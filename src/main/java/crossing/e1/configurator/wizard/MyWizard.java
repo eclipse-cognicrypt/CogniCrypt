@@ -29,7 +29,7 @@ public class MyWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		String[] tasks = model.getClafersByType("Primate").stream()
+		String[] tasks = model.getClafersByType("c0_Task").stream()
 				.map(clafer -> clafer.getName()).toArray(String[]::new);
 		taskSelectionPage = new TaskSelectionPage(tasks);
 		two = new MyPageTwo();

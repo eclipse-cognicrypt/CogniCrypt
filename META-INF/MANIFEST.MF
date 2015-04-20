@@ -5,8 +5,10 @@ Bundle-SymbolicName: crossing.e1.configurator;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: crossing.e1.configurator.Activator
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources;bundle-version="3.9.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/claferchocoig.jar,
- .
+ .,
+ src/main/resources/

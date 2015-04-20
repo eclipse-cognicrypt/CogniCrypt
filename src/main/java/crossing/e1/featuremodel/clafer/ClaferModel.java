@@ -2,10 +2,25 @@ package crossing.e1.featuremodel.clafer;
 
 import static org.clafer.ast.Asts.newModel;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.clafer.ast.*;
+import org.clafer.collection.Triple;
+import org.clafer.javascript.Javascript;
+import org.clafer.javascript.JavascriptShell;
+import org.clafer.objective.Objective;
+import org.clafer.scope.Scope;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
 
 
 public class ClaferModel {
@@ -14,26 +29,36 @@ public class ClaferModel {
 	private AstModel model;
 	
 	public ClaferModel(){
-		//hard-coded model for now
-		//should have option to read from file later on
-		model = newModel();
-
-        AstAbstractClafer object = model.addAbstract("Object");
-        object.addChild("Name").withCard(0, 1);
-
-        AstAbstractClafer animal = model.addAbstract("Animal").extending(object);
-        animal.addChild("Tail").withCard(0, 1);
-
-        AstAbstractClafer primate = model.addAbstract("Primate").extending(animal);
-        primate.addChild("Bipedal").withCard(0, 1);
-
-        model.addChild("Human").withCard(1, 1).extending(primate);
-        model.addChild("Beaver").withCard(1, 1).extending(animal);
-        model.addChild("Sarah").withCard(1, 1).extending(primate);
+		loadModel();
+	}
+	
+	//temporarily hard coding model file
+	private void loadModel(){
+		try {
+//			IWorkspaceRoot myWorkspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+//			IProject myWebProject = myWorkspaceRoot.getProject("ClaferConfigurator");
+//			if (myWebProject.exists() && !myWebProject.isOpen())
+//			      myWebProject.open(null);
+			
+	
+			//IFolder imagesFolder = myWebProject.getFolder("src/main/resources");
+			
+			//System.out.println("exists: " + imagesFolder.exists());
+			Triple<AstModel, Scope, Objective[]> pair = Javascript.readModel(new File(ClassLoader.getSystemResource("hashing.js").getFile()), Javascript.newEngine());
+            model = pair.getFst();
+            System.out.println("Loaded " + AstUtil.getNames(AstUtil.getClafers(model)) + ".");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//		} catch (CoreException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 	public List<AstConcreteClafer> getClafersByType(String type){
-		return model.getChildren().stream().filter(child -> child.getSuperClafer().getName() == type).collect(Collectors.toList());
+		return model.getChildren().stream().filter(child -> child.getSuperClafer().getName().equals(type)).collect(Collectors.toList());
 	}
 	
 	public void setModelName(String modelName) {

@@ -57,6 +57,8 @@ public class TaskSelectionPage extends WizardPage {
 		setPageComplete(false);
 
 	}
+	
+	
 
 	public String getSelction() {
 		return taskCombo.getText();

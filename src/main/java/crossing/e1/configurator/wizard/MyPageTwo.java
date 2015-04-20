@@ -59,6 +59,7 @@ public class MyPageTwo extends WizardPage {
     setPageComplete(false);
   }
 
+  
   public String getText1() {
     return text1.getText();
   }

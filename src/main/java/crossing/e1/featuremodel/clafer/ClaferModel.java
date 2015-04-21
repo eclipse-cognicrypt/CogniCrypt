@@ -37,17 +37,25 @@ public class ClaferModel {
 
 	// temporarily hard coding model file
 	private void loadModel() {
+		Triple<AstModel, Scope, Objective[]> pair = null;
 		try {
 			Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+			if (bundle == null) {
+				// running as application
+				pair = Javascript.readModel(new File(ClassLoader
+						.getSystemResource("hashing.js").getFile()), Javascript
+						.newEngine());
+			} else {
+				// running as plugin
+				Path originPath = new Path("src/main/resources/hashing.js");
 
-			Path originPath = new Path("src/main/resources/hashing.js");
+				URL bundledFileURL = FileLocator.find(bundle, originPath, null);
 
-			URL bundledFileURL = FileLocator.find(bundle, originPath, null);
+				bundledFileURL = FileLocator.resolve(bundledFileURL);
+				pair = Javascript.readModel(new File(bundledFileURL.getFile()),
+						Javascript.newEngine());
+			}
 
-			bundledFileURL = FileLocator.resolve(bundledFileURL);
-
-			Triple<AstModel, Scope, Objective[]> pair = Javascript.readModel(
-					new File(bundledFileURL.getFile()), Javascript.newEngine());
 			model = pair.getFst();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

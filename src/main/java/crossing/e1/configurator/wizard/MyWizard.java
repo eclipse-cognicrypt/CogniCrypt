@@ -29,8 +29,8 @@ public class MyWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		String[] tasks = model.getClafersByType("c0_Task").stream()
-				.map(clafer -> clafer.getName()).toArray(String[]::new);
+		
+		AstClafer[] tasks = model.getClafersByType("c0_Task").stream().toArray(AstClafer[]::new);
 		taskSelectionPage = new TaskSelectionPage(tasks);
 		two = new MyPageTwo();
 		addPage(taskSelectionPage);
@@ -49,11 +49,15 @@ public class MyWizard extends Wizard {
 	@Override
 	public IWizardPage getNextPage(IWizardPage currentPage) {
 	    if (currentPage == taskSelectionPage) {
-	    	two.setTitle(((TaskSelectionPage) currentPage).getSelction());
+	    	AstClafer selectedTask = ((TaskSelectionPage) currentPage).getSelction();
+	    	two.setTitle(selectedTask.getName());
+	    	selectedTask.getChildren().forEach(child -> two.addField(child.getName()));
+	    	addPage(two);
 	    	return two;
 	    }else{
 	    	return super.getNextPage(currentPage);
 	    }
 	    //return null;
 	} 
+	
 }

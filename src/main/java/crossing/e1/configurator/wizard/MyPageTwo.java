@@ -58,6 +58,13 @@ public class MyPageTwo extends WizardPage {
     setControl(container);
     setPageComplete(false);
   }
+  
+  public void addField(String labelText){
+	  System.out.println("adding field");
+	  Label label = new Label(container, SWT.NONE);
+	  label.setText(labelText);
+	  container.layout();
+  }
 
   
   public String getText1() {

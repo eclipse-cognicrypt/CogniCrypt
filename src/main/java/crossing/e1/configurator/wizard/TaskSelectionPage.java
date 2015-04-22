@@ -4,6 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.JComboBox;
+
+import org.clafer.ast.AstClafer;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -17,11 +26,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.events.*;
 
 public class TaskSelectionPage extends WizardPage {
-	private Combo taskCombo;
+	private ComboViewer taskCombo;
 	private Composite container;
-	private String[] tasks;
+	private AstClafer[] tasks;
 
-	public TaskSelectionPage(String[] items) {
+	public TaskSelectionPage(AstClafer[] items) {
 		super("Select Task");
 		setTitle("Select Taks");
 		setDescription("Here the user selects his task");
@@ -38,12 +47,27 @@ public class TaskSelectionPage extends WizardPage {
 		Label label1 = new Label(container, SWT.NONE);
 		label1.setText("Select Task");
 
-		taskCombo = new Combo(container, SWT.BORDER | SWT.SINGLE);
-		taskCombo.setItems(tasks);
-		taskCombo.addSelectionListener(new SelectionAdapter() {
+		taskCombo = new ComboViewer(container, SWT.BORDER | SWT.SINGLE);
+		
+		taskCombo.setContentProvider(ArrayContentProvider.getInstance());
+		taskCombo.setLabelProvider(new LabelProvider() {
+		  @Override
+		  public String getText(Object element) {
+		    if (element instanceof AstClafer) {
+		      AstClafer clafer = (AstClafer) element;
+		      return clafer.getName();
+		    }
+		    return super.getText(element);
+		  }
+		});
+		
+		taskCombo.setInput(tasks);
+		taskCombo.addSelectionChangedListener(new ISelectionChangedListener() {
 			
-			public void widgetSelected(SelectionEvent e) {
-				if (taskCombo.getSelectionIndex() >= 0) {
+			public void selectionChanged(SelectionChangedEvent event){
+				
+				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+				if (selection.size() > 0) {
 					setPageComplete(true);
 				}
 			}
@@ -51,7 +75,7 @@ public class TaskSelectionPage extends WizardPage {
 		});
 
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		taskCombo.setLayoutData(gd);
+		//taskCombo.setL setLayoutData(gd);
 		// required to avoid an error in the system
 		setControl(container);
 		setPageComplete(false);
@@ -60,7 +84,7 @@ public class TaskSelectionPage extends WizardPage {
 	
 	
 
-	public String getSelction() {
-		return taskCombo.getText();
+	public AstClafer getSelction() {
+		return (AstClafer) ((IStructuredSelection) taskCombo.getSelection()).getFirstElement();
 	}
 }

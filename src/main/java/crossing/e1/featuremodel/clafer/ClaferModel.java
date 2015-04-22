@@ -68,6 +68,10 @@ public class ClaferModel {
 				.filter(child -> child.getSuperClafer().getName().equals(type))
 				.collect(Collectors.toList());
 	}
+	
+	public List<AstConcreteClafer> getClaferProperties(AstConcreteClafer clafer){
+		return clafer.getChildren();
+	}
 
 	public void setModelName(String modelName) {
 		this.modelName = modelName;

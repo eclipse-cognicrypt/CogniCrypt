@@ -25,19 +25,7 @@ import org.clafer.objective.Objective;
 
 public class TestClafer {
 
-	/**
-     * <pre>
-     * abstract Object
-     *     Name ?
-     * abstract Animal : Object
-     *     Tail ?
-     * abstract Primate : Animal
-     *     Bipedal ?
-     * Human : Primate
-     * Beaver : Animal
-     * Sarah : Primate
-     * </pre>
-     */
+
 	public static void main(String[] args) {
 		ClaferModel model = new ClaferModel();
 		System.out.println("-------");

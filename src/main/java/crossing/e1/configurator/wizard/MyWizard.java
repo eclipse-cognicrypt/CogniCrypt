@@ -16,6 +16,7 @@ public class MyWizard extends Wizard {
 	protected MyPageTwo two;
 	private ClaferModel model;
 
+
 	public MyWizard() {
 		super();
 		setNeedsProgressMonitor(true);
@@ -30,7 +31,7 @@ public class MyWizard extends Wizard {
 	@Override
 	public void addPages() {
 		
-		AstClafer[] tasks = model.getClafersByType("c0_Task").stream().toArray(AstClafer[]::new);
+		List<AstConcreteClafer> tasks =   new ClaferModel().model.getChildren();//model.getClafersByType("c0_Task").stream().toArray(AstClafer[]::new);
 		taskSelectionPage = new TaskSelectionPage(tasks);
 		two = new MyPageTwo();
 		addPage(taskSelectionPage);
@@ -41,7 +42,7 @@ public class MyWizard extends Wizard {
 	public boolean performFinish() {
 		// Print the result to the console
 		System.out.println(taskSelectionPage.getSelction());
-		System.out.println(two.getText1());
+		System.out.println(two.getText1()+" ANd here goes values "+new ClaferModel().model.getChildren());
 
 		return true;
 	}

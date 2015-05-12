@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.JComboBox;
 
 import org.clafer.ast.AstClafer;
+import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -28,9 +29,9 @@ import org.eclipse.swt.events.*;
 public class TaskSelectionPage extends WizardPage {
 	private ComboViewer taskCombo;
 	private Composite container;
-	private AstClafer[] tasks;
+	private List<AstConcreteClafer> tasks;
 
-	public TaskSelectionPage(AstClafer[] items) {
+	public TaskSelectionPage(List<AstConcreteClafer> items) {
 		super("Select Task");
 		setTitle("Select Taks");
 		setDescription("Here the user selects his task");

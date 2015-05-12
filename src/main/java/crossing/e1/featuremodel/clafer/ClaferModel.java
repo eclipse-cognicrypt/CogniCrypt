@@ -29,7 +29,7 @@ import crossing.e1.configurator.Activator;
 public class ClaferModel {
 
 	private String modelName;
-	private AstModel model;
+	public AstModel model;
 
 	public ClaferModel() {
 		loadModel();

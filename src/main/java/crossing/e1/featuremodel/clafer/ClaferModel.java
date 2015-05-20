@@ -70,14 +70,13 @@ public class ClaferModel {
 				.collect(Collectors.toList());
 	}
 	
-	public List<AstConstraint> getConstraints(String type) {
-		
-		return getConstraints(model.getChildren());
+	public List<AstConstraint> getConstraints() {
+				return getConstraints(model.getChildren());
 	}
+	
+	//Method to provide list of constraints of the model
 	public List<AstConstraint> getConstraints(List<AstConcreteClafer> type) {
 		List<AstConstraint> constarint= new ArrayList<AstConstraint>();
-		System.out.println("Here"+model.getTypeHierarchyRoot().getChildren());
-		
 		if (type.size()==0)
 			return null;
 		for (AstConcreteClafer object : type) {
@@ -88,11 +87,7 @@ public class ClaferModel {
 				constarint.addAll(interMediate);
 				constarint.addAll(object.getConstraints());
 			}
-				
-			
 		}
-		
-		
 		return constarint;
 	}
 	

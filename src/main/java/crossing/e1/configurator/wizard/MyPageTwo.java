@@ -1,5 +1,13 @@
 package crossing.e1.configurator.wizard;
 
+import java.util.Arrays;
+
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -12,14 +20,21 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 public class MyPageTwo extends WizardPage {
-  private Text text1;
+  
   private Composite container;
-
+  private ComboViewer algorithmClass;
+  private Label label1;
+  private ComboViewer algorithm;
+  private Label label2;
+  private String[] example={"ex01","ex02","Example01","Example02","Example--01","Example--02"};//Tobe replaced by clafer values with constraint filter
+  
+  
+  
   public MyPageTwo() {
     super("Second Page");
-    setTitle("Second Page");
-    setDescription("Now this is the second page");
-    setControl(text1);
+    setTitle("Available options");
+    setDescription("User can choose below mentioned algorithm(s) for encryption");
+    
   }
 
   @Override
@@ -27,33 +42,64 @@ public class MyPageTwo extends WizardPage {
     container = new Composite(parent, SWT.NONE);
     GridLayout layout = new GridLayout();
     container.setLayout(layout);
-    layout.numColumns = 2;
-    Label label1 = new Label(container, SWT.NONE);
-    label1.setText("Say hello to Fred");
+    layout.numColumns = 4;
+   
+    label1 = new Label(container, SWT.NONE);
+	label1.setText("Select Algorithm Type");
+    
+    algorithmClass = new ComboViewer(container, SWT.BORDER | SWT.SINGLE);
+	algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
+    algorithmClass.setLabelProvider((new LabelProvider() {
+	  @Override
+	  public String getText(Object element) {
+	    	    return element.toString();
+	  }
+	}));
+	
+    algorithmClass.setInput(Arrays.asList(example));
+    algorithmClass.addSelectionChangedListener(new ISelectionChangedListener() {
+		
+		public void selectionChanged(SelectionChangedEvent event){
+			
+			IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+			if (selection.size() > 0) {
+				setPageComplete(true);
+			}
+		}
 
-    text1 = new Text(container, SWT.BORDER | SWT.SINGLE);
-    text1.setText("");
-    text1.addKeyListener(new KeyListener() {
+	});
+    
+    label2 = new Label(container, SWT.NONE);
+	label2.setText("Select Algorithm");
+    
+    algorithm = new ComboViewer(container, SWT.BORDER );
+    algorithm.setContentProvider(ArrayContentProvider.getInstance());
+    algorithm.setLabelProvider((new LabelProvider() {
+	  @Override
+	  public String getText(Object element) {
+	    	    return element.toString();
+	  }
+	}));
+	
+    algorithm.setInput(Arrays.asList(example));
+    algorithm.addSelectionChangedListener(new ISelectionChangedListener() {
+		
+		public void selectionChanged(SelectionChangedEvent event){
+			
+			IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+			if (selection.size() > 0) {
+				setPageComplete(true);
+			}
+		}
 
-      @Override
-      public void keyPressed(KeyEvent e) {
-        // TODO Auto-generated method stub
-      }
-
-      @Override
-      public void keyReleased(KeyEvent e) {
-        if (!text1.getText().isEmpty()) {
-          setPageComplete(true);
-        }
-      }
-
-    });
+	});
+    
+    
+    
+    
+    
     GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-    text1.setLayoutData(gd);
-    Label labelCheck = new Label(container, SWT.NONE);
-    labelCheck.setText("This is a check");
-    Button check = new Button(container, SWT.CHECK);
-    check.setSelection(true);
+     
     // required to avoid an error in the system
     setControl(container);
     setPageComplete(false);
@@ -68,7 +114,7 @@ public class MyPageTwo extends WizardPage {
 
   
   public String getText1() {
-    return text1.getText();
+    return "";
   }
 }
  

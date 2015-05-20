@@ -92,6 +92,7 @@ public class TaskSelectionPage extends WizardPage {
 			}
 		
 		});
+		
 		securityLevelInSecured.addSelectionListener(new SelectionListener() {
 			
 			@Override
@@ -124,10 +125,7 @@ public class TaskSelectionPage extends WizardPage {
 		outPutSize=new Spinner(container,SWT.BORDER | SWT.SINGLE);
 		outPutSize.setValues(128,128,2048,0, 2, 10);
 		outPutSize.setToolTipText("key leangth");
-		
-		
-		
-		
+				
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		//taskCombo.setL setLayoutData(gd);
 		// required to avoid an error in the system
@@ -136,9 +134,13 @@ public class TaskSelectionPage extends WizardPage {
 
 	}
 	
-	
-
-	public Integer getSelction() {
+	public Integer getKeyLengthSelction() {
 		return taskCombo.getSelection();
+	}
+	public Integer getOutPutSelection(){
+		return outPutSize.getSelection();
+	}
+	public boolean isSecure(){
+		return securityLevelSecured.getSelection();
 	}
 }

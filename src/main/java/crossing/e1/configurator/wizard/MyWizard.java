@@ -41,8 +41,8 @@ public class MyWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		// Print the result to the console
-		System.out.println(taskSelectionPage.getSelction());
-		System.out.println(two.getText1()+" ANd here goes values "+new ClaferModel().model.getChildren());
+		System.out.println(taskSelectionPage.isPageComplete());
+		System.out.println(two.getText1());
 
 		return true;
 	}
@@ -51,15 +51,16 @@ public class MyWizard extends Wizard {
 	public IWizardPage getNextPage(IWizardPage currentPage) {
 	    if (currentPage == taskSelectionPage) {
 	    	// TODO
-//	    	AstClafer selectedTask = ((TaskSelectionPage) currentPage).getSelction();
+	    	if( ((TaskSelectionPage) currentPage).isSecure()){
 //	    	two.setTitle(selectedTask.getName());
 //	    	selectedTask.getChildren().forEach(child -> two.addField(child.getName()));
+	    		
 	    	addPage(two);
+	    	}
 	    	return two;
 	    }else{
 	    	return super.getNextPage(currentPage);
 	    }
-	    //return null;
-	} 
-	
+	}
+
 }

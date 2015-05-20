@@ -50,9 +50,10 @@ public class MyWizard extends Wizard {
 	@Override
 	public IWizardPage getNextPage(IWizardPage currentPage) {
 	    if (currentPage == taskSelectionPage) {
-	    	AstClafer selectedTask = ((TaskSelectionPage) currentPage).getSelction();
-	    	two.setTitle(selectedTask.getName());
-	    	selectedTask.getChildren().forEach(child -> two.addField(child.getName()));
+	    	// TODO
+//	    	AstClafer selectedTask = ((TaskSelectionPage) currentPage).getSelction();
+//	    	two.setTitle(selectedTask.getName());
+//	    	selectedTask.getChildren().forEach(child -> two.addField(child.getName()));
 	    	addPage(two);
 	    	return two;
 	    }else{

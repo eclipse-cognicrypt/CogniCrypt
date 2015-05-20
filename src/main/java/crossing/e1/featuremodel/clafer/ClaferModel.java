@@ -5,6 +5,7 @@ import static org.clafer.ast.Asts.newModel;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,7 @@ public class ClaferModel {
 				pair = Javascript.readModel(new File(bundledFileURL.getFile()),
 						Javascript.newEngine());
 			}
-
+			this.setModelName("hashing");
 			model = pair.getFst();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -66,6 +67,39 @@ public class ClaferModel {
 	public List<AstConcreteClafer> getClafersByType(String type) {
 		return model.getChildren().stream()
 				.filter(child -> child.getSuperClafer().getName().equals(type))
+				.collect(Collectors.toList());
+	}
+	
+	public List<AstConstraint> getConstraints(String type) {
+		
+		return getConstraints(model.getChildren());
+	}
+	public List<AstConstraint> getConstraints(List<AstConcreteClafer> type) {
+		List<AstConstraint> constarint= new ArrayList<AstConstraint>();
+		System.out.println("Here"+model.getTypeHierarchyRoot().getChildren());
+		
+		if (type.size()==0)
+			return null;
+		for (AstConcreteClafer object : type) {
+			
+			List<AstConstraint> interMediate=new ArrayList<AstConstraint>();
+			interMediate=this.getConstraints(object.getChildren());
+			if(interMediate!=null){
+				constarint.addAll(interMediate);
+				constarint.addAll(object.getConstraints());
+			}
+				
+			
+		}
+		
+		
+		return constarint;
+	}
+	
+	public List<AstConcreteClafer> getClafersByName(String type) {
+		
+		return model.getChildren().stream()
+				.filter(child -> child.getName().equals(type))
 				.collect(Collectors.toList());
 	}
 	

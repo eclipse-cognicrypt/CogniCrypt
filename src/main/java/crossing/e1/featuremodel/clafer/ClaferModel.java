@@ -77,25 +77,41 @@ public class ClaferModel {
 	//Method to provide list of constraints of the model
 	public List<AstConstraint> getConstraints(List<AstConcreteClafer> type) {
 		List<AstConstraint> constarint= new ArrayList<AstConstraint>();
-		if (type.size()==0)
-			return null;
+		
+		for (AstConcreteClafer object : type) {
+			if(object.hasChildren()){
+				constarint.addAll(this.getConstraints(object.getChildren()));
+				 
+			}
+			else
+				constarint.addAll(object.getConstraints());
+		}
+	return constarint;
+	}
+	
+	public List<AstConcreteClafer> getChildByName(String name,List<AstConcreteClafer> type) {
+		List<AstConcreteClafer> constarint= new ArrayList<AstConcreteClafer>();
+		ClaferModel m=new ClaferModel();
 		for (AstConcreteClafer object : type) {
 			
-			List<AstConstraint> interMediate=new ArrayList<AstConstraint>();
-			interMediate=this.getConstraints(object.getChildren());
-			if(interMediate!=null){
-				constarint.addAll(interMediate);
-				constarint.addAll(object.getConstraints());
+			if(object.hasChildren()){
+				constarint.addAll(this.getChildByName(name,object.getChildren()));
+				 
 			}
+			else{
+				if(object.getConstraints().toString().contains(name)){
+					constarint.add(object);
+					}
+				}
 		}
-		return constarint;
+	return constarint;
 	}
+	
 	
 	public List<AstConcreteClafer> getClafersByName(String type) {
 		
 		return model.getChildren().stream()
-				.filter(child -> child.getName().equals(type))
-				.collect(Collectors.toList());
+				.filter(child -> child.getName().contains(type)).collect(Collectors.toList());
 	}
 	
 	public List<AstConcreteClafer> getClaferProperties(AstConcreteClafer clafer){

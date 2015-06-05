@@ -1,25 +1,16 @@
 package crossing.e1.featuremodel.clafer;
 
-import static org.clafer.ast.Asts.newModel;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.clafer.ast.*;
 import org.clafer.collection.Triple;
 import org.clafer.javascript.Javascript;
-import org.clafer.javascript.JavascriptShell;
 import org.clafer.objective.Objective;
 import org.clafer.scope.Scope;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -126,6 +117,14 @@ public class ClaferModel {
 		return modelName;
 	}
 
+	public AstConcreteClafer getChild(String name){
+		for(AstConcreteClafer chil : AstUtil.getConcreteClafers(model)){
+			if(chil.getName().contains(name)){
+				return chil;
+			}
+		}
+	return null;
+	}
 	public AstModel getModel() {
 		return model;
 	}

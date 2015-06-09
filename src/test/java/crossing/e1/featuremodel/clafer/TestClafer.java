@@ -28,7 +28,8 @@ public class TestClafer {
 
 	public static void main(String[] args) {
 		ClaferModel model = new ClaferModel();
-		System.out.println("-------");
+		
+		System.out.println("--Testing getClafersByType-----");
 		model.getClafersByType("c0_Task").forEach(task -> {
 			System.out.println("Task: "+ task);
 			model.getClaferProperties(task).forEach(property -> {
@@ -40,7 +41,8 @@ public class TestClafer {
 			});
 		});
 		
-		
+		System.out.println("--Testing getChild-----");
+		System.out.println(model.getChildByName("c0_Digest",model.getModel().getChildren()));
 	}
 
 }

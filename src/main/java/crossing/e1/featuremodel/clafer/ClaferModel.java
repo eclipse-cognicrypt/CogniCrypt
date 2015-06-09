@@ -130,7 +130,7 @@ public class ClaferModel {
 	}
 
 	/* This method is used to retrive the scope and objectives from
-	 * compiles js file
+	 * compiles javaScript file
 	 * This method will return collection if succeeded ,null otherwise 
 	 * */
 	public Triple<AstModel, Scope, Objective[]> getTriple() {

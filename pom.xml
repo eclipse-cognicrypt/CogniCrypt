@@ -3,13 +3,7 @@
   <groupId>ClaferConfigurator</groupId>
   <artifactId>ClaferConfigurator</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <dependencies>
-  <dependency>
-    <groupId>org.clafer</groupId>
-    <artifactId>chocosolver</artifactId>
-    <version>0.3.10.1</version>
-</dependency>
-</dependencies>
+ 
   <build>
   
     <plugins>

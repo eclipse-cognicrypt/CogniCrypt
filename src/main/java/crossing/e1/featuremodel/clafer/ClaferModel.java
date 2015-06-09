@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.clafer.ast.*;
 import org.clafer.collection.Triple;
 import org.clafer.javascript.Javascript;
@@ -82,7 +83,6 @@ public class ClaferModel {
 	
 	public List<AstConcreteClafer> getChildByName(String name,List<AstConcreteClafer> type) {
 		List<AstConcreteClafer> constarint= new ArrayList<AstConcreteClafer>();
-		ClaferModel m=new ClaferModel();
 		for (AstConcreteClafer object : type) {
 			
 			if(object.hasChildren()){
@@ -127,6 +127,18 @@ public class ClaferModel {
 	}
 	public AstModel getModel() {
 		return model;
+	}
+
+	public Triple<AstModel, Scope, Objective[]> getTriple() {
+		try {
+			return Javascript.readModel(new File(ClassLoader
+					.getSystemResource("hashing.js").getFile()), Javascript
+					.newEngine());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

@@ -129,14 +129,17 @@ public class ClaferModel {
 		return model;
 	}
 
+	/* This method is used to retrive the scope and objectives from
+	 * compiles js file
+	 * This method will return collection if succeeded ,null otherwise 
+	 * */
 	public Triple<AstModel, Scope, Objective[]> getTriple() {
 		try {
 			return Javascript.readModel(new File(ClassLoader
 					.getSystemResource("hashing.js").getFile()), Javascript
 					.newEngine());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+					e.printStackTrace();
 		}
 		return null;
 	}

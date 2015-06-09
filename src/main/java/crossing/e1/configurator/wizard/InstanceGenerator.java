@@ -1,60 +1,39 @@
 package crossing.e1.configurator.wizard;
-import java.util.HashMap;
-import java.util.Map;
-
-
-import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstModel;
+import org.clafer.common.Check;
 import org.clafer.compiler.ClaferCompiler;
-import org.clafer.compiler.ClaferOption;
 import org.clafer.compiler.ClaferSolver;
 import org.clafer.objective.Objective;
 import org.clafer.scope.Scope;
-import org.clafer.scope.ScopeBuilder;
 import org.clafer.collection.Triple;
-
 import crossing.e1.featuremodel.clafer.ClaferModel;
-
+/*
+ * Class responsible for generating instances 
+ * for a given clafer
+ * */
 public class InstanceGenerator {
 
-
+	private ClaferSolver solver;
+	private AstModel model;
+	private ClaferModel clafModel;
 public InstanceGenerator(){
 	
-	AstModel model= new ClaferModel().getModel();
-	ClaferModel clafModel=new ClaferModel();
+	this.model= new ClaferModel().getModel();
+	this.clafModel=new ClaferModel();
 	AstConcreteClafer algorithms=clafModel.getChild("PasswordStoring");
 	AstConcreteClafer performance=clafModel.getChild("performance");
 	AstConcreteClafer name=clafModel.getChild("name");
 	AstConcreteClafer outputSize=clafModel.getChild("c0_outputSize");
 	AstConcreteClafer status=clafModel.getChild("status");
-//	ScopeBuilder scope= Scope.intHigh(600).defaultScope(20);
-//	
-//	System.out.println("status  solver "+scope.toScope().getScope(performance));
-//	Map<AstClafer, Integer> map = new HashMap<AstClafer, Integer>();
-//	map.put(status, 16);
-//	map.put(outputSize, 1);
-//	map.put(name, 16);
-//	map.put(performance, 18);
-//	map.put(algorithms, 1);
-//	
-//	clafModel.getTriple();
+
 	Triple<AstModel, Scope, Objective[]> triple = clafModel.getTriple(); 
-	Scope scope=triple.getSnd();
-	scope.intHigh(512);
-	scope.intHigh(128);
-	ClaferSolver solver = ClaferCompiler.compile(triple.getFst(),scope );
-	
-	
-	System.out.println(solver.find()+" status  solver ");
-	solver.instance();
-	;
-	
+	Scope scope=Check.notNull(triple.getSnd());
+	Scope.intHigh(512);
+	Scope.intHigh(128);
+	solver = ClaferCompiler.compile(triple.getFst(),scope );
 	while (solver.find()) {
-		      
-		        System.out.println(solver.instance());
+				System.out.println(solver.instance());
 		    }
 }
-	
-	
 }

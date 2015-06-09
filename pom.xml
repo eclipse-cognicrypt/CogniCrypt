@@ -3,9 +3,7 @@
   <groupId>ClaferConfigurator</groupId>
   <artifactId>ClaferConfigurator</artifactId>
   <version>0.0.1-SNAPSHOT</version>
- 
-  <build>
-  
+   <build>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>

@@ -10,7 +10,7 @@ import org.clafer.collection.Triple;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 /*
  * Class responsible for generating instances 
- * for a given clafer
+ * for a given clafer.
  * */
 public class InstanceGenerator {
 

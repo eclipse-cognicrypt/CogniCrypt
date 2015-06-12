@@ -12,6 +12,7 @@ import crossing.e1.featuremodel.clafer.ClaferModel;
 /*
  * Class responsible for generating instances 
  * for a given clafer.
+ * 
  * */
 public class InstanceGenerator {
 
@@ -25,6 +26,7 @@ public class InstanceGenerator {
 		AstClafer name=clafModel.getChild("name");
 		AstClafer outputSize=clafModel.getChild("c0_outputSize");
 		AstClafer status=clafModel.getChild("status");
+		
 		Triple<AstModel, Scope, Objective[]> triple = clafModel.getTriple(); 
 		ScopeWrapper scopes=new ScopeWrapper();
 			scopes.setScopes(triple.getSnd().getScoped(), triple.getSnd());

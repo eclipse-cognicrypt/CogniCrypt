@@ -23,6 +23,9 @@ public class ClaferModel {
 
 	private String modelName;
 	public AstModel model;
+	private Bundle bundle;
+	private Path originPath;
+	private URL bundledFileURL;
 
 	public ClaferModel() {
 		loadModel();
@@ -32,7 +35,7 @@ public class ClaferModel {
 	private void loadModel() {
 		Triple<AstModel, Scope, Objective[]> pair = null;
 		try {
-			Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+			bundle = Platform.getBundle(Activator.PLUGIN_ID);
 			if (bundle == null) {
 				// running as application
 				pair = Javascript.readModel(new File(ClassLoader
@@ -40,9 +43,9 @@ public class ClaferModel {
 						.newEngine());
 			} else {
 				// running as plugin
-				Path originPath = new Path("src/main/resources/hashing.js");
+				originPath = new Path("hashing.js");
 
-				URL bundledFileURL = FileLocator.find(bundle, originPath, null);
+				bundledFileURL = FileLocator.find(bundle, originPath, null);
 
 				bundledFileURL = FileLocator.resolve(bundledFileURL);
 				pair = Javascript.readModel(new File(bundledFileURL.getFile()),
@@ -51,7 +54,7 @@ public class ClaferModel {
 			this.setModelName("hashing");
 			model = pair.getFst();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Value of Bundle"+bundle);
 			e.printStackTrace();
 		}
 	}
@@ -117,8 +120,8 @@ public class ClaferModel {
 		return modelName;
 	}
 
-	public AstConcreteClafer getChild(String name){
-		for(AstConcreteClafer chil : AstUtil.getConcreteClafers(model)){
+	public AstClafer getChild(String name){
+		for(AstClafer chil : AstUtil.getClafers(model)){
 			if(chil.getName().contains(name)){
 				return chil;
 			}
@@ -135,9 +138,22 @@ public class ClaferModel {
 	 * */
 	public Triple<AstModel, Scope, Objective[]> getTriple() {
 		try {
-			return Javascript.readModel(new File(ClassLoader
-					.getSystemResource("hashing.js").getFile()), Javascript
-					.newEngine());
+				bundle = Platform.getBundle(Activator.PLUGIN_ID);
+				if (bundle == null) {
+					// running as application
+					return Javascript.readModel(new File(ClassLoader
+							.getSystemResource("hashing.js").getFile()), Javascript
+							.newEngine());
+				} else {
+					// running as plugin
+					originPath = new Path("hashing.js");
+
+					bundledFileURL = FileLocator.find(bundle, originPath, null);
+
+					bundledFileURL = FileLocator.resolve(bundledFileURL);
+					return Javascript.readModel(new File(bundledFileURL.getFile()),
+							Javascript.newEngine());
+				}
 		} catch (IOException e) {
 					e.printStackTrace();
 		}

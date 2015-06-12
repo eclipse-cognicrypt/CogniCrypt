@@ -26,7 +26,6 @@ public class ScopeWrapper  {
     		scopes.put(ast,scope.getScope(ast));
     	}
     }
-    
     public Map<AstClafer, Integer> getScope(){
     	return scopes;
     }

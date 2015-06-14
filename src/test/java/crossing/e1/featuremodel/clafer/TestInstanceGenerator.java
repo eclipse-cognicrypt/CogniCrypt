@@ -1,18 +1,14 @@
 package crossing.e1.featuremodel.clafer;
 
 import java.util.Map;
-
 import org.clafer.ast.AstClafer;
 import org.clafer.scope.Scope;
 import org.claferconfigurator.scope.ScopeWrapper;
-
-import crossing.e1.configurator.wizard.InstanceGenerator;
-
 public class TestInstanceGenerator {
 
 	public static void main(String[] args) {
 		
-			System.out.println("Testing instance Generator method");
+			System.out.println(" Testing instance Generator method");
 			InstanceGenerator instance=new InstanceGenerator();
 			displayScope(instance.getScope(),instance.getWrapper());
 			

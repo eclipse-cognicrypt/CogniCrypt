@@ -1,4 +1,4 @@
-package crossing.e1.configurator.wizard;
+package crossing.e1.featuremodel.clafer;
 
 import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstModel;

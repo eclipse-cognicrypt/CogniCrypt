@@ -44,7 +44,7 @@ public class InstanceGenerator {
 		while (solver.find()) {
 						System.out.println(solver.instance());
 		}
-		System.out.println("Ther are Instances"+solver.allInstances().length+" for scope");
+		System.out.println("Ther are "+solver.instanceCount()+" Instances  for scope");
 	}
 	public Scope getScope() {
 		return Check.notNull(scope);

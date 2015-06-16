@@ -1,11 +1,7 @@
 package crossing.e1.featuremodel.clafer;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.clafer.ast.AstClafer;
-import org.clafer.ast.AstConcreteClafer;
-import org.clafer.ast.AstConstraint;
+
 
 public class ClaferModelUtils {
 

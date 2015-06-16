@@ -1,6 +1,5 @@
 package crossing.e1.featuremodel.clafer;
 
-import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstModel;
 import org.clafer.common.Check;
 import org.clafer.compiler.ClaferCompiler;
@@ -25,25 +24,28 @@ public class InstanceGenerator {
 	public InstanceGenerator(){
 		this.clafModel=new ClaferModel();
 		this.intermediateScope=new ScopeWrapper();
-		AstClafer algorithms=clafModel.getChild("PasswordStoring");
-		AstClafer performance=clafModel.getChild("performance");
-		AstClafer name=clafModel.getChild("name");
-		AstClafer outputSize=clafModel.getChild("c0_outputSize");
-		AstClafer status=clafModel.getChild("status");
 		Triple<AstModel, Scope, Objective[]> triple = clafModel.getTriple(); 
 		intermediateScope=new ScopeWrapper();
 		intermediateScope.setScopes(triple.getSnd().getScoped(), triple.getSnd());
-		intermediateScope.alterScope(performance, 20);
-		intermediateScope.alterScope(outputSize, 240);
-		intermediateScope.alterScope(algorithms, 14);
-		intermediateScope.alterScope(name, 25);
-		intermediateScope.alterScope(status, 27);
+//		AstClafer algorithms=clafModel.getChild("PasswordStoring");
+//		AstClafer performance=clafModel.getChild("performance");
+//		AstClafer name=clafModel.getChild("name");
+//		AstClafer outputSize=clafModel.getChild("c0_outputSize");
+//		AstClafer status=clafModel.getChild("status");
+//		intermediateScope.alterScope(performance, 20);
+//		intermediateScope.alterScope(outputSize, 272);
+//		intermediateScope.alterScope(algorithms, 14);
+//		intermediateScope.alterScope(name, 18);
+//		intermediateScope.alterScope(status, 16);
+		 
 		scope=intermediateScope.getScopeObject(triple.getFstSnd().getSnd(),intermediateScope.getScope());
+		Scope.intLow(0);
 		solver = ClaferCompiler.compile(triple.getFst(),scope.toScope() );
-		System.out.println(" Ther eare "+solver.allInstances().length+" Instances for scope"+" ");
+		
 		while (solver.find()) {
-			//Instances can be accessed here
-			 }
+						System.out.println(solver.instance());
+		}
+		System.out.println("Ther are Instances"+solver.allInstances().length+" for scope");
 	}
 	public Scope getScope() {
 		return Check.notNull(scope);

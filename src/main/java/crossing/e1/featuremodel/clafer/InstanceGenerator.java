@@ -8,7 +8,6 @@ import org.clafer.objective.Objective;
 import org.clafer.scope.Scope;
 import org.claferconfigurator.scope.ScopeWrapper;
 import org.clafer.collection.Triple;
-
 import crossing.e1.featuremodel.clafer.ClaferModel;
 /*
  * Class responsible for generating instances 

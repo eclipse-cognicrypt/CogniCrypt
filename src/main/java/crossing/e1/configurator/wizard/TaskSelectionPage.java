@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.events.*;
 
 import crossing.e1.featuremodel.clafer.ClaferModel;
+import crossing.e1.featuremodel.clafer.InstanceGenerator;
 
 public class TaskSelectionPage extends WizardPage {
 	private ClaferModel model;

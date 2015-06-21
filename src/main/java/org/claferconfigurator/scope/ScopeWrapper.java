@@ -11,9 +11,10 @@ import org.clafer.scope.Scope;
 public class ScopeWrapper  {
 
 	private Map<AstClafer,Integer> scopes;
-	public org.clafer.scope.Scope getScopeObject(Scope scope,Map<AstClafer, Integer> map) {
-		
-    	return new Scope(map, 1,scope.getIntLow(),scope.getIntHigh(),scope.getMulLow(),scope.getMulHigh(),1500,scope.getCharLow(),scope.getCharHigh());
+	public Scope getScopeObject(Scope scope,Map<AstClafer, Integer> map) {
+		Scope scoped;
+    	scoped= new Scope(map, 1,scope.getIntLow(),600,scope.getMulLow(),scope.getMulHigh(),20,scope.getCharLow(),scope.getCharHigh());
+    	return scoped;
 	}
     public void setScopes(Set<AstClafer> set,Scope scope){
     	this.scopes=new HashMap<AstClafer, Integer>();

@@ -1,10 +1,13 @@
 package crossing.e1.featuremodel.clafer;
 import org.clafer.ast.AstRef;
+
+import crossing.e1.configurator.Lables;
+import crossing.e1.configurator.ReadConfig;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import static crossing.e1.featuremodel.clafer.ClaferModelUtils.*;
 public class TestClafer {
 	public static void main(String[] args) {
-		ClaferModel model = new ClaferModel();
+		ClaferModel model = new ClaferModel(new ReadConfig().getClaferPath());
 		
 		System.out.println("--Testing getClafersByType-----");
 		model.getClafersByType("c0_Task").forEach(task -> {

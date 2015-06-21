@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.events.*;
 
 import crossing.e1.featuremodel.clafer.ClaferModel;
+import crossing.e1.featuremodel.clafer.InstanceGenerator;
 
 public class TaskSelectionPage extends WizardPage {
 	private ClaferModel model;
@@ -49,17 +50,16 @@ public class TaskSelectionPage extends WizardPage {
 	private Spinner outPutSize;
 	private Label label1;
 	private Label label2;
-	private Integer[] perf=new Integer[]{1,2,3,4};
 	
 	
 	
-	public TaskSelectionPage(List<AstConcreteClafer> items) {
+	public TaskSelectionPage(List<AstConcreteClafer> items,ClaferModel claferModel) {
 		super("Select Task");
 		setTitle("Chonfigure");
-		new InstanceGenerator();
 		setDescription("Here the user selects her options and security levels");
+		new InstanceGenerator(claferModel);
 		tasks = items;
-		model=new ClaferModel();
+		this.model=claferModel;
 		
 	}
 

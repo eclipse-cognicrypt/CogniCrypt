@@ -1,10 +1,5 @@
 package crossing.e1.featuremodel.clafer;
-
-import java.util.Map;
-
-import org.clafer.ast.AstClafer;
 import org.clafer.scope.Scope;
-import org.claferconfigurator.scope.ScopeWrapper;
 
 import crossing.e1.configurator.ReadConfig;
 public class TestInstanceGenerator {
@@ -13,16 +8,11 @@ public class TestInstanceGenerator {
 		
 			System.out.println(" Testing instance Generator method");
 			InstanceGenerator instance=new InstanceGenerator(new ClaferModel(new ReadConfig().getClaferPath()));
-			displayScope(instance.getScope(),instance.getWrapper());
+			displayScope(instance.getScope());
 			
 	}
-	static void displayScope(Scope scope,ScopeWrapper wrapper) {
-		
-		Map<AstClafer, Integer> x= wrapper.getScope();
-		System.out.println("scopes"+"");
-		for (AstClafer ast: x.keySet()){
-			System.out.println(ast.getName()+" "+x.get(ast));
-		}
+	static void displayScope(Scope scope) {
+		System.out.println("**********Scope are**********");
 		System.out.println("DefaultScope "+scope.getDefaultScope());
 		System.out.println("Charhigh "+scope.getCharHigh());
 		System.out.println("CharLow "+scope.getCharLow());

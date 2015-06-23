@@ -126,8 +126,6 @@ public class TaskSelectionPage extends WizardPage {
 		label1 = new Label(container, SWT.NONE);
 		label1.setText("Select Performance");
 		taskCombo = new Spinner(container, SWT.BORDER | SWT.SINGLE);
-		System.out.println("here we go for claffer buddy"+model.getChildByName("c0_performance", model.getModel().getChildren()));
-		
 		taskCombo.setValues(2, 1, 4, 0, 1, 1);		
 		label2 = new Label(container, SWT.NONE);
 		label2.setText("Select Key length");
@@ -143,7 +141,7 @@ public class TaskSelectionPage extends WizardPage {
 				List <AstConstraint> ast= model.getConstraints();
 				ast=ast.stream().filter(child -> child.getExpr().toString().contains("performance . ref = 4")).collect(Collectors.toList());
 				for(AstConstraint x: ast){
-					System.out.println(model.getConstraints().size()+" context "+x.getContext()+" "+ x.getContext());
+					//System.out.println(model.getConstraints().size()+" context "+x.getContext()+" "+ x.getContext());
 				}
 						
 			

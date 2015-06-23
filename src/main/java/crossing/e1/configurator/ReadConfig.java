@@ -16,10 +16,10 @@ public class ReadConfig {
 		try {
 	 
 			input = new FileInputStream(Lables.CONFIG_PATH);
-	 		prop.load(input);
-	 		this.path=prop.getProperty(Lables.CLAFER_PATH);
-				 
-		} catch (IOException ex) {
+			prop.load(input);
+			this.path=prop.getProperty(Lables.CLAFER_PATH);
+	 					 
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			if (input != null) {
@@ -33,6 +33,6 @@ public class ReadConfig {
 	 
 	  }
 	public String getClaferPath(){
-		return this.path;
+		return path;
 	}
 	}

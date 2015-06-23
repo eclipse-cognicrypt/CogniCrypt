@@ -1,26 +1,24 @@
 package crossing.e1.configurator.wizard;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
-
+import crossing.e1.configurator.ReadConfig;
 import crossing.e1.featuremodel.clafer.ClaferModel;
-
 import org.clafer.ast.*;
 
 public class MyWizard extends Wizard {
 
 	protected TaskSelectionPage taskSelectionPage;
 	protected MyPageTwo two;
-	private ClaferModel model;
+	private ClaferModel claferModel;
 
 
 	public MyWizard() {
 		super();
 		setNeedsProgressMonitor(true);
-		model = new ClaferModel();
+		
 	}
 
 	@Override
@@ -30,9 +28,9 @@ public class MyWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		
-		List<AstConcreteClafer> tasks =   new ClaferModel().model.getChildren();//model.getClafersByType("c0_Task").stream().toArray(AstClafer[]::new);
-		taskSelectionPage = new TaskSelectionPage(tasks);
+		this.claferModel=new ClaferModel(new ReadConfig().getClaferPath());
+		List<AstConcreteClafer> tasks = claferModel.getModel().getChildren();
+		taskSelectionPage = new TaskSelectionPage(tasks,claferModel);
 		two = new MyPageTwo();
 		addPage(taskSelectionPage);
 		addPage(two);

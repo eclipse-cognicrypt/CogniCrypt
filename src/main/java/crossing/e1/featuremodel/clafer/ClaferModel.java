@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.clafer.ast.*;
 import org.clafer.collection.Triple;
+import org.clafer.common.Check;
 import org.clafer.javascript.Javascript;
 import org.clafer.objective.Objective;
 import org.clafer.scope.Scope;
@@ -22,28 +23,30 @@ import crossing.e1.configurator.Activator;
 public class ClaferModel {
 
 	private String modelName;
-	public AstModel model;
+	private AstModel model;
 	private Bundle bundle;
 	private Path originPath;
 	private URL bundledFileURL;
+	Triple<AstModel, Scope, Objective[]> pair;
 
-	public ClaferModel() {
-		loadModel();
+	public ClaferModel(String path) {
+		loadModel(path);
 	}
 
 	// temporarily hard coding model file
-	private void loadModel() {
-		Triple<AstModel, Scope, Objective[]> pair = null;
+	private void loadModel(String path) {
+		pair = null;
+		path="src/main/resources/hashing.js";
 		try {
 			bundle = Platform.getBundle(Activator.PLUGIN_ID);
 			if (bundle == null) {
+				File filename=new File(ClassLoader
+						.getSystemResource(path).getFile());
 				// running as application
-				pair = Javascript.readModel(new File(ClassLoader
-						.getSystemResource("hashing.js").getFile()), Javascript
-						.newEngine());
+				pair = Javascript.readModel(filename, Javascript.newEngine());
 			} else {
 				// running as plugin
-				originPath = new Path("hashing.js");
+				originPath = new Path(path);
 
 				bundledFileURL = FileLocator.find(bundle, originPath, null);
 
@@ -51,10 +54,9 @@ public class ClaferModel {
 				pair = Javascript.readModel(new File(bundledFileURL.getFile()),
 						Javascript.newEngine());
 			}
-			this.setModelName("hashing");
+			this.setModelName("hashings");
 			model = pair.getFst();
 		} catch (IOException e) {
-			System.out.println("Value of Bundle"+bundle);
 			e.printStackTrace();
 		}
 	}
@@ -85,22 +87,30 @@ public class ClaferModel {
 	}
 	
 	public List<AstConcreteClafer> getChildByName(String name,List<AstConcreteClafer> type) {
-		List<AstConcreteClafer> constarint= new ArrayList<AstConcreteClafer>();
+		List<AstConcreteClafer> children= new ArrayList<AstConcreteClafer>();
 		for (AstConcreteClafer object : type) {
 			
 			if(object.hasChildren()){
-				constarint.addAll(this.getChildByName(name,object.getChildren()));
+				children.addAll(this.getChildByName(name,object.getChildren()));
 				 
 			}
 			else{
 				if(object.getConstraints().toString().contains(name)){
-					constarint.add(object);
+					children.add(object);
 					}
 				}
 		}
-	return constarint;
+	return children;
 	}
-	
+	public int addConstraint(AstConcreteClafer name,AstBoolExpr constraint,ClaferModel model) {
+		try{
+			model.getChild(name.getName()).addConstraint(constraint);
+		}catch(Exception e){
+			e.printStackTrace();
+			return 1;
+		}
+	return 0;
+	}
 	
 	public List<AstConcreteClafer> getClafersByName(String type) {
 		
@@ -129,7 +139,7 @@ public class ClaferModel {
 	return null;
 	}
 	public AstModel getModel() {
-		return model;
+		return this.model;
 	}
 
 	/* This method is used to retrive the scope and objectives from
@@ -137,27 +147,6 @@ public class ClaferModel {
 	 * This method will return collection if succeeded ,null otherwise 
 	 * */
 	public Triple<AstModel, Scope, Objective[]> getTriple() {
-		try {
-				bundle = Platform.getBundle(Activator.PLUGIN_ID);
-				if (bundle == null) {
-					// running as application
-					return Javascript.readModel(new File(ClassLoader
-							.getSystemResource("hashing.js").getFile()), Javascript
-							.newEngine());
-				} else {
-					// running as plugin
-					originPath = new Path("hashing.js");
-
-					bundledFileURL = FileLocator.find(bundle, originPath, null);
-
-					bundledFileURL = FileLocator.resolve(bundledFileURL);
-					return Javascript.readModel(new File(bundledFileURL.getFile()),
-							Javascript.newEngine());
-				}
-		} catch (IOException e) {
-					e.printStackTrace();
-		}
-		return null;
+		return Check.notNull(pair);
 	}
-
 }

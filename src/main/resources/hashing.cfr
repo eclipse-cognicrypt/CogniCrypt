@@ -6,14 +6,13 @@ abstract Algorithm
     	insecure
 
 abstract Digest : Algorithm
-    outputSize -> integer //in bits
+        outputSize -> integer
 
 abstract KeyDerivationAlgorithm : Algorithm
 
 abstract MAC: Algorithm
 
 abstract Task
-	
 
 //group digest algorithms together
 //for easier viewing/collapsing etc.
@@ -112,14 +111,14 @@ KeyDerivationAlgorithms
 		[performance = 1]
 		[secure]
 
-PasswordStoring : Task
+Abstract Main 
 	digestToUse -> Digest ?
 	kdaToUse -> KeyDerivationAlgorithm ?
 		[kdaToUse = pbkdf => digestToUse]
 		[kdaToUse != pbkdf => no digestToUse]
-	[this.digestToUse.performance < 3]
-	[this.digestToUse.outputSize > 510]
+	[digestToUse.performance < 4]
+	[digestToUse.outputSize < 511]
 	[kdaToUse || digestToUse]
-	[this.kdaToUse.performance < 3 ]
+	[kdaToUse.performance < 4 ]
 	[no digestToUse.status.insecure] 
 	

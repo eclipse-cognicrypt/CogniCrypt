@@ -1,0 +1,77 @@
+
+enum TypeOfPadding  = PKCS7Padding | PKCS5Padding | PKCS1Padding | OAEPWithSHA1AndMGF1Padding | OAEPWithSHA256AndMGF1Padding | NoPadding
+enum TypeOfMode	= ECB | CBC | CFB
+enum TypeOfStatus = secure|insecure
+abstract Cipher
+	AlgorithmName -> string
+	xor CipherType
+		BlockCipher
+		StreamCipher
+	performance -> integer
+
+	Status -> TypeOfStatus
+		
+	Padding -> TypeOfPadding
+		
+
+abstract Symmetric : Cipher
+	Mode -> TypeOfMode 
+	KeySize -> integer
+	[Status = if (AlgorithmName = "AES" && Mode = ECB) then insecure else secure]
+	
+	
+	
+// abstract Asymmetric : Cipher
+// 	keyPairGenerator : KeyPairGenerator
+// 		[keyPair.privateKeyLength <= 100 && keyPair.publicKeyLength <=100  => parent.Status = secure]
+
+// 	//[(AlgorithmName) && (Padding) => this.Status.insecure]
+// 	[(AlgorithmName = "RSA") && (Padding = PKCS1Padding)  => this.Status = secure]
+// 	[(AlgorithmName = "RSA") && (Padding = OAEPWithSHA1AndMGF1Padding)  => this.Status = secure]
+// 	[(AlgorithmName = "RSA") && (Padding = OAEPWithSHA256AndMGF1Padding) => this.Status = secure]
+	
+// 	[keyPairGenerator.keyPair.publicKeyLength > 100]
+
+// abstract KeyPairGenerator
+// 	keyPair : KeyPair
+	
+// abstract KeyPair
+// 	privateKeyLength -> integer
+// 	publicKeyLength -> integer
+	
+AES : Symmetric
+	[AlgorithmName = "AES"]
+	[TypeOfMode]
+	[TypeOfPadding]
+	[BlockCipher]
+	[performance = 3]
+	[KeySize = 128]
+	[Status]
+		
+DES : Symmetric
+	[AlgorithmName = "DES"]
+	[Mode]
+	[Padding]
+	[BlockCipher]
+	[performance = 2]
+	[KeySize = 64]
+	[Status]
+
+// RSA : Asymmetric
+// 	[AlgorithmName = "RSA"]
+// 	[TypeOfPadding]
+// 	[BlockCipher]
+// 	[performance = 2]
+// 	[Status]
+// 	[keyPairGenerator.keyPair.privateKeyLength = 200]
+// 	[keyPairGenerator.keyPair.publicKeyLength = 200]
+
+
+	
+abstract Task
+	name -> string	
+
+EncryptionTask : Task
+	[name = "Encryption"]
+	cipherToUse -> Cipher ? 
+	[cipherToUse.AlgorithmName]

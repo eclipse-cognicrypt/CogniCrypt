@@ -36,13 +36,14 @@ public class ClaferModel {
 	// temporarily hard coding model file
 	private void loadModel(String path) {
 		pair = null;
+		path="src/main/resources/hashing.js";
 		try {
 			bundle = Platform.getBundle(Activator.PLUGIN_ID);
 			if (bundle == null) {
-				File ram=new File(ClassLoader
+				File filename=new File(ClassLoader
 						.getSystemResource(path).getFile());
 				// running as application
-				pair = Javascript.readModel(ram, Javascript.newEngine());
+				pair = Javascript.readModel(filename, Javascript.newEngine());
 			} else {
 				// running as plugin
 				originPath = new Path(path);
@@ -101,9 +102,9 @@ public class ClaferModel {
 		}
 	return children;
 	}
-	public int addConstraint(AstConcreteClafer name,AstBoolExpr constraint) {
+	public int addConstraint(AstConcreteClafer name,AstBoolExpr constraint,ClaferModel model) {
 		try{
-			this.getClafersByName(name.getName()).get(0).addConstraint(constraint);
+			model.getChild(name.getName()).addConstraint(constraint);
 		}catch(Exception e){
 			e.printStackTrace();
 			return 1;

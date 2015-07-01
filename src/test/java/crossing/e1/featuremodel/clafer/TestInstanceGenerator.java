@@ -7,8 +7,19 @@ public class TestInstanceGenerator {
 	public static void main(String[] args) {
 		
 			System.out.println(" Testing instance Generator method");
-			InstanceGenerator instance=new InstanceGenerator(new ClaferModel(new ReadConfig().getClaferPath()));
-			displayScope(instance.getScope());
+			InstanceGenerator instance=new InstanceGenerator();
+			String path=new ReadConfig().getClaferPath();
+			ClaferModel model=new ClaferModel(path);
+
+			instance.generateInstances(new ClaferModel(path), 1, 128);
+			
+			instance.generateInstances(new ClaferModel(path), 2, 128);
+
+
+			instance.generateInstances(new ClaferModel(path), 3, 128);
+
+			instance.generateInstances(new ClaferModel(path), 4, 128);
+			//displayScope(instance.getScope());
 			
 	}
 	static void displayScope(Scope scope) {

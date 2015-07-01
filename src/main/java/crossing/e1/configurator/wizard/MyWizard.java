@@ -14,11 +14,10 @@ public class MyWizard extends Wizard {
 	protected MyPageTwo two;
 	private ClaferModel claferModel;
 
-
 	public MyWizard() {
 		super();
 		setNeedsProgressMonitor(true);
-		
+
 	}
 
 	@Override
@@ -28,10 +27,10 @@ public class MyWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		this.claferModel=new ClaferModel(new ReadConfig().getClaferPath());
+		this.claferModel = new ClaferModel(new ReadConfig().getClaferPath());
 		List<AstConcreteClafer> tasks = claferModel.getModel().getChildren();
-		taskSelectionPage = new TaskSelectionPage(tasks,claferModel);
-		two = new MyPageTwo();
+		taskSelectionPage = new TaskSelectionPage(tasks, claferModel);
+		two = new MyPageTwo(taskSelectionPage.getInstanceObject());
 		addPage(taskSelectionPage);
 		addPage(two);
 	}
@@ -44,21 +43,22 @@ public class MyWizard extends Wizard {
 
 		return true;
 	}
-	
+
 	@Override
 	public IWizardPage getNextPage(IWizardPage currentPage) {
-	    if (currentPage == taskSelectionPage) {
-	    	// TODO
-	    	if( ((TaskSelectionPage) currentPage).isSecure()){
-//	    	two.setTitle(selectedTask.getName());
-//	    	selectedTask.getChildren().forEach(child -> two.addField(child.getName()));
-	    		
-	    	addPage(two);
-	    	}
-	    	return two;
-	    }else{
-	    	return super.getNextPage(currentPage);
-	    }
+		if (currentPage == taskSelectionPage) {
+			// TODO
+			if (((TaskSelectionPage) currentPage).isSecure()) {
+				// two.setTitle(selectedTask.getName());
+				// selectedTask.getChildren().forEach(child ->
+				// two.addField(child.getName()));
+
+				addPage(two);
+			}
+			return two;
+		} else {
+			return super.getNextPage(currentPage);
+		}
 	}
 
 }

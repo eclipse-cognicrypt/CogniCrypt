@@ -1,7 +1,12 @@
 package crossing.e1.featuremodel.clafer;
+import java.util.List;
+
+import org.clafer.ast.AstAbstractClafer;
+import org.clafer.ast.AstClafer;
+import org.clafer.ast.AstConcreteClafer;
+import org.clafer.ast.AstConstraint;
 import org.clafer.ast.AstRef;
 
-import crossing.e1.configurator.Lables;
 import crossing.e1.configurator.ReadConfig;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import static crossing.e1.featuremodel.clafer.ClaferModelUtils.*;
@@ -20,9 +25,15 @@ public class TestClafer {
 				//System.out.println("has property: "+ property + " of type: " + property.getRef() + " card: "+ property.getCard()));
 			});
 		});
-		
-		System.out.println("--Testing getChild-----");
-		System.out.println(model.getChildByName("c0_Digest",model.getModel().getChildren()));
+		for(AstAbstractClafer clafer : model.getModel().getAbstracts()){
+			for(AstConcreteClafer childClafer: clafer.getChildren()){
+				System.out.println("name is "+childClafer.getName()+" card "+childClafer.getCard());
+				System.out.println((childClafer.hasRef()?"type is "+childClafer.getRef().getTargetType():(childClafer.hasChildren()?" children are "+childClafer.getChildren().toString()+""+childClafer.getCard():"")));
+			}
+		}
+		List<AstConstraint> const_=model.getConstraints();
+		AstClafer ram = const_.get(0).getContext();
+		System.out.println(ram.hasRef());
 	}
 
 }

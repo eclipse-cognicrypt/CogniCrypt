@@ -1,0 +1,125 @@
+abstract Algorithm
+    name -> string
+    performance -> integer //Levels 1 - 4 (4 fastest) -- based on http://bench.cr.yp.to/results-hash.html
+    xor status
+    	secure
+    	insecure
+
+abstract Digest : Algorithm
+        outputSize -> integer
+
+abstract KeyDerivationAlgorithm : Algorithm
+
+abstract MAC: Algorithm
+
+abstract Task
+	name -> string
+
+//group digest algorithms together
+//for easier viewing/collapsing etc.
+DigestAlgorithms
+	md5: Digest
+		[name = "MD5"]
+		[performance = 4]
+		[insecure]
+		[outputSize = 128]
+
+	sha_0: Digest
+		[name = "SHA-0"]
+		[performance = 4]//fake value
+		[insecure]
+		[outputSize = 160]
+
+	sha_1: Digest
+		[name = "SHA-1"]
+		[performance = 4]
+		[insecure]
+		[outputSize = 160]
+		
+	sha_224: Digest
+		[name = "SHA-224"]
+		[outputSize = 224 ]
+		[secure]
+		[performance = 2]
+	
+	sha_256: Digest
+		[name = "SHA-256"]
+		[outputSize = 256 ]
+		[secure]
+		[performance = 2]	
+
+	sha_384: Digest
+		[name = "SHA-384"]
+		[secure]
+		[outputSize = 384 ]
+		[performance = 3]
+
+	sha_512: Digest
+		[name = "SHA-512"]
+		[secure]
+		[outputSize=512]
+		[performance = 3]
+
+	sha_512_224: Digest
+		[name = "SHA-512/224"]
+		[secure]
+		[outputSize=224]
+		[performance = 3]//fake
+
+	sha_512_256: Digest
+		[name = "SHA-512/256"]
+		[secure]
+		[outputSize=256]
+		[performance = 154]
+
+	sha3_224: Digest
+		[name = "SHA3-224"]
+		[secure]
+		[outputSize = 224]
+		[performance=3]
+
+	sha3_256: Digest
+		[name = "SHA3-256"]
+		[secure]
+		[outputSize = 256]
+		[performance=3]
+
+	sha3_384: Digest
+		[name = "SHA3-384"]
+		[secure]
+		[outputSize = 384]
+		[performance=2]
+
+	sha3_512: Digest
+		[name = "SHA3-512"]
+		[secure]
+		[outputSize = 512 ]
+		[performance=1]
+
+KeyDerivationAlgorithms
+	pbkdf : KeyDerivationAlgorithm
+		[name = "PBKDF"]
+		[performance = 2]
+		[secure]
+
+	bcrypt : KeyDerivationAlgorithm
+		[name = "Bcrypt"]
+		[performance = 1]
+		[secure]
+
+	scrypt : KeyDerivationAlgorithm	
+		[name = "Scrypt"]
+		[performance = 1]
+		[secure]
+
+Main : Task
+	digestToUse -> Digest ?
+	kdaToUse -> KeyDerivationAlgorithm ?
+		[kdaToUse = pbkdf => digestToUse]
+		[kdaToUse != pbkdf => no digestToUse]
+	[digestToUse.performance < 4]
+	[digestToUse.outputSize < 511]
+	[kdaToUse || digestToUse]
+	[kdaToUse.performance < 4 ]
+	[no digestToUse.status.insecure] 
+	

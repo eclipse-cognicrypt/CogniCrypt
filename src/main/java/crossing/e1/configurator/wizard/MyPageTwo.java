@@ -1,7 +1,10 @@
 package crossing.e1.configurator.wizard;
 
-import java.util.Arrays;
+
 import java.util.List;
+import java.util.Set;
+
+import javax.swing.text.StyledEditorKit.ForegroundAction;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -25,16 +28,18 @@ public class MyPageTwo extends WizardPage {
 	private Label label1;
 	private Label label2;
 	private List<InstanceClafer> options;
-	InstanceGenerator instances;
+	private InstanceGenerator instance;
 
-	public MyPageTwo(InstanceGenerator instances) {
+	public MyPageTwo(InstanceGenerator inst) {
 		super("Second page");
 		setTitle("Available options");
 		setDescription("User can choose below mentioned algorithm(s) for encryption");
-		this.instances=instances;
+		this.instance=inst;
 
 	}
-
+	void setValue(Set<String> set){
+		algorithmClass.setInput(set);
+	}
 	@Override
 	public void createControl(Composite parent) {
 		container = new Composite(parent, SWT.NONE);
@@ -45,7 +50,7 @@ public class MyPageTwo extends WizardPage {
 		label1 = new Label(container, SWT.NONE);
 		label1.setText("Select Algorithm Type");
 		label2 = new Label(container, SWT.NONE);
-		algorithmClass = new ComboViewer(container, SWT.BORDER | SWT.SINGLE);
+		algorithmClass = new ComboViewer(container, SWT.COMPOSITION_SELECTION);
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
 		algorithmClass.setLabelProvider((new LabelProvider() {
 			@Override
@@ -53,26 +58,18 @@ public class MyPageTwo extends WizardPage {
 				return element.toString();
 			}
 		}));
-
-		algorithmClass.setInput(instances.getInstances());
+		
+//		algorithmClass.setInput(instances.getInstances());
 		algorithmClass
 				.addSelectionChangedListener(new ISelectionChangedListener() {
-
-					public void selectionChanged(SelectionChangedEvent event) {
-
+				public void selectionChanged(SelectionChangedEvent event) {
 						IStructuredSelection selection = (IStructuredSelection) event
 								.getSelection();
 						String value="";
-						InstanceClafer b=(InstanceClafer)selection.getFirstElement();
-						
-						
-						for(InstanceClafer in: b.getChildren()){
-							
-							value=value+in.getRef();
-							
+						String b=(String)selection.getFirstElement().toString();
+						for(InstanceClafer instance:instance.getInstances(b).getChildren()){
+							value+=instance.getRef().toString();
 						}
-						label2.setText(value);
-						label2.setVisible(true);
 						System.out.println("Vlaue is "+value);
 						if (selection.size() > 0) {
 							canFlipToNextPage();
@@ -101,6 +98,6 @@ public class MyPageTwo extends WizardPage {
 	}
 
 	public String getText1() {
-		return "";
+		return "Heyyyy";
 	}
 }

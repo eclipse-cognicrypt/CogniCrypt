@@ -19,6 +19,7 @@ public class TestInstanceGenerator {
 			instance.generateInstances(new ClaferModel(path), 3, 128);
 
 			instance.generateInstances(new ClaferModel(path), 4, 128);
+			
 			//displayScope(instance.getScope());
 			
 	}

@@ -35,7 +35,6 @@ public class TaskSelectionPage extends WizardPage {
 	private Label label1;
 	private Label label2;
 	private Label label3;
-	InstanceGenerator gen;
 
 	public TaskSelectionPage(List<AstConcreteClafer> items,
 			ClaferModel claferModel) {
@@ -44,7 +43,6 @@ public class TaskSelectionPage extends WizardPage {
 		setDescription("Here the user selects her options and security levels");
 		this.tasks = items;
 		this.model = claferModel;
-		this.gen = new InstanceGenerator();
 
 	}
 
@@ -106,30 +104,24 @@ public class TaskSelectionPage extends WizardPage {
 		label1.setText("Select Performance");
 		taskCombo = new Spinner(container, SWT.BORDER | SWT.SINGLE);
 		taskCombo.setValues(4, 0, 4, 0, 1, 1);
-		taskCombo.addModifyListener(new ModifyListener() {
-			
-			@Override
-			public void modifyText(ModifyEvent arg0) {
-				canFlipToNextPage();
-				
-			}
-		});
+		
 		label2 = new Label(container, SWT.NONE);
 		label2.setText("Select Key length");
 
 		outPutSize = new Spinner(container, SWT.BORDER | SWT.SINGLE);
-		outPutSize.setValues(128, 120, 2048, 0, 2, 10);
+		outPutSize.setValues(100, 100,2048, 0, 24, 10);
 		outPutSize.setToolTipText("key leangth");
 
 		label3 = new Label(container, SWT.NONE);
 		label3.setVisible(true);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		setControl(container);
-		setPageComplete(true);
 		canFlipToNextPage();
 
 	}
-
+private void onNext() {
+	System.out.println("clicked Next");
+}
 	
 	public Integer getKeyLengthSelction() {
 		return taskCombo.getSelection();
@@ -140,16 +132,10 @@ public class TaskSelectionPage extends WizardPage {
 	}
 
 	public boolean isSecure() {
-
-		gen.generateInstances(model, taskCombo.getSelection(),
-				outPutSize.getSelection());
-		if (gen.getNoOfInstances() > 0)
-			return true;
+		if(getOutPutSelection().intValue() > 100)
+		return true;
+		
 		return false;
 	}
 
-	public InstanceGenerator getInstanceObject() {
-
-		return Check.notNull(gen);
-	}
 }

@@ -3,7 +3,9 @@ package crossing.e1.featuremodel.clafer;
 import static org.clafer.ast.Asts.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.clafer.compiler.ClaferCompiler;
 import org.clafer.compiler.ClaferSolver;
@@ -28,6 +30,7 @@ public class InstanceGenerator {
 	private ClaferSolver solver;
 	private Scope scope;
 	private List<InstanceClafer> instances;
+	private Map<String, InstanceClafer> instance;
 	AstModel model;
 	Triple<AstModel, Scope, Objective[]> triple;
 	private int noOfInstances;
@@ -43,6 +46,7 @@ public class InstanceGenerator {
 	public List<InstanceClafer> generateInstances(ClaferModel clafModel,
 			int performanceValue, int keyLength) {
 		this.instances = new ArrayList<InstanceClafer>();
+		this.instance = new HashMap<String, InstanceClafer>();
 		clafModel.setModel(clafModel.getModelNoCon());
 		this.model = clafModel.getModel();
 		this.triple = clafModel.getTriple();
@@ -88,7 +92,7 @@ public class InstanceGenerator {
 										: clafer.toString()));
 			}
 		}
-		
+
 		setInstances(instances);
 		setNoOfInstances(solver.instanceCount());
 		System.out.println("there are " + getNoOfInstances() + " instances");
@@ -100,15 +104,28 @@ public class InstanceGenerator {
 		return Check.notNull(scope);
 	}
 
-	public List<InstanceClafer> getInstances() {
-		return Check.notNull(instances);
+	public Map<String, InstanceClafer> getInstances() {
+		return Check.notNull(instance);
 	}
 
 	public void setInstances(List<InstanceClafer> instances) {
-		this.instances = instances;
+		String value;
+		for (InstanceClafer inst : instances) {
+			value = new String();
+			for (InstanceClafer in : inst.getChildren()) {
+				InstanceClafer instt = (InstanceClafer) in.getRef();
+				value += (value.length() > 0 ? "+" : "")
+						+ instt.getType().toString();
+			}
+			instance.put(value, inst);
+		}
 	}
 
 	public ScopeWrapper getWrapper() {
-		return null;// Check.notNull(this.intermediateScope);
+		return null; // Check.notNull(this.intermediateScope);
+	}
+
+	public InstanceClafer getInstances(String b) {
+		return Check.notNull(this.instance.get(b));
 	}
 }

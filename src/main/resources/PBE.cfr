@@ -11,7 +11,7 @@ abstract Digest : Algorithm
 abstract KeyDerivationAlgorithm : Algorithm
 
 abstract Task
-	name -> string
+	Description -> string
 
 abstract Cipher : Algorithm 
     memory ->> integer  
@@ -75,7 +75,7 @@ KeyDerivationAlgorithms
 		[secure]
 
 PasswordBasedEncryption : Task
-	[name = "Encrypt data based on a password"]
+	[Description = "Encrypt data based on a password"]
 	kda -> KeyDerivationAlgorithm
 	digest -> Digest
 	cipher -> SymmetricBlockCipher

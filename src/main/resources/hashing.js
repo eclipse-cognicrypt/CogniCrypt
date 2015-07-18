@@ -4,6 +4,7 @@ intRange(-8, 7);
 stringLength(16);
 
 c0_Algorithm = Abstract("c0_Algorithm");
+c0_Task = Abstract("c0_Task");
 c0_Digest = Abstract("c0_Digest").extending(c0_Algorithm);
 c0_KeyDerivationAlgorithm = Abstract("c0_KeyDerivationAlgorithm").extending(c0_Algorithm);
 c0_name = c0_Algorithm.addChild("c0_name").withCard(1, 1);
@@ -30,8 +31,7 @@ c0_KeyDerivationAlgorithms = Clafer("c0_KeyDerivationAlgorithms").withCard(1, 1)
 c0_pbkdf = c0_KeyDerivationAlgorithms.addChild("c0_pbkdf").withCard(1, 1).extending(c0_KeyDerivationAlgorithm);
 c0_bcrypt = c0_KeyDerivationAlgorithms.addChild("c0_bcrypt").withCard(1, 1).extending(c0_KeyDerivationAlgorithm);
 c0_scrypt = c0_KeyDerivationAlgorithms.addChild("c0_scrypt").withCard(1, 1).extending(c0_KeyDerivationAlgorithm);
-c0_Abstract = Clafer("c0_Abstract").withCard(1, 1);
-c0_Main = Clafer("c0_Main").withCard(1, 1);
+c0_Main = Clafer("c0_Main").withCard(1, 1).extending(c0_Task);
 c0_digestToUse = c0_Main.addChild("c0_digestToUse").withCard(0, 1);
 c0_kdaToUse = c0_Main.addChild("c0_kdaToUse").withCard(0, 1);
 c0_name.refTo(string);

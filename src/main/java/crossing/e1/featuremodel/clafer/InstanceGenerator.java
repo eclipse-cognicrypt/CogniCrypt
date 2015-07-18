@@ -6,15 +6,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.clafer.compiler.ClaferCompiler;
 import org.clafer.compiler.ClaferSolver;
 import org.clafer.scope.Scope;
-import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstModel;
 import org.clafer.common.Check;
 import org.clafer.objective.Objective;
-import org.claferconfigurator.scope.ScopeWrapper;
 import org.clafer.collection.Triple;
 import org.clafer.instance.InstanceClafer;
 
@@ -31,71 +30,29 @@ public class InstanceGenerator {
 	private Scope scope;
 	private List<InstanceClafer> instances;
 	private Map<String, InstanceClafer> instance;
-	AstModel model;
-	Triple<AstModel, Scope, Objective[]> triple;
+	private Triple<AstModel, Scope, Objective[]> triple;
 	private int noOfInstances;
 
-	public int getNoOfInstances() {
-		return noOfInstances;
-	}
-
-	public void setNoOfInstances(int noOfInstances) {
-		this.noOfInstances = noOfInstances;
-	}
-
 	public List<InstanceClafer> generateInstances(ClaferModel clafModel,
-			int performanceValue, int keyLength) {
+			Map<String, Integer> filters) {
 		this.instances = new ArrayList<InstanceClafer>();
 		this.instance = new HashMap<String, InstanceClafer>();
 		clafModel.setModel(clafModel.getModelNoCon());
-		this.model = clafModel.getModel();
 		this.triple = clafModel.getTriple();
 		this.scope = triple.getSnd();
-		AstConcreteClafer algorithms = (AstConcreteClafer) clafModel
-				.getChild("Main");
-		AstConcreteClafer digestToUse = algorithms.getChildren().get(1);
-		AstConcreteClafer performance = (AstConcreteClafer) clafModel
-				.getChild("c0_Algorithm").getChildren().get(1);
-		clafModel.addConstraint(
-				algorithms,
-				lessThan(
-						joinRef(join(joinRef(join($this(), digestToUse)),
-								performance)), constant(performanceValue)),
-				clafModel);
+
+		clafModel.getConstraintClafers().get(0)
+				.addConstraint(lessThanEqual(joinRef($this()), constant(5)));
+		// System.out.println(clafModel.getConstraintClafers().get(0).getConstraints().toString());
 		solver = ClaferCompiler.compile(clafModel.getModel(), scope.toScope());
 		while (solver.find()) {
-			System.out
-					.println("===="
-							+ performanceValue
-							+ "==========================================================");
+
 			InstanceClafer instance = solver.instance().getTopClafers()[solver
 					.instance().getTopClafers().length - 1];
 			instances.add(instance);
-			for (InstanceClafer clafer : instance.getChildren()) {
-
-				System.out
-						.println(clafer.getType().getName()
-								+ " => "
-								+ (clafer.getRef().getClass().getSimpleName()
-										.endsWith("InstanceClafer") == true ? ((InstanceClafer) clafer
-										.getRef())
-										.getType()
-										.toString()
-										.substring(
-												((InstanceClafer) clafer
-														.getRef()).getType()
-														.toString()
-														.indexOf('_') + 1,
-												((InstanceClafer) clafer
-														.getRef()).getType()
-														.toString().length())
-										: clafer.toString()));
-			}
 		}
-
-		setInstances(instances);
+		getInstanceMapping();
 		setNoOfInstances(solver.instanceCount());
-		System.out.println("there are " + getNoOfInstances() + " instances");
 		return instances;
 
 	}
@@ -108,24 +65,84 @@ public class InstanceGenerator {
 		return Check.notNull(instance);
 	}
 
-	public void setInstances(List<InstanceClafer> instances) {
-		String value;
+	public void getInstanceMapping() {
 		for (InstanceClafer inst : instances) {
-			value = new String();
-			for (InstanceClafer in : inst.getChildren()) {
-				InstanceClafer instt = (InstanceClafer) in.getRef();
-				value += (value.length() > 0 ? "+" : "")
-						+ instt.getType().toString();
+			String key = getInstanceMapping(inst).trim();
+			instance.put(key, inst);
+		}
+
+	}
+
+	public void displayInstanceValues(InstanceClafer inst) {
+		try {
+			if (inst.hasChildren()) {
+				for (InstanceClafer in : inst.getChildren())
+					displayInstanceValues(in);
+
+			} else if (inst.hasRef()
+					&& (inst.getType().isPrimitive() != true)
+					&& (inst.getRef().getClass().toString().contains("Integer") == false)
+					&& (inst.getRef().getClass().toString().contains("String") == false)
+					&& (inst.getRef().getClass().toString().contains("Boolean") == false)) {
+				displayInstanceValues((InstanceClafer) inst.getRef());
+			} else {
+				if (inst.hasRef())
+					System.out.println(inst.getType().getName() + " ==> "
+							+ inst.getRef().toString().replace("\"", ""));
+				else
+					System.out.println(inst.getType().getName());
+
 			}
-			instance.put(value, inst);
+		} catch (Exception E) {
+			E.printStackTrace();
 		}
 	}
 
-	public ScopeWrapper getWrapper() {
-		return null; // Check.notNull(this.intermediateScope);
+	String getInstanceMapping(InstanceClafer inst) {
+		String val = "";
+		try {
+			if (inst.hasChildren()) {
+				for (InstanceClafer in : inst.getChildren())
+					if (val.length() > 0) {
+						String x = getInstanceMapping(in);
+						if (x.length() > 0)
+							val = val + "+" + x;
+					} else
+						val = getInstanceMapping(in);
+			} else if (inst.hasRef()
+					&& (inst.getType().isPrimitive() != true)
+					&& (inst.getRef().getClass().toString().contains("Integer") == false)
+					&& (inst.getRef().getClass().toString().contains("String") == false)
+					&& (inst.getRef().getClass().toString().contains("Boolean") == false)) {
+				val += getInstanceMapping((InstanceClafer) inst.getRef());
+			} else {
+				if (inst.getType().getName().contains("_name")
+						&& inst.getRef().getClass().toString()
+								.contains("String")) {
+					return inst.getRef().toString().replace("\"", "");
+				}
+			}
+		} catch (Exception E) {
+			E.printStackTrace();
+		}
+		return val;
 	}
 
 	public InstanceClafer getInstances(String b) {
 		return Check.notNull(this.instance.get(b));
 	}
+
+	public int getNoOfInstances() {
+		return noOfInstances;
+	}
+
+	public void setNoOfInstances(int noOfInstances) {
+		this.noOfInstances = noOfInstances;
+	}
+
+	public Object getVariables() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

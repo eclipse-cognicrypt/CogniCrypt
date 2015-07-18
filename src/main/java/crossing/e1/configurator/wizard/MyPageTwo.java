@@ -2,6 +2,7 @@ package crossing.e1.configurator.wizard;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.text.StyledEditorKit.ForegroundAction;
@@ -35,9 +36,11 @@ public class MyPageTwo extends WizardPage {
 		setTitle("Available options");
 		setDescription("User can choose below mentioned algorithm(s) for encryption");
 		this.instance=inst;
+		
 
 	}
 	void setValue(Set<String> set){
+		
 		algorithmClass.setInput(set);
 	}
 	@Override
@@ -49,17 +52,17 @@ public class MyPageTwo extends WizardPage {
 
 		label1 = new Label(container, SWT.NONE);
 		label1.setText("Select Algorithm Type");
-		label2 = new Label(container, SWT.NONE);
+		label2 = new Label(container, SWT.NONE);		
+		Map<String,InstanceClafer> inst=instance.getInstances();
 		algorithmClass = new ComboViewer(container, SWT.COMPOSITION_SELECTION);
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
+		algorithmClass.setInput(inst.keySet());
 		algorithmClass.setLabelProvider((new LabelProvider() {
 			@Override
 			public String getText(Object element) {
 				return element.toString();
 			}
 		}));
-		
-//		algorithmClass.setInput(instances.getInstances());
 		algorithmClass
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 				public void selectionChanged(SelectionChangedEvent event) {
@@ -67,34 +70,22 @@ public class MyPageTwo extends WizardPage {
 								.getSelection();
 						String value="";
 						String b=(String)selection.getFirstElement().toString();
-						for(InstanceClafer instance:instance.getInstances(b).getChildren()){
-							value+=instance.getRef().toString();
-						}
-						System.out.println("Vlaue is "+value);
+						instance.displayInstanceValues(instance.getInstances().get(b));
+						
 						if (selection.size() > 0) {
 							canFlipToNextPage();
+							setPageComplete(true);
 						}
 					}
 
 				});
 
-		
-
-		// required to avoid an error in the system
 		setControl(container);
-		setPageComplete(false);
+		;
 	}
-
-	public void addField(String labelText) {
-		System.out.println("adding field");
-		Label label = new Label(container, SWT.NONE);
-		label.setText(labelText);
-		container.layout();
-	}
-
 	public boolean canFlipToNextPage() {
 
-		return false;
+		return true;
 	}
 
 	public String getText1() {

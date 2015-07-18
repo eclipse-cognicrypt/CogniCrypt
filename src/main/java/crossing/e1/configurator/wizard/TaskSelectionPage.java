@@ -1,6 +1,8 @@
 package crossing.e1.configurator.wizard;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.clafer.ast.AstConcreteClafer;
@@ -27,21 +29,20 @@ public class TaskSelectionPage extends WizardPage {
 	private ClaferModel model;
 	private Spinner taskCombo;
 	private Composite container;
-	private List<AstConcreteClafer> tasks;
-	private List<Integer> performanceLevel;
 	private Button securityLevelSecured;
 	private Button securityLevelInSecured;
 	private Spinner outPutSize;
 	private Label label1;
 	private Label label2;
 	private Label label3;
+	private HashMap<String, Integer> userOptions;
 
 	public TaskSelectionPage(List<AstConcreteClafer> items,
 			ClaferModel claferModel) {
 		super("Select Task");
 		setTitle("Chonfigure");
 		setDescription("Here the user selects her options and security levels");
-		this.tasks = items;
+		userOptions = new HashMap<String, Integer>();
 		this.model = claferModel;
 
 	}
@@ -53,6 +54,15 @@ public class TaskSelectionPage extends WizardPage {
 		container.setLayout(layout);
 		layout.numColumns = 2;
 
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		setControl(container);
+		canFlipToNextPage();
+		for (AstConcreteClafer clafer : model.getConstraintClafers()) {
+			getWidget(container, clafer.getName(), 1, 0, 5, 0, 1, 1);
+		}
+	}
+
+	void getRadio() {
 		securityLevelSecured = new Button(container, SWT.RADIO);
 		securityLevelSecured.setToolTipText("Secured Encryption");
 		securityLevelSecured.setText("Secure");
@@ -100,42 +110,24 @@ public class TaskSelectionPage extends WizardPage {
 			}
 
 		});
+	}
+
+	void getWidget(Composite container, String label, int selection, int min,
+			int max, int digits, int incement, int pageincrement) {
 		label1 = new Label(container, SWT.NONE);
-		label1.setText("Select Performance");
+		label1.setText(label);
 		taskCombo = new Spinner(container, SWT.BORDER | SWT.SINGLE);
-		taskCombo.setValues(4, 0, 4, 0, 1, 1);
-		
-		label2 = new Label(container, SWT.NONE);
-		label2.setText("Select Key length");
+		taskCombo.setValues(selection, min, max, digits, incement,
+				pageincrement);
 
-		outPutSize = new Spinner(container, SWT.BORDER | SWT.SINGLE);
-		outPutSize.setValues(100, 100,2048, 0, 24, 10);
-		outPutSize.setToolTipText("key leangth");
-
-		label3 = new Label(container, SWT.NONE);
-		label3.setVisible(true);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		setControl(container);
-		canFlipToNextPage();
-
-	}
-private void onNext() {
-	System.out.println("clicked Next");
-}
-	
-	public Integer getKeyLengthSelction() {
-		return taskCombo.getSelection();
-	}
-
-	public Integer getOutPutSelection() {
-		return outPutSize.getSelection();
 	}
 
 	public boolean isSecure() {
-		if(getOutPutSelection().intValue() > 100)
 		return true;
-		
-		return false;
+	}
+
+	public Map<String, Integer> getMap() {
+		return userOptions;
 	}
 
 }

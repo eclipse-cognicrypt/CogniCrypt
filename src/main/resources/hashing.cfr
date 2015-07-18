@@ -1,6 +1,6 @@
 abstract Algorithm
     name -> string
-    performance -> integer //Levels 1 - 4 (4 fastest) -- based on http://bench.cr.yp.to/results-hash.html
+    performance -> integer
     xor status
     	secure
     	insecure
@@ -12,7 +12,6 @@ abstract KeyDerivationAlgorithm : Algorithm
 
 abstract MAC: Algorithm
 
-abstract Task
 
 //group digest algorithms together
 //for easier viewing/collapsing etc.
@@ -110,8 +109,9 @@ KeyDerivationAlgorithms
 		[name = "Scrypt"]
 		[performance = 1]
 		[secure]
-
-Abstract Main 
+abstract Task
+	
+Main : Task
 	digestToUse -> Digest ?
 	kdaToUse -> KeyDerivationAlgorithm ?
 		[kdaToUse = pbkdf => digestToUse]

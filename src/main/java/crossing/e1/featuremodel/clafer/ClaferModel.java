@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.clafer.ast.*;
 import org.clafer.collection.Triple;
 import org.clafer.common.Check;
@@ -28,11 +29,11 @@ public class ClaferModel {
 	private Path originPath;
 	private URL bundledFileURL;
 	Triple<AstModel, Scope, Objective[]> pair;
+	private List<AstConcreteClafer> constraintClafers;
 
 	public ClaferModel(String path) {
-	 path="src/main/resources/hashing.js";
-		//path = "hashing.js";
-		System.out.println("Path is " + path);
+		path = "src/main/resources/PBE.js";
+		//path = "PBE.js";
 		loadModel(path);
 	}
 
@@ -57,8 +58,11 @@ public class ClaferModel {
 						Javascript.newEngine());
 			}
 			this.setModelName("hashings");
+			this.constraintClafers = new ArrayList<AstConcreteClafer>();
 			setModel(pair.getFst());
 			setModelNoCon(model);
+			setConstraintClafers();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -127,6 +131,15 @@ public class ClaferModel {
 				.collect(Collectors.toList());
 	}
 
+	public AstConcreteClafer getClafersByParent(String type) {
+
+		for (AstConcreteClafer ast : model.getChildren()) {
+			if (ast.getSuperClafer().getName().contains(type))
+				return ast;
+		}
+		return null;
+	}
+
 	public List<AstConcreteClafer> getClaferProperties(AstConcreteClafer clafer) {
 		return clafer.getChildren();
 	}
@@ -169,4 +182,33 @@ public class ClaferModel {
 		this.modelNoCon = modelNoCon;
 	}
 
+	public List<AstConcreteClafer> getConstraintClafers() {
+		return Check.notNull(constraintClafers);
+	}
+
+	public void setConstraintClafers() {
+		for (AstAbstractClafer s : model.getAbstracts()) {
+			getPrimitive(s);
+		}
+	}
+
+	void getPrimitive(AstAbstractClafer inst) {
+
+		try {
+			if (inst.hasChildren()) {
+				for (AstConcreteClafer in : inst.getChildren())
+					if (in.hasRef())
+						if (in.getRef().getTargetType().isPrimitive() == true
+								&& (in.getRef().getTargetType().getName()
+										.contains("string") == false)) {
+							constraintClafers.add(in);
+
+						}
+			}
+			
+			
+		} catch (Exception E) {
+			E.printStackTrace();
+		}
+	}
 }

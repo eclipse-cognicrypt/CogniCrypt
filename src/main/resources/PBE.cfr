@@ -14,7 +14,7 @@ abstract Task
 	Description -> string
 
 abstract Cipher : Algorithm 
-    memory ->> integer  
+    memory -> integer  
 
 abstract SymmetricCipher : Cipher
     keySize -> integer

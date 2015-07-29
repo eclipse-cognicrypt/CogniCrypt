@@ -74,23 +74,17 @@ KeyDerivationAlgorithms
 		[performance = 2]
 		[secure]
 
-PasswordBasedEncryption
+PasswordBasedEncryption : Task
+	[Description = "Encrypt data based on a password"]
 	kda -> KeyDerivationAlgorithm
 	digest -> Digest
 	cipher -> SymmetricBlockCipher
 
-PasswordStoring 
+PasswordStoring : Task
+	[Description = "Password Storing"]
 	digestToUse -> Digest ?
 	kdaToUse -> KeyDerivationAlgorithm ?
 		[kdaToUse = pbkdf => digestToUse]
 		[kdaToUse != pbkdf => no digestToUse]
 	[kdaToUse || digestToUse]
-	[no digestToUse.status.insecure] 
-Encrypt : Task
-    [Description = "Password Storing"]
-    xor Type
-        PS -> PasswordStoring
-                [Description = "Password Storing"]
-        PBE -> PasswordBasedEncryption 
-                [Description = "Encrypt data based on a password"]
-    
+	[no digestToUse.status.insecure]    

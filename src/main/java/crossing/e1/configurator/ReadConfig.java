@@ -1,9 +1,14 @@
 package crossing.e1.configurator;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+//import java.io.FileInputStream;
+//import java.io.IOException;
+//import java.io.InputStream;
+//import java.util.Properties;
+
+/**
+ * @author Ram
+ *
+ */
 
 public class ReadConfig {
 

@@ -1,11 +1,7 @@
 package crossing.e1.configurator.wizard;
 
 
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import javax.swing.text.StyledEditorKit.ForegroundAction;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -27,9 +23,8 @@ public class MyPageTwo extends WizardPage {
 	private Composite container;
 	private ComboViewer algorithmClass;
 	private Label label1;
-	private Label label2;
-	private List<InstanceClafer> options;
 	private InstanceGenerator instance;
+	String value="";
 
 	public MyPageTwo(InstanceGenerator inst) {
 		super("Second page");
@@ -39,20 +34,17 @@ public class MyPageTwo extends WizardPage {
 		
 
 	}
-	void setValue(Set<String> set){
-		
-		algorithmClass.setInput(set);
-	}
+	
 	@Override
 	public void createControl(Composite parent) {
 		container = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
-		container.setLayout(layout);
 		layout.numColumns = 4;
+		container.setLayout(layout);
+		
 
 		label1 = new Label(container, SWT.NONE);
-		label1.setText("Select Algorithm Type");
-		label2 = new Label(container, SWT.NONE);		
+		label1.setText("Select Algorithm Type");		
 		Map<String,InstanceClafer> inst=instance.getInstances();
 		algorithmClass = new ComboViewer(container, SWT.COMPOSITION_SELECTION);
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
@@ -68,10 +60,9 @@ public class MyPageTwo extends WizardPage {
 				public void selectionChanged(SelectionChangedEvent event) {
 						IStructuredSelection selection = (IStructuredSelection) event
 								.getSelection();
-						String value="";
-						String b=(String)selection.getFirstElement().toString();
-						instance.displayInstanceValues(instance.getInstances().get(b));
 						
+						String b=(String)selection.getFirstElement().toString();
+						setValue(instance.displayInstanceValues(instance.getInstances().get(b),""));
 						if (selection.size() > 0) {
 							canFlipToNextPage();
 							setPageComplete(true);
@@ -83,12 +74,17 @@ public class MyPageTwo extends WizardPage {
 		setControl(container);
 		;
 	}
+	
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
 	public boolean canFlipToNextPage() {
 
 		return true;
-	}
-
-	public String getText1() {
-		return "Heyyyy";
 	}
 }

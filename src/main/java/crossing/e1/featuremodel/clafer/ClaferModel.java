@@ -20,6 +20,11 @@ import org.osgi.framework.Bundle;
 
 import crossing.e1.configurator.Activator;
 
+/**
+ * @author Ram
+ *
+ */
+
 public class ClaferModel {
 
 	private String modelName;
@@ -32,8 +37,8 @@ public class ClaferModel {
 	private List<AstConcreteClafer> constraintClafers;
 
 	public ClaferModel(String path) {
-		path = "src/main/resources/PBE.js";
-		//path = "PBE.js";
+		//path = "src/main/resources/hashing.js";
+		path = "PBE.js";
 		loadModel(path);
 	}
 
@@ -113,16 +118,28 @@ public class ClaferModel {
 		return children;
 	}
 
-	public int addConstraint(AstConcreteClafer name, AstBoolExpr constraint,
-			ClaferModel model) {
-		try {
-			model.getChild(name.getName()).addConstraint(constraint);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return 1;
+	public List<AstConcreteClafer> getSuperClafer(AstModel model) {
+		ArrayList<AstConcreteClafer> listOfTasks=new ArrayList<AstConcreteClafer>();
+		for (AstConcreteClafer object : model.getChildren()) {
+			if (object.hasChildren()) {
+				if (object.getSuperClafer().getName().contains("Task") == true) {
+					listOfTasks.add(object);
+				}
+			}
 		}
-		return 0;
+		return listOfTasks;
 	}
+
+	// public int addConstraint(AstConcreteClafer name, AstBoolExpr constraint,
+	// ClaferModel model) {
+	// try {
+	// model.getChild(name.getName()).addConstraint(constraint);
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// return 1;
+	// }
+	// return 0;
+	// }
 
 	public List<AstConcreteClafer> getClafersByName(String type) {
 
@@ -205,10 +222,11 @@ public class ClaferModel {
 
 						}
 			}
-			
-			
+
 		} catch (Exception E) {
 			E.printStackTrace();
 		}
 	}
+	
+	
 }

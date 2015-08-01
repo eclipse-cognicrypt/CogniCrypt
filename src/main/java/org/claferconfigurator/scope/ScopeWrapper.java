@@ -8,6 +8,11 @@ import org.clafer.ast.AstClafer;
 import org.clafer.common.Check;
 import org.clafer.scope.Scope;
 
+/**
+ * @author Ram
+ *
+ */
+
 public class ScopeWrapper  {
 
 	private Map<AstClafer,Integer> scopes;

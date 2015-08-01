@@ -1,20 +1,21 @@
 package crossing.e1.configurator.wizard;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.clafer.ast.AstConcreteClafer;
-import org.clafer.ast.AstConstraint;
-import org.clafer.common.Check;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.clafer.instance.InstanceClafer;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -25,24 +26,26 @@ import org.eclipse.swt.events.*;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 
+/**
+ * @author Ram
+ *
+ */
+
 public class TaskSelectionPage extends WizardPage {
-	private ClaferModel model;
-	private Spinner taskCombo;
+
 	private Composite container;
-	private Button securityLevelSecured;
-	private Button securityLevelInSecured;
-	private Spinner outPutSize;
+	private ComboViewer algorithmClass;
 	private Label label1;
-	private Label label2;
-	private Label label3;
+	private InstanceGenerator instance;
+	String value="";
+	private ClaferModel model;
+	
 	private HashMap<String, Integer> userOptions;
 
-	public TaskSelectionPage(List<AstConcreteClafer> items,
-			ClaferModel claferModel) {
+	public TaskSelectionPage(ClaferModel claferModel) {
 		super("Select Task");
 		setTitle("Chonfigure");
 		setDescription("Here the user selects her options and security levels");
-		userOptions = new HashMap<String, Integer>();
 		this.model = claferModel;
 
 	}
@@ -51,83 +54,47 @@ public class TaskSelectionPage extends WizardPage {
 	public void createControl(Composite parent) {
 		container = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
+		layout.numColumns = 4;
 		container.setLayout(layout);
-		layout.numColumns = 2;
+		
 
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		setControl(container);
-		canFlipToNextPage();
-		for (AstConcreteClafer clafer : model.getConstraintClafers()) {
-			getWidget(container, clafer.getName(), 1, 0, 5, 0, 1, 1);
-		}
-	}
-
-	void getRadio() {
-		securityLevelSecured = new Button(container, SWT.RADIO);
-		securityLevelSecured.setToolTipText("Secured Encryption");
-		securityLevelSecured.setText("Secure");
-		securityLevelSecured.setEnabled(true);
-		securityLevelInSecured = new Button(container, SWT.RADIO);
-		securityLevelInSecured.setToolTipText("Insecure");
-		securityLevelInSecured.setText("Do Not Secure");
-		securityLevelInSecured.setEnabled(true);
-
-		securityLevelSecured.addSelectionListener(new SelectionListener() {
-
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				securityLevelInSecured.setSelection(false);
-				securityLevelSecured.setSelection(true);
-				outPutSize.setVisible(true);
-				taskCombo.setVisible(true);
-				label1.setVisible(true);
-				label2.setVisible(true);
-				label3.setVisible(true);
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-
-			}
-
-		});
-
-		securityLevelInSecured.addSelectionListener(new SelectionListener() {
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				securityLevelSecured.setSelection(false);
-				securityLevelInSecured.setSelection(true);
-				outPutSize.setVisible(false);
-				taskCombo.setVisible(false);
-				label1.setVisible(false);
-				label2.setVisible(false);
-				label3.setVisible(false);
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-
-			}
-
-		});
-	}
-
-	void getWidget(Composite container, String label, int selection, int min,
-			int max, int digits, int incement, int pageincrement) {
 		label1 = new Label(container, SWT.NONE);
-		label1.setText(label);
-		taskCombo = new Spinner(container, SWT.BORDER | SWT.SINGLE);
-		taskCombo.setValues(selection, min, max, digits, incement,
-				pageincrement);
+		label1.setText("Select Task");	
+		List<AstConcreteClafer> getSuperClafer = model.getSuperClafer(model.getModel());
+		algorithmClass = new ComboViewer(container, SWT.COMPOSITION_SELECTION);
+		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
+		algorithmClass.setInput(getSuperClafer.toArray().toString());
+		algorithmClass.setLabelProvider((new LabelProvider() {
+			@Override
+			public String getText(Object element) {
+				return element.toString();
+			}
+		}));
+		algorithmClass
+				.addSelectionChangedListener(new ISelectionChangedListener() {
+				public void selectionChanged(SelectionChangedEvent event) {
+						IStructuredSelection selection = (IStructuredSelection) event
+								.getSelection();
+						
+						String b=(String)selection.getFirstElement().toString();
+						setValue(instance.displayInstanceValues(instance.getInstances().get(b),""));
+						if (selection.size() > 0) {
+							canFlipToNextPage();
+							setPageComplete(true);
+						}
+					}
 
+				});
+
+		setControl(container);
+		;
+	}
+	public String getValue() {
+		return value;
 	}
 
-	public boolean isSecure() {
-		return true;
-	}
-
-	public Map<String, Integer> getMap() {
-		return userOptions;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 }

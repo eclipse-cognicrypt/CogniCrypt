@@ -1,0 +1,20 @@
+scope({c0_Person:2, c0_age:2, c0_name:2});
+defaultScope(1);
+intRange(-8, 7);
+stringLength(16);
+
+c0_Task = Abstract("c0_Task");
+c0_Person = Abstract("c0_Person");
+c0_name = c0_Person.addChild("c0_name").withCard(1, 1);
+c0_age = c0_Person.addChild("c0_age").withCard(1, 1);
+c0_Bob = Clafer("c0_Bob").withCard(1, 1).extending(c0_Person);
+c0_Alic = Clafer("c0_Alic").withCard(1, 1).extending(c0_Person);
+c0_myTask = Clafer("c0_myTask").withCard(1, 1).extending(c0_Task);
+c0_person = c0_myTask.addChild("c0_person").withCard(1, 1);
+c0_name.refTo(string);
+c0_age.refTo(Int);
+c0_person.refTo(c0_Person);
+c0_Bob.addConstraint(equal(joinRef(join($this(), c0_name)), constant("\"bob\"")));
+c0_Bob.addConstraint(equal(joinRef(join($this(), c0_age)), constant(20)));
+c0_Alic.addConstraint(equal(joinRef(join($this(), c0_name)), constant("\"alice\"")));
+c0_Alic.addConstraint(equal(joinRef(join($this(), c0_age)), constant(25)));

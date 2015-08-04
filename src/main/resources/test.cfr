@@ -1,0 +1,16 @@
+abstract Task
+
+abstract Person
+	name -> string
+	age -> int
+
+Bob: Person
+	[name="bob"]
+	[age = 20]
+
+Alic: Person
+	[name = "alice"]
+	[age = 25]
+	
+myTask: Task
+	person -> Person

@@ -1,4 +1,4 @@
-scope({c0_Algorithm:16, c0_Digest:13, c0_KeyDerivationAlgorithm:3, c0_insecure:16, c0_name:16, c0_outputSize:13, c0_performance:16, c0_secure:16, c0_status:16});
+scope({c0_Algorithm:16, c0_Digest:13, c0_KeyDerivationAlgorithm:3, c0_Task:2, c0_insecure:16, c0_name:16, c0_outputSize:13, c0_performance:16, c0_secure:16, c0_status:16});
 defaultScope(1);
 intRange(-8, 7);
 stringLength(16);
@@ -34,11 +34,16 @@ c0_scrypt = c0_KeyDerivationAlgorithms.addChild("c0_scrypt").withCard(1, 1).exte
 c0_Main = Clafer("c0_Main").withCard(1, 1).extending(c0_Task);
 c0_digestToUse = c0_Main.addChild("c0_digestToUse").withCard(0, 1);
 c0_kdaToUse = c0_Main.addChild("c0_kdaToUse").withCard(0, 1);
+c0_Main_1 = Clafer("c0_Main_1").withCard(1, 1).extending(c0_Task);
+c1_digestToUse = c0_Main_1.addChild("c1_digestToUse").withCard(0, 1);
+c1_kdaToUse = c0_Main_1.addChild("c1_kdaToUse").withCard(0, 1);
 c0_name.refTo(string);
 c0_performance.refTo(Int);
 c0_outputSize.refTo(Int);
 c0_digestToUse.refTo(c0_Digest);
 c0_kdaToUse.refTo(c0_KeyDerivationAlgorithm);
+c1_digestToUse.refTo(c0_Digest);
+c1_kdaToUse.refTo(c0_KeyDerivationAlgorithm);
 c0_md5.addConstraint(equal(joinRef(join($this(), c0_name)), constant("\"MD5\"")));
 c0_md5.addConstraint(equal(joinRef(join($this(), c0_performance)), constant(4)));
 c0_md5.addConstraint(some(join(join($this(), c0_status), c0_insecure)));
@@ -107,3 +112,10 @@ c0_Main.addConstraint(lessThan(joinRef(join(joinRef(join($this(), c0_kdaToUse)),
 c0_Main.addConstraint(none(join(join(joinRef(join($this(), c0_digestToUse)), c0_status), c0_insecure)));
 c0_kdaToUse.addConstraint(implies(equal(joinRef($this()), join(global(c0_KeyDerivationAlgorithms), c0_pbkdf)), some(join(joinParent($this()), c0_digestToUse))));
 c0_kdaToUse.addConstraint(implies(notEqual(joinRef($this()), join(global(c0_KeyDerivationAlgorithms), c0_pbkdf)), none(join(joinParent($this()), c0_digestToUse))));
+c0_Main_1.addConstraint(lessThan(joinRef(join(joinRef(join($this(), c1_digestToUse)), c0_performance)), constant(4)));
+c0_Main_1.addConstraint(lessThan(joinRef(join(joinRef(join($this(), c1_digestToUse)), c0_outputSize)), constant(511)));
+c0_Main_1.addConstraint(or(some(join($this(), c1_kdaToUse)), some(join($this(), c1_digestToUse))));
+c0_Main_1.addConstraint(lessThan(joinRef(join(joinRef(join($this(), c1_kdaToUse)), c0_performance)), constant(4)));
+c0_Main_1.addConstraint(none(join(join(joinRef(join($this(), c1_digestToUse)), c0_status), c0_insecure)));
+c1_kdaToUse.addConstraint(implies(equal(joinRef($this()), join(global(c0_KeyDerivationAlgorithms), c0_pbkdf)), some(join(joinParent($this()), c1_digestToUse))));
+c1_kdaToUse.addConstraint(implies(notEqual(joinRef($this()), join(global(c0_KeyDerivationAlgorithms), c0_pbkdf)), none(join(joinParent($this()), c1_digestToUse))));

@@ -4,19 +4,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
-import org.eclipse.swt.events.*;
 import crossing.e1.featuremodel.clafer.ClaferModel;
+import crossing.e1.featuremodel.clafer.InstanceGenerator;
+import crossing.e1.featuremodel.clafer.ParseClafer;
+import crossing.e1.featuremodel.clafer.StringLableMapper;
 
 /**
  * @author Ram
@@ -25,114 +28,113 @@ import crossing.e1.featuremodel.clafer.ClaferModel;
 
 public class ValueSelectionPage extends WizardPage {
 	private ClaferModel model;
-	private Spinner taskCombo;
+	private List<Spinner> taskCombo;
 	private Composite container;
-	private Button securityLevelSecured;
-	private Button securityLevelInSecured;
-	private Spinner outPutSize;
-	private Label label1;
-	private Label label2;
-	private Label label3;
-	private ComboViewer options;
-	private HashMap<String, Integer> userOptions;
+	private List<AstConcreteClafer> label;
+	private List<AstConcreteClafer> mainClafer;
+	private List<ComboViewer> options;
+	private HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>> userOptions;
+	private ParseClafer parser = new ParseClafer();
+	List<Composite> widgets = new ArrayList<Composite>();
 
 	public ValueSelectionPage(List<AstConcreteClafer> items,
 			ClaferModel claferModel) {
-		super("Select Task");
-		setTitle("Chonfigure");
-		setDescription("Here the user selects her options and security levels");
-		userOptions = new HashMap<String, Integer>();
+		super("Select Properties");
+		setTitle("Configure");
+		setDescription("Here the user configures values for properties");
+		userOptions = new HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>>();
 		this.model = claferModel;
 
 	}
 
 	@Override
 	public void createControl(Composite parent) {
-		container = new Composite(parent, SWT.NONE);
+		taskCombo = new ArrayList<Spinner>();
+		label = new ArrayList<AstConcreteClafer>();
+		options = new ArrayList<ComboViewer>();
+		mainClafer=  new ArrayList<AstConcreteClafer>();
+
+		container = new Composite(parent, SWT.NONE); 
 		GridLayout layout = new GridLayout();
 		container.setLayout(layout);
 		layout.numColumns = 3;
 		setControl(container);
-		canFlipToNextPage();
-		for (AstConcreteClafer clafer : model.getConstraintClafers()) {
-			getWidget(container, clafer.getName(), 1, 0, 5, 0, 1, 1);
+		for (AstConcreteClafer clafer : StringLableMapper.getPropertiesLables().keySet()) {
+			for(AstConcreteClafer claf: StringLableMapper.getPropertiesLables().get(clafer))
+			getWidget(container, clafer,claf, parser.trim(claf.getName()), 1, 0, 1024, 0, 1,
+					1);
 		}
 	}
 
-	void getRadio() {
-		securityLevelSecured = new Button(container, SWT.RADIO);
-		securityLevelSecured.setToolTipText("Secured Encryption");
-		securityLevelSecured.setText("Secure");
-		securityLevelSecured.setEnabled(true);
-		securityLevelInSecured = new Button(container, SWT.RADIO);
-		securityLevelInSecured.setToolTipText("Insecure");
-		securityLevelInSecured.setText("Do Not Secure");
-		securityLevelInSecured.setEnabled(true);
-
-		securityLevelSecured.addSelectionListener(new SelectionListener() {
-
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				securityLevelInSecured.setSelection(false);
-				securityLevelSecured.setSelection(true);
-				outPutSize.setVisible(true);
-				taskCombo.setVisible(true);
-				label1.setVisible(true);
-				label2.setVisible(true);
-				label3.setVisible(true);
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-
-			}
-
-		});
-
-		securityLevelInSecured.addSelectionListener(new SelectionListener() {
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				securityLevelSecured.setSelection(false);
-				securityLevelInSecured.setSelection(true);
-				outPutSize.setVisible(false);
-				taskCombo.setVisible(false);
-				label1.setVisible(false);
-				label2.setVisible(false);
-				label3.setVisible(false);
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-
-			}
-
-		});
-	}
-
-	void getWidget(Composite container, String label, int selection, int min,
-			int max, int digits, int incement, int pageincrement) {
-		List<String> values=new ArrayList<String>();
+	void getWidget(Composite container, AstConcreteClafer key1,AstConcreteClafer key2, String label,
+			int selection, int min, int max, int digits, int incement,
+			int pageincrement) {
+		List<String> values = new ArrayList<String>();
 		values.add("<=");
 		values.add(">=");
 		values.add("==");
-		label1 = new Label(container, SWT.NONE);
+		Label label1 = new Label(container, SWT.NONE);
 		label1.setText(label);
-		options = new ComboViewer(container, SWT.NONE);
-		options.setContentProvider(ArrayContentProvider.getInstance());
-		options.setInput(values);
-		
-		taskCombo = new Spinner(container, SWT.BORDER | SWT.SINGLE);
-		taskCombo.setValues(selection, min, max, digits, incement,
-				pageincrement);
+		ComboViewer option = new ComboViewer(container, SWT.NONE);
+		option.setContentProvider(ArrayContentProvider.getInstance());
+		option.setInput(values);
+		option.setSelection(new StructuredSelection(values.get(2)));
 
+		Spinner taskComb = new Spinner(container, SWT.BORDER | SWT.SINGLE);
+		taskComb.setValues(selection, min, max, digits, incement, pageincrement);
+		this.mainClafer.add(key1);
+		this.label.add(key2);
+		this.options.add(option);
+		this.taskCombo.add(taskComb);
 	}
 
-	public boolean isSecure() {
-		return true;
-	}
-
-	public Map<String, Integer> getMap() {
+	public Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> getMap() {
 		return userOptions;
 	}
 
+	/**
+	 * @return Validation method which will be invoked upon clicking next on the
+	 *         valueList page Next widgetPage is only accessible if there are
+	 *         more than 0 instances for a given clafer and the chosen values
+	 */
+	public boolean validate(InstanceGenerator gen, ClaferModel claferModel) {
+		setMap();
+		gen.generateInstances(claferModel, this.getMap());
+		if (gen.getNoOfInstances() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Set user selected values to the clafer properties
+	 */
+	private void setMap() {
+		ArrayList<Integer> values;
+		for (int i = 0; i < taskCombo.size(); i++) {
+			values = new ArrayList<Integer>();
+			ArrayList<AstConcreteClafer> keys= new ArrayList<AstConcreteClafer>();
+			keys.add(mainClafer.get(i));
+			keys.add(label.get(i));
+			values.add(toNumber(options.get(i).getSelection().toString()));
+			values.add(taskCombo.get(i).getSelection());
+			userOptions.put(keys,
+					values);
+		}
+	}
+
+	/**
+	 * @param selection
+	 * @return Map quantifier to integer
+	 */
+	private Integer toNumber(String selection) {
+		if (selection.contains("=="))
+			return 1;
+		if (selection.contains("<="))
+			return 2;
+		if (selection.contains(">="))
+			return 3;
+		return 999;
+	}
 }

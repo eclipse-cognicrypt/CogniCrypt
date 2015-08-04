@@ -38,43 +38,63 @@ public class InstanceGenerator {
 	private Map<String, InstanceClafer> instance;
 	private Triple<AstModel, Scope, Objective[]> triple;
 	private int noOfInstances;
+	String taskName = "";
 
 	public List<InstanceClafer> generateInstances(ClaferModel clafModel,
-			Map<String, Integer> filters) {
+			Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> map) {
+		System.out.println("Instance generator called");
+		if (map.isEmpty())
+			return null;
 		this.instances = new ArrayList<InstanceClafer>();
 		this.instance = new HashMap<String, InstanceClafer>();
 		clafModel.setModel(clafModel.getModelNoCon());
 		this.triple = clafModel.getTriple();
 		this.scope = triple.getSnd();
-			for (AstConcreteClafer claf : clafModel.getSuperClafer(clafModel.getModel())) {
-				if (claf.getName().contains("performance")) {
-					claf.getParent().addConstraint(
-							lessThanEqual(joinRef(global(clafModel
-									.getConstraintClafers().get(0))),
-									constant(4)));
-					System.out.println(claf.getParent().getName()
-							+ "  VALUESSS "
-							+ claf.getParent().getConstraints().toString());
-					//claf.addConstraint(lessThanEqual($this(), constant(3)));
-				}
-				for (AstConstraint x : clafModel.getModel().getConstraints()) {
-					System.out.println("VALUE" + x.toString());
+		AstModel model = clafModel.getModelNoCon();
+		try {
+			AstConcreteClafer m = model
+					.addChild("Main")
+					.addChild("MAINTASK")
+					.refTo(StringLableMapper.getTaskLables().get(getTaskName()));
+
+			for (AstConcreteClafer main : m.getRef().getTargetType()
+					.getChildren()) {
+				for (ArrayList<AstConcreteClafer> claf : map.keySet()) {
+					if (claf.get(0).equals(main)) {
+						int operator = map.get(claf).get(0);
+						int value = map.get(claf).get(1);
+						System.out.println("Constraints before addition "
+								+ main.getConstraints());
+						System.out.println("MAIN =>"+main.getClass()+" property"+claf.get(1).getClass());
+						if (operator == 1)
+							main.addConstraint(equal(
+									join(joinRef($this()), joinRef(claf.get(1))),
+									constant(value)));
+						if (operator == 2)
+							main.addConstraint(lessThanEqual(
+									join(joinRef($this()), joinRef(claf.get(1))),
+									constant(value)));
+						if (operator == 3)
+							main.addConstraint(greaterThanEqual(
+									join(joinRef($this()), joinRef(claf.get(1))),
+									constant(value)));
+
+						System.out.println("Constraints after addition "
+								+ main.getConstraints());
+					}
 				}
 			}
-		// clafModel.getModel().addConstraint(
-		// lessThanEqual(joinRef(global(clafModel.getConstraintClafers()
-		// .get(2))), constant(3000)));
-		// clafModel.getModel().addConstraint(
-		// lessThanEqual(joinRef(global(clafModel.getConstraintClafers()
-		// .get(3))), constant(3000)));
 
-		// System.out.println(clafModel.getConstraintClafers().get(0).getConstraints().toString());
-		solver = ClaferCompiler.compile(clafModel.getModel(), scope.toScope());
-		while (solver.find()) {
+			solver = ClaferCompiler.compile(model, scope.toScope());
+			while (solver.find()) {
 
-			InstanceClafer instance = solver.instance().getTopClafers()[solver
-					.instance().getTopClafers().length - 1];
-			instances.add(instance);
+				InstanceClafer instance = solver.instance().getTopClafers()[solver
+						.instance().getTopClafers().length - 1];
+
+				instances.add(instance);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		getInstanceMapping();
 		setNoOfInstances(solver.instanceCount());
@@ -90,12 +110,13 @@ public class InstanceGenerator {
 		return Check.notNull(instance);
 	}
 
+	public void resetInstances() {
+		instance = null;
+	}
+
 	public void getInstanceMapping() {
-		int i=0;
 		for (InstanceClafer inst : instances) {
-			System.out.println("Instances are "+ i++ +inst.toString());
-			String key = getInstanceMapping(inst).trim();
-			System.out.println("KEY = > "+key+" VALUE=> "+inst.toString());
+			String key = getInstanceMapping(inst);
 			instance.put(key, inst);
 		}
 
@@ -172,8 +193,14 @@ public class InstanceGenerator {
 	}
 
 	public Object getVariables() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
+	public String getTaskName() {
+		return taskName;
+	}
+
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
 }

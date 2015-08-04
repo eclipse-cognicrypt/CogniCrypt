@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.clafer.ast.AstAbstractClafer;
+import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 
 import crossing.e1.configurator.ReadConfig;
@@ -20,36 +22,72 @@ public class TesCases {
 		String path = new ReadConfig().getClaferPath();
 		ClaferModel model = new ClaferModel(path);
 
-		InstanceGenerator inst = test.getInstance(model);
-		test.displayInstances(inst);
+		//InstanceGenerator inst = test.getInstance(model);
+		//test.displayInstances(inst);
 		//test.displayConstraints(model);
 		//test.displaySuperClafers(model);
+		test.displayTasks(model);
+		test.displayProperties(model);
 
+	}
+	/**
+	 * @param model
+	 */
+	private void displayProperties(ClaferModel model) {
+
+		System.out.println("----- Listing Propertie -----");
+		ParseClafer parser= new ParseClafer();
+		for(String ins : model.getTaskList(model.getModel()).keySet()){
+			System.out.println("Task Name "+ins+"\nProperties are");
+			parser.getPrimitive(StringLableMapper.getTaskLables().get(ins));
+			for(AstConcreteClafer key : StringLableMapper.getPropertiesLables().keySet()){
+				System.out.println(key+" => "+StringLableMapper.getPropertiesLables().get(key));
+			}
+			StringLableMapper.resetProperties();
+		}
+		
+		
+	}
+	/**
+	 * @param model
+	 */
+	private void displayTasks(ClaferModel model) {
+		System.out.println("----- Listing Tasks -----");
+		for(String inst : StringLableMapper.getTaskLables().keySet()){
+			
+			System.out.println(inst+" => "+StringLableMapper.getTaskLables().get(inst));
+		}
+		
 	}
 	private void displaySuperClafers(ClaferModel model){
 
 		System.out.println("--Testing displaySuperClafers Method--");
-		ArrayList<AstConcreteClafer> taskList=new ArrayList<AstConcreteClafer>();
-		taskList= (ArrayList<AstConcreteClafer>) model.getSuperClafer(model.getModel());
-		
-		for( AstConcreteClafer clafer : taskList){
-			System.out.println("VALUE : "+ clafer.getName());
+		Map<String, AstConcreteClafer> taskList=new HashMap<String, AstConcreteClafer>();
+		taskList=  model.getTaskList(model.getModel());
+		for(String key : taskList.keySet())
+		{
+			System.out.println("VALUE : "+ taskList.get(key));
 		}
 		
 	}
 
-	private void displayConstraints(ClaferModel model) {
+//	private void displayConstraints(ClaferModel model) {
+//
+//		System.out.println("--Testing Constrainable properties--");
+//		for(String key : model.getPrimitive())
+//		{
+//			System.out.println("VALUE : "+ taskList.get(key));
+//		}
+//		
+//		for (AstConcreteClafer clafer : model.getConstraintClafers())
+//			System.out.println(clafer.toString());
+//
+//	}
 
-		System.out.println("--Testing Constrainable properties--");
-		for (AstConcreteClafer clafer : model.getConstraintClafers())
-			System.out.println(clafer.toString());
-
-	}
-
-	Map<String, Integer> getMap() {
-		Map<String, Integer> filters = new HashMap<String, Integer>();
-		filters.put("performance", 3);
-		filters.put("keyLength", 256);
+	Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>>  getMap() {
+		Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>>  filters = new HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>>();
+//		filters.put(null, {3});
+//		filters.put(null, {256});
 		return filters;
 	}
 

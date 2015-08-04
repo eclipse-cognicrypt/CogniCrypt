@@ -10,24 +10,21 @@ import org.jgrapht.util.PrefetchIterator.NextElementFunctor;
  * @author Ram
  *
  */
-public class MyPageThree extends WizardPage {
+public class DisplayValuePage extends WizardPage {
 
 	private Label label1;
 	private Composite container;
 	String value;
 
-	public MyPageThree(String desc) {
-		super("Third page");
+	public DisplayValuePage(String desc) {
+		super("Complete");
 		setTitle("Complete");
 		setDescription("Below are the values for choosen option");
 		value = desc;
-		canFlipToNextPage();
 
 	}
 
-	public boolean canFlipToNextPage(){
-		return false;
-	}
+	
 	@Override
 	public void createControl(Composite parent) {
 		container = new Composite(parent, SWT.NONE);

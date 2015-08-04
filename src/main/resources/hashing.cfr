@@ -122,3 +122,14 @@ Main : Task
 	[kdaToUse.performance < 4 ]
 	[no digestToUse.status.insecure] 
 	
+Main_1 : Task
+	digestToUse -> Digest ?
+	kdaToUse -> KeyDerivationAlgorithm ?
+		[kdaToUse = pbkdf => digestToUse]
+		[kdaToUse != pbkdf => no digestToUse]
+	[digestToUse.performance < 4]
+	[digestToUse.outputSize < 511]
+	[kdaToUse || digestToUse]
+	[kdaToUse.performance < 4 ]
+	[no digestToUse.status.insecure] 
+	

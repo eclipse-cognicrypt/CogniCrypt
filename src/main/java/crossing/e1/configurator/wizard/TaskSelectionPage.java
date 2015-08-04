@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.instance.InstanceClafer;
@@ -13,6 +14,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -25,6 +27,8 @@ import org.eclipse.swt.events.*;
 
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
+import crossing.e1.featuremodel.clafer.ParseClafer;
+import crossing.e1.featuremodel.clafer.StringLableMapper;
 
 /**
  * @author Ram
@@ -36,15 +40,12 @@ public class TaskSelectionPage extends WizardPage {
 	private Composite container;
 	private ComboViewer algorithmClass;
 	private Label label1;
-	private InstanceGenerator instance;
-	String value="";
+	String value = "";
 	private ClaferModel model;
-	
-	private HashMap<String, Integer> userOptions;
 
 	public TaskSelectionPage(ClaferModel claferModel) {
 		super("Select Task");
-		setTitle("Chonfigure");
+		setTitle("Configure");
 		setDescription("Here the user selects her options and security levels");
 		this.model = claferModel;
 
@@ -56,14 +57,22 @@ public class TaskSelectionPage extends WizardPage {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 4;
 		container.setLayout(layout);
-		
 
 		label1 = new Label(container, SWT.NONE);
-		label1.setText("Select Task");	
-		List<AstConcreteClafer> getSuperClafer = model.getSuperClafer(model.getModel());
+		label1.setText("Select Task");
+		Set<String> getSuperClafer = model.getTaskList(model.getModel())
+				.keySet();
 		algorithmClass = new ComboViewer(container, SWT.COMPOSITION_SELECTION);
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-		algorithmClass.setInput(getSuperClafer.toArray().toString());
+		algorithmClass.setInput(getSuperClafer);
+		if (getSuperClafer.size() > 0) {
+			algorithmClass.setSelection(new StructuredSelection(getSuperClafer
+					.toArray()[0]));
+		} else {
+			setPageComplete(false);
+			algorithmClass.setSelection(new StructuredSelection("no task"));
+
+		}
 		algorithmClass.setLabelProvider((new LabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -72,16 +81,18 @@ public class TaskSelectionPage extends WizardPage {
 		}));
 		algorithmClass
 				.addSelectionChangedListener(new ISelectionChangedListener() {
-				public void selectionChanged(SelectionChangedEvent event) {
+					public void selectionChanged(SelectionChangedEvent event) {
 						IStructuredSelection selection = (IStructuredSelection) event
 								.getSelection();
-						
-						String b=(String)selection.getFirstElement().toString();
-						setValue(instance.displayInstanceValues(instance.getInstances().get(b),""));
-						if (selection.size() > 0) {
-							canFlipToNextPage();
-							setPageComplete(true);
-						}
+
+						ParseClafer parser= new ParseClafer();
+						String b = (String) selection.getFirstElement()
+								.toString();
+						StringLableMapper.resetProperties();
+						parser.setConstraintClafers(StringLableMapper.getTaskLables()
+								.get(b));
+						setValue(b);
+
 					}
 
 				});
@@ -89,12 +100,13 @@ public class TaskSelectionPage extends WizardPage {
 		setControl(container);
 		;
 	}
+
 	public String getValue() {
 		return value;
 	}
 
 	public void setValue(String value) {
-		this.value = value;
+			this.value = value;
 	}
 
 }

@@ -3,7 +3,6 @@ package crossing.e1.configurator.wizard;
 import java.util.List;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
-
 import crossing.e1.configurator.ReadConfig;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
@@ -11,10 +10,10 @@ import org.clafer.ast.*;
 
 public class MyWizard extends Wizard {
 
-	protected TaskSelectionPage welcomePage;
-	protected ValueSelectionPage pageOne;
-	protected MyPageTwo pageTwo;
-	protected MyPageThree pageThree;
+	protected TaskSelectionPage taskListPage;
+	protected ValueSelectionPage valueListPage;
+	protected InstanceListPage instanceListPage;
+	protected DisplayValuePage finalValueListPage;
 	private ClaferModel claferModel;
 	InstanceGenerator gen = new InstanceGenerator();
 
@@ -24,44 +23,43 @@ public class MyWizard extends Wizard {
 	}
 
 	@Override
-	public String getWindowTitle() {
-		return "Export My Data";
-	}
-
-	@Override
 	public void addPages() {
 		this.claferModel = new ClaferModel(new ReadConfig().getClaferPath());
 		List<AstConcreteClafer> tasks = claferModel.getModel().getChildren();
-		welcomePage = new TaskSelectionPage(claferModel);
+		taskListPage = new TaskSelectionPage(claferModel);
 		this.setForcePreviousAndNextButtons(true);
-		addPage(welcomePage);
+		addPage(taskListPage);
 
 	}
 
 	@Override
 	public boolean performFinish() {
 		// Print the result to the console
-		System.out.println(pageOne.isPageComplete());
+		System.out.println(valueListPage.isPageComplete());
 		return true;
 	}
 
 	@Override
 	public IWizardPage getNextPage(IWizardPage currentPage) {
-
-		if (currentPage == pageOne && pageOne.isSecure()) {
-			gen.generateInstances(claferModel, pageOne.getMap());
-			if (gen.getNoOfInstances() > 0) {
-				pageTwo = new MyPageTwo(gen);
-				addPage(pageTwo);
+		if (currentPage == taskListPage && taskListPage.isPageComplete()) {
+			valueListPage = new ValueSelectionPage(null, claferModel);
+			gen.setTaskName(taskListPage.getValue());
+			addPage(valueListPage);
+			gen.setNoOfInstances(0);
+			return valueListPage;
+		} else if (currentPage == valueListPage) {
+			if (valueListPage.validate(gen, claferModel)) {
+				instanceListPage = new InstanceListPage(gen);
+				addPage(instanceListPage);
+				return instanceListPage;
 			}
-			return pageTwo;
-		} else if (currentPage == pageTwo) {
-			pageThree = new MyPageThree(pageTwo.getValue());
-			addPage(pageThree);
-			return pageThree;
-		} else {
-			return currentPage;
+		} else if (currentPage == instanceListPage) {
+			finalValueListPage = new DisplayValuePage(
+					instanceListPage.getValue());
+			addPage(finalValueListPage);
+			return finalValueListPage;
 		}
+		return currentPage;
 
 	}
 

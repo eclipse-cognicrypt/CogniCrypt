@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Label;
 
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 
-public class MyPageTwo extends WizardPage {
+public class InstanceListPage extends WizardPage {
 
 	private Composite container;
 	private ComboViewer algorithmClass;
@@ -26,7 +26,7 @@ public class MyPageTwo extends WizardPage {
 	private InstanceGenerator instance;
 	String value="";
 
-	public MyPageTwo(InstanceGenerator inst) {
+	public InstanceListPage(InstanceGenerator inst) {
 		super("Second page");
 		setTitle("Available options");
 		setDescription("User can choose below mentioned algorithm(s) for encryption");

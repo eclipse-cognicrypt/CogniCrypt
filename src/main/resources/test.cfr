@@ -14,3 +14,5 @@ Alic: Person
 	
 myTask: Task
 	person -> Person
+myTask2: Task
+	person -> Person

@@ -39,7 +39,7 @@ public class InstanceGenerator {
 	private Triple<AstModel, Scope, Objective[]> triple;
 	private int noOfInstances;
 	String taskName = "";
-
+	ParseClafer parser=new ParseClafer();
 	public List<InstanceClafer> generateInstances(
 			Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> map) {
 		System.out.println("Instance generator called");
@@ -138,10 +138,10 @@ public class InstanceGenerator {
 						"");
 			} else {
 				if (inst.hasRef())
-					return (inst.getType().getName() + "\t\t"
+					return (parser.trim(inst.getType().getName()) + "\t\t"
 							+ inst.getRef().toString().replace("\"", "") + "\n");
 				else
-					return (inst.getType().getName() + "\n");
+					return (parser.trim(inst.getType().getName()) + "\n");
 
 			}
 		} catch (Exception E) {

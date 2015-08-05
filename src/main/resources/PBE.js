@@ -1,7 +1,7 @@
-scope({c0_Algorithm:7, c0_Cipher:3, c0_Description:2, c0_Digest:3, c0_SymmetricBlockCipher:3, c0_SymmetricCipher:3, c0_Task:2, c0_blockSize:3, c0_insecure:7, c0_keySize:3, c0_memory:3, c0_name:7, c0_outputSize:3, c0_performance:7, c0_secure:7, c0_status:7});
+scope({c0_Algorithm:7, c0_Cipher:3, c0_Description:3, c0_Digest:3, c0_SymmetricBlockCipher:3, c0_SymmetricCipher:3, c0_Task:3, c0_blockSize:3, c0_insecure:7, c0_keySize:3, c0_memory:3, c0_name:7, c0_outputSize:3, c0_performance:7, c0_secure:7, c0_status:7});
 defaultScope(1);
 intRange(-8, 7);
-stringLength(34);
+stringLength(32);
 
 c0_Algorithm = Abstract("c0_Algorithm");
 c0_Task = Abstract("c0_Task");
@@ -30,10 +30,11 @@ c0_sha_1 = c0_DigestAlgorithms.addChild("c0_sha_1").withCard(1, 1).extending(c0_
 c0_sha_256 = c0_DigestAlgorithms.addChild("c0_sha_256").withCard(1, 1).extending(c0_Digest);
 c0_KeyDerivationAlgorithms = Clafer("c0_KeyDerivationAlgorithms").withCard(1, 1);
 c0_pbkdf = c0_KeyDerivationAlgorithms.addChild("c0_pbkdf").withCard(1, 1).extending(c0_KeyDerivationAlgorithm);
-c0_PasswordBasedEncryption = Clafer("c0_PasswordBasedEncryption").withCard(1, 1).extending(c0_Task);
-c0_kda = c0_PasswordBasedEncryption.addChild("c0_kda").withCard(1, 1);
-c0_digest = c0_PasswordBasedEncryption.addChild("c0_digest").withCard(1, 1);
-c0_cipher = c0_PasswordBasedEncryption.addChild("c0_cipher").withCard(1, 1);
+c0_SecurityUsingDigest = Clafer("c0_SecurityUsingDigest").withCard(1, 1).extending(c0_Task);
+c0_digest = c0_SecurityUsingDigest.addChild("c0_digest").withCard(1, 1);
+c0_SecurityUsingCipher = Clafer("c0_SecurityUsingCipher").withCard(1, 1).extending(c0_Task);
+c0_cipher = c0_SecurityUsingCipher.addChild("c0_cipher").withCard(1, 1);
+c0_kda = c0_SecurityUsingCipher.addChild("c0_kda").withCard(1, 1);
 c0_PASS = Clafer("c0_PASS").withCard(1, 1).extending(c0_Task);
 c0_name.refTo(string);
 c0_performance.refTo(Int);
@@ -42,9 +43,9 @@ c0_Description.refTo(string);
 c0_memory.refTo(Int);
 c0_keySize.refTo(Int);
 c0_blockSize.refTo(Int);
-c0_kda.refTo(c0_KeyDerivationAlgorithm);
 c0_digest.refTo(c0_Digest);
 c0_cipher.refTo(c0_SymmetricBlockCipher);
+c0_kda.refTo(c0_KeyDerivationAlgorithm);
 c0_AES128.addConstraint(equal(joinRef(join($this(), c0_name)), constant("\"AES with 128bit key\"")));
 c0_AES128.addConstraint(equal(joinRef(join($this(), c0_performance)), constant(3)));
 c0_AES128.addConstraint(some(join(join($this(), c0_status), c0_secure)));
@@ -78,5 +79,6 @@ c0_sha_256.addConstraint(equal(joinRef(join($this(), c0_performance)), constant(
 c0_pbkdf.addConstraint(equal(joinRef(join($this(), c0_name)), constant("\"PBKDF\"")));
 c0_pbkdf.addConstraint(equal(joinRef(join($this(), c0_performance)), constant(2)));
 c0_pbkdf.addConstraint(some(join(join($this(), c0_status), c0_secure)));
-c0_PasswordBasedEncryption.addConstraint(equal(joinRef(join($this(), c0_Description)), constant("\"Encrypt data based on a password\"")));
+c0_SecurityUsingDigest.addConstraint(equal(joinRef(join($this(), c0_Description)), constant("\"Encrypt data based on a Digest\"")));
+c0_SecurityUsingCipher.addConstraint(equal(joinRef(join($this(), c0_Description)), constant("\"Encrypt data based on a Digest\"")));
 c0_PASS.addConstraint(equal(joinRef(join($this(), c0_Description)), constant("\"Test\"")));

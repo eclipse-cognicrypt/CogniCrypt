@@ -74,10 +74,12 @@ KeyDerivationAlgorithms
 		[performance = 2]
 		[secure]
 
-PasswordBasedEncryption : Task
-	[Description = "Encrypt data based on a password"]
-	kda -> KeyDerivationAlgorithm
+SecurityUsingDigest : Task
+	[Description = "Encrypt data based on a Digest"]
 	digest -> Digest
+SecurityUsingCipher : Task
+	[Description = "Encrypt data based on a Digest"]
 	cipher -> SymmetricBlockCipher
+	kda -> KeyDerivationAlgorithm
 PASS : Task
 	[Description = "Test"]

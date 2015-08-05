@@ -48,6 +48,7 @@ public class MyWizard extends Wizard {
 			gen.setNoOfInstances(0);
 			return valueListPage;
 		} else if (currentPage == valueListPage) {
+			if(valueListPage.getPageStatus()==true)
 			if (valueListPage.validate(gen, claferModel)) {
 				instanceListPage = new InstanceListPage(gen);
 				addPage(instanceListPage);

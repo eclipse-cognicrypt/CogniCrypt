@@ -15,6 +15,7 @@ import org.clafer.scope.Scope;
 
 import static org.clafer.ast.Asts.*;
 
+<<<<<<< HEAD
 //Installation
 //xor Status
 //    Ok
@@ -27,6 +28,13 @@ public class InstanceGenerationTest {
 		
 		System.out.println(ClassLoader.getSystemResource(
 				"installation.js"));
+=======
+public class InstanceGenerationTest {
+
+	public static void main(String[] args) {
+
+		System.out.println(ClassLoader.getSystemResource("installation.js"));
+>>>>>>> 1c62314e5087e23dc5f27d71304a8a0a77af6988
 		File filename = new File(ClassLoader.getSystemResource(
 				"installation.js").getFile());
 
@@ -41,12 +49,17 @@ public class InstanceGenerationTest {
 			int numOfInstances = 0;
 			while (solver.find()) {
 				numOfInstances++;
+<<<<<<< HEAD
 				//System.out.println(solver.instance());
+=======
+				// System.out.println(solver.instance());
+>>>>>>> 1c62314e5087e23dc5f27d71304a8a0a77af6988
 			}
 
 			System.out.println("before: " + numOfInstances);
 
 			List<AstConcreteClafer> timeClafers = getClafersByName(
+<<<<<<< HEAD
 					model.getChildren(), "c0_Time");
 			
 			System.out.println("time clafer: "+ timeClafers.size());
@@ -56,11 +69,35 @@ public class InstanceGenerationTest {
 
 			solver = ClaferCompiler.compile(model, scope.toScope());
 			
+=======
+					model.getChildren(), "c0_student");
+
+			System.out.println("time clafer: " + timeClafers.size());
+
+			for (AstClafer clafer : timeClafers) {
+				AstClafer b = clafer.getChildren().get(0);
+				b.addConstraint(greaterThan(
+						joinRef(join(joinRef($this()), b.getRef()
+								.getTargetType().getChildren().get(0))),
+						constant(5)));
+				
+				b.addConstraint(greaterThan(
+						joinRef(join(joinRef($this()), b.getRef()
+								.getTargetType().getChildren().get(1))),
+						constant(5)));
+
+			}
+			solver = ClaferCompiler.compile(model, scope.toScope());
+>>>>>>> 1c62314e5087e23dc5f27d71304a8a0a77af6988
 
 			numOfInstances = 0;
 			while (solver.find()) {
 				numOfInstances++;
+<<<<<<< HEAD
 				//System.out.println(solver.instance());
+=======
+				// System.out.println(solver.instance());
+>>>>>>> 1c62314e5087e23dc5f27d71304a8a0a77af6988
 			}
 
 			System.out.println("after: " + numOfInstances);

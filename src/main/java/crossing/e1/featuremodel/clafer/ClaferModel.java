@@ -39,9 +39,9 @@ public class ClaferModel {
 	private ParseClafer pClafer = new ParseClafer();
 
 	public ClaferModel(String path) {
-		path = "src/main/resources/test.js";
+		path = "src/main/resources/PBE.js";
 		// path = "PBE.js";
-		loadModel("test.js");
+		loadModel(path);
 	}
 
 	// temporarily hard coding model file

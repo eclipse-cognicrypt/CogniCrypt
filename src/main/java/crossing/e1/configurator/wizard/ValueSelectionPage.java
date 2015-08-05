@@ -12,10 +12,13 @@ import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
+
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 import crossing.e1.featuremodel.clafer.ParseClafer;
@@ -36,6 +39,7 @@ public class ValueSelectionPage extends WizardPage {
 	private HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>> userOptions;
 	private ParseClafer parser = new ParseClafer();
 	List<Composite> widgets = new ArrayList<Composite>();
+	boolean statusPage=false;
 
 	public ValueSelectionPage(List<AstConcreteClafer> items,
 			ClaferModel claferModel) {
@@ -82,12 +86,29 @@ public class ValueSelectionPage extends WizardPage {
 
 		Spinner taskComb = new Spinner(container, SWT.BORDER | SWT.SINGLE);
 		taskComb.setValues(selection, min, max, digits, incement, pageincrement);
+		taskComb.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent arg0) {
+				setComplete(true);
+				
+			}
+
+		});
 		this.mainClafer.add(key1);
 		this.label.add(key2);
 		this.options.add(option);
 		this.taskCombo.add(taskComb);
 	}
 
+	private void setComplete(boolean b) {
+		
+		statusPage=b;
+	}
+	
+	boolean getPageStatus(){
+		return statusPage;
+	}
 	public Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> getMap() {
 		return userOptions;
 	}

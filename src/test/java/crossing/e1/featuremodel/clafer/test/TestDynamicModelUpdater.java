@@ -10,6 +10,7 @@ import org.clafer.ast.*;
 import org.clafer.compiler.ClaferCompiler;
 import org.clafer.compiler.ClaferSolver;
 import org.clafer.instance.InstanceClafer;
+import org.clafer.instance.InstanceModel;
 import org.clafer.scope.Scope;
 
 import crossing.e1.featuremodel.clafer.ClaferModel;
@@ -37,7 +38,8 @@ public class TestDynamicModelUpdater {
 				
 		solver = ClaferCompiler.compile(model.getModel(),model.getTriple().getSnd() );
 		while (solver.find()) {
-			System.out.println(solver.instance());
+			InstanceModel instance= solver.instance();
+			System.out.println(instance);
 		}
 		System.out.println("No of instances after child "+solver.instanceCount());
 	

@@ -25,11 +25,11 @@ public class InstanceListPage extends WizardPage {
 	private Label label1;
 	private InstanceGenerator instance;
 	String value="";
-
+boolean val= false;
 	public InstanceListPage(InstanceGenerator inst) {
 		super("Second page");
 		setTitle("Available options");
-		setDescription("User can choose below mentioned algorithm(s) for encryption");
+		setDescription("Available conbinations have been listed below , choose a value");
 		this.instance=inst;
 		
 
@@ -41,7 +41,7 @@ public class InstanceListPage extends WizardPage {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 4;
 		container.setLayout(layout);
-		
+		setPageComplete(false);
 
 		label1 = new Label(container, SWT.NONE);
 		label1.setText("Select Algorithm Type");		
@@ -64,7 +64,7 @@ public class InstanceListPage extends WizardPage {
 						String b=(String)selection.getFirstElement().toString();
 						setValue(instance.displayInstanceValues(instance.getInstances().get(b),""));
 						if (selection.size() > 0) {
-							canFlipToNextPage();
+							val=true;
 							setPageComplete(true);
 						}
 					}
@@ -82,9 +82,9 @@ public class InstanceListPage extends WizardPage {
 	public void setValue(String value) {
 		this.value = value;
 	}
-
+@Override
 	public boolean canFlipToNextPage() {
 
-		return true;
+		return val;
 	}
 }

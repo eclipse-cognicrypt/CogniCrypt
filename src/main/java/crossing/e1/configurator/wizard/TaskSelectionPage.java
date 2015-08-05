@@ -45,8 +45,8 @@ public class TaskSelectionPage extends WizardPage {
 
 	public TaskSelectionPage(ClaferModel claferModel) {
 		super("Select Task");
-		setTitle("Configure");
-		setDescription("Here the user selects her options and security levels");
+		setTitle("Task List");
+		setDescription("Tasks can be performed are listed below , choose a value");
 		this.model = claferModel;
 
 	}

@@ -44,8 +44,8 @@ public class ValueSelectionPage extends WizardPage {
 	public ValueSelectionPage(List<AstConcreteClafer> items,
 			ClaferModel claferModel) {
 		super("Select Properties");
-		setTitle("Configure");
-		setDescription("Here the user configures values for properties");
+		setTitle("Properties");
+		setDescription("Choose values for the properties ");
 		userOptions = new HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>>();
 		this.model = claferModel;
 
@@ -133,10 +133,11 @@ public class ValueSelectionPage extends WizardPage {
 	 */
 	public boolean validate(InstanceGenerator gen, ClaferModel claferModel) {
 		setMap();
-		gen.generateInstances(this.getMap());
+		gen.generateInstances(claferModel,this.getMap());
 		if (gen.getNoOfInstances() > 0) {
 			return true;
 		} else {
+			setErrorMessage("No possible instance for choosen values");
 			return false;
 		}
 	}

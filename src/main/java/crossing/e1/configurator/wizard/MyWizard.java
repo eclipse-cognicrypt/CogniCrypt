@@ -36,7 +36,9 @@ public class MyWizard extends Wizard {
 	public boolean performFinish() {
 		// Print the result to the console
 		System.out.println(valueListPage.isPageComplete());
-		return true;
+		if (finalValueListPage.isPageComplete())
+			return true;
+		return false;
 	}
 
 	@Override
@@ -48,12 +50,12 @@ public class MyWizard extends Wizard {
 			gen.setNoOfInstances(0);
 			return valueListPage;
 		} else if (currentPage == valueListPage) {
-			if(valueListPage.getPageStatus()==true)
-			if (valueListPage.validate(gen, claferModel)) {
-				instanceListPage = new InstanceListPage(gen);
-				addPage(instanceListPage);
-				return instanceListPage;
-			}
+			if (valueListPage.getPageStatus() == true)
+				if (valueListPage.validate(gen, claferModel)) {
+					instanceListPage = new InstanceListPage(gen);
+					addPage(instanceListPage);
+					return instanceListPage;
+				}
 		} else if (currentPage == instanceListPage) {
 			finalValueListPage = new DisplayValuePage(
 					instanceListPage.getValue());

@@ -39,7 +39,7 @@ public class ValueSelectionPage extends WizardPage {
 	private HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>> userOptions;
 	private ParseClafer parser = new ParseClafer();
 	List<Composite> widgets = new ArrayList<Composite>();
-	boolean statusPage=false;
+	boolean statusPage = false;
 
 	public ValueSelectionPage(List<AstConcreteClafer> items,
 			ClaferModel claferModel) {
@@ -56,23 +56,35 @@ public class ValueSelectionPage extends WizardPage {
 		taskCombo = new ArrayList<Spinner>();
 		label = new ArrayList<AstConcreteClafer>();
 		options = new ArrayList<ComboViewer>();
-		mainClafer=  new ArrayList<AstConcreteClafer>();
+		mainClafer = new ArrayList<AstConcreteClafer>();
 
-		container = new Composite(parent, SWT.NONE); 
+		container = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		container.setLayout(layout);
-		layout.numColumns = 3;
-		setControl(container);
-		for (AstConcreteClafer clafer : StringLableMapper.getPropertiesLables().keySet()) {
-			for(AstConcreteClafer claf: StringLableMapper.getPropertiesLables().get(clafer))
-			getWidget(container, clafer,claf, parser.trim(claf.getName()), 1, 0, 1024, 0, 1,
-					1);
+		layout.numColumns = 1;
+		
+		for (AstConcreteClafer clafer : StringLableMapper.getPropertiesLables()
+				.keySet()) {
+			Label label1 = new Label(container, SWT.BOLD);
+			label1.setText(parser.trim(clafer.getName()).toUpperCase());
+			Label label2 = new Label(container, SWT.NONE);
+			label2.setText("");
+			Label label3 = new Label(container, SWT.NONE);
+			label3.setText("");
+
+			for (AstConcreteClafer claf : StringLableMapper
+					.getPropertiesLables().get(clafer)) {
+				layout.numColumns = 3;
+				getWidget(container, clafer, claf, parser.trim(claf.getName()),
+						1, 0, 1024, 0, 1, 1);
+			}
 		}
+		setControl(container);
 	}
 
-	void getWidget(Composite container, AstConcreteClafer key1,AstConcreteClafer key2, String label,
-			int selection, int min, int max, int digits, int incement,
-			int pageincrement) {
+	void getWidget(Composite container, AstConcreteClafer key1,
+			AstConcreteClafer key2, String label, int selection, int min,
+			int max, int digits, int incement, int pageincrement) {
 		List<String> values = new ArrayList<String>();
 		values.add("<=");
 		values.add(">=");
@@ -87,11 +99,11 @@ public class ValueSelectionPage extends WizardPage {
 		Spinner taskComb = new Spinner(container, SWT.BORDER | SWT.SINGLE);
 		taskComb.setValues(selection, min, max, digits, incement, pageincrement);
 		taskComb.addModifyListener(new ModifyListener() {
-			
+
 			@Override
 			public void modifyText(ModifyEvent arg0) {
 				setComplete(true);
-				
+
 			}
 
 		});
@@ -102,13 +114,14 @@ public class ValueSelectionPage extends WizardPage {
 	}
 
 	private void setComplete(boolean b) {
-		
-		statusPage=b;
+
+		statusPage = b;
 	}
-	
-	boolean getPageStatus(){
+
+	boolean getPageStatus() {
 		return statusPage;
 	}
+
 	public Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> getMap() {
 		return userOptions;
 	}
@@ -120,7 +133,7 @@ public class ValueSelectionPage extends WizardPage {
 	 */
 	public boolean validate(InstanceGenerator gen, ClaferModel claferModel) {
 		setMap();
-		gen.generateInstances(claferModel, this.getMap());
+		gen.generateInstances(this.getMap());
 		if (gen.getNoOfInstances() > 0) {
 			return true;
 		} else {
@@ -135,13 +148,12 @@ public class ValueSelectionPage extends WizardPage {
 		ArrayList<Integer> values;
 		for (int i = 0; i < taskCombo.size(); i++) {
 			values = new ArrayList<Integer>();
-			ArrayList<AstConcreteClafer> keys= new ArrayList<AstConcreteClafer>();
+			ArrayList<AstConcreteClafer> keys = new ArrayList<AstConcreteClafer>();
 			keys.add(mainClafer.get(i));
 			keys.add(label.get(i));
 			values.add(toNumber(options.get(i).getSelection().toString()));
 			values.add(taskCombo.get(i).getSelection());
-			userOptions.put(keys,
-					values);
+			userOptions.put(keys, values);
 		}
 	}
 

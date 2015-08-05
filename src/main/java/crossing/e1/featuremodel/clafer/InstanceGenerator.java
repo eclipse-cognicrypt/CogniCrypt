@@ -39,13 +39,13 @@ public class InstanceGenerator {
 	private Triple<AstModel, Scope, Objective[]> triple;
 	private int noOfInstances;
 	String taskName = "";
-	ParseClafer parser=new ParseClafer();
-	public List<InstanceClafer> generateInstances(
+	ParseClafer parser = new ParseClafer();
+
+	public List<InstanceClafer> generateInstances(ClaferModel clafModel,
 			Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> map) {
 		System.out.println("Instance generator called");
 		if (map.isEmpty())
 			return null;
-		ClaferModel clafModel=new ClaferModel("");
 		this.instances = new ArrayList<InstanceClafer>();
 		this.instance = new HashMap<String, InstanceClafer>();
 		clafModel.setModel(clafModel.getModel());
@@ -87,7 +87,6 @@ public class InstanceGenerator {
 
 			solver = ClaferCompiler.compile(model, scope);
 			while (solver.find()) {
-				System.out.println("There is an instance");
 				InstanceClafer instance = solver.instance().getTopClafers()[solver
 						.instance().getTopClafers().length - 1];
 

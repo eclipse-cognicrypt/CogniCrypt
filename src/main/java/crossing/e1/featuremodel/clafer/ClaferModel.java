@@ -68,7 +68,6 @@ public class ClaferModel {
 			this.setModelName("hashings");
 
 			setModel(pair.getFst());
-			setModelNoCon(model);
 			setTaskList(model);
 
 		} catch (IOException e) {
@@ -136,17 +135,6 @@ public class ClaferModel {
 		}
 	}
 
-	// public int addConstraint(AstConcreteClafer name, AstBoolExpr constraint,
-	// ClaferModel model) {
-	// try {
-	// model.getChild(name.getName()).addConstraint(constraint);
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// return 1;
-	// }
-	// return 0;
-	// }
-
 	public List<AstConcreteClafer> getClafersByName(String type) {
 
 		return model.getChildren().stream()
@@ -197,14 +185,6 @@ public class ClaferModel {
 	 */
 	public Triple<AstModel, Scope, Objective[]> getTriple() {
 		return Check.notNull(pair);
-	}
-
-	public AstModel getModelNoCon() {
-		return modelNoCon;
-	}
-
-	public void setModelNoCon(AstModel modelNoCon) {
-		this.modelNoCon = modelNoCon;
 	}
 
 	public Map<String, AstConcreteClafer> getConstraintClafers() {

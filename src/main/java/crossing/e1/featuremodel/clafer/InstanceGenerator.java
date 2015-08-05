@@ -40,17 +40,18 @@ public class InstanceGenerator {
 	private int noOfInstances;
 	String taskName = "";
 
-	public List<InstanceClafer> generateInstances(ClaferModel clafModel,
+	public List<InstanceClafer> generateInstances(
 			Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> map) {
 		System.out.println("Instance generator called");
 		if (map.isEmpty())
 			return null;
+		ClaferModel clafModel=new ClaferModel("");
 		this.instances = new ArrayList<InstanceClafer>();
 		this.instance = new HashMap<String, InstanceClafer>();
-		clafModel.setModel(clafModel.getModelNoCon());
+		clafModel.setModel(clafModel.getModel());
 		this.triple = clafModel.getTriple();
 		this.scope = triple.getSnd();
-		AstModel model = clafModel.getModelNoCon();
+		AstModel model = clafModel.getModel();
 		try {
 			AstConcreteClafer m = model
 					.addChild("Main")

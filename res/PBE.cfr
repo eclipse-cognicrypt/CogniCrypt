@@ -79,3 +79,5 @@ PasswordBasedEncryption : Task
 	kda -> KeyDerivationAlgorithm
 	digest -> Digest
 	cipher -> SymmetricBlockCipher
+Pass : Task
+	[name = "test" ]

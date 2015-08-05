@@ -65,18 +65,17 @@ public class InstanceGenerator {
 						int value = map.get(claf).get(1);
 						System.out.println("Constraints before addition "
 								+ main.getConstraints());
-						System.out.println("MAIN =>"+main.getClass()+" property"+claf.get(1).getClass());
 						if (operator == 1)
 							main.addConstraint(equal(
-									join(joinRef($this()), joinRef(claf.get(1))),
+									joinRef(join(joinRef($this()), claf.get(1))),
 									constant(value)));
 						if (operator == 2)
 							main.addConstraint(lessThanEqual(
-									join(joinRef($this()), joinRef(claf.get(1))),
+									joinRef(join(joinRef($this()), claf.get(1))),
 									constant(value)));
 						if (operator == 3)
 							main.addConstraint(greaterThanEqual(
-									join(joinRef($this()), joinRef(claf.get(1))),
+									joinRef(join(joinRef($this()), claf.get(1))),
 									constant(value)));
 
 						System.out.println("Constraints after addition "
@@ -85,9 +84,9 @@ public class InstanceGenerator {
 				}
 			}
 
-			solver = ClaferCompiler.compile(model, scope.toScope());
+			solver = ClaferCompiler.compile(model, scope);
 			while (solver.find()) {
-
+				System.out.println("There is an instance");
 				InstanceClafer instance = solver.instance().getTopClafers()[solver
 						.instance().getTopClafers().length - 1];
 

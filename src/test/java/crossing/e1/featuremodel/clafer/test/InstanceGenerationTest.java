@@ -15,18 +15,11 @@ import org.clafer.scope.Scope;
 
 import static org.clafer.ast.Asts.*;
 
-//Installation
-//xor Status
-//    Ok
-//    Bad
-//Time -> integer
-//    [this > 2]
 public class InstanceGenerationTest {
 
 	public static void main(String[] args) {
-		
-		System.out.println(ClassLoader.getSystemResource(
-				"installation.js"));
+
+		System.out.println(ClassLoader.getSystemResource("installation.js"));
 		File filename = new File(ClassLoader.getSystemResource(
 				"installation.js").getFile());
 
@@ -41,26 +34,35 @@ public class InstanceGenerationTest {
 			int numOfInstances = 0;
 			while (solver.find()) {
 				numOfInstances++;
-				//System.out.println(solver.instance());
+				// System.out.println(solver.instance());
 			}
 
 			System.out.println("before: " + numOfInstances);
 
 			List<AstConcreteClafer> timeClafers = getClafersByName(
-					model.getChildren(), "c0_Time");
-			
-			System.out.println("time clafer: "+ timeClafers.size());
+					model.getChildren(), "c0_student");
 
-			timeClafers.forEach(clafer -> clafer.addConstraint(greaterThan(
-					joinRef($this()), constant(6))));
+			System.out.println("time clafer: " + timeClafers.size());
 
+			for (AstClafer clafer : timeClafers) {
+				AstClafer b = clafer.getChildren().get(0);
+				b.addConstraint(greaterThan(
+						joinRef(join(joinRef($this()), b.getRef()
+								.getTargetType().getChildren().get(0))),
+						constant(5)));
+				
+				b.addConstraint(greaterThan(
+						joinRef(join(joinRef($this()), b.getRef()
+								.getTargetType().getChildren().get(1))),
+						constant(5)));
+
+			}
 			solver = ClaferCompiler.compile(model, scope.toScope());
-			
 
 			numOfInstances = 0;
 			while (solver.find()) {
 				numOfInstances++;
-				//System.out.println(solver.instance());
+				// System.out.println(solver.instance());
 			}
 
 			System.out.println("after: " + numOfInstances);

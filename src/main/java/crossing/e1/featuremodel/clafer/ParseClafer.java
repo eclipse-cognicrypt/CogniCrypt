@@ -68,6 +68,8 @@ public class ParseClafer {
 	}
 
 	public String trim(String value) {
-		return value.substring(value.indexOf('_') + 1, value.length());
+		String val=value.substring(value.indexOf('_') + 1, value.length());
+		val=val.substring(0, 1).toUpperCase()+val.substring(1, val.length());
+		return val;
 	}
 }

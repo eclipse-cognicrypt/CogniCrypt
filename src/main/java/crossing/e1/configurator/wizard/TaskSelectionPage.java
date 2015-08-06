@@ -53,6 +53,8 @@ public class TaskSelectionPage extends WizardPage {
 
 	@Override
 	public void createControl(Composite parent) {
+		Map<String,String> tasks=new HashMap<String, String>();
+		ParseClafer parser=new ParseClafer();
 		container = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 4;
@@ -60,13 +62,14 @@ public class TaskSelectionPage extends WizardPage {
 
 		label1 = new Label(container, SWT.NONE);
 		label1.setText("Select Task");
-		Set<String> getSuperClafer = model.getTaskList(model.getModel())
-				.keySet();
+		for(String val: model.getTaskList(model.getModel())
+				.keySet())
+		tasks.put(parser.trim(val),val); 
 		algorithmClass = new ComboViewer(container, SWT.COMPOSITION_SELECTION);
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-		algorithmClass.setInput(getSuperClafer);
-		if (getSuperClafer.size() > 0) {
-			algorithmClass.setSelection(new StructuredSelection(getSuperClafer
+		algorithmClass.setInput(tasks.keySet());
+		if (tasks.keySet().size() > 0) {
+			algorithmClass.setSelection(new StructuredSelection(tasks.keySet()
 					.toArray()[0]));
 		} else {
 			setPageComplete(false);
@@ -90,8 +93,8 @@ public class TaskSelectionPage extends WizardPage {
 								.toString();
 						StringLableMapper.resetProperties();
 						parser.setConstraintClafers(StringLableMapper.getTaskLables()
-								.get(b));
-						setValue(b);
+								.get(tasks.get(b)));
+						setValue(tasks.get(b));
 
 					}
 

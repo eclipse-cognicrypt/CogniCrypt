@@ -19,7 +19,7 @@
                label="&amp;Sample Action"
                icon="icons/sample.gif"
                class="crossing.e1.configurator.actions.SampleAction"
-               tooltip="Hello, Eclipse world"
+               tooltip="Generate Instances fr your Clafer"
                menubarPath="sampleMenu/sampleGroup"
                toolbarPath="sampleGroup"
                id="crossing.e1.configurator.actions.SampleAction">

@@ -10,11 +10,7 @@ import java.util.Map;
 import org.clafer.compiler.ClaferCompiler;
 import org.clafer.compiler.ClaferSolver;
 import org.clafer.scope.Scope;
-import org.clafer.ast.AstAbstractClafer;
-import org.clafer.ast.AstBoolExpr;
-import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
-import org.clafer.ast.AstConstraint;
 import org.clafer.ast.AstModel;
 import org.clafer.common.Check;
 import org.clafer.objective.Objective;
@@ -43,7 +39,7 @@ public class InstanceGenerator {
 
 	public List<InstanceClafer> generateInstances(ClaferModel clafModel,
 			Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> map) {
-		System.out.println("Instance generator called");
+		// System.out.println("Instance generator called");
 		if (map.isEmpty())
 			return null;
 		this.instances = new ArrayList<InstanceClafer>();
@@ -53,6 +49,7 @@ public class InstanceGenerator {
 		this.scope = triple.getSnd();
 		AstModel model = clafModel.getModel();
 		try {
+
 			AstConcreteClafer m = model
 					.addChild("Main")
 					.addChild("MAINTASK")
@@ -61,28 +58,35 @@ public class InstanceGenerator {
 			for (AstConcreteClafer main : m.getRef().getTargetType()
 					.getChildren()) {
 				for (ArrayList<AstConcreteClafer> claf : map.keySet()) {
-					if (claf.get(0).equals(main)) {
+					if (claf.get(0).getName().equals(main.getName())) {
 						int operator = map.get(claf).get(0);
 						int value = map.get(claf).get(1);
-						System.out.println("Constraints before addition "
-								+ main.getConstraints());
+						// System.out.println("Constraints before addition "
+						// + main.getConstraints());
 						if (operator == 1)
 							main.addConstraint(equal(
-									joinRef(join(joinRef($this()), claf.get(1))),
+									joinRef(join(joinRef($this()), parser
+											.getClaferByName(main, claf.get(1)
+													.getName()))),
 									constant(value)));
 						if (operator == 2)
-							main.addConstraint(lessThanEqual(
-									joinRef(join(joinRef($this()), claf.get(1))),
+							main.addConstraint(lessThan(
+									joinRef(join(joinRef($this()), parser
+											.getClaferByName(main, claf.get(1)
+													.getName()))),
 									constant(value)));
 						if (operator == 3)
-							main.addConstraint(greaterThanEqual(
-									joinRef(join(joinRef($this()), claf.get(1))),
+							main.addConstraint(greaterThan(
+									joinRef(join(joinRef($this()), parser
+											.getClaferByName(main, claf.get(1)
+													.getName()))),
 									constant(value)));
 
-						System.out.println("Constraints after addition "
-								+ main.getConstraints());
+//						System.out.println("Constraints after addition "
+//								+ main.getConstraints());
 					}
 				}
+
 			}
 
 			solver = ClaferCompiler.compile(model, scope);
@@ -96,7 +100,7 @@ public class InstanceGenerator {
 			e.printStackTrace();
 		}
 		getInstanceMapping();
-		setNoOfInstances(solver.instanceCount());
+		setNoOfInstances(instance.keySet().size());
 		return instances;
 
 	}
@@ -116,37 +120,10 @@ public class InstanceGenerator {
 	public void getInstanceMapping() {
 		for (InstanceClafer inst : instances) {
 			String key = getInstanceMapping(inst);
-			instance.put(key, inst);
+			if (inst.getType().getName().equals("Main") && key.length() > 0)
+				instance.put(key, inst);
 		}
 
-	}
-
-	public String displayInstanceValues(InstanceClafer inst, String value) {
-		try {
-			if (inst.hasChildren()) {
-				for (InstanceClafer in : inst.getChildren()) {
-					value += displayInstanceValues(in, "");
-				}
-
-			} else if (inst.hasRef()
-					&& (inst.getType().isPrimitive() != true)
-					&& (inst.getRef().getClass().toString().contains("Integer") == false)
-					&& (inst.getRef().getClass().toString().contains("String") == false)
-					&& (inst.getRef().getClass().toString().contains("Boolean") == false)) {
-				value += displayInstanceValues((InstanceClafer) inst.getRef(),
-						"");
-			} else {
-				if (inst.hasRef())
-					return (parser.trim(inst.getType().getName()) + "\t\t"
-							+ inst.getRef().toString().replace("\"", "") + "\n");
-				else
-					return (parser.trim(inst.getType().getName()) + "\n");
-
-			}
-		} catch (Exception E) {
-			E.printStackTrace();
-		}
-		return value;
 	}
 
 	String getInstanceMapping(InstanceClafer inst) {
@@ -177,6 +154,34 @@ public class InstanceGenerator {
 			E.printStackTrace();
 		}
 		return val;
+	}
+
+	public String displayInstanceValues(InstanceClafer inst, String value) {
+		try {
+			if (inst.hasChildren()) {
+				for (InstanceClafer in : inst.getChildren()) {
+					value += displayInstanceValues(in, "");
+				}
+
+			} else if (inst.hasRef()
+					&& (inst.getType().isPrimitive() != true)
+					&& (inst.getRef().getClass().toString().contains("Integer") == false)
+					&& (inst.getRef().getClass().toString().contains("String") == false)
+					&& (inst.getRef().getClass().toString().contains("Boolean") == false)) {
+				value += displayInstanceValues((InstanceClafer) inst.getRef(),
+						"");
+			} else {
+				if (inst.hasRef())
+					return (parser.trim(inst.getType().getName()) + "\t\t"
+							+ inst.getRef().toString().replace("\"", "") + "\n");
+				else
+					return (parser.trim(inst.getType().getName()) + "\n");
+
+			}
+		} catch (Exception E) {
+			E.printStackTrace();
+		}
+		return value;
 	}
 
 	public InstanceClafer getInstances(String b) {

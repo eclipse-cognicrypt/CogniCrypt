@@ -1,13 +1,8 @@
 package crossing.e1.configurator.wizard;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import org.clafer.ast.AstConcreteClafer;
-import org.clafer.instance.InstanceClafer;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -17,16 +12,10 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Spinner;
-import org.eclipse.swt.events.*;
-
 import crossing.e1.featuremodel.clafer.ClaferModel;
-import crossing.e1.featuremodel.clafer.InstanceGenerator;
 import crossing.e1.featuremodel.clafer.ParseClafer;
 import crossing.e1.featuremodel.clafer.StringLableMapper;
 
@@ -40,8 +29,9 @@ public class TaskSelectionPage extends WizardPage {
 	private Composite container;
 	private ComboViewer algorithmClass;
 	private Label label1;
-	String value = "";
+	private String value = "";
 	private ClaferModel model;
+	private Map<String,String> tasks;
 
 	public TaskSelectionPage(ClaferModel claferModel) {
 		super("Select Task");
@@ -53,7 +43,7 @@ public class TaskSelectionPage extends WizardPage {
 
 	@Override
 	public void createControl(Composite parent) {
-		Map<String,String> tasks=new HashMap<String, String>();
+		tasks=new HashMap<String, String>();
 		ParseClafer parser=new ParseClafer();
 		container = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -103,7 +93,20 @@ public class TaskSelectionPage extends WizardPage {
 		setControl(container);
 		;
 	}
-
+	public boolean canProceed(){
+//		ParseClafer parser= new ParseClafer();
+//		String b = tasks.keySet()
+//				.toArray()[0]
+//				.toString();
+//		StringLableMapper.resetProperties();
+//		parser.setConstraintClafers(StringLableMapper.getTaskLables()
+//				.get(tasks.get(b)));
+//		setValue(tasks.get(b));
+		if(value.length()>0)
+			return true;
+		else
+			return false;
+	}
 	public String getValue() {
 		return value;
 	}

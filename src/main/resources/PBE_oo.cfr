@@ -79,8 +79,7 @@ PasswordBasedEncryption : Task
 	kda -> KeyDerivationAlgorithm
 	digest -> Digest
 	cipher -> SymmetricBlockCipher
-	totalPerformance ->> integer = {kda.performance + 
-									digest.performance + 
-									cipher.performance}
+	totalPerformance ->> integer 
+	[totalPerformance= kda.performance + digest.performance+cipher.performance]
 
 <<max totalPerformance>>

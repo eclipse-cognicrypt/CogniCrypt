@@ -1,7 +1,7 @@
-scope({c0_Algorithm:7, c0_Cipher:3, c0_Description:2, c0_Digest:3, c0_SymmetricBlockCipher:3, c0_SymmetricCipher:3, c0_Task:2, c0_blockSize:3, c0_insecure:7, c0_keySize:3, c0_memory:3, c0_name:7, c0_outputSize:3, c0_performance:7, c0_secure:7, c0_status:7});
+scope({c0_Algorithm:7, c0_Cipher:3, c0_Digest:3, c0_SymmetricBlockCipher:3, c0_SymmetricCipher:3, c0_blockSize:3, c0_insecure:7, c0_keySize:3, c0_memory:3, c0_name:7, c0_outputSize:3, c0_performance:7, c0_secure:7, c0_status:7});
 defaultScope(1);
 intRange(-8, 7);
-stringLength(36);
+stringLength(34);
 
 c0_Algorithm = Abstract("c0_Algorithm");
 c0_Task = Abstract("c0_Task");
@@ -16,7 +16,7 @@ c0_status = c0_Algorithm.addChild("c0_status").withCard(1, 1).withGroupCard(1, 1
 c0_secure = c0_status.addChild("c0_secure").withCard(0, 1);
 c0_insecure = c0_status.addChild("c0_insecure").withCard(0, 1);
 c0_outputSize = c0_Digest.addChild("c0_outputSize").withCard(1, 1);
-c0_Description = c0_Task.addChild("c0_Description").withCard(1, 1);
+c1_name = c0_Task.addChild("c1_name").withCard(1, 1);
 c0_memory = c0_Cipher.addChild("c0_memory").withCard(1, 1);
 c0_keySize = c0_SymmetricCipher.addChild("c0_keySize").withCard(1, 1);
 c0_blockSize = c0_SymmetricBlockCipher.addChild("c0_blockSize").withCard(1, 1);
@@ -30,21 +30,22 @@ c0_sha_1 = c0_DigestAlgorithms.addChild("c0_sha_1").withCard(1, 1).extending(c0_
 c0_sha_256 = c0_DigestAlgorithms.addChild("c0_sha_256").withCard(1, 1).extending(c0_Digest);
 c0_KeyDerivationAlgorithms = Clafer("c0_KeyDerivationAlgorithms").withCard(1, 1);
 c0_pbkdf = c0_KeyDerivationAlgorithms.addChild("c0_pbkdf").withCard(1, 1).extending(c0_KeyDerivationAlgorithm);
-c0_Test = Clafer("c0_Test").withCard(1, 1).extending(c0_Task);
-c0_EncryptionUsingDigest = Clafer("c0_EncryptionUsingDigest").withCard(1, 1).extending(c0_Task);
-c0_digest = c0_EncryptionUsingDigest.addChild("c0_digest").withCard(1, 1);
-c0_kda = c0_EncryptionUsingDigest.addChild("c0_kda").withCard(1, 1);
-c0_cipher = c0_EncryptionUsingDigest.addChild("c0_cipher").withCard(1, 1);
+c0_PasswordBasedEncryption = Clafer("c0_PasswordBasedEncryption").withCard(1, 1).extending(c0_Task);
+c0_kda = c0_PasswordBasedEncryption.addChild("c0_kda").withCard(1, 1);
+c0_digest = c0_PasswordBasedEncryption.addChild("c0_digest").withCard(1, 1);
+c0_cipher = c0_PasswordBasedEncryption.addChild("c0_cipher").withCard(1, 1);
+c0_totalPerformance = c0_PasswordBasedEncryption.addChild("c0_totalPerformance").withCard(1, 1);
 c0_name.refTo(string);
 c0_performance.refTo(Int);
 c0_outputSize.refTo(Int);
-c0_Description.refTo(string);
+c1_name.refTo(string);
 c0_memory.refTo(Int);
 c0_keySize.refTo(Int);
 c0_blockSize.refTo(Int);
-c0_digest.refTo(c0_Digest);
 c0_kda.refTo(c0_KeyDerivationAlgorithm);
+c0_digest.refTo(c0_Digest);
 c0_cipher.refTo(c0_SymmetricBlockCipher);
+c0_totalPerformance.refTo(Int);
 c0_AES128.addConstraint(equal(joinRef(join($this(), c0_name)), constant("\"AES with 128bit key\"")));
 c0_AES128.addConstraint(equal(joinRef(join($this(), c0_performance)), constant(3)));
 c0_AES128.addConstraint(some(join(join($this(), c0_status), c0_secure)));
@@ -78,5 +79,6 @@ c0_sha_256.addConstraint(equal(joinRef(join($this(), c0_performance)), constant(
 c0_pbkdf.addConstraint(equal(joinRef(join($this(), c0_name)), constant("\"PBKDF\"")));
 c0_pbkdf.addConstraint(equal(joinRef(join($this(), c0_performance)), constant(2)));
 c0_pbkdf.addConstraint(some(join(join($this(), c0_status), c0_secure)));
-c0_Test.addConstraint(equal(joinRef(join($this(), c0_Description)), constant("\"Encrypt data using a Symmetric key\"")));
-c0_EncryptionUsingDigest.addConstraint(equal(joinRef(join($this(), c0_Description)), constant("\"Encrypt data using a Symmetric key\"")));
+c0_PasswordBasedEncryption.addConstraint(equal(joinRef(join($this(), c1_name)), constant("\"Encrypt data based on a password\"")));
+c0_PasswordBasedEncryption.addConstraint(equal(joinRef(join($this(), c0_totalPerformance)), add(add(joinRef(join(joinRef(join($this(), c0_kda)), c0_performance)), joinRef(join(joinRef(join($this(), c0_digest)), c0_performance))), joinRef(join(joinRef(join($this(), c0_cipher)), c0_performance)))));
+max(joinRef(join(global(c0_PasswordBasedEncryption), c0_totalPerformance)));

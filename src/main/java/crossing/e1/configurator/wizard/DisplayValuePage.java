@@ -1,14 +1,10 @@
 package crossing.e1.configurator.wizard;
 
-import java.awt.Rectangle;
-
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.jgrapht.util.PrefetchIterator.NextElementFunctor;
 
 /**
  * @author Ram

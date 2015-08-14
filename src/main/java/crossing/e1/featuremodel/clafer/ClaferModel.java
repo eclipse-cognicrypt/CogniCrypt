@@ -30,7 +30,6 @@ public class ClaferModel {
 
 	private String modelName;
 	private AstModel model;
-	private AstModel modelNoCon;
 	private Bundle bundle;
 	private Path originPath;
 	private URL bundledFileURL;
@@ -39,7 +38,7 @@ public class ClaferModel {
 	private ParseClafer pClafer = new ParseClafer();
 
 	public ClaferModel(String path) {
-		path = "src/main/resources/PBE.js";
+		path = "src/main/resources/test.js";
 		// path = "PBE.js";
 		loadModel(path);
 	}
@@ -121,7 +120,7 @@ public class ClaferModel {
 	}
 
 	public Map<String, AstConcreteClafer> getTaskList(AstModel model) {
-		return StringLableMapper.getTaskLables();
+		return Check.notNull(StringLableMapper.getTaskLables());
 	}
 
 	void setTaskList(AstModel model) {

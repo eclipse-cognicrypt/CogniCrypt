@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -18,7 +16,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
-
+import crossing.e1.configurator.ReadConfig;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 import crossing.e1.featuremodel.clafer.ParseClafer;
@@ -47,7 +45,7 @@ public class ValueSelectionPage extends WizardPage {
 		setTitle("Properties");
 		setDescription("Choose values for the properties ");
 		userOptions = new HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>>();
-		this.model = claferModel;
+		model = claferModel;
 
 	}
 
@@ -86,9 +84,9 @@ public class ValueSelectionPage extends WizardPage {
 			AstConcreteClafer key2, String label, int selection, int min,
 			int max, int digits, int incement, int pageincrement) {
 		List<String> values = new ArrayList<String>();
-		values.add("<=");
-		values.add(">=");
-		values.add("==");
+		values.add("<");
+		values.add(">");
+		values.add("=");
 		Label label1 = new Label(container, SWT.NONE);
 		label1.setText(label);
 		ComboViewer option = new ComboViewer(container, SWT.NONE);
@@ -133,7 +131,7 @@ public class ValueSelectionPage extends WizardPage {
 	 */
 	public boolean validate(InstanceGenerator gen, ClaferModel claferModel) {
 		setMap();
-		gen.generateInstances(claferModel,this.getMap());
+		gen.generateInstances(new ClaferModel(new ReadConfig().getClaferPath()),this.getMap());
 		if (gen.getNoOfInstances() > 0) {
 			return true;
 		} else {
@@ -163,11 +161,11 @@ public class ValueSelectionPage extends WizardPage {
 	 * @return Map quantifier to integer
 	 */
 	private Integer toNumber(String selection) {
-		if (selection.contains("=="))
+		if (selection.contains("="))
 			return 1;
-		if (selection.contains("<="))
+		if (selection.contains("<"))
 			return 2;
-		if (selection.contains(">="))
+		if (selection.contains(">"))
 			return 3;
 		return 999;
 	}

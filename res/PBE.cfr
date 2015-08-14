@@ -76,8 +76,6 @@ KeyDerivationAlgorithms
 
 PasswordBasedEncryption : Task
 	[name = "Encrypt data based on a password"]
-	kda -> KeyDerivationAlgorithm
 	digest -> Digest
-	cipher -> SymmetricBlockCipher
 Pass : Task
 	[name = "test" ]

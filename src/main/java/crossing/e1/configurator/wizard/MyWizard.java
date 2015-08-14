@@ -25,7 +25,6 @@ public class MyWizard extends Wizard {
 	@Override
 	public void addPages() {
 		this.claferModel = new ClaferModel(new ReadConfig().getClaferPath());
-		List<AstConcreteClafer> tasks = claferModel.getModel().getChildren();
 		taskListPage = new TaskSelectionPage(claferModel);
 		this.setForcePreviousAndNextButtons(true);
 		addPage(taskListPage);
@@ -35,7 +34,6 @@ public class MyWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		// Print the result to the console
-		System.out.println(valueListPage.isPageComplete());
 		if (finalValueListPage.isPageComplete())
 			return true;
 		return false;
@@ -43,7 +41,7 @@ public class MyWizard extends Wizard {
 
 	@Override
 	public IWizardPage getNextPage(IWizardPage currentPage) {
-		if (currentPage == taskListPage && taskListPage.isPageComplete()) {
+		if (currentPage == taskListPage && taskListPage.canProceed()) {
 			valueListPage = new ValueSelectionPage(null, claferModel);
 			gen.setTaskName(taskListPage.getValue());
 			addPage(valueListPage);

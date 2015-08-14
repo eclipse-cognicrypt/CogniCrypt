@@ -74,12 +74,11 @@ KeyDerivationAlgorithms
 		[performance = 2]
 		[secure]
 
-SecurityUsingDigest : Task
-	[Description = "Encrypt data based on a Digest"]
+Test : Task
+	[Description = "Encrypt data using a Symmetric key"]
+	
+EncryptionUsingDigest : Task
+	[Description = "Encrypt data using a Symmetric key"]
 	digest -> Digest
-SecurityUsingCipher : Task
-	[Description = "Encrypt data based on a Digest"]
-	cipher -> SymmetricBlockCipher
 	kda -> KeyDerivationAlgorithm
-PASS : Task
-	[Description = "Test"]
+	cipher -> SymmetricBlockCipher

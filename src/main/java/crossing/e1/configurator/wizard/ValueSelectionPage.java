@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -16,6 +17,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
+
+import crossing.e1.configurator.Lables;
 import crossing.e1.configurator.ReadConfig;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
@@ -27,7 +30,7 @@ import crossing.e1.featuremodel.clafer.StringLableMapper;
  *
  */
 
-public class ValueSelectionPage extends WizardPage {
+public class ValueSelectionPage extends WizardPage implements Lables{
 	private ClaferModel model;
 	private List<Spinner> taskCombo;
 	private Composite container;
@@ -41,9 +44,9 @@ public class ValueSelectionPage extends WizardPage {
 
 	public ValueSelectionPage(List<AstConcreteClafer> items,
 			ClaferModel claferModel) {
-		super("Select Properties");
-		setTitle("Properties");
-		setDescription("Choose values for the properties ");
+		super(Lables.SELECT_PROPERTIES);
+		setTitle(Lables.PROPERTIES);
+		setDescription(Lables.DESCRIPTION_VALUE_SELECTION_PAGE);
 		userOptions = new HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>>();
 		model = claferModel;
 
@@ -63,12 +66,12 @@ public class ValueSelectionPage extends WizardPage {
 		
 		for (AstConcreteClafer clafer : StringLableMapper.getPropertiesLables()
 				.keySet()) {
-			Label label1 = new Label(container, SWT.BOLD);
-			label1.setText(parser.trim(clafer.getName()).toUpperCase());
-			Label label2 = new Label(container, SWT.NONE);
-			label2.setText("");
-			Label label3 = new Label(container, SWT.NONE);
-			label3.setText("");
+			Label label3 = new Label(container, SWT.BOLD);
+			label3.setText(parser.trim(clafer.getName()).toUpperCase());
+			Label label4 = new Label(container, SWT.NONE);
+			label4.setText(Lables.EMPTY);
+			Label label5 = new Label(container, SWT.NONE);
+			label5.setText(Lables.EMPTY);
 
 			for (AstConcreteClafer claf : StringLableMapper
 					.getPropertiesLables().get(clafer)) {
@@ -84,9 +87,9 @@ public class ValueSelectionPage extends WizardPage {
 			AstConcreteClafer key2, String label, int selection, int min,
 			int max, int digits, int incement, int pageincrement) {
 		List<String> values = new ArrayList<String>();
-		values.add("<");
-		values.add(">");
-		values.add("=");
+		values.add(Lables.LESS_THAN);
+		values.add(Lables.GREATER_THAN);
+		values.add(Lables.EQUALS);
 		Label label1 = new Label(container, SWT.NONE);
 		label1.setText(label);
 		ComboViewer option = new ComboViewer(container, SWT.NONE);
@@ -135,7 +138,7 @@ public class ValueSelectionPage extends WizardPage {
 		if (gen.getNoOfInstances() > 0) {
 			return true;
 		} else {
-			setErrorMessage("No possible instance for choosen values");
+			setErrorMessage(Lables.INSTANCE_ERROR_MESSGAE);
 			return false;
 		}
 	}
@@ -161,11 +164,11 @@ public class ValueSelectionPage extends WizardPage {
 	 * @return Map quantifier to integer
 	 */
 	private Integer toNumber(String selection) {
-		if (selection.contains("="))
+		if (selection.contains(Lables.EQUALS))
 			return 1;
-		if (selection.contains("<"))
+		if (selection.contains(Lables.LESS_THAN))
 			return 2;
-		if (selection.contains(">"))
+		if (selection.contains(Lables.GREATER_THAN))
 			return 3;
 		return 999;
 	}

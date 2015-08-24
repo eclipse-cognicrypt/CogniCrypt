@@ -16,9 +16,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import crossing.e1.configurator.Lables;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 
-public class InstanceListPage extends WizardPage {
+public class InstanceListPage extends WizardPage implements Lables {
 
 	private Composite container;
 	private ComboViewer algorithmClass;
@@ -27,9 +28,9 @@ public class InstanceListPage extends WizardPage {
 	String value="";
 boolean val= false;
 	public InstanceListPage(InstanceGenerator inst) {
-		super("Second page");
-		setTitle("Available options");
-		setDescription("Available conbinations have been listed below , choose a value");
+		super(Lables.SECOND_PAGE);
+		setTitle(Lables.AVAILABLE_OPTIONS);
+		setDescription(Lables.DESCRIPTION_INSTANCE_LIST_PAGE);
 		this.instance=inst;
 		
 
@@ -44,7 +45,7 @@ boolean val= false;
 		setPageComplete(false);
 
 		label1 = new Label(container, SWT.NONE);
-		label1.setText("Select Algorithm Type");		
+		label1.setText(Lables.LABEL1);		
 		Map<String,InstanceClafer> inst=instance.getInstances();
 		algorithmClass = new ComboViewer(container, SWT.COMPOSITION_SELECTION);
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());

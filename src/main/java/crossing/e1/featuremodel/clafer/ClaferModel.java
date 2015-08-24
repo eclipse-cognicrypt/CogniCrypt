@@ -38,7 +38,7 @@ public class ClaferModel {
 	private ParseClafer pClafer = new ParseClafer();
 
 	public ClaferModel(String path) {
-		path = "src/main/resources/test.js";
+		path = "F:\\HiWi\\Workspace\\code-clafer_configurator\\src\\main\\resources\\test.js";
 		// path = "PBE.js";
 		loadModel(path);
 	}
@@ -50,8 +50,7 @@ public class ClaferModel {
 			bundle = Platform.getBundle(Activator.PLUGIN_ID);
 			if (bundle == null) {
 				System.out.println("path: " + path);
-				File filename = new File(ClassLoader.getSystemResource(path)
-						.getFile());
+				File filename = new File(path);
 				// running as application
 				pair = Javascript.readModel(filename, Javascript.newEngine());
 			} else {

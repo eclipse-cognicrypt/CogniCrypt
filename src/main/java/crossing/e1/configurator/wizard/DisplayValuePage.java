@@ -6,20 +6,22 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import crossing.e1.configurator.Lables;
+
 /**
  * @author Ram
  *
  */
-public class DisplayValuePage extends WizardPage {
+public class DisplayValuePage extends WizardPage implements Lables {
 
 	private Label label1;
 	private Composite container;
 	String value;
 
 	public DisplayValuePage(String desc) {
-		super("Complete");
-		setTitle("Result");
-		setDescription("Below are the values for choosen option, click next to proceed , click Back to reconfigure");
+		super(Lables.COMPLETE);
+		setTitle(Lables.RESULT);
+		setDescription(Lables.DESCRIPTION_VALUE_DISPLAY_PAGE);
 		value = desc;
 		canFlipToNextPage();
 

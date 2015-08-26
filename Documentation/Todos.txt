@@ -1,0 +1,22 @@
+TODO
+----
+
+===Configurator Tasks/Problems
+- Display description instead of task name (can fix label/display name as "description" -- can be set in properties file).
+I have changed the model to use "description" for all clafers in the new CryptoTasks.cfr model
+- XOR groups are currently not displayed. They should be displayed as a drop-down menu (see Security level for example)
+- CryptoTasks.cfr model --> currently no instances found. (could it be because maxInt needs to be setup somewhere?)
+- The user should be able to click "Next" without having to change any values
+- We need better default values.. I'm still figuring a way to do that in the model, but maybe we could have some defaults in the properties
+file for things like output length etc. ?
+- Not sure if this is a problem or not currently since I couldn't test it but if no instances are found and the user updates the constraints
+and clicks next again, she should be able to get new instances
+- Given the CryptoTasks.cfr model and the input constraints in ExpectedInstances file, make sure you get the expected instances
+- "Prettier" formatting of displayed instances, constraints etc. (better spacing between controls, different font for headers etc.
+- Should we have a don't care option for each setting? What if a user doesn't care about the output size?
+
+
+===Modeling Tasks/Problems
+- Iterations is a user supplied value -- how can we include it in the model and xml output but mark that it should not be
+displayed to the user
+- how should security levels be combined ?

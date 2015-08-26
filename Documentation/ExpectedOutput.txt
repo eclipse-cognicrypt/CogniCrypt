@@ -1,0 +1,114 @@
+Tests for CryptoTasks.cfr
+
+============== Test 1
+Task: SymmetricEncryption
+
+Constraints:
+[cipher.keySize > 128]
+
+Expected Output:
+AES-256
+
+============== Test 2
+Task: SymmetricEncryption
+
+Constraints:
+[cipher.keySize > 64]
+
+Expected Output:
+AES-256
+AES-128
+
+============== Test 3
+Task: SymmetricEncryption
+
+Constraints:
+[cipher.security.HighSecurity]
+
+
+Expected Output:
+AES-256
+
+============== Test 4
+Task: SecurePassword
+
+Constraints:
+[kda.digest.outputSize = 128]
+
+
+Expected Output:
+pbkdf2 with md5
+
+============== Test 5
+Task: SecurePassword
+
+Constraints:
+[kda.digest.outputSize > 128]
+
+
+Expected Output:
+instance 1: pbkdf2 with sha-1
+instance 2: pbkdf2 with sha-256
+
+============== Test 6
+Task: PasswordBasedEncryption
+
+Constraints:
+[cipher.keySize = 128]
+
+
+Expected Output:
+instance 1: kda = pbkdf2 with md5 & cipher = AES128
+
+============== Test 7
+Task: PasswordBasedEncryption
+
+Constraints:
+[cipher.keySize > 128]
+
+
+Expected Output:
+instance 1: kda = pbkdf2 with sha256 & cipher = AES256
+
+============== Test 7
+Task: PasswordBasedEncryption
+
+Constraints:
+[cipher.keySize > 128]
+[cipher.security.MediumSecurity]
+
+
+Expected Output:
+no instances found
+
+============== Test 8
+Task: PasswordBasedEncryption
+
+Constraints:
+[cipher.security.MediumSecurity]
+
+
+Expected Output:
+instance 1: kda = pbkdf2 with md5 & cipher = AES128
+
+============== Test 8
+Task: PasswordBasedEncryption
+
+Constraints:
+[cipher.security.HighSecurity]
+
+
+Expected Output:
+instance 1: kda = pbkdf2 with SHA256 & cipher = AES256
+
+============== Test 8
+Task: PasswordBasedEncryption
+
+Constraints:
+[kda.digest.security.LowSecurity]
+
+
+Expected Output:
+instance 1: kda = pbkdf2 with md5 & cipher = AES128
+
+

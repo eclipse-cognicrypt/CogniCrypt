@@ -1,9 +1,19 @@
 package crossing.e1.configurator;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Properties;
+
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
+
+import crossing.e1.configurator.utilities.Utilities;
 
 //import java.io.FileInputStream;
 //import java.io.IOException;
@@ -17,34 +27,27 @@ import java.util.Properties;
 
 public class ReadConfig {
 
-	private String path = "";
+	private String path = "src/main/resources/config.properties";
+	private Properties prop;
 
 	public ReadConfig() {
-		Properties prop = new Properties();
-		InputStream input = null;
-
 		try {
+		prop = new Properties();
 
-//			input = new FileInputStream(Lables.CONFIG_PATH);
-//			prop.load(input);
-//
-//			this.path = prop.getProperty(Lables.CLAFER_PATH);
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		} finally {
-			if (input != null) {
-				try {
-					input.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+		String configFile = Utilities.getAbsolutePath(path);
+		
+			prop.load(new FileInputStream(configFile));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
+		
 	}
 
 	public String getClaferPath() {
-		return path;
+		return Utilities.getAbsolutePath(prop.getProperty("claferPath"));
 	}
 }

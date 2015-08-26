@@ -10,7 +10,9 @@ import java.util.Properties;
 
 public interface Lables {
 	//Properties prop = new ReadLables("res/Labels.properties").getProperties();
-	Properties prop = new ReadLables("F:\\HiWi\\Workspace\\code-clafer_configurator\\src\\main\\resources\\Labels.properties").getProperties();static final String CONFIG_PATH = prop.getProperty("CONFIG_PATH");
+	Properties prop = new ReadLables("src/main/resources/Labels.properties").getProperties();
+	//Properties prop = new ReadLables("F:\\HiWi\\Workspace\\code-clafer_configurator\\src\\main\\resources\\Labels.properties").getProperties();
+	static final String CONFIG_PATH = prop.getProperty("CONFIG_PATH");
 	static final String CLAFER_PATH = prop.getProperty("CLAFER_PATH");
 	static final String PLUGINID = prop.getProperty("PLUGINID");
 	static final String COMPLETE = prop.getProperty("COMPLETE");

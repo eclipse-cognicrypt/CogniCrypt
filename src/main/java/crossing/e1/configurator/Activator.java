@@ -13,7 +13,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractUIPlugin implements Lables {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = Lables.PLUGINID; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "crossing.e1.configurator"; //$NON-NLS-1$
 
 	// The shared instance
 	private static Activator plugin;

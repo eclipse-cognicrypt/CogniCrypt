@@ -1,11 +1,15 @@
 package crossing.e1.configurator.wizard;
 
 import java.util.List;
+
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+
 import crossing.e1.configurator.ReadConfig;
+import crossing.e1.configurator.utilities.Utilities;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
+
 import org.clafer.ast.*;
 
 public class MyWizard extends Wizard {

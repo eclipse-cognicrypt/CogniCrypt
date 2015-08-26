@@ -38,8 +38,6 @@ public class ClaferModel {
 	private ParseClafer pClafer = new ParseClafer();
 
 	public ClaferModel(String path) {
-		//path = "F:\\HiWi\\Workspace\\code-clafer_configurator\\src\\main\\resources\\test.js";
-		// path = "PBE.js";
 		loadModel(path);
 	}
 

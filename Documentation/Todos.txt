@@ -11,7 +11,7 @@ I have changed the model to use "description" for all clafers in the new CryptoT
 file for things like output length etc. ?
 - Not sure if this is a problem or not currently since I couldn't test it but if no instances are found and the user updates the constraints
 and clicks next again, she should be able to get new instances
-- Given the CryptoTasks.cfr model and the input constraints in ExpectedInstances file, make sure you get the expected instances
+- Given the CryptoTasks.cfr model and the input constraints in ExpectedOutput.txt file, make sure you get the expected instances
 - "Prettier" formatting of displayed instances, constraints etc. (better spacing between controls, different font for headers etc.
 - Should we have a don't care option for each setting? What if a user doesn't care about the output size?
 

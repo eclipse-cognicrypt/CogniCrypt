@@ -69,9 +69,9 @@ public class ValueSelectionPage extends WizardPage implements Lables{
 			Label label3 = new Label(container, SWT.BOLD);
 			label3.setText(parser.trim(clafer.getName()).toUpperCase());
 			Label label4 = new Label(container, SWT.NONE);
-			label4.setText(Lables.EMPTY);
+			label4.setText("");
 			Label label5 = new Label(container, SWT.NONE);
-			label5.setText(Lables.EMPTY);
+			label5.setText("");
 
 			for (AstConcreteClafer claf : StringLableMapper
 					.getPropertiesLables().get(clafer)) {
@@ -90,6 +90,8 @@ public class ValueSelectionPage extends WizardPage implements Lables{
 		values.add(Lables.LESS_THAN);
 		values.add(Lables.GREATER_THAN);
 		values.add(Lables.EQUALS);
+		values.add(Lables.LESS_THAN_EQUAL);
+		values.add(Lables.GREATER_THAN_EQUAL);
 		Label label1 = new Label(container, SWT.NONE);
 		label1.setText(label);
 		ComboViewer option = new ComboViewer(container, SWT.NONE);
@@ -170,6 +172,10 @@ public class ValueSelectionPage extends WizardPage implements Lables{
 			return 2;
 		if (selection.contains(Lables.GREATER_THAN))
 			return 3;
+		if (selection.contains(Lables.LESS_THAN_EQUAL))
+			return 4;
+		if (selection.contains(Lables.GREATER_THAN_EQUAL))
+			return 5;
 		return 999;
 	}
 }

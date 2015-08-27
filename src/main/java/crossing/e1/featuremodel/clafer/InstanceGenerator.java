@@ -81,6 +81,18 @@ public class InstanceGenerator {
 											.getClaferByName(main, claf.get(1)
 													.getName()))),
 									constant(value)));
+						if (operator == 4)
+							main.addConstraint(lessThanEqual(
+									joinRef(join(joinRef($this()), parser
+											.getClaferByName(main, claf.get(1)
+													.getName()))),
+									constant(value)));
+						if (operator == 5)
+							main.addConstraint(greaterThanEqual(
+									joinRef(join(joinRef($this()), parser
+											.getClaferByName(main, claf.get(1)
+													.getName()))),
+									constant(value)));
 
 //						System.out.println("Constraints after addition "
 //								+ main.getConstraints());

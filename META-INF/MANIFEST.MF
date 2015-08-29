@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ClaferConfigurator
-Bundle-SymbolicName: crossing.e1.configurator;singleton:=true
+Bundle-SymbolicName: CROSSING.E1.CONFIGURATOR;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: crossing.e1.configurator.Activator
 Require-Bundle: org.eclipse.ui,
@@ -11,4 +11,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/claferchocoig.jar,
  .,
- src/main/resources/
+ src/main/resources/,
+ src/main/java/

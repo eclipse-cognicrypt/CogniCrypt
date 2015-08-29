@@ -9,7 +9,7 @@
             visible="true"
             id="crossing.e1.configurator.actionSet">
          <menu
-               label="Sample &amp;Menu"
+               label="Sample Menu"
                id="sampleMenu">
             <separator
                   name="sampleGroup">
@@ -19,7 +19,7 @@
                label="&amp;Sample Action"
                icon="icons/sample.gif"
                class="crossing.e1.configurator.actions.SampleAction"
-               tooltip="Generate Instances fr your Clafer"
+               tooltip="Generate Instances for your Clafer"
                menubarPath="sampleMenu/sampleGroup"
                toolbarPath="sampleGroup"
                id="crossing.e1.configurator.actions.SampleAction">

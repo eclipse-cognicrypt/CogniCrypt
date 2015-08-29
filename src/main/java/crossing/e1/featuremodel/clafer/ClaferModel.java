@@ -108,10 +108,11 @@ public class ClaferModel {
 	}
 
 	void setTaskList(AstModel model) {
+		ClaferModelUtils util=new ClaferModelUtils();
 		for (AstAbstractClafer object : model.getAbstracts()) {
 			if (object.getName().contains("Task") == true) {
 				for (AstClafer clafers : object.getSubs()) {
-					StringLableMapper.getTaskLables().put(clafers.getName(),
+					StringLableMapper.getTaskLables().put(util.getDescription(clafers),
 							(AstConcreteClafer) clafers);
 				}
 			}

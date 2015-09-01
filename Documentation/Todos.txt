@@ -3,7 +3,7 @@ TODO
 
 === Configurator Tasks/Problems
 
-- XOR groups are currently not displayed. They should be displayed as a drop-down menu (see Security level for example)
+--XOR constraints are not integrated as expected
 - CryptoTasks.cfr model --> currently no instances found. (could it be because maxInt needs to be setup somewhere?)
 - The user should be able to click "Next" without having to change any values
 - We need better default values.. I'm still figuring a way to do that in the model, but maybe we could have some defaults in the properties
@@ -26,3 +26,4 @@ DONE
 =================
 I have changed the model to use "description" for all clafers in the new CryptoTasks.cfr model
 - Display description instead of task name (can fix label/display name as "description" -- can be set in properties file).
+- XOR groups are currently not displayed. They should be displayed as a drop-down menu (see Security level for example)

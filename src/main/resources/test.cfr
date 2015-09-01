@@ -3,28 +3,27 @@ abstract Task
 abstract Person
 	name -> string
 	age -> int
-	Gender -> string
+	or Gender
+		Male
+		Fem
 
 Bob: Person
 	[name="bob"]
 	[age = 20]
-	[Gender = "M" ]
+	[Male]
 
 Alice: Person
 	[name = "alice"]
 	[age = 25]
-	[Gender = "F" ]
+	[Fem]
 	
 Trudy: Person
 	[name = "Trudy"]
 	[age = 30]
-	[Gender = "M" ]
+	[Male]
 myTask: Task
 	person -> Person
+		[this.age < 29]
+		[Fem]
 myTask2: Task
 	person -> Person
-		[this.age > 22]
-myTask3: Task
-	person -> Person
-		[this.age > 22]
-		[this.Gender="M"]

@@ -4,6 +4,7 @@
 package crossing.e1.featuremodel.clafer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.clafer.ast.AstAbstractClafer;
 import org.clafer.ast.AstClafer;
@@ -15,7 +16,16 @@ import org.clafer.ast.AstConcreteClafer;
  */
 public class ParseClafer {
 	ArrayList<AstConcreteClafer> properties;
-	AstConcreteClafer claferByName;
+	AstClafer claferByName;
+	boolean flag = false;
+
+	public boolean isFlag() {
+		return flag;
+	}
+
+	private void setFlag(boolean flag) {
+		this.flag = flag;
+	}
 
 	public void setConstraintClafers(AstConcreteClafer claf) {
 		if (claf.hasChildren())
@@ -29,8 +39,18 @@ public class ParseClafer {
 	public void getPrimitive(AstClafer inst) {
 		try {
 			if (inst.hasChildren()) {
-				for (AstConcreteClafer in : inst.getChildren())
-					getPrimitive(in);
+				if (inst.getGroupCard().getLow() >= 1) {
+					// HashMap<ArrayList<AstConcreteClafer>, Integer> val=new
+					// HashMap<ArrayList<AstConcreteClafer>, Integer>();
+					// val.put((ArrayList<AstConcreteClafer>)
+					// inst.getChildren(), inst.getGroupCard().getHigh());
+					// StringLableMapper.getGroupProperties().put((AstConcreteClafer)
+					// inst, val);
+
+					properties.add((AstConcreteClafer) inst);
+				} else
+					for (AstConcreteClafer in : inst.getChildren())
+						getPrimitive(in);
 			}
 			if (inst.hasRef()) {
 				if (inst.getRef().getTargetType().isPrimitive() == true
@@ -95,9 +115,10 @@ public class ParseClafer {
 				for (AstConcreteClafer in : astClafer.getChildren())
 					setClafersByName(in, field);
 			}
-			if (astClafer.hasRef())
+			if (astClafer.hasRef()) {
 				setClafersByName(astClafer.getRef().getTargetType(), field);
 
+			}
 			if (astClafer.getSuperClafer() != null)
 				setClafersByName(astClafer.getSuperClafer(), field);
 
@@ -105,13 +126,33 @@ public class ParseClafer {
 			E.printStackTrace();
 		}
 		if (astClafer.getName().equals(field))
-			claferByName = (AstConcreteClafer) astClafer;
+			claferByName = astClafer;
 
 	}
 
-	AstConcreteClafer getClaferByName(AstClafer astClafer, String field) {
+	void getClaferByName(AstClafer astClafer, String field) {
+		setFlag(false);
 		setClafersByName(astClafer, field);
-		return claferByName;
+		if (isAbstract(claferByName)) {
+			setFlag(true);
+		}
+	}
+
+	AstConcreteClafer getClaferByName() {
+		return (AstConcreteClafer) claferByName;
+	}
+
+	AstAbstractClafer getAstAbstractClaferByName() {
+		return (AstAbstractClafer) claferByName;
+	}
+
+	boolean isAbstract(AstClafer astClafer) {
+	if(astClafer.hasRef())
+		return astClafer.getRef().getTargetType().getClass().toGenericString()
+				.contains("AstAbstractClafer");
+	else 
+		return astClafer.getClass().toGenericString()
+				.contains("AstAbstractClafer");
 	}
 
 }

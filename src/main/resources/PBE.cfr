@@ -72,10 +72,14 @@ KeyDerivationAlgorithms
 	pbkdf : KeyDerivationAlgorithm
 		[name = "PBKDF"]
 		[performance = 2]
+		[insecure]
+	pbkdf1 : KeyDerivationAlgorithm
+		[name = "PBKDF1"]
+		[performance = 2]
 		[secure]
 
 Test : Task
-	[Description = "Encrypt data using a Symmetric key"]
+	[Description = "Encrypt data using a Symmetric key Test"]
 	
 EncryptionUsingDigest : Task
 	[Description = "Encrypt data using a Symmetric key"]

@@ -114,6 +114,7 @@ public class ClaferModel {
 				for (AstClafer clafers : object.getSubs()) {
 					StringLableMapper.getTaskLables().put(util.getDescription(clafers),
 							(AstConcreteClafer) clafers);
+					
 				}
 			}
 		}

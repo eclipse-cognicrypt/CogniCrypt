@@ -1,7 +1,7 @@
-scope({c0_Algorithm:7, c0_Cipher:3, c0_Description:2, c0_Digest:3, c0_SymmetricBlockCipher:3, c0_SymmetricCipher:3, c0_Task:2, c0_blockSize:3, c0_insecure:7, c0_keySize:3, c0_memory:3, c0_name:7, c0_outputSize:3, c0_performance:7, c0_secure:7, c0_status:7});
+scope({c0_Algorithm:8, c0_Cipher:3, c0_Description:2, c0_Digest:3, c0_KeyDerivationAlgorithm:2, c0_SymmetricBlockCipher:3, c0_SymmetricCipher:3, c0_Task:2, c0_blockSize:3, c0_insecure:8, c0_keySize:3, c0_memory:3, c0_name:8, c0_outputSize:3, c0_performance:8, c0_secure:8, c0_status:8});
 defaultScope(1);
 intRange(-8, 7);
-stringLength(36);
+stringLength(41);
 
 c0_Algorithm = Abstract("c0_Algorithm");
 c0_Task = Abstract("c0_Task");
@@ -30,6 +30,7 @@ c0_sha_1 = c0_DigestAlgorithms.addChild("c0_sha_1").withCard(1, 1).extending(c0_
 c0_sha_256 = c0_DigestAlgorithms.addChild("c0_sha_256").withCard(1, 1).extending(c0_Digest);
 c0_KeyDerivationAlgorithms = Clafer("c0_KeyDerivationAlgorithms").withCard(1, 1);
 c0_pbkdf = c0_KeyDerivationAlgorithms.addChild("c0_pbkdf").withCard(1, 1).extending(c0_KeyDerivationAlgorithm);
+c0_pbkdf1 = c0_KeyDerivationAlgorithms.addChild("c0_pbkdf1").withCard(1, 1).extending(c0_KeyDerivationAlgorithm);
 c0_Test = Clafer("c0_Test").withCard(1, 1).extending(c0_Task);
 c0_EncryptionUsingDigest = Clafer("c0_EncryptionUsingDigest").withCard(1, 1).extending(c0_Task);
 c0_digest = c0_EncryptionUsingDigest.addChild("c0_digest").withCard(1, 1);
@@ -77,6 +78,9 @@ c0_sha_256.addConstraint(some(join(join($this(), c0_status), c0_secure)));
 c0_sha_256.addConstraint(equal(joinRef(join($this(), c0_performance)), constant(2)));
 c0_pbkdf.addConstraint(equal(joinRef(join($this(), c0_name)), constant("\"PBKDF\"")));
 c0_pbkdf.addConstraint(equal(joinRef(join($this(), c0_performance)), constant(2)));
-c0_pbkdf.addConstraint(some(join(join($this(), c0_status), c0_secure)));
-c0_Test.addConstraint(equal(joinRef(join($this(), c0_Description)), constant("\"Encrypt data using a Symmetric key\"")));
+c0_pbkdf.addConstraint(some(join(join($this(), c0_status), c0_insecure)));
+c0_pbkdf1.addConstraint(equal(joinRef(join($this(), c0_name)), constant("\"PBKDF1\"")));
+c0_pbkdf1.addConstraint(equal(joinRef(join($this(), c0_performance)), constant(2)));
+c0_pbkdf1.addConstraint(some(join(join($this(), c0_status), c0_secure)));
+c0_Test.addConstraint(equal(joinRef(join($this(), c0_Description)), constant("\"Encrypt data using a Symmetric key Test\"")));
 c0_EncryptionUsingDigest.addConstraint(equal(joinRef(join($this(), c0_Description)), constant("\"Encrypt data using a Symmetric key\"")));

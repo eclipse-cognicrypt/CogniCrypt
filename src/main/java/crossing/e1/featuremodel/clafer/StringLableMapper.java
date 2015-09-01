@@ -15,27 +15,41 @@ import org.clafer.ast.AstConcreteClafer;
  *
  */
 public class StringLableMapper {
-	private static Map<String,AstConcreteClafer> task=null;
-	private static Map<AstConcreteClafer,ArrayList<AstConcreteClafer>> properties=null;
+	private static Map<String, AstConcreteClafer> task = null;
+	private static Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> properties = null;
+	private static Map<AstConcreteClafer, Map<ArrayList<AstConcreteClafer>, Integer>> groupProperties = null;
 
-	private StringLableMapper(){
-		
+	private StringLableMapper() {
+
 	}
-	
-	public static Map<String,AstConcreteClafer>getTaskLables(){
-		if(task==null){
-			task=new HashMap<String, AstConcreteClafer>();
+
+	public static Map<String, AstConcreteClafer> getTaskLables() {
+		if (task == null) {
+			task = new HashMap<String, AstConcreteClafer>();
 		}
 		return task;
 	}
-	
-	public static Map<AstConcreteClafer,ArrayList<AstConcreteClafer>>getPropertiesLables(){
-		if(properties==null){
-			properties=new HashMap<AstConcreteClafer, ArrayList<AstConcreteClafer>>();
+
+	public static Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> getPropertiesLables() {
+		if (properties == null) {
+			properties = new HashMap<AstConcreteClafer, ArrayList<AstConcreteClafer>>();
 		}
 		return properties;
 	}
-	public static void resetProperties(){
-		properties=null;
+
+	public static void resetProperties() {
+		properties = null;
 	}
+
+	public static Map<AstConcreteClafer, Map<ArrayList<AstConcreteClafer>, Integer>> getGroupProperties() {
+		if (groupProperties == null) {
+			groupProperties = new HashMap<AstConcreteClafer, Map<ArrayList<AstConcreteClafer>, Integer>>();
+		}
+		return groupProperties;
+	}
+
+	public static void resetGroupProperties() {
+		StringLableMapper.groupProperties = null;
+	}
+
 }

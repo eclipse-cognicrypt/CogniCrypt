@@ -10,8 +10,11 @@ import java.util.Map;
 import org.clafer.compiler.ClaferCompiler;
 import org.clafer.compiler.ClaferSolver;
 import org.clafer.scope.Scope;
+import org.clafer.ast.AstAbstractClafer;
+import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstModel;
+import org.clafer.ast.AstSetExpr;
 import org.clafer.common.Check;
 import org.clafer.objective.Objective;
 import org.clafer.collection.Triple;
@@ -61,41 +64,51 @@ public class InstanceGenerator {
 					if (claf.get(0).getName().equals(main.getName())) {
 						int operator = map.get(claf).get(0);
 						int value = map.get(claf).get(1);
-						// System.out.println("Constraints before addition "
-						// + main.getConstraints());
+						AstConcreteClafer operand=null;
+						parser.getClaferByName(main, claf.get(1).getName());
+						if(!parser.isFlag())
+						operand=parser.getClaferByName();
 						if (operator == 1)
 							main.addConstraint(equal(
-									joinRef(join(joinRef($this()), parser
-											.getClaferByName(main, claf.get(1)
-													.getName()))),
+									joinRef(join(joinRef($this()), operand)),
 									constant(value)));
 						if (operator == 2)
 							main.addConstraint(lessThan(
-									joinRef(join(joinRef($this()), parser
-											.getClaferByName(main, claf.get(1)
-													.getName()))),
+									joinRef(join(joinRef($this()), operand)),
 									constant(value)));
 						if (operator == 3)
 							main.addConstraint(greaterThan(
-									joinRef(join(joinRef($this()), parser
-											.getClaferByName(main, claf.get(1)
-													.getName()))),
+									joinRef(join(joinRef($this()), operand)),
 									constant(value)));
 						if (operator == 4)
 							main.addConstraint(lessThanEqual(
-									joinRef(join(joinRef($this()), parser
-											.getClaferByName(main, claf.get(1)
-													.getName()))),
+									joinRef(join(joinRef($this()), operand)),
 									constant(value)));
 						if (operator == 5)
 							main.addConstraint(greaterThanEqual(
-									joinRef(join(joinRef($this()), parser
-											.getClaferByName(main, claf.get(1)
-													.getName()))),
+									joinRef(join(joinRef($this()), operand)),
 									constant(value)));
-
-//						System.out.println("Constraints after addition "
-//								+ main.getConstraints());
+						if (operator == 6) {
+							AstAbstractClafer operandGloabl=null;
+							AstConcreteClafer operandValue=null;
+							parser.getClaferByName(main, main.getRef()
+									.getTargetType().getName());
+							if (parser.isFlag()) {
+								operandGloabl = parser
+										.getAstAbstractClaferByName();
+							}
+							parser
+							.getClaferByName(main, claf.get(2)
+									.getName());
+							if (!parser.isFlag()) {
+								operandValue = parser
+										.getClaferByName();
+							}
+							main.addConstraint(some(join(
+									join(global(operandGloabl), operand),operandValue)));
+						}
+						System.out.println("Constraints after addition "
+								+ main.getConstraints());
 					}
 				}
 

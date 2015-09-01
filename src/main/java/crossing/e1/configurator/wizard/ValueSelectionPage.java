@@ -30,7 +30,7 @@ import crossing.e1.featuremodel.clafer.StringLableMapper;
  *
  */
 
-public class ValueSelectionPage extends WizardPage implements Lables{
+public class ValueSelectionPage extends WizardPage implements Lables {
 	private ClaferModel model;
 	private List<Spinner> taskCombo;
 	private Composite container;
@@ -38,6 +38,7 @@ public class ValueSelectionPage extends WizardPage implements Lables{
 	private List<AstConcreteClafer> mainClafer;
 	private List<ComboViewer> options;
 	private HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>> userOptions;
+	private HashMap<String, AstConcreteClafer> userGroupOptions;
 	private ParseClafer parser = new ParseClafer();
 	List<Composite> widgets = new ArrayList<Composite>();
 	boolean statusPage = false;
@@ -48,6 +49,7 @@ public class ValueSelectionPage extends WizardPage implements Lables{
 		setTitle(Lables.PROPERTIES);
 		setDescription(Lables.DESCRIPTION_VALUE_SELECTION_PAGE);
 		userOptions = new HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>>();
+		userGroupOptions = new HashMap<String, AstConcreteClafer>();
 		model = claferModel;
 
 	}
@@ -63,7 +65,7 @@ public class ValueSelectionPage extends WizardPage implements Lables{
 		GridLayout layout = new GridLayout();
 		container.setLayout(layout);
 		layout.numColumns = 1;
-		
+
 		for (AstConcreteClafer clafer : StringLableMapper.getPropertiesLables()
 				.keySet()) {
 			Label label3 = new Label(container, SWT.BOLD);
@@ -76,8 +78,12 @@ public class ValueSelectionPage extends WizardPage implements Lables{
 			for (AstConcreteClafer claf : StringLableMapper
 					.getPropertiesLables().get(clafer)) {
 				layout.numColumns = 3;
-				getWidget(container, clafer, claf, parser.trim(claf.getName()),
-						1, 0, 1024, 0, 1, 1);
+				if (claf.getGroupCard().getLow() >= 1) {
+					getWidget(container, clafer, claf, claf.getGroupCard()
+							.getHigh());
+				} else
+					getWidget(container, clafer, claf,
+							parser.trim(claf.getName()), 1, 0, 1024, 0, 1, 1);
 			}
 		}
 		setControl(container);
@@ -116,6 +122,32 @@ public class ValueSelectionPage extends WizardPage implements Lables{
 		this.taskCombo.add(taskComb);
 	}
 
+	void getWidget(Composite container, AstConcreteClafer claferMain,
+			AstConcreteClafer claferProperty, int groupCard) {
+		ArrayList<String> optionLables = new ArrayList<String>();
+		Label label1 = new Label(container, SWT.NONE);
+		label1.setText(parser.trim(claferProperty.getName()));
+		for (AstConcreteClafer astClafer : claferProperty.getChildren()) {
+			userGroupOptions.put(
+					claferMain.getName() + parser.trim(astClafer.getName()),
+					astClafer);
+			optionLables.add(parser.trim(astClafer.getName()));
+		}
+		ComboViewer option = new ComboViewer(container, SWT.NONE);
+		option.setContentProvider(ArrayContentProvider.getInstance());
+		option.setInput(optionLables);
+		option.setSelection(new StructuredSelection(claferProperty
+				.getChildren().get(0)));
+		Label label2 = new Label(container, SWT.NONE);
+		label2.setText("");
+
+		this.mainClafer.add(claferMain);
+		this.label.add(claferProperty);
+		this.options.add(option);
+		this.taskCombo.add(null);
+
+	}
+
 	private void setComplete(boolean b) {
 
 		statusPage = b;
@@ -136,7 +168,9 @@ public class ValueSelectionPage extends WizardPage implements Lables{
 	 */
 	public boolean validate(InstanceGenerator gen, ClaferModel claferModel) {
 		setMap();
-		gen.generateInstances(new ClaferModel(new ReadConfig().getClaferPath()),this.getMap());
+		gen.generateInstances(
+				new ClaferModel(new ReadConfig().getClaferPath()),
+				this.getMap());
 		if (gen.getNoOfInstances() > 0) {
 			return true;
 		} else {
@@ -150,14 +184,28 @@ public class ValueSelectionPage extends WizardPage implements Lables{
 	 */
 	private void setMap() {
 		ArrayList<Integer> values;
-		for (int i = 0; i < taskCombo.size(); i++) {
-			values = new ArrayList<Integer>();
-			ArrayList<AstConcreteClafer> keys = new ArrayList<AstConcreteClafer>();
-			keys.add(mainClafer.get(i));
-			keys.add(label.get(i));
-			values.add(toNumber(options.get(i).getSelection().toString()));
-			values.add(taskCombo.get(i).getSelection());
-			userOptions.put(keys, values);
+		for (int i = 0; i < label.size(); i++) {
+			if (taskCombo.get(i) == null) {
+				values = new ArrayList<Integer>();
+				ArrayList<AstConcreteClafer> keys = new ArrayList<AstConcreteClafer>();
+				keys.add(mainClafer.get(i));
+				keys.add(label.get(i));
+				String test = mainClafer.get(i).getName()
+						+ options.get(i).getSelection().toString()
+								.replace("[", "").replace("]", "");
+				keys.add(userGroupOptions.get(test));
+				values.add(6);
+				values.add(label.get(i).getGroupCard().getLow());
+				userOptions.put(keys, values);
+			} else {
+				values = new ArrayList<Integer>();
+				ArrayList<AstConcreteClafer> keys = new ArrayList<AstConcreteClafer>();
+				keys.add(mainClafer.get(i));
+				keys.add(label.get(i));
+				values.add(toNumber(options.get(i).getSelection().toString()));
+				values.add(taskCombo.get(i).getSelection());
+				userOptions.put(keys, values);
+			}
 		}
 	}
 

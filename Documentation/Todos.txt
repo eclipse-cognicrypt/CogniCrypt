@@ -13,6 +13,7 @@ and clicks next again, she should be able to get new instances
 - Given the CryptoTasks.cfr model and the input constraints in ExpectedOutput.txt file, make sure you get the expected instances
 - "Prettier" formatting of displayed instances, constraints etc. (better spacing between controls, different font for headers etc.
 - Should we have a don't care option for each setting? What if a user doesn't care about the output size?
+- Label message of Properties page not being displayed properly (probably too long.. resize box/label?)
 
 
 ===Modeling Tasks/Problems

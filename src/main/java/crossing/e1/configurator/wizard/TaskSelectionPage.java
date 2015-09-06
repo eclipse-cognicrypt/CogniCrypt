@@ -35,7 +35,10 @@ public class TaskSelectionPage extends WizardPage {
 	private ClaferModel model;
 	private Map<String, String> tasks;
 
+	ParseClafer parser = new ParseClafer();
+
 	public TaskSelectionPage(ClaferModel claferModel) {
+	
 		super(Lables.SELECT_TASK);
 		setTitle(Lables.TASK_LIST);
 		setDescription(Lables.DESCRIPTION_TASK_SELECTION_PAGE);
@@ -46,8 +49,8 @@ public class TaskSelectionPage extends WizardPage {
 	@Override
 	public void createControl(Composite parent) {
 		tasks = new HashMap<String, String>();
-		ParseClafer parser = new ParseClafer();
 		container = new Composite(parent, SWT.NONE);
+		container.setBounds(10, 10, 200, 200);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 4;
 		container.setLayout(layout);
@@ -96,6 +99,11 @@ public class TaskSelectionPage extends WizardPage {
 	}
 
 	public boolean canProceed() {
+		String b=((IStructuredSelection)algorithmClass.getSelection()).getFirstElement().toString();
+		StringLableMapper.resetProperties();
+		parser.setConstraintClafers(StringLableMapper
+				.getTaskLables().get(tasks.get(b)));
+		setValue(tasks.get(b));
 		if (value.length() > 0)
 			return true;
 		else

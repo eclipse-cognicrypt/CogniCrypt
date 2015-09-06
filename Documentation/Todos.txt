@@ -26,4 +26,7 @@ DONE
 =================
 I have changed the model to use "description" for all clafers in the new CryptoTasks.cfr model
 - Display description instead of task name (can fix label/display name as "description" -- can be set in properties file).
-- XOR groups are currently not displayed. They should be displayed as a drop-down menu (see Security level for example)
+- XOR groups are currently not displayed. They should be displayed as a drop-down menu (see Security level for example).
+- Changed Task label to bold
+- Titled panel has been used
+- Title and version has been titled to Wizard

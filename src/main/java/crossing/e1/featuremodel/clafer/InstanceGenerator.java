@@ -107,8 +107,8 @@ public class InstanceGenerator {
 							main.addConstraint(some(join(
 									join(global(operandGloabl), operand),operandValue)));
 						}
-						System.out.println("Constraints after addition "
-								+ main.getConstraints());
+//						System.out.println("Constraints after addition "
+//								+ main.getConstraints());
 					}
 				}
 
@@ -180,12 +180,22 @@ public class InstanceGenerator {
 		}
 		return val;
 	}
-
 	public String displayInstanceValues(InstanceClafer inst, String value) {
+		value="<Algorithm> \n";
+		if (inst.hasChildren()) {
+			for (InstanceClafer in : inst.getChildren()) {
+				value+=displayInstanceXML(in, "");
+			}
+			}
+		
+		value+="</Algorithm>";
+		return value;
+	}
+	public String displayInstanceXML(InstanceClafer inst, String value) {
 		try {
 			if (inst.hasChildren()) {
 				for (InstanceClafer in : inst.getChildren()) {
-					value += displayInstanceValues(in, "");
+					value += displayInstanceXML(in, "");
 				}
 
 			} else if (inst.hasRef()
@@ -193,12 +203,12 @@ public class InstanceGenerator {
 					&& (inst.getRef().getClass().toString().contains("Integer") == false)
 					&& (inst.getRef().getClass().toString().contains("String") == false)
 					&& (inst.getRef().getClass().toString().contains("Boolean") == false)) {
-				value += displayInstanceValues((InstanceClafer) inst.getRef(),
+				value += displayInstanceXML((InstanceClafer) inst.getRef(),
 						"");
 			} else {
 				if (inst.hasRef())
-					return (parser.trim(inst.getType().getName()) + "\t\t"
-							+ inst.getRef().toString().replace("\"", "") + "\n");
+					return ("\t<"+parser.trim(inst.getType().getName()) + ">"
+							+ inst.getRef().toString().replace("\"", "") +"</"+parser.trim(inst.getType().getName()) + ">\n");
 				else
 					return (parser.trim(inst.getType().getName()) + "\n");
 

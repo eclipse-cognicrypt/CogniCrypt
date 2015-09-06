@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
 import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -13,8 +16,11 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
@@ -56,34 +62,52 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 
 	@Override
 	public void createControl(Composite parent) {
+
 		taskCombo = new ArrayList<Spinner>();
 		label = new ArrayList<AstConcreteClafer>();
 		options = new ArrayList<ComboViewer>();
 		mainClafer = new ArrayList<AstConcreteClafer>();
 
 		container = new Composite(parent, SWT.NONE);
+
+		container.setBounds(10, 10, 450, 200);
 		GridLayout layout = new GridLayout();
 		container.setLayout(layout);
 		layout.numColumns = 1;
 
 		for (AstConcreteClafer clafer : StringLableMapper.getPropertiesLables()
 				.keySet()) {
-			Label label3 = new Label(container, SWT.BOLD);
-			label3.setText(parser.trim(clafer.getName()).toUpperCase());
-			Label label4 = new Label(container, SWT.NONE);
-			label4.setText("");
-			Label label5 = new Label(container, SWT.NONE);
-			label5.setText("");
 
+			// Label label3 = new Label(container, SWT.NONE);
+			// Font boldFont = new Font( label3.getDisplay(), new FontData(
+			// "Arial", 10, SWT.BOLD ));
+			// label3.setFont(boldFont);
+			// label3.setText(parser.trim(parser.trim(clafer.getName())));
+			// Label label4 = new Label(container, SWT.NONE);
+			// label4.setText("");
+			// Label label5 = new Label(container, SWT.NONE);
+			// label5.setText("");
+			//
+
+			Group ownerInfo = new Group(container, SWT.NONE);
+			ownerInfo.setText(parser.trim(clafer.getName()));
+			Font boldFont = new Font(ownerInfo.getDisplay(), new FontData(
+					"Arial", 9, SWT.BOLD));
+			ownerInfo.setFont(boldFont);
+			GridLayout layout2 = new GridLayout();
+
+			layout2.numColumns = 4;
+			ownerInfo.setLayout(layout2);
 			for (AstConcreteClafer claf : StringLableMapper
 					.getPropertiesLables().get(clafer)) {
-				layout.numColumns = 3;
-				if (claf.getGroupCard().getLow() >= 1) {
-					getWidget(container, clafer, claf, claf.getGroupCard()
-							.getHigh());
-				} else
-					getWidget(container, clafer, claf,
-							parser.trim(claf.getName()), 1, 0, 1024, 0, 1, 1);
+
+				 if (claf.getGroupCard().getLow() >= 1) {
+//				 getWidget(container, clafer, claf, claf.getGroupCard()
+//				 .getHigh());
+				 } else
+
+				getWidget(ownerInfo, clafer, claf, parser.trim(claf.getName()),
+						1, 0, 1024, 0, 1, 1);
 			}
 		}
 		setControl(container);
@@ -98,6 +122,8 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 		values.add(Lables.EQUALS);
 		values.add(Lables.LESS_THAN_EQUAL);
 		values.add(Lables.GREATER_THAN_EQUAL);
+		Label label5 = new Label(container, SWT.NONE);
+		label5.setText("	");
 		Label label1 = new Label(container, SWT.NONE);
 		label1.setText(label);
 		ComboViewer option = new ComboViewer(container, SWT.NONE);
@@ -136,8 +162,7 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 		ComboViewer option = new ComboViewer(container, SWT.NONE);
 		option.setContentProvider(ArrayContentProvider.getInstance());
 		option.setInput(optionLables);
-		option.setSelection(new StructuredSelection(claferProperty
-				.getChildren().get(0)));
+		option.setSelection(new StructuredSelection(optionLables.get(0)));
 		Label label2 = new Label(container, SWT.NONE);
 		label2.setText("");
 

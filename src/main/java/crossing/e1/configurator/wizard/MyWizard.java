@@ -23,7 +23,9 @@ public class MyWizard extends Wizard {
 
 	public MyWizard() {
 		super();
+		setWindowTitle("Configurator v1.0");
 		setNeedsProgressMonitor(true);
+		
 	}
 
 	@Override

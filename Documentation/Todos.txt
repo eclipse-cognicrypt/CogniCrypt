@@ -14,7 +14,7 @@ and clicks next again, she should be able to get new instances
 - "Prettier" formatting of displayed instances, constraints etc. (better spacing between controls, different font for headers etc.
 - Should we have a don't care option for each setting? What if a user doesn't care about the output size?
 - Label message of Properties page not being displayed properly (probably too long.. resize box/label?)
-
+- XML should be formatted and saved as file
 
 ===Modeling Tasks/Problems
 - Iterations is a user supplied value -- how can we include it in the model and xml output but mark that it should not be
@@ -30,3 +30,4 @@ I have changed the model to use "description" for all clafers in the new CryptoT
 - Changed Task label to bold
 - Titled panel has been used
 - Title and version has been titled to Wizard
+- Displayed output is in XML format

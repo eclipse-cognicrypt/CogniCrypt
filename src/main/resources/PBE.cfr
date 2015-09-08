@@ -20,7 +20,7 @@ abstract SymmetricCipher : Cipher
     keySize -> integer
 
 abstract SymmetricBlockCipher : SymmetricCipher
-    blockSize -> integer 
+    //blockSize -> integer 
 
 Ciphers
 	AES128 : SymmetricBlockCipher
@@ -29,7 +29,7 @@ Ciphers
 	    [ secure ]
 	    [ memory = 1 ]
 	    [ keySize = 128 ]
-	    [ blockSize = 128 ]
+	   // [ blockSize = 128 ]
 
 	AES256 : SymmetricBlockCipher
 	    [ name = "AES with 256bit key"]
@@ -37,7 +37,7 @@ Ciphers
 	    [ secure ]
 	    [ memory = 1 ]
 	    [ keySize = 256 ]
-	    [ blockSize = 128 ]
+	   // [ blockSize = 128 ]
 
 	DES: SymmetricBlockCipher
 	    [ name = "DES"]
@@ -45,7 +45,7 @@ Ciphers
 	    [ memory = 2 ]
 	    [ secure ]
 	    [ keySize = 56 ]
-	    [ blockSize = 64 ]
+	    //[ blockSize = 64 ]
 
 //group digest algorithms together
 //for easier viewing/collapsing etc.
@@ -69,14 +69,10 @@ DigestAlgorithms
 		[performance = 2]	
 
 KeyDerivationAlgorithms
-	pbkdf : KeyDerivationAlgorithm
-		[name = "PBKDF"]
+	pbkdf2 : KeyDerivationAlgorithm
+		[name = "PBKDF2"]
 		[performance = 2]
 		[insecure]
-	pbkdf1 : KeyDerivationAlgorithm
-		[name = "PBKDF1"]
-		[performance = 2]
-		[secure]
 
 Test : Task
 	[Description = "Encrypt data using a Symmetric key Test"]

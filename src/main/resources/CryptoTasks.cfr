@@ -1,6 +1,6 @@
 abstract Algorithm
     name -> string
-    description -> string
+    Description -> string
     xor performance 
        	Slow
     	Fast
@@ -17,11 +17,11 @@ abstract KeyDerivationAlgorithm : Algorithm
 	iterations -> integer
 	digest -> Digest
 	outputSize -> integer
-	[outputSize = digest.outputSize]
+	//[outputSize = digest.outputSize]
 	[iterations = 1000]
 
 abstract Task
-	description -> string
+	Description -> string
 
 abstract Cipher : Algorithm 
     memory -> integer  
@@ -30,77 +30,77 @@ abstract SymmetricCipher : Cipher
     keySize -> integer
 
 abstract SymmetricBlockCipher : SymmetricCipher
-    blockSize -> integer 
+    //blockSize -> integer 
 
 Ciphers
 	AES128 : SymmetricBlockCipher
-	    [ description = "AES encryption with 128bit key" ]
-	    [ name = "AES"]
+	    [ Description = "AES encryption with 128bit key" ]
+	    [ name = "AES encryption with 128bit key"]
 	    [ Fast ]
 	    [ MediumSecurity ]
 	    [ memory = 1 ]
 	    [ keySize = 128 ]
-	    [ blockSize = 128 ]
+	    //[ blockSize = 128 ]
 
 	AES256 : SymmetricBlockCipher
-	    [ description = "AES encryption with 256bit key"]
-	    [ name = "AES"]
+	    [ Description = "AES encryption with 256bit key"]
+	    [ name = "AES encryption with 256bit key"]
 	    [ Fast ]
 	    [ HighSecurity ]
 	    [ memory = 1 ]
 	    [ keySize = 256 ]
-	    [ blockSize = 128 ]
+	    //[ blockSize = 128 ]
 
 	DES: SymmetricBlockCipher
-	    [ description = "DES encryption"]
-	    [ name = "DES"]
+	    [ Description = "DES encryption"]
+	    [ name = "DES encryption"]
 	    [ Slow ]
 	    [ memory = 2 ]
 	    [ MediumSecurity ]
 	    [ keySize = 56 ]
-	    [ blockSize = 64 ]
+	   // [ blockSize = 64 ]
 
 //group digest algorithms together
 //for easier viewing/collapsing etc.
 DigestAlgorithms
 	md5: Digest
-		[description = "MD5 digest"]
-		[name = "MD5"]
+		[Description = "MD5 digest"]
+		[name = "MD5 digest"]
 		[VeryFast]
 		[LowSecurity]
 		[outputSize = 128]
 
 	sha_1: Digest
-		[name = "SHA-1"]
-		[description = "SHA-1 digest"]
+		[name = "SHA-1 digest"]
+		[Description = "SHA-1 digest"]
 		[VeryFast]
 		[LowSecurity]
 		[outputSize = 160]
 	
 	sha_256: Digest
-		[description = "SHA-256 digest"]
-		[name = "SHA-256"]
+		[Description = "SHA-256 digest"]
+		[name = "SHA-256 digest"]
 		[outputSize = 256 ]
 		[HighSecurity]
 		[Slow]	
 
 KeyDerivationAlgorithms
 	pbkdf : KeyDerivationAlgorithm
-		[name = "PBKDF2"]
-		[description = "PBKDF2 key derivation"]
+		[name = "PBKDF2 key derivation"]
+		[Description = "PBKDF2 key derivation"]
 		[Slow]
 		[HighSecurity]
 
 SymmetricEncryption : Task
-	[description = "Encrypt data using a secret key"]
+	[Description = "Encrypt data using a secret key"]
 	cipher -> SymmetricBlockCipher
 
 SecurePassword : Task
-	[description = "Represent password in a secure way for storage"]
+	[Description = "Represent password in a secure way for storage"]
 	kda -> KeyDerivationAlgorithm
 	
 PasswordBasedEncryption : Task
-	[description = "Encrypt data using a given password"]
+	[Description = "Encrypt data using a given password"]
 	kda -> KeyDerivationAlgorithm
 	cipher -> SymmetricBlockCipher
-	[cipher.keySize = kda.outputSize]
+	//[cipher.keySize = kda.outputSize]

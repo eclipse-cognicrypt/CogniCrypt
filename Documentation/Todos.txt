@@ -3,6 +3,7 @@ TODO
 
 === Configurator Tasks/Problems
 
+- For xml generation, it should be <task><algorithm></algorithm><algorithm></algorithm></task> — check file sent in email
 - In final displayed solutions, it should use the Description field (not the name field) — I have name and Description now with same values in CryptoTasks.cfr just for the demo tom
 - Look at how KeyDerviationAlgorithm is displayed. Inside it, there is a digest instance that has an output size property and inside KeyDerivationAlgorithm, there is another output size property. In the current display, there is no distinction between them so it is confusing.
 - XOR constraints are not integrated as expected

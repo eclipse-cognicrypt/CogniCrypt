@@ -15,7 +15,6 @@ abstract Digest : Algorithm
 
 abstract KeyDerivationAlgorithm : Algorithm
 	iterations -> integer
-	digest -> Digest
 	outputSize -> integer
 	//[outputSize = digest.outputSize]
 	[iterations = 1000]
@@ -98,6 +97,7 @@ SymmetricEncryption : Task
 SecurePassword : Task
 	[Description = "Represent password in a secure way for storage"]
 	kda -> KeyDerivationAlgorithm
+	digest -> Digest
 	
 PasswordBasedEncryption : Task
 	[Description = "Encrypt data using a given password"]

@@ -239,16 +239,17 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 	 * @return Map quantifier to integer
 	 */
 	private Integer toNumber(String selection) {
+		if (selection.contains(Lables.LESS_THAN_EQUAL))
+			return 4;
+		if (selection.contains(Lables.GREATER_THAN_EQUAL))
+			return 5;
 		if (selection.contains(Lables.EQUALS))
 			return 1;
 		if (selection.contains(Lables.LESS_THAN))
 			return 2;
 		if (selection.contains(Lables.GREATER_THAN))
 			return 3;
-		if (selection.contains(Lables.LESS_THAN_EQUAL))
-			return 4;
-		if (selection.contains(Lables.GREATER_THAN_EQUAL))
-			return 5;
+	
 		return 999;
 	}
 }

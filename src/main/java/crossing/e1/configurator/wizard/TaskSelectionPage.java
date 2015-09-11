@@ -14,6 +14,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
@@ -33,6 +34,7 @@ public class TaskSelectionPage extends WizardPage {
 
 	private Composite container;
 	private ComboViewer taskComboSelection;
+	private Button advancedModeCheckBox;
 	private Label label2;
 	private String value = "";
 	private ClaferModel model;
@@ -97,7 +99,10 @@ public class TaskSelectionPage extends WizardPage {
 					}
 
 				});
-
+		
+		advancedModeCheckBox = new Button(container,SWT.CHECK);
+		advancedModeCheckBox.setText("Advanced Mode");
+		advancedModeCheckBox.setSelection(false);
 		setControl(container);
 	}
 
@@ -107,15 +112,21 @@ public class TaskSelectionPage extends WizardPage {
 		
 		if (selectedTask != null){
 			StringLabelMapper.resetProperties();
-			System.out.println("task clafer name: "+ selectedTask.getClaferTaskName());
-			System.out.println(StringLabelMapper.getTaskLabels());
 			parser.setConstraintClafers(StringLabelMapper.getTaskLabels().get(selectedTask.getClaferTaskName()));
 			setValue(selectedTask.getClaferTaskName());
 			return true;
 		}else
 			return false;
 	}
+	
+	public CryptoTask getSelectedTask(){
+		return (CryptoTask) ((IStructuredSelection)taskComboSelection.getSelection()).getFirstElement();
+	}
 
+	public boolean isAdvancedMode(){
+		return advancedModeCheckBox.getSelection();
+	}
+	
 	public String getValue() {
 		return value;
 	}

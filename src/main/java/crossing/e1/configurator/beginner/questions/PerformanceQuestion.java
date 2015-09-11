@@ -9,14 +9,15 @@ import static org.clafer.ast.Asts.joinRef;
 
 import org.clafer.ast.AstConstraint;
 
+import crossing.e1.configurator.wizard.beginner.Constraint;
+
 public class PerformanceQuestion extends CryptoQuestion {
 	
 	
 	public PerformanceQuestion(){
 		super("Is high performance important to you?");
-		choices.put("Yes", equal(
-				joinRef($this()),
-				constant("High")));
+		correspondingClaferProperty = "c0_performance";
+		choices.put("Yes", new Constraint(correspondingClaferProperty, Constraint.Operator.GTE, 2));
 		choices.put("No", null);
 	}
 

@@ -9,14 +9,15 @@ import static org.clafer.ast.Asts.joinRef;
 
 import org.clafer.ast.AstConstraint;
 
+import crossing.e1.configurator.wizard.beginner.Constraint;
+
 public class MemoryQuestion extends CryptoQuestion {
 	
 	
 	public MemoryQuestion(){
 		super("Is low memory consumption important to you?");
-		choices.put("Yes", equal(
-				joinRef($this()),
-				constant("Low")));
+		correspondingClaferProperty = "c0_memory";
+		choices.put("Yes", new Constraint(correspondingClaferProperty, Constraint.Operator.GTE, 2));
 		choices.put("No", null);
 	}
 

@@ -4,19 +4,22 @@ import java.util.HashMap;
 
 import org.clafer.ast.AstBoolExpr;
 
+import crossing.e1.configurator.wizard.beginner.Constraint;
+
 public abstract class CryptoQuestion {
 	
 	protected String questionText;
-	protected HashMap<String, AstBoolExpr> choices;
+	protected String correspondingClaferProperty;
+	protected HashMap<String, Constraint> choices;
 
-	public CryptoQuestion(String questionText, HashMap<String, AstBoolExpr> choices){
+	public CryptoQuestion(String questionText, HashMap<String, Constraint> choices){
 		this.questionText = questionText;
 		this.choices = choices;
 	}
 	
 	public CryptoQuestion(String questionText){
 		this.questionText = questionText;
-		this.choices = new HashMap<String, AstBoolExpr>();		
+		this.choices = new HashMap<String, Constraint>();		
 	}
 
 	public String getQuestionText() {
@@ -27,12 +30,16 @@ public abstract class CryptoQuestion {
 		this.questionText = questionText;
 	}
 
-	public HashMap<String, AstBoolExpr> getChoices() {
+	public HashMap<String, Constraint> getChoices() {
 		return choices;
 	}
 
-	public void setChoices(HashMap<String, AstBoolExpr> choices) {
+	public void setChoices(HashMap<String, Constraint> choices) {
 		this.choices = choices;
+	}
+	
+	public Constraint getCorrespondingChoiceConstraint(String key){
+		return choices.get(key);
 	}
 	
 	

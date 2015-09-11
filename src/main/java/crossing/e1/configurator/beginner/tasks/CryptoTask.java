@@ -1,6 +1,8 @@
 package crossing.e1.configurator.beginner.tasks;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import crossing.e1.configurator.beginner.questions.CryptoQuestion;
 
@@ -8,17 +10,17 @@ public abstract class CryptoTask {
 	
 	protected String description;
 	protected String displayText;
-	protected HashSet<CryptoQuestion> relevantQuestions;
+	protected List<CryptoQuestion> relevantQuestions;
 	protected String claferTaskName;
 	
 	public CryptoTask(String description, String displayText, String claferTaskName){
 		this.description = description;
 		this.displayText = displayText;
 		this.claferTaskName = claferTaskName;
-		relevantQuestions = new HashSet<CryptoQuestion>();
+		relevantQuestions = new ArrayList<CryptoQuestion>();
 	}
 	
-	public CryptoTask(String description, String displayText, String claferTaskName, HashSet<CryptoQuestion> questions){
+	public CryptoTask(String description, String displayText, String claferTaskName, List<CryptoQuestion> questions){
 		this.description = description;
 		this.displayText = displayText;
 		this.claferTaskName = claferTaskName;
@@ -41,11 +43,11 @@ public abstract class CryptoTask {
 		this.displayText = displayText;
 	}
 
-	public HashSet<CryptoQuestion> getRelevantQuestions() {
+	public List<CryptoQuestion> getRelevantQuestions() {
 		return relevantQuestions;
 	}
 
-	public void setRelevantQuestions(HashSet<CryptoQuestion> relevantQuestions) {
+	public void setRelevantQuestions(List<CryptoQuestion> relevantQuestions) {
 		this.relevantQuestions = relevantQuestions;
 	}
 

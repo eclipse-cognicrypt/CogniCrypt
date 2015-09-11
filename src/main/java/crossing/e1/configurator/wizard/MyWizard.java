@@ -75,9 +75,11 @@ public class MyWizard extends Wizard {
 				}
 			}else{
 				//running in beginner mode
-				DummyPage dummyPage = new DummyPage();
-				addPage(dummyPage);
-				return dummyPage;
+				if(((RelevantQuestionsPage) valueListPage).validate(instanceGenerator, claferModel)){					
+					DummyPage dummyPage = new DummyPage();
+					addPage(dummyPage);
+					return dummyPage;
+				}
 			}
 		} else if (currentPage == instanceListPage) {
 			finalValueListPage = new DisplayValuePage(

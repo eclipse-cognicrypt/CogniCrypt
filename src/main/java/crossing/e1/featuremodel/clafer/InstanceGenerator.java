@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.clafer.compiler.ClaferCompiler;
 import org.clafer.compiler.ClaferSolver;
@@ -20,7 +21,11 @@ import org.clafer.objective.Objective;
 import org.clafer.collection.Triple;
 import org.clafer.instance.InstanceClafer;
 
+<<<<<<< HEAD
 import crossing.e1.configurator.ReadConfig;
+=======
+import crossing.e1.configurator.wizard.beginner.Constraint;
+>>>>>>> work still in progress: trying to map the question answers to constraints. Strategy is to get a list of constraints then loop on related clafers in the task and see if they have this property. If they do, then add the constraint there
 import crossing.e1.featuremodel.clafer.ClaferModel;
 
 /*
@@ -40,6 +45,7 @@ public class InstanceGenerator {
 	private int noOfInstances;
 	String taskName = "";
 	ParseClafer parser = new ParseClafer();
+	
 
 	public List<InstanceClafer> generateInstances(ClaferModel clafModel,
 			Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> map) {
@@ -206,4 +212,5 @@ public class InstanceGenerator {
 	public void setTaskName(String taskName) {
 		this.taskName = taskName;
 	}
+
 }

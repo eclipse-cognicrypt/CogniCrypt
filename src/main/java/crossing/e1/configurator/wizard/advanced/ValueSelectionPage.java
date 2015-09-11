@@ -1,4 +1,4 @@
-package crossing.e1.configurator.wizard;
+package crossing.e1.configurator.wizard.advanced;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -199,7 +199,7 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 		statusPage = b;
 	}
 
-	boolean getPageStatus() {
+	public boolean getPageStatus() {
 		return statusPage;
 	}
 

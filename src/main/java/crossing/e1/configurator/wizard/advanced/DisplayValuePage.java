@@ -1,4 +1,4 @@
-package crossing.e1.configurator.wizard;
+package crossing.e1.configurator.wizard.advanced;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.wizard.WizardPage;

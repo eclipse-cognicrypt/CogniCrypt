@@ -7,6 +7,8 @@ import org.eclipse.jface.wizard.Wizard;
 
 import crossing.e1.configurator.ReadConfig;
 import crossing.e1.configurator.utilities.Utilities;
+import crossing.e1.configurator.wizard.advanced.DisplayValuePage;
+import crossing.e1.configurator.wizard.advanced.ValueSelectionPage;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 

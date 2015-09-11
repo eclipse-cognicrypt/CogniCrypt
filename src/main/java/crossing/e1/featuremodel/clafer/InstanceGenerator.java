@@ -57,7 +57,7 @@ public class InstanceGenerator {
 			AstConcreteClafer m = model
 					.addChild("Main")
 					.addChild("MAINTASK")
-					.refTo(StringLableMapper.getTaskLables().get(getTaskName()));
+					.refTo(StringLabelMapper.getTaskLabels().get(getTaskName()));
 
 			for (AstConcreteClafer main : m.getRef().getTargetType()
 					.getChildren()) {

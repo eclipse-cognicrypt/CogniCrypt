@@ -32,7 +32,7 @@ public class ParseClafer {
 			for (AstConcreteClafer s : claf.getChildren()) {
 				properties = new ArrayList<AstConcreteClafer>();
 				getPrimitive(s);
-				StringLableMapper.getPropertiesLables().put(s, properties);
+				StringLabelMapper.getPropertyLabels().put(s, properties);
 			}
 	}
 

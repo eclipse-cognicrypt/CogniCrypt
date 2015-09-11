@@ -19,7 +19,7 @@ public class MyWizard extends Wizard {
 	protected InstanceListPage instanceListPage;
 	protected DisplayValuePage finalValueListPage;
 	private ClaferModel claferModel;
-	InstanceGenerator gen = new InstanceGenerator();
+	InstanceGenerator instanceGenerator = new InstanceGenerator();
 
 	public MyWizard() {
 		super();
@@ -49,14 +49,14 @@ public class MyWizard extends Wizard {
 	public IWizardPage getNextPage(IWizardPage currentPage) {
 		if (currentPage == taskListPage && taskListPage.canProceed()) {
 			valueListPage = new ValueSelectionPage(null, claferModel);
-			gen.setTaskName(taskListPage.getValue());
+			instanceGenerator.setTaskName(taskListPage.getValue());
 			addPage(valueListPage);
-			gen.setNoOfInstances(0);
+			instanceGenerator.setNoOfInstances(0);
 			return valueListPage;
 		} else if (currentPage == valueListPage) {
 			if (valueListPage.getPageStatus() == true)
-				if (valueListPage.validate(gen, claferModel)) {
-					instanceListPage = new InstanceListPage(gen);
+				if (valueListPage.validate(instanceGenerator, claferModel)) {
+					instanceListPage = new InstanceListPage(instanceGenerator);
 					addPage(instanceListPage);
 					return instanceListPage;
 				}

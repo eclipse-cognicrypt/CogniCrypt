@@ -104,16 +104,16 @@ public class ClaferModel {
 	}
 
 	public Map<String, AstConcreteClafer> getTaskList(AstModel model) {
-		return Check.notNull(StringLableMapper.getTaskLables());
+		return Check.notNull(StringLabelMapper.getTaskLabels());
 	}
 
 	void setTaskList(AstModel model) {
 		ClaferModelUtils util=new ClaferModelUtils();
 		for (AstAbstractClafer object : model.getAbstracts()) {
 			if (object.getName().contains("Task") == true) {
-				for (AstClafer clafers : object.getSubs()) {
-					StringLableMapper.getTaskLables().put(util.getDescription(clafers),
-							(AstConcreteClafer) clafers);
+				for (AstClafer clafer : object.getSubs()) {
+					StringLabelMapper.getTaskLabels().put(clafer.getName(),
+							(AstConcreteClafer) clafer);
 					
 				}
 			}

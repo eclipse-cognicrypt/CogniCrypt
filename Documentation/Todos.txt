@@ -2,21 +2,17 @@ TODO
 ----
 
 === Configurator Tasks/Problems
-
-- For xml generation, it should be <task><algorithm></algorithm><algorithm></algorithm></task> — check file sent in email
 - In final displayed solutions, it should use the Description field (not the name field) — I have name and Description now with same values in CryptoTasks.cfr just for the demo tom
 - Look at how KeyDerviationAlgorithm is displayed. Inside it, there is a digest instance that has an output size property and inside KeyDerivationAlgorithm, there is another output size property. In the current display, there is no distinction between them so it is confusing.
-- XOR constraints are not integrated as expected
 - The user should be able to click "Next" without having to change any values
 - We need better default values.. I'm still figuring a way to do that in the model, but maybe we could have some defaults in the properties
 file for things like output length etc. ?
-- Not sure if this is a problem or not currently since I couldn't test it but if no instances are found and the user updates the constraints
-and clicks next again, she should be able to get new instances
+
 - Given the CryptoTasks.cfr model and the input constraints in ExpectedOutput.txt file, make sure you get the expected instances
 - "Prettier" formatting of displayed instances, constraints etc. (better spacing between controls, different font for headers etc.
 - Should we have a don't care option for each setting? What if a user doesn't care about the output size?
 - Label message of Properties page not being displayed properly (probably too long.. resize box/label?)
-- XML should be formatted and saved as file
+
 
 ===Modeling Tasks/Problems
 - Iterations is a user supplied value -- how can we include it in the model and xml output but mark that it should not be
@@ -34,3 +30,8 @@ I have changed the model to use "description" for all clafers in the new CryptoT
 - Titled panel has been used
 - Title and version has been titled to Wizard
 - Displayed output is in XML format
+- For xml generation, it should be <task><algorithm></algorithm><algorithm></algorithm></task> — check file sent in email
+- XOR constraints are not integrated as expected
+- XML should be formatted and saved as file
+- Not sure if this is a problem or not currently since I couldn't test it but if no instances are found and the user updates the constraints
+and clicks next again, she should be able to get new instances

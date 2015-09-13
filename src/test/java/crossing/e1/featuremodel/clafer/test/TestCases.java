@@ -13,6 +13,7 @@ import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 import crossing.e1.featuremodel.clafer.ParseClafer;
 import crossing.e1.featuremodel.clafer.StringLableMapper;
+import crossing.e1.xml.export.PublishToXML;
 
 /**
  * @author Ram
@@ -104,7 +105,7 @@ public class TestCases {
 	void displayInstances(InstanceGenerator instance) {
 		System.out.println("----Diplaying instances----");
 		for (String b : instance.getInstances().keySet())
-			System.out.println(instance.displayInstanceValues(instance
+			System.out.println(new PublishToXML().displayInstanceValues(instance
 					.getInstances().get(b), ""));
 	}
 

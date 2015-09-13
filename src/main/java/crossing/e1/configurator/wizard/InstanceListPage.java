@@ -1,8 +1,6 @@
 package crossing.e1.configurator.wizard;
 
-
 import java.util.Map;
-
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -15,9 +13,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-
 import crossing.e1.configurator.Lables;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
+
 
 public class InstanceListPage extends WizardPage implements Lables {
 
@@ -25,17 +23,16 @@ public class InstanceListPage extends WizardPage implements Lables {
 	private ComboViewer algorithmClass;
 	private Label label1;
 	private InstanceGenerator instance;
-	String value="";
-boolean val= false;
+	InstanceClafer value;
+	boolean val = false;
+
 	public InstanceListPage(InstanceGenerator inst) {
 		super(Lables.SECOND_PAGE);
 		setTitle(Lables.AVAILABLE_OPTIONS);
 		setDescription(Lables.DESCRIPTION_INSTANCE_LIST_PAGE);
-		this.instance=inst;
-		
-
+		this.instance = inst;
 	}
-	
+
 	@Override
 	public void createControl(Composite parent) {
 		container = new Composite(parent, SWT.NONE);
@@ -45,8 +42,8 @@ boolean val= false;
 		setPageComplete(false);
 
 		label1 = new Label(container, SWT.NONE);
-		label1.setText(Lables.LABEL1);		
-		Map<String,InstanceClafer> inst=instance.getInstances();
+		label1.setText(Lables.LABEL1);
+		Map<String, InstanceClafer> inst = instance.getInstances();
 		algorithmClass = new ComboViewer(container, SWT.COMPOSITION_SELECTION);
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
 		algorithmClass.setInput(inst.keySet());
@@ -58,14 +55,15 @@ boolean val= false;
 		}));
 		algorithmClass
 				.addSelectionChangedListener(new ISelectionChangedListener() {
-				public void selectionChanged(SelectionChangedEvent event) {
+					public void selectionChanged(SelectionChangedEvent event) {
 						IStructuredSelection selection = (IStructuredSelection) event
 								.getSelection();
-						
-						String b=(String)selection.getFirstElement().toString();
-						setValue(instance.displayInstanceValues(instance.getInstances().get(b),""));
+
+						String b = (String) selection.getFirstElement()
+								.toString();
+						setValue(instance.getInstances().get(b));
 						if (selection.size() > 0) {
-							val=true;
+							val = true;
 							setPageComplete(true);
 						}
 					}
@@ -75,15 +73,16 @@ boolean val= false;
 		setControl(container);
 		;
 	}
-	
-	public String getValue() {
+
+	public InstanceClafer getValue() {
 		return value;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setValue(InstanceClafer instanceClafer) {
+		this.value = instanceClafer;
 	}
-@Override
+
+	@Override
 	public boolean canFlipToNextPage() {
 
 		return val;

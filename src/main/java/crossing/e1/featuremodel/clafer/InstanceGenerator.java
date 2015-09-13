@@ -20,6 +20,7 @@ import org.clafer.objective.Objective;
 import org.clafer.collection.Triple;
 import org.clafer.instance.InstanceClafer;
 
+import crossing.e1.configurator.ReadConfig;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 
 /*
@@ -45,9 +46,9 @@ public class InstanceGenerator {
 		// System.out.println("Instance generator called");
 		if (map.isEmpty())
 			return null;
+		clafModel = new ClaferModel(new ReadConfig().getClaferPath());
 		this.instances = new ArrayList<InstanceClafer>();
 		this.instance = new HashMap<String, InstanceClafer>();
-		clafModel.setModel(clafModel.getModel());
 		this.triple = clafModel.getTriple();
 		this.scope = triple.getSnd();
 		AstModel model = clafModel.getModel();
@@ -180,44 +181,7 @@ public class InstanceGenerator {
 		}
 		return val;
 	}
-	public String displayInstanceValues(InstanceClafer inst, String value) {
-		value="<Algorithm> \n";
-		if (inst.hasChildren()) {
-			for (InstanceClafer in : inst.getChildren()) {
-				value+=displayInstanceXML(in, "");
-			}
-			}
-		
-		value+="</Algorithm>";
-		return value;
-	}
-	public String displayInstanceXML(InstanceClafer inst, String value) {
-		try {
-			if (inst.hasChildren()) {
-				for (InstanceClafer in : inst.getChildren()) {
-					value += displayInstanceXML(in, "");
-				}
-
-			} else if (inst.hasRef()
-					&& (inst.getType().isPrimitive() != true)
-					&& (inst.getRef().getClass().toString().contains("Integer") == false)
-					&& (inst.getRef().getClass().toString().contains("String") == false)
-					&& (inst.getRef().getClass().toString().contains("Boolean") == false)) {
-				value += displayInstanceXML((InstanceClafer) inst.getRef(),
-						"");
-			} else {
-				if (inst.hasRef())
-					return ("\t<"+parser.trim(inst.getType().getName()) + ">"
-							+ inst.getRef().toString().replace("\"", "") +"</"+parser.trim(inst.getType().getName()) + ">\n");
-				else
-					return (parser.trim(inst.getType().getName()) + "\n");
-
-			}
-		} catch (Exception E) {
-			E.printStackTrace();
-		}
-		return value;
-	}
+	
 
 	public InstanceClafer getInstances(String b) {
 		return Check.notNull(this.instance.get(b));

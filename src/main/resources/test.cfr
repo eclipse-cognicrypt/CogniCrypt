@@ -23,7 +23,4 @@ Trudy: Person
 	[Male]
 myTask: Task
 	person -> Person
-		[this.age < 29]
-		[Fem]
-myTask2: Task
-	person -> Person
+	[Fem]

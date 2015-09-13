@@ -34,7 +34,7 @@ abstract SymmetricBlockCipher : SymmetricCipher
 Ciphers
 	AES128 : SymmetricBlockCipher
 	    [ Description = "AES encryption with 128bit key" ]
-	    [ name = "AES encryption with 128bit key"]
+	    [ name = "AES-128bit"]
 	    [ Fast ]
 	    [ MediumSecurity ]
 	    [ memory = 1 ]
@@ -43,7 +43,7 @@ Ciphers
 
 	AES256 : SymmetricBlockCipher
 	    [ Description = "AES encryption with 256bit key"]
-	    [ name = "AES encryption with 256bit key"]
+	    [ name = "AES-256bit"]
 	    [ Fast ]
 	    [ HighSecurity ]
 	    [ memory = 1 ]
@@ -52,7 +52,7 @@ Ciphers
 
 	DES: SymmetricBlockCipher
 	    [ Description = "DES encryption"]
-	    [ name = "DES encryption"]
+	    [ name = "DES"]
 	    [ Slow ]
 	    [ memory = 2 ]
 	    [ MediumSecurity ]
@@ -70,14 +70,14 @@ DigestAlgorithms
 		[outputSize = 128]
 
 	sha_1: Digest
-		[name = "SHA-1 digest"]
+		[name = "SHA-1"]
 		[Description = "SHA-1 digest"]
 		[VeryFast]
 		[LowSecurity]
 		[outputSize = 160]
 	
 	sha_256: Digest
-		[Description = "SHA-256 digest"]
+		[Description = "SHA-256"]
 		[name = "SHA-256 digest"]
 		[outputSize = 256 ]
 		[HighSecurity]
@@ -85,8 +85,8 @@ DigestAlgorithms
 
 KeyDerivationAlgorithms
 	pbkdf : KeyDerivationAlgorithm
-		[name = "PBKDF2 key derivation"]
-		[Description = "PBKDF2 key derivation"]
+		[name = "PBKDF2"]
+		[Description = "PBKDF 2 key derivation"]
 		[Slow]
 		[HighSecurity]
 

@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-
 import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -16,9 +12,13 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -85,29 +85,28 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 			// label3.setText(parser.trim(parser.trim(clafer.getName())));
 			// Label label4 = new Label(container, SWT.NONE);
 			// label4.setText("");
-			// Label label5 = new Label(container, SWT.NONE);
-			// label5.setText("");
-			//
+			 
+			
 
-			Group ownerInfo = new Group(container, SWT.NONE);
-			ownerInfo.setText(parser.trim(clafer.getName()));
-			Font boldFont = new Font(ownerInfo.getDisplay(), new FontData(
+			Group titledPanel = new Group(container, SWT.NONE);
+			titledPanel.setText(parser.trim(clafer.getName()));
+			Font boldFont = new Font(titledPanel.getDisplay(), new FontData(
 					"Arial", 9, SWT.BOLD));
-			ownerInfo.setFont(boldFont);
+			titledPanel.setFont(boldFont);
 			GridLayout layout2 = new GridLayout();
-
+			
 			layout2.numColumns = 4;
-			ownerInfo.setLayout(layout2);
+			titledPanel.setLayout(layout2);
 			for (AstConcreteClafer claf : StringLableMapper
 					.getPropertiesLables().get(clafer)) {
 
-				 if (claf.getGroupCard().getLow() >= 1) {
-//				 getWidget(container, clafer, claf, claf.getGroupCard()
-//				 .getHigh());
-				 } else
+				if (claf.getGroupCard().getLow() >= 1) {
+					getWidget(titledPanel, clafer, claf, claf.getGroupCard()
+							.getHigh());
+				} else
 
-				getWidget(ownerInfo, clafer, claf, parser.trim(claf.getName()),
-						1, 0, 1024, 0, 1, 1);
+					getWidget(titledPanel, clafer, claf,
+							parser.trim(claf.getName()), 1, 0, 1024, 0, 1, 1);
 			}
 		}
 		setControl(container);
@@ -142,14 +141,22 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 			}
 
 		});
+
 		this.mainClafer.add(key1);
 		this.label.add(key2);
 		this.options.add(option);
 		this.taskCombo.add(taskComb);
 	}
 
+	void getsubPanel() {
+		// TODO method takes 2 widget as an input and adds an X mark
+	}
+
 	void getWidget(Composite container, AstConcreteClafer claferMain,
 			AstConcreteClafer claferProperty, int groupCard) {
+		
+		Label label5 = new Label(container, SWT.NONE);
+		label5.setText("	");
 		ArrayList<String> optionLables = new ArrayList<String>();
 		Label label1 = new Label(container, SWT.NONE);
 		label1.setText(parser.trim(claferProperty.getName()));
@@ -163,9 +170,22 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 		option.setContentProvider(ArrayContentProvider.getInstance());
 		option.setInput(optionLables);
 		option.setSelection(new StructuredSelection(optionLables.get(0)));
-		Label label2 = new Label(container, SWT.NONE);
-		label2.setText("");
-
+//		Button button = new Button(composite, SWT.TOGGLE);
+//		button.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
+//				false));
+//		button.setText("X");
+//		button.addSelectionListener(new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//
+//				composite.setEnabled(!composite.isEnabled());
+//				;
+//				container.redraw();
+//
+//			}
+//		});
+		Label label6 = new Label(container, SWT.NONE);
+		label6.setText("	");
 		this.mainClafer.add(claferMain);
 		this.label.add(claferProperty);
 		this.options.add(option);
@@ -249,7 +269,7 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 			return 2;
 		if (selection.contains(Lables.GREATER_THAN))
 			return 3;
-	
+
 		return 999;
 	}
 }

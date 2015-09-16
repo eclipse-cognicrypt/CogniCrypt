@@ -86,7 +86,7 @@ DigestAlgorithms
 KeyDerivationAlgorithms
 	pbkdf : KeyDerivationAlgorithm
 		[name = "PBKDF2"]
-		[Description = "PBKDF 2 key derivation"]
+		[Description = "PBKDF2 key derivation"]
 		[Slow]
 		[HighSecurity]
 

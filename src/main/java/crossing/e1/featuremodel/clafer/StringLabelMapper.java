@@ -14,23 +14,23 @@ import org.clafer.ast.AstConcreteClafer;
  * @author Ram
  *
  */
-public class StringLableMapper {
+public class StringLabelMapper {
 	private static Map<String, AstConcreteClafer> task = null;
 	private static Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> properties = null;
 	private static Map<AstConcreteClafer, Map<ArrayList<AstConcreteClafer>, Integer>> groupProperties = null;
 
-	private StringLableMapper() {
+	private StringLabelMapper() {
 
 	}
 
-	public static Map<String, AstConcreteClafer> getTaskLables() {
+	public static Map<String, AstConcreteClafer> getTaskLabels() {
 		if (task == null) {
 			task = new HashMap<String, AstConcreteClafer>();
 		}
 		return task;
 	}
 
-	public static Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> getPropertiesLables() {
+	public static Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> getPropertyLabels() {
 		if (properties == null) {
 			properties = new HashMap<AstConcreteClafer, ArrayList<AstConcreteClafer>>();
 		}
@@ -49,7 +49,7 @@ public class StringLableMapper {
 	}
 
 	public static void resetGroupProperties() {
-		StringLableMapper.groupProperties = null;
+		StringLabelMapper.groupProperties = null;
 	}
 
 }

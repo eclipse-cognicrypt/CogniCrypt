@@ -1,4 +1,4 @@
-package crossing.e1.configurator.wizard;
+package crossing.e1.configurator.wizard.advanced;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +29,7 @@ import crossing.e1.configurator.ReadConfig;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 import crossing.e1.featuremodel.clafer.ParseClafer;
-import crossing.e1.featuremodel.clafer.StringLableMapper;
+import crossing.e1.featuremodel.clafer.StringLabelMapper;
 
 /**
  * @author Ram
@@ -75,7 +75,7 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 		container.setLayout(layout);
 		layout.numColumns = 1;
 
-		for (AstConcreteClafer clafer : StringLableMapper.getPropertiesLables()
+		for (AstConcreteClafer clafer : StringLabelMapper.getPropertyLabels()
 				.keySet()) {
 
 			// Label label3 = new Label(container, SWT.NONE);
@@ -97,8 +97,9 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 			
 			layout2.numColumns = 4;
 			titledPanel.setLayout(layout2);
-			for (AstConcreteClafer claf : StringLableMapper
-					.getPropertiesLables().get(clafer)) {
+
+			for (AstConcreteClafer claf : StringLabelMapper
+					.getPropertyLabels().get(clafer)) {
 
 				if (claf.getGroupCard().getLow() >= 1) {
 					getWidget(titledPanel, clafer, claf, claf.getGroupCard()
@@ -198,7 +199,7 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 		statusPage = b;
 	}
 
-	boolean getPageStatus() {
+	public boolean getPageStatus() {
 		return statusPage;
 	}
 

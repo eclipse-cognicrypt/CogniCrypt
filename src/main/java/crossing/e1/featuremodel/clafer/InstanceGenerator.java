@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.clafer.compiler.ClaferCompiler;
 import org.clafer.compiler.ClaferSolver;
@@ -19,8 +20,8 @@ import org.clafer.common.Check;
 import org.clafer.objective.Objective;
 import org.clafer.collection.Triple;
 import org.clafer.instance.InstanceClafer;
-
 import crossing.e1.configurator.ReadConfig;
+import crossing.e1.configurator.wizard.beginner.Constraint;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 
 /*
@@ -41,6 +42,97 @@ public class InstanceGenerator {
 	String taskName = "";
 	ParseClafer parser = new ParseClafer();
 
+//	
+//
+//	public void generateInstances(ClaferModel clafModel,
+//			Set<Constraint> constraints) {
+//		// System.out.println("Instance generator called");
+//
+//		this.instances = new ArrayList<InstanceClafer>();
+//		this.instance = new HashMap<String, InstanceClafer>();
+//		clafModel.setModel(clafModel.getModel());
+//		this.triple = clafModel.getTriple();
+//		this.scope = triple.getSnd();
+//		AstModel model = clafModel.getModel();
+//		try {
+//
+//			AstConcreteClafer m = model
+//					.addChild("Main")
+//					.addChild("MAINTASK")
+//					.refTo(StringLabelMapper.getTaskLabels().get(getTaskName()));
+//
+//			for (AstConcreteClafer main : m.getRef().getTargetType()
+//					.getChildren()) {
+//				for (ArrayList<AstConcreteClafer> claf : map.keySet()) {
+//					if (claf.get(0).getName().equals(main.getName())) {
+//						int operator = map.get(claf).get(0);
+//						int value = map.get(claf).get(1);
+//						AstConcreteClafer operand=null;
+//						parser.getClaferByName(main, claf.get(1).getName());
+//						if(!parser.isFlag())
+//						operand=parser.getClaferByName();
+//						if (operator == 1)
+//							main.addConstraint(equal(
+//									joinRef(join(joinRef($this()), operand)),
+//									constant(value)));
+//						if (operator == 2)
+//							main.addConstraint(lessThan(
+//									joinRef(join(joinRef($this()), operand)),
+//									constant(value)));
+//						if (operator == 3)
+//							main.addConstraint(greaterThan(
+//									joinRef(join(joinRef($this()), operand)),
+//									constant(value)));
+//						if (operator == 4)
+//							main.addConstraint(lessThanEqual(
+//									joinRef(join(joinRef($this()), operand)),
+//									constant(value)));
+//						if (operator == 5)
+//							main.addConstraint(greaterThanEqual(
+//									joinRef(join(joinRef($this()), operand)),
+//									constant(value)));
+//						if (operator == 6) {
+//							AstAbstractClafer operandGloabl=null;
+//							AstConcreteClafer operandValue=null;
+//							parser.getClaferByName(main, main.getRef()
+//									.getTargetType().getName());
+//							if (parser.isFlag()) {
+//								operandGloabl = parser
+//										.getAstAbstractClaferByName();
+//							}
+//							parser
+//							.getClaferByName(main, claf.get(2)
+//									.getName());
+//							if (!parser.isFlag()) {
+//								operandValue = parser
+//										.getClaferByName();
+//							}
+//							main.addConstraint(some(join(
+//									join(global(operandGloabl), operand),operandValue)));
+//						}
+////						System.out.println("Constraints after addition "
+////								+ main.getConstraints());
+//					}
+//				}
+//
+//			}
+//
+//			solver = ClaferCompiler.compile(model, scope);
+//			while (solver.find()) {
+//				InstanceClafer instance = solver.instance().getTopClafers()[solver
+//						.instance().getTopClafers().length - 1];
+//
+//				instances.add(instance);
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		getInstanceMapping();
+//		setNoOfInstances(instance.keySet().size());
+//		return instances;
+//		
+//	}
+
 	public List<InstanceClafer> generateInstances(ClaferModel clafModel,
 			Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> map) {
 		// System.out.println("Instance generator called");
@@ -57,7 +149,7 @@ public class InstanceGenerator {
 			AstConcreteClafer m = model
 					.addChild("Main")
 					.addChild("MAINTASK")
-					.refTo(StringLableMapper.getTaskLables().get(getTaskName()));
+					.refTo(StringLabelMapper.getTaskLabels().get(getTaskName()));
 
 			for (AstConcreteClafer main : m.getRef().getTargetType()
 					.getChildren()) {
@@ -206,4 +298,5 @@ public class InstanceGenerator {
 	public void setTaskName(String taskName) {
 		this.taskName = taskName;
 	}
+
 }

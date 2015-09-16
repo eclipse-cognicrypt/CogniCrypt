@@ -1,6 +1,7 @@
 package crossing.e1.configurator.wizard;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -13,13 +14,16 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import crossing.e1.configurator.Lables;
+import crossing.e1.configurator.beginner.tasks.TaskUtils;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.ParseClafer;
-import crossing.e1.featuremodel.clafer.StringLableMapper;
+import crossing.e1.featuremodel.clafer.StringLabelMapper;
+import crossing.e1.configurator.beginner.tasks.CryptoTask;;
 
 /**
  * @author Ram
@@ -29,11 +33,12 @@ import crossing.e1.featuremodel.clafer.StringLableMapper;
 public class TaskSelectionPage extends WizardPage {
 
 	private Composite container;
-	private ComboViewer algorithmClass;
+	private ComboViewer taskComboSelection;
+	private Button advancedModeCheckBox;
 	private Label label2;
 	private String value = "";
 	private ClaferModel model;
-	private Map<String, String> tasks;
+	//private Map<String, String> tasks;
 
 	ParseClafer parser = new ParseClafer();
 
@@ -48,7 +53,8 @@ public class TaskSelectionPage extends WizardPage {
 
 	@Override
 	public void createControl(Composite parent) {
-		tasks = new HashMap<String, String>();
+		//tasks = new HashMap<String, String>();
+		HashSet<CryptoTask> availableTasks = TaskUtils.getAvailableTasks();
 		container = new Composite(parent, SWT.NONE);
 		container.setBounds(10, 10, 200, 200);
 		GridLayout layout = new GridLayout();
@@ -57,59 +63,70 @@ public class TaskSelectionPage extends WizardPage {
 
 		label2 = new Label(container, SWT.NONE);
 		label2.setText(Lables.LABEL2);
-		for (String val : model.getTaskList(model.getModel()).keySet())
-			tasks.put(parser.trim(val), val);
-		algorithmClass = new ComboViewer(container, SWT.COMPOSITION_SELECTION);
-		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-		algorithmClass.setInput(tasks.keySet());
-		if (tasks.keySet().size() > 0) {
-			algorithmClass.setSelection(new StructuredSelection(tasks.keySet()
-					.toArray()[0]));
+//		for (CryptoTask task : TaskUtils.getAvailableTasks())
+//			tasks.put(task.getDisplayText(), task.getClaferTaskName());
+		
+		taskComboSelection = new ComboViewer(container, SWT.COMPOSITION_SELECTION);
+		taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
+		taskComboSelection.setInput(TaskUtils.getAvailableTasks());
+		if (availableTasks.size() > 0) {
+			taskComboSelection.setSelection(new StructuredSelection(availableTasks.iterator().next()));
 		} else {
 			setPageComplete(false);
-			algorithmClass
+			taskComboSelection
 					.setSelection(new StructuredSelection(Lables.NO_TASK));
 
 		}
-		algorithmClass.setLabelProvider((new LabelProvider() {
+		taskComboSelection.setLabelProvider((new LabelProvider() {
 			@Override
 			public String getText(Object element) {
+				if(element instanceof CryptoTask){
+					return ((CryptoTask) element).getDisplayText();
+				}
 				return element.toString();
 			}
 		}));
-		algorithmClass
+		taskComboSelection
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
 						IStructuredSelection selection = (IStructuredSelection) event
 								.getSelection();
 
-						ParseClafer parser = new ParseClafer();
-						String b = (String) selection.getFirstElement()
-								.toString();
-						StringLableMapper.resetProperties();
-						parser.setConstraintClafers(StringLableMapper
-								.getTaskLables().get(tasks.get(b)));
-						setValue(tasks.get(b));
+						CryptoTask selectedTask = (CryptoTask) selection.getFirstElement();
+					
+						setValue(selectedTask.getClaferTaskName());
 
 					}
 
 				});
-
+		
+		advancedModeCheckBox = new Button(container,SWT.CHECK);
+		advancedModeCheckBox.setText("Advanced Mode");
+		advancedModeCheckBox.setSelection(false);
 		setControl(container);
 	}
 
 	public boolean canProceed() {
-		String b=((IStructuredSelection)algorithmClass.getSelection()).getFirstElement().toString();
-		StringLableMapper.resetProperties();
-		parser.setConstraintClafers(StringLableMapper
-				.getTaskLables().get(tasks.get(b)));
-		setValue(tasks.get(b));
-		if (value.length() > 0)
+		CryptoTask selectedTask = (CryptoTask) ((IStructuredSelection)taskComboSelection.getSelection()).getFirstElement();
+		
+		
+		if (selectedTask != null){
+			StringLabelMapper.resetProperties();
+			parser.setConstraintClafers(StringLabelMapper.getTaskLabels().get(selectedTask.getClaferTaskName()));
+			setValue(selectedTask.getClaferTaskName());
 			return true;
-		else
+		}else
 			return false;
 	}
+	
+	public CryptoTask getSelectedTask(){
+		return (CryptoTask) ((IStructuredSelection)taskComboSelection.getSelection()).getFirstElement();
+	}
 
+	public boolean isAdvancedMode(){
+		return advancedModeCheckBox.getSelection();
+	}
+	
 	public String getValue() {
 		return value;
 	}

@@ -73,7 +73,7 @@ public class MyWizard extends Wizard {
 					addPage(instanceListPage);
 					return instanceListPage;
 				}
-			}else{
+			}else if (!taskListPage.isAdvancedMode()){
 				//running in beginner mode
 				if(((RelevantQuestionsPage) valueListPage).validate(instanceGenerator, claferModel)){					
 					DummyPage dummyPage = new DummyPage();

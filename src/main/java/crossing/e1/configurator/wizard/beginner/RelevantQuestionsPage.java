@@ -82,7 +82,7 @@ public class RelevantQuestionsPage extends WizardPage {
 			constraints.add(constraint);
 		}
 		
-		gen.generateInstances(new ClaferModel(new ReadConfig().getClaferPath()), constraints);
+		//gen.generateInstances(new ClaferModel(new ReadConfig().getClaferPath()), constraints);
 		
 //		for (AstConcreteClafer clafer : StringLabelMapper.getPropertyLabels()
 //				.keySet()) {

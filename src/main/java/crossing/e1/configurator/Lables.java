@@ -1,6 +1,5 @@
 package crossing.e1.configurator;
 
-import java.io.File;
 import java.util.Properties;
 
 /**

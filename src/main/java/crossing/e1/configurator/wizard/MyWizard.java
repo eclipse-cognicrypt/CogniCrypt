@@ -1,21 +1,17 @@
 package crossing.e1.configurator.wizard;
 
-import java.util.List;
-
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 
 import crossing.e1.configurator.ReadConfig;
-import crossing.e1.configurator.utilities.Utilities;
 import crossing.e1.configurator.wizard.advanced.DisplayValuePage;
 import crossing.e1.configurator.wizard.advanced.ValueSelectionPage;
 import crossing.e1.configurator.wizard.beginner.DummyPage;
 import crossing.e1.configurator.wizard.beginner.RelevantQuestionsPage;
+import crossing.e1.cryptogen.generation.Generation;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
-
-import org.clafer.ast.*;
 
 public class MyWizard extends Wizard {
 
@@ -26,6 +22,8 @@ public class MyWizard extends Wizard {
 	private boolean advancedMode;
 	private ClaferModel claferModel;
 	InstanceGenerator instanceGenerator = new InstanceGenerator();
+	
+	private final Generation codeGeneration = new Generation();
 
 	public MyWizard() {
 		super();
@@ -46,9 +44,10 @@ public class MyWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		// Print the result to the console
-		if (finalValueListPage.isPageComplete())
-			return true;
-		return false;
+		boolean ret = finalValueListPage.isPageComplete();
+		// Generate code template
+		ret &= codeGeneration.generateCodeTemplates();
+		return ret;
 	}
 
 	@Override

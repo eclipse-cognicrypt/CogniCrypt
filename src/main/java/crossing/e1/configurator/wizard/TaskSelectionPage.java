@@ -1,8 +1,6 @@
 package crossing.e1.configurator.wizard;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -19,11 +17,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import crossing.e1.configurator.Lables;
+import crossing.e1.configurator.beginner.tasks.CryptoTask;
 import crossing.e1.configurator.beginner.tasks.TaskUtils;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.ParseClafer;
 import crossing.e1.featuremodel.clafer.StringLabelMapper;
-import crossing.e1.configurator.beginner.tasks.CryptoTask;;
 
 /**
  * @author Ram

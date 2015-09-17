@@ -1,28 +1,34 @@
 package crossing.e1.featuremodel.clafer;
 
-import static org.clafer.ast.Asts.*;
+import static org.clafer.ast.Asts.$this;
+import static org.clafer.ast.Asts.constant;
+import static org.clafer.ast.Asts.equal;
+import static org.clafer.ast.Asts.global;
+import static org.clafer.ast.Asts.greaterThan;
+import static org.clafer.ast.Asts.greaterThanEqual;
+import static org.clafer.ast.Asts.join;
+import static org.clafer.ast.Asts.joinRef;
+import static org.clafer.ast.Asts.lessThan;
+import static org.clafer.ast.Asts.lessThanEqual;
+import static org.clafer.ast.Asts.some;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.clafer.compiler.ClaferCompiler;
-import org.clafer.compiler.ClaferSolver;
-import org.clafer.scope.Scope;
 import org.clafer.ast.AstAbstractClafer;
-import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstModel;
-import org.clafer.ast.AstSetExpr;
-import org.clafer.common.Check;
-import org.clafer.objective.Objective;
 import org.clafer.collection.Triple;
+import org.clafer.common.Check;
+import org.clafer.compiler.ClaferCompiler;
+import org.clafer.compiler.ClaferSolver;
 import org.clafer.instance.InstanceClafer;
+import org.clafer.objective.Objective;
+import org.clafer.scope.Scope;
+
 import crossing.e1.configurator.ReadConfig;
-import crossing.e1.configurator.wizard.beginner.Constraint;
-import crossing.e1.featuremodel.clafer.ClaferModel;
 
 /*
  * Class responsible for generating instances 

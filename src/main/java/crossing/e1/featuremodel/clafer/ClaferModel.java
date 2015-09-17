@@ -8,18 +8,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.clafer.ast.*;
+import org.clafer.ast.AstAbstractClafer;
+import org.clafer.ast.AstClafer;
+import org.clafer.ast.AstConcreteClafer;
+import org.clafer.ast.AstConstraint;
+import org.clafer.ast.AstModel;
+import org.clafer.ast.AstUtil;
 import org.clafer.collection.Triple;
 import org.clafer.common.Check;
 import org.clafer.javascript.Javascript;
 import org.clafer.objective.Objective;
 import org.clafer.scope.Scope;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
-
-import crossing.e1.configurator.Activator;
 
 /**
  * @author Ram

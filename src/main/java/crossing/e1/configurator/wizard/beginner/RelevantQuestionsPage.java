@@ -6,24 +6,17 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 
-import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
-
-import javax.swing.JButton;
-
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 
 import crossing.e1.configurator.Lables;
-import crossing.e1.configurator.ReadConfig;
 import crossing.e1.configurator.beginner.questions.CryptoQuestion;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
-import crossing.e1.featuremodel.clafer.StringLabelMapper;
 
 public class RelevantQuestionsPage extends WizardPage {
 

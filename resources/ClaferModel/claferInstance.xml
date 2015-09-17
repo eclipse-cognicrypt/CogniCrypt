@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task description="Encrypt data based on password">
+	<Package>crypto</Package>
+	<Imports>
+		<Import>java.security.InvalidAlgorithmParameterException</Import>
+		<Import>java.security.InvalidKeyException</Import>
+		<Import>java.security.NoSuchAlgorithmException</Import>
+		<Import>javax.crypto.SecretKey</Import>
+		<Import>javax.crypto.BadPaddingException</Import>
+		<Import>javax.crypto.Cipher</Import>
+		<Import>javax.crypto.IllegalBlockSizeException</Import>
+		<Import>javax.crypto.NoSuchPaddingException</Import>
+		<Import>java.security.SecureRandom</Import>
+		<Import>javax.crypto.spec.IvParameterSpec</Import>
+		<Import>javax.crypto.spec.SecretKeySpec</Import>
+		<Import>java.security.spec.InvalidKeySpecException</Import>	
+	</Imports>
+	<algorithm type="KeyDerivationAlgorithm">
+		<name>PBKDF2WithHmacSHA1</name>
+		<performance>2</performance>
+		<iterations>2500</iterations>
+	</algorithm>
+	<algorithm type="Digest">
+		<name>SHA-1</name>
+		<performance>4</performance>
+		<security>insecure</security>
+		<outputSize>128</outputSize>
+	</algorithm>
+	<algorithm type="SymmetricBlockCipher">
+		<name>AES</name>
+		<!-- mode and padding are actually not in the model yet since we were not sure if that would be a usage protocol or a feature model thing. The masters student working on the model included modes and padding but I still didn't merge everything together to see if it would work !-->
+		<mode>CBC</mode> 
+		<padding>PKCS5Padding</padding>
+		<!-- -->
+		<keySize>128</keySize>
+		<blockSize>128</blockSize>
+		<memory>1</memory>
+		<security>secure</security>
+	</algorithm>
+</task>

@@ -2,8 +2,6 @@ package crossing.e1.configurator.beginner.questions;
 
 import java.util.HashMap;
 
-import org.clafer.ast.AstBoolExpr;
-
 import crossing.e1.configurator.wizard.beginner.Constraint;
 
 public abstract class CryptoQuestion {

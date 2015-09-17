@@ -4,7 +4,6 @@
 package crossing.e1.featuremodel.clafer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.clafer.ast.AstAbstractClafer;
 import org.clafer.ast.AstClafer;

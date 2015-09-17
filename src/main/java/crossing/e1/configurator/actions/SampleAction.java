@@ -1,11 +1,12 @@
 package crossing.e1.configurator.actions;
 
 import org.eclipse.jface.action.IAction;
-import crossing.e1.configurator.wizard.MyWizard;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+
+import crossing.e1.configurator.wizard.MyWizard;
 
 /**
  * Our sample action implements workbench action delegate.

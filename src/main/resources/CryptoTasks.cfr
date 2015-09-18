@@ -8,12 +8,6 @@ abstract Algorithm
        	Slow
     	Fast
     	VeryFast
-    // xor security
-    // 	Broken
-    // 	Weak
-    // 	Modern
-    // 	Strong
-    //security -> Security
 
 abstract Digest : Algorithm
     outputSize -> integer
@@ -42,7 +36,6 @@ abstract SymmetricCipher : Cipher
     keySize -> integer
 
 abstract SymmetricBlockCipher : SymmetricCipher
-    //blockSize -> integer 
 
 Ciphers
 	AES128 : SymmetricBlockCipher

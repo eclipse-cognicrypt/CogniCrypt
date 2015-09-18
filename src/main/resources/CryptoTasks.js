@@ -1,7 +1,7 @@
 scope({c0_Algorithm:9, c0_Cipher:3, c0_Digest:3, c0_Fast:9, c0_KeyDerivationAlgorithm:3, c0_Security:4, c0_Slow:9, c0_SymmetricBlockCipher:3, c0_SymmetricCipher:3, c0_VeryFast:9, c0_VerySlow:9, c0_description:9, c0_digest:3, c0_iterations:3, c0_keySize:3, c0_memory:3, c0_name:9, c0_outputSize:3, c0_performance:9, c0_security:3, c1_outputSize:3, c1_security:3, c2_security:3});
 defaultScope(1);
 intRange(-8, 7);
-stringLength(48);
+stringLength(38);
 
 c0_Security = Abstract("c0_Security");
 c0_Algorithm = Abstract("c0_Algorithm");
@@ -44,8 +44,9 @@ c0_KeyDerivationAlgorithms = Clafer("c0_KeyDerivationAlgorithms").withCard(1, 1)
 c0_pbkdf = c0_KeyDerivationAlgorithms.addChild("c0_pbkdf").withCard(1, 1).extending(c0_KeyDerivationAlgorithm);
 c0_scrypt = c0_KeyDerivationAlgorithms.addChild("c0_scrypt").withCard(1, 1).extending(c0_KeyDerivationAlgorithm);
 c0_bcrypt = c0_KeyDerivationAlgorithms.addChild("c0_bcrypt").withCard(1, 1).extending(c0_KeyDerivationAlgorithm);
-c0_SecurePassword = Clafer("c0_SecurePassword").withCard(1, 1).extending(c0_Task);
-c0_kda = c0_SecurePassword.addChild("c0_kda").withCard(1, 1);
+c0_PasswordBasedEncryption = Clafer("c0_PasswordBasedEncryption").withCard(1, 1).extending(c0_Task);
+c0_kda = c0_PasswordBasedEncryption.addChild("c0_kda").withCard(1, 1);
+c0_cipher = c0_PasswordBasedEncryption.addChild("c0_cipher").withCard(1, 1);
 c0_name.refTo(string);
 c0_description.refTo(string);
 c0_outputSize.refTo(Int);
@@ -59,6 +60,7 @@ c0_memory.refTo(Int);
 c2_security.refTo(c0_Security);
 c0_keySize.refTo(Int);
 c0_kda.refTo(c0_KeyDerivationAlgorithm);
+c0_cipher.refTo(c0_SymmetricBlockCipher);
 c0_KeyDerivationAlgorithm.addConstraint(implies(some(join($this(), c0_digest)), equal(joinRef(join($this(), c1_outputSize)), joinRef(join(joinRef(join($this(), c0_digest)), c0_outputSize)))));
 c0_KeyDerivationAlgorithm.addConstraint(implies(some(join($this(), c0_digest)), equal(joinRef(join($this(), c1_security)), joinRef(join(joinRef(join($this(), c0_digest)), c0_security)))));
 c0_KeyDerivationAlgorithm.addConstraint(implies(none(join($this(), c0_digest)), or(or(equal(joinRef(join($this(), c1_outputSize)), constant(128)), equal(joinRef(join($this(), c1_outputSize)), constant(192))), equal(joinRef(join($this(), c1_outputSize)), constant(256)))));
@@ -111,4 +113,5 @@ c0_bcrypt.addConstraint(equal(joinRef(join($this(), c0_description)), constant("
 c0_bcrypt.addConstraint(none(join($this(), c0_digest)));
 c0_bcrypt.addConstraint(some(join(join($this(), c0_performance), c0_Slow)));
 c0_bcrypt.addConstraint(equal(joinRef(join($this(), c1_outputSize)), constant(192)));
-c0_SecurePassword.addConstraint(equal(joinRef(join($this(), c1_description)), constant("\"Represent password in a secure way for storage\"")));
+c0_PasswordBasedEncryption.addConstraint(equal(joinRef(join($this(), c1_description)), constant("\"Encrypt data using a given password\"")));
+c0_PasswordBasedEncryption.addConstraint(equal(joinRef(join(joinRef(join($this(), c0_cipher)), c0_keySize)), joinRef(join(joinRef(join($this(), c0_kda)), c1_outputSize))));

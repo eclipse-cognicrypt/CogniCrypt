@@ -29,7 +29,7 @@ abstract KeyDerivationAlgorithm : Algorithm
 	[no digest => outputSize = 128 || outputSize = 192 || outputSize = 256]//fix popular outputSize else all values upto maxInt will be allowed
 	[no digest && outputSize = 128 => security = Modern]
 	[no digest && outputSize > 128 => security = Strong ]
-	[iterations = 1000]
+	[iterations = 1000]//1000 is the accepted default number of iterations for a slow enough computation
 
 abstract Task
 	description -> string
@@ -114,16 +114,16 @@ KeyDerivationAlgorithms
 		[outputSize = 192]//FIXME: is 192 really the only output size of bcrypt?
 		
 
-// SymmetricEncryption : Task
-// 	[description = "Encrypt data using a secret key"]
-// 	cipher -> SymmetricBlockCipher
+SymmetricEncryption : Task
+	[description = "Encrypt data using a secret key"]
+	cipher -> SymmetricBlockCipher
 
 SecurePassword : Task
 	[description = "Represent password in a secure way for storage"]
 	kda -> KeyDerivationAlgorithm
 	
-// PasswordBasedEncryption : Task
-// 	[description = "Encrypt data using a given password"]
-// 	kda -> KeyDerivationAlgorithm
-// 	cipher -> SymmetricBlockCipher
-// 	//[cipher.keySize = kda.outputSize]
+PasswordBasedEncryption : Task
+ 	[description = "Encrypt data using a given password"]
+ 	kda -> KeyDerivationAlgorithm
+ 	cipher -> SymmetricBlockCipher
+ 	[cipher.keySize = kda.outputSize]

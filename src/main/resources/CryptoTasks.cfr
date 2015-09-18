@@ -29,7 +29,10 @@ abstract Task
 	description -> string
 
 abstract Cipher : Algorithm 
-    memory -> integer
+    xor memory
+		Low
+		Medium
+		High    	
     security -> Security  
 
 abstract SymmetricCipher : Cipher
@@ -43,7 +46,7 @@ Ciphers
 	    [ name = "AES-128bit"]
 	    [ Fast ]
 	    [ security = Modern ]
-	    [ memory = 1 ]
+	    [ Low ]
 	    [ keySize = 128 ]
 
 	AES256 : SymmetricBlockCipher
@@ -51,14 +54,14 @@ Ciphers
 	    [ name = "AES-256bit"]
 	    [ Fast ]
 	    [ security = Strong ]
-	    [ memory = 1 ]
+	    [ Medium ]
 	    [ keySize = 256 ]
 
 	DES: SymmetricBlockCipher
 	    [ description = "DES encryption"]
 	    [ name = "DES"]
 	    [ Slow ]
-	    [ memory = 2 ]
+	    [ Low ]
 	    [ security = Weak ]
 	    [ keySize = 56 ]
 

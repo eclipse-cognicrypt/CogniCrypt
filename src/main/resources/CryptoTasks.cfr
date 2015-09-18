@@ -1,29 +1,39 @@
+enum Security= Broken | Weak | Modern | Strong
+
 abstract Algorithm
     name -> string
-    Description -> string
+    description -> string
     xor performance 
        	Slow
     	Fast
     	VeryFast
-    xor security
-    	LowSecurity
-    	MediumSecurity
-    	HighSecurity
+    // xor security
+    // 	Broken
+    // 	Weak
+    // 	Modern
+    // 	Strong
+    //security -> Security
 
 abstract Digest : Algorithm
     outputSize -> integer
+    security -> Security
 
 abstract KeyDerivationAlgorithm : Algorithm
 	iterations -> integer
 	outputSize -> integer
+	digest -> Digest?
+	security -> Security //= digest.security
+	[digest => outputSize = digest.outputSize]
+	[digest => security = digest.security]
 	//[outputSize = digest.outputSize]
 	[iterations = 1000]
 
 abstract Task
-	Description -> string
+	description -> string
 
 abstract Cipher : Algorithm 
-    memory -> integer  
+    memory -> integer
+    security -> Security  
 
 abstract SymmetricCipher : Cipher
     keySize -> integer
@@ -33,29 +43,29 @@ abstract SymmetricBlockCipher : SymmetricCipher
 
 Ciphers
 	AES128 : SymmetricBlockCipher
-	    [ Description = "AES encryption with 128bit key" ]
+	    [ description = "AES encryption with 128bit key" ]
 	    [ name = "AES-128bit"]
 	    [ Fast ]
-	    [ MediumSecurity ]
+	    [ security = Modern ]
 	    [ memory = 1 ]
 	    [ keySize = 128 ]
 	    //[ blockSize = 128 ]
 
 	AES256 : SymmetricBlockCipher
-	    [ Description = "AES encryption with 256bit key"]
+	    [ description = "AES encryption with 256bit key"]
 	    [ name = "AES-256bit"]
 	    [ Fast ]
-	    [ HighSecurity ]
+	    [ security = Strong ]
 	    [ memory = 1 ]
 	    [ keySize = 256 ]
 	    //[ blockSize = 128 ]
 
 	DES: SymmetricBlockCipher
-	    [ Description = "DES encryption"]
+	    [ description = "DES encryption"]
 	    [ name = "DES"]
 	    [ Slow ]
 	    [ memory = 2 ]
-	    [ MediumSecurity ]
+	    [ security = Weak ]
 	    [ keySize = 56 ]
 	   // [ blockSize = 64 ]
 
@@ -63,44 +73,47 @@ Ciphers
 //for easier viewing/collapsing etc.
 DigestAlgorithms
 	md5: Digest
-		[Description = "MD5 digest"]
+		[description = "MD5 digest"]
 		[name = "MD5 digest"]
 		[VeryFast]
-		[LowSecurity]
+		[security = Broken]
 		[outputSize = 128]
 
 	sha_1: Digest
 		[name = "SHA-1"]
-		[Description = "SHA-1 digest"]
+		[description = "SHA-1 digest"]
 		[VeryFast]
-		[LowSecurity]
+		[security = Modern]
 		[outputSize = 160]
 	
 	sha_256: Digest
-		[Description = "SHA-256"]
+		[description = "SHA-256"]
 		[name = "SHA-256 digest"]
 		[outputSize = 256 ]
-		[HighSecurity]
+		[security = Strong]
 		[Slow]	
 
 KeyDerivationAlgorithms
 	pbkdf : KeyDerivationAlgorithm
 		[name = "PBKDF2"]
-		[Description = "PBKDF2 key derivation"]
+		[description = "PBKDF2 key derivation"]
 		[Slow]
-		[HighSecurity]
+		[digest]
+		// [iterations < 1000 => security.Weak]
+		// [iterations >= 1000 && iterations < 2000 => security.Modern]
+		// [iterations >= 2000 => security.Strong]
 
-SymmetricEncryption : Task
-	[Description = "Encrypt data using a secret key"]
-	cipher -> SymmetricBlockCipher
+// SymmetricEncryption : Task
+// 	[description = "Encrypt data using a secret key"]
+// 	cipher -> SymmetricBlockCipher
 
 SecurePassword : Task
-	[Description = "Represent password in a secure way for storage"]
+	[description = "Represent password in a secure way for storage"]
 	kda -> KeyDerivationAlgorithm
-	digest -> Digest
+	//digest -> Digest
 	
-PasswordBasedEncryption : Task
-	[Description = "Encrypt data using a given password"]
-	kda -> KeyDerivationAlgorithm
-	cipher -> SymmetricBlockCipher
-	//[cipher.keySize = kda.outputSize]
+// PasswordBasedEncryption : Task
+// 	[description = "Encrypt data using a given password"]
+// 	kda -> KeyDerivationAlgorithm
+// 	cipher -> SymmetricBlockCipher
+// 	//[cipher.keySize = kda.outputSize]

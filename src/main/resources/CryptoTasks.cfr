@@ -3,6 +3,7 @@ enum Security= Broken | Weak | Modern | Strong
 abstract Algorithm
     name -> string
     description -> string
+    security -> Security
     xor performance 
     	VerySlow
        	Slow
@@ -11,15 +12,13 @@ abstract Algorithm
 
 abstract Digest : Algorithm
     outputSize -> integer
-    security -> Security
-
+    
 abstract KeyDerivationAlgorithm : Algorithm
 	iterations -> integer
 	outputSize -> integer
 	digest -> Digest?
-	security -> Security //= digest.security
 	[digest => outputSize = digest.outputSize]
-	[digest => security = digest.security]
+	[digest => security.ref = digest.security.ref]
 	[no digest => outputSize = 128 || outputSize = 192 || outputSize = 256]//fix popular outputSize else all values upto maxInt will be allowed
 	[no digest && outputSize = 128 => security = Modern]
 	[no digest && outputSize > 128 => security = Strong ]
@@ -32,8 +31,7 @@ abstract Cipher : Algorithm
     xor memory
 		Low
 		Medium
-		High    	
-    security -> Security  
+		High    	  
 
 abstract SymmetricCipher : Cipher
     keySize -> integer

@@ -4,7 +4,6 @@
 package crossing.e1.featuremodel.clafer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.clafer.ast.AstAbstractClafer;
 import org.clafer.ast.AstClafer;
@@ -32,7 +31,7 @@ public class ParseClafer {
 			for (AstConcreteClafer s : claf.getChildren()) {
 				properties = new ArrayList<AstConcreteClafer>();
 				getPrimitive(s);
-				StringLableMapper.getPropertiesLables().put(s, properties);
+				StringLabelMapper.getPropertyLabels().put(s, properties);
 			}
 	}
 

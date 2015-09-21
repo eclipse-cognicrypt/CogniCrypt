@@ -4,15 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.clafer.ast.AstAbstractClafer;
-import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 
 import crossing.e1.configurator.ReadConfig;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 import crossing.e1.featuremodel.clafer.ParseClafer;
-import crossing.e1.featuremodel.clafer.StringLableMapper;
+import crossing.e1.featuremodel.clafer.StringLabelMapper;
 import crossing.e1.xml.export.PublishToXML;
 
 /**
@@ -45,12 +43,12 @@ public class TestCases {
 		ParseClafer parser = new ParseClafer();
 
 		System.out.println("Task Name "
-				+ StringLableMapper.getTaskLables().keySet().toArray()[0]
+				+ StringLabelMapper.getTaskLabels().keySet().toArray()[0]
 						.toString() + "\nProperties are");
-		for (AstConcreteClafer key : StringLableMapper.getPropertiesLables()
+		for (AstConcreteClafer key : StringLabelMapper.getPropertyLabels()
 				.keySet()) {
 			System.out.println(key + " => "
-					+ StringLableMapper.getPropertiesLables().get(key));
+					+ StringLabelMapper.getPropertyLabels().get(key));
 
 		}
 
@@ -62,14 +60,14 @@ public class TestCases {
 	private void displayTasks(ClaferModel model) {
 		model.getTaskList(model.getModel());
 		System.out.println("----- Listing Tasks -----");
-		for (String inst : StringLableMapper.getTaskLables().keySet()) {
+		for (String inst : StringLabelMapper.getTaskLabels().keySet()) {
 
 			System.out.println(inst + " => "
-					+ StringLableMapper.getTaskLables().get(inst));
+					+ StringLabelMapper.getTaskLabels().get(inst));
 		}
 		ParseClafer parser = new ParseClafer();
-		parser.setConstraintClafers(StringLableMapper.getTaskLables().get(
-				StringLableMapper.getTaskLables().keySet().toArray()[0]
+		parser.setConstraintClafers(StringLabelMapper.getTaskLabels().get(
+				StringLabelMapper.getTaskLabels().keySet().toArray()[0]
 						.toString()));
 
 	}

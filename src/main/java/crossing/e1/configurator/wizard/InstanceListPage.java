@@ -1,6 +1,7 @@
 package crossing.e1.configurator.wizard;
 
 import java.util.Map;
+
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -13,6 +14,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+
 import crossing.e1.configurator.Lables;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 

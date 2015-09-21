@@ -6,15 +6,12 @@ package crossing.e1.featuremodel.clafer.test;
 
 import java.util.List;
 
-import org.clafer.ast.*;
+import org.clafer.ast.AstConcreteClafer;
 import org.clafer.compiler.ClaferCompiler;
 import org.clafer.compiler.ClaferSolver;
-import org.clafer.instance.InstanceClafer;
 import org.clafer.instance.InstanceModel;
-import org.clafer.scope.Scope;
 
 import crossing.e1.featuremodel.clafer.ClaferModel;
-import static org.clafer.ast.Asts.*;
 
 public class TestDynamicModelUpdater {
 	public static void main(String[] args) {

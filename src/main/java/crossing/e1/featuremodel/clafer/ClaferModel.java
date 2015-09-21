@@ -8,18 +8,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.clafer.ast.*;
+import org.clafer.ast.AstAbstractClafer;
+import org.clafer.ast.AstClafer;
+import org.clafer.ast.AstConcreteClafer;
+import org.clafer.ast.AstConstraint;
+import org.clafer.ast.AstModel;
+import org.clafer.ast.AstUtil;
 import org.clafer.collection.Triple;
 import org.clafer.common.Check;
 import org.clafer.javascript.Javascript;
 import org.clafer.objective.Objective;
 import org.clafer.scope.Scope;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
-
-import crossing.e1.configurator.Activator;
 
 /**
  * @author Ram
@@ -104,16 +105,16 @@ public class ClaferModel {
 	}
 
 	public Map<String, AstConcreteClafer> getTaskList(AstModel model) {
-		return Check.notNull(StringLableMapper.getTaskLables());
+		return Check.notNull(StringLabelMapper.getTaskLabels());
 	}
 
 	void setTaskList(AstModel model) {
 		ClaferModelUtils util=new ClaferModelUtils();
 		for (AstAbstractClafer object : model.getAbstracts()) {
 			if (object.getName().contains("Task") == true) {
-				for (AstClafer clafers : object.getSubs()) {
-					StringLableMapper.getTaskLables().put(util.getDescription(clafers),
-							(AstConcreteClafer) clafers);
+				for (AstClafer clafer : object.getSubs()) {
+					StringLabelMapper.getTaskLabels().put(clafer.getName(),
+							(AstConcreteClafer) clafer);
 					
 				}
 			}

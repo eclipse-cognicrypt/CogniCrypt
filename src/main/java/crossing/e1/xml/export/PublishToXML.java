@@ -3,7 +3,6 @@
  */
 package crossing.e1.xml.export;
 
-import org.clafer.ast.AstAbstractClafer;
 import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.instance.InstanceClafer;

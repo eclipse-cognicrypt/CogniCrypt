@@ -1,19 +1,25 @@
 package crossing.e1.featuremodel.clafer.test;
 
+import static org.clafer.ast.Asts.$this;
+import static org.clafer.ast.Asts.constant;
+import static org.clafer.ast.Asts.greaterThan;
+import static org.clafer.ast.Asts.join;
+import static org.clafer.ast.Asts.joinRef;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.clafer.ast.*;
+import org.clafer.ast.AstClafer;
+import org.clafer.ast.AstConcreteClafer;
+import org.clafer.ast.AstModel;
 import org.clafer.collection.Triple;
 import org.clafer.compiler.ClaferCompiler;
 import org.clafer.compiler.ClaferSolver;
 import org.clafer.javascript.Javascript;
 import org.clafer.objective.Objective;
 import org.clafer.scope.Scope;
-
-import static org.clafer.ast.Asts.*;
 
 //Installation
 //xor Status

@@ -6,10 +6,18 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: crossing.e1.configurator.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.core.resources;bundle-version="3.9.1"
+ org.eclipse.core.resources
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/claferchocoig.jar,
  .,
  src/main/resources/,
- src/main/java/
+ src/main/java/,
+ lib/saxon9pe.jar
+Import-Package: org.eclipse.jdt.core,
+ org.eclipse.jdt.core.dom,
+ org.eclipse.jdt.ui.actions,
+ org.eclipse.jface.text,
+ org.eclipse.ui.ide,
+ org.eclipse.ui.part,
+ org.eclipse.ui.texteditor

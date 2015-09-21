@@ -1,5 +1,7 @@
 package crossing.e1.configurator;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -60,5 +62,21 @@ public class Activator extends AbstractUIPlugin implements Lables {
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+	}
+	
+	public void logInfo(String message) {
+		log(IStatus.INFO, message, null);
+	}
+	
+	public void logError(Exception ex) {
+		logError(ex, ex.getMessage());
+	}
+	
+	public void logError(Exception ex, String message) {
+		log(IStatus.ERROR, message, ex);
+	}
+	
+	private void log(int severity, String message, Exception ex) {
+		getLog().log(new Status(severity, PLUGIN_ID, message, ex));
 	}
 }

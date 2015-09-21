@@ -1,106 +1,125 @@
+enum Security= Broken | Weak | Modern | Strong
+
 abstract Algorithm
     name -> string
-    Description -> string
+    description -> string
     xor performance 
+    	VerySlow
        	Slow
     	Fast
     	VeryFast
-    xor security
-    	LowSecurity
-    	MediumSecurity
-    	HighSecurity
 
 abstract Digest : Algorithm
     outputSize -> integer
+    security -> Security
 
 abstract KeyDerivationAlgorithm : Algorithm
 	iterations -> integer
 	outputSize -> integer
-	//[outputSize = digest.outputSize]
-	[iterations = 1000]
+	digest -> Digest?
+	security -> Security //= digest.security
+	[digest => outputSize = digest.outputSize]
+	[digest => security = digest.security]
+	[no digest => outputSize = 128 || outputSize = 192 || outputSize = 256]//fix popular outputSize else all values upto maxInt will be allowed
+	[no digest && outputSize = 128 => security = Modern]
+	[no digest && outputSize > 128 => security = Strong ]
+	[iterations = 1000]//1000 is the accepted default number of iterations for a slow enough computation
 
 abstract Task
-	Description -> string
+	description -> string
 
 abstract Cipher : Algorithm 
-    memory -> integer  
+    xor memory
+		Low
+		Medium
+		High    	
+    security -> Security  
 
 abstract SymmetricCipher : Cipher
     keySize -> integer
 
 abstract SymmetricBlockCipher : SymmetricCipher
-    //blockSize -> integer 
 
 Ciphers
 	AES128 : SymmetricBlockCipher
-	    [ Description = "AES encryption with 128bit key" ]
+	    [ description = "AES encryption with 128bit key" ]
 	    [ name = "AES-128bit"]
 	    [ Fast ]
-	    [ MediumSecurity ]
-	    [ memory = 1 ]
+	    [ security = Modern ]
+	    [ Low ]
 	    [ keySize = 128 ]
-	    //[ blockSize = 128 ]
 
 	AES256 : SymmetricBlockCipher
-	    [ Description = "AES encryption with 256bit key"]
+	    [ description = "AES encryption with 256bit key"]
 	    [ name = "AES-256bit"]
 	    [ Fast ]
-	    [ HighSecurity ]
-	    [ memory = 1 ]
+	    [ security = Strong ]
+	    [ Medium ]
 	    [ keySize = 256 ]
-	    //[ blockSize = 128 ]
 
 	DES: SymmetricBlockCipher
-	    [ Description = "DES encryption"]
+	    [ description = "DES encryption"]
 	    [ name = "DES"]
 	    [ Slow ]
-	    [ memory = 2 ]
-	    [ MediumSecurity ]
+	    [ Low ]
+	    [ security = Weak ]
 	    [ keySize = 56 ]
-	   // [ blockSize = 64 ]
 
 //group digest algorithms together
 //for easier viewing/collapsing etc.
 DigestAlgorithms
 	md5: Digest
-		[Description = "MD5 digest"]
+		[description = "MD5 digest"]
 		[name = "MD5 digest"]
 		[VeryFast]
-		[LowSecurity]
+		[security = Broken]
 		[outputSize = 128]
 
 	sha_1: Digest
 		[name = "SHA-1"]
-		[Description = "SHA-1 digest"]
+		[description = "SHA-1 digest"]
 		[VeryFast]
-		[LowSecurity]
+		[security = Modern]
 		[outputSize = 160]
 	
 	sha_256: Digest
-		[Description = "SHA-256"]
+		[description = "SHA-256"]
 		[name = "SHA-256 digest"]
 		[outputSize = 256 ]
-		[HighSecurity]
+		[security = Strong]
 		[Slow]	
 
 KeyDerivationAlgorithms
 	pbkdf : KeyDerivationAlgorithm
 		[name = "PBKDF2"]
-		[Description = "PBKDF 2 key derivation"]
+		[description = "PBKDF2 key derivation"]
 		[Slow]
-		[HighSecurity]
+		[digest]
+	
+	scrypt: KeyDerivationAlgorithm
+		[name = "scrypt"]
+		[description = "Scrypt password-based key derivation"]
+		[no digest] //scrypt does not need a digest specified. It internally uses HMAC_SHA256
+		[VerySlow]
+
+	bcrypt: KeyDerivationAlgorithm
+		[name = "bcrypt"]
+		[description = "Bcrypt password-based key derivation"]
+		[no digest] //scrypt does not need a digest specified. It internally uses blowfish
+		[Slow]
+		[outputSize = 192]//FIXME: is 192 really the only output size of bcrypt?
+		
 
 SymmetricEncryption : Task
-	[Description = "Encrypt data using a secret key"]
+	[description = "Encrypt data using a secret key"]
 	cipher -> SymmetricBlockCipher
 
 SecurePassword : Task
-	[Description = "Represent password in a secure way for storage"]
+	[description = "Represent password in a secure way for storage"]
 	kda -> KeyDerivationAlgorithm
-	digest -> Digest
 	
 PasswordBasedEncryption : Task
-	[Description = "Encrypt data using a given password"]
-	kda -> KeyDerivationAlgorithm
-	cipher -> SymmetricBlockCipher
-	//[cipher.keySize = kda.outputSize]
+ 	[description = "Encrypt data using a given password"]
+ 	kda -> KeyDerivationAlgorithm
+ 	cipher -> SymmetricBlockCipher
+ 	[cipher.keySize = kda.outputSize]

@@ -4,6 +4,7 @@ package org.claferconfigurator.scope;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import org.clafer.ast.AstClafer;
 import org.clafer.common.Check;
 import org.clafer.scope.Scope;

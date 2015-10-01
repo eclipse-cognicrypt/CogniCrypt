@@ -27,7 +27,7 @@ public class MyWizard extends Wizard {
 
 	public MyWizard() {
 		super();
-		setWindowTitle("Configurator v1.0");
+		setWindowTitle("Cyrptography Task Configurator");
 		setNeedsProgressMonitor(true);
 		advancedMode = false;
 	}

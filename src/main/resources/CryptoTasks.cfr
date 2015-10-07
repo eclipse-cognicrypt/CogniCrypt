@@ -28,10 +28,10 @@ abstract Task
 	description -> string
 
 abstract Cipher : Algorithm 
-    xor memory
-		Low
-		Medium
-		High    	  
+  //   xor memory
+		// Low
+		// Medium
+		// High    	  
 
 abstract SymmetricCipher : Cipher
     keySize -> integer
@@ -39,27 +39,17 @@ abstract SymmetricCipher : Cipher
 abstract SymmetricBlockCipher : SymmetricCipher
 
 Ciphers
-	AES128 : SymmetricBlockCipher
-	    [ description = "AES encryption with 128bit key" ]
-	    [ name = "AES-128bit"]
-	    [ Fast ]
-	    [ security = Modern ]
-	    [ Low ]
-	    [ keySize = 128 ]
-
-	AES256 : SymmetricBlockCipher
-	    [ description = "AES encryption with 256bit key"]
-	    [ name = "AES-256bit"]
-	    [ Fast ]
-	    [ security = Strong ]
-	    [ Medium ]
-	    [ keySize = 256 ]
+	AES: SymmetricBlockCipher
+		[description = "Advanced Encryption Standard (AES) cipher"]
+		[name = "AES"]
+		[keySize = 128 || keySize = 192 || keySize = 256]
+		[keySize = 128 => VeryFast && security = Modern]
+		[keySize > 128 => Fast && security = Strong]
 
 	DES: SymmetricBlockCipher
 	    [ description = "DES encryption"]
 	    [ name = "DES"]
-	    [ Slow ]
-	    [ Low ]
+	    [ VeryFast ]
 	    [ security = Weak ]
 	    [ keySize = 56 ]
 

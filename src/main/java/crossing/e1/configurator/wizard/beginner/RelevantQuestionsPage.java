@@ -120,7 +120,7 @@ public class RelevantQuestionsPage extends WizardPage {
 			return true;
 		} else {
 			setErrorMessage(Lables.INSTANCE_ERROR_MESSGAE);
-			return false;
+			return true;
 		}
 		
 		//return true;

@@ -200,5 +200,6 @@ public class ClaferModel {
 		pClafer.getPrimitive(astConcreteClafer);
 
 	}
+	
 
 }

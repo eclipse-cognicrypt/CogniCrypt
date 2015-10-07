@@ -222,28 +222,12 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 		return userOptions;
 	}
 
-	/**
-	 * @return Validation method which will be invoked upon clicking next on the
-	 *         valueList page Next widgetPage is only accessible if there are
-	 *         more than 0 instances for a given clafer and the chosen values
-	 */
-	public boolean validate(InstanceGenerator gen, ClaferModel claferModel) {
-		setMap();
-		gen.generateInstances(
-				new ClaferModel(new ReadConfig().getClaferPath()),
-				this.getMap());
-		if (gen.getNoOfInstances() > 0) {
-			return true;
-		} else {
-			setErrorMessage(Lables.INSTANCE_ERROR_MESSGAE);
-			return false;
-		}
-	}
+
 
 	/**
 	 * Set user selected values to the clafer properties
 	 */
-	private void setMap() {
+	public void setMap() {
 		ArrayList<Integer> values;
 		for (int i = 0; i < label.size(); i++) {
 			if (taskCombo.get(i) == null) {

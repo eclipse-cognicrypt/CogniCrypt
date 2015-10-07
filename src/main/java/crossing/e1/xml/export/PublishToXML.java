@@ -86,7 +86,7 @@ public class PublishToXML {
 							+ inst.getRef().toString().replace("\"", "") +"</"+parser.trim(inst.getType().getName()) + ">\n");
 				else
 					return ("\t<"+parser.trim(((AstConcreteClafer)inst.getType()).getParent().getName()) + ">"
-							+parser.trim(inst.getType().getName()) + "\n");
+							+parser.trim(inst.getType().getName()) + "</"+parser.trim(((AstConcreteClafer)inst.getType()).getParent().getName()) + ">\n");
 
 			}
 		} catch (Exception E) {

@@ -14,7 +14,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
 import crossing.e1.configurator.Lables;
-import crossing.e1.configurator.beginner.questions.CryptoQuestion;
+import crossing.e1.configurator.questions.beginner.CryptoQuestion;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 

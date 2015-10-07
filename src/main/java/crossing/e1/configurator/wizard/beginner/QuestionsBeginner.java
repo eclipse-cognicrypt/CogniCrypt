@@ -7,12 +7,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.clafer.ast.AstConcreteClafer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Group;
-
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.StringLabelMapper;
 import crossing.e1.xml.export.ReadTaskConfig;

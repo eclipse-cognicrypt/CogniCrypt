@@ -18,11 +18,11 @@
          <action
                label="&amp;Sample Action"
                icon="icons/sample.gif"
-               class="crossing.e1.configurator.actions.SampleAction"
+               class="crossing.e1.configurator.actions.WizardAction"
                tooltip="Generate Instances for your Clafer"
                menubarPath="sampleMenu/sampleGroup"
                toolbarPath="sampleGroup"
-               id="crossing.e1.configurator.actions.SampleAction">
+               id="crossing.e1.configurator.actions.WizardAction">
          </action>
       </actionSet>
    </extension>

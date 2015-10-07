@@ -16,12 +16,12 @@ import crossing.e1.configurator.wizard.MyWizard;
  * delegated to it.
  * @see IWorkbenchWindowActionDelegate
  */
-public class SampleAction implements IWorkbenchWindowActionDelegate {
+public class WizardAction implements IWorkbenchWindowActionDelegate {
 	private IWorkbenchWindow window;
 	/**
 	 * The constructor.
 	 */
-	public SampleAction() {
+	public WizardAction() {
 	}
 
 	/**

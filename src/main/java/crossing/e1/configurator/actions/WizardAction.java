@@ -6,7 +6,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-import crossing.e1.configurator.wizard.MyWizard;
+import crossing.e1.configurator.wizard.ConfiguratorWizard;
 
 /**
  * Our sample action implements workbench action delegate.
@@ -31,7 +31,7 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
-		WizardDialog dialog = new WizardDialog(window.getShell(), new MyWizard());
+		WizardDialog dialog = new WizardDialog(window.getShell(), new ConfiguratorWizard());
 		dialog.open(); 
 	}
 

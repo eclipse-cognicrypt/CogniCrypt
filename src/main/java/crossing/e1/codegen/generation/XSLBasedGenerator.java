@@ -1,4 +1,25 @@
-package crossing.e1.cryptogen.generation;
+/**
+ * Copyright 2015 Technische Universität Darmstadt
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+/**
+ * @author Stefan Krueger
+ *
+ */
+package crossing.e1.codegen.generation;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,19 +57,19 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import crossing.e1.codegen.DeveloperProject;
+import crossing.e1.codegen.Utils;
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
-import crossing.e1.cryptogen.CryptoProject;
-import crossing.e1.cryptogen.Utils;
 
 /**
  * This class is responsible for generating code templates by performing an XSL transformation. 
  * Currently, Saxon is used as an XSLT- processor.
- * @author Stefan Krueger
+ * 
  */
-public class Generation {
+public class XSLBasedGenerator {
 	
-	private CryptoProject project;
+	private DeveloperProject project;
 	private boolean fileOpened = false;
 	private IFile currentFile;
 	
@@ -61,7 +82,7 @@ public class Generation {
 		fileOpened = currentFile != null;
 		if (currentFile != null && "java".equals(currentFile.getFileExtension())) {
 			//Get currently opened file to 
-			project = new CryptoProject(currentFile.getProject());
+			project = new DeveloperProject(currentFile.getProject());
 		} else {
 			//if no open file, get selected project
 			IProject iproject = Utils.getIProjectFromSelection();
@@ -71,7 +92,7 @@ public class Generation {
 				return false;
 			}
 			Activator.getDefault().logInfo(Constants.NoFileOpenedErrorMessage);
-		    project = new CryptoProject(iproject);
+		    project = new DeveloperProject(iproject);
 		}
 		return true;
 	}
@@ -127,8 +148,8 @@ public class Generation {
 	 * @param temporaryOutputFile Path to temporary output file.
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if insertion successful/failed.
 	 * @throws BadLocationException See {@link org.eclipse.jface.text.IDocument#replace(int, int, String) replace()}
-	 * @throws IOException See {@link crossing.e1.cryptogen.generation.Generation#getCallsForGenClasses(String) getCallsForGenClasses()}
-	 * @throws CoreException See {@link de.crossing.opencce.cryptogen.CryptoProject#refresh() refresh()}
+	 * @throws IOException See {@link crossing.e1.codegen.generation.XSLBasedGenerator#getCallsForGenClasses(String) getCallsForGenClasses()}
+	 * @throws CoreException See {@link DeveloperProject.crossing.opencce.cryptogen.CryptoProject#refresh() refresh()}
 	 */
 	private boolean insertCallCodeIntoOpenFile(final String temporaryOutputFile) throws  BadLocationException, CoreException, IOException {
 		IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();

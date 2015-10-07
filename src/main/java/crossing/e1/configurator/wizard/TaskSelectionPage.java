@@ -120,7 +120,6 @@ public class TaskSelectionPage extends WizardPage {
 	public CryptoTask getSelectedTask(){
 		return (CryptoTask) ((IStructuredSelection)taskComboSelection.getSelection()).getFirstElement();
 	}
-
 	public boolean isAdvancedMode(){
 		return advancedModeCheckBox.getSelection();
 	}

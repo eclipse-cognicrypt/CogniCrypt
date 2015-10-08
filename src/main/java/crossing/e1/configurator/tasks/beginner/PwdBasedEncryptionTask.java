@@ -14,35 +14,23 @@
  * limitations under the License.
  */
 
+
 /**
- * @author Ram
+ * @author Sarah Nadi
  *
  */
-package crossing.e1.configurator;
 
-import java.io.FileInputStream;
-import java.util.Properties;
+package crossing.e1.configurator.tasks.beginner;
 
-import crossing.e1.configurator.utilities.Utilities;
+import crossing.e1.configurator.questions.beginner.MemoryQuestion;
+import crossing.e1.configurator.questions.beginner.PerformanceQuestion;
 
-public class ReadLables {
-	Properties prop = new Properties();
-	public ReadLables(String path) {
-		try {
-
-		String configFile = Utilities.getAbsolutePath(path);
-		
-		prop.load(new FileInputStream(configFile));
-		
-		
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
+public class PwdBasedEncryptionTask extends CryptoTask {
+	
+	public PwdBasedEncryptionTask(){
+		//FIXME: hard coding scope c0 for now to be able to match tasks
+		super("A secret key is derviced from a password and then used to encrypt your data", "Encrypt data using a given password", "c0_PasswordBasedEncryption");
+		relevantQuestions.add(new PerformanceQuestion());
+		relevantQuestions.add(new MemoryQuestion());
 	}
-
-	public Properties getProperties() {
-		return prop;
-	}
-
 }

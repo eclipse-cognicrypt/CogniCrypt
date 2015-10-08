@@ -8,6 +8,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
+import crossing.e1.configurator.ReadConfig;
 import crossing.e1.configurator.utilities.Utilities;
 
 import java.io.File;
@@ -16,8 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ReadTaskConfig {
-	private File fXmlFile = new File(
-			Utilities.getAbsolutePath("src/main/resources/Encrypt.xml"));
+	private File fXmlFile = new File(new ReadConfig().getPath("encryptXmlPath"));
 	private DocumentBuilderFactory dbFactory = DocumentBuilderFactory
 			.newInstance();
 	private DocumentBuilder dBuilder;
@@ -91,8 +91,7 @@ public class ReadTaskConfig {
 							answerList = answers.getElementsByTagName("Answer");
 						for (int ans = 0; ans < answerList.getLength(); ans++) {
 							Element answeritem = (Element) answerList.item(ans);
-							list2.add(answeritem.getAttribute("value") + ":"
-									+ answeritem.getAttribute("ref"));
+							list2.add(answeritem.getAttribute("value"));// + ":"+ answeritem.getAttribute("ref")
 							System.out.println(answeritem.getAttribute("value")
 									+ " => " + answeritem.getAttribute("ref"));
 						}

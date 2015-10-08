@@ -1,7 +1,30 @@
+/**
+ * Copyright 2015 Technische Universität Darmstadt
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+/**
+ * @author Ram Kamath
+ *
+ */
+
 package crossing.e1.configurator.wizard.advanced;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -28,10 +51,6 @@ import crossing.e1.featuremodel.clafer.InstanceGenerator;
 import crossing.e1.featuremodel.clafer.ParseClafer;
 import crossing.e1.featuremodel.clafer.StringLabelMapper;
 
-/**
- * @author Ram
- *
- */
 
 public class ValueSelectionPage extends WizardPage implements Lables {
 	private ClaferModel model;
@@ -82,8 +101,6 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 			// label3.setText(parser.trim(parser.trim(clafer.getName())));
 			// Label label4 = new Label(container, SWT.NONE);
 			// label4.setText("");
-			 
-			
 
 			Group titledPanel = new Group(container, SWT.NONE);
 			titledPanel.setText(parser.trim(clafer.getName()));
@@ -91,16 +108,17 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 					"Arial", 9, SWT.BOLD));
 			titledPanel.setFont(boldFont);
 			GridLayout layout2 = new GridLayout();
-			
+
 			layout2.numColumns = 4;
 			titledPanel.setLayout(layout2);
-
-			for (AstConcreteClafer claf : StringLabelMapper
-					.getPropertyLabels().get(clafer)) {
+			ArrayList<AstConcreteClafer> x = new ArrayList<AstConcreteClafer>(
+					new LinkedHashSet(StringLabelMapper.getPropertyLabels()
+							.get(clafer)));
+			for (AstConcreteClafer claf : x) {
 
 				if (claf.getGroupCard().getLow() >= 1) {
-					getWidget(titledPanel, clafer, claf, claf.getGroupCard()
-							.getHigh());
+//					getWidget(titledPanel, clafer, claf, claf.getGroupCard()
+//							.getHigh());
 				} else
 
 					getWidget(titledPanel, clafer, claf,
@@ -152,7 +170,7 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 
 	void getWidget(Composite container, AstConcreteClafer claferMain,
 			AstConcreteClafer claferProperty, int groupCard) {
-		
+
 		Label label5 = new Label(container, SWT.NONE);
 		label5.setText("	");
 		ArrayList<String> optionLables = new ArrayList<String>();
@@ -168,20 +186,20 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 		option.setContentProvider(ArrayContentProvider.getInstance());
 		option.setInput(optionLables);
 		option.setSelection(new StructuredSelection(optionLables.get(0)));
-//		Button button = new Button(composite, SWT.TOGGLE);
-//		button.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
-//				false));
-//		button.setText("X");
-//		button.addSelectionListener(new SelectionAdapter() {
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//
-//				composite.setEnabled(!composite.isEnabled());
-//				;
-//				container.redraw();
-//
-//			}
-//		});
+		// Button button = new Button(composite, SWT.TOGGLE);
+		// button.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
+		// false));
+		// button.setText("X");
+		// button.addSelectionListener(new SelectionAdapter() {
+		// @Override
+		// public void widgetSelected(SelectionEvent e) {
+		//
+		// composite.setEnabled(!composite.isEnabled());
+		// ;
+		// container.redraw();
+		//
+		// }
+		// });
 		Label label6 = new Label(container, SWT.NONE);
 		label6.setText("	");
 		this.mainClafer.add(claferMain);
@@ -197,14 +215,13 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 	}
 
 	public boolean getPageStatus() {
+		setMap();
 		return statusPage;
 	}
 
 	public Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> getMap() {
 		return userOptions;
 	}
-
-
 
 	/**
 	 * Set user selected values to the clafer properties

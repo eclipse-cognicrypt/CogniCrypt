@@ -22,7 +22,7 @@ public class TestCases {
 
 	public static void main(String[] args) {
 		TestCases test = new TestCases();
-		String path = new ReadConfig().getClaferPath();
+		String path = new ReadConfig().getPath("claferPath");
 		ClaferModel model = new ClaferModel(path);
 
 		// InstanceGenerator inst = test.getInstance(model);
@@ -111,7 +111,7 @@ public class TestCases {
 		System.out.println("-- Testing instance Generator method--");
 		InstanceGenerator instance = new InstanceGenerator();
 		;
-		instance.generateInstances(model, getMap());
+		instance.generateInstances(model, getMap(),false);
 		System.out.println("There are " + instance.getNoOfInstances()
 				+ " instances");
 		return instance;

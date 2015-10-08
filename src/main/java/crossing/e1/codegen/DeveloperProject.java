@@ -1,4 +1,25 @@
-package crossing.e1.cryptogen;
+/**
+ * Copyright 2015 Technische Universität Darmstadt
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+/**
+ * @author Stefan Krueger
+ *
+ */
+package crossing.e1.codegen;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -13,10 +34,9 @@ import crossing.e1.configurator.Constants;
 
 /**
  * This class represents the app developer's project, on which the plugin is working.
- * @author Stefan Krueger
  *
  */
-public class CryptoProject {
+public class DeveloperProject {
 
 	/**
 	 * Application project
@@ -24,7 +44,7 @@ public class CryptoProject {
 	private IProject project;
 	
 	
-	public CryptoProject(IProject _project) {
+	public DeveloperProject(IProject _project) {
 		this.project = _project;
 	}
 	

@@ -1,3 +1,24 @@
+/**
+ * Copyright 2015 Technische Universität Darmstadt
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+/**
+ * @author Ram Kamath
+ *
+ */
 package crossing.e1.featuremodel.clafer;
 
 import java.io.File;
@@ -22,12 +43,8 @@ import org.clafer.scope.Scope;
 import org.eclipse.core.runtime.Path;
 import org.osgi.framework.Bundle;
 
-/**
- * @author Ram
- *
- */
-
 public class ClaferModel {
+
 
 	private String modelName;
 	private AstModel model;
@@ -44,12 +61,12 @@ public class ClaferModel {
 
 	// temporarily hard coding model file
 	private void loadModel(String path) {
-		try{
-				File filename = new File(path);
-				
-				pair = Javascript.readModel(filename, Javascript.newEngine());
-			
-			this.setModelName("hashings");
+		try {
+			File filename = new File(path);
+
+			pair = Javascript.readModel(filename, Javascript.newEngine());
+
+			this.setModelName("Cyrptography Task Configurator");
 
 			setModel(pair.getFst());
 			setTaskList(model);
@@ -109,13 +126,29 @@ public class ClaferModel {
 	}
 
 	void setTaskList(AstModel model) {
-		ClaferModelUtils util=new ClaferModelUtils();
+		ClaferModelUtils util = new ClaferModelUtils();
+		String key = "";
 		for (AstAbstractClafer object : model.getAbstracts()) {
 			if (object.getName().contains("Task") == true) {
 				for (AstClafer clafer : object.getSubs()) {
-					StringLabelMapper.getTaskLabels().put(clafer.getName(),
+					for (AstConstraint constraint : clafer.getConstraints()) {
+						if (constraint.getExpr().toString()
+								.contains("description . ref")) {
+							key = constraint
+									.getExpr()
+									.toString()
+									.substring(
+											constraint.getExpr().toString()
+													.indexOf("=") + 1,
+											constraint.getExpr().toString()
+													.length()).trim().replace("\"", "");
+						}
+					}
+					System.out.println(clafer.getConstraints().get(0).getExpr()
+							+ " EXPR");// .toString()
+					StringLabelMapper.getTaskLabels().put(key,
 							(AstConcreteClafer) clafer);
-					
+
 				}
 			}
 		}
@@ -184,6 +217,5 @@ public class ClaferModel {
 		pClafer.getPrimitive(astConcreteClafer);
 
 	}
-	
 
 }

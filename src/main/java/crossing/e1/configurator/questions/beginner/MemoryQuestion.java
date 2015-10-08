@@ -14,35 +14,24 @@
  * limitations under the License.
  */
 
+
 /**
- * @author Ram
+ * @author Sarah Nadi
  *
  */
-package crossing.e1.configurator;
 
-import java.io.FileInputStream;
-import java.util.Properties;
+package crossing.e1.configurator.questions.beginner;
 
-import crossing.e1.configurator.utilities.Utilities;
+import crossing.e1.configurator.wizard.beginner.Constraint;
 
-public class ReadLables {
-	Properties prop = new Properties();
-	public ReadLables(String path) {
-		try {
-
-		String configFile = Utilities.getAbsolutePath(path);
-		
-		prop.load(new FileInputStream(configFile));
-		
-		
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-	}
-
-	public Properties getProperties() {
-		return prop;
+public class MemoryQuestion extends CryptoQuestion {
+	
+	
+	public MemoryQuestion(){
+		super("Is low memory consumption important to you?");
+		correspondingClaferProperty = "c0_memory";
+		choices.put("Yes", new Constraint(correspondingClaferProperty, Constraint.Operator.GTE, 2));
+		choices.put("No", null);
 	}
 
 }

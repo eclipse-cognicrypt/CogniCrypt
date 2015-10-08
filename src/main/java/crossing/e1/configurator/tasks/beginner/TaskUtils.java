@@ -14,35 +14,23 @@
  * limitations under the License.
  */
 
+
 /**
- * @author Ram
+ * @author Sarah Nadi
  *
  */
-package crossing.e1.configurator;
+package crossing.e1.configurator.tasks.beginner;
 
-import java.io.FileInputStream;
-import java.util.Properties;
+import java.util.HashSet;
 
-import crossing.e1.configurator.utilities.Utilities;
+public final class TaskUtils {
 
-public class ReadLables {
-	Properties prop = new Properties();
-	public ReadLables(String path) {
-		try {
-
-		String configFile = Utilities.getAbsolutePath(path);
-		
-		prop.load(new FileInputStream(configFile));
-		
-		
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
+	public static HashSet<CryptoTask> getAvailableTasks(){
+		HashSet<CryptoTask> availableTasks = new HashSet<CryptoTask>();
+		//TODO: get all subclasses of CryptoTask instead of adding them here
+		availableTasks.add(new SymmEncrTask());
+		availableTasks.add(new PwdBasedEncryptionTask());
+		availableTasks.add(new SecurePwdQuestion());
+		return availableTasks;
 	}
-
-	public Properties getProperties() {
-		return prop;
-	}
-
 }

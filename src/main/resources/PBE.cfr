@@ -11,7 +11,7 @@ abstract Digest : Algorithm
 abstract KeyDerivationAlgorithm : Algorithm
 
 abstract Task
-	Description -> string
+	description -> string
 
 abstract Cipher : Algorithm 
     memory -> integer  
@@ -75,10 +75,12 @@ KeyDerivationAlgorithms
 		[insecure]
 
 Test : Task
-	[Description = "Encrypt data using a Symmetric key Test"]
-	
+	[description = "Encrypt data using a password"]
+	digest -> Digest
+	kda -> KeyDerivationAlgorithm
+	cipher -> SymmetricBlockCipher
 EncryptionUsingDigest : Task
-	[Description = "Encrypt data using a Symmetric key"]
+	[description = "Encrypt data using a secret key"]
 	digest -> Digest
 	kda -> KeyDerivationAlgorithm
 	cipher -> SymmetricBlockCipher

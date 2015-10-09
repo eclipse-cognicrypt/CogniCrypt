@@ -3,12 +3,6 @@ package crossing.e1.configurator.wizard.beginner;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.clafer.ast.AstConcreteClafer;
-import crossing.e1.featuremodel.clafer.ClaferModel;
-import crossing.e1.featuremodel.clafer.StringLabelMapper;
 import crossing.e1.xml.export.ReadTaskConfig;
 
 public class QuestionsBeginner {

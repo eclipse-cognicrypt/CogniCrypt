@@ -1,4 +1,4 @@
-package crossing.e1.featuremodel.clafer.test;
+package crossing.e1.featuremodel.clafer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

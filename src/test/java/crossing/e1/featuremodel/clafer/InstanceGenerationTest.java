@@ -1,4 +1,4 @@
-package crossing.e1.featuremodel.clafer.test;
+package crossing.e1.featuremodel.clafer;
 
 import static org.clafer.ast.Asts.$this;
 import static org.clafer.ast.Asts.constant;

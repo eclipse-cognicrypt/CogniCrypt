@@ -117,8 +117,8 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 			for (AstConcreteClafer claf : x) {
 
 				if (claf.getGroupCard().getLow() >= 1) {
-//					getWidget(titledPanel, clafer, claf, claf.getGroupCard()
-//							.getHigh());
+					getWidget(titledPanel, clafer, claf, claf.getGroupCard()
+							.getHigh());
 				} else
 
 					getWidget(titledPanel, clafer, claf,

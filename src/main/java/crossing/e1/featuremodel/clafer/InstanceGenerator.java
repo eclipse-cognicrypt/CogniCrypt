@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 /**
  * @author Ram Kamath
  *
@@ -50,6 +49,8 @@ import org.clafer.objective.Objective;
 import org.clafer.scope.Scope;
 
 import crossing.e1.configurator.ReadConfig;
+import crossing.e1.xml.export.Answer;
+import crossing.e1.xml.export.Dependency;
 
 /*
  * Class responsible for generating instances 
@@ -68,100 +69,8 @@ public class InstanceGenerator {
 	String taskName = "";
 	ParseClafer parser = new ParseClafer();
 
-	//
-	//
-	// public void generateInstances(ClaferModel clafModel,
-	// Set<Constraint> constraints) {
-	// // System.out.println("Instance generator called");
-	//
-	// this.instances = new ArrayList<InstanceClafer>();
-	// this.instance = new HashMap<String, InstanceClafer>();
-	// clafModel.setModel(clafModel.getModel());
-	// this.triple = clafModel.getTriple();
-	// this.scope = triple.getSnd();
-	// AstModel model = clafModel.getModel();
-	// try {
-	//
-	// AstConcreteClafer m = model
-	// .addChild("Main")
-	// .addChild("MAINTASK")
-	// .refTo(StringLabelMapper.getTaskLabels().get(getTaskName()));
-	//
-	// for (AstConcreteClafer main : m.getRef().getTargetType()
-	// .getChildren()) {
-	// for (ArrayList<AstConcreteClafer> claf : map.keySet()) {
-	// if (claf.get(0).getName().equals(main.getName())) {
-	// int operator = map.get(claf).get(0);
-	// int value = map.get(claf).get(1);
-	// AstConcreteClafer operand=null;
-	// parser.getClaferByName(main, claf.get(1).getName());
-	// if(!parser.isFlag())
-	// operand=parser.getClaferByName();
-	// if (operator == 1)
-	// main.addConstraint(equal(
-	// joinRef(join(joinRef($this()), operand)),
-	// constant(value)));
-	// if (operator == 2)
-	// main.addConstraint(lessThan(
-	// joinRef(join(joinRef($this()), operand)),
-	// constant(value)));
-	// if (operator == 3)
-	// main.addConstraint(greaterThan(
-	// joinRef(join(joinRef($this()), operand)),
-	// constant(value)));
-	// if (operator == 4)
-	// main.addConstraint(lessThanEqual(
-	// joinRef(join(joinRef($this()), operand)),
-	// constant(value)));
-	// if (operator == 5)
-	// main.addConstraint(greaterThanEqual(
-	// joinRef(join(joinRef($this()), operand)),
-	// constant(value)));
-	// if (operator == 6) {
-	// AstAbstractClafer operandGloabl=null;
-	// AstConcreteClafer operandValue=null;
-	// parser.getClaferByName(main, main.getRef()
-	// .getTargetType().getName());
-	// if (parser.isFlag()) {
-	// operandGloabl = parser
-	// .getAstAbstractClaferByName();
-	// }
-	// parser
-	// .getClaferByName(main, claf.get(2)
-	// .getName());
-	// if (!parser.isFlag()) {
-	// operandValue = parser
-	// .getClaferByName();
-	// }
-	// main.addConstraint(some(join(
-	// join(global(operandGloabl), operand),operandValue)));
-	// }
-	// // System.out.println("Constraints after addition "
-	// // + main.getConstraints());
-	// }
-	// }
-	//
-	// }
-	//
-	// solver = ClaferCompiler.compile(model, scope);
-	// while (solver.find()) {
-	// InstanceClafer instance = solver.instance().getTopClafers()[solver
-	// .instance().getTopClafers().length - 1];
-	//
-	// instances.add(instance);
-	// }
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// getInstanceMapping();
-	// setNoOfInstances(instance.keySet().size());
-	// return instances;
-	//
-	// }
 	public List<InstanceClafer> generateInstances(ClaferModel clafModel,
-			HashMap<String, Integer> map, boolean isadvanced) {
-		// TODO Auto-generated method stub
-		System.out.println("Instance generator called");
+			HashMap<String, Answer> map, boolean isadvanced) {
 		if (map.isEmpty())
 			return null;
 		clafModel = new ClaferModel(new ReadConfig().getPath("claferPath"));
@@ -172,11 +81,11 @@ public class InstanceGenerator {
 		AstModel model = clafModel.getModel();
 		try {
 
-			AstConcreteClafer m = model
+			AstConcreteClafer main = model
 					.addChild("Main")
 					.addChild("MAINTASK")
 					.refTo(StringLabelMapper.getTaskLabels().get(getTaskName()));
-			basicModeHandler(m, map);
+			basicModeHandler(main, map);
 			solver = ClaferCompiler.compile(model, scope);
 			while (solver.find()) {
 				InstanceClafer instance = solver.instance().getTopClafers()[solver
@@ -195,7 +104,6 @@ public class InstanceGenerator {
 	public List<InstanceClafer> generateInstances(ClaferModel clafModel,
 			Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> map,
 			boolean isadvanced) {
-		System.out.println("Instance generator called");
 		if (map.isEmpty())
 			return null;
 		clafModel = new ClaferModel(new ReadConfig().getPath("claferPath"));
@@ -249,18 +157,17 @@ public class InstanceGenerator {
 
 	}
 
-	void basicModeHandler(AstConcreteClafer m, HashMap<String, Integer> map) {
+	/*
+	 * basicModeHandler will take <String, answer> map as a parameter where the
+	 * key of the map is a clafer name associated with the question answer is
+	 * the selected answer for a given question each answer has been further
+	 * iterated to apply associated dependencies
+	 */
+	// FIXME include group operator
+	void basicModeHandler(AstConcreteClafer m, HashMap<String, Answer> map) {
 		Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> b = StringLabelMapper
 				.getPropertyLabels();
-		for (AstConcreteClafer ast : StringLabelMapper.getPropertyLabels()
-				.keySet()) {
-			for (AstConcreteClafer main : m.getRef().getTargetType()
-					.getChildren()) {
-				if (main.getName().equals(ast.getName()))
-					System.out.println("same name" + ast.getName());
-			}
-		}
-		System.out.println(b.toString());
+
 		for (AstConcreteClafer main : m.getRef().getTargetType().getChildren()) {
 			for (AstConcreteClafer ast : StringLabelMapper.getPropertyLabels()
 					.keySet()) {
@@ -269,8 +176,26 @@ public class InstanceGenerator {
 					for (AstConcreteClafer property : propertiesList) {
 						for (String name : map.keySet())
 							if (property.getName().contains(name)) {
-								addConstraints(4, ast,
-										1000/* map.get(name) */, property, null);
+								Answer ans = map.get(name);
+								addConstraints(
+										Integer.parseInt(ans.getOperator()),
+										ast, Integer.parseInt(ans.getRef()),
+										property, null);
+							}
+						for (String name : map.keySet())
+							if (map.get(name).hasDependencies()) {
+								for (Dependency dependency : map.get(name)
+										.getDependencies()) {
+									if (property.getName().contains(
+											dependency.getRefClafer())) {
+										addConstraints(
+												Integer.parseInt(dependency
+														.getOperator()), ast,
+												Integer.parseInt(dependency
+														.getValue()), property,
+												null);
+									}
+								}
 							}
 
 					}

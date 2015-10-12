@@ -24,14 +24,15 @@ import org.eclipse.swt.widgets.Label;
 import crossing.e1.configurator.Lables;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.StringLabelMapper;
+import crossing.e1.xml.export.Answer;
+import crossing.e1.xml.export.Question;
 import crossing.e1.xml.export.ReadTaskConfig;
 
 public class DisplayQuestions extends WizardPage {
 
-	List<String> answer;
 	String questions = null;
 	QuestionsBeginner quest;
-	HashMap<String, Integer> selection = new HashMap<String, Integer>();
+	HashMap<String, Answer> selection = new HashMap<String, Answer>();
 	private List<Composite> quetsionsList;
 	private HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>> userOptions;
 
@@ -43,7 +44,7 @@ public class DisplayQuestions extends WizardPage {
 		quetsionsList = new ArrayList<Composite>();
 	}
 
-	public synchronized HashMap<String, Integer> getSelection() {
+	public synchronized HashMap<String, Answer> getSelection() {
 		return selection;
 	}
 
@@ -53,11 +54,9 @@ public class DisplayQuestions extends WizardPage {
 		GridLayout layout = new GridLayout();
 		container.setLayout(layout);
 		while (quest.hasQuestions()) {
-			questions = quest.nextQuestion();
-			String claferName=quest.nextQuestionClafer();
-			System.out.println("Question initialized " + questions
-					+ " Clafer is " + claferName);
-			answer = quest.nextValues();
+			questions = quest.nextQuestion().getDef();
+			Question claferName = quest.nextQuestion();
+
 			nextQuestion(container, claferName);
 
 		}
@@ -78,24 +77,33 @@ public class DisplayQuestions extends WizardPage {
 		return titledPanel;
 	}
 
-	public void nextQuestion(Composite parent, String refClafer) {
+	public void nextQuestion(Composite parent, Question question) {
+		List<Answer> answer = quest.nextValues();
+		List<String> answerString = new ArrayList<String>();
 		ComboViewer option;
 		Composite container = getPanle(parent);
 		Label label = new Label(container, SWT.CENTER);
 		label.setText(questions);
-		System.out.println(questions + " => " + answer.toString());
+		for (Answer answerObject : answer) {
+			answerString.add(answerObject.getValue());
+		}
 		option = new ComboViewer(container, SWT.NONE);
 		option.setContentProvider(ArrayContentProvider.getInstance());
-		option.setInput(answer);
-		option.setSelection(new StructuredSelection(answer.get(1)));
+		option.setInput(answerString);
+		option.setSelection(new StructuredSelection(answerString.get(1)));
 		option.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent arg0) {
+
 				String answerSelection = option.getSelection().toString();
 				// FIXME need to replace 4 by the value selected by user , check
 				// groupcard property here before assignment
-				selection.put(refClafer, 4);
+				int index= answerString
+						.indexOf(answerSelection.toString().replace("[", "")
+								.replace("]", ""));
+				System.out.println(answer.get(index));
+				selection.put(question.getRefCalfer(), answer.get(index));
 
 				// Integer.parseInt(answerSelection
 				// .substring(answerSelection.indexOf(':') + 1,
@@ -106,45 +114,46 @@ public class DisplayQuestions extends WizardPage {
 		quetsionsList.add(container);
 	}
 
-	public void setMap(Map<String, Integer> map, ClaferModel model) {
+	public void setMap(HashMap<String, Answer> hashMap, ClaferModel model) {
 		System.out.println("Set MAAP INVOKED");
-//		userOptions = new HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>>();
-//		ArrayList<Integer> values = null;
-//		ArrayList<AstConcreteClafer> keys = null; // new
-//													// ArrayList<AstConcreteClafer>();
-//		for (AstConcreteClafer clafer : StringLabelMapper.getPropertyLabels()
-//				.keySet()) {
-//			values = new ArrayList<Integer>();
-//			keys = new ArrayList<AstConcreteClafer>();
-//			for (AstConcreteClafer claf : StringLabelMapper.getPropertyLabels()
-//					.get(clafer)) {
-//				HashMap<HashMap<String, String>, List<String>> qutionare = quest
-//						.getQutionare();
-//				for (HashMap<String, String> val : qutionare.keySet()) {
-//					String st1 = val.get(val.keySet().toArray()[0]);
-//					String st2 = claf.getName();
-//					if (st2.contains(st1)
-//					// && map.containsKey(val .get(val.keySet().toArray()[0]))
-//					) {
-//						keys.add(clafer);
-//						keys.add(claf);
-//						values.add(4);
-//						values.add(map.get(val.get(val.keySet().toArray()[0])));
-//					}
-//				}
-//			}
-//		}
-//		if (keys != null && values != null)
-//			userOptions.put(keys, values);
-//
-//		for (ArrayList<AstConcreteClafer> x : userOptions.keySet()) {
-//			System.out.println(x.toString());
-//		}
+		// userOptions = new HashMap<ArrayList<AstConcreteClafer>,
+		// ArrayList<Integer>>();
+		// ArrayList<Integer> values = null;
+		// ArrayList<AstConcreteClafer> keys = null; // new
+		// // ArrayList<AstConcreteClafer>();
+		// for (AstConcreteClafer clafer : StringLabelMapper.getPropertyLabels()
+		// .keySet()) {
+		// values = new ArrayList<Integer>();
+		// keys = new ArrayList<AstConcreteClafer>();
+		// for (AstConcreteClafer claf : StringLabelMapper.getPropertyLabels()
+		// .get(clafer)) {
+		// HashMap<HashMap<String, String>, List<String>> qutionare = quest
+		// .getQutionare();
+		// for (HashMap<String, String> val : qutionare.keySet()) {
+		// String st1 = val.get(val.keySet().toArray()[0]);
+		// String st2 = claf.getName();
+		// if (st2.contains(st1)
+		// // && map.containsKey(val .get(val.keySet().toArray()[0]))
+		// ) {
+		// keys.add(clafer);
+		// keys.add(claf);
+		// values.add(4);
+		// values.add(map.get(val.get(val.keySet().toArray()[0])));
+		// }
+		// }
+		// }
+		// }
+		// if (keys != null && values != null)
+		// userOptions.put(keys, values);
+		//
+		// for (ArrayList<AstConcreteClafer> x : userOptions.keySet()) {
+		// System.out.println(x.toString());
+		// }
 	}
 
-	public HashMap<String, Integer> getMap() {
+	public HashMap<String, Answer> getMap() {
 		System.out.println("GET MAPP INVOKED");
-		// TODO Auto-generated method stub
+		
 		return selection;
 	}
 }

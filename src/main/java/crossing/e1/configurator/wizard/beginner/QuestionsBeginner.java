@@ -3,11 +3,14 @@ package crossing.e1.configurator.wizard.beginner;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import crossing.e1.xml.export.Answer;
+import crossing.e1.xml.export.Question;
 import crossing.e1.xml.export.ReadTaskConfig;
 
 public class QuestionsBeginner {
 
-	private HashMap<HashMap<String, String>, List<String>> qutionare;
+	private ArrayList<Question> qutionare;
 	private String taskName;
 	int counter = 0;
 
@@ -18,17 +21,15 @@ public class QuestionsBeginner {
 	public void init(String taskName) {
 		setTask(taskName);
 		setQutionare(new ReadTaskConfig().getQA(taskName));
-		setCounter(qutionare.size());
-
+		
 	}
 
-	public HashMap<HashMap<String, String>, List<String>> getQutionare() {
+	public ArrayList<Question> getQutionare() {
 		return qutionare;
 	}
 
-	public void setQutionare(
-			HashMap<HashMap<String, String>, List<String>> qutionare) {
-		this.qutionare = qutionare;
+	public void setQutionare(ArrayList<Question> arrayList) {
+		this.qutionare = arrayList;
 	}
 
 	public void setTask(String value) {
@@ -42,34 +43,32 @@ public class QuestionsBeginner {
 	}
 
 	public boolean hasQuestions() {
-		if (counter > 0)
+		if (counter < getQutionare().size())
 			return true;
 		else
 			return false;
 	}
 
-	public List<String> nextValues() {
-		List<HashMap<String, String>> key = new ArrayList<HashMap<String, String>>(
-				getQutionare().keySet());
-		List<String> answers = getQutionare()
-				.get(key.get(key.size() - counter));
-		counter = counter - 1;
+	public List<Answer> nextValues() {
+		List<Question> key = getQutionare();
+		List<Answer> answers = getQutionare().get(counter).getAnswers();
+		counter = counter + 1;
 		return answers;
 	}
 
-	public String nextQuestion() {
-		List<HashMap<String, String>> x = new ArrayList<HashMap<String, String>>(
-				getQutionare().keySet());
-		return x.get(x.size() - counter).keySet().toArray()[0].toString();
+	public Question nextQuestion() {
+		List<Question> key = getQutionare();
+		List<Answer> answers = getQutionare().get(counter).getAnswers();
+		return key.get(counter);
 	}
-
-	public String nextQuestionClafer() {
-		List<HashMap<String, String>> x = new ArrayList<HashMap<String, String>>(
-				getQutionare().keySet());
-		HashMap<String, String> questionClaferMap = x.get(x.size() - counter);
-		String claferName = questionClaferMap.get(x.get(x.size() - counter)
-				.keySet().toArray()[0].toString());
-		return claferName;
-	}
+	//
+	// public String nextQuestionClafer() {
+	// List<HashMap<String, String>> x = new ArrayList<HashMap<String, String>>(
+	// getQutionare().keySet());
+	// HashMap<String, String> questionClaferMap = x.get(x.size() - counter);
+	// String claferName = questionClaferMap.get(x.get(x.size() - counter)
+	// .keySet().toArray()[0].toString());
+	// return claferName;
+	// }
 
 }

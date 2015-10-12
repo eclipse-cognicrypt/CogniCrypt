@@ -33,7 +33,6 @@ import crossing.e1.configurator.utilities.Validator;
 import crossing.e1.configurator.wizard.advanced.DisplayValuePage;
 import crossing.e1.configurator.wizard.advanced.ValueSelectionPage;
 import crossing.e1.configurator.wizard.beginner.DisplayQuestions;
-import crossing.e1.configurator.wizard.beginner.DummyPage;
 import crossing.e1.configurator.wizard.beginner.QuestionsBeginner;
 import crossing.e1.configurator.wizard.beginner.RelevantQuestionsPage;
 import crossing.e1.featuremodel.clafer.ClaferModel;
@@ -103,7 +102,7 @@ public class ConfiguratorWizard extends Wizard {
 			addPage(valueListPage);
 
 			return valueListPage;
-		} else if (currentPage.getTitle().equals("Properties")) {
+		} else if (currentPage.getTitle().equals(Lables.PROPERTIES)) {
 			if (taskListPage.isAdvancedMode()
 					&& ((ValueSelectionPage) valueListPage).getPageStatus() == true) {
 				System.out.println("Invoking instance generator");

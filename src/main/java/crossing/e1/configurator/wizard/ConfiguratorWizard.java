@@ -46,12 +46,12 @@ public class ConfiguratorWizard extends Wizard {
 	protected DisplayValuePage finalValueListPage;
 	protected QuestionsBeginner quest;
 	private ClaferModel claferModel;
-	private InstanceGenerator instanceGenerator;
+	//private InstanceGenerator instanceGenerator;
 
 	public ConfiguratorWizard() {
 		super();
 		this.claferModel = new ClaferModel(new ReadConfig().getPath("claferPath"));
-		instanceGenerator = new InstanceGenerator(claferModel);
+		//instanceGenerator = new InstanceGenerator(claferModel);
 		setWindowTitle("Cyrptography Task Configurator");
 		setNeedsProgressMonitor(true);
 	}
@@ -77,11 +77,8 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public IWizardPage getNextPage(IWizardPage currentPage) {
-		if (currentPage == taskListPage && taskListPage.canProceed()) {
-
-			instanceGenerator.setTaskName(taskListPage.getValue());
-			instanceGenerator.setNoOfInstances(0);
-
+		
+		if (currentPage == taskListPage && taskListPage.canProceed()) {		
 			if (taskListPage.isAdvancedMode())
 				valueListPage = new ValueSelectionPage(null, claferModel);
 			else {
@@ -97,13 +94,16 @@ public class ConfiguratorWizard extends Wizard {
 
 			return valueListPage;
 		} else if (currentPage.getTitle().equals(Lables.PROPERTIES)) {
+			InstanceGenerator instanceGenerator = new InstanceGenerator();
+			instanceGenerator.setTaskName(taskListPage.getValue());
+			instanceGenerator.setNoOfInstances(0);
+			
 			if (taskListPage.isAdvancedMode()
 					&& ((ValueSelectionPage) valueListPage).getPageStatus() == true) {
 				System.out.println("Invoking instance generator");
 				instanceGenerator.generateInstances(
 						((ValueSelectionPage) currentPage).getMap(),true);
-				if (new Validator().validate(instanceGenerator)) {
-					
+				if (new Validator().validate(instanceGenerator)) {					
 					instanceListPage = new InstanceListPage(instanceGenerator);
 					addPage(instanceListPage);
 					return instanceListPage;

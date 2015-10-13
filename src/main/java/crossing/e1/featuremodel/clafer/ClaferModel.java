@@ -56,10 +56,6 @@ public class ClaferModel {
 		properties = new ArrayList<AstConcreteClafer>();
 	}
 
-	public ClaferModel(ClaferModel inputModel) {
-		// TODO Auto-generated constructor stub
-	}
-	
 	public Scope getScope(){
 		return triple.getSnd();
 	}

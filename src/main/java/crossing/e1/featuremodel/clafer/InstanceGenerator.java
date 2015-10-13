@@ -54,7 +54,7 @@ import crossing.e1.xml.export.Answer;
 import crossing.e1.xml.export.Dependency;
 
 /*
- * Class responsible for generating instances 
+ * Class responsible for generating generatedInstances 
  * for a given clafer.
  *
  */
@@ -62,25 +62,22 @@ import crossing.e1.xml.export.Dependency;
 public class InstanceGenerator {
 
 	private ClaferSolver solver;
-	private Scope scope;
-	private List<InstanceClafer> instances;
-	private Map<String, InstanceClafer> instance;
+	private List<InstanceClafer> generatedInstances;
+	private Map<String, InstanceClafer> displayNameToInstanceMap;
 	private ClaferModel claferModel;
 	private int noOfInstances;
 	String taskName = "";
 	
-	public InstanceGenerator(ClaferModel inputModel){
-		claferModel = new ClaferModel(inputModel);		
-		this.instances = new ArrayList<InstanceClafer>();
-		this.instance = new HashMap<String, InstanceClafer>();
+	public InstanceGenerator(){
+		claferModel = new ClaferModel(new ReadConfig().getPath("claferPath"));//till copy constructor works	
+		this.generatedInstances = new ArrayList<InstanceClafer>();
+		this.displayNameToInstanceMap = new HashMap<String, InstanceClafer>();
 	}
 
 	public List<InstanceClafer> generateInstances(
 			HashMap<String, Answer> map, boolean isadvanced) {
 		if (map.isEmpty())
 			return null;
-		this.instances = new ArrayList<InstanceClafer>();
-		this.instance = new HashMap<String, InstanceClafer>();
 		AstModel model = claferModel.getModel();
 		try {
 
@@ -89,19 +86,19 @@ public class InstanceGenerator {
 					.addChild("MAINTASK")
 					.refTo(StringLabelMapper.getTaskLabels().get(getTaskName()));
 			basicModeHandler(main, map);
-			solver = ClaferCompiler.compile(model, scope);
+			solver = ClaferCompiler.compile(model, claferModel.getScope());
 			while (solver.find()) {
 				InstanceClafer instance = solver.instance().getTopClafers()[solver
 						.instance().getTopClafers().length - 1];
 
-				instances.add(instance);
+				generatedInstances.add(instance);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		getInstanceMapping();
-		setNoOfInstances(instance.keySet().size());
-		return instances;
+		setNoOfInstances(displayNameToInstanceMap.keySet().size());
+		return generatedInstances;
 	}
 
 	public List<InstanceClafer> generateInstances(
@@ -120,19 +117,19 @@ public class InstanceGenerator {
 			if (isadvanced)
 				advancedModeHandler(m, map);
 
-			solver = ClaferCompiler.compile(model, scope);
+			solver = ClaferCompiler.compile(model, claferModel.getScope());
 			while (solver.find()) {
 				InstanceClafer instance = solver.instance().getTopClafers()[solver
 						.instance().getTopClafers().length - 1];
 
-				instances.add(instance);
+				generatedInstances.add(instance);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		getInstanceMapping();
-		setNoOfInstances(instance.keySet().size());
-		return instances;
+		setNoOfInstances(displayNameToInstanceMap.keySet().size());
+		return generatedInstances;
 
 	}
 
@@ -236,22 +233,22 @@ public class InstanceGenerator {
 	}
 
 	public Scope getScope() {
-		return Check.notNull(scope);
+		return Check.notNull(claferModel.getScope());
 	}
 
 	public Map<String, InstanceClafer> getInstances() {
-		return Check.notNull(instance);
+		return Check.notNull(displayNameToInstanceMap);
 	}
 
 	public void resetInstances() {
-		instance = null;
+		displayNameToInstanceMap = null;
 	}
 
 	public void getInstanceMapping() {
-		for (InstanceClafer inst : instances) {
+		for (InstanceClafer inst : generatedInstances) {
 			String key = getInstanceMapping(inst);
 			if (inst.getType().getName().equals("Main") && key.length() > 0)
-				instance.put(key, inst);
+				displayNameToInstanceMap.put(key, inst);
 		}
 
 	}
@@ -287,7 +284,7 @@ public class InstanceGenerator {
 	}
 
 	public InstanceClafer getInstances(String b) {
-		return Check.notNull(this.instance.get(b));
+		return Check.notNull(this.displayNameToInstanceMap.get(b));
 	}
 
 	public int getNoOfInstances() {

@@ -106,7 +106,7 @@ public class TestCases {
 
 	InstanceGenerator getInstance(ClaferModel model) {
 		System.out.println("-- Testing instance Generator method--");
-		InstanceGenerator instance = new InstanceGenerator(model);
+		InstanceGenerator instance = new InstanceGenerator();
 		;
 		instance.generateInstances(getMap(),false);
 		System.out.println("There are " + instance.getNoOfInstances()

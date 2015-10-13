@@ -57,9 +57,6 @@ public class ClaferModel {
 	}
 
 	public ClaferModel(ClaferModel inputModel) {
-		triple = new Triple<AstModel, Scope, Objective[]>(new AstModel(inputModel.getModel()), 
-				new Scope(inputModel.getScope()), 
-						triple.getThd());
 		// TODO Auto-generated constructor stub
 	}
 	

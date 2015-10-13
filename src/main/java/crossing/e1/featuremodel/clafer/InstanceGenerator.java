@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.clafer.ast.AstAbstractClafer;
+import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstModel;
 import org.clafer.collection.Triple;
@@ -64,21 +65,23 @@ public class InstanceGenerator {
 	private Scope scope;
 	private List<InstanceClafer> instances;
 	private Map<String, InstanceClafer> instance;
-	private Triple<AstModel, Scope, Objective[]> triple;
+	private ClaferModel claferModel;
 	private int noOfInstances;
 	String taskName = "";
-	ParseClafer parser = new ParseClafer();
+	
+	public InstanceGenerator(ClaferModel inputModel){
+		claferModel = new ClaferModel(inputModel);		
+		this.instances = new ArrayList<InstanceClafer>();
+		this.instance = new HashMap<String, InstanceClafer>();
+	}
 
-	public List<InstanceClafer> generateInstances(ClaferModel clafModel,
+	public List<InstanceClafer> generateInstances(
 			HashMap<String, Answer> map, boolean isadvanced) {
 		if (map.isEmpty())
 			return null;
-		clafModel = new ClaferModel(new ReadConfig().getPath("claferPath"));
 		this.instances = new ArrayList<InstanceClafer>();
 		this.instance = new HashMap<String, InstanceClafer>();
-		this.triple = clafModel.getTriple();
-		this.scope = triple.getSnd();
-		AstModel model = clafModel.getModel();
+		AstModel model = claferModel.getModel();
 		try {
 
 			AstConcreteClafer main = model
@@ -101,17 +104,13 @@ public class InstanceGenerator {
 		return instances;
 	}
 
-	public List<InstanceClafer> generateInstances(ClaferModel clafModel,
+	public List<InstanceClafer> generateInstances(
 			Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> map,
 			boolean isadvanced) {
 		if (map.isEmpty())
 			return null;
-		clafModel = new ClaferModel(new ReadConfig().getPath("claferPath"));
-		this.instances = new ArrayList<InstanceClafer>();
-		this.instance = new HashMap<String, InstanceClafer>();
-		this.triple = clafModel.getTriple();
-		this.scope = triple.getSnd();
-		AstModel model = clafModel.getModel();
+
+		AstModel model = claferModel.getModel();
 		try {
 
 			AstConcreteClafer m = model
@@ -144,11 +143,9 @@ public class InstanceGenerator {
 				if (claf.get(0).getName().equals(main.getName())) {
 					int operator = map.get(claf).get(0);
 					int value = map.get(claf).get(1);
-					AstConcreteClafer operand = null;
-					parser.getClaferByName(main, claf.get(1).getName());
-					if (!parser.isFlag())
-						operand = parser.getClaferByName();
-					addConstraints(operator, main, value, operand, claf.get(1));
+					AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils.findClaferByName(main,  claf.get(1).getName());
+					if(operand !=null && !ClaferModelUtils.isAbstract(operand))
+						addConstraints(operator, main, value, operand, claf.get(1));
 
 				}
 			}
@@ -224,17 +221,17 @@ public class InstanceGenerator {
 		if (operator == 6) {
 			AstAbstractClafer operandGloabl = null;
 			AstConcreteClafer operandValue = null;
-			parser.getClaferByName(main, main.getRef().getTargetType()
-					.getName());
-			if (parser.isFlag()) {
-				operandGloabl = parser.getAstAbstractClaferByName();
+			AstClafer claferByName = ClaferModelUtils.findClaferByName(main,  main.getRef().getTargetType().getName());//.getClaferByName(main, main.getRef().getTargetType().getName());
+			if (ClaferModelUtils.isAbstract(claferByName)) {
+				operandGloabl = (AstAbstractClafer) claferByName;
 			}
-			parser.getClaferByName(main, claf.getName());
-			if (!parser.isFlag()) {
-				operandValue = parser.getClaferByName();
-			}
-			main.addConstraint(some(join(join(global(operandGloabl), operand),
-					operandValue)));
+			//TODO: fix xor behavior.. how do we get the operandValue??
+//			parser.getClaferByName(main, claf.getName());
+//			if (!parser.isFlag()) {
+//				operandValue = parser.getClaferByName();
+//			}
+//			main.addConstraint(some(join(join(global(operandGloabl), operand),
+//					operandValue)));
 		}
 	}
 

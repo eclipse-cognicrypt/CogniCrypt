@@ -25,7 +25,7 @@ import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.instance.InstanceClafer;
 
-import crossing.e1.featuremodel.clafer.ParseClafer;
+import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 
 /**
  * @author Ram
@@ -33,7 +33,6 @@ import crossing.e1.featuremodel.clafer.ParseClafer;
  */
 public class PublishToXML {
 
-	ParseClafer parser = new ParseClafer();
 	
 	public String displayInstanceValues(InstanceClafer inst, String value) {
 		InstanceClafer instan = null;
@@ -41,7 +40,7 @@ public class PublishToXML {
 		if(inst.hasChildren()){
 			instan = (InstanceClafer)inst.getChildren()[0].getRef();
 			String taskName= instan.getType().getName();
-			value="<Task description=\""+parser.trim(taskName)+"\">\n";
+			value="<Task description=\""+ ClaferModelUtils.trimScope(taskName)+"\">\n";
 			
 			}
 		else{
@@ -50,7 +49,7 @@ public class PublishToXML {
 		if (instan!=null && instan.hasChildren()) {
 			for (InstanceClafer in : instan.getChildren()) {
 				if(!in.getType().getRef().getTargetType().isPrimitive()){
-				value+="<Algorithm type=\""+parser.trim(in.getType().getRef().getTargetType().getName())+"\"> \n";
+				value+="<Algorithm type=\""+ClaferModelUtils.trimScope(in.getType().getRef().getTargetType().getName())+"\"> \n";
 				value+=displayInstanceXML((InstanceClafer)in, "");
 				value+="</Algorithm> \n";}
 				else{
@@ -82,11 +81,11 @@ public class PublishToXML {
 						"");
 			} else {
 				if (inst.hasRef())
-					return ("\t<"+parser.trim(inst.getType().getName()) + ">"
-							+ inst.getRef().toString().replace("\"", "") +"</"+parser.trim(inst.getType().getName()) + ">\n");
+					return ("\t<"+ClaferModelUtils.trimScope(inst.getType().getName()) + ">"
+							+ inst.getRef().toString().replace("\"", "") +"</"+ClaferModelUtils.trimScope(inst.getType().getName()) + ">\n");
 				else
-					return ("\t<"+parser.trim(((AstConcreteClafer)inst.getType()).getParent().getName()) + ">"
-							+parser.trim(inst.getType().getName()) + "</"+parser.trim(((AstConcreteClafer)inst.getType()).getParent().getName()) + ">\n");
+					return ("\t<"+ClaferModelUtils.trimScope(((AstConcreteClafer)inst.getType()).getParent().getName()) + ">"
+							+ClaferModelUtils.trimScope(inst.getType().getName()) + "</"+ClaferModelUtils.trimScope(((AstConcreteClafer)inst.getType()).getParent().getName()) + ">\n");
 
 			}
 		} catch (Exception E) {

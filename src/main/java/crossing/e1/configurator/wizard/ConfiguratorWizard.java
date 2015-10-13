@@ -34,10 +34,8 @@ import crossing.e1.configurator.wizard.advanced.DisplayValuePage;
 import crossing.e1.configurator.wizard.advanced.ValueSelectionPage;
 import crossing.e1.configurator.wizard.beginner.DisplayQuestions;
 import crossing.e1.configurator.wizard.beginner.QuestionsBeginner;
-import crossing.e1.configurator.wizard.beginner.RelevantQuestionsPage;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
-import crossing.e1.featuremodel.clafer.ParseClafer;
 import crossing.e1.featuremodel.clafer.StringLabelMapper;
 
 public class ConfiguratorWizard extends Wizard {
@@ -47,24 +45,20 @@ public class ConfiguratorWizard extends Wizard {
 	protected InstanceListPage instanceListPage;
 	protected DisplayValuePage finalValueListPage;
 	protected QuestionsBeginner quest;
-	private boolean advancedMode;
 	private ClaferModel claferModel;
-
-	InstanceGenerator instanceGenerator = new InstanceGenerator();
-
-	//private final Generation codeGeneration = new Generation();
-	ParseClafer parser = new ParseClafer();
+	private InstanceGenerator instanceGenerator;
 
 	public ConfiguratorWizard() {
 		super();
+		this.claferModel = new ClaferModel(new ReadConfig().getPath("claferPath"));
+		instanceGenerator = new InstanceGenerator(claferModel);
 		setWindowTitle("Cyrptography Task Configurator");
 		setNeedsProgressMonitor(true);
-		advancedMode = false;
 	}
 
 	@Override
 	public void addPages() {
-		this.claferModel = new ClaferModel(new ReadConfig().getPath("claferPath"));
+		
 		taskListPage = new TaskSelectionPage(claferModel);
 		this.setForcePreviousAndNextButtons(true);
 		addPage(taskListPage);
@@ -91,7 +85,7 @@ public class ConfiguratorWizard extends Wizard {
 			if (taskListPage.isAdvancedMode())
 				valueListPage = new ValueSelectionPage(null, claferModel);
 			else {
-				parser.setConstraintClafers(StringLabelMapper.getTaskLabels()
+				claferModel.createClaferConstraintMap(StringLabelMapper.getTaskLabels()
 						.get(taskListPage.getValue()));
 				quest = new QuestionsBeginner();
 				quest.init(StringLabelMapper.getTaskLabels()
@@ -106,8 +100,7 @@ public class ConfiguratorWizard extends Wizard {
 			if (taskListPage.isAdvancedMode()
 					&& ((ValueSelectionPage) valueListPage).getPageStatus() == true) {
 				System.out.println("Invoking instance generator");
-				instanceGenerator.generateInstances(new ClaferModel(
-						new ReadConfig().getPath("claferPath")),
+				instanceGenerator.generateInstances(
 						((ValueSelectionPage) currentPage).getMap(),true);
 				if (new Validator().validate(instanceGenerator)) {
 					
@@ -121,8 +114,7 @@ public class ConfiguratorWizard extends Wizard {
 				((DisplayQuestions) currentPage).setMap(
 						((DisplayQuestions) currentPage).getSelection(),
 						claferModel);
-				instanceGenerator.generateInstances(new ClaferModel(
-						new ReadConfig().getPath("claferPath")),
+				instanceGenerator.generateInstances(
 						((DisplayQuestions) currentPage).getMap(),false);
 
 				if (new Validator().validate(instanceGenerator)) {

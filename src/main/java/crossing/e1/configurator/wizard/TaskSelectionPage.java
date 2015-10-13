@@ -43,7 +43,6 @@ import crossing.e1.configurator.Lables;
 import crossing.e1.configurator.tasks.beginner.CryptoTask;
 import crossing.e1.configurator.tasks.beginner.TaskUtils;
 import crossing.e1.featuremodel.clafer.ClaferModel;
-import crossing.e1.featuremodel.clafer.ParseClafer;
 import crossing.e1.featuremodel.clafer.StringLabelMapper;
 
 public class TaskSelectionPage extends WizardPage {
@@ -55,9 +54,6 @@ public class TaskSelectionPage extends WizardPage {
 	private Label label2;
 	private String value = "";
 	private ClaferModel model;
-	//private Map<String, String> tasks;
-
-	ParseClafer parser = new ParseClafer();
 	private boolean status=true;
 
 	public TaskSelectionPage(ClaferModel claferModel) {
@@ -131,7 +127,7 @@ public class TaskSelectionPage extends WizardPage {
 		if (selectedTask.length() > 0){
 			StringLabelMapper.resetProperties();
 			AstConcreteClafer claferSelected=StringLabelMapper.getTaskLabels().get(selectedTask);
-			parser.setConstraintClafers(claferSelected);
+			model.createClaferConstraintMap(claferSelected);
 			setValue(selectedTask);
 			return true;
 		}else

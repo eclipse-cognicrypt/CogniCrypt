@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 /**
  * @author Ram Kamath
  *
@@ -22,6 +21,7 @@
 package crossing.e1.featuremodel.clafer;
 
 import org.clafer.ast.AstClafer;
+import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstConstraint;
 
 public class ClaferModelUtils {
@@ -44,16 +44,16 @@ public class ClaferModelUtils {
 	 * Method takes AstClafer as an input and returns a description of the
 	 * clafer if exist, returns name of the clafer otherwise
 	 */
-	String getDescription(AstClafer inputClafer) {
+	public static String getDescription(AstClafer inputClafer) {
 		if (inputClafer.hasConstraints())
 			for (AstConstraint child : inputClafer.getConstraints()) {
 				String expr = child.getExpr().toString();
 				if (expr.substring(0,
 						((expr.indexOf('=') > 0) ? expr.indexOf('=') : 1))
 						.contains("escription . ref")) {
-					//return without Quotes,hence replaced the "" with empty
+					// return without Quotes,hence replaced the "" with empty
 					return expr.substring(expr.indexOf('=') + 1, expr.length())
-							.replace("\"","");
+							.replace("\"", "");
 				}
 
 			}
@@ -61,4 +61,58 @@ public class ClaferModelUtils {
 		return inputClafer.getName();
 
 	}
+
+	public static boolean isAbstract(AstClafer astClafer) {
+		if (astClafer.hasRef())
+			return astClafer.getRef().getTargetType().getClass()
+					.toGenericString().contains("AstAbstractClafer");
+		else
+			return astClafer.getClass().toGenericString()
+					.contains("AstAbstractClafer");
+	}
+	
+	/*
+	 * Method to find a clafer with a given name
+	 * 
+	 */
+	public static AstClafer findClaferByName(AstClafer inputClafer, String name) {
+
+		try {
+						
+			if (inputClafer.getName().equals(name))
+				return inputClafer;
+			
+			if (inputClafer.hasChildren()) {
+				for (AstConcreteClafer childClafer : inputClafer.getChildren())
+					findClaferByName(childClafer, name);
+			}
+			
+			if (inputClafer.hasRef()) {
+				findClaferByName(inputClafer.getRef().getTargetType(), name);
+
+			}
+			if (inputClafer.getSuperClafer() != null)
+				findClaferByName(inputClafer.getSuperClafer(), name);
+		
+
+		} catch (Exception E) {
+			E.printStackTrace();
+			return null;
+		}
+		
+		return null;
+
+	}
+	
+
+	/*
+	 * removes scope from name (e.g., c0_)
+	 */
+	public static String trimScope(String value) {
+		String val = value.substring(value.indexOf('_') + 1, value.length());
+		val = val.substring(0, 1).toUpperCase()
+				+ val.substring(1, val.length());
+		return val;
+	}
+
 }

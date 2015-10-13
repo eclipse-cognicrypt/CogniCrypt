@@ -45,49 +45,50 @@ import org.osgi.framework.Bundle;
 
 public class ClaferModel {
 
-
 	private String modelName;
-	private AstModel model;
-	private Bundle bundle;
-	private Path originPath;
-	private URL bundledFileURL;
-	Triple<AstModel, Scope, Objective[]> pair;
+	Triple<AstModel, Scope, Objective[]> triple;
 	private Map<String, AstConcreteClafer> constraintClafers;
-	private ParseClafer pClafer = new ParseClafer();
+	//private ParseClafer pClafer = new ParseClafer();
+	ArrayList<AstConcreteClafer> properties;
 
 	public ClaferModel(String path) {
 		loadModel(path);
+		properties = new ArrayList<AstConcreteClafer>();
 	}
 
-	// temporarily hard coding model file
+	public ClaferModel(ClaferModel inputModel) {
+		triple = new Triple<AstModel, Scope, Objective[]>(new AstModel(inputModel.getModel()), 
+				new Scope(inputModel.getScope()), 
+						triple.getThd());
+		// TODO Auto-generated constructor stub
+	}
+	
+	public Scope getScope(){
+		return triple.getSnd();
+	}
+
 	private void loadModel(String path) {
 		try {
 			File filename = new File(path);
 
-			pair = Javascript.readModel(filename, Javascript.newEngine());
+			triple = Javascript.readModel(filename, Javascript.newEngine());
 
 			this.setModelName("Cyrptography Task Configurator");
-
-			setModel(pair.getFst());
-			setTaskList(model);
+			setTaskList(triple.getFst());
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void setModel(AstModel model) {
-		this.model = model;
-	}
-
 	public List<AstConcreteClafer> getClafersByType(String type) {
-		return model.getChildren().stream()
+		return triple.getFst().getChildren().stream()
 				.filter(child -> child.getSuperClafer().getName().equals(type))
 				.collect(Collectors.toList());
 	}
 
 	public List<AstConstraint> getConstraints() {
-		return getConstraints(model.getChildren());
+		return getConstraints(triple.getFst().getChildren());
 	}
 
 	// Method to provide list of constraints of the model
@@ -126,7 +127,6 @@ public class ClaferModel {
 	}
 
 	void setTaskList(AstModel model) {
-		ClaferModelUtils util = new ClaferModelUtils();
 		String key = "";
 		for (AstAbstractClafer object : model.getAbstracts()) {
 			if (object.getName().contains("Task") == true) {
@@ -156,14 +156,14 @@ public class ClaferModel {
 
 	public List<AstConcreteClafer> getClafersByName(String type) {
 
-		return model.getChildren().stream()
+		return triple.getFst().getChildren().stream()
 				.filter(child -> child.getName().contains(type))
 				.collect(Collectors.toList());
 	}
 
 	public AstConcreteClafer getClafersByParent(String type) {
 
-		for (AstConcreteClafer ast : model.getChildren()) {
+		for (AstConcreteClafer ast : triple.getFst().getChildren()) {
 			if (ast.getSuperClafer().getName().contains(type))
 				return ast;
 		}
@@ -185,7 +185,7 @@ public class ClaferModel {
 	}
 
 	public AstClafer getChild(String name) {
-		for (AstClafer chil : AstUtil.getClafers(model)) {
+		for (AstClafer chil : AstUtil.getClafers(triple.getFst())) {
 			if (chil.getName().contains(name)) {
 				return chil;
 			}
@@ -194,7 +194,7 @@ public class ClaferModel {
 	}
 
 	public AstModel getModel() {
-		return this.model;
+		return triple.getFst();
 	}
 
 	/*
@@ -203,19 +203,74 @@ public class ClaferModel {
 	 * otherwise
 	 */
 	public Triple<AstModel, Scope, Objective[]> getTriple() {
-		return Check.notNull(pair);
+		return Check.notNull(triple);
 	}
 
 	public Map<String, AstConcreteClafer> getConstraintClafers() {
 		return Check.notNull(constraintClafers);
 	}
+//
+//	/**
+//	 * @param astConcreteClafer
+//	 */
+//	public void getPrimitive(AstConcreteClafer astConcreteClafer) {
+//		pClafer.getPrimitive(astConcreteClafer);
+//
+//	}
+	
+	public void addClaferProperties(AstClafer inputClafer) {
+		try {
+			if (inputClafer.hasChildren()) {
+				if (inputClafer.getGroupCard().getLow() >= 1) {
+					properties.add((AstConcreteClafer) inputClafer);
+				} else
+					for (AstConcreteClafer in : inputClafer.getChildren())
+						addClaferProperties(in);
+			}
+			if (inputClafer.hasRef()) {
+				if (inputClafer.getRef().getTargetType().isPrimitive() == true
+						&& (inputClafer.getRef().getTargetType().getName()
+								.contains("string") == false)) {
+					properties.add((AstConcreteClafer) inputClafer);
 
-	/**
-	 * @param astConcreteClafer
-	 */
-	public void getPrimitive(AstConcreteClafer astConcreteClafer) {
-		pClafer.getPrimitive(astConcreteClafer);
-
+				} else if (inputClafer.getRef().getTargetType().isPrimitive() == false) {
+					addClaferProperties(inputClafer.getRef().getTargetType());
+				}
+			}
+			if (inputClafer.getSuperClafer() != null)
+				addClaferProperties(inputClafer.getSuperClafer());
+		} catch (Exception E) {
+			E.printStackTrace();
+		}
 	}
+
+	public void addClaferProperties(AstAbstractClafer inputClafer) {
+
+		try {
+			if (inputClafer.hasChildren()) {
+				for (AstConcreteClafer in : inputClafer.getChildren())
+					addClaferProperties(in);
+			}
+			if (inputClafer.hasRef())
+				addClaferProperties(inputClafer.getRef().getTargetType());
+
+			if (inputClafer.getSuperClafer() != null)
+				addClaferProperties(inputClafer.getSuperClafer());
+
+		} catch (Exception E) {
+			E.printStackTrace();
+		}
+	}
+
+	
+	public void createClaferConstraintMap(AstConcreteClafer inputClafer) {
+		if (inputClafer.hasChildren())
+			for (AstConcreteClafer s : inputClafer.getChildren()) {
+				properties = new ArrayList<AstConcreteClafer>();
+				addClaferProperties(s);
+				StringLabelMapper.getPropertyLabels().put(s, properties);
+			}
+	}
+
 
 }

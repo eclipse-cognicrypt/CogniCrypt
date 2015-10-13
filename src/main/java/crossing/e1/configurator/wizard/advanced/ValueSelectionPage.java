@@ -47,8 +47,8 @@ import org.eclipse.swt.widgets.Spinner;
 import crossing.e1.configurator.Lables;
 import crossing.e1.configurator.ReadConfig;
 import crossing.e1.featuremodel.clafer.ClaferModel;
+import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
-import crossing.e1.featuremodel.clafer.ParseClafer;
 import crossing.e1.featuremodel.clafer.StringLabelMapper;
 
 
@@ -61,7 +61,6 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 	private List<ComboViewer> options;
 	private HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>> userOptions;
 	private HashMap<String, AstConcreteClafer> userGroupOptions;
-	private ParseClafer parser = new ParseClafer();
 	List<Composite> widgets = new ArrayList<Composite>();
 	boolean statusPage = false;
 
@@ -103,7 +102,7 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 			// label4.setText("");
 
 			Group titledPanel = new Group(container, SWT.NONE);
-			titledPanel.setText(parser.trim(clafer.getName()));
+			titledPanel.setText(ClaferModelUtils.trimScope(clafer.getName()));
 			Font boldFont = new Font(titledPanel.getDisplay(), new FontData(
 					"Arial", 9, SWT.BOLD));
 			titledPanel.setFont(boldFont);
@@ -122,7 +121,7 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 				} else
 
 					getWidget(titledPanel, clafer, claf,
-							parser.trim(claf.getName()), 1, 0, 1024, 0, 1, 1);
+							ClaferModelUtils.trimScope(claf.getName()), 1, 0, 1024, 0, 1, 1);
 			}
 		}
 		setControl(container);
@@ -175,12 +174,12 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 		label5.setText("	");
 		ArrayList<String> optionLables = new ArrayList<String>();
 		Label label1 = new Label(container, SWT.NONE);
-		label1.setText(parser.trim(claferProperty.getName()));
+		label1.setText(ClaferModelUtils.trimScope(claferProperty.getName()));
 		for (AstConcreteClafer astClafer : claferProperty.getChildren()) {
 			userGroupOptions.put(
-					claferMain.getName() + parser.trim(astClafer.getName()),
+					claferMain.getName() + ClaferModelUtils.trimScope(astClafer.getName()),
 					astClafer);
-			optionLables.add(parser.trim(astClafer.getName()));
+			optionLables.add(ClaferModelUtils.trimScope(astClafer.getName()));
 		}
 		ComboViewer option = new ComboViewer(container, SWT.NONE);
 		option.setContentProvider(ArrayContentProvider.getInstance());

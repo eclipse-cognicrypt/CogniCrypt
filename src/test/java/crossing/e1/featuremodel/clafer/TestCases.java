@@ -9,7 +9,6 @@ import org.clafer.ast.AstConcreteClafer;
 import crossing.e1.configurator.ReadConfig;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
-import crossing.e1.featuremodel.clafer.ParseClafer;
 import crossing.e1.featuremodel.clafer.StringLabelMapper;
 import crossing.e1.xml.export.PublishToXML;
 
@@ -40,7 +39,6 @@ public class TestCases {
 	private void displayProperties(ClaferModel model) {
 
 		System.out.println("----- Listing Propertie -----");
-		ParseClafer parser = new ParseClafer();
 
 		System.out.println("Task Name "
 				+ StringLabelMapper.getTaskLabels().keySet().toArray()[0]
@@ -65,8 +63,7 @@ public class TestCases {
 			System.out.println(inst + " => "
 					+ StringLabelMapper.getTaskLabels().get(inst));
 		}
-		ParseClafer parser = new ParseClafer();
-		parser.setConstraintClafers(StringLabelMapper.getTaskLabels().get(
+		model.createClaferConstraintMap(StringLabelMapper.getTaskLabels().get(
 				StringLabelMapper.getTaskLabels().keySet().toArray()[0]
 						.toString()));
 
@@ -109,9 +106,9 @@ public class TestCases {
 
 	InstanceGenerator getInstance(ClaferModel model) {
 		System.out.println("-- Testing instance Generator method--");
-		InstanceGenerator instance = new InstanceGenerator();
+		InstanceGenerator instance = new InstanceGenerator(model);
 		;
-		instance.generateInstances(model, getMap(),false);
+		instance.generateInstances(getMap(),false);
 		System.out.println("There are " + instance.getNoOfInstances()
 				+ " instances");
 		return instance;

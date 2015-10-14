@@ -1,14 +1,11 @@
 enum Security= Broken | Weak | Modern | Strong
+enum Performance=VerySlow | Slow | Fast | VeryFast
 
 abstract Algorithm
     name -> string
     description -> string
     security -> Security
-    xor performance 
-    	VerySlow
-       	Slow
-    	Fast
-    	VeryFast
+    performance -> Performance
 
 abstract Digest : Algorithm
     outputSize -> integer
@@ -47,11 +44,11 @@ Ciphers
 		[keySize > 128 => Fast && security = Strong]
 
 	DES: SymmetricBlockCipher
-	    [ description = "DES encryption"]
-	    [ name = "DES"]
-	    [ VeryFast ]
-	    [ security = Weak ]
-	    [ keySize = 56 ]
+	    [description = "DES encryption"]
+	    [name = "DES"]
+	    [performance = VeryFast ]
+	    [security = Weak ]
+	    [keySize = 56 ]
 
 //group digest algorithms together
 //for easier viewing/collapsing etc.
@@ -59,14 +56,14 @@ DigestAlgorithms
 	md5: Digest
 		[description = "MD5 digest"]
 		[name = "MD5 digest"]
-		[VeryFast]
+		[performance = VeryFast]
 		[security = Broken]
 		[outputSize = 128]
 
 	sha_1: Digest
 		[name = "SHA-1"]
 		[description = "SHA-1 digest"]
-		[VeryFast]
+		[performance = VeryFast]
 		[security = Modern]
 		[outputSize = 160]
 	
@@ -75,26 +72,26 @@ DigestAlgorithms
 		[name = "SHA-256 digest"]
 		[outputSize = 256 ]
 		[security = Strong]
-		[Slow]	
+		[performance = Slow]	
 
 KeyDerivationAlgorithms
 	pbkdf : KeyDerivationAlgorithm
 		[name = "PBKDF2"]
 		[description = "PBKDF2 key derivation"]
-		[Slow]
+		[performance = Slow]
 		[digest]
 	
 	scrypt: KeyDerivationAlgorithm
 		[name = "scrypt"]
 		[description = "Scrypt password-based key derivation"]
 		[no digest] //scrypt does not need a digest specified. It internally uses HMAC_SHA256
-		[VerySlow]
+		[performance = VerySlow]
 
 	bcrypt: KeyDerivationAlgorithm
 		[name = "bcrypt"]
 		[description = "Bcrypt password-based key derivation"]
 		[no digest] //scrypt does not need a digest specified. It internally uses blowfish
-		[Slow]
+		[performance = Slow]
 		[outputSize = 192]//FIXME: is 192 really the only output size of bcrypt?
 		
 

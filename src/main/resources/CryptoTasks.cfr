@@ -18,17 +18,13 @@ abstract KeyDerivationAlgorithm : Algorithm
 	[digest => security.ref = digest.security.ref]
 	[no digest => outputSize = 128 || outputSize = 192 || outputSize = 256]//fix popular outputSize else all values upto maxInt will be allowed
 	[no digest && outputSize = 128 => security = Modern]
-	[no digest && outputSize > 128 => security = Strong ]
+	[no digest && outputSize > 128 => security = Strong]
 	[iterations = 1000]//1000 is the accepted default number of iterations for a slow enough computation
 
 abstract Task
 	description -> string
 
-abstract Cipher : Algorithm 
-  //   xor memory
-		// Low
-		// Medium
-		// High    	  
+abstract Cipher : Algorithm   
 
 abstract SymmetricCipher : Cipher
     keySize -> integer
@@ -40,8 +36,8 @@ Ciphers
 		[description = "Advanced Encryption Standard (AES) cipher"]
 		[name = "AES"]
 		[keySize = 128 || keySize = 192 || keySize = 256]
-		[keySize = 128 => VeryFast && security = Modern]
-		[keySize > 128 => Fast && security = Strong]
+		[keySize = 128 => performance = VeryFast && security = Modern]
+		[keySize > 128 => performance = Fast && security = Strong]
 
 	DES: SymmetricBlockCipher
 	    [description = "DES encryption"]

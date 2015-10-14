@@ -71,8 +71,8 @@ c0_KeyDerivationAlgorithm.addConstraint(equal(joinRef(join($this(), c0_iteration
 c0_AES.addConstraint(equal(joinRef(join($this(), c0_description)), constant("\"Advanced Encryption Standard (AES) cipher\"")));
 c0_AES.addConstraint(equal(joinRef(join($this(), c0_name)), constant("\"AES\"")));
 c0_AES.addConstraint(or(or(equal(joinRef(join($this(), c0_keySize)), constant(128)), equal(joinRef(join($this(), c0_keySize)), constant(192))), equal(joinRef(join($this(), c0_keySize)), constant(256))));
-c0_AES.addConstraint(implies(equal(joinRef(join($this(), c0_keySize)), constant(128)), and(some(global(c0_VeryFast)), equal(joinRef(join($this(), c0_security)), global(c0_Modern)))));
-c0_AES.addConstraint(implies(greaterThan(joinRef(join($this(), c0_keySize)), constant(128)), and(some(global(c0_Fast)), equal(joinRef(join($this(), c0_security)), global(c0_Strong)))));
+c0_AES.addConstraint(implies(equal(joinRef(join($this(), c0_keySize)), constant(128)), and(equal(joinRef(join($this(), c0_performance)), global(c0_VeryFast)), equal(joinRef(join($this(), c0_security)), global(c0_Modern)))));
+c0_AES.addConstraint(implies(greaterThan(joinRef(join($this(), c0_keySize)), constant(128)), and(equal(joinRef(join($this(), c0_performance)), global(c0_Fast)), equal(joinRef(join($this(), c0_security)), global(c0_Strong)))));
 c0_DES.addConstraint(equal(joinRef(join($this(), c0_description)), constant("\"DES encryption\"")));
 c0_DES.addConstraint(equal(joinRef(join($this(), c0_name)), constant("\"DES\"")));
 c0_DES.addConstraint(equal(joinRef(join($this(), c0_performance)), global(c0_VeryFast)));

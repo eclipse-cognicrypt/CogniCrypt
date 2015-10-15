@@ -43,7 +43,7 @@ import crossing.e1.configurator.Lables;
 import crossing.e1.configurator.tasks.beginner.CryptoTask;
 import crossing.e1.configurator.tasks.beginner.TaskUtils;
 import crossing.e1.featuremodel.clafer.ClaferModel;
-import crossing.e1.featuremodel.clafer.StringLabelMapper;
+import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
 public class TaskSelectionPage extends WizardPage {
 
@@ -68,7 +68,7 @@ public class TaskSelectionPage extends WizardPage {
 	@Override
 	public void createControl(Composite parent) {
 		//tasks = new HashMap<String, String>();
-		Set<String> availableTasks = StringLabelMapper.getTaskLabels().keySet();//TaskUtils.getAvailableTasks();
+		Set<String> availableTasks = PropertiesMapperUtil.getTaskLabelsMap().keySet();//TaskUtils.getAvailableTasks();
 		container = new Composite(parent, SWT.NONE);
 		container.setBounds(10, 10, 200, 200);
 		GridLayout layout = new GridLayout();
@@ -107,7 +107,7 @@ public class TaskSelectionPage extends WizardPage {
 								.getSelection();
 
 						String selectedTask = selection.getFirstElement().toString();
-					System.out.println("TASK IS "+StringLabelMapper.getTaskLabels().get(selectedTask).getName());
+					System.out.println("TASK IS "+PropertiesMapperUtil.getTaskLabelsMap().get(selectedTask).getName());
 						setValue(selectedTask);
 
 					}
@@ -125,9 +125,9 @@ public class TaskSelectionPage extends WizardPage {
 		
 		
 		if (selectedTask.length() > 0){
-			StringLabelMapper.resetProperties();
-			AstConcreteClafer claferSelected=StringLabelMapper.getTaskLabels().get(selectedTask);
-			model.createClaferConstraintMap(claferSelected);
+			PropertiesMapperUtil.resetPropertiesMap();
+			AstConcreteClafer claferSelected=PropertiesMapperUtil.getTaskLabelsMap().get(selectedTask);
+			model.createClaferPropertiesMap(claferSelected);
 			setValue(selectedTask);
 			return true;
 		}else

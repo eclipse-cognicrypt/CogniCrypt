@@ -21,12 +21,14 @@ import java.util.ArrayList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import crossing.e1.configurator.Lables;
+
 /**
  * @author Ram
  *
  */
 
-public class Answer {
+public class Answer implements Lables{
 	private ArrayList<Dependency> dependencies;
 	boolean hasDependencies = false;
 	private String value;
@@ -139,11 +141,6 @@ public class Answer {
 	 */
 	public void setDependencies(ArrayList<Dependency> dependencies) {
 		this.dependencies = dependencies;
-	}
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

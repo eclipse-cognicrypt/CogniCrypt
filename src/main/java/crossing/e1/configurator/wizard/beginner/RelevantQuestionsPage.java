@@ -99,9 +99,9 @@ public class RelevantQuestionsPage extends WizardPage {
 		
 		//gen.generateInstances(new ClaferModel(new ReadConfig().getClaferPath()), constraints);
 		
-//		for (AstConcreteClafer clafer : StringLabelMapper.getPropertyLabels()
+//		for (AstConcreteClafer clafer : PropertiesMapperUtil.getPropertyLabels()
 //				.keySet()) {
-//			for (AstConcreteClafer claf : StringLabelMapper
+//			for (AstConcreteClafer claf : PropertiesMapperUtil
 //					.getPropertyLabels().get(clafer)) {
 //				
 //				for(Constraint constraint : constraints){

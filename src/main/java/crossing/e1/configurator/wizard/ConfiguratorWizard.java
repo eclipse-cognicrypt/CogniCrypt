@@ -36,7 +36,7 @@ import crossing.e1.configurator.wizard.beginner.DisplayQuestions;
 import crossing.e1.configurator.wizard.beginner.QuestionsBeginner;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
-import crossing.e1.featuremodel.clafer.StringLabelMapper;
+import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
 public class ConfiguratorWizard extends Wizard {
 
@@ -82,10 +82,10 @@ public class ConfiguratorWizard extends Wizard {
 			if (taskListPage.isAdvancedMode())
 				valueListPage = new ValueSelectionPage(null, claferModel);
 			else {
-				claferModel.createClaferConstraintMap(StringLabelMapper.getTaskLabels()
+				claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap()
 						.get(taskListPage.getValue()));
 				quest = new QuestionsBeginner();
-				quest.init(StringLabelMapper.getTaskLabels()
+				quest.init(PropertiesMapperUtil.getTaskLabelsMap()
 						.get(taskListPage.getValue()).getName());
 				if (quest.hasQuestions())
 					valueListPage = new DisplayQuestions(quest);

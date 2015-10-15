@@ -18,16 +18,16 @@ package crossing.e1.xml.export;
 
 import java.util.ArrayList;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+
+import crossing.e1.configurator.Lables;
 
 /**
  * @author Ram
  *
  */
-public class Question {
+public class Question implements Lables {
 	private ArrayList<Answer> answers = null;
 	String def;
 	String display;
@@ -131,11 +131,6 @@ public class Question {
 	 */
 	public void setAnswers(ArrayList<Answer> answers) {
 		this.answers = answers;
-	}
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

@@ -84,7 +84,7 @@ public class InstanceGenerator {
 			AstConcreteClafer main = model
 					.addChild("Main")
 					.addChild("MAINTASK")
-					.refTo(StringLabelMapper.getTaskLabels().get(getTaskName()));
+					.refTo(PropertiesMapperUtil.getTaskLabelsMap().get(getTaskName()));
 			basicModeHandler(main, map);
 			solver = ClaferCompiler.compile(model, claferModel.getScope());
 			while (solver.find()) {
@@ -113,7 +113,7 @@ public class InstanceGenerator {
 			AstConcreteClafer m = model
 					.addChild("Main")
 					.addChild("MAINTASK")
-					.refTo(StringLabelMapper.getTaskLabels().get(getTaskName()));
+					.refTo(PropertiesMapperUtil.getTaskLabelsMap().get(getTaskName()));
 			if (isadvanced)
 				advancedModeHandler(m, map);
 
@@ -159,11 +159,11 @@ public class InstanceGenerator {
 	 */
 	// FIXME include group operator
 	void basicModeHandler(AstConcreteClafer m, HashMap<String, Answer> map) {
-		Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> b = StringLabelMapper
-				.getPropertyLabels();
+		Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> b = PropertiesMapperUtil
+				.getPropertiesMap();
 
 		for (AstConcreteClafer main : m.getRef().getTargetType().getChildren()) {
-			for (AstConcreteClafer ast : StringLabelMapper.getPropertyLabels()
+			for (AstConcreteClafer ast : PropertiesMapperUtil.getPropertiesMap()
 					.keySet()) {
 				if (main.getName().equals(ast.getName())) {
 					ArrayList<AstConcreteClafer> propertiesList = b.get(ast);

@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Label;
 
 import crossing.e1.configurator.Lables;
 import crossing.e1.featuremodel.clafer.ClaferModel;
-import crossing.e1.featuremodel.clafer.StringLabelMapper;
+import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 import crossing.e1.xml.export.Answer;
 import crossing.e1.xml.export.Question;
 import crossing.e1.xml.export.ReadTaskConfig;
@@ -121,11 +121,11 @@ public class DisplayQuestions extends WizardPage {
 		// ArrayList<Integer> values = null;
 		// ArrayList<AstConcreteClafer> keys = null; // new
 		// // ArrayList<AstConcreteClafer>();
-		// for (AstConcreteClafer clafer : StringLabelMapper.getPropertyLabels()
+		// for (AstConcreteClafer clafer : PropertiesMapperUtil.getPropertyLabels()
 		// .keySet()) {
 		// values = new ArrayList<Integer>();
 		// keys = new ArrayList<AstConcreteClafer>();
-		// for (AstConcreteClafer claf : StringLabelMapper.getPropertyLabels()
+		// for (AstConcreteClafer claf : PropertiesMapperUtil.getPropertyLabels()
 		// .get(clafer)) {
 		// HashMap<HashMap<String, String>, List<String>> qutionare = quest
 		// .getQutionare();

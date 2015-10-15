@@ -49,7 +49,7 @@ import crossing.e1.configurator.ReadConfig;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
-import crossing.e1.featuremodel.clafer.StringLabelMapper;
+import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
 
 public class ValueSelectionPage extends WizardPage implements Lables {
@@ -90,7 +90,7 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 		container.setLayout(layout);
 		layout.numColumns = 1;
 
-		for (AstConcreteClafer clafer : StringLabelMapper.getPropertyLabels()
+		for (AstConcreteClafer clafer : PropertiesMapperUtil.getPropertiesMap()
 				.keySet()) {
 
 			// Label label3 = new Label(container, SWT.NONE);
@@ -111,7 +111,7 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 			layout2.numColumns = 4;
 			titledPanel.setLayout(layout2);
 			ArrayList<AstConcreteClafer> x = new ArrayList<AstConcreteClafer>(
-					new LinkedHashSet(StringLabelMapper.getPropertyLabels()
+					new LinkedHashSet(PropertiesMapperUtil.getPropertiesMap()
 							.get(clafer)));
 			for (AstConcreteClafer claf : x) {
 

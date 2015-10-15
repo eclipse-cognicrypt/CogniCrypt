@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 /**
  * @author Ram Kamath
  *
@@ -48,15 +47,15 @@ public class ClaferModel {
 	private String modelName;
 	Triple<AstModel, Scope, Objective[]> triple;
 	private Map<String, AstConcreteClafer> constraintClafers;
-	//private ParseClafer pClafer = new ParseClafer();
-	ArrayList<AstConcreteClafer> properties;
+	// private ParseClafer pClafer = new ParseClafer();
+	ArrayList<AstConcreteClafer> propertiesList;
 
 	public ClaferModel(String path) {
 		loadModel(path);
-		properties = new ArrayList<AstConcreteClafer>();
+		propertiesList = new ArrayList<AstConcreteClafer>();
 	}
 
-	public Scope getScope(){
+	public Scope getScope() {
 		return triple.getSnd();
 	}
 
@@ -74,50 +73,24 @@ public class ClaferModel {
 		}
 	}
 
-	public List<AstConcreteClafer> getClafersByType(String type) {
-		return triple.getFst().getChildren().stream()
-				.filter(child -> child.getSuperClafer().getName().equals(type))
-				.collect(Collectors.toList());
-	}
+//	public List<AstConstraint> getConstraints() {
+//		return getConstraints(triple.getFst().getChildren());
+//	}
+//
+//	// Method to provide list of constraints of the model
+//	public List<AstConstraint> getConstraints(List<AstConcreteClafer> type) {
+//		List<AstConstraint> constarint = new ArrayList<AstConstraint>();
+//
+//		for (AstConcreteClafer object : type) {
+//			if (object.hasChildren()) {
+//				constarint.addAll(this.getConstraints(object.getChildren()));
+//
+//			} else
+//				constarint.addAll(object.getConstraints());
+//		}
+//		return constarint;
+//	}
 
-	public List<AstConstraint> getConstraints() {
-		return getConstraints(triple.getFst().getChildren());
-	}
-
-	// Method to provide list of constraints of the model
-	public List<AstConstraint> getConstraints(List<AstConcreteClafer> type) {
-		List<AstConstraint> constarint = new ArrayList<AstConstraint>();
-
-		for (AstConcreteClafer object : type) {
-			if (object.hasChildren()) {
-				constarint.addAll(this.getConstraints(object.getChildren()));
-
-			} else
-				constarint.addAll(object.getConstraints());
-		}
-		return constarint;
-	}
-
-	public List<AstConcreteClafer> getChildByName(String name,
-			List<AstConcreteClafer> type) {
-		List<AstConcreteClafer> children = new ArrayList<AstConcreteClafer>();
-		for (AstConcreteClafer object : type) {
-
-			if (object.hasChildren()) {
-				children.addAll(this.getChildByName(name, object.getChildren()));
-
-			} else {
-				if (object.getName().toString().contains(name)) {
-					children.add(object);
-				}
-			}
-		}
-		return children;
-	}
-
-	public Map<String, AstConcreteClafer> getTaskList(AstModel model) {
-		return Check.notNull(StringLabelMapper.getTaskLabels());
-	}
 
 	void setTaskList(AstModel model) {
 		String key = "";
@@ -134,12 +107,11 @@ public class ClaferModel {
 											constraint.getExpr().toString()
 													.indexOf("=") + 1,
 											constraint.getExpr().toString()
-													.length()).trim().replace("\"", "");
+													.length()).trim()
+									.replace("\"", "");
 						}
 					}
-					System.out.println(clafer.getConstraints().get(0).getExpr()
-							+ " EXPR");// .toString()
-					StringLabelMapper.getTaskLabels().put(key,
+				PropertiesMapperUtil.getTaskLabelsMap().put(key,
 							(AstConcreteClafer) clafer);
 
 				}
@@ -154,19 +126,6 @@ public class ClaferModel {
 				.collect(Collectors.toList());
 	}
 
-	public AstConcreteClafer getClafersByParent(String type) {
-
-		for (AstConcreteClafer ast : triple.getFst().getChildren()) {
-			if (ast.getSuperClafer().getName().contains(type))
-				return ast;
-		}
-		return null;
-	}
-
-	public List<AstConcreteClafer> getClaferProperties(AstConcreteClafer clafer) {
-		return clafer.getChildren();
-	}
-
 	public void setModelName(String modelName) {
 
 		this.modelName = modelName;
@@ -177,45 +136,28 @@ public class ClaferModel {
 		return modelName;
 	}
 
-	public AstClafer getChild(String name) {
-		for (AstClafer chil : AstUtil.getClafers(triple.getFst())) {
-			if (chil.getName().contains(name)) {
-				return chil;
-			}
-		}
-		return null;
-	}
-
 	public AstModel getModel() {
 		return triple.getFst();
-	}
-
-	/*
-	 * This method is used to retrive the scope and objectives from compiles
-	 * javaScript file This method will return collection if succeeded ,null
-	 * otherwise
-	 */
-	public Triple<AstModel, Scope, Objective[]> getTriple() {
-		return Check.notNull(triple);
 	}
 
 	public Map<String, AstConcreteClafer> getConstraintClafers() {
 		return Check.notNull(constraintClafers);
 	}
-//
-//	/**
-//	 * @param astConcreteClafer
-//	 */
-//	public void getPrimitive(AstConcreteClafer astConcreteClafer) {
-//		pClafer.getPrimitive(astConcreteClafer);
-//
-//	}
-	
+
+	//
+	// /**
+	// * @param astConcreteClafer
+	// */
+	// public void getPrimitive(AstConcreteClafer astConcreteClafer) {
+	// pClafer.getPrimitive(astConcreteClafer);
+	//
+	// }
+
 	public void addClaferProperties(AstClafer inputClafer) {
 		try {
 			if (inputClafer.hasChildren()) {
 				if (inputClafer.getGroupCard().getLow() >= 1) {
-					properties.add((AstConcreteClafer) inputClafer);
+					propertiesList.add((AstConcreteClafer) inputClafer);
 				} else
 					for (AstConcreteClafer in : inputClafer.getChildren())
 						addClaferProperties(in);
@@ -224,7 +166,7 @@ public class ClaferModel {
 				if (inputClafer.getRef().getTargetType().isPrimitive() == true
 						&& (inputClafer.getRef().getTargetType().getName()
 								.contains("string") == false)) {
-					properties.add((AstConcreteClafer) inputClafer);
+					propertiesList.add((AstConcreteClafer) inputClafer);
 
 				} else if (inputClafer.getRef().getTargetType().isPrimitive() == false) {
 					addClaferProperties(inputClafer.getRef().getTargetType());
@@ -255,15 +197,14 @@ public class ClaferModel {
 		}
 	}
 
-	
-	public void createClaferConstraintMap(AstConcreteClafer inputClafer) {
+	public void createClaferPropertiesMap(AstConcreteClafer inputClafer) {
 		if (inputClafer.hasChildren())
-			for (AstConcreteClafer s : inputClafer.getChildren()) {
-				properties = new ArrayList<AstConcreteClafer>();
-				addClaferProperties(s);
-				StringLabelMapper.getPropertyLabels().put(s, properties);
+			for (AstConcreteClafer childClafer : inputClafer.getChildren()) {
+				propertiesList = new ArrayList<AstConcreteClafer>();
+				addClaferProperties(childClafer);
+				PropertiesMapperUtil.getPropertiesMap().put(childClafer,
+						propertiesList);
 			}
 	}
-
 
 }

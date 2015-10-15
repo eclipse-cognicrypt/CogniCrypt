@@ -14,11 +14,8 @@ abstract KeyDerivationAlgorithm : Algorithm
 	iterations -> integer
 	outputSize -> integer
 	digest -> Digest?
-	[digest => outputSize = digest.outputSize]
-	[digest => security.ref = digest.security.ref]
-	[no digest => outputSize = 128 || outputSize = 192 || outputSize = 256]//fix popular outputSize else all values upto maxInt will be allowed
-	[no digest && outputSize = 128 => security = Modern]
-	[no digest && outputSize > 128 => security = Strong]
+	[outputSize = 128 || outputSize = 192 || outputSize = 256]//fix popular outputSize else all values upto maxInt will be allowed
+	[digest.security.ref != Broken]
 	[iterations = 1000]//1000 is the accepted default number of iterations for a slow enough computation
 
 abstract Task
@@ -31,7 +28,7 @@ abstract SymmetricCipher : Cipher
 
 abstract SymmetricBlockCipher : SymmetricCipher
 
-Ciphers
+Ciphers ?
 	AES: SymmetricBlockCipher
 		[description = "Advanced Encryption Standard (AES) cipher"]
 		[name = "AES"]
@@ -71,17 +68,19 @@ DigestAlgorithms
 		[performance = Slow]	
 
 KeyDerivationAlgorithms
-	pbkdf : KeyDerivationAlgorithm
+	pbkdf2 : KeyDerivationAlgorithm
 		[name = "PBKDF2"]
 		[description = "PBKDF2 key derivation"]
 		[performance = Slow]
 		[digest]
+		[security.ref = digest.security.ref]
 	
 	scrypt: KeyDerivationAlgorithm
 		[name = "scrypt"]
 		[description = "Scrypt password-based key derivation"]
 		[no digest] //scrypt does not need a digest specified. It internally uses HMAC_SHA256
 		[performance = VerySlow]
+		[security = Modern]
 
 	bcrypt: KeyDerivationAlgorithm
 		[name = "bcrypt"]
@@ -98,6 +97,7 @@ SymmetricEncryption : Task
 SecurePassword : Task
 	[description = "Represent password in a secure way for storage"]
 	kda -> KeyDerivationAlgorithm
+	[no Ciphers]
 	
 PasswordBasedEncryption : Task
  	[description = "Encrypt data using a given password"]

@@ -1,4 +1,4 @@
-enum Security= Broken | Weak | Modern | Strong
+enum Security= Broken | Weak | Medium | Strong
 enum Performance=VerySlow | Slow | Fast | VeryFast
 
 abstract Algorithm
@@ -33,14 +33,14 @@ Ciphers ?
 		[description = "Advanced Encryption Standard (AES) cipher"]
 		[name = "AES"]
 		[keySize = 128 || keySize = 192 || keySize = 256]
-		[keySize = 128 => performance = VeryFast && security = Modern]
+		[keySize = 128 => performance = VeryFast && security = Medium]
 		[keySize > 128 => performance = Fast && security = Strong]
 
 	DES: SymmetricBlockCipher
 	    [description = "DES encryption"]
 	    [name = "DES"]
 	    [performance = VeryFast ]
-	    [security = Weak ]
+	    [security = Broken ]
 	    [keySize = 56 ]
 
 //group digest algorithms together
@@ -57,7 +57,7 @@ DigestAlgorithms
 		[name = "SHA-1"]
 		[description = "SHA-1 digest"]
 		[performance = VeryFast]
-		[security = Modern]
+		[security = Weak]
 		[outputSize = 160]
 	
 	sha_256: Digest
@@ -80,7 +80,7 @@ KeyDerivationAlgorithms
 		[description = "Scrypt password-based key derivation"]
 		[no digest] //scrypt does not need a digest specified. It internally uses HMAC_SHA256
 		[performance = VerySlow]
-		[security = Modern]
+		[security = Strong]
 
 	bcrypt: KeyDerivationAlgorithm
 		[name = "bcrypt"]
@@ -88,7 +88,7 @@ KeyDerivationAlgorithms
 		[no digest] //scrypt does not need a digest specified. It internally uses blowfish
 		[performance = Slow]
 		[outputSize = 192]//FIXME: is 192 really the only output size of bcrypt?
-		
+		[security = Medium]
 
 SymmetricEncryption : Task
 	[description = "Encrypt data using a secret key"]

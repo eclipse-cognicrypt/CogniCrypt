@@ -9,17 +9,26 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import crossing.e1.configurator.ReadConfig;
+
 /**
- * @author kamathar
+ * @author Ram
  *
  */
 public class InstanceGeneratorTest {
+
+	private String path = new ReadConfig().getPath("claferPath");
+	private String claferName = "performance";
+	private String taskDescription = "Encrypt data using a secret key";
+	ClaferModel claferModel;
+	InstanceGenerator instanceGenerator;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
+		claferModel = new ClaferModel(path);
 	}
 
 	/**
@@ -30,15 +39,20 @@ public class InstanceGeneratorTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#InstanceGenerator()}.
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#InstanceGenerator()}
+	 * .
 	 */
 	@Test
 	public final void testInstanceGenerator() {
-		fail("Not yet implemented"); // TODO
+		instanceGenerator = new InstanceGenerator();
+		assertNotNull("failed to return instanceGenerator Object", instanceGenerator);
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#generateInstances(java.util.HashMap)}.
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#generateInstances(java.util.HashMap)}
+	 * .
 	 */
 	@Test
 	public final void testGenerateInstances() {
@@ -46,7 +60,9 @@ public class InstanceGeneratorTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#generateInstancesAdvancedUserMode(java.util.Map)}.
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#generateInstancesAdvancedUserMode(java.util.Map)}
+	 * .
 	 */
 	@Test
 	public final void testGenerateInstancesAdvancedUserMode() {
@@ -54,7 +70,9 @@ public class InstanceGeneratorTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#advancedModeHandler(org.clafer.ast.AstConcreteClafer, java.util.Map)}.
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#advancedModeHandler(org.clafer.ast.AstConcreteClafer, java.util.Map)}
+	 * .
 	 */
 	@Test
 	public final void testAdvancedModeHandler() {
@@ -62,7 +80,9 @@ public class InstanceGeneratorTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#basicModeHandler(org.clafer.ast.AstConcreteClafer, java.util.HashMap)}.
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#basicModeHandler(org.clafer.ast.AstConcreteClafer, java.util.HashMap)}
+	 * .
 	 */
 	@Test
 	public final void testBasicModeHandler() {
@@ -70,7 +90,9 @@ public class InstanceGeneratorTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#addConstraints(int, org.clafer.ast.AstConcreteClafer, int, org.clafer.ast.AstConcreteClafer, org.clafer.ast.AstConcreteClafer)}.
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#addConstraints(int, org.clafer.ast.AstConcreteClafer, int, org.clafer.ast.AstConcreteClafer, org.clafer.ast.AstConcreteClafer)}
+	 * .
 	 */
 	@Test
 	public final void testAddConstraints() {
@@ -78,7 +100,8 @@ public class InstanceGeneratorTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getScope()}.
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getScope()}.
 	 */
 	@Test
 	public final void testGetScope() {
@@ -86,7 +109,8 @@ public class InstanceGeneratorTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getInstances()}.
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getInstances()}.
 	 */
 	@Test
 	public final void testGetInstances() {
@@ -94,7 +118,9 @@ public class InstanceGeneratorTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#resetInstances()}.
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#resetInstances()}
+	 * .
 	 */
 	@Test
 	public final void testResetInstances() {
@@ -102,7 +128,9 @@ public class InstanceGeneratorTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#generateInstanceMapping()}.
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#generateInstanceMapping()}
+	 * .
 	 */
 	@Test
 	public final void testGenerateInstanceMapping() {
@@ -110,7 +138,9 @@ public class InstanceGeneratorTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getInstanceName(org.clafer.instance.InstanceClafer)}.
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getInstanceName(org.clafer.instance.InstanceClafer)}
+	 * .
 	 */
 	@Test
 	public final void testGetInstanceName() {
@@ -118,7 +148,9 @@ public class InstanceGeneratorTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getNoOfInstances()}.
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getNoOfInstances()}
+	 * .
 	 */
 	@Test
 	public final void testGetNoOfInstances() {
@@ -126,7 +158,9 @@ public class InstanceGeneratorTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#setNoOfInstances(int)}.
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#setNoOfInstances(int)}
+	 * .
 	 */
 	@Test
 	public final void testSetNoOfInstances() {
@@ -134,7 +168,8 @@ public class InstanceGeneratorTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getTaskName()}.
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getTaskName()}.
 	 */
 	@Test
 	public final void testGetTaskName() {
@@ -142,7 +177,9 @@ public class InstanceGeneratorTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#setTaskName(java.lang.String)}.
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#setTaskName(java.lang.String)}
+	 * .
 	 */
 	@Test
 	public final void testSetTaskName() {

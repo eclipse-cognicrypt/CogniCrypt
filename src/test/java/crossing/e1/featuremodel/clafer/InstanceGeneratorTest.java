@@ -38,18 +38,18 @@ public class InstanceGeneratorTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#generateInstances(java.util.HashMap, boolean)}.
+	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#generateInstances(java.util.HashMap)}.
 	 */
 	@Test
-	public final void testGenerateInstancesHashMapOfStringAnswerBoolean() {
+	public final void testGenerateInstances() {
 		fail("Not yet implemented"); // TODO
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#generateInstances(java.util.Map, boolean)}.
+	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#generateInstancesAdvancedUserMode(java.util.Map)}.
 	 */
 	@Test
-	public final void testGenerateInstancesMapOfArrayListOfAstConcreteClaferArrayListOfIntegerBoolean() {
+	public final void testGenerateInstancesAdvancedUserMode() {
 		fail("Not yet implemented"); // TODO
 	}
 
@@ -102,26 +102,18 @@ public class InstanceGeneratorTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getInstanceMapping()}.
+	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#generateInstanceMapping()}.
 	 */
 	@Test
-	public final void testGetInstanceMapping() {
+	public final void testGenerateInstanceMapping() {
 		fail("Not yet implemented"); // TODO
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getInstanceMapping(org.clafer.instance.InstanceClafer)}.
+	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getInstanceName(org.clafer.instance.InstanceClafer)}.
 	 */
 	@Test
-	public final void testGetInstanceMappingInstanceClafer() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getInstances(java.lang.String)}.
-	 */
-	@Test
-	public final void testGetInstancesString() {
+	public final void testGetInstanceName() {
 		fail("Not yet implemented"); // TODO
 	}
 
@@ -138,14 +130,6 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testSetNoOfInstances() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getVariables()}.
-	 */
-	@Test
-	public final void testGetVariables() {
 		fail("Not yet implemented"); // TODO
 	}
 

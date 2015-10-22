@@ -101,8 +101,8 @@ public class ConfiguratorWizard extends Wizard {
 			if (taskListPage.isAdvancedMode()
 					&& ((ValueSelectionPage) valueListPage).getPageStatus() == true) {
 				System.out.println("Invoking instance generator");
-				instanceGenerator.generateInstances(
-						((ValueSelectionPage) currentPage).getMap(),true);
+				instanceGenerator.generateInstancesAdvancedUserMode(
+						((ValueSelectionPage) currentPage).getMap());
 				if (new Validator().validate(instanceGenerator)) {					
 					instanceListPage = new InstanceListPage(instanceGenerator);
 					addPage(instanceListPage);
@@ -115,7 +115,7 @@ public class ConfiguratorWizard extends Wizard {
 						((DisplayQuestions) currentPage).getSelection(),
 						claferModel);
 				instanceGenerator.generateInstances(
-						((DisplayQuestions) currentPage).getMap(),false);
+						((DisplayQuestions) currentPage).getMap());
 
 				if (new Validator().validate(instanceGenerator)) {
 					instanceListPage = new InstanceListPage(instanceGenerator);

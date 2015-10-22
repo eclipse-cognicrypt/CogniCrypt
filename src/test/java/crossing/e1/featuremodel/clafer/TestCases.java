@@ -108,7 +108,7 @@ public class TestCases {
 		System.out.println("-- Testing instance Generator method--");
 		InstanceGenerator instance = new InstanceGenerator();
 		;
-		instance.generateInstances(getMap(),false);
+		instance.generateInstancesAdvancedUserMode(getMap());
 		System.out.println("There are " + instance.getNoOfInstances()
 				+ " instances");
 		return instance;

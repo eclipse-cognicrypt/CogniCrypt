@@ -25,6 +25,21 @@ import java.util.Properties;
 
 public interface Lables {
 	Properties prop = new ReadLables("src/main/resources/Labels.properties").getProperties();
+	String DEPENDENCIES = "dependencies";
+	String DEPENDENCY = "dependency";
+	String VALUE = "value";
+	String OPERATOR = "operator";
+	String REF_CLAFER = "refClafer";
+	String IS_GROUP = "isGroup";
+	String REF = "ref";
+	String ANSWER_LIST = "Answers";
+	String ANSWER = "Answer";
+	String DEF = "def";
+	String DISPLAY = "display";
+	String TASK = "Task";
+	String TASK_NAME = "name";
+	String QUESTION_LIST = "Questions";
+	String QUESTION = "Question";
 	static final String CONFIG_PATH = prop.getProperty("CONFIG_PATH");
 	static final String CLAFER_PATH = prop.getProperty("CLAFER_PATH");
 	static final String PLUGINID = prop.getProperty("PLUGINID");

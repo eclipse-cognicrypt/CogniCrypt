@@ -35,10 +35,10 @@ public class ReadTaskConfig implements Lables{
 			dBuilder = dbFactory.newDocumentBuilder();
 			doc = dBuilder.parse(fXmlFile);
 			doc.getDocumentElement().normalize();
-			NodeList nList = doc.getElementsByTagName("Task");
+			NodeList nList = doc.getElementsByTagName(Lables.TASK);
 			for (int temp = 0; temp < nList.getLength(); temp++) {
 				Node nNode = nList.item(temp);
-				if (((Element) nNode).getAttribute("name").toString()
+				if (((Element) nNode).getAttribute(Lables.TASK_NAME).toString()
 						.equals(task))
 					getQuestionsAndAnswers(nNode);
 
@@ -58,11 +58,11 @@ public class ReadTaskConfig implements Lables{
 		if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
 			Element eElement = (Element) nNode;
-			NodeList questions = eElement.getElementsByTagName("Questions");
+			NodeList questions = eElement.getElementsByTagName(Lables.QUESTION_LIST);
 			for (int temp = 0; temp < questions.getLength(); temp++) {
 				Node question = questions.item(temp);
 				NodeList questionList = ((Element) question)
-						.getElementsByTagName("Question");
+						.getElementsByTagName(Lables.QUESTION);
 				parseQuestions(questionList);
 
 			}

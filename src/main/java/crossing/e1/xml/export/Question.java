@@ -38,11 +38,11 @@ public class Question implements Lables {
 		NodeList answer = null;
 		if (que.hasChildNodes()) {
 			Element answersList = null;
-			if (que.getElementsByTagName("Answers").getLength() > 0)
-				answersList = (Element) que.getElementsByTagName("Answers")
+			if (que.getElementsByTagName(Lables.ANSWER_LIST).getLength() > 0)
+				answersList = (Element) que.getElementsByTagName(Lables.ANSWER_LIST)
 						.item(0);
 			if (answersList.hasChildNodes()) {
-				answer = answersList.getElementsByTagName("Answer");
+				answer = answersList.getElementsByTagName(Lables.ANSWER);
 				for (int ans = 0; ans < answer.getLength(); ans++) {
 					this.getAnswers().add(
 							new Answer((Element) answer.item(ans)));
@@ -50,10 +50,10 @@ public class Question implements Lables {
 				}
 			}
 		}
-		this.setDef(que.getAttribute("def"));
-		this.setDisplay(que.getAttribute("display"));
-		this.setRefCalfer(que.getAttribute("refCalfer"));
-		this.setGroup(Boolean.parseBoolean(que.getAttribute("isGroup")));
+		this.setDef(que.getAttribute(Lables.DEF));
+		this.setDisplay(que.getAttribute(Lables.DISPLAY));
+		this.setRefCalfer(que.getAttribute(Lables.REF_CLAFER));
+		this.setGroup(Boolean.parseBoolean(que.getAttribute(Lables.IS_GROUP)));
 	}
 
 	/**

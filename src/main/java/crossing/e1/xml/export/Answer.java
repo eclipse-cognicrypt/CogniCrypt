@@ -38,32 +38,31 @@ public class Answer implements Lables{
 	Answer(Element answeritem) {
 		if (answeritem.hasChildNodes()) {
 			Element dependencies = null;
-			if (answeritem.getElementsByTagName("dependencies").getLength() > 0) {
-				dependencies = (Element) answeritem.getElementsByTagName(
-						"dependencies").item(0);
+			if (answeritem.getElementsByTagName(Lables.DEPENDENCIES).getLength() > 0) {
+				dependencies = (Element) answeritem.getElementsByTagName(Lables.DEPENDENCIES).item(0);
 				NodeList dependenciesList = null;
 				if (dependencies.hasChildNodes()) {
 					setDependencies(true);
 					dependenciesList = dependencies
-							.getElementsByTagName("dependency");
+							.getElementsByTagName(Lables.DEPENDENCY);
 					for (int depIndex = 0; depIndex < dependenciesList
 							.getLength(); depIndex++) {
 						Element dependency = (Element) dependenciesList
 								.item(depIndex);
 						this.getDependencies().add(
 								new Dependency(
-										dependency.getAttribute("value"),
-										dependency.getAttribute("operator"),
-										dependency.getAttribute("refClafer"),
+										dependency.getAttribute(Lables.VALUE),
+										dependency.getAttribute(Lables.OPERATOR),
+										dependency.getAttribute(Lables.REF_CLAFER),
 										Boolean.parseBoolean(dependency
-												.getAttribute("isGroup"))));
+												.getAttribute(Lables.IS_GROUP))));
 					}
 				}
 			}
 		}
-		this.setOperator(answeritem.getAttribute("operator"));
-		this.setRef(answeritem.getAttribute("ref"));
-		this.setValue(answeritem.getAttribute("value"));
+		this.setOperator(answeritem.getAttribute(Lables.OPERATOR));
+		this.setRef(answeritem.getAttribute(Lables.REF));
+		this.setValue(answeritem.getAttribute(Lables.VALUE));
 	}
 
 	/**

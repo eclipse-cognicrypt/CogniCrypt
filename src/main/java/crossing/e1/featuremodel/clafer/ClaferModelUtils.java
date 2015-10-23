@@ -25,25 +25,17 @@ import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstConstraint;
 
 public class ClaferModelUtils {
+	static AstClafer mathedClafer = null;
 
 	public static String getDisplayName(AstClafer inputClafer) {
 		return "";
-	}
-
-	public static void displayProperties(AstClafer inputClafer) {
-
-		if (inputClafer != null) {
-			inputClafer.getChildren().forEach(
-					child -> System.out.println("attr: " + child));
-
-			displayProperties(inputClafer.getSuperClafer());
-		}
 	}
 
 	/*
 	 * Method takes AstClafer as an input and returns a description of the
 	 * clafer if exist, returns name of the clafer otherwise
 	 */
+	// FIXME check if this method is used in any commented code
 	public static String getDescription(AstClafer inputClafer) {
 		if (inputClafer.hasConstraints())
 			for (AstConstraint child : inputClafer.getConstraints()) {
@@ -70,43 +62,52 @@ public class ClaferModelUtils {
 			return astClafer.getClass().toGenericString()
 					.contains("AstAbstractClafer");
 	}
-	
+
 	/*
 	 * Method to find a clafer with a given name
-	 * 
 	 */
 	public static AstClafer findClaferByName(AstClafer inputClafer, String name) {
+		mathedClafer = null;
+		setClaferByName(inputClafer, name);
+		return mathedClafer;
+	}
+
+	/*
+	 * Helper method to find the clafer with a given name, if there are
+	 * duplicates it always sets the first matching clafer as matchedClafer
+	 * object
+	 */
+	public static void setClaferByName(AstClafer inputClafer, String name) {
 
 		try {
-						
-			if (inputClafer.getName().equals(name))
-				return inputClafer;
-			
-			if (inputClafer.hasChildren()) {
-				for (AstConcreteClafer childClafer : inputClafer.getChildren())
-					findClaferByName(childClafer, name);
-			}
-			
-			if (inputClafer.hasRef()) {
-				findClaferByName(inputClafer.getRef().getTargetType(), name);
+			if (mathedClafer == null) {
+				if (inputClafer.getName().equals(name)) {
+					mathedClafer = inputClafer;
 
+				}
+				if (inputClafer.hasChildren()) {
+					for (AstConcreteClafer childClafer : inputClafer
+							.getChildren())
+						setClaferByName(childClafer, name);
+				}
+
+				if (inputClafer.hasRef()) {
+					setClaferByName(inputClafer.getRef().getTargetType(), name);
+
+				}
+				if (inputClafer.getSuperClafer() != null)
+					setClaferByName(inputClafer.getSuperClafer(), name);
 			}
-			if (inputClafer.getSuperClafer() != null)
-				findClaferByName(inputClafer.getSuperClafer(), name);
-		
 
 		} catch (Exception E) {
 			E.printStackTrace();
-			return null;
+
 		}
-		
-		return null;
 
 	}
-	
 
 	/*
-	 * removes scope from name (e.g., c0_)
+	 * removes scope from name (e.g., c0_) and changes first letter of the string to Upper case example c0_scope will become Scope
 	 */
 	public static String trimScope(String value) {
 		String val = value.substring(value.indexOf('_') + 1, value.length());

@@ -29,6 +29,7 @@ public class InstanceGeneratorTest {
 	@Before
 	public void setUp() throws Exception {
 		claferModel = new ClaferModel(path);
+		instanceGenerator = new InstanceGenerator();
 	}
 
 	/**
@@ -45,8 +46,8 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testInstanceGenerator() {
-		instanceGenerator = new InstanceGenerator();
-		assertNotNull("failed to return instanceGenerator Object", instanceGenerator);
+		assertNotNull("failed to return instanceGenerator Object",
+				instanceGenerator);
 	}
 
 	/**
@@ -154,7 +155,14 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testGetNoOfInstances() {
-		fail("Not yet implemented"); // TODO
+		int noOfInstances = 10;
+		instanceGenerator.setNoOfInstances(10);
+		assertEquals("failed to get number of instances",
+				instanceGenerator.getNoOfInstances(), noOfInstances);
+		assertNotEquals("failed to get number of instances",
+				instanceGenerator.getNoOfInstances(), 0);
+		instanceGenerator.setNoOfInstances(0);
+
 	}
 
 	/**
@@ -164,7 +172,14 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testSetNoOfInstances() {
-		fail("Not yet implemented"); // TODO
+		int noOfInstances = 10;
+		instanceGenerator.setNoOfInstances(10);
+		assertEquals("failed to set number of instances",
+				instanceGenerator.getNoOfInstances(), noOfInstances);
+		assertNotEquals("failed to set number of instances",
+				instanceGenerator.getNoOfInstances(), 0);
+		instanceGenerator.setNoOfInstances(0);
+
 	}
 
 	/**
@@ -173,7 +188,7 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testGetTaskName() {
-		fail("Not yet implemented"); // TODO
+		assertNotNull("Empty Task Name", instanceGenerator.getTaskName());
 	}
 
 	/**
@@ -183,7 +198,11 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testSetTaskName() {
-		fail("Not yet implemented"); // TODO
+		String taskName = instanceGenerator.getTaskName();
+		instanceGenerator.setTaskName("TestTaskName");
+		assertEquals("", "TestTaskName", instanceGenerator.getTaskName());
+		instanceGenerator.setTaskName(taskName);
+
 	}
 
 }

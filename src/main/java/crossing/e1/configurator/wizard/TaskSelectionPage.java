@@ -67,8 +67,7 @@ public class TaskSelectionPage extends WizardPage {
 
 	@Override
 	public void createControl(Composite parent) {
-		//tasks = new HashMap<String, String>();
-		Set<String> availableTasks = PropertiesMapperUtil.getTaskLabelsMap().keySet();//TaskUtils.getAvailableTasks();
+		Set<String> availableTasks = PropertiesMapperUtil.getTaskLabelsMap().keySet();
 		container = new Composite(parent, SWT.NONE);
 		container.setBounds(10, 10, 200, 200);
 		GridLayout layout = new GridLayout();
@@ -77,8 +76,6 @@ public class TaskSelectionPage extends WizardPage {
 
 		label2 = new Label(container, SWT.NONE);
 		label2.setText(Lables.LABEL2);
-//		for (CryptoTask task : TaskUtils.getAvailableTasks())
-//			tasks.put(task.getDisplayText(), task.getClaferTaskName());
 		
 		taskComboSelection = new ComboViewer(container, SWT.COMPOSITION_SELECTION);
 		taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
@@ -107,8 +104,7 @@ public class TaskSelectionPage extends WizardPage {
 								.getSelection();
 
 						String selectedTask = selection.getFirstElement().toString();
-					System.out.println("TASK IS "+PropertiesMapperUtil.getTaskLabelsMap().get(selectedTask).getName());
-						setValue(selectedTask);
+					setValue(selectedTask);
 
 					}
 
@@ -121,8 +117,7 @@ public class TaskSelectionPage extends WizardPage {
 	}
 
 	public boolean canProceed() {
-		String selectedTask =  getValue();//((IStructuredSelection)taskComboSelection.getSelection()).getFirstElement().toString();
-		
+		String selectedTask =  getValue();
 		
 		if (selectedTask.length() > 0){
 			PropertiesMapperUtil.resetPropertiesMap();

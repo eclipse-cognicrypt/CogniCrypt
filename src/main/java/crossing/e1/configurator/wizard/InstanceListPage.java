@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import crossing.e1.configurator.Lables;
+import crossing.e1.featuremodel.clafer.InstanceClaferHash;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 
 

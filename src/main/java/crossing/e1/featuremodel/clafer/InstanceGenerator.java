@@ -34,8 +34,10 @@ import static org.clafer.ast.Asts.some;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.clafer.ast.AstAbstractClafer;
 import org.clafer.ast.AstClafer;
@@ -63,39 +65,41 @@ public class InstanceGenerator {
 
 	private ClaferSolver solver;
 	private List<InstanceClafer> generatedInstances;
+	Map<Long, InstanceClafer> uniqueInstances;
 	private Map<String, InstanceClafer> displayNameToInstanceMap;
 	private ClaferModel claferModel;
 	private int noOfInstances;
 	String taskName = "";
-	
-	public InstanceGenerator(){
-		claferModel = new ClaferModel(new ReadConfig().getPath("claferPath"));//till copy constructor works	
-		this.generatedInstances = new ArrayList<InstanceClafer>();
+
+	public InstanceGenerator() {
+		claferModel = new ClaferModel(new ReadConfig().getPath("claferPath"));// till
+																				// copy
+																				// constructor
+																				// works
+
 		this.displayNameToInstanceMap = new HashMap<String, InstanceClafer>();
+		this.uniqueInstances = new HashMap<Long, InstanceClafer>();
 	}
 
-	public List<InstanceClafer> generateInstances(
-			HashMap<String, Answer> map) {
+	public List<InstanceClafer> generateInstances(HashMap<String, Answer> map) {
 		if (map.isEmpty())
 			return null;
 		AstModel model = claferModel.getModel();
 		try {
 
-			AstConcreteClafer main = model
-					.addChild("Main")
-					.addChild("MAINTASK")
+			AstConcreteClafer main = model.addChild("Main").addChild("MAINTASK")
 					.refTo(PropertiesMapperUtil.getTaskLabelsMap().get(getTaskName()));
 			basicModeHandler(main, map);
 			solver = ClaferCompiler.compile(model, claferModel.getScope());
 			while (solver.find()) {
-				InstanceClafer instance = solver.instance().getTopClafers()[solver
-						.instance().getTopClafers().length - 1];
-
-				generatedInstances.add(instance);
+				InstanceClafer instance = solver.instance().getTopClafers()[solver.instance().getTopClafers().length
+						- 1];
+				uniqueInstances.put(getHashValue(instance), instance);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		this.generatedInstances = new ArrayList<InstanceClafer>(uniqueInstances.values());
 		generateInstanceMapping();
 		setNoOfInstances(displayNameToInstanceMap.keySet().size());
 		return generatedInstances;
@@ -109,37 +113,36 @@ public class InstanceGenerator {
 		AstModel model = claferModel.getModel();
 		try {
 
-			AstConcreteClafer m = model
-					.addChild("Main")
-					.addChild("MAINTASK")
+			AstConcreteClafer m = model.addChild("Main").addChild("MAINTASK")
 					.refTo(PropertiesMapperUtil.getTaskLabelsMap().get(getTaskName()));
 			advancedModeHandler(m, map);
 
 			solver = ClaferCompiler.compile(model, claferModel.getScope());
 			while (solver.find()) {
-				InstanceClafer instance = solver.instance().getTopClafers()[solver
-						.instance().getTopClafers().length - 1];
+				InstanceClafer instance = solver.instance().getTopClafers()[solver.instance().getTopClafers().length
+						- 1];
 
-				generatedInstances.add(instance);
+				uniqueInstances.put(getHashValue(instance), instance);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		this.generatedInstances = new ArrayList<InstanceClafer>(uniqueInstances.values());
 		generateInstanceMapping();
 		setNoOfInstances(displayNameToInstanceMap.keySet().size());
 		return generatedInstances;
 
 	}
 
-	void advancedModeHandler(AstConcreteClafer m,
-			Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> map) {
+	void advancedModeHandler(AstConcreteClafer m, Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> map) {
 		for (AstConcreteClafer main : m.getRef().getTargetType().getChildren()) {
 			for (ArrayList<AstConcreteClafer> claf : map.keySet()) {
 				if (claf.get(0).getName().equals(main.getName())) {
 					int operator = map.get(claf).get(0);
 					int value = map.get(claf).get(1);
-					AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils.findClaferByName(main,  claf.get(1).getName());
-					if(operand !=null && !ClaferModelUtils.isAbstract(operand))
+					AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils.findClaferByName(main,
+							claf.get(1).getName());
+					if (operand != null && !ClaferModelUtils.isAbstract(operand))
 						addConstraints(operator, main, value, operand, claf.get(1));
 
 				}
@@ -157,35 +160,25 @@ public class InstanceGenerator {
 	 */
 	// FIXME include group operator
 	void basicModeHandler(AstConcreteClafer inputClafer, HashMap<String, Answer> qAMap) {
-		Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> b = PropertiesMapperUtil
-				.getPropertiesMap();
+		Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> b = PropertiesMapperUtil.getPropertiesMap();
 
 		for (AstConcreteClafer main : inputClafer.getRef().getTargetType().getChildren()) {
-			for (AstConcreteClafer ast : PropertiesMapperUtil.getPropertiesMap()
-					.keySet()) {
+			for (AstConcreteClafer ast : PropertiesMapperUtil.getPropertiesMap().keySet()) {
 				if (main.getName().equals(ast.getName())) {
 					ArrayList<AstConcreteClafer> propertiesList = b.get(ast);
 					for (AstConcreteClafer property : propertiesList) {
 						for (String question : qAMap.keySet())
 							if (property.getName().contains(question)) {
 								Answer answer = qAMap.get(question);
-								addConstraints(
-										Integer.parseInt(answer.getOperator()),
-										ast, Integer.parseInt(answer.getRef()),
-										property, null);
+								addConstraints(Integer.parseInt(answer.getOperator()), ast,
+										Integer.parseInt(answer.getRef()), property, null);
 							}
 						for (String name : qAMap.keySet())
 							if (qAMap.get(name).hasDependencies()) {
-								for (Dependency dependency : qAMap.get(name)
-										.getDependencies()) {
-									if (property.getName().contains(
-											dependency.getRefClafer())) {
-										addConstraints(
-												Integer.parseInt(dependency
-														.getOperator()), ast,
-												Integer.parseInt(dependency
-														.getValue()), property,
-												null);
+								for (Dependency dependency : qAMap.get(name).getDependencies()) {
+									if (property.getName().contains(dependency.getRefClafer())) {
+										addConstraints(Integer.parseInt(dependency.getOperator()), ast,
+												Integer.parseInt(dependency.getValue()), property, null);
 									}
 								}
 							}
@@ -196,37 +189,34 @@ public class InstanceGenerator {
 		}
 	}
 
-	void addConstraints(int operator, AstConcreteClafer main, int value,
-			AstConcreteClafer operand, AstConcreteClafer claf) {
+	void addConstraints(int operator, AstConcreteClafer main, int value, AstConcreteClafer operand,
+			AstConcreteClafer claf) {
 		if (operator == 1)
-			main.addConstraint(equal(joinRef(join(joinRef($this()), operand)),
-					constant(value)));
+			main.addConstraint(equal(joinRef(join(joinRef($this()), operand)), constant(value)));
 		if (operator == 2)
-			main.addConstraint(lessThan(
-					joinRef(join(joinRef($this()), operand)), constant(value)));
+			main.addConstraint(lessThan(joinRef(join(joinRef($this()), operand)), constant(value)));
 		if (operator == 3)
-			main.addConstraint(greaterThan(
-					joinRef(join(joinRef($this()), operand)), constant(value)));
+			main.addConstraint(greaterThan(joinRef(join(joinRef($this()), operand)), constant(value)));
 		if (operator == 4)
-			main.addConstraint(lessThanEqual(
-					joinRef(join(joinRef($this()), operand)), constant(value)));
+			main.addConstraint(lessThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
 		if (operator == 5)
-			main.addConstraint(greaterThanEqual(
-					joinRef(join(joinRef($this()), operand)), constant(value)));
+			main.addConstraint(greaterThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
 		if (operator == 6) {
 			AstAbstractClafer operandGloabl = null;
 			AstConcreteClafer operandValue = null;
-			AstClafer claferByName = ClaferModelUtils.findClaferByName(main,  main.getRef().getTargetType().getName());//.getClaferByName(main, main.getRef().getTargetType().getName());
+			AstClafer claferByName = ClaferModelUtils.findClaferByName(main, main.getRef().getTargetType().getName());// .getClaferByName(main,
+																														// main.getRef().getTargetType().getName());
 			if (ClaferModelUtils.isAbstract(claferByName)) {
 				operandGloabl = (AstAbstractClafer) claferByName;
 			}
-			//TODO: fix xor behavior.. how do we get the operandValue??
-//			parser.getClaferByName(main, claf.getName());
-//			if (!parser.isFlag()) {
-//				operandValue = parser.getClaferByName();
-//			}
-//			main.addConstraint(some(join(join(global(operandGloabl), operand),
-//					operandValue)));
+			// TODO: fix xor behavior.. how do we get the operandValue??
+			// parser.getClaferByName(main, claf.getName());
+			// if (!parser.isFlag()) {
+			// operandValue = parser.getClaferByName();
+			// }
+			// main.addConstraint(some(join(join(global(operandGloabl),
+			// operand),
+			// operandValue)));
 		}
 	}
 
@@ -243,11 +233,26 @@ public class InstanceGenerator {
 	}
 
 	public void generateInstanceMapping() {
+
 		for (InstanceClafer inst : generatedInstances) {
 			String key = getInstanceName(inst);
 			if (inst.getType().getName().equals("Main") && key.length() > 0)
 				displayNameToInstanceMap.put(key, inst);
 		}
+
+	}
+
+	private long getHashValue(InstanceClafer inst) {
+
+		InstanceClafer sub = null;
+		if (inst.hasChildren())
+			sub = (InstanceClafer) inst.getChildren()[0].getRef();
+
+		if (sub != null) {
+			return new InstanceClaferHash(sub).hashCode();
+		}
+
+		return 0;
 
 	}
 
@@ -262,16 +267,14 @@ public class InstanceGenerator {
 							val = val + "+" + x;
 					} else
 						val = getInstanceName(in);
-			} else if (inst.hasRef()
-					&& (inst.getType().isPrimitive() != true)
+			} else if (inst.hasRef() && (inst.getType().isPrimitive() != true)
 					&& (inst.getRef().getClass().toString().contains("Integer") == false)
 					&& (inst.getRef().getClass().toString().contains("String") == false)
 					&& (inst.getRef().getClass().toString().contains("Boolean") == false)) {
 				val += getInstanceName((InstanceClafer) inst.getRef());
 			} else {
 				if (inst.getType().getName().contains("_name")
-						&& inst.getRef().getClass().toString()
-								.contains("String")) {
+						&& inst.getRef().getClass().toString().contains("String")) {
 					return inst.getRef().toString().replace("\"", "");
 				}
 			}
@@ -288,7 +291,6 @@ public class InstanceGenerator {
 	public void setNoOfInstances(int noOfInstances) {
 		this.noOfInstances = noOfInstances;
 	}
-
 
 	public String getTaskName() {
 		return taskName;

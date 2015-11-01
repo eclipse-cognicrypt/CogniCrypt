@@ -22,6 +22,9 @@
  */
 package crossing.e1.configurator.wizard;
 
+import java.util.Map;
+
+import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -87,6 +90,9 @@ public class ConfiguratorWizard extends Wizard {
 				quest = new QuestionsBeginner();
 				quest.init(PropertiesMapperUtil.getTaskLabelsMap()
 						.get(taskListPage.getValue()).getName());
+				
+				Map<String, AstConcreteClafer> x=PropertiesMapperUtil.getTaskLabelsMap();
+				//c0_EncryptionUsingDigest
 				if (quest.hasQuestions())
 					valueListPage = new DisplayQuestions(quest);
 			}
@@ -100,7 +106,6 @@ public class ConfiguratorWizard extends Wizard {
 			
 			if (taskListPage.isAdvancedMode()
 					&& ((ValueSelectionPage) valueListPage).getPageStatus() == true) {
-				System.out.println("Invoking instance generator");
 				instanceGenerator.generateInstancesAdvancedUserMode(
 						((ValueSelectionPage) currentPage).getMap());
 				if (new Validator().validate(instanceGenerator)) {					
@@ -110,7 +115,6 @@ public class ConfiguratorWizard extends Wizard {
 				}
 			} else if (!taskListPage.isAdvancedMode() && !quest.hasQuestions() && taskListPage.getStatus()) {
 				// running in beginner mode
-				System.out.println("Next page");
 				((DisplayQuestions) currentPage).setMap(
 						((DisplayQuestions) currentPage).getSelection(),
 						claferModel);

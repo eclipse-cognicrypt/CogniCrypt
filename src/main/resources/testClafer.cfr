@@ -1,0 +1,31 @@
+abstract person
+    name -> string
+    age -> integer
+    grade -> integer
+    xor gender
+    	male
+    	female
+
+abstract Task
+	description -> string
+	
+alice : person
+	[name = "alice"]
+	[age = 20]
+	[female]
+	[grade=5]
+	
+bob : person
+	[name = "bob"]
+	[age = 25]
+	[female]
+	[grade=10]
+	
+testTask : Task
+	[description="test task"]
+	main->bob
+testTask2 : Task
+	[description="test task"]
+	main->alice
+MAINTASK 
+    main -> testTask

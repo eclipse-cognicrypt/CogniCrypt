@@ -102,7 +102,7 @@ public class DisplayQuestions extends WizardPage {
 				int index= answerString
 						.indexOf(answerSelection.toString().replace("[", "")
 								.replace("]", ""));
-				System.out.println(answer.get(index));
+				
 				selection.put(question.getRefCalfer(), answer.get(index));
 
 				// Integer.parseInt(answerSelection

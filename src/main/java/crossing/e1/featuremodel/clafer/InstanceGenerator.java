@@ -225,7 +225,7 @@ public class InstanceGenerator {
 	}
 
 	public Map<String, InstanceClafer> getInstances() {
-		return Check.notNull(displayNameToInstanceMap);
+		return displayNameToInstanceMap;
 	}
 
 	public void resetInstances() {

@@ -5,11 +5,21 @@ package crossing.e1.featuremodel.clafer;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.clafer.instance.InstanceClafer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import crossing.e1.configurator.ReadConfig;
+import crossing.e1.configurator.wizard.beginner.QuestionsBeginner;
+import crossing.e1.xml.export.Answer;
+import crossing.e1.xml.export.Question;
 
 /**
  * @author Ram
@@ -19,9 +29,10 @@ public class InstanceGeneratorTest {
 
 	private String path = new ReadConfig().getPath("claferPath");
 	private String claferName = "performance";
-	private String taskDescription = "Encrypt data using a secret key";
+	private String taskDescription = "test task";
 	ClaferModel claferModel;
 	InstanceGenerator instanceGenerator;
+	QuestionsBeginner quest;
 
 	/**
 	 * @throws java.lang.Exception
@@ -30,6 +41,8 @@ public class InstanceGeneratorTest {
 	public void setUp() throws Exception {
 		claferModel = new ClaferModel(path);
 		instanceGenerator = new InstanceGenerator();
+		quest = new QuestionsBeginner();
+
 	}
 
 	/**
@@ -46,8 +59,8 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testInstanceGenerator() {
-		assertNotNull("failed to return instanceGenerator Object",
-				instanceGenerator);
+
+		assertNotNull("failed to return instanceGenerator Object", instanceGenerator);
 	}
 
 	/**
@@ -57,7 +70,14 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testGenerateInstances() {
-		fail("Not yet implemented"); // TODO
+		instanceGenerator.setTaskName(taskDescription);
+		HashMap<String, Answer> map = new HashMap<String, Answer>();
+		quest.init("c0_testTask");
+		ArrayList<Question> q = quest.getQutionare();
+		Answer answer = q.get(0).getAnswers().get(0);
+		map.put("age", answer);
+		List<InstanceClafer> instances = instanceGenerator.generateInstances(map);
+		assertNotNull("failed to return instances Object", instances);
 	}
 
 	/**
@@ -69,27 +89,6 @@ public class InstanceGeneratorTest {
 	public final void testGenerateInstancesAdvancedUserMode() {
 		fail("Not yet implemented"); // TODO
 	}
-
-	/**
-	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#advancedModeHandler(org.clafer.ast.AstConcreteClafer, java.util.Map)}
-	 * .
-	 */
-	@Test
-	public final void testAdvancedModeHandler() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#basicModeHandler(org.clafer.ast.AstConcreteClafer, java.util.HashMap)}
-	 * .
-	 */
-	@Test
-	public final void testBasicModeHandler() {
-		fail("Not yet implemented"); // TODO
-	}
-
 	/**
 	 * Test method for
 	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#addConstraints(int, org.clafer.ast.AstConcreteClafer, int, org.clafer.ast.AstConcreteClafer, org.clafer.ast.AstConcreteClafer)}
@@ -102,20 +101,12 @@ public class InstanceGeneratorTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getScope()}.
-	 */
-	@Test
-	public final void testGetScope() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for
 	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getInstances()}.
 	 */
 	@Test
 	public final void testGetInstances() {
-		fail("Not yet implemented"); // TODO
+		testGenerateInstances();
+		assertNotNull("failed to return instances Object", instanceGenerator.getInstances());
 	}
 
 	/**
@@ -124,8 +115,10 @@ public class InstanceGeneratorTest {
 	 * .
 	 */
 	@Test
-	public final void testResetInstances() {
-		fail("Not yet implemented"); // TODO
+	public final void testResetInstances() { 
+		testGenerateInstances();
+		instanceGenerator.resetInstances();
+		assertNull("failed to reset instances Object", instanceGenerator.getInstances());
 	}
 
 	/**
@@ -135,7 +128,9 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testGenerateInstanceMapping() {
-		fail("Not yet implemented"); // TODO
+		testGenerateInstances();
+		instanceGenerator.generateInstanceMapping();
+		assertNotNull("failed to reset instances Object", instanceGenerator.getInstances());
 	}
 
 	/**
@@ -145,7 +140,9 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testGetInstanceName() {
-		fail("Not yet implemented"); // TODO
+		testGenerateInstances();
+		for(String key:instanceGenerator.getInstances().keySet())
+		System.out.println("instance "+instanceGenerator.getInstances().get(key));;
 	}
 
 	/**
@@ -157,10 +154,8 @@ public class InstanceGeneratorTest {
 	public final void testGetNoOfInstances() {
 		int noOfInstances = 10;
 		instanceGenerator.setNoOfInstances(10);
-		assertEquals("failed to get number of instances",
-				instanceGenerator.getNoOfInstances(), noOfInstances);
-		assertNotEquals("failed to get number of instances",
-				instanceGenerator.getNoOfInstances(), 0);
+		assertEquals("failed to get number of instances", instanceGenerator.getNoOfInstances(), noOfInstances);
+		assertNotEquals("failed to get number of instances", instanceGenerator.getNoOfInstances(), 0);
 		instanceGenerator.setNoOfInstances(0);
 
 	}
@@ -174,10 +169,8 @@ public class InstanceGeneratorTest {
 	public final void testSetNoOfInstances() {
 		int noOfInstances = 10;
 		instanceGenerator.setNoOfInstances(10);
-		assertEquals("failed to set number of instances",
-				instanceGenerator.getNoOfInstances(), noOfInstances);
-		assertNotEquals("failed to set number of instances",
-				instanceGenerator.getNoOfInstances(), 0);
+		assertEquals("failed to set number of instances", instanceGenerator.getNoOfInstances(), noOfInstances);
+		assertNotEquals("failed to set number of instances", instanceGenerator.getNoOfInstances(), 0);
 		instanceGenerator.setNoOfInstances(0);
 
 	}

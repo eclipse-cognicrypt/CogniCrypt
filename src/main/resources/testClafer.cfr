@@ -1,31 +1,37 @@
-abstract person
+abstract CAR
     name -> string
-    age -> integer
-    grade -> integer
-    xor gender
-    	male
-    	female
+    performance -> integer
+
+abstract BMW_F : CAR
+    class -> integer
+
+abstract TESLA : CAR
+    power -> integer
 
 abstract Task
 	description -> string
-	
-alice : person
-	[name = "alice"]
-	[age = 20]
-	[female]
-	[grade=5]
-	
-bob : person
-	[name = "bob"]
-	[age = 25]
-	[female]
-	[grade=10]
-	
-testTask : Task
-	[description="test task"]
-	main->bob
-testTask2 : Task
-	[description="test task"]
-	main->alice
-MAINTASK 
-    main -> testTask
+
+BMWCars
+	F30: BMW_F
+		[name = "BMW F30"]
+		[class = 4]
+		[performance = 3]
+
+	F87: BMW_F
+		[name = "BMW F87"]
+		[performance = 1]
+		[class = 2]
+TeslaCars
+	ModelS : TESLA
+		[name = "Model S"]
+		[performance = 2]
+		[power=3]
+	Model3 : TESLA
+		[name = "Model 3"]
+		[performance = 3]
+		[power=2]
+
+CarFinder : Task
+	[description = "Find car"]
+	optionPetrol -> BMWCars
+	optionElectric -> TeslaCars

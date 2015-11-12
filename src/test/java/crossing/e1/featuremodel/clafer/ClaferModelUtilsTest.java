@@ -41,7 +41,7 @@ public class ClaferModelUtilsTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		claferModel = new ClaferModel(path);
+		claferModel = new ClaferModel(new ReadConfig().getPath("claferPath"));
 	}
 
 	/**

@@ -29,7 +29,7 @@ public class InstanceGeneratorTest {
 
 	private String path = new ReadConfig().getPath("claferPath");
 	private String claferName = "performance";
-	private String taskDescription = "test task";
+	private String taskDescription = "Encrypt data using a secret key";
 	ClaferModel claferModel;
 	InstanceGenerator instanceGenerator;
 	QuestionsBeginner quest;
@@ -39,7 +39,7 @@ public class InstanceGeneratorTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		claferModel = new ClaferModel(path);
+		claferModel = new ClaferModel(new ReadConfig().getPath("claferPath"));
 		instanceGenerator = new InstanceGenerator();
 		quest = new QuestionsBeginner();
 
@@ -72,10 +72,10 @@ public class InstanceGeneratorTest {
 	public final void testGenerateInstances() {
 		instanceGenerator.setTaskName(taskDescription);
 		HashMap<String, Answer> map = new HashMap<String, Answer>();
-		quest.init("c0_testTask");
+		quest.init(taskDescription);
 		ArrayList<Question> q = quest.getQutionare();
 		Answer answer = q.get(0).getAnswers().get(0);
-		map.put("age", answer);
+		//map.put(claferName, answer);
 		List<InstanceClafer> instances = instanceGenerator.generateInstances(map);
 		assertNotNull("failed to return instances Object", instances);
 	}

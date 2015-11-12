@@ -22,7 +22,7 @@ public class TestCases {
 	public static void main(String[] args) {
 		TestCases test = new TestCases();
 		String path = new ReadConfig().getPath("claferPath");
-		ClaferModel model = new ClaferModel(path);
+		ClaferModel model = new ClaferModel(new ReadConfig().getPath("claferPath"));
 
 		// InstanceGenerator inst = test.getInstance(model);
 		// test.displayInstances(inst);

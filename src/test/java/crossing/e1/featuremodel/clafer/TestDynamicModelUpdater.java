@@ -11,11 +11,12 @@ import org.clafer.compiler.ClaferCompiler;
 import org.clafer.compiler.ClaferSolver;
 import org.clafer.instance.InstanceModel;
 
+import crossing.e1.configurator.ReadConfig;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 
 public class TestDynamicModelUpdater {
 	public static void main(String[] args) {
-		ClaferModel model = new ClaferModel("test.cfr");
+		ClaferModel model = new ClaferModel(new ReadConfig().getPath("claferPath"));
 		List<AstConcreteClafer> people=null;
 //		List<AstConcreteClafer> people = claferModel.getChildrenByName("person", claferModel
 //				.getModel().getChildren());

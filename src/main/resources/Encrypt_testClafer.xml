@@ -23,24 +23,34 @@
 	-> Numerical value between 1-6 , which will be further mapped to mathematical 
 	operator >,<,<=,>=,= respectively (value 6 is used for groupcard) -->
 <Tasks>
-	<Task name="c0_testTask">
+	<Task name="c0_CarFinder">
 		<Questions>
-			<Question def="age ?" display="age?" refCalfer="age"
+			<Question def="is performnace important ?" display="performance?" refClafer="performance"
 				isGroup="false">
 				<Answers>
-					<Answer value="Very important" ref="25" operator="2">
+					<Answer value="Very important" ref="3" operator="4">
 						<dependencies>
-							<dependency refClafer="grade" value="10" operator="2" />
+							<dependency refClafer="class" value="3" operator="4" />
+						</dependencies>
+					</Answer>
+					<Answer value="not important" ref="4" operator="4">
+						<dependencies>
+							<dependency refClafer="class" value="2" operator="2" />
 						</dependencies>
 					</Answer>
 				</Answers>
 			</Question>
-			<Question def="age ?" display="age?" refCalfer="age"
+			<Question def="power saving really important ?" display="power?" refClafer="power"
 				isGroup="false">
 				<Answers>
-					<Answer value="Very important" ref="25" operator="2">
+					<Answer value="Very important" ref="3" operator="4">
+						 <dependencies>
+							<dependency refClafer="performance" value="3" operator="4" />
+						</dependencies>
+					</Answer>
+					<Answer value="Not important" ref="2" operator="2">
 						<dependencies>
-							<dependency refClafer="grade" value="10" operator="2" />
+							<dependency refClafer="performance" value="2" operator="2" />
 						</dependencies>
 					</Answer>
 				</Answers>

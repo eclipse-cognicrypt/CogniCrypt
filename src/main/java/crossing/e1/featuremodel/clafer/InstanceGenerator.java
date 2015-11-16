@@ -160,24 +160,24 @@ public class InstanceGenerator {
 	 */
 	// FIXME include group operator
 	void basicModeHandler(AstConcreteClafer inputClafer, HashMap<String, Answer> qAMap) {
-		Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> b = PropertiesMapperUtil.getPropertiesMap();
+		Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> popertiesMap = PropertiesMapperUtil.getPropertiesMap();
 
-		for (AstConcreteClafer main : inputClafer.getRef().getTargetType().getChildren()) {
-			for (AstConcreteClafer ast : PropertiesMapperUtil.getPropertiesMap().keySet()) {
-				if (main.getName().equals(ast.getName())) {
-					ArrayList<AstConcreteClafer> propertiesList = b.get(ast);
-					for (AstConcreteClafer property : propertiesList) {
+		for (AstConcreteClafer childOfMainClfer : inputClafer.getRef().getTargetType().getChildren()) {
+			for (AstConcreteClafer propertyOfaClafer : popertiesMap.keySet()) {
+				if (childOfMainClfer.getName().equals(propertyOfaClafer.getName())) {
+					ArrayList<AstConcreteClafer> propertiesList  ;
+					for (AstConcreteClafer property : popertiesMap.get(propertyOfaClafer)) {
 						for (String question : qAMap.keySet())
 							if (property.getName().contains(question)) {
 								Answer answer = qAMap.get(question);
-								addConstraints(Integer.parseInt(answer.getOperator()), ast,
+								addConstraints(Integer.parseInt(answer.getOperator()), propertyOfaClafer,
 										Integer.parseInt(answer.getRef()), property, null);
 							}
 						for (String name : qAMap.keySet())
 							if (qAMap.get(name).hasDependencies()) {
 								for (Dependency dependency : qAMap.get(name).getDependencies()) {
 									if (property.getName().contains(dependency.getRefClafer())) {
-										addConstraints(Integer.parseInt(dependency.getOperator()), ast,
+										addConstraints(Integer.parseInt(dependency.getOperator()), propertyOfaClafer,
 												Integer.parseInt(dependency.getValue()), property, null);
 									}
 								}

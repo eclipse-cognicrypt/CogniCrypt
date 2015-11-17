@@ -18,7 +18,7 @@ import org.clafer.collection.Triple;
 import org.clafer.compiler.ClaferCompiler;
 import org.clafer.compiler.ClaferSolver;
 import org.clafer.javascript.Javascript;
-import org.clafer.javascript.JavascriptFile;
+//import org.clafer.javascript.JavascriptFile;
 import org.clafer.objective.Objective;
 import org.clafer.scope.Scope;
 
@@ -40,8 +40,8 @@ public class InstanceGenerationTest {
 		Triple<AstModel, Scope, Objective[]> triple;
 		try {
 			
-			JavascriptFile file=Javascript.readModel(filename);
-			triple = new Triple<AstModel, Scope, Objective[]>(file.getModel(), file.getScope(), file.getObjectives());
+		//	JavascriptFile file=Javascript.readModel(filename);
+			triple = Javascript.readModel(filename, Javascript.newEngine());
 
 			AstModel model = triple.getFst();
 			Scope scope = triple.getSnd();

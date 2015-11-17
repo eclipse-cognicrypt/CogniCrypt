@@ -35,7 +35,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import crossing.e1.configurator.Lables;
+import crossing.e1.configurator.Labels;
 import crossing.e1.configurator.questions.beginner.CryptoQuestion;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
@@ -119,7 +119,7 @@ public class RelevantQuestionsPage extends WizardPage {
 		if (gen.getNoOfInstances() > 0) {
 			return true;
 		} else {
-			setErrorMessage(Lables.INSTANCE_ERROR_MESSGAE);
+			setErrorMessage(Labels.INSTANCE_ERROR_MESSGAE);
 			return true;
 		}
 		

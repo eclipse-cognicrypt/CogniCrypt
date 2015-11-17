@@ -1,6 +1,6 @@
 TODO
 ----
-
+If we use Enum it is yet another abstarct clafer. Differentiating it by other clafer viz algorithm is not possible. Which makes it difficult to display to user 
 === Configurator Tasks/Problems
 - In final displayed solutions, it should use the Description field (not the name field) — I have name and Description now with same values in CryptoTasks.cfr just for the demo tom
 - Look at how KeyDerviationAlgorithm is displayed. Inside it, there is a digest instance that has an output size property and inside KeyDerivationAlgorithm, there is another output size property. In the current display, there is no distinction between them so it is confusing.

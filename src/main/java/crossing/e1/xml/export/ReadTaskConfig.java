@@ -8,13 +8,13 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
-import crossing.e1.configurator.Lables;
+import crossing.e1.configurator.Labels;
 import crossing.e1.configurator.ReadConfig;
 
 import java.io.File;
 import java.util.ArrayList;
 
-public class ReadTaskConfig implements Lables{
+public class ReadTaskConfig implements Labels{
 	private File fXmlFile = new File(new ReadConfig().getPath("encryptXmlPath"));
 	private DocumentBuilderFactory dbFactory = DocumentBuilderFactory
 			.newInstance();
@@ -35,10 +35,10 @@ public class ReadTaskConfig implements Lables{
 			dBuilder = dbFactory.newDocumentBuilder();
 			doc = dBuilder.parse(fXmlFile);
 			doc.getDocumentElement().normalize();
-			NodeList nList = doc.getElementsByTagName(Lables.TASK);
+			NodeList nList = doc.getElementsByTagName(Labels.TASK);
 			for (int temp = 0; temp < nList.getLength(); temp++) {
 				Node nNode = nList.item(temp);
-				if (((Element) nNode).getAttribute(Lables.TASK_NAME).toString()
+				if (((Element) nNode).getAttribute(Labels.TASK_NAME).toString()
 						.equals(task))
 					getQuestionsAndAnswers(nNode);
 
@@ -58,11 +58,11 @@ public class ReadTaskConfig implements Lables{
 		if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
 			Element eElement = (Element) nNode;
-			NodeList questions = eElement.getElementsByTagName(Lables.QUESTION_LIST);
+			NodeList questions = eElement.getElementsByTagName(Labels.QUESTION_LIST);
 			for (int temp = 0; temp < questions.getLength(); temp++) {
 				Node question = questions.item(temp);
 				NodeList questionList = ((Element) question)
-						.getElementsByTagName(Lables.QUESTION);
+						.getElementsByTagName(Labels.QUESTION);
 				parseQuestions(questionList);
 
 			}

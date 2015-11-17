@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
-import crossing.e1.configurator.Lables;
+import crossing.e1.configurator.Labels;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 import crossing.e1.xml.export.Answer;
@@ -38,8 +38,8 @@ public class DisplayQuestions extends WizardPage {
 
 	public DisplayQuestions(QuestionsBeginner quest) {
 		super("Display Questions");
-		setTitle(Lables.PROPERTIES);
-		setDescription(Lables.DESCRIPTION_VALUE_SELECTION_PAGE);
+		setTitle(Labels.PROPERTIES);
+		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.quest = quest;
 		quetsionsList = new ArrayList<Composite>();
 	}

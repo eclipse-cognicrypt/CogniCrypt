@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
-import crossing.e1.configurator.Lables;
+import crossing.e1.configurator.Labels;
 import crossing.e1.configurator.ReadConfig;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.ClaferModelUtils;
@@ -52,7 +52,7 @@ import crossing.e1.featuremodel.clafer.InstanceGenerator;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
 
-public class ValueSelectionPage extends WizardPage implements Lables {
+public class ValueSelectionPage extends WizardPage implements Labels {
 	private ClaferModel model;
 	private List<Spinner> taskCombo;
 	private Composite container;
@@ -66,9 +66,9 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 
 	public ValueSelectionPage(List<AstConcreteClafer> items,
 			ClaferModel claferModel) {
-		super(Lables.SELECT_PROPERTIES);
-		setTitle(Lables.PROPERTIES);
-		setDescription(Lables.DESCRIPTION_VALUE_SELECTION_PAGE);
+		super(Labels.SELECT_PROPERTIES);
+		setTitle(Labels.PROPERTIES);
+		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		userOptions = new HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>>();
 		userGroupOptions = new HashMap<String, AstConcreteClafer>();
 		model = claferModel;
@@ -131,11 +131,11 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 			AstConcreteClafer key2, String label, int selection, int min,
 			int max, int digits, int incement, int pageincrement) {
 		List<String> values = new ArrayList<String>();
-		values.add(Lables.LESS_THAN);
-		values.add(Lables.GREATER_THAN);
-		values.add(Lables.EQUALS);
-		values.add(Lables.LESS_THAN_EQUAL);
-		values.add(Lables.GREATER_THAN_EQUAL);
+		values.add(Labels.LESS_THAN);
+		values.add(Labels.GREATER_THAN);
+		values.add(Labels.EQUALS);
+		values.add(Labels.LESS_THAN_EQUAL);
+		values.add(Labels.GREATER_THAN_EQUAL);
 		Label label5 = new Label(container, SWT.NONE);
 		label5.setText("	");
 		Label label1 = new Label(container, SWT.NONE);
@@ -257,15 +257,15 @@ public class ValueSelectionPage extends WizardPage implements Lables {
 	 * @return Map quantifier to integer
 	 */
 	private Integer toNumber(String selection) {
-		if (selection.contains(Lables.LESS_THAN_EQUAL))
+		if (selection.contains(Labels.LESS_THAN_EQUAL))
 			return 4;
-		if (selection.contains(Lables.GREATER_THAN_EQUAL))
+		if (selection.contains(Labels.GREATER_THAN_EQUAL))
 			return 5;
-		if (selection.contains(Lables.EQUALS))
+		if (selection.contains(Labels.EQUALS))
 			return 1;
-		if (selection.contains(Lables.LESS_THAN))
+		if (selection.contains(Labels.LESS_THAN))
 			return 2;
-		if (selection.contains(Lables.GREATER_THAN))
+		if (selection.contains(Labels.GREATER_THAN))
 			return 3;
 
 		return 999;

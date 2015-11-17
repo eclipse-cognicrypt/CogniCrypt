@@ -21,13 +21,13 @@ import java.util.ArrayList;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 
-import crossing.e1.configurator.Lables;
+import crossing.e1.configurator.Labels;
 
 /**
  * @author Ram
  *
  */
-public class Question implements Lables {
+public class Question implements Labels {
 	private ArrayList<Answer> answers = null;
 	String def;
 	String display;
@@ -38,11 +38,11 @@ public class Question implements Lables {
 		NodeList answer = null;
 		if (que.hasChildNodes()) {
 			Element answersList = null;
-			if (que.getElementsByTagName(Lables.ANSWER_LIST).getLength() > 0)
-				answersList = (Element) que.getElementsByTagName(Lables.ANSWER_LIST)
+			if (que.getElementsByTagName(Labels.ANSWER_LIST).getLength() > 0)
+				answersList = (Element) que.getElementsByTagName(Labels.ANSWER_LIST)
 						.item(0);
 			if (answersList.hasChildNodes()) {
-				answer = answersList.getElementsByTagName(Lables.ANSWER);
+				answer = answersList.getElementsByTagName(Labels.ANSWER);
 				for (int ans = 0; ans < answer.getLength(); ans++) {
 					this.getAnswers().add(
 							new Answer((Element) answer.item(ans)));
@@ -50,10 +50,10 @@ public class Question implements Lables {
 				}
 			}
 		}
-		this.setDef(que.getAttribute(Lables.DEF));
-		this.setDisplay(que.getAttribute(Lables.DISPLAY));
-		this.setRefCalfer(que.getAttribute(Lables.REF_CLAFER));
-		this.setGroup(Boolean.parseBoolean(que.getAttribute(Lables.IS_GROUP)));
+		this.setDef(que.getAttribute(Labels.DEF));
+		this.setDisplay(que.getAttribute(Labels.DISPLAY));
+		this.setRefCalfer(que.getAttribute(Labels.REF_CLAFER));
+		this.setGroup(Boolean.parseBoolean(que.getAttribute(Labels.IS_GROUP)));
 	}
 
 	/**

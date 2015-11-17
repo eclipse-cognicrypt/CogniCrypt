@@ -30,7 +30,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 
 import crossing.e1.codegen.generation.XSLBasedGenerator;
-import crossing.e1.configurator.Lables;
+import crossing.e1.configurator.Labels;
 import crossing.e1.configurator.ReadConfig;
 import crossing.e1.configurator.utilities.Validator;
 import crossing.e1.configurator.wizard.advanced.DisplayValuePage;
@@ -99,7 +99,7 @@ public class ConfiguratorWizard extends Wizard {
 			addPage(valueListPage);
 
 			return valueListPage;
-		} else if (currentPage.getTitle().equals(Lables.PROPERTIES)) {
+		} else if (currentPage.getTitle().equals(Labels.PROPERTIES)) {
 			InstanceGenerator instanceGenerator = new InstanceGenerator();
 			instanceGenerator.setTaskName(taskListPage.getValue());
 			instanceGenerator.setNoOfInstances(0);

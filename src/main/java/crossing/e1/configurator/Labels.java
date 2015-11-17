@@ -23,7 +23,7 @@ package crossing.e1.configurator;
 
 import java.util.Properties;
 
-public interface Lables {
+public interface Labels {
 	Properties prop = new ReadLables("src/main/resources/Labels.properties").getProperties();
 	static final String DEPENDENCIES = "dependencies";
 	static final String DEPENDENCY = "dependency";
@@ -52,7 +52,7 @@ public interface Lables {
 			.getProperty("AVAILABLE_OPTIONS");
 	static final String DESCRIPTION_INSTANCE_LIST_PAGE = prop
 			.getProperty("DESCRIPTION_INSTANCE_LIST_PAGE");
-	static final String LABEL1 = prop.getProperty("LABEL1");
+	static final String instanceList = prop.getProperty("LABEL1");
 	static final String SELECT_TASK = prop.getProperty("SELECT_TASK");
 	static final String TASK_LIST = prop.getProperty("TASK_LIST");
 	static final String DESCRIPTION_TASK_SELECTION_PAGE = prop

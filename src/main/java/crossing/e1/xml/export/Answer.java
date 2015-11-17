@@ -21,14 +21,14 @@ import java.util.ArrayList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import crossing.e1.configurator.Lables;
+import crossing.e1.configurator.Labels;
 
 /**
  * @author Ram
  *
  */
 
-public class Answer implements Lables{
+public class Answer implements Labels{
 	private ArrayList<Dependency> dependencies;
 	boolean hasDependencies = false;
 	private String value;
@@ -38,31 +38,31 @@ public class Answer implements Lables{
 	Answer(Element answeritem) {
 		if (answeritem.hasChildNodes()) {
 			Element dependencies = null;
-			if (answeritem.getElementsByTagName(Lables.DEPENDENCIES).getLength() > 0) {
-				dependencies = (Element) answeritem.getElementsByTagName(Lables.DEPENDENCIES).item(0);
+			if (answeritem.getElementsByTagName(Labels.DEPENDENCIES).getLength() > 0) {
+				dependencies = (Element) answeritem.getElementsByTagName(Labels.DEPENDENCIES).item(0);
 				NodeList dependenciesList = null;
 				if (dependencies.hasChildNodes()) {
 					setDependencies(true);
 					dependenciesList = dependencies
-							.getElementsByTagName(Lables.DEPENDENCY);
+							.getElementsByTagName(Labels.DEPENDENCY);
 					for (int depIndex = 0; depIndex < dependenciesList
 							.getLength(); depIndex++) {
 						Element dependency = (Element) dependenciesList
 								.item(depIndex);
 						this.getDependencies().add(
 								new Dependency(
-										dependency.getAttribute(Lables.VALUE),
-										dependency.getAttribute(Lables.OPERATOR),
-										dependency.getAttribute(Lables.REF_CLAFER),
+										dependency.getAttribute(Labels.VALUE),
+										dependency.getAttribute(Labels.OPERATOR),
+										dependency.getAttribute(Labels.REF_CLAFER),
 										Boolean.parseBoolean(dependency
-												.getAttribute(Lables.IS_GROUP))));
+												.getAttribute(Labels.IS_GROUP))));
 					}
 				}
 			}
 		}
-		this.setOperator(answeritem.getAttribute(Lables.OPERATOR));
-		this.setRef(answeritem.getAttribute(Lables.REF));
-		this.setValue(answeritem.getAttribute(Lables.VALUE));
+		this.setOperator(answeritem.getAttribute(Labels.OPERATOR));
+		this.setRef(answeritem.getAttribute(Labels.REF));
+		this.setValue(answeritem.getAttribute(Labels.VALUE));
 	}
 
 	/**

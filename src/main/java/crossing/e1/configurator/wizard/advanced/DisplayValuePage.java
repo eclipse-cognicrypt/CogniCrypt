@@ -34,20 +34,20 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import crossing.e1.configurator.Lables;
+import crossing.e1.configurator.Labels;
 import crossing.e1.configurator.utilities.WriteToFileHelper;
 import crossing.e1.xml.export.PublishToXML;
 
-public class DisplayValuePage extends WizardPage implements Lables {
+public class DisplayValuePage extends WizardPage implements Labels {
 
 	private Label label1;
 	private Composite container;
 	String value;
 
 	public DisplayValuePage(InstanceClafer instanceChosen) {
-		super(Lables.COMPLETE);
-		setTitle(Lables.RESULT);
-		setDescription(Lables.DESCRIPTION_VALUE_DISPLAY_PAGE);
+		super(Labels.COMPLETE);
+		setTitle(Labels.RESULT);
+		setDescription(Labels.DESCRIPTION_VALUE_DISPLAY_PAGE);
 		value = new PublishToXML().displayInstanceValues(instanceChosen,"");
 		canFlipToNextPage();
 

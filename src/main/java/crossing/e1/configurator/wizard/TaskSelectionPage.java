@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import crossing.e1.configurator.Lables;
+import crossing.e1.configurator.Labels;
 import crossing.e1.configurator.tasks.beginner.CryptoTask;
 import crossing.e1.configurator.tasks.beginner.TaskUtils;
 import crossing.e1.featuremodel.clafer.ClaferModel;
@@ -58,9 +58,9 @@ public class TaskSelectionPage extends WizardPage {
 
 	public TaskSelectionPage(ClaferModel claferModel) {
 	
-		super(Lables.SELECT_TASK);
-		setTitle(Lables.TASK_LIST);
-		setDescription(Lables.DESCRIPTION_TASK_SELECTION_PAGE);
+		super(Labels.SELECT_TASK);
+		setTitle(Labels.TASK_LIST);
+		setDescription(Labels.DESCRIPTION_TASK_SELECTION_PAGE);
 		this.model = claferModel;
 
 	}
@@ -75,7 +75,7 @@ public class TaskSelectionPage extends WizardPage {
 		container.setLayout(layout);
 
 		label2 = new Label(container, SWT.NONE);
-		label2.setText(Lables.LABEL2);
+		label2.setText(Labels.LABEL2);
 		
 		taskComboSelection = new ComboViewer(container, SWT.COMPOSITION_SELECTION);
 		taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
@@ -85,7 +85,7 @@ public class TaskSelectionPage extends WizardPage {
 		} else {
 			setPageComplete(false);
 			taskComboSelection
-					.setSelection(new StructuredSelection(Lables.NO_TASK));
+					.setSelection(new StructuredSelection(Labels.NO_TASK));
 
 		}
 		taskComboSelection.setLabelProvider((new LabelProvider() {

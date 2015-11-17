@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 /**
  * @author Ram Kamath
  *
@@ -36,37 +35,36 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import crossing.e1.configurator.Lables;
-import crossing.e1.featuremodel.clafer.InstanceClaferHash;
+import crossing.e1.configurator.Labels;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 
-
-public class InstanceListPage extends WizardPage implements Lables {
+public class InstanceListPage extends WizardPage implements Labels {
 
 	private Composite container;
-	private ComboViewer algorithmClass;
-	private Label label1;
+
 	private InstanceGenerator instance;
 	InstanceClafer value;
 	boolean val = false;
 
 	public InstanceListPage(InstanceGenerator inst) {
-		super(Lables.SECOND_PAGE);
-		setTitle(Lables.AVAILABLE_OPTIONS);
-		setDescription(Lables.DESCRIPTION_INSTANCE_LIST_PAGE);
+		super(Labels.SECOND_PAGE);
+		setTitle(Labels.AVAILABLE_OPTIONS);
+		setDescription(Labels.DESCRIPTION_INSTANCE_LIST_PAGE);
 		this.instance = inst;
 	}
 
 	@Override
 	public void createControl(Composite parent) {
+		ComboViewer algorithmClass;
+		Label lableInstanceList;
 		container = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 4;
 		container.setLayout(layout);
 		setPageComplete(false);
 
-		label1 = new Label(container, SWT.NONE);
-		label1.setText(Lables.LABEL1);
+		lableInstanceList = new Label(container, SWT.NONE);
+		lableInstanceList.setText(Labels.instanceList);
 		Map<String, InstanceClafer> inst = instance.getInstances();
 		algorithmClass = new ComboViewer(container, SWT.COMPOSITION_SELECTION);
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
@@ -77,22 +75,19 @@ public class InstanceListPage extends WizardPage implements Lables {
 				return element.toString();
 			}
 		}));
-		algorithmClass
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-					public void selectionChanged(SelectionChangedEvent event) {
-						IStructuredSelection selection = (IStructuredSelection) event
-								.getSelection();
+		algorithmClass.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 
-						String b = (String) selection.getFirstElement()
-								.toString();
-						setValue(instance.getInstances().get(b));
-						if (selection.size() > 0) {
-							val = true;
-							setPageComplete(true);
-						}
-					}
+				String b = (String) selection.getFirstElement().toString();
+				setValue(instance.getInstances().get(b));
+				if (selection.size() > 0) {
+					val = true;
+					setPageComplete(true);
+				}
+			}
 
-				});
+		});
 
 		setControl(container);
 		;

@@ -28,7 +28,7 @@ abstract SymmetricCipher : Cipher
 
 abstract SymmetricBlockCipher : SymmetricCipher
 
-Ciphers ?
+Ciphers
 	AES: SymmetricBlockCipher
 		[description = "Advanced Encryption Standard (AES) cipher"]
 		[name = "AES"]

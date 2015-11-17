@@ -23,7 +23,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 
-public class Activator extends AbstractUIPlugin implements Lables {
+public class Activator extends AbstractUIPlugin implements Labels {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "CROSSING.E1.CONFIGURATOR"; //$NON-NLS-1$

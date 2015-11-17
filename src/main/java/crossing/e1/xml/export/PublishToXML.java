@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 /**
  * @author Ram Kamath
  *
@@ -32,61 +31,63 @@ import crossing.e1.featuremodel.clafer.ClaferModelUtils;
  * @author Ram
  *
  */
-public class PublishToXML implements Labels{
+public class PublishToXML implements Labels {
 
-	
 	public String displayInstanceValues(InstanceClafer inst, String value) {
 		InstanceClafer instan = null;
-		
-		if(inst.hasChildren()){
-			instan = (InstanceClafer)inst.getChildren()[0].getRef();
-			String taskName= instan.getType().getName();
-			value="<Task description=\""+ ClaferModelUtils.trimScope(taskName)+"\">\n";
-			
-			}
-		else{
-			value="<Task>\n";
+
+		if (inst.hasChildren()) {
+			instan = (InstanceClafer) inst.getChildren()[0].getRef();
+			String taskName = instan.getType().getName();
+			value = "<Task description=\"" + ClaferModelUtils.trimScope(taskName) + "\">\n";
+
+		} else {
+			value = "<Task>\n";
 		}
-		if (instan!=null && instan.hasChildren()) {
+		if (instan != null && instan.hasChildren()) {
 			for (InstanceClafer in : instan.getChildren()) {
-				if(!in.getType().getRef().getTargetType().isPrimitive()){
-				value+="<Algorithm type=\""+ClaferModelUtils.trimScope(in.getType().getRef().getTargetType().getName())+"\"> \n";
-				value+=displayInstanceXML((InstanceClafer)in, "");
-				value+="</Algorithm> \n";}
-				else{
-					value+=displayInstanceXML((InstanceClafer)in, "");
+				if (!in.getType().getRef().getTargetType().isPrimitive()) {
+					value += "<Algorithm type=\""
+							+ ClaferModelUtils.trimScope(in.getType().getRef().getTargetType().getName()) + "\"> \n";
+					value += displayInstanceXML((InstanceClafer) in, "");
+					value += "</Algorithm> \n";
+				} else {
+					value += displayInstanceXML((InstanceClafer) in, "");
 				}
 			}
-			
+
 		}
-		value+="</Task>";
+		value += "</Task>";
 		return value;
 	}
+
 	public String displayInstanceXML(InstanceClafer inst, String value) {
 		try {
-			if(inst.getType().hasRef()){
-				if(getSuperClaferName(inst.getType().getRef().getTargetType()))
-				System.out.println("YES => "+inst);
+			if (inst.getType().hasRef()) {
+				if (getSuperClaferName(inst.getType().getRef().getTargetType()))
+					System.out.println("YES => " + inst);
 			}
 			if (inst.hasChildren()) {
 				for (InstanceClafer in : inst.getChildren()) {
 					value += displayInstanceXML(in, "");
 				}
 
-			} else if (inst.hasRef()
-					&& (inst.getType().isPrimitive() != true)
+			} else if (inst.hasRef() && (inst.getType().isPrimitive() != true)
 					&& (inst.getRef().getClass().toString().contains("Integer") == false)
 					&& (inst.getRef().getClass().toString().contains("String") == false)
 					&& (inst.getRef().getClass().toString().contains("Boolean") == false)) {
-				value += displayInstanceXML((InstanceClafer) inst.getRef(),
-						"");
+				value += displayInstanceXML((InstanceClafer) inst.getRef(), "");
 			} else {
 				if (inst.hasRef())
-					return ("\t<"+ClaferModelUtils.trimScope(inst.getType().getName()) + ">"
-							+ inst.getRef().toString().replace("\"", "") +"</"+ClaferModelUtils.trimScope(inst.getType().getName()) + ">\n");
+					return ("\t<" + ClaferModelUtils.trimScope(inst.getType().getName()) + ">"
+							+ inst.getRef().toString().replace("\"", "") + "</"
+							+ ClaferModelUtils.trimScope(inst.getType().getName()) + ">\n");
 				else
-					return ("\t<"+ClaferModelUtils.trimScope(((AstConcreteClafer)inst.getType()).getParent().getName()) + ">"
-							+ClaferModelUtils.trimScope(inst.getType().getName()) + "</"+ClaferModelUtils.trimScope(((AstConcreteClafer)inst.getType()).getParent().getName()) + ">\n");
+					return ("\t<"
+							+ ClaferModelUtils.trimScope(((AstConcreteClafer) inst.getType()).getParent().getName())
+							+ ">" + ClaferModelUtils.trimScope(inst.getType().getName()) + "</"
+							+ ClaferModelUtils.trimScope(((AstConcreteClafer) inst.getType()).getParent().getName())
+							+ ">\n");
 
 			}
 		} catch (Exception E) {
@@ -94,12 +95,70 @@ public class PublishToXML implements Labels{
 		}
 		return value;
 	}
-boolean getSuperClaferName(AstClafer astClafer){
-	if(astClafer.getSuperClafer()!=null)
-		getSuperClaferName(astClafer.getSuperClafer());
-	if(astClafer.getName().contains("_Algorithm"))
-		return true;
-	return false;
-	
-}
+
+	boolean getSuperClaferName(AstClafer astClafer) {
+		if (astClafer.getSuperClafer() != null)
+			getSuperClaferName(astClafer.getSuperClafer());
+		if (astClafer.getName().contains("_Algorithm"))
+			return true;
+		return false;
+
+	}
+
+	public String getInstanceProperties(InstanceClafer inst, String value) {
+		InstanceClafer instan = null;
+
+		if (inst.hasChildren()) {
+			instan = (InstanceClafer) inst.getChildren()[0].getRef();
+			
+		} 
+		if (instan != null && instan.hasChildren()) {
+			for (InstanceClafer in : instan.getChildren()) {
+				if (!in.getType().getRef().getTargetType().isPrimitive()) {
+					value += "Algorithm :"
+							+ ClaferModelUtils.trimScope(in.getType().getRef().getTargetType().getName()) + "\n";
+					value += getInstancePropertiesDetails((InstanceClafer) in, "");
+					value += "\n";
+				} else {
+					value += getInstancePropertiesDetails((InstanceClafer) in, "");
+				}
+			}
+
+		}
+
+		return value;
+	}
+
+	public String getInstancePropertiesDetails(InstanceClafer inst, String value) {
+		try {
+			if (inst.getType().hasRef()) {
+				if (getSuperClaferName(inst.getType().getRef().getTargetType()))
+					System.out.println("YES => " + inst);
+			}
+			if (inst.hasChildren()) {
+				for (InstanceClafer in : inst.getChildren()) {
+					value += getInstancePropertiesDetails(in, "");
+				}
+
+			} else if (inst.hasRef() && (inst.getType().isPrimitive() != true)
+					&& (inst.getRef().getClass().toString().contains("Integer") == false)
+					&& (inst.getRef().getClass().toString().contains("String") == false)
+					&& (inst.getRef().getClass().toString().contains("Boolean") == false)) {
+				value += getInstancePropertiesDetails((InstanceClafer) inst.getRef(), "");
+			} else {
+				if (inst.hasRef())
+					return ("\t" + ClaferModelUtils.trimScope(inst.getType().getName())+" : "
+							+ inst.getRef().toString().replace("\"", "")+ "\n");
+				else
+					return ("\t"
+							+ ClaferModelUtils.trimScope(((AstConcreteClafer) inst.getType()).getParent().getName())
+							+" : "+ ClaferModelUtils.trimScope(inst.getType().getName())
+							+ "\n");
+
+			}
+		} catch (Exception E) {
+			E.printStackTrace();
+		}
+		return value;
+	}
 }

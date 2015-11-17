@@ -21,7 +21,6 @@
 package crossing.e1.configurator.wizard;
 
 import java.util.Map;
-
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -31,42 +30,51 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-
+import org.eclipse.swt.widgets.Text;
 import crossing.e1.configurator.Labels;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
+import crossing.e1.xml.export.PublishToXML;
 
 public class InstanceListPage extends WizardPage implements Labels {
 
-	private Composite container;
-
+	private Composite control;
+	Text instanceDetails;
 	private InstanceGenerator instance;
 	InstanceClafer value;
 	boolean val = false;
+	PublishToXML publisher;
+	Group instancePropertiesPanel ;
 
 	public InstanceListPage(InstanceGenerator inst) {
 		super(Labels.SECOND_PAGE);
 		setTitle(Labels.AVAILABLE_OPTIONS);
 		setDescription(Labels.DESCRIPTION_INSTANCE_LIST_PAGE);
 		this.instance = inst;
+		publisher = new PublishToXML();
 	}
 
 	@Override
 	public void createControl(Composite parent) {
 		ComboViewer algorithmClass;
 		Label lableInstanceList;
-		container = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 4;
-		container.setLayout(layout);
+		control=new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout(1, false);
+		control.setLayout(layout);
+		
+		Composite compositeControl = new Composite(control, SWT.NONE);
 		setPageComplete(false);
-
-		lableInstanceList = new Label(container, SWT.NONE);
+		compositeControl.setLayout(new GridLayout(2, false));
+		lableInstanceList = new Label(compositeControl, SWT.NONE);
 		lableInstanceList.setText(Labels.instanceList);
 		Map<String, InstanceClafer> inst = instance.getInstances();
-		algorithmClass = new ComboViewer(container, SWT.COMPOSITION_SELECTION);
+		algorithmClass = new ComboViewer(compositeControl, SWT.COMPOSITION_SELECTION);
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
 		algorithmClass.setInput(inst.keySet());
 		algorithmClass.setLabelProvider((new LabelProvider() {
@@ -78,9 +86,10 @@ public class InstanceListPage extends WizardPage implements Labels {
 		algorithmClass.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-
+				instancePropertiesPanel.setVisible(true);
 				String b = (String) selection.getFirstElement().toString();
 				setValue(instance.getInstances().get(b));
+				instanceDetails.setText(publisher.getInstanceProperties(instance.getInstances().get(b), ""));
 				if (selection.size() > 0) {
 					val = true;
 					setPageComplete(true);
@@ -88,8 +97,16 @@ public class InstanceListPage extends WizardPage implements Labels {
 			}
 
 		});
+		 instancePropertiesPanel = new Group(control, SWT.NONE);
+		instancePropertiesPanel.setText("Instance Details");
+		Font boldFont = new Font(instancePropertiesPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
+		instancePropertiesPanel.setFont(boldFont);
 
-		setControl(container);
+		   instanceDetails = new Text(instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		   instanceDetails.setLayoutData(new GridData(GridData.FILL_BOTH));
+		   instanceDetails.setBounds(10, 10, 400, 200);
+		   instancePropertiesPanel.setVisible(false);
+		setControl(control);
 		;
 	}
 

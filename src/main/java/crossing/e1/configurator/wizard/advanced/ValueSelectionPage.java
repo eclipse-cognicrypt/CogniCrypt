@@ -104,7 +104,7 @@ public class ValueSelectionPage extends WizardPage implements Labels {
 			Group titledPanel = new Group(container, SWT.NONE);
 			titledPanel.setText(ClaferModelUtils.trimScope(clafer.getName()));
 			Font boldFont = new Font(titledPanel.getDisplay(), new FontData(
-					"Arial", 9, SWT.BOLD));
+					"Arial", 11, SWT.BOLD));
 			titledPanel.setFont(boldFont);
 			GridLayout layout2 = new GridLayout();
 

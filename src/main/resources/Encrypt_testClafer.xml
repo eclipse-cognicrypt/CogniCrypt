@@ -25,12 +25,12 @@
 <Tasks>
 	<Task name="c0_CarFinder">
 		<Questions>
-			<Question def="is performnace important ?" display="performance?" refClafer="performance"
+			<Question def="is performnace important ?" display="c0_performance?" refClafer="performance"
 				isGroup="false">
 				<Answers>
-					<Answer value="Very important" ref="3" operator="4">
+					<Answer value="Very important" ref="3" operator="1">
 						<dependencies>
-							<dependency refClafer="class" value="3" operator="4" />
+							<dependency refClafer="class" value="4" operator="1" />
 						</dependencies>
 					</Answer>
 					<Answer value="not important" ref="4" operator="4">
@@ -40,15 +40,15 @@
 					</Answer>
 				</Answers>
 			</Question>
-			<Question def="power saving really important ?" display="power?" refClafer="power"
+			<Question def="power saving really important ?" display="c0_power?" refClafer="power"
 				isGroup="false">
 				<Answers>
-					<Answer value="Very important" ref="3" operator="4">
+					<Answer value="Very important" ref="2" operator="1">
 						 <dependencies>
-							<dependency refClafer="performance" value="3" operator="4" />
+							<dependency refClafer="performance" value="3" operator="1" />
 						</dependencies>
 					</Answer>
-					<Answer value="Not important" ref="2" operator="2">
+					<Answer value="Not important" ref="2" operator="4">
 						<dependencies>
 							<dependency refClafer="performance" value="2" operator="2" />
 						</dependencies>

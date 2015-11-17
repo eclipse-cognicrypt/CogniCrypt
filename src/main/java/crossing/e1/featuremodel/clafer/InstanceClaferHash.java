@@ -30,19 +30,11 @@ import org.clafer.instance.InstanceClafer;
  */
 public class InstanceClaferHash extends InstanceClafer {
 
-	private AstClafer type;;
-	private int id;
-	private Object ref;
-	private InstanceClafer[] children;
 
 	public InstanceClaferHash(InstanceClafer inputInstance) {
 
-		super(inputInstance.getType(), inputInstance.getId(), inputInstance
-				.getRef(), inputInstance.getChildren());
-		type = inputInstance.getType();
-		id = inputInstance.getId();
-		ref = inputInstance.getRef();
-		children = inputInstance.getChildren();
+		super(inputInstance.getType(), inputInstance.getId(), inputInstance.getRef(), inputInstance.getChildren());
+		
 
 	}
 
@@ -55,37 +47,58 @@ public class InstanceClaferHash extends InstanceClafer {
 	 */
 	@Override
 	public int hashCode() {
-		int hashValue = 0;
-		for (InstanceClafer childInstanceClafer : children) {
-			InstanceClaferHash tempInstanceHash = null;
-			if (childInstanceClafer.hasRef()
-					&& (childInstanceClafer.getType().isPrimitive() != true)
-					&& (childInstanceClafer.getRef().getClass().toString().contains("Integer") == false)
-					&& (childInstanceClafer.getRef().getClass().toString().contains("String") == false)
-					&& (childInstanceClafer.getRef().getClass().toString().contains("Boolean") == false))
-				tempInstanceHash = new InstanceClaferHash((InstanceClafer) childInstanceClafer.getRef());
-			if (tempInstanceHash != null) {
-
-				hashValue += tempInstanceHash.getHashCode();
-			}
-		}
-
-		return hashValue;
+		/*
+		 * This method only 
+		 */
+//		int hashValue = 0;
+//		for (InstanceClafer childInstanceClafer : this.getChildren()) {
+//			InstanceClaferHash tempInstanceHash = null;
+//			if (childInstanceClafer.hasRef() && (childInstanceClafer.getType().isPrimitive() != true)
+//					&& (childInstanceClafer.getRef().getClass().toString().contains("Integer") == false)
+//					&& (childInstanceClafer.getRef().getClass().toString().contains("String") == false)
+//					&& (childInstanceClafer.getRef().getClass().toString().contains("Boolean") == false)) {
+//				tempInstanceHash = new InstanceClaferHash((InstanceClafer) childInstanceClafer.getRef());
+//				if (tempInstanceHash != null) {
+//
+//					hashValue += tempInstanceHash.getHashCode();
+//				}
+//				if ((childInstanceClafer.getRef().getClass().toString().contains("Integer") == true)
+//						|| (childInstanceClafer.getRef().getClass().toString().contains("String") == true)
+//						|| (childInstanceClafer.getRef().getClass().toString().contains("Boolean") == true)) {
+//					hashValue += childInstanceClafer.getRef().hashCode();
+//				}
+//			}
+//
+//		}	
+//		if (this.hasRef())
+//			hashValue += this.getRef().hashCode();
+//		hashValue+=this.getType().hashCode();
+//		hashValue+=this.getId();
+		return this.getHashCode();
 	}
-
 	public int getHashCode() {
 
 		int hashToChildrenInstances = 0;
+		for (InstanceClafer childInstanceClafer : this.getChildren()) {
+		InstanceClaferHash tempInstanceHash = null;
+		if (childInstanceClafer.hasRef() && (childInstanceClafer.getType().isPrimitive() != true)
+				&& (childInstanceClafer.getRef().getClass().toString().contains("Integer") == false)
+				&& (childInstanceClafer.getRef().getClass().toString().contains("String") == false)
+				&& (childInstanceClafer.getRef().getClass().toString().contains("Boolean") == false)) {
+			tempInstanceHash = new InstanceClaferHash((InstanceClafer) childInstanceClafer.getRef());
+			if (tempInstanceHash != null) {
 
-		for (InstanceClafer childInstanceClafer : children) {
-
-			if (childInstanceClafer.hasRef()) {
+				hashToChildrenInstances += tempInstanceHash.getHashCode();
+			}
+			if ((childInstanceClafer.getRef().getClass().toString().contains("Integer") == true)
+					|| (childInstanceClafer.getRef().getClass().toString().contains("String") == true)
+					|| (childInstanceClafer.getRef().getClass().toString().contains("Boolean") == true)) {
 				hashToChildrenInstances += childInstanceClafer.getRef().hashCode();
 			}
-			hashToChildrenInstances += childInstanceClafer.getType().hashCode();
 		}
-		return type.hashCode() ^ id ^ hashToChildrenInstances
-				^ Objects.hash(ref);
+
+	}	
+		return this.getType().hashCode() ^ this.getId() ^ hashToChildrenInstances ^ Objects.hash(this.getRef());
 
 	}
 

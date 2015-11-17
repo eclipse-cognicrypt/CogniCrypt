@@ -28,7 +28,8 @@ import crossing.e1.xml.export.Question;
 public class InstanceGeneratorTest {
 
 	private String path = new ReadConfig().getPath("claferPath");
-	private String claferName = "performance";
+	private String propertyName1 = "performance";
+	private String propertyName2 = "power";
 	private String taskDescription = "Find car";
 	ClaferModel claferModel;
 	InstanceGenerator instanceGenerator;
@@ -51,6 +52,9 @@ public class InstanceGeneratorTest {
 	 */
 	@After
 	public void tearDown() throws Exception {
+		claferModel = null;
+		instanceGenerator = null;
+		quest = null;
 	}
 
 	/**
@@ -77,14 +81,15 @@ public class InstanceGeneratorTest {
 		/*
 		 * Below are the hash codes of the expected instances
 		 */
-		hashCodes.add(-3546765);
-		hashCodes.add(-2136166356);
-		hashCodes.add(-606937044);
-		hashCodes.add(-771579251);
-		hashCodes.add(-921709371);
 
-		List<InstanceClafer> instances = instanceGenerator.generateInstances(map);
-		assertEquals(instanceGenerator.getNoOfInstances(), 4);
+		hashCodes.add(1706109440);
+		hashCodes.add(1706109472);
+		hashCodes.add(1706109950);
+		hashCodes.add(1706109854);
+
+		instanceGenerator.generateInstances(map);
+		List<InstanceClafer> instances = new ArrayList<>(instanceGenerator.getInstances().values());
+		assertEquals(4, instanceGenerator.getNoOfInstances());
 		for (InstanceClafer inst : instances) {
 			assertTrue(hashCodes.contains(new InstanceClaferHash(inst).hashCode()));
 		}
@@ -102,27 +107,42 @@ public class InstanceGeneratorTest {
 		HashMap<String, Answer> map = new HashMap<String, Answer>();
 		quest.init(taskName);
 		ArrayList<Question> q = quest.getQutionare();
-		Answer answer1 = q.get(0).getAnswers().get(0);
-		Answer answer2 = q.get(0).getAnswers().get(0);
-		map.put(claferName, answer1);
-		map.put("", answer2);
-
+		Answer answer1 = q.get(0).getAnswers().get(0);//performance=3
+		Answer answer2 = q.get(1).getAnswers().get(0);//power=2
+		map.put(propertyName1, answer1);
+		map.put(propertyName2, answer2);
+		claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(taskDescription));
 		List<Integer> hashCodes = new ArrayList<>();
-		hashCodes.add(-3546765);
-		hashCodes.add(-2136166356);
-		hashCodes.add(-606937044);
-		hashCodes.add(-771579251);
-		hashCodes.add(-921709371);
 
-		List<InstanceClafer> instances = instanceGenerator.generateInstances(map);
+		hashCodes.add(1706109472);
+		instanceGenerator.generateInstances(map);
+		List<InstanceClafer> instances = new ArrayList<>(instanceGenerator.getInstances().values());
 
-		assertEquals(instanceGenerator.getNoOfInstances(), 4);
+		assertEquals(1, instanceGenerator.getNoOfInstances());
 		for (InstanceClafer inst : instances) {
-
-			System.out.println(new InstanceClaferHash(inst).hashCode());
 			assertTrue(hashCodes.contains(new InstanceClaferHash(inst).hashCode()));
 		}
 		assertNotNull("failed to return instances Object", instances);
+	}
+
+	/**
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#generateInstances(java.util.HashMap)}
+	 * .
+	 */
+	@Test
+	public final void testGenerateInstancesBmodeNegative() {
+		instanceGenerator.setTaskName(taskDescription);
+		HashMap<String, Answer> map = new HashMap<String, Answer>();
+		quest.init(taskName);
+		ArrayList<Question> q = quest.getQutionare();
+		Answer answer1 = q.get(0).getAnswers().get(1);
+		Answer answer2 = q.get(1).getAnswers().get(1);
+		map.put(propertyName1, answer1);
+		map.put("power", answer2);
+		claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(taskDescription));
+		instanceGenerator.generateInstances(map);
+		assertEquals(0, instanceGenerator.getNoOfInstances());
 	}
 
 	/**
@@ -151,7 +171,7 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testGetInstances() {
-		// testGenerateInstances();
+		testGenerateInstancesBmodeWithConstraints();
 		assertNotNull("failed to return instances Object", instanceGenerator.getInstances());
 	}
 
@@ -162,7 +182,7 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testResetInstances() {
-		// testGenerateInstances();
+		testGenerateInstancesBmodeWithConstraints();
 		instanceGenerator.resetInstances();
 		assertNull("failed to reset instances Object", instanceGenerator.getInstances());
 	}
@@ -174,9 +194,9 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testGenerateInstanceMapping() {
-		// testGenerateInstances();
-		instanceGenerator.generateInstanceMapping();
-		assertNotNull("failed to reset instances Object", instanceGenerator.getInstances());
+		instanceGenerator.setTaskName(taskDescription);
+		HashMap<String, Answer> map = new HashMap<String, Answer>();
+		assertNotNull("failed to reset instances Object", instanceGenerator.generateInstances(map));
 	}
 
 	/**
@@ -186,10 +206,11 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testGetInstanceName() {
-		// testGenerateInstances();
-		for (String key : instanceGenerator.getInstances().keySet())
-			System.out.println("instance " + instanceGenerator.getInstances().get(key));
-		;
+		testGenerateInstancesBmodeWithConstraints();
+		for (String key : instanceGenerator.getInstances().keySet()) {
+			String instanceName = instanceGenerator.getInstanceName(instanceGenerator.getInstances().get(key));
+			assertEquals("BMW F30+Model 3", instanceName);
+		}
 	}
 
 	/**
@@ -216,8 +237,8 @@ public class InstanceGeneratorTest {
 	public final void testSetNoOfInstances() {
 		int noOfInstances = 10;
 		instanceGenerator.setNoOfInstances(10);
-		assertEquals("failed to set number of instances", instanceGenerator.getNoOfInstances(), noOfInstances);
-		assertNotEquals("failed to set number of instances", instanceGenerator.getNoOfInstances(), 0);
+		assertEquals(noOfInstances,instanceGenerator.getNoOfInstances());
+		assertNotEquals(0,instanceGenerator.getNoOfInstances());
 		instanceGenerator.setNoOfInstances(0);
 
 	}
@@ -228,7 +249,7 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testGetTaskName() {
-		assertNotNull("Empty Task Name", instanceGenerator.getTaskName());
+		assertNotNull(instanceGenerator.getTaskName());
 	}
 
 	/**
@@ -240,7 +261,7 @@ public class InstanceGeneratorTest {
 	public final void testSetTaskName() {
 		String taskName = instanceGenerator.getTaskName();
 		instanceGenerator.setTaskName("TestTaskName");
-		assertEquals("", "TestTaskName", instanceGenerator.getTaskName());
+		assertEquals("TestTaskName", instanceGenerator.getTaskName());
 		instanceGenerator.setTaskName(taskName);
 
 	}

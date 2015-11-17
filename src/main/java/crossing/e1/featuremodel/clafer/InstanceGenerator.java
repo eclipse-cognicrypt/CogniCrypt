@@ -82,8 +82,6 @@ public class InstanceGenerator {
 	}
 
 	public List<InstanceClafer> generateInstances(HashMap<String, Answer> map) {
-		if (map.isEmpty())
-			return null;
 		AstModel model = claferModel.getModel();
 		try {
 

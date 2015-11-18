@@ -1,5 +1,7 @@
 enum Security= Broken | Weak | Medium | Strong
 enum Performance=VerySlow | Slow | Fast | VeryFast
+enum Padding = NoPadding | PKCS5Padding
+enum Mode = ECB | CBC | OFB
 
 abstract Algorithm
     name -> string
@@ -27,14 +29,22 @@ abstract SymmetricCipher : Cipher
     keySize -> integer
 
 abstract SymmetricBlockCipher : SymmetricCipher
+    mode -> Mode
+    padding -> Padding
+    [mode != ECB]
+    [mode = CBC => padding != NoPadding]
 
 Ciphers
 	AES: SymmetricBlockCipher
 		[description = "Advanced Encryption Standard (AES) cipher"]
 		[name = "AES"]
-		[keySize = 128 || keySize = 192 || keySize = 256]
-		[keySize = 128 => performance = VeryFast && security = Medium]
-		[keySize > 128 => performance = Fast && security = Strong]
+		[keySize = 128 || 
+			keySize = 192 || 
+			keySize = 256]
+		[keySize = 128 => performance = VeryFast 
+							&& security = Medium]
+		[keySize > 128 => performance = Fast 
+							&& security = Strong]
 
 	DES: SymmetricBlockCipher
 	    [description = "DES encryption"]

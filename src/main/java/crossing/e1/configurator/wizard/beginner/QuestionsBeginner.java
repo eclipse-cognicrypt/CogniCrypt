@@ -1,7 +1,6 @@
 package crossing.e1.configurator.wizard.beginner;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import crossing.e1.xml.export.Answer;
@@ -50,7 +49,6 @@ public class QuestionsBeginner {
 	}
 
 	public List<Answer> nextValues() {
-		List<Question> key = getQutionare();
 		List<Answer> answers = getQutionare().get(counter).getAnswers();
 		counter = counter + 1;
 		return answers;
@@ -58,7 +56,6 @@ public class QuestionsBeginner {
 
 	public Question nextQuestion() {
 		List<Question> key = getQutionare();
-		List<Answer> answers = getQutionare().get(counter).getAnswers();
 		return key.get(counter);
 	}
 	//

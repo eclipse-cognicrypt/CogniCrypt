@@ -31,7 +31,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import crossing.e1.configurator.Labels;
@@ -40,7 +39,7 @@ import crossing.e1.xml.export.PublishToXML;
 
 public class DisplayValuePage extends WizardPage implements Labels {
 
-	private Label label1;
+	
 	private Composite container;
 	String value;
 

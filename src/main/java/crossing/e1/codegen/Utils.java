@@ -46,6 +46,7 @@ import org.osgi.framework.Bundle;
 
 import crossing.e1.configurator.Activator;
 
+@SuppressWarnings("restriction")
 public class Utils {
 	
 	private final static Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);

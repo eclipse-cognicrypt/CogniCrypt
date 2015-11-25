@@ -1,8 +1,6 @@
 package crossing.e1.configurator.utilities;
 
-import crossing.e1.configurator.Labels;
-import crossing.e1.configurator.ReadConfig;
-import crossing.e1.featuremodel.clafer.ClaferModel;
+
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 
 public class Validator {

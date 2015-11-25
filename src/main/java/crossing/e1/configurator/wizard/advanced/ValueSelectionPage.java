@@ -45,15 +45,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
 import crossing.e1.configurator.Labels;
-import crossing.e1.configurator.ReadConfig;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.ClaferModelUtils;
-import crossing.e1.featuremodel.clafer.InstanceGenerator;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
 
 public class ValueSelectionPage extends WizardPage implements Labels {
-	private ClaferModel model;
+	
 	private List<Spinner> taskCombo;
 	private Composite container;
 	private List<AstConcreteClafer> label;
@@ -71,10 +69,11 @@ public class ValueSelectionPage extends WizardPage implements Labels {
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		userOptions = new HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>>();
 		userGroupOptions = new HashMap<String, AstConcreteClafer>();
-		model = claferModel;
+		
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void createControl(Composite parent) {
 
@@ -110,6 +109,7 @@ public class ValueSelectionPage extends WizardPage implements Labels {
 
 			layout2.numColumns = 4;
 			titledPanel.setLayout(layout2);
+			@SuppressWarnings("unchecked")
 			ArrayList<AstConcreteClafer> x = new ArrayList<AstConcreteClafer>(
 					new LinkedHashSet(PropertiesMapperUtil.getPropertiesMap()
 							.get(clafer)));

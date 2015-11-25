@@ -17,8 +17,6 @@
 package crossing.e1.featuremodel.clafer;
 
 import java.util.Objects;
-
-import org.clafer.ast.AstClafer;
 import org.clafer.instance.InstanceClafer;
 
 /**

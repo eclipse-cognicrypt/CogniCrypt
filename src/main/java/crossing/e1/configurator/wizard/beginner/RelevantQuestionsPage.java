@@ -42,7 +42,7 @@ import crossing.e1.featuremodel.clafer.InstanceGenerator;
 
 public class RelevantQuestionsPage extends WizardPage {
 
-	private ClaferModel model;
+	
 	private List<CryptoQuestion> relevantQuestions;
 	private List<ButtonGroup> questionControls;
 
@@ -51,7 +51,6 @@ public class RelevantQuestionsPage extends WizardPage {
 		super("RELEVANT_QUESTIONS");
 		setTitle("Relevant Questions");
 		setDescription("Answering relevant questions");
-		this.model = model;
 		this.relevantQuestions = relevantQuestions;
 		questionControls = new ArrayList<ButtonGroup>();
 	}

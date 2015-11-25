@@ -21,7 +21,7 @@
  */
 package crossing.e1.configurator.wizard;
 
-import java.util.HashSet;
+
 import java.util.Set;
 
 import org.clafer.ast.AstConcreteClafer;
@@ -41,7 +41,6 @@ import org.eclipse.swt.widgets.Label;
 
 import crossing.e1.configurator.Labels;
 import crossing.e1.configurator.tasks.beginner.CryptoTask;
-import crossing.e1.configurator.tasks.beginner.TaskUtils;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 

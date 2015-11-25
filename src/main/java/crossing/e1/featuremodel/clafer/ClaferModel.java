@@ -22,7 +22,6 @@ package crossing.e1.featuremodel.clafer;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,14 +32,11 @@ import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstConstraint;
 import org.clafer.ast.AstModel;
-import org.clafer.ast.AstUtil;
 import org.clafer.collection.Triple;
 import org.clafer.common.Check;
 import org.clafer.javascript.Javascript;
 import org.clafer.objective.Objective;
 import org.clafer.scope.Scope;
-import org.eclipse.core.runtime.Path;
-import org.osgi.framework.Bundle;
 
 public class ClaferModel {
 

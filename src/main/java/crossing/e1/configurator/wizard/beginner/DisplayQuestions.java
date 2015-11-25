@@ -3,10 +3,6 @@ package crossing.e1.configurator.wizard.beginner;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.clafer.ast.AstConcreteClafer;
-import org.clafer.choco.constraint.SetNotMember;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -18,15 +14,12 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
 import crossing.e1.configurator.Labels;
 import crossing.e1.featuremodel.clafer.ClaferModel;
-import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 import crossing.e1.xml.export.Answer;
 import crossing.e1.xml.export.Question;
-import crossing.e1.xml.export.ReadTaskConfig;
 
 public class DisplayQuestions extends WizardPage {
 
@@ -34,7 +27,6 @@ public class DisplayQuestions extends WizardPage {
 	QuestionsBeginner quest;
 	HashMap<String, Answer> selection = new HashMap<String, Answer>();
 	private List<Composite> quetsionsList;
-	private HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>> userOptions;
 
 	public DisplayQuestions(QuestionsBeginner quest) {
 		super("Display Questions");

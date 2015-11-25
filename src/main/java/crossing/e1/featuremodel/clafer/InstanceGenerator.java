@@ -23,32 +23,23 @@ package crossing.e1.featuremodel.clafer;
 import static org.clafer.ast.Asts.$this;
 import static org.clafer.ast.Asts.constant;
 import static org.clafer.ast.Asts.equal;
-import static org.clafer.ast.Asts.global;
 import static org.clafer.ast.Asts.greaterThan;
 import static org.clafer.ast.Asts.greaterThanEqual;
 import static org.clafer.ast.Asts.join;
 import static org.clafer.ast.Asts.joinRef;
 import static org.clafer.ast.Asts.lessThan;
 import static org.clafer.ast.Asts.lessThanEqual;
-import static org.clafer.ast.Asts.some;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-
-import org.clafer.ast.AstAbstractClafer;
-import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstModel;
-import org.clafer.collection.Triple;
 import org.clafer.common.Check;
 import org.clafer.compiler.ClaferCompiler;
 import org.clafer.compiler.ClaferSolver;
 import org.clafer.instance.InstanceClafer;
-import org.clafer.objective.Objective;
 import org.clafer.scope.Scope;
 
 import crossing.e1.configurator.ReadConfig;
@@ -163,7 +154,6 @@ public class InstanceGenerator {
 		for (AstConcreteClafer childOfMainClfer : inputClafer.getRef().getTargetType().getChildren()) {
 			for (AstConcreteClafer propertyOfaClafer : popertiesMap.keySet()) {
 				if (childOfMainClfer.getName().equals(propertyOfaClafer.getName())) {
-					ArrayList<AstConcreteClafer> propertiesList  ;
 					for (AstConcreteClafer property : popertiesMap.get(propertyOfaClafer)) {
 						for (String question : qAMap.keySet())
 							if (property.getName().contains(question)) {
@@ -200,13 +190,15 @@ public class InstanceGenerator {
 		if (operator == 5)
 			main.addConstraint(greaterThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
 		if (operator == 6) {
-			AstAbstractClafer operandGloabl = null;
-			AstConcreteClafer operandValue = null;
-			AstClafer claferByName = ClaferModelUtils.findClaferByName(main, main.getRef().getTargetType().getName());// .getClaferByName(main,
-																														// main.getRef().getTargetType().getName());
-			if (ClaferModelUtils.isAbstract(claferByName)) {
-				operandGloabl = (AstAbstractClafer) claferByName;
-			}
+			// AstAbstractClafer operandGloabl = null;
+			// AstConcreteClafer operandValue = null;
+			// AstClafer claferByName = ClaferModelUtils.findClaferByName(main,
+			// main.getRef().getTargetType().getName());//
+			// .getClaferByName(main,
+			// // main.getRef().getTargetType().getName());
+			// if (ClaferModelUtils.isAbstract(claferByName)) {
+			// operandGloabl = (AstAbstractClafer) claferByName;
+			// }
 			// TODO: fix xor behavior.. how do we get the operandValue??
 			// parser.getClaferByName(main, claf.getName());
 			// if (!parser.isFlag()) {

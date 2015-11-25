@@ -22,14 +22,10 @@
  */
 package crossing.e1.configurator.wizard;
 
-import java.util.Map;
-
-import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 
-import crossing.e1.codegen.generation.XSLBasedGenerator;
 import crossing.e1.configurator.Labels;
 import crossing.e1.configurator.ReadConfig;
 import crossing.e1.configurator.utilities.Validator;
@@ -91,7 +87,7 @@ public class ConfiguratorWizard extends Wizard {
 				quest.init(PropertiesMapperUtil.getTaskLabelsMap()
 						.get(taskListPage.getValue()).getName());
 				
-				Map<String, AstConcreteClafer> x=PropertiesMapperUtil.getTaskLabelsMap();
+			//	Map<String, AstConcreteClafer> x=PropertiesMapperUtil.getTaskLabelsMap();
 				//c0_EncryptionUsingDigest
 				if (quest.hasQuestions())
 					valueListPage = new DisplayQuestions(quest);

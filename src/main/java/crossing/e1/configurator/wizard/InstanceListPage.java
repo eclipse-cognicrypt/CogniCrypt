@@ -38,6 +38,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+
 import crossing.e1.configurator.Labels;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 import crossing.e1.xml.export.PublishToXML;
@@ -50,7 +51,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 	InstanceClafer value;
 	boolean val = false;
 	PublishToXML publisher;
-	Group instancePropertiesPanel ;
+	Group instancePropertiesPanel;
 
 	public InstanceListPage(InstanceGenerator inst) {
 		super(Labels.SECOND_PAGE);
@@ -64,10 +65,10 @@ public class InstanceListPage extends WizardPage implements Labels {
 	public void createControl(Composite parent) {
 		ComboViewer algorithmClass;
 		Label lableInstanceList;
-		control=new Composite(parent, SWT.NONE);
+		control = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout(1, false);
 		control.setLayout(layout);
-		
+
 		Composite compositeControl = new Composite(control, SWT.NONE);
 		setPageComplete(false);
 		compositeControl.setLayout(new GridLayout(2, false));
@@ -97,18 +98,18 @@ public class InstanceListPage extends WizardPage implements Labels {
 			}
 
 		});
-		 instancePropertiesPanel = new Group(control, SWT.NONE);
+		instancePropertiesPanel = new Group(control, SWT.NONE);
 		instancePropertiesPanel.setText("Instance Details");
 		Font boldFont = new Font(instancePropertiesPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
 		instancePropertiesPanel.setFont(boldFont);
 
-		   instanceDetails = new Text(instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-		   instanceDetails.setLayoutData(new GridData(GridData.FILL_BOTH));
-		   instanceDetails.setBounds(10, 10, 400, 200);
-		   /*
-		    * Initially instance properties panel will be hidden
-		    */
-		   instancePropertiesPanel.setVisible(false);
+		instanceDetails = new Text(instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		instanceDetails.setLayoutData(new GridData(GridData.FILL_BOTH));
+		instanceDetails.setBounds(10, 10, 400, 200);
+		/*
+		 * Initially instance properties panel will be hidden
+		 */
+		instancePropertiesPanel.setVisible(false);
 		setControl(control);
 		;
 	}
@@ -124,6 +125,12 @@ public class InstanceListPage extends WizardPage implements Labels {
 	@Override
 	public boolean canFlipToNextPage() {
 
-		return val;
+		return false;
+	}
+
+	@Override
+	public void setPageComplete(boolean complete) {
+		// TODO Auto-generated method stub
+		super.setPageComplete(complete);
 	}
 }

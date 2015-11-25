@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 /**
  * @author Ram Kamath
  *
@@ -27,36 +26,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Shell;
-
 public class WriteToFileHelper {
+	/*
+	 * A helper class which writes string content to a file and it will be saved
+	 * under project directory
+	 */
 
-	public String getFileNameToBeSaved(Composite container, String name) {
-
-		String pathToReturn = "";
-		FileDialog dialog = new FileDialog(new Shell(), SWT.SAVE);
-		String[] names = new String[] { "XML Files", "All Files (*)" };
-		String[] extensions = new String[] { "*.xml", "*" };
-		String path = "/";
-		String platform = SWT.getPlatform();
-		if (platform.equals("win32")) {
-			names = new String[] { "XML Files", "All Files (*.*)" };
-			extensions = new String[] { "*.xml", "*.*" };
-			path = "c:\\";
-		}
-		dialog.setFilterNames(names);
-		dialog.setFilterExtensions(extensions);
-		dialog.setFilterPath(path);
-		dialog.setFileName(name);
-		pathToReturn = dialog.open();
-		return pathToReturn;
-	}
-
-	public int writeToFile(String content, String path) {
-		File file = new File(path);
+	public int writeToFile(String content, String filename) {
+		File file = new File(filename);
 		FileWriter writer = null;
 		PrintWriter printer = null;
 		try {

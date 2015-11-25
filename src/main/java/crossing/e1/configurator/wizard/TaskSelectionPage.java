@@ -82,7 +82,6 @@ public class TaskSelectionPage extends WizardPage {
 		if (availableTasks.size() > 0) {
 			//taskComboSelection.setSelection(new StructuredSelection(availableTasks.iterator().next()));
 		} else {
-			setPageComplete(false);
 			taskComboSelection
 					.setSelection(new StructuredSelection(Labels.NO_TASK));
 

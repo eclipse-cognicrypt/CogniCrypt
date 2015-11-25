@@ -30,11 +30,9 @@ import org.clafer.instance.InstanceClafer;
  */
 public class InstanceClaferHash extends InstanceClafer {
 
-
 	public InstanceClaferHash(InstanceClafer inputInstance) {
 
 		super(inputInstance.getType(), inputInstance.getId(), inputInstance.getRef(), inputInstance.getChildren());
-		
 
 	}
 
@@ -47,57 +45,31 @@ public class InstanceClaferHash extends InstanceClafer {
 	 */
 	@Override
 	public int hashCode() {
-		/*
-		 * This method only 
-		 */
-//		int hashValue = 0;
-//		for (InstanceClafer childInstanceClafer : this.getChildren()) {
-//			InstanceClaferHash tempInstanceHash = null;
-//			if (childInstanceClafer.hasRef() && (childInstanceClafer.getType().isPrimitive() != true)
-//					&& (childInstanceClafer.getRef().getClass().toString().contains("Integer") == false)
-//					&& (childInstanceClafer.getRef().getClass().toString().contains("String") == false)
-//					&& (childInstanceClafer.getRef().getClass().toString().contains("Boolean") == false)) {
-//				tempInstanceHash = new InstanceClaferHash((InstanceClafer) childInstanceClafer.getRef());
-//				if (tempInstanceHash != null) {
-//
-//					hashValue += tempInstanceHash.getHashCode();
-//				}
-//				if ((childInstanceClafer.getRef().getClass().toString().contains("Integer") == true)
-//						|| (childInstanceClafer.getRef().getClass().toString().contains("String") == true)
-//						|| (childInstanceClafer.getRef().getClass().toString().contains("Boolean") == true)) {
-//					hashValue += childInstanceClafer.getRef().hashCode();
-//				}
-//			}
-//
-//		}	
-//		if (this.hasRef())
-//			hashValue += this.getRef().hashCode();
-//		hashValue+=this.getType().hashCode();
-//		hashValue+=this.getId();
 		return this.getHashCode();
 	}
+
 	public int getHashCode() {
 
 		int hashToChildrenInstances = 0;
 		for (InstanceClafer childInstanceClafer : this.getChildren()) {
-		InstanceClaferHash tempInstanceHash = null;
-		if (childInstanceClafer.hasRef() && (childInstanceClafer.getType().isPrimitive() != true)
-				&& (childInstanceClafer.getRef().getClass().toString().contains("Integer") == false)
-				&& (childInstanceClafer.getRef().getClass().toString().contains("String") == false)
-				&& (childInstanceClafer.getRef().getClass().toString().contains("Boolean") == false)) {
-			tempInstanceHash = new InstanceClaferHash((InstanceClafer) childInstanceClafer.getRef());
-			if (tempInstanceHash != null) {
+			InstanceClaferHash tempInstanceHash = null;
+			if (childInstanceClafer.hasRef() && (childInstanceClafer.getType().isPrimitive() != true)
+					&& (childInstanceClafer.getRef().getClass().toString().contains("Integer") == false)
+					&& (childInstanceClafer.getRef().getClass().toString().contains("String") == false)
+					&& (childInstanceClafer.getRef().getClass().toString().contains("Boolean") == false)) {
+				tempInstanceHash = new InstanceClaferHash((InstanceClafer) childInstanceClafer.getRef());
+				if (tempInstanceHash != null) {
 
-				hashToChildrenInstances += tempInstanceHash.getHashCode();
+					hashToChildrenInstances += tempInstanceHash.getHashCode();
+				}
+				if ((childInstanceClafer.getRef().getClass().toString().contains("Integer") == true)
+						|| (childInstanceClafer.getRef().getClass().toString().contains("String") == true)
+						|| (childInstanceClafer.getRef().getClass().toString().contains("Boolean") == true)) {
+					hashToChildrenInstances += childInstanceClafer.getRef().hashCode();
+				}
 			}
-			if ((childInstanceClafer.getRef().getClass().toString().contains("Integer") == true)
-					|| (childInstanceClafer.getRef().getClass().toString().contains("String") == true)
-					|| (childInstanceClafer.getRef().getClass().toString().contains("Boolean") == true)) {
-				hashToChildrenInstances += childInstanceClafer.getRef().hashCode();
-			}
+
 		}
-
-	}	
 		return this.getType().hashCode() ^ this.getId() ^ hashToChildrenInstances ^ Objects.hash(this.getRef());
 
 	}

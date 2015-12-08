@@ -1,5 +1,7 @@
 package crossing.e1.configurator.utilities;
 
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
 
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 
@@ -14,7 +16,13 @@ public class Validator {
 		if (gen.getNoOfInstances() > 0) {
 			return true;
 		} else {
-				return false;
+			displayError(
+					" No possible combinations are available for chosen values , please modify your prefference and try agin.\n \n You can use  \n >= insted of >\n<= insted of <\nto make your selection generic.");
+			return false;
 		}
+	}
+
+	private void displayError(String message) {
+		MessageDialog.openError(new Shell(), "Error", message);
 	}
 }

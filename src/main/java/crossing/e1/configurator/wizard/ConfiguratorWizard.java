@@ -21,6 +21,9 @@
  */
 package crossing.e1.configurator.wizard;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -56,11 +59,29 @@ public class ConfiguratorWizard extends Wizard {
 
 	public ConfiguratorWizard() {
 		super();
+
+		try {
+			// Set the Look and Feel of the application to the operating
+			// system's look and feel.
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
+		} catch (UnsupportedLookAndFeelException e) {
+		}
+
+		this.claferModel = new ClaferModel(new ReadConfig().getPath("claferPath"));
+		setWindowTitle("Cyrptography Task Configurator");
+		setNeedsProgressMonitor(true);
+	}
+
+	/**
+	 * Select the project location of the project which has been selected in a
+	 * workspace
+	 */
+	public boolean checkProjectSelection() {
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		/*
-		 * Select the project location of the project which has been selected in
-		 * a workspace
-		 */
+
 		if (window != null) {
 			IStructuredSelection selection = (IStructuredSelection) window.getSelectionService().getSelection();
 			Object firstElement = selection.getFirstElement();
@@ -68,35 +89,32 @@ public class ConfiguratorWizard extends Wizard {
 				IProject project = (IProject) ((IAdaptable) firstElement).getAdapter(IProject.class);
 				path = project.getLocation();
 			} else {
-
-				exitWithError();
+				/**
+				 * No project has been selected, exit with an error
+				 */
+				displayError("Please select projrct directory to launch the configurator");
+				return false;
 
 			}
 		} else {
-			exitWithError();
+			displayError("Please select projrct directory to launch the configurator");
+			return false;
 
 		}
-		
-		this.claferModel = new ClaferModel(new ReadConfig().getPath("claferPath"));
-		setWindowTitle("Cyrptography Task Configurator");
-		setNeedsProgressMonitor(true);
+		return true;
 	}
 
-	private void exitWithError() {
-		MessageDialog.openError(new Shell(), "Error", "Please select projrct directory to launch the configurator");
-		/*
-		 * No project has been selected, exit with an error
-		 */
-		System.exit(1);
+	private void displayError(String message) {
+		MessageDialog.openError(new Shell(), "Error", message);
 	}
 
 	@Override
 	public void addPages() {
-
-		taskListPage = new TaskSelectionPage(claferModel);
-		this.setForcePreviousAndNextButtons(true);
-		addPage(taskListPage);
-
+		if (checkProjectSelection()) {
+			taskListPage = new TaskSelectionPage(claferModel);
+			this.setForcePreviousAndNextButtons(true);
+			addPage(taskListPage);
+		}
 	}
 
 	@Override
@@ -105,7 +123,7 @@ public class ConfiguratorWizard extends Wizard {
 		boolean ret = instanceListPage.isPageComplete();
 		WriteToFileHelper write = new WriteToFileHelper();
 		write.writeToFile(new PublishToXML().displayInstanceValues(instanceListPage.getValue(), ""),
-				path.toString()+"/Configurator.xml");
+				path.toString() + "/Configurator.xml");
 		// Generate code template
 		// ret &= codeGeneration.generateCodeTemplates();
 		return ret;
@@ -119,13 +137,13 @@ public class ConfiguratorWizard extends Wizard {
 			if (taskListPage.isAdvancedMode())
 				valueListPage = new ValueSelectionPage(null, claferModel);
 			else {
-				/*
+				/**
 				 * Before showing the question update properties of a chosen
 				 * task
 				 */
 				claferModel.createClaferPropertiesMap(
 						PropertiesMapperUtil.getTaskLabelsMap().get(taskListPage.getValue()));
-				/*
+				/**
 				 * Create Questions object
 				 */
 				quest = new QuestionsBeginner();
@@ -138,7 +156,7 @@ public class ConfiguratorWizard extends Wizard {
 
 			return valueListPage;
 		}
-		/*
+		/**
 		 * If current page is either question or properties page (in Advanced
 		 * mode) check title. Maintain uniform title for second wizard page of
 		 * the wizard
@@ -165,9 +183,7 @@ public class ConfiguratorWizard extends Wizard {
 					instanceListPage = new InstanceListPage(instanceGenerator);
 					addPage(instanceListPage);
 					return instanceListPage;
-				} else {
-					// currentPage.(Lables.INSTANCE_ERROR_MESSGAE);
-				}
+				} 
 			}
 		}
 		return currentPage;

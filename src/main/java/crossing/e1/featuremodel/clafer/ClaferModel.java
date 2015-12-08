@@ -23,6 +23,7 @@ package crossing.e1.featuremodel.clafer;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,6 +46,7 @@ public class ClaferModel {
 	private Map<String, AstConcreteClafer> constraintClafers;
 	// private ParseClafer pClafer = new ParseClafer();
 	ArrayList<AstConcreteClafer> propertiesList;
+	HashMap<AstConcreteClafer,AstConcreteClafer> childClaferList;
 
 	public ClaferModel(String path) {
 		loadModel(path);
@@ -69,24 +71,23 @@ public class ClaferModel {
 		}
 	}
 
-//	public List<AstConstraint> getConstraints() {
-//		return getConstraints(triple.getFst().getChildren());
-//	}
-//
-//	// Method to provide list of constraints of the model
-//	public List<AstConstraint> getConstraints(List<AstConcreteClafer> type) {
-//		List<AstConstraint> constarint = new ArrayList<AstConstraint>();
-//
-//		for (AstConcreteClafer object : type) {
-//			if (object.hasChildren()) {
-//				constarint.addAll(this.getConstraints(object.getChildren()));
-//
-//			} else
-//				constarint.addAll(object.getConstraints());
-//		}
-//		return constarint;
-//	}
-
+	// public List<AstConstraint> getConstraints() {
+	// return getConstraints(triple.getFst().getChildren());
+	// }
+	//
+	// // Method to provide list of constraints of the model
+	// public List<AstConstraint> getConstraints(List<AstConcreteClafer> type) {
+	// List<AstConstraint> constarint = new ArrayList<AstConstraint>();
+	//
+	// for (AstConcreteClafer object : type) {
+	// if (object.hasChildren()) {
+	// constarint.addAll(this.getConstraints(object.getChildren()));
+	//
+	// } else
+	// constarint.addAll(object.getConstraints());
+	// }
+	// return constarint;
+	// }
 
 	void setTaskList(AstModel model) {
 		String key = "";
@@ -94,21 +95,14 @@ public class ClaferModel {
 			if (object.getName().contains("Task") == true) {
 				for (AstClafer clafer : object.getSubs()) {
 					for (AstConstraint constraint : clafer.getConstraints()) {
-						if (constraint.getExpr().toString()
-								.contains("description . ref")) {
-							key = constraint
-									.getExpr()
-									.toString()
-									.substring(
-											constraint.getExpr().toString()
-													.indexOf("=") + 1,
-											constraint.getExpr().toString()
-													.length()).trim()
-									.replace("\"", "");
+						if (constraint.getExpr().toString().contains("description . ref")) {
+							key = constraint.getExpr().toString()
+									.substring(constraint.getExpr().toString().indexOf("=") + 1,
+											constraint.getExpr().toString().length())
+									.trim().replace("\"", "");
 						}
 					}
-				PropertiesMapperUtil.getTaskLabelsMap().put(key,
-							(AstConcreteClafer) clafer);
+					PropertiesMapperUtil.getTaskLabelsMap().put(key, (AstConcreteClafer) clafer);
 
 				}
 			}
@@ -117,8 +111,7 @@ public class ClaferModel {
 
 	public List<AstConcreteClafer> getClafersByName(String type) {
 
-		return triple.getFst().getChildren().stream()
-				.filter(child -> child.getName().contains(type))
+		return triple.getFst().getChildren().stream().filter(child -> child.getName().contains(type))
 				.collect(Collectors.toList());
 	}
 
@@ -140,6 +133,54 @@ public class ClaferModel {
 		return Check.notNull(constraintClafers);
 	}
 
+	public HashMap<AstConcreteClafer, AstConcreteClafer> getChildrenListbyName(String name) {
+		childClaferList=new HashMap<>();
+		for(AstClafer child: this.getModel().getChildren())
+		{
+			setChildrenList(child, name);
+		}
+		return childClaferList;
+	}
+
+	private void setChildrenList(AstClafer inputClafer, String name) {
+		try {
+			if (inputClafer.getName().contains(name)) {
+				childClaferList.put((AstConcreteClafer) ((AstConcreteClafer) inputClafer).getParent(),(AstConcreteClafer) inputClafer);
+				
+			} 
+			if (inputClafer.hasChildren()) {
+					for (AstConcreteClafer in : inputClafer.getChildren())
+						setChildrenList(in, name);
+			}
+			if (inputClafer.hasRef()) {
+				 if (inputClafer.getRef().getTargetType().isPrimitive() == false) {
+					setChildrenList(inputClafer.getRef().getTargetType(), name);
+				}
+			}
+			if (inputClafer.getSuperClafer() != null)
+				setChildrenList(inputClafer.getSuperClafer(), name);
+		} catch (Exception E) {
+			E.printStackTrace();
+		}
+	}
+
+	private void setChildrenList(AstAbstractClafer inputClafer, String name) {
+
+		try {
+			if (inputClafer.hasChildren()) {
+				for (AstConcreteClafer in : inputClafer.getChildren())
+				setChildrenList(in, name);
+			}
+			if (inputClafer.hasRef())
+				setChildrenList(inputClafer.getRef().getTargetType(), name);
+
+			if (inputClafer.getSuperClafer() != null)
+				setChildrenList(inputClafer.getSuperClafer(), name);
+
+		} catch (Exception E) {
+			E.printStackTrace();
+		}
+	}
 	//
 	// /**
 	// * @param astConcreteClafer
@@ -160,8 +201,7 @@ public class ClaferModel {
 			}
 			if (inputClafer.hasRef()) {
 				if (inputClafer.getRef().getTargetType().isPrimitive() == true
-						&& (inputClafer.getRef().getTargetType().getName()
-								.contains("string") == false)) {
+						&& (inputClafer.getRef().getTargetType().getName().contains("string") == false)) {
 					propertiesList.add((AstConcreteClafer) inputClafer);
 
 				} else if (inputClafer.getRef().getTargetType().isPrimitive() == false) {
@@ -198,8 +238,7 @@ public class ClaferModel {
 			for (AstConcreteClafer childClafer : inputClafer.getChildren()) {
 				propertiesList = new ArrayList<AstConcreteClafer>();
 				addClaferProperties(childClafer);
-				PropertiesMapperUtil.getPropertiesMap().put(childClafer,
-						propertiesList);
+				PropertiesMapperUtil.getPropertiesMap().put(childClafer, propertiesList);
 			}
 	}
 

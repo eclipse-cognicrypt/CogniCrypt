@@ -72,6 +72,13 @@ public class InstanceGenerator {
 		this.uniqueInstances = new HashMap<Long, InstanceClafer>();
 	}
 
+	/**
+	 * Method to Generate instances for basic user. Argument is a map of
+	 * property(clafer) name and their values
+	 * 
+	 * @param map
+	 * @return
+	 */
 	public List<InstanceClafer> generateInstances(HashMap<String, Answer> map) {
 		AstModel model = claferModel.getModel();
 		try {
@@ -94,6 +101,13 @@ public class InstanceGenerator {
 		return generatedInstances;
 	}
 
+	/**
+	 * Method to generate instances in an advanced user mode, takes map with
+	 * claer and their values as parameterF
+	 * 
+	 * @param map
+	 * @return
+	 */
 	public List<InstanceClafer> generateInstancesAdvancedUserMode(
 			Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> map) {
 		if (map.isEmpty())
@@ -123,6 +137,13 @@ public class InstanceGenerator {
 
 	}
 
+	/**
+	 * This method is to parse the map of clafers and apply their values as
+	 * constraints before instance generation, used only in advanceduserMode
+	 * 
+	 * @param m
+	 * @param map
+	 */
 	void advancedModeHandler(AstConcreteClafer m, Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> map) {
 		for (AstConcreteClafer main : m.getRef().getTargetType().getChildren()) {
 			for (ArrayList<AstConcreteClafer> claf : map.keySet()) {
@@ -141,8 +162,8 @@ public class InstanceGenerator {
 
 	}
 
-	/*
-	 * basicModeHandler will take <String, answer> map as a parameter where the
+	/**
+	 * BasicModeHandler will take <String, answer> map as a parameter where the
 	 * key of the map is a clafer name associated with the question answer is
 	 * the selected answer for a given question each answer has been further
 	 * iterated to apply associated dependencies
@@ -177,6 +198,28 @@ public class InstanceGenerator {
 		}
 	}
 
+	/**
+	 * method used by both basic and advanced user operations to add constraints
+	 * to clafers before instance generation
+	 * 
+	 * operator is the numeric value which indicates > < >= <= == operations
+	 * 
+	 * main is the higher level clafer ,usually task choose by user
+	 * 
+	 * value is the numeric or string value whch will be added as a constraints,
+	 * EX outPutLength=128 here 128 is the value
+	 * 
+	 * operand is the clafer on which constraint is being applied EX
+	 * outPutLength=128 outPutLength is operand here
+	 * 
+	 * claf is a clafer used only with XOR
+	 * 
+	 * @param operator
+	 * @param main
+	 * @param value
+	 * @param operand
+	 * @param claf
+	 */
 	void addConstraints(int operator, AstConcreteClafer main, int value, AstConcreteClafer operand,
 			AstConcreteClafer claf) {
 		if (operator == 1)
@@ -210,18 +253,35 @@ public class InstanceGenerator {
 		}
 	}
 
+	/**
+	 * scope of the model
+	 * 
+	 * @return
+	 */
 	public Scope getScope() {
 		return Check.notNull(claferModel.getScope());
 	}
 
+	/**
+	 * gives the instances, key field being the name in String format .
+	 * 
+	 * @return
+	 */
 	public Map<String, InstanceClafer> getInstances() {
 		return displayNameToInstanceMap;
 	}
 
+	/**
+	 * method to set instanceCount to 0
+	 */
 	public void resetInstances() {
 		displayNameToInstanceMap = null;
 	}
 
+	/**
+	 * this method is part of instance generation process , creates a mapping
+	 * instance name and instance Object
+	 */
 	public void generateInstanceMapping() {
 
 		for (InstanceClafer inst : generatedInstances) {
@@ -232,6 +292,12 @@ public class InstanceGenerator {
 
 	}
 
+	/**
+	 * Returns the hash value of the instance passed as an argument
+	 * 
+	 * @param inst
+	 * @return
+	 */
 	private long getHashValue(InstanceClafer inst) {
 
 		InstanceClafer sub = null;
@@ -246,6 +312,12 @@ public class InstanceGenerator {
 
 	}
 
+	/**
+	 * Used by instanceMapping method to find the instance name
+	 * 
+	 * @param inst
+	 * @return
+	 */
 	String getInstanceName(InstanceClafer inst) {
 		String val = "";
 		try {
@@ -274,18 +346,39 @@ public class InstanceGenerator {
 		return val;
 	}
 
+	/**
+	 * Returns number of instances of the task
+	 * 
+	 * @return
+	 */
 	public int getNoOfInstances() {
 		return noOfInstances;
 	}
 
+	/**
+	 * once the instances are generated, this methd is invoked to set number of
+	 * instances
+	 * 
+	 * @param noOfInstances
+	 */
 	public void setNoOfInstances(int noOfInstances) {
 		this.noOfInstances = noOfInstances;
 	}
 
+	/**
+	 * Provides the name of the task choosed by user
+	 * 
+	 * @return
+	 */
 	public String getTaskName() {
 		return taskName;
 	}
 
+	/**
+	 * to Set task name
+	 * 
+	 * @param taskName
+	 */
 	public void setTaskName(String taskName) {
 		this.taskName = taskName;
 	}

@@ -32,7 +32,12 @@ import crossing.e1.featuremodel.clafer.ClaferModelUtils;
  *
  */
 public class PublishToXML implements Labels {
-
+	/**
+	 * 
+	 * @param inst
+	 * @param value
+	 * @return
+	 */
 	public String displayInstanceValues(InstanceClafer inst, String value) {
 		InstanceClafer instan = null;
 
@@ -61,6 +66,12 @@ public class PublishToXML implements Labels {
 		return value;
 	}
 
+	/**
+	 * 
+	 * @param inst
+	 * @param value
+	 * @return
+	 */
 	public String displayInstanceXML(InstanceClafer inst, String value) {
 		try {
 			if (inst.getType().hasRef()) {
@@ -96,6 +107,11 @@ public class PublishToXML implements Labels {
 		return value;
 	}
 
+	/**
+	 * 
+	 * @param astClafer
+	 * @return
+	 */
 	boolean getSuperClaferName(AstClafer astClafer) {
 		if (astClafer.getSuperClafer() != null)
 			getSuperClaferName(astClafer.getSuperClafer());
@@ -105,18 +121,24 @@ public class PublishToXML implements Labels {
 
 	}
 
+	/**
+	 * 
+	 * @param inst
+	 * @param value
+	 * @return
+	 */
 	public String getInstanceProperties(InstanceClafer inst, String value) {
 		InstanceClafer instan = null;
 
 		if (inst.hasChildren()) {
 			instan = (InstanceClafer) inst.getChildren()[0].getRef();
-			
-		} 
+
+		}
 		if (instan != null && instan.hasChildren()) {
 			for (InstanceClafer in : instan.getChildren()) {
 				if (!in.getType().getRef().getTargetType().isPrimitive()) {
-					value += "Algorithm :"
-							+ ClaferModelUtils.trimScope(in.getType().getRef().getTargetType().getName()) + "\n";
+					value += "Algorithm :" + ClaferModelUtils.trimScope(in.getType().getRef().getTargetType().getName())
+							+ "\n";
 					value += getInstancePropertiesDetails((InstanceClafer) in, "");
 					value += "\n";
 				} else {
@@ -129,11 +151,19 @@ public class PublishToXML implements Labels {
 		return value;
 	}
 
+	/**
+	 * 
+	 * @param inst
+	 * @param value
+	 * @return
+	 */
 	public String getInstancePropertiesDetails(InstanceClafer inst, String value) {
 		try {
 			if (inst.getType().hasRef()) {
 				if (getSuperClaferName(inst.getType().getRef().getTargetType()))
-					System.out.println("YES => " + inst);
+					{
+					
+					}
 			}
 			if (inst.hasChildren()) {
 				for (InstanceClafer in : inst.getChildren()) {
@@ -147,13 +177,12 @@ public class PublishToXML implements Labels {
 				value += getInstancePropertiesDetails((InstanceClafer) inst.getRef(), "");
 			} else {
 				if (inst.hasRef())
-					return ("\t" + ClaferModelUtils.trimScope(inst.getType().getName())+" : "
-							+ inst.getRef().toString().replace("\"", "")+ "\n");
+					return ("\t" + ClaferModelUtils.trimScope(inst.getType().getName()) + " : "
+							+ inst.getRef().toString().replace("\"", "") + "\n");
 				else
 					return ("\t"
 							+ ClaferModelUtils.trimScope(((AstConcreteClafer) inst.getType()).getParent().getName())
-							+" : "+ ClaferModelUtils.trimScope(inst.getType().getName())
-							+ "\n");
+							+ " : " + ClaferModelUtils.trimScope(inst.getType().getName()) + "\n");
 
 			}
 		} catch (Exception E) {

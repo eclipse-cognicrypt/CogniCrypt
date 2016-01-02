@@ -16,7 +16,7 @@ import crossing.e1.featuremodel.clafer.ClaferModel;
 
 public class TestDynamicModelUpdater {
 	public static void main(String[] args) {
-		ClaferModel model = new ClaferModel(new ReadConfig().getPath("claferPath"));
+		ClaferModel model = new ClaferModel(new ReadConfig().getValueFromConfig("claferPath"));
 		List<AstConcreteClafer> people=null;
 //		List<AstConcreteClafer> people = claferModel.getChildrenByName("person", claferModel
 //				.getModel().getChildren());

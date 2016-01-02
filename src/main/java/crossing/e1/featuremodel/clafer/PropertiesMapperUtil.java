@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 /**
  * @author Ram Kamath
  *
@@ -31,11 +30,18 @@ public class PropertiesMapperUtil {
 	private static Map<String, AstConcreteClafer> taskLabelMap = null;
 	private static Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> propertiesMap = null;
 	private static Map<AstConcreteClafer, Map<ArrayList<AstConcreteClafer>, Integer>> groupPropertiesMap = null;
-
+	/**
+	 * private Constructor for singleton pattern     
+	 */
 	private PropertiesMapperUtil() {
 
 	}
 
+	/**
+	 * List of clafer which extends abstract Task
+	 * 
+	 * @return
+	 */
 	public static Map<String, AstConcreteClafer> getTaskLabelsMap() {
 		if (taskLabelMap == null) {
 			taskLabelMap = new HashMap<String, AstConcreteClafer>();
@@ -43,6 +49,16 @@ public class PropertiesMapperUtil {
 		return taskLabelMap;
 	}
 
+	/**
+	 * Map with list of clafers and their properties 
+	 * ex : car : 
+	 * 				speed
+	 * 				transmission
+	 * in above clafer key would be 'car' and values would be
+	 * [speed,transmission]
+	 * 
+	 * @return
+	 */
 	public static Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> getPropertiesMap() {
 		if (propertiesMap == null) {
 			propertiesMap = new HashMap<AstConcreteClafer, ArrayList<AstConcreteClafer>>();
@@ -50,10 +66,18 @@ public class PropertiesMapperUtil {
 		return propertiesMap;
 	}
 
+	/**
+	 * method to reset the properties map
+	 */
 	public static void resetPropertiesMap() {
 		propertiesMap = null;
 	}
 
+	/**
+	 * used when there is an enum in the properties 
+	 * 
+	 * @return
+	 */
 	public static Map<AstConcreteClafer, Map<ArrayList<AstConcreteClafer>, Integer>> getGroupPropertiesMap() {
 		if (groupPropertiesMap == null) {
 			groupPropertiesMap = new HashMap<AstConcreteClafer, Map<ArrayList<AstConcreteClafer>, Integer>>();
@@ -61,6 +85,9 @@ public class PropertiesMapperUtil {
 		return groupPropertiesMap;
 	}
 
+	/**
+	 * reset group properties
+	 */
 	public static void resetGroupPropertiesMap() {
 		PropertiesMapperUtil.groupPropertiesMap = null;
 	}

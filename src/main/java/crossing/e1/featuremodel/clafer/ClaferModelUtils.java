@@ -31,7 +31,7 @@ public class ClaferModelUtils {
 		return "";
 	}
 
-	/*
+	/**
 	 * Method takes AstClafer as an input and returns a description of the
 	 * clafer if exist, returns name of the clafer otherwise
 	 */
@@ -54,6 +54,11 @@ public class ClaferModelUtils {
 
 	}
 
+	/**
+	 * method to check if the given clafer is an abstract clafer
+	 * @param astClafer
+	 * @return
+	 */
 	public static boolean isAbstract(AstClafer astClafer) {
 		if (astClafer.hasRef())
 			return astClafer.getRef().getTargetType().getClass()
@@ -63,8 +68,8 @@ public class ClaferModelUtils {
 					.contains("AstAbstractClafer");
 	}
 
-	/*
-	 * Method to find a clafer with a given name
+	/**
+	 * Method to find a clafer with a given name in whole model
 	 */
 	public static AstClafer findClaferByName(AstClafer inputClafer, String name) {
 		mathedClafer = null;
@@ -72,7 +77,7 @@ public class ClaferModelUtils {
 		return mathedClafer;
 	}
 
-	/*
+	/**
 	 * Helper method to find the clafer with a given name, if there are
 	 * duplicates it always sets the first matching clafer as matchedClafer
 	 * object
@@ -106,7 +111,7 @@ public class ClaferModelUtils {
 
 	}
 
-	/*
+	/**
 	 * removes scope from name (e.g., c0_) and changes first letter of the string to Upper case example c0_scope will become Scope
 	 */
 	public static String trimScope(String value) {

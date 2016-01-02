@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
+import crossing.e1.codegen.generation.XSLBasedGenerator;
 import crossing.e1.configurator.Labels;
 import crossing.e1.configurator.ReadConfig;
 import crossing.e1.configurator.utilities.Validator;
@@ -56,6 +57,7 @@ public class ConfiguratorWizard extends Wizard {
 	protected QuestionsBeginner quest;
 	private ClaferModel claferModel;
 	IPath path = null;
+	private XSLBasedGenerator codeGeneration=new XSLBasedGenerator();
 
 	public ConfiguratorWizard() {
 		super();
@@ -70,9 +72,8 @@ public class ConfiguratorWizard extends Wizard {
 		} catch (UnsupportedLookAndFeelException e) {
 		}
 
-		this.claferModel = new ClaferModel(new ReadConfig().getPath("claferPath"));
+		this.claferModel = new ClaferModel(new ReadConfig().getValueFromConfig("claferPath"));
 		setWindowTitle("Cyrptography Task Configurator");
-		setNeedsProgressMonitor(true);
 	}
 
 	/**
@@ -125,7 +126,7 @@ public class ConfiguratorWizard extends Wizard {
 		write.writeToFile(new PublishToXML().displayInstanceValues(instanceListPage.getValue(), ""),
 				path.toString() + "/Configurator.xml");
 		// Generate code template
-		// ret &= codeGeneration.generateCodeTemplates();
+		 ret &= codeGeneration.generateCodeTemplates();
 		return ret;
 
 	}
@@ -163,7 +164,7 @@ public class ConfiguratorWizard extends Wizard {
 		 * 
 		 */
 		else if (currentPage.getTitle().equals(Labels.PROPERTIES)) {
-			InstanceGenerator instanceGenerator = new InstanceGenerator();
+			InstanceGenerator instanceGenerator = new InstanceGenerator("claferPath");
 			instanceGenerator.setTaskName(taskListPage.getValue());
 			instanceGenerator.setNoOfInstances(0);
 

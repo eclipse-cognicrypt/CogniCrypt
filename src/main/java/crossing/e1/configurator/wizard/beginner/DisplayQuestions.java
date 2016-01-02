@@ -107,7 +107,7 @@ public class DisplayQuestions extends WizardPage {
 	}
 
 	public void setMap(HashMap<String, Answer> hashMap, ClaferModel model) {
-		System.out.println("Set MAAP INVOKED");
+		
 		// userOptions = new HashMap<ArrayList<AstConcreteClafer>,
 		// ArrayList<Integer>>();
 		// ArrayList<Integer> values = null;

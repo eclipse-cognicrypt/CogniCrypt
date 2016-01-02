@@ -34,18 +34,21 @@ public class Question implements Labels {
 	String refCalfer;
 	boolean isGroup = false;
 
+	/**
+	 * Each question will have multiple answers and associated display Value  
+	 * Question itself will have reference clafer and a display value.
+	 * @param que
+	 */
 	Question(Element que) {
 		NodeList answer = null;
 		if (que.hasChildNodes()) {
 			Element answersList = null;
 			if (que.getElementsByTagName(Labels.ANSWER_LIST).getLength() > 0)
-				answersList = (Element) que.getElementsByTagName(Labels.ANSWER_LIST)
-						.item(0);
+				answersList = (Element) que.getElementsByTagName(Labels.ANSWER_LIST).item(0);
 			if (answersList.hasChildNodes()) {
 				answer = answersList.getElementsByTagName(Labels.ANSWER);
 				for (int ans = 0; ans < answer.getLength(); ans++) {
-					this.getAnswers().add(
-							new Answer((Element) answer.item(ans)));
+					this.getAnswers().add(new Answer((Element) answer.item(ans)));
 
 				}
 			}
@@ -65,7 +68,7 @@ public class Question implements Labels {
 
 	/**
 	 * @param def
-	 *            the def to set
+	 * the def to set
 	 */
 	public void setDef(String def) {
 		this.def = def;
@@ -121,7 +124,7 @@ public class Question implements Labels {
 	 */
 	public ArrayList<Answer> getAnswers() {
 		if (answers == null)
-			answers=new ArrayList<Answer>();
+			answers = new ArrayList<Answer>();
 		return answers;
 	}
 

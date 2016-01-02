@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 /**
  * @author Ram Kamath
  *
  */
 package crossing.e1.configurator.wizard;
-
 
 import java.util.Set;
 
@@ -29,7 +27,6 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
@@ -40,12 +37,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import crossing.e1.configurator.Labels;
-import crossing.e1.configurator.tasks.beginner.CryptoTask;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
 public class TaskSelectionPage extends WizardPage {
-
 
 	private Composite container;
 	private ComboViewer taskComboSelection;
@@ -53,10 +48,10 @@ public class TaskSelectionPage extends WizardPage {
 	private Label label2;
 	private String value = "";
 	private ClaferModel model;
-	private boolean status=true;
+	private boolean status = true;
 
 	public TaskSelectionPage(ClaferModel claferModel) {
-	
+
 		super(Labels.SELECT_TASK);
 		setTitle(Labels.TASK_LIST);
 		setDescription(Labels.DESCRIPTION_TASK_SELECTION_PAGE);
@@ -75,65 +70,57 @@ public class TaskSelectionPage extends WizardPage {
 
 		label2 = new Label(container, SWT.NONE);
 		label2.setText(Labels.LABEL2);
-		
+
 		taskComboSelection = new ComboViewer(container, SWT.COMPOSITION_SELECTION);
 		taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
 		taskComboSelection.setInput(availableTasks);
 		if (availableTasks.size() > 0) {
-			//taskComboSelection.setSelection(new StructuredSelection(availableTasks.iterator().next()));
+			// taskComboSelection.setSelection(new
+			// StructuredSelection(availableTasks.iterator().next()));
 		} else {
-			taskComboSelection
-					.setSelection(new StructuredSelection(Labels.NO_TASK));
+			taskComboSelection.setSelection(new StructuredSelection(Labels.NO_TASK));
 
 		}
-		taskComboSelection.setLabelProvider((new LabelProvider() {
-			@Override
-			public String getText(Object element) {
-				if(element instanceof CryptoTask){
-					return ((CryptoTask) element).getDisplayText();
-				}
-				return element.toString();
+
+		taskComboSelection.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+
+				String selectedTask = selection.getFirstElement().toString();
+				setValue(selectedTask);
+
 			}
-		}));
-		taskComboSelection
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-					public void selectionChanged(SelectionChangedEvent event) {
-						IStructuredSelection selection = (IStructuredSelection) event
-								.getSelection();
 
-						String selectedTask = selection.getFirstElement().toString();
-					setValue(selectedTask);
+		});
 
-					}
-
-				});
-		
-		advancedModeCheckBox = new Button(container,SWT.CHECK);
+		advancedModeCheckBox = new Button(container, SWT.CHECK);
 		advancedModeCheckBox.setText("Advanced Mode");
 		advancedModeCheckBox.setSelection(false);
 		setControl(container);
 	}
 
 	public boolean canProceed() {
-		String selectedTask =  getValue();
-		
-		if (selectedTask.length() > 0){
+		String selectedTask = getValue();
+
+		if (selectedTask.length() > 0) {
 			PropertiesMapperUtil.resetPropertiesMap();
-			AstConcreteClafer claferSelected=PropertiesMapperUtil.getTaskLabelsMap().get(selectedTask);
+			AstConcreteClafer claferSelected = PropertiesMapperUtil.getTaskLabelsMap().get(selectedTask);
 			model.createClaferPropertiesMap(claferSelected);
 			setValue(selectedTask);
 			return true;
-		}else
+		} else
 			return false;
 	}
-	
-	public CryptoTask getSelectedTask(){
-		return (CryptoTask) ((IStructuredSelection)taskComboSelection.getSelection()).getFirstElement();
-	}
-	public boolean isAdvancedMode(){
+
+	/**
+	 * Helper method to UI , this flag decides the second page of the wizard
+	 * 
+	 * @return
+	 */
+	public boolean isAdvancedMode() {
 		return advancedModeCheckBox.getSelection();
 	}
-	
+
 	public String getValue() {
 		return value;
 	}
@@ -143,7 +130,7 @@ public class TaskSelectionPage extends WizardPage {
 	}
 
 	public boolean getStatus() {
-		status=((status==true)?false:true);
+		status = ((status == true) ? false : true);
 		return status;
 	}
 

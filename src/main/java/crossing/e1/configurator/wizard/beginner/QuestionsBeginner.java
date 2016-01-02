@@ -19,7 +19,7 @@ public class QuestionsBeginner {
 
 	public void init(String taskName) {
 		setTask(taskName);
-		setQutionare(new ReadTaskConfig().getQA(taskName));
+		setQutionare(new ReadTaskConfig().getQA(taskName,"encryptXmlPath"));
 		
 	}
 

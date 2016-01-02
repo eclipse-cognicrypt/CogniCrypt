@@ -21,8 +21,8 @@ public class TestCases {
 
 	public static void main(String[] args) {
 		TestCases test = new TestCases();
-		String path = new ReadConfig().getPath("claferPath");
-		ClaferModel model = new ClaferModel(new ReadConfig().getPath("claferPath"));
+		String path = new ReadConfig().getValueFromConfig("claferPath");
+		ClaferModel model = new ClaferModel(new ReadConfig().getValueFromConfig("claferPath"));
 
 		// InstanceGenerator inst = test.getInstance(model);
 		// test.displayInstances(inst);
@@ -106,7 +106,7 @@ public class TestCases {
 
 	InstanceGenerator getInstance(ClaferModel model) {
 		System.out.println("-- Testing instance Generator method--");
-		InstanceGenerator instance = new InstanceGenerator();
+		InstanceGenerator instance = new InstanceGenerator("testClaferPath");
 		;
 		instance.generateInstancesAdvancedUserMode(getMap());
 		System.out.println("There are " + instance.getNoOfInstances()

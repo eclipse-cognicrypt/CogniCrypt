@@ -34,12 +34,9 @@ public class InstanceClaferHash extends InstanceClafer {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode() Iterates through individual
-	 * instanceClafer values and summed value is ORed with hash value of id,ref
-	 * and type.
+	/**
+	 * Iterates through individual instanceClafer values and summed value is
+	 * ORed with hash value of id,ref and type.
 	 */
 	@Override
 	public int hashCode() {
@@ -47,7 +44,10 @@ public class InstanceClaferHash extends InstanceClafer {
 	}
 
 	public int getHashCode() {
-
+		/**
+		 * Method calculates hash for all the children and ORs it with hashcode
+		 * for ID ,Type and Ref
+		 */
 		int hashToChildrenInstances = 0;
 		for (InstanceClafer childInstanceClafer : this.getChildren()) {
 			InstanceClaferHash tempInstanceHash = null;
@@ -55,11 +55,19 @@ public class InstanceClaferHash extends InstanceClafer {
 					&& (childInstanceClafer.getRef().getClass().toString().contains("Integer") == false)
 					&& (childInstanceClafer.getRef().getClass().toString().contains("String") == false)
 					&& (childInstanceClafer.getRef().getClass().toString().contains("Boolean") == false)) {
+				/**
+				 * recursively find hashcode for all the children for a clafer
+				 * if it is not primitive
+				 */
 				tempInstanceHash = new InstanceClaferHash((InstanceClafer) childInstanceClafer.getRef());
 				if (tempInstanceHash != null) {
 
 					hashToChildrenInstances += tempInstanceHash.getHashCode();
 				}
+				/**
+				 * add hashcode from standard object.hasCode() method for
+				 * primitive types
+				 */
 				if ((childInstanceClafer.getRef().getClass().toString().contains("Integer") == true)
 						|| (childInstanceClafer.getRef().getClass().toString().contains("String") == true)
 						|| (childInstanceClafer.getRef().getClass().toString().contains("Boolean") == true)) {

@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class WriteToFileHelper {
-	/*
+	/**
 	 * A helper class which writes string content to a file and it will be saved
 	 * under project directory
 	 */

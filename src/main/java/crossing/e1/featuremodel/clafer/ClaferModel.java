@@ -24,9 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.clafer.ast.AstAbstractClafer;
 import org.clafer.ast.AstClafer;
@@ -46,17 +44,33 @@ public class ClaferModel {
 	private Map<String, AstConcreteClafer> constraintClafers;
 	// private ParseClafer pClafer = new ParseClafer();
 	ArrayList<AstConcreteClafer> propertiesList;
-	HashMap<AstConcreteClafer,AstConcreteClafer> childClaferList;
+	HashMap<AstConcreteClafer, AstConcreteClafer> childClaferList;
 
+	/**
+	 * Constructor for claferModel which takes absolute path for the js as parm
+	 * 
+	 * @param path
+	 */
 	public ClaferModel(String path) {
 		loadModel(path);
 		propertiesList = new ArrayList<AstConcreteClafer>();
 	}
 
+	/**
+	 * returns the scope of the model
+	 * 
+	 * @return
+	 */
 	public Scope getScope() {
 		return triple.getSnd();
 	}
 
+	/**
+	 * Initializes the model and also list the task list Tasks lists are those
+	 * who extends Task
+	 * 
+	 * @param path
+	 */
 	private void loadModel(String path) {
 		try {
 			File filename = new File(path);
@@ -71,24 +85,12 @@ public class ClaferModel {
 		}
 	}
 
-	// public List<AstConstraint> getConstraints() {
-	// return getConstraints(triple.getFst().getChildren());
-	// }
-	//
-	// // Method to provide list of constraints of the model
-	// public List<AstConstraint> getConstraints(List<AstConcreteClafer> type) {
-	// List<AstConstraint> constarint = new ArrayList<AstConstraint>();
-	//
-	// for (AstConcreteClafer object : type) {
-	// if (object.hasChildren()) {
-	// constarint.addAll(this.getConstraints(object.getChildren()));
-	//
-	// } else
-	// constarint.addAll(object.getConstraints());
-	// }
-	// return constarint;
-	// }
-
+	/**
+	 * list the task list, Tasks lists are those who extends Abstract clafer
+	 * Task
+	 * 
+	 * @param model
+	 */
 	void setTaskList(AstModel model) {
 		String key = "";
 		for (AstAbstractClafer object : model.getAbstracts()) {
@@ -102,6 +104,11 @@ public class ClaferModel {
 									.trim().replace("\"", "");
 						}
 					}
+					/**
+					 * construct a map of tasks, key is a clafer description and
+					 * value is actual clafer Key will be used in Wizard, as an
+					 * input for taskList combo box
+					 */
 					PropertiesMapperUtil.getTaskLabelsMap().put(key, (AstConcreteClafer) clafer);
 
 				}
@@ -109,78 +116,119 @@ public class ClaferModel {
 		}
 	}
 
-	public List<AstConcreteClafer> getClafersByName(String type) {
-
-		return triple.getFst().getChildren().stream().filter(child -> child.getName().contains(type))
-				.collect(Collectors.toList());
-	}
-
+	/**
+	 * set a model name
+	 * 
+	 * @param modelName
+	 */
 	public void setModelName(String modelName) {
 
 		this.modelName = modelName;
 
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getModelName() {
 		return modelName;
 	}
 
+	/**
+	 * returns the astModel from the clafer list
+	 * 
+	 * @return
+	 */
 	public AstModel getModel() {
 		return triple.getFst();
 	}
 
+	/**
+	 * returns the clafer constraint list
+	 * 
+	 * @return
+	 */
 	public Map<String, AstConcreteClafer> getConstraintClafers() {
 		return Check.notNull(constraintClafers);
 	}
 
+	/**
+	 * Method provides map of clafer with a desired name.
+	 * 
+	 * Ex: Search clafer with name performance throughout the model
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public HashMap<AstConcreteClafer, AstConcreteClafer> getChildrenListbyName(String name) {
-		childClaferList=new HashMap<>();
-		for(AstClafer child: this.getModel().getChildren())
-		{
-			setChildrenList(child, name);
+		childClaferList = new HashMap<>();
+		for (AstClafer child : this.getModel().getChildren()) {
+			setChildrenList(child, child, name);
 		}
 		return childClaferList;
 	}
 
-	private void setChildrenList(AstClafer inputClafer, String name) {
+	/**
+	 * Initializes the children of a given clafer , used in testing also invoked
+	 * by getChildrenListByName(). Retention is a HashMap data structure where
+	 * key is parent clafer and inputclafer is recursive parameter clafer.
+	 * parentClafer remains constant throughout the iteration. When the name of
+	 * the clafer matches with the string being passed, map entry is constructed
+	 * as <parentclafer,matchedClafer>
+	 * 
+	 * @param parentClafer
+	 * @param inputClafer
+	 * @param name
+	 */
+	private void setChildrenList(AstClafer parentClafer, AstClafer inputClafer, String name) {
 		try {
 			if (inputClafer.getName().contains(name)) {
-				childClaferList.put((AstConcreteClafer) ((AstConcreteClafer) inputClafer).getParent(),(AstConcreteClafer) inputClafer);
-				
-			} 
+				childClaferList.put((AstConcreteClafer) parentClafer, (AstConcreteClafer) inputClafer);
+
+			}
 			if (inputClafer.hasChildren()) {
-					for (AstConcreteClafer in : inputClafer.getChildren())
-						setChildrenList(in, name);
+				for (AstConcreteClafer in : inputClafer.getChildren())
+					setChildrenList(parentClafer, in, name);
 			}
 			if (inputClafer.hasRef()) {
-				 if (inputClafer.getRef().getTargetType().isPrimitive() == false) {
-					setChildrenList(inputClafer.getRef().getTargetType(), name);
+				if (inputClafer.getRef().getTargetType().isPrimitive() == false) {
+					setChildrenList(parentClafer, inputClafer.getRef().getTargetType(), name);
 				}
 			}
 			if (inputClafer.getSuperClafer() != null)
-				setChildrenList(inputClafer.getSuperClafer(), name);
+				setChildrenList(parentClafer, inputClafer.getSuperClafer(), name);
 		} catch (Exception E) {
 			E.printStackTrace();
 		}
 	}
 
-	private void setChildrenList(AstAbstractClafer inputClafer, String name) {
+	/**
+	 * Method performs same functionality as of the above method, written for
+	 * Abstract clafer
+	 * 
+	 * @param parentClafer
+	 * @param inputClafer
+	 * @param claferName
+	 */
+	private void setChildrenList(AstClafer parentClafer, AstAbstractClafer inputClafer, String claferName) {
 
 		try {
 			if (inputClafer.hasChildren()) {
-				for (AstConcreteClafer in : inputClafer.getChildren())
-				setChildrenList(in, name);
+				for (AstConcreteClafer childClafer : inputClafer.getChildren())
+					setChildrenList(parentClafer, childClafer, claferName);
 			}
 			if (inputClafer.hasRef())
-				setChildrenList(inputClafer.getRef().getTargetType(), name);
+				setChildrenList(parentClafer, inputClafer.getRef().getTargetType(), claferName);
 
 			if (inputClafer.getSuperClafer() != null)
-				setChildrenList(inputClafer.getSuperClafer(), name);
+				setChildrenList(parentClafer, inputClafer.getSuperClafer(), claferName);
 
 		} catch (Exception E) {
 			E.printStackTrace();
 		}
 	}
+
 	//
 	// /**
 	// * @param astConcreteClafer
@@ -189,15 +237,19 @@ public class ClaferModel {
 	// pClafer.getPrimitive(astConcreteClafer);
 	//
 	// }
-
+	/**
+	 * Recursive method to list subclafers of a clafer
+	 * 
+	 * @param inputClafer
+	 */
 	public void addClaferProperties(AstClafer inputClafer) {
 		try {
 			if (inputClafer.hasChildren()) {
 				if (inputClafer.getGroupCard().getLow() >= 1) {
 					propertiesList.add((AstConcreteClafer) inputClafer);
 				} else
-					for (AstConcreteClafer in : inputClafer.getChildren())
-						addClaferProperties(in);
+					for (AstConcreteClafer childClafer : inputClafer.getChildren())
+						addClaferProperties(childClafer);
 			}
 			if (inputClafer.hasRef()) {
 				if (inputClafer.getRef().getTargetType().isPrimitive() == true
@@ -215,6 +267,11 @@ public class ClaferModel {
 		}
 	}
 
+	/**
+	 * Recursive method to list properties or subclafres of an Abstract clafer
+	 * 
+	 * @param inputClafer
+	 */
 	public void addClaferProperties(AstAbstractClafer inputClafer) {
 
 		try {
@@ -233,6 +290,33 @@ public class ClaferModel {
 		}
 	}
 
+	/**
+	 * Method which creates the list of subclafers in a given task , It omits
+	 * String type If a subclafers refers to another clafer then search is
+	 * performed recursively to list all the subclafers
+	 * 
+	 * 	PasswordStoring : Task
+	  		[Description = "Password Storing"] 
+	  		digestToUse ->Digest ? 
+	  		kdaToUse -> KeyDerivationAlgorithm ?
+	  	abstract Digest : Algorithm 
+	  		outputSize -> integer
+	  	abstract KeyDerivationAlgorithm : Algorithm
+	 	
+	 	abstract Algorithm 
+	 		name -> string 
+	 		performance -> integer
+	 
+	 * if input clafer is passwordStoring  then PropertiesMapperUtil.getPropertiesMap()
+	 * will be
+	 * 
+	 * <digestToUse,<outputSize,performance>> ,<kdaToUse,<performance>>
+	 * 
+	 * Note : String types are ignored
+	 * 
+	 * 
+	 * @param inputClafer
+	 */
 	public void createClaferPropertiesMap(AstConcreteClafer inputClafer) {
 		if (inputClafer.hasChildren())
 			for (AstConcreteClafer childClafer : inputClafer.getChildren()) {

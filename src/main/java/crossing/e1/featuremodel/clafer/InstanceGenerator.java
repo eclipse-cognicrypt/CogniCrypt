@@ -62,8 +62,8 @@ public class InstanceGenerator {
 	private int noOfInstances;
 	String taskName = "";
 
-	public InstanceGenerator() {
-		claferModel = new ClaferModel(new ReadConfig().getPath("claferPath"));// till
+	public InstanceGenerator(String path) {
+		claferModel = new ClaferModel(new ReadConfig().getValueFromConfig(path));// till
 																				// copy
 																				// constructor
 																				// works
@@ -82,15 +82,14 @@ public class InstanceGenerator {
 	public List<InstanceClafer> generateInstances(HashMap<String, Answer> map) {
 		AstModel model = claferModel.getModel();
 		try {
-
-			AstConcreteClafer main = model.addChild("Main").addChild("MAINTASK")
-					.refTo(PropertiesMapperUtil.getTaskLabelsMap().get(getTaskName()));
+			AstConcreteClafer taskName = PropertiesMapperUtil.getTaskLabelsMap().get(getTaskName());
+			AstConcreteClafer main = model.addChild("Main").addChild("MAINTASK").refTo(taskName);
 			basicModeHandler(main, map);
 			solver = ClaferCompiler.compile(model, claferModel.getScope());
 			while (solver.find()) {
 				InstanceClafer instance = solver.instance().getTopClafers()[solver.instance().getTopClafers().length
 						- 1];
-				uniqueInstances.put(getHashValue(instance), instance);
+				uniqueInstances.put(getHashValueOfInstance(instance), instance);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -125,7 +124,7 @@ public class InstanceGenerator {
 				InstanceClafer instance = solver.instance().getTopClafers()[solver.instance().getTopClafers().length
 						- 1];
 
-				uniqueInstances.put(getHashValue(instance), instance);
+				uniqueInstances.put(getHashValueOfInstance(instance), instance);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -164,7 +163,7 @@ public class InstanceGenerator {
 
 	/**
 	 * BasicModeHandler will take <String, answer> map as a parameter where the
-	 * key of the map is a clafer name associated with the question answer is
+	 * key of the map is a clafer name associated with the question, answer is
 	 * the selected answer for a given question each answer has been further
 	 * iterated to apply associated dependencies
 	 */
@@ -298,7 +297,7 @@ public class InstanceGenerator {
 	 * @param inst
 	 * @return
 	 */
-	private long getHashValue(InstanceClafer inst) {
+	private long getHashValueOfInstance(InstanceClafer inst) {
 
 		InstanceClafer sub = null;
 		if (inst.hasChildren())
@@ -356,7 +355,7 @@ public class InstanceGenerator {
 	}
 
 	/**
-	 * once the instances are generated, this methd is invoked to set number of
+	 * once the instances are generated, this method is invoked to set number of
 	 * instances
 	 * 
 	 * @param noOfInstances
@@ -366,7 +365,7 @@ public class InstanceGenerator {
 	}
 
 	/**
-	 * Provides the name of the task choosed by user
+	 * Provides the name of the task chosen by user
 	 * 
 	 * @return
 	 */

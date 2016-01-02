@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.clafer.ast.AstConcreteClafer;
 import org.clafer.instance.InstanceClafer;
 import org.junit.After;
 import org.junit.Before;
@@ -26,8 +27,6 @@ import crossing.e1.xml.export.Question;
  *
  */
 public class InstanceGeneratorTest {
-
-	private String path = new ReadConfig().getPath("claferPath");
 	private String propertyName1 = "performance";
 	private String propertyName2 = "power";
 	private String taskDescription = "Find car";
@@ -41,8 +40,8 @@ public class InstanceGeneratorTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		claferModel = new ClaferModel(new ReadConfig().getPath("claferPath"));
-		instanceGenerator = new InstanceGenerator();
+		claferModel = new ClaferModel(new ReadConfig().getValueFromConfig("testClaferPath"));
+		instanceGenerator = new InstanceGenerator("testClaferPath");
 		quest = new QuestionsBeginner();
 
 	}
@@ -89,11 +88,12 @@ public class InstanceGeneratorTest {
 
 		instanceGenerator.generateInstances(map);
 		List<InstanceClafer> instances = new ArrayList<>(instanceGenerator.getInstances().values());
+		assertNotNull("failed to return instances Object", instances);
 		assertEquals(4, instanceGenerator.getNoOfInstances());
 		for (InstanceClafer inst : instances) {
 			assertTrue(hashCodes.contains(new InstanceClaferHash(inst).hashCode()));
 		}
-		assertNotNull("failed to return instances Object", instances);
+
 	}
 
 	/**
@@ -107,8 +107,8 @@ public class InstanceGeneratorTest {
 		HashMap<String, Answer> map = new HashMap<String, Answer>();
 		quest.init(taskName);
 		ArrayList<Question> q = quest.getQutionare();
-		Answer answer1 = q.get(0).getAnswers().get(0);//performance=3
-		Answer answer2 = q.get(1).getAnswers().get(0);//power=2
+		Answer answer1 = q.get(0).getAnswers().get(0);// performance=3
+		Answer answer2 = q.get(1).getAnswers().get(0);// power=2
 		map.put(propertyName1, answer1);
 		map.put(propertyName2, answer2);
 		claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(taskDescription));
@@ -152,7 +152,60 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testGenerateInstancesAdvancedUserMode() {
-		fail("Not yet implemented"); // TODO
+		HashMap<AstConcreteClafer, AstConcreteClafer> power = claferModel.getChildrenListbyName("power");
+		HashMap<AstConcreteClafer, AstConcreteClafer> performance = claferModel.getChildrenListbyName("performance");
+		HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>> map = new HashMap<>();
+		System.out.println(power + " " + performance);
+		ArrayList<AstConcreteClafer> key;
+		ArrayList<Integer> values;
+		List<Integer> hashCodes = new ArrayList<>();
+		/*
+		 * Below are the hash codes of the expected instances
+		 */
+
+		hashCodes.add(1706109440);
+		hashCodes.add(1706109472);
+		hashCodes.add(1706109950);
+		hashCodes.add(1706109854);
+
+		instanceGenerator.setTaskName(taskDescription);
+		claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(taskDescription));
+
+		
+		for (AstConcreteClafer p : power.keySet()) {
+			key = new ArrayList<AstConcreteClafer>();
+			values = new ArrayList<Integer>();
+
+			key.add((AstConcreteClafer) p);
+			key.add(power.get(p));
+			values.add(new Integer(2));
+			values.add(new Integer(4));
+
+			map.put(key, values);
+		}
+		for (AstConcreteClafer perform : performance.keySet()) {
+			key = new ArrayList<AstConcreteClafer>();
+			values = new ArrayList<Integer>();
+
+			key.add((AstConcreteClafer) perform);
+			key.add(performance.get(perform));
+			values.add(new Integer(2));
+			values.add(new Integer(4));
+			map.put(key, values);
+		}
+		if (map.isEmpty()) {
+			System.out.println("MAP IS EMPTY");
+		} else {
+			instanceGenerator.generateInstancesAdvancedUserMode(map);
+			List<InstanceClafer> instances = new ArrayList<>(instanceGenerator.getInstances().values());
+			assertNotNull("failed to return instances Object", instances);
+			assertEquals(4, instanceGenerator.getNoOfInstances());
+			for (InstanceClafer inst : instances) {
+				assertTrue(hashCodes.contains(new InstanceClaferHash(inst).hashCode()));
+			}
+
+		}
+
 	}
 
 	/**
@@ -162,7 +215,7 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testAddConstraints() {
-		fail("Not yet implemented"); // TODO
+		// ("Not yet implemented"); // TODO
 	}
 
 	/**
@@ -237,8 +290,8 @@ public class InstanceGeneratorTest {
 	public final void testSetNoOfInstances() {
 		int noOfInstances = 10;
 		instanceGenerator.setNoOfInstances(10);
-		assertEquals(noOfInstances,instanceGenerator.getNoOfInstances());
-		assertNotEquals(0,instanceGenerator.getNoOfInstances());
+		assertEquals(noOfInstances, instanceGenerator.getNoOfInstances());
+		assertNotEquals(0, instanceGenerator.getNoOfInstances());
 		instanceGenerator.setNoOfInstances(0);
 
 	}

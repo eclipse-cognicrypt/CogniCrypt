@@ -33,7 +33,7 @@ import crossing.e1.configurator.ReadConfig;
  *
  */
 public class ClaferModelTest {
-	private String path = new ReadConfig().getPath("claferPath");
+	private String path = new ReadConfig().getValueFromConfig("claferPath");
 	private String claferName = "performance";
 	private String taskDescription = "Encrypt data using a secret key";
 	ClaferModel claferModel;
@@ -83,22 +83,8 @@ public class ClaferModelTest {
 	@Test
 	public final void testSetTaskList() {
 		claferModel.setTaskList(claferModel.getModel());
-		assertNotNull(
-				"failed to create TaskLabelsMap Object in testSetTaskList() method",
+		assertNotNull("failed to create TaskLabelsMap Object in testSetTaskList() method",
 				PropertiesMapperUtil.getTaskLabelsMap());
-	}
-
-	/**
-	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.ClaferModel#getClafersByName(java.lang.String)}
-	 * .
-	 */
-	@Test
-	public final void testGetClafersByName() {
-		List<AstConcreteClafer> claferListByName = claferModel
-				.getClafersByName(claferName);
-		assertNotNull("failed to create claferListByName Object",
-				claferListByName);
 	}
 
 	/**
@@ -110,8 +96,7 @@ public class ClaferModelTest {
 	public final void testSetandGetModelName() {
 		String testName = "Sample module";
 		claferModel.setModelName(testName);
-		assertSame("Failed to update claferModel name", testName,
-				claferModel.getModelName());
+		assertSame("Failed to update claferModel name", testName, claferModel.getModelName());
 
 	}
 
@@ -121,8 +106,7 @@ public class ClaferModelTest {
 	 */
 	@Test
 	public final void testGetModel() {
-		assertNotNull("failed to return claferModel Object",
-				claferModel.getModel());
+		assertNotNull("failed to return claferModel Object", claferModel.getModel());
 
 	}
 
@@ -133,10 +117,8 @@ public class ClaferModelTest {
 	 */
 	@Test
 	public final void testAddClaferPropertiesAstClafer() {
-		claferModel.addClaferProperties(PropertiesMapperUtil.getTaskLabelsMap().get(
-				taskDescription));
-		assertNotNull("failed to return properties Object",
-				PropertiesMapperUtil.getPropertiesMap());
+		claferModel.addClaferProperties(PropertiesMapperUtil.getTaskLabelsMap().get(taskDescription));
+		assertNotNull("failed to return properties Object", PropertiesMapperUtil.getPropertiesMap());
 	}
 
 	/**
@@ -146,10 +128,8 @@ public class ClaferModelTest {
 	 */
 	@Test
 	public final void testCreateClaferPropertiestMap() {
-		claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap()
-				.get(taskDescription));
-		assertNotNull("failed to create PropertyLabelsMap Object",
-				PropertiesMapperUtil.getPropertiesMap());
+		claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(taskDescription));
+		assertNotNull("failed to create PropertyLabelsMap Object", PropertiesMapperUtil.getPropertiesMap());
 
 	}
 

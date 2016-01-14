@@ -25,7 +25,7 @@ public class DisplayQuestions extends WizardPage {
 
 	String questions = null;
 	QuestionsBeginner quest;
-	HashMap<String, Answer> selection = new HashMap<String, Answer>();
+	HashMap<Question, Answer> selection = new HashMap<Question, Answer>();
 	private List<Composite> quetsionsList;
 
 	public DisplayQuestions(QuestionsBeginner quest) {
@@ -36,7 +36,7 @@ public class DisplayQuestions extends WizardPage {
 		quetsionsList = new ArrayList<Composite>();
 	}
 
-	public synchronized HashMap<String, Answer> getSelection() {
+	public synchronized HashMap<Question, Answer> getSelection() {
 		return selection;
 	}
 
@@ -95,7 +95,7 @@ public class DisplayQuestions extends WizardPage {
 						.indexOf(answerSelection.toString().replace("[", "")
 								.replace("]", ""));
 				
-				selection.put(question.getRefCalfer(), answer.get(index));
+				selection.put(question, answer.get(index));
 
 				// Integer.parseInt(answerSelection
 				// .substring(answerSelection.indexOf(':') + 1,
@@ -106,7 +106,7 @@ public class DisplayQuestions extends WizardPage {
 		quetsionsList.add(container);
 	}
 
-	public void setMap(HashMap<String, Answer> hashMap, ClaferModel model) {
+	public void setMap(HashMap<Question, Answer> hashMap, ClaferModel model) {
 		
 		// userOptions = new HashMap<ArrayList<AstConcreteClafer>,
 		// ArrayList<Integer>>();
@@ -143,7 +143,7 @@ public class DisplayQuestions extends WizardPage {
 		// }
 	}
 
-	public HashMap<String, Answer> getMap() {
+	public HashMap<Question, Answer> getMap() {
 		System.out.println("GET MAPP INVOKED");
 		
 		return selection;

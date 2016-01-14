@@ -17,9 +17,9 @@ public class QuestionsBeginner {
 		counter = value;
 	}
 
-	public void init(String taskName) {
+	public void init(String taskName,String filePath) {
 		setTask(taskName);
-		setQutionare(new ReadTaskConfig().getQA(taskName,"encryptXmlPath"));
+		setQutionare(new ReadTaskConfig().getQA(taskName,filePath));
 		
 	}
 

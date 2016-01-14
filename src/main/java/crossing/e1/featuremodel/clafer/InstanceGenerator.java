@@ -45,6 +45,7 @@ import org.clafer.scope.Scope;
 import crossing.e1.configurator.ReadConfig;
 import crossing.e1.xml.export.Answer;
 import crossing.e1.xml.export.Dependency;
+import crossing.e1.xml.export.Question;
 
 /*
  * Class responsible for generating generatedInstances 
@@ -79,7 +80,7 @@ public class InstanceGenerator {
 	 * @param map
 	 * @return
 	 */
-	public List<InstanceClafer> generateInstances(HashMap<String, Answer> map) {
+	public List<InstanceClafer> generateInstances(HashMap<Question, Answer> map) {
 		AstModel model = claferModel.getModel();
 		try {
 			AstConcreteClafer taskName = PropertiesMapperUtil.getTaskLabelsMap().get(getTaskName());
@@ -168,20 +169,20 @@ public class InstanceGenerator {
 	 * iterated to apply associated dependencies
 	 */
 	// FIXME include group operator
-	void basicModeHandler(AstConcreteClafer inputClafer, HashMap<String, Answer> qAMap) {
+	void basicModeHandler(AstConcreteClafer inputClafer, HashMap<Question, Answer> qAMap) {
 		Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> popertiesMap = PropertiesMapperUtil.getPropertiesMap();
 
 		for (AstConcreteClafer childOfMainClfer : inputClafer.getRef().getTargetType().getChildren()) {
 			for (AstConcreteClafer propertyOfaClafer : popertiesMap.keySet()) {
 				if (childOfMainClfer.getName().equals(propertyOfaClafer.getName())) {
 					for (AstConcreteClafer property : popertiesMap.get(propertyOfaClafer)) {
-						for (String question : qAMap.keySet())
-							if (property.getName().contains(question)) {
-								Answer answer = qAMap.get(question);
-								addConstraints(Integer.parseInt(answer.getOperator()), propertyOfaClafer,
-										Integer.parseInt(answer.getRef()), property, null);
-							}
-						for (String name : qAMap.keySet())
+//						for (String question : qAMap.keySet())
+//							if (property.getName().contains(question)) {
+//								Answer answer = qAMap.get(question);
+//								addConstraints(Integer.parseInt(answer.getOperator()), propertyOfaClafer,
+//										Integer.parseInt(answer.getRef()), property, null);
+//							}
+						for (Question name : qAMap.keySet())
 							if (qAMap.get(name).hasDependencies()) {
 								for (Dependency dependency : qAMap.get(name).getDependencies()) {
 									if (property.getName().contains(dependency.getRefClafer())) {
@@ -205,7 +206,7 @@ public class InstanceGenerator {
 	 * 
 	 * main is the higher level clafer ,usually task choose by user
 	 * 
-	 * value is the numeric or string value whch will be added as a constraints,
+	 * value is the numeric or string value which will be added as a constraints,
 	 * EX outPutLength=128 here 128 is the value
 	 * 
 	 * operand is the clafer on which constraint is being applied EX

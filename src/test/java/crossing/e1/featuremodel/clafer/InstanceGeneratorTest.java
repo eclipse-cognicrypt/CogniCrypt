@@ -8,8 +8,6 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.instance.InstanceClafer;
@@ -27,21 +25,25 @@ import crossing.e1.xml.export.Question;
  *
  */
 public class InstanceGeneratorTest {
-	private String propertyName1 = "performance";
-	private String propertyName2 = "power";
-	private String taskDescription = "Find car";
 	ClaferModel claferModel;
 	InstanceGenerator instanceGenerator;
 	QuestionsBeginner quest;
-	private String taskName = "c0_CarFinder";
+	
+	
+	private static final String CLAFER_PROPERTY_1 = "performance";
+	private static final String CLAFER_PROPERTY_2 = "power";
+	private static final String TASK_DESCRIPTION = "Find car";
+	private static final String TASK_NAME = "c0_CarFinder";
+	private static final String XML_FILE_NAME="testEncryptXmlPath";
+	private static final String JS_PATH="testClaferPath";
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		claferModel = new ClaferModel(new ReadConfig().getValueFromConfig("testClaferPath"));
-		instanceGenerator = new InstanceGenerator("testClaferPath");
+		claferModel = new ClaferModel(new ReadConfig().getValueFromConfig(JS_PATH));
+		instanceGenerator = new InstanceGenerator(JS_PATH);
 		quest = new QuestionsBeginner();
 
 	}
@@ -74,10 +76,10 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testGenerateInstancesBmodeNoConstraints() {
-		instanceGenerator.setTaskName(taskDescription);
-		HashMap<String, Answer> map = new HashMap<String, Answer>();
+		instanceGenerator.setTaskName(TASK_DESCRIPTION);
+		HashMap<Question, Answer> map = new HashMap<Question, Answer>();
 		List<Integer> hashCodes = new ArrayList<>();
-		/*
+		/**
 		 * Below are the hash codes of the expected instances
 		 */
 
@@ -103,15 +105,15 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testGenerateInstancesBmodeWithConstraints() {
-		instanceGenerator.setTaskName(taskDescription);
-		HashMap<String, Answer> map = new HashMap<String, Answer>();
-		quest.init(taskName);
-		ArrayList<Question> q = quest.getQutionare();
-		Answer answer1 = q.get(0).getAnswers().get(0);// performance=3
-		Answer answer2 = q.get(1).getAnswers().get(0);// power=2
-		map.put(propertyName1, answer1);
-		map.put(propertyName2, answer2);
-		claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(taskDescription));
+		instanceGenerator.setTaskName(TASK_DESCRIPTION);
+		HashMap<Question, Answer> map = new HashMap<Question, Answer>();
+		quest.init(TASK_NAME,XML_FILE_NAME);
+		ArrayList<Question> question = quest.getQutionare();
+		Answer answer1 = question.get(0).getAnswers().get(0);// performance=3
+		Answer answer2 = question.get(1).getAnswers().get(0);// power=2
+		map.put(question.get(0), answer1);
+		map.put(question.get(1), answer2);
+		claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(TASK_DESCRIPTION));
 		List<Integer> hashCodes = new ArrayList<>();
 
 		hashCodes.add(1706109472);
@@ -132,15 +134,15 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testGenerateInstancesBmodeNegative() {
-		instanceGenerator.setTaskName(taskDescription);
-		HashMap<String, Answer> map = new HashMap<String, Answer>();
-		quest.init(taskName);
-		ArrayList<Question> q = quest.getQutionare();
-		Answer answer1 = q.get(0).getAnswers().get(1);
-		Answer answer2 = q.get(1).getAnswers().get(1);
-		map.put(propertyName1, answer1);
-		map.put("power", answer2);
-		claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(taskDescription));
+		instanceGenerator.setTaskName(TASK_DESCRIPTION);
+		HashMap<Question, Answer> map = new HashMap<Question, Answer>();
+		quest.init(TASK_NAME,XML_FILE_NAME);
+		ArrayList<Question> question = quest.getQutionare();
+		Answer answer1 = question.get(0).getAnswers().get(1);
+		Answer answer2 = question.get(1).getAnswers().get(1);
+		map.put(question.get(0), answer1);
+		map.put(question.get(1), answer2);
+		claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(TASK_DESCRIPTION));
 		instanceGenerator.generateInstances(map);
 		assertEquals(0, instanceGenerator.getNoOfInstances());
 	}
@@ -152,14 +154,14 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testGenerateInstancesAdvancedUserMode() {
-		HashMap<AstConcreteClafer, AstConcreteClafer> power = claferModel.getChildrenListbyName("power");
-		HashMap<AstConcreteClafer, AstConcreteClafer> performance = claferModel.getChildrenListbyName("performance");
+		HashMap<AstConcreteClafer, AstConcreteClafer> performance = claferModel.getChildrenListbyName(CLAFER_PROPERTY_1);
+		HashMap<AstConcreteClafer, AstConcreteClafer> power = claferModel.getChildrenListbyName(CLAFER_PROPERTY_2);
+		
 		HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>> map = new HashMap<>();
-		System.out.println(power + " " + performance);
 		ArrayList<AstConcreteClafer> key;
 		ArrayList<Integer> values;
 		List<Integer> hashCodes = new ArrayList<>();
-		/*
+		/**
 		 * Below are the hash codes of the expected instances
 		 */
 
@@ -168,8 +170,8 @@ public class InstanceGeneratorTest {
 		hashCodes.add(1706109950);
 		hashCodes.add(1706109854);
 
-		instanceGenerator.setTaskName(taskDescription);
-		claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(taskDescription));
+		instanceGenerator.setTaskName(TASK_DESCRIPTION);
+		claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(TASK_DESCRIPTION));
 
 		
 		for (AstConcreteClafer p : power.keySet()) {
@@ -247,8 +249,8 @@ public class InstanceGeneratorTest {
 	 */
 	@Test
 	public final void testGenerateInstanceMapping() {
-		instanceGenerator.setTaskName(taskDescription);
-		HashMap<String, Answer> map = new HashMap<String, Answer>();
+		instanceGenerator.setTaskName(TASK_DESCRIPTION);
+		HashMap<Question, Answer> map = new HashMap<Question, Answer>();
 		assertNotNull("failed to reset instances Object", instanceGenerator.generateInstances(map));
 	}
 

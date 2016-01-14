@@ -51,6 +51,7 @@ import crossing.e1.xml.export.PublishToXML;
 
 public class ConfiguratorWizard extends Wizard {
 
+	
 	protected TaskSelectionPage taskListPage;
 	protected WizardPage valueListPage;
 	protected InstanceListPage instanceListPage;
@@ -58,6 +59,8 @@ public class ConfiguratorWizard extends Wizard {
 	private ClaferModel claferModel;
 	IPath path = null;
 	private XSLBasedGenerator codeGeneration=new XSLBasedGenerator();
+	private static final String XML_FILE_NAME="encryptXmlPath";
+	private static final String PATH_FOR_CONFIG_XML = "/Configurator.xml";
 
 	public ConfiguratorWizard() {
 		super();
@@ -124,7 +127,7 @@ public class ConfiguratorWizard extends Wizard {
 		boolean ret = instanceListPage.isPageComplete();
 		WriteToFileHelper write = new WriteToFileHelper();
 		write.writeToFile(new PublishToXML().displayInstanceValues(instanceListPage.getValue(), ""),
-				path.toString() + "/Configurator.xml");
+				path.toString() + PATH_FOR_CONFIG_XML);
 		// Generate code template
 		 ret &= codeGeneration.generateCodeTemplates();
 		return ret;
@@ -148,7 +151,7 @@ public class ConfiguratorWizard extends Wizard {
 				 * Create Questions object
 				 */
 				quest = new QuestionsBeginner();
-				quest.init(PropertiesMapperUtil.getTaskLabelsMap().get(taskListPage.getValue()).getName());
+				quest.init(PropertiesMapperUtil.getTaskLabelsMap().get(taskListPage.getValue()).getName(),XML_FILE_NAME);
 				if (quest.hasQuestions())
 					valueListPage = new DisplayQuestions(quest);
 			}

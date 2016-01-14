@@ -1,7 +1,7 @@
 /**
  * 
  */
-package crossing.e1.featuremodel.clafer;
+package crossing.e1.featuremodel.clafer.test;
 
 import static org.junit.Assert.*;
 
@@ -17,6 +17,10 @@ import org.junit.Test;
 
 import crossing.e1.configurator.ReadConfig;
 import crossing.e1.configurator.wizard.beginner.QuestionsBeginner;
+import crossing.e1.featuremodel.clafer.ClaferModel;
+import crossing.e1.featuremodel.clafer.InstanceClaferHash;
+import crossing.e1.featuremodel.clafer.InstanceGenerator;
+import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 import crossing.e1.xml.export.Answer;
 import crossing.e1.xml.export.Question;
 
@@ -60,7 +64,7 @@ public class InstanceGeneratorTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#InstanceGenerator()}
+	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#InstanceGenerator()}
 	 * .
 	 */
 	@Test
@@ -71,7 +75,7 @@ public class InstanceGeneratorTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#generateInstances(java.util.HashMap)}
+	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#generateInstances(java.util.HashMap)}
 	 * .
 	 */
 	@Test
@@ -100,7 +104,7 @@ public class InstanceGeneratorTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#generateInstances(java.util.HashMap)}
+	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#generateInstances(java.util.HashMap)}
 	 * .
 	 */
 	@Test
@@ -129,7 +133,7 @@ public class InstanceGeneratorTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#generateInstances(java.util.HashMap)}
+	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#generateInstances(java.util.HashMap)}
 	 * .
 	 */
 	@Test
@@ -149,7 +153,7 @@ public class InstanceGeneratorTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#generateInstancesAdvancedUserMode(java.util.Map)}
+	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#generateInstancesAdvancedUserMode(java.util.Map)}
 	 * .
 	 */
 	@Test
@@ -212,7 +216,7 @@ public class InstanceGeneratorTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#addConstraints(int, org.clafer.ast.AstConcreteClafer, int, org.clafer.ast.AstConcreteClafer, org.clafer.ast.AstConcreteClafer)}
+	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#addConstraints(int, org.clafer.ast.AstConcreteClafer, int, org.clafer.ast.AstConcreteClafer, org.clafer.ast.AstConcreteClafer)}
 	 * .
 	 */
 	@Test
@@ -222,7 +226,7 @@ public class InstanceGeneratorTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getInstances()}.
+	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#getInstances()}.
 	 */
 	@Test
 	public final void testGetInstances() {
@@ -232,7 +236,7 @@ public class InstanceGeneratorTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#resetInstances()}
+	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#resetInstances()}
 	 * .
 	 */
 	@Test
@@ -244,7 +248,7 @@ public class InstanceGeneratorTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#generateInstanceMapping()}
+	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#generateInstanceMapping()}
 	 * .
 	 */
 	@Test
@@ -256,7 +260,7 @@ public class InstanceGeneratorTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getInstanceName(org.clafer.instance.InstanceClafer)}
+	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#getInstanceName(org.clafer.instance.InstanceClafer)}
 	 * .
 	 */
 	@Test
@@ -270,7 +274,7 @@ public class InstanceGeneratorTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getNoOfInstances()}
+	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#getNoOfInstances()}
 	 * .
 	 */
 	@Test
@@ -285,7 +289,7 @@ public class InstanceGeneratorTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#setNoOfInstances(int)}
+	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#setNoOfInstances(int)}
 	 * .
 	 */
 	@Test
@@ -300,7 +304,7 @@ public class InstanceGeneratorTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#getTaskName()}.
+	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#getTaskName()}.
 	 */
 	@Test
 	public final void testGetTaskName() {
@@ -309,7 +313,7 @@ public class InstanceGeneratorTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.InstanceGenerator#setTaskName(java.lang.String)}
+	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#setTaskName(java.lang.String)}
 	 * .
 	 */
 	@Test

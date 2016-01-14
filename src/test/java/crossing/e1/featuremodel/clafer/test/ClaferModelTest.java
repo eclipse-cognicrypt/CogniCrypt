@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package crossing.e1.featuremodel.clafer;
+package crossing.e1.featuremodel.clafer.test;
 
 import static org.junit.Assert.*;
 import org.clafer.scope.Scope;
@@ -23,6 +23,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import crossing.e1.configurator.ReadConfig;
+import crossing.e1.featuremodel.clafer.ClaferModel;
+import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
 /**
  * @author Ram
@@ -50,7 +52,7 @@ public class ClaferModelTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.ClaferModel#ClaferModel(java.lang.String)}
+	 * {@link crossing.e1.featuremodel.clafer.test.ClaferModel#ClaferModel(java.lang.String)}
 	 * .
 	 */
 	@Test
@@ -62,7 +64,7 @@ public class ClaferModelTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.ClaferModel#getScope()}.
+	 * {@link crossing.e1.featuremodel.clafer.test.ClaferModel#getScope()}.
 	 */
 	@Test
 	public final void testGetScope() {
@@ -72,7 +74,7 @@ public class ClaferModelTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.ClaferModel#setTaskList(org.clafer.ast.AstModel)}
+	 * {@link crossing.e1.featuremodel.clafer.test.ClaferModel#setTaskList(org.clafer.ast.AstModel)}
 	 * .
 	 */
 	@Test
@@ -84,8 +86,8 @@ public class ClaferModelTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.ClaferModel#setModelName(java.lang.String)}
-	 * {@link crossing.e1.featuremodel.clafer.ClaferModel#getModelName()}.
+	 * {@link crossing.e1.featuremodel.clafer.test.ClaferModel#setModelName(java.lang.String)}
+	 * {@link crossing.e1.featuremodel.clafer.test.ClaferModel#getModelName()}.
 	 */
 	@Test
 	public final void testSetandGetModelName() {
@@ -97,7 +99,7 @@ public class ClaferModelTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.ClaferModel#getModel()}.
+	 * {@link crossing.e1.featuremodel.clafer.test.ClaferModel#getModel()}.
 	 */
 	@Test
 	public final void testGetModel() {
@@ -107,7 +109,7 @@ public class ClaferModelTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.ClaferModel#addClaferProperties(org.clafer.ast.AstClafer)}
+	 * {@link crossing.e1.featuremodel.clafer.test.ClaferModel#addClaferProperties(org.clafer.ast.AstClafer)}
 	 * .
 	 */
 	@Test
@@ -118,7 +120,7 @@ public class ClaferModelTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.ClaferModel#createClaferPropertiesMap(org.clafer.ast.AstConcreteClafer)}
+	 * {@link crossing.e1.featuremodel.clafer.test.ClaferModel#createClaferPropertiesMap(org.clafer.ast.AstConcreteClafer)}
 	 * .
 	 */
 	@Test

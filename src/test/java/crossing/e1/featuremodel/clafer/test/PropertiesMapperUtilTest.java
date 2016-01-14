@@ -1,7 +1,7 @@
 /**
  * 
  */
-package crossing.e1.featuremodel.clafer;
+package crossing.e1.featuremodel.clafer.test;
 
 import static org.junit.Assert.*;
 
@@ -30,7 +30,7 @@ public class PropertiesMapperUtilTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.PropertiesMapperUtil#getTaskLabelsMap()}.
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.PropertiesMapperUtil#getTaskLabelsMap()}.
 	 */
 	@Test
 	public final void testGetTaskLabelsMap() {
@@ -38,7 +38,7 @@ public class PropertiesMapperUtilTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.PropertiesMapperUtil#getPropertiesMap()}.
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.PropertiesMapperUtil#getPropertiesMap()}.
 	 */
 	@Test
 	public final void testGetPropertiesMap() {
@@ -46,7 +46,7 @@ public class PropertiesMapperUtilTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.PropertiesMapperUtil#resetPropertiesMap()}.
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.PropertiesMapperUtil#resetPropertiesMap()}.
 	 */
 	@Test
 	public final void testResetPropertiesMap() {
@@ -54,7 +54,7 @@ public class PropertiesMapperUtilTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.PropertiesMapperUtil#getGroupPropertiesMap()}.
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.PropertiesMapperUtil#getGroupPropertiesMap()}.
 	 */
 	@Test
 	public final void testGetGroupPropertiesMap() {
@@ -62,7 +62,7 @@ public class PropertiesMapperUtilTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.PropertiesMapperUtil#resetGroupPropertiesMap()}.
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.PropertiesMapperUtil#resetGroupPropertiesMap()}.
 	 */
 	@Test
 	public final void testResetGroupPropertiesMap() {

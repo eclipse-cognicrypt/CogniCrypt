@@ -114,8 +114,7 @@ public class InstanceGenerator {
 	 */
 	public List<InstanceClafer> generateInstancesAdvancedUserMode(
 			Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> map) {
-		if (map.isEmpty())
-			return null;
+		
 
 		AstModel model = claferModel.getModel();
 		try {
@@ -343,7 +342,7 @@ public class InstanceGenerator {
 	 * @param inst
 	 * @return
 	 */
-	String getInstanceName(InstanceClafer inst) {
+	public String getInstanceName(InstanceClafer inst) {
 		String val = "";
 		try {
 			if (inst.hasChildren()) {

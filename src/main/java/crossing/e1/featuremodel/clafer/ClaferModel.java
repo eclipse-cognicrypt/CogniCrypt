@@ -91,7 +91,7 @@ public class ClaferModel {
 	 * 
 	 * @param model
 	 */
-	void setTaskList(AstModel model) {
+	public void setTaskList(AstModel model) {
 		String key = "";
 		for (AstAbstractClafer object : model.getAbstracts()) {
 			if (object.getName().contains("Task") == true) {

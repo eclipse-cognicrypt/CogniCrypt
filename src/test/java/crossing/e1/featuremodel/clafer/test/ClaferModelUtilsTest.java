@@ -18,7 +18,7 @@
  * @author Ram
  *
  */
-package crossing.e1.featuremodel.clafer;
+package crossing.e1.featuremodel.clafer.test;
 
 import static org.junit.Assert.*;
 import org.junit.After;
@@ -26,6 +26,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import crossing.e1.configurator.ReadConfig;
+import crossing.e1.featuremodel.clafer.ClaferModel;
+import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 
 public class ClaferModelUtilsTest {
 	ClaferModel claferModel;
@@ -48,7 +50,7 @@ public class ClaferModelUtilsTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.ClaferModelUtils#isAbstract(org.clafer.ast.AstClafer)}
+	 * {@link crossing.e1.featuremodel.clafer.test.ClaferModelUtils#isAbstract(org.clafer.ast.AstClafer)}
 	 * .
 	 */
 	@Test
@@ -65,7 +67,7 @@ public class ClaferModelUtilsTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.ClaferModelUtils#findClaferByName(org.clafer.ast.AstClafer, java.lang.String)}
+	 * {@link crossing.e1.featuremodel.clafer.test.ClaferModelUtils#findClaferByName(org.clafer.ast.AstClafer, java.lang.String)}
 	 * .
 	 */
 	@Test
@@ -86,7 +88,7 @@ public class ClaferModelUtilsTest {
 
 	/**
 	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.ClaferModelUtils#trimScope(java.lang.String)}
+	 * {@link crossing.e1.featuremodel.clafer.test.ClaferModelUtils#trimScope(java.lang.String)}
 	 * .
 	 */
 	@Test

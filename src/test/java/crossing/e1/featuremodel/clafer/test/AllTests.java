@@ -18,7 +18,7 @@
  * @author Ram Kamath
  *
  */
-package crossing.e1.featuremodel.clafer;
+package crossing.e1.featuremodel.clafer.test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

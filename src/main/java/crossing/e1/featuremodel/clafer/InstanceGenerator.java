@@ -64,7 +64,7 @@ public class InstanceGenerator {
 	String taskName = "";
 
 	public InstanceGenerator(String path) {
-		claferModel = new ClaferModel(new ReadConfig().getValueFromConfig(path));// till
+		claferModel = new ClaferModel(new ReadConfig().getPathFromConfig(path));// till
 																				// copy
 																				// constructor
 																				// works
@@ -120,7 +120,9 @@ public class InstanceGenerator {
 					.refTo(PropertiesMapperUtil.getTaskLabelsMap().get(getTaskName()));
 			advancedModeHandler(m, map);
 
-			solver = ClaferCompiler.compile(model, claferModel.getScope());
+			solver = ClaferCompiler.compile(model, claferModel.getScope().toBuilder()
+					.intHigh(Integer.parseInt(new ReadConfig().getValue("INT_HIGH")))
+					.intLow(Integer.parseInt(new ReadConfig().getValue("INT_LOW"))));
 			while (solver.find()) {
 				InstanceClafer instance = solver.instance().getTopClafers()[solver.instance().getTopClafers().length
 						- 1];
@@ -163,10 +165,10 @@ public class InstanceGenerator {
 	}
 
 	/**
-	 * BasicModeHandler will take <String, answer> map as a parameter where the
-	 * key of the map is a clafer name associated with the question, answer is
-	 * the selected answer for a given question each answer has been further
-	 * iterated to apply associated dependencies
+	 * BasicModeHandler will take <Question, answer> map as a parameter where
+	 * the key of the map is a question, answer is the selected answer for a
+	 * given question each answer has been further iterated to apply associated
+	 * dependencies
 	 */
 	// FIXME include group operator
 	void basicModeHandler(AstConcreteClafer inputClafer, HashMap<Question, Answer> qAMap) {
@@ -176,15 +178,9 @@ public class InstanceGenerator {
 			for (AstConcreteClafer propertyOfaClafer : popertiesMap.keySet()) {
 				if (childOfMainClfer.getName().equals(propertyOfaClafer.getName())) {
 					for (AstConcreteClafer property : popertiesMap.get(propertyOfaClafer)) {
-//						for (String question : qAMap.keySet())
-//							if (property.getName().contains(question)) {
-//								Answer answer = qAMap.get(question);
-//								addConstraints(Integer.parseInt(answer.getOperator()), propertyOfaClafer,
-//										Integer.parseInt(answer.getRef()), property, null);
-//							}
-						for (Question name : qAMap.keySet())
-							if (qAMap.get(name).hasDependencies()) {
-								for (Dependency dependency : qAMap.get(name).getDependencies()) {
+						for (Question question : qAMap.keySet())
+							if (qAMap.get(question).hasDependencies()) {
+								for (Dependency dependency : qAMap.get(question).getDependencies()) {
 									if (property.getName().contains(dependency.getRefClafer())) {
 										addConstraints(Integer.parseInt(dependency.getOperator()), propertyOfaClafer,
 												Integer.parseInt(dependency.getValue()), property, null);
@@ -206,8 +202,8 @@ public class InstanceGenerator {
 	 * 
 	 * main is the higher level clafer ,usually task choose by user
 	 * 
-	 * value is the numeric or string value which will be added as a constraints,
-	 * EX outPutLength=128 here 128 is the value
+	 * value is the numeric or string value which will be added as a
+	 * constraints, EX outPutLength=128 here 128 is the value
 	 * 
 	 * operand is the clafer on which constraint is being applied EX
 	 * outPutLength=128 outPutLength is operand here
@@ -286,8 +282,28 @@ public class InstanceGenerator {
 
 		for (InstanceClafer inst : generatedInstances) {
 			String key = getInstanceName(inst);
-			if (inst.getType().getName().equals("Main") && key.length() > 0)
+			if (inst.getType().getName().equals("Main") && key.length() > 0) {
+				/**
+				 * Check if any instance has same name , if yes add numerical
+				 * values as suffix
+				 * 
+				 */
+				if (displayNameToInstanceMap.keySet().contains(key)) {
+					int counter = 0;
+					for (String name : displayNameToInstanceMap.keySet()) {
+						if (name.contains(key)) {
+							counter++;
+						}
+					}
+					/**
+					 * There is no need to check if the counter value is not 0 ,
+					 * because this loop will be executed only if there is a
+					 * match in name of an instance
+					 */
+					key = key + "(" + counter + ")";
+				}
 				displayNameToInstanceMap.put(key, inst);
+			}
 		}
 
 	}

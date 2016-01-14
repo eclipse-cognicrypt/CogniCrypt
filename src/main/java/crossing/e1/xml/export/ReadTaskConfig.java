@@ -30,7 +30,7 @@ public class ReadTaskConfig implements Labels {
 		try {
 
 			dBuilder = dbFactory.newDocumentBuilder();
-			doc = dBuilder.parse(new File(new ReadConfig().getValueFromConfig(xmlFileName)));
+			doc = dBuilder.parse(new File(new ReadConfig().getPathFromConfig(xmlFileName)));
 			doc.getDocumentElement().normalize();
 			NodeList nList = doc.getElementsByTagName(Labels.TASK);
 			for (int temp = 0; temp < nList.getLength(); temp++) {

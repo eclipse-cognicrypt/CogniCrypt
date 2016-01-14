@@ -30,7 +30,7 @@ import org.junit.Test;
 import crossing.e1.configurator.ReadConfig;
 
 public class ClaferModelUtilsTest {
-	private String path = new ReadConfig().getValueFromConfig("claferPath");
+	private String path = new ReadConfig().getPathFromConfig("claferPath");
 	// any of the tasks name
 	private String claferName = "EncryptionUsingDigest";
 	ClaferModel claferModel;
@@ -41,7 +41,7 @@ public class ClaferModelUtilsTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		claferModel = new ClaferModel(new ReadConfig().getValueFromConfig("claferPath"));
+		claferModel = new ClaferModel(new ReadConfig().getPathFromConfig("claferPath"));
 	}
 
 	/**

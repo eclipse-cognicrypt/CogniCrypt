@@ -42,7 +42,7 @@ public class InstanceGeneratorTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		claferModel = new ClaferModel(new ReadConfig().getValueFromConfig(JS_PATH));
+		claferModel = new ClaferModel(new ReadConfig().getPathFromConfig(JS_PATH));
 		instanceGenerator = new InstanceGenerator(JS_PATH);
 		quest = new QuestionsBeginner();
 

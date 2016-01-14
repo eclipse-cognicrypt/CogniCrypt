@@ -33,7 +33,7 @@ import crossing.e1.configurator.ReadConfig;
  *
  */
 public class ClaferModelTest {
-	private String path = new ReadConfig().getValueFromConfig("claferPath");
+	private String path = new ReadConfig().getPathFromConfig("claferPath");
 	private String claferName = "performance";
 	private String taskDescription = "Encrypt data using a secret key";
 	ClaferModel claferModel;

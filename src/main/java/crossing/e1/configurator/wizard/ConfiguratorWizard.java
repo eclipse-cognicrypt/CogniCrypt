@@ -75,7 +75,7 @@ public class ConfiguratorWizard extends Wizard {
 		} catch (UnsupportedLookAndFeelException e) {
 		}
 
-		this.claferModel = new ClaferModel(new ReadConfig().getValueFromConfig("claferPath"));
+		this.claferModel = new ClaferModel(new ReadConfig().getPathFromConfig("claferPath"));
 		setWindowTitle("Cyrptography Task Configurator");
 	}
 

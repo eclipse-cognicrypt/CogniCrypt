@@ -52,7 +52,17 @@ public class ReadConfig {
 
 	}
 
-	public String getValueFromConfig(String value) {
-		return Utilities.getAbsolutePath(prop.getProperty(value));
+	/**
+	 * Used only when path has to be read
+	 * 
+	 * @param key
+	 * @return absolute path
+	 */
+	public String getPathFromConfig(String key) {
+		return Utilities.getAbsolutePath(prop.getProperty(key));
+	}
+
+	public String getValue(String key) {
+		return prop.getProperty(key);
 	}
 }

@@ -21,7 +21,6 @@ public class TestCases {
 
 	public static void main(String[] args) {
 		TestCases test = new TestCases();
-		String path = new ReadConfig().getPathFromConfig("claferPath");
 		ClaferModel model = new ClaferModel(new ReadConfig().getPathFromConfig("claferPath"));
 
 		// InstanceGenerator inst = test.getInstance(model);

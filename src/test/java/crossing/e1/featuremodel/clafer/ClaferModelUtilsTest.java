@@ -21,8 +21,6 @@
 package crossing.e1.featuremodel.clafer;
 
 import static org.junit.Assert.*;
-import org.clafer.ast.AstClafer;
-import org.clafer.ast.AstConcreteClafer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,9 +28,6 @@ import org.junit.Test;
 import crossing.e1.configurator.ReadConfig;
 
 public class ClaferModelUtilsTest {
-	private String path = new ReadConfig().getPathFromConfig("claferPath");
-	// any of the tasks name
-	private String claferName = "EncryptionUsingDigest";
 	ClaferModel claferModel;
 	String abstarctClaferName = "Digest";
 

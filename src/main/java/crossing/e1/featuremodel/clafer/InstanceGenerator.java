@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstModel;
 import org.clafer.common.Check;
@@ -47,7 +49,7 @@ import crossing.e1.xml.export.Answer;
 import crossing.e1.xml.export.Dependency;
 import crossing.e1.xml.export.Question;
 
-/*
+/**
  * Class responsible for generating generatedInstances 
  * for a given clafer.
  *
@@ -86,7 +88,9 @@ public class InstanceGenerator {
 			AstConcreteClafer taskName = PropertiesMapperUtil.getTaskLabelsMap().get(getTaskName());
 			AstConcreteClafer main = model.addChild("Main").addChild("MAINTASK").refTo(taskName);
 			basicModeHandler(main, map);
-			solver = ClaferCompiler.compile(model, claferModel.getScope());
+			solver = ClaferCompiler.compile(model, claferModel.getScope().toBuilder()
+					.intHigh(Integer.parseInt(new ReadConfig().getValue("INT_HIGH")))
+					.intLow(Integer.parseInt(new ReadConfig().getValue("INT_LOW"))));
 			while (solver.find()) {
 				InstanceClafer instance = solver.instance().getTopClafers()[solver.instance().getTopClafers().length
 						- 1];
@@ -289,22 +293,27 @@ public class InstanceGenerator {
 				 * 
 				 */
 				if (displayNameToInstanceMap.keySet().contains(key)) {
-					int counter = 0;
+					int counter = 1;
 					for (String name : displayNameToInstanceMap.keySet()) {
 						if (name.contains(key)) {
 							counter++;
 						}
 					}
 					/**
-					 * There is no need to check if the counter value is not 0 ,
+					 * There is no need to check if the counter value is not 1 ,
 					 * because this loop will be executed only if there is a
-					 * match in name of an instance
+					 * match in name of an instances
 					 */
 					key = key + "(" + counter + ")";
 				}
 				displayNameToInstanceMap.put(key, inst);
 			}
 		}
+		/**
+		 *  sort all the instances, to have an user friendly display 
+		 */
+		Map<String, InstanceClafer>treeMap = new TreeMap<>(displayNameToInstanceMap);
+		displayNameToInstanceMap=treeMap;
 
 	}
 

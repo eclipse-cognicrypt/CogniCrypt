@@ -17,10 +17,6 @@
 package crossing.e1.featuremodel.clafer;
 
 import static org.junit.Assert.*;
-
-import java.util.List;
-
-import org.clafer.ast.AstConcreteClafer;
 import org.clafer.scope.Scope;
 import org.junit.After;
 import org.junit.Before;
@@ -34,7 +30,6 @@ import crossing.e1.configurator.ReadConfig;
  */
 public class ClaferModelTest {
 	private String path = new ReadConfig().getPathFromConfig("claferPath");
-	private String claferName = "performance";
 	private String taskDescription = "Encrypt data using a secret key";
 	ClaferModel claferModel;
 

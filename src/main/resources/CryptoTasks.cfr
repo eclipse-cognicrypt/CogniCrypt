@@ -124,7 +124,7 @@ SymmetricEncryption : Task
 SecurePassword : Task
 	[description = "Represent password in a secure way for storage"]
 	kda -> KeyDerivationAlgorithm
-	[no Ciphers]
+	//[no Ciphers]
 	
 PasswordBasedEncryption : Task
  	[description = "Encrypt data using a given password"]

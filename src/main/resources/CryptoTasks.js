@@ -1,4 +1,4 @@
-scope({c0_Algorithm:8, c0_Cipher:2, c0_CipherSuite:0, c0_Digest:3, c0_Enum:4, c0_KeyDerivationAlgorithm:3, c0_Mode:3, c0_Padding:2, c0_Performance:4, c0_Security:4, c0_SymmetricBlockCipher:2, c0_SymmetricCipher:2, c0_Task:3, c0_cipher:0, c0_description:8, c0_digest:3, c0_iterations:3, c0_keySize:2, c0_mode:2, c0_name:8, c0_outputSize:3, c0_padding:2, c0_performance:8, c0_security:8, c1_description:3, c1_digest:0, c1_outputSize:3});
+scope({c0_Algorithm:8, c0_Cipher:2, c0_CipherSuite:0, c0_Digest:3, c0_Enum:8, c0_KeyDerivationAlgorithm:3, c0_Mode:3, c0_Padding:2, c0_Performance:4, c0_Security:4, c0_SymmetricBlockCipher:2, c0_SymmetricCipher:2, c0_Task:3, c0_cipher:0, c0_description:8, c0_digest:3, c0_iterations:3, c0_keySize:2, c0_mode:2, c0_name:8, c0_outputSize:3, c0_padding:2, c0_performance:8, c0_security:8, c1_description:3, c1_digest:0, c1_outputSize:3});
 defaultScope(1);
 intRange(-8, 7);
 stringLength(48);
@@ -70,7 +70,7 @@ c0_Medium.extending(c0_Security);
 Constraint(implies(some(global(c0_Medium)), equal(joinRef(global(c0_Medium)), constant(3))));
 c0_Strong.extending(c0_Security);
 Constraint(implies(some(global(c0_Strong)), equal(joinRef(global(c0_Strong)), constant(4))));
-c0_Performance.refToUnique(Int);
+c0_Performance.extending(c0_Enum).refToUnique(Int);
 c0_VerySlow.extending(c0_Performance);
 Constraint(implies(some(global(c0_VerySlow)), equal(joinRef(global(c0_VerySlow)), constant(1))));
 c0_Slow.extending(c0_Performance);

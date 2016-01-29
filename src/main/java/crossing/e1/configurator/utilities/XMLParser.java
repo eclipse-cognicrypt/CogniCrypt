@@ -18,20 +18,19 @@
  * @author Ram Kamath
  *
  */
-package crossing.e1.xml.export;
+package crossing.e1.configurator.utilities;
 
 import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.instance.InstanceClafer;
 
-import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 
 /**
  * @author Ram
  *
  */
-public class PublishToXML implements Labels {
+public class XMLParser implements Labels {
 	/**
 	 * 
 	 * @param inst

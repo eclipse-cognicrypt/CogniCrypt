@@ -38,6 +38,7 @@ import org.eclipse.ui.PlatformUI;
 
 import crossing.e1.codegen.generation.XSLBasedGenerator;
 import crossing.e1.configurator.utilities.Labels;
+import crossing.e1.configurator.utilities.XMLParser;
 import crossing.e1.configurator.utilities.ReadConfig;
 import crossing.e1.configurator.utilities.Validator;
 import crossing.e1.configurator.utilities.WriteToFileHelper;
@@ -47,7 +48,6 @@ import crossing.e1.configurator.wizard.beginner.QuestionsBeginner;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
-import crossing.e1.xml.export.PublishToXML;
 
 public class ConfiguratorWizard extends Wizard {
 
@@ -126,7 +126,7 @@ public class ConfiguratorWizard extends Wizard {
 		// Print the result to the console
 		boolean ret = instanceListPage.isPageComplete();
 		WriteToFileHelper write = new WriteToFileHelper();
-		write.writeToFile(new PublishToXML().displayInstanceValues(instanceListPage.getValue(), ""),
+		write.writeToFile(new XMLParser().displayInstanceValues(instanceListPage.getValue(), ""),
 				path.toString() + PATH_FOR_CONFIG_XML);
 		// Generate code template
 		 ret &= codeGeneration.generateCodeTemplates();

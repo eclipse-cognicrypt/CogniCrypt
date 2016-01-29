@@ -40,8 +40,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import crossing.e1.configurator.utilities.Labels;
+import crossing.e1.configurator.utilities.XMLParser;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
-import crossing.e1.xml.export.PublishToXML;
 
 public class InstanceListPage extends WizardPage implements Labels {
 
@@ -50,7 +50,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 	private InstanceGenerator instance;
 	InstanceClafer value;
 	boolean val = false;
-	PublishToXML publisher;
+	XMLParser publisher;
 	Group instancePropertiesPanel;
 
 	public InstanceListPage(InstanceGenerator inst) {
@@ -58,7 +58,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 		setTitle(Labels.AVAILABLE_OPTIONS);
 		setDescription(Labels.DESCRIPTION_INSTANCE_LIST_PAGE);
 		this.instance = inst;
-		publisher = new PublishToXML();
+		publisher = new XMLParser();
 	}
 
 	@Override

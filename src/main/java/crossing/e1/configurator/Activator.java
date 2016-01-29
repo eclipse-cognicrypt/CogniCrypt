@@ -22,6 +22,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import crossing.e1.configurator.utilities.Labels;
+
 
 public class Activator extends AbstractUIPlugin implements Labels {
 

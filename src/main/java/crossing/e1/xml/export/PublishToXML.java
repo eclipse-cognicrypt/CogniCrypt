@@ -24,7 +24,7 @@ import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.instance.InstanceClafer;
 
-import crossing.e1.configurator.Labels;
+import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 
 /**

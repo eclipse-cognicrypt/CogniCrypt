@@ -18,12 +18,10 @@
  * @author Ram
  *
  */
-package crossing.e1.configurator;
+package crossing.e1.configurator.utilities;
 
 import java.io.FileInputStream;
 import java.util.Properties;
-
-import crossing.e1.configurator.utilities.Utilities;
 
 public class ReadLables {
 	Properties prop = new Properties();

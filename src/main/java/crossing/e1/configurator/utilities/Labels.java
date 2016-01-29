@@ -19,7 +19,7 @@
  *
  */
 
-package crossing.e1.configurator;
+package crossing.e1.configurator.utilities;
 
 import java.util.Properties;
 

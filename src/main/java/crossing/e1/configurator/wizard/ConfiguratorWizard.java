@@ -37,8 +37,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 import crossing.e1.codegen.generation.XSLBasedGenerator;
-import crossing.e1.configurator.Labels;
-import crossing.e1.configurator.ReadConfig;
+import crossing.e1.configurator.utilities.Labels;
+import crossing.e1.configurator.utilities.ReadConfig;
 import crossing.e1.configurator.utilities.Validator;
 import crossing.e1.configurator.utilities.WriteToFileHelper;
 import crossing.e1.configurator.wizard.advanced.ValueSelectionPage;

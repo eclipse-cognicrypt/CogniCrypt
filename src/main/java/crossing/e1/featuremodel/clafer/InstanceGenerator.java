@@ -44,7 +44,7 @@ import org.clafer.compiler.ClaferSolver;
 import org.clafer.instance.InstanceClafer;
 import org.clafer.scope.Scope;
 
-import crossing.e1.configurator.ReadConfig;
+import crossing.e1.configurator.utilities.ReadConfig;
 import crossing.e1.xml.export.Answer;
 import crossing.e1.xml.export.Dependency;
 import crossing.e1.xml.export.Question;

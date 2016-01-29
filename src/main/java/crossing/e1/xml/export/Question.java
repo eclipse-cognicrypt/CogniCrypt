@@ -19,9 +19,10 @@ package crossing.e1.xml.export;
 import java.util.ArrayList;
 
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
 
-import crossing.e1.configurator.Labels;
+import crossing.e1.configurator.utilities.Labels;
+
+import org.w3c.dom.Element;
 
 /**
  * @author Ram

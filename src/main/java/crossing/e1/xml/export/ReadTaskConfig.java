@@ -8,8 +8,8 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
-import crossing.e1.configurator.Labels;
-import crossing.e1.configurator.ReadConfig;
+import crossing.e1.configurator.utilities.Labels;
+import crossing.e1.configurator.utilities.ReadConfig;
 
 import java.io.File;
 import java.util.ArrayList;

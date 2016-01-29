@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import crossing.e1.configurator.Labels;
+import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 import crossing.e1.xml.export.PublishToXML;
 

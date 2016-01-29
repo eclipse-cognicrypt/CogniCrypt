@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import crossing.e1.configurator.Labels;
+import crossing.e1.configurator.utilities.Labels;
 
 /**
  * @author Ram

@@ -19,14 +19,12 @@
  *
  */
 
-package crossing.e1.configurator;
+package crossing.e1.configurator.utilities;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
-
-import crossing.e1.configurator.utilities.Utilities;
 
 /**
  * An utility class which reads the configuration file .

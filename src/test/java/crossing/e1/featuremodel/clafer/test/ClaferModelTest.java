@@ -22,7 +22,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import crossing.e1.configurator.ReadConfig;
+import crossing.e1.configurator.utilities.ReadConfig;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 

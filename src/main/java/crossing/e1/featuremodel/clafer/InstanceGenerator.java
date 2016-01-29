@@ -44,10 +44,10 @@ import org.clafer.compiler.ClaferSolver;
 import org.clafer.instance.InstanceClafer;
 import org.clafer.scope.Scope;
 
+import crossing.e1.configurator.beginer.question.Answer;
+import crossing.e1.configurator.beginer.question.Dependency;
+import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.utilities.ReadConfig;
-import crossing.e1.xml.export.Answer;
-import crossing.e1.xml.export.Dependency;
-import crossing.e1.xml.export.Question;
 
 /**
  * Class responsible for generating generatedInstances 

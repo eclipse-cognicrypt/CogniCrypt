@@ -15,14 +15,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import crossing.e1.configurator.ReadConfig;
+import crossing.e1.configurator.beginer.question.Answer;
+import crossing.e1.configurator.beginer.question.Question;
+import crossing.e1.configurator.utilities.ReadConfig;
 import crossing.e1.configurator.wizard.beginner.QuestionsBeginner;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceClaferHash;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
-import crossing.e1.xml.export.Answer;
-import crossing.e1.xml.export.Question;
+
 
 /**
  * @author Ram

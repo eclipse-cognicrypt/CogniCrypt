@@ -3,9 +3,9 @@ package crossing.e1.configurator.wizard.beginner;
 import java.util.ArrayList;
 import java.util.List;
 
-import crossing.e1.xml.export.Answer;
-import crossing.e1.xml.export.Question;
-import crossing.e1.xml.export.ReadTaskConfig;
+import crossing.e1.configurator.beginer.question.Answer;
+import crossing.e1.configurator.beginer.question.Question;
+import crossing.e1.configurator.beginer.question.ReadTaskConfig;
 
 public class QuestionsBeginner {
 

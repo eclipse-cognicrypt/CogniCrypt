@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package crossing.e1.xml.export;
+package crossing.e1.configurator.beginer.question;
 
 /**
  * @author Ram

@@ -94,9 +94,11 @@ public class ClaferModel {
 	public void setTaskList(AstModel model) {
 		String key = "";
 		for (AstAbstractClafer object : model.getAbstracts()) {
+			// Find all the abstract first and select only the abstact with name Task
 			if (object.getName().contains("Task") == true) {
-				for (AstClafer clafer : object.getSubs()) {
+				for (AstClafer clafer : object.getSubs()) { // get all clafers which are derived from "Task" 
 					for (AstConstraint constraint : clafer.getConstraints()) {
+						// Check Task description , and put that as Key 
 						if (constraint.getExpr().toString().contains("description . ref")) {
 							key = constraint.getExpr().toString()
 									.substring(constraint.getExpr().toString().indexOf("=") + 1,
@@ -115,7 +117,30 @@ public class ClaferModel {
 			}
 		}
 	}
+	
+	/**
+	 * list the Enums
+	 * 
+	 * @param model
+	 */
+	public void setEnumList(AstModel model) {
+		String key = "";
+		for (AstAbstractClafer object : model.getAbstracts()) {
+			if (object.getName().contains("Enum") == true) {
+				for (AstClafer clafer : object.getSubs()) {
+					
+				
+					/**
+					 * construct a map of tasks, key is a clafer description and
+					 * value is actual clafer Key will be used in Wizard, as an
+					 * input for taskList combo box
+					 */
+					//PropertiesMapperUtil.getTaskLabelsMap().put(key, (AstConcreteClafer) clafer);
 
+				}
+			}
+		}
+	}
 	/**
 	 * set a model name
 	 * 

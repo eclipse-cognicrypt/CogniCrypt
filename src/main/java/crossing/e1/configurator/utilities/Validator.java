@@ -17,7 +17,7 @@ public class Validator {
 			return true;
 		} else {
 			displayError(
-					" No possible combinations are available for chosen values , please modify your prefference and try agin.\n \n You can use  \n >= insted of >\n<= insted of <\nto make your selection generic.");
+					" No possible combinations are available for chosen values , please modify your prefference and try agin.\n \n You can use  \n>= insted of >\n<= insted of <\nto make your selection generic.");
 			return false;
 		}
 	}

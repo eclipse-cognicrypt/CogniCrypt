@@ -17,7 +17,7 @@
          </menu>
          <action
                label="&amp;Sample Action"
-               icon="icons/sample.gif"
+               icon="icons/opencce.png"
                class="crossing.e1.configurator.actions.WizardAction"
                tooltip="Generate Instances for your Clafer"
                menubarPath="sampleMenu/sampleGroup"

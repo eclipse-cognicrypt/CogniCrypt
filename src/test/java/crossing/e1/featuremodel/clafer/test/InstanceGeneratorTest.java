@@ -1,9 +1,13 @@
 /**
- * 
+ *
  */
 package crossing.e1.featuremodel.clafer.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,32 +28,30 @@ import crossing.e1.featuremodel.clafer.InstanceClaferHash;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
-
 /**
  * @author Ram
  *
  */
 public class InstanceGeneratorTest {
-	ClaferModel claferModel;
-	InstanceGenerator instanceGenerator;
-	QuestionsBeginner quest;
-	
-	
 	private static final String CLAFER_PROPERTY_1 = "performance";
 	private static final String CLAFER_PROPERTY_2 = "power";
 	private static final String TASK_DESCRIPTION = "Find car";
+
 	private static final String TASK_NAME = "c0_CarFinder";
-	private static final String XML_FILE_NAME="testEncryptXmlPath";
-	private static final String JS_PATH="testClaferPath";
+	private static final String XML_FILE_NAME = "testEncryptXmlPath";
+	private static final String JS_PATH = "testClaferPath";
+	ClaferModel claferModel;
+	InstanceGenerator instanceGenerator;
+	QuestionsBeginner quest;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		claferModel = new ClaferModel(new ReadConfig().getPathFromConfig(JS_PATH));
-		instanceGenerator = new InstanceGenerator(JS_PATH);
-		quest = new QuestionsBeginner();
+		this.claferModel = new ClaferModel(new ReadConfig().getPathFromConfig(JS_PATH));
+		this.instanceGenerator = new InstanceGenerator(JS_PATH);
+		this.quest = new QuestionsBeginner();
 
 	}
 
@@ -58,161 +60,9 @@ public class InstanceGeneratorTest {
 	 */
 	@After
 	public void tearDown() throws Exception {
-		claferModel = null;
-		instanceGenerator = null;
-		quest = null;
-	}
-
-	/**
-	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#InstanceGenerator()}
-	 * .
-	 */
-	@Test
-	public final void testInstanceGenerator() {
-
-		assertNotNull("failed to return instanceGenerator Object", instanceGenerator);
-	}
-
-	/**
-	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#generateInstances(java.util.HashMap)}
-	 * .
-	 */
-	@Test
-	public final void testGenerateInstancesBmodeNoConstraints() {
-		instanceGenerator.setTaskName(TASK_DESCRIPTION);
-		HashMap<Question, Answer> map = new HashMap<Question, Answer>();
-		List<Integer> hashCodes = new ArrayList<>();
-		/**
-		 * Below are the hash codes of the expected instances
-		 */
-
-		hashCodes.add(1706109440);
-		hashCodes.add(1706109472);
-		hashCodes.add(1706109950);
-		hashCodes.add(1706109854);
-
-		instanceGenerator.generateInstances(map);
-		List<InstanceClafer> instances = new ArrayList<>(instanceGenerator.getInstances().values());
-		assertNotNull("failed to return instances Object", instances);
-		assertEquals(4, instanceGenerator.getNoOfInstances());
-		for (InstanceClafer inst : instances) {
-			assertTrue(hashCodes.contains(new InstanceClaferHash(inst).hashCode()));
-		}
-
-	}
-
-	/**
-	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#generateInstances(java.util.HashMap)}
-	 * .
-	 */
-	@Test
-	public final void testGenerateInstancesBmodeWithConstraints() {
-		instanceGenerator.setTaskName(TASK_DESCRIPTION);
-		HashMap<Question, Answer> map = new HashMap<Question, Answer>();
-		quest.init(TASK_NAME,XML_FILE_NAME);
-		ArrayList<Question> question = quest.getQutionare();
-		Answer answer1 = question.get(0).getAnswers().get(0);// performance=3
-		Answer answer2 = question.get(1).getAnswers().get(0);// power=2
-		map.put(question.get(0), answer1);
-		map.put(question.get(1), answer2);
-		claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(TASK_DESCRIPTION));
-		List<Integer> hashCodes = new ArrayList<>();
-
-		hashCodes.add(1706109472);
-		instanceGenerator.generateInstances(map);
-		List<InstanceClafer> instances = new ArrayList<>(instanceGenerator.getInstances().values());
-
-		assertEquals(1, instanceGenerator.getNoOfInstances());
-		for (InstanceClafer inst : instances) {
-			assertTrue(hashCodes.contains(new InstanceClaferHash(inst).hashCode()));
-		}
-		assertNotNull("failed to return instances Object", instances);
-	}
-
-	/**
-	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#generateInstances(java.util.HashMap)}
-	 * .
-	 */
-	@Test
-	public final void testGenerateInstancesBmodeNegative() {
-		instanceGenerator.setTaskName(TASK_DESCRIPTION);
-		HashMap<Question, Answer> map = new HashMap<Question, Answer>();
-		quest.init(TASK_NAME,XML_FILE_NAME);
-		ArrayList<Question> question = quest.getQutionare();
-		Answer answer1 = question.get(0).getAnswers().get(1);
-		Answer answer2 = question.get(1).getAnswers().get(1);
-		map.put(question.get(0), answer1);
-		map.put(question.get(1), answer2);
-		claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(TASK_DESCRIPTION));
-		instanceGenerator.generateInstances(map);
-		assertEquals(0, instanceGenerator.getNoOfInstances());
-	}
-
-	/**
-	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#generateInstancesAdvancedUserMode(java.util.Map)}
-	 * .
-	 */
-	@Test
-	public final void testGenerateInstancesAdvancedUserMode() {
-		HashMap<AstConcreteClafer, AstConcreteClafer> performance = claferModel.getChildrenListbyName(CLAFER_PROPERTY_1);
-		HashMap<AstConcreteClafer, AstConcreteClafer> power = claferModel.getChildrenListbyName(CLAFER_PROPERTY_2);
-		
-		HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>> map = new HashMap<>();
-		ArrayList<AstConcreteClafer> key;
-		ArrayList<Integer> values;
-		List<Integer> hashCodes = new ArrayList<>();
-		/**
-		 * Below are the hash codes of the expected instances
-		 */
-
-		hashCodes.add(1706109440);
-		hashCodes.add(1706109472);
-		hashCodes.add(1706109950);
-		hashCodes.add(1706109854);
-
-		instanceGenerator.setTaskName(TASK_DESCRIPTION);
-		claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(TASK_DESCRIPTION));
-
-		
-		for (AstConcreteClafer p : power.keySet()) {
-			key = new ArrayList<AstConcreteClafer>();
-			values = new ArrayList<Integer>();
-
-			key.add((AstConcreteClafer) p);
-			key.add(power.get(p));
-			values.add(new Integer(2));
-			values.add(new Integer(4));
-
-			map.put(key, values);
-		}
-		for (AstConcreteClafer perform : performance.keySet()) {
-			key = new ArrayList<AstConcreteClafer>();
-			values = new ArrayList<Integer>();
-
-			key.add((AstConcreteClafer) perform);
-			key.add(performance.get(perform));
-			values.add(new Integer(2));
-			values.add(new Integer(4));
-			map.put(key, values);
-		}
-		if (map.isEmpty()) {
-			System.out.println("MAP IS EMPTY");
-		} else {
-			instanceGenerator.generateInstancesAdvancedUserMode(map);
-			List<InstanceClafer> instances = new ArrayList<>(instanceGenerator.getInstances().values());
-			assertNotNull("failed to return instances Object", instances);
-			assertEquals(4, instanceGenerator.getNoOfInstances());
-			for (InstanceClafer inst : instances) {
-				assertTrue(hashCodes.contains(new InstanceClaferHash(inst).hashCode()));
-			}
-
-		}
-
+		this.claferModel = null;
+		this.instanceGenerator = null;
+		this.quest = null;
 	}
 
 	/**
@@ -226,37 +76,149 @@ public class InstanceGeneratorTest {
 	}
 
 	/**
-	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#getInstances()}.
-	 */
-	@Test
-	public final void testGetInstances() {
-		testGenerateInstancesBmodeWithConstraints();
-		assertNotNull("failed to return instances Object", instanceGenerator.getInstances());
-	}
-
-	/**
-	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#resetInstances()}
-	 * .
-	 */
-	@Test
-	public final void testResetInstances() {
-		testGenerateInstancesBmodeWithConstraints();
-		instanceGenerator.resetInstances();
-		assertNull("failed to reset instances Object", instanceGenerator.getInstances());
-	}
-
-	/**
-	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#generateInstanceMapping()}
-	 * .
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#generateInstanceMapping()} .
 	 */
 	@Test
 	public final void testGenerateInstanceMapping() {
-		instanceGenerator.setTaskName(TASK_DESCRIPTION);
-		HashMap<Question, Answer> map = new HashMap<Question, Answer>();
-		assertNotNull("failed to reset instances Object", instanceGenerator.generateInstances(map));
+		this.instanceGenerator.setTaskName(TASK_DESCRIPTION);
+		final HashMap<Question, Answer> map = new HashMap<Question, Answer>();
+		assertNotNull("failed to reset instances Object", this.instanceGenerator.generateInstances(map));
+	}
+
+	/**
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#generateInstancesAdvancedUserMode(java.util.Map)} .
+	 */
+	@Test
+	public final void testGenerateInstancesAdvancedUserMode() {
+		final HashMap<AstConcreteClafer, AstConcreteClafer> performance = this.claferModel.getChildrenListbyName(CLAFER_PROPERTY_1);
+		final HashMap<AstConcreteClafer, AstConcreteClafer> power = this.claferModel.getChildrenListbyName(CLAFER_PROPERTY_2);
+
+		final HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>> map = new HashMap<>();
+		ArrayList<AstConcreteClafer> key;
+		ArrayList<Integer> values;
+		final List<Integer> hashCodes = new ArrayList<>();
+		/**
+		 * Below are the hash codes of the expected instances
+		 */
+
+		hashCodes.add(1706109440);
+		hashCodes.add(1706109472);
+		hashCodes.add(1706109950);
+		hashCodes.add(1706109854);
+
+		this.instanceGenerator.setTaskName(TASK_DESCRIPTION);
+		this.claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(TASK_DESCRIPTION));
+
+		for (final AstConcreteClafer p : power.keySet()) {
+			key = new ArrayList<AstConcreteClafer>();
+			values = new ArrayList<Integer>();
+
+			key.add(p);
+			key.add(power.get(p));
+			values.add(new Integer(2));
+			values.add(new Integer(4));
+
+			map.put(key, values);
+		}
+		for (final AstConcreteClafer perform : performance.keySet()) {
+			key = new ArrayList<AstConcreteClafer>();
+			values = new ArrayList<Integer>();
+
+			key.add(perform);
+			key.add(performance.get(perform));
+			values.add(new Integer(2));
+			values.add(new Integer(4));
+			map.put(key, values);
+		}
+		if (map.isEmpty()) {
+			System.out.println("MAP IS EMPTY");
+		} else {
+			this.instanceGenerator.generateInstancesAdvancedUserMode(map);
+			final List<InstanceClafer> instances = new ArrayList<>(this.instanceGenerator.getInstances().values());
+			assertNotNull("failed to return instances Object", instances);
+			assertEquals(4, this.instanceGenerator.getNoOfInstances());
+			for (final InstanceClafer inst : instances) {
+				assertTrue(hashCodes.contains(new InstanceClaferHash(inst).hashCode()));
+			}
+
+		}
+
+	}
+
+	/**
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#generateInstances(java.util.HashMap)} .
+	 */
+	@Test
+	public final void testGenerateInstancesBmodeNegative() {
+		this.instanceGenerator.setTaskName(TASK_DESCRIPTION);
+		final HashMap<Question, Answer> map = new HashMap<Question, Answer>();
+		this.quest.init(TASK_NAME, XML_FILE_NAME);
+		final ArrayList<Question> question = this.quest.getQutionare();
+		final Answer answer1 = question.get(0).getAnswers().get(1);
+		final Answer answer2 = question.get(1).getAnswers().get(1);
+		map.put(question.get(0), answer1);
+		map.put(question.get(1), answer2);
+		this.claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(TASK_DESCRIPTION));
+		this.instanceGenerator.generateInstances(map);
+		assertEquals(0, this.instanceGenerator.getNoOfInstances());
+	}
+
+	/**
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#generateInstances(java.util.HashMap)} .
+	 */
+	@Test
+	public final void testGenerateInstancesBmodeNoConstraints() {
+		this.instanceGenerator.setTaskName(TASK_DESCRIPTION);
+		final HashMap<Question, Answer> map = new HashMap<Question, Answer>();
+		final List<Integer> hashCodes = new ArrayList<>();
+		/**
+		 * Below are the hash codes of the expected instances
+		 */
+
+		hashCodes.add(1706109440);
+		hashCodes.add(1706109472);
+		hashCodes.add(1706109950);
+		hashCodes.add(1706109854);
+
+		this.instanceGenerator.generateInstances(map);
+		final List<InstanceClafer> instances = new ArrayList<>(this.instanceGenerator.getInstances().values());
+		assertNotNull("failed to return instances Object", instances);
+		assertEquals(4, this.instanceGenerator.getNoOfInstances());
+		for (final InstanceClafer inst : instances) {
+			assertTrue(hashCodes.contains(new InstanceClaferHash(inst).hashCode()));
+		}
+
+	}
+
+	/**
+	 * Test method for
+	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#generateInstances(java.util.HashMap)} .
+	 */
+	@Test
+	public final void testGenerateInstancesBmodeWithConstraints() {
+		this.instanceGenerator.setTaskName(TASK_DESCRIPTION);
+		final HashMap<Question, Answer> map = new HashMap<Question, Answer>();
+		this.quest.init(TASK_NAME, XML_FILE_NAME);
+		final ArrayList<Question> question = this.quest.getQutionare();
+		final Answer answer1 = question.get(0).getAnswers().get(0);// performance=3
+		final Answer answer2 = question.get(1).getAnswers().get(0);// power=2
+		map.put(question.get(0), answer1);
+		map.put(question.get(1), answer2);
+		this.claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(TASK_DESCRIPTION));
+		final List<Integer> hashCodes = new ArrayList<>();
+
+		hashCodes.add(1706109472);
+		this.instanceGenerator.generateInstances(map);
+		final List<InstanceClafer> instances = new ArrayList<>(this.instanceGenerator.getInstances().values());
+
+		assertEquals(1, this.instanceGenerator.getNoOfInstances());
+		for (final InstanceClafer inst : instances) {
+			assertTrue(hashCodes.contains(new InstanceClaferHash(inst).hashCode()));
+		}
+		assertNotNull("failed to return instances Object", instances);
 	}
 
 	/**
@@ -267,62 +229,83 @@ public class InstanceGeneratorTest {
 	@Test
 	public final void testGetInstanceName() {
 		testGenerateInstancesBmodeWithConstraints();
-		for (String key : instanceGenerator.getInstances().keySet()) {
-			String instanceName = instanceGenerator.getInstanceName(instanceGenerator.getInstances().get(key));
+		for (final String key : this.instanceGenerator.getInstances().keySet()) {
+			final String instanceName = this.instanceGenerator.getInstanceName(this.instanceGenerator.getInstances().get(key));
 			assertEquals("BMW F30+Model 3", instanceName);
 		}
 	}
 
 	/**
-	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#getNoOfInstances()}
-	 * .
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#getInstances()}.
+	 */
+	@Test
+	public final void testGetInstances() {
+		testGenerateInstancesBmodeWithConstraints();
+		assertNotNull("failed to return instances Object", this.instanceGenerator.getInstances());
+	}
+
+	/**
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#getNoOfInstances()} .
 	 */
 	@Test
 	public final void testGetNoOfInstances() {
-		int noOfInstances = 10;
-		instanceGenerator.setNoOfInstances(10);
-		assertEquals("failed to get number of instances", instanceGenerator.getNoOfInstances(), noOfInstances);
-		assertNotEquals("failed to get number of instances", instanceGenerator.getNoOfInstances(), 0);
-		instanceGenerator.setNoOfInstances(0);
+		final int noOfInstances = 10;
+		this.instanceGenerator.setNoOfInstances(10);
+		assertEquals("failed to get number of instances", this.instanceGenerator.getNoOfInstances(), noOfInstances);
+		assertNotEquals("failed to get number of instances", this.instanceGenerator.getNoOfInstances(), 0);
+		this.instanceGenerator.setNoOfInstances(0);
 
 	}
 
 	/**
-	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#setNoOfInstances(int)}
-	 * .
-	 */
-	@Test
-	public final void testSetNoOfInstances() {
-		int noOfInstances = 10;
-		instanceGenerator.setNoOfInstances(10);
-		assertEquals(noOfInstances, instanceGenerator.getNoOfInstances());
-		assertNotEquals(0, instanceGenerator.getNoOfInstances());
-		instanceGenerator.setNoOfInstances(0);
-
-	}
-
-	/**
-	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#getTaskName()}.
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#getTaskName()}.
 	 */
 	@Test
 	public final void testGetTaskName() {
-		assertNotNull(instanceGenerator.getTaskName());
+		assertNotNull(this.instanceGenerator.getTaskName());
 	}
 
 	/**
-	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#setTaskName(java.lang.String)}
-	 * .
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#InstanceGenerator()} .
+	 */
+	@Test
+	public final void testInstanceGenerator() {
+
+		assertNotNull("failed to return instanceGenerator Object", this.instanceGenerator);
+	}
+
+	/**
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#resetInstances()} .
+	 */
+	@Test
+	public final void testResetInstances() {
+		testGenerateInstancesBmodeWithConstraints();
+		this.instanceGenerator.resetInstances();
+		assertNull("failed to reset instances Object", this.instanceGenerator.getInstances());
+	}
+
+	/**
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#setNoOfInstances(int)} .
+	 */
+	@Test
+	public final void testSetNoOfInstances() {
+		final int noOfInstances = 10;
+		this.instanceGenerator.setNoOfInstances(10);
+		assertEquals(noOfInstances, this.instanceGenerator.getNoOfInstances());
+		assertNotEquals(0, this.instanceGenerator.getNoOfInstances());
+		this.instanceGenerator.setNoOfInstances(0);
+
+	}
+
+	/**
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.InstanceGenerator#setTaskName(java.lang.String)} .
 	 */
 	@Test
 	public final void testSetTaskName() {
-		String taskName = instanceGenerator.getTaskName();
-		instanceGenerator.setTaskName("TestTaskName");
-		assertEquals("TestTaskName", instanceGenerator.getTaskName());
-		instanceGenerator.setTaskName(taskName);
+		final String taskName = this.instanceGenerator.getTaskName();
+		this.instanceGenerator.setTaskName("TestTaskName");
+		assertEquals("TestTaskName", this.instanceGenerator.getTaskName());
+		this.instanceGenerator.setTaskName(taskName);
 
 	}
 

@@ -1,12 +1,12 @@
 /**
  * Copyright 2015 Technische Universität Darmstadt
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,6 @@ import org.osgi.framework.BundleContext;
 
 import crossing.e1.configurator.utilities.Labels;
 
-
 public class Activator extends AbstractUIPlugin implements Labels {
 
 	// The plug-in ID
@@ -32,23 +31,21 @@ public class Activator extends AbstractUIPlugin implements Labels {
 
 	// The shared instance
 	private static Activator plugin;
-	
+
 	/**
 	 * The constructor
 	 */
 	public Activator() {
 	}
 
-
 	@Override
-	public void start(BundleContext context) throws Exception {
+	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
 	}
 
-
 	@Override
-	public void stop(BundleContext context) throws Exception {
+	public void stop(final BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
 	}
@@ -61,31 +58,36 @@ public class Activator extends AbstractUIPlugin implements Labels {
 	public static Activator getDefault() {
 		return plugin;
 	}
-
-	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path
-	 *
-	 * @param path the path
-	 * @return the image descriptor
-	 */
-	public static ImageDescriptor getImageDescriptor(String path) {
-		return imageDescriptorFromPlugin(PLUGIN_ID, path);
-	}
 	
-	public void logInfo(String message) {
+	
+	public void logError(final Exception ex) {
+		logError(ex, ex.getMessage());
+	}
+
+	public void logError(final Exception ex, final String message) {
+		log(IStatus.ERROR, message, ex);
+	}
+
+	public void logError(final String message) {
+		log(IStatus.ERROR, message, null);
+	}
+
+	public void logInfo(final String message) {
 		log(IStatus.INFO, message, null);
 	}
 	
-	public void logError(Exception ex) {
-		logError(ex, ex.getMessage());
-	}
-	
-	public void logError(Exception ex, String message) {
-		log(IStatus.ERROR, message, ex);
-	}
-	
-	private void log(int severity, String message, Exception ex) {
+	private void log(final int severity, final String message, final Exception ex) {
 		getLog().log(new Status(severity, PLUGIN_ID, message, ex));
+	}
+
+	/**
+	 * Returns an image descriptor for the image file at the given plug-in relative path
+	 *
+	 * @param path
+	 *            the path
+	 * @return the image descriptor
+	 */
+	public static ImageDescriptor getImageDescriptor(final String path) {
+		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 }

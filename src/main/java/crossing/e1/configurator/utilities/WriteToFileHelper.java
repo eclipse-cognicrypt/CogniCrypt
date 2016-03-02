@@ -1,12 +1,12 @@
 /**
  * Copyright 2015 Technische Universität Darmstadt
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,33 +21,26 @@
 
 package crossing.e1.configurator.utilities;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
+import crossing.e1.configurator.Activator;
+
+/**
+ * A helper class which writes string content to a file and it will be saved under project directory
+ */
 public class WriteToFileHelper {
-	/**
-	 * A helper class which writes string content to a file and it will be saved
-	 * under project directory
-	 */
 
-	public int writeToFile(String content, String filename) {
-		File file = new File(filename);
-		FileWriter writer = null;
-		PrintWriter printer = null;
+	public int writeToFile(final String content, final String filename) {
 		try {
-			writer = new FileWriter(file, false);
-			printer = new PrintWriter(writer);
-			printer.append(content);
-			printer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+			Files.write(Paths.get(filename), content.getBytes(Charset.defaultCharset()), StandardOpenOption.WRITE,
+					StandardOpenOption.APPEND);
+		} catch (final IOException e) {
+			Activator.getDefault().logError(e);
 			return 1;
-		} finally {
-			if (printer != null) {
-				printer.close();
-			}
 		}
 		return 0;
 	}

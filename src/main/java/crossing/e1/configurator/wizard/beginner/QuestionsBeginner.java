@@ -11,52 +11,28 @@ public class QuestionsBeginner {
 
 	private ArrayList<Question> qutionare;
 	private String taskName;
-	int counter = 0;
-
-	void setCounter(int value) {
-		counter = value;
-	}
-
-	public void init(String taskName,String filePath) {
-		setTask(taskName);
-		setQutionare(new ReadTaskConfig().getQA(taskName,filePath));
-		
-	}
+	private int counter = 0;
 
 	public ArrayList<Question> getQutionare() {
-		return qutionare;
-	}
-
-	public void setQutionare(ArrayList<Question> arrayList) {
-		this.qutionare = arrayList;
-	}
-
-	public void setTask(String value) {
-		taskName = value;
-
+		return this.qutionare;
 	}
 
 	public String getTask() {
-		return taskName;
-
+		return this.taskName;
 	}
 
 	public boolean hasQuestions() {
-		if (counter < getQutionare().size())
-			return true;
-		else
-			return false;
+		return this.counter < getQutionare().size();
 	}
 
-	public List<Answer> nextValues() {
-		List<Answer> answers = getQutionare().get(counter).getAnswers();
-		counter = counter + 1;
-		return answers;
+	public void init(final String taskName, final String filePath) {
+		setTask(taskName);
+		setQutionare(new ReadTaskConfig().getQA(taskName, filePath));
 	}
 
 	public Question nextQuestion() {
-		List<Question> key = getQutionare();
-		return key.get(counter);
+		final List<Question> key = getQutionare();
+		return key.get(this.counter);
 	}
 	//
 	// public String nextQuestionClafer() {
@@ -67,5 +43,21 @@ public class QuestionsBeginner {
 	// .keySet().toArray()[0].toString());
 	// return claferName;
 	// }
+
+	public List<Answer> nextValues() {
+		return getQutionare().get(this.counter++).getAnswers();
+	}
+
+	public void setQutionare(final ArrayList<Question> arrayList) {
+		this.qutionare = arrayList;
+	}
+
+	public void setTask(final String value) {
+		this.taskName = value;
+	}
+
+	void setCounter(final int value) {
+		this.counter = value;
+	}
 
 }

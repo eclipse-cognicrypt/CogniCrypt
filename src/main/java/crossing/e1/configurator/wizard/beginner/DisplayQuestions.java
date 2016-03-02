@@ -24,32 +24,28 @@ import crossing.e1.featuremodel.clafer.ClaferModel;
 
 public class DisplayQuestions extends WizardPage {
 
-	String questions = null;
-	QuestionsBeginner quest;
-	HashMap<Question, Answer> selection = new HashMap<Question, Answer>();
-	private List<Composite> quetsionsList;
+	private String questions = null;
+	private final QuestionsBeginner quest;
+	private final HashMap<Question, Answer> selection = new HashMap<Question, Answer>();
+	private final List<Composite> quetsionsList;
 
-	public DisplayQuestions(QuestionsBeginner quest) {
+	public DisplayQuestions(final QuestionsBeginner quest) {
 		super("Display Questions");
 		setTitle(Labels.PROPERTIES);
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.quest = quest;
-		quetsionsList = new ArrayList<Composite>();
-	}
-
-	public synchronized HashMap<Question, Answer> getSelection() {
-		return selection;
+		this.quetsionsList = new ArrayList<Composite>();
 	}
 
 	@Override
-	public void createControl(Composite parent) {
-		Composite container = new Composite(parent, SWT.NONE);
+	public void createControl(final Composite parent) {
+		final Composite container = new Composite(parent, SWT.NONE);
 		container.setBounds(10, 10, 450, 200);
-		GridLayout layout = new GridLayout();
+		final GridLayout layout = new GridLayout();
 		container.setLayout(layout);
-		while (quest.hasQuestions()) {
-			questions = quest.nextQuestion().getDef();
-			Question claferName = quest.nextQuestion();
+		while (this.quest.hasQuestions()) {
+			this.questions = this.quest.nextQuestion().getDef();
+			final Question claferName = this.quest.nextQuestion();
 
 			nextQuestion(container, claferName);
 
@@ -58,27 +54,22 @@ public class DisplayQuestions extends WizardPage {
 		setControl(container);
 	}
 
-	private Composite getPanle(Composite parent) {
-		Composite titledPanel = new Composite(parent, SWT.NONE);
-		Font boldFont = new Font(titledPanel.getDisplay(), new FontData(
-				"Arial", 9, SWT.BOLD));
-		titledPanel.setFont(boldFont);
-		GridLayout layout2 = new GridLayout();
-
-		layout2.numColumns = 4;
-		titledPanel.setLayout(layout2);
-
-		return titledPanel;
+	public HashMap<Question, Answer> getMap() {
+		return this.selection;
 	}
 
-	public void nextQuestion(Composite parent, Question question) {
-		List<Answer> answer = quest.nextValues();
-		List<String> answerString = new ArrayList<String>();
+	public synchronized HashMap<Question, Answer> getSelection() {
+		return this.selection;
+	}
+
+	public void nextQuestion(final Composite parent, final Question question) {
+		final List<Answer> answer = this.quest.nextValues();
+		final List<String> answerString = new ArrayList<String>();
 		ComboViewer option;
-		Composite container = getPanle(parent);
-		Label label = new Label(container, SWT.CENTER);
-		label.setText(questions);
-		for (Answer answerObject : answer) {
+		final Composite container = getPanle(parent);
+		final Label label = new Label(container, SWT.CENTER);
+		label.setText(this.questions);
+		for (final Answer answerObject : answer) {
 			answerString.add(answerObject.getValue());
 		}
 		option = new ComboViewer(container, SWT.NONE);
@@ -88,16 +79,13 @@ public class DisplayQuestions extends WizardPage {
 		option.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
-			public void selectionChanged(SelectionChangedEvent arg0) {
+			public void selectionChanged(final SelectionChangedEvent arg0) {
 
-				String answerSelection = option.getSelection().toString();
-				// FIXME need to replace 4 by the value selected by user , check
-				// groupcard property here before assignment
-				int index= answerString
-						.indexOf(answerSelection.toString().replace("[", "")
-								.replace("]", ""));
-				
-				selection.put(question, answer.get(index));
+				final String answerSelection = option.getSelection().toString();
+				// FIXME need to replace 4 by the value selected by user , check groupcard property here before
+				// assignment
+				final int index = answerString.indexOf(answerSelection.toString().replace("[", "").replace("]", ""));
+				DisplayQuestions.this.selection.put(question, answer.get(index));
 
 				// Integer.parseInt(answerSelection
 				// .substring(answerSelection.indexOf(':') + 1,
@@ -105,11 +93,11 @@ public class DisplayQuestions extends WizardPage {
 
 			}
 		});
-		quetsionsList.add(container);
+		this.quetsionsList.add(container);
 	}
 
-	public void setMap(HashMap<Question, Answer> hashMap, ClaferModel model) {
-		
+	public void setMap(final HashMap<Question, Answer> hashMap, final ClaferModel model) {
+
 		// userOptions = new HashMap<ArrayList<AstConcreteClafer>,
 		// ArrayList<Integer>>();
 		// ArrayList<Integer> values = null;
@@ -145,7 +133,15 @@ public class DisplayQuestions extends WizardPage {
 		// }
 	}
 
-	public HashMap<Question, Answer> getMap() {
-		return selection;
+	private Composite getPanle(final Composite parent) {
+		final Composite titledPanel = new Composite(parent, SWT.NONE);
+		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 9, SWT.BOLD));
+		titledPanel.setFont(boldFont);
+		final GridLayout layout2 = new GridLayout();
+
+		layout2.numColumns = 4;
+		titledPanel.setLayout(layout2);
+
+		return titledPanel;
 	}
 }

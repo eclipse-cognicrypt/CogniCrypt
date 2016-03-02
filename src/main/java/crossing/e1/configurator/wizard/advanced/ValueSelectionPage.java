@@ -1,12 +1,12 @@
 /**
  * Copyright 2015 Technische Universität Darmstadt
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -55,37 +55,32 @@ public class ValueSelectionPage extends WizardPage implements Labels {
 	private List<AstConcreteClafer> label;
 	private List<AstConcreteClafer> mainClafer;
 	private List<ComboViewer> options;
-	private HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>> userOptions;
-	private HashMap<String, AstConcreteClafer> userGroupOptions;
-	List<Composite> widgets = new ArrayList<Composite>();
-	boolean statusPage = false;
+	private final HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>> userOptions;
+	private final HashMap<String, AstConcreteClafer> userGroupOptions;
+	private boolean statusPage = false;
 
-	public ValueSelectionPage(List<AstConcreteClafer> items, ClaferModel claferModel) {
+	public ValueSelectionPage(final List<AstConcreteClafer> items, final ClaferModel claferModel) {
 		super(Labels.SELECT_PROPERTIES);
 		setTitle(Labels.PROPERTIES);
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
-		userOptions = new HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>>();
-		userGroupOptions = new HashMap<String, AstConcreteClafer>();
-
+		this.userOptions = new HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>>();
+		this.userGroupOptions = new HashMap<String, AstConcreteClafer>();
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public void createControl(Composite parent) {
-
-		taskCombo = new ArrayList<Spinner>();
-		label = new ArrayList<AstConcreteClafer>();
-		options = new ArrayList<ComboViewer>();
-		mainClafer = new ArrayList<AstConcreteClafer>();
-
-		container = new Composite(parent, SWT.NONE);
-
-		container.setBounds(10, 10, 450, 200);
-		GridLayout layout = new GridLayout();
-		container.setLayout(layout);
+	public void createControl(final Composite parent) {
+		this.taskCombo = new ArrayList<Spinner>();
+		this.label = new ArrayList<AstConcreteClafer>();
+		this.options = new ArrayList<ComboViewer>();
+		this.mainClafer = new ArrayList<AstConcreteClafer>();
+		this.container = new Composite(parent, SWT.NONE);
+		this.container.setBounds(10, 10, 450, 200);
+		final GridLayout layout = new GridLayout();
+		this.container.setLayout(layout);
 		layout.numColumns = 1;
 
-		for (AstConcreteClafer clafer : PropertiesMapperUtil.getPropertiesMap().keySet()) {
+		for (final AstConcreteClafer clafer : PropertiesMapperUtil.getPropertiesMap().keySet()) {
 
 			// Label label3 = new Label(container, SWT.NONE);
 			// Font boldFont = new Font( label3.getDisplay(), new FontData(
@@ -95,81 +90,85 @@ public class ValueSelectionPage extends WizardPage implements Labels {
 			// Label label4 = new Label(container, SWT.NONE);
 			// label4.setText("");
 
-			Group titledPanel = new Group(container, SWT.NONE);
-			titledPanel.setText(ClaferModelUtils.trimScope(clafer.getName()));
-			Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
+			final Group titledPanel = new Group(this.container, SWT.NONE);
+			titledPanel.setText(ClaferModelUtils.removeScopePrefix(clafer.getName()));
+			final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
 			titledPanel.setFont(boldFont);
-			GridLayout layout2 = new GridLayout();
+			final GridLayout layout2 = new GridLayout();
 
 			layout2.numColumns = 4;
 			titledPanel.setLayout(layout2);
 			@SuppressWarnings("unchecked")
-			ArrayList<AstConcreteClafer> x = new ArrayList<AstConcreteClafer>(
+			final ArrayList<AstConcreteClafer> x = new ArrayList<AstConcreteClafer>(
 					new LinkedHashSet(PropertiesMapperUtil.getPropertiesMap().get(clafer)));
-			for (AstConcreteClafer claf : x) {
+			for (final AstConcreteClafer claf : x) {
 
 				if (claf.getGroupCard().getLow() >= 1) {
 					getWidget(titledPanel, clafer, claf, claf.getGroupCard().getHigh());
-				} else
-
-					getWidget(titledPanel, clafer, claf, ClaferModelUtils.trimScope(claf.getName()), 1, 0, 1024, 0, 1,
-							1);
+				} else {
+					getWidget(titledPanel, clafer, claf, ClaferModelUtils.removeScopePrefix(claf.getName()), 1, 0, 1024, 0, 1, 1);
+				}
 			}
 		}
-		setControl(container);
+		setControl(this.container);
 	}
 
-	void getWidget(Composite container, AstConcreteClafer key1, AstConcreteClafer key2, String label, int selection,
-			int min, int max, int digits, int incement, int pageincrement) {
-		List<String> values = new ArrayList<String>();
-		values.add(Labels.LESS_THAN);
-		values.add(Labels.GREATER_THAN);
-		values.add(Labels.EQUALS);
-		values.add(Labels.LESS_THAN_EQUAL);
-		values.add(Labels.GREATER_THAN_EQUAL);
-		Label label5 = new Label(container, SWT.NONE);
-		label5.setText("	");
-		Label label1 = new Label(container, SWT.NONE);
-		label1.setText(label);
-		ComboViewer option = new ComboViewer(container, SWT.NONE);
-		option.setContentProvider(ArrayContentProvider.getInstance());
-		option.setInput(values);
-		option.setSelection(new StructuredSelection(values.get(2)));
+	public Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> getMap() {
+		return this.userOptions;
+	}
 
-		Spinner taskComb = new Spinner(container, SWT.BORDER | SWT.SINGLE);
-		taskComb.setValues(selection, min, max, digits, incement, pageincrement);
-		taskComb.addModifyListener(new ModifyListener() {
+	public boolean getPageStatus() {
+		setMap();
+		return this.statusPage;
+	}
 
-			@Override
-			public void modifyText(ModifyEvent arg0) {
-				setComplete(true);
-
+	/**
+	 * Set user selected values to the clafer properties
+	 */
+	public void setMap() {
+		ArrayList<Integer> values;
+		for (int i = 0; i < this.label.size(); i++) {
+			if (this.taskCombo.get(i) == null) {
+				values = new ArrayList<Integer>();
+				final ArrayList<AstConcreteClafer> keys = new ArrayList<AstConcreteClafer>();
+				keys.add(this.mainClafer.get(i));
+				keys.add(this.label.get(i));
+				final String test = this.mainClafer.get(i).getName() + this.options.get(i).getSelection().toString().replace("[", "")
+						.replace("]", "");
+				keys.add(this.userGroupOptions.get(test));
+				values.add(6);
+				values.add(this.label.get(i).getGroupCard().getLow());
+				this.userOptions.put(keys, values);
+			} else {
+				values = new ArrayList<Integer>();
+				final ArrayList<AstConcreteClafer> keys = new ArrayList<AstConcreteClafer>();
+				keys.add(this.mainClafer.get(i));
+				keys.add(this.label.get(i));
+				values.add(toNumber(this.options.get(i).getSelection().toString()));
+				values.add(this.taskCombo.get(i).getSelection());
+				this.userOptions.put(keys, values);
 			}
-
-		});
-
-		this.mainClafer.add(key1);
-		this.label.add(key2);
-		this.options.add(option);
-		this.taskCombo.add(taskComb);
+		}
 	}
 
-	void getsubPanel() {
+	private void getsubPanel() {
 		// TODO method takes 2 widget as an input and adds an X mark
+		throw new UnsupportedOperationException("TODO method takes 2 widget as an input and adds an X mark");
 	}
 
-	void getWidget(Composite container, AstConcreteClafer claferMain, AstConcreteClafer claferProperty, int groupCard) {
+	private void getWidget(final Composite container, final AstConcreteClafer claferMain, final AstConcreteClafer claferProperty,
+			final int groupCard) {
 
-		Label label5 = new Label(container, SWT.NONE);
+		final Label label5 = new Label(container, SWT.NONE);
 		label5.setText("	");
-		ArrayList<String> optionLables = new ArrayList<String>();
-		Label label1 = new Label(container, SWT.NONE);
-		label1.setText(ClaferModelUtils.trimScope(claferProperty.getName()));
-		for (AstConcreteClafer astClafer : claferProperty.getChildren()) {
-			userGroupOptions.put(claferMain.getName() + ClaferModelUtils.trimScope(astClafer.getName()), astClafer);
-			optionLables.add(ClaferModelUtils.trimScope(astClafer.getName()));
+		final ArrayList<String> optionLables = new ArrayList<String>();
+		final Label label1 = new Label(container, SWT.NONE);
+		label1.setText(ClaferModelUtils.removeScopePrefix(claferProperty.getName()));
+		for (final AstConcreteClafer astClafer : claferProperty.getChildren()) {
+			this.userGroupOptions.put(claferMain.getName() + ClaferModelUtils.removeScopePrefix(astClafer.getName()), astClafer);
+			optionLables.add(ClaferModelUtils.removeScopePrefix(astClafer.getName()));
 		}
-		ComboViewer option = new ComboViewer(container, SWT.NONE);
+		final ComboViewer option = new ComboViewer(container, SWT.NONE);
 		option.setContentProvider(ArrayContentProvider.getInstance());
 		option.setInput(optionLables);
 		option.setSelection(new StructuredSelection(optionLables.get(0)));
@@ -187,7 +186,7 @@ public class ValueSelectionPage extends WizardPage implements Labels {
 		//
 		// }
 		// });
-		Label label6 = new Label(container, SWT.NONE);
+		final Label label6 = new Label(container, SWT.NONE);
 		label6.setText("	");
 		this.mainClafer.add(claferMain);
 		this.label.add(claferProperty);
@@ -196,64 +195,64 @@ public class ValueSelectionPage extends WizardPage implements Labels {
 
 	}
 
-	private void setComplete(boolean b) {
+	private void getWidget(final Composite container, final AstConcreteClafer key1, final AstConcreteClafer key2, final String label,
+			final int selection, final int min, final int max, final int digits, final int incement, final int pageincrement) {
+		final List<String> values = new ArrayList<String>();
+		values.add(Labels.LESS_THAN);
+		values.add(Labels.GREATER_THAN);
+		values.add(Labels.EQUALS);
+		values.add(Labels.LESS_THAN_EQUAL);
+		values.add(Labels.GREATER_THAN_EQUAL);
+		final Label label5 = new Label(container, SWT.NONE);
+		label5.setText("	");
+		final Label label1 = new Label(container, SWT.NONE);
+		label1.setText(label);
+		final ComboViewer option = new ComboViewer(container, SWT.NONE);
+		option.setContentProvider(ArrayContentProvider.getInstance());
+		option.setInput(values);
+		option.setSelection(new StructuredSelection(values.get(2)));
 
-		statusPage = b;
-	}
+		final Spinner taskComb = new Spinner(container, SWT.BORDER | SWT.SINGLE);
+		taskComb.setValues(selection, min, max, digits, incement, pageincrement);
+		taskComb.addModifyListener(new ModifyListener() {
 
-	public boolean getPageStatus() {
-		setMap();
-		return statusPage;
-	}
-
-	public Map<ArrayList<AstConcreteClafer>, ArrayList<Integer>> getMap() {
-		return userOptions;
-	}
-
-	/**
-	 * Set user selected values to the clafer properties
-	 */
-	public void setMap() {
-		ArrayList<Integer> values;
-		for (int i = 0; i < label.size(); i++) {
-			if (taskCombo.get(i) == null) {
-				values = new ArrayList<Integer>();
-				ArrayList<AstConcreteClafer> keys = new ArrayList<AstConcreteClafer>();
-				keys.add(mainClafer.get(i));
-				keys.add(label.get(i));
-				String test = mainClafer.get(i).getName()
-						+ options.get(i).getSelection().toString().replace("[", "").replace("]", "");
-				keys.add(userGroupOptions.get(test));
-				values.add(6);
-				values.add(label.get(i).getGroupCard().getLow());
-				userOptions.put(keys, values);
-			} else {
-				values = new ArrayList<Integer>();
-				ArrayList<AstConcreteClafer> keys = new ArrayList<AstConcreteClafer>();
-				keys.add(mainClafer.get(i));
-				keys.add(label.get(i));
-				values.add(toNumber(options.get(i).getSelection().toString()));
-				values.add(taskCombo.get(i).getSelection());
-				userOptions.put(keys, values);
+			@Override
+			public void modifyText(final ModifyEvent arg0) {
+				setComplete(true);
 			}
-		}
+		});
+
+		this.mainClafer.add(key1);
+		this.label.add(key2);
+		this.options.add(option);
+		this.taskCombo.add(taskComb);
+	}
+
+	private void setComplete(final boolean b) {
+
+		this.statusPage = b;
 	}
 
 	/**
 	 * @param selection
 	 * @return Map quantifier to integer
 	 */
-	private Integer toNumber(String selection) {
-		if (selection.contains(Labels.LESS_THAN_EQUAL))
+	private Integer toNumber(final String selection) {
+		if (selection.contains(Labels.LESS_THAN_EQUAL)) {
 			return 4;
-		if (selection.contains(Labels.GREATER_THAN_EQUAL))
+		}
+		if (selection.contains(Labels.GREATER_THAN_EQUAL)) {
 			return 5;
-		if (selection.contains(Labels.EQUALS))
+		}
+		if (selection.contains(Labels.EQUALS)) {
 			return 1;
-		if (selection.contains(Labels.LESS_THAN))
+		}
+		if (selection.contains(Labels.LESS_THAN)) {
 			return 2;
-		if (selection.contains(Labels.GREATER_THAN))
+		}
+		if (selection.contains(Labels.GREATER_THAN)) {
 			return 3;
+		}
 
 		return 999;
 	}

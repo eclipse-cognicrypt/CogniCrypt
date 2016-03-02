@@ -1,12 +1,12 @@
 /**
  * Copyright 2015 Technische Universität Darmstadt
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,44 +35,11 @@ public class PropertiesMapperUtil {
 	 * private Constructor for singleton pattern
 	 */
 	private PropertiesMapperUtil() {
-
-	}
-
-	/**
-	 * List of clafer which extends abstract Task
-	 * 
-	 * @return
-	 */
-	public static Map<String, AstConcreteClafer> getTaskLabelsMap() {
-		if (taskLabelMap == null) {
-			taskLabelMap = new HashMap<String, AstConcreteClafer>();
-		}
-		return taskLabelMap;
-	}
-
-	/**
-	 * Map with list of clafers and their properties ex : car : speed transmission in above clafer key would be 'car'
-	 * and values would be [speed,transmission]
-	 * 
-	 * @return
-	 */
-	public static Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> getPropertiesMap() {
-		if (propertiesMap == null) {
-			propertiesMap = new HashMap<AstConcreteClafer, ArrayList<AstConcreteClafer>>();
-		}
-		return propertiesMap;
-	}
-
-	/**
-	 * method to reset the properties map
-	 */
-	public static void resetPropertiesMap() {
-		propertiesMap = null;
 	}
 
 	/**
 	 * used when there is an enum in the properties
-	 * 
+	 *
 	 * @return
 	 */
 	public static Map<AstConcreteClafer, Map<ArrayList<AstConcreteClafer>, Integer>> getGroupPropertiesMap() {
@@ -83,10 +50,42 @@ public class PropertiesMapperUtil {
 	}
 
 	/**
+	 * Map with list of clafers and their properties ex : car : speed transmission in above clafer key would be 'car'
+	 * and values would be [speed,transmission]
+	 *
+	 * @return
+	 */
+	public static Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> getPropertiesMap() {
+		if (propertiesMap == null) {
+			propertiesMap = new HashMap<AstConcreteClafer, ArrayList<AstConcreteClafer>>();
+		}
+		return propertiesMap;
+	}
+
+	/**
+	 * List of clafer which extends abstract Task
+	 *
+	 * @return
+	 */
+	public static Map<String, AstConcreteClafer> getTaskLabelsMap() {
+		if (taskLabelMap == null) {
+			taskLabelMap = new HashMap<String, AstConcreteClafer>();
+		}
+		return taskLabelMap;
+	}
+
+	/**
 	 * reset group properties
 	 */
 	public static void resetGroupPropertiesMap() {
 		PropertiesMapperUtil.groupPropertiesMap = null;
+	}
+
+	/**
+	 * method to reset the properties map
+	 */
+	public static void resetPropertiesMap() {
+		propertiesMap = null;
 	}
 
 }

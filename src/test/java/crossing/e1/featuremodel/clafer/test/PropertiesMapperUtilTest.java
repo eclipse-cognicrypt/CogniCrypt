@@ -1,9 +1,9 @@
 /**
- * 
+ *
  */
 package crossing.e1.featuremodel.clafer.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,10 +30,10 @@ public class PropertiesMapperUtilTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.test.PropertiesMapperUtil#getTaskLabelsMap()}.
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.PropertiesMapperUtil#getGroupPropertiesMap()}.
 	 */
 	@Test
-	public final void testGetTaskLabelsMap() {
+	public final void testGetGroupPropertiesMap() {
 		fail("Not yet implemented"); // TODO
 	}
 
@@ -46,18 +46,10 @@ public class PropertiesMapperUtilTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.test.PropertiesMapperUtil#resetPropertiesMap()}.
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.PropertiesMapperUtil#getTaskLabelsMap()}.
 	 */
 	@Test
-	public final void testResetPropertiesMap() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.test.PropertiesMapperUtil#getGroupPropertiesMap()}.
-	 */
-	@Test
-	public final void testGetGroupPropertiesMap() {
+	public final void testGetTaskLabelsMap() {
 		fail("Not yet implemented"); // TODO
 	}
 
@@ -66,6 +58,14 @@ public class PropertiesMapperUtilTest {
 	 */
 	@Test
 	public final void testResetGroupPropertiesMap() {
+		fail("Not yet implemented"); // TODO
+	}
+
+	/**
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.PropertiesMapperUtil#resetPropertiesMap()}.
+	 */
+	@Test
+	public final void testResetPropertiesMap() {
 		fail("Not yet implemented"); // TODO
 	}
 

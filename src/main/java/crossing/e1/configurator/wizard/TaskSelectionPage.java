@@ -1,12 +1,12 @@
 /**
  * Copyright 2015 Technische Universität Darmstadt
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,92 +48,85 @@ public class TaskSelectionPage extends WizardPage {
 	private Button advancedModeCheckBox;
 	private Label label2;
 	private String value = "";
-	private ClaferModel model;
+	private final ClaferModel model;
 	private boolean status = true;
 
-	public TaskSelectionPage(ClaferModel claferModel) {
-
+	public TaskSelectionPage(final ClaferModel claferModel) {
 		super(Labels.SELECT_TASK);
 		setTitle(Labels.TASK_LIST);
 		setDescription(Labels.DESCRIPTION_TASK_SELECTION_PAGE);
 		this.model = claferModel;
+	}
 
+	public boolean canProceed() {
+		final String selectedTask = getValue();
+		if (selectedTask.length() > 0) {
+			PropertiesMapperUtil.resetPropertiesMap();
+			final AstConcreteClafer claferSelected = PropertiesMapperUtil.getTaskLabelsMap().get(selectedTask);
+			this.model.createClaferPropertiesMap(claferSelected);
+			setValue(selectedTask);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
-	public void createControl(Composite parent) {
-		Set<String> availableTasks = PropertiesMapperUtil.getTaskLabelsMap().keySet();
-		container = new Composite(parent, SWT.NONE);
-		container.setBounds(10, 10, 200, 200);
-		GridLayout layout = new GridLayout();
+	public void createControl(final Composite parent) {
+		final Set<String> availableTasks = PropertiesMapperUtil.getTaskLabelsMap().keySet();
+		this.container = new Composite(parent, SWT.NONE);
+		this.container.setBounds(10, 10, 200, 200);
+		final GridLayout layout = new GridLayout();
 		layout.numColumns = 4;
-		container.setLayout(layout);
+		this.container.setLayout(layout);
 
-		label2 = new Label(container, SWT.NONE);
-		label2.setText(Labels.LABEL2);
+		this.label2 = new Label(this.container, SWT.NONE);
+		this.label2.setText(Labels.LABEL2);
 
-		taskComboSelection = new ComboViewer(container, SWT.COMPOSITION_SELECTION);
-		taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
-		taskComboSelection.setInput(availableTasks);
+		this.taskComboSelection = new ComboViewer(this.container, SWT.COMPOSITION_SELECTION);
+		this.taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
+		this.taskComboSelection.setInput(availableTasks);
 		if (availableTasks.size() > 0) {
 			// taskComboSelection.setSelection(new
 			// StructuredSelection(availableTasks.iterator().next()));
 		} else {
-			taskComboSelection.setSelection(new StructuredSelection(Labels.NO_TASK));
-
+			this.taskComboSelection.setSelection(new StructuredSelection(Labels.NO_TASK));
 		}
 
-		taskComboSelection.addSelectionChangedListener(new ISelectionChangedListener() {
+		this.taskComboSelection.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-
-				String selectedTask = selection.getFirstElement().toString();
+			public void selectionChanged(final SelectionChangedEvent event) {
+				final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+				final String selectedTask = selection.getFirstElement().toString();
 				setValue(selectedTask);
-
 			}
-
 		});
 
-		advancedModeCheckBox = new Button(container, SWT.CHECK);
-		advancedModeCheckBox.setText(Constants.ADVANCED_MODE);
-		advancedModeCheckBox.setSelection(false);
-		setControl(container);
+		this.advancedModeCheckBox = new Button(this.container, SWT.CHECK);
+		this.advancedModeCheckBox.setText(Constants.ADVANCED_MODE);
+		this.advancedModeCheckBox.setSelection(false);
+		setControl(this.container);
 	}
 
-	public boolean canProceed() {
-		String selectedTask = getValue();
+	public boolean getStatus() {
+		return this.status = !this.status;
+	}
 
-		if (selectedTask.length() > 0) {
-			PropertiesMapperUtil.resetPropertiesMap();
-			AstConcreteClafer claferSelected = PropertiesMapperUtil.getTaskLabelsMap().get(selectedTask);
-			model.createClaferPropertiesMap(claferSelected);
-			setValue(selectedTask);
-			return true;
-		} else
-			return false;
+	public String getValue() {
+		return this.value;
 	}
 
 	/**
 	 * Helper method to UI , this flag decides the second page of the wizard
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isAdvancedMode() {
-		return advancedModeCheckBox.getSelection();
+		return this.advancedModeCheckBox.getSelection();
 	}
 
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
+	public void setValue(final String value) {
 		this.value = value;
-	}
-
-	public boolean getStatus() {
-		status = ((status == true) ? false : true);
-		return status;
 	}
 
 }

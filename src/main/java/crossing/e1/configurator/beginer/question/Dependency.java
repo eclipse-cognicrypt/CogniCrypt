@@ -1,12 +1,12 @@
 /**
  * Copyright 2015 Technische Universität Darmstadt
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,12 +22,12 @@ package crossing.e1.configurator.beginer.question;
  */
 public class Dependency {
 
-	String value;
-	String operator;
-	String refClafer;
-	boolean isGroup;
+	private String value;
+	private String operator;
+	private String refClafer;
+	private boolean isGroup;
 
-	Dependency(String value, String operator, String refClafer, boolean isGroup) {
+	Dependency(final String value, final String operator, final String refClafer, final boolean isGroup) {
 		setGroup(isGroup);
 		setOperator(operator);
 		setRefClafer(refClafer);
@@ -35,63 +35,63 @@ public class Dependency {
 	}
 
 	/**
-	 * @return the value
-	 */
-	public String getValue() {
-		return value;
-	}
-
-	/**
-	 * @param value
-	 *            the value to set
-	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	/**
 	 * @return the operator
 	 */
 	public String getOperator() {
-		return operator;
-	}
-
-	/**
-	 * @param operator
-	 *            the operator to set
-	 */
-	public void setOperator(String operator) {
-		this.operator = operator;
+		return this.operator;
 	}
 
 	/**
 	 * @return the refClafer
 	 */
 	public String getRefClafer() {
-		return refClafer;
+		return this.refClafer;
 	}
 
 	/**
-	 * @param refClafer
-	 *            the refClafer to set
+	 * @return the value
 	 */
-	public void setRefClafer(String refClafer) {
-		this.refClafer = refClafer;
+	public String getValue() {
+		return this.value;
 	}
 
 	/**
 	 * @return the isGroup
 	 */
 	public boolean isGroup() {
-		return isGroup;
+		return this.isGroup;
 	}
 
 	/**
 	 * @param isGroup
 	 *            the isGroup to set
 	 */
-	public void setGroup(boolean isGroup) {
+	public void setGroup(final boolean isGroup) {
 		this.isGroup = isGroup;
+	}
+
+	/**
+	 * @param operator
+	 *            the operator to set
+	 */
+	public void setOperator(final String operator) {
+		this.operator = operator;
+	}
+
+	/**
+	 * @param refClafer
+	 *            the refClafer to set
+	 */
+	public void setRefClafer(final String refClafer) {
+		this.refClafer = refClafer;
+	}
+
+	/**
+	 * @param value
+	 *            the value to set
+	 */
+	public void setValue(final String value) {
+		this.value = value;
 	}
 
 }

@@ -1,12 +1,12 @@
 /**
  * Copyright 2015 Technische Universität Darmstadt
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,95 +25,79 @@ import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstConstraint;
 
 public class ClaferModelUtils {
-	static AstClafer mathedClafer = null;
-
-	public static String getDisplayName(AstClafer inputClafer) {
-		return "";
-	}
-
-	/**
-	 * Method takes AstClafer as an input and returns a description of the
-	 * clafer if exist, returns name of the clafer otherwise
-	 */
-	// FIXME check if this method is used in any commented code
-	public static String getDescription(AstClafer inputClafer) {
-		if (inputClafer.hasConstraints())
-			for (AstConstraint child : inputClafer.getConstraints()) {
-				String expr = child.getExpr().toString();
-				if (expr.substring(0, ((expr.indexOf('=') > 0) ? expr.indexOf('=') : 1)).contains("escription . ref")) {
-					// return without Quotes,hence replaced the "" with empty
-					return expr.substring(expr.indexOf('=') + 1, expr.length()).replace("\"", "");
-				}
-
-			}
-
-		return inputClafer.getName();
-
-	}
-
-	/**
-	 * method to check if the given clafer is an abstract clafer
-	 * 
-	 * @param astClafer
-	 * @return
-	 */
-	public static boolean isAbstract(AstClafer astClafer) {
-		if (astClafer.hasRef())
-			return astClafer.getRef().getTargetType().getClass().toGenericString().contains("AstAbstractClafer");
-		else
-			return astClafer.getClass().toGenericString().contains("AstAbstractClafer");
-	}
+	private static AstClafer mathedClafer = null;
 
 	/**
 	 * Method to find a clafer with a given name in whole model
 	 */
-	public static AstClafer findClaferByName(AstClafer inputClafer, String name) {
+	public static AstClafer findClaferByName(final AstClafer inputClafer, final String name) {
 		mathedClafer = null;
 		setClaferByName(inputClafer, name);
 		return mathedClafer;
 	}
 
 	/**
-	 * Helper method to find the clafer with a given name, if there are
-	 * duplicates it always sets the first matching clafer as matchedClafer
-	 * object
+	 * Method takes AstClafer as an input and returns a description of the clafer if exist, returns name of the clafer
+	 * otherwise
 	 */
-	public static void setClaferByName(AstClafer inputClafer, String name) {
-
-		try {
-			if (mathedClafer == null) {
-				if (inputClafer.getName().equals(name)) {
-					mathedClafer = inputClafer;
-
-				}
-				if (inputClafer.hasChildren()) {
-					for (AstConcreteClafer childClafer : inputClafer.getChildren())
-						setClaferByName(childClafer, name);
-				}
-
-				if (inputClafer.hasRef()) {
-					setClaferByName(inputClafer.getRef().getTargetType(), name);
-
-				}
-				if (inputClafer.getSuperClafer() != null)
-					setClaferByName(inputClafer.getSuperClafer(), name);
+	// FIXME check if this method is used in any commented code
+	public static String getDescription(final AstClafer inputClafer) {
+		for (final AstConstraint child : inputClafer.getConstraints()) {
+			final String expr = child.getExpr().toString();
+			final int indexEqSign = expr.indexOf('=');
+			if (expr.substring(0, indexEqSign > 0 ? indexEqSign : 1).contains("escription . ref")) {
+				// return without Quotes,hence replaced the "" with empty
+				return expr.substring(indexEqSign + 1, expr.length()).replace("\"", "");
 			}
-
-		} catch (Exception E) {
-			E.printStackTrace();
-
 		}
-
+		return inputClafer.getName();
 	}
 
 	/**
-	 * removes scope from name (e.g., c0_) and changes first letter of the
-	 * string to Upper case example c0_scope will become Scope
+	 * method to check if the given clafer is an abstract clafer
+	 *
+	 * @param astClafer
+	 * @return
 	 */
-	public static String trimScope(String value) {
-		String val = value.substring(value.indexOf('_') + 1, value.length());
-		val = val.substring(0, 1).toUpperCase() + val.substring(1, val.length());
-		return val;
+	public static boolean isAbstract(final AstClafer astClafer) {
+		if (astClafer.hasRef()) {
+			return astClafer.getRef().getTargetType().getClass().toGenericString().contains("AstAbstractClafer");
+		} else {
+			return astClafer.getClass().toGenericString().contains("AstAbstractClafer");
+		}
+	}
+
+	/**
+	 * removes scope from name (e.g., c0_) and changes first letter of the string to Upper case example c0_scope will
+	 * become Scope
+	 */
+	public static String removeScopePrefix(final String scope) {
+		final String shortenedScope = scope.substring(scope.indexOf('_') + 1, scope.length());
+		return shortenedScope.substring(0, 1).toUpperCase() + shortenedScope.substring(1, shortenedScope.length());
+	}
+
+	/**
+	 * Helper method to find the clafer with a given name, if there are duplicates it always sets the first matching
+	 * clafer as matchedClafer object
+	 */
+	public static void setClaferByName(final AstClafer inputClafer, final String name) {
+		if (mathedClafer == null) {
+			if (inputClafer.getName().equals(name)) {
+				mathedClafer = inputClafer;
+			}
+			if (inputClafer.hasChildren()) {
+				for (final AstConcreteClafer childClafer : inputClafer.getChildren()) {
+					setClaferByName(childClafer, name);
+				}
+			}
+
+			if (inputClafer.hasRef()) {
+				setClaferByName(inputClafer.getRef().getTargetType(), name);
+			}
+			if (inputClafer.getSuperClafer() != null) {
+				setClaferByName(inputClafer.getSuperClafer(), name);
+			}
+		}
 	}
 
 }

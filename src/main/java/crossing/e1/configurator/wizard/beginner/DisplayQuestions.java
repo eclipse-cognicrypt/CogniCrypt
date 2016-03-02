@@ -3,6 +3,7 @@ package crossing.e1.configurator.wizard.beginner;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -40,6 +41,7 @@ public class DisplayQuestions extends WizardPage {
 		return selection;
 	}
 
+	@Override
 	public void createControl(Composite parent) {
 		Composite container = new Composite(parent, SWT.NONE);
 		container.setBounds(10, 10, 450, 200);
@@ -144,8 +146,6 @@ public class DisplayQuestions extends WizardPage {
 	}
 
 	public HashMap<Question, Answer> getMap() {
-		System.out.println("GET MAPP INVOKED");
-		
 		return selection;
 	}
 }

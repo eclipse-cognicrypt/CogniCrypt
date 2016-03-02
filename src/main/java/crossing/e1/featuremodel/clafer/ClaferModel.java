@@ -254,14 +254,6 @@ public class ClaferModel {
 		}
 	}
 
-	//
-	// /**
-	// * @param astConcreteClafer
-	// */
-	// public void getPrimitive(AstConcreteClafer astConcreteClafer) {
-	// pClafer.getPrimitive(astConcreteClafer);
-	//
-	// }
 	/**
 	 * Recursive method to list subclafers of a clafer
 	 * 

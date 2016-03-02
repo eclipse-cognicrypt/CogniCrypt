@@ -80,7 +80,7 @@ public class XSLBasedGenerator {
 	public boolean init() {
 		currentFile = Utils.getCurrentlyOpenFile();
 		fileOpened = currentFile != null;
-		if (currentFile != null && "java".equals(currentFile.getFileExtension())) {
+		if (currentFile != null && Constants.JAVA.equals(currentFile.getFileExtension())) {
 			//Get currently opened file to 
 			project = new DeveloperProject(currentFile.getProject());
 		} else {
@@ -197,7 +197,7 @@ public class XSLBasedGenerator {
 	private String[] getCallsForGenClasses(String filePath) throws IOException {
 		//Checks whether file exists
 		File f = new File(filePath);
-		if (!f.exists()) {
+		if (!(f.exists() && Files.isWritable(f.toPath()))) {
 			Activator.getDefault().logError(null, Constants.NoTemporaryOutputFile);
 			return null;
 		}

@@ -17,7 +17,10 @@
 package crossing.e1.featuremodel.clafer;
 
 import java.util.Objects;
+
 import org.clafer.instance.InstanceClafer;
+
+import crossing.e1.configurator.Constants;
 
 /**
  *
@@ -52,9 +55,9 @@ public class InstanceClaferHash extends InstanceClafer {
 		for (InstanceClafer childInstanceClafer : this.getChildren()) {
 			InstanceClaferHash tempInstanceHash = null;
 			if (childInstanceClafer.hasRef() && (childInstanceClafer.getType().isPrimitive() != true)
-					&& (childInstanceClafer.getRef().getClass().toString().contains("Integer") == false)
-					&& (childInstanceClafer.getRef().getClass().toString().contains("String") == false)
-					&& (childInstanceClafer.getRef().getClass().toString().contains("Boolean") == false)) {
+					&& (childInstanceClafer.getRef().getClass().toString().contains(Constants.INTEGER) == false)
+					&& (childInstanceClafer.getRef().getClass().toString().contains(Constants.STRING) == false)
+					&& (childInstanceClafer.getRef().getClass().toString().contains(Constants.BOOLEAN) == false)) {
 				/**
 				 * recursively find hashcode for all the children for a clafer
 				 * if it is not primitive
@@ -68,9 +71,9 @@ public class InstanceClaferHash extends InstanceClafer {
 				 * add hashcode from standard object.hasCode() method for
 				 * primitive types
 				 */
-				if ((childInstanceClafer.getRef().getClass().toString().contains("Integer") == true)
-						|| (childInstanceClafer.getRef().getClass().toString().contains("String") == true)
-						|| (childInstanceClafer.getRef().getClass().toString().contains("Boolean") == true)) {
+				if ((childInstanceClafer.getRef().getClass().toString().contains(Constants.INTEGER) == true)
+						|| (childInstanceClafer.getRef().getClass().toString().contains(Constants.STRING) == true)
+						|| (childInstanceClafer.getRef().getClass().toString().contains(Constants.BOOLEAN) == true)) {
 					hashToChildrenInstances += childInstanceClafer.getRef().hashCode();
 				}
 			}

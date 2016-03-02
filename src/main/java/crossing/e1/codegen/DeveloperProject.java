@@ -23,6 +23,7 @@ package crossing.e1.codegen;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -62,7 +63,7 @@ public class DeveloperProject {
 	public void refresh() throws CoreException {
 		//From JavaDoc: "This method is long-running." -> if it takes too long for big projects, reduce depth parameter in call 
 		//or call refresh on Crypto package only
-		project.refreshLocal(IProject.DEPTH_INFINITE, null);
+		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 	}
 	
 	/**

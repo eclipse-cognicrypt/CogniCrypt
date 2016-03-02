@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 /**
  * @author Ram Kamath
  *
@@ -49,9 +48,8 @@ import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
-
 public class ValueSelectionPage extends WizardPage implements Labels {
-	
+
 	private List<Spinner> taskCombo;
 	private Composite container;
 	private List<AstConcreteClafer> label;
@@ -62,14 +60,12 @@ public class ValueSelectionPage extends WizardPage implements Labels {
 	List<Composite> widgets = new ArrayList<Composite>();
 	boolean statusPage = false;
 
-	public ValueSelectionPage(List<AstConcreteClafer> items,
-			ClaferModel claferModel) {
+	public ValueSelectionPage(List<AstConcreteClafer> items, ClaferModel claferModel) {
 		super(Labels.SELECT_PROPERTIES);
 		setTitle(Labels.PROPERTIES);
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		userOptions = new HashMap<ArrayList<AstConcreteClafer>, ArrayList<Integer>>();
 		userGroupOptions = new HashMap<String, AstConcreteClafer>();
-		
 
 	}
 
@@ -89,8 +85,7 @@ public class ValueSelectionPage extends WizardPage implements Labels {
 		container.setLayout(layout);
 		layout.numColumns = 1;
 
-		for (AstConcreteClafer clafer : PropertiesMapperUtil.getPropertiesMap()
-				.keySet()) {
+		for (AstConcreteClafer clafer : PropertiesMapperUtil.getPropertiesMap().keySet()) {
 
 			// Label label3 = new Label(container, SWT.NONE);
 			// Font boldFont = new Font( label3.getDisplay(), new FontData(
@@ -102,8 +97,7 @@ public class ValueSelectionPage extends WizardPage implements Labels {
 
 			Group titledPanel = new Group(container, SWT.NONE);
 			titledPanel.setText(ClaferModelUtils.trimScope(clafer.getName()));
-			Font boldFont = new Font(titledPanel.getDisplay(), new FontData(
-					"Arial", 12, SWT.BOLD));
+			Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
 			titledPanel.setFont(boldFont);
 			GridLayout layout2 = new GridLayout();
 
@@ -111,25 +105,22 @@ public class ValueSelectionPage extends WizardPage implements Labels {
 			titledPanel.setLayout(layout2);
 			@SuppressWarnings("unchecked")
 			ArrayList<AstConcreteClafer> x = new ArrayList<AstConcreteClafer>(
-					new LinkedHashSet(PropertiesMapperUtil.getPropertiesMap()
-							.get(clafer)));
+					new LinkedHashSet(PropertiesMapperUtil.getPropertiesMap().get(clafer)));
 			for (AstConcreteClafer claf : x) {
 
 				if (claf.getGroupCard().getLow() >= 1) {
-					getWidget(titledPanel, clafer, claf, claf.getGroupCard()
-							.getHigh());
+					getWidget(titledPanel, clafer, claf, claf.getGroupCard().getHigh());
 				} else
 
-					getWidget(titledPanel, clafer, claf,
-							ClaferModelUtils.trimScope(claf.getName()), 1, 0, 1024, 0, 1, 1);
+					getWidget(titledPanel, clafer, claf, ClaferModelUtils.trimScope(claf.getName()), 1, 0, 1024, 0, 1,
+							1);
 			}
 		}
 		setControl(container);
 	}
 
-	void getWidget(Composite container, AstConcreteClafer key1,
-			AstConcreteClafer key2, String label, int selection, int min,
-			int max, int digits, int incement, int pageincrement) {
+	void getWidget(Composite container, AstConcreteClafer key1, AstConcreteClafer key2, String label, int selection,
+			int min, int max, int digits, int incement, int pageincrement) {
 		List<String> values = new ArrayList<String>();
 		values.add(Labels.LESS_THAN);
 		values.add(Labels.GREATER_THAN);
@@ -167,8 +158,7 @@ public class ValueSelectionPage extends WizardPage implements Labels {
 		// TODO method takes 2 widget as an input and adds an X mark
 	}
 
-	void getWidget(Composite container, AstConcreteClafer claferMain,
-			AstConcreteClafer claferProperty, int groupCard) {
+	void getWidget(Composite container, AstConcreteClafer claferMain, AstConcreteClafer claferProperty, int groupCard) {
 
 		Label label5 = new Label(container, SWT.NONE);
 		label5.setText("	");
@@ -176,9 +166,7 @@ public class ValueSelectionPage extends WizardPage implements Labels {
 		Label label1 = new Label(container, SWT.NONE);
 		label1.setText(ClaferModelUtils.trimScope(claferProperty.getName()));
 		for (AstConcreteClafer astClafer : claferProperty.getChildren()) {
-			userGroupOptions.put(
-					claferMain.getName() + ClaferModelUtils.trimScope(astClafer.getName()),
-					astClafer);
+			userGroupOptions.put(claferMain.getName() + ClaferModelUtils.trimScope(astClafer.getName()), astClafer);
 			optionLables.add(ClaferModelUtils.trimScope(astClafer.getName()));
 		}
 		ComboViewer option = new ComboViewer(container, SWT.NONE);
@@ -234,8 +222,7 @@ public class ValueSelectionPage extends WizardPage implements Labels {
 				keys.add(mainClafer.get(i));
 				keys.add(label.get(i));
 				String test = mainClafer.get(i).getName()
-						+ options.get(i).getSelection().toString()
-								.replace("[", "").replace("]", "");
+						+ options.get(i).getSelection().toString().replace("[", "").replace("]", "");
 				keys.add(userGroupOptions.get(test));
 				values.add(6);
 				values.add(label.get(i).getGroupCard().getLow());

@@ -30,8 +30,9 @@ public class PropertiesMapperUtil {
 	private static Map<String, AstConcreteClafer> taskLabelMap = null;
 	private static Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> propertiesMap = null;
 	private static Map<AstConcreteClafer, Map<ArrayList<AstConcreteClafer>, Integer>> groupPropertiesMap = null;
+
 	/**
-	 * private Constructor for singleton pattern     
+	 * private Constructor for singleton pattern
 	 */
 	private PropertiesMapperUtil() {
 
@@ -50,12 +51,8 @@ public class PropertiesMapperUtil {
 	}
 
 	/**
-	 * Map with list of clafers and their properties 
-	 * ex : car : 
-	 * 				speed
-	 * 				transmission
-	 * in above clafer key would be 'car' and values would be
-	 * [speed,transmission]
+	 * Map with list of clafers and their properties ex : car : speed transmission in above clafer key would be 'car'
+	 * and values would be [speed,transmission]
 	 * 
 	 * @return
 	 */
@@ -74,7 +71,7 @@ public class PropertiesMapperUtil {
 	}
 
 	/**
-	 * used when there is an enum in the properties 
+	 * used when there is an enum in the properties
 	 * 
 	 * @return
 	 */

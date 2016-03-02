@@ -37,11 +37,12 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 import crossing.e1.codegen.generation.XSLBasedGenerator;
+import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.utilities.Labels;
-import crossing.e1.configurator.utilities.XMLParser;
 import crossing.e1.configurator.utilities.ReadConfig;
 import crossing.e1.configurator.utilities.Validator;
 import crossing.e1.configurator.utilities.WriteToFileHelper;
+import crossing.e1.configurator.utilities.XMLParser;
 import crossing.e1.configurator.wizard.advanced.ValueSelectionPage;
 import crossing.e1.configurator.wizard.beginner.DisplayQuestions;
 import crossing.e1.configurator.wizard.beginner.QuestionsBeginner;
@@ -59,9 +60,6 @@ public class ConfiguratorWizard extends Wizard {
 	private ClaferModel claferModel;
 	IPath path = null;
 	private XSLBasedGenerator codeGeneration=new XSLBasedGenerator();
-	private static final String XML_FILE_NAME="encryptXmlPath";
-	private static final String PATH_FOR_CONFIG_XML = "/Configurator.xml";
-
 	public ConfiguratorWizard() {
 		super();
 
@@ -76,7 +74,7 @@ public class ConfiguratorWizard extends Wizard {
 		}
 
 		this.claferModel = new ClaferModel(new ReadConfig().getPathFromConfig("claferPath"));
-		setWindowTitle("Cyrptography Task Configurator");
+		setWindowTitle("Cryptography Task Configurator");
 	}
 
 	/**
@@ -90,18 +88,18 @@ public class ConfiguratorWizard extends Wizard {
 			IStructuredSelection selection = (IStructuredSelection) window.getSelectionService().getSelection();
 			Object firstElement = selection.getFirstElement();
 			if (firstElement instanceof IAdaptable) {
-				IProject project = (IProject) ((IAdaptable) firstElement).getAdapter(IProject.class);
+				IProject project = ((IAdaptable) firstElement).getAdapter(IProject.class);
 				path = project.getLocation();
 			} else {
 				/**
 				 * No project has been selected, exit with an error
 				 */
-				displayError("Please select projrct directory to launch the configurator");
+				displayError(Constants.PLEASE_SELECT);
 				return false;
 
 			}
 		} else {
-			displayError("Please select projrct directory to launch the configurator");
+			displayError(Constants.PLEASE_SELECT);
 			return false;
 
 		}
@@ -127,7 +125,7 @@ public class ConfiguratorWizard extends Wizard {
 		boolean ret = instanceListPage.isPageComplete();
 		WriteToFileHelper write = new WriteToFileHelper();
 		write.writeToFile(new XMLParser().displayInstanceValues(instanceListPage.getValue(), ""),
-				path.toString() + PATH_FOR_CONFIG_XML);
+				path.toString() + Constants.PATH_FOR_CONFIG_XML);
 		// Generate code template
 		 ret &= codeGeneration.generateCodeTemplates();
 		return ret;
@@ -151,7 +149,7 @@ public class ConfiguratorWizard extends Wizard {
 				 * Create Questions object
 				 */
 				quest = new QuestionsBeginner();
-				quest.init(PropertiesMapperUtil.getTaskLabelsMap().get(taskListPage.getValue()).getName(),XML_FILE_NAME);
+				quest.init(PropertiesMapperUtil.getTaskLabelsMap().get(taskListPage.getValue()).getName(), Constants.XML_FILE_NAME);
 				if (quest.hasQuestions())
 					valueListPage = new DisplayQuestions(quest);
 			}
@@ -160,6 +158,7 @@ public class ConfiguratorWizard extends Wizard {
 
 			return valueListPage;
 		}
+		
 		/**
 		 * If current page is either question or properties page (in Advanced
 		 * mode) check title. Maintain uniform title for second wizard page of
@@ -191,6 +190,5 @@ public class ConfiguratorWizard extends Wizard {
 			}
 		}
 		return currentPage;
-
 	}
 }

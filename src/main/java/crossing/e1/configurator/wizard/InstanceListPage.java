@@ -21,6 +21,7 @@
 package crossing.e1.configurator.wizard;
 
 import java.util.Map;
+
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -85,10 +86,11 @@ public class InstanceListPage extends WizardPage implements Labels {
 			}
 		}));
 		algorithmClass.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 				instancePropertiesPanel.setVisible(true);
-				String b = (String) selection.getFirstElement().toString();
+				String b = selection.getFirstElement().toString();
 				setValue(instance.getInstances().get(b));
 				instanceDetails.setText(publisher.getInstanceProperties(instance.getInstances().get(b), ""));
 				if (selection.size() > 0) {

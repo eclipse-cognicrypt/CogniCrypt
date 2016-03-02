@@ -40,12 +40,9 @@ public class ClaferModelUtils {
 		if (inputClafer.hasConstraints())
 			for (AstConstraint child : inputClafer.getConstraints()) {
 				String expr = child.getExpr().toString();
-				if (expr.substring(0,
-						((expr.indexOf('=') > 0) ? expr.indexOf('=') : 1))
-						.contains("escription . ref")) {
+				if (expr.substring(0, ((expr.indexOf('=') > 0) ? expr.indexOf('=') : 1)).contains("escription . ref")) {
 					// return without Quotes,hence replaced the "" with empty
-					return expr.substring(expr.indexOf('=') + 1, expr.length())
-							.replace("\"", "");
+					return expr.substring(expr.indexOf('=') + 1, expr.length()).replace("\"", "");
 				}
 
 			}
@@ -56,16 +53,15 @@ public class ClaferModelUtils {
 
 	/**
 	 * method to check if the given clafer is an abstract clafer
+	 * 
 	 * @param astClafer
 	 * @return
 	 */
 	public static boolean isAbstract(AstClafer astClafer) {
 		if (astClafer.hasRef())
-			return astClafer.getRef().getTargetType().getClass()
-					.toGenericString().contains("AstAbstractClafer");
+			return astClafer.getRef().getTargetType().getClass().toGenericString().contains("AstAbstractClafer");
 		else
-			return astClafer.getClass().toGenericString()
-					.contains("AstAbstractClafer");
+			return astClafer.getClass().toGenericString().contains("AstAbstractClafer");
 	}
 
 	/**
@@ -91,8 +87,7 @@ public class ClaferModelUtils {
 
 				}
 				if (inputClafer.hasChildren()) {
-					for (AstConcreteClafer childClafer : inputClafer
-							.getChildren())
+					for (AstConcreteClafer childClafer : inputClafer.getChildren())
 						setClaferByName(childClafer, name);
 				}
 
@@ -112,12 +107,12 @@ public class ClaferModelUtils {
 	}
 
 	/**
-	 * removes scope from name (e.g., c0_) and changes first letter of the string to Upper case example c0_scope will become Scope
+	 * removes scope from name (e.g., c0_) and changes first letter of the
+	 * string to Upper case example c0_scope will become Scope
 	 */
 	public static String trimScope(String value) {
 		String val = value.substring(value.indexOf('_') + 1, value.length());
-		val = val.substring(0, 1).toUpperCase()
-				+ val.substring(1, val.length());
+		val = val.substring(0, 1).toUpperCase() + val.substring(1, val.length());
 		return val;
 	}
 

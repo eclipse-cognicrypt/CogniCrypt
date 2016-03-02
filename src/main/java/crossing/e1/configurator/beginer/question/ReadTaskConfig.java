@@ -1,18 +1,18 @@
 package crossing.e1.configurator.beginer.question;
 
-import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
+import java.util.ArrayList;
+
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.configurator.utilities.ReadConfig;
-
-import java.io.File;
-import java.util.ArrayList;
 
 public class ReadTaskConfig implements Labels {
 	private DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

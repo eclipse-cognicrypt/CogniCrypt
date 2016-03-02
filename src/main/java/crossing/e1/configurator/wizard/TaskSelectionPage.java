@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
@@ -83,6 +84,7 @@ public class TaskSelectionPage extends WizardPage {
 		}
 
 		taskComboSelection.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 
@@ -94,7 +96,7 @@ public class TaskSelectionPage extends WizardPage {
 		});
 
 		advancedModeCheckBox = new Button(container, SWT.CHECK);
-		advancedModeCheckBox.setText("Advanced Mode");
+		advancedModeCheckBox.setText(Constants.ADVANCED_MODE);
 		advancedModeCheckBox.setSelection(false);
 		setControl(container);
 	}

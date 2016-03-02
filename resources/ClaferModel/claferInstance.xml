@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <task description="Encrypt data based on password">
-	<Package>crypto</Package>
+	<Package>Crypto</Package>
 	<Imports>
 		<Import>java.security.InvalidAlgorithmParameterException</Import>
 		<Import>java.security.InvalidKeyException</Import>

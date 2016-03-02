@@ -3,6 +3,7 @@ package crossing.e1.configurator.utilities;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
+import crossing.e1.configurator.Constants;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 
 public class Validator {
@@ -17,7 +18,7 @@ public class Validator {
 			return true;
 		} else {
 			displayError(
-					" No possible combinations are available for chosen values , please modify your prefference and try agin.\n \n You can use  \n>= insted of >\n<= insted of <\nto make your selection generic.");
+					Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE);
 			return false;
 		}
 	}

@@ -134,7 +134,7 @@ public class InstanceGeneratorTest {
 		if (map.isEmpty()) {
 			System.out.println("MAP IS EMPTY");
 		} else {
-			this.instanceGenerator.generateInstancesAdvancedUserMode(map);
+//			this.instanceGenerator.generateInstancesAdvancedUserMode(map);
 			final List<InstanceClafer> instances = new ArrayList<>(this.instanceGenerator.getInstances().values());
 			assertNotNull("failed to return instances Object", instances);
 			assertEquals(4, this.instanceGenerator.getNoOfInstances());

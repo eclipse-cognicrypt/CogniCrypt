@@ -30,7 +30,7 @@ public class PropertiesMapperUtilTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.test.PropertiesMapperUtil#getGroupPropertiesMap()}.
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.PropertiesMapperUtil#getenumMap()}.
 	 */
 	@Test
 	public final void testGetGroupPropertiesMap() {

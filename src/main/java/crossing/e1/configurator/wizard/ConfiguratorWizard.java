@@ -150,7 +150,7 @@ public class ConfiguratorWizard extends Wizard {
 			instanceGenerator.setNoOfInstances(0);
 
 			if (this.taskListPage.isAdvancedMode() && ((ValueSelectionPage) this.valueListPage).getPageStatus() == true) {
-				instanceGenerator.generateInstancesAdvancedUserMode(((ValueSelectionPage) currentPage).getMap());
+				instanceGenerator.generateInstancesAdvancedUserMode(((ValueSelectionPage) currentPage).getConstraints());
 				if (new Validator().validate(instanceGenerator)) {
 					this.instanceListPage = new InstanceListPage(instanceGenerator);
 					addPage(this.instanceListPage);

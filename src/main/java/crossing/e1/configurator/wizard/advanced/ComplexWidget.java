@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
 import crossing.e1.configurator.utilities.Labels;
+import crossing.e1.configurator.utilities.Utilities;
 import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 
 public class ComplexWidget {
@@ -28,6 +29,9 @@ public class ComplexWidget {
 	private AstConcreteClafer childClafer;
 	private ComboViewer option;
 	private boolean isGroupConstraint=false;
+	private AstAbstractClafer abstarctParentClafer;
+
+	
 
 	public ComplexWidget(Composite container, AstConcreteClafer parentClafer, AstConcreteClafer childClafer,
 			String label, int selection, int min, int max, int digits, int increment, int pageincrement) {
@@ -58,6 +62,8 @@ public class ComplexWidget {
 
 	public ComplexWidget(Composite container, AstAbstractClafer claferMain, List<AstClafer> claferProperty) {
 		setGroupConstraint(true);
+		setAbstarctParentClafer(claferMain);
+		setChildClafer((AstConcreteClafer) claferProperty.get(0));
 		List<String> values = new ArrayList<String>();
 		values.add(Labels.LESS_THAN);
 		values.add(Labels.GREATER_THAN);
@@ -78,7 +84,14 @@ public class ComplexWidget {
 		for (AstClafer comboValue : claferProperty) {
 			comboValues.add(ClaferModelUtils.removeScopePrefix(comboValue.getName()));
 		}
-
+		option.addSelectionChangedListener(new ISelectionChangedListener() {
+			
+			@Override
+			public void selectionChanged(SelectionChangedEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		ComboViewer valuesCombo = new ComboViewer(container, SWT.NONE);
 		valuesCombo.setContentProvider(ArrayContentProvider.getInstance());
 		valuesCombo.setInput(comboValues);
@@ -87,12 +100,28 @@ public class ComplexWidget {
 			
 			@Override
 			public void selectionChanged(SelectionChangedEvent arg0) {
-				//TODO
-				valuesCombo.getStructuredSelection();
+				String selection=valuesCombo.getStructuredSelection().toString().replace('[', ' ').replace(']', ' ').trim();
+				for(AstClafer property: claferProperty){
+					System.out.println("VALUES "+valuesCombo.getStructuredSelection()+" name "+ClaferModelUtils.removeScopePrefix(property.getName())+" and it is "+selection.equals(ClaferModelUtils.removeScopePrefix(property.getName())));
+					if(selection.equals(ClaferModelUtils.removeScopePrefix(property.getName()))){
+						System.out.println("VALUES "+valuesCombo.getStructuredSelection());
+						setChildClafer((AstConcreteClafer) property);
+					}
+				}
+				
+				
 				
 			}
 		});
 
+	}
+
+	public AstAbstractClafer getAbstarctParentClafer() {
+		return abstarctParentClafer;
+	}
+
+	public void setAbstarctParentClafer(AstAbstractClafer abstarctParentClafer) {
+		this.abstarctParentClafer = abstarctParentClafer;
 	}
 
 	/**
@@ -125,8 +154,8 @@ public class ComplexWidget {
 		this.parentClafer = parentClafer;
 	}
 
-	public String getOption() {
-		return option.getSelection().toString();
+	public Integer getOption() {
+		return Utilities.toNumber(option.getSelection().toString());
 	}
 	public Integer getValue() {
 		return taskComb.getSelection();

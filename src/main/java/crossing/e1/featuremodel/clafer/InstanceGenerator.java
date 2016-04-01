@@ -161,8 +161,7 @@ public class InstanceGenerator {
 	 * @param propertiesMap
 	 * @return
 	 */
-	public List<InstanceClafer> generateInstancesAdvancedUserMode(
-			final List<ComplexWidget> constraints) {
+	public List<InstanceClafer> generateInstancesAdvancedUserMode(final List<ComplexWidget> constraints) {
 
 		final AstModel model = this.claferModel.getModel();
 		try {
@@ -327,23 +326,23 @@ public class InstanceGenerator {
 	 * claf is a clafer used only with XOR
 	 *
 	 * @param operator
-	 * @param main
+	 * @param childClafer
 	 * @param value
 	 * @param operand
 	 * @param claf
 	 */
-	void addConstraints(final int operator, final AstConcreteClafer main, final int value,
+	void addConstraints(final int operator, final AstConcreteClafer childClafer, final int value,
 			final AstConcreteClafer operand, final AstConcreteClafer claf) {
 		if (operator == 1) {
-			main.addConstraint(equal(joinRef(join(joinRef($this()), operand)), constant(value)));
+			childClafer.addConstraint(equal(joinRef(join(joinRef($this()), operand)), constant(value)));
 		} else if (operator == 2) {
-			main.addConstraint(lessThan(joinRef(join(joinRef($this()), operand)), constant(value)));
+			childClafer.addConstraint(lessThan(joinRef(join(joinRef($this()), operand)), constant(value)));
 		} else if (operator == 3) {
-			main.addConstraint(greaterThan(joinRef(join(joinRef($this()), operand)), constant(value)));
+			childClafer.addConstraint(greaterThan(joinRef(join(joinRef($this()), operand)), constant(value)));
 		} else if (operator == 4) {
-			main.addConstraint(lessThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
+			childClafer.addConstraint(lessThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
 		} else if (operator == 5) {
-			main.addConstraint(greaterThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
+			childClafer.addConstraint(greaterThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
 		} else if (operator == 6) {
 			// AstAbstractClafer operandGloabl = null;
 			// AstConcreteClafer operandValue = null;
@@ -372,24 +371,57 @@ public class InstanceGenerator {
 	 * @param tempClafer
 	 * @param propertiesMap
 	 */
-	void addGroupProperties(final AstConcreteClafer tempClafer,
-			final List<ComplexWidget> groupProperties) {
+	void addGroupProperties(final AstConcreteClafer tempClafer, final List<ComplexWidget> groupProperties) {
+		System.out.println("here are group properties " + PropertiesMapperUtil.getGroupPropertiesMap().toString()
+				+ " and enum is " + PropertiesMapperUtil.getenumMap().toString());
 		for (final AstConcreteClafer childClafer : tempClafer.getRef().getTargetType().getChildren()) {
 			for (final ComplexWidget claf : groupProperties) {
-				if(claf.isGroupConstraint()){
-				AstClafer operand = ClaferModelUtils.findClaferByName(childClafer, claf.getChildClafer().getName());
-				final int operator = Utilities.toNumber(claf.getOption());
-				final int value = claf.getValue();
-				Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> m=PropertiesMapperUtil.getGroupPropertiesMap();
-				Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> n= PropertiesMapperUtil.getPropertiesMap();
-				if(m.containsKey(childClafer)){
-					System.out.println("APPLIED GROUP Properties");
-//				childClafer.addConstraint(equal(
-//						joinRef(join(joinRef($this()),
-//								PropertiesMapperUtil.getGroupPropertiesMap().get(childClafer).get(0))),
-//						global(PropertiesMapperUtil.getenumMap().get(claf).get(groupProperties.get(claf).get(1)))));
-//				 addConstraints(operator, childClafer, value,(AstConcreteClafer)operand, null);
-				}
+				if (claf.isGroupConstraint()) {
+
+					final int operator = claf.getOption();
+
+					Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> m = PropertiesMapperUtil
+							.getGroupPropertiesMap();
+					Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> n = PropertiesMapperUtil.getPropertiesMap();
+
+					for (AstConcreteClafer groupProperty : PropertiesMapperUtil.getGroupPropertiesMap().keySet()) {
+						AstAbstractClafer key = null;
+						for (AstConcreteClafer property : PropertiesMapperUtil.getGroupPropertiesMap()
+								.get(groupProperty)) {
+							if (claf.getAbstarctParentClafer().getName()
+									.equals(property.getRef().getTargetType().getName())) {
+								final AstConcreteClafer operand = property;
+								AstConcreteClafer value = null;// (AstConcreteClafer)
+																// ClaferModelUtils.findClaferByName(tempClafer,
+																// claf.getChildClafer().getName());
+								System.out.println(PropertiesMapperUtil.getenumMap() + " KEY "
+										+ claf.getAbstarctParentClafer().getName());
+								for (AstAbstractClafer enumProperty : PropertiesMapperUtil.getenumMap().keySet()) {
+									if (enumProperty.getName().equals(claf.getAbstarctParentClafer().getName())) {
+										key = enumProperty;
+										break;
+									}
+								}
+								for (AstClafer enumValue : PropertiesMapperUtil.getenumMap().get(key)) {
+									if (enumValue.getName().equals(claf.getChildClafer().getName())) {
+										value = claf.getChildClafer();
+										break;
+									}
+								}
+								// Working
+								System.out.println(groupProperty.getConstraints().toString());
+								groupProperty.addConstraint(equal(join($this(), joinRef(operand)), global(value)));
+								System.out.println(groupProperty.getConstraints().toString());
+								// c0_SymmetricEncryption.
+								// addConstraint(equal(joinRef(join(joinRef(join($this(), c1_cipher)), c0_performance)), global(c0_Fast)));
+
+								// ((equal(joinRef(join($this(), )),
+								// global(claf.getChildClafer()))));
+//								claferModel.getModel().addConstraint(equal(joinRef(join($this(),operand)), global(value)));
+								// ;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -402,20 +434,19 @@ public class InstanceGenerator {
 	 * @param tempClafer
 	 * @param propertiesMap
 	 */
-	void advancedModeHandler(final AstConcreteClafer tempClafer,
-			final List<ComplexWidget> constraints) {
+	void advancedModeHandler(final AstConcreteClafer tempClafer, final List<ComplexWidget> constraints) {
 		for (final AstConcreteClafer childClafer : tempClafer.getRef().getTargetType().getChildren()) {
 			for (final ComplexWidget claf : constraints) {
-				if(!claf.isGroupConstraint())
-				if (claf.getParentClafer().getName().equals(childClafer.getName())) {
-					final int operator = Utilities.toNumber(claf.getOption());
-					final int value = claf.getValue();
-					final AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils.findClaferByName(childClafer,
-							claf.getChildClafer().getName());
-					if (operand != null && !ClaferModelUtils.isAbstract(operand)) {
-						addConstraints(operator, childClafer, value, operand, claf.getChildClafer());
+				if (!claf.isGroupConstraint())
+					if (claf.getParentClafer().getName().equals(childClafer.getName())) {
+						final int operator = claf.getOption();
+						final int value = claf.getValue();
+						final AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils
+								.findClaferByName(childClafer, claf.getChildClafer().getName());
+						if (operand != null && !ClaferModelUtils.isAbstract(operand)) {
+							addConstraints(operator, childClafer, value, operand, claf.getChildClafer());
+						}
 					}
-				}
 			}
 		}
 	}

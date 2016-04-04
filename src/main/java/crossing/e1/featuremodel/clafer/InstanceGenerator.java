@@ -164,6 +164,7 @@ public class InstanceGenerator {
 			AstConcreteClafer tempTask = model.addChild("Main").addChild(MAINTASK)
 					.refTo(PropertiesMapperUtil.getTaskLabelsMap().get(getTaskName()));
 			advancedModeHandler(tempTask, constraints);
+			// TODO Need to be uncommented after fix
 			// addGroupProperties(tempTask, constraints);
 
 			solver = ClaferCompiler.compile(model,
@@ -221,6 +222,152 @@ public class InstanceGenerator {
 			Activator.getDefault().logError(e);
 		}
 		return currentInstanceName;
+	}
+
+	/**
+	 * method used by both basic and advanced user operations to add constraints
+	 * to clafers before instance generation
+	 *
+	 * operator is the numeric value which indicates > < >= <= == operations
+	 *
+	 * main is the higher level clafer ,usually task choose by user
+	 *
+	 * value is the numeric or string value which will be added as a
+	 * constraints, EX outPutLength=128 here 128 is the value
+	 *
+	 * operand is the clafer on which constraint is being applied EX
+	 * outPutLength=128 outPutLength is operand here
+	 *
+	 * claf is a clafer used only with XOR
+	 *
+	 * @param operator
+	 * @param childClafer
+	 * @param value
+	 * @param operand
+	 * @param claf
+	 */
+	void addConstraints(final int operator, final AstConcreteClafer childClafer, final int value,
+			final AstConcreteClafer operand, final AstConcreteClafer claf) {
+		if (operator == 1) {
+			childClafer.addConstraint(equal(joinRef(join(joinRef($this()), operand)), constant(value)));
+		} else if (operator == 2) {
+			childClafer.addConstraint(lessThan(joinRef(join(joinRef($this()), operand)), constant(value)));
+		} else if (operator == 3) {
+			childClafer.addConstraint(greaterThan(joinRef(join(joinRef($this()), operand)), constant(value)));
+		} else if (operator == 4) {
+			childClafer.addConstraint(lessThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
+		} else if (operator == 5) {
+			childClafer.addConstraint(greaterThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
+		}
+	}
+
+	/**
+	 * This method is to parse the map of clafers and apply their values as
+	 * constraints before instance generation, used only in advanceduserMode
+	 *
+	 * @param tempClafer
+	 * @param propertiesMap
+	 */
+	void addGroupProperties(final AstConcreteClafer tempClafer, final List<ComplexWidget> groupProperties) {
+		for (final AstConcreteClafer childClafer : tempClafer.getRef().getTargetType().getChildren()) {
+			for (final ComplexWidget claf : groupProperties) {
+				// Check if the constraint is groupconstraint
+				if (claf.isGroupConstraint()) {
+					/**
+					 * Here a group properties list being used, this list
+					 * contains the group properties which are part of the
+					 * chosen task, where as EnumMap contains group properties
+					 * of entire clafer
+					 */
+					for (AstConcreteClafer groupProperty : PropertiesMapperUtil.getGroupPropertiesMap().keySet()) {
+						AstAbstractClafer key = null;
+						for (AstConcreteClafer property : PropertiesMapperUtil.getGroupPropertiesMap()
+								.get(groupProperty)) {
+							// look in Iff the group properties key matches the
+							// clafer
+							if (claf.getAbstarctParentClafer().getName()
+									.equals(property.getRef().getTargetType().getName())) {
+								AstConcreteClafer value = null;
+
+								for (AstAbstractClafer enumProperty : PropertiesMapperUtil.getenumMap().keySet()) {
+									if (enumProperty.getName().equals(claf.getAbstarctParentClafer().getName())) {
+										key = enumProperty;
+										break;
+									}
+								}
+								// Find an enum value from enumMap which matches
+								// the user selection
+								for (AstClafer enumValue : PropertiesMapperUtil.getenumMap().get(key)) {
+									if (enumValue.getName().equals(claf.getChildClafer().getName())) {
+										value = claf.getChildClafer();
+										break;
+									}
+								}
+
+								if (value != null) {
+									AstBoolExpr expr = equal(joinRef(property), global(value));
+									childClafer.addConstraint(expr);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * This method is to parse the map of clafers and apply their values as
+	 * constraints before instance generation, used only in advanceduserMode
+	 *
+	 * @param tempClafer
+	 * @param propertiesMap
+	 */
+	void advancedModeHandler(final AstConcreteClafer tempClafer, final List<ComplexWidget> constraints) {
+		for (AstConcreteClafer childClafer : tempClafer.getRef().getTargetType().getChildren()) {
+			for (ComplexWidget claf : constraints) {
+				if (!claf.isGroupConstraint())
+					if (claf.getParentClafer().getName().equals(childClafer.getName())) {
+						final int operator = claf.getOption();
+						final int value = claf.getValue();
+						final AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils
+								.findClaferByName(childClafer, claf.getChildClafer().getName());
+						if (operand != null && !ClaferModelUtils.isAbstract(operand)) {
+							addConstraints(operator, childClafer, value, operand, claf.getChildClafer());
+						}
+					}
+			}
+		}
+	}
+
+	/**
+	 * BasicModeHandler will take <Question, answer> map as a parameter where
+	 * the key of the map is a question, answer is the selected answer for a
+	 * given question each answer has been further iterated to apply associated
+	 * dependencies
+	 */
+	// FIXME include group operator
+	void basicModeHandler(final AstConcreteClafer inputClafer, final HashMap<Question, Answer> qAMap) {
+		final Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> popertiesMap = PropertiesMapperUtil
+				.getPropertiesMap();
+		for (final AstConcreteClafer childOfMainClfer : inputClafer.getRef().getTargetType().getChildren()) {
+			for (final AstConcreteClafer propertyOfaClafer : popertiesMap.keySet()) {
+				if (childOfMainClfer.getName().equals(propertyOfaClafer.getName())) {
+					for (final AstConcreteClafer property : popertiesMap.get(propertyOfaClafer)) {
+						for (final Question question : qAMap.keySet()) {
+							if (qAMap.get(question).hasDependencies()) {
+								for (final Dependency dependency : qAMap.get(question).getDependencies()) {
+									if (property.getName().contains(dependency.getRefClafer())) {
+										addConstraints(Integer.parseInt(dependency.getOperator()), propertyOfaClafer,
+												Integer.parseInt(dependency.getValue()), property, null);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -302,138 +449,4 @@ public class InstanceGenerator {
 		}
 		return 0;
 	}
-
-	/**
-	 * method used by both basic and advanced user operations to add constraints
-	 * to clafers before instance generation
-	 *
-	 * operator is the numeric value which indicates > < >= <= == operations
-	 *
-	 * main is the higher level clafer ,usually task choose by user
-	 *
-	 * value is the numeric or string value which will be added as a
-	 * constraints, EX outPutLength=128 here 128 is the value
-	 *
-	 * operand is the clafer on which constraint is being applied EX
-	 * outPutLength=128 outPutLength is operand here
-	 *
-	 * claf is a clafer used only with XOR
-	 *
-	 * @param operator
-	 * @param childClafer
-	 * @param value
-	 * @param operand
-	 * @param claf
-	 */
-	void addConstraints(final int operator, final AstConcreteClafer childClafer, final int value,
-			final AstConcreteClafer operand, final AstConcreteClafer claf) {
-		if (operator == 1) {
-			childClafer.addConstraint(equal(joinRef(join(joinRef($this()), operand)), constant(value)));
-		} else if (operator == 2) {
-			childClafer.addConstraint(lessThan(joinRef(join(joinRef($this()), operand)), constant(value)));
-		} else if (operator == 3) {
-			childClafer.addConstraint(greaterThan(joinRef(join(joinRef($this()), operand)), constant(value)));
-		} else if (operator == 4) {
-			childClafer.addConstraint(lessThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
-		} else if (operator == 5) {
-			childClafer.addConstraint(greaterThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
-		}
-	}
-
-	/**
-	 * This method is to parse the map of clafers and apply their values as
-	 * constraints before instance generation, used only in advanceduserMode
-	 *
-	 * @param tempClafer
-	 * @param propertiesMap
-	 */
-	void addGroupProperties(final AstConcreteClafer tempClafer, final List<ComplexWidget> groupProperties) {
-		for (final AstConcreteClafer childClafer : tempClafer.getRef().getTargetType().getChildren()) {
-			for (final ComplexWidget claf : groupProperties) {
-				if (claf.isGroupConstraint()) {
-					for (AstConcreteClafer groupProperty : PropertiesMapperUtil.getGroupPropertiesMap().keySet()) {
-						AstAbstractClafer key = null;
-						for (AstConcreteClafer property : PropertiesMapperUtil.getGroupPropertiesMap()
-								.get(groupProperty)) {
-							if (claf.getAbstarctParentClafer().getName()
-									.equals(property.getRef().getTargetType().getName())) {
-								AstConcreteClafer value = null;
-								for (AstAbstractClafer enumProperty : PropertiesMapperUtil.getenumMap().keySet()) {
-									if (enumProperty.getName().equals(claf.getAbstarctParentClafer().getName())) {
-										key = enumProperty;
-										break;
-									}
-								}
-								for (AstClafer enumValue : PropertiesMapperUtil.getenumMap().get(key)) {
-									if (enumValue.getName().equals(claf.getChildClafer().getName())) {
-										value = claf.getChildClafer();
-										break;
-									}
-								}
-								if (value != null) {
-									AstBoolExpr expr = equal(joinRef(property), global(value));
-									childClafer.addConstraint(expr);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * This method is to parse the map of clafers and apply their values as
-	 * constraints before instance generation, used only in advanceduserMode
-	 *
-	 * @param tempClafer
-	 * @param propertiesMap
-	 */
-	void advancedModeHandler(final AstConcreteClafer tempClafer, final List<ComplexWidget> constraints) {
-		for (AstConcreteClafer childClafer : tempClafer.getRef().getTargetType().getChildren()) {
-			for (ComplexWidget claf : constraints) {
-				if (!claf.isGroupConstraint())
-					if (claf.getParentClafer().getName().equals(childClafer.getName())) {
-						final int operator = claf.getOption();
-						final int value = claf.getValue();
-						final AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils
-								.findClaferByName(childClafer, claf.getChildClafer().getName());
-						if (operand != null && !ClaferModelUtils.isAbstract(operand)) {
-							addConstraints(operator, childClafer, value, operand, claf.getChildClafer());
-						}
-					}
-			}
-		}
-	}
-
-	/**
-	 * BasicModeHandler will take <Question, answer> map as a parameter where
-	 * the key of the map is a question, answer is the selected answer for a
-	 * given question each answer has been further iterated to apply associated
-	 * dependencies
-	 */
-	// FIXME include group operator
-	void basicModeHandler(final AstConcreteClafer inputClafer, final HashMap<Question, Answer> qAMap) {
-		final Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> popertiesMap = PropertiesMapperUtil
-				.getPropertiesMap();
-		for (final AstConcreteClafer childOfMainClfer : inputClafer.getRef().getTargetType().getChildren()) {
-			for (final AstConcreteClafer propertyOfaClafer : popertiesMap.keySet()) {
-				if (childOfMainClfer.getName().equals(propertyOfaClafer.getName())) {
-					for (final AstConcreteClafer property : popertiesMap.get(propertyOfaClafer)) {
-						for (final Question question : qAMap.keySet()) {
-							if (qAMap.get(question).hasDependencies()) {
-								for (final Dependency dependency : qAMap.get(question).getDependencies()) {
-									if (property.getName().contains(dependency.getRefClafer())) {
-										addConstraints(Integer.parseInt(dependency.getOperator()), propertyOfaClafer,
-												Integer.parseInt(dependency.getValue()), property, null);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
 }

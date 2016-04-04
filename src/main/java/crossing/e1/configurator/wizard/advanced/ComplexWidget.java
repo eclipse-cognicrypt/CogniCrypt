@@ -9,12 +9,9 @@ import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
@@ -28,11 +25,27 @@ public class ComplexWidget {
 	private AstConcreteClafer parentClafer;
 	private AstConcreteClafer childClafer;
 	private ComboViewer option;
-	private boolean isGroupConstraint=false;
+	private boolean isGroupConstraint = false;
 	private AstAbstractClafer abstarctParentClafer;
 
-	
+	// TODO THIS IS A WORKAROUND TO STOP INSTANCE GENERATION ON PAGE LOAD, NEEDS
+	// TO BE FIXED
+	public static boolean status = false;
 
+	/**
+	 * Method to create a widget for specific properties, task level constraints
+	 * 
+	 * @param container
+	 * @param parentClafer
+	 * @param childClafer
+	 * @param label
+	 * @param selection
+	 * @param min
+	 * @param max
+	 * @param digits
+	 * @param increment
+	 * @param pageincrement
+	 */
 	public ComplexWidget(Composite container, AstConcreteClafer parentClafer, AstConcreteClafer childClafer,
 			String label, int selection, int min, int max, int digits, int increment, int pageincrement) {
 		this.setChildClafer(childClafer);
@@ -44,6 +57,7 @@ public class ComplexWidget {
 		values.add(Labels.LESS_THAN_EQUAL);
 		values.add(Labels.GREATER_THAN_EQUAL);
 
+		// To create a tab in the first column
 		Label empty = new Label(container, SWT.NONE);
 		empty.setText("	");
 		Label title = new Label(container, SWT.NONE);
@@ -56,10 +70,16 @@ public class ComplexWidget {
 
 		taskComb = new Spinner(container, SWT.BORDER | SWT.SINGLE);
 		taskComb.setValues(selection, min, max, digits, increment, pageincrement);
-		
 
 	}
 
+	/**
+	 * Method to create a widget for group properties, clafer level constraints
+	 * 
+	 * @param container
+	 * @param claferMain
+	 * @param claferProperty
+	 */
 	public ComplexWidget(Composite container, AstAbstractClafer claferMain, List<AstClafer> claferProperty) {
 		setGroupConstraint(true);
 		setAbstarctParentClafer(claferMain);
@@ -85,11 +105,11 @@ public class ComplexWidget {
 			comboValues.add(ClaferModelUtils.removeScopePrefix(comboValue.getName()));
 		}
 		option.addSelectionChangedListener(new ISelectionChangedListener() {
-			
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent arg0) {
-				// TODO Auto-generated method stub
-				
+				status = true;
+
 			}
 		});
 		ComboViewer valuesCombo = new ComboViewer(container, SWT.NONE);
@@ -97,20 +117,17 @@ public class ComplexWidget {
 		valuesCombo.setInput(comboValues);
 		valuesCombo.setSelection(new StructuredSelection(comboValues.get(0)));
 		valuesCombo.addSelectionChangedListener(new ISelectionChangedListener() {
-			
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent arg0) {
-				String selection=valuesCombo.getStructuredSelection().toString().replace('[', ' ').replace(']', ' ').trim();
-				for(AstClafer property: claferProperty){
-					System.out.println("VALUES "+valuesCombo.getStructuredSelection()+" name "+ClaferModelUtils.removeScopePrefix(property.getName())+" and it is "+selection.equals(ClaferModelUtils.removeScopePrefix(property.getName())));
-					if(selection.equals(ClaferModelUtils.removeScopePrefix(property.getName()))){
-						System.out.println("VALUES "+valuesCombo.getStructuredSelection());
+				status = true;
+				String selection = valuesCombo.getStructuredSelection().toString().replace('[', ' ').replace(']', ' ')
+						.trim();
+				for (AstClafer property : claferProperty) {
+					if (selection.equals(ClaferModelUtils.removeScopePrefix(property.getName()))) {
 						setChildClafer((AstConcreteClafer) property);
 					}
 				}
-				
-				
-				
 			}
 		});
 
@@ -157,9 +174,11 @@ public class ComplexWidget {
 	public Integer getOption() {
 		return Utilities.toNumber(option.getSelection().toString());
 	}
+
 	public Integer getValue() {
 		return taskComb.getSelection();
 	}
+
 	/**
 	 * @return the isGroupConstraint
 	 */
@@ -168,7 +187,8 @@ public class ComplexWidget {
 	}
 
 	/**
-	 * @param isGroupConstraint the isGroupConstraint to set
+	 * @param isGroupConstraint
+	 *            the isGroupConstraint to set
 	 */
 	public void setGroupConstraint(boolean isGroupConstraint) {
 		this.isGroupConstraint = isGroupConstraint;

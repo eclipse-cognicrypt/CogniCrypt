@@ -112,7 +112,7 @@ public class ConfiguratorWizard extends Wizard {
 	}
 
 	@Override
-	public IWizardPage getNextPage(final IWizardPage currentPage) {
+	public IWizardPage getNextPage(IWizardPage currentPage) {
 
 		if (currentPage == this.taskListPage && this.taskListPage.canProceed()) {
 			if (this.taskListPage.isAdvancedMode()) {
@@ -145,7 +145,7 @@ public class ConfiguratorWizard extends Wizard {
 		 *
 		 */
 		else if (currentPage.getTitle().equals(Labels.PROPERTIES)) {
-			final InstanceGenerator instanceGenerator = new InstanceGenerator("claferPath");
+			InstanceGenerator instanceGenerator = new InstanceGenerator("claferPath");
 			instanceGenerator.setTaskName(this.taskListPage.getValue());
 			instanceGenerator.setNoOfInstances(0);
 

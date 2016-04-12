@@ -34,6 +34,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
+import crossing.e1.codegen.Utils;
 import crossing.e1.codegen.generation.XSLBasedGenerator;
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
@@ -76,39 +77,18 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		if (checkProjectSelection()) {
+		IProject project = Utils.getIProjectFromSelection();
+		if (project == null) {
+			/**
+			 * No project has been selected, exit with an error
+			 */
+			Activator.getDefault().logError(Constants.PLEASE_SELECT);
+		} else {
+			this.path = project.getLocation();
 			this.taskListPage = new TaskSelectionPage(this.claferModel);
 			setForcePreviousAndNextButtons(true);
 			addPage(this.taskListPage);
 		}
-	}
-
-	/**
-	 * Select the project location of the project which has been selected in a workspace
-	 */
-	public boolean checkProjectSelection() {
-		final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-
-		if (window != null) {
-			final IStructuredSelection selection = (IStructuredSelection) window.getSelectionService().getSelection();
-			final Object firstElement = selection.getFirstElement();
-			if (firstElement instanceof IAdaptable) {
-				final IProject project = ((IAdaptable) firstElement).getAdapter(IProject.class);
-				this.path = project.getLocation();
-			} else {
-				/**
-				 * No project has been selected, exit with an error
-				 */
-				Activator.getDefault().logError(Constants.PLEASE_SELECT);
-				return false;
-
-			}
-		} else {
-			Activator.getDefault().logError(Constants.PLEASE_SELECT);
-			return false;
-
-		}
-		return true;
 	}
 
 	@Override

@@ -92,7 +92,7 @@ public class Utils {
 	}
 
 	/**
-	 * This method gets the project, which is currently selected.
+	 * This method gets the project that is currently selected.
 	 *
 	 * @return Currently selected project.
 	 */

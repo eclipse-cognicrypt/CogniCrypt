@@ -34,13 +34,14 @@ import org.clafer.ast.AstModel;
 import org.clafer.collection.Triple;
 import org.clafer.common.Check;
 import org.clafer.javascript.Javascript;
+import org.clafer.javascript.JavascriptFile;
 import org.clafer.objective.Objective;
 import org.clafer.scope.Scope;
 
 public class ClaferModel {
 
 	private String modelName;
-	Triple<AstModel, Scope, Objective[]> triple;
+	JavascriptFile jsFile;
 	private Map<String, AstConcreteClafer> constraintClafers;
 	// private ParseClafer pClafer = new ParseClafer();
 	ArrayList<AstConcreteClafer> propertiesList;
@@ -63,7 +64,7 @@ public class ClaferModel {
 	 * @return
 	 */
 	public Scope getScope() {
-		return triple.getSnd();
+		return jsFile.getScope();
 	}
 
 	/**
@@ -76,11 +77,12 @@ public class ClaferModel {
 		try {
 			File filename = new File(path);
 
-			triple = Javascript.readModel(filename, Javascript.newEngine());
+			jsFile = Javascript.readModel(filename, Javascript.newEngine());
 
 			this.setModelName("Cyrptography Task Configurator");
-			setTaskList(triple.getFst());
-			setEnumList(triple.getFst());
+			AstModel astModel = getModel();
+			setTaskList(astModel);
+			setEnumList(astModel);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -174,7 +176,7 @@ public class ClaferModel {
 	 * @return
 	 */
 	public AstModel getModel() {
-		return triple.getFst();
+		return jsFile.getModel();
 	}
 
 	/**

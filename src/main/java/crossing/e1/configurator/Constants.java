@@ -36,7 +36,7 @@ public class Constants {
 
 	// Input for Code Generation
 	public static final String folderOfXSLTemplates = "resources" + fileSeparator + "XSLTemplates" + fileSeparator + "JCA.xsl";
-	public static final String folderOfClaferInstance = "resources/ClaferModel" + fileSeparator + "claferInstance.xml";
+	public static final String folderOfClaferInstance = "resources" + fileSeparator + "ClaferModel" + fileSeparator + "claferInstance.xml";
 	public static final String NameOfTemporaryMethod = "run";
 
 	// Output of Code Generation

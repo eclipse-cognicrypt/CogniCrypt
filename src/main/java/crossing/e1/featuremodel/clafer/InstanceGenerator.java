@@ -133,7 +133,7 @@ public class InstanceGenerator {
 			basicModeHandler(main, map);
 			solver = ClaferCompiler.compile(model,
 					claferModel.getScope().toBuilder()
-							.defaultScope(Integer.parseInt(new ReadConfig().getValue(DEFAULT_SCOPE)))
+							//.defaultScope(Integer.parseInt(new ReadConfig().getValue(DEFAULT_SCOPE)))
 							.intHigh(Integer.parseInt(new ReadConfig().getValue(INT_HIGH)))
 							.intLow(Integer.parseInt(new ReadConfig().getValue(INT_LOW))));
 			while (this.solver.find()) {

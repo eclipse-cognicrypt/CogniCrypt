@@ -24,6 +24,7 @@ package crossing.e1.configurator.wizard.advanced;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+
 import org.clafer.ast.AstAbstractClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.jface.wizard.WizardPage;
@@ -33,6 +34,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+
 import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.ClaferModelUtils;

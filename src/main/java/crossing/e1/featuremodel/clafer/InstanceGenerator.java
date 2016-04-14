@@ -23,13 +23,13 @@ package crossing.e1.featuremodel.clafer;
 import static org.clafer.ast.Asts.$this;
 import static org.clafer.ast.Asts.constant;
 import static org.clafer.ast.Asts.equal;
+import static org.clafer.ast.Asts.global;
 import static org.clafer.ast.Asts.greaterThan;
 import static org.clafer.ast.Asts.greaterThanEqual;
 import static org.clafer.ast.Asts.join;
 import static org.clafer.ast.Asts.joinRef;
 import static org.clafer.ast.Asts.lessThan;
 import static org.clafer.ast.Asts.lessThanEqual;
-import static org.clafer.ast.Asts.global;
 
 import java.util.ArrayList;
 import java.util.HashMap;

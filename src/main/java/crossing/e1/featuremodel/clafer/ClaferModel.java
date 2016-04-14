@@ -31,11 +31,9 @@ import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstConstraint;
 import org.clafer.ast.AstModel;
-import org.clafer.collection.Triple;
 import org.clafer.common.Check;
 import org.clafer.javascript.Javascript;
 import org.clafer.javascript.JavascriptFile;
-import org.clafer.objective.Objective;
 import org.clafer.scope.Scope;
 
 public class ClaferModel {

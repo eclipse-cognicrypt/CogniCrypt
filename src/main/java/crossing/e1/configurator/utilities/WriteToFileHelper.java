@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /**
  * @author Ram Kamath
  *
  */
-
 package crossing.e1.configurator.utilities;
 
 import java.io.IOException;
@@ -30,15 +28,13 @@ import java.nio.file.StandardOpenOption;
 import crossing.e1.configurator.Activator;
 
 /**
- * A helper class which writes string content to a file and it will be saved
- * under project directory
+ * A helper class which writes string content to a file and it will be saved under project directory
  */
 public class WriteToFileHelper {
 
 	public int writeToFile(final String content, final String filename) {
 		try {
-			Files.write(Paths.get(filename), content.getBytes(Charset.defaultCharset()), StandardOpenOption.WRITE,
-					StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+			Files.write(Paths.get(filename), content.getBytes(Charset.defaultCharset()), StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e);
 			return 1;

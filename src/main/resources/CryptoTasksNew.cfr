@@ -1,0 +1,307 @@
+//enum Security
+abstract Security -> integer
+NoSecurity: Security = 0
+Broken: Security = 1
+Weak: Security = 2
+Medium: Security = 3
+Strong: Security = 4
+
+//enum Performance
+abstract Performance -> integer
+VerySlow: Performance = 1
+Slow: Performance = 2
+Fast: Performance = 3
+VeryFast: Performance = 4
+
+//enum TLS_Version
+abstract TLS_Version -> integer
+SSL2: TLS_Version = 1
+SSL3: TLS_Version = 2
+TLS1_0: TLS_Version = 3
+TLS1_1: TLS_Version = 4
+TLS1_2: TLS_Version = 5
+
+enum Padding = NoPadding | PKCS5Padding
+enum Mode = ECB | CBC | OFB 
+
+abstract Interface
+	security -> Security
+	performance -> Performance
+	classPerformance -> Performance  
+
+abstract Algorithm
+	name -> string
+	description -> string
+	symmCipher -> SymmetricBlockCipher ?
+	asymmCipher -> AsymmetricCipher ?
+	digesting -> Digest ?
+	signing -> DigitalSignatureAlgm ?
+	keyAg -> KeyAgreementAlgorithm ?
+	KeyDer -> KeyDerivationAlgorithm ?
+
+abstract Cipher : Interface
+
+abstract SymmetricCipher : Cipher
+	keySize -> integer
+	SymmEncryptionProperty
+	[classPerformance = Fast]
+
+abstract AsymmetricCipher: Cipher
+	AsEncryptionProperty
+	[classPerformance = VerySlow]
+
+abstract SymmetricBlockCipher : SymmetricCipher
+	mode -> Mode
+	padding -> Padding
+	[mode != ECB]
+	[mode = CBC => padding != NoPadding]
+
+abstract DigitalSignatureAlgm : Interface
+	SigningProperty
+	[classPerformance = VerySlow]
+
+abstract KeyAgreementAlgorithm : Interface
+	ExchangeAlgProperty
+	[classPerformance = Slow]
+
+abstract Digest : Interface
+	outputSize -> integer
+	DigestingProperty
+	[classPerformance = VeryFast]
+
+abstract KeyDerivationAlgorithm : Interface
+	outputSize -> integer ?
+	keyDerivProperty
+	[classPerformance = Slow]
+
+
+abstract Task
+    description -> string
+
+SymmetricBlockCipherAlgorithms
+	SBCAES128 : SymmetricBlockCipher
+		[keySize = 128]
+		[performance = VeryFast]
+		[security = Medium]
+	
+	AES128 : Algorithm
+		[name = "AES"]
+		[description = "Advanced Encryption Standard (AES) cipher"]s
+		[symmCipher = SBCAES128]
+		SymmEncryptionProperty
+
+
+	SBCAES192 : SymmetricBlockCipher
+		[keySize = 192]
+		[performance = Fast]
+		[security = Strong]
+
+	AES192 : Algorithm
+		[name = "AES"]
+		[description = "Advanced Encryption Standard (AES) cipher"]s
+		[symmCipher = SBCAES192]
+		SymmEncryptionProperty
+
+	SBCAES256 : SymmetricBlockCipher
+		[keySize = 256]
+		[performance = Fast]
+		[security = Strong]
+
+	AES256 : Algorithm
+		[name = "AES"]
+		[description = "Advanced Encryption Standard (AES) cipher"]s
+		[symmCipher = SBCAES256]
+		SymmEncryptionProperty
+
+DigestAlgorithms
+	DigestSHA256 : Digest
+		[outputSize = 256]
+		[security = Strong]
+		[performance = Fast]
+
+	SHA256: Algorithm
+		[description = "SHA-256"]
+		[name = "SHA-256 digest"]
+		[digesting = DigestSHA256]
+		DigestingProperty
+
+	DigestSHA384 : Digest
+		[outputSize = 384]
+		[security = Strong]
+		[performance = VerySlow]
+
+	SHA384: Algorithm
+		[description = "SHA-384"]
+		[name = "SHA-384 digest"]
+		[digesting = DigestSHA384]
+		DigestingProperty
+
+	SHA1: Algorithm
+		[name = "SHA-1"]
+		[description = "SHA-1 digest"]
+		[digesting = DigestSHA1]
+		DigestingProperty
+
+	DigestSHA1 : Digest
+		[performance = VeryFast]
+		[security = Weak]
+		[outputSize = 160]
+
+	MD5: Algorithm
+		[name = "MD5"]
+		[description = "MD5 digest"]
+		[digesting = DigestMD5]
+		DigestingProperty
+
+	DigestMD5 : Digest
+		[performance = VeryFast]
+		[security = Broken]
+		[outputSize = 128]		
+
+KeyAgreementAlgorithms
+	ECDHE : Algorithm 
+		[name = "ECDHE"]
+		[description = "Key exchange algorithm"]
+		[keyAg = KeyAlgECDHE]
+		ExchangeAlgProperty
+
+	KeyAlgECDHE : KeyAgreementAlgorithm
+		[security = Strong]
+		[performance = Fast]
+
+DigitalSigAlgms
+	ECDSA : Algorithm
+		[name = "ECDSA"]
+		[description = "Digital signature"]
+		[signing = DSAECDSA]
+		SigningProperty
+
+	DSAECDSA : DigitalSignatureAlgm
+		[security = Medium]
+		[performance = Fast]
+
+
+KeyDerivationAlgorithms
+	pbkdf2 : Algorithm
+		[name = "PBKDF2"]
+		[description = "PBKDF2 key derivation"]
+		[KeyDer = pbkdf2KDA]
+		keyDerivProperty
+
+	pbkdf2KDA : KeyDerivationAlgorithm
+		[performance = Slow]
+		[security = Medium]	
+
+	scrypt: Algorithm
+		[name = "scrypt"]
+		[description = "Scrypt password-based key derivation"]
+		[KeyDer = scryptKDA]
+		keyDerivProperty
+		
+	scryptKDA: KeyDerivationAlgorithm
+		[performance = VerySlow]
+		[security = Strong]
+
+	bcrypt: Algorithm
+		[name = "bcrypt"]
+		[description = "Bcrypt password-based key derivation"]
+		[KeyDer = bcryptKDA]
+		keyDerivProperty
+		
+	bcryptKDA : KeyDerivationAlgorithm
+		[performance = Slow]
+		[outputSize = 192]
+		[security = Medium]
+
+
+
+RSAAlgorithms
+	SigningRSA : DigitalSignatureAlgm
+		[security = Strong]
+		[performance = Slow]
+
+	EncryptingRSA : AsymmetricCipher
+		[security = Strong]
+		[performance = VerySlow]
+
+	KeyAlgRSA : KeyAgreementAlgorithm
+		[security = Medium]
+		[performance = Slow]
+
+	RSA : Algorithm
+		[name = "RSA"]
+		[description = "RSA Algm"]
+		[signing = SigningRSA]
+		[asymmCipher = EncryptingRSA]
+		[keyAg = KeyAlgRSA]
+		SigningProperty
+		AsEncryptionProperty
+		ExchangeAlgProperty
+
+abstract CipherSuite
+	tlsProtocol -> TLS_Version
+	cipher -> Algorithm ? SymmEncryptionProperty
+	keyAgreement -> Algorithm ? ExchangeAlgProperty
+	signature -> Algorithm ? SigningProperty
+	messageAuth -> Algorithm ? DigestingProperty
+	[messageAuth = SHA384 || messageAuth = SHA256 => tlsProtocol >= TLS1_2]
+
+	security -> Security    
+	sec-> integer 
+	[ sec = min(keyAgreement.keyAg.security, messageAuth.digesting.security, signature.signing.security, cipher.symmCipher.security) ]
+	[ sec = messageAuth.digesting.security => security = messageAuth.digesting.security || sec = keyAgreement.keyAg.security => security = keyAgreement.keyAg.security || 
+	  sec = cipher.symmCipher.security => security = cipher.symmCipher.security || sec = signature.signing.security => security = signature.signing.security]
+
+	performance -> Performance
+	classPerformance -> integer 
+	[classPerformance = min(keyAgreement.keyAg.classPerformance, signature.signing.classPerformance, cipher.symmCipher.classPerformance, messageAuth.digesting.classPerformance)]
+	[classPerformance = messageAuth.digesting.classPerformance => performance = messageAuth.digesting.performance || classPerformance = keyAgreement.keyAg.classPerformance => performance = keyAgreement.keyAg.performance ||
+	classPerformance = signature.signing.classPerformance => performance = signature.signing.performance || classPerformance = cipher.symmCipher.classPerformance => performance = cipher.symmCipher.performance]
+
+TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384 : CipherSuite
+	[cipher = AES256]
+	[cipher.symmCipher.mode = CBC]
+	[keyAgreement = ECDHE]
+	[signature = RSA]
+	[messageAuth = SHA384]
+
+TLS_RSA_WITH_AES_256_CBC_SHA256 : CipherSuite
+	[cipher = AES256]
+	[cipher.symmCipher.mode = CBC]
+	[tlsProtocol >= TLS1_2]
+	[signature = RSA]
+	[messageAuth = SHA256]
+	[keyAgreement = RSA]
+
+TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 : CipherSuite
+	[cipher = AES128]
+	[cipher.symmCipher.mode = CBC]
+	[signature = RSA]
+	[messageAuth = SHA256]
+	[keyAgreement = RSA]
+
+SSL_RSA_WITH_NULL_MD5 : CipherSuite
+	[signature = RSA]
+	[messageAuth = MD5]
+	[keyAgreement = RSA]
+	[security = NoSecurity]
+
+SecureCommunication : Task  
+	[description = "Communicate over a secure channel"]
+	ciphersuites -> CipherSuite 1..*
+	[all suite : ciphersuites | suite.tlsProtocol >= TLS1_2 && suite.security > Medium]	
+
+SymmetricEncryption : Task
+	[description = "Encrypt data using a secret key"]
+	cipher -> SymmetricBlockCipher
+
+SecurePassword : Task
+	[description = "Represent password in a secure way for storage"]
+	kda -> KeyDerivationAlgorithm
+	//[no Ciphers]
+	
+PasswordBasedEncryption : Task
+	[description = "Encrypt data using a given password"]
+	kda -> KeyDerivationAlgorithm
+	cipher -> SymmetricBlockCipher
+	[cipher.keySize = kda.outputSize]

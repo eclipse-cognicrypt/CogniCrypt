@@ -1,5 +1,7 @@
+abstract Enum
+
 //enum Security
-abstract Security -> integer
+abstract Security : Enum -> integer
 NoSecurity: Security = 0
 Broken: Security = 1
 Weak: Security = 2
@@ -7,22 +9,30 @@ Medium: Security = 3
 Strong: Security = 4
 
 //enum Performance
-abstract Performance -> integer
+abstract Performance : Enum -> integer
 VerySlow: Performance = 1
 Slow: Performance = 2
 Fast: Performance = 3
 VeryFast: Performance = 4
 
 //enum TLS_Version
-abstract TLS_Version -> integer
+abstract TLS_Version : Enum  -> integer
 SSL2: TLS_Version = 1
 SSL3: TLS_Version = 2
 TLS1_0: TLS_Version = 3
 TLS1_1: TLS_Version = 4
 TLS1_2: TLS_Version = 5
 
-enum Padding = NoPadding | PKCS5Padding
-enum Mode = ECB | CBC | OFB 
+//enum Padding
+abstract Padding: Enum 
+NoPadding : Padding
+PKCS5Padding : Padding
+
+//enum Mode
+abstract Mode : Enum
+ECB : Mode
+CBC : Mode
+OFB : Mode
 
 abstract Interface
 	security -> Security

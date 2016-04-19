@@ -121,7 +121,7 @@ public class ComplexWidget {
 			@Override
 			public void selectionChanged(SelectionChangedEvent arg0) {
 				status = true;
-				String selection = valuesCombo.getStructuredSelection().toString().replace('[', ' ').replace(']', ' ')
+				String selection = valuesCombo.getSelection().toString().replace('[', ' ').replace(']', ' ')
 						.trim();
 				for (AstClafer property : claferProperty) {
 					if (selection.equals(ClaferModelUtils.removeScopePrefix(property.getName()))) {

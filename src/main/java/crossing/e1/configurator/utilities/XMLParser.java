@@ -92,12 +92,20 @@ public class XMLParser implements Labels {
 					&& inst.getRef().getClass().toString().contains(Constants.STRING) == false
 					&& inst.getRef().getClass().toString().contains(Constants.BOOLEAN) == false) {
 				value += displayInstanceXML((InstanceClafer) inst.getRef(), "");
-			} else if (inst.hasRef()
-					&& PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())) {
-				// For group properties
-				return "\t<" + ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName()) + ">"
-						+ ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", "") + "</"
-						+ ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName()) + ">\n";
+			} else if(PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())){
+				
+				if(inst.hasRef()){
+					// For group properties
+					return "\t<" + ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName()) + ">"
+							+ ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", "") + "</"
+							+ ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName()) + ">\n";
+				}else{
+					//enums that don't have a reference type (e.g., Mode, Padding etc)
+					
+					return "\t<" + ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName()) + ">"
+					+ ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", "") + "</"
+					+ ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName()) + ">\n";
+				}
 			} else {
 				if (inst.hasRef()) {
 					return "\t<" + ClaferModelUtils.removeScopePrefix(inst.getType().getName()) + ">"
@@ -174,12 +182,21 @@ public class XMLParser implements Labels {
 					&& inst.getRef().getClass().toString().contains(Constants.STRING) == false
 					&& inst.getRef().getClass().toString().contains(Constants.BOOLEAN) == false) {
 				value += getInstancePropertiesDetails((InstanceClafer) inst.getRef(), "");
-			} else if (inst.hasRef()
-					&& PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())) {
-				// For group properties
-				return "\t"+ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName()) + ":"
-						+ ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", "")
+			} else if(PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())){
+				
+				if(inst.hasRef()){
+					// For group properties
+					return "\t"+ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName()) + ":"
+							+ ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", "")
+							+ Constants.lineSeparator;
+				}else{
+					//enums that don't have a reference type (e.g., Mode, Padding etc)
+					return "\t"
+						+ ClaferModelUtils.removeScopePrefix(
+								((AstConcreteClafer) inst.getType()).getSuperClafer().getName())
+						+ " : " + ClaferModelUtils.removeScopePrefix(inst.getType().getName())
 						+ Constants.lineSeparator;
+				}
 			} else {
 				if (inst.hasRef()) {
 					return "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName()) + " : "

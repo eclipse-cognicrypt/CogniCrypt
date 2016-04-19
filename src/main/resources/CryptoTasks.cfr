@@ -14,8 +14,16 @@ Slow: Performance = 2
 Fast: Performance = 3
 VeryFast: Performance = 4
 
-enum Padding = NoPadding | PKCS5Padding
-enum Mode = ECB | CBC | OFB
+//enum Padding
+abstract Padding: Enum 
+NoPadding : Padding
+PKCS5Padding : Padding
+
+//enum Mode
+abstract Mode : Enum
+ECB : Mode
+CBC : Mode
+OFB : Mode
 
 abstract Algorithm
     name -> string

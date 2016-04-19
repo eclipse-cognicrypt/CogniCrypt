@@ -134,7 +134,6 @@ public class ClaferModel {
 		for (AstAbstractClafer object : model.getAbstracts()) {
 			if (object.getName().contains("Enum") == true) {
 				for (AstClafer clafer : object.getSubs()) {
-
 					/**
 					 * construct a map of tasks, key is a clafer description and
 					 * value is actual clafer. Key will be used in Wizard, as an

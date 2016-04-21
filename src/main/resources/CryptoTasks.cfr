@@ -83,8 +83,8 @@ Ciphers
 //for easier viewing/collapsing etc.
 DigestAlgorithms
 	md5: Digest
+		[name = "MD5"]
 		[description = "MD5 digest"]
-		[name = "MD5 digest"]
 		[performance = VeryFast]
 		[security = Broken]
 		[outputSize = 128]
@@ -97,8 +97,8 @@ DigestAlgorithms
 		[outputSize = 160]
 	
 	sha_256: Digest
-		[description = "SHA-256"]
-		[name = "SHA-256 digest"]
+		[name = "SHA-256"]
+		[description = "SHA-256 digest"]
 		[outputSize = 256 ]
 		[security = Strong]
 		[performance = Slow]	

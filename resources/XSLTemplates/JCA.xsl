@@ -54,7 +54,7 @@ public class KeyDeriv {
 </xsl:result-document>
 </xsl:if>
 
-<xsl:if test="//task[@description='Encrypt data based on password']">
+<xsl:if test="//task[@description='PasswordBasedEncryption']">
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {

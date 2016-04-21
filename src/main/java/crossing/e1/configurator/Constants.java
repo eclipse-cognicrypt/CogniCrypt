@@ -35,14 +35,15 @@ public class Constants {
 	public static final String XML_FILE_NAME = "encryptXmlPath";
 
 	// Input for Code Generation
-	public static final String folderOfXSLTemplates = "resources" + fileSeparator + "XSLTemplates" + fileSeparator + "JCA.xsl";
-	public static final String folderOfClaferInstance = "resources" + fileSeparator + "ClaferModel" + fileSeparator + "claferInstance.xml";
+	public static final String pathToXSLFile = "resources" + fileSeparator + "XSLTemplates" + fileSeparator + "JCA.xsl";
+	public static final String pathToClaferInstanceFolder = "resources" + fileSeparator + "ClaferModel" + fileSeparator;
+	public static final String pathToClaferInstanceFile = "claferInstance.xml";
 	public static final String NameOfTemporaryMethod = "run";
 
 	// Output of Code Generation
 	public static final String AdditionalOutputFile = "Output.java";
-	public static final String Packagname = "Crypto";
-	public static final String CodeGenerationCallFile = fileSeparator + Constants.Packagname + fileSeparator + AdditionalOutputFile;
+	public static final String PackageName = "Crypto";
+	public static final String CodeGenerationCallFile = fileSeparator + Constants.PackageName + fileSeparator + AdditionalOutputFile;
 
 	// Error Messages
 	public static final String NoFileOpenedErrorMessage = "There is no file opened to generate the source code in. Will generate output file instead.";
@@ -56,12 +57,23 @@ public class Constants {
 	public static final String PLEASE_SELECT = "Please select project directory to launch the configurator";
 
 	public static final String JAVA = "java";
-	public static final String ALGORITHM = "Algorithm :";
+	public static final String ALGORITHM = "algorithm";
 	public static final String ADVANCED_MODE = "Advanced Mode";
 
+	public static final String xmlPackage = "<Package>" + PackageName + "</Package>";
+	public static final String xmlimports = "<Imports>" + lineSeparator + "<Import>java.security.InvalidAlgorithmParameterException</Import>" + lineSeparator +
+		"<Import>java.security.InvalidKeyException</Import>" + lineSeparator + "<Import>java.security.NoSuchAlgorithmException</Import>" +
+		"<Import>javax.crypto.SecretKey</Import>" + lineSeparator + "<Import>javax.crypto.BadPaddingException</Import>" + lineSeparator +
+		"<Import>javax.crypto.Cipher</Import>" + lineSeparator + "<Import>javax.crypto.IllegalBlockSizeException</Import>" + lineSeparator +
+		"<Import>javax.crypto.NoSuchPaddingException</Import>" + lineSeparator + "<Import>java.security.SecureRandom</Import>" + lineSeparator +
+		"<Import>javax.crypto.spec.IvParameterSpec</Import>" + lineSeparator + "<Import>javax.crypto.spec.SecretKeySpec</Import>" + lineSeparator +
+		"<Import>java.security.spec.InvalidKeySpecException</Import>" + lineSeparator + "</Imports>";
+	
 	// Types
 	public static final String INTEGER = "Integer";
 	public static final String STRING = "String";
 	public static final String BOOLEAN = "Boolean";
+	
+	
 
 }

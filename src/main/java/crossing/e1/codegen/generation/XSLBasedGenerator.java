@@ -94,8 +94,8 @@ public class XSLBasedGenerator {
 		}
 		try {
 			// Check whether directories and templates/model exist
-			final File claferOutputFiles = Utils.resolveResourcePathToFile(Constants.folderOfClaferInstance);
-			final File xslFiles = Utils.resolveResourcePathToFile(Constants.folderOfXSLTemplates);
+			final File claferOutputFiles = Utils.resolveResourcePathToFile(Constants.pathToClaferInstanceFolder + Constants.fileSeparator + Constants.pathToClaferInstanceFile);
+			final File xslFiles = Utils.resolveResourcePathToFile(Constants.pathToXSLFile);
 			if (!Files.exists(claferOutputFiles.toPath()) || !Files.exists(xslFiles.toPath())) {
 				Activator.getDefault().logError(Constants.FilesDoNotExistErrorMessage);
 				return false;
@@ -267,7 +267,7 @@ public class XSLBasedGenerator {
 	private void organizeImports(final IEditorPart editor) throws CoreException {
 		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
 
-		final ICompilationUnit[] compilationUnitsInCryptoPackage = this.project.getPackagesOfProject(Constants.Packagname)
+		final ICompilationUnit[] compilationUnitsInCryptoPackage = this.project.getPackagesOfProject(Constants.PackageName)
 				.getCompilationUnits();
 		for (int i = 0; i < compilationUnitsInCryptoPackage.length; i++) {
 			organizeImportsActionForAllFilesTouchedDuringGeneration.run(compilationUnitsInCryptoPackage[i]);

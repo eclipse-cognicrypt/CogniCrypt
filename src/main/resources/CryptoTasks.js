@@ -124,8 +124,8 @@ c0_DES.addConstraint(equal(joinRef(join($this(), c0_performance)), global(c0_Ver
 c0_DES.addConstraint(equal(joinRef(join($this(), c0_security)), global(c0_Broken)));
 c0_DES.addConstraint(equal(joinRef(join($this(), c0_keySize)), constant(56)));
 c0_md5.extending(c0_Digest);
+c0_md5.addConstraint(equal(joinRef(join($this(), c0_name)), constant("\"MD5\"")));
 c0_md5.addConstraint(equal(joinRef(join($this(), c0_description)), constant("\"MD5 digest\"")));
-c0_md5.addConstraint(equal(joinRef(join($this(), c0_name)), constant("\"MD5 digest\"")));
 c0_md5.addConstraint(equal(joinRef(join($this(), c0_performance)), global(c0_VeryFast)));
 c0_md5.addConstraint(equal(joinRef(join($this(), c0_security)), global(c0_Broken)));
 c0_md5.addConstraint(equal(joinRef(join($this(), c0_outputSize)), constant(128)));
@@ -136,8 +136,8 @@ c0_sha_1.addConstraint(equal(joinRef(join($this(), c0_performance)), global(c0_V
 c0_sha_1.addConstraint(equal(joinRef(join($this(), c0_security)), global(c0_Weak)));
 c0_sha_1.addConstraint(equal(joinRef(join($this(), c0_outputSize)), constant(160)));
 c0_sha_256.extending(c0_Digest);
-c0_sha_256.addConstraint(equal(joinRef(join($this(), c0_description)), constant("\"SHA-256\"")));
-c0_sha_256.addConstraint(equal(joinRef(join($this(), c0_name)), constant("\"SHA-256 digest\"")));
+c0_sha_256.addConstraint(equal(joinRef(join($this(), c0_name)), constant("\"SHA-256\"")));
+c0_sha_256.addConstraint(equal(joinRef(join($this(), c0_description)), constant("\"SHA-256 digest\"")));
 c0_sha_256.addConstraint(equal(joinRef(join($this(), c0_outputSize)), constant(256)));
 c0_sha_256.addConstraint(equal(joinRef(join($this(), c0_security)), global(c0_Strong)));
 c0_sha_256.addConstraint(equal(joinRef(join($this(), c0_performance)), global(c0_Slow)));

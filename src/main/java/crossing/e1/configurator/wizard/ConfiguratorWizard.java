@@ -1,4 +1,3 @@
-
 /**
  * Copyright 2015 Technische Universität Darmstadt
  *
@@ -14,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /**
  * @author Ram Kamath, Sarah Nadi
  *
  */
 package crossing.e1.configurator.wizard;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -58,7 +59,6 @@ public class ConfiguratorWizard extends Wizard {
 
 	public ConfiguratorWizard() {
 		super();
-
 		// Set the Look and Feel of the application to the operating
 		// system's look and feel.
 		try {
@@ -66,7 +66,6 @@ public class ConfiguratorWizard extends Wizard {
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			Activator.getDefault().logError(e);
 		}
-
 		this.claferModel = new ClaferModel(new ReadConfig().getPathFromConfig("claferPath"));
 		setWindowTitle("Cryptography Task Configurator");
 	}
@@ -89,7 +88,6 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public IWizardPage getNextPage(IWizardPage currentPage) {
-
 		if (currentPage == this.taskListPage && this.taskListPage.canProceed()) {
 			if (this.taskListPage.isAdvancedMode()) {
 				this.valueListPage = new ValueSelectionPage(null, this.claferModel);
@@ -102,8 +100,7 @@ public class ConfiguratorWizard extends Wizard {
 				 * Create Questions object
 				 */
 				this.quest = new QuestionsBeginner();
-				this.quest.init(PropertiesMapperUtil.getTaskLabelsMap().get(this.taskListPage.getValue()).getName(),
-						Constants.XML_FILE_NAME);
+				this.quest.init(PropertiesMapperUtil.getTaskLabelsMap().get(this.taskListPage.getValue()).getName(), Constants.XML_FILE_NAME);
 				if (this.quest.hasQuestions()) {
 					this.valueListPage = new DisplayQuestions(this.quest);
 				}
@@ -111,20 +108,16 @@ public class ConfiguratorWizard extends Wizard {
 			if (this.valueListPage != null) {
 				addPage(this.valueListPage);
 			}
-
 			return this.valueListPage;
 		}
-
 		/**
-		 * If current page is either question or properties page (in Advanced mode) check title. Maintain uniform title
-		 * for second wizard page of the wizard
+		 * If current page is either question or properties page (in Advanced mode) check title. Maintain uniform title for second wizard page of the wizard
 		 *
 		 */
 		else if (currentPage.getTitle().equals(Labels.PROPERTIES)) {
 			InstanceGenerator instanceGenerator = new InstanceGenerator("claferPath");
 			instanceGenerator.setTaskName(this.taskListPage.getValue());
 			instanceGenerator.setNoOfInstances(0);
-
 			if (this.taskListPage.isAdvancedMode() && ((ValueSelectionPage) this.valueListPage).getPageStatus() == true) {
 				instanceGenerator.generateInstancesAdvancedUserMode(((ValueSelectionPage) currentPage).getConstraints());
 				if (new Validator().validate(instanceGenerator)) {
@@ -136,7 +129,6 @@ public class ConfiguratorWizard extends Wizard {
 				// running in beginner mode
 				((DisplayQuestions) currentPage).setMap(((DisplayQuestions) currentPage).getSelection(), this.claferModel);
 				instanceGenerator.generateInstances(((DisplayQuestions) currentPage).getMap());
-
 				if (new Validator().validate(instanceGenerator)) {
 					this.instanceListPage = new InstanceListPage(instanceGenerator);
 					addPage(this.instanceListPage);
@@ -149,14 +141,19 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		// Print the result to the console
 		boolean ret = this.instanceListPage.isPageComplete();
-		final WriteToFileHelper write = new WriteToFileHelper();
-		write.writeToFile(new XMLParser().displayInstanceValues(this.instanceListPage.getValue(), ""),
-				this.path.toString() + Constants.PATH_FOR_CONFIG_XML);
-		// Generate code template
-		ret &= this.codeGeneration.generateCodeTemplates();
+		try {
+			// Print the result to the console
+			final WriteToFileHelper write = new WriteToFileHelper();
+			write.writeToFile(new XMLParser().displayInstanceValues(this.instanceListPage.getValue(), ""), Utils.resolveResourcePathToFile(Constants.pathToClaferInstanceFolder).getAbsolutePath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile);
+			// Generate code template
+			ret &= this.codeGeneration.generateCodeTemplates();
+		} catch (URISyntaxException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		
 		return ret;
-
 	}
 }

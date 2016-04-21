@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /**
  * @author Ram Kamath
  *
@@ -34,6 +33,7 @@ import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
  *
  */
 public class XMLParser implements Labels {
+
 	/**
 	 *
 	 * @param inst
@@ -42,30 +42,26 @@ public class XMLParser implements Labels {
 	 */
 	public String displayInstanceValues(final InstanceClafer inst, String value) {
 		InstanceClafer childInstance = null;
-
 		if (inst.hasChildren()) {
 			childInstance = (InstanceClafer) inst.getChildren()[0].getRef();
 			final String taskName = childInstance.getType().getName();
-			value = "<Task description=\"" + ClaferModelUtils.removeScopePrefix(taskName) + "\">\n";
-
+			value = "<task description=\"" + ClaferModelUtils
+				.removeScopePrefix(taskName) + "\">" + Constants.lineSeparator + Constants.lineSeparator + Constants.xmlPackage + Constants.lineSeparator + Constants.xmlimports;
 		} else {
-			value = "<Task>\n";
+			value = "<task>" + Constants.lineSeparator;
 		}
 		if (childInstance != null && childInstance.hasChildren()) {
 			for (final InstanceClafer in : childInstance.getChildren()) {
 				if (!in.getType().getRef().getTargetType().isPrimitive()) {
-					value += "<" + Constants.ALGORITHM + " type=\""
-							+ ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName())
-							+ "\"> \n";
+					value += "<" + Constants.ALGORITHM + " type=\"" + ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()) + "\"> \n";
 					value += displayInstanceXML(in, "");
 					value += "</" + Constants.ALGORITHM + "> \n";
 				} else {
 					value += displayInstanceXML(in, "");
 				}
 			}
-
 		}
-		value += "</Task>";
+		value += "</task>";
 		return value;
 	}
 
@@ -86,41 +82,29 @@ public class XMLParser implements Labels {
 				for (final InstanceClafer in : inst.getChildren()) {
 					value += displayInstanceXML(in, "");
 				}
-
-			} else if (inst.hasRef() && inst.getType().isPrimitive() != true
-					&& inst.getRef().getClass().toString().contains(Constants.INTEGER) == false
-					&& inst.getRef().getClass().toString().contains(Constants.STRING) == false
-					&& inst.getRef().getClass().toString().contains(Constants.BOOLEAN) == false) {
+			} else if (inst.hasRef() && inst.getType().isPrimitive() != true && inst.getRef().getClass().toString().contains(Constants.INTEGER) == false && inst.getRef().getClass()
+				.toString().contains(Constants.STRING) == false && inst.getRef().getClass().toString().contains(Constants.BOOLEAN) == false) {
 				value += displayInstanceXML((InstanceClafer) inst.getRef(), "");
-			} else if(PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())){
-				
-				if(inst.hasRef()){
+			} else if (PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())) {
+				String superClaferName = ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName());
+				superClaferName = Character.toLowerCase(superClaferName.charAt(0)) + superClaferName.substring(1);
+				if (inst.hasRef()) {
 					// For group properties
-					return "\t<" + ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName()) + ">"
-							+ ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", "") + "</"
-							+ ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName()) + ">\n";
-				}else{
+					return "\t<" + superClaferName + ">" + ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", "") + "</" + superClaferName + ">\n";
+				} else {
 					//enums that don't have a reference type (e.g., Mode, Padding etc)
-					
-					return "\t<" + ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName()) + ">"
-					+ ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", "") + "</"
-					+ ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName()) + ">\n";
+					return "\t<" + superClaferName + ">" + ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", "") + "</" + superClaferName + ">\n";
 				}
 			} else {
+				String instName = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
+				instName = Character.toLowerCase(instName.charAt(0)) + instName.substring(1);
 				if (inst.hasRef()) {
-					return "\t<" + ClaferModelUtils.removeScopePrefix(inst.getType().getName()) + ">"
-							+ inst.getRef().toString().replace("\"", "") + "</"
-							+ ClaferModelUtils.removeScopePrefix(inst.getType().getName()) + ">\n";
+					return "\t<" + instName + ">" + inst.getRef().toString().replace("\"", "") + "</" + instName + ">\n";
 				} else {
-					return "\t<"
-							+ ClaferModelUtils
-									.removeScopePrefix(((AstConcreteClafer) inst.getType()).getParent().getName())
-							+ ">"
-							+ ClaferModelUtils.removeScopePrefix(inst.getType().getName()) + "</" + ClaferModelUtils
-									.removeScopePrefix(((AstConcreteClafer) inst.getType()).getParent().getName())
-							+ ">\n";
+					String instparentName = ClaferModelUtils.removeScopePrefix(((AstConcreteClafer) inst.getType()).getParent().getName());
+					instparentName = Character.toLowerCase(instparentName.charAt(0)) + instparentName.substring(1);
+					return "\t<" + instparentName + ">" + instName + "</" + instparentName + ">\n";
 				}
-
 			}
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e);
@@ -136,25 +120,20 @@ public class XMLParser implements Labels {
 	 */
 	public String getInstanceProperties(final InstanceClafer inst, String value) {
 		InstanceClafer instan = null;
-
 		if (inst.hasChildren()) {
 			instan = (InstanceClafer) inst.getChildren()[0].getRef();
 		}
 		if (instan != null && instan.hasChildren()) {
 			for (final InstanceClafer in : instan.getChildren()) {
 				if (!in.getType().getRef().getTargetType().isPrimitive()) {
-					value += Constants.ALGORITHM + " :"
-							+ ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName())
-							+ Constants.lineSeparator;
+					value += Constants.ALGORITHM + " :" + ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()) + Constants.lineSeparator;
 					value += getInstancePropertiesDetails(in, "");
 					value += Constants.lineSeparator;
 				} else {
 					value += getInstancePropertiesDetails(in, "");
 				}
 			}
-
 		}
-
 		return value;
 	}
 
@@ -176,39 +155,26 @@ public class XMLParser implements Labels {
 				for (final InstanceClafer in : inst.getChildren()) {
 					value += getInstancePropertiesDetails(in, "");
 				}
-
-			} else if (inst.hasRef() && inst.getType().isPrimitive() != true
-					&& inst.getRef().getClass().toString().contains(Constants.INTEGER) == false
-					&& inst.getRef().getClass().toString().contains(Constants.STRING) == false
-					&& inst.getRef().getClass().toString().contains(Constants.BOOLEAN) == false) {
+			} else if (inst.hasRef() && inst.getType().isPrimitive() != true && inst.getRef().getClass().toString().contains(Constants.INTEGER) == false && inst.getRef().getClass()
+				.toString().contains(Constants.STRING) == false && inst.getRef().getClass().toString().contains(Constants.BOOLEAN) == false) {
 				value += getInstancePropertiesDetails((InstanceClafer) inst.getRef(), "");
-			} else if(PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())){
-				
-				if(inst.hasRef()){
+			} else if (PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())) {
+				if (inst.hasRef()) {
 					// For group properties
-					return "\t"+ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName()) + ":"
-							+ ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", "")
-							+ Constants.lineSeparator;
-				}else{
+					return "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName()) + ":" + ClaferModelUtils
+						.removeScopePrefix(inst.getType().toString()).replace("\"", "") + Constants.lineSeparator;
+				} else {
 					//enums that don't have a reference type (e.g., Mode, Padding etc)
-					return "\t"
-						+ ClaferModelUtils.removeScopePrefix(
-								((AstConcreteClafer) inst.getType()).getSuperClafer().getName())
-						+ " : " + ClaferModelUtils.removeScopePrefix(inst.getType().getName())
-						+ Constants.lineSeparator;
+					return "\t" + ClaferModelUtils.removeScopePrefix(((AstConcreteClafer) inst.getType()).getSuperClafer().getName()) + " : " + ClaferModelUtils
+						.removeScopePrefix(inst.getType().getName()) + Constants.lineSeparator;
 				}
 			} else {
 				if (inst.hasRef()) {
-					return "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName()) + " : "
-							+ inst.getRef().toString().replace("\"", "") + Constants.lineSeparator;
+					return "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName()) + " : " + inst.getRef().toString().replace("\"", "") + Constants.lineSeparator;
 				} else {
-					return "\t"
-							+ ClaferModelUtils.removeScopePrefix(
-									((AstConcreteClafer) inst.getType()).getParent().getName())
-							+ " : " + ClaferModelUtils.removeScopePrefix(inst.getType().getName())
-							+ Constants.lineSeparator;
+					return "\t" + ClaferModelUtils.removeScopePrefix(((AstConcreteClafer) inst.getType()).getParent().getName()) + " : " + ClaferModelUtils
+						.removeScopePrefix(inst.getType().getName()) + Constants.lineSeparator;
 				}
-
 			}
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e);
@@ -222,13 +188,10 @@ public class XMLParser implements Labels {
 	 * @return
 	 */
 	private boolean getSuperClaferName(final AstClafer astClafer) {
-		if (astClafer.getSuperClafer() != null) {
-			getSuperClaferName(astClafer.getSuperClafer());
-		}
+		if (astClafer.getSuperClafer() != null) {}
 		if (astClafer.getName().contains("_" + Constants.ALGORITHM)) {
 			return true;
 		}
 		return false;
-
 	}
 }

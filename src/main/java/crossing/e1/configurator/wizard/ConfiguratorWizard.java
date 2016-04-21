@@ -90,8 +90,7 @@ public class ConfiguratorWizard extends Wizard {
 				try {
 					this.quest.init(PropertiesMapperUtil.getTaskLabelsMap().get(this.taskListPage.getValue()).getName(), Utils.resolveResourcePathToFile(Constants.XML_FILE_NAME).getAbsolutePath());
 				} catch (URISyntaxException | IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Activator.getDefault().logError(e);
 				}
 				if (this.quest.hasQuestions()) {
 					this.valueListPage = new DisplayQuestions(this.quest);
@@ -130,11 +129,8 @@ public class ConfiguratorWizard extends Wizard {
 					}
 				}
 			} catch (URISyntaxException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Activator.getDefault().logError(e);
 			}
-			
-			
 		}
 		return currentPage;
 	}
@@ -149,8 +145,7 @@ public class ConfiguratorWizard extends Wizard {
 			// Generate code template
 			ret &= this.codeGeneration.generateCodeTemplates();
 		} catch (URISyntaxException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Activator.getDefault().logError(e);
 			return false;
 		}
 		

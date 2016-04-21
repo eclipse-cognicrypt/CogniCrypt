@@ -24,7 +24,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import crossing.e1.configurator.utilities.ReadConfig;
+import crossing.e1.configurator.Constants;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
@@ -33,7 +33,6 @@ import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
  *
  */
 public class ClaferModelTest {
-	private final String path = new ReadConfig().getPathFromConfig("claferPath");
 	private final String taskDescription = "Encrypt data using a secret key";
 	ClaferModel claferModel;
 
@@ -42,7 +41,7 @@ public class ClaferModelTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		this.claferModel = new ClaferModel(this.path);
+		this.claferModel = new ClaferModel(Constants.claferPath);
 	}
 
 	/**

@@ -21,7 +21,6 @@ import org.junit.Test;
 
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Question;
-import crossing.e1.configurator.utilities.ReadConfig;
 import crossing.e1.configurator.wizard.beginner.QuestionsBeginner;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceClaferHash;
@@ -49,8 +48,9 @@ public class InstanceGeneratorTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		this.claferModel = new ClaferModel(new ReadConfig().getPathFromConfig(JS_PATH));
-		this.instanceGenerator = new InstanceGenerator(JS_PATH);
+		String path = "src/main/resources/testClafer.js";
+		this.claferModel = new ClaferModel(path);
+		this.instanceGenerator = new InstanceGenerator(path);
 		this.quest = new QuestionsBeginner();
 
 	}

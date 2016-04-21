@@ -36,7 +36,6 @@ import crossing.e1.codegen.generation.XSLBasedGenerator;
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.utilities.Labels;
-import crossing.e1.configurator.utilities.ReadConfig;
 import crossing.e1.configurator.utilities.Validator;
 import crossing.e1.configurator.utilities.WriteToFileHelper;
 import crossing.e1.configurator.utilities.XMLParser;
@@ -53,7 +52,7 @@ public class ConfiguratorWizard extends Wizard {
 	protected WizardPage valueListPage;
 	protected InstanceListPage instanceListPage;
 	protected QuestionsBeginner quest;
-	private final ClaferModel claferModel;
+	private ClaferModel claferModel;
 	private IPath path = null;
 	private final XSLBasedGenerator codeGeneration = new XSLBasedGenerator();
 
@@ -63,10 +62,10 @@ public class ConfiguratorWizard extends Wizard {
 		// system's look and feel.
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+			this.claferModel = new ClaferModel(Utils.resolveResourcePathToFile(Constants.claferPath).getAbsolutePath());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | URISyntaxException | IOException e) {
 			Activator.getDefault().logError(e);
 		}
-		this.claferModel = new ClaferModel(new ReadConfig().getPathFromConfig("claferPath"));
 		setWindowTitle("Cryptography Task Configurator");
 	}
 
@@ -100,7 +99,12 @@ public class ConfiguratorWizard extends Wizard {
 				 * Create Questions object
 				 */
 				this.quest = new QuestionsBeginner();
-				this.quest.init(PropertiesMapperUtil.getTaskLabelsMap().get(this.taskListPage.getValue()).getName(), Constants.XML_FILE_NAME);
+				try {
+					this.quest.init(PropertiesMapperUtil.getTaskLabelsMap().get(this.taskListPage.getValue()).getName(), Utils.resolveResourcePathToFile(Constants.XML_FILE_NAME).getAbsolutePath());
+				} catch (URISyntaxException | IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				if (this.quest.hasQuestions()) {
 					this.valueListPage = new DisplayQuestions(this.quest);
 				}
@@ -115,26 +119,34 @@ public class ConfiguratorWizard extends Wizard {
 		 *
 		 */
 		else if (currentPage.getTitle().equals(Labels.PROPERTIES)) {
-			InstanceGenerator instanceGenerator = new InstanceGenerator("claferPath");
-			instanceGenerator.setTaskName(this.taskListPage.getValue());
-			instanceGenerator.setNoOfInstances(0);
-			if (this.taskListPage.isAdvancedMode() && ((ValueSelectionPage) this.valueListPage).getPageStatus() == true) {
-				instanceGenerator.generateInstancesAdvancedUserMode(((ValueSelectionPage) currentPage).getConstraints());
-				if (new Validator().validate(instanceGenerator)) {
-					this.instanceListPage = new InstanceListPage(instanceGenerator);
-					addPage(this.instanceListPage);
-					return this.instanceListPage;
+			InstanceGenerator instanceGenerator;
+			try {
+				instanceGenerator = new InstanceGenerator(Utils.resolveResourcePathToFile(Constants.claferPath).getAbsolutePath());
+				instanceGenerator.setTaskName(this.taskListPage.getValue());
+				instanceGenerator.setNoOfInstances(0);
+				if (this.taskListPage.isAdvancedMode() && ((ValueSelectionPage) this.valueListPage).getPageStatus() == true) {
+					instanceGenerator.generateInstancesAdvancedUserMode(((ValueSelectionPage) currentPage).getConstraints());
+					if (new Validator().validate(instanceGenerator)) {
+						this.instanceListPage = new InstanceListPage(instanceGenerator);
+						addPage(this.instanceListPage);
+						return this.instanceListPage;
+					}
+				} else if (!this.taskListPage.isAdvancedMode() && !this.quest.hasQuestions() && this.taskListPage.getStatus()) {
+					// running in beginner mode
+					((DisplayQuestions) currentPage).setMap(((DisplayQuestions) currentPage).getSelection(), this.claferModel);
+					instanceGenerator.generateInstances(((DisplayQuestions) currentPage).getMap());
+					if (new Validator().validate(instanceGenerator)) {
+						this.instanceListPage = new InstanceListPage(instanceGenerator);
+						addPage(this.instanceListPage);
+						return this.instanceListPage;
+					}
 				}
-			} else if (!this.taskListPage.isAdvancedMode() && !this.quest.hasQuestions() && this.taskListPage.getStatus()) {
-				// running in beginner mode
-				((DisplayQuestions) currentPage).setMap(((DisplayQuestions) currentPage).getSelection(), this.claferModel);
-				instanceGenerator.generateInstances(((DisplayQuestions) currentPage).getMap());
-				if (new Validator().validate(instanceGenerator)) {
-					this.instanceListPage = new InstanceListPage(instanceGenerator);
-					addPage(this.instanceListPage);
-					return this.instanceListPage;
-				}
+			} catch (URISyntaxException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			
+			
 		}
 		return currentPage;
 	}

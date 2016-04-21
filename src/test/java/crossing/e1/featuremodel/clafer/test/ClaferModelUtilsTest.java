@@ -27,7 +27,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import crossing.e1.configurator.utilities.ReadConfig;
+import crossing.e1.configurator.Constants;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 
@@ -40,7 +40,7 @@ public class ClaferModelUtilsTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		this.claferModel = new ClaferModel(new ReadConfig().getPathFromConfig("claferPath"));
+		this.claferModel = new ClaferModel(Constants.claferPath);
 	}
 
 	/**

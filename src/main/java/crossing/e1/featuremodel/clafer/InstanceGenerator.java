@@ -52,7 +52,6 @@ import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Dependency;
 import crossing.e1.configurator.beginer.question.Question;
-import crossing.e1.configurator.utilities.ReadConfig;
 import crossing.e1.configurator.wizard.advanced.ComplexWidget;
 
 /**
@@ -62,9 +61,6 @@ import crossing.e1.configurator.wizard.advanced.ComplexWidget;
 public class InstanceGenerator {
 
 	private static final String MAINTASK = "MAINTASK";
-	private static final String INT_LOW = "INT_LOW";
-	private static final String INT_HIGH = "INT_HIGH";
-	private static final String DEFAULT_SCOPE = "DEFAULT_SCOPE";
 	private ClaferSolver solver;
 	private List<InstanceClafer> generatedInstances;
 	private Map<Long, InstanceClafer> uniqueInstances;
@@ -74,7 +70,7 @@ public class InstanceGenerator {
 	private String taskName = "";
 
 	public InstanceGenerator(final String path) {
-		this.claferModel = new ClaferModel(new ReadConfig().getPathFromConfig(path));
+		this.claferModel = new ClaferModel(path);
 		this.displayNameToInstanceMap = new HashMap<String, InstanceClafer>();
 		this.uniqueInstances = new HashMap<Long, InstanceClafer>();
 	}
@@ -127,7 +123,7 @@ public class InstanceGenerator {
 			solver = ClaferCompiler.compile(model,
 				claferModel.getScope().toBuilder()
 					//.defaultScope(Integer.parseInt(new ReadConfig().getValue(DEFAULT_SCOPE)))
-					.intHigh(Integer.parseInt(new ReadConfig().getValue(INT_HIGH))).intLow(Integer.parseInt(new ReadConfig().getValue(INT_LOW))));
+					.intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
 			while (this.solver.find()) {
 				final InstanceClafer instance = solver.instance().getTopClafers()[solver.instance().getTopClafers().length - 1];
 				uniqueInstances.put(getHashValueOfInstance(instance), instance);
@@ -154,7 +150,7 @@ public class InstanceGenerator {
 			advancedModeHandler(tempTask, constraints);
 			// TODO Need to be uncommented after fix
 			// addGroupProperties(tempTask, constraints);
-			solver = ClaferCompiler.compile(model, claferModel.getScope().toBuilder().intHigh(Integer.parseInt(new ReadConfig().getValue(INT_HIGH))).intLow(Integer.parseInt(new ReadConfig().getValue(INT_LOW))));
+			solver = ClaferCompiler.compile(model, claferModel.getScope().toBuilder().intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
 			while (solver.find()) {
 				InstanceClafer instance = solver.instance().getTopClafers()[solver.instance().getTopClafers().length - 1];
 				uniqueInstances.put(getHashValueOfInstance(instance), instance);
@@ -189,8 +185,8 @@ public class InstanceGenerator {
 						currentInstanceName = getInstanceName(childClafer);
 					}
 				}
-			} else if (inst.hasRef() && !inst.getType().isPrimitive() && !inst.getRef().getClass().toString().contains(Constants.INTEGER) && !inst.getRef().getClass().toString().contains(Constants.STRING) && !inst.getRef().getClass()
-				.toString().contains(Constants.BOOLEAN)) {
+			} else if (inst.hasRef() && !inst.getType().isPrimitive() && !inst.getRef().getClass().toString().contains(Constants.INTEGER) && !inst.getRef().getClass().toString()
+				.contains(Constants.STRING) && !inst.getRef().getClass().toString().contains(Constants.BOOLEAN)) {
 				currentInstanceName += getInstanceName((InstanceClafer) inst.getRef());
 			} else {
 				if (inst.getType().getName().contains("_name") && inst.getRef().getClass().toString().contains(Constants.STRING)) {

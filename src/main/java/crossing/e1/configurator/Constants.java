@@ -31,8 +31,9 @@ public class Constants {
 	public static final String JavaNatureID = "org.eclipse.jdt.core.javanature";
 
 	// Clafer Instance Generation
+	public static final String claferPath = "src" + fileSeparator + "main" + fileSeparator + "resources" + fileSeparator + "ClaferModel" + fileSeparator + "CryptoTasks.js";
 	public static final String PATH_FOR_CONFIG_XML = "/Configurator.xml";
-	public static final String XML_FILE_NAME = "encryptXmlPath";
+	public static final String XML_FILE_NAME = "src/main/resources/ClaferModel/Encrypt_CryptoTasks.xml";
 
 	// Input for Code Generation
 	public static final String pathToXSLFile = "src" + fileSeparator + "main" + fileSeparator + "resources" + fileSeparator + "XSLTemplates" + fileSeparator + "JCA.xsl";
@@ -67,13 +68,14 @@ public class Constants {
 		"<Import>javax.crypto.Cipher</Import>" + lineSeparator + "<Import>javax.crypto.IllegalBlockSizeException</Import>" + lineSeparator +
 		"<Import>javax.crypto.NoSuchPaddingException</Import>" + lineSeparator + "<Import>java.security.SecureRandom</Import>" + lineSeparator +
 		"<Import>javax.crypto.spec.IvParameterSpec</Import>" + lineSeparator + "<Import>javax.crypto.spec.SecretKeySpec</Import>" + lineSeparator +
-		"<Import>java.security.spec.InvalidKeySpecException</Import>" + lineSeparator + "</Imports>";
+		"<Import>java.security.spec.InvalidKeySpecException</Import>" + lineSeparator + "\t</Imports>";
 	
 	// Types
 	public static final String INTEGER = "Integer";
 	public static final String STRING = "String";
 	public static final String BOOLEAN = "Boolean";
 	
-	
-
+	public static final int INT_HIGH = 600;
+	public static final int INT_LOW = -17;
+	public static final int	DEFAULT_SCOPE = 5;
 }

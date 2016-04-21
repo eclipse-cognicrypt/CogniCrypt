@@ -13,7 +13,6 @@ import org.w3c.dom.NodeList;
 
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.utilities.Labels;
-import crossing.e1.configurator.utilities.ReadConfig;
 
 public class ReadTaskConfig implements Labels {
 	private final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -75,7 +74,7 @@ public class ReadTaskConfig implements Labels {
 	private void parseXML(final String task, final String xmlFileName) {
 		try {
 			this.dBuilder = this.dbFactory.newDocumentBuilder();
-			this.doc = this.dBuilder.parse(new File(new ReadConfig().getPathFromConfig(xmlFileName)));
+			this.doc = this.dBuilder.parse(new File(xmlFileName));
 			this.doc.getDocumentElement().normalize();
 			final NodeList nList = this.doc.getElementsByTagName(Labels.TASK);
 			for (int temp = 0; temp < nList.getLength(); temp++) {

@@ -25,8 +25,6 @@ import java.net.URISyntaxException;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -53,7 +51,6 @@ public class ConfiguratorWizard extends Wizard {
 	protected InstanceListPage instanceListPage;
 	protected QuestionsBeginner quest;
 	private ClaferModel claferModel;
-	private IPath path = null;
 	private final XSLBasedGenerator codeGeneration = new XSLBasedGenerator();
 
 	public ConfiguratorWizard() {
@@ -71,18 +68,9 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		IProject project = Utils.getIProjectFromSelection();
-		if (project == null) {
-			/**
-			 * No project has been selected, exit with an error
-			 */
-			Activator.getDefault().logError(Constants.PLEASE_SELECT);
-		} else {
-			this.path = project.getLocation();
-			this.taskListPage = new TaskSelectionPage(this.claferModel);
-			setForcePreviousAndNextButtons(true);
-			addPage(this.taskListPage);
-		}
+		this.taskListPage = new TaskSelectionPage(this.claferModel);
+		setForcePreviousAndNextButtons(true);
+		addPage(this.taskListPage);
 	}
 
 	@Override

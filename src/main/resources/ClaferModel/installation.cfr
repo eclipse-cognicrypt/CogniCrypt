@@ -1,7 +1,0 @@
-main
-	age -> integer
-	height -> integer
-student 
-	hi -> main
-	roomnumber -> integer
-		[roomnumber = hi.age]

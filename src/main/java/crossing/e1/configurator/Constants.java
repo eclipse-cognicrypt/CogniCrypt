@@ -35,8 +35,8 @@ public class Constants {
 	public static final String XML_FILE_NAME = "encryptXmlPath";
 
 	// Input for Code Generation
-	public static final String pathToXSLFile = "resources" + fileSeparator + "XSLTemplates" + fileSeparator + "JCA.xsl";
-	public static final String pathToClaferInstanceFolder = "resources" + fileSeparator + "ClaferModel" + fileSeparator;
+	public static final String pathToXSLFile = "src" + fileSeparator + "main" + fileSeparator + "resources" + fileSeparator + "XSLTemplates" + fileSeparator + "JCA.xsl";
+	public static final String pathToClaferInstanceFolder = "src" + fileSeparator + "main" + fileSeparator + "resources" + fileSeparator + "ClaferModel" + fileSeparator;
 	public static final String pathToClaferInstanceFile = "claferInstance.xml";
 	public static final String NameOfTemporaryMethod = "run";
 

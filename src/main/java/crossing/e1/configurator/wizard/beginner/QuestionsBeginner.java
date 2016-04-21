@@ -13,7 +13,7 @@ public class QuestionsBeginner {
 	private String taskName;
 	private int counter = 0;
 
-	public ArrayList<Question> getQutionare() {
+	public ArrayList<Question> getQutionare() throws NullPointerException {
 		return this.qutionare;
 	}
 

@@ -74,6 +74,11 @@ public class ConfiguratorWizard extends Wizard {
 	}
 
 	@Override
+	public boolean canFinish() {
+		return instanceListPage != null && instanceListPage.isPageComplete();
+	}
+
+	@Override
 	public IWizardPage getNextPage(IWizardPage currentPage) {
 		if (currentPage == this.taskListPage && this.taskListPage.canProceed()) {
 			if (this.taskListPage.isAdvancedMode()) {
@@ -103,7 +108,6 @@ public class ConfiguratorWizard extends Wizard {
 		}
 		/**
 		 * If current page is either question or properties page (in Advanced mode) check title. Maintain uniform title for second wizard page of the wizard
-		 *
 		 */
 		else if (currentPage.getTitle().equals(Labels.PROPERTIES)) {
 			InstanceGenerator instanceGenerator;

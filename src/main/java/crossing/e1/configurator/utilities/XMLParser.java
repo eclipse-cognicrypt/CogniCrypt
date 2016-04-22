@@ -72,15 +72,16 @@ public class XMLParser implements Labels {
 	 * @return
 	 */
 	public String displayInstanceXML(final InstanceClafer inst, String value) {
-		try {
-			if (inst.getType().hasRef()) {
-				if (getSuperClaferName(inst.getType().getRef().getTargetType())) {
-					System.out.println("YES => " + inst);
-				}
-			}
+		try {			
 			if (inst.hasChildren()) {
 				for (final InstanceClafer in : inst.getChildren()) {
-					value += displayInstanceXML(in, "");
+					if (isAlgorithm(in.getType())) {
+						value += "<" + Constants.ALGORITHM + " type=\"" + ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()) + "\"> \n";
+						value += displayInstanceXML(in, "");
+						value += "</" + Constants.ALGORITHM + "> \n";
+					} else {
+						value += displayInstanceXML(in, "");
+					}
 				}
 			} else if (inst.hasRef() && inst.getType().isPrimitive() != true && inst.getRef().getClass().toString().contains(Constants.INTEGER) == false && inst.getRef().getClass()
 				.toString().contains(Constants.STRING) == false && inst.getRef().getClass().toString().contains(Constants.BOOLEAN) == false) {
@@ -187,11 +188,12 @@ public class XMLParser implements Labels {
 	 * @param astClafer
 	 * @return
 	 */
-	private boolean getSuperClaferName(final AstClafer astClafer) {
-		if (astClafer.getSuperClafer() != null) {}
-		if (astClafer.getName().contains("_" + Constants.ALGORITHM)) {
-			return true;
-		}
+	private boolean isAlgorithm(final AstClafer astClafer) {	
+		if(astClafer.hasRef())
+			if(astClafer.getRef().getTargetType() != null && astClafer.getRef().getTargetType().getSuperClafer() != null)
+				return astClafer.getRef().getTargetType().getSuperClafer().getName().contains("_Algorithm");
+		
 		return false;
+		
 	}
 }

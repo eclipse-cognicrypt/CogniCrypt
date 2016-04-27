@@ -61,10 +61,13 @@ public class TaskSelectionPage extends WizardPage {
 	public boolean canProceed() {
 		final String selectedTask = getValue();
 		if (selectedTask.length() > 0) {
-			PropertiesMapperUtil.resetPropertiesMap();
-//			PropertiesMapperUtil.resetEnumMap();
-			final AstConcreteClafer claferSelected = PropertiesMapperUtil.getTaskLabelsMap().get(selectedTask);
-			this.model.createClaferPropertiesMap(claferSelected);
+			// Special handling for TLS task
+			if (!selectedTask.equals("Communicate over a secure channel")) {
+				PropertiesMapperUtil.resetPropertiesMap();
+				// PropertiesMapperUtil.resetEnumMap();
+				final AstConcreteClafer claferSelected = PropertiesMapperUtil.getTaskLabelsMap().get(selectedTask);
+				this.model.createClaferPropertiesMap(claferSelected);
+			}
 			setValue(selectedTask);
 			return true;
 		} else {

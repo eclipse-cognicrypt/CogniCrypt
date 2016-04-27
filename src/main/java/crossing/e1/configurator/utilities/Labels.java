@@ -55,9 +55,13 @@ public interface Labels {
 	static final String instanceList = prop.getProperty("LABEL1");
 	static final String SELECT_TASK = prop.getProperty("SELECT_TASK");
 	static final String TASK_LIST = prop.getProperty("TASK_LIST");
+	static final String TLS_PAGE = prop.getProperty("TLS_PAGE");
 	static final String DESCRIPTION_TASK_SELECTION_PAGE = prop.getProperty("DESCRIPTION_TASK_SELECTION_PAGE");
+	static final String DESCRIPTION_TLS_PAGE = prop.getProperty("DESCRIPTION_TLS_PAGE");
 	static final String NO_TASK = prop.getProperty("NO_TASK");
 	static final String LABEL2 = prop.getProperty("LABEL2");
+	static final String HOST = prop.getProperty("HOST");
+	static final String PORT = prop.getProperty("PORT");
 	static final String DESCRIPTION_VALUE_SELECTION_PAGE = prop.getProperty("DESCRIPTION_VALUE_SELECTION_PAGE");
 	static final String PROPERTIES = prop.getProperty("PROPERTIES");
 	static final String SELECT_PROPERTIES = prop.getProperty("SELECT_PROPERTIES");

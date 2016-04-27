@@ -60,6 +60,7 @@ public class Constants {
 	public static final String JAVA = "java";
 	public static final String ALGORITHM = "algorithm";
 	public static final String ADVANCED_MODE = "Advanced Mode";
+	public static final String TEST_CONNECTION = "Test Connection";
 
 	public static final String xmlPackage = "<Package>" + PackageName + "</Package>";
 	public static final String xmlimports = "<Imports>" + lineSeparator + "<Import>java.security.InvalidAlgorithmParameterException</Import>" + lineSeparator +

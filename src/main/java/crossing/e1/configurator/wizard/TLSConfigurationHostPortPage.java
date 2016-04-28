@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Text;
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.utilities.Labels;
 
-public class TLSConfigurationPage extends WizardPage {
+public class TLSConfigurationHostPortPage extends WizardPage {
 
 	private static final String SUCCESS = "SUCCESS!";
 	private Composite container;
@@ -48,10 +48,10 @@ public class TLSConfigurationPage extends WizardPage {
 	private Text portText;
 	private Label testConnectionLabel;
 	
-	TLSConfigurationPage tls;
+	TLSConfigurationHostPortPage tls;
 	boolean complete = false;
 	
-	public TLSConfigurationPage() {
+	public TLSConfigurationHostPortPage() {
 		super(Labels.SELECT_TASK);
 		setTitle(Labels.TLS_PAGE);
 		setDescription(Labels.DESCRIPTION_TLS_PAGE);

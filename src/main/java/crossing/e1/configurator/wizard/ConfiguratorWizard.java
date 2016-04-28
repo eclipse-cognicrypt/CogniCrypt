@@ -29,7 +29,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -59,7 +58,8 @@ import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 public class ConfiguratorWizard extends Wizard {
 
 	protected TaskSelectionPage taskListPage;
-	protected TLSConfigurationPage tlsPage;
+	protected TLSConfigurationServerClientPage tlsSCPage;
+	protected TLSConfigurationHostPortPage tlsPage;
 	protected WizardPage valueListPage;
 	protected InstanceListPage instanceListPage;
 	protected QuestionsBeginner quest;
@@ -82,10 +82,10 @@ public class ConfiguratorWizard extends Wizard {
 	@Override
 	public void addPages() {
 		this.taskListPage = new TaskSelectionPage(this.claferModel);
-		this.tlsPage = new TLSConfigurationPage();
+		this.tlsSCPage = new TLSConfigurationServerClientPage();
 		setForcePreviousAndNextButtons(true);
 		addPage(this.taskListPage);
-		addPage(this.tlsPage);
+		addPage(this.tlsSCPage);
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class ConfiguratorWizard extends Wizard {
 		if (currentPage == this.taskListPage && this.taskListPage.canProceed()) {
 			// Special handling for the TLS task
 			if (this.taskListPage.getValue().equals("Communicate over a secure channel")) {
-				this.valueListPage = this.tlsPage;
+				this.valueListPage = this.tlsSCPage;
 			} else {
 				if (this.taskListPage.isAdvancedMode()) {
 					this.valueListPage = new ValueSelectionPage(null, this.claferModel);
@@ -122,6 +122,13 @@ public class ConfiguratorWizard extends Wizard {
 					}
 				}
 			}
+			if (this.valueListPage != null) {
+				addPage(this.valueListPage);
+			}
+			return this.valueListPage;
+		} else if (this.tlsSCPage != null && this.tlsSCPage.canFlipToNextPage()) {
+			this.tlsPage = new TLSConfigurationHostPortPage();
+			this.valueListPage = this.tlsPage;
 			if (this.valueListPage != null) {
 				addPage(this.valueListPage);
 			}

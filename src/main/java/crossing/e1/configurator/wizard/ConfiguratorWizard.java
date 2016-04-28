@@ -60,6 +60,7 @@ public class ConfiguratorWizard extends Wizard {
 	protected TaskSelectionPage taskListPage;
 	protected TLSConfigurationServerClientPage tlsSCPage;
 	protected TLSConfigurationHostPortPage tlsPage;
+	protected TLSConfigurationKeyStorePage tlsKeyPage;
 	protected WizardPage valueListPage;
 	protected InstanceListPage instanceListPage;
 	protected QuestionsBeginner quest;
@@ -126,14 +127,22 @@ public class ConfiguratorWizard extends Wizard {
 				addPage(this.valueListPage);
 			}
 			return this.valueListPage;
-		} else if (this.tlsSCPage != null && this.tlsSCPage.canFlipToNextPage()) {
+		} else if (this.tlsKeyPage != null && this.tlsKeyPage.canFlipToNextPage()) {
 			this.tlsPage = new TLSConfigurationHostPortPage();
 			this.valueListPage = this.tlsPage;
 			if (this.valueListPage != null) {
 				addPage(this.valueListPage);
 			}
 			return this.valueListPage;
-		}
+		} else if (this.tlsSCPage != null && this.tlsSCPage.canFlipToNextPage()) {
+			
+			this.tlsKeyPage = new TLSConfigurationKeyStorePage();
+			this.valueListPage = this.tlsKeyPage;
+			if (this.valueListPage != null) {
+				addPage(this.valueListPage);
+			}
+			return this.valueListPage;
+		} 
 		/**
 		 * If current page is either question or properties page (in Advanced mode) check title. Maintain uniform title for second wizard page of the wizard
 		 */
@@ -194,6 +203,8 @@ public class ConfiguratorWizard extends Wizard {
 				
 				doc.getElementsByTagName("host").item(0).setTextContent(tlsPage.getHost());
 				doc.getElementsByTagName("port").item(0).setTextContent(tlsPage.getPort());
+				doc.getElementsByTagName("path").item(0).setTextContent(tlsKeyPage.getPath());
+				doc.getElementsByTagName("password").item(0).setTextContent(tlsKeyPage.getPassword());
 				
 				TransformerFactory tF = TransformerFactory.newInstance();
 				Transformer tfr = tF.newTransformer();

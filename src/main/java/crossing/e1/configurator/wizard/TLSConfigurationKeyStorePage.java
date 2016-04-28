@@ -72,9 +72,9 @@ public class TLSConfigurationKeyStorePage extends WizardPage {
 	@Override
 	public void createControl(final Composite parent) {
 		container = new Composite(parent, SWT.NONE);
-		container.setBounds(10, 10, 400, 200);
-		final GridLayout layout = new GridLayout(4, true);
-		layout.horizontalSpacing = 20;
+		container.setBounds(10, 10, 250, 200);
+		final GridLayout layout = new GridLayout(3, true);
+		layout.horizontalSpacing = 10;
 		container.setLayout(layout);
 		
 		this.pathLabel = new Label(container, SWT.NONE);

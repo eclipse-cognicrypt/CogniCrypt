@@ -58,7 +58,6 @@ public class TLSConfigurationHostPortPage extends WizardPage {
 		tls = this;
 	}
 
-	
 	@Override
 	public boolean canFlipToNextPage() {
 		return false;
@@ -80,7 +79,7 @@ public class TLSConfigurationHostPortPage extends WizardPage {
 	@Override
 	public void createControl(final Composite parent) {
 		this.container = new Composite(parent, SWT.NONE);
-		this.container.setBounds(10, 10, 400, 200);
+		this.container.setBounds(10, 10, 250, 120);
 		final GridLayout layout = new GridLayout(4, true);
 		layout.horizontalSpacing = 20;
 		this.container.setLayout(layout);

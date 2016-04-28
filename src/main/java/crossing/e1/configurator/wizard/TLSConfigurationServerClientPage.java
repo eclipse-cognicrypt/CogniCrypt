@@ -61,9 +61,9 @@ public class TLSConfigurationServerClientPage extends WizardPage {
 	@Override
 	public void createControl(final Composite parent) {
 		this.container = new Composite(parent, SWT.NONE);
-		this.container.setBounds(10, 10, 400, 200);
+		this.container.setBounds(10, 10, 250, 200);
 		final GridLayout layout = new GridLayout(4, true);
-		layout.horizontalSpacing = 20;
+		layout.horizontalSpacing = 10;
 		this.container.setLayout(layout);
 
 		this.clientRadioButton = new Button(this.container, SWT.RADIO);

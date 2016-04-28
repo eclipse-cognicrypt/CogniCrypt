@@ -69,6 +69,13 @@ public class TLSConfigurationPage extends WizardPage {
 		return this.testConnectionLabel.getText().equals(SUCCESS);
 	}
 
+	public String getHost() {
+		return hostText.getText();
+	}
+	
+	public String getPort() {
+		return portText.getText();
+	}
 
 	@Override
 	public void createControl(final Composite parent) {
@@ -100,10 +107,8 @@ public class TLSConfigurationPage extends WizardPage {
 						
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				String host = hostText.getText();
-				String port = portText.getText();
 				try {
-					TLSConnection tlstest = new TLSConnection(Integer.parseInt(port), host);
+					TLSConnection tlstest = new TLSConnection(Integer.parseInt(portText.getText()), getHost());
 					testConnectionLabel.setText(SUCCESS);
 					testConnectionLabel.redraw();
 					complete = true;

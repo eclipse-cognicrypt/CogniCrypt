@@ -19,15 +19,27 @@
  */
 package crossing.e1.configurator.wizard;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import crossing.e1.codegen.Utils;
 import crossing.e1.codegen.generation.XSLBasedGenerator;
@@ -167,10 +179,24 @@ public class ConfiguratorWizard extends Wizard {
 		} else if (this.tlsPage != null) {
 			ret = this.tlsPage.isPageComplete();
 			try {
+				File xslTLSfile = Utils.resolveResourcePathToFile(Constants.pathToTSLXSLFile);
+				File xmlInstanceFile = Utils.resolveResourcePathToFile(Constants.pathToClaferInstanceFolder + Constants.fileSeparator + Constants.pathToClaferInstanceTLSFile);
+				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+				Document doc = docBuilder.parse(xmlInstanceFile);
+				
+				doc.getElementsByTagName("host").item(0).setTextContent(tlsPage.getHost());
+				doc.getElementsByTagName("port").item(0).setTextContent(tlsPage.getPort());
+				
+				TransformerFactory tF = TransformerFactory.newInstance();
+				Transformer tfr = tF.newTransformer();
+				DOMSource source = new DOMSource(doc);
+				StreamResult result = new StreamResult(xmlInstanceFile);
+				tfr.transform(source, result);
 				ret &= this.codeGeneration.generateCodeTemplates(
-					Utils.resolveResourcePathToFile(Constants.pathToClaferInstanceFolder + Constants.fileSeparator + Constants.pathToClaferInstanceTLSFile),
-					Utils.resolveResourcePathToFile(Constants.pathToTSLXSLFile));
-			} catch (URISyntaxException | IOException e) {
+					xmlInstanceFile,
+					xslTLSfile);
+			} catch (URISyntaxException | IOException | SAXException | ParserConfigurationException | TransformerException e) {
 				Activator.getDefault().logError(e);
 				return false;
 			}

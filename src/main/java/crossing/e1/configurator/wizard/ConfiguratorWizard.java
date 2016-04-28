@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * @author Ram Kamath, Sarah Nadi, Karim Ali
+ * @author Ram Kamath, Sarah Nadi, Karim Ali, Stefan Krüger
  *
  */
 package crossing.e1.configurator.wizard;
@@ -61,8 +61,7 @@ public class ConfiguratorWizard extends Wizard {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			this.claferModel = new ClaferModel(Utils.resolveResourcePathToFile(Constants.claferPath).getAbsolutePath());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-				| UnsupportedLookAndFeelException | URISyntaxException | IOException e) {
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | URISyntaxException | IOException e) {
 			Activator.getDefault().logError(e);
 		}
 		setWindowTitle("Cryptography Task Configurator");
@@ -71,7 +70,7 @@ public class ConfiguratorWizard extends Wizard {
 	@Override
 	public void addPages() {
 		this.taskListPage = new TaskSelectionPage(this.claferModel);
-		this.tlsPage = new TLSConfigurationPage(this.claferModel);
+		this.tlsPage = new TLSConfigurationPage();
 		setForcePreviousAndNextButtons(true);
 		addPage(this.taskListPage);
 		addPage(this.tlsPage);
@@ -79,7 +78,7 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public boolean canFinish() {
-		return instanceListPage != null && instanceListPage.isPageComplete();
+		return (tlsPage != null && tlsPage.isPageComplete()) || (instanceListPage != null && instanceListPage.isPageComplete());
 	}
 
 	@Override
@@ -87,25 +86,22 @@ public class ConfiguratorWizard extends Wizard {
 		if (currentPage == this.taskListPage && this.taskListPage.canProceed()) {
 			// Special handling for the TLS task
 			if (this.taskListPage.getValue().equals("Communicate over a secure channel")) {
-				this.valueListPage = new TLSConfigurationPage(this.claferModel);
+				this.valueListPage = this.tlsPage;
 			} else {
 				if (this.taskListPage.isAdvancedMode()) {
 					this.valueListPage = new ValueSelectionPage(null, this.claferModel);
 				} else {
 					/**
-					 * Before showing the question update properties of a chosen
-					 * task
+					 * Before showing the question update properties of a chosen task
 					 */
-					this.claferModel.createClaferPropertiesMap(
-							PropertiesMapperUtil.getTaskLabelsMap().get(this.taskListPage.getValue()));
+					this.claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(this.taskListPage.getValue()));
 					/**
 					 * Create Questions object
 					 */
 					this.quest = new QuestionsBeginner();
 					try {
-						this.quest.init(
-								PropertiesMapperUtil.getTaskLabelsMap().get(this.taskListPage.getValue()).getName(),
-								Utils.resolveResourcePathToFile(Constants.XML_FILE_NAME).getAbsolutePath());
+						this.quest.init(PropertiesMapperUtil.getTaskLabelsMap().get(this.taskListPage.getValue()).getName(),
+							Utils.resolveResourcePathToFile(Constants.XML_FILE_NAME).getAbsolutePath());
 					} catch (URISyntaxException | IOException e) {
 						Activator.getDefault().logError(e);
 					}
@@ -114,38 +110,30 @@ public class ConfiguratorWizard extends Wizard {
 					}
 				}
 			}
-			
 			if (this.valueListPage != null) {
 				addPage(this.valueListPage);
 			}
 			return this.valueListPage;
 		}
 		/**
-		 * If current page is either question or properties page (in Advanced
-		 * mode) check title. Maintain uniform title for second wizard page of
-		 * the wizard
+		 * If current page is either question or properties page (in Advanced mode) check title. Maintain uniform title for second wizard page of the wizard
 		 */
 		else if (currentPage.getTitle().equals(Labels.PROPERTIES)) {
 			InstanceGenerator instanceGenerator;
 			try {
-				instanceGenerator = new InstanceGenerator(
-						Utils.resolveResourcePathToFile(Constants.claferPath).getAbsolutePath());
+				instanceGenerator = new InstanceGenerator(Utils.resolveResourcePathToFile(Constants.claferPath).getAbsolutePath());
 				instanceGenerator.setTaskName(this.taskListPage.getValue());
 				instanceGenerator.setNoOfInstances(0);
-				if (this.taskListPage.isAdvancedMode()
-						&& ((ValueSelectionPage) this.valueListPage).getPageStatus() == true) {
-					instanceGenerator
-							.generateInstancesAdvancedUserMode(((ValueSelectionPage) currentPage).getConstraints());
+				if (this.taskListPage.isAdvancedMode() && ((ValueSelectionPage) this.valueListPage).getPageStatus() == true) {
+					instanceGenerator.generateInstancesAdvancedUserMode(((ValueSelectionPage) currentPage).getConstraints());
 					if (new Validator().validate(instanceGenerator)) {
 						this.instanceListPage = new InstanceListPage(instanceGenerator);
 						addPage(this.instanceListPage);
 						return this.instanceListPage;
 					}
-				} else if (!this.taskListPage.isAdvancedMode() && !this.quest.hasQuestions()
-						&& this.taskListPage.getStatus()) {
+				} else if (!this.taskListPage.isAdvancedMode() && !this.quest.hasQuestions() && this.taskListPage.getStatus()) {
 					// running in beginner mode
-					((DisplayQuestions) currentPage).setMap(((DisplayQuestions) currentPage).getSelection(),
-							this.claferModel);
+					((DisplayQuestions) currentPage).setMap(((DisplayQuestions) currentPage).getSelection(), this.claferModel);
 					instanceGenerator.generateInstances(((DisplayQuestions) currentPage).getMap());
 					if (new Validator().validate(instanceGenerator)) {
 						this.instanceListPage = new InstanceListPage(instanceGenerator);
@@ -162,20 +150,24 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		boolean ret = this.instanceListPage.isPageComplete();
-		try {
-			// Print the result to the console
-			final WriteToFileHelper write = new WriteToFileHelper();
-			write.writeToFile(new XMLParser().displayInstanceValues(this.instanceListPage.getValue(), ""),
-					Utils.resolveResourcePathToFile(Constants.pathToClaferInstanceFolder).getAbsolutePath()
-							+ Constants.fileSeparator + Constants.pathToClaferInstanceFile);
-			// Generate code template
-			ret &= this.codeGeneration.generateCodeTemplates();
-		} catch (URISyntaxException | IOException e) {
-			Activator.getDefault().logError(e);
-			return false;
-		}
+		boolean ret = false;
+		if (this.instanceListPage != null) {
+			ret = this.instanceListPage.isPageComplete();
+			try {
+				// Print the result to the console
+				final WriteToFileHelper write = new WriteToFileHelper();
+				write.writeToFile(new XMLParser().displayInstanceValues(this.instanceListPage.getValue(), ""),
+					Utils.resolveResourcePathToFile(Constants.pathToClaferInstanceFolder).getAbsolutePath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile);
+				// Generate code template
+				ret &= this.codeGeneration.generateCodeTemplates();
+			} catch (URISyntaxException | IOException e) {
+				Activator.getDefault().logError(e);
+				return false;
+			}
+		} else if (this.tlsPage != null){
+			ret = this.tlsPage.isPageComplete();
 
+		}
 		return ret;
 	}
 }

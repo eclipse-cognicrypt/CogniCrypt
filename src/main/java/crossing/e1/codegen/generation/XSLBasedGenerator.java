@@ -109,8 +109,8 @@ public class XSLBasedGenerator {
 		}
 		try {
 			// Check whether directories and templates/model exist
-			final File claferOutputFiles = claferOutput.exists() ? claferOutput : Utils.resolveResourcePathToFile(Constants.pathToClaferInstanceFolder + Constants.fileSeparator + Constants.pathToClaferInstanceFile);
-			final File xslFiles = xslFile.exists() ? xslFile : Utils.resolveResourcePathToFile(Constants.pathToXSLFile);
+			final File claferOutputFiles = claferOutput != null && claferOutput.exists() ? claferOutput : Utils.resolveResourcePathToFile(Constants.pathToClaferInstanceFolder + Constants.fileSeparator + Constants.pathToClaferInstanceFile);
+			final File xslFiles = xslFile != null && xslFile.exists() ? xslFile : Utils.resolveResourcePathToFile(Constants.pathToXSLFile);
 			if (!claferOutputFiles.exists() || !xslFiles.exists()) {
 				Activator.getDefault().logError(Constants.FilesDoNotExistErrorMessage);
 				return false;

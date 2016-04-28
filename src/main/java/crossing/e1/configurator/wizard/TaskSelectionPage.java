@@ -20,6 +20,7 @@
  */
 package crossing.e1.configurator.wizard;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.clafer.ast.AstConcreteClafer;
@@ -89,7 +90,11 @@ public class TaskSelectionPage extends WizardPage {
 
 		this.taskComboSelection = new ComboViewer(this.container, SWT.COMPOSITION_SELECTION);
 		this.taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
-		this.taskComboSelection.setInput(availableTasks);
+		Set<String> retreatTasks = new HashSet<String>();
+		retreatTasks.add("Communicate over a secure channel");
+		retreatTasks.add("Encrypt data using a given password");
+		this.taskComboSelection.setInput(retreatTasks);
+//		this.taskComboSelection.setInput(availableTasks);
 		if (availableTasks.size() > 0) {
 			// taskComboSelection.setSelection(new
 			// StructuredSelection(availableTasks.iterator().next()));

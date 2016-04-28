@@ -159,14 +159,21 @@ public class ConfiguratorWizard extends Wizard {
 				write.writeToFile(new XMLParser().displayInstanceValues(this.instanceListPage.getValue(), ""),
 					Utils.resolveResourcePathToFile(Constants.pathToClaferInstanceFolder).getAbsolutePath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile);
 				// Generate code template
-				ret &= this.codeGeneration.generateCodeTemplates();
+				ret &= this.codeGeneration.generateCodeTemplates(null, null);
 			} catch (URISyntaxException | IOException e) {
 				Activator.getDefault().logError(e);
 				return false;
 			}
-		} else if (this.tlsPage != null){
+		} else if (this.tlsPage != null) {
 			ret = this.tlsPage.isPageComplete();
-
+			try {
+				ret &= this.codeGeneration.generateCodeTemplates(
+					Utils.resolveResourcePathToFile(Constants.pathToClaferInstanceFolder + Constants.fileSeparator + Constants.pathToClaferInstanceTLSFile),
+					Utils.resolveResourcePathToFile(Constants.pathToTSLXSLFile));
+			} catch (URISyntaxException | IOException e) {
+				Activator.getDefault().logError(e);
+				return false;
+			}
 		}
 		return ret;
 	}

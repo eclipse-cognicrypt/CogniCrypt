@@ -80,13 +80,28 @@ public class XSLBasedGenerator {
 	private int startingPositionForRunMethod = -1;
 
 	private int endingPositionForRunMethod = -1;
-
+	
+//	public boolean generateCodeTemplates() {
+//	
+//		final File claferOutputFiles;
+//		final File xslFiles;
+//		try {
+//			claferOutputFiles = Utils.resolveResourcePathToFile(Constants.pathToClaferInstanceFolder + Constants.fileSeparator + Constants.pathToClaferInstanceFile);
+//			xslFiles = Utils.resolveResourcePathToFile(Constants.pathToXSLFile);
+//			
+//		} catch (URISyntaxException | IOException e) {
+//			Activator.getDefault().logError(Constants.FilesDoNotExistErrorMessage);
+//		}
+//		
+//		return generateCodeTemplates();
+//	}
+		
 	/**
 	 * Generation of code templates using XSL template and Clafer instance.
 	 *
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if transformation successful/failed.
 	 */
-	public boolean generateCodeTemplates() {
+	public boolean generateCodeTemplates(File claferOutput, File xslFile) {
 		// TODO: Android
 		// TODO: extract init to Configurator
 		if (!initCodeGeneration()) {
@@ -94,9 +109,9 @@ public class XSLBasedGenerator {
 		}
 		try {
 			// Check whether directories and templates/model exist
-			final File claferOutputFiles = Utils.resolveResourcePathToFile(Constants.pathToClaferInstanceFolder + Constants.fileSeparator + Constants.pathToClaferInstanceFile);
-			final File xslFiles = Utils.resolveResourcePathToFile(Constants.pathToXSLFile);
-			if (!Files.exists(claferOutputFiles.toPath()) || !Files.exists(xslFiles.toPath())) {
+			final File claferOutputFiles = claferOutput.exists() ? claferOutput : Utils.resolveResourcePathToFile(Constants.pathToClaferInstanceFolder + Constants.fileSeparator + Constants.pathToClaferInstanceFile);
+			final File xslFiles = xslFile.exists() ? xslFile : Utils.resolveResourcePathToFile(Constants.pathToXSLFile);
+			if (!claferOutputFiles.exists() || !xslFiles.exists()) {
 				Activator.getDefault().logError(Constants.FilesDoNotExistErrorMessage);
 				return false;
 			}

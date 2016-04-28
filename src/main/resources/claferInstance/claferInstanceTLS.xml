@@ -17,8 +17,8 @@
 		<port>9999</port>
 	</connection>
 	<keystore>
-		<path>C:\\Users\\skrueger\\workspaceMars\\Echo\\bin\\keystore</path>
-		<password>Opencce</password>
+		<path>C:\\Users\\stefank3\\workspaceCROSSING\\Echo\\bin\\keystore</path>
+		<password>opencce</password>
 	</keystore>
 	
 	

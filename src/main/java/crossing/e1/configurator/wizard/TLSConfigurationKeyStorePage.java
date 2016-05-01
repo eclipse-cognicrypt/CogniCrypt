@@ -15,7 +15,7 @@
  */
 
 /**
- * @author Karim Ali, Stefan Krüger
+ * @author Karim Ali, Stefan Krï¿½ger
  *
  */
 package crossing.e1.configurator.wizard;
@@ -122,7 +122,7 @@ public class TLSConfigurationKeyStorePage extends WizardPage {
 		
 		this.passwordLabel = new Label(container, SWT.NONE);
 		this.passwordLabel.setText("Password of Key Store");
-		this.passwordText = new Text(container, SWT.SINGLE);
+		this.passwordText = new Text(container, SWT.PASSWORD);
 		this.passwordText.setLayoutData(new GridData(200, 15));
 		
 		

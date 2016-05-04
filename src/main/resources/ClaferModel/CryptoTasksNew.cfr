@@ -33,13 +33,7 @@ abstract Mode : Enum
 ECB : Mode
 CBC : Mode
 OFB : Mode
-
-abstract Property : Enum
-asymmEncrProperty : Property
-digSigProperty : Property
-keyAgrProperty : Property
-
-
+GCM : Mode
 
 abstract Algorithm
 	name -> string
@@ -47,28 +41,12 @@ abstract Algorithm
 	security -> Security
 	performance -> Performance
 	classPerformance -> Performance 
-	//property -> Property ?
-	// asymmEncrProperty ?
-	// digSigProperty ?
-	// keyAgrProperty ?
-	// [asymmEncrProperty => no digSigProperty && no keyAgrProperty]
-	// [digSigProperty => no asymmEncrProperty && no keyAgrProperty]
-	// [keyAgrProperty => no asymmEncrProperty && no digSigProperty]
-	//symmCipher -> SymmetricBlockCipher ?
-	//asymmCipher -> AsymmetricCipher  ?
-	//digesting -> Digest ?
-	// signing -> DigitalSignatureAlgm ?
-	// keyAg -> KeyAgreementAlgorithm ?
-	//KeyDer -> KeyDerivationAlgorithm ?
+
 
 abstract Cipher : Algorithm
-	// [property != digSigProperty]
-	// [property != keyAgrProperty]
 
 abstract SymmetricCipher : Cipher
 	keySize -> integer
-	//[property != asymmEncrProperty]
-	// SymmEncryptionProperty
 	[classPerformance = Fast]
 
 abstract AsymmetricCipher: Cipher
@@ -81,46 +59,46 @@ abstract SymmetricBlockCipher : SymmetricCipher
 	[mode = CBC => padding != NoPadding]
 
 abstract DigitalSignatureAlgm : Algorithm
-	//[property = digSigProperty]
-	// [no keyAgrProperty]
-	// [no asymmEncrProperty]
 	//keySize -> integer
 	[classPerformance = VerySlow]
 
 abstract KeyAgreementAlgorithm : Algorithm
-	//[property = keyAgrProperty]
-	// [no digSigProperty]
-	// [no asymmEncrProperty]
 	[classPerformance = Slow]
 
 abstract Digest : Algorithm
 	outputSize -> integer
-	// [no digSigProperty]
-	// [no asymmEncrProperty]
-	// [no keyAgrProperty]
-	//[no property]
 	[classPerformance = VeryFast]
 
 // abstract KeyDerivationAlgorithm : Algorithm
 // 	outputSize -> integer ?
-// 	// [no digSigProperty]
-// 	// [no asymmEncrProperty]
-// 	// [no keyAgrProperty]
-// 	//[no property]
 // 	[classPerformance = Slow]
 
 abstract Task
     description -> string
 
 //SymmetricBlockCipherAlgorithms
+	
+AES128 : SymmetricBlockCipher
+	[name = "AES"]
+	[description = "Advanced Encryption Standard (AES) cipher"]s
+	[keySize = 128]
+	[performance = VeryFast]
+	[security = Medium]
 
-abstract AES : SymmetricBlockCipher
-    [name = "AES"]
-    [description = "Advanced Encryption Standard (AES) cipher"]
-    [keySize = 128 || keySize = 192 || keySize = 256]
-    [keySize = 128 => performance = VeryFast && security = Medium]
-    [keySize > 128 => performance = Fast && security = Strong]
+AES192 : SymmetricBlockCipher
+	[name = "AES"]
+	[description = "Advanced Encryption Standard (AES) cipher"]s
+	[keySize = 192]
+	[performance = Fast]
+	[security = Strong]
+	
 
+AES256 : SymmetricBlockCipher
+	[name = "AES"]
+	[description = "Advanced Encryption Standard (AES) cipher"]s
+	[keySize = 256]
+	[performance = Fast]
+	[security = Strong]
 
 // DigestAlgorithms
 SHA256: Digest
@@ -192,10 +170,6 @@ RSA_Sig : DigitalSignatureAlgm
 	[description = "RSA Algm"]
 	[security = Strong]
 	[performance = Slow]
-	//[digSigProperty || asymmEncrProperty || keyAgrProperty]
-	// [property = digSigProperty => security = Strong && performance = Slow]
-	// [property = asymmEncrProperty => security = Strong && performance = VerySlow]
-	// [property = keyAgrProperty => security = Medium && performance = Slow]
 
 RSA_Asymm : AsymmetricCipher
 	[name = "RSA"]
@@ -210,62 +184,58 @@ RSA_KeyAgr : KeyAgreementAlgorithm
 	[performance = Slow]
 
 abstract CipherSuite
-	abstract cipher : SymmetricBlockCipher ?
+	cipher -> SymmetricBlockCipher ?
 	tlsProtocol -> TLS_Version
-	keyAgreement -> KeyAgreementAlgorithm ?
+	keyAgreement -> KeyAgreementAlgorithm
 	signature -> DigitalSignatureAlgm
 	messageAuth -> Digest
-	//messageAuth -> Digest
 	[messageAuth = SHA384 || messageAuth = SHA256 => tlsProtocol >= TLS1_2]
-
-	security -> integer    
-	//sec-> integer 
-	[ security = min(messageAuth.security, signature.security, cipher.security) ]
-	// [ sec = messageAuth.security => security = messageAuth.security || sec = keyAgreement.security => security = keyAgreement.security || 
-	//   sec = cipher.security => security = cipher.security || sec = signature.security => security = signature.security]
+	
+	cipherSecurity -> integer
+	[cipherSecurity = (if cipher then cipher.security.ref else 0)]
+	security -> integer   
+	[security = min(
+		messageAuth.security, 
+		keyAgreement.security, 
+		signature.security, 
+		cipherSecurity)]
 
 	performance -> integer
-	// classPerformance -> integer 
-	[performance = min(signature.classPerformance, cipher.classPerformance, messageAuth.classPerformance)]
-	// [classPerformance = messageAuth.classPerformance => performance = messageAuth.performance || classPerformance = keyAgreement.classPerformance => performance = keyAgreement.performance ||
-	// classPerformance = signature.classPerformance => performance = signature.performance || classPerformance = cipher.classPerformance => performance = cipher.performance]
+	[performance = min(signature.classPerformance, keyAgreement.classPerformance, cipher.classPerformance, messageAuth.classPerformance)]
 
 TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384 : CipherSuite
-	[signature = RSA_Sig]
-	cipher : AES
+	[cipher = AES256]
 	[cipher.mode = CBC]
-	[cipher.keySize = 256]
+	[signature = RSA_Sig]
 	[keyAgreement = ECDHE]
 	[messageAuth = SHA384]
 
 TLS_RSA_WITH_AES_256_CBC_SHA256 : CipherSuite
-	cipher : AES
-	[cipher.keySize = 256]
+	[cipher = AES256]
 	[cipher.mode = CBC]
 	[tlsProtocol >= TLS1_2]
 	[signature = RSA_Sig]
-	[messageAuth = SHA256]
 	[keyAgreement = RSA_KeyAgr]
+	[messageAuth = SHA256]
 
 TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 : CipherSuite
-	cipher : AES
-	[cipher.keySize = 128]
-	[cipher.mode = CBC]
+	[cipher = AES128]
+	[cipher.mode = GCM]
 	[signature = RSA_Sig]
 	[messageAuth = SHA256]
-	[keyAgreement = RSA_KeyAgr]
+	[keyAgreement = ECDHE]
 
 SSL_RSA_WITH_NULL_MD5 : CipherSuite
 	[no cipher]
 	[signature = RSA_Sig]
 	[messageAuth = MD5]
 	[keyAgreement = RSA_KeyAgr]
-	[security = NoSecurity]
+	[tlsProtocol >= SSL2] //TODO: double check the tls version/protocol
 
 SecureCommunication : Task  
 	[description = "Communicate over a secure channel"]
 	ciphersuites -> CipherSuite 1..*
-	//[all suite : ciphersuites | suite.tlsProtocol >= TLS1_2 && suite.security > Medium]	
+	[all suite : ciphersuites | suite.tlsProtocol >= TLS1_2 && suite.security > Medium]	
 
 // SymmetricEncryption : Task
 // 	[description = "Encrypt data using a secret key"]

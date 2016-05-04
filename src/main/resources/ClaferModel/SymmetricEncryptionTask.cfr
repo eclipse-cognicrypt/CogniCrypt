@@ -2,7 +2,6 @@ abstract Enum
 
 //enum Security
 abstract Security : Enum -> integer
-NoSecurity: Security = 0
 Broken: Security = 1
 Weak: Security = 2
 Medium: Security = 3
@@ -41,9 +40,6 @@ abstract SymmetricCipher : Cipher
 	keySize -> integer
 	[classPerformance = Fast]
 
-abstract AsymmetricCipher: Cipher
-	[classPerformance = VerySlow]
-
 abstract SymmetricBlockCipher : SymmetricCipher
 	mode -> Mode
 	padding -> Padding
@@ -54,29 +50,36 @@ abstract Task
     description -> string
 
 //SymmetricBlockCipherAlgorithms
-	
-AES128 : SymmetricBlockCipher
-	[name = "AES"]
-	[description = "Advanced Encryption Standard (AES) cipher"]s
-	[keySize = 128]
-	[performance = VeryFast]
-	[security = Medium]
 
-AES192 : SymmetricBlockCipher
-	[name = "AES"]
-	[description = "Advanced Encryption Standard (AES) cipher"]s
-	[keySize = 192]
-	[performance = Fast]
-	[security = Strong]
+abstract AES: SymmetricBlockCipher
+    [name = "AES"]
+    [description = "Advanced Encryption Standard (AES) cipher"]
+    [keySize = 128 || keySize = 192 || keySize = 256]
+    [keySize = 128 => performance = VeryFast && security = Medium]
+    [keySize > 128 => performance = Fast && security = Strong]
+	
+// AES128 : SymmetricBlockCipher
+// 	[name = "AES"]
+// 	[description = "Advanced Encryption Standard (AES) cipher"]s
+// 	[keySize = 128]
+// 	[performance = VeryFast]
+// 	[security = Medium]
+
+// AES192 : SymmetricBlockCipher
+// 	[name = "AES"]
+// 	[description = "Advanced Encryption Standard (AES) cipher"]s
+// 	[keySize = 192]
+// 	[performance = Fast]
+// 	[security = Strong]
 	
 
-AES256 : SymmetricBlockCipher
-	[name = "AES"]
-	[description = "Advanced Encryption Standard (AES) cipher"]s
-	[keySize = 256]
-	[performance = Fast]
-	[security = Strong]
+// AES256 : SymmetricBlockCipher
+// 	[name = "AES"]
+// 	[description = "Advanced Encryption Standard (AES) cipher"]s
+// 	[keySize = 256]
+// 	[performance = Fast]
+// 	[security = Strong]
 
 SymmetricEncryption : Task
 	[description = "Encrypt data using a secret key"]
-	cipher -> SymmetricBlockCipher
+	cipher : AES

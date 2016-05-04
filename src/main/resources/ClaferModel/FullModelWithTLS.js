@@ -62,7 +62,6 @@ c0_SHA1 = Clafer("c0_SHA1").withCard(1, 1);
 c0_MD5 = Clafer("c0_MD5").withCard(1, 1);
 c0_ECDHE = Clafer("c0_ECDHE").withCard(1, 1);
 c0_ECDSA = Clafer("c0_ECDSA").withCard(1, 1);
-c0_KeyDerivationAlgorithms = Clafer("c0_KeyDerivationAlgorithms").withCard(1, 1);
 c0_pbkdf2 = Clafer("c0_pbkdf2").withCard(1, 1);
 c0_scrypt = Clafer("c0_scrypt").withCard(1, 1);
 c0_bcrypt = Clafer("c0_bcrypt").withCard(1, 1);

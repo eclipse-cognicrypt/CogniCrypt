@@ -144,7 +144,7 @@ ECDSA : DigitalSignatureAlgm
 	[security = Medium]
 	[performance = Fast]
 
-KeyDerivationAlgorithms
+//KeyDerivationAlgorithms
 pbkdf2 : KeyDerivationAlgorithm
 	[name = "PBKDF2"]
 	[description = "PBKDF2 key derivation"]

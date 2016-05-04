@@ -49,13 +49,29 @@ abstract SymmetricBlockCipher : SymmetricCipher
 abstract Task
     description -> string
 
-abstract AES: SymmetricBlockCipher
-    [name = "AES"]
-    [description = "Advanced Encryption Standard (AES) cipher"]
-    [keySize = 128 || keySize = 192 || keySize = 256]
-    [keySize = 128 => performance = VeryFast && security = Medium]
-    [keySize > 128 => performance = Fast && security = Strong]
+xor SymmetricBlockCipherAlgorithms
+	AES128 : SymmetricBlockCipher
+		[name = "AES"]
+		[description = "Advanced Encryption Standard (AES) cipher"]
+		[keySize = 128]
+		[performance = VeryFast]
+		[security = Medium]
+
+	AES192 : SymmetricBlockCipher
+		[name = "AES"]
+		[description = "Advanced Encryption Standard (AES) cipher"]
+		[keySize = 192]
+		[performance = Fast]
+		[security = Strong]
+		
+
+	AES256 : SymmetricBlockCipher
+		[name = "AES"]
+		[description = "Advanced Encryption Standard (AES) cipher"]
+		[keySize = 256]
+		[performance = Fast]
+		[security = Strong]
 
 SymmetricEncryption : Task
 	[description = "Encrypt data using a secret key"]
-	cipher : AES
+	cipher -> SymmetricBlockCipher

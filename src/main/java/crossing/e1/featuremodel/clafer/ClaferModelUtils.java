@@ -66,9 +66,6 @@ public class ClaferModelUtils {
 		} 
 		if(astClafer.getClass().toGenericString().contains("AstAbstractClafer")){
 			isAbstract= true;
-		}else{
-			System.out.println("type "+astClafer.getClass().toGenericString());
-			
 		}
 	return isAbstract;	
 	}

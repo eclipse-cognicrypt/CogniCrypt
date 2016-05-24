@@ -21,6 +21,7 @@
 package crossing.e1.configurator.wizard;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.clafer.ast.AstConcreteClafer;
@@ -28,16 +29,22 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 
 import crossing.e1.configurator.Constants;
+import crossing.e1.configurator.tasks.Task;
+import crossing.e1.configurator.tasks.TaskJSONReader;
 import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
@@ -48,32 +55,24 @@ public class TaskSelectionPage extends WizardPage {
 	private ComboViewer taskComboSelection;
 	private Button advancedModeCheckBox;
 	private Label label2;
-	private String value = "";
-	private final ClaferModel model;
+//	private Task selectedTask = null;
+	//private final ClaferModel model;
 	private boolean status = true;
+	private boolean canProceed = false;
 
-	public TaskSelectionPage(final ClaferModel claferModel) {
+	public TaskSelectionPage() {
 		super(Labels.SELECT_TASK);
 		setTitle(Labels.TASK_LIST);
 		setDescription(Labels.DESCRIPTION_TASK_SELECTION_PAGE);
-		this.model = claferModel;
+		//this.model = claferModel;
+	}
+	
+	public Task getSelectedTask(){
+		return (Task) ((IStructuredSelection) taskComboSelection.getSelection()).getFirstElement();
 	}
 
 	public boolean canProceed() {
-		final String selectedTask = getValue();
-		if (selectedTask.length() > 0) {
-			// Special handling for TLS task
-			if (!selectedTask.equals("Communicate over a secure channel")) {
-				PropertiesMapperUtil.resetPropertiesMap();
-				// PropertiesMapperUtil.resetEnumMap();
-				final AstConcreteClafer claferSelected = PropertiesMapperUtil.getTaskLabelsMap().get(selectedTask);
-				this.model.createClaferPropertiesMap(claferSelected);
-			}
-			setValue(selectedTask);
-			return true;
-		} else {
-			return false;
-		}
+		return canProceed;
 	}
 
 	@Override
@@ -90,39 +89,43 @@ public class TaskSelectionPage extends WizardPage {
 
 		this.taskComboSelection = new ComboViewer(this.container, SWT.COMPOSITION_SELECTION);
 		this.taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
-		Set<String> retreatTasks = new HashSet<String>();
-		//retreatTasks.add("Communicate over a secure channel");
-		//retreatTasks.add("Encrypt data using a given password");
-		this.taskComboSelection.setInput(retreatTasks);
-		this.taskComboSelection.setInput(availableTasks);
-		if (availableTasks.size() > 0) {
-			 taskComboSelection.setSelection(new
-			 StructuredSelection(availableTasks.iterator().next()));
-		} else {
-			this.taskComboSelection.setSelection(new StructuredSelection(Labels.NO_TASK));
-		}
 
-		this.taskComboSelection.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(final SelectionChangedEvent event) {
-				final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-				final String selectedTask = selection.getFirstElement().toString();
-				setValue(selectedTask);
-			}
-		});
+		final List<Task> tasks = TaskJSONReader.getTasks();
+
+	    /* if the current person is selected, show text */
+		taskComboSelection.setLabelProvider(new LabelProvider() {
+	        @Override
+	        public String getText(Object element) {
+	            if (element instanceof Task) {
+	                Task current = (Task) element;
+	                return current.getDescription();
+	            }
+	            return super.getText(element);
+	        }
+	    });
+		 
+	    
+		taskComboSelection.setInput(tasks);
+		taskComboSelection.setSelection(new StructuredSelection(taskComboSelection.getElementAt(0)), true);
+	    
+		taskComboSelection.addSelectionChangedListener(new ISelectionChangedListener() {
+	        @Override
+	        public void selectionChanged(SelectionChangedEvent event) {
+	            IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+	            Task selectedTask = (Task)selection.getFirstElement();
+
+	            taskComboSelection.refresh();
+	            
+	            if(selectedTask != null){
+	            	canProceed = true;
+	            }
+	        }
+	    });
 
 		this.advancedModeCheckBox = new Button(this.container, SWT.CHECK);
 		this.advancedModeCheckBox.setText(Constants.ADVANCED_MODE);
 		this.advancedModeCheckBox.setSelection(false);
 		setControl(this.container);
-	}
-
-	public boolean getStatus() {
-		return this.status = !this.status;
-	}
-
-	public String getValue() {
-		return this.value;
 	}
 
 	/**
@@ -133,9 +136,4 @@ public class TaskSelectionPage extends WizardPage {
 	public boolean isAdvancedMode() {
 		return this.advancedModeCheckBox.getSelection();
 	}
-
-	public void setValue(final String value) {
-		this.value = value;
-	}
-
 }

@@ -30,8 +30,11 @@ public class Constants {
 	public static final String lineSeparator = System.getProperty("line.separator");
 	public static final String JavaNatureID = "org.eclipse.jdt.core.javanature";
 
+	//JSON task file
+	public static final String jsonTaskFile = "src" + fileSeparator + "main" + fileSeparator + "resources" + fileSeparator + "Tasks" + fileSeparator + "tasks.json";
+	
 	// Clafer Instance Generation
-	public static final String claferPath = "src" + fileSeparator + "main" + fileSeparator + "resources" + fileSeparator + "ClaferModel" + fileSeparator + "CryptoTasks.js";
+	public static final String claferPath = "src" + fileSeparator + "main" + fileSeparator + "resources" + fileSeparator + "ClaferModel" + fileSeparator + "SymmetricEncryptionTask.js";
 	public static final String PATH_FOR_CONFIG_XML = "/Configurator.xml";
 	public static final String XML_FILE_NAME = "src/main/resources/ClaferModel/Encrypt_CryptoTasks.xml";
 

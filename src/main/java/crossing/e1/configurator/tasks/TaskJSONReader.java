@@ -20,7 +20,6 @@ public class TaskJSONReader {
 
 	public static List<Task> getTasks() {
 
-		System.out.println(Utilities.getAbsolutePath(Constants.jsonTaskFile));
 		if (tasks == null) {
 			BufferedReader reader;
 			try {

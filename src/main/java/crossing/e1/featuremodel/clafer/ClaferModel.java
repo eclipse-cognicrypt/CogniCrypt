@@ -143,7 +143,6 @@ public class ClaferModel {
 							((AstAbstractClafer) clafer).getSubs());
 
 				}
-				System.out.println("DONE" + PropertiesMapperUtil.getenumMap());
 			}
 		}
 	}
@@ -277,12 +276,10 @@ public class ClaferModel {
 	public void addClaferProperties(AstClafer inputClafer) {
 		try {
 			if (inputClafer.hasChildren()) {
-				if (inputClafer.getGroupCard().getLow() >= 1) {
-					System.out.println(inputClafer.getName() + propertiesList.toString());
+				if (inputClafer.getGroupCard() != null && inputClafer.getGroupCard().getLow() >= 1) {
 					propertiesList.add((AstConcreteClafer) inputClafer);
 				} else
 					for (AstConcreteClafer childClafer : inputClafer.getChildren()) {
-						System.out.println("ADD Clafer" + inputClafer.getName() + " TO " + propertiesList.toString());
 						addClaferProperties(childClafer);
 					}
 			}
@@ -292,12 +289,9 @@ public class ClaferModel {
 		}
 		try {
 			if (inputClafer.hasRef()) {
-				System.out.println("VALUE => " + PropertiesMapperUtil.getenumMap()
-						.containsKey(inputClafer.getRef().getTargetType()));
 				if (inputClafer.getRef().getTargetType().isPrimitive() == true
 						&& (inputClafer.getRef().getTargetType().getName().contains("string") == false)) {
 					if (!ClaferModelUtils.isAbstract(inputClafer)) {
-						System.out.println("adding" + inputClafer.getName() + " TO " + propertiesList.toString());
 						try {
 							propertiesList.add((AstConcreteClafer) inputClafer);
 						} catch (Exception E) {
@@ -385,7 +379,6 @@ public class ClaferModel {
 				propertiesList = new ArrayList<AstConcreteClafer>();
 				groupPropertiesList = new ArrayList<AstConcreteClafer>();
 				addClaferProperties(childClafer);
-				System.out.println("GROUP PROP" + groupPropertiesList.toString());
 				PropertiesMapperUtil.getPropertiesMap().put(childClafer, propertiesList);
 				PropertiesMapperUtil.getGroupPropertiesMap().put(childClafer, groupPropertiesList);
 				

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * @author Ram Kamath, Sarah Nadi, Karim Ali, Stefan Krüger
+ * @author Ram Kamath, Sarah Nadi, Karim Ali, Stefan Krï¿½ger
  *
  */
 package crossing.e1.configurator.wizard;
@@ -44,6 +44,7 @@ import crossing.e1.codegen.Utils;
 import crossing.e1.codegen.generation.XSLBasedGenerator;
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
+import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.configurator.utilities.Validator;
 import crossing.e1.configurator.utilities.WriteToFileHelper;
@@ -73,8 +74,8 @@ public class ConfiguratorWizard extends Wizard {
 		// system's look and feel.
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			this.claferModel = new ClaferModel(Utils.resolveResourcePathToFile(Constants.claferPath).getAbsolutePath());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | URISyntaxException | IOException e) {
+			//this.claferModel = new ClaferModel(Utils.resolveResourcePathToFile(Constants.claferPath).getAbsolutePath());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			Activator.getDefault().logError(e);
 		}
 		setWindowTitle("Cryptography Task Configurator");
@@ -82,7 +83,7 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		this.taskListPage = new TaskSelectionPage(this.claferModel);
+		this.taskListPage = new TaskSelectionPage();
 		this.tlsSCPage = new TLSConfigurationServerClientPage();
 		setForcePreviousAndNextButtons(true);
 		addPage(this.taskListPage);
@@ -96,25 +97,32 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public IWizardPage getNextPage(IWizardPage currentPage) {
+		Task selectedTask = this.taskListPage.getSelectedTask();
 		if (currentPage == this.taskListPage && this.taskListPage.canProceed()) {
 			// Special handling for the TLS task
-			if (this.taskListPage.getValue().equals("Communicate over a secure channel")) {
+			if (selectedTask.getDescription().equals("Communicate over a secure channel")) {
 				this.valueListPage = this.tlsSCPage;
 			} else {
 				if (this.taskListPage.isAdvancedMode()) {
 					this.valueListPage = new ValueSelectionPage(null, this.claferModel);
 				} else {
-					/**
-					 * Before showing the question update properties of a chosen task
-					 */
-					this.claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(this.taskListPage.getValue()));
+//					/**
+//					 * Before showing the question update properties of a chosen task
+//					 */
+//					this.claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(this.taskListPage.getSelectedTask().getDescription())); 
+					//Load appropriate model
+					try {
+						claferModel =  new ClaferModel(Utils.resolveResourcePathToFile(selectedTask.getModelFile()).getAbsolutePath());
+						claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(selectedTask.getDescription())); 
+					
+					
 					/**
 					 * Create Questions object
 					 */
 					this.quest = new QuestionsBeginner();
-					try {
-						this.quest.init(PropertiesMapperUtil.getTaskLabelsMap().get(this.taskListPage.getValue()).getName(),
-							Utils.resolveResourcePathToFile(Constants.XML_FILE_NAME).getAbsolutePath());
+					
+						this.quest.init(PropertiesMapperUtil.getTaskLabelsMap().get(selectedTask.getDescription()).getName(),
+							Utils.resolveResourcePathToFile(selectedTask.getXmlFile()).getAbsolutePath());
 					} catch (URISyntaxException | IOException e) {
 						Activator.getDefault().logError(e);
 					}
@@ -150,7 +158,7 @@ public class ConfiguratorWizard extends Wizard {
 			InstanceGenerator instanceGenerator;
 			try {
 				instanceGenerator = new InstanceGenerator(Utils.resolveResourcePathToFile(Constants.claferPath).getAbsolutePath());
-				instanceGenerator.setTaskName(this.taskListPage.getValue());
+				instanceGenerator.setTaskName(this.taskListPage.getSelectedTask().getDescription());
 				instanceGenerator.setNoOfInstances(0);
 				if (this.taskListPage.isAdvancedMode() && ((ValueSelectionPage) this.valueListPage).getPageStatus() == true) {
 					instanceGenerator.generateInstancesAdvancedUserMode(((ValueSelectionPage) currentPage).getConstraints());
@@ -159,7 +167,8 @@ public class ConfiguratorWizard extends Wizard {
 						addPage(this.instanceListPage);
 						return this.instanceListPage;
 					}
-				} else if (!this.taskListPage.isAdvancedMode() && !this.quest.hasQuestions() && this.taskListPage.getStatus()) {
+				} else if (!this.taskListPage.isAdvancedMode() && !this.quest.hasQuestions()){// && this.taskListPage.getStatus()) {
+					//FIXME: What is this status?! the method there is very weird... removing this check for now
 					// running in beginner mode
 					((DisplayQuestions) currentPage).setMap(((DisplayQuestions) currentPage).getSelection(), this.claferModel);
 					instanceGenerator.generateInstances(((DisplayQuestions) currentPage).getMap());

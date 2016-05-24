@@ -2,19 +2,13 @@
 		{
 			"name": "SymmetricEncryption",
 			"description": "Encrypt data using a secret key",
-			"modelFile" : "src/main/resources/ClaferModel/SymmetricEncryption.js",
+			"modelFile" : "src/main/resources/ClaferModel/SymmetricEncryptionTask.js",
 			"xmlFile" : "src/main/resources/TaskDesc/SymmetricEncryption.xml"
-		},
-		{
-			"name": "SecurePassword",
-			"description": "Represent password in a secure way for storage",
-			"modelFile" : "src/main/resources/ClaferModel/SecurePassword.js",
-			"xmlFile" : "src/main/resources/TaskDesc/SecurePassword.xml"
 		},
 		{
 			"name": "PasswordBasedEncryption",
 			"description": "Encrypt data using a given password",
-			"modelFile" : "src/main/resources/ClaferModel/PasswordBasedEncryption.js",
+			"modelFile" : "src/main/resources/ClaferModel/PwdBasedEncryTask.js",
 			"xmlFile" : "src/main/resources/TaskDesc/PasswordBasedEncryption.xml"
 		}
 ]

@@ -1,0 +1,43 @@
+package crossing.e1.configurator.tasks;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+
+import crossing.e1.configurator.Constants;
+import crossing.e1.configurator.utilities.Utilities;
+
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
+
+public class TaskJSONReader {
+
+	private static List<Task> tasks;
+
+	public static List<Task> getTasks() {
+
+		System.out.println(Utilities.getAbsolutePath(Constants.jsonTaskFile));
+		if (tasks == null) {
+			BufferedReader reader;
+			try {
+				reader = new BufferedReader(new FileReader(
+						Utilities.getAbsolutePath(Constants.jsonTaskFile)));
+				Gson gson = new Gson();
+
+				tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {
+				}.getType());
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return tasks;
+
+	}
+
+}

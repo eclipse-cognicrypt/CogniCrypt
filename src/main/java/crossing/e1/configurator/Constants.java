@@ -56,7 +56,7 @@ public class Constants {
 	public static final String NoJavaFileOpenedErrorMessage = "The currently open file is not a java file. Will generate output file instead.";
 	public static final String CodeGenerationErrorMessage = "An error occured during template generation.";
 	public static final String FilesDoNotExistErrorMessage = "At least one of the files necessary for template generation does not exist.";
-	public static final String NoRunMethodFoundInTemporaryOutputFileErrorMessage = "XSL Template does not contain method \"+ NameOfTemporaryMethod + \".";
+	public static final String NoRunMethodFoundInTemporaryOutputFileErrorMessage = "XSL Template does not contain method "+ NameOfTemporaryMethod + ".";
 	public static final String NoTemporaryOutputFile = "Temporary output file does not exist.";
 	public static final String NoFileandNoProjectOpened = "No file opened and no project selected.";
 	public static final String NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE = "No possible combinations are available for chosen values. Please modify your preferences and try agin.\n \n You can use  \n>= insted of >\n<= instead of <\nto make your selection generic.";

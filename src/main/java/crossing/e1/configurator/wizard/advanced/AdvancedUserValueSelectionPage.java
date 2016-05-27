@@ -40,13 +40,13 @@ import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
-public class ValueSelectionPage extends WizardPage implements Labels {
+public class AdvancedUserValueSelectionPage extends WizardPage implements Labels {
 
 	private Composite container;
 	private List<ComplexWidget> userConstraints = new ArrayList<ComplexWidget>();
 	
 
-	public ValueSelectionPage(List<AstConcreteClafer> items, ClaferModel claferModel) {
+	public AdvancedUserValueSelectionPage(List<AstConcreteClafer> items, ClaferModel claferModel) {
 		super(Labels.SELECT_PROPERTIES);
 		setTitle(Labels.PROPERTIES);
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);

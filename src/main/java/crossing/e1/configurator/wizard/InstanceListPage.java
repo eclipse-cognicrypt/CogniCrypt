@@ -23,6 +23,7 @@ package crossing.e1.configurator.wizard;
 import java.util.Map;
 
 import org.clafer.instance.InstanceClafer;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -38,8 +39,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.configurator.utilities.XMLParser;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
@@ -48,7 +51,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 
 	private Composite control;
 	private Text instanceDetails;
-	private final InstanceGenerator instance;
+	private final InstanceGenerator instanceGenerator;
 	private InstanceClafer value;
 	private boolean val = false;
 	private final XMLParser publisher;
@@ -58,18 +61,20 @@ public class InstanceListPage extends WizardPage implements Labels {
 		super(Labels.SECOND_PAGE);
 		setTitle(Labels.AVAILABLE_OPTIONS);
 		setDescription(Labels.DESCRIPTION_INSTANCE_LIST_PAGE);
-		this.instance = inst;
+		this.instanceGenerator = inst;
 		this.publisher = new XMLParser();
 	}
 
 	@Override
 	public boolean canFlipToNextPage() {
-
 		return false;
 	}
 
 	@Override
 	public void createControl(final Composite parent) {
+		
+		//checkNumberOfInstances();
+		
 		ComboViewer algorithmClass;
 		Label lableInstanceList;
 		this.control = new Composite(parent, SWT.NONE);
@@ -81,7 +86,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 		compositeControl.setLayout(new GridLayout(2, false));
 		lableInstanceList = new Label(compositeControl, SWT.NONE);
 		lableInstanceList.setText(Labels.instanceList);
-		final Map<String, InstanceClafer> inst = this.instance.getInstances();
+		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
 		algorithmClass = new ComboViewer(compositeControl, SWT.COMPOSITION_SELECTION);
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
 		algorithmClass.setInput(inst.keySet());
@@ -97,9 +102,9 @@ public class InstanceListPage extends WizardPage implements Labels {
 				final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 				InstanceListPage.this.instancePropertiesPanel.setVisible(true);
 				final String b = selection.getFirstElement().toString();
-				setValue(InstanceListPage.this.instance.getInstances().get(b));
+				setValue(InstanceListPage.this.instanceGenerator.getInstances().get(b));
 				InstanceListPage.this.instanceDetails.setText(
-						InstanceListPage.this.publisher.getInstanceProperties(InstanceListPage.this.instance.getInstances().get(b), ""));
+						InstanceListPage.this.publisher.getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(b), ""));
 				if (selection.size() > 0) {
 					InstanceListPage.this.val = true;
 					setPageComplete(true);
@@ -121,6 +126,13 @@ public class InstanceListPage extends WizardPage implements Labels {
 		this.instancePropertiesPanel.setVisible(false);
 		setControl(this.control);
 		;
+	}
+	
+	public void checkNumberOfInstances(){
+		if (instanceGenerator.getNoOfInstances() == 0){
+			MessageDialog.openError(new Shell(), "Error", Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE);
+		}
+		
 	}
 
 	public InstanceClafer getValue() {

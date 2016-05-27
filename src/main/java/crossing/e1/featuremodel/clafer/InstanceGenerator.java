@@ -40,6 +40,7 @@ import org.clafer.ast.AstAbstractClafer;
 import org.clafer.ast.AstBoolExpr;
 import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
+import org.clafer.ast.AstConstraint;
 import org.clafer.ast.AstModel;
 import org.clafer.common.Check;
 import org.clafer.compiler.ClaferCompiler;
@@ -115,12 +116,14 @@ public class InstanceGenerator {
 	 * @return
 	 */
 	public List<InstanceClafer> generateInstances(final HashMap<Question, Answer> map) {
-		final AstModel model = claferModel.getModel();
+		final AstModel astModel = claferModel.getModel();
 		try {
 			final AstConcreteClafer taskName = PropertiesMapperUtil.getTaskLabelsMap().get(getTaskName());
-			final AstConcreteClafer main = model.addChild("Main").addChild(MAINTASK).refTo(taskName);
+			final AstConcreteClafer main = astModel.addChild("Main").addChild(MAINTASK).refTo(taskName);
+			
 			basicModeHandler(main, map);
-			solver = ClaferCompiler.compile(model,
+			
+			solver = ClaferCompiler.compile(astModel,
 				claferModel.getScope().toBuilder()
 					//.defaultScope(Integer.parseInt(new ReadConfig().getValue(DEFAULT_SCOPE)))
 					.intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
@@ -218,16 +221,21 @@ public class InstanceGenerator {
 	 * @param operand
 	 * @param claf
 	 */
-	void addConstraints(final int operator, final AstConcreteClafer childClafer, final int value, final AstConcreteClafer operand, final AstConcreteClafer claf) {
-		if (operator == 1) {
+	void addConstraints(final String operator, final AstConcreteClafer childClafer, final int value, final AstConcreteClafer operand, final AstConcreteClafer claf) {
+		if (operator.equals("=")) {
+			System.out.println("adding constraint equal " + childClafer + " " + value + " " + operand + " " + claf);
 			childClafer.addConstraint(equal(joinRef(join(joinRef($this()), operand)), constant(value)));
-		} else if (operator == 2) {
+		} else if (operator.equals("<")) {
+			System.out.println("adding constraint less than " + childClafer + " " + value + " " + operand + " " + claf);
 			childClafer.addConstraint(lessThan(joinRef(join(joinRef($this()), operand)), constant(value)));
-		} else if (operator == 3) {
+		} else if (operator.equals(">")) {
+			System.out.println("adding constraint greater than " + childClafer + " " + value + " " + operand + " " + claf);
 			childClafer.addConstraint(greaterThan(joinRef(join(joinRef($this()), operand)), constant(value)));
-		} else if (operator == 4) {
+		} else if (operator.equals("<=")) {
+			System.out.println("adding constraint lessthanequal " + childClafer + " " + value + " " + operand + " " + claf);
 			childClafer.addConstraint(lessThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
-		} else if (operator == 5) {
+		} else if (operator.equals(">=")) {
+			System.out.println("adding constraint greaterthanequal " + childClafer + " " + value + " " + operand + " " + claf);
 			childClafer.addConstraint(greaterThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
 		}
 	}
@@ -290,7 +298,7 @@ public class InstanceGenerator {
 			for (ComplexWidget claf : constraints) {
 				if (!claf.isGroupConstraint())
 					if (claf.getParentClafer().getName().equals(childClafer.getName())) {
-						final int operator = claf.getOption();
+						final String operator = claf.getOption();
 						final int value = claf.getValue();
 						final AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils.findClaferByName(childClafer, claf.getChildClafer().getName());
 						if (operand != null && !ClaferModelUtils.isAbstract(operand)) {
@@ -306,19 +314,27 @@ public class InstanceGenerator {
 	 */
 	// FIXME include group operator
 	void basicModeHandler(final AstConcreteClafer inputClafer, final HashMap<Question, Answer> qAMap) {
+		System.out.println("adding constraints");
 		final Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> popertiesMap = PropertiesMapperUtil.getPropertiesMap();
 		for (final AstConcreteClafer childOfMainClfer : inputClafer.getRef().getTargetType().getChildren()) {
+			System.out.println("loop 1");
 			for (final AstConcreteClafer propertyOfaClafer : popertiesMap.keySet()) {
+				System.out.println("loop 2");
 				if (childOfMainClfer.getName().equals(propertyOfaClafer.getName())) {
 					for (final AstConcreteClafer property : popertiesMap.get(propertyOfaClafer)) {
+						System.out.println("loop 3");
 						for (final Question question : qAMap.keySet()) {
-							if (qAMap.get(question).hasDependencies()) {
-								for (final Dependency dependency : qAMap.get(question).getDependencies()) {
+							System.out.println("loop 4");
+							System.out.println("question: " +question);
+							Answer answer = qAMap.get(question);
+							System.out.println("answer: " + answer.getValue());
+								for (final Dependency dependency : answer.getDependencies()) {
+									System.out.println("loop 5");
 									if (property.getName().contains(dependency.getRefClafer())) {
-										addConstraints(Integer.parseInt(dependency.getOperator()), propertyOfaClafer, Integer.parseInt(dependency.getValue()), property, null);
+										addConstraints(dependency.getOperator(), propertyOfaClafer, Integer.parseInt(dependency.getValue()), property, null);
 									}
 								}
-							}
+							
 						}
 					}
 				}

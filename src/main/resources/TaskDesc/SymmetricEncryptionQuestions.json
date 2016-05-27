@@ -1,0 +1,18 @@
+[
+		{
+			"questionText":"What is the level of security that you need for your data?",
+			"answers":[
+				{"value":"Very secure",
+				"dependencies":[
+				{"refClafer":"keySize","value":"128","operator":">"}
+				]},
+				{"value":"Secure",
+				"dependencies":[
+				{"refClafer":"keySize","value":"128","operator":">="}
+				]},
+				{"value":"Not important (I'm just testing for now and would prefer something fast)",
+				"dependencies":[]}
+			]
+		}
+]
+

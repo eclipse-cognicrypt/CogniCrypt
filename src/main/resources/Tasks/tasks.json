@@ -3,13 +3,13 @@
 			"name": "SymmetricEncryption",
 			"description": "Encrypt data using a secret key",
 			"modelFile" : "src/main/resources/ClaferModel/SymmetricEncryptionTask.js",
-			"xmlFile" : "src/main/resources/TaskDesc/SymmetricEncryption.xml"
+			"xmlFile" : "src/main/resources/TaskDesc/SymmetricEncryptionQuestions.json"
 		},
 		{
 			"name": "PasswordBasedEncryption",
 			"description": "Encrypt data using a given password",
 			"modelFile" : "src/main/resources/ClaferModel/PwdBasedEncryTask.js",
-			"xmlFile" : "src/main/resources/TaskDesc/PasswordBasedEncryption.xml"
+			"xmlFile" : "src/main/resources/TaskDesc/PasswordBasedEncryptionQuestions.json"
 		}
 ]
 

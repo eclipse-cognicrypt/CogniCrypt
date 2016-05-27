@@ -19,17 +19,19 @@ import org.eclipse.swt.widgets.Label;
 
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Question;
+import crossing.e1.configurator.beginer.question.Answer;
+import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 
-public class DisplayQuestions extends WizardPage {
+public class BeginnerTaskQuestionPage extends WizardPage {
 
-	private String questions = null;
+	private String currentQuestion = null;
 	private final QuestionsBeginner quest;
 	private final HashMap<Question, Answer> selection = new HashMap<Question, Answer>();
 	private final List<Composite> quetsionsList;
 
-	public DisplayQuestions(final QuestionsBeginner quest) {
+	public BeginnerTaskQuestionPage(final QuestionsBeginner quest) {
 		super("Display Questions");
 		setTitle(Labels.PROPERTIES);
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
@@ -43,13 +45,18 @@ public class DisplayQuestions extends WizardPage {
 		container.setBounds(10, 10, 450, 200);
 		final GridLayout layout = new GridLayout();
 		container.setLayout(layout);
-		while (this.quest.hasQuestions()) {
-			this.questions = this.quest.nextQuestion().getDef();
-			final Question claferName = this.quest.nextQuestion();
-
-			nextQuestion(container, claferName);
-
+		List<Question> questionList = quest.getQutionare();
+		for(Question question : questionList){
+			createQuestionControl(container, question);
+			
 		}
+//		while (this.quest.hasQuestions()) {
+//			this.currentQuestion = this.quest.nextQuestion().getDef();
+//			final Question claferName = this.quest.nextQuestion();
+//
+//			nextQuestion(container, claferName);
+//
+//		}
 		layout.numColumns = 1;
 		setControl(container);
 	}
@@ -62,20 +69,20 @@ public class DisplayQuestions extends WizardPage {
 		return this.selection;
 	}
 
-	public void nextQuestion(final Composite parent, final Question question) {
-		final List<Answer> answer = this.quest.nextValues();
-		final List<String> answerString = new ArrayList<String>();
+	public void createQuestionControl(final Composite parent, final Question question) {
+		final List<Answer> answers = question.getAnswers();
+		final List<String> answerStrings = new ArrayList<String>();
 		ComboViewer option;
 		final Composite container = getPanle(parent);
 		final Label label = new Label(container, SWT.CENTER);
-		label.setText(this.questions);
-		for (final Answer answerObject : answer) {
-			answerString.add(answerObject.getValue());
+		label.setText(question.getQuestionText());
+		for (Answer answerObject : answers) {
+			answerStrings.add(answerObject.getValue());
 		}
 		option = new ComboViewer(container, SWT.NONE);
 		option.setContentProvider(ArrayContentProvider.getInstance());
-		option.setInput(answerString);
-		option.setSelection(new StructuredSelection(answerString.get(1)));
+		option.setInput(answerStrings);
+		option.setSelection(new StructuredSelection(answerStrings.get(1)));
 		option.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
@@ -84,8 +91,8 @@ public class DisplayQuestions extends WizardPage {
 				final String answerSelection = option.getSelection().toString();
 				// FIXME need to replace 4 by the value selected by user , check groupcard property here before
 				// assignment
-				final int index = answerString.indexOf(answerSelection.toString().replace("[", "").replace("]", ""));
-				DisplayQuestions.this.selection.put(question, answer.get(index));
+				final int index = answerStrings.indexOf(answerSelection.toString().replace("[", "").replace("]", ""));
+				BeginnerTaskQuestionPage.this.selection.put(question, answers.get(index));
 
 				// Integer.parseInt(answerSelection
 				// .substring(answerSelection.indexOf(':') + 1,

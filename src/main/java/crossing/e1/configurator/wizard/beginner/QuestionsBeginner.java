@@ -1,20 +1,22 @@
 package crossing.e1.configurator.wizard.beginner;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Question;
-import crossing.e1.configurator.beginer.question.ReadTaskConfig;
+import crossing.e1.configurator.beginer.question.QuestionsJSONReader;
 
 public class QuestionsBeginner {
 
-	private ArrayList<Question> qutionare;
+	private List<Question> questionList;
 	private String taskName;
 	private int counter = 0;
+	
+	public QuestionsBeginner(final String taskName, final String filePath) {
+		setTask(taskName);
+		questionList = (new QuestionsJSONReader()).getQuestions(filePath);
+	}
 
-	public ArrayList<Question> getQutionare() throws NullPointerException {
-		return this.qutionare;
+	public List<Question> getQutionare() throws NullPointerException {
+		return questionList;
 	}
 
 	public String getTask() {
@@ -22,17 +24,13 @@ public class QuestionsBeginner {
 	}
 
 	public boolean hasQuestions() {
-		return this.counter < getQutionare().size();
+		//return this.counter < getQutionare().size();
+		return questionList.size() > 0;
 	}
 
-	public void init(final String taskName, final String filePath) {
-		setTask(taskName);
-		setQutionare(new ReadTaskConfig().getQA(taskName, filePath));
-	}
 
 	public Question nextQuestion() {
-		final List<Question> key = getQutionare();
-		return key.get(this.counter);
+		return questionList.get(this.counter);
 	}
 	//
 	// public String nextQuestionClafer() {
@@ -44,13 +42,13 @@ public class QuestionsBeginner {
 	// return claferName;
 	// }
 
-	public List<Answer> nextValues() {
-		return getQutionare().get(this.counter++).getAnswers();
-	}
-
-	public void setQutionare(final ArrayList<Question> arrayList) {
-		this.qutionare = arrayList;
-	}
+//	public List<Answer> nextValues() {
+//		return getQutionare().get(this.counter++).getAnswers();
+//	}
+//
+//	public void setQutionare(final ArrayList<Question> arrayList) {
+//		this.questionList = arrayList;
+//	}
 
 	public void setTask(final String value) {
 		this.taskName = value;

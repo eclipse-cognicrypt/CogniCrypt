@@ -171,8 +171,8 @@ public class ComplexWidget {
 		this.parentClafer = parentClafer;
 	}
 
-	public Integer getOption() {
-		return Utilities.toNumber(option.getSelection().toString());
+	public String getOption() {
+		return option.getSelection().toString();
 	}
 
 	public Integer getValue() {

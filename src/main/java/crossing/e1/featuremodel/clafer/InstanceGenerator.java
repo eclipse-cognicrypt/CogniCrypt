@@ -42,9 +42,11 @@ import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstConstraint;
 import org.clafer.ast.AstModel;
+import org.clafer.cli.Utils;
 import org.clafer.common.Check;
 import org.clafer.compiler.ClaferCompiler;
 import org.clafer.compiler.ClaferSolver;
+import org.clafer.compiler.ClaferUnsat;
 import org.clafer.instance.InstanceClafer;
 import org.clafer.scope.Scope;
 
@@ -121,7 +123,9 @@ public class InstanceGenerator {
 			final AstConcreteClafer taskName = PropertiesMapperUtil.getTaskLabelsMap().get(getTaskName());
 			final AstConcreteClafer main = astModel.addChild("Main").addChild(MAINTASK).refTo(taskName);
 			
-			basicModeHandler(main, map);
+			basicModeHandler(astModel, main, map);
+			
+			System.out.println("Symm encry: " + Utils.getModelChildByName(astModel, "c0_SymmetricEncryption").getConstraints().toString());
 			
 			solver = ClaferCompiler.compile(astModel,
 				claferModel.getScope().toBuilder()
@@ -221,7 +225,14 @@ public class InstanceGenerator {
 	 * @param operand
 	 * @param claf
 	 */
-	void addConstraints(final String operator, final AstConcreteClafer childClafer, final int value, final AstConcreteClafer operand, final AstConcreteClafer claf) {
+	void addConstraints(AstModel astModel, AstClafer taskClafer, final String operator, final AstConcreteClafer childClafer, final int value, final AstConcreteClafer operand, final AstConcreteClafer claf) {
+		System.out.println("taskClafer: " + taskClafer.getName());
+		System.out.println("operator: " + operator);
+		System.out.println("child clafer: " + childClafer.getName());
+		System.out.println("Value: " + value);
+		System.out.println("operand: " + operand.getName());
+		System.out.println("claf: " + claf);
+		
 		if (operator.equals("=")) {
 			System.out.println("adding constraint equal " + childClafer + " " + value + " " + operand + " " + claf);
 			childClafer.addConstraint(equal(joinRef(join(joinRef($this()), operand)), constant(value)));
@@ -229,8 +240,21 @@ public class InstanceGenerator {
 			System.out.println("adding constraint less than " + childClafer + " " + value + " " + operand + " " + claf);
 			childClafer.addConstraint(lessThan(joinRef(join(joinRef($this()), operand)), constant(value)));
 		} else if (operator.equals(">")) {
-			System.out.println("adding constraint greater than " + childClafer + " " + value + " " + operand + " " + claf);
-			childClafer.addConstraint(greaterThan(joinRef(join(joinRef($this()), operand)), constant(value)));
+			//System.out.println("adding constraint greater than " + childClafer + " " + value + " " + operand + " " + claf);
+			//c0_SymmetricEncryption.addConstraint(greaterThan(joinRef(join(joinRef(join($this(), c0_cipher)), c0_keySize)), constant(128)));
+			//main.addConstraint(greaterThan(joinRef(join(joinRef(join($this(), childClafer)), operand)), constant(value)));
+			//childClafer.addConstraint(greaterThan(joinRef(join(joinRef($this()), operand)), constant(value)));
+			
+			//Constraint(greaterThan(joinRef(join(joinRef(join(global(c0_SymmetricEncryption), c0_cipher)), c0_keySize)), constant(128)));
+			//astModel.addConstraint(greaterThan(joinRef(join(joinRef(join(global(taskClafer), childClafer)), operand)), constant(value)));
+			
+			//COMPILES BUT THEN LEADS TO NULL PTR
+			taskClafer.addConstraint(greaterThan(joinRef(join(joinRef(childClafer),operand)), constant(value)));
+			
+			//taskClafer.addConstraint(greaterThan(join($this(),joinRef(join(childClafer,operand)))), constant(value)));
+			
+			//taskClafer.addConstraint(greaterThan(joinRef(join(joinRef(join($this(), childClafer)), operand)), constant(value)));
+			
 		} else if (operator.equals("<=")) {
 			System.out.println("adding constraint lessthanequal " + childClafer + " " + value + " " + operand + " " + claf);
 			childClafer.addConstraint(lessThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
@@ -302,7 +326,8 @@ public class InstanceGenerator {
 						final int value = claf.getValue();
 						final AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils.findClaferByName(childClafer, claf.getChildClafer().getName());
 						if (operand != null && !ClaferModelUtils.isAbstract(operand)) {
-							addConstraints(operator, childClafer, value, operand, claf.getChildClafer());
+							//TODO: Fix first two params for advanced mode
+							addConstraints(null, null, operator, childClafer, value, operand, claf.getChildClafer());
 						}
 					}
 			}
@@ -313,25 +338,21 @@ public class InstanceGenerator {
 	 * BasicModeHandler will take <Question, answer> map as a parameter where the key of the map is a question, answer is the selected answer for a given question each answer has been further iterated to apply associated dependencies
 	 */
 	// FIXME include group operator
-	void basicModeHandler(final AstConcreteClafer inputClafer, final HashMap<Question, Answer> qAMap) {
-		System.out.println("adding constraints");
+	void basicModeHandler(AstModel astModel, final AstConcreteClafer inputClafer, final HashMap<Question, Answer> qAMap) {		
 		final Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> popertiesMap = PropertiesMapperUtil.getPropertiesMap();
+		
 		for (final AstConcreteClafer childOfMainClfer : inputClafer.getRef().getTargetType().getChildren()) {
-			System.out.println("loop 1");
 			for (final AstConcreteClafer propertyOfaClafer : popertiesMap.keySet()) {
-				System.out.println("loop 2");
 				if (childOfMainClfer.getName().equals(propertyOfaClafer.getName())) {
-					for (final AstConcreteClafer property : popertiesMap.get(propertyOfaClafer)) {
-						System.out.println("loop 3");
+					for (final AstConcreteClafer property : popertiesMap.get(propertyOfaClafer)) {					
 						for (final Question question : qAMap.keySet()) {
-							System.out.println("loop 4");
-							System.out.println("question: " +question);
 							Answer answer = qAMap.get(question);
-							System.out.println("answer: " + answer.getValue());
 								for (final Dependency dependency : answer.getDependencies()) {
-									System.out.println("loop 5");
 									if (property.getName().contains(dependency.getRefClafer())) {
-										addConstraints(dependency.getOperator(), propertyOfaClafer, Integer.parseInt(dependency.getValue()), property, null);
+										System.out.println("property: "+ property.getName());
+										System.out.println("propertyof clafeR: "+ propertyOfaClafer.getName());
+										System.out.println("child fo main: " + childOfMainClfer);
+										addConstraints(astModel, inputClafer.getRef().getTargetType(), dependency.getOperator(), propertyOfaClafer, Integer.parseInt(dependency.getValue()), property, null);
 									}
 								}
 							

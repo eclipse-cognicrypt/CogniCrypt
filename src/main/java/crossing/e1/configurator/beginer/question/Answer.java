@@ -19,6 +19,8 @@ package crossing.e1.configurator.beginer.question;
 import java.util.ArrayList;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import crossing.e1.configurator.utilities.Labels;
@@ -30,32 +32,37 @@ import crossing.e1.configurator.utilities.Labels;
 
 public class Answer implements Labels {
 	private ArrayList<Dependency> dependencies;
-	private boolean hasDependencies = false;
 	private String value;
-	private String ref;
-	private String operator;
+//	private String ref;
+//	private String operator;
 
-	Answer(final Element answeritem) {
-		if (answeritem.hasChildNodes()) {
-			Element dependencies = null;
-			if (answeritem.getElementsByTagName(Labels.DEPENDENCIES).getLength() > 0) {
-				dependencies = (Element) answeritem.getElementsByTagName(Labels.DEPENDENCIES).item(0);
-				NodeList dependenciesList = null;
-				if (dependencies.hasChildNodes()) {
-					setDependencies(true);
-					dependenciesList = dependencies.getElementsByTagName(Labels.DEPENDENCY);
-					for (int depIndex = 0; depIndex < dependenciesList.getLength(); depIndex++) {
-						final Element dependency = (Element) dependenciesList.item(depIndex);
-						getDependencies().add(new Dependency(dependency.getAttribute(Labels.VALUE),
-								dependency.getAttribute(Labels.OPERATOR), dependency.getAttribute(Labels.REF_CLAFER),
-								Boolean.parseBoolean(dependency.getAttribute(Labels.IS_GROUP))));
-					}
-				}
+	Answer(final Node answerNode) {
+		System.out.println("Asnwer node:" + answerNode.toString());
+		if (answerNode.hasChildNodes()) {
+			NodeList answerDependencies = answerNode.getChildNodes();
+			System.out.println("answer dependencies: " + answerDependencies.toString());
+			for (int depIndex = 0; depIndex < answerDependencies.getLength(); depIndex++) {
+				final Node dependency = answerDependencies.item(depIndex);
+				System.out.println("dependency: " + dependency.toString());
+				NamedNodeMap attributes = dependency.getAttributes();
+				System.out.println("attributes: " + attributes.toString());
+				dependencies.add(new Dependency(attributes.getNamedItem(VALUE).getNodeValue(),
+						attributes.getNamedItem(OPERATOR).getNodeValue(),
+						attributes.getNamedItem(REF_CLAFER).getNodeValue(),
+						Boolean.parseBoolean(attributes.getNamedItem(IS_GROUP).getNodeValue())));
+				
+//				dependencies.add(
+//						new Dependency(dependency.getA getAttribute(Labels.VALUE),
+//								dependency.getAttribute(Labels.OPERATOR),
+//								dependency.getAttribute(Labels.REF_CLAFER),
+//								Boolean.parseBoolean(dependency
+//										.getAttribute(Labels.IS_GROUP))));
 			}
 		}
-		setOperator(answeritem.getAttribute(Labels.OPERATOR));
-		setRef(answeritem.getAttribute(Labels.REF));
-		setValue(answeritem.getAttribute(Labels.VALUE));
+
+//		setOperator(answeritem.getAttribute(Labels.OPERATOR));
+//		setRef(answeritem.getAttribute(Labels.REF));
+		setValue(answerNode.getAttributes().getNamedItem(VALUE).getNodeValue());
 	}
 
 	/**
@@ -68,19 +75,19 @@ public class Answer implements Labels {
 		return this.dependencies;
 	}
 
-	/**
-	 * @return the operator
-	 */
-	public String getOperator() {
-		return this.operator;
-	}
-
-	/**
-	 * @return the ref
-	 */
-	public String getRef() {
-		return this.ref;
-	}
+//	/**
+//	 * @return the operator
+//	 */
+//	public String getOperator() {
+//		return this.operator;
+//	}
+//
+//	/**
+//	 * @return the ref
+//	 */
+//	public String getRef() {
+//		return this.ref;
+//	}
 
 	/**
 	 * @return the value
@@ -93,7 +100,7 @@ public class Answer implements Labels {
 	 * @return the hasDependencies
 	 */
 	public boolean hasDependencies() {
-		return this.hasDependencies;
+		return dependencies.size() > 0;
 	}
 
 	/**
@@ -104,29 +111,21 @@ public class Answer implements Labels {
 		this.dependencies = dependencies;
 	}
 
-	/**
-	 * @param hasDependencies
-	 *            the hasDependencies to set
-	 */
-	public void setDependencies(final boolean hasDependencies) {
-		this.hasDependencies = hasDependencies;
-	}
-
-	/**
-	 * @param operator
-	 *            the operator to set
-	 */
-	public void setOperator(final String operator) {
-		this.operator = operator;
-	}
-
-	/**
-	 * @param ref
-	 *            the ref to set
-	 */
-	public void setRef(final String ref) {
-		this.ref = ref;
-	}
+//	/**
+//	 * @param operator
+//	 *            the operator to set
+//	 */
+//	public void setOperator(final String operator) {
+//		this.operator = operator;
+//	}
+//
+//	/**
+//	 * @param ref
+//	 *            the ref to set
+//	 */
+//	public void setRef(final String ref) {
+//		this.ref = ref;
+//	}
 
 	/**
 	 * @param value

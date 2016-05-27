@@ -41,16 +41,17 @@ public class Question implements Labels {
 	 * @param que
 	 */
 	Question(final Element que) {
-		NodeList answer = null;
+		NodeList answers = null;
 		if (que.hasChildNodes()) {
 			Element answersList = null;
 			if (que.getElementsByTagName(Labels.ANSWER_LIST).getLength() > 0) {
 				answersList = (Element) que.getElementsByTagName(Labels.ANSWER_LIST).item(0);
 			}
 			if (answersList.hasChildNodes()) {
-				answer = answersList.getElementsByTagName(Labels.ANSWER);
-				for (int ans = 0; ans < answer.getLength(); ans++) {
-					getAnswers().add(new Answer((Element) answer.item(ans)));
+				answers = answersList.getElementsByTagName(Labels.ANSWER);
+				System.out.println("ANSWERS: " + answers.toString());
+				for (int ans = 0; ans < answers.getLength(); ans++) {
+					getAnswers().add(new Answer(answers.item(ans)));
 				}
 			}
 		}

@@ -63,7 +63,6 @@ import crossing.e1.configurator.wizard.advanced.ComplexWidget;
  */
 public class InstanceGenerator {
 
-	private static final String MAINTASK = "MAINTASK";
 	private ClaferSolver solver;
 	private List<InstanceClafer> generatedInstances;
 	private Map<Long, InstanceClafer> uniqueInstances;
@@ -121,28 +120,20 @@ public class InstanceGenerator {
 	public List<InstanceClafer> generateInstances(final HashMap<Question, Answer> map) {
 		final AstModel astModel = claferModel.getModel();
 		try {
-			final AstConcreteClafer taskClafer = PropertiesMapperUtil.getTaskLabelsMap().get(getTaskDescription());
-			//final AstConcreteClafer mainClafer = astModel.addChild("Main").addChild(MAINTASK).refTo(taskClafer);
+			final AstClafer taskClafer = Utils.getModelChildByName(astModel, "c0_" + taskName);
 			
 			basicModeHandler(astModel, taskClafer, map);
-			
-			System.out.println("Symm encry: " + Utils.getModelChildByName(astModel, "c0_SymmetricEncryption").getConstraints().toString());
-			
-
 			
 			solver = ClaferCompiler.compile(astModel,
 				claferModel.getScope().toBuilder()
 					//.defaultScope(Integer.parseInt(new ReadConfig().getValue(DEFAULT_SCOPE)))
 					.intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
-			
-			System.out.println("compiled");
-			int count = 0;
+
 			while (this.solver.find()) {
-				count++;
 				final InstanceClafer instance = solver.instance().getTopClafers()[solver.instance().getTopClafers().length - 1];
 				uniqueInstances.put(getHashValueOfInstance(instance), instance);
 			}
-			System.out.println("num of instances: " + count);
+	
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e);
 		}
@@ -161,8 +152,9 @@ public class InstanceGenerator {
 	public List<InstanceClafer> generateInstancesAdvancedUserMode(final List<ComplexWidget> constraints) {
 		final AstModel model = claferModel.getModel();
 		try {
-			AstConcreteClafer tempTask = model.addChild("Main").addChild(MAINTASK).refTo(PropertiesMapperUtil.getTaskLabelsMap().get(getTaskDescription()));
-			advancedModeHandler(tempTask, constraints);
+			
+			final AstConcreteClafer taskClafer = PropertiesMapperUtil.getTaskLabelsMap().get(getTaskDescription());
+			advancedModeHandler(taskClafer, constraints);
 			// TODO Need to be uncommented after fix
 			// addGroupProperties(tempTask, constraints);
 			solver = ClaferCompiler.compile(model, claferModel.getScope().toBuilder().intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
@@ -233,23 +225,18 @@ public class InstanceGenerator {
 	 * @param operand
 	 * @param claf
 	 */
-	void addConstraints(AstModel astModel, AstClafer taskClafer, final String operator, final AstConcreteClafer childClafer, final int value, final AstConcreteClafer operand, final AstConcreteClafer claf) {
+	void addConstraints(AstClafer taskClafer, final String operator, AstClafer childClafer, final int value, final AstConcreteClafer operand, final AstConcreteClafer claf) {
 		if (operator.equals("=")) {
-			System.out.println("adding constraint equal " + childClafer + " " + value + " " + operand + " " + claf);
 			childClafer.addConstraint(equal(joinRef(join(joinRef($this()), operand)), constant(value)));
 		} else if (operator.equals("<")) {
-			System.out.println("adding constraint less than " + childClafer + " " + value + " " + operand + " " + claf);
 			childClafer.addConstraint(lessThan(joinRef(join(joinRef($this()), operand)), constant(value)));
 		} else if (operator.equals(">")) {
-			
-			System.out.println(greaterThan(joinRef(join(joinRef(join($this(), childClafer)), operand)), constant(value)));
+			//my attempt to make the constraints actually make a difference
 			taskClafer.addConstraint(greaterThan(joinRef(join(joinRef(join($this(), childClafer)), operand)), constant(value)));
-	
 		} else if (operator.equals("<=")) {
-			System.out.println("adding constraint lessthanequal " + childClafer + " " + value + " " + operand + " " + claf);
 			childClafer.addConstraint(lessThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
 		} else if (operator.equals(">=")) {
-			System.out.println("adding constraint greaterthanequal " + childClafer + " " + value + " " + operand + " " + claf);
+			//this keeps the old way of adding the constraint to the actual child (e.g., cipher in SymmetricEncryption task)
 			childClafer.addConstraint(greaterThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
 		}
 	}
@@ -304,20 +291,20 @@ public class InstanceGenerator {
 	/**
 	 * This method is to parse the map of clafers and apply their values as constraints before instance generation, used only in advanceduserMode
 	 *
-	 * @param tempClafer
+	 * @param taskClafer
 	 * @param propertiesMap
 	 */
-	void advancedModeHandler(final AstConcreteClafer tempClafer, final List<ComplexWidget> constraints) {
-		for (AstConcreteClafer childClafer : tempClafer.getRef().getTargetType().getChildren()) {
-			for (ComplexWidget claf : constraints) {
-				if (!claf.isGroupConstraint())
-					if (claf.getParentClafer().getName().equals(childClafer.getName())) {
-						final String operator = claf.getOption();
-						final int value = claf.getValue();
-						final AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils.findClaferByName(childClafer, claf.getChildClafer().getName());
+	void advancedModeHandler(final AstConcreteClafer taskClafer, final List<ComplexWidget> constraints) {
+		for (AstConcreteClafer taskAlgorithm : taskClafer.getChildren()) {
+			for (ComplexWidget constraint : constraints) {
+				if (!constraint.isGroupConstraint())
+					if (constraint.getParentClafer().getName().equals(taskAlgorithm.getName())) {
+						final String operator = constraint.getOption();
+						final int value = constraint.getValue();
+						final AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils.findClaferByName(taskAlgorithm, constraint.getChildClafer().getName());
 						if (operand != null && !ClaferModelUtils.isAbstract(operand)) {
 							//TODO: Fix first two params for advanced mode
-							addConstraints(null, null, operator, childClafer, value, operand, claf.getChildClafer());
+							addConstraints(taskClafer, operator, taskAlgorithm, value, operand, constraint.getChildClafer());
 						}
 					}
 			}
@@ -328,21 +315,22 @@ public class InstanceGenerator {
 	 * BasicModeHandler will take <Question, answer> map as a parameter where the key of the map is a question, answer is the selected answer for a given question each answer has been further iterated to apply associated dependencies
 	 */
 	// FIXME include group operator
-	void basicModeHandler(AstModel astModel, final AstConcreteClafer taskClafer, final HashMap<Question, Answer> qAMap) {		
+	void basicModeHandler(AstModel astModel, AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {		
 		final Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> popertiesMap = PropertiesMapperUtil.getPropertiesMap();
 		
-		for (final AstConcreteClafer taskAlgorithm : taskClafer.getChildren()) {
-			for (final AstConcreteClafer algorithm : popertiesMap.keySet()) {
+		for (AstConcreteClafer taskAlgorithm : taskClafer.getChildren()) {
+			for (AstConcreteClafer algorithm : popertiesMap.keySet()) {
 				if (taskAlgorithm.getName().equals(algorithm.getName())) {
-					for (final AstConcreteClafer property : popertiesMap.get(algorithm)) {					
-						for (final Question question : qAMap.keySet()) {
+					for (AstConcreteClafer property : popertiesMap.get(algorithm)) {					
+						for (Question question : qAMap.keySet()) {
 							Answer answer = qAMap.get(question);
-								for (final Dependency dependency : answer.getDependencies()) {
+								for (Dependency dependency : answer.getDependencies()) {
 									if (property.getName().contains(dependency.getRefClafer())) {
-										System.out.println("property: "+ property.getName());
-										System.out.println("propertyof clafeR: "+ algorithm.getName());
-										System.out.println("child fo main: " + taskAlgorithm);
-										addConstraints(astModel, taskClafer, dependency.getOperator(), algorithm, Integer.parseInt(dependency.getValue()), property, null);
+										//Since a new model is created each time the instance generator is called, the original algorithm object that is put in the propertiesMap is not
+										//even part of the current model. Therefore, we find the correct object in the current model first
+										//the taskClafer is OK because it is retrieved from the current model
+										AstClafer algorithmInCurrentModel = Utils.getModelChildByName(astModel, algorithm.getName());
+										addConstraints(taskClafer, dependency.getOperator(), algorithmInCurrentModel , Integer.parseInt(dependency.getValue()), property, null);
 									}
 								}
 							

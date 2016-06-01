@@ -381,7 +381,7 @@ public class ClaferModel {
 				addClaferProperties(childClafer);
 				PropertiesMapperUtil.getPropertiesMap().put(childClafer, propertiesList);
 				PropertiesMapperUtil.getGroupPropertiesMap().put(childClafer, groupPropertiesList);
-				
+				System.out.println("putting child: " + childClafer.getName() + System.identityHashCode(childClafer));
 
 			}
 	}

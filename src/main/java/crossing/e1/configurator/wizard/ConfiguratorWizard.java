@@ -183,7 +183,6 @@ public class ConfiguratorWizard extends Wizard {
 		 * If current page is either question or properties page (in Advanced mode) check title. Maintain uniform title for second wizard page of the wizard
 		 */
 		else if (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage){
-			System.out.println("CALLING INSTANCE GENERATOR");
 			InstanceGenerator instanceGenerator;
 			try {
 				instanceGenerator = new InstanceGenerator(Utils.resolveResourcePathToFile(selectedTask.getModelFile()).getAbsolutePath());
@@ -191,12 +190,10 @@ public class ConfiguratorWizard extends Wizard {
 				instanceGenerator.setTaskName(this.taskListPage.getSelectedTask().getName());
 				instanceGenerator.setNoOfInstances(0);
 				if (this.taskListPage.isAdvancedMode()){// && ((ValueSelectionPage) this.valueListPage).getPageStatus() == true) {
-					System.out.println("Advanced mode");
 					instanceGenerator.generateInstancesAdvancedUserMode(((AdvancedUserValueSelectionPage) currentPage).getConstraints());
 				} else {//if (!this.taskListPage.isAdvancedMode() && !this.quest.hasQuestions()){// && this.taskListPage.getStatus()) {
 					//FIXME: What is this status?! the method there is very weird... removing this check for now
 					// running in beginner mode
-					System.out.println("BEGINNER mode");
 					((BeginnerTaskQuestionPage) currentPage).setMap(((BeginnerTaskQuestionPage) currentPage).getSelection(), claferModel);
 		
 					instanceGenerator.generateInstances(((BeginnerTaskQuestionPage) currentPage).getMap());
@@ -205,12 +202,12 @@ public class ConfiguratorWizard extends Wizard {
 				if (instanceGenerator.getNoOfInstances() > 0) {
 					this.instanceListPage = new InstanceListPage(instanceGenerator);
 					addPage(this.instanceListPage);
-					System.out.println("Returning page: " + this.instanceListPage.getName());
 					return this.instanceListPage;
 				}else{
-					System.out.println("no instances");
-					if("nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[2].getMethodName()))
-						MessageDialog.openError(new Shell(), "Error", Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE);
+					if("nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[3].getMethodName())){
+						String message = this.taskListPage.isAdvancedMode() ? Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE : Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER;
+						MessageDialog.openError(new Shell(), "Error", message);
+					}
 				}
 				
 				
@@ -219,7 +216,7 @@ public class ConfiguratorWizard extends Wizard {
 				Activator.getDefault().logError(e);
 			}
 		}
-		System.out.println("Returning page: " + currentPage.getName());
+	
 		return currentPage;
 	}
 

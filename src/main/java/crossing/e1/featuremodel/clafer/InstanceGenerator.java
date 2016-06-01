@@ -71,6 +71,7 @@ public class InstanceGenerator {
 	private ClaferModel claferModel;
 	private int noOfInstances;
 	private String taskName = "";
+	private String taskDescription = "";
 
 	public InstanceGenerator(final String path) {
 		this.claferModel = new ClaferModel(path);
@@ -84,7 +85,7 @@ public class InstanceGenerator {
 	public void generateInstanceMapping() {
 		for (InstanceClafer inst : this.generatedInstances) {
 			String key = getInstanceName(inst);
-			if (inst.getType().getName().equals("Main") && key.length() > 0) {
+			if (inst.getType().getName().substring(inst.getType().getName().indexOf("_") + 1).equals(taskName) && key.length() > 0) {
 				/**
 				 * Check if any instance has same name , if yes add numerical values as suffix
 				 *
@@ -120,21 +121,28 @@ public class InstanceGenerator {
 	public List<InstanceClafer> generateInstances(final HashMap<Question, Answer> map) {
 		final AstModel astModel = claferModel.getModel();
 		try {
-			final AstConcreteClafer taskName = PropertiesMapperUtil.getTaskLabelsMap().get(getTaskName());
-			final AstConcreteClafer main = astModel.addChild("Main").addChild(MAINTASK).refTo(taskName);
+			final AstConcreteClafer taskClafer = PropertiesMapperUtil.getTaskLabelsMap().get(getTaskDescription());
+			//final AstConcreteClafer mainClafer = astModel.addChild("Main").addChild(MAINTASK).refTo(taskClafer);
 			
-			basicModeHandler(astModel, main, map);
+			basicModeHandler(astModel, taskClafer, map);
 			
 			System.out.println("Symm encry: " + Utils.getModelChildByName(astModel, "c0_SymmetricEncryption").getConstraints().toString());
+			
+
 			
 			solver = ClaferCompiler.compile(astModel,
 				claferModel.getScope().toBuilder()
 					//.defaultScope(Integer.parseInt(new ReadConfig().getValue(DEFAULT_SCOPE)))
 					.intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
+			
+			System.out.println("compiled");
+			int count = 0;
 			while (this.solver.find()) {
+				count++;
 				final InstanceClafer instance = solver.instance().getTopClafers()[solver.instance().getTopClafers().length - 1];
 				uniqueInstances.put(getHashValueOfInstance(instance), instance);
 			}
+			System.out.println("num of instances: " + count);
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e);
 		}
@@ -153,7 +161,7 @@ public class InstanceGenerator {
 	public List<InstanceClafer> generateInstancesAdvancedUserMode(final List<ComplexWidget> constraints) {
 		final AstModel model = claferModel.getModel();
 		try {
-			AstConcreteClafer tempTask = model.addChild("Main").addChild(MAINTASK).refTo(PropertiesMapperUtil.getTaskLabelsMap().get(getTaskName()));
+			AstConcreteClafer tempTask = model.addChild("Main").addChild(MAINTASK).refTo(PropertiesMapperUtil.getTaskLabelsMap().get(getTaskDescription()));
 			advancedModeHandler(tempTask, constraints);
 			// TODO Need to be uncommented after fix
 			// addGroupProperties(tempTask, constraints);
@@ -226,13 +234,6 @@ public class InstanceGenerator {
 	 * @param claf
 	 */
 	void addConstraints(AstModel astModel, AstClafer taskClafer, final String operator, final AstConcreteClafer childClafer, final int value, final AstConcreteClafer operand, final AstConcreteClafer claf) {
-		System.out.println("taskClafer: " + taskClafer.getName());
-		System.out.println("operator: " + operator);
-		System.out.println("child clafer: " + childClafer.getName());
-		System.out.println("Value: " + value);
-		System.out.println("operand: " + operand.getName());
-		System.out.println("claf: " + claf);
-		
 		if (operator.equals("=")) {
 			System.out.println("adding constraint equal " + childClafer + " " + value + " " + operand + " " + claf);
 			childClafer.addConstraint(equal(joinRef(join(joinRef($this()), operand)), constant(value)));
@@ -240,21 +241,10 @@ public class InstanceGenerator {
 			System.out.println("adding constraint less than " + childClafer + " " + value + " " + operand + " " + claf);
 			childClafer.addConstraint(lessThan(joinRef(join(joinRef($this()), operand)), constant(value)));
 		} else if (operator.equals(">")) {
-			//System.out.println("adding constraint greater than " + childClafer + " " + value + " " + operand + " " + claf);
-			//c0_SymmetricEncryption.addConstraint(greaterThan(joinRef(join(joinRef(join($this(), c0_cipher)), c0_keySize)), constant(128)));
-			//main.addConstraint(greaterThan(joinRef(join(joinRef(join($this(), childClafer)), operand)), constant(value)));
-			//childClafer.addConstraint(greaterThan(joinRef(join(joinRef($this()), operand)), constant(value)));
 			
-			//Constraint(greaterThan(joinRef(join(joinRef(join(global(c0_SymmetricEncryption), c0_cipher)), c0_keySize)), constant(128)));
-			//astModel.addConstraint(greaterThan(joinRef(join(joinRef(join(global(taskClafer), childClafer)), operand)), constant(value)));
-			
-			//COMPILES BUT THEN LEADS TO NULL PTR
-			taskClafer.addConstraint(greaterThan(joinRef(join(joinRef(childClafer),operand)), constant(value)));
-			
-			//taskClafer.addConstraint(greaterThan(join($this(),joinRef(join(childClafer,operand)))), constant(value)));
-			
-			//taskClafer.addConstraint(greaterThan(joinRef(join(joinRef(join($this(), childClafer)), operand)), constant(value)));
-			
+			System.out.println(greaterThan(joinRef(join(joinRef(join($this(), childClafer)), operand)), constant(value)));
+			taskClafer.addConstraint(greaterThan(joinRef(join(joinRef(join($this(), childClafer)), operand)), constant(value)));
+	
 		} else if (operator.equals("<=")) {
 			System.out.println("adding constraint lessthanequal " + childClafer + " " + value + " " + operand + " " + claf);
 			childClafer.addConstraint(lessThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
@@ -338,21 +328,21 @@ public class InstanceGenerator {
 	 * BasicModeHandler will take <Question, answer> map as a parameter where the key of the map is a question, answer is the selected answer for a given question each answer has been further iterated to apply associated dependencies
 	 */
 	// FIXME include group operator
-	void basicModeHandler(AstModel astModel, final AstConcreteClafer inputClafer, final HashMap<Question, Answer> qAMap) {		
+	void basicModeHandler(AstModel astModel, final AstConcreteClafer taskClafer, final HashMap<Question, Answer> qAMap) {		
 		final Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> popertiesMap = PropertiesMapperUtil.getPropertiesMap();
 		
-		for (final AstConcreteClafer childOfMainClfer : inputClafer.getRef().getTargetType().getChildren()) {
-			for (final AstConcreteClafer propertyOfaClafer : popertiesMap.keySet()) {
-				if (childOfMainClfer.getName().equals(propertyOfaClafer.getName())) {
-					for (final AstConcreteClafer property : popertiesMap.get(propertyOfaClafer)) {					
+		for (final AstConcreteClafer taskAlgorithm : taskClafer.getChildren()) {
+			for (final AstConcreteClafer algorithm : popertiesMap.keySet()) {
+				if (taskAlgorithm.getName().equals(algorithm.getName())) {
+					for (final AstConcreteClafer property : popertiesMap.get(algorithm)) {					
 						for (final Question question : qAMap.keySet()) {
 							Answer answer = qAMap.get(question);
 								for (final Dependency dependency : answer.getDependencies()) {
 									if (property.getName().contains(dependency.getRefClafer())) {
 										System.out.println("property: "+ property.getName());
-										System.out.println("propertyof clafeR: "+ propertyOfaClafer.getName());
-										System.out.println("child fo main: " + childOfMainClfer);
-										addConstraints(astModel, inputClafer.getRef().getTargetType(), dependency.getOperator(), propertyOfaClafer, Integer.parseInt(dependency.getValue()), property, null);
+										System.out.println("propertyof clafeR: "+ algorithm.getName());
+										System.out.println("child fo main: " + taskAlgorithm);
+										addConstraints(astModel, taskClafer, dependency.getOperator(), algorithm, Integer.parseInt(dependency.getValue()), property, null);
 									}
 								}
 							
@@ -422,6 +412,16 @@ public class InstanceGenerator {
 	 */
 	public void setTaskName(final String taskName) {
 		this.taskName = taskName;
+	}
+	
+	
+
+	public String getTaskDescription() {
+		return taskDescription;
+	}
+
+	public void setTaskDescription(String taskDescription) {
+		this.taskDescription = taskDescription;
 	}
 
 	/**

@@ -187,7 +187,8 @@ public class ConfiguratorWizard extends Wizard {
 			InstanceGenerator instanceGenerator;
 			try {
 				instanceGenerator = new InstanceGenerator(Utils.resolveResourcePathToFile(selectedTask.getModelFile()).getAbsolutePath());
-				instanceGenerator.setTaskName(this.taskListPage.getSelectedTask().getDescription());
+				instanceGenerator.setTaskDescription(this.taskListPage.getSelectedTask().getDescription());
+				instanceGenerator.setTaskName(this.taskListPage.getSelectedTask().getName());
 				instanceGenerator.setNoOfInstances(0);
 				if (this.taskListPage.isAdvancedMode()){// && ((ValueSelectionPage) this.valueListPage).getPageStatus() == true) {
 					System.out.println("Advanced mode");
@@ -207,6 +208,7 @@ public class ConfiguratorWizard extends Wizard {
 					System.out.println("Returning page: " + this.instanceListPage.getName());
 					return this.instanceListPage;
 				}else{
+					System.out.println("no instances");
 					if("nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[2].getMethodName()))
 						MessageDialog.openError(new Shell(), "Error", Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE);
 				}

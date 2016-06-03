@@ -77,7 +77,7 @@ public class TaskSelectionPage extends WizardPage {
 
 	@Override
 	public void createControl(final Composite parent) {
-		final Set<String> availableTasks = PropertiesMapperUtil.getTaskLabelsMap().keySet();
+		
 		this.container = new Composite(parent, SWT.NONE);
 		this.container.setBounds(10, 10, 200, 200);
 		final GridLayout layout = new GridLayout();
@@ -106,7 +106,6 @@ public class TaskSelectionPage extends WizardPage {
 		 
 	    
 		taskComboSelection.setInput(tasks);
-		taskComboSelection.setSelection(new StructuredSelection(taskComboSelection.getElementAt(0)), true);
 	    
 		taskComboSelection.addSelectionChangedListener(new ISelectionChangedListener() {
 	        @Override
@@ -121,6 +120,8 @@ public class TaskSelectionPage extends WizardPage {
 	            }
 	        }
 	    });
+		
+		taskComboSelection.setSelection(new StructuredSelection(taskComboSelection.getElementAt(0)), true);
 
 		this.advancedModeCheckBox = new Button(this.container, SWT.CHECK);
 		this.advancedModeCheckBox.setText(Constants.ADVANCED_MODE);

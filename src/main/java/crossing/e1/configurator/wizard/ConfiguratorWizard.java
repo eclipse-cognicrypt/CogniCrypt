@@ -111,11 +111,7 @@ public class ConfiguratorWizard extends Wizard {
 				if (taskListPage.isAdvancedMode()) {
 					preferenceSelectionPage = new AdvancedUserValueSelectionPage(null, this.claferModel);
 				} else {
-//					/**
-//					 * Before showing the question update properties of a chosen task
-//					 */
-//					this.claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(this.taskListPage.getSelectedTask().getDescription())); 
-					//Load appropriate model
+
 					try {
 						claferModel =  new ClaferModel(Utils.resolveResourcePathToFile(selectedTask.getModelFile()).getAbsolutePath());
 						claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(selectedTask.getDescription())); 
@@ -126,13 +122,6 @@ public class ConfiguratorWizard extends Wizard {
 						preferenceSelectionPage = new BeginnerTaskQuestionPage(beginnerQuestions);
 					}
 						
-						/**
-//					 * Create Questions object
-//					 */
-//					this.quest = new QuestionsBeginner();
-//					
-//						this.quest.init(PropertiesMapperUtil.getTaskLabelsMap().get(selectedTask.getDescription()).getName(),
-//							Utils.resolveResourcePathToFile(selectedTask.getXmlFile()).getAbsolutePath());
 					} catch (URISyntaxException | IOException e) {
 						Activator.getDefault().logError(e);
 					}

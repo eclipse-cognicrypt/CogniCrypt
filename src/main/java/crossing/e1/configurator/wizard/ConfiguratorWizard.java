@@ -162,25 +162,8 @@ public class ConfiguratorWizard extends Wizard {
 			System.out.println("Returning page: " + this.preferenceSelectionPage.getName());
 			return this.preferenceSelectionPage;
 		} 
-//		else if (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage){
-//			InstanceGenerator instanceGenerator;
-//			try {
-//				instanceGenerator = new InstanceGenerator(Utils.resolveResourcePathToFile(selectedTask.getModelFile()).getAbsolutePath());
-//				instanceGenerator.setTaskName(selectedTask.getDescription());
-//				instanceGenerator.setNoOfInstances(0);
-//				instanceListPage.
-//			} catch (URISyntaxException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			
-//			
-//		}
 		/**
-		 * If current page is either question or properties page (in Advanced mode) check title. Maintain uniform title for second wizard page of the wizard
+		 * If current page is either question or properties page (in Advanced mode)
 		 */
 		else if (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage){
 			InstanceGenerator instanceGenerator;
@@ -189,13 +172,11 @@ public class ConfiguratorWizard extends Wizard {
 				instanceGenerator.setTaskDescription(this.taskListPage.getSelectedTask().getDescription());
 				instanceGenerator.setTaskName(this.taskListPage.getSelectedTask().getName());
 				instanceGenerator.setNoOfInstances(0);
-				if (this.taskListPage.isAdvancedMode()){// && ((ValueSelectionPage) this.valueListPage).getPageStatus() == true) {
+				if (this.taskListPage.isAdvancedMode()){
 					instanceGenerator.generateInstancesAdvancedUserMode(((AdvancedUserValueSelectionPage) currentPage).getConstraints());
-				} else {//if (!this.taskListPage.isAdvancedMode() && !this.quest.hasQuestions()){// && this.taskListPage.getStatus()) {
-					//FIXME: What is this status?! the method there is very weird... removing this check for now
+				} else {
 					// running in beginner mode
 					((BeginnerTaskQuestionPage) currentPage).setMap(((BeginnerTaskQuestionPage) currentPage).getSelection(), claferModel);
-		
 					instanceGenerator.generateInstances(((BeginnerTaskQuestionPage) currentPage).getMap());
 				}
 				

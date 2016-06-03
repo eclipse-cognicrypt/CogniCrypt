@@ -7,6 +7,7 @@ import java.util.List;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
@@ -70,36 +71,27 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	}
 
 	public void createQuestionControl(final Composite parent, final Question question) {
-		final List<Answer> answers = question.getAnswers();
-		final List<String> answerStrings = new ArrayList<String>();
-		ComboViewer option;
-		final Composite container = getPanle(parent);
-		final Label label = new Label(container, SWT.CENTER);
+
+		List<Answer> answers = question.getAnswers();
+	
+		Composite container = getPanle(parent);
+		Label label = new Label(container, SWT.CENTER);
 		label.setText(question.getQuestionText());
-		for (Answer answerObject : answers) {
-			answerStrings.add(answerObject.getValue());
-		}
-		option = new ComboViewer(container, SWT.NONE);
-		option.setContentProvider(ArrayContentProvider.getInstance());
-		option.setInput(answerStrings);
-		option.setSelection(new StructuredSelection(answerStrings.get(1)));
-		option.addSelectionChangedListener(new ISelectionChangedListener() {
+
+		ComboViewer comboViewer = new ComboViewer(container, SWT.NONE);
+		comboViewer.setContentProvider(ArrayContentProvider.getInstance());
+		comboViewer.setInput(answers);
+		
+		comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
 			public void selectionChanged(final SelectionChangedEvent arg0) {
-
-				final String answerSelection = option.getSelection().toString();
-				// FIXME need to replace 4 by the value selected by user , check groupcard property here before
-				// assignment
-				final int index = answerStrings.indexOf(answerSelection.toString().replace("[", "").replace("]", ""));
-				BeginnerTaskQuestionPage.this.selection.put(question, answers.get(index));
-
-				// Integer.parseInt(answerSelection
-				// .substring(answerSelection.indexOf(':') + 1,
-				// answerSelection.length()-1))
-
+				IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
+				BeginnerTaskQuestionPage.this.selection.put(question, (Answer) selection.getFirstElement());
 			}
 		});
+		
+		comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
 		this.quetsionsList.add(container);
 	}
 

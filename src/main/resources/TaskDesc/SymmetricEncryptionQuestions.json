@@ -9,7 +9,8 @@
 				{"value":"Secure",
 				"dependencies":[
 				{"refClafer":"keySize","value":"128","operator":">="}
-				]},
+				],
+				"defaultAnswer": true},
 				{"value":"Not important (I'm just testing for now and would prefer something fast)",
 				"dependencies":[]}
 			]

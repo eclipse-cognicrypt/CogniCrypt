@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import crossing.e1.configurator.Constants;
+import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.configurator.utilities.XMLParser;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
@@ -56,10 +57,11 @@ public class InstanceListPage extends WizardPage implements Labels {
 	private boolean val = false;
 	private final XMLParser publisher;
 	private Group instancePropertiesPanel;
+	private Task selectedTask;
 
-	public InstanceListPage(final InstanceGenerator inst) {
+	public InstanceListPage(final InstanceGenerator inst, Task selectedTask) {
 		super(Labels.SECOND_PAGE);
-		setTitle(Labels.AVAILABLE_OPTIONS);
+		setTitle("Possible solutions for task: " + selectedTask.getDescription());
 		setDescription(Labels.DESCRIPTION_INSTANCE_LIST_PAGE);
 		this.instanceGenerator = inst;
 		this.publisher = new XMLParser();
@@ -137,6 +139,10 @@ public class InstanceListPage extends WizardPage implements Labels {
 
 	public InstanceClafer getValue() {
 		return this.value;
+	}
+	
+	public Task getTask(){
+		return selectedTask;
 	}
 
 	@Override

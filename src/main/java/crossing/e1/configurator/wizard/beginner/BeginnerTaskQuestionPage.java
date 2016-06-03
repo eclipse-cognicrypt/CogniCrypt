@@ -28,13 +28,13 @@ import crossing.e1.featuremodel.clafer.ClaferModel;
 public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private String currentQuestion = null;
-	private final QuestionsBeginner quest;
+	private final BeginnerModeQuestionnaire quest;
 	private final HashMap<Question, Answer> selection = new HashMap<Question, Answer>();
 	private final List<Composite> quetsionsList;
 
-	public BeginnerTaskQuestionPage(final QuestionsBeginner quest) {
+	public BeginnerTaskQuestionPage(final BeginnerModeQuestionnaire quest) {
 		super("Display Questions");
-		setTitle(Labels.PROPERTIES);
+		setTitle("Configuring Selected Task: "+ quest.getTask().getDescription());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.quest = quest;
 		this.quetsionsList = new ArrayList<Composite>();
@@ -46,18 +46,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		container.setBounds(10, 10, 450, 200);
 		final GridLayout layout = new GridLayout();
 		container.setLayout(layout);
+	
 		List<Question> questionList = quest.getQutionare();
 		for(Question question : questionList){
 			createQuestionControl(container, question);
 			
 		}
-//		while (this.quest.hasQuestions()) {
-//			this.currentQuestion = this.quest.nextQuestion().getDef();
-//			final Question claferName = this.quest.nextQuestion();
-//
-//			nextQuestion(container, claferName);
-//
-//		}
+		
 		layout.numColumns = 1;
 		setControl(container);
 	}

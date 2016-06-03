@@ -55,7 +55,7 @@ import crossing.e1.configurator.utilities.Validator;
 import crossing.e1.configurator.utilities.WriteToFileHelper;
 import crossing.e1.configurator.utilities.XMLParser;
 import crossing.e1.configurator.wizard.advanced.AdvancedUserValueSelectionPage;
-import crossing.e1.configurator.wizard.beginner.QuestionsBeginner;
+import crossing.e1.configurator.wizard.beginner.BeginnerModeQuestionnaire;
 import crossing.e1.configurator.wizard.beginner.BeginnerTaskQuestionPage;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
@@ -121,7 +121,7 @@ public class ConfiguratorWizard extends Wizard {
 						claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(selectedTask.getDescription())); 
 					
 					
-						QuestionsBeginner beginnerQuestions = new QuestionsBeginner(selectedTask.getName(), selectedTask.getXmlFile());
+						BeginnerModeQuestionnaire beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
 					if (beginnerQuestions.hasQuestions()) {
 						preferenceSelectionPage = new BeginnerTaskQuestionPage(beginnerQuestions);
 					}
@@ -181,7 +181,7 @@ public class ConfiguratorWizard extends Wizard {
 				}
 				
 				if (instanceGenerator.getNoOfInstances() > 0) {
-					this.instanceListPage = new InstanceListPage(instanceGenerator);
+					this.instanceListPage = new InstanceListPage(instanceGenerator, selectedTask);
 					addPage(this.instanceListPage);
 					return this.instanceListPage;
 				}else{

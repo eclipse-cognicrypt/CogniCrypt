@@ -1,0 +1,212 @@
+abstract Enum
+
+//enum Security
+abstract Security : Enum -> integer
+NoSecurity: Security = 0
+Broken: Security = 1
+Weak: Security = 2
+Medium: Security = 3
+Strong: Security = 4
+
+//enum Performance
+abstract Performance : Enum -> integer
+VerySlow: Performance = 1
+Slow: Performance = 2
+Fast: Performance = 3
+VeryFast: Performance = 4
+
+//enum TLS_Version
+abstract TLS_Version : Enum  -> integer
+SSL2: TLS_Version = 1
+SSL3: TLS_Version = 2
+TLS1_0: TLS_Version = 3
+TLS1_1: TLS_Version = 4
+TLS1_2: TLS_Version = 5
+
+//enum Padding
+abstract Padding: Enum 
+NoPadding : Padding
+PKCS5Padding : Padding
+
+//enum Mode
+abstract Mode : Enum
+ECB : Mode
+CBC : Mode
+OFB : Mode
+GCM : Mode
+
+abstract Algorithm
+	name -> string
+	description -> string
+	security -> Security
+	performance -> Performance
+	classPerformance -> Performance 
+
+abstract Cipher : Algorithm
+
+abstract SymmetricCipher : Cipher
+	keySize -> integer
+	[classPerformance = Fast]
+
+abstract AsymmetricCipher: Cipher
+	[classPerformance = VerySlow]
+
+abstract SymmetricBlockCipher : SymmetricCipher
+	mode -> Mode
+	padding -> Padding
+	[mode != ECB]
+	[mode = CBC => padding != NoPadding]
+
+abstract DigitalSignatureAlgm : Algorithm
+	//keySize -> integer
+	[classPerformance = VerySlow]
+
+abstract KeyAgreementAlgorithm : Algorithm
+	[classPerformance = Slow]
+
+abstract Digest : Algorithm
+	outputSize -> integer
+	[classPerformance = VeryFast]
+
+abstract Task
+    description -> string
+
+//SymmetricBlockCipherAlgorithms
+	
+AES128 : SymmetricBlockCipher
+	[name = "AES"]
+	[description = "Advanced Encryption Standard (AES) cipher"]s
+	[keySize = 128]
+	[performance = VeryFast]
+	[security = Medium]
+
+AES192 : SymmetricBlockCipher
+	[name = "AES"]
+	[description = "Advanced Encryption Standard (AES) cipher"]s
+	[keySize = 192]
+	[performance = Fast]
+	[security = Strong]
+	
+
+AES256 : SymmetricBlockCipher
+	[name = "AES"]
+	[description = "Advanced Encryption Standard (AES) cipher"]s
+	[keySize = 256]
+	[performance = Fast]
+	[security = Strong]
+
+// DigestAlgorithms
+SHA256: Digest
+	[description = "SHA-256 digest"]
+	[name = "SHA-256"]
+	[outputSize = 256]
+	[security = Strong]
+	[performance = Fast]
+
+SHA384: Digest
+	[description = "SHA-384 digest"]
+	[name = "SHA-384"]
+	[outputSize = 384]
+	[security = Strong]
+	[performance = VerySlow]
+
+SHA1: Digest
+	[name = "SHA-1"]
+	[description = "SHA-1 digest"]
+	[performance = VeryFast]
+	[security = Weak]
+	[outputSize = 160]		
+
+MD5: Digest
+	[name = "MD5"]
+	[description = "MD5 digest"]
+	[performance = VeryFast]
+	[security = Broken]
+	[outputSize = 128]	
+			
+
+//KeyAgreementAlgorithms
+ECDHE : KeyAgreementAlgorithm 
+	[name = "ECDHE"]
+	[description = "Key exchange algorithm"]
+	[security = Strong]
+	[performance = Fast]	
+
+//DigitalSigAlgms
+ECDSA : DigitalSignatureAlgm
+	[name = "ECDSA"]
+	[description = "Digital signature"]
+	[security = Medium]
+	[performance = Fast]
+
+RSA_Sig : DigitalSignatureAlgm
+	[name = "RSA"]
+	[description = "RSA Algm"]
+	[security = Strong]
+	[performance = Slow]
+
+RSA_Asymm : AsymmetricCipher
+	[name = "RSA"]
+	[description = "RSA Algm"]
+	[security = Strong]
+	[performance = VerySlow]
+
+RSA_KeyAgr : KeyAgreementAlgorithm
+	[name = "RSA"]
+	[description = "RSA Algm"]
+	[security = Medium]
+	[performance = Slow]
+
+abstract CipherSuite
+	cipher -> SymmetricBlockCipher ?
+	tlsProtocol -> TLS_Version
+	keyAgreement -> KeyAgreementAlgorithm
+	signature -> DigitalSignatureAlgm
+	messageAuth -> Digest
+	[messageAuth = SHA384 || messageAuth = SHA256 => tlsProtocol >= TLS1_2]
+	
+	cipherSecurity -> integer
+	[cipherSecurity = (if cipher then cipher.security.ref else 0)]
+	security -> integer   
+	[security = min(
+		messageAuth.security, 
+		keyAgreement.security, 
+		signature.security, 
+		cipherSecurity)]
+
+	performance -> integer
+	[performance = min(signature.classPerformance, keyAgreement.classPerformance, cipher.classPerformance, messageAuth.classPerformance)]
+
+TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384 : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = CBC]
+	[signature = RSA_Sig]
+	[keyAgreement = ECDHE]
+	[messageAuth = SHA384]
+
+TLS_RSA_WITH_AES_256_CBC_SHA256 : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = CBC]
+	[tlsProtocol >= TLS1_2]
+	[signature = RSA_Sig]
+	[keyAgreement = RSA_KeyAgr]
+	[messageAuth = SHA256]
+
+TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 : CipherSuite
+	[cipher = AES128]
+	[cipher.mode = GCM]
+	[signature = RSA_Sig]
+	[messageAuth = SHA256]
+	[keyAgreement = ECDHE]
+
+SSL_RSA_WITH_NULL_MD5 : CipherSuite
+	[no cipher]
+	[signature = RSA_Sig]
+	[messageAuth = MD5]
+	[keyAgreement = RSA_KeyAgr]
+	[tlsProtocol >= SSL2] //TODO: double check the tls version/protocol
+
+SecureCommunication : Task  
+	[description = "Communicate over a secure channel"]
+	ciphersuites -> CipherSuite 1..*
+	[all suite : ciphersuites | suite.tlsProtocol >= TLS1_2 && suite.security > Medium]

@@ -10,6 +10,18 @@
 			"description": "Encrypt data using a given password",
 			"modelFile" : "src/main/resources/ClaferModel/PwdBasedEncryTask.js",
 			"xmlFile" : "src/main/resources/TaskDesc/PasswordBasedEncryptionQuestions.json"
+		},
+		{
+			"name": "SecureCommunication",
+			"description": "Communicate over a secure channel",
+			"modelFile" : "src/main/resources/ClaferModel/TLSTask.js",
+			"xmlFile" : "src/main/resources/TaskDesc/TLSQuestions.json"
+		},
+		{
+			"name": "SecurePassword",
+			"description": "Represent password in a secure way for storage",
+			"modelFile" : "src/main/resources/ClaferModel/SecurePasswordStorage.js",
+			"xmlFile" : "src/main/resources/TaskDesc/SecurePasswordStorage.json"
 		}
 ]
 

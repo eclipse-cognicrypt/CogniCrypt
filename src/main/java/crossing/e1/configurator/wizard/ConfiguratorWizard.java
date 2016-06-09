@@ -80,7 +80,6 @@ public class ConfiguratorWizard extends Wizard {
 		// system's look and feel.
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			//this.claferModel = new ClaferModel(Utils.resolveResourcePathToFile(Constants.claferPath).getAbsolutePath());
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			Activator.getDefault().logError(e);
 		}
@@ -158,9 +157,6 @@ public class ConfiguratorWizard extends Wizard {
 			InstanceGenerator instanceGenerator;
 			try {
 				instanceGenerator = new InstanceGenerator(Utils.resolveResourcePathToFile(selectedTask.getModelFile()).getAbsolutePath(), "c0_" +  this.taskListPage.getSelectedTask().getName(), this.taskListPage.getSelectedTask().getDescription());
-//				instanceGenerator.setTaskDescription(this.taskListPage.getSelectedTask().getDescription());
-//				instanceGenerator.setTaskName(this.taskListPage.getSelectedTask().getName());
-				//instanceGenerator.setNoOfInstances(0);
 				
 				if (this.taskListPage.isAdvancedMode()){
 					instanceGenerator.generateInstancesAdvancedUserMode(((AdvancedUserValueSelectionPage) currentPage).getConstraints());

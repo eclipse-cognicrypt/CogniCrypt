@@ -9,6 +9,7 @@ import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
@@ -20,11 +21,11 @@ import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.configurator.utilities.Utilities;
 import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 
-public class ComplexWidget {
-	private Spinner taskComb;
+public class PropertyWidget {
+	private Spinner valueSpinner;
 	private AstConcreteClafer parentClafer;
 	private AstConcreteClafer childClafer;
-	private ComboViewer option;
+	private ComboViewer operatorComboViewer;
 	private boolean isGroupConstraint = false;
 	private AstAbstractClafer abstarctParentClafer;
 
@@ -46,16 +47,16 @@ public class ComplexWidget {
 	 * @param increment
 	 * @param pageincrement
 	 */
-	public ComplexWidget(Composite container, AstConcreteClafer parentClafer, AstConcreteClafer childClafer,
+	public PropertyWidget(Composite container, AstConcreteClafer parentClafer, AstConcreteClafer childClafer,
 			String label, int selection, int min, int max, int digits, int increment, int pageincrement) {
 		this.setChildClafer(childClafer);
 		this.setParentClafer(parentClafer);
 		List<String> values = new ArrayList<String>();
-		values.add(Labels.LESS_THAN);
-		values.add(Labels.GREATER_THAN);
-		values.add(Labels.EQUALS);
-		values.add(Labels.LESS_THAN_EQUAL);
-		values.add(Labels.GREATER_THAN_EQUAL);
+		values.add("<");
+		values.add(">");
+		values.add("=");
+		values.add("<=");
+		values.add(">=");
 
 		// To create a tab in the first column
 		Label empty = new Label(container, SWT.NONE);
@@ -63,13 +64,13 @@ public class ComplexWidget {
 		Label title = new Label(container, SWT.NONE);
 		title.setText(label);
 
-		option = new ComboViewer(container, SWT.NONE);
-		option.setContentProvider(ArrayContentProvider.getInstance());
-		option.setInput(values);
-		option.setSelection(new StructuredSelection(values.get(2)));
+		operatorComboViewer = new ComboViewer(container, SWT.NONE);
+		operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
+		operatorComboViewer.setInput(values);
+		operatorComboViewer.setSelection(new StructuredSelection(values.get(2)));
 
-		taskComb = new Spinner(container, SWT.BORDER | SWT.SINGLE);
-		taskComb.setValues(selection, min, max, digits, increment, pageincrement);
+		valueSpinner = new Spinner(container, SWT.BORDER | SWT.SINGLE);
+		valueSpinner.setValues(selection, min, max, digits, increment, pageincrement);
 
 	}
 
@@ -80,31 +81,31 @@ public class ComplexWidget {
 	 * @param claferMain
 	 * @param claferProperty
 	 */
-	public ComplexWidget(Composite container, AstAbstractClafer claferMain, List<AstClafer> claferProperty) {
+	public PropertyWidget(Composite container, AstAbstractClafer claferMain, List<AstClafer> claferProperty) {
 		setGroupConstraint(true);
 		setAbstarctParentClafer(claferMain);
 		setChildClafer((AstConcreteClafer) claferProperty.get(0));
 		List<String> values = new ArrayList<String>();
-		values.add(Labels.LESS_THAN);
-		values.add(Labels.GREATER_THAN);
-		values.add(Labels.EQUALS);
-		values.add(Labels.LESS_THAN_EQUAL);
-		values.add(Labels.GREATER_THAN_EQUAL);
+		values.add("<");
+		values.add(">");
+		values.add("=");
+		values.add("<=");
+		values.add(">=");
 		Label label5 = new Label(container, SWT.NONE);
 		label5.setText("	");
 
 		Label label1 = new Label(container, SWT.NONE);
 		label1.setText(ClaferModelUtils.removeScopePrefix(claferMain.getName()));
 
-		option = new ComboViewer(container, SWT.NONE);
-		option.setContentProvider(ArrayContentProvider.getInstance());
-		option.setInput(values);
-		option.setSelection(new StructuredSelection(values.get(2)));
+		operatorComboViewer = new ComboViewer(container, SWT.NONE);
+		operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
+		operatorComboViewer.setInput(values);
+		
 		ArrayList<String> comboValues = new ArrayList<String>();
 		for (AstClafer comboValue : claferProperty) {
 			comboValues.add(ClaferModelUtils.removeScopePrefix(comboValue.getName()));
 		}
-		option.addSelectionChangedListener(new ISelectionChangedListener() {
+		operatorComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent arg0) {
@@ -112,17 +113,19 @@ public class ComplexWidget {
 
 			}
 		});
+		
+		operatorComboViewer.setSelection(new StructuredSelection(values.get(2)));
+		
 		ComboViewer valuesCombo = new ComboViewer(container, SWT.NONE);
 		valuesCombo.setContentProvider(ArrayContentProvider.getInstance());
 		valuesCombo.setInput(comboValues);
-		valuesCombo.setSelection(new StructuredSelection(comboValues.get(0)));
+		
 		valuesCombo.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent arg0) {
 				status = true;
-				String selection = valuesCombo.getSelection().toString().replace('[', ' ').replace(']', ' ')
-						.trim();
+				String selection = valuesCombo.getSelection().toString();
 				for (AstClafer property : claferProperty) {
 					if (selection.equals(ClaferModelUtils.removeScopePrefix(property.getName()))) {
 						setChildClafer((AstConcreteClafer) property);
@@ -130,6 +133,8 @@ public class ComplexWidget {
 				}
 			}
 		});
+		
+		valuesCombo.setSelection(new StructuredSelection(comboValues.get(0)));
 
 	}
 
@@ -171,12 +176,12 @@ public class ComplexWidget {
 		this.parentClafer = parentClafer;
 	}
 
-	public String getOption() {
-		return option.getSelection().toString();
+	public String getOperator() {
+		return ((IStructuredSelection) operatorComboViewer.getSelection()).getFirstElement().toString();
 	}
 
 	public Integer getValue() {
-		return taskComb.getSelection();
+		return valueSpinner.getSelection();
 	}
 
 	/**

@@ -43,7 +43,7 @@ import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 public class AdvancedUserValueSelectionPage extends WizardPage implements Labels {
 
 	private Composite container;
-	private List<ComplexWidget> userConstraints = new ArrayList<ComplexWidget>();
+	private List<PropertyWidget> userConstraints = new ArrayList<PropertyWidget>();
 	
 
 	public AdvancedUserValueSelectionPage(List<AstConcreteClafer> items, ClaferModel claferModel) {
@@ -63,26 +63,26 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 		GridLayout layout = new GridLayout();
 		container.setLayout(layout);
 		layout.numColumns = 1;
-		try {
-			Group titledPanel = new Group(container, SWT.NONE);
-			titledPanel.setText("Global Constraints");
-			Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
-			titledPanel.setFont(boldFont);
-			GridLayout layout2 = new GridLayout();
-			// sent number of columns in a widget
-			layout2.numColumns = 4;
-			titledPanel.setLayout(layout2);
-			// List constraints from ENUMmap as group properties, under single
-			// titled panel
-			for (AstAbstractClafer groupPropertiesKey : PropertiesMapperUtil.getenumMap().keySet()) {
-
-				userConstraints.add(new ComplexWidget(titledPanel, groupPropertiesKey,
-						PropertiesMapperUtil.getenumMap().get(groupPropertiesKey)));
-
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			Group titledPanel = new Group(container, SWT.NONE);
+//			titledPanel.setText("Global Constraints");
+//			Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
+//			titledPanel.setFont(boldFont);
+//			GridLayout layout2 = new GridLayout();
+//			// sent number of columns in a widget
+//			layout2.numColumns = 4;
+//			titledPanel.setLayout(layout2);
+//			// List constraints from ENUMmap as group properties, under single
+//			// titled panel
+//			for (AstAbstractClafer groupPropertiesKey : PropertiesMapperUtil.getenumMap().keySet()) {
+//
+//				userConstraints.add(new ComplexWidget(titledPanel, groupPropertiesKey,
+//						PropertiesMapperUtil.getenumMap().get(groupPropertiesKey)));
+//
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 
 		// Add every constraints to its parent and group it as a separate titled
 		// panel
@@ -95,12 +95,15 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 
 			layout2.numColumns = 4;
 			titledPanel.setLayout(layout2);
+			
+			System.out.println("getting clafer: " + clafer);
 			@SuppressWarnings("unchecked")
 			ArrayList<AstConcreteClafer> claferProperties = new ArrayList<AstConcreteClafer>(
 					new LinkedHashSet(PropertiesMapperUtil.getPropertiesMap().get(clafer)));
 
 			for (AstConcreteClafer property : claferProperties) {
-				userConstraints.add(new ComplexWidget(titledPanel, clafer, property,
+				System.out.println("Adding property: "+ property);
+				userConstraints.add(new PropertyWidget(titledPanel, clafer, property,
 						ClaferModelUtils.removeScopePrefix(property.getName()), 1, 0, 1024, 0, 1, 1));
 			}
 
@@ -109,10 +112,10 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 	}
 
 	public boolean getPageStatus() {
-		return ComplexWidget.status;
+		return PropertyWidget.status;
 	}
 
-	public List<ComplexWidget> getConstraints() {
+	public List<PropertyWidget> getConstraints() {
 		return userConstraints;
 	}
 

@@ -54,22 +54,5 @@ public class Utilities {
 
 		return outputFile;
 	}
-	/**
-	 * @param selection
-	 * @return Map quantifier to integer
-	 */
-	public static Integer toNumber(final String selection) {
-		if (selection.contains(Labels.LESS_THAN_EQUAL))
-			return 4;
-		if (selection.contains(Labels.GREATER_THAN_EQUAL))
-			return 5;
-		if (selection.contains(Labels.EQUALS))
-			return 1;
-		if (selection.contains(Labels.LESS_THAN))
-			return 2;
-		if (selection.contains(Labels.GREATER_THAN))
-			return 3;
 
-		return 999;
-	}
 }

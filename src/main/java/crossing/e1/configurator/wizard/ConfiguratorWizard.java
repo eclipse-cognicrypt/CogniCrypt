@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 
+import javax.rmi.CORBA.Util;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.xml.parsers.DocumentBuilder;
@@ -35,6 +36,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
@@ -101,7 +103,6 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public IWizardPage getNextPage(IWizardPage currentPage) {
-		System.out.println("Current page: " + currentPage.getName());
 		Task selectedTask = this.taskListPage.getSelectedTask();
 		if (currentPage == this.taskListPage && this.taskListPage.canProceed()) {
 			// Special handling for the TLS task
@@ -114,7 +115,7 @@ public class ConfiguratorWizard extends Wizard {
 
 					try {
 						claferModel =  new ClaferModel(Utils.resolveResourcePathToFile(selectedTask.getModelFile()).getAbsolutePath());
-						claferModel.createClaferPropertiesMap(PropertiesMapperUtil.getTaskLabelsMap().get(selectedTask.getDescription())); 
+						claferModel.createClaferPropertiesMap((AstConcreteClafer) org.clafer.cli.Utils.getModelChildByName(claferModel.getModel(), "c0_" + selectedTask.getName())); 
 					
 					
 						BeginnerModeQuestionnaire beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
@@ -131,7 +132,7 @@ public class ConfiguratorWizard extends Wizard {
 			if (preferenceSelectionPage != null) {
 				addPage(preferenceSelectionPage);
 			}
-			System.out.println("Returning page: " + this.preferenceSelectionPage);
+			
 			return preferenceSelectionPage;
 		} else if (this.tlsKeyPage != null && this.tlsKeyPage.canFlipToNextPage()) {
 			this.tlsPage = new TLSConfigurationHostPortPage();
@@ -139,7 +140,7 @@ public class ConfiguratorWizard extends Wizard {
 			if (this.preferenceSelectionPage != null) {
 				addPage(this.preferenceSelectionPage);
 			}
-			System.out.println("Returning page: " + this.preferenceSelectionPage.getName());
+		
 			return this.preferenceSelectionPage;
 		} else if (this.tlsSCPage != null && this.tlsSCPage.canFlipToNextPage()) {
 			
@@ -148,7 +149,6 @@ public class ConfiguratorWizard extends Wizard {
 			if (this.preferenceSelectionPage != null) {
 				addPage(this.preferenceSelectionPage);
 			}
-			System.out.println("Returning page: " + this.preferenceSelectionPage.getName());
 			return this.preferenceSelectionPage;
 		} 
 		/**
@@ -157,10 +157,11 @@ public class ConfiguratorWizard extends Wizard {
 		else if (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage){
 			InstanceGenerator instanceGenerator;
 			try {
-				instanceGenerator = new InstanceGenerator(Utils.resolveResourcePathToFile(selectedTask.getModelFile()).getAbsolutePath());
-				instanceGenerator.setTaskDescription(this.taskListPage.getSelectedTask().getDescription());
-				instanceGenerator.setTaskName(this.taskListPage.getSelectedTask().getName());
-				instanceGenerator.setNoOfInstances(0);
+				instanceGenerator = new InstanceGenerator(Utils.resolveResourcePathToFile(selectedTask.getModelFile()).getAbsolutePath(), "c0_" +  this.taskListPage.getSelectedTask().getName(), this.taskListPage.getSelectedTask().getDescription());
+//				instanceGenerator.setTaskDescription(this.taskListPage.getSelectedTask().getDescription());
+//				instanceGenerator.setTaskName(this.taskListPage.getSelectedTask().getName());
+				//instanceGenerator.setNoOfInstances(0);
+				
 				if (this.taskListPage.isAdvancedMode()){
 					instanceGenerator.generateInstancesAdvancedUserMode(((AdvancedUserValueSelectionPage) currentPage).getConstraints());
 				} else {

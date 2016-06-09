@@ -96,13 +96,11 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 			layout2.numColumns = 4;
 			titledPanel.setLayout(layout2);
 			
-			System.out.println("getting clafer: " + clafer);
 			@SuppressWarnings("unchecked")
 			ArrayList<AstConcreteClafer> claferProperties = new ArrayList<AstConcreteClafer>(
 					new LinkedHashSet(PropertiesMapperUtil.getPropertiesMap().get(clafer)));
 
 			for (AstConcreteClafer property : claferProperties) {
-				System.out.println("Adding property: "+ property);
 				userConstraints.add(new PropertyWidget(titledPanel, clafer, property,
 						ClaferModelUtils.removeScopePrefix(property.getName()), 1, 0, 1024, 0, 1, 1));
 			}

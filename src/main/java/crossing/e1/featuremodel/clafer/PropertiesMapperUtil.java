@@ -30,7 +30,7 @@ import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 
 public class PropertiesMapperUtil {
-	private static Map<String, AstConcreteClafer> taskLabelMap = null;
+	//private static Map<String, AstConcreteClafer> taskLabelMap = null;
 	private static Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> propertiesMap = null;
 	private static Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> groupPropertiesMap = null;
 	private static HashMap<AstAbstractClafer, List<AstClafer>> enumMap = null;
@@ -46,12 +46,12 @@ public class PropertiesMapperUtil {
 	 * 
 	 * @return
 	 */
-	public static Map<String, AstConcreteClafer> getTaskLabelsMap() {
-		if (taskLabelMap == null) {
-			taskLabelMap = new HashMap<String, AstConcreteClafer>();
-		}
-		return taskLabelMap;
-	}
+//	public static Map<String, AstConcreteClafer> getTaskLabelsMap() {
+//		if (taskLabelMap == null) {
+//			taskLabelMap = new HashMap<String, AstConcreteClafer>();
+//		}
+//		return taskLabelMap;
+//	}
 
 	/**
 	 * Map with list of clafers and their properties 

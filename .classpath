@@ -13,7 +13,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry excluding="crossing/e1/featuremodel/clafer/test/InstanceGeneratorTest.java|crossing/e1/featuremodel/clafer/test/AllTests.java" kind="src" output="target/test-classes" path="src/test/java">
+	<classpathentry excluding="crossing/e1/featuremodel/clafer/test/InstanceGeneratorTest.java|crossing/e1/featuremodel/clafer/test/AllTests.java|crossing/e1/featuremodel/clafer/test/ClaferModelTest.java" kind="src" output="target/test-classes" path="src/test/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>

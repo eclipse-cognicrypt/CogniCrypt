@@ -68,15 +68,123 @@ public class InstanceGenerator {
 	private Map<Long, InstanceClafer> uniqueInstances;
 	private Map<String, InstanceClafer> displayNameToInstanceMap;
 	private ClaferModel claferModel;
-	private int noOfInstances;
-	private String taskName = "";
-	private String taskDescription = "";
+	//private int noOfInstances;
+	private String taskName;
+	private String taskDescription;
+	private AstClafer taskClafer;
+	//we basically create a new instance generator for each task we trigger it for so why not just have this task property map here to avoid references issues
+	private Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> taskPropertyMap;
 
-	public InstanceGenerator(final String path) {
+	public InstanceGenerator(final String path, String taskName, String taskDescription) {
 		this.claferModel = new ClaferModel(path);
 		this.displayNameToInstanceMap = new HashMap<String, InstanceClafer>();
 		this.uniqueInstances = new HashMap<Long, InstanceClafer>();
+		this.taskName = taskName;
+		this.taskDescription = taskDescription;
+		taskClafer = Utils.getModelChildByName(claferModel.getModel(), taskName);
+		taskPropertyMap = new HashMap<AstConcreteClafer, ArrayList<AstConcreteClafer>>();
+		if(taskName != null && !taskName.isEmpty()){
+			fillTaskPropertyMap();
+		}
 	}
+	
+	
+
+	private void fillTaskPropertyMap() {
+		if (taskClafer.hasChildren())
+			for (AstConcreteClafer childClafer : taskClafer.getChildren()) {
+				ArrayList<AstConcreteClafer> propertiesList = new ArrayList<AstConcreteClafer>();
+				addClaferProperties(childClafer, propertiesList);
+				taskPropertyMap.put(childClafer, propertiesList);
+				
+			}	
+	}
+	
+	/**
+	 * Recursive method to list subclafers of a clafer
+	 * 
+	 * @param inputClafer
+	 */
+	public void addClaferProperties(AstClafer inputClafer, ArrayList<AstConcreteClafer> propertiesList) {
+		try {
+			if (inputClafer.hasChildren()) {
+				if (inputClafer.getGroupCard() != null && inputClafer.getGroupCard().getLow() >= 1) {
+					propertiesList.add((AstConcreteClafer) inputClafer);
+				} else
+					for (AstConcreteClafer childClafer : inputClafer.getChildren()) {
+						addClaferProperties(childClafer, propertiesList);
+					}
+			}
+		} catch (Exception E) {
+			System.out.println("1");
+			E.printStackTrace();
+		}
+		try {
+			if (inputClafer.hasRef()) {
+				if (inputClafer.getRef().getTargetType().isPrimitive() == true
+						&& (inputClafer.getRef().getTargetType().getName().contains("string") == false)) {
+					if (!ClaferModelUtils.isAbstract(inputClafer)) {
+						try {
+							propertiesList.add((AstConcreteClafer) inputClafer);
+						} catch (Exception E) {
+							System.out.println("2.1");
+							E.printStackTrace();
+						}
+
+					}
+
+				} else if (PropertiesMapperUtil.getenumMap()
+						.containsKey(inputClafer.getRef().getTargetType())) {
+				//	groupPropertiesList.add((AstConcreteClafer) inputClafer, propertiesList);
+				} else if (inputClafer.getRef().getTargetType().isPrimitive() == false) {
+					try {
+						addClaferProperties(inputClafer.getRef().getTargetType(), propertiesList);
+					} catch (Exception E) {
+						System.out.println("2.2");
+						E.printStackTrace();
+					}
+				}
+			}
+		} catch (Exception E) {
+			System.out.println("2");
+			E.printStackTrace();
+		}
+		try {
+			if (inputClafer.getSuperClafer() != null) {
+				addClaferProperties(inputClafer.getSuperClafer(), propertiesList);
+			}
+		} catch (Exception E) {
+			System.out.println("3");
+			E.printStackTrace();
+		}
+
+	}
+
+	/**
+	 * Recursive method to list properties or subclafres of an Abstract clafer
+	 * 
+	 * @param inputClafer
+	 */
+	public void addClaferProperties(AstAbstractClafer inputClafer, ArrayList<AstConcreteClafer> propertiesList) {
+
+		try {
+			if (inputClafer.hasChildren()) {
+				for (AstConcreteClafer in : inputClafer.getChildren())
+					addClaferProperties(in, propertiesList);
+			}
+			if (inputClafer.hasRef())
+				addClaferProperties(inputClafer.getRef().getTargetType(), propertiesList);
+
+			if (inputClafer.getSuperClafer() != null)
+				addClaferProperties(inputClafer.getSuperClafer(), propertiesList);
+
+		} catch (Exception E) {
+			E.printStackTrace();
+		}
+	}
+
+
+
 
 	/**
 	 * this method is part of instance generation process , creates a mapping instance name and instance Object
@@ -84,7 +192,7 @@ public class InstanceGenerator {
 	public void generateInstanceMapping() {
 		for (InstanceClafer inst : this.generatedInstances) {
 			String key = getInstanceName(inst);
-			if (inst.getType().getName().substring(inst.getType().getName().indexOf("_") + 1).equals(taskName) && key.length() > 0) {
+			if (inst.getType().getName().equals(taskName) && key.length() > 0) {
 				/**
 				 * Check if any instance has same name , if yes add numerical values as suffix
 				 *
@@ -120,8 +228,6 @@ public class InstanceGenerator {
 	public List<InstanceClafer> generateInstances(final HashMap<Question, Answer> map) {
 		final AstModel astModel = claferModel.getModel();
 		try {
-			final AstClafer taskClafer = Utils.getModelChildByName(astModel, "c0_" + taskName);
-			
 			basicModeHandler(astModel, taskClafer, map);
 			
 			solver = ClaferCompiler.compile(astModel,
@@ -139,7 +245,7 @@ public class InstanceGenerator {
 		}
 		generatedInstances = new ArrayList<InstanceClafer>(uniqueInstances.values());
 		generateInstanceMapping();
-		setNoOfInstances(displayNameToInstanceMap.keySet().size());
+		//setNoOfInstances(displayNameToInstanceMap.keySet().size());
 		return generatedInstances;
 	}
 
@@ -152,17 +258,9 @@ public class InstanceGenerator {
 	public List<InstanceClafer> generateInstancesAdvancedUserMode(final List<PropertyWidget> constraints) {
 		final AstModel model = claferModel.getModel();
 		try {
-			for (PropertyWidget constraint: constraints){
-				if(constraint != null)
-				System.out.println("constraint: " + constraint.getOperator() + ": " + constraint.getValue());
-			}
-			AstClafer taskClafer = Utils.getModelChildByName(model, "c0_" + taskName);
+	
 			//PropertiesMapperUtil.getTaskLabelsMap().get(getTaskDescription());
 			advancedModeHandler(model, taskClafer, constraints);
-			System.out.println("task name to obtain from model: "+ taskName);
-			System.out.println("obstained task clafer: "+ taskClafer);
-			if(taskClafer != null)
-				System.out.println("Added constraint: " + taskClafer.getConstraints());
 			
 			// TODO Need to be uncommented after fix
 			// addGroupProperties(tempTask, constraints);
@@ -177,7 +275,7 @@ public class InstanceGenerator {
 		}
 		generatedInstances = new ArrayList<InstanceClafer>(uniqueInstances.values());
 		generateInstanceMapping();
-		setNoOfInstances(displayNameToInstanceMap.keySet().size());
+		//setNoOfInstances(displayNameToInstanceMap.keySet().size());
 		return generatedInstances;
 	}
 
@@ -235,7 +333,6 @@ public class InstanceGenerator {
 	 * @param claf
 	 */
 	void addConstraints(AstClafer taskClafer, final String operator, AstClafer childClafer, final int value, final AstConcreteClafer operand, final AstConcreteClafer claf) {
-		System.out.println("OPERATOR: "+ operator);
 		if (operator.equals("=")) {
 			childClafer.addConstraint(equal(joinRef(join(joinRef($this()), operand)), constant(value)));
 		} else if (operator.equals("<")) {
@@ -246,58 +343,56 @@ public class InstanceGenerator {
 		} else if (operator.equals("<=")) {
 			childClafer.addConstraint(lessThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
 		} else if (operator.equals(">=")) {
-			childClafer.addConstraint(greaterThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
-			//this keeps the old way of adding the constraint to the actual child (e.g., cipher in SymmetricEncryption task)
-			//childClafer.addConstraint(greaterThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
+			childClafer.addConstraint(greaterThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));			
 		}
 	}
 
-	/**
-	 * This method is to parse the map of clafers and apply their values as constraints before instance generation, used only in advanceduserMode
-	 *
-	 * @param tempClafer
-	 * @param propertiesMap
-	 */
-	void addGroupProperties(final AstConcreteClafer tempClafer, final List<PropertyWidget> groupProperties) {
-		for (final AstConcreteClafer childClafer : tempClafer.getRef().getTargetType().getChildren()) {
-			for (final PropertyWidget claf : groupProperties) {
-				// Check if the constraint is groupconstraint
-				if (claf.isGroupConstraint()) {
-					/**
-					 * Here a group properties list being used, this list contains the group properties which are part of the chosen task, where as EnumMap contains group properties of entire clafer
-					 */
-					for (AstConcreteClafer groupProperty : PropertiesMapperUtil.getGroupPropertiesMap().keySet()) {
-						AstAbstractClafer key = null;
-						for (AstConcreteClafer property : PropertiesMapperUtil.getGroupPropertiesMap().get(groupProperty)) {
-							// look in Iff the group properties key matches the
-							// clafer
-							if (claf.getAbstarctParentClafer().getName().equals(property.getRef().getTargetType().getName())) {
-								AstConcreteClafer value = null;
-								for (AstAbstractClafer enumProperty : PropertiesMapperUtil.getenumMap().keySet()) {
-									if (enumProperty.getName().equals(claf.getAbstarctParentClafer().getName())) {
-										key = enumProperty;
-										break;
-									}
-								}
-								// Find an enum value from enumMap which matches
-								// the user selection
-								for (AstClafer enumValue : PropertiesMapperUtil.getenumMap().get(key)) {
-									if (enumValue.getName().equals(claf.getChildClafer().getName())) {
-										value = claf.getChildClafer();
-										break;
-									}
-								}
-								if (value != null) {
-									AstBoolExpr expr = equal(joinRef(property), global(value));
-									childClafer.addConstraint(expr);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+//	/**
+//	 * This method is to parse the map of clafers and apply their values as constraints before instance generation, used only in advanceduserMode
+//	 *
+//	 * @param tempClafer
+//	 * @param propertiesMap
+//	 */
+//	void addGroupProperties(final AstConcreteClafer tempClafer, final List<PropertyWidget> groupProperties) {
+//		for (final AstConcreteClafer childClafer : tempClafer.getRef().getTargetType().getChildren()) {
+//			for (final PropertyWidget claf : groupProperties) {
+//				// Check if the constraint is groupconstraint
+//				if (claf.isGroupConstraint()) {
+//					/**
+//					 * Here a group properties list being used, this list contains the group properties which are part of the chosen task, where as EnumMap contains group properties of entire clafer
+//					 */
+//					for (AstConcreteClafer groupProperty : PropertiesMapperUtil.getGroupPropertiesMap().keySet()) {
+//						AstAbstractClafer key = null;
+//						for (AstConcreteClafer property : PropertiesMapperUtil.getGroupPropertiesMap().get(groupProperty)) {
+//							// look in Iff the group properties key matches the
+//							// clafer
+//							if (claf.getAbstarctParentClafer().getName().equals(property.getRef().getTargetType().getName())) {
+//								AstConcreteClafer value = null;
+//								for (AstAbstractClafer enumProperty : PropertiesMapperUtil.getenumMap().keySet()) {
+//									if (enumProperty.getName().equals(claf.getAbstarctParentClafer().getName())) {
+//										key = enumProperty;
+//										break;
+//									}
+//								}
+//								// Find an enum value from enumMap which matches
+//								// the user selection
+//								for (AstClafer enumValue : PropertiesMapperUtil.getenumMap().get(key)) {
+//									if (enumValue.getName().equals(claf.getChildClafer().getName())) {
+//										value = claf.getChildClafer();
+//										break;
+//									}
+//								}
+//								if (value != null) {
+//									AstBoolExpr expr = equal(joinRef(property), global(value));
+//									childClafer.addConstraint(expr);
+//								}
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
 
 	/**
 	 * This method is to parse the map of clafers and apply their values as constraints before instance generation, used only in advanceduserMode
@@ -309,19 +404,11 @@ public class InstanceGenerator {
 		for (AstConcreteClafer taskAlgorithm : taskClafer.getChildren()) {
 			for (PropertyWidget constraint : constraints) {
 				if (!constraint.isGroupConstraint()){
-					System.out.println("not group constraint: " + constraint);
-					System.out.println("comparing: "+ constraint.getParentClafer().getName() + " " + taskAlgorithm.getName());
 					if (constraint.getParentClafer().getName().equals(taskAlgorithm.getName())) {
 						final String operator = constraint.getOperator();
 						final int value = constraint.getValue();
 						final AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils.findClaferByName(taskAlgorithm, constraint.getChildClafer().getName());
 						if (operand != null && !ClaferModelUtils.isAbstract(operand)) {
-							//TODO: Fix first two params for advanced mode
-							System.out.println("taskClafeR: " + taskClafer);
-							System.out.println("operator: " + operator);
-							System.out.println("task algm: " + taskAlgorithm);
-							System.out.println("value: "+ value);
-							System.out.println("operand: " + operand);
 							//Since a new model is created each time the instance generator is called, the original algorithm object that is put in the propertiesMap is not
 							//even part of the current model. Therefore, we find the correct object in the current model first
 							//the taskClafer is OK because it is retrieved from the current model
@@ -339,21 +426,16 @@ public class InstanceGenerator {
 	 */
 	// FIXME include group operator
 	void basicModeHandler(AstModel astModel, AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {		
-		final Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> popertiesMap = PropertiesMapperUtil.getPropertiesMap();
 		
-		for (AstConcreteClafer taskAlgorithm : taskClafer.getChildren()) {
-			for (AstConcreteClafer algorithm : popertiesMap.keySet()) {
+		for (AstConcreteClafer taskAlgorithm : taskClafer.getChildren()) {	
+			for (AstConcreteClafer algorithm : taskPropertyMap.keySet()) {
 				if (taskAlgorithm.getName().equals(algorithm.getName())) {
-					for (AstConcreteClafer property : popertiesMap.get(algorithm)) {					
+					for (AstConcreteClafer property : taskPropertyMap.get(algorithm)) {					
 						for (Question question : qAMap.keySet()) {
 							Answer answer = qAMap.get(question);
 								for (Dependency dependency : answer.getDependencies()) {
 									if (property.getName().contains(dependency.getRefClafer())) {
-										//Since a new model is created each time the instance generator is called, the original algorithm object that is put in the propertiesMap is not
-										//even part of the current model. Therefore, we find the correct object in the current model first
-										//the taskClafer is OK because it is retrieved from the current model
-										AstClafer algorithmInCurrentModel = Utils.getModelChildByName(astModel, algorithm.getName());
-										addConstraints(taskClafer, dependency.getOperator(), algorithmInCurrentModel , Integer.parseInt(dependency.getValue()), property, null);
+										addConstraints(taskClafer, dependency.getOperator(), algorithm , Integer.parseInt(dependency.getValue()), property, null);
 									}
 								}
 							
@@ -379,7 +461,7 @@ public class InstanceGenerator {
 	 * @return
 	 */
 	public int getNoOfInstances() {
-		return this.noOfInstances;
+		return uniqueInstances.size();
 	}
 
 	/**
@@ -407,14 +489,14 @@ public class InstanceGenerator {
 		this.displayNameToInstanceMap = null;
 	}
 
-	/**
-	 * once the instances are generated, this method is invoked to set number of instances
-	 *
-	 * @param noOfInstances
-	 */
-	public void setNoOfInstances(final int noOfInstances) {
-		this.noOfInstances = noOfInstances;
-	}
+//	/**
+//	 * once the instances are generated, this method is invoked to set number of instances
+//	 *
+//	 * @param noOfInstances
+//	 */
+//	public void setNoOfInstances(final int noOfInstances) {
+//		this.noOfInstances = noOfInstances;
+//	}
 
 	/**
 	 * to Set task name

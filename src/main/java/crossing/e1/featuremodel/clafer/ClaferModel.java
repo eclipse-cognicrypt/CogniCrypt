@@ -111,12 +111,12 @@ public class ClaferModel {
 									.trim().replace("\"", "");
 						}
 					}
-					/**
-					 * construct a map of tasks, key is a clafer description and
-					 * value is actual clafer Key will be used in Wizard, as an
-					 * input for taskList combo box
-					 */
-					PropertiesMapperUtil.getTaskLabelsMap().put(key, (AstConcreteClafer) clafer);
+//					/**
+//					 * construct a map of tasks, key is a clafer description and
+//					 * value is actual clafer Key will be used in Wizard, as an
+//					 * input for taskList combo box
+//					 */
+//					PropertiesMapperUtil.getTaskLabelsMap().put(key, (AstConcreteClafer) clafer);
 
 				}
 			}
@@ -381,8 +381,6 @@ public class ClaferModel {
 				addClaferProperties(childClafer);
 				PropertiesMapperUtil.getPropertiesMap().put(childClafer, propertiesList);
 				PropertiesMapperUtil.getGroupPropertiesMap().put(childClafer, groupPropertiesList);
-				System.out.println("putting child: " + childClafer.getName() + System.identityHashCode(childClafer));
-
 			}
 	}
 

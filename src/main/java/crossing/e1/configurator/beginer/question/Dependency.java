@@ -2,32 +2,44 @@ package crossing.e1.configurator.beginer.question;
 
 public class Dependency {
 	
-	String refClafer;
+	String algorithm;
+	String operand;
 	String value;
 	String operator;
 	
-	public String getRefClafer() {
-		return refClafer;
+	public String getOperand() {
+		return operand;
 	}
-	public void setRefClafer(String refClafer) {
-		this.refClafer = refClafer;
+	
+	public void setOperand(String operand) {
+		this.operand = operand;
 	}
+	
 	public String getValue() {
 		return value;
 	}
+	
 	public void setValue(String value) {
 		this.value = value;
 	}
+	
 	public String getOperator() {
 		return operator;
 	}
+	
 	public void setOperator(String operator) {
 		this.operator = operator;
 	}
 	
+	public String getAlgorithm() {
+		return algorithm;
+	}
+	public void setAlgorithm(String algorithm) {
+		this.algorithm = algorithm;
+	}
 	@Override
 	public String toString() {
-		return "AnswerDependency [refClafer=" + refClafer + ", value=" + value
+		return "AnswerDependency [algorithm=" + algorithm + ", operand=" + operand + ", value=" + value
 				+ ", operator=" + operator + "]";
 	}
 	

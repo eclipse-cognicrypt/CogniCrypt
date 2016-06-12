@@ -374,18 +374,17 @@ public class InstanceGenerator {
 	// FIXME include group operator
 	void basicModeHandler(AstModel astModel, AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {		
 		
+		
 		for (AstConcreteClafer taskAlgorithm : taskClafer.getChildren()) {	
-			for (AstConcreteClafer algorithm : taskPropertyMap.keySet()) {
-				if (taskAlgorithm.getName().equals(algorithm.getName())) {
-					for (AstConcreteClafer property : taskPropertyMap.get(algorithm)) {					
-						for (Question question : qAMap.keySet()) {
-							Answer answer = qAMap.get(question);
-								for (Dependency dependency : answer.getDependencies()) {
-									if (property.getName().contains(dependency.getRefClafer())) {
-										addConstraints(algorithm, property, dependency.getOperator(), Integer.parseInt(dependency.getValue()));
-									}
-								}
-							
+			for (Question question : qAMap.keySet()){
+				Answer selectedAnswer = qAMap.get(question);
+				for (Dependency dependency : selectedAnswer.getDependencies()){
+					String algorithmInDep = dependency.getAlgorithm();
+					if(ClaferModelUtils.getNameWithoutScope(taskAlgorithm.getName()).equals(algorithmInDep)){
+						for(AstConcreteClafer property : taskPropertyMap.get(taskAlgorithm)){
+							if (property.getName().contains(dependency.getOperand())) {
+								addConstraints(taskAlgorithm, property, dependency.getOperator(), Integer.parseInt(dependency.getValue()));
+							}
 						}
 					}
 				}

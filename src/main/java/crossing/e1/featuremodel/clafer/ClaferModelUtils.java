@@ -187,4 +187,7 @@ public class ClaferModelUtils {
 						propertiesList, groupPropertiesList);
 	}
 
+	public static String getNameWithoutScope(String input){
+		return input.substring(input.indexOf("_") + 1);
+	}
 }

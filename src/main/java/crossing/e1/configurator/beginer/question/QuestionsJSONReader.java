@@ -58,6 +58,6 @@ public class QuestionsJSONReader {
 	
 	public static void main(String args[]){
 		QuestionsJSONReader reader = new QuestionsJSONReader();
-		System.out.println(reader.getQuestions( Utilities.class.getClassLoader().getResource("TaskDesc/SymmetricEncryptionQuestions.json").getPath()));
+		System.out.println(reader.getQuestions("/Users/snadi/Documents/EclipseWorkspaces/CROSSING/ClaferConfigurator/src/main/resources/TaskDesc/SymmetricEncryptionQuestions.json"));
 	}
 }

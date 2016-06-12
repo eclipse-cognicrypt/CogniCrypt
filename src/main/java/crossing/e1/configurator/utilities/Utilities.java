@@ -39,8 +39,8 @@ public class Utilities {
 			final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
 			if (bundle == null) {
 				// running as application
-				final String fileName = inputPath.substring(inputPath.lastIndexOf("/") + 1);
-				outputFile = Utilities.class.getClassLoader().getResource(fileName).getPath();
+				//final String fileName = inputPath.substring(inputPath.lastIndexOf("/") + 1);
+				outputFile = inputPath;//Utilities.class.getClassLoader().getResource(fileName).getPath();
 			} else {
 				// running as plugin
 				final Path originPath = new Path(inputPath);

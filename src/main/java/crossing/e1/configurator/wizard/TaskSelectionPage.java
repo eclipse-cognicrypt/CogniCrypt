@@ -121,7 +121,7 @@ public class TaskSelectionPage extends WizardPage {
 	        }
 	    });
 		
-		taskComboSelection.setSelection(new StructuredSelection(taskComboSelection.getElementAt(0)), true);
+		taskComboSelection.setSelection(new StructuredSelection(tasks.get(0)));
 
 		this.advancedModeCheckBox = new Button(this.container, SWT.CHECK);
 		this.advancedModeCheckBox.setText(Constants.ADVANCED_MODE);

@@ -338,8 +338,7 @@ public class InstanceGenerator {
 		} else if (operator.equals("<")) {
 			childClafer.addConstraint(lessThan(joinRef(join(joinRef($this()), operand)), constant(value)));
 		} else if (operator.equals(">")) {
-			//my attempt to make the constraints actually make a difference
-			taskClafer.addConstraint(greaterThan(joinRef(join(joinRef(join($this(), childClafer)), operand)), constant(value)));
+			childClafer.addConstraint(greaterThan(joinRef(join(joinRef($this()), operand)), constant(value)));
 		} else if (operator.equals("<=")) {
 			childClafer.addConstraint(lessThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
 		} else if (operator.equals(">=")) {

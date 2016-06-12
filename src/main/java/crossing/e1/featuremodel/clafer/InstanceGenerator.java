@@ -68,7 +68,6 @@ public class InstanceGenerator {
 	private Map<Long, InstanceClafer> uniqueInstances;
 	private Map<String, InstanceClafer> displayNameToInstanceMap;
 	private ClaferModel claferModel;
-	//private int noOfInstances;
 	private String taskName;
 	private String taskDescription;
 	private AstClafer taskClafer;
@@ -245,7 +244,6 @@ public class InstanceGenerator {
 		}
 		generatedInstances = new ArrayList<InstanceClafer>(uniqueInstances.values());
 		generateInstanceMapping();
-		//setNoOfInstances(displayNameToInstanceMap.keySet().size());
 		return generatedInstances;
 	}
 
@@ -332,66 +330,20 @@ public class InstanceGenerator {
 	 * @param operand
 	 * @param claf
 	 */
-	void addConstraints(AstClafer taskClafer, final String operator, AstClafer childClafer, final int value, final AstConcreteClafer operand, final AstConcreteClafer claf) {
+	void addConstraints(AstClafer taskAlgorithm, AstConcreteClafer algorithmProperty, String operator, int value) {
 		if (operator.equals("=")) {
-			childClafer.addConstraint(equal(joinRef(join(joinRef($this()), operand)), constant(value)));
+			taskAlgorithm.addConstraint(equal(joinRef(join(joinRef($this()), algorithmProperty)), constant(value)));
 		} else if (operator.equals("<")) {
-			childClafer.addConstraint(lessThan(joinRef(join(joinRef($this()), operand)), constant(value)));
+			taskAlgorithm.addConstraint(lessThan(joinRef(join(joinRef($this()), algorithmProperty)), constant(value)));
 		} else if (operator.equals(">")) {
-			childClafer.addConstraint(greaterThan(joinRef(join(joinRef($this()), operand)), constant(value)));
+			taskAlgorithm.addConstraint(greaterThan(joinRef(join(joinRef($this()), algorithmProperty)), constant(value)));
 		} else if (operator.equals("<=")) {
-			childClafer.addConstraint(lessThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));
+			taskAlgorithm.addConstraint(lessThanEqual(joinRef(join(joinRef($this()), algorithmProperty)), constant(value)));
 		} else if (operator.equals(">=")) {
-			childClafer.addConstraint(greaterThanEqual(joinRef(join(joinRef($this()), operand)), constant(value)));			
+			taskAlgorithm.addConstraint(greaterThanEqual(joinRef(join(joinRef($this()), algorithmProperty)), constant(value)));			
 		}
 	}
 
-//	/**
-//	 * This method is to parse the map of clafers and apply their values as constraints before instance generation, used only in advanceduserMode
-//	 *
-//	 * @param tempClafer
-//	 * @param propertiesMap
-//	 */
-//	void addGroupProperties(final AstConcreteClafer tempClafer, final List<PropertyWidget> groupProperties) {
-//		for (final AstConcreteClafer childClafer : tempClafer.getRef().getTargetType().getChildren()) {
-//			for (final PropertyWidget claf : groupProperties) {
-//				// Check if the constraint is groupconstraint
-//				if (claf.isGroupConstraint()) {
-//					/**
-//					 * Here a group properties list being used, this list contains the group properties which are part of the chosen task, where as EnumMap contains group properties of entire clafer
-//					 */
-//					for (AstConcreteClafer groupProperty : PropertiesMapperUtil.getGroupPropertiesMap().keySet()) {
-//						AstAbstractClafer key = null;
-//						for (AstConcreteClafer property : PropertiesMapperUtil.getGroupPropertiesMap().get(groupProperty)) {
-//							// look in Iff the group properties key matches the
-//							// clafer
-//							if (claf.getAbstarctParentClafer().getName().equals(property.getRef().getTargetType().getName())) {
-//								AstConcreteClafer value = null;
-//								for (AstAbstractClafer enumProperty : PropertiesMapperUtil.getenumMap().keySet()) {
-//									if (enumProperty.getName().equals(claf.getAbstarctParentClafer().getName())) {
-//										key = enumProperty;
-//										break;
-//									}
-//								}
-//								// Find an enum value from enumMap which matches
-//								// the user selection
-//								for (AstClafer enumValue : PropertiesMapperUtil.getenumMap().get(key)) {
-//									if (enumValue.getName().equals(claf.getChildClafer().getName())) {
-//										value = claf.getChildClafer();
-//										break;
-//									}
-//								}
-//								if (value != null) {
-//									AstBoolExpr expr = equal(joinRef(property), global(value));
-//									childClafer.addConstraint(expr);
-//								}
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
 
 	/**
 	 * This method is to parse the map of clafers and apply their values as constraints before instance generation, used only in advanceduserMode
@@ -407,12 +359,8 @@ public class InstanceGenerator {
 						final String operator = constraint.getOperator();
 						final int value = constraint.getValue();
 						final AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils.findClaferByName(taskAlgorithm, constraint.getChildClafer().getName());
-						if (operand != null && !ClaferModelUtils.isAbstract(operand)) {
-							//Since a new model is created each time the instance generator is called, the original algorithm object that is put in the propertiesMap is not
-							//even part of the current model. Therefore, we find the correct object in the current model first
-							//the taskClafer is OK because it is retrieved from the current model
-							AstClafer algorithmInCurrentModel = Utils.getModelChildByName(astModel, taskAlgorithm.getName());
-							addConstraints(taskClafer, operator, algorithmInCurrentModel, value, operand, constraint.getChildClafer());
+						if (operand != null && !ClaferModelUtils.isAbstract(operand)) {							
+							addConstraints(taskAlgorithm, operand, operator, value);
 						}
 					}
 				}
@@ -434,7 +382,7 @@ public class InstanceGenerator {
 							Answer answer = qAMap.get(question);
 								for (Dependency dependency : answer.getDependencies()) {
 									if (property.getName().contains(dependency.getRefClafer())) {
-										addConstraints(taskClafer, dependency.getOperator(), algorithm , Integer.parseInt(dependency.getValue()), property, null);
+										addConstraints(algorithm, property, dependency.getOperator(), Integer.parseInt(dependency.getValue()));
 									}
 								}
 							
@@ -487,15 +435,6 @@ public class InstanceGenerator {
 	public void resetInstances() {
 		this.displayNameToInstanceMap = null;
 	}
-
-//	/**
-//	 * once the instances are generated, this method is invoked to set number of instances
-//	 *
-//	 * @param noOfInstances
-//	 */
-//	public void setNoOfInstances(final int noOfInstances) {
-//		this.noOfInstances = noOfInstances;
-//	}
 
 	/**
 	 * to Set task name

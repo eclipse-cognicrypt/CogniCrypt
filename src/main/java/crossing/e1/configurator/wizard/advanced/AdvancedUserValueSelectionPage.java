@@ -22,10 +22,13 @@
 package crossing.e1.configurator.wizard.advanced;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.clafer.ast.AstAbstractClafer;
+import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -44,19 +47,18 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 
 	private Composite container;
 	private List<PropertyWidget> userConstraints = new ArrayList<PropertyWidget>();
-	
+	private AstConcreteClafer taskClafer;
 
-	public AdvancedUserValueSelectionPage(List<AstConcreteClafer> items, ClaferModel claferModel) {
+	public AdvancedUserValueSelectionPage(ClaferModel claferModel, AstConcreteClafer taskClafer) {
 		super(Labels.SELECT_PROPERTIES);
 		setTitle(Labels.PROPERTIES);
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
-
+		this.taskClafer = taskClafer;
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void createControl(Composite parent) {
-
 		container = new Composite(parent, SWT.NONE);
 
 		container.setBounds(10, 10, 450, 200);
@@ -86,7 +88,13 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 
 		// Add every constraints to its parent and group it as a separate titled
 		// panel
-		for (AstConcreteClafer clafer : PropertiesMapperUtil.getPropertiesMap().keySet()) {
+		
+		Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> taskPropertiesMap = new HashMap<AstConcreteClafer, ArrayList<AstConcreteClafer>>();
+		Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> taskGroupPropertiesMap = new HashMap<AstConcreteClafer, ArrayList<AstConcreteClafer>>();
+				
+		ClaferModelUtils.createTaskPropertiesMap(taskClafer, taskPropertiesMap, taskGroupPropertiesMap);
+		
+		for (AstConcreteClafer clafer : taskPropertiesMap.keySet()) {			
 			Group titledPanel = new Group(container, SWT.NONE);
 			titledPanel.setText(ClaferModelUtils.removeScopePrefix(clafer.getName()));
 			Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
@@ -96,11 +104,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 			layout2.numColumns = 4;
 			titledPanel.setLayout(layout2);
 			
-			@SuppressWarnings("unchecked")
-			ArrayList<AstConcreteClafer> claferProperties = new ArrayList<AstConcreteClafer>(
-					new LinkedHashSet(PropertiesMapperUtil.getPropertiesMap().get(clafer)));
-
-			for (AstConcreteClafer property : claferProperties) {
+			for (AstConcreteClafer property : taskPropertiesMap.get(clafer)) {
 				userConstraints.add(new PropertyWidget(titledPanel, clafer, property,
 						ClaferModelUtils.removeScopePrefix(property.getName()), 1, 0, 1024, 0, 1, 1));
 			}
@@ -116,5 +120,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 	public List<PropertyWidget> getConstraints() {
 		return userConstraints;
 	}
+	
+	
 
 }

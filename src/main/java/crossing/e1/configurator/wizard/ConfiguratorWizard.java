@@ -108,24 +108,24 @@ public class ConfiguratorWizard extends Wizard {
 			if (selectedTask.getDescription().equals("Communicate over a secure channel")) {
 				this.preferenceSelectionPage = this.tlsSCPage;
 			} else {
+				try {
+					claferModel =  new ClaferModel(Utils.resolveResourcePathToFile(selectedTask.getModelFile()).getAbsolutePath());
+				} catch (URISyntaxException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				if (taskListPage.isAdvancedMode()) {
-					preferenceSelectionPage = new AdvancedUserValueSelectionPage(null, this.claferModel);
+					preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, (AstConcreteClafer) org.clafer.cli.Utils.getModelChildByName(claferModel.getModel(), "c0_" + selectedTask.getName()));
 				} else {
-
-					try {
-						claferModel =  new ClaferModel(Utils.resolveResourcePathToFile(selectedTask.getModelFile()).getAbsolutePath());
-						claferModel.createClaferPropertiesMap((AstConcreteClafer) org.clafer.cli.Utils.getModelChildByName(claferModel.getModel(), "c0_" + selectedTask.getName())); 
+					BeginnerModeQuestionnaire beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
 					
-					
-						BeginnerModeQuestionnaire beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
 					if (beginnerQuestions.hasQuestions()) {
 						preferenceSelectionPage = new BeginnerTaskQuestionPage(beginnerQuestions);
-					}
-						
-					} catch (URISyntaxException | IOException e) {
-						Activator.getDefault().logError(e);
-					}
-					
+					}					
 				}
 			}
 			if (preferenceSelectionPage != null) {

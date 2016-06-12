@@ -30,51 +30,12 @@ import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 
 public class PropertiesMapperUtil {
-	//private static Map<String, AstConcreteClafer> taskLabelMap = null;
-	private static Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> propertiesMap = null;
-	private static Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> groupPropertiesMap = null;
 	private static HashMap<AstAbstractClafer, List<AstClafer>> enumMap = null;
 	/**
 	 * private Constructor for singleton pattern     
 	 */
 	private PropertiesMapperUtil() {
 
-	}
-
-	/**
-	 * List of clafer which extends abstract Task
-	 * 
-	 * @return
-	 */
-//	public static Map<String, AstConcreteClafer> getTaskLabelsMap() {
-//		if (taskLabelMap == null) {
-//			taskLabelMap = new HashMap<String, AstConcreteClafer>();
-//		}
-//		return taskLabelMap;
-//	}
-
-	/**
-	 * Map with list of clafers and their properties 
-	 * ex : car : 
-	 * 				speed
-	 * 				transmission
-	 * in above clafer key would be 'car' and values would be
-	 * [speed,transmission]
-	 * 
-	 * @return
-	 */
-	public static Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> getPropertiesMap() {
-		if (propertiesMap == null) {
-			propertiesMap = new HashMap<AstConcreteClafer, ArrayList<AstConcreteClafer>>();
-		}
-		return propertiesMap;
-	}
-
-	/**
-	 * method to reset the properties map
-	 */
-	public static void resetPropertiesMap() {
-		propertiesMap = null;
 	}
 
 	/**
@@ -95,32 +56,5 @@ public class PropertiesMapperUtil {
 	public static void resetEnumMap() {
 		PropertiesMapperUtil.enumMap = null;
 	}
-	
-	
-	
-	/**
-	 * Map with list of clafers and their properties 
-	 * ex : car : 
-	 * 				speed
-	 * 				transmission
-	 * in above clafer key would be 'car' and values would be
-	 * [speed,transmission]
-	 * 
-	 * @return
-	 */
-	public static Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> getGroupPropertiesMap() {
-		if (groupPropertiesMap == null) {
-			groupPropertiesMap = new HashMap<AstConcreteClafer, ArrayList<AstConcreteClafer>>();
-		}
-		return groupPropertiesMap;
-	}
-
-	/**
-	 * method to reset the properties map
-	 */
-	public static void resetGroupPropertiesMap() {
-		groupPropertiesMap = null;
-	}
-
 
 }

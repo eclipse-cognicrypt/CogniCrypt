@@ -87,103 +87,17 @@ public class InstanceGenerator {
 		}
 	}
 	
-	
-
 	private void fillTaskPropertyMap() {
 		if (taskClafer.hasChildren())
-			for (AstConcreteClafer childClafer : taskClafer.getChildren()) {
+			for (AstConcreteClafer childClafer : taskClafer.getChildren()) {				
 				ArrayList<AstConcreteClafer> propertiesList = new ArrayList<AstConcreteClafer>();
-				addClaferProperties(childClafer, propertiesList);
+				ClaferModelUtils.findClaferProperties(childClafer, propertiesList, null);
+				//addClaferProperties(childClafer, propertiesList);
 				taskPropertyMap.put(childClafer, propertiesList);
 				
 			}	
 	}
 	
-	/**
-	 * Recursive method to list subclafers of a clafer
-	 * 
-	 * @param inputClafer
-	 */
-	public void addClaferProperties(AstClafer inputClafer, ArrayList<AstConcreteClafer> propertiesList) {
-		try {
-			if (inputClafer.hasChildren()) {
-				if (inputClafer.getGroupCard() != null && inputClafer.getGroupCard().getLow() >= 1) {
-					propertiesList.add((AstConcreteClafer) inputClafer);
-				} else
-					for (AstConcreteClafer childClafer : inputClafer.getChildren()) {
-						addClaferProperties(childClafer, propertiesList);
-					}
-			}
-		} catch (Exception E) {
-			System.out.println("1");
-			E.printStackTrace();
-		}
-		try {
-			if (inputClafer.hasRef()) {
-				if (inputClafer.getRef().getTargetType().isPrimitive() == true
-						&& (inputClafer.getRef().getTargetType().getName().contains("string") == false)) {
-					if (!ClaferModelUtils.isAbstract(inputClafer)) {
-						try {
-							propertiesList.add((AstConcreteClafer) inputClafer);
-						} catch (Exception E) {
-							System.out.println("2.1");
-							E.printStackTrace();
-						}
-
-					}
-
-				} else if (PropertiesMapperUtil.getenumMap()
-						.containsKey(inputClafer.getRef().getTargetType())) {
-				//	groupPropertiesList.add((AstConcreteClafer) inputClafer, propertiesList);
-				} else if (inputClafer.getRef().getTargetType().isPrimitive() == false) {
-					try {
-						addClaferProperties(inputClafer.getRef().getTargetType(), propertiesList);
-					} catch (Exception E) {
-						System.out.println("2.2");
-						E.printStackTrace();
-					}
-				}
-			}
-		} catch (Exception E) {
-			System.out.println("2");
-			E.printStackTrace();
-		}
-		try {
-			if (inputClafer.getSuperClafer() != null) {
-				addClaferProperties(inputClafer.getSuperClafer(), propertiesList);
-			}
-		} catch (Exception E) {
-			System.out.println("3");
-			E.printStackTrace();
-		}
-
-	}
-
-	/**
-	 * Recursive method to list properties or subclafres of an Abstract clafer
-	 * 
-	 * @param inputClafer
-	 */
-	public void addClaferProperties(AstAbstractClafer inputClafer, ArrayList<AstConcreteClafer> propertiesList) {
-
-		try {
-			if (inputClafer.hasChildren()) {
-				for (AstConcreteClafer in : inputClafer.getChildren())
-					addClaferProperties(in, propertiesList);
-			}
-			if (inputClafer.hasRef())
-				addClaferProperties(inputClafer.getRef().getTargetType(), propertiesList);
-
-			if (inputClafer.getSuperClafer() != null)
-				addClaferProperties(inputClafer.getSuperClafer(), propertiesList);
-
-		} catch (Exception E) {
-			E.printStackTrace();
-		}
-	}
-
-
-
 
 	/**
 	 * this method is part of instance generation process , creates a mapping instance name and instance Object
@@ -373,23 +287,45 @@ public class InstanceGenerator {
 	 */
 	// FIXME include group operator
 	void basicModeHandler(AstModel astModel, AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {		
-		
-		
+			
 		for (AstConcreteClafer taskAlgorithm : taskClafer.getChildren()) {	
-			for (Question question : qAMap.keySet()){
-				Answer selectedAnswer = qAMap.get(question);
-				for (Dependency dependency : selectedAnswer.getDependencies()){
-					String algorithmInDep = dependency.getAlgorithm();
-					if(ClaferModelUtils.getNameWithoutScope(taskAlgorithm.getName()).equals(algorithmInDep)){
-						for(AstConcreteClafer property : taskPropertyMap.get(taskAlgorithm)){
-							if (property.getName().contains(dependency.getOperand())) {
-								addConstraints(taskAlgorithm, property, dependency.getOperator(), Integer.parseInt(dependency.getValue()));
-							}
+			for (AstConcreteClafer algorithm : taskPropertyMap.keySet()) {
+				if (taskAlgorithm.getName().equals(algorithm.getName())) {
+					for (AstConcreteClafer property : taskPropertyMap.get(algorithm)) {							
+						for (Question question : qAMap.keySet()) {
+							Answer answer = qAMap.get(question);
+								for (Dependency dependency : answer.getDependencies()) {
+									if (property.getName().contains(dependency.getOperand())) {
+										addConstraints(algorithm, property, dependency.getOperator(), Integer.parseInt(dependency.getValue()));
+									}
+								}
+							
 						}
 					}
 				}
 			}
 		}
+//		for (AstConcreteClafer taskAlgorithm : taskClafer.getChildren()) {	
+//			System.out.println("looping for task: "+ taskAlgorithm);
+//			for (Question question : qAMap.keySet()){
+//				Answer selectedAnswer = qAMap.get(question);
+//				System.out.println("selected answer : " + selectedAnswer);
+//				for (Dependency dependency : selectedAnswer.getDependencies()){
+//					String algorithmInDep = dependency.getAlgorithm();
+//					System.out.println("algorthm in dep: " + algorithmInDep);
+//					System.out.println("comparing to: " + ClaferModelUtils.getNameWithoutScope(taskAlgorithm.getName()));
+//					if(ClaferModelUtils.getNameWithoutScope(taskAlgorithm.getName()).equals(algorithmInDep)){
+//						for(AstConcreteClafer property : taskPropertyMap.get(taskAlgorithm)){
+//							System.out.println("comaring property: " + property.getName() + " to " + dependency.getOperand());
+//							if (property.getName().contains(dependency.getOperand())) {
+//								System.out.println("Adding constraint: " + taskAlgorithm + " property: "+ property + " operator: "+ dependency.getOperator() + " value: "+ dependency.getValue());
+//								addConstraints(taskAlgorithm, property, dependency.getOperator(), Integer.parseInt(dependency.getValue()));
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
 	}
 
 	/**

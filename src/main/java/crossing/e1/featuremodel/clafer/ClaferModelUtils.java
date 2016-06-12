@@ -136,7 +136,7 @@ public class ClaferModelUtils {
 
 		if (inputClafer.hasChildren()) {
 			if (inputClafer.getGroupCard() != null
-					&& inputClafer.getGroupCard().getLow() >= 1) {
+					&& inputClafer.getGroupCard().getLow() >= 1) {				
 				propertiesList.add((AstConcreteClafer) inputClafer);
 			} else
 				for (AstConcreteClafer childClafer : inputClafer.getChildren()) {
@@ -146,17 +146,17 @@ public class ClaferModelUtils {
 		}
 
 		if (inputClafer.hasRef()) {
-			if (inputClafer.getRef().getTargetType().isPrimitive() == true
-					&& (inputClafer.getRef().getTargetType().getName()
-							.contains("string") == false)) {
+			if (inputClafer.getRef().getTargetType().isPrimitive()
+					&& !(inputClafer.getRef().getTargetType().getName()
+							.contains("string"))) {
 				if (!ClaferModelUtils.isAbstract(inputClafer)) {
 					propertiesList.add((AstConcreteClafer) inputClafer);
 				}
 
-			} else if (PropertiesMapperUtil.getenumMap().containsKey(
+			} else if (groupPropertiesList != null && PropertiesMapperUtil.getenumMap().containsKey(
 					inputClafer.getRef().getTargetType())) {
 				groupPropertiesList.add((AstConcreteClafer) inputClafer);
-			} else if (inputClafer.getRef().getTargetType().isPrimitive() == false) {
+			} else if (!inputClafer.getRef().getTargetType().isPrimitive()) {
 				findClaferProperties(inputClafer.getRef().getTargetType(),
 						propertiesList, groupPropertiesList);
 
@@ -174,17 +174,20 @@ public class ClaferModelUtils {
 			ArrayList<AstConcreteClafer> propertiesList,
 			ArrayList<AstConcreteClafer> groupPropertiesList) {
 			if (inputClafer.hasChildren()) {
-				for (AstConcreteClafer in : inputClafer.getChildren())
+				for (AstConcreteClafer in : inputClafer.getChildren()){
 					findClaferProperties(in, propertiesList,
 							groupPropertiesList);
+				}
 			}
-			if (inputClafer.hasRef())
+			if (inputClafer.hasRef()){
 				findClaferProperties(inputClafer.getRef().getTargetType(),
 						propertiesList, groupPropertiesList);
+			}
 
-			if (inputClafer.getSuperClafer() != null)
+			if (inputClafer.getSuperClafer() != null){
 				findClaferProperties(inputClafer.getSuperClafer(),
 						propertiesList, groupPropertiesList);
+			}
 	}
 
 	public static String getNameWithoutScope(String input){

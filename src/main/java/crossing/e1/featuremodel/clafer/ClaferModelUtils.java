@@ -30,16 +30,16 @@ import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstConstraint;
 
 public class ClaferModelUtils {
-	private static AstClafer mathedClafer = null;
+	private static AstClafer targetClafer = null;
 
 	/**
 	 * Method to find a clafer with a given name in whole model
 	 */
 	public static AstClafer findClaferByName(final AstClafer inputClafer,
 			final String name) {
-		mathedClafer = null;
-		setClaferByName(inputClafer, name);
-		return mathedClafer;
+		targetClafer = null;
+		findClaferByNameHelper(inputClafer, name);
+		return targetClafer;
 	}
 
 	/**
@@ -96,24 +96,24 @@ public class ClaferModelUtils {
 	 * duplicates it always sets the first matching clafer as matchedClafer
 	 * object
 	 */
-	public static void setClaferByName(final AstClafer inputClafer,
+	public static void findClaferByNameHelper(final AstClafer inputClafer,
 			final String name) {
-		if (mathedClafer == null) {
+		if (targetClafer == null) {
 			if (inputClafer.getName().equals(name)) {
-				mathedClafer = inputClafer;
+				targetClafer = inputClafer;
 			}
 			if (inputClafer.hasChildren()) {
 				for (final AstConcreteClafer childClafer : inputClafer
 						.getChildren()) {
-					setClaferByName(childClafer, name);
+					findClaferByNameHelper(childClafer, name);
 				}
 			}
 
 			if (inputClafer.hasRef()) {
-				setClaferByName(inputClafer.getRef().getTargetType(), name);
+				findClaferByNameHelper(inputClafer.getRef().getTargetType(), name);
 			}
 			if (inputClafer.getSuperClafer() != null) {
-				setClaferByName(inputClafer.getSuperClafer(), name);
+				findClaferByNameHelper(inputClafer.getSuperClafer(), name);
 			}
 		}
 	}
@@ -164,6 +164,7 @@ public class ClaferModelUtils {
 		}
 
 		if (inputClafer.getSuperClafer() != null) {
+			System.out.println("input clafer: " + inputClafer + " super clafer: " + inputClafer.getSuperClafer());
 			findClaferProperties(inputClafer.getSuperClafer(), propertiesList,
 					groupPropertiesList);
 		}
@@ -173,8 +174,10 @@ public class ClaferModelUtils {
 	public static void findClaferProperties(AstAbstractClafer inputClafer,
 			ArrayList<AstConcreteClafer> propertiesList,
 			ArrayList<AstConcreteClafer> groupPropertiesList) {
+		System.out.println("adding for abstract: "+ inputClafer);
 			if (inputClafer.hasChildren()) {
 				for (AstConcreteClafer in : inputClafer.getChildren()){
+					System.out.println("calling for child: " + in);
 					findClaferProperties(in, propertiesList,
 							groupPropertiesList);
 				}

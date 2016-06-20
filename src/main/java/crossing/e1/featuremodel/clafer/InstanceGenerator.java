@@ -72,7 +72,7 @@ public class InstanceGenerator {
 	private String taskDescription;
 	private AstClafer taskClafer;
 	//we basically create a new instance generator for each task we trigger it for so why not just have this task property map here to avoid references issues
-	private Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> taskPropertyMap;
+	//private Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> taskPropertyMap;
 
 	public InstanceGenerator(final String path, String taskName, String taskDescription) {
 		this.claferModel = new ClaferModel(path);
@@ -81,22 +81,22 @@ public class InstanceGenerator {
 		this.taskName = taskName;
 		this.taskDescription = taskDescription;
 		taskClafer = Utils.getModelChildByName(claferModel.getModel(), taskName);
-		taskPropertyMap = new HashMap<AstConcreteClafer, ArrayList<AstConcreteClafer>>();
-		if(taskName != null && !taskName.isEmpty()){
-			fillTaskPropertyMap();
-		}
+	//	taskPropertyMap = new HashMap<AstConcreteClafer, ArrayList<AstConcreteClafer>>();
+//		if(taskName != null && !taskName.isEmpty()){
+//			fillTaskPropertyMap();
+//		}
 	}
 	
-	private void fillTaskPropertyMap() {
-		if (taskClafer.hasChildren())
-			for (AstConcreteClafer childClafer : taskClafer.getChildren()) {				
-				ArrayList<AstConcreteClafer> propertiesList = new ArrayList<AstConcreteClafer>();
-				ClaferModelUtils.findClaferProperties(childClafer, propertiesList, null);
-				//addClaferProperties(childClafer, propertiesList);
-				taskPropertyMap.put(childClafer, propertiesList);
-				
-			}	
-	}
+//	private void fillTaskPropertyMap() {
+//		if (taskClafer.hasChildren())
+//			for (AstConcreteClafer childClafer : taskClafer.getChildren()) {				
+//				ArrayList<AstConcreteClafer> propertiesList = new ArrayList<AstConcreteClafer>();
+//				ClaferModelUtils.findClaferProperties(childClafer, propertiesList, null);
+//				//addClaferProperties(childClafer, propertiesList);
+//				taskPropertyMap.put(childClafer, propertiesList);
+//				
+//			}	
+//	}
 	
 
 	/**
@@ -246,6 +246,7 @@ public class InstanceGenerator {
 	 */
 	void addConstraints(AstClafer taskAlgorithm, AstConcreteClafer algorithmProperty, String operator, int value) {
 		if (operator.equals("=")) {
+			System.out.println("adding equal");
 			taskAlgorithm.addConstraint(equal(joinRef(join(joinRef($this()), algorithmProperty)), constant(value)));
 		} else if (operator.equals("<")) {
 			taskAlgorithm.addConstraint(lessThan(joinRef(join(joinRef($this()), algorithmProperty)), constant(value)));
@@ -287,45 +288,14 @@ public class InstanceGenerator {
 	 */
 	// FIXME include group operator
 	void basicModeHandler(AstModel astModel, AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {		
-			
-		for (AstConcreteClafer taskAlgorithm : taskClafer.getChildren()) {	
-			for (AstConcreteClafer algorithm : taskPropertyMap.keySet()) {
-				if (taskAlgorithm.getName().equals(algorithm.getName())) {
-					for (AstConcreteClafer property : taskPropertyMap.get(algorithm)) {							
-						for (Question question : qAMap.keySet()) {
-							Answer answer = qAMap.get(question);
-								for (Dependency dependency : answer.getDependencies()) {
-									if (property.getName().contains(dependency.getOperand())) {
-										addConstraints(algorithm, property, dependency.getOperator(), Integer.parseInt(dependency.getValue()));
-									}
-								}
-							
-						}
-					}
-				}
+		for (Question question : qAMap.keySet()){
+			Answer answer = qAMap.get(question);
+			for (Dependency dependency : answer.getDependencies()){
+				AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + dependency.getAlgorithm());
+				AstConcreteClafer propertyClafer = (AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + dependency.getOperand());				
+				addConstraints(algorithmClafer, propertyClafer, dependency.getOperator(), Integer.parseInt(dependency.getValue()));				
 			}
 		}
-//		for (AstConcreteClafer taskAlgorithm : taskClafer.getChildren()) {	
-//			System.out.println("looping for task: "+ taskAlgorithm);
-//			for (Question question : qAMap.keySet()){
-//				Answer selectedAnswer = qAMap.get(question);
-//				System.out.println("selected answer : " + selectedAnswer);
-//				for (Dependency dependency : selectedAnswer.getDependencies()){
-//					String algorithmInDep = dependency.getAlgorithm();
-//					System.out.println("algorthm in dep: " + algorithmInDep);
-//					System.out.println("comparing to: " + ClaferModelUtils.getNameWithoutScope(taskAlgorithm.getName()));
-//					if(ClaferModelUtils.getNameWithoutScope(taskAlgorithm.getName()).equals(algorithmInDep)){
-//						for(AstConcreteClafer property : taskPropertyMap.get(taskAlgorithm)){
-//							System.out.println("comaring property: " + property.getName() + " to " + dependency.getOperand());
-//							if (property.getName().contains(dependency.getOperand())) {
-//								System.out.println("Adding constraint: " + taskAlgorithm + " property: "+ property + " operator: "+ dependency.getOperator() + " value: "+ dependency.getValue());
-//								addConstraints(taskAlgorithm, property, dependency.getOperator(), Integer.parseInt(dependency.getValue()));
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
 	}
 
 	/**

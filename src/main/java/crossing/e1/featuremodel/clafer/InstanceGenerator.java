@@ -246,7 +246,6 @@ public class InstanceGenerator {
 	 */
 	void addConstraints(AstClafer taskAlgorithm, AstConcreteClafer algorithmProperty, String operator, int value) {
 		if (operator.equals("=")) {
-			System.out.println("adding equal");
 			taskAlgorithm.addConstraint(equal(joinRef(join(joinRef($this()), algorithmProperty)), constant(value)));
 		} else if (operator.equals("<")) {
 			taskAlgorithm.addConstraint(lessThan(joinRef(join(joinRef($this()), algorithmProperty)), constant(value)));

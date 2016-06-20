@@ -29,8 +29,8 @@ CBC : Mode
 abstract Algorithm
 	name -> string
 	description -> string
-	security -> Security
-	performance -> Performance
+	security -> integer
+	performance -> integer
 	classPerformance -> Performance 
 
 abstract Cipher : Algorithm

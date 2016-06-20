@@ -164,7 +164,6 @@ public class ClaferModelUtils {
 		}
 
 		if (inputClafer.getSuperClafer() != null) {
-			System.out.println("input clafer: " + inputClafer + " super clafer: " + inputClafer.getSuperClafer());
 			findClaferProperties(inputClafer.getSuperClafer(), propertiesList,
 					groupPropertiesList);
 		}
@@ -174,10 +173,9 @@ public class ClaferModelUtils {
 	public static void findClaferProperties(AstAbstractClafer inputClafer,
 			ArrayList<AstConcreteClafer> propertiesList,
 			ArrayList<AstConcreteClafer> groupPropertiesList) {
-		System.out.println("adding for abstract: "+ inputClafer);
+	
 			if (inputClafer.hasChildren()) {
 				for (AstConcreteClafer in : inputClafer.getChildren()){
-					System.out.println("calling for child: " + in);
 					findClaferProperties(in, propertiesList,
 							groupPropertiesList);
 				}

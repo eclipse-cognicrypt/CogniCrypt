@@ -118,78 +118,78 @@ public class ClaferModelUtils {
 		}
 	}
 	
-	public static void createTaskPropertiesMap(AstConcreteClafer taskClafer, Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> taskPropertiesMap, Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> taskGroupPropertiesMap) {
-		 
-		if (taskClafer.hasChildren())
-			for (AstConcreteClafer childClafer : taskClafer.getChildren()) {
-				ArrayList<AstConcreteClafer> propertiesList = new ArrayList<AstConcreteClafer>();
-				ArrayList<AstConcreteClafer> groupPropertiesList = new ArrayList<AstConcreteClafer>();
-				findClaferProperties(childClafer, propertiesList, groupPropertiesList);
-				taskPropertiesMap.put(childClafer, propertiesList);
-				taskGroupPropertiesMap.put(childClafer, groupPropertiesList);
-			}
-	}
-
-	public static void findClaferProperties(AstClafer inputClafer,
-			ArrayList<AstConcreteClafer> propertiesList,
-			ArrayList<AstConcreteClafer> groupPropertiesList) {
-
-		if (inputClafer.hasChildren()) {
-			if (inputClafer.getGroupCard() != null
-					&& inputClafer.getGroupCard().getLow() >= 1) {				
-				propertiesList.add((AstConcreteClafer) inputClafer);
-			} else
-				for (AstConcreteClafer childClafer : inputClafer.getChildren()) {
-					findClaferProperties(childClafer, propertiesList,
-							groupPropertiesList);
-				}
-		}
-
-		if (inputClafer.hasRef()) {
-			if (inputClafer.getRef().getTargetType().isPrimitive()
-					&& !(inputClafer.getRef().getTargetType().getName()
-							.contains("string"))) {
-				if (!ClaferModelUtils.isAbstract(inputClafer)) {
-					propertiesList.add((AstConcreteClafer) inputClafer);
-				}
-
-			} else if (groupPropertiesList != null && PropertiesMapperUtil.getenumMap().containsKey(
-					inputClafer.getRef().getTargetType())) {
-				groupPropertiesList.add((AstConcreteClafer) inputClafer);
-			} else if (!inputClafer.getRef().getTargetType().isPrimitive()) {
-				findClaferProperties(inputClafer.getRef().getTargetType(),
-						propertiesList, groupPropertiesList);
-
-			}
-		}
-
-		if (inputClafer.getSuperClafer() != null) {
-			findClaferProperties(inputClafer.getSuperClafer(), propertiesList,
-					groupPropertiesList);
-		}
-
-	}
-
-	public static void findClaferProperties(AstAbstractClafer inputClafer,
-			ArrayList<AstConcreteClafer> propertiesList,
-			ArrayList<AstConcreteClafer> groupPropertiesList) {
-	
-			if (inputClafer.hasChildren()) {
-				for (AstConcreteClafer in : inputClafer.getChildren()){
-					findClaferProperties(in, propertiesList,
-							groupPropertiesList);
-				}
-			}
-			if (inputClafer.hasRef()){
-				findClaferProperties(inputClafer.getRef().getTargetType(),
-						propertiesList, groupPropertiesList);
-			}
-
-			if (inputClafer.getSuperClafer() != null){
-				findClaferProperties(inputClafer.getSuperClafer(),
-						propertiesList, groupPropertiesList);
-			}
-	}
+//	public static void createTaskPropertiesMap(AstConcreteClafer taskClafer, Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> taskPropertiesMap, Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> taskGroupPropertiesMap) {
+//		 
+//		if (taskClafer.hasChildren())
+//			for (AstConcreteClafer childClafer : taskClafer.getChildren()) {
+//				ArrayList<AstConcreteClafer> propertiesList = new ArrayList<AstConcreteClafer>();
+//				ArrayList<AstConcreteClafer> groupPropertiesList = new ArrayList<AstConcreteClafer>();
+//				findClaferProperties(childClafer, propertiesList, groupPropertiesList);
+//				taskPropertiesMap.put(childClafer, propertiesList);
+//				taskGroupPropertiesMap.put(childClafer, groupPropertiesList);
+//			}
+//	}
+//
+//	public static void findClaferProperties(AstClafer inputClafer,
+//			ArrayList<AstConcreteClafer> propertiesList,
+//			ArrayList<AstConcreteClafer> groupPropertiesList) {
+//
+//		if (inputClafer.hasChildren()) {
+//			if (inputClafer.getGroupCard() != null
+//					&& inputClafer.getGroupCard().getLow() >= 1) {				
+//				propertiesList.add((AstConcreteClafer) inputClafer);
+//			} else
+//				for (AstConcreteClafer childClafer : inputClafer.getChildren()) {
+//					findClaferProperties(childClafer, propertiesList,
+//							groupPropertiesList);
+//				}
+//		}
+//
+//		if (inputClafer.hasRef()) {
+//			if (inputClafer.getRef().getTargetType().isPrimitive()
+//					&& !(inputClafer.getRef().getTargetType().getName()
+//							.contains("string"))) {
+//				if (!ClaferModelUtils.isAbstract(inputClafer)) {
+//					propertiesList.add((AstConcreteClafer) inputClafer);
+//				}
+//
+//			} else if (groupPropertiesList != null && PropertiesMapperUtil.getenumMap().containsKey(
+//					inputClafer.getRef().getTargetType())) {
+//				groupPropertiesList.add((AstConcreteClafer) inputClafer);
+//			} else if (!inputClafer.getRef().getTargetType().isPrimitive()) {
+//				findClaferProperties(inputClafer.getRef().getTargetType(),
+//						propertiesList, groupPropertiesList);
+//
+//			}
+//		}
+//
+//		if (inputClafer.getSuperClafer() != null) {
+//			findClaferProperties(inputClafer.getSuperClafer(), propertiesList,
+//					groupPropertiesList);
+//		}
+//
+//	}
+//
+//	public static void findClaferProperties(AstAbstractClafer inputClafer,
+//			ArrayList<AstConcreteClafer> propertiesList,
+//			ArrayList<AstConcreteClafer> groupPropertiesList) {
+//	
+//			if (inputClafer.hasChildren()) {
+//				for (AstConcreteClafer in : inputClafer.getChildren()){
+//					findClaferProperties(in, propertiesList,
+//							groupPropertiesList);
+//				}
+//			}
+//			if (inputClafer.hasRef()){
+//				findClaferProperties(inputClafer.getRef().getTargetType(),
+//						propertiesList, groupPropertiesList);
+//			}
+//
+//			if (inputClafer.getSuperClafer() != null){
+//				findClaferProperties(inputClafer.getSuperClafer(),
+//						propertiesList, groupPropertiesList);
+//			}
+//	}
 
 	public static String getNameWithoutScope(String input){
 		return input.substring(input.indexOf("_") + 1);

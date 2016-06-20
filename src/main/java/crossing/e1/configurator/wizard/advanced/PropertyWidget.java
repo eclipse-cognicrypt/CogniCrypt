@@ -23,7 +23,7 @@ import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 
 public class PropertyWidget {
 	private Spinner valueSpinner;
-	private AstConcreteClafer parentClafer;
+	private AstClafer parentClafer;
 	private AstConcreteClafer childClafer;
 	private ComboViewer operatorComboViewer;
 	private boolean isGroupConstraint = false;
@@ -47,7 +47,7 @@ public class PropertyWidget {
 	 * @param increment
 	 * @param pageincrement
 	 */
-	public PropertyWidget(Composite container, AstConcreteClafer parentClafer, AstConcreteClafer childClafer,
+	public PropertyWidget(Composite container, AstClafer parentClafer, AstConcreteClafer childClafer,
 			String label, int selection, int min, int max, int digits, int increment, int pageincrement) {
 		this.setChildClafer(childClafer);
 		this.setParentClafer(parentClafer);
@@ -164,7 +164,7 @@ public class PropertyWidget {
 	/**
 	 * @return the parentClafer
 	 */
-	public AstConcreteClafer getParentClafer() {
+	public AstClafer getParentClafer() {
 		return parentClafer;
 	}
 
@@ -172,7 +172,7 @@ public class PropertyWidget {
 	 * @param parentClafer
 	 *            the parentClafer to set
 	 */
-	public void setParentClafer(AstConcreteClafer parentClafer) {
+	public void setParentClafer(AstClafer parentClafer) {
 		this.parentClafer = parentClafer;
 	}
 
@@ -197,5 +197,10 @@ public class PropertyWidget {
 	 */
 	public void setGroupConstraint(boolean isGroupConstraint) {
 		this.isGroupConstraint = isGroupConstraint;
+	}
+	
+	@Override
+	public String toString(){
+		return "[parent:" + parentClafer.getName() + ", child: " + childClafer.getName() + ", operator: " + getOperator() + ", value:" + getValue() + ", isGroupConstraint: "+ isGroupConstraint + "]";		
 	}
 }

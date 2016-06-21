@@ -12,7 +12,7 @@ package <xsl:value-of select="//task/Package"/>;
 
 public class Enc {	
 	
-	public byte[] encrypt(byte [] stuff, SecretKeySpec key) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException { 
+	public byte[] encrypt(byte [] data, SecretKey key) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException { 
 		byte [] ivb = new byte [16];
 	    SecureRandom.getInstance("SHA1PRNG").nextBytes(ivb);
 	    IvParameterSpec iv = new IvParameterSpec(ivb);
@@ -20,7 +20,7 @@ public class Enc {
 		Cipher c = Cipher.getInstance("<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>/<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/mode"/>/<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/padding"/>");
 		
 		c.init(Cipher.ENCRYPT_MODE, key, iv);
-		byte [] res = c.doFinal(stuff);
+		byte [] res = c.doFinal(data);
 		byte [] ret = new byte[res.length + ivb.length];
 		System.arraycopy(ivb, 0, ret, 0, ivb.length);
 		System.arraycopy(res, 0, ret, ivb.length, ret.length);
@@ -37,7 +37,7 @@ package <xsl:value-of select="//Package"/>;
 
 public class KeyDeriv {
 	
-	public SecretKeySpec getKey(String pwd) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public SecretKey getKey(String pwd) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		SecureRandom r = new SecureRandom();
 		byte[] salt = new byte[16];
 		r.nextBytes(salt);
@@ -58,15 +58,30 @@ public class KeyDeriv {
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public byte[] run(byte[] file<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">, String pwd</xsl:if>) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
+	public byte[] run(byte[] data<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">, String pwd</xsl:if>) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
 		 <xsl:choose>
          <xsl:when test="//task/algorithm[@type='KeyDerivationAlgorithm']">KeyDeriv kd = new KeyDeriv();
-		 SecretKeySpec key = kd.getKey(pwd); </xsl:when>
+		 SecretKey key = kd.getKey(pwd); </xsl:when>
          <xsl:otherwise>SecretKeySpec key = getKey(); </xsl:otherwise>
 		 </xsl:choose>		
 		
 		Enc enc = new Enc();
-		return enc.encrypt(file, key);
+		return enc.encrypt(data, key);
+	}
+}
+</xsl:if>
+
+<xsl:if test="//task[@description='SymmetricEncryption']">
+package <xsl:value-of select="//Package"/>; 
+<xsl:apply-templates select="//Import"/>	
+public class Output {
+	public byte[] run(byte[] data) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
+		KeyGenerator kg = KeyGenerator.getInstance("<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>");
+		kg.init(<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/keySize"/>);
+		SecretKey key = kg.generateKey();
+
+		Enc enc = new Enc();
+		return enc.encrypt(data, key);
 	}
 }
 </xsl:if>

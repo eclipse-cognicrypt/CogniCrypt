@@ -41,9 +41,7 @@ public class XMLParser implements Labels {
 	 * @return
 	 */
 	public String displayInstanceValues(final InstanceClafer inst, String value) {
-//		InstanceClafer childInstance = null;
 		if (inst.hasChildren()) {
-//			childInstance = (InstanceClafer) inst.getChildren()[0].getRef();
 			final String taskName = inst.getType().getName();
 			value = "<task description=\"" + ClaferModelUtils
 				.removeScopePrefix(taskName) + "\">" + Constants.lineSeparator + Constants.lineSeparator + Constants.xmlPackage + Constants.lineSeparator + Constants.xmlimports;

@@ -30,6 +30,8 @@ public class Enc {
 </xsl:result-document>
 </xsl:if>
 
+<xsl:if test="//task[@description='PasswordBasedEncryption']">
+
 <xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">
 <xsl:result-document href="KeyDeriv.java">
 package <xsl:value-of select="//Package"/>; 
@@ -54,7 +56,6 @@ public class KeyDeriv {
 </xsl:result-document>
 </xsl:if>
 
-<xsl:if test="//task[@description='PasswordBasedEncryption']">
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
@@ -85,6 +86,35 @@ public class Output {
 	}
 }
 </xsl:if>
+<xsl:if test="//task[@description='SecurePassword']">
+
+<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">
+<xsl:result-document href="PWHasher.java">
+package <xsl:value-of select="//task/Package"/>; 
+<xsl:apply-templates select="//Import"/>
+
+public class PWHasher {	
+	
+	public byte[] hashPW(String pwd) throws NoSuchAlgorithmException, InvalidKeySpecException { 
+		byte[] salt = new byte[32];
+		SecureRandom.getInstance("SHA1PRNG").nextBytes(salt);
+		KeySpec spec = new PBEKeySpec(pwd.toCharArray(), salt, 65536, <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/outputSize"/>);
+		SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+		return f.generateSecret(spec).getEncoded();}
+}
+</xsl:result-document>
+</xsl:if>
+
+package <xsl:value-of select="//Package"/>; 
+<xsl:apply-templates select="//Import"/>	
+public class Output {
+	public byte[] run(String pwd) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
+		PWHasher pwHasher = new PWHasher();
+		return pwHasher.hashPW(pwd);
+	}
+}
+</xsl:if>
+
 
 </xsl:template>
 	

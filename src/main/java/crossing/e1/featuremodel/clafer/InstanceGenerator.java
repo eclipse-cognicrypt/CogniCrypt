@@ -71,8 +71,6 @@ public class InstanceGenerator {
 	private String taskName;
 	private String taskDescription;
 	private AstClafer taskClafer;
-	//we basically create a new instance generator for each task we trigger it for so why not just have this task property map here to avoid references issues
-	//private Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> taskPropertyMap;
 
 	public InstanceGenerator(final String path, String taskName, String taskDescription) {
 		this.claferModel = new ClaferModel(path);
@@ -81,22 +79,8 @@ public class InstanceGenerator {
 		this.taskName = taskName;
 		this.taskDescription = taskDescription;
 		taskClafer = Utils.getModelChildByName(claferModel.getModel(), taskName);
-	//	taskPropertyMap = new HashMap<AstConcreteClafer, ArrayList<AstConcreteClafer>>();
-//		if(taskName != null && !taskName.isEmpty()){
-//			fillTaskPropertyMap();
-//		}
 	}
-	
-//	private void fillTaskPropertyMap() {
-//		if (taskClafer.hasChildren())
-//			for (AstConcreteClafer childClafer : taskClafer.getChildren()) {				
-//				ArrayList<AstConcreteClafer> propertiesList = new ArrayList<AstConcreteClafer>();
-//				ClaferModelUtils.findClaferProperties(childClafer, propertiesList, null);
-//				//addClaferProperties(childClafer, propertiesList);
-//				taskPropertyMap.put(childClafer, propertiesList);
-//				
-//			}	
-//	}
+
 	
 
 	/**
@@ -266,15 +250,25 @@ public class InstanceGenerator {
 	 * @param propertiesMap
 	 */
 	void advancedModeHandler(AstModel astModel, AstClafer taskClafer, final List<PropertyWidget> constraints) {
+		System.out.println("=========Constraints====");
+		for(PropertyWidget constraint: constraints){
+			System.out.println(constraint);
+		}
+		System.out.println("=============");
 		for (AstConcreteClafer taskAlgorithm : taskClafer.getChildren()) {
 			for (PropertyWidget constraint : constraints) {
+				//System.out.println("checking constraint: "+ constraint);
 				if (!constraint.isGroupConstraint()){
+					//System.out.println("comparing: "+ constraint.getParentClafer().getName() + " and" + taskAlgorithm.getName());
 					if (constraint.getParentClafer().getName().equals(taskAlgorithm.getName())) {
 						final String operator = constraint.getOperator();
 						final int value = constraint.getValue();
 						final AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils.findClaferByName(taskAlgorithm, constraint.getChildClafer().getName());
-						if (operand != null && !ClaferModelUtils.isAbstract(operand)) {							
+						if (operand != null && !ClaferModelUtils.isAbstract(operand)) {		
+//							System.out.println("algorithm: "+ taskAlgorithm + " " + operand + " " + operator + " " + value);
+//							System.out.println("constraints before: "+ taskAlgorithm.getConstraints());
 							addConstraints(taskAlgorithm, operand, operator, value);
+//							System.out.println("constraints after: "+ taskAlgorithm.getConstraints());
 						}
 					}
 				}

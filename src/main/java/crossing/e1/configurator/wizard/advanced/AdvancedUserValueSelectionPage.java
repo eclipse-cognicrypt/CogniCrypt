@@ -89,28 +89,84 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 		// Add every constraints to its parent and group it as a separate titled
 		// panel
 		
-		Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> taskPropertiesMap = new HashMap<AstConcreteClafer, ArrayList<AstConcreteClafer>>();
-		Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> taskGroupPropertiesMap = new HashMap<AstConcreteClafer, ArrayList<AstConcreteClafer>>();
-				
-		ClaferModelUtils.createTaskPropertiesMap(taskClafer, taskPropertiesMap, taskGroupPropertiesMap);
+		for(AstClafer taskAlgorithm : taskClafer.getChildren()){
+			Group titledPanel = createPanel(ClaferModelUtils.removeScopePrefix(taskAlgorithm.getRef().getTargetType().getName()), container);
+			createConstraints(taskClafer, taskAlgorithm, titledPanel);
+		}
 		
-		for (AstConcreteClafer clafer : taskPropertiesMap.keySet()) {			
-			Group titledPanel = new Group(container, SWT.NONE);
-			titledPanel.setText(ClaferModelUtils.removeScopePrefix(clafer.getName()));
-			Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
-			titledPanel.setFont(boldFont);
-			GridLayout layout2 = new GridLayout();
+		setControl(container);
+	}
+	
+	public void createConstraints(AstClafer parent, AstClafer inputClafer, Group titledPanel) {
+		
+		System.out.println("creating for parent: "+ parent + " input: "+ inputClafer);
+		
+		if (inputClafer.hasChildren()) {
+			if (inputClafer.getGroupCard() != null
+					&& inputClafer.getGroupCard().getLow() >= 1) {				
+				userConstraints.add(new PropertyWidget(titledPanel, parent, (AstConcreteClafer) inputClafer,
+						ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
+			} else
+				for (AstConcreteClafer childClafer : inputClafer.getChildren()) {
+					createConstraints(parent, childClafer, titledPanel);
+				}
+		}
 
-			layout2.numColumns = 4;
-			titledPanel.setLayout(layout2);
-			
-			for (AstConcreteClafer property : taskPropertiesMap.get(clafer)) {
-				userConstraints.add(new PropertyWidget(titledPanel, clafer, property,
-						ClaferModelUtils.removeScopePrefix(property.getName()), 1, 0, 1024, 0, 1, 1));
+		if (inputClafer.hasRef()) {
+			if (inputClafer.getRef().getTargetType().isPrimitive()
+					&& !(inputClafer.getRef().getTargetType().getName()
+							.contains("string"))) {
+				if (!ClaferModelUtils.isAbstract(inputClafer)) {
+					userConstraints.add(new PropertyWidget(titledPanel,  parent, (AstConcreteClafer) inputClafer,
+							ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
+				}
+			} else if (PropertiesMapperUtil.getenumMap().containsKey(
+					inputClafer.getRef().getTargetType())) {
+				createConstraints(inputClafer, inputClafer.getRef().getTargetType(), titledPanel);
+			} else if (!inputClafer.getRef().getTargetType().isPrimitive()) {
+				if(!ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()).equals(titledPanel.getText())){
+					Group childPanel = createPanel(ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()), titledPanel);	
+					createConstraints(inputClafer, inputClafer.getRef().getTargetType(), childPanel);
+				}else{
+					//same panel as main algorithm type (e.g., kda in secure pwd storage)
+					createConstraints(inputClafer, inputClafer.getRef().getTargetType(), titledPanel);
+				}
+			}
+		}
+
+		if (inputClafer.getSuperClafer() != null) {
+			createConstraints(parent, inputClafer.getSuperClafer(), titledPanel);
+		}
+
+	}
+	
+	public void createConstraints(AstClafer parent, AstAbstractClafer inputClafer, Group titledPanel) {
+	
+			if (inputClafer.hasChildren()) {
+				for (AstConcreteClafer in : inputClafer.getChildren()){
+					createConstraints(parent, in, titledPanel);
+				}
+			}
+			if (inputClafer.hasRef()){
+				createConstraints(parent, inputClafer.getRef().getTargetType(), titledPanel);
 			}
 
-		}
-		setControl(container);
+			if (inputClafer.getSuperClafer() != null){
+				createConstraints(parent, inputClafer.getSuperClafer(), titledPanel);
+			}
+	}
+	
+	private Group createPanel(String name, Composite parent){
+		Group titledPanel = new Group(parent, SWT.LEFT);
+		titledPanel.setText(name);
+		Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
+		titledPanel.setFont(boldFont);
+		GridLayout layout2 = new GridLayout();
+
+		layout2.numColumns = 4;
+		titledPanel.setLayout(layout2);
+		
+		return titledPanel;
 	}
 
 	public boolean getPageStatus() {

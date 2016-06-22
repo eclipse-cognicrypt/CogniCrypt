@@ -37,9 +37,31 @@ public class ClaferModelUtils {
 	 */
 	public static AstClafer findClaferByName(final AstClafer inputClafer,
 			final String name) {
-		targetClafer = null;
-		findClaferByNameHelper(inputClafer, name);
-		return targetClafer;
+		if (inputClafer.getName().equals(name)) {
+			return inputClafer;
+		} else {
+			if (inputClafer.hasChildren()) {
+				for (final AstConcreteClafer childClafer : inputClafer
+						.getChildren()) {
+					AstClafer foundClafer = findClaferByName(childClafer, name);
+					if(foundClafer != null){
+						return foundClafer;
+					}
+				}
+			}
+
+			if (inputClafer.hasRef()) {
+				return findClaferByName(inputClafer.getRef().getTargetType(),
+						name);
+			}
+			
+			if (inputClafer.getSuperClafer() != null) {
+				return findClaferByName(inputClafer.getSuperClafer(), name);
+			}
+			
+			return null;
+
+		}
 	}
 
 	/**
@@ -91,107 +113,7 @@ public class ClaferModelUtils {
 				+ shortenedScope.substring(1, shortenedScope.length());
 	}
 
-	/**
-	 * Helper method to find the clafer with a given name, if there are
-	 * duplicates it always sets the first matching clafer as matchedClafer
-	 * object
-	 */
-	public static void findClaferByNameHelper(final AstClafer inputClafer,
-			final String name) {
-		if (targetClafer == null) {
-			if (inputClafer.getName().equals(name)) {
-				targetClafer = inputClafer;
-			}
-			if (inputClafer.hasChildren()) {
-				for (final AstConcreteClafer childClafer : inputClafer
-						.getChildren()) {
-					findClaferByNameHelper(childClafer, name);
-				}
-			}
-
-			if (inputClafer.hasRef()) {
-				findClaferByNameHelper(inputClafer.getRef().getTargetType(), name);
-			}
-			if (inputClafer.getSuperClafer() != null) {
-				findClaferByNameHelper(inputClafer.getSuperClafer(), name);
-			}
-		}
-	}
-	
-//	public static void createTaskPropertiesMap(AstConcreteClafer taskClafer, Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> taskPropertiesMap, Map<AstConcreteClafer, ArrayList<AstConcreteClafer>> taskGroupPropertiesMap) {
-//		 
-//		if (taskClafer.hasChildren())
-//			for (AstConcreteClafer childClafer : taskClafer.getChildren()) {
-//				ArrayList<AstConcreteClafer> propertiesList = new ArrayList<AstConcreteClafer>();
-//				ArrayList<AstConcreteClafer> groupPropertiesList = new ArrayList<AstConcreteClafer>();
-//				findClaferProperties(childClafer, propertiesList, groupPropertiesList);
-//				taskPropertiesMap.put(childClafer, propertiesList);
-//				taskGroupPropertiesMap.put(childClafer, groupPropertiesList);
-//			}
-//	}
-//
-//	public static void findClaferProperties(AstClafer inputClafer,
-//			ArrayList<AstConcreteClafer> propertiesList,
-//			ArrayList<AstConcreteClafer> groupPropertiesList) {
-//
-//		if (inputClafer.hasChildren()) {
-//			if (inputClafer.getGroupCard() != null
-//					&& inputClafer.getGroupCard().getLow() >= 1) {				
-//				propertiesList.add((AstConcreteClafer) inputClafer);
-//			} else
-//				for (AstConcreteClafer childClafer : inputClafer.getChildren()) {
-//					findClaferProperties(childClafer, propertiesList,
-//							groupPropertiesList);
-//				}
-//		}
-//
-//		if (inputClafer.hasRef()) {
-//			if (inputClafer.getRef().getTargetType().isPrimitive()
-//					&& !(inputClafer.getRef().getTargetType().getName()
-//							.contains("string"))) {
-//				if (!ClaferModelUtils.isAbstract(inputClafer)) {
-//					propertiesList.add((AstConcreteClafer) inputClafer);
-//				}
-//
-//			} else if (groupPropertiesList != null && PropertiesMapperUtil.getenumMap().containsKey(
-//					inputClafer.getRef().getTargetType())) {
-//				groupPropertiesList.add((AstConcreteClafer) inputClafer);
-//			} else if (!inputClafer.getRef().getTargetType().isPrimitive()) {
-//				findClaferProperties(inputClafer.getRef().getTargetType(),
-//						propertiesList, groupPropertiesList);
-//
-//			}
-//		}
-//
-//		if (inputClafer.getSuperClafer() != null) {
-//			findClaferProperties(inputClafer.getSuperClafer(), propertiesList,
-//					groupPropertiesList);
-//		}
-//
-//	}
-//
-//	public static void findClaferProperties(AstAbstractClafer inputClafer,
-//			ArrayList<AstConcreteClafer> propertiesList,
-//			ArrayList<AstConcreteClafer> groupPropertiesList) {
-//	
-//			if (inputClafer.hasChildren()) {
-//				for (AstConcreteClafer in : inputClafer.getChildren()){
-//					findClaferProperties(in, propertiesList,
-//							groupPropertiesList);
-//				}
-//			}
-//			if (inputClafer.hasRef()){
-//				findClaferProperties(inputClafer.getRef().getTargetType(),
-//						propertiesList, groupPropertiesList);
-//			}
-//
-//			if (inputClafer.getSuperClafer() != null){
-//				findClaferProperties(inputClafer.getSuperClafer(),
-//						propertiesList, groupPropertiesList);
-//			}
-//	}
-
-	public static String getNameWithoutScope(String input){
+	public static String getNameWithoutScope(String input) {
 		return input.substring(input.indexOf("_") + 1);
 	}
 }

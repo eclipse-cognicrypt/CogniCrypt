@@ -60,7 +60,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 	@Override
 	public void createControl(Composite parent) {
 		container = new Composite(parent, SWT.NONE);
-
+		
 		container.setBounds(10, 10, 450, 200);
 		GridLayout layout = new GridLayout();
 		container.setLayout(layout);
@@ -98,8 +98,6 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 	}
 	
 	public void createConstraints(AstClafer parent, AstClafer inputClafer, Group titledPanel) {
-		
-		System.out.println("creating for parent: "+ parent + " input: "+ inputClafer);
 		
 		if (inputClafer.hasChildren()) {
 			if (inputClafer.getGroupCard() != null

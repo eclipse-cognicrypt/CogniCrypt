@@ -165,13 +165,14 @@ public class InstanceGenerator {
 				InstanceClafer instance = solver.instance().getTopClafers()[solver.instance().getTopClafers().length - 1];
 				uniqueInstances.put(getHashValueOfInstance(instance), instance);
 			}
+
 		} catch (final Exception e) {
 			e.printStackTrace();
 			Activator.getDefault().logError(e);
 		}
 		generatedInstances = new ArrayList<InstanceClafer>(uniqueInstances.values());
 		generateInstanceMapping();
-		//setNoOfInstances(displayNameToInstanceMap.keySet().size());
+
 		return generatedInstances;
 	}
 
@@ -250,27 +251,16 @@ public class InstanceGenerator {
 	 * @param propertiesMap
 	 */
 	void advancedModeHandler(AstModel astModel, AstClafer taskClafer, final List<PropertyWidget> constraints) {
-		System.out.println("=========Constraints====");
+
 		for(PropertyWidget constraint: constraints){
-			System.out.println(constraint);
-		}
-		System.out.println("=============");
-		for (AstConcreteClafer taskAlgorithm : taskClafer.getChildren()) {
-			for (PropertyWidget constraint : constraints) {
-				//System.out.println("checking constraint: "+ constraint);
-				if (!constraint.isGroupConstraint()){
-					//System.out.println("comparing: "+ constraint.getParentClafer().getName() + " and" + taskAlgorithm.getName());
-					if (constraint.getParentClafer().getName().equals(taskAlgorithm.getName())) {
-						final String operator = constraint.getOperator();
-						final int value = constraint.getValue();
-						final AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils.findClaferByName(taskAlgorithm, constraint.getChildClafer().getName());
-						if (operand != null && !ClaferModelUtils.isAbstract(operand)) {		
-//							System.out.println("algorithm: "+ taskAlgorithm + " " + operand + " " + operator + " " + value);
-//							System.out.println("constraints before: "+ taskAlgorithm.getConstraints());
-							addConstraints(taskAlgorithm, operand, operator, value);
-//							System.out.println("constraints after: "+ taskAlgorithm.getConstraints());
-						}
-					}
+			
+			if (constraint.isEnabled() && !constraint.isGroupConstraint()){ //not sure why we need this check but keeping it from Ram's code till we figure it out
+				final String operator = constraint.getOperator();
+				final int value = constraint.getValue();
+				final AstConcreteClafer parent = (AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getParentClafer().getName());
+				final AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getChildClafer().getName());
+				if (operand != null && !ClaferModelUtils.isAbstract(operand)) {		
+					addConstraints(parent, operand, operator, value);
 				}
 			}
 		}

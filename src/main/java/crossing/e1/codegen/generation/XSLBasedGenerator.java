@@ -69,6 +69,10 @@ import crossing.e1.configurator.Constants;
 public class XSLBasedGenerator {
 
 	private DeveloperProject project;
+	
+	public DeveloperProject getDeveloperProject() {
+		return project;
+	}
 
 	private boolean fileOpened = false;
 	private IFile currentFile;

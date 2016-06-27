@@ -194,10 +194,12 @@ public class ConfiguratorWizard extends Wizard {
 			try {
 				// Print the result to the console
 				final WriteToFileHelper write = new WriteToFileHelper();
-				write.writeToFile(new XMLParser().displayInstanceValues(this.instanceListPage.getValue(), ""),
+				String selectedInstance = new XMLParser().displayInstanceValues(this.instanceListPage.getValue(), "");
+				write.writeToFile(selectedInstance,
 					Utils.resolveResourcePathToFile(Constants.pathToClaferInstanceFolder).getAbsolutePath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile);
 				// Generate code template
 				ret &= this.codeGeneration.generateCodeTemplates(null, null);
+				write.writeToFile(selectedInstance, codeGeneration.getDeveloperProject().getProjectPath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile);
 			} catch (URISyntaxException | IOException e) {
 				Activator.getDefault().logError(e);
 				return false;

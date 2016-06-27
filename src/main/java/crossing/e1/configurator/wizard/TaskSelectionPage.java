@@ -92,7 +92,6 @@ public class TaskSelectionPage extends WizardPage {
 
 		final List<Task> tasks = TaskJSONReader.getTasks();
 
-	    /* if the current person is selected, show text */
 		taskComboSelection.setLabelProvider(new LabelProvider() {
 	        @Override
 	        public String getText(Object element) {
@@ -112,7 +111,7 @@ public class TaskSelectionPage extends WizardPage {
 	        public void selectionChanged(SelectionChangedEvent event) {
 	            IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 	            Task selectedTask = (Task)selection.getFirstElement();
-
+	           
 	            taskComboSelection.refresh();
 	            
 	            if(selectedTask != null){

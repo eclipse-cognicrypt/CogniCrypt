@@ -24,7 +24,7 @@ package crossing.e1.configurator.utilities;
 import java.util.Properties;
 
 public interface Labels {
-	Properties prop = new ReadLables("src/main/resources/Labels.properties").getProperties();
+	Properties prop = new PropertiesFileReader("src/main/resources/Labels.properties").getProperties();
 	// Strings for GUI elements
 	static final String MEWGENERATIONWINDOWTITLE = "Generate Cryptography Code";
 	static final String NEWGENERATIONWIZARDPAGETITLE = "Generate Code";

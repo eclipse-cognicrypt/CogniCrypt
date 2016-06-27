@@ -25,10 +25,10 @@ import java.util.Properties;
 
 import crossing.e1.configurator.Activator;
 
-public class ReadLables {
+public class PropertiesFileReader {
 	private final Properties prop = new Properties();
 
-	public ReadLables(final String path) {
+	public PropertiesFileReader(final String path) {
 		try {
 			final String configFile = Utilities.getAbsolutePath(path);
 			this.prop.load(new FileInputStream(configFile));

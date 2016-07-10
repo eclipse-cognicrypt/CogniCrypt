@@ -232,6 +232,38 @@ SSL_RSA_WITH_NULL_MD5 : CipherSuite
 	[keyAgreement = RSA_KeyAgr]
 	[tlsProtocol >= SSL2] //TODO: double check the tls version/protocol
 
+TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384 : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = CBC]
+	[tlsProtocol >= TLS1_2]
+	[keyAgreement = ECDHE]
+	[signature = ECDSA]
+	[messageAuth = SHA384]
+
+TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384 : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = CBC]
+	[tlsProtocol >= TLS1_2]
+	[keyAgreement = ECDHE]
+	[signature = RSA_Sig]
+	[messageAuth = SHA384]
+
+TLS_DHE_RSA_WITH_AES_256_CBC_SHA256 : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = CBC]
+	[tlsProtocol >= TLS1_2]
+	[keyAgreement = ECDHE]
+	[signature = RSA_Sig]
+	[messageAuth = SHA256]
+
+TLS_DHE_DSS_WITH_AES_256_CBC_SHA256 : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = CBC]
+	[tlsProtocol >= TLS1_2]
+	[keyAgreement = ECDHE]
+	[signature = ECDSA]
+	[messageAuth = SHA256]
+
 SecureCommunication : Task  
 	[description = "Communicate over a secure channel"]
 	ciphersuites -> CipherSuite 1..*

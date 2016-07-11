@@ -135,13 +135,37 @@ ECDHE : KeyAgreementAlgorithm
 	[name = "ECDHE"]
 	[description = "Key exchange algorithm"]
 	[security = Strong]
-	[performance = Fast]	
+	[performance = VeryFast]	
+
+ECDH : KeyAgreementAlgorithm 
+	[name = "ECDH"]
+	[description = "Key exchange algorithm"]
+	[security = Medium]
+	[performance = VeryFast]
+
+DHE : KeyAgreementAlgorithm 
+	[name = "DHE"]
+	[description = "Key exchange algorithm"]
+	[security = Strong]
+	[performance = Fast]
+
+DH : KeyAgreementAlgorithm 
+	[name = "DH"]
+	[description = "Key exchange algorithm"]
+	[security = Medium]
+	[performance = Fast]
 
 //DigitalSigAlgms
 ECDSA : DigitalSignatureAlgm
 	[name = "ECDSA"]
 	[description = "Digital signature"]
-	[security = Medium]
+	[security = Strong]
+	[performance = VeryFast]
+
+DSS : DigitalSignatureAlgm
+	[name = "DSS"]
+	[description = "Digital signature"]
+	[security = Strong]
 	[performance = Fast]
 
 //KeyDerivationAlgorithms

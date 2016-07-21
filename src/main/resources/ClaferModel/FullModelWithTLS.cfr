@@ -58,6 +58,8 @@ abstract SymmetricBlockCipher : SymmetricCipher
 	[mode != ECB]
 	[mode = CBC => padding != NoPadding]
 
+abstract StreamCipher: SymmetricCipher
+
 abstract DigitalSignatureAlgm : Algorithm
 	//keySize -> integer
 	[classPerformance = VerySlow]
@@ -99,6 +101,22 @@ AES256 : SymmetricBlockCipher
 	[keySize = 256]
 	[performance = Fast]
 	[security = Strong]
+
+//SymmetricStreamCiphersAlgorithms
+
+RC4128 : StreamCipher
+	[name = "RC4"]
+	[description = "RC4 (Rivest Cipher 4)"]s
+	[keySize = 128]
+	[performance = VeryFast]
+	[security = Broken]
+
+RC440 : StreamCipher
+	[name = "RC4"]
+	[description = "RC4 (Rivest Cipher 4)"]s
+	[keySize = 40]
+	[performance = VeryFast]
+	[security = Broken]
 
 // DigestAlgorithms
 SHA256: Digest

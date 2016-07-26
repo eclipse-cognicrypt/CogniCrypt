@@ -22,6 +22,12 @@
 			"description": "Represent password in a secure way for storage",
 			"modelFile" : "src/main/resources/ClaferModel/SecurePasswordStorage.js",
 			"xmlFile" : "src/main/resources/TaskDesc/SecurePasswordStorage.json"
+		},
+		{
+			"name": "LongTermArchiving",
+			"description": "Securly archiving files.",
+			"modelFile" : "src/main/resources/ClaferModel/TLSTask.js",
+			"xmlFile" : "src/main/resources/TaskDesc/LongTermArchivingQuestions.json"
 		}
 ]
 

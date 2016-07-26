@@ -22,9 +22,7 @@ package crossing.e1.configurator.wizard;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 
-import javax.rmi.CORBA.Util;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.xml.parsers.DocumentBuilder;
@@ -49,10 +47,7 @@ import crossing.e1.codegen.Utils;
 import crossing.e1.codegen.generation.XSLBasedGenerator;
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
-import crossing.e1.configurator.beginer.question.Answer;
-import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.tasks.Task;
-import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.configurator.utilities.WriteToFileHelper;
 import crossing.e1.configurator.utilities.XMLParser;
 import crossing.e1.configurator.wizard.advanced.AdvancedUserValueSelectionPage;
@@ -60,7 +55,6 @@ import crossing.e1.configurator.wizard.beginner.BeginnerModeQuestionnaire;
 import crossing.e1.configurator.wizard.beginner.BeginnerTaskQuestionPage;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
-import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
 public class ConfiguratorWizard extends Wizard {
 
@@ -195,12 +189,21 @@ public class ConfiguratorWizard extends Wizard {
 				// Print the result to the console
 				final WriteToFileHelper write = new WriteToFileHelper();
 				String selectedInstance = new XMLParser().displayInstanceValues(this.instanceListPage.getValue(), "");
-				write.writeToFile(selectedInstance,
-					Utils.resolveResourcePathToFile(Constants.pathToClaferInstanceFolder).getAbsolutePath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile);
+				
+				// Initialize Code Generation to retrieve developer project
+				ret &= this.codeGeneration.initCodeGeneration();
+				
+				// Write Instance File into developer project
+				String xmlInstancePath = codeGeneration.getDeveloperProject().getProjectPath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile;
+				write.writeToFile(selectedInstance, xmlInstancePath);
+
 				// Generate code template
-				ret &= this.codeGeneration.generateCodeTemplates(null, null);
-				write.writeToFile(selectedInstance, codeGeneration.getDeveloperProject().getProjectPath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile);
-			} catch (URISyntaxException | IOException e) {
+				ret &= this.codeGeneration.generateCodeTemplates(new File(xmlInstancePath), null);
+				
+				// Delete Instance File
+				write.deleteFile(xmlInstancePath);
+				codeGeneration.getDeveloperProject().refresh();
+			} catch (Exception e) {//(URISyntaxException | IOException e) {
 				Activator.getDefault().logError(e);
 				return false;
 			}

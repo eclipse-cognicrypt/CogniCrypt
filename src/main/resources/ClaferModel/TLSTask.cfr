@@ -46,16 +46,19 @@ abstract Cipher : Algorithm
 
 abstract SymmetricCipher : Cipher
 	keySize -> integer
+	mode -> Mode ?
 	[classPerformance = Fast]
 
 abstract AsymmetricCipher: Cipher
 	[classPerformance = VerySlow]
 
 abstract SymmetricBlockCipher : SymmetricCipher
-	mode -> Mode
 	padding -> Padding
 	[mode != ECB]
 	[mode = CBC => padding != NoPadding]
+
+abstract StreamCipher: SymmetricCipher
+	[no mode]
 
 abstract DigitalSignatureAlgm : Algorithm
 	//keySize -> integer
@@ -95,6 +98,29 @@ AES256 : SymmetricBlockCipher
 	[performance = Fast]
 	[security = Strong]
 
+TDES : SymmetricBlockCipher
+	[name = "3DES"]
+	[description = "Triple Data Encryption Algorithm Encrypt-Decrypt-Encrypt mode"]s
+	[keySize = 168]
+	[performance = VeryFast]
+	[security = Weak]
+
+//SymmetricStreamCiphersAlgorithms
+
+RC4128 : StreamCipher
+	[name = "RC4"]
+	[description = "RC4 (Rivest Cipher 4)"]s
+	[keySize = 128]
+	[performance = VeryFast]
+	[security = Broken]
+
+RC440 : StreamCipher
+	[name = "RC4"]
+	[description = "RC4 (Rivest Cipher 4)"]s
+	[keySize = 40]
+	[performance = VeryFast]
+	[security = Broken]
+
 // DigestAlgorithms
 SHA256: Digest
 	[description = "SHA-256 digest"]
@@ -130,13 +156,37 @@ ECDHE : KeyAgreementAlgorithm
 	[name = "ECDHE"]
 	[description = "Key exchange algorithm"]
 	[security = Strong]
-	[performance = Fast]	
+	[performance = VeryFast]	
+
+ECDH : KeyAgreementAlgorithm 
+	[name = "ECDH"]
+	[description = "Key exchange algorithm"]
+	[security = Medium]
+	[performance = VeryFast]
+
+DHE : KeyAgreementAlgorithm 
+	[name = "DHE"]
+	[description = "Key exchange algorithm"]
+	[security = Strong]
+	[performance = Fast]
+
+DH : KeyAgreementAlgorithm 
+	[name = "DH"]
+	[description = "Key exchange algorithm"]
+	[security = Medium]
+	[performance = Fast]
 
 //DigitalSigAlgms
 ECDSA : DigitalSignatureAlgm
 	[name = "ECDSA"]
 	[description = "Digital signature"]
-	[security = Medium]
+	[security = Strong]
+	[performance = VeryFast]
+
+DSS : DigitalSignatureAlgm
+	[name = "DSS"]
+	[description = "Digital signature"]
+	[security = Strong]
 	[performance = Fast]
 
 RSA_Sig : DigitalSignatureAlgm
@@ -158,7 +208,7 @@ RSA_KeyAgr : KeyAgreementAlgorithm
 	[performance = Slow]
 
 abstract CipherSuite
-	cipher -> SymmetricBlockCipher ?
+	cipher -> SymmetricCipher ?
 	tlsProtocol -> TLS_Version
 	keyAgreement -> KeyAgreementAlgorithm
 	signature -> DigitalSignatureAlgm
@@ -176,6 +226,14 @@ abstract CipherSuite
 
 	performance -> integer
 	[performance = min(signature.classPerformance, keyAgreement.classPerformance, cipher.classPerformance, messageAuth.classPerformance)]
+
+TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384 : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = CBC]
+	[tlsProtocol >= TLS1_2]
+	[keyAgreement = ECDHE]
+	[signature = ECDSA]
+	[messageAuth = SHA384]
 
 TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384 : CipherSuite
 	[cipher = AES256]
@@ -197,7 +255,7 @@ TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 : CipherSuite
 	[cipher.mode = GCM]
 	[signature = RSA_Sig]
 	[messageAuth = SHA256]
-	[keyAgreement = ECDHE]
+	[keyAgreement = DHE]
 
 SSL_RSA_WITH_NULL_MD5 : CipherSuite
 	[no cipher]
@@ -205,6 +263,386 @@ SSL_RSA_WITH_NULL_MD5 : CipherSuite
 	[messageAuth = MD5]
 	[keyAgreement = RSA_KeyAgr]
 	[tlsProtocol >= SSL2] //TODO: double check the tls version/protocol
+
+TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384 : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = CBC]
+	[tlsProtocol >= TLS1_2]
+	[keyAgreement = ECDH]
+	[signature = ECDSA]
+	[messageAuth = SHA384]
+
+TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384 : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = CBC]
+	[tlsProtocol >= TLS1_2]
+	[keyAgreement = ECDH]
+	[signature = RSA_Sig]
+	[messageAuth = SHA384]
+
+TLS_DHE_RSA_WITH_AES_256_CBC_SHA256 : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = CBC]
+	[tlsProtocol >= TLS1_2]
+	[keyAgreement = DHE]
+	[signature = RSA_Sig]
+	[messageAuth = SHA256]
+
+TLS_DHE_DSS_WITH_AES_256_CBC_SHA256 : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = CBC]
+	[tlsProtocol >= TLS1_2]
+	[keyAgreement = DHE]
+	[signature = DSS]
+	[messageAuth = SHA256]
+
+TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = CBC]
+	[keyAgreement = ECDHE]
+	[signature = ECDSA]
+	[messageAuth = SHA1]
+
+TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = CBC]
+	[keyAgreement = ECDHE]
+	[signature = RSA_Sig]
+	[messageAuth = SHA1]
+
+TLS_RSA_WITH_AES_256_CBC_SHA : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = CBC]
+	[keyAgreement = RSA_KeyAgr]
+	[signature = RSA_Sig]
+	[messageAuth = SHA1]
+
+TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = CBC]
+	[keyAgreement = ECDH]
+	[signature = ECDSA]
+	[messageAuth = SHA1]
+
+TLS_ECDH_RSA_WITH_AES_256_CBC_SHA : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = CBC]
+	[keyAgreement = ECDH]
+	[signature = RSA_Sig]
+	[messageAuth = SHA1]
+
+TLS_DHE_RSA_WITH_AES_256_CBC_SHA : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = CBC]
+	[keyAgreement = DHE]
+	[signature = RSA_Sig]
+	[messageAuth = SHA1]
+
+TLS_DHE_DSS_WITH_AES_256_CBC_SHA : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = CBC]
+	[keyAgreement = DHE]
+	[signature = DSS]
+	[messageAuth = SHA1]
+
+TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256 : CipherSuite
+	[cipher = AES128]
+	[cipher.mode = CBC]
+	[tlsProtocol >= TLS1_2]
+	[keyAgreement = ECDHE]
+	[signature = ECDSA]
+	[messageAuth = SHA256]
+
+TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256 : CipherSuite
+	[cipher = AES128]
+	[cipher.mode = CBC]
+	[tlsProtocol >= TLS1_2]
+	[keyAgreement = ECDHE]
+	[signature = RSA_Sig]
+	[messageAuth = SHA256]
+
+TLS_RSA_WITH_AES_128_CBC_SHA256 : CipherSuite
+	[cipher = AES128]
+	[cipher.mode = CBC]
+	[tlsProtocol >= TLS1_2]
+	[keyAgreement = RSA_KeyAgr]
+	[signature = RSA_Sig]
+	[messageAuth = SHA256]
+
+TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256 : CipherSuite
+	[cipher = AES128]
+	[cipher.mode = CBC]
+	[tlsProtocol >= TLS1_2]
+	[keyAgreement = ECDH]
+	[signature = ECDSA]
+	[messageAuth = SHA256]
+
+TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256 : CipherSuite
+	[cipher = AES128]
+	[cipher.mode = CBC]
+	[tlsProtocol >= TLS1_2]
+	[keyAgreement = ECDH]
+	[signature = RSA_Sig]
+	[messageAuth = SHA256]
+
+TLS_DHE_RSA_WITH_AES_128_CBC_SHA256 : CipherSuite
+	[cipher = AES128]
+	[cipher.mode = CBC]
+	[tlsProtocol >= TLS1_2]
+	[keyAgreement = DHE]
+	[signature = RSA_Sig]
+	[messageAuth = SHA256]
+
+TLS_DHE_DSS_WITH_AES_128_CBC_SHA256 : CipherSuite
+	[cipher = AES128]
+	[cipher.mode = CBC]
+	[tlsProtocol >= TLS1_2]
+	[keyAgreement = DHE]
+	[signature = DSS]
+	[messageAuth = SHA256]
+
+TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA : CipherSuite
+	[cipher = AES128]
+	[cipher.mode = CBC]
+	[keyAgreement = ECDHE]
+	[signature = ECDSA]
+	[messageAuth = SHA1]
+
+TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA : CipherSuite
+	[cipher = AES128]
+	[cipher.mode = CBC]
+	[keyAgreement = ECDHE]
+	[signature = RSA_Sig]
+	[messageAuth = SHA1]
+
+TLS_RSA_WITH_AES_128_CBC_SHA : CipherSuite
+	[cipher = AES128]
+	[cipher.mode = CBC]
+	[keyAgreement = RSA_KeyAgr]
+	[signature = RSA_Sig]
+	[messageAuth = SHA1]
+
+TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA : CipherSuite
+	[cipher = AES128]
+	[cipher.mode = CBC]
+	[keyAgreement = ECDH]
+	[signature = ECDSA]
+	[messageAuth = SHA1]
+
+TLS_ECDH_RSA_WITH_AES_128_CBC_SHA : CipherSuite
+	[cipher = AES128]
+	[cipher.mode = CBC]
+	[keyAgreement = ECDH]
+	[signature = RSA_Sig]
+	[messageAuth = SHA1]
+
+TLS_DHE_RSA_WITH_AES_128_CBC_SHA : CipherSuite
+	[cipher = AES128]
+	[cipher.mode = CBC]
+	[keyAgreement = DHE]
+	[signature = RSA_Sig]
+	[messageAuth = SHA1]
+
+TLS_DHE_DSS_WITH_AES_128_CBC_SHA : CipherSuite
+	[cipher = AES128]
+	[cipher.mode = CBC]
+	[keyAgreement = DHE]
+	[signature = DSS]
+	[messageAuth = SHA1]
+
+TLS_ECDHE_ECDSA_WITH_RC4_128_SHA : CipherSuite
+	[cipher = RC4128]
+	[keyAgreement = ECDHE]
+	[signature = ECDSA]
+	[messageAuth = SHA1]
+
+TLS_ECDHE_RSA_WITH_RC4_128_SHA : CipherSuite
+	[cipher = RC4128]
+	[keyAgreement = ECDHE]
+	[signature = RSA_Sig]
+	[messageAuth = SHA1]
+
+SSL_RSA_WITH_RC4_128_SHA : CipherSuite
+	[cipher = RC4128]
+	[keyAgreement = RSA_KeyAgr]
+	[signature = RSA_Sig]
+	[messageAuth = SHA1]
+	[tlsProtocol >= SSL2] //TODO: double check the tls version/protocol
+
+TLS_ECDH_ECDSA_WITH_RC4_128_SHA : CipherSuite
+	[cipher = RC4128]
+	[keyAgreement = ECDH]
+	[signature = ECDSA]
+	[messageAuth = SHA1]
+
+TLS_ECDH_RSA_WITH_RC4_128_SHA : CipherSuite
+	[cipher = RC4128]
+	[keyAgreement = ECDH]
+	[signature = RSA_Sig]
+	[messageAuth = SHA1]
+
+TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 : CipherSuite
+	[cipher = AES256]
+	[cipher.mode = GCM]
+	[tlsProtocol >= TLS1_2]
+	[keyAgreement = ECDHE]
+	[signature = ECDSA]
+	[messageAuth = SHA384]
+
+TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 : CipherSuite
+    [cipher = AES128]
+    [cipher.mode = GCM]
+    [tlsProtocol >= TLS1_2]
+    [keyAgreement = ECDHE]
+    [signature = ECDSA]
+    [messageAuth = SHA256]
+
+TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 : CipherSuite
+    [cipher = AES256]
+    [cipher.mode = GCM]
+    [tlsProtocol >= TLS1_2]
+    [keyAgreement = ECDHE]
+    [signature = RSA_Sig]
+    [messageAuth = SHA384]
+
+TLS_RSA_WITH_AES_256_GCM_SHA384 : CipherSuite
+    [cipher = AES256]
+    [cipher.mode = GCM]
+    [tlsProtocol >= TLS1_2]
+    [keyAgreement = RSA_KeyAgr]
+    [signature = RSA_Sig]
+    [messageAuth = SHA384]
+
+TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384 : CipherSuite
+    [cipher = AES256]
+    [cipher.mode = GCM]
+    [tlsProtocol >= TLS1_2]
+    [keyAgreement = ECDH]
+    [signature = ECDSA]
+    [messageAuth = SHA384]
+
+TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384 : CipherSuite
+    [cipher = AES256]
+    [cipher.mode = GCM]
+    [tlsProtocol >= TLS1_2]
+    [keyAgreement = ECDH]
+    [signature = RSA_Sig]
+    [messageAuth = SHA384]
+
+TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 : CipherSuite
+    [cipher = AES256]
+    [cipher.mode = GCM]
+    [tlsProtocol >= TLS1_2]
+    [keyAgreement = DHE]
+    [signature = RSA_Sig]
+    [messageAuth = SHA384]
+
+TLS_DHE_DSS_WITH_AES_256_GCM_SHA384 : CipherSuite
+    [cipher = AES256]
+    [cipher.mode = GCM]
+    [tlsProtocol >= TLS1_2]
+    [keyAgreement = DHE]
+    [signature = DSS]
+    [messageAuth = SHA384]
+
+TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 : CipherSuite
+    [cipher = AES128]
+    [cipher.mode = GCM]
+    [tlsProtocol >= TLS1_2]
+    [keyAgreement = ECDHE]
+    [signature = RSA_Sig]
+    [messageAuth = SHA256]
+
+TLS_RSA_WITH_AES_128_GCM_SHA256 : CipherSuite
+    [cipher = AES128]
+    [cipher.mode = GCM]
+    [tlsProtocol >= TLS1_2]
+    [keyAgreement = RSA_KeyAgr]
+    [signature = RSA_Sig]
+    [messageAuth = SHA256]
+
+TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256 : CipherSuite
+    [cipher = AES128]
+    [cipher.mode = GCM]
+    [tlsProtocol >= TLS1_2]
+    [keyAgreement = ECDH]
+    [signature = ECDSA]
+    [messageAuth = SHA256]
+
+TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256 : CipherSuite
+    [cipher = AES128]
+    [cipher.mode = GCM]
+    [tlsProtocol >= TLS1_2]
+    [keyAgreement = ECDH]
+    [signature = RSA_Sig]
+    [messageAuth = SHA256]
+
+TLS_DHE_DSS_WITH_AES_128_GCM_SHA256 : CipherSuite
+    [cipher = AES128]
+    [cipher.mode = GCM]
+    [tlsProtocol >= TLS1_2]
+    [keyAgreement = DHE]
+    [signature = DSS]
+    [messageAuth = SHA256]
+
+TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA : CipherSuite
+    [cipher = TDES]
+    [cipher.mode = CBC]
+    [keyAgreement = ECDHE]
+    [signature = ECDSA]
+    [messageAuth = SHA1]
+
+TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA : CipherSuite
+    [cipher = TDES]
+    [cipher.mode = CBC]
+    [keyAgreement = ECDHE]
+    [signature = RSA_Sig]
+    [messageAuth = SHA1]
+
+SSL_RSA_WITH_3DES_EDE_CBC_SHA : CipherSuite
+    [cipher = TDES]
+    [cipher.mode = CBC]
+    [keyAgreement = RSA_KeyAgr]
+    [signature = RSA_Sig]
+    [messageAuth = SHA1]
+    [tlsProtocol >= SSL2] //TODO: double check the tls version/protocol
+
+TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA : CipherSuite
+    [cipher = TDES]
+    [cipher.mode = CBC]
+    [keyAgreement = ECDH]
+    [signature = ECDSA]
+    [messageAuth = SHA1]
+
+TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA : CipherSuite
+    [cipher = TDES]
+    [cipher.mode = CBC]
+    [keyAgreement = ECDH]
+    [signature = RSA_Sig]
+    [messageAuth = SHA1]
+
+SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA : CipherSuite
+    [cipher = TDES]
+    [cipher.mode = CBC]
+    [keyAgreement = DHE]
+    [signature = RSA_Sig]
+    [messageAuth = SHA1]
+    [tlsProtocol >= SSL2] //TODO: double check the tls version/protocol
+
+SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA : CipherSuite
+    [cipher = TDES]
+    [cipher.mode = CBC]
+    [keyAgreement = DHE]
+    [signature = DSS]
+    [messageAuth = SHA1]
+    [tlsProtocol >= SSL2] //TODO: double check the tls version/protocol
+
+SSL_RSA_WITH_RC4_128_MD5 : CipherSuite
+    [cipher = RC4128]
+    [keyAgreement = RSA_KeyAgr]
+    [signature = RSA_Sig]
+    [messageAuth = MD5]
+    [tlsProtocol >= SSL2] //TODO: double check the tls version/protocol
 
 SecureCommunication : Task  
 	[description = "Communicate over a secure channel"]

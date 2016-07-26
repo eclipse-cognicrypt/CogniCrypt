@@ -1,0 +1,45 @@
+{
+	"beginner": {
+		"criteria": "isAddingNewDocuments",
+		"trueBranch" : {
+			"decision" : "SKIPLIST"
+		},
+		"falseBranch": {
+			"criteria": "isMultipleDocuments",
+			"trueBranch": {
+				"decision": "MERKLE_TREE_SEQUENCE"
+			},
+			"falseBranch": {
+				"criteria": "trustedAuthorithies",
+				"children": [
+					{ 
+						"value": "SignatureBasedTimeStamping",
+						"decision": "SIMPLE_LIST"
+					},
+					{ 
+						"value": "Notaries",
+						"decision": "NOTARIAL_ATTESTATION_WRAPPER"
+					},
+					{ 
+						"criteria": "isSingleDocument",
+						"trueBranch": {
+							"decision": "NOTARIAL_ATTESTATION_WRAPPER"
+						},
+						"falseBranch": {
+							"decision": "SIMPLE_LIST"
+						}
+					}
+				]
+			}
+		}
+	},
+	"expert" : { 
+		"criteria": "isNotarisationWithoutTimestamping",
+		"trueBranch" : {
+			"decision": "NOTARIAL_ATTESTATION_WRAPPER"
+		},
+		"falseBranch": {
+			"decision": "SIMPLE_LIST"
+		}
+	}
+}

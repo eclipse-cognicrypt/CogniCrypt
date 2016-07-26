@@ -1,0 +1,58 @@
+[
+	{
+		"questionText":"Do you want to add new documents frequently?",
+		"answers":[
+			{
+				"value":"Yes"	
+			},
+			{
+				"value":"No",
+				"defaultAnswer": true
+			}
+		]
+	}
+,
+	{
+		"questionText":"Do you want to protect large sets of documents?",
+		"answers":[
+			{"value":"Yes",
+			"defaultAnswer": true,
+			"dependencies":[]
+			},
+			{"value":"No",
+			"dependencies":[]
+			}
+		]
+	}
+,
+
+	{
+		"questionText":"What kind of authority do you trust?",
+		"answers":[
+			{"value":"Timestamping authorities",
+			"dependencies":[]
+			},
+			{"value":"Notaries",
+			"dependencies":[]
+			},
+			{"value":"Both",
+			"defaultAnswer": true,
+			"dependencies":[]
+			}
+		]
+	}
+,
+
+	{
+		"questionText":"Do you want to protect only a single document?",
+		"answers":[
+			{"value":"Yes",
+			"dependencies":[]
+			},
+			{"value":"No",
+			"defaultAnswer": true,
+			"dependencies":[]
+			}
+		]
+	}
+]

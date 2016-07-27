@@ -493,7 +493,6 @@ SSL_RSA_WITH_RC4_128_SHA : CipherSuite
 	[keyAgreement = RSA_KeyAgr]
 	[signature = RSA_Sig]
 	[messageAuth = SHA1]
-	[tlsProtocol >= SSL2] //TODO: double check the tls version/protocol
 
 TLS_ECDH_ECDSA_WITH_RC4_128_SHA : CipherSuite
 	[cipher = RC4128]
@@ -653,7 +652,6 @@ SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA : CipherSuite
     [keyAgreement = DHE]
     [signature = RSA_Sig]
     [messageAuth = SHA1]
-    [tlsProtocol >= SSL2] //TODO: double check the tls version/protocol
 
 SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA : CipherSuite
     [cipher = TDES]
@@ -661,14 +659,12 @@ SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA : CipherSuite
     [keyAgreement = DHE]
     [signature = DSS]
     [messageAuth = SHA1]
-    [tlsProtocol >= SSL2] //TODO: double check the tls version/protocol
 
 SSL_RSA_WITH_RC4_128_MD5 : CipherSuite
     [cipher = RC4128]
     [keyAgreement = RSA_KeyAgr]
     [signature = RSA_Sig]
     [messageAuth = MD5]
-    [tlsProtocol >= SSL2] //TODO: double check the tls version/protocol
 
 SecureCommunication : Task  
 	[description = "Communicate over a secure channel"]

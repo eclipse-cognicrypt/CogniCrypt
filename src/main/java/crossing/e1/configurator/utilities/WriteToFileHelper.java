@@ -41,4 +41,15 @@ public class WriteToFileHelper {
 		}
 		return 0;
 	}
+	
+	public int deleteFile(final String fileName) {
+		try {
+			Files.delete(Paths.get(fileName));
+		} catch (IOException e) {
+			Activator.getDefault().logError(e);
+			return 1;
+		}
+		return 0;
+	}
+	
 }

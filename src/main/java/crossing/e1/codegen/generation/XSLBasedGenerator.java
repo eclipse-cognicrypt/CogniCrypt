@@ -87,11 +87,6 @@ public class XSLBasedGenerator {
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if transformation successful/failed.
 	 */
 	public boolean generateCodeTemplates(File claferOutput, File xslFile) {
-		// TODO: Android
-		// TODO: extract init to Configurator
-		if (!initCodeGeneration()) {
-			return false;
-		}
 		try {
 			// Check whether directories and templates/model exist
 			final File claferOutputFiles = claferOutput != null && claferOutput.exists() ? claferOutput

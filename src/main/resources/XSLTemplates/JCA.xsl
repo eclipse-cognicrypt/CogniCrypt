@@ -14,7 +14,7 @@ public class Enc {
 	
 	public byte[] encrypt(byte [] data, SecretKey key) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException { 
 		byte [] ivb = new byte [16];
-	    SecureRandom.getInstance("SHA1PRNG").nextBytes(ivb);
+	    SecureRandom.getInstanceStrong().nextBytes(ivb);
 	    IvParameterSpec iv = new IvParameterSpec(ivb);
 		
 		Cipher c = Cipher.getInstance("<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>/<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/mode"/>/<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/padding"/>");
@@ -40,9 +40,8 @@ package <xsl:value-of select="//Package"/>;
 public class KeyDeriv {
 	
 	public SecretKey getKey(String pwd) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		SecureRandom r = new SecureRandom();
 		byte[] salt = new byte[16];
-		r.nextBytes(salt);
+		SecureRandom.getInstanceStrong().nextBytes(salt);
 		
 		PBEKeySpec spec = new PBEKeySpec(pwd.toCharArray(), salt, <xsl:choose>
          <xsl:when test="$Rounds > 1000"> <xsl:value-of select="$Rounds"/> </xsl:when>
@@ -97,7 +96,7 @@ public class PWHasher {
 	
 	public byte[] hashPW(String pwd) throws NoSuchAlgorithmException, InvalidKeySpecException { 
 		byte[] salt = new byte[32];
-		SecureRandom.getInstance("SHA1PRNG").nextBytes(salt);
+		SecureRandom.getInstanceStrong().nextBytes(salt);
 		KeySpec spec = new PBEKeySpec(pwd.toCharArray(), salt, 65536, <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/outputSize"/>);
 		SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 		return f.generateSecret(spec).getEncoded();}

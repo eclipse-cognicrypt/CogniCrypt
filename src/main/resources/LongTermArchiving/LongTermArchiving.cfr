@@ -1,0 +1,31 @@
+abstract Enum
+
+abstract List : Enum
+Skip_List : List
+Simple_List : List
+Merkle_Tree_Sequence : List
+Notarial_Attestation_Wrapper : List
+
+abstract AddingDocuments : Enum
+Once : AddingDocuments
+MultipleTimes : AddingDocuments
+
+abstract NumberDocuments : Enum
+Single : NumberDocuments
+MultipleDocuments : NumberDocuments
+
+abstract TrustedAuthorities : Enum
+SignatureBased : TrustedAuthorities
+Notaries : TrustedAuthorities
+
+SymmetricBlockCipher
+	list -> List
+	addDoc -> AddingDocuments
+	numDoc -> NumberDocuments
+	trust -> TrustedAuthorities
+	[addDoc = Once => list = Skip_List]
+	[addDoc = MultipleTimes && numDoc = MultipleDocuments => list = Merkle_Tree_Sequence]
+	[addDoc = MultipleTimes && numDoc = Single && TrustedAuthorities = SignatureBased => list = Simple_List]
+	[addDoc = MultipleTimes && numDoc = Single && TrustedAuthorities = Notaries => list = Notarial_Attestation_Wrapper]
+	//What about that second "IsSingle Document" branch?
+	

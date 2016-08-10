@@ -9,6 +9,7 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.utilities.Utilities;
 
 /**
@@ -34,9 +35,9 @@ class JSONDecisionTreeParser {
 
 			decisionTree = gson.fromJson(reader, TreeModel.class);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
+			Activator.getDefault().logError(e);
+		} catch (IOException e) {
+			Activator.getDefault().logError(e);
 		}
 
 		return decisionTree;

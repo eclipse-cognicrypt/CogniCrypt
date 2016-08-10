@@ -105,10 +105,10 @@ public class ConfiguratorWizard extends Wizard {
 					claferModel = new ClaferModel(Utils.resolveResourcePathToFile(selectedTask.getModelFile()).getAbsolutePath());
 				} catch (URISyntaxException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Activator.getDefault().logError(e);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Activator.getDefault().logError(e);
 				}
 
 				if (taskListPage.isAdvancedMode()) {

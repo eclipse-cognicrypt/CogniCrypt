@@ -160,7 +160,6 @@ public class InstanceGenerator {
 			}
 
 		} catch (final Exception e) {
-			e.printStackTrace();
 			Activator.getDefault().logError(e);
 		}
 		generatedInstances = new ArrayList<InstanceClafer>(uniqueInstances.values());

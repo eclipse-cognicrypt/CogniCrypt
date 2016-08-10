@@ -8,6 +8,7 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.utilities.Utilities;
 
@@ -26,7 +27,7 @@ public class TaskJSONReader {
 				tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {}.getType());
 
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				Activator.getDefault().logError(e);
 			}
 		}
 

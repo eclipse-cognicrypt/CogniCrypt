@@ -35,6 +35,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
+import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.ClaferModelUtils;
@@ -79,7 +80,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 		//
 		//			}
 		//		} catch (Exception e) {
-		//			e.printStackTrace();
+		//			Activator.getDefault().logError(e);
 		//		}
 
 		// Add every constraints to its parent and group it as a separate titled

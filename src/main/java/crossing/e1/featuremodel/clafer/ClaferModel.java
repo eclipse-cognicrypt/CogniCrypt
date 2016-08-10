@@ -35,6 +35,8 @@ import org.clafer.javascript.Javascript;
 import org.clafer.javascript.JavascriptFile;
 import org.clafer.scope.Scope;
 
+import crossing.e1.configurator.Activator;
+
 public class ClaferModel {
 
 	private String modelName;
@@ -77,7 +79,7 @@ public class ClaferModel {
 			setEnumList(astModel);
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e);
 		}
 	}
 
@@ -213,8 +215,8 @@ public class ClaferModel {
 			}
 			if (inputClafer.getSuperClafer() != null)
 				setChildrenList(parentClafer, inputClafer.getSuperClafer(), name);
-		} catch (Exception E) {
-			E.printStackTrace();
+		} catch (Exception e) {
+			Activator.getDefault().logError(e);
 		}
 	}
 
@@ -238,8 +240,8 @@ public class ClaferModel {
 			if (inputClafer.getSuperClafer() != null)
 				setChildrenList(parentClafer, inputClafer.getSuperClafer(), claferName);
 
-		} catch (Exception E) {
-			E.printStackTrace();
+		} catch (Exception e) {
+			Activator.getDefault().logError(e);
 		}
 	}
 

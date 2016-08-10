@@ -3,4 +3,4 @@
 /org.eclipse.core.runtime/
 /Layered.atxa
 /.gitignore
-/.DS_Store
+*/.DS_Store

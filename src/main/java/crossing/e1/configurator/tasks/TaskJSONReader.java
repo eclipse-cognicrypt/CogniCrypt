@@ -20,12 +20,10 @@ public class TaskJSONReader {
 		if (tasks == null) {
 			BufferedReader reader;
 			try {
-				reader = new BufferedReader(new FileReader(
-						Utilities.getAbsolutePath(Constants.jsonTaskFile)));
+				reader = new BufferedReader(new FileReader(Utilities.getAbsolutePath(Constants.jsonTaskFile)));
 				Gson gson = new Gson();
 
-				tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {
-				}.getType());
+				tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {}.getType());
 
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();

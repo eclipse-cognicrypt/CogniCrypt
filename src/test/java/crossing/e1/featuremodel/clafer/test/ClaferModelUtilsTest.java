@@ -32,6 +32,7 @@ import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 
 public class ClaferModelUtilsTest {
+
 	ClaferModel claferModel;
 	String abstarctClaferName = "Digest";
 
@@ -47,13 +48,10 @@ public class ClaferModelUtilsTest {
 	 * @throws java.lang.Exception
 	 */
 	@After
-	public void tearDown() throws Exception {
-	}
+	public void tearDown() throws Exception {}
 
 	/**
-	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.test.ClaferModelUtils#findClaferByName(org.clafer.ast.AstClafer, java.lang.String)}
-	 * .
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.ClaferModelUtils#findClaferByName(org.clafer.ast.AstClafer, java.lang.String)} .
 	 */
 	@Test
 	public final void testFindClaferByName() {
@@ -72,8 +70,7 @@ public class ClaferModelUtilsTest {
 	}
 
 	/**
-	 * Test method for
-	 * {@link crossing.e1.featuremodel.clafer.test.ClaferModelUtils#isAbstract(org.clafer.ast.AstClafer)} .
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.ClaferModelUtils#isAbstract(org.clafer.ast.AstClafer)} .
 	 */
 	@Test
 	public final void testIsAbstract() {
@@ -88,8 +85,7 @@ public class ClaferModelUtilsTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.test.ClaferModelUtils#removeScopePrefix(java.lang.String)}
-	 * .
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.ClaferModelUtils#removeScopePrefix(java.lang.String)} .
 	 */
 	@Test
 	public final void testTrimScope() {

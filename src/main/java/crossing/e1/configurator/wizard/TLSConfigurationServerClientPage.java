@@ -35,10 +35,10 @@ public class TLSConfigurationServerClientPage extends WizardPage {
 	private Composite container;
 	private Button serverRadioButton;
 	private Button clientRadioButton;
-	
+
 	TLSConfigurationServerClientPage tls;
 	boolean complete = false;
-	
+
 	public TLSConfigurationServerClientPage() {
 		super(Labels.SELECT_TASK);
 		setTitle(Labels.TLS_PAGE);
@@ -46,7 +46,6 @@ public class TLSConfigurationServerClientPage extends WizardPage {
 		tls = this;
 	}
 
-	
 	@Override
 	public boolean canFlipToNextPage() {
 		return clientRadioButton.getSelection();
@@ -56,7 +55,6 @@ public class TLSConfigurationServerClientPage extends WizardPage {
 	public boolean isPageComplete() {
 		return false;
 	}
-
 
 	@Override
 	public void createControl(final Composite parent) {
@@ -69,43 +67,40 @@ public class TLSConfigurationServerClientPage extends WizardPage {
 		this.clientRadioButton = new Button(this.container, SWT.RADIO);
 		this.clientRadioButton.setText("Client");
 		clientRadioButton.addSelectionListener(new SelectionListener() {
-						
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				try {
 					complete = true;
 					tls.setPageComplete(complete);
-				} catch (NumberFormatException e1) {				
-				}
+				} catch (NumberFormatException e1) {}
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				widgetSelected(e);
 			}
 		});
-		
+
 		this.serverRadioButton = new Button(this.container, SWT.RADIO);
 		this.serverRadioButton.setText("Server");
 		serverRadioButton.addSelectionListener(new SelectionListener() {
-						
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				try {
 					complete = true;
 					tls.setPageComplete(complete);
-				} catch (NumberFormatException e1) {				
-				}
+				} catch (NumberFormatException e1) {}
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				widgetSelected(e);
 			}
 		});
-		
+
 		setControl(this.container);
 	}
-	
-	
+
 }

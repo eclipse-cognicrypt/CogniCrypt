@@ -24,6 +24,7 @@ package crossing.e1.configurator.utilities;
 import java.util.Properties;
 
 public interface Labels {
+
 	Properties prop = new PropertiesFileReader("src/main/resources/Labels.properties").getProperties();
 	// Strings for GUI elements
 	static final String MEWGENERATIONWINDOWTITLE = "Generate Cryptography Code";
@@ -66,10 +67,10 @@ public interface Labels {
 	static final String PROPERTIES = prop.getProperty("PROPERTIES");
 	static final String SELECT_PROPERTIES = prop.getProperty("SELECT_PROPERTIES");
 	static final String INSTANCE_ERROR_MESSGAE = prop.getProperty("INSTANCE_ERROR_MESSGAE");
-//	static final String EQUALS = prop.getProperty("EQUALS");
-//	static final String GREATER_THAN = prop.getProperty("GREATER_THAN");
-//	static final String LESS_THAN = prop.getProperty("LESS_THAN");
-//	static final String GREATER_THAN_EQUAL = prop.getProperty("GREATER_THAN_EQUAL");
-//	static final String LESS_THAN_EQUAL = prop.getProperty("LESS_THAN_EQUAL");
+	//	static final String EQUALS = prop.getProperty("EQUALS");
+	//	static final String GREATER_THAN = prop.getProperty("GREATER_THAN");
+	//	static final String LESS_THAN = prop.getProperty("LESS_THAN");
+	//	static final String GREATER_THAN_EQUAL = prop.getProperty("GREATER_THAN_EQUAL");
+	//	static final String LESS_THAN_EQUAL = prop.getProperty("LESS_THAN_EQUAL");
 
 }

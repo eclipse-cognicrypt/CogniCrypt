@@ -26,6 +26,7 @@ import java.util.Properties;
 import crossing.e1.configurator.Activator;
 
 public class PropertiesFileReader {
+
 	private final Properties prop = new Properties();
 
 	public PropertiesFileReader(final String path) {

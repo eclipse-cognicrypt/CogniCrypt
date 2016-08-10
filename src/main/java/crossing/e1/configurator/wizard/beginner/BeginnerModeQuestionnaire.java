@@ -11,7 +11,7 @@ public class BeginnerModeQuestionnaire {
 	private List<Question> questionList;
 	private Task task;
 	private int counter = 0;
-	
+
 	public BeginnerModeQuestionnaire(final Task task, final String filePath) {
 		this.task = task;
 		questionList = (new QuestionsJSONReader()).getQuestions(filePath);
@@ -29,7 +29,6 @@ public class BeginnerModeQuestionnaire {
 		//return this.counter < getQutionare().size();
 		return questionList.size() > 0;
 	}
-
 
 	public Question nextQuestion() {
 		return questionList.get(this.counter);

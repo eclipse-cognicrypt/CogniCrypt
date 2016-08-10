@@ -76,8 +76,6 @@ public class InstanceGenerator {
 		taskClafer = Utils.getModelChildByName(claferModel.getModel(), taskName);
 	}
 
-	
-
 	/**
 	 * this method is part of instance generation process , creates a mapping instance name and instance Object
 	 */
@@ -121,7 +119,7 @@ public class InstanceGenerator {
 		final AstModel astModel = claferModel.getModel();
 		try {
 			basicModeHandler(astModel, taskClafer, map);
-			
+
 			solver = ClaferCompiler.compile(astModel,
 				claferModel.getScope().toBuilder()
 					//.defaultScope(Integer.parseInt(new ReadConfig().getValue(DEFAULT_SCOPE)))
@@ -131,7 +129,7 @@ public class InstanceGenerator {
 				final InstanceClafer instance = solver.instance().getTopClafers()[solver.instance().getTopClafers().length - 1];
 				uniqueInstances.put(getHashValueOfInstance(instance), instance);
 			}
-	
+
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e);
 		}
@@ -149,10 +147,10 @@ public class InstanceGenerator {
 	public List<InstanceClafer> generateInstancesAdvancedUserMode(final List<PropertyWidget> constraints) {
 		final AstModel model = claferModel.getModel();
 		try {
-	
+
 			//PropertiesMapperUtil.getTaskLabelsMap().get(getTaskDescription());
 			advancedModeHandler(model, taskClafer, constraints);
-			
+
 			// TODO Need to be uncommented after fix
 			// addGroupProperties(tempTask, constraints);
 			solver = ClaferCompiler.compile(model, claferModel.getScope().toBuilder().intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
@@ -234,10 +232,9 @@ public class InstanceGenerator {
 		} else if (operator.equals("<=")) {
 			taskAlgorithm.addConstraint(lessThanEqual(joinRef(join(joinRef($this()), algorithmProperty)), constant(value)));
 		} else if (operator.equals(">=")) {
-			taskAlgorithm.addConstraint(greaterThanEqual(joinRef(join(joinRef($this()), algorithmProperty)), constant(value)));			
+			taskAlgorithm.addConstraint(greaterThanEqual(joinRef(join(joinRef($this()), algorithmProperty)), constant(value)));
 		}
 	}
-
 
 	/**
 	 * This method is to parse the map of clafers and apply their values as constraints before instance generation, used only in advanceduserMode
@@ -247,14 +244,14 @@ public class InstanceGenerator {
 	 */
 	void advancedModeHandler(AstModel astModel, AstClafer taskClafer, final List<PropertyWidget> constraints) {
 
-		for(PropertyWidget constraint: constraints){
-			
-			if (constraint.isEnabled() && !constraint.isGroupConstraint()){ //not sure why we need this check but keeping it from Ram's code till we figure it out
+		for (PropertyWidget constraint : constraints) {
+
+			if (constraint.isEnabled() && !constraint.isGroupConstraint()) { //not sure why we need this check but keeping it from Ram's code till we figure it out
 				final String operator = constraint.getOperator();
 				final int value = constraint.getValue();
 				final AstConcreteClafer parent = (AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getParentClafer().getName());
 				final AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getChildClafer().getName());
-				if (operand != null && !ClaferModelUtils.isAbstract(operand)) {		
+				if (operand != null && !ClaferModelUtils.isAbstract(operand)) {
 					addConstraints(parent, operand, operator, value);
 				}
 			}
@@ -262,16 +259,17 @@ public class InstanceGenerator {
 	}
 
 	/**
-	 * BasicModeHandler will take <Question, answer> map as a parameter where the key of the map is a question, answer is the selected answer for a given question each answer has been further iterated to apply associated dependencies
+	 * BasicModeHandler will take <Question, answer> map as a parameter where the key of the map is a question, answer is the selected answer for a given question each answer has
+	 * been further iterated to apply associated dependencies
 	 */
 	// FIXME include group operator
-	void basicModeHandler(AstModel astModel, AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {		
-		for (Question question : qAMap.keySet()){
+	void basicModeHandler(AstModel astModel, AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {
+		for (Question question : qAMap.keySet()) {
 			Answer answer = qAMap.get(question);
-			for (Dependency dependency : answer.getDependencies()){
+			for (Dependency dependency : answer.getDependencies()) {
 				AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + dependency.getAlgorithm());
-				AstConcreteClafer propertyClafer = (AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + dependency.getOperand());				
-				addConstraints(algorithmClafer, propertyClafer, dependency.getOperator(), Integer.parseInt(dependency.getValue()));				
+				AstConcreteClafer propertyClafer = (AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + dependency.getOperand());
+				addConstraints(algorithmClafer, propertyClafer, dependency.getOperator(), Integer.parseInt(dependency.getValue()));
 			}
 		}
 	}
@@ -327,8 +325,6 @@ public class InstanceGenerator {
 	public void setTaskName(final String taskName) {
 		this.taskName = taskName;
 	}
-	
-	
 
 	public String getTaskDescription() {
 		return taskDescription;

@@ -32,7 +32,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	public BeginnerTaskQuestionPage(final BeginnerModeQuestionnaire quest) {
 		super("Display Questions");
-		setTitle("Configuring Selected Task: "+ quest.getTask().getDescription());
+		setTitle("Configuring Selected Task: " + quest.getTask().getDescription());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.quest = quest;
 		this.quetsionsList = new ArrayList<Composite>();
@@ -44,13 +44,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		container.setBounds(10, 10, 450, 200);
 		final GridLayout layout = new GridLayout();
 		container.setLayout(layout);
-	
+
 		List<Question> questionList = quest.getQutionare();
-		for(Question question : questionList){
+		for (Question question : questionList) {
 			createQuestionControl(container, question);
-			
+
 		}
-		
+
 		layout.numColumns = 1;
 		setControl(container);
 	}
@@ -66,7 +66,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	public void createQuestionControl(final Composite parent, final Question question) {
 
 		List<Answer> answers = question.getAnswers();
-	
+
 		Composite container = getPanel(parent);
 		Label label = new Label(container, SWT.CENTER);
 		label.setText(question.getQuestionText());
@@ -74,7 +74,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		ComboViewer comboViewer = new ComboViewer(container, SWT.NONE);
 		comboViewer.setContentProvider(ArrayContentProvider.getInstance());
 		comboViewer.setInput(answers);
-		
+
 		comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
@@ -83,7 +83,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				BeginnerTaskQuestionPage.this.selection.put(question, (Answer) selection.getFirstElement());
 			}
 		});
-		
+
 		comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
 		this.quetsionsList.add(container);
 	}

@@ -35,8 +35,7 @@ public class Activator extends AbstractUIPlugin implements Labels {
 	/**
 	 * The constructor
 	 */
-	public Activator() {
-	}
+	public Activator() {}
 
 	@Override
 	public void start(final BundleContext context) throws Exception {
@@ -58,8 +57,7 @@ public class Activator extends AbstractUIPlugin implements Labels {
 	public static Activator getDefault() {
 		return plugin;
 	}
-	
-	
+
 	public void logError(final Exception ex) {
 		logError(ex, ex.getMessage());
 	}
@@ -75,7 +73,7 @@ public class Activator extends AbstractUIPlugin implements Labels {
 	public void logInfo(final String message) {
 		log(IStatus.INFO, message, null);
 	}
-	
+
 	private void log(final int severity, final String message, final Exception ex) {
 		getLog().log(new Status(severity, PLUGIN_ID, message, ex));
 	}
@@ -84,7 +82,7 @@ public class Activator extends AbstractUIPlugin implements Labels {
 	 * Returns an image descriptor for the image file at the given plug-in relative path
 	 *
 	 * @param path
-	 *            the path
+	 *        the path
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(final String path) {

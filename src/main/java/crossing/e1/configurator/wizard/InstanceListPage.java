@@ -74,9 +74,9 @@ public class InstanceListPage extends WizardPage implements Labels {
 
 	@Override
 	public void createControl(final Composite parent) {
-		
+
 		//checkNumberOfInstances();
-		
+
 		ComboViewer algorithmClass;
 		Label lableInstanceList;
 		this.control = new Composite(parent, SWT.NONE);
@@ -93,20 +93,22 @@ public class InstanceListPage extends WizardPage implements Labels {
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
 		algorithmClass.setInput(inst.keySet());
 		algorithmClass.setLabelProvider(new LabelProvider() {
+
 			@Override
 			public String getText(final Object element) {
 				return element.toString();
 			}
 		});
 		algorithmClass.addSelectionChangedListener(new ISelectionChangedListener() {
+
 			@Override
 			public void selectionChanged(final SelectionChangedEvent event) {
 				final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 				InstanceListPage.this.instancePropertiesPanel.setVisible(true);
 				final String b = selection.getFirstElement().toString();
 				setValue(InstanceListPage.this.instanceGenerator.getInstances().get(b));
-				InstanceListPage.this.instanceDetails.setText(
-						InstanceListPage.this.publisher.getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(b), ""));
+				InstanceListPage.this.instanceDetails
+					.setText(InstanceListPage.this.publisher.getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(b), ""));
 				if (selection.size() > 0) {
 					InstanceListPage.this.val = true;
 					setPageComplete(true);
@@ -129,19 +131,19 @@ public class InstanceListPage extends WizardPage implements Labels {
 		setControl(this.control);
 		;
 	}
-	
-	public void checkNumberOfInstances(){
-		if (instanceGenerator.getNoOfInstances() == 0){
+
+	public void checkNumberOfInstances() {
+		if (instanceGenerator.getNoOfInstances() == 0) {
 			MessageDialog.openError(new Shell(), "Error", Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE);
 		}
-		
+
 	}
 
 	public InstanceClafer getValue() {
 		return this.value;
 	}
-	
-	public Task getTask(){
+
+	public Task getTask() {
 		return selectedTask;
 	}
 

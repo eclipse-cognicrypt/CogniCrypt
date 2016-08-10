@@ -47,7 +47,7 @@ public class TaskSelectionPage extends WizardPage {
 	private ComboViewer taskComboSelection;
 	private Button advancedModeCheckBox;
 	private Label label2;
-//	private Task selectedTask = null;
+	//	private Task selectedTask = null;
 	//private final ClaferModel model;
 	private boolean status = true;
 	private boolean canProceed = false;
@@ -58,8 +58,8 @@ public class TaskSelectionPage extends WizardPage {
 		setDescription(Labels.DESCRIPTION_TASK_SELECTION_PAGE);
 		//this.model = claferModel;
 	}
-	
-	public Task getSelectedTask(){
+
+	public Task getSelectedTask() {
 		return (Task) ((IStructuredSelection) taskComboSelection.getSelection()).getFirstElement();
 	}
 
@@ -69,7 +69,7 @@ public class TaskSelectionPage extends WizardPage {
 
 	@Override
 	public void createControl(final Composite parent) {
-		
+
 		this.container = new Composite(parent, SWT.NONE);
 		this.container.setBounds(10, 10, 200, 200);
 		final GridLayout layout = new GridLayout();
@@ -85,33 +85,34 @@ public class TaskSelectionPage extends WizardPage {
 		final List<Task> tasks = TaskJSONReader.getTasks();
 
 		taskComboSelection.setLabelProvider(new LabelProvider() {
-	        @Override
-	        public String getText(Object element) {
-	            if (element instanceof Task) {
-	                Task current = (Task) element;
-	                return current.getDescription();
-	            }
-	            return super.getText(element);
-	        }
-	    });
-		 
-	    
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof Task) {
+					Task current = (Task) element;
+					return current.getDescription();
+				}
+				return super.getText(element);
+			}
+		});
+
 		taskComboSelection.setInput(tasks);
-	    
+
 		taskComboSelection.addSelectionChangedListener(new ISelectionChangedListener() {
-	        @Override
-	        public void selectionChanged(SelectionChangedEvent event) {
-	            IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-	            Task selectedTask = (Task)selection.getFirstElement();
-	           
-	            taskComboSelection.refresh();
-	            
-	            if(selectedTask != null){
-	            	canProceed = true;
-	            }
-	        }
-	    });
-		
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+				Task selectedTask = (Task) selection.getFirstElement();
+
+				taskComboSelection.refresh();
+
+				if (selectedTask != null) {
+					canProceed = true;
+				}
+			}
+		});
+
 		taskComboSelection.setSelection(new StructuredSelection(tasks.get(0)));
 
 		this.advancedModeCheckBox = new Button(this.container, SWT.CHECK);

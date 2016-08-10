@@ -1,38 +1,35 @@
 package crossing.e1.featuremodel.tree;
 
-public class NCriteria extends TreeNode{
-	
+public class NCriteria extends TreeNode {
+
 	private TreeNode[] children;
 	private String criteria;
-	
-	public NCriteria(String criteria, TreeNode[] children){
+
+	public NCriteria(String criteria, TreeNode[] children) {
 		this.criteria = criteria;
 		this.children = children;
 	}
-	
-	public String toString(){
-		
+
+	public String toString() {
+
 		String childNodes = "[";
-		for(TreeNode tn: children){
-			childNodes += "{\n\t" + tn.toString() +"},";
+		for (TreeNode tn : children) {
+			childNodes += "{\n\t" + tn.toString() + "},";
 		}
-		
-		return "{" 
-				+ "\tcriteria: " + criteria +
-				"\n\tcildren: " + childNodes +"]}";
+
+		return "{" + "\tcriteria: " + criteria + "\n\tcildren: " + childNodes + "]}";
 	}
-	
+
 	@Override
 	public boolean isLeaf() {
 		return false;
 	}
-	
-	public TreeNode[] getChildren(){
+
+	public TreeNode[] getChildren() {
 		return children;
 	}
-	
-	
-	public String getCriteria(){
+
+	public String getCriteria() {
 		return criteria;
 	}
 }

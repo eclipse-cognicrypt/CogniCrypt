@@ -48,10 +48,10 @@ public class TLSConfigurationKeyStorePage extends WizardPage {
 	private Label passwordLabel;
 	private Text passwordText;
 	private Button selectFilePushButton;
-	
+
 	TLSConfigurationKeyStorePage tls;
 	boolean complete = false;
-	
+
 	public TLSConfigurationKeyStorePage() {
 		super(Labels.SELECT_TASK);
 		setTitle(Labels.TLS_PAGE);
@@ -76,16 +76,17 @@ public class TLSConfigurationKeyStorePage extends WizardPage {
 		final GridLayout layout = new GridLayout(3, true);
 		layout.horizontalSpacing = 10;
 		container.setLayout(layout);
-		
+
 		this.pathLabel = new Label(container, SWT.NONE);
 		this.pathLabel.setText("Path to Key Store");
 		this.pathText = new Text(container, SWT.SINGLE);
 		this.pathText.setText("C:\\");
 		this.pathText.setLayoutData(new GridData(200, 15));
-		
+
 		this.selectFilePushButton = new Button(container, SWT.PUSH);
 		this.selectFilePushButton.setText("Select File");
 		selectFilePushButton.addSelectionListener(new SelectionListener() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				JFileChooser fileChooser = new JFileChooser();
@@ -94,7 +95,7 @@ public class TLSConfigurationKeyStorePage extends WizardPage {
 					pathText.setText(s);
 				}
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				widgetSelected(e);
@@ -102,9 +103,10 @@ public class TLSConfigurationKeyStorePage extends WizardPage {
 		});
 
 		pathText.addModifyListener(new ModifyListener() {
+
 			@Override
 			public void modifyText(ModifyEvent e) {
-				
+
 				String pathTextcontent = pathText.getText();
 				if (!pathTextcontent.isEmpty()) {
 					File keyStoreFile = new File(pathTextcontent.replace("\\", "\\\\"));
@@ -118,21 +120,19 @@ public class TLSConfigurationKeyStorePage extends WizardPage {
 				tls.setPageComplete(complete);
 			}
 		});
-		
-		
+
 		this.passwordLabel = new Label(container, SWT.NONE);
 		this.passwordLabel.setText("Password of Key Store");
 		this.passwordText = new Text(container, SWT.PASSWORD);
 		this.passwordText.setLayoutData(new GridData(200, 15));
-		
-		
+
 		setControl(this.container);
 	}
-	
+
 	public String getPath() {
 		return pathText.getText().replace("\\", "\\\\");
 	}
-	
+
 	public String getPassword() {
 		return passwordText.getText();
 	}

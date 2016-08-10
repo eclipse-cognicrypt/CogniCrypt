@@ -47,10 +47,10 @@ public class TLSConfigurationHostPortPage extends WizardPage {
 	private Label portLabel;
 	private Text portText;
 	private Label testConnectionLabel;
-	
+
 	TLSConfigurationHostPortPage tls;
 	boolean complete = false;
-	
+
 	public TLSConfigurationHostPortPage() {
 		super(Labels.SELECT_TASK);
 		setTitle(Labels.TLS_PAGE);
@@ -71,7 +71,7 @@ public class TLSConfigurationHostPortPage extends WizardPage {
 	public String getHost() {
 		return hostText.getText();
 	}
-	
+
 	public String getPort() {
 		return portText.getText();
 	}
@@ -89,21 +89,20 @@ public class TLSConfigurationHostPortPage extends WizardPage {
 		this.hostText = new Text(this.container, SWT.SINGLE);
 		this.hostText.setText("localhost");
 		this.hostText.setLayoutData(new GridData(200, 15));
-		
+
 		this.portLabel = new Label(this.container, SWT.NONE);
 		this.portLabel.setText(Labels.PORT);
 		this.portText = new Text(this.container, SWT.SINGLE);
 		this.portText.setText("80");
 		this.portText.setLayoutData(new GridData(100, 15));
 
-		
 		this.testConnectionLabel = new Label(this.container, SWT.DOWN);
 		this.testConnectionLabel.setText("                         ");
-		
+
 		this.testConnectionPushButton = new Button(this.container, SWT.PUSH);
 		this.testConnectionPushButton.setText(Constants.TEST_CONNECTION);
 		testConnectionPushButton.addSelectionListener(new SelectionListener() {
-						
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				try {
@@ -112,12 +111,12 @@ public class TLSConfigurationHostPortPage extends WizardPage {
 					testConnectionLabel.redraw();
 					complete = true;
 					tls.setPageComplete(complete);
-				} catch (IOException | NumberFormatException | URISyntaxException e1) {				
+				} catch (IOException | NumberFormatException | URISyntaxException e1) {
 					testConnectionLabel.setText("FAIL!");
 				}
-				
+
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				widgetSelected(e);
@@ -125,6 +124,5 @@ public class TLSConfigurationHostPortPage extends WizardPage {
 		});
 		setControl(this.container);
 	}
-	
-	
+
 }

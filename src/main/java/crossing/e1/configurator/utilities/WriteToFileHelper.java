@@ -41,7 +41,7 @@ public class WriteToFileHelper {
 		}
 		return 0;
 	}
-	
+
 	public int deleteFile(final String fileName) {
 		try {
 			Files.delete(Paths.get(fileName));
@@ -51,5 +51,5 @@ public class WriteToFileHelper {
 		}
 		return 0;
 	}
-	
+
 }

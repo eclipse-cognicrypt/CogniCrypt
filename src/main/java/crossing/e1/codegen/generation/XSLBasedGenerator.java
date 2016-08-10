@@ -69,7 +69,7 @@ import crossing.e1.configurator.Constants;
 public class XSLBasedGenerator {
 
 	private DeveloperProject project;
-	
+
 	public DeveloperProject getDeveloperProject() {
 		return project;
 	}
@@ -205,8 +205,8 @@ public class XSLBasedGenerator {
 	}
 
 	/**
-	 * If a file was open when the code generation was started, this method inserts the glue code that calls the generated classes directly into the opened file and removes the temporary output file. If no file was open this method is
-	 * skipped and the temporary output file is not removed.
+	 * If a file was open when the code generation was started, this method inserts the glue code that calls the generated classes directly into the opened file and removes the
+	 * temporary output file. If no file was open this method is skipped and the temporary output file is not removed.
 	 *
 	 * @param temporaryOutputFile
 	 *        Path to temporary output file.
@@ -228,13 +228,13 @@ public class XSLBasedGenerator {
 		final ITextEditor currentlyOpenEditor = (ITextEditor) currentlyOpenPart;
 		final IDocument currentlyOpenDocument = currentlyOpenEditor.getDocumentProvider().getDocument(currentlyOpenEditor.getEditorInput());
 		final ITextSelection cursorPosition = (ITextSelection) currentlyOpenPart.getSite().getSelectionProvider().getSelection();
-		
+
 		int cursorPos = cursorPosition.getOffset();
 		final String docContent = currentlyOpenDocument.get();
 		TreeSet<Tuple<Integer, Integer>> methLims = new TreeSet<Tuple<Integer, Integer>>();
 		Tuple<Integer, Integer> classlims;
 		classlims = new Tuple<Integer, Integer>(0, 0);
-		
+
 		final ASTParser astp = ASTParser.newParser(AST.JLS8);
 		astp.setSource(docContent.toCharArray());
 		astp.setKind(ASTParser.K_COMPILATION_UNIT);
@@ -255,7 +255,7 @@ public class XSLBasedGenerator {
 			}
 		};
 		cu.accept(astVisitor);
-		
+
 		//Check and correct cursor position
 		//1. case: cursor is outside the class -> set cursor position to end of the class
 		//2. case: it is inside the class but also inside a method -> set cursor position two right after the method
@@ -297,9 +297,9 @@ public class XSLBasedGenerator {
 		organizeImportsActionForAllFilesTouchedDuringGeneration.run(JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor)));
 		editor.doSave(null);
 	}
-	
+
 	protected void setPosForClassDecl(final int start, final int end) {
-//		classlims = new Tuple<Integer, Integer>(start, end);
+		//		classlims = new Tuple<Integer, Integer>(start, end);
 	}
 
 	protected void setPosForRunMethod(final int start, final int end) {
@@ -327,7 +327,7 @@ public class XSLBasedGenerator {
 		transformer.transform(new StreamSource(sourceFile), new StreamResult(new File(resultDir)));
 	}
 
-	class Tuple<X, Y> implements Comparable<Tuple<X,Y>>{
+	class Tuple<X, Y> implements Comparable<Tuple<X, Y>> {
 
 		public X x;
 		public Y y;
@@ -348,11 +348,11 @@ public class XSLBasedGenerator {
 
 		@Override
 		public int compareTo(Tuple<X, Y> comp) {
-			if (this.equals(comp)) return 0;
-			if (!(this.x instanceof Comparable && comp.x instanceof Comparable &&
-				this.y instanceof Comparable && comp.y instanceof Comparable)) {
+			if (this.equals(comp))
+				return 0;
+			if (!(this.x instanceof Comparable && comp.x instanceof Comparable && this.y instanceof Comparable && comp.y instanceof Comparable)) {
 				return -1;
-			} else { 
+			} else {
 				Comparable<X> thisX = (Comparable<X>) this.x;
 				return thisX.compareTo(comp.x);
 			}

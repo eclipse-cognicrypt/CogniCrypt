@@ -57,50 +57,49 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 	@Override
 	public void createControl(Composite parent) {
 		container = new Composite(parent, SWT.NONE);
-		
+
 		container.setBounds(10, 10, 450, 200);
 		GridLayout layout = new GridLayout();
 		container.setLayout(layout);
 		layout.numColumns = 1;
-//		try {
-//			Group titledPanel = new Group(container, SWT.NONE);
-//			titledPanel.setText("Global Constraints");
-//			Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
-//			titledPanel.setFont(boldFont);
-//			GridLayout layout2 = new GridLayout();
-//			// sent number of columns in a widget
-//			layout2.numColumns = 4;
-//			titledPanel.setLayout(layout2);
-//			// List constraints from ENUMmap as group properties, under single
-//			// titled panel
-//			for (AstAbstractClafer groupPropertiesKey : PropertiesMapperUtil.getenumMap().keySet()) {
-//
-//				userConstraints.add(new ComplexWidget(titledPanel, groupPropertiesKey,
-//						PropertiesMapperUtil.getenumMap().get(groupPropertiesKey)));
-//
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+		//		try {
+		//			Group titledPanel = new Group(container, SWT.NONE);
+		//			titledPanel.setText("Global Constraints");
+		//			Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
+		//			titledPanel.setFont(boldFont);
+		//			GridLayout layout2 = new GridLayout();
+		//			// sent number of columns in a widget
+		//			layout2.numColumns = 4;
+		//			titledPanel.setLayout(layout2);
+		//			// List constraints from ENUMmap as group properties, under single
+		//			// titled panel
+		//			for (AstAbstractClafer groupPropertiesKey : PropertiesMapperUtil.getenumMap().keySet()) {
+		//
+		//				userConstraints.add(new ComplexWidget(titledPanel, groupPropertiesKey,
+		//						PropertiesMapperUtil.getenumMap().get(groupPropertiesKey)));
+		//
+		//			}
+		//		} catch (Exception e) {
+		//			e.printStackTrace();
+		//		}
 
 		// Add every constraints to its parent and group it as a separate titled
 		// panel
-		
-		for(AstClafer taskAlgorithm : taskClafer.getChildren()){
+
+		for (AstClafer taskAlgorithm : taskClafer.getChildren()) {
 			Group titledPanel = createPanel(ClaferModelUtils.removeScopePrefix(taskAlgorithm.getRef().getTargetType().getName()), container);
 			createConstraints(taskClafer, taskAlgorithm, titledPanel);
 		}
-		
+
 		setControl(container);
 	}
-	
+
 	public void createConstraints(AstClafer parent, AstClafer inputClafer, Group titledPanel) {
-		
+
 		if (inputClafer.hasChildren()) {
-			if (inputClafer.getGroupCard() != null
-					&& inputClafer.getGroupCard().getLow() >= 1) {				
-				userConstraints.add(new PropertyWidget(titledPanel, parent, (AstConcreteClafer) inputClafer,
-						ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
+			if (inputClafer.getGroupCard() != null && inputClafer.getGroupCard().getLow() >= 1) {
+				userConstraints
+					.add(new PropertyWidget(titledPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
 			} else
 				for (AstConcreteClafer childClafer : inputClafer.getChildren()) {
 					createConstraints(parent, childClafer, titledPanel);
@@ -108,21 +107,18 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 		}
 
 		if (inputClafer.hasRef()) {
-			if (inputClafer.getRef().getTargetType().isPrimitive()
-					&& !(inputClafer.getRef().getTargetType().getName()
-							.contains("string"))) {
+			if (inputClafer.getRef().getTargetType().isPrimitive() && !(inputClafer.getRef().getTargetType().getName().contains("string"))) {
 				if (!ClaferModelUtils.isAbstract(inputClafer)) {
-					userConstraints.add(new PropertyWidget(titledPanel,  parent, (AstConcreteClafer) inputClafer,
-							ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
+					userConstraints.add(
+						new PropertyWidget(titledPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
 				}
-			} else if (PropertiesMapperUtil.getenumMap().containsKey(
-					inputClafer.getRef().getTargetType())) {
+			} else if (PropertiesMapperUtil.getenumMap().containsKey(inputClafer.getRef().getTargetType())) {
 				createConstraints(inputClafer, inputClafer.getRef().getTargetType(), titledPanel);
 			} else if (!inputClafer.getRef().getTargetType().isPrimitive()) {
-				if(!ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()).equals(titledPanel.getText())){
-					Group childPanel = createPanel(ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()), titledPanel);	
+				if (!ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()).equals(titledPanel.getText())) {
+					Group childPanel = createPanel(ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()), titledPanel);
 					createConstraints(inputClafer, inputClafer.getRef().getTargetType(), childPanel);
-				}else{
+				} else {
 					//same panel as main algorithm type (e.g., kda in secure pwd storage)
 					createConstraints(inputClafer, inputClafer.getRef().getTargetType(), titledPanel);
 				}
@@ -134,24 +130,24 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 		}
 
 	}
-	
-	public void createConstraints(AstClafer parent, AstAbstractClafer inputClafer, Group titledPanel) {
-	
-			if (inputClafer.hasChildren()) {
-				for (AstConcreteClafer in : inputClafer.getChildren()){
-					createConstraints(parent, in, titledPanel);
-				}
-			}
-			if (inputClafer.hasRef()){
-				createConstraints(parent, inputClafer.getRef().getTargetType(), titledPanel);
-			}
 
-			if (inputClafer.getSuperClafer() != null){
-				createConstraints(parent, inputClafer.getSuperClafer(), titledPanel);
+	public void createConstraints(AstClafer parent, AstAbstractClafer inputClafer, Group titledPanel) {
+
+		if (inputClafer.hasChildren()) {
+			for (AstConcreteClafer in : inputClafer.getChildren()) {
+				createConstraints(parent, in, titledPanel);
 			}
+		}
+		if (inputClafer.hasRef()) {
+			createConstraints(parent, inputClafer.getRef().getTargetType(), titledPanel);
+		}
+
+		if (inputClafer.getSuperClafer() != null) {
+			createConstraints(parent, inputClafer.getSuperClafer(), titledPanel);
+		}
 	}
-	
-	private Group createPanel(String name, Composite parent){
+
+	private Group createPanel(String name, Composite parent) {
 		Group titledPanel = new Group(parent, SWT.LEFT);
 		titledPanel.setText(name);
 		Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
@@ -160,7 +156,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 
 		layout2.numColumns = 4;
 		titledPanel.setLayout(layout2);
-		
+
 		return titledPanel;
 	}
 
@@ -171,7 +167,5 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 	public List<PropertyWidget> getConstraints() {
 		return userConstraints;
 	}
-	
-	
 
 }

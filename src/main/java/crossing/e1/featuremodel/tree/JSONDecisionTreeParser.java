@@ -20,30 +20,25 @@ import crossing.e1.configurator.utilities.Utilities;
  */
 class JSONDecisionTreeParser {
 
-	
-	public static TreeModel parseDecisionTree(final String filePath){
-		
+	public static TreeModel parseDecisionTree(final String filePath) {
+
 		TreeModel decisionTree = null;
-		
+
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.IDENTITY);
 		gsonBuilder.registerTypeAdapter(TreeNode.class, new DecisionTreeDeserializer());
 
-		final Gson gson = gsonBuilder.create(); 
-		
-		try(
-			BufferedReader reader = new BufferedReader(
-					new FileReader(Utilities.getAbsolutePath(filePath)))
-		){
-			
-			
+		final Gson gson = gsonBuilder.create();
+
+		try (BufferedReader reader = new BufferedReader(new FileReader(Utilities.getAbsolutePath(filePath)))) {
+
 			decisionTree = gson.fromJson(reader, TreeModel.class);
-		} catch (FileNotFoundException e){
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		return decisionTree;
 	}
 }

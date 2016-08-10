@@ -12,8 +12,7 @@ import com.google.gson.JsonParseException;
 public class DecisionTreeDeserializer implements JsonDeserializer<TreeNode> {
 
 	@Override
-	public TreeNode deserialize(JsonElement element, Type type, JsonDeserializationContext context)
-			throws JsonParseException {
+	public TreeNode deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
 		return parseJsonObject(element.getAsJsonObject());
 	}
 
@@ -35,23 +34,20 @@ public class DecisionTreeDeserializer implements JsonDeserializer<TreeNode> {
 
 	private TreeNode parseBooleanCritera(JsonObject obj) {
 		final String criteria = obj.get("criteria").getAsString();
-		final JsonObject trueBranch = obj.get("trueBranch").getAsJsonObject();		
+		final JsonObject trueBranch = obj.get("trueBranch").getAsJsonObject();
 		final JsonObject falseBranch = obj.get("falseBranch").getAsJsonObject();
-		return new BooleanCriteria(
-				criteria,
-				parseJsonObject(trueBranch),
-				parseJsonObject(falseBranch));
+		return new BooleanCriteria(criteria, parseJsonObject(trueBranch), parseJsonObject(falseBranch));
 	}
-	
+
 	private TreeNode parseNCritera(JsonObject obj) {
 		final String criteria = obj.get("criteria").getAsString();
 		final JsonArray children = obj.get("children").getAsJsonArray();
 		TreeNode[] nodes = new TreeNode[children.size()];
-		for(int i = 0; i < children.size(); i++){
+		for (int i = 0; i < children.size(); i++) {
 			final JsonObject arrayElement = children.get(i).getAsJsonObject();
 			nodes[i] = parseJsonObject(arrayElement);
 		}
-		
+
 		return new NCriteria(criteria, nodes);
 	}
 

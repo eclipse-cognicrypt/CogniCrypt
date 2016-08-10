@@ -12,6 +12,7 @@ import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.Utilities;
 
 public class QuestionsJSONReader {
+
 	private List<Question> questions;
 
 	public List<Question> getQuestions(Task task) {
@@ -19,12 +20,10 @@ public class QuestionsJSONReader {
 		if (questions == null) {
 			BufferedReader reader;
 			try {
-				reader = new BufferedReader(new FileReader(
-						Utilities.getAbsolutePath(task.getXmlFile())));
+				reader = new BufferedReader(new FileReader(Utilities.getAbsolutePath(task.getXmlFile())));
 				Gson gson = new Gson();
 
-				questions = gson.fromJson(reader, new TypeToken<List<Question>>() {
-				}.getType());
+				questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
 
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -34,7 +33,7 @@ public class QuestionsJSONReader {
 		return questions;
 
 	}
-	
+
 	public List<Question> getQuestions(String filePath) {
 
 		if (questions == null) {
@@ -43,8 +42,7 @@ public class QuestionsJSONReader {
 				reader = new BufferedReader(new FileReader(Utilities.getAbsolutePath(filePath)));
 				Gson gson = new Gson();
 
-				questions = gson.fromJson(reader, new TypeToken<List<Question>>() {
-				}.getType());
+				questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
 
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -54,8 +52,8 @@ public class QuestionsJSONReader {
 		return questions;
 
 	}
-	
-	public static void main(String args[]){
+
+	public static void main(String args[]) {
 		QuestionsJSONReader reader = new QuestionsJSONReader();
 		System.out.println(reader.getQuestions("src/main/resources/TaskDesc/LongTermArchivingQuestions.json"));
 	}

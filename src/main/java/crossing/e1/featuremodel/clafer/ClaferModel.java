@@ -65,8 +65,7 @@ public class ClaferModel {
 	}
 
 	/**
-	 * Initializes the model and also list the task list Tasks lists are those
-	 * who extends Task
+	 * Initializes the model and also list the task list Tasks lists are those who extends Task
 	 * 
 	 * @param path
 	 */
@@ -87,8 +86,7 @@ public class ClaferModel {
 	}
 
 	/**
-	 * list the task list, Tasks lists are those who extends Abstract clafer
-	 * Task
+	 * list the task list, Tasks lists are those who extends Abstract clafer Task
 	 * 
 	 * @param model
 	 */
@@ -99,23 +97,21 @@ public class ClaferModel {
 			// name Task
 			if (object.getName().contains("Task") == true) {
 				for (AstClafer clafer : object.getSubs()) { // get all clafers
-															// which are derived
+																// which are derived
 															// from "Task"
 					for (AstConstraint constraint : clafer.getConstraints()) {
 						// Check Task description , and put that as Key
 						if (constraint.getExpr().toString().contains("description . ref")) {
-							key = constraint.getExpr().toString()
-									.substring(constraint.getExpr().toString().indexOf("=") + 1,
-											constraint.getExpr().toString().length())
-									.trim().replace("\"", "");
+							key = constraint.getExpr().toString().substring(constraint.getExpr().toString().indexOf("=") + 1, constraint.getExpr().toString().length()).trim()
+								.replace("\"", "");
 						}
 					}
-//					/**
-//					 * construct a map of tasks, key is a clafer description and
-//					 * value is actual clafer Key will be used in Wizard, as an
-//					 * input for taskList combo box
-//					 */
-//					PropertiesMapperUtil.getTaskLabelsMap().put(key, (AstConcreteClafer) clafer);
+					//					/**
+					//					 * construct a map of tasks, key is a clafer description and
+					//					 * value is actual clafer Key will be used in Wizard, as an
+					//					 * input for taskList combo box
+					//					 */
+					//					PropertiesMapperUtil.getTaskLabelsMap().put(key, (AstConcreteClafer) clafer);
 
 				}
 			}
@@ -134,12 +130,9 @@ public class ClaferModel {
 			if (object.getName().contains("Enum") == true) {
 				for (AstClafer clafer : object.getSubs()) {
 					/**
-					 * construct a map of tasks, key is a clafer description and
-					 * value is actual clafer. Key will be used in Wizard, as an
-					 * input for taskList combo box
+					 * construct a map of tasks, key is a clafer description and value is actual clafer. Key will be used in Wizard, as an input for taskList combo box
 					 */
-					PropertiesMapperUtil.getenumMap().put((AstAbstractClafer) clafer,
-							((AstAbstractClafer) clafer).getSubs());
+					PropertiesMapperUtil.getenumMap().put((AstAbstractClafer) clafer, ((AstAbstractClafer) clafer).getSubs());
 
 				}
 			}
@@ -200,12 +193,9 @@ public class ClaferModel {
 	}
 
 	/**
-	 * Initializes the children of a given clafer , used in testing also invoked
-	 * by getChildrenListByName(). Retention is a HashMap data structure where
-	 * key is parent clafer and inputclafer is recursive parameter clafer.
-	 * parentClafer remains constant throughout the iteration. When the name of
-	 * the clafer matches with the string being passed, map entry is constructed
-	 * as <parentclafer,matchedClafer>
+	 * Initializes the children of a given clafer , used in testing also invoked by getChildrenListByName(). Retention is a HashMap data structure where key is parent clafer and
+	 * inputclafer is recursive parameter clafer. parentClafer remains constant throughout the iteration. When the name of the clafer matches with the string being passed, map
+	 * entry is constructed as <parentclafer,matchedClafer>
 	 * 
 	 * @param parentClafer
 	 * @param inputClafer
@@ -234,8 +224,7 @@ public class ClaferModel {
 	}
 
 	/**
-	 * Method performs same functionality as of the above method, written for
-	 * Abstract clafer
+	 * Method performs same functionality as of the above method, written for Abstract clafer
 	 * 
 	 * @param parentClafer
 	 * @param inputClafer
@@ -258,5 +247,5 @@ public class ClaferModel {
 			E.printStackTrace();
 		}
 	}
-	
+
 }

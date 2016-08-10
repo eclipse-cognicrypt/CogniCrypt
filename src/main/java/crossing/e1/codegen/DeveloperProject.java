@@ -65,7 +65,7 @@ public class DeveloperProject {
 	/**
 	 * @return Path to Source Folder of Project.
 	 * @throws CoreException
-	 *             See {@link org.eclipse.core.resources.IProject#hasNature(String) hasNature()}
+	 *         See {@link org.eclipse.core.resources.IProject#hasNature(String) hasNature()}
 	 */
 	public String getSourcePath() throws CoreException {
 		if (this.project.isOpen() && this.project.hasNature(Constants.JavaNatureID)) {
@@ -86,9 +86,7 @@ public class DeveloperProject {
 	/**
 	 * @return Absolute Path of Project
 	 * @throws CoreException
-	 *             See
-	 *             {@link org.eclipse.core.resources.IResource#refreshLocal(int, org.eclipse.core.runtime.IProgressMonitor)
-	 *             refreshLocal()}
+	 *         See {@link org.eclipse.core.resources.IResource#refreshLocal(int, org.eclipse.core.runtime.IProgressMonitor) refreshLocal()}
 	 */
 	public void refresh() throws CoreException {
 		// From JavaDoc: "This method is long-running." -> if it takes too long for big projects, reduce depth parameter

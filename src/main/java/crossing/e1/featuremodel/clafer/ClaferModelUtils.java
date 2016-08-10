@@ -25,54 +25,49 @@ import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstConstraint;
 
 public class ClaferModelUtils {
+
 	private static AstClafer targetClafer = null;
 
 	/**
 	 * Method to find a clafer with a given name in whole model
 	 */
-	public static AstClafer findClaferByName(final AstClafer inputClafer,
-			final String name) {
+	public static AstClafer findClaferByName(final AstClafer inputClafer, final String name) {
 		if (inputClafer.getName().equals(name)) {
 			return inputClafer;
 		} else {
 			if (inputClafer.hasChildren()) {
-				for (final AstConcreteClafer childClafer : inputClafer
-						.getChildren()) {
+				for (final AstConcreteClafer childClafer : inputClafer.getChildren()) {
 					AstClafer foundClafer = findClaferByName(childClafer, name);
-					if(foundClafer != null){
+					if (foundClafer != null) {
 						return foundClafer;
 					}
 				}
 			}
 
 			if (inputClafer.hasRef()) {
-				return findClaferByName(inputClafer.getRef().getTargetType(),
-						name);
+				return findClaferByName(inputClafer.getRef().getTargetType(), name);
 			}
-			
+
 			if (inputClafer.getSuperClafer() != null) {
 				return findClaferByName(inputClafer.getSuperClafer(), name);
 			}
-			
+
 			return null;
 
 		}
 	}
 
 	/**
-	 * Method takes AstClafer as an input and returns a description of the
-	 * clafer if exist, returns name of the clafer otherwise
+	 * Method takes AstClafer as an input and returns a description of the clafer if exist, returns name of the clafer otherwise
 	 */
 	// FIXME check if this method is used in any commented code
 	public static String getDescription(final AstClafer inputClafer) {
 		for (final AstConstraint child : inputClafer.getConstraints()) {
 			final String expr = child.getExpr().toString();
 			final int indexEqSign = expr.indexOf('=');
-			if (expr.substring(0, indexEqSign > 0 ? indexEqSign : 1).contains(
-					"escription . ref")) {
+			if (expr.substring(0, indexEqSign > 0 ? indexEqSign : 1).contains("escription . ref")) {
 				// return without Quotes,hence replaced the "" with empty
-				return expr.substring(indexEqSign + 1, expr.length()).replace(
-						"\"", "");
+				return expr.substring(indexEqSign + 1, expr.length()).replace("\"", "");
 			}
 		}
 		return inputClafer.getName();
@@ -87,25 +82,20 @@ public class ClaferModelUtils {
 	public static boolean isAbstract(final AstClafer astClafer) {
 		Boolean isAbstract = false;
 		if (astClafer.hasRef()) {
-			isAbstract = astClafer.getRef().getTargetType().getClass()
-					.toGenericString().contains("AstAbstractClafer");
+			isAbstract = astClafer.getRef().getTargetType().getClass().toGenericString().contains("AstAbstractClafer");
 		}
-		if (astClafer.getClass().toGenericString()
-				.contains("AstAbstractClafer")) {
+		if (astClafer.getClass().toGenericString().contains("AstAbstractClafer")) {
 			isAbstract = true;
 		}
 		return isAbstract;
 	}
 
 	/**
-	 * removes scope from name (e.g., c0_) and changes first letter of the
-	 * string to Upper case example c0_scope will become Scope
+	 * removes scope from name (e.g., c0_) and changes first letter of the string to Upper case example c0_scope will become Scope
 	 */
 	public static String removeScopePrefix(final String scope) {
-		final String shortenedScope = scope.substring(scope.indexOf('_') + 1,
-				scope.length());
-		return shortenedScope.substring(0, 1).toUpperCase()
-				+ shortenedScope.substring(1, shortenedScope.length());
+		final String shortenedScope = scope.substring(scope.indexOf('_') + 1, scope.length());
+		return shortenedScope.substring(0, 1).toUpperCase() + shortenedScope.substring(1, shortenedScope.length());
 	}
 
 	public static String getNameWithoutScope(String input) {

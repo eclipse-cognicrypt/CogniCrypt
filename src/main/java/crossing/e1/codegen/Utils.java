@@ -77,7 +77,7 @@ public class Utils {
 	 * This method gets the file that is currently opened in the editor as an {@link IFile}.
 	 *
 	 * @param part
-	 *            Editor part that contains the file.
+	 *        Editor part that contains the file.
 	 * @return Currently open file.
 	 */
 	public static IFile getCurrentlyOpenFile(final IEditorPart part) {
@@ -90,7 +90,7 @@ public class Utils {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * This method gets the project that is currently selected.
 	 *
@@ -117,25 +117,24 @@ public class Utils {
 	 * This method resolves a project-relative path to a canonical path and creates a file out of it.
 	 *
 	 * @param path
-	 *            Path to file within plugin.
+	 *        Path to file within plugin.
 	 * @return Created file.
 	 * @throws IOException
-	 *             See {@link org.eclipse.core.runtime.FileLocator#toFileURL(URL) toFileURL()}.
+	 *         See {@link org.eclipse.core.runtime.FileLocator#toFileURL(URL) toFileURL()}.
 	 * @throws URISyntaxException
-	 *             See {@link org.osgi.framework.Bundle#getEntry(String) getEntry()}.
+	 *         See {@link org.osgi.framework.Bundle#getEntry(String) getEntry()}.
 	 */
 	public static File resolveResourcePathToFile(final String path) throws URISyntaxException, IOException {
 		if (bundle != null) {
 			final URL resolvedFileURL = org.eclipse.core.runtime.FileLocator.toFileURL(bundle.getEntry(path));
 			return new File(new URI(resolvedFileURL.getProtocol(), resolvedFileURL.getPath(), null));
-//			final Path originPath = new Path(path);
-//			URL bundledFileURL = FileLocator.find(bundle, originPath, null);
-//			bundledFileURL = FileLocator.resolve(bundledFileURL);
-//			return new File(bundledFileURL.getFile());
+			//			final Path originPath = new Path(path);
+			//			URL bundledFileURL = FileLocator.find(bundle, originPath, null);
+			//			bundledFileURL = FileLocator.resolve(bundledFileURL);
+			//			return new File(bundledFileURL.getFile());
 		}
 		return null;
-		
-		
+
 	}
 
 }

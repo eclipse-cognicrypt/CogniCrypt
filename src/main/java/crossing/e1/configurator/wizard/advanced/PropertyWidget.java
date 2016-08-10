@@ -1,6 +1,5 @@
 package crossing.e1.configurator.wizard.advanced;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +23,7 @@ import org.eclipse.swt.widgets.Spinner;
 import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 
 public class PropertyWidget {
+
 	private Spinner valueSpinner;
 	private AstClafer parentClafer;
 	private AstConcreteClafer childClafer;
@@ -50,8 +50,7 @@ public class PropertyWidget {
 	 * @param increment
 	 * @param pageincrement
 	 */
-	public PropertyWidget(Composite container, AstClafer parentClafer, AstConcreteClafer childClafer,
-			String propertyName, int selection, int min, int max, int digits, int increment, int pageincrement) {
+	public PropertyWidget(Composite container, AstClafer parentClafer, AstConcreteClafer childClafer, String propertyName, int selection, int min, int max, int digits, int increment, int pageincrement) {
 		this.setChildClafer(childClafer);
 		this.setParentClafer(parentClafer);
 		List<String> values = new ArrayList<String>();
@@ -64,33 +63,29 @@ public class PropertyWidget {
 		// To create a tab in the first column
 		Label emptySpace = new Label(container, SWT.NONE);
 		emptySpace.setText("	");
-		
+
 		enablePropertyCheckBox = new Button(container, SWT.CHECK);
 		enablePropertyCheckBox.setSelection(false);
-		
-		enablePropertyCheckBox.addSelectionListener(new SelectionAdapter()
-		{
-		    @Override
-		    public void widgetSelected(SelectionEvent e)
-		    {
-		        Button button = (Button) e.widget;
-		        if (button.getSelection()){
-		        	valueSpinner.setEnabled(true);
-		        }		            
-		        else
-		        	valueSpinner.setEnabled(false);
-		    }
+
+		enablePropertyCheckBox.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Button button = (Button) e.widget;
+				if (button.getSelection()) {
+					valueSpinner.setEnabled(true);
+				} else
+					valueSpinner.setEnabled(false);
+			}
 		});
-		
-		
+
 		Label propertyNameLabel = new Label(container, SWT.NONE);
 		propertyNameLabel.setText(propertyName);
-	
 
 		operatorComboViewer = new ComboViewer(container, SWT.NONE);
 		operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
 		operatorComboViewer.setInput(values);
-		
+
 		operatorComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
@@ -98,7 +93,7 @@ public class PropertyWidget {
 				operatorComboViewer.refresh();
 			}
 		});
-		
+
 		operatorComboViewer.setSelection(new StructuredSelection(values.get(2)));
 
 		valueSpinner = new Spinner(container, SWT.BORDER | SWT.SINGLE);
@@ -132,7 +127,7 @@ public class PropertyWidget {
 		operatorComboViewer = new ComboViewer(container, SWT.NONE);
 		operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
 		operatorComboViewer.setInput(values);
-		
+
 		ArrayList<String> propertyNames = new ArrayList<String>();
 		for (AstClafer propertyClafer : claferProperties) {
 			propertyNames.add(ClaferModelUtils.removeScopePrefix(propertyClafer.getName()));
@@ -145,13 +140,13 @@ public class PropertyWidget {
 
 			}
 		});
-		
+
 		operatorComboViewer.setSelection(new StructuredSelection(values.get(2)));
-		
+
 		ComboViewer valuesCombo = new ComboViewer(container, SWT.NONE);
 		valuesCombo.setContentProvider(ArrayContentProvider.getInstance());
 		valuesCombo.setInput(propertyNames);
-		
+
 		valuesCombo.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
@@ -165,7 +160,7 @@ public class PropertyWidget {
 				}
 			}
 		});
-		
+
 		valuesCombo.setSelection(new StructuredSelection(propertyNames.get(0)));
 
 	}
@@ -187,7 +182,7 @@ public class PropertyWidget {
 
 	/**
 	 * @param childClafer
-	 *            the childClafer to set
+	 *        the childClafer to set
 	 */
 	public void setChildClafer(AstConcreteClafer childClafer) {
 		this.childClafer = childClafer;
@@ -202,7 +197,7 @@ public class PropertyWidget {
 
 	/**
 	 * @param parentClafer
-	 *            the parentClafer to set
+	 *        the parentClafer to set
 	 */
 	public void setParentClafer(AstClafer parentClafer) {
 		this.parentClafer = parentClafer;
@@ -225,18 +220,19 @@ public class PropertyWidget {
 
 	/**
 	 * @param isGroupConstraint
-	 *            the isGroupConstraint to set
+	 *        the isGroupConstraint to set
 	 */
 	public void setGroupConstraint(boolean isGroupConstraint) {
 		this.isGroupConstraint = isGroupConstraint;
 	}
-	
-	public boolean isEnabled(){
+
+	public boolean isEnabled() {
 		return valueSpinner.isEnabled();
 	}
-	
+
 	@Override
-	public String toString(){
-		return "[parent:" + parentClafer.getName() + ", child: " + childClafer.getName() + ", operator: " + getOperator() + ", value:" + getValue() + ", isGroupConstraint: "+ isGroupConstraint + "]";		
+	public String toString() {
+		return "[parent:" + parentClafer.getName() + ", child: " + childClafer
+			.getName() + ", operator: " + getOperator() + ", value:" + getValue() + ", isGroupConstraint: " + isGroupConstraint + "]";
 	}
 }

@@ -102,7 +102,7 @@ public class ConfiguratorWizard extends Wizard {
 				this.preferenceSelectionPage = this.tlsSCPage;
 			} else {
 				try {
-					claferModel =  new ClaferModel(Utils.resolveResourcePathToFile(selectedTask.getModelFile()).getAbsolutePath());
+					claferModel = new ClaferModel(Utils.resolveResourcePathToFile(selectedTask.getModelFile()).getAbsolutePath());
 				} catch (URISyntaxException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -110,21 +110,22 @@ public class ConfiguratorWizard extends Wizard {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 				if (taskListPage.isAdvancedMode()) {
-					preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, (AstConcreteClafer) org.clafer.cli.Utils.getModelChildByName(claferModel.getModel(), "c0_" + selectedTask.getName()));
+					preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, (AstConcreteClafer) org.clafer.cli.Utils
+						.getModelChildByName(claferModel.getModel(), "c0_" + selectedTask.getName()));
 				} else {
 					BeginnerModeQuestionnaire beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
-					
+
 					if (beginnerQuestions.hasQuestions()) {
 						preferenceSelectionPage = new BeginnerTaskQuestionPage(beginnerQuestions);
-					}					
+					}
 				}
 			}
 			if (preferenceSelectionPage != null) {
 				addPage(preferenceSelectionPage);
 			}
-			
+
 			return preferenceSelectionPage;
 		} else if (this.tlsKeyPage != null && this.tlsKeyPage.canFlipToNextPage()) {
 			this.tlsPage = new TLSConfigurationHostPortPage();
@@ -132,51 +133,50 @@ public class ConfiguratorWizard extends Wizard {
 			if (this.preferenceSelectionPage != null) {
 				addPage(this.preferenceSelectionPage);
 			}
-		
+
 			return this.preferenceSelectionPage;
 		} else if (this.tlsSCPage != null && this.tlsSCPage.canFlipToNextPage()) {
-			
+
 			this.tlsKeyPage = new TLSConfigurationKeyStorePage();
 			this.preferenceSelectionPage = this.tlsKeyPage;
 			if (this.preferenceSelectionPage != null) {
 				addPage(this.preferenceSelectionPage);
 			}
 			return this.preferenceSelectionPage;
-		} 
+		}
 		/**
 		 * If current page is either question or properties page (in Advanced mode)
 		 */
-		else if (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage){
+		else if (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage) {
 			InstanceGenerator instanceGenerator;
 			try {
-				instanceGenerator = new InstanceGenerator(Utils.resolveResourcePathToFile(selectedTask.getModelFile()).getAbsolutePath(), "c0_" +  this.taskListPage.getSelectedTask().getName(), this.taskListPage.getSelectedTask().getDescription());
-				
-				if (this.taskListPage.isAdvancedMode()){
+				instanceGenerator = new InstanceGenerator(Utils.resolveResourcePathToFile(selectedTask.getModelFile())
+					.getAbsolutePath(), "c0_" + this.taskListPage.getSelectedTask().getName(), this.taskListPage.getSelectedTask().getDescription());
+
+				if (this.taskListPage.isAdvancedMode()) {
 					instanceGenerator.generateInstancesAdvancedUserMode(((AdvancedUserValueSelectionPage) currentPage).getConstraints());
 				} else {
 					// running in beginner mode
 					((BeginnerTaskQuestionPage) currentPage).setMap(((BeginnerTaskQuestionPage) currentPage).getSelection(), claferModel);
 					instanceGenerator.generateInstances(((BeginnerTaskQuestionPage) currentPage).getMap());
 				}
-				
+
 				if (instanceGenerator.getNoOfInstances() > 0) {
 					this.instanceListPage = new InstanceListPage(instanceGenerator, selectedTask);
 					addPage(this.instanceListPage);
 					return this.instanceListPage;
-				}else{
-					if("nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[3].getMethodName())){
+				} else {
+					if ("nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[3].getMethodName())) {
 						String message = this.taskListPage.isAdvancedMode() ? Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE : Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER;
 						MessageDialog.openError(new Shell(), "Error", message);
 					}
 				}
-				
-				
-				
+
 			} catch (URISyntaxException | IOException e) {
 				Activator.getDefault().logError(e);
 			}
 		}
-	
+
 		return currentPage;
 	}
 
@@ -189,17 +189,17 @@ public class ConfiguratorWizard extends Wizard {
 				// Print the result to the console
 				final WriteToFileHelper write = new WriteToFileHelper();
 				String selectedInstance = new XMLParser().displayInstanceValues(this.instanceListPage.getValue(), "");
-				
+
 				// Initialize Code Generation to retrieve developer project
 				ret &= this.codeGeneration.initCodeGeneration();
-				
+
 				// Write Instance File into developer project
 				String xmlInstancePath = codeGeneration.getDeveloperProject().getProjectPath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile;
 				write.writeToFile(selectedInstance, xmlInstancePath);
 
 				// Generate code template
 				ret &= this.codeGeneration.generateCodeTemplates(new File(xmlInstancePath), null);
-				
+
 				// Delete Instance File
 				write.deleteFile(xmlInstancePath);
 				codeGeneration.getDeveloperProject().refresh();
@@ -215,20 +215,18 @@ public class ConfiguratorWizard extends Wizard {
 				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 				Document doc = docBuilder.parse(xmlInstanceFile);
-				
+
 				doc.getElementsByTagName("host").item(0).setTextContent(tlsPage.getHost());
 				doc.getElementsByTagName("port").item(0).setTextContent(tlsPage.getPort());
 				doc.getElementsByTagName("path").item(0).setTextContent(tlsKeyPage.getPath());
 				doc.getElementsByTagName("password").item(0).setTextContent(tlsKeyPage.getPassword());
-				
+
 				TransformerFactory tF = TransformerFactory.newInstance();
 				Transformer tfr = tF.newTransformer();
 				DOMSource source = new DOMSource(doc);
 				StreamResult result = new StreamResult(xmlInstanceFile);
 				tfr.transform(source, result);
-				ret &= this.codeGeneration.generateCodeTemplates(
-					xmlInstanceFile,
-					xslTLSfile);
+				ret &= this.codeGeneration.generateCodeTemplates(xmlInstanceFile, xslTLSfile);
 			} catch (URISyntaxException | IOException | SAXException | ParserConfigurationException | TransformerException e) {
 				Activator.getDefault().logError(e);
 				return false;
@@ -236,6 +234,5 @@ public class ConfiguratorWizard extends Wizard {
 		}
 		return ret;
 	}
-	
 
 }

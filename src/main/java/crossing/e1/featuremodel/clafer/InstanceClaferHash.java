@@ -38,9 +38,9 @@ public class InstanceClaferHash extends InstanceClafer {
 		int hashToChildrenInstances = 0;
 		for (final InstanceClafer childInstanceClafer : this.getChildren()) {
 			InstanceClaferHash tempInstanceHash = null;
-			if (childInstanceClafer.hasRef() && !childInstanceClafer.getType().isPrimitive() && !childInstanceClafer.getRef().getClass()
-					.toString().contains(Constants.INTEGER) && !childInstanceClafer.getRef().getClass().toString().contains(
-							Constants.STRING) && !childInstanceClafer.getRef().getClass().toString().contains(Constants.BOOLEAN)) {
+			if (childInstanceClafer
+				.hasRef() && !childInstanceClafer.getType().isPrimitive() && !childInstanceClafer.getRef().getClass().toString().contains(Constants.INTEGER) && !childInstanceClafer
+					.getRef().getClass().toString().contains(Constants.STRING) && !childInstanceClafer.getRef().getClass().toString().contains(Constants.BOOLEAN)) {
 				/**
 				 * recursively find hashcode for all the children for a clafer if it is not primitive
 				 */
@@ -51,9 +51,8 @@ public class InstanceClaferHash extends InstanceClafer {
 				/**
 				 * add hashcode from standard object.hasCode() method for primitive types
 				 */
-				if (childInstanceClafer.getRef().getClass().toString().contains(Constants.INTEGER) || childInstanceClafer.getRef()
-						.getClass().toString()
-						.contains(Constants.STRING) || childInstanceClafer.getRef().getClass().toString().contains(Constants.BOOLEAN)) {
+				if (childInstanceClafer.getRef().getClass().toString().contains(Constants.INTEGER) || childInstanceClafer.getRef().getClass().toString()
+					.contains(Constants.STRING) || childInstanceClafer.getRef().getClass().toString().contains(Constants.BOOLEAN)) {
 					hashToChildrenInstances += childInstanceClafer.getRef().hashCode();
 				}
 			}

@@ -70,7 +70,7 @@ public class XMLParser implements Labels {
 	 * @return
 	 */
 	public String displayInstanceXML(final InstanceClafer inst, String value) {
-		try {			
+		try {
 			if (inst.hasChildren()) {
 				for (final InstanceClafer in : inst.getChildren()) {
 					if (isAlgorithm(in.getType())) {
@@ -186,12 +186,12 @@ public class XMLParser implements Labels {
 	 * @param astClafer
 	 * @return
 	 */
-	private boolean isAlgorithm(final AstClafer astClafer) {	
-		if(astClafer.hasRef())
-			if(astClafer.getRef().getTargetType() != null && astClafer.getRef().getTargetType().getSuperClafer() != null)
+	private boolean isAlgorithm(final AstClafer astClafer) {
+		if (astClafer.hasRef())
+			if (astClafer.getRef().getTargetType() != null && astClafer.getRef().getTargetType().getSuperClafer() != null)
 				return astClafer.getRef().getTargetType().getSuperClafer().getName().contains("_Algorithm");
-		
+
 		return false;
-		
+
 	}
 }

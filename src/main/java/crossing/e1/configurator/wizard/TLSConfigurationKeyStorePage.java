@@ -42,7 +42,7 @@ import crossing.e1.configurator.utilities.Labels;
 
 public class TLSConfigurationKeyStorePage extends WizardPage {
 
-	static private Composite container;
+	private static Composite container;
 	private Label pathLabel;
 	private Text pathText;
 	private Label passwordLabel;

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 public class Question {
 
-	String questionText;
-	ArrayList<Answer> answers;
-	Answer defaultAnswer;
+	private String questionText;
+	private ArrayList<Answer> answers;
+	private Answer defaultAnswer;
 
 	public String getQuestionText() {
 		return questionText;

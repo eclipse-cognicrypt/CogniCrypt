@@ -2,7 +2,7 @@ package crossing.e1.featuremodel.tree;
 
 public class SimpleDecision extends TreeNode {
 
-	DataStructure decision;
+	protected DataStructure decision;
 
 	public SimpleDecision(DataStructure decision) {
 		super();

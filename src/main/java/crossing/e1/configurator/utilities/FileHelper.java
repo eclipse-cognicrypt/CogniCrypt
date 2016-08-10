@@ -30,7 +30,7 @@ import crossing.e1.configurator.Activator;
 /**
  * A helper class which writes string content to a file and it will be saved under project directory
  */
-public class WriteToFileHelper {
+public class FileHelper {
 
 	public int writeToFile(final String content, final String filename) {
 		try {

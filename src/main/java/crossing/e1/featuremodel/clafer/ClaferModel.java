@@ -22,7 +22,6 @@ package crossing.e1.featuremodel.clafer;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,11 +38,9 @@ import org.clafer.scope.Scope;
 public class ClaferModel {
 
 	private String modelName;
-	JavascriptFile jsFile;
+	private JavascriptFile jsFile;
 	private Map<String, AstConcreteClafer> constraintClafers;
-	ArrayList<AstConcreteClafer> propertiesList;
-	ArrayList<AstConcreteClafer> groupPropertiesList;
-	HashMap<AstConcreteClafer, AstConcreteClafer> childClaferList;
+	private HashMap<AstConcreteClafer, AstConcreteClafer> childClaferList;
 
 	/**
 	 * Constructor for claferModel which takes absolute path for the js as parm
@@ -52,7 +49,6 @@ public class ClaferModel {
 	 */
 	public ClaferModel(String path) {
 		loadModel(path);
-		propertiesList = new ArrayList<AstConcreteClafer>();
 	}
 
 	/**

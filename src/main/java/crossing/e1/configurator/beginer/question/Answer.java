@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 public class Answer {
 
-	String value;
-	Boolean defaultAnswer;
-	ArrayList<Dependency> dependencies;
+	private String value;
+	private Boolean defaultAnswer;
+	private ArrayList<Dependency> dependencies;
 
 	public String getValue() {
 		return value;

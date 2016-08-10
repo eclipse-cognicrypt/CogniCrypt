@@ -26,7 +26,6 @@ import org.clafer.ast.AstConstraint;
 
 public class ClaferModelUtils {
 
-
 	/**
 	 * Method to find a clafer with a given name in whole model
 	 */

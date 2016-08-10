@@ -48,7 +48,7 @@ import crossing.e1.codegen.generation.XSLBasedGenerator;
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.tasks.Task;
-import crossing.e1.configurator.utilities.WriteToFileHelper;
+import crossing.e1.configurator.utilities.FileHelper;
 import crossing.e1.configurator.utilities.XMLParser;
 import crossing.e1.configurator.wizard.advanced.AdvancedUserValueSelectionPage;
 import crossing.e1.configurator.wizard.beginner.BeginnerModeQuestionnaire;
@@ -187,7 +187,7 @@ public class ConfiguratorWizard extends Wizard {
 			ret = this.instanceListPage.isPageComplete();
 			try {
 				// Print the result to the console
-				final WriteToFileHelper write = new WriteToFileHelper();
+				final FileHelper write = new FileHelper();
 				String selectedInstance = new XMLParser().displayInstanceValues(this.instanceListPage.getValue(), "");
 
 				// Initialize Code Generation to retrieve developer project

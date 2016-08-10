@@ -2,10 +2,10 @@ package crossing.e1.configurator.beginer.question;
 
 public class Dependency {
 
-	String algorithm;
-	String operand;
-	String value;
-	String operator;
+	private String algorithm;
+	private String operand;
+	private String value;
+	private String operator;
 
 	public String getOperand() {
 		return operand;

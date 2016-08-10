@@ -106,6 +106,8 @@ public class TLSConfigurationHostPortPage extends WizardPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				try {
+					//The variable is not "unused" as the constructor actually already performs the necessary operation. 
+					@SuppressWarnings("unused")
 					TLSConnection tlstest = new TLSConnection(Integer.parseInt(portText.getText()), getHost());
 					testConnectionLabel.setText(SUCCESS);
 					testConnectionLabel.redraw();

@@ -54,7 +54,6 @@ public class InstanceListPage extends WizardPage implements Labels {
 	private Text instanceDetails;
 	private final InstanceGenerator instanceGenerator;
 	private InstanceClafer value;
-	private boolean val = false;
 	private final XMLParser publisher;
 	private Group instancePropertiesPanel;
 	private Task selectedTask;
@@ -110,7 +109,6 @@ public class InstanceListPage extends WizardPage implements Labels {
 				InstanceListPage.this.instanceDetails
 					.setText(InstanceListPage.this.publisher.getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(b), ""));
 				if (selection.size() > 0) {
-					InstanceListPage.this.val = true;
 					setPageComplete(true);
 				}
 			}

@@ -47,9 +47,6 @@ public class TaskSelectionPage extends WizardPage {
 	private ComboViewer taskComboSelection;
 	private Button advancedModeCheckBox;
 	private Label label2;
-	//	private Task selectedTask = null;
-	//private final ClaferModel model;
-	private boolean status = true;
 	private boolean canProceed = false;
 
 	public TaskSelectionPage() {

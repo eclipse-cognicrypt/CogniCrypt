@@ -53,7 +53,6 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 		this.taskClafer = taskClafer;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public void createControl(Composite parent) {
 		container = new Composite(parent, SWT.NONE);

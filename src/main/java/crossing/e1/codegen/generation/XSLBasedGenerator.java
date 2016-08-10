@@ -341,6 +341,7 @@ public class XSLBasedGenerator {
 			if (!(o instanceof Tuple)) {
 				return false;
 			} else {
+				@SuppressWarnings("unchecked")
 				Tuple<X, Y> t = (Tuple<X, Y>) o;
 				return t.y.equals(this.y) && t.x.equals(this.x);
 			}
@@ -353,6 +354,7 @@ public class XSLBasedGenerator {
 			if (!(this.x instanceof Comparable && comp.x instanceof Comparable && this.y instanceof Comparable && comp.y instanceof Comparable)) {
 				return -1;
 			} else {
+				@SuppressWarnings("unchecked")
 				Comparable<X> thisX = (Comparable<X>) this.x;
 				return thisX.compareTo(comp.x);
 			}

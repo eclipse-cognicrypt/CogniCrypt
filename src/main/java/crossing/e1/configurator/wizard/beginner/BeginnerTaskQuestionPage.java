@@ -25,7 +25,6 @@ import crossing.e1.featuremodel.clafer.ClaferModel;
 
 public class BeginnerTaskQuestionPage extends WizardPage {
 
-	private String currentQuestion = null;
 	private final BeginnerModeQuestionnaire quest;
 	private final HashMap<Question, Answer> selection = new HashMap<Question, Answer>();
 	private final List<Composite> quetsionsList;

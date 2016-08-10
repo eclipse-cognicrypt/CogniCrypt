@@ -91,7 +91,7 @@ public class ClaferModel {
 	 * @param model
 	 */
 	public void setTaskList(AstModel model) {
-		String key = "";
+		//String key = "";
 		for (AstAbstractClafer object : model.getAbstracts()) {
 			// Find all the abstract first and select only the abstract with
 			// name Task
@@ -102,8 +102,8 @@ public class ClaferModel {
 					for (AstConstraint constraint : clafer.getConstraints()) {
 						// Check Task description , and put that as Key
 						if (constraint.getExpr().toString().contains("description . ref")) {
-							key = constraint.getExpr().toString().substring(constraint.getExpr().toString().indexOf("=") + 1, constraint.getExpr().toString().length()).trim()
-								.replace("\"", "");
+							//key = constraint.getExpr().toString().substring(constraint.getExpr().toString().indexOf("=") + 1, constraint.getExpr().toString().length()).trim()
+								//.replace("\"", "");
 						}
 					}
 					//					/**
@@ -124,7 +124,6 @@ public class ClaferModel {
 	 * @param model
 	 */
 	public void setEnumList(AstModel model) {
-		String key = "";
 		PropertiesMapperUtil.resetEnumMap();
 		for (AstAbstractClafer object : model.getAbstracts()) {
 			if (object.getName().contains("Enum") == true) {

@@ -126,7 +126,7 @@ public class TLSConfigurationKeyStorePage extends WizardPage {
 		this.passwordText = new Text(container, SWT.PASSWORD);
 		this.passwordText.setLayoutData(new GridData(200, 15));
 
-		setControl(this.container);
+		setControl(container);
 	}
 
 	public String getPath() {

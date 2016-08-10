@@ -20,11 +20,8 @@
  */
 package crossing.e1.configurator.wizard;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -34,20 +31,15 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.tasks.TaskJSONReader;
 import crossing.e1.configurator.utilities.Labels;
-import crossing.e1.featuremodel.clafer.ClaferModel;
-import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
 public class TaskSelectionPage extends WizardPage {
 

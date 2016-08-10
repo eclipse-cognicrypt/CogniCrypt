@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
-
 import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 
 public class PropertyWidget {

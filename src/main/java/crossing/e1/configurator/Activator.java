@@ -24,8 +24,6 @@ import org.osgi.framework.BundleContext;
 
 import crossing.e1.configurator.utilities.Labels;
 
-import static java.rmi.server.RemoteServer.getLog;
-
 public class Activator extends AbstractUIPlugin implements Labels {
 
 	// The plug-in ID

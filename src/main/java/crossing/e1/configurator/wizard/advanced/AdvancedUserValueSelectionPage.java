@@ -22,10 +22,7 @@
 package crossing.e1.configurator.wizard.advanced;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 
 import org.clafer.ast.AstAbstractClafer;
 import org.clafer.ast.AstClafer;

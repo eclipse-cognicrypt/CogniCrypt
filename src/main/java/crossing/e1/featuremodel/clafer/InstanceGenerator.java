@@ -22,7 +22,6 @@ package crossing.e1.featuremodel.clafer;
 import static org.clafer.ast.Asts.$this;
 import static org.clafer.ast.Asts.constant;
 import static org.clafer.ast.Asts.equal;
-import static org.clafer.ast.Asts.global;
 import static org.clafer.ast.Asts.greaterThan;
 import static org.clafer.ast.Asts.greaterThanEqual;
 import static org.clafer.ast.Asts.join;
@@ -36,17 +35,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.clafer.ast.AstAbstractClafer;
-import org.clafer.ast.AstBoolExpr;
 import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
-import org.clafer.ast.AstConstraint;
 import org.clafer.ast.AstModel;
 import org.clafer.cli.Utils;
 import org.clafer.common.Check;
 import org.clafer.compiler.ClaferCompiler;
 import org.clafer.compiler.ClaferSolver;
-import org.clafer.compiler.ClaferUnsat;
 import org.clafer.instance.InstanceClafer;
 import org.clafer.scope.Scope;
 

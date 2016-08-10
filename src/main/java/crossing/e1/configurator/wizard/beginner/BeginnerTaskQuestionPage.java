@@ -20,8 +20,6 @@ import org.eclipse.swt.widgets.Label;
 
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Question;
-import crossing.e1.configurator.beginer.question.Answer;
-import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 

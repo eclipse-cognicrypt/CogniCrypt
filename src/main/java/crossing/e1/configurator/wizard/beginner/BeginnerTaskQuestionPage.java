@@ -69,7 +69,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 		List<Answer> answers = question.getAnswers();
 	
-		Composite container = getPanle(parent);
+		Composite container = getPanel(parent);
 		Label label = new Label(container, SWT.CENTER);
 		label.setText(question.getQuestionText());
 
@@ -127,7 +127,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		// }
 	}
 
-	private Composite getPanle(final Composite parent) {
+	private Composite getPanel(final Composite parent) {
 		final Composite titledPanel = new Composite(parent, SWT.NONE);
 		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 9, SWT.BOLD));
 		titledPanel.setFont(boldFont);

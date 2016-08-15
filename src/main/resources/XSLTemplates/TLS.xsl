@@ -15,8 +15,8 @@ public class TLSClient {
 	
 		
 	public TLSClient() throws IOException {
-			System.setProperty("javax.net.ssl.trustStore","<xsl:value-of select="//task/keystore/path"/>");
-	        System.setProperty("javax.net.ssl.trustStorePassword","<xsl:value-of select="//task/keystore/password"/>");
+			System.setProperty("javax.net.ssl.<xsl:choose><xsl:when test="//task/code/server='true'">key</xsl:when><xsl:otherwise>trust</xsl:otherwise></xsl:choose>Store","path");
+        System.setProperty("javax.net.ssl.<xsl:choose><xsl:when test="//task/code/server='true'">key</xsl:when><xsl:otherwise>trust</xsl:otherwise></xsl:choose>StorePassword","password");
 	        SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 		try {
 			sslsocket = (SSLSocket) sslsocketfactory.createSocket(<xsl:if test="//task/connection/ip">"<xsl:value-of select="//task/connection/ip"/>"</xsl:if>

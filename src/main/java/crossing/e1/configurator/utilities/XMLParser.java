@@ -19,12 +19,19 @@
  */
 package crossing.e1.configurator.utilities;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.instance.InstanceClafer;
 
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
+import crossing.e1.configurator.beginer.question.Answer;
+import crossing.e1.configurator.beginer.question.CodeDependency;
+import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
@@ -40,7 +47,7 @@ public class XMLParser implements Labels {
 	 * @param value
 	 * @return
 	 */
-	public String displayInstanceValues(final InstanceClafer inst, String value) {
+	public String displayInstanceValues(final InstanceClafer inst, HashMap<Question, Answer> constraints, String value) {
 		if (inst.hasChildren()) {
 			final String taskName = inst.getType().getName();
 			value = "<task description=\"" + ClaferModelUtils
@@ -59,6 +66,17 @@ public class XMLParser implements Labels {
 				}
 			}
 		}
+		value += "<code>";
+		for (Entry<Question, Answer> ent : constraints.entrySet()) {
+			ArrayList<CodeDependency> cdp = ent.getValue().getCodeDependencies();
+			if (cdp != null) {
+				for (CodeDependency dep : cdp) {
+					value += "<" + dep.getOption() + ">" + dep.getValue() + "</" + dep.getOption() + ">";
+				}
+			}
+		}
+		value += "</code>";
+		
 		value += "</task>";
 		return value;
 	}

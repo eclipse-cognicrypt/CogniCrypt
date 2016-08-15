@@ -43,7 +43,7 @@ public class Question {
 		builder.append(questionText + "\n");
 		for (Answer answer : answers) {
 
-			builder.append("\t" + answer.getValue() + " [dependencies=" + answer.getDependencies() + "], defaultValue=" + answer.isDefaultAnswer() + "\n");
+			builder.append("\t" + answer.getValue() + " [dependencies=" + answer.getClaferDependencies() + "], defaultValue=" + answer.isDefaultAnswer() + "\n");
 
 		}
 

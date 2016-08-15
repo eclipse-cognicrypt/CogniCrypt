@@ -27,14 +27,14 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private final BeginnerModeQuestionnaire quest;
 	private final HashMap<Question, Answer> selection = new HashMap<Question, Answer>();
-	private final List<Composite> quetsionsList;
+	private final List<Composite> questionsList;
 
 	public BeginnerTaskQuestionPage(final BeginnerModeQuestionnaire quest) {
 		super("Display Questions");
 		setTitle("Configuring Selected Task: " + quest.getTask().getDescription());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.quest = quest;
-		this.quetsionsList = new ArrayList<Composite>();
+		this.questionsList = new ArrayList<Composite>();
 	}
 
 	@Override
@@ -47,7 +47,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		List<Question> questionList = quest.getQutionare();
 		for (Question question : questionList) {
 			createQuestionControl(container, question);
-
 		}
 
 		layout.numColumns = 1;
@@ -65,7 +64,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	public void createQuestionControl(final Composite parent, final Question question) {
 
 		List<Answer> answers = question.getAnswers();
-
 		Composite container = getPanel(parent);
 		Label label = new Label(container, SWT.CENTER);
 		label.setText(question.getQuestionText());
@@ -75,7 +73,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		comboViewer.setInput(answers);
 
 		comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
 			@Override
 			public void selectionChanged(final SelectionChangedEvent arg0) {
 				IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
@@ -84,7 +81,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		});
 
 		comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
-		this.quetsionsList.add(container);
+		this.questionsList.add(container);
 	}
 
 	public void setMap(final HashMap<Question, Answer> hashMap, final ClaferModel model) {

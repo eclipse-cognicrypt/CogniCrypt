@@ -22,6 +22,7 @@ package crossing.e1.configurator.wizard;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -47,6 +48,8 @@ import crossing.e1.codegen.Utils;
 import crossing.e1.codegen.generation.XSLBasedGenerator;
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
+import crossing.e1.configurator.beginer.question.Answer;
+import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.FileHelper;
 import crossing.e1.configurator.utilities.XMLParser;
@@ -66,7 +69,8 @@ public class ConfiguratorWizard extends Wizard {
 	protected InstanceListPage instanceListPage;
 	private ClaferModel claferModel;
 	private final XSLBasedGenerator codeGeneration = new XSLBasedGenerator();
-
+	private HashMap<Question, Answer> constraints;
+	
 	public ConfiguratorWizard() {
 		super();
 		// Set the Look and Feel of the application to the operating
@@ -104,10 +108,8 @@ public class ConfiguratorWizard extends Wizard {
 				try {
 					claferModel = new ClaferModel(Utils.resolveResourcePathToFile(selectedTask.getModelFile()).getAbsolutePath());
 				} catch (URISyntaxException e) {
-					// TODO Auto-generated catch block
 					Activator.getDefault().logError(e);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					Activator.getDefault().logError(e);
 				}
 
@@ -157,8 +159,8 @@ public class ConfiguratorWizard extends Wizard {
 					instanceGenerator.generateInstancesAdvancedUserMode(((AdvancedUserValueSelectionPage) currentPage).getConstraints());
 				} else {
 					// running in beginner mode
-					((BeginnerTaskQuestionPage) currentPage).setMap(((BeginnerTaskQuestionPage) currentPage).getSelection(), claferModel);
 					instanceGenerator.generateInstances(((BeginnerTaskQuestionPage) currentPage).getMap());
+					constraints = ((BeginnerTaskQuestionPage) currentPage).getMap();
 				}
 
 				if (instanceGenerator.getNoOfInstances() > 0) {
@@ -176,7 +178,7 @@ public class ConfiguratorWizard extends Wizard {
 				Activator.getDefault().logError(e);
 			}
 		}
-
+		
 		return currentPage;
 	}
 
@@ -188,7 +190,7 @@ public class ConfiguratorWizard extends Wizard {
 			try {
 				// Print the result to the console
 				final FileHelper write = new FileHelper();
-				String selectedInstance = new XMLParser().displayInstanceValues(this.instanceListPage.getValue(), "");
+				String selectedInstance = new XMLParser().displayInstanceValues(this.instanceListPage.getValue(), constraints,  "");
 
 				// Initialize Code Generation to retrieve developer project
 				ret &= this.codeGeneration.initCodeGeneration();

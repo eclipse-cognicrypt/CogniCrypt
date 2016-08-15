@@ -23,7 +23,6 @@ public class QuestionsJSONReader {
 			try {
 				reader = new BufferedReader(new FileReader(Utilities.getAbsolutePath(task.getXmlFile())));
 				Gson gson = new Gson();
-
 				questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
 
 			} catch (FileNotFoundException e) {
@@ -44,7 +43,6 @@ public class QuestionsJSONReader {
 				Gson gson = new Gson();
 
 				questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
-
 			} catch (FileNotFoundException e) {
 				Activator.getDefault().logError(e);
 			}

@@ -6,8 +6,9 @@ public class Answer {
 
 	private String value;
 	private Boolean defaultAnswer;
-	private ArrayList<Dependency> dependencies;
-
+	private ArrayList<ClaferDependency> claferDependencies;
+	private ArrayList<CodeDependency> codeDependencies;
+	
 	public String getValue() {
 		return value;
 	}
@@ -16,14 +17,14 @@ public class Answer {
 		this.value = value;
 	}
 
-	public ArrayList<Dependency> getDependencies() {
-		return dependencies;
+	public ArrayList<ClaferDependency> getClaferDependencies() {
+		return claferDependencies;
 	}
 
-	public void setDependencies(ArrayList<Dependency> dependencies) {
-		this.dependencies = dependencies;
+	public void setClaferDependencies(ArrayList<ClaferDependency> claferDependencies) {
+		this.claferDependencies = claferDependencies;
 	}
-
+	
 	public Boolean isDefaultAnswer() {
 		return defaultAnswer == null ? false : defaultAnswer;
 	}
@@ -36,6 +37,16 @@ public class Answer {
 	public String toString() {
 		//the combo viewer calls the toString() method so just display the value
 		return value;
+	}
+
+	
+	public ArrayList<CodeDependency> getCodeDependencies() {
+		return codeDependencies;
+	}
+
+	
+	public void setCodeDependencies(ArrayList<CodeDependency> codeDependencies) {
+		this.codeDependencies = codeDependencies;
 	}
 
 }

@@ -48,7 +48,7 @@ import org.clafer.scope.Scope;
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.beginer.question.Answer;
-import crossing.e1.configurator.beginer.question.Dependency;
+import crossing.e1.configurator.beginer.question.ClaferDependency;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.wizard.advanced.PropertyWidget;
 
@@ -265,10 +265,12 @@ public class InstanceGenerator {
 	void basicModeHandler(AstModel astModel, AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {
 		for (Question question : qAMap.keySet()) {
 			Answer answer = qAMap.get(question);
-			for (Dependency dependency : answer.getDependencies()) {
-				AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + dependency.getAlgorithm());
-				AstConcreteClafer propertyClafer = (AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + dependency.getOperand());
-				addConstraints(algorithmClafer, propertyClafer, dependency.getOperator(), Integer.parseInt(dependency.getValue()));
+			if (answer.getClaferDependencies() != null){
+				for (ClaferDependency claferDependency : answer.getClaferDependencies()) {
+					AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + claferDependency.getAlgorithm());
+					AstConcreteClafer propertyClafer = (AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + claferDependency.getOperand());
+					addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), Integer.parseInt(claferDependency.getValue()));
+				}
 			}
 		}
 	}

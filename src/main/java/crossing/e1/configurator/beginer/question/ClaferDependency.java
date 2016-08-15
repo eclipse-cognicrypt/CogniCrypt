@@ -1,6 +1,6 @@
 package crossing.e1.configurator.beginer.question;
 
-public class Dependency {
+public class ClaferDependency {
 
 	private String algorithm;
 	private String operand;
@@ -44,4 +44,16 @@ public class Dependency {
 		return "AnswerDependency [algorithm=" + algorithm + ", operand=" + operand + ", value=" + value + ", operator=" + operator + "]";
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof ClaferDependency)) {
+			return false;
+		} else {
+			ClaferDependency cmp = (ClaferDependency) obj;
+			return cmp.getAlgorithm().equals(this.getAlgorithm()) &&
+				cmp.getOperand().equals(this.getOperand()) &&
+				cmp.getOperator().equals(this.getOperator()) &&
+				cmp.getValue().equals(this.getValue());
+		}
+	}
 }

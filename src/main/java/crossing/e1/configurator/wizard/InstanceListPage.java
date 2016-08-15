@@ -77,7 +77,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 		//checkNumberOfInstances();
 
 		ComboViewer algorithmClass;
-		Label lableInstanceList;
+		Label labelInstanceList;
 		this.control = new Composite(parent, SWT.NONE);
 		final GridLayout layout = new GridLayout(1, false);
 		this.control.setLayout(layout);
@@ -85,8 +85,8 @@ public class InstanceListPage extends WizardPage implements Labels {
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
 		setPageComplete(false);
 		compositeControl.setLayout(new GridLayout(2, false));
-		lableInstanceList = new Label(compositeControl, SWT.NONE);
-		lableInstanceList.setText(Labels.instanceList);
+		labelInstanceList = new Label(compositeControl, SWT.NONE);
+		labelInstanceList.setText(Labels.instanceList);
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
 		algorithmClass = new ComboViewer(compositeControl, SWT.COMPOSITION_SELECTION);
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
@@ -134,7 +134,6 @@ public class InstanceListPage extends WizardPage implements Labels {
 		if (instanceGenerator.getNoOfInstances() == 0) {
 			MessageDialog.openError(new Shell(), "Error", Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE);
 		}
-
 	}
 
 	public InstanceClafer getValue() {

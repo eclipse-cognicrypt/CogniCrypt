@@ -6,7 +6,6 @@ Simple_List : List
 Merkle_Tree_Sequence : List
 Notarial_Attestation_Wrapper : List
 
-
 abstract AddingDocuments : Enum
 Once : AddingDocuments
 MultipleTimes : AddingDocuments
@@ -19,14 +18,18 @@ abstract TrustedAuthorities : Enum
 SignatureBased : TrustedAuthorities
 Notaries : TrustedAuthorities
 
-SymmetricBlockCipher
+abstract Task
+	description -> string
+
+LongTermArchiving : Task
+	[description = "Archiving Documents"]
 	list -> List
 	addDoc -> AddingDocuments
 	numDoc -> NumberDocuments
-	trust -> TrustedAuthorities
+	trust -> TrustedAuthorities ?
 	[numDoc = MultipleDocuments && addDoc = MultipleTimes => list = Skip_List]
 	[numDoc = MultipleDocuments && addDoc = Once => list = Merkle_Tree_Sequence]
 	[numDoc = Single && addDoc = MultipleTimes => list = Skip_List]
 	[numDoc = Single && addDoc = Once => list = Skip_List]
-	[numDoc = Single && addDoc = Once && trust = SignatureBased && (not trust = Notaries) => list = Simple_List]
-	[numDoc = Single && addDoc = Once && trust = Notaries => list = NOTARIAL_ATTESTATION_WRAPPER]
+	[numDoc = Single && addDoc = Once && trust = SignatureBased && trust != Notaries => list = Simple_List]
+	[numDoc = Single && addDoc = Once && trust = Notaries => list = Notarial_Attestation_Wrapper]

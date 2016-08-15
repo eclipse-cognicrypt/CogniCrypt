@@ -104,6 +104,78 @@ public class PWHasher {
 </xsl:result-document>
 </xsl:if>
 
+<xsl:if test="//task[@description='Archiving Documents']">
+<xsl:result-document href="LongTermArchivingClient.java">
+package <xsl:value-of select="//task/Package"/>; 
+<xsl:apply-templates select="//Import"/>
+
+public class LongTermArchivingClient {
+
+	private ArchivingSystem archivingSystem;
+	
+	/**
+	 * 
+	 * Translates a `dataStructure` string to an ArchivingConfiguration.
+	 * 
+	 * Allowed dataStructures: 
+	 * 	- Simple_List
+	 *  - Skip_List
+	 *  - Merkle_Tree_Sequence
+	 *  - Notarial_Attestation_Wrapper
+	 * 
+	 * @param dataStructure DataStructe that fulfill the clafer constrains w.r.t. to the questionaire.
+	 * @return null, if the given dataStructure is unknown else the correct ArchiveConfiguration that
+	 * is required to create an Archive.
+	 */
+	private  static ArchiveConfiguration mapDatastructureToScheme(String dataStructure){
+		Scheme archivingScheme = null;
+		switch(dataStructure){
+			case "Simple_List": 
+				archivingScheme = Scheme.AdES;
+				break;
+			case "Skip_List": 
+				archivingScheme = Scheme.CISS;
+				break;
+			case "Merkle_Tree_Sequence": 
+				archivingScheme= Scheme.ERS;
+				break;
+			case "Notarial_Attestation_Wrapper": 
+				archivingScheme= Scheme.ERS;
+				break;
+		}
+		
+		ArchiveConfiguration archConfig = (archivingScheme == null)? null : 
+				ArchiveConfiguration.createDefaultArchiveConfiguration(archivingScheme);
+		
+		return archConfig;
+	}
+	
+	public LongTermArchivingClient() throws ServiceClientCreationException {
+		if(archivingSystem != null){
+			archivingSystem = (ArchivingSystem) ServiceClientCreator.createServiceClient(ServiceType.ARCHIVING_SYSTEM);
+			mapDatastructureToScheme("");
+		}
+	}
+	
+	public Archive createArchive(String archiveName, ArchiveConfiguration archiveConfig) throws InternalServiceErrorException, IOException{
+		return archivingSystem.createArchive(archiveName, archiveConfig);
+	}
+	
+	public void renameArchive(long archiveId, String newName) throws EntityNotFoundException, InternalServiceErrorException{
+		archivingSystem.renameArchive(archiveId, newName);
+	}
+	
+	public List&lt;Archive&gt; getArchives() throws InternalServiceErrorException{
+		return archivingSystem.getArchives();
+	}
+	
+	public void deleteArchive(long archiveID) throws EntityNotFoundException, InternalServiceErrorException, IOException{
+		archivingSystem.deleteArchive(archiveID);
+	}
+} 
+</xsl:result-document>
+</xsl:if>
+
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {

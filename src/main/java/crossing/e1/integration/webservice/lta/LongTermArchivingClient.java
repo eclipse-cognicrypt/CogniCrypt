@@ -42,7 +42,7 @@ public class LongTermArchivingClient {
 	 * @return null, if the given dataStructure is unknown else the correct ArchiveConfiguration that
 	 * is required to create an Archive.
 	 */
-	public static ArchiveConfiguration mapDatastructureToScheme(String dataStructure){
+	private  static ArchiveConfiguration mapDatastructureToScheme(String dataStructure){
 		Scheme archivingScheme = null;
 		switch(dataStructure){
 			case "Simple_List": 
@@ -67,7 +67,10 @@ public class LongTermArchivingClient {
 	
 	
 	public LongTermArchivingClient() throws ServiceClientCreationException {
-		initArchivingSystemClient();
+		if(archivingSystem != null){
+			archivingSystem = (ArchivingSystem) ServiceClientCreator.createServiceClient(ServiceType.ARCHIVING_SYSTEM);
+			mapDatastructureToScheme("");
+		}
 	}
 	
 	public Archive createArchive(String archiveName, ArchiveConfiguration archiveConfig) throws InternalServiceErrorException, IOException{
@@ -82,13 +85,8 @@ public class LongTermArchivingClient {
 		return archivingSystem.getArchives();
 	}
 	
-	public void deleteArchive() throws EntityNotFoundException, InternalServiceErrorException, IOException{
-		archivingSystem.deleteArchive(1l);
+	public void deleteArchive(long archiveID) throws EntityNotFoundException, InternalServiceErrorException, IOException{
+		archivingSystem.deleteArchive(archiveID);
 	}
 	
-	private void initArchivingSystemClient() throws ServiceClientCreationException {
-		if(archivingSystem != null){
-			archivingSystem = (ArchivingSystem) ServiceClientCreator.createServiceClient(ServiceType.ARCHIVING_SYSTEM);
-		}
-	}
 }

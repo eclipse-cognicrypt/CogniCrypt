@@ -88,7 +88,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 		labelInstanceList = new Label(compositeControl, SWT.NONE);
 		labelInstanceList.setText(Labels.instanceList);
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
-		algorithmClass = new ComboViewer(compositeControl, SWT.COMPOSITION_SELECTION);
+		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
 		algorithmClass.setInput(inst.keySet());
 		algorithmClass.setLabelProvider(new LabelProvider() {

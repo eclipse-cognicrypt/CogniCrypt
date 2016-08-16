@@ -25,13 +25,20 @@ public class BeginnerModeQuestionnaire {
 		return this.task;
 	}
 
-	public boolean hasQuestions() {
-		//return this.counter < getQutionare().size();
-		return questionList.size() > 0;
+	public boolean hasMoreQuestions() {
+		return this.counter < getQutionare().size();
+	}
+	
+	public boolean isFirstQuestion() {
+		return this.counter == 0;
 	}
 
 	public Question nextQuestion() {
-		return questionList.get(this.counter);
+		return questionList.get(this.counter++);
+	}
+	
+	public Question previousQuestion() {
+		return questionList.get(--this.counter);
 	}
 
 	public void setTask(final Task task) {

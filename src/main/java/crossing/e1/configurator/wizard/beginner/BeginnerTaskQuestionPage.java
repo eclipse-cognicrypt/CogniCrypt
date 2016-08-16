@@ -1,6 +1,5 @@
 package crossing.e1.configurator.wizard.beginner;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -10,6 +9,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -20,21 +20,20 @@ import org.eclipse.swt.widgets.Label;
 
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Question;
+import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 
 public class BeginnerTaskQuestionPage extends WizardPage {
 
-	private final BeginnerModeQuestionnaire quest;
+	private final Question quest;
 	private final HashMap<Question, Answer> selection = new HashMap<Question, Answer>();
-	private final List<Composite> questionsList;
 
-	public BeginnerTaskQuestionPage(final BeginnerModeQuestionnaire quest) {
+	public BeginnerTaskQuestionPage(final Question quest, Task task) {
 		super("Display Questions");
-		setTitle("Configuring Selected Task: " + quest.getTask().getDescription());
+		setTitle("Configuring Selected Task: " + task.getDescription());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.quest = quest;
-		this.questionsList = new ArrayList<Composite>();
 	}
 
 	@Override
@@ -44,11 +43,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		final GridLayout layout = new GridLayout();
 		container.setLayout(layout);
 
-		List<Question> questionList = quest.getQutionare();
-		for (Question question : questionList) {
-			createQuestionControl(container, question);
-		}
-
+		createQuestionControl(container, quest);
 		layout.numColumns = 1;
 		setControl(container);
 	}
@@ -81,7 +76,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		});
 
 		comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
-		this.questionsList.add(container);
 	}
 
 	public void setMap(final HashMap<Question, Answer> hashMap, final ClaferModel model) {
@@ -132,4 +126,28 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 		return titledPanel;
 	}
+
+	@Override
+	public boolean canFlipToNextPage() {
+		return isPageComplete();
+	}
+
+	@Override
+	public IWizardPage getPreviousPage() {
+		IWizardPage prev = super.getPreviousPage();
+		if (prev != null && prev instanceof BeginnerTaskQuestionPage) {
+			return getWizard().getPreviousPage(this);
+		}
+		return prev;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof BeginnerTaskQuestionPage)) {
+			return false;
+		} 
+		BeginnerTaskQuestionPage cmp = (BeginnerTaskQuestionPage) obj;
+		return this.quest.equals(cmp.quest);
+	}
+
 }

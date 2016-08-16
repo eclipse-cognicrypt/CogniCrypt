@@ -70,7 +70,8 @@ public class ConfiguratorWizard extends Wizard {
 	private ClaferModel claferModel;
 	private final XSLBasedGenerator codeGeneration = new XSLBasedGenerator();
 	private HashMap<Question, Answer> constraints;
-	
+	private BeginnerModeQuestionnaire beginnerQuestions;
+		
 	public ConfiguratorWizard() {
 		super();
 		// Set the Look and Feel of the application to the operating
@@ -86,10 +87,8 @@ public class ConfiguratorWizard extends Wizard {
 	@Override
 	public void addPages() {
 		this.taskListPage = new TaskSelectionPage();
-		this.tlsSCPage = new TLSConfigurationServerClientPage();
 		setForcePreviousAndNextButtons(true);
 		addPage(this.taskListPage);
-		addPage(this.tlsSCPage);
 	}
 
 	@Override
@@ -103,13 +102,13 @@ public class ConfiguratorWizard extends Wizard {
 		if (currentPage == this.taskListPage && this.taskListPage.canProceed()) {
 			// Special handling for the TLS task
 			if (selectedTask.getDescription().equals("Communicate over a secure channel")) {
+				this.tlsSCPage = new TLSConfigurationServerClientPage();
+				addPage(this.tlsSCPage);
 				this.preferenceSelectionPage = this.tlsSCPage;
 			} else {
 				try {
 					claferModel = new ClaferModel(Utils.resolveResourcePathToFile(selectedTask.getModelFile()).getAbsolutePath());
-				} catch (URISyntaxException e) {
-					Activator.getDefault().logError(e);
-				} catch (IOException e) {
+				} catch (URISyntaxException | IOException e) {
 					Activator.getDefault().logError(e);
 				}
 
@@ -117,17 +116,13 @@ public class ConfiguratorWizard extends Wizard {
 					preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, (AstConcreteClafer) org.clafer.cli.Utils
 						.getModelChildByName(claferModel.getModel(), "c0_" + selectedTask.getName()));
 				} else {
-					BeginnerModeQuestionnaire beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
-
-					if (beginnerQuestions.hasQuestions()) {
-						preferenceSelectionPage = new BeginnerTaskQuestionPage(beginnerQuestions);
-					}
+					beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
+					preferenceSelectionPage = new BeginnerTaskQuestionPage(beginnerQuestions.nextQuestion(), beginnerQuestions.getTask());
 				}
 			}
 			if (preferenceSelectionPage != null) {
 				addPage(preferenceSelectionPage);
 			}
-
 			return preferenceSelectionPage;
 		} else if (this.tlsKeyPage != null && this.tlsKeyPage.canFlipToNextPage()) {
 			this.tlsPage = new TLSConfigurationHostPortPage();
@@ -150,6 +145,37 @@ public class ConfiguratorWizard extends Wizard {
 		 * If current page is either question or properties page (in Advanced mode)
 		 */
 		else if (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage) {
+			if (this.taskListPage.isAdvancedMode()) {
+				//TODO: Implement for Advanced Mode
+			} else {
+				if (constraints == null) {
+					constraints = ((BeginnerTaskQuestionPage) currentPage).getMap();
+				}
+				
+				if (beginnerQuestions.hasMoreQuestions()) {
+					
+					preferenceSelectionPage = new BeginnerTaskQuestionPage(beginnerQuestions.nextQuestion(), beginnerQuestions.getTask());
+					if (checkifInUpdateRound()) {
+						beginnerQuestions.previousQuestion();
+					}
+					IWizardPage[] pages = getPages();
+					for (int i = 1; i < pages.length; i++) {
+						if (!(pages[i] instanceof BeginnerTaskQuestionPage)) 
+							continue;
+						BeginnerTaskQuestionPage oldPage = (BeginnerTaskQuestionPage) pages[i];
+						if (oldPage.equals(preferenceSelectionPage)) {
+							return oldPage;
+						}
+					}
+					if (preferenceSelectionPage != null) {
+						addPage(preferenceSelectionPage);
+					}
+					
+					constraints.putAll(((BeginnerTaskQuestionPage) currentPage).getMap());
+					return preferenceSelectionPage;
+				}
+			}
+			
 			InstanceGenerator instanceGenerator;
 			try {
 				instanceGenerator = new InstanceGenerator(Utils.resolveResourcePathToFile(selectedTask.getModelFile())
@@ -159,8 +185,7 @@ public class ConfiguratorWizard extends Wizard {
 					instanceGenerator.generateInstancesAdvancedUserMode(((AdvancedUserValueSelectionPage) currentPage).getConstraints());
 				} else {
 					// running in beginner mode
-					instanceGenerator.generateInstances(((BeginnerTaskQuestionPage) currentPage).getMap());
-					constraints = ((BeginnerTaskQuestionPage) currentPage).getMap();
+					instanceGenerator.generateInstances(constraints);
 				}
 
 				if (instanceGenerator.getNoOfInstances() > 0) {
@@ -235,6 +260,29 @@ public class ConfiguratorWizard extends Wizard {
 			}
 		}
 		return ret;
+	}
+
+	@Override
+	public IWizardPage getPreviousPage(IWizardPage currentPage) {
+		boolean lastPage = currentPage instanceof InstanceListPage;
+		if (!checkifInUpdateRound() && (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage || lastPage)) {
+			if (!beginnerQuestions.isFirstQuestion()) {
+				beginnerQuestions.previousQuestion();
+			}
+		}
+		return super.getPreviousPage(currentPage);
+	}
+
+	private boolean checkifInUpdateRound() {
+		boolean updateRound = false;
+		StackTraceElement [] stack = Thread.currentThread().getStackTrace();
+		for (StackTraceElement el : stack) {
+			if (el.getMethodName().contains("updateButtons")) {
+				updateRound = true;
+				break;
+			}
+		}
+		return updateRound;
 	}
 
 }

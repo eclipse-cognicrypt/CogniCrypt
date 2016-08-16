@@ -63,7 +63,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		Label label = new Label(container, SWT.CENTER);
 		label.setText(question.getQuestionText());
 
-		ComboViewer comboViewer = new ComboViewer(container, SWT.NONE);
+		ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY);
 		comboViewer.setContentProvider(ArrayContentProvider.getInstance());
 		comboViewer.setInput(answers);
 

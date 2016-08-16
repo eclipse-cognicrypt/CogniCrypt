@@ -76,7 +76,7 @@ public class TaskSelectionPage extends WizardPage {
 		this.label2 = new Label(this.container, SWT.NONE);
 		this.label2.setText(Labels.LABEL2);
 
-		this.taskComboSelection = new ComboViewer(this.container, SWT.COMPOSITION_SELECTION);
+		this.taskComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
 		this.taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
 
 		final List<Task> tasks = TaskJSONReader.getTasks();

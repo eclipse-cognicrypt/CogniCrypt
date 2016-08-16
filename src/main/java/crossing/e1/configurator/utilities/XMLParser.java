@@ -76,7 +76,7 @@ public class XMLParser implements Labels {
 			}
 		}
 		value += "</code>";
-		
+
 		value += "</task>";
 		return value;
 	}

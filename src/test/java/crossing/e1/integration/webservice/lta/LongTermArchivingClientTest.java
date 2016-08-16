@@ -1,6 +1,5 @@
 package crossing.e1.integration.webservice.lta;
 
-
 import org.junit.Test;
 
 public class LongTermArchivingClientTest {
@@ -9,5 +8,5 @@ public class LongTermArchivingClientTest {
 	public void ServiceClientCreationSmokeTest() throws Exception {
 		new LongTermArchivingClient();
 	}
-	
+
 }

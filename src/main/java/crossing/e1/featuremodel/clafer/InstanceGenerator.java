@@ -265,7 +265,7 @@ public class InstanceGenerator {
 	void basicModeHandler(AstModel astModel, AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {
 		for (Question question : qAMap.keySet()) {
 			Answer answer = qAMap.get(question);
-			if (answer.getClaferDependencies() != null){
+			if (answer.getClaferDependencies() != null) {
 				for (ClaferDependency claferDependency : answer.getClaferDependencies()) {
 					AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + claferDependency.getAlgorithm());
 					AstConcreteClafer propertyClafer = (AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + claferDependency.getOperand());

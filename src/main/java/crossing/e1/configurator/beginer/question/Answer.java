@@ -8,7 +8,7 @@ public class Answer {
 	private Boolean defaultAnswer;
 	private ArrayList<ClaferDependency> claferDependencies;
 	private ArrayList<CodeDependency> codeDependencies;
-	
+
 	public String getValue() {
 		return value;
 	}
@@ -24,7 +24,7 @@ public class Answer {
 	public void setClaferDependencies(ArrayList<ClaferDependency> claferDependencies) {
 		this.claferDependencies = claferDependencies;
 	}
-	
+
 	public Boolean isDefaultAnswer() {
 		return defaultAnswer == null ? false : defaultAnswer;
 	}
@@ -39,12 +39,10 @@ public class Answer {
 		return value;
 	}
 
-	
 	public ArrayList<CodeDependency> getCodeDependencies() {
 		return codeDependencies;
 	}
 
-	
 	public void setCodeDependencies(ArrayList<CodeDependency> codeDependencies) {
 		this.codeDependencies = codeDependencies;
 	}

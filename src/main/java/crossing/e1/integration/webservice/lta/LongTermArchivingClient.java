@@ -15,8 +15,7 @@ import de.tu_darmstadt.cs.cdc.moltas.services.utilities.ServiceClientCreator;
 
 /**
  * 
- * A client that communicates with the REST API of the long term archiving system. The client
- * allows to create, rename and delete archives.
+ * A client that communicates with the REST API of the long term archiving system. The client allows to create, rename and delete archives.
  * 
  * @note The funcutionally of this class does only work within the university network of TU Darmstadt.
  *
@@ -27,66 +26,60 @@ import de.tu_darmstadt.cs.cdc.moltas.services.utilities.ServiceClientCreator;
 public class LongTermArchivingClient {
 
 	private ArchivingSystem archivingSystem;
-	
+
 	/**
 	 * 
 	 * Translates a `dataStructure` string to an ArchivingConfiguration.
 	 * 
-	 * Allowed dataStructures: 
-	 * 	- Simple_List
-	 *  - Skip_List
-	 *  - Merkle_Tree_Sequence
-	 *  - Notarial_Attestation_Wrapper
+	 * Allowed dataStructures: - Simple_List - Skip_List - Merkle_Tree_Sequence - Notarial_Attestation_Wrapper
 	 * 
-	 * @param dataStructure DataStructe that fulfill the clafer constrains w.r.t. to the questionaire.
-	 * @return null, if the given dataStructure is unknown else the correct ArchiveConfiguration that
-	 * is required to create an Archive.
+	 * @param dataStructure
+	 *        DataStructe that fulfill the clafer constrains w.r.t. to the questionaire.
+	 * @return null, if the given dataStructure is unknown else the correct ArchiveConfiguration that is required to create an Archive.
 	 */
-	private  static ArchiveConfiguration mapDatastructureToScheme(String dataStructure){
+	private static ArchiveConfiguration mapDatastructureToScheme(String dataStructure) {
 		Scheme archivingScheme = null;
-		switch(dataStructure){
-			case "Simple_List": 
+		switch (dataStructure) {
+			case "Simple_List":
 				archivingScheme = Scheme.AdES;
 				break;
-			case "Skip_List": 
+			case "Skip_List":
 				archivingScheme = Scheme.CISS;
 				break;
-			case "Merkle_Tree_Sequence": 
-				archivingScheme= Scheme.ERS;
+			case "Merkle_Tree_Sequence":
+				archivingScheme = Scheme.ERS;
 				break;
-			case "Notarial_Attestation_Wrapper": 
-				archivingScheme= Scheme.ERS;
+			case "Notarial_Attestation_Wrapper":
+				archivingScheme = Scheme.ERS;
 				break;
 		}
-		
-		ArchiveConfiguration archConfig = (archivingScheme == null)? null : 
-				ArchiveConfiguration.createDefaultArchiveConfiguration(archivingScheme);
-		
+
+		ArchiveConfiguration archConfig = (archivingScheme == null) ? null : ArchiveConfiguration.createDefaultArchiveConfiguration(archivingScheme);
+
 		return archConfig;
 	}
-	
-	
+
 	public LongTermArchivingClient() throws ServiceClientCreationException {
-		if(archivingSystem != null){
+		if (archivingSystem != null) {
 			archivingSystem = (ArchivingSystem) ServiceClientCreator.createServiceClient(ServiceType.ARCHIVING_SYSTEM);
 			mapDatastructureToScheme("");
 		}
 	}
-	
-	public Archive createArchive(String archiveName, ArchiveConfiguration archiveConfig) throws InternalServiceErrorException, IOException{
+
+	public Archive createArchive(String archiveName, ArchiveConfiguration archiveConfig) throws InternalServiceErrorException, IOException {
 		return archivingSystem.createArchive(archiveName, archiveConfig);
 	}
-	
-	public void renameArchive(long archiveId, String newName) throws EntityNotFoundException, InternalServiceErrorException{
+
+	public void renameArchive(long archiveId, String newName) throws EntityNotFoundException, InternalServiceErrorException {
 		archivingSystem.renameArchive(archiveId, newName);
 	}
-	
-	public List<Archive> getArchives() throws InternalServiceErrorException{
+
+	public List<Archive> getArchives() throws InternalServiceErrorException {
 		return archivingSystem.getArchives();
 	}
-	
-	public void deleteArchive(long archiveID) throws EntityNotFoundException, InternalServiceErrorException, IOException{
+
+	public void deleteArchive(long archiveID) throws EntityNotFoundException, InternalServiceErrorException, IOException {
 		archivingSystem.deleteArchive(archiveID);
 	}
-	
+
 }

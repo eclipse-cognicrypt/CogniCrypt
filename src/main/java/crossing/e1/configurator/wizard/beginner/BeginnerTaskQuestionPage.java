@@ -68,6 +68,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		comboViewer.setInput(answers);
 
 		comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
 			@Override
 			public void selectionChanged(final SelectionChangedEvent arg0) {
 				IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
@@ -145,7 +146,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	public boolean equals(Object obj) {
 		if (!(obj instanceof BeginnerTaskQuestionPage)) {
 			return false;
-		} 
+		}
 		BeginnerTaskQuestionPage cmp = (BeginnerTaskQuestionPage) obj;
 		return this.quest.equals(cmp.quest);
 	}

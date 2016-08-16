@@ -50,10 +50,8 @@ public class ClaferDependency {
 			return false;
 		} else {
 			ClaferDependency cmp = (ClaferDependency) obj;
-			return cmp.getAlgorithm().equals(this.getAlgorithm()) &&
-				cmp.getOperand().equals(this.getOperand()) &&
-				cmp.getOperator().equals(this.getOperator()) &&
-				cmp.getValue().equals(this.getValue());
+			return cmp.getAlgorithm().equals(this.getAlgorithm()) && cmp.getOperand().equals(this.getOperand()) && cmp.getOperator().equals(this.getOperator()) && cmp.getValue()
+				.equals(this.getValue());
 		}
 	}
 }

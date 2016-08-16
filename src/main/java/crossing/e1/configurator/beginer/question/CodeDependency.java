@@ -1,23 +1,22 @@
 package crossing.e1.configurator.beginer.question;
 
-
 public class CodeDependency {
-	
+
 	private String option;
 	private Boolean value;
-	
+
 	public String getOption() {
 		return option;
 	}
-	
+
 	public void setOption(String option) {
 		this.option = option;
 	}
-	
+
 	public Boolean getValue() {
 		return value;
 	}
-	
+
 	public void setValue(Boolean value) {
 		this.value = value;
 	}
@@ -37,6 +36,4 @@ public class CodeDependency {
 		}
 	}
 
-	
-	
 }

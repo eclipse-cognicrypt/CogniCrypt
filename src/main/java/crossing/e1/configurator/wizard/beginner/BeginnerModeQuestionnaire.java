@@ -28,7 +28,7 @@ public class BeginnerModeQuestionnaire {
 	public boolean hasMoreQuestions() {
 		return this.counter < getQutionare().size();
 	}
-	
+
 	public boolean isFirstQuestion() {
 		return this.counter == 0;
 	}
@@ -36,7 +36,7 @@ public class BeginnerModeQuestionnaire {
 	public Question nextQuestion() {
 		return questionList.get(this.counter++);
 	}
-	
+
 	public Question previousQuestion() {
 		return questionList.get(--this.counter);
 	}

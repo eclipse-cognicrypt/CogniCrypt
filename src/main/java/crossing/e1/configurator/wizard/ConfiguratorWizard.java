@@ -71,7 +71,7 @@ public class ConfiguratorWizard extends Wizard {
 	private final XSLBasedGenerator codeGeneration = new XSLBasedGenerator();
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
-		
+
 	public ConfiguratorWizard() {
 		super();
 		// Set the Look and Feel of the application to the operating
@@ -151,16 +151,16 @@ public class ConfiguratorWizard extends Wizard {
 				if (constraints == null) {
 					constraints = ((BeginnerTaskQuestionPage) currentPage).getMap();
 				}
-				
+
 				if (beginnerQuestions.hasMoreQuestions()) {
-					
+
 					preferenceSelectionPage = new BeginnerTaskQuestionPage(beginnerQuestions.nextQuestion(), beginnerQuestions.getTask());
 					if (checkifInUpdateRound()) {
 						beginnerQuestions.previousQuestion();
 					}
 					IWizardPage[] pages = getPages();
 					for (int i = 1; i < pages.length; i++) {
-						if (!(pages[i] instanceof BeginnerTaskQuestionPage)) 
+						if (!(pages[i] instanceof BeginnerTaskQuestionPage))
 							continue;
 						BeginnerTaskQuestionPage oldPage = (BeginnerTaskQuestionPage) pages[i];
 						if (oldPage.equals(preferenceSelectionPage)) {
@@ -170,12 +170,12 @@ public class ConfiguratorWizard extends Wizard {
 					if (preferenceSelectionPage != null) {
 						addPage(preferenceSelectionPage);
 					}
-					
+
 					constraints.putAll(((BeginnerTaskQuestionPage) currentPage).getMap());
 					return preferenceSelectionPage;
 				}
 			}
-			
+
 			InstanceGenerator instanceGenerator;
 			try {
 				instanceGenerator = new InstanceGenerator(Utils.resolveResourcePathToFile(selectedTask.getModelFile())
@@ -203,7 +203,7 @@ public class ConfiguratorWizard extends Wizard {
 				Activator.getDefault().logError(e);
 			}
 		}
-		
+
 		return currentPage;
 	}
 
@@ -215,7 +215,7 @@ public class ConfiguratorWizard extends Wizard {
 			try {
 				// Print the result to the console
 				final FileHelper write = new FileHelper();
-				String selectedInstance = new XMLParser().displayInstanceValues(this.instanceListPage.getValue(), constraints,  "");
+				String selectedInstance = new XMLParser().displayInstanceValues(this.instanceListPage.getValue(), constraints, "");
 
 				// Initialize Code Generation to retrieve developer project
 				ret &= this.codeGeneration.initCodeGeneration();
@@ -275,7 +275,7 @@ public class ConfiguratorWizard extends Wizard {
 
 	private boolean checkifInUpdateRound() {
 		boolean updateRound = false;
-		StackTraceElement [] stack = Thread.currentThread().getStackTrace();
+		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 		for (StackTraceElement el : stack) {
 			if (el.getMethodName().contains("updateButtons")) {
 				updateRound = true;

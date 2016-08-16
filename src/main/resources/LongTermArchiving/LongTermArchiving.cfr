@@ -22,11 +22,11 @@ abstract Task
 	description -> string
 
 LongTermArchiving : Task
-	[description = "Archiving Documents"]
+	[description = "Securely archiving files."]
 	list -> List
 	addDoc -> AddingDocuments
 	numDoc -> NumberDocuments
-	trust -> TrustedAuthorities ?
+	trust -> TrustedAuthorities
 	[numDoc = MultipleDocuments && addDoc = MultipleTimes => list = Skip_List]
 	[numDoc = MultipleDocuments && addDoc = Once => list = Merkle_Tree_Sequence]
 	[numDoc = Single && addDoc = MultipleTimes => list = Skip_List]

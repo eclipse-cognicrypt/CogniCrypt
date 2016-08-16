@@ -25,8 +25,8 @@
 		},
 		{
 			"name": "LongTermArchiving",
-			"description": "Securly archiving files.",
-			"modelFile" : "src/main/resources/ClaferModel/TLSTask.js",
+			"description": "Securely archiving files.",
+			"modelFile" : "src/main/resources/LongTermArchiving/LongTermArchiving.js",
 			"xmlFile" : "src/main/resources/TaskDesc/LongTermArchivingQuestions.json"
 		}
 ]

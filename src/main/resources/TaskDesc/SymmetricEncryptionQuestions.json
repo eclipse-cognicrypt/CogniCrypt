@@ -3,17 +3,16 @@
 			"questionText":"What is the level of security that you need for your data?",
 			"answers":[
 				{"value":"Very secure",
-				"dependencies":[
+				"claferDependencies":[
 				{"algorithm": "cipher", "operand":"keySize","value":"128","operator":">"}
 				]},
 				{"value":"Secure",
-				"dependencies":[
+				"claferDependencies":[
 				{"algorithm": "cipher", "operand":"keySize","value":"128","operator":">="}
 				],
 				"defaultAnswer": true},
 				{"value":"Not important (I'm just testing for now and would prefer something fast)",
-				"dependencies":[]}
+				"claferDependencies":[]}
 			]
 		}
 ]
-

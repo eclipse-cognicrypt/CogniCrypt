@@ -17,10 +17,10 @@
 		"answers":[
 			{"value":"Yes",
 			"defaultAnswer": true,
-			"dependencies":[]
+			"claferDependencies":[]
 			},
 			{"value":"No",
-			"dependencies":[]
+			"claferDependencies":[]
 			}
 		]
 	}
@@ -33,11 +33,11 @@
 			"dependencies":[]
 			},
 			{"value":"Notaries",
-			"dependencies":[]
+			"claferDependencies":[]
 			},
 			{"value":"Both",
 			"defaultAnswer": true,
-			"dependencies":[]
+			"claferDependencies":[]
 			}
 		]
 	}
@@ -47,11 +47,11 @@
 		"questionText":"Do you want to protect only a single document?",
 		"answers":[
 			{"value":"Yes",
-			"dependencies":[]
+			"claferDependencies":[]
 			},
 			{"value":"No",
 			"defaultAnswer": true,
-			"dependencies":[]
+			"claferDependencies":[]
 			}
 		]
 	}

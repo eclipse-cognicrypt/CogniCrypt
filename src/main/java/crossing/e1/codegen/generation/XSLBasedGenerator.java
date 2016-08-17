@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -35,6 +36,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -86,7 +88,7 @@ public class XSLBasedGenerator {
 	 *
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if transformation successful/failed.
 	 */
-	public boolean generateCodeTemplates(File claferOutput, File xslFile) {
+	public boolean generateCodeTemplates(File claferOutput, String path, File xslFile) {
 		try {
 			// Check whether directories and templates/model exist
 			final File claferOutputFiles = claferOutput != null && claferOutput.exists() ? claferOutput
@@ -100,6 +102,28 @@ public class XSLBasedGenerator {
 			final String srcPath = this.project.getProjectPath() + Constants.fileSeparator + this.project.getSourcePath();
 			final String temporaryOutputFile = srcPath + Constants.CodeGenerationCallFile;
 			transform(claferOutputFiles, xslFiles, temporaryOutputFile);
+
+			// Add additional resources like jar files
+			File addResFolder = Utils.resolveResourcePathToFile(path);
+			File[] members = addResFolder.listFiles();
+			IFolder libFolder = project.getFolder(Constants.pathsForLibrariesinDevProject);
+			if (!libFolder.exists()) {
+				libFolder.create(true, true, null);
+			}
+			for (int i = 0; i < members.length; i++) {
+				Path memberPath = members[i].toPath();
+				Files.copy(memberPath, new File(project.getProjectPath() + Constants.fileSeparator + Constants.pathsForLibrariesinDevProject + Constants.fileSeparator + memberPath.getFileName()).toPath(),
+					StandardCopyOption.REPLACE_EXISTING);
+				String filePath = members[i].toString();
+				String cutPath = filePath.substring(filePath.lastIndexOf(Constants.fileSeparator));
+				if (".jar".equals(cutPath.substring(cutPath.indexOf(".")))) {
+					if (!project.addJar(Constants.pathsForLibrariesinDevProject + Constants.fileSeparator + members[i].getName())) {
+						return false;
+					}
+				}
+
+			}
+
 			// If there is a java file opened in the editor, insert call code there, and remove temporary output file
 			// else keep the output file
 			// In any case, organize imports

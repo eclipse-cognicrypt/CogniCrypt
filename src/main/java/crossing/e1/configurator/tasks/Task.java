@@ -7,6 +7,7 @@ public class Task {
 	private String modelFile;
 	private String xmlFile;
 	private boolean isSelected;
+	private String additionalResources;
 
 	public String getName() {
 		return name;
@@ -46,6 +47,16 @@ public class Task {
 
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
+	}
+
+	
+	public String getAdditionalResources() {
+		return additionalResources;
+	}
+
+	
+	public void setAdditionalResources(String additionalResources) {
+		this.additionalResources = additionalResources;
 	}
 
 }

@@ -3,31 +3,37 @@
 			"name": "SymmetricEncryption",
 			"description": "Encrypt data using a secret key",
 			"modelFile" : "src/main/resources/ClaferModel/SymmetricEncryptionTask.js",
-			"xmlFile" : "src/main/resources/TaskDesc/SymmetricEncryptionQuestions.json"
+			"xmlFile" : "src/main/resources/TaskDesc/SymmetricEncryptionQuestions.json",
+			"additionalResources" : "src/main/resources/AdditionalResources/LongTermArchiving"
 		},
 		{
 			"name": "PasswordBasedEncryption",
 			"description": "Encrypt data using a given password",
 			"modelFile" : "src/main/resources/ClaferModel/PwdBasedEncryTask.js",
-			"xmlFile" : "src/main/resources/TaskDesc/PasswordBasedEncryptionQuestions.json"
+			"xmlFile" : "src/main/resources/TaskDesc/PasswordBasedEncryptionQuestions.json",
+			"additionalResources" : ""
 		},
 		{
 			"name": "SecureCommunication",
 			"description": "Communicate over a secure channel",
 			"modelFile" : "src/main/resources/ClaferModel/TLSTask.js",
-			"xmlFile" : "src/main/resources/TaskDesc/TLSQuestions.json"
+			"xmlFile" : "src/main/resources/TaskDesc/TLSQuestions.json",
+			"additionalResources" : ""
 		},
 		{
 			"name": "SecurePassword",
 			"description": "Represent password in a secure way for storage",
 			"modelFile" : "src/main/resources/ClaferModel/SecurePasswordStorage.js",
-			"xmlFile" : "src/main/resources/TaskDesc/SecurePasswordStorage.json"
+			"xmlFile" : "src/main/resources/TaskDesc/SecurePasswordStorage.json",
+			"additionalResources" : ""
+			
 		},
 		{
 			"name": "LongTermArchiving",
 			"description": "Securely archiving files.",
 			"modelFile" : "src/main/resources/LongTermArchiving/LongTermArchiving.js",
-			"xmlFile" : "src/main/resources/TaskDesc/LongTermArchivingQuestions.json"
+			"xmlFile" : "src/main/resources/TaskDesc/LongTermArchivingQuestions.json",
+			"additionalResources" : "src/main/resources/AdditionalResources/LongTermArchiving"
 		}
 ]
 

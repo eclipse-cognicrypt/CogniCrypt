@@ -223,9 +223,9 @@ public class ConfiguratorWizard extends Wizard {
 				// Write Instance File into developer project
 				String xmlInstancePath = codeGeneration.getDeveloperProject().getProjectPath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile;
 				write.writeToFile(selectedInstance, xmlInstancePath);
-
+				
 				// Generate code template
-				ret &= this.codeGeneration.generateCodeTemplates(new File(xmlInstancePath), null);
+				ret &= this.codeGeneration.generateCodeTemplates(new File(xmlInstancePath), taskListPage.getSelectedTask().getAdditionalResources(), null);
 
 				// Delete Instance File
 				write.deleteFile(xmlInstancePath);
@@ -253,7 +253,7 @@ public class ConfiguratorWizard extends Wizard {
 				DOMSource source = new DOMSource(doc);
 				StreamResult result = new StreamResult(xmlInstanceFile);
 				tfr.transform(source, result);
-				ret &= this.codeGeneration.generateCodeTemplates(xmlInstanceFile, xslTLSfile);
+				ret &= this.codeGeneration.generateCodeTemplates(xmlInstanceFile, taskListPage.getSelectedTask().getAdditionalResources(), xslTLSfile);
 			} catch (URISyntaxException | IOException | SAXException | ParserConfigurationException | TransformerException e) {
 				Activator.getDefault().logError(e);
 				return false;

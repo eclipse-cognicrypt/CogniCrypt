@@ -20,7 +20,12 @@
  */
 package crossing.e1.codegen;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -82,6 +87,28 @@ public class DeveloperProject {
 		}
 		return null;
 	}
+	
+	public boolean addJar(String pathToJar) throws IOException, CoreException {
+		if (project.isOpen() && this.project.hasNature(Constants.JavaNatureID)) {
+			final IJavaProject projectAsJavaProject = JavaCore.create(project);
+			final IFile file = project.getFile(pathToJar);
+			final LinkedHashSet<IClasspathEntry> classPathEntryList = new LinkedHashSet<IClasspathEntry>();
+			final IClasspathEntry newEntryOfLibrary = JavaCore.newLibraryEntry(file.getFullPath(), null, null, false);
+			
+			classPathEntryList.addAll(Arrays.asList(projectAsJavaProject.getRawClasspath()));
+			classPathEntryList.add(newEntryOfLibrary);
+			
+			projectAsJavaProject.setRawClasspath(classPathEntryList.toArray(new IClasspathEntry[1]), null);
+			return true;
+		}
+
+		return false;
+	}
+	
+	public IFolder getFolder(String name) {
+		return project.getFolder(name);
+	}
+	
 
 	/**
 	 * @return Absolute Path of Project

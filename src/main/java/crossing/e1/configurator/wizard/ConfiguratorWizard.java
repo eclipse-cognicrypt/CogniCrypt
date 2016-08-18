@@ -21,7 +21,6 @@ package crossing.e1.configurator.wizard;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 
 import javax.swing.UIManager;
@@ -44,14 +43,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import crossing.e1.codegen.Utils;
-import crossing.e1.codegen.generation.XSLBasedGenerator;
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Question;
+import crossing.e1.configurator.codegeneration.XSLBasedGenerator;
 import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.FileHelper;
+import crossing.e1.configurator.utilities.Utils;
 import crossing.e1.configurator.utilities.XMLParser;
 import crossing.e1.configurator.wizard.advanced.AdvancedUserValueSelectionPage;
 import crossing.e1.configurator.wizard.beginner.BeginnerModeQuestionnaire;
@@ -106,11 +105,7 @@ public class ConfiguratorWizard extends Wizard {
 				addPage(this.tlsSCPage);
 				this.preferenceSelectionPage = this.tlsSCPage;
 			} else {
-				try {
-					claferModel = new ClaferModel(Utils.resolveResourcePathToFile(selectedTask.getModelFile()).getAbsolutePath());
-				} catch (URISyntaxException | IOException e) {
-					Activator.getDefault().logError(e);
-				}
+				claferModel = new ClaferModel(Utils.getAbsolutePath(selectedTask.getModelFile()));
 
 				if (taskListPage.isAdvancedMode()) {
 					preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, (AstConcreteClafer) org.clafer.cli.Utils
@@ -176,31 +171,25 @@ public class ConfiguratorWizard extends Wizard {
 				}
 			}
 
-			InstanceGenerator instanceGenerator;
-			try {
-				instanceGenerator = new InstanceGenerator(Utils.resolveResourcePathToFile(selectedTask.getModelFile())
-					.getAbsolutePath(), "c0_" + this.taskListPage.getSelectedTask().getName(), this.taskListPage.getSelectedTask().getDescription());
+			InstanceGenerator instanceGenerator = new InstanceGenerator(new File(Utils.getAbsolutePath(selectedTask.getModelFile()))
+				.getAbsolutePath(), "c0_" + this.taskListPage.getSelectedTask().getName(), this.taskListPage.getSelectedTask().getDescription());
 
-				if (this.taskListPage.isAdvancedMode()) {
-					instanceGenerator.generateInstancesAdvancedUserMode(((AdvancedUserValueSelectionPage) currentPage).getConstraints());
-				} else {
-					// running in beginner mode
-					instanceGenerator.generateInstances(constraints);
+			if (this.taskListPage.isAdvancedMode()) {
+				instanceGenerator.generateInstancesAdvancedUserMode(((AdvancedUserValueSelectionPage) currentPage).getConstraints());
+			} else {
+				// running in beginner mode
+				instanceGenerator.generateInstances(constraints);
+			}
+
+			if (instanceGenerator.getNoOfInstances() > 0) {
+				this.instanceListPage = new InstanceListPage(instanceGenerator, selectedTask);
+				addPage(this.instanceListPage);
+				return this.instanceListPage;
+			} else {
+				if ("nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[3].getMethodName())) {
+					String message = this.taskListPage.isAdvancedMode() ? Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE : Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER;
+					MessageDialog.openError(new Shell(), "Error", message);
 				}
-
-				if (instanceGenerator.getNoOfInstances() > 0) {
-					this.instanceListPage = new InstanceListPage(instanceGenerator, selectedTask);
-					addPage(this.instanceListPage);
-					return this.instanceListPage;
-				} else {
-					if ("nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[3].getMethodName())) {
-						String message = this.taskListPage.isAdvancedMode() ? Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE : Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER;
-						MessageDialog.openError(new Shell(), "Error", message);
-					}
-				}
-
-			} catch (URISyntaxException | IOException e) {
-				Activator.getDefault().logError(e);
 			}
 		}
 
@@ -237,8 +226,8 @@ public class ConfiguratorWizard extends Wizard {
 		} else if (this.tlsPage != null) {
 			ret = this.tlsPage.isPageComplete();
 			try {
-				File xslTLSfile = Utils.resolveResourcePathToFile(Constants.pathToTSLXSLFile);
-				File xmlInstanceFile = Utils.resolveResourcePathToFile(Constants.pathToClaferInstanceFolder + Constants.fileSeparator + Constants.pathToClaferInstanceTLSFile);
+				File xslTLSfile = new File(Utils.getAbsolutePath(Constants.pathToTSLXSLFile));
+				File xmlInstanceFile = new File(Utils.getAbsolutePath(Constants.pathToClaferInstanceFolder + Constants.fileSeparator + Constants.pathToClaferInstanceTLSFile));
 				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 				Document doc = docBuilder.parse(xmlInstanceFile);
@@ -254,7 +243,7 @@ public class ConfiguratorWizard extends Wizard {
 				StreamResult result = new StreamResult(xmlInstanceFile);
 				tfr.transform(source, result);
 				ret &= this.codeGeneration.generateCodeTemplates(xmlInstanceFile, taskListPage.getSelectedTask().getAdditionalResources(), xslTLSfile);
-			} catch (URISyntaxException | IOException | SAXException | ParserConfigurationException | TransformerException e) {
+			} catch (IOException | SAXException | ParserConfigurationException | TransformerException e) {
 				Activator.getDefault().logError(e);
 				return false;
 			}

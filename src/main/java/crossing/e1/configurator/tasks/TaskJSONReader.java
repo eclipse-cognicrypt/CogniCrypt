@@ -10,7 +10,7 @@ import com.google.gson.reflect.TypeToken;
 
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
-import crossing.e1.configurator.utilities.Utilities;
+import crossing.e1.configurator.utilities.Utils;
 
 public class TaskJSONReader {
 
@@ -21,7 +21,7 @@ public class TaskJSONReader {
 		if (tasks == null) {
 			BufferedReader reader;
 			try {
-				reader = new BufferedReader(new FileReader(Utilities.getAbsolutePath(Constants.jsonTaskFile)));
+				reader = new BufferedReader(new FileReader(Utils.getAbsolutePath(Constants.jsonTaskFile)));
 				Gson gson = new Gson();
 
 				tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {}.getType());

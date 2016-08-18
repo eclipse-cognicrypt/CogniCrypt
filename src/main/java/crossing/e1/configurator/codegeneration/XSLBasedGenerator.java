@@ -17,11 +17,10 @@
  * @author Stefan Krueger
  *
  */
-package crossing.e1.codegen.generation;
+package crossing.e1.configurator.codegeneration;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -59,10 +58,10 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import crossing.e1.codegen.DeveloperProject;
-import crossing.e1.codegen.Utils;
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
+import crossing.e1.configurator.DeveloperProject;
+import crossing.e1.configurator.utilities.Utils;
 
 /**
  * This class is responsible for generating code templates by performing an XSL transformation. Currently, Saxon is used as an XSLT- processor.
@@ -92,8 +91,8 @@ public class XSLBasedGenerator {
 		try {
 			// Check whether directories and templates/model exist
 			final File claferOutputFiles = claferOutput != null && claferOutput.exists() ? claferOutput
-				: Utils.resolveResourcePathToFile(Constants.pathToClaferInstanceFolder + Constants.fileSeparator + Constants.pathToClaferInstanceFile);
-			final File xslFiles = xslFile != null && xslFile.exists() ? xslFile : Utils.resolveResourcePathToFile(Constants.pathToXSLFile);
+				: new File(Utils.getAbsolutePath(Constants.pathToClaferInstanceFolder + Constants.fileSeparator + Constants.pathToClaferInstanceFile));
+			final File xslFiles = xslFile != null && xslFile.exists() ? xslFile : new File(Utils.getAbsolutePath(Constants.pathToXSLFile));
 			if (!claferOutputFiles.exists() || !xslFiles.exists()) {
 				Activator.getDefault().logError(Constants.FilesDoNotExistErrorMessage);
 				return false;
@@ -104,7 +103,7 @@ public class XSLBasedGenerator {
 			transform(claferOutputFiles, xslFiles, temporaryOutputFile);
 
 			// Add additional resources like jar files
-			File addResFolder = Utils.resolveResourcePathToFile(path);
+			File addResFolder = new File(Utils.getAbsolutePath(path));
 			File[] members = addResFolder.listFiles();
 			IFolder libFolder = project.getFolder(Constants.pathsForLibrariesinDevProject);
 			if (!libFolder.exists()) {
@@ -137,7 +136,7 @@ public class XSLBasedGenerator {
 				organizeImports(editor);
 			}
 			this.project.refresh();
-		} catch (TransformerException | IOException | URISyntaxException | CoreException | BadLocationException e) {
+		} catch (TransformerException | IOException | CoreException | BadLocationException e) {
 			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
 			return false;
 		}
@@ -238,7 +237,7 @@ public class XSLBasedGenerator {
 	 * @throws BadLocationException
 	 *         See {@link org.eclipse.jface.text.IDocument#replace(int, int, String) replace()}
 	 * @throws IOException
-	 *         See {@link crossing.e1.codegen.generation.XSLBasedGenerator#getCallsForGenClasses(String) getCallsForGenClasses()}
+	 *         See {@link crossing.e1.configurator.codegeneration.XSLBasedGenerator#getCallsForGenClasses(String) getCallsForGenClasses()}
 	 * @throws CoreException
 	 *         See {@link DeveloperProject.crossing.opencce.cryptogen.CryptoProject#refresh() refresh()}
 	 */

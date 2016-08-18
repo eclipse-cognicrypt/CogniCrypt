@@ -18,7 +18,7 @@
  * @author Stefan Krueger
  *
  */
-package crossing.e1.codegen;
+package crossing.e1.configurator;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -34,8 +34,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
-
-import crossing.e1.configurator.Constants;
 
 /**
  * This class represents the app developer's project, on which the plugin is working.

@@ -31,7 +31,7 @@ public class PropertiesFileReader {
 
 	public PropertiesFileReader(final String path) {
 		try {
-			final String configFile = Utilities.getAbsolutePath(path);
+			final String configFile = Utils.getAbsolutePath(path);
 			this.prop.load(new FileInputStream(configFile));
 		} catch (final Exception ex) {
 			Activator.getDefault().logError(ex);

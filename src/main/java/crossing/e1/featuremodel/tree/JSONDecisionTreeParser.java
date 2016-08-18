@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import crossing.e1.configurator.Activator;
-import crossing.e1.configurator.utilities.Utilities;
+import crossing.e1.configurator.utilities.Utils;
 
 /**
  * 
@@ -31,7 +31,7 @@ class JSONDecisionTreeParser {
 
 		final Gson gson = gsonBuilder.create();
 
-		try (BufferedReader reader = new BufferedReader(new FileReader(Utilities.getAbsolutePath(filePath)))) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(Utils.getAbsolutePath(filePath)))) {
 
 			decisionTree = gson.fromJson(reader, TreeModel.class);
 		} catch (FileNotFoundException e) {

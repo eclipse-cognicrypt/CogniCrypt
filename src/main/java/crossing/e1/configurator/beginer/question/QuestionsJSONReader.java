@@ -10,7 +10,7 @@ import com.google.gson.reflect.TypeToken;
 
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.tasks.Task;
-import crossing.e1.configurator.utilities.Utilities;
+import crossing.e1.configurator.utilities.Utils;
 
 public class QuestionsJSONReader {
 
@@ -21,7 +21,7 @@ public class QuestionsJSONReader {
 		if (questions == null) {
 			BufferedReader reader;
 			try {
-				reader = new BufferedReader(new FileReader(Utilities.getAbsolutePath(task.getXmlFile())));
+				reader = new BufferedReader(new FileReader(Utils.getAbsolutePath(task.getXmlFile())));
 				Gson gson = new Gson();
 				questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
 
@@ -39,7 +39,8 @@ public class QuestionsJSONReader {
 		if (questions == null) {
 			BufferedReader reader;
 			try {
-				reader = new BufferedReader(new FileReader(Utilities.getAbsolutePath(filePath)));
+				
+				reader = new BufferedReader(new FileReader(Utils.getAbsolutePath(filePath)));
 				Gson gson = new Gson();
 
 				questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());

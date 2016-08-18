@@ -15,20 +15,19 @@
  */
 
 /**
- * @author Stefan Krueger
+ * @author Sarah Nadi
  *
  */
-package crossing.e1.codegen;
+package crossing.e1.configurator.utilities;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -48,7 +47,28 @@ import crossing.e1.configurator.Activator;
 @SuppressWarnings("restriction")
 public class Utils {
 
-	private final static Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+	public static String getAbsolutePath(final String inputPath) {
+		String outputFile = null;
+
+		try {
+			final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+			if (bundle == null) {
+				// running as application
+				//final String fileName = inputPath.substring(inputPath.lastIndexOf("/") + 1);
+				outputFile = inputPath;//Utilities.class.getClassLoader().getResource(fileName).getPath();
+			} else {
+				// running as plugin
+				final Path originPath = new Path(inputPath);
+				URL bundledFileURL = FileLocator.find(bundle, originPath, null);
+				bundledFileURL = FileLocator.resolve(bundledFileURL);
+				outputFile = new File(bundledFileURL.getFile()).getPath();
+			}
+		} catch (final Exception ex) {
+			Activator.getDefault().logError(ex);
+		}
+
+		return outputFile;
+	}
 
 	/**
 	 * This method gets the currently open editor as an {@link IEditorPart}.
@@ -70,7 +90,7 @@ public class Utils {
 	 *
 	 */
 	public static IFile getCurrentlyOpenFile() {
-		return getCurrentlyOpenFile(getCurrentlyOpenEditor());
+		return Utils.getCurrentlyOpenFile(getCurrentlyOpenEditor());
 	}
 
 	/**
@@ -99,7 +119,7 @@ public class Utils {
 	public static IProject getIProjectFromSelection() {
 		final ISelectionService selectionService = Workbench.getInstance().getActiveWorkbenchWindow().getSelectionService();
 		final ISelection selection = selectionService.getSelection();
-
+	
 		IProject iproject = null;
 		if (selection instanceof IStructuredSelection) {
 			final Object element = ((IStructuredSelection) selection).getFirstElement();
@@ -111,30 +131,6 @@ public class Utils {
 			}
 		}
 		return iproject;
-	}
-
-	/**
-	 * This method resolves a project-relative path to a canonical path and creates a file out of it.
-	 *
-	 * @param path
-	 *        Path to file within plugin.
-	 * @return Created file.
-	 * @throws IOException
-	 *         See {@link org.eclipse.core.runtime.FileLocator#toFileURL(URL) toFileURL()}.
-	 * @throws URISyntaxException
-	 *         See {@link org.osgi.framework.Bundle#getEntry(String) getEntry()}.
-	 */
-	public static File resolveResourcePathToFile(final String path) throws URISyntaxException, IOException {
-		if (bundle != null) {
-			final URL resolvedFileURL = org.eclipse.core.runtime.FileLocator.toFileURL(bundle.getEntry(path));
-			return new File(new URI(resolvedFileURL.getProtocol(), resolvedFileURL.getPath(), null));
-			//			final Path originPath = new Path(path);
-			//			URL bundledFileURL = FileLocator.find(bundle, originPath, null);
-			//			bundledFileURL = FileLocator.resolve(bundledFileURL);
-			//			return new File(bundledFileURL.getFile());
-		}
-		return null;
-
 	}
 
 }

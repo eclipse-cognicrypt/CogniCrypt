@@ -103,26 +103,28 @@ public class XSLBasedGenerator {
 			transform(claferOutputFiles, xslFiles, temporaryOutputFile);
 
 			// Add additional resources like jar files
-			File addResFolder = new File(Utils.getAbsolutePath(path));
-			File[] members = addResFolder.listFiles();
-			IFolder libFolder = project.getFolder(Constants.pathsForLibrariesinDevProject);
-			if (!libFolder.exists()) {
-				libFolder.create(true, true, null);
-			}
-			for (int i = 0; i < members.length; i++) {
-				Path memberPath = members[i].toPath();
-				Files.copy(memberPath, new File(project.getProjectPath() + Constants.fileSeparator + Constants.pathsForLibrariesinDevProject + Constants.fileSeparator + memberPath.getFileName()).toPath(),
-					StandardCopyOption.REPLACE_EXISTING);
-				String filePath = members[i].toString();
-				String cutPath = filePath.substring(filePath.lastIndexOf(Constants.fileSeparator));
-				if (".jar".equals(cutPath.substring(cutPath.indexOf(".")))) {
-					if (!project.addJar(Constants.pathsForLibrariesinDevProject + Constants.fileSeparator + members[i].getName())) {
-						return false;
-					}
+			if (!path.isEmpty()) {
+				File addResFolder = new File(Utils.getAbsolutePath(path));
+				File[] members = addResFolder.listFiles();
+				IFolder libFolder = project.getFolder(Constants.pathsForLibrariesinDevProject);
+				if (!libFolder.exists()) {
+					libFolder.create(true, true, null);
 				}
-
+				for (int i = 0; i < members.length; i++) {
+					Path memberPath = members[i].toPath();
+					Files.copy(memberPath, new File(project.getProjectPath() + Constants.fileSeparator + Constants.pathsForLibrariesinDevProject + Constants.fileSeparator + memberPath.getFileName()).toPath(),
+						StandardCopyOption.REPLACE_EXISTING);
+					String filePath = members[i].toString();
+					String cutPath = filePath.substring(filePath.lastIndexOf(Constants.fileSeparator));
+					if (".jar".equals(cutPath.substring(cutPath.indexOf(".")))) {
+						if (!project.addJar(Constants.pathsForLibrariesinDevProject + Constants.fileSeparator + members[i].getName())) {
+							return false;
+						}
+					}
+	
+				}
 			}
-
+			
 			// If there is a java file opened in the editor, insert call code there, and remove temporary output file
 			// else keep the output file
 			// In any case, organize imports

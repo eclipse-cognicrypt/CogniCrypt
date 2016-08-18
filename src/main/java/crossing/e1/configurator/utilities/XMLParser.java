@@ -21,11 +21,17 @@ package crossing.e1.configurator.utilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map.Entry;
 
 import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.instance.InstanceClafer;
+
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
@@ -41,44 +47,75 @@ import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
  */
 public class XMLParser implements Labels {
 
+	private void addInstanceXML(Element parent, String xmlString) throws DocumentException {
+		// ToDo: At the End of refactoring this method should be substitude by a simple addition of Element that displayInstanceXML returns
+		Document instanceXML = DocumentHelper.parseText(xmlString);
+		Element root2 = instanceXML.getRootElement();
+		parent.add(root2);
+        for(Iterator i = root2.elementIterator(); i.hasNext();)
+        {
+        	Element elem = (Element) i.next();
+        	Element clone = (Element) elem.clone();
+        	parent.add(clone);
+        }
+	}
+	
 	/**
 	 *
 	 * @param inst
 	 * @param value
 	 * @return
+	 * @throws DocumentException 
 	 */
-	public String displayInstanceValues(final InstanceClafer inst, HashMap<Question, Answer> constraints, String value) {
+	public String displayInstanceValues(final InstanceClafer inst, HashMap<Question, Answer> constraints, String value) throws DocumentException {
+		// ToDo: check if there is any use where "value" is NOT "", if so remove "value" from list of parameters
+		Document document = DocumentHelper.createDocument();
+		Element root = document.addElement( "task" );
 		if (inst.hasChildren()) {
 			final String taskName = inst.getType().getName();
-			value = "<task description=\"" + ClaferModelUtils
-				.removeScopePrefix(taskName) + "\">" + Constants.lineSeparator + Constants.lineSeparator + Constants.xmlPackage + Constants.lineSeparator + Constants.xmlimports;
-		} else {
-			value = "<task>" + Constants.lineSeparator;
+//			value = "<task description=\"" + ClaferModelUtils
+//				.removeScopePrefix(taskName) + "\">" + Constants.lineSeparator + Constants.lineSeparator + Constants.xmlPackage + Constants.lineSeparator + Constants.xmlimports;
+			root.addAttribute("description", ClaferModelUtils.removeScopePrefix(taskName));
+			root.addElement("Package").addText(Constants.PackageName);	// Constants.xmlPackage
+			Element xmlimports = root.addElement("Imports");
+			for(String file: Constants.xmlimportsarr){
+				xmlimports.addElement("Import").addText(file);
+			}
 		}
+//		} else {
+//			value = "<task>" + Constants.lineSeparator;
+//		}
 		if (inst != null && inst.hasChildren()) {
 			for (final InstanceClafer in : inst.getChildren()) {
 				if (!in.getType().getRef().getTargetType().isPrimitive()) {
-					value += "<" + Constants.ALGORITHM + " type=\"" + ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()) + "\"> \n";
-					value += displayInstanceXML(in, "");
-					value += "</" + Constants.ALGORITHM + "> \n";
+//					value += "<" + Constants.ALGORITHM + " type=\"" + ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()) + "\"> \n";
+					Element algoElem = root.addElement(Constants.ALGORITHM).addAttribute("type", ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()));
+//					value += displayInstanceXML(in, "");
+					addInstanceXML(algoElem, displayInstanceXML(in, ""));
+//					value += "</" + Constants.ALGORITHM + "> \n";
 				} else {
-					value += displayInstanceXML(in, "");
+//					value += displayInstanceXML(in, "");
+					addInstanceXML(root, displayInstanceXML(in, ""));
 				}
 			}
 		}
-		value += "<code>";
+//		value += "<code>";
+		Element codeElem = root.addElement("code");
 		for (Entry<Question, Answer> ent : constraints.entrySet()) {
 			ArrayList<CodeDependency> cdp = ent.getValue().getCodeDependencies();
 			if (cdp != null) {
 				for (CodeDependency dep : cdp) {
 					value += "<" + dep.getOption() + ">" + dep.getValue() + "</" + dep.getOption() + ">";
+					codeElem.addElement(dep.getOption()).addText(dep.getValue()+"");
 				}
 			}
 		}
-		value += "</code>";
-
-		value += "</task>";
-		return value;
+//		value += "</code>";
+//
+//		value += "</task>";
+		
+//		return value;
+		return document.asXML();
 	}
 
 	/**

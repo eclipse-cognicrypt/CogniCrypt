@@ -71,6 +71,20 @@ public class Constants {
 
 	public static final String xmlPackage = "<Package>" + PackageName + "</Package>";
 	public static final String xmlimports = "<Imports>" + lineSeparator + "<Import>java.security.InvalidAlgorithmParameterException</Import>" + lineSeparator + "<Import>java.security.InvalidKeyException</Import>" + lineSeparator + "<Import>java.security.NoSuchAlgorithmException</Import>" + "<Import>javax.crypto.SecretKey</Import>" + lineSeparator + "<Import>javax.crypto.BadPaddingException</Import>" + lineSeparator + "<Import>javax.crypto.Cipher</Import>" + lineSeparator + "<Import>javax.crypto.IllegalBlockSizeException</Import>" + lineSeparator + "<Import>javax.crypto.NoSuchPaddingException</Import>" + lineSeparator + "<Import>java.security.SecureRandom</Import>" + lineSeparator + "<Import>javax.crypto.spec.IvParameterSpec</Import>" + lineSeparator + "<Import>javax.crypto.spec.SecretKeySpec</Import>" + lineSeparator + "<Import>java.security.spec.InvalidKeySpecException</Import>" + lineSeparator + "\t</Imports>";
+	public static final String[] xmlimportsarr = {"java.security.InvalidAlgorithmParameterException", 
+												  "java.security.InvalidKeyException",
+												  "java.security.NoSuchAlgorithmException",
+												  "java.security.NoSuchAlgorithmException",
+												  "javax.crypto.SecretKey",
+												  "javax.crypto.BadPaddingException",
+												  "javax.crypto.Cipher",
+												  "javax.crypto.IllegalBlockSizeException",
+												  "javax.crypto.NoSuchPaddingException",
+												  "java.security.SecureRandom",
+												  "javax.crypto.spec.IvParameterSpec",
+												  "javax.crypto.spec.SecretKeySpec",
+												  "java.security.spec.InvalidKeySpecException",
+												  };
 
 	// Types
 	public static final String INTEGER = "Integer";

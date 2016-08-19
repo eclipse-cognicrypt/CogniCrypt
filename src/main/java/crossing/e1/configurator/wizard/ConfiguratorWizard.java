@@ -148,26 +148,28 @@ public class ConfiguratorWizard extends Wizard {
 				}
 
 				if (beginnerQuestions.hasMoreQuestions()) {
-
-					preferenceSelectionPage = new BeginnerTaskQuestionPage(beginnerQuestions.nextQuestion(), beginnerQuestions.getTask());
-					if (checkifInUpdateRound()) {
-						beginnerQuestions.previousQuestion();
-					}
-					IWizardPage[] pages = getPages();
-					for (int i = 1; i < pages.length; i++) {
-						if (!(pages[i] instanceof BeginnerTaskQuestionPage))
-							continue;
-						BeginnerTaskQuestionPage oldPage = (BeginnerTaskQuestionPage) pages[i];
-						if (oldPage.equals(preferenceSelectionPage)) {
-							return oldPage;
+					int nextID = ((Answer)((BeginnerTaskQuestionPage) currentPage).getSelection().values().toArray()[0]).getNextID();
+					if (nextID > -1) {
+						preferenceSelectionPage = new BeginnerTaskQuestionPage(beginnerQuestions.getQuestionByID(nextID), beginnerQuestions.getTask());
+						if (checkifInUpdateRound()) {
+							beginnerQuestions.previousQuestion();
 						}
+						IWizardPage[] pages = getPages();
+						for (int i = 1; i < pages.length; i++) {
+							if (!(pages[i] instanceof BeginnerTaskQuestionPage))
+								continue;
+							BeginnerTaskQuestionPage oldPage = (BeginnerTaskQuestionPage) pages[i];
+							if (oldPage.equals(preferenceSelectionPage)) {
+								return oldPage;
+							}
+						}
+						if (preferenceSelectionPage != null) {
+							addPage(preferenceSelectionPage);
+						}
+	
+						constraints.putAll(((BeginnerTaskQuestionPage) currentPage).getMap());
+						return preferenceSelectionPage;
 					}
-					if (preferenceSelectionPage != null) {
-						addPage(preferenceSelectionPage);
-					}
-
-					constraints.putAll(((BeginnerTaskQuestionPage) currentPage).getMap());
-					return preferenceSelectionPage;
 				}
 			}
 
@@ -219,7 +221,7 @@ public class ConfiguratorWizard extends Wizard {
 				// Delete Instance File
 				write.deleteFile(xmlInstancePath);
 				codeGeneration.getDeveloperProject().refresh();
-			} catch (Exception e) {//(URISyntaxException | IOException e) {
+			} catch (Exception e) {
 				Activator.getDefault().logError(e);
 				return false;
 			}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Question {
 
+	private int id;
 	private String questionText;
 	private ArrayList<Answer> answers;
 	private Answer defaultAnswer;
@@ -48,6 +49,16 @@ public class Question {
 		}
 
 		return builder.toString();
+	}
+
+	
+	public int getId() {
+		return id;
+	}
+
+	
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }

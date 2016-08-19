@@ -32,6 +32,11 @@ public class BeginnerModeQuestionnaire {
 	public boolean isFirstQuestion() {
 		return this.counter == 0;
 	}
+	
+	public Question getQuestionByID(int ID) {
+		this.counter = ID;
+		return questionList.get(this.counter);
+	}
 
 	public Question nextQuestion() {
 		return questionList.get(this.counter++);

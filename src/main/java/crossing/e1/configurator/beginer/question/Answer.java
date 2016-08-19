@@ -8,6 +8,7 @@ public class Answer {
 	private Boolean defaultAnswer;
 	private ArrayList<ClaferDependency> claferDependencies;
 	private ArrayList<CodeDependency> codeDependencies;
+	private int nextID;
 
 	public String getValue() {
 		return value;
@@ -45,6 +46,16 @@ public class Answer {
 
 	public void setCodeDependencies(ArrayList<CodeDependency> codeDependencies) {
 		this.codeDependencies = codeDependencies;
+	}
+
+	
+	public int getNextID() {
+		return nextID;
+	}
+
+	
+	public void setNextID(int prevID) {
+		this.nextID = prevID;
 	}
 
 }

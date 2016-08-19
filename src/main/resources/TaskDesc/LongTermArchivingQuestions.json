@@ -1,55 +1,59 @@
 [
 	{
+		"id" : "0",
 		"questionText":"Do you want to add new documents frequently?",
 		"answers":[
 			{
 				"value":"Yes",
 				"claferDependencies":[
 				{"algorithm":"addDoc", "value":"MultipleTimes", "operator":"="}
-				]	
+				], "nextID" : "-1"	
 			},
 			{
 				"value":"No",
 				"claferDependencies":[
 				{"algorithm":"addDoc", "value":"Once", "operator":"="}
 				],
-				"defaultAnswer": true
+				"defaultAnswer": true, "nextID" : "1"
 			}
 		]
 	}
 ,
 	{
+		"id" : "1",
 		"questionText":"Do you want to protect large sets of documents?",
 		"answers":[
 			{"value":"Yes",
 			"claferDependencies":[{"algorithm":"numDoc", "value":"MultipleDocuments", "operator":"="}],
-			"defaultAnswer": true			
+			"defaultAnswer": true, "nextID" : "-1"			
 			},
 			{"value":"No",
-			"claferDependencies":[{"algorithm":"numDoc", "value":"Single", "operator":"="}]
+			"claferDependencies":[{"algorithm":"numDoc", "value":"Single", "operator":"="}], "nextID" : "2"
 			}
 		]
 	}
 ,
 
 	{
+		"id" : "2",
 		"questionText":"What kind of authority do you trust?",
 		"answers":[
 			{"value":"Timestamping authorities",
-			"claferDependencies":[{"algorithm":"trust", "value":"SignatureBased", "operator":"="}]
+			"claferDependencies":[{"algorithm":"trust", "value":"SignatureBased", "operator":"="}], "nextID" : "-1"
 			},
 			{"value":"Notaries",
-			"claferDependencies":[{"algorithm":"trust", "value":"Notaries", "operator":"="}]
+			"claferDependencies":[{"algorithm":"trust", "value":"Notaries", "operator":"="}], "nextID" : "-1"
 			},
 			{"value":"Both",
 			"defaultAnswer": true,
-			"claferDependencies":[{"algorithm":"trust", "value":"SignatureBased || trust = Notaries", "operator":"="}]
+			"claferDependencies":[{"algorithm":"trust", "value":"SignatureBased || trust = Notaries", "operator":"="}], "nextID" : "-1"
 			}
 		]
 	}
 ,
 
 	{
+		"id" : "3",
 		"questionText":"Do you want to protect only a single document?",
 		"answers":[
 			{"value":"Yes"

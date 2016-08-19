@@ -1,18 +1,20 @@
 [
 		{
+			"id" : "0",
 			"questionText":"What is the level of security that you need for your data?",
 			"answers":[
 				{"value":"Very secure",
 				"claferDependencies":[
 				{"algorithm": "cipher", "operand":"keySize","value":"128","operator":">"}
-				]},
+				],"nextID" : "1" 
+				},
 				{"value":"Secure",
 				"claferDependencies":[
 				{"algorithm": "cipher", "operand":"keySize","value":"128","operator":">="}
 				],
-				"defaultAnswer": true},
+				"defaultAnswer": true, "nextID" : "2"},
 				{"value":"Not important (I'm just testing for now and would prefer something fast)",
-				"claferDependencies":[]}
+				"claferDependencies":[], "nextID" : "3"}
 			]
 		}
 ]

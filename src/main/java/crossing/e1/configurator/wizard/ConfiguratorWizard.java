@@ -100,11 +100,12 @@ public class ConfiguratorWizard extends Wizard {
 		Task selectedTask = this.taskListPage.getSelectedTask();
 		if (currentPage == this.taskListPage && this.taskListPage.canProceed()) {
 			// Special handling for the TLS task
-			if (selectedTask.getDescription().equals("Communicate over a secure channel")) {
-				this.tlsSCPage = new TLSConfigurationServerClientPage();
-				addPage(this.tlsSCPage);
-				this.preferenceSelectionPage = this.tlsSCPage;
-			} else {
+//			if (selectedTask.getDescription().equals("Communicate over a secure channel")) {
+//				this.tlsSCPage = new TLSConfigurationServerClientPage();
+//				addPage(this.tlsSCPage);
+//				this.preferenceSelectionPage = this.tlsSCPage;
+//			} else 
+			{
 				claferModel = new ClaferModel(Utils.getAbsolutePath(selectedTask.getModelFile()));
 
 				if (taskListPage.isAdvancedMode()) {

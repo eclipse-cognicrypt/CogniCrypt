@@ -47,17 +47,19 @@ import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
  */
 public class XMLParser implements Labels {
 
-	private void addInstanceXML(Element parent, String xmlString) throws DocumentException {
+	/**
+	 * Parse xmlString and adds it as a child to the parent Element
+	 *
+	 * @param parent
+	 * @param xmlString
+	 * @return
+	 * @throws DocumentException 
+	 */
+	private void addToParent(Element parent, String xmlString) throws DocumentException {
 		// ToDo: At the End of refactoring this method should be substitude by a simple addition of Element that displayInstanceXML returns
 		Document instanceXML = DocumentHelper.parseText(xmlString);
 		Element root2 = instanceXML.getRootElement();
 		parent.add(root2);
-        for(Iterator i = root2.elementIterator(); i.hasNext();)
-        {
-        	Element elem = (Element) i.next();
-        	Element clone = (Element) elem.clone();
-        	parent.add(clone);
-        }
 	}
 	
 	/**
@@ -91,11 +93,11 @@ public class XMLParser implements Labels {
 //					value += "<" + Constants.ALGORITHM + " type=\"" + ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()) + "\"> \n";
 					Element algoElem = root.addElement(Constants.ALGORITHM).addAttribute("type", ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()));
 //					value += displayInstanceXML(in, "");
-					addInstanceXML(algoElem, displayInstanceXML(in, ""));
+					addToParent(algoElem, displayInstanceXML(in, ""));
 //					value += "</" + Constants.ALGORITHM + "> \n";
 				} else {
 //					value += displayInstanceXML(in, "");
-					addInstanceXML(root, displayInstanceXML(in, ""));
+					addToParent(root, displayInstanceXML(in, ""));
 				}
 			}
 		}

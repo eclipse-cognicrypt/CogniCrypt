@@ -36,7 +36,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/stefank3/git/code-clafer_configurator/src/main/resources/AdditionalResources/LongTermArchiving/LongTermArchiving.jar"/>
+	<classpathentry kind="lib" path="lib/LongTermArchiving.jar"/>
 	<classpathentry kind="lib" path="lib/dom4j-2.0.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

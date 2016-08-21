@@ -75,8 +75,6 @@ public class XMLParser implements Labels {
 		Element root = document.addElement( "task" );
 		if (inst.hasChildren()) {
 			final String taskName = inst.getType().getName();
-//			value = "<task description=\"" + ClaferModelUtils
-//				.removeScopePrefix(taskName) + "\">" + Constants.lineSeparator + Constants.lineSeparator + Constants.xmlPackage + Constants.lineSeparator + Constants.xmlimports;
 			root.addAttribute("description", ClaferModelUtils.removeScopePrefix(taskName));
 			root.addElement("Package").addText(Constants.PackageName);	// Constants.xmlPackage
 			Element xmlimports = root.addElement("Imports");
@@ -84,39 +82,26 @@ public class XMLParser implements Labels {
 				xmlimports.addElement("Import").addText(file);
 			}
 		}
-//		} else {
-//			value = "<task>" + Constants.lineSeparator;
-//		}
 		if (inst != null && inst.hasChildren()) {
 			for (final InstanceClafer in : inst.getChildren()) {
 				if (!in.getType().getRef().getTargetType().isPrimitive()) {
-//					value += "<" + Constants.ALGORITHM + " type=\"" + ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()) + "\"> \n";
 					Element algoElem = root.addElement(Constants.ALGORITHM).addAttribute("type", ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()));
-//					value += displayInstanceXML(in, "");
 					addToParent(algoElem, displayInstanceXML(in, ""));
-//					value += "</" + Constants.ALGORITHM + "> \n";
 				} else {
-//					value += displayInstanceXML(in, "");
 					addToParent(root, displayInstanceXML(in, ""));
 				}
 			}
 		}
-//		value += "<code>";
 		Element codeElem = root.addElement("code");
 		for (Entry<Question, Answer> ent : constraints.entrySet()) {
 			ArrayList<CodeDependency> cdp = ent.getValue().getCodeDependencies();
 			if (cdp != null) {
 				for (CodeDependency dep : cdp) {
-//					value += "<" + dep.getOption() + ">" + dep.getValue() + "</" + dep.getOption() + ">";
 					codeElem.addElement(dep.getOption()).addText(dep.getValue()+"");
 				}
 			}
 		}
-//		value += "</code>";
-//
-//		value += "</task>";
-		
-//		return value;
+
 		return document.asXML();
 	}
 

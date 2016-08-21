@@ -107,7 +107,7 @@ public class XMLParser implements Labels {
 			ArrayList<CodeDependency> cdp = ent.getValue().getCodeDependencies();
 			if (cdp != null) {
 				for (CodeDependency dep : cdp) {
-					value += "<" + dep.getOption() + ">" + dep.getValue() + "</" + dep.getOption() + ">";
+//					value += "<" + dep.getOption() + ">" + dep.getValue() + "</" + dep.getOption() + ">";
 					codeElem.addElement(dep.getOption()).addText(dep.getValue()+"");
 				}
 			}

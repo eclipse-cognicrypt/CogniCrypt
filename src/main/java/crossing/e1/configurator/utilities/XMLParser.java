@@ -19,6 +19,8 @@
  */
 package crossing.e1.configurator.utilities;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,6 +34,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
@@ -46,6 +50,14 @@ import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
  *
  */
 public class XMLParser implements Labels {
+	Document document;
+	
+	public void writeTofile(String path) throws IOException {
+		OutputFormat format = OutputFormat.createPrettyPrint();
+		XMLWriter writer = new XMLWriter( new FileWriter(path), format );
+		writer.write( document );
+        writer.close();
+	}
 	
 	/**
 	 *
@@ -54,9 +66,9 @@ public class XMLParser implements Labels {
 	 * @return
 	 * @throws DocumentException 
 	 */
-	public String displayInstanceValues(final InstanceClafer inst, HashMap<Question, Answer> constraints, String value) throws DocumentException {
+	public String displayInstanceValues(final InstanceClafer inst, HashMap<Question, Answer> constraints) throws DocumentException {
 		// ToDo: check if there is any use where "value" is NOT "", if so remove "value" from list of parameters
-		Document document = DocumentHelper.createDocument();
+		document = DocumentHelper.createDocument();
 		Element taskElem = document.addElement( "task" );
 		if (inst.hasChildren()) {
 			final String taskName = inst.getType().getName();

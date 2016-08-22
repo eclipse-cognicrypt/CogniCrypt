@@ -46,21 +46,6 @@ import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
  *
  */
 public class XMLParser implements Labels {
-
-	/**
-	 * Parse xmlString and adds it as a child to the parent Element
-	 *
-	 * @param parent
-	 * @param xmlString
-	 * @return
-	 * @throws DocumentException 
-	 */
-	private void addToParent(Element parent, String xmlString) throws DocumentException {
-		// ToDo: At the End of refactoring this method should be substitude by a simple addition of Element that displayInstanceXML returns
-		Document instanceXML = DocumentHelper.parseText(xmlString);
-		Element root2 = instanceXML.getRootElement();
-		parent.add(root2);
-	}
 	
 	/**
 	 *
@@ -72,12 +57,12 @@ public class XMLParser implements Labels {
 	public String displayInstanceValues(final InstanceClafer inst, HashMap<Question, Answer> constraints, String value) throws DocumentException {
 		// ToDo: check if there is any use where "value" is NOT "", if so remove "value" from list of parameters
 		Document document = DocumentHelper.createDocument();
-		Element root = document.addElement( "task" );
+		Element taskElem = document.addElement( "task" );
 		if (inst.hasChildren()) {
 			final String taskName = inst.getType().getName();
-			root.addAttribute("description", ClaferModelUtils.removeScopePrefix(taskName));
-			root.addElement("Package").addText(Constants.PackageName);	// Constants.xmlPackage
-			Element xmlimports = root.addElement("Imports");
+			taskElem.addAttribute("description", ClaferModelUtils.removeScopePrefix(taskName));
+			taskElem.addElement("Package").addText(Constants.PackageName);	// Constants.xmlPackage
+			Element xmlimports = taskElem.addElement("Imports");
 			for(String file: Constants.xmlimportsarr){
 				xmlimports.addElement("Import").addText(file);
 			}
@@ -85,14 +70,14 @@ public class XMLParser implements Labels {
 		if (inst != null && inst.hasChildren()) {
 			for (final InstanceClafer in : inst.getChildren()) {
 				if (!in.getType().getRef().getTargetType().isPrimitive()) {
-					Element algoElem = root.addElement(Constants.ALGORITHM).addAttribute("type", ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()));
-					addToParent(algoElem, displayInstanceXML(in, ""));
+					Element algoElem = taskElem.addElement(Constants.ALGORITHM).addAttribute("type", ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()));
+					displayInstanceXML(in, algoElem);
 				} else {
-					addToParent(root, displayInstanceXML(in, ""));
+					displayInstanceXML(in, taskElem);
 				}
 			}
 		}
-		Element codeElem = root.addElement("code");
+		Element codeElem = taskElem.addElement("code");
 		for (Entry<Question, Answer> ent : constraints.entrySet()) {
 			ArrayList<CodeDependency> cdp = ent.getValue().getCodeDependencies();
 			if (cdp != null) {
@@ -111,46 +96,58 @@ public class XMLParser implements Labels {
 	 * @param value
 	 * @return
 	 */
-	public String displayInstanceXML(final InstanceClafer inst, String value) {
+//	public String displayInstanceXML(final InstanceClafer inst, Element parent) {
+	private void displayInstanceXML(final InstanceClafer inst, Element parent) {
+		String value;
 		try {
 			if (inst.hasChildren()) {
 				for (final InstanceClafer in : inst.getChildren()) {
 					if (isAlgorithm(in.getType())) {
-						value += "<" + Constants.ALGORITHM + " type=\"" + ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()) + "\"> \n";
-						value += displayInstanceXML(in, "");
-						value += "</" + Constants.ALGORITHM + "> \n";
+//						value += "<" + Constants.ALGORITHM + " type=\"" + ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()) + "\"> \n";
+						Element algoElem = parent.addElement(Constants.ALGORITHM);
+						algoElem.addAttribute("type", ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()));
+//						value += displayInstanceXML(in, "");
+						displayInstanceXML(in, algoElem);
+//						value += "</" + Constants.ALGORITHM + "> \n";
 					} else {
-						value += displayInstanceXML(in, "");
+//						value += displayInstanceXML(in, "");
+						displayInstanceXML(in, parent);
 					}
 				}
 			} else if (inst.hasRef() && inst.getType().isPrimitive() != true && inst.getRef().getClass().toString().contains(Constants.INTEGER) == false && inst.getRef().getClass()
 				.toString().contains(Constants.STRING) == false && inst.getRef().getClass().toString().contains(Constants.BOOLEAN) == false) {
-				value += displayInstanceXML((InstanceClafer) inst.getRef(), "");
+//				value += displayInstanceXML((InstanceClafer) inst.getRef(), "");
+				displayInstanceXML((InstanceClafer) inst.getRef(), parent);
 			} else if (PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())) {
 				String superClaferName = ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName());
 				superClaferName = Character.toLowerCase(superClaferName.charAt(0)) + superClaferName.substring(1);
+				// Todo : This if and it's else do exactly the same thing, It will be commented out in refactoring
 				if (inst.hasRef()) {
 					// For group properties
-					return "\t<" + superClaferName + ">" + ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", "") + "</" + superClaferName + ">\n";
+//					return "\t<" + superClaferName + ">" + ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", "") + "</" + superClaferName + ">\n";
+					parent.addElement(superClaferName).addText(ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", ""));
 				} else {
 					//enums that don't have a reference type (e.g., Mode, Padding etc)
-					return "\t<" + superClaferName + ">" + ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", "") + "</" + superClaferName + ">\n";
+//					return "\t<" + superClaferName + ">" + ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", "") + "</" + superClaferName + ">\n";
+					parent.addElement(superClaferName).addText(ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", ""));
 				}
 			} else {
 				String instName = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
 				instName = Character.toLowerCase(instName.charAt(0)) + instName.substring(1);
 				if (inst.hasRef()) {
-					return "\t<" + instName + ">" + inst.getRef().toString().replace("\"", "") + "</" + instName + ">\n";
+//					return "\t<" + instName + ">" + inst.getRef().toString().replace("\"", "") + "</" + instName + ">\n";
+					parent.addElement(instName).addText(inst.getRef().toString().replace("\"", ""));
 				} else {
 					String instparentName = ClaferModelUtils.removeScopePrefix(((AstConcreteClafer) inst.getType()).getParent().getName());
 					instparentName = Character.toLowerCase(instparentName.charAt(0)) + instparentName.substring(1);
-					return "\t<" + instparentName + ">" + instName + "</" + instparentName + ">\n";
+//					return "\t<" + instparentName + ">" + instName + "</" + instparentName + ">\n";
+					parent.addElement(instparentName).addText(instName);
 				}
 			}
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e);
 		}
-		return value;
+//		return value;
 	}
 
 	/**

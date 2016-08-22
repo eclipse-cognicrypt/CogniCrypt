@@ -5,7 +5,8 @@ public class TreeModel {
 	private TreeNode beginner;
 	private TreeNode expert;
 
+	@Override
 	public String toString() {
-		return beginner.toString() + " \n\n\n " + expert.toString();
+		return this.beginner.toString() + " \n\n\n " + this.expert.toString();
 	}
 }

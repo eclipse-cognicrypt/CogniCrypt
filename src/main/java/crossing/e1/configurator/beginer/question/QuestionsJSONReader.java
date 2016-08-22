@@ -14,47 +14,47 @@ import crossing.e1.configurator.utilities.Utils;
 
 public class QuestionsJSONReader {
 
+	public static void main(final String args[]) {
+		final QuestionsJSONReader reader = new QuestionsJSONReader();
+		System.out.println(reader.getQuestions("src/main/resources/TaskDesc/LongTermArchivingQuestions.json"));
+	}
+
 	private List<Question> questions;
 
-	public List<Question> getQuestions(Task task) {
+	public List<Question> getQuestions(final String filePath) {
 
-		if (questions == null) {
+		if (this.questions == null) {
+			BufferedReader reader;
+			try {
+
+				reader = new BufferedReader(new FileReader(Utils.getAbsolutePath(filePath)));
+				final Gson gson = new Gson();
+
+				this.questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
+			} catch (final FileNotFoundException e) {
+				Activator.getDefault().logError(e);
+			}
+		}
+
+		return this.questions;
+
+	}
+
+	public List<Question> getQuestions(final Task task) {
+
+		if (this.questions == null) {
 			BufferedReader reader;
 			try {
 				reader = new BufferedReader(new FileReader(Utils.getAbsolutePath(task.getXmlFile())));
-				Gson gson = new Gson();
-				questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
+				final Gson gson = new Gson();
+				this.questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
 
-			} catch (FileNotFoundException e) {
+			} catch (final FileNotFoundException e) {
 				Activator.getDefault().logError(e);
 			}
 		}
 
-		return questions;
+		return this.questions;
 
-	}
-
-	public List<Question> getQuestions(String filePath) {
-
-		if (questions == null) {
-			BufferedReader reader;
-			try {
-				
-				reader = new BufferedReader(new FileReader(Utils.getAbsolutePath(filePath)));
-				Gson gson = new Gson();
-
-				questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
-			} catch (FileNotFoundException e) {
-				Activator.getDefault().logError(e);
-			}
-		}
-
-		return questions;
-
-	}
-
-	public static void main(String args[]) {
-		QuestionsJSONReader reader = new QuestionsJSONReader();
-		System.out.println(reader.getQuestions("src/main/resources/TaskDesc/LongTermArchivingQuestions.json"));
 	}
 }

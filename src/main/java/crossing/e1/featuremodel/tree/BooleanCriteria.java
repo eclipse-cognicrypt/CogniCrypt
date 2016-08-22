@@ -8,22 +8,30 @@ package crossing.e1.featuremodel.tree;
  */
 public class BooleanCriteria extends TreeNode {
 
-	private TreeNode trueBranch;
-	private TreeNode falseBranch;
-	private String criteria;
+	private final TreeNode trueBranch;
+	private final TreeNode falseBranch;
+	private final String criteria;
 
-	public BooleanCriteria(String criteria, TreeNode trueBranch, TreeNode falseBranch) {
+	public BooleanCriteria(final String criteria, final TreeNode trueBranch, final TreeNode falseBranch) {
 		this.criteria = criteria;
 		this.trueBranch = trueBranch;
 		this.falseBranch = falseBranch;
 	}
 
-	/*
-	 * Only Used for debugging puposes. (non-Javadoc)
-	 * @see crossing.e1.featuremodel.tree.TreeNode#toString()
-	 */
-	public String toString() {
-		return "{\n\t" + "criteria: " + criteria + "\n\ttrueBranch: " + trueBranch.toString() + "\n\tfalseBranch: " + falseBranch.toString() + "}";
+	public TreeNode getBranch(final boolean bool) {
+		return (bool) ? this.trueBranch : this.falseBranch;
+	}
+
+	public String getCriteria() {
+		return this.criteria;
+	}
+
+	public TreeNode getFalseBranch() {
+		return this.falseBranch;
+	}
+
+	public TreeNode getTrueBranch() {
+		return this.trueBranch;
 	}
 
 	@Override
@@ -31,20 +39,13 @@ public class BooleanCriteria extends TreeNode {
 		return false;
 	}
 
-	public TreeNode getTrueBranch() {
-		return trueBranch;
-	}
-
-	public TreeNode getFalseBranch() {
-		return falseBranch;
-	}
-
-	public TreeNode getBranch(boolean bool) {
-		return (bool) ? trueBranch : falseBranch;
-	}
-
-	public String getCriteria() {
-		return criteria;
+	/*
+	 * Only Used for debugging puposes. (non-Javadoc)
+	 * @see crossing.e1.featuremodel.tree.TreeNode#toString()
+	 */
+	@Override
+	public String toString() {
+		return "{\n\t" + "criteria: " + this.criteria + "\n\ttrueBranch: " + this.trueBranch.toString() + "\n\tfalseBranch: " + this.falseBranch.toString() + "}";
 	}
 
 }

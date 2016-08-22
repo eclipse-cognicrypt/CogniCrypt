@@ -35,7 +35,7 @@ public class ClaferModelUtils {
 		} else {
 			if (inputClafer.hasChildren()) {
 				for (final AstConcreteClafer childClafer : inputClafer.getChildren()) {
-					AstClafer foundClafer = findClaferByName(childClafer, name);
+					final AstClafer foundClafer = findClaferByName(childClafer, name);
 					if (foundClafer != null) {
 						return foundClafer;
 					}
@@ -71,6 +71,10 @@ public class ClaferModelUtils {
 		return inputClafer.getName();
 	}
 
+	public static String getNameWithoutScope(final String input) {
+		return input.substring(input.indexOf("_") + 1);
+	}
+
 	/**
 	 * method to check if the given clafer is an abstract clafer
 	 *
@@ -94,9 +98,5 @@ public class ClaferModelUtils {
 	public static String removeScopePrefix(final String scope) {
 		final String shortenedScope = scope.substring(scope.indexOf('_') + 1, scope.length());
 		return shortenedScope.substring(0, 1).toUpperCase() + shortenedScope.substring(1, shortenedScope.length());
-	}
-
-	public static String getNameWithoutScope(String input) {
-		return input.substring(input.indexOf("_") + 1);
 	}
 }

@@ -9,54 +9,52 @@ public class Task {
 	private boolean isSelected;
 	private String additionalResources;
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	public String getAdditionalResources() {
+		return this.additionalResources;
 	}
 
 	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
+		return this.description;
 	}
 
 	public String getModelFile() {
-		return modelFile;
+		return this.modelFile;
 	}
 
-	public void setModelFile(String modelFile) {
-		this.modelFile = modelFile;
+	public String getName() {
+		return this.name;
 	}
 
 	public String getXmlFile() {
-		return xmlFile;
-	}
-
-	public void setXmlFile(String xmlFile) {
-		this.xmlFile = xmlFile;
+		return this.xmlFile;
 	}
 
 	public boolean isSelected() {
-		return isSelected;
+		return this.isSelected;
 	}
 
-	public void setSelected(boolean isSelected) {
+	public void setAdditionalResources(final String additionalResources) {
+		this.additionalResources = additionalResources;
+	}
+
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
+	public void setModelFile(final String modelFile) {
+		this.modelFile = modelFile;
+	}
+
+	public void setName(final String name) {
+		this.name = name;
+	}
+
+	public void setSelected(final boolean isSelected) {
 		this.isSelected = isSelected;
 	}
 
-	
-	public String getAdditionalResources() {
-		return additionalResources;
-	}
-
-	
-	public void setAdditionalResources(String additionalResources) {
-		this.additionalResources = additionalResources;
+	public void setXmlFile(final String xmlFile) {
+		this.xmlFile = xmlFile;
 	}
 
 }

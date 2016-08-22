@@ -92,34 +92,46 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public boolean canFinish() {
-		return (tlsPage != null && tlsPage.isPageComplete()) || (instanceListPage != null && instanceListPage.isPageComplete());
+		return (this.tlsPage != null && this.tlsPage.isPageComplete()) || (this.instanceListPage != null && this.instanceListPage.isPageComplete());
+	}
+
+	private boolean checkifInUpdateRound() {
+		boolean updateRound = false;
+		final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+		for (final StackTraceElement el : stack) {
+			if (el.getMethodName().contains("updateButtons")) {
+				updateRound = true;
+				break;
+			}
+		}
+		return updateRound;
 	}
 
 	@Override
-	public IWizardPage getNextPage(IWizardPage currentPage) {
-		Task selectedTask = this.taskListPage.getSelectedTask();
+	public IWizardPage getNextPage(final IWizardPage currentPage) {
+		final Task selectedTask = this.taskListPage.getSelectedTask();
 		if (currentPage == this.taskListPage && this.taskListPage.canProceed()) {
 			// Special handling for the TLS task
-//			if (selectedTask.getDescription().equals("Communicate over a secure channel")) {
-//				this.tlsSCPage = new TLSConfigurationServerClientPage();
-//				addPage(this.tlsSCPage);
-//				this.preferenceSelectionPage = this.tlsSCPage;
-//			} else 
+			//			if (selectedTask.getDescription().equals("Communicate over a secure channel")) {
+			//				this.tlsSCPage = new TLSConfigurationServerClientPage();
+			//				addPage(this.tlsSCPage);
+			//				this.preferenceSelectionPage = this.tlsSCPage;
+			//			} else 
 			{
-				claferModel = new ClaferModel(Utils.getAbsolutePath(selectedTask.getModelFile()));
+				this.claferModel = new ClaferModel(Utils.getAbsolutePath(selectedTask.getModelFile()));
 
-				if (taskListPage.isAdvancedMode()) {
-					preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, (AstConcreteClafer) org.clafer.cli.Utils
-						.getModelChildByName(claferModel.getModel(), "c0_" + selectedTask.getName()));
+				if (this.taskListPage.isAdvancedMode()) {
+					this.preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, (AstConcreteClafer) org.clafer.cli.Utils
+						.getModelChildByName(this.claferModel.getModel(), "c0_" + selectedTask.getName()));
 				} else {
-					beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
-					preferenceSelectionPage = new BeginnerTaskQuestionPage(beginnerQuestions.nextQuestion(), beginnerQuestions.getTask());
+					this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
+					this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextQuestion(), this.beginnerQuestions.getTask());
 				}
 			}
-			if (preferenceSelectionPage != null) {
-				addPage(preferenceSelectionPage);
+			if (this.preferenceSelectionPage != null) {
+				addPage(this.preferenceSelectionPage);
 			}
-			return preferenceSelectionPage;
+			return this.preferenceSelectionPage;
 		} else if (this.tlsKeyPage != null && this.tlsKeyPage.canFlipToNextPage()) {
 			this.tlsPage = new TLSConfigurationHostPortPage();
 			this.preferenceSelectionPage = this.tlsPage;
@@ -144,44 +156,45 @@ public class ConfiguratorWizard extends Wizard {
 			if (this.taskListPage.isAdvancedMode()) {
 				//TODO: Implement for Advanced Mode
 			} else {
-				if (constraints == null) {
-					constraints = ((BeginnerTaskQuestionPage) currentPage).getMap();
+				if (this.constraints == null) {
+					this.constraints = ((BeginnerTaskQuestionPage) currentPage).getMap();
 				}
 
-				if (beginnerQuestions.hasMoreQuestions()) {
-					int nextID = ((Answer)((BeginnerTaskQuestionPage) currentPage).getSelection().values().toArray()[0]).getNextID();
+				if (this.beginnerQuestions.hasMoreQuestions()) {
+					final int nextID = ((Answer) ((BeginnerTaskQuestionPage) currentPage).getSelection().values().toArray()[0]).getNextID();
 					if (nextID > -1) {
-						preferenceSelectionPage = new BeginnerTaskQuestionPage(beginnerQuestions.getQuestionByID(nextID), beginnerQuestions.getTask());
+						this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.getQuestionByID(nextID), this.beginnerQuestions.getTask());
 						if (checkifInUpdateRound()) {
-							beginnerQuestions.previousQuestion();
+							this.beginnerQuestions.previousQuestion();
 						}
-						IWizardPage[] pages = getPages();
+						final IWizardPage[] pages = getPages();
 						for (int i = 1; i < pages.length; i++) {
-							if (!(pages[i] instanceof BeginnerTaskQuestionPage))
+							if (!(pages[i] instanceof BeginnerTaskQuestionPage)) {
 								continue;
-							BeginnerTaskQuestionPage oldPage = (BeginnerTaskQuestionPage) pages[i];
-							if (oldPage.equals(preferenceSelectionPage)) {
+							}
+							final BeginnerTaskQuestionPage oldPage = (BeginnerTaskQuestionPage) pages[i];
+							if (oldPage.equals(this.preferenceSelectionPage)) {
 								return oldPage;
 							}
 						}
-						if (preferenceSelectionPage != null) {
-							addPage(preferenceSelectionPage);
+						if (this.preferenceSelectionPage != null) {
+							addPage(this.preferenceSelectionPage);
 						}
-	
-						constraints.putAll(((BeginnerTaskQuestionPage) currentPage).getMap());
-						return preferenceSelectionPage;
+
+						this.constraints.putAll(((BeginnerTaskQuestionPage) currentPage).getMap());
+						return this.preferenceSelectionPage;
 					}
 				}
 			}
 
-			InstanceGenerator instanceGenerator = new InstanceGenerator(new File(Utils.getAbsolutePath(selectedTask.getModelFile()))
+			final InstanceGenerator instanceGenerator = new InstanceGenerator(new File(Utils.getAbsolutePath(selectedTask.getModelFile()))
 				.getAbsolutePath(), "c0_" + this.taskListPage.getSelectedTask().getName(), this.taskListPage.getSelectedTask().getDescription());
 
 			if (this.taskListPage.isAdvancedMode()) {
 				instanceGenerator.generateInstancesAdvancedUserMode(((AdvancedUserValueSelectionPage) currentPage).getConstraints());
 			} else {
 				// running in beginner mode
-				instanceGenerator.generateInstances(constraints);
+				instanceGenerator.generateInstances(this.constraints);
 			}
 
 			if (instanceGenerator.getNoOfInstances() > 0) {
@@ -190,13 +203,24 @@ public class ConfiguratorWizard extends Wizard {
 				return this.instanceListPage;
 			} else {
 				if ("nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[3].getMethodName())) {
-					String message = this.taskListPage.isAdvancedMode() ? Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE : Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER;
+					final String message = this.taskListPage.isAdvancedMode() ? Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE : Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER;
 					MessageDialog.openError(new Shell(), "Error", message);
 				}
 			}
 		}
 
 		return currentPage;
+	}
+
+	@Override
+	public IWizardPage getPreviousPage(final IWizardPage currentPage) {
+		final boolean lastPage = currentPage instanceof InstanceListPage;
+		if (!checkifInUpdateRound() && (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage || lastPage)) {
+			if (!this.beginnerQuestions.isFirstQuestion()) {
+				this.beginnerQuestions.previousQuestion();
+			}
+		}
+		return super.getPreviousPage(currentPage);
 	}
 
 	@Override
@@ -207,74 +231,52 @@ public class ConfiguratorWizard extends Wizard {
 			try {
 				// Print the result to the console
 				final FileHelper write = new FileHelper();
-				String selectedInstance = new XMLParser().displayInstanceValues(this.instanceListPage.getValue(), constraints, "");
+				final String selectedInstance = new XMLParser().displayInstanceValues(this.instanceListPage.getValue(), this.constraints, "");
 
 				// Initialize Code Generation to retrieve developer project
 				ret &= this.codeGeneration.initCodeGeneration();
 
 				// Write Instance File into developer project
-				String xmlInstancePath = codeGeneration.getDeveloperProject().getProjectPath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile;
+				final String xmlInstancePath = this.codeGeneration.getDeveloperProject().getProjectPath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile;
 				write.writeToFile(selectedInstance, xmlInstancePath);
-				
+
 				// Generate code template
-				ret &= this.codeGeneration.generateCodeTemplates(new File(xmlInstancePath), taskListPage.getSelectedTask().getAdditionalResources(), null);
+				ret &= this.codeGeneration.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), null);
 
 				// Delete Instance File
 				write.deleteFile(xmlInstancePath);
-				codeGeneration.getDeveloperProject().refresh();
-			} catch (Exception e) {
+				this.codeGeneration.getDeveloperProject().refresh();
+			} catch (final Exception e) {
 				Activator.getDefault().logError(e);
 				return false;
 			}
 		} else if (this.tlsPage != null) {
 			ret = this.tlsPage.isPageComplete();
 			try {
-				File xslTLSfile = new File(Utils.getAbsolutePath(Constants.pathToTSLXSLFile));
-				File xmlInstanceFile = new File(Utils.getAbsolutePath(Constants.pathToClaferInstanceFolder + Constants.fileSeparator + Constants.pathToClaferInstanceTLSFile));
-				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-				Document doc = docBuilder.parse(xmlInstanceFile);
+				final File xslTLSfile = new File(Utils.getAbsolutePath(Constants.pathToTSLXSLFile));
+				final File xmlInstanceFile = new File(Utils
+					.getAbsolutePath(Constants.pathToClaferInstanceFolder + Constants.fileSeparator + Constants.pathToClaferInstanceTLSFile));
+				final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+				final DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+				final Document doc = docBuilder.parse(xmlInstanceFile);
 
-				doc.getElementsByTagName("host").item(0).setTextContent(tlsPage.getHost());
-				doc.getElementsByTagName("port").item(0).setTextContent(tlsPage.getPort());
-				doc.getElementsByTagName("path").item(0).setTextContent(tlsKeyPage.getPath());
-				doc.getElementsByTagName("password").item(0).setTextContent(tlsKeyPage.getPassword());
+				doc.getElementsByTagName("host").item(0).setTextContent(this.tlsPage.getHost());
+				doc.getElementsByTagName("port").item(0).setTextContent(this.tlsPage.getPort());
+				doc.getElementsByTagName("path").item(0).setTextContent(this.tlsKeyPage.getPath());
+				doc.getElementsByTagName("password").item(0).setTextContent(this.tlsKeyPage.getPassword());
 
-				TransformerFactory tF = TransformerFactory.newInstance();
-				Transformer tfr = tF.newTransformer();
-				DOMSource source = new DOMSource(doc);
-				StreamResult result = new StreamResult(xmlInstanceFile);
+				final TransformerFactory tF = TransformerFactory.newInstance();
+				final Transformer tfr = tF.newTransformer();
+				final DOMSource source = new DOMSource(doc);
+				final StreamResult result = new StreamResult(xmlInstanceFile);
 				tfr.transform(source, result);
-				ret &= this.codeGeneration.generateCodeTemplates(xmlInstanceFile, taskListPage.getSelectedTask().getAdditionalResources(), xslTLSfile);
+				ret &= this.codeGeneration.generateCodeTemplates(xmlInstanceFile, this.taskListPage.getSelectedTask().getAdditionalResources(), xslTLSfile);
 			} catch (IOException | SAXException | ParserConfigurationException | TransformerException e) {
 				Activator.getDefault().logError(e);
 				return false;
 			}
 		}
 		return ret;
-	}
-
-	@Override
-	public IWizardPage getPreviousPage(IWizardPage currentPage) {
-		boolean lastPage = currentPage instanceof InstanceListPage;
-		if (!checkifInUpdateRound() && (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage || lastPage)) {
-			if (!beginnerQuestions.isFirstQuestion()) {
-				beginnerQuestions.previousQuestion();
-			}
-		}
-		return super.getPreviousPage(currentPage);
-	}
-
-	private boolean checkifInUpdateRound() {
-		boolean updateRound = false;
-		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-		for (StackTraceElement el : stack) {
-			if (el.getMethodName().contains("updateButtons")) {
-				updateRound = true;
-				break;
-			}
-		}
-		return updateRound;
 	}
 
 }

@@ -55,25 +55,12 @@ public class TLSConfigurationHostPortPage extends WizardPage {
 		super(Labels.SELECT_TASK);
 		setTitle(Labels.TLS_PAGE);
 		setDescription(Labels.DESCRIPTION_TLS_PAGE);
-		tls = this;
+		this.tls = this;
 	}
 
 	@Override
 	public boolean canFlipToNextPage() {
 		return false;
-	}
-
-	@Override
-	public boolean isPageComplete() {
-		return this.testConnectionLabel.getText().equals(SUCCESS);
-	}
-
-	public String getHost() {
-		return hostText.getText();
-	}
-
-	public String getPort() {
-		return portText.getText();
 	}
 
 	@Override
@@ -101,30 +88,41 @@ public class TLSConfigurationHostPortPage extends WizardPage {
 
 		this.testConnectionPushButton = new Button(this.container, SWT.PUSH);
 		this.testConnectionPushButton.setText(Constants.TEST_CONNECTION);
-		testConnectionPushButton.addSelectionListener(new SelectionListener() {
+		this.testConnectionPushButton.addSelectionListener(new SelectionListener() {
 
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetDefaultSelected(final SelectionEvent e) {
+				widgetSelected(e);
+			}
+
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
 				try {
-					//The variable is not "unused" as the constructor actually already performs the necessary operation. 
-					@SuppressWarnings("unused")
-					TLSConnection tlstest = new TLSConnection(Integer.parseInt(portText.getText()), getHost());
-					testConnectionLabel.setText(SUCCESS);
-					testConnectionLabel.redraw();
-					complete = true;
-					tls.setPageComplete(complete);
+					new TLSConnection(Integer.parseInt(TLSConfigurationHostPortPage.this.portText.getText()), getHost());
+					TLSConfigurationHostPortPage.this.testConnectionLabel.setText(SUCCESS);
+					TLSConfigurationHostPortPage.this.testConnectionLabel.redraw();
+					TLSConfigurationHostPortPage.this.complete = true;
+					TLSConfigurationHostPortPage.this.tls.setPageComplete(TLSConfigurationHostPortPage.this.complete);
 				} catch (IOException | NumberFormatException | URISyntaxException e1) {
-					testConnectionLabel.setText("FAIL!");
+					TLSConfigurationHostPortPage.this.testConnectionLabel.setText("FAIL!");
 				}
 
 			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				widgetSelected(e);
-			}
 		});
 		setControl(this.container);
+	}
+
+	public String getHost() {
+		return this.hostText.getText();
+	}
+
+	public String getPort() {
+		return this.portText.getText();
+	}
+
+	@Override
+	public boolean isPageComplete() {
+		return this.testConnectionLabel.getText().equals(SUCCESS);
 	}
 
 }

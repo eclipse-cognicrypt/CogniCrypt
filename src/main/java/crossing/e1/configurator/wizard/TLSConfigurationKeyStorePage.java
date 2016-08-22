@@ -27,8 +27,6 @@ import javax.swing.JPanel;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -56,17 +54,12 @@ public class TLSConfigurationKeyStorePage extends WizardPage {
 		super(Labels.SELECT_TASK);
 		setTitle(Labels.TLS_PAGE);
 		setDescription("Please enter the path to your keystore.");
-		tls = this;
+		this.tls = this;
 	}
 
 	@Override
 	public boolean canFlipToNextPage() {
-		return complete;
-	}
-
-	@Override
-	public boolean isPageComplete() {
-		return false;
+		return this.complete;
 	}
 
 	@Override
@@ -85,40 +78,36 @@ public class TLSConfigurationKeyStorePage extends WizardPage {
 
 		this.selectFilePushButton = new Button(container, SWT.PUSH);
 		this.selectFilePushButton.setText("Select File");
-		selectFilePushButton.addSelectionListener(new SelectionListener() {
+		this.selectFilePushButton.addSelectionListener(new SelectionListener() {
 
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				JFileChooser fileChooser = new JFileChooser();
-				if (fileChooser.showOpenDialog(new JPanel()) == JFileChooser.APPROVE_OPTION) {
-					String s = fileChooser.getSelectedFile().getAbsolutePath();
-					pathText.setText(s);
-				}
+			public void widgetDefaultSelected(final SelectionEvent e) {
+				widgetSelected(e);
 			}
 
 			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				widgetSelected(e);
+			public void widgetSelected(final SelectionEvent e) {
+				final JFileChooser fileChooser = new JFileChooser();
+				if (fileChooser.showOpenDialog(new JPanel()) == JFileChooser.APPROVE_OPTION) {
+					final String s = fileChooser.getSelectedFile().getAbsolutePath();
+					TLSConfigurationKeyStorePage.this.pathText.setText(s);
+				}
 			}
 		});
 
-		pathText.addModifyListener(new ModifyListener() {
+		this.pathText.addModifyListener(e -> {
 
-			@Override
-			public void modifyText(ModifyEvent e) {
-
-				String pathTextcontent = pathText.getText();
-				if (!pathTextcontent.isEmpty()) {
-					File keyStoreFile = new File(pathTextcontent.replace("\\", "\\\\"));
-					if (keyStoreFile.exists()) {
-						complete = true;
-						tls.setPageComplete(complete);
-						return;
-					}
+			final String pathTextcontent = TLSConfigurationKeyStorePage.this.pathText.getText();
+			if (!pathTextcontent.isEmpty()) {
+				final File keyStoreFile = new File(pathTextcontent.replace("\\", "\\\\"));
+				if (keyStoreFile.exists()) {
+					TLSConfigurationKeyStorePage.this.complete = true;
+					TLSConfigurationKeyStorePage.this.tls.setPageComplete(TLSConfigurationKeyStorePage.this.complete);
+					return;
 				}
-				complete = false;
-				tls.setPageComplete(complete);
 			}
+			TLSConfigurationKeyStorePage.this.complete = false;
+			TLSConfigurationKeyStorePage.this.tls.setPageComplete(TLSConfigurationKeyStorePage.this.complete);
 		});
 
 		this.passwordLabel = new Label(container, SWT.NONE);
@@ -129,11 +118,16 @@ public class TLSConfigurationKeyStorePage extends WizardPage {
 		setControl(container);
 	}
 
-	public String getPath() {
-		return pathText.getText().replace("\\", "\\\\");
+	public String getPassword() {
+		return this.passwordText.getText();
 	}
 
-	public String getPassword() {
-		return passwordText.getText();
+	public String getPath() {
+		return this.pathText.getText().replace("\\", "\\\\");
+	}
+
+	@Override
+	public boolean isPageComplete() {
+		return false;
 	}
 }

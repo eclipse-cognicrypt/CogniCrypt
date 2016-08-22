@@ -12,11 +12,18 @@ import com.google.gson.JsonParseException;
 public class DecisionTreeDeserializer implements JsonDeserializer<TreeNode> {
 
 	@Override
-	public TreeNode deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
+	public TreeNode deserialize(final JsonElement element, final Type type, final JsonDeserializationContext context) throws JsonParseException {
 		return parseJsonObject(element.getAsJsonObject());
 	}
 
-	private TreeNode parseJsonObject(JsonObject obj) {
+	private TreeNode parseBooleanCritera(final JsonObject obj) {
+		final String criteria = obj.get("criteria").getAsString();
+		final JsonObject trueBranch = obj.get("trueBranch").getAsJsonObject();
+		final JsonObject falseBranch = obj.get("falseBranch").getAsJsonObject();
+		return new BooleanCriteria(criteria, parseJsonObject(trueBranch), parseJsonObject(falseBranch));
+	}
+
+	private TreeNode parseJsonObject(final JsonObject obj) {
 		if (obj.has("trueBranch")) { // BooleanCriteria.class
 			return parseBooleanCritera(obj);
 		} else if (obj.has("children")) { // NCritera.class
@@ -32,17 +39,10 @@ public class DecisionTreeDeserializer implements JsonDeserializer<TreeNode> {
 		}
 	}
 
-	private TreeNode parseBooleanCritera(JsonObject obj) {
-		final String criteria = obj.get("criteria").getAsString();
-		final JsonObject trueBranch = obj.get("trueBranch").getAsJsonObject();
-		final JsonObject falseBranch = obj.get("falseBranch").getAsJsonObject();
-		return new BooleanCriteria(criteria, parseJsonObject(trueBranch), parseJsonObject(falseBranch));
-	}
-
-	private TreeNode parseNCritera(JsonObject obj) {
+	private TreeNode parseNCritera(final JsonObject obj) {
 		final String criteria = obj.get("criteria").getAsString();
 		final JsonArray children = obj.get("children").getAsJsonArray();
-		TreeNode[] nodes = new TreeNode[children.size()];
+		final TreeNode[] nodes = new TreeNode[children.size()];
 		for (int i = 0; i < children.size(); i++) {
 			final JsonObject arrayElement = children.get(i).getAsJsonObject();
 			nodes[i] = parseJsonObject(arrayElement);

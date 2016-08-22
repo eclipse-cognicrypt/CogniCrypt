@@ -22,11 +22,11 @@ public class TaskJSONReader {
 			BufferedReader reader;
 			try {
 				reader = new BufferedReader(new FileReader(Utils.getAbsolutePath(Constants.jsonTaskFile)));
-				Gson gson = new Gson();
+				final Gson gson = new Gson();
 
 				tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {}.getType());
 
-			} catch (FileNotFoundException e) {
+			} catch (final FileNotFoundException e) {
 				Activator.getDefault().logError(e);
 			}
 		}

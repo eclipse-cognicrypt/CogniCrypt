@@ -2,22 +2,20 @@ package crossing.e1.featuremodel.tree;
 
 public class NCriteria extends TreeNode {
 
-	private TreeNode[] children;
-	private String criteria;
+	private final TreeNode[] children;
+	private final String criteria;
 
-	public NCriteria(String criteria, TreeNode[] children) {
+	public NCriteria(final String criteria, final TreeNode[] children) {
 		this.criteria = criteria;
 		this.children = children;
 	}
 
-	public String toString() {
+	public TreeNode[] getChildren() {
+		return this.children;
+	}
 
-		String childNodes = "[";
-		for (TreeNode tn : children) {
-			childNodes += "{\n\t" + tn.toString() + "},";
-		}
-
-		return "{" + "\tcriteria: " + criteria + "\n\tcildren: " + childNodes + "]}";
+	public String getCriteria() {
+		return this.criteria;
 	}
 
 	@Override
@@ -25,11 +23,14 @@ public class NCriteria extends TreeNode {
 		return false;
 	}
 
-	public TreeNode[] getChildren() {
-		return children;
-	}
+	@Override
+	public String toString() {
 
-	public String getCriteria() {
-		return criteria;
+		String childNodes = "[";
+		for (final TreeNode tn : this.children) {
+			childNodes += "{\n\t" + tn.toString() + "},";
+		}
+
+		return "{" + "\tcriteria: " + this.criteria + "\n\tcildren: " + childNodes + "]}";
 	}
 }

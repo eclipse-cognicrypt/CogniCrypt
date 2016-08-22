@@ -4,13 +4,13 @@ public class SimpleDecision extends TreeNode {
 
 	protected DataStructure decision;
 
-	public SimpleDecision(DataStructure decision) {
+	public SimpleDecision(final DataStructure decision) {
 		super();
 		this.decision = decision;
 	}
 
-	public String toString() {
-		return "{" + decision.toString() + "}";
+	public DataStructure getDecision() {
+		return this.decision;
 	}
 
 	@Override
@@ -18,7 +18,8 @@ public class SimpleDecision extends TreeNode {
 		return true;
 	}
 
-	public DataStructure getDecision() {
-		return decision;
+	@Override
+	public String toString() {
+		return "{" + this.decision.toString() + "}";
 	}
 }

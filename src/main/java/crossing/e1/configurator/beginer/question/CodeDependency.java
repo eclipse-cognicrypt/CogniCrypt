@@ -5,35 +5,35 @@ public class CodeDependency {
 	private String option;
 	private Boolean value;
 
-	public String getOption() {
-		return option;
+	@Override
+	public boolean equals(final Object obj) {
+		if (!(obj instanceof CodeDependency)) {
+			return false;
+		} else {
+			final CodeDependency comp = (CodeDependency) obj;
+			return comp.getOption().equals(getOption()) && comp.getValue().equals(getValue());
+		}
 	}
 
-	public void setOption(String option) {
-		this.option = option;
+	public String getOption() {
+		return this.option;
 	}
 
 	public Boolean getValue() {
-		return value;
+		return this.value;
 	}
 
-	public void setValue(Boolean value) {
+	public void setOption(final String option) {
+		this.option = option;
+	}
+
+	public void setValue(final Boolean value) {
 		this.value = value;
 	}
 
 	@Override
 	public String toString() {
-		return "Code Dependency [option=" + option + ", value=" + value + "]";
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof CodeDependency)) {
-			return false;
-		} else {
-			CodeDependency comp = (CodeDependency) obj;
-			return comp.getOption().equals(this.getOption()) && comp.getValue().equals(this.getValue());
-		}
+		return "Code Dependency [option=" + this.option + ", value=" + this.value + "]";
 	}
 
 }

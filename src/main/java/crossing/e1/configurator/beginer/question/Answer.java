@@ -10,52 +10,50 @@ public class Answer {
 	private ArrayList<CodeDependency> codeDependencies;
 	private int nextID;
 
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
 	public ArrayList<ClaferDependency> getClaferDependencies() {
-		return claferDependencies;
+		return this.claferDependencies;
 	}
 
-	public void setClaferDependencies(ArrayList<ClaferDependency> claferDependencies) {
-		this.claferDependencies = claferDependencies;
+	public ArrayList<CodeDependency> getCodeDependencies() {
+		return this.codeDependencies;
+	}
+
+	public int getNextID() {
+		return this.nextID;
+	}
+
+	public String getValue() {
+		return this.value;
 	}
 
 	public Boolean isDefaultAnswer() {
-		return defaultAnswer == null ? false : defaultAnswer;
+		return this.defaultAnswer == null ? false : this.defaultAnswer;
 	}
 
-	public void setDefaultAnswer(Boolean defaultAnswer) {
+	public void setClaferDependencies(final ArrayList<ClaferDependency> claferDependencies) {
+		this.claferDependencies = claferDependencies;
+	}
+
+	public void setCodeDependencies(final ArrayList<CodeDependency> codeDependencies) {
+		this.codeDependencies = codeDependencies;
+	}
+
+	public void setDefaultAnswer(final Boolean defaultAnswer) {
 		this.defaultAnswer = defaultAnswer;
+	}
+
+	public void setNextID(final int prevID) {
+		this.nextID = prevID;
+	}
+
+	public void setValue(final String value) {
+		this.value = value;
 	}
 
 	@Override
 	public String toString() {
 		//the combo viewer calls the toString() method so just display the value
-		return value;
-	}
-
-	public ArrayList<CodeDependency> getCodeDependencies() {
-		return codeDependencies;
-	}
-
-	public void setCodeDependencies(ArrayList<CodeDependency> codeDependencies) {
-		this.codeDependencies = codeDependencies;
-	}
-
-	
-	public int getNextID() {
-		return nextID;
-	}
-
-	
-	public void setNextID(int prevID) {
-		this.nextID = prevID;
+		return this.value;
 	}
 
 }

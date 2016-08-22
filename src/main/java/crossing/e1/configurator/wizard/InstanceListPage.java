@@ -26,10 +26,8 @@ import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -58,7 +56,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 	private Group instancePropertiesPanel;
 	private Task selectedTask;
 
-	public InstanceListPage(final InstanceGenerator inst, Task selectedTask) {
+	public InstanceListPage(final InstanceGenerator inst, final Task selectedTask) {
 		super(Labels.SECOND_PAGE);
 		setTitle("Possible solutions for task: " + selectedTask.getDescription());
 		setDescription(Labels.DESCRIPTION_INSTANCE_LIST_PAGE);
@@ -69,6 +67,12 @@ public class InstanceListPage extends WizardPage implements Labels {
 	@Override
 	public boolean canFlipToNextPage() {
 		return false;
+	}
+
+	public void checkNumberOfInstances() {
+		if (this.instanceGenerator.getNoOfInstances() == 0) {
+			MessageDialog.openError(new Shell(), "Error", Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE);
+		}
 	}
 
 	@Override
@@ -98,21 +102,15 @@ public class InstanceListPage extends WizardPage implements Labels {
 				return element.toString();
 			}
 		});
-		algorithmClass.addSelectionChangedListener(new ISelectionChangedListener() {
-
-			@Override
-			public void selectionChanged(final SelectionChangedEvent event) {
-				final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-				InstanceListPage.this.instancePropertiesPanel.setVisible(true);
-				final String b = selection.getFirstElement().toString();
-				setValue(InstanceListPage.this.instanceGenerator.getInstances().get(b));
-				InstanceListPage.this.instanceDetails
-					.setText(InstanceListPage.this.publisher.getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(b), ""));
-				if (selection.size() > 0) {
-					setPageComplete(true);
-				}
+		algorithmClass.addSelectionChangedListener(event -> {
+			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+			InstanceListPage.this.instancePropertiesPanel.setVisible(true);
+			final String b = selection.getFirstElement().toString();
+			setValue(InstanceListPage.this.instanceGenerator.getInstances().get(b));
+			InstanceListPage.this.instanceDetails.setText(InstanceListPage.this.publisher.getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(b), ""));
+			if (selection.size() > 0) {
+				setPageComplete(true);
 			}
-
 		});
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
 		this.instancePropertiesPanel.setText("Instance Details");
@@ -130,18 +128,12 @@ public class InstanceListPage extends WizardPage implements Labels {
 		;
 	}
 
-	public void checkNumberOfInstances() {
-		if (instanceGenerator.getNoOfInstances() == 0) {
-			MessageDialog.openError(new Shell(), "Error", Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE);
-		}
+	public Task getTask() {
+		return this.selectedTask;
 	}
 
 	public InstanceClafer getValue() {
 		return this.value;
-	}
-
-	public Task getTask() {
-		return selectedTask;
 	}
 
 	@Override

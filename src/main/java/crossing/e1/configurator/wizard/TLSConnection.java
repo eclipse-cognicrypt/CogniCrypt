@@ -31,9 +31,9 @@ public class TLSConnection {
 
 	private static SSLSocket sslsocket = null;
 
-	public TLSConnection(int port, String host) throws UnknownHostException, IOException, URISyntaxException {
-		SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-		SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket(host, port);
+	public TLSConnection(final int port, final String host) throws UnknownHostException, IOException, URISyntaxException {
+		final SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+		final SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket(host, port);
 		setCipherSuites();
 		setProtocols();
 		sslsocket.startHandshake();

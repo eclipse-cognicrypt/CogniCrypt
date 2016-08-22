@@ -43,23 +43,77 @@ import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 public class AdvancedUserValueSelectionPage extends WizardPage implements Labels {
 
 	private Composite container;
-	private List<PropertyWidget> userConstraints = new ArrayList<PropertyWidget>();
-	private AstConcreteClafer taskClafer;
+	private final List<PropertyWidget> userConstraints = new ArrayList<PropertyWidget>();
+	private final AstConcreteClafer taskClafer;
 
-	public AdvancedUserValueSelectionPage(ClaferModel claferModel, AstConcreteClafer taskClafer) {
+	public AdvancedUserValueSelectionPage(final ClaferModel claferModel, final AstConcreteClafer taskClafer) {
 		super(Labels.SELECT_PROPERTIES);
 		setTitle(Labels.PROPERTIES);
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.taskClafer = taskClafer;
 	}
 
-	@Override
-	public void createControl(Composite parent) {
-		container = new Composite(parent, SWT.NONE);
+	public void createConstraints(final AstClafer parent, final AstAbstractClafer inputClafer, final Group titledPanel) {
 
-		container.setBounds(10, 10, 450, 200);
-		GridLayout layout = new GridLayout();
-		container.setLayout(layout);
+		if (inputClafer.hasChildren()) {
+			for (final AstConcreteClafer in : inputClafer.getChildren()) {
+				createConstraints(parent, in, titledPanel);
+			}
+		}
+		if (inputClafer.hasRef()) {
+			createConstraints(parent, inputClafer.getRef().getTargetType(), titledPanel);
+		}
+
+		if (inputClafer.getSuperClafer() != null) {
+			createConstraints(parent, inputClafer.getSuperClafer(), titledPanel);
+		}
+	}
+
+	public void createConstraints(final AstClafer parent, final AstClafer inputClafer, final Group titledPanel) {
+
+		if (inputClafer.hasChildren()) {
+			if (inputClafer.getGroupCard() != null && inputClafer.getGroupCard().getLow() >= 1) {
+				this.userConstraints
+					.add(new PropertyWidget(titledPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
+			} else {
+				for (final AstConcreteClafer childClafer : inputClafer.getChildren()) {
+					createConstraints(parent, childClafer, titledPanel);
+				}
+			}
+		}
+
+		if (inputClafer.hasRef()) {
+			if (inputClafer.getRef().getTargetType().isPrimitive() && !(inputClafer.getRef().getTargetType().getName().contains("string"))) {
+				if (!ClaferModelUtils.isAbstract(inputClafer)) {
+					this.userConstraints.add(
+						new PropertyWidget(titledPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
+				}
+			} else if (PropertiesMapperUtil.getenumMap().containsKey(inputClafer.getRef().getTargetType())) {
+				createConstraints(inputClafer, inputClafer.getRef().getTargetType(), titledPanel);
+			} else if (!inputClafer.getRef().getTargetType().isPrimitive()) {
+				if (!ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()).equals(titledPanel.getText())) {
+					final Group childPanel = createPanel(ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()), titledPanel);
+					createConstraints(inputClafer, inputClafer.getRef().getTargetType(), childPanel);
+				} else {
+					//same panel as main algorithm type (e.g., kda in secure pwd storage)
+					createConstraints(inputClafer, inputClafer.getRef().getTargetType(), titledPanel);
+				}
+			}
+		}
+
+		if (inputClafer.getSuperClafer() != null) {
+			createConstraints(parent, inputClafer.getSuperClafer(), titledPanel);
+		}
+
+	}
+
+	@Override
+	public void createControl(final Composite parent) {
+		this.container = new Composite(parent, SWT.NONE);
+
+		this.container.setBounds(10, 10, 450, 200);
+		final GridLayout layout = new GridLayout();
+		this.container.setLayout(layout);
 		layout.numColumns = 1;
 		//		try {
 		//			Group titledPanel = new Group(container, SWT.NONE);
@@ -85,73 +139,20 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 		// Add every constraints to its parent and group it as a separate titled
 		// panel
 
-		for (AstClafer taskAlgorithm : taskClafer.getChildren()) {
-			Group titledPanel = createPanel(ClaferModelUtils.removeScopePrefix(taskAlgorithm.getRef().getTargetType().getName()), container);
-			createConstraints(taskClafer, taskAlgorithm, titledPanel);
+		for (final AstClafer taskAlgorithm : this.taskClafer.getChildren()) {
+			final Group titledPanel = createPanel(ClaferModelUtils.removeScopePrefix(taskAlgorithm.getRef().getTargetType().getName()), this.container);
+			createConstraints(this.taskClafer, taskAlgorithm, titledPanel);
 		}
 
-		setControl(container);
+		setControl(this.container);
 	}
 
-	public void createConstraints(AstClafer parent, AstClafer inputClafer, Group titledPanel) {
-
-		if (inputClafer.hasChildren()) {
-			if (inputClafer.getGroupCard() != null && inputClafer.getGroupCard().getLow() >= 1) {
-				userConstraints
-					.add(new PropertyWidget(titledPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
-			} else
-				for (AstConcreteClafer childClafer : inputClafer.getChildren()) {
-					createConstraints(parent, childClafer, titledPanel);
-				}
-		}
-
-		if (inputClafer.hasRef()) {
-			if (inputClafer.getRef().getTargetType().isPrimitive() && !(inputClafer.getRef().getTargetType().getName().contains("string"))) {
-				if (!ClaferModelUtils.isAbstract(inputClafer)) {
-					userConstraints.add(
-						new PropertyWidget(titledPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
-				}
-			} else if (PropertiesMapperUtil.getenumMap().containsKey(inputClafer.getRef().getTargetType())) {
-				createConstraints(inputClafer, inputClafer.getRef().getTargetType(), titledPanel);
-			} else if (!inputClafer.getRef().getTargetType().isPrimitive()) {
-				if (!ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()).equals(titledPanel.getText())) {
-					Group childPanel = createPanel(ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()), titledPanel);
-					createConstraints(inputClafer, inputClafer.getRef().getTargetType(), childPanel);
-				} else {
-					//same panel as main algorithm type (e.g., kda in secure pwd storage)
-					createConstraints(inputClafer, inputClafer.getRef().getTargetType(), titledPanel);
-				}
-			}
-		}
-
-		if (inputClafer.getSuperClafer() != null) {
-			createConstraints(parent, inputClafer.getSuperClafer(), titledPanel);
-		}
-
-	}
-
-	public void createConstraints(AstClafer parent, AstAbstractClafer inputClafer, Group titledPanel) {
-
-		if (inputClafer.hasChildren()) {
-			for (AstConcreteClafer in : inputClafer.getChildren()) {
-				createConstraints(parent, in, titledPanel);
-			}
-		}
-		if (inputClafer.hasRef()) {
-			createConstraints(parent, inputClafer.getRef().getTargetType(), titledPanel);
-		}
-
-		if (inputClafer.getSuperClafer() != null) {
-			createConstraints(parent, inputClafer.getSuperClafer(), titledPanel);
-		}
-	}
-
-	private Group createPanel(String name, Composite parent) {
-		Group titledPanel = new Group(parent, SWT.LEFT);
+	private Group createPanel(final String name, final Composite parent) {
+		final Group titledPanel = new Group(parent, SWT.LEFT);
 		titledPanel.setText(name);
-		Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
+		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
 		titledPanel.setFont(boldFont);
-		GridLayout layout2 = new GridLayout();
+		final GridLayout layout2 = new GridLayout();
 
 		layout2.numColumns = 4;
 		titledPanel.setLayout(layout2);
@@ -159,12 +160,12 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 		return titledPanel;
 	}
 
-	public boolean getPageStatus() {
-		return PropertyWidget.status;
+	public List<PropertyWidget> getConstraints() {
+		return this.userConstraints;
 	}
 
-	public List<PropertyWidget> getConstraints() {
-		return userConstraints;
+	public boolean getPageStatus() {
+		return PropertyWidget.status;
 	}
 
 }

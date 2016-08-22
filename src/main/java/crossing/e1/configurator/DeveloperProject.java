@@ -50,6 +50,27 @@ public class DeveloperProject {
 		this.project = _project;
 	}
 
+	public boolean addJar(final String pathToJar) throws IOException, CoreException {
+		if (this.project.isOpen() && this.project.hasNature(Constants.JavaNatureID)) {
+			final IJavaProject projectAsJavaProject = JavaCore.create(this.project);
+			final IFile file = this.project.getFile(pathToJar);
+			final LinkedHashSet<IClasspathEntry> classPathEntryList = new LinkedHashSet<IClasspathEntry>();
+			final IClasspathEntry newEntryOfLibrary = JavaCore.newLibraryEntry(file.getFullPath(), null, null, false);
+
+			classPathEntryList.addAll(Arrays.asList(projectAsJavaProject.getRawClasspath()));
+			classPathEntryList.add(newEntryOfLibrary);
+
+			projectAsJavaProject.setRawClasspath(classPathEntryList.toArray(new IClasspathEntry[1]), null);
+			return true;
+		}
+
+		return false;
+	}
+
+	public IFolder getFolder(final String name) {
+		return this.project.getFolder(name);
+	}
+
 	public IFile getIFile(final String path) {
 		return this.project.getFile(path.substring(path.indexOf(this.project.getName()) + this.project.getName().length()));
 	}
@@ -85,28 +106,6 @@ public class DeveloperProject {
 		}
 		return null;
 	}
-	
-	public boolean addJar(String pathToJar) throws IOException, CoreException {
-		if (project.isOpen() && this.project.hasNature(Constants.JavaNatureID)) {
-			final IJavaProject projectAsJavaProject = JavaCore.create(project);
-			final IFile file = project.getFile(pathToJar);
-			final LinkedHashSet<IClasspathEntry> classPathEntryList = new LinkedHashSet<IClasspathEntry>();
-			final IClasspathEntry newEntryOfLibrary = JavaCore.newLibraryEntry(file.getFullPath(), null, null, false);
-			
-			classPathEntryList.addAll(Arrays.asList(projectAsJavaProject.getRawClasspath()));
-			classPathEntryList.add(newEntryOfLibrary);
-			
-			projectAsJavaProject.setRawClasspath(classPathEntryList.toArray(new IClasspathEntry[1]), null);
-			return true;
-		}
-
-		return false;
-	}
-	
-	public IFolder getFolder(String name) {
-		return project.getFolder(name);
-	}
-	
 
 	/**
 	 * @return Absolute Path of Project

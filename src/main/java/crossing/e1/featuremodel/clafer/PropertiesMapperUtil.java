@@ -31,13 +31,6 @@ public class PropertiesMapperUtil {
 	private static HashMap<AstAbstractClafer, List<AstClafer>> enumMap = null;
 
 	/**
-	 * private Constructor for singleton pattern
-	 */
-	private PropertiesMapperUtil() {
-
-	}
-
-	/**
 	 * used when there is an enum in the properties
 	 * 
 	 * @return
@@ -54,6 +47,13 @@ public class PropertiesMapperUtil {
 	 */
 	public static void resetEnumMap() {
 		PropertiesMapperUtil.enumMap = null;
+	}
+
+	/**
+	 * private Constructor for singleton pattern
+	 */
+	private PropertiesMapperUtil() {
+
 	}
 
 }

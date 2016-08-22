@@ -5,9 +5,7 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
@@ -29,11 +27,16 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private final Question quest;
 	private final HashMap<Question, Answer> selection = new HashMap<Question, Answer>();
 
-	public BeginnerTaskQuestionPage(final Question quest, Task task) {
+	public BeginnerTaskQuestionPage(final Question quest, final Task task) {
 		super("Display Questions");
 		setTitle("Configuring Selected Task: " + task.getDescription());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.quest = quest;
+	}
+
+	@Override
+	public boolean canFlipToNextPage() {
+		return isPageComplete();
 	}
 
 	@Override
@@ -43,40 +46,66 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		final GridLayout layout = new GridLayout();
 		container.setLayout(layout);
 
-		createQuestionControl(container, quest);
+		createQuestionControl(container, this.quest);
 		layout.numColumns = 1;
 		setControl(container);
+	}
+
+	public void createQuestionControl(final Composite parent, final Question question) {
+
+		final List<Answer> answers = question.getAnswers();
+		final Composite container = getPanel(parent);
+		final Label label = new Label(container, SWT.CENTER);
+		label.setText(question.getQuestionText());
+
+		final ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY);
+		comboViewer.setContentProvider(ArrayContentProvider.getInstance());
+		comboViewer.setInput(answers);
+
+		comboViewer.addSelectionChangedListener(arg0 -> {
+			final IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
+			BeginnerTaskQuestionPage.this.selection.put(question, (Answer) selection.getFirstElement());
+		});
+
+		comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (!(obj instanceof BeginnerTaskQuestionPage)) {
+			return false;
+		}
+		final BeginnerTaskQuestionPage cmp = (BeginnerTaskQuestionPage) obj;
+		return this.quest.equals(cmp.quest);
 	}
 
 	public HashMap<Question, Answer> getMap() {
 		return this.selection;
 	}
 
-	public synchronized HashMap<Question, Answer> getSelection() {
-		return this.selection;
+	private Composite getPanel(final Composite parent) {
+		final Composite titledPanel = new Composite(parent, SWT.NONE);
+		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 9, SWT.BOLD));
+		titledPanel.setFont(boldFont);
+		final GridLayout layout2 = new GridLayout();
+
+		layout2.numColumns = 4;
+		titledPanel.setLayout(layout2);
+
+		return titledPanel;
 	}
 
-	public void createQuestionControl(final Composite parent, final Question question) {
+	@Override
+	public IWizardPage getPreviousPage() {
+		final IWizardPage prev = super.getPreviousPage();
+		if (prev != null && prev instanceof BeginnerTaskQuestionPage) {
+			return getWizard().getPreviousPage(this);
+		}
+		return prev;
+	}
 
-		List<Answer> answers = question.getAnswers();
-		Composite container = getPanel(parent);
-		Label label = new Label(container, SWT.CENTER);
-		label.setText(question.getQuestionText());
-
-		ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY);
-		comboViewer.setContentProvider(ArrayContentProvider.getInstance());
-		comboViewer.setInput(answers);
-
-		comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-			@Override
-			public void selectionChanged(final SelectionChangedEvent arg0) {
-				IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
-				BeginnerTaskQuestionPage.this.selection.put(question, (Answer) selection.getFirstElement());
-			}
-		});
-
-		comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
+	public synchronized HashMap<Question, Answer> getSelection() {
+		return this.selection;
 	}
 
 	public void setMap(final HashMap<Question, Answer> hashMap, final ClaferModel model) {
@@ -114,41 +143,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		// for (ArrayList<AstConcreteClafer> x : userOptions.keySet()) {
 		// System.out.println(x.toString());
 		// }
-	}
-
-	private Composite getPanel(final Composite parent) {
-		final Composite titledPanel = new Composite(parent, SWT.NONE);
-		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 9, SWT.BOLD));
-		titledPanel.setFont(boldFont);
-		final GridLayout layout2 = new GridLayout();
-
-		layout2.numColumns = 4;
-		titledPanel.setLayout(layout2);
-
-		return titledPanel;
-	}
-
-	@Override
-	public boolean canFlipToNextPage() {
-		return isPageComplete();
-	}
-
-	@Override
-	public IWizardPage getPreviousPage() {
-		IWizardPage prev = super.getPreviousPage();
-		if (prev != null && prev instanceof BeginnerTaskQuestionPage) {
-			return getWizard().getPreviousPage(this);
-		}
-		return prev;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof BeginnerTaskQuestionPage)) {
-			return false;
-		}
-		BeginnerTaskQuestionPage cmp = (BeginnerTaskQuestionPage) obj;
-		return this.quest.equals(cmp.quest);
 	}
 
 }

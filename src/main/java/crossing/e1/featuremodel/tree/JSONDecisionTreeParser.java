@@ -25,7 +25,7 @@ class JSONDecisionTreeParser {
 
 		TreeModel decisionTree = null;
 
-		GsonBuilder gsonBuilder = new GsonBuilder();
+		final GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.IDENTITY);
 		gsonBuilder.registerTypeAdapter(TreeNode.class, new DecisionTreeDeserializer());
 
@@ -34,9 +34,9 @@ class JSONDecisionTreeParser {
 		try (BufferedReader reader = new BufferedReader(new FileReader(Utils.getAbsolutePath(filePath)))) {
 
 			decisionTree = gson.fromJson(reader, TreeModel.class);
-		} catch (FileNotFoundException e) {
+		} catch (final FileNotFoundException e) {
 			Activator.getDefault().logError(e);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Activator.getDefault().logError(e);
 		}
 

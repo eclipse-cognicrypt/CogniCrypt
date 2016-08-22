@@ -43,17 +43,12 @@ public class TLSConfigurationServerClientPage extends WizardPage {
 		super(Labels.SELECT_TASK);
 		setTitle(Labels.TLS_PAGE);
 		setDescription("Please select whether you want to create the server or client side.");
-		tls = this;
+		this.tls = this;
 	}
 
 	@Override
 	public boolean canFlipToNextPage() {
-		return clientRadioButton.getSelection();
-	}
-
-	@Override
-	public boolean isPageComplete() {
-		return false;
+		return this.clientRadioButton.getSelection();
 	}
 
 	@Override
@@ -66,41 +61,46 @@ public class TLSConfigurationServerClientPage extends WizardPage {
 
 		this.clientRadioButton = new Button(this.container, SWT.RADIO);
 		this.clientRadioButton.setText("Client");
-		clientRadioButton.addSelectionListener(new SelectionListener() {
+		this.clientRadioButton.addSelectionListener(new SelectionListener() {
 
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				try {
-					complete = true;
-					tls.setPageComplete(complete);
-				} catch (NumberFormatException e1) {}
+			public void widgetDefaultSelected(final SelectionEvent e) {
+				widgetSelected(e);
 			}
 
 			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				widgetSelected(e);
+			public void widgetSelected(final SelectionEvent e) {
+				try {
+					TLSConfigurationServerClientPage.this.complete = true;
+					TLSConfigurationServerClientPage.this.tls.setPageComplete(TLSConfigurationServerClientPage.this.complete);
+				} catch (final NumberFormatException e1) {}
 			}
 		});
 
 		this.serverRadioButton = new Button(this.container, SWT.RADIO);
 		this.serverRadioButton.setText("Server");
-		serverRadioButton.addSelectionListener(new SelectionListener() {
+		this.serverRadioButton.addSelectionListener(new SelectionListener() {
 
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				try {
-					complete = true;
-					tls.setPageComplete(complete);
-				} catch (NumberFormatException e1) {}
+			public void widgetDefaultSelected(final SelectionEvent e) {
+				widgetSelected(e);
 			}
 
 			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				widgetSelected(e);
+			public void widgetSelected(final SelectionEvent e) {
+				try {
+					TLSConfigurationServerClientPage.this.complete = true;
+					TLSConfigurationServerClientPage.this.tls.setPageComplete(TLSConfigurationServerClientPage.this.complete);
+				} catch (final NumberFormatException e1) {}
 			}
 		});
 
 		setControl(this.container);
+	}
+
+	@Override
+	public boolean isPageComplete() {
+		return false;
 	}
 
 }

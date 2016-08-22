@@ -8,17 +8,22 @@ import crossing.e1.configurator.tasks.Task;
 
 public class BeginnerModeQuestionnaire {
 
-	private List<Question> questionList;
+	private final List<Question> questionList;
 	private Task task;
 	private int counter = 0;
 
 	public BeginnerModeQuestionnaire(final Task task, final String filePath) {
 		this.task = task;
-		questionList = (new QuestionsJSONReader()).getQuestions(filePath);
+		this.questionList = (new QuestionsJSONReader()).getQuestions(filePath);
+	}
+
+	public Question getQuestionByID(final int ID) {
+		this.counter = ID;
+		return this.questionList.get(this.counter);
 	}
 
 	public List<Question> getQutionare() throws NullPointerException {
-		return questionList;
+		return this.questionList;
 	}
 
 	public Task getTask() {
@@ -32,26 +37,21 @@ public class BeginnerModeQuestionnaire {
 	public boolean isFirstQuestion() {
 		return this.counter == 0;
 	}
-	
-	public Question getQuestionByID(int ID) {
-		this.counter = ID;
-		return questionList.get(this.counter);
-	}
 
 	public Question nextQuestion() {
-		return questionList.get(this.counter++);
+		return this.questionList.get(this.counter++);
 	}
 
 	public Question previousQuestion() {
-		return questionList.get(--this.counter);
-	}
-
-	public void setTask(final Task task) {
-		this.task = task;
+		return this.questionList.get(--this.counter);
 	}
 
 	void setCounter(final int value) {
 		this.counter = value;
+	}
+
+	public void setTask(final Task task) {
+		this.task = task;
 	}
 
 }

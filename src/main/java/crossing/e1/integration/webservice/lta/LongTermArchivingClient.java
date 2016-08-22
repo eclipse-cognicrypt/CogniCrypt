@@ -25,8 +25,6 @@ import de.tu_darmstadt.cs.cdc.moltas.services.utilities.ServiceClientCreator;
  */
 public class LongTermArchivingClient {
 
-	private ArchivingSystem archivingSystem;
-
 	/**
 	 * 
 	 * Translates a `dataStructure` string to an ArchivingConfiguration.
@@ -37,7 +35,7 @@ public class LongTermArchivingClient {
 	 *        DataStructe that fulfill the clafer constrains w.r.t. to the questionaire.
 	 * @return null, if the given dataStructure is unknown else the correct ArchiveConfiguration that is required to create an Archive.
 	 */
-	private static ArchiveConfiguration mapDatastructureToScheme(String dataStructure) {
+	private static ArchiveConfiguration mapDatastructureToScheme(final String dataStructure) {
 		Scheme archivingScheme = null;
 		switch (dataStructure) {
 			case "Simple_List":
@@ -54,32 +52,34 @@ public class LongTermArchivingClient {
 				break;
 		}
 
-		ArchiveConfiguration archConfig = (archivingScheme == null) ? null : ArchiveConfiguration.createDefaultArchiveConfiguration(archivingScheme);
+		final ArchiveConfiguration archConfig = (archivingScheme == null) ? null : ArchiveConfiguration.createDefaultArchiveConfiguration(archivingScheme);
 
 		return archConfig;
 	}
 
+	private ArchivingSystem archivingSystem;
+
 	public LongTermArchivingClient() throws ServiceClientCreationException {
-		if (archivingSystem != null) {
-			archivingSystem = (ArchivingSystem) ServiceClientCreator.createServiceClient(ServiceType.ARCHIVING_SYSTEM);
+		if (this.archivingSystem != null) {
+			this.archivingSystem = (ArchivingSystem) ServiceClientCreator.createServiceClient(ServiceType.ARCHIVING_SYSTEM);
 			mapDatastructureToScheme("");
 		}
 	}
 
-	public Archive createArchive(String archiveName, ArchiveConfiguration archiveConfig) throws InternalServiceErrorException, IOException {
-		return archivingSystem.createArchive(archiveName, archiveConfig);
+	public Archive createArchive(final String archiveName, final ArchiveConfiguration archiveConfig) throws InternalServiceErrorException, IOException {
+		return this.archivingSystem.createArchive(archiveName, archiveConfig);
 	}
 
-	public void renameArchive(long archiveId, String newName) throws EntityNotFoundException, InternalServiceErrorException {
-		archivingSystem.renameArchive(archiveId, newName);
+	public void deleteArchive(final long archiveID) throws EntityNotFoundException, InternalServiceErrorException, IOException {
+		this.archivingSystem.deleteArchive(archiveID);
 	}
 
 	public List<Archive> getArchives() throws InternalServiceErrorException {
-		return archivingSystem.getArchives();
+		return this.archivingSystem.getArchives();
 	}
 
-	public void deleteArchive(long archiveID) throws EntityNotFoundException, InternalServiceErrorException, IOException {
-		archivingSystem.deleteArchive(archiveID);
+	public void renameArchive(final long archiveId, final String newName) throws EntityNotFoundException, InternalServiceErrorException {
+		this.archivingSystem.renameArchive(archiveId, newName);
 	}
 
 }

@@ -47,7 +47,7 @@ public class XMLParser implements Labels {
 	 * @param value
 	 * @return
 	 */
-	public String displayInstanceValues(final InstanceClafer inst, HashMap<Question, Answer> constraints, String value) {
+	public String displayInstanceValues(final InstanceClafer inst, final HashMap<Question, Answer> constraints, String value) {
 		if (inst.hasChildren()) {
 			final String taskName = inst.getType().getName();
 			value = "<task description=\"" + ClaferModelUtils
@@ -67,10 +67,10 @@ public class XMLParser implements Labels {
 			}
 		}
 		value += "<code>";
-		for (Entry<Question, Answer> ent : constraints.entrySet()) {
-			ArrayList<CodeDependency> cdp = ent.getValue().getCodeDependencies();
+		for (final Entry<Question, Answer> ent : constraints.entrySet()) {
+			final ArrayList<CodeDependency> cdp = ent.getValue().getCodeDependencies();
 			if (cdp != null) {
-				for (CodeDependency dep : cdp) {
+				for (final CodeDependency dep : cdp) {
 					value += "<" + dep.getOption() + ">" + dep.getValue() + "</" + dep.getOption() + ">";
 				}
 			}
@@ -205,9 +205,11 @@ public class XMLParser implements Labels {
 	 * @return
 	 */
 	private boolean isAlgorithm(final AstClafer astClafer) {
-		if (astClafer.hasRef())
-			if (astClafer.getRef().getTargetType() != null && astClafer.getRef().getTargetType().getSuperClafer() != null)
+		if (astClafer.hasRef()) {
+			if (astClafer.getRef().getTargetType() != null && astClafer.getRef().getTargetType().getSuperClafer() != null) {
 				return astClafer.getRef().getTargetType().getSuperClafer().getName().contains("_Algorithm");
+			}
+		}
 
 		return false;
 

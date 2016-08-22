@@ -9,56 +9,52 @@ public class Question {
 	private ArrayList<Answer> answers;
 	private Answer defaultAnswer;
 
-	public String getQuestionText() {
-		return questionText;
-	}
-
-	public void setQuestionText(String questionText) {
-		this.questionText = questionText;
-	}
-
 	public ArrayList<Answer> getAnswers() {
-		return answers;
-	}
-
-	public void setAnswers(ArrayList<Answer> answers) {
-		this.answers = answers;
+		return this.answers;
 	}
 
 	public Answer getDefaultAnswer() {
-		if (defaultAnswer == null) {
-			for (Answer answer : answers) {
+		if (this.defaultAnswer == null) {
+			for (final Answer answer : this.answers) {
 				if (answer.isDefaultAnswer()) {
-					defaultAnswer = answer;
+					this.defaultAnswer = answer;
 					break;
 				}
 			}
 		}
 
-		return defaultAnswer;
+		return this.defaultAnswer;
+	}
+
+	public int getId() {
+		return this.id;
+	}
+
+	public String getQuestionText() {
+		return this.questionText;
+	}
+
+	public void setAnswers(final ArrayList<Answer> answers) {
+		this.answers = answers;
+	}
+
+	public void setId(final int id) {
+		this.id = id;
+	}
+
+	public void setQuestionText(final String questionText) {
+		this.questionText = questionText;
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append(questionText + "\n");
-		for (Answer answer : answers) {
-
-			builder.append("\t" + answer.getValue() + " [dependencies=" + answer.getClaferDependencies() + "], defaultValue=" + answer.isDefaultAnswer() + "\n");
-
+		final StringBuilder builder = new StringBuilder();
+		builder.append(this.questionText + "\n");
+		for (final Answer answer : this.answers) {
+			builder.append("\t" + answer.getValue() + " [dependencies=" + answer.getClaferDependencies() + "], defaultValue=" + answer
+				.isDefaultAnswer() + ", next Question=" + answer.getNextID());
 		}
-
 		return builder.toString();
-	}
-
-	
-	public int getId() {
-		return id;
-	}
-
-	
-	public void setId(int id) {
-		this.id = id;
 	}
 
 }

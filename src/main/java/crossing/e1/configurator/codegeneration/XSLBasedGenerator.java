@@ -69,17 +69,69 @@ import crossing.e1.configurator.utilities.Utils;
  */
 public class XSLBasedGenerator {
 
-	private DeveloperProject project;
+	class Tuple<X, Y> implements Comparable<Tuple<X, Y>> {
 
-	public DeveloperProject getDeveloperProject() {
-		return project;
+		public X x;
+		public Y y;
+
+		public Tuple(final X l, final Y r) {
+			this.x = l;
+			this.y = r;
+		}
+
+		@Override
+		public int compareTo(final Tuple<X, Y> comp) {
+			if (this.equals(comp)) {
+				return 0;
+			}
+			if (!(this.x instanceof Comparable && comp.x instanceof Comparable && this.y instanceof Comparable && comp.y instanceof Comparable)) {
+				return -1;
+			} else {
+				@SuppressWarnings("unchecked")
+				final Comparable<X> thisX = (Comparable<X>) this.x;
+				return thisX.compareTo(comp.x);
+			}
+		}
+
+		@Override
+		public boolean equals(final Object o) {
+			if (!(o instanceof Tuple)) {
+				return false;
+			} else {
+				@SuppressWarnings("unchecked")
+				final Tuple<X, Y> t = (Tuple<X, Y>) o;
+				return t.y.equals(this.y) && t.x.equals(this.x);
+			}
+		}
 	}
 
+	/**
+	 * Performs the XSL-Transformation
+	 *
+	 * @param sourceFile
+	 *        xmlFile that contains the Clafer Instance
+	 * @param xsltFile
+	 *        XSL Template
+	 * @param resultDir
+	 *        Path to temporary output file
+	 * @throws TransformerException
+	 *         see {@link javax.xml.transform.Transformer#transform(javax.xml.transform.Source, javax.xml.transform.Result) transform()}
+	 */
+	private static void transform(final File sourceFile, final File xsltFile, final String resultDir) throws TransformerException {
+		// TODO: currently, only one xml file is used
+		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
+		final TransformerFactory tFactory = TransformerFactory.newInstance();
+		final Transformer transformer = tFactory.newTransformer(new StreamSource(xsltFile));
+		transformer.transform(new StreamSource(sourceFile), new StreamResult(new File(resultDir)));
+	}
+
+	private DeveloperProject project;
 	private boolean fileOpened = false;
 	private IFile currentFile;
 	private int startPosForImports = -1;
 	private int endPosForImports = -1;
 	private int startingPositionForRunMethod = -1;
+
 	private int endingPositionForRunMethod = -1;
 
 	/**
@@ -87,7 +139,7 @@ public class XSLBasedGenerator {
 	 *
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if transformation successful/failed.
 	 */
-	public boolean generateCodeTemplates(File claferOutput, String path, File xslFile) {
+	public boolean generateCodeTemplates(final File claferOutput, final String path, final File xslFile) {
 		try {
 			// Check whether directories and templates/model exist
 			final File claferOutputFiles = claferOutput != null && claferOutput.exists() ? claferOutput
@@ -104,27 +156,28 @@ public class XSLBasedGenerator {
 
 			// Add additional resources like jar files
 			if (!path.isEmpty()) {
-				File addResFolder = new File(Utils.getAbsolutePath(path));
-				File[] members = addResFolder.listFiles();
-				IFolder libFolder = project.getFolder(Constants.pathsForLibrariesinDevProject);
+				final File addResFolder = new File(Utils.getAbsolutePath(path));
+				final File[] members = addResFolder.listFiles();
+				final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesinDevProject);
 				if (!libFolder.exists()) {
 					libFolder.create(true, true, null);
 				}
 				for (int i = 0; i < members.length; i++) {
-					Path memberPath = members[i].toPath();
-					Files.copy(memberPath, new File(project.getProjectPath() + Constants.fileSeparator + Constants.pathsForLibrariesinDevProject + Constants.fileSeparator + memberPath.getFileName()).toPath(),
+					final Path memberPath = members[i].toPath();
+					Files.copy(
+						memberPath, new File(this.project
+							.getProjectPath() + Constants.fileSeparator + Constants.pathsForLibrariesinDevProject + Constants.fileSeparator + memberPath.getFileName()).toPath(),
 						StandardCopyOption.REPLACE_EXISTING);
-					String filePath = members[i].toString();
-					String cutPath = filePath.substring(filePath.lastIndexOf(Constants.fileSeparator));
+					final String filePath = members[i].toString();
+					final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.fileSeparator));
 					if (".jar".equals(cutPath.substring(cutPath.indexOf(".")))) {
-						if (!project.addJar(Constants.pathsForLibrariesinDevProject + Constants.fileSeparator + members[i].getName())) {
+						if (!this.project.addJar(Constants.pathsForLibrariesinDevProject + Constants.fileSeparator + members[i].getName())) {
 							return false;
 						}
 					}
-	
 				}
 			}
-			
+
 			// If there is a java file opened in the editor, insert call code there, and remove temporary output file
 			// else keep the output file
 			// In any case, organize imports
@@ -141,31 +194,6 @@ public class XSLBasedGenerator {
 		} catch (TransformerException | IOException | CoreException | BadLocationException e) {
 			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
 			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * This method initializes the code template generator. If neither a java file is opened nor a project selected initialization fails.
-	 *
-	 * @return <Code>true</Code>/<Code>false</Code> if initialization successful/failed.
-	 */
-	public boolean initCodeGeneration() {
-		this.currentFile = Utils.getCurrentlyOpenFile();
-		this.fileOpened = this.currentFile != null;
-		if (this.currentFile != null && Constants.JAVA.equals(this.currentFile.getFileExtension())) {
-			// Get currently opened file to
-			this.project = new DeveloperProject(this.currentFile.getProject());
-		} else {
-			// if no open file, get selected project
-			final IProject iproject = Utils.getIProjectFromSelection();
-			if (iproject == null) {
-				// if no project selected abort with error message
-				Activator.getDefault().logError(null, Constants.NoFileandNoProjectOpened);
-				return false;
-			}
-			Activator.getDefault().logInfo(Constants.NoFileOpenedErrorMessage);
-			this.project = new DeveloperProject(iproject);
 		}
 		return true;
 	}
@@ -229,6 +257,35 @@ public class XSLBasedGenerator {
 			this.endingPositionForRunMethod) };
 	}
 
+	public DeveloperProject getDeveloperProject() {
+		return this.project;
+	}
+
+	/**
+	 * This method initializes the code template generator. If neither a java file is opened nor a project selected initialization fails.
+	 *
+	 * @return <Code>true</Code>/<Code>false</Code> if initialization successful/failed.
+	 */
+	public boolean initCodeGeneration() {
+		this.currentFile = Utils.getCurrentlyOpenFile();
+		this.fileOpened = this.currentFile != null;
+		if (this.currentFile != null && Constants.JAVA.equals(this.currentFile.getFileExtension())) {
+			// Get currently opened file to
+			this.project = new DeveloperProject(this.currentFile.getProject());
+		} else {
+			// if no open file, get selected project
+			final IProject iproject = Utils.getIProjectFromSelection();
+			if (iproject == null) {
+				// if no project selected abort with error message
+				Activator.getDefault().logError(null, Constants.NoFileandNoProjectOpened);
+				return false;
+			}
+			Activator.getDefault().logInfo(Constants.NoFileOpenedErrorMessage);
+			this.project = new DeveloperProject(iproject);
+		}
+		return true;
+	}
+
 	/**
 	 * If a file was open when the code generation was started, this method inserts the glue code that calls the generated classes directly into the opened file and removes the
 	 * temporary output file. If no file was open this method is skipped and the temporary output file is not removed.
@@ -256,7 +313,7 @@ public class XSLBasedGenerator {
 
 		int cursorPos = cursorPosition.getOffset();
 		final String docContent = currentlyOpenDocument.get();
-		TreeSet<Tuple<Integer, Integer>> methLims = new TreeSet<Tuple<Integer, Integer>>();
+		final TreeSet<Tuple<Integer, Integer>> methLims = new TreeSet<Tuple<Integer, Integer>>();
 		Tuple<Integer, Integer> classlims;
 		classlims = new Tuple<Integer, Integer>(0, 0);
 
@@ -273,7 +330,7 @@ public class XSLBasedGenerator {
 			}
 
 			@Override
-			public boolean visit(TypeDeclaration node) {
+			public boolean visit(final TypeDeclaration node) {
 				classlims.x = node.getStartPosition();
 				classlims.y = node.getStartPosition() + node.getLength();
 				return super.visit(node);
@@ -287,7 +344,7 @@ public class XSLBasedGenerator {
 		if (classlims.x < cursorPos || cursorPos < classlims.y) {
 			cursorPos = classlims.y - 2;
 		} else {
-			for (Tuple<Integer, Integer> meth : methLims) {
+			for (final Tuple<Integer, Integer> meth : methLims) {
 				if (meth.x.intValue() > cursorPos) {
 					break;
 				}
@@ -330,59 +387,5 @@ public class XSLBasedGenerator {
 	protected void setPosForRunMethod(final int start, final int end) {
 		this.startingPositionForRunMethod = start;
 		this.endingPositionForRunMethod = end;
-	}
-
-	/**
-	 * Performs the XSL-Transformation
-	 *
-	 * @param sourceFile
-	 *        xmlFile that contains the Clafer Instance
-	 * @param xsltFile
-	 *        XSL Template
-	 * @param resultDir
-	 *        Path to temporary output file
-	 * @throws TransformerException
-	 *         see {@link javax.xml.transform.Transformer#transform(javax.xml.transform.Source, javax.xml.transform.Result) transform()}
-	 */
-	private static void transform(final File sourceFile, final File xsltFile, final String resultDir) throws TransformerException {
-		// TODO: currently, only one xml file is used
-		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
-		final TransformerFactory tFactory = TransformerFactory.newInstance();
-		final Transformer transformer = tFactory.newTransformer(new StreamSource(xsltFile));
-		transformer.transform(new StreamSource(sourceFile), new StreamResult(new File(resultDir)));
-	}
-
-	class Tuple<X, Y> implements Comparable<Tuple<X, Y>> {
-
-		public X x;
-		public Y y;
-
-		public Tuple(X l, Y r) {
-			x = l;
-			y = r;
-		}
-
-		public boolean equals(Object o) {
-			if (!(o instanceof Tuple)) {
-				return false;
-			} else {
-				@SuppressWarnings("unchecked")
-				Tuple<X, Y> t = (Tuple<X, Y>) o;
-				return t.y.equals(this.y) && t.x.equals(this.x);
-			}
-		}
-
-		@Override
-		public int compareTo(Tuple<X, Y> comp) {
-			if (this.equals(comp))
-				return 0;
-			if (!(this.x instanceof Comparable && comp.x instanceof Comparable && this.y instanceof Comparable && comp.y instanceof Comparable)) {
-				return -1;
-			} else {
-				@SuppressWarnings("unchecked")
-				Comparable<X> thisX = (Comparable<X>) this.x;
-				return thisX.compareTo(comp.x);
-			}
-		}
 	}
 }

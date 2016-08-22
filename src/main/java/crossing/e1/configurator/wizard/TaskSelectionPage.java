@@ -24,10 +24,8 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -56,12 +54,8 @@ public class TaskSelectionPage extends WizardPage {
 		//this.model = claferModel;
 	}
 
-	public Task getSelectedTask() {
-		return (Task) ((IStructuredSelection) taskComboSelection.getSelection()).getFirstElement();
-	}
-
 	public boolean canProceed() {
-		return canProceed;
+		return this.canProceed;
 	}
 
 	@Override
@@ -81,41 +75,41 @@ public class TaskSelectionPage extends WizardPage {
 
 		final List<Task> tasks = TaskJSONReader.getTasks();
 
-		taskComboSelection.setLabelProvider(new LabelProvider() {
+		this.taskComboSelection.setLabelProvider(new LabelProvider() {
 
 			@Override
-			public String getText(Object element) {
+			public String getText(final Object element) {
 				if (element instanceof Task) {
-					Task current = (Task) element;
+					final Task current = (Task) element;
 					return current.getDescription();
 				}
 				return super.getText(element);
 			}
 		});
 
-		taskComboSelection.setInput(tasks);
+		this.taskComboSelection.setInput(tasks);
 
-		taskComboSelection.addSelectionChangedListener(new ISelectionChangedListener() {
+		this.taskComboSelection.addSelectionChangedListener(event -> {
+			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+			final Task selectedTask = (Task) selection.getFirstElement();
 
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-				Task selectedTask = (Task) selection.getFirstElement();
+			TaskSelectionPage.this.taskComboSelection.refresh();
 
-				taskComboSelection.refresh();
-
-				if (selectedTask != null) {
-					canProceed = true;
-				}
+			if (selectedTask != null) {
+				TaskSelectionPage.this.canProceed = true;
 			}
 		});
 
-		taskComboSelection.setSelection(new StructuredSelection(tasks.get(0)));
+		this.taskComboSelection.setSelection(new StructuredSelection(tasks.get(0)));
 
 		this.advancedModeCheckBox = new Button(this.container, SWT.CHECK);
 		this.advancedModeCheckBox.setText(Constants.ADVANCED_MODE);
 		this.advancedModeCheckBox.setSelection(false);
 		setControl(this.container);
+	}
+
+	public Task getSelectedTask() {
+		return (Task) ((IStructuredSelection) this.taskComboSelection.getSelection()).getFirstElement();
 	}
 
 	/**

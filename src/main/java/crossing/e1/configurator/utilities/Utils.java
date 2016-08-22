@@ -119,7 +119,7 @@ public class Utils {
 	public static IProject getIProjectFromSelection() {
 		final ISelectionService selectionService = Workbench.getInstance().getActiveWorkbenchWindow().getSelectionService();
 		final ISelection selection = selectionService.getSelection();
-	
+
 		IProject iproject = null;
 		if (selection instanceof IStructuredSelection) {
 			final Object element = ((IStructuredSelection) selection).getFirstElement();

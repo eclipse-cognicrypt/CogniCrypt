@@ -22,6 +22,7 @@ package crossing.e1.featuremodel.clafer;
 import static org.clafer.ast.Asts.$this;
 import static org.clafer.ast.Asts.constant;
 import static org.clafer.ast.Asts.equal;
+import static org.clafer.ast.Asts.global;
 import static org.clafer.ast.Asts.greaterThan;
 import static org.clafer.ast.Asts.greaterThanEqual;
 import static org.clafer.ast.Asts.join;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.clafer.ast.AstAbstractClafer;
 import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstModel;
@@ -109,6 +111,23 @@ public class InstanceGenerator {
 		}
 	}
 
+	void addConstraints(final AstClafer taskAlgorithm, final AstConcreteClafer algorithmProperty, final String operator, final String value) {
+		if (operator.equals("=")) {
+			if (algorithmProperty != null) {
+				taskAlgorithm.addConstraint(equal(joinRef(join(joinRef($this()), algorithmProperty)), constant(value)));
+			} else {
+				AstAbstractClafer aac = (AstAbstractClafer) taskAlgorithm.getRef().getTargetType();
+				for (AstClafer ac : aac.getSubs()) {
+					if (ac.getName().endsWith(value)) {
+						taskAlgorithm.addConstraint(equal(joinRef($this()), global(ac)));
+					}
+				}
+				
+			}
+		}
+	}
+	
+	
 	/**
 	 * This method is to parse the map of clafers and apply their values as constraints before instance generation, used only in advanceduserMode
 	 *
@@ -121,7 +140,7 @@ public class InstanceGenerator {
 
 			if (constraint.isEnabled() && !constraint.isGroupConstraint()) { //not sure why we need this check but keeping it from Ram's code till we figure it out
 				final String operator = constraint.getOperator();
-				final int value = constraint.getValue();
+				final String value = constraint.getValue();
 				final AstConcreteClafer parent = (AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getParentClafer().getName());
 				final AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getChildClafer().getName());
 				if (operand != null && !ClaferModelUtils.isAbstract(operand)) {
@@ -143,7 +162,12 @@ public class InstanceGenerator {
 				for (final ClaferDependency claferDependency : answer.getClaferDependencies()) {
 					final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + claferDependency.getAlgorithm());
 					final AstConcreteClafer propertyClafer = (AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + claferDependency.getOperand());
-					addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), Integer.parseInt(claferDependency.getValue()));
+					try {
+						Integer value = Integer.parseInt(claferDependency.getValue());
+						addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), value);
+					} catch (NumberFormatException e) { 
+						addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), claferDependency.getValue());
+					}
 				}
 			}
 		}
@@ -154,7 +178,11 @@ public class InstanceGenerator {
 	 */
 	public void generateInstanceMapping() {
 		for (final InstanceClafer inst : this.generatedInstances) {
+			
 			String key = getInstanceName(inst);
+			if (key.isEmpty()) {
+				key = inst.getChildren()[0].getRef().toString();
+			}
 			if (inst.getType().getName().equals(this.taskName) && key.length() > 0) {
 				/**
 				 * Check if any instance has same name , if yes add numerical values as suffix
@@ -197,7 +225,7 @@ public class InstanceGenerator {
 				this.claferModel.getScope().toBuilder()
 					//.defaultScope(Integer.parseInt(new ReadConfig().getValue(DEFAULT_SCOPE)))
 					.intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
-
+						
 			while (this.solver.find()) {
 				final InstanceClafer instance = this.solver.instance().getTopClafers()[this.solver.instance().getTopClafers().length - 1];
 				this.uniqueInstances.put(getHashValueOfInstance(instance), instance);
@@ -282,10 +310,8 @@ public class InstanceGenerator {
 			} else if (inst.hasRef() && !inst.getType().isPrimitive() && !inst.getRef().getClass().toString().contains(Constants.INTEGER) && !inst.getRef().getClass().toString()
 				.contains(Constants.STRING) && !inst.getRef().getClass().toString().contains(Constants.BOOLEAN)) {
 				currentInstanceName += getInstanceName((InstanceClafer) inst.getRef());
-			} else {
-				if (inst.getType().getName().contains("_name") && inst.getRef().getClass().toString().contains(Constants.STRING)) {
-					return inst.getRef().toString().replace("\"", "");
-				}
+			} else if (inst.getType().getName().contains("_name") && inst.getRef().getClass().toString().contains(Constants.STRING)) {
+				return inst.getRef().toString().replace("\"", "");
 			}
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e);

@@ -104,14 +104,28 @@ public class PWHasher {
 </xsl:result-document>
 </xsl:if>
 
-<xsl:if test="//task[@description='Archiving Documents']">
+
+
+package <xsl:value-of select="//Package"/>; 
+<xsl:apply-templates select="//Import"/>	
+public class Output {
+	public byte[] run(String pwd) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
+		PWHasher pwHasher = new PWHasher();
+		return pwHasher.hashPW(pwd);
+	}
+}
+</xsl:if>
+
+<xsl:if test="//task[@description='LongTermArchiving']">
 <xsl:result-document href="LongTermArchivingClient.java">
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
+import java.util.List;
 
 public class LongTermArchivingClient {
 
 	private ArchivingSystem archivingSystem;
+	private ArchiveConfiguration archiveConfig;
 	
 	/**
 	 * 
@@ -152,12 +166,12 @@ public class LongTermArchivingClient {
 	
 	public LongTermArchivingClient() throws ServiceClientCreationException {
 		if(archivingSystem != null){
-			archivingSystem = (ArchivingSystem) ServiceClientCreator.createServiceClient(ServiceType.ARCHIVING_SYSTEM);
-			mapDatastructureToScheme("");
+			this.archivingSystem = (ArchivingSystem) ServiceClientCreator.createServiceClient(ServiceType.ARCHIVING_SYSTEM);
+			this.archiveConfig = mapDatastructureToScheme("<xsl:value-of select="//task/algorithm[@type='List']/list"/>");
 		}
 	}
 	
-	public Archive createArchive(String archiveName, ArchiveConfiguration archiveConfig) throws InternalServiceErrorException, IOException{
+	public Archive createArchive(String archiveName) throws InternalServiceErrorException, IOException{
 		return archivingSystem.createArchive(archiveName, archiveConfig);
 	}
 	
@@ -174,14 +188,13 @@ public class LongTermArchivingClient {
 	}
 } 
 </xsl:result-document>
-</xsl:if>
 
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public byte[] run(String pwd) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
-		PWHasher pwHasher = new PWHasher();
-		return pwHasher.hashPW(pwd);
+	public void run(String archiveName) throws ServiceClientCreationException, InternalServiceErrorException, IOException  {
+		LongTermArchivingClient ltac = new LongTermArchivingClient();
+		Archive a = ltac.createArchive(archiveName);
 	}
 }
 </xsl:if>

@@ -33,3 +33,4 @@ LongTermArchiving : Task
 	[numDoc = Single && addDoc = Once => list = Skip_List]
 	[numDoc = Single && addDoc = Once && trust = SignatureBased && trust != Notaries => list = Simple_List]
 	[numDoc = Single && addDoc = Once && trust = Notaries => list = Notarial_Attestation_Wrapper]
+	

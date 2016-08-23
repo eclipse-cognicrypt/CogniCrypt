@@ -169,8 +169,8 @@ public class PropertyWidget {
 		return this.parentClafer;
 	}
 
-	public Integer getValue() {
-		return this.valueSpinner.getSelection();
+	public String getValue() {
+		return String.valueOf(this.valueSpinner.getSelection());
 	}
 
 	public boolean isEnabled() {

@@ -128,6 +128,9 @@ public class ConfiguratorWizard extends Wizard {
 					this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextQuestion(), this.beginnerQuestions.getTask());
 				}
 			}
+			if (constraints != null) {
+				constraints = null;
+			}
 			if (this.preferenceSelectionPage != null) {
 				addPage(this.preferenceSelectionPage);
 			}

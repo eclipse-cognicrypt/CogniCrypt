@@ -22,6 +22,7 @@ package crossing.e1.configurator.wizard;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -128,8 +129,8 @@ public class ConfiguratorWizard extends Wizard {
 					this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextQuestion(), this.beginnerQuestions.getTask());
 				}
 			}
-			if (constraints != null) {
-				constraints = null;
+			if (this.constraints != null) {
+				this.constraints = null;
 			}
 			if (this.preferenceSelectionPage != null) {
 				addPage(this.preferenceSelectionPage);
@@ -160,11 +161,14 @@ public class ConfiguratorWizard extends Wizard {
 				//TODO: Implement for Advanced Mode
 			} else {
 				if (this.constraints == null) {
-					this.constraints = ((BeginnerTaskQuestionPage) currentPage).getMap();
+					this.constraints = new HashMap<Question, Answer>();
 				}
 
+				final Entry<Question, Answer> entry = ((BeginnerTaskQuestionPage) currentPage).getMap();
+				this.constraints.put(entry.getKey(), entry.getValue());
+
 				if (this.beginnerQuestions.hasMoreQuestions()) {
-					final int nextID = ((Answer) ((BeginnerTaskQuestionPage) currentPage).getSelection().values().toArray()[0]).getNextID();
+					final int nextID = entry.getValue().getNextID();
 					if (nextID > -1) {
 						this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.getQuestionByID(nextID), this.beginnerQuestions.getTask());
 						if (checkifInUpdateRound()) {
@@ -184,7 +188,7 @@ public class ConfiguratorWizard extends Wizard {
 							addPage(this.preferenceSelectionPage);
 						}
 
-						this.constraints.putAll(((BeginnerTaskQuestionPage) currentPage).getMap());
+						//						this.constraints.putAll(((BeginnerTaskQuestionPage) currentPage).getMap());
 						return this.preferenceSelectionPage;
 					}
 				}

@@ -1,6 +1,7 @@
 [
 	{
 		"id" : "0",
+		"element" : "combo",
 		"questionText":"Do you want to add new documents frequently?",
 		"answers":[
 			{
@@ -21,6 +22,7 @@
 ,
 	{
 		"id" : "1",
+		"element" : "combo",
 		"questionText":"Do you want to protect large sets of documents?",
 		"answers":[
 			{"value":"Yes",
@@ -36,6 +38,7 @@
 
 	{
 		"id" : "2",
+		"element" : "combo",
 		"questionText":"What kind of authority do you trust?",
 		"answers":[
 			{"value":"Timestamping authorities",
@@ -54,6 +57,7 @@
 
 	{
 		"id" : "3",
+		"element" : "combo",
 		"questionText":"Do you want to protect only a single document?",
 		"answers":[
 			{"value":"Yes"

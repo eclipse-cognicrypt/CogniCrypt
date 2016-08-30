@@ -1,7 +1,9 @@
 package crossing.e1.configurator.wizard.beginner;
 
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -15,6 +17,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Question;
@@ -25,7 +28,7 @@ import crossing.e1.featuremodel.clafer.ClaferModel;
 public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private final Question quest;
-	private final HashMap<Question, Answer> selection = new HashMap<Question, Answer>();
+	private Entry<Question, Answer> selection = new AbstractMap.SimpleEntry<Question, Answer>(null, null);
 
 	public BeginnerTaskQuestionPage(final Question quest, final Task task) {
 		super("Display Questions");
@@ -57,17 +60,38 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		final Composite container = getPanel(parent);
 		final Label label = new Label(container, SWT.CENTER);
 		label.setText(question.getQuestionText());
+		switch (question.getElement()) {
+			case combo:
+				final ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY);
+				comboViewer.setContentProvider(ArrayContentProvider.getInstance());
+				comboViewer.setInput(answers);
 
-		final ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY);
-		comboViewer.setContentProvider(ArrayContentProvider.getInstance());
-		comboViewer.setInput(answers);
+				comboViewer.addSelectionChangedListener(arg0 -> {
+					final IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
+					BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, (Answer) selection.getFirstElement());
+					//BeginnerTaskQuestionPage.this.selection.put(question, (Answer) selection.getFirstElement());
+				});
 
-		comboViewer.addSelectionChangedListener(arg0 -> {
-			final IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
-			BeginnerTaskQuestionPage.this.selection.put(question, (Answer) selection.getFirstElement());
-		});
+				comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
+				break;
 
-		comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
+			case text:
+				final Text inputField = new Text(container, SWT.BORDER);
+				inputField.setSize(240, inputField.getSize().y);
+				inputField.addModifyListener(e -> {
+					final Answer a = question.getDefaultAnswer();
+					final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?:\\\\-])", "\\\\");
+
+					a.setValue(cleanedInput);
+					a.getCodeDependencies().get(0).setValue(cleanedInput);
+					BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, a);
+					//BeginnerTaskQuestionPage.this.selection.put(question, a);
+				});
+
+			default:
+				break;
+		}
+
 	}
 
 	@Override
@@ -79,7 +103,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		return this.quest.equals(cmp.quest);
 	}
 
-	public HashMap<Question, Answer> getMap() {
+	public Entry<Question, Answer> getMap() {
 		return this.selection;
 	}
 
@@ -104,7 +128,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		return prev;
 	}
 
-	public synchronized HashMap<Question, Answer> getSelection() {
+	public synchronized Entry<Question, Answer> getSelection() {
 		return this.selection;
 	}
 

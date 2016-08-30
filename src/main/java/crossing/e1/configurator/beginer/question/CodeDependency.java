@@ -3,7 +3,7 @@ package crossing.e1.configurator.beginer.question;
 public class CodeDependency {
 
 	private String option;
-	private Boolean value;
+	private String value;
 
 	@Override
 	public boolean equals(final Object obj) {
@@ -19,7 +19,7 @@ public class CodeDependency {
 		return this.option;
 	}
 
-	public Boolean getValue() {
+	public String getValue() {
 		return this.value;
 	}
 
@@ -27,7 +27,7 @@ public class CodeDependency {
 		this.option = option;
 	}
 
-	public void setValue(final Boolean value) {
+	public void setValue(final String value) {
 		this.value = value;
 	}
 

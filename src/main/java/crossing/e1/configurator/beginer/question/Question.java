@@ -2,9 +2,13 @@ package crossing.e1.configurator.beginer.question;
 
 import java.util.ArrayList;
 
+import crossing.e1.configurator.Constants;
+import crossing.e1.configurator.Constants.guiElements;
+
 public class Question {
 
 	private int id;
+	private guiElements element;
 	private String questionText;
 	private ArrayList<Answer> answers;
 	private Answer defaultAnswer;
@@ -26,6 +30,13 @@ public class Question {
 		return this.defaultAnswer;
 	}
 
+	public guiElements getElement() {
+		if (this.element == null || this.element.name().isEmpty()) {
+			setElement(Constants.guiElements.combo);
+		}
+		return this.element;
+	}
+
 	public int getId() {
 		return this.id;
 	}
@@ -36,6 +47,10 @@ public class Question {
 
 	public void setAnswers(final ArrayList<Answer> answers) {
 		this.answers = answers;
+	}
+
+	public void setElement(final guiElements combo) {
+		this.element = combo;
 	}
 
 	public void setId(final int id) {

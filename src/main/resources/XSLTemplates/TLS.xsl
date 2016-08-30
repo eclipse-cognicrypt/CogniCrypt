@@ -19,8 +19,7 @@ public class TLSClient {
         System.setProperty("javax.net.ssl.<xsl:choose><xsl:when test="//task/code/server='true'">key</xsl:when><xsl:otherwise>trust</xsl:otherwise></xsl:choose>StorePassword","password");
 	        SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 		try {
-			sslsocket = (SSLSocket) sslsocketfactory.createSocket(<xsl:if test="//task/connection/ip">"<xsl:value-of select="//task/connection/ip"/>"</xsl:if>
-			<xsl:if test="//task/connection/host">"<xsl:value-of select="//task/connection/host"/>"</xsl:if>, <xsl:value-of select="//task/connection/port"/>);
+			sslsocket = (SSLSocket) sslsocketfactory.createSocket("<xsl:value-of select="//task/code/host"/>", <xsl:value-of select="//task/code/port"/>);
 			setCipherSuites();
 			setProtocols();
 			sslsocket.startHandshake();

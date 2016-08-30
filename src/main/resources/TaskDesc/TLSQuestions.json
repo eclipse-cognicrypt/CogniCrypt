@@ -1,22 +1,24 @@
 [
 		{
 			"id": "0",
+			"element" : "text",
 			"questionText":"Please specify the path to your keystore.",
 			"answers":[
-				{"value":"Schalalalalalala",
+				{"value":"",
 				"codeDependencies":[
-				{"option":"keystore","value":"XXX"}
+				{"option":"keystore","value":""}
 				],
 				"defaultAnswer": true, "nextID" : "1"}
 			]
 		},
 		{
 			"id": "1",
+			"element" : "text",
 			"questionText":"Please give the password for your keystore.",
 			"answers":[
-				{"value":"C:\                  ",
+				{"value":"C:\      ",
 				"codeDependencies":[
-				{"option":"keystorepassword","value":"XXX"}
+				{"option":"keystorepassword","value":""}
 				],
 				"defaultAnswer": true, "nextID": "2"}
 			]
@@ -47,26 +49,38 @@
 		},
 		{
 			"id" : "4",
+			"element" : "text",
 			"questionText":"Enter host/ip + port",
 			"answers":[
-				{"value":"server",
+				{"value":"",
 				"codeDependencies":[
-				{"option":"keySize","value":"128","operator":">"}
+				{"option":"host+ip","value":""}
 				], "defaultAnswer": true, "nextID" : "5"}
 			]
 		},
 		{
 			"id" : "5",
+			"element" : "text",
+			"questionText":"Enter port",
+			"answers":[
+				{"value":"",
+				"codeDependencies":[
+				{"option":"host+ip","value":""}
+				], "defaultAnswer": true, "nextID" : "6"}
+			]
+		},
+		{
+			"id" : "6",
 			"questionText":"We have compiled a default configuration that is secure and should work for most connections. Do you want to accept this configuration or would you like to change it?",
 			"answers":[
 				{"value":"Keep.",
 				"codeDependencies":[], "defaultAnswer": true, "nextID" : "-1"},
 				{"value":"Change.",
-				"codeDependencies":[], "nextID" : "6"}
+				"codeDependencies":[], "nextID" : "7"}
 			]
 		},
 		{
-			"id" : "6",
+			"id" : "7",
 			"questionText":"Please select the cipher suites and tls protocol versions you would like to use.",
 			"answers":[
 				{"value":"",

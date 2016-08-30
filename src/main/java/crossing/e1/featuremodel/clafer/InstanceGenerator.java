@@ -116,18 +116,17 @@ public class InstanceGenerator {
 			if (algorithmProperty != null) {
 				taskAlgorithm.addConstraint(equal(joinRef(join(joinRef($this()), algorithmProperty)), constant(value)));
 			} else {
-				AstAbstractClafer aac = (AstAbstractClafer) taskAlgorithm.getRef().getTargetType();
-				for (AstClafer ac : aac.getSubs()) {
+				final AstAbstractClafer aac = (AstAbstractClafer) taskAlgorithm.getRef().getTargetType();
+				for (final AstClafer ac : aac.getSubs()) {
 					if (ac.getName().endsWith(value)) {
 						taskAlgorithm.addConstraint(equal(joinRef($this()), global(ac)));
 					}
 				}
-				
+
 			}
 		}
 	}
-	
-	
+
 	/**
 	 * This method is to parse the map of clafers and apply their values as constraints before instance generation, used only in advanceduserMode
 	 *
@@ -163,9 +162,9 @@ public class InstanceGenerator {
 					final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + claferDependency.getAlgorithm());
 					final AstConcreteClafer propertyClafer = (AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + claferDependency.getOperand());
 					try {
-						Integer value = Integer.parseInt(claferDependency.getValue());
+						final Integer value = Integer.parseInt(claferDependency.getValue());
 						addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), value);
-					} catch (NumberFormatException e) { 
+					} catch (final NumberFormatException e) {
 						addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), claferDependency.getValue());
 					}
 				}
@@ -178,7 +177,7 @@ public class InstanceGenerator {
 	 */
 	public void generateInstanceMapping() {
 		for (final InstanceClafer inst : this.generatedInstances) {
-			
+
 			String key = getInstanceName(inst);
 			if (key.isEmpty()) {
 				key = inst.getChildren()[0].getRef().toString();
@@ -225,7 +224,7 @@ public class InstanceGenerator {
 				this.claferModel.getScope().toBuilder()
 					//.defaultScope(Integer.parseInt(new ReadConfig().getValue(DEFAULT_SCOPE)))
 					.intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
-						
+
 			while (this.solver.find()) {
 				final InstanceClafer instance = this.solver.instance().getTopClafers()[this.solver.instance().getTopClafers().length - 1];
 				this.uniqueInstances.put(getHashValueOfInstance(instance), instance);

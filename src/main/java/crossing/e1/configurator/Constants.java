@@ -26,12 +26,16 @@ package crossing.e1.configurator;
  */
 public class Constants {
 
+	public static enum guiElements {
+		combo, text
+	}
+
 	public static final String fileSeparator = System.getProperty("file.separator");
 	public static final String lineSeparator = System.getProperty("line.separator");
-	public static final String JavaNatureID = "org.eclipse.jdt.core.javanature";
 
+	public static final String JavaNatureID = "org.eclipse.jdt.core.javanature";
 	//JSON task file
-	public static final String jsonTaskFile = "src" + fileSeparator + "main" + fileSeparator + "resources" + fileSeparator + "Tasks" + fileSeparator + "tasks.json";
+	public static final String jsonTaskFile = "src" + fileSeparator + "main" + fileSeparator + "resources" + fileSeparator + "Tasks" + fileSeparator + "tasks.json";;
 
 	// Clafer Instance Generation
 	public static final String claferPath = "src" + fileSeparator + "main" + fileSeparator + "resources" + fileSeparator + "ClaferModel" + fileSeparator + "SymmetricEncryptionTask.js";

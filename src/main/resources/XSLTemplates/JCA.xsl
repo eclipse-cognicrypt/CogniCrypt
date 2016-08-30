@@ -18,7 +18,6 @@ public class Enc {
 	    IvParameterSpec iv = new IvParameterSpec(ivb);
 		
 		Cipher c = Cipher.getInstance("<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>/<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/mode"/>/<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/padding"/>");
-		
 		c.init(Cipher.ENCRYPT_MODE, key, iv);
 		byte [] res = c.doFinal(data);
 		byte [] ret = new byte[res.length + ivb.length];

@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Technische Universität Darmstadt
+ * Copyright 2015-2016 Technische Universitaet Darmstadt
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 /**
- * @author Ram Kamath, Sarah Nadi, Karim Ali, Stefan Kr�ger
+ * @author Stefan Krueger 
+ * @author Sarah Nadi 
+ * @author Ram Kamath
+ * @author Karim Ali 
  *
  */
 package crossing.e1.configurator.wizard;

@@ -17,6 +17,7 @@ MultipleDocuments : NumberDocuments
 abstract TrustedAuthorities : Enum
 SignatureBased : TrustedAuthorities
 Notaries : TrustedAuthorities
+Both : TrustedAuthorities
 
 abstract Task
 	description -> string
@@ -27,10 +28,7 @@ LongTermArchiving : Task
 	addDoc -> AddingDocuments
 	numDoc -> NumberDocuments
 	trust -> TrustedAuthorities
-	[numDoc = MultipleDocuments && addDoc = MultipleTimes => list = Skip_List]
+	[addDoc = MultipleTimes => list = Skip_List]
 	[numDoc = MultipleDocuments && addDoc = Once => list = Merkle_Tree_Sequence]
-	[numDoc = Single && addDoc = MultipleTimes => list = Skip_List]
-	[numDoc = Single && addDoc = Once => list = Skip_List]
-	[numDoc = Single && addDoc = Once && trust = SignatureBased && trust != Notaries => list = Simple_List]
-	[numDoc = Single && addDoc = Once && trust = Notaries => list = Notarial_Attestation_Wrapper]
-	
+	[numDoc = Single && addDoc = Once && trust = SignatureBased => list = Simple_List]
+	[numDoc = Single && addDoc = Once && (trust = Both || trust = Notaries) => list = Notarial_Attestation_Wrapper]

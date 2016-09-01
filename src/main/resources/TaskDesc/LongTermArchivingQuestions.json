@@ -26,7 +26,8 @@
 		"questionText":"Do you want to protect large sets of documents?",
 		"answers":[
 			{"value":"Yes",
-			"claferDependencies":[{"algorithm":"numDoc", "value":"MultipleDocuments", "operator":"="}],
+			"claferDependencies":[
+			{"algorithm":"numDoc", "value":"MultipleDocuments", "operator":"="}],
 			"defaultAnswer": true, "nextID" : "-1"			
 			},
 			{"value":"No",
@@ -49,21 +50,7 @@
 			},
 			{"value":"Both",
 			"defaultAnswer": true,
-			"claferDependencies":[{"algorithm":"trust", "value":"SignatureBased || trust = Notaries", "operator":"="}], "nextID" : "-1"
-			}
-		]
-	}
-,
-
-	{
-		"id" : "3",
-		"element" : "combo",
-		"questionText":"Do you want to protect only a single document?",
-		"answers":[
-			{"value":"Yes"
-			},
-			{"value":"No",
-			"defaultAnswer": true
+			"claferDependencies":[{"algorithm":"trust", "value":"Both", "operator":"="}], "nextID" : "-1"
 			}
 		]
 	}

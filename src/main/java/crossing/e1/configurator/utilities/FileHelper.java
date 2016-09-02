@@ -20,10 +20,8 @@
 package crossing.e1.configurator.utilities;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 import crossing.e1.configurator.Activator;
 
@@ -32,19 +30,9 @@ import crossing.e1.configurator.Activator;
  */
 public class FileHelper {
 
-	public int deleteFile(final String fileName) {
+	public static int deleteFile(final String fileName) {
 		try {
 			Files.delete(Paths.get(fileName));
-		} catch (final IOException e) {
-			Activator.getDefault().logError(e);
-			return 1;
-		}
-		return 0;
-	}
-
-	public int writeToFile(final String content, final String filename) {
-		try {
-			Files.write(Paths.get(filename), content.getBytes(Charset.defaultCharset()), StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e);
 			return 1;

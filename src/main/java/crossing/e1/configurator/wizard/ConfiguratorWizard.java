@@ -239,22 +239,21 @@ public class ConfiguratorWizard extends Wizard {
 		if (this.instanceListPage != null) {
 			ret = this.instanceListPage.isPageComplete();
 			try {
-				// Print the result to the console
-				final FileHelper write = new FileHelper();
-				final String selectedInstance = new XMLParser().displayInstanceValues(this.instanceListPage.getValue(), this.constraints, "");
+				XMLParser parser = new XMLParser();
+				parser.displayInstanceValues(this.instanceListPage.getValue(), constraints);
 
 				// Initialize Code Generation to retrieve developer project
 				ret &= this.codeGeneration.initCodeGeneration();
 
 				// Write Instance File into developer project
-				final String xmlInstancePath = this.codeGeneration.getDeveloperProject().getProjectPath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile;
-				write.writeToFile(selectedInstance, xmlInstancePath);
-
+				final String xmlInstancePath = codeGeneration.getDeveloperProject().getProjectPath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile;
+				parser.writeClaferInstanceToFile(xmlInstancePath);
+				
 				// Generate code template
 				ret &= this.codeGeneration.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), null);
 
 				// Delete Instance File
-				write.deleteFile(xmlInstancePath);
+				FileHelper.deleteFile(xmlInstancePath);
 				this.codeGeneration.getDeveloperProject().refresh();
 			} catch (final Exception e) {
 				Activator.getDefault().logError(e);

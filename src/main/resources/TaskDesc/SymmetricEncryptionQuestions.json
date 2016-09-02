@@ -6,15 +6,15 @@
 				{"value":"Very secure",
 				"claferDependencies":[
 				{"algorithm": "cipher", "operand":"keySize","value":"128","operator":">"}
-				],"nextID" : "1" 
+				],"nextID" : "-1" 
 				},
 				{"value":"Secure",
 				"claferDependencies":[
 				{"algorithm": "cipher", "operand":"keySize","value":"128","operator":">="}
 				],
-				"defaultAnswer": true, "nextID" : "2"},
+				"defaultAnswer": true, "nextID" : "-1"},
 				{"value":"Not important (I'm just testing for now and would prefer something fast)",
-				"claferDependencies":[], "nextID" : "3"}
+				"claferDependencies":[], "nextID" : "-1"}
 			]
 		}
 ]

@@ -68,9 +68,14 @@ public class Constants {
 	public static final String ALGORITHM = "algorithm";
 	public static final String ADVANCED_MODE = "Advanced Mode";
 	public static final String TEST_CONNECTION = "Test Connection";
-
-	public static final String xmlPackage = "<Package>" + PackageName + "</Package>";
-	public static final String xmlimports = "<Imports>" + lineSeparator + "<Import>java.security.InvalidAlgorithmParameterException</Import>" + lineSeparator + "<Import>java.security.InvalidKeyException</Import>" + lineSeparator + "<Import>java.security.NoSuchAlgorithmException</Import>" + "<Import>javax.crypto.SecretKey</Import>" + lineSeparator + "<Import>javax.crypto.BadPaddingException</Import>" + lineSeparator + "<Import>javax.crypto.Cipher</Import>" + lineSeparator + "<Import>javax.crypto.IllegalBlockSizeException</Import>" + lineSeparator + "<Import>javax.crypto.NoSuchPaddingException</Import>" + lineSeparator + "<Import>java.security.SecureRandom</Import>" + lineSeparator + "<Import>javax.crypto.spec.IvParameterSpec</Import>" + lineSeparator + "<Import>javax.crypto.spec.SecretKeySpec</Import>" + lineSeparator + "<Import>java.security.spec.InvalidKeySpecException</Import>" + lineSeparator + "\t</Imports>";
+	
+	public static final String Package = "Package";
+	public static final String Description = "description";
+	public static final String Imports = "Imports";
+	public static final String Import = "Import";
+	public static final String Task = "task";
+	public static final String Code = "code";
+	public static final String Type = "type";
 	public static final String[] xmlimportsarr = {"java.security.InvalidAlgorithmParameterException", 
 												  "java.security.InvalidKeyException",
 												  "java.security.NoSuchAlgorithmException",

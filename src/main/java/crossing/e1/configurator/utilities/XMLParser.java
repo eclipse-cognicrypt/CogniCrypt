@@ -68,27 +68,27 @@ public class XMLParser implements Labels {
 	public String displayInstanceValues(final InstanceClafer inst, HashMap<Question, Answer> constraints) throws DocumentException {
 		// ToDo: check if there is any use where "value" is NOT "", if so remove "value" from list of parameters
 		document = DocumentHelper.createDocument();
-		Element taskElem = document.addElement( "task" );
+		Element taskElem = document.addElement( Constants.Task );
 		if (inst.hasChildren()) {
 			final String taskName = inst.getType().getName();
-			taskElem.addAttribute("description", ClaferModelUtils.removeScopePrefix(taskName));
-			taskElem.addElement("Package").addText(Constants.PackageName);	// Constants.xmlPackage
-			Element xmlimports = taskElem.addElement("Imports");
+			taskElem.addAttribute(Constants.Description, ClaferModelUtils.removeScopePrefix(taskName));
+			taskElem.addElement(Constants.Package).addText(Constants.PackageName);	// Constants.xmlPackage
+			Element xmlimports = taskElem.addElement(Constants.Imports);
 			for(String file: Constants.xmlimportsarr){
-				xmlimports.addElement("Import").addText(file);
+				xmlimports.addElement(Constants.Import).addText(file);
 			}
 		}
 		if (inst != null && inst.hasChildren()) {
 			for (final InstanceClafer in : inst.getChildren()) {
 				if (!in.getType().getRef().getTargetType().isPrimitive()) {
-					Element algoElem = taskElem.addElement(Constants.ALGORITHM).addAttribute("type", ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()));
+					Element algoElem = taskElem.addElement(Constants.ALGORITHM).addAttribute(Constants.Type, ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()));
 					displayInstanceXML(in, algoElem);
 				} else {
 					displayInstanceXML(in, taskElem);
 				}
 			}
 		}
-		Element codeElem = taskElem.addElement("code");
+		Element codeElem = taskElem.addElement(Constants.Code);
 		for (Entry<Question, Answer> ent : constraints.entrySet()) {
 			ArrayList<CodeDependency> cdp = ent.getValue().getCodeDependencies();
 			if (cdp != null) {
@@ -113,7 +113,7 @@ public class XMLParser implements Labels {
 				for (final InstanceClafer in : inst.getChildren()) {
 					if (isAlgorithm(in.getType())) {
 						Element algoElem = parent.addElement(Constants.ALGORITHM);
-						algoElem.addAttribute("type", ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()));
+						algoElem.addAttribute(Constants.Type, ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()));
 						displayInstanceXML(in, algoElem);
 					} else {
 						displayInstanceXML(in, parent);
@@ -149,7 +149,8 @@ public class XMLParser implements Labels {
 	 * @param value
 	 * @return
 	 */
-	public String getInstanceProperties(final InstanceClafer inst, String value) {
+	public String getInstanceProperties(final InstanceClafer inst) {
+		String value = "";
 		InstanceClafer instan = null;
 		if (inst.hasChildren()) {
 			instan = (InstanceClafer) inst.getChildren()[0].getRef();
@@ -158,10 +159,10 @@ public class XMLParser implements Labels {
 			for (final InstanceClafer in : instan.getChildren()) {
 				if (!in.getType().getRef().getTargetType().isPrimitive()) {
 					value += Constants.ALGORITHM + " :" + ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()) + Constants.lineSeparator;
-					value += getInstancePropertiesDetails(in, "");
+					value += getInstancePropertiesDetails(in);
 					value += Constants.lineSeparator;
 				} else {
-					value += getInstancePropertiesDetails(in, "");
+					value += getInstancePropertiesDetails(in);
 				}
 			}
 		}
@@ -174,15 +175,16 @@ public class XMLParser implements Labels {
 	 * @param value
 	 * @return
 	 */
-	public String getInstancePropertiesDetails(final InstanceClafer inst, String value) {
+	public String getInstancePropertiesDetails(final InstanceClafer inst) {
+		String value = "";
 		try {
 			if (inst.hasChildren()) {
 				for (final InstanceClafer in : inst.getChildren()) {
-					value += getInstancePropertiesDetails(in, "");
+					value += getInstancePropertiesDetails(in);
 				}
 			} else if (inst.hasRef() && inst.getType().isPrimitive() != true && inst.getRef().getClass().toString().contains(Constants.INTEGER) == false && inst.getRef().getClass()
 				.toString().contains(Constants.STRING) == false && inst.getRef().getClass().toString().contains(Constants.BOOLEAN) == false) {
-				value += getInstancePropertiesDetails((InstanceClafer) inst.getRef(), "");
+				value += getInstancePropertiesDetails((InstanceClafer) inst.getRef());
 			} else if (PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())) {
 				if (inst.hasRef()) {
 					// For group properties

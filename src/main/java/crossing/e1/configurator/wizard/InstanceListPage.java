@@ -107,7 +107,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 				final String b = selection.getFirstElement().toString();
 				setValue(InstanceListPage.this.instanceGenerator.getInstances().get(b));
 				InstanceListPage.this.instanceDetails
-					.setText(InstanceListPage.this.publisher.getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(b), ""));
+					.setText(InstanceListPage.this.publisher.getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(b)));
 				if (selection.size() > 0) {
 					setPageComplete(true);
 				}

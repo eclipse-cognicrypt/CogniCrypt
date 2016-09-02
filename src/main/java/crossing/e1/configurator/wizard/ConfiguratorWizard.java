@@ -216,7 +216,7 @@ public class ConfiguratorWizard extends Wizard {
 				ret &= this.codeGeneration.generateCodeTemplates(new File(xmlInstancePath), taskListPage.getSelectedTask().getAdditionalResources(), null);
 
 				// Delete Instance File
-				new FileHelper().deleteFile(xmlInstancePath);
+				FileHelper.deleteFile(xmlInstancePath);
 				codeGeneration.getDeveloperProject().refresh();
 			} catch (Exception e) {//(URISyntaxException | IOException e) {
 				Activator.getDefault().logError(e);

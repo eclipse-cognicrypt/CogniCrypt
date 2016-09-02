@@ -32,17 +32,7 @@ import crossing.e1.configurator.Activator;
  */
 public class FileHelper {
 
-	public int writeToFile(final String content, final String filename) {
-		try {
-			Files.write(Paths.get(filename), content.getBytes(Charset.defaultCharset()), StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-		} catch (final IOException e) {
-			Activator.getDefault().logError(e);
-			return 1;
-		}
-		return 0;
-	}
-
-	public int deleteFile(final String fileName) {
+	public static int deleteFile(final String fileName) {
 		try {
 			Files.delete(Paths.get(fileName));
 		} catch (IOException e) {

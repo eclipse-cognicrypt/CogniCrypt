@@ -23,7 +23,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map.Entry;
 
 import org.clafer.ast.AstClafer;
@@ -52,7 +51,7 @@ import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 public class XMLParser implements Labels {
 	Document document;
 	
-	public void writeTofile(String path) throws IOException {
+	public void writeClaferInstanceToFile(String path) throws IOException {
 		OutputFormat format = OutputFormat.createPrettyPrint();
 		XMLWriter writer = new XMLWriter( new FileWriter(path), format );
 		writer.write( document );
@@ -109,7 +108,6 @@ public class XMLParser implements Labels {
 	 * @return
 	 */
 	private void displayInstanceXML(final InstanceClafer inst, Element parent) {
-		String value;
 		try {
 			if (inst.hasChildren()) {
 				for (final InstanceClafer in : inst.getChildren()) {
@@ -127,14 +125,8 @@ public class XMLParser implements Labels {
 			} else if (PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())) {
 				String superClaferName = ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName());
 				superClaferName = Character.toLowerCase(superClaferName.charAt(0)) + superClaferName.substring(1);
-				// Todo : This if and it's else do exactly the same thing, It will be commented out in refactoring
-//				if (inst.hasRef()) {
-					// For group properties
-					parent.addElement(superClaferName).addText(ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", ""));
-//				} else {
-					//enums that don't have a reference type (e.g., Mode, Padding etc)
-//					parent.addElement(superClaferName).addText(ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", ""));
-//				}
+				// Removed if-else block after refactorng, while the following statement in both blocks was identical
+				parent.addElement(superClaferName).addText(ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", ""));
 			} else {
 				String instName = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
 				instName = Character.toLowerCase(instName.charAt(0)) + instName.substring(1);
@@ -184,12 +176,6 @@ public class XMLParser implements Labels {
 	 */
 	public String getInstancePropertiesDetails(final InstanceClafer inst, String value) {
 		try {
-			// if (inst.getType().hasRef()) {
-			// if (getSuperClaferName(inst.getType().getRef().getTargetType()))
-			// {
-			//
-			// }
-			// }
 			if (inst.hasChildren()) {
 				for (final InstanceClafer in : inst.getChildren()) {
 					value += getInstancePropertiesDetails(in, "");

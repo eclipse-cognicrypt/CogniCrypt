@@ -210,7 +210,7 @@ public class ConfiguratorWizard extends Wizard {
 
 				// Write Instance File into developer project
 				String xmlInstancePath = codeGeneration.getDeveloperProject().getProjectPath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile;
-				parser.writeTofile(xmlInstancePath);
+				parser.writeClaferInstanceToFile(xmlInstancePath);
 				
 				// Generate code template
 				ret &= this.codeGeneration.generateCodeTemplates(new File(xmlInstancePath), taskListPage.getSelectedTask().getAdditionalResources(), null);

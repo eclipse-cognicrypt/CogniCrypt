@@ -51,6 +51,12 @@ import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 public class XMLParser implements Labels {
 	Document document;
 	
+	/**
+	 * Writes xml document to file
+	 * 
+	 * @param path
+	 * @throws IOException
+	 */
 	public void writeClaferInstanceToFile(String path) throws IOException {
 		OutputFormat format = OutputFormat.createPrettyPrint();
 		XMLWriter writer = new XMLWriter( new FileWriter(path), format );
@@ -59,9 +65,10 @@ public class XMLParser implements Labels {
 	}
 	
 	/**
+	 * builds xml document, returns it's string representation
 	 *
 	 * @param inst
-	 * @param value
+	 * @param constraints
 	 * @return
 	 * @throws DocumentException 
 	 */
@@ -101,9 +108,10 @@ public class XMLParser implements Labels {
 	}
 
 	/**
-	 *
+	 * Adds xml of inst to parent element
+	 * 
 	 * @param inst
-	 * @param value
+	 * @param parent
 	 * @return
 	 */
 	private void displayInstanceXML(final InstanceClafer inst, Element parent) {

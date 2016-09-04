@@ -45,7 +45,6 @@ import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.Labels;
-import crossing.e1.configurator.utilities.XMLParser;
 import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;

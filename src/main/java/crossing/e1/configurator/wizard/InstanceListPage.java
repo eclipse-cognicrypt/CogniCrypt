@@ -22,6 +22,7 @@ package crossing.e1.configurator.wizard;
 
 import java.util.Map;
 
+import org.clafer.ast.AstConcreteClafer;
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -40,11 +41,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.configurator.utilities.XMLParser;
+import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
+import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
 public class InstanceListPage extends WizardPage implements Labels {
 
@@ -52,7 +56,6 @@ public class InstanceListPage extends WizardPage implements Labels {
 	private Text instanceDetails;
 	private final InstanceGenerator instanceGenerator;
 	private InstanceClafer value;
-	private final XMLParser publisher;
 	private Group instancePropertiesPanel;
 	private Task selectedTask;
 
@@ -61,7 +64,6 @@ public class InstanceListPage extends WizardPage implements Labels {
 		setTitle("Possible solutions for task: " + selectedTask.getDescription());
 		setDescription(Labels.DESCRIPTION_INSTANCE_LIST_PAGE);
 		this.instanceGenerator = inst;
-		this.publisher = new XMLParser();
 	}
 
 	@Override
@@ -107,7 +109,8 @@ public class InstanceListPage extends WizardPage implements Labels {
 			InstanceListPage.this.instancePropertiesPanel.setVisible(true);
 			final String b = selection.getFirstElement().toString();
 			setValue(InstanceListPage.this.instanceGenerator.getInstances().get(b));
-			InstanceListPage.this.instanceDetails.setText(InstanceListPage.this.publisher.getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(b), ""));
+			InstanceListPage.this.instanceDetails.setText(getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(b)));
+
 			if (selection.size() > 0) {
 				setPageComplete(true);
 			}
@@ -126,6 +129,72 @@ public class InstanceListPage extends WizardPage implements Labels {
 		this.instancePropertiesPanel.setVisible(false);
 		setControl(this.control);
 		;
+	}
+
+	/**
+	 *
+	 * @param inst
+	 * @param value
+	 * @return
+	 */
+	public String getInstanceProperties(final InstanceClafer inst) {
+		String value = "";
+		InstanceClafer instan = null;
+		if (inst.hasChildren()) {
+			instan = (InstanceClafer) inst.getChildren()[0].getRef();
+		}
+		if (instan != null && instan.hasChildren()) {
+			for (final InstanceClafer in : instan.getChildren()) {
+				if (!in.getType().getRef().getTargetType().isPrimitive()) {
+					value += Constants.ALGORITHM + " :" + ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()) + Constants.lineSeparator;
+					value += getInstancePropertiesDetails(in);
+					value += Constants.lineSeparator;
+				} else {
+					value += getInstancePropertiesDetails(in);
+				}
+			}
+		}
+		return value;
+	}
+
+	/**
+	 *
+	 * @param inst
+	 * @param value
+	 * @return
+	 */
+	public String getInstancePropertiesDetails(final InstanceClafer inst) {
+		String value = "";
+		try {
+			if (inst.hasChildren()) {
+				for (final InstanceClafer in : inst.getChildren()) {
+					value += getInstancePropertiesDetails(in);
+				}
+			} else if (inst.hasRef() && inst.getType().isPrimitive() != true && inst.getRef().getClass().toString().contains(Constants.INTEGER) == false && inst.getRef().getClass()
+				.toString().contains(Constants.STRING) == false && inst.getRef().getClass().toString().contains(Constants.BOOLEAN) == false) {
+				value += getInstancePropertiesDetails((InstanceClafer) inst.getRef());
+			} else if (PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())) {
+				if (inst.hasRef()) {
+					// For group properties
+					return "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName()) + ":" + ClaferModelUtils
+						.removeScopePrefix(inst.getType().toString()).replace("\"", "") + Constants.lineSeparator;
+				} else {
+					//enums that don't have a reference type (e.g., Mode, Padding etc)
+					return "\t" + ClaferModelUtils.removeScopePrefix(((AstConcreteClafer) inst.getType()).getSuperClafer().getName()) + " : " + ClaferModelUtils
+						.removeScopePrefix(inst.getType().getName()) + Constants.lineSeparator;
+				}
+			} else {
+				if (inst.hasRef()) {
+					return "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName()) + " : " + inst.getRef().toString().replace("\"", "") + Constants.lineSeparator;
+				} else {
+					return "\t" + ClaferModelUtils.removeScopePrefix(((AstConcreteClafer) inst.getType()).getParent().getName()) + " : " + ClaferModelUtils
+						.removeScopePrefix(inst.getType().getName()) + Constants.lineSeparator;
+				}
+			}
+		} catch (final Exception e) {
+			Activator.getDefault().logError(e);
+		}
+		return value;
 	}
 
 	public Task getTask() {

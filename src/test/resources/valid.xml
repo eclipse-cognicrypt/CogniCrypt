@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<task description="PasswordBasedEncryption">
+  <Package>Crypto</Package>
+  <Imports>
+    <Import>java.security.InvalidAlgorithmParameterException</Import>
+    <Import>java.security.InvalidKeyException</Import>
+    <Import>java.security.NoSuchAlgorithmException</Import>
+    <Import>java.security.NoSuchAlgorithmException</Import>
+    <Import>javax.crypto.SecretKey</Import>
+    <Import>javax.crypto.BadPaddingException</Import>
+    <Import>javax.crypto.Cipher</Import>
+    <Import>javax.crypto.IllegalBlockSizeException</Import>
+    <Import>javax.crypto.NoSuchPaddingException</Import>
+    <Import>java.security.SecureRandom</Import>
+    <Import>javax.crypto.spec.IvParameterSpec</Import>
+    <Import>javax.crypto.spec.SecretKeySpec</Import>
+    <Import>java.security.spec.InvalidKeySpecException</Import>
+  </Imports>
+  <algorithm type="KeyDerivationAlgorithm">
+    <iterations>1000</iterations>
+    <outputSize>192</outputSize>
+    <name>bcrypt</name>
+    <description>Bcrypt password-based key derivation</description>
+    <security>Medium</security>
+    <performance>Slow</performance>
+  </algorithm>
+  <algorithm type="SymmetricBlockCipher">
+    <mode>OFB</mode>
+    <padding>PKCS5Padding</padding>
+    <keySize>192</keySize>
+    <name>AES</name>
+    <description>Advanced Encryption Standard (AES) cipher</description>
+    <security>Strong</security>
+    <performance>Fast</performance>
+  </algorithm>
+  <description>Encrypt data using a given password</description>
+  <code/>
+</task>

@@ -52,7 +52,8 @@ public class XMLParser implements Labels {
 	Document document;
 	
 	/**
-	 * Writes xml document to file
+	 * Writes xml document to file.
+	 * Before calling this method displayInstanceValues should have been called to create document.
 	 * 
 	 * @param path
 	 * @throws IOException
@@ -60,7 +61,7 @@ public class XMLParser implements Labels {
 	public void writeClaferInstanceToFile(String path) throws IOException {
 		OutputFormat format = OutputFormat.createPrettyPrint();
 		XMLWriter writer = new XMLWriter( new FileWriter(path), format );
-		writer.write( document );
+		writer.write( this.document );
         writer.close();
 	}
 	
@@ -73,8 +74,8 @@ public class XMLParser implements Labels {
 	 * @throws DocumentException 
 	 */
 	public String displayInstanceValues(final InstanceClafer inst, final HashMap<Question, Answer> constraints) throws DocumentException {
-		document = DocumentHelper.createDocument();
-		Element taskElem = document.addElement( Constants.Task );
+		this.document = DocumentHelper.createDocument();
+		Element taskElem = this.document.addElement( Constants.Task );
 		if (inst.hasChildren()) {
 			final String taskName = inst.getType().getName();
 			taskElem.addAttribute(Constants.Description, ClaferModelUtils.removeScopePrefix(taskName));
@@ -104,7 +105,7 @@ public class XMLParser implements Labels {
 			}
 		}
 
-		return document.asXML();
+		return this.document.asXML();
 	}
 
 	/**

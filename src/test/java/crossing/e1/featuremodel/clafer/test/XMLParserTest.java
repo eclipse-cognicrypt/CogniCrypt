@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.clafer.instance.InstanceClafer;
 import org.dom4j.DocumentException;
@@ -15,6 +14,7 @@ import org.junit.Test;
 
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Question;
+import crossing.e1.configurator.utilities.FileHelper;
 import crossing.e1.configurator.utilities.XMLParser;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
@@ -25,6 +25,7 @@ public class XMLParserTest {
 	HashMap<Question, Answer> constraints;
 	InstanceClafer inst;
 	String validFile = "src/test/resources/valid.xml";
+	String xmlTestFilePath = "testXMLwriteInstance.xml";
 
 	@Before
 	public void setUp() throws Exception {
@@ -37,6 +38,7 @@ public class XMLParserTest {
 
 	@After
 	public void tearDown() throws Exception {
+		FileHelper.deleteFile(xmlTestFilePath);
 	}
 
 	@Test
@@ -48,5 +50,23 @@ public class XMLParserTest {
 		assertEquals(validXML, xml);
 	}
 
-	
+	@Test
+	public void testWriteToFile() throws IOException, DocumentException {
+		byte[] validBytes = new byte[2000];
+		byte[] generatedBytes = new byte[2000];;
+		
+		FileInputStream validFile = new FileInputStream(this.validFile);
+		validFile.read(validBytes);
+		validFile.close();
+		
+		XMLParser xmlparser = new XMLParser();
+		xmlparser.displayInstanceValues(this.inst, this.constraints);
+		xmlparser.writeClaferInstanceToFile(this.xmlTestFilePath);
+		
+		FileInputStream testFile = new FileInputStream(this.xmlTestFilePath);
+		testFile.read(generatedBytes);
+		testFile.close();
+		
+		assertArrayEquals(validBytes, generatedBytes);
+	}
 }

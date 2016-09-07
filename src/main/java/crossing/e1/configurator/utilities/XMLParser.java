@@ -51,23 +51,31 @@ import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 public class XMLParser implements Labels {
 	Document document;
 	
+	/**
+	 * Writes xml document to file.
+	 * Before calling this method displayInstanceValues should have been called to create document.
+	 * 
+	 * @param path
+	 * @throws IOException
+	 */
 	public void writeClaferInstanceToFile(String path) throws IOException {
 		OutputFormat format = OutputFormat.createPrettyPrint();
 		XMLWriter writer = new XMLWriter( new FileWriter(path), format );
-		writer.write( document );
+		writer.write( this.document );
         writer.close();
 	}
 	
 	/**
+	 * builds xml document, returns it's string representation
 	 *
 	 * @param inst
-	 * @param value
+	 * @param constraints
 	 * @return
 	 * @throws DocumentException 
 	 */
 	public String displayInstanceValues(final InstanceClafer inst, final HashMap<Question, Answer> constraints) throws DocumentException {
-		document = DocumentHelper.createDocument();
-		Element taskElem = document.addElement( Constants.Task );
+		this.document = DocumentHelper.createDocument();
+		Element taskElem = this.document.addElement( Constants.Task );
 		if (inst.hasChildren()) {
 			final String taskName = inst.getType().getName();
 			taskElem.addAttribute(Constants.Description, ClaferModelUtils.removeScopePrefix(taskName));
@@ -97,13 +105,14 @@ public class XMLParser implements Labels {
 			}
 		}
 
-		return document.asXML();
+		return this.document.asXML();
 	}
 
 	/**
-	 *
+	 * Adds xml of inst to parent element
+	 * 
 	 * @param inst
-	 * @param value
+	 * @param parent
 	 * @return
 	 */
 	private void displayInstanceXML(final InstanceClafer inst, Element parent) {

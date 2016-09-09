@@ -19,6 +19,7 @@
  */
 package crossing.e1.configurator.utilities;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -32,7 +33,10 @@ public class FileHelper {
 
 	public static int deleteFile(final String fileName) {
 		try {
-			Files.delete(Paths.get(fileName));
+			File f = new File(fileName);
+			if(f.exists()) {
+				Files.delete(Paths.get(fileName));
+			}
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e);
 			return 1;

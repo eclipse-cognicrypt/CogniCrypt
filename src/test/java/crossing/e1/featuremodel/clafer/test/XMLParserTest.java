@@ -37,7 +37,7 @@ public class XMLParserTest {
 	}
 
 	@After
-	public void tearDown() throws Exception {
+	public void tearDown() {
 		FileHelper.deleteFile(xmlTestFilePath);
 	}
 

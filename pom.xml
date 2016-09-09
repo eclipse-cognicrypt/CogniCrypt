@@ -29,8 +29,9 @@
    	</dependency>
    	<dependency>
    		<groupId>org.clafer</groupId>
-   		<artifactId>chocosolver</artifactId>
-   		<version>0.4.3</version>
+   		<artifactId>claferchocoig</artifactId>
+   		<version>0.4.2</version>
+			<systemPath>${basedir}/lib/claferchocoig.jar</systemPath>
    	</dependency>
    </dependencies>
 </project>

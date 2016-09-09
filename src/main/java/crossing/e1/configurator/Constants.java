@@ -21,7 +21,7 @@
 package crossing.e1.configurator;
 
 /**
- * This class consists of all constants of the XSLT-based code generation plugin.
+ * This class consists of all constants that are used by the plugin.
  *
  */
 public class Constants {

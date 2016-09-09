@@ -20,7 +20,6 @@
  */
 package crossing.e1.configurator;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 
@@ -50,7 +49,18 @@ public class DeveloperProject {
 		this.project = _project;
 	}
 
-	public boolean addJar(final String pathToJar) throws IOException, CoreException {
+	/***
+	 * The method adds one library to the developer's project physical and build path. In the context of the overall tool, this is necessary when the user chooses a task that comes
+	 * with additional libraries.
+	 * 
+	 * @param pathToJar
+	 *        path to library to be added
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if library was (not) added successfully.
+	 * @throws CoreException 
+	 *         {@link org.eclipse.core.resources.IProject#hasNature(String) hasNature()}, {@link org.eclipse.jdt.core.IJavaProject#getRawClasspath() getRawClassPath()} and
+	 *         {@link org.eclipse.jdt.core.IJavaProject#setRawClassPath() setRawClassPath()}
+	 */
+	public boolean addJar(final String pathToJar) throws CoreException {
 		if (this.project.isOpen() && this.project.hasNature(Constants.JavaNatureID)) {
 			final IJavaProject projectAsJavaProject = JavaCore.create(this.project);
 			final IFile file = this.project.getFile(pathToJar);
@@ -67,6 +77,9 @@ public class DeveloperProject {
 		return false;
 	}
 
+	/***
+	 *  @see  {@link org.eclipse.core.resources.IProject#getFolder() IProject.getFolder()}
+	 */
 	public IFolder getFolder(final String name) {
 		return this.project.getFolder(name);
 	}
@@ -75,6 +88,12 @@ public class DeveloperProject {
 		return this.project.getFile(path.substring(path.indexOf(this.project.getName()) + this.project.getName().length()));
 	}
 
+	/***
+	 *  This method retrieves a package of the name {@linkplain name} that is in the developer's project.
+	 * @param name name of the package
+	 * @return package as {@link org.eclipse.jdt.core.IPackageFragment IPackageFragment}
+	 * @throws CoreException see {@link crossing.e1.configurator.DeveloperProject#getSourcePath() getSourcePath()}
+	 */
 	public IPackageFragment getPackagesOfProject(final String name) throws CoreException {
 		return JavaCore.create(this.project).getPackageFragmentRoot(this.project.getFolder(getSourcePath())).getPackageFragment(name);
 	}

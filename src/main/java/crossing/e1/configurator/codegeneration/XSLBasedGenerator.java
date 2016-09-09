@@ -61,6 +61,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.DeveloperProject;
+import crossing.e1.configurator.utilities.Tuple;
 import crossing.e1.configurator.utilities.Utils;
 
 /**
@@ -69,80 +70,27 @@ import crossing.e1.configurator.utilities.Utils;
  */
 public class XSLBasedGenerator {
 
-	class Tuple<X, Y> implements Comparable<Tuple<X, Y>> {
-
-		public X x;
-		public Y y;
-
-		public Tuple(final X l, final Y r) {
-			this.x = l;
-			this.y = r;
-		}
-
-		@Override
-		public int compareTo(final Tuple<X, Y> comp) {
-			if (this.equals(comp)) {
-				return 0;
-			}
-			if (!(this.x instanceof Comparable && comp.x instanceof Comparable && this.y instanceof Comparable && comp.y instanceof Comparable)) {
-				return -1;
-			} else {
-				@SuppressWarnings("unchecked")
-				final Comparable<X> thisX = (Comparable<X>) this.x;
-				return thisX.compareTo(comp.x);
-			}
-		}
-
-		@Override
-		public boolean equals(final Object o) {
-			if (!(o instanceof Tuple)) {
-				return false;
-			} else {
-				@SuppressWarnings("unchecked")
-				final Tuple<X, Y> t = (Tuple<X, Y>) o;
-				return t.y.equals(this.y) && t.x.equals(this.x);
-			}
-		}
-	}
-
-	/**
-	 * Performs the XSL-Transformation
-	 *
-	 * @param sourceFile
-	 *        xmlFile that contains the Clafer Instance
-	 * @param xsltFile
-	 *        XSL Template
-	 * @param resultDir
-	 *        Path to temporary output file
-	 * @throws TransformerException
-	 *         see {@link javax.xml.transform.Transformer#transform(javax.xml.transform.Source, javax.xml.transform.Result) transform()}
-	 */
-	private static void transform(final File sourceFile, final File xsltFile, final String resultDir) throws TransformerException {
-		// TODO: currently, only one xml file is used
-		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
-		final TransformerFactory tFactory = TransformerFactory.newInstance();
-		final Transformer transformer = tFactory.newTransformer(new StreamSource(xsltFile));
-		transformer.transform(new StreamSource(sourceFile), new StreamResult(new File(resultDir)));
-	}
-
-	private DeveloperProject project;
-	private boolean fileOpened = false;
 	private IFile currentFile;
-	private int startPosForImports = -1;
-	private int endPosForImports = -1;
-	private int startingPositionForRunMethod = -1;
 
 	private int endingPositionForRunMethod = -1;
-
-	/**
+	private int endPosForImports = -1;
+	private boolean fileOpened = false;
+	private DeveloperProject project;
+	private int startingPositionForRunMethod = -1;
+	private int startPosForImports = -1;
+	
+	/***
 	 * Generation of code templates using XSL template and Clafer instance.
-	 *
+	 * 
+	 * @param xmlInstanceFile xml model that details the algorithm configuration chosen by the user. 
+	 * @param pathToFolderWithAdditionalResources If additional files need to be generated into a developer's project, they are in this folder.
+	 * @param xslFile optional, can be used if not the default xsl stylesheet should be used.
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if transformation successful/failed.
 	 */
-	public boolean generateCodeTemplates(final File claferOutput, final String path, final File xslFile) {
+	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources, final File xslFile) {
 		try {
 			// Check whether directories and templates/model exist
-			final File claferOutputFiles = claferOutput != null && claferOutput.exists() ? claferOutput
+			final File claferOutputFiles = xmlInstanceFile != null && xmlInstanceFile.exists() ? xmlInstanceFile
 				: new File(Utils.getAbsolutePath(Constants.pathToClaferInstanceFolder + Constants.fileSeparator + Constants.pathToClaferInstanceFile));
 			final File xslFiles = xslFile != null && xslFile.exists() ? xslFile : new File(Utils.getAbsolutePath(Constants.pathToXSLFile));
 			if (!claferOutputFiles.exists() || !xslFiles.exists()) {
@@ -155,8 +103,8 @@ public class XSLBasedGenerator {
 			transform(claferOutputFiles, xslFiles, temporaryOutputFile);
 
 			// Add additional resources like jar files
-			if (!path.isEmpty()) {
-				final File addResFolder = new File(Utils.getAbsolutePath(path));
+			if (!pathToFolderWithAdditionalResources.isEmpty()) {
+				final File addResFolder = new File(Utils.getAbsolutePath(pathToFolderWithAdditionalResources));
 				final File[] members = addResFolder.listFiles();
 				final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesinDevProject);
 				if (!libFolder.exists()) {
@@ -178,8 +126,8 @@ public class XSLBasedGenerator {
 				}
 			}
 
-			// If there is a java file opened in the editor, insert call code there, and remove temporary output file
-			// else keep the output file
+			// If there is a java file opened in the editor, insert glue code there, and remove temporary output file
+			// Otherwise keep the output file
 			// In any case, organize imports
 			if (this.fileOpened) {
 				insertCallCodeIntoOpenFile(temporaryOutputFile);
@@ -257,6 +205,10 @@ public class XSLBasedGenerator {
 			this.endingPositionForRunMethod) };
 	}
 
+	/***
+	 * Getter method for developer project the code is generated into
+	 * @return developer project
+	 */
 	public DeveloperProject getDeveloperProject() {
 		return this.project;
 	}
@@ -387,5 +339,25 @@ public class XSLBasedGenerator {
 	protected void setPosForRunMethod(final int start, final int end) {
 		this.startingPositionForRunMethod = start;
 		this.endingPositionForRunMethod = end;
+	}
+
+	/**
+	 * Performs the XSL-Transformation
+	 *
+	 * @param sourceFile
+	 *        xmlFile that contains the Clafer Instance
+	 * @param xsltFile
+	 *        XSL Template
+	 * @param resultDir
+	 *        Path to temporary output file
+	 * @throws TransformerException
+	 *         see {@link javax.xml.transform.Transformer#transform(javax.xml.transform.Source, javax.xml.transform.Result) transform()}
+	 */
+	private void transform(final File sourceFile, final File xsltFile, final String resultDir) throws TransformerException {
+		// TODO: currently, only one xml file is used
+		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
+		final TransformerFactory tFactory = TransformerFactory.newInstance();
+		final Transformer transformer = tFactory.newTransformer(new StreamSource(xsltFile));
+		transformer.transform(new StreamSource(sourceFile), new StreamResult(new File(resultDir)));
 	}
 }

@@ -47,6 +47,11 @@ import crossing.e1.configurator.Activator;
 @SuppressWarnings("restriction")
 public class Utils {
 
+	/***
+	 * retrieves absolute path of a project-relative path. 
+	 * @param inputPath project-relative path
+	 * @return absolute path
+	 */
 	public static String getAbsolutePath(final String inputPath) {
 		String outputFile = null;
 

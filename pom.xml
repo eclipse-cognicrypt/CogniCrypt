@@ -16,19 +16,21 @@
       </plugin>
     </plugins>
   </build>
-  <dependency>
-    <groupId>org.eclipse</groupId>
-    <artifactId>jface</artifactId>
-    <version>3.3.0-I20070606-0010</version>
-</dependency>
-	<dependency>
-    <groupId>org.clafer</groupId>
-    <artifactId>chocosolver</artifactId>
-    <version>0.4.3</version>
-</dependency>
-	<dependency>
-    <groupId>org.eclipse</groupId>
-    <artifactId>swt</artifactId>
-    <version>3.3.0-v3346</version>
-</dependency>
+   <dependencies>
+   	<dependency>
+   		<groupId>org.eclipse</groupId>
+   		<artifactId>jface</artifactId>
+   		<version>3.3.0-I20070606-0010</version>
+   	</dependency>
+   	<dependency>
+   		<groupId>org.eclipse</groupId>
+   		<artifactId>swt</artifactId>
+   		<version>3.3.0-v3346</version>
+   	</dependency>
+   	<dependency>
+   		<groupId>org.clafer</groupId>
+   		<artifactId>chocosolver</artifactId>
+   		<version>0.4.3</version>
+   	</dependency>
+   </dependencies>
 </project>

@@ -1,3 +1,4 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>ClaferConfigurator</groupId>
@@ -19,16 +20,15 @@
     <groupId>org.eclipse</groupId>
     <artifactId>jface</artifactId>
     <version>3.3.0-I20070606-0010</version>
-	</dependency>
+</dependency>
 	<dependency>
     <groupId>org.clafer</groupId>
     <artifactId>chocosolver</artifactId>
     <version>0.4.3</version>
-	</dependency>
+</dependency>
 	<dependency>
     <groupId>org.eclipse</groupId>
     <artifactId>swt</artifactId>
     <version>3.3.0-v3346</version>
-	</dependency>
-	
+</dependency>
 </project>

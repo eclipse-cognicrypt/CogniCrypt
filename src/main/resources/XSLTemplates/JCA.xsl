@@ -199,6 +199,135 @@ public class Output {
 </xsl:if>
 
 
+<xsl:if test="//task[@description='SecureCommunication']">
+<xsl:result-document href="TLSClient.java">
+package <xsl:value-of select="//task/Package"/>; 
+<xsl:apply-templates select="//Import"/>
+
+public class TLSClient {	
+	private static SSLSocket sslsocket = null;
+	private static BufferedWriter bufW = null;
+	private static BufferedReader bufR = null;
+	
+		
+	public TLSClient(<xsl:choose>
+         <xsl:when test="//task/code/host"></xsl:when>
+         <xsl:otherwise> String host</xsl:otherwise>
+		 </xsl:choose>
+		 <xsl:choose>
+         <xsl:when test="//task/code/port"></xsl:when>
+         <xsl:otherwise>,int port</xsl:otherwise>
+		 </xsl:choose>
+		 	) throws IOException {
+			System.setProperty("javax.net.ssl.<xsl:choose><xsl:when test="//task/code/server='true'">key</xsl:when><xsl:otherwise>trust</xsl:otherwise></xsl:choose>Store","path");
+        System.setProperty("javax.net.ssl.<xsl:choose><xsl:when test="//task/code/server='true'">key</xsl:when><xsl:otherwise>trust</xsl:otherwise></xsl:choose>StorePassword","password");
+	        SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+		try {
+			sslsocket = (SSLSocket) sslsocketfactory.createSocket(<xsl:choose>
+         <xsl:when test="//task/code/host">
+         "<xsl:value-of select="//task/code/host"/>"</xsl:when>
+          <xsl:otherwise> host</xsl:otherwise>
+		 </xsl:choose>, 
+        <xsl:choose>
+         <xsl:when test="//task/code/port"><xsl:value-of select="//task/code/port"/></xsl:when>
+         <xsl:otherwise>port</xsl:otherwise>
+		 </xsl:choose>
+         );
+         
+			setCipherSuites();
+			setProtocols();
+			sslsocket.startHandshake();
+	        bufW = new BufferedWriter(new OutputStreamWriter(sslsocket.getOutputStream()));
+	        bufR = new BufferedReader(new InputStreamReader(sslsocket.getInputStream()));
+		} catch (IOException e) {
+			throw new IOException("Connection to server could not be established. Please check whether the ip/hostname and port are correct");
+		}
+	        
+        }
+        
+        private void setCipherSuites() {
+		if (sslsocket != null) {
+			//Insert cipher suites here
+			sslsocket.setEnabledCipherSuites(new String[]{
+			<xsl:for-each select="//task/element[@type='SecureCommunication']/Ciphersuites">"<xsl:value-of select="."/>",</xsl:for-each>
+			});
+		}
+	}
+
+	private void setProtocols() {
+		if (sslsocket != null) {
+			//Insert TLSxx here
+			sslsocket.setEnabledProtocols( new String[]{
+			"TLSv1.2" <!-- <xsl:for-each select="//task/element[@type='SecureCommunication']/TlsVersion">"<xsl:value-of select="."/>",</xsl:for-each>-->
+			} );
+		}
+	}
+	
+	public void closeConnection() throws IOException {
+		if (!sslsocket.isClosed()) {
+			sslsocket.close();
+		}
+	}
+	
+	public boolean sendData(String content) {
+		try {
+			bufW.write(content + "\n");
+			bufW.flush();
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+	}
+	
+	public String receiveData() throws IOException {
+		return bufR.readLine();
+	}
+	
+}
+</xsl:result-document>
+
+package <xsl:value-of select="//Package"/>; 
+<xsl:apply-templates select="//Import"/>	
+public class Output {
+
+	public void run(<xsl:choose>
+         <xsl:when test="//task/code/host"></xsl:when>
+         <xsl:otherwise>String host</xsl:otherwise>
+		 </xsl:choose>
+		 <xsl:choose>
+         <xsl:when test="//task/code/port"></xsl:when>
+         <xsl:otherwise>,int port</xsl:otherwise></xsl:choose>) {
+		 TLSClient tls = null;
+		try {
+			//You need to set the right host (first parameter) and the port name (second parameter). If you wish to pass a IP address, please use overload with InetAdress as second parameter instead of string.
+			tls = new TLSClient(<xsl:choose>
+         <xsl:when test="//task/code/host"></xsl:when>
+         <xsl:otherwise>host</xsl:otherwise>
+		 </xsl:choose>
+		 <xsl:choose>
+         <xsl:when test="//task/code/port"></xsl:when>
+         <xsl:otherwise>, port</xsl:otherwise>
+		 </xsl:choose>);
+			tls.sendData("");
+			String data = tls.receiveData();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			
+			try {
+				if (tls != null) {
+					tls.closeConnection();
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+}
+</xsl:if>
+
 </xsl:template>
 	
 <xsl:template match="Import">

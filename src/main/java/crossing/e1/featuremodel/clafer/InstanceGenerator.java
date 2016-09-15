@@ -224,10 +224,19 @@ public class InstanceGenerator {
 				this.claferModel.getScope().toBuilder()
 					//.defaultScope(Integer.parseInt(new ReadConfig().getValue(DEFAULT_SCOPE)))
 					.intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
-
+  
+			int redundantCounter = 0;
 			while (this.solver.find()) {
 				final InstanceClafer instance = this.solver.instance().getTopClafers()[this.solver.instance().getTopClafers().length - 1];
-				this.uniqueInstances.put(getHashValueOfInstance(instance), instance);
+				long hashValueOfInstance = getHashValueOfInstance(instance);
+				if (uniqueInstances.containsKey(hashValueOfInstance)) {
+					if (++redundantCounter > 1000) {
+						break;
+					}
+				} else {
+					this.uniqueInstances.put(hashValueOfInstance, instance);
+					redundantCounter = 0;
+				}
 			}
 
 		} catch (final Exception e) {

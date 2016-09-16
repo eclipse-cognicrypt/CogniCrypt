@@ -44,7 +44,7 @@ abstract SymmetricBlockCipher : SymmetricCipher
 	mode -> Mode
 	padding -> Padding
 	[mode != ECB]
-	[mode = CBC => padding != NoPadding]
+	[padding != NoPadding]
 
 abstract Task
     description -> string

@@ -43,7 +43,7 @@ abstract SymmetricBlockCipher : SymmetricCipher
 	mode -> Mode
 	padding -> Padding
 	[mode != ECB]
-	[mode = CBC => padding != NoPadding]
+	[padding != NoPadding]
 
 abstract KeyDerivationAlgorithm : Algorithm
 	iterations -> integer

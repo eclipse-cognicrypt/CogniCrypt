@@ -56,7 +56,7 @@ abstract AsymmetricCipher: Cipher
 abstract SymmetricBlockCipher : SymmetricCipher
 	padding -> Padding
 	[mode != ECB]
-	[mode = CBC => padding != NoPadding]
+	[padding != NoPadding]
 
 abstract StreamCipher: SymmetricCipher
 	[no mode]

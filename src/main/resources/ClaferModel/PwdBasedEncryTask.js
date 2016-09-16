@@ -91,7 +91,7 @@ c0_SymmetricBlockCipher.extending(c0_SymmetricCipher);
 c0_mode.refTo(c0_Mode);
 c0_padding.refTo(c0_Padding);
 c0_SymmetricBlockCipher.addConstraint(notEqual(joinRef(join($this(), c0_mode)), global(c0_ECB)));
-c0_SymmetricBlockCipher.addConstraint(implies(equal(joinRef(join($this(), c0_mode)), global(c0_CBC)), notEqual(joinRef(join($this(), c0_padding)), global(c0_NoPadding))));
+c0_SymmetricBlockCipher.addConstraint(notEqual(joinRef(join($this(), c0_padding)), global(c0_NoPadding)));
 c0_KeyDerivationAlgorithm.extending(c0_Algorithm);
 c0_iterations.refTo(Int);
 c0_outputSize.refTo(Int);

@@ -207,7 +207,7 @@ c0_AsymmetricCipher.addConstraint(equal(joinRef(join($this(), c0_classPerformanc
 c0_SymmetricBlockCipher.extending(c0_SymmetricCipher);
 c0_padding.refTo(c0_Padding);
 c0_SymmetricBlockCipher.addConstraint(notEqual(joinRef(join($this(), c0_mode)), global(c0_ECB)));
-c0_SymmetricBlockCipher.addConstraint(implies(equal(joinRef(join($this(), c0_mode)), global(c0_CBC)), notEqual(joinRef(join($this(), c0_padding)), global(c0_NoPadding))));
+c0_SymmetricBlockCipher.addConstraint(notEqual(joinRef(join($this(), c0_padding)), global(c0_NoPadding)));
 c0_StreamCipher.extending(c0_SymmetricCipher);
 c0_StreamCipher.addConstraint(none(join($this(), c0_mode)));
 c0_DigitalSignatureAlgm.extending(c0_Algorithm);
@@ -562,7 +562,6 @@ c0_SSL_RSA_WITH_RC4_128_SHA.addConstraint(equal(joinRef(join($this(), c0_cipher)
 c0_SSL_RSA_WITH_RC4_128_SHA.addConstraint(equal(joinRef(join($this(), c0_keyAgreement)), global(c0_RSA_KeyAgr)));
 c0_SSL_RSA_WITH_RC4_128_SHA.addConstraint(equal(joinRef(join($this(), c0_signature)), global(c0_RSA_Sig)));
 c0_SSL_RSA_WITH_RC4_128_SHA.addConstraint(equal(joinRef(join($this(), c0_messageAuth)), global(c0_SHA1)));
-c0_SSL_RSA_WITH_RC4_128_SHA.addConstraint(greaterThanEqual(joinRef(joinRef(join($this(), c0_tlsProtocol))), joinRef(global(c0_SSL2))));
 c0_TLS_ECDH_ECDSA_WITH_RC4_128_SHA.extending(c0_CipherSuite);
 c0_TLS_ECDH_ECDSA_WITH_RC4_128_SHA.addConstraint(equal(joinRef(join($this(), c0_cipher)), global(c0_RC4128)));
 c0_TLS_ECDH_ECDSA_WITH_RC4_128_SHA.addConstraint(equal(joinRef(join($this(), c0_keyAgreement)), global(c0_ECDH)));
@@ -701,20 +700,17 @@ c0_SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA.addConstraint(equal(joinRef(join(joinRef(jo
 c0_SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA.addConstraint(equal(joinRef(join($this(), c0_keyAgreement)), global(c0_DHE)));
 c0_SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA.addConstraint(equal(joinRef(join($this(), c0_signature)), global(c0_RSA_Sig)));
 c0_SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA.addConstraint(equal(joinRef(join($this(), c0_messageAuth)), global(c0_SHA1)));
-c0_SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA.addConstraint(greaterThanEqual(joinRef(joinRef(join($this(), c0_tlsProtocol))), joinRef(global(c0_SSL2))));
 c0_SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA.extending(c0_CipherSuite);
 c0_SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA.addConstraint(equal(joinRef(join($this(), c0_cipher)), global(c0_TDES)));
 c0_SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA.addConstraint(equal(joinRef(join(joinRef(join($this(), c0_cipher)), c0_mode)), global(c0_CBC)));
 c0_SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA.addConstraint(equal(joinRef(join($this(), c0_keyAgreement)), global(c0_DHE)));
 c0_SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA.addConstraint(equal(joinRef(join($this(), c0_signature)), global(c0_DSS)));
 c0_SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA.addConstraint(equal(joinRef(join($this(), c0_messageAuth)), global(c0_SHA1)));
-c0_SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA.addConstraint(greaterThanEqual(joinRef(joinRef(join($this(), c0_tlsProtocol))), joinRef(global(c0_SSL2))));
 c0_SSL_RSA_WITH_RC4_128_MD5.extending(c0_CipherSuite);
 c0_SSL_RSA_WITH_RC4_128_MD5.addConstraint(equal(joinRef(join($this(), c0_cipher)), global(c0_RC4128)));
 c0_SSL_RSA_WITH_RC4_128_MD5.addConstraint(equal(joinRef(join($this(), c0_keyAgreement)), global(c0_RSA_KeyAgr)));
 c0_SSL_RSA_WITH_RC4_128_MD5.addConstraint(equal(joinRef(join($this(), c0_signature)), global(c0_RSA_Sig)));
 c0_SSL_RSA_WITH_RC4_128_MD5.addConstraint(equal(joinRef(join($this(), c0_messageAuth)), global(c0_MD5)));
-c0_SSL_RSA_WITH_RC4_128_MD5.addConstraint(greaterThanEqual(joinRef(joinRef(join($this(), c0_tlsProtocol))), joinRef(global(c0_SSL2))));
 c0_SecureCommunication.extending(c0_Task);
 c0_SecureCommunication.addConstraint(equal(joinRef(join($this(), c1_description)), constant("\"Communicate over a secure channel\"")));
 c0_ciphersuites.refToUnique(c0_CipherSuite);

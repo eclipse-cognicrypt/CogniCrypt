@@ -4,7 +4,7 @@
 			"description": "Encrypt data using a secret key",
 			"modelFile" : "src/main/resources/ClaferModel/SymmetricEncryptionTask.js",
 			"xmlFile" : "src/main/resources/TaskDesc/SymmetricEncryptionQuestions.json",
-			"additionalResources" : "src/main/resources/AdditionalResources/LongTermArchiving"
+			"additionalResources" : ""
 		},
 		{
 			"name": "PasswordBasedEncryption",
@@ -31,7 +31,7 @@
 		{
 			"name": "LongTermArchiving",
 			"description": "Securely archiving files.",
-			"modelFile" : "src/main/resources/LongTermArchiving/LongTermArchiving.js",
+			"modelFile" : "src/main/resources/ClaferModel/LongTermArchiving.js",
 			"xmlFile" : "src/main/resources/TaskDesc/LongTermArchivingQuestions.json",
 			"additionalResources" : "src/main/resources/AdditionalResources/LongTermArchiving"
 		}

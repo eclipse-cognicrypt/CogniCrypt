@@ -96,13 +96,12 @@ public class XMLParser implements Labels {
 			boolean oneLevelToAlgorithm = false;
 			for (final InstanceClafer in : inst.getChildren()) {
 				AstClafer targetType = in.getType().getRef().getTargetType();
-				AstClafer parentType = targetType.getParent();
-				do {
-					if (parentType.toString().contains(Constants.CLAFER_ALGORITHM)) {
+				for (AstClafer superClafer = targetType.getSuperClafer(); superClafer != null && superClafer.hasSuperClafer(); superClafer = superClafer.getSuperClafer()) {
+					if (superClafer.toString().contains(Constants.CLAFER_ALGORITHM)) {
 						oneLevelToAlgorithm = true;
 						break;
 					}
-				} while (parentType.hasParent());
+				}
 
 				if (oneLevelToAlgorithm) {
 					if (!targetType.isPrimitive()) {
@@ -111,19 +110,18 @@ public class XMLParser implements Labels {
 					} else {
 						displayInstanceXML(in, taskElem);
 					}
-				} else {
-					break;
 				}
 			}
 
 			if (!oneLevelToAlgorithm) {
 				Element algoElem = taskElem.addElement("element").addAttribute(Constants.Type, "SecureCommunication");
-				
+
 				for (final InstanceClafer in : inst.getChildren()) {
 					if (in.getRef() instanceof InstanceClafer) {
-						algoElem.addElement(ClaferModelUtils.removeScopePrefix(in.getType().getName())).setText(ClaferModelUtils.removeScopePrefix(((InstanceClafer)in.getRef()).getType().getName()));
+						algoElem.addElement(ClaferModelUtils.removeScopePrefix(in.getType().getName()))
+							.setText(ClaferModelUtils.removeScopePrefix(((InstanceClafer) in.getRef()).getType().getName()));
 					}
-					
+
 				}
 			}
 		}

@@ -20,7 +20,10 @@
  */
 package crossing.e1.configurator.wizard;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.instance.InstanceClafer;
@@ -133,67 +136,58 @@ public class InstanceListPage extends WizardPage implements Labels {
 	/**
 	 *
 	 * @param inst
-	 * @param value
 	 * @return
 	 */
 	public String getInstanceProperties(final InstanceClafer inst) {
-		String value = "";
-		InstanceClafer instan = null;
-		if (inst.hasChildren()) {
-			instan = (InstanceClafer) inst.getChildren()[0].getRef();
+		String output = "";
+		
+		Map<String, String> algorithms = new HashMap<String, String>();
+		InstanceClafer[] children = inst.getChildren();
+		for(int i=0; i < children.length; i++)
+		{
+			getInstanceDetails(children[i], algorithms);
 		}
-		if (instan != null && instan.hasChildren()) {
-			for (final InstanceClafer in : instan.getChildren()) {
-				if (!in.getType().getRef().getTargetType().isPrimitive()) {
-					value += Constants.ALGORITHM + " :" + ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()) + Constants.lineSeparator;
-					value += getInstancePropertiesDetails(in);
-					value += Constants.lineSeparator;
-				} else {
-					value += getInstancePropertiesDetails(in);
-				}
-			}
+		
+		for (Map.Entry<String, String> entry : algorithms.entrySet()) {
+		    String key = entry.getKey();
+		    String value = entry.getValue();
+		    if(!value.equals("")){
+		    	output += key + value + Constants.lineSeparator;
+		    }
 		}
-		return value;
+		
+		return output;
 	}
-
+	
 	/**
-	 *
+	 * 
 	 * @param inst
-	 * @param value
-	 * @return
+	 * @param algorithms
 	 */
-	public String getInstancePropertiesDetails(final InstanceClafer inst) {
+	void getInstanceDetails(final InstanceClafer inst, Map<String, String> algorithms) {
 		String value = "";
-		try {
-			if (inst.hasChildren()) {
-				for (final InstanceClafer in : inst.getChildren()) {
-					value += getInstancePropertiesDetails(in);
+		
+		if (!inst.getType().getRef().getTargetType().isPrimitive()) {
+			String algo = Constants.ALGORITHM + " :" + ClaferModelUtils.removeScopePrefix(inst.getType().getRef().getTargetType().getName()) + Constants.lineSeparator;
+			algorithms.put(algo, "");
+			
+			InstanceClafer instan = (InstanceClafer) inst.getRef();
+			for (final InstanceClafer in : instan.getChildren()) {
+				if (!in.getType().getRef().getTargetType().isPrimitive()){
+					String superName = ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName());
+					if(!superName.equals("Enum")){
+						getInstanceDetails(in, algorithms);
+						continue;
+					}
 				}
-			} else if (inst.hasRef() && inst.getType().isPrimitive() != true && inst.getRef().getClass().toString().contains(Constants.INTEGER) == false && inst.getRef().getClass()
-				.toString().contains(Constants.STRING) == false && inst.getRef().getClass().toString().contains(Constants.BOOLEAN) == false) {
-				value += getInstancePropertiesDetails((InstanceClafer) inst.getRef());
-			} else if (PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())) {
-				if (inst.hasRef()) {
-					// For group properties
-					return "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName()) + ":" + ClaferModelUtils
-						.removeScopePrefix(inst.getType().toString()).replace("\"", "") + Constants.lineSeparator;
-				} else {
-					//enums that don't have a reference type (e.g., Mode, Padding etc)
-					return "\t" + ClaferModelUtils.removeScopePrefix(((AstConcreteClafer) inst.getType()).getSuperClafer().getName()) + " : " + ClaferModelUtils
-						.removeScopePrefix(inst.getType().getName()) + Constants.lineSeparator;
+				value = "\t" + ClaferModelUtils.removeScopePrefix(in.getType().getName()) + " : " + in.getRef().toString().replace("\"", "");
+				if(value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
+					value = value.substring(0, value.indexOf("->")-1);
 				}
-			} else {
-				if (inst.hasRef()) {
-					return "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName()) + " : " + inst.getRef().toString().replace("\"", "") + Constants.lineSeparator;
-				} else {
-					return "\t" + ClaferModelUtils.removeScopePrefix(((AstConcreteClafer) inst.getType()).getParent().getName()) + " : " + ClaferModelUtils
-						.removeScopePrefix(inst.getType().getName()) + Constants.lineSeparator;
-				}
+				value = value.replace("\n", "") + Constants.lineSeparator;	// having only one \n at the end of string
+				algorithms.put(algo, algorithms.get(algo)+value);
 			}
-		} catch (final Exception e) {
-			Activator.getDefault().logError(e);
 		}
-		return value;
 	}
 
 	public Task getTask() {

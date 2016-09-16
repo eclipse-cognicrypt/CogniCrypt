@@ -1,0 +1,28 @@
+[
+		{
+			"questionText":"Is this the fourth test question?",
+			"answers":[
+				{"value":"Yes.",
+				"claferDependencies":[{}],"nextID" : "-1" 
+				},
+				{"value":"No.",
+				"claferDependencies":[
+				{"algorithm": "cipher", "operand":"keySize","value":"128","operator":">="}
+				],
+				"nextID" : "-1"}
+			]
+		}
+		{
+			"questionText":"Is this the fifth test question?",
+			"answers":[
+				{"value":"Yes.",
+				"claferDependencies":[{}],"nextID" : "-1" 
+				},
+				{"value":"No.",
+				"claferDependencies":[
+				{"algorithm": "cipher", "operand":"keySize","value":"128","operator":">="}
+				],
+				"nextID" : "-1"}
+			]
+		}
+]

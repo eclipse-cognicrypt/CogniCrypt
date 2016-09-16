@@ -64,6 +64,7 @@ public class Question {
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
+		builder.append("ID: " + this.id + "\n");
 		builder.append(this.questionText + "\n");
 		for (final Answer answer : this.answers) {
 			builder.append("\t" + answer.getValue() + " [dependencies=" + answer.getClaferDependencies() + "], defaultValue=" + answer

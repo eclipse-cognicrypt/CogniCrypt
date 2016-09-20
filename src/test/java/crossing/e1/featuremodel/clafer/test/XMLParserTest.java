@@ -24,12 +24,13 @@ public class XMLParserTest {
 	InstanceGenerator instGen;
 	HashMap<Question, Answer> constraints;
 	InstanceClafer inst;
-	String validFile = "src/test/resources/valid.xml";
+	String validFilePath = "src/test/resources/valid.xml";
 	String xmlTestFilePath = "testXMLwriteInstance.xml";
 
 	@Before
 	public void setUp() throws Exception {
 		String path = "src/main/resources/ClaferModel/CryptoTasks.js";
+		path = "src/test/resources/hashing.js";
 		this.claferModel = new ClaferModel(path);
 		this.instGen = new InstanceGenerator(path, "PasswordBasedEncryption", "description");
 		this.constraints = new HashMap<Question, Answer>();
@@ -43,7 +44,7 @@ public class XMLParserTest {
 
 	@Test
 	public void testXMLValidity() throws DocumentException, IOException {
-		String validXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<task description=\"PasswordBasedEncryption\"><Package>Crypto</Package><Imports><Import>java.security.InvalidAlgorithmParameterException</Import><Import>java.security.InvalidKeyException</Import><Import>java.security.NoSuchAlgorithmException</Import><Import>java.security.NoSuchAlgorithmException</Import><Import>javax.crypto.SecretKey</Import><Import>javax.crypto.BadPaddingException</Import><Import>javax.crypto.Cipher</Import><Import>javax.crypto.IllegalBlockSizeException</Import><Import>javax.crypto.NoSuchPaddingException</Import><Import>java.security.SecureRandom</Import><Import>javax.crypto.spec.IvParameterSpec</Import><Import>javax.crypto.spec.SecretKeySpec</Import><Import>java.security.spec.InvalidKeySpecException</Import></Imports><algorithm type=\"KeyDerivationAlgorithm\"><iterations>1000</iterations><outputSize>192</outputSize><name>bcrypt</name><description>Bcrypt password-based key derivation</description><security>Medium</security><performance>Slow</performance></algorithm><algorithm type=\"SymmetricBlockCipher\"><mode>OFB</mode><padding>PKCS5Padding</padding><keySize>192</keySize><name>AES</name><description>Advanced Encryption Standard (AES) cipher</description><security>Strong</security><performance>Fast</performance></algorithm><description>Encrypt data using a given password</description><code/></task>";
+		String validXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<task description=\"Main\"><Package>Crypto</Package><Imports><Import>java.security.InvalidAlgorithmParameterException</Import><Import>java.security.InvalidKeyException</Import><Import>java.security.NoSuchAlgorithmException</Import><Import>java.security.NoSuchAlgorithmException</Import><Import>javax.crypto.SecretKey</Import><Import>javax.crypto.BadPaddingException</Import><Import>javax.crypto.Cipher</Import><Import>javax.crypto.IllegalBlockSizeException</Import><Import>javax.crypto.NoSuchPaddingException</Import><Import>java.security.SecureRandom</Import><Import>javax.crypto.spec.IvParameterSpec</Import><Import>javax.crypto.spec.SecretKeySpec</Import><Import>java.security.spec.InvalidKeySpecException</Import></Imports><algorithm type=\"Digest\"><outputSize>224</outputSize><name>SHA-224</name><performance>2</performance><status>secure</status></algorithm><code/></task>";
 		XMLParser xmlparser = new XMLParser();
 		
 		String xml = xmlparser.displayInstanceValues(this.inst, this.constraints);
@@ -55,7 +56,7 @@ public class XMLParserTest {
 		byte[] validBytes = new byte[2000];
 		byte[] generatedBytes = new byte[2000];;
 		
-		FileInputStream validFile = new FileInputStream(this.validFile);
+		FileInputStream validFile = new FileInputStream(this.validFilePath);
 		validFile.read(validBytes);
 		validFile.close();
 		

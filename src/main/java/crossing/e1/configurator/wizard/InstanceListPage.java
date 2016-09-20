@@ -17,11 +17,8 @@
 package crossing.e1.configurator.wizard;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.clafer.ast.AstConcreteClafer;
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -43,7 +40,6 @@ import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
-import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
 /**
  * This class is responsible for displaying the instances the Clafer instance generator generated.
@@ -130,48 +126,46 @@ public class InstanceListPage extends WizardPage implements Labels {
 	 * @return details for chosen algorithm configuration
 	 */
 	public String getInstanceProperties(final InstanceClafer inst) {
-		String output = "";
-		
 		Map<String, String> algorithms = new HashMap<String, String>();
 		InstanceClafer[] children = inst.getChildren();
-		for(int i=0; i < children.length; i++)
-		{
+		for (int i = 0; i < children.length; i++) {
 			getInstanceDetails(children[i], algorithms);
 		}
-		
+
+		String output = "";
 		for (Map.Entry<String, String> entry : algorithms.entrySet()) {
-		    String key = entry.getKey();
-		    String value = entry.getValue();
-		    if(!value.equals("")){
-		    	output += key + value + Constants.lineSeparator;
-		    }
+			String key = entry.getKey();
+			String value = entry.getValue();
+			if (value.isEmpty()) {
+				output += key + value + Constants.lineSeparator;
+			}
 		}
-		
+
 		return output;
 	}
-	
+
 	private void getInstanceDetails(final InstanceClafer inst, Map<String, String> algorithms) {
 		String value = "";
-		
+
 		if (!inst.getType().getRef().getTargetType().isPrimitive()) {
 			String algo = Constants.ALGORITHM + " :" + ClaferModelUtils.removeScopePrefix(inst.getType().getRef().getTargetType().getName()) + Constants.lineSeparator;
 			algorithms.put(algo, "");
-			
+
 			InstanceClafer instan = (InstanceClafer) inst.getRef();
 			for (final InstanceClafer in : instan.getChildren()) {
-				if (!in.getType().getRef().getTargetType().isPrimitive()){
+				if (!in.getType().getRef().getTargetType().isPrimitive()) {
 					String superName = ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName());
-					if(!superName.equals("Enum")){
+					if (!superName.equals("Enum")) {
 						getInstanceDetails(in, algorithms);
 						continue;
 					}
 				}
 				value = "\t" + ClaferModelUtils.removeScopePrefix(in.getType().getName()) + " : " + in.getRef().toString().replace("\"", "");
-				if(value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
-					value = value.substring(0, value.indexOf("->")-1);
+				if (value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
+					value = value.substring(0, value.indexOf("->") - 1);
 				}
 				value = value.replace("\n", "") + Constants.lineSeparator;	// having only one \n at the end of string
-				algorithms.put(algo, algorithms.get(algo)+value);
+				algorithms.put(algo, algorithms.get(algo) + value);
 			}
 		}
 	}

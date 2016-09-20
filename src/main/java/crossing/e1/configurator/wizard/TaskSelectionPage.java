@@ -44,14 +44,13 @@ public class TaskSelectionPage extends WizardPage {
 	private Composite container;
 	private ComboViewer taskComboSelection;
 	private Button advancedModeCheckBox;
-	private Label label2;
+	private Label selectTaskLabel;
 	private boolean canProceed = false;
 
 	public TaskSelectionPage() {
 		super(Labels.SELECT_TASK);
 		setTitle(Labels.TASK_LIST);
 		setDescription(Labels.DESCRIPTION_TASK_SELECTION_PAGE);
-		//this.model = claferModel;
 	}
 
 	public boolean canProceed() {
@@ -67,8 +66,8 @@ public class TaskSelectionPage extends WizardPage {
 		layout.numColumns = 4;
 		this.container.setLayout(layout);
 
-		this.label2 = new Label(this.container, SWT.NONE);
-		this.label2.setText(Labels.LABEL2);
+		this.selectTaskLabel = new Label(this.container, SWT.NONE);
+		this.selectTaskLabel.setText(Constants.SELECT_TASK);
 
 		this.taskComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
 		this.taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
@@ -78,12 +77,12 @@ public class TaskSelectionPage extends WizardPage {
 		this.taskComboSelection.setLabelProvider(new LabelProvider() {
 
 			@Override
-			public String getText(final Object element) {
-				if (element instanceof Task) {
-					final Task current = (Task) element;
+			public String getText(final Object task) {
+				if (task instanceof Task) {
+					final Task current = (Task) task;
 					return current.getDescription();
 				}
-				return super.getText(element);
+				return super.getText(task);
 			}
 		});
 

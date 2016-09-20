@@ -1,7 +1,6 @@
 package crossing.e1.configurator.wizard.beginner;
 
 import java.util.AbstractMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -23,7 +22,6 @@ import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.Labels;
-import crossing.e1.featuremodel.clafer.ClaferModel;
 
 public class BeginnerTaskQuestionPage extends WizardPage {
 
@@ -69,7 +67,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				comboViewer.addSelectionChangedListener(arg0 -> {
 					final IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
 					BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, (Answer) selection.getFirstElement());
-					//BeginnerTaskQuestionPage.this.selection.put(question, (Answer) selection.getFirstElement());
 				});
 
 				comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
@@ -85,7 +82,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					a.setValue(cleanedInput);
 					a.getCodeDependencies().get(0).setValue(cleanedInput);
 					BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, a);
-					//BeginnerTaskQuestionPage.this.selection.put(question, a);
 				});
 
 			default:
@@ -130,43 +126,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	public synchronized Entry<Question, Answer> getSelection() {
 		return this.selection;
-	}
-
-	public void setMap(final HashMap<Question, Answer> hashMap, final ClaferModel model) {
-
-		// userOptions = new HashMap<ArrayList<AstConcreteClafer>,
-		// ArrayList<Integer>>();
-		// ArrayList<Integer> values = null;
-		// ArrayList<AstConcreteClafer> keys = null; // new
-		// // ArrayList<AstConcreteClafer>();
-		// for (AstConcreteClafer clafer : PropertiesMapperUtil.getPropertyLabels()
-		// .keySet()) {
-		// values = new ArrayList<Integer>();
-		// keys = new ArrayList<AstConcreteClafer>();
-		// for (AstConcreteClafer claf : PropertiesMapperUtil.getPropertyLabels()
-		// .get(clafer)) {
-		// HashMap<HashMap<String, String>, List<String>> qutionare = quest
-		// .getQutionare();
-		// for (HashMap<String, String> val : qutionare.keySet()) {
-		// String st1 = val.get(val.keySet().toArray()[0]);
-		// String st2 = claf.getName();
-		// if (st2.contains(st1)
-		// // && map.containsKey(val .get(val.keySet().toArray()[0]))
-		// ) {
-		// keys.add(clafer);
-		// keys.add(claf);
-		// values.add(4);
-		// values.add(map.get(val.get(val.keySet().toArray()[0])));
-		// }
-		// }
-		// }
-		// }
-		// if (keys != null && values != null)
-		// userOptions.put(keys, values);
-		//
-		// for (ArrayList<AstConcreteClafer> x : userOptions.keySet()) {
-		// System.out.println(x.toString());
-		// }
 	}
 
 }

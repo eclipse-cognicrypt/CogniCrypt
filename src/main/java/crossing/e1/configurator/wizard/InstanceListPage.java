@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-/**
- * @author Ram Kamath
- *
- */
 package crossing.e1.configurator.wizard;
 
 import java.util.Map;
 
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.instance.InstanceClafer;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -38,10 +33,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.Labels;
@@ -49,6 +42,11 @@ import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
+/**
+ * This class is responsible for displaying the instances the Clafer instance generator generated.
+ * 
+ * @author Ram Kamath
+ */
 public class InstanceListPage extends WizardPage implements Labels {
 
 	private Composite control;
@@ -70,17 +68,8 @@ public class InstanceListPage extends WizardPage implements Labels {
 		return false;
 	}
 
-	public void checkNumberOfInstances() {
-		if (this.instanceGenerator.getNoOfInstances() == 0) {
-			MessageDialog.openError(new Shell(), "Error", Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE);
-		}
-	}
-
 	@Override
 	public void createControl(final Composite parent) {
-
-		//checkNumberOfInstances();
-
 		ComboViewer algorithmClass;
 		Label labelInstanceList;
 		this.control = new Composite(parent, SWT.NONE);
@@ -115,8 +104,8 @@ public class InstanceListPage extends WizardPage implements Labels {
 			}
 		});
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
-		this.instancePropertiesPanel.setText("Instance Details");
-		final Font boldFont = new Font(this.instancePropertiesPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
+		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
+		final Font boldFont = new Font(this.instancePropertiesPanel.getDisplay(), new FontData(Constants.ARIAL, 12, SWT.BOLD));
 		this.instancePropertiesPanel.setFont(boldFont);
 
 		this.instanceDetails = new Text(this.instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
@@ -127,73 +116,64 @@ public class InstanceListPage extends WizardPage implements Labels {
 		 */
 		this.instancePropertiesPanel.setVisible(false);
 		setControl(this.control);
-		;
 	}
 
 	/**
-	 *
+	 * The user might select an algorithm configuration/instance from the combobox. This method returns the details of the currently selected algorithm, which is passed as a
+	 * parameter.
+	 * 
 	 * @param inst
-	 * @param value
-	 * @return
+	 *        instance currently selected in the combo box
+	 * @return details for chosen algorithm configuration
 	 */
 	public String getInstanceProperties(final InstanceClafer inst) {
-		String value = "";
-		InstanceClafer instan = null;
+		String details = "";
+		InstanceClafer childOfInstance = null;
 		if (inst.hasChildren()) {
-			instan = (InstanceClafer) inst.getChildren()[0].getRef();
+			childOfInstance = (InstanceClafer) inst.getChildren()[0].getRef();
 		}
-		if (instan != null && instan.hasChildren()) {
-			for (final InstanceClafer in : instan.getChildren()) {
+		if (childOfInstance != null && childOfInstance.hasChildren()) {
+			for (final InstanceClafer in : childOfInstance.getChildren()) {
 				if (!in.getType().getRef().getTargetType().isPrimitive()) {
-					value += Constants.ALGORITHM + " :" + ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()) + Constants.lineSeparator;
-					value += getInstancePropertiesDetails(in);
-					value += Constants.lineSeparator;
+					details += Constants.ALGORITHM + " :" + ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()) + Constants.lineSeparator;
+					details += getInstancePropertiesDetails(in);
+					details += Constants.lineSeparator;
 				} else {
-					value += getInstancePropertiesDetails(in);
+					details += getInstancePropertiesDetails(in);
 				}
 			}
 		}
-		return value;
+		return details;
 	}
 
-	/**
-	 *
-	 * @param inst
-	 * @param value
-	 * @return
-	 */
-	public String getInstancePropertiesDetails(final InstanceClafer inst) {
-		String value = "";
-		try {
-			if (inst.hasChildren()) {
-				for (final InstanceClafer in : inst.getChildren()) {
-					value += getInstancePropertiesDetails(in);
-				}
-			} else if (inst.hasRef() && inst.getType().isPrimitive() != true && inst.getRef().getClass().toString().contains(Constants.INTEGER) == false && inst.getRef().getClass()
-				.toString().contains(Constants.STRING) == false && inst.getRef().getClass().toString().contains(Constants.BOOLEAN) == false) {
-				value += getInstancePropertiesDetails((InstanceClafer) inst.getRef());
-			} else if (PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())) {
-				if (inst.hasRef()) {
-					// For group properties
-					return "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName()) + ":" + ClaferModelUtils
-						.removeScopePrefix(inst.getType().toString()).replace("\"", "") + Constants.lineSeparator;
-				} else {
-					//enums that don't have a reference type (e.g., Mode, Padding etc)
-					return "\t" + ClaferModelUtils.removeScopePrefix(((AstConcreteClafer) inst.getType()).getSuperClafer().getName()) + " : " + ClaferModelUtils
-						.removeScopePrefix(inst.getType().getName()) + Constants.lineSeparator;
-				}
-			} else {
-				if (inst.hasRef()) {
-					return "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName()) + " : " + inst.getRef().toString().replace("\"", "") + Constants.lineSeparator;
-				} else {
-					return "\t" + ClaferModelUtils.removeScopePrefix(((AstConcreteClafer) inst.getType()).getParent().getName()) + " : " + ClaferModelUtils
-						.removeScopePrefix(inst.getType().getName()) + Constants.lineSeparator;
-				}
+	private String getInstancePropertiesDetails(final InstanceClafer inst) {
+		String details = "";
+		if (inst.hasChildren()) {
+			for (final InstanceClafer in : inst.getChildren()) {
+				details += getInstancePropertiesDetails(in);
 			}
-		} catch (final Exception e) {
-			Activator.getDefault().logError(e);
+		} else if (inst.hasRef() && !inst.getType().isPrimitive() && !inst.getRef().getClass().toString().contains(Constants.INTEGER) && !inst.getRef().getClass().toString()
+			.contains(Constants.STRING) && !inst.getRef().getClass().toString().contains(Constants.BOOLEAN)) {
+			details += getInstancePropertiesDetails((InstanceClafer) inst.getRef());
+		} else if (PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())) {
+			if (inst.hasRef()) {
+				// For group properties
+				return "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName()) + ":" + ClaferModelUtils
+					.removeScopePrefix(inst.getType().toString()).replace("\"", "") + Constants.lineSeparator;
+			} else {
+				//enums that don't have a reference type (e.g., Mode, Padding etc)
+				return "\t" + ClaferModelUtils.removeScopePrefix(((AstConcreteClafer) inst.getType()).getSuperClafer().getName()) + " : " + ClaferModelUtils
+					.removeScopePrefix(inst.getType().getName()) + Constants.lineSeparator;
+			}
+		} else {
+			if (inst.hasRef()) {
+				return "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName()) + " : " + inst.getRef().toString().replace("\"", "") + Constants.lineSeparator;
+			} else {
+				return "\t" + ClaferModelUtils.removeScopePrefix(((AstConcreteClafer) inst.getType()).getParent().getName()) + " : " + ClaferModelUtils
+					.removeScopePrefix(inst.getType().getName()) + Constants.lineSeparator;
+			}
 		}
-		return value;
+		return details;
 	}
 
 	public Task getTask() {

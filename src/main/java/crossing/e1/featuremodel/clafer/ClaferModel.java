@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-/**
- * @author Ram Kamath
- *
- */
+
 package crossing.e1.featuremodel.clafer;
 
 import java.io.File;
@@ -37,6 +34,10 @@ import org.clafer.scope.Scope;
 
 import crossing.e1.configurator.Activator;
 
+/**
+ * @author Ram Kamath
+ *
+ */
 public class ClaferModel {
 
 	private String modelName;

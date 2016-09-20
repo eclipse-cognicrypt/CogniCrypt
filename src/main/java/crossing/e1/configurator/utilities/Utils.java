@@ -48,7 +48,7 @@ import crossing.e1.configurator.Activator;
 public class Utils {
 
 	/***
-	 * retrieves absolute path of a project-relative path. 
+	 * This method returns absolute path of a project-relative path. 
 	 * @param inputPath project-relative path
 	 * @return absolute path
 	 */
@@ -76,7 +76,7 @@ public class Utils {
 	}
 
 	/**
-	 * This method gets the currently open editor as an {@link IEditorPart}.
+	 * This method returns the currently open editor as an {@link IEditorPart}.
 	 *
 	 * @return Current editor.
 	 */

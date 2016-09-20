@@ -13,13 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @author Stefan Krueger 
- * @author Sarah Nadi 
- * @author Ram Kamath
- * @author Karim Ali 
- *
- */
+
 package crossing.e1.configurator.wizard;
 
 import java.io.File;
@@ -39,6 +33,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.clafer.ast.AstConcreteClafer;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
@@ -62,6 +57,16 @@ import crossing.e1.configurator.wizard.beginner.BeginnerTaskQuestionPage;
 import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 
+/**
+ * This class implements the logic of the dialogue windows the user has to go through. Currently, methods getNextPage() and performFinish() have special handling of TLS task
+ * that should be deleted once the task is integrated.
+ * 
+ * @author Stefan Krueger
+ * @author Sarah Nadi
+ * @author Ram Kamath
+ * @author Karim Ali
+ *
+ */
 public class ConfiguratorWizard extends Wizard {
 
 	protected TaskSelectionPage taskListPage;
@@ -111,6 +116,12 @@ public class ConfiguratorWizard extends Wizard {
 		return updateRound;
 	}
 
+	/**
+	 * This method returns the next page. If current page is task list or any but the last question page, the first/next question page is returned.
+	 * If the current page is the the last question page, the instance list page is returned.
+	 * @param currentPage current page
+	 * @return either next question page or instance list page
+	 */
 	@Override
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
 		final Task selectedTask = this.taskListPage.getSelectedTask();
@@ -191,7 +202,7 @@ public class ConfiguratorWizard extends Wizard {
 							addPage(this.preferenceSelectionPage);
 						}
 
-						//						this.constraints.putAll(((BeginnerTaskQuestionPage) currentPage).getMap());
+						//this.constraints.putAll(((BeginnerTaskQuestionPage) currentPage).getMap());
 						return this.preferenceSelectionPage;
 					}
 				}
@@ -222,6 +233,13 @@ public class ConfiguratorWizard extends Wizard {
 		return currentPage;
 	}
 
+	/**
+	 * This method returns previous page. If currentPage is the first question, the task list page is returned. 
+	 * If it is any other question page or the instance list page, the previous question page is returned.
+	 *   
+	 * @param currentPage current page, either instance list page or question page
+	 * @return either previous question or task selection page
+	 */
 	@Override
 	public IWizardPage getPreviousPage(final IWizardPage currentPage) {
 		final boolean lastPage = currentPage instanceof InstanceListPage;
@@ -233,6 +251,11 @@ public class ConfiguratorWizard extends Wizard {
 		return super.getPreviousPage(currentPage);
 	}
 
+	/**
+	 * This method is called once the user selects an instance. It writes the instance to an xml file and calls the code generation.
+	 * 
+	 * @return <code>true</code>/<code>false</code> if writing instance file and code generation are (un)successful
+	 */
 	@Override
 	public boolean performFinish() {
 		boolean ret = false;
@@ -248,18 +271,20 @@ public class ConfiguratorWizard extends Wizard {
 				// Write Instance File into developer project
 				final String xmlInstancePath = codeGeneration.getDeveloperProject().getProjectPath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile;
 				parser.writeClaferInstanceToFile(xmlInstancePath);
-				
+
 				// Generate code template
 				ret &= this.codeGeneration.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), null);
 
 				// Delete Instance File
 				FileHelper.deleteFile(xmlInstancePath);
 				this.codeGeneration.getDeveloperProject().refresh();
-			} catch (final Exception e) {
+			} catch (final IOException | CoreException e) {
 				Activator.getDefault().logError(e);
 				return false;
 			}
 		} else if (this.tlsPage != null) {
+			// Special code for TLS task
+			// Should be removed once its integration is finished.
 			ret = this.tlsPage.isPageComplete();
 			try {
 				final File xslTLSfile = new File(Utils.getAbsolutePath(Constants.pathToTSLXSLFile));

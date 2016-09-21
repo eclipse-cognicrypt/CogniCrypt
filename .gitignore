@@ -6,3 +6,5 @@
 **/.DS_Store
 **/*.html
 **/*.als
+.idea/*
+.settings/org.eclipse.core.*

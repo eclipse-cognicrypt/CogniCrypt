@@ -136,7 +136,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 		for (Map.Entry<String, String> entry : algorithms.entrySet()) {
 			String key = entry.getKey();
 			String value = entry.getValue();
-			if (value.isEmpty()) {
+			if (!value.isEmpty()) {
 				output += key + value + Constants.lineSeparator;
 			}
 		}

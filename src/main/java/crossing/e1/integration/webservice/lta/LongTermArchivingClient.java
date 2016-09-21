@@ -2,6 +2,7 @@ package crossing.e1.integration.webservice.lta;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import de.tu_darmstadt.cs.cdc.moltas.exceptions.EntityNotFoundException;
 import de.tu_darmstadt.cs.cdc.moltas.exceptions.InternalServiceErrorException;
@@ -60,10 +61,8 @@ public class LongTermArchivingClient {
 	private ArchivingSystem archivingSystem;
 
 	public LongTermArchivingClient() throws ServiceClientCreationException {
-		if (this.archivingSystem != null) {
-			this.archivingSystem = (ArchivingSystem) ServiceClientCreator.createServiceClient(ServiceType.ARCHIVING_SYSTEM);
-			mapDatastructureToScheme("");
-		}
+		this.archivingSystem = (ArchivingSystem) ServiceClientCreator.createServiceClient(ServiceType.ARCHIVING_SYSTEM);
+		mapDatastructureToScheme("");
 	}
 
 	public Archive createArchive(final String archiveName, final ArchiveConfiguration archiveConfig) throws InternalServiceErrorException, IOException {
@@ -81,5 +80,11 @@ public class LongTermArchivingClient {
 	public void renameArchive(final long archiveId, final String newName) throws EntityNotFoundException, InternalServiceErrorException {
 		this.archivingSystem.renameArchive(archiveId, newName);
 	}
-
+	
+	public List<Map<String, String>> verifyArchive(final long archiveId) throws EntityNotFoundException, InternalServiceErrorException {
+		return this.archivingSystem.verifyArchive(archiveId);
+	}
+	
+	
+	
 }

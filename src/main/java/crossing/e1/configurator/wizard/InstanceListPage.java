@@ -171,11 +171,6 @@ public class InstanceListPage extends WizardPage implements Labels {
 			// Above for loop over children hasn't been executed, then following if
 			if (!instan.hasChildren()) {
 				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName()) + " : " + inst.getRef().toString().replace("\"", "");
-//				value = "\t" + ClaferModelUtils.removeScopePrefix(instan.getType().getName()) + Constants.lineSeparator;
-//				if (instan.hasRef()) {
-//					value += " : " + instan.getRef().toString().replace("\"", "");
-//					value = value.replace(Constants.lineSeparator, "") + Constants.lineSeparator;	// having only one \n at the end of string
-//				}
 				algo = algorithms.keySet().iterator().next();
 				algorithms.put(algo, algorithms.get(algo) + value);				
 			}

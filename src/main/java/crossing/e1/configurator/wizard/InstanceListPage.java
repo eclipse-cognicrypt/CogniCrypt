@@ -18,7 +18,6 @@ package crossing.e1.configurator.wizard;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -154,14 +153,14 @@ public class InstanceListPage extends WizardPage implements Labels {
 
 			InstanceClafer instan = (InstanceClafer) inst.getRef();
 			for (final InstanceClafer in : instan.getChildren()) {
-				if (!in.getType().getRef().getTargetType().isPrimitive()) {
+				if (in.getType().getRef() != null && !in.getType().getRef().getTargetType().isPrimitive()) {
 					String superName = ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName());
 					if (!superName.equals("Enum")) {
 						getInstanceDetails(in, algorithms);
 						continue;
 					}
 				}
-				value = "\t" + ClaferModelUtils.removeScopePrefix(in.getType().getName()) + " : " + in.getRef().toString().replace("\"", "");
+				value = "\t" + ClaferModelUtils.removeScopePrefix(in.getType().getName()) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
 				if (value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
 					value = value.substring(0, value.indexOf("->") - 1);
 				}

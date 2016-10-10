@@ -18,6 +18,7 @@ package crossing.e1.configurator.wizard;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -166,6 +167,12 @@ public class InstanceListPage extends WizardPage implements Labels {
 				}
 				value = value.replace("\n", "") + Constants.lineSeparator;	// having only one \n at the end of string
 				algorithms.put(algo, algorithms.get(algo) + value);
+			}
+			// Above for loop over children hasn't been executed, then following if
+			if (!instan.hasChildren()) {
+				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName()) + " : " + inst.getRef().toString().replace("\"", "");
+				algo = algorithms.keySet().iterator().next();
+				algorithms.put(algo, algorithms.get(algo) + value);				
 			}
 		}
 	}

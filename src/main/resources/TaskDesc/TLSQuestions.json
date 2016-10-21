@@ -81,11 +81,12 @@
 		},
 		{
 			"id" : "7",
+			"element" : "itemselection", "selectionValue" : "Ciphersuite",
 			"questionText":"Please select the cipher suites and tls protocol versions you would like to use.",
 			"answers":[
 				{"value":"",
 				"":[
-				{"refClafer":"keySize","value":"128","operator":">"}
+				{"refClafer":"","value":"","operator":""}
 				], "defaultAnswer": true, "nextID" : "-1"}
 			]
 		}

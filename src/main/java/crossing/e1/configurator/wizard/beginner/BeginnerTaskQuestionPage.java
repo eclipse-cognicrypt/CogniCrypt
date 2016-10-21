@@ -14,6 +14,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -83,11 +84,24 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					a.getCodeDependencies().get(0).setValue(cleanedInput);
 					BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, a);
 				});
-
+				break;
+				
+			case itemselection:
+				//Get Clafer model
+				
+				
+				//Get element according to selection from selectionvalue
+				
+				
+				//Create list of checkboxes with names
+				for (Answer a : question.getAnswers()) {
+					Button checkBox = new Button(container,SWT.CHECK);
+					checkBox.setText("CheckBox");
+				}
+				break;
 			default:
 				break;
 		}
-
 	}
 
 	@Override

@@ -27,7 +27,7 @@ package crossing.e1.configurator;
 public class Constants {
 
 	public static enum guiElements {
-		combo, text
+		combo, text, itemselection
 	}
 
 	public static final String fileSeparator = System.getProperty("file.separator");

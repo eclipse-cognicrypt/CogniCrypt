@@ -25,14 +25,6 @@ import java.util.Map.Entry;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.core.runtime.CoreException;
@@ -41,8 +33,6 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Shell;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
@@ -75,9 +65,6 @@ import crossing.e1.featuremodel.clafer.InstanceGenerator;
 public class ConfiguratorWizard extends Wizard {
 
 	protected TaskSelectionPage taskListPage;
-	protected TLSConfigurationServerClientPage tlsSCPage;
-	protected TLSConfigurationHostPortPage tlsPage;
-	protected TLSConfigurationKeyStorePage tlsKeyPage;
 	protected WizardPage preferenceSelectionPage;
 	protected InstanceListPage instanceListPage;
 	private ClaferModel claferModel;
@@ -106,7 +93,7 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public boolean canFinish() {
-		return (this.tlsPage != null && this.tlsPage.isPageComplete()) || (this.instanceListPage != null && this.instanceListPage.isPageComplete());
+		return this.instanceListPage != null && this.instanceListPage.isPageComplete();
 	}
 
 	private boolean checkifInUpdateRound() {
@@ -133,13 +120,6 @@ public class ConfiguratorWizard extends Wizard {
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
 		final Task selectedTask = this.taskListPage.getSelectedTask();
 		if (currentPage == this.taskListPage && this.taskListPage.canProceed()) {
-			// Special handling for the TLS task
-			//			if (selectedTask.getDescription().equals("Communicate over a secure channel")) {
-			//				this.tlsSCPage = new TLSConfigurationServerClientPage();
-			//				addPage(this.tlsSCPage);
-			//				this.preferenceSelectionPage = this.tlsSCPage;
-			//			} else 
-			//			{
 			this.claferModel = new ClaferModel(Utils.getAbsolutePath(selectedTask.getModelFile()));
 
 			if (this.taskListPage.isAdvancedMode()) {
@@ -149,7 +129,6 @@ public class ConfiguratorWizard extends Wizard {
 				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
 				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextQuestion(), this.beginnerQuestions.getTask());
 			}
-			//			}
 			if (this.constraints != null) {
 				this.constraints = null;
 			}
@@ -157,23 +136,7 @@ public class ConfiguratorWizard extends Wizard {
 				addPage(this.preferenceSelectionPage);
 			}
 			return this.preferenceSelectionPage;
-		} else if (this.tlsKeyPage != null && this.tlsKeyPage.canFlipToNextPage()) {
-			this.tlsPage = new TLSConfigurationHostPortPage();
-			this.preferenceSelectionPage = this.tlsPage;
-			if (this.preferenceSelectionPage != null) {
-				addPage(this.preferenceSelectionPage);
-			}
-
-			return this.preferenceSelectionPage;
-		} else if (this.tlsSCPage != null && this.tlsSCPage.canFlipToNextPage()) {
-
-			this.tlsKeyPage = new TLSConfigurationKeyStorePage();
-			this.preferenceSelectionPage = this.tlsKeyPage;
-			if (this.preferenceSelectionPage != null) {
-				addPage(this.preferenceSelectionPage);
-			}
-			return this.preferenceSelectionPage;
-		}
+		} 
 		/**
 		 * If current page is either question or properties page (in Advanced mode)
 		 */
@@ -337,34 +300,7 @@ public class ConfiguratorWizard extends Wizard {
 				Activator.getDefault().logError(e);
 				return false;
 			}
-		} else if (this.tlsPage != null) {
-			// Special code for TLS task
-			// Should be removed once its integration is finished.
-			ret = this.tlsPage.isPageComplete();
-			try {
-				final File xslTLSfile = new File(Utils.getAbsolutePath(Constants.pathToTSLXSLFile));
-				final File xmlInstanceFile = new File(Utils
-					.getAbsolutePath(Constants.pathToClaferInstanceFolder + Constants.fileSeparator + Constants.pathToClaferInstanceTLSFile));
-				final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-				final DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-				final Document doc = docBuilder.parse(xmlInstanceFile);
-
-				doc.getElementsByTagName("host").item(0).setTextContent(this.tlsPage.getHost());
-				doc.getElementsByTagName("port").item(0).setTextContent(this.tlsPage.getPort());
-				doc.getElementsByTagName("path").item(0).setTextContent(this.tlsKeyPage.getPath());
-				doc.getElementsByTagName("password").item(0).setTextContent(this.tlsKeyPage.getPassword());
-
-				final TransformerFactory tF = TransformerFactory.newInstance();
-				final Transformer tfr = tF.newTransformer();
-				final DOMSource source = new DOMSource(doc);
-				final StreamResult result = new StreamResult(xmlInstanceFile);
-				tfr.transform(source, result);
-				ret &= this.codeGeneration.generateCodeTemplates(xmlInstanceFile, this.taskListPage.getSelectedTask().getAdditionalResources(), xslTLSfile);
-			} catch (IOException | SAXException | ParserConfigurationException | TransformerException e) {
-				Activator.getDefault().logError(e);
-				return false;
-			}
-		}
+		} 
 		return ret;
 	}
 

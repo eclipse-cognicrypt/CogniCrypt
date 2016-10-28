@@ -18,7 +18,9 @@ package crossing.e1.configurator.wizard;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.swing.UIManager;
@@ -44,7 +46,9 @@ import org.xml.sax.SAXException;
 
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
+import crossing.e1.configurator.Constants.guiElements;
 import crossing.e1.configurator.beginer.question.Answer;
+import crossing.e1.configurator.beginer.question.ClaferDependency;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.codegeneration.XSLBasedGenerator;
 import crossing.e1.configurator.tasks.Task;
@@ -55,11 +59,12 @@ import crossing.e1.configurator.wizard.advanced.AdvancedUserValueSelectionPage;
 import crossing.e1.configurator.wizard.beginner.BeginnerModeQuestionnaire;
 import crossing.e1.configurator.wizard.beginner.BeginnerTaskQuestionPage;
 import crossing.e1.featuremodel.clafer.ClaferModel;
+import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 
 /**
- * This class implements the logic of the dialogue windows the user has to go through. Currently, methods getNextPage() and performFinish() have special handling of TLS task
- * that should be deleted once the task is integrated.
+ * This class implements the logic of the dialogue windows the user has to go through. Currently, methods getNextPage() and performFinish() have special handling of TLS task that
+ * should be deleted once the task is integrated.
  * 
  * @author Stefan Krueger
  * @author Sarah Nadi
@@ -117,9 +122,11 @@ public class ConfiguratorWizard extends Wizard {
 	}
 
 	/**
-	 * This method returns the next page. If current page is task list or any but the last question page, the first/next question page is returned.
-	 * If the current page is the the last question page, the instance list page is returned.
-	 * @param currentPage current page
+	 * This method returns the next page. If current page is task list or any but the last question page, the first/next question page is returned. If the current page is the the
+	 * last question page, the instance list page is returned.
+	 * 
+	 * @param currentPage
+	 *        current page
 	 * @return either next question page or instance list page
 	 */
 	@Override
@@ -132,17 +139,17 @@ public class ConfiguratorWizard extends Wizard {
 			//				addPage(this.tlsSCPage);
 			//				this.preferenceSelectionPage = this.tlsSCPage;
 			//			} else 
-			{
-				this.claferModel = new ClaferModel(Utils.getAbsolutePath(selectedTask.getModelFile()));
+			//			{
+			this.claferModel = new ClaferModel(Utils.getAbsolutePath(selectedTask.getModelFile()));
 
-				if (this.taskListPage.isAdvancedMode()) {
-					this.preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, (AstConcreteClafer) org.clafer.cli.Utils
-						.getModelChildByName(this.claferModel.getModel(), "c0_" + selectedTask.getName()));
-				} else {
-					this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
-					this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextQuestion(), this.beginnerQuestions.getTask());
-				}
+			if (this.taskListPage.isAdvancedMode()) {
+				this.preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, (AstConcreteClafer) org.clafer.cli.Utils
+					.getModelChildByName(this.claferModel.getModel(), "c0_" + selectedTask.getName()));
+			} else {
+				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
+				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextQuestion(), this.beginnerQuestions.getTask());
 			}
+			//			}
 			if (this.constraints != null) {
 				this.constraints = null;
 			}
@@ -178,13 +185,19 @@ public class ConfiguratorWizard extends Wizard {
 					this.constraints = new HashMap<Question, Answer>();
 				}
 
-				final Entry<Question, Answer> entry = ((BeginnerTaskQuestionPage) currentPage).getMap();
+				BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
+				final Entry<Question, Answer> entry = beginnerTaskQuestionPage.getMap();
+
+				if (entry.getKey().getElement().equals(guiElements.itemselection)) {
+					handleItemSelection(entry);
+				}
 				this.constraints.put(entry.getKey(), entry.getValue());
 
 				if (this.beginnerQuestions.hasMoreQuestions()) {
 					final int nextID = entry.getValue().getNextID();
 					if (nextID > -1) {
-						this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.getQuestionByID(nextID), this.beginnerQuestions.getTask());
+						Question curQuestion = this.beginnerQuestions.setQuestionByID(nextID);
+						createBeginnerPage(curQuestion);
 						if (checkifInUpdateRound()) {
 							this.beginnerQuestions.previousQuestion();
 						}
@@ -233,11 +246,53 @@ public class ConfiguratorWizard extends Wizard {
 		return currentPage;
 	}
 
+	private void createBeginnerPage(Question curQuestion) {
+		if (curQuestion.getElement().equals(guiElements.itemselection)) {
+			List<String> selection = new ArrayList<String>();
+			for (AstConcreteClafer childClafer : claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
+				if (childClafer.getSuperClafer().getName().endsWith(curQuestion.getSelectionClafer())) {
+					selection.add(ClaferModelUtils.removeScopePrefix(childClafer.getName()));
+				}
+			}
+			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curQuestion, this.beginnerQuestions.getTask(), selection);
+		} else {
+			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curQuestion, this.beginnerQuestions.getTask());
+		}
+	}
+
+	private void handleItemSelection(final Entry<Question, Answer> entry) {
+		Answer ans = entry.getValue();
+		ArrayList<ClaferDependency> claferDependencies = ans.getClaferDependencies();
+		if (null == claferDependencies) {
+			claferDependencies = new ArrayList<ClaferDependency>();
+		}
+
+		String operand = "";
+		for (AstConcreteClafer childClafer : claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
+			if (childClafer.getSuperClafer().getName().endsWith("Task")) {
+				for (AstConcreteClafer grandChildClafer : childClafer.getChildren()) {
+					if (grandChildClafer.getRef().getTargetType().getName().endsWith(entry.getKey().getSelectionClafer())) {
+						operand = ClaferModelUtils.removeScopePrefix(grandChildClafer.getName());
+						break;
+					}
+				}
+			}
+		}
+		ClaferDependency cd = new ClaferDependency();
+		cd.setAlgorithm(this.taskListPage.getSelectedTask().getName());
+		cd.setOperand(operand);
+		cd.setOperator("++");
+		cd.setValue(ans.getValue());
+		claferDependencies.add(cd);
+		ans.setClaferDependencies(claferDependencies);
+	}
+
 	/**
-	 * This method returns previous page. If currentPage is the first question, the task list page is returned. 
-	 * If it is any other question page or the instance list page, the previous question page is returned.
-	 *   
-	 * @param currentPage current page, either instance list page or question page
+	 * This method returns previous page. If currentPage is the first question, the task list page is returned. If it is any other question page or the instance list page, the
+	 * previous question page is returned.
+	 * 
+	 * @param currentPage
+	 *        current page, either instance list page or question page
 	 * @return either previous question or task selection page
 	 */
 	@Override

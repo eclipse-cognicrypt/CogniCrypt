@@ -8,7 +8,7 @@ public class Answer {
 	private Boolean defaultAnswer;
 	private ArrayList<ClaferDependency> claferDependencies;
 	private ArrayList<CodeDependency> codeDependencies;
-	private int nextID;
+	private int nextID = -1;
 
 	public ArrayList<ClaferDependency> getClaferDependencies() {
 		return this.claferDependencies;

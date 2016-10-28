@@ -140,7 +140,7 @@ c0_TLS_ECDH_ECDSA_WITH_RC4_128_SHA = Clafer("c0_TLS_ECDH_ECDSA_WITH_RC4_128_SHA"
 c0_TLS_ECDHE_ECDSA_WITH_RC4_128_SHA = Clafer("c0_TLS_ECDHE_ECDSA_WITH_RC4_128_SHA").withCard(1, 1);
 c0_TLS_ECDHE_RSA_WITH_RC4_128_SHA = Clafer("c0_TLS_ECDHE_RSA_WITH_RC4_128_SHA").withCard(1, 1);
 c0_SecureCommunication = Clafer("c0_SecureCommunication").withCard(1, 1);
-c0_ciphersuites = c0_SecureCommunication.addChild("c0_ciphersuites").withCard(7);
+c0_ciphersuites = c0_SecureCommunication.addChild("c0_ciphersuites").withCard(1);
 c0_tlsVersion = c0_SecureCommunication.addChild("c0_tlsVersion").withCard(1, 1);
 c0_Security.extending(c0_Enum).refToUnique(Int);
 c0_NoSecurity.extending(c0_Security);
@@ -684,6 +684,5 @@ c0_TLS_ECDHE_RSA_WITH_RC4_128_SHA.addConstraint(equal(joinRef(join($this(), c0_m
 c0_SecureCommunication.extending(c0_Task);
 c0_SecureCommunication.addConstraint(equal(joinRef(join($this(), c1_description)), constant("\"Communicate over a secure channel\"")));
 c0_ciphersuites.refToUnique(c0_CipherSuite);
-c0_SecureCommunication.addConstraint(all([decl([suite = local("suite")], join($this(), c0_ciphersuites))], and(greaterThanEqual(joinRef(joinRef(join(joinRef(suite), c0_tlsProtocol))), joinRef(global(c0_TLS1_2))), greaterThan(joinRef(join(joinRef(suite), c1_security)), joinRef(global(c0_Medium))))));
 c0_tlsVersion.refTo(c0_TLS_Version);
 c0_SecureCommunication.addConstraint(equal(joinRef(join($this(), c0_tlsVersion)), global(c0_TLS1_2)));

@@ -30,7 +30,7 @@ public class ClaferModelUtils {
 	 * Method to find a clafer with a given name in whole model
 	 */
 	public static AstClafer findClaferByName(final AstClafer inputClafer, final String name) {
-		if (inputClafer.getName().equals(name)) {
+		if (inputClafer.getName().equalsIgnoreCase(name)) {
 			return inputClafer;
 		} else {
 			if (inputClafer.hasChildren()) {

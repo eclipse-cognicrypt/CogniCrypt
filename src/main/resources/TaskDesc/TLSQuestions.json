@@ -81,7 +81,7 @@
 		},
 		{
 			"id" : "7",
-			"element" : "itemselection", "selectionValue" : "Ciphersuite",
+			"element" : "itemselection", "selectionClafer" : "CipherSuite",
 			"questionText":"Please select the cipher suites and tls protocol versions you would like to use.",
 			"answers":[
 				{"value":"",

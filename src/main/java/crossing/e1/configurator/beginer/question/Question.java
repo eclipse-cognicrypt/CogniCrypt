@@ -9,6 +9,7 @@ public class Question {
 
 	private int id;
 	private guiElements element;
+	private String selectionClafer;
 	private String questionText;
 	private ArrayList<Answer> answers;
 	private Answer defaultAnswer;
@@ -71,6 +72,11 @@ public class Question {
 				.isDefaultAnswer() + ", next Question=" + answer.getNextID());
 		}
 		return builder.toString();
+	}
+
+	
+	public String getSelectionClafer() {
+		return selectionClafer;
 	}
 
 }

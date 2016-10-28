@@ -641,8 +641,6 @@ TLS_ECDHE_RSA_WITH_RC4_128_SHA : CipherSuite
 
 SecureCommunication : Task  
 	[description = "Communicate over a secure channel"]
-	ciphersuites -> CipherSuite 7..*
-	[all suite : ciphersuites | suite.tlsProtocol >= TLS1_2 && suite.security > Medium]
+	ciphersuites -> CipherSuite 1..*
 	tlsVersion -> TLS_Version
 	[tlsVersion = TLS1_2]
-	

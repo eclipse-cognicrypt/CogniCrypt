@@ -2,6 +2,7 @@ package crossing.e1.configurator.wizard.beginner;
 
 import java.util.AbstractMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -11,6 +12,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridLayout;
@@ -28,17 +31,24 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private final Question quest;
 	private Entry<Question, Answer> selection = new AbstractMap.SimpleEntry<Question, Answer>(null, null);
+	private boolean finish = false;
+	private List<String> selectionValues;
 
 	public BeginnerTaskQuestionPage(final Question quest, final Task task) {
+		this(quest, task, null);
+	}
+
+	public BeginnerTaskQuestionPage(final Question quest, final Task task, List<String> selectionValues) {
 		super("Display Questions");
 		setTitle("Configuring Selected Task: " + task.getDescription());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.quest = quest;
+		this.selectionValues = selectionValues;
 	}
 
 	@Override
 	public boolean canFlipToNextPage() {
-		return isPageComplete();
+		return finish && isPageComplete();
 	}
 
 	@Override
@@ -69,7 +79,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					final IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
 					BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, (Answer) selection.getFirstElement());
 				});
-
+				finish = true;
+				BeginnerTaskQuestionPage.this.setPageComplete(finish);
 				comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
 				break;
 
@@ -82,21 +93,49 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 					a.setValue(cleanedInput);
 					a.getCodeDependencies().get(0).setValue(cleanedInput);
+					finish = !cleanedInput.isEmpty();
+					BeginnerTaskQuestionPage.this.setPageComplete(finish);
 					BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, a);
+
 				});
 				break;
-				
+
 			case itemselection:
-				//Get Clafer model
-				
-				
-				//Get element according to selection from selectionvalue
-				
-				
-				//Create list of checkboxes with names
-				for (Answer a : question.getAnswers()) {
-					Button checkBox = new Button(container,SWT.CHECK);
-					checkBox.setText("CheckBox");
+				for (String value : selectionValues) {
+					Button checkBox = new Button(container, SWT.CHECK);
+					checkBox.setText(value);
+					checkBox.addMouseListener(new MouseListener() {
+
+						@Override
+						public void mouseUp(MouseEvent e) {
+							if (e.getSource() instanceof Button && (((Button) e.getSource()).getStyle() & SWT.CHECK) == SWT.CHECK) {
+								Answer ans = BeginnerTaskQuestionPage.this.selection.getValue();
+								if (ans == null) {
+									ans = new Answer();
+									ans.setNextID(-1);
+								}
+								Button clickedCheckbox = (Button) e.getSource();
+								String checkedElement = ans.getValue();
+								ans.setValue(clickedCheckbox.getSelection() ? 
+									clickedCheckbox.getText() + ";" + ((checkedElement != null) ? checkedElement : "")
+										: checkedElement.replace(clickedCheckbox.getText() + ";", ""));
+
+								finish = ans.getValue().contains(";");
+								BeginnerTaskQuestionPage.this.setPageComplete(finish);
+								BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, ans);
+							}
+						}
+
+						@Override
+						public void mouseDown(MouseEvent e) {
+							return;
+						}
+
+						@Override
+						public void mouseDoubleClick(MouseEvent e) {
+							return;
+						}
+					});
 				}
 				break;
 			default:

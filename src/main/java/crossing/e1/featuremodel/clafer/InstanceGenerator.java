@@ -29,6 +29,7 @@ import static org.clafer.ast.Asts.join;
 import static org.clafer.ast.Asts.joinRef;
 import static org.clafer.ast.Asts.lessThan;
 import static org.clafer.ast.Asts.lessThanEqual;
+import static org.clafer.ast.Asts.union;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +41,7 @@ import org.clafer.ast.AstAbstractClafer;
 import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstModel;
+import org.clafer.ast.AstSetExpr;
 import org.clafer.cli.Utils;
 import org.clafer.common.Check;
 import org.clafer.compiler.ClaferCompiler;
@@ -97,7 +99,7 @@ public class InstanceGenerator {
 	 * @param operand
 	 * @param claf
 	 */
-	void addConstraints(final AstClafer taskAlgorithm, final AstConcreteClafer algorithmProperty, final String operator, final int value) {
+	private void addConstraints(final AstClafer taskAlgorithm, final AstConcreteClafer algorithmProperty, final String operator, final int value) {
 		if (operator.equals("=")) {
 			taskAlgorithm.addConstraint(equal(joinRef(join(joinRef($this()), algorithmProperty)), constant(value)));
 		} else if (operator.equals("<")) {
@@ -111,7 +113,7 @@ public class InstanceGenerator {
 		}
 	}
 
-	void addConstraints(final AstClafer taskAlgorithm, final AstConcreteClafer algorithmProperty, final String operator, final String value) {
+	private void addConstraints(final AstClafer taskAlgorithm, final AstConcreteClafer algorithmProperty, final String operator, final String value) {
 		if (operator.equals("=")) {
 			if (algorithmProperty != null) {
 				taskAlgorithm.addConstraint(equal(joinRef(join(joinRef($this()), algorithmProperty)), constant(value)));
@@ -120,10 +122,30 @@ public class InstanceGenerator {
 				for (final AstClafer ac : aac.getSubs()) {
 					if (ac.getName().endsWith(value)) {
 						taskAlgorithm.addConstraint(equal(joinRef($this()), global(ac)));
+						break;
 					}
 				}
 
 			}
+		} else if (operator.equals("++")) {
+			String[] claferNames = value.split(";");
+			int length = claferNames.length;
+			AstSetExpr constraint = null;
+			if (length == 1) {
+				addConstraints(taskAlgorithm, algorithmProperty, "=", value);
+			} else {
+				for (int j = 0; j < claferNames.length; j++) {
+					AstSetExpr previousC = null;
+					if (j == 0) {
+						previousC = global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j++]));						
+					} else {
+						previousC = constraint;
+					}
+					AstClafer astC = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j]);
+					constraint =  union(previousC, global(astC));
+				}
+			}
+			taskAlgorithm.addConstraint(equal(joinRef(join($this(), algorithmProperty)), constraint));	
 		}
 	}
 
@@ -133,7 +155,7 @@ public class InstanceGenerator {
 	 * @param taskClafer
 	 * @param propertiesMap
 	 */
-	void advancedModeHandler(final AstModel astModel, final AstClafer taskClafer, final List<PropertyWidget> constraints) {
+	private void advancedModeHandler(final AstModel astModel, final AstClafer taskClafer, final List<PropertyWidget> constraints) {
 
 		for (final PropertyWidget constraint : constraints) {
 
@@ -154,7 +176,7 @@ public class InstanceGenerator {
 	 * been further iterated to apply associated dependencies
 	 */
 	// FIXME include group operator
-	void basicModeHandler(final AstModel astModel, final AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {
+	private void basicModeHandler(final AstModel astModel, final AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {
 		for (final Question question : qAMap.keySet()) {
 			final Answer answer = qAMap.get(question);
 			if (answer.getClaferDependencies() != null) {
@@ -224,7 +246,7 @@ public class InstanceGenerator {
 				this.claferModel.getScope().toBuilder()
 					//.defaultScope(Integer.parseInt(new ReadConfig().getValue(DEFAULT_SCOPE)))
 					.intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
-  
+
 			int redundantCounter = 0;
 			while (this.solver.find()) {
 				final InstanceClafer instance = this.solver.instance().getTopClafers()[this.solver.instance().getTopClafers().length - 1];

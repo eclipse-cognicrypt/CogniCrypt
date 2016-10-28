@@ -51,27 +51,6 @@ public class XMLParser implements Labels {
 	Document document = null;
 
 	/**
-	 * Writes XML document to file. Before calling this method {@link crossing.e1.configurator.utilities.XMLParser#displayInstanceValues(InstanceClafer, HashMap)
-	 * displayInstanceValues()} should have been called to create document.
-	 * 
-	 * @param path
-	 *        path the XML file is written to
-	 * @throws IOException
-	 *         See {@link org.dom4j.io.XMLWriter#write(Document) write()} and {@link org.dom4j.io.XMLWriter#close() close()}
-	 */
-	public void writeClaferInstanceToFile(String path) throws IOException {
-		if (document != null) {
-			OutputFormat format = OutputFormat.createPrettyPrint();
-			XMLWriter writer = new XMLWriter(new FileWriter(path), format);
-			writer.write(this.document);
-			writer.close();
-			document = null;
-		} else {
-			Activator.getDefault().logError(Constants.NO_XML_INSTANCE_FILE_TO_WRITE);
-		}
-	}
-
-	/**
 	 * builds xml document, returns it's string representation
 	 * 
 	 * @param inst
@@ -82,20 +61,20 @@ public class XMLParser implements Labels {
 	 */
 	public String displayInstanceValues(final InstanceClafer inst, final HashMap<Question, Answer> constraints) {
 		this.document = DocumentHelper.createDocument();
-		Element taskElem = this.document.addElement(Constants.Task);
+		final Element taskElem = this.document.addElement(Constants.Task);
 		if (inst.hasChildren()) {
 			final String taskName = inst.getType().getName();
 			taskElem.addAttribute(Constants.Description, ClaferModelUtils.removeScopePrefix(taskName));
 			taskElem.addElement(Constants.Package).addText(Constants.PackageName);	// Constants.xmlPackage
-			Element xmlimports = taskElem.addElement(Constants.Imports);
-			for (String file : Constants.xmlimportsarr) {
+			final Element xmlimports = taskElem.addElement(Constants.Imports);
+			for (final String file : Constants.xmlimportsarr) {
 				xmlimports.addElement(Constants.Import).addText(file);
 			}
 		}
 		if (inst != null && inst.hasChildren()) {
 			boolean oneLevelToAlgorithm = false;
 			for (final InstanceClafer in : inst.getChildren()) {
-				AstClafer targetType = in.getType().getRef().getTargetType();
+				final AstClafer targetType = in.getType().getRef().getTargetType();
 				for (AstClafer superClafer = targetType.getSuperClafer(); superClafer != null && superClafer.hasSuperClafer(); superClafer = superClafer.getSuperClafer()) {
 					if (superClafer.toString().contains(Constants.CLAFER_ALGORITHM)) {
 						oneLevelToAlgorithm = true;
@@ -105,7 +84,7 @@ public class XMLParser implements Labels {
 
 				if (oneLevelToAlgorithm) {
 					if (!targetType.isPrimitive()) {
-						Element algoElem = taskElem.addElement(Constants.ALGORITHM).addAttribute(Constants.Type, ClaferModelUtils.removeScopePrefix(targetType.getName()));
+						final Element algoElem = taskElem.addElement(Constants.ALGORITHM).addAttribute(Constants.Type, ClaferModelUtils.removeScopePrefix(targetType.getName()));
 						displayInstanceXML(in, algoElem);
 					} else {
 						displayInstanceXML(in, taskElem);
@@ -114,7 +93,7 @@ public class XMLParser implements Labels {
 			}
 
 			if (!oneLevelToAlgorithm) {
-				Element algoElem = taskElem.addElement("element").addAttribute(Constants.Type, "SecureCommunication");
+				final Element algoElem = taskElem.addElement("element").addAttribute(Constants.Type, "SecureCommunication");
 
 				for (final InstanceClafer in : inst.getChildren()) {
 					if (in.getRef() instanceof InstanceClafer) {
@@ -125,7 +104,7 @@ public class XMLParser implements Labels {
 				}
 			}
 		}
-		Element codeElem = taskElem.addElement(Constants.Code);
+		final Element codeElem = taskElem.addElement(Constants.Code);
 		for (final Entry<Question, Answer> ent : constraints.entrySet()) {
 			final ArrayList<CodeDependency> cdp = ent.getValue().getCodeDependencies();
 			if (cdp != null) {
@@ -140,12 +119,12 @@ public class XMLParser implements Labels {
 	/**
 	 * Adds XML of inst to parent element
 	 */
-	private void displayInstanceXML(final InstanceClafer inst, Element parent) {
+	private void displayInstanceXML(final InstanceClafer inst, final Element parent) {
 		try {
 			if (inst.hasChildren()) {
 				for (final InstanceClafer in : inst.getChildren()) {
 					if (isAlgorithm(in.getType())) {
-						Element algoElem = parent.addElement(Constants.ALGORITHM);
+						final Element algoElem = parent.addElement(Constants.ALGORITHM);
 						algoElem.addAttribute(Constants.Type, ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getName()));
 						displayInstanceXML(in, algoElem);
 					} else {
@@ -183,5 +162,26 @@ public class XMLParser implements Labels {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Writes XML document to file. Before calling this method {@link crossing.e1.configurator.utilities.XMLParser#displayInstanceValues(InstanceClafer, HashMap)
+	 * displayInstanceValues()} should have been called to create document.
+	 * 
+	 * @param path
+	 *        path the XML file is written to
+	 * @throws IOException
+	 *         See {@link org.dom4j.io.XMLWriter#write(Document) write()} and {@link org.dom4j.io.XMLWriter#close() close()}
+	 */
+	public void writeClaferInstanceToFile(final String path) throws IOException {
+		if (this.document != null) {
+			final OutputFormat format = OutputFormat.createPrettyPrint();
+			final XMLWriter writer = new XMLWriter(new FileWriter(path), format);
+			writer.write(this.document);
+			writer.close();
+			this.document = null;
+		} else {
+			Activator.getDefault().logError(Constants.NO_XML_INSTANCE_FILE_TO_WRITE);
+		}
 	}
 }

@@ -128,8 +128,8 @@ public class InstanceGenerator {
 
 			}
 		} else if (operator.equals("++")) {
-			String[] claferNames = value.split(";");
-			int length = claferNames.length;
+			final String[] claferNames = value.split(";");
+			final int length = claferNames.length;
 			AstSetExpr constraint = null;
 			if (length == 1) {
 				addConstraints(taskAlgorithm, algorithmProperty, "=", value);
@@ -137,15 +137,15 @@ public class InstanceGenerator {
 				for (int j = 0; j < claferNames.length; j++) {
 					AstSetExpr previousC = null;
 					if (j == 0) {
-						previousC = global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j++]));						
+						previousC = global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j++]));
 					} else {
 						previousC = constraint;
 					}
-					AstClafer astC = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j]);
-					constraint =  union(previousC, global(astC));
+					final AstClafer astC = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j]);
+					constraint = union(previousC, global(astC));
 				}
 			}
-			taskAlgorithm.addConstraint(equal(joinRef(join($this(), algorithmProperty)), constraint));	
+			taskAlgorithm.addConstraint(equal(joinRef(join($this(), algorithmProperty)), constraint));
 		}
 	}
 
@@ -250,8 +250,8 @@ public class InstanceGenerator {
 			int redundantCounter = 0;
 			while (this.solver.find()) {
 				final InstanceClafer instance = this.solver.instance().getTopClafers()[this.solver.instance().getTopClafers().length - 1];
-				long hashValueOfInstance = getHashValueOfInstance(instance);
-				if (uniqueInstances.containsKey(hashValueOfInstance)) {
+				final long hashValueOfInstance = getHashValueOfInstance(instance);
+				if (this.uniqueInstances.containsKey(hashValueOfInstance)) {
 					if (++redundantCounter > 1000) {
 						break;
 					}

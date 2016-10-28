@@ -33,8 +33,8 @@ public class FileHelper {
 
 	public static int deleteFile(final String fileName) {
 		try {
-			File f = new File(fileName);
-			if(f.exists()) {
+			final File f = new File(fileName);
+			if (f.exists()) {
 				Files.delete(Paths.get(fileName));
 			}
 		} catch (final IOException e) {

@@ -117,44 +117,17 @@ public class InstanceListPage extends WizardPage implements Labels {
 		setControl(this.control);
 	}
 
-	/**
-	 * The user might select an algorithm configuration/instance from the combobox. This method returns the details of the currently selected algorithm, which is passed as a
-	 * parameter.
-	 * 
-	 * @param inst
-	 *        instance currently selected in the combo box
-	 * @return details for chosen algorithm configuration
-	 */
-	public String getInstanceProperties(final InstanceClafer inst) {
-		Map<String, String> algorithms = new HashMap<String, String>();
-		InstanceClafer[] children = inst.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			getInstanceDetails(children[i], algorithms);
-		}
-
-		String output = "";
-		for (Map.Entry<String, String> entry : algorithms.entrySet()) {
-			String key = entry.getKey();
-			String value = entry.getValue();
-			if (!value.isEmpty()) {
-				output += key + value + Constants.lineSeparator;
-			}
-		}
-
-		return output;
-	}
-
-	private void getInstanceDetails(final InstanceClafer inst, Map<String, String> algorithms) {
+	private void getInstanceDetails(final InstanceClafer inst, final Map<String, String> algorithms) {
 		String value = "";
 
 		if (!inst.getType().getRef().getTargetType().isPrimitive()) {
 			String algo = Constants.ALGORITHM + " :" + ClaferModelUtils.removeScopePrefix(inst.getType().getRef().getTargetType().getName()) + Constants.lineSeparator;
 			algorithms.put(algo, "");
 
-			InstanceClafer instan = (InstanceClafer) inst.getRef();
+			final InstanceClafer instan = (InstanceClafer) inst.getRef();
 			for (final InstanceClafer in : instan.getChildren()) {
 				if (in.getType().getRef() != null && !in.getType().getRef().getTargetType().isPrimitive()) {
-					String superName = ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName());
+					final String superName = ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName());
 					if (!superName.equals("Enum")) {
 						getInstanceDetails(in, algorithms);
 						continue;
@@ -171,9 +144,36 @@ public class InstanceListPage extends WizardPage implements Labels {
 			if (!instan.hasChildren()) {
 				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName()) + " : " + inst.getRef().toString().replace("\"", "");
 				algo = algorithms.keySet().iterator().next();
-				algorithms.put(algo, algorithms.get(algo) + value);				
+				algorithms.put(algo, algorithms.get(algo) + value);
 			}
 		}
+	}
+
+	/**
+	 * The user might select an algorithm configuration/instance from the combobox. This method returns the details of the currently selected algorithm, which is passed as a
+	 * parameter.
+	 * 
+	 * @param inst
+	 *        instance currently selected in the combo box
+	 * @return details for chosen algorithm configuration
+	 */
+	public String getInstanceProperties(final InstanceClafer inst) {
+		final Map<String, String> algorithms = new HashMap<String, String>();
+		final InstanceClafer[] children = inst.getChildren();
+		for (int i = 0; i < children.length; i++) {
+			getInstanceDetails(children[i], algorithms);
+		}
+
+		String output = "";
+		for (final Map.Entry<String, String> entry : algorithms.entrySet()) {
+			final String key = entry.getKey();
+			final String value = entry.getValue();
+			if (!value.isEmpty()) {
+				output += key + value + Constants.lineSeparator;
+			}
+		}
+
+		return output;
 	}
 
 	public Task getTask() {

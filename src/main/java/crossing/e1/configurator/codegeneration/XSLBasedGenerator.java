@@ -78,13 +78,16 @@ public class XSLBasedGenerator {
 	private DeveloperProject project;
 	private int startingPositionForRunMethod = -1;
 	private int startPosForImports = -1;
-	
+
 	/***
 	 * Generation of code templates using XSL template and Clafer instance.
 	 * 
-	 * @param xmlInstanceFile xml model that details the algorithm configuration chosen by the user. 
-	 * @param pathToFolderWithAdditionalResources If additional files need to be generated into a developer's project, they are in this folder.
-	 * @param xslFile optional, can be used if not the default xsl stylesheet should be used.
+	 * @param xmlInstanceFile
+	 *        xml model that details the algorithm configuration chosen by the user.
+	 * @param pathToFolderWithAdditionalResources
+	 *        If additional files need to be generated into a developer's project, they are in this folder.
+	 * @param xslFile
+	 *        optional, can be used if not the default xsl stylesheet should be used.
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if transformation successful/failed.
 	 */
 	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources, final File xslFile) {
@@ -207,6 +210,7 @@ public class XSLBasedGenerator {
 
 	/***
 	 * Getter method for developer project the code is generated into
+	 * 
 	 * @return developer project
 	 */
 	public DeveloperProject getDeveloperProject() {

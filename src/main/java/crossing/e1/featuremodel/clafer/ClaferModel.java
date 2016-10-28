@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package crossing.e1.featuremodel.clafer;
 
 import java.io.File;

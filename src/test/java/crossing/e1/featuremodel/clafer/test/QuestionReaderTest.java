@@ -7,7 +7,6 @@ import com.google.gson.JsonSyntaxException;
 
 import crossing.e1.configurator.beginer.question.QuestionsJSONReader;
 
-
 public class QuestionReaderTest {
 
 	static QuestionsJSONReader qjr;
@@ -17,38 +16,37 @@ public class QuestionReaderTest {
 	String testFile4 = "src/main/resources/testFiles/TestQuestions4.json";
 	String testFile5 = "src/main/resources/testFiles/TestQuestions5.json";
 
-	
 	@BeforeClass
-	public static void setUpBeforeClass()  {
+	public static void setUpBeforeClass() {
 		qjr = new QuestionsJSONReader();
 	}
-	
+
 	@Test
 	/***
-	 * This test method should always perform a successfull read. Create new methods for more fail test cases. 
+	 * This test method should always perform a successfull read. Create new methods for more fail test cases.
 	 */
 	public final void testGetQuestionsCorrect() {
-		qjr.getQuestions(testFile1);
+		qjr.getQuestions(this.testFile1);
 	}
 
-	@Test (expected = IllegalArgumentException.class)
-	public final void testGetQuestionsExceptionMissingID() {
-		qjr.getQuestions(testFile2);
-	}
-	
-	@Test (expected = IllegalArgumentException.class)
-	public final void testGetQuestionsExceptionMissingNextID() {
-		qjr.getQuestions(testFile3);
-	}
-	
-	@Test (expected = IllegalArgumentException.class)
-	public final void testGetQuestionsExceptionNoDefaultAnswer() {
-		qjr.getQuestions(testFile4);
-	}
-	
-	@Test (expected = JsonSyntaxException.class)
+	@Test(expected = JsonSyntaxException.class)
 	public final void testGetQuestionsExceptionJSONSyntaxError() {
-		qjr.getQuestions(testFile5);
+		qjr.getQuestions(this.testFile5);
 	}
-	
+
+	@Test(expected = IllegalArgumentException.class)
+	public final void testGetQuestionsExceptionMissingID() {
+		qjr.getQuestions(this.testFile2);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public final void testGetQuestionsExceptionMissingNextID() {
+		qjr.getQuestions(this.testFile3);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public final void testGetQuestionsExceptionNoDefaultAnswer() {
+		qjr.getQuestions(this.testFile4);
+	}
+
 }

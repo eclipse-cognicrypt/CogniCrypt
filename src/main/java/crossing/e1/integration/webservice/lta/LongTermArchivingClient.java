@@ -26,6 +26,8 @@ import de.tu_darmstadt.cs.cdc.moltas.services.utilities.ServiceClientCreator;
  */
 public class LongTermArchivingClient {
 
+	private final ArchivingSystem archivingSystem;
+
 	/**
 	 * 
 	 * Translates a `dataStructure` string to an ArchivingConfiguration.
@@ -58,8 +60,6 @@ public class LongTermArchivingClient {
 		return archConfig;
 	}
 
-	private ArchivingSystem archivingSystem;
-
 	public LongTermArchivingClient() throws ServiceClientCreationException {
 		this.archivingSystem = (ArchivingSystem) ServiceClientCreator.createServiceClient(ServiceType.ARCHIVING_SYSTEM);
 		mapDatastructureToScheme("");
@@ -80,11 +80,9 @@ public class LongTermArchivingClient {
 	public void renameArchive(final long archiveId, final String newName) throws EntityNotFoundException, InternalServiceErrorException {
 		this.archivingSystem.renameArchive(archiveId, newName);
 	}
-	
+
 	public List<Map<String, String>> verifyArchive(final long archiveId) throws EntityNotFoundException, InternalServiceErrorException {
 		return this.archivingSystem.verifyArchive(archiveId);
 	}
-	
-	
-	
+
 }

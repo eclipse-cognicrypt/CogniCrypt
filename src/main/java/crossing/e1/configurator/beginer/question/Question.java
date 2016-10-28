@@ -46,6 +46,10 @@ public class Question {
 		return this.questionText;
 	}
 
+	public String getSelectionClafer() {
+		return this.selectionClafer;
+	}
+
 	public void setAnswers(final ArrayList<Answer> answers) {
 		this.answers = answers;
 	}
@@ -72,11 +76,6 @@ public class Question {
 				.isDefaultAnswer() + ", next Question=" + answer.getNextID());
 		}
 		return builder.toString();
-	}
-
-	
-	public String getSelectionClafer() {
-		return selectionClafer;
 	}
 
 }

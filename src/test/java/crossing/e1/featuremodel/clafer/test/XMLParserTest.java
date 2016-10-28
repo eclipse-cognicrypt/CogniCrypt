@@ -1,6 +1,7 @@
 package crossing.e1.featuremodel.clafer.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import crossing.e1.featuremodel.clafer.ClaferModel;
 import crossing.e1.featuremodel.clafer.InstanceGenerator;
 
 public class XMLParserTest {
+
 	ClaferModel claferModel;
 	InstanceGenerator instGen;
 	HashMap<Question, Answer> constraints;
@@ -34,40 +36,41 @@ public class XMLParserTest {
 		this.claferModel = new ClaferModel(path);
 		this.instGen = new InstanceGenerator(path, "PasswordBasedEncryption", "description");
 		this.constraints = new HashMap<Question, Answer>();
-		this.inst = this.instGen.generateInstances(constraints).get(0);
+		this.inst = this.instGen.generateInstances(this.constraints).get(0);
 	}
 
 	@After
 	public void tearDown() {
-		FileHelper.deleteFile(xmlTestFilePath);
-	}
-
-	@Test
-	public void testXMLValidity() throws DocumentException, IOException {
-		String validXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<task description=\"Main\"><Package>Crypto</Package><Imports><Import>java.security.InvalidAlgorithmParameterException</Import><Import>java.security.InvalidKeyException</Import><Import>java.security.NoSuchAlgorithmException</Import><Import>java.security.NoSuchAlgorithmException</Import><Import>javax.crypto.SecretKey</Import><Import>javax.crypto.BadPaddingException</Import><Import>javax.crypto.Cipher</Import><Import>javax.crypto.IllegalBlockSizeException</Import><Import>javax.crypto.NoSuchPaddingException</Import><Import>java.security.SecureRandom</Import><Import>javax.crypto.spec.IvParameterSpec</Import><Import>javax.crypto.spec.SecretKeySpec</Import><Import>java.security.spec.InvalidKeySpecException</Import></Imports><algorithm type=\"Digest\"><outputSize>224</outputSize><name>SHA-224</name><performance>2</performance><status>secure</status></algorithm><code/></task>";
-		XMLParser xmlparser = new XMLParser();
-		
-		String xml = xmlparser.displayInstanceValues(this.inst, this.constraints);
-		assertEquals(validXML, xml);
+		FileHelper.deleteFile(this.xmlTestFilePath);
 	}
 
 	@Test
 	public void testWriteToFile() throws IOException, DocumentException {
-		byte[] validBytes = new byte[2000];
-		byte[] generatedBytes = new byte[2000];;
-		
-		FileInputStream validFile = new FileInputStream(this.validFilePath);
+		final byte[] validBytes = new byte[2000];
+		final byte[] generatedBytes = new byte[2000];
+		;
+
+		final FileInputStream validFile = new FileInputStream(this.validFilePath);
 		validFile.read(validBytes);
 		validFile.close();
-		
-		XMLParser xmlparser = new XMLParser();
+
+		final XMLParser xmlparser = new XMLParser();
 		xmlparser.displayInstanceValues(this.inst, this.constraints);
 		xmlparser.writeClaferInstanceToFile(this.xmlTestFilePath);
-		
-		FileInputStream testFile = new FileInputStream(this.xmlTestFilePath);
+
+		final FileInputStream testFile = new FileInputStream(this.xmlTestFilePath);
 		testFile.read(generatedBytes);
 		testFile.close();
-		
+
 		assertArrayEquals(validBytes, generatedBytes);
+	}
+
+	@Test
+	public void testXMLValidity() throws DocumentException, IOException {
+		final String validXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<task description=\"Main\"><Package>Crypto</Package><Imports><Import>java.security.InvalidAlgorithmParameterException</Import><Import>java.security.InvalidKeyException</Import><Import>java.security.NoSuchAlgorithmException</Import><Import>java.security.NoSuchAlgorithmException</Import><Import>javax.crypto.SecretKey</Import><Import>javax.crypto.BadPaddingException</Import><Import>javax.crypto.Cipher</Import><Import>javax.crypto.IllegalBlockSizeException</Import><Import>javax.crypto.NoSuchPaddingException</Import><Import>java.security.SecureRandom</Import><Import>javax.crypto.spec.IvParameterSpec</Import><Import>javax.crypto.spec.SecretKeySpec</Import><Import>java.security.spec.InvalidKeySpecException</Import></Imports><algorithm type=\"Digest\"><outputSize>224</outputSize><name>SHA-224</name><performance>2</performance><status>secure</status></algorithm><code/></task>";
+		final XMLParser xmlparser = new XMLParser();
+
+		final String xml = xmlparser.displayInstanceValues(this.inst, this.constraints);
+		assertEquals(validXML, xml);
 	}
 }

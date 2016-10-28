@@ -18,11 +18,10 @@ public class BeginnerModeQuestionnaire {
 		this.ID = 0;
 	}
 
-	public Question setQuestionByID(final int ID) {
-		this.ID = ID;
-		return this.questionList.get(this.ID);
+	public int getCurrentID() {
+		return this.ID;
 	}
-	
+
 	public Question getQuestionByID(final int ID) {
 		return this.questionList.get(ID);
 	}
@@ -46,13 +45,14 @@ public class BeginnerModeQuestionnaire {
 	public Question nextQuestion() {
 		return this.questionList.get(this.ID++);
 	}
-	
+
 	public Question previousQuestion() {
 		return this.questionList.get(--this.ID);
 	}
 
-	public int getCurrentID() {
-		return this.ID;
+	public Question setQuestionByID(final int ID) {
+		this.ID = ID;
+		return this.questionList.get(this.ID);
 	}
 
 	public void setTask(final Task task) {

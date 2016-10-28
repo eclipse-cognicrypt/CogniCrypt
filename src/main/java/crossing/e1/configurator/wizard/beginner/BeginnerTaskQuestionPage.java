@@ -2,7 +2,6 @@ package crossing.e1.configurator.wizard.beginner;
 
 import java.util.AbstractMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -32,13 +31,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private final Question quest;
 	private Entry<Question, Answer> selection = new AbstractMap.SimpleEntry<Question, Answer>(null, null);
 	private boolean finish = false;
-	private List<String> selectionValues;
+	private final List<String> selectionValues;
 
 	public BeginnerTaskQuestionPage(final Question quest, final Task task) {
 		this(quest, task, null);
 	}
 
-	public BeginnerTaskQuestionPage(final Question quest, final Task task, List<String> selectionValues) {
+	public BeginnerTaskQuestionPage(final Question quest, final Task task, final List<String> selectionValues) {
 		super("Display Questions");
 		setTitle("Configuring Selected Task: " + task.getDescription());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
@@ -48,7 +47,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	@Override
 	public boolean canFlipToNextPage() {
-		return finish && isPageComplete();
+		return this.finish && isPageComplete();
 	}
 
 	@Override
@@ -79,8 +78,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					final IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
 					BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, (Answer) selection.getFirstElement());
 				});
-				finish = true;
-				BeginnerTaskQuestionPage.this.setPageComplete(finish);
+				this.finish = true;
+				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
 				comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
 				break;
 
@@ -93,47 +92,46 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 					a.setValue(cleanedInput);
 					a.getCodeDependencies().get(0).setValue(cleanedInput);
-					finish = !cleanedInput.isEmpty();
-					BeginnerTaskQuestionPage.this.setPageComplete(finish);
+					this.finish = !cleanedInput.isEmpty();
+					BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
 					BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, a);
 
 				});
 				break;
 
 			case itemselection:
-				for (String value : selectionValues) {
-					Button checkBox = new Button(container, SWT.CHECK);
+				for (final String value : this.selectionValues) {
+					final Button checkBox = new Button(container, SWT.CHECK);
 					checkBox.setText(value);
 					checkBox.addMouseListener(new MouseListener() {
 
 						@Override
-						public void mouseUp(MouseEvent e) {
+						public void mouseDoubleClick(final MouseEvent e) {
+							return;
+						}
+
+						@Override
+						public void mouseDown(final MouseEvent e) {
+							return;
+						}
+
+						@Override
+						public void mouseUp(final MouseEvent e) {
 							if (e.getSource() instanceof Button && (((Button) e.getSource()).getStyle() & SWT.CHECK) == SWT.CHECK) {
 								Answer ans = BeginnerTaskQuestionPage.this.selection.getValue();
 								if (ans == null) {
 									ans = new Answer();
 									ans.setNextID(-1);
 								}
-								Button clickedCheckbox = (Button) e.getSource();
-								String checkedElement = ans.getValue();
-								ans.setValue(clickedCheckbox.getSelection() ? 
-									clickedCheckbox.getText() + ";" + ((checkedElement != null) ? checkedElement : "")
-										: checkedElement.replace(clickedCheckbox.getText() + ";", ""));
+								final Button clickedCheckbox = (Button) e.getSource();
+								final String checkedElement = ans.getValue();
+								ans.setValue(clickedCheckbox.getSelection() ? clickedCheckbox.getText() + ";" + ((checkedElement != null) ? checkedElement : "")
+									: checkedElement.replace(clickedCheckbox.getText() + ";", ""));
 
-								finish = ans.getValue().contains(";");
-								BeginnerTaskQuestionPage.this.setPageComplete(finish);
+								BeginnerTaskQuestionPage.this.finish = ans.getValue().contains(";");
+								BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish);
 								BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, ans);
 							}
-						}
-
-						@Override
-						public void mouseDown(MouseEvent e) {
-							return;
-						}
-
-						@Override
-						public void mouseDoubleClick(MouseEvent e) {
-							return;
 						}
 					});
 				}

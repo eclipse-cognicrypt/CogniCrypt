@@ -56,7 +56,7 @@ public class DeveloperProject {
 	 * @param pathToJar
 	 *        path to library to be added
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if library was (not) added successfully.
-	 * @throws CoreException 
+	 * @throws CoreException
 	 *         {@link org.eclipse.core.resources.IProject#hasNature(String) hasNature()}, {@link org.eclipse.jdt.core.IJavaProject#getRawClasspath() getRawClassPath()} and
 	 *         {@link org.eclipse.jdt.core.IJavaProject#setRawClassPath() setRawClassPath()}
 	 */
@@ -78,7 +78,7 @@ public class DeveloperProject {
 	}
 
 	/***
-	 *  @see  {@link org.eclipse.core.resources.IProject#getFolder() IProject.getFolder()}
+	 * @see {@link org.eclipse.core.resources.IProject#getFolder() IProject.getFolder()}
 	 */
 	public IFolder getFolder(final String name) {
 		return this.project.getFolder(name);
@@ -89,10 +89,13 @@ public class DeveloperProject {
 	}
 
 	/***
-	 *  This method retrieves a package of the name {@linkplain name} that is in the developer's project.
-	 * @param name name of the package
+	 * This method retrieves a package of the name {@linkplain name} that is in the developer's project.
+	 * 
+	 * @param name
+	 *        name of the package
 	 * @return package as {@link org.eclipse.jdt.core.IPackageFragment IPackageFragment}
-	 * @throws CoreException see {@link crossing.e1.configurator.DeveloperProject#getSourcePath() getSourcePath()}
+	 * @throws CoreException
+	 *         see {@link crossing.e1.configurator.DeveloperProject#getSourcePath() getSourcePath()}
 	 */
 	public IPackageFragment getPackagesOfProject(final String name) throws CoreException {
 		return JavaCore.create(this.project).getPackageFragmentRoot(this.project.getFolder(getSourcePath())).getPackageFragment(name);

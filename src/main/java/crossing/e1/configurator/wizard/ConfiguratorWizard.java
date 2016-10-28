@@ -108,6 +108,20 @@ public class ConfiguratorWizard extends Wizard {
 		return updateRound;
 	}
 
+	private void createBeginnerPage(final Question curQuestion) {
+		if (curQuestion.getElement().equals(guiElements.itemselection)) {
+			final List<String> selection = new ArrayList<String>();
+			for (final AstConcreteClafer childClafer : this.claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
+				if (childClafer.getSuperClafer().getName().endsWith(curQuestion.getSelectionClafer())) {
+					selection.add(ClaferModelUtils.removeScopePrefix(childClafer.getName()));
+				}
+			}
+			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curQuestion, this.beginnerQuestions.getTask(), selection);
+		} else {
+			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curQuestion, this.beginnerQuestions.getTask());
+		}
+	}
+
 	/**
 	 * This method returns the next page. If current page is task list or any but the last question page, the first/next question page is returned. If the current page is the the
 	 * last question page, the instance list page is returned.
@@ -136,7 +150,7 @@ public class ConfiguratorWizard extends Wizard {
 				addPage(this.preferenceSelectionPage);
 			}
 			return this.preferenceSelectionPage;
-		} 
+		}
 		/**
 		 * If current page is either question or properties page (in Advanced mode)
 		 */
@@ -148,7 +162,7 @@ public class ConfiguratorWizard extends Wizard {
 					this.constraints = new HashMap<Question, Answer>();
 				}
 
-				BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
+				final BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
 				final Entry<Question, Answer> entry = beginnerTaskQuestionPage.getMap();
 
 				if (entry.getKey().getElement().equals(guiElements.itemselection)) {
@@ -159,7 +173,7 @@ public class ConfiguratorWizard extends Wizard {
 				if (this.beginnerQuestions.hasMoreQuestions()) {
 					final int nextID = entry.getValue().getNextID();
 					if (nextID > -1) {
-						Question curQuestion = this.beginnerQuestions.setQuestionByID(nextID);
+						final Question curQuestion = this.beginnerQuestions.setQuestionByID(nextID);
 						createBeginnerPage(curQuestion);
 						if (checkifInUpdateRound()) {
 							this.beginnerQuestions.previousQuestion();
@@ -209,47 +223,6 @@ public class ConfiguratorWizard extends Wizard {
 		return currentPage;
 	}
 
-	private void createBeginnerPage(Question curQuestion) {
-		if (curQuestion.getElement().equals(guiElements.itemselection)) {
-			List<String> selection = new ArrayList<String>();
-			for (AstConcreteClafer childClafer : claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
-				if (childClafer.getSuperClafer().getName().endsWith(curQuestion.getSelectionClafer())) {
-					selection.add(ClaferModelUtils.removeScopePrefix(childClafer.getName()));
-				}
-			}
-			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curQuestion, this.beginnerQuestions.getTask(), selection);
-		} else {
-			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curQuestion, this.beginnerQuestions.getTask());
-		}
-	}
-
-	private void handleItemSelection(final Entry<Question, Answer> entry) {
-		Answer ans = entry.getValue();
-		ArrayList<ClaferDependency> claferDependencies = ans.getClaferDependencies();
-		if (null == claferDependencies) {
-			claferDependencies = new ArrayList<ClaferDependency>();
-		}
-
-		String operand = "";
-		for (AstConcreteClafer childClafer : claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
-			if (childClafer.getSuperClafer().getName().endsWith("Task")) {
-				for (AstConcreteClafer grandChildClafer : childClafer.getChildren()) {
-					if (grandChildClafer.getRef().getTargetType().getName().endsWith(entry.getKey().getSelectionClafer())) {
-						operand = ClaferModelUtils.removeScopePrefix(grandChildClafer.getName());
-						break;
-					}
-				}
-			}
-		}
-		ClaferDependency cd = new ClaferDependency();
-		cd.setAlgorithm(this.taskListPage.getSelectedTask().getName());
-		cd.setOperand(operand);
-		cd.setOperator("++");
-		cd.setValue(ans.getValue());
-		claferDependencies.add(cd);
-		ans.setClaferDependencies(claferDependencies);
-	}
-
 	/**
 	 * This method returns previous page. If currentPage is the first question, the task list page is returned. If it is any other question page or the instance list page, the
 	 * previous question page is returned.
@@ -269,6 +242,33 @@ public class ConfiguratorWizard extends Wizard {
 		return super.getPreviousPage(currentPage);
 	}
 
+	private void handleItemSelection(final Entry<Question, Answer> entry) {
+		final Answer ans = entry.getValue();
+		ArrayList<ClaferDependency> claferDependencies = ans.getClaferDependencies();
+		if (null == claferDependencies) {
+			claferDependencies = new ArrayList<ClaferDependency>();
+		}
+
+		String operand = "";
+		for (final AstConcreteClafer childClafer : this.claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
+			if (childClafer.getSuperClafer().getName().endsWith("Task")) {
+				for (final AstConcreteClafer grandChildClafer : childClafer.getChildren()) {
+					if (grandChildClafer.getRef().getTargetType().getName().endsWith(entry.getKey().getSelectionClafer())) {
+						operand = ClaferModelUtils.removeScopePrefix(grandChildClafer.getName());
+						break;
+					}
+				}
+			}
+		}
+		final ClaferDependency cd = new ClaferDependency();
+		cd.setAlgorithm(this.taskListPage.getSelectedTask().getName());
+		cd.setOperand(operand);
+		cd.setOperator("++");
+		cd.setValue(ans.getValue());
+		claferDependencies.add(cd);
+		ans.setClaferDependencies(claferDependencies);
+	}
+
 	/**
 	 * This method is called once the user selects an instance. It writes the instance to an xml file and calls the code generation.
 	 * 
@@ -280,14 +280,14 @@ public class ConfiguratorWizard extends Wizard {
 		if (this.instanceListPage != null) {
 			ret = this.instanceListPage.isPageComplete();
 			try {
-				XMLParser parser = new XMLParser();
-				parser.displayInstanceValues(this.instanceListPage.getValue(), constraints);
+				final XMLParser parser = new XMLParser();
+				parser.displayInstanceValues(this.instanceListPage.getValue(), this.constraints);
 
 				// Initialize Code Generation to retrieve developer project
 				ret &= this.codeGeneration.initCodeGeneration();
 
 				// Write Instance File into developer project
-				final String xmlInstancePath = codeGeneration.getDeveloperProject().getProjectPath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile;
+				final String xmlInstancePath = this.codeGeneration.getDeveloperProject().getProjectPath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile;
 				parser.writeClaferInstanceToFile(xmlInstancePath);
 
 				// Generate code template
@@ -300,7 +300,7 @@ public class ConfiguratorWizard extends Wizard {
 				Activator.getDefault().logError(e);
 				return false;
 			}
-		} 
+		}
 		return ret;
 	}
 

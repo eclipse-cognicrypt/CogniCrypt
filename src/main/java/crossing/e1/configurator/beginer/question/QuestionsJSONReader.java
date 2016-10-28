@@ -15,11 +15,14 @@ import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.Utils;
 
 /**
- *  This class reads all questions and answers of one task.
+ * This class reads all questions and answers of one task.
+ * 
  * @author Sarah Nadi
  *
  */
 public class QuestionsJSONReader {
+
+	private List<Question> questions;
 
 	//Test method so that OpenCCE does not have to be started.
 	public static void main(final String args[]) {
@@ -27,41 +30,18 @@ public class QuestionsJSONReader {
 		System.out.println(reader.getQuestions("src/main/resources/testFiles/TestQuestions0.json"));
 	}
 
-	private List<Question> questions;
-
-	/***
-	 * This method reads all questions of one task using the file path to the question file.
-	 * @param filePath path to the file that contains all questions for one task.
-	 * @return questions
-	 */
-	public List<Question> getQuestions(final String filePath) {
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(Utils.getAbsolutePath(filePath)));
-			final Gson gson = new Gson();
-
-			this.questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
-			
-			checkReadQuestions();
-		} catch (final FileNotFoundException e) {
-			Activator.getDefault().logError(e);
-		}
-
-
-		return this.questions;
-	}
-
 	private void checkReadQuestions() {
-		Set<Integer> ids = new HashSet<Integer>(); 
-		for (Question question: questions) {
+		final Set<Integer> ids = new HashSet<Integer>();
+		for (final Question question : this.questions) {
 			if (!ids.add(question.getId())) {
 				throw new IllegalArgumentException("Each question must have a unique ID.");
 			}
-			
+
 			if (question.getDefaultAnswer() == null) {
 				throw new IllegalArgumentException("Each question must have a default answer.");
 			}
-			
-			for (Answer answer : question.getAnswers()) {
+
+			for (final Answer answer : question.getAnswers()) {
 				if (answer.getNextID() == 0) {
 					throw new IllegalArgumentException("Each answer must point to the following question.");
 				}
@@ -70,8 +50,32 @@ public class QuestionsJSONReader {
 	}
 
 	/***
+	 * This method reads all questions of one task using the file path to the question file.
+	 * 
+	 * @param filePath
+	 *        path to the file that contains all questions for one task.
+	 * @return questions
+	 */
+	public List<Question> getQuestions(final String filePath) {
+		try {
+			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getAbsolutePath(filePath)));
+			final Gson gson = new Gson();
+
+			this.questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
+
+			checkReadQuestions();
+		} catch (final FileNotFoundException e) {
+			Activator.getDefault().logError(e);
+		}
+
+		return this.questions;
+	}
+
+	/***
 	 * This method reads all questions of one task.
-	 * @param task task whose questions should be read
+	 * 
+	 * @param task
+	 *        task whose questions should be read
 	 * @return Questions
 	 */
 	public List<Question> getQuestions(final Task task) {

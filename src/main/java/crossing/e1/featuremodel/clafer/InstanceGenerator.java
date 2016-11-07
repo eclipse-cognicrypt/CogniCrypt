@@ -123,7 +123,7 @@ public class InstanceGenerator {
 
 	private void addConstraints(final AstClafer taskAlgorithm, final List<AstConcreteClafer> algorithmProperty, final String operator, final String value) {
 		if (operator.equals("=")) {
-			if (algorithmProperty != null) {
+			if (algorithmProperty.get(0) != null) {
 				taskAlgorithm.addConstraint(equal(joinRef(join(joinRef($this()), algorithmProperty.get(0))), constant(value)));
 			} else {
 				final AstAbstractClafer taskClafer = (AstAbstractClafer) taskAlgorithm.getRef().getTargetType();
@@ -229,7 +229,7 @@ public class InstanceGenerator {
 					final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + claferDependency.getAlgorithm());
 					final List<AstConcreteClafer> propertyClafer = new ArrayList<AstConcreteClafer>();
 					String operand = claferDependency.getOperand();
-					if (operand.contains(";")) {
+					if (operand != null && operand.contains(";")) {
 						for (String name : operand.split(";")) {
 							propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + name));
 						}

@@ -140,7 +140,7 @@ c0_TLS_ECDH_ECDSA_WITH_RC4_128_SHA = Clafer("c0_TLS_ECDH_ECDSA_WITH_RC4_128_SHA"
 c0_TLS_ECDHE_ECDSA_WITH_RC4_128_SHA = Clafer("c0_TLS_ECDHE_ECDSA_WITH_RC4_128_SHA").withCard(1, 1);
 c0_TLS_ECDHE_RSA_WITH_RC4_128_SHA = Clafer("c0_TLS_ECDHE_RSA_WITH_RC4_128_SHA").withCard(1, 1);
 c0_SecureCommunication = Clafer("c0_SecureCommunication").withCard(1, 1);
-c0_ciphersuites = c0_SecureCommunication.addChild("c0_ciphersuites").withCard(1);
+c0_ciphersuites = c0_SecureCommunication.addChild("c0_ciphersuites").withCard(7);
 c0_tlsVersion = c0_SecureCommunication.addChild("c0_tlsVersion").withCard(1, 1);
 c0_Security.extending(c0_Enum).refToUnique(Int);
 c0_NoSecurity.extending(c0_Security);

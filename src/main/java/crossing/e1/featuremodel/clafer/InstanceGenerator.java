@@ -20,7 +20,10 @@
 package crossing.e1.featuremodel.clafer;
 
 import static org.clafer.ast.Asts.$this;
+import static org.clafer.ast.Asts.all;
+import static org.clafer.ast.Asts.and;
 import static org.clafer.ast.Asts.constant;
+import static org.clafer.ast.Asts.decl;
 import static org.clafer.ast.Asts.equal;
 import static org.clafer.ast.Asts.global;
 import static org.clafer.ast.Asts.greaterThan;
@@ -29,6 +32,7 @@ import static org.clafer.ast.Asts.join;
 import static org.clafer.ast.Asts.joinRef;
 import static org.clafer.ast.Asts.lessThan;
 import static org.clafer.ast.Asts.lessThanEqual;
+import static org.clafer.ast.Asts.local;
 import static org.clafer.ast.Asts.union;
 
 import java.util.ArrayList;
@@ -38,8 +42,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.clafer.ast.AstAbstractClafer;
+import org.clafer.ast.AstBoolExpr;
 import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
+import org.clafer.ast.AstDecl;
+import org.clafer.ast.AstLocal;
 import org.clafer.ast.AstModel;
 import org.clafer.ast.AstSetExpr;
 import org.clafer.cli.Utils;
@@ -79,7 +86,8 @@ public class InstanceGenerator {
 		this.taskDescription = taskDescription;
 		this.taskClafer = Utils.getModelChildByName(this.claferModel.getModel(), taskName);
 	}
-
+	
+	
 	/**
 	 * method used by both basic and advanced user operations to add constraints to clafers before instance generation
 	 *
@@ -113,19 +121,18 @@ public class InstanceGenerator {
 		}
 	}
 
-	private void addConstraints(final AstClafer taskAlgorithm, final AstConcreteClafer algorithmProperty, final String operator, final String value) {
+	private void addConstraints(final AstClafer taskAlgorithm, final List<AstConcreteClafer> algorithmProperty, final String operator, final String value) {
 		if (operator.equals("=")) {
 			if (algorithmProperty != null) {
-				taskAlgorithm.addConstraint(equal(joinRef(join(joinRef($this()), algorithmProperty)), constant(value)));
+				taskAlgorithm.addConstraint(equal(joinRef(join(joinRef($this()), algorithmProperty.get(0))), constant(value)));
 			} else {
-				final AstAbstractClafer aac = (AstAbstractClafer) taskAlgorithm.getRef().getTargetType();
-				for (final AstClafer ac : aac.getSubs()) {
-					if (ac.getName().endsWith(value)) {
-						taskAlgorithm.addConstraint(equal(joinRef($this()), global(ac)));
+				final AstAbstractClafer taskClafer = (AstAbstractClafer) taskAlgorithm.getRef().getTargetType();
+				for (final AstClafer subClafer : taskClafer.getSubs()) {
+					if (subClafer.getName().endsWith(value)) {
+						taskAlgorithm.addConstraint(equal(joinRef($this()), global(subClafer)));
 						break;
 					}
 				}
-
 			}
 		} else if (operator.equals("++")) {
 			final String[] claferNames = value.split(";");
@@ -134,21 +141,58 @@ public class InstanceGenerator {
 			if (length == 1) {
 				addConstraints(taskAlgorithm, algorithmProperty, "=", value);
 			} else {
-				for (int j = 0; j < claferNames.length; j++) {
-					AstSetExpr previousC = null;
+				for (int j = 0; j < length; j++) {
 					if (j == 0) {
-						previousC = global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j++]));
-					} else {
-						previousC = constraint;
+						constraint = global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j++]));
 					}
 					final AstClafer astC = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j]);
-					constraint = union(previousC, global(astC));
+					constraint = union(constraint, global(astC));
 				}
 			}
-			taskAlgorithm.addConstraint(equal(joinRef(join($this(), algorithmProperty)), constraint));
+			taskAlgorithm.addConstraint(equal(joinRef(join($this(), algorithmProperty.get(0))), constraint));
+		} else if (operator.equals("|")) {
+			
+			final String[] claferNames = value.split(";");
+			//The constraint that is created looks like [all $consName : taskAlgorithm | $consName.algorithmProperty claferNames[0] && ...]  
+			AstLocal tmpClafer = local("suite");
+			AstDecl decl = decl(tmpClafer, join($this(), taskAlgorithm));
+			AstBoolExpr boolExp = null;
+			if (claferNames.length == 1) {
+				String[] opSquare = claferNames[0].split(" ");
+				boolExp = getFunctionFromOperator(tmpClafer, algorithmProperty.get(0), opSquare[0] , opSquare[1]);
+			} else {
+				for (int i = 0; i < claferNames.length; i++) {
+					if (i == 0) {
+						String[] opSquare = claferNames[i].split(" ");
+						boolExp = getFunctionFromOperator(tmpClafer, algorithmProperty.get(i++), opSquare[0] , opSquare[1]);
+					}
+					String[] opSquare = claferNames[i].split(" ");
+					AstBoolExpr addExp = getFunctionFromOperator(tmpClafer, algorithmProperty.get(i), opSquare[0], opSquare[1]);
+					boolExp = and(boolExp, addExp);
+				}
+			}
+			taskAlgorithm.getParent().addConstraint(all(decl, boolExp));
 		}
 	}
 
+	
+	private AstBoolExpr getFunctionFromOperator(AstLocal local, AstConcreteClafer algorithmProperty, String operator, String operand) {
+		AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(algorithmProperty.getParent().getParent(), "c0_" + operand)));
+		AstSetExpr operandLeftClafer = joinRef(join(joinRef(local), algorithmProperty));
+		if (operator.equals("=")) {
+			return equal(operandLeftClafer, operandRightClafer);
+		} else if (operator.equals("<")) {
+			return lessThan(operandLeftClafer, operandRightClafer);
+		} else if (operator.equals(">")) {
+			return greaterThan(operandLeftClafer, operandRightClafer);
+		} else if (operator.equals("<=")) {
+			return lessThanEqual(operandLeftClafer, operandRightClafer);
+		} else if (operator.equals(">=")) {
+			return greaterThanEqual(operandLeftClafer, operandRightClafer);
+		}
+		return null;
+	}
+	
 	/**
 	 * This method is to parse the map of clafers and apply their values as constraints before instance generation, used only in advanceduserMode
 	 *
@@ -163,8 +207,9 @@ public class InstanceGenerator {
 				final String operator = constraint.getOperator();
 				final String value = constraint.getValue();
 				final AstConcreteClafer parent = (AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getParentClafer().getName());
-				final AstConcreteClafer operand = (AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getChildClafer().getName());
-				if (operand != null && !ClaferModelUtils.isAbstract(operand)) {
+				final List<AstConcreteClafer> operand = new ArrayList<AstConcreteClafer>();
+				operand.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getChildClafer().getName()));
+				if (operand != null && !ClaferModelUtils.isAbstract(operand.get(0))) {
 					addConstraints(parent, operand, operator, value);
 				}
 			}
@@ -182,10 +227,19 @@ public class InstanceGenerator {
 			if (answer.getClaferDependencies() != null) {
 				for (final ClaferDependency claferDependency : answer.getClaferDependencies()) {
 					final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + claferDependency.getAlgorithm());
-					final AstConcreteClafer propertyClafer = (AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + claferDependency.getOperand());
+					final List<AstConcreteClafer> propertyClafer = new ArrayList<AstConcreteClafer>();
+					String operand = claferDependency.getOperand();
+					if (operand.contains(";")) {
+						for (String name : operand.split(";")) {
+							propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + name));
+						}
+					} else {
+						propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + operand));
+					}
+					
 					try {
 						final Integer value = Integer.parseInt(claferDependency.getValue());
-						addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), value);
+						addConstraints(algorithmClafer, propertyClafer.get(0), claferDependency.getOperator(), value);
 					} catch (final NumberFormatException e) {
 						addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), claferDependency.getValue());
 					}

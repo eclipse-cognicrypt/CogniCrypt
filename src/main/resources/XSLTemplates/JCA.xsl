@@ -219,8 +219,8 @@ public class TLSClient {
          <xsl:otherwise>,int port</xsl:otherwise>
 		 </xsl:choose>
 		 	) throws IOException {
-			System.setProperty("javax.net.ssl.<xsl:choose><xsl:when test="//task/code/server='true'">key</xsl:when><xsl:otherwise>trust</xsl:otherwise></xsl:choose>Store","path");
-        System.setProperty("javax.net.ssl.<xsl:choose><xsl:when test="//task/code/server='true'">key</xsl:when><xsl:otherwise>trust</xsl:otherwise></xsl:choose>StorePassword","password");
+			System.setProperty("javax.net.ssl.<xsl:choose><xsl:when test="//task/code/server='true'">key</xsl:when><xsl:otherwise>trust</xsl:otherwise></xsl:choose>Store","<xsl:value-of select="//task/code/keystore"/>");
+        System.setProperty("javax.net.ssl.<xsl:choose><xsl:when test="//task/code/server='true'">key</xsl:when><xsl:otherwise>trust</xsl:otherwise></xsl:choose>StorePassword","<xsl:value-of select="//task/code/keystorepassword"/>");
 	        SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 		try {
 			sslsocket = (SSLSocket) sslsocketfactory.createSocket(<xsl:choose>

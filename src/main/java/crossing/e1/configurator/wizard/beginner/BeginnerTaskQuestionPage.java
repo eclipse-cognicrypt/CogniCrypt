@@ -11,10 +11,11 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -54,11 +55,10 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	public void createControl(final Composite parent) {
 		final Composite container = new Composite(parent, SWT.NONE);
 		container.setBounds(10, 10, 450, 200);
-		final GridLayout layout = new GridLayout();
+		final GridLayout layout = new GridLayout(3, false);
 		container.setLayout(layout);
 
 		createQuestionControl(container, this.quest);
-		layout.numColumns = 1;
 		setControl(container);
 	}
 
@@ -66,7 +66,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 		final List<Answer> answers = question.getAnswers();
 		final Composite container = getPanel(parent);
-		final Label label = new Label(container, SWT.CENTER);
+		final Label label = new Label(container, SWT.TOP);
 		label.setText(question.getQuestionText());
 		switch (question.getElement()) {
 			case combo:
@@ -74,7 +74,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				comboViewer.setContentProvider(ArrayContentProvider.getInstance());
 				comboViewer.setInput(answers);
 
-				comboViewer.addSelectionChangedListener(arg0 -> {
+				comboViewer.addSelectionChangedListener(selectedElement -> {
 					final IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
 					BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, (Answer) selection.getFirstElement());
 				});
@@ -97,44 +97,149 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, a);
 
 				});
+				inputField.forceFocus();
 				break;
 
 			case itemselection:
+				new Label(container, SWT.NONE);
+				new Label(container, SWT.NONE);
+				new Label(container, SWT.NONE);
+
+				final org.eclipse.swt.widgets.List itemList = new org.eclipse.swt.widgets.List(container, SWT.LEFT | SWT.MULTI | SWT.V_SCROLL);
+
+				final Composite composite = new Composite(container, SWT.CENTER);
+				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
+				gridData.horizontalSpan = 2;
+				composite.setLayoutData(gridData);
+				composite.setLayout(new GridLayout(1, false));
+
+				gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
+
+				final Button moveRightButton = new Button(composite, SWT.TOP);
+				moveRightButton.setLayoutData(gridData);
+
+				final Button moveLeftButton = new Button(composite, SWT.BOTTOM);
+
+				moveRightButton.setText("-Select->");
+				moveLeftButton.setText("<-Deselect-");
+				moveRightButton.setEnabled(false);
+				moveLeftButton.setEnabled(false);
+
+				final org.eclipse.swt.widgets.List selectedItemList = new org.eclipse.swt.widgets.List(container, SWT.RIGHT | SWT.MULTI | SWT.V_SCROLL);
+				selectedItemList.setEnabled(false);
+
 				for (final String value : this.selectionValues) {
-					final Button checkBox = new Button(container, SWT.CHECK);
-					checkBox.setText(value);
-					checkBox.addMouseListener(new MouseListener() {
-
-						@Override
-						public void mouseDoubleClick(final MouseEvent e) {
-							return;
-						}
-
-						@Override
-						public void mouseDown(final MouseEvent e) {
-							return;
-						}
-
-						@Override
-						public void mouseUp(final MouseEvent e) {
-							if (e.getSource() instanceof Button && (((Button) e.getSource()).getStyle() & SWT.CHECK) == SWT.CHECK) {
-								Answer ans = BeginnerTaskQuestionPage.this.selection.getValue();
-								if (ans == null) {
-									ans = new Answer();
-									ans.setNextID(-1);
-								}
-								final Button clickedCheckbox = (Button) e.getSource();
-								final String checkedElement = ans.getValue();
-								ans.setValue(clickedCheckbox.getSelection() ? clickedCheckbox.getText() + ";" + ((checkedElement != null) ? checkedElement : "")
-									: checkedElement.replace(clickedCheckbox.getText() + ";", ""));
-
-								BeginnerTaskQuestionPage.this.finish = ans.getValue().contains(";");
-								BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish);
-								BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, ans);
-							}
-						}
-					});
+					itemList.add(value);
+					selectedItemList.add(new String("                                                                           "));
 				}
+
+				itemList.addSelectionListener(new SelectionListener() {
+
+					@Override
+					public void widgetDefaultSelected(final SelectionEvent e) {
+						return;
+					}
+
+					@Override
+					public void widgetSelected(final SelectionEvent e) {
+						if (e.getSource() instanceof org.eclipse.swt.widgets.List) {
+							final org.eclipse.swt.widgets.List sel = (org.eclipse.swt.widgets.List) e.getSource();
+							moveRightButton.setEnabled(sel.getSelectionCount() > 0);
+						}
+
+					}
+				});
+
+				selectedItemList.addSelectionListener(new SelectionListener() {
+
+					@Override
+					public void widgetDefaultSelected(final SelectionEvent e) {
+						return;
+					}
+
+					@Override
+					public void widgetSelected(final SelectionEvent e) {
+						if (e.getSource() instanceof org.eclipse.swt.widgets.List) {
+							final org.eclipse.swt.widgets.List sel = (org.eclipse.swt.widgets.List) e.getSource();
+							moveLeftButton.setEnabled(sel.getSelectionCount() > 0);
+						}
+
+					}
+				});
+
+				moveRightButton.addSelectionListener(new SelectionListener() {
+
+					@Override
+					public void widgetDefaultSelected(final SelectionEvent e) {
+						return;
+					}
+
+					@Override
+					public void widgetSelected(final SelectionEvent e) {
+						if (e.getSource() instanceof Button && (((Button) e.getSource()).getStyle() & SWT.NONE) == SWT.NONE) {
+							final String[] sel = itemList.getSelection();
+							Answer ans = BeginnerTaskQuestionPage.this.selection.getValue();
+							String checkedElement = "";
+							if (ans == null) {
+								ans = new Answer();
+								ans.setNextID(-1);
+							} else {
+								checkedElement = ans.getValue();
+							}
+
+							if (selectedItemList.getItemCount() > 0 && selectedItemList.getItem(0).trim().isEmpty()) {
+								selectedItemList.removeAll();
+								selectedItemList.setEnabled(true);
+							}
+
+							for (final String item : sel) {
+								selectedItemList.add(item);
+								itemList.remove(item);
+								checkedElement += item + ";";
+							}
+							ans.setValue(checkedElement);
+							BeginnerTaskQuestionPage.this.finish = ans.getValue().contains(";");
+							BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish);
+							BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, ans);
+							moveRightButton.setEnabled(false);
+						}
+					}
+				});
+
+				moveLeftButton.addSelectionListener(new SelectionListener() {
+
+					@Override
+					public void widgetDefaultSelected(final SelectionEvent e) {
+						return;
+					}
+
+					@Override
+					public void widgetSelected(final SelectionEvent e) {
+						if (e.getSource() instanceof Button && (((Button) e.getSource()).getStyle() & SWT.NONE) == SWT.NONE) {
+							final String[] sel = selectedItemList.getSelection();
+
+							Answer ans = BeginnerTaskQuestionPage.this.selection.getValue();
+							if (ans == null) {
+								ans = new Answer();
+								ans.setNextID(-1);
+							}
+							String checkedElement = ans.getValue();
+
+							for (final String item : sel) {
+								selectedItemList.remove(item);
+								if (!item.trim().isEmpty()) {
+									itemList.add(item);
+									checkedElement = checkedElement.replace(item + ";", "");
+								}
+							}
+							ans.setValue(checkedElement);
+							BeginnerTaskQuestionPage.this.finish = ans.getValue().contains(";");
+							BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish);
+							BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, ans);
+							moveLeftButton.setEnabled(false);
+						}
+					}
+				});
 				break;
 			default:
 				break;

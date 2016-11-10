@@ -1,48 +1,26 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>ClaferConfigurator</groupId>
-  <artifactId>ClaferConfigurator</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-   <build>
+  <groupId>CROSSING.E1.CONFIGURATOR</groupId>
+  <artifactId>CROSSING.E1.CONFIGURATOR</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>eclipse-plugin</packaging>
+	<repositories>
+	<repository>
+   <id>eclipse-neon</id>
+   <url>http://download.eclipse.org/releases/neon</url>
+   <layout>p2</layout>
+	</repository>
+	</repositories>
+  <build>
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>0.26.0</version>
+        <extensions>true</extensions>
       </plugin>
     </plugins>
   </build>
-   <dependencies>
-   	<dependency>
-   		<groupId>org.eclipse</groupId>
-   		<artifactId>jface</artifactId>
-   		<version>3.3.0-I20070606-0010</version>
-   	</dependency>
-   	<dependency>
-   		<groupId>org.eclipse</groupId>
-   		<artifactId>swt</artifactId>
-   		<version>3.3.0-v3346</version>
-   	</dependency>
-   	<dependency>
-   		<groupId>org.clafer</groupId>
-   		<artifactId>claferchocoig</artifactId>
-   		<version>0.4.2</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/claferchocoig.jar</systemPath>
-   	</dependency>
-   	<dependency>
-	    <groupId>javax.ws.rs</groupId>
-	    <artifactId>javax.ws.rs-api</artifactId>
-	    <version>2.0</version>
-	</dependency>
-	<dependency>
-	    <groupId>org.bouncycastle</groupId>
-	    <artifactId>bcprov-jdk15on</artifactId>
-	    <version>1.55</version>
-	</dependency>
-   </dependencies>
 </project>

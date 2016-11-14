@@ -57,7 +57,7 @@ public class KeyDeriv {
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public byte[] run(byte[] data<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">, String pwd</xsl:if>) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
+	public byte[] templateUsage(byte[] data<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">, String pwd</xsl:if>) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
 		 <xsl:choose>
          <xsl:when test="//task/algorithm[@type='KeyDerivationAlgorithm']">KeyDeriv kd = new KeyDeriv();
 		 SecretKey key = kd.getKey(pwd); </xsl:when>
@@ -74,7 +74,7 @@ public class Output {
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public byte[] run(byte[] data) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
+	public byte[] templateUsage(byte[] data) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
 		KeyGenerator kg = KeyGenerator.getInstance("<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>");
 		kg.init(<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/keySize"/>);
 		SecretKey key = kg.generateKey();
@@ -108,7 +108,7 @@ public class PWHasher {
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public byte[] run(String pwd) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
+	public byte[] templateUsage(String pwd) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
 		PWHasher pwHasher = new PWHasher();
 		return pwHasher.hashPW(pwd);
 	}
@@ -191,7 +191,7 @@ public class LongTermArchivingClient {
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public void run(String archiveName) throws ServiceClientCreationException, InternalServiceErrorException, IOException  {
+	public void templateUsage(String archiveName) throws ServiceClientCreationException, InternalServiceErrorException, IOException  {
 		LongTermArchivingClient ltac = new LongTermArchivingClient();
 		Archive a = ltac.createArchive(archiveName);
 	}
@@ -218,7 +218,7 @@ public class TLSClient {
          <xsl:when test="//task/code/port"></xsl:when>
          <xsl:otherwise>,int port</xsl:otherwise>
 		 </xsl:choose>
-		 	) throws IOException {
+		 	) {
 			System.setProperty("javax.net.ssl.<xsl:choose><xsl:when test="//task/code/server='true'">key</xsl:when><xsl:otherwise>trust</xsl:otherwise></xsl:choose>Store","<xsl:value-of select="//task/code/keystore"/>");
         System.setProperty("javax.net.ssl.<xsl:choose><xsl:when test="//task/code/server='true'">key</xsl:when><xsl:otherwise>trust</xsl:otherwise></xsl:choose>StorePassword","<xsl:value-of select="//task/code/keystorepassword"/>");
 	        SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
@@ -239,8 +239,9 @@ public class TLSClient {
 			sslsocket.startHandshake();
 	        bufW = new BufferedWriter(new OutputStreamWriter(sslsocket.getOutputStream()));
 	        bufR = new BufferedReader(new InputStreamReader(sslsocket.getInputStream()));
-		} catch (IOException e) {
-			throw new IOException("Connection to server could not be established. Please check whether the ip/hostname and port are correct");
+		} catch (IOException ex) {
+			System.out.println("Connection to server could not be established. Please check whether the ip/hostname and port are correct");
+			ex.printStackTrace();
 		}
 	        
         }
@@ -258,14 +259,19 @@ public class TLSClient {
 		if (sslsocket != null) {
 			//Insert TLSxx here
 			sslsocket.setEnabledProtocols( new String[]{
-			"TLSv1.2" <!-- <xsl:for-each select="//task/element[@type='SecureCommunication']/TlsVersion">"<xsl:value-of select="."/>",</xsl:for-each>-->
+			"TLSv1.1", "TLSv1.2" <!-- <xsl:for-each select="//task/element[@type='SecureCommunication']/TlsVersion">"<xsl:value-of select="."/>",</xsl:for-each>-->
 			} );
 		}
 	}
 	
-	public void closeConnection() throws IOException {
+	public void closeConnection() {
+		try {
 		if (!sslsocket.isClosed()) {
 			sslsocket.close();
+		}
+		} catch (IOException ex) {
+			System.out.println("Could not close channel.");
+			ex.printStackTrace();
 		}
 	}
 	
@@ -274,13 +280,21 @@ public class TLSClient {
 			bufW.write(content + "\n");
 			bufW.flush();
 			return true;
-		} catch (IOException e) {
+		} catch (IOException ex) {
+			System.out.println("Sending data failed.");
+			ex.printStackTrace();
 			return false;
 		}
 	}
 	
-	public String receiveData() throws IOException {
-		return bufR.readLine();
+	public String receiveData() {
+		try {
+			return bufR.readLine();
+		} catch (IOException ex) {
+			System.out.println("Receiving data failed.");
+			ex.printStackTrace();
+			return null;
+		}
 	}
 	
 }
@@ -290,17 +304,15 @@ package <xsl:value-of select="//Package"/>;
 <xsl:apply-templates select="//Import"/>	
 public class Output {
 
-	public void run(<xsl:choose>
+	public void templateUsage(<xsl:choose>
          <xsl:when test="//task/code/host"></xsl:when>
          <xsl:otherwise>String host</xsl:otherwise>
 		 </xsl:choose>
 		 <xsl:choose>
          <xsl:when test="//task/code/port"></xsl:when>
          <xsl:otherwise>,int port</xsl:otherwise></xsl:choose>) {
-		 TLSClient tls = null;
-		try {
-			//You need to set the right host (first parameter) and the port name (second parameter). If you wish to pass a IP address, please use overload with InetAdress as second parameter instead of string.
-			tls = new TLSClient(<xsl:choose>
+         //You need to set the right host (first parameter) and the port name (second parameter). If you wish to pass a IP address, please use overload with InetAdress as second parameter instead of string.
+		 TLSClient tls = new TLSClient(<xsl:choose>
          <xsl:when test="//task/code/host"></xsl:when>
          <xsl:otherwise>host</xsl:otherwise>
 		 </xsl:choose>
@@ -308,22 +320,11 @@ public class Output {
          <xsl:when test="//task/code/port"></xsl:when>
          <xsl:otherwise>, port</xsl:otherwise>
 		 </xsl:choose>);
-			tls.sendData("");
-			String data = tls.receiveData();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			
-			try {
-				if (tls != null) {
-					tls.closeConnection();
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		 
+		 Boolean sendingSuccessful = tls.sendData("");
+		 String data = tls.receiveData();
+		
+		tls.closeConnection();		
 	}
 }
 </xsl:if>

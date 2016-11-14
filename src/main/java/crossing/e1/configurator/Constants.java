@@ -48,7 +48,7 @@ public class Constants {
 	public static final String pathToClaferInstanceFolder = "src" + fileSeparator + "main" + fileSeparator + "resources" + fileSeparator + "ClaferInstance" + fileSeparator;
 	public static final String pathToClaferInstanceFile = "claferInstance.xml";
 	public static final String pathToClaferInstanceTLSFile = "claferInstanceTLS.xml";
-	public static final String NameOfTemporaryMethod = "run";
+	public static final String NameOfTemporaryMethod = "templateUsage";
 	public static final String pathsForLibrariesinDevProject = "libs";
 
 	// Output of Code Generation

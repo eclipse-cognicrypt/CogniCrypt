@@ -22,8 +22,10 @@ import java.util.Map;
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -83,7 +85,9 @@ public class InstanceListPage extends WizardPage implements Labels {
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
 		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
+		
 		algorithmClass.setInput(inst.keySet());
+		
 		algorithmClass.setLabelProvider(new LabelProvider() {
 
 			@Override
@@ -102,6 +106,8 @@ public class InstanceListPage extends WizardPage implements Labels {
 				setPageComplete(true);
 			}
 		});
+		
+		
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
 		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
 		final Font boldFont = new Font(this.instancePropertiesPanel.getDisplay(), new FontData(Constants.ARIAL, 12, SWT.BOLD));
@@ -115,6 +121,8 @@ public class InstanceListPage extends WizardPage implements Labels {
 		 */
 		this.instancePropertiesPanel.setVisible(false);
 		setControl(this.control);
+		final ISelection selection = new StructuredSelection(inst.keySet().toArray()[0]);
+		algorithmClass.setSelection(selection);
 	}
 
 	private void getInstanceDetails(final InstanceClafer inst, final Map<String, String> algorithms) {

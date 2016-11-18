@@ -38,11 +38,11 @@ package <xsl:value-of select="//Package"/>;
 
 public class KeyDeriv {
 	
-	public SecretKey getKey(String pwd) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public SecretKey getKey(char[] pwd) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		byte[] salt = new byte[16];
 		SecureRandom.getInstanceStrong().nextBytes(salt);
 		
-		PBEKeySpec spec = new PBEKeySpec(pwd.toCharArray(), salt, <xsl:choose>
+		PBEKeySpec spec = new PBEKeySpec(pwd, salt, <xsl:choose>
          <xsl:when test="$Rounds > 1000"> <xsl:value-of select="$Rounds"/> </xsl:when>
          <xsl:otherwise> 1000 </xsl:otherwise>
 		 </xsl:choose>, <xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/keySize"/>);
@@ -57,7 +57,7 @@ public class KeyDeriv {
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public byte[] templateUsage(byte[] data<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">, String pwd</xsl:if>) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
+	public byte[] templateUsage(byte[] data<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">, char[] pwd</xsl:if>) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
 		 <xsl:choose>
          <xsl:when test="//task/algorithm[@type='KeyDerivationAlgorithm']">KeyDeriv kd = new KeyDeriv();
 		 SecretKey key = kd.getKey(pwd); </xsl:when>
@@ -153,7 +153,7 @@ public class LongTermArchivingClient {
 				archivingScheme= Scheme.ERS;
 				break;
 			case "Notarial_Attestation_Wrapper": 
-				archivingScheme= Scheme.ERS;
+				archivingScheme= Scheme.AC;
 				break;
 		}
 		

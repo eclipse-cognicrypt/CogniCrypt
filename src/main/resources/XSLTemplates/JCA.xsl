@@ -92,25 +92,56 @@ package <xsl:value-of select="//task/Package"/>;
 <xsl:apply-templates select="//Import"/>
 
 public class PWHasher {	
+	//adopted code from https://github.com/defuse/password-hashing
 	
-	public byte[] hashPW(String pwd) throws NoSuchAlgorithmException, InvalidKeySpecException { 
-		byte[] salt = new byte[32];
+	public String createPWHash(char[] pwd) throws NoSuchAlgorithmException, InvalidKeySpecException { 
+		byte[] salt = new byte[<xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/outputSize"/>/8];
 		SecureRandom.getInstanceStrong().nextBytes(salt);
-		KeySpec spec = new PBEKeySpec(pwd.toCharArray(), salt, 65536, <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/outputSize"/>);
+		
+		PBEKeySpec spec = new PBEKeySpec(pwd, salt, 65536, <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/outputSize"/>);
+		SecretKeyFactory f = SecretKeyFactory.getInstance("<xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/name"/>WithHmacSHA1");
+		String pwdHash = toBase64(salt) + ":" + toBase64(f.generateSecret(spec).getEncoded());
+		spec.clearPassword();
+		return pwdHash;
+	}
+	
+	public Boolean verifyPWHash(char[] pwd, String pwdhash) throws NoSuchAlgorithmException, InvalidKeySpecException {
+		String[] parts = pwdhash.split(":");
+		byte[] salt = fromBase64(parts[0]);
+
+		PBEKeySpec spec = new PBEKeySpec(pwd, salt, 65536, 128);
 		SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-		return f.generateSecret(spec).getEncoded();}
+		Boolean areEqual = slowEquals(f.generateSecret(spec).getEncoded(), fromBase64(parts[1]));
+		spec.clearPassword();
+		return areEqual;
+	}
+	
+	private static boolean slowEquals(byte[] a, byte[] b) {
+		int diff = a.length ^ b.length;
+		for (int i = 0; i &lt; a.length <xsl:text disable-output-escaping="yes"><![CDATA[&&]]></xsl:text> i &lt; b.length; i++) {
+			diff |= a[i] ^ b[i];
+		}	
+		return diff == 0;
+	}
+
+	private static String toBase64(byte[] array) {
+		return DatatypeConverter.printBase64Binary(array);
+	}
+
+	private static byte[] fromBase64(String hash) {
+		return DatatypeConverter.parseBase64Binary(hash);
+	}
 }
 </xsl:result-document>
 </xsl:if>
 
-
-
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public byte[] templateUsage(String pwd) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
+	public void templateUsage(char[] pwd) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
 		PWHasher pwHasher = new PWHasher();
-		return pwHasher.hashPW(pwd);
+		String pwdHash = pwHasher.createPWHash(pwd);
+		Boolean t = pwHasher.verifyPWHash(pwd, pwdHash);
 	}
 }
 </xsl:if>

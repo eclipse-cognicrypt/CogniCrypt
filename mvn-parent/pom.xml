@@ -61,6 +61,8 @@
 							<arch>x86_64</arch>
 						</environment>
 					</environments>
+					<source>1.8</source>
+          <target>1.8</target>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -134,7 +134,7 @@ public class ConfiguratorWizard extends Wizard {
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
 		final Task selectedTask = this.taskListPage.getSelectedTask();
 		if (currentPage == this.taskListPage && this.taskListPage.canProceed()) {
-			this.claferModel = new ClaferModel(Utils.getAbsolutePath(selectedTask.getModelFile()));
+			this.claferModel = new ClaferModel(Utils.getResourceFromWithin(selectedTask.getModelFile()));
 
 			if (this.taskListPage.isAdvancedMode()) {
 				this.preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, (AstConcreteClafer) org.clafer.cli.Utils
@@ -198,7 +198,7 @@ public class ConfiguratorWizard extends Wizard {
 				}
 			}
 
-			final InstanceGenerator instanceGenerator = new InstanceGenerator(new File(Utils.getAbsolutePath(selectedTask.getModelFile()))
+			final InstanceGenerator instanceGenerator = new InstanceGenerator(Utils.getResourceFromWithin(selectedTask.getModelFile())
 				.getAbsolutePath(), "c0_" + this.taskListPage.getSelectedTask().getName(), this.taskListPage.getSelectedTask().getDescription());
 
 			if (this.taskListPage.isAdvancedMode()) {
@@ -287,7 +287,7 @@ public class ConfiguratorWizard extends Wizard {
 				ret &= this.codeGeneration.initCodeGeneration();
 
 				// Write Instance File into developer project
-				final String xmlInstancePath = this.codeGeneration.getDeveloperProject().getProjectPath() + Constants.fileSeparator + Constants.pathToClaferInstanceFile;
+				final String xmlInstancePath = this.codeGeneration.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
 				parser.writeClaferInstanceToFile(xmlInstancePath);
 
 				// Generate code template

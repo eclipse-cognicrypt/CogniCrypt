@@ -94,20 +94,20 @@ public class XSLBasedGenerator {
 		try {
 			// Check whether directories and templates/model exist
 			final File claferOutputFiles = xmlInstanceFile != null && xmlInstanceFile.exists() ? xmlInstanceFile
-				: new File(Utils.getAbsolutePath(Constants.pathToClaferInstanceFolder + Constants.fileSeparator + Constants.pathToClaferInstanceFile));
-			final File xslFiles = xslFile != null && xslFile.exists() ? xslFile : new File(Utils.getAbsolutePath(Constants.pathToXSLFile));
+				: Utils.getResourceFromWithin(Constants.pathToClaferInstanceFolder + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
+			final File xslFiles = xslFile != null && xslFile.exists() ? xslFile : Utils.getResourceFromWithin(Constants.pathToXSLFile);
 			if (!claferOutputFiles.exists() || !xslFiles.exists()) {
 				Activator.getDefault().logError(Constants.FilesDoNotExistErrorMessage);
 				return false;
 			}
 			// Perform actual transformation by calling XSLT processor.
-			final String srcPath = this.project.getProjectPath() + Constants.fileSeparator + this.project.getSourcePath();
+			final String srcPath = this.project.getProjectPath() + Constants.innerFileSeparator + this.project.getSourcePath();
 			final String temporaryOutputFile = srcPath + Constants.CodeGenerationCallFile;
 			transform(claferOutputFiles, xslFiles, temporaryOutputFile);
 
 			// Add additional resources like jar files
 			if (!pathToFolderWithAdditionalResources.isEmpty()) {
-				final File addResFolder = new File(Utils.getAbsolutePath(pathToFolderWithAdditionalResources));
+				final File addResFolder = Utils.getResourceFromWithin(pathToFolderWithAdditionalResources);
 				final File[] members = addResFolder.listFiles();
 				final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesinDevProject);
 				if (!libFolder.exists()) {
@@ -115,14 +115,14 @@ public class XSLBasedGenerator {
 				}
 				for (int i = 0; i < members.length; i++) {
 					final Path memberPath = members[i].toPath();
-					Files.copy(
-						memberPath, new File(this.project
-							.getProjectPath() + Constants.fileSeparator + Constants.pathsForLibrariesinDevProject + Constants.fileSeparator + memberPath.getFileName()).toPath(),
+					Files.copy(memberPath,
+						new File(this.project.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + memberPath
+							.getFileName()).toPath(),
 						StandardCopyOption.REPLACE_EXISTING);
 					final String filePath = members[i].toString();
-					final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.fileSeparator));
+					final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.outerFileSeparator));
 					if (".jar".equals(cutPath.substring(cutPath.indexOf(".")))) {
-						if (!this.project.addJar(Constants.pathsForLibrariesinDevProject + Constants.fileSeparator + members[i].getName())) {
+						if (!this.project.addJar(Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + members[i].getName())) {
 							return false;
 						}
 					}

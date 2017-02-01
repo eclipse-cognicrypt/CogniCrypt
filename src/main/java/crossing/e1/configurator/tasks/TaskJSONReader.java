@@ -21,7 +21,7 @@ public class TaskJSONReader {
 		if (tasks == null) {
 			BufferedReader reader;
 			try {
-				reader = new BufferedReader(new FileReader(Utils.getAbsolutePath(Constants.jsonTaskFile)));
+				reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(Constants.jsonTaskFile)));
 				final Gson gson = new Gson();
 
 				tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {}.getType());

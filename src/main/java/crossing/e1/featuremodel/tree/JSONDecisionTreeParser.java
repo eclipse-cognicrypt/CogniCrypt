@@ -31,7 +31,7 @@ class JSONDecisionTreeParser {
 
 		final Gson gson = gsonBuilder.create();
 
-		try (BufferedReader reader = new BufferedReader(new FileReader(Utils.getAbsolutePath(filePath)))) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(filePath)))) {
 
 			decisionTree = gson.fromJson(reader, TreeModel.class);
 		} catch (final FileNotFoundException e) {

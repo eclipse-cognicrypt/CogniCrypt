@@ -21,7 +21,7 @@
 package crossing.e1.configurator;
 
 /**
- * This class consists of all constants that are used by the plugin.
+ * This class comprises all constants that are used by the plugin.
  *
  */
 public class Constants {
@@ -30,22 +30,32 @@ public class Constants {
 		combo, text, itemselection
 	}
 
-	public static final String fileSeparator = System.getProperty("file.separator");
+	//The plugin is bundled in a jar archive and the file separator within jar files is / (see: https://stackoverflow.com/questions/24749007/how-to-use-file-separator-for-a-jar-file-resource). 
+	//Use this file separator for all paths within the plugin space.
+	public static final String innerFileSeparator = "/";
+	
+	//Use this file separator for all paths outside the plugin space.
+	public static final String outerFileSeparator = System.getProperty("file.separator");;
 	public static final String lineSeparator = System.getProperty("line.separator");
 
 	public static final String JavaNatureID = "org.eclipse.jdt.core.javanature";
+	
+	public static final String rsrcPath = "src" + innerFileSeparator + "main" + innerFileSeparator + "resources" + innerFileSeparator;
+	
 	//JSON task file
-	public static final String jsonTaskFile = "src" + fileSeparator + "main" + fileSeparator + "resources" + fileSeparator + "Tasks" + fileSeparator + "tasks.json";;
+	public static final String jsonTaskFile =  rsrcPath  + "Tasks" + innerFileSeparator + "tasks.json";;
 
+	public static final String pathToPropertyfiles = rsrcPath + "Labels.properties";
+	
 	// Clafer Instance Generation
-	public static final String claferPath = "src" + fileSeparator + "main" + fileSeparator + "resources" + fileSeparator + "ClaferModel" + fileSeparator + "SymmetricEncryptionTask.js";
+	public static final String claferPath = rsrcPath + "ClaferModel" + innerFileSeparator + "SymmetricEncryptionTask.js";
 	public static final String PATH_FOR_CONFIG_XML = "/Configurator.xml";
-	public static final String XML_FILE_NAME = "src/main/resources/ClaferModel/Encrypt_CryptoTasks.xml";
+	public static final String XML_FILE_NAME = rsrcPath + "ClaferModel/Encrypt_CryptoTasks.xml";
 
 	// Input for Code Generation
-	public static final String pathToXSLFile = "src" + fileSeparator + "main" + fileSeparator + "resources" + fileSeparator + "XSLTemplates" + fileSeparator + "JCA.xsl";
-	public static final String pathToTSLXSLFile = "src" + fileSeparator + "main" + fileSeparator + "resources" + fileSeparator + "XSLTemplates" + fileSeparator + "TLS.xsl";
-	public static final String pathToClaferInstanceFolder = "src" + fileSeparator + "main" + fileSeparator + "resources" + fileSeparator + "ClaferInstance" + fileSeparator;
+	public static final String pathToXSLFile = rsrcPath  + "XSLTemplates" + innerFileSeparator + "JCA.xsl";
+	public static final String pathToTSLXSLFile = rsrcPath + "XSLTemplates" + innerFileSeparator + "TLS.xsl";
+	public static final String pathToClaferInstanceFolder = rsrcPath + "ClaferInstance" + innerFileSeparator;
 	public static final String pathToClaferInstanceFile = "claferInstance.xml";
 	public static final String pathToClaferInstanceTLSFile = "claferInstanceTLS.xml";
 	public static final String NameOfTemporaryMethod = "templateUsage";
@@ -54,7 +64,7 @@ public class Constants {
 	// Output of Code Generation
 	public static final String AdditionalOutputFile = "Output.java";
 	public static final String PackageName = "Crypto";
-	public static final String CodeGenerationCallFile = fileSeparator + Constants.PackageName + fileSeparator + AdditionalOutputFile;
+	public static final String CodeGenerationCallFile = innerFileSeparator + Constants.PackageName + innerFileSeparator + AdditionalOutputFile;
 
 	// Error Messages
 	public static final String NoFileOpenedErrorMessage = "There is no file opened to generate the source code in. Will generate output file instead.";

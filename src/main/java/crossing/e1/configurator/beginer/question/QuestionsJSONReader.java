@@ -58,7 +58,7 @@ public class QuestionsJSONReader {
 	 */
 	public List<Question> getQuestions(final String filePath) {
 		try {
-			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getAbsolutePath(filePath)));
+			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(filePath)));
 			final Gson gson = new Gson();
 
 			this.questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());

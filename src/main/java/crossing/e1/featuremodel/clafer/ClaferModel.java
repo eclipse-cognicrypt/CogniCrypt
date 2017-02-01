@@ -49,8 +49,12 @@ public class ClaferModel {
 	 * 
 	 * @param path
 	 */
-	public ClaferModel(final String path) {
+	public ClaferModel(final File path) {
 		loadModel(path);
+	}
+	
+	public ClaferModel(final String path) {
+		loadModel(new File(path));
 	}
 
 	/**
@@ -109,11 +113,9 @@ public class ClaferModel {
 	 * 
 	 * @param path
 	 */
-	private void loadModel(final String path) {
+	private void loadModel(final File file) {
 		try {
-			final File filename = new File(path);
-
-			this.jsFile = Javascript.readModel(filename, Javascript.newEngine());
+			this.jsFile = Javascript.readModel(file, Javascript.newEngine());
 
 			setModelName("Cyrptography Task Configurator");
 			final AstModel astModel = getModel();

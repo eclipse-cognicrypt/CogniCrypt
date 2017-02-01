@@ -21,13 +21,13 @@
 package crossing.e1.configurator.utilities;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URL;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -54,27 +54,28 @@ public class Utils {
 	 *        project-relative path
 	 * @return absolute path
 	 */
-	public static String getAbsolutePath(final String inputPath) {
-		String outputFile = null;
-
+	public static File getResourceFromWithin(final String inputPath) {
 		try {
 			final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+			
 			if (bundle == null) {
+				System.out.println("Bundle is null");
 				// running as application
 				//final String fileName = inputPath.substring(inputPath.lastIndexOf("/") + 1);
-				outputFile = inputPath;//Utilities.class.getClassLoader().getResource(fileName).getPath();
+				return new File(inputPath);//Utilities.class.getClassLoader().getResource(fileName).getPath();
 			} else {
-				// running as plugin
-				final Path originPath = new Path(inputPath);
-				URL bundledFileURL = FileLocator.find(bundle, originPath, null);
-				bundledFileURL = FileLocator.resolve(bundledFileURL);
-				outputFile = new File(bundledFileURL.getFile()).getPath();
+				System.out.println(bundle.getSymbolicName());
+				URL fileURL = bundle.getEntry(inputPath);
+				System.out.println("PATH: " + inputPath);
+				URL resolvedURL = FileLocator.toFileURL(fileURL);
+				URI uri = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
+				return new File(uri);
 			}
 		} catch (final Exception ex) {
 			Activator.getDefault().logError(ex);
 		}
 
-		return outputFile;
+		return null;
 	}
 
 	/**

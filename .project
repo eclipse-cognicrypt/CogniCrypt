@@ -3,6 +3,7 @@
 	<name>code-clafer_configurator</name>
 	<comment></comment>
 	<projects>
+		<project>CogniCrypt UI Tests</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

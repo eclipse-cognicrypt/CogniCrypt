@@ -22,7 +22,7 @@ public class Enc {
 		byte [] res = c.doFinal(data);
 		byte [] ret = new byte[res.length + ivb.length];
 		System.arraycopy(ivb, 0, ret, 0, ivb.length);
-		System.arraycopy(res, 0, ret, ivb.length, ret.length);
+		System.arraycopy(res, 0, res, ivb.length, ret.length);
 		return ret;
 	}
 }

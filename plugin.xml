@@ -5,24 +5,24 @@
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
-            label="Sample Action Set"
+            label="Start Code Generation"
             visible="true"
             id="crossing.e1.configurator.actionSet">
          <menu
-               label="Sample Menu"
+               label="CogniCryptMenu"
                id="sampleMenu">
             <separator
-                  name="sampleGroup">
+                  name="CognicryptGroup">
             </separator>
          </menu>
          <action
-               label="&amp;Sample Action"
-               icon="icons/opencce.png"
                class="crossing.e1.configurator.actions.WizardAction"
-               tooltip="Generate Instances for your Clafer"
-               menubarPath="sampleMenu/sampleGroup"
-               toolbarPath="sampleGroup"
-               id="crossing.e1.configurator.actions.WizardAction">
+               icon="icons/opencce.png"
+               id="crossing.e1.configurator.actions.WizardAction"
+               label="&amp;Start Code Generation"
+               menubarPath="CogniCryptMenu/CogniCryptGroup"
+               toolbarPath="CogniCryptGroup"
+               tooltip="Generate Code For Cryptographic Task">
          </action>
       </actionSet>
    </extension>

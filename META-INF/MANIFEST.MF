@@ -7,7 +7,10 @@ Bundle-Activator: crossing.e1.configurator.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
- org.junit
+ org.junit,
+ de.darmstadt.tu.crossing.CryptSL;bundle-version="1.0.0",
+ de.darmstadt.tu.crossing.CryptSL.ui;bundle-version="1.0.0",
+ org.eclipse.xtext.ui;bundle-version="2.10.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/claferchocoig.jar,
@@ -17,10 +20,20 @@ Bundle-ClassPath: lib/claferchocoig.jar,
  lib/saxon9pe.jar,
  lib/gson-2.3.1.jar,
  lib/dom4j-2.0.0.jar
-Import-Package: org.eclipse.jdt.core,
+Import-Package: de.darmstadt.tu.crossing.CryptSL.ui.internal,
+ org.eclipse.emf.common.util,
+ org.eclipse.emf.ecore.resource,
+ org.eclipse.emf.ecore.resource.impl,
+ org.eclipse.emf.ecore.util,
+ org.eclipse.emf.mwe.internal.core.ast.util,
+ org.eclipse.jdt.core,
  org.eclipse.jdt.core.dom,
  org.eclipse.jdt.ui.actions,
  org.eclipse.jface.text,
  org.eclipse.ui.ide,
  org.eclipse.ui.part,
- org.eclipse.ui.texteditor
+ org.eclipse.ui.texteditor,
+ org.eclipse.xtext.common.types.access,
+ org.eclipse.xtext.common.types.access.impl,
+ org.eclipse.xtext.common.types.access.jdt,
+ org.eclipse.xtext.resource

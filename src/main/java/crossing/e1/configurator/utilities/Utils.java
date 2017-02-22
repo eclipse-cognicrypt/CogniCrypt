@@ -136,7 +136,8 @@ public class Utils {
 			} else if (element instanceof IJavaElement) {
 				final IJavaProject jProject = ((IJavaElement) element).getJavaProject();
 				iproject = jProject.getProject();
-			}
+			} 
+				
 		}
 		return iproject;
 	}

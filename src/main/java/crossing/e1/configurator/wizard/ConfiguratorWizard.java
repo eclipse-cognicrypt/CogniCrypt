@@ -42,7 +42,6 @@ import crossing.e1.configurator.beginer.question.ClaferDependency;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.codegeneration.XSLBasedGenerator;
 import crossing.e1.configurator.tasks.Task;
-import crossing.e1.configurator.utilities.FileHelper;
 import crossing.e1.configurator.utilities.Utils;
 import crossing.e1.configurator.utilities.XMLParser;
 import crossing.e1.configurator.wizard.advanced.AdvancedUserValueSelectionPage;
@@ -77,8 +76,9 @@ public class ConfiguratorWizard extends Wizard {
 		// Set the Look and Feel of the application to the operating
 		// system's look and feel.
 		try {
+			CryptSLModelReader csmr = new CryptSLModelReader();
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | CoreException e) {
 			Activator.getDefault().logError(e);
 		}
 		setWindowTitle("Cryptography Task Configurator");
@@ -294,7 +294,7 @@ public class ConfiguratorWizard extends Wizard {
 				ret &= this.codeGeneration.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), null);
 
 				// Delete Instance File
-				FileHelper.deleteFile(xmlInstancePath);
+//				FileHelper.deleteFile(xmlInstancePath);
 				this.codeGeneration.getDeveloperProject().refresh();
 			} catch (final IOException | CoreException e) {
 				Activator.getDefault().logError(e);

@@ -78,7 +78,7 @@ public class ConfiguratorWizard extends Wizard {
 		try {
 			CryptSLModelReader csmr = new CryptSLModelReader();
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | CoreException e) {
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | CoreException | IOException e) {
 			Activator.getDefault().logError(e);
 		}
 		setWindowTitle("Cryptography Task Configurator");

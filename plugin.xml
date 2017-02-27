@@ -17,7 +17,7 @@
          </menu>
          <action
                class="crossing.e1.configurator.actions.WizardAction"
-               icon="icons/opencce.png"
+               icon="icons/cognicrypt.png"
                id="crossing.e1.configurator.actions.WizardAction"
                label="&amp;Start Code Generation"
                menubarPath="CogniCryptMenu/CogniCryptGroup"

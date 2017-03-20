@@ -25,7 +25,7 @@
 		},
 		{
 			"id" : "2",
-			"questionText":"Are you implementing the server or the client side?.",
+			"questionText":"Are you implementing the server or the client side?",
 			"answers":[
 				{"value":"Server",
 				"codeDependencies":[

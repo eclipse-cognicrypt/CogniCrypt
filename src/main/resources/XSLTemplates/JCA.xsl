@@ -360,6 +360,26 @@ public class Output {
 }
 </xsl:if>
 
+<xsl:if test="//task[@description='ABY']">
+package <xsl:value-of select="//Package"/>; 
+<xsl:apply-templates select="//Import"/>	
+public class Output {
+
+	public void templateUsage(int pos_x, int pos_y <xsl:choose><xsl:when test="not(//task/code/host or //task/code/server='false')"></xsl:when>
+         <xsl:otherwise>, String host</xsl:otherwise></xsl:choose> <xsl:choose><xsl:when test="//task/code/port"></xsl:when>
+         <xsl:otherwise>, int port</xsl:otherwise></xsl:choose>, int bitlength ) {
+        
+        //Comments explaining what's going on
+        runEuc_Dist(
+         <xsl:choose><xsl:when test="//task/code/host"><xsl:value-of select="//task/code/host"/></xsl:when><xsl:when test="//task/code/server='true'">"This will be ignored."</xsl:when><xsl:otherwise>host</xsl:otherwise></xsl:choose>,
+		 <xsl:choose><xsl:when test="//task/code/port"><xsl:value-of select="//task/code/port"/></xsl:when><xsl:otherwise>port</xsl:otherwise></xsl:choose>, 
+		 bitlength,
+		 <xsl:value-of select="//task/element[@type='ABY']/Security"/>, 
+		 <xsl:choose><xsl:when test="//task/code/server='true'">0</xsl:when><xsl:otherwise>1</xsl:otherwise></xsl:choose>
+		 , pos_x, pos_y);
+	}
+}
+</xsl:if>
 </xsl:template>
 	
 <xsl:template match="Import">

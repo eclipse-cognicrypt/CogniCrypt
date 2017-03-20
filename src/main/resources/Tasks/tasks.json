@@ -34,6 +34,13 @@
 			"modelFile" : "src/main/resources/ClaferModel/LongTermArchiving.js",
 			"xmlFile" : "src/main/resources/TaskDesc/LongTermArchivingQuestions.json",
 			"additionalResources" : "src/main/resources/AdditionalResources/LongTermArchiving"
+		},
+		{
+			"name": "ABY",
+			"description": "Anonymous Multi-Party Computation",
+			"modelFile" : "src/main/resources/ClaferModel/ABY.js",
+			"xmlFile" : "src/main/resources/TaskDesc/ABYQuestions.json",
+			"additionalResources" : "src/main/resources/AdditionalResources/ABY"
 		}
 ]
 

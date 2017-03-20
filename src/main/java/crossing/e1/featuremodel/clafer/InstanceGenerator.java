@@ -302,7 +302,11 @@ public class InstanceGenerator {
 		if (algorithmProperty.size() == 1) {
 			try {
 				final Integer valueAsInt = Integer.parseInt(value);
-				taskAlgorithm.addConstraint(getFunctionFromOperator(joinRef(join(joinRef($this()), rightOperand)), constant(valueAsInt), operator));
+				if (rightOperand == null && "=".equals(operator)) {
+					taskAlgorithm.addConstraint(equal(joinRef($this()), constant(valueAsInt)));
+				} else {
+					taskAlgorithm.addConstraint(getFunctionFromOperator(joinRef(join(joinRef($this()), rightOperand)), constant(valueAsInt), operator));
+				}
 			} catch (final NumberFormatException e) {
 				if (operator.equals("=")) {
 					if (rightOperand != null) {
@@ -311,7 +315,6 @@ public class InstanceGenerator {
 						final AstAbstractClafer taskClafer = (AstAbstractClafer) taskAlgorithm.getRef().getTargetType();
 						for (final AstClafer subClafer : taskClafer.getSubs()) {
 							if (subClafer.getName().endsWith(value)) {
-								Activator.getDefault().logInfo("Yeah, so this actually happens for task " + taskAlgorithm.getName());
 								taskAlgorithm.addConstraint(equal(joinRef($this()), global(subClafer)));
 								break;
 							}

@@ -43,7 +43,9 @@ import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
 /**
- * @author Ram
+ * @author Mohammad Zahraee
+ * @author Ram Kamath
+ * @author Stefan Krueger
  *
  */
 public class XMLParser implements Labels {
@@ -93,12 +95,23 @@ public class XMLParser implements Labels {
 			}
 
 			if (!oneLevelToAlgorithm) {
-				final Element algoElem = taskElem.addElement("element").addAttribute(Constants.Type, "SecureCommunication");
-
+				final Element algoElem = taskElem.addElement("element").addAttribute(Constants.Type, taskElem.attributes().get(0).getValue());
+				
 				for (final InstanceClafer in : inst.getChildren()) {
-					if (in.getRef() instanceof InstanceClafer) {
+					if (!in.getType().getName().contains("description") ) {
+						Object ref = in.getRef();
+						String text = "";
+						if (ref instanceof InstanceClafer) {
+							text = ClaferModelUtils.removeScopePrefix(((InstanceClafer) in.getRef()).getType().getName());
+						} else if (ref instanceof Integer) {
+							text = ((Integer)ref).toString();
+						} else if (ref instanceof String) {
+							text = (String) ref;
+						} else {
+							text = "This should not happen.";
+						}
 						algoElem.addElement(ClaferModelUtils.removeScopePrefix(in.getType().getName()))
-							.setText(ClaferModelUtils.removeScopePrefix(((InstanceClafer) in.getRef()).getType().getName()));
+							.setText(text);
 					}
 
 				}

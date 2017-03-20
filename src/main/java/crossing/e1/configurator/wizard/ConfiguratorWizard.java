@@ -27,6 +27,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.clafer.ast.AstConcreteClafer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -71,25 +72,47 @@ public class ConfiguratorWizard extends Wizard {
 	private final XSLBasedGenerator codeGeneration = new XSLBasedGenerator();
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
+	private boolean targetFile;
 
 	public ConfiguratorWizard() {
 		super();
+		targetFile = true;
 		// Set the Look and Feel of the application to the operating
 		// system's look and feel.
 		try {
+
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+			IFile currentFile = Utils.getCurrentlyOpenFile();
+			// Check if java file open, if not display error dialog and stop.
+			if (currentFile == null || !(Constants.JAVA.equals(currentFile.getFileExtension()))) {
+				targetFile = false;
+				System.out.println("FILE" + currentFile);
+				MessageDialog.openWarning(new Shell(), "Warning",
+						"No Java file found!! Please create a new or choose an exisiting Java file");
+				throw new ClassNotFoundException();
+			}
+
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
 			Activator.getDefault().logError(e);
 		}
+
 		setWindowTitle("Cryptography Task Configurator");
+
 	}
 
 	@Override
 	public void addPages() {
-		this.taskListPage = new TaskSelectionPage();
-		setForcePreviousAndNextButtons(true);
-		addPage(this.taskListPage);
+		if (targetFile == true) {
+			this.taskListPage = new TaskSelectionPage();
+			setForcePreviousAndNextButtons(true);
+			addPage(this.taskListPage);
+		} else {
+
+			this.getNextPage(null);
+		}
 	}
+
 
 	@Override
 	public boolean canFinish() {

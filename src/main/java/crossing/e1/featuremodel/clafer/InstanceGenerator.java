@@ -144,6 +144,7 @@ public class InstanceGenerator {
 			while (this.solver.find()) {
 				final InstanceClafer instance = this.solver.instance().getTopClafers()[this.solver.instance().getTopClafers().length - 1];
 				final long hashValueOfInstance = getHashValueOfInstance(instance);
+				
 				if (this.uniqueInstances.containsKey(hashValueOfInstance)) {
 					if (++redundantCounter > 1000) {
 						break;
@@ -151,6 +152,9 @@ public class InstanceGenerator {
 				} else {
 					this.uniqueInstances.put(hashValueOfInstance, instance);
 					redundantCounter = 0;
+				}
+				if (uniqueInstances.size() > 100) {
+					break;
 				}
 			}
 
@@ -320,6 +324,8 @@ public class InstanceGenerator {
 							}
 						}
 					}
+				} else {
+					taskAlgorithm.getParent().addConstraint(getFunctionFromOperator(joinRef(joinRef(join(joinRef(join($this(), taskAlgorithm)), rightOperand))), joinRef(global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent().getParent(), "c0_" + value))), operator));
 				}
 			}
 
@@ -439,12 +445,11 @@ public class InstanceGenerator {
 	private long getHashValueOfInstance(final InstanceClafer inst) {
 		// TODO: Why child at position 0, why is 0 returned if there is no
 		// child?
-		if (inst.hasChildren()) {
-			final InstanceClafer sub = (InstanceClafer) inst.getChildren()[0].getRef();
-			if (sub != null) {
-				return new InstanceClaferHash(sub).hashCode();
-			}
+		int hash = 37;
+		for (InstanceClafer child : inst.getChildren()) {
+			hash *= new InstanceClaferHash(child).hashCode();
 		}
-		return 0;
+		
+		return hash;
 	}
 }

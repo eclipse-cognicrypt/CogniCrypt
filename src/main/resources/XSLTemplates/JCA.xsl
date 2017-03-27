@@ -4,6 +4,7 @@
 <xsl:template match="/">
 
 <xsl:variable name="Rounds"> <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/iterations"/> </xsl:variable>
+<xsl:variable name="outputSize"> <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/algorithm[@type='Digest']/outputSize"/> </xsl:variable>
 
 <xsl:if test="//task/algorithm[@type='SymmetricBlockCipher']">
 <xsl:result-document href="Enc.java">
@@ -47,7 +48,7 @@ public class KeyDeriv {
          <xsl:when test="$Rounds > 1000"> <xsl:value-of select="$Rounds"/> </xsl:when>
          <xsl:otherwise> 1000 </xsl:otherwise>
 		 </xsl:choose>, <xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/keySize"/>);
-		SecretKeyFactory skf = SecretKeyFactory.getInstance("<xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/name"/>");
+		SecretKeyFactory skf = SecretKeyFactory.getInstance("<xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/name"/>WithHmacSHA256");
 		
 		return new SecretKeySpec(skf.generateSecret(spec).getEncoded(), "<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>" );
 	}
@@ -59,11 +60,11 @@ package <xsl:value-of select="//Package"/>;
 <xsl:apply-templates select="//Import"/>	
 public class Output {
 	public byte[] templateUsage(byte[] data<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">, char[] pwd</xsl:if>) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
-		 <xsl:choose>
-         <xsl:when test="//task/algorithm[@type='KeyDerivationAlgorithm']">KeyDeriv kd = new KeyDeriv();
-		 SecretKey key = kd.getKey(pwd); </xsl:when>
-         <xsl:otherwise>SecretKeySpec key = getKey(); </xsl:otherwise>
-		 </xsl:choose>		
+		<xsl:choose>
+        <xsl:when test="//task/algorithm[@type='KeyDerivationAlgorithm']">KeyDeriv kd = new KeyDeriv();
+		SecretKey key = kd.getKey(pwd); </xsl:when>
+        <xsl:otherwise>SecretKeySpec key = getKey(); </xsl:otherwise>
+		</xsl:choose>		
 		
 		Enc enc = new Enc();
 		return enc.encrypt(data, key);
@@ -100,7 +101,8 @@ public class PWHasher {
 		SecureRandom.getInstanceStrong().nextBytes(salt);
 		
 		PBEKeySpec spec = new PBEKeySpec(pwd, salt, 65536, <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/outputSize"/>);
-		SecretKeyFactory f = SecretKeyFactory.getInstance("<xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/name"/>WithHmacSHA1");
+		SecretKeyFactory f = SecretKeyFactory.getInstance("<xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/name"/>WithHmac<xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/algorithm[@type='Digest']/name"/><xsl:choose><xsl:when test="$outputSize > 200"> <xsl:value-of select="$outputSize"/> </xsl:when>
+         <xsl:otherwise>1</xsl:otherwise></xsl:choose>");
 		String pwdHash = toBase64(salt) + ":" + toBase64(f.generateSecret(spec).getEncoded());
 		spec.clearPassword();
 		return pwdHash;
@@ -110,8 +112,9 @@ public class PWHasher {
 		String[] parts = pwdhash.split(":");
 		byte[] salt = fromBase64(parts[0]);
 
-		PBEKeySpec spec = new PBEKeySpec(pwd, salt, 65536, 128);
-		SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+		PBEKeySpec spec = new PBEKeySpec(pwd, salt, 65536, <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/outputSize"/>);
+		SecretKeyFactory f = SecretKeyFactory.getInstance("<xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/name"/>WithHmac<xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/algorithm[@type='Digest']/name"/><xsl:choose><xsl:when test="$outputSize > 200"> <xsl:value-of select="$outputSize"/> </xsl:when>
+         <xsl:otherwise>1</xsl:otherwise></xsl:choose>");
 		Boolean areEqual = slowEquals(f.generateSecret(spec).getEncoded(), fromBase64(parts[1]));
 		spec.clearPassword();
 		return areEqual;

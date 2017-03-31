@@ -235,6 +235,133 @@ public class Output {
 
 
 <xsl:if test="//task[@description='SecureCommunication']">
+<xsl:choose><xsl:when test="//task/code/server='true'">
+<xsl:result-document href="TLSServer.java">
+package <xsl:value-of select="//task/Package"/>; 
+<xsl:apply-templates select="//Import"/>
+
+public class TLSServer {	
+	private static SSLServerSocket sslServersocket = null;
+	private static List&lt;TLSConnection&gt; sslConnections = null;
+			
+	public TLSServer(int port) {
+			System.setProperty("javax.net.ssl.keyStore","<xsl:value-of select="//task/code/keystore"/>");
+        System.setProperty("javax.net.ssl.keyStorePassword","<xsl:value-of select="//task/code/keystorepassword"/>");
+	        SSLServerSocketFactory sslServerSocketFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+		try {
+			sslServersocket = (SSLServerSocket) sslServerSocketFactory.createServerSocket(<xsl:choose><xsl:when test="//task/code/port"><xsl:value-of select="//task/code/port"/></xsl:when>
+         <xsl:otherwise>port</xsl:otherwise>
+		 </xsl:choose>
+         );
+         
+			setCipherSuites();
+			setProtocols();
+			
+			sslConnections = new ArrayList&lt;TLSConnection&gt;();
+			startAcceptingConnections();
+		} catch (IOException ex) {
+			System.out.println("Connection to server could not be established. Please check whether the ip/hostname and port are correct");
+			ex.printStackTrace();
+		}
+	}
+	
+	private static void startAcceptingConnections() throws IOException {
+		while (true) {
+			sslConnections.add(new TLSConnection((SSLSocket) sslServersocket.accept()));
+		}
+	}
+
+	public List&lt;TLSConnection&gt; getCurrentConnections() {
+		return sslConnections;
+	}
+        
+    private void setCipherSuites() {
+		if (sslServersocket != null) {
+		//Insert cipher suites here
+		sslServersocket.setEnabledCipherSuites(new String[]{
+		<xsl:for-each select="//task/element[@type='SecureCommunication']/Ciphersuites">"<xsl:value-of select="."/>",</xsl:for-each>
+		});
+		}
+	}
+
+	private void setProtocols() {
+		if (sslServersocket != null) {
+			//Insert TLSxx here
+			sslServersocket.setEnabledProtocols( new String[]{
+			"TLSv1.1", "TLSv1.2" <!-- <xsl:for-each select="//task/element[@type='SecureCommunication']/TlsVersion">"<xsl:value-of select="."/>",</xsl:for-each>-->
+			} );
+		}
+	}
+}
+</xsl:result-document>
+
+<xsl:result-document href="TLSConnection.java">
+package <xsl:value-of select="//task/Package"/>; 
+<xsl:apply-templates select="//Import"/>
+
+public class TLSConnection {
+
+	private SSLSocket sslSocket = null; 
+	private static BufferedWriter bufW = null;
+	private static BufferedReader bufR = null;
+
+	public TLSConnection(SSLSocket con) {
+		sslSocket = con;
+	}
+	
+	public void closeConnection() {
+		try {
+			if (!sslSocket.isClosed()) {
+				sslSocket.close();
+			}
+		} catch (IOException ex) {
+			System.out.println("Could not close channel.");
+			ex.printStackTrace();
+		}
+	}
+
+	public boolean sendData(String content) {
+		try {
+			bufW.write(content + "\n");
+			bufW.flush();
+			return true;
+		} catch (IOException ex) {
+			System.out.println("Sending data failed.");
+			ex.printStackTrace();
+			return false;
+		}
+	}
+
+	public String receiveData() {
+		try {
+			return bufR.readLine();
+		} catch (IOException ex) {
+			System.out.println("Receiving data failed.");
+			ex.printStackTrace();
+			return null;
+		}
+	}
+
+}
+</xsl:result-document>
+	
+package <xsl:value-of select="//Package"/>; 
+<xsl:apply-templates select="//Import"/>	
+public class Output {
+
+	public void templateUsage(
+		 <xsl:choose>
+         <xsl:when test="//task/code/port"></xsl:when>
+         <xsl:otherwise>,int port</xsl:otherwise></xsl:choose>) {
+         //You need to set the right host (first parameter) and the port name (second parameter). If you wish to pass a IP address, please use overload with InetAdress as second parameter instead of string.
+		 TLSServer tls = new TLSServer(<xsl:choose><xsl:when test="//task/code/port"><xsl:value-of select="//task/code/port"/></xsl:when>
+         <xsl:otherwise>port</xsl:otherwise></xsl:choose>);
+		 
+		 tls.getCurrentConnections();
+		
+	}
+}
+</xsl:when><xsl:otherwise>
 <xsl:result-document href="TLSClient.java">
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
@@ -254,8 +381,8 @@ public class TLSClient {
          <xsl:otherwise>,int port</xsl:otherwise>
 		 </xsl:choose>
 		 	) {
-			System.setProperty("javax.net.ssl.<xsl:choose><xsl:when test="//task/code/server='true'">key</xsl:when><xsl:otherwise>trust</xsl:otherwise></xsl:choose>Store","<xsl:value-of select="//task/code/keystore"/>");
-        System.setProperty("javax.net.ssl.<xsl:choose><xsl:when test="//task/code/server='true'">key</xsl:when><xsl:otherwise>trust</xsl:otherwise></xsl:choose>StorePassword","<xsl:value-of select="//task/code/keystorepassword"/>");
+			System.setProperty("javax.net.ssl.trustStore","<xsl:value-of select="//task/code/keystore"/>");
+        System.setProperty("javax.net.ssl.trustStorePassword","<xsl:value-of select="//task/code/keystorepassword"/>");
 	        SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 		try {
 			sslsocket = (SSLSocket) sslsocketfactory.createSocket(<xsl:choose>
@@ -362,6 +489,8 @@ public class Output {
 		tls.closeConnection();		
 	}
 }
+</xsl:otherwise></xsl:choose>
+
 </xsl:if>
 
 <xsl:if test="//task[@description='ABY']">

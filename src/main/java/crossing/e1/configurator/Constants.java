@@ -103,6 +103,7 @@ public class Constants {
 												  "javax.crypto.spec.IvParameterSpec",
 												  "javax.crypto.spec.SecretKeySpec",
 												  "java.security.spec.InvalidKeySpecException",
+												  "java.util.List;"
 												  };
 
 	// Types

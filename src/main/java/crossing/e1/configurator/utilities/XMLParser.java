@@ -51,6 +51,7 @@ import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 public class XMLParser implements Labels {
 
 	Document document = null;
+	String enumParent = null;
 
 	/**
 	 * builds xml document, returns it's string representation
@@ -134,6 +135,7 @@ public class XMLParser implements Labels {
 	 */
 	private void displayInstanceXML(final InstanceClafer inst, final Element parent) {
 		try {
+			System.out.print("Instance:"+inst);
 			if (inst.hasChildren()) {
 				for (final InstanceClafer in : inst.getChildren()) {
 					if (isAlgorithm(in.getType())) {
@@ -146,17 +148,25 @@ public class XMLParser implements Labels {
 				}
 			} else if (inst.hasRef() && inst.getType().isPrimitive() != true && inst.getRef().getClass().toString().contains(Constants.INTEGER) == false && inst.getRef().getClass()
 				.toString().contains(Constants.STRING) == false && inst.getRef().getClass().toString().contains(Constants.BOOLEAN) == false) {
+				enumParent=ClaferModelUtils.removeScopePrefix(inst.getType().getName());
+				enumParent=Character.toLowerCase(enumParent.charAt(0)) + enumParent.substring(1);
+				System.out.print("enumparent"+enumParent);
 				displayInstanceXML((InstanceClafer) inst.getRef(), parent);
 			} else if (PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())) {
 				String superClaferName = ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName());
 				superClaferName = Character.toLowerCase(superClaferName.charAt(0)) + superClaferName.substring(1);
-				// Removed if-else block after refactorng, while the following statement in both blocks was identical
-				parent.addElement(superClaferName).addText(ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", ""));
+				System.out.println("SuperClafername"+superClaferName);
+				// Removed if-else block after re-factoring, while the following statement in both blocks was identical
+				System.out.println("Text:"+ClaferModelUtils.removeScopePrefix(inst.getType().toString()));
+				parent.addElement(enumParent).addText(ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", ""));
+			
 			} else {
 				String instName = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
 				instName = Character.toLowerCase(instName.charAt(0)) + instName.substring(1);
+				System.out.println("Instname"+instName);
 				if (inst.hasRef()) {
 					parent.addElement(instName).addText(inst.getRef().toString().replace("\"", ""));
+					System.out.println(inst.getRef().toString().replace("\"", ""));
 				} else {
 					String instparentName = ClaferModelUtils.removeScopePrefix(((AstConcreteClafer) inst.getType()).getParent().getName());
 					instparentName = Character.toLowerCase(instparentName.charAt(0)) + instparentName.substring(1);

@@ -19,7 +19,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="lib/claferchocoig.jar" sourcepath="C:/Users/stefank3/Downloads/choco-solver-master/choco-solver-master/choco-solver"/>
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
@@ -38,5 +37,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/LongTermArchiving.jar"/>
 	<classpathentry kind="lib" path="lib/dom4j-2.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/claferchocoig.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

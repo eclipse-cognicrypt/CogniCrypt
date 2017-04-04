@@ -85,4 +85,3 @@ c0_pbkdf2.addConstraint(equal(joinRef(join($this(), c0_security)), joinRef(join(
 c0_SecurePassword.extending(c0_Task);
 c0_SecurePassword.addConstraint(equal(joinRef(join($this(), c1_description)), constant("\"Represent password in a secure way for storage\"")));
 c0_kda.refTo(c0_KeyDerivationAlgorithm);
-Constraint(greaterThanEqual(joinRef(joinRef(join(joinRef(join(global(c0_SecurePassword), c0_kda)), c0_security))), joinRef(global(c0_Medium))));

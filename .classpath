@@ -38,5 +38,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/LongTermArchiving.jar"/>
 	<classpathentry kind="lib" path="lib/dom4j-2.0.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ideal"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

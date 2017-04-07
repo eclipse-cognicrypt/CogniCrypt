@@ -6,7 +6,8 @@ import java.util.List;
 
 import typestate.interfaces.FiniteStateMachine;
 
-public final class StateMachineGraph implements FiniteStateMachine<StateNode> {
+
+public final class StateMachineGraph implements FiniteStateMachine {
 
 	private final List<StateNode> nodes;
 	private final List<TransitionEdge> edges;
@@ -18,6 +19,9 @@ public final class StateMachineGraph implements FiniteStateMachine<StateNode> {
 
 	public Boolean addEdge(TransitionEdge edge) {
 		if (!(nodes.contains(edge.getLeft()) || nodes.contains(edge.getRight()))) {
+			return false;
+		}
+		if (edges.contains(edge)) {
 			return false;
 		}
 		edges.add(edge);
@@ -59,12 +63,10 @@ public final class StateMachineGraph implements FiniteStateMachine<StateNode> {
 		return edges;
 	}
 
-	@Override
 	public TransitionEdge getInitialTransition() {
 		return edges.get(0);
 	}
 
-	@Override
 	public Collection<StateNode> getAcceptingStates() {
 		Collection<StateNode> accNodes = new ArrayList<StateNode>();
 		for (StateNode node : nodes) {
@@ -76,7 +78,6 @@ public final class StateMachineGraph implements FiniteStateMachine<StateNode> {
 		return accNodes;
 	}
 
-	@Override
 	public Collection getAllTransitions() {
 		return getEdges();
 	}

@@ -1,8 +1,6 @@
 package crossing.e1.cryptsl.analysis;
 
-import typestate.finiteautomata.State;
-
-public class StateNode implements State {
+public class StateNode  {
 
 	private final String name;
 
@@ -35,6 +33,10 @@ public class StateNode implements State {
 		return accepting;
 	}
 	
+	public void setAccepting(Boolean _accepting) {
+		accepting = _accepting;
+	}
+	
 	public String toString() {
 		StringBuilder nodeSB = new StringBuilder();
 		nodeSB.append("Name: ");
@@ -47,14 +49,23 @@ public class StateNode implements State {
 		return nodeSB.toString();
 	}
 
-	@Override
 	public boolean isErrorState() {
 		return !accepting;
 	}
 
-	@Override
 	public boolean isInitialState() {
 		return init;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof StateNode)) {
+			return false;
+		}
+		StateNode cmp = (StateNode) obj;
+		
+		return cmp.getName().equals(this.name) && cmp.getAccepting().equals(this.accepting) && cmp.getInit().equals(this.init);
+	}
+
+	
 }

@@ -2,7 +2,7 @@ package crossing.e1.cryptsl.analysis;
 
 import typestate.interfaces.Transition;
 
-public class TransitionEdge implements Transition<StateNode> {
+public class TransitionEdge implements Transition {
 
 	private StateNode left = null;
 	private StateNode right = null;
@@ -37,19 +37,28 @@ public class TransitionEdge implements Transition<StateNode> {
 		return edgeSB.toString();
 	}
 
-	@Override
 	public StateNode from() {
 		return left;
 	}
 
-	@Override
 	public StateNode to() {
 		return right;
 	}
 
-	@Override
 	public String label() {
 		return label;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof TransitionEdge)) {
+			return false;
+		}
+		TransitionEdge cmp = (TransitionEdge) obj;
+		
+		return cmp.getLeft().equals(this.left) && cmp.getRight().equals(this.right) && cmp.getLabel().equals(this.label);
+	}
+	
+	
 	
 }

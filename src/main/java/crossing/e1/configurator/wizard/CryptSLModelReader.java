@@ -1,6 +1,7 @@
 package crossing.e1.configurator.wizard;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -26,10 +27,16 @@ import crossing.e1.cryptsl.analysis.StateMachineGraph;
 import crossing.e1.cryptsl.analysis.StateNode;
 import crossing.e1.cryptsl.analysis.TransitionEdge;
 import de.darmstadt.tu.crossing.CryptSL.ui.internal.CryptSLActivator;
-import de.darmstadt.tu.crossing.cryptSL.Constraint;
+import de.darmstadt.tu.crossing.cryptSL.Aggegate;
 import de.darmstadt.tu.crossing.cryptSL.Domainmodel;
+import de.darmstadt.tu.crossing.cryptSL.Event;
 import de.darmstadt.tu.crossing.cryptSL.Expression;
+import de.darmstadt.tu.crossing.cryptSL.LabelMethodCall;
+import de.darmstadt.tu.crossing.cryptSL.Method;
+import de.darmstadt.tu.crossing.cryptSL.ObjectDecl;
 import de.darmstadt.tu.crossing.cryptSL.Order;
+import de.darmstadt.tu.crossing.cryptSL.Par;
+import de.darmstadt.tu.crossing.cryptSL.ParList;
 import de.darmstadt.tu.crossing.cryptSL.SimpleOrder;
 
 public class CryptSLModelReader {
@@ -52,100 +59,230 @@ public class CryptSLModelReader {
 		new JdtTypeProviderFactory(injector.getInstance(IJavaProjectProvider.class)).createTypeProvider(resourceSet);
 
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-		Resource resource = resourceSet.getResource(URI.createPlatformResourceURI("/CryptSL Examples/src/de/darmstadt/tu/crossing/Mac.cryptsl", true), true);
+		
+		List<String> classNames = new ArrayList<String>();
+		classNames.add("KeyGenerator");
+		classNames.add("KeyPairGenerator");
+//		classNames.add("KeyStore");
+		classNames.add("Mac");
+		classNames.add("PBEKeySpec");
+		classNames.add("SecretKeyFactory");
+		classNames.add("MessageDigest");
+		classNames.add("Cipher");
+		
+		for (String className : classNames) {
+			EObject eObject = buildStateMachineGraph(resourceSet, className);
+			String outputURI = storeModelToFile(resourceSet, eObject, className);
+			loadModelFromFile(outputURI);
+		}
+		
+		
+		
+		
+	}
+
+	private EObject buildStateMachineGraph(XtextResourceSet resourceSet, String className) {
+		Resource resource = resourceSet.getResource(URI.createPlatformResourceURI("/CryptSL Examples/src/de/darmstadt/tu/crossing/" + className + ".cryptsl", true), true);
 		EcoreUtil.resolveAll(resourceSet);
 		EObject eObject = resource.getContents().get(0);
 		
 		Domainmodel dm = (Domainmodel) eObject;
 		StateMachineGraph smg = new StateMachineGraph();
 		smg.addNode(new StateNode("pre_init", true));
-		iterateThroughSubtrees(smg, dm.getOrder());
+		nodeNameCounter = 0;
+		iterateThroughSubtrees(smg, dm.getOrder(), null, null);
+		iterateThroughSubtreesOptional(smg, dm.getOrder(), null, null);
+		return eObject;
+	}
+
+	private void iterateThroughSubtreesOptional(StateMachineGraph smg, Expression order, StateNode prevNode, StateNode nextNode) {
+		Expression left = order.getLeft();
+		Expression right = order.getRight();
+		String elementOp = order.getElementop();
+		Boolean elOpNotNull = elementOp != null;
+		String leftElOp = left.getElementop();
+		String rightElOp = right.getElementop();
 		
-		System.out.println(dm.getOrder());
-		for (Constraint req : dm.getReq()) {
-			System.out.println(req);
+		if ((left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
+			iterateThroughSubtreesOptional(smg, left, null, nextNode);
+			iterateThroughSubtreesOptional(smg, right, null, nextNode);
+		} else if ((left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
+			iterateThroughSubtreesOptional(smg, left, null, nextNode);
+			if(rightElOp != null && rightElOp.equals("?")) {
+				addSkipEdge(smg, right);
+			}
+		} else if (!(left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
+			if (leftElOp != null && leftElOp.equals("?")) {
+				addSkipEdge(smg, left);
+			}
+			
+			iterateThroughSubtreesOptional(smg, right, null, nextNode);
+		} else if (!(left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
+			if (leftElOp != null && leftElOp.equals("?")) {
+				addSkipEdge(smg, left);
+			}
+			
+			if(rightElOp != null && rightElOp.equals("?")) {
+				addSkipEdge(smg, right);
+			}
 		}
 		
-		//Store the model to path outputURI
-		String outputURI = "file:///C:/Users/stefank3/Desktop/Output.xmi";
-		Resource xmiResource = resourceSet.createResource(URI.createURI(outputURI));
-		xmiResource.getContents().add(eObject);
-		xmiResource.save(null);
+	}
 
-		//Load the model from path outputURI
+	private void addSkipEdge(StateMachineGraph smg, Expression leaf) {
+		List<TransitionEdge> tedges = new ArrayList<TransitionEdge>(smg.getEdges());
+		for (TransitionEdge trans : tedges) {
+			if (trans.getLabel().equals(leaf.getOrderEv().get(0).getName())) {
+				for (TransitionEdge innerTrans : tedges) {
+					if (innerTrans.from().equals(trans.to())) {
+						smg.addEdge(new TransitionEdge(innerTrans.getLabel(), trans.from(), innerTrans.to()));
+					}
+				}
+			}
+		}
+	}
+
+	private void loadModelFromFile(String outputURI) {
 		ResourceSet resSet = new ResourceSetImpl();
 		Resource xmiResourceRead = resSet.getResource(URI.createURI(outputURI), true);
 		Domainmodel dmro = (Domainmodel) xmiResourceRead.getContents().get(0);
-		
-	}
-	
-	private void iterateThroughSubtrees(StateMachineGraph smg, Expression order) {
-		//if order.getLeft == null && order.getRight == null => no nesting whatsoever todo
-		int skipCounter = 0;
-		Expression left = order.getLeft();
-		Expression right = order.getRight();
-		
-		if ((left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
-			iterateThroughSubtrees(smg, left);
-			iterateThroughSubtrees(smg, right);
-		} else if ((left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
-			iterateThroughSubtrees(smg, left);
-			handleOp(smg, order.getOrderop(), right);
-		} else if (!(left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
-			handleOp(smg, order.getOrderop(), left);
-			iterateThroughSubtrees(smg, right);
-		} else if (!(left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
-			handleOp(smg, order.getOrderop(), left);
-			if (skipCounter == 0) {
-				handleOp(smg, order.getOrderop(), right);
-			}
-		}
-//		if (left instanceof Order || left instanceof SimpleOrder) {
-//			int prevSize = smg.getNodes().size() ;
-//			iterateThroughSubtrees(smg, left);
-//		} else {
-//			handleOp(smg, order.getOrderop(), left);
-//		}
-//		
-//		if (right instanceof Order || right instanceof SimpleOrder) {
-//			int prevSize = smg.getNodes().size() ;
-//			iterateThroughSubtrees(smg, right);
-//			
-//		} else {
-//			handleOp(smg, order.getOrderop(), right);
-//		}
 	}
 
-	private int handleOp(StateMachineGraph smg, String orderop, Expression leaf) {
-		int skipCounter = 0;
-		StateNode newNode = getNewNode();
-		List<StateNode> nodes = smg.getNodes();
-		int curLength = nodes.size();
-		smg.addNode(newNode);
+	private String storeModelToFile(XtextResourceSet resourceSet, EObject eObject, String className) throws IOException {
+		//Store the model to path outputURI
+		String outputURI = "file:///C:/Users/stefank3/Desktop/" + className + ".xmi";
+		Resource xmiResource = resourceSet.createResource(URI.createURI(outputURI));
+		xmiResource.getContents().add(eObject);
+		xmiResource.save(null);
+		return outputURI;
+	}
+	
+	private void iterateThroughSubtrees(StateMachineGraph smg, Expression order, StateNode prevNode, StateNode nextNode) {
+		//if order.getLeft == null && order.getRight == null => no nesting whatsoever todo
+		Expression left = order.getLeft();
+		Expression right = order.getRight();
+		String elementOp = order.getElementop();
+		Boolean elOpNotNull = elementOp != null;
 		
-		if (orderop.equals(",") && !leaf.equals("?")) {
-			smg.addEdge(new TransitionEdge(leaf.getOrderEv().get(0).getName(), nodes.get(curLength -1), newNode));
-			if (leaf.getOrderop() != null) {
-				if (leaf.getOrderop().equals("+")) {
-					smg.addEdge(new TransitionEdge(leaf.getOrderEv().get(0).getName(), newNode, newNode));
-				} else if (leaf.getOrderop().equals("*")){
-					smg.addEdge(new TransitionEdge(leaf.getOrderEv().get(0).getName(), newNode, newNode));				
-					//handle extra edge in case of *
-				}
+		if ((left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
+			iterateThroughSubtrees(smg, left, null, nextNode);
+			prevNode = getLastNode(smg);
+			
+			iterateThroughSubtrees(smg, right, prevNode, nextNode);
+		} else if ((left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
+			iterateThroughSubtrees(smg, left, prevNode, nextNode);
+			handleOp(smg, order.getOrderop(), right, prevNode, nextNode);
+		} else if (!(left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
+			if (order.getOrderop().equals("|")) {
+				prevNode = getLastNode(smg);
 			}
-		} else if (orderop.equals(",")) {
+			handleOp(smg, order.getOrderop(), left, prevNode, nextNode);
+			if (order.getOrderop().equals("|")) {
+				nextNode = getLastNode(smg);
+			}
 			
-		} else if (orderop.equals("|")) {
+			if (elOpNotNull && elementOp.equals("+")) {
+				StateNode linkBackNode = prevNode;
+				
+				iterateThroughSubtrees(smg, right, prevNode, nextNode);
+				
+				List<TransitionEdge> transEdges = new ArrayList<TransitionEdge>(smg.getEdges());
+				for (TransitionEdge trans : transEdges) {
+					if (trans.to().equals(nextNode)) {
+						if (trans.from().equals(linkBackNode)) {
+							smg.addEdge(new TransitionEdge(trans.getLabel(), trans.to(), trans.to()));
+						} else {
+							for (TransitionEdge innerTrans : transEdges) {
+								if (innerTrans.to().equals(trans.from())) {
+									smg.addEdge(new TransitionEdge(innerTrans.getLabel(), trans.to(), trans.from()));
+								}
+							}
+						}
+					}
+				}
+			} else {
+				iterateThroughSubtrees(smg, right, prevNode, nextNode);
+			}
 			
-			
-			skipCounter++;
+		} else if (!(left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
+			if (order.getOrderop().equals("|")) {
+				prevNode = getLastNode(smg);
+			}
+			handleOp(smg, order.getOrderop(), left, prevNode, null);
+			if (order.getOrderop().equals("|")) {
+				nextNode = getLastNode(smg);
+				handleOp(smg, order.getOrderop(), right, prevNode, nextNode);
+			} else {
+				handleOp(smg, order.getOrderop(), right, null, nextNode);
+			}
+		}
+	}
+
+	private StateNode getLastNode(StateMachineGraph smg) {
+		List<StateNode> nodes = smg.getNodes();
+		return nodes.get(nodes.size() -1);
+	}
+
+	private void handleOp(StateMachineGraph smg, String orderop, Expression leaf, StateNode prevNode, StateNode nextNode) {
+		prevNode = (prevNode == null) ? getLastNode(smg) : prevNode; 
+		if (nextNode == null) {
+			nextNode = getNewNode();
+			smg.addNode(nextNode);
 		}
 		
-		return skipCounter;
+		StringBuilder labelBuilder = new StringBuilder();
+		if (leaf.getOrderEv().get(0) instanceof Aggegate) {
+			Aggegate ev = (Aggegate) leaf.getOrderEv().get(0);
+			dealWithAggegate(labelBuilder, ev);
+		} else {
+			stringifyMethodSignature(labelBuilder, leaf.getOrderEv().get(0));
+		}
+		
+		String label = labelBuilder.toString();
+		smg.addEdge(new TransitionEdge(label, prevNode, nextNode));
+		prevNode.setAccepting(false);
+		if (leaf.getElementop() != null) {
+			if (leaf.getElementop().equals("+")) {
+				smg.addEdge(new TransitionEdge(label, nextNode, nextNode));
+			} else if (leaf.getElementop().equals("*")){
+				smg.addEdge(new TransitionEdge(label, nextNode, nextNode));				
+				//handle extra edge in case of *
+			} else if (leaf.getElementop().equals("?")) {
+				//handle extra edge in case of ?
+			}
+		}
+	}
+
+	private void dealWithAggegate(StringBuilder labelBuilder, Aggegate ev) {
+		for (Event lab : ev.getLab()) {
+			if (lab instanceof Aggegate) {
+				dealWithAggegate(labelBuilder, (Aggegate)lab);
+			} else {
+				stringifyMethodSignature(labelBuilder, lab);
+			}
+		}
+		
+	}
+
+	private void stringifyMethodSignature(StringBuilder labelBuilder, Event lab) {
+		Method method = ((LabelMethodCall) lab).getMeth();
+		labelBuilder.append(method.getMethName().getQualifiedName());
+		labelBuilder.append("(");
+		ParList parList = method.getParList();
+		if (parList != null) {
+			for (Par par : parList.getParameters()) {
+				String parValue = (par.getVal() == null) ? "_" : ((ObjectDecl)par.getVal().eContainer()).getObjectType().getIdentifier();
+				labelBuilder.append(parValue);
+				labelBuilder.append(",");
+			}
+		int length = labelBuilder.length();
+		labelBuilder.replace(length - 1, length, "");
+		}
+		labelBuilder.append(");");
 	}
 
 	private StateNode getNewNode() {
-		return new StateNode(String.valueOf(nodeNameCounter++));
+		return new StateNode(String.valueOf(nodeNameCounter++), false, true);
 	}
 
 	private Expression getFirstMethod(Expression order) {
@@ -157,80 +294,4 @@ public class CryptSLModelReader {
 		}
 		return prev;
 	}
-
-	private void iterateThrough(StateMachineGraph smg, Expression first) {
-		/*
-		 * 
-		 * 1. Get Left most child - check 
-		 * 2. Add Init nodes - check 
-		 * 3. Add init edge(s) 
-		 * 		depends on orderop of node
-		 * 		, -> only edge btwn pre_init and init node
-		 * 		+ -> add another edge from pre_init node to itself
-		 * 		* -> , plus + plus get (leftest child of) right child of parent and add edge from pre_init node to init node (do 
-		 * 4. Iterate through remaining aggs
-		 * 		For each agg
-		 * 		if (skipCounter > 0) { skip;}
-		 * 		else {
-		 * 			if (!OrderImpl || SimpleOrder) {
-		 * 				5.
-		 * 			else {
-		 * 				
-		 * 			}
-		 * 
-		 * 		}
-		 */
-		
-		StateNode pre_initNode = new StateNode("pre_init", true);
-		StateNode initNode = new StateNode("init", false);
-
-		int nodeLabelIterator = 0;
-		smg.addNode(pre_initNode);
-		smg.addNode(initNode);
-		smg.addEdge(new TransitionEdge(first.getOrderEv().toString(), pre_initNode, initNode));
-		
-		
-		
-		
-//		EObject container = first.eContainer();
-//		if (container instanceof Expression) {
-//			Expression parent = (Expression) container;
-//			String operator = parent.getOrderop();
-//			StateNode nodeAddedLast = smg.getNodes().get(smg.getNodes().size() -1);
-//			if (operator.equals(",")) {
-//
-//				StateNode newNode = new StateNode(String.valueOf(nodeLabelIterator++));
-//				smg.addNode(newNode);
-//				smg.addEdge(new Edge(right))
-//			}
-//		}
-		
-//		if (oi.getLeft() != null) {
-//			iterateThrough(smg, (ExpressionImpl)oi.getLeft());
-//		}
-//		
-//		
-//		
-//		if (oi.getRight() != null) {
-//			iterateThrough(smg, (ExpressionImpl)oi.getRight());
-//		}
-		
-		
-		
-		
-	}
-	
-	/* both expressions ->
-	* , -> addNode(right), addedge(agg, left, right)
-	* | -> addNode(right), addedge(agg, edge_BeforeLeft, right)
-	*
-	*
-	*
-	*
-	*/
-	
-	
-	
-	
-
 }

@@ -31,8 +31,11 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISelectionService;
@@ -57,7 +60,7 @@ public class Utils {
 	public static File getResourceFromWithin(final String inputPath) {
 		try {
 			final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
-			
+
 			if (bundle == null) {
 				System.out.println("Bundle is null");
 				// running as application
@@ -139,6 +142,22 @@ public class Utils {
 			}
 		}
 		return iproject;
+	}
+	
+	/**
+	 * This method returns if a Java project is selected for code generation.
+	 *
+	 * @return  <CODE>true</CODE>/<CODE>false</CODE> if library java project selected.
+	 */
+	public static boolean checkIfJavaProjectSelected() {
+		IProject project = Utils.getIProjectFromSelection();
+		IJavaProject javaProject = JavaCore.create(project);
+		if (javaProject == null || !javaProject.exists() || project == null) {
+			MessageDialog.openWarning(new Shell(), "Warning",
+					"CogniCrypt requires a target Java project in order to perform successful code generation. Please select or create a Java project. ");
+			return false;
+		}
+		return true;
 	}
 
 }

@@ -1,6 +1,10 @@
 package crossing.e1.configurator.wizard;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +27,9 @@ import com.google.inject.Injector;
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.utilities.Utils;
-import crossing.e1.cryptsl.analysis.StateMachineGraph;
-import crossing.e1.cryptsl.analysis.StateNode;
-import crossing.e1.cryptsl.analysis.TransitionEdge;
+import crypto.rules.StateMachineGraph;
+import crypto.rules.StateNode;
+import crypto.rules.TransitionEdge;
 import de.darmstadt.tu.crossing.CryptSL.ui.internal.CryptSLActivator;
 import de.darmstadt.tu.crossing.cryptSL.Aggegate;
 import de.darmstadt.tu.crossing.cryptSL.Domainmodel;
@@ -76,9 +80,6 @@ public class CryptSLModelReader {
 			loadModelFromFile(outputURI);
 		}
 		
-		
-		
-		
 	}
 
 	private EObject buildStateMachineGraph(XtextResourceSet resourceSet, String className) {
@@ -92,6 +93,25 @@ public class CryptSLModelReader {
 		nodeNameCounter = 0;
 		iterateThroughSubtrees(smg, dm.getOrder(), null, null);
 		iterateThroughSubtreesOptional(smg, dm.getOrder(), null, null);
+		
+		String filePath = "C:/Users/stefank3/Desktop/"+ className +".smg";
+		FileOutputStream fileOut;
+		try {
+			fileOut = new FileOutputStream(filePath);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(smg);
+			out.close();
+			fileOut.close();
+			FileInputStream fileIn = new FileInputStream(filePath);
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			smg = (StateMachineGraph) in.readObject();
+			in.close();
+			fileIn.close();
+			
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 		return eObject;
 	}
 

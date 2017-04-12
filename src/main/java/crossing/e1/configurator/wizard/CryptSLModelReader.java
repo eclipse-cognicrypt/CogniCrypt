@@ -94,7 +94,7 @@ public class CryptSLModelReader {
 		iterateThroughSubtrees(smg, dm.getOrder(), null, null);
 		iterateThroughSubtreesOptional(smg, dm.getOrder(), null, null);
 		
-		String filePath = "C:/Users/stefank3/Desktop/"+ className +".smg";
+		String filePath = "C:\\Users\\stefank3\\git\\code-dsl-ideal\\crypto\\resources\\"+ className +".smg";
 		FileOutputStream fileOut;
 		try {
 			fileOut = new FileOutputStream(filePath);
@@ -152,7 +152,9 @@ public class CryptSLModelReader {
 	private void addSkipEdge(StateMachineGraph smg, Expression leaf) {
 		List<TransitionEdge> tedges = new ArrayList<TransitionEdge>(smg.getEdges());
 		for (TransitionEdge trans : tedges) {
-			if (trans.getLabel().equals(leaf.getOrderEv().get(0).getName())) {
+			StringBuilder labelBuilder = new StringBuilder();
+			resolveAggegateToMethodeNames(leaf, labelBuilder);
+			if (trans.getLabel().equals(labelBuilder.toString())) {
 				for (TransitionEdge innerTrans : tedges) {
 					if (innerTrans.from().equals(trans.to())) {
 						smg.addEdge(new TransitionEdge(innerTrans.getLabel(), trans.from(), innerTrans.to()));
@@ -251,12 +253,7 @@ public class CryptSLModelReader {
 		}
 		
 		StringBuilder labelBuilder = new StringBuilder();
-		if (leaf.getOrderEv().get(0) instanceof Aggegate) {
-			Aggegate ev = (Aggegate) leaf.getOrderEv().get(0);
-			dealWithAggegate(labelBuilder, ev);
-		} else {
-			stringifyMethodSignature(labelBuilder, leaf.getOrderEv().get(0));
-		}
+		resolveAggegateToMethodeNames(leaf, labelBuilder);
 		
 		String label = labelBuilder.toString();
 		smg.addEdge(new TransitionEdge(label, prevNode, nextNode));
@@ -270,6 +267,15 @@ public class CryptSLModelReader {
 			} else if (leaf.getElementop().equals("?")) {
 				//handle extra edge in case of ?
 			}
+		}
+	}
+
+	private void resolveAggegateToMethodeNames(Expression leaf, StringBuilder labelBuilder) {
+		if (leaf.getOrderEv().get(0) instanceof Aggegate) {
+			Aggegate ev = (Aggegate) leaf.getOrderEv().get(0);
+			dealWithAggegate(labelBuilder, ev);
+		} else {
+			stringifyMethodSignature(labelBuilder, leaf.getOrderEv().get(0));
 		}
 	}
 

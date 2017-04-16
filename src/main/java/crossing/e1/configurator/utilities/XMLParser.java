@@ -50,8 +50,8 @@ import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
  */
 public class XMLParser implements Labels {
 
-	Document document = null;
-	String enumParent = null;
+	private Document document = null;
+	private String enumParent = null;
 
 	/**
 	 * builds xml document, returns it's string representation

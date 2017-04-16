@@ -30,39 +30,32 @@ public class Constants {
 		combo, text, itemselection
 	}
 
-	//The plugin is bundled in a jar archive and the file separator within jar files is / (see: https://stackoverflow.com/questions/24749007/how-to-use-file-separator-for-a-jar-file-resource). 
+	//The plugin is bundled in a jar archive and the file separator within jar files is / (see: https://stackoverflow.com/questions/24749007/how-to-use-file-separator-for-a-jar-file-resource).
 	//Use this file separator for all paths within the plugin space.
 	public static final String innerFileSeparator = "/";
-	
+
 	//Use this file separator for all paths outside the plugin space.
 	public static final String outerFileSeparator = System.getProperty("file.separator");;
 	public static final String lineSeparator = System.getProperty("line.separator");
 
 	public static final String JavaNatureID = "org.eclipse.jdt.core.javanature";
-	
-	public static final String rsrcPath = "src" + innerFileSeparator + "main" + innerFileSeparator + "resources" + innerFileSeparator;
-	
+
+	private static final String rsrcPath = "src" + innerFileSeparator + "main" + innerFileSeparator + "resources" + innerFileSeparator;
+
 	//JSON task file
 	public static final String jsonTaskFile =  rsrcPath  + "Tasks" + innerFileSeparator + "tasks.json";;
 
 	public static final String pathToPropertyfiles = rsrcPath + "Labels.properties";
-	
-	// Clafer Instance Generation
-	public static final String claferPath = rsrcPath + "ClaferModel" + innerFileSeparator + "SymmetricEncryptionTask.js";
-	public static final String PATH_FOR_CONFIG_XML = "/Configurator.xml";
-	public static final String XML_FILE_NAME = rsrcPath + "ClaferModel/Encrypt_CryptoTasks.xml";
 
 	// Input for Code Generation
 	public static final String pathToXSLFile = rsrcPath  + "XSLTemplates" + innerFileSeparator + "JCA.xsl";
-	public static final String pathToTSLXSLFile = rsrcPath + "XSLTemplates" + innerFileSeparator + "TLS.xsl";
 	public static final String pathToClaferInstanceFolder = rsrcPath + "ClaferInstance" + innerFileSeparator;
 	public static final String pathToClaferInstanceFile = "claferInstance.xml";
-	public static final String pathToClaferInstanceTLSFile = "claferInstanceTLS.xml";
 	public static final String NameOfTemporaryMethod = "templateUsage";
 	public static final String pathsForLibrariesinDevProject = "libs";
 
 	// Output of Code Generation
-	public static final String AdditionalOutputFile = "Output.java";
+	private static final String AdditionalOutputFile = "Output.java";
 	public static final String PackageName = "Crypto";
 	public static final String CodeGenerationCallFile = innerFileSeparator + Constants.PackageName + innerFileSeparator + AdditionalOutputFile;
 
@@ -81,8 +74,7 @@ public class Constants {
 	public static final String JAVA = "java";
 	public static final String ALGORITHM = "algorithm";
 	public static final String ADVANCED_MODE = "Advanced Mode";
-	public static final String TEST_CONNECTION = "Test Connection";
-	
+
 	public static final String Package = "Package";
 	public static final String Description = "description";
 	public static final String Imports = "Imports";
@@ -90,7 +82,7 @@ public class Constants {
 	public static final String Task = "task";
 	public static final String Code = "code";
 	public static final String Type = "type";
-	public static final String[] xmlimportsarr = {"java.security.InvalidAlgorithmParameterException", 
+	public static final String[] xmlimportsarr = {"java.security.InvalidAlgorithmParameterException",
 												  "java.security.InvalidKeyException",
 												  "java.security.NoSuchAlgorithmException",
 												  "java.security.NoSuchAlgorithmException",
@@ -113,7 +105,6 @@ public class Constants {
 
 	public static final int INT_HIGH = 600;
 	public static final int INT_LOW = -17;
-	public static final int DEFAULT_SCOPE = 5;
 	public static final String INSTANCE_DETAILS = "Instance Details";
 	public static final String ARIAL = "Arial";
 	public static final String SELECT_TASK = "Select Task :";

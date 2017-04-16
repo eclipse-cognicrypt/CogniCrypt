@@ -62,7 +62,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		setControl(container);
 	}
 
-	public void createQuestionControl(final Composite parent, final Question question) {
+	private void createQuestionControl(final Composite parent, final Question question) {
 
 		final List<Answer> answers = question.getAnswers();
 		final Composite container = getPanel(parent);

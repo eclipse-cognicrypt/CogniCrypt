@@ -27,7 +27,7 @@ import java.net.UnknownHostException;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
-public class TLSConnection {
+public class TLSConnection { // NO_UCD (unused code)
 
 	private static SSLSocket sslsocket = null;
 

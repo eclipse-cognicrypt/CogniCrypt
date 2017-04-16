@@ -42,7 +42,6 @@ import crossing.e1.configurator.beginer.question.ClaferDependency;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.codegeneration.XSLBasedGenerator;
 import crossing.e1.configurator.tasks.Task;
-import crossing.e1.configurator.utilities.FileHelper;
 import crossing.e1.configurator.utilities.Utils;
 import crossing.e1.configurator.utilities.XMLParser;
 import crossing.e1.configurator.wizard.advanced.AdvancedUserValueSelectionPage;
@@ -56,7 +55,7 @@ import crossing.e1.featuremodel.clafer.InstanceGenerator;
  * This class implements the logic of the dialogue windows the user has to go
  * through. Currently, methods getNextPage() and performFinish() have special
  * handling of TLS task that should be deleted once the task is integrated.
- * 
+ *
  * @author Stefan Krueger
  * @author Sarah Nadi
  * @author Ram Kamath
@@ -65,9 +64,9 @@ import crossing.e1.featuremodel.clafer.InstanceGenerator;
  */
 public class ConfiguratorWizard extends Wizard {
 
-	protected TaskSelectionPage taskListPage;
-	protected WizardPage preferenceSelectionPage;
-	protected InstanceListPage instanceListPage;
+	private TaskSelectionPage taskListPage;
+	private WizardPage preferenceSelectionPage;
+	private InstanceListPage instanceListPage;
 	private ClaferModel claferModel;
 	private final XSLBasedGenerator codeGeneration = new XSLBasedGenerator();
 	private HashMap<Question, Answer> constraints;
@@ -90,7 +89,7 @@ public class ConfiguratorWizard extends Wizard {
 				| UnsupportedLookAndFeelException e) {
 			Activator.getDefault().logError(e);
 		}
-		
+
 		setWindowTitle("Cryptography Task Configurator");
 
 	}
@@ -145,7 +144,7 @@ public class ConfiguratorWizard extends Wizard {
 	 * but the last question page, the first/next question page is returned. If
 	 * the current page is the the last question page, the instance list page is
 	 * returned.
-	 * 
+	 *
 	 * @param currentPage
 	 *            current page
 	 * @return either next question page or instance list page
@@ -257,7 +256,7 @@ public class ConfiguratorWizard extends Wizard {
 	 * This method returns previous page. If currentPage is the first question,
 	 * the task list page is returned. If it is any other question page or the
 	 * instance list page, the previous question page is returned.
-	 * 
+	 *
 	 * @param currentPage
 	 *            current page, either instance list page or question page
 	 * @return either previous question or task selection page
@@ -306,7 +305,7 @@ public class ConfiguratorWizard extends Wizard {
 	/**
 	 * This method is called once the user selects an instance. It writes the
 	 * instance to an xml file and calls the code generation.
-	 * 
+	 *
 	 * @return <code>true</code>/<code>false</code> if writing instance file and
 	 *         code generation are (un)successful
 	 */

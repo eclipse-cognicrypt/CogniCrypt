@@ -24,7 +24,7 @@ public class PropertyWidget {
 
 	// TODO THIS IS A WORKAROUND TO STOP INSTANCE GENERATION ON PAGE LOAD, NEEDS
 	// TO BE FIXED
-	public static boolean status = false;
+	protected static boolean status = false;
 	private Spinner valueSpinner;
 	private AstClafer parentClafer;
 	private AstConcreteClafer childClafer;
@@ -36,7 +36,7 @@ public class PropertyWidget {
 
 	/**
 	 * Method to create a widget for group properties, clafer level constraints
-	 * 
+	 *
 	 * @param container
 	 * @param claferMain
 	 * @param claferProperties
@@ -89,7 +89,7 @@ public class PropertyWidget {
 
 	/**
 	 * Method to create a widget for specific properties, task level constraints
-	 * 
+	 *
 	 * @param container
 	 * @param parentClafer
 	 * @param childClafer

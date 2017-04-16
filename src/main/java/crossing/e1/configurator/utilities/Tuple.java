@@ -2,7 +2,7 @@ package crossing.e1.configurator.utilities;
 
 /***
  * Auxiliary class for tuples.
- * 
+ *
  * @author Stefan Krueger
  *
  */
@@ -29,6 +29,12 @@ public class Tuple<X, Y> implements Comparable<Tuple<X, Y>> {
 			return thisX.compareTo(comp.x);
 		}
 	}
+
+	public int hashCode() {
+		  assert false : "hashCode not designed";
+		  return 42; // any arbitrary constant will do
+	}
+
 
 	@Override
 	public boolean equals(final Object o) {

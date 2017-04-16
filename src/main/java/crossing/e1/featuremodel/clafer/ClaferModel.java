@@ -1,12 +1,12 @@
 /**
  * Copyright 2015-2016 Technische Universitaet Darmstadt
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,22 +46,22 @@ public class ClaferModel {
 
 	/**
 	 * Constructor for claferModel which takes absolute path for the js as parm
-	 * 
+	 *
 	 * @param path
 	 */
 	public ClaferModel(final File path) {
 		loadModel(path);
 	}
-	
+
 	public ClaferModel(final String path) {
 		loadModel(new File(path));
 	}
 
 	/**
 	 * Method provides map of clafer with a desired name.
-	 * 
+	 *
 	 * Ex: Search clafer with name performance throughout the model
-	 * 
+	 *
 	 * @param name
 	 * @return
 	 */
@@ -75,7 +75,7 @@ public class ClaferModel {
 
 	/**
 	 * returns the clafer constraint list
-	 * 
+	 *
 	 * @return
 	 */
 	public Map<String, AstConcreteClafer> getConstraintClafers() {
@@ -84,7 +84,7 @@ public class ClaferModel {
 
 	/**
 	 * returns the astModel from the clafer list
-	 * 
+	 *
 	 * @return
 	 */
 	public AstModel getModel() {
@@ -92,7 +92,7 @@ public class ClaferModel {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public String getModelName() {
@@ -101,7 +101,7 @@ public class ClaferModel {
 
 	/**
 	 * returns the scope of the model
-	 * 
+	 *
 	 * @return
 	 */
 	public Scope getScope() {
@@ -110,7 +110,7 @@ public class ClaferModel {
 
 	/**
 	 * Initializes the model and also list the task list Tasks lists are those who extends Task
-	 * 
+	 *
 	 * @param path
 	 */
 	private void loadModel(final File file) {
@@ -119,7 +119,6 @@ public class ClaferModel {
 
 			setModelName("Cyrptography Task Configurator");
 			final AstModel astModel = getModel();
-			setTaskList(astModel);
 			setEnumList(astModel);
 
 		} catch (final IOException e) {
@@ -129,7 +128,7 @@ public class ClaferModel {
 
 	/**
 	 * Method performs same functionality as of the above method, written for Abstract clafer
-	 * 
+	 *
 	 * @param parentClafer
 	 * @param inputClafer
 	 * @param claferName
@@ -159,7 +158,7 @@ public class ClaferModel {
 	 * Initializes the children of a given clafer , used in testing also invoked by getChildrenListByName(). Retention is a HashMap data structure where key is parent clafer and
 	 * inputclafer is recursive parameter clafer. parentClafer remains constant throughout the iteration. When the name of the clafer matches with the string being passed, map
 	 * entry is constructed as <parentclafer,matchedClafer>
-	 * 
+	 *
 	 * @param parentClafer
 	 * @param inputClafer
 	 * @param name
@@ -190,7 +189,7 @@ public class ClaferModel {
 
 	/**
 	 * list the Enums
-	 * 
+	 *
 	 * @param model
 	 */
 	public void setEnumList(final AstModel model) {
@@ -210,46 +209,13 @@ public class ClaferModel {
 
 	/**
 	 * set a model name
-	 * 
+	 *
 	 * @param modelName
 	 */
 	public void setModelName(final String modelName) {
 
 		this.modelName = modelName;
 
-	}
-
-	/**
-	 * list the task list, Tasks lists are those who extends Abstract clafer Task
-	 * 
-	 * @param model
-	 */
-	public void setTaskList(final AstModel model) {
-		//String key = "";
-		for (final AstAbstractClafer object : model.getAbstracts()) {
-			// Find all the abstract first and select only the abstract with
-			// name Task
-			if (object.getName().contains("Task") == true) {
-				for (final AstClafer clafer : object.getSubs()) { // get all clafers
-																		// which are derived
-																	// from "Task"
-					for (final AstConstraint constraint : clafer.getConstraints()) {
-						// Check Task description , and put that as Key
-						if (constraint.getExpr().toString().contains("description . ref")) {
-							//key = constraint.getExpr().toString().substring(constraint.getExpr().toString().indexOf("=") + 1, constraint.getExpr().toString().length()).trim()
-							//.replace("\"", "");
-						}
-					}
-					//					/**
-					//					 * construct a map of tasks, key is a clafer description and
-					//					 * value is actual clafer Key will be used in Wizard, as an
-					//					 * input for taskList combo box
-					//					 */
-					//					PropertiesMapperUtil.getTaskLabelsMap().put(key, (AstConcreteClafer) clafer);
-
-				}
-			}
-		}
 	}
 
 }

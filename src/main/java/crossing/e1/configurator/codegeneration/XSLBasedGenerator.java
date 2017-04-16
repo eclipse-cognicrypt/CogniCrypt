@@ -81,7 +81,7 @@ public class XSLBasedGenerator {
 
 	/***
 	 * Generation of code templates using XSL template and Clafer instance.
-	 * 
+	 *
 	 * @param xmlInstanceFile
 	 *        xml model that details the algorithm configuration chosen by the user.
 	 * @param pathToFolderWithAdditionalResources
@@ -109,6 +109,9 @@ public class XSLBasedGenerator {
 			if (!pathToFolderWithAdditionalResources.isEmpty()) {
 				final File addResFolder = Utils.getResourceFromWithin(pathToFolderWithAdditionalResources);
 				final File[] members = addResFolder.listFiles();
+				if (members == null) {
+					Activator.getDefault().logError("No directory for additional resources found.");
+				}
 				final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesinDevProject);
 				if (!libFolder.exists()) {
 					libFolder.create(true, true, null);
@@ -210,7 +213,7 @@ public class XSLBasedGenerator {
 
 	/***
 	 * Getter method for developer project the code is generated into
-	 * 
+	 *
 	 * @return developer project
 	 */
 	public DeveloperProject getDeveloperProject() {

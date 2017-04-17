@@ -46,6 +46,11 @@ public class Constants {
 	public static final String jsonTaskFile =  rsrcPath  + "Tasks" + innerFileSeparator + "tasks.json";;
 
 	public static final String pathToPropertyfiles = rsrcPath + "Labels.properties";
+	
+	// Clafer Instance Generation
+	public static final String claferPath = rsrcPath + "ClaferModel" + innerFileSeparator + "SymmetricEncryptionTask.js";
+	public static final String PATH_FOR_CONFIG_XML = "/Configurator.xml";
+	public static final String XML_FILE_NAME = rsrcPath + "ClaferModel/Encrypt_CryptoTasks.xml";
 
 	// Input for Code Generation
 	public static final String pathToXSLFile = rsrcPath  + "XSLTemplates" + innerFileSeparator + "JCA.xsl";

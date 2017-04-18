@@ -63,6 +63,8 @@ import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.DeveloperProject;
 import crossing.e1.configurator.utilities.Tuple;
 import crossing.e1.configurator.utilities.Utils;
+import crossing.e1.configurator.wizard.ConfiguratorWizard;
+
 
 /**
  * This class is responsible for generating code templates by performing an XSL transformation. Currently, Saxon is used as an XSLT- processor.
@@ -230,7 +232,7 @@ public class XSLBasedGenerator {
 			this.project = new DeveloperProject(this.currentFile.getProject());
 		} else {
 			// if no open file, get selected project
-			final IProject iproject = Utils.getIProjectFromSelection();
+			final IProject iproject = ConfiguratorWizard.targetFile;
 			if (iproject == null) {
 				// if no project selected abort with error message
 				Activator.getDefault().logError(null, Constants.NoFileandNoProjectOpened);

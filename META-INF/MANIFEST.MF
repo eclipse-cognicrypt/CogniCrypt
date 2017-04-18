@@ -22,5 +22,7 @@ Import-Package: org.eclipse.jdt.core,
  org.eclipse.jdt.ui.actions,
  org.eclipse.jface.text,
  org.eclipse.ui.ide,
+ org.eclipse.ui.internal.ide,
+ org.eclipse.ui.internal.ide.misc,
  org.eclipse.ui.part,
  org.eclipse.ui.texteditor

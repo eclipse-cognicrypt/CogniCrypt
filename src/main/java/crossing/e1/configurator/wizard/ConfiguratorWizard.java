@@ -27,13 +27,13 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.clafer.ast.AstConcreteClafer;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Shell;
-
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.Constants.guiElements;
@@ -42,7 +42,6 @@ import crossing.e1.configurator.beginer.question.ClaferDependency;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.codegeneration.XSLBasedGenerator;
 import crossing.e1.configurator.tasks.Task;
-import crossing.e1.configurator.utilities.FileHelper;
 import crossing.e1.configurator.utilities.Utils;
 import crossing.e1.configurator.utilities.XMLParser;
 import crossing.e1.configurator.wizard.advanced.AdvancedUserValueSelectionPage;
@@ -72,32 +71,35 @@ public class ConfiguratorWizard extends Wizard {
 	private final XSLBasedGenerator codeGeneration = new XSLBasedGenerator();
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
-	private boolean targetFile;
+	public static IProject targetFile;
 
 	public ConfiguratorWizard() {
 		super();
-		targetFile = true;
+		targetFile = null;
 		// Set the Look and Feel of the application to the operating
 		// system's look and feel.
 		try {
 
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			targetFile=Utils.ProjectSelection();
 			// Check if java file open, if not display error dialog and stop.
-			targetFile = Utils.checkIfJavaProjectSelected();
+			// targetFile = Utils.checkIfJavaProjectSelected();
 		}
 
 		catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e) {
 			Activator.getDefault().logError(e);
 		}
-		
+
 		setWindowTitle("Cryptography Task Configurator");
 
 	}
 
+	
 	@Override
 	public void addPages() {
-		if (targetFile == true) {
+
+		if (targetFile != null) {
 			this.taskListPage = new TaskSelectionPage();
 			setForcePreviousAndNextButtons(true);
 			addPage(this.taskListPage);
@@ -332,7 +334,7 @@ public class ConfiguratorWizard extends Wizard {
 						this.taskListPage.getSelectedTask().getAdditionalResources(), null);
 
 				// Delete Instance File
-			//	FileHelper.deleteFile(xmlInstancePath);
+				// FileHelper.deleteFile(xmlInstancePath);
 				this.codeGeneration.getDeveloperProject().refresh();
 			} catch (final IOException | CoreException e) {
 				Activator.getDefault().logError(e);

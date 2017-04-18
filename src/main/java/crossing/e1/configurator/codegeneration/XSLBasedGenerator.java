@@ -65,7 +65,6 @@ import crossing.e1.configurator.utilities.Tuple;
 import crossing.e1.configurator.utilities.Utils;
 import crossing.e1.configurator.wizard.ConfiguratorWizard;
 
-
 /**
  * This class is responsible for generating code templates by performing an XSL transformation. Currently, Saxon is used as an XSLT- processor.
  *

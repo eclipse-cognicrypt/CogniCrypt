@@ -82,8 +82,6 @@ public class ConfiguratorWizard extends Wizard {
 
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			targetFile=Utils.ProjectSelection();
-			// Check if java file open, if not display error dialog and stop.
-			// targetFile = Utils.checkIfJavaProjectSelected();
 		}
 
 		catch (ClassNotFoundException | InstantiationException | IllegalAccessException

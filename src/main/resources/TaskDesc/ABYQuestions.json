@@ -34,9 +34,9 @@
 		"questionText":"Do you know ip and port of the server?",
 		"answers":[
 			{"value":"Yes",
-			"codeDependencies":[], "defaultAnswer": true, "nextID" : "3"},
+			"codeDependencies":[], "nextID" : "3"},
 			{"value":"No",
-			"codeDependencies":[], "nextID" : "5"}
+			"codeDependencies":[], "defaultAnswer": true, "nextID" : "5"}
 		]
 	},
 	{

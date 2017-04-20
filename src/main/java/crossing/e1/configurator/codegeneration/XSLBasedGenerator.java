@@ -1,5 +1,5 @@
 /**
- * Copyright 2015-2016 Technische Universitaet Darmstadt
+ * Copyright 2015-2017 Technische Universitaet Darmstadt
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ public class XSLBasedGenerator {
 
 	/***
 	 * Generation of code templates using XSL template and Clafer instance.
-	 * 
+	 *
 	 * @param xmlInstanceFile
 	 *        xml model that details the algorithm configuration chosen by the user.
 	 * @param pathToFolderWithAdditionalResources
@@ -110,6 +110,9 @@ public class XSLBasedGenerator {
 			if (!pathToFolderWithAdditionalResources.isEmpty()) {
 				final File addResFolder = Utils.getResourceFromWithin(pathToFolderWithAdditionalResources);
 				final File[] members = addResFolder.listFiles();
+				if (members == null) {
+					Activator.getDefault().logError("No directory for additional resources found.");
+				}
 				final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesinDevProject);
 				if (!libFolder.exists()) {
 					libFolder.create(true, true, null);
@@ -211,7 +214,7 @@ public class XSLBasedGenerator {
 
 	/***
 	 * Getter method for developer project the code is generated into
-	 * 
+	 *
 	 * @return developer project
 	 */
 	public DeveloperProject getDeveloperProject() {
@@ -337,11 +340,7 @@ public class XSLBasedGenerator {
 		editor.doSave(null);
 	}
 
-	protected void setPosForClassDecl(final int start, final int end) {
-		//		classlims = new Tuple<Integer, Integer>(start, end);
-	}
-
-	protected void setPosForRunMethod(final int start, final int end) {
+	private void setPosForRunMethod(final int start, final int end) {
 		this.startingPositionForRunMethod = start;
 		this.endingPositionForRunMethod = end;
 	}

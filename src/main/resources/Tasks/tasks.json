@@ -14,19 +14,19 @@
 			"additionalResources" : ""
 		},
 		{
-			"name": "SecureCommunication",
-			"description": "Communicate over a secure channel",
-			"modelFile" : "src/main/resources/ClaferModel/TLSTask.js",
-			"xmlFile" : "src/main/resources/TaskDesc/TLSQuestions.json",
-			"additionalResources" : ""
-		},
-		{
 			"name": "SecurePassword",
 			"description": "Represent password in a secure way for storage",
 			"modelFile" : "src/main/resources/ClaferModel/SecurePasswordStorage.js",
 			"xmlFile" : "src/main/resources/TaskDesc/SecurePasswordStorage.json",
 			"additionalResources" : ""
 			
+		},
+		{
+			"name": "SecureCommunication",
+			"description": "Communicate over a secure channel",
+			"modelFile" : "src/main/resources/ClaferModel/TLSTask.js",
+			"xmlFile" : "src/main/resources/TaskDesc/TLSQuestions.json",
+			"additionalResources" : ""
 		},
 		{
 			"name": "LongTermArchiving",

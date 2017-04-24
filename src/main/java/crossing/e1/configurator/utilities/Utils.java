@@ -53,36 +53,36 @@ import crossing.e1.configurator.Activator;
 @SuppressWarnings("restriction")
 public class Utils {
 
-	/***
-	 * This method returns absolute path of a project-relative path.
-	 * 
-	 * @param inputPath
-	 *            project-relative path
-	 * @return absolute path
+	/**
+	 * This method returns if a Java project is selected for code generation.
+	 *
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if library java project selected.
 	 */
-	public static File getResourceFromWithin(final String inputPath) {
-		try {
-			final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
-
-			if (bundle == null) {
-				System.out.println("Bundle is null");
-				// running as application
-				// final String fileName =
-				// inputPath.substring(inputPath.lastIndexOf("/") + 1);
-				return new File(inputPath);// Utilities.class.getClassLoader().getResource(fileName).getPath();
-			} else {
-				System.out.println(bundle.getSymbolicName());
-				URL fileURL = bundle.getEntry(inputPath);
-				System.out.println("PATH: " + inputPath);
-				URL resolvedURL = FileLocator.toFileURL(fileURL);
-				URI uri = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
-				return new File(uri);
-			}
-		} catch (final Exception ex) {
-			Activator.getDefault().logError(ex);
+	public static boolean checkIfJavaProjectSelected() {
+		final IProject project = Utils.getIProjectFromSelection();
+		final IJavaProject javaProject = JavaCore.create(project);
+		if (javaProject == null || !javaProject.exists() || project == null) {
+			/*
+			 * MessageDialog.openWarning(new Shell(), "Warning",
+			 * "CogniCrypt requires a target Java project in order to perform successful code generation. Please select or create a Java project. " );
+			 */
+			return false;
 		}
+		return true;
+	}
 
-		return null;
+	/**
+	 * This method checks if a project passed as parameter is a Java project or not.
+	 * 
+	 * @param Iproject
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if project is Java project
+	 */
+	public static boolean checkIfJavaProjectSelected(final IProject project) {
+		final IJavaProject javaProject = JavaCore.create(project);
+		if (javaProject == null || !javaProject.exists()) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -99,8 +99,7 @@ public class Utils {
 	}
 
 	/**
-	 * Overload for {@link Utils#getCurrentlyOpenFile(IEditorPart)
-	 * getCurrentlyOpenFile(IEditor part)}
+	 * Overload for {@link Utils#getCurrentlyOpenFile(IEditorPart) getCurrentlyOpenFile(IEditor part)}
 	 *
 	 * @return Currently open file.
 	 *
@@ -110,11 +109,10 @@ public class Utils {
 	}
 
 	/**
-	 * This method gets the file that is currently opened in the editor as an
-	 * {@link IFile}.
+	 * This method gets the file that is currently opened in the editor as an {@link IFile}.
 	 *
 	 * @param part
-	 *            Editor part that contains the file.
+	 *        Editor part that contains the file.
 	 * @return Currently open file.
 	 */
 	public static IFile getCurrentlyOpenFile(final IEditorPart part) {
@@ -134,8 +132,7 @@ public class Utils {
 	 * @return Currently selected project.
 	 */
 	public static IProject getIProjectFromSelection() {
-		final ISelectionService selectionService = Workbench.getInstance().getActiveWorkbenchWindow()
-				.getSelectionService();
+		final ISelectionService selectionService = Workbench.getInstance().getActiveWorkbenchWindow().getSelectionService();
 		final ISelection selection = selectionService.getSelection();
 
 		IProject iproject = null;
@@ -151,45 +148,42 @@ public class Utils {
 		return iproject;
 	}
 
-	/**
-	 * This method returns if a Java project is selected for code generation.
-	 *
-	 * @return <CODE>true</CODE>/<CODE>false</CODE> if library java project
-	 *         selected.
-	 */
-	public static boolean checkIfJavaProjectSelected() {
-		IProject project = Utils.getIProjectFromSelection();
-		IJavaProject javaProject = JavaCore.create(project);
-		if (javaProject == null || !javaProject.exists() || project == null) {
-			/*
-			 * MessageDialog.openWarning(new Shell(), "Warning",
-			 * "CogniCrypt requires a target Java project in order to perform successful code generation. Please select or create a Java project. "
-			 * );
-			 */
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * This method checks if a project passed as parameter is a Java project or
-	 * not.
+	/***
+	 * This method returns absolute path of a project-relative path.
 	 * 
-	 * @param Iproject
-	 * @return <CODE>true</CODE>/<CODE>false</CODE> if project is Java project
+	 * @param inputPath
+	 *        project-relative path
+	 * @return absolute path
 	 */
-	public static boolean checkIfJavaProjectSelected(IProject project) {
-		IJavaProject javaProject = JavaCore.create(project);
-		if (javaProject == null || !javaProject.exists()) {
-			return false;
+	public static File getResourceFromWithin(final String inputPath) {
+		try {
+			final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+
+			if (bundle == null) {
+				System.out.println("Bundle is null");
+				// running as application
+				// final String fileName =
+				// inputPath.substring(inputPath.lastIndexOf("/") + 1);
+				return new File(inputPath);// Utilities.class.getClassLoader().getResource(fileName).getPath();
+			} else {
+				System.out.println(bundle.getSymbolicName());
+				final URL fileURL = bundle.getEntry(inputPath);
+				System.out.println("PATH: " + inputPath);
+				final URL resolvedURL = FileLocator.toFileURL(fileURL);
+				final URI uri = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
+				return new File(uri);
+			}
+		} catch (final Exception ex) {
+			Activator.getDefault().logError(ex);
 		}
-		return true;
+
+		return null;
 	}
 
 	public static IProject ProjectSelection() {
 		IProject defaultProject = null;
-		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		List<IProject> javaProjects = new ArrayList<IProject>();
+		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+		final List<IProject> javaProjects = new ArrayList<>();
 		if (projects.length > 0) {
 			for (int i = 0; i < projects.length; i++) {
 				if (Boolean.TRUE.equals(Utils.checkIfJavaProjectSelected(projects[i]))) {
@@ -198,19 +192,17 @@ public class Utils {
 			}
 
 		}
-		if (Utils.getCurrentlyOpenFile() != null
-				&& Utils.getCurrentlyOpenFile().getFileExtension().equalsIgnoreCase("java"))
+		if (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension().equalsIgnoreCase("java")) {
 			defaultProject = Utils.getCurrentlyOpenFile().getProject();
-
-		else if (Boolean.TRUE.equals(Utils.checkIfJavaProjectSelected()))
+		} else if (Boolean.TRUE.equals(Utils.checkIfJavaProjectSelected())) {
 			defaultProject = Utils.getIProjectFromSelection();
-
-		else
+		} else {
 			defaultProject = null;
-		IProject[] javaProject = javaProjects.toArray(new IProject[javaProjects.size()]);
-		IProject targetFile = (IProject) JOptionPane.showInputDialog(null,
-				"CogniCrypt requires a java project which acts as target for code generation. Please choose a Java project.",
-				"CogniCrypt", JOptionPane.QUESTION_MESSAGE, null, javaProject, defaultProject);
+		}
+		final IProject[] javaProject = javaProjects.toArray(new IProject[javaProjects.size()]);
+		final IProject targetFile = (IProject) JOptionPane.showInputDialog(null,
+			"CogniCrypt requires a java project which acts as target for code generation. Please choose a Java project.", "CogniCrypt", JOptionPane.QUESTION_MESSAGE, null,
+			javaProject, defaultProject);
 		return targetFile;
 	}
 

@@ -98,20 +98,19 @@ public class XMLParser implements Labels {
 				final Element algoElem = taskElem.addElement("element").addAttribute(Constants.Type, taskElem.attributes().get(0).getValue());
 
 				for (final InstanceClafer in : inst.getChildren()) {
-					if (!in.getType().getName().contains("description") ) {
-						Object ref = in.getRef();
+					if (!in.getType().getName().contains("description")) {
+						final Object ref = in.getRef();
 						String text = "";
 						if (ref instanceof InstanceClafer) {
 							text = ClaferModelUtils.removeScopePrefix(((InstanceClafer) in.getRef()).getType().getName());
 						} else if (ref instanceof Integer) {
-							text = ((Integer)ref).toString();
+							text = ((Integer) ref).toString();
 						} else if (ref instanceof String) {
 							text = (String) ref;
 						} else {
 							text = "This should not happen.";
 						}
-						algoElem.addElement(ClaferModelUtils.removeScopePrefix(in.getType().getName()))
-							.setText(text);
+						algoElem.addElement(ClaferModelUtils.removeScopePrefix(in.getType().getName())).setText(text);
 					}
 
 				}
@@ -146,22 +145,21 @@ public class XMLParser implements Labels {
 				}
 			} else if (inst.hasRef() && inst.getType().isPrimitive() != true && inst.getRef().getClass().toString().contains(Constants.INTEGER) == false && inst.getRef().getClass()
 				.toString().contains(Constants.STRING) == false && inst.getRef().getClass().toString().contains(Constants.BOOLEAN) == false) {
-				enumParent=ClaferModelUtils.removeScopePrefix(inst.getType().getName());
-				enumParent=Character.toLowerCase(enumParent.charAt(0)) + enumParent.substring(1);
+				this.enumParent = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
+				this.enumParent = Character.toLowerCase(this.enumParent.charAt(0)) + this.enumParent.substring(1);
 				displayInstanceXML((InstanceClafer) inst.getRef(), parent);
 			} else if (PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())) {
 				String superClaferName = ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName());
 				superClaferName = Character.toLowerCase(superClaferName.charAt(0)) + superClaferName.substring(1);
 				// Removed if-else block after re-factoring, while the following statement in both blocks was identical
-				parent.addElement(enumParent).addText(ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", ""));
+				parent.addElement(this.enumParent).addText(ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", ""));
 
 			} else {
 				String instName = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
 				instName = Character.toLowerCase(instName.charAt(0)) + instName.substring(1);
 				if (inst.hasRef()) {
 					parent.addElement(instName).addText(inst.getRef().toString().replace("\"", ""));
-					}
-			else {
+				} else {
 					String instparentName = ClaferModelUtils.removeScopePrefix(((AstConcreteClafer) inst.getType()).getParent().getName());
 					instparentName = Character.toLowerCase(instparentName.charAt(0)) + instparentName.substring(1);
 					parent.addElement(instparentName).addText(instName);

@@ -222,11 +222,11 @@ public class XSLBasedGenerator {
 	 *
 	 * @return <Code>true</Code>/<Code>false</Code> if initialization successful/failed.
 	 */
-	public boolean initCodeGeneration(IProject targetProject) {
+	public boolean initCodeGeneration(final IProject targetProject) {
 
 		this.project = new DeveloperProject(targetProject);
 		// Commented in April 2017. If at least June 2017 and this has not
-		// caused issues, remove altogehter.
+		// caused issues, remove this method altogether and replace it with a regular constructor.
 		// this.currentFile = Utils.getCurrentlyOpenFile();
 		// this.fileOpened = this.currentFile != null;
 		// if (this.currentFile != null &&
@@ -275,9 +275,9 @@ public class XSLBasedGenerator {
 
 		int cursorPos = cursorPosition.getOffset();
 		final String docContent = currentlyOpenDocument.get();
-		final TreeSet<Tuple<Integer, Integer>> methLims = new TreeSet<Tuple<Integer, Integer>>();
+		final TreeSet<Tuple<Integer, Integer>> methLims = new TreeSet<>();
 		Tuple<Integer, Integer> classlims;
-		classlims = new Tuple<Integer, Integer>(0, 0);
+		classlims = new Tuple<>(0, 0);
 
 		final ASTParser astp = ASTParser.newParser(AST.JLS8);
 		astp.setSource(docContent.toCharArray());
@@ -287,7 +287,7 @@ public class XSLBasedGenerator {
 
 			@Override
 			public boolean visit(final MethodDeclaration node) {
-				methLims.add(new Tuple<Integer, Integer>(node.getStartPosition(), node.getStartPosition() + node.getLength()));
+				methLims.add(new Tuple<>(node.getStartPosition(), node.getStartPosition() + node.getLength()));
 				return super.visit(node);
 			}
 

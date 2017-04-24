@@ -64,7 +64,7 @@ public class DeveloperProject {
 		if (this.project.isOpen() && this.project.hasNature(Constants.JavaNatureID)) {
 			final IJavaProject projectAsJavaProject = JavaCore.create(this.project);
 			final IFile file = this.project.getFile(pathToJar);
-			final LinkedHashSet<IClasspathEntry> classPathEntryList = new LinkedHashSet<IClasspathEntry>();
+			final LinkedHashSet<IClasspathEntry> classPathEntryList = new LinkedHashSet<>();
 			final IClasspathEntry newEntryOfLibrary = JavaCore.newLibraryEntry(file.getFullPath(), null, null, false);
 
 			classPathEntryList.addAll(Arrays.asList(projectAsJavaProject.getRawClasspath()));

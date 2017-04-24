@@ -45,7 +45,7 @@ import crossing.e1.configurator.utilities.Labels;
 public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private final Question quest;
-	private Entry<Question, Answer> selection = new AbstractMap.SimpleEntry<Question, Answer>(null, null);
+	private Entry<Question, Answer> selection = new AbstractMap.SimpleEntry<>(null, null);
 	private boolean finish = false;
 	private final List<String> selectionValues;
 
@@ -262,18 +262,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (finish ? 1231 : 1237);
-		result = prime * result + ((quest == null) ? 0 : quest.hashCode());
-		result = prime * result + ((selection == null) ? 0 : selection.hashCode());
-		result = prime * result + ((selectionValues == null) ? 0 : selectionValues.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -283,29 +272,29 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		if (!(obj instanceof BeginnerTaskQuestionPage)) {
 			return false;
 		}
-		BeginnerTaskQuestionPage other = (BeginnerTaskQuestionPage) obj;
-		if (finish != other.finish) {
+		final BeginnerTaskQuestionPage other = (BeginnerTaskQuestionPage) obj;
+		if (this.finish != other.finish) {
 			return false;
 		}
-		if (quest == null) {
+		if (this.quest == null) {
 			if (other.quest != null) {
 				return false;
 			}
-		} else if (!quest.equals(other.quest)) {
+		} else if (!this.quest.equals(other.quest)) {
 			return false;
 		}
-		if (selection == null) {
+		if (this.selection == null) {
 			if (other.selection != null) {
 				return false;
 			}
-		} else if (!selection.equals(other.selection)) {
+		} else if (!this.selection.equals(other.selection)) {
 			return false;
 		}
-		if (selectionValues == null) {
+		if (this.selectionValues == null) {
 			if (other.selectionValues != null) {
 				return false;
 			}
-		} else if (!selectionValues.equals(other.selectionValues)) {
+		} else if (!this.selectionValues.equals(other.selectionValues)) {
 			return false;
 		}
 		return true;
@@ -338,6 +327,17 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	public synchronized Entry<Question, Answer> getSelection() {
 		return this.selection;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (this.finish ? 1231 : 1237);
+		result = prime * result + ((this.quest == null) ? 0 : this.quest.hashCode());
+		result = prime * result + ((this.selection == null) ? 0 : this.selection.hashCode());
+		result = prime * result + ((this.selectionValues == null) ? 0 : this.selectionValues.hashCode());
+		return result;
 	}
 
 }

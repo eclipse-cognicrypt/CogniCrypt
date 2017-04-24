@@ -45,12 +45,6 @@ public class Tuple<X, Y> implements Comparable<Tuple<X, Y>> {
 		}
 	}
 
-	public int hashCode() {
-		  assert false : "hashCode not designed";
-		  return 42; // any arbitrary constant will do
-	}
-
-
 	@Override
 	public boolean equals(final Object o) {
 		if (!(o instanceof Tuple)) {
@@ -60,5 +54,11 @@ public class Tuple<X, Y> implements Comparable<Tuple<X, Y>> {
 			final Tuple<X, Y> t = (Tuple<X, Y>) o;
 			return t.y.equals(this.y) && t.x.equals(this.x);
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		assert false : "hashCode not designed";
+		return 42; // any arbitrary constant will do
 	}
 }

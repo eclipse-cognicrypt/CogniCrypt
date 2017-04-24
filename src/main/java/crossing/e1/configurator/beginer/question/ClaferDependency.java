@@ -23,18 +23,7 @@ public class ClaferDependency {
 	private String operator;
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((algorithm == null) ? 0 : algorithm.hashCode());
-		result = prime * result + ((operand == null) ? 0 : operand.hashCode());
-		result = prime * result + ((operator == null) ? 0 : operator.hashCode());
-		result = prime * result + ((value == null) ? 0 : value.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -44,33 +33,33 @@ public class ClaferDependency {
 		if (!(obj instanceof ClaferDependency)) {
 			return false;
 		}
-		ClaferDependency other = (ClaferDependency) obj;
-		if (algorithm == null) {
+		final ClaferDependency other = (ClaferDependency) obj;
+		if (this.algorithm == null) {
 			if (other.algorithm != null) {
 				return false;
 			}
-		} else if (!algorithm.equals(other.algorithm)) {
+		} else if (!this.algorithm.equals(other.algorithm)) {
 			return false;
 		}
-		if (operand == null) {
+		if (this.operand == null) {
 			if (other.operand != null) {
 				return false;
 			}
-		} else if (!operand.equals(other.operand)) {
+		} else if (!this.operand.equals(other.operand)) {
 			return false;
 		}
-		if (operator == null) {
+		if (this.operator == null) {
 			if (other.operator != null) {
 				return false;
 			}
-		} else if (!operator.equals(other.operator)) {
+		} else if (!this.operator.equals(other.operator)) {
 			return false;
 		}
-		if (value == null) {
+		if (this.value == null) {
 			if (other.value != null) {
 				return false;
 			}
-		} else if (!value.equals(other.value)) {
+		} else if (!this.value.equals(other.value)) {
 			return false;
 		}
 		return true;
@@ -90,6 +79,17 @@ public class ClaferDependency {
 
 	public String getValue() {
 		return this.value;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((this.algorithm == null) ? 0 : this.algorithm.hashCode());
+		result = prime * result + ((this.operand == null) ? 0 : this.operand.hashCode());
+		result = prime * result + ((this.operator == null) ? 0 : this.operator.hashCode());
+		result = prime * result + ((this.value == null) ? 0 : this.value.hashCode());
+		return result;
 	}
 
 	public void setAlgorithm(final String algorithm) {

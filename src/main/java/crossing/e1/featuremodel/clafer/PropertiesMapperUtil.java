@@ -37,7 +37,7 @@ public class PropertiesMapperUtil {
 	 */
 	public static HashMap<AstAbstractClafer, List<AstClafer>> getenumMap() {
 		if (enumMap == null) {
-			enumMap = new HashMap<AstAbstractClafer, List<AstClafer>>();
+			enumMap = new HashMap<>();
 		}
 		return enumMap;
 	}

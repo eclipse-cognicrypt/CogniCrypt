@@ -42,7 +42,7 @@ import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 public class AdvancedUserValueSelectionPage extends WizardPage implements Labels {
 
 	private Composite container;
-	private final List<PropertyWidget> userConstraints = new ArrayList<PropertyWidget>();
+	private final List<PropertyWidget> userConstraints = new ArrayList<>();
 	private final AstConcreteClafer taskClafer;
 
 	public AdvancedUserValueSelectionPage(final ClaferModel claferModel, final AstConcreteClafer taskClafer) {

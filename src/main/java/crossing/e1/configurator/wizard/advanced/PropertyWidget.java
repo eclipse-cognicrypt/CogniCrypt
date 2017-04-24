@@ -60,7 +60,7 @@ public class PropertyWidget {
 		setGroupConstraint(true);
 		setAbstarctParentClafer(claferMain);
 		setChildClafer((AstConcreteClafer) claferProperties.get(0));
-		final List<String> values = new ArrayList<String>();
+		final List<String> values = new ArrayList<>();
 		values.add("<");
 		values.add(">");
 		values.add("=");
@@ -76,7 +76,7 @@ public class PropertyWidget {
 		this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
 		this.operatorComboViewer.setInput(values);
 
-		final ArrayList<String> propertyNames = new ArrayList<String>();
+		final ArrayList<String> propertyNames = new ArrayList<>();
 		for (final AstClafer propertyClafer : claferProperties) {
 			propertyNames.add(ClaferModelUtils.removeScopePrefix(propertyClafer.getName()));
 		}
@@ -119,7 +119,7 @@ public class PropertyWidget {
 	public PropertyWidget(final Composite container, final AstClafer parentClafer, final AstConcreteClafer childClafer, final String propertyName, final int selection, final int min, final int max, final int digits, final int increment, final int pageincrement) {
 		setChildClafer(childClafer);
 		setParentClafer(parentClafer);
-		final List<String> values = new ArrayList<String>();
+		final List<String> values = new ArrayList<>();
 		values.add("<");
 		values.add(">");
 		values.add("=");

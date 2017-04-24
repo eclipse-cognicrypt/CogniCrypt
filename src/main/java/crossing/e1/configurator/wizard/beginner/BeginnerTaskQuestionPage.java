@@ -262,12 +262,53 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	}
 
 	@Override
-	public boolean equals(final Object obj) {
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (finish ? 1231 : 1237);
+		result = prime * result + ((quest == null) ? 0 : quest.hashCode());
+		result = prime * result + ((selection == null) ? 0 : selection.hashCode());
+		result = prime * result + ((selectionValues == null) ? 0 : selectionValues.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
 		if (!(obj instanceof BeginnerTaskQuestionPage)) {
 			return false;
 		}
-		final BeginnerTaskQuestionPage cmp = (BeginnerTaskQuestionPage) obj;
-		return this.quest.equals(cmp.quest);
+		BeginnerTaskQuestionPage other = (BeginnerTaskQuestionPage) obj;
+		if (finish != other.finish) {
+			return false;
+		}
+		if (quest == null) {
+			if (other.quest != null) {
+				return false;
+			}
+		} else if (!quest.equals(other.quest)) {
+			return false;
+		}
+		if (selection == null) {
+			if (other.selection != null) {
+				return false;
+			}
+		} else if (!selection.equals(other.selection)) {
+			return false;
+		}
+		if (selectionValues == null) {
+			if (other.selectionValues != null) {
+				return false;
+			}
+		} else if (!selectionValues.equals(other.selectionValues)) {
+			return false;
+		}
+		return true;
 	}
 
 	public Entry<Question, Answer> getMap() {

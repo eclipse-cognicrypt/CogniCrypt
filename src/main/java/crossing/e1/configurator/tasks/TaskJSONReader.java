@@ -29,16 +29,14 @@ import crossing.e1.configurator.utilities.Utils;
 
 public class TaskJSONReader {
 
-	private static List<Task> tasks;
+	private volatile static List<Task> tasks;
 
 	public static List<Task> getTasks() {
 
 		if (tasks == null) {
-			BufferedReader reader;
 			try {
-				reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(Constants.jsonTaskFile)));
+				BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(Constants.jsonTaskFile)));
 				final Gson gson = new Gson();
-
 				tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {}.getType());
 
 			} catch (final FileNotFoundException e) {
@@ -47,7 +45,6 @@ public class TaskJSONReader {
 		}
 
 		return tasks;
-
 	}
 
 }

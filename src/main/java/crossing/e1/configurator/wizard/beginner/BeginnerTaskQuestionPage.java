@@ -145,7 +145,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 				for (final String value : this.selectionValues) {
 					itemList.add(value);
-					selectedItemList.add(new String("                                                                           "));
+					selectedItemList.add("                                                                           ");
 				}
 
 				itemList.addSelectionListener(new SelectionListener() {
@@ -194,12 +194,12 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						if (e.getSource() instanceof Button && (((Button) e.getSource()).getStyle() & SWT.NONE) == SWT.NONE) {
 							final String[] sel = itemList.getSelection();
 							Answer ans = BeginnerTaskQuestionPage.this.selection.getValue();
-							String checkedElement = "";
+							StringBuilder checkedElement = new StringBuilder();
 							if (ans == null) {
 								ans = new Answer();
 								ans.setNextID(-1);
 							} else {
-								checkedElement = ans.getValue();
+								checkedElement.append(ans.getValue());
 							}
 
 							if (selectedItemList.getItemCount() > 0 && selectedItemList.getItem(0).trim().isEmpty()) {
@@ -210,9 +210,10 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							for (final String item : sel) {
 								selectedItemList.add(item);
 								itemList.remove(item);
-								checkedElement += item + ";";
+								checkedElement.append(item);
+								checkedElement.append(";");
 							}
-							ans.setValue(checkedElement);
+							ans.setValue(checkedElement.toString());
 							BeginnerTaskQuestionPage.this.finish = ans.getValue().contains(";");
 							BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish);
 							BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, ans);

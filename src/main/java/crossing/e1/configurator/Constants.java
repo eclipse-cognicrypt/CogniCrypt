@@ -26,7 +26,7 @@ package crossing.e1.configurator;
  */
 public class Constants {
 
-	public static enum guiElements {
+	public static enum GUIElements {
 		combo, text, itemselection
 	}
 

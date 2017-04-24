@@ -180,7 +180,7 @@ public class Utils {
 		return null;
 	}
 
-	public static IProject ProjectSelection() {
+	public static IProject getProjectSelection() {
 		IProject defaultProject = null;
 		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		final List<IProject> javaProjects = new ArrayList<>();

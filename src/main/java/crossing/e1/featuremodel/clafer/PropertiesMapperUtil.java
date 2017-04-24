@@ -28,7 +28,7 @@ import org.clafer.ast.AstClafer;
 
 public class PropertiesMapperUtil {
 
-	private static HashMap<AstAbstractClafer, List<AstClafer>> enumMap = null;
+	private volatile static HashMap<AstAbstractClafer, List<AstClafer>> enumMap = null;
 
 	/**
 	 * used when there is an enum in the properties

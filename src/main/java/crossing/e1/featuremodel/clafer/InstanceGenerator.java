@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.clafer.ast.AstAbstractClafer;
@@ -202,8 +203,8 @@ public class InstanceGenerator {
 	 */
 	// FIXME include group operator
 	private void basicModeHandler(final AstModel astModel, final AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {
-		for (final Question question : qAMap.keySet()) {
-			final Answer answer = qAMap.get(question);
+		for (final Entry<Question, Answer> entry : qAMap.entrySet()) {
+			Answer answer = entry.getValue();
 			if (answer.getClaferDependencies() != null) {
 				for (final ClaferDependency claferDependency : answer.getClaferDependencies()) {
 					final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + claferDependency.getAlgorithm());

@@ -34,7 +34,6 @@ import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 public class ClaferModelUtilsTest {
 
 	ClaferModel claferModel;
-	String abstarctClaferName = "Digest";
 
 	/**
 	 * @throws java.lang.Exception

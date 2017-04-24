@@ -18,12 +18,12 @@ package crossing.e1.configurator.beginer.question;
 import java.util.ArrayList;
 
 import crossing.e1.configurator.Constants;
-import crossing.e1.configurator.Constants.guiElements;
+import crossing.e1.configurator.Constants.GUIElements;
 
 public class Question {
 
 	private int id;
-	private guiElements element;
+	private GUIElements element;
 	private String selectionClafer;
 	private String questionText;
 	private ArrayList<Answer> answers;
@@ -46,9 +46,9 @@ public class Question {
 		return this.defaultAnswer;
 	}
 
-	public guiElements getElement() {
+	public GUIElements getElement() {
 		if (this.element == null || this.element.name().isEmpty()) {
-			setElement(Constants.guiElements.combo);
+			setElement(Constants.GUIElements.combo);
 		}
 		return this.element;
 	}
@@ -69,7 +69,7 @@ public class Question {
 		this.answers = answers;
 	}
 
-	public void setElement(final guiElements combo) {
+	public void setElement(final GUIElements combo) {
 		this.element = combo;
 	}
 

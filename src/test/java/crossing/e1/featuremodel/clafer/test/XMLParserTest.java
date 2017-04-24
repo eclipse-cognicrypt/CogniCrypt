@@ -63,7 +63,6 @@ public class XMLParserTest {
 	public void testWriteToFile() throws IOException, DocumentException {
 		final byte[] validBytes = new byte[2000];
 		final byte[] generatedBytes = new byte[2000];
-		;
 
 		final FileInputStream validFile = new FileInputStream(this.validFilePath);
 		validFile.read(validBytes);

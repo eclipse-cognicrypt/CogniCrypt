@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
-import crossing.e1.configurator.Constants.guiElements;
+import crossing.e1.configurator.Constants.GUIElements;
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.ClaferDependency;
 import crossing.e1.configurator.beginer.question.Question;
@@ -81,7 +81,7 @@ public class ConfiguratorWizard extends Wizard {
 		try {
 
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			this.targetProject = Utils.ProjectSelection();
+			this.targetProject = Utils.getProjectSelection();
 		}
 
 		catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
@@ -123,7 +123,7 @@ public class ConfiguratorWizard extends Wizard {
 	}
 
 	private void createBeginnerPage(final Question curQuestion) {
-		if (curQuestion.getElement().equals(guiElements.itemselection)) {
+		if (curQuestion.getElement().equals(GUIElements.itemselection)) {
 			final List<String> selection = new ArrayList<>();
 			for (final AstConcreteClafer childClafer : this.claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
 				if (childClafer.getSuperClafer().getName().endsWith(curQuestion.getSelectionClafer())) {
@@ -179,7 +179,7 @@ public class ConfiguratorWizard extends Wizard {
 				final BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
 				final Entry<Question, Answer> entry = beginnerTaskQuestionPage.getMap();
 
-				if (entry.getKey().getElement().equals(guiElements.itemselection)) {
+				if (entry.getKey().getElement().equals(GUIElements.itemselection)) {
 					handleItemSelection(entry);
 				}
 				this.constraints.put(entry.getKey(), entry.getValue());

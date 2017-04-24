@@ -70,17 +70,17 @@ public class ConfiguratorWizard extends Wizard {
 	private final XSLBasedGenerator codeGeneration = new XSLBasedGenerator();
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
-	public static IProject targetFile;
+	public IProject targetProject;
 
 	public ConfiguratorWizard() {
 		super();
-		targetFile = null;
+		targetProject = null;
 		// Set the Look and Feel of the application to the operating
 		// system's look and feel.
 		try {
 
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			targetFile=Utils.ProjectSelection();
+			targetProject=Utils.ProjectSelection();
 		}
 
 		catch (ClassNotFoundException | InstantiationException | IllegalAccessException
@@ -96,7 +96,7 @@ public class ConfiguratorWizard extends Wizard {
 	@Override
 	public void addPages() {
 
-		if (targetFile != null) {
+		if (targetProject != null) {
 			this.taskListPage = new TaskSelectionPage();
 			setForcePreviousAndNextButtons(true);
 			addPage(this.taskListPage);
@@ -319,7 +319,7 @@ public class ConfiguratorWizard extends Wizard {
 				parser.displayInstanceValues(this.instanceListPage.getValue(), this.constraints);
 
 				// Initialize Code Generation to retrieve developer project
-				ret &= this.codeGeneration.initCodeGeneration();
+				ret &= this.codeGeneration.initCodeGeneration(targetProject);
 
 				// Write Instance File into developer project
 				final String xmlInstancePath = this.codeGeneration.getDeveloperProject().getProjectPath()

@@ -63,7 +63,6 @@ import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.DeveloperProject;
 import crossing.e1.configurator.utilities.Tuple;
 import crossing.e1.configurator.utilities.Utils;
-import crossing.e1.configurator.wizard.ConfiguratorWizard;
 
 /**
  * This class is responsible for generating code templates by performing an XSL transformation. Currently, Saxon is used as an XSLT- processor.
@@ -71,11 +70,8 @@ import crossing.e1.configurator.wizard.ConfiguratorWizard;
  */
 public class XSLBasedGenerator {
 
-	private IFile currentFile;
-
 	private int endingPositionForRunMethod = -1;
 	private int endPosForImports = -1;
-	private boolean fileOpened = false;
 	private DeveloperProject project;
 	private int startingPositionForRunMethod = -1;
 	private int startPosForImports = -1;
@@ -87,8 +83,6 @@ public class XSLBasedGenerator {
 	 *        xml model that details the algorithm configuration chosen by the user.
 	 * @param pathToFolderWithAdditionalResources
 	 *        If additional files need to be generated into a developer's project, they are in this folder.
-	 * @param xslFile
-	 *        optional, can be used if not the default xsl stylesheet should be used.
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if transformation successful/failed.
 	 */
 	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources, final File xslFile) {
@@ -108,8 +102,7 @@ public class XSLBasedGenerator {
 
 			// Add additional resources like jar files
 			if (!pathToFolderWithAdditionalResources.isEmpty()) {
-				final File addResFolder = Utils.getResourceFromWithin(pathToFolderWithAdditionalResources);
-				final File[] members = addResFolder.listFiles();
+				final File[] members = Utils.getResourceFromWithin(pathToFolderWithAdditionalResources).listFiles();
 				if (members == null) {
 					Activator.getDefault().logError("No directory for additional resources found.");
 				}
@@ -133,10 +126,11 @@ public class XSLBasedGenerator {
 				}
 			}
 
-			// If there is a java file opened in the editor, insert glue code there, and remove temporary output file
+			// If there is a java file opened in the editor, insert glue code
+			// there, and remove temporary output file
 			// Otherwise keep the output file
 			// In any case, organize imports
-			if (this.fileOpened) {
+			if (Utils.getCurrentlyOpenFile() != null) {
 				insertCallCodeIntoOpenFile(temporaryOutputFile);
 			} else {
 				this.project.refresh();
@@ -223,26 +217,34 @@ public class XSLBasedGenerator {
 
 	/**
 	 * This method initializes the code template generator. If neither a java file is opened nor a project selected initialization fails.
+	 * 
+	 * @param targetProject
 	 *
 	 * @return <Code>true</Code>/<Code>false</Code> if initialization successful/failed.
 	 */
-	public boolean initCodeGeneration() {
-		this.currentFile = Utils.getCurrentlyOpenFile();
-		this.fileOpened = this.currentFile != null;
-		if (this.currentFile != null && Constants.JAVA.equals(this.currentFile.getFileExtension())) {
-			// Get currently opened file to
-			this.project = new DeveloperProject(this.currentFile.getProject());
-		} else {
-			// if no open file, get selected project
-			final IProject iproject = ConfiguratorWizard.targetFile;
-			if (iproject == null) {
-				// if no project selected abort with error message
-				Activator.getDefault().logError(null, Constants.NoFileandNoProjectOpened);
-				return false;
-			}
-			Activator.getDefault().logInfo(Constants.NoFileOpenedErrorMessage);
-			this.project = new DeveloperProject(iproject);
-		}
+	public boolean initCodeGeneration(IProject targetProject) {
+
+		this.project = new DeveloperProject(targetProject);
+		// Commented in April 2017. If at least June 2017 and this has not
+		// caused issues, remove altogehter.
+		// this.currentFile = Utils.getCurrentlyOpenFile();
+		// this.fileOpened = this.currentFile != null;
+		// if (this.currentFile != null &&
+		// Constants.JAVA.equals(this.currentFile.getFileExtension())) {
+		// // Get currently opened file to
+		// this.project = new DeveloperProject(this.currentFile.getProject());
+		// } else {
+		// // if no open file, get selected project
+		// final IProject iproject = targetProject;
+		// if (iproject == null) {
+		// // if no project selected abort with error message
+		// Activator.getDefault().logError(null,
+		// Constants.NoFileandNoProjectOpened);
+		// return false;
+		// }
+		// Activator.getDefault().logInfo(Constants.NoFileOpenedErrorMessage);
+		// this.project = new DeveloperProject(iproject);
+		// }
 		return true;
 	}
 
@@ -298,9 +300,11 @@ public class XSLBasedGenerator {
 		};
 		cu.accept(astVisitor);
 
-		//Check and correct cursor position
-		//1. case: cursor is outside the class -> set cursor position to end of the class
-		//2. case: it is inside the class but also inside a method -> set cursor position two right after the method
+		// Check and correct cursor position
+		// 1. case: cursor is outside the class -> set cursor position to end of
+		// the class
+		// 2. case: it is inside the class but also inside a method -> set
+		// cursor position two right after the method
 		if (classlims.x < cursorPos || cursorPos < classlims.y) {
 			cursorPos = classlims.y - 2;
 		} else {

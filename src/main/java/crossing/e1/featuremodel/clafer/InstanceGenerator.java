@@ -1,5 +1,5 @@
 /**
- * Copyright 2015-2016 Technische Universitaet Darmstadt
+ * Copyright 2015-2017 Technische Universitaet Darmstadt
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ public class InstanceGenerator {
 	/**
 	 * this method is part of instance generation process , creates a mapping instance name and instance Object
 	 */
-	public void generateInstanceMapping() {
+	private void generateInstanceMapping() {
 		for (final InstanceClafer inst : this.generatedInstances) {
 
 			String key = getInstanceName(inst);
@@ -144,7 +144,7 @@ public class InstanceGenerator {
 			while (this.solver.find()) {
 				final InstanceClafer instance = this.solver.instance().getTopClafers()[this.solver.instance().getTopClafers().length - 1];
 				final long hashValueOfInstance = getHashValueOfInstance(instance);
-				
+
 				if (this.uniqueInstances.containsKey(hashValueOfInstance)) {
 					if (++redundantCounter > 1000) {
 						break;
@@ -289,13 +289,13 @@ public class InstanceGenerator {
 	}
 
 	/**
-	 * 
+	 *
 	 * method used by both basic and advanced user operations to add constraints to clafers before instance generation
-	 * 
+	 *
 	 * @param taskAlgorithm
 	 *		Higher-level Clafer
 	 * @param algorithmProperty
-	 * 			Clafer on which constraint is being applied EX outPutLength=128 outPutLength is operan        
+	 * 			Clafer on which constraint is being applied EX outPutLength=128 outPutLength is operan
 	 * @param operator
 	 *        Currently supported: Single - =, >,<,>=, <=; Multiple - ++, |
 	 * @param value
@@ -348,7 +348,7 @@ public class InstanceGenerator {
 		} else if (operator.equals("|")) {
 
 			final String[] claferNames = value.split(";");
-			//The constraint that is created looks like [all $consName : taskAlgorithm | $consName.algorithmProperty claferNames[0] && ...]  
+			//The constraint that is created looks like [all $consName : taskAlgorithm | $consName.algorithmProperty claferNames[0] && ...]
 			AstLocal tmpClafer = local("suite");
 			AstDecl decl = decl(tmpClafer, join($this(), taskAlgorithm));
 			AstBoolExpr boolExp = null;
@@ -449,7 +449,7 @@ public class InstanceGenerator {
 		for (InstanceClafer child : inst.getChildren()) {
 			hash *= new InstanceClaferHash(child).hashCode();
 		}
-		
+
 		return hash;
 	}
 }

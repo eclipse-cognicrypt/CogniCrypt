@@ -16,7 +16,7 @@
 			"element" : "text",
 			"questionText":"Please give the password for your keystore.",
 			"answers":[
-				{"value":"C:\      ",
+				{"value":"C:\\      ",
 				"codeDependencies":[
 				{"option":"keystorepassword","value":""}
 				],
@@ -42,9 +42,9 @@
 			"questionText":"Do you know the host/ip?",
 			"answers":[
 				{"value":"Yes",
-				"codeDependencies":[], "defaultAnswer": true, "nextID" : "4"},
+				"codeDependencies":[], "nextID" : "4"},
 				{"value":"No",
-				"codeDependencies":[], "nextID" : "6"}
+				"codeDependencies":[], "defaultAnswer": true, "nextID" : "6"}
 			]
 		},
 		{

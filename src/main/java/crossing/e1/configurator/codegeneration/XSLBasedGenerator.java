@@ -28,7 +28,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.TreeSet;
 
-import javax.swing.JOptionPane;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -386,7 +385,6 @@ public class XSLBasedGenerator {
 				.run(JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor)));
 		editor.doSave(null);
 	}
-
 
 	protected void setPosForClassDecl(final int start, final int end) {
 		// classlims = new Tuple<Integer, Integer>(start, end);

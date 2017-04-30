@@ -23,14 +23,12 @@ package crossing.e1.configurator.utilities;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JOptionPane;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
@@ -52,6 +50,7 @@ import crossing.e1.configurator.Activator;
 
 @SuppressWarnings("restriction")
 public class Utils {
+	public static List<IProject> javaProjects;
 
 	/***
 	 * This method returns absolute path of a project-relative path.
@@ -188,16 +187,7 @@ public class Utils {
 
 	public static IProject ProjectSelection() {
 		IProject defaultProject = null;
-		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		List<IProject> javaProjects = new ArrayList<IProject>();
-		if (projects.length > 0) {
-			for (int i = 0; i < projects.length; i++) {
-				if (Boolean.TRUE.equals(Utils.checkIfJavaProjectSelected(projects[i]))) {
-					javaProjects.add(projects[i]);
-				}
-			}
 
-		}
 		if (Utils.getCurrentlyOpenFile() != null
 				&& Utils.getCurrentlyOpenFile().getFileExtension().equalsIgnoreCase("java"))
 			defaultProject = Utils.getCurrentlyOpenFile().getProject();
@@ -207,11 +197,7 @@ public class Utils {
 
 		else
 			defaultProject = null;
-		IProject[] javaProject = javaProjects.toArray(new IProject[javaProjects.size()]);
-		IProject targetFile = (IProject) JOptionPane.showInputDialog(null,
-				"CogniCrypt requires a java project which acts as target for code generation. Please choose a Java project.",
-				"CogniCrypt", JOptionPane.QUESTION_MESSAGE, null, javaProject, defaultProject);
-		return targetFile;
+		return defaultProject;
 	}
 
 }

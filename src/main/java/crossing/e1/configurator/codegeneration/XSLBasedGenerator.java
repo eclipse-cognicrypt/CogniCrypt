@@ -28,6 +28,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.TreeSet;
 
+import javax.swing.JOptionPane;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -63,10 +64,11 @@ import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.DeveloperProject;
 import crossing.e1.configurator.utilities.Tuple;
 import crossing.e1.configurator.utilities.Utils;
-import crossing.e1.configurator.wizard.ConfiguratorWizard;
+import crossing.e1.configurator.wizard.TaskSelectionPage;
 
 /**
- * This class is responsible for generating code templates by performing an XSL transformation. Currently, Saxon is used as an XSLT- processor.
+ * This class is responsible for generating code templates by performing an XSL
+ * transformation. Currently, Saxon is used as an XSLT- processor.
  *
  */
 public class XSLBasedGenerator {
@@ -84,25 +86,35 @@ public class XSLBasedGenerator {
 	 * Generation of code templates using XSL template and Clafer instance.
 	 * 
 	 * @param xmlInstanceFile
-	 *        xml model that details the algorithm configuration chosen by the user.
+	 *            xml model that details the algorithm configuration chosen by
+	 *            the user.
 	 * @param pathToFolderWithAdditionalResources
-	 *        If additional files need to be generated into a developer's project, they are in this folder.
+	 *            If additional files need to be generated into a developer's
+	 *            project, they are in this folder.
 	 * @param xslFile
-	 *        optional, can be used if not the default xsl stylesheet should be used.
-	 * @return <CODE>true</CODE>/<CODE>false</CODE> if transformation successful/failed.
+	 *            optional, can be used if not the default xsl stylesheet should
+	 *            be used.
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if transformation
+	 *         successful/failed.
+	 * @throws BadLocationException
+	 *
 	 */
-	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources, final File xslFile) {
+	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources,
+			final File xslFile) throws BadLocationException {
 		try {
 			// Check whether directories and templates/model exist
 			final File claferOutputFiles = xmlInstanceFile != null && xmlInstanceFile.exists() ? xmlInstanceFile
-				: Utils.getResourceFromWithin(Constants.pathToClaferInstanceFolder + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
-			final File xslFiles = xslFile != null && xslFile.exists() ? xslFile : Utils.getResourceFromWithin(Constants.pathToXSLFile);
+					: Utils.getResourceFromWithin(Constants.pathToClaferInstanceFolder + Constants.innerFileSeparator
+							+ Constants.pathToClaferInstanceFile);
+			final File xslFiles = xslFile != null && xslFile.exists() ? xslFile
+					: Utils.getResourceFromWithin(Constants.pathToXSLFile);
 			if (!claferOutputFiles.exists() || !xslFiles.exists()) {
 				Activator.getDefault().logError(Constants.FilesDoNotExistErrorMessage);
 				return false;
 			}
 			// Perform actual transformation by calling XSLT processor.
-			final String srcPath = this.project.getProjectPath() + Constants.innerFileSeparator + this.project.getSourcePath();
+			final String srcPath = this.project.getProjectPath() + Constants.innerFileSeparator
+					+ this.project.getSourcePath();
 			final String temporaryOutputFile = srcPath + Constants.CodeGenerationCallFile;
 			transform(claferOutputFiles, xslFiles, temporaryOutputFile);
 
@@ -117,25 +129,31 @@ public class XSLBasedGenerator {
 				for (int i = 0; i < members.length; i++) {
 					final Path memberPath = members[i].toPath();
 					Files.copy(memberPath,
-						new File(this.project.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + memberPath
-							.getFileName()).toPath(),
-						StandardCopyOption.REPLACE_EXISTING);
+							new File(this.project.getProjectPath() + Constants.outerFileSeparator
+									+ Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator
+									+ memberPath.getFileName()).toPath(),
+							StandardCopyOption.REPLACE_EXISTING);
 					final String filePath = members[i].toString();
 					final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.outerFileSeparator));
 					if (".jar".equals(cutPath.substring(cutPath.indexOf(".")))) {
-						if (!this.project.addJar(Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + members[i].getName())) {
+						if (!this.project.addJar(Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator
+								+ members[i].getName())) {
 							return false;
 						}
 					}
 				}
 			}
 
-			// If there is a java file opened in the editor, insert glue code there, and remove temporary output file
+			// If there is a java file opened in the editor, insert glue code
+			// there, and remove temporary output file
 			// Otherwise keep the output file
 			// In any case, organize imports
-			if (this.fileOpened) {
+
+			if (this.currentFile != null && this.currentFile.getProject().equals(TaskSelectionPage.selectedProject)) {
 				insertCallCodeIntoOpenFile(temporaryOutputFile);
-			} else {
+			}
+
+			else {
 				this.project.refresh();
 				final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 				final IFile outputFile = this.project.getIFile(temporaryOutputFile);
@@ -143,7 +161,7 @@ public class XSLBasedGenerator {
 				organizeImports(editor);
 			}
 			this.project.refresh();
-		} catch (TransformerException | IOException | CoreException | BadLocationException e) {
+		} catch (TransformerException | IOException | CoreException e) {
 			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
 			return false;
 		}
@@ -151,13 +169,16 @@ public class XSLBasedGenerator {
 	}
 
 	/**
-	 * This method extracts the glue code with the calls to the generated classes from the temporary output file.
+	 * This method extracts the glue code with the calls to the generated
+	 * classes from the temporary output file.
 	 *
 	 * @param filePath
-	 *        Path to temporary output file.
-	 * @return Glue code from temporary output file which calls the generated files.
+	 *            Path to temporary output file.
+	 * @return Glue code from temporary output file which calls the generated
+	 *         files.
 	 * @throws IOException
-	 *         See {@link java.nio.file.Files#readAllLines(Path) readAllLines()}
+	 *             See {@link java.nio.file.Files#readAllLines(Path)
+	 *             readAllLines()}
 	 */
 	private String[] getCallsForGenClasses(final String filePath) throws IOException {
 		// Checks whether file exists
@@ -183,9 +204,11 @@ public class XSLBasedGenerator {
 
 			@Override
 			public boolean visit(final ImportDeclaration node) {
-				XSLBasedGenerator.this.startPosForImports = XSLBasedGenerator.this.startPosForImports < 0 ? node.getStartPosition() : XSLBasedGenerator.this.startPosForImports;
+				XSLBasedGenerator.this.startPosForImports = XSLBasedGenerator.this.startPosForImports < 0
+						? node.getStartPosition() : XSLBasedGenerator.this.startPosForImports;
 				final int endPos = node.getStartPosition() + node.getLength();
-				XSLBasedGenerator.this.endPosForImports = XSLBasedGenerator.this.endPosForImports < endPos ? endPos : XSLBasedGenerator.this.endPosForImports;
+				XSLBasedGenerator.this.endPosForImports = XSLBasedGenerator.this.endPosForImports < endPos ? endPos
+						: XSLBasedGenerator.this.endPosForImports;
 				return super.visit(node);
 			}
 
@@ -205,8 +228,8 @@ public class XSLBasedGenerator {
 		// Delete temporary output file as it is not needed anymore
 		f.delete();
 		// Get extract from content that we actually need
-		return new String[] { contentString.substring(this.startPosForImports, this.endPosForImports), contentString.substring(this.startingPositionForRunMethod,
-			this.endingPositionForRunMethod) };
+		return new String[] { contentString.substring(this.startPosForImports, this.endPosForImports),
+				contentString.substring(this.startingPositionForRunMethod, this.endingPositionForRunMethod) };
 	}
 
 	/***
@@ -219,19 +242,22 @@ public class XSLBasedGenerator {
 	}
 
 	/**
-	 * This method initializes the code template generator. If neither a java file is opened nor a project selected initialization fails.
+	 * This method initializes the code template generator. If neither a java
+	 * file is opened nor a project selected initialization fails.
 	 *
-	 * @return <Code>true</Code>/<Code>false</Code> if initialization successful/failed.
+	 * @return <Code>true</Code>/<Code>false</Code> if initialization
+	 *         successful/failed.
 	 */
 	public boolean initCodeGeneration() {
 		this.currentFile = Utils.getCurrentlyOpenFile();
 		this.fileOpened = this.currentFile != null;
-		if (this.currentFile != null && Constants.JAVA.equals(this.currentFile.getFileExtension())) {
+		if (this.currentFile != null && Constants.JAVA.equals(this.currentFile.getFileExtension())
+				&& this.currentFile.getProject().equals(TaskSelectionPage.selectedProject)) {
 			// Get currently opened file to
 			this.project = new DeveloperProject(this.currentFile.getProject());
 		} else {
 			// if no open file, get selected project
-			final IProject iproject = ConfiguratorWizard.targetFile;
+			final IProject iproject = TaskSelectionPage.selectedProject;
 			if (iproject == null) {
 				// if no project selected abort with error message
 				Activator.getDefault().logError(null, Constants.NoFileandNoProjectOpened);
@@ -240,33 +266,47 @@ public class XSLBasedGenerator {
 			Activator.getDefault().logInfo(Constants.NoFileOpenedErrorMessage);
 			this.project = new DeveloperProject(iproject);
 		}
+
 		return true;
 	}
 
 	/**
-	 * If a file was open when the code generation was started, this method inserts the glue code that calls the generated classes directly into the opened file and removes the
-	 * temporary output file. If no file was open this method is skipped and the temporary output file is not removed.
+	 * If a file was open when the code generation was started, this method
+	 * inserts the glue code that calls the generated classes directly into the
+	 * opened file and removes the temporary output file. If no file was open
+	 * this method is skipped and the temporary output file is not removed.
 	 *
 	 * @param temporaryOutputFile
-	 *        Path to temporary output file.
-	 * @return <CODE>true</CODE>/<CODE>false</CODE> if insertion successful/failed.
+	 *            Path to temporary output file.
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if insertion
+	 *         successful/failed.
 	 * @throws BadLocationException
-	 *         See {@link org.eclipse.jface.text.IDocument#replace(int, int, String) replace()}
+	 *             See
+	 *             {@link org.eclipse.jface.text.IDocument#replace(int, int, String)
+	 *             replace()}
 	 * @throws IOException
-	 *         See {@link crossing.e1.configurator.codegeneration.XSLBasedGenerator#getCallsForGenClasses(String) getCallsForGenClasses()}
+	 *             See
+	 *             {@link crossing.e1.configurator.codegeneration.XSLBasedGenerator#getCallsForGenClasses(String)
+	 *             getCallsForGenClasses()}
 	 * @throws CoreException
-	 *         See {@link DeveloperProject.crossing.opencce.cryptogen.CryptoProject#refresh() refresh()}
+	 *             See
+	 *             {@link DeveloperProject.crossing.opencce.cryptogen.CryptoProject#refresh()
+	 *             refresh()}
 	 */
-	private boolean insertCallCodeIntoOpenFile(final String temporaryOutputFile) throws BadLocationException, CoreException, IOException {
+	private boolean insertCallCodeIntoOpenFile(final String temporaryOutputFile)
+			throws BadLocationException, CoreException, IOException {
 		final IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
 		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {
 			Activator.getDefault().logError(null,
-				"Could not open access the editor of the file. Therefore, an outputfile " + "containing calls to the generated classes in the Crypto package was generated.");
+					"Could not open access the editor of the file. Therefore, an outputfile "
+							+ "containing calls to the generated classes in the Crypto package was generated.");
 			return false;
 		}
 		final ITextEditor currentlyOpenEditor = (ITextEditor) currentlyOpenPart;
-		final IDocument currentlyOpenDocument = currentlyOpenEditor.getDocumentProvider().getDocument(currentlyOpenEditor.getEditorInput());
-		final ITextSelection cursorPosition = (ITextSelection) currentlyOpenPart.getSite().getSelectionProvider().getSelection();
+		final IDocument currentlyOpenDocument = currentlyOpenEditor.getDocumentProvider()
+				.getDocument(currentlyOpenEditor.getEditorInput());
+		final ITextSelection cursorPosition = (ITextSelection) currentlyOpenPart.getSite().getSelectionProvider()
+				.getSelection();
 
 		int cursorPos = cursorPosition.getOffset();
 		final String docContent = currentlyOpenDocument.get();
@@ -282,7 +322,8 @@ public class XSLBasedGenerator {
 
 			@Override
 			public boolean visit(final MethodDeclaration node) {
-				methLims.add(new Tuple<Integer, Integer>(node.getStartPosition(), node.getStartPosition() + node.getLength()));
+				methLims.add(new Tuple<Integer, Integer>(node.getStartPosition(),
+						node.getStartPosition() + node.getLength()));
 				return super.visit(node);
 			}
 
@@ -295,9 +336,11 @@ public class XSLBasedGenerator {
 		};
 		cu.accept(astVisitor);
 
-		//Check and correct cursor position
-		//1. case: cursor is outside the class -> set cursor position to end of the class
-		//2. case: it is inside the class but also inside a method -> set cursor position two right after the method
+		// Check and correct cursor position
+		// 1. case: cursor is outside the class -> set cursor position to end of
+		// the class
+		// 2. case: it is inside the class but also inside a method -> set
+		// cursor position two right after the method
 		if (classlims.x < cursorPos || cursorPos < classlims.y) {
 			cursorPos = classlims.y - 2;
 		} else {
@@ -321,24 +364,28 @@ public class XSLBasedGenerator {
 	}
 
 	/**
-	 * This method organizes imports for all generated files and the file, in which the call code for the generated classes is inserted.
+	 * This method organizes imports for all generated files and the file, in
+	 * which the call code for the generated classes is inserted.
 	 *
 	 * @param editor
-	 *        of the currently open file.
+	 *            of the currently open file.
 	 * @throws CoreException
 	 */
 	private void organizeImports(final IEditorPart editor) throws CoreException {
-		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
-		final ICompilationUnit[] compilationUnitsInCryptoPackage = this.project.getPackagesOfProject(Constants.PackageName).getCompilationUnits();
+		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(
+				editor.getSite());
+		final ICompilationUnit[] compilationUnitsInCryptoPackage = this.project
+				.getPackagesOfProject(Constants.PackageName).getCompilationUnits();
 		for (int i = 0; i < compilationUnitsInCryptoPackage.length; i++) {
 			organizeImportsActionForAllFilesTouchedDuringGeneration.run(compilationUnitsInCryptoPackage[i]);
 		}
-		organizeImportsActionForAllFilesTouchedDuringGeneration.run(JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor)));
+		organizeImportsActionForAllFilesTouchedDuringGeneration
+				.run(JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor)));
 		editor.doSave(null);
 	}
 
 	protected void setPosForClassDecl(final int start, final int end) {
-		//		classlims = new Tuple<Integer, Integer>(start, end);
+		// classlims = new Tuple<Integer, Integer>(start, end);
 	}
 
 	protected void setPosForRunMethod(final int start, final int end) {
@@ -350,15 +397,18 @@ public class XSLBasedGenerator {
 	 * Performs the XSL-Transformation
 	 *
 	 * @param sourceFile
-	 *        xmlFile that contains the Clafer Instance
+	 *            xmlFile that contains the Clafer Instance
 	 * @param xsltFile
-	 *        XSL Template
+	 *            XSL Template
 	 * @param resultDir
-	 *        Path to temporary output file
+	 *            Path to temporary output file
 	 * @throws TransformerException
-	 *         see {@link javax.xml.transform.Transformer#transform(javax.xml.transform.Source, javax.xml.transform.Result) transform()}
+	 *             see
+	 *             {@link javax.xml.transform.Transformer#transform(javax.xml.transform.Source, javax.xml.transform.Result)
+	 *             transform()}
 	 */
-	private void transform(final File sourceFile, final File xsltFile, final String resultDir) throws TransformerException {
+	private void transform(final File sourceFile, final File xsltFile, final String resultDir)
+			throws TransformerException {
 		// TODO: currently, only one xml file is used
 		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
 		final TransformerFactory tFactory = TransformerFactory.newInstance();

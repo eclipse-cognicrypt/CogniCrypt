@@ -27,9 +27,9 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.clafer.ast.AstConcreteClafer;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -71,17 +71,14 @@ public class ConfiguratorWizard extends Wizard {
 	private final XSLBasedGenerator codeGeneration = new XSLBasedGenerator();
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
-	public static IProject targetFile;
 
 	public ConfiguratorWizard() {
 		super();
-		targetFile = null;
 		// Set the Look and Feel of the application to the operating
 		// system's look and feel.
 		try {
 
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			targetFile=Utils.ProjectSelection();
 		}
 
 		catch (ClassNotFoundException | InstantiationException | IllegalAccessException
@@ -90,21 +87,14 @@ public class ConfiguratorWizard extends Wizard {
 		}
 
 		setWindowTitle("Cryptography Task Configurator");
-
 	}
 
-	
 	@Override
 	public void addPages() {
-
-		if (targetFile != null) {
-			this.taskListPage = new TaskSelectionPage();
-			setForcePreviousAndNextButtons(true);
-			addPage(this.taskListPage);
-		} else {
-
-			this.getNextPage(null);
-		}
+		this.taskListPage = new TaskSelectionPage();
+		// if(this.taskListPage.canProceed())
+		setForcePreviousAndNextButtons(true);
+		addPage(this.taskListPage);
 	}
 
 	@Override
@@ -328,8 +318,13 @@ public class ConfiguratorWizard extends Wizard {
 				parser.writeClaferInstanceToFile(xmlInstancePath);
 
 				// Generate code template
-				ret &= this.codeGeneration.generateCodeTemplates(new File(xmlInstancePath),
-						this.taskListPage.getSelectedTask().getAdditionalResources(), null);
+				try {
+					ret &= this.codeGeneration.generateCodeTemplates(new File(xmlInstancePath),
+							this.taskListPage.getSelectedTask().getAdditionalResources(), null);
+				} catch (BadLocationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 				// Delete Instance File
 				// FileHelper.deleteFile(xmlInstancePath);

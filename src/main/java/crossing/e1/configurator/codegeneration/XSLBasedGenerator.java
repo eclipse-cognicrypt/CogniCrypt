@@ -387,15 +387,13 @@ public class XSLBasedGenerator {
 		editor.doSave(null);
 	}
 
-<<<<<<< HEAD
+
 	protected void setPosForClassDecl(final int start, final int end) {
 		// classlims = new Tuple<Integer, Integer>(start, end);
 	}
 
-	protected void setPosForRunMethod(final int start, final int end) {
-=======
 	private void setPosForRunMethod(final int start, final int end) {
->>>>>>> a93e90521195f35ff2a64b92a8375f09ce5d9f4a
+
 		this.startingPositionForRunMethod = start;
 		this.endingPositionForRunMethod = end;
 	}

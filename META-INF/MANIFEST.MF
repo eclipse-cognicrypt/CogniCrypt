@@ -10,8 +10,7 @@ Require-Bundle: org.eclipse.ui,
  org.junit,
  de.darmstadt.tu.crossing.CryptSL;bundle-version="1.0.0",
  de.darmstadt.tu.crossing.CryptSL.ui;bundle-version="1.0.0",
- org.eclipse.xtext.ui;bundle-version="2.10.0",
- de.fraunhofer.iem.ideal;bundle-version="1.0.0"
+ org.eclipse.xtext.ui;bundle-version="2.10.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/claferchocoig.jar,
@@ -20,7 +19,8 @@ Bundle-ClassPath: lib/claferchocoig.jar,
  src/main/java/,
  lib/saxon9pe.jar,
  lib/gson-2.3.1.jar,
- lib/dom4j-2.0.0.jar
+ lib/dom4j-2.0.0.jar,
+ lib/ideal-crossing-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 Import-Package: org.eclipse.emf.common.util,
  org.eclipse.emf.ecore.resource,
  org.eclipse.emf.ecore.resource.impl,

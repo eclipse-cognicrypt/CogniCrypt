@@ -94,7 +94,7 @@ public class CryptSLModelReader {
 		iterateThroughSubtrees(smg, dm.getOrder(), null, null);
 		iterateThroughSubtreesOptional(smg, dm.getOrder(), null, null);
 		
-		String filePath = "C:\\Users\\stefank3\\git\\code-dsl-ideal\\crypto\\resources\\"+ className +".smg";
+		String filePath = "C:\\Users\\stefank3\\git\\code-dsl-ideal\\src\\test\\resources\\"+ className +".smg";
 		FileOutputStream fileOut;
 		try {
 			fileOut = new FileOutputStream(filePath);
@@ -118,8 +118,6 @@ public class CryptSLModelReader {
 	private void iterateThroughSubtreesOptional(StateMachineGraph smg, Expression order, StateNode prevNode, StateNode nextNode) {
 		Expression left = order.getLeft();
 		Expression right = order.getRight();
-		String elementOp = order.getElementop();
-		Boolean elOpNotNull = elementOp != null;
 		String leftElOp = left.getElementop();
 		String rightElOp = right.getElementop();
 		
@@ -152,9 +150,7 @@ public class CryptSLModelReader {
 	private void addSkipEdge(StateMachineGraph smg, Expression leaf) {
 		List<TransitionEdge> tedges = new ArrayList<TransitionEdge>(smg.getEdges());
 		for (TransitionEdge trans : tedges) {
-			StringBuilder labelBuilder = new StringBuilder();
-			resolveAggegateToMethodeNames(leaf, labelBuilder);
-			if (trans.getLabel().equals(labelBuilder.toString())) {
+			if (trans.getLabel().equals(resolveAggegateToMethodeNames(leaf))) {
 				for (TransitionEdge innerTrans : tedges) {
 					if (innerTrans.from().equals(trans.to())) {
 						smg.addEdge(new TransitionEdge(innerTrans.getLabel(), trans.from(), innerTrans.to()));
@@ -252,10 +248,7 @@ public class CryptSLModelReader {
 			smg.addNode(nextNode);
 		}
 		
-		StringBuilder labelBuilder = new StringBuilder();
-		resolveAggegateToMethodeNames(leaf, labelBuilder);
-		
-		String label = labelBuilder.toString();
+		String label = resolveAggegateToMethodeNames(leaf);
 		smg.addEdge(new TransitionEdge(label, prevNode, nextNode));
 		prevNode.setAccepting(false);
 		if (leaf.getElementop() != null) {
@@ -270,29 +263,34 @@ public class CryptSLModelReader {
 		}
 	}
 
-	private void resolveAggegateToMethodeNames(Expression leaf, StringBuilder labelBuilder) {
+	private String resolveAggegateToMethodeNames(Expression leaf) {
 		if (leaf.getOrderEv().get(0) instanceof Aggegate) {
 			Aggegate ev = (Aggegate) leaf.getOrderEv().get(0);
-			dealWithAggegate(labelBuilder, ev);
+			return dealWithAggegate(ev);
 		} else {
-			stringifyMethodSignature(labelBuilder, leaf.getOrderEv().get(0));
+			return stringifyMethodSignature(leaf.getOrderEv().get(0));
 		}
 	}
 
-	private void dealWithAggegate(StringBuilder labelBuilder, Aggegate ev) {
+	private String dealWithAggegate(Aggegate ev) {
 		for (Event lab : ev.getLab()) {
 			if (lab instanceof Aggegate) {
-				dealWithAggegate(labelBuilder, (Aggegate)lab);
+				return dealWithAggegate((Aggegate)lab);
 			} else {
-				stringifyMethodSignature(labelBuilder, lab);
+				return stringifyMethodSignature(lab);
 			}
 		}
-		
+		return "";
 	}
 
-	private void stringifyMethodSignature(StringBuilder labelBuilder, Event lab) {
+	private String stringifyMethodSignature(Event lab) {
+		
 		Method method = ((LabelMethodCall) lab).getMeth();
-		labelBuilder.append(method.getMethName().getQualifiedName());
+		String qualifiedName = method.getMethName().getQualifiedName();
+		if (qualifiedName == null) {
+			qualifiedName = ((de.darmstadt.tu.crossing.cryptSL.impl.DomainmodelImpl)(method.eContainer().eContainer())).getJavaType().getQualifiedName();
+		}
+		StringBuilder labelBuilder = new StringBuilder(qualifiedName);
 		labelBuilder.append("(");
 		ParList parList = method.getParList();
 		if (parList != null) {
@@ -305,6 +303,7 @@ public class CryptSLModelReader {
 		labelBuilder.replace(length - 1, length, "");
 		}
 		labelBuilder.append(");");
+		return labelBuilder.toString();
 	}
 
 	private StateNode getNewNode() {

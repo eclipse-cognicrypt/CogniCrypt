@@ -21,7 +21,6 @@
 package crossing.e1.featuremodel.clafer.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 import org.junit.After;
 import org.junit.Before;
@@ -92,7 +91,6 @@ public class ClaferModelUtilsTest {
 		final String beforeTrimValue = "c0_testString";
 		final String comparableValue = "TestString";
 		assertEquals("Failed to trim string value", ClaferModelUtils.removeScopePrefix(beforeTrimValue), comparableValue);
-		assertNotEquals("Failed to trim string value", beforeTrimValue, comparableValue);
 
 	}
 

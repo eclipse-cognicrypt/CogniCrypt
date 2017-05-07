@@ -122,7 +122,9 @@ public class ConfiguratorWizard extends Wizard {
 		return updateRound;
 	}
 
-	private void createBeginnerPage(final Question curQuestion) {
+	
+	
+	private void createBeginnerPage(final Question curQuestion, final List<Question> allQuestion) {
 		if (curQuestion.getElement().equals(GUIElements.itemselection)) {
 			final List<String> selection = new ArrayList<>();
 			for (final AstConcreteClafer childClafer : this.claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
@@ -131,7 +133,11 @@ public class ConfiguratorWizard extends Wizard {
 				}
 			}
 			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curQuestion, this.beginnerQuestions.getTask(), selection);
-		} else {
+		}
+		else if(curQuestion.getElement().equals(GUIElements.button)){
+			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(allQuestion, curQuestion, this.beginnerQuestions.getTask());
+		}
+		else {
 			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curQuestion, this.beginnerQuestions.getTask());
 		}
 	}
@@ -188,7 +194,9 @@ public class ConfiguratorWizard extends Wizard {
 					final int nextID = entry.getValue().getNextID();
 					if (nextID > -1) {
 						final Question curQuestion = this.beginnerQuestions.setQuestionByID(nextID);
-						createBeginnerPage(curQuestion);
+						final List<Question> allQuestion = this.beginnerQuestions.getQuestionList();
+
+						createBeginnerPage(curQuestion, allQuestion);
 						if (checkifInUpdateRound()) {
 							this.beginnerQuestions.previousQuestion();
 						}

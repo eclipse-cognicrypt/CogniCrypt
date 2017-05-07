@@ -15,6 +15,7 @@
  */
 package crossing.e1.configurator.beginer.question;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import crossing.e1.configurator.Constants;
@@ -28,6 +29,8 @@ public class Question {
 	private String questionText;
 	private ArrayList<Answer> answers;
 	private Answer defaultAnswer;
+	private ArrayList<String> method;
+	private ArrayList<Integer> refIds;
 
 	public ArrayList<Answer> getAnswers() {
 		return this.answers;
@@ -64,6 +67,14 @@ public class Question {
 	public String getSelectionClafer() {
 		return this.selectionClafer;
 	}
+	
+	public ArrayList<String> getMethod() {
+		return this.method;
+	}
+
+	public ArrayList<Integer> getRefIds() {
+		return refIds;
+	}
 
 	public void setAnswers(final ArrayList<Answer> answers) {
 		this.answers = answers;
@@ -80,7 +91,15 @@ public class Question {
 	public void setQuestionText(final String questionText) {
 		this.questionText = questionText;
 	}
+	
+	public ArrayList<String> setMethod(final ArrayList<String> method) {
+		return this.method;
+	}
 
+	public void setRefIds(ArrayList<Integer> refId) {
+		this.refIds = refId;
+	}
+	
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();

@@ -31,15 +31,45 @@ public class TLSConnection { // NO_UCD (unused code)
 
 	private static SSLSocket sslsocket = null;
 
-	public TLSConnection(final int port, final String host) throws UnknownHostException, IOException, URISyntaxException {
+	/*public TLSConnection(final int port, final String host) throws UnknownHostException, IOException, URISyntaxException {
 		final SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 		final SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket(host, port);
 		setCipherSuites();
 		setProtocols();
 		sslsocket.startHandshake();
 		sslsocket.close();
-	}
+	}*/
 
+	public TLSConnection(){
+		
+	}
+	
+	
+	public String[] TestConnection(String host, int port){
+		boolean isConnected = false;
+		String[] returnArray = new String[2];
+		returnArray[0] = "Error! Connection to host could not be established.";
+		returnArray[1] = "false";
+		try {
+			final SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+			final SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket(host, port);	
+			isConnected = sslsocket.isConnected();
+			sslsocket.close();
+			
+			if(isConnected){
+				returnArray[0] = "Connection established successfully!";
+				returnArray[1] = "true";
+
+			}
+			
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		}
+		return returnArray;
+	}
+	
+	
+	
 	private void setCipherSuites() {
 		if (sslsocket != null) {
 			//Insert cipher suites here

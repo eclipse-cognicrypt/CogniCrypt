@@ -37,6 +37,10 @@ public class BeginnerModeQuestionnaire {
 		return this.ID;
 	}
 
+	public List<Question> getQuestionList(){
+		return this.questionList;	
+	};
+	
 	public Question getQuestionByID(final int ID) {
 		return this.questionList.get(ID);
 	}

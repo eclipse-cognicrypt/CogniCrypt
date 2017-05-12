@@ -106,7 +106,6 @@ public class InstanceListPage extends WizardPage implements Labels {
 			}
 		});
 
-
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
 		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
 		final Font boldFont = new Font(this.instancePropertiesPanel.getDisplay(), new FontData(Constants.ARIAL, 12, SWT.BOLD));
@@ -165,7 +164,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 	 * @return details for chosen algorithm configuration
 	 */
 	private String getInstanceProperties(final InstanceClafer inst) {
-		final Map<String, String> algorithms = new HashMap<String, String>();
+		final Map<String, String> algorithms = new HashMap<>();
 		final InstanceClafer[] children = inst.getChildren();
 		for (int i = 0; i < children.length; i++) {
 			getInstanceDetails(children[i], algorithms);

@@ -45,7 +45,7 @@ import crossing.e1.configurator.utilities.Labels;
 public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private final Question quest;
-	private Entry<Question, Answer> selection = new AbstractMap.SimpleEntry<Question, Answer>(null, null);
+	private Entry<Question, Answer> selection = new AbstractMap.SimpleEntry<>(null, null);
 	private boolean finish = false;
 	private final List<String> selectionValues;
 

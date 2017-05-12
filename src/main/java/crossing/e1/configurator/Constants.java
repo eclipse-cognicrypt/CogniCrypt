@@ -43,17 +43,17 @@ public class Constants {
 	private static final String rsrcPath = "src" + innerFileSeparator + "main" + innerFileSeparator + "resources" + innerFileSeparator;
 
 	//JSON task file
-	public static final String jsonTaskFile =  rsrcPath  + "Tasks" + innerFileSeparator + "tasks.json";;
+	public static final String jsonTaskFile = rsrcPath + "Tasks" + innerFileSeparator + "tasks.json";;
 
 	public static final String pathToPropertyfiles = rsrcPath + "Labels.properties";
-	
+
 	// Clafer Instance Generation
 	public static final String claferPath = rsrcPath + "ClaferModel" + innerFileSeparator + "SymmetricEncryptionTask.js";
 	public static final String PATH_FOR_CONFIG_XML = "/Configurator.xml";
 	public static final String XML_FILE_NAME = rsrcPath + "ClaferModel/Encrypt_CryptoTasks.xml";
 
 	// Input for Code Generation
-	public static final String pathToXSLFile = rsrcPath  + "XSLTemplates" + innerFileSeparator + "JCA.xsl";
+	public static final String pathToXSLFile = rsrcPath + "XSLTemplates" + innerFileSeparator + "JCA.xsl";
 	public static final String pathToClaferInstanceFolder = rsrcPath + "ClaferInstance" + innerFileSeparator;
 	public static final String pathToClaferInstanceFile = "claferInstance.xml";
 	public static final String NameOfTemporaryMethod = "templateUsage";
@@ -87,21 +87,7 @@ public class Constants {
 	public static final String Task = "task";
 	public static final String Code = "code";
 	public static final String Type = "type";
-	public static final String[] xmlimportsarr = {"java.security.InvalidAlgorithmParameterException",
-												  "java.security.InvalidKeyException",
-												  "java.security.NoSuchAlgorithmException",
-												  "java.security.NoSuchAlgorithmException",
-												  "javax.crypto.SecretKey",
-												  "javax.crypto.BadPaddingException",
-												  "javax.crypto.Cipher",
-												  "javax.crypto.IllegalBlockSizeException",
-												  "javax.crypto.NoSuchPaddingException",
-												  "java.security.SecureRandom",
-												  "javax.crypto.spec.IvParameterSpec",
-												  "javax.crypto.spec.SecretKeySpec",
-												  "java.security.spec.InvalidKeySpecException",
-												  "java.util.List;"
-												  };
+	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List;" };
 
 	// Types
 	public static final String INTEGER = "Integer";
@@ -112,7 +98,7 @@ public class Constants {
 	public static final int INT_LOW = -17;
 	public static final String INSTANCE_DETAILS = "Instance Details";
 	public static final String ARIAL = "Arial";
-	public static final String SELECT_JAVA_PROJECT= "Select a Java Project :";
+	public static final String SELECT_JAVA_PROJECT = "Select a Java Project :";
 	public static final String SELECT_TASK = "Select Task :";
 	public static final String NO_XML_INSTANCE_FILE_TO_WRITE = "No xml instance file to write.";
 	public static final String CLAFER_ALGORITHM = "_Algorithm";

@@ -25,16 +25,18 @@ import crossing.e1.configurator.beginer.question.QuestionsJSONReader;
 public class QuestionReaderTest {
 
 	static QuestionsJSONReader qjr;
-	String testFile1 = "src/main/resources/testFiles/TestQuestions1.json";
-	String testFile2 = "src/main/resources/testFiles/TestQuestions2.json";
-	String testFile3 = "src/main/resources/testFiles/TestQuestions3.json";
-	String testFile4 = "src/main/resources/testFiles/TestQuestions4.json";
-	String testFile5 = "src/main/resources/testFiles/TestQuestions5.json";
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		qjr = new QuestionsJSONReader();
 	}
+
+	String testFile1 = "src/main/resources/testFiles/TestQuestions1.json";
+	String testFile2 = "src/main/resources/testFiles/TestQuestions2.json";
+	String testFile3 = "src/main/resources/testFiles/TestQuestions3.json";
+	String testFile4 = "src/main/resources/testFiles/TestQuestions4.json";
+
+	String testFile5 = "src/main/resources/testFiles/TestQuestions5.json";
 
 	@Test
 	/***

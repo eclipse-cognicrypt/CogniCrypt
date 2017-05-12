@@ -23,7 +23,6 @@ import java.util.Map;
 import org.clafer.ast.AstAbstractClafer;
 import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
-import org.clafer.ast.AstConstraint;
 import org.clafer.ast.AstModel;
 import org.clafer.common.Check;
 import org.clafer.javascript.Javascript;

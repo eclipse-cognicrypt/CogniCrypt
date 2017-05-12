@@ -50,8 +50,7 @@ public class TaskSelectionPage extends WizardPage {
 	private Button advancedModeCheckBox;
 	private Label selectTaskLabel;
 	private boolean canProceed = false;
-	private Button createJavaProject;
-	public static IProject selectedProject = null;
+	private IProject selectedProject = null;
 
 	public TaskSelectionPage() {
 		super(Labels.SELECT_TASK);
@@ -68,11 +67,9 @@ public class TaskSelectionPage extends WizardPage {
 
 		this.container = new Composite(parent, SWT.NONE);
 		this.container.setBounds(10, 10, 200, 300);
-		final GridLayout layout = new GridLayout(3, false);
+		final GridLayout layout = new GridLayout(2, false);
 		//layout.numColumns = 4;
 		this.container.setLayout(layout);
-		
-		
 
 		this.selectTaskLabel = new Label(this.container, SWT.NONE);
 		this.selectTaskLabel.setText(Constants.SELECT_JAVA_PROJECT);
@@ -80,8 +77,8 @@ public class TaskSelectionPage extends WizardPage {
 		this.taskComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
 		this.taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
 
-		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		List<IProject> javaProjects = new ArrayList<IProject>();
+		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+		final List<IProject> javaProjects = new ArrayList<>();
 		if (projects.length > 0) {
 			for (int i = 0; i < projects.length; i++) {
 				if (Boolean.TRUE.equals(Utils.checkIfJavaProjectSelected(projects[i]))) {
@@ -90,25 +87,22 @@ public class TaskSelectionPage extends WizardPage {
 			}
 
 		}
+
 		this.taskComboSelection.setInput(javaProjects);
 
 		this.taskComboSelection.addSelectionChangedListener(event -> {
 			final IStructuredSelection selected = (IStructuredSelection) event.getSelection();
-			selectedProject = (IProject) selected.getFirstElement();
+			this.selectedProject = (IProject) selected.getFirstElement();
 
 			TaskSelectionPage.this.taskComboSelection.refresh();
 
 		});
-		if (javaProjects.indexOf(Utils.ProjectSelection()) >= 0)
-			this.taskComboSelection.setSelection(
-					new StructuredSelection(javaProjects.get(javaProjects.indexOf(Utils.ProjectSelection()))));
-		else
+		if (javaProjects.indexOf(Utils.defaultProjectSelectionforDropdownList()) >= 0) {
+			this.taskComboSelection.setSelection(new StructuredSelection(javaProjects.get(javaProjects.indexOf(Utils.defaultProjectSelectionforDropdownList()))));
+		} else {
 			this.taskComboSelection.setSelection(new StructuredSelection(javaProjects.get(0)));
-		
-		this.createJavaProject = new Button(this.container, SWT.BUTTON1);
-		this.createJavaProject.setText("Create Java Project");
-		setControl(this.container);
-		
+		}
+
 		this.selectTaskLabel = new Label(this.container, SWT.NONE);
 		this.selectTaskLabel.setText(Constants.SELECT_TASK);
 
@@ -137,7 +131,7 @@ public class TaskSelectionPage extends WizardPage {
 
 			TaskSelectionPage.this.taskComboSelection.refresh();
 
-			if (selectedTask != null && selectedProject !=null) {
+			if (selectedTask != null && this.selectedProject != null) {
 				TaskSelectionPage.this.canProceed = true;
 			}
 		});
@@ -148,8 +142,11 @@ public class TaskSelectionPage extends WizardPage {
 		this.advancedModeCheckBox.setText(Constants.ADVANCED_MODE);
 		this.advancedModeCheckBox.setSelection(false);
 		setControl(this.container);
-		
-		
+
+	}
+
+	public IProject getSelectedProject() {
+		return this.selectedProject;
 	}
 
 	public Task getSelectedTask() {

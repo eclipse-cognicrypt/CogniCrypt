@@ -98,6 +98,7 @@ public class Constants {
 	public static final int INT_LOW = -17;
 	public static final String INSTANCE_DETAILS = "Instance Details";
 	public static final String ARIAL = "Arial";
+	public static final String SELECT_JAVA_PROJECT = "Select a Java Project :";
 	public static final String SELECT_TASK = "Select Task :";
 	public static final String NO_XML_INSTANCE_FILE_TO_WRITE = "No xml instance file to write.";
 	public static final String CLAFER_ALGORITHM = "_Algorithm";

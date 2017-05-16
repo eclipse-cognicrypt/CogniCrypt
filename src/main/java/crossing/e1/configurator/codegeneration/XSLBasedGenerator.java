@@ -63,6 +63,10 @@ import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.DeveloperProject;
 import crossing.e1.configurator.utilities.Tuple;
 import crossing.e1.configurator.utilities.Utils;
+<<<<<<< HEAD
+=======
+import crossing.e1.configurator.wizard.TaskSelectionPage;
+>>>>>>> feature/EONE-91
 
 /**
  * This class is responsible for generating code templates by performing an XSL transformation. Currently, Saxon is used as an XSLT- processor.
@@ -84,8 +88,10 @@ public class XSLBasedGenerator {
 	 * @param pathToFolderWithAdditionalResources
 	 *        If additional files need to be generated into a developer's project, they are in this folder.
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if transformation successful/failed.
+	 * @throws BadLocationException
+	 *
 	 */
-	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources, final File xslFile) {
+	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources, final File xslFile, final TaskSelectionPage taskSelectionPage) throws BadLocationException {
 		try {
 			// Check whether directories and templates/model exist
 			final File claferOutputFiles = xmlInstanceFile != null && xmlInstanceFile.exists() ? xmlInstanceFile
@@ -130,9 +136,16 @@ public class XSLBasedGenerator {
 			// there, and remove temporary output file
 			// Otherwise keep the output file
 			// In any case, organize imports
+<<<<<<< HEAD
 			if (Utils.getCurrentlyOpenFile() != null) {
+=======
+
+			if (this.currentFile != null && this.currentFile.getProject().equals(taskSelectionPage.getSelectedProject())) {
+>>>>>>> feature/EONE-91
 				insertCallCodeIntoOpenFile(temporaryOutputFile);
-			} else {
+			}
+
+			else {
 				this.project.refresh();
 				final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 				final IFile outputFile = this.project.getIFile(temporaryOutputFile);
@@ -140,7 +153,7 @@ public class XSLBasedGenerator {
 				organizeImports(editor);
 			}
 			this.project.refresh();
-		} catch (TransformerException | IOException | CoreException | BadLocationException e) {
+		} catch (TransformerException | IOException | CoreException e) {
 			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
 			return false;
 		}
@@ -222,6 +235,7 @@ public class XSLBasedGenerator {
 	 *
 	 * @return <Code>true</Code>/<Code>false</Code> if initialization successful/failed.
 	 */
+<<<<<<< HEAD
 	public boolean initCodeGeneration(final IProject targetProject) {
 
 		this.project = new DeveloperProject(targetProject);
@@ -245,6 +259,25 @@ public class XSLBasedGenerator {
 		// Activator.getDefault().logInfo(Constants.NoFileOpenedErrorMessage);
 		// this.project = new DeveloperProject(iproject);
 		// }
+=======
+	public boolean initCodeGeneration(final IProject iproject) {
+		this.project = new DeveloperProject(iproject);
+		this.currentFile = Utils.getCurrentlyOpenFile();
+		if (this.currentFile != null && Constants.JAVA.equals(this.currentFile.getFileExtension()) && this.currentFile.getProject().equals(iproject)) {
+			// Get currently opened file to
+			this.project = new DeveloperProject(this.currentFile.getProject());
+		} else {
+			// if no open file, get selected project
+			final IProject iProject = iproject;
+			if (iProject == null) {
+				// if no project selected abort with error message
+				Activator.getDefault().logError(null, Constants.NoFileandNoProjectOpened);
+				return false;
+			}
+			Activator.getDefault().logInfo(Constants.NoFileOpenedErrorMessage);
+			this.project = new DeveloperProject(iproject);
+		}
+>>>>>>> feature/EONE-91
 		return true;
 	}
 
@@ -344,7 +377,12 @@ public class XSLBasedGenerator {
 		editor.doSave(null);
 	}
 
+	protected void setPosForClassDecl(final int start, final int end) {
+		// classlims = new Tuple<Integer, Integer>(start, end);
+	}
+
 	private void setPosForRunMethod(final int start, final int end) {
+
 		this.startingPositionForRunMethod = start;
 		this.endingPositionForRunMethod = end;
 	}

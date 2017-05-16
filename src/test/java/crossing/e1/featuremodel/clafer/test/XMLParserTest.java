@@ -50,7 +50,7 @@ public class XMLParserTest {
 		path = "src/test/resources/hashing.js";
 		this.claferModel = new ClaferModel(path);
 		this.instGen = new InstanceGenerator(path, "PasswordBasedEncryption", "description");
-		this.constraints = new HashMap<Question, Answer>();
+		this.constraints = new HashMap<>();
 		this.inst = this.instGen.generateInstances(this.constraints).get(0);
 	}
 

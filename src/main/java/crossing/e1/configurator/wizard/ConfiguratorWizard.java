@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -29,6 +30,7 @@ import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -71,17 +73,34 @@ public class ConfiguratorWizard extends Wizard {
 	private final XSLBasedGenerator codeGeneration = new XSLBasedGenerator();
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
+<<<<<<< HEAD
 	public IProject targetProject;
 
 	public ConfiguratorWizard() {
 		super();
 		this.targetProject = null;
+=======
+	private List<IProject> javaProjects;
+
+	public ConfiguratorWizard() {
+		super();
+>>>>>>> feature/EONE-91
 		// Set the Look and Feel of the application to the operating
 		// system's look and feel.
 		try {
 
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+<<<<<<< HEAD
 			this.targetProject = Utils.getProjectSelection();
+=======
+			this.javaProjects = Utils.createListOfJavaProjectsInCurrentWorkspace();
+			if (this.javaProjects.isEmpty()) {
+				JOptionPane.showMessageDialog(null,
+					"CogniCrypt requires a Java project as code generation target. Currently, there are no Java projects in this workspace, please create a new Java project to continue.",
+					"CogniCrypt", JOptionPane.INFORMATION_MESSAGE);
+			}
+
+>>>>>>> feature/EONE-91
 		}
 
 		catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
@@ -89,11 +108,11 @@ public class ConfiguratorWizard extends Wizard {
 		}
 
 		setWindowTitle("Cryptography Task Configurator");
-
 	}
 
 	@Override
 	public void addPages() {
+<<<<<<< HEAD
 
 		if (this.targetProject != null) {
 			this.taskListPage = new TaskSelectionPage();
@@ -103,6 +122,11 @@ public class ConfiguratorWizard extends Wizard {
 
 			getNextPage(null);
 		}
+=======
+		this.taskListPage = new TaskSelectionPage();
+		setForcePreviousAndNextButtons(true);
+		addPage(this.taskListPage);
+>>>>>>> feature/EONE-91
 	}
 
 	@Override
@@ -123,7 +147,11 @@ public class ConfiguratorWizard extends Wizard {
 	}
 
 	private void createBeginnerPage(final Question curQuestion) {
+<<<<<<< HEAD
 		if (curQuestion.getElement().equals(GUIElements.itemselection)) {
+=======
+		if (curQuestion.getElement().equals(guiElements.itemselection)) {
+>>>>>>> feature/EONE-91
 			final List<String> selection = new ArrayList<>();
 			for (final AstConcreteClafer childClafer : this.claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
 				if (childClafer.getSuperClafer().getName().endsWith(curQuestion.getSelectionClafer())) {
@@ -292,21 +320,36 @@ public class ConfiguratorWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		boolean ret = false;
+
 		if (this.instanceListPage != null) {
 			ret = this.instanceListPage.isPageComplete();
 			try {
 				final XMLParser parser = new XMLParser();
 				parser.displayInstanceValues(this.instanceListPage.getValue(), this.constraints);
-
 				// Initialize Code Generation to retrieve developer project
+<<<<<<< HEAD
 				ret &= this.codeGeneration.initCodeGeneration(this.targetProject);
 
+=======
+				// ret &= this.codeGeneration.initCodeGeneration();
+				ret &= this.codeGeneration.initCodeGeneration(this.taskListPage.getSelectedProject());
+>>>>>>> feature/EONE-91
 				// Write Instance File into developer project
 				final String xmlInstancePath = this.codeGeneration.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
 				parser.writeClaferInstanceToFile(xmlInstancePath);
 
 				// Generate code template
+<<<<<<< HEAD
 				ret &= this.codeGeneration.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), null);
+=======
+				try {
+					ret &= this.codeGeneration.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), null,
+						this.taskListPage);
+				} catch (final BadLocationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+>>>>>>> feature/EONE-91
 
 				// Delete Instance File
 				FileHelper.deleteFile(xmlInstancePath);

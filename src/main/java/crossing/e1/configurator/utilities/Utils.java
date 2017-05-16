@@ -26,8 +26,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -53,6 +51,11 @@ import crossing.e1.configurator.Activator;
 @SuppressWarnings("restriction")
 public class Utils {
 
+<<<<<<< HEAD
+=======
+	public static List<IProject> javaProjects;
+
+>>>>>>> feature/EONE-91
 	/**
 	 * This method returns if a Java project is selected for code generation.
 	 *
@@ -60,17 +63,33 @@ public class Utils {
 	 */
 	public static boolean checkIfJavaProjectSelected() {
 		final IProject project = Utils.getIProjectFromSelection();
+<<<<<<< HEAD
 		final IJavaProject javaProject = JavaCore.create(project);
 		if (javaProject == null || !javaProject.exists() || project == null) {
 			/*
 			 * MessageDialog.openWarning(new Shell(), "Warning",
 			 * "CogniCrypt requires a target Java project in order to perform successful code generation. Please select or create a Java project. " );
 			 */
+=======
+		return (checkIfJavaProjectSelected(project));
+	}
+
+	/**
+	 * This method checks if a project passed as parameter is a Java project or not.
+	 * 
+	 * @param Iproject
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if project is Java project
+	 */
+	public static boolean checkIfJavaProjectSelected(final IProject project) {
+		final IJavaProject javaProject = JavaCore.create(project);
+		if (javaProject == null || !javaProject.exists()) {
+>>>>>>> feature/EONE-91
 			return false;
 		}
 		return true;
 	}
 
+<<<<<<< HEAD
 	/**
 	 * This method checks if a project passed as parameter is a Java project or not.
 	 * 
@@ -83,6 +102,19 @@ public class Utils {
 			return false;
 		}
 		return true;
+=======
+	public static IProject defaultProjectSelectionforDropdownList() {
+		IProject defaultProject = null;
+
+		if (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension().equalsIgnoreCase("java")) {
+			defaultProject = Utils.getCurrentlyOpenFile().getProject();
+		} else if (Utils.checkIfJavaProjectSelected()) {
+			defaultProject = Utils.getIProjectFromSelection();
+		} else {
+			defaultProject = null;
+		}
+		return defaultProject;
+>>>>>>> feature/EONE-91
 	}
 
 	/**
@@ -180,18 +212,23 @@ public class Utils {
 		return null;
 	}
 
+<<<<<<< HEAD
 	public static IProject getProjectSelection() {
 		IProject defaultProject = null;
+=======
+	public static List<IProject> createListOfJavaProjectsInCurrentWorkspace() {
+>>>>>>> feature/EONE-91
 		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		final List<IProject> javaProjects = new ArrayList<>();
 		if (projects.length > 0) {
 			for (int i = 0; i < projects.length; i++) {
-				if (Boolean.TRUE.equals(Utils.checkIfJavaProjectSelected(projects[i]))) {
+				if (Utils.checkIfJavaProjectSelected(projects[i])) {
 					javaProjects.add(projects[i]);
 				}
 			}
 
 		}
+<<<<<<< HEAD
 		if (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension().equalsIgnoreCase("java")) {
 			defaultProject = Utils.getCurrentlyOpenFile().getProject();
 		} else if (Boolean.TRUE.equals(Utils.checkIfJavaProjectSelected())) {
@@ -204,6 +241,9 @@ public class Utils {
 			"CogniCrypt requires a java project which acts as target for code generation. Please choose a Java project.", "CogniCrypt", JOptionPane.QUESTION_MESSAGE, null,
 			javaProject, defaultProject);
 		return targetFile;
+=======
+		return javaProjects;
+>>>>>>> feature/EONE-91
 	}
 
 }

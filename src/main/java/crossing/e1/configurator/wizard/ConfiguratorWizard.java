@@ -81,7 +81,7 @@ public class ConfiguratorWizard extends Wizard {
 		try {
 
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			this.javaProjects = Utils.JavaProjects();
+			this.javaProjects = Utils.createListOfJavaProjectsInCurrentWorkspace();
 			if (this.javaProjects.isEmpty()) {
 				JOptionPane.showMessageDialog(null,
 					"CogniCrypt requires a Java project as code generation target. Currently, there are no Java projects in this workspace, please create a new Java project to continue.",
@@ -99,14 +99,9 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		if (!this.javaProjects.isEmpty()) {
-			this.taskListPage = new TaskSelectionPage();
-			// if(this.taskListPage.canProceed())
-			setForcePreviousAndNextButtons(true);
-			addPage(this.taskListPage);
-		} else {
-			addPage(null);
-		}
+		this.taskListPage = new TaskSelectionPage();
+		setForcePreviousAndNextButtons(true);
+		addPage(this.taskListPage);
 	}
 
 	@Override

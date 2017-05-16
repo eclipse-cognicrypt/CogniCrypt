@@ -237,9 +237,7 @@ public class XSLBasedGenerator {
 		if (this.currentFile != null && Constants.JAVA.equals(this.currentFile.getFileExtension()) && this.currentFile.getProject().equals(iproject)) {
 			// Get currently opened file to
 			this.project = new DeveloperProject(this.currentFile.getProject());
-		}
-
-		else {
+		} else {
 			// if no open file, get selected project
 			final IProject iProject = iproject;
 			if (iProject == null) {
@@ -250,7 +248,6 @@ public class XSLBasedGenerator {
 			Activator.getDefault().logInfo(Constants.NoFileOpenedErrorMessage);
 			this.project = new DeveloperProject(iproject);
 		}
-
 		return true;
 	}
 

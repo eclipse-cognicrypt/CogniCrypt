@@ -19,6 +19,8 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="src/experimental"/>
+	<classpathentry exported="true" kind="lib" path="lib/claferchocoig.jar" sourcepath="C:/Users/stefank3/Downloads/choco-solver-master/choco-solver-master/choco-solver"/>
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>

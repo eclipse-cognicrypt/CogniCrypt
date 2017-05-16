@@ -139,4 +139,35 @@ public class DeveloperProject {
 		// in call or call refresh on Crypto package only
 		this.project.refreshLocal(IResource.DEPTH_INFINITE, null);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((project == null) ? 0 : project.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (obj instanceof DeveloperProject) {
+			DeveloperProject other = (DeveloperProject) obj;
+			if (project == null || other.project != null) {
+					return false;
+				}
+			return project.equals(other.project);
+		} else if (obj instanceof IProject) {
+			IProject other = (IProject) obj;
+			return project.equals(other);
+		}
+		return false;
+	}
+	
+	
 }

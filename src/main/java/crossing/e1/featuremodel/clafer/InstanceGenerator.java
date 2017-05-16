@@ -203,13 +203,8 @@ public class InstanceGenerator {
 	 */
 	// FIXME include group operator
 	private void basicModeHandler(final AstModel astModel, final AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {
-<<<<<<< HEAD
 		for (final Entry<Question, Answer> entry : qAMap.entrySet()) {
 			Answer answer = entry.getValue();
-=======
-		for (final Question question : qAMap.keySet()) {
-			final Answer answer = qAMap.get(question);
->>>>>>> feature/EONE-91
 			if (answer.getClaferDependencies() != null) {
 				for (final ClaferDependency claferDependency : answer.getClaferDependencies()) {
 					final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + claferDependency.getAlgorithm());

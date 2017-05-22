@@ -1,0 +1,23 @@
+scope({c0_ABYApp:2, c0_Enum:2});
+defaultScope(1);
+intRange(-8, 7);
+stringLength(35);
+
+c0_Enum = Abstract("c0_Enum");
+c0_ABYApp = Abstract("c0_ABYApp");
+c0_Euclid = Clafer("c0_Euclid").withCard(1, 1);
+c0_Millionare = Clafer("c0_Millionare").withCard(1, 1);
+c0_Task = Abstract("c0_Task");
+c0_description = c0_Task.addChild("c0_description").withCard(1, 1);
+c0_ABY = Clafer("c0_ABY").withCard(1, 1);
+c0_abyapp = c0_ABY.addChild("c0_abyapp").withCard(1, 1);
+c0_security = c0_ABY.addChild("c0_security").withCard(1, 1);
+c0_ABYApp.extending(c0_Enum);
+c0_Euclid.extending(c0_ABYApp);
+c0_Millionare.extending(c0_ABYApp);
+c0_description.refTo(string);
+c0_ABY.extending(c0_Task);
+c0_ABY.addConstraint(equal(joinRef(join($this(), c0_description)), constant("\"Anonymous Multi-Party Computation\"")));
+c0_abyapp.refTo(c0_ABYApp);
+c0_security.refTo(Int);
+c0_ABY.addConstraint(or(or(or(or(equal(joinRef(join($this(), c0_security)), constant(80)), equal(joinRef(join($this(), c0_security)), constant(112))), equal(joinRef(join($this(), c0_security)), constant(128))), equal(joinRef(join($this(), c0_security)), constant(192))), equal(joinRef(join($this(), c0_security)), constant(256))));

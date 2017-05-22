@@ -16,7 +16,7 @@
 			"element" : "text",
 			"questionText":"Please give the password for your keystore.",
 			"answers":[
-				{"value":"C:\      ",
+				{"value":"C:\\      ",
 				"codeDependencies":[
 				{"option":"keystorepassword","value":""}
 				],
@@ -25,12 +25,12 @@
 		},
 		{
 			"id" : "2",
-			"questionText":"Are you implementing the server or the client side?.",
+			"questionText":"Are you implementing the server or the client side?",
 			"answers":[
 				{"value":"Server",
 				"codeDependencies":[
 				{"option":"server", "value" : "true" }
-				], "nextID" : "4"},
+				], "nextID" : "5"},
 				{"value":"Client",
 				"codeDependencies":[
 				{"option": "server", "value" : "false"}
@@ -42,30 +42,30 @@
 			"questionText":"Do you know the host/ip?",
 			"answers":[
 				{"value":"Yes",
-				"codeDependencies":[], "defaultAnswer": true, "nextID" : "4"},
+				"codeDependencies":[], "nextID" : "4"},
 				{"value":"No",
-				"codeDependencies":[], "nextID" : "6"}
+				"codeDependencies":[], "defaultAnswer": true, "nextID" : "6"}
 			]
 		},
 		{
 			"id" : "4",
 			"element" : "text",
-			"questionText":"Enter host/ip + port",
+			"questionText":"Enter host/ip.",
 			"answers":[
 				{"value":"",
 				"codeDependencies":[
-				{"option":"host+ip","value":""}
+				{"option":"host","value":""}
 				], "defaultAnswer": true, "nextID" : "5"}
 			]
 		},
 		{
 			"id" : "5",
 			"element" : "text",
-			"questionText":"Enter port",
+			"questionText":"Enter port.",
 			"answers":[
 				{"value":"",
 				"codeDependencies":[
-				{"option":"host+ip","value":""}
+				{"option":"port","value":""}
 				], "defaultAnswer": true, "nextID" : "6"}
 			]
 		},

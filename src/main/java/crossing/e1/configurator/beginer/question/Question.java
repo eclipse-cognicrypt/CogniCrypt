@@ -1,14 +1,29 @@
+/**
+ * Copyright 2015-2017 Technische Universitaet Darmstadt
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package crossing.e1.configurator.beginer.question;
 
 import java.util.ArrayList;
 
 import crossing.e1.configurator.Constants;
-import crossing.e1.configurator.Constants.guiElements;
+import crossing.e1.configurator.Constants.GUIElements;
 
 public class Question {
 
 	private int id;
-	private guiElements element;
+	private GUIElements element;
 	private String selectionClafer;
 	private String questionText;
 	private ArrayList<Answer> answers;
@@ -31,9 +46,9 @@ public class Question {
 		return this.defaultAnswer;
 	}
 
-	public guiElements getElement() {
+	public GUIElements getElement() {
 		if (this.element == null || this.element.name().isEmpty()) {
-			setElement(Constants.guiElements.combo);
+			setElement(Constants.GUIElements.combo);
 		}
 		return this.element;
 	}
@@ -54,7 +69,7 @@ public class Question {
 		this.answers = answers;
 	}
 
-	public void setElement(final guiElements combo) {
+	public void setElement(final GUIElements combo) {
 		this.element = combo;
 	}
 

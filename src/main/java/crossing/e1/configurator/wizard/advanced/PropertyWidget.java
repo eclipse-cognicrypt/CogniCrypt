@@ -1,3 +1,18 @@
+/**
+ * Copyright 2015-2017 Technische Universitaet Darmstadt
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package crossing.e1.configurator.wizard.advanced;
 
 import java.util.ArrayList;
@@ -24,7 +39,7 @@ public class PropertyWidget {
 
 	// TODO THIS IS A WORKAROUND TO STOP INSTANCE GENERATION ON PAGE LOAD, NEEDS
 	// TO BE FIXED
-	public static boolean status = false;
+	protected static boolean status = false;
 	private Spinner valueSpinner;
 	private AstClafer parentClafer;
 	private AstConcreteClafer childClafer;
@@ -36,7 +51,7 @@ public class PropertyWidget {
 
 	/**
 	 * Method to create a widget for group properties, clafer level constraints
-	 * 
+	 *
 	 * @param container
 	 * @param claferMain
 	 * @param claferProperties
@@ -45,7 +60,7 @@ public class PropertyWidget {
 		setGroupConstraint(true);
 		setAbstarctParentClafer(claferMain);
 		setChildClafer((AstConcreteClafer) claferProperties.get(0));
-		final List<String> values = new ArrayList<String>();
+		final List<String> values = new ArrayList<>();
 		values.add("<");
 		values.add(">");
 		values.add("=");
@@ -61,7 +76,7 @@ public class PropertyWidget {
 		this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
 		this.operatorComboViewer.setInput(values);
 
-		final ArrayList<String> propertyNames = new ArrayList<String>();
+		final ArrayList<String> propertyNames = new ArrayList<>();
 		for (final AstClafer propertyClafer : claferProperties) {
 			propertyNames.add(ClaferModelUtils.removeScopePrefix(propertyClafer.getName()));
 		}
@@ -89,7 +104,7 @@ public class PropertyWidget {
 
 	/**
 	 * Method to create a widget for specific properties, task level constraints
-	 * 
+	 *
 	 * @param container
 	 * @param parentClafer
 	 * @param childClafer
@@ -104,7 +119,7 @@ public class PropertyWidget {
 	public PropertyWidget(final Composite container, final AstClafer parentClafer, final AstConcreteClafer childClafer, final String propertyName, final int selection, final int min, final int max, final int digits, final int increment, final int pageincrement) {
 		setChildClafer(childClafer);
 		setParentClafer(parentClafer);
-		final List<String> values = new ArrayList<String>();
+		final List<String> values = new ArrayList<>();
 		values.add("<");
 		values.add(">");
 		values.add("=");

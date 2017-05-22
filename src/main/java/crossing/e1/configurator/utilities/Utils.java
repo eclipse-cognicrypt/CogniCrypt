@@ -1,5 +1,5 @@
 /**
- * Copyright 2015-2016 Technische Universitaet Darmstadt
+ * Copyright 2015-2017 Technische Universitaet Darmstadt
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,14 +23,18 @@ package crossing.e1.configurator.utilities;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
@@ -47,35 +51,44 @@ import crossing.e1.configurator.Activator;
 @SuppressWarnings("restriction")
 public class Utils {
 
-	/***
-	 * This method returns absolute path of a project-relative path.
-	 * 
-	 * @param inputPath
-	 *        project-relative path
-	 * @return absolute path
-	 */
-	public static File getResourceFromWithin(final String inputPath) {
-		try {
-			final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
-			
-			if (bundle == null) {
-				System.out.println("Bundle is null");
-				// running as application
-				//final String fileName = inputPath.substring(inputPath.lastIndexOf("/") + 1);
-				return new File(inputPath);//Utilities.class.getClassLoader().getResource(fileName).getPath();
-			} else {
-				System.out.println(bundle.getSymbolicName());
-				URL fileURL = bundle.getEntry(inputPath);
-				System.out.println("PATH: " + inputPath);
-				URL resolvedURL = FileLocator.toFileURL(fileURL);
-				URI uri = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
-				return new File(uri);
-			}
-		} catch (final Exception ex) {
-			Activator.getDefault().logError(ex);
-		}
 
-		return null;
+	public static List<IProject> javaProjects;
+
+	/**
+	 * This method returns if a Java project is selected for code generation.
+	 *
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if library java project selected.
+	 */
+	public static boolean checkIfJavaProjectSelected() {
+		final IProject project = Utils.getIProjectFromSelection();
+		return (checkIfJavaProjectSelected(project));
+	}
+
+	/**
+	 * This method checks if a project passed as parameter is a Java project or not.
+	 * 
+	 * @param Iproject
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if project is Java project
+	 */
+	public static boolean checkIfJavaProjectSelected(final IProject project) {
+		final IJavaProject javaProject = JavaCore.create(project);
+		if (javaProject == null || !javaProject.exists()) {
+			return false;
+		}
+		return true;
+	}
+
+	public static IProject defaultProjectSelectionforDropdownList() {
+		IProject defaultProject = null;
+
+		if (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension().equalsIgnoreCase("java")) {
+			defaultProject = Utils.getCurrentlyOpenFile().getProject();
+		} else if (Utils.checkIfJavaProjectSelected()) {
+			defaultProject = Utils.getIProjectFromSelection();
+		} else {
+			defaultProject = null;
+		}
+		return defaultProject;
 	}
 
 	/**
@@ -140,6 +153,54 @@ public class Utils {
 				
 		}
 		return iproject;
+	}
+
+	/***
+	 * This method returns absolute path of a project-relative path.
+	 * 
+	 * @param inputPath
+	 *        project-relative path
+	 * @return absolute path
+	 */
+	public static File getResourceFromWithin(final String inputPath) {
+		try {
+			final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+
+			if (bundle == null) {
+				System.out.println("Bundle is null");
+				// running as application
+				// final String fileName =
+				// inputPath.substring(inputPath.lastIndexOf("/") + 1);
+				return new File(inputPath);// Utilities.class.getClassLoader().getResource(fileName).getPath();
+			} else {
+				System.out.println(bundle.getSymbolicName());
+				final URL fileURL = bundle.getEntry(inputPath);
+				System.out.println("PATH: " + inputPath);
+				final URL resolvedURL = FileLocator.toFileURL(fileURL);
+				final URI uri = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
+				return new File(uri);
+			}
+		} catch (final Exception ex) {
+			Activator.getDefault().logError(ex);
+		}
+
+		return null;
+	}
+
+	public static List<IProject> createListOfJavaProjectsInCurrentWorkspace() {
+
+		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+		final List<IProject> javaProjects = new ArrayList<>();
+		if (projects.length > 0) {
+			for (int i = 0; i < projects.length; i++) {
+				if (Utils.checkIfJavaProjectSelected(projects[i])) {
+					javaProjects.add(projects[i]);
+				}
+			}
+
+		}
+
+		return javaProjects;
 	}
 
 }

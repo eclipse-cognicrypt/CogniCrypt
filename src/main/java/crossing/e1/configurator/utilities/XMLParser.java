@@ -1,5 +1,5 @@
 /**
- * Copyright 2015-2016 Technische Universitaet Darmstadt
+ * Copyright 2015-2017 Technische Universitaet Darmstadt
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,16 +43,19 @@ import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 import crossing.e1.featuremodel.clafer.PropertiesMapperUtil;
 
 /**
- * @author Ram
+ * @author Mohammad Zahraee
+ * @author Ram Kamath
+ * @author Stefan Krueger
  *
  */
 public class XMLParser implements Labels {
 
-	Document document = null;
+	private Document document = null;
+	private String enumParent = null;
 
 	/**
 	 * builds xml document, returns it's string representation
-	 * 
+	 *
 	 * @param inst
 	 *        Clafer instance/algorithm configuration selected to be generated
 	 * @param constraints
@@ -62,7 +65,7 @@ public class XMLParser implements Labels {
 	public String displayInstanceValues(final InstanceClafer inst, final HashMap<Question, Answer> constraints) {
 		this.document = DocumentHelper.createDocument();
 		final Element taskElem = this.document.addElement(Constants.Task);
-		if (inst.hasChildren()) {
+		if (inst != null && inst.hasChildren()) {
 			final String taskName = inst.getType().getName();
 			taskElem.addAttribute(Constants.Description, ClaferModelUtils.removeScopePrefix(taskName));
 			taskElem.addElement(Constants.Package).addText(Constants.PackageName);	// Constants.xmlPackage
@@ -70,8 +73,7 @@ public class XMLParser implements Labels {
 			for (final String file : Constants.xmlimportsarr) {
 				xmlimports.addElement(Constants.Import).addText(file);
 			}
-		}
-		if (inst != null && inst.hasChildren()) {
+
 			boolean oneLevelToAlgorithm = false;
 			for (final InstanceClafer in : inst.getChildren()) {
 				final AstClafer targetType = in.getType().getRef().getTargetType();
@@ -93,12 +95,22 @@ public class XMLParser implements Labels {
 			}
 
 			if (!oneLevelToAlgorithm) {
-				final Element algoElem = taskElem.addElement("element").addAttribute(Constants.Type, "SecureCommunication");
+				final Element algoElem = taskElem.addElement("element").addAttribute(Constants.Type, taskElem.attributes().get(0).getValue());
 
 				for (final InstanceClafer in : inst.getChildren()) {
-					if (in.getRef() instanceof InstanceClafer) {
-						algoElem.addElement(ClaferModelUtils.removeScopePrefix(in.getType().getName()))
-							.setText(ClaferModelUtils.removeScopePrefix(((InstanceClafer) in.getRef()).getType().getName()));
+					if (!in.getType().getName().contains("description")) {
+						final Object ref = in.getRef();
+						String text = "";
+						if (ref instanceof InstanceClafer) {
+							text = ClaferModelUtils.removeScopePrefix(((InstanceClafer) in.getRef()).getType().getName());
+						} else if (ref instanceof Integer) {
+							text = ((Integer) ref).toString();
+						} else if (ref instanceof String) {
+							text = (String) ref;
+						} else {
+							text = "This should not happen.";
+						}
+						algoElem.addElement(ClaferModelUtils.removeScopePrefix(in.getType().getName())).setText(text);
 					}
 
 				}
@@ -133,12 +145,15 @@ public class XMLParser implements Labels {
 				}
 			} else if (inst.hasRef() && inst.getType().isPrimitive() != true && inst.getRef().getClass().toString().contains(Constants.INTEGER) == false && inst.getRef().getClass()
 				.toString().contains(Constants.STRING) == false && inst.getRef().getClass().toString().contains(Constants.BOOLEAN) == false) {
+				this.enumParent = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
+				this.enumParent = Character.toLowerCase(this.enumParent.charAt(0)) + this.enumParent.substring(1);
 				displayInstanceXML((InstanceClafer) inst.getRef(), parent);
 			} else if (PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())) {
 				String superClaferName = ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName());
 				superClaferName = Character.toLowerCase(superClaferName.charAt(0)) + superClaferName.substring(1);
-				// Removed if-else block after refactorng, while the following statement in both blocks was identical
-				parent.addElement(superClaferName).addText(ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", ""));
+				// Removed if-else block after re-factoring, while the following statement in both blocks was identical
+				parent.addElement(this.enumParent).addText(ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", ""));
+
 			} else {
 				String instName = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
 				instName = Character.toLowerCase(instName.charAt(0)) + instName.substring(1);
@@ -167,7 +182,7 @@ public class XMLParser implements Labels {
 	/**
 	 * Writes XML document to file. Before calling this method {@link crossing.e1.configurator.utilities.XMLParser#displayInstanceValues(InstanceClafer, HashMap)
 	 * displayInstanceValues()} should have been called to create document.
-	 * 
+	 *
 	 * @param path
 	 *        path the XML file is written to
 	 * @throws IOException

@@ -23,8 +23,12 @@ PKCS5Padding : Padding
 abstract Mode : Enum
 ECB : Mode
 CBC : Mode
+PCBC: Mode
+CTR : Mode
+CTS : Mode
+CFB : Mode
 OFB : Mode
-GCM : Mode
+//GCM : Mode
 
 abstract Algorithm
 	name -> string

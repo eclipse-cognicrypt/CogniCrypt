@@ -1,5 +1,5 @@
 /**
- * Copyright 2015-2016 Technische Universitaet Darmstadt
+ * Copyright 2015-2017 Technische Universitaet Darmstadt
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,27 +70,24 @@ import crossing.e1.configurator.utilities.Utils;
  */
 public class XSLBasedGenerator {
 
-	private IFile currentFile;
-
 	private int endingPositionForRunMethod = -1;
 	private int endPosForImports = -1;
-	private boolean fileOpened = false;
 	private DeveloperProject project;
 	private int startingPositionForRunMethod = -1;
 	private int startPosForImports = -1;
 
 	/***
 	 * Generation of code templates using XSL template and Clafer instance.
-	 * 
+	 *
 	 * @param xmlInstanceFile
 	 *        xml model that details the algorithm configuration chosen by the user.
 	 * @param pathToFolderWithAdditionalResources
 	 *        If additional files need to be generated into a developer's project, they are in this folder.
-	 * @param xslFile
-	 *        optional, can be used if not the default xsl stylesheet should be used.
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if transformation successful/failed.
+	 * @throws BadLocationException
+	 *
 	 */
-	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources, final File xslFile) {
+	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources, final File xslFile) throws BadLocationException {
 		try {
 			// Check whether directories and templates/model exist
 			final File claferOutputFiles = xmlInstanceFile != null && xmlInstanceFile.exists() ? xmlInstanceFile
@@ -107,8 +104,10 @@ public class XSLBasedGenerator {
 
 			// Add additional resources like jar files
 			if (!pathToFolderWithAdditionalResources.isEmpty()) {
-				final File addResFolder = Utils.getResourceFromWithin(pathToFolderWithAdditionalResources);
-				final File[] members = addResFolder.listFiles();
+				final File[] members = Utils.getResourceFromWithin(pathToFolderWithAdditionalResources).listFiles();
+				if (members == null) {
+					Activator.getDefault().logError("No directory for additional resources found.");
+				}
 				final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesinDevProject);
 				if (!libFolder.exists()) {
 					libFolder.create(true, true, null);
@@ -129,12 +128,17 @@ public class XSLBasedGenerator {
 				}
 			}
 
-			// If there is a java file opened in the editor, insert glue code there, and remove temporary output file
+			// If there is a java file opened in the editor, insert glue code
+			// there, and remove temporary output file
 			// Otherwise keep the output file
 			// In any case, organize imports
-			if (this.fileOpened) {
+			IFile currentlyOpenFile = Utils.getCurrentlyOpenFile();
+
+			if (currentlyOpenFile != null && project.equals(currentlyOpenFile.getProject())) {
 				insertCallCodeIntoOpenFile(temporaryOutputFile);
-			} else {
+			}
+
+			else {
 				this.project.refresh();
 				final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 				final IFile outputFile = this.project.getIFile(temporaryOutputFile);
@@ -142,7 +146,7 @@ public class XSLBasedGenerator {
 				organizeImports(editor);
 			}
 			this.project.refresh();
-		} catch (TransformerException | IOException | CoreException | BadLocationException e) {
+		} catch (TransformerException | IOException | CoreException e) {
 			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
 			return false;
 		}
@@ -210,7 +214,7 @@ public class XSLBasedGenerator {
 
 	/***
 	 * Getter method for developer project the code is generated into
-	 * 
+	 *
 	 * @return developer project
 	 */
 	public DeveloperProject getDeveloperProject() {
@@ -219,29 +223,37 @@ public class XSLBasedGenerator {
 
 	/**
 	 * This method initializes the code template generator. If neither a java file is opened nor a project selected initialization fails.
+	 * 
+	 * @param targetProject
 	 *
 	 * @return <Code>true</Code>/<Code>false</Code> if initialization successful/failed.
 	 */
-	public boolean initCodeGeneration() {
-		this.currentFile = Utils.getCurrentlyOpenFile();
-		this.fileOpened = this.currentFile != null;
-		if (this.currentFile != null && Constants.JAVA.equals(this.currentFile.getFileExtension())) {
-			// Get currently opened file to
-			this.project = new DeveloperProject(this.currentFile.getProject());
-		} else {
-			// if no open file, get selected project
-			final IProject iproject = Utils.getIProjectFromSelection();
-			if (iproject == null) {
-				// if no project selected abort with error message
-				Activator.getDefault().logError(null, Constants.NoFileandNoProjectOpened);
-				return false;
-			}
-			Activator.getDefault().logInfo(Constants.NoFileOpenedErrorMessage);
-			this.project = new DeveloperProject(iproject);
-		}
+	public boolean initCodeGeneration(final IProject targetProject) {
+
+		this.project = new DeveloperProject(targetProject);
+		// Commented in April 2017. If at least June 2017 and this has not
+		// caused issues, remove this method altogether and replace it with a regular constructor.
+		// this.currentFile = Utils.getCurrentlyOpenFile();
+		// this.fileOpened = this.currentFile != null;
+		// if (this.currentFile != null &&
+		// Constants.JAVA.equals(this.currentFile.getFileExtension())) {
+		// // Get currently opened file to
+		// this.project = new DeveloperProject(this.currentFile.getProject());
+		// } else {
+		// // if no open file, get selected project
+		// final IProject iproject = targetProject;
+		// if (iproject == null) {
+		// // if no project selected abort with error message
+		// Activator.getDefault().logError(null,
+		// Constants.NoFileandNoProjectOpened);
+		// return false;
+		// }
+		// Activator.getDefault().logInfo(Constants.NoFileOpenedErrorMessage);
+		// this.project = new DeveloperProject(iproject);
+		// }
 		return true;
 	}
-
+	
 	/**
 	 * If a file was open when the code generation was started, this method inserts the glue code that calls the generated classes directly into the opened file and removes the
 	 * temporary output file. If no file was open this method is skipped and the temporary output file is not removed.
@@ -269,9 +281,9 @@ public class XSLBasedGenerator {
 
 		int cursorPos = cursorPosition.getOffset();
 		final String docContent = currentlyOpenDocument.get();
-		final TreeSet<Tuple<Integer, Integer>> methLims = new TreeSet<Tuple<Integer, Integer>>();
+		final TreeSet<Tuple<Integer, Integer>> methLims = new TreeSet<>();
 		Tuple<Integer, Integer> classlims;
-		classlims = new Tuple<Integer, Integer>(0, 0);
+		classlims = new Tuple<>(0, 0);
 
 		final ASTParser astp = ASTParser.newParser(AST.JLS8);
 		astp.setSource(docContent.toCharArray());
@@ -281,7 +293,7 @@ public class XSLBasedGenerator {
 
 			@Override
 			public boolean visit(final MethodDeclaration node) {
-				methLims.add(new Tuple<Integer, Integer>(node.getStartPosition(), node.getStartPosition() + node.getLength()));
+				methLims.add(new Tuple<>(node.getStartPosition(), node.getStartPosition() + node.getLength()));
 				return super.visit(node);
 			}
 
@@ -294,9 +306,11 @@ public class XSLBasedGenerator {
 		};
 		cu.accept(astVisitor);
 
-		//Check and correct cursor position
-		//1. case: cursor is outside the class -> set cursor position to end of the class
-		//2. case: it is inside the class but also inside a method -> set cursor position two right after the method
+		// Check and correct cursor position
+		// 1. case: cursor is outside the class -> set cursor position to end of
+		// the class
+		// 2. case: it is inside the class but also inside a method -> set
+		// cursor position two right after the method
 		if (classlims.x < cursorPos || cursorPos < classlims.y) {
 			cursorPos = classlims.y - 2;
 		} else {
@@ -337,10 +351,11 @@ public class XSLBasedGenerator {
 	}
 
 	protected void setPosForClassDecl(final int start, final int end) {
-		//		classlims = new Tuple<Integer, Integer>(start, end);
+		// classlims = new Tuple<Integer, Integer>(start, end);
 	}
 
-	protected void setPosForRunMethod(final int start, final int end) {
+	private void setPosForRunMethod(final int start, final int end) {
+
 		this.startingPositionForRunMethod = start;
 		this.endingPositionForRunMethod = end;
 	}

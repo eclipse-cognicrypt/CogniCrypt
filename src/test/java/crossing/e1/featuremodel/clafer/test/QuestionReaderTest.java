@@ -1,3 +1,18 @@
+/**
+ * Copyright 2015-2017 Technische Universitaet Darmstadt
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package crossing.e1.featuremodel.clafer.test;
 
 import org.junit.BeforeClass;
@@ -10,16 +25,18 @@ import crossing.e1.configurator.beginer.question.QuestionsJSONReader;
 public class QuestionReaderTest {
 
 	static QuestionsJSONReader qjr;
-	String testFile1 = "src/main/resources/testFiles/TestQuestions1.json";
-	String testFile2 = "src/main/resources/testFiles/TestQuestions2.json";
-	String testFile3 = "src/main/resources/testFiles/TestQuestions3.json";
-	String testFile4 = "src/main/resources/testFiles/TestQuestions4.json";
-	String testFile5 = "src/main/resources/testFiles/TestQuestions5.json";
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		qjr = new QuestionsJSONReader();
 	}
+
+	String testFile1 = "src/main/resources/testFiles/TestQuestions1.json";
+	String testFile2 = "src/main/resources/testFiles/TestQuestions2.json";
+	String testFile3 = "src/main/resources/testFiles/TestQuestions3.json";
+	String testFile4 = "src/main/resources/testFiles/TestQuestions4.json";
+
+	String testFile5 = "src/main/resources/testFiles/TestQuestions5.json";
 
 	@Test
 	/***

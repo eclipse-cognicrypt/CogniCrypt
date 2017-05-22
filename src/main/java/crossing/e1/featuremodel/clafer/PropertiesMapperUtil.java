@@ -1,5 +1,5 @@
 /**
- * Copyright 2015-2016 Technische Universitaet Darmstadt
+ * Copyright 2015-2017 Technische Universitaet Darmstadt
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import org.clafer.ast.AstClafer;
 
 public class PropertiesMapperUtil {
 
-	private static HashMap<AstAbstractClafer, List<AstClafer>> enumMap = null;
+	private volatile static HashMap<AstAbstractClafer, List<AstClafer>> enumMap = null;
 
 	/**
 	 * used when there is an enum in the properties
@@ -37,7 +37,7 @@ public class PropertiesMapperUtil {
 	 */
 	public static HashMap<AstAbstractClafer, List<AstClafer>> getenumMap() {
 		if (enumMap == null) {
-			enumMap = new HashMap<AstAbstractClafer, List<AstClafer>>();
+			enumMap = new HashMap<>();
 		}
 		return enumMap;
 	}

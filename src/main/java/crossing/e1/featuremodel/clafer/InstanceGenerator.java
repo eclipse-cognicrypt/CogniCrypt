@@ -1,5 +1,5 @@
 /**
- * Copyright 2015-2016 Technische Universitaet Darmstadt
+ * Copyright 2015-2017 Technische Universitaet Darmstadt
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.clafer.ast.AstAbstractClafer;
@@ -80,17 +81,152 @@ public class InstanceGenerator {
 
 	public InstanceGenerator(final String path, final String taskName, final String taskDescription) {
 		this.claferModel = new ClaferModel(path);
-		this.displayNameToInstanceMap = new HashMap<String, InstanceClafer>();
-		this.uniqueInstances = new HashMap<Long, InstanceClafer>();
+		this.displayNameToInstanceMap = new HashMap<>();
+		this.uniqueInstances = new HashMap<>();
 		this.taskName = taskName;
 		this.taskDescription = taskDescription;
 		this.taskClafer = Utils.getModelChildByName(this.claferModel.getModel(), taskName);
 	}
 
 	/**
+	 *
+	 * method used by both basic and advanced user operations to add constraints to clafers before instance generation
+	 *
+	 * @param taskAlgorithm
+	 *        Higher-level Clafer
+	 * @param algorithmProperty
+	 *        Clafer on which constraint is being applied EX outPutLength=128 outPutLength is operan
+	 * @param operator
+	 *        Currently supported: Single - =, >,<,>=, <=; Multiple - ++, |
+	 * @param value
+	 *        Numeric or String value added as a constraint, EX outPutLength=128 here 128 is the value
+	 */
+	private void addConstraints(final AstClafer taskAlgorithm, final List<AstConcreteClafer> algorithmProperty, final String operator, final String value) {
+		final AstConcreteClafer rightOperand = algorithmProperty.get(0);
+		if (algorithmProperty.size() == 1) {
+			try {
+				final Integer valueAsInt = Integer.parseInt(value);
+				if (rightOperand == null && "=".equals(operator)) {
+					taskAlgorithm.addConstraint(equal(joinRef($this()), constant(valueAsInt)));
+				} else {
+					taskAlgorithm.addConstraint(getFunctionFromOperator(joinRef(join(joinRef($this()), rightOperand)), constant(valueAsInt), operator));
+				}
+			} catch (final NumberFormatException e) {
+				if (operator.equals("=")) {
+					if (rightOperand != null) {
+						taskAlgorithm.addConstraint(equal(joinRef(join(joinRef($this()), rightOperand)), constant(value)));
+					} else {
+						final AstAbstractClafer taskClafer = (AstAbstractClafer) taskAlgorithm.getRef().getTargetType();
+						for (final AstClafer subClafer : taskClafer.getSubs()) {
+							if (subClafer.getName().endsWith(value)) {
+								taskAlgorithm.addConstraint(equal(joinRef($this()), global(subClafer)));
+								break;
+							}
+						}
+					}
+				} else {
+					taskAlgorithm.getParent().addConstraint(getFunctionFromOperator(joinRef(joinRef(join(joinRef(join($this(), taskAlgorithm)), rightOperand))),
+						joinRef(global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent().getParent(), "c0_" + value))), operator));
+				}
+			}
+
+		} else if (operator.equals("++")) {
+			final String[] claferNames = value.split(";");
+			final int length = claferNames.length;
+			AstSetExpr constraint = null;
+			if (length == 1) {
+				addConstraints(taskAlgorithm, algorithmProperty, "=", value);
+			} else {
+				for (int j = 0; j < length; j++) {
+					if (j == 0) {
+						constraint = global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j++]));
+					}
+					final AstClafer astC = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j]);
+					constraint = union(constraint, global(astC));
+				}
+			}
+			taskAlgorithm.addConstraint(equal(joinRef(join($this(), rightOperand)), constraint));
+		} else if (operator.equals("|")) {
+
+			final String[] claferNames = value.split(";");
+			//The constraint that is created looks like [all $consName : taskAlgorithm | $consName.algorithmProperty claferNames[0] && ...]
+			final AstLocal tmpClafer = local("suite");
+			final AstDecl decl = decl(tmpClafer, join($this(), taskAlgorithm));
+			AstBoolExpr boolExp = null;
+			final AstSetExpr operandLeftClafer = joinRef(join(joinRef(tmpClafer), rightOperand));
+			if (claferNames.length == 1) {
+				final String[] opSquare = claferNames[0].split(" ");
+				final AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(rightOperand.getParent().getParent(), "c0_" + opSquare[1])));
+				boolExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, opSquare[0]);
+			} else {
+				for (int i = 0; i < claferNames.length; i++) {
+					if (i == 0) {
+						final String[] opSquare = claferNames[i].split(" ");
+						final AstSetExpr operandRightClafer = joinRef(
+							global(ClaferModelUtils.findClaferByName(algorithmProperty.get(i++).getParent().getParent(), "c0_" + opSquare[1])));
+						boolExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, operator);
+					}
+					final String[] opSquare = claferNames[i].split(" ");
+					final AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(algorithmProperty.get(i).getParent().getParent(), "c0_" + opSquare[1])));
+					final AstBoolExpr addExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, operator);
+					boolExp = and(boolExp, addExp);
+				}
+			}
+			taskAlgorithm.getParent().addConstraint(all(decl, boolExp));
+		}
+	}
+
+	/**
+	 * This method is to parse the map of clafers and apply their values as constraints before instance generation, used only in advanceduserMode
+	 *
+	 * @param taskClafer
+	 * @param propertiesMap
+	 */
+	private void advancedModeHandler(final AstModel astModel, final AstClafer taskClafer, final List<PropertyWidget> constraints) {
+		for (final PropertyWidget constraint : constraints) {
+			if (constraint.isEnabled() && !constraint.isGroupConstraint()) { //not sure why we need this check but keeping it from Ram's code till we figure it out
+				final String operator = constraint.getOperator();
+				final String value = constraint.getValue();
+				final AstConcreteClafer parent = (AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getParentClafer().getName());
+				final List<AstConcreteClafer> operand = new ArrayList<>();
+				operand.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getChildClafer().getName()));
+				if (operand != null && !ClaferModelUtils.isAbstract(operand.get(0))) {
+					addConstraints(parent, operand, operator, value);
+				}
+			}
+		}
+	}
+
+	/**
+	 * BasicModeHandler will take <Question, answer> map as a parameter where the key of the map is a question, answer is the selected answer for a given question each answer has
+	 * been further iterated to apply associated dependencies
+	 */
+	// FIXME include group operator
+	private void basicModeHandler(final AstModel astModel, final AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {
+		for (final Entry<Question, Answer> entry : qAMap.entrySet()) {
+			Answer answer = entry.getValue();
+			if (answer.getClaferDependencies() != null) {
+				for (final ClaferDependency claferDependency : answer.getClaferDependencies()) {
+					final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + claferDependency.getAlgorithm());
+					final List<AstConcreteClafer> propertyClafer = new ArrayList<>();
+					final String operand = claferDependency.getOperand();
+					if (operand != null && operand.contains(";")) {
+						for (final String name : operand.split(";")) {
+							propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + name));
+						}
+					} else {
+						propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + operand));
+					}
+					addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), claferDependency.getValue());
+				}
+			}
+		}
+	}
+
+	/**
 	 * this method is part of instance generation process , creates a mapping instance name and instance Object
 	 */
-	public void generateInstanceMapping() {
+	private void generateInstanceMapping() {
 		for (final InstanceClafer inst : this.generatedInstances) {
 
 			String key = getInstanceName(inst);
@@ -144,6 +280,7 @@ public class InstanceGenerator {
 			while (this.solver.find()) {
 				final InstanceClafer instance = this.solver.instance().getTopClafers()[this.solver.instance().getTopClafers().length - 1];
 				final long hashValueOfInstance = getHashValueOfInstance(instance);
+
 				if (this.uniqueInstances.containsKey(hashValueOfInstance)) {
 					if (++redundantCounter > 1000) {
 						break;
@@ -152,12 +289,15 @@ public class InstanceGenerator {
 					this.uniqueInstances.put(hashValueOfInstance, instance);
 					redundantCounter = 0;
 				}
+				if (this.uniqueInstances.size() > 100) {
+					break;
+				}
 			}
 
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e);
 		}
-		this.generatedInstances = new ArrayList<InstanceClafer>(this.uniqueInstances.values());
+		this.generatedInstances = new ArrayList<>(this.uniqueInstances.values());
 		generateInstanceMapping();
 		return this.generatedInstances;
 	}
@@ -186,10 +326,42 @@ public class InstanceGenerator {
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e);
 		}
-		this.generatedInstances = new ArrayList<InstanceClafer>(this.uniqueInstances.values());
+		this.generatedInstances = new ArrayList<>(this.uniqueInstances.values());
 		generateInstanceMapping();
 
 		return this.generatedInstances;
+	}
+
+	private AstBoolExpr getFunctionFromOperator(final AstSetExpr operandLeftClafer, final AstSetExpr operandRightClafer, final String operator) {
+		if (operator.equals("=")) {
+			return equal(operandLeftClafer, operandRightClafer);
+		} else if (operator.equals("<")) {
+			return lessThan(operandLeftClafer, operandRightClafer);
+		} else if (operator.equals(">")) {
+			return greaterThan(operandLeftClafer, operandRightClafer);
+		} else if (operator.equals("<=")) {
+			return lessThanEqual(operandLeftClafer, operandRightClafer);
+		} else if (operator.equals(">=")) {
+			return greaterThanEqual(operandLeftClafer, operandRightClafer);
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the hash value of the instance passed as an argument
+	 *
+	 * @param inst
+	 * @return
+	 */
+	private long getHashValueOfInstance(final InstanceClafer inst) {
+		// TODO: Why child at position 0, why is 0 returned if there is no
+		// child?
+		int hash = 37;
+		for (final InstanceClafer child : inst.getChildren()) {
+			hash *= new InstanceClaferHash(child).hashCode();
+		}
+
+		return hash;
 	}
 
 	/**
@@ -282,166 +454,5 @@ public class InstanceGenerator {
 	 */
 	public void setTaskName(final String taskName) {
 		this.taskName = taskName;
-	}
-
-	/**
-	 * 
-	 * method used by both basic and advanced user operations to add constraints to clafers before instance generation
-	 * 
-	 * @param taskAlgorithm
-	 *		Higher-level Clafer
-	 * @param algorithmProperty
-	 * 			Clafer on which constraint is being applied EX outPutLength=128 outPutLength is operan        
-	 * @param operator
-	 *        Currently supported: Single - =, >,<,>=, <=; Multiple - ++, |
-	 * @param value
-	 *        Numeric or String value added as a constraint, EX outPutLength=128 here 128 is the value
-	 */
-	private void addConstraints(final AstClafer taskAlgorithm, final List<AstConcreteClafer> algorithmProperty, final String operator, final String value) {
-		AstConcreteClafer rightOperand = algorithmProperty.get(0);
-		if (algorithmProperty.size() == 1) {
-			try {
-				final Integer valueAsInt = Integer.parseInt(value);
-				taskAlgorithm.addConstraint(getFunctionFromOperator(joinRef(join(joinRef($this()), rightOperand)), constant(valueAsInt), operator));
-			} catch (final NumberFormatException e) {
-				if (operator.equals("=")) {
-					if (rightOperand != null) {
-						taskAlgorithm.addConstraint(equal(joinRef(join(joinRef($this()), rightOperand)), constant(value)));
-					} else {
-						final AstAbstractClafer taskClafer = (AstAbstractClafer) taskAlgorithm.getRef().getTargetType();
-						for (final AstClafer subClafer : taskClafer.getSubs()) {
-							if (subClafer.getName().endsWith(value)) {
-								Activator.getDefault().logInfo("Yeah, so this actually happens for task " + taskAlgorithm.getName());
-								taskAlgorithm.addConstraint(equal(joinRef($this()), global(subClafer)));
-								break;
-							}
-						}
-					}
-				}
-			}
-
-		} else if (operator.equals("++")) {
-			final String[] claferNames = value.split(";");
-			final int length = claferNames.length;
-			AstSetExpr constraint = null;
-			if (length == 1) {
-				addConstraints(taskAlgorithm, algorithmProperty, "=", value);
-			} else {
-				for (int j = 0; j < length; j++) {
-					if (j == 0) {
-						constraint = global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j++]));
-					}
-					final AstClafer astC = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j]);
-					constraint = union(constraint, global(astC));
-				}
-			}
-			taskAlgorithm.addConstraint(equal(joinRef(join($this(), rightOperand)), constraint));
-		} else if (operator.equals("|")) {
-
-			final String[] claferNames = value.split(";");
-			//The constraint that is created looks like [all $consName : taskAlgorithm | $consName.algorithmProperty claferNames[0] && ...]  
-			AstLocal tmpClafer = local("suite");
-			AstDecl decl = decl(tmpClafer, join($this(), taskAlgorithm));
-			AstBoolExpr boolExp = null;
-			AstSetExpr operandLeftClafer = joinRef(join(joinRef(tmpClafer), rightOperand));
-			if (claferNames.length == 1) {
-				String[] opSquare = claferNames[0].split(" ");
-				AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(rightOperand.getParent().getParent(), "c0_" + opSquare[1])));
-				boolExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, opSquare[0]);
-			} else {
-				for (int i = 0; i < claferNames.length; i++) {
-					if (i == 0) {
-						String[] opSquare = claferNames[i].split(" ");
-						AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(algorithmProperty.get(i++).getParent().getParent(), "c0_" + opSquare[1])));
-						boolExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, operator);
-					}
-					String[] opSquare = claferNames[i].split(" ");
-					AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(algorithmProperty.get(i).getParent().getParent(), "c0_" + opSquare[1])));
-					AstBoolExpr addExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, operator);
-					boolExp = and(boolExp, addExp);
-				}
-			}
-			taskAlgorithm.getParent().addConstraint(all(decl, boolExp));
-		}
-	}
-
-	/**
-	 * This method is to parse the map of clafers and apply their values as constraints before instance generation, used only in advanceduserMode
-	 *
-	 * @param taskClafer
-	 * @param propertiesMap
-	 */
-	private void advancedModeHandler(final AstModel astModel, final AstClafer taskClafer, final List<PropertyWidget> constraints) {
-		for (final PropertyWidget constraint : constraints) {
-			if (constraint.isEnabled() && !constraint.isGroupConstraint()) { //not sure why we need this check but keeping it from Ram's code till we figure it out
-				final String operator = constraint.getOperator();
-				final String value = constraint.getValue();
-				final AstConcreteClafer parent = (AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getParentClafer().getName());
-				final List<AstConcreteClafer> operand = new ArrayList<AstConcreteClafer>();
-				operand.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getChildClafer().getName()));
-				if (operand != null && !ClaferModelUtils.isAbstract(operand.get(0))) {
-					addConstraints(parent, operand, operator, value);
-				}
-			}
-		}
-	}
-
-	/**
-	 * BasicModeHandler will take <Question, answer> map as a parameter where the key of the map is a question, answer is the selected answer for a given question each answer has
-	 * been further iterated to apply associated dependencies
-	 */
-	// FIXME include group operator
-	private void basicModeHandler(final AstModel astModel, final AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {
-		for (final Question question : qAMap.keySet()) {
-			final Answer answer = qAMap.get(question);
-			if (answer.getClaferDependencies() != null) {
-				for (final ClaferDependency claferDependency : answer.getClaferDependencies()) {
-					final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + claferDependency.getAlgorithm());
-					final List<AstConcreteClafer> propertyClafer = new ArrayList<AstConcreteClafer>();
-					String operand = claferDependency.getOperand();
-					if (operand != null && operand.contains(";")) {
-						for (String name : operand.split(";")) {
-							propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + name));
-						}
-					} else {
-						propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + operand));
-					}
-					addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), claferDependency.getValue());
-				}
-			}
-		}
-	}
-
-	private AstBoolExpr getFunctionFromOperator(AstSetExpr operandLeftClafer, AstSetExpr operandRightClafer, String operator) {
-		if (operator.equals("=")) {
-			return equal(operandLeftClafer, operandRightClafer);
-		} else if (operator.equals("<")) {
-			return lessThan(operandLeftClafer, operandRightClafer);
-		} else if (operator.equals(">")) {
-			return greaterThan(operandLeftClafer, operandRightClafer);
-		} else if (operator.equals("<=")) {
-			return lessThanEqual(operandLeftClafer, operandRightClafer);
-		} else if (operator.equals(">=")) {
-			return greaterThanEqual(operandLeftClafer, operandRightClafer);
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the hash value of the instance passed as an argument
-	 *
-	 * @param inst
-	 * @return
-	 */
-	private long getHashValueOfInstance(final InstanceClafer inst) {
-		// TODO: Why child at position 0, why is 0 returned if there is no
-		// child?
-		if (inst.hasChildren()) {
-			final InstanceClafer sub = (InstanceClafer) inst.getChildren()[0].getRef();
-			if (sub != null) {
-				return new InstanceClaferHash(sub).hashCode();
-			}
-		}
-		return 0;
 	}
 }

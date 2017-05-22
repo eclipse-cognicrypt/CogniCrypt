@@ -1,5 +1,5 @@
 /**
- * Copyright 2015-2016 Technische Universitaet Darmstadt
+ * Copyright 2015-2017 Technische Universitaet Darmstadt
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 public class ClaferModelUtilsTest {
 
 	ClaferModel claferModel;
-	String abstarctClaferName = "Digest";
 
 	/**
 	 * @throws java.lang.Exception

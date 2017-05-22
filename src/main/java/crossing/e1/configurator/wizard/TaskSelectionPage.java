@@ -1,5 +1,5 @@
 /**
- * Copyright 2015-2016 Technische Universitaet Darmstadt
+ * Copyright 2015-2017 Technische Universitaet Darmstadt
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,11 @@
  */
 package crossing.e1.configurator.wizard;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -38,6 +41,7 @@ import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.tasks.TaskJSONReader;
 import crossing.e1.configurator.utilities.Labels;
+import crossing.e1.configurator.utilities.Utils;
 
 public class TaskSelectionPage extends WizardPage {
 
@@ -46,6 +50,7 @@ public class TaskSelectionPage extends WizardPage {
 	private Button advancedModeCheckBox;
 	private Label selectTaskLabel;
 	private boolean canProceed = false;
+	private IProject selectedProject = null;
 
 	public TaskSelectionPage() {
 		super(Labels.SELECT_TASK);
@@ -61,10 +66,42 @@ public class TaskSelectionPage extends WizardPage {
 	public void createControl(final Composite parent) {
 
 		this.container = new Composite(parent, SWT.NONE);
-		this.container.setBounds(10, 10, 200, 200);
-		final GridLayout layout = new GridLayout();
-		layout.numColumns = 4;
+		this.container.setBounds(10, 10, 200, 300);
+		final GridLayout layout = new GridLayout(2, false);
+		//layout.numColumns = 4;
 		this.container.setLayout(layout);
+
+		this.selectTaskLabel = new Label(this.container, SWT.NONE);
+		this.selectTaskLabel.setText(Constants.SELECT_JAVA_PROJECT);
+
+		this.taskComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
+		this.taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
+
+		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+		final List<IProject> javaProjects = new ArrayList<>();
+		if (projects.length > 0) {
+			for (int i = 0; i < projects.length; i++) {
+				if (Boolean.TRUE.equals(Utils.checkIfJavaProjectSelected(projects[i]))) {
+					javaProjects.add(projects[i]);
+				}
+			}
+
+		}
+
+		this.taskComboSelection.setInput(javaProjects);
+
+		this.taskComboSelection.addSelectionChangedListener(event -> {
+			final IStructuredSelection selected = (IStructuredSelection) event.getSelection();
+			this.selectedProject = (IProject) selected.getFirstElement();
+
+			TaskSelectionPage.this.taskComboSelection.refresh();
+
+		});
+		if (javaProjects.indexOf(Utils.defaultProjectSelectionforDropdownList()) >= 0) {
+			this.taskComboSelection.setSelection(new StructuredSelection(javaProjects.get(javaProjects.indexOf(Utils.defaultProjectSelectionforDropdownList()))));
+		} else {
+			this.taskComboSelection.setSelection(new StructuredSelection(javaProjects.get(0)));
+		}
 
 		this.selectTaskLabel = new Label(this.container, SWT.NONE);
 		this.selectTaskLabel.setText(Constants.SELECT_TASK);
@@ -94,7 +131,7 @@ public class TaskSelectionPage extends WizardPage {
 
 			TaskSelectionPage.this.taskComboSelection.refresh();
 
-			if (selectedTask != null) {
+			if (selectedTask != null && this.selectedProject != null) {
 				TaskSelectionPage.this.canProceed = true;
 			}
 		});
@@ -105,6 +142,11 @@ public class TaskSelectionPage extends WizardPage {
 		this.advancedModeCheckBox.setText(Constants.ADVANCED_MODE);
 		this.advancedModeCheckBox.setSelection(false);
 		setControl(this.container);
+
+	}
+
+	public IProject getSelectedProject() {
+		return this.selectedProject;
 	}
 
 	public Task getSelectedTask() {

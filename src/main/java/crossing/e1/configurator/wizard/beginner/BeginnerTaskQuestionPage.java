@@ -1,3 +1,18 @@
+/**
+ * Copyright 2015-2017 Technische Universitaet Darmstadt
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package crossing.e1.configurator.wizard.beginner;
 
 import java.util.AbstractMap;
@@ -30,7 +45,7 @@ import crossing.e1.configurator.utilities.Labels;
 public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private final Question quest;
-	private Entry<Question, Answer> selection = new AbstractMap.SimpleEntry<Question, Answer>(null, null);
+	private Entry<Question, Answer> selection = new AbstractMap.SimpleEntry<>(null, null);
 	private boolean finish = false;
 	private final List<String> selectionValues;
 
@@ -62,7 +77,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		setControl(container);
 	}
 
-	public void createQuestionControl(final Composite parent, final Question question) {
+	private void createQuestionControl(final Composite parent, final Question question) {
 
 		final List<Answer> answers = question.getAnswers();
 		final Composite container = getPanel(parent);
@@ -130,7 +145,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 				for (final String value : this.selectionValues) {
 					itemList.add(value);
-					selectedItemList.add(new String("                                                                           "));
+					selectedItemList.add("                                                                           ");
 				}
 
 				itemList.addSelectionListener(new SelectionListener() {
@@ -179,12 +194,12 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						if (e.getSource() instanceof Button && (((Button) e.getSource()).getStyle() & SWT.NONE) == SWT.NONE) {
 							final String[] sel = itemList.getSelection();
 							Answer ans = BeginnerTaskQuestionPage.this.selection.getValue();
-							String checkedElement = "";
+							StringBuilder checkedElement = new StringBuilder();
 							if (ans == null) {
 								ans = new Answer();
 								ans.setNextID(-1);
 							} else {
-								checkedElement = ans.getValue();
+								checkedElement.append(ans.getValue());
 							}
 
 							if (selectedItemList.getItemCount() > 0 && selectedItemList.getItem(0).trim().isEmpty()) {
@@ -195,9 +210,10 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							for (final String item : sel) {
 								selectedItemList.add(item);
 								itemList.remove(item);
-								checkedElement += item + ";";
+								checkedElement.append(item);
+								checkedElement.append(";");
 							}
-							ans.setValue(checkedElement);
+							ans.setValue(checkedElement.toString());
 							BeginnerTaskQuestionPage.this.finish = ans.getValue().contains(";");
 							BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish);
 							BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, ans);
@@ -248,11 +264,41 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	@Override
 	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
 		if (!(obj instanceof BeginnerTaskQuestionPage)) {
 			return false;
 		}
-		final BeginnerTaskQuestionPage cmp = (BeginnerTaskQuestionPage) obj;
-		return this.quest.equals(cmp.quest);
+		final BeginnerTaskQuestionPage other = (BeginnerTaskQuestionPage) obj;
+		if (this.finish != other.finish) {
+			return false;
+		}
+		if (this.quest == null) {
+			if (other.quest != null) {
+				return false;
+			}
+		} else if (!this.quest.equals(other.quest)) {
+			return false;
+		}
+		if (this.selection == null) {
+			if (other.selection != null) {
+				return false;
+			}
+		} else if (!this.selection.equals(other.selection)) {
+			return false;
+		}
+		if (this.selectionValues == null) {
+			if (other.selectionValues != null) {
+				return false;
+			}
+		} else if (!this.selectionValues.equals(other.selectionValues)) {
+			return false;
+		}
+		return true;
 	}
 
 	public Entry<Question, Answer> getMap() {
@@ -282,6 +328,17 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	public synchronized Entry<Question, Answer> getSelection() {
 		return this.selection;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (this.finish ? 1231 : 1237);
+		result = prime * result + ((this.quest == null) ? 0 : this.quest.hashCode());
+		result = prime * result + ((this.selection == null) ? 0 : this.selection.hashCode());
+		result = prime * result + ((this.selectionValues == null) ? 0 : this.selectionValues.hashCode());
+		return result;
 	}
 
 }

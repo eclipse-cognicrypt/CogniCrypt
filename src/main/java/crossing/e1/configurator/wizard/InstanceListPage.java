@@ -1,5 +1,5 @@
 /**
- * Copyright 2015-2016 Technische Universitaet Darmstadt
+ * Copyright 2015-2017 Technische Universitaet Darmstadt
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package crossing.e1.configurator.wizard;
 
 import java.util.HashMap;
@@ -45,7 +44,7 @@ import crossing.e1.featuremodel.clafer.InstanceGenerator;
 
 /**
  * This class is responsible for displaying the instances the Clafer instance generator generated.
- * 
+ *
  * @author Ram Kamath
  */
 public class InstanceListPage extends WizardPage implements Labels {
@@ -85,9 +84,9 @@ public class InstanceListPage extends WizardPage implements Labels {
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
 		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-		
+
 		algorithmClass.setInput(inst.keySet());
-		
+
 		algorithmClass.setLabelProvider(new LabelProvider() {
 
 			@Override
@@ -106,8 +105,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 				setPageComplete(true);
 			}
 		});
-		
-		
+
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
 		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
 		final Font boldFont = new Font(this.instancePropertiesPanel.getDisplay(), new FontData(Constants.ARIAL, 12, SWT.BOLD));
@@ -160,28 +158,30 @@ public class InstanceListPage extends WizardPage implements Labels {
 	/**
 	 * The user might select an algorithm configuration/instance from the combobox. This method returns the details of the currently selected algorithm, which is passed as a
 	 * parameter.
-	 * 
+	 *
 	 * @param inst
 	 *        instance currently selected in the combo box
 	 * @return details for chosen algorithm configuration
 	 */
-	public String getInstanceProperties(final InstanceClafer inst) {
-		final Map<String, String> algorithms = new HashMap<String, String>();
+	private String getInstanceProperties(final InstanceClafer inst) {
+		final Map<String, String> algorithms = new HashMap<>();
 		final InstanceClafer[] children = inst.getChildren();
 		for (int i = 0; i < children.length; i++) {
 			getInstanceDetails(children[i], algorithms);
 		}
 
-		String output = "";
+		StringBuilder output = new StringBuilder();
 		for (final Map.Entry<String, String> entry : algorithms.entrySet()) {
 			final String key = entry.getKey();
 			final String value = entry.getValue();
 			if (!value.isEmpty()) {
-				output += key + value + Constants.lineSeparator;
+				output.append(key);
+				output.append(value);
+				output.append(Constants.lineSeparator);
 			}
 		}
 
-		return output;
+		return output.toString();
 	}
 
 	public Task getTask() {

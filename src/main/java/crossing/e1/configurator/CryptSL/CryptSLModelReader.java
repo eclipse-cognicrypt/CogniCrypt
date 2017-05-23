@@ -1,4 +1,4 @@
-package crossing.e1.configurator.wizard;
+package crossing.e1.configurator.CryptSL;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

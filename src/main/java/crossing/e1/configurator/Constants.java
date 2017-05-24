@@ -75,6 +75,7 @@ public class Constants {
 	public static final String NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE = "No possible combinations are available for chosen values. Please modify your preferences and try agin.\n \n You can use  \n>= insted of >\n<= instead of <\nto make your selection generic.";
 	public static final String NO_POSSIBLE_COMBINATIONS_BEGINNER = "No possible combinations are available for chosen values. Please modify your preferences and try agin.";
 	public static final String PLEASE_SELECT = "Please select project directory to launch the configurator";
+	public static final String ERROR_MESSAGE_NO_PROJECT = "There is no Java project in your workspace. Please create one and restart CogniCrypt.";
 
 	public static final String JAVA = "java";
 	public static final String ALGORITHM = "algorithm";

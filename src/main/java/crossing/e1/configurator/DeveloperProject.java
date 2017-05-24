@@ -159,14 +159,18 @@ public class DeveloperProject {
 		if (obj instanceof DeveloperProject) {
 			DeveloperProject other = (DeveloperProject) obj;
 			if (project == null || other.project != null) {
-					return false;
-				}
+				return false;
+			}
 			return project.equals(other.project);
 		} else if (obj instanceof IProject) {
 			IProject other = (IProject) obj;
 			return project.equals(other);
 		}
 		return false;
+	}
+	
+	public String toString() {
+		return project.getName() + "(" + getProjectPath() + ")";
 	}
 	
 	

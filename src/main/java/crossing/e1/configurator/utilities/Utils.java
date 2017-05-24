@@ -51,7 +51,6 @@ import crossing.e1.configurator.Activator;
 @SuppressWarnings("restriction")
 public class Utils {
 
-
 	public static List<IProject> javaProjects;
 
 	/**
@@ -78,17 +77,17 @@ public class Utils {
 		return true;
 	}
 
-	public static IProject defaultProjectSelectionforDropdownList() {
-		IProject defaultProject = null;
+	public static IProject getCurrentProject() {
+		IProject currentProject = null;
 
 		if (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension().equalsIgnoreCase("java")) {
-			defaultProject = Utils.getCurrentlyOpenFile().getProject();
+			currentProject = Utils.getCurrentlyOpenFile().getProject();
 		} else if (Utils.checkIfJavaProjectSelected()) {
-			defaultProject = Utils.getIProjectFromSelection();
+			currentProject = Utils.getIProjectFromSelection();
 		} else {
-			defaultProject = null;
+			currentProject = null;
 		}
-		return defaultProject;
+		return currentProject;
 	}
 
 	/**
@@ -166,15 +165,10 @@ public class Utils {
 			final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
 
 			if (bundle == null) {
-				System.out.println("Bundle is null");
 				// running as application
-				// final String fileName =
-				// inputPath.substring(inputPath.lastIndexOf("/") + 1);
-				return new File(inputPath);// Utilities.class.getClassLoader().getResource(fileName).getPath();
+				return new File(inputPath);
 			} else {
-				System.out.println(bundle.getSymbolicName());
 				final URL fileURL = bundle.getEntry(inputPath);
-				System.out.println("PATH: " + inputPath);
 				final URL resolvedURL = FileLocator.toFileURL(fileURL);
 				final URI uri = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
 				return new File(uri);
@@ -196,7 +190,6 @@ public class Utils {
 					javaProjects.add(projects[i]);
 				}
 			}
-
 		}
 
 		return javaProjects;

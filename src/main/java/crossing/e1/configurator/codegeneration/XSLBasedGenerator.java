@@ -136,9 +136,7 @@ public class XSLBasedGenerator {
 
 			if (currentlyOpenFile != null && project.equals(currentlyOpenFile.getProject())) {
 				insertCallCodeIntoOpenFile(temporaryOutputFile);
-			}
-
-			else {
+			} else {
 				this.project.refresh();
 				final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 				final IFile outputFile = this.project.getIFile(temporaryOutputFile);
@@ -253,7 +251,7 @@ public class XSLBasedGenerator {
 		// }
 		return true;
 	}
-	
+
 	/**
 	 * If a file was open when the code generation was started, this method inserts the glue code that calls the generated classes directly into the opened file and removes the
 	 * temporary output file. If no file was open this method is skipped and the temporary output file is not removed.

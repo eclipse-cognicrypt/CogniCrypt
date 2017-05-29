@@ -73,13 +73,14 @@
 			"id" : "6",
 			"element" : "button",
 			"questionText":"If you want test the connection to the host then click the \"Test\" button, else click \"Next\".",
-			"method" : ["Test","crossing.e1.configurator.wizard.TLSConnection","TestConnection"],
-			"refIds" : ["5","6"],
+			"method" : ["Test","crossing.e1.configurator.wizard.TLSConnection","testConnection"],
+			"methodParamIds" : ["5","6"],
+			"methodReferIds" : ["-1","7"],
 			"answers":[
 				{"value":"",
 				"codeDependencies":[
 				{"option":"test","value":""}
-				], "defaultAnswer": true, "nextID" : "7"}
+				], "defaultAnswer": true, "nextID" : "-1"}
 			]
 		},
 		{

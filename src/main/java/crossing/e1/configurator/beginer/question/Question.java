@@ -30,7 +30,8 @@ public class Question {
 	private ArrayList<Answer> answers;
 	private Answer defaultAnswer;
 	private ArrayList<String> method;
-	private ArrayList<Integer> refIds;
+	private ArrayList<Integer> methodParamIds;
+	private ArrayList<Integer> methodReferIds;
 
 	public ArrayList<Answer> getAnswers() {
 		return this.answers;
@@ -72,8 +73,12 @@ public class Question {
 		return this.method;
 	}
 
-	public ArrayList<Integer> getRefIds() {
-		return refIds;
+	public ArrayList<Integer> getMethodParamIds() {
+		return methodParamIds;
+	}
+	
+	public ArrayList<Integer> getMethodReferIds() {
+		return methodReferIds;
 	}
 
 	public void setAnswers(final ArrayList<Answer> answers) {
@@ -96,8 +101,12 @@ public class Question {
 		return this.method;
 	}
 
-	public void setRefIds(ArrayList<Integer> refId) {
-		this.refIds = refId;
+	public void setMethodParamIds(ArrayList<Integer> methodParamIds) {
+		this.methodParamIds = methodParamIds;
+	}
+	
+	public void setMethodReferIds(ArrayList<Integer> methodReferIds) {
+		this.methodReferIds = methodReferIds;
 	}
 	
 	@Override

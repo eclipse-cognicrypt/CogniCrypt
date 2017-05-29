@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Text;
 
+import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.tasks.Task;
@@ -136,7 +137,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 
 			case button:
-				//GridLayout {numColumns=3 marginWidth=5 marginHeight=5 horizontalSpacing=5 verticalSpacing=5}
 				for(int i = 0; i < 3; i++){
 					final Label blankLabel = new Label(container,SWT.NULL);
 				}
@@ -171,16 +171,16 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 								
 				Class<?>[] paramTypes  = method.getParameterTypes();	
 				ArrayList<Object> paramObjList = new ArrayList<Object>(); 
-				ArrayList<Integer> refIds = quest.getRefIds();
+				ArrayList<Integer> methodParamIds = quest.getMethodParamIds();
 				String value = null;
 				
-				for(int i = 0; i < refIds.size(); i++){
-					value = allQuestion.get(refIds.get(i)-1).getAnswers().get(0).getValue(); 					
+				for(int i = 0; i < methodParamIds.size(); i++){
+					value = allQuestion.get(methodParamIds.get(i)-1).getAnswers().get(0).getValue(); 					
 					
 					if(!paramTypes[i].getName().equals("int")){
 						paramObjList.add(paramTypes[i].cast(value));
 					}else{
-						paramObjList.add(Integer.parseInt(allQuestion.get(refIds.get(i)-1).getAnswers().get(0).getValue()));
+						paramObjList.add(Integer.parseInt(allQuestion.get(methodParamIds.get(i)-1).getAnswers().get(0).getValue()));
 					}	
 				}
 
@@ -191,13 +191,16 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					ClassNotFoundException | 
 					IllegalAccessException | 
 					IllegalArgumentException | 
-					InstantiationException e1) {
-				e1.printStackTrace();
+					InstantiationException e) {
+				Activator.getDefault().logError(e);
 			}
 
 				final Method invokeMethod = method;
 				final Object invokeClassObj = classObj;
 				final Object[] invokeParamArray = paramArray;
+				ArrayList<Integer> methodReferIds = quest.getMethodReferIds();
+				boolean buttonState = true;
+				
 				
 				methodButton.addSelectionListener(new SelectionAdapter() {
 					@Override
@@ -206,26 +209,32 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							 
 							 Object[] resObjArray = (Object[])  invokeMethod.invoke(invokeClassObj, invokeParamArray);
 							 String [] resStringArray = Arrays.copyOf(resObjArray, resObjArray.length, String[].class);
-							 feedbackLabel.setText(resStringArray[0]);
-							 feedbackLabel.getParent().pack();
-							  
-							 if(!resStringArray[1].equals(false)){
-								 question.getDefaultAnswer().setNextID(-1);
+							
+							 if(resStringArray[0].equals(true)){
+								 question.getDefaultAnswer().setNextID(methodReferIds.get(1));
+							 }
+							 else{
+								question.getDefaultAnswer().setNextID(methodReferIds.get(0));
 							 }
 							 
+							 feedbackLabel.setText(resStringArray[1]);
+							 feedbackLabel.getParent().pack();
+							 methodButton.setEnabled(false);
 						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
-							e1.printStackTrace();
+							Activator.getDefault().logError(e1);
 						}
-    
+				
 					}		
 				});
+				
+				
 				
 				this.finish = true;
 				final Answer a = question.getDefaultAnswer();
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
 				BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, a);
-	
 				break;
+
 				
 			case itemselection:
 				new Label(container, SWT.NONE);

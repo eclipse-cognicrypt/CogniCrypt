@@ -103,14 +103,34 @@ public class CryptSLModelReader {
 			StateMachineGraph smg = buildStateMachineGraph(dm.getOrder(), className);
 
 			List<ISLConstraint> constraints = buildUpConstraints(dm.getReq());
-			
 			List<CryptSLPredicate> predicates = getPredicates(dm.getEns());
 			
-			new CryptSLRule(className, forbiddenMethods, smg, constraints, predicates);
+			CryptSLRule rule = new CryptSLRule(className, forbiddenMethods, smg, constraints, predicates);
+			storeRuletoFile(rule, className);
 			String outputURI = storeModelToFile(resourceSet, eObject, className);
 			loadModelFromFile(outputURI);
 		}
 
+	}
+
+	private void storeRuletoFile(CryptSLRule rule, String className) {
+		String filePath = "C:\\Users\\stefank3\\git\\CryptoAnalysis\\CryptoAnalysis\\src\\test\\resources\\" + className + ".cryptslbin";
+		FileOutputStream fileOut;
+		try {
+			fileOut = new FileOutputStream(filePath);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(rule);
+			out.close();
+			fileOut.close();
+			FileInputStream fileIn = new FileInputStream(filePath);
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			CryptSLRule inRule = (CryptSLRule) in.readObject();
+			in.close();
+			fileIn.close();
+
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private List<CryptSLPredicate> getPredicates(List<Constraint> predList) {
@@ -282,23 +302,6 @@ public class CryptSLModelReader {
 		iterateThroughSubtrees(smg, order, null, null);
 		iterateThroughSubtreesOptional(smg, order, null, null);
 
-		String filePath = "C:\\Users\\stefank3\\git\\code-dsl-ideal\\src\\test\\resources\\" + className + ".smg";
-		FileOutputStream fileOut;
-		try {
-			fileOut = new FileOutputStream(filePath);
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			out.writeObject(smg);
-			out.close();
-			fileOut.close();
-			FileInputStream fileIn = new FileInputStream(filePath);
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-			smg = (StateMachineGraph) in.readObject();
-			in.close();
-			fileIn.close();
-
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}
 		return smg;
 	}
 

@@ -72,6 +72,34 @@ xor Ciphers
 	    [security = Broken ]
 	    [keySize = 56 ]
 
+abstract KeyDerivationAlgorithm : Algorithm
+	iterations -> integer
+	outputSize -> integer
+	digest -> Digest?
+	[outputSize = digest.outputSize]
+	[digest.security != Broken]
+	[iterations = 1000]//1000 is the accepted default number of iterations for a slow enough computation
+
+abstract Digest : Algorithm
+    outputSize -> integer
+
+SHA: Digest
+	[name = "SHA"]
+	[description = "SHAdigest"]
+	[outputSize = 160 || outputSize = 224 || outputSize = 256 || outputSize = 384 || outputSize = 512]
+	[outputSize = 160 => performance = VeryFast && security = Weak]
+	[outputSize = 224 => performance = Fast && security = Strong]
+	[outputSize = 256 => performance = Fast && security = Strong]
+	[outputSize = 384 => performance = Fast && security = Strong]
+	[outputSize = 512 => performance = Slow && security = Strong]
+
+pbkdf2 : KeyDerivationAlgorithm
+	[name = "PBKDF2"]
+	[description = "PBKDF2 key derivation"]
+	[performance = Slow]
+	[digest]
+	[security.ref = digest.security.ref]	    
+
 SymmetricEncryption : Task
 	[description = "Encrypt data using a secret key"]
 	cipher -> SymmetricBlockCipher

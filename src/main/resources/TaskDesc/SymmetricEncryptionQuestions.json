@@ -20,6 +20,21 @@
 		{
 			"id" : "1",
 			"element" : "combo",
+			"questionText":"Should your key be derived from a user-specified password?",
+			"answers":[
+				{"value":"Yes",
+				"claferDependencies":[
+				{"algorithm":"kda", "value":"KeyDerivationAlgorithm", "operator":"->"}],
+				 "nextID" : "2"
+				},
+				{"value":"No",
+				"claferDependencies":[], "defaultAnswer": true, "nextID" : "2"
+			}
+			]
+		},
+		{
+			"id" : "2",
+			"element" : "combo",
 			"questionText":"Will the size of the plaintext blocks your application should encrypt regularly exceed 250 MB?",
 			"answers":[
 				{"value":"Yes",

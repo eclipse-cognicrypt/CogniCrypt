@@ -207,21 +207,27 @@ public class InstanceGenerator {
 			Answer answer = entry.getValue();
 			if (answer.getClaferDependencies() != null) {
 				for (final ClaferDependency claferDependency : answer.getClaferDependencies()) {
-					final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + claferDependency.getAlgorithm());
-					final List<AstConcreteClafer> propertyClafer = new ArrayList<>();
-					final String operand = claferDependency.getOperand();
-					if (operand != null && operand.contains(";")) {
-						for (final String name : operand.split(";")) {
-							propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + name));
-						}
+					if ("->".equals(claferDependency.getOperator())) {
+						ClaferModelUtils.createClafer(taskClafer, claferDependency.getAlgorithm(), claferDependency.getValue());
 					} else {
-						propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + operand));
+						final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + claferDependency.getAlgorithm());
+						final List<AstConcreteClafer> propertyClafer = new ArrayList<>();
+						final String operand = claferDependency.getOperand();
+						if (operand != null && operand.contains(";")) {
+							for (final String name : operand.split(";")) {
+								propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + name));
+							}
+						} else {
+							propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + operand));
+						}
+						addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), claferDependency.getValue());
 					}
-					addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), claferDependency.getValue());
 				}
 			}
 		}
 	}
+
+
 
 	/**
 	 * this method is part of instance generation process , creates a mapping instance name and instance Object

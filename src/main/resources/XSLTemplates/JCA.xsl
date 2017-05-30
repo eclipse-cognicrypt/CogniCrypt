@@ -44,7 +44,7 @@ public class Enc {
 </xsl:result-document>
 </xsl:if>
 
-<xsl:if test="//task[@description='PasswordBasedEncryption']">
+<xsl:if test="//task[@description='SymmetricEncryption']">
 
 <xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">
 <xsl:result-document href="KeyDeriv.java">

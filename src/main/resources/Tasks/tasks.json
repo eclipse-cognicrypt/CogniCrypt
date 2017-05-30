@@ -7,13 +7,6 @@
 			"additionalResources" : ""
 		},
 		{
-			"name": "PasswordBasedEncryption",
-			"description": "Encrypt data using a given password",
-			"modelFile" : "src/main/resources/ClaferModel/PwdBasedEncryTask.js",
-			"xmlFile" : "src/main/resources/TaskDesc/PasswordBasedEncryptionQuestions.json",
-			"additionalResources" : ""
-		},
-		{
 			"name": "SecurePassword",
 			"description": "Represent password in a secure way for storage",
 			"modelFile" : "src/main/resources/ClaferModel/SecurePasswordStorage.js",

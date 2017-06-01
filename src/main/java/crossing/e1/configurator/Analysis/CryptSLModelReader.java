@@ -5,8 +5,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -39,6 +41,7 @@ import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLValueConstraint;
 import crypto.rules.StateMachineGraph;
 import crypto.rules.StateNode;
+import crypto.rules.StatementLabel;
 import crypto.rules.TransitionEdge;
 import de.darmstadt.tu.crossing.CryptSL.ui.internal.CryptSLActivator;
 import de.darmstadt.tu.crossing.cryptSL.Aggegate;
@@ -54,18 +57,21 @@ import de.darmstadt.tu.crossing.cryptSL.LabelMethodCall;
 import de.darmstadt.tu.crossing.cryptSL.Literal;
 import de.darmstadt.tu.crossing.cryptSL.LiteralExpression;
 import de.darmstadt.tu.crossing.cryptSL.Method;
+import de.darmstadt.tu.crossing.cryptSL.Object;
 import de.darmstadt.tu.crossing.cryptSL.ObjectDecl;
 import de.darmstadt.tu.crossing.cryptSL.Order;
 import de.darmstadt.tu.crossing.cryptSL.Par;
 import de.darmstadt.tu.crossing.cryptSL.ParList;
 import de.darmstadt.tu.crossing.cryptSL.SimpleOrder;
 import de.darmstadt.tu.crossing.cryptSL.SuPar;
+import de.darmstadt.tu.crossing.cryptSL.SuperType;
 import de.darmstadt.tu.crossing.cryptSL.UnaryPreExpression;
 import typestate.interfaces.ISLConstraint;
 
 public class CryptSLModelReader {
 
 	private int nodeNameCounter = 0;
+	List<CryptSLPredicate> predicates = null;
 
 	public CryptSLModelReader() throws ClassNotFoundException, CoreException, IOException {
 		Injector injector = CryptSLActivator.getInstance().getInjector(CryptSLActivator.DE_DARMSTADT_TU_CROSSING_CRYPTSL);
@@ -87,11 +93,11 @@ public class CryptSLModelReader {
 		List<String> classNames = new ArrayList<String>();
 		classNames.add("KeyGenerator");
 		classNames.add("KeyPairGenerator");
-		//		classNames.add("KeyStore");
+//		classNames.add("KeyStore");
 		classNames.add("Mac");
 		classNames.add("PBEKeySpec");
 		classNames.add("SecretKeyFactory");
-		classNames.add("MessageDigest");
+//		classNames.add("MessageDigest");
 		classNames.add("Cipher");
 
 		for (String className : classNames) {
@@ -100,15 +106,15 @@ public class CryptSLModelReader {
 			EObject eObject = resource.getContents().get(0);
 			Domainmodel dm = (Domainmodel) eObject;
 			List<String> forbiddenMethods = getForbiddenMethods(dm.getMethod());
+			predicates = getPredicates(dm.getEns());
 			StateMachineGraph smg = buildStateMachineGraph(dm.getOrder(), className);
 
 			List<ISLConstraint> constraints = buildUpConstraints(dm.getReq());
-			List<CryptSLPredicate> predicates = getPredicates(dm.getEns());
 			
 			CryptSLRule rule = new CryptSLRule(className, forbiddenMethods, smg, constraints, predicates);
 			storeRuletoFile(rule, className);
-			String outputURI = storeModelToFile(resourceSet, eObject, className);
-			loadModelFromFile(outputURI);
+			//String outputURI = storeModelToFile(resourceSet, eObject, className);
+			//loadModelFromFile(outputURI);
 		}
 
 	}
@@ -139,7 +145,11 @@ public class CryptSLModelReader {
 			List<String> variables = new ArrayList<String>();
 			if (pred.getParList() != null) {
 				for (SuPar var : pred.getParList().getParameters()) {
-					variables.add(((LiteralExpression) var.getVal().getName()).getValue().getName());
+					if (var.getVal() != null) {
+						variables.add(((LiteralExpression) var.getVal().getName()).getValue().getName());
+					} else {
+						variables.add("_");
+					}
 				}
 			}
 			preds.add(new CryptSLPredicate(pred.getPredName(), variables, false));
@@ -279,7 +289,12 @@ public class CryptSLModelReader {
 	private String getValueOfLiteral(EObject name) {
 		String value = "";
 		if (name instanceof LiteralExpression) {
-			value = ((LiteralExpression) name).getValue().getName();
+			SuperType preValue = ((LiteralExpression) name).getValue();
+			if (preValue != null) {
+				value = preValue.getName();
+			} else {
+				value = getValueOfLiteral(((LiteralExpression) name).getCons().getName());
+			}
 		} else {
 			value = ((Literal) name).getVal();
 		}
@@ -439,7 +454,7 @@ public class CryptSLModelReader {
 			smg.addNode(nextNode);
 		}
 
-		String label = resolveAggegateToMethodeNames(leaf);
+		List<StatementLabel> label = resolveAggegateToMethodeNames(leaf);
 		smg.addEdge(new TransitionEdge(label, prevNode, nextNode));
 		prevNode.setAccepting(false);
 		if (leaf.getElementop() != null) {
@@ -449,52 +464,74 @@ public class CryptSLModelReader {
 				smg.addEdge(new TransitionEdge(label, nextNode, nextNode));
 				//handle extra edge in case of *
 			} else if (leaf.getElementop().equals("?")) {
-				//handle extra edge in case of ?
+//				handle extra edge in case of ?
 			}
 		}
 	}
 
-	private String resolveAggegateToMethodeNames(Expression leaf) {
+	private List<StatementLabel> resolveAggegateToMethodeNames(Expression leaf) {
 		if (leaf.getOrderEv().get(0) instanceof Aggegate) {
 			Aggegate ev = (Aggegate) leaf.getOrderEv().get(0);
 			return dealWithAggegate(ev);
 		} else {
-			return stringifyMethodSignature(leaf.getOrderEv().get(0));
+			ArrayList<StatementLabel> statements = new ArrayList<StatementLabel>();
+			statements.add(stringifyMethodSignature(leaf.getOrderEv().get(0)));
+			return statements;
 		}
 	}
 
-	private String dealWithAggegate(Aggegate ev) {
+	private List<StatementLabel> dealWithAggegate(Aggegate ev) {
+		List<StatementLabel> statements = new ArrayList<StatementLabel>();
 		for (Event lab : ev.getLab()) {
 			if (lab instanceof Aggegate) {
-				return dealWithAggegate((Aggegate) lab);
+				statements.addAll(dealWithAggegate((Aggegate) lab));
 			} else {
-				return stringifyMethodSignature(lab);
+				statements.add(stringifyMethodSignature(lab));
 			}
 		}
-		return "";
+		return statements;
 	}
 
-	private String stringifyMethodSignature(Event lab) {
-
+	private StatementLabel stringifyMethodSignature(Event lab) {
 		Method method = ((LabelMethodCall) lab).getMeth();
 		String qualifiedName = method.getMethName().getQualifiedName();
 		if (qualifiedName == null) {
 			qualifiedName = ((de.darmstadt.tu.crossing.cryptSL.impl.DomainmodelImpl) (method.eContainer().eContainer())).getJavaType().getQualifiedName();
 		}
-		StringBuilder labelBuilder = new StringBuilder(qualifiedName);
-		labelBuilder.append("(");
+		List<Entry<String, String>> pars = new ArrayList<Entry<String, String>>();
+		Object returnValue = method.getLeftSide();
+		if (returnValue != null && returnValue.getName() != null) {
+			ObjectDecl v = ((ObjectDecl) returnValue.eContainer());
+			pars.add(new SimpleEntry<String, String>(returnValue.getName(), v.getObjectType().getQualifiedName() + ((v.getArray() != null) ? v.getArray() : "")));
+		} else {
+			pars.add(new SimpleEntry<String, String>("_", "AnyType"));
+		}
 		ParList parList = method.getParList();
 		if (parList != null) {
 			for (Par par : parList.getParameters()) {
-				String parValue = (par.getVal() == null) ? "_" : ((ObjectDecl) par.getVal().eContainer()).getObjectType().getIdentifier();
-				labelBuilder.append(parValue);
-				labelBuilder.append(",");
+				String parValue = "_";
+				if (par.getVal() != null && par.getVal().getName() != null) {
+					ObjectDecl objectDecl = (ObjectDecl) par.getVal().eContainer();
+					parValue = par.getVal().getName();
+					String parType = objectDecl.getObjectType().getIdentifier() + ((objectDecl.getArray() != null) ? objectDecl.getArray() : "");
+					pars.add(new SimpleEntry<String, String>(parValue, parType));
+					
+				} else {
+					pars.add(new SimpleEntry<String, String>(parValue, "AnyType"));
+				}
 			}
-			int length = labelBuilder.length();
-			labelBuilder.replace(length - 1, length, "");
 		}
-		labelBuilder.append(");");
-		return labelBuilder.toString();
+		List<Boolean> backw = new ArrayList<Boolean>(); 
+		for (CryptSLPredicate pred : predicates) {
+			for (Entry<String, String> par : pars) {
+				if (par.getKey().equals(pred.getParameters().get(0))) {
+					backw.add(false);
+					continue;
+				}
+				backw.add(true);
+			}
+		}
+		return new StatementLabel(qualifiedName, pars, backw);
 	}
 
 	private StateNode getNewNode() {

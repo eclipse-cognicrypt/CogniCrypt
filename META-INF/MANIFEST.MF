@@ -23,7 +23,7 @@ Bundle-ClassPath: lib/claferchocoig.jar,
  lib/saxon9pe.jar,
  lib/gson-2.3.1.jar,
  lib/dom4j-2.0.0.jar,
- lib/ideal-crossing-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+ lib/crossing.crypto.interfaces-20-SNAPSHOT.jar
 Import-Package: org.eclipse.emf.common.util,
  org.eclipse.emf.ecore.resource,
  org.eclipse.emf.ecore.resource.impl,

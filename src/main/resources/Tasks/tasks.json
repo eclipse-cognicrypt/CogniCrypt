@@ -23,7 +23,7 @@
 		},
 		{
 			"name": "LongTermArchiving",
-			"description": "Securely archiving files.",
+			"description": "Securely archiving files",
 			"modelFile" : "src/main/resources/ClaferModel/LongTermArchiving.js",
 			"xmlFile" : "src/main/resources/TaskDesc/LongTermArchivingQuestions.json",
 			"additionalResources" : "src/main/resources/AdditionalResources/LongTermArchiving"

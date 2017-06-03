@@ -39,7 +39,6 @@
 	<classpathentry kind="lib" path="lib/LongTermArchiving.jar"/>
 	<classpathentry kind="lib" path="lib/dom4j-2.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/claferchocoig.jar"/>
-	<classpathentry kind="lib" path="C:/Users/stefank3/git/CryptoAnalysis/CryptoInterfaces/target/crossing.crypto.interfaces-20-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/crossing.crypto.interfaces-20-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

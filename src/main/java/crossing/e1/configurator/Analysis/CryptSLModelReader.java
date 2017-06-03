@@ -72,6 +72,7 @@ public class CryptSLModelReader {
 
 	private int nodeNameCounter = 0;
 	List<CryptSLPredicate> predicates = null;
+	String clazzName = "";
 
 	public CryptSLModelReader() throws ClassNotFoundException, CoreException, IOException {
 		Injector injector = CryptSLActivator.getInstance().getInjector(CryptSLActivator.DE_DARMSTADT_TU_CROSSING_CRYPTSL);
@@ -91,16 +92,18 @@ public class CryptSLModelReader {
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 
 		List<String> classNames = new ArrayList<String>();
-		classNames.add("KeyGenerator");
-		classNames.add("KeyPairGenerator");
-//		classNames.add("KeyStore");
-		classNames.add("Mac");
+//		classNames.add("KeyGenerator");
+//		classNames.add("KeyPairGenerator");
+////		classNames.add("KeyStore");
+//		classNames.add("Mac");
 		classNames.add("PBEKeySpec");
-		classNames.add("SecretKeyFactory");
+//		classNames.add("SecretKeyFactory");
 //		classNames.add("MessageDigest");
-		classNames.add("Cipher");
+//		classNames.add("Cipher");
 
 		for (String className : classNames) {
+			
+			clazzName = className;
 			Resource resource = resourceSet.getResource(URI.createPlatformResourceURI("/CryptSL Examples/src/de/darmstadt/tu/crossing/" + className + ".cryptsl", true), true);
 			EcoreUtil.resolveAll(resourceSet);
 			EObject eObject = resource.getContents().get(0);
@@ -146,13 +149,19 @@ public class CryptSLModelReader {
 			if (pred.getParList() != null) {
 				for (SuPar var : pred.getParList().getParameters()) {
 					if (var.getVal() != null) {
-						variables.add(((LiteralExpression) var.getVal().getName()).getValue().getName());
+						String name = ((LiteralExpression) var.getVal().getName()).getValue().getName();
+						if (name == null) {
+							name = "this";
+						}
+						variables.add(name);
 					} else {
 						variables.add("_");
 					}
 				}
 			}
-			preds.add(new CryptSLPredicate(pred.getPredName(), variables, false));
+			
+			String meth = pred.getPredName();
+			preds.add(new CryptSLPredicate(meth, variables, false));
 			
 		}
 		return preds;
@@ -522,14 +531,15 @@ public class CryptSLModelReader {
 			}
 		}
 		List<Boolean> backw = new ArrayList<Boolean>(); 
-		for (CryptSLPredicate pred : predicates) {
-			for (Entry<String, String> par : pars) {
+		for (Entry<String, String> par : pars) {
+			boolean backwards = true;
+			for (CryptSLPredicate pred : predicates) {
 				if (par.getKey().equals(pred.getParameters().get(0))) {
-					backw.add(false);
+					backwards = false;
 					continue;
 				}
-				backw.add(true);
 			}
+			backw.add(backwards);
 		}
 		return new StatementLabel(qualifiedName, pars, backw);
 	}

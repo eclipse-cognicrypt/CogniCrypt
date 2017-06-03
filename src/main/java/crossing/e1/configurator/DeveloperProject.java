@@ -173,5 +173,15 @@ public class DeveloperProject {
 		return project.getName() + "(" + getProjectPath() + ")";
 	}
 	
+	public Boolean removePackage(String packageName) {
+		try {
+			IPackageFragment delPackage = getPackagesOfProject(packageName);
+			delPackage.delete(true, null);
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e);
+		}
+		
+		return false;
+	}
 	
 }

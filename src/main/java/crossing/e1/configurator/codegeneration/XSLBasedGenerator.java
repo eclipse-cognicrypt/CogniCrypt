@@ -39,6 +39,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -136,9 +137,8 @@ public class XSLBasedGenerator {
 
 			if (currentlyOpenFile != null && project.equals(currentlyOpenFile.getProject())) {
 				insertCallCodeIntoOpenFile(temporaryOutputFile);
-			}
-
-			else {
+				removeCryptoPackageIfEmpty();
+			} else {
 				this.project.refresh();
 				final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 				final IFile outputFile = this.project.getIFile(temporaryOutputFile);
@@ -151,6 +151,13 @@ public class XSLBasedGenerator {
 			return false;
 		}
 		return true;
+	}
+
+	private void removeCryptoPackageIfEmpty() throws CoreException {
+		IPackageFragment cryptoPackage = this.project.getPackagesOfProject(Constants.PackageName);
+		if (cryptoPackage.getCompilationUnits().length == 0) {
+			this.project.removePackage(Constants.PackageName);
+		}
 	}
 
 	/**

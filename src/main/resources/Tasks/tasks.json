@@ -29,7 +29,7 @@
 			"additionalResources" : "src/main/resources/AdditionalResources/LongTermArchiving"
 		},
 		{
-			"name": "ABY",
+			"name": "SECMUPACOMP",
 			"description": "Secure Multi-Party Computation",
 			"modelFile" : "src/main/resources/ClaferModel/ABY.js",
 			"xmlFile" : "src/main/resources/TaskDesc/ABYQuestions.json",

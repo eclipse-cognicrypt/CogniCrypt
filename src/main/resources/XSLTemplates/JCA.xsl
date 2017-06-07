@@ -13,7 +13,7 @@ package <xsl:value-of select="//task/Package"/>;
 
 public class Enc {	
 	
-	public byte[] encrypt(byte [] data, SecretKey key) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException, ShortBufferException { 
+	public byte[] encrypt(byte [] data, SecretKey key) throws GeneralSecurityException { 
 		byte [] ivb = new byte [16];
 	    SecureRandom.getInstanceStrong().nextBytes(ivb);
 	    IvParameterSpec iv = new IvParameterSpec(ivb);
@@ -53,7 +53,7 @@ package <xsl:value-of select="//Package"/>;
 
 public class KeyDeriv {
 	
-	public SecretKey getKey(char[] pwd) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public SecretKey getKey(char[] pwd) throws GeneralSecurityException {
 		byte[] salt = new byte[16];
 		SecureRandom.getInstanceStrong().nextBytes(salt);
 		
@@ -72,7 +72,7 @@ public class KeyDeriv {
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public byte[] templateUsage(byte[] data<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">, char[] pwd</xsl:if>) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException, ShortBufferException  {
+	public byte[] templateUsage(byte[] data<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">, char[] pwd</xsl:if>) throws GeneralSecurityException  {
 		<xsl:choose>
         <xsl:when test="//task/algorithm[@type='KeyDerivationAlgorithm']">KeyDeriv kd = new KeyDeriv();
 		SecretKey key = kd.getKey(pwd); </xsl:when>
@@ -89,7 +89,7 @@ public class Output {
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public byte[] templateUsage(byte[] data) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException, ShortBufferException  {
+	public byte[] templateUsage(byte[] data) throws GeneralSecurityException {
 		KeyGenerator kg = KeyGenerator.getInstance("<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>");
 		kg.init(<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/keySize"/>);
 		SecretKey key = kg.generateKey();
@@ -109,7 +109,7 @@ package <xsl:value-of select="//task/Package"/>;
 public class PWHasher {	
 	//adopted code from https://github.com/defuse/password-hashing
 	
-	public String createPWHash(char[] pwd) throws NoSuchAlgorithmException, InvalidKeySpecException { 
+	public String createPWHash(char[] pwd) throws GeneralSecurityException { 
 		byte[] salt = new byte[<xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/outputSize"/>/8];
 		SecureRandom.getInstanceStrong().nextBytes(salt);
 		
@@ -121,7 +121,7 @@ public class PWHasher {
 		return pwdHash;
 	}
 	
-	public Boolean verifyPWHash(char[] pwd, String pwdhash) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public Boolean verifyPWHash(char[] pwd, String pwdhash) throws GeneralSecurityException {
 		String[] parts = pwdhash.split(":");
 		byte[] salt = fromBase64(parts[0]);
 
@@ -155,7 +155,7 @@ public class PWHasher {
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public void templateUsage(char[] pwd) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
+	public void templateUsage(char[] pwd) throws GeneralSecurityException  {
 		PWHasher pwHasher = new PWHasher();
 		String pwdHash = pwHasher.createPWHash(pwd);
 		Boolean t = pwHasher.verifyPWHash(pwd, pwdHash);

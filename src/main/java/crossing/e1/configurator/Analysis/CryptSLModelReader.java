@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.xtext.common.types.JvmFormalParameter;
 import org.eclipse.xtext.common.types.access.jdt.IJavaProjectProvider;
 import org.eclipse.xtext.common.types.access.jdt.JdtTypeProviderFactory;
 import org.eclipse.xtext.resource.XtextResource;
@@ -92,14 +93,14 @@ public class CryptSLModelReader {
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 
 		List<String> classNames = new ArrayList<String>();
-//		classNames.add("KeyGenerator");
-//		classNames.add("KeyPairGenerator");
-////		classNames.add("KeyStore");
-//		classNames.add("Mac");
+		classNames.add("KeyGenerator");
+		classNames.add("KeyPairGenerator");
+//		classNames.add("KeyStore");
+		classNames.add("Mac");
 		classNames.add("PBEKeySpec");
-//		classNames.add("SecretKeyFactory");
+		classNames.add("SecretKeyFactory");
 //		classNames.add("MessageDigest");
-//		classNames.add("Cipher");
+		classNames.add("Cipher");
 
 		for (String className : classNames) {
 			
@@ -123,7 +124,7 @@ public class CryptSLModelReader {
 	}
 
 	private void storeRuletoFile(CryptSLRule rule, String className) {
-		String filePath = "C:\\Users\\stefank3\\git\\CryptoAnalysis\\CryptoAnalysis\\src\\test\\resources\\" + className + ".cryptslbin";
+		String filePath = "C:\\Users\\stefank3\\git\\CROSSINGAnalysis\\CryptoAnalysis\\src\\test\\resources\\" + className + ".cryptslbin";
 		FileOutputStream fileOut;
 		try {
 			fileOut = new FileOutputStream(filePath);
@@ -170,7 +171,10 @@ public class CryptSLModelReader {
 	private List<ISLConstraint> buildUpConstraints(List<Constraint> constraints) {
 		List<ISLConstraint> slCons = new ArrayList<ISLConstraint>();
 		for (Constraint cons : constraints) {
-			slCons.add(getConstraint(cons));
+			ISLConstraint constraint = getConstraint(cons);
+			if (constraint != null) {
+				slCons.add(constraint);
+			}
 		}
 		return slCons;
 	}
@@ -189,7 +193,11 @@ public class CryptSLModelReader {
 					parList.add(a.getVal());
 				}
 			}
-			slci = new CryptSLValueConstraint(((LiteralExpression) lit.getCons().getName()).getValue().getName(), parList);
+			
+			LiteralExpression name = (LiteralExpression) lit.getCons().getName();
+			if (name != null) {
+				slci = new CryptSLValueConstraint(name.getValue().getName(), parList);
+			}
 		} else if (cons instanceof ComparisonExpression) {
 			ComparisonExpression comp = (ComparisonExpression) cons;
 			CompOp op = null;
@@ -313,7 +321,7 @@ public class CryptSLModelReader {
 	private List<String> getForbiddenMethods(EList<ForbMethod> methods) {
 		List<String> methodSignatures = new ArrayList<String>();
 		for (ForbMethod fm : methods) {
-			methodSignatures.add(fm.getJavaMeth().getQualifiedName());
+			methodSignatures.add(fm.getJavaMeth().getIdentifier());
 		}
 		return methodSignatures;
 	}

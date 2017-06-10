@@ -52,6 +52,7 @@ c0_SHA = Clafer("c0_SHA").withCard(1, 1);
 c0_pbkdf2 = Clafer("c0_pbkdf2").withCard(1, 1);
 c0_SymmetricEncryption = Clafer("c0_SymmetricEncryption").withCard(1, 1);
 c0_cipher = c0_SymmetricEncryption.addChild("c0_cipher").withCard(1, 1);
+c1_security = c0_SymmetricEncryption.addChild("c1_security").withCard(1, 1);
 c0_Security.extending(c0_Enum).refToUnique(Int);
 c0_Broken.extending(c0_Security);
 Constraint(implies(some(global(c0_Broken)), equal(joinRef(global(c0_Broken)), constant(1))));
@@ -135,3 +136,5 @@ c0_pbkdf2.addConstraint(equal(joinRef(join($this(), c0_security)), joinRef(join(
 c0_SymmetricEncryption.extending(c0_Task);
 c0_SymmetricEncryption.addConstraint(equal(joinRef(join($this(), c1_description)), constant("\"Encrypt data using a secret key\"")));
 c0_cipher.refTo(c0_SymmetricBlockCipher);
+c1_security.refTo(Int);
+c0_SymmetricEncryption.addConstraint(equal(joinRef(join($this(), c1_security)), joinRef(joinRef(join(joinRef(join($this(), c0_cipher)), c0_security)))));

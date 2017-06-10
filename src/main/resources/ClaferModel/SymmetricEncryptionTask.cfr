@@ -103,3 +103,5 @@ pbkdf2 : KeyDerivationAlgorithm
 SymmetricEncryption : Task
 	[description = "Encrypt data using a secret key"]
 	cipher -> SymmetricBlockCipher
+	security -> integer
+	[security = cipher.security]

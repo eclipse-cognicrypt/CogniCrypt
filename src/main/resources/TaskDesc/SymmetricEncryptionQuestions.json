@@ -24,11 +24,14 @@
 			"answers":[
 				{"value":"Yes",
 				"claferDependencies":[
-				{"algorithm":"kda", "value":"KeyDerivationAlgorithm", "operator":"->"}],
+				{"algorithm":"kda", "value":"KeyDerivationAlgorithm", "operator":"->"},
+				{"algorithm":"security", "value":"min(cipher.security, kda.security)", "operator":"="}],
 				 "nextID" : "2"
 				},
 				{"value":"No",
-				"claferDependencies":[], "defaultAnswer": true, "nextID" : "2"
+				"claferDependencies":[
+				{"algorithm":"security", "value":"cipher.security", "operator":"="}
+				], "defaultAnswer": true, "nextID" : "2"
 			}
 			]
 		},

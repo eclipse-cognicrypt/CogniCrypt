@@ -248,9 +248,9 @@ public class InstanceGenerator {
 			}
 
 			private Integer getSecurityLevel(InstanceClafer instance) {
-				for (InstanceClafer innerInst: ((InstanceClafer)((InstanceClafer)instance.getChildren()[0]).getRef()).getChildren()) {
+				for (InstanceClafer innerInst: instance.getChildren()) {
 					if (innerInst.getType().getName().contains("security")) {
-						Object level = ((InstanceClafer) innerInst.getRef()).getRef();
+						Object level = innerInst.getRef();
 						if (level instanceof Integer) {
 							return (Integer) level;
 						}

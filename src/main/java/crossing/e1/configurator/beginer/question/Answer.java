@@ -23,7 +23,7 @@ public class Answer {
 	private Boolean defaultAnswer;
 	private ArrayList<ClaferDependency> claferDependencies;
 	private ArrayList<CodeDependency> codeDependencies;
-	private int nextID = -1;
+	private int nextID = -2;
 
 	public ArrayList<ClaferDependency> getClaferDependencies() {
 		return this.claferDependencies;

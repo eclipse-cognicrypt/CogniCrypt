@@ -20,11 +20,11 @@
  */
 package crossing.e1.configurator.wizard;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -49,18 +49,16 @@ public class TaskSelectionPage extends WizardPage {
 	private ComboViewer taskComboSelection;
 	private Button advancedModeCheckBox;
 	private Label selectTaskLabel;
-	private boolean canProceed = false;
 	private IProject selectedProject = null;
 
 	public TaskSelectionPage() {
 		super(Labels.SELECT_TASK);
 		setTitle(Labels.TASK_LIST);
 		setDescription(Labels.DESCRIPTION_TASK_SELECTION_PAGE);
+		setPageComplete(false);
 	}
 
-	public boolean canProceed() {
-		return this.canProceed;
-	}
+
 
 	@Override
 	public void createControl(final Composite parent) {
@@ -74,35 +72,37 @@ public class TaskSelectionPage extends WizardPage {
 		this.selectTaskLabel = new Label(this.container, SWT.NONE);
 		this.selectTaskLabel.setText(Constants.SELECT_JAVA_PROJECT);
 
-		this.taskComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
-		this.taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
+		ComboViewer projectComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
+		projectComboSelection.setContentProvider(ArrayContentProvider.getInstance());
 
-		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		final List<IProject> javaProjects = new ArrayList<>();
-		if (projects.length > 0) {
-			for (int i = 0; i < projects.length; i++) {
-				if (Boolean.TRUE.equals(Utils.checkIfJavaProjectSelected(projects[i]))) {
-					javaProjects.add(projects[i]);
-				}
-			}
-
+		Map<String, IProject> javaProjects = new HashMap<String, IProject>();
+		for (IProject project : Utils.createListOfJavaProjectsInCurrentWorkspace()) {
+			javaProjects.put(project.getName(), project);
 		}
-
-		this.taskComboSelection.setInput(javaProjects);
-
-		this.taskComboSelection.addSelectionChangedListener(event -> {
-			final IStructuredSelection selected = (IStructuredSelection) event.getSelection();
-			this.selectedProject = (IProject) selected.getFirstElement();
-
-			TaskSelectionPage.this.taskComboSelection.refresh();
-
-		});
-		if (javaProjects.indexOf(Utils.defaultProjectSelectionforDropdownList()) >= 0) {
-			this.taskComboSelection.setSelection(new StructuredSelection(javaProjects.get(javaProjects.indexOf(Utils.defaultProjectSelectionforDropdownList()))));
+		
+		if (javaProjects.isEmpty()) {
+			String[] errorMessage = {Constants.ERROR_MESSAGE_NO_PROJECT};
+			projectComboSelection.setInput(errorMessage);
+			projectComboSelection.setSelection(new StructuredSelection(projectComboSelection.getElementAt(0)));
 		} else {
-			this.taskComboSelection.setSelection(new StructuredSelection(javaProjects.get(0)));
+			projectComboSelection.setInput(javaProjects.keySet().toArray());
+			projectComboSelection.addSelectionChangedListener(event -> {
+				final IStructuredSelection selected = (IStructuredSelection) event.getSelection();
+				this.selectedProject = javaProjects.get((String) selected.getFirstElement());
+				projectComboSelection.refresh();
+
+			});
+			
+			IProject currentProject = Utils.getCurrentProject();
+			if (currentProject == null) {
+				projectComboSelection.setSelection(new StructuredSelection(projectComboSelection.getElementAt(0)));
+			} else {
+				projectComboSelection.setSelection(new StructuredSelection(currentProject.getName()));
+			}	
 		}
 
+		
+		
 		this.selectTaskLabel = new Label(this.container, SWT.NONE);
 		this.selectTaskLabel.setText(Constants.SELECT_TASK);
 
@@ -130,10 +130,7 @@ public class TaskSelectionPage extends WizardPage {
 			final Task selectedTask = (Task) selection.getFirstElement();
 
 			TaskSelectionPage.this.taskComboSelection.refresh();
-
-			if (selectedTask != null && this.selectedProject != null) {
-				TaskSelectionPage.this.canProceed = true;
-			}
+			setPageComplete(selectedTask != null && this.selectedProject != null);
 		});
 
 		this.taskComboSelection.setSelection(new StructuredSelection(tasks.get(0)));

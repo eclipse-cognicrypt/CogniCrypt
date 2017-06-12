@@ -57,7 +57,7 @@ public class QuestionsJSONReader {
 			}
 
 			for (final Answer answer : question.getAnswers()) {
-				if (answer.getNextID() == 0) {
+				if (answer.getNextID() == -2) {
 					throw new IllegalArgumentException("Each answer must point to the following question.");
 				}
 			}

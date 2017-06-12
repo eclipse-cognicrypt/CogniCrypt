@@ -36,6 +36,8 @@ import static org.clafer.ast.Asts.local;
 import static org.clafer.ast.Asts.union;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +83,7 @@ public class InstanceGenerator {
 
 	public InstanceGenerator(final String path, final String taskName, final String taskDescription) {
 		this.claferModel = new ClaferModel(path);
-		this.displayNameToInstanceMap = new HashMap<>();
+		this.displayNameToInstanceMap = new HashMap<String, InstanceClafer>();
 		this.uniqueInstances = new HashMap<>();
 		this.taskName = taskName;
 		this.taskDescription = taskDescription;
@@ -207,55 +209,79 @@ public class InstanceGenerator {
 			Answer answer = entry.getValue();
 			if (answer.getClaferDependencies() != null) {
 				for (final ClaferDependency claferDependency : answer.getClaferDependencies()) {
-					final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + claferDependency.getAlgorithm());
-					final List<AstConcreteClafer> propertyClafer = new ArrayList<>();
-					final String operand = claferDependency.getOperand();
-					if (operand != null && operand.contains(";")) {
-						for (final String name : operand.split(";")) {
-							propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + name));
-						}
+					if ("->".equals(claferDependency.getOperator())) {
+						ClaferModelUtils.createClafer(taskClafer, claferDependency.getAlgorithm(), claferDependency.getValue());
 					} else {
-						propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + operand));
+						final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + claferDependency.getAlgorithm());
+						final List<AstConcreteClafer> propertyClafer = new ArrayList<>();
+						final String operand = claferDependency.getOperand();
+						if (operand != null && operand.contains(";")) {
+							for (final String name : operand.split(";")) {
+								propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + name));
+							}
+						} else {
+							propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + operand));
+						}
+						addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), claferDependency.getValue());
 					}
-					addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), claferDependency.getValue());
 				}
 			}
 		}
 	}
 
+
+
 	/**
 	 * this method is part of instance generation process , creates a mapping instance name and instance Object
 	 */
 	private void generateInstanceMapping() {
-		for (final InstanceClafer inst : this.generatedInstances) {
+		this.displayNameToInstanceMap.clear();
+		/**
+		 * sort all the instances, to have an user friendly display
+		 */
+		try {
+		Collections.sort(this.generatedInstances, new Comparator<InstanceClafer>() {
 
-			String key = getInstanceName(inst);
-			if (key.isEmpty()) {
-				key = inst.getChildren()[0].getRef().toString();
+			@Override
+			public int compare(InstanceClafer left, InstanceClafer right) {
+				return - Integer.compare(getSecurityLevel(left), getSecurityLevel(right));
 			}
-			if (inst.getType().getName().equals(this.taskName) && key.length() > 0) {
+
+			private Integer getSecurityLevel(InstanceClafer instance) {
+				for (InstanceClafer innerInst: instance.getChildren()) {
+					if (innerInst.getType().getName().contains("security")) {
+						Object level = innerInst.getRef();
+						if (level instanceof Integer) {
+							return (Integer) level;
+						}
+					}
+				}
+				return -1;				
+			}
+			
+		});
+		} catch (Exception ex) {
+			Activator.getDefault().logError("Instances not sorted by security level. Be cautious");
+		}
+		for (InstanceClafer sortedInst: this.generatedInstances) {
+			String key = getInstanceName(sortedInst);
+			if (key.isEmpty()) {
+				key = sortedInst.getChildren()[0].getRef().toString();
+			}
+			if (sortedInst.getType().getName().equals(this.taskName) && key.length() > 0) {
 				/**
 				 * Check if any instance has same name , if yes add numerical values as suffix
 				 *
 				 */
-				if (this.displayNameToInstanceMap.keySet().contains(key)) {
-					int counter = 1;
-					for (final String name : this.displayNameToInstanceMap.keySet()) {
-						if (name.contains(key)) {
-							counter++;
-						}
-					}
-					/**
-					 * There is no need to check if the counter value is not 1 , because this loop will be executed only if there is a match in name of an instances
-					 */
-					key = key + "(" + counter + ")";
+				int counter = 1;
+				String copyKey = key;
+				while (displayNameToInstanceMap.containsKey(copyKey)) {
+					copyKey = key + "(" + String.format("%02d", ++counter) + ")";
 				}
-				this.displayNameToInstanceMap.put(key, inst);
+				
+				this.displayNameToInstanceMap.put(copyKey, sortedInst);
 			}
 		}
-		/**
-		 * sort all the instances, to have an user friendly display
-		 */
 		final Map<String, InstanceClafer> treeMap = new TreeMap<>(this.displayNameToInstanceMap);
 		this.displayNameToInstanceMap = treeMap;
 	}

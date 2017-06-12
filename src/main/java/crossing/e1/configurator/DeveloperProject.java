@@ -159,8 +159,8 @@ public class DeveloperProject {
 		if (obj instanceof DeveloperProject) {
 			DeveloperProject other = (DeveloperProject) obj;
 			if (project == null || other.project != null) {
-					return false;
-				}
+				return false;
+			}
 			return project.equals(other.project);
 		} else if (obj instanceof IProject) {
 			IProject other = (IProject) obj;
@@ -169,5 +169,19 @@ public class DeveloperProject {
 		return false;
 	}
 	
+	public String toString() {
+		return project.getName() + "(" + getProjectPath() + ")";
+	}
+	
+	public Boolean removePackage(String packageName) {
+		try {
+			IPackageFragment delPackage = getPackagesOfProject(packageName);
+			delPackage.delete(true, null);
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e);
+		}
+		
+		return false;
+	}
 	
 }

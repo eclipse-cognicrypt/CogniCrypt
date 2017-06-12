@@ -22,12 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.clafer.ast.AstConcreteClafer;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.BadLocationException;
@@ -73,7 +71,6 @@ public class ConfiguratorWizard extends Wizard {
 	private final XSLBasedGenerator codeGeneration = new XSLBasedGenerator();
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
-	private List<IProject> javaProjects;
 
 	public ConfiguratorWizard() {
 		super();
@@ -83,12 +80,6 @@ public class ConfiguratorWizard extends Wizard {
 			CryptSLModelReader csmr = new CryptSLModelReader();
 
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			this.javaProjects = Utils.createListOfJavaProjectsInCurrentWorkspace();
-			if (this.javaProjects.isEmpty()) {
-				JOptionPane.showMessageDialog(null,
-					"CogniCrypt requires a Java project as code generation target. Currently, there are no Java projects in this workspace, please create a new Java project to continue.",
-					"CogniCrypt", JOptionPane.INFORMATION_MESSAGE);
-			}
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | CoreException | IOException e) {
 			Activator.getDefault().logError(e);
 		}
@@ -145,7 +136,7 @@ public class ConfiguratorWizard extends Wizard {
 	@Override
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
 		final Task selectedTask = this.taskListPage.getSelectedTask();
-		if (currentPage == this.taskListPage && this.taskListPage.canProceed()) {
+		if (currentPage == this.taskListPage && this.taskListPage.isPageComplete()) {
 			this.claferModel = new ClaferModel(Utils.getResourceFromWithin(selectedTask.getModelFile()));
 
 			if (this.taskListPage.isAdvancedMode()) {
@@ -300,12 +291,12 @@ public class ConfiguratorWizard extends Wizard {
 
 				// ret &= this.codeGeneration.initCodeGeneration();
 				ret &= this.codeGeneration.initCodeGeneration(this.taskListPage.getSelectedProject());
+				
 				// Write Instance File into developer project
 				final String xmlInstancePath = this.codeGeneration.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
 				parser.writeClaferInstanceToFile(xmlInstancePath);
 
 				// Generate code template
-
 				ret &= this.codeGeneration.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), null);
 
 				// Delete Instance File

@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.xtext.common.types.JvmExecutable;
 import org.eclipse.xtext.common.types.JvmFormalParameter;
 import org.eclipse.xtext.common.types.access.jdt.IJavaProjectProvider;
 import org.eclipse.xtext.common.types.access.jdt.JdtTypeProviderFactory;
@@ -37,12 +38,13 @@ import crypto.rules.CryptSLComparisonConstraint;
 import crypto.rules.CryptSLComparisonConstraint.CompOp;
 import crypto.rules.CryptSLConstraint;
 import crypto.rules.CryptSLConstraint.LogOps;
+import crypto.rules.CryptSLForbiddenMethod;
+import crypto.rules.CryptSLMethod;
 import crypto.rules.CryptSLPredicate;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLValueConstraint;
 import crypto.rules.StateMachineGraph;
 import crypto.rules.StateNode;
-import crypto.rules.StatementLabel;
 import crypto.rules.TransitionEdge;
 import de.darmstadt.tu.crossing.CryptSL.ui.internal.CryptSLActivator;
 import de.darmstadt.tu.crossing.cryptSL.Aggegate;
@@ -72,6 +74,7 @@ public class CryptSLModelReader {
 
 	private int nodeNameCounter = 0;
 	List<CryptSLPredicate> predicates = null;
+	List<CryptSLForbiddenMethod> forbiddenMethods = null;
 	String clazzName = "";
 
 	public CryptSLModelReader() throws ClassNotFoundException, CoreException, IOException {
@@ -92,12 +95,12 @@ public class CryptSLModelReader {
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 
 		List<String> classNames = new ArrayList<String>();
-		classNames.add("KeyGenerator");
-		classNames.add("KeyPairGenerator");
+//		classNames.add("KeyGenerator");
+//		classNames.add("KeyPairGenerator");
 //		classNames.add("KeyStore");
-		classNames.add("Mac");
-		classNames.add("PBEKeySpec");
-		classNames.add("SecretKeyFactory");
+//		classNames.add("Mac");
+//		classNames.add("PBEKeySpec");
+//		classNames.add("SecretKeyFactory");
 //		classNames.add("MessageDigest");
 		classNames.add("Cipher");
 
@@ -108,7 +111,7 @@ public class CryptSLModelReader {
 			EcoreUtil.resolveAll(resourceSet);
 			EObject eObject = resource.getContents().get(0);
 			Domainmodel dm = (Domainmodel) eObject;
-			List<String> forbiddenMethods = getForbiddenMethods(dm.getMethod());
+			forbiddenMethods = getForbiddenMethods(dm.getMethod());
 			predicates = getPredicates(dm.getEns());
 			StateMachineGraph smg = buildStateMachineGraph(dm.getOrder(), className);
 
@@ -180,6 +183,7 @@ public class CryptSLModelReader {
 
 	private ISLConstraint getConstraint(Constraint cons) {
 		ISLConstraint slci = null;
+		
 		if (cons instanceof ArithmeticExpression) {
 			ArithmeticExpression ae = (ArithmeticExpression) cons;
 			ae.getOperator().toString();
@@ -192,10 +196,26 @@ public class CryptSLModelReader {
 					parList.add(a.getVal());
 				}
 			}
-			
-			LiteralExpression name = (LiteralExpression) lit.getCons().getName();
-			if (name != null) {
-				slci = new CryptSLValueConstraint(name.getValue().getName(), parList);
+			String pred = lit.getCons().getPred();
+			if (pred != null) {
+				switch (pred) {
+					case "noCallTo" : 
+						for (CryptSLMethod csm :dealWithAggegate((Aggegate)lit.getCons().getObj().get(0))) {
+							forbiddenMethods.add(new CryptSLForbiddenMethod(csm, true));
+						}
+						slci = new CryptSLPredicate(pred, parList, false);
+						break;
+					case "neverTypeOf" :
+					
+						break;
+					default:
+						new RuntimeException();
+				}
+			} else {
+				LiteralExpression name = (LiteralExpression) lit.getCons().getName();
+				if (name != null) {
+					slci = new CryptSLValueConstraint(name.getValue().getName(), parList);
+				}
 			}
 		} else if (cons instanceof ComparisonExpression) {
 			ComparisonExpression comp = (ComparisonExpression) cons;
@@ -261,6 +281,8 @@ public class CryptSLModelReader {
 			}
 			slci = new CryptSLPredicate(innerPredicate.getPredName(), vars, true);
 			System.out.println(un);
+//		} else if (cons instanceof ) {
+			
 		} else if (cons instanceof Constraint) {
 			if (cons.getPredName() != null && !cons.getPredName().isEmpty()) {
 				List<String> vars = new ArrayList<String>();
@@ -290,7 +312,10 @@ public class CryptSLModelReader {
 					default:
 						op = LogOps.and;
 				}
-				slci = new CryptSLConstraint(getConstraint(cons.getLeftExpression()), getConstraint(cons.getRightExpression()), op);
+				slci = new CryptSLConstraint(
+					getConstraint(cons.getLeftExpression()), 
+					getConstraint(cons.getRightExpression()), 
+					op);
 			}
 		}
 
@@ -317,10 +342,15 @@ public class CryptSLModelReader {
 		return value;
 	}
 
-	private List<String> getForbiddenMethods(EList<ForbMethod> methods) {
-		List<String> methodSignatures = new ArrayList<String>();
+	private List<CryptSLForbiddenMethod> getForbiddenMethods(EList<ForbMethod> methods) {
+		List<CryptSLForbiddenMethod> methodSignatures = new ArrayList<CryptSLForbiddenMethod>();
 		for (ForbMethod fm : methods) {
-			methodSignatures.add(fm.getJavaMeth().getIdentifier());
+			JvmExecutable meth = fm.getJavaMeth();
+			List<Entry<String, String>> pars = new ArrayList<Entry<String, String>>();
+			for (JvmFormalParameter par : meth.getParameters()) {
+				pars.add(new SimpleEntry<String,String>(par.getParameterType().getIdentifier(), par.getSimpleName()));
+			}
+			methodSignatures.add(new CryptSLForbiddenMethod(new CryptSLMethod(meth.getIdentifier(), pars, null), false));
 		}
 		return methodSignatures;
 	}
@@ -470,7 +500,7 @@ public class CryptSLModelReader {
 			smg.addNode(nextNode);
 		}
 
-		List<StatementLabel> label = resolveAggegateToMethodeNames(leaf);
+		List<CryptSLMethod> label = resolveAggegateToMethodeNames(leaf);
 		smg.addEdge(new TransitionEdge(label, prevNode, nextNode));
 		prevNode.setAccepting(false);
 		if (leaf.getElementop() != null) {
@@ -485,19 +515,19 @@ public class CryptSLModelReader {
 		}
 	}
 
-	private List<StatementLabel> resolveAggegateToMethodeNames(Expression leaf) {
+	private List<CryptSLMethod> resolveAggegateToMethodeNames(Expression leaf) {
 		if (leaf.getOrderEv().get(0) instanceof Aggegate) {
 			Aggegate ev = (Aggegate) leaf.getOrderEv().get(0);
 			return dealWithAggegate(ev);
 		} else {
-			ArrayList<StatementLabel> statements = new ArrayList<StatementLabel>();
+			ArrayList<CryptSLMethod> statements = new ArrayList<CryptSLMethod>();
 			statements.add(stringifyMethodSignature(leaf.getOrderEv().get(0)));
 			return statements;
 		}
 	}
-
-	private List<StatementLabel> dealWithAggegate(Aggegate ev) {
-		List<StatementLabel> statements = new ArrayList<StatementLabel>();
+	
+	private List<CryptSLMethod> dealWithAggegate(Aggegate ev) {
+		List<CryptSLMethod> statements = new ArrayList<CryptSLMethod>();
 		for (Event lab : ev.getLab()) {
 			if (lab instanceof Aggegate) {
 				statements.addAll(dealWithAggegate((Aggegate) lab));
@@ -508,7 +538,7 @@ public class CryptSLModelReader {
 		return statements;
 	}
 
-	private StatementLabel stringifyMethodSignature(Event lab) {
+	private CryptSLMethod stringifyMethodSignature(Event lab) {
 		Method method = ((SuperType) lab).getMeth();
 		String qualifiedName = method.getMethName().getQualifiedName();
 		if (qualifiedName == null) {
@@ -548,7 +578,7 @@ public class CryptSLModelReader {
 			}
 			backw.add(backwards);
 		}
-		return new StatementLabel(qualifiedName, pars, backw);
+		return new CryptSLMethod(qualifiedName, pars, backw);
 	}
 
 	private StateNode getNewNode() {

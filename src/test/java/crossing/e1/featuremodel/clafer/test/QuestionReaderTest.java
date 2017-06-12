@@ -31,16 +31,16 @@ public class QuestionReaderTest {
 		qjr = new QuestionsJSONReader();
 	}
 
-	String testFile1 = "src/main/resources/testFiles/TestQuestions1.json";
-	String testFile2 = "src/main/resources/testFiles/TestQuestions2.json";
-	String testFile3 = "src/main/resources/testFiles/TestQuestions3.json";
-	String testFile4 = "src/main/resources/testFiles/TestQuestions4.json";
-
-	String testFile5 = "src/main/resources/testFiles/TestQuestions5.json";
+	String testFileFolder = "src/test/resources/testQuestions/";
+	String testFile1 = testFileFolder + "TestQuestions1.json";
+	String testFile2 = testFileFolder + "TestQuestions2.json";
+	String testFile3 = testFileFolder + "TestQuestions3.json";
+	String testFile4 = testFileFolder + "TestQuestions4.json";
+	String testFile5 = testFileFolder + "TestQuestions5.json";
 
 	@Test
 	/***
-	 * This test method should always perform a successfull read. Create new methods for more fail test cases.
+	 * This test method should always perform a successful read. Create new methods for more failing test cases.
 	 */
 	public final void testGetQuestionsCorrect() {
 		qjr.getQuestions(this.testFile1);

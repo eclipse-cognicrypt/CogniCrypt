@@ -13,7 +13,7 @@ package <xsl:value-of select="//task/Package"/>;
 
 public class Enc {	
 	
-	public byte[] encrypt(byte [] data, SecretKey key) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException, ShortBufferException { 
+	public byte[] encrypt(byte [] data, SecretKey key) throws GeneralSecurityException { 
 		byte [] ivb = new byte [16];
 	    SecureRandom.getInstanceStrong().nextBytes(ivb);
 	    IvParameterSpec iv = new IvParameterSpec(ivb);
@@ -44,7 +44,7 @@ public class Enc {
 </xsl:result-document>
 </xsl:if>
 
-<xsl:if test="//task[@description='PasswordBasedEncryption']">
+<xsl:if test="//task[@description='SymmetricEncryption']">
 
 <xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">
 <xsl:result-document href="KeyDeriv.java">
@@ -53,7 +53,7 @@ package <xsl:value-of select="//Package"/>;
 
 public class KeyDeriv {
 	
-	public SecretKey getKey(char[] pwd) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public SecretKey getKey(char[] pwd) throws GeneralSecurityException {
 		byte[] salt = new byte[16];
 		SecureRandom.getInstanceStrong().nextBytes(salt);
 		
@@ -72,7 +72,7 @@ public class KeyDeriv {
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public byte[] templateUsage(byte[] data<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">, char[] pwd</xsl:if>) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException, ShortBufferException  {
+	public byte[] templateUsage(byte[] data<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">, char[] pwd</xsl:if>) throws GeneralSecurityException  {
 		<xsl:choose>
         <xsl:when test="//task/algorithm[@type='KeyDerivationAlgorithm']">KeyDeriv kd = new KeyDeriv();
 		SecretKey key = kd.getKey(pwd); </xsl:when>
@@ -89,7 +89,7 @@ public class Output {
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public byte[] templateUsage(byte[] data) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException, ShortBufferException  {
+	public byte[] templateUsage(byte[] data) throws GeneralSecurityException {
 		KeyGenerator kg = KeyGenerator.getInstance("<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>");
 		kg.init(<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/keySize"/>);
 		SecretKey key = kg.generateKey();
@@ -109,7 +109,7 @@ package <xsl:value-of select="//task/Package"/>;
 public class PWHasher {	
 	//adopted code from https://github.com/defuse/password-hashing
 	
-	public String createPWHash(char[] pwd) throws NoSuchAlgorithmException, InvalidKeySpecException { 
+	public String createPWHash(char[] pwd) throws GeneralSecurityException { 
 		byte[] salt = new byte[<xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/outputSize"/>/8];
 		SecureRandom.getInstanceStrong().nextBytes(salt);
 		
@@ -121,7 +121,7 @@ public class PWHasher {
 		return pwdHash;
 	}
 	
-	public Boolean verifyPWHash(char[] pwd, String pwdhash) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public Boolean verifyPWHash(char[] pwd, String pwdhash) throws GeneralSecurityException {
 		String[] parts = pwdhash.split(":");
 		byte[] salt = fromBase64(parts[0]);
 
@@ -155,7 +155,7 @@ public class PWHasher {
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public void templateUsage(char[] pwd) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException  {
+	public void templateUsage(char[] pwd) throws GeneralSecurityException  {
 		PWHasher pwHasher = new PWHasher();
 		String pwdHash = pwHasher.createPWHash(pwd);
 		Boolean t = pwHasher.verifyPWHash(pwd, pwdHash);
@@ -506,24 +506,32 @@ public class Output {
 
 </xsl:if>
 
-<xsl:if test="//task[@description='ABY']">
+<xsl:if test="//task[@description='SECMUPACOMP']">
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
+
+<xsl:if test="//task[@description='SECMUPACOMP']//element[@type='SECMUPACOMP']//Aby='Euclid'">
 
 	public void templateUsage(int pos_x, int pos_y <xsl:choose><xsl:when test="not(//task/code/host or //task/code/server='false')"></xsl:when>
          <xsl:otherwise>, String host</xsl:otherwise></xsl:choose> <xsl:choose><xsl:when test="//task/code/port"></xsl:when>
          <xsl:otherwise>, int port</xsl:otherwise></xsl:choose>, int bitlength ) {
         
         //Comments explaining what's going on
-        runEuc_Dist(
+        euc_dist.run(<xsl:choose><xsl:when test="//task/code/server='true'">0</xsl:when><xsl:otherwise>1</xsl:otherwise></xsl:choose>, pos_x, pos_y, <xsl:value-of select="//task/element[@type='SECMUPACOMP']/Security"/>, bitlength,
          <xsl:choose><xsl:when test="//task/code/host"><xsl:value-of select="//task/code/host"/></xsl:when><xsl:when test="//task/code/server='true'">"This will be ignored."</xsl:when><xsl:otherwise>host</xsl:otherwise></xsl:choose>,
-		 <xsl:choose><xsl:when test="//task/code/port"><xsl:value-of select="//task/code/port"/></xsl:when><xsl:otherwise>port</xsl:otherwise></xsl:choose>, 
-		 bitlength,
-		 <xsl:value-of select="//task/element[@type='ABY']/Security"/>, 
-		 <xsl:choose><xsl:when test="//task/code/server='true'">0</xsl:when><xsl:otherwise>1</xsl:otherwise></xsl:choose>
-		 , pos_x, pos_y);
+		 <xsl:choose><xsl:when test="//task/code/port"><xsl:value-of select="//task/code/port"/></xsl:when><xsl:otherwise>port</xsl:otherwise></xsl:choose>);
 	}
+</xsl:if>
+<xsl:if test="//task[@description='SECMUPACOMP']//element[@type='SECMUPACOMP']//Aby='Millionaire'">
+
+	public void templateUsage(<xsl:choose><xsl:when test="not(//task/code/host or //task/code/server='false')"></xsl:when>
+         <xsl:otherwise> String host, </xsl:otherwise></xsl:choose>int money) {
+        
+       mill_jni.run(<xsl:choose><xsl:when test="//task/code/server='true'">0</xsl:when><xsl:otherwise>1</xsl:otherwise></xsl:choose>, money);
+	}
+</xsl:if>
+
 }
 </xsl:if>
 </xsl:template>

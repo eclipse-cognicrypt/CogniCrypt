@@ -7,13 +7,6 @@
 			"additionalResources" : ""
 		},
 		{
-			"name": "PasswordBasedEncryption",
-			"description": "Encrypt data using a given password",
-			"modelFile" : "src/main/resources/ClaferModel/PwdBasedEncryTask.js",
-			"xmlFile" : "src/main/resources/TaskDesc/PasswordBasedEncryptionQuestions.json",
-			"additionalResources" : ""
-		},
-		{
 			"name": "SecurePassword",
 			"description": "Represent password in a secure way for storage",
 			"modelFile" : "src/main/resources/ClaferModel/SecurePasswordStorage.js",
@@ -30,13 +23,13 @@
 		},
 		{
 			"name": "LongTermArchiving",
-			"description": "Securely archiving files.",
+			"description": "Securely archiving files",
 			"modelFile" : "src/main/resources/ClaferModel/LongTermArchiving.js",
 			"xmlFile" : "src/main/resources/TaskDesc/LongTermArchivingQuestions.json",
 			"additionalResources" : "src/main/resources/AdditionalResources/LongTermArchiving"
 		},
 		{
-			"name": "ABY",
+			"name": "SECMUPACOMP",
 			"description": "Secure Multi-Party Computation",
 			"modelFile" : "src/main/resources/ClaferModel/ABY.js",
 			"xmlFile" : "src/main/resources/TaskDesc/ABYQuestions.json",

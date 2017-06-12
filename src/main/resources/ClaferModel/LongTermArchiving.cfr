@@ -28,6 +28,8 @@ LongTermArchiving : Task
 	addDoc -> AddingDocuments
 	numDoc -> NumberDocuments
 	trust -> TrustedAuthorities
+	security -> integer
+	[security = 1]
 	[addDoc = MultipleTimes => list = Skip_List]
 	[numDoc = MultipleDocuments && addDoc = Once => list = Merkle_Tree_Sequence]
 	[numDoc = Single && addDoc = Once && trust = SignatureBased => list = Simple_List]

@@ -54,7 +54,6 @@ import de.darmstadt.tu.crossing.cryptSL.Domainmodel;
 import de.darmstadt.tu.crossing.cryptSL.Event;
 import de.darmstadt.tu.crossing.cryptSL.Expression;
 import de.darmstadt.tu.crossing.cryptSL.ForbMethod;
-import de.darmstadt.tu.crossing.cryptSL.LabelMethodCall;
 import de.darmstadt.tu.crossing.cryptSL.Literal;
 import de.darmstadt.tu.crossing.cryptSL.LiteralExpression;
 import de.darmstadt.tu.crossing.cryptSL.Method;
@@ -510,7 +509,7 @@ public class CryptSLModelReader {
 	}
 
 	private StatementLabel stringifyMethodSignature(Event lab) {
-		Method method = ((LabelMethodCall) lab).getMeth();
+		Method method = ((SuperType) lab).getMeth();
 		String qualifiedName = method.getMethName().getQualifiedName();
 		if (qualifiedName == null) {
 			qualifiedName = ((de.darmstadt.tu.crossing.cryptSL.impl.DomainmodelImpl) (method.eContainer().eContainer())).getJavaType().getQualifiedName();

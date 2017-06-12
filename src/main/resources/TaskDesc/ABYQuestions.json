@@ -2,62 +2,62 @@
 	{
 		"id" : "0",
 		"element" : "combo",
-		"questionText":"Which multi-party-computation scenario do you want to implement?",
-		"answers":[
-			{"value":"Millionaire's Comparison",
-			"claferDependencies":[
-			{"algorithm":"abyapp", "value":"Millionaire", "operator":"="}
-			], "nextID" : "1"},
-			{"value":"Euclidean Distance",
-			"claferDependencies":[
-			{"algorithm":"abyapp", "value":"Euclid", "operator":"="}
-			], "defaultAnswer": true, "nextID" : "1"}
-		]
-	},
-	{
-		"id" : "1",
-		"element" : "combo",
 		"questionText":"Are you implementing the server or the client side?",
 		"answers":[
 			{"value":"Server",
 			"codeDependencies":[
 			{"option":"server", "value" : "true" }
-			], "nextID" : "4"},
+			], "nextID" : "3"},
 			{"value":"Client",
 			"codeDependencies":[
 			{"option": "server", "value" : "false"}
-			], "defaultAnswer": true, "nextID" : "2"}
+			], "defaultAnswer": true, "nextID" : "1"}
+		]
+	},
+	{
+		"id" : "1",
+		"questionText":"Do you know ip and port of the server?",
+		"answers":[
+			{"value":"Yes",
+			"codeDependencies":[], "nextID" : "2"},
+			{"value":"No",
+			"codeDependencies":[], "defaultAnswer": true, "nextID" : "4"}
 		]
 	},
 	{
 		"id" : "2",
-		"questionText":"Do you know ip and port of the server?",
-		"answers":[
-			{"value":"Yes",
-			"codeDependencies":[], "nextID" : "3"},
-			{"value":"No",
-			"codeDependencies":[], "defaultAnswer": true, "nextID" : "5"}
-		]
-	},
-	{
-		"id" : "3",
 		"element" : "text",
 		"questionText":"Please enter the server's ip.",
 		"answers":[
 			{"value":"",
 			"codeDependencies":[
 			{"option":"host","value":""}
-			], "defaultAnswer": true, "nextID" : "4"}
+			], "defaultAnswer": true, "nextID" : "3"}
 		]
 	},
 	{
-		"id" : "4",
+		"id" : "3",
 		"element" : "text",
 		"questionText":"Please enter the port of the server.",
 		"answers":[
 			{"value":"",
 			"codeDependencies":[
 			{"option":"port","value":""}
+			], "defaultAnswer": true, "nextID" : "5"}
+		]
+	},
+	{
+		"id" : "4",
+		"element" : "combo",
+		"questionText":"Which multi-party-computation scenario do you want to implement?",
+		"answers":[
+			{"value":"Millionaire's Comparison",
+			"claferDependencies":[
+			{"algorithm":"aby", "value":"Millionaire", "operator":"="}
+			], "nextID" : "-1"},
+			{"value":"Euclidean Distance",
+			"claferDependencies":[
+			{"algorithm":"aby", "value":"Euclid", "operator":"="}
 			], "defaultAnswer": true, "nextID" : "5"}
 		]
 	},

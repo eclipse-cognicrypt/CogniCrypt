@@ -95,12 +95,12 @@ public class CryptSLModelReader {
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 
 		List<String> classNames = new ArrayList<String>();
-//		classNames.add("KeyGenerator");
-//		classNames.add("KeyPairGenerator");
-//		classNames.add("KeyStore");
-//		classNames.add("Mac");
-//		classNames.add("PBEKeySpec");
-//		classNames.add("SecretKeyFactory");
+		classNames.add("KeyGenerator");
+		classNames.add("KeyPairGenerator");
+		classNames.add("KeyStore");
+		classNames.add("Mac");
+		classNames.add("PBEKeySpec");
+		classNames.add("SecretKeyFactory");
 //		classNames.add("MessageDigest");
 		classNames.add("Cipher");
 
@@ -348,9 +348,9 @@ public class CryptSLModelReader {
 			JvmExecutable meth = fm.getJavaMeth();
 			List<Entry<String, String>> pars = new ArrayList<Entry<String, String>>();
 			for (JvmFormalParameter par : meth.getParameters()) {
-				pars.add(new SimpleEntry<String,String>(par.getParameterType().getIdentifier(), par.getSimpleName()));
+				pars.add(new SimpleEntry<String,String>(par.getParameterType().getSimpleName(), par.getSimpleName()));
 			}
-			methodSignatures.add(new CryptSLForbiddenMethod(new CryptSLMethod(meth.getIdentifier(), pars, null), false));
+			methodSignatures.add(new CryptSLForbiddenMethod(new CryptSLMethod(meth.getDeclaringType().getIdentifier() + "." + meth.getSimpleName(), pars, null), false));
 		}
 		return methodSignatures;
 	}
@@ -540,10 +540,12 @@ public class CryptSLModelReader {
 
 	private CryptSLMethod stringifyMethodSignature(Event lab) {
 		Method method = ((SuperType) lab).getMeth();
+		
 		String qualifiedName = method.getMethName().getQualifiedName();
 		if (qualifiedName == null) {
 			qualifiedName = ((de.darmstadt.tu.crossing.cryptSL.impl.DomainmodelImpl) (method.eContainer().eContainer())).getJavaType().getQualifiedName();
 		}
+		qualifiedName = removeSPI(qualifiedName);
 		List<Entry<String, String>> pars = new ArrayList<Entry<String, String>>();
 		Object returnValue = method.getLeftSide();
 		if (returnValue != null && returnValue.getName() != null) {
@@ -579,6 +581,12 @@ public class CryptSLModelReader {
 			backw.add(backwards);
 		}
 		return new CryptSLMethod(qualifiedName, pars, backw);
+	}
+
+	private String removeSPI(String qualifiedName) {
+		int spiIndex = qualifiedName.lastIndexOf("Spi");
+		int dotIndex = qualifiedName.lastIndexOf(".");
+		return (spiIndex == dotIndex - 3) ? qualifiedName.substring(0, spiIndex) + qualifiedName.substring(dotIndex) : qualifiedName;
 	}
 
 	private StateNode getNewNode() {

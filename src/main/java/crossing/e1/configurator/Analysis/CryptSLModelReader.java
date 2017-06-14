@@ -27,6 +27,8 @@ import org.eclipse.xtext.common.types.access.jdt.JdtTypeProviderFactory;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 
+import com.google.common.base.CharMatcher;
+import com.google.common.collect.Lists;
 import com.google.inject.Injector;
 
 import crossing.e1.configurator.Activator;
@@ -53,9 +55,11 @@ import de.darmstadt.tu.crossing.cryptSL.ArithmeticOperator;
 import de.darmstadt.tu.crossing.cryptSL.ComparisonExpression;
 import de.darmstadt.tu.crossing.cryptSL.Constraint;
 import de.darmstadt.tu.crossing.cryptSL.Domainmodel;
+import de.darmstadt.tu.crossing.cryptSL.EnsuresBlock;
 import de.darmstadt.tu.crossing.cryptSL.Event;
 import de.darmstadt.tu.crossing.cryptSL.Expression;
 import de.darmstadt.tu.crossing.cryptSL.ForbMethod;
+import de.darmstadt.tu.crossing.cryptSL.ForbiddenBlock;
 import de.darmstadt.tu.crossing.cryptSL.Literal;
 import de.darmstadt.tu.crossing.cryptSL.LiteralExpression;
 import de.darmstadt.tu.crossing.cryptSL.Method;
@@ -95,12 +99,12 @@ public class CryptSLModelReader {
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 
 		List<String> classNames = new ArrayList<String>();
-		classNames.add("KeyGenerator");
-		classNames.add("KeyPairGenerator");
-		classNames.add("KeyStore");
-		classNames.add("Mac");
-		classNames.add("PBEKeySpec");
-		classNames.add("SecretKeyFactory");
+//		classNames.add("KeyGenerator");
+//		classNames.add("KeyPairGenerator");
+//		classNames.add("KeyStore");
+//		classNames.add("Mac");
+//		classNames.add("PBEKeySpec");
+//		classNames.add("SecretKeyFactory");
 //		classNames.add("MessageDigest");
 		classNames.add("Cipher");
 
@@ -111,11 +115,13 @@ public class CryptSLModelReader {
 			EcoreUtil.resolveAll(resourceSet);
 			EObject eObject = resource.getContents().get(0);
 			Domainmodel dm = (Domainmodel) eObject;
-			forbiddenMethods = getForbiddenMethods(dm.getMethod());
-			predicates = getPredicates(dm.getEns());
+			ForbiddenBlock forbEvent = dm.getForbEvent();
+			forbiddenMethods = (forbEvent != null) ? getForbiddenMethods(forbEvent.getForb_methods()) : Lists.newArrayList();
+			EnsuresBlock ensure = dm.getEnsure();
+			predicates = (ensure != null) ? getPredicates(ensure.getPred()) : Lists.newArrayList();
 			StateMachineGraph smg = buildStateMachineGraph(dm.getOrder(), className);
 
-			List<ISLConstraint> constraints = buildUpConstraints(dm.getReq());
+			List<ISLConstraint> constraints = buildUpConstraints(dm.getReqConstraints().getReq());
 			
 			CryptSLRule rule = new CryptSLRule(className, forbiddenMethods, smg, constraints, predicates);
 			storeRuletoFile(rule, className);
@@ -152,11 +158,11 @@ public class CryptSLModelReader {
 			if (pred.getParList() != null) {
 				for (SuPar var : pred.getParList().getParameters()) {
 					if (var.getVal() != null) {
-						String name = ((LiteralExpression) var.getVal().getName()).getValue().getName();
+						String name = ((LiteralExpression) var.getVal().getLit().getName()).getValue().getName();
 						if (name == null) {
 							name = "this";
 						}
-						variables.add(name);
+						variables.add(filterQuotes(name));
 					} else {
 						variables.add("_");
 					}
@@ -180,6 +186,10 @@ public class CryptSLModelReader {
 		}
 		return slCons;
 	}
+	
+	private String filterQuotes(String dirty) {
+		return CharMatcher.anyOf("\"").removeFrom(dirty);
+	}
 
 	private ISLConstraint getConstraint(Constraint cons) {
 		ISLConstraint slci = null;
@@ -193,7 +203,7 @@ public class CryptSLModelReader {
 			List<String> parList = new ArrayList<String>();
 			if (lit.getLitsleft() != null) {
 				for (Literal a : lit.getLitsleft().getParameters()) {
-					parList.add(a.getVal());
+					parList.add(filterQuotes(a.getVal()));
 				}
 			}
 			String pred = lit.getCons().getPred();
@@ -213,7 +223,12 @@ public class CryptSLModelReader {
 				}
 			} else {
 				LiteralExpression name = (LiteralExpression) lit.getCons().getName();
-				if (name != null) {
+				String part = lit.getCons().getPart();
+				if (part != null) {
+					//Enter code of part predicate here
+					
+					slci = new CryptSLValueConstraint(name.getValue().getName(), Lists.newArrayList());
+				} else if (name != null) {
 					slci = new CryptSLValueConstraint(name.getValue().getName(), parList);
 				}
 			}
@@ -275,14 +290,12 @@ public class CryptSLModelReader {
 					if (sup.getVal() == null) {
 						vars.add("_");
 					} else {
-						vars.add(((LiteralExpression) sup.getVal().getName()).getValue().getName());
+						vars.add(filterQuotes(((LiteralExpression) sup.getVal().getName()).getValue().getName()));
 					}
 				}
 			}
 			slci = new CryptSLPredicate(innerPredicate.getPredName(), vars, true);
 			System.out.println(un);
-//		} else if (cons instanceof ) {
-			
 		} else if (cons instanceof Constraint) {
 			if (cons.getPredName() != null && !cons.getPredName().isEmpty()) {
 				List<String> vars = new ArrayList<String>();
@@ -290,7 +303,7 @@ public class CryptSLModelReader {
 					if (sup.getVal() == null) {
 						vars.add("_");
 					} else {
-						vars.add(((LiteralExpression) sup.getVal().getName()).getValue().getName());
+						vars.add(filterQuotes(((LiteralExpression) sup.getVal().getName()).getValue().getName()));
 					}
 				}
 				slci = new CryptSLPredicate(cons.getPredName(), vars, false);
@@ -339,7 +352,7 @@ public class CryptSLModelReader {
 		} else {
 			value = ((Literal) name).getVal();
 		}
-		return value;
+		return filterQuotes(value);
 	}
 
 	private List<CryptSLForbiddenMethod> getForbiddenMethods(EList<ForbMethod> methods) {

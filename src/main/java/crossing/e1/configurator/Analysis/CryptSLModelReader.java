@@ -42,14 +42,16 @@ import crypto.rules.CryptSLConstraint;
 import crypto.rules.CryptSLConstraint.LogOps;
 import crypto.rules.CryptSLForbiddenMethod;
 import crypto.rules.CryptSLMethod;
+import crypto.rules.CryptSLObject;
 import crypto.rules.CryptSLPredicate;
 import crypto.rules.CryptSLRule;
+import crypto.rules.CryptSLSplitter;
 import crypto.rules.CryptSLValueConstraint;
 import crypto.rules.StateMachineGraph;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
 import de.darmstadt.tu.crossing.CryptSL.ui.internal.CryptSLActivator;
-import de.darmstadt.tu.crossing.cryptSL.Aggegate;
+import de.darmstadt.tu.crossing.cryptSL.Aggregate;
 import de.darmstadt.tu.crossing.cryptSL.ArithmeticExpression;
 import de.darmstadt.tu.crossing.cryptSL.ArithmeticOperator;
 import de.darmstadt.tu.crossing.cryptSL.ComparisonExpression;
@@ -68,10 +70,13 @@ import de.darmstadt.tu.crossing.cryptSL.ObjectDecl;
 import de.darmstadt.tu.crossing.cryptSL.Order;
 import de.darmstadt.tu.crossing.cryptSL.Par;
 import de.darmstadt.tu.crossing.cryptSL.ParList;
+import de.darmstadt.tu.crossing.cryptSL.PreDefinedPredicates;
 import de.darmstadt.tu.crossing.cryptSL.SimpleOrder;
 import de.darmstadt.tu.crossing.cryptSL.SuPar;
 import de.darmstadt.tu.crossing.cryptSL.SuperType;
 import de.darmstadt.tu.crossing.cryptSL.UnaryPreExpression;
+import de.darmstadt.tu.crossing.cryptSL.UseBlock;
+import typestate.interfaces.ICryptSLPredicateParameter;
 import typestate.interfaces.ISLConstraint;
 
 public class CryptSLModelReader {
@@ -99,12 +104,12 @@ public class CryptSLModelReader {
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 
 		List<String> classNames = new ArrayList<String>();
-//		classNames.add("KeyGenerator");
-//		classNames.add("KeyPairGenerator");
-//		classNames.add("KeyStore");
-//		classNames.add("Mac");
-//		classNames.add("PBEKeySpec");
-//		classNames.add("SecretKeyFactory");
+		classNames.add("KeyGenerator");
+		classNames.add("KeyPairGenerator");
+		classNames.add("KeyStore");
+		classNames.add("Mac");
+		classNames.add("PBEKeySpec");
+		classNames.add("SecretKeyFactory");
 //		classNames.add("MessageDigest");
 		classNames.add("Cipher");
 
@@ -122,13 +127,23 @@ public class CryptSLModelReader {
 			StateMachineGraph smg = buildStateMachineGraph(dm.getOrder(), className);
 
 			List<ISLConstraint> constraints = buildUpConstraints(dm.getReqConstraints().getReq());
-			
-			CryptSLRule rule = new CryptSLRule(className, forbiddenMethods, smg, constraints, predicates);
+			List<Entry<String, String>> objects = getObjects(dm.getUsage());
+			CryptSLRule rule = new CryptSLRule(className, objects, forbiddenMethods, smg, constraints, predicates);
 			storeRuletoFile(rule, className);
 			//String outputURI = storeModelToFile(resourceSet, eObject, className);
 			//loadModelFromFile(outputURI);
 		}
 
+	}
+
+	private List<Entry<String, String>> getObjects(UseBlock usage) {
+		List<Entry<String, String>> objects = new ArrayList<>();
+		
+		for (ObjectDecl obj : usage.getObjects()) {
+			objects.add(new SimpleEntry<String, String>(obj.getObjectType().getIdentifier(), obj.getObjectName().getName()));
+		}
+		
+		return objects;
 	}
 
 	private void storeRuletoFile(CryptSLRule rule, String className) {
@@ -154,7 +169,7 @@ public class CryptSLModelReader {
 	private List<CryptSLPredicate> getPredicates(List<Constraint> predList) {
 		List<CryptSLPredicate> preds = new ArrayList<CryptSLPredicate>();
 		for (Constraint pred : predList) {
-			List<String> variables = new ArrayList<String>();
+			List<ICryptSLPredicateParameter> variables = new ArrayList<ICryptSLPredicateParameter>();
 			if (pred.getParList() != null) {
 				for (SuPar var : pred.getParList().getParameters()) {
 					if (var.getVal() != null) {
@@ -162,9 +177,9 @@ public class CryptSLModelReader {
 						if (name == null) {
 							name = "this";
 						}
-						variables.add(filterQuotes(name));
+						variables.add(new CryptSLObject(name));
 					} else {
-						variables.add("_");
+						variables.add(new CryptSLObject("_"));
 					}
 				}
 			}
@@ -206,14 +221,22 @@ public class CryptSLModelReader {
 					parList.add(filterQuotes(a.getVal()));
 				}
 			}
-			String pred = lit.getCons().getPred();
+			String pred = lit.getCons().getPredName();
 			if (pred != null) {
 				switch (pred) {
-					case "noCallTo" : 
-						for (CryptSLMethod csm :dealWithAggegate((Aggegate)lit.getCons().getObj().get(0))) {
+					case "callTo" :
+						List<ICryptSLPredicateParameter> methodsToBeCalled = new ArrayList<ICryptSLPredicateParameter>();
+						methodsToBeCalled.addAll(resolveAggregateToMethodeNames((SuperType)((PreDefinedPredicates)lit.getCons()).getObj().get(0)));
+						slci = new CryptSLPredicate(pred, methodsToBeCalled, false);
+						break;
+					case "noCallTo" :
+						List<ICryptSLPredicateParameter> methodsNotToBeCalled = new ArrayList<ICryptSLPredicateParameter>();
+						List<CryptSLMethod> resolvedMethodNames = resolveAggregateToMethodeNames((Aggregate)((PreDefinedPredicates)lit.getCons()).getObj().get(0));
+						for (CryptSLMethod csm :resolvedMethodNames ) {
 							forbiddenMethods.add(new CryptSLForbiddenMethod(csm, true));
+							methodsNotToBeCalled.add(csm);
 						}
-						slci = new CryptSLPredicate(pred, parList, false);
+						slci = new CryptSLPredicate(pred, methodsNotToBeCalled, false);
 						break;
 					case "neverTypeOf" :
 					
@@ -222,14 +245,19 @@ public class CryptSLModelReader {
 						new RuntimeException();
 				}
 			} else {
-				LiteralExpression name = (LiteralExpression) lit.getCons().getName();
+				
 				String part = lit.getCons().getPart();
 				if (part != null) {
-					//Enter code of part predicate here
-					
-					slci = new CryptSLValueConstraint(name.getValue().getName(), Lists.newArrayList());
-				} else if (name != null) {
-					slci = new CryptSLValueConstraint(name.getValue().getName(), parList);
+					LiteralExpression name = (LiteralExpression) lit.getCons().getLit().getName();
+					CryptSLObject variable = new CryptSLObject(name.getValue().getName(), new CryptSLSplitter(Integer.parseInt(lit.getCons().getInd()), filterQuotes(lit.getCons().getSplit())));
+					slci = new CryptSLValueConstraint(variable, parList);
+				} else {
+					LiteralExpression name = (LiteralExpression) lit.getCons().getName();
+					if (name == null) {
+						name = (LiteralExpression) lit.getCons().getLit().getName();
+					}
+					CryptSLObject variable = new CryptSLObject(name.getValue().getName());
+					slci = new CryptSLValueConstraint(variable, parList);
 				}
 			}
 		} else if (cons instanceof ComparisonExpression) {
@@ -283,14 +311,22 @@ public class CryptSLModelReader {
 			slci = new CryptSLComparisonConstraint(left, right,	op);
 		} else if (cons instanceof UnaryPreExpression) {
 			UnaryPreExpression un = (UnaryPreExpression) cons;
-			List<String> vars = new ArrayList<String>();
+			List<ICryptSLPredicateParameter> vars = new ArrayList<ICryptSLPredicateParameter>();
 			Constraint innerPredicate = un.getEnclosedExpression();
 			if (innerPredicate.getParList() != null) {
 				for (SuPar sup : innerPredicate.getParList().getParameters()) {
 					if (sup.getVal() == null) {
-						vars.add("_");
+						vars.add(new CryptSLObject("_"));
 					} else {
-						vars.add(filterQuotes(((LiteralExpression) sup.getVal().getName()).getValue().getName()));
+						LiteralExpression lit = sup.getVal();
+						
+						String variable = filterQuotes(((LiteralExpression) lit.getLit().getName()).getValue().getName());
+						String part = sup.getVal().getPart();
+						if (part != null) {
+							vars.add(new CryptSLObject(variable, new CryptSLSplitter(Integer.parseInt(lit.getInd()), filterQuotes(lit.getSplit()))));
+						} else {
+							vars.add(new CryptSLObject(variable));
+						}
 					}
 				}
 			}
@@ -298,12 +334,20 @@ public class CryptSLModelReader {
 			System.out.println(un);
 		} else if (cons instanceof Constraint) {
 			if (cons.getPredName() != null && !cons.getPredName().isEmpty()) {
-				List<String> vars = new ArrayList<String>();
+				List<ICryptSLPredicateParameter> vars = new ArrayList<ICryptSLPredicateParameter>();
 				for (SuPar sup : cons.getParList().getParameters()) {
 					if (sup.getVal() == null) {
-						vars.add("_");
+						vars.add(new CryptSLObject("_"));
 					} else {
-						vars.add(filterQuotes(((LiteralExpression) sup.getVal().getName()).getValue().getName()));
+						LiteralExpression lit = sup.getVal();
+						
+						String variable = filterQuotes(((LiteralExpression) lit.getLit().getName()).getValue().getName());
+						String part = sup.getVal().getPart();
+						if (part != null) {
+							vars.add(new CryptSLObject(variable, new CryptSLSplitter(Integer.parseInt(lit.getInd()), filterQuotes(lit.getSplit()))));
+						} else {
+							vars.add(new CryptSLObject(variable));
+						}
 					}
 				}
 				slci = new CryptSLPredicate(cons.getPredName(), vars, false);
@@ -414,7 +458,7 @@ public class CryptSLModelReader {
 	private void addSkipEdge(StateMachineGraph smg, Expression leaf) {
 		List<TransitionEdge> tedges = new ArrayList<TransitionEdge>(smg.getEdges());
 		for (TransitionEdge trans : tedges) {
-			if (trans.getLabel().equals(resolveAggegateToMethodeNames(leaf))) {
+			if (trans.getLabel().equals(resolveAggregateToMethodeNames(leaf.getOrderEv().get(0)))) {
 				for (TransitionEdge innerTrans : tedges) {
 					if (innerTrans.from().equals(trans.to())) {
 						smg.addEdge(new TransitionEdge(innerTrans.getLabel(), trans.from(), innerTrans.to()));
@@ -513,7 +557,7 @@ public class CryptSLModelReader {
 			smg.addNode(nextNode);
 		}
 
-		List<CryptSLMethod> label = resolveAggegateToMethodeNames(leaf);
+		List<CryptSLMethod> label = resolveAggregateToMethodeNames(leaf.getOrderEv().get(0));
 		smg.addEdge(new TransitionEdge(label, prevNode, nextNode));
 		prevNode.setAccepting(false);
 		if (leaf.getElementop() != null) {
@@ -528,22 +572,23 @@ public class CryptSLModelReader {
 		}
 	}
 
-	private List<CryptSLMethod> resolveAggegateToMethodeNames(Expression leaf) {
-		if (leaf.getOrderEv().get(0) instanceof Aggegate) {
-			Aggegate ev = (Aggegate) leaf.getOrderEv().get(0);
-			return dealWithAggegate(ev);
+	private List<CryptSLMethod> resolveAggregateToMethodeNames(Event leaf) {
+		if (leaf instanceof Aggregate) {
+			Aggregate ev = (Aggregate) leaf;
+			return dealWithAggregate(ev);
 		} else {
 			ArrayList<CryptSLMethod> statements = new ArrayList<CryptSLMethod>();
-			statements.add(stringifyMethodSignature(leaf.getOrderEv().get(0)));
+			statements.add(stringifyMethodSignature(leaf));
 			return statements;
 		}
 	}
 	
-	private List<CryptSLMethod> dealWithAggegate(Aggegate ev) {
+	private List<CryptSLMethod> dealWithAggregate(Aggregate ev) {
 		List<CryptSLMethod> statements = new ArrayList<CryptSLMethod>();
+		
 		for (Event lab : ev.getLab()) {
-			if (lab instanceof Aggegate) {
-				statements.addAll(dealWithAggegate((Aggegate) lab));
+			if (lab instanceof Aggregate) {
+				statements.addAll(dealWithAggregate((Aggregate) lab));
 			} else {
 				statements.add(stringifyMethodSignature(lab));
 			}

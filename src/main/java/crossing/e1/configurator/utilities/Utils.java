@@ -81,19 +81,17 @@ public class Utils {
 	public static IProject getCurrentProject() {
 		IProject currentProject = null;
 
-		/*if (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension().equalsIgnoreCase("java")) {
-			currentProject = Utils.getCurrentlyOpenFile().getProject();
-		} else if (Utils.checkIfJavaProjectSelected()) {
-			currentProject = Utils.getIProjectFromSelection();
-		} else {
-			currentProject = null;
-		}*/
-		if (WizardAction.calledAction.equals("code-clafer_configurator_fromContextMenu"))  {
+		/*
+		 * if (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension().equalsIgnoreCase("java")) { currentProject =
+		 * Utils.getCurrentlyOpenFile().getProject(); } else if (Utils.checkIfJavaProjectSelected()) { currentProject = Utils.getIProjectFromSelection(); } else { currentProject =
+		 * null; }
+		 */
+		if (WizardAction.calledAction.equals("code-clafer_configurator_fromContextMenu")) {
 			currentProject = Utils.getIProjectFromSelection();
 		} else if (WizardAction.calledAction.equals("crossing.e1.configurator.actions.WizardAction") && (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile()
 			.getFileExtension().equalsIgnoreCase("java"))) {
 			currentProject = Utils.getCurrentlyOpenFile().getProject();
-		}  else if (Utils.checkIfJavaProjectSelected()) {
+		} else if (Utils.checkIfJavaProjectSelected()) {
 			currentProject = Utils.getIProjectFromSelection();
 		} else {
 			currentProject = null;

@@ -168,11 +168,11 @@ public class DeveloperProject {
 		}
 		return false;
 	}
-	
+
 	public String toString() {
 		return project.getName() + "(" + getProjectPath() + ")";
 	}
-	
+
 	public Boolean removePackage(String packageName) {
 		try {
 			IPackageFragment delPackage = getPackagesOfProject(packageName);
@@ -180,8 +180,8 @@ public class DeveloperProject {
 		} catch (CoreException e) {
 			Activator.getDefault().logError(e);
 		}
-		
+
 		return false;
 	}
-	
+
 }

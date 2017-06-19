@@ -290,7 +290,7 @@ public class ConfiguratorWizard extends Wizard {
 
 				// ret &= this.codeGeneration.initCodeGeneration();
 				ret &= this.codeGeneration.initCodeGeneration(this.taskListPage.getSelectedProject());
-				
+
 				// Write Instance File into developer project
 				final String xmlInstancePath = this.codeGeneration.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
 				parser.writeClaferInstanceToFile(xmlInstancePath);

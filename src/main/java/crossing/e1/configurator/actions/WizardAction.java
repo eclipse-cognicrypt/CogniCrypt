@@ -18,6 +18,7 @@ package crossing.e1.configurator.actions;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
@@ -32,6 +33,7 @@ import crossing.e1.configurator.wizard.ConfiguratorWizard;
 public class WizardAction implements IWorkbenchWindowActionDelegate {
 
 	private IWorkbenchWindow window;
+	public static String calledAction;
 
 	/**
 	 * The constructor.
@@ -63,7 +65,8 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	 */
 	@Override
 	public void run(final IAction action) {
-		final WizardDialog dialog = new WizardDialog(this.window.getShell(), new ConfiguratorWizard());
+		calledAction=action.getId();
+		final WizardDialog dialog = new WizardDialog(new Shell(), new ConfiguratorWizard());
 		dialog.open();
 	}
 

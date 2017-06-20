@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>CROSSING.E1.CONFIGURATOR</groupId>
   <artifactId>CROSSING.E1.CONFIGURATOR</artifactId>
   <packaging>eclipse-plugin</packaging>
-	<parent>
+  <parent>
   	<groupId>CROSSING.E1.PARENT</groupId>
   	<artifactId>CROSSING.E1.CONFIGURATOR</artifactId>
   	<version>1.0.0-SNAPSHOT</version>
-  	<relativePath>../code-clafer_configurator/mvn-parent</relativePath>
+  	<relativePath>/mvn-parent</relativePath>
   </parent>
 	<repositories>
 	<repository>

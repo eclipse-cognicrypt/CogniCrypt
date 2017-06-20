@@ -37,16 +37,16 @@ import crossing.e1.configurator.utilities.Utils;
  */
 public class QuestionsJSONReader {
 
-	private List<Question> questions;
-
 	//Test method so that OpenCCE does not have to be started.
 	public static void main(final String args[]) {
 		final QuestionsJSONReader reader = new QuestionsJSONReader();
 		System.out.println(reader.getQuestions("src/main/resources/testFiles/TestQuestions0.json"));
 	}
 
+	private List<Question> questions;
+
 	private void checkReadQuestions() {
-		final Set<Integer> ids = new HashSet<Integer>();
+		final Set<Integer> ids = new HashSet<>();
 		for (final Question question : this.questions) {
 			if (!ids.add(question.getId())) {
 				throw new IllegalArgumentException("Each question must have a unique ID.");

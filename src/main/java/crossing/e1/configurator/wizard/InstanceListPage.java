@@ -170,7 +170,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 			getInstanceDetails(children[i], algorithms);
 		}
 
-		StringBuilder output = new StringBuilder();
+		final StringBuilder output = new StringBuilder();
 		for (final Map.Entry<String, String> entry : algorithms.entrySet()) {
 			final String key = entry.getKey();
 			final String value = entry.getValue();

@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 package crossing.e1.configurator.wizard.beginner;
-import java.util.Locale;
-import java.awt.BorderLayout;
-import java.awt.Color;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,11 +37,9 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Text;
 
 import crossing.e1.configurator.Activator;
@@ -56,10 +51,18 @@ import crossing.e1.configurator.utilities.Labels;
 public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private final Question quest;
-	private List<Question>allQuestion;
+	private List<Question> allQuestion;
 	private Entry<Question, Answer> selection = new AbstractMap.SimpleEntry<>(null, null);
 	private boolean finish = false;
 	private List<String> selectionValues;
+
+	public BeginnerTaskQuestionPage(final List<Question> allQuestion, final Question quest, final Task task) {
+		super("Display Questions");
+		setTitle("Configuring Selected Task: " + task.getDescription());
+		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
+		this.allQuestion = allQuestion;
+		this.quest = quest;
+	}
 
 	public BeginnerTaskQuestionPage(final Question quest, final Task task) {
 		this(quest, task, null);
@@ -71,15 +74,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.quest = quest;
 		this.selectionValues = selectionValues;
-		
-	}
-	
-	public BeginnerTaskQuestionPage(final List<Question>allQuestion, final Question quest, final Task task) {
-		super("Display Questions");
-		setTitle("Configuring Selected Task: " + task.getDescription());
-		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
-		this.allQuestion = allQuestion;
-		this.quest = quest;
+
 	}
 
 	@Override
@@ -137,105 +132,97 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 
 			case button:
-				for(int i = 0; i < 3; i++){
-					final Label blankLabel = new Label(container,SWT.NULL);
+
+				for (int i = 0; i < 3; i++) {
+					new Label(container, SWT.NULL);
 				}
-				 
-				 Composite comp = new Composite(container, SWT.NONE);
-				 GridLayout grid = new GridLayout(2,false);
-				 grid.marginWidth = 0;
-				 comp.setLayout(grid);
+
+				final Composite comp = new Composite(container, SWT.NONE);
+				final GridLayout grid = new GridLayout(2, false);
+				grid.marginWidth = 0;
+				comp.setLayout(grid);
 
 				final Button methodButton = new Button(comp, SWT.PUSH);
-				final ArrayList<String> methodArrayList = quest.getMethod();
+				final ArrayList<String> methodArrayList = question.getMethod();
 				final String buttonName = methodArrayList.get(0);
 				final String className = methodArrayList.get(1);
 				final String methodName = methodArrayList.get(2);
-				methodButton.setText(buttonName);
-				final Label feedbackLabel = new Label(comp,SWT.NONE);					
 
-				Object classObj = null; 
+				methodButton.setText(buttonName);
+				final Label feedbackLabel = new Label(comp, SWT.NONE);
+
+				Object classObj = null;
 				Method method = null;
 				Object[] paramArray = null;
-				
-			try {	
-				Class<?> c = Class.forName(className);
-				Method[] methods = c.getMethods();
 
-				for(Method m : methods){					
-					if(m.getName().equals(methodName)){
-						method = m;
-						break;
+				try {
+					final Class<?> c = Class.forName(className);
+					final Method[] methods = c.getMethods();
+
+					for (final Method m : methods) {
+						if (m.getName().equals(methodName)) {
+							method = m;
+							break;
+						}
 					}
-				}
-								
-				Class<?>[] paramTypes  = method.getParameterTypes();	
-				ArrayList<Object> paramObjList = new ArrayList<Object>(); 
-				ArrayList<Integer> methodParamIds = quest.getMethodParamIds();
-				String value = null;
-				
-				for(int i = 0; i < methodParamIds.size(); i++){
-					value = allQuestion.get(methodParamIds.get(i)-1).getAnswers().get(0).getValue(); 					
-					
-					if(!paramTypes[i].getName().equals("int")){
-						paramObjList.add(paramTypes[i].cast(value));
-					}else{
-						paramObjList.add(Integer.parseInt(allQuestion.get(methodParamIds.get(i)-1).getAnswers().get(0).getValue()));
-					}	
-				}
 
-				 classObj = c.newInstance();
-				 paramArray = paramObjList.toArray();		
+					final Class<?>[] paramTypes = method.getParameterTypes();
+					final ArrayList<Object> paramObjList = new ArrayList<>();
+					final ArrayList<Integer> methodParamIds = question.getMethodParamIds();
+					String value = null;
 
-			} catch (SecurityException | 
-					ClassNotFoundException | 
-					IllegalAccessException | 
-					IllegalArgumentException | 
-					InstantiationException e) {
-				Activator.getDefault().logError(e);
-			}
+					for (int i = 0; i < methodParamIds.size(); i++) {
+						value = this.allQuestion.get(methodParamIds.get(i) - 1).getAnswers().get(0).getValue();
+
+						if (!paramTypes[i].getName().equals("int")) {
+							paramObjList.add(paramTypes[i].cast(value));
+						} else {
+							paramObjList.add(Integer.parseInt(this.allQuestion.get(methodParamIds.get(i) - 1).getAnswers().get(0).getValue()));
+						}
+					}
+
+					classObj = c.newInstance();
+					paramArray = paramObjList.toArray();
+
+				} catch (SecurityException | ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InstantiationException e) {
+					Activator.getDefault().logError(e);
+				}
 
 				final Method invokeMethod = method;
 				final Object invokeClassObj = classObj;
 				final Object[] invokeParamArray = paramArray;
-				ArrayList<Integer> methodReferIds = quest.getMethodReferIds();
-				boolean buttonState = true;
-				
-				
+
 				methodButton.addSelectionListener(new SelectionAdapter() {
+
 					@Override
-				    public void widgetSelected(SelectionEvent e) {
-						 try {
-							 
-							 Object[] resObjArray = (Object[])  invokeMethod.invoke(invokeClassObj, invokeParamArray);
-							 String [] resStringArray = Arrays.copyOf(resObjArray, resObjArray.length, String[].class);
-							
-							 if(resStringArray[0].equals(true)){
-								 question.getDefaultAnswer().setNextID(methodReferIds.get(1));
-							 }
-							 else{
-								question.getDefaultAnswer().setNextID(methodReferIds.get(0));
-							 }
-							 
-							 feedbackLabel.setText(resStringArray[1]);
-							 feedbackLabel.getParent().pack();
-							 methodButton.setEnabled(false);
+					public void widgetSelected(final SelectionEvent e) {
+						try {
+
+							final Object[] resObjArray = (Object[]) invokeMethod.invoke(invokeClassObj, invokeParamArray);
+							final String[] resStringArray = Arrays.copyOf(resObjArray, resObjArray.length, String[].class);
+
+							if (resStringArray[0].equals(true)) {
+								question.getDefaultAnswer().setNextID(question.getAnswers().get(0).getNextID());
+							} else {
+								question.getDefaultAnswer().setNextID(question.getAnswers().get(1).getNextID());
+							}
+
+							feedbackLabel.setText(resStringArray[1]);
+							feedbackLabel.getParent().pack();
+							methodButton.setEnabled(false);
 						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
 							Activator.getDefault().logError(e1);
 						}
-				
-					}		
+
+					}
 				});
-				
-				
-				
+
 				this.finish = true;
 				final Answer a = question.getDefaultAnswer();
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
 				BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, a);
 				break;
 
-				
 			case itemselection:
 				new Label(container, SWT.NONE);
 				new Label(container, SWT.NONE);
@@ -315,7 +302,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						if (e.getSource() instanceof Button && (((Button) e.getSource()).getStyle() & SWT.NONE) == SWT.NONE) {
 							final String[] sel = itemList.getSelection();
 							Answer ans = BeginnerTaskQuestionPage.this.selection.getValue();
-							StringBuilder checkedElement = new StringBuilder();
+							final StringBuilder checkedElement = new StringBuilder();
 							if (ans == null) {
 								ans = new Answer();
 								ans.setNextID(-1);
@@ -461,5 +448,5 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		result = prime * result + ((this.selectionValues == null) ? 0 : this.selectionValues.hashCode());
 		return result;
 	}
-	
+
 }

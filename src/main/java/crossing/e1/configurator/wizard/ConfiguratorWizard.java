@@ -122,8 +122,6 @@ public class ConfiguratorWizard extends Wizard {
 		return updateRound;
 	}
 
-	
-	
 	private void createBeginnerPage(final Question curQuestion, final List<Question> allQuestion) {
 		if (curQuestion.getElement().equals(GUIElements.itemselection)) {
 			final List<String> selection = new ArrayList<>();
@@ -133,11 +131,9 @@ public class ConfiguratorWizard extends Wizard {
 				}
 			}
 			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curQuestion, this.beginnerQuestions.getTask(), selection);
-		}
-		else if(curQuestion.getElement().equals(GUIElements.button)){
+		} else if (curQuestion.getElement().equals(GUIElements.button)) {
 			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(allQuestion, curQuestion, this.beginnerQuestions.getTask());
-		}
-		else {
+		} else {
 			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curQuestion, this.beginnerQuestions.getTask());
 		}
 	}

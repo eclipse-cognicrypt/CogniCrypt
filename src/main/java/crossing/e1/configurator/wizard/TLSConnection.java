@@ -21,6 +21,7 @@
 package crossing.e1.configurator.wizard;
 
 import java.io.IOException;
+
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -28,31 +29,33 @@ import crossing.e1.configurator.Activator;
 
 public class TLSConnection {
 
-	public TLSConnection(){}
+	public TLSConnection() {}
 
 	/**
 	 * The method testConnection check if it possible to establish a ssl connection to the host ip.
-	 * @param host ip
+	 * 
+	 * @param host
+	 *        ip
 	 * @param port
 	 * @return A string array with request answer and output text. array[0] contains true or false, array[1] contains the output text.
 	 */
-	public String[] testConnection(String host, int port){
+	public String[] testConnection(final String host, final int port) {
 		boolean isConnected = false;
-		String[] returnArray = new String[2];
+		final String[] returnArray = new String[2];
 		returnArray[1] = "Error! Connection to host could not be established.";
 		returnArray[0] = "false";
 		try {
 			final SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-			final SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket(host, port);	
+			final SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket(host, port);
 			isConnected = sslsocket.isConnected();
 			sslsocket.close();
-			
-			if(isConnected){
+
+			if (isConnected) {
 				returnArray[1] = "Connection established successfully!";
 				returnArray[0] = "true";
 			}
-			
-		} catch (IOException e) {
+
+		} catch (final IOException e) {
 			Activator.getDefault().logError(e);
 		}
 		return returnArray;

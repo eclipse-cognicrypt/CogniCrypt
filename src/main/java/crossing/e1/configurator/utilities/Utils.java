@@ -148,6 +148,32 @@ public class Utils {
 		return iproject;
 	}
 
+	public static IProject getProjectSelection() {
+		IProject defaultProject = null;
+		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+		final List<IProject> javaProjects = new ArrayList<>();
+		if (projects.length > 0) {
+			for (int i = 0; i < projects.length; i++) {
+				if (Boolean.TRUE.equals(Utils.checkIfJavaProjectSelected(projects[i]))) {
+					javaProjects.add(projects[i]);
+				}
+			}
+
+		}
+		if (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension().equalsIgnoreCase("java")) {
+			defaultProject = Utils.getCurrentlyOpenFile().getProject();
+		} else if (Boolean.TRUE.equals(Utils.checkIfJavaProjectSelected())) {
+			defaultProject = Utils.getIProjectFromSelection();
+		} else {
+			defaultProject = null;
+		}
+		final IProject[] javaProject = javaProjects.toArray(new IProject[javaProjects.size()]);
+		final IProject targetFile = (IProject) JOptionPane.showInputDialog(null,
+			"CogniCrypt requires a java project which acts as target for code generation. Please choose a Java project.", "CogniCrypt", JOptionPane.QUESTION_MESSAGE, null,
+			javaProject, defaultProject);
+		return targetFile;
+	}
+
 	/***
 	 * This method returns absolute path of a project-relative path.
 	 * 
@@ -178,32 +204,6 @@ public class Utils {
 		}
 
 		return null;
-	}
-
-	public static IProject getProjectSelection() {
-		IProject defaultProject = null;
-		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		final List<IProject> javaProjects = new ArrayList<>();
-		if (projects.length > 0) {
-			for (int i = 0; i < projects.length; i++) {
-				if (Boolean.TRUE.equals(Utils.checkIfJavaProjectSelected(projects[i]))) {
-					javaProjects.add(projects[i]);
-				}
-			}
-
-		}
-		if (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension().equalsIgnoreCase("java")) {
-			defaultProject = Utils.getCurrentlyOpenFile().getProject();
-		} else if (Boolean.TRUE.equals(Utils.checkIfJavaProjectSelected())) {
-			defaultProject = Utils.getIProjectFromSelection();
-		} else {
-			defaultProject = null;
-		}
-		final IProject[] javaProject = javaProjects.toArray(new IProject[javaProjects.size()]);
-		final IProject targetFile = (IProject) JOptionPane.showInputDialog(null,
-			"CogniCrypt requires a java project which acts as target for code generation. Please choose a Java project.", "CogniCrypt", JOptionPane.QUESTION_MESSAGE, null,
-			javaProject, defaultProject);
-		return targetFile;
 	}
 
 }

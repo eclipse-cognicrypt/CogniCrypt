@@ -104,14 +104,15 @@ public class CryptSLModelReader {
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 
 		List<String> classNames = new ArrayList<String>();
-		classNames.add("KeyGenerator");
-		classNames.add("KeyPairGenerator");
-		classNames.add("KeyStore");
-		classNames.add("Mac");
-		classNames.add("PBEKeySpec");
-		classNames.add("SecretKeyFactory");
-//		classNames.add("MessageDigest");
-		classNames.add("Cipher");
+//		classNames.add("KeyGenerator");
+//		classNames.add("KeyPairGenerator");
+//		classNames.add("KeyStore");
+//		classNames.add("Mac");
+//		classNames.add("PBEKeySpec");
+//		classNames.add("SecretKey");
+//		classNames.add("SecretKeyFactory");
+		classNames.add("MessageDigest");
+//		classNames.add("Cipher");
 
 		for (String className : classNames) {
 			
@@ -126,7 +127,7 @@ public class CryptSLModelReader {
 			predicates = (ensure != null) ? getPredicates(ensure.getPred()) : Lists.newArrayList();
 			StateMachineGraph smg = buildStateMachineGraph(dm.getOrder(), className);
 
-			List<ISLConstraint> constraints = buildUpConstraints(dm.getReqConstraints().getReq());
+			List<ISLConstraint> constraints = (dm.getReqConstraints() != null) ? buildUpConstraints(dm.getReqConstraints().getReq()) : Lists.newArrayList();
 			List<Entry<String, String>> objects = getObjects(dm.getUsage());
 			CryptSLRule rule = new CryptSLRule(className, objects, forbiddenMethods, smg, constraints, predicates);
 			storeRuletoFile(rule, className);
@@ -170,6 +171,7 @@ public class CryptSLModelReader {
 		List<CryptSLPredicate> preds = new ArrayList<CryptSLPredicate>();
 		for (Constraint pred : predList) {
 			List<ICryptSLPredicateParameter> variables = new ArrayList<ICryptSLPredicateParameter>();
+			
 			if (pred.getParList() != null) {
 				for (SuPar var : pred.getParList().getParameters()) {
 					if (var.getVal() != null) {
@@ -185,7 +187,12 @@ public class CryptSLModelReader {
 			}
 			
 			String meth = pred.getPredName();
-			preds.add(new CryptSLPredicate(meth, variables, false));
+			SuperType cond = pred.getLabelCond();
+			if (cond == null) {
+				preds.add(new CryptSLPredicate(meth, variables, false));
+			} else {
+				preds.add(new CryptSLPredicate(meth, variables, false, resolveAggregateToMethodeNames(cond)));
+			}
 			
 		}
 		return preds;
@@ -245,7 +252,6 @@ public class CryptSLModelReader {
 						new RuntimeException();
 				}
 			} else {
-				
 				String part = lit.getCons().getPart();
 				if (part != null) {
 					LiteralExpression name = (LiteralExpression) lit.getCons().getLit().getName();
@@ -331,7 +337,6 @@ public class CryptSLModelReader {
 				}
 			}
 			slci = new CryptSLPredicate(innerPredicate.getPredName(), vars, true);
-			System.out.println(un);
 		} else if (cons instanceof Constraint) {
 			if (cons.getPredName() != null && !cons.getPredName().isEmpty()) {
 				List<ICryptSLPredicateParameter> vars = new ArrayList<ICryptSLPredicateParameter>();
@@ -414,11 +419,13 @@ public class CryptSLModelReader {
 
 	private StateMachineGraph buildStateMachineGraph(Expression order, String className) {
 
-		StateMachineGraph smg = new StateMachineGraph();
-		smg.addNode(new StateNode("pre_init", true));
-		nodeNameCounter = 0;
-		iterateThroughSubtrees(smg, order, null, null);
-		iterateThroughSubtreesOptional(smg, order, null, null);
+		StateMachineGraphBuilder smgb = new StateMachineGraphBuilder(order, className);
+		
+		StateMachineGraph smg = smgb.buildSMG();
+//		smg.addNode(new StateNode("pre_init", true));
+//		nodeNameCounter = 0;
+//		iterateThroughSubtrees(smg, order, null, null);
+//		iterateThroughSubtreesOptional(smg, order, null, null);
 
 		return smg;
 	}
@@ -426,6 +433,10 @@ public class CryptSLModelReader {
 	private void iterateThroughSubtreesOptional(StateMachineGraph smg, Expression order, StateNode prevNode, StateNode nextNode) {
 		Expression left = order.getLeft();
 		Expression right = order.getRight();
+		if (left == null && right == null) {
+			return;
+		}
+		
 		String leftElOp = left.getElementop();
 		String rightElOp = right.getElementop();
 
@@ -491,56 +502,63 @@ public class CryptSLModelReader {
 		String elementOp = order.getElementop();
 		Boolean elOpNotNull = elementOp != null;
 
+		if (left == null && right == null) {
+			return;
+		}
+		
 		if ((left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
 			iterateThroughSubtrees(smg, left, null, nextNode);
 			prevNode = getLastNode(smg);
 
 			iterateThroughSubtrees(smg, right, prevNode, nextNode);
-		} else if ((left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
-			iterateThroughSubtrees(smg, left, prevNode, nextNode);
-			handleOp(smg, order.getOrderop(), right, prevNode, nextNode);
-		} else if (!(left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
-			if (order.getOrderop().equals("|")) {
-				prevNode = getLastNode(smg);
-			}
-			handleOp(smg, order.getOrderop(), left, prevNode, nextNode);
-			if (order.getOrderop().equals("|")) {
-				nextNode = getLastNode(smg);
-			}
+		} else {
+			String orderop = order.getOrderop();
+			if ((left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
+				iterateThroughSubtrees(smg, left, prevNode, nextNode);
+				handleOp(smg, orderop, right, prevNode, nextNode);
+			} else if (!(left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
+				if (orderop.equals("|")) {
+					prevNode = getLastNode(smg);
+				}
+				handleOp(smg, orderop, left, prevNode, nextNode);
+				if (orderop.equals("|")) {
+					nextNode = getLastNode(smg);
+				}
 
-			if (elOpNotNull && elementOp.equals("+")) {
-				StateNode linkBackNode = prevNode;
+				if (elOpNotNull && elementOp.equals("+")) {
+					StateNode linkBackNode = prevNode;
 
-				iterateThroughSubtrees(smg, right, prevNode, nextNode);
+					iterateThroughSubtrees(smg, right, prevNode, nextNode);
 
-				List<TransitionEdge> transEdges = new ArrayList<TransitionEdge>(smg.getEdges());
-				for (TransitionEdge trans : transEdges) {
-					if (trans.to().equals(nextNode)) {
-						if (trans.from().equals(linkBackNode)) {
-							smg.addEdge(new TransitionEdge(trans.getLabel(), trans.to(), trans.to()));
-						} else {
-							for (TransitionEdge innerTrans : transEdges) {
-								if (innerTrans.to().equals(trans.from())) {
-									smg.addEdge(new TransitionEdge(innerTrans.getLabel(), trans.to(), trans.from()));
+					List<TransitionEdge> transEdges = new ArrayList<TransitionEdge>(smg.getEdges());
+					for (TransitionEdge trans : transEdges) {
+						if (trans.to().equals(nextNode)) {
+							if (trans.from().equals(linkBackNode)) {
+								smg.addEdge(new TransitionEdge(trans.getLabel(), trans.to(), trans.to()));
+							} else {
+								for (TransitionEdge innerTrans : transEdges) {
+									if (innerTrans.to().equals(trans.from())) {
+										smg.addEdge(new TransitionEdge(innerTrans.getLabel(), trans.to(), trans.from()));
+									}
 								}
 							}
 						}
 					}
+				} else {
+					iterateThroughSubtrees(smg, right, prevNode, nextNode);
 				}
-			} else {
-				iterateThroughSubtrees(smg, right, prevNode, nextNode);
-			}
 
-		} else if (!(left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
-			if (order.getOrderop().equals("|")) {
-				prevNode = getLastNode(smg);
-			}
-			handleOp(smg, order.getOrderop(), left, prevNode, null);
-			if (order.getOrderop().equals("|")) {
-				nextNode = getLastNode(smg);
-				handleOp(smg, order.getOrderop(), right, prevNode, nextNode);
-			} else {
-				handleOp(smg, order.getOrderop(), right, null, nextNode);
+			} else if (!(left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
+				if (orderop != null && orderop.equals("|")) {
+					prevNode = getLastNode(smg);
+				}
+				handleOp(smg, orderop, left, prevNode, null);
+				if (orderop.equals("|")) {
+					nextNode = getLastNode(smg);
+					handleOp(smg, orderop, right, prevNode, nextNode);
+				} else {
+					handleOp(smg, orderop, right, null, nextNode);
+				}
 			}
 		}
 	}
@@ -648,7 +666,7 @@ public class CryptSLModelReader {
 	}
 
 	private StateNode getNewNode() {
-		return new StateNode(String.valueOf(nodeNameCounter++), false, true);
+		return new StateNode(String.valueOf(nodeNameCounter++), false, false);
 	}
 
 //	private Expression getFirstMethod(Expression order) {

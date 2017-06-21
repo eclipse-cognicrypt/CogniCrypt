@@ -68,7 +68,6 @@ public class ConfiguratorWizard extends Wizard {
 	private WizardPage preferenceSelectionPage;
 	private InstanceListPage instanceListPage;
 	private ClaferModel claferModel;
-	private final XSLBasedGenerator codeGeneration = new XSLBasedGenerator();
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
 
@@ -194,8 +193,6 @@ public class ConfiguratorWizard extends Wizard {
 							addPage(this.preferenceSelectionPage);
 						}
 
-						// this.constraints.putAll(((BeginnerTaskQuestionPage)
-						// currentPage).getMap());
 						return this.preferenceSelectionPage;
 					}
 				}
@@ -280,27 +277,25 @@ public class ConfiguratorWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		boolean ret = false;
-
 		if (this.instanceListPage != null) {
 			ret = this.instanceListPage.isPageComplete();
 			try {
 				final XMLParser parser = new XMLParser();
 				parser.displayInstanceValues(this.instanceListPage.getValue(), this.constraints);
-				// Initialize Code Generation to retrieve developer project
-
-				// ret &= this.codeGeneration.initCodeGeneration();
-				ret &= this.codeGeneration.initCodeGeneration(this.taskListPage.getSelectedProject());
 				
+				// Initialize Code Generation
+				XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject());
+
 				// Write Instance File into developer project
-				final String xmlInstancePath = this.codeGeneration.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
+				final String xmlInstancePath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
 				parser.writeClaferInstanceToFile(xmlInstancePath);
 
 				// Generate code template
-				ret &= this.codeGeneration.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), null);
+				ret &= codeGenerator.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources());
 
 				// Delete Instance File
 				FileHelper.deleteFile(xmlInstancePath);
-				this.codeGeneration.getDeveloperProject().refresh();
+				codeGenerator.getDeveloperProject().refresh();
 			} catch (final IOException | CoreException | BadLocationException e) {
 				Activator.getDefault().logError(e);
 				return false;

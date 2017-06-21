@@ -77,6 +77,16 @@ public class XSLBasedGenerator {
 	private int startingPositionForRunMethod = -1;
 	private int startPosForImports = -1;
 
+	/**
+	 * Constructor to initialize the code template generator. If neither a java file is opened nor a project selected initialization fails.
+	 * 
+	 * @param targetProject
+	 *
+	 */
+	public XSLBasedGenerator(final IProject targetProject) {
+		this.project = new DeveloperProject(targetProject);
+	}
+
 	/***
 	 * Generation of code templates using XSL template and Clafer instance.
 	 *
@@ -88,12 +98,12 @@ public class XSLBasedGenerator {
 	 * @throws BadLocationException
 	 *
 	 */
-	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources, final File xslFile) throws BadLocationException {
+	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources) throws BadLocationException {
 		try {
 			// Check whether directories and templates/model exist
 			final File claferOutputFiles = xmlInstanceFile != null && xmlInstanceFile.exists() ? xmlInstanceFile
 				: Utils.getResourceFromWithin(Constants.pathToClaferInstanceFolder + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
-			final File xslFiles = xslFile != null && xslFile.exists() ? xslFile : Utils.getResourceFromWithin(Constants.pathToXSLFile);
+			final File xslFiles = Utils.getResourceFromWithin(Constants.pathToXSLFile);
 			if (!claferOutputFiles.exists() || !xslFiles.exists()) {
 				Activator.getDefault().logError(Constants.FilesDoNotExistErrorMessage);
 				return false;
@@ -107,7 +117,7 @@ public class XSLBasedGenerator {
 			if (!pathToFolderWithAdditionalResources.isEmpty()) {
 				final File[] members = Utils.getResourceFromWithin(pathToFolderWithAdditionalResources).listFiles();
 				if (members == null) {
-					Activator.getDefault().logError("No directory for additional resources found.");
+					Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);
 				}
 				final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesinDevProject);
 				if (!libFolder.exists()) {
@@ -228,39 +238,6 @@ public class XSLBasedGenerator {
 		return this.project;
 	}
 
-	/**
-	 * This method initializes the code template generator. If neither a java file is opened nor a project selected initialization fails.
-	 * 
-	 * @param targetProject
-	 *
-	 * @return <Code>true</Code>/<Code>false</Code> if initialization successful/failed.
-	 */
-	public boolean initCodeGeneration(final IProject targetProject) {
-
-		this.project = new DeveloperProject(targetProject);
-		// Commented in April 2017. If at least June 2017 and this has not
-		// caused issues, remove this method altogether and replace it with a regular constructor.
-		// this.currentFile = Utils.getCurrentlyOpenFile();
-		// this.fileOpened = this.currentFile != null;
-		// if (this.currentFile != null &&
-		// Constants.JAVA.equals(this.currentFile.getFileExtension())) {
-		// // Get currently opened file to
-		// this.project = new DeveloperProject(this.currentFile.getProject());
-		// } else {
-		// // if no open file, get selected project
-		// final IProject iproject = targetProject;
-		// if (iproject == null) {
-		// // if no project selected abort with error message
-		// Activator.getDefault().logError(null,
-		// Constants.NoFileandNoProjectOpened);
-		// return false;
-		// }
-		// Activator.getDefault().logInfo(Constants.NoFileOpenedErrorMessage);
-		// this.project = new DeveloperProject(iproject);
-		// }
-		return true;
-	}
-	
 	/**
 	 * If a file was open when the code generation was started, this method inserts the glue code that calls the generated classes directly into the opened file and removes the
 	 * temporary output file. If no file was open this method is skipped and the temporary output file is not removed.

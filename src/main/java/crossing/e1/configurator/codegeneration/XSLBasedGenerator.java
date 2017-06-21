@@ -39,6 +39,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -84,8 +85,10 @@ public class XSLBasedGenerator {
 	 * @param pathToFolderWithAdditionalResources
 	 *        If additional files need to be generated into a developer's project, they are in this folder.
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if transformation successful/failed.
+	 * @throws BadLocationException
+	 *
 	 */
-	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources, final File xslFile) {
+	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources, final File xslFile) throws BadLocationException {
 		try {
 			// Check whether directories and templates/model exist
 			final File claferOutputFiles = xmlInstanceFile != null && xmlInstanceFile.exists() ? xmlInstanceFile
@@ -130,8 +133,11 @@ public class XSLBasedGenerator {
 			// there, and remove temporary output file
 			// Otherwise keep the output file
 			// In any case, organize imports
-			if (Utils.getCurrentlyOpenFile() != null) {
+			IFile currentlyOpenFile = Utils.getCurrentlyOpenFile();
+
+			if (currentlyOpenFile != null && project.equals(currentlyOpenFile.getProject())) {
 				insertCallCodeIntoOpenFile(temporaryOutputFile);
+				removeCryptoPackageIfEmpty();
 			} else {
 				this.project.refresh();
 				final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
@@ -140,11 +146,18 @@ public class XSLBasedGenerator {
 				organizeImports(editor);
 			}
 			this.project.refresh();
-		} catch (TransformerException | IOException | CoreException | BadLocationException e) {
+		} catch (TransformerException | IOException | CoreException e) {
 			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
 			return false;
 		}
 		return true;
+	}
+
+	private void removeCryptoPackageIfEmpty() throws CoreException {
+		IPackageFragment cryptoPackage = this.project.getPackagesOfProject(Constants.PackageName);
+		if (cryptoPackage.getCompilationUnits().length == 0) {
+			this.project.removePackage(Constants.PackageName);
+		}
 	}
 
 	/**
@@ -247,7 +260,7 @@ public class XSLBasedGenerator {
 		// }
 		return true;
 	}
-
+	
 	/**
 	 * If a file was open when the code generation was started, this method inserts the glue code that calls the generated classes directly into the opened file and removes the
 	 * temporary output file. If no file was open this method is skipped and the temporary output file is not removed.
@@ -344,7 +357,12 @@ public class XSLBasedGenerator {
 		editor.doSave(null);
 	}
 
+	protected void setPosForClassDecl(final int start, final int end) {
+		// classlims = new Tuple<Integer, Integer>(start, end);
+	}
+
 	private void setPosForRunMethod(final int start, final int end) {
+
 		this.startingPositionForRunMethod = start;
 		this.endingPositionForRunMethod = end;
 	}

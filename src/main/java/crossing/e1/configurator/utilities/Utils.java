@@ -26,8 +26,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -53,6 +51,8 @@ import crossing.e1.configurator.Activator;
 @SuppressWarnings("restriction")
 public class Utils {
 
+	public static List<IProject> javaProjects;
+
 	/**
 	 * This method returns if a Java project is selected for code generation.
 	 *
@@ -60,15 +60,7 @@ public class Utils {
 	 */
 	public static boolean checkIfJavaProjectSelected() {
 		final IProject project = Utils.getIProjectFromSelection();
-		final IJavaProject javaProject = JavaCore.create(project);
-		if (javaProject == null || !javaProject.exists() || project == null) {
-			/*
-			 * MessageDialog.openWarning(new Shell(), "Warning",
-			 * "CogniCrypt requires a target Java project in order to perform successful code generation. Please select or create a Java project. " );
-			 */
-			return false;
-		}
-		return true;
+		return (checkIfJavaProjectSelected(project));
 	}
 
 	/**
@@ -83,6 +75,19 @@ public class Utils {
 			return false;
 		}
 		return true;
+	}
+
+	public static IProject getCurrentProject() {
+		IProject currentProject = null;
+
+		if (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension().equalsIgnoreCase("java")) {
+			currentProject = Utils.getCurrentlyOpenFile().getProject();
+		} else if (Utils.checkIfJavaProjectSelected()) {
+			currentProject = Utils.getIProjectFromSelection();
+		} else {
+			currentProject = null;
+		}
+		return currentProject;
 	}
 
 	/**
@@ -148,32 +153,6 @@ public class Utils {
 		return iproject;
 	}
 
-	public static IProject getProjectSelection() {
-		IProject defaultProject = null;
-		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		final List<IProject> javaProjects = new ArrayList<>();
-		if (projects.length > 0) {
-			for (int i = 0; i < projects.length; i++) {
-				if (Boolean.TRUE.equals(Utils.checkIfJavaProjectSelected(projects[i]))) {
-					javaProjects.add(projects[i]);
-				}
-			}
-
-		}
-		if (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension().equalsIgnoreCase("java")) {
-			defaultProject = Utils.getCurrentlyOpenFile().getProject();
-		} else if (Boolean.TRUE.equals(Utils.checkIfJavaProjectSelected())) {
-			defaultProject = Utils.getIProjectFromSelection();
-		} else {
-			defaultProject = null;
-		}
-		final IProject[] javaProject = javaProjects.toArray(new IProject[javaProjects.size()]);
-		final IProject targetFile = (IProject) JOptionPane.showInputDialog(null,
-			"CogniCrypt requires a java project which acts as target for code generation. Please choose a Java project.", "CogniCrypt", JOptionPane.QUESTION_MESSAGE, null,
-			javaProject, defaultProject);
-		return targetFile;
-	}
-
 	/***
 	 * This method returns absolute path of a project-relative path.
 	 * 
@@ -186,15 +165,10 @@ public class Utils {
 			final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
 
 			if (bundle == null) {
-				System.out.println("Bundle is null");
 				// running as application
-				// final String fileName =
-				// inputPath.substring(inputPath.lastIndexOf("/") + 1);
-				return new File(inputPath);// Utilities.class.getClassLoader().getResource(fileName).getPath();
+				return new File(inputPath);
 			} else {
-				System.out.println(bundle.getSymbolicName());
 				final URL fileURL = bundle.getEntry(inputPath);
-				System.out.println("PATH: " + inputPath);
 				final URL resolvedURL = FileLocator.toFileURL(fileURL);
 				final URI uri = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
 				return new File(uri);
@@ -204,6 +178,21 @@ public class Utils {
 		}
 
 		return null;
+	}
+
+	public static List<IProject> createListOfJavaProjectsInCurrentWorkspace() {
+
+		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+		final List<IProject> javaProjects = new ArrayList<>();
+		if (projects.length > 0) {
+			for (int i = 0; i < projects.length; i++) {
+				if (Utils.checkIfJavaProjectSelected(projects[i])) {
+					javaProjects.add(projects[i]);
+				}
+			}
+		}
+
+		return javaProjects;
 	}
 
 }

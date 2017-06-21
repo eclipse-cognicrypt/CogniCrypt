@@ -643,3 +643,5 @@ SecureCommunication : Task
 	ciphersuites -> CipherSuite 7..*
 	tlsVersion -> TLS_Version
 	[tlsVersion = TLS1_2]
+	security -> integer
+	[security = min(ciphersuites.security)]

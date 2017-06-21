@@ -20,6 +20,7 @@
  */
 package crossing.e1.featuremodel.clafer;
 
+import org.clafer.ast.AstAbstractClafer;
 import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstConstraint;
@@ -41,7 +42,15 @@ public class ClaferModelUtils {
 					}
 				}
 			}
-
+			if (inputClafer instanceof AstAbstractClafer) {
+				for (final AstAbstractClafer abstractChildClafer : ((AstAbstractClafer) inputClafer).getAbstractChildren()) {
+					AstClafer foundClafer = findClaferByName(abstractChildClafer, name);
+					if (foundClafer != null) {
+						return foundClafer;
+					}
+				}
+			}
+			
 			if (inputClafer.hasRef()) {
 				return findClaferByName(inputClafer.getRef().getTargetType(), name);
 			}
@@ -71,6 +80,12 @@ public class ClaferModelUtils {
 		return inputClafer.getName();
 	}
 
+	public static AstConcreteClafer createClafer(AstClafer taskClafer, String name, String type) {
+		AstConcreteClafer newClafer = taskClafer.addChild(name).withCard(1, 1);
+		newClafer.refTo(ClaferModelUtils.findClaferByName(taskClafer.getParent(), "c0_" + type));
+		return newClafer;
+	}
+	
 	public static String getNameWithoutScope(final String input) {
 		return input.substring(input.indexOf("_") + 1);
 	}

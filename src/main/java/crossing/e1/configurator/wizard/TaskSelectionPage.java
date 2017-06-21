@@ -20,8 +20,11 @@
  */
 package crossing.e1.configurator.wizard;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -38,6 +41,7 @@ import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.tasks.TaskJSONReader;
 import crossing.e1.configurator.utilities.Labels;
+import crossing.e1.configurator.utilities.Utils;
 
 public class TaskSelectionPage extends WizardPage {
 
@@ -45,27 +49,60 @@ public class TaskSelectionPage extends WizardPage {
 	private ComboViewer taskComboSelection;
 	private Button advancedModeCheckBox;
 	private Label selectTaskLabel;
-	private boolean canProceed = false;
+	private IProject selectedProject = null;
 
 	public TaskSelectionPage() {
 		super(Labels.SELECT_TASK);
 		setTitle(Labels.TASK_LIST);
 		setDescription(Labels.DESCRIPTION_TASK_SELECTION_PAGE);
+		setPageComplete(false);
 	}
 
-	public boolean canProceed() {
-		return this.canProceed;
-	}
+
 
 	@Override
 	public void createControl(final Composite parent) {
 
 		this.container = new Composite(parent, SWT.NONE);
-		this.container.setBounds(10, 10, 200, 200);
-		final GridLayout layout = new GridLayout();
-		layout.numColumns = 4;
+		this.container.setBounds(10, 10, 200, 300);
+		final GridLayout layout = new GridLayout(2, false);
+		//layout.numColumns = 4;
 		this.container.setLayout(layout);
 
+		this.selectTaskLabel = new Label(this.container, SWT.NONE);
+		this.selectTaskLabel.setText(Constants.SELECT_JAVA_PROJECT);
+
+		ComboViewer projectComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
+		projectComboSelection.setContentProvider(ArrayContentProvider.getInstance());
+
+		Map<String, IProject> javaProjects = new HashMap<String, IProject>();
+		for (IProject project : Utils.createListOfJavaProjectsInCurrentWorkspace()) {
+			javaProjects.put(project.getName(), project);
+		}
+		
+		if (javaProjects.isEmpty()) {
+			String[] errorMessage = {Constants.ERROR_MESSAGE_NO_PROJECT};
+			projectComboSelection.setInput(errorMessage);
+			projectComboSelection.setSelection(new StructuredSelection(projectComboSelection.getElementAt(0)));
+		} else {
+			projectComboSelection.setInput(javaProjects.keySet().toArray());
+			projectComboSelection.addSelectionChangedListener(event -> {
+				final IStructuredSelection selected = (IStructuredSelection) event.getSelection();
+				this.selectedProject = javaProjects.get((String) selected.getFirstElement());
+				projectComboSelection.refresh();
+
+			});
+			
+			IProject currentProject = Utils.getCurrentProject();
+			if (currentProject == null) {
+				projectComboSelection.setSelection(new StructuredSelection(projectComboSelection.getElementAt(0)));
+			} else {
+				projectComboSelection.setSelection(new StructuredSelection(currentProject.getName()));
+			}	
+		}
+
+		
+		
 		this.selectTaskLabel = new Label(this.container, SWT.NONE);
 		this.selectTaskLabel.setText(Constants.SELECT_TASK);
 
@@ -93,10 +130,7 @@ public class TaskSelectionPage extends WizardPage {
 			final Task selectedTask = (Task) selection.getFirstElement();
 
 			TaskSelectionPage.this.taskComboSelection.refresh();
-
-			if (selectedTask != null) {
-				TaskSelectionPage.this.canProceed = true;
-			}
+			setPageComplete(selectedTask != null && this.selectedProject != null);
 		});
 
 		this.taskComboSelection.setSelection(new StructuredSelection(tasks.get(0)));
@@ -105,6 +139,11 @@ public class TaskSelectionPage extends WizardPage {
 		this.advancedModeCheckBox.setText(Constants.ADVANCED_MODE);
 		this.advancedModeCheckBox.setSelection(false);
 		setControl(this.container);
+
+	}
+
+	public IProject getSelectedProject() {
+		return this.selectedProject;
 	}
 
 	public Task getSelectedTask() {

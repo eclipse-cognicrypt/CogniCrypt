@@ -26,9 +26,9 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.clafer.ast.AstConcreteClafer;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -71,38 +71,26 @@ public class ConfiguratorWizard extends Wizard {
 	private final XSLBasedGenerator codeGeneration = new XSLBasedGenerator();
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
-	public IProject targetProject;
 
 	public ConfiguratorWizard() {
 		super();
-		this.targetProject = null;
 		// Set the Look and Feel of the application to the operating
 		// system's look and feel.
 		try {
 
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			this.targetProject = Utils.getProjectSelection();
-		}
-
-		catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			Activator.getDefault().logError(e);
 		}
 
 		setWindowTitle("Cryptography Task Configurator");
-
 	}
 
 	@Override
 	public void addPages() {
-
-		if (this.targetProject != null) {
-			this.taskListPage = new TaskSelectionPage();
-			setForcePreviousAndNextButtons(true);
-			addPage(this.taskListPage);
-		} else {
-
-			getNextPage(null);
-		}
+		this.taskListPage = new TaskSelectionPage();
+		setForcePreviousAndNextButtons(true);
+		addPage(this.taskListPage);
 	}
 
 	@Override
@@ -149,7 +137,7 @@ public class ConfiguratorWizard extends Wizard {
 	@Override
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
 		final Task selectedTask = this.taskListPage.getSelectedTask();
-		if (currentPage == this.taskListPage && this.taskListPage.canProceed()) {
+		if (currentPage == this.taskListPage && this.taskListPage.isPageComplete()) {
 			this.claferModel = new ClaferModel(Utils.getResourceFromWithin(selectedTask.getModelFile()));
 
 			if (this.taskListPage.isAdvancedMode()) {
@@ -296,15 +284,17 @@ public class ConfiguratorWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		boolean ret = false;
+
 		if (this.instanceListPage != null) {
 			ret = this.instanceListPage.isPageComplete();
 			try {
 				final XMLParser parser = new XMLParser();
 				parser.displayInstanceValues(this.instanceListPage.getValue(), this.constraints);
-
 				// Initialize Code Generation to retrieve developer project
-				ret &= this.codeGeneration.initCodeGeneration(this.targetProject);
 
+				// ret &= this.codeGeneration.initCodeGeneration();
+				ret &= this.codeGeneration.initCodeGeneration(this.taskListPage.getSelectedProject());
+				
 				// Write Instance File into developer project
 				final String xmlInstancePath = this.codeGeneration.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
 				parser.writeClaferInstanceToFile(xmlInstancePath);
@@ -315,7 +305,7 @@ public class ConfiguratorWizard extends Wizard {
 				// Delete Instance File
 				FileHelper.deleteFile(xmlInstancePath);
 				this.codeGeneration.getDeveloperProject().refresh();
-			} catch (final IOException | CoreException e) {
+			} catch (final IOException | CoreException | BadLocationException e) {
 				Activator.getDefault().logError(e);
 				return false;
 			}

@@ -1,0 +1,10 @@
+language: java
+
+jdk:
+  - oraclejdk8
+  
+jobs:
+  - name: CogniCrypt_runCI      # required
+    type: runCI                 # required
+    steps:                      # required
+      - IN: nightly-trigger

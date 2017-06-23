@@ -7,8 +7,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -29,6 +33,7 @@ import org.eclipse.xtext.resource.XtextResourceSet;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.inject.Injector;
 
 import crossing.e1.configurator.Activator;
@@ -38,6 +43,7 @@ import crypto.rules.CryptSLArithmeticConstraint;
 import crypto.rules.CryptSLArithmeticConstraint.ArithOp;
 import crypto.rules.CryptSLComparisonConstraint;
 import crypto.rules.CryptSLComparisonConstraint.CompOp;
+import crypto.rules.CryptSLCondPredicate;
 import crypto.rules.CryptSLConstraint;
 import crypto.rules.CryptSLConstraint.LogOps;
 import crypto.rules.CryptSLForbiddenMethod;
@@ -82,9 +88,10 @@ import typestate.interfaces.ISLConstraint;
 public class CryptSLModelReader {
 
 	private int nodeNameCounter = 0;
-	List<CryptSLPredicate> predicates = null;
-	List<CryptSLForbiddenMethod> forbiddenMethods = null;
-	String clazzName = "";
+	private List<CryptSLPredicate> predicates = null;
+	private List<CryptSLForbiddenMethod> forbiddenMethods = null;
+	private String clazzName = "";
+	private StateMachineGraph smg = null;
 
 	public CryptSLModelReader() throws ClassNotFoundException, CoreException, IOException {
 		Injector injector = CryptSLActivator.getInstance().getInjector(CryptSLActivator.DE_DARMSTADT_TU_CROSSING_CRYPTSL);
@@ -104,15 +111,15 @@ public class CryptSLModelReader {
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 
 		List<String> classNames = new ArrayList<String>();
-//		classNames.add("KeyGenerator");
-//		classNames.add("KeyPairGenerator");
-//		classNames.add("KeyStore");
-//		classNames.add("Mac");
-//		classNames.add("PBEKeySpec");
-//		classNames.add("SecretKey");
-//		classNames.add("SecretKeyFactory");
-		classNames.add("MessageDigest");
-//		classNames.add("Cipher");
+		classNames.add("KeyGenerator");
+		classNames.add("KeyPairGenerator");
+		classNames.add("KeyStore");
+		classNames.add("Mac");
+		classNames.add("PBEKeySpec");
+		classNames.add("SecretKey");
+		classNames.add("SecretKeyFactory");
+//		classNames.add("MessageDigest");
+		classNames.add("Cipher");
 
 		for (String className : classNames) {
 			
@@ -121,14 +128,29 @@ public class CryptSLModelReader {
 			EcoreUtil.resolveAll(resourceSet);
 			EObject eObject = resource.getContents().get(0);
 			Domainmodel dm = (Domainmodel) eObject;
+			EnsuresBlock ensure = dm.getEnsure();
+			Map<CryptSLPredicate, SuperType> pre_preds = Maps.newHashMap();
+			if (ensure != null) {
+				pre_preds = getPredicates(ensure.getPred());
+				predicates = Lists.newArrayList((ensure != null) ? pre_preds.keySet() : Lists.newArrayList());
+			}
+			smg = buildStateMachineGraph(dm.getOrder(), className);
 			ForbiddenBlock forbEvent = dm.getForbEvent();
 			forbiddenMethods = (forbEvent != null) ? getForbiddenMethods(forbEvent.getForb_methods()) : Lists.newArrayList();
-			EnsuresBlock ensure = dm.getEnsure();
-			predicates = (ensure != null) ? getPredicates(ensure.getPred()) : Lists.newArrayList();
-			StateMachineGraph smg = buildStateMachineGraph(dm.getOrder(), className);
-
+			
 			List<ISLConstraint> constraints = (dm.getReqConstraints() != null) ? buildUpConstraints(dm.getReqConstraints().getReq()) : Lists.newArrayList();
 			List<Entry<String, String>> objects = getObjects(dm.getUsage());
+			
+			List<CryptSLPredicate> actPreds = Lists.newArrayList();
+			
+			for (CryptSLPredicate pred : pre_preds.keySet()) {
+				SuperType cond = pre_preds.get(pred);
+				if (cond == null) {
+					actPreds.add(pred);
+				} else {
+					actPreds.add(new CryptSLCondPredicate(pred.getPredName(), pred.getParameters(), pred.isNegated(), getStatesForMethods(resolveAggregateToMethodeNames(cond))));
+				}
+			}
 			CryptSLRule rule = new CryptSLRule(className, objects, forbiddenMethods, smg, constraints, predicates);
 			storeRuletoFile(rule, className);
 			//String outputURI = storeModelToFile(resourceSet, eObject, className);
@@ -167,8 +189,8 @@ public class CryptSLModelReader {
 		}
 	}
 
-	private List<CryptSLPredicate> getPredicates(List<Constraint> predList) {
-		List<CryptSLPredicate> preds = new ArrayList<CryptSLPredicate>();
+	private Map<CryptSLPredicate, SuperType> getPredicates(List<Constraint> predList) {
+		Map<CryptSLPredicate, SuperType> preds = new HashMap<CryptSLPredicate, SuperType>();
 		for (Constraint pred : predList) {
 			List<ICryptSLPredicateParameter> variables = new ArrayList<ICryptSLPredicateParameter>();
 			
@@ -185,17 +207,29 @@ public class CryptSLModelReader {
 					}
 				}
 			}
-			
 			String meth = pred.getPredName();
 			SuperType cond = pred.getLabelCond();
 			if (cond == null) {
-				preds.add(new CryptSLPredicate(meth, variables, false));
+				preds.put(new CryptSLPredicate(meth, variables, false), null);
 			} else {
-				preds.add(new CryptSLPredicate(meth, variables, false, resolveAggregateToMethodeNames(cond)));
+				preds.put(new CryptSLPredicate(meth, variables, false), cond);
 			}
 			
 		}
 		return preds;
+	}
+
+	private Set<StateNode> getStatesForMethods(List<CryptSLMethod> condMethods) {
+		Set<StateNode> predGens = new HashSet<StateNode>();
+		if (condMethods.size() != 0) {
+			for (TransitionEdge methTrans : smg.getAllTransitions()) {
+				final List<CryptSLMethod> transLabel = methTrans.getLabel();
+				if (transLabel.size() > 0 && transLabel.equals(condMethods)) {
+					predGens.add(methTrans.getRight());
+				}
+			}
+		}
+		return predGens;
 	}
 
 	private List<ISLConstraint> buildUpConstraints(List<Constraint> constraints) {
@@ -420,12 +454,11 @@ public class CryptSLModelReader {
 	private StateMachineGraph buildStateMachineGraph(Expression order, String className) {
 
 		StateMachineGraphBuilder smgb = new StateMachineGraphBuilder(order, className);
-		
-		StateMachineGraph smg = smgb.buildSMG();
-//		smg.addNode(new StateNode("pre_init", true));
-//		nodeNameCounter = 0;
-//		iterateThroughSubtrees(smg, order, null, null);
-//		iterateThroughSubtreesOptional(smg, order, null, null);
+		StateMachineGraph smg = new StateMachineGraph(); //.buildSMG();
+		smg.addNode(new StateNode("pre_init", true));
+		nodeNameCounter = 0;
+		iterateThroughSubtrees(smg, order, null, null);
+		iterateThroughSubtreesOptional(smg, order, null, null);
 
 		return smg;
 	}
@@ -666,7 +699,7 @@ public class CryptSLModelReader {
 	}
 
 	private StateNode getNewNode() {
-		return new StateNode(String.valueOf(nodeNameCounter++), false, false);
+		return new StateNode(String.valueOf(nodeNameCounter++), false, true);
 	}
 
 //	private Expression getFirstMethod(Expression order) {

@@ -18,6 +18,7 @@ package crossing.e1.configurator.beginer.question;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,21 +34,50 @@ import crossing.e1.configurator.utilities.Utils;
  * This class reads all questions and answers of one task.
  * 
  * @author Sarah Nadi
+ * @author Stefan Krueger
  *
  */
 public class QuestionsJSONReader {
 
-	//Test method so that OpenCCE does not have to be started.
-	public static void main(final String args[]) {
-		final QuestionsJSONReader reader = new QuestionsJSONReader();
-		System.out.println(reader.getQuestions("src/main/resources/testFiles/TestQuestions0.json"));
+	/***
+	 * This method reads all questions of one task using the file path to the question file.
+	 * 
+	 * @param filePath
+	 *        path to the file that contains all questions for one task.
+	 * @return questions
+	 */
+	public List<Question> getQuestions(final String filePath) {
+		List<Question> questions = new ArrayList<Question>();
+		try {
+			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(filePath)));
+			final Gson gson = new Gson();
+
+			questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
+
+			checkReadQuestions(questions);
+		} catch (final FileNotFoundException e) {
+			Activator.getDefault().logError(e);
+		}
+		return questions;
 	}
 
-	private List<Question> questions;
+	/***
+	 * This method reads all questions of one task.
+	 * 
+	 * @param task
+	 *        task whose questions should be read
+	 * @return Questions
+	 */
+	public List<Question> getQuestions(final Task task) {
+		return getQuestions(task.getXmlFile());
+	}
 
-	private void checkReadQuestions() {
+	private void checkReadQuestions(List<Question> questions) {
 		final Set<Integer> ids = new HashSet<>();
-		for (final Question question : this.questions) {
+		if (questions.size() < 1) {
+			throw new IllegalArgumentException("There are no questions for this task.");
+		}
+		for (final Question question : questions) {
 			if (!ids.add(question.getId())) {
 				throw new IllegalArgumentException("Each question must have a unique ID.");
 			}
@@ -62,38 +92,5 @@ public class QuestionsJSONReader {
 				}
 			}
 		}
-	}
-
-	/***
-	 * This method reads all questions of one task using the file path to the question file.
-	 * 
-	 * @param filePath
-	 *        path to the file that contains all questions for one task.
-	 * @return questions
-	 */
-	public List<Question> getQuestions(final String filePath) {
-		try {
-			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(filePath)));
-			final Gson gson = new Gson();
-
-			this.questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
-
-			checkReadQuestions();
-		} catch (final FileNotFoundException e) {
-			Activator.getDefault().logError(e);
-		}
-
-		return this.questions;
-	}
-
-	/***
-	 * This method reads all questions of one task.
-	 * 
-	 * @param task
-	 *        task whose questions should be read
-	 * @return Questions
-	 */
-	public List<Question> getQuestions(final Task task) {
-		return getQuestions(task.getXmlFile());
 	}
 }

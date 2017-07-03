@@ -20,8 +20,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.xtext.common.types.JvmExecutable;
@@ -64,21 +62,15 @@ import de.darmstadt.tu.crossing.cryptSL.ComparisonExpression;
 import de.darmstadt.tu.crossing.cryptSL.Constraint;
 import de.darmstadt.tu.crossing.cryptSL.Domainmodel;
 import de.darmstadt.tu.crossing.cryptSL.EnsuresBlock;
-import de.darmstadt.tu.crossing.cryptSL.Event;
 import de.darmstadt.tu.crossing.cryptSL.Expression;
 import de.darmstadt.tu.crossing.cryptSL.ForbMethod;
 import de.darmstadt.tu.crossing.cryptSL.ForbiddenBlock;
 import de.darmstadt.tu.crossing.cryptSL.Literal;
 import de.darmstadt.tu.crossing.cryptSL.LiteralExpression;
-import de.darmstadt.tu.crossing.cryptSL.Method;
-import de.darmstadt.tu.crossing.cryptSL.Object;
 import de.darmstadt.tu.crossing.cryptSL.ObjectDecl;
-import de.darmstadt.tu.crossing.cryptSL.Order;
-import de.darmstadt.tu.crossing.cryptSL.Par;
-import de.darmstadt.tu.crossing.cryptSL.ParList;
 import de.darmstadt.tu.crossing.cryptSL.PreDefinedPredicates;
-import de.darmstadt.tu.crossing.cryptSL.SimpleOrder;
 import de.darmstadt.tu.crossing.cryptSL.SuPar;
+import de.darmstadt.tu.crossing.cryptSL.SuParList;
 import de.darmstadt.tu.crossing.cryptSL.SuperType;
 import de.darmstadt.tu.crossing.cryptSL.UnaryPreExpression;
 import de.darmstadt.tu.crossing.cryptSL.UseBlock;
@@ -87,10 +79,8 @@ import typestate.interfaces.ISLConstraint;
 
 public class CryptSLModelReader {
 
-	private int nodeNameCounter = 0;
 	private List<CryptSLPredicate> predicates = null;
 	private List<CryptSLForbiddenMethod> forbiddenMethods = null;
-	private String clazzName = "";
 	private StateMachineGraph smg = null;
 
 	public CryptSLModelReader() throws ClassNotFoundException, CoreException, IOException {
@@ -118,12 +108,12 @@ public class CryptSLModelReader {
 		classNames.add("PBEKeySpec");
 		classNames.add("SecretKey");
 		classNames.add("SecretKeyFactory");
-//		classNames.add("MessageDigest");
+		classNames.add("SecureRandom");
+		classNames.add("MessageDigest");
 		classNames.add("Cipher");
 
 		for (String className : classNames) {
 			
-			clazzName = className;
 			Resource resource = resourceSet.getResource(URI.createPlatformResourceURI("/CryptSL Examples/src/de/darmstadt/tu/crossing/" + className + ".cryptsl", true), true);
 			EcoreUtil.resolveAll(resourceSet);
 			EObject eObject = resource.getContents().get(0);
@@ -134,7 +124,7 @@ public class CryptSLModelReader {
 				pre_preds = getPredicates(ensure.getPred());
 				predicates = Lists.newArrayList((ensure != null) ? pre_preds.keySet() : Lists.newArrayList());
 			}
-			smg = buildStateMachineGraph(dm.getOrder(), className);
+			smg = buildStateMachineGraph(dm.getOrder());
 			ForbiddenBlock forbEvent = dm.getForbEvent();
 			forbiddenMethods = (forbEvent != null) ? getForbiddenMethods(forbEvent.getForb_methods()) : Lists.newArrayList();
 			
@@ -148,10 +138,12 @@ public class CryptSLModelReader {
 				if (cond == null) {
 					actPreds.add(pred);
 				} else {
-					actPreds.add(new CryptSLCondPredicate(pred.getPredName(), pred.getParameters(), pred.isNegated(), getStatesForMethods(resolveAggregateToMethodeNames(cond))));
+					actPreds.add(new CryptSLCondPredicate(pred.getBaseObject(), pred.getPredName(), pred.getParameters(), pred.isNegated(), getStatesForMethods(CryptSLReaderUtils.resolveAggregateToMethodeNames(cond))));
 				}
 			}
 			CryptSLRule rule = new CryptSLRule(className, objects, forbiddenMethods, smg, constraints, predicates);
+			System.out.println("===========================================");
+			System.out.println("");
 			storeRuletoFile(rule, className);
 			//String outputURI = storeModelToFile(resourceSet, eObject, className);
 			//loadModelFromFile(outputURI);
@@ -180,7 +172,7 @@ public class CryptSLModelReader {
 			fileOut.close();
 			FileInputStream fileIn = new FileInputStream(filePath);
 			ObjectInputStream in = new ObjectInputStream(fileIn);
-			CryptSLRule inRule = (CryptSLRule) in.readObject();
+			in.readObject();
 			in.close();
 			fileIn.close();
 
@@ -209,10 +201,16 @@ public class CryptSLModelReader {
 			}
 			String meth = pred.getPredName();
 			SuperType cond = pred.getLabelCond();
-			if (cond == null) {
-				preds.put(new CryptSLPredicate(meth, variables, false), null);
+			CryptSLObject bobj = null;
+			if (pred.getRet().getVal() == null) {
+				bobj = new CryptSLObject("this");
 			} else {
-				preds.put(new CryptSLPredicate(meth, variables, false), cond);
+				bobj = new CryptSLObject(((LiteralExpression) pred.getRet().getVal().getLit().getName()).getValue().getName());
+			}
+			if (cond == null) {
+				preds.put(new CryptSLPredicate(bobj, meth, variables, false), null);
+			} else {
+				preds.put(new CryptSLPredicate(bobj, meth, variables, false), cond);
 			}
 			
 		}
@@ -267,17 +265,17 @@ public class CryptSLModelReader {
 				switch (pred) {
 					case "callTo" :
 						List<ICryptSLPredicateParameter> methodsToBeCalled = new ArrayList<ICryptSLPredicateParameter>();
-						methodsToBeCalled.addAll(resolveAggregateToMethodeNames((SuperType)((PreDefinedPredicates)lit.getCons()).getObj().get(0)));
-						slci = new CryptSLPredicate(pred, methodsToBeCalled, false);
+						methodsToBeCalled.addAll(CryptSLReaderUtils.resolveAggregateToMethodeNames((SuperType)((PreDefinedPredicates)lit.getCons()).getObj().get(0)));
+						slci = new CryptSLPredicate(null, pred, methodsToBeCalled, false);
 						break;
 					case "noCallTo" :
 						List<ICryptSLPredicateParameter> methodsNotToBeCalled = new ArrayList<ICryptSLPredicateParameter>();
-						List<CryptSLMethod> resolvedMethodNames = resolveAggregateToMethodeNames((Aggregate)((PreDefinedPredicates)lit.getCons()).getObj().get(0));
+						List<CryptSLMethod> resolvedMethodNames = CryptSLReaderUtils.resolveAggregateToMethodeNames((Aggregate)((PreDefinedPredicates)lit.getCons()).getObj().get(0));
 						for (CryptSLMethod csm :resolvedMethodNames ) {
 							forbiddenMethods.add(new CryptSLForbiddenMethod(csm, true));
 							methodsNotToBeCalled.add(csm);
 						}
-						slci = new CryptSLPredicate(pred, methodsNotToBeCalled, false);
+						slci = new CryptSLPredicate(null, pred, methodsNotToBeCalled, false);
 						break;
 					case "neverTypeOf" :
 					
@@ -370,26 +368,36 @@ public class CryptSLModelReader {
 					}
 				}
 			}
-			slci = new CryptSLPredicate(innerPredicate.getPredName(), vars, true);
+			slci = new CryptSLPredicate(null, innerPredicate.getPredName(), vars, true);
 		} else if (cons instanceof Constraint) {
 			if (cons.getPredName() != null && !cons.getPredName().isEmpty()) {
 				List<ICryptSLPredicateParameter> vars = new ArrayList<ICryptSLPredicateParameter>();
-				for (SuPar sup : cons.getParList().getParameters()) {
-					if (sup.getVal() == null) {
-						vars.add(new CryptSLObject("_"));
-					} else {
-						LiteralExpression lit = sup.getVal();
-						
-						String variable = filterQuotes(((LiteralExpression) lit.getLit().getName()).getValue().getName());
-						String part = sup.getVal().getPart();
-						if (part != null) {
-							vars.add(new CryptSLObject(variable, new CryptSLSplitter(Integer.parseInt(lit.getInd()), filterQuotes(lit.getSplit()))));
+				
+				final SuParList parList = cons.getParList();
+				if (parList != null) {
+					for (SuPar sup : parList.getParameters()) {
+						if (sup.getVal() == null) {
+							vars.add(new CryptSLObject("_"));
 						} else {
-							vars.add(new CryptSLObject(variable));
+							LiteralExpression lit = sup.getVal();
+							
+							String variable = filterQuotes(((LiteralExpression) lit.getLit().getName()).getValue().getName());
+							String part = sup.getVal().getPart();
+							if (part != null) {
+								vars.add(new CryptSLObject(variable, new CryptSLSplitter(Integer.parseInt(lit.getInd()), filterQuotes(lit.getSplit()))));
+							} else {
+								vars.add(new CryptSLObject(variable));
+							}
 						}
 					}
 				}
-				slci = new CryptSLPredicate(cons.getPredName(), vars, false);
+				CryptSLObject bobj = null;
+				if (cons.getRet().getVal() == null) {
+					bobj = new CryptSLObject("this");
+				} else {
+					bobj = new CryptSLObject(((LiteralExpression) cons.getRet().getVal().getLit().getName()).getValue().getName());
+				}
+				slci = new CryptSLPredicate(bobj, cons.getPredName(), vars, false);
 			} else {
 				LogOps op = null;
 				switch (cons.getOperator().toString()) {
@@ -446,269 +454,30 @@ public class CryptSLModelReader {
 			for (JvmFormalParameter par : meth.getParameters()) {
 				pars.add(new SimpleEntry<String,String>(par.getParameterType().getSimpleName(), par.getSimpleName()));
 			}
-			methodSignatures.add(new CryptSLForbiddenMethod(new CryptSLMethod(meth.getDeclaringType().getIdentifier() + "." + meth.getSimpleName(), pars, null), false));
+			methodSignatures.add(new CryptSLForbiddenMethod(new CryptSLMethod(meth.getDeclaringType().getIdentifier() + "." + meth.getSimpleName(), pars, null, new SimpleEntry<String, String>("_","AnyType")), false));
 		}
 		return methodSignatures;
 	}
 
-	private StateMachineGraph buildStateMachineGraph(Expression order, String className) {
-
-		StateMachineGraphBuilder smgb = new StateMachineGraphBuilder(order, className);
-		StateMachineGraph smg = new StateMachineGraph(); //.buildSMG();
-		smg.addNode(new StateNode("pre_init", true));
-		nodeNameCounter = 0;
-		iterateThroughSubtrees(smg, order, null, null);
-		iterateThroughSubtreesOptional(smg, order, null, null);
-
-		return smg;
-	}
-
-	private void iterateThroughSubtreesOptional(StateMachineGraph smg, Expression order, StateNode prevNode, StateNode nextNode) {
-		Expression left = order.getLeft();
-		Expression right = order.getRight();
-		if (left == null && right == null) {
-			return;
-		}
-		
-		String leftElOp = left.getElementop();
-		String rightElOp = right.getElementop();
-
-		if ((left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
-			iterateThroughSubtreesOptional(smg, left, null, nextNode);
-			iterateThroughSubtreesOptional(smg, right, null, nextNode);
-		} else if ((left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
-			iterateThroughSubtreesOptional(smg, left, null, nextNode);
-			if (rightElOp != null && rightElOp.equals("?")) {
-				addSkipEdge(smg, right);
-			}
-		} else if (!(left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
-			if (leftElOp != null && leftElOp.equals("?")) {
-				addSkipEdge(smg, left);
-			}
-
-			iterateThroughSubtreesOptional(smg, right, null, nextNode);
-		} else if (!(left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
-			if (leftElOp != null && leftElOp.equals("?")) {
-				addSkipEdge(smg, left);
-			}
-
-			if (rightElOp != null && rightElOp.equals("?")) {
-				addSkipEdge(smg, right);
-			}
-		}
-
-	}
-
-	private void addSkipEdge(StateMachineGraph smg, Expression leaf) {
-		List<TransitionEdge> tedges = new ArrayList<TransitionEdge>(smg.getEdges());
-		for (TransitionEdge trans : tedges) {
-			if (trans.getLabel().equals(resolveAggregateToMethodeNames(leaf.getOrderEv().get(0)))) {
-				for (TransitionEdge innerTrans : tedges) {
-					if (innerTrans.from().equals(trans.to())) {
-						smg.addEdge(new TransitionEdge(innerTrans.getLabel(), trans.from(), innerTrans.to()));
-					}
-				}
-			}
-		}
-	}
-
-	private void loadModelFromFile(String outputURI) {
-		ResourceSet resSet = new ResourceSetImpl();
-		Resource xmiResourceRead = resSet.getResource(URI.createURI(outputURI), true);
-		xmiResourceRead.getContents().get(0);
-//		Domainmodel dmro = 
-	}
-
-	private String storeModelToFile(XtextResourceSet resourceSet, EObject eObject, String className) throws IOException {
-		//Store the model to path outputURI
-		String outputURI = "file:///C:/Users/stefank3/Desktop/" + className + ".xmi";
-		Resource xmiResource = resourceSet.createResource(URI.createURI(outputURI));
-		xmiResource.getContents().add(eObject);
-		xmiResource.save(null);
-		return outputURI;
-	}
-
-	private void iterateThroughSubtrees(StateMachineGraph smg, Expression order, StateNode prevNode, StateNode nextNode) {
-		//if order.getLeft == null && order.getRight == null => no nesting whatsoever todo
-		Expression left = order.getLeft();
-		Expression right = order.getRight();
-		String elementOp = order.getElementop();
-		Boolean elOpNotNull = elementOp != null;
-
-		if (left == null && right == null) {
-			return;
-		}
-		
-		if ((left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
-			iterateThroughSubtrees(smg, left, null, nextNode);
-			prevNode = getLastNode(smg);
-
-			iterateThroughSubtrees(smg, right, prevNode, nextNode);
-		} else {
-			String orderop = order.getOrderop();
-			if ((left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
-				iterateThroughSubtrees(smg, left, prevNode, nextNode);
-				handleOp(smg, orderop, right, prevNode, nextNode);
-			} else if (!(left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
-				if (orderop.equals("|")) {
-					prevNode = getLastNode(smg);
-				}
-				handleOp(smg, orderop, left, prevNode, nextNode);
-				if (orderop.equals("|")) {
-					nextNode = getLastNode(smg);
-				}
-
-				if (elOpNotNull && elementOp.equals("+")) {
-					StateNode linkBackNode = prevNode;
-
-					iterateThroughSubtrees(smg, right, prevNode, nextNode);
-
-					List<TransitionEdge> transEdges = new ArrayList<TransitionEdge>(smg.getEdges());
-					for (TransitionEdge trans : transEdges) {
-						if (trans.to().equals(nextNode)) {
-							if (trans.from().equals(linkBackNode)) {
-								smg.addEdge(new TransitionEdge(trans.getLabel(), trans.to(), trans.to()));
-							} else {
-								for (TransitionEdge innerTrans : transEdges) {
-									if (innerTrans.to().equals(trans.from())) {
-										smg.addEdge(new TransitionEdge(innerTrans.getLabel(), trans.to(), trans.from()));
-									}
-								}
-							}
-						}
-					}
-				} else {
-					iterateThroughSubtrees(smg, right, prevNode, nextNode);
-				}
-
-			} else if (!(left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
-				if (orderop != null && orderop.equals("|")) {
-					prevNode = getLastNode(smg);
-				}
-				handleOp(smg, orderop, left, prevNode, null);
-				if (orderop.equals("|")) {
-					nextNode = getLastNode(smg);
-					handleOp(smg, orderop, right, prevNode, nextNode);
-				} else {
-					handleOp(smg, orderop, right, null, nextNode);
-				}
-			}
-		}
-	}
-
-	private StateNode getLastNode(StateMachineGraph smg) {
-		List<StateNode> nodes = smg.getNodes();
-		return nodes.get(nodes.size() - 1);
-	}
-
-	private void handleOp(StateMachineGraph smg, String orderop, Expression leaf, StateNode prevNode, StateNode nextNode) {
-		prevNode = (prevNode == null) ? getLastNode(smg) : prevNode;
-		if (nextNode == null) {
-			nextNode = getNewNode();
-			smg.addNode(nextNode);
-		}
-
-		List<CryptSLMethod> label = resolveAggregateToMethodeNames(leaf.getOrderEv().get(0));
-		smg.addEdge(new TransitionEdge(label, prevNode, nextNode));
-		prevNode.setAccepting(false);
-		if (leaf.getElementop() != null) {
-			if (leaf.getElementop().equals("+")) {
-				smg.addEdge(new TransitionEdge(label, nextNode, nextNode));
-			} else if (leaf.getElementop().equals("*")) {
-				smg.addEdge(new TransitionEdge(label, nextNode, nextNode));
-				//handle extra edge in case of *
-			} else if (leaf.getElementop().equals("?")) {
-//				handle extra edge in case of ?
-			}
-		}
-	}
-
-	private List<CryptSLMethod> resolveAggregateToMethodeNames(Event leaf) {
-		if (leaf instanceof Aggregate) {
-			Aggregate ev = (Aggregate) leaf;
-			return dealWithAggregate(ev);
-		} else {
-			ArrayList<CryptSLMethod> statements = new ArrayList<CryptSLMethod>();
-			statements.add(stringifyMethodSignature(leaf));
-			return statements;
-		}
+	private StateMachineGraph buildStateMachineGraph(Expression order) {
+		StateMachineGraphBuilder smgb = new StateMachineGraphBuilder(order);
+		return  smgb.buildSMG();
 	}
 	
-	private List<CryptSLMethod> dealWithAggregate(Aggregate ev) {
-		List<CryptSLMethod> statements = new ArrayList<CryptSLMethod>();
-		
-		for (Event lab : ev.getLab()) {
-			if (lab instanceof Aggregate) {
-				statements.addAll(dealWithAggregate((Aggregate) lab));
-			} else {
-				statements.add(stringifyMethodSignature(lab));
-			}
-		}
-		return statements;
-	}
-
-	private CryptSLMethod stringifyMethodSignature(Event lab) {
-		Method method = ((SuperType) lab).getMeth();
-		
-		String qualifiedName = method.getMethName().getQualifiedName();
-		if (qualifiedName == null) {
-			qualifiedName = ((de.darmstadt.tu.crossing.cryptSL.impl.DomainmodelImpl) (method.eContainer().eContainer())).getJavaType().getQualifiedName();
-		}
-		qualifiedName = removeSPI(qualifiedName);
-		List<Entry<String, String>> pars = new ArrayList<Entry<String, String>>();
-		Object returnValue = method.getLeftSide();
-		if (returnValue != null && returnValue.getName() != null) {
-			ObjectDecl v = ((ObjectDecl) returnValue.eContainer());
-			pars.add(new SimpleEntry<String, String>(returnValue.getName(), v.getObjectType().getQualifiedName() + ((v.getArray() != null) ? v.getArray() : "")));
-		} else {
-			pars.add(new SimpleEntry<String, String>("_", "AnyType"));
-		}
-		ParList parList = method.getParList();
-		if (parList != null) {
-			for (Par par : parList.getParameters()) {
-				String parValue = "_";
-				if (par.getVal() != null && par.getVal().getName() != null) {
-					ObjectDecl objectDecl = (ObjectDecl) par.getVal().eContainer();
-					parValue = par.getVal().getName();
-					String parType = objectDecl.getObjectType().getIdentifier() + ((objectDecl.getArray() != null) ? objectDecl.getArray() : "");
-					pars.add(new SimpleEntry<String, String>(parValue, parType));
-					
-				} else {
-					pars.add(new SimpleEntry<String, String>(parValue, "AnyType"));
-				}
-			}
-		}
-		List<Boolean> backw = new ArrayList<Boolean>(); 
-		for (Entry<String, String> par : pars) {
-			boolean backwards = true;
-			for (CryptSLPredicate pred : predicates) {
-				if (par.getKey().equals(pred.getParameters().get(0))) {
-					backwards = false;
-					continue;
-				}
-			}
-			backw.add(backwards);
-		}
-		return new CryptSLMethod(qualifiedName, pars, backw);
-	}
-
-	private String removeSPI(String qualifiedName) {
-		int spiIndex = qualifiedName.lastIndexOf("Spi");
-		int dotIndex = qualifiedName.lastIndexOf(".");
-		return (spiIndex == dotIndex - 3) ? qualifiedName.substring(0, spiIndex) + qualifiedName.substring(dotIndex) : qualifiedName;
-	}
-
-	private StateNode getNewNode() {
-		return new StateNode(String.valueOf(nodeNameCounter++), false, true);
-	}
-
-//	private Expression getFirstMethod(Expression order) {
-//		Expression cur = (Expression) order;
-//		Expression prev = null;
-//		while (cur != null) {
-//			prev = cur;
-//			cur = cur.getLeft();
-//		}
-//		return prev;
+//	private void loadModelFromFile(String outputURI) {
+//		ResourceSet resSet = new ResourceSetImpl();
+//		Resource xmiResourceRead = resSet.getResource(URI.createURI(outputURI), true);
+//		xmiResourceRead.getContents().get(0);
+////		Domainmodel dmro = 
 //	}
+
+//	private String storeModelToFile(XtextResourceSet resourceSet, EObject eObject, String className) throws IOException {
+//		//Store the model to path outputURI
+//		String outputURI = "file:///C:/Users/stefank3/Desktop/" + className + ".xmi";
+//		Resource xmiResource = resourceSet.createResource(URI.createURI(outputURI));
+//		xmiResource.getContents().add(eObject);
+//		xmiResource.save(null);
+//		return outputURI;
+//	}
+
 }

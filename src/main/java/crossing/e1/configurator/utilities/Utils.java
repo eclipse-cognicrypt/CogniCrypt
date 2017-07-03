@@ -182,7 +182,6 @@ public class Utils {
 	}
 
 	public static List<IProject> createListOfJavaProjectsInCurrentWorkspace() {
-
 		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		final List<IProject> javaProjects = new ArrayList<>();
 		if (projects.length > 0) {

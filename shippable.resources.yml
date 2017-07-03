@@ -1,0 +1,10 @@
+language: java
+
+jdk:
+  - oraclejdk8
+  
+resources:
+  - name: nightly-trigger
+    type: time
+    seed:
+      interval: "1 0 * * *"

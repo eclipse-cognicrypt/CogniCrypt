@@ -36,13 +36,14 @@ import org.eclipse.swt.widgets.Shell;
 
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
-import crossing.e1.configurator.Analysis.CryptSLModelReader;
 import crossing.e1.configurator.Constants.GUIElements;
+import crossing.e1.configurator.Analysis.CryptSLModelReader;
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.ClaferDependency;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.codegeneration.XSLBasedGenerator;
 import crossing.e1.configurator.tasks.Task;
+import crossing.e1.configurator.utilities.FileHelper;
 import crossing.e1.configurator.utilities.Utils;
 import crossing.e1.configurator.utilities.XMLParser;
 import crossing.e1.configurator.wizard.advanced.AdvancedUserValueSelectionPage;
@@ -68,7 +69,6 @@ public class ConfiguratorWizard extends Wizard {
 	private WizardPage preferenceSelectionPage;
 	private InstanceListPage instanceListPage;
 	private ClaferModel claferModel;
-	private final XSLBasedGenerator codeGeneration = new XSLBasedGenerator();
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
 
@@ -195,8 +195,6 @@ public class ConfiguratorWizard extends Wizard {
 							addPage(this.preferenceSelectionPage);
 						}
 
-						// this.constraints.putAll(((BeginnerTaskQuestionPage)
-						// currentPage).getMap());
 						return this.preferenceSelectionPage;
 					}
 				}
@@ -281,27 +279,26 @@ public class ConfiguratorWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		boolean ret = false;
-
 		if (this.instanceListPage != null) {
 			ret = this.instanceListPage.isPageComplete();
 			try {
 				final XMLParser parser = new XMLParser();
 				parser.displayInstanceValues(this.instanceListPage.getValue(), this.constraints);
-				// Initialize Code Generation to retrieve developer project
-
-				// ret &= this.codeGeneration.initCodeGeneration();
-				ret &= this.codeGeneration.initCodeGeneration(this.taskListPage.getSelectedProject());
 				
+				// Initialize Code Generation
+				XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject());
+
 				// Write Instance File into developer project
-				final String xmlInstancePath = this.codeGeneration.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
+				final String xmlInstancePath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
 				parser.writeClaferInstanceToFile(xmlInstancePath);
 
 				// Generate code template
-				ret &= this.codeGeneration.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), null);
+				ret &= codeGenerator.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources());
 
 				// Delete Instance File
-//				FileHelper.deleteFile(xmlInstancePath);
-				this.codeGeneration.getDeveloperProject().refresh();
+				FileHelper.deleteFile(xmlInstancePath);
+				codeGenerator.getDeveloperProject().refresh();
+
 			} catch (final IOException | CoreException | BadLocationException e) {
 				Activator.getDefault().logError(e);
 				return false;

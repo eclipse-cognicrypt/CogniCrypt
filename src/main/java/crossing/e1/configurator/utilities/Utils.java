@@ -48,6 +48,7 @@ import org.osgi.framework.Bundle;
 
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.actions.WizardAction;
+import crossing.e1.configurator.actions.WizardActionFromContextMenu;
 
 @SuppressWarnings("restriction")
 public class Utils {
@@ -78,25 +79,19 @@ public class Utils {
 		return true;
 	}
 
-	public static IProject getCurrentProject() {
-		IProject currentProject = null;
+	public static List<IProject> createListOfJavaProjectsInCurrentWorkspace() {
 
-		/*
-		 * if (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension().equalsIgnoreCase("java")) { currentProject =
-		 * Utils.getCurrentlyOpenFile().getProject(); } else if (Utils.checkIfJavaProjectSelected()) { currentProject = Utils.getIProjectFromSelection(); } else { currentProject =
-		 * null; }
-		 */
-		if (WizardAction.calledAction.equals("code-clafer_configurator_fromContextMenu")) {
-			currentProject = Utils.getIProjectFromSelection();
-		} else if (WizardAction.calledAction.equals("crossing.e1.configurator.actions.WizardAction") && (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile()
-			.getFileExtension().equalsIgnoreCase("java"))) {
-			currentProject = Utils.getCurrentlyOpenFile().getProject();
-		} else if (Utils.checkIfJavaProjectSelected()) {
-			currentProject = Utils.getIProjectFromSelection();
-		} else {
-			currentProject = null;
+		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+		final List<IProject> javaProjects = new ArrayList<>();
+		if (projects.length > 0) {
+			for (int i = 0; i < projects.length; i++) {
+				if (Utils.checkIfJavaProjectSelected(projects[i])) {
+					javaProjects.add(projects[i]);
+				}
+			}
 		}
-		return currentProject;
+
+		return javaProjects;
 	}
 
 	/**
@@ -138,6 +133,24 @@ public class Utils {
 			}
 		}
 		return null;
+	}
+
+	public static IProject getCurrentProject() {
+		IProject currentProject = null;
+		if (WizardActionFromContextMenu.WizardActionFromContextMenuFlag == true) {
+			currentProject = Utils.getIProjectFromSelection();
+		} else if ((WizardAction.WizardActionFromMenuFlag == true) && (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension()
+			.equalsIgnoreCase("java"))) {
+			currentProject = Utils.getCurrentlyOpenFile().getProject();
+		}
+
+		else if (Utils.checkIfJavaProjectSelected()) {
+			currentProject = Utils.getIProjectFromSelection();
+		} else {
+			currentProject = null;
+		}
+
+		return currentProject;
 	}
 
 	/**
@@ -187,21 +200,6 @@ public class Utils {
 		}
 
 		return null;
-	}
-
-	public static List<IProject> createListOfJavaProjectsInCurrentWorkspace() {
-
-		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		final List<IProject> javaProjects = new ArrayList<>();
-		if (projects.length > 0) {
-			for (int i = 0; i < projects.length; i++) {
-				if (Utils.checkIfJavaProjectSelected(projects[i])) {
-					javaProjects.add(projects[i]);
-				}
-			}
-		}
-
-		return javaProjects;
 	}
 
 }

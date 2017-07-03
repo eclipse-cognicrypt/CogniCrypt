@@ -157,16 +157,16 @@
          <menu
                icon="icons/cognicrypt.png"
                id="code-clafer_configurator.menu1"
-               label="CogniCrypt">
+               label="Launch CogniCrypt">
             <separator
                   name="code-clafer_configurator.separator1">
             </separator>
          </menu>
          <action
-               class="crossing.e1.configurator.actions.WizardAction"
+               class="crossing.e1.configurator.actions.WizardActionFromContextMenu"
                icon="icons/cognicrypt.png"
                id="code-clafer_configurator_fromContextMenu"
-               label="CogniCrypt">
+               label="Launch CogniCrypt">
          </action>
       </objectContribution>
    </extension>

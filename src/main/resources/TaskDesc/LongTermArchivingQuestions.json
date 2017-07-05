@@ -1,6 +1,6 @@
 [{
-  "id": 0,
-  "content": [{
+    "id": 0,
+    "content": [{
       "id": "0",
       "element": "combo",
       "questionText": "Do you want to add new documents frequently?",
@@ -24,8 +24,10 @@
           "nextID": "1"
         }
       ]
-    },
-    {
+    }]
+  }, {
+    "id": 1,
+    "content": [{
       "id": "1",
       "element": "combo",
       "questionText": "Do you want to protect large sets of documents?",
@@ -49,9 +51,11 @@
           "nextID": "2"
         }
       ]
-    },
-
-    {
+    }]
+  },
+  {
+    "id": 2,
+    "content": [{
       "id": "2",
       "element": "combo",
       "questionText": "What kind of authority do you trust?",
@@ -84,6 +88,6 @@
           "nextID": "-1"
         }
       ]
-    }
-  ]
-}]
+    }]
+  }
+]

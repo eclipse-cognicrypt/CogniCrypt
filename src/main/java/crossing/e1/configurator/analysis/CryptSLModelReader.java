@@ -1,4 +1,4 @@
-package crossing.e1.configurator.Analysis;
+package crossing.e1.configurator.analysis;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -15,7 +15,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -99,22 +102,15 @@ public class CryptSLModelReader {
 		new JdtTypeProviderFactory(injector.getInstance(IJavaProjectProvider.class)).createTypeProvider(resourceSet);
 
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-
-		List<String> classNames = new ArrayList<String>();
-		classNames.add("KeyGenerator");
-		classNames.add("KeyPairGenerator");
-		classNames.add("KeyStore");
-		classNames.add("Mac");
-		classNames.add("PBEKeySpec");
-		classNames.add("SecretKey");
-		classNames.add("SecretKeyFactory");
-		classNames.add("SecureRandom");
-		classNames.add("MessageDigest");
-		classNames.add("Cipher");
-
-		for (String className : classNames) {
-			
-			Resource resource = resourceSet.getResource(URI.createPlatformResourceURI("/CryptSL Examples/src/de/darmstadt/tu/crossing/" + className + ".cryptsl", true), true);
+		List<String> exceptions = new ArrayList<String>();
+		exceptions.add("String.cryptsl");
+		for (IResource res : ResourcesPlugin.getWorkspace().getRoot().getFolder(Path.fromPortableString("/CryptSL Examples/src/de/darmstadt/tu/crossing/")).members()) {
+			final String extension = res.getFileExtension();
+			final String fileName = res.getName();
+			if (!"cryptsl".equals(extension) || exceptions.contains(fileName)) {
+				continue;
+			}
+			Resource resource = resourceSet.getResource(URI.createPlatformResourceURI("/CryptSL Examples/src/de/darmstadt/tu/crossing/" + fileName, true), true);
 			EcoreUtil.resolveAll(resourceSet);
 			EObject eObject = resource.getContents().get(0);
 			Domainmodel dm = (Domainmodel) eObject;
@@ -141,6 +137,7 @@ public class CryptSLModelReader {
 					actPreds.add(new CryptSLCondPredicate(pred.getBaseObject(), pred.getPredName(), pred.getParameters(), pred.isNegated(), getStatesForMethods(CryptSLReaderUtils.resolveAggregateToMethodeNames(cond))));
 				}
 			}
+			final String className = fileName.substring(0, fileName.indexOf(extension)-1);
 			CryptSLRule rule = new CryptSLRule(className, objects, forbiddenMethods, smg, constraints, predicates);
 			System.out.println("===========================================");
 			System.out.println("");
@@ -201,16 +198,16 @@ public class CryptSLModelReader {
 			}
 			String meth = pred.getPredName();
 			SuperType cond = pred.getLabelCond();
-			CryptSLObject bobj = null;
-			if (pred.getRet().getVal() == null) {
-				bobj = new CryptSLObject("this");
-			} else {
-				bobj = new CryptSLObject(((LiteralExpression) pred.getRet().getVal().getLit().getName()).getValue().getName());
-			}
+//			CryptSLObject bobj = null;
+//			if (pred.getRet().getVal() == null) {
+//				bobj = new CryptSLObject("this");
+//			} else {
+//				bobj = new CryptSLObject(((LiteralExpression) pred.getRet().getVal().getLit().getName()).getValue().getName());
+//			}
 			if (cond == null) {
-				preds.put(new CryptSLPredicate(bobj, meth, variables, false), null);
+				preds.put(new CryptSLPredicate(null, meth, variables, false), null);
 			} else {
-				preds.put(new CryptSLPredicate(bobj, meth, variables, false), cond);
+				preds.put(new CryptSLPredicate(null, meth, variables, false), cond);
 			}
 			
 		}
@@ -391,13 +388,13 @@ public class CryptSLModelReader {
 						}
 					}
 				}
-				CryptSLObject bobj = null;
-				if (cons.getRet().getVal() == null) {
-					bobj = new CryptSLObject("this");
-				} else {
-					bobj = new CryptSLObject(((LiteralExpression) cons.getRet().getVal().getLit().getName()).getValue().getName());
-				}
-				slci = new CryptSLPredicate(bobj, cons.getPredName(), vars, false);
+//				CryptSLObject bobj = null;
+//				if (cons.getRet().getVal() == null) {
+//					bobj = new CryptSLObject("this");
+//				} else {
+//					bobj = new CryptSLObject(((LiteralExpression) cons.getRet().getVal().getLit().getName()).getValue().getName());
+//				}
+				slci = new CryptSLPredicate(null, cons.getPredName(), vars, false);
 			} else {
 				LogOps op = null;
 				switch (cons.getOperator().toString()) {

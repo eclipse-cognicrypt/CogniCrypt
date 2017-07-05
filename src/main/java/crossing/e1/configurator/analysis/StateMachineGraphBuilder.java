@@ -1,4 +1,4 @@
-package crossing.e1.configurator.Analysis;
+package crossing.e1.configurator.analysis;
 
 import java.util.HashMap;
 import java.util.List;

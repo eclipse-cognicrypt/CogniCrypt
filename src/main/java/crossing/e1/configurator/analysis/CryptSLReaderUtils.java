@@ -1,8 +1,8 @@
-package crossing.e1.configurator.Analysis;
+package crossing.e1.configurator.analysis;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 
 import crypto.rules.CryptSLMethod;
@@ -46,7 +46,7 @@ public class CryptSLReaderUtils {
 		
 		String qualifiedName = method.getMethName().getQualifiedName();
 		if (qualifiedName == null) {
-			qualifiedName = ((de.darmstadt.tu.crossing.cryptSL.impl.DomainmodelImpl) (method.eContainer().eContainer())).getJavaType().getQualifiedName();
+			qualifiedName = ((de.darmstadt.tu.crossing.cryptSL.impl.DomainmodelImpl) (method.eContainer().eContainer().eContainer())).getJavaType().getQualifiedName();
 		}
 		qualifiedName = removeSPI(qualifiedName);
 		List<Entry<String, String>> pars = new ArrayList<Entry<String, String>>();
@@ -73,18 +73,7 @@ public class CryptSLReaderUtils {
 				}
 			}
 		}
-		List<Boolean> backw = new ArrayList<Boolean>(); 
-//		for (Entry<String, String> par : pars) {
-//			boolean backwards = true;
-//			for (CryptSLPredicate pred : predicates) {
-//				if (par.getKey().equals(pred.getParameters().get(0))) {
-//					backwards = false;
-//					continue;
-//				}
-//			}
-//			backw.add(backwards);
-//		}
-		return new CryptSLMethod(qualifiedName, pars, backw, returnObject);
+		return new CryptSLMethod(qualifiedName, pars, new ArrayList<Boolean>(), returnObject);
 	}
 	
 	protected static String removeSPI(String qualifiedName) {

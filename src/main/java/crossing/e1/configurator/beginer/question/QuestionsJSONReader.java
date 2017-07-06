@@ -46,19 +46,19 @@ public class QuestionsJSONReader {
 	 *        path to the file that contains all questions for one task.
 	 * @return questions
 	 */
-	public List<Question> getQuestions(final String filePath) {
-		List<Question> questions = new ArrayList<Question>();
+	public List<Page> getPages(final String filePath) {
+		List<Page> pages = new ArrayList<Page>();
 		try {
 			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(filePath)));
 			final Gson gson = new Gson();
 
-			questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
+			pages = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
 
-			checkReadQuestions(questions);
+			checkReadPages(pages);
 		} catch (final FileNotFoundException e) {
 			Activator.getDefault().logError(e);
 		}
-		return questions;
+		return pages;
 	}
 
 	/***
@@ -68,8 +68,22 @@ public class QuestionsJSONReader {
 	 *        task whose questions should be read
 	 * @return Questions
 	 */
-	public List<Question> getQuestions(final Task task) {
-		return getQuestions(task.getXmlFile());
+	public List<Page> getPages(final Task task) {
+		return getPages(task.getXmlFile());
+	}
+
+	private void checkReadPages(List<Page> pages) {
+		final Set<Integer> ids = new HashSet<>();
+		if (pages.size() < 1) {
+			throw new IllegalArgumentException("There are no pages for this task.");
+		}
+		for (final Page page : pages) {
+			if (!ids.add(page.getId())) {
+				throw new IllegalArgumentException("Each page must have a unique ID.");
+			}
+
+			checkReadQuestions(page.getContent());
+		}
 	}
 
 	private void checkReadQuestions(List<Question> questions) {

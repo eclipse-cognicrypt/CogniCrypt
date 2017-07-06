@@ -29,7 +29,7 @@ public class BeginnerModeQuestionnaire {
 
 	public BeginnerModeQuestionnaire(final Task task, final String filePath) {
 		this.task = task;
-		this.questionList = (new QuestionsJSONReader()).getQuestions(filePath);
+		this.questionList = (new QuestionsJSONReader()).getPages(filePath);
 		this.ID = 0;
 	}
 

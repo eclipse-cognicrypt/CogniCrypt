@@ -49,10 +49,28 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private boolean finish = false;
 	private final List<String> selectionValues;
 
+	/**
+	 * construct a page containing an element other than itemselection
+	 * 
+	 * @param quest
+	 *        question that will be displayed on the page
+	 * @param task
+	 *        task for which the page is created
+	 */
 	public BeginnerTaskQuestionPage(final Question quest, final Task task) {
 		this(quest, task, null);
 	}
 
+	/**
+	 * construct a page containing a single question
+	 * 
+	 * @param quest
+	 *        question that will be displayed on the page
+	 * @param task
+	 *        task for which the page is created
+	 * @param selectionValues
+	 *        list of selectable strings if element type of quest is itemselection, null otherwise
+	 */
 	public BeginnerTaskQuestionPage(final Question quest, final Task task, final List<String> selectionValues) {
 		super("Display Questions");
 		setTitle("Configuring Selected Task: " + task.getDescription());

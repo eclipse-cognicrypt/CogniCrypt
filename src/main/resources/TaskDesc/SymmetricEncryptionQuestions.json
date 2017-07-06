@@ -1,5 +1,5 @@
 [{
-  "id": 0,
+  "id": "0",
   "content": [{
       "id": "0",
       "questionText": "What is the level of security that you need for your data?",
@@ -79,5 +79,5 @@
       ]
     }
   ],
-  "nextID": -1
+  "nextID": "-1"
 }]

@@ -1,5 +1,5 @@
 [{
-    "id": 0,
+    "id": "0",
     "content": [{
       "id": "0",
       "element": "combo",
@@ -26,7 +26,7 @@
       ]
     }]
   }, {
-    "id": 1,
+    "id": "1",
     "content": [{
       "id": "1",
       "element": "combo",
@@ -54,7 +54,7 @@
     }]
   },
   {
-    "id": 2,
+    "id": "2",
     "content": [{
       "id": "2",
       "element": "combo",

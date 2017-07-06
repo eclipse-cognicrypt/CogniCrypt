@@ -48,8 +48,6 @@ import org.osgi.framework.Bundle;
 
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.Constants;
-import crossing.e1.configurator.actions.WizardAction;
-import crossing.e1.configurator.actions.WizardActionFromContextMenu;
 
 @SuppressWarnings("restriction")
 public class Utils {
@@ -81,7 +79,6 @@ public class Utils {
 	}
 
 	public static List<IProject> createListOfJavaProjectsInCurrentWorkspace() {
-
 		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		final List<IProject> javaProjects = new ArrayList<>();
 		if (projects.length > 0) {

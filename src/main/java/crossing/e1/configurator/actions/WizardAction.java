@@ -61,7 +61,7 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	 */
 	@Override
 	public void run(final IAction action) {
-		Constants.WizardActionFromContextMenuFlag=false;
+		Constants.WizardActionFromContextMenuFlag = false;
 		Constants.WizardActionFromMenuFlag = true;
 		final WizardDialog dialog = new WizardDialog(new Shell(), new ConfiguratorWizard());
 		dialog.open();

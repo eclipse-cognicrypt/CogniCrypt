@@ -33,8 +33,6 @@ import crossing.e1.configurator.wizard.ConfiguratorWizard;
  */
 public class WizardActionFromContextMenu implements IWorkbenchWindowActionDelegate {
 
-	private IWorkbenchWindow window;
-	
 	/**
 	 * The constructor.
 	 */
@@ -54,9 +52,7 @@ public class WizardActionFromContextMenu implements IWorkbenchWindowActionDelega
 	 * @see IWorkbenchWindowActionDelegate#init
 	 */
 	@Override
-	public void init(final IWorkbenchWindow window) {
-		this.window = window;
-	}
+	public void init(final IWorkbenchWindow window) {}
 
 	/**
 	 * The action has been activated. The argument of the method represents the 'real' action sitting in the workbench UI.
@@ -65,8 +61,8 @@ public class WizardActionFromContextMenu implements IWorkbenchWindowActionDelega
 	 */
 	@Override
 	public void run(final IAction action) {
-		Constants.WizardActionFromMenuFlag =false;
-		Constants.WizardActionFromContextMenuFlag= true;
+		Constants.WizardActionFromMenuFlag = false;
+		Constants.WizardActionFromContextMenuFlag = true;
 		final WizardDialog dialog = new WizardDialog(new Shell(), new ConfiguratorWizard());
 		dialog.open();
 	}

@@ -63,12 +63,10 @@ public class DeveloperProject {
 	public boolean addJar(final String pathToJar) throws CoreException {
 		if (this.project.isOpen() && this.project.hasNature(Constants.JavaNatureID)) {
 			final IJavaProject projectAsJavaProject = JavaCore.create(this.project);
-			final IFile file = this.project.getFile(pathToJar);
 			final LinkedHashSet<IClasspathEntry> classPathEntryList = new LinkedHashSet<>();
-			final IClasspathEntry newEntryOfLibrary = JavaCore.newLibraryEntry(file.getFullPath(), null, null, false);
 
 			classPathEntryList.addAll(Arrays.asList(projectAsJavaProject.getRawClasspath()));
-			classPathEntryList.add(newEntryOfLibrary);
+			classPathEntryList.add(JavaCore.newLibraryEntry(this.project.getFile(pathToJar).getFullPath(), null, null, false));
 
 			projectAsJavaProject.setRawClasspath(classPathEntryList.toArray(new IClasspathEntry[1]), null);
 			return true;
@@ -115,12 +113,7 @@ public class DeveloperProject {
 	 */
 	public String getSourcePath() throws CoreException {
 		if (this.project.isOpen() && this.project.hasNature(Constants.JavaNatureID)) {
-			final IJavaProject javaProject = JavaCore.create(this.project);
-			IClasspathEntry[] classpathEntries = null;
-			classpathEntries = javaProject.getResolvedClasspath(true);
-
-			for (int i = 0; i < classpathEntries.length; i++) {
-				final IClasspathEntry entry = classpathEntries[i];
+			for (IClasspathEntry entry : JavaCore.create(this.project).getResolvedClasspath(true)) {
 				if (entry.getContentKind() == IPackageFragmentRoot.K_SOURCE) {
 					return entry.getPath().removeFirstSegments(1).toOSString();
 				}
@@ -130,7 +123,7 @@ public class DeveloperProject {
 	}
 
 	/**
-	 * @return Absolute Path of Project
+	 * @return Refreshes the project.
 	 * @throws CoreException
 	 *         See {@link org.eclipse.core.resources.IResource#refreshLocal(int, org.eclipse.core.runtime.IProgressMonitor) refreshLocal()}
 	 */
@@ -158,13 +151,13 @@ public class DeveloperProject {
 		}
 		if (obj instanceof DeveloperProject) {
 			DeveloperProject other = (DeveloperProject) obj;
-			if (project == null || other.project != null) {
+			if (this.project == null || other.project != null) {
 				return false;
 			}
-			return project.equals(other.project);
+			return this.project.equals(other.project);
 		} else if (obj instanceof IProject) {
 			IProject other = (IProject) obj;
-			return project.equals(other);
+			return this.project.equals(other);
 		}
 		return false;
 	}

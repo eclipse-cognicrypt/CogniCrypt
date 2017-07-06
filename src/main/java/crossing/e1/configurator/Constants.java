@@ -103,5 +103,9 @@ public class Constants {
 	public static final String SELECT_TASK = "Select Task :";
 	public static final String NO_XML_INSTANCE_FILE_TO_WRITE = "No xml instance file to write.";
 	public static final String CLAFER_ALGORITHM = "_Algorithm";
+	
+	//Flags for default project selection
+	public static boolean WizardActionFromContextMenuFlag = false;
+	public static boolean WizardActionFromMenuFlag = false;
 
 }

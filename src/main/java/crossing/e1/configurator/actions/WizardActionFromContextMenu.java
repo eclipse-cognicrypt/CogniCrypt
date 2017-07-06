@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.wizard.ConfiguratorWizard;
 
 /**
@@ -33,8 +34,7 @@ import crossing.e1.configurator.wizard.ConfiguratorWizard;
 public class WizardActionFromContextMenu implements IWorkbenchWindowActionDelegate {
 
 	private IWorkbenchWindow window;
-	public static boolean WizardActionFromContextMenuFlag;
-
+	
 	/**
 	 * The constructor.
 	 */
@@ -65,8 +65,8 @@ public class WizardActionFromContextMenu implements IWorkbenchWindowActionDelega
 	 */
 	@Override
 	public void run(final IAction action) {
-		WizardAction.WizardActionFromMenuFlag = false;
-		WizardActionFromContextMenuFlag = true;
+		Constants.WizardActionFromMenuFlag =false;
+		Constants.WizardActionFromContextMenuFlag= true;
 		final WizardDialog dialog = new WizardDialog(new Shell(), new ConfiguratorWizard());
 		dialog.open();
 	}

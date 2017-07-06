@@ -47,6 +47,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.osgi.framework.Bundle;
 
 import crossing.e1.configurator.Activator;
+import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.actions.WizardAction;
 import crossing.e1.configurator.actions.WizardActionFromContextMenu;
 
@@ -137,9 +138,9 @@ public class Utils {
 
 	public static IProject getCurrentProject() {
 		IProject currentProject = null;
-		if (WizardActionFromContextMenu.WizardActionFromContextMenuFlag == true) {
+		if (Constants.WizardActionFromContextMenuFlag == true) {
 			currentProject = Utils.getIProjectFromSelection();
-		} else if ((WizardAction.WizardActionFromMenuFlag == true) && (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension()
+		} else if ((Constants.WizardActionFromMenuFlag == true) && (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension()
 			.equalsIgnoreCase("java"))) {
 			currentProject = Utils.getCurrentlyOpenFile().getProject();
 		}

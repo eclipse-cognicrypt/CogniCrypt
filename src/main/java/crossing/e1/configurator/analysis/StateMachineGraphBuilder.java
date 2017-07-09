@@ -1,5 +1,6 @@
 package crossing.e1.configurator.analysis;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,8 +52,16 @@ public class StateMachineGraphBuilder {
 				setAcceptingState(rightPrev);
 			} 
 			if (rightElOp != null && ("+".equals(rightElOp) || "*".equals(rightElOp))) {
-				TransitionEdge outgoingEdge = getOutgoingEdge(rightPrev, prevNode);
-				addRegularEdge(outgoingEdge.getLabel(), prevNode, outgoingEdge.to(), true);
+				final String orderop = right.getOrderop();
+				List<TransitionEdge> outgoingEdges = null;
+				if (orderop != null && "|".equals(orderop)) {
+					outgoingEdges = getOutgoingEdge(rightPrev, null);
+				} else {
+					outgoingEdges = getOutgoingEdge(rightPrev, prevNode);
+				}
+				for (TransitionEdge outgoingEdge : outgoingEdges) {
+					addRegularEdge(outgoingEdge.getLabel(), prevNode, outgoingEdge.to(), true);
+				}
 			}
 			
 			if (leftElOp != null && ("?".equals(leftElOp) || "*".equals(leftElOp))) {
@@ -72,13 +81,14 @@ public class StateMachineGraphBuilder {
 		}
 	}
 
-	private TransitionEdge getOutgoingEdge(StateNode rightPrev, StateNode notTo) {
+	private List<TransitionEdge> getOutgoingEdge(StateNode rightPrev, StateNode notTo) {
+		List<TransitionEdge> outgoingEdges = new ArrayList<TransitionEdge>();
 		for (TransitionEdge comp : result.getAllTransitions()) {
 			if (comp.getLeft().equals(rightPrev) && !(comp.getRight().equals(rightPrev) || comp.getRight().equals(notTo))) {
-				return comp;
+				outgoingEdges.add(comp);
 			}
 		}
-		return null;
+		return outgoingEdges;
 	}
 
 	private StateNode process(Expression curLevel, int level, Multimap<Integer, Map.Entry<String, StateNode>> leftOvers, StateNode prevNode) {
@@ -125,8 +135,10 @@ public class StateMachineGraphBuilder {
 			}
 			
 			if (rightElOp != null && ("+".equals(rightElOp) || "*".equals(rightElOp))) {
-				TransitionEdge outgoingEdge = getOutgoingEdge(rightPrev, prevNode);
-				addRegularEdge(outgoingEdge.getLabel(), prevNode, outgoingEdge.to(), true);
+				List<TransitionEdge> outgoingEdges = getOutgoingEdge(rightPrev, prevNode);
+				for (TransitionEdge outgoingEdge : outgoingEdges) {
+					addRegularEdge(outgoingEdge.getLabel(), prevNode, outgoingEdge.to(), true);
+				}
 			}
 			
 			if (leftElOp != null && ("?".equals(leftElOp) || "*".equals(leftElOp))) {

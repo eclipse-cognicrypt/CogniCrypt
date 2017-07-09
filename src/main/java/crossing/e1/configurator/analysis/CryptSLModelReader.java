@@ -103,6 +103,11 @@ public class CryptSLModelReader {
 
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 		List<String> exceptions = new ArrayList<String>();
+		exceptions.add("DSAGenParameter.cryptsl");
+		exceptions.add("DSAParameter.cryptsl");
+		exceptions.add("HMACParameter.cryptsl");
+		exceptions.add("IVParameter.cryptsl");
+		exceptions.add("RSAKeyGenParameter.cryptsl");
 		exceptions.add("String.cryptsl");
 		for (IResource res : ResourcesPlugin.getWorkspace().getRoot().getFolder(Path.fromPortableString("/CryptSL Examples/src/de/darmstadt/tu/crossing/")).members()) {
 			final String extension = res.getFileExtension();

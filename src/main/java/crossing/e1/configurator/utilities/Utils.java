@@ -137,7 +137,7 @@ public class Utils {
 		IProject currentProject = null;
 		if (Constants.WizardActionFromContextMenuFlag == true) {
 			currentProject = Utils.getIProjectFromSelection();
-		} else if ((Constants.WizardActionFromMenuFlag == true) && (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension()
+		} else if ((Constants.WizardActionFromContextMenuFlag == false) && (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension()
 			.equalsIgnoreCase("java"))) {
 			currentProject = Utils.getCurrentlyOpenFile().getProject();
 		}

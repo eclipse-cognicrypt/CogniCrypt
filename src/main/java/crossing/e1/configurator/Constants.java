@@ -107,6 +107,5 @@ public class Constants {
 
 	//Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;
-	public static boolean WizardActionFromMenuFlag = false;
-
+	
 }

@@ -63,6 +63,7 @@ import de.darmstadt.tu.crossing.cryptSL.ArithmeticExpression;
 import de.darmstadt.tu.crossing.cryptSL.ArithmeticOperator;
 import de.darmstadt.tu.crossing.cryptSL.ComparisonExpression;
 import de.darmstadt.tu.crossing.cryptSL.Constraint;
+import de.darmstadt.tu.crossing.cryptSL.DestroysBlock;
 import de.darmstadt.tu.crossing.cryptSL.Domainmodel;
 import de.darmstadt.tu.crossing.cryptSL.EnsuresBlock;
 import de.darmstadt.tu.crossing.cryptSL.Expression;
@@ -103,11 +104,11 @@ public class CryptSLModelReader {
 
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 		List<String> exceptions = new ArrayList<String>();
-		exceptions.add("DSAGenParameter.cryptsl");
-		exceptions.add("DSAParameter.cryptsl");
-		exceptions.add("HMACParameter.cryptsl");
-		exceptions.add("IVParameter.cryptsl");
-		exceptions.add("RSAKeyGenParameter.cryptsl");
+		exceptions.add("DSAGenParameterSpec.cryptsl");
+		exceptions.add("DSAParameterSpec.cryptsl");
+		exceptions.add("HMACParameterSpec.cryptsl");
+		exceptions.add("IVParameterSpec.cryptsl");
+		exceptions.add("RSAKeyGenParameterSpec.cryptsl");
 		exceptions.add("String.cryptsl");
 		for (IResource res : ResourcesPlugin.getWorkspace().getRoot().getFolder(Path.fromPortableString("/CryptSL Examples/src/de/darmstadt/tu/crossing/")).members()) {
 			final String extension = res.getFileExtension();
@@ -121,8 +122,12 @@ public class CryptSLModelReader {
 			Domainmodel dm = (Domainmodel) eObject;
 			EnsuresBlock ensure = dm.getEnsure();
 			Map<CryptSLPredicate, SuperType> pre_preds = Maps.newHashMap();
+			DestroysBlock destroys = dm.getDestroy();
+			if (destroys != null) {
+				pre_preds.putAll(getKills(destroys.getPred()));
+			}
 			if (ensure != null) {
-				pre_preds = getPredicates(ensure.getPred());
+				pre_preds.putAll(getPredicates(ensure.getPred()));
 				predicates = Lists.newArrayList((ensure != null) ? pre_preds.keySet() : Lists.newArrayList());
 			}
 			smg = buildStateMachineGraph(dm.getOrder());
@@ -143,7 +148,7 @@ public class CryptSLModelReader {
 				}
 			}
 			final String className = fileName.substring(0, fileName.indexOf(extension)-1);
-			CryptSLRule rule = new CryptSLRule(className, objects, forbiddenMethods, smg, constraints, predicates);
+			CryptSLRule rule = new CryptSLRule(className, objects, forbiddenMethods, smg, constraints, actPreds);
 			System.out.println("===========================================");
 			System.out.println("");
 			storeRuletoFile(rule, className);
@@ -151,6 +156,36 @@ public class CryptSLModelReader {
 			//loadModelFromFile(outputURI);
 		}
 
+	}
+
+	private Map<? extends CryptSLPredicate, ? extends SuperType> getKills(EList<Constraint> eList) {
+		Map<CryptSLPredicate, SuperType> preds = new HashMap<CryptSLPredicate, SuperType>();
+		for (Constraint pred : eList) {
+			List<ICryptSLPredicateParameter> variables = new ArrayList<ICryptSLPredicateParameter>();
+			
+			if (pred.getParList() != null) {
+				for (SuPar var : pred.getParList().getParameters()) {
+					if (var.getVal() != null) {
+						String name = ((LiteralExpression) var.getVal().getLit().getName()).getValue().getName();
+						if (name == null) {
+							name = "this";
+						}
+						variables.add(new CryptSLObject(name));
+					} else {
+						variables.add(new CryptSLObject("_"));
+					}
+				}
+			}
+			String meth = pred.getPredName();
+			SuperType cond = pred.getLabelCond();
+			if (cond == null) {
+				preds.put(new CryptSLPredicate(null, meth, variables, true), null);
+			} else {
+				preds.put(new CryptSLPredicate(null, meth, variables, true), cond);
+			}
+			
+		}
+		return preds;
 	}
 
 	private List<Entry<String, String>> getObjects(UseBlock usage) {
@@ -189,6 +224,7 @@ public class CryptSLModelReader {
 			List<ICryptSLPredicateParameter> variables = new ArrayList<ICryptSLPredicateParameter>();
 			
 			if (pred.getParList() != null) {
+				boolean firstPar = true;
 				for (SuPar var : pred.getParList().getParameters()) {
 					if (var.getVal() != null) {
 						String name = ((LiteralExpression) var.getVal().getLit().getName()).getValue().getName();
@@ -197,8 +233,13 @@ public class CryptSLModelReader {
 						}
 						variables.add(new CryptSLObject(name));
 					} else {
-						variables.add(new CryptSLObject("_"));
+						if (firstPar) {
+							variables.add(new CryptSLObject("this"));
+						} else {
+							variables.add(new CryptSLObject("_"));
+						}
 					}
+					firstPar = false;
 				}
 			}
 			String meth = pred.getPredName();

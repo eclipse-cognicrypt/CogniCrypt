@@ -44,11 +44,12 @@ public class CryptSLReaderUtils {
 	protected static  CryptSLMethod stringifyMethodSignature(Event lab) {
 		Method method = ((SuperType) lab).getMeth();
 		
-		String qualifiedName = method.getMethName().getQualifiedName();
-		if (qualifiedName == null) {
-			qualifiedName = ((de.darmstadt.tu.crossing.cryptSL.impl.DomainmodelImpl) (method.eContainer().eContainer().eContainer())).getJavaType().getQualifiedName();
+		String methodName = method.getMethName().getSimpleName();
+		if (methodName == null) {
+			methodName = ((de.darmstadt.tu.crossing.cryptSL.impl.DomainmodelImpl) (method.eContainer().eContainer().eContainer())).getJavaType().getSimpleName();
 		}
-		qualifiedName = removeSPI(qualifiedName);
+		String qualifiedName = ((de.darmstadt.tu.crossing.cryptSL.impl.DomainmodelImpl) (method.eContainer().eContainer().eContainer())).getJavaType().getQualifiedName() + "." + methodName; //method.getMethName().getQualifiedName();
+//		qualifiedName = removeSPI(qualifiedName);
 		List<Entry<String, String>> pars = new ArrayList<Entry<String, String>>();
 		Object returnValue = method.getLeftSide();
 		Entry<String, String> returnObject = null;

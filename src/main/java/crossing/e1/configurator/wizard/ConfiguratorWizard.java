@@ -282,7 +282,7 @@ public class ConfiguratorWizard extends Wizard {
 			try {
 				final XMLParser parser = new XMLParser();
 				parser.displayInstanceValues(this.instanceListPage.getValue(), this.constraints);
-				
+
 				// Initialize Code Generation
 				XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject());
 

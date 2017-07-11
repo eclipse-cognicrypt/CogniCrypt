@@ -77,7 +77,7 @@ public class Constants {
 	public static final String PLEASE_SELECT = "Please select project directory to launch the configurator";
 	public static final String ERROR_MESSAGE_NO_PROJECT = "There is no Java project in your workspace. Please create one and restart CogniCrypt.";
 	public static final String ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY = "No directory for additional resources found.";
-	
+
 	public static final String JAVA = "java";
 	public static final String ALGORITHM = "algorithm";
 	public static final String ADVANCED_MODE = "Advanced Mode";
@@ -104,4 +104,8 @@ public class Constants {
 	public static final String SELECT_TASK = "Select Task :";
 	public static final String NO_XML_INSTANCE_FILE_TO_WRITE = "No xml instance file to write.";
 	public static final String CLAFER_ALGORITHM = "_Algorithm";
+
+	//Flags for default project selection
+	public static boolean WizardActionFromContextMenuFlag = false;
+	
 }

@@ -64,7 +64,7 @@ public class DeveloperProject {
 		if (this.project.isOpen() && this.project.hasNature(Constants.JavaNatureID)) {
 			final IJavaProject projectAsJavaProject = JavaCore.create(this.project);
 			final LinkedHashSet<IClasspathEntry> classPathEntryList = new LinkedHashSet<>();
-			
+
 			classPathEntryList.addAll(Arrays.asList(projectAsJavaProject.getRawClasspath()));
 			classPathEntryList.add(JavaCore.newLibraryEntry(this.project.getFile(pathToJar).getFullPath(), null, null, false));
 
@@ -161,11 +161,11 @@ public class DeveloperProject {
 		}
 		return false;
 	}
-	
+
 	public String toString() {
 		return project.getName() + "(" + getProjectPath() + ")";
 	}
-	
+
 	public Boolean removePackage(String packageName) {
 		try {
 			IPackageFragment delPackage = getPackagesOfProject(packageName);
@@ -173,8 +173,8 @@ public class DeveloperProject {
 		} catch (CoreException e) {
 			Activator.getDefault().logError(e);
 		}
-		
+
 		return false;
 	}
-	
+
 }

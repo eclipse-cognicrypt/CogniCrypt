@@ -46,13 +46,38 @@ public class QuestionsJSONReader {
 	 *        path to the file that contains all questions for one task.
 	 * @return questions
 	 */
+	public List<Question> getQuestions(final String filePath) {
+		List<Question> questions = new ArrayList<Question>();
+		try {
+			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(filePath)));
+			final Gson gson = new Gson();
+
+			questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
+
+			checkReadQuestions(questions);
+		} catch (final FileNotFoundException e) {
+			Activator.getDefault().logError(e);
+			return null;
+		}
+		return questions;
+	}
+	
+	
+	/***
+	 * This method reads all pages of one task using the file path to the JSON file.
+	 * 
+	 * @param filePath 
+	 * 			Path to the file that contains all questions for one task.
+	 * @return pages 
+	 * 			Return a list of all the pages in the JSON file.
+	 */
 	public List<Page> getPages(final String filePath) {
 		List<Page> pages = new ArrayList<Page>();
 		try {
 			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(filePath)));
 			final Gson gson = new Gson();
 
-			pages = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
+			pages = gson.fromJson(reader, new TypeToken<List<Page>>() {}.getType());
 
 			checkReadPages(pages);
 		} catch (final FileNotFoundException e) {
@@ -68,10 +93,25 @@ public class QuestionsJSONReader {
 	 *        task whose questions should be read
 	 * @return Questions
 	 */
+	public List<Question> getQuestions(final Task task) {
+		return getQuestions(task.getXmlFile());
+	}
+	
+	/***
+	 * This method reads all pages of one task.
+	 * 
+	 * @param task
+	 *        task whose questions should be read
+	 * @return Pages
+	 */
 	public List<Page> getPages(final Task task) {
 		return getPages(task.getXmlFile());
 	}
-
+	
+	/**
+	 * Check the validity of the pages and the questions contained in them.
+	 * @param pages
+	 */
 	private void checkReadPages(List<Page> pages) {
 		final Set<Integer> ids = new HashSet<>();
 		if (pages.size() < 1) {
@@ -81,7 +121,8 @@ public class QuestionsJSONReader {
 			if (!ids.add(page.getId())) {
 				throw new IllegalArgumentException("Each page must have a unique ID.");
 			}
-
+			
+			// Check the validity of questions for each page.
 			checkReadQuestions(page.getContent());
 		}
 	}
@@ -99,12 +140,15 @@ public class QuestionsJSONReader {
 			if (question.getDefaultAnswer() == null) {
 				throw new IllegalArgumentException("Each question must have a default answer.");
 			}
+			/* TODO : Look for a better alternative to commenting this check. I want to maintain the legacy code as 
+			 * it is. Current implementation does not follow this.			
 
 			for (final Answer answer : question.getAnswers()) {
+				
 				if (answer.getNextID() == -2) {
 					throw new IllegalArgumentException("Each answer must point to the following question.");
 				}
-			}
+			}*/
 		}
 	}
 }

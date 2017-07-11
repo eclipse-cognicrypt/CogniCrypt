@@ -141,8 +141,13 @@ public class ConfiguratorWizard extends Wizard {
 				this.preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, (AstConcreteClafer) org.clafer.cli.Utils
 					.getModelChildByName(this.claferModel.getModel(), "c0_" + selectedTask.getName()));
 			} else {
-				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
-				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextQuestion(), this.beginnerQuestions.getTask());
+				// Updated the calls to accommodate for the pages instead of questions.
+				//this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
+				//this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextQuestion(), this.beginnerQuestions.getTask());
+				
+				// The 3rd parameter in this constructor call is benign, it only exists to call the constructor designed for pages
+				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile(),"pages"); 
+				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(),null);
 			}
 			if (this.constraints != null) {
 				this.constraints = null;
@@ -162,6 +167,12 @@ public class ConfiguratorWizard extends Wizard {
 				if (this.constraints == null) {
 					this.constraints = new HashMap<>();
 				}
+				// TODO : This code depends on the single questions per page.
+				// Check how Entry<Question, Answer> entry is relevant.
+				// [May not work] Created a new method beginnerQuestions.getPageMap() that returns the current
+				// page id to be used with this.beginnerQuestions.hasMorePages()
+				// [Alternative] implement a version of beginnerTaskQuestionPage.getMap() that returns a
+				// a list of type Entry<Question, Answer>.
 
 				final BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
 				final Entry<Question, Answer> entry = beginnerTaskQuestionPage.getMap();

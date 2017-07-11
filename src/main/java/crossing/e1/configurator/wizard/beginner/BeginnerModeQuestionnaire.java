@@ -17,6 +17,7 @@ package crossing.e1.configurator.wizard.beginner;
 
 import java.util.List;
 
+import crossing.e1.configurator.beginer.question.Page;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.beginer.question.QuestionsJSONReader;
 import crossing.e1.configurator.tasks.Task;
@@ -24,13 +25,31 @@ import crossing.e1.configurator.tasks.Task;
 public class BeginnerModeQuestionnaire {
 
 	private final List<Question> questionList;
+	private final List<Page> pageList;
 	private Task task;
 	private int ID;
+	private int pageID;
 
 	public BeginnerModeQuestionnaire(final Task task, final String filePath) {
 		this.task = task;
-		this.questionList = (new QuestionsJSONReader()).getPages(filePath);
+		this.questionList = (new QuestionsJSONReader()).getQuestions(filePath);		
 		this.ID = 0;
+		
+		this.pageList = null;
+		
+	}
+	/**
+	 * 
+	 * @param task
+	 * @param filePath
+	 * @param mode Call to this constructor if questions are being grouped into pages.
+	 */
+	public BeginnerModeQuestionnaire(final Task task, final String filePath, final String mode){
+		this.task = task;
+		this.pageList = (new QuestionsJSONReader()).getPages(filePath);
+		this.pageID = 0;
+		
+		this.questionList = null;
 	}
 
 	public int getCurrentID() {
@@ -72,6 +91,73 @@ public class BeginnerModeQuestionnaire {
 
 	public void setTask(final Task task) {
 		this.task = task;
+	}
+	/**
+	 * 
+	 * @param pageID
+	 * @return Return the page at pageID.
+	 */
+	public Page getPageByID(final int pageID) {
+		return this.pageList.get(pageID);
+	}
+	
+	/**
+	 * 
+	 * @return Return the list of pages.
+	 * @throws NullPointerException
+	 */
+	public List<Page> getPages() throws NullPointerException {
+		return this.pageList;
+	}
+	
+	/**
+	 * 
+	 * @return Return the next page.
+	 */
+	public Page nextPage() {
+		return this.pageList.get(this.pageID++);
+	}
+
+	/**
+	 * 
+	 * @return Return the previous page.
+	 */
+	public Page previousPage() {
+		return this.pageList.get(--this.pageID);
+	}
+
+	/**
+	 * 
+	 * @param pageID
+	 * @return Return the page that has been set.
+	 */
+	public Question setPageByID(final int pageID) {
+		this.pageID = pageID;
+		return this.questionList.get(this.pageID);
+	}
+
+	/**
+	 * 
+	 * @return Whether this is the first page.
+	 */
+	public boolean isFirstPage() {
+		return this.pageID == 0;
+	}
+	
+	/**
+	 * 
+	 * @return Return whether there are more pages.
+	 */
+	public boolean hasMorePages() {
+		return this.pageID < getPages().size();
+	}
+	
+	/**
+	 * 
+	 * @return Return the current pageID.
+	 */
+	public int getCurrentPageID() {
+		return this.pageID;
 	}
 
 }

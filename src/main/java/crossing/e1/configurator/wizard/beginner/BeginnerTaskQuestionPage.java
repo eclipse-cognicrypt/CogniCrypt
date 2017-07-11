@@ -38,6 +38,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import crossing.e1.configurator.beginer.question.Answer;
+import crossing.e1.configurator.beginer.question.Page;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.Labels;
@@ -48,6 +49,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private Entry<Question, Answer> selection = new AbstractMap.SimpleEntry<>(null, null);
 	private boolean finish = false;
 	private final List<String> selectionValues;
+	
+	private final Page page;
 
 	/**
 	 * construct a page containing an element other than itemselection
@@ -77,6 +80,28 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.quest = quest;
 		this.selectionValues = selectionValues;
+		
+		// This variable needs to be initialized.
+		this.page = null;
+	}
+	/**
+	 * 
+	 * @param page
+	 * 			page contains the questions that need to be displayed.
+	 * @param task
+	 * 			task for which the page is created
+	 * @param selectionValues The call to this constructor needs to have this extra parameter for itemselection. 
+	 * 			list of selectable strings if element type of quest is itemselection, null otherwise
+	 */
+	public BeginnerTaskQuestionPage(final Page page, final Task task, final List<String> selectionValues){
+		super("Display Questions");
+		setTitle("Configuring Selected Task: " + task.getDescription());
+		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
+		this.page = page;
+		this.selectionValues = selectionValues;
+		
+		//This variable needs to be initialized.
+		this.quest = null;
 	}
 
 	@Override
@@ -88,17 +113,27 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	public void createControl(final Composite parent) {
 		final Composite container = new Composite(parent, SWT.NONE);
 		container.setBounds(10, 10, 450, 200);
-		final GridLayout layout = new GridLayout(3, false);
+		// Updated the number of columns to order the questions vertically.
+		final GridLayout layout = new GridLayout(1, false);
+		
 		container.setLayout(layout);
-
-		createQuestionControl(container, this.quest);
+		// If legacy JSON files are in effect.
+		if(page == null){
+			createQuestionControl(container, this.quest);
+		} else{
+			// loop through the questions that are to be displayed on the page.
+			for(Question question : page.getContent()){
+				createQuestionControl(container, question);
+			}
+		}
+		
 		setControl(container);
 	}
 
 	private void createQuestionControl(final Composite parent, final Question question) {
 
 		final List<Answer> answers = question.getAnswers();
-		final Composite container = getPanel(parent);
+		final Composite container = getPanel(parent);		
 		final Label label = new Label(container, SWT.TOP);
 		label.setText(question.getQuestionText());
 		switch (question.getElement()) {
@@ -321,6 +356,14 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	public Entry<Question, Answer> getMap() {
 		return this.selection;
+	}
+	
+	/**
+	 * 
+	 * @return returns the id of the current page.
+	 */
+	public int getPageMap(){
+		return page.getId();
 	}
 
 	private Composite getPanel(final Composite parent) {

@@ -89,11 +89,14 @@ public class Output {
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public byte[] templateUsage(byte[] data) throws GeneralSecurityException {
-		KeyGenerator kg = KeyGenerator.getInstance("<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>");
+	public byte[] templateUsage(byte[] data<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">, char[] pwd</xsl:if>) throws GeneralSecurityException {
+		<xsl:choose>
+        <xsl:when test="//task/algorithm[@type='KeyDerivationAlgorithm']">KeyDeriv kd = new KeyDeriv();
+		SecretKey key = kd.getKey(pwd); </xsl:when>
+        <xsl:otherwise>KeyGenerator kg = KeyGenerator.getInstance("<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>");
 		kg.init(<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/keySize"/>);
-		SecretKey key = kg.generateKey();
-
+		SecretKey key = kg.generateKey(); </xsl:otherwise>
+		</xsl:choose>	
 		Enc enc = new Enc();
 		return enc.encrypt(data, key);
 	}

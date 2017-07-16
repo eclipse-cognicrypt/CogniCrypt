@@ -15,7 +15,11 @@
  */
 package crossing.e1.configurator.wizard.beginner;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -26,6 +30,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
@@ -37,6 +42,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.tasks.Task;
@@ -45,9 +51,10 @@ import crossing.e1.configurator.utilities.Labels;
 public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private final Question quest;
+	private List<Question> allQuestion;
 	private Entry<Question, Answer> selection = new AbstractMap.SimpleEntry<>(null, null);
 	private boolean finish = false;
-	private final List<String> selectionValues;
+	private List<String> selectionValues;
 
 	public BeginnerTaskQuestionPage(final Question quest, final Task task) {
 		this(quest, task, null);
@@ -61,6 +68,15 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		this.selectionValues = selectionValues;
 	}
 
+	public BeginnerTaskQuestionPage(final List<Question> allQuestion, final Question quest, final Task task) {
+		super("Display Questions");
+		setTitle("Configuring Selected Task: " + task.getDescription());
+		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
+		this.allQuestion = allQuestion;
+		this.quest = quest;
+	}
+	
+	
 	@Override
 	public boolean canFlipToNextPage() {
 		return this.finish && isPageComplete();
@@ -257,6 +273,98 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					}
 				});
 				break;
+				
+			case button:
+				for (int i = 0; i < 3; i++) {
+					new Label(container, SWT.NULL);
+				}
+
+				final Composite comp = new Composite(container, SWT.NONE);
+				final GridLayout grid = new GridLayout(2, false);
+				grid.marginWidth = 0;
+				comp.setLayout(grid);
+
+				final Button methodButton = new Button(comp, SWT.PUSH);
+				final ArrayList<String> methodArrayList = question.getMethod();
+				final String buttonName = methodArrayList.get(0);
+				final String className = methodArrayList.get(1);
+				final String methodName = methodArrayList.get(2);
+
+				methodButton.setText(buttonName);
+				final Label feedbackLabel = new Label(comp, SWT.NONE);
+
+				Object classObj = null;
+				Method method = null;
+				Object[] paramArray = null;
+
+				try {
+					final Class<?> c = Class.forName(className);
+					final Method[] methods = c.getMethods();
+
+					for (final Method m : methods) {
+						if (m.getName().equals(methodName)) {
+							method = m;
+							break;
+						}
+					}
+
+					final Class<?>[] paramTypes = method.getParameterTypes();
+					final ArrayList<Object> paramObjList = new ArrayList<>();
+					final ArrayList<Integer> methodParamIds = question.getMethodParamIds();
+					String value = null;
+
+					for (int i = 0; i < methodParamIds.size(); i++) {
+						value = this.allQuestion.get(methodParamIds.get(i) - 1).getAnswers().get(0).getValue();
+
+						if (!paramTypes[i].getName().equals("int")) {
+							paramObjList.add(paramTypes[i].cast(value));
+						} else {
+							paramObjList.add(Integer.parseInt(this.allQuestion.get(methodParamIds.get(i) - 1).getAnswers().get(0).getValue()));
+						}
+					}
+
+					classObj = c.newInstance();
+					paramArray = paramObjList.toArray();
+
+				} catch (SecurityException | ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InstantiationException e) {
+					Activator.getDefault().logError(e);
+				}
+
+				final Method invokeMethod = method;
+				final Object invokeClassObj = classObj;
+				final Object[] invokeParamArray = paramArray;
+				
+				methodButton.addSelectionListener(new SelectionAdapter() {
+
+					@Override
+					public void widgetSelected(final SelectionEvent e) {
+						try {
+
+							final Object[] resObjArray = (Object[]) invokeMethod.invoke(invokeClassObj, invokeParamArray);
+							final String[] resStringArray = Arrays.copyOf(resObjArray, resObjArray.length, String[].class);
+
+							if (resStringArray[0].equals(true)) {
+								question.getDefaultAnswer().setNextID(question.getAnswers().get(0).getNextID());
+							} else {
+								question.getDefaultAnswer().setNextID(question.getAnswers().get(1).getNextID());
+							}
+
+							feedbackLabel.setText(resStringArray[1]);
+							feedbackLabel.getParent().pack();
+							methodButton.setEnabled(false);
+						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
+							Activator.getDefault().logError(e1);
+						}
+
+					}
+				});
+
+				this.finish = true;
+				final Answer a = question.getDefaultAnswer();
+				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
+				BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, a);
+				break;
+				
 			default:
 				break;
 		}

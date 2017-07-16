@@ -16,42 +16,47 @@
 
 /**
  * @author Stefan Krüger, Karim Ali
- *
+ * @author André Sonntag
  */
 package crossing.e1.configurator.wizard;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
-
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
+import crossing.e1.configurator.Activator;
 
-public class TLSConnection { // NO_UCD (unused code)
 
-	private static SSLSocket sslsocket = null;
+public class TLSConnection { 
 
-	public TLSConnection(final int port, final String host) throws UnknownHostException, IOException, URISyntaxException {
-		final SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-		final SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket(host, port);
-		setCipherSuites();
-		setProtocols();
-		sslsocket.startHandshake();
-		sslsocket.close();
-	}
+	public TLSConnection() {}
 
-	private void setCipherSuites() {
-		if (sslsocket != null) {
-			//Insert cipher suites here
-			sslsocket.setEnabledCipherSuites(
-				new String[] { "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256", "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256", "TLS_RSA_WITH_AES_128_CBC_SHA256", "TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256", "TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256", "TLS_DHE_RSA_WITH_AES_128_CBC_SHA256", "TLS_DHE_DSS_WITH_AES_128_CBC_SHA256", "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA", "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA", "TLS_RSA_WITH_AES_128_CBC_SHA", "TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA", "TLS_ECDH_RSA_WITH_AES_128_CBC_SHA", "TLS_DHE_RSA_WITH_AES_128_CBC_SHA", "TLS_DHE_DSS_WITH_AES_128_CBC_SHA", "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256", "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256", "TLS_RSA_WITH_AES_128_GCM_SHA256", "TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256", "TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256", "TLS_DHE_RSA_WITH_AES_128_GCM_SHA256", "TLS_DHE_DSS_WITH_AES_128_GCM_SHA256", "TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA", "TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA", "SSL_RSA_WITH_3DES_EDE_CBC_SHA", "TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA", "TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA", "SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA", "SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA", "TLS_EMPTY_RENEGOTIATION_INFO_SCSV" });
+	/**
+	 * The method testConnection check if it possible to establish a ssl connection to the host ip.
+	 * 
+	 * @param host
+	 *        ip
+	 * @param port
+	 * @return A string array with request answer and output text. array[0] contains true or false, array[1] contains the output text.
+	 */
+	public String[] testConnection(final String host, final int port) {
+		boolean isConnected = false;
+		final String[] returnArray = new String[2];
+		returnArray[1] = "Error! Connection to host could not be established.";
+		returnArray[0] = "false";
+		try {
+			final SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+			final SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket(host, port);
+			isConnected = sslsocket.isConnected();
+			sslsocket.close();
+
+			if (isConnected) {
+				returnArray[1] = "Connection established successfully!";
+				returnArray[0] = "true";
+			}
+
+		} catch (final IOException e) {
+			Activator.getDefault().logError(e);
 		}
+		return returnArray;
 	}
-
-	private void setProtocols() {
-		if (sslsocket != null) {
-			sslsocket.setEnabledProtocols(new String[] { "TLSv1", "TLSv1.1", "TLSv1.2" });
-		}
-	}
-
 }

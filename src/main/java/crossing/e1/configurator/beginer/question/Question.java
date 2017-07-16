@@ -28,6 +28,8 @@ public class Question {
 	private String questionText;
 	private ArrayList<Answer> answers;
 	private Answer defaultAnswer;
+	private ArrayList<String> method;
+	private ArrayList<Integer> methodParamIds;
 
 	public ArrayList<Answer> getAnswers() {
 		return this.answers;
@@ -64,7 +66,15 @@ public class Question {
 	public String getSelectionClafer() {
 		return this.selectionClafer;
 	}
+	
+	public ArrayList<String> getMethod() {
+		return method;
+	}
 
+	public ArrayList<Integer> getMethodParamIds() {
+		return methodParamIds;
+	}
+	
 	public void setAnswers(final ArrayList<Answer> answers) {
 		this.answers = answers;
 	}
@@ -80,6 +90,14 @@ public class Question {
 	public void setQuestionText(final String questionText) {
 		this.questionText = questionText;
 	}
+	
+	public void setMethod(final ArrayList<String> method) {
+		this.method = method;
+	}
+	
+	public void setMethodParamIds(final ArrayList<Integer> methodParamIds) {
+		this.methodParamIds = methodParamIds;
+	}
 
 	@Override
 	public String toString() {
@@ -92,5 +110,6 @@ public class Question {
 		}
 		return builder.toString();
 	}
+
 
 }

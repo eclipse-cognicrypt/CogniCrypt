@@ -50,7 +50,7 @@ public class ClaferModelUtils {
 					}
 				}
 			}
-			
+
 			if (inputClafer.hasRef()) {
 				return findClaferByName(inputClafer.getRef().getTargetType(), name);
 			}
@@ -85,7 +85,7 @@ public class ClaferModelUtils {
 		newClafer.refTo(ClaferModelUtils.findClaferByName(taskClafer.getParent(), "c0_" + type));
 		return newClafer;
 	}
-	
+
 	public static String getNameWithoutScope(final String input) {
 		return input.substring(input.indexOf("_") + 1);
 	}

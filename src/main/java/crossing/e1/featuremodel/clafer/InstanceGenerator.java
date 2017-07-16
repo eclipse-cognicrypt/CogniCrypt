@@ -229,8 +229,6 @@ public class InstanceGenerator {
 		}
 	}
 
-
-
 	/**
 	 * this method is part of instance generation process , creates a mapping instance name and instance Object
 	 */
@@ -240,30 +238,30 @@ public class InstanceGenerator {
 		 * sort all the instances, to have an user friendly display
 		 */
 		try {
-		Collections.sort(this.generatedInstances, new Comparator<InstanceClafer>() {
+			Collections.sort(this.generatedInstances, new Comparator<InstanceClafer>() {
 
-			@Override
-			public int compare(InstanceClafer left, InstanceClafer right) {
-				return - Integer.compare(getSecurityLevel(left), getSecurityLevel(right));
-			}
+				@Override
+				public int compare(InstanceClafer left, InstanceClafer right) {
+					return -Integer.compare(getSecurityLevel(left), getSecurityLevel(right));
+				}
 
-			private Integer getSecurityLevel(InstanceClafer instance) {
-				for (InstanceClafer innerInst: instance.getChildren()) {
-					if (innerInst.getType().getName().contains("security")) {
-						Object level = innerInst.getRef();
-						if (level instanceof Integer) {
-							return (Integer) level;
+				private Integer getSecurityLevel(InstanceClafer instance) {
+					for (InstanceClafer innerInst : instance.getChildren()) {
+						if (innerInst.getType().getName().contains("security")) {
+							Object level = innerInst.getRef();
+							if (level instanceof Integer) {
+								return (Integer) level;
+							}
 						}
 					}
+					return -1;
 				}
-				return -1;				
-			}
-			
-		});
+
+			});
 		} catch (Exception ex) {
 			Activator.getDefault().logError("Instances not sorted by security level. Be cautious");
 		}
-		for (InstanceClafer sortedInst: this.generatedInstances) {
+		for (InstanceClafer sortedInst : this.generatedInstances) {
 			String key = getInstanceName(sortedInst);
 			if (key.isEmpty()) {
 				key = sortedInst.getChildren()[0].getRef().toString();
@@ -278,7 +276,7 @@ public class InstanceGenerator {
 				while (displayNameToInstanceMap.containsKey(copyKey)) {
 					copyKey = key + "(" + String.format("%02d", ++counter) + ")";
 				}
-				
+
 				this.displayNameToInstanceMap.put(copyKey, sortedInst);
 			}
 		}

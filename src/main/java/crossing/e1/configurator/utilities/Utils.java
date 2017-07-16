@@ -47,6 +47,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.osgi.framework.Bundle;
 
 import crossing.e1.configurator.Activator;
+import crossing.e1.configurator.Constants;
 
 @SuppressWarnings("restriction")
 public class Utils {
@@ -77,17 +78,18 @@ public class Utils {
 		return true;
 	}
 
-	public static IProject getCurrentProject() {
-		IProject currentProject = null;
-
-		if (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension().equalsIgnoreCase("java")) {
-			currentProject = Utils.getCurrentlyOpenFile().getProject();
-		} else if (Utils.checkIfJavaProjectSelected()) {
-			currentProject = Utils.getIProjectFromSelection();
-		} else {
-			currentProject = null;
+	public static List<IProject> createListOfJavaProjectsInCurrentWorkspace() {
+		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+		final List<IProject> javaProjects = new ArrayList<>();
+		if (projects.length > 0) {
+			for (int i = 0; i < projects.length; i++) {
+				if (Utils.checkIfJavaProjectSelected(projects[i])) {
+					javaProjects.add(projects[i]);
+				}
+			}
 		}
-		return currentProject;
+
+		return javaProjects;
 	}
 
 	/**
@@ -129,6 +131,24 @@ public class Utils {
 			}
 		}
 		return null;
+	}
+
+	public static IProject getCurrentProject() {
+		IProject currentProject = null;
+		if (Constants.WizardActionFromContextMenuFlag == true) {
+			currentProject = Utils.getIProjectFromSelection();
+		} else if ((Constants.WizardActionFromContextMenuFlag == false) && (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension()
+			.equalsIgnoreCase("java"))) {
+			currentProject = Utils.getCurrentlyOpenFile().getProject();
+		}
+
+		else if (Utils.checkIfJavaProjectSelected()) {
+			currentProject = Utils.getIProjectFromSelection();
+		} else {
+			currentProject = null;
+		}
+
+		return currentProject;
 	}
 
 	/**
@@ -178,20 +198,6 @@ public class Utils {
 		}
 
 		return null;
-	}
-
-	public static List<IProject> createListOfJavaProjectsInCurrentWorkspace() {
-		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		final List<IProject> javaProjects = new ArrayList<>();
-		if (projects.length > 0) {
-			for (int i = 0; i < projects.length; i++) {
-				if (Utils.checkIfJavaProjectSelected(projects[i])) {
-					javaProjects.add(projects[i]);
-				}
-			}
-		}
-
-		return javaProjects;
 	}
 
 }

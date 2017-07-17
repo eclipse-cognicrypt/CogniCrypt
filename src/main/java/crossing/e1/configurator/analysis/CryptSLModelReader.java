@@ -83,7 +83,6 @@ import typestate.interfaces.ISLConstraint;
 
 public class CryptSLModelReader {
 
-	private List<CryptSLPredicate> predicates = null;
 	private List<CryptSLForbiddenMethod> forbiddenMethods = null;
 	private StateMachineGraph smg = null;
 
@@ -104,11 +103,6 @@ public class CryptSLModelReader {
 
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 		List<String> exceptions = new ArrayList<String>();
-		exceptions.add("DSAGenParameterSpec.cryptsl");
-		exceptions.add("DSAParameterSpec.cryptsl");
-		exceptions.add("HMACParameterSpec.cryptsl");
-		exceptions.add("IVParameterSpec.cryptsl");
-		exceptions.add("RSAKeyGenParameterSpec.cryptsl");
 		exceptions.add("String.cryptsl");
 		for (IResource res : ResourcesPlugin.getWorkspace().getRoot().getFolder(Path.fromPortableString("/CryptSL Examples/src/de/darmstadt/tu/crossing/")).members()) {
 			final String extension = res.getFileExtension();
@@ -128,7 +122,6 @@ public class CryptSLModelReader {
 			}
 			if (ensure != null) {
 				pre_preds.putAll(getPredicates(ensure.getPred()));
-				predicates = Lists.newArrayList((ensure != null) ? pre_preds.keySet() : Lists.newArrayList());
 			}
 			smg = buildStateMachineGraph(dm.getOrder());
 			ForbiddenBlock forbEvent = dm.getForbEvent();
@@ -321,7 +314,10 @@ public class CryptSLModelReader {
 						slci = new CryptSLPredicate(null, pred, methodsNotToBeCalled, false);
 						break;
 					case "neverTypeOf" :
-					
+						List<ICryptSLPredicateParameter> varNType = new ArrayList<ICryptSLPredicateParameter>();
+						varNType.add(new CryptSLObject(((de.darmstadt.tu.crossing.cryptSL.impl.ObjectImpl)((PreDefinedPredicates)lit.getCons()).getObj().get(0)).getName()));
+						varNType.add(new CryptSLObject(((PreDefinedPredicates)lit.getCons()).getType().getQualifiedName()));
+						slci = new CryptSLPredicate(null, pred, varNType, false);
 						break;
 					default:
 						new RuntimeException();

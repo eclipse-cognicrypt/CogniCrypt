@@ -25,7 +25,7 @@ public class StateMachineGraphBuilder {
 	
 	public StateMachineGraphBuilder(Expression order) {
 		head = order;
-		result.addNode(new StateNode("-1", true));
+		result.addNode(new StateNode("-1", true, true));
 	}
 	
 	public StateMachineGraph buildSMG() {
@@ -38,7 +38,7 @@ public class StateMachineGraphBuilder {
 		Expression right = curLevel.getRight();
 		String leftElOp = (left != null) ? left.getElementop() : "";
 		String rightElOp = (right != null) ? right.getElementop() : "";
-//		String orderOp = curLevel.getOrderop();
+		String orderOp = curLevel.getOrderop();
 		
 		if (left == null && right == null) {
 			addRegularEdge(curLevel, prevNode, null);
@@ -77,7 +77,36 @@ public class StateMachineGraphBuilder {
 		} else if (!(left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
 			process(curLevel, level, leftOvers, prevNode);
 		} else if (!(left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
-			process(curLevel, level, leftOvers, prevNode);
+			StateNode leftPrev = null;
+			leftPrev = prevNode;
+			StateNode returnToNode = isOr(level, leftOvers);
+	
+			final boolean leftOptional = "?".equals(leftElOp) || "*".equals(leftElOp);
+			prevNode = addRegularEdge(left, prevNode, null, leftOptional);
+			
+			if (leftElOp != null && ("+".equals(leftElOp) ||  "*".equals(leftElOp))) {
+				addRegularEdge(left, prevNode, prevNode, true);
+			}
+			
+			final boolean rightoptional = "?".equals(rightElOp) || "*".equals(rightElOp);
+			if (returnToNode != null || "|".equals(orderOp)) {
+				if ("|".equals(orderOp)) {
+					addRegularEdge(right, leftPrev, prevNode, rightoptional);
+				}
+				if ((returnToNode = isOr(level, leftOvers)) != null) {
+					prevNode = addRegularEdge(right, prevNode, returnToNode, rightoptional);
+				} 
+			} else {
+				prevNode = addRegularEdge(right, prevNode, null, rightoptional);
+			}
+			
+			if (rightElOp != null && ("+".equals(rightElOp) || "*".equals(rightElOp))) {
+				addRegularEdge(right, prevNode, prevNode, true);
+			}
+			
+			if (leftElOp != null && ("?".equals(leftElOp) || "*".equals(leftElOp))) {
+				addRegularEdge(right, leftPrev, prevNode, true);
+			}
 		}
 	}
 

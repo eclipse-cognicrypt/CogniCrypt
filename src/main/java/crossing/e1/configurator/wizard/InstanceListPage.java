@@ -55,6 +55,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 	private InstanceClafer value;
 	private Group instancePropertiesPanel;
 	private Task selectedTask;
+	private String provider;
 
 	public InstanceListPage(final InstanceGenerator inst, final Task selectedTask) {
 		super(Labels.SECOND_PAGE);
@@ -178,11 +179,34 @@ public class InstanceListPage extends WizardPage implements Labels {
 				output.append(key);
 				output.append(value);
 				output.append(Constants.lineSeparator);
+				setProvider(getProviderFromInstance(value));
 			}
 		}
 
 		return output.toString();
 	}
+	
+	// @Ahmed 
+		public String getProviderFromInstance(String instance)
+		{
+			String[] inst=instance.split(System.getProperty("line.separator"));
+			int index=0;
+			for(int i=0; i<inst.length;i++)
+			if(inst[i].contains("Provider"))
+				index=i;
+			inst=inst[index].split(": ");
+			return inst[1];
+		}
+		
+		public void setProvider(String provider)
+		{
+			this.provider=provider;
+		}
+		public String getProvider()
+		{
+			return this.provider;
+			
+		}
 
 	public Task getTask() {
 		return this.selectedTask;

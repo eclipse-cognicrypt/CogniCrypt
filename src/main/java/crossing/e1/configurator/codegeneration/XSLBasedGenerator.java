@@ -98,7 +98,7 @@ public class XSLBasedGenerator {
 	 * @throws BadLocationException
 	 *
 	 */
-	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources) throws BadLocationException {
+	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources,final String providerName) throws BadLocationException {
 		try {
 			// Check whether directories and templates/model exist
 			final File claferOutputFiles = xmlInstanceFile != null && xmlInstanceFile.exists() ? xmlInstanceFile
@@ -138,6 +138,39 @@ public class XSLBasedGenerator {
 					}
 				}
 			}
+			//Add Provider's jar file 
+			if(!providerName.equals("JCA")) {
+				int index=0;
+			if (!"src/main/resources/AdditionalResources/Provider".isEmpty()) {
+				final File[] members = Utils.getResourceFromWithin("src/main/resources/AdditionalResources/Provider").listFiles();
+				if (members == null) {
+					Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);
+				}
+				final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesinDevProject);
+				if (!libFolder.exists()) {
+					libFolder.create(true, true, null);
+				}
+				for (int i = 0; i < members.length; i++) {
+					if(members[i].getName().equalsIgnoreCase(providerName +".jar")){
+					final Path memberPath = members[i].toPath();
+					Files.copy(memberPath,
+						new File(this.project.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + memberPath
+							.getFileName()).toPath(),
+						StandardCopyOption.REPLACE_EXISTING);
+					final String filePath = members[i].toString();
+					final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.outerFileSeparator));
+				
+					if (".jar".equals(cutPath.substring(cutPath.indexOf(".")))) {
+						if (!this.project.addJar(Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + members[index].getName())) {
+							return false; } 
+						  }
+					i+=members.length;
+					  }
+				  }
+			   }
+			}	
+			
+			
 
 			// If there is a java file opened in the editor, insert glue code
 			// there, and remove temporary output file

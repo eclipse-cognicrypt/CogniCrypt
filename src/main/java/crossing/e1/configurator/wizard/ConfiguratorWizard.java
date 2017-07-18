@@ -295,7 +295,7 @@ public class ConfiguratorWizard extends Wizard {
 				parser.writeClaferInstanceToFile(xmlInstancePath);
 
 				// Generate code template
-				ret &= codeGenerator.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources());
+				ret &= codeGenerator.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), instanceListPage.getProvider());
 
 				// Delete Instance File
 				FileHelper.deleteFile(xmlInstancePath);

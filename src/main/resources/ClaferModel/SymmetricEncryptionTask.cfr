@@ -30,6 +30,12 @@ CFB : Mode
 OFB : Mode
 //GCM : Mode
 
+//enum Provider
+abstract Provider: Enum
+SUNJCE : Provider
+BOUNCYCASTLE : Provider
+JCA : Provider
+
 abstract Algorithm
 	name -> string
 	description -> string
@@ -45,6 +51,7 @@ abstract SymmetricCipher : Cipher
 	[classPerformance = Fast]
 
 abstract SymmetricBlockCipher : SymmetricCipher
+	provider -> Provider
 	mode -> Mode
 	padding -> Padding
 	[mode != ECB]
@@ -71,6 +78,7 @@ xor Ciphers
 	    [performance = VeryFast ]
 	    [security = Broken ]
 	    [keySize = 56 ]
+	    [provider != BOUNCYCASTLE]
 
 abstract KeyDerivationAlgorithm : Algorithm
 	iterations -> integer

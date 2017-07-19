@@ -9,11 +9,11 @@ import crypto.rules.CryptSLMethod;
 import de.darmstadt.tu.crossing.cryptSL.Aggregate;
 import de.darmstadt.tu.crossing.cryptSL.Event;
 import de.darmstadt.tu.crossing.cryptSL.Method;
-import de.darmstadt.tu.crossing.cryptSL.Object;
 import de.darmstadt.tu.crossing.cryptSL.ObjectDecl;
 import de.darmstadt.tu.crossing.cryptSL.Par;
 import de.darmstadt.tu.crossing.cryptSL.ParList;
 import de.darmstadt.tu.crossing.cryptSL.SuperType;
+
 
 public class CryptSLReaderUtils {
 
@@ -46,12 +46,12 @@ public class CryptSLReaderUtils {
 		
 		String methodName = method.getMethName().getSimpleName();
 		if (methodName == null) {
-			methodName = ((de.darmstadt.tu.crossing.cryptSL.impl.DomainmodelImpl) (method.eContainer().eContainer().eContainer())).getJavaType().getSimpleName();
+			methodName = ((de.darmstadt.tu.crossing.cryptSL.Domainmodel) (method.eContainer().eContainer().eContainer())).getJavaType().getSimpleName();
 		}
-		String qualifiedName = ((de.darmstadt.tu.crossing.cryptSL.impl.DomainmodelImpl) (method.eContainer().eContainer().eContainer())).getJavaType().getQualifiedName() + "." + methodName; //method.getMethName().getQualifiedName();
+		String qualifiedName = ((de.darmstadt.tu.crossing.cryptSL.Domainmodel) (method.eContainer().eContainer().eContainer())).getJavaType().getQualifiedName() + "." + methodName; //method.getMethName().getQualifiedName();
 //		qualifiedName = removeSPI(qualifiedName);
 		List<Entry<String, String>> pars = new ArrayList<Entry<String, String>>();
-		Object returnValue = method.getLeftSide();
+		de.darmstadt.tu.crossing.cryptSL.Object returnValue = method.getLeftSide();
 		Entry<String, String> returnObject = null;
 		if (returnValue != null && returnValue.getName() != null) {
 			ObjectDecl v = ((ObjectDecl) returnValue.eContainer());

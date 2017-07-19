@@ -315,7 +315,7 @@ public class CryptSLModelReader {
 						break;
 					case "neverTypeOf" :
 						List<ICryptSLPredicateParameter> varNType = new ArrayList<ICryptSLPredicateParameter>();
-						varNType.add(new CryptSLObject(((de.darmstadt.tu.crossing.cryptSL.impl.ObjectImpl)((PreDefinedPredicates)lit.getCons()).getObj().get(0)).getName()));
+						varNType.add(new CryptSLObject(((de.darmstadt.tu.crossing.cryptSL.Object)((PreDefinedPredicates)lit.getCons()).getObj().get(0)).getName()));
 						varNType.add(new CryptSLObject(((PreDefinedPredicates)lit.getCons()).getType().getQualifiedName()));
 						slci = new CryptSLPredicate(null, pred, varNType, false);
 						break;

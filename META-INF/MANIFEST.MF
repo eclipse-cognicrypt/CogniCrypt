@@ -4,13 +4,9 @@ Bundle-Name: ClaferConfigurator
 Bundle-SymbolicName: CROSSING.E1.CONFIGURATOR;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: crossing.e1.configurator.Activator
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.core.resources,
- org.junit,
+Require-Bundle: org.junit,
  org.eclipse.xtext.ui;bundle-version="2.10.0",
  org.eclipse.jdt.ui;bundle-version="3.12.0",
- org.eclipse.jface.text;bundle-version="3.11.0",
  org.eclipse.jdt.core;bundle-version="3.12.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
@@ -21,12 +17,15 @@ Bundle-ClassPath: lib/claferchocoig.jar,
  lib/saxon9pe.jar,
  lib/gson-2.3.1.jar,
  lib/dom4j-2.0.0.jar,
- lib/crossing.crypto.interfaces-20-SNAPSHOT.jar
-Import-Package: org.eclipse.emf.common.util,
+ lib/crossing.crypto.interfaces-20-SNAPSHOT.jar,
+ lib/de.darmstadt.tu.crossing.CryptSL_1.0.0.SICS.jar,
+ lib/de.darmstadt.tu.crossing.CryptSL.ide_1.0.0.SICS.jar,
+ lib/de.darmstadt.tu.crossing.CryptSL.ui_1.0.0.SICS.jar
+Import-Package: de.darmstadt.tu.crossing.CryptSL.ui.internal,
+ de.darmstadt.tu.crossing.cryptSL,
+ org.eclipse.emf.common.util,
  org.eclipse.emf.ecore.resource,
- org.eclipse.emf.ecore.resource.impl,
  org.eclipse.emf.ecore.util,
- org.eclipse.emf.mwe.internal.core.ast.util,
  org.eclipse.jdt.core,
  org.eclipse.jdt.core.dom,
  org.eclipse.jdt.ui.actions,
@@ -35,7 +34,5 @@ Import-Package: org.eclipse.emf.common.util,
  org.eclipse.ui.part,
  org.eclipse.ui.texteditor,
  org.eclipse.xtext.common.types,
- org.eclipse.xtext.common.types.access,
- org.eclipse.xtext.common.types.access.impl,
  org.eclipse.xtext.common.types.access.jdt,
  org.eclipse.xtext.resource

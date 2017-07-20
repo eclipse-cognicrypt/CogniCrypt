@@ -69,13 +69,50 @@ public class StateMachineGraphBuilder {
 			}
 		} else if ((left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
 			prevNode = process(left, level + 1, leftOvers, prevNode);
+			StateNode rightPrev = prevNode;
 			prevNode = addRegularEdge(right, prevNode, null);
+			if ("*".equals(rightElOp) || "?".equals(rightElOp)) {
+				setAcceptingState(rightPrev);
+			} 
 			StateNode returnToNode = null;
 			if ((returnToNode = isQM(level, leftOvers)) != null) {
 				addRegularEdge(right, returnToNode, prevNode, true);
 			}	
 		} else if (!(left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
-			process(curLevel, level, leftOvers, prevNode);
+//			process(curLevel, level, leftOvers, prevNode);
+			StateNode leftPrev = null;
+			leftPrev = prevNode;
+			prevNode = addRegularEdge(left, prevNode, null);
+			
+			if (leftElOp != null && ("+".equals(leftElOp) ||  "*".equals(leftElOp))) {
+				addRegularEdge(left, prevNode, prevNode, true);
+			}
+			
+			if (rightElOp != null && ("?".equals(rightElOp) || "*".equals(rightElOp))) {
+				leftOvers.put(level - 1, new HashMap.SimpleEntry<String,StateNode>(rightElOp, prevNode));
+			}
+			StateNode rightPrev = prevNode;
+			StateNode returnToNode = null;
+			if ("|".equals(orderOp)) {
+//				leftOvers.put(level + 1, new HashMap.SimpleEntry<String,StateNode>(orderOp, prevNode));
+				setAcceptingState(prevNode);
+				prevNode = process(right, level + 1, leftOvers, leftPrev);
+			} else if ((returnToNode = isOr(level, leftOvers)) != null) {
+				prevNode = process(right, level + 1, leftOvers, returnToNode);
+			} else {
+				prevNode = process(right, level + 1, leftOvers, prevNode);
+			}
+			
+			if (rightElOp != null && ("+".equals(rightElOp) || "*".equals(rightElOp))) {
+				List<TransitionEdge> outgoingEdges = getOutgoingEdge(rightPrev, prevNode);
+				for (TransitionEdge outgoingEdge : outgoingEdges) {
+					addRegularEdge(outgoingEdge.getLabel(), prevNode, outgoingEdge.to(), true);
+				}
+			}
+			
+			if (leftElOp != null && ("?".equals(leftElOp) || "*".equals(leftElOp))) {
+				addRegularEdge(right, leftPrev, prevNode, true);
+			}
 		} else if (!(left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
 			StateNode leftPrev = null;
 			leftPrev = prevNode;
@@ -134,8 +171,31 @@ public class StateMachineGraphBuilder {
 		if (left == null && right == null) {
 			addRegularEdge(curLevel, prevNode, null);
 		} else if ((left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
-			prevNode = process(left, level + 1, leftOvers, prevNode);			
-			prevNode = process(right, level + 1, leftOvers, prevNode);
+			StateNode leftPrev = prevNode;
+			prevNode = process(left, level + 1, leftOvers, prevNode);
+			
+			StateNode rightPrev = prevNode;
+			StateNode returnToNode = null;
+			if ("|".equals(orderOp)) {
+				leftOvers.put(level + 1, new HashMap.SimpleEntry<String,StateNode>(orderOp, prevNode));
+				prevNode = process(right, level + 1, leftOvers, leftPrev);
+			} else if ((returnToNode = isOr(level, leftOvers)) != null) {
+				prevNode = process(right, level + 1, leftOvers, returnToNode);
+			} else {
+				prevNode = process(right, level + 1, leftOvers, prevNode);
+			}
+			
+			if (rightElOp != null && ("+".equals(rightElOp) || "*".equals(rightElOp))) {
+				List<TransitionEdge> outgoingEdges = getOutgoingEdge(rightPrev, prevNode);
+				for (TransitionEdge outgoingEdge : outgoingEdges) {
+					addRegularEdge(outgoingEdge.getLabel(), prevNode, outgoingEdge.to(), true);
+				}
+			}
+			
+			if (leftElOp != null && ("?".equals(leftElOp) || "*".equals(leftElOp))) {
+				addRegularEdge(right, leftPrev, prevNode, true);
+			}
+			
 		} else if ((left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
 			prevNode = process(left, level + 1, leftOvers, prevNode);
 			

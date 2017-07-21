@@ -140,7 +140,6 @@ public class XSLBasedGenerator {
 			}
 			//Add Provider's jar file 
 			if(!providerName.equals("JCA")) {
-				int index=0;
 			if (!"src/main/resources/AdditionalResources/Provider".isEmpty()) {
 				final File[] members = Utils.getResourceFromWithin("src/main/resources/AdditionalResources/Provider").listFiles();
 				if (members == null) {
@@ -161,7 +160,7 @@ public class XSLBasedGenerator {
 					final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.outerFileSeparator));
 				
 					if (".jar".equals(cutPath.substring(cutPath.indexOf(".")))) {
-						if (!this.project.addJar(Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + members[index].getName())) {
+						if (!this.project.addJar(Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + members[i].getName())) {
 							return false; } 
 						  }
 					i+=members.length;

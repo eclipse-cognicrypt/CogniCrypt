@@ -88,11 +88,12 @@ public class StateMachineGraphBuilder {
 				addRegularEdge(left, prevNode, prevNode, true);
 			}
 			
-			if (rightElOp != null && ("?".equals(rightElOp) || "*".equals(rightElOp))) {
-				leftOvers.put(level - 1, new HashMap.SimpleEntry<String,StateNode>(rightElOp, prevNode));
-			}
 			StateNode rightPrev = prevNode;
 			StateNode returnToNode = null;
+			if (rightElOp != null && ("?".equals(rightElOp) || "*".equals(rightElOp))) {
+//				leftOvers.put(level - 1, new HashMap.SimpleEntry<String,StateNode>(rightElOp, prevNode));
+				setAcceptingState(rightPrev);
+			}
 			if ("|".equals(orderOp)) {
 //				leftOvers.put(level + 1, new HashMap.SimpleEntry<String,StateNode>(orderOp, prevNode));
 				setAcceptingState(prevNode);
@@ -104,15 +105,24 @@ public class StateMachineGraphBuilder {
 			}
 			
 			if (rightElOp != null && ("+".equals(rightElOp) || "*".equals(rightElOp))) {
-				List<TransitionEdge> outgoingEdges = getOutgoingEdge(rightPrev, prevNode);
+				List<TransitionEdge> outgoingEdges = getOutgoingEdge(rightPrev, null);
 				for (TransitionEdge outgoingEdge : outgoingEdges) {
 					addRegularEdge(outgoingEdge.getLabel(), prevNode, outgoingEdge.to(), true);
 				}
 			}
 			
 			if (leftElOp != null && ("?".equals(leftElOp) || "*".equals(leftElOp))) {
-				addRegularEdge(right, leftPrev, prevNode, true);
+				setAcceptingState(leftPrev);
+				List<TransitionEdge> outgoingEdges = getOutgoingEdge(rightPrev, null);
+				for (TransitionEdge outgoingEdge : outgoingEdges) {
+					setAcceptingState(outgoingEdge.to());
+					addRegularEdge(outgoingEdge.getLabel(), leftPrev, outgoingEdge.to(), true);
+				}
 			}
+			if (rightElOp != null && ("?".equals(rightElOp) || "*".equals(rightElOp))) {
+				setAcceptingState(rightPrev);
+			}
+			
 		} else if (!(left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
 			StateNode leftPrev = null;
 			leftPrev = prevNode;
@@ -147,16 +157,17 @@ public class StateMachineGraphBuilder {
 		}
 	}
 
-	private List<TransitionEdge> getOutgoingEdge(StateNode rightPrev, StateNode notTo) {
+	private List<TransitionEdge> getOutgoingEdge(StateNode curNode, StateNode notTo) {
 		List<TransitionEdge> outgoingEdges = new ArrayList<TransitionEdge>();
 		for (TransitionEdge comp : result.getAllTransitions()) {
-			if (comp.getLeft().equals(rightPrev) && !(comp.getRight().equals(rightPrev) || comp.getRight().equals(notTo))) {
+			if (comp.getLeft().equals(curNode) && !(comp.getRight().equals(curNode) || comp.getRight().equals(notTo))) {
 				outgoingEdges.add(comp);
 			}
 		}
 		return outgoingEdges;
 	}
 
+	
 	private StateNode process(Expression curLevel, int level, Multimap<Integer, Map.Entry<String, StateNode>> leftOvers, StateNode prevNode) {
 		Expression left = curLevel.getLeft();
 		Expression right = curLevel.getRight();

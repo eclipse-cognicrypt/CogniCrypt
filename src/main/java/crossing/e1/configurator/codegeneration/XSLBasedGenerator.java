@@ -163,7 +163,7 @@ public class XSLBasedGenerator {
 						if (!this.project.addJar(Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + members[i].getName())) {
 							return false; } 
 						  }
-					i+=members.length;
+					        i+=members.length;
 					  }
 				  }
 			   }

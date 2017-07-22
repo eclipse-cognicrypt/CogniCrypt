@@ -258,7 +258,7 @@ public class CryptSLModelReader {
 		if (condMethods.size() != 0) {
 			for (TransitionEdge methTrans : smg.getAllTransitions()) {
 				final List<CryptSLMethod> transLabel = methTrans.getLabel();
-				if (transLabel.size() > 0 && transLabel.equals(condMethods)) {
+				if (transLabel.size() > 0 && (transLabel.equals(condMethods) || (condMethods.size() == 1 && transLabel.contains(condMethods.get(0))))) {
 					predGens.add(methTrans.getRight());
 				}
 			}

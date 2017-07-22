@@ -35,12 +35,17 @@ CBC : Mode
 OFB : Mode
 GCM : Mode
 
+//enum Provider
+abstract Provider : Enum
+JCA : Provider
+
 abstract Algorithm
 	name -> string
 	description -> string
 	security -> Security
 	performance -> Performance
-	classPerformance -> Performance 
+	classPerformance -> Performance
+	provider -> Provider
 
 
 abstract Cipher : Algorithm

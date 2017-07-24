@@ -68,18 +68,24 @@ public class StateMachineGraphBuilder {
 				addRegularEdge(right, leftPrev, prevNode, true);
 			}
 		} else if ((left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
+			StateNode leftPrev = prevNode;
 			prevNode = process(left, level + 1, leftOvers, prevNode);
 			StateNode rightPrev = prevNode;
 			prevNode = addRegularEdge(right, prevNode, null);
 			if ("*".equals(rightElOp) || "?".equals(rightElOp)) {
 				setAcceptingState(rightPrev);
+				if ("?".equals(left.getRight().getElementop()) || "*".equals(left.getRight().getElementop())) {
+					List<TransitionEdge> outgoingEdges = getOutgoingEdge(leftPrev, null);
+					for (TransitionEdge outgoingEdge : outgoingEdges) {
+						setAcceptingState(outgoingEdge.to());
+					}
+				}
 			} 
 			StateNode returnToNode = null;
 			if ((returnToNode = isQM(level, leftOvers)) != null) {
 				addRegularEdge(right, returnToNode, prevNode, true);
 			}	
 		} else if (!(left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
-//			process(curLevel, level, leftOvers, prevNode);
 			StateNode leftPrev = null;
 			leftPrev = prevNode;
 			prevNode = addRegularEdge(left, prevNode, null);
@@ -91,11 +97,9 @@ public class StateMachineGraphBuilder {
 			StateNode rightPrev = prevNode;
 			StateNode returnToNode = null;
 			if (rightElOp != null && ("?".equals(rightElOp) || "*".equals(rightElOp))) {
-//				leftOvers.put(level - 1, new HashMap.SimpleEntry<String,StateNode>(rightElOp, prevNode));
 				setAcceptingState(rightPrev);
 			}
 			if ("|".equals(orderOp)) {
-//				leftOvers.put(level + 1, new HashMap.SimpleEntry<String,StateNode>(orderOp, prevNode));
 				setAcceptingState(prevNode);
 				prevNode = process(right, level + 1, leftOvers, leftPrev);
 			} else if ((returnToNode = isOr(level, leftOvers)) != null) {

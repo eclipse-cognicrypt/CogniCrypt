@@ -95,11 +95,7 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public boolean canFinish() {
-		if(getContainer().getCurrentPage().getName().equals(Labels.SECOND_PAGE))
-			return true;
-		else
-			return false;
-		
+			return (getContainer().getCurrentPage().getName().equals(Labels.ALGORITHM_SELECTION_PAGE));	
 	}
 
 	private boolean checkifInUpdateRound() {

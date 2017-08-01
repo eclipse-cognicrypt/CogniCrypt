@@ -57,7 +57,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 	private Task selectedTask;
 
 	public InstanceListPage(final InstanceGenerator inst, final Task selectedTask) {
-		super(Labels.SECOND_PAGE);
+		super(Labels.ALGORITHM_SELECTION_PAGE);
 		setTitle("Possible solutions for task: " + selectedTask.getDescription());
 		setDescription(Labels.DESCRIPTION_INSTANCE_LIST_PAGE);
 		this.instanceGenerator = inst;

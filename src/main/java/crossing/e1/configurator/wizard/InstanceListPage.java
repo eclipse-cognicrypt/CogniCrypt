@@ -189,13 +189,16 @@ public class InstanceListPage extends WizardPage implements Labels {
 	// @Ahmed 
 		public String getProviderFromInstance(String instance)
 		{
+			String provider="";
 			String[] inst=instance.split(System.getProperty("line.separator"));
 			int index=0;
 			for(int i=0; i<inst.length;i++)
 			if(inst[i].contains("Provider"))
-				index=i;
+			{	index=i;
+		
 			inst=inst[index].split(": ");
-			return inst[1];
+			provider= inst[1]; }
+			return instance;
 		}
 		
 		public void setProvider(String provider)

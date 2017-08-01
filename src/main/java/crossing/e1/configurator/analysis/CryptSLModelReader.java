@@ -66,6 +66,7 @@ import de.darmstadt.tu.crossing.cryptSL.Constraint;
 import de.darmstadt.tu.crossing.cryptSL.DestroysBlock;
 import de.darmstadt.tu.crossing.cryptSL.Domainmodel;
 import de.darmstadt.tu.crossing.cryptSL.EnsuresBlock;
+import de.darmstadt.tu.crossing.cryptSL.Event;
 import de.darmstadt.tu.crossing.cryptSL.Expression;
 import de.darmstadt.tu.crossing.cryptSL.ForbMethod;
 import de.darmstadt.tu.crossing.cryptSL.ForbiddenBlock;
@@ -73,6 +74,8 @@ import de.darmstadt.tu.crossing.cryptSL.Literal;
 import de.darmstadt.tu.crossing.cryptSL.LiteralExpression;
 import de.darmstadt.tu.crossing.cryptSL.ObjectDecl;
 import de.darmstadt.tu.crossing.cryptSL.PreDefinedPredicates;
+import de.darmstadt.tu.crossing.cryptSL.Pred;
+import de.darmstadt.tu.crossing.cryptSL.ReqPred;
 import de.darmstadt.tu.crossing.cryptSL.SuPar;
 import de.darmstadt.tu.crossing.cryptSL.SuParList;
 import de.darmstadt.tu.crossing.cryptSL.SuperType;
@@ -107,7 +110,7 @@ public class CryptSLModelReader {
 		for (IResource res : ResourcesPlugin.getWorkspace().getRoot().getFolder(Path.fromPortableString("/CryptSL Examples/src/de/darmstadt/tu/crossing/")).members()) {
 			final String extension = res.getFileExtension();
 			final String fileName = res.getName();
-			if (!"cryptsl".equals(extension) || exceptions.contains(fileName)) {
+			if (!"cryptsl".equals(extension) || exceptions.contains(fileName)) { //!fileName.contains("Cipher.")) {
 				continue;
 			}
 			Resource resource = resourceSet.getResource(URI.createPlatformResourceURI("/CryptSL Examples/src/de/darmstadt/tu/crossing/" + fileName, true), true);
@@ -126,21 +129,23 @@ public class CryptSLModelReader {
 			smg = buildStateMachineGraph(dm.getOrder());
 			ForbiddenBlock forbEvent = dm.getForbEvent();
 			forbiddenMethods = (forbEvent != null) ? getForbiddenMethods(forbEvent.getForb_methods()) : Lists.newArrayList();
-			
+
 			List<ISLConstraint> constraints = (dm.getReqConstraints() != null) ? buildUpConstraints(dm.getReqConstraints().getReq()) : Lists.newArrayList();
+			constraints.addAll(((dm.getRequire() != null) ? collectRequiredPredicates(dm.getRequire().getPred()) : Lists.newArrayList()));
 			List<Entry<String, String>> objects = getObjects(dm.getUsage());
-			
+
 			List<CryptSLPredicate> actPreds = Lists.newArrayList();
-			
+
 			for (CryptSLPredicate pred : pre_preds.keySet()) {
 				SuperType cond = pre_preds.get(pred);
 				if (cond == null) {
 					actPreds.add(pred);
 				} else {
-					actPreds.add(new CryptSLCondPredicate(pred.getBaseObject(), pred.getPredName(), pred.getParameters(), pred.isNegated(), getStatesForMethods(CryptSLReaderUtils.resolveAggregateToMethodeNames(cond))));
+					actPreds.add(new CryptSLCondPredicate(pred.getBaseObject(), pred.getPredName(), pred.getParameters(), pred
+						.isNegated(), getStatesForMethods(CryptSLReaderUtils.resolveAggregateToMethodeNames(cond))));
 				}
 			}
-			final String className = fileName.substring(0, fileName.indexOf(extension)-1);
+			final String className = fileName.substring(0, fileName.indexOf(extension) - 1);
 			CryptSLRule rule = new CryptSLRule(className, objects, forbiddenMethods, smg, constraints, actPreds);
 			System.out.println("===========================================");
 			System.out.println("");
@@ -151,11 +156,39 @@ public class CryptSLModelReader {
 
 	}
 
+	private List<ISLConstraint> collectRequiredPredicates(EList<ReqPred> requiredPreds) {
+		List<ISLConstraint> preds = new ArrayList<ISLConstraint>();
+		for (ReqPred pred : requiredPreds) {
+			final Constraint conditional = pred.getCons();
+			if (conditional != null) {
+				System.out.println("This happened!");
+			}
+			List<ICryptSLPredicateParameter> variables = new ArrayList<ICryptSLPredicateParameter>();
+			if (pred.getPred().getParList() != null) {
+				for (SuPar var : pred.getPred().getParList().getParameters()) {
+					if (var.getVal() != null) {
+						String name = ((LiteralExpression) var.getVal().getLit().getName()).getValue().getName();
+						if (name == null) {
+							name = "this";
+						}
+						variables.add(new CryptSLObject(name));
+					} else {
+						variables.add(new CryptSLObject("_"));
+					}
+				}
+			}
+
+			preds.add(new CryptSLPredicate(null, pred.getPred().getPredName(), variables, ("true".equals(pred.getNot()) ? true : false)));
+		}
+		return preds;
+	}
+
 	private Map<? extends CryptSLPredicate, ? extends SuperType> getKills(EList<Constraint> eList) {
 		Map<CryptSLPredicate, SuperType> preds = new HashMap<CryptSLPredicate, SuperType>();
-		for (Constraint pred : eList) {
+		for (Constraint cons : eList) {
+			Pred pred = (Pred) cons;
 			List<ICryptSLPredicateParameter> variables = new ArrayList<ICryptSLPredicateParameter>();
-			
+
 			if (pred.getParList() != null) {
 				for (SuPar var : pred.getParList().getParameters()) {
 					if (var.getVal() != null) {
@@ -176,18 +209,18 @@ public class CryptSLModelReader {
 			} else {
 				preds.put(new CryptSLPredicate(null, meth, variables, true), cond);
 			}
-			
+
 		}
 		return preds;
 	}
 
 	private List<Entry<String, String>> getObjects(UseBlock usage) {
 		List<Entry<String, String>> objects = new ArrayList<>();
-		
+
 		for (ObjectDecl obj : usage.getObjects()) {
 			objects.add(new SimpleEntry<String, String>(obj.getObjectType().getIdentifier(), obj.getObjectName().getName()));
 		}
-		
+
 		return objects;
 	}
 
@@ -213,9 +246,10 @@ public class CryptSLModelReader {
 
 	private Map<CryptSLPredicate, SuperType> getPredicates(List<Constraint> predList) {
 		Map<CryptSLPredicate, SuperType> preds = new HashMap<CryptSLPredicate, SuperType>();
-		for (Constraint pred : predList) {
+		for (Constraint cons : predList) {
+			Pred pred = (Pred) cons;
 			List<ICryptSLPredicateParameter> variables = new ArrayList<ICryptSLPredicateParameter>();
-			
+
 			if (pred.getParList() != null) {
 				boolean firstPar = true;
 				for (SuPar var : pred.getParList().getParameters()) {
@@ -237,18 +271,18 @@ public class CryptSLModelReader {
 			}
 			String meth = pred.getPredName();
 			SuperType cond = pred.getLabelCond();
-//			CryptSLObject bobj = null;
-//			if (pred.getRet().getVal() == null) {
-//				bobj = new CryptSLObject("this");
-//			} else {
-//				bobj = new CryptSLObject(((LiteralExpression) pred.getRet().getVal().getLit().getName()).getValue().getName());
-//			}
+			//			CryptSLObject bobj = null;
+			//			if (pred.getRet().getVal() == null) {
+			//				bobj = new CryptSLObject("this");
+			//			} else {
+			//				bobj = new CryptSLObject(((LiteralExpression) pred.getRet().getVal().getLit().getName()).getValue().getName());
+			//			}
 			if (cond == null) {
 				preds.put(new CryptSLPredicate(null, meth, variables, false), null);
 			} else {
 				preds.put(new CryptSLPredicate(null, meth, variables, false), cond);
 			}
-			
+
 		}
 		return preds;
 	}
@@ -276,14 +310,14 @@ public class CryptSLModelReader {
 		}
 		return slCons;
 	}
-	
+
 	private String filterQuotes(String dirty) {
 		return CharMatcher.anyOf("\"").removeFrom(dirty);
 	}
 
 	private ISLConstraint getConstraint(Constraint cons) {
 		ISLConstraint slci = null;
-		
+
 		if (cons instanceof ArithmeticExpression) {
 			ArithmeticExpression ae = (ArithmeticExpression) cons;
 			ae.getOperator().toString();
@@ -296,27 +330,28 @@ public class CryptSLModelReader {
 					parList.add(filterQuotes(a.getVal()));
 				}
 			}
-			String pred = lit.getCons().getPredName();
-			if (pred != null) {
+			if (lit.getCons() instanceof PreDefinedPredicates) {
+				String pred = ((PreDefinedPredicates) lit.getCons()).getPredName();
 				switch (pred) {
-					case "callTo" :
+					case "callTo":
 						List<ICryptSLPredicateParameter> methodsToBeCalled = new ArrayList<ICryptSLPredicateParameter>();
-						methodsToBeCalled.addAll(CryptSLReaderUtils.resolveAggregateToMethodeNames((SuperType)((PreDefinedPredicates)lit.getCons()).getObj().get(0)));
+						methodsToBeCalled.addAll(CryptSLReaderUtils.resolveAggregateToMethodeNames((SuperType) ((PreDefinedPredicates) lit.getCons()).getObj().get(0)));
 						slci = new CryptSLPredicate(null, pred, methodsToBeCalled, false);
 						break;
-					case "noCallTo" :
+					case "noCallTo":
 						List<ICryptSLPredicateParameter> methodsNotToBeCalled = new ArrayList<ICryptSLPredicateParameter>();
-						List<CryptSLMethod> resolvedMethodNames = CryptSLReaderUtils.resolveAggregateToMethodeNames((Aggregate)((PreDefinedPredicates)lit.getCons()).getObj().get(0));
-						for (CryptSLMethod csm :resolvedMethodNames ) {
+						List<CryptSLMethod> resolvedMethodNames = CryptSLReaderUtils
+							.resolveAggregateToMethodeNames((Aggregate) ((PreDefinedPredicates) lit.getCons()).getObj().get(0));
+						for (CryptSLMethod csm : resolvedMethodNames) {
 							forbiddenMethods.add(new CryptSLForbiddenMethod(csm, true));
 							methodsNotToBeCalled.add(csm);
 						}
 						slci = new CryptSLPredicate(null, pred, methodsNotToBeCalled, false);
 						break;
-					case "neverTypeOf" :
+					case "neverTypeOf":
 						List<ICryptSLPredicateParameter> varNType = new ArrayList<ICryptSLPredicateParameter>();
-						varNType.add(new CryptSLObject(((de.darmstadt.tu.crossing.cryptSL.Object)((PreDefinedPredicates)lit.getCons()).getObj().get(0)).getName()));
-						varNType.add(new CryptSLObject(((PreDefinedPredicates)lit.getCons()).getType().getQualifiedName()));
+						varNType.add(new CryptSLObject(((de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0)).getName()));
+						varNType.add(new CryptSLObject(((PreDefinedPredicates) lit.getCons()).getType().getQualifiedName()));
 						slci = new CryptSLPredicate(null, pred, varNType, false);
 						break;
 					default:
@@ -326,7 +361,8 @@ public class CryptSLModelReader {
 				String part = lit.getCons().getPart();
 				if (part != null) {
 					LiteralExpression name = (LiteralExpression) lit.getCons().getLit().getName();
-					CryptSLObject variable = new CryptSLObject(name.getValue().getName(), new CryptSLSplitter(Integer.parseInt(lit.getCons().getInd()), filterQuotes(lit.getCons().getSplit())));
+					CryptSLObject variable = new CryptSLObject(name.getValue()
+						.getName(), new CryptSLSplitter(Integer.parseInt(lit.getCons().getInd()), filterQuotes(lit.getCons().getSplit())));
 					slci = new CryptSLValueConstraint(variable, parList);
 				} else {
 					LiteralExpression name = (LiteralExpression) lit.getCons().getName();
@@ -358,19 +394,18 @@ public class CryptSLModelReader {
 			}
 			CryptSLArithmeticConstraint left;
 			CryptSLArithmeticConstraint right;
-			
-			
+
 			Constraint leftExpression = comp.getLeftExpression();
 			if (leftExpression instanceof LiteralExpression) {
 				left = convertLiteralToArithmetic(leftExpression);
 			} else {
 				left = (CryptSLArithmeticConstraint) leftExpression;
 			}
-			
+
 			Constraint rightExpression = comp.getRightExpression();
 			if (rightExpression instanceof LiteralExpression) {
 				right = convertLiteralToArithmetic(rightExpression);
-			}  else {
+			} else {
 				ArithmeticExpression ar = (ArithmeticExpression) rightExpression;
 				String leftValue = getValueOfLiteral(ar.getLeftExpression());
 				String rightValue = getValueOfLiteral(ar.getRightExpression());
@@ -382,21 +417,21 @@ public class CryptSLModelReader {
 				} else {
 					operator = ArithOp.n;
 				}
-				
+
 				right = new CryptSLArithmeticConstraint(leftValue, rightValue, operator);
 			}
-			slci = new CryptSLComparisonConstraint(left, right,	op);
+			slci = new CryptSLComparisonConstraint(left, right, op);
 		} else if (cons instanceof UnaryPreExpression) {
 			UnaryPreExpression un = (UnaryPreExpression) cons;
 			List<ICryptSLPredicateParameter> vars = new ArrayList<ICryptSLPredicateParameter>();
-			Constraint innerPredicate = un.getEnclosedExpression();
+			Pred innerPredicate = (Pred) un.getEnclosedExpression();
 			if (innerPredicate.getParList() != null) {
 				for (SuPar sup : innerPredicate.getParList().getParameters()) {
 					if (sup.getVal() == null) {
 						vars.add(new CryptSLObject("_"));
 					} else {
 						LiteralExpression lit = sup.getVal();
-						
+
 						String variable = filterQuotes(((LiteralExpression) lit.getLit().getName()).getValue().getName());
 						String part = sup.getVal().getPart();
 						if (part != null) {
@@ -408,18 +443,18 @@ public class CryptSLModelReader {
 				}
 			}
 			slci = new CryptSLPredicate(null, innerPredicate.getPredName(), vars, true);
-		} else if (cons instanceof Constraint) {
-			if (cons.getPredName() != null && !cons.getPredName().isEmpty()) {
+		} else if (cons instanceof Pred) {
+			if (((Pred) cons).getPredName() != null && !((Pred) cons).getPredName().isEmpty()) {
 				List<ICryptSLPredicateParameter> vars = new ArrayList<ICryptSLPredicateParameter>();
-				
-				final SuParList parList = cons.getParList();
+
+				final SuParList parList = ((Pred) cons).getParList();
 				if (parList != null) {
 					for (SuPar sup : parList.getParameters()) {
 						if (sup.getVal() == null) {
 							vars.add(new CryptSLObject("_"));
 						} else {
 							LiteralExpression lit = sup.getVal();
-							
+
 							String variable = filterQuotes(((LiteralExpression) lit.getLit().getName()).getValue().getName());
 							String part = sup.getVal().getPart();
 							if (part != null) {
@@ -430,36 +465,34 @@ public class CryptSLModelReader {
 						}
 					}
 				}
-//				CryptSLObject bobj = null;
-//				if (cons.getRet().getVal() == null) {
-//					bobj = new CryptSLObject("this");
-//				} else {
-//					bobj = new CryptSLObject(((LiteralExpression) cons.getRet().getVal().getLit().getName()).getValue().getName());
-//				}
-				slci = new CryptSLPredicate(null, cons.getPredName(), vars, false);
-			} else {
-				LogOps op = null;
-				switch (cons.getOperator().toString()) {
-					case "&&":
-						op = LogOps.and;
-						break;
-					case "||":
-						op = LogOps.or;
-						break;
-					case "=>":
-						op = LogOps.implies;
-						break;
-					case "<=>":
-						op = LogOps.eq;
-						break;
-					default:
-						op = LogOps.and;
-				}
-				slci = new CryptSLConstraint(
-					getConstraint(cons.getLeftExpression()), 
-					getConstraint(cons.getRightExpression()), 
-					op);
+				//				CryptSLObject bobj = null;
+				//				if (cons.getRet().getVal() == null) {
+				//					bobj = new CryptSLObject("this");
+				//				} else {
+				//					bobj = new CryptSLObject(((LiteralExpression) cons.getRet().getVal().getLit().getName()).getValue().getName());
+				//				}
+				slci = new CryptSLPredicate(null, ((Pred) cons).getPredName(), vars, false);
 			}
+		} else if (cons instanceof Constraint) {
+			LogOps op = null;
+			switch (cons.getOperator().toString()) {
+				case "&&":
+					op = LogOps.and;
+					break;
+				case "||":
+					op = LogOps.or;
+					break;
+				case "=>":
+					op = LogOps.implies;
+					break;
+				case "<=>":
+					op = LogOps.eq;
+					break;
+				default:
+					op = LogOps.and;
+			}
+			slci = new CryptSLConstraint(getConstraint(cons.getLeftExpression()), getConstraint(cons.getRightExpression()), op);
+
 		}
 
 		return slci;
@@ -491,32 +524,33 @@ public class CryptSLModelReader {
 			JvmExecutable meth = fm.getJavaMeth();
 			List<Entry<String, String>> pars = new ArrayList<Entry<String, String>>();
 			for (JvmFormalParameter par : meth.getParameters()) {
-				pars.add(new SimpleEntry<String,String>(par.getParameterType().getSimpleName(), par.getSimpleName()));
+				pars.add(new SimpleEntry<String, String>(par.getParameterType().getSimpleName(), par.getSimpleName()));
 			}
-			methodSignatures.add(new CryptSLForbiddenMethod(new CryptSLMethod(meth.getDeclaringType().getIdentifier() + "." + meth.getSimpleName(), pars, null, new SimpleEntry<String, String>("_","AnyType")), false));
+			methodSignatures.add(new CryptSLForbiddenMethod(new CryptSLMethod(meth.getDeclaringType().getIdentifier() + "." + meth
+				.getSimpleName(), pars, null, new SimpleEntry<String, String>("_", "AnyType")), false));
 		}
 		return methodSignatures;
 	}
 
 	private StateMachineGraph buildStateMachineGraph(Expression order) {
 		StateMachineGraphBuilder smgb = new StateMachineGraphBuilder(order);
-		return  smgb.buildSMG();
+		return smgb.buildSMG();
 	}
-	
-//	private void loadModelFromFile(String outputURI) {
-//		ResourceSet resSet = new ResourceSetImpl();
-//		Resource xmiResourceRead = resSet.getResource(URI.createURI(outputURI), true);
-//		xmiResourceRead.getContents().get(0);
-////		Domainmodel dmro = 
-//	}
 
-//	private String storeModelToFile(XtextResourceSet resourceSet, EObject eObject, String className) throws IOException {
-//		//Store the model to path outputURI
-//		String outputURI = "file:///C:/Users/stefank3/Desktop/" + className + ".xmi";
-//		Resource xmiResource = resourceSet.createResource(URI.createURI(outputURI));
-//		xmiResource.getContents().add(eObject);
-//		xmiResource.save(null);
-//		return outputURI;
-//	}
+	//	private void loadModelFromFile(String outputURI) {
+	//		ResourceSet resSet = new ResourceSetImpl();
+	//		Resource xmiResourceRead = resSet.getResource(URI.createURI(outputURI), true);
+	//		xmiResourceRead.getContents().get(0);
+	////		Domainmodel dmro = 
+	//	}
+
+	//	private String storeModelToFile(XtextResourceSet resourceSet, EObject eObject, String className) throws IOException {
+	//		//Store the model to path outputURI
+	//		String outputURI = "file:///C:/Users/stefank3/Desktop/" + className + ".xmi";
+	//		Resource xmiResource = resourceSet.createResource(URI.createURI(outputURI));
+	//		xmiResource.getContents().add(eObject);
+	//		xmiResource.save(null);
+	//		return outputURI;
+	//	}
 
 }

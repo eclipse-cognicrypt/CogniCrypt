@@ -113,6 +113,16 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		this.quest = null;
 	}
 
+	public BeginnerTaskQuestionPage(final Page page, final Task task, final List<Question> allQuestion, final List<String> selectionValues) {
+		super("Display Questions");
+		setTitle("Configuring Selected Task: " + task.getDescription());
+		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
+		this.allQuestion = allQuestion;
+		this.quest = null;
+		this.page = page;
+		this.selectionValues = selectionValues;
+	}
+
 	public BeginnerTaskQuestionPage(final List<Question> allQuestion, final Question quest, final Task task) {
 		super("Display Questions");
 		setTitle("Configuring Selected Task: " + task.getDescription());
@@ -459,6 +469,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				return false;
 			}
 		} else if (!this.selectionValues.equals(other.selectionValues)) {
+			return false;
+		}
+		if (this.page != other.page) {
 			return false;
 		}
 		return true;

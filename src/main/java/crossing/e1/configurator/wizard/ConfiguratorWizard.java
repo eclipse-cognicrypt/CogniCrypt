@@ -110,29 +110,21 @@ public class ConfiguratorWizard extends Wizard {
 		return updateRound;
 	}
 
-	private void createBeginnerPage(final Question curQuestion, final List<Question> allQuestion) {
-		if (curQuestion.getElement().equals(GUIElements.itemselection)) {
-			final List<String> selection = new ArrayList<>();
-			for (final AstConcreteClafer childClafer : this.claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
-				if (childClafer.getSuperClafer().getName().endsWith(curQuestion.getSelectionClafer())) {
-					selection.add(ClaferModelUtils.removeScopePrefix(childClafer.getName()));
-				}
-			}
-			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curQuestion, this.beginnerQuestions.getTask(), selection);
-		} else if (curQuestion.getElement().equals(GUIElements.button)) {
-			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(allQuestion, curQuestion, this.beginnerQuestions.getTask());
-		} else {
-			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curQuestion, this.beginnerQuestions.getTask());
-		}
-	}
-
 	private void createBeginnerPage(final Page curPage, final List<Question> allQuestion) {
+
+		List<String> selection = null;
 		if (curPage.getContent().size() == 1) {
 			final Question curQuestion = curPage.getContent().get(0);
-			createBeginnerPage(curQuestion, allQuestion);
-		} else {
-			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curPage, this.beginnerQuestions.getTask(), null); // what about selection here?
+			if (curQuestion.getElement().equals(GUIElements.itemselection)) {
+				selection = new ArrayList<>();
+				for (final AstConcreteClafer childClafer : this.claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
+					if (childClafer.getSuperClafer().getName().endsWith(curQuestion.getSelectionClafer())) {
+						selection.add(ClaferModelUtils.removeScopePrefix(childClafer.getName()));
+					}
+				}
+			}
 		}
+		this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curPage, this.beginnerQuestions.getTask(), allQuestion, selection);
 	}
 
 	/**
@@ -196,10 +188,11 @@ public class ConfiguratorWizard extends Wizard {
 
 				if (this.beginnerQuestions.hasMorePages()) {
 					final int nextID;
-					if (beginnerTaskQuestionPage.getPageNextID() > -2)
+					if (beginnerTaskQuestionPage.getPageNextID() > -2) {
 						nextID = beginnerTaskQuestionPage.getPageNextID();
-					else
+					} else {
 						nextID = entry.getValue().getNextID();
+					}
 
 					if (nextID > -1) {
 						final Page curPage = this.beginnerQuestions.setPageByID(nextID);

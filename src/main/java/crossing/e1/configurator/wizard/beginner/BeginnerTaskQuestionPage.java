@@ -119,6 +119,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.allQuestion = allQuestion;
 		this.quest = quest;
+		this.page = null;
 	}
 
 	@Override

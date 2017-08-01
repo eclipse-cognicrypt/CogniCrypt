@@ -476,6 +476,14 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		return page.getId();
 	}
 
+	public int getPageNextID() {
+		if (page != null) {
+			return page.getNextID();
+		} else {
+			return -2;
+		}
+	}
+
 	private Composite getPanel(final Composite parent) {
 		final Composite titledPanel = new Composite(parent, SWT.NONE);
 		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 9, SWT.BOLD));

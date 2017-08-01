@@ -39,6 +39,7 @@ import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.Constants.GUIElements;
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.ClaferDependency;
+import crossing.e1.configurator.beginer.question.Page;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.codegeneration.XSLBasedGenerator;
 import crossing.e1.configurator.tasks.Task;
@@ -125,6 +126,15 @@ public class ConfiguratorWizard extends Wizard {
 		}
 	}
 
+	private void createBeginnerPage(final Page curPage, final List<Question> allQuestion) {
+		if (curPage.getContent().size() == 1) {
+			final Question curQuestion = curPage.getContent().get(0);
+			createBeginnerPage(curQuestion, allQuestion);
+		} else {
+			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curPage, this.beginnerQuestions.getTask(), null); // what about selection here?
+		}
+	}
+
 	/**
 	 * This method returns the next page. If current page is task list or any but the last question page, the first/next question page is returned. If the current page is the the
 	 * last question page, the instance list page is returned.
@@ -184,13 +194,18 @@ public class ConfiguratorWizard extends Wizard {
 				}
 				this.constraints.put(entry.getKey(), entry.getValue());
 
-				if (this.beginnerQuestions.hasMoreQuestions()) {
-					final int nextID = entry.getValue().getNextID();
+				if (this.beginnerQuestions.hasMorePages()) {
+					final int nextID;
+					if (beginnerTaskQuestionPage.getPageNextID() > -2)
+						nextID = beginnerTaskQuestionPage.getPageNextID();
+					else
+						nextID = entry.getValue().getNextID();
+
 					if (nextID > -1) {
-						final Question curQuestion = this.beginnerQuestions.setQuestionByID(nextID);
+						final Page curPage = this.beginnerQuestions.setPageByID(nextID);
 						final List<Question> allQuestion = this.beginnerQuestions.getQuestionList();
 
-						createBeginnerPage(curQuestion, allQuestion);
+						createBeginnerPage(curPage, allQuestion);
 						if (checkifInUpdateRound()) {
 							this.beginnerQuestions.previousQuestion();
 						}

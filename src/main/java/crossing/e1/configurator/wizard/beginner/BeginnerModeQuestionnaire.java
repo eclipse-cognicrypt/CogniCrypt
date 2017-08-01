@@ -60,8 +60,8 @@ public class BeginnerModeQuestionnaire {
 		return this.questionList.get(ID);
 	}
 
-	public List<Question> getQutionare() throws NullPointerException {
-		return this.questionList;
+	public List<Page> getQutionare() throws NullPointerException {
+		return this.pageList;
 	}
 
 	public List<Question> getQuestionList() {
@@ -135,9 +135,9 @@ public class BeginnerModeQuestionnaire {
 	 * @param pageID
 	 * @return Return the page that has been set.
 	 */
-	public Question setPageByID(final int pageID) {
+	public Page setPageByID(final int pageID) {
 		this.pageID = pageID;
-		return this.questionList.get(this.pageID);
+		return this.pageList.get(this.pageID);
 	}
 
 	/**

@@ -160,25 +160,26 @@ public class CryptSLModelReader {
 		List<ISLConstraint> preds = new ArrayList<ISLConstraint>();
 		for (ReqPred pred : requiredPreds) {
 			final Constraint conditional = pred.getCons();
-			if (conditional != null) {
-				System.out.println("This happened!");
-			}
 			List<ICryptSLPredicateParameter> variables = new ArrayList<ICryptSLPredicateParameter>();
 			if (pred.getPred().getParList() != null) {
 				for (SuPar var : pred.getPred().getParList().getParameters()) {
 					if (var.getVal() != null) {
-						String name = ((LiteralExpression) var.getVal().getLit().getName()).getValue().getName();
-						if (name == null) {
-							name = "this";
+						LiteralExpression lit = var.getVal();
+
+						String variable = filterQuotes(((LiteralExpression) lit.getLit().getName()).getValue().getName());
+						String part = var.getVal().getPart();
+						if (part != null) {
+							variables.add(new CryptSLObject(variable, new CryptSLSplitter(Integer.parseInt(lit.getInd()), filterQuotes(lit.getSplit()))));
+						} else {
+							variables.add(new CryptSLObject(variable));
 						}
-						variables.add(new CryptSLObject(name));
 					} else {
 						variables.add(new CryptSLObject("_"));
 					}
 				}
 			}
 
-			preds.add(new CryptSLPredicate(null, pred.getPred().getPredName(), variables, ("true".equals(pred.getNot()) ? true : false)));
+			preds.add(new CryptSLPredicate(null, pred.getPred().getPredName(), variables, (pred.getNot() != null ? true : false), getConstraint(conditional)));
 		}
 		return preds;
 	}
@@ -316,6 +317,9 @@ public class CryptSLModelReader {
 	}
 
 	private ISLConstraint getConstraint(Constraint cons) {
+		if (cons == null) {
+			return null;
+		}
 		ISLConstraint slci = null;
 
 		if (cons instanceof ArithmeticExpression) {

@@ -78,7 +78,7 @@ abstract Task
 	
 AES128GCM : SymmetricBlockCipher
 	[name = "AES"]
-	[description = "Advanced Encryption Standard (AES) cipher"]s
+	[description = "Advanced Encryption Standard (AES) cipher"]
 	[keySize = 128]
 	[performance = VeryFast]
 	[security = Medium]
@@ -86,7 +86,7 @@ AES128GCM : SymmetricBlockCipher
 
 AES128CBC : SymmetricBlockCipher
 	[name = "AES"]
-	[description = "Advanced Encryption Standard (AES) cipher"]s
+	[description = "Advanced Encryption Standard (AES) cipher"]
 	[keySize = 128]
 	[performance = VeryFast]
 	[security = Medium]
@@ -94,7 +94,7 @@ AES128CBC : SymmetricBlockCipher
 
 AES256GCM : SymmetricBlockCipher
 	[name = "AES"]
-	[description = "Advanced Encryption Standard (AES) cipher"]s
+	[description = "Advanced Encryption Standard (AES) cipher"]
 	[keySize = 256]
 	[performance = Fast]
 	[security = Strong]
@@ -102,7 +102,7 @@ AES256GCM : SymmetricBlockCipher
 
 AES256CBC : SymmetricBlockCipher
 	[name = "AES"]
-	[description = "Advanced Encryption Standard (AES) cipher"]s
+	[description = "Advanced Encryption Standard (AES) cipher"]
 	[keySize = 256]
 	[performance = Fast]
 	[security = Strong]
@@ -111,7 +111,7 @@ AES256CBC : SymmetricBlockCipher
 
 TDES : SymmetricBlockCipher
 	[name = "3DES"]
-	[description = "Triple Data Encryption Algorithm Encrypt-Decrypt-Encrypt mode"]s
+	[description = "Triple Data Encryption Algorithm Encrypt-Decrypt-Encrypt mode"]
 	[keySize = 168]
 	[performance = VeryFast]
 	[security = Weak]
@@ -120,14 +120,14 @@ TDES : SymmetricBlockCipher
 
 RC4128 : StreamCipher
 	[name = "RC4"]
-	[description = "RC4 (Rivest Cipher 4)"]s
+	[description = "RC4 (Rivest Cipher 4)"]
 	[keySize = 128]
 	[performance = VeryFast]
 	[security = Broken]
 
 RC440 : StreamCipher
 	[name = "RC4"]
-	[description = "RC4 (Rivest Cipher 4)"]s
+	[description = "RC4 (Rivest Cipher 4)"]
 	[keySize = 40]
 	[performance = VeryFast]
 	[security = Broken]

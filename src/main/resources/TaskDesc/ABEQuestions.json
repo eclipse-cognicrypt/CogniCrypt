@@ -1,0 +1,42 @@
+[
+		{
+			"id" : "0",
+			"questionText":"Which policy would you like to implement?",
+			"answers":[
+				{"value":"Ciphertext Index Policy",
+				"claferDependencies":[
+				{"algorithm": "abe", "operand":"keySize","value":"128","operator":">"}
+				],"nextID" : "1" 
+				},
+				{"value":"Key Index Policy",
+				"claferDependencies":[
+				{"algorithm": "abe", "operand":"keySize","value":"128","operator":">="}
+				],
+			    "defaultAnswer": true, "nextID" : "1"}]				
+		},
+		{
+			"id": "1",
+			"element" : "text", 
+			"questionText":"Please specify the attributes separated by a semicolon.",
+			"answers":[
+				{"value":"    ",
+				"codeDependencies":[
+				{"option":"attributes","value":""}
+				],
+				"defaultAnswer": true, "nextID": "2"}
+			]
+		},
+			
+		{
+			"id": "2",
+			"element" : "text",
+			"questionText":"Please specify the policy.",
+			"answers":[
+				{"value":"    ",
+				"codeDependencies":[
+				{"option":"policy","value":""}
+				],
+				"defaultAnswer": true, "nextID": "-1"}
+			]
+		}
+]

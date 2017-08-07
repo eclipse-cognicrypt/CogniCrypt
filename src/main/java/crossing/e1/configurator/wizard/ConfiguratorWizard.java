@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -43,7 +44,6 @@ import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.codegeneration.XSLBasedGenerator;
 import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.FileHelper;
-import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.configurator.utilities.Utils;
 import crossing.e1.configurator.utilities.XMLParser;
 import crossing.e1.configurator.wizard.advanced.AdvancedUserValueSelectionPage;
@@ -95,7 +95,7 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public boolean canFinish() {
-			return (getContainer().getCurrentPage().getName().equals(Labels.ALGORITHM_SELECTION_PAGE));	
+		return this.instanceListPage != null && this.instanceListPage.isPageComplete();
 	}
 
 	private boolean checkifInUpdateRound() {
@@ -110,7 +110,7 @@ public class ConfiguratorWizard extends Wizard {
 		return updateRound;
 	}
 
-	private void createBeginnerPage(final Question curQuestion, final List<Question> allQuestion) {
+	private void createBeginnerPage(final Question curQuestion) {
 		if (curQuestion.getElement().equals(GUIElements.itemselection)) {
 			final List<String> selection = new ArrayList<>();
 			for (final AstConcreteClafer childClafer : this.claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
@@ -119,8 +119,6 @@ public class ConfiguratorWizard extends Wizard {
 				}
 			}
 			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curQuestion, this.beginnerQuestions.getTask(), selection);
-		} else if (curQuestion.getElement().equals(GUIElements.button)) {
-			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(allQuestion, curQuestion, this.beginnerQuestions.getTask());
 		} else {
 			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curQuestion, this.beginnerQuestions.getTask());
 		}
@@ -173,14 +171,13 @@ public class ConfiguratorWizard extends Wizard {
 					handleItemSelection(entry);
 				}
 				this.constraints.put(entry.getKey(), entry.getValue());
-
+				
+				
 				if (this.beginnerQuestions.hasMoreQuestions()) {
 					final int nextID = entry.getValue().getNextID();
 					if (nextID > -1) {
 						final Question curQuestion = this.beginnerQuestions.setQuestionByID(nextID);
-						final List<Question> allQuestion = this.beginnerQuestions.getQuestionList();
-
-						createBeginnerPage(curQuestion, allQuestion);
+						createBeginnerPage(curQuestion);
 						if (checkifInUpdateRound()) {
 							this.beginnerQuestions.previousQuestion();
 						}

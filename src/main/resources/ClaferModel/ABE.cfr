@@ -1,0 +1,25 @@
+abstract Algorithm
+	name -> string
+	description -> string
+
+abstract Cipher : Algorithm 
+
+abstract AttributeBasedCipher : Cipher
+
+ABECipherTextPolicy : Cipher
+	[name = "Cipher Text Policy"]
+	[description = "Cipher Text Policy"]
+
+ABEKeyIndexPolicy : Cipher
+	[name = "Key Index Policy"]
+	[description = "Key Index Policy"]  
+
+abstract Task 
+	description -> string
+
+ABE : Task
+	[description = "Attribute-Based Encryption"]
+	policy -> Cipher
+	[policy.name = "Cipher Text Policy"]
+	keyPolicy -> Cipher
+	[keyPolicy.name = "Key Index Policy"]

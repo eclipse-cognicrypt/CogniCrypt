@@ -1,16 +1,16 @@
 [
 		{
 			"id" : "0",
-			"questionText":"Which policy would you like to implement?",
+			"questionText":"Would you like to implement the policy on CipherText or KeyIndex?",
 			"answers":[
 				{"value":"Ciphertext Index Policy",
 				"claferDependencies":[
-				{"algorithm": "abe", "operand":"keySize","value":"128","operator":">"}
+				{"algorithm": "abe", "value":"CiphertextIndexPolicy","operator":"="}
 				],"nextID" : "1" 
 				},
 				{"value":"Key Index Policy",
 				"claferDependencies":[
-				{"algorithm": "abe", "operand":"keySize","value":"128","operator":">="}
+				{"algorithm": "abe", "value":"KeyIndexPolicy","operator":"="}
 				],
 			    "defaultAnswer": true, "nextID" : "1"}]				
 		},
@@ -30,7 +30,7 @@
 		{
 			"id": "2",
 			"element" : "text",
-			"questionText":"Please specify the policy.",
+			"questionText":"Please specify the boolean policy over the attributes.",
 			"answers":[
 				{"value":"    ",
 				"codeDependencies":[

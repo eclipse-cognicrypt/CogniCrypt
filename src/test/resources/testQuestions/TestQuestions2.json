@@ -1,28 +1,41 @@
-[
-		{
-			"questionText":"Is this the second test question?",
-			"answers":[
-				{"value":"Yes.",
-				"claferDependencies":[{}],"nextID" : "-1" 
-				},
-				{"value":"No.",
-				"claferDependencies":[
-				{"algorithm": "cipher", "operand":"keySize","value":"128","operator":">="}
-				],
-				"defaultAnswer": true, "nextID" : "-1"}
-			]
-		},
-		{
-			"questionText":"Is this the third test question?",
-			"answers":[
-				{"value":"Yes.",
-				"claferDependencies":[{}],"nextID" : "-1" 
-				},
-				{"value":"No.",
-				"claferDependencies":[
-				{"algorithm": "cipher", "operand":"keySize","value":"128","operator":">="}
-				],
-				"defaultAnswer": true, "nextID" : "-1"}
-			]
-		}
+[{
+    "questionText": "Is this the second test question?",
+    "answers": [{
+        "value": "Yes.",
+        "claferDependencies": [{}],
+        "nextID": "-1"
+      },
+      {
+        "value": "No.",
+        "claferDependencies": [{
+          "algorithm": "cipher",
+          "operand": "keySize",
+          "value": "128",
+          "operator": ">="
+        }],
+        "defaultAnswer": true,
+        "nextID": "-1"
+      }
+    ]
+  },
+  {
+    "questionText": "Is this the third test question?",
+    "answers": [{
+        "value": "Yes.",
+        "claferDependencies": [{}],
+        "nextID": "-1"
+      },
+      {
+        "value": "No.",
+        "claferDependencies": [{
+          "algorithm": "cipher",
+          "operand": "keySize",
+          "value": "128",
+          "operator": ">="
+        }],
+        "defaultAnswer": true,
+        "nextID": "-1"
+      }
+    ]
+  }
 ]

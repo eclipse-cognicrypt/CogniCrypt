@@ -1,17 +1,25 @@
-[
-		{
-			"id" : "0",
-			"questionText":"Is this the first test question?",
-			"answers":[
-				{"value":"Yes.",
-				"claferDependencies":[
-				{"algorithm": "cipher", "operand":"keySize","value":"128","operator":">"}
-				],"nextID" : "-1" 
-				},
-				{"value":"No.",
-				"claferDependencies":[
-				{"algorithm": "cipher", "operand":"keySize","value":"128","operator":">="}
-				], "nextID" : "-1"}
-			]
-		}
-]
+[{
+  "id": "0",
+  "questionText": "Is this the first test question?",
+  "answers": [{
+      "value": "Yes.",
+      "claferDependencies": [{
+        "algorithm": "cipher",
+        "operand": "keySize",
+        "value": "128",
+        "operator": ">"
+      }],
+      "nextID": "-1"
+    },
+    {
+      "value": "No.",
+      "claferDependencies": [{
+        "algorithm": "cipher",
+        "operand": "keySize",
+        "value": "128",
+        "operator": ">="
+      }],
+      "nextID": "-1"
+    }
+  ]
+}]

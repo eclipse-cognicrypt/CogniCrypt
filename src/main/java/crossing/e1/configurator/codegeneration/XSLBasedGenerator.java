@@ -140,7 +140,7 @@ public class XSLBasedGenerator {
 			}
 			//Add Provider's jar file 
 			if(!providerName.equals("JCA")) {
-			if (!"src/main/resources/AdditionalResources/Provider".isEmpty()) {
+			 
 				final File[] members = Utils.getResourceFromWithin("src/main/resources/AdditionalResources/Provider").listFiles();
 				if (members == null) {
 					Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);
@@ -161,12 +161,13 @@ public class XSLBasedGenerator {
 				
 					if (".jar".equals(cutPath.substring(cutPath.indexOf(".")))) {
 						if (!this.project.addJar(Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + members[i].getName())) {
-							return false; } 
-						  }
-					        i+=members.length;
+							return false; 
+						} 
+						  } 
+					        i+=members.length; 
 					  }
 				  }
-			   }
+			   
 			}	
 			
 			

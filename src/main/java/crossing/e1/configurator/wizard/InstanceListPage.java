@@ -185,31 +185,28 @@ public class InstanceListPage extends WizardPage implements Labels {
 
 		return output.toString();
 	}
-	
+
 	// @Ahmed 
-		public String getProviderFromInstance(String instance)
-		{
-			String provider="";
-			String[] inst=instance.split(System.getProperty("line.separator"));
-			int index=0;
-			for(int i=0; i<inst.length;i++)
-			if(inst[i].contains("Provider"))
-			{	index=i;
-		
-			inst=inst[index].split(": ");
-			provider= inst[1]; }
-			return instance;
+	public String getProviderFromInstance(String instance) {
+		String providerName = "";
+		String[] inst = instance.split(System.getProperty("line.separator"));
+		for (int i = 0; i < inst.length; i++) {
+			if (inst[i].contains("Provider")) {
+				providerName=inst[i].split(": ")[1];
+				break;
+			}
 		}
-		
-		public void setProvider(String provider)
-		{
-			this.provider=provider;
-		}
-		public String getProvider()
-		{
-			return this.provider;
-			
-		}
+		return providerName;
+	}
+
+	public void setProvider(String provider) {
+		this.provider = provider;
+	}
+
+	public String getProvider() {
+		return this.provider;
+
+	}
 
 	public Task getTask() {
 		return this.selectedTask;

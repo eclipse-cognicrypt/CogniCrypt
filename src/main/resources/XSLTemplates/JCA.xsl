@@ -378,6 +378,7 @@ public class Output {
 	}
 }
 </xsl:when><xsl:otherwise>
+
 <xsl:result-document href="TLSClient.java">
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
@@ -537,6 +538,161 @@ public class Output {
 }
 </xsl:if>
 </xsl:template>
+
+
+<xsl:if test="//task/algorithm[@type='ABE']">
+<xsl:if test="//task[@description='Attribute Based Encryption']//element[@type='ABE']//Abe='CipherTextPolicy'">
+<xsl:result-document href="CPLargeUniverseConstruction.java">
+package <xsl:value-of select="//Package"/>; 
+<xsl:apply-templates select="//Import"/>
+
+
+
+public class CPLargeUniverseConstruction {	
+	
+	{
+	 private PredicateEncryptionScheme predicateEncryptionScheme;
+
+	    private CPPublicParameters publicParameters;
+
+	    private MasterSecret masterSecret;
+
+	    private DecryptionKey decryptionKey;
+
+	    private EncryptionKey encryptionKey;
+
+	    public void setup (){
+	        /** Creates a setup class that provides the algorithm parameters*/
+	        CPSetup setup = new CPSetup();
+
+	        /**
+	        * Generates algorithm parameters:
+	        * 80 = security level, 5 = the maximum number of attributes in a key, 5 = maximum number of leaf-node attributes in a policy
+	        */
+	        setup.doKeyGen(80, 5, 5, false, false);
+
+	        /** The algorithm parameters */
+	        publicParameters = setup.getPublicParameters();
+
+	        /** Generates the encryption scheme*/
+	        predicateEncryptionScheme = new LargeUniverseConstruction(setup.getPublicParameters());
+	        /** The master secret is needed for the generation of a DecryptioKey*/
+	        masterSecret = setup.getMasterSecret();
+	    }
+
+	    public void generateKeys (){
+	        /** Generate a policy for the encryption key (CipherTextIndex)*/
+	        ThresholdPolicy leftNode = new ThresholdPolicy(1, new StringAttribute("A"), new StringAttribute("B"));
+	        ThresholdPolicy rightNode = new ThresholdPolicy(2, new StringAttribute("C"), new StringAttribute("D"), new StringAttribute("E"));
+	        /** Policy is ((A,B)'1 ,(B, C, D)'2)'2 := (A + B) * (CD + DE + CE)*/
+	        CiphertextIndex ciphertextIndex = new ThresholdPolicy(2, leftNode, rightNode);
+	        encryptionKey = predicateEncryptionScheme.generateEncryptionKey(ciphertextIndex);
+
+	        /** Generate a KeyIndex for the decryption key*/
+	        KeyIndex keyIndex = new SetOfAttributes(new StringAttribute("A"),  new StringAttribute("C"), new StringAttribute("D"));
+	        decryptionKey = predicateEncryptionScheme.generateDecryptionKey(masterSecret, keyIndex);
+	    }
+
+	    public void encryptDecrypt(){
+	        /** Encrypt a random element*/
+	        GroupElement randomElement = publicParameters.getGroupGT().getUniformlyRandomElement();
+	        PlainText plainText = new GroupElementPlainText(randomElement);
+	        /** Encrypt it*/
+	        CipherText cipherText = predicateEncryptionScheme.encrypt(plainText, encryptionKey);
+	        /** Decrypt it again*/
+	        PlainText decryptedPlainText = predicateEncryptionScheme.decrypt(cipherText, decryptionKey);
+	        assertTrue(plainText.equals(decryptedPlainText));
+	    }
+
+	   
+}
+</xsl:result-document>
+</xsl:if>
+
+<xsl:if test="//task[@description='Attribute Based Encryption']//element[@type='ABE']//Abe='KeyIndexPolicy'">
+<xsl:result-document href="KPLargeUniverseConstruction java">
+package <xsl:value-of select="//Package"/>; 
+<xsl:apply-templates select="//Import"/>
+public class KPLargeUniverseConstruction {
+private PredicateEncryptionScheme predicateEncryptionScheme;
+
+    private KPPublicParameters publicParameters;
+
+    private MasterSecret masterSecret;
+
+    private DecryptionKey decryptionKey;
+
+    private EncryptionKey encryptionKey;
+
+    public void setup (){
+        /** Creates a setup class that provides the algorithm parameters*/
+        KPSetup setup = new KPSetup();
+
+        /**
+        * Generates algorithm parameters:
+        * 80 = security level, 5 = the maximum number of attributes in a cipher text
+        */
+        setup.doKeyGen(80, 5, false, false);
+
+        /** The algorithm parameters */
+        publicParameters = setup.getPublicParameters();
+
+        /** Generates the encryption scheme*/
+        predicateEncryptionScheme = new LargeUniverseConstruction(setup.getPublicParameters());
+        /** The master secret is needed for the generation of a DecryptionKey*/
+        masterSecret = setup.getMasterSecret();
+    }
+
+    public void generateKeys (){
+        /** Generate a policy for the decryption key (KeyIndex)*/
+        ThresholdPolicy leftNode = new ThresholdPolicy(1, new StringAttribute("A"), new StringAttribute("B"));
+        ThresholdPolicy rightNode = new ThresholdPolicy(2, new StringAttribute("C"), new StringAttribute("D"), new StringAttribute("E"));
+        /** Policy is ((A,B)'1 ,(B, C, D)'2)'2 := (A + B) * (CD + DE + CE)*/
+        KeyIndex keyIndex = new ThresholdPolicy(2, leftNode, rightNode);
+        decryptionKey = predicateEncryptionScheme.generateDecryptionKey(masterSecret, keyIndex);
+
+        /** Generate a cipher text index for the encryption key*/
+        CiphertextIndex ciphertextIndex = new SetOfAttributes(new StringAttribute("A"),  new StringAttribute("C"), new StringAttribute("D"));
+        encryptionKey = predicateEncryptionScheme.generateEncryptionKey(ciphertextIndex);
+    }
+
+    public void encryptDecrypt(){
+        /** Encrypt a random element*/
+        GroupElement randomElement = publicParameters.getGroupGT().getUniformlyRandomElement();
+        PlainText plainText = new GroupElementPlainText(randomElement);
+        /** Encrypt it*/
+        CipherText cipherText = predicateEncryptionScheme.encrypt(plainText, encryptionKey);
+        /** Decrypt it again*/
+        PlainText decryptedPlainText = predicateEncryptionScheme.decrypt(cipherText, decryptionKey);
+        assertTrue(plainText.equals(decryptedPlainText));
+    }
+
+}
+
+</xsl:result-document>
+</xsl:if>
+package <xsl:value-of select="//Package"/>; 
+<xsl:apply-templates select="//Import"/>	
+public class Output {
+	public void templateUsage() throws GeneralSecurityException  {
+		<xsl:if test="//task[@description='Attribute Based Encryption']//element[@type='ABE']//Abe='CipherTextPolicy'">
+		CPLargeUniverseConstruction cp = new CPLargeUniverseConstruction();
+	    cp.setup();
+	    cp.generateKeys();
+	    cp.encryptDecrypt();
+	    </xsl:if>
+	    
+	    <xsl:if test="//task[@description='Attribute Based Encryption']//element[@type='ABE']//Abe='KeyIndexPolicy'">
+	    KPLargeUniverseConstruction kp = new KPLargeUniverseConstruction();
+        kp.setup();
+        kp.generateKeys();
+        kp.encryptDecrypt();  
+        </xsl:if>
+	}
+}
+</xsl:if>
+
+
 	
 <xsl:template match="Import">
 import <xsl:value-of select="."/>;

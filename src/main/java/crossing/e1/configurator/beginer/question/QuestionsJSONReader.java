@@ -80,6 +80,7 @@ public class QuestionsJSONReader {
 			pages = gson.fromJson(reader, new TypeToken<List<Page>>() {}.getType());
 
 			checkReadPages(pages);
+			checkNextIDs(pages);
 		} catch (final FileNotFoundException e) {
 			Activator.getDefault().logError(e);
 		}
@@ -140,15 +141,21 @@ public class QuestionsJSONReader {
 			if (question.getDefaultAnswer() == null) {
 				throw new IllegalArgumentException("Each question must have a default answer.");
 			}
-			/* TODO : Look for a better alternative to commenting this check. I want to maintain the legacy code as 
-			 * it is. Current implementation does not follow this.			
-
-			for (final Answer answer : question.getAnswers()) {
-				
-				if (answer.getNextID() == -2) {
-					throw new IllegalArgumentException("Each answer must point to the following question.");
-				}
-			}*/
 		}
 	}
+
+	private void checkNextIDs(List<Page> pages) {
+		for (final Page page : pages) {
+			if (page.getNextID() == -2) {
+				for (final Question question : page.getContent()) {
+					for (final Answer answer : question.getAnswers()) {
+						if (answer.getNextID() == -2) {
+							throw new IllegalArgumentException("Each answer must point to the following question if the page does not have a nextID.");
+						}
+					}
+				}
+			}
+		}
+	}
+
 }

@@ -29,7 +29,12 @@ public class StateMachineGraphBuilder {
 	}
 	
 	public StateMachineGraph buildSMG() {
-		processHead(head, 0, HashMultimap.create(), result.getNodes().get(0));
+		final StateNode initialNode = result.getNodes().get(0);
+		if (head != null) {
+			processHead(head, 0, HashMultimap.create(), initialNode);
+		} else {
+			result.addEdge(new TransitionEdge(new ArrayList<CryptSLMethod>(), initialNode, initialNode));
+		}
 		return result;
 	}
 	

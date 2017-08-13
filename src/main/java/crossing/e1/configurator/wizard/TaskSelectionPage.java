@@ -104,7 +104,7 @@ public class TaskSelectionPage extends WizardPage {
 
 		this.taskComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
 		this.taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
-
+//*****************
 		final List<Task> tasks = TaskJSONReader.getTasks();
 
 		this.taskComboSelection.setLabelProvider(new LabelProvider() {
@@ -118,7 +118,7 @@ public class TaskSelectionPage extends WizardPage {
 				return super.getText(task);
 			}
 		});
-
+// add tasks in combo
 		this.taskComboSelection.setInput(tasks);
 
 		this.taskComboSelection.addSelectionChangedListener(event -> {

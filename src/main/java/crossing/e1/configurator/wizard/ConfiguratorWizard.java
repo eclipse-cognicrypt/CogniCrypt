@@ -172,7 +172,7 @@ public class ConfiguratorWizard extends Wizard {
 					handleItemSelection(entry);
 				}
 				this.constraints.put(entry.getKey(), entry.getValue());
-
+// hasMoreQuestions
 				if (this.beginnerQuestions.hasMoreQuestions()) {
 					final int nextID = entry.getValue().getNextID();
 					if (nextID > -1) {

@@ -164,7 +164,7 @@ public class XSLBasedGenerator {
 							return false; 
 						} 
 						  } 
-					        i+=members.length; 
+					        break; 
 					  }
 				  }
 			   

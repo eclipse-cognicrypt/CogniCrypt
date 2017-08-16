@@ -30,13 +30,26 @@
 		{
 			"id": "2",
 			"element" : "text",
-			"questionText":"Please specify the boolean policy over the attributes.",
+			"questionText":"Please specify a boolean policy over the attributes.",
 			"answers":[
 				{"value":"    ",
 				"codeDependencies":[
 				{"option":"policy","value":""}
 				],
+				"defaultAnswer": true, "nextID": "3"}
+			]
+		},
+		{
+			"id": "3",
+			"element" : "text",
+			"questionText":"Please specify attributes for the encryption key.",
+			"answers":[
+				{"value":"    ",
+				"codeDependencies":[
+				{"option":"encryptionkey","value":""}
+				],
 				"defaultAnswer": true, "nextID": "-1"}
 			]
 		}
+		
 ]

@@ -541,7 +541,7 @@ public class Output {
 
 
 <xsl:if test="//task/algorithm[@type='ABE']">
-<xsl:if test="//task[@description='Attribute Based Encryption']//element[@type='ABE']//Abe='CipherTextPolicy'">
+<xsl:if test="//task[@description='Attribute-Based Encryption']//element[@type='ABE']//Abe='CipherTextPolicy'">
 <xsl:result-document href="CPLargeUniverseConstruction.java">
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>
@@ -609,7 +609,7 @@ public class CPLargeUniverseConstruction {
 </xsl:result-document>
 </xsl:if>
 
-<xsl:if test="//task[@description='Attribute Based Encryption']//element[@type='ABE']//Abe='KeyIndexPolicy'">
+<xsl:if test="//task[@description='Attribute-Based Encryption']//element[@type='ABE']//Abe='KeyIndexPolicy'">
 <xsl:result-document href="KPLargeUniverseConstruction java">
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>
@@ -675,14 +675,14 @@ package <xsl:value-of select="//Package"/>;
 <xsl:apply-templates select="//Import"/>	
 public class Output {
 	public void templateUsage() throws GeneralSecurityException  {
-		<xsl:if test="//task[@description='Attribute Based Encryption']//element[@type='ABE']//Abe='CipherTextPolicy'">
+		<xsl:if test="//task[@description='Attribute-Based Encryption']//element[@type='ABE']//Abe='CipherTextPolicy'">
 		CPLargeUniverseConstruction cp = new CPLargeUniverseConstruction();
 	    cp.setup();
 	    cp.generateKeys();
 	    cp.encryptDecrypt();
 	    </xsl:if>
 	    
-	    <xsl:if test="//task[@description='Attribute Based Encryption']//element[@type='ABE']//Abe='KeyIndexPolicy'">
+	    <xsl:if test="//task[@description='Attribute-Based Encryption']//element[@type='ABE']//Abe='KeyIndexPolicy'">
 	    KPLargeUniverseConstruction kp = new KPLargeUniverseConstruction();
         kp.setup();
         kp.generateKeys();

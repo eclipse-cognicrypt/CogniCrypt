@@ -17,9 +17,9 @@ package crossing.e1.configurator.wizard.beginner;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -53,7 +53,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private final Question quest;
 	private List<Question> allQuestion;
-	private Entry<Question, Answer> selection = new AbstractMap.SimpleEntry<>(null, null);
+	private HashMap<Question, Answer> selectionMap = new HashMap<Question, Answer>(); 
 	private boolean finish = false;
 	private List<String> selectionValues;
 
@@ -172,7 +172,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 				comboViewer.addSelectionChangedListener(selectedElement -> {
 					final IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
-					BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, (Answer) selection.getFirstElement());
+					BeginnerTaskQuestionPage.this.selectionMap.put(question, (Answer) selection.getFirstElement());
 				});
 				this.finish = true;
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
@@ -190,7 +190,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					a.getCodeDependencies().get(0).setValue(cleanedInput);
 					this.finish = !cleanedInput.isEmpty();
 					BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
-					BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, a);
+					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
 
 				});
 				inputField.forceFocus();
@@ -274,7 +274,11 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					public void widgetSelected(final SelectionEvent e) {
 						if (e.getSource() instanceof Button && (((Button) e.getSource()).getStyle() & SWT.NONE) == SWT.NONE) {
 							final String[] sel = itemList.getSelection();
-							Answer ans = BeginnerTaskQuestionPage.this.selection.getValue();
+							Answer ans = null;
+							// Since this part is for the item selection, there will only be a single entry for this page.
+							for(Entry<Question, Answer> selectionEntry : BeginnerTaskQuestionPage.this.selectionMap.entrySet()){
+								ans = selectionEntry.getValue();
+							}
 							StringBuilder checkedElement = new StringBuilder();
 							if (ans == null) {
 								ans = new Answer();
@@ -297,7 +301,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							ans.setValue(checkedElement.toString());
 							BeginnerTaskQuestionPage.this.finish = ans.getValue().contains(";");
 							BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish);
-							BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, ans);
+							BeginnerTaskQuestionPage.this.selectionMap.put(question, ans);
 							moveRightButton.setEnabled(false);
 						}
 					}
@@ -315,7 +319,11 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						if (e.getSource() instanceof Button && (((Button) e.getSource()).getStyle() & SWT.NONE) == SWT.NONE) {
 							final String[] sel = selectedItemList.getSelection();
 
-							Answer ans = BeginnerTaskQuestionPage.this.selection.getValue();
+							Answer ans = null;
+							// Since this part is for the item selection, there will only be a single entry for this page.
+							for(Entry<Question, Answer> selectionEntry : BeginnerTaskQuestionPage.this.selectionMap.entrySet()){
+								ans = selectionEntry.getValue();
+							}
 							if (ans == null) {
 								ans = new Answer();
 								ans.setNextID(-1);
@@ -332,7 +340,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							ans.setValue(checkedElement);
 							BeginnerTaskQuestionPage.this.finish = ans.getValue().contains(";");
 							BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish);
-							BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, ans);
+							BeginnerTaskQuestionPage.this.selectionMap.put(question, ans);
 							moveLeftButton.setEnabled(false);
 						}
 					}
@@ -427,7 +435,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				this.finish = true;
 				final Answer a = question.getDefaultAnswer();
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
-				BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, a);
+				BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
 				break;
 
 			default:
@@ -456,14 +464,15 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			}
 		} else if (!this.quest.equals(other.quest)) {
 			return false;
-		}
-		if (this.selection == null) {
-			if (other.selection != null) {
+		}		
+		if (this.selectionMap == null) {
+			if (other.selectionMap != null) {
 				return false;
 			}
-		} else if (!this.selection.equals(other.selection)) {
+		} else if (!this.selectionMap.equals(other.selectionMap)) {
 			return false;
 		}
+		
 		if (this.selectionValues == null) {
 			if (other.selectionValues != null) {
 				return false;
@@ -477,8 +486,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		return true;
 	}
 
-	public Entry<Question, Answer> getMap() {
-		return this.selection;
+	public HashMap<Question, Answer> getMap() {
+		return this.selectionMap;
 	}
 
 	/**
@@ -518,8 +527,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		return prev;
 	}
 
-	public synchronized Entry<Question, Answer> getSelection() {
-		return this.selection;
+	public synchronized HashMap<Question, Answer> getSelection() {
+		return this.selectionMap;
 	}
 
 	@Override
@@ -528,7 +537,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		int result = 1;
 		result = prime * result + (this.finish ? 1231 : 1237);
 		result = prime * result + ((this.quest == null) ? 0 : this.quest.hashCode());
-		result = prime * result + ((this.selection == null) ? 0 : this.selection.hashCode());
+		result = prime * result + ((this.selectionMap == null) ? 0 : this.selectionMap.hashCode());
 		result = prime * result + ((this.selectionValues == null) ? 0 : this.selectionValues.hashCode());
 		return result;
 	}

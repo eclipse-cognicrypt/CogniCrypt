@@ -179,19 +179,27 @@ public class ConfiguratorWizard extends Wizard {
 				// a list of type Entry<Question, Answer>.
 
 				final BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
-				final Entry<Question, Answer> entry = beginnerTaskQuestionPage.getMap();
-
-				if (entry.getKey().getElement().equals(GUIElements.itemselection)) {
-					handleItemSelection(entry);
+				final HashMap<Question, Answer> selectionMap = beginnerTaskQuestionPage.getMap();
+				
+				// Looping through all the entries that were added to the BeginnerTaskQuestionPage
+				for(Entry<Question, Answer> entry : selectionMap.entrySet()){
+					if (entry.getKey().getElement().equals(GUIElements.itemselection)) {
+						handleItemSelection(entry);
+					}
+					
+					this.constraints.put(entry.getKey(), entry.getValue());
 				}
-				this.constraints.put(entry.getKey(), entry.getValue());
 
 				if (this.beginnerQuestions.hasMorePages()) {
-					final int nextID;
+					int nextID = -1;
 					if (beginnerTaskQuestionPage.getPageNextID() > -2) {
 						nextID = beginnerTaskQuestionPage.getPageNextID();
 					} else {
-						nextID = entry.getValue().getNextID();
+						// in this case there would only be one question on a page, thus only have a single selection.
+						for(Entry<Question, Answer> entry : selectionMap.entrySet()){
+							nextID = entry.getValue().getNextID();
+						}
+						
 					}
 
 					if (nextID > -1) {

@@ -171,12 +171,6 @@ public class ConfiguratorWizard extends Wizard {
 				if (this.constraints == null) {
 					this.constraints = new HashMap<>();
 				}
-				// TODO : This code depends on the single questions per page.
-				// Check how Entry<Question, Answer> entry is relevant.
-				// [May not work] Created a new method beginnerQuestions.getPageMap() that returns the current
-				// page id to be used with this.beginnerQuestions.hasMorePages()
-				// [Alternative] implement a version of beginnerTaskQuestionPage.getMap() that returns a
-				// a list of type Entry<Question, Answer>.
 
 				final BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
 				final HashMap<Question, Answer> selectionMap = beginnerTaskQuestionPage.getMap();

@@ -135,6 +135,13 @@ public class TaskSelectionPage extends WizardPage {
 		this.advancedModeCheckBox.setText(Constants.ADVANCED_MODE);
 		this.advancedModeCheckBox.setSelection(false);
 		setControl(this.container);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		
+		Button btnPrimitiveIntegration = new Button(container, SWT.NONE);
+		btnPrimitiveIntegration.setText("Primitive Integration");
+		new Label(container, SWT.NONE);
 
 	}
 

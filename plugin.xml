@@ -16,6 +16,15 @@
             </separator>
          </menu>
          <action
+               class="crossing.e1.taskintegrator.actions.WizardAction"
+               icon="icons/cognicrypt.png"
+               id="crossing.e1.taskintegrator.actions.WizardAction"
+               label="&amp;Start Task Integration"
+               menubarPath="CogniCryptMenu/CogniCryptGroup"
+               toolbarPath="CogniCryptGroup"
+               tooltip="Integrate a Cryptographic Task into CogniCrypt">
+         </action>
+         <action
                class="crossing.e1.configurator.actions.WizardAction"
                icon="icons/cognicrypt.png"
                id="crossing.e1.configurator.actions.WizardAction"

@@ -45,6 +45,10 @@ public class BeginnerModeQuestionnaire {
 		return this.questionList;
 	}
 
+	public List<Question> getQuestionList() {
+		return this.questionList;
+	}
+	
 	public Task getTask() {
 		return this.task;
 	}

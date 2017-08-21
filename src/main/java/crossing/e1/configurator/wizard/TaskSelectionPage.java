@@ -58,8 +58,6 @@ public class TaskSelectionPage extends WizardPage {
 		setPageComplete(false);
 	}
 
-
-
 	@Override
 	public void createControl(final Composite parent) {
 
@@ -79,9 +77,9 @@ public class TaskSelectionPage extends WizardPage {
 		for (IProject project : Utils.createListOfJavaProjectsInCurrentWorkspace()) {
 			javaProjects.put(project.getName(), project);
 		}
-		
+
 		if (javaProjects.isEmpty()) {
-			String[] errorMessage = {Constants.ERROR_MESSAGE_NO_PROJECT};
+			String[] errorMessage = { Constants.ERROR_MESSAGE_NO_PROJECT };
 			projectComboSelection.setInput(errorMessage);
 			projectComboSelection.setSelection(new StructuredSelection(projectComboSelection.getElementAt(0)));
 		} else {
@@ -92,17 +90,15 @@ public class TaskSelectionPage extends WizardPage {
 				projectComboSelection.refresh();
 
 			});
-			
+
 			IProject currentProject = Utils.getCurrentProject();
 			if (currentProject == null) {
 				projectComboSelection.setSelection(new StructuredSelection(projectComboSelection.getElementAt(0)));
 			} else {
 				projectComboSelection.setSelection(new StructuredSelection(currentProject.getName()));
-			}	
+			}
 		}
 
-		
-		
 		this.selectTaskLabel = new Label(this.container, SWT.NONE);
 		this.selectTaskLabel.setText(Constants.SELECT_TASK);
 

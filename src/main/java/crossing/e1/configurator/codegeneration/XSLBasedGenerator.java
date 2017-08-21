@@ -239,8 +239,41 @@ public class XSLBasedGenerator {
 	}
 
 	/**
-	 * If a file was open when the code generation was started, this method inserts the glue code that calls the generated classes directly into the opened file and removes the
-	 * temporary output file. If no file was open this method is skipped and the temporary output file is not removed.
+	 * <<<<<<< HEAD This method initializes the code template generator. If neither a java file is opened nor a project selected initialization fails.
+	 * 
+	 * @param targetProject
+	 *
+	 * @return <Code>true</Code>/<Code>false</Code> if initialization successful/failed.
+	 */
+	public boolean initCodeGeneration(final IProject targetProject) {
+
+		this.project = new DeveloperProject(targetProject);
+		// Commented in April 2017. If at least June 2017 and this has not
+		// caused issues, remove this method altogether and replace it with a regular constructor.
+		// this.currentFile = Utils.getCurrentlyOpenFile();
+		// this.fileOpened = this.currentFile != null;
+		// if (this.currentFile != null &&
+		// Constants.JAVA.equals(this.currentFile.getFileExtension())) {
+		// // Get currently opened file to
+		// this.project = new DeveloperProject(this.currentFile.getProject());
+		// } else {
+		// // if no open file, get selected project
+		// final IProject iproject = targetProject;
+		// if (iproject == null) {
+		// // if no project selected abort with error message
+		// Activator.getDefault().logError(null,
+		// Constants.NoFileandNoProjectOpened);
+		// return false;
+		// }
+		// Activator.getDefault().logInfo(Constants.NoFileOpenedErrorMessage);
+		// this.project = new DeveloperProject(iproject);
+		// }
+		return true;
+	}
+
+	/**
+	 * ======= >>>>>>> master If a file was open when the code generation was started, this method inserts the glue code that calls the generated classes directly into the opened
+	 * file and removes the temporary output file. If no file was open this method is skipped and the temporary output file is not removed.
 	 *
 	 * @param temporaryOutputFile
 	 *        Path to temporary output file.

@@ -9,6 +9,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -66,7 +67,6 @@ import de.darmstadt.tu.crossing.cryptSL.Constraint;
 import de.darmstadt.tu.crossing.cryptSL.DestroysBlock;
 import de.darmstadt.tu.crossing.cryptSL.Domainmodel;
 import de.darmstadt.tu.crossing.cryptSL.EnsuresBlock;
-import de.darmstadt.tu.crossing.cryptSL.Event;
 import de.darmstadt.tu.crossing.cryptSL.Expression;
 import de.darmstadt.tu.crossing.cryptSL.ForbMethod;
 import de.darmstadt.tu.crossing.cryptSL.ForbiddenBlock;
@@ -74,8 +74,6 @@ import de.darmstadt.tu.crossing.cryptSL.Literal;
 import de.darmstadt.tu.crossing.cryptSL.LiteralExpression;
 import de.darmstadt.tu.crossing.cryptSL.ObjectDecl;
 import de.darmstadt.tu.crossing.cryptSL.PreDefinedPredicates;
-import de.darmstadt.tu.crossing.cryptSL.Pred;
-import de.darmstadt.tu.crossing.cryptSL.ReqPred;
 import de.darmstadt.tu.crossing.cryptSL.SuPar;
 import de.darmstadt.tu.crossing.cryptSL.SuParList;
 import de.darmstadt.tu.crossing.cryptSL.SuperType;
@@ -87,7 +85,14 @@ import typestate.interfaces.ISLConstraint;
 public class CryptSLModelReader {
 
 	private List<CryptSLForbiddenMethod> forbiddenMethods = null;
-	private StateMachineGraph smg = null;
+	private StateMachineGraph stateMachineGraph = null;
+	
+	/**
+	 * Hashtable of CryptSLRule object. This objects are used
+	 * for the automatic code generation of class
+	 * crossing.e1.configurator.codegeneration.CodeGenerator
+	 */
+	public static Hashtable<String, CryptSLRule> rules = new Hashtable<String, CryptSLRule>();
 
 	public CryptSLModelReader() throws ClassNotFoundException, CoreException, IOException {
 		Injector injector = CryptSLActivator.getInstance().getInjector(CryptSLActivator.DE_DARMSTADT_TU_CROSSING_CRYPTSL);
@@ -110,29 +115,28 @@ public class CryptSLModelReader {
 		for (IResource res : ResourcesPlugin.getWorkspace().getRoot().getFolder(Path.fromPortableString("/CryptSL Examples/src/de/darmstadt/tu/crossing/")).members()) {
 			final String extension = res.getFileExtension();
 			final String fileName = res.getName();
-			if (!"cryptsl".equals(extension) || exceptions.contains(fileName)) { //!fileName.contains("Cipher.")) {
+			if (!"cryptsl".equals(extension) || exceptions.contains(fileName)) {
 				continue;
 			}
 			Resource resource = resourceSet.getResource(URI.createPlatformResourceURI("/CryptSL Examples/src/de/darmstadt/tu/crossing/" + fileName, true), true);
 			EcoreUtil.resolveAll(resourceSet);
 			EObject eObject = resource.getContents().get(0);
-			Domainmodel dm = (Domainmodel) eObject;
-			EnsuresBlock ensure = dm.getEnsure();
+			Domainmodel domainModel = (Domainmodel) eObject;
+			EnsuresBlock ensure = domainModel.getEnsure();
 			Map<CryptSLPredicate, SuperType> pre_preds = Maps.newHashMap();
-			DestroysBlock destroys = dm.getDestroy();
+			DestroysBlock destroys = domainModel.getDestroy();
 			if (destroys != null) {
 				pre_preds.putAll(getKills(destroys.getPred()));
 			}
 			if (ensure != null) {
 				pre_preds.putAll(getPredicates(ensure.getPred()));
 			}
-			smg = buildStateMachineGraph(dm.getOrder());
-			ForbiddenBlock forbEvent = dm.getForbEvent();
+			stateMachineGraph = buildStateMachineGraph(domainModel.getOrder());
+			ForbiddenBlock forbEvent = domainModel.getForbEvent();
 			forbiddenMethods = (forbEvent != null) ? getForbiddenMethods(forbEvent.getForb_methods()) : Lists.newArrayList();
 
-			List<ISLConstraint> constraints = (dm.getReqConstraints() != null) ? buildUpConstraints(dm.getReqConstraints().getReq()) : Lists.newArrayList();
-			constraints.addAll(((dm.getRequire() != null) ? collectRequiredPredicates(dm.getRequire().getPred()) : Lists.newArrayList()));
-			List<Entry<String, String>> objects = getObjects(dm.getUsage());
+			List<ISLConstraint> constraints = (domainModel.getReqConstraints() != null) ? buildUpConstraints(domainModel.getReqConstraints().getReq()) : Lists.newArrayList();
+			List<Entry<String, String>> objects = getObjects(domainModel.getUsage());
 
 			List<CryptSLPredicate> actPreds = Lists.newArrayList();
 
@@ -146,48 +150,38 @@ public class CryptSLModelReader {
 				}
 			}
 			final String className = fileName.substring(0, fileName.indexOf(extension) - 1);
-			CryptSLRule rule = new CryptSLRule(className, objects, forbiddenMethods, smg, constraints, actPreds);
-			System.out.println("===========================================");
-			System.out.println("");
-			storeRuletoFile(rule, className);
-			//String outputURI = storeModelToFile(resourceSet, eObject, className);
-			//loadModelFromFile(outputURI);
+			CryptSLRule rule = new CryptSLRule(className, objects, forbiddenMethods, stateMachineGraph, constraints, actPreds);
+
+			/*
+			 * Store parsed rule to a hashtable
+			 */
+			rules.put(className, rule);
+
 		}
 
 	}
 
-	private List<ISLConstraint> collectRequiredPredicates(EList<ReqPred> requiredPreds) {
-		List<ISLConstraint> preds = new ArrayList<ISLConstraint>();
-		for (ReqPred pred : requiredPreds) {
-			final Constraint conditional = pred.getCons();
-			List<ICryptSLPredicateParameter> variables = new ArrayList<ICryptSLPredicateParameter>();
-			if (pred.getPred().getParList() != null) {
-				for (SuPar var : pred.getPred().getParList().getParameters()) {
-					if (var.getVal() != null) {
-						LiteralExpression lit = var.getVal();
-
-						String variable = filterQuotes(((LiteralExpression) lit.getLit().getName()).getValue().getName());
-						String part = var.getVal().getPart();
-						if (part != null) {
-							variables.add(new CryptSLObject(variable, new CryptSLSplitter(Integer.parseInt(lit.getInd()), filterQuotes(lit.getSplit()))));
-						} else {
-							variables.add(new CryptSLObject(variable));
-						}
-					} else {
-						variables.add(new CryptSLObject("_"));
-					}
-				}
-			}
-
-			preds.add(new CryptSLPredicate(null, pred.getPred().getPredName(), variables, (pred.getNot() != null ? true : false), getConstraint(conditional)));
+	/**
+	 * Returns the cryptsl rule with the name that is defined by the method parameter cryptslRule.
+	 * 
+	 * @param cryptslRule
+	 *        Name of cryptsl rule that should by returend.
+	 * 
+	 * @return Returns the cryptsl rule with the name that is defined by the parameter cryptslRule.
+	 * @throws Exception
+	 *         Thows an exception if given rule name does not exist.
+	 */
+	public static CryptSLRule getCryptSLRule(String cryptslRule) throws Exception {
+		if (rules.containsKey(cryptslRule)) {
+			return rules.get(cryptslRule);
+		} else {
+			throw new Exception("Rules does not exist.");
 		}
-		return preds;
 	}
 
 	private Map<? extends CryptSLPredicate, ? extends SuperType> getKills(EList<Constraint> eList) {
 		Map<CryptSLPredicate, SuperType> preds = new HashMap<CryptSLPredicate, SuperType>();
-		for (Constraint cons : eList) {
-			Pred pred = (Pred) cons;
+		for (Constraint pred : eList) {
 			List<ICryptSLPredicateParameter> variables = new ArrayList<ICryptSLPredicateParameter>();
 
 			if (pred.getParList() != null) {
@@ -225,30 +219,48 @@ public class CryptSLModelReader {
 		return objects;
 	}
 
-	private void storeRuletoFile(CryptSLRule rule, String className) {
-		String filePath = "C:\\Users\\stefank3\\git\\CROSSINGAnalysis\\CryptoAnalysis\\src\\test\\resources\\" + className + ".cryptslbin";
-		FileOutputStream fileOut;
-		try {
-			fileOut = new FileOutputStream(filePath);
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			out.writeObject(rule);
-			out.close();
-			fileOut.close();
-			FileInputStream fileIn = new FileInputStream(filePath);
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-			in.readObject();
-			in.close();
-			fileIn.close();
+	/**
+	 * Stores a cryptsl rule to a binary file.
+	 * 
+	 * @param rule
+	 *        Rule that should be stored to a file.
+	 * 
+	 * @param className
+	 *        Name of rule that should by stored.
+	 * 
+	 * @param filePath
+	 *        Path where to store the rule.
+	 * 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void storeRuletoFile(CryptSLRule rule, String className, String filePath) throws IOException, ClassNotFoundException {
+		// Open file output
+		FileOutputStream fileOutputStream = new FileOutputStream(filePath);
+		ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
 
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+		// Write rule to file
+		objectOutputStream.writeObject(rule);
+
+		// Close file output
+		objectOutputStream.close();
+		fileOutputStream.close();
+
+		// Open file input
+		FileInputStream fileInputStream = new FileInputStream(filePath);
+		ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+
+		// Try to read file
+		objectInputStream.readObject();
+
+		// Close file input
+		objectInputStream.close();
+		fileInputStream.close();
 	}
 
 	private Map<CryptSLPredicate, SuperType> getPredicates(List<Constraint> predList) {
 		Map<CryptSLPredicate, SuperType> preds = new HashMap<CryptSLPredicate, SuperType>();
-		for (Constraint cons : predList) {
-			Pred pred = (Pred) cons;
+		for (Constraint pred : predList) {
 			List<ICryptSLPredicateParameter> variables = new ArrayList<ICryptSLPredicateParameter>();
 
 			if (pred.getParList() != null) {
@@ -291,7 +303,7 @@ public class CryptSLModelReader {
 	private Set<StateNode> getStatesForMethods(List<CryptSLMethod> condMethods) {
 		Set<StateNode> predGens = new HashSet<StateNode>();
 		if (condMethods.size() != 0) {
-			for (TransitionEdge methTrans : smg.getAllTransitions()) {
+			for (TransitionEdge methTrans : stateMachineGraph.getAllTransitions()) {
 				final List<CryptSLMethod> transLabel = methTrans.getLabel();
 				if (transLabel.size() > 0 && (transLabel.equals(condMethods) || (condMethods.size() == 1 && transLabel.contains(condMethods.get(0))))) {
 					predGens.add(methTrans.getRight());
@@ -317,9 +329,6 @@ public class CryptSLModelReader {
 	}
 
 	private ISLConstraint getConstraint(Constraint cons) {
-		if (cons == null) {
-			return null;
-		}
 		ISLConstraint slci = null;
 
 		if (cons instanceof ArithmeticExpression) {
@@ -334,8 +343,8 @@ public class CryptSLModelReader {
 					parList.add(filterQuotes(a.getVal()));
 				}
 			}
-			if (lit.getCons() instanceof PreDefinedPredicates) {
-				String pred = ((PreDefinedPredicates) lit.getCons()).getPredName();
+			String pred = lit.getCons().getPredName();
+			if (pred != null) {
 				switch (pred) {
 					case "callTo":
 						List<ICryptSLPredicateParameter> methodsToBeCalled = new ArrayList<ICryptSLPredicateParameter>();
@@ -428,7 +437,7 @@ public class CryptSLModelReader {
 		} else if (cons instanceof UnaryPreExpression) {
 			UnaryPreExpression un = (UnaryPreExpression) cons;
 			List<ICryptSLPredicateParameter> vars = new ArrayList<ICryptSLPredicateParameter>();
-			Pred innerPredicate = (Pred) un.getEnclosedExpression();
+			Constraint innerPredicate = un.getEnclosedExpression();
 			if (innerPredicate.getParList() != null) {
 				for (SuPar sup : innerPredicate.getParList().getParameters()) {
 					if (sup.getVal() == null) {
@@ -447,11 +456,11 @@ public class CryptSLModelReader {
 				}
 			}
 			slci = new CryptSLPredicate(null, innerPredicate.getPredName(), vars, true);
-		} else if (cons instanceof Pred) {
-			if (((Pred) cons).getPredName() != null && !((Pred) cons).getPredName().isEmpty()) {
+		} else if (cons instanceof Constraint) {
+			if (cons.getPredName() != null && !cons.getPredName().isEmpty()) {
 				List<ICryptSLPredicateParameter> vars = new ArrayList<ICryptSLPredicateParameter>();
 
-				final SuParList parList = ((Pred) cons).getParList();
+				final SuParList parList = cons.getParList();
 				if (parList != null) {
 					for (SuPar sup : parList.getParameters()) {
 						if (sup.getVal() == null) {
@@ -469,34 +478,27 @@ public class CryptSLModelReader {
 						}
 					}
 				}
-				//				CryptSLObject bobj = null;
-				//				if (cons.getRet().getVal() == null) {
-				//					bobj = new CryptSLObject("this");
-				//				} else {
-				//					bobj = new CryptSLObject(((LiteralExpression) cons.getRet().getVal().getLit().getName()).getValue().getName());
-				//				}
-				slci = new CryptSLPredicate(null, ((Pred) cons).getPredName(), vars, false);
+				slci = new CryptSLPredicate(null, cons.getPredName(), vars, false);
+			} else {
+				LogOps op = null;
+				switch (cons.getOperator().toString()) {
+					case "&&":
+						op = LogOps.and;
+						break;
+					case "||":
+						op = LogOps.or;
+						break;
+					case "=>":
+						op = LogOps.implies;
+						break;
+					case "<=>":
+						op = LogOps.eq;
+						break;
+					default:
+						op = LogOps.and;
+				}
+				slci = new CryptSLConstraint(getConstraint(cons.getLeftExpression()), getConstraint(cons.getRightExpression()), op);
 			}
-		} else if (cons instanceof Constraint) {
-			LogOps op = null;
-			switch (cons.getOperator().toString()) {
-				case "&&":
-					op = LogOps.and;
-					break;
-				case "||":
-					op = LogOps.or;
-					break;
-				case "=>":
-					op = LogOps.implies;
-					break;
-				case "<=>":
-					op = LogOps.eq;
-					break;
-				default:
-					op = LogOps.and;
-			}
-			slci = new CryptSLConstraint(getConstraint(cons.getLeftExpression()), getConstraint(cons.getRightExpression()), op);
-
 		}
 
 		return slci;
@@ -536,25 +538,18 @@ public class CryptSLModelReader {
 		return methodSignatures;
 	}
 
+	/**
+	 * Builds a state machine of a given order.
+	 * 
+	 * @param order
+	 *        Order that is used for creating a state machine that describes this order.
+	 * 
+	 * @return Returns a StateMachineGraph object.
+	 * 
+	 */
 	private StateMachineGraph buildStateMachineGraph(Expression order) {
-		StateMachineGraphBuilder smgb = new StateMachineGraphBuilder(order);
-		return smgb.buildSMG();
+		StateMachineGraphBuilder stateMachineGraphBuilder = new StateMachineGraphBuilder(order);
+		return stateMachineGraphBuilder.buildSMG();
 	}
-
-	//	private void loadModelFromFile(String outputURI) {
-	//		ResourceSet resSet = new ResourceSetImpl();
-	//		Resource xmiResourceRead = resSet.getResource(URI.createURI(outputURI), true);
-	//		xmiResourceRead.getContents().get(0);
-	////		Domainmodel dmro = 
-	//	}
-
-	//	private String storeModelToFile(XtextResourceSet resourceSet, EObject eObject, String className) throws IOException {
-	//		//Store the model to path outputURI
-	//		String outputURI = "file:///C:/Users/stefank3/Desktop/" + className + ".xmi";
-	//		Resource xmiResource = resourceSet.createResource(URI.createURI(outputURI));
-	//		xmiResource.getContents().add(eObject);
-	//		xmiResource.save(null);
-	//		return outputURI;
-	//	}
 
 }

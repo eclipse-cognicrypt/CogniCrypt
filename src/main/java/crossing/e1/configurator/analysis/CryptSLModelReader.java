@@ -393,6 +393,9 @@ public class CryptSLModelReader {
 				case "<=":
 					op = CompOp.le;
 					break;
+				case "!=":
+					op = CompOp.neq;
+					break;
 				default:
 					op = CompOp.eq;
 			}
@@ -528,7 +531,7 @@ public class CryptSLModelReader {
 			JvmExecutable meth = fm.getJavaMeth();
 			List<Entry<String, String>> pars = new ArrayList<Entry<String, String>>();
 			for (JvmFormalParameter par : meth.getParameters()) {
-				pars.add(new SimpleEntry<String, String>(par.getParameterType().getSimpleName(), par.getSimpleName()));
+				pars.add(new SimpleEntry<String, String>(par.getSimpleName(), par.getParameterType().getSimpleName()));
 			}
 			methodSignatures.add(new CryptSLForbiddenMethod(new CryptSLMethod(meth.getDeclaringType().getIdentifier() + "." + meth
 				.getSimpleName(), pars, null, new SimpleEntry<String, String>("_", "AnyType")), false));

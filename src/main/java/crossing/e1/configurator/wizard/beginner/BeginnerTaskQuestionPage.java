@@ -17,9 +17,9 @@ package crossing.e1.configurator.wizard.beginner;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Text;
 
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.beginer.question.Answer;
+import crossing.e1.configurator.beginer.question.Page;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.Labels;
@@ -52,19 +53,73 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private final Question quest;
 	private List<Question> allQuestion;
-	private Entry<Question, Answer> selection = new AbstractMap.SimpleEntry<>(null, null);
+	private HashMap<Question, Answer> selectionMap = new HashMap<Question, Answer>(); 
 	private boolean finish = false;
 	private List<String> selectionValues;
 
+	private final Page page;
+
+	/**
+	 * construct a page containing an element other than itemselection
+	 * 
+	 * @param quest
+	 *        question that will be displayed on the page
+	 * @param task
+	 *        task for which the page is created
+	 */
 	public BeginnerTaskQuestionPage(final Question quest, final Task task) {
 		this(quest, task, null);
 	}
 
+	/**
+	 * construct a page containing a single question
+	 * 
+	 * @param quest
+	 *        question that will be displayed on the page
+	 * @param task
+	 *        task for which the page is created
+	 * @param selectionValues
+	 *        list of selectable strings if element type of quest is itemselection, null otherwise
+	 */
 	public BeginnerTaskQuestionPage(final Question quest, final Task task, final List<String> selectionValues) {
 		super("Display Questions");
 		setTitle("Configuring Selected Task: " + task.getDescription());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.quest = quest;
+		this.selectionValues = selectionValues;
+
+		// This variable needs to be initialized.
+		this.page = null;
+	}
+
+	/**
+	 * 
+	 * @param page
+	 *        page contains the questions that need to be displayed.
+	 * @param task
+	 *        task for which the page is created
+	 * @param selectionValues
+	 *        The call to this constructor needs to have this extra parameter for itemselection. list of selectable strings if element type of quest is itemselection, null
+	 *        otherwise
+	 */
+	public BeginnerTaskQuestionPage(final Page page, final Task task, final List<String> selectionValues) {
+		super("Display Questions");
+		setTitle("Configuring Selected Task: " + task.getDescription());
+		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
+		this.page = page;
+		this.selectionValues = selectionValues;
+
+		//This variable needs to be initialized.
+		this.quest = null;
+	}
+
+	public BeginnerTaskQuestionPage(final Page page, final Task task, final List<Question> allQuestion, final List<String> selectionValues) {
+		super("Display Questions");
+		setTitle("Configuring Selected Task: " + task.getDescription());
+		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
+		this.allQuestion = allQuestion;
+		this.quest = null;
+		this.page = page;
 		this.selectionValues = selectionValues;
 	}
 
@@ -74,9 +129,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.allQuestion = allQuestion;
 		this.quest = quest;
+		this.page = null;
 	}
-	
-	
+
 	@Override
 	public boolean canFlipToNextPage() {
 		return this.finish && isPageComplete();
@@ -86,10 +141,20 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	public void createControl(final Composite parent) {
 		final Composite container = new Composite(parent, SWT.NONE);
 		container.setBounds(10, 10, 450, 200);
-		final GridLayout layout = new GridLayout(3, false);
-		container.setLayout(layout);
+		// Updated the number of columns to order the questions vertically.
+		final GridLayout layout = new GridLayout(1, false);
 
-		createQuestionControl(container, this.quest);
+		container.setLayout(layout);
+		// If legacy JSON files are in effect.
+		if (page == null) {
+			createQuestionControl(container, this.quest);
+		} else {
+			// loop through the questions that are to be displayed on the page.
+			for (Question question : page.getContent()) {
+				createQuestionControl(container, question);
+			}
+		}
+
 		setControl(container);
 	}
 
@@ -107,7 +172,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 				comboViewer.addSelectionChangedListener(selectedElement -> {
 					final IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
-					BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, (Answer) selection.getFirstElement());
+					BeginnerTaskQuestionPage.this.selectionMap.put(question, (Answer) selection.getFirstElement());
 				});
 				this.finish = true;
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
@@ -125,7 +190,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					a.getCodeDependencies().get(0).setValue(cleanedInput);
 					this.finish = !cleanedInput.isEmpty();
 					BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
-					BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, a);
+					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
 
 				});
 				inputField.forceFocus();
@@ -209,7 +274,11 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					public void widgetSelected(final SelectionEvent e) {
 						if (e.getSource() instanceof Button && (((Button) e.getSource()).getStyle() & SWT.NONE) == SWT.NONE) {
 							final String[] sel = itemList.getSelection();
-							Answer ans = BeginnerTaskQuestionPage.this.selection.getValue();
+							Answer ans = null;
+							// Since this part is for the item selection, there will only be a single entry for this page.
+							for(Entry<Question, Answer> selectionEntry : BeginnerTaskQuestionPage.this.selectionMap.entrySet()){
+								ans = selectionEntry.getValue();
+							}
 							StringBuilder checkedElement = new StringBuilder();
 							if (ans == null) {
 								ans = new Answer();
@@ -232,7 +301,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							ans.setValue(checkedElement.toString());
 							BeginnerTaskQuestionPage.this.finish = ans.getValue().contains(";");
 							BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish);
-							BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, ans);
+							BeginnerTaskQuestionPage.this.selectionMap.put(question, ans);
 							moveRightButton.setEnabled(false);
 						}
 					}
@@ -250,7 +319,11 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						if (e.getSource() instanceof Button && (((Button) e.getSource()).getStyle() & SWT.NONE) == SWT.NONE) {
 							final String[] sel = selectedItemList.getSelection();
 
-							Answer ans = BeginnerTaskQuestionPage.this.selection.getValue();
+							Answer ans = null;
+							// Since this part is for the item selection, there will only be a single entry for this page.
+							for(Entry<Question, Answer> selectionEntry : BeginnerTaskQuestionPage.this.selectionMap.entrySet()){
+								ans = selectionEntry.getValue();
+							}
 							if (ans == null) {
 								ans = new Answer();
 								ans.setNextID(-1);
@@ -267,13 +340,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							ans.setValue(checkedElement);
 							BeginnerTaskQuestionPage.this.finish = ans.getValue().contains(";");
 							BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish);
-							BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, ans);
+							BeginnerTaskQuestionPage.this.selectionMap.put(question, ans);
 							moveLeftButton.setEnabled(false);
 						}
 					}
 				});
 				break;
-				
+
 			case button:
 				for (int i = 0; i < 3; i++) {
 					new Label(container, SWT.NULL);
@@ -333,7 +406,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				final Method invokeMethod = method;
 				final Object invokeClassObj = classObj;
 				final Object[] invokeParamArray = paramArray;
-				
+
 				methodButton.addSelectionListener(new SelectionAdapter() {
 
 					@Override
@@ -364,9 +437,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				this.finish = true;
 				final Answer a = question.getDefaultAnswer();
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
-				BeginnerTaskQuestionPage.this.selection = new AbstractMap.SimpleEntry<>(question, a);
+				BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
 				break;
-				
+
 			default:
 				break;
 		}
@@ -393,14 +466,15 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			}
 		} else if (!this.quest.equals(other.quest)) {
 			return false;
-		}
-		if (this.selection == null) {
-			if (other.selection != null) {
+		}		
+		if (this.selectionMap == null) {
+			if (other.selectionMap != null) {
 				return false;
 			}
-		} else if (!this.selection.equals(other.selection)) {
+		} else if (!this.selectionMap.equals(other.selectionMap)) {
 			return false;
 		}
+		
 		if (this.selectionValues == null) {
 			if (other.selectionValues != null) {
 				return false;
@@ -408,11 +482,30 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		} else if (!this.selectionValues.equals(other.selectionValues)) {
 			return false;
 		}
+		if (this.page != other.page) {
+			return false;
+		}
 		return true;
 	}
 
-	public Entry<Question, Answer> getMap() {
-		return this.selection;
+	public HashMap<Question, Answer> getMap() {
+		return this.selectionMap;
+	}
+
+	/**
+	 * 
+	 * @return returns the id of the current page.
+	 */
+	public int getPageMap() {
+		return page.getId();
+	}
+
+	public int getPageNextID() {
+		if (page != null) {
+			return page.getNextID();
+		} else {
+			return -2;
+		}
 	}
 
 	private Composite getPanel(final Composite parent) {
@@ -436,8 +529,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		return prev;
 	}
 
-	public synchronized Entry<Question, Answer> getSelection() {
-		return this.selection;
+	public synchronized HashMap<Question, Answer> getSelection() {
+		return this.selectionMap;
 	}
 
 	@Override
@@ -446,7 +539,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		int result = 1;
 		result = prime * result + (this.finish ? 1231 : 1237);
 		result = prime * result + ((this.quest == null) ? 0 : this.quest.hashCode());
-		result = prime * result + ((this.selection == null) ? 0 : this.selection.hashCode());
+		result = prime * result + ((this.selectionMap == null) ? 0 : this.selectionMap.hashCode());
 		result = prime * result + ((this.selectionValues == null) ? 0 : this.selectionValues.hashCode());
 		return result;
 	}

@@ -39,6 +39,7 @@ import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.Constants.GUIElements;
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.ClaferDependency;
+import crossing.e1.configurator.beginer.question.Page;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.codegeneration.XSLBasedGenerator;
 import crossing.e1.configurator.tasks.Task;
@@ -110,20 +111,21 @@ public class ConfiguratorWizard extends Wizard {
 		return updateRound;
 	}
 
-	private void createBeginnerPage(final Question curQuestion, final List<Question> allQuestion) {
-		if (curQuestion.getElement().equals(GUIElements.itemselection)) {
-			final List<String> selection = new ArrayList<>();
-			for (final AstConcreteClafer childClafer : this.claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
-				if (childClafer.getSuperClafer().getName().endsWith(curQuestion.getSelectionClafer())) {
-					selection.add(ClaferModelUtils.removeScopePrefix(childClafer.getName()));
+	private void createBeginnerPage(final Page curPage, final List<Question> allQuestion) {
+
+		List<String> selection = null;
+		if (curPage.getContent().size() == 1) {
+			final Question curQuestion = curPage.getContent().get(0);
+			if (curQuestion.getElement().equals(GUIElements.itemselection)) {
+				selection = new ArrayList<>();
+				for (final AstConcreteClafer childClafer : this.claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
+					if (childClafer.getSuperClafer().getName().endsWith(curQuestion.getSelectionClafer())) {
+						selection.add(ClaferModelUtils.removeScopePrefix(childClafer.getName()));
+					}
 				}
 			}
-			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curQuestion, this.beginnerQuestions.getTask(), selection);
-		} else if (curQuestion.getElement().equals(GUIElements.button)) {
-			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(allQuestion, curQuestion, this.beginnerQuestions.getTask());
-		} else {
-			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curQuestion, this.beginnerQuestions.getTask());
 		}
+		this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curPage, this.beginnerQuestions.getTask(), allQuestion, selection);
 	}
 
 	/**
@@ -144,8 +146,13 @@ public class ConfiguratorWizard extends Wizard {
 				this.preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, (AstConcreteClafer) org.clafer.cli.Utils
 					.getModelChildByName(this.claferModel.getModel(), "c0_" + selectedTask.getName()));
 			} else {
-				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
-				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextQuestion(), this.beginnerQuestions.getTask());
+				// Updated the calls to accommodate for the pages instead of questions.
+				//this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
+				//this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextQuestion(), this.beginnerQuestions.getTask());
+				
+				// The 3rd parameter in this constructor call is benign, it only exists to call the constructor designed for pages
+				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile(),"pages"); 
+				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(),null);
 			}
 			if (this.constraints != null) {
 				this.constraints = null;
@@ -167,20 +174,34 @@ public class ConfiguratorWizard extends Wizard {
 				}
 
 				final BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
-				final Entry<Question, Answer> entry = beginnerTaskQuestionPage.getMap();
-
-				if (entry.getKey().getElement().equals(GUIElements.itemselection)) {
-					handleItemSelection(entry);
+				final HashMap<Question, Answer> selectionMap = beginnerTaskQuestionPage.getMap();
+				
+				// Looping through all the entries that were added to the BeginnerTaskQuestionPage
+				for(Entry<Question, Answer> entry : selectionMap.entrySet()){
+					if (entry.getKey().getElement().equals(GUIElements.itemselection)) {
+						handleItemSelection(entry);
+					}
+					
+					this.constraints.put(entry.getKey(), entry.getValue());
 				}
-				this.constraints.put(entry.getKey(), entry.getValue());
 
-				if (this.beginnerQuestions.hasMoreQuestions()) {
-					final int nextID = entry.getValue().getNextID();
+				if (this.beginnerQuestions.hasMorePages()) {
+					int nextID = -1;
+					if (beginnerTaskQuestionPage.getPageNextID() > -2) {
+						nextID = beginnerTaskQuestionPage.getPageNextID();
+					} else {
+						// in this case there would only be one question on a page, thus only have a single selection.
+						for(Entry<Question, Answer> entry : selectionMap.entrySet()){
+							nextID = entry.getValue().getNextID();
+						}
+						
+					}
+
 					if (nextID > -1) {
-						final Question curQuestion = this.beginnerQuestions.setQuestionByID(nextID);
+						final Page curPage = this.beginnerQuestions.setPageByID(nextID);
 						final List<Question> allQuestion = this.beginnerQuestions.getQuestionList();
 
-						createBeginnerPage(curQuestion, allQuestion);
+						createBeginnerPage(curPage, allQuestion);
 						if (checkifInUpdateRound()) {
 							this.beginnerQuestions.previousQuestion();
 						}

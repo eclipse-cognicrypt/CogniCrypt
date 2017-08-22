@@ -43,7 +43,8 @@ public class Constants {
 	private static final String rsrcPath = "src" + innerFileSeparator + "main" + innerFileSeparator + "resources" + innerFileSeparator;
 
 	//JSON task file
-	public static final String jsonTaskFile = rsrcPath + "Tasks" + innerFileSeparator + "tasks.json";;
+	public static final String jsonTaskFile = rsrcPath + "Tasks" + innerFileSeparator + "tasks.json";
+	public static final String jsonPrimitiveTypesFile = rsrcPath + "Tasks" + innerFileSeparator + "PrimitiveType.json";
 
 	public static final String pathToPropertyfiles = rsrcPath + "Labels.properties";
 

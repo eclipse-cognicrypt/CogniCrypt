@@ -24,7 +24,7 @@ public class IntegrationNewPrimitive extends Wizard {
 	}
 	public boolean performCancel() {
 		boolean ans = MessageDialog.openConfirm(getShell(), "Confirmation",
-				"Are you sure to close without integrate new Primitve?");
+				"Are you sure to close without integrating the new primitve?");
 		if (ans)
 			return true;
 		else

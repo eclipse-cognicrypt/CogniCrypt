@@ -43,18 +43,18 @@ public class PrimitivePage2 extends WizardPage {
 		lblName.setBounds(20, 41, 59, 25);
 		
 		text = new Text(container, SWT.BORDER);
-		text.setBounds(98, 41, 76, 21);
+		text.setBounds(98, 41, 208, 21);
 		
 		Label lblTheNameOf = new Label(container, SWT.NONE);
-		lblTheNameOf.setText("The name of author/company");
+		lblTheNameOf.setText("What is the name of the author/company ?");
 		lblTheNameOf.setFont(SWTResourceManager.getFont("Tahoma", 10, SWT.NORMAL));
 		lblTheNameOf.setBounds(20, 87, 181, 25);
 		
 		text_1 = new Text(container, SWT.BORDER);
-		text_1.setBounds(230, 87, 76, 21);
+		text_1.setBounds(230, 87, 214, 21);
 		
 		Label lblDescriptionOfYour = new Label(container, SWT.NONE);
-		lblDescriptionOfYour.setText("Description of your Algorithm");
+		lblDescriptionOfYour.setText("Please describe your algorithm");
 		lblDescriptionOfYour.setFont(SWTResourceManager.getFont("Tahoma", 10, SWT.NORMAL));
 		lblDescriptionOfYour.setBounds(20, 166, 181, 25);
 		

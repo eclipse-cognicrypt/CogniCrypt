@@ -1,15 +1,30 @@
 package crossing.e1.configurator.wizard;
 
+import java.util.List;
+
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.wb.swt.SWTResourceManager;
+
+import crossing.e1.primitive.Primitive;
+import crossing.e1.primitive.PrimitiveJSONReader;
+
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 
 public class PrimitivePages extends WizardPage {
 
+	private ComboViewer primitiveComboSelection;
+	private Composite container;
+	private Label selectTaskLabel;
 	/**
 	 * Create the wizard.
 	 */
@@ -25,21 +40,54 @@ public class PrimitivePages extends WizardPage {
 	 * @param parent
 	 */
 	public void createControl(Composite parent) {
-		Composite container = new Composite(parent, SWT.NULL);
+		this.container = new Composite(parent, SWT.NULL);
+		this.container.setBounds(10, 10, 200, 300);
+		final GridLayout layout = new GridLayout(4, false);
+		this.container.setLayout(layout);
+		final List<Primitive> primitives = PrimitiveJSONReader.getPrimitiveTypes();
+		System.out.println(primitives.get(0));
 
-		Label lblNewLabel = new Label(container, SWT.NONE);
-		lblNewLabel.setFont(SWTResourceManager.getFont("Tahoma", 10, SWT.NORMAL));
-		lblNewLabel.setBounds(22, 49, 214, 25);
-		lblNewLabel.setText("Please select the type of Algorithm");
-
-		Combo combo = new Combo(container, SWT.READ_ONLY);
-		combo.setTouchEnabled(true);
-		combo.setToolTipText("");
-		combo.setBounds(254, 47, 112, 23);
-		combo.setText("");
-//		String[] items = { "Cipher", "Message Digest", "Key Generation" };
-		combo.setItems(new String[] { "Cipher", "Message Digest", "Key Generation" });
-		combo.select(0);
 		setControl(container);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+
+		Label lblPleaseChooseThe = new Label(container, SWT.NONE);
+		lblPleaseChooseThe.setText("Please choose the type of algorithm");
+		new Label(container, SWT.NONE);
+
+		this.primitiveComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
+		this.primitiveComboSelection.setContentProvider(ArrayContentProvider.getInstance());
+		this.primitiveComboSelection.setLabelProvider(new LabelProvider() {
+
+			@Override
+			public String getText(final Object primitive) {
+				if (primitive instanceof Primitive) {
+					final Primitive current = (Primitive) primitive;
+					return current.getName();
+				}
+				return super.getText(primitive);
+			}
+		});
+		// add primitives in combo
+		this.primitiveComboSelection.setInput(primitives);
+
+		this.primitiveComboSelection.addSelectionChangedListener(event -> {
+			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+			final Primitive selectedprimitive = (Primitive) selection.getFirstElement();
+
+			PrimitivePages.this.primitiveComboSelection.refresh();
+			setPageComplete(selectedprimitive != null);
+		});
+		this.primitiveComboSelection.setSelection(new StructuredSelection(primitives.get(0)));
+	}
+	public Primitive getSelectedprimitive() {
+		return (Primitive) ((IStructuredSelection) this.primitiveComboSelection.getSelection()).getFirstElement();
 	}
 }

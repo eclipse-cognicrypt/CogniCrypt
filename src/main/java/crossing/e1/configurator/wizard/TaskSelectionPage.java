@@ -30,6 +30,8 @@ import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -42,6 +44,8 @@ import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.tasks.TaskJSONReader;
 import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.configurator.utilities.Utils;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
 public class TaskSelectionPage extends WizardPage {
 
@@ -140,6 +144,17 @@ public class TaskSelectionPage extends WizardPage {
 		new Label(container, SWT.NONE);
 		
 		Button btnPrimitiveIntegration = new Button(container, SWT.NONE);
+		btnPrimitiveIntegration.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				 WizardDialog wizardDialog = new WizardDialog(parent.getShell(),new  IntegrationNewPrimitive());
+		           if (wizardDialog.open() == Window.CANCEL) {
+		               System.out.println("Ok pressed");
+		           } else {
+		               System.out.println("Cancel pressed");
+		           }
+			}
+		});
 		btnPrimitiveIntegration.setText("Primitive Integration");
 		new Label(container, SWT.NONE);
 

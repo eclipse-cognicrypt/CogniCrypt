@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import crossing.e1.configurator.Activator;
+import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Page;
 import crossing.e1.configurator.beginer.question.Question;
@@ -282,6 +283,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							StringBuilder checkedElement = new StringBuilder();
 							if (ans == null) {
 								ans = new Answer();
+								// TODO Why is this -1? Does it still make sense after having introduced multiple questions per page?
 								ans.setNextID(-1);
 							} else {
 								checkedElement.append(ans.getValue());
@@ -326,6 +328,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							}
 							if (ans == null) {
 								ans = new Answer();
+								// TODO Why is this -1? Does it still make sense after having introduced multiple questions per page?
 								ans.setNextID(-1);
 							}
 							String checkedElement = ans.getValue();
@@ -502,7 +505,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		if (page != null) {
 			return page.getNextID();
 		} else {
-			return -2;
+			return Constants.QUESTION_PAGE_NO_STATIC_NEXT_PAGE_ID;
 		}
 	}
 

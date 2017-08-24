@@ -154,6 +154,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		// If legacy JSON files are in effect.
 		if (page == null) {
 			createQuestionControl(container, this.quest);
+			Activator.getDefault().logError("Outdated json file is used for task " + this.task.getDescription() + ". Please update.");
 		} else {
 			// loop through the questions that are to be displayed on the page.
 			for (Question question : page.getContent()) {

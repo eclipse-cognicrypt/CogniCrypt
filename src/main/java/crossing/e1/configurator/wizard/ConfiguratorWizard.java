@@ -150,7 +150,7 @@ public class ConfiguratorWizard extends Wizard {
 				//this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextQuestion(), this.beginnerQuestions.getTask());
 				
 				// The 3rd parameter in this constructor call is benign, it only exists to call the constructor designed for pages
-				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile(),"pages"); 
+				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile()); 
 				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(),null);
 			}
 			if (this.constraints != null) {
@@ -202,7 +202,7 @@ public class ConfiguratorWizard extends Wizard {
 
 						createBeginnerPage(curPage, allQuestion);
 						if (checkifInUpdateRound()) {
-							this.beginnerQuestions.previousQuestion();
+							this.beginnerQuestions.previousPage();
 						}
 						final IWizardPage[] pages = getPages();
 						for (int i = 1; i < pages.length; i++) {
@@ -260,8 +260,8 @@ public class ConfiguratorWizard extends Wizard {
 	public IWizardPage getPreviousPage(final IWizardPage currentPage) {
 		final boolean lastPage = currentPage instanceof InstanceListPage;
 		if (!checkifInUpdateRound() && (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage || lastPage)) {
-			if (!this.beginnerQuestions.isFirstQuestion()) {
-				this.beginnerQuestions.previousQuestion();
+			if (!this.beginnerQuestions.isFirstPage()) {
+				this.beginnerQuestions.previousPage();
 			}
 		}
 		return super.getPreviousPage(currentPage);

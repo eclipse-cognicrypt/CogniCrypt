@@ -53,6 +53,7 @@ import crossing.e1.configurator.utilities.Labels;
 public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private final Question quest;
+	private final Task task;
 	private List<Question> allQuestion;
 	private HashMap<Question, Answer> selectionMap = new HashMap<Question, Answer>(); 
 	private boolean finish = false;
@@ -87,6 +88,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		setTitle("Configuring Selected Task: " + task.getDescription());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.quest = quest;
+		this.task = task;
 		this.selectionValues = selectionValues;
 
 		// This variable needs to be initialized.
@@ -108,6 +110,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		setTitle("Configuring Selected Task: " + task.getDescription());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.page = page;
+		this.task = task;
 		this.selectionValues = selectionValues;
 
 		//This variable needs to be initialized.
@@ -121,6 +124,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		this.allQuestion = allQuestion;
 		this.quest = null;
 		this.page = page;
+		this.task = task;
 		this.selectionValues = selectionValues;
 	}
 
@@ -131,6 +135,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		this.allQuestion = allQuestion;
 		this.quest = quest;
 		this.page = null;
+		this.task = task;
 	}
 
 	@Override

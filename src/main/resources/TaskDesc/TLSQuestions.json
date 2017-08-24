@@ -40,7 +40,7 @@
             "option": "server",
             "value": "true"
           }],
-          "nextID": "4"
+          "nextID": "3"
         },
         {
           "value": "Client",
@@ -68,7 +68,7 @@
           "value": "No",
           "codeDependencies": [],
           "defaultAnswer": true,
-          "nextID": "5"
+          "nextID": "6"
         }
       ]
     }]
@@ -107,10 +107,26 @@
     }],
     "nextID": "5"
   },
+	{
+		"id": "5",
+		"content": [		{
+			"id" : "6",
+			"element" : "button",
+			"questionText":"If you want test the connection to the host IP then click the \"Test\" button, else click \"Next\".",
+			"method" : ["Test","crossing.e1.configurator.wizard.TLSConnection","testConnection"],
+			"methodParamIds" : ["5","6"],
+			"answers":[
+				{"value":"true",
+				"codeDependencies":[]},
+				{"value":"false",
+				"codeDependencies":[], "defaultAnswer": true, "nextID" : "7"}
+			],
+		"nextID" : "7"}]
+	},
   {
-    "id": "5",
+    "id": "6",
     "content": [{
-      "id": "6",
+      "id": "7",
       "questionText": "We have compiled a default configuration that is secure and should work for most connections. Do you want to accept this configuration or would you like to change it?",
       "answers": [{
           "value": "Keep.",
@@ -126,15 +142,15 @@
         {
           "value": "Change.",
           "claferDependencies": [],
-          "nextID": "6"
+          "nextID": "7"
         }
       ]
     }]
   },
   {
-    "id": "6",
+    "id": "7",
     "content": [{
-      "id": "7",
+      "id": "8",
       "element": "itemselection",
       "selectionClafer": "CipherSuite",
       "questionText": "Please select the cipher suites and tls protocol versions you would like to use.",

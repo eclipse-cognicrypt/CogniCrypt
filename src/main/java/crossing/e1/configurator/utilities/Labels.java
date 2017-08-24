@@ -29,7 +29,7 @@ public interface Labels {
 
 	Properties prop = new PropertiesFileReader(Constants.pathToPropertyfiles).getProperties();
 	// Strings for GUI elements
-	static final String SECOND_PAGE = prop.getProperty("SECOND_PAGE");
+	static final String ALGORITHM_SELECTION_PAGE = prop.getProperty("ALGORITHM_SELECTION_PAGE");
 	static final String DESCRIPTION_INSTANCE_LIST_PAGE = prop.getProperty("DESCRIPTION_INSTANCE_LIST_PAGE");
 	static final String instanceList = prop.getProperty("LABEL1");
 	static final String SELECT_TASK = prop.getProperty("SELECT_TASK");

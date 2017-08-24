@@ -44,6 +44,7 @@ import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.codegeneration.XSLBasedGenerator;
 import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.FileHelper;
+import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.configurator.utilities.Utils;
 import crossing.e1.configurator.utilities.XMLParser;
 import crossing.e1.configurator.wizard.advanced.AdvancedUserValueSelectionPage;
@@ -95,7 +96,7 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public boolean canFinish() {
-		return this.instanceListPage != null && this.instanceListPage.isPageComplete();
+			return (getContainer().getCurrentPage().getName().equals(Labels.ALGORITHM_SELECTION_PAGE));	
 	}
 
 	private boolean checkifInUpdateRound() {

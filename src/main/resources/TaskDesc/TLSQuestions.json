@@ -107,22 +107,27 @@
     }],
     "nextID": "5"
   },
-	{
-		"id": "5",
-		"content": [		{
-			"id" : "6",
-			"element" : "button",
-			"questionText":"If you want test the connection to the host IP then click the \"Test\" button, else click \"Next\".",
-			"method" : ["Test","crossing.e1.configurator.wizard.TLSConnection","testConnection"],
-			"methodParamIds" : ["5","6"],
-			"answers":[
-				{"value":"true",
-				"codeDependencies":[]},
-				{"value":"false",
-				"codeDependencies":[], "defaultAnswer": true, "nextID" : "7"}
-			],
-		"nextID" : "7"}]
-	},
+  {
+    "id": "5",
+    "content": [{
+      "id": "6",
+      "element": "button",
+      "questionText": "If you want test the connection to the host IP then click the \"Test\" button, else click \"Next\".",
+      "method": ["Test", "crossing.e1.configurator.wizard.TLSConnection", "testConnection"],
+      "methodParamIds": ["5", "6"],
+      "answers": [{
+          "value": "true",
+          "codeDependencies": []
+        },
+        {
+          "value": "false",
+          "codeDependencies": [],
+          "defaultAnswer": true
+        }
+      ]
+    }],
+    "nextID": "7"
+  },
   {
     "id": "6",
     "content": [{

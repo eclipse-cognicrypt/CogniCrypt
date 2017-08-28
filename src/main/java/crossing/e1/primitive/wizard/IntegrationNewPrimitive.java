@@ -1,4 +1,4 @@
-package crossing.e1.configurator.wizard;
+package crossing.e1.primitive.wizard;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
@@ -12,7 +12,7 @@ public class IntegrationNewPrimitive extends Wizard {
 
 	public void addPages() {
 		addPage(new PrimitivePages());
-		addPage(new PrimitivePage2());
+		
 
 	}
 

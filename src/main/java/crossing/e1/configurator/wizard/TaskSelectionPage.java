@@ -44,6 +44,8 @@ import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.tasks.TaskJSONReader;
 import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.configurator.utilities.Utils;
+import crossing.e1.primitive.wizard.IntegrationNewPrimitive;
+
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 

@@ -1,4 +1,4 @@
-package crossing.e1.primitive;
+package crossing.e1.primitive.types;
 public class Primitive {
 
 	private String name;

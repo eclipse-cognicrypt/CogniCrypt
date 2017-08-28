@@ -1,0 +1,64 @@
+[
+		{
+			"id" : "0",
+			"questionList":[
+			{ "questionText":"Please select the type of the Cipher",
+			"element": "combo",
+			"answers":[
+				{"value":"Symmetric",
+				"claferDependencies":[
+				{"algorithm": "", "operand":"","value":"","operator":""}
+				],"nextID" : "1" 
+				},
+				{"value":"Asymmetric",
+				"claferDependencies":[
+				{"algorithm": "", "operand":"","value":"","operator":""}
+				]
+				}
+			]
+		}
+		]
+		},
+		{
+			"id" : "1",
+			"questionList":[
+			  {
+			"questionText":"Please select the type of the symmetric-key algorithm",
+			"element" : "combo",
+			"answers":[
+				{"value":"Block",
+				"claferDependencies":[
+				{"algorithm":"", "value":"", "operator":""},
+				{"algorithm":"", "value":"", "operator":""}],
+				 "nextID" : "2"
+				},
+				{"value":"Stream",
+				"claferDependencies":[
+				{"algorithm":"", "value":"", "operator":""}
+				], "defaultAnswer": true, "nextID" : "2"
+			}
+			]
+			  }
+			  ]
+		},
+		{
+			"id" : "2",
+			"questionList":[
+			 {
+			"questionText":"",
+			"element" : "combo",
+			"answers":[
+				{"value":"Yes",
+				"codeDependencies":[
+				{"option":"textsize", "value" : "true"}],
+				 "nextID" : "-1"
+				},
+				{"value":"No",
+				"codeDependencies":[
+				{"option":"textsize", "value" : "false"}], "defaultAnswer": true, "nextID" : "-1"
+			}
+			]
+		}
+]
+}
+]

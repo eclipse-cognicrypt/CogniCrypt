@@ -1,4 +1,4 @@
-package crossing.e1.configurator.wizard;
+package crossing.e1.primitive.wizard;
 
 import java.util.List;
 
@@ -7,13 +7,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.wb.swt.SWTResourceManager;
 
-import crossing.e1.primitive.Primitive;
-import crossing.e1.primitive.PrimitiveJSONReader;
+import crossing.e1.primitive.types.Primitive;
+import crossing.e1.primitive.types.PrimitiveJSONReader;
 
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -25,6 +22,7 @@ public class PrimitivePages extends WizardPage {
 	private ComboViewer primitiveComboSelection;
 	private Composite container;
 	private Label selectTaskLabel;
+
 	/**
 	 * Create the wizard.
 	 */
@@ -87,6 +85,7 @@ public class PrimitivePages extends WizardPage {
 		});
 		this.primitiveComboSelection.setSelection(new StructuredSelection(primitives.get(0)));
 	}
+
 	public Primitive getSelectedprimitive() {
 		return (Primitive) ((IStructuredSelection) this.primitiveComboSelection.getSelection()).getFirstElement();
 	}

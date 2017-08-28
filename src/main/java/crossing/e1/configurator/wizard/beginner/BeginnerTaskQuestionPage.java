@@ -56,6 +56,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private boolean finish = false;
 	private List<String> selectionValues;
 
+	/**
+	 * @wbp.parser.constructor
+	 */
 	public BeginnerTaskQuestionPage(final Question quest, final Task task) {
 		this(quest, task, null);
 	}

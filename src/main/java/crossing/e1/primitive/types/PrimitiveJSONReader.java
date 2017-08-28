@@ -1,4 +1,5 @@
-package crossing.e1.primitive;
+package crossing.e1.primitive.types;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -15,7 +16,6 @@ public class PrimitiveJSONReader {
 
 	private volatile static List<Primitive> primitives;
 
-	
 	public static List<Primitive> getPrimitiveTypes() {
 		if (primitives == null) {
 			try {
@@ -29,6 +29,5 @@ public class PrimitiveJSONReader {
 		}
 		return primitives;
 	}
-	
 
 }

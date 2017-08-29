@@ -46,19 +46,5 @@ public class TaskJSONReader {
 
 		return tasks;
 	}
-	public static List<Task> getPrimitiveTypes() {
-		if (tasks == null) {
-			try {
-				BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(Constants.jsonPrimitiveTypesFile)));
-				final Gson gson = new Gson();
-				tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {}.getType());
-
-			} catch (final FileNotFoundException e) {
-				Activator.getDefault().logError(e);
-			}
-		}
-		return tasks;
-	}
 	
-
 }

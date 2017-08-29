@@ -1,12 +1,12 @@
-package crossing.e1.primitive.wizard;
+package crossing.e1.primitive.questionnaire;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 
 
-public class PrimitiveQuestions extends WizardPage {
+public class PrimitiveQuestionnairePage extends WizardPage {
 
-	protected PrimitiveQuestions(String pageName) {
+	protected PrimitiveQuestionnairePage(String pageName) {
 		super(pageName);
 		// TODO Auto-generated constructor stub
 	}

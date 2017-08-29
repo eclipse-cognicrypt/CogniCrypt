@@ -563,6 +563,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		int result = 1;
 		result = prime * result + (this.finish ? 1231 : 1237);
 		result = prime * result + ((this.quest == null) ? 0 : this.quest.hashCode());
+		result = prime * result + ((this.page == null) ? 0 : this.quest.hashCode());
 		result = prime * result + ((this.selectionMap == null) ? 0 : this.selectionMap.hashCode());
 		result = prime * result + ((this.selectionValues == null) ? 0 : this.selectionValues.hashCode());
 		return result;

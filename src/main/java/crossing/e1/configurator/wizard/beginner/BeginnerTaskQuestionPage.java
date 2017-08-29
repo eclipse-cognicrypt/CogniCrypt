@@ -54,7 +54,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private final Question quest;
 	private final Task task;
-	private List<Question> allQuestion;
+	// Removed the allquestions variable as it was not longer required.
+	private BeginnerModeQuestionnaire beginnerModeQuestionnaire;
 	private HashMap<Question, Answer> selectionMap = new HashMap<Question, Answer>(); 
 	private boolean finish = false;
 	private List<String> selectionValues;
@@ -116,23 +117,34 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		//This variable needs to be initialized.
 		this.quest = null;
 	}
-
-	public BeginnerTaskQuestionPage(final Page page, final Task task, final List<Question> allQuestion, final List<String> selectionValues) {
+	/**
+	 * 
+	 * @param page
+	 * @param task
+	 * @param beginnerModeQuestionnaire Updated this parameter in the constructor to accept the questionnaire instead of all the questions. 
+	 * @param selectionValues
+	 */
+	public BeginnerTaskQuestionPage(final Page page, final Task task, final BeginnerModeQuestionnaire beginnerModeQuestionnaire, final List<String> selectionValues) {
 		super("Display Questions");
 		setTitle("Configuring Selected Task: " + task.getDescription());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
-		this.allQuestion = allQuestion;
+		this.beginnerModeQuestionnaire = beginnerModeQuestionnaire;
 		this.quest = null;
 		this.page = page;
 		this.task = task;
 		this.selectionValues = selectionValues;
 	}
-
-	public BeginnerTaskQuestionPage(final List<Question> allQuestion, final Question quest, final Task task) {
+	/**
+	 * 
+	 * @param beginnerModeQuestionnaire Updated this parameter in the constructor to accept the questionnaire instead of all the questions. 
+	 * @param quest
+	 * @param task
+	 */
+	public BeginnerTaskQuestionPage(final BeginnerModeQuestionnaire beginnerModeQuestionnaire, final Question quest, final Task task) {
 		super("Display Questions");
 		setTitle("Configuring Selected Task: " + task.getDescription());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
-		this.allQuestion = allQuestion;
+		this.beginnerModeQuestionnaire = beginnerModeQuestionnaire;
 		this.quest = quest;
 		this.page = null;
 		this.task = task;
@@ -396,19 +408,22 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					String value = null;
 
 					for (int i = 0; i < methodParamIds.size(); i++) {
-						value = this.allQuestion.get(methodParamIds.get(i) - 1).getAnswers().get(0).getValue();
-
+						// Updated this code to pull just specific questions from the questionnaire. 
+						// getQuestionByID may return null in case of a bad json file. Updated the catch block.
+						value = this.beginnerModeQuestionnaire.getQuestionByID(methodParamIds.get(i)).getAnswers().get(0).getValue();
+						
 						if (!paramTypes[i].getName().equals("int")) {
 							paramObjList.add(paramTypes[i].cast(value));
 						} else {
-							paramObjList.add(Integer.parseInt(this.allQuestion.get(methodParamIds.get(i) - 1).getAnswers().get(0).getValue()));
+							// updated this code to reuse the value variable instead of the earlier line of code.
+							paramObjList.add(Integer.parseInt(value));
 						}
 					}
 
 					classObj = c.newInstance();
 					paramArray = paramObjList.toArray();
 
-				} catch (SecurityException | ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InstantiationException e) {
+				} catch (NullPointerException | SecurityException | ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InstantiationException e) {
 					Activator.getDefault().logError(e);
 				}
 

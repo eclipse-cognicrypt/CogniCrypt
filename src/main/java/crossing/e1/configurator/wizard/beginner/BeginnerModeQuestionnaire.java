@@ -41,8 +41,23 @@ public class BeginnerModeQuestionnaire {
 		
 		this.questionList = null;
 	}
-
-
+	/**
+	 * Added this method to get specific questions. This functionality was created to replace the code when handling buttons
+	 * as 'Questions'.
+	 * @param questionID
+	 * @return The requested question.
+	 */
+	public Question getQuestionByID(final int questionID) {
+		
+		for(Page page : pageList){
+			for(Question question : page.getContent()){
+				if(question.getId() == questionID){
+					return question;
+				}
+			}
+		}
+		return null;
+	}
 
 	public List<Page> getQuestionnaire() throws NullPointerException {
 		return this.pageList;

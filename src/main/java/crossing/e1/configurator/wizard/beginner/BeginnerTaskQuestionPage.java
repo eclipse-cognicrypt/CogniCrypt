@@ -345,14 +345,16 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 							final Object[] resObjArray = (Object[]) invokeMethod.invoke(invokeClassObj, invokeParamArray);
 							final String[] resStringArray = Arrays.copyOf(resObjArray, resObjArray.length, String[].class);
-
-							if (resStringArray[0].equals(true)) {
+							final boolean methodResult = Boolean.parseBoolean(resStringArray[0]);
+							final String feedbackString = resStringArray[1];
+							
+							if (methodResult == true) {
 								question.getDefaultAnswer().setNextID(question.getAnswers().get(0).getNextID());
 							} else {
 								question.getDefaultAnswer().setNextID(question.getAnswers().get(1).getNextID());
 							}
 
-							feedbackLabel.setText(resStringArray[1]);
+							feedbackLabel.setText(feedbackString);
 							feedbackLabel.getParent().pack();
 							methodButton.setEnabled(false);
 						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {

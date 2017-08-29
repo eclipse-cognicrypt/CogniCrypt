@@ -108,4 +108,23 @@ public class Constants {
 	//Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;
 	
+	// Constants for the Task Integrator Wizard.
+	// Page constants
+	
+	public static final String PAGE_NAME_FOR_MODE_OF_WIZARD = "pageForChoiceOfModeOfWizard";
+	public static final String PAGE_TITLE_FOR_MODE_OF_WIZARD = "Please select the mode for the wizard";
+	public static final String PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD = "Here you can update the basic details of the task, and the mode in which the wizard will run.";
+	
+	public static final String PAGE_NAME_FOR_CLAFER_FILE_CREATION = "pageForClaferFileCreation";
+	public static final String PAGE_TITLE_FOR_CLAFER_FILE_CREATION = "Add the variablity modelling here";
+	public static final String PAGE_DESCRIPTION_FOR_CLAFER_FILE_CREATION = "Here you can add features to the variability model here.";
+	
+	public static final String PAGE_NAME_FOR_XSL_FILE_CREATION = "pageForXSLFileCreation";
+	public static final String PAGE_TITLE_FOR_XSL_FILE_CREATION = "Add data for the code generation";
+	public static final String PAGE_DESCRIPTION_FOR_XSL_FILE_CREATION = "Here you can details for the code generation.";
+	
+	public static final String PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS = "pageForHighLevelQuestions";
+	public static final String PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS = "Add the high level qustions and their dependencies here";
+	public static final String PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS = "Here you can add the questions that will be asked to the end user, and the dependencies to the "+
+																			"variability modelling and the code generation.";
 }

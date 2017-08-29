@@ -1,64 +1,534 @@
 [
-		{
-			"id" : "0",
-			"questionList":[
-			{ "questionText":"Please select the type of the Cipher",
-			"element": "combo",
-			"answers":[
-				{"value":"Symmetric",
-				"claferDependencies":[
-				{"algorithm": "", "operand":"","value":"","operator":""}
-				],"nextID" : "1" 
-				},
-				{"value":"Asymmetric",
-				"claferDependencies":[
-				{"algorithm": "", "operand":"","value":"","operator":""}
-				]
-				}
-			]
-		}
-		]
-		},
-		{
-			"id" : "1",
-			"questionList":[
-			  {
-			"questionText":"Please select the type of the symmetric-key algorithm",
-			"element" : "combo",
-			"answers":[
-				{"value":"Block",
-				"claferDependencies":[
-				{"algorithm":"", "value":"", "operator":""},
-				{"algorithm":"", "value":"", "operator":""}],
-				 "nextID" : "2"
-				},
-				{"value":"Stream",
-				"claferDependencies":[
-				{"algorithm":"", "value":"", "operator":""}
-				], "defaultAnswer": true, "nextID" : "2"
-			}
-			]
-			  }
-			  ]
-		},
-		{
-			"id" : "2",
-			"questionList":[
-			 {
-			"questionText":"",
-			"element" : "combo",
-			"answers":[
-				{"value":"Yes",
-				"codeDependencies":[
-				{"option":"textsize", "value" : "true"}],
-				 "nextID" : "-1"
-				},
-				{"value":"No",
-				"codeDependencies":[
-				{"option":"textsize", "value" : "false"}], "defaultAnswer": true, "nextID" : "-1"
-			}
-			]
-		}
-]
-}
+  {
+    "id": "0",
+    "questionList": [
+      {
+        "questionText": "Please select the type of the Cipher",
+        "element": "combo",
+        "answers": [
+          {
+            "value": "Symmetric",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          },
+          {
+            "value": "Asymmetric",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "1",
+    "questionList": [
+      {
+        "questionText": "Please select the type of the symmetric-key algorithm",
+        "element": "combo",
+        "answers": [
+          {
+            "value": "Block",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "value": "",
+                "operator": ""
+              },
+              {
+                "algorithm": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "2"
+          },
+          {
+            "value": "Stream",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "defaultAnswer": true,
+            "nextID": "2"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "questionList": [
+      {
+        "questionText": "Name",
+        "element": "text",
+        "answers": [
+          {
+            "value": "",
+            "codeDependencies": [
+              {
+                "option": "textsize",
+                "value": "true"
+              }
+            ],
+            "nextID": "-1"
+          }
+        ]
+      },
+      {
+        "questionText": "The Name of author/company?",
+        "element": "text",
+        "answers": [
+          {
+            "value": "",
+            "codeDependencies": [
+              {
+                "option": "textsize",
+                "value": "true"
+              }
+            ],
+            "nextID": "-1"
+          }
+        ]
+      },
+      {
+        "questionText": "Description of your Algorithm",
+        "element": "text",
+        "answers": [
+          {
+            "value": "",
+            "codeDependencies": [
+              {
+                "option": "textsize",
+                "value": "true"
+              }
+            ],
+            "nextID": "-1"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "questionList": [
+      {
+        "questionText": "Please select the corresponded key size of Algorithm",
+        "element": "combo",
+        "answers": [
+          {
+            "value": "56",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          },
+          {
+            "value": "128",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          },
+          {
+            "value": "192",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          },
+          {
+            "value": "256",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          }
+        ]
+      },
+      {
+        "questionText": "Please enter the block size of cipher",
+        "element": "text",
+        "answers": [
+          {
+            "value": "",
+            "codeDependencies": [
+              {
+                "option": "textsize",
+                "value": "true"
+              }
+            ],
+            "nextID": "-1"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "questionList": [
+      {
+        "questionText": "Please select the modes of operation of your Algorithm",
+        "element": "checkboxes",
+        "answers": [
+          {
+            "value": "ECB",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          },
+          {
+            "value": "CBC",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          },
+          {
+            "value": "PCBC",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          },
+          {
+            "value": "CTR",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          },
+          {
+            "value": "CTS",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          },
+          {
+            "value": "CFB",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          },
+          {
+            "value": "OFB",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          },
+          {
+            "value": "GCM",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          }
+        ]
+      },
+      {
+        "questionText": "Please enter the block size of cipher",
+        "element": "text",
+        "answers": [
+          {
+            "value": "",
+            "codeDependencies": [
+              {
+                "option": "textsize",
+                "value": "true"
+              }
+            ],
+            "nextID": "-1"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "questionList": [
+      {
+        "questionText": "Please select the padding used for Algorithm",
+        "element": "combo",
+        "answers": [
+          {
+            "value": "OneAndZeroes Padding",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          },
+          {
+            "value": "Zero Padding",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ]
+          },
+          {
+            "value": "No Padding",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          },
+          {
+            "value": "PKCS7",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "6",
+    "questionList": [
+      {
+        "questionText": "Please select the Encryption Class",
+        "element": "combo",
+        "answers": [
+          {
+            "value": "Encr",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          },
+          {
+            "value": "Test",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ]
+          },
+          {
+            "value": "Decrypt",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          }
+        ]
+      },
+      {
+        "questionText": "Please select the Decryption Class",
+        "element": "combo",
+        "answers": [
+          {
+            "value": "Encrypt",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          },
+          {
+            "value": "Decrypt",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ]
+          },
+          {
+            "value": "Both",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "7",
+    "questionList": [
+      {
+        "questionText": "Does your project include a keyGeneration class?",
+        "element": "radio",
+        "answers": [
+          {
+            "value": "Yes",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          },
+          {
+            "value": "No",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "questionText": "Please select the keyGeneration class?",
+        "element": "combo",
+        "answers": [
+          {
+            "value": "",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ],
+            "nextID": "1"
+          },
+          {
+            "value": "",
+            "claferDependencies": [
+              {
+                "algorithm": "",
+                "operand": "",
+                "value": "",
+                "operator": ""
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 ]

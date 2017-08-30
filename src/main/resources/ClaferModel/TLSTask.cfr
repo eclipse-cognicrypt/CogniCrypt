@@ -639,7 +639,7 @@ SSL_RSA_WITH_NULL_MD5 : CipherSuite
 	[tlsProtocol >= SSL2] //TODO: double check the tls version/protocol
 
 SecureCommunication : Task  
-	[description = "Communicate over a secure channel"]
+	[description = "Establish a Secure Network Connection"]
 	ciphersuites -> CipherSuite 7..*
 	tlsVersion -> TLS_Version
 	[tlsVersion = TLS1_2]

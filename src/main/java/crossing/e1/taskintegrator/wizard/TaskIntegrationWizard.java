@@ -14,6 +14,8 @@ public class TaskIntegrationWizard extends Wizard {
 	@Override
 	public void addPages() {
 		
+		this.addPage(new DialogsTestPage());
+
 		PageForTaskIntegratorWizard choicePageForModeOfWizard = new PageForTaskIntegratorWizard(
 			Constants.PAGE_NAME_FOR_MODE_OF_WIZARD, Constants.PAGE_TITLE_FOR_MODE_OF_WIZARD, Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD);
 		this.addPage(choicePageForModeOfWizard);

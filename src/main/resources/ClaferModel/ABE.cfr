@@ -6,11 +6,11 @@ abstract Cipher : Algorithm
 
 abstract AttributeBasedCipher : Cipher
 
-ABECipherTextPolicy : Cipher
+ABECipherTextPolicy : AttributeBasedCipher
 	[name = "Cipher Text Policy"]
 	[description = "Cipher Text Policy"]
 
-ABEKeyIndexPolicy : Cipher
+ABEKeyIndexPolicy : AttributeBasedCipher
 	[name = "Key Index Policy"]
 	[description = "Key Index Policy"]  
 
@@ -19,7 +19,6 @@ abstract Task
 
 ABE : Task
 	[description = "Attribute-Based Encryption"]
-	policy -> Cipher
-	[policy.name = "Cipher Text Policy"]
-	keyPolicy -> Cipher
-	[keyPolicy.name = "Key Index Policy"]
+	abe -> AttributeBasedCipher
+	[abe = ABECipherTextPolicy]
+	[abe = ABEKeyIndexPolicy]

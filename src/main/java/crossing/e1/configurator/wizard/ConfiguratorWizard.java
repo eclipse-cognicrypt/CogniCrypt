@@ -303,8 +303,17 @@ public class ConfiguratorWizard extends Wizard {
 
 				// New code generator
 				try {
-					CodeGenerator codeGeneratorNew = new CodeGenerator("KeyGenerator");
-					codeGeneratorNew.next();
+					//CodeGenerator codeGeneratorNew = new CodeGenerator("KeyGenerator");
+					//codeGeneratorNew.next();
+
+					String[] rules = { "AlgorithmParameters", "Cipher", "DHGenParameterSpec", "DHParameterSpec", "DSAGenParameterSpec", "DSAParameterSpec", "GCMParameterSpec", "HMACParameterSpec", "IVParameterSpec", "KeyGenerator", };
+
+					for (String ruleName : rules) {
+						CodeGenerator codeGeneratorNew = new CodeGenerator(ruleName);
+						codeGeneratorNew.next();
+
+					}
+
 				} catch (Exception e) {
 					// For debugging
 					e.printStackTrace();

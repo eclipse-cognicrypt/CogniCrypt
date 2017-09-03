@@ -80,4 +80,11 @@
     	</plugins>
     </pluginManagement>
   </build>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.eclipse.jdt.core.compiler</groupId>
+  		<artifactId>ecj</artifactId>
+  		<version>4.6.1</version>
+  	</dependency>
+  </dependencies>
 </project>

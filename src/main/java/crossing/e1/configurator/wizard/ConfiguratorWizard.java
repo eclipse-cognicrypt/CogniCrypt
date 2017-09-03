@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -41,6 +42,7 @@ import crossing.e1.configurator.analysis.CryptSLModelReader;
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.ClaferDependency;
 import crossing.e1.configurator.beginer.question.Question;
+import crossing.e1.configurator.codegeneration.CodeGenerator;
 import crossing.e1.configurator.codegeneration.XSLBasedGenerator;
 import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.FileHelper;
@@ -284,7 +286,7 @@ public class ConfiguratorWizard extends Wizard {
 			try {
 				final XMLParser parser = new XMLParser();
 				parser.displayInstanceValues(this.instanceListPage.getValue(), this.constraints);
-				
+
 				// Initialize Code Generation
 				XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject());
 
@@ -298,6 +300,27 @@ public class ConfiguratorWizard extends Wizard {
 				// Delete Instance File
 				FileHelper.deleteFile(xmlInstancePath);
 				codeGenerator.getDeveloperProject().refresh();
+
+				// New code generator
+				try {
+					//CodeGenerator codeGeneratorNew = new CodeGenerator("KeyGenerator");
+					//codeGeneratorNew.next();
+
+					String[] rules = { "AlgorithmParameters", "Cipher", "DHGenParameterSpec", "DHParameterSpec", "DSAGenParameterSpec", "DSAParameterSpec", "GCMParameterSpec", "HMACParameterSpec", "IVParameterSpec", "KeyGenerator", };
+
+					for (String ruleName : rules) {
+						CodeGenerator codeGeneratorNew = new CodeGenerator(ruleName);
+						codeGeneratorNew.next();
+
+					}
+
+				} catch (Exception e) {
+					// For debugging
+					e.printStackTrace();
+
+					JOptionPane.showConfirmDialog(null, "Code generation failed.");
+
+				}
 
 			} catch (final IOException | CoreException | BadLocationException e) {
 				Activator.getDefault().logError(e);

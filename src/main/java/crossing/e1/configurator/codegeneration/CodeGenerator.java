@@ -129,7 +129,9 @@ public class CodeGenerator {
 			 * Determine method name. We still found no solution to determine an appropriate method name. Therefore we use the name "use()".
 			 */
 			String methodName = "use() throws Exception";
-
+				
+			//FIXME java.lang.Class.forName("className").getMethod("a").getExceptionTypes();
+			
 			javaCodeFile.addCodeLine("public " + getReturnType(currentTransitions) + " " + methodName + " {");
 
 			// first code line for test reasons

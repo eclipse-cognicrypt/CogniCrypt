@@ -3,8 +3,12 @@ package crossing.e1.taskintegrator.wizard;
 import org.eclipse.jface.wizard.Wizard;
 
 import crossing.e1.configurator.Constants;
+import crossing.e1.taskintegrator.models.ModelAdvancedMode;
+
 
 public class TaskIntegrationWizard extends Wizard {
+	private ModelAdvancedMode objectForDataInNonGuidedMode;
+	PageForTaskIntegratorWizard choicePageForModeOfWizard;
 
 	public TaskIntegrationWizard() {
 	}
@@ -14,8 +18,9 @@ public class TaskIntegrationWizard extends Wizard {
 	@Override
 	public void addPages() {
 		
-		PageForTaskIntegratorWizard choicePageForModeOfWizard = new PageForTaskIntegratorWizard(
-			Constants.PAGE_NAME_FOR_MODE_OF_WIZARD, Constants.PAGE_TITLE_FOR_MODE_OF_WIZARD, Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD);
+		choicePageForModeOfWizard = new PageForTaskIntegratorWizard(
+			Constants.PAGE_NAME_FOR_MODE_OF_WIZARD, Constants.PAGE_TITLE_FOR_MODE_OF_WIZARD, Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD
+			);
 		this.addPage(choicePageForModeOfWizard);
 		
 		PageForTaskIntegratorWizard pageForClaferFileCreation = new PageForTaskIntegratorWizard(
@@ -34,11 +39,48 @@ public class TaskIntegrationWizard extends Wizard {
 
 
 	/* (non-Javadoc)
+	 * @see org.eclipse.jface.wizard.Wizard#getNextPage(org.eclipse.jface.wizard.IWizardPage)
+	 */
+	/*@Override
+	public IWizardPage getNextPage(IWizardPage page) {
+		
+		
+		
+		return super.getNextPage(page);
+	}*/
+
+
+
+	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
 	@Override
 	public boolean performFinish() {
+		//choicePageForModeOfWizard.setDataForAdvancedMode(choicePageForModeOfWizard.getControl());
+		System.out.println(objectForDataInNonGuidedMode.getNameOfTheTask());
+		System.out.println(objectForDataInNonGuidedMode.getLocationOfCustomLibrary());
+		System.out.println(objectForDataInNonGuidedMode.getLocationOfClaferFile());
+		System.out.println(objectForDataInNonGuidedMode.getLocationOfJSONFile());
+		System.out.println(objectForDataInNonGuidedMode.getLocationOfXSLFile());
 		return false;
+	}
+
+
+
+	/**
+	 * @return the objectForDataInNonGuidedMode
+	 */
+	public ModelAdvancedMode getObjectForDataInNonGuidedMode() {
+		return objectForDataInNonGuidedMode;
+	}
+
+
+
+	/**
+	 * @param objectForDataInNonGuidedMode the objectForDataInNonGuidedMode to set
+	 */
+	public void setObjectForDataInNonGuidedMode(ModelAdvancedMode objectForDataInNonGuidedMode) {
+		this.objectForDataInNonGuidedMode = objectForDataInNonGuidedMode;
 	}
 
 }

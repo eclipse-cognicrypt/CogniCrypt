@@ -24,6 +24,7 @@ public class DialogsTestPage extends WizardPage {
 		container.setLayout(layout);
 
 		ClaferConstraintDialog cfrConstrDialog = new ClaferConstraintDialog(parent.getShell());
+		ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(parent.getShell());
 
 		Button btn = new Button(container, SWT.PUSH);
 		btn.setText("Clafer Constraint Dialog");
@@ -32,6 +33,16 @@ public class DialogsTestPage extends WizardPage {
 			@Override
 			public void handleEvent(Event e) {
 				cfrConstrDialog.open();
+			}
+		});
+
+		Button btn2 = new Button(container, SWT.PUSH);
+		btn2.setText("Clafer Feature Dialog");
+		btn2.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event e) {
+				cfrFeatureDialog.open();
 			}
 		});
 

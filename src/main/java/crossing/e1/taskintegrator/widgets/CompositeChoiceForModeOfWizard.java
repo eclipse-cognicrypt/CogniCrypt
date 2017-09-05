@@ -49,7 +49,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		lblNameOfTheTask.setText("Name of the Task :");
 		
 		txtForTaskName = new Text(grpChooseTheMode, SWT.NONE);
-		txtForTaskName.setBounds(120, 10, 349, Constants.UI_WIDGET_HEIGHT_NORMAL);
+		txtForTaskName.setBounds(120, 10, 379, Constants.UI_WIDGET_HEIGHT_NORMAL);
 				
 		Combo cmbLibraryLocation = new Combo(grpChooseTheMode, SWT.NONE);		
 		cmbLibraryLocation.setBounds(10, 46, 153, Constants.UI_WIDGET_HEIGHT_NORMAL);
@@ -58,9 +58,9 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		cmbLibraryLocation.select(0);
 		
 		Group grpLibraryWidgets = new Group(grpChooseTheMode, SWT.NONE);
-		grpLibraryWidgets.setBounds(169, 46, 327, 32);
+		grpLibraryWidgets.setBounds(169, 46, 330, 32);
 		// Keep invisible since the default selection is existing library.
-		grpLibraryWidgets.setVisible(false);
+		//grpLibraryWidgets.setVisible(false);
 		
 		Label lblLibraryLocation = new Label(grpLibraryWidgets, SWT.NONE);
 		lblLibraryLocation.setLocation(10, 0);
@@ -71,7 +71,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		txtLibraryLocation.setBounds(111, 0, 156, Constants.UI_WIDGET_HEIGHT_NORMAL);
 		
 		Button btnBrowseForLibraryLocation = new Button(grpLibraryWidgets, SWT.NONE);
-		btnBrowseForLibraryLocation.setBounds(269, 0, 56, Constants.UI_WIDGET_HEIGHT_NORMAL);
+		btnBrowseForLibraryLocation.setBounds(273, 0, 56, Constants.UI_WIDGET_HEIGHT_NORMAL);
 		btnBrowseForLibraryLocation.setText(Constants.LABEL_BROWSE_BUTTON);
 		
 		Button btnDoYouWishToUseTheGuidedMode = new Button(grpChooseTheMode, SWT.CHECK);		
@@ -81,46 +81,46 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		btnDoYouWishToUseTheGuidedMode.setSelection(true);
 		
 		Group grpNonguidedMode = new Group(grpChooseTheMode, SWT.NONE);
-		grpNonguidedMode.setBounds(10, 119, 459, 166);
+		grpNonguidedMode.setBounds(10, 119, 489, 166);
 		grpNonguidedMode.setText("Non-Guided mode");
-		grpNonguidedMode.setVisible(false);
+		//grpNonguidedMode.setVisible(false);
 		
 		Label lblLocationOfClaferFile = new Label(grpNonguidedMode, SWT.NONE);
 		lblLocationOfClaferFile.setText("Location of the Clafer file :");
 		lblLocationOfClaferFile.setBounds(10, 10, 150, Constants.UI_WIDGET_HEIGHT_NORMAL);
 		
 		txtLocationOfClaferFile = new Text(grpNonguidedMode, SWT.BORDER);
-		txtLocationOfClaferFile.setBounds(163, 10, 226, Constants.UI_WIDGET_HEIGHT_NORMAL);
+		txtLocationOfClaferFile.setBounds(163, 10, 255, Constants.UI_WIDGET_HEIGHT_NORMAL);
 		
 		Button btnLocationOfClaferFileBrowse = new Button(grpNonguidedMode, SWT.NONE);
 		btnLocationOfClaferFileBrowse.setText(Constants.LABEL_BROWSE_BUTTON);
-		btnLocationOfClaferFileBrowse.setBounds(389, 10, 56, Constants.UI_WIDGET_HEIGHT_NORMAL);
+		btnLocationOfClaferFileBrowse.setBounds(421, 10, 56, Constants.UI_WIDGET_HEIGHT_NORMAL);
 		
 		Label lblLocationOfXSLFile = new Label(grpNonguidedMode, SWT.NONE);
 		lblLocationOfXSLFile.setText("Location of the XSL file :");
 		lblLocationOfXSLFile.setBounds(10, 46, 150, Constants.UI_WIDGET_HEIGHT_NORMAL);
 		
 		txtLocationOfXSLFile = new Text(grpNonguidedMode, SWT.BORDER);		
-		txtLocationOfXSLFile.setBounds(162, 46, 227, Constants.UI_WIDGET_HEIGHT_NORMAL);
+		txtLocationOfXSLFile.setBounds(162, 46, 256, Constants.UI_WIDGET_HEIGHT_NORMAL);
 		
 		Button btnLocationOfXSLFileBrowse = new Button(grpNonguidedMode, SWT.NONE);
 		btnLocationOfXSLFileBrowse.setText(Constants.LABEL_BROWSE_BUTTON);
-		btnLocationOfXSLFileBrowse.setBounds(389, 46, 56, Constants.UI_WIDGET_HEIGHT_NORMAL);
+		btnLocationOfXSLFileBrowse.setBounds(421, 46, 56, Constants.UI_WIDGET_HEIGHT_NORMAL);
 		
 		Label lblLocationOfJSONFile = new Label(grpNonguidedMode, SWT.NONE);
 		lblLocationOfJSONFile.setText("Location of the questions :");
 		lblLocationOfJSONFile.setBounds(10, 82, 150, Constants.UI_WIDGET_HEIGHT_NORMAL);
 		
 		txtLocationOfJSONFile = new Text(grpNonguidedMode, SWT.BORDER);		
-		txtLocationOfJSONFile.setBounds(162, 82, 227, Constants.UI_WIDGET_HEIGHT_NORMAL);
+		txtLocationOfJSONFile.setBounds(162, 82, 256, Constants.UI_WIDGET_HEIGHT_NORMAL);
 		
 		Button btnLocationOfJSONFileBrowse = new Button(grpNonguidedMode, SWT.NONE);
 		btnLocationOfJSONFileBrowse.setText(Constants.LABEL_BROWSE_BUTTON);
-		btnLocationOfJSONFileBrowse.setBounds(389, 82, 56, Constants.UI_WIDGET_HEIGHT_NORMAL);
+		btnLocationOfJSONFileBrowse.setBounds(421, 82, 56, Constants.UI_WIDGET_HEIGHT_NORMAL);
 		
 		Button btnForceGuidedMode = new Button(grpNonguidedMode, SWT.CHECK);
 		btnForceGuidedMode.setBounds(10, 118, 142, Constants.UI_WIDGET_HEIGHT_NORMAL);
-		btnForceGuidedMode.setText("Force Guided mode");	
+		btnForceGuidedMode.setText("Force guided mode");	
 
 		
 		// Creating empty/default data key value pairs.
@@ -238,5 +238,9 @@ public class CompositeChoiceForModeOfWizard extends Composite {
         fileDialog.setFilterExtensions(constraints);
         fileDialog.setText(title);
 		return fileDialog.open();
+	}
+	
+	public boolean validateTextBoxes(){
+		return true;
 	}
 }

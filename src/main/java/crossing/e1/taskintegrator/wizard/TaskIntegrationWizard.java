@@ -22,8 +22,32 @@ public class TaskIntegrationWizard extends Wizard {
 	@Override
 	public void addPages() {
 		// Just add the mode selection page, since the rest of the pages may not be necessary based on the choices.
-		this.addPage(new PageForTaskIntegratorWizard(
-			Constants.PAGE_NAME_FOR_MODE_OF_WIZARD, Constants.PAGE_TITLE_FOR_MODE_OF_WIZARD, Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD
+		this.addPage(
+			new PageForTaskIntegratorWizard(
+			Constants.PAGE_NAME_FOR_MODE_OF_WIZARD, 
+			Constants.PAGE_TITLE_FOR_MODE_OF_WIZARD, 
+			Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD
+			));
+		
+		this.addPage(
+			new PageForTaskIntegratorWizard(
+			Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION, 
+			Constants.PAGE_TITLE_FOR_CLAFER_FILE_CREATION, 
+			Constants.PAGE_DESCRIPTION_FOR_CLAFER_FILE_CREATION
+			));
+				
+		this.addPage(
+			new PageForTaskIntegratorWizard(
+			Constants.PAGE_NAME_FOR_XSL_FILE_CREATION, 
+			Constants.PAGE_TITLE_FOR_XSL_FILE_CREATION, 
+			Constants.PAGE_DESCRIPTION_FOR_XSL_FILE_CREATION
+			));
+				
+		this.addPage(
+			new PageForTaskIntegratorWizard(
+			Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS, 
+			Constants.PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS, 
+			Constants.PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS
 			));
 	}
 
@@ -32,12 +56,24 @@ public class TaskIntegrationWizard extends Wizard {
 	 */
 	@Override
 	public boolean performFinish() {
+		/*
+		 * TODO finish button behavior important for the mode selection page. Postponing this code to 
+		 * a future time, but within the Sept milestone. 
+		 */
+		if(this.getContainer().getCurrentPage().getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)){
+			setDataForAdvancedMode(
+				((PageForTaskIntegratorWizard) this.getPage(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)).getCompositeChoiceForModeOfWizard()
+				);
+			if(
+				this.objectForDataInNonGuidedMode.isGuidedModeChosen() == false &&
+				this.objectForDataInNonGuidedMode.isGuidedModeForced() == false){
+				// and if the validations on all the text boxes is true, then close. 
+				return true;
+			}
+		}
 		
-		// TODO create the condition in which this method is called.
-		setDataForAdvancedMode(
-			((PageForTaskIntegratorWizard) this.getPage(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)).getCompositeChoiceForModeOfWizard()
-			);
 		
+		/*
 		System.out.println(objectForDataInNonGuidedMode.getNameOfTheTask());
 		System.out.println(objectForDataInNonGuidedMode.getLocationOfCustomLibrary());
 		System.out.println(objectForDataInNonGuidedMode.getLocationOfClaferFile());
@@ -48,6 +84,7 @@ public class TaskIntegrationWizard extends Wizard {
 		System.out.println(objectForDataInNonGuidedMode.isGuidedModeChosen());
 		System.out.println(objectForDataInNonGuidedMode.isGuidedModeForced());
 		
+		return false;*/
 		return true;
 	}
 
@@ -57,9 +94,14 @@ public class TaskIntegrationWizard extends Wizard {
 	@Override
 	public IWizardPage getNextPage(IWizardPage page) {
 		
-		
+		/*
+		 * TODO next button behavior important for the mode selection page. Postponing this code to 
+		 * a future time, but within the Sept milestone. 
 		switch(page.getName()){
-			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:				
+			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
+				if(((PageForTaskIntegratorWizard) this.getPage(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)).getCompositeChoiceForModeOfWizard() != null){
+					
+				}
 				break;
 			case Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION:
 				break;
@@ -68,22 +110,8 @@ public class TaskIntegrationWizard extends Wizard {
 			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
 				break;
 		}
+			*/	
 		
-		
-		
-		
-		
-		PageForTaskIntegratorWizard pageForClaferFileCreation = new PageForTaskIntegratorWizard(
-			Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION, Constants.PAGE_TITLE_FOR_CLAFER_FILE_CREATION, Constants.PAGE_DESCRIPTION_FOR_CLAFER_FILE_CREATION);
-		this.addPage(pageForClaferFileCreation);
-		
-		PageForTaskIntegratorWizard pageForXSLFileCreation = new PageForTaskIntegratorWizard(
-			Constants.PAGE_NAME_FOR_XSL_FILE_CREATION, Constants.PAGE_TITLE_FOR_XSL_FILE_CREATION, Constants.PAGE_DESCRIPTION_FOR_XSL_FILE_CREATION);
-		this.addPage(pageForXSLFileCreation);
-		
-		PageForTaskIntegratorWizard pageForHighLevelQuestions = new PageForTaskIntegratorWizard(
-			Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS, Constants.PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS, Constants.PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS);
-		this.addPage(pageForHighLevelQuestions);
 		return super.getNextPage(page);
 	}
 

@@ -3,16 +3,12 @@
  */
 package crossing.e1.taskintegrator.wizard;
 
-import java.nio.file.Paths;
-
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.FillLayout;
 
 import crossing.e1.configurator.Constants;
-import crossing.e1.taskintegrator.models.ModelAdvancedMode;
 import crossing.e1.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
 
 
@@ -30,6 +26,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		super(name);
 		setTitle(title);
 		setDescription(description);
+		// TODO improve the next button selection functionality.
 		//this.setPageComplete(false);
 	}
 
@@ -59,6 +56,35 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.wizard.WizardPage#canFlipToNextPage()
+	 */
+	@Override
+	public boolean canFlipToNextPage() {
+
+		// each case needs to be handled separately. By default all cases will return false. 
+		switch(this.getName()){
+			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
+				if(((boolean)compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_IS_GUIDED_MODE_CHOSEN) == true ||
+				(boolean)compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_IS_GUIDED_MODE_FORCED) == true) &&
+					!this.isPageComplete()){
+					
+					return true;
+					
+					}
+			case Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION:
+				return false;
+			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:
+				return false;
+			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
+				return false;
+			default:
+				return false;				
+		}
+		
+		
+	}
+
 	/**
 	 * @return the compositeChoiceForModeOfWizard
 	 */

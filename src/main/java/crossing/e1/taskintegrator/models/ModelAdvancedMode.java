@@ -148,7 +148,7 @@ public class ModelAdvancedMode {
 	/**
 	 * @param isCustomLibraryRequired the isCustomLibraryRequired to set
 	 */
-	public void setCustomLibraryRequired(boolean isCustomLibraryRequired) {
+	private void setCustomLibraryRequired(boolean isCustomLibraryRequired) {
 		this.isCustomLibraryRequired = isCustomLibraryRequired;
 	}
 }

@@ -141,4 +141,24 @@ public class Constants {
 	public static final String PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS = "Add the high level qustions and their dependencies here";
 	public static final String PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS = "Here you can add the questions that will be asked to the end user, and the dependencies to the "+
 																			"variability modelling and the code generation.";
+	
+	// Widget constants
+	// Labels
+	public static final String LABEL_BROWSE_BUTTON = "Browse";
+	// Dimensions
+	public static final int UI_WIDGET_HEIGHT_NORMAL = 30;
+	// Constants for the composites
+	public static final String WIDGET_DATA_NAME_OF_THE_TASK = "NameOfTheTask";
+	public static final String WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK = "LibraryLocationOfTheTask";
+	public static final String WIDGET_DATA_LOCATION_OF_CLAFER_FILE = "LocationOfClaferFile";
+	public static final String WIDGET_DATA_LOCATION_OF_XSL_FILE = "LocationOfXSLFile";
+	public static final String WIDGET_DATA_LOCATION_OF_JSON_FILE = "LocationOfJSONFile";
+	public static final String WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED = "isCustomLibraryRequired";
+	public static final String WIDGET_DATA_IS_GUIDED_MODE_CHOSEN = "isGuidedModeChosen";
+	public static final String WIDGET_DATA_IS_GUIDED_MODE_FORCED = "isGuidedModeForced";
+	
+	// Constants for the drop down for the library type on the mode selection page
+	public static final String WIDGET_CONTENT_EXISTING_LIBRARY = "Existing Library";
+	public static final String WIDGET_CONTENT_CUSTOM_LIBRARY = "Custom Library";
+	
 }

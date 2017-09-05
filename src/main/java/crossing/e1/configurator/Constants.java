@@ -139,6 +139,9 @@ public class Constants {
 	public static final String WIDGET_DATA_LOCATION_OF_CLAFER_FILE = "LocationOfClaferFile";
 	public static final String WIDGET_DATA_LOCATION_OF_XSL_FILE = "LocationOfXSLFile";
 	public static final String WIDGET_DATA_LOCATION_OF_JSON_FILE = "LocationOfJSONFile";
+	public static final String WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED = "isCustomLibraryRequired";
+	public static final String WIDGET_DATA_IS_GUIDED_MODE_CHOSEN = "isGuidedModeChosen";
+	public static final String WIDGET_DATA_IS_GUIDED_MODE_FORCED = "isGuidedModeForced";
 	
 	// Constants for the drop down for the library type on the mode selection page
 	public static final String WIDGET_CONTENT_EXISTING_LIBRARY = "Existing Library";

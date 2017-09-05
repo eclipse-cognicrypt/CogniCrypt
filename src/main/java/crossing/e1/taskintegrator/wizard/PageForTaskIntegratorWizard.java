@@ -30,7 +30,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		super(name);
 		setTitle(title);
 		setDescription(description);
-		this.setPageComplete(false);
+		//this.setPageComplete(false);
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			
 		switch(this.getName()){
 			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
-				compositeChoiceForModeOfWizard = new CompositeChoiceForModeOfWizard(container, SWT.NONE);
+				this.setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE));
 				break;
 			case Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION:
 				break;
@@ -58,39 +58,19 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		
 	}
 	
-	private void setDataForAdvancedMode(Composite compositeChoiceForModeOfWizard){
-		// Check if this call is from the initial call to the getNextPage.
-		if(compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK)!=null){
-			TaskIntegrationWizard wizard = (TaskIntegrationWizard) this.getWizard();		
-			wizard.setObjectForDataInNonGuidedMode(
-				new ModelAdvancedMode(
-					compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_NAME_OF_THE_TASK).toString(), 
-					Paths.get(compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK).toString()), 
-					Paths.get(compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE).toString()), 
-					Paths.get(compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE).toString()), 
-					Paths.get(compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE).toString())
-						)
-					);
-		}
-		
+	
+	/**
+	 * @return the compositeChoiceForModeOfWizard
+	 */
+	public Composite getCompositeChoiceForModeOfWizard() {
+		return compositeChoiceForModeOfWizard;
 	}
 
-	@Override
-	public IWizardPage getNextPage() {
-		switch(this.getName()){
-			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:	
-				//TODO move this to performFinish().
-				setDataForAdvancedMode(compositeChoiceForModeOfWizard);
-				break;
-			case Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION:
-				break;
-			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:
-				break;
-			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
-				break;
-		}
-		return super.getNextPage();
+	
+	/**
+	 * @param compositeChoiceForModeOfWizard the compositeChoiceForModeOfWizard to set
+	 */
+	private void setCompositeChoiceForModeOfWizard(Composite compositeChoiceForModeOfWizard) {
+		this.compositeChoiceForModeOfWizard = compositeChoiceForModeOfWizard;
 	}
-	
-	
 }

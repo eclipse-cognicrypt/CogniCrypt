@@ -74,18 +74,11 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		btnBrowseForLibraryLocation.setBounds(269, 0, 56, Constants.UI_WIDGET_HEIGHT_NORMAL);
 		btnBrowseForLibraryLocation.setText(Constants.LABEL_BROWSE_BUTTON);
 		
-		Label lblGuidedMode = new Label(grpChooseTheMode, SWT.NONE);
-		lblGuidedMode.setBounds(10, 83, 206, Constants.UI_WIDGET_HEIGHT_NORMAL);
-		lblGuidedMode.setText("Do you wish to use the guided mode?");
-		
-		Button btnGuidedModeYes = new Button(grpChooseTheMode, SWT.RADIO);
-		btnGuidedModeYes.setBounds(221, 83, 46, Constants.UI_WIDGET_HEIGHT_NORMAL);
-		btnGuidedModeYes.setSelection(true);
-		btnGuidedModeYes.setText("Yes");
-		
-		Button btnGuidedModeNo = new Button(grpChooseTheMode, SWT.RADIO);
-		btnGuidedModeNo.setBounds(272, 83, 42, Constants.UI_WIDGET_HEIGHT_NORMAL);
-		btnGuidedModeNo.setText("No");
+		Button btnDoYouWishToUseTheGuidedMode = new Button(grpChooseTheMode, SWT.CHECK);		
+		btnDoYouWishToUseTheGuidedMode.setBounds(10, 82, 238, Constants.UI_WIDGET_HEIGHT_NORMAL);
+		btnDoYouWishToUseTheGuidedMode.setText("Do you wish to use the guided mode?");
+		// guided mode by default.
+		btnDoYouWishToUseTheGuidedMode.setSelection(true);
 		
 		Group grpNonguidedMode = new Group(grpChooseTheMode, SWT.NONE);
 		grpNonguidedMode.setBounds(10, 119, 459, 166);
@@ -127,37 +120,44 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		
 		Button btnForceGuidedMode = new Button(grpNonguidedMode, SWT.CHECK);
 		btnForceGuidedMode.setBounds(10, 118, 142, Constants.UI_WIDGET_HEIGHT_NORMAL);
-		btnForceGuidedMode.setText("Force Guided mode");
+		btnForceGuidedMode.setText("Force Guided mode");	
+
 		
-		// Creating empty data key value pairs.
+		// Creating empty/default data key value pairs.
 		this.setData(Constants.WIDGET_DATA_NAME_OF_THE_TASK, txtForTaskName.getText());
 		this.setData(Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE, txtLocationOfJSONFile.getText());
 		this.setData(Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK, txtLibraryLocation.getText());
 		this.setData(Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE, txtLocationOfXSLFile.getText());
 		this.setData(Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE, txtLocationOfClaferFile.getText());
+		// false by default since default selection is not using custom library.
+		this.setData(Constants.WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED, cmbLibraryLocation.getText().equals(Constants.WIDGET_CONTENT_CUSTOM_LIBRARY) ? true : false);		
+		// true by default since the guided mode is selected by default.
+		this.setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_CHOSEN, btnDoYouWishToUseTheGuidedMode.getSelection());
+		// false by default since the guided mode is not forced by default. 
+		this.setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_FORCED,btnForceGuidedMode.getSelection());
+		
 		
 		// moved all the event listeners at the bottom.
-		btnGuidedModeNo.addSelectionListener(new SelectionAdapter() {
+		btnDoYouWishToUseTheGuidedMode.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				grpNonguidedMode.setVisible(true);				
-			}
-		});
-		
-		btnGuidedModeYes.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				grpNonguidedMode.setVisible(false);				
-			}
-		});
+				grpNonguidedMode.setVisible(!btnDoYouWishToUseTheGuidedMode.getSelection());
+				btnDoYouWishToUseTheGuidedMode.getParent().getParent().setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_CHOSEN, btnDoYouWishToUseTheGuidedMode.getSelection());
+				}
+			});
 		
 		cmbLibraryLocation.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				if(cmbLibraryLocation.getText().equals(Constants.WIDGET_CONTENT_EXISTING_LIBRARY)){
-					grpLibraryWidgets.setVisible(false);
-				} else if(cmbLibraryLocation.getText().equals(Constants.WIDGET_CONTENT_CUSTOM_LIBRARY)){
-					grpLibraryWidgets.setVisible(true);
-				}
+			public void modifyText(ModifyEvent e) {				
+				boolean isCustomLibraryRequired = cmbLibraryLocation.getText().equals(Constants.WIDGET_CONTENT_CUSTOM_LIBRARY) ? true : false;				
+				cmbLibraryLocation.getParent().getParent().setData(Constants.WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED, isCustomLibraryRequired);				
+				grpLibraryWidgets.setVisible(isCustomLibraryRequired);				
+			}
+		});
+		
+		btnForceGuidedMode.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				btnForceGuidedMode.getParent().getParent().getParent().setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_FORCED, btnForceGuidedMode.getSelection());
 			}
 		});
 		

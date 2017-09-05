@@ -10,31 +10,49 @@ import java.nio.file.Path;
  *
  */
 public class ModelAdvancedMode {
-	private String nameOfTheTask;
-	private boolean requiresCustomLibrary;
+	private String nameOfTheTask;	
 	private Path locationOfCustomLibrary;
 	private Path locationOfClaferFile;
 	private Path locationOfXSLFile;
 	private Path locationOfJSONFile;
+	private boolean isCustomLibraryRequired;
+	private boolean isGuidedModeChosen;
+	private boolean isGuidedModeForced;
+	
 	/**
-	 * Disabling all the setters for now.
-	 * 
 	 * @param nameOfTheTask
-	 * @param requiresCustomLibrary
 	 * @param locationOfCustomLibrary
 	 * @param locationOfClaferFile
 	 * @param locationOfXSLFile
 	 * @param locationOfJSONFile
+	 * @param isCustomLibraryRequired
+	 * @param isGuidedModeChosen
+	 * @param isGuidedModeForced
 	 */
-	public ModelAdvancedMode(String nameOfTheTask, Path locationOfCustomLibrary, Path locationOfClaferFile, Path locationOfXSLFile, Path locationOfJSONFile) {
+	public ModelAdvancedMode(
+			String nameOfTheTask, 
+			Path locationOfCustomLibrary, 
+			Path locationOfClaferFile, 
+			Path locationOfXSLFile, 
+			Path locationOfJSONFile, 
+			boolean isCustomLibraryRequired, 
+			boolean isGuidedModeChosen, 
+			boolean isGuidedModeForced
+			) {
 		super();
 		this.setNameOfTheTask(nameOfTheTask);
-		//this.setRequiresCustomLibrary(requiresCustomLibrary);
 		this.setLocationOfCustomLibrary(locationOfCustomLibrary);
 		this.setLocationOfClaferFile(locationOfClaferFile);
 		this.setLocationOfXSLFile(locationOfXSLFile);
 		this.setLocationOfJSONFile(locationOfJSONFile);
+		this.setCustomLibraryRequired(isCustomLibraryRequired);
+		this.setGuidedModeChosen(isGuidedModeChosen);
+		this.setGuidedModeForced(isGuidedModeForced);
 	}
+
+
+
+
 	/**
 	 * @return the nameOfTheTask
 	 */
@@ -44,21 +62,9 @@ public class ModelAdvancedMode {
 	/**
 	 * @param nameOfTheTask the nameOfTheTask to set
 	 */
-	public void setNameOfTheTask(String nameOfTheTask) {
+	private void setNameOfTheTask(String nameOfTheTask) {
 		this.nameOfTheTask = nameOfTheTask;
 	}
-	/**
-	 * @return the requiresCustomLibrary
-	 */
-	/*public boolean isRequiresCustomLibrary() {
-		return requiresCustomLibrary;
-	}
-	/**
-	 * @param requiresCustomLibrary the requiresCustomLibrary to set
-	 */
-	/*public void setRequiresCustomLibrary(boolean requiresCustomLibrary) {
-		this.requiresCustomLibrary = requiresCustomLibrary;
-	}*/
 	/**
 	 * @return the locationOfCustomLibrary
 	 */
@@ -68,7 +74,7 @@ public class ModelAdvancedMode {
 	/**
 	 * @param locationOfCustomLibrary the locationOfCustomLibrary to set
 	 */
-	public void setLocationOfCustomLibrary(Path locationOfCustomLibrary) {
+	private void setLocationOfCustomLibrary(Path locationOfCustomLibrary) {
 		this.locationOfCustomLibrary = locationOfCustomLibrary;
 	}
 	/**
@@ -80,7 +86,7 @@ public class ModelAdvancedMode {
 	/**
 	 * @param locationOfClaferFile the locationOfClaferFile to set
 	 */
-	public void setLocationOfClaferFile(Path locationOfClaferFile) {
+	private void setLocationOfClaferFile(Path locationOfClaferFile) {
 		this.locationOfClaferFile = locationOfClaferFile;
 	}
 	/**
@@ -92,7 +98,7 @@ public class ModelAdvancedMode {
 	/**
 	 * @param locationOfXSLFile the locationOfXSLFile to set
 	 */
-	public void setLocationOfXSLFile(Path locationOfXSLFile) {
+	private void setLocationOfXSLFile(Path locationOfXSLFile) {
 		this.locationOfXSLFile = locationOfXSLFile;
 	}
 	/**
@@ -104,7 +110,45 @@ public class ModelAdvancedMode {
 	/**
 	 * @param locationOfJSONFile the locationOfJSONFile to set
 	 */
-	public void setLocationOfJSONFile(Path locationOfJSONFile) {
+	private void setLocationOfJSONFile(Path locationOfJSONFile) {
 		this.locationOfJSONFile = locationOfJSONFile;
+	}
+	/**
+	 * @return the isGuidedModeChosen
+	 */
+	public boolean isGuidedModeChosen() {
+		return isGuidedModeChosen;
+	}
+	/**
+	 * @param isGuidedModeChosen the isGuidedModeChosen to set
+	 */
+	private void setGuidedModeChosen(boolean isGuidedModeChosen) {
+		this.isGuidedModeChosen = isGuidedModeChosen;
+	}
+	/**
+	 * @return the isGuidedModeForced
+	 */
+	public boolean isGuidedModeForced() {
+		return isGuidedModeForced;
+	}
+	/**
+	 * @param isGuidedModeForced the isGuidedModeForced to set
+	 */
+	private void setGuidedModeForced(boolean isGuidedModeForced) {
+		this.isGuidedModeForced = isGuidedModeForced;
+	}
+
+	/**
+	 * @return the isCustomLibraryRequired
+	 */
+	public boolean isCustomLibraryRequired() {
+		return isCustomLibraryRequired;
+	}
+
+	/**
+	 * @param isCustomLibraryRequired the isCustomLibraryRequired to set
+	 */
+	public void setCustomLibraryRequired(boolean isCustomLibraryRequired) {
+		this.isCustomLibraryRequired = isCustomLibraryRequired;
 	}
 }

@@ -60,7 +60,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		Group grpLibraryWidgets = new Group(grpChooseTheMode, SWT.NONE);
 		grpLibraryWidgets.setBounds(169, 46, 330, 32);
 		// Keep invisible since the default selection is existing library.
-		//grpLibraryWidgets.setVisible(false);
+		grpLibraryWidgets.setVisible(false);
 		
 		Label lblLibraryLocation = new Label(grpLibraryWidgets, SWT.NONE);
 		lblLibraryLocation.setLocation(10, 0);
@@ -83,7 +83,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		Group grpNonguidedMode = new Group(grpChooseTheMode, SWT.NONE);
 		grpNonguidedMode.setBounds(10, 119, 489, 166);
 		grpNonguidedMode.setText("Non-Guided mode");
-		//grpNonguidedMode.setVisible(false);
+		grpNonguidedMode.setVisible(false);
 		
 		Label lblLocationOfClaferFile = new Label(grpNonguidedMode, SWT.NONE);
 		lblLocationOfClaferFile.setText("Location of the Clafer file :");

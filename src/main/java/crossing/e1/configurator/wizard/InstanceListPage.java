@@ -114,6 +114,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 		this.instanceDetails = new Text(this.instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		this.instanceDetails.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.instanceDetails.setBounds(10, 20, 400, 200);
+		this.instanceDetails.setEditable(false);
 		/*
 		 * Initially instance properties panel will be hidden
 		 */

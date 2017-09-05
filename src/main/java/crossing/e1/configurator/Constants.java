@@ -47,6 +47,20 @@ public class Constants {
 
 	public static final String pathToPropertyfiles = rsrcPath + "Labels.properties";
 
+	// Task descriptions
+
+	// if the next question page depends on user input, the Page object encodes this as a nextPageID as opposed to the one that the last page points to
+	public static final int QUESTION_PAGE_NO_STATIC_NEXT_PAGE_ID = -2;
+
+	// the last page points to this virtual nextPageID
+	public static final int QUESTION_PAGE_LAST_PAGE_NEXT_ID = -1;
+
+	// the answer does not point to a next page, so in this case the page links to a next one statically
+	public static final int ANSWER_NO_NEXT_ID = -2;
+	
+	// the given answer makes the wizard end
+	public static final int ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID = -1;
+
 	// Clafer Instance Generation
 	public static final String claferPath = rsrcPath + "ClaferModel" + innerFileSeparator + "SymmetricEncryptionTask.js";
 	public static final String PATH_FOR_CONFIG_XML = "/Configurator.xml";

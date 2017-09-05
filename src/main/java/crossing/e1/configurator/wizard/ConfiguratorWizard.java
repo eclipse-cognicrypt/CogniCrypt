@@ -110,8 +110,13 @@ public class ConfiguratorWizard extends Wizard {
 		}
 		return updateRound;
 	}
-
-	private void createBeginnerPage(final Page curPage, final List<Question> allQuestion) {
+	/**
+	 * 
+	 * @param curPage
+	 * @param beginnerQuestionnaire updated this variable from a list of questions to have access to the method to 
+	 * 			get specific Questions.  
+	 */
+	private void createBeginnerPage(final Page curPage, final BeginnerModeQuestionnaire beginnerQuestionnaire) {
 
 		List<String> selection = null;
 		if (curPage.getContent().size() == 1) {
@@ -125,7 +130,8 @@ public class ConfiguratorWizard extends Wizard {
 				}
 			}
 		}
-		this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curPage, this.beginnerQuestions.getTask(), allQuestion, selection);
+		// Pass the questionnaire instead of the all of the questions. 
+		this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curPage, this.beginnerQuestions.getTask(), beginnerQuestionnaire, selection);
 	}
 
 	/**
@@ -151,7 +157,7 @@ public class ConfiguratorWizard extends Wizard {
 				//this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextQuestion(), this.beginnerQuestions.getTask());
 				
 				// The 3rd parameter in this constructor call is benign, it only exists to call the constructor designed for pages
-				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile(),"pages"); 
+				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile()); 
 				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(),null);
 			}
 			if (this.constraints != null) {
@@ -199,11 +205,10 @@ public class ConfiguratorWizard extends Wizard {
 
 					if (nextID > -1) {
 						final Page curPage = this.beginnerQuestions.setPageByID(nextID);
-						final List<Question> allQuestion = this.beginnerQuestions.getQuestionList();
-
-						createBeginnerPage(curPage, allQuestion);
+						// Pass the variable for the questionnaire here instead of all the questions. 
+						createBeginnerPage(curPage, beginnerQuestions);
 						if (checkifInUpdateRound()) {
-							this.beginnerQuestions.previousQuestion();
+							this.beginnerQuestions.previousPage();
 						}
 						final IWizardPage[] pages = getPages();
 						for (int i = 1; i < pages.length; i++) {
@@ -261,8 +266,8 @@ public class ConfiguratorWizard extends Wizard {
 	public IWizardPage getPreviousPage(final IWizardPage currentPage) {
 		final boolean lastPage = currentPage instanceof InstanceListPage;
 		if (!checkifInUpdateRound() && (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage || lastPage)) {
-			if (!this.beginnerQuestions.isFirstQuestion()) {
-				this.beginnerQuestions.previousQuestion();
+			if (!this.beginnerQuestions.isFirstPage()) {
+				this.beginnerQuestions.previousPage();
 			}
 		}
 		return super.getPreviousPage(currentPage);

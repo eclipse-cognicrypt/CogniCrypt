@@ -5,11 +5,16 @@ package crossing.e1.taskintegrator.wizard;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.FillLayout;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
+import crossing.e1.taskintegrator.widgets.CompositeToHoldGranularUIElements;
+import org.eclipse.swt.widgets.Button;
 
 
 /**
@@ -18,6 +23,7 @@ import crossing.e1.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
  */
 public class PageForTaskIntegratorWizard extends WizardPage {
 	private Composite compositeChoiceForModeOfWizard = null;
+	private Composite compositeToHoldGranularUIElements = null;
 	
 	/**
 	 * Create the wizard.
@@ -38,21 +44,57 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		Composite container = new Composite(parent, SWT.NULL);
 				
 		setControl(container);
-		container.setLayout(new FillLayout(SWT.HORIZONTAL));
-			
+		
+		
+		
+		
+				
 		switch(this.getName()){
 			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
+				container.setLayout(new FillLayout(SWT.HORIZONTAL));
 				this.setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE));
+				//this.compositeChoiceForModeOfWizard.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
 				break;
 			case Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION:
+				this.setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));				
+				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
+				Button btnAddFeature = new Button(container, SWT.NONE);
+				btnAddFeature.setBounds(Constants.RECTANGLE_FOR_BUTTONS_FOR_NON_MODE_SELECTION_PAGES);
+				btnAddFeature.setText("Add Feature");
+				btnAddFeature.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						
+					}
+				});
 				break;
 			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:
+				this.setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
+				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);				
+				Button btnAddXSLTag = new Button(container, SWT.NONE);
+				btnAddXSLTag.setBounds(Constants.RECTANGLE_FOR_BUTTONS_FOR_NON_MODE_SELECTION_PAGES);
+				btnAddXSLTag.setText("Add XSL tag");
+				btnAddXSLTag.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						
+					}
+				});
 				break;
 			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
+				this.setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
+				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
+				Button btnAddQuestion = new Button(container, SWT.NONE);
+				btnAddQuestion.setBounds(Constants.RECTANGLE_FOR_BUTTONS_FOR_NON_MODE_SELECTION_PAGES);
+				btnAddQuestion.setText("Add Question");
+				btnAddQuestion.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						
+					}
+				});
 				break;
 		}
-			
-		
 	}
 	
 	
@@ -63,7 +105,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	public boolean canFlipToNextPage() {
 
 		// each case needs to be handled separately. By default all cases will return false. 
-		switch(this.getName()){
+		/*switch(this.getName()){
 			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
 				if(((boolean)compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_IS_GUIDED_MODE_CHOSEN) == true ||
 				(boolean)compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_IS_GUIDED_MODE_FORCED) == true) &&
@@ -80,8 +122,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				return false;
 			default:
 				return false;				
-		}
-		
+		}*/
+		return true;
 		
 	}
 
@@ -98,5 +140,19 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	 */
 	private void setCompositeChoiceForModeOfWizard(Composite compositeChoiceForModeOfWizard) {
 		this.compositeChoiceForModeOfWizard = compositeChoiceForModeOfWizard;
+	}
+
+	/**
+	 * @return the compositeToHoldGranularUIElements
+	 */
+	public Composite getCompositeToHoldGranularUIElements() {
+		return compositeToHoldGranularUIElements;
+	}
+
+	/**
+	 * @param compositeToHoldGranularUIElements the compositeToHoldGranularUIElements to set
+	 */
+	public void setCompositeToHoldGranularUIElements(Composite compositeToHoldGranularUIElements) {
+		this.compositeToHoldGranularUIElements = compositeToHoldGranularUIElements;
 	}
 }

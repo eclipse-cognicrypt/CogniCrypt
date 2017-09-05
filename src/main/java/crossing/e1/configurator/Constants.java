@@ -20,6 +20,8 @@
 
 package crossing.e1.configurator;
 
+import org.eclipse.swt.graphics.Rectangle;
+
 /**
  * This class comprises all constants that are used by the plugin.
  *
@@ -160,5 +162,9 @@ public class Constants {
 	// Constants for the drop down for the library type on the mode selection page
 	public static final String WIDGET_CONTENT_EXISTING_LIBRARY = "Existing Library";
 	public static final String WIDGET_CONTENT_CUSTOM_LIBRARY = "Custom Library";
+	
+	// Default bounds for the composites
+	public static final Rectangle RECTANGLE_FOR_COMPOSITES = new Rectangle(0, 0, 550, 325);
+	public static final Rectangle RECTANGLE_FOR_BUTTONS_FOR_NON_MODE_SELECTION_PAGES = new Rectangle(560, 10, 83, 30);
 	
 }

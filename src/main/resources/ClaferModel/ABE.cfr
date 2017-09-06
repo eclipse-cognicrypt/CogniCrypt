@@ -20,5 +20,4 @@ abstract Task
 ABE : Task
 	[description = "Attribute-Based Encryption"]
 	abe -> AttributeBasedCipher
-	[abe = ABECipherTextPolicy]
-	[abe = ABEKeyIndexPolicy]
+	[abe = ABECipherTextPolicy || abe = ABEKeyIndexPolicy]

@@ -12,6 +12,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.FillLayout;
 
 import crossing.e1.configurator.Constants;
+import crossing.e1.taskintegrator.models.ClaferFeature;
+import crossing.e1.taskintegrator.models.FeatureProperty;
+import crossing.e1.taskintegrator.widgets.CompisiteGranularUIForClaferFeature;
 import crossing.e1.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
 import crossing.e1.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 import org.eclipse.swt.widgets.Button;
@@ -22,8 +25,8 @@ import org.eclipse.swt.widgets.Button;
  *
  */
 public class PageForTaskIntegratorWizard extends WizardPage {
-	private Composite compositeChoiceForModeOfWizard = null;
-	private Composite compositeToHoldGranularUIElements = null;
+	private CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard = null;
+	private CompositeToHoldGranularUIElements compositeToHoldGranularUIElements = null;
 	
 	/**
 	 * Create the wizard.
@@ -45,7 +48,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				
 		setControl(container);
 		
-		
+		//container.setBounds(10, 10, 1000, 1000);
 		
 		
 				
@@ -64,7 +67,22 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				btnAddFeature.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
+						//TODO : https://stackoverflow.com/questions/20204367/how-to-dynamically-add-swt-widgets-to-a-composite
+						ClaferFeature claferFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, 
+							"Security", 
+							new FeatureProperty("Enum", "integer"), 
+							null);
+						//new CompisiteGranularUIForClaferFeature(
+						//	((PageForTaskIntegratorWizard) btnAddFeature.getParent().).getCompositeToHoldGranularUIElements(), 
+						//	SWT.NONE, 
+						//	claferFeature);
 						
+						CompisiteGranularUIForClaferFeature granularClaferFeature = new CompisiteGranularUIForClaferFeature(
+							((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompositeToHoldGranularUIElements(), 
+							SWT.NONE, 
+							claferFeature);
+						granularClaferFeature.setBounds(10, 10, 744, 272);
+						//((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompositeToHoldGranularUIElements().redraw();
 					}
 				});
 				break;
@@ -138,7 +156,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	/**
 	 * @param compositeChoiceForModeOfWizard the compositeChoiceForModeOfWizard to set
 	 */
-	private void setCompositeChoiceForModeOfWizard(Composite compositeChoiceForModeOfWizard) {
+	private void setCompositeChoiceForModeOfWizard(CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard) {
 		this.compositeChoiceForModeOfWizard = compositeChoiceForModeOfWizard;
 	}
 
@@ -152,7 +170,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	/**
 	 * @param compositeToHoldGranularUIElements the compositeToHoldGranularUIElements to set
 	 */
-	public void setCompositeToHoldGranularUIElements(Composite compositeToHoldGranularUIElements) {
+	public void setCompositeToHoldGranularUIElements(CompositeToHoldGranularUIElements compositeToHoldGranularUIElements) {
 		this.compositeToHoldGranularUIElements = compositeToHoldGranularUIElements;
 	}
 }

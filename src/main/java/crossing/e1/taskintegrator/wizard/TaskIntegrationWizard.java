@@ -5,9 +5,12 @@ import java.nio.file.Paths;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.taskintegrator.models.ModelAdvancedMode;
+import crossing.e1.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
+import crossing.e1.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 
 
 
@@ -15,6 +18,7 @@ public class TaskIntegrationWizard extends Wizard {
 	private ModelAdvancedMode objectForDataInNonGuidedMode;	
 
 	public TaskIntegrationWizard() {
+			
 	}
 	
 	
@@ -111,7 +115,14 @@ public class TaskIntegrationWizard extends Wizard {
 				break;
 		}
 			*/	
-		
+		// TODO for debuggnig only.
+		if(page.getName().equals(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)){
+			PageForTaskIntegratorWizard claferPage = (PageForTaskIntegratorWizard) page;
+			CompositeToHoldGranularUIElements compoGran = (CompositeToHoldGranularUIElements) claferPage.getCompositeToHoldGranularUIElements();
+			Control granComp = compoGran.getChildren()[0];
+			Control granContro[] = ((Composite) granComp).getChildren();
+			System.out.println("");
+		}
 		return super.getNextPage(page);
 	}
 

@@ -63,7 +63,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				btnAddFeature.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						//TODO : https://stackoverflow.com/questions/20204367/how-to-dynamically-add-swt-widgets-to-a-composite
+						//TODO dynamic addition of the composites needs to be implemented.
 						ClaferFeature claferFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, 
 							"Security", 
 							new FeatureProperty("Enum", "integer"), 

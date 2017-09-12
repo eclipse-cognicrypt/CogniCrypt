@@ -13,6 +13,7 @@ public class CompositeToHoldGranularUIElements extends Composite {
 
 	/**
 	 * Create the composite.
+	 * TODO try to add the handling of the granular elements here.
 	 * @param parent
 	 * @param style
 	 */

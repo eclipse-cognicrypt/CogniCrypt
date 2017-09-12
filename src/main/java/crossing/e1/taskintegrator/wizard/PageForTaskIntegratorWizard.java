@@ -77,7 +77,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 							((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompositeToHoldGranularUIElements(), 
 							SWT.NONE, 
 							claferFeature);
-						granularClaferFeature.setBounds(10, 10, 744, 272);
+						granularClaferFeature.setBounds(Constants.RECTANGLE_FOR_GRANULAR_CLAFER_UI_ELEMENT);
 						//((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompositeToHoldGranularUIElements().redraw();
 					}
 				});

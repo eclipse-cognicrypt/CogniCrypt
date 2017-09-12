@@ -179,15 +179,14 @@ public class InstanceListPage extends WizardPage implements Labels {
 				output.append(key);
 				output.append(value);
 				output.append(Constants.lineSeparator);
-				setProvider(getProviderFromInstance(value));
+			setProvider(getProviderFromInstance(value));
 			}
 		}
-
 		return output.toString();
 	}
 
 	// @Ahmed 
-	private String getProviderFromInstance(String instance) {
+	public String getProviderFromInstance(String instance) {
 		String providerName = "";
 		String[] inst = instance.split(System.getProperty("line.separator"));
 		for (int i = 0; i < inst.length; i++) {

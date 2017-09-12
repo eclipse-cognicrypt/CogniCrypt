@@ -76,6 +76,7 @@ public class XSLBasedGenerator {
 	private DeveloperProject project;
 	private int startingPositionForRunMethod = -1;
 	private int startPosForImports = -1;
+		
 
 	/**
 	 * Constructor to initialize the code template generator. If neither a java file is opened nor a project selected initialization fails.
@@ -114,64 +115,14 @@ public class XSLBasedGenerator {
 			transform(claferOutputFiles, xslFiles, temporaryOutputFile);
 
 			// Add additional resources like jar files
-			if (!pathToFolderWithAdditionalResources.isEmpty()) {
-				final File[] members = Utils.getResourceFromWithin(pathToFolderWithAdditionalResources).listFiles();
-				if (members == null) {
-					Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);
-				}
-				final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesinDevProject);
-				if (!libFolder.exists()) {
-					libFolder.create(true, true, null);
-				}
-				for (int i = 0; i < members.length; i++) {
-					final Path memberPath = members[i].toPath();
-					Files.copy(memberPath,
-						new File(this.project.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + memberPath
-							.getFileName()).toPath(),
-						StandardCopyOption.REPLACE_EXISTING);
-					final String filePath = members[i].toString();
-					final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.outerFileSeparator));
-					if (".jar".equals(cutPath.substring(cutPath.indexOf(".")))) {
-						if (!this.project.addJar(Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + members[i].getName())) {
-							return false;
-						}
-					}
-				}
+			
+			if (!addAdditionalJarFiles(pathToFolderWithAdditionalResources)) {
+				return false;
 			}
-			//Add Provider's jar file 
-			if(!providerName.equals("JCA")) {
-			 
-				final File[] members = Utils.getResourceFromWithin("src/main/resources/AdditionalResources/Provider").listFiles();
-				if (members == null) {
-					Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);
-				}
-				final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesinDevProject);
-				if (!libFolder.exists()) {
-					libFolder.create(true, true, null);
-				}
-				for (int i = 0; i < members.length; i++) {
-					if(members[i].getName().equalsIgnoreCase(providerName +".jar")){
-					final Path memberPath = members[i].toPath();
-					Files.copy(memberPath,
-						new File(this.project.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + memberPath
-							.getFileName()).toPath(),
-						StandardCopyOption.REPLACE_EXISTING);
-					final String filePath = members[i].toString();
-					final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.outerFileSeparator));
-				
-					if (".jar".equals(cutPath.substring(cutPath.indexOf(".")))) {
-						if (!this.project.addJar(Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + members[i].getName())) {
-							return false; 
-						} 
-						  } 
-					        break; 
-					  }
-				  }
-			   
-			}	
+			if (!addAdditionalJarFiles(providerName)) {
+				return false;
+			}
 			
-			
-
 			// If there is a java file opened in the editor, insert glue code
 			// there, and remove temporary output file
 			// Otherwise keep the output file
@@ -201,6 +152,50 @@ public class XSLBasedGenerator {
 		if (cryptoPackage.getCompilationUnits().length == 0) {
 			this.project.removePackage(Constants.PackageName);
 		}
+	}
+
+	private boolean addAdditionalJarFiles(String source) {
+		try {
+			if (!source.isEmpty() && !source.equals("JCA")) {
+				final File[] members;
+				if (source.startsWith("src/")) {
+					members = Utils.getResourceFromWithin(source).listFiles();
+				} else {
+					members = Utils.getResourceFromWithin("src/main/resources/AdditionalResources/Provider").listFiles();
+				}
+				if (members == null) {
+					Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);
+				}
+				final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesinDevProject);
+				if (!libFolder.exists()) {
+					libFolder.create(true, true, null);
+				}
+				boolean JarIsAdded = false;
+				for (int i = 0; i < members.length && JarIsAdded == false; i++) {
+					if (members[i].getName().equalsIgnoreCase(source + ".jar") || source.startsWith("src/")) {
+						final Path memberPath = members[i].toPath();
+						Files.copy(memberPath, new File(this.project
+							.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + memberPath.getFileName())
+								.toPath(),
+							StandardCopyOption.REPLACE_EXISTING);
+						final String filePath = members[i].toString();
+						final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.outerFileSeparator));
+						if (".jar".equals(cutPath.substring(cutPath.indexOf(".")))) {
+							if (!this.project.addJar(Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + members[i].getName())) {
+								return false;
+							}
+						}
+						JarIsAdded = true;
+					}
+				}
+			}
+		}
+
+		catch (IOException | CoreException e) {
+			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
+			return false;
+		}
+		return true;
 	}
 
 	/**

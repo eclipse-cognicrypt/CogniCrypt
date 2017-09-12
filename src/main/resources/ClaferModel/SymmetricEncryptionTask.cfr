@@ -33,7 +33,7 @@ OFB : Mode
 //enum Provider
 abstract Provider: Enum
 JCA : Provider
-SUNJCE : Provider
+
 abstract Algorithm
 	name -> string
 	description -> string

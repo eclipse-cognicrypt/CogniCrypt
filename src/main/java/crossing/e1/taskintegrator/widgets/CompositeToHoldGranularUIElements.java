@@ -21,7 +21,7 @@ public class CompositeToHoldGranularUIElements extends Composite {
 		this.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
 		setLayout(new RowLayout(SWT.HORIZONTAL));
 		
-		this.setTargetPageName(pageName);
+		this.setTargetPageName(pageName);		
 
 	}
 

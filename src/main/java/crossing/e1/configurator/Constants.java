@@ -167,4 +167,42 @@ public class Constants {
 	public static final Rectangle RECTANGLE_FOR_COMPOSITES = new Rectangle(0, 0, 550, 325);
 	public static final Rectangle RECTANGLE_FOR_BUTTONS_FOR_NON_MODE_SELECTION_PAGES = new Rectangle(560, 10, 83, 30);
 	
+	public static enum FeatureConstraintRelationship{
+		EQUAL("="),
+		NOTEQUAL("!="),
+		LESSTHAN("<"),
+		GREATERTHAN(">"),
+		LESSTHANEQUALTO("<="),
+		GREATERTHANEQUALTO(">="),
+		AND("and"),
+		OR("or");
+		
+		private final String operatorValue;
+		
+		FeatureConstraintRelationship(String operatorValue){
+			this.operatorValue = operatorValue;
+		}
+
+		/**
+		 * @return the operatorValue
+		 */
+		public String getOperatorValue() {
+			return operatorValue;
+		}
+	}
+	
+	public static enum FeatureType{
+		CONCRETE,
+		ABSTRACT;
+
+		/* 
+		 * Although "concrete" is never used in the actual cfr file, "abstract" is used. Hence the toString() returns lower case.
+		 */
+		@Override
+		public String toString() {
+			return this.name().toLowerCase();
+		}
+		
+	}
+	
 }

@@ -8,6 +8,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import crossing.e1.configurator.tasks.Task;
 import crossing.e1.primitive.types.Primitive;
 import crossing.e1.primitive.types.PrimitiveJSONReader;
 
@@ -43,7 +44,6 @@ public class PrimitivePages extends WizardPage {
 		final GridLayout layout = new GridLayout(4, false);
 		this.container.setLayout(layout);
 		final List<Primitive> primitives = PrimitiveJSONReader.getPrimitiveTypes();
-		System.out.println(primitives.get(0));
 
 		setControl(container);
 		new Label(container, SWT.NONE);
@@ -78,15 +78,19 @@ public class PrimitivePages extends WizardPage {
 
 		this.primitiveComboSelection.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-			final Primitive selectedprimitive = (Primitive) selection.getFirstElement();
+			final Primitive selectedPrimitive = (Primitive) selection.getFirstElement();
 
 			PrimitivePages.this.primitiveComboSelection.refresh();
-			setPageComplete(selectedprimitive != null);
+			setPageComplete(selectedPrimitive != null);
 		});
 		this.primitiveComboSelection.setSelection(new StructuredSelection(primitives.get(0)));
 	}
 
-	public Primitive getSelectedprimitive() {
+	public Primitive getSelectedPrimitive() {
 		return (Primitive) ((IStructuredSelection) this.primitiveComboSelection.getSelection()).getFirstElement();
 	}
+public boolean canFlipToNextPage(){
+	return true;
+}
+
 }

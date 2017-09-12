@@ -15,7 +15,7 @@ import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.widgets.Button;
 
 
-public class CompisiteGranularUIForClaferFeature extends Composite {
+public class CompositeGranularUIForClaferFeature extends Composite {
 	private ClaferFeature claferFeature;
 	private Text txtFeatureName;
 
@@ -24,7 +24,7 @@ public class CompisiteGranularUIForClaferFeature extends Composite {
 	 * @param parent
 	 * @param style
 	 */
-	public CompisiteGranularUIForClaferFeature(Composite parent, int style, ClaferFeature claferFeatureParam) {
+	public CompositeGranularUIForClaferFeature(Composite parent, int style, ClaferFeature claferFeatureParam) {
 		super(parent, SWT.BORDER);
 		// set the clafer feature first.
 		this.setClaferFeature(claferFeatureParam);

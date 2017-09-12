@@ -14,8 +14,8 @@ import org.eclipse.swt.layout.FillLayout;
 import crossing.e1.configurator.Constants;
 import crossing.e1.taskintegrator.models.ClaferFeature;
 import crossing.e1.taskintegrator.models.FeatureProperty;
-import crossing.e1.taskintegrator.widgets.CompisiteGranularUIForClaferFeature;
 import crossing.e1.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
+import crossing.e1.taskintegrator.widgets.CompositeGranularUIForClaferFeature;
 import crossing.e1.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 import org.eclipse.swt.widgets.Button;
 
@@ -73,7 +73,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						//	SWT.NONE, 
 						//	claferFeature);
 						
-						CompisiteGranularUIForClaferFeature granularClaferFeature = new CompisiteGranularUIForClaferFeature(
+						CompositeGranularUIForClaferFeature granularClaferFeature = new CompositeGranularUIForClaferFeature(
 							((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompositeToHoldGranularUIElements(), 
 							SWT.NONE, 
 							claferFeature);

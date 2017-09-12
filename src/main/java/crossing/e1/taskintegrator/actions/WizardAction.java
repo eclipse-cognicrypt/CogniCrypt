@@ -16,6 +16,7 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	public void run(IAction arg0) {
 		Constants.WizardActionFromContextMenuFlag = false;
 		final WizardDialog dialog = new WizardDialog(new Shell(), new TaskIntegrationWizard());
+		dialog.setPageSize(Constants.DEFAULT_SIZE_FOR_TI_WIZARD);		
 		dialog.open();
 	}
 

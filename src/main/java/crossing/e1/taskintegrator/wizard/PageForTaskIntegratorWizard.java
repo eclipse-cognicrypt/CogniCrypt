@@ -44,14 +44,10 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	 * @param parent
 	 */
 	public void createControl(Composite parent) {
-		Composite container = new Composite(parent, SWT.NULL);
+		Composite container = new Composite(parent, SWT.BORDER);
 				
 		setControl(container);
-		
-		//container.setBounds(10, 10, 1000, 1000);
-		
-		
-				
+						
 		switch(this.getName()){
 			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
 				container.setLayout(new FillLayout(SWT.HORIZONTAL));
@@ -60,7 +56,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				break;
 			case Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION:
 				this.setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));				
-				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
+				this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
 				Button btnAddFeature = new Button(container, SWT.NONE);
 				btnAddFeature.setBounds(Constants.RECTANGLE_FOR_BUTTONS_FOR_NON_MODE_SELECTION_PAGES);
 				btnAddFeature.setText("Add Feature");

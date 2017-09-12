@@ -20,6 +20,7 @@
 
 package crossing.e1.configurator;
 
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
 /**
@@ -148,7 +149,7 @@ public class Constants {
 	// Labels
 	public static final String LABEL_BROWSE_BUTTON = "Browse";
 	// Dimensions
-	public static final int UI_WIDGET_HEIGHT_NORMAL = 30;
+	public static final int UI_WIDGET_HEIGHT_NORMAL = 29;
 	// Constants for the composites
 	public static final String WIDGET_DATA_NAME_OF_THE_TASK = "NameOfTheTask";
 	public static final String WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK = "LibraryLocationOfTheTask";
@@ -164,8 +165,9 @@ public class Constants {
 	public static final String WIDGET_CONTENT_CUSTOM_LIBRARY = "Custom Library";
 	
 	// Default bounds for the composites
-	public static final Rectangle RECTANGLE_FOR_COMPOSITES = new Rectangle(0, 0, 550, 325);
-	public static final Rectangle RECTANGLE_FOR_BUTTONS_FOR_NON_MODE_SELECTION_PAGES = new Rectangle(560, 10, 83, 30);
+	public static final Point DEFAULT_SIZE_FOR_TI_WIZARD = new Point(1000, 500);
+	public static final Rectangle RECTANGLE_FOR_COMPOSITES = new Rectangle(0, 0, 887, 325); //897 - 10
+	public static final Rectangle RECTANGLE_FOR_BUTTONS_FOR_NON_MODE_SELECTION_PAGES = new Rectangle(897, 10, 83, 29); //1000 - 83 - 10 -10
 	
 	public static enum FeatureConstraintRelationship{
 		EQUAL("="),

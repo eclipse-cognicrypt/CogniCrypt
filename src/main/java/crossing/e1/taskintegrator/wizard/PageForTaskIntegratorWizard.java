@@ -3,12 +3,15 @@
  */
 package crossing.e1.taskintegrator.wizard;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.layout.FillLayout;
 
 import crossing.e1.configurator.Constants;
@@ -28,6 +31,9 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	private CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard = null;
 	private CompositeToHoldGranularUIElements compositeToHoldGranularUIElements = null;
 	
+	// TODO for testing only
+	private ClaferFeature claferFeature;
+	
 	/**
 	 * Create the wizard.
 	 */
@@ -37,6 +43,37 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		setDescription(description);
 		// TODO improve the next button selection functionality.
 		//this.setPageComplete(false);
+		
+		
+		
+		// TODO for testing only
+		createClaferFeatures();
+		
+		
+	}
+
+	
+	// TODO for testing only
+	private void createClaferFeatures() {
+		//TODO dynamic addition of the composites needs to be implemented.
+		//claferFeature = new ArrayList<ClaferFeature>();
+		
+		/*for(int i = 0; i<10; i++){
+			claferFeature.add(
+				new ClaferFeature(
+					Constants.FeatureType.ABSTRACT,
+					"Security",
+					new FeatureProperty("Enum", "integer"),
+					null)
+				);
+		}*/
+			
+		claferFeature = new ClaferFeature(
+			Constants.FeatureType.ABSTRACT,
+			"Security",
+			new FeatureProperty("Enum", "integer"),
+			null);
+		
 	}
 
 	/**
@@ -63,23 +100,41 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				btnAddFeature.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						//TODO dynamic addition of the composites needs to be implemented.
-						ClaferFeature claferFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, 
-							"Security", 
-							new FeatureProperty("Enum", "integer"), 
-							null);
-						//new CompisiteGranularUIForClaferFeature(
-						//	((PageForTaskIntegratorWizard) btnAddFeature.getParent().).getCompositeToHoldGranularUIElements(), 
-						//	SWT.NONE, 
-						//	claferFeature);
+						CompositeToHoldGranularUIElements forTestingOnly = (CompositeToHoldGranularUIElements) ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompositeToHoldGranularUIElements(); 
 						
-						CompositeGranularUIForClaferFeature granularClaferFeature = new CompositeGranularUIForClaferFeature(
-							((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompositeToHoldGranularUIElements(), 
-							SWT.NONE, 
-							claferFeature);
-						granularClaferFeature.setBounds(Constants.RECTANGLE_FOR_GRANULAR_CLAFER_UI_ELEMENT);
-						//((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompositeToHoldGranularUIElements().redraw();
+						// TODO for testing only.
+						//for(ClaferFeature feature:claferFeature){
+							CompositeGranularUIForClaferFeature granularClaferFeature = new CompositeGranularUIForClaferFeature
+								((Composite) forTestingOnly.getContent(), 
+								SWT.NONE, 
+								claferFeature);
+							granularClaferFeature.setBounds(10, forTestingOnly.getLowestWidgetYAxisValue(), 744, 280);
+							forTestingOnly.setLowestWidgetYAxisValue(forTestingOnly.getLowestWidgetYAxisValue() + 280);
+							
+							Control test = forTestingOnly.getContent();
+							System.out.println(test.getSize());
+							//Control[] cont = ((Composite) test).getChildren();
+						//}
+						//forTestingOnly.setMinSize(forTestingOnly.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+						//forTestingOnly.update();
+						
+						//System.out.println(forTestingOnly.getMinHeight());
+						forTestingOnly.setMinHeight(forTestingOnly.getLowestWidgetYAxisValue());
+						//forTestingOnly.setMinSize(forTestingOnly.getContent().computeSize(SWT.DEFAULT, forTestingOnly.getLowestWidgetYAxisValue()));
+						//System.out.println(forTestingOnly.getMinHeight());
+						System.out.println(test.getSize());
+						forTestingOnly.layout();
+						
+						
+						//forTestingOnly.getVerticalBar().setMaximum(forTestingOnly.getMinHeight());
+						//forTestingOnly.setMinSize(forTestingOnly.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+						//System.out.println(forTestingOnly.getMinHeight());
+						//	forTestingOnly.setSize(744, forTestingOnly.getLowestWidgetYAxisValue());
+						//forTestingOnly.getVerticalBar();
+						
+						
 					}
+					
 				});
 				break;
 			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:

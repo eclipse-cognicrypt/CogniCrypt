@@ -170,6 +170,8 @@ public class Constants {
 	public static final Rectangle RECTANGLE_FOR_BUTTONS_FOR_NON_MODE_SELECTION_PAGES = new Rectangle(897, 10, 83, 29); //1000 - 83 - 10 -10
 	public static final Rectangle RECTANGLE_FOR_GRANULAR_CLAFER_UI_ELEMENT = new Rectangle(10, 10, 744, 280);
 	
+	public static final int PADDING_BETWEEN_GRANULAR_UI_ELEMENTS = 10;
+	
 	public static enum FeatureConstraintRelationship{
 		EQUAL("="),
 		NOTEQUAL("!="),

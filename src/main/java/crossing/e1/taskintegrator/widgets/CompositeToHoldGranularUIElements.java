@@ -143,5 +143,12 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	public void setLowestWidgetYAxisValue(int lowestWidgetYAxisValue) {
 		this.lowestWidgetYAxisValue = lowestWidgetYAxisValue + Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS;
 	}
+	
+	/**
+	 * @return the listOfAllClaferFeatures
+	 */
+	public ArrayList<ClaferFeature> getListOfAllClaferFeatures() {
+		return listOfAllClaferFeatures;
+	}
 
 }

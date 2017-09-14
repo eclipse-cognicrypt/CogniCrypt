@@ -3,6 +3,8 @@ package crossing.e1.taskintegrator.widgets;
 import org.eclipse.swt.widgets.Composite;
 
 import crossing.e1.configurator.Constants;
+import crossing.e1.taskintegrator.models.ClaferFeature;
+import crossing.e1.taskintegrator.models.FeatureProperty;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -23,6 +25,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	 */
 	public CompositeToHoldGranularUIElements(Composite parent, int style, String pageName) {
 		super(parent, SWT.BORDER | SWT.V_SCROLL);
+		setExpandHorizontal(true);
 		/*addControlListener(new ControlAdapter() {
 			@Override
 			public void controlResized(ControlEvent e) {				
@@ -33,15 +36,23 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		setExpandVertical(true);
 		this.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
 		setLayout(new RowLayout(SWT.HORIZONTAL));
-		setAlwaysShowScrollBars(true);
 		
 		Composite composite = new Composite(this, SWT.NONE);
-		RowLayout rl_composite = new RowLayout(SWT.VERTICAL);
-		composite.setLayout(rl_composite);
 		setContent(composite);
 		setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		this.setTargetPageName(pageName);	
+		this.setTargetPageName(pageName);
+		composite.setLayout(null);
 		
+		/*TODO for testing only
+		 * CompositeGranularUIForClaferFeature granularClaferFeature = new CompositeGranularUIForClaferFeature
+			(composite, 
+			SWT.NONE, 
+			new ClaferFeature(
+				Constants.FeatureType.ABSTRACT,
+				"Security",
+				new FeatureProperty("Enum", "integer"),
+				null));
+		granularClaferFeature.setBounds(10, 10, 744, 280);*/
 		
 		
 

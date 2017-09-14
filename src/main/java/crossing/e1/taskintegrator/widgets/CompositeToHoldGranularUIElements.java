@@ -2,28 +2,25 @@ package crossing.e1.taskintegrator.widgets;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
-import crossing.e1.configurator.Constants;
-import crossing.e1.taskintegrator.models.ClaferFeature;
-import crossing.e1.taskintegrator.models.FeatureProperty;
-
-import java.util.ArrayList;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
+
+import crossing.e1.configurator.Constants;
+import crossing.e1.taskintegrator.models.ClaferFeature;
+
+import java.util.ArrayList;
+
+
 
 
 public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	private String targetPageName;
-	private int lowestWidgetYAxisValue = 10;
+	private int lowestWidgetYAxisValue = Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS;
 	private ArrayList<ClaferFeature> listOfAllClaferFeatures;
 	
 	/**
-	 * Create the composite.
-	 * TODO try to add the handling of the granular elements here.
+	 * Create the composite.  
 	 * @param parent
 	 * @param style
 	 */
@@ -31,49 +28,35 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		super(parent, SWT.BORDER | SWT.V_SCROLL);
 		
 		listOfAllClaferFeatures = new ArrayList<ClaferFeature>();
+		setTargetPageName(pageName);
 		
-		
-		setExpandHorizontal(true);
-		/*addControlListener(new ControlAdapter() {
-			@Override
-			public void controlResized(ControlEvent e) {				
-				setMinHeight(getClientArea().height);
-				System.out.println(getMinHeight());
-			}
-		});*/
+		setExpandHorizontal(true);		
 		setExpandVertical(true);
-		this.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
+		setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
 		setLayout(new RowLayout(SWT.HORIZONTAL));
 		
-		Composite composite = new Composite(this, SWT.NONE);
-		setContent(composite);
-		setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		this.setTargetPageName(pageName);
-		composite.setLayout(null);
-		
-		/*TODO for testing only
-		 * CompositeGranularUIForClaferFeature granularClaferFeature = new CompositeGranularUIForClaferFeature
-			(composite, 
-			SWT.NONE, 
-			new ClaferFeature(
-				Constants.FeatureType.ABSTRACT,
-				"Security",
-				new FeatureProperty("Enum", "integer"),
-				null));
-		granularClaferFeature.setBounds(10, 10, 744, 280);*/
-		
-		
+		// All the granular UI elements will be added to this composite for the ScrolledComposite to work.
+		Composite contentComposite = new Composite(this, SWT.NONE);
+		setContent(contentComposite);
+		setMinSize(contentComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));		
+		contentComposite.setLayout(null);	
 
 	}
 	
 	public void addGranularClaferUIElements(ClaferFeature claferFeature){
-		listOfAllClaferFeatures.add(claferFeature);
+		// Update the array list.
+		//listOfAllClaferFeatures.add(claferFeature);
+		
 		CompositeGranularUIForClaferFeature granularClaferFeature = new CompositeGranularUIForClaferFeature
-			((Composite) this.getContent(), 
+			((Composite) this.getContent(), // the content composite of ScrolledComposite.
 			SWT.NONE, 
 			claferFeature);
-		granularClaferFeature.setBounds(10, getLowestWidgetYAxisValue(), 744, 280);
-		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 280);
+		granularClaferFeature.setBounds(
+			Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS, 
+			getLowestWidgetYAxisValue(), 
+			Constants.WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT, 
+			Constants.HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT);
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + Constants.HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT);
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
 	
@@ -92,23 +75,20 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	
 	private void updateClaferContainer() {
 		Composite compositeContentOfThisScrolledComposite = (Composite)this.getContent();
+		
+		// first dispose all the granular UI elements (which includes the deleted one).
 		for(Control uiRepresentationOfClaferFeatures : compositeContentOfThisScrolledComposite.getChildren()){
 			uiRepresentationOfClaferFeatures.dispose();
 		}
+		
+		// update the size values.
 		setLowestWidgetYAxisValue(0);
 		setMinHeight(getLowestWidgetYAxisValue());
 		
+		// add all the clafer features excluding the deleted one.
 		for(ClaferFeature featureUnderConsideration : listOfAllClaferFeatures){
-			CompositeGranularUIForClaferFeature granularClaferFeature = new CompositeGranularUIForClaferFeature
-			(compositeContentOfThisScrolledComposite, 
-			SWT.NONE, 
-			featureUnderConsideration);
-		granularClaferFeature.setBounds(10, getLowestWidgetYAxisValue(), 744, 280);
-		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 280);
+			addGranularClaferUIElements(featureUnderConsideration);
 		}
-		
-		setMinHeight(getLowestWidgetYAxisValue());
-		
 	}
 
 	@Override

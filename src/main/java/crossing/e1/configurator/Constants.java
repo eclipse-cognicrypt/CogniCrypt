@@ -169,7 +169,9 @@ public class Constants {
 	public static final Rectangle RECTANGLE_FOR_COMPOSITES = new Rectangle(0, 0, 887, 500 - 10 -10 ); //897 - 10
 	public static final Rectangle RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES = new Rectangle(897, 10, 83, 29); //1000 - 83 - 10 -10
 	public static final Rectangle RECTANGLE_FOR_SECOND_BUTTON_FOR_NON_MODE_SELECTION_PAGES = new Rectangle(897, 49, 83, 29); //1000 - 83 - 10 -10
-	public static final Rectangle RECTANGLE_FOR_GRANULAR_CLAFER_UI_ELEMENT = new Rectangle(10, 10, 744, 280);
+	//public static final Rectangle RECTANGLE_FOR_GRANULAR_CLAFER_UI_ELEMENT = new Rectangle(10, 10, 744, 280);
+	public static final int WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT = 744;
+	public static final int HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT = 280;
 	
 	public static final int PADDING_BETWEEN_GRANULAR_UI_ELEMENTS = 10;
 	

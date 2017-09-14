@@ -1,12 +1,6 @@
 package crossing.e1.taskintegrator.widgets;
 
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-
-import crossing.e1.taskintegrator.models.ClaferFeature;
-import crossing.e1.taskintegrator.models.FeatureProperty;
-import crossing.e1.taskintegrator.wizard.PageForTaskIntegratorWizard;
-
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Group;
@@ -15,17 +9,17 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
+import crossing.e1.taskintegrator.models.ClaferFeature;
+
 
 public class CompositeGranularUIForClaferFeature extends Composite {
 	private ClaferFeature claferFeature;
-	private Text txtFeatureName;
 
 	/**
 	 * Create the composite.
@@ -36,6 +30,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		super(parent, SWT.BORDER);
 		// set the clafer feature first.
 		this.setClaferFeature(claferFeatureParam);
+		
 		setLayout(new FormLayout());
 		
 		Group grpClaferFeatureProperties = new Group(this, SWT.BORDER);
@@ -51,6 +46,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		Label lblType = new Label(grpClaferFeatureProperties, SWT.NONE);
 		lblType.setText(claferFeature.getFeatureType().toString());
 		
+		Text txtFeatureName;
 		txtFeatureName = new Text(grpClaferFeatureProperties, SWT.BORDER);
 		txtFeatureName.setLayoutData(new RowData(160, SWT.DEFAULT));
 		txtFeatureName.setEnabled(false);
@@ -59,7 +55,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		
 		Label lblInheritsFrom = new Label(grpClaferFeatureProperties, SWT.NONE);
 		lblInheritsFrom.setText("Inherits from");
-		GroupFeatureProperty grpClaferFeatureInheritance = new GroupFeatureProperty(
+		GroupFeatureProperty grpClaferFeatureInheritance = new GroupFeatureProperty( // TODO for testing only.
 																grpClaferFeatureProperties, 
 																SWT.BORDER, 
 																claferFeature.getFeatureInheritsFromForAbstract()

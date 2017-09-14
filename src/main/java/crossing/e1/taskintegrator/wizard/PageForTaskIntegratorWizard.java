@@ -3,24 +3,20 @@
  */
 package crossing.e1.taskintegrator.wizard;
 
-import java.util.ArrayList;
-
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Button;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.taskintegrator.models.ClaferFeature;
 import crossing.e1.taskintegrator.models.FeatureProperty;
 import crossing.e1.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
-import crossing.e1.taskintegrator.widgets.CompositeGranularUIForClaferFeature;
 import crossing.e1.taskintegrator.widgets.CompositeToHoldGranularUIElements;
-import org.eclipse.swt.widgets.Button;
+
 
 
 /**
@@ -31,11 +27,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	private CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard = null;
 	private CompositeToHoldGranularUIElements compositeToHoldGranularUIElements = null;
 	
-	
-	
-	
-	// TODO for testing only.
-	int counter = 0;
+	int counter = 0;// TODO for testing only.
 	
 	/**
 	 * Create the wizard.
@@ -61,80 +53,35 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		switch(this.getName()){
 			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
 				container.setLayout(new FillLayout(SWT.HORIZONTAL));
-				this.setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE));
-				//this.compositeChoiceForModeOfWizard.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
+				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE));
 				break;
 			case Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION:
-				this.setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));				
-				this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
+				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));				
+				compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
+				
 				Button btnAddFeature = new Button(container, SWT.NONE);
 				btnAddFeature.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
 				btnAddFeature.setText("Add Feature");
-				
-				//TODO for testing only
-				Button btnDeleteFeature = new Button(container, SWT.NONE);
-				btnDeleteFeature.setBounds(Constants.RECTANGLE_FOR_SECOND_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
-				btnDeleteFeature.setText("Delete Feature");
-				btnDeleteFeature.addSelectionListener(new SelectionAdapter() {	
-				
+				btnAddFeature.addSelectionListener(new SelectionAdapter() {					
 					@Override
-					public void widgetSelected(SelectionEvent e) {
-						//deleteClaferFeature(listOfAllClaferFeatures.get(listOfAllClaferFeatures.size() - 1));
-					}
-				});
-				
-				
-				btnAddFeature.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						CompositeToHoldGranularUIElements forTestingOnly = (CompositeToHoldGranularUIElements) ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompositeToHoldGranularUIElements(); 
+					public void widgetSelected(SelectionEvent e) {						
 						
-						// TODO for testing only
+						// TODO dummy Clafer feature for testing only. Keep until the pop up is complete.
 						counter++;
 						ClaferFeature tempFeature = new ClaferFeature(
 							Constants.FeatureType.ABSTRACT,
-							Integer.toString(counter), // TODO for testing only. Counter as the name.
+							Integer.toString(counter), // Counter as the name to make each addition identifiable.
 							new FeatureProperty("Enum", "integer"),
 							null);
-						
-						//listOfAllClaferFeatures.add(tempFeature);
-						
+						// Update the array list.
+						compositeToHoldGranularUIElements.getListOfAllClaferFeatures().add(tempFeature);
 						compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
-						
-						
-						
-						// TODO for testing only.
-						//for(ClaferFeature feature:claferFeature){
-							
-							
-							Control test = forTestingOnly.getContent();
-							System.out.println(test.getSize());
-							//Control[] cont = ((Composite) test).getChildren();
-						//}
-						//forTestingOnly.setMinSize(forTestingOnly.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-						//forTestingOnly.update();
-						
-						//System.out.println(forTestingOnly.getMinHeight());
-						forTestingOnly.setMinHeight(forTestingOnly.getLowestWidgetYAxisValue());
-						//forTestingOnly.setMinSize(forTestingOnly.getContent().computeSize(SWT.DEFAULT, forTestingOnly.getLowestWidgetYAxisValue()));
-						//System.out.println(forTestingOnly.getMinHeight());
-						System.out.println(test.getSize());
-						forTestingOnly.layout();
-						
-						
-						//forTestingOnly.getVerticalBar().setMaximum(forTestingOnly.getMinHeight());
-						//forTestingOnly.setMinSize(forTestingOnly.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-						//System.out.println(forTestingOnly.getMinHeight());
-						//	forTestingOnly.setSize(744, forTestingOnly.getLowestWidgetYAxisValue());
-						//forTestingOnly.getVerticalBar();
-						
-						
 					}
 					
 				});
 				break;
 			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:
-				this.setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
+				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
 				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);				
 				Button btnAddXSLTag = new Button(container, SWT.NONE);
 				btnAddXSLTag.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
@@ -147,7 +94,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				});
 				break;
 			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
-				this.setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
+				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
 				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
 				Button btnAddQuestion = new Button(container, SWT.NONE);
 				btnAddQuestion.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);

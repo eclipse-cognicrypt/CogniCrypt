@@ -96,10 +96,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		btnDelete.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Composite claferPageAsComposite = btnDelete.getParent().getParent().getParent().getParent();// (1) CompositeGranularUIForClaferFeature, (2) composite inside (3) CompositeToHoldGranularUIElements
-				Control[] controls = claferPageAsComposite.getChildren();
-				
-				//((PageForTaskIntegratorWizard) claferPageAsComposite).deleteClaferFeature(claferFeature);
+				((CompositeToHoldGranularUIElements) btnDelete.getParent().getParent().getParent()).deleteClaferFeature(claferFeature);// (1) CompositeGranularUIForClaferFeature, (2) composite inside (3) CompositeToHoldGranularUIElements				
 			}
 		});
 		FormData fd_btnDelete = new FormData();

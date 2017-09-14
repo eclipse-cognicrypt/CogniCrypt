@@ -1,10 +1,13 @@
 package crossing.e1.taskintegrator.widgets;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.taskintegrator.models.ClaferFeature;
 import crossing.e1.taskintegrator.models.FeatureProperty;
+
+import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -16,7 +19,8 @@ import org.eclipse.swt.events.ControlEvent;
 public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	private String targetPageName;
 	private int lowestWidgetYAxisValue = 10;
-
+	private ArrayList<ClaferFeature> listOfAllClaferFeatures;
+	
 	/**
 	 * Create the composite.
 	 * TODO try to add the handling of the granular elements here.
@@ -25,6 +29,10 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	 */
 	public CompositeToHoldGranularUIElements(Composite parent, int style, String pageName) {
 		super(parent, SWT.BORDER | SWT.V_SCROLL);
+		
+		listOfAllClaferFeatures = new ArrayList<ClaferFeature>();
+		
+		
 		setExpandHorizontal(true);
 		/*addControlListener(new ControlAdapter() {
 			@Override
@@ -56,6 +64,51 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		
 		
 
+	}
+	
+	public void addGranularClaferUIElements(ClaferFeature claferFeature){
+		listOfAllClaferFeatures.add(claferFeature);
+		CompositeGranularUIForClaferFeature granularClaferFeature = new CompositeGranularUIForClaferFeature
+			((Composite) this.getContent(), 
+			SWT.NONE, 
+			claferFeature);
+		granularClaferFeature.setBounds(10, getLowestWidgetYAxisValue(), 744, 280);
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 280);
+		setMinHeight(getLowestWidgetYAxisValue());
+	}
+	
+	public void deleteClaferFeature(ClaferFeature featureToBeDeleted){		
+		
+		for(ClaferFeature featureUnderConsideration:listOfAllClaferFeatures){
+			if(featureUnderConsideration.equals(featureToBeDeleted)){
+				listOfAllClaferFeatures.remove(featureUnderConsideration);
+				break;
+			}
+		}
+		
+		updateClaferContainer();
+		
+	}
+	
+	private void updateClaferContainer() {
+		Composite compositeContentOfThisScrolledComposite = (Composite)this.getContent();
+		for(Control uiRepresentationOfClaferFeatures : compositeContentOfThisScrolledComposite.getChildren()){
+			uiRepresentationOfClaferFeatures.dispose();
+		}
+		setLowestWidgetYAxisValue(0);
+		setMinHeight(getLowestWidgetYAxisValue());
+		
+		for(ClaferFeature featureUnderConsideration : listOfAllClaferFeatures){
+			CompositeGranularUIForClaferFeature granularClaferFeature = new CompositeGranularUIForClaferFeature
+			(compositeContentOfThisScrolledComposite, 
+			SWT.NONE, 
+			featureUnderConsideration);
+		granularClaferFeature.setBounds(10, getLowestWidgetYAxisValue(), 744, 280);
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 280);
+		}
+		
+		setMinHeight(getLowestWidgetYAxisValue());
+		
 	}
 
 	@Override

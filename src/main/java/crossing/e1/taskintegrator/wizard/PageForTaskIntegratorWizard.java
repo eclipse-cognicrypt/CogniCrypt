@@ -32,7 +32,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	private CompositeToHoldGranularUIElements compositeToHoldGranularUIElements = null;
 	
 	
-	private ArrayList<ClaferFeature> listOfAllClaferFeatures;
+	
 	
 	// TODO for testing only.
 	int counter = 0;
@@ -44,7 +44,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		super(name);
 		setTitle(title);
 		setDescription(description);
-		listOfAllClaferFeatures = new ArrayList<ClaferFeature>();
+		
 		// TODO improve the next button selection functionality.
 		//this.setPageComplete(false);		
 	}
@@ -71,6 +71,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				btnAddFeature.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
 				btnAddFeature.setText("Add Feature");
 				
+				//TODO for testing only
 				Button btnDeleteFeature = new Button(container, SWT.NONE);
 				btnDeleteFeature.setBounds(Constants.RECTANGLE_FOR_SECOND_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
 				btnDeleteFeature.setText("Delete Feature");
@@ -78,7 +79,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						deleteClaferFeature(listOfAllClaferFeatures.get(listOfAllClaferFeatures.size() - 1));
+						//deleteClaferFeature(listOfAllClaferFeatures.get(listOfAllClaferFeatures.size() - 1));
 					}
 				});
 				
@@ -95,16 +96,16 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 							Integer.toString(counter), // TODO for testing only. Counter as the name.
 							new FeatureProperty("Enum", "integer"),
 							null);
-						listOfAllClaferFeatures.add(tempFeature);
+						
+						//listOfAllClaferFeatures.add(tempFeature);
+						
+						compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
+						
+						
 						
 						// TODO for testing only.
 						//for(ClaferFeature feature:claferFeature){
-							CompositeGranularUIForClaferFeature granularClaferFeature = new CompositeGranularUIForClaferFeature
-								((Composite) forTestingOnly.getContent(), 
-								SWT.NONE, 
-								tempFeature);
-							granularClaferFeature.setBounds(10, forTestingOnly.getLowestWidgetYAxisValue(), 744, 280);
-							forTestingOnly.setLowestWidgetYAxisValue(forTestingOnly.getLowestWidgetYAxisValue() + 280);
+							
 							
 							Control test = forTestingOnly.getContent();
 							System.out.println(test.getSize());
@@ -161,40 +162,9 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		}
 	}
 	
-	public void deleteClaferFeature(ClaferFeature featureToBeDeleted){
-		
-		
-		for(ClaferFeature featureUnderConsideration:listOfAllClaferFeatures){
-			if(featureUnderConsideration.equals(featureToBeDeleted)){
-				listOfAllClaferFeatures.remove(featureUnderConsideration);
-				break;
-			}
-		}
-		
-		updateClaferContainer();
-		
-	}
 	
-	private void updateClaferContainer() {
-		
-		for(Control uiRepresentationOfClaferFeatures : ((Composite)compositeToHoldGranularUIElements.getContent()).getChildren()){
-			uiRepresentationOfClaferFeatures.dispose();
-		}
-		compositeToHoldGranularUIElements.setLowestWidgetYAxisValue(0);
-		compositeToHoldGranularUIElements.setMinHeight(compositeToHoldGranularUIElements.getLowestWidgetYAxisValue());
-		
-		for(ClaferFeature featureUnderConsideration : listOfAllClaferFeatures){
-			CompositeGranularUIForClaferFeature granularClaferFeature = new CompositeGranularUIForClaferFeature
-			((Composite) compositeToHoldGranularUIElements.getContent(), 
-			SWT.NONE, 
-			featureUnderConsideration);
-		granularClaferFeature.setBounds(10, compositeToHoldGranularUIElements.getLowestWidgetYAxisValue(), 744, 280);
-		compositeToHoldGranularUIElements.setLowestWidgetYAxisValue(compositeToHoldGranularUIElements.getLowestWidgetYAxisValue() + 280);
-		}
-		
-		compositeToHoldGranularUIElements.setMinHeight(compositeToHoldGranularUIElements.getLowestWidgetYAxisValue());
-		
-	}
+	
+	
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.WizardPage#canFlipToNextPage()

@@ -31,8 +31,11 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	private CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard = null;
 	private CompositeToHoldGranularUIElements compositeToHoldGranularUIElements = null;
 	
-	// TODO for testing only
-	private ClaferFeature claferFeature;
+	
+	private ArrayList<ClaferFeature> listOfAllClaferFeatures;
+	
+	// TODO for testing only.
+	int counter = 0;
 	
 	/**
 	 * Create the wizard.
@@ -41,39 +44,9 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		super(name);
 		setTitle(title);
 		setDescription(description);
+		listOfAllClaferFeatures = new ArrayList<ClaferFeature>();
 		// TODO improve the next button selection functionality.
-		//this.setPageComplete(false);
-		
-		
-		
-		// TODO for testing only
-		createClaferFeatures();
-		
-		
-	}
-
-	
-	// TODO for testing only
-	private void createClaferFeatures() {
-		//TODO dynamic addition of the composites needs to be implemented.
-		//claferFeature = new ArrayList<ClaferFeature>();
-		
-		/*for(int i = 0; i<10; i++){
-			claferFeature.add(
-				new ClaferFeature(
-					Constants.FeatureType.ABSTRACT,
-					"Security",
-					new FeatureProperty("Enum", "integer"),
-					null)
-				);
-		}*/
-			
-		claferFeature = new ClaferFeature(
-			Constants.FeatureType.ABSTRACT,
-			"Security",
-			new FeatureProperty("Enum", "integer"),
-			null);
-		
+		//this.setPageComplete(false);		
 	}
 
 	/**
@@ -95,19 +68,41 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				this.setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));				
 				this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
 				Button btnAddFeature = new Button(container, SWT.NONE);
-				btnAddFeature.setBounds(Constants.RECTANGLE_FOR_BUTTONS_FOR_NON_MODE_SELECTION_PAGES);
+				btnAddFeature.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
 				btnAddFeature.setText("Add Feature");
+				
+				Button btnDeleteFeature = new Button(container, SWT.NONE);
+				btnDeleteFeature.setBounds(Constants.RECTANGLE_FOR_SECOND_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
+				btnDeleteFeature.setText("Delete Feature");
+				btnDeleteFeature.addSelectionListener(new SelectionAdapter() {	
+				
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						deleteClaferFeature(listOfAllClaferFeatures.get(listOfAllClaferFeatures.size() - 1));
+					}
+				});
+				
+				
 				btnAddFeature.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						CompositeToHoldGranularUIElements forTestingOnly = (CompositeToHoldGranularUIElements) ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompositeToHoldGranularUIElements(); 
+						
+						// TODO for testing only
+						counter++;
+						ClaferFeature tempFeature = new ClaferFeature(
+							Constants.FeatureType.ABSTRACT,
+							Integer.toString(counter), // TODO for testing only. Counter as the name.
+							new FeatureProperty("Enum", "integer"),
+							null);
+						listOfAllClaferFeatures.add(tempFeature);
 						
 						// TODO for testing only.
 						//for(ClaferFeature feature:claferFeature){
 							CompositeGranularUIForClaferFeature granularClaferFeature = new CompositeGranularUIForClaferFeature
 								((Composite) forTestingOnly.getContent(), 
 								SWT.NONE, 
-								claferFeature);
+								tempFeature);
 							granularClaferFeature.setBounds(10, forTestingOnly.getLowestWidgetYAxisValue(), 744, 280);
 							forTestingOnly.setLowestWidgetYAxisValue(forTestingOnly.getLowestWidgetYAxisValue() + 280);
 							
@@ -141,7 +136,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				this.setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
 				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);				
 				Button btnAddXSLTag = new Button(container, SWT.NONE);
-				btnAddXSLTag.setBounds(Constants.RECTANGLE_FOR_BUTTONS_FOR_NON_MODE_SELECTION_PAGES);
+				btnAddXSLTag.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
 				btnAddXSLTag.setText("Add XSL tag");
 				btnAddXSLTag.addSelectionListener(new SelectionAdapter() {
 					@Override
@@ -154,7 +149,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				this.setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
 				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
 				Button btnAddQuestion = new Button(container, SWT.NONE);
-				btnAddQuestion.setBounds(Constants.RECTANGLE_FOR_BUTTONS_FOR_NON_MODE_SELECTION_PAGES);
+				btnAddQuestion.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
 				btnAddQuestion.setText("Add Question");
 				btnAddQuestion.addSelectionListener(new SelectionAdapter() {
 					@Override
@@ -166,7 +161,41 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		}
 	}
 	
+	public void deleteClaferFeature(ClaferFeature featureToBeDeleted){
+		
+		
+		for(ClaferFeature featureUnderConsideration:listOfAllClaferFeatures){
+			if(featureUnderConsideration.equals(featureToBeDeleted)){
+				listOfAllClaferFeatures.remove(featureUnderConsideration);
+				break;
+			}
+		}
+		
+		updateClaferContainer();
+		
+	}
 	
+	private void updateClaferContainer() {
+		
+		for(Control uiRepresentationOfClaferFeatures : ((Composite)compositeToHoldGranularUIElements.getContent()).getChildren()){
+			uiRepresentationOfClaferFeatures.dispose();
+		}
+		compositeToHoldGranularUIElements.setLowestWidgetYAxisValue(0);
+		compositeToHoldGranularUIElements.setMinHeight(compositeToHoldGranularUIElements.getLowestWidgetYAxisValue());
+		
+		for(ClaferFeature featureUnderConsideration : listOfAllClaferFeatures){
+			CompositeGranularUIForClaferFeature granularClaferFeature = new CompositeGranularUIForClaferFeature
+			((Composite) compositeToHoldGranularUIElements.getContent(), 
+			SWT.NONE, 
+			featureUnderConsideration);
+		granularClaferFeature.setBounds(10, compositeToHoldGranularUIElements.getLowestWidgetYAxisValue(), 744, 280);
+		compositeToHoldGranularUIElements.setLowestWidgetYAxisValue(compositeToHoldGranularUIElements.getLowestWidgetYAxisValue() + 280);
+		}
+		
+		compositeToHoldGranularUIElements.setMinHeight(compositeToHoldGranularUIElements.getLowestWidgetYAxisValue());
+		
+	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.WizardPage#canFlipToNextPage()
 	 */

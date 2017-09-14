@@ -1,9 +1,11 @@
 package crossing.e1.taskintegrator.widgets;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 import crossing.e1.taskintegrator.models.ClaferFeature;
 import crossing.e1.taskintegrator.models.FeatureProperty;
+import crossing.e1.taskintegrator.wizard.PageForTaskIntegratorWizard;
 
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.SWT;
@@ -17,6 +19,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
 
 public class CompositeGranularUIForClaferFeature extends Composite {
@@ -89,6 +93,15 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		btnModify.setText("Modify");
 		
 		Button btnDelete = new Button(this, SWT.NONE);
+		btnDelete.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Composite claferPageAsComposite = btnDelete.getParent().getParent().getParent().getParent();// (1) CompositeGranularUIForClaferFeature, (2) composite inside (3) CompositeToHoldGranularUIElements
+				Control[] controls = claferPageAsComposite.getChildren();
+				
+				//((PageForTaskIntegratorWizard) claferPageAsComposite).deleteClaferFeature(claferFeature);
+			}
+		});
 		FormData fd_btnDelete = new FormData();
 		fd_btnDelete.right = new FormAttachment(0, 736);
 		fd_btnDelete.top = new FormAttachment(0, 3);

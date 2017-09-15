@@ -67,16 +67,16 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					public void widgetSelected(SelectionEvent e) {						
 						
 						// TODO dummy Clafer feature for testing only. Keep until the pop up is complete.
-						counter++;
-						ClaferFeature tempFeature = new ClaferFeature(
-							Constants.FeatureType.ABSTRACT,
-							Integer.toString(counter), // Counter as the name to make each addition identifiable.
-							new FeatureProperty("Enum", "integer"),
-							null);
-						// Update the array list.
+						counter++;						
+						ClaferFeature tempFeature = getDummyClaferFeature();
+						
+						
+						// Update the array list.							
 						compositeToHoldGranularUIElements.getListOfAllClaferFeatures().add(tempFeature);
 						compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
 					}
+
+					
 					
 				});
 				break;
@@ -110,7 +110,31 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	}
 	
 	
-	
+	private ClaferFeature getDummyClaferFeature() {
+		ClaferFeature tempFeature = new ClaferFeature(
+			Constants.FeatureType.ABSTRACT,
+			Integer.toString(counter), // Counter as the name to make each addition identifiable.
+			new FeatureProperty("Enum", "integer"),
+			null);
+		
+		// from symmetric encryption abstract Algorithm
+		tempFeature.getfeatureProperties().add(new FeatureProperty("name", "string"));
+		tempFeature.getfeatureProperties().add(new FeatureProperty("description", "string"));
+		tempFeature.getfeatureProperties().add(new FeatureProperty("security", "Security"));
+		tempFeature.getfeatureProperties().add(new FeatureProperty("performance", "Performance"));
+		tempFeature.getfeatureProperties().add(new FeatureProperty("classPerformance", "Performance"));
+		
+		// from symmetric encryption concrete SHA: Digest
+		tempFeature.getFeatureConstraints().add("outputSize = 160 || outputSize = 224 || outputSize = 256 || outputSize = 384 || outputSize = 512");
+		tempFeature.getFeatureConstraints().add("outputSize = 160 => performance = VeryFast && security = Weak");
+		tempFeature.getFeatureConstraints().add("outputSize = 224 => performance = Fast && security = Strong");
+		tempFeature.getFeatureConstraints().add("description = \"PBKDF2 key derivation\"");
+		tempFeature.getFeatureConstraints().add("security = cipher.security");
+		
+		
+		return tempFeature;
+		
+	}
 	
 
 	/* (non-Javadoc)

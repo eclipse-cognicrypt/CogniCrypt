@@ -173,7 +173,21 @@ public class Constants {
 	public static final int WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT = 744;
 	public static final int HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT = 280;
 	
+	// Form  data for CompositeGranularUIForClaferFeature
+	public static final int RIGHT_VALUE_FOR_GRANULAR_CLAFER_UI_SUB_ELEMENT = 736;
+	
 	public static final int PADDING_BETWEEN_GRANULAR_UI_ELEMENTS = 10;
+	public static final int PADDING_BETWEEN_SMALLER_UI_ELEMENTS = 3;
+	
+	public static final int WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT = 409;
+	public static final int HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT = 37;
+	
+	// TypeOfTargetDataForSmallUIElements int values. Add the type of data that needs to be shown on the composite here.
+	public static final int FEATURE_PROPERTY = 0;
+	public static final int FEATURE_CONSTRAINT = 1;
+	
+	
+	
 	
 	public static enum FeatureConstraintRelationship{
 		EQUAL("="),
@@ -197,6 +211,17 @@ public class Constants {
 		public String getOperatorValue() {
 			return operatorValue;
 		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Enum#toString()
+		 * Just return the operator value instead of the name.
+		 */
+		@Override
+		public String toString() {			
+			return  operatorValue;
+		}
+		
+		
 	}
 	
 	public static enum FeatureType{
@@ -212,5 +237,8 @@ public class Constants {
 		}
 		
 	}
+	
+	
+	
 	
 }

@@ -55,8 +55,9 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 			Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS, 
 			getLowestWidgetYAxisValue(), 
 			Constants.WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT, 
-			Constants.HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT);
-		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + Constants.HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT);
+			//Constants.HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT
+			granularClaferFeature.getSize().y);
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + granularClaferFeature.getSize().y);
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
 	

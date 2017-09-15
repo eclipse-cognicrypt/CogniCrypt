@@ -15,11 +15,13 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
+import crossing.e1.configurator.Constants;
 import crossing.e1.taskintegrator.models.ClaferFeature;
 
 
 public class CompositeGranularUIForClaferFeature extends Composite {
 	private ClaferFeature claferFeature;
+	private int yAxisValue = 40; // begin at 40 for the "top" value.
 
 	/**
 	 * Create the composite.
@@ -29,56 +31,72 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 	public CompositeGranularUIForClaferFeature(Composite parent, int style, ClaferFeature claferFeatureParam) {
 		super(parent, SWT.BORDER);
 		// set the clafer feature first.
-		this.setClaferFeature(claferFeatureParam);
-		
+		setClaferFeature(claferFeatureParam);
 		setLayout(new FormLayout());
 		
-		Group grpClaferFeatureProperties = new Group(this, SWT.BORDER);
-		FormData fd_grpClaferFeatureProperties = new FormData();
-		fd_grpClaferFeatureProperties.bottom = new FormAttachment(0, 122);
-		fd_grpClaferFeatureProperties.right = new FormAttachment(0, 736);
-		fd_grpClaferFeatureProperties.top = new FormAttachment(0, 40);
-		fd_grpClaferFeatureProperties.left = new FormAttachment(0, 3);
-		grpClaferFeatureProperties.setLayoutData(fd_grpClaferFeatureProperties);
-		grpClaferFeatureProperties.setText("Clafer feature");
-		grpClaferFeatureProperties.setLayout(new RowLayout(SWT.HORIZONTAL));
+		Group grpClaferFeature = new Group(this, SWT.BORDER);
+		FormData fd_grpClaferFeature = new FormData();
+		fd_grpClaferFeature.top = new FormAttachment(0, yAxisValue); //40
+		yAxisValue = yAxisValue + 70;
+		fd_grpClaferFeature.bottom = new FormAttachment(0, yAxisValue);//110
+		fd_grpClaferFeature.right = new FormAttachment(0, Constants.RIGHT_VALUE_FOR_GRANULAR_CLAFER_UI_SUB_ELEMENT);		
+		fd_grpClaferFeature.left = new FormAttachment(0, 3);
+		grpClaferFeature.setLayoutData(fd_grpClaferFeature);
+		grpClaferFeature.setText("Clafer feature");
+		grpClaferFeature.setLayout(new RowLayout(SWT.HORIZONTAL));
+		yAxisValue = yAxisValue + 6;
 		
-		Label lblType = new Label(grpClaferFeatureProperties, SWT.NONE);
+		Label lblType = new Label(grpClaferFeature, SWT.NONE);
 		lblType.setText(claferFeature.getFeatureType().toString());
 		
 		Text txtFeatureName;
-		txtFeatureName = new Text(grpClaferFeatureProperties, SWT.BORDER);
-		txtFeatureName.setLayoutData(new RowData(160, SWT.DEFAULT));
-		txtFeatureName.setEnabled(false);
+		txtFeatureName = new Text(grpClaferFeature, SWT.BORDER);
 		txtFeatureName.setEditable(false);
+		txtFeatureName.setLayoutData(new RowData(160, SWT.DEFAULT));
 		txtFeatureName.setText(claferFeature.getFeatureName());
 		
-		Label lblInheritsFrom = new Label(grpClaferFeatureProperties, SWT.NONE);
-		lblInheritsFrom.setText("Inherits from");
-		GroupFeatureProperty grpClaferFeatureInheritance = new GroupFeatureProperty( // TODO for testing only.
-																grpClaferFeatureProperties, 
-																SWT.BORDER, 
-																claferFeature.getFeatureInheritsFromForAbstract()
-																);
 		
-		Group grpClaferFeatureConstraints = new Group(this, SWT.NONE);
-		FormData fd_grpClaferFeatureConstraints = new FormData();
-		fd_grpClaferFeatureConstraints.bottom = new FormAttachment(0, 198);
-		fd_grpClaferFeatureConstraints.right = new FormAttachment(0, 736);
-		fd_grpClaferFeatureConstraints.top = new FormAttachment(0, 128);
-		fd_grpClaferFeatureConstraints.left = new FormAttachment(0, 3);
-		grpClaferFeatureConstraints.setLayoutData(fd_grpClaferFeatureConstraints);
-		grpClaferFeatureConstraints.setText("Clafer feature properties");
+		if(claferFeature.getFeatureInheritsFromForAbstract()!=null){
+			Label lblInheritsFrom = new Label(grpClaferFeature, SWT.NONE);
+			lblInheritsFrom.setText("Inherits from");
+			GroupFeatureProperty grpClaferFeatureInheritance = new GroupFeatureProperty(
+																	grpClaferFeature, 
+																	SWT.BORDER, 
+																	claferFeature.getFeatureInheritsFromForAbstract()
+																	);
+		}
 		
-		Group grpClaferFeature = new Group(this, SWT.NONE);
-		FormData fd_grpClaferFeature = new FormData();
-		fd_grpClaferFeature.bottom = new FormAttachment(0, 274);
-		fd_grpClaferFeature.right = new FormAttachment(0, 736);
-		fd_grpClaferFeature.top = new FormAttachment(0, 204);
-		fd_grpClaferFeature.left = new FormAttachment(0, 3);
-		grpClaferFeature.setLayoutData(fd_grpClaferFeature);
-		grpClaferFeature.setText("Clafer feature constraints");
-		grpClaferFeature.setLayout(new FillLayout(SWT.HORIZONTAL));
+		if(claferFeature.getfeatureProperties().size()!=0){
+			Group grpClaferFeatureProperties = new Group(this, SWT.NONE);
+			FormData fd_grpClaferFeatureProperties = new FormData();
+			fd_grpClaferFeatureProperties.top = new FormAttachment(0, yAxisValue);//116
+			yAxisValue = yAxisValue + 130;
+			fd_grpClaferFeatureProperties.bottom = new FormAttachment(0, yAxisValue);//246
+			fd_grpClaferFeatureProperties.right = new FormAttachment(0, Constants.RIGHT_VALUE_FOR_GRANULAR_CLAFER_UI_SUB_ELEMENT);			
+			fd_grpClaferFeatureProperties.left = new FormAttachment(0, 3);
+			grpClaferFeatureProperties.setLayoutData(fd_grpClaferFeatureProperties);
+			grpClaferFeatureProperties.setLayout(new FillLayout(SWT.HORIZONTAL));
+			grpClaferFeatureProperties.setText("Clafer feature properties");
+			CompositeToHoldSmallerUIElements compositeToHoldClaferFeatureProperties = new CompositeToHoldSmallerUIElements(grpClaferFeatureProperties, SWT.NONE, claferFeature.getfeatureProperties());
+			yAxisValue = yAxisValue + 6;
+		}
+		
+		
+		if(claferFeature.getFeatureConstraints().size()!=0){
+			Group grpClaferFeatureConstraints = new Group(this, SWT.NONE);
+			FormData fd_grpClaferFeatureConstraints = new FormData();
+			fd_grpClaferFeatureConstraints.top = new FormAttachment(0, yAxisValue);//252
+			yAxisValue = yAxisValue + 130;
+			fd_grpClaferFeatureConstraints.bottom = new FormAttachment(0, yAxisValue);//364
+			fd_grpClaferFeatureConstraints.right = new FormAttachment(0, Constants.RIGHT_VALUE_FOR_GRANULAR_CLAFER_UI_SUB_ELEMENT);			
+			fd_grpClaferFeatureConstraints.left = new FormAttachment(0, 3);
+			grpClaferFeatureConstraints.setLayoutData(fd_grpClaferFeatureConstraints);
+			grpClaferFeatureConstraints.setText("Clafer feature constraints");
+			grpClaferFeatureConstraints.setLayout(new FillLayout(SWT.HORIZONTAL));
+			CompositeToHoldSmallerUIElements compositeToHoldClaferFeatureConstraints = new CompositeToHoldSmallerUIElements(grpClaferFeatureConstraints, SWT.NONE,claferFeature.getFeatureConstraints());
+			yAxisValue = yAxisValue + 6;
+		}
+		
 		
 		Button btnModify = new Button(this, SWT.NONE);
 		FormData fd_btnModify = new FormData();
@@ -89,19 +107,20 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		btnModify.setText("Modify");
 		
 		Button btnDelete = new Button(this, SWT.NONE);
+		FormData fd_btnDelete = new FormData();
+		fd_btnDelete.right = new FormAttachment(0, Constants.RIGHT_VALUE_FOR_GRANULAR_CLAFER_UI_SUB_ELEMENT);
+		fd_btnDelete.top = new FormAttachment(0, 3);
+		fd_btnDelete.left = new FormAttachment(0, 657);
+		btnDelete.setLayoutData(fd_btnDelete);
 		btnDelete.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				((CompositeToHoldGranularUIElements) btnDelete.getParent().getParent().getParent()).deleteClaferFeature(claferFeature);// (1) CompositeGranularUIForClaferFeature, (2) composite inside (3) CompositeToHoldGranularUIElements				
 			}
 		});
-		FormData fd_btnDelete = new FormData();
-		fd_btnDelete.right = new FormAttachment(0, 736);
-		fd_btnDelete.top = new FormAttachment(0, 3);
-		fd_btnDelete.left = new FormAttachment(0, 657);
-		btnDelete.setLayoutData(fd_btnDelete);
 		btnDelete.setText("Delete");
 		
+		this.setSize(Constants.WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT, yAxisValue);
 	}
 
 	@Override

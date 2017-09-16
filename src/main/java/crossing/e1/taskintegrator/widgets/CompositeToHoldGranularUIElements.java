@@ -91,6 +91,17 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 			addGranularClaferUIElements(featureUnderConsideration);
 		}
 	}
+	
+	public void modifyClaferFeature(ClaferFeature originalClaferFeature, ClaferFeature modifiedClaferFeature ){
+		for(ClaferFeature featureUnderConsideration:listOfAllClaferFeatures){
+			if(featureUnderConsideration.equals(originalClaferFeature)){
+				featureUnderConsideration = modifiedClaferFeature;
+				break;
+			}
+		}
+		
+		updateClaferContainer();
+	}
 
 	@Override
 	protected void checkSubclass() {

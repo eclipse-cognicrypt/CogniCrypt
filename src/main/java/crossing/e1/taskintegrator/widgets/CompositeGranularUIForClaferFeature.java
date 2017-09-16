@@ -99,6 +99,15 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		
 		
 		Button btnModify = new Button(this, SWT.NONE);
+		btnModify.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				
+				ClaferFeature modifiedClaferFeature = null; // this will come from the pop up.
+				
+				((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent()).modifyClaferFeature(claferFeature, modifiedClaferFeature);// (1) CompositeGranularUIForClaferFeature, (2) composite inside (3) CompositeToHoldGranularUIElements
+			}
+		});
 		FormData fd_btnModify = new FormData();
 		fd_btnModify.right = new FormAttachment(0, 651);
 		fd_btnModify.top = new FormAttachment(0, 3);

@@ -5,6 +5,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.layout.RowData;
@@ -124,7 +125,16 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		btnDelete.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((CompositeToHoldGranularUIElements) btnDelete.getParent().getParent().getParent()).deleteClaferFeature(claferFeature);// (1) CompositeGranularUIForClaferFeature, (2) composite inside (3) CompositeToHoldGranularUIElements				
+				
+				MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING
+		            | SWT.YES | SWT.NO);
+				confirmationMessageBox.setMessage("This information will be lost. Do you really want to delete?");
+				confirmationMessageBox.setText("Deleting Clafer Feature");
+		        int response = confirmationMessageBox.open();
+		        if (response == SWT.YES){
+		        	((CompositeToHoldGranularUIElements) btnDelete.getParent().getParent().getParent()).deleteClaferFeature(claferFeature);// (1) CompositeGranularUIForClaferFeature, (2) composite inside (3) CompositeToHoldGranularUIElements
+		        }
+		          
 			}
 		});
 		btnDelete.setText("Delete");

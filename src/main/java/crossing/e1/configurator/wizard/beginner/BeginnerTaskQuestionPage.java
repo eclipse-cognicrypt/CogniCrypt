@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import crossing.e1.configurator.Activator;
+import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Page;
 import crossing.e1.configurator.beginer.question.Question;
@@ -52,7 +53,9 @@ import crossing.e1.configurator.utilities.Labels;
 public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private final Question quest;
-	private List<Question> allQuestion;
+	private final Task task;
+	// Removed the allquestions variable as it was not longer required.
+	private BeginnerModeQuestionnaire beginnerModeQuestionnaire;
 	private HashMap<Question, Answer> selectionMap = new HashMap<Question, Answer>(); 
 	private boolean finish = false;
 	private List<String> selectionValues;
@@ -86,6 +89,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		setTitle("Configuring Selected Task: " + task.getDescription());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.quest = quest;
+		this.task = task;
 		this.selectionValues = selectionValues;
 
 		// This variable needs to be initialized.
@@ -107,29 +111,43 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		setTitle("Configuring Selected Task: " + task.getDescription());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.page = page;
+		this.task = task;
 		this.selectionValues = selectionValues;
 
 		//This variable needs to be initialized.
 		this.quest = null;
 	}
-
-	public BeginnerTaskQuestionPage(final Page page, final Task task, final List<Question> allQuestion, final List<String> selectionValues) {
+	/**
+	 * 
+	 * @param page
+	 * @param task
+	 * @param beginnerModeQuestionnaire Updated this parameter in the constructor to accept the questionnaire instead of all the questions. 
+	 * @param selectionValues
+	 */
+	public BeginnerTaskQuestionPage(final Page page, final Task task, final BeginnerModeQuestionnaire beginnerModeQuestionnaire, final List<String> selectionValues) {
 		super("Display Questions");
 		setTitle("Configuring Selected Task: " + task.getDescription());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
-		this.allQuestion = allQuestion;
+		this.beginnerModeQuestionnaire = beginnerModeQuestionnaire;
 		this.quest = null;
 		this.page = page;
+		this.task = task;
 		this.selectionValues = selectionValues;
 	}
-
-	public BeginnerTaskQuestionPage(final List<Question> allQuestion, final Question quest, final Task task) {
+	/**
+	 * 
+	 * @param beginnerModeQuestionnaire Updated this parameter in the constructor to accept the questionnaire instead of all the questions. 
+	 * @param quest
+	 * @param task
+	 */
+	public BeginnerTaskQuestionPage(final BeginnerModeQuestionnaire beginnerModeQuestionnaire, final Question quest, final Task task) {
 		super("Display Questions");
 		setTitle("Configuring Selected Task: " + task.getDescription());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
-		this.allQuestion = allQuestion;
+		this.beginnerModeQuestionnaire = beginnerModeQuestionnaire;
 		this.quest = quest;
 		this.page = null;
+		this.task = task;
 	}
 
 	@Override
@@ -148,6 +166,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		// If legacy JSON files are in effect.
 		if (page == null) {
 			createQuestionControl(container, this.quest);
+			Activator.getDefault().logError("Outdated json file is used for task " + this.task.getDescription() + ". Please update.");
 		} else {
 			// loop through the questions that are to be displayed on the page.
 			for (Question question : page.getContent()) {
@@ -282,6 +301,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							StringBuilder checkedElement = new StringBuilder();
 							if (ans == null) {
 								ans = new Answer();
+								// TODO Why is this -1? Does it still make sense after having introduced multiple questions per page?
 								ans.setNextID(-1);
 							} else {
 								checkedElement.append(ans.getValue());
@@ -326,6 +346,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							}
 							if (ans == null) {
 								ans = new Answer();
+								// TODO Why is this -1? Does it still make sense after having introduced multiple questions per page?
 								ans.setNextID(-1);
 							}
 							String checkedElement = ans.getValue();
@@ -387,19 +408,22 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					String value = null;
 
 					for (int i = 0; i < methodParamIds.size(); i++) {
-						value = this.allQuestion.get(methodParamIds.get(i) - 1).getAnswers().get(0).getValue();
-
+						// Updated this code to pull just specific questions from the questionnaire. 
+						// getQuestionByID may return null in case of a bad json file. Updated the catch block.
+						value = this.beginnerModeQuestionnaire.getQuestionByID(methodParamIds.get(i)).getAnswers().get(0).getValue();
+						
 						if (!paramTypes[i].getName().equals("int")) {
 							paramObjList.add(paramTypes[i].cast(value));
 						} else {
-							paramObjList.add(Integer.parseInt(this.allQuestion.get(methodParamIds.get(i) - 1).getAnswers().get(0).getValue()));
+							// updated this code to reuse the value variable instead of the earlier line of code.
+							paramObjList.add(Integer.parseInt(value));
 						}
 					}
 
 					classObj = c.newInstance();
 					paramArray = paramObjList.toArray();
 
-				} catch (SecurityException | ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InstantiationException e) {
+				} catch (NullPointerException | SecurityException | ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InstantiationException e) {
 					Activator.getDefault().logError(e);
 				}
 
@@ -504,7 +528,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		if (page != null) {
 			return page.getNextID();
 		} else {
-			return -2;
+			return Constants.QUESTION_PAGE_NO_STATIC_NEXT_PAGE_ID;
 		}
 	}
 
@@ -539,6 +563,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		int result = 1;
 		result = prime * result + (this.finish ? 1231 : 1237);
 		result = prime * result + ((this.quest == null) ? 0 : this.quest.hashCode());
+		result = prime * result + ((this.page == null) ? 0 : this.quest.hashCode());
 		result = prime * result + ((this.selectionMap == null) ? 0 : this.selectionMap.hashCode());
 		result = prime * result + ((this.selectionValues == null) ? 0 : this.selectionValues.hashCode());
 		return result;

@@ -27,40 +27,39 @@ public class BeginnerModeQuestionnaire {
 	private final List<Question> questionList;
 	private final List<Page> pageList;
 	private Task task;
-	private int ID;
 	private int pageID;
 
-	public BeginnerModeQuestionnaire(final Task task, final String filePath) {
-		this.task = task;
-		this.questionList = (new QuestionsJSONReader()).getQuestions(filePath);		
-		this.ID = 0;
-		
-		this.pageList = null;
-		
-	}
 	/**
 	 * 
 	 * @param task
 	 * @param filePath
-	 * @param mode Call to this constructor if questions are being grouped into pages.
 	 */
-	public BeginnerModeQuestionnaire(final Task task, final String filePath, final String mode){
+	public BeginnerModeQuestionnaire(final Task task, final String filePath){
 		this.task = task;
 		this.pageList = (new QuestionsJSONReader()).getPages(filePath);
 		this.pageID = 0;
 		
 		this.questionList = null;
 	}
-
-	public int getCurrentID() {
-		return this.ID;
+	/**
+	 * Added this method to get specific questions. This functionality was created to replace the code when handling buttons
+	 * as 'Questions'.
+	 * @param questionID
+	 * @return The requested question.
+	 */
+	public Question getQuestionByID(final int questionID) {
+		
+		for(Page page : pageList){
+			for(Question question : page.getContent()){
+				if(question.getId() == questionID){
+					return question;
+				}
+			}
+		}
+		return null;
 	}
 
-	public Question getQuestionByID(final int ID) {
-		return this.questionList.get(ID);
-	}
-
-	public List<Page> getQutionare() throws NullPointerException {
+	public List<Page> getQuestionnaire() throws NullPointerException {
 		return this.pageList;
 	}
 
@@ -72,26 +71,6 @@ public class BeginnerModeQuestionnaire {
 		return this.task;
 	}
 
-	public boolean hasMoreQuestions() {
-		return this.ID < getQutionare().size();
-	}
-
-	public boolean isFirstQuestion() {
-		return this.ID == 0;
-	}
-
-	public Question nextQuestion() {
-		return this.questionList.get(this.ID++);
-	}
-
-	public Question previousQuestion() {
-		return this.questionList.get(--this.ID);
-	}
-
-	public Question setQuestionByID(final int ID) {
-		this.ID = ID;
-		return this.questionList.get(this.ID);
-	}
 
 	public void setTask(final Task task) {
 		this.task = task;

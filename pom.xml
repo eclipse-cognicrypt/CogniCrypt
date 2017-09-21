@@ -5,11 +5,11 @@
   <groupId>CROSSING.E1.CONFIGURATOR</groupId>
   <artifactId>CROSSING.E1.CONFIGURATOR</artifactId>
   <packaging>eclipse-plugin</packaging>
-  <parent>
+	<parent>
   	<groupId>CROSSING.E1.PARENT</groupId>
   	<artifactId>CROSSING.E1.CONFIGURATOR</artifactId>
   	<version>1.0.0-SNAPSHOT</version>
-  	<relativePath>/mvn-parent</relativePath>
+  	<relativePath>../code-clafer_configurator/mvn-parent</relativePath>
   </parent>
 	<repositories>
 	<repository>
@@ -19,13 +19,70 @@
 	</repository>
 	</repositories>
   <build>
-    <plugins>
+		<testResources>
+  <testResource>
+    <directory>${project.basedir}/src/test/java</directory>
+    <excludes>
+        <exclude>**/*.java</exclude>
+    </excludes>
+  </testResource>
+  <testResource>
+    <directory>${project.basedir}/src/test/resources</directory>
+  </testResource>
+</testResources>
+<plugins>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
         <version>0.26.0</version>
         <extensions>true</extensions>
       </plugin>
+			<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>2.12.4</version>
+    <executions>
+      <execution>
+        <id>test</id>
+        <phase>test</phase>
+        <configuration>
+          <includes>
+            <include>**/*Test.java</include>
+						<include>**/*test.java</include>
+						<include>**/Test*.java</include>
+						<include>**/*Tests.java</include>
+						<include>**/*tests.java</include>
+          </includes>
+					<testSourceDirectory>${project.basedir}\src\test\java\crossing\e1\featuremodel\clafer\test\*</testSourceDirectory>
+					<source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+        <goals>
+          <goal>test</goal>
+        </goals>
+      </execution>
+    </executions>
+  </plugin>
+ 
+  <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>2.5.1</version>
+    <executions>
+      <execution>
+        <id>compiletests</id>
+        <phase>test-compile</phase>
+        <goals>
+          <goal>testCompile</goal>
+        </goals>
+				<configuration>
+				<testSourceDirectory>${project.basedir}\src\test\java\crossing\e1\featuremodel\clafer\test\*</testSourceDirectory>
+				<source>1.8</source>
+        <target>1.8</target>
+				</configuration>
+      </execution>
+    </executions>
+  </plugin>
     </plugins>
     <pluginManagement>
     	<plugins>

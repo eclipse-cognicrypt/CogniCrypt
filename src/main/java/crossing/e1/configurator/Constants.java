@@ -20,6 +20,9 @@
 
 package crossing.e1.configurator;
 
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+
 /**
  * This class comprises all constants that are used by the plugin.
  *
@@ -146,7 +149,7 @@ public class Constants {
 	// Labels
 	public static final String LABEL_BROWSE_BUTTON = "Browse";
 	// Dimensions
-	public static final int UI_WIDGET_HEIGHT_NORMAL = 30;
+	public static final int UI_WIDGET_HEIGHT_NORMAL = 29;
 	// Constants for the composites
 	public static final String WIDGET_DATA_NAME_OF_THE_TASK = "NameOfTheTask";
 	public static final String WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK = "LibraryLocationOfTheTask";
@@ -160,5 +163,82 @@ public class Constants {
 	// Constants for the drop down for the library type on the mode selection page
 	public static final String WIDGET_CONTENT_EXISTING_LIBRARY = "Existing Library";
 	public static final String WIDGET_CONTENT_CUSTOM_LIBRARY = "Custom Library";
+	
+	// Default bounds for the composites
+	public static final Point DEFAULT_SIZE_FOR_TI_WIZARD = new Point(1000, 500);
+	public static final Rectangle RECTANGLE_FOR_COMPOSITES = new Rectangle(0, 0, 887, 500 - 10 -10 ); //897 - 10
+	public static final Rectangle RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES = new Rectangle(897, 10, 83, 29); //1000 - 83 - 10 -10
+	public static final Rectangle RECTANGLE_FOR_SECOND_BUTTON_FOR_NON_MODE_SELECTION_PAGES = new Rectangle(897, 49, 83, 29); //1000 - 83 - 10 -10
+	//public static final Rectangle RECTANGLE_FOR_GRANULAR_CLAFER_UI_ELEMENT = new Rectangle(10, 10, 744, 280);
+	public static final int WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT = 744;
+	public static final int HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT = 280;
+	
+	// Form  data for CompositeGranularUIForClaferFeature
+	public static final int RIGHT_VALUE_FOR_GRANULAR_CLAFER_UI_SUB_ELEMENT = 736;
+	
+	public static final int PADDING_BETWEEN_GRANULAR_UI_ELEMENTS = 10;
+	public static final int PADDING_BETWEEN_SMALLER_UI_ELEMENTS = 3;
+	
+	public static final int WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT = 409;
+	public static final int HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT = 37;
+	
+	// TypeOfTargetDataForSmallUIElements int values. Add the type of data that needs to be shown on the composite here.
+	public static final int FEATURE_PROPERTY = 0;
+	public static final int FEATURE_CONSTRAINT = 1;
+	
+	
+	
+	
+	public static enum FeatureConstraintRelationship{
+		EQUAL("="),
+		NOTEQUAL("!="),
+		LESSTHAN("<"),
+		GREATERTHAN(">"),
+		LESSTHANEQUALTO("<="),
+		GREATERTHANEQUALTO(">="),
+		AND("and"),
+		OR("or");
+		
+		private final String operatorValue;
+		
+		FeatureConstraintRelationship(String operatorValue){
+			this.operatorValue = operatorValue;
+		}
+
+		/**
+		 * @return the operatorValue
+		 */
+		public String getOperatorValue() {
+			return operatorValue;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Enum#toString()
+		 * Just return the operator value instead of the name.
+		 */
+		@Override
+		public String toString() {			
+			return  operatorValue;
+		}
+		
+		
+	}
+	
+	public static enum FeatureType{
+		CONCRETE,
+		ABSTRACT;
+
+		/* 
+		 * Although "concrete" is never used in the actual cfr file, "abstract" is used. Hence the toString() returns lower case.
+		 */
+		@Override
+		public String toString() {
+			return this.name().toLowerCase();
+		}
+		
+	}
+	
+	
+	
 	
 }

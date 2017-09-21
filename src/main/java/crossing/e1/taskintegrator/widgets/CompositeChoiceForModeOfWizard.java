@@ -36,7 +36,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	 */
 	public CompositeChoiceForModeOfWizard(Composite parent, int style) {
 		super(parent, SWT.BORDER);
-		this.setBounds(getClientArea());
+		this.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
 		setLayout(null);
 		
 		// All the UI widgets

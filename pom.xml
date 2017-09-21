@@ -9,7 +9,7 @@
   	<groupId>CROSSING.E1.PARENT</groupId>
   	<artifactId>CROSSING.E1.CONFIGURATOR</artifactId>
   	<version>1.0.0-SNAPSHOT</version>
-  	<relativePath>../code-clafer_configurator/mvn-parent</relativePath>
+  	<relativePath>/mvn-parent</relativePath>
   </parent>
 	<repositories>
 	<repository>

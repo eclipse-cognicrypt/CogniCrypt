@@ -175,6 +175,7 @@ public class CryptSLModelReader {
 		if (rules.containsKey(cryptslRule)) {
 			return rules.get(cryptslRule);
 		} else {
+			// TODO: Create own exception.
 			throw new Exception("Rules does not exist.");
 		}
 	}

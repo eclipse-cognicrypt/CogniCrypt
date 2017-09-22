@@ -27,6 +27,8 @@ public class StateMachineGraphAnalyser {
 		this.stateMachine = stateMachine;
 	}
 
+	// FIXME loop handling
+	// Current solution: Take every loop one 
 	public ArrayList<List<TransitionEdge>> getTransitions() throws Exception {
 		allTransitions = new ArrayList<List<TransitionEdge>>();
 

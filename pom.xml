@@ -19,17 +19,7 @@
 	</repository>
 	</repositories>
   <build>
-		<testResources>
-  <testResource>
-    <directory>${project.basedir}/src/test/java</directory>
-    <excludes>
-        <exclude>**/*.java</exclude>
-    </excludes>
-  </testResource>
-  <testResource>
-    <directory>${project.basedir}/src/test/resources</directory>
-  </testResource>
-</testResources>
+		
 <plugins>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
@@ -40,41 +30,32 @@
 			<plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-surefire-plugin</artifactId>
-    <version>2.20.1</version>
+    <version>2.17</version>
 		<dependencies>
       <dependency>
         <groupId>org.apache.maven.surefire</groupId>
-        <artifactId>surefire-junit47</artifactId>
-        <version>2.20.1</version>
+        <artifactId>surefire-junit4</artifactId>
+        <version>2.17</version>
       </dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.12</version>
+			</dependency>
     </dependencies>
-    <executions>
-      <execution>
-        <id>test</id>
-        <phase>test</phase>
-        <configuration>
-          <includes>
-            <include>**/*Test.java</include>
-						<include>**/*test.java</include>
-						<include>**/Test*.java</include>
-						<include>**/*Tests.java</include>
-						<include>**/*tests.java</include>
-          </includes>
-					<testSourceDirectory>${project.basedir}\src\test\java\crossing\e1\featuremodel\clafer\test\*</testSourceDirectory>
-					<source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-        <goals>
-          <goal>test</goal>
-        </goals>
-      </execution>
-    </executions>
   </plugin>
- 
+	
   <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-compiler-plugin</artifactId>
     <version>2.5.1</version>
+		<dependencies>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.12</version>
+			</dependency>
+		</dependencies>
     <executions>
       <execution>
         <id>compiletests</id>
@@ -131,6 +112,36 @@
     								</versionRange>
     								<goals>
     									<goal>compile</goal>
+    								</goals>
+    							</pluginExecutionFilter>
+    							<action>
+    								<ignore></ignore>
+    							</action>
+    						</pluginExecution>
+								<pluginExecution>
+    							<pluginExecutionFilter>
+    								<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-compiler-plugin</artifactId>
+    								<versionRange>
+    									[0.26.0,)
+    								</versionRange>
+    								<goals>
+    									<goal>test-compile</goal>
+    								</goals>
+    							</pluginExecutionFilter>
+    							<action>
+    								<ignore></ignore>
+    							</action>
+    						</pluginExecution>
+								<pluginExecution>
+    							<pluginExecutionFilter>
+    								<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-surefire-plugin</artifactId>
+    								<versionRange>
+    									[0.26.0,)
+    								</versionRange>
+    								<goals>
+    									<goal>test</goal>
     								</goals>
     							</pluginExecutionFilter>
     							<action>

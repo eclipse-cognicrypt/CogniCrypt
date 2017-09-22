@@ -7,6 +7,7 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.RowLayout;
 
 import crossing.e1.configurator.Constants;
+import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.taskintegrator.models.ClaferFeature;
 
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	private int lowestWidgetYAxisValue = Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS;
 	private ArrayList<ClaferFeature> listOfAllClaferFeatures;
 	
+	private ArrayList<Question> listOfAllQuestions;
+	
 	/**
 	 * Create the composite.  
 	 * @param parent
@@ -28,6 +31,10 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		super(parent, SWT.BORDER | SWT.V_SCROLL);
 		
 		listOfAllClaferFeatures = new ArrayList<ClaferFeature>();
+		
+		listOfAllQuestions = new ArrayList<Question>();
+		
+		
 		setTargetPageName(pageName);
 		
 		setExpandHorizontal(true);		
@@ -102,6 +109,27 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		
 		updateClaferContainer();
 	}
+	
+	
+	public void addQuestionUIElements(Question question){
+		// Update the array list.
+		//listOfAllClaferFeatures.add(claferFeature);
+		
+		CompositeGranularUIForHighLevelQuestions granularQuestion = new CompositeGranularUIForHighLevelQuestions
+			((Composite) this.getContent(), // the content composite of ScrolledComposite.
+			SWT.NONE, 
+			question);
+		granularQuestion.setBounds(
+			Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS, 
+			getLowestWidgetYAxisValue(), 
+			Constants.WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT, 
+			//Constants.HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT
+			granularQuestion.getSize().y);
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + granularQuestion.getSize().y);
+		setMinHeight(getLowestWidgetYAxisValue());
+	}
+	
+	
 
 	@Override
 	protected void checkSubclass() {
@@ -141,6 +169,20 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	 */
 	public ArrayList<ClaferFeature> getListOfAllClaferFeatures() {
 		return listOfAllClaferFeatures;
+	}
+
+	/**
+	 * @return the listOfAllQuestions
+	 */
+	public ArrayList<Question> getListOfAllQuestions() {
+		return listOfAllQuestions;
+	}
+
+	/**
+	 * @param listOfAllQuestions the listOfAllQuestions to set
+	 */
+	public void setListOfAllQuestions(ArrayList<Question> listOfAllQuestions) {
+		this.listOfAllQuestions = listOfAllQuestions;
 	}
 
 }

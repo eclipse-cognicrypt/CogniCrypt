@@ -41,6 +41,7 @@ public class CodeHandler {
 	 */
 	public File[] compile() throws Exception {
 		// setup compiler
+		// FIXME warning
 		JavaCompiler compiler = new EclipseCompiler();
 		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
 		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(javaCodeFiles));

@@ -1,14 +1,14 @@
 package crossing.e1.taskintegrator.widgets;
 
+import java.util.ArrayList;
+
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Text;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.taskintegrator.models.FeatureProperty;
-
-import java.util.ArrayList;
 
 
 
@@ -27,10 +27,11 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * @param parent
 	 * @param style
 	 * @param targetArrayListOfDataToBeDisplayed
+	 * @param showRemoveButton TODO
 	 */
 	@SuppressWarnings("unchecked")
-	public CompositeToHoldSmallerUIElements(Composite parent, int style, ArrayList<?> targetArrayListOfDataToBeDisplayed) {
-		super(parent, SWT.V_SCROLL);
+	public CompositeToHoldSmallerUIElements(Composite parent, int style, ArrayList<?> targetArrayListOfDataToBeDisplayed, boolean showRemoveButton) {
+		super(parent, SWT.BORDER | SWT.V_SCROLL);
 		setExpandVertical(true);
 		setExpandHorizontal(true);
 		

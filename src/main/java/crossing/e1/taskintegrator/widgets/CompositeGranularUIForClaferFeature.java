@@ -1,20 +1,20 @@
 package crossing.e1.taskintegrator.widgets;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.taskintegrator.models.ClaferFeature;
@@ -63,7 +63,8 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 			GroupFeatureProperty grpClaferFeatureInheritance = new GroupFeatureProperty(
 																	grpClaferFeature, 
 																	SWT.BORDER, 
-																	claferFeature.getFeatureInheritsFromForAbstract()
+																	claferFeature.getFeatureInheritsFromForAbstract(),
+																	false
 																	);
 		}
 		
@@ -78,7 +79,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 			grpClaferFeatureProperties.setLayoutData(fd_grpClaferFeatureProperties);
 			grpClaferFeatureProperties.setLayout(new FillLayout(SWT.HORIZONTAL));
 			grpClaferFeatureProperties.setText("Clafer feature properties");
-			CompositeToHoldSmallerUIElements compositeToHoldClaferFeatureProperties = new CompositeToHoldSmallerUIElements(grpClaferFeatureProperties, SWT.NONE, claferFeature.getfeatureProperties());
+			CompositeToHoldSmallerUIElements compositeToHoldClaferFeatureProperties = new CompositeToHoldSmallerUIElements(grpClaferFeatureProperties, SWT.NONE, claferFeature.getfeatureProperties(), false);
 			yAxisValue = yAxisValue + 6;
 		}
 		
@@ -94,7 +95,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 			grpClaferFeatureConstraints.setLayoutData(fd_grpClaferFeatureConstraints);
 			grpClaferFeatureConstraints.setText("Clafer feature constraints");
 			grpClaferFeatureConstraints.setLayout(new FillLayout(SWT.HORIZONTAL));
-			CompositeToHoldSmallerUIElements compositeToHoldClaferFeatureConstraints = new CompositeToHoldSmallerUIElements(grpClaferFeatureConstraints, SWT.NONE,claferFeature.getFeatureConstraints());
+			CompositeToHoldSmallerUIElements compositeToHoldClaferFeatureConstraints = new CompositeToHoldSmallerUIElements(grpClaferFeatureConstraints, SWT.NONE,claferFeature.getFeatureConstraints(), false);
 			yAxisValue = yAxisValue + 6;
 		}
 		

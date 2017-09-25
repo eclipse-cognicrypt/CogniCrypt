@@ -9,6 +9,7 @@ import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 
+// TODO fix warning
 import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler;
 
 /**

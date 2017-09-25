@@ -8,7 +8,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import crossing.e1.configurator.analysis.CryptSLModelReader;
 import crypto.rules.CryptSLConstraint;
@@ -42,7 +41,7 @@ public class CodeGenerator {
 	/**
 	 * Method name that is used in the new generated Java class.
 	 */
-	private String newMethod;
+	private String newMethod = "VALUE_IS_NOT_SET";
 
 	/**
 	 * Name of the Java class that is used in the generated Java code.
@@ -80,12 +79,12 @@ public class CodeGenerator {
 	private ArrayList<Entry<String, String>> methodParametersOfSuperMethod = new ArrayList<Entry<String, String>>();
 
 	/**
-	 * Constructor
+	 * First constructor
 	 * 
-	 * Loads the given rule and determines possible sequences of method class to implement the rule as java code.
+	 * Loads the given rule and determines possible sequences of method calls to implement the rule as java code.
 	 * 
 	 * @param cryptslRule
-	 *        Name of the cryptsl rule that should by used
+	 *        Name of the cryptsl rule that should by transformed into java code.
 	 */
 	public CodeGenerator(String cryptslRule) throws Exception {
 		// load cryptsl rule
@@ -99,12 +98,17 @@ public class CodeGenerator {
 		init();
 	}
 
-	// TODO
 	/**
+	 * Second constructor version
+	 * 
+	 * This constructor allows it to set a specific class and method names that are used in the generated Java code.
 	 * 
 	 * @param cryptslRule
+	 *        Name of the cryptsl rule that should by transformed into java code.
 	 * @param className
+	 *        Class name that is used for the generated Java class.
 	 * @param methodName
+	 *        Method name that is usd for the generated Java code
 	 * @throws Exception
 	 */
 	public CodeGenerator(String cryptslRule, String className, String methodName) throws Exception {
@@ -114,6 +118,10 @@ public class CodeGenerator {
 		// Determine class name
 		usedClass = rule.getClassName();
 		newClass = className;
+		
+		// TODO prove if the given name is an appropriate 
+		// java method identifier.
+		// If not. Do not store the value.
 		newMethod = methodName;
 
 		// initialise code generator
@@ -201,10 +209,18 @@ public class CodeGenerator {
 			// method definition
 			// ################################################################
 
-			/*
-			 * Determine method name. We still found no solution to determine an appropriate method name. Therefore we use the name "use()".
-			 */
-			String methodName = "use";
+			// Determine method name. We still found no solution to determine an appropriate method name.
+			// Therefore we use the name "use()" as default.
+			// This default name can be altered by using the following constructor:
+			// CodeGenerator(String cryptslRule, String className, String methodName)
+			String methodName;
+
+			if (newMethod.equals("VALUE_IS_NOT_SET")) {
+				methodName = "use";
+			} else {
+				methodName = newMethod;
+			}
+			
 			String returnType = getReturnType(currentTransitions);
 
 			String methodDefintion = "public " + returnType + " " + methodName + "(";
@@ -268,6 +284,8 @@ public class CodeGenerator {
 			File[] codeFiles = { javaCodeFile.writeToDisk() };
 			codeFileList = codeFiles;
 
+			// TODO
+			// Compiling is enabled for testing
 			CodeHandler codeHandler = new CodeHandler(codeFileList);
 			//codeHandler.compile();
 
@@ -319,7 +337,6 @@ public class CodeGenerator {
 					i++;
 				} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
-
 					System.out.println("No class found for type: " + parameter.getValue().toString());
 					e.printStackTrace();
 				}
@@ -390,8 +407,6 @@ public class CodeGenerator {
 				String invokeMethod;
 				// Does method have a return value?
 				if (method.getRetObject() != null) {
-
-					String[] invocationParts = currentInvokedMethod.split("=");
 					String returnValueType = method.getRetObject().getValue();
 
 					// Determine lastInvokedMethod
@@ -400,6 +415,8 @@ public class CodeGenerator {
 					// FIXME Currently methods with return type void are
 					// tagged by "AnyType". "AnyType" should be replaced by "void"
 					// form methods with return type void.
+					// Opened a new issue in the project CROSSINGTUD/CryptoAnalysis:
+					// Return value of CryptSLMethod.getRetObject().getValue() #30
 
 					// Last invoked method and return type is not equal to "void".
 					if (methodName.equals(lastInvokedMethod) && !returnValueType.equals("AnyType")) {

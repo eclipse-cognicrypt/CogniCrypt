@@ -302,10 +302,10 @@ public class ConfiguratorWizard extends Wizard {
 				codeGenerator.getDeveloperProject().refresh();
 
 				// New code generator
-				//String[] rules = { "AlgorithmParameters", "Cipher", "DHGenParameterSpec", "DHParameterSpec", "DSAGenParameterSpec", "DSAParameterSpec", "GCMParameterSpec", "HMACParameterSpec", "IvParameterSpec", "KeyGenerator", "KeyPair", "KeyPairGenerator", "KeyStore", "Mac", "MessageDigest", "PBEKeySpec", "PBEParameterSpec", "RSAKeyGenParameterSpec", "SecretKey", "SecretKeyFactory", "SecretKeySpec", "SecureRandom", "Signature" };
+				String[] rules = { "AlgorithmParameters", "Cipher", "DHGenParameterSpec", "DHParameterSpec", "DSAGenParameterSpec", "DSAParameterSpec", "GCMParameterSpec", "HMACParameterSpec", "IvParameterSpec", "KeyGenerator", "KeyPair", "KeyPairGenerator", "KeyStore", "Mac", "MessageDigest", "PBEKeySpec", "PBEParameterSpec", "RSAKeyGenParameterSpec", "SecretKey", "SecretKeyFactory", "SecretKeySpec", "SecureRandom", "Signature" };
 				//String[] rules = { "DHGenParameterSpec", "DHParameterSpec"};
 				//String[] rules = { "KeyGenerator" };
-				String[] rules = { "SecretKey" };
+				//String[] rules = { "SecretKey" };
 
 				for (String ruleName : rules) {
 					try {

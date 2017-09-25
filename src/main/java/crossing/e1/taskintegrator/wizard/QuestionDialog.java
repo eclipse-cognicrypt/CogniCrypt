@@ -19,6 +19,11 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 
+import crossing.e1.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
+import crossing.e1.taskintegrator.widgets.GroupAnswer;
+
+import org.eclipse.swt.events.SelectionAdapter;
+
 
 public class QuestionDialog extends Dialog {
 	private Text textQuestion;
@@ -86,8 +91,19 @@ public class QuestionDialog extends Dialog {
 		new Label(composite, SWT.NONE);
 
 		Button btnAddAnswer = new Button(composite, SWT.NONE);
+		
 		btnAddAnswer.setText("Add answer");
 		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		boolean showRemoveButton = true;
+		CompositeToHoldSmallerUIElements compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, 
+			SWT.NONE, null, showRemoveButton);
+		GridData gd_compositeToHoldAnswers = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		gd_compositeToHoldAnswers.heightHint = 95;
+		gd_compositeToHoldAnswers.widthHint = 388;
+		compositeToHoldAnswers.setLayoutData(gd_compositeToHoldAnswers);
+		compositeToHoldAnswers.setLayout(new FillLayout(SWT.HORIZONTAL));
+		//compositeToHoldAnswers.setSize(SWT.DEFAULT, 200);
 
 		TabItem tbtmLinkAnswers = new TabItem(tabFolder, SWT.NONE);
 		tbtmLinkAnswers.setText("Link answers");
@@ -108,6 +124,13 @@ public class QuestionDialog extends Dialog {
 
 		TabItem tbtmLink = new TabItem(tabFolder, SWT.NONE);
 		tbtmLink.setText("Link code");
+		
+		btnAddAnswer.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				compositeToHoldAnswers.addAnswer(null, showRemoveButton);
+			}
+		});
 
 		return container;
 	}
@@ -127,7 +150,7 @@ public class QuestionDialog extends Dialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(450, 300);
+		return new Point(559, 351);
 	}
 
 }

@@ -8,6 +8,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 import crossing.e1.configurator.Constants;
+import crossing.e1.configurator.beginer.question.Answer;
+import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.taskintegrator.models.FeatureProperty;
 
 
@@ -92,6 +94,15 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 			Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
 
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
+
+		setMinHeight(getLowestWidgetYAxisValue());
+	}
+	
+	public void addAnswer(Answer answer, boolean showRemoveButton){
+		GroupAnswer groupForAnswer =  new GroupAnswer((Composite) getContent(), SWT.NONE, null ,showRemoveButton);
+		groupForAnswer.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(),451,
+			39);
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
 
 		setMinHeight(getLowestWidgetYAxisValue());
 	}

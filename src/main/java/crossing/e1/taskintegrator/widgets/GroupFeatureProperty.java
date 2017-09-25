@@ -58,6 +58,8 @@ public class GroupFeatureProperty extends Group {
 
 				@Override
 				public void widgetSelected(SelectionEvent e) {
+					((CompositeToHoldSmallerUIElements) getParent().getParent())
+						.removeFeatureProperty(getFeatureProperty());
 				}
 			});
 		}

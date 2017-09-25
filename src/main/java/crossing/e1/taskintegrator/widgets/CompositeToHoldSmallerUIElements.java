@@ -98,6 +98,10 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
 
+	public void removeFeatureProperty(FeatureProperty featureProperty) {
+		featureProperties.remove(featureProperty);
+	}
+
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components

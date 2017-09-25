@@ -63,8 +63,8 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		txtQuestionID.setBounds(76, 5, 162, 29);
 		
 		// update this part.
-		//txtQuestionID.setText(Integer.toString(question.getId()));
-		txtQuestionID.setText("0");
+		txtQuestionID.setText(Integer.toString(question.getId()));
+		//txtQuestionID.setText("0");
 		
 		Label lblQuestion = new Label(grpQuestionDetails, SWT.NONE);
 		lblQuestion.setBounds(18, 45, 53, 17);
@@ -74,8 +74,8 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		txtQuestion.setEditable(false);
 		txtQuestion.setBounds(76, 39, 384, 29);
 		
-		//txtQuestion.setText(question.getQuestionText());
-		txtQuestion.setText("question");
+		txtQuestion.setText(question.getQuestionText());
+		//txtQuestion.setText("question");
 		
 		Label lblType = new Label(grpQuestionDetails, SWT.NONE);
 		lblType.setBounds(244, 11, 30, 17);
@@ -85,21 +85,39 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		txtAnswerType.setEditable(false);
 		txtAnswerType.setBounds(278, 5, 182, 29);
 		
-		/*StringBuilder answerString = new StringBuilder();
+		StringBuilder answerString = new StringBuilder();
+		
+		/*for(Answer answer : question.getAnswers()){
+			answerString.append(answer.getValue());
+			answerString.append(answer.isDefaultAnswer() ? "*" : "");
+			SUPER_SCRIPT = new AttributedString("c");
+			SUPER_SCRIPT.addAttribute(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
+			answerString.append(answer.getCodeDependencies().size()>0 ? SUPER_SCRIPT.toString() : "");
+			SUPER_SCRIPT = new AttributedString("x");
+			SUPER_SCRIPT.addAttribute(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
+			answerString.append(answer.getClaferDependencies().size()>0 ? SUPER_SCRIPT.toString() : "");
+			answerString.append("|");
+			
+		}*/
 		
 		for(Answer answer : question.getAnswers()){
 			answerString.append(answer.getValue());
 			answerString.append(answer.isDefaultAnswer() ? "*" : "");
 			SUPER_SCRIPT = new AttributedString("c");
 			SUPER_SCRIPT.addAttribute(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
-			answerString.append(answer.getCodeDependencies().size()>0 ? SUPER_SCRIPT : "");
+			answerString.append(answer.getCodeDependencies().size()>0 ? "@" : "");
 			SUPER_SCRIPT = new AttributedString("x");
 			SUPER_SCRIPT.addAttribute(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
-			answerString.append(answer.getClaferDependencies().size()>0 ? SUPER_SCRIPT : "");
+			answerString.append(answer.getClaferDependencies().size()>0 ? "#" : "");
+			answerString.append("|");
+		}
 			
-		}*/
+		
+		
+	
 		
 		txtAnswerType.setText("type");
+		//txtAnswerType.setText(question.get);
 		
 		Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
 		lblAnswers.setBounds(20, 79, 51, 17);
@@ -108,10 +126,10 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		txtAnswers = new Text(grpQuestionDetails, SWT.BORDER);
 		txtAnswers.setEditable(false);
 		txtAnswers.setBounds(76, 73, 384, 29);
-		txtAnswers.setText("answers");
-		//txtAnswers.setText(answerString.toString());
+		//txtAnswers.setText("answers");
+		txtAnswers.setText(answerString.toString());
 		
-		this.setSize(Constants.WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT, 187);
+		this.setSize(SWT.DEFAULT, 190);
 
 	}
 

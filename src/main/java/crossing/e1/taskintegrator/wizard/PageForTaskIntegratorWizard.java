@@ -157,17 +157,20 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		Answer answer = new Answer();
 		answer.setValue("answer");
 		answer.setDefaultAnswer(false);
-		answer.setNextID(0);
+		answer.setNextID(counter);
 		ClaferDependency claferDependency = new ClaferDependency();
 		claferDependency.setAlgorithm("algoritm");
 		claferDependency.setOperand("operand");
 		claferDependency.setOperator(Constants.FeatureConstraintRelationship.AND.toString());
 		claferDependency.setValue("value");
 		ArrayList<ClaferDependency> claferDependencies = new ArrayList<ClaferDependency>();
+		claferDependencies.add(claferDependency);		
+		
 		CodeDependency codeDependency = new CodeDependency();
 		codeDependency.setOption("option");
 		codeDependency.setValue("value");
 		ArrayList<CodeDependency> codeDependencies = new ArrayList<CodeDependency>();
+		codeDependencies.add(codeDependency);
 		
 		answer.setCodeDependencies(codeDependencies);
 		answer.setClaferDependencies(claferDependencies);
@@ -177,7 +180,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		
 		tempQuestion.setAnswers(answers);
 		
-		return null;
+		return tempQuestion;
 	}
 	
 

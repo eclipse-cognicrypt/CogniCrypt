@@ -125,11 +125,48 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 			Constants.WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT, 
 			//Constants.HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT
 			granularQuestion.getSize().y);
+		
+		//granularQuestion.setSize(SWT.DEFAULT, granularQuestion.getSize().y);
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + granularQuestion.getSize().y);
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
 	
+	public void deleteQuestion(Question questionToBeDeleted){		
+		
+		listOfAllQuestions.remove(questionToBeDeleted);
+				
+		updateQuestionContainer();
+		
+	}
 	
+	private void updateQuestionContainer() {
+		Composite compositeContentOfThisScrolledComposite = (Composite)this.getContent();
+		
+		// first dispose all the granular UI elements (which includes the deleted one).
+		for(Control uiRepresentationOfQuestions : compositeContentOfThisScrolledComposite.getChildren()){
+			uiRepresentationOfQuestions.dispose();
+		}
+		
+		// update the size values.
+		setLowestWidgetYAxisValue(0);
+		setMinHeight(getLowestWidgetYAxisValue());
+		
+		// add all the clafer features excluding the deleted one.
+		for(Question questionUnderConsideration : listOfAllQuestions){
+			addQuestionUIElements(questionUnderConsideration);
+		}
+	}
+	
+	public void modifyQuestion(Question originalQuestion, Question modifiedQuestion ){
+		for(Question questionUnderConsideration:listOfAllQuestions){
+			if(questionUnderConsideration.equals(originalQuestion)){
+				questionUnderConsideration = modifiedQuestion;
+				break;
+			}
+		}
+		
+		updateClaferContainer();
+	}
 
 	@Override
 	protected void checkSubclass() {

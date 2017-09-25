@@ -3,6 +3,8 @@
  */
 package crossing.e1.taskintegrator.wizard;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -12,6 +14,10 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 
 import crossing.e1.configurator.Constants;
+import crossing.e1.configurator.beginer.question.Answer;
+import crossing.e1.configurator.beginer.question.ClaferDependency;
+import crossing.e1.configurator.beginer.question.CodeDependency;
+import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.taskintegrator.models.ClaferFeature;
 import crossing.e1.taskintegrator.models.FeatureProperty;
 import crossing.e1.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
@@ -102,8 +108,16 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				btnAddQuestion.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
+						counter++;
+						Question tempQuestion = getDummyQuestion();
+						
+						// Update the array list.							
+						compositeToHoldGranularUIElements.getListOfAllQuestions().add(tempQuestion);
+						compositeToHoldGranularUIElements.addQuestionUIElements(tempQuestion);
 						
 					}
+
+					
 				});
 				break;
 		}
@@ -134,6 +148,39 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		
 		return tempFeature;
 		
+	}
+	private Question getDummyQuestion() {
+		Question tempQuestion = new Question();
+		tempQuestion.setId(counter);
+		tempQuestion.setQuestionText("question?");
+		
+		Answer answer = new Answer();
+		answer.setValue("answer");
+		answer.setDefaultAnswer(false);
+		answer.setNextID(counter);
+		ClaferDependency claferDependency = new ClaferDependency();
+		claferDependency.setAlgorithm("algoritm");
+		claferDependency.setOperand("operand");
+		claferDependency.setOperator(Constants.FeatureConstraintRelationship.AND.toString());
+		claferDependency.setValue("value");
+		ArrayList<ClaferDependency> claferDependencies = new ArrayList<ClaferDependency>();
+		claferDependencies.add(claferDependency);		
+		
+		CodeDependency codeDependency = new CodeDependency();
+		codeDependency.setOption("option");
+		codeDependency.setValue("value");
+		ArrayList<CodeDependency> codeDependencies = new ArrayList<CodeDependency>();
+		codeDependencies.add(codeDependency);
+		
+		answer.setCodeDependencies(codeDependencies);
+		answer.setClaferDependencies(claferDependencies);
+		
+		ArrayList<Answer> answers = new ArrayList<Answer>();
+		answers.add(answer);
+		
+		tempQuestion.setAnswers(answers);
+		
+		return tempQuestion;
 	}
 	
 

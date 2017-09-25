@@ -1,8 +1,13 @@
 package crossing.e1.taskintegrator.wizard;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -14,10 +19,17 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import crossing.e1.taskintegrator.models.ClaferFeature;
+import crossing.e1.taskintegrator.models.FeatureProperty;
+import crossing.e1.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 
 public class ClaferFeatureDialog extends Dialog {
 
 	private Text text;
+	private ArrayList<FeatureProperty> propertyList;
+	private Composite featureComposite;
+	private CompositeToHoldSmallerUIElements smallComp;
+	private ScrolledComposite scrolledComposite;
 
 	/**
 	 * Create the dialog.
@@ -25,6 +37,8 @@ public class ClaferFeatureDialog extends Dialog {
 	 */
 	public ClaferFeatureDialog(Shell parentShell) {
 		super(parentShell);
+		setShellStyle(SWT.RESIZE);
+		propertyList = new ArrayList<>();
 	}
 
 	/**
@@ -60,23 +74,23 @@ public class ClaferFeatureDialog extends Dialog {
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
 		Button btnNewButton = new Button(container, SWT.NONE);
-		btnNewButton.setText("Add property");
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
+		btnNewButton.addSelectionListener(new SelectionAdapter() {
 
-		Composite composite = new Composite(container, SWT.NONE);
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				addClaferProperty();
+			}
+		});
+		btnNewButton.setText("Add property");
+
+		propertyList.add(new FeatureProperty("name", "type"));
+
+		smallComp = new CompositeToHoldSmallerUIElements(container, SWT.NONE, propertyList, true);
+		smallComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		smallComp.setMinHeight(200);
 
 		Button btnAddConstraint = new Button(container, SWT.NONE);
 		btnAddConstraint.setText("Add constraint");
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-
-		Composite composite_1 = new Composite(container, SWT.NONE);
-		composite_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
 
 		return container;
 	}
@@ -97,5 +111,14 @@ public class ClaferFeatureDialog extends Dialog {
 	@Override
 	protected Point getInitialSize() {
 		return new Point(800, 600);
+	}
+
+	private void addClaferProperty() {
+		propertyList.add(new FeatureProperty("TestProp", "TestVal"));
+		this.smallComp.addFeatureProperty(propertyList.get(propertyList.size() - 1), true);
+	}
+
+	public void deleteClaferProperty(ClaferFeature cfrFeature) {
+
 	}
 }

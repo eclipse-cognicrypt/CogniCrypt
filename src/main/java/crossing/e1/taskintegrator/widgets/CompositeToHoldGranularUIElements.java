@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import crossing.e1.configurator.Constants;
+import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.taskintegrator.models.ClaferFeature;
 
 
@@ -16,6 +17,8 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	private String targetPageName;
 	private int lowestWidgetYAxisValue = Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS;
 	private ArrayList<ClaferFeature> listOfAllClaferFeatures;
+	
+	private ArrayList<Question> listOfAllQuestions;
 	
 	/**
 	 * Create the composite.  
@@ -26,6 +29,10 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		super(parent, SWT.BORDER | SWT.V_SCROLL);
 		
 		listOfAllClaferFeatures = new ArrayList<ClaferFeature>();
+		
+		listOfAllQuestions = new ArrayList<Question>();
+		
+		
 		setTargetPageName(pageName);
 		
 		setExpandHorizontal(true);		
@@ -92,6 +99,64 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		
 		updateClaferContainer();
 	}
+	
+	
+	public void addQuestionUIElements(Question question){
+		// Update the array list.
+		//listOfAllClaferFeatures.add(claferFeature);
+		
+		CompositeGranularUIForHighLevelQuestions granularQuestion = new CompositeGranularUIForHighLevelQuestions
+			((Composite) this.getContent(), // the content composite of ScrolledComposite.
+			SWT.NONE, 
+			question);
+		granularQuestion.setBounds(
+			Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS, 
+			getLowestWidgetYAxisValue(), 
+			Constants.WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT, 
+			//Constants.HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT
+			granularQuestion.getSize().y);
+		
+		//granularQuestion.setSize(SWT.DEFAULT, granularQuestion.getSize().y);
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + granularQuestion.getSize().y);
+		setMinHeight(getLowestWidgetYAxisValue());
+	}
+	
+	public void deleteQuestion(Question questionToBeDeleted){		
+		
+		listOfAllQuestions.remove(questionToBeDeleted);
+				
+		updateQuestionContainer();
+		
+	}
+	
+	private void updateQuestionContainer() {
+		Composite compositeContentOfThisScrolledComposite = (Composite)this.getContent();
+		
+		// first dispose all the granular UI elements (which includes the deleted one).
+		for(Control uiRepresentationOfQuestions : compositeContentOfThisScrolledComposite.getChildren()){
+			uiRepresentationOfQuestions.dispose();
+		}
+		
+		// update the size values.
+		setLowestWidgetYAxisValue(0);
+		setMinHeight(getLowestWidgetYAxisValue());
+		
+		// add all the clafer features excluding the deleted one.
+		for(Question questionUnderConsideration : listOfAllQuestions){
+			addQuestionUIElements(questionUnderConsideration);
+		}
+	}
+	
+	public void modifyQuestion(Question originalQuestion, Question modifiedQuestion ){
+		for(Question questionUnderConsideration:listOfAllQuestions){
+			if(questionUnderConsideration.equals(originalQuestion)){
+				questionUnderConsideration = modifiedQuestion;
+				break;
+			}
+		}
+		
+		updateClaferContainer();
+	}
 
 	@Override
 	protected void checkSubclass() {
@@ -131,6 +196,20 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	 */
 	public ArrayList<ClaferFeature> getListOfAllClaferFeatures() {
 		return listOfAllClaferFeatures;
+	}
+
+	/**
+	 * @return the listOfAllQuestions
+	 */
+	public ArrayList<Question> getListOfAllQuestions() {
+		return listOfAllQuestions;
+	}
+
+	/**
+	 * @param listOfAllQuestions the listOfAllQuestions to set
+	 */
+	public void setListOfAllQuestions(ArrayList<Question> listOfAllQuestions) {
+		this.listOfAllQuestions = listOfAllQuestions;
 	}
 
 }

@@ -1,5 +1,7 @@
 package crossing.e1.taskintegrator.widgets;
 
+import java.util.ArrayList;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -11,6 +13,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import crossing.e1.taskintegrator.models.ClaferFeature;
 import crossing.e1.taskintegrator.models.FeatureProperty;
 
 
@@ -18,6 +21,8 @@ public class GroupFeatureProperty extends Group {
 	private FeatureProperty featureProperty;
 	private Text txtPropertyName;
 	private Text txtPropertyType;
+	private ArrayList<ClaferFeature> propertylist;
+
 	/**
 	 * Create the composite.
 	 * @param parent

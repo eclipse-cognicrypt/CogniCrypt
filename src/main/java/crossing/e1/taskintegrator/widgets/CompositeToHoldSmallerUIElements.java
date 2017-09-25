@@ -18,6 +18,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	private ArrayList<FeatureProperty> featureProperties;
 	private ArrayList<String> featureConstraints;
 	private Text txtForFeatureConstraints;
+	private Composite composite;
 	
 
 
@@ -35,44 +36,64 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setExpandVertical(true);
 		setExpandHorizontal(true);
 		
-		Composite composite = new Composite(this, SWT.NONE);
+		composite = new Composite(this, SWT.NONE);
 		setContent(composite);
 		setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		composite.setLayout(null);		
+		composite.setLayout(null);
 		
-		if(targetArrayListOfDataToBeDisplayed.get(0) instanceof FeatureProperty){			
-		
-			featureProperties = (ArrayList<FeatureProperty>) targetArrayListOfDataToBeDisplayed;
-			
-			for(FeatureProperty featureUnderConsideration : featureProperties){
-				GroupFeatureProperty groupForFeatureProperty = new GroupFeatureProperty(composite, SWT.NONE, featureUnderConsideration);
-				groupForFeatureProperty.setBounds(
-					Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, 
-					getLowestWidgetYAxisValue(), 
-					Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT, 
-					Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
-				
-				setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
-				}		
-		} else if(targetArrayListOfDataToBeDisplayed.get(0) instanceof String){
-			featureConstraints = (ArrayList<String>) targetArrayListOfDataToBeDisplayed;
-			
-			for(String featureConstraintUnderConsideration : featureConstraints){
-				
-				txtForFeatureConstraints = new Text(composite, SWT.BORDER);
-				txtForFeatureConstraints.setBounds(
-					Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, 
-					getLowestWidgetYAxisValue(), 
-					Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT, 
-					29);
-				txtForFeatureConstraints.setEditable(false);
-				txtForFeatureConstraints.setText(featureConstraintUnderConsideration);
-				setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 29);
-			}
-		}
-				
-		setMinHeight(getLowestWidgetYAxisValue());
+		addData(targetArrayListOfDataToBeDisplayed, showRemoveButton);
 
+	}
+
+	@SuppressWarnings("unchecked")
+	private void addData(ArrayList<?> targetArrayListOfDataToBeDisplayed, boolean showRemoveButton) {
+		if (targetArrayListOfDataToBeDisplayed != null) {
+
+			if (featureProperties == null && featureConstraints == null) {
+				if (targetArrayListOfDataToBeDisplayed.get(0) instanceof FeatureProperty) {
+					featureProperties = new ArrayList<FeatureProperty>();
+				} else if (targetArrayListOfDataToBeDisplayed.get(0) instanceof String) {
+					featureConstraints = new ArrayList<String>();
+				}
+			}
+
+			if (targetArrayListOfDataToBeDisplayed.get(0) instanceof FeatureProperty) {
+
+				featureProperties.addAll((ArrayList<FeatureProperty>) targetArrayListOfDataToBeDisplayed);
+
+				for (FeatureProperty featureUnderConsideration : (ArrayList<FeatureProperty>) targetArrayListOfDataToBeDisplayed) {
+					addFeatureProperty(featureUnderConsideration, showRemoveButton);
+				}
+			} else if (targetArrayListOfDataToBeDisplayed.get(0) instanceof String) {
+				featureConstraints.addAll((ArrayList<String>) targetArrayListOfDataToBeDisplayed);
+
+				for (String featureConstraintUnderConsideration : (ArrayList<String>) targetArrayListOfDataToBeDisplayed) {
+					addFeatureConstraint(featureConstraintUnderConsideration);
+				}
+			}
+
+		}
+	}
+
+	private void addFeatureConstraint(String featureConstraintUnderConsideration) {
+		txtForFeatureConstraints = new Text(composite, SWT.BORDER);
+		txtForFeatureConstraints.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(),
+			Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT, 29);
+		txtForFeatureConstraints.setEditable(false);
+		txtForFeatureConstraints.setText(featureConstraintUnderConsideration);
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 29);
+
+		setMinHeight(getLowestWidgetYAxisValue());
+	}
+
+	public void addFeatureProperty(FeatureProperty featureProperty, boolean showRemoveButton) {
+		GroupFeatureProperty groupForFeatureProperty = new GroupFeatureProperty((Composite) getContent(), SWT.NONE, featureProperty, showRemoveButton);
+		groupForFeatureProperty.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT + 200,
+			Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
+
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
+
+		setMinHeight(getLowestWidgetYAxisValue());
 	}
 
 	@Override

@@ -82,9 +82,6 @@ public class ClaferFeatureDialog extends Dialog {
 			}
 		});
 		btnNewButton.setText("Add property");
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-
 
 		propertyList.add(new FeatureProperty("name", "type"));
 
@@ -94,14 +91,6 @@ public class ClaferFeatureDialog extends Dialog {
 
 		Button btnAddConstraint = new Button(container, SWT.NONE);
 		btnAddConstraint.setText("Add constraint");
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-
-		Composite composite_1 = new Composite(container, SWT.NONE);
-		composite_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
 
 		return container;
 	}

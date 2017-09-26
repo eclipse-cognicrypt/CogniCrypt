@@ -1,19 +1,16 @@
 package crossing.e1.primitive.types;
+
 public class Primitive {
 
 	private String name;
 	private String xmlFile;
 	private boolean isSelected;
-	
-	
-
-	
 
 	public String getName() {
 		return this.name;
 	}
-	
-	public String getXmlFile(){
+
+	public String getXmlFile() {
 		return this.xmlFile;
 	}
 
@@ -21,8 +18,8 @@ public class Primitive {
 		return this.isSelected;
 	}
 
-	public void setXmlFile(String xml){
-		this.xmlFile=xml;
+	public void setXmlFile(String xml) {
+		this.xmlFile = xml;
 	}
 
 	public void setName(final String name) {

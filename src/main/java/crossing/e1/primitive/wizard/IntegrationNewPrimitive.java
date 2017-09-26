@@ -24,10 +24,10 @@ import crossing.e1.primitive.questionnaire.PrimitiveQuestionnairePage;
 import crossing.e1.primitive.types.Primitive;
 
 public class IntegrationNewPrimitive extends Wizard {
+
 	PrimitivePages selectedPrimitivePage;
 	PrimitiveQuestionnaire questionnaire;
 	WizardPage preferenceSelectionPage;
-
 
 	public IntegrationNewPrimitive() {
 		super();
@@ -35,11 +35,11 @@ public class IntegrationNewPrimitive extends Wizard {
 	}
 
 	public void addPages() {
-			selectedPrimitivePage=new PrimitivePages();
-			setForcePreviousAndNextButtons(true);
-			addPage(selectedPrimitivePage);
-		}
-	
+		selectedPrimitivePage = new PrimitivePages();
+		setForcePreviousAndNextButtons(true);
+		addPage(selectedPrimitivePage);
+	}
+
 	private boolean checkifInUpdateRound() {
 		boolean updateRound = false;
 		final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
@@ -51,11 +51,11 @@ public class IntegrationNewPrimitive extends Wizard {
 		}
 		return updateRound;
 	}
+
 	private void createBeginnerPage(final Question curQuestion, final List<Question> allQuestion) {
 		if (curQuestion.getElement().equals(GUIElements.itemselection)) {
 			final List<String> selection = new ArrayList<>();
-			
-			
+
 			this.preferenceSelectionPage = new PrimitiveQuestionnairePage(curQuestion, this.questionnaire.getPrimitive(), selection);
 		} else if (curQuestion.getElement().equals(GUIElements.button)) {
 			this.preferenceSelectionPage = new PrimitiveQuestionnairePage(allQuestion, curQuestion, this.questionnaire.getPrimitive());
@@ -63,26 +63,23 @@ public class IntegrationNewPrimitive extends Wizard {
 			this.preferenceSelectionPage = new PrimitiveQuestionnairePage(curQuestion, this.questionnaire.getPrimitive());
 		}
 	}
-	
-	
+
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
 		final Primitive selectedPrimitive = this.selectedPrimitivePage.getSelectedPrimitive();
 		if (currentPage == this.selectedPrimitivePage && this.selectedPrimitivePage.isPageComplete()) {
-		
-				this.questionnaire = new PrimitiveQuestionnaire(selectedPrimitive, selectedPrimitive.getXmlFile());
-				this.preferenceSelectionPage = new PrimitiveQuestionnairePage(this.questionnaire.nextQuestion(), this.questionnaire.getPrimitive());
-			
-		
-		if (this.preferenceSelectionPage != null) {
-			addPage(this.preferenceSelectionPage);
-		
-		}	
-			
-			return this.preferenceSelectionPage; 
-		
-		
+
+			this.questionnaire = new PrimitiveQuestionnaire(selectedPrimitive, selectedPrimitive.getXmlFile());
+			this.preferenceSelectionPage = new PrimitiveQuestionnairePage(this.questionnaire.nextQuestion(), this.questionnaire.getPrimitive());
+
+			if (this.preferenceSelectionPage != null) {
+				addPage(this.preferenceSelectionPage);
+
+			}
+
+			return this.preferenceSelectionPage;
+
 		}
-		
+
 		final Entry<Question, Answer> entry = PrimitiveQuestionnairePage.getMap();
 		if (this.questionnaire.hasMoreQuestions()) {
 			final int nextID = entry.getValue().getNextID();
@@ -113,26 +110,26 @@ public class IntegrationNewPrimitive extends Wizard {
 		}
 		return currentPage;
 	}
-		
+
 	public IWizardPage getPreviousPage(final IWizardPage currentPage) {
 		final boolean lastPage = currentPage instanceof InstanceListPage;
-		if ( currentPage instanceof PrimitiveQuestionnairePage || lastPage) {
+		if (currentPage instanceof PrimitiveQuestionnairePage || lastPage) {
 			if (!this.questionnaire.isFirstQuestion()) {
 				this.questionnaire.previousQuestion();
 			}
 		}
 		return super.getPreviousPage(currentPage);
 	}
+
 	@Override
 	public boolean performFinish() {
-		
+
 		// TODO Auto-generated method stub
 		return true;
 	}
 
 	public boolean performCancel() {
-		boolean ans = MessageDialog.openConfirm(getShell(), "Confirmation",
-				"Are you sure to close without integrating the new primitve?");
+		boolean ans = MessageDialog.openConfirm(getShell(), "Confirmation", "Are you sure to close without integrating the new primitve?");
 		if (ans)
 			return true;
 		else

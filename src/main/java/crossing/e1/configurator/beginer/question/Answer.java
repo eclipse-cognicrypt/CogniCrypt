@@ -17,13 +17,15 @@ package crossing.e1.configurator.beginer.question;
 
 import java.util.ArrayList;
 
+import crossing.e1.configurator.Constants;
+
 public class Answer {
 
 	private String value;
 	private Boolean defaultAnswer;
 	private ArrayList<ClaferDependency> claferDependencies;
 	private ArrayList<CodeDependency> codeDependencies;
-	private int nextID = -2;
+	private int nextID = Constants.ANSWER_NO_NEXT_ID;
 
 	public ArrayList<ClaferDependency> getClaferDependencies() {
 		return this.claferDependencies;

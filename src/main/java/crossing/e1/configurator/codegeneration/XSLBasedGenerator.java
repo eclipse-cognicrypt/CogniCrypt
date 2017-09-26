@@ -154,7 +154,12 @@ public class XSLBasedGenerator {
 			this.project.removePackage(Constants.PackageName);
 		}
 	}
-
+/**
+ * This method allows to add the corresponding jar file 
+ * @param source
+ * 			is whether a provider or pathToFolderWithAdditionalResources
+ * @return
+ */
 	private boolean addAdditionalJarFiles(String source) {
 		try {
 			if (!source.isEmpty() && !source.equals("JCA")) {

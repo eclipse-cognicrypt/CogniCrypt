@@ -22,15 +22,17 @@ import org.eclipse.swt.widgets.Text;
 import crossing.e1.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 import crossing.e1.taskintegrator.widgets.GroupAnswer;
 
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 
-
 public class QuestionDialog extends Dialog {
+
 	private Text textQuestion;
 	private Label lblQuestionContent;
 
 	/**
 	 * Create the dialog.
+	 * 
 	 * @param parentShell
 	 */
 	public QuestionDialog(Shell parentShell) {
@@ -39,6 +41,7 @@ public class QuestionDialog extends Dialog {
 
 	/**
 	 * Create contents of the dialog.
+	 * 
 	 * @param parent
 	 */
 	@Override
@@ -48,7 +51,7 @@ public class QuestionDialog extends Dialog {
 
 		TabFolder tabFolder = new TabFolder(container, SWT.NONE);
 		tabFolder.addSelectionListener(new SelectionListener() {
-			
+
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				// TODO Auto-generated method stub
@@ -57,11 +60,11 @@ public class QuestionDialog extends Dialog {
 					lblQuestionContent.setText(textQuestion.getText());
 				}
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 
@@ -85,26 +88,49 @@ public class QuestionDialog extends Dialog {
 
 		Combo combo = new Combo(composite, SWT.NONE);
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-
-		Label lblAnswers = new Label(composite, SWT.NONE);
-		lblAnswers.setText("Answers");
-		new Label(composite, SWT.NONE);
-
-		Button btnAddAnswer = new Button(composite, SWT.NONE);
+		combo.setItems(new String[] { "combo", "text", "itemselection", "Button" });
 		
-		btnAddAnswer.setText("Add answer");
-		new Label(composite, SWT.NONE);
-		new Label(composite, SWT.NONE);
-		boolean showRemoveButton = true;
-		CompositeToHoldSmallerUIElements compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, 
-			SWT.NONE, null, showRemoveButton);
-		GridData gd_compositeToHoldAnswers = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gd_compositeToHoldAnswers.heightHint = 95;
-		gd_compositeToHoldAnswers.widthHint = 388;
-		compositeToHoldAnswers.setLayoutData(gd_compositeToHoldAnswers);
-		compositeToHoldAnswers.setLayout(new FillLayout(SWT.HORIZONTAL));
-		//compositeToHoldAnswers.setSize(SWT.DEFAULT, 200);
+		combo.addSelectionListener(new SelectionAdapter() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				switch (combo.getText()) {
+					case "text":
+						//do nothing
+						break;
+					case "combo":
+						Label lblAnswers = new Label(composite, SWT.NONE);
+						lblAnswers.setText("Add the answers by clicking add answer button");
+						new Label(composite, SWT.NONE);
+						Button btnAddAnswer = new Button(composite, SWT.NONE);
+						btnAddAnswer.setText("Add answer");
+						new Label(composite, SWT.NONE);
+						new Label(composite, SWT.NONE);
+						boolean showRemoveButton = true;
+						CompositeToHoldSmallerUIElements compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton);
+						GridData gd_compositeToHoldAnswers = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+						gd_compositeToHoldAnswers.heightHint = 95;
+						gd_compositeToHoldAnswers.widthHint = 388;
+						compositeToHoldAnswers.setLayoutData(gd_compositeToHoldAnswers);
+						compositeToHoldAnswers.setLayout(new FillLayout(SWT.HORIZONTAL));
+						btnAddAnswer.addSelectionListener(new SelectionAdapter() {
 
+							@Override
+							public void widgetSelected(SelectionEvent e) {
+								compositeToHoldAnswers.addAnswer(null, showRemoveButton);
+							}
+						});
+						//compositeToHoldAnswers.setSize(SWT.DEFAULT, 200);
+						break;
+					case "itemselection":
+						break;
+					case "Button":
+						break;
+				}
+			}
+		});
+
+		
 		TabItem tbtmLinkAnswers = new TabItem(tabFolder, SWT.NONE);
 		tbtmLinkAnswers.setText("Link answers");
 
@@ -125,18 +151,13 @@ public class QuestionDialog extends Dialog {
 		TabItem tbtmLink = new TabItem(tabFolder, SWT.NONE);
 		tbtmLink.setText("Link code");
 		
-		btnAddAnswer.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				compositeToHoldAnswers.addAnswer(null, showRemoveButton);
-			}
-		});
-
+		
 		return container;
 	}
 
 	/**
 	 * Create contents of the button bar.
+	 * 
 	 * @param parent
 	 */
 	@Override

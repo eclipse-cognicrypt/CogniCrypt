@@ -23,7 +23,9 @@ public class ClaferFeatureDialog extends Dialog {
 
 	private Text text;
 	private CompositeToHoldSmallerUIElements featuresComposite;
+	private CompositeToHoldSmallerUIElements constraintsComposite;
 	private int globalFeaturesCounter = 0; // TODO Debugging purposes (name dummy values meaningfully)
+	private int globalConstraintsCounter = 0; // TODO Debugging purposes (name dummy values meaningfully)
 
 	/**
 	 * Create the dialog.
@@ -81,7 +83,18 @@ public class ClaferFeatureDialog extends Dialog {
 		featuresComposite.setMinHeight(200);
 
 		Button btnAddConstraint = new Button(container, SWT.NONE);
+		btnAddConstraint.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				addClaferConstraint();
+			}
+		});
 		btnAddConstraint.setText("Add constraint");
+
+		constraintsComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, null, true);
+		constraintsComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		constraintsComposite.setMinHeight(200);
 
 		return container;
 	}
@@ -107,5 +120,10 @@ public class ClaferFeatureDialog extends Dialog {
 	private void addClaferProperty() {
 		FeatureProperty featureProperty = new FeatureProperty("TestProp " + String.valueOf(++globalFeaturesCounter), "TestVal");
 		featuresComposite.addFeatureProperty(featureProperty, true);
+	}
+
+	private void addClaferConstraint() {
+		String featureConstraint = new String("Constraint " + String.valueOf(++globalConstraintsCounter));
+		constraintsComposite.addFeatureConstraint(featureConstraint, true);
 	}
 }

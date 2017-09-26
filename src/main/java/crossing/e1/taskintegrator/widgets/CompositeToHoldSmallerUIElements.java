@@ -6,7 +6,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Text;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.taskintegrator.models.FeatureProperty;
@@ -18,7 +17,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	private int lowestWidgetYAxisValue = Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS;
 	private ArrayList<FeatureProperty> featureProperties;
 	private ArrayList<String> featureConstraints;
-	private Text txtForFeatureConstraints;
 	private Composite composite;
 	
 
@@ -74,24 +72,22 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 
 				for (String featureConstraintUnderConsideration : (ArrayList<String>) targetArrayListOfDataToBeDisplayed) {
 					featureConstraints.add(featureConstraintUnderConsideration);
-					addFeatureConstraint(featureConstraintUnderConsideration);
+					addFeatureConstraint(featureConstraintUnderConsideration, false);
 				}
 			}
 
 		}
 	}
 
-	private void addFeatureConstraint(String featureConstraintUnderConsideration) {
+	public void addFeatureConstraint(String featureConstraintUnderConsideration, boolean showRemoveButton) {
 		featureConstraints.add(featureConstraintUnderConsideration);
-		addFeatureConstraintUI(featureConstraintUnderConsideration);
+		addFeatureConstraintUI(featureConstraintUnderConsideration, showRemoveButton);
 	}
 
-	private void addFeatureConstraintUI(String featureConstraintUnderConsideration) {
-		txtForFeatureConstraints = new Text(composite, SWT.BORDER);
-		txtForFeatureConstraints.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(),
-			Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT, 29);
-		txtForFeatureConstraints.setEditable(false);
-		txtForFeatureConstraints.setText(featureConstraintUnderConsideration);
+	private void addFeatureConstraintUI(String featureConstraintUnderConsideration, boolean showRemoveButton) {
+		GroupConstraint groupConstraint = new GroupConstraint((Composite) getContent(), SWT.NONE, featureConstraintUnderConsideration, showRemoveButton);
+		groupConstraint.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT + 200, 29);
+
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 29);
 
 		setMinHeight(getLowestWidgetYAxisValue());
@@ -114,6 +110,10 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 
 	public void removeFeatureProperty(FeatureProperty featureProperty) {
 		featureProperties.remove(featureProperty);
+	}
+
+	public void removeFeatureConstraint(String featureConstraint) {
+		featureConstraints.remove(featureConstraint);
 	}
 
 	@Override
@@ -161,13 +161,13 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setMinHeight(getLowestWidgetYAxisValue());
 
 		// add all the feature properties excluding the deleted one.
-		if (featureProperties != null) {
+		if (featureProperties.size() > 0) {
 			for (FeatureProperty fp : featureProperties) {
 				addFeaturePropertyUI(fp, true);
 			}
-		} else if (featureConstraints != null) {
+		} else if (featureConstraints.size() > 0) {
 			for (String fc : featureConstraints) {
-				addFeatureConstraintUI(fc);
+				addFeatureConstraintUI(fc, true);
 			}
 		}
 

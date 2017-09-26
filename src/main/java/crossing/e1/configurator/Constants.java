@@ -27,7 +27,7 @@ package crossing.e1.configurator;
 public class Constants {
 
 	public static enum GUIElements {
-		combo, text, itemselection,button, checkbox
+		combo, text, itemselection,button
 	}
 
 	//The plugin is bundled in a jar archive and the file separator within jar files is / (see: https://stackoverflow.com/questions/24749007/how-to-use-file-separator-for-a-jar-file-resource).
@@ -43,10 +43,23 @@ public class Constants {
 	private static final String rsrcPath = "src" + innerFileSeparator + "main" + innerFileSeparator + "resources" + innerFileSeparator;
 
 	//JSON task file
-	public static final String jsonTaskFile = rsrcPath + "Tasks" + innerFileSeparator + "tasks.json";
-	public static final String jsonPrimitiveTypesFile = rsrcPath + "Tasks" + innerFileSeparator + "PrimitiveType.json";
+	public static final String jsonTaskFile = rsrcPath + "Tasks" + innerFileSeparator + "tasks.json";;
 
 	public static final String pathToPropertyfiles = rsrcPath + "Labels.properties";
+
+	// Task descriptions
+
+	// if the next question page depends on user input, the Page object encodes this as a nextPageID as opposed to the one that the last page points to
+	public static final int QUESTION_PAGE_NO_STATIC_NEXT_PAGE_ID = -2;
+
+	// the last page points to this virtual nextPageID
+	public static final int QUESTION_PAGE_LAST_PAGE_NEXT_ID = -1;
+
+	// the answer does not point to a next page, so in this case the page links to a next one statically
+	public static final int ANSWER_NO_NEXT_ID = -2;
+	
+	// the given answer makes the wizard end
+	public static final int ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID = -1;
 
 	// Clafer Instance Generation
 	public static final String claferPath = rsrcPath + "ClaferModel" + innerFileSeparator + "SymmetricEncryptionTask.js";

@@ -76,7 +76,7 @@ public class XSLBasedGenerator {
 	private DeveloperProject project;
 	private int startingPositionForRunMethod = -1;
 	private int startPosForImports = -1;
-		
+	private String provider;
 
 	/**
 	 * Constructor to initialize the code template generator. If neither a java file is opened nor a project selected initialization fails.
@@ -84,8 +84,9 @@ public class XSLBasedGenerator {
 	 * @param targetProject
 	 *
 	 */
-	public XSLBasedGenerator(final IProject targetProject) {
+	public XSLBasedGenerator(final IProject targetProject, String provider) {
 		this.project = new DeveloperProject(targetProject);
+		this.provider = provider;
 	}
 
 	/***
@@ -99,7 +100,7 @@ public class XSLBasedGenerator {
 	 * @throws BadLocationException
 	 *
 	 */
-	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources,final String providerName) throws BadLocationException {
+	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources, final String providerName) throws BadLocationException {
 		try {
 			// Check whether directories and templates/model exist
 			final File claferOutputFiles = xmlInstanceFile != null && xmlInstanceFile.exists() ? xmlInstanceFile
@@ -115,14 +116,14 @@ public class XSLBasedGenerator {
 			transform(claferOutputFiles, xslFiles, temporaryOutputFile);
 
 			// Add additional resources like jar files
-			
+
 			if (!addAdditionalJarFiles(pathToFolderWithAdditionalResources)) {
 				return false;
 			}
 			if (!addAdditionalJarFiles(providerName)) {
 				return false;
 			}
-			
+
 			// If there is a java file opened in the editor, insert glue code
 			// there, and remove temporary output file
 			// Otherwise keep the output file
@@ -423,5 +424,13 @@ public class XSLBasedGenerator {
 		final TransformerFactory tFactory = TransformerFactory.newInstance();
 		final Transformer transformer = tFactory.newTransformer(new StreamSource(xsltFile));
 		transformer.transform(new StreamSource(sourceFile), new StreamResult(new File(resultDir)));
+	}
+
+	public String getProvider() {
+		return this.provider;
+	}
+
+	public void setProvider(String provider) {
+		this.provider = provider;
 	}
 }

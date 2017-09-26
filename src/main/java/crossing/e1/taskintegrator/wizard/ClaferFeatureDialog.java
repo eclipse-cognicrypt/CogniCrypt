@@ -33,7 +33,7 @@ public class ClaferFeatureDialog extends Dialog {
 	 */
 	public ClaferFeatureDialog(Shell parentShell) {
 		super(parentShell);
-		setShellStyle(SWT.RESIZE);
+		setShellStyle(SWT.CLOSE);
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class ClaferFeatureDialog extends Dialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(800, 600);
+		return new Point(800, 700);
 	}
 
 	private void addClaferProperty() {

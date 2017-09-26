@@ -60,6 +60,7 @@ public class GroupFeatureProperty extends Group {
 				public void widgetSelected(SelectionEvent e) {
 					((CompositeToHoldSmallerUIElements) getParent().getParent())
 						.removeFeatureProperty(getFeatureProperty());
+					((CompositeToHoldSmallerUIElements) getParent().getParent()).updateClaferContainer();
 				}
 			});
 		}

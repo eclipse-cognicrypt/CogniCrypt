@@ -30,6 +30,7 @@ public class ClaferFeatureDialog extends Dialog {
 	private Composite featureComposite;
 	private CompositeToHoldSmallerUIElements smallComp;
 	private ScrolledComposite scrolledComposite;
+	private int globalFeaturesCounter = 0; // TODO Debugging purposes (name dummy values meaningfully)
 
 	/**
 	 * Create the dialog.
@@ -83,9 +84,8 @@ public class ClaferFeatureDialog extends Dialog {
 		});
 		btnNewButton.setText("Add property");
 
-		propertyList.add(new FeatureProperty("name", "type"));
 
-		smallComp = new CompositeToHoldSmallerUIElements(container, SWT.NONE, propertyList, true);
+		smallComp = new CompositeToHoldSmallerUIElements(container, SWT.NONE, null, true);
 		smallComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		smallComp.setMinHeight(200);
 
@@ -114,8 +114,8 @@ public class ClaferFeatureDialog extends Dialog {
 	}
 
 	private void addClaferProperty() {
-		propertyList.add(new FeatureProperty("TestProp", "TestVal"));
-		this.smallComp.addFeatureProperty(propertyList.get(propertyList.size() - 1), true);
+		FeatureProperty featureProperty = new FeatureProperty("TestProp " + String.valueOf(++globalFeaturesCounter), "TestVal");
+		smallComp.addFeatureProperty(featureProperty, true);
 	}
 
 	public void deleteClaferProperty(ClaferFeature cfrFeature) {

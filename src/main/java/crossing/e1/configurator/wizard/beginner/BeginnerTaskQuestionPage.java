@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import javax.swing.JOptionPane;
+
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -49,6 +51,8 @@ import crossing.e1.configurator.beginer.question.Page;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.Labels;
+import crossing.e1.configurator.wizard.ConfiguratorWizard;
+import crossing.e1.configurator.wizard.InstanceListPage;
 
 public class BeginnerTaskQuestionPage extends WizardPage {
 
@@ -56,11 +60,15 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private final Task task;
 	// Removed the allquestions variable as it was not longer required.
 	private BeginnerModeQuestionnaire beginnerModeQuestionnaire;
-	private HashMap<Question, Answer> selectionMap = new HashMap<Question, Answer>(); 
+	private HashMap<Question, Answer> selectionMap = new HashMap<Question, Answer>();
 	private boolean finish = false;
 	private List<String> selectionValues;
 
 	private final Page page;
+
+	public int getCurrentPageID() {
+		return page.getId();
+	}
 
 	/**
 	 * construct a page containing an element other than itemselection
@@ -117,11 +125,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		//This variable needs to be initialized.
 		this.quest = null;
 	}
+
 	/**
 	 * 
 	 * @param page
 	 * @param task
-	 * @param beginnerModeQuestionnaire Updated this parameter in the constructor to accept the questionnaire instead of all the questions. 
+	 * @param beginnerModeQuestionnaire
+	 *        Updated this parameter in the constructor to accept the questionnaire instead of all the questions.
 	 * @param selectionValues
 	 */
 	public BeginnerTaskQuestionPage(final Page page, final Task task, final BeginnerModeQuestionnaire beginnerModeQuestionnaire, final List<String> selectionValues) {
@@ -134,9 +144,11 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		this.task = task;
 		this.selectionValues = selectionValues;
 	}
+
 	/**
 	 * 
-	 * @param beginnerModeQuestionnaire Updated this parameter in the constructor to accept the questionnaire instead of all the questions. 
+	 * @param beginnerModeQuestionnaire
+	 *        Updated this parameter in the constructor to accept the questionnaire instead of all the questions.
 	 * @param quest
 	 * @param task
 	 */
@@ -192,25 +204,38 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				comboViewer.addSelectionChangedListener(selectedElement -> {
 					final IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
 					BeginnerTaskQuestionPage.this.selectionMap.put(question, (Answer) selection.getFirstElement());
+					question.setEnteredAnswer((Answer) selection.getFirstElement());
 				});
 				this.finish = true;
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
-				comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
+				if (question.getEnteredAnswer() != null)
+					comboViewer.setSelection(new StructuredSelection(question.getEnteredAnswer()));
+				else
+					comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
 				break;
 
 			case text:
 				final Text inputField = new Text(container, SWT.BORDER);
 				inputField.setSize(240, inputField.getSize().y);
+
+				if (question.getEnteredAnswer() != null) {
+					final Answer a = question.getEnteredAnswer();
+					inputField.setText(a.getValue());
+					a.setValue(a.getValue());
+					a.getCodeDependencies().get(0).setValue(a.getValue());
+					this.finish = !inputField.getText().isEmpty();
+					BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
+				}
+
 				inputField.addModifyListener(e -> {
 					final Answer a = question.getDefaultAnswer();
 					final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?:\\\\-])", "\\\\");
-
 					a.setValue(cleanedInput);
 					a.getCodeDependencies().get(0).setValue(cleanedInput);
 					this.finish = !cleanedInput.isEmpty();
 					BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
 					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
-
+					question.setEnteredAnswer(a);
 				});
 				inputField.forceFocus();
 				break;
@@ -295,7 +320,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							final String[] sel = itemList.getSelection();
 							Answer ans = null;
 							// Since this part is for the item selection, there will only be a single entry for this page.
-							for(Entry<Question, Answer> selectionEntry : BeginnerTaskQuestionPage.this.selectionMap.entrySet()){
+							for (Entry<Question, Answer> selectionEntry : BeginnerTaskQuestionPage.this.selectionMap.entrySet()) {
 								ans = selectionEntry.getValue();
 							}
 							StringBuilder checkedElement = new StringBuilder();
@@ -341,7 +366,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 							Answer ans = null;
 							// Since this part is for the item selection, there will only be a single entry for this page.
-							for(Entry<Question, Answer> selectionEntry : BeginnerTaskQuestionPage.this.selectionMap.entrySet()){
+							for (Entry<Question, Answer> selectionEntry : BeginnerTaskQuestionPage.this.selectionMap.entrySet()) {
 								ans = selectionEntry.getValue();
 							}
 							if (ans == null) {
@@ -411,7 +436,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						// Updated this code to pull just specific questions from the questionnaire. 
 						// getQuestionByID may return null in case of a bad json file. Updated the catch block.
 						value = this.beginnerModeQuestionnaire.getQuestionByID(methodParamIds.get(i)).getAnswers().get(0).getValue();
-						
+
 						if (!paramTypes[i].getName().equals("int")) {
 							paramObjList.add(paramTypes[i].cast(value));
 						} else {
@@ -441,7 +466,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							final String[] resStringArray = Arrays.copyOf(resObjArray, resObjArray.length, String[].class);
 							final boolean methodResult = Boolean.parseBoolean(resStringArray[0]);
 							final String feedbackString = resStringArray[1];
-							
+
 							if (methodResult == true) {
 								question.getDefaultAnswer().setNextID(question.getAnswers().get(0).getNextID());
 							} else {
@@ -459,9 +484,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				});
 
 				this.finish = true;
-				final Answer a = question.getDefaultAnswer();
+				final Answer ans = question.getDefaultAnswer();
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
-				BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
+				BeginnerTaskQuestionPage.this.selectionMap.put(question, ans);
 				break;
 
 			default:
@@ -490,7 +515,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			}
 		} else if (!this.quest.equals(other.quest)) {
 			return false;
-		}		
+		}
 		if (this.selectionMap == null) {
 			if (other.selectionMap != null) {
 				return false;
@@ -498,7 +523,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		} else if (!this.selectionMap.equals(other.selectionMap)) {
 			return false;
 		}
-		
+
 		if (this.selectionValues == null) {
 			if (other.selectionValues != null) {
 				return false;
@@ -547,9 +572,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	@Override
 	public IWizardPage getPreviousPage() {
 		final IWizardPage prev = super.getPreviousPage();
-		if (prev != null && prev instanceof BeginnerTaskQuestionPage) {
-			return getWizard().getPreviousPage(this);
-		}
 		return prev;
 	}
 

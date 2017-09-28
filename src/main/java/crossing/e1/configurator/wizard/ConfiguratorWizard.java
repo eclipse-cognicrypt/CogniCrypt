@@ -19,9 +19,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -72,6 +75,7 @@ public class ConfiguratorWizard extends Wizard {
 	private ClaferModel claferModel;
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
+	private HashMap<Integer, IWizardPage> createdPages = new HashMap<Integer, IWizardPage>();
 
 	public ConfiguratorWizard() {
 		super();
@@ -96,7 +100,7 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public boolean canFinish() {
-			return (getContainer().getCurrentPage().getName().equals(Labels.ALGORITHM_SELECTION_PAGE));	
+		return (getContainer().getCurrentPage().getName().equals(Labels.ALGORITHM_SELECTION_PAGE));
 	}
 
 	private boolean checkifInUpdateRound() {
@@ -110,11 +114,12 @@ public class ConfiguratorWizard extends Wizard {
 		}
 		return updateRound;
 	}
+
 	/**
 	 * 
 	 * @param curPage
-	 * @param beginnerQuestionnaire updated this variable from a list of questions to have access to the method to 
-	 * 			get specific Questions.  
+	 * @param beginnerQuestionnaire
+	 *        updated this variable from a list of questions to have access to the method to get specific Questions.
 	 */
 	private void createBeginnerPage(final Page curPage, final BeginnerModeQuestionnaire beginnerQuestionnaire) {
 
@@ -144,6 +149,33 @@ public class ConfiguratorWizard extends Wizard {
 	 */
 	@Override
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
+		int nextPageid = -1;
+		if (currentPage instanceof BeginnerTaskQuestionPage) {
+			createdPages.put(((BeginnerTaskQuestionPage) currentPage).getCurrentPageID(), currentPage);
+			this.beginnerQuestions.getCurrentPageID();
+			BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
+			HashMap<Question, Answer> selectionMap = beginnerTaskQuestionPage.getMap();
+
+			if (this.beginnerQuestions.hasMorePages()) {
+				nextPageid = -1;
+				if (beginnerTaskQuestionPage.getPageNextID() > -2) {
+					nextPageid = beginnerTaskQuestionPage.getPageNextID();
+				} else {
+					for (Entry<Question, Answer> entry : selectionMap.entrySet()) {
+						nextPageid = entry.getValue().getNextID();
+					}
+
+				}
+			}
+			if (createdPages.containsKey(nextPageid)) {
+				return createdPages.get(nextPageid);
+			}
+
+		}
+		if (currentPage instanceof TaskSelectionPage) {
+			createdPages.clear();
+		}
+
 		final Task selectedTask = this.taskListPage.getSelectedTask();
 		if (currentPage == this.taskListPage && this.taskListPage.isPageComplete()) {
 			this.claferModel = new ClaferModel(Utils.getResourceFromWithin(selectedTask.getModelFile()));
@@ -155,10 +187,10 @@ public class ConfiguratorWizard extends Wizard {
 				// Updated the calls to accommodate for the pages instead of questions.
 				//this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
 				//this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextQuestion(), this.beginnerQuestions.getTask());
-				
+
 				// The 3rd parameter in this constructor call is benign, it only exists to call the constructor designed for pages
-				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile()); 
-				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(),null);
+				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
+				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(), null);
 			}
 			if (this.constraints != null) {
 				this.constraints = null;
@@ -181,13 +213,13 @@ public class ConfiguratorWizard extends Wizard {
 
 				final BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
 				final HashMap<Question, Answer> selectionMap = beginnerTaskQuestionPage.getMap();
-				
+
 				// Looping through all the entries that were added to the BeginnerTaskQuestionPage
-				for(Entry<Question, Answer> entry : selectionMap.entrySet()){
+				for (Entry<Question, Answer> entry : selectionMap.entrySet()) {
 					if (entry.getKey().getElement().equals(GUIElements.itemselection)) {
 						handleItemSelection(entry);
 					}
-					
+
 					this.constraints.put(entry.getKey(), entry.getValue());
 				}
 
@@ -197,10 +229,10 @@ public class ConfiguratorWizard extends Wizard {
 						nextID = beginnerTaskQuestionPage.getPageNextID();
 					} else {
 						// in this case there would only be one question on a page, thus only have a single selection.
-						for(Entry<Question, Answer> entry : selectionMap.entrySet()){
+						for (Entry<Question, Answer> entry : selectionMap.entrySet()) {
 							nextID = entry.getValue().getNextID();
 						}
-						
+
 					}
 
 					if (nextID > -1) {
@@ -223,7 +255,6 @@ public class ConfiguratorWizard extends Wizard {
 						if (this.preferenceSelectionPage != null) {
 							addPage(this.preferenceSelectionPage);
 						}
-
 						return this.preferenceSelectionPage;
 					}
 				}
@@ -269,6 +300,7 @@ public class ConfiguratorWizard extends Wizard {
 			if (!this.beginnerQuestions.isFirstPage()) {
 				this.beginnerQuestions.previousPage();
 			}
+
 		}
 		return super.getPreviousPage(currentPage);
 	}

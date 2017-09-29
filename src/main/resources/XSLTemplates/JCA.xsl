@@ -40,6 +40,35 @@ public class Enc {
 		System.arraycopy(res, 0, ret, ivb.length, res.length);
 		return ret;
 	}
+	
+	public byte[] decrypt(byte [] ciphertext, SecretKey key) throws GeneralSecurityException { 
+		
+		byte [] ivb = new byte [16];
+		System.arraycopy(ciphertext, 0, ivb, 0, ivb.length);
+	    IvParameterSpec iv = new IvParameterSpec(ivb);
+		byte[] data = new byte[ciphertext.length - ivb.length];
+		System.arraycopy(ciphertext, ivb.length, data, 0, data.length);
+		
+		Cipher c = Cipher.getInstance("<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>/<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/mode"/>/<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/padding"/>");
+		c.init(Cipher.DECRYPT_MODE, key, iv);
+		<xsl:choose>
+		<xsl:when test="//task/code/textsize='false'">
+		byte[] res = c.doFinal(data);
+		</xsl:when>        
+         <xsl:otherwise>
+         int conv_len = 0;
+         byte[] res = new byte[c.getOutputSize(data.length)];
+         for (int i = 0; i + 1024 &lt;= ciphertext.length; i += 1024) {
+			byte[] input = new byte[1024];
+			System.arraycopy(data, i, input, 0, 1024);
+			conv_len += c.update(input, 0, input.length, res, i);
+		}
+		conv_len += c.doFinal(data, conv_len, data.length-conv_len, res, conv_len);
+        </xsl:otherwise>
+		</xsl:choose>
+		
+		return res;
+	}
 }
 </xsl:result-document>
 </xsl:if>
@@ -98,7 +127,9 @@ public class Output {
 		SecretKey key = kg.generateKey(); </xsl:otherwise>
 		</xsl:choose>	
 		Enc enc = new Enc();
-		return enc.encrypt(data, key);
+		byte[] ciphertext = enc.encrypt(data, key);
+		enc.decrypt(ciphertext, key);
+		return ciphertext;
 	}
 }
 </xsl:if>

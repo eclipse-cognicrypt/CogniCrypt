@@ -150,22 +150,14 @@ public class ConfiguratorWizard extends Wizard {
 	@Override
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
 		int nextPageid = -1;
+		// if page was already created, return the existing object
 		if (currentPage instanceof BeginnerTaskQuestionPage) {
 			createdPages.put(((BeginnerTaskQuestionPage) currentPage).getCurrentPageID(), currentPage);
 			this.beginnerQuestions.getCurrentPageID();
 			BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
-			HashMap<Question, Answer> selectionMap = beginnerTaskQuestionPage.getMap();
 
 			if (this.beginnerQuestions.hasMorePages()) {
-				nextPageid = -1;
-				if (beginnerTaskQuestionPage.getPageNextID() > -2) {
-					nextPageid = beginnerTaskQuestionPage.getPageNextID();
-				} else {
-					for (Entry<Question, Answer> entry : selectionMap.entrySet()) {
-						nextPageid = entry.getValue().getNextID();
-					}
-
-				}
+				nextPageid = beginnerTaskQuestionPage.getPageNextID();
 			}
 			if (createdPages.containsKey(nextPageid)) {
 				return createdPages.get(nextPageid);
@@ -176,6 +168,7 @@ public class ConfiguratorWizard extends Wizard {
 			createdPages.clear();
 		}
 
+		// if page is shown for the first time, create the new object
 		final Task selectedTask = this.taskListPage.getSelectedTask();
 		if (currentPage == this.taskListPage && this.taskListPage.isPageComplete()) {
 			this.claferModel = new ClaferModel(Utils.getResourceFromWithin(selectedTask.getModelFile()));
@@ -224,16 +217,7 @@ public class ConfiguratorWizard extends Wizard {
 				}
 
 				if (this.beginnerQuestions.hasMorePages()) {
-					int nextID = -1;
-					if (beginnerTaskQuestionPage.getPageNextID() > -2) {
-						nextID = beginnerTaskQuestionPage.getPageNextID();
-					} else {
-						// in this case there would only be one question on a page, thus only have a single selection.
-						for (Entry<Question, Answer> entry : selectionMap.entrySet()) {
-							nextID = entry.getValue().getNextID();
-						}
-
-					}
+					int nextID = beginnerTaskQuestionPage.getPageNextID();
 
 					if (nextID > -1) {
 						final Page curPage = this.beginnerQuestions.setPageByID(nextID);

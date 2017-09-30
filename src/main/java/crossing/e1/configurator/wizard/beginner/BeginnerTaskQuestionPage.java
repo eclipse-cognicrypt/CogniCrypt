@@ -553,8 +553,12 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		if (page != null) {
 			return page.getNextID();
 		} else {
-			return Constants.QUESTION_PAGE_NO_STATIC_NEXT_PAGE_ID;
+			// in this case there would only be one question on a page, thus only have a single selection.
+			for (Entry<Question, Answer> entry : selectionMap.entrySet()) {
+				return entry.getValue().getNextID();
+			}
 		}
+		return -1;
 	}
 
 	private Composite getPanel(final Composite parent) {

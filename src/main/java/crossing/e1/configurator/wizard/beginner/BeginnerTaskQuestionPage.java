@@ -567,12 +567,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		return titledPanel;
 	}
 
-	@Override
-	public IWizardPage getPreviousPage() {
-		final IWizardPage prev = super.getPreviousPage();
-		return prev;
-	}
-
 	public synchronized HashMap<Question, Answer> getSelection() {
 		return this.selectionMap;
 	}

@@ -215,7 +215,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				if (question.getEnteredAnswer() != null) {
 					final Answer a = question.getEnteredAnswer();
 					inputField.setText(a.getValue());
-					a.setValue(a.getValue());
 					a.getCodeDependencies().get(0).setValue(a.getValue());
 					this.finish = !inputField.getText().isEmpty();
 					BeginnerTaskQuestionPage.this.setPageComplete(this.finish);

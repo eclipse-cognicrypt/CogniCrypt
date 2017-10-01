@@ -36,7 +36,7 @@
 			"additionalResources" : "src/main/resources/AdditionalResources/ABY"
 		},
 		{
-			"name": "ABE",
+			"name": "ABETask",
 			"description": "Attribute Based Encryption",
 			"modelFile" : "src/main/resources/ClaferModel/ABE.js",
 			"xmlFile" : "src/main/resources/TaskDesc/ABEQuestions.json",

@@ -1,7 +1,7 @@
 [
 		{
 			"name": "Cipher",
-			"xmlFile" : "src/main/resources/Primitives/CipherQuestion1.json"
+			"xmlFile" : "src/main/resources/Primitives/CipherQuestion.json"
 		},
 		{
 		  "name": "Message Digest",

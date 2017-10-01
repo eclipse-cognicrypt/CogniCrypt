@@ -27,7 +27,7 @@ package crossing.e1.configurator;
 public class Constants {
 
 	public static enum GUIElements {
-		combo, text, itemselection,button
+		combo, text, itemselection,button, checkbox, radiobutton, textarea, composed
 	}
 
 	//The plugin is bundled in a jar archive and the file separator within jar files is / (see: https://stackoverflow.com/questions/24749007/how-to-use-file-separator-for-a-jar-file-resource).
@@ -47,6 +47,7 @@ public class Constants {
 
 	public static final String pathToPropertyfiles = rsrcPath + "Labels.properties";
 
+	public static final String jsonPrimitiveTypesFile = rsrcPath + "Primitives" + innerFileSeparator + "PrimitiveType.json";
 	// Task descriptions
 
 	// if the next question page depends on user input, the Page object encodes this as a nextPageID as opposed to the one that the last page points to
@@ -118,6 +119,7 @@ public class Constants {
 	public static final String SELECT_TASK = "Select Task :";
 	public static final String NO_XML_INSTANCE_FILE_TO_WRITE = "No xml instance file to write.";
 	public static final String CLAFER_ALGORITHM = "_Algorithm";
+	
 
 	//Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;

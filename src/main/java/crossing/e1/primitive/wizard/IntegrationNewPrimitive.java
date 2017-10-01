@@ -1,11 +1,9 @@
 package crossing.e1.primitive.wizard;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
@@ -13,12 +11,9 @@ import org.eclipse.jface.wizard.WizardPage;
 
 import crossing.e1.configurator.Constants.GUIElements;
 import crossing.e1.configurator.beginer.question.Answer;
-import crossing.e1.configurator.beginer.question.ClaferDependency;
+import crossing.e1.configurator.beginer.question.Page;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.wizard.InstanceListPage;
-import crossing.e1.configurator.wizard.advanced.AdvancedUserValueSelectionPage;
-import crossing.e1.configurator.wizard.beginner.BeginnerTaskQuestionPage;
-import crossing.e1.featuremodel.clafer.ClaferModelUtils;
 import crossing.e1.primitive.questionnaire.PrimitiveQuestionnaire;
 import crossing.e1.primitive.questionnaire.PrimitiveQuestionnairePage;
 import crossing.e1.primitive.types.Primitive;
@@ -26,8 +21,9 @@ import crossing.e1.primitive.types.Primitive;
 public class IntegrationNewPrimitive extends Wizard {
 
 	PrimitivePages selectedPrimitivePage;
-	PrimitiveQuestionnaire questionnaire;
+	PrimitiveQuestionnaire primitiveQuestions;
 	WizardPage preferenceSelectionPage;
+	private HashMap<Question, Answer> constraints;
 
 	public IntegrationNewPrimitive() {
 		super();
@@ -52,25 +48,30 @@ public class IntegrationNewPrimitive extends Wizard {
 		return updateRound;
 	}
 
-	private void createBeginnerPage(final Question curQuestion, final List<Question> allQuestion) {
-		if (curQuestion.getElement().equals(GUIElements.itemselection)) {
-			final List<String> selection = new ArrayList<>();
-
-			this.preferenceSelectionPage = new PrimitiveQuestionnairePage(curQuestion, this.questionnaire.getPrimitive(), selection);
-		} else if (curQuestion.getElement().equals(GUIElements.button)) {
-			this.preferenceSelectionPage = new PrimitiveQuestionnairePage(allQuestion, curQuestion, this.questionnaire.getPrimitive());
-		} else {
-			this.preferenceSelectionPage = new PrimitiveQuestionnairePage(curQuestion, this.questionnaire.getPrimitive());
+	private void createPrimitivePage(final Page curPage, final PrimitiveQuestionnaire primitiveQuestionnaire) {
+		List<String> selection = null;
+		if (curPage.getContent().size() == 1) {
+			final Question curQuestion = curPage.getContent().get(0);
+//			if (curQuestion.getElement().equals(GUIElements.itemselection)) {
+//				selection = new ArrayList<>();
+//				for (final AstConcreteClafer childClafer : this.claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
+//					if (childClafer.getSuperClafer().getName().endsWith(curQuestion.getSelectionClafer())) {
+//						selection.add(ClaferModelUtils.removeScopePrefix(childClafer.getName()));
+//					}
+//				}
+//			}
 		}
+		// Pass the questionnaire instead of the all of the questions. 
+		this.preferenceSelectionPage = new PrimitiveQuestionnairePage(curPage, this.primitiveQuestions.getPrimitive(), primitiveQuestionnaire, selection);
 	}
+	
 
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
 		final Primitive selectedPrimitive = this.selectedPrimitivePage.getSelectedPrimitive();
 		if (currentPage == this.selectedPrimitivePage && this.selectedPrimitivePage.isPageComplete()) {
 
-			this.questionnaire = new PrimitiveQuestionnaire(selectedPrimitive, selectedPrimitive.getXmlFile());
-			this.preferenceSelectionPage = new PrimitiveQuestionnairePage(this.questionnaire.nextQuestion(), this.questionnaire.getPrimitive());
-
+			this.primitiveQuestions = new PrimitiveQuestionnaire(selectedPrimitive, selectedPrimitive.getXmlFile());
+			this.preferenceSelectionPage = new PrimitiveQuestionnairePage(this.primitiveQuestions.nextPage(), this.primitiveQuestions.getPrimitive(), null);
 			if (this.preferenceSelectionPage != null) {
 				addPage(this.preferenceSelectionPage);
 
@@ -79,24 +80,39 @@ public class IntegrationNewPrimitive extends Wizard {
 			return this.preferenceSelectionPage;
 
 		}
+		final PrimitiveQuestionnairePage primitiveQuestionPage = (PrimitiveQuestionnairePage) currentPage;
+		final HashMap<Question, Answer> selectionMap = primitiveQuestionPage.getMap();
+	
+		for(Entry<Question, Answer> entry : selectionMap.entrySet()){
+			if (entry.getKey().getElement().equals(GUIElements.itemselection)) {
+				
+			}
+			
+			this.constraints.put(entry.getKey(), entry.getValue());
+		}
 
-		final Entry<Question, Answer> entry = PrimitiveQuestionnairePage.getMap();
-		if (this.questionnaire.hasMoreQuestions()) {
-			final int nextID = entry.getValue().getNextID();
-			if (nextID > -1) {
-				final Question curQuestion = this.questionnaire.setQuestionByID(nextID);
-				final List<Question> allQuestion = this.questionnaire.getQuestionList();
-
-				createBeginnerPage(curQuestion, allQuestion);
+			
+		if (this.primitiveQuestions.hasMorePages()) {
+			 int nextID = -1;
+			if (primitiveQuestionPage.getPageNextID() > -2) {
+				nextID= primitiveQuestionPage.getPageNextID();
+			} else {
+				for(Entry<Question, Answer> entry : selectionMap.entrySet()){
+					nextID = entry.getValue().getNextID();
+			}
+			}
+			if(nextID > -1) {
+				final Page curPage= this.primitiveQuestions.setPageByID(nextID);
+				createPrimitivePage(curPage, primitiveQuestions);
 				if (checkifInUpdateRound()) {
-					this.questionnaire.previousQuestion();
-				}
+					this.primitiveQuestions.previousPage();
+				} 
 				final IWizardPage[] pages = getPages();
 				for (int i = 1; i < pages.length; i++) {
-					if (!(pages[i] instanceof BeginnerTaskQuestionPage)) {
+					if (!(pages[i] instanceof PrimitiveQuestionnairePage)) {
 						continue;
 					}
-					final BeginnerTaskQuestionPage oldPage = (BeginnerTaskQuestionPage) pages[i];
+					final PrimitiveQuestionnairePage oldPage =  (PrimitiveQuestionnairePage) pages[i];
 					if (oldPage.equals(this.preferenceSelectionPage)) {
 						return oldPage;
 					}
@@ -114,8 +130,8 @@ public class IntegrationNewPrimitive extends Wizard {
 	public IWizardPage getPreviousPage(final IWizardPage currentPage) {
 		final boolean lastPage = currentPage instanceof InstanceListPage;
 		if (currentPage instanceof PrimitiveQuestionnairePage || lastPage) {
-			if (!this.questionnaire.isFirstQuestion()) {
-				this.questionnaire.previousQuestion();
+			if (!this.primitiveQuestions.isFirstPage()) {
+				this.primitiveQuestions.previousPage();
 			}
 		}
 		return super.getPreviousPage(currentPage);

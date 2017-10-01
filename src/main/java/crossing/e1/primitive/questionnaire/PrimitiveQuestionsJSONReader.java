@@ -12,44 +12,108 @@ import com.google.gson.reflect.TypeToken;
 
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.beginer.question.Answer;
-import crossing.e1.configurator.tasks.Task;
+import crossing.e1.configurator.beginer.question.Page;
+import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.utilities.Utils;
+import crossing.e1.primitive.types.Primitive;
 
 public class PrimitiveQuestionsJSONReader {
 
-	public List<QuestionsList> getQuestions(final String filePath) {
-		List<QuestionsList> questions = new ArrayList<QuestionsList>();
+	/***
+	 * This method reads all questions of one primitive using the file path to the question file.
+	 * 
+	 * @param filePath
+	 *        path to the file that contains all questions for one primitive.
+	 * @return questions
+	 */
+	public List<Question> getQuestions(final String filePath) {
+		List<Question> questions = new ArrayList<Question>();
 		try {
 			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(filePath)));
 			final Gson gson = new Gson();
 
-			questions = gson.fromJson(reader, new TypeToken<List<QuestionsList>>() {}.getType());
+			questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
 
 			checkReadQuestions(questions);
 		} catch (final FileNotFoundException e) {
 			Activator.getDefault().logError(e);
+			return null;
 		}
 		return questions;
 	}
-
+	
+	
 	/***
-	 * This method reads all questions of one task.
+	 * This method reads all pages of one primitive using the file path to the JSON file.
 	 * 
-	 * @param task
-	 *        task whose questions should be read
-	 * @return Questions
+	 * @param filePath 
+	 * 			Path to the file that contains all questions for one primitive.
+	 * @return pages 
+	 * 			Return a list of all the pages in the JSON file.
 	 */
-	public List<QuestionsList> getQuestions(final Task task) {
-		return getQuestions(task.getXmlFile());
+	public List<Page> getPages(final String filePath) {
+		List<Page> pages = new ArrayList<Page>();
+		try {
+			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(filePath)));
+			final Gson gson = new Gson();
+
+			pages = gson.fromJson(reader, new TypeToken<List<Page>>() {}.getType());
+
+			checkReadPages(pages);
+			checkNextIDs(pages);
+		} catch (final FileNotFoundException e) {
+			Activator.getDefault().logError(e);
+		}
+		return pages;
 	}
 
-	private void checkReadQuestions(List<QuestionsList> questionsList) {
+	/***
+	 * This method reads all questions of one primitive.
+	 * 
+	 * @param primitive
+	 *        primitive whose questions should be read
+	 * @return Questions
+	 */
+	public List<Question> getQuestions(final Primitive primitive) {
+		return getQuestions(primitive.getXmlFile());
+	}
+	
+	/***
+	 * This method reads all pages of one primitive.
+	 * 
+	 * @param primitive
+	 *        primitive whose questions should be read
+	 * @return Pages
+	 */
+	public List<Page> getPages(final Primitive primitive) {
+		return getPages(primitive.getXmlFile());
+	}
+	
+	/**
+	 * Check the validity of the pages and the questions contained in them.
+	 * @param pages
+	 */
+	private void checkReadPages(List<Page> pages) {
 		final Set<Integer> ids = new HashSet<>();
-		if (questionsList.size() < 1) {
-			throw new IllegalArgumentException("There are no questions for this task.");
+		if (pages.size() < 1) {
+			throw new IllegalArgumentException("There are no pages for this primitive.");
 		}
-		for (final QuestionsList questionList : questionsList){
-		for (final Questions question: questionList.getQuestions()) {
+		for (final Page page : pages) {
+			if (!ids.add(page.getId())) {
+				throw new IllegalArgumentException("Each page must have a unique ID.");
+			}
+			
+			// Check the validity of questions for each page.
+			checkReadQuestions(page.getContent());
+		}
+	}
+
+	private void checkReadQuestions(List<Question> questions) {
+		final Set<Integer> ids = new HashSet<>();
+		if (questions.size() < 1) {
+			throw new IllegalArgumentException("There are no questions for this primitive.");
+		}
+		for (final Question question : questions) {
 			if (!ids.add(question.getId())) {
 				throw new IllegalArgumentException("Each question must have a unique ID.");
 			}
@@ -57,12 +121,20 @@ public class PrimitiveQuestionsJSONReader {
 			if (question.getDefaultAnswer() == null) {
 				throw new IllegalArgumentException("Each question must have a default answer.");
 			}
+		}
+	}
 
-			for (final Answer answer : question.getAnswers()) {
-				if (answer.getNextID() == -2) {
-					throw new IllegalArgumentException("Each answer must point to the following question.");
+	private void checkNextIDs(List<Page> pages) {
+		for (final Page page : pages) {
+			if (page.getNextID() == -2) {
+				for (final Question question : page.getContent()) {
+					for (final Answer answer : question.getAnswers()) {
+						if (answer.getNextID() == -2) {
+							throw new IllegalArgumentException("Each answer must point to the following question if the page does not have a nextID.");
+						}
+					}
 				}
 			}
 		}
-	} }
+	}
 }

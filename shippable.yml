@@ -10,4 +10,12 @@ build:
 
   
    - cd mvn-parent
-   - mvn install
+   - mvn clean verify surefire:test
+   
+  on_success:
+   - cp ../target/surefire-reports/*.xml ../shippable/testresults/
+   - cd ../shippable/testresults
+   
+  on_failure:
+   - cp ../target/surefire-reports/*.xml ../shippable/testresults/
+   - cd ../shippable/testresults

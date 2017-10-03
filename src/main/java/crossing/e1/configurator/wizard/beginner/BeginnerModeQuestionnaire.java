@@ -17,6 +17,7 @@ package crossing.e1.configurator.wizard.beginner;
 
 import java.util.List;
 
+import crossing.e1.configurator.beginer.question.Page;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.beginer.question.QuestionsJSONReader;
 import crossing.e1.configurator.tasks.Task;
@@ -24,25 +25,42 @@ import crossing.e1.configurator.tasks.Task;
 public class BeginnerModeQuestionnaire {
 
 	private final List<Question> questionList;
+	private final List<Page> pageList;
 	private Task task;
-	private int ID;
+	private int pageID;
 
-	public BeginnerModeQuestionnaire(final Task task, final String filePath) {
+	/**
+	 * 
+	 * @param task
+	 * @param filePath
+	 */
+	public BeginnerModeQuestionnaire(final Task task, final String filePath){
 		this.task = task;
-		this.questionList = (new QuestionsJSONReader()).getQuestions(filePath);
-		this.ID = 0;
+		this.pageList = (new QuestionsJSONReader()).getPages(filePath);
+		this.pageID = 0;
+		
+		this.questionList = null;
+	}
+	/**
+	 * Added this method to get specific questions. This functionality was created to replace the code when handling buttons
+	 * as 'Questions'.
+	 * @param questionID
+	 * @return The requested question.
+	 */
+	public Question getQuestionByID(final int questionID) {
+		
+		for(Page page : pageList){
+			for(Question question : page.getContent()){
+				if(question.getId() == questionID){
+					return question;
+				}
+			}
+		}
+		return null;
 	}
 
-	public int getCurrentID() {
-		return this.ID;
-	}
-
-	public Question getQuestionByID(final int ID) {
-		return this.questionList.get(ID);
-	}
-
-	public List<Question> getQutionare() throws NullPointerException {
-		return this.questionList;
+	public List<Page> getQuestionnaire() throws NullPointerException {
+		return this.pageList;
 	}
 
 	public List<Question> getQuestionList() {
@@ -53,29 +71,76 @@ public class BeginnerModeQuestionnaire {
 		return this.task;
 	}
 
-	public boolean hasMoreQuestions() {
-		return this.ID < getQutionare().size();
-	}
-
-	public boolean isFirstQuestion() {
-		return this.ID == 0;
-	}
-
-	public Question nextQuestion() {
-		return this.questionList.get(this.ID++);
-	}
-
-	public Question previousQuestion() {
-		return this.questionList.get(--this.ID);
-	}
-
-	public Question setQuestionByID(final int ID) {
-		this.ID = ID;
-		return this.questionList.get(this.ID);
-	}
 
 	public void setTask(final Task task) {
 		this.task = task;
+	}
+	/**
+	 * 
+	 * @param pageID
+	 * @return Return the page at pageID.
+	 */
+	public Page getPageByID(final int pageID) {
+		return this.pageList.get(pageID);
+	}
+	
+	/**
+	 * 
+	 * @return Return the list of pages.
+	 * @throws NullPointerException
+	 */
+	public List<Page> getPages() throws NullPointerException {
+		return this.pageList;
+	}
+	
+	/**
+	 * 
+	 * @return Return the next page.
+	 */
+	public Page nextPage() {
+		return this.pageList.get(this.pageID++);
+	}
+
+	/**
+	 * 
+	 * @return Return the previous page.
+	 */
+	public Page previousPage() {
+		return this.pageList.get(--this.pageID);
+	}
+
+	/**
+	 * 
+	 * @param pageID
+	 * @return Return the page that has been set.
+	 */
+	public Page setPageByID(final int pageID) {
+		this.pageID = pageID;
+		return this.pageList.get(this.pageID);
+	}
+
+	/**
+	 * 
+	 * @return Whether this is the first page.
+	 */
+	public boolean isFirstPage() {
+		return this.pageID == 0;
+	}
+	
+	/**
+	 * 
+	 * @return Return whether there are more pages.
+	 */
+	public boolean hasMorePages() {
+		return this.pageID < getPages().size();
+	}
+	
+	/**
+	 * 
+	 * @return Return the current pageID.
+	 */
+	public int getCurrentPageID() {
+		return this.pageID;
 	}
 
 }

@@ -40,6 +40,35 @@ public class Enc {
 		System.arraycopy(res, 0, ret, ivb.length, res.length);
 		return ret;
 	}
+	
+	public byte[] decrypt(byte [] ciphertext, SecretKey key) throws GeneralSecurityException { 
+		
+		byte [] ivb = new byte [16];
+		System.arraycopy(ciphertext, 0, ivb, 0, ivb.length);
+	    IvParameterSpec iv = new IvParameterSpec(ivb);
+		byte[] data = new byte[ciphertext.length - ivb.length];
+		System.arraycopy(ciphertext, ivb.length, data, 0, data.length);
+		
+		Cipher c = Cipher.getInstance("<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>/<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/mode"/>/<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/padding"/>");
+		c.init(Cipher.DECRYPT_MODE, key, iv);
+		<xsl:choose>
+		<xsl:when test="//task/code/textsize='false'">
+		byte[] res = c.doFinal(data);
+		</xsl:when>        
+         <xsl:otherwise>
+         int conv_len = 0;
+         byte[] res = new byte[c.getOutputSize(data.length)];
+         for (int i = 0; i + 1024 &lt;= ciphertext.length; i += 1024) {
+			byte[] input = new byte[1024];
+			System.arraycopy(data, i, input, 0, 1024);
+			conv_len += c.update(input, 0, input.length, res, i);
+		}
+		conv_len += c.doFinal(data, conv_len, data.length-conv_len, res, conv_len);
+        </xsl:otherwise>
+		</xsl:choose>
+		
+		return res;
+	}
 }
 </xsl:result-document>
 </xsl:if>
@@ -98,7 +127,9 @@ public class Output {
 		SecretKey key = kg.generateKey(); </xsl:otherwise>
 		</xsl:choose>	
 		Enc enc = new Enc();
-		return enc.encrypt(data, key);
+		byte[] ciphertext = enc.encrypt(data, key);
+		enc.decrypt(ciphertext, key);
+		return ciphertext;
 	}
 }
 </xsl:if>
@@ -761,22 +792,21 @@ public class Output {
 
 <xsl:if test="//task[@description='SECMUPACOMP']//element[@type='SECMUPACOMP']//Aby='Euclid'">
 
-	public void templateUsage(int pos_x, int pos_y <xsl:choose><xsl:when test="not(//task/code/host or //task/code/server='false')"></xsl:when>
+	public double templateUsage(int pos_x, int pos_y <xsl:choose><xsl:when test="not(//task/code/host or //task/code/server='false')"></xsl:when>
          <xsl:otherwise>, String host</xsl:otherwise></xsl:choose> <xsl:choose><xsl:when test="//task/code/port"></xsl:when>
          <xsl:otherwise>, int port</xsl:otherwise></xsl:choose>, int bitlength ) {
         
-        //Comments explaining what's going on
-        euc_dist.run(<xsl:choose><xsl:when test="//task/code/server='true'">0</xsl:when><xsl:otherwise>1</xsl:otherwise></xsl:choose>, pos_x, pos_y, <xsl:value-of select="//task/element[@type='SECMUPACOMP']/Security"/>, bitlength,
+        return euc_dist.run(<xsl:choose><xsl:when test="//task/code/server='true'">0</xsl:when><xsl:otherwise>1</xsl:otherwise></xsl:choose>, pos_x, pos_y, <xsl:value-of select="//task/element[@type='SECMUPACOMP']/Security"/>, bitlength,
          <xsl:choose><xsl:when test="//task/code/host"><xsl:value-of select="//task/code/host"/></xsl:when><xsl:when test="//task/code/server='true'">"This will be ignored."</xsl:when><xsl:otherwise>host</xsl:otherwise></xsl:choose>,
 		 <xsl:choose><xsl:when test="//task/code/port"><xsl:value-of select="//task/code/port"/></xsl:when><xsl:otherwise>port</xsl:otherwise></xsl:choose>);
 	}
 </xsl:if>
 <xsl:if test="//task[@description='SECMUPACOMP']//element[@type='SECMUPACOMP']//Aby='Millionaire'">
 
-	public void templateUsage(<xsl:choose><xsl:when test="not(//task/code/host or //task/code/server='false')"></xsl:when>
+	public int templateUsage(<xsl:choose><xsl:when test="not(//task/code/host or //task/code/server='false')"></xsl:when>
          <xsl:otherwise> String host, </xsl:otherwise></xsl:choose>int money) {
         
-       mill_jni.run(<xsl:choose><xsl:when test="//task/code/server='true'">0</xsl:when><xsl:otherwise>1</xsl:otherwise></xsl:choose>, money);
+       return mill_jni.run(<xsl:choose><xsl:when test="//task/code/server='true'">0</xsl:when><xsl:otherwise>1</xsl:otherwise></xsl:choose>, money);
 	}
 </xsl:if>
 

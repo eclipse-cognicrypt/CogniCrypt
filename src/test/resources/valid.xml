@@ -16,11 +16,12 @@
     <Import>javax.crypto.spec.IvParameterSpec</Import>
     <Import>javax.crypto.spec.SecretKeySpec</Import>
     <Import>java.security.spec.InvalidKeySpecException</Import>
+    <Import>java.util.List;</Import>
   </Imports>
   <algorithm type="Digest">
-    <outputSize>224</outputSize>
-    <name>SHA-224</name>
-    <performance>2</performance>
+    <outputSize>256</outputSize>
+    <name>SHA3-256</name>
+    <performance>3</performance>
     <status>secure</status>
   </algorithm>
   <code/>

@@ -1,7 +1,7 @@
 scope({c0_AddingDocuments:2, c0_Enum:11, c0_List:4, c0_NumberDocuments:2, c0_TrustedAuthorities:3});
 defaultScope(1);
 intRange(-8, 7);
-stringLength(27);
+stringLength(24);
 
 c0_Enum = Abstract("c0_Enum");
 c0_List = Abstract("c0_List");
@@ -44,7 +44,7 @@ c0_Notaries.extending(c0_TrustedAuthorities);
 c0_Both.extending(c0_TrustedAuthorities);
 c0_description.refTo(string);
 c0_LongTermArchiving.extending(c0_Task);
-c0_LongTermArchiving.addConstraint(equal(joinRef(join($this(), c0_description)), constant("\"Securely archiving files.\"")));
+c0_LongTermArchiving.addConstraint(equal(joinRef(join($this(), c0_description)), constant("\"Securely Archive Files\"")));
 c0_list.refTo(c0_List);
 c0_addDoc.refTo(c0_AddingDocuments);
 c0_numDoc.refTo(c0_NumberDocuments);

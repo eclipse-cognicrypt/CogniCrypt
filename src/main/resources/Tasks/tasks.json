@@ -1,14 +1,14 @@
 [
 		{
 			"name": "SymmetricEncryption",
-			"description": "Encrypt data using a secret key",
+			"description": "Encrypt Data Using a Secret Key",
 			"modelFile" : "src/main/resources/ClaferModel/SymmetricEncryptionTask.js",
 			"xmlFile" : "src/main/resources/TaskDesc/SymmetricEncryptionQuestions.json",
 			"additionalResources" : ""
 		},
 		{
 			"name": "SecurePassword",
-			"description": "Represent password in a secure way for storage",
+			"description": "Encode Password for Secure Storage",
 			"modelFile" : "src/main/resources/ClaferModel/SecurePasswordStorage.js",
 			"xmlFile" : "src/main/resources/TaskDesc/SecurePasswordStorage.json",
 			"additionalResources" : ""
@@ -16,14 +16,14 @@
 		},
 		{
 			"name": "SecureCommunication",
-			"description": "Communicate over a secure channel",
+			"description": "Establish a Secure Network Connection",
 			"modelFile" : "src/main/resources/ClaferModel/TLSTask.js",
 			"xmlFile" : "src/main/resources/TaskDesc/TLSQuestions.json",
 			"additionalResources" : ""
 		},
 		{
 			"name": "LongTermArchiving",
-			"description": "Securely archiving files",
+			"description": "Securely Archive Files",
 			"modelFile" : "src/main/resources/ClaferModel/LongTermArchiving.js",
 			"xmlFile" : "src/main/resources/TaskDesc/LongTermArchivingQuestions.json",
 			"additionalResources" : "src/main/resources/AdditionalResources/LongTermArchiving"
@@ -34,6 +34,14 @@
 			"modelFile" : "src/main/resources/ClaferModel/ABY.js",
 			"xmlFile" : "src/main/resources/TaskDesc/ABYQuestions.json",
 			"additionalResources" : "src/main/resources/AdditionalResources/ABY"
+		}
+		,
+		{
+			"name": "CertainTrust",
+			"description": "CertainTrust",
+			"modelFile" : "src/main/resources/ClaferModel/CertainTrust.js",
+			"xmlFile" : "src/main/resources/TaskDesc/CertainTrust.json",
+			"additionalResources" : "src/main/resources/AdditionalResources/CertainTrust"
 		}
 ]
 

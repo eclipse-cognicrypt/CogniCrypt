@@ -57,7 +57,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 	private Task selectedTask;
 
 	public InstanceListPage(final InstanceGenerator inst, final Task selectedTask) {
-		super(Labels.SECOND_PAGE);
+		super(Labels.ALGORITHM_SELECTION_PAGE);
 		setTitle("Possible solutions for task: " + selectedTask.getDescription());
 		setDescription(Labels.DESCRIPTION_INSTANCE_LIST_PAGE);
 		this.instanceGenerator = inst;
@@ -114,6 +114,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 		this.instanceDetails = new Text(this.instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		this.instanceDetails.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.instanceDetails.setBounds(10, 20, 400, 200);
+		this.instanceDetails.setEditable(false);
 		/*
 		 * Initially instance properties panel will be hidden
 		 */

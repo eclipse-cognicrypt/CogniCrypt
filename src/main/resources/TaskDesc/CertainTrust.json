@@ -1,0 +1,82 @@
+[
+		{
+			"id": "0",
+			"element" : "questionText",
+			"questionText":"Do you want to evaluate the trustworthiness of one or more opinions?",
+			"answers":[
+			{"value":"One",
+			"codeDependencies":[
+				{"option":"operator", "value" : "NONE"}],
+			"claferDependencies":[
+				{"algorithm":"op", "value":"NONE", "operator":"="}], "defaultAnswer": true, "nextID" : "3"},
+			{"value":"More",
+			"codeDependencies":[],  "nextID" : "1"}
+			]
+		},
+		
+		{
+			"id" : "1",
+			"element" : "text",
+			"questionText":"How many opinions do you want combine?",
+			"answers":[
+				{"value":"",
+				"codeDependencies":[
+				{"option":"amountOpinions","value":""}
+				], "defaultAnswer": true, "nextID" : "2"}
+			]
+		},	
+		{
+			"id" : "2",
+			"element" : "combo",
+			"questionText":"Please select an operator for combining the opinions",
+			"answers":[
+				{"value":"AND", "codeDependencies":[
+				{"option":"operator", "value" : "AND"}],"claferDependencies":[
+				{"algorithm":"op", "value":"AND", "operator":"="}
+				], "defaultAnswer": true, "nextID" : "3"
+				},
+				{"value":"OR",
+				"codeDependencies":[
+				{"option":"operator", "value" : "OR"}],"claferDependencies":[
+				{"algorithm":"op", "value":"OR", "operator":"="}
+				], "nextID" : "3"
+				},
+				{"value":"Weighted fusion",
+				"codeDependencies":[
+				{"option":"operator", "value" : "wFUSION"}],"claferDependencies":[
+				{"algorithm":"op", "value":"wFUSION", "operator":"="}
+				], "nextID" : "3"
+				},
+				{"value":"Conflict-aware fusion",
+				"codeDependencies":[
+				{"option":"operator", "value" : "cFUSION"}],"claferDependencies":[
+				{"algorithm":"op", "value":"cFUSION", "operator":"="}
+				], "nextID" : "3"
+				}
+			]
+		},
+		{
+			"id" : "3",
+			"element" : "text",
+			"questionText":"Please set the maximal expected number of evidence (>0)",
+			"answers":[
+				{"value":"",
+				"codeDependencies":[
+				{"option":"n","value":""}
+				], "defaultAnswer": true, "nextID" : "4"}
+			]
+		},		
+		{
+			"id": "4",
+			"element" : "questionText",
+			"questionText":"Do you want to show user interface to visualize the expectation?",
+			"answers":[
+			{"value":"Yes",
+			"codeDependencies":[
+			{"option":"HTI", "value": "true"}], "defaultAnswer": true, "nextID" : "-1"},
+			{"value":"No",
+			"codeDependencies":[
+			{"option":"HTI", "value": "false"}],  "nextID" : "-1"}
+			]
+		}
+]

@@ -134,7 +134,7 @@ c0_pbkdf2.addConstraint(equal(joinRef(join($this(), c0_performance)), global(c0_
 c0_pbkdf2.addConstraint(some(join($this(), c0_digest)));
 c0_pbkdf2.addConstraint(equal(joinRef(join($this(), c0_security)), joinRef(join(joinRef(join($this(), c0_digest)), c0_security))));
 c0_SymmetricEncryption.extending(c0_Task);
-c0_SymmetricEncryption.addConstraint(equal(joinRef(join($this(), c1_description)), constant("\"Encrypt data using a secret key\"")));
+c0_SymmetricEncryption.addConstraint(equal(joinRef(join($this(), c1_description)), constant("\"Encrypt Data Using a Secret Key\"")));
 c0_cipher.refTo(c0_SymmetricBlockCipher);
 c1_security.refTo(Int);
 c0_SymmetricEncryption.addConstraint(equal(joinRef(join($this(), c1_security)), joinRef(joinRef(join(joinRef(join($this(), c0_cipher)), c0_security)))));

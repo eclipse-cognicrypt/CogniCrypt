@@ -43,27 +43,27 @@ public class QuestionReaderTest {
 	 * This test method should always perform a successful read. Create new methods for more failing test cases.
 	 */
 	public final void testGetQuestionsCorrect() {
-		qjr.getQuestions(this.testFile1);
+		qjr.getPages(this.testFile1);
 	}
 
 	@Test(expected = JsonSyntaxException.class)
 	public final void testGetQuestionsExceptionJSONSyntaxError() {
-		qjr.getQuestions(this.testFile5);
+		qjr.getPages(this.testFile5);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public final void testGetQuestionsExceptionMissingID() {
-		qjr.getQuestions(this.testFile2);
+		qjr.getPages(this.testFile2);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public final void testGetQuestionsExceptionMissingNextID() {
-		qjr.getQuestions(this.testFile3);
+		qjr.getPages(this.testFile3);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public final void testGetQuestionsExceptionNoDefaultAnswer() {
-		qjr.getQuestions(this.testFile4);
+		qjr.getPages(this.testFile4);
 	}
 
 }

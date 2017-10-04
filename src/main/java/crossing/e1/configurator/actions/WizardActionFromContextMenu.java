@@ -31,12 +31,12 @@ import crossing.e1.configurator.wizard.ConfiguratorWizard;
  *
  * @see IWorkbenchWindowActionDelegate
  */
-public class WizardAction implements IWorkbenchWindowActionDelegate {
+public class WizardActionFromContextMenu implements IWorkbenchWindowActionDelegate {
 
 	/**
 	 * The constructor.
 	 */
-	public WizardAction() {}
+	public WizardActionFromContextMenu() {}
 
 	/**
 	 * We can use this method to dispose of any system resources we previously allocated.
@@ -61,7 +61,7 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	 */
 	@Override
 	public void run(final IAction action) {
-		Constants.WizardActionFromContextMenuFlag = false;
+		Constants.WizardActionFromContextMenuFlag = true;
 		final WizardDialog dialog = new WizardDialog(new Shell(), new ConfiguratorWizard());
 		dialog.open();
 	}

@@ -40,6 +40,35 @@ public class Enc {
 		System.arraycopy(res, 0, ret, ivb.length, res.length);
 		return ret;
 	}
+	
+	public byte[] decrypt(byte [] ciphertext, SecretKey key) throws GeneralSecurityException { 
+		
+		byte [] ivb = new byte [16];
+		System.arraycopy(ciphertext, 0, ivb, 0, ivb.length);
+	    IvParameterSpec iv = new IvParameterSpec(ivb);
+		byte[] data = new byte[ciphertext.length - ivb.length];
+		System.arraycopy(ciphertext, ivb.length, data, 0, data.length);
+		
+		Cipher c = Cipher.getInstance("<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>/<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/mode"/>/<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/padding"/>");
+		c.init(Cipher.DECRYPT_MODE, key, iv);
+		<xsl:choose>
+		<xsl:when test="//task/code/textsize='false'">
+		byte[] res = c.doFinal(data);
+		</xsl:when>        
+         <xsl:otherwise>
+         int conv_len = 0;
+         byte[] res = new byte[c.getOutputSize(data.length)];
+         for (int i = 0; i + 1024 &lt;= ciphertext.length; i += 1024) {
+			byte[] input = new byte[1024];
+			System.arraycopy(data, i, input, 0, 1024);
+			conv_len += c.update(input, 0, input.length, res, i);
+		}
+		conv_len += c.doFinal(data, conv_len, data.length-conv_len, res, conv_len);
+        </xsl:otherwise>
+		</xsl:choose>
+		
+		return res;
+	}
 }
 </xsl:result-document>
 </xsl:if>
@@ -89,13 +118,18 @@ public class Output {
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public byte[] templateUsage(byte[] data) throws GeneralSecurityException {
-		KeyGenerator kg = KeyGenerator.getInstance("<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>");
+	public byte[] templateUsage(byte[] data<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">, char[] pwd</xsl:if>) throws GeneralSecurityException {
+		<xsl:choose>
+        <xsl:when test="//task/algorithm[@type='KeyDerivationAlgorithm']">KeyDeriv kd = new KeyDeriv();
+		SecretKey key = kd.getKey(pwd); </xsl:when>
+        <xsl:otherwise>KeyGenerator kg = KeyGenerator.getInstance("<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>");
 		kg.init(<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/keySize"/>);
-		SecretKey key = kg.generateKey();
-
+		SecretKey key = kg.generateKey(); </xsl:otherwise>
+		</xsl:choose>	
 		Enc enc = new Enc();
-		return enc.encrypt(data, key);
+		byte[] ciphertext = enc.encrypt(data, key);
+		enc.decrypt(ciphertext, key);
+		return ciphertext;
 	}
 }
 </xsl:if>
@@ -506,6 +540,251 @@ public class Output {
 
 </xsl:if>
 
+<xsl:if test="//task[@description='CertainTrust']">
+<xsl:result-document href="CertainTrustUtils.java">
+package <xsl:value-of select="//task/Package"/>; 
+<xsl:apply-templates select="//Import"/>
+
+public class CertainTrustUtils {
+	public static CertainTrust[] createMultipleCertainTrustObj(int count, int n){
+		
+		if(count &lt; 1) throw new IllegalArgumentException("count should be greater than 0. Entered n = " + count + "\n");
+		
+		CertainTrust[] ctObjArray = new CertainTrust[count];
+		for(int i = 0; i &lt; ctObjArray.length; i++){
+			ctObjArray[i]=new CertainTrust(n);
+		}
+		return ctObjArray;
+	}
+	
+	public static CertainTrust AND(CertainTrust[] ctObjArray){
+		if(ctObjArray.length &lt; 2) throw new IllegalArgumentException("Array need at least 2 CertainTrust objects. Operation not allowed. \n\n");
+		
+		return ctObjArray[0].AND(Arrays.copyOfRange(ctObjArray, 1, ctObjArray.length));
+	}
+	
+	
+	public static CertainTrust OR(CertainTrust[] ctObjArray){
+		if(ctObjArray.length &lt; 2) throw new IllegalArgumentException("Array need at least 2 CertainTrust objects. Operation not allowed. \n\n");
+
+		return ctObjArray[0].OR(Arrays.copyOfRange(ctObjArray, 1, ctObjArray.length));
+	}
+	
+	
+	public static CertainTrust cFUSION(CertainTrust[] ctObjArray, int[] weights){
+		if(ctObjArray.length &lt; 2) throw new IllegalArgumentException("Array need at least 2 CertainTrust objects. Operation not allowed. \n\n");
+		if(weights.length != ctObjArray.length) throw new IllegalArgumentException("Different lengths of arrays. Operation not allowed. \n\n");
+	
+		return CertainTrust.cFusion(ctObjArray, weights);
+	}
+	
+	
+	public static CertainTrust wFUSION(CertainTrust[] ctObjArray, int[] weights){
+		if(ctObjArray.length &lt; 2) throw new IllegalArgumentException("Array need at least 2 CertainTrust objects. Operation not allowed. \n\n");
+		if(weights.length != ctObjArray.length) throw new IllegalArgumentException("Different lengths of arrays. Operation not allowed. \n\n");
+	
+		return CertainTrust.wFusion(ctObjArray, weights);
+	}
+}
+</xsl:result-document>
+
+
+<xsl:choose><xsl:when test="//task/code/HTI='true'">
+<xsl:result-document href="CertainTrustView.java">
+package <xsl:value-of select="//task/Package"/>; 
+<xsl:apply-templates select="//Import"/>
+
+public class CertainTrustView extends JFrame{
+
+	private static final long serialVersionUID = -8391833921510126856L;
+	private CertainTrust[] ctObjArray;
+	private CertainTrust result;
+	
+	public CertainTrustView(CertainTrust ctObject) {			
+		setTitle("CertainTrust");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setLayout(new FlowLayout());
+		this.add(new CertainTrustHTI(ctObject));
+		this.pack();
+		this.setVisible(true);	
+	}
+		
+	public CertainTrustView(Operator op, CertainTrust[] ctObjArray) {
+		
+		if(op == null || (op != Operator.AND &amp;&amp; op != Operator.OR)) throw new IllegalArgumentException("Operator have to be AND or OR operator. Operation not allowed. \n");
+		
+		setLocationRelativeTo(null);
+		setTitle("CertainTrust - "+op.name());
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLayout(new FlowLayout());
+		setSize(800, 600);
+		
+		this.ctObjArray = ctObjArray;
+		for(int i = 0; i &lt; ctObjArray.length; i++){
+			this.add(new CertainTrustHTI(ctObjArray[i]));
+		}
+		
+		this.result = new CertainTrust(ctObjArray[0].getN());
+		Map&lt;String,String&gt; htiConfig = new HashMap&lt;String, String&gt;();
+		htiConfig.put("readonly", "true");
+		add(new CertainTrustHTI(result,htiConfig));
+		
+		setVisible(true);	
+		setObserver(op);
+	}
+	
+	public CertainTrustView(Operator op, CertainTrust[] ctObjArray, int[] weights) {
+		
+		if(op == null || (op != Operator.wFUSION &amp;&amp; op != Operator.cFUSION)) throw new IllegalArgumentException("Operator have to be wFusion or cFusion operator. Operation not allowed. \n");
+		
+		setLocationRelativeTo(null);
+		setTitle("CertainTrust - "+op.name());
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLayout(new FlowLayout());
+		setSize(800, 600);
+		
+		this.ctObjArray = ctObjArray;
+		for(int i = 0; i &lt; ctObjArray.length; i++){
+			this.add(new CertainTrustHTI(ctObjArray[i]));
+		}
+		
+		this.result = new CertainTrust(ctObjArray[0].getN());
+		Map&lt;String,String&gt; htiConfig = new HashMap&lt;String, String&gt;();
+		htiConfig.put("readonly", "true");
+		add(new CertainTrustHTI(result,htiConfig));
+		
+		setVisible(true);	
+		setObserver(op, weights);
+	}
+
+	
+	private void setObserver(Operator op){
+		HTIObserver HTIObserver = new HTIObserver(ctObjArray, result, op);
+		
+		for(int i = 0; i &lt; ctObjArray.length; i++){
+			ctObjArray[i].addObserver(HTIObserver);
+
+		}
+		HTIObserver.update(null, null);
+	}
+	
+	private void setObserver(Operator op, int[] weights){
+		HTIObserver HTIObserver = new HTIObserver(ctObjArray,weights, result, op);
+		
+		for(int i = 0; i &lt; ctObjArray.length; i++){
+			ctObjArray[i].addObserver(HTIObserver);
+
+		}
+		HTIObserver.update(null, null);
+	}
+}
+</xsl:result-document>
+
+<xsl:result-document href="HTIObserver.java">
+package <xsl:value-of select="//task/Package"/>; 
+<xsl:apply-templates select="//Import"/>
+
+public class HTIObserver implements Observer{
+
+	private CertainTrust[] ctObjArray;
+	private CertainTrust tempResult;
+	private CertainTrust finaleResult;
+	private Operator op;
+	private int[] weights;
+	
+	public HTIObserver(CertainTrust[] ctObjArray, CertainTrust result, Operator op) {	
+		this.ctObjArray = ctObjArray;
+		this.finaleResult = result;
+		this.op = op;
+	}
+	
+	public HTIObserver(CertainTrust[] ctObjArray, int[] weights, CertainTrust result, Operator op) {	
+		this.ctObjArray = ctObjArray;
+		this.finaleResult = result;
+		this.op = op;
+		this.weights = weights;
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		switch(op){
+		case AND: tempResult = CertainTrustUtils.AND(ctObjArray); break;
+		case OR: tempResult = CertainTrustUtils.OR(ctObjArray); break;
+		case wFUSION : tempResult = CertainTrustUtils.wFUSION(ctObjArray, weights); break;
+		case cFUSION : tempResult =  CertainTrustUtils.cFUSION(ctObjArray, weights); break;
+		default: break;
+		}
+		
+		this.finaleResult.setF(tempResult.getF());
+		this.finaleResult.setTC(tempResult.getT(), tempResult.getC());
+	}
+	
+}
+
+</xsl:result-document>
+
+<xsl:result-document href="Operator.java">
+package <xsl:value-of select="//task/Package"/>; 
+<xsl:apply-templates select="//Import"/>
+
+public enum Operator {
+	NOT,AND,OR,wFUSION,cFUSION
+}
+
+</xsl:result-document>
+
+</xsl:when>
+</xsl:choose>
+
+package <xsl:value-of select="//Package"/>; 
+<xsl:apply-templates select="//Import"/>	
+public class Output {
+
+	public void templateUsage() {
+		<xsl:choose>
+		<xsl:when test="//task/code/operator='NONE'">
+		CertainTrust opinion = new CertainTrust(<xsl:value-of select="//task/code/n"/>);
+		
+		/*-----------------------
+		 opinion.setRS(positive evidence, negative evidence);	&lt;-- set evidence
+		 opinion = opinion.NOT();								&lt;-- negate opinion
+		 ------------------------*/
+		
+		double expectation = opinion.getExpectation();
+		<xsl:choose>
+		<xsl:when test="//task/code/HTI='true'">
+    	CertainTrustView view = new CertainTrustView(opinion);
+		</xsl:when>
+		</xsl:choose>
+		</xsl:when>
+		
+		<xsl:otherwise>
+		CertainTrust[] opinions = CertainTrustUtils.createMultipleCertainTrustObj(<xsl:value-of select="//task/code/amountOpinions"/>, <xsl:value-of select="//task/code/n"/>);
+		<xsl:choose>
+		<xsl:when test="//task/code/operator='wFUSION' or //task/code/operator='cFUSION'">
+		int[] weights = new int[<xsl:value-of select="//task/code/amountOpinions"/>];
+		</xsl:when>
+		</xsl:choose>
+		
+		/*-----------------------
+		  opinions[x].setRS(positive evidence, negative evidence);	&lt;-- set evidence
+		  opinions[x] = opinions[x].NOT();							&lt;-- negate opinion
+		 ------------------------*/
+		
+		CertainTrust result = CertainTrustUtils.<xsl:value-of select="//task/code/operator"/>(opinions<xsl:choose><xsl:when test="//task/code/operator='wFUSION' or //task/code/operator='cFUSION'">,weights</xsl:when></xsl:choose>);
+		double expectation = result.getExpectation();
+		<xsl:choose><xsl:when test="//task/code/HTI='true'">
+		CertainTrustView view = new CertainTrustView(Operator.<xsl:value-of select="//task/code/operator"/>, opinions<xsl:choose><xsl:when test="//task/code/operator='wFUSION' or //task/code/operator='cFUSION'">,weights</xsl:when></xsl:choose>);
+		</xsl:when></xsl:choose>
+		</xsl:otherwise>
+		</xsl:choose>
+	}
+}
+
+</xsl:if>
+
+
 <xsl:if test="//task[@description='SECMUPACOMP']">
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
@@ -513,22 +792,21 @@ public class Output {
 
 <xsl:if test="//task[@description='SECMUPACOMP']//element[@type='SECMUPACOMP']//Aby='Euclid'">
 
-	public void templateUsage(int pos_x, int pos_y <xsl:choose><xsl:when test="not(//task/code/host or //task/code/server='false')"></xsl:when>
+	public double templateUsage(int pos_x, int pos_y <xsl:choose><xsl:when test="not(//task/code/host or //task/code/server='false')"></xsl:when>
          <xsl:otherwise>, String host</xsl:otherwise></xsl:choose> <xsl:choose><xsl:when test="//task/code/port"></xsl:when>
          <xsl:otherwise>, int port</xsl:otherwise></xsl:choose>, int bitlength ) {
         
-        //Comments explaining what's going on
-        euc_dist.run(<xsl:choose><xsl:when test="//task/code/server='true'">0</xsl:when><xsl:otherwise>1</xsl:otherwise></xsl:choose>, pos_x, pos_y, <xsl:value-of select="//task/element[@type='SECMUPACOMP']/Security"/>, bitlength,
+        return euc_dist.run(<xsl:choose><xsl:when test="//task/code/server='true'">0</xsl:when><xsl:otherwise>1</xsl:otherwise></xsl:choose>, pos_x, pos_y, <xsl:value-of select="//task/element[@type='SECMUPACOMP']/Security"/>, bitlength,
          <xsl:choose><xsl:when test="//task/code/host"><xsl:value-of select="//task/code/host"/></xsl:when><xsl:when test="//task/code/server='true'">"This will be ignored."</xsl:when><xsl:otherwise>host</xsl:otherwise></xsl:choose>,
 		 <xsl:choose><xsl:when test="//task/code/port"><xsl:value-of select="//task/code/port"/></xsl:when><xsl:otherwise>port</xsl:otherwise></xsl:choose>);
 	}
 </xsl:if>
 <xsl:if test="//task[@description='SECMUPACOMP']//element[@type='SECMUPACOMP']//Aby='Millionaire'">
 
-	public void templateUsage(<xsl:choose><xsl:when test="not(//task/code/host or //task/code/server='false')"></xsl:when>
+	public int templateUsage(<xsl:choose><xsl:when test="not(//task/code/host or //task/code/server='false')"></xsl:when>
          <xsl:otherwise> String host, </xsl:otherwise></xsl:choose>int money) {
         
-       mill_jni.run(<xsl:choose><xsl:when test="//task/code/server='true'">0</xsl:when><xsl:otherwise>1</xsl:otherwise></xsl:choose>, money);
+       return mill_jni.run(<xsl:choose><xsl:when test="//task/code/server='true'">0</xsl:when><xsl:otherwise>1</xsl:otherwise></xsl:choose>, money);
 	}
 </xsl:if>
 
@@ -539,4 +817,6 @@ public class Output {
 <xsl:template match="Import">
 import <xsl:value-of select="."/>;
 </xsl:template>
+
+
 </xsl:stylesheet>

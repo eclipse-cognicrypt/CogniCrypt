@@ -147,4 +147,27 @@
       	</handledMarkerTypes>
    		</quickFixProcessor>
 	</extension>
+
+<extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="code-clafer_configurator.objectContribution"
+            objectClass="org.eclipse.core.resources.IResource">
+         <menu
+               icon="icons/cognicrypt.png"
+               id="code-clafer_configurator.menu1"
+               label="Launch CogniCrypt">
+            <separator
+                  name="code-clafer_configurator.separator1">
+            </separator>
+         </menu>
+         <action
+               class="crossing.e1.configurator.actions.WizardActionFromContextMenu"
+               icon="icons/cognicrypt.png"
+               id="code-clafer_configurator_fromContextMenu"
+               label="Launch CogniCrypt">
+         </action>
+      </objectContribution>
+   </extension>
 </plugin>

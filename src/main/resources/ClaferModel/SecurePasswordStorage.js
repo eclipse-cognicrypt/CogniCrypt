@@ -1,7 +1,7 @@
 scope({c0_Algorithm:2, c0_Enum:9, c0_Performance:4, c0_Security:5, c0_name:2, c0_performance:2, c0_security:2, c1_description:2});
 defaultScope(1);
 intRange(-8, 7);
-stringLength(48);
+stringLength(36);
 
 c0_Enum = Abstract("c0_Enum");
 c0_Security = Abstract("c0_Security");
@@ -84,7 +84,7 @@ c0_pbkdf2.addConstraint(equal(joinRef(join($this(), c0_performance)), global(c0_
 c0_pbkdf2.addConstraint(some(join($this(), c0_digest)));
 c0_pbkdf2.addConstraint(equal(joinRef(join($this(), c0_security)), joinRef(join(joinRef(join($this(), c0_digest)), c0_security))));
 c0_SecurePassword.extending(c0_Task);
-c0_SecurePassword.addConstraint(equal(joinRef(join($this(), c0_description)), constant("\"Represent password in a secure way for storage\"")));
+c0_SecurePassword.addConstraint(equal(joinRef(join($this(), c0_description)), constant("\"Encode password for secure storage\"")));
 c0_kda.refTo(c0_KeyDerivationAlgorithm);
 c1_security.refTo(Int);
 c0_SecurePassword.addConstraint(equal(joinRef(join($this(), c1_security)), joinRef(joinRef(join(joinRef(join($this(), c0_kda)), c0_security)))));

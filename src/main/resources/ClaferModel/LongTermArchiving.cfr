@@ -23,7 +23,7 @@ abstract Task
 	description -> string
 
 LongTermArchiving : Task
-	[description = "Securely archiving files."]
+	[description = "Securely Archive Files"]
 	list -> List
 	addDoc -> AddingDocuments
 	numDoc -> NumberDocuments

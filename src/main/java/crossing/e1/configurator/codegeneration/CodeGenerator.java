@@ -11,8 +11,11 @@ import java.util.Map.Entry;
 
 import crossing.e1.configurator.analysis.CryptSLModelReader;
 import crypto.rules.CryptSLConstraint;
+import crypto.rules.CryptSLConstraint.LogOps;
 import crypto.rules.CryptSLMethod;
+import crypto.rules.CryptSLObject;
 import crypto.rules.CryptSLRule;
+import crypto.rules.CryptSLSplitter;
 import crypto.rules.CryptSLValueConstraint;
 import crypto.rules.StateMachineGraph;
 import crypto.rules.TransitionEdge;
@@ -118,7 +121,7 @@ public class CodeGenerator {
 		// Determine class name
 		usedClass = rule.getClassName();
 		newClass = className;
-		
+
 		// TODO prove if the given name is an appropriate 
 		// java method identifier.
 		// If not. Do not store the value.
@@ -220,7 +223,7 @@ public class CodeGenerator {
 			} else {
 				methodName = newMethod;
 			}
-			
+
 			String returnType = getReturnType(currentTransitions);
 
 			String methodDefintion = "public " + returnType + " " + methodName + "(";
@@ -299,7 +302,18 @@ public class CodeGenerator {
 		return codeFileList;
 	}
 
+	/**
+	 * This method generates a method invocation for every transition of a state machine that represents a cryptsl rule.
+	 * 
+	 * @param currentTransitions
+	 *        List of transitions that represents a cryptsl rule's state machine.
+	 */
 	private void generateMethodInvocations(List<TransitionEdge> currentTransitions) {
+		// Determine possible valid parameter values be analysing
+		// the given constraints
+		// ################################################################
+		analyseConstraints(rule.getConstraints());
+
 		for (TransitionEdge transition : currentTransitions) {
 
 			// Determine method name and signature
@@ -362,12 +376,8 @@ public class CodeGenerator {
 			// ################################################################
 			// see also method getSubClass(className);
 
-			// Replace parameters by values that are defined by constraints.
-			// ################################################################
-
-			currentInvokedMethod = replaceParameterByValue(parameters, rule.getConstraints(), currentInvokedMethod);
-
-			// Generate method call Hereafter, a method call is distinguished in three categories.
+			// Generate method invocation. Hereafter, a method call is distinguished in three categories.
+			String methodInvocation = "";
 
 			// 1. Constructor method calls
 			// 2. Static method calls
@@ -379,15 +389,13 @@ public class CodeGenerator {
 				// determine name of current instance
 				instanceName = usedClass.substring(0, 1).toLowerCase() + usedClass.substring(1);
 
-				String invokeMethod = usedClass + " " + instanceName + " = new " + currentInvokedMethod;
-				methodInvocations.add(invokeMethod);
+				methodInvocation = usedClass + " " + instanceName + " = new " + currentInvokedMethod;
 
 				// If constructor call is the last method call return new object.
 				String lastInvokedMethod = getLastInvokedMethodName(currentTransitions).toString();
 
 				if (methodName.equals(lastInvokedMethod)) {
-					invokeMethod = "return " + instanceName + ";";
-					methodInvocations.add(invokeMethod);
+					methodInvocation = methodInvocation + "\nreturn " + instanceName + ";";
 				}
 			}
 			// Static method call
@@ -397,14 +405,17 @@ public class CodeGenerator {
 				// determine name of current instance
 				instanceName = usedClass.substring(0, 1).toLowerCase() + usedClass.substring(1);
 
-				String invokeMethod = usedClass + " " + instanceName + " = " + usedClass + "." + currentInvokedMethod;
+				methodInvocation = usedClass + " " + instanceName + " = " + usedClass + "." + currentInvokedMethod;
 
-				methodInvocations.add(invokeMethod);
+				// If constructor call is the last method call return new object.
+				String lastInvokedMethod = getLastInvokedMethodName(currentTransitions).toString();
 
+				if (methodName.equals(lastInvokedMethod)) {
+					methodInvocation = methodInvocation + "\nreturn " + instanceName + ";";
+				}
 			}
 			// 3. Instance method call
 			else {
-				String invokeMethod;
 				// Does method have a return value?
 				if (method.getRetObject() != null) {
 					String returnValueType = method.getRetObject().getValue();
@@ -420,28 +431,69 @@ public class CodeGenerator {
 
 					// Last invoked method and return type is not equal to "void".
 					if (methodName.equals(lastInvokedMethod) && !returnValueType.equals("AnyType")) {
-						invokeMethod = "return " + instanceName + "." + currentInvokedMethod;
+						methodInvocation = "return " + instanceName + "." + currentInvokedMethod;
 					}
 					// Last invoked method and return type is equal to "void".
 					else if (methodName.equals(lastInvokedMethod) && returnValueType.equals("AnyType")) {
-						invokeMethod = instanceName + "." + currentInvokedMethod + "return " + instanceName + ";";
+						methodInvocation = instanceName + "." + currentInvokedMethod + "\nreturn " + instanceName + ";";
 					}
 					// Not the last invoked method and return type is not equal to "void".
 					else if (!methodName.equals(lastInvokedMethod) && !returnValueType.equals("AnyType")) {
-						invokeMethod = returnValueType + " = " + instanceName + "." + currentInvokedMethod;
+						methodInvocation = returnValueType + " = " + instanceName + "." + currentInvokedMethod;
 					}
 					// Not the last invoked method and return type is equal to "void"
 					else if (!methodName.equals(lastInvokedMethod) && returnValueType.equals("AnyType")) {
-						invokeMethod = instanceName + "." + currentInvokedMethod;
+						methodInvocation = instanceName + "." + currentInvokedMethod;
 					} else {
-						invokeMethod = instanceName + "." + currentInvokedMethod;
+						methodInvocation = instanceName + "." + currentInvokedMethod;
 					}
 
 				} else {
-					invokeMethod = instanceName + "." + currentInvokedMethod;
+					methodInvocation = instanceName + "." + currentInvokedMethod;
 				}
+			}
 
-				methodInvocations.add(invokeMethod);
+			// Replace parameters by values that are defined in the previous step
+			// ################################################################
+			methodInvocation = replaceParameterByValue(parameters, methodInvocation);
+
+			// Add new generated method invocation
+			if (!methodInvocation.equals("")) {
+				methodInvocations.add(methodInvocation);
+				methodInvocation = "";
+			}
+
+		}
+	}
+
+	/**
+	 * This method analyses ISLConstraints to determine possible valid values for variables.
+	 * 
+	 * @param constraints
+	 *        List of constraints that are used for the analysis.
+	 */
+	private void analyseConstraints(List<ISLConstraint> constraints) {
+		for (ISLConstraint constraint : constraints) {
+			// handle CryptSLValueConstraint
+			if (constraint instanceof CryptSLValueConstraint) {
+				CryptSLValueConstraint cryptSLValueConstraint = (CryptSLValueConstraint) constraint;
+				resolveCryptSLValueConstraint(cryptSLValueConstraint);
+			}
+			// handle CryptSLConstraint
+			else if (constraint instanceof CryptSLConstraint) {
+				CryptSLConstraint cryptSLConstraint = (CryptSLConstraint) constraint;
+
+				// (CryptSLConstrant | CryptSLValueConstraint => CryptSLConstrant | CryptSLValueConstraint)
+				if ((cryptSLConstraint.getLeft() instanceof CryptSLConstraint || cryptSLConstraint.getRight() instanceof CryptSLValueConstraint) && cryptSLConstraint
+					.getOperator() == LogOps.implies && (cryptSLConstraint
+						.getRight() instanceof CryptSLConstraint || cryptSLConstraint.getRight() instanceof CryptSLValueConstraint)) {
+
+					// 1. step verify premise
+					if (resolveCryptSLConstraint(cryptSLConstraint.getLeft())) {
+						// 2. step verify conclusion
+						resolveCryptSLConstraint(cryptSLConstraint.getRight());
+					}
+				}
 			}
 		}
 	}
@@ -459,59 +511,48 @@ public class CodeGenerator {
 	 * 
 	 * @return New method invocation as string (parameter names are replaces by values)
 	 */
-	private String replaceParameterByValue(List<Entry<String, String>> parameters, List<ISLConstraint> constraints, String currentInvokedMethod) {
+	private String replaceParameterByValue(List<Entry<String, String>> parameters, String currentInvokedMethod) {
+
+		// Split current method invocation "variable = method(method parameter)" in:
+		// 1. variable = method
+		// 2. (method parameter)
+		// replace only parameter names by values in the second part.
+		String methodNamdResultAssignment = currentInvokedMethod.substring(0, currentInvokedMethod.indexOf("("));
+		String methodParameter = currentInvokedMethod.substring(currentInvokedMethod.indexOf("("), currentInvokedMethod.indexOf(")"));
+		String appendix = currentInvokedMethod.substring(currentInvokedMethod.indexOf(")"), currentInvokedMethod.length());
 
 		for (Entry<String, String> parameter : parameters) {
-			// Check if currentInvokedMethod has parameters with constraints
-			for (ISLConstraint constraint : constraints) {
-				if (constraint.getInvolvedVarNames().contains(parameter.getKey())) {
 
-					// handle CryptSLValueConstraint
-					if (constraint instanceof CryptSLValueConstraint) {
-						CryptSLValueConstraint cryptSLValueConstraint = (CryptSLValueConstraint) constraint;
-
-						// replace parameter by value
-						if (parameter.getValue().equals("java.lang.String")) {
-							currentInvokedMethod = currentInvokedMethod.replace(cryptSLValueConstraint.getVarName(), "\"" + cryptSLValueConstraint.getValueRange().get(0) + "\"");
-						} else {
-							currentInvokedMethod = currentInvokedMethod.replace(cryptSLValueConstraint.getVarName(), cryptSLValueConstraint.getValueRange().get(0));
-						}
-
-						// store assigned value
-						parameterValues.put(cryptSLValueConstraint.getVarName(), cryptSLValueConstraint.getValueRange().get(0));
-					}
-					// handle CryptSLConstraint
-					else if (constraint instanceof CryptSLConstraint) {
-						CryptSLConstraint cryptSLConstraint = (CryptSLConstraint) constraint;
-
-						// check if (variableX in {} => variableY in {})
-						if (cryptSLConstraint.getLeft() instanceof CryptSLValueConstraint && cryptSLConstraint.getRight() instanceof CryptSLValueConstraint) {
-							CryptSLValueConstraint cryptSLValueConstraintLeft = (CryptSLValueConstraint) cryptSLConstraint.getLeft();
-							CryptSLValueConstraint cryptSLValueConstraintRight = (CryptSLValueConstraint) cryptSLConstraint.getRight();
-
-							if (cryptSLValueConstraintRight.getVarName().equals(parameter.getKey()) && cryptSLConstraint.getOperator().toString()
-								.equals("implies") && cryptSLValueConstraintLeft.getValueRange().contains(parameterValues.get(cryptSLValueConstraintLeft.getVarName()))) {
-
-								// replace parameter by value
-								if (parameter.getValue().equals("java.lang.String")) {
-									currentInvokedMethod = currentInvokedMethod.replace(cryptSLValueConstraintRight.getVarName(),
-										"\"" + cryptSLValueConstraintRight.getValueRange().get(0) + "\"");
-								} else {
-									currentInvokedMethod = currentInvokedMethod.replace(cryptSLValueConstraintRight.getVarName(),
-										cryptSLValueConstraintRight.getValueRange().get(0));
-								}
-
-								// store assigned value
-								parameterValues.put(cryptSLValueConstraintRight.getVarName(), cryptSLValueConstraintRight.getValueRange().get(0));
-
-							}
-						}
-					}
+			if (parameterValues.containsKey(parameter.getKey())) {
+				String value = parameterValues.get(parameter.getKey());
+				// replace parameter by value
+				if (parameter.getValue().equals("java.lang.String")) {
+					methodParameter = methodParameter.replace(parameter.getKey(), "\"" + value + "\"");
+				} else {
+					methodParameter = methodParameter.replace(parameter.getKey(), value);
 				}
-			}
+			} else if (currentInvokedMethod.contains("Cipher.getInstance")) {
+				String firstParameter = parameter.getKey() + "[0]";
+				String secondParameter = parameter.getKey() + "[1]";
+				String thirdParameter = parameter.getKey() + "[2]";
+				String value = "\"";
 
-			if (!parameterValues.containsKey(parameter.getKey())) {
+				if (parameterValues.containsKey(firstParameter) && !parameterValues.get(firstParameter).equals("")) {
+					value = value + parameterValues.get(firstParameter);
 
+					if (parameterValues.containsKey(secondParameter) && !parameterValues.get(secondParameter).equals("")) {
+						value = value + "/" + parameterValues.get(secondParameter);
+
+						if (parameterValues.containsKey(thirdParameter) && !parameterValues.get(thirdParameter).equals("")) {
+							value = value + "/" + parameterValues.get(thirdParameter);
+						}
+					}
+
+					value = value + "\"";
+					methodParameter = methodParameter.replace(parameter.getKey(), value);
+				}
+			} else {
+				// If no value can be assigned add variable to the parameter list of the super method
 				// Check type name for "."
 				if (parameter.getValue().contains(".")) {
 					methodParametersOfSuperMethod
@@ -524,7 +565,78 @@ public class CodeGenerator {
 			}
 		}
 
+		currentInvokedMethod = methodNamdResultAssignment + methodParameter + appendix;
 		return currentInvokedMethod;
+	}
+
+	/**
+	 * This method assigns a value to a variable by analysing a CryptSLValueConstraint object.
+	 * 
+	 * If the assigned value is valid this method returns true otherwise false
+	 * 
+	 * @param cryptSLValueConstraint
+	 *        CryptSLValueConstraint object that is used to determine a value.
+	 * 
+	 * @return If the assigned value is valid this method returns true otherwise false
+	 */
+	private boolean resolveCryptSLValueConstraint(CryptSLValueConstraint cryptSLValueConstraint) {
+		CryptSLObject cryptSLObject = cryptSLValueConstraint.getVar();
+		CryptSLSplitter cryptSLSplitter = cryptSLObject.getSplitter();
+
+		String parameterNameKey = "";
+
+		// Distinguish between regular variable assignments and
+		// part assignments.
+		if (cryptSLSplitter == null) {
+			parameterNameKey = cryptSLValueConstraint.getVarName();
+		} else {
+			parameterNameKey = cryptSLObject.getVarName() + "[" + cryptSLSplitter.getIndex() + "]";
+		}
+
+		if (!parameterValues.containsKey(parameterNameKey)) {
+			parameterValues.put(parameterNameKey, cryptSLValueConstraint.getValueRange().get(0));
+		}
+
+		if (cryptSLValueConstraint.getValueRange().contains(parameterValues.get(parameterNameKey))) {
+			return true; // Assigned parameter value is in valid value range.
+		} else {
+			return false; // Assigned parameter value is not in valid value range.
+		}
+	}
+
+	/**
+	 * This method resolves constraints of a cryptsl rule recursively.
+	 * 
+	 * @param constraint
+	 *        Constraint object that should be resolved.
+	 * @return Returns true if the given constraint object describes a valid logical expression otherwise false.
+	 */
+	private boolean resolveCryptSLConstraint(ISLConstraint constraint) {
+		if (constraint instanceof CryptSLValueConstraint) {
+
+			CryptSLValueConstraint cryptSLValueConstraint = (CryptSLValueConstraint) constraint;
+			return resolveCryptSLValueConstraint(cryptSLValueConstraint);
+
+		} else if (constraint instanceof CryptSLConstraint) {
+
+			CryptSLConstraint cryptSLConstraint = (CryptSLConstraint) constraint;
+			LogOps operator = cryptSLConstraint.getOperator();
+
+			if (operator == LogOps.and) {
+				return resolveCryptSLConstraint(cryptSLConstraint.getLeft()) && resolveCryptSLConstraint(cryptSLConstraint.getRight());
+			} else if (operator == LogOps.or) {
+				return resolveCryptSLConstraint(cryptSLConstraint.getLeft()) || resolveCryptSLConstraint(cryptSLConstraint.getRight());
+			} else if (operator == LogOps.implies) {
+				if (resolveCryptSLConstraint(cryptSLConstraint.getLeft())) {
+					return resolveCryptSLConstraint(cryptSLConstraint.getRight());
+				} else {
+					return true;
+				}
+			} else {
+				return false; // invalid operator
+			}
+		}
+		return false; // unsupported object type
 	}
 
 	/**

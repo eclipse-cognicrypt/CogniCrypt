@@ -1,4 +1,4 @@
-package crossing.e1.primitive.questionnaire;
+package crossing.e1.primitive.questionnaire.wizard;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -118,9 +118,9 @@ public class PrimitiveQuestionsJSONReader {
 				throw new IllegalArgumentException("Each question must have a unique ID.");
 			}
 
-			if (question.getDefaultAnswer() == null) {
-				throw new IllegalArgumentException("Each question must have a default answer.");
-			}
+//			if (question.getDefaultAnswer() == null) {
+//				throw new IllegalArgumentException("Each question must have a default answer.");
+//			}
 		}
 	}
 

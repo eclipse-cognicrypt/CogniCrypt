@@ -1,4 +1,4 @@
-package crossing.e1.primitive.questionnaire;
+package crossing.e1.primitive.questionnaire.wizard;
 
 import java.util.List;
 

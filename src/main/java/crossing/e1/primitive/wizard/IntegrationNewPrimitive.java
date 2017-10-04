@@ -14,8 +14,8 @@ import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Page;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.wizard.InstanceListPage;
-import crossing.e1.primitive.questionnaire.PrimitiveQuestionnaire;
-import crossing.e1.primitive.questionnaire.PrimitiveQuestionnairePage;
+import crossing.e1.primitive.questionnaire.wizard.PrimitiveQuestionnaire;
+import crossing.e1.primitive.questionnaire.wizard.PrimitiveQuestionnairePage;
 import crossing.e1.primitive.types.Primitive;
 
 public class IntegrationNewPrimitive extends Wizard {
@@ -24,6 +24,7 @@ public class IntegrationNewPrimitive extends Wizard {
 	PrimitiveQuestionnaire primitiveQuestions;
 	WizardPage preferenceSelectionPage;
 	private HashMap<Question, Answer> constraints;
+	static String test = "";
 
 	public IntegrationNewPrimitive() {
 		super();
@@ -52,19 +53,18 @@ public class IntegrationNewPrimitive extends Wizard {
 		List<String> selection = null;
 		if (curPage.getContent().size() == 1) {
 			final Question curQuestion = curPage.getContent().get(0);
-//			if (curQuestion.getElement().equals(GUIElements.itemselection)) {
-//				selection = new ArrayList<>();
-//				for (final AstConcreteClafer childClafer : this.claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
-//					if (childClafer.getSuperClafer().getName().endsWith(curQuestion.getSelectionClafer())) {
-//						selection.add(ClaferModelUtils.removeScopePrefix(childClafer.getName()));
-//					}
-//				}
-//			}
+			//			if (curQuestion.getElement().equals(GUIElements.itemselection)) {
+			//				selection = new ArrayList<>();
+			//				for (final AstConcreteClafer childClafer : this.claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
+			//					if (childClafer.getSuperClafer().getName().endsWith(curQuestion.getSelectionClafer())) {
+			//						selection.add(ClaferModelUtils.removeScopePrefix(childClafer.getName()));
+			//					}
+			//				}
+			//			}
 		}
 		// Pass the questionnaire instead of the all of the questions. 
 		this.preferenceSelectionPage = new PrimitiveQuestionnairePage(curPage, this.primitiveQuestions.getPrimitive(), primitiveQuestionnaire, selection);
 	}
-	
 
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
 		final Primitive selectedPrimitive = this.selectedPrimitivePage.getSelectedPrimitive();
@@ -78,41 +78,44 @@ public class IntegrationNewPrimitive extends Wizard {
 			}
 
 			return this.preferenceSelectionPage;
-
 		}
 		final PrimitiveQuestionnairePage primitiveQuestionPage = (PrimitiveQuestionnairePage) currentPage;
 		final HashMap<Question, Answer> selectionMap = primitiveQuestionPage.getMap();
-	
-		for(Entry<Question, Answer> entry : selectionMap.entrySet()){
+		if (primitiveQuestionPage.selectedValue != null)
+			test += "\n" + "[" + primitiveQuestionPage.selectedValue + "]";
+
+		for (Entry<Question, Answer> entry : selectionMap.entrySet()) {
 			if (entry.getKey().getElement().equals(GUIElements.itemselection)) {
-				
+
 			}
-			
+
 			this.constraints.put(entry.getKey(), entry.getValue());
 		}
 
-			
 		if (this.primitiveQuestions.hasMorePages()) {
-			 int nextID = -1;
+			int nextID = -1;
 			if (primitiveQuestionPage.getPageNextID() > -2) {
-				nextID= primitiveQuestionPage.getPageNextID();
+				nextID = primitiveQuestionPage.getPageNextID();
 			} else {
-				for(Entry<Question, Answer> entry : selectionMap.entrySet()){
+				for (Entry<Question, Answer> entry : selectionMap.entrySet()) {
 					nextID = entry.getValue().getNextID();
+				}
 			}
+			if (nextID == 5) {
+				System.out.println(test);
 			}
-			if(nextID > -1) {
-				final Page curPage= this.primitiveQuestions.setPageByID(nextID);
+			if (nextID > -1) {
+				final Page curPage = this.primitiveQuestions.setPageByID(nextID);
 				createPrimitivePage(curPage, primitiveQuestions);
 				if (checkifInUpdateRound()) {
 					this.primitiveQuestions.previousPage();
-				} 
+				}
 				final IWizardPage[] pages = getPages();
 				for (int i = 1; i < pages.length; i++) {
 					if (!(pages[i] instanceof PrimitiveQuestionnairePage)) {
 						continue;
 					}
-					final PrimitiveQuestionnairePage oldPage =  (PrimitiveQuestionnairePage) pages[i];
+					final PrimitiveQuestionnairePage oldPage = (PrimitiveQuestionnairePage) pages[i];
 					if (oldPage.equals(this.preferenceSelectionPage)) {
 						return oldPage;
 					}

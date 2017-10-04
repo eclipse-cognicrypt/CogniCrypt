@@ -302,15 +302,20 @@ public class ConfiguratorWizard extends Wizard {
 				codeGenerator.getDeveloperProject().refresh();
 
 				// New code generator
-				try {
-					CodeGenerator codeGeneratorNew = new CodeGenerator("KeyGenerator");
-					codeGeneratorNew.next();
-				} catch (Exception e) {
-					// For debugging
-					e.printStackTrace();
+				String[] rules = { "AlgorithmParameters", "Cipher", "DHGenParameterSpec", "DHParameterSpec", "DSAGenParameterSpec", "DSAParameterSpec", "GCMParameterSpec", "HMACParameterSpec", "IvParameterSpec", "KeyGenerator", "KeyPair", "KeyPairGenerator", "KeyStore", "Mac", "MessageDigest", "PBEKeySpec", "PBEParameterSpec", "RSAKeyGenParameterSpec", "SecretKey", "SecretKeyFactory", "SecretKeySpec", "SecureRandom", "Signature" };
+				//String[] rules = { "DHGenParameterSpec", "DHParameterSpec"};
+				//String[] rules = { "KeyGenerator" };
+				//String[] rules = { "HMACParameterSpec" };
+				//String[] rules = { "KeyGenerator", "Cipher" };
+				//String[] rules = { "SecureRandom" };
 
-					JOptionPane.showConfirmDialog(null, "Code generation failed.");
-
+				for (String ruleName : rules) {
+					try {
+						CodeGenerator codeGeneratorNew = new CodeGenerator(ruleName);
+						codeGeneratorNew.next();
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(null, "Code generation for rule " + ruleName + " failed");
+					}
 				}
 
 			} catch (final IOException | CoreException | BadLocationException e) {

@@ -1,6 +1,8 @@
 package crossing.e1.configurator.codegeneration;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
@@ -9,7 +11,10 @@ import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 
+// TODO fix warning
 import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler;
+
+import crossing.e1.configurator.codegeneration.exceptions.CompilationFailedException;
 
 /**
  * A Code object contains java code source files. This files can be compiled during runtime with the method compile() and afterwards be executed by using the method run(...)
@@ -36,11 +41,12 @@ public class CodeHandler {
 	 * 
 	 * @return Array of generated class files.
 	 * 
-	 * @throws Exception
+	 * @throws CompilationFailedException
 	 *         If the compilation process was not successful an exception is thrown.
 	 */
-	public File[] compile() throws Exception {
+	public File[] compile() throws CompilationFailedException, RuntimeException, IllegalStateException {
 		// setup compiler
+		// FIXME warning
 		JavaCompiler compiler = new EclipseCompiler();
 		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
 		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(javaCodeFiles));
@@ -49,7 +55,7 @@ public class CodeHandler {
 		boolean state = compiler.getTask(null, fileManager, null, null, null, compilationUnits).call();
 
 		if (state) { // if the compilation process was successful return list of
-						// class files
+					// class files
 			for (int i = 0; i < javaCodeFiles.length; i++) {
 				String path = javaCodeFiles[i].getAbsolutePath();
 				path = path.substring(0, path.lastIndexOf(".")) + ".class";
@@ -62,7 +68,7 @@ public class CodeHandler {
 
 		} else { // if the compilation failed throw exception
 			isCodeCompiled = false;
-			throw new Exception("compilation failed!");
+			throw new CompilationFailedException("Compilation failed!");
 		}
 	}
 
@@ -81,20 +87,17 @@ public class CodeHandler {
 	 * @param args
 	 *        Parameter values.
 	 * 
-	 * @throws Exception
-	 *         An exception is throwen if<br>
-	 *         - the given java code cannot be compiled<br>
-	 *         - the compiled class files cannot be found<br>
-	 *         - the given class cannot be loaded
+	 * @return Returns true, if the given method could be executed, otherwise false.
 	 * 
 	 */
-	public boolean run(String clazz, String method, Class<?>[] parameterTypes, Object[] args) throws Exception {
+	public boolean run(String clazz, String method, Class<?>[] parameterTypes, Object[] args) {
 		// check if source code was compiled
 		if (!isCodeCompiled) {
 			try { // compile source code
 				this.compile();
-			} catch (Exception e) {
-				throw new Exception("Invoke method run not possible because compilation of the java code failed.");
+			} catch (Exception exception) {
+				System.out.println(exception.getClass().getSimpleName() + " was thrown: " + exception.getMessage());
+				return false;
 			}
 		}
 
@@ -106,15 +109,26 @@ public class CodeHandler {
 			String path = classFiles[i].getAbsoluteFile().toString();
 			path = path.substring(0, path.lastIndexOf("\\") + 1);
 
-			urls[i] = new File(path).toURI().toURL();
+			try {
+				urls[i] = new File(path).toURI().toURL();
+			} catch (MalformedURLException exception) {
+				System.out.println(exception.getClass().getSimpleName() + " was thrown: " + exception.getMessage());
+				return false;
+			}
 		}
 
-		// initialize class loader
+		// initialise class loader
 		URLClassLoader urlClassLoader = new URLClassLoader(urls);
 
 		// load class
-		Class<?> loadedClass = urlClassLoader.loadClass(clazz);
-		urlClassLoader.close();
+		Class<?> loadedClass;
+		try {
+			loadedClass = urlClassLoader.loadClass(clazz);
+			urlClassLoader.close();
+		} catch (ClassNotFoundException | IOException exception) {
+			System.out.println(exception.getClass().getSimpleName() + " was thrown: " + exception.getMessage());
+			return false;
+		}
 
 		// invoke method
 		try {
@@ -122,6 +136,7 @@ public class CodeHandler {
 		} catch (Exception e) {
 			System.err.println("Exception is occured during method execution.");
 			System.err.println(e.getCause());
+			return false;
 		}
 
 		return true;

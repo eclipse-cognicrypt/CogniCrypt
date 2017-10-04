@@ -27,6 +27,10 @@ public class StateMachineGraphAnalyser {
 		this.stateMachine = stateMachine;
 	}
 
+	// FIXME loop handling
+	// Current solution: Take every loop once.
+	// This solution does not distinguish between the two operates
+	// + and * of the cryptsl language
 	public ArrayList<List<TransitionEdge>> getTransitions() throws Exception {
 		allTransitions = new ArrayList<List<TransitionEdge>>();
 

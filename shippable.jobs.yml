@@ -18,7 +18,7 @@ jobs:
         - TASK:
             #- script: sudo apt-get install maven     # run this once, if mvn is an unknown command
             - script: cd $CPGROUP1718_BRANCH_STATE
-            - script: git -checkout cp-group1718
+            - script: git checkout cp-group1718
             - script: cd mvn-parent
             - script: mvn clean verify surefire:test
     on_success:

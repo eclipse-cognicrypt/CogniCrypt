@@ -20,13 +20,10 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import crossing.e1.taskintegrator.models.ClaferConstraint;
-
 
 public class ClaferConstraintDialog extends Dialog {
 
 	private Text text;
-	private ClaferConstraint returnValue;
 
 	/**
 	 * Create the dialog.
@@ -37,11 +34,6 @@ public class ClaferConstraintDialog extends Dialog {
 	public ClaferConstraintDialog(Shell parentShell) {
 		super(parentShell);
 		setShellStyle(SWT.CLOSE | SWT.MAX | SWT.RESIZE | SWT.TITLE);
-	}
-
-	public ClaferConstraintDialog(Shell parentShell, ClaferConstraint returnedConstraint) {
-		this(parentShell);
-		this.returnValue = returnedConstraint;
 	}
 
 	/**
@@ -122,10 +114,8 @@ public class ClaferConstraintDialog extends Dialog {
 		return new Point(600, 600);
 	}
 
-	@Override
-	protected void okPressed() {
-		returnValue.setConstraint(text.getText());
-		super.okPressed();
+	public String getResult() {
+		return text.getText();
 	}
 
 }

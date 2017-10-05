@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import crossing.e1.taskintegrator.models.ClaferConstraint;
 import crossing.e1.taskintegrator.models.FeatureProperty;
 import crossing.e1.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 
@@ -124,13 +123,12 @@ public class ClaferFeatureDialog extends Dialog {
 	}
 
 	private void addClaferConstraint() {
-		ClaferConstraint cfrConstraintFromDialog = new ClaferConstraint();
-		ClaferConstraintDialog cfrConstraintDialog = new ClaferConstraintDialog(getShell(), cfrConstraintFromDialog);
+		ClaferConstraintDialog cfrConstraintDialog = new ClaferConstraintDialog(getShell());
 
 		// blocking call to Dialog.open() the dialog
 		// it returns 0 on success
 		if (cfrConstraintDialog.open() == 0) {
-			constraintsComposite.addFeatureConstraint(cfrConstraintFromDialog.getConstraint(), true);
+			constraintsComposite.addFeatureConstraint(cfrConstraintDialog.getResult(), true);
 		}
 	}
 }

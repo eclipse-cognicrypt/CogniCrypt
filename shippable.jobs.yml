@@ -16,7 +16,7 @@ jobs:
         - IN: cp-group1718_branch
           showbuildstatus: true
         - TASK:
-            #- script: sudo apt-get install maven     # run this once, if mvn is an unknown command
+            - script: sudo apt-get install maven     # run this once, if mvn is an unknown command
             - script: cd $CPGROUP1718_BRANCH_STATE
             - script: mkdir -p shippable/testresults
             - script: mkdir -p shippable/codecoverage
@@ -41,6 +41,8 @@ jobs:
         - TASK:
             #- script: sudo apt-get install maven   # run this once, if mvn is an unknown command
             - script: cd $TIGROUP1718_BRANCH_STATE
+            - script: mkdir -p shippable/testresults
+            - script: mkdir -p shippable/codecoverage
             - script: git checkout ti-group1718
             - script: cd mvn-parent
             - script: mvn clean verify surefire:test
@@ -62,6 +64,8 @@ jobs:
         - TASK:
             #- script: sudo apt-get install maven   # run this once, if mvn is an unknown command
             - script: cd $UIGROUP1718_BRANCH_STATE
+            - script: mkdir -p shippable/testresults
+            - script: mkdir -p shippable/codecoverage
             - script: git checkout ui-group1718
             - script: cd mvn-parent
             - script: mvn clean verify surefire:test

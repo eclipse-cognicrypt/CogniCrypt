@@ -25,6 +25,7 @@ public class IntegrationNewPrimitive extends Wizard {
 	WizardPage preferenceSelectionPage;
 	private HashMap<Question, Answer> constraints;
 	static String test = "";
+	StringBuilder data=new StringBuilder();
 
 	public IntegrationNewPrimitive() {
 		super();
@@ -82,12 +83,14 @@ public class IntegrationNewPrimitive extends Wizard {
 		final PrimitiveQuestionnairePage primitiveQuestionPage = (PrimitiveQuestionnairePage) currentPage;
 		final HashMap<Question, Answer> selectionMap = primitiveQuestionPage.getMap();
 		if (primitiveQuestionPage.selectedValue != null)
-			test += "\n" + "[" + primitiveQuestionPage.selectedValue + "]";
+			data.append("["+ primitiveQuestionPage.selectedValue + "]");
+			data.append("\n");
+//			test += "\n" + "[" + primitiveQuestionPage.selectedValue + "]";
 
 		for (Entry<Question, Answer> entry : selectionMap.entrySet()) {
-			if (entry.getKey().getElement().equals(GUIElements.itemselection)) {
-
-			}
+//			if (entry.getKey().getElement().equals(GUIElements.itemselection)) {
+//
+//			}
 
 			this.constraints.put(entry.getKey(), entry.getValue());
 		}
@@ -102,7 +105,7 @@ public class IntegrationNewPrimitive extends Wizard {
 				}
 			}
 			if (nextID == 5) {
-				System.out.println(test);
+				System.out.println(data.toString());
 			}
 			if (nextID > -1) {
 				final Page curPage = this.primitiveQuestions.setPageByID(nextID);

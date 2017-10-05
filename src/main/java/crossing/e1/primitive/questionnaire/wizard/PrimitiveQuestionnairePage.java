@@ -24,6 +24,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
@@ -196,6 +197,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				break;
 			case checkbox:
 				container.setLayout(new RowLayout(SWT.VERTICAL));
+				selectedValue="";
 				Button[] checkbox = new Button[answers.size()];
 				for (int i = 0; i < answers.size(); i++) {
 					String ans = answers.get(i).getValue();
@@ -208,10 +210,24 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 							Button source = (Button) e.getSource();
 
 							if (source.getSelection()) {
+								source.handle=SWT.CHECK;
 								if (answers.get(getIndex(answers, source.getText())).getClaferDependencies() != null) {
 									claferDepend = answers.get(getIndex(answers, source.getText())).getClaferDependencies().get(0).getAlgorithm();
+									if(selectedValue.equals("")){
 									selectedValue = claferDepend + source.getText();
 								}
+									else
+										selectedValue+="||"+claferDepend+ source.getText();
+								}
+							}
+							else {
+								if(!selectedValue.equals(""))
+									if(!selectedValue.contains("||"))
+								selectedValue.replace(claferDepend+source.getText(), "");
+									else{
+										
+									selectedValue.replace("||"+claferDepend+source.getText(),"");
+									}
 							}
 
 						}

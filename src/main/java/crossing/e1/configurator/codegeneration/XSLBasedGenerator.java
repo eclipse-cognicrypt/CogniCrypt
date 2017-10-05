@@ -154,21 +154,23 @@ public class XSLBasedGenerator {
 			this.project.removePackage(Constants.PackageName);
 		}
 	}
-/**
- * This method allows to add the corresponding jar file 
- * @param source
- * 			is whether a provider or pathToFolderWithAdditionalResources
- * @return
- */
+
+	/**
+	 * This method allows to add the corresponding jar file
+	 * 
+	 * @param source
+	 *        is whether a provider or pathToFolderWithAdditionalResources
+	 * @return
+	 */
 	private boolean addAdditionalJarFiles(String source) {
 		try {
-			if (!source.isEmpty() && !source.equals("JCA")) {
-				final File[] members;
-				if (source.startsWith("src/")) {
-					members = Utils.getResourceFromWithin(source).listFiles();
-				} else {
-					members = Utils.getResourceFromWithin("src/main/resources/AdditionalResources/Provider").listFiles();
+
+			if (!source.isEmpty() && !source.equals(Constants.JCA)) {
+				String sourceFolder = "src/";
+				if (!source.startsWith(sourceFolder)) {
+					source = Constants.providerPath;
 				}
+				final File[] members = Utils.getResourceFromWithin(source).listFiles();
 				if (members == null) {
 					Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);
 				}
@@ -177,16 +179,16 @@ public class XSLBasedGenerator {
 					libFolder.create(true, true, null);
 				}
 				boolean JarIsAdded = false;
-				for (int i = 0; i < members.length && JarIsAdded == false; i++) {
-					if (members[i].getName().equalsIgnoreCase(source + ".jar") || source.startsWith("src/")) {
+				for (int i = 0; i < members.length && !JarIsAdded; i++) {
+
+					if (members[i].getName().equalsIgnoreCase(source + Constants.JAR) || source.startsWith(sourceFolder)) {
 						final Path memberPath = members[i].toPath();
 						Files.copy(memberPath, new File(this.project
 							.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + memberPath.getFileName())
-								.toPath(),
-							StandardCopyOption.REPLACE_EXISTING);
+								.toPath(), StandardCopyOption.REPLACE_EXISTING);
 						final String filePath = members[i].toString();
 						final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.outerFileSeparator));
-						if (".jar".equals(cutPath.substring(cutPath.indexOf(".")))) {
+						if (Constants.JAR.equals(cutPath.substring(cutPath.indexOf(".")))) {
 							if (!this.project.addJar(Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + members[i].getName())) {
 								return false;
 							}

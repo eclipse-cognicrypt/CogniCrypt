@@ -18,6 +18,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	private ArrayList<FeatureProperty> featureProperties;
 	private ArrayList<String> featureConstraints;
 	private Composite composite;
+	private ArrayList<String> XSLAttributes;
 	
 
 
@@ -43,6 +44,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		featureProperties = new ArrayList<FeatureProperty>();
 		featureConstraints = new ArrayList<String>();
 
+		setXSLAttributes(new ArrayList<String>());
+		
 		addData(targetArrayListOfDataToBeDisplayed, showRemoveButton);
 
 	}
@@ -103,6 +106,16 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		groupForFeatureProperty.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT + 200,
 			Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
 
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
+
+		setMinHeight(getLowestWidgetYAxisValue());
+	}
+	
+	public void addXSLAttributeUI(String XSLTag, boolean showRemoveButton){
+		GroupXSLTagAttribute groupforXSLTagAttribute = new GroupXSLTagAttribute((Composite) getContent(), SWT.NONE, showRemoveButton);
+		groupforXSLTagAttribute.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT,
+			Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
+		
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
 
 		setMinHeight(getLowestWidgetYAxisValue());
@@ -171,6 +184,20 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 			}
 		}
 
+	}
+
+	/**
+	 * @return the xSLAttributes
+	 */
+	public ArrayList<String> getXSLAttributes() {
+		return XSLAttributes;
+	}
+
+	/**
+	 * @param xSLAttributes the xSLAttributes to set
+	 */
+	private void setXSLAttributes(ArrayList<String> xSLAttributes) {
+		XSLAttributes = xSLAttributes;
 	}
 
 }

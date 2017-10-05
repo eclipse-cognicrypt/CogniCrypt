@@ -15,10 +15,13 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
 
 public class XSLTagDialog extends Dialog {
-
+	private CompositeToHoldSmallerUIElements compositeForXSLAttributes;
 	/**
 	 * Create the dialog.
 	 * @param parentShell
@@ -36,20 +39,31 @@ public class XSLTagDialog extends Dialog {
 		Composite container = (Composite) super.createDialogArea(parent);
 		
 		Combo comboXSLTags = new Combo(container, SWT.NONE);
-		comboXSLTags.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		GridData gd_comboXSLTags = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		gd_comboXSLTags.widthHint = 430;
+		comboXSLTags.setLayoutData(gd_comboXSLTags);
 		
 		for(XSLTags tag : Constants.XSLTags.values()){
 			comboXSLTags.add(tag.getXSLTagFaceName());
 		}
 		comboXSLTags.select(0);
 		
-		CompositeToHoldSmallerUIElements compositeForProperties = new CompositeToHoldSmallerUIElements(container, SWT.NONE, null);
+		Button btnAddAttribute = new Button(container, SWT.NONE);
+		
+		btnAddAttribute.setText("Add Attribute");
+		
+		compositeForXSLAttributes = new CompositeToHoldSmallerUIElements(container, SWT.NONE, null, true);
 		GridData gd_compositeForProperties = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_compositeForProperties.widthHint = 432;
+		gd_compositeForProperties.widthHint = 417;
 		gd_compositeForProperties.heightHint = 150;
-		compositeForProperties.setLayoutData(gd_compositeForProperties);
+		compositeForXSLAttributes.setLayoutData(gd_compositeForProperties);
 		
-		
+		btnAddAttribute.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				compositeForXSLAttributes.addXSLAttributeUI(comboXSLTags.getText(), true);
+			}
+		});
 
 		return container;
 	}

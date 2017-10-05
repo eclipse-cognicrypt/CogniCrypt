@@ -197,7 +197,50 @@ public class Constants {
 	public static final int FEATURE_CONSTRAINT = 1;
 	
 	
-	
+	public static enum XSLTags{
+		XSL_VARIABLE_TAG("Variable","<xsl:variable>","</xsl:variable>"),
+		XSL_SELECT_TAG("Select","<xsl:value-of select=\"\"/>",""),
+		XSL_IF_TAG("If","<xsl:if>",""),
+		XSL_RESULT_DOCUMENT("Result Document","<xsl result-document href = \"\">",""),
+		XSL_APPLY_TEMPLATES("Apply Templates","<xsl apply-templates select =\"\">",""),
+		XSL_CHOOSE_TAG("Choose","<xsl:choose>","</xsl:choose>"),
+		XSL_WHEN_TAG("When","<xsl:when test =\"\">","</xsl:when>"),
+		XSL_OTHERWISE_TAG("Otherwise","<xsl:otherwise>","</xsl:otheriwse>");
+		
+		private final String XSLTagFaceName;
+		private final String XSLBeginTag;
+		private final String XSLEndTag;
+		/**
+		 * @param xSLTagFaceName
+		 * @param xSLBeginTag
+		 * @param xSLEndTag
+		 */
+		private XSLTags(String xSLTagFaceName, String xSLBeginTag, String xSLEndTag) {
+			XSLTagFaceName = xSLTagFaceName;
+			XSLBeginTag = xSLBeginTag;
+			XSLEndTag = xSLEndTag;
+		}
+		/**
+		 * @return the xSLTagFaceName
+		 */
+		public String getXSLTagFaceName() {
+			return XSLTagFaceName;
+		}
+		/**
+		 * @return the xSLBeginTag
+		 */
+		public String getXSLBeginTag() {
+			return XSLBeginTag;
+		}
+		/**
+		 * @return the xSLEndTag
+		 */
+		public String getXSLEndTag() {
+			return XSLEndTag;
+		}
+		
+		
+	}
 	
 	public static enum FeatureConstraintRelationship{
 		EQUAL("="),

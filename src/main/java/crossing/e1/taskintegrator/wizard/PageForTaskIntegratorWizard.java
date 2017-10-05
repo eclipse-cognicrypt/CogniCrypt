@@ -140,8 +140,13 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 					@Override
 					public void widgetSelected(SelectionEvent e) {
+						
+						
+						XSLTagDialog dialog = new XSLTagDialog(getShell());
+						
+						
 						//Retrieve the selected tag from the combo
-						String xslSelectedVariable = xslVariableCombo.getText();
+						/*String xslSelectedVariable = xslVariableCombo.getText();
 						String introduceTag = null;
 						//To check which xsl tag is selected and to include that xsl tag in the code
 						switch (xslSelectedVariable) {
@@ -170,12 +175,12 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 								introduceTag = "<xsl:otherwise></xsl:otheriwse>";
 								break;
 
-						}
+						}*/
 						// To locate the position of the xsl tag to be introduce
-						Point selected = ((StyledText) getCompositeForXsl().getChildren()[0]).getSelection();
+						/*Point selected = ((StyledText) getCompositeForXsl().getChildren()[0]).getSelection();
 						String xslTxtBoxContent = ((StyledText) getCompositeForXsl().getChildren()[0]).getText();
 						xslTxtBoxContent = xslTxtBoxContent.substring(0, selected.x) + introduceTag + xslTxtBoxContent.substring(selected.y, xslTxtBoxContent.length());
-						((StyledText) getCompositeForXsl().getChildren()[0]).setText(xslTxtBoxContent);
+						((StyledText) getCompositeForXsl().getChildren()[0]).setText(xslTxtBoxContent);*/
 
 					}
 				});

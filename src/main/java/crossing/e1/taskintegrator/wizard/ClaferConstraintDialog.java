@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Text;
 public class ClaferConstraintDialog extends Dialog {
 
 	private Text text;
+	private String constraintString;
 
 	/**
 	 * Create the dialog.
@@ -114,8 +115,14 @@ public class ClaferConstraintDialog extends Dialog {
 		return new Point(600, 600);
 	}
 
+	@Override
+	protected void okPressed() {
+		constraintString = text.getText();
+		super.okPressed();
+	}
+
 	public String getResult() {
-		return text.getText();
+		return constraintString;
 	}
 
 }

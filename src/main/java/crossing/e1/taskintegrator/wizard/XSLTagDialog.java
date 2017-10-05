@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.Constants.XSLTags;
+import crossing.e1.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.SWT;
@@ -34,12 +35,21 @@ public class XSLTagDialog extends Dialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
 		
-		Combo combo = new Combo(container, SWT.NONE);
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		Combo comboXSLTags = new Combo(container, SWT.NONE);
+		comboXSLTags.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		for(XSLTags tag : Constants.XSLTags.values()){
-			combo.add(tag.getXSLTagFaceName());
+			comboXSLTags.add(tag.getXSLTagFaceName());
 		}
+		comboXSLTags.select(0);
+		
+		CompositeToHoldSmallerUIElements compositeForProperties = new CompositeToHoldSmallerUIElements(container, SWT.NONE, null);
+		GridData gd_compositeForProperties = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_compositeForProperties.widthHint = 432;
+		gd_compositeForProperties.heightHint = 150;
+		compositeForProperties.setLayoutData(gd_compositeForProperties);
+		
+		
 
 		return container;
 	}

@@ -99,18 +99,18 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				//getCompositeForXsl().setBounds(0,0,887,500);
 				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);		
 				
-				//TODO move this combo box to the pop up.
+				/*//TODO move this combo box to the pop up.
 				Combo xslVariableCombo = new Combo(container, SWT.NONE);//displaying the tag to be included
 				xslVariableCombo.setBounds(900,0,155, 30);
 				xslVariableCombo.setItems(
 					new String[] { Constants.XSL_VARIABLE_TAG, Constants.XSL_SELECT_TAG, Constants.XSL_IF_TAG, Constants.XSL_RESULT_DOCUMENT, Constants.XSL_APPLY_TEMPLATES, Constants.XSL_CHOOSE_TAG, Constants.XSL_WHEN_TAG, Constants.XSL_OTHERWISE_TAG });
-				xslVariableCombo.select(0);
+				xslVariableCombo.select(0);*/
 				Button btnAddXSLTag = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
-				btnAddXSLTag.setBounds(1065, 0, 100, 30);
+				btnAddXSLTag.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
 				btnAddXSLTag.setText("Add Xsl Tag");
 
 				Button btnReadCode = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
-				btnReadCode.setBounds(1065, 33, 100, 30);
+				btnReadCode.setBounds(Constants.RECTANGLE_FOR_SECOND_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
 				btnReadCode.setText("Get the code");
 				
 				btnReadCode.addSelectionListener(new SelectionAdapter(){
@@ -143,7 +143,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						
 						
 						XSLTagDialog dialog = new XSLTagDialog(getShell());
-						
+						dialog.open();
 						
 						//Retrieve the selected tag from the combo
 						/*String xslSelectedVariable = xslVariableCombo.getText();

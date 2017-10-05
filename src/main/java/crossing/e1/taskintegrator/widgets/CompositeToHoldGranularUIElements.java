@@ -1,18 +1,16 @@
 package crossing.e1.taskintegrator.widgets;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
+import java.util.ArrayList;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.taskintegrator.models.ClaferFeature;
-
-import java.util.ArrayList;
-
-
 
 
 public class CompositeToHoldGranularUIElements extends ScrolledComposite {
@@ -67,20 +65,12 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + granularClaferFeature.getSize().y);
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
-	
-	public void deleteClaferFeature(ClaferFeature featureToBeDeleted){		
-		
-		for(ClaferFeature featureUnderConsideration:listOfAllClaferFeatures){
-			if(featureUnderConsideration.equals(featureToBeDeleted)){
-				listOfAllClaferFeatures.remove(featureUnderConsideration);
-				break;
-			}
-		}
-		
+
+	public void deleteClaferFeature(ClaferFeature featureToBeDeleted) {
+		listOfAllClaferFeatures.remove(featureToBeDeleted);
 		updateClaferContainer();
-		
 	}
-	
+
 	private void updateClaferContainer() {
 		Composite compositeContentOfThisScrolledComposite = (Composite)this.getContent();
 		

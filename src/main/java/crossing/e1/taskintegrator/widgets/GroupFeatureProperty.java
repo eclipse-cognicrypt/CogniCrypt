@@ -1,26 +1,31 @@
 package crossing.e1.taskintegrator.widgets;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 import crossing.e1.taskintegrator.models.FeatureProperty;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.RowData;
 
 
 public class GroupFeatureProperty extends Group {
 	private FeatureProperty featureProperty;
 	private Text txtPropertyName;
 	private Text txtPropertyType;
+
 	/**
 	 * Create the composite.
 	 * @param parent
 	 * @param style
+	 * @param showRemoveButton TODO
 	 */
-	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam) {
+	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam, boolean showRemoveButton) {
 		
 		super(parent, SWT.BORDER);
 		// Set the model for use first.
@@ -42,7 +47,19 @@ public class GroupFeatureProperty extends Group {
 		txtPropertyType.setLayoutData(new RowData(160, SWT.DEFAULT));
 		txtPropertyType.setText(featureProperty.getPropertyType());
 		
+		if (showRemoveButton) {
+			Button btnRemove = new Button(this, SWT.NONE);
+			btnRemove.setText("Remove");
+			btnRemove.addSelectionListener(new SelectionAdapter() {
 
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					((CompositeToHoldSmallerUIElements) getParent().getParent())
+						.removeFeatureProperty(getFeatureProperty());
+					((CompositeToHoldSmallerUIElements) getParent().getParent()).updateClaferContainer();
+				}
+			});
+		}
 	}
 
 	@Override

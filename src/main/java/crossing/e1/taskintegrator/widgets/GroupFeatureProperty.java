@@ -25,7 +25,7 @@ public class GroupFeatureProperty extends Group {
 	 * @param style
 	 * @param showRemoveButton TODO
 	 */
-	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam, boolean showRemoveButton) {
+	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam, boolean showRemoveButton, boolean editable) {
 		
 		super(parent, SWT.BORDER);
 		// Set the model for use first.
@@ -35,7 +35,7 @@ public class GroupFeatureProperty extends Group {
 		setLayout(new RowLayout(SWT.HORIZONTAL));
 		
 		txtPropertyName = new Text(this, SWT.BORDER);
-		txtPropertyName.setEditable(false);
+		txtPropertyName.setEditable(editable);
 		txtPropertyName.setLayoutData(new RowData(160, SWT.DEFAULT));
 		txtPropertyName.setText(featureProperty.getPropertyName());
 		
@@ -43,7 +43,7 @@ public class GroupFeatureProperty extends Group {
 		lblNewLabel.setText("Type of");
 		
 		txtPropertyType = new Text(this, SWT.BORDER);
-		txtPropertyType.setEditable(false);
+		txtPropertyType.setEditable(editable);
 		txtPropertyType.setLayoutData(new RowData(160, SWT.DEFAULT));
 		txtPropertyType.setText(featureProperty.getPropertyType());
 		
@@ -60,6 +60,10 @@ public class GroupFeatureProperty extends Group {
 				}
 			});
 		}
+	}
+
+	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam, boolean showRemoveButton) {
+		this(parent, style, featurePropertyParam, showRemoveButton, false);
 	}
 
 	@Override

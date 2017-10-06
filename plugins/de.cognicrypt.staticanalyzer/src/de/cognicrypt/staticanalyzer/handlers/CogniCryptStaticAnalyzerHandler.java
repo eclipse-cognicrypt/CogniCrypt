@@ -83,7 +83,7 @@ public class CogniCryptStaticAnalyzerHandler extends AbstractHandler {
 			PrintStream tmp = System.out;
 
 			String outputPath = curProj.getLocation().toOSString();
-			outputPath += "\\src\\output.log";
+			outputPath += "\\src\\output.txt";
 			new File(outputPath).createNewFile();
 			out = new PrintStream(outputPath);
 			System.setOut(out);

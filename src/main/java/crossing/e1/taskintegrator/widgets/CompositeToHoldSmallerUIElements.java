@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Question;
+import crossing.e1.taskintegrator.models.ClaferFeature;
 import crossing.e1.taskintegrator.models.FeatureProperty;
 
 
@@ -22,7 +24,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	private Text txtForFeatureConstraints;
 	private Composite composite;
 	
-
+	private ArrayList<Answer> arrayAnswer;
 
 	/**
 	 * Create the composite.
@@ -37,6 +39,9 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		super(parent, SWT.BORDER | SWT.V_SCROLL);
 		setExpandVertical(true);
 		setExpandHorizontal(true);
+		
+		arrayAnswer=new ArrayList<Answer>();
+
 		
 		composite = new Composite(this, SWT.NONE);
 		setContent(composite);
@@ -99,14 +104,35 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	}
 	
 	public void addAnswer(Answer answer, boolean showRemoveButton){
-		GroupAnswer groupForAnswer =  new GroupAnswer((Composite) getContent(), SWT.NONE, null ,showRemoveButton);
-		groupForAnswer.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(),451,
+		GroupAnswer groupForAnswer =  new GroupAnswer((Composite) getContent(), SWT.NONE, answer,showRemoveButton);
+		groupForAnswer.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(),651,
 			39);
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
 
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
+	
+	//To delete the answer
+	public void deleteAnswer(Answer answerToBeDeleted){
+		arrayAnswer.remove(answerToBeDeleted);
+		updateAnswerContainer();
+	}
 
+	public void updateAnswerContainer(){
+		Composite contentOfThisScrolledComposite = (Composite)this.getContent();
+		
+		for(Control answerToDelete : contentOfThisScrolledComposite.getChildren()){
+			answerToDelete.dispose();
+		}
+		
+		setLowestWidgetYAxisValue(0);
+		setMinHeight(getLowestWidgetYAxisValue());
+		
+		for(Answer answerUnderConsideration: arrayAnswer){
+			addAnswer(answerUnderConsideration,true);
+		}
+	}
+	
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
@@ -137,5 +163,12 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 */
 	public ArrayList<String> getFeatureConstraints() {
 		return featureConstraints;
+	}
+	
+	/**
+	 * @return the listOfAllAnswer
+	 */
+	public ArrayList<Answer> getListOfAllAnswer() {
+		return arrayAnswer;
 	}
 }

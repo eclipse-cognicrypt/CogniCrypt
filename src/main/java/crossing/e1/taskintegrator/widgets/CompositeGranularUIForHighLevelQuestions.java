@@ -47,43 +47,43 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		rowLayout.marginTop = 5;
 		rowLayout.fill = true;
 		rowLayout.center = true;
-		grpModifyDeleteButtons.setBounds(10, 10, 471, 41);
+		grpModifyDeleteButtons.setBounds(10, 5, 571, 53);
 		
 		Group grpQuestionDetails = new Group(this, SWT.NONE);
-		grpQuestionDetails.setBounds(10, 57, 471, 126);
+		grpQuestionDetails.setBounds(10, 62, 571, 180);
 		grpQuestionDetails.setLayout(null);
 		grpQuestionDetails.setText("Question details");
 		
 		Label lblQuestionId = new Label(grpQuestionDetails, SWT.NONE);
-		lblQuestionId.setBounds(5, 11, 66, 17);
+		lblQuestionId.setBounds(5, 30, 76, 17);
 		lblQuestionId.setText("Question id:");
 		
 		txtQuestionID = new Text(grpQuestionDetails, SWT.BORDER);
 		txtQuestionID.setEditable(false);
-		txtQuestionID.setBounds(76, 5, 162, 29);
+		txtQuestionID.setBounds(94, 25, 162, 29);
 		
 		// update this part.
 		txtQuestionID.setText(Integer.toString(question.getId()));
 		//txtQuestionID.setText("0");
 		
 		Label lblQuestion = new Label(grpQuestionDetails, SWT.NONE);
-		lblQuestion.setBounds(18, 45, 53, 17);
+		lblQuestion.setBounds(5, 60, 58, 17);
 		lblQuestion.setText("Question:");
 		
 		txtQuestion = new Text(grpQuestionDetails, SWT.BORDER);
 		txtQuestion.setEditable(false);
-		txtQuestion.setBounds(76, 39, 384, 29);
+		txtQuestion.setBounds(94, 57, 403, 29);
 		
 		txtQuestion.setText(question.getQuestionText());
 		//txtQuestion.setText("question");
 		
 		Label lblType = new Label(grpQuestionDetails, SWT.NONE);
-		lblType.setBounds(244, 11, 30, 17);
+		lblType.setBounds(267, 30, 38, 20);
 		lblType.setText("Type:");
 		
 		txtAnswerType = new Text(grpQuestionDetails, SWT.BORDER);
 		txtAnswerType.setEditable(false);
-		txtAnswerType.setBounds(278, 5, 182, 29);
+		txtAnswerType.setBounds(315, 25, 182, 29);
 		
 		StringBuilder answerString = new StringBuilder();
 		
@@ -120,12 +120,12 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		//txtAnswerType.setText(question.get);
 		
 		Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
-		lblAnswers.setBounds(20, 79, 51, 17);
+		lblAnswers.setBounds(5, 98, 55, 17);
 		lblAnswers.setText("Answers:");
 		
 		txtAnswers = new Text(grpQuestionDetails, SWT.BORDER);
 		txtAnswers.setEditable(false);
-		txtAnswers.setBounds(76, 73, 384, 29);
+		txtAnswers.setBounds(94, 92, 403, 29);
 		//txtAnswers.setText("answers");
 		txtAnswers.setText(answerString.toString());
 		

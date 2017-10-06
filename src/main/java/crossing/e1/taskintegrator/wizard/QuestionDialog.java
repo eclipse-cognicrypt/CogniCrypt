@@ -1,5 +1,7 @@
 package crossing.e1.taskintegrator.wizard;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -13,15 +15,22 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 
+import crossing.e1.configurator.Constants;
+import crossing.e1.configurator.Constants.GUIElements;
+import crossing.e1.configurator.beginer.question.Answer;
+import crossing.e1.configurator.beginer.question.ClaferDependency;
+import crossing.e1.configurator.beginer.question.CodeDependency;
 import crossing.e1.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 import crossing.e1.taskintegrator.widgets.GroupAnswer;
 
+import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 
@@ -29,6 +38,7 @@ public class QuestionDialog extends Dialog {
 
 	private Text textQuestion;
 	private Label lblQuestionContent;
+	private int counter=0;
 
 	/**
 	 * Create the dialog.
@@ -76,55 +86,70 @@ public class QuestionDialog extends Dialog {
 		composite.setLayout(new GridLayout(2, false));
 
 		Label lblQuestion = new Label(composite, SWT.NONE);
-		lblQuestion.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblQuestion.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		lblQuestion.setText("Question");
 
 		textQuestion = new Text(composite, SWT.BORDER);
 		textQuestion.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		Label lblType = new Label(composite, SWT.NONE);
-		lblType.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		lblType.setText("Type");
 
 		Combo combo = new Combo(composite, SWT.NONE);
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		combo.setItems(new String[] { "combo", "text", "itemselection", "Button" });
-		
-		combo.addSelectionListener(new SelectionAdapter() {
+		combo.setItems(new String[] {Constants.GUIElements.combo.toString(),Constants.GUIElements.text.toString(),Constants.GUIElements.itemselection.toString(),Constants.GUIElements.button.toString()});
+		combo.select(-1);
+	
+			Button btnAddAnswer=new Button(composite,SWT.None);
+			btnAddAnswer.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER,false,false,1,1));
+			btnAddAnswer.setText("Add Answer");
+			//Visibility depends on question type
+			btnAddAnswer.setVisible(false);
+			new Label(composite, SWT.NONE);
+			new Label(composite, SWT.NONE);
+			boolean showRemoveButton = true;
+			CompositeToHoldSmallerUIElements compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton);
+			GridData gd_compositeToHoldAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
+			gd_compositeToHoldAnswers.heightHint = 95;
+			gd_compositeToHoldAnswers.widthHint = 650;
+			compositeToHoldAnswers.setLayoutData(gd_compositeToHoldAnswers);
+			compositeToHoldAnswers.setLayout(new FillLayout(SWT.HORIZONTAL));
+			compositeToHoldAnswers.setVisible(false);
 			
+			btnAddAnswer.addSelectionListener(new SelectionAdapter(){
+				@ Override
+				public void widgetSelected(SelectionEvent e){
+					//compositeToHoldAnswers.setVisible(true);
+					Answer tempAnswer = new Answer();
+					compositeToHoldAnswers.getListOfAllAnswer().add(tempAnswer);
+					compositeToHoldAnswers.addAnswer(tempAnswer, showRemoveButton);
+					compositeToHoldAnswers.setVisible(true);
+				}
+				
+			});
+			
+			
+		
+		combo.addModifyListener(new ModifyListener(){
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				switch (combo.getText()) {
+			public void modifyText(ModifyEvent e) {
+				switch( combo.getText()){
 					case "text":
-						//do nothing
 						break;
 					case "combo":
-						Label lblAnswers = new Label(composite, SWT.NONE);
-						lblAnswers.setText("Add the answers by clicking add answer button");
-						new Label(composite, SWT.NONE);
-						Button btnAddAnswer = new Button(composite, SWT.NONE);
-						btnAddAnswer.setText("Add answer");
-						new Label(composite, SWT.NONE);
-						new Label(composite, SWT.NONE);
-						boolean showRemoveButton = true;
-						CompositeToHoldSmallerUIElements compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton);
-						GridData gd_compositeToHoldAnswers = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-						gd_compositeToHoldAnswers.heightHint = 95;
-						gd_compositeToHoldAnswers.widthHint = 388;
-						compositeToHoldAnswers.setLayoutData(gd_compositeToHoldAnswers);
-						compositeToHoldAnswers.setLayout(new FillLayout(SWT.HORIZONTAL));
-						btnAddAnswer.addSelectionListener(new SelectionAdapter() {
-
-							@Override
-							public void widgetSelected(SelectionEvent e) {
-								compositeToHoldAnswers.addAnswer(null, showRemoveButton);
-							}
-						});
-						//compositeToHoldAnswers.setSize(SWT.DEFAULT, 200);
+						boolean comboSelected=combo.getText().equalsIgnoreCase("combo")?true:false;
+						btnAddAnswer.setVisible(comboSelected);
 						break;
 					case "itemselection":
+						boolean itemSelected=combo.getText().equalsIgnoreCase("itemselection")?true:false;
+						btnAddAnswer.setVisible(itemSelected);
 						break;
-					case "Button":
+					case "button":
+						boolean buttonSelected=combo.getText().equalsIgnoreCase("button")?true:false;
+						btnAddAnswer.setVisible(buttonSelected);
+						break;
+					default:
 						break;
 				}
 			}
@@ -150,6 +175,7 @@ public class QuestionDialog extends Dialog {
 
 		TabItem tbtmLink = new TabItem(tabFolder, SWT.NONE);
 		tbtmLink.setText("Link code");
+		
 		
 		
 		return container;

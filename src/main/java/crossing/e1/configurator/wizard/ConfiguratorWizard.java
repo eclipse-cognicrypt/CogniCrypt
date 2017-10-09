@@ -296,7 +296,7 @@ public class ConfiguratorWizard extends Wizard {
 				ret &= codeGenerator.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources());
 
 				// Delete Instance File
-				FileHelper.deleteFile(xmlInstancePath);
+				//FileHelper.deleteFile(xmlInstancePath);
 				codeGenerator.getDeveloperProject().refresh();
 			} catch (final IOException | CoreException | BadLocationException e) {
 				Activator.getDefault().logError(e);

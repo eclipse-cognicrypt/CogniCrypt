@@ -162,6 +162,27 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	}
 
 	@Override
+	public boolean isPageComplete() {
+		boolean flag = true;
+		for (Question question : page.getContent()) {
+			if (question.getEnteredAnswer() == null) {
+				flag = false;
+			}
+			if (question.getEnteredAnswer() != null && question.getEnteredAnswer().getValue().isEmpty()) {
+				flag = false;
+			}
+			if (question.getElement() == crossing.e1.configurator.Constants.GUIElements.button) {
+				flag = this.finish;
+			}
+			if (question.getElement() == crossing.e1.configurator.Constants.GUIElements.itemselection) {
+				flag = this.finish;
+			}
+
+		}
+		return flag;
+	}
+
+	@Override
 	public void createControl(final Composite parent) {
 		final Composite container = new Composite(parent, SWT.NONE);
 		container.setBounds(10, 10, 450, 200);
@@ -171,19 +192,23 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		container.setLayout(layout);
 		// If legacy JSON files are in effect.
 		if (page == null) {
-			createQuestionControl(container, this.quest);
+			createQuestionControl(container, this.quest,false);
 			Activator.getDefault().logError("Outdated json file is used for task " + this.task.getDescription() + ". Please update.");
 		} else {
+			int noOfQuestions=0;
 			// loop through the questions that are to be displayed on the page.
 			for (Question question : page.getContent()) {
-				createQuestionControl(container, question);
+				if(++noOfQuestions==1)
+				createQuestionControl(container, question, true);
+				else
+					createQuestionControl(container, question, false);
 			}
 		}
 
 		setControl(container);
 	}
 
-	private void createQuestionControl(final Composite parent, final Question question) {
+	private void createQuestionControl(final Composite parent, final Question question, boolean oneQuestion) {
 
 		final List<Answer> answers = question.getAnswers();
 		final Composite container = getPanel(parent);
@@ -226,11 +251,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					a.setValue(cleanedInput);
 					a.getCodeDependencies().get(0).setValue(cleanedInput);
 					this.finish = !cleanedInput.isEmpty();
-					BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
 					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
 					question.setEnteredAnswer(a);
+					BeginnerTaskQuestionPage.this.setPageComplete(this.isPageComplete());
 				});
+				if(oneQuestion){
 				inputField.forceFocus();
+				}
 				break;
 
 			case itemselection:

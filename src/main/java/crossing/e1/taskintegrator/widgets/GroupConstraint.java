@@ -1,6 +1,7 @@
 package crossing.e1.taskintegrator.widgets;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.RowLayout;
@@ -33,6 +34,16 @@ public class GroupConstraint extends Group {
 		txtForFeatureConstraints.setEditable(false);
 		txtForFeatureConstraints.setText(constraint);
 		txtForFeatureConstraints.setSize(200, 30);
+
+		// TODO add useful listener here
+		txtForFeatureConstraints.addFocusListener(new FocusAdapter() {
+
+			@Override
+			public void focusLost(org.eclipse.swt.events.FocusEvent e) {
+				System.out.println("Focus lost");
+				super.focusLost(e);
+			}
+		});
 
 		if (showRemoveButton) {
 			Button btnRemove = new Button(this, SWT.NONE);

@@ -6,15 +6,9 @@ public class TestFile {
 
 	public static void main(String args[]){
 		
-		File file = null;
-		String path="TESTFILE.txt";
-		PrimitiveClaferGenerator claf=new PrimitiveClaferGenerator(file,path);
-	
-			
-			claf.createClaferFile("Helloooooooooooo");
-			System.out.println(claf.getFilePath());
-		
-		
+		String s="hello";
+		s=s.replace("e", "");
+		System.out.println(s);
 	}
 	
 }

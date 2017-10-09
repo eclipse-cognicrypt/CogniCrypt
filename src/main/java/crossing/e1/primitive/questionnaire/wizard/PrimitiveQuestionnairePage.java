@@ -1,6 +1,7 @@
 
 package crossing.e1.primitive.questionnaire.wizard;
 
+import java.awt.Checkbox;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -197,7 +198,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				break;
 			case checkbox:
 				container.setLayout(new RowLayout(SWT.VERTICAL));
-				selectedValue="";
+				selectedValue = "";
 				Button[] checkbox = new Button[answers.size()];
 				for (int i = 0; i < answers.size(); i++) {
 					String ans = answers.get(i).getValue();
@@ -208,30 +209,25 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 						@Override
 						public void widgetSelected(SelectionEvent e) {
 							Button source = (Button) e.getSource();
-
 							if (source.getSelection()) {
-								source.handle=SWT.CHECK;
 								if (answers.get(getIndex(answers, source.getText())).getClaferDependencies() != null) {
 									claferDepend = answers.get(getIndex(answers, source.getText())).getClaferDependencies().get(0).getAlgorithm();
-									if(selectedValue.equals("")){
-									selectedValue = claferDepend + source.getText();
-								}
-									else
-										selectedValue+="||"+claferDepend+ source.getText();
-								}
-							}
-							else {
-								if(!selectedValue.equals(""))
-									if(!selectedValue.contains("||"))
-								selectedValue.replace(claferDepend+source.getText(), "");
-									else{
-										
-									selectedValue.replace("||"+claferDepend+source.getText(),"");
+									if (selectedValue.equals("")) {
+										selectedValue = claferDepend + source.getText();
+									} else {
+										if (!selectedValue.contains(source.getText())) {
+											selectedValue += "||" + claferDepend + source.getText();
+
+										}
+
 									}
+								}
+							} else {
+								selectedValue = selectedValue.replace("||" + claferDepend + source.getText(), "");
+
 							}
 
 						}
-
 					});
 				}
 

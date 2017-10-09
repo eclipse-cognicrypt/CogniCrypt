@@ -10,10 +10,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
+import crossing.e1.taskintegrator.models.ClaferConstraint;
 
 public class GroupConstraint extends Group {
 
-	private String constraint;
+	private ClaferConstraint constraint;
 	private Text txtForFeatureConstraints;
 
 	/**
@@ -22,7 +23,7 @@ public class GroupConstraint extends Group {
 	 * @param style
 	 * @param showRemoveButton TODO
 	 */
-	public GroupConstraint(Composite parent, int style, String constraint, boolean showRemoveButton) {
+	public GroupConstraint(Composite parent, int style, ClaferConstraint constraint, boolean showRemoveButton) {
 		
 		super(parent, SWT.BORDER);
 		// Set the model for use first.
@@ -32,7 +33,7 @@ public class GroupConstraint extends Group {
 		
 		txtForFeatureConstraints = new Text(this, SWT.BORDER);
 		txtForFeatureConstraints.setEditable(false);
-		txtForFeatureConstraints.setText(constraint);
+		txtForFeatureConstraints.setText(constraint.getConstraint());
 		txtForFeatureConstraints.setSize(200, 30);
 
 		// TODO add useful listener here
@@ -65,11 +66,11 @@ public class GroupConstraint extends Group {
 		// Disable the check that prevents subclassing of SWT components
 	}
 
-	public String getConstraint() {
+	public ClaferConstraint getConstraint() {
 		return constraint;
 	}
 
-	public void setConstraint(String constraint) {
+	public void setConstraint(ClaferConstraint constraint) {
 		this.constraint = constraint;
 	}
 

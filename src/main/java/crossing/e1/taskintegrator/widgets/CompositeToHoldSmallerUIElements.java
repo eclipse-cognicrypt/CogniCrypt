@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import crossing.e1.configurator.Constants;
+import crossing.e1.taskintegrator.models.ClaferConstraint;
 import crossing.e1.taskintegrator.models.FeatureProperty;
 
 
@@ -16,7 +17,7 @@ import crossing.e1.taskintegrator.models.FeatureProperty;
 public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	private int lowestWidgetYAxisValue = Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS;
 	private ArrayList<FeatureProperty> featureProperties;
-	private ArrayList<String> featureConstraints;
+	private ArrayList<ClaferConstraint> featureConstraints;
 	private Composite composite;
 	
 
@@ -41,7 +42,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		composite.setLayout(null);
 		
 		featureProperties = new ArrayList<FeatureProperty>();
-		featureConstraints = new ArrayList<String>();
+		featureConstraints = new ArrayList<ClaferConstraint>();
 
 		addData(targetArrayListOfDataToBeDisplayed, showRemoveButton);
 
@@ -54,8 +55,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 			if (featureProperties == null && featureConstraints == null) {
 				if (targetArrayListOfDataToBeDisplayed.get(0) instanceof FeatureProperty) {
 					featureProperties = new ArrayList<FeatureProperty>();
-				} else if (targetArrayListOfDataToBeDisplayed.get(0) instanceof String) {
-					featureConstraints = new ArrayList<String>();
+				} else if (targetArrayListOfDataToBeDisplayed.get(0) instanceof ClaferConstraint) {
+					featureConstraints = new ArrayList<ClaferConstraint>();
 				}
 			}
 
@@ -67,10 +68,10 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 					featureProperties.add(featureUnderConsideration);
 					addFeatureProperty(featureUnderConsideration, showRemoveButton);
 				}
-			} else if (targetArrayListOfDataToBeDisplayed.get(0) instanceof String) {
-				featureConstraints.addAll((ArrayList<String>) targetArrayListOfDataToBeDisplayed);
+			} else if (targetArrayListOfDataToBeDisplayed.get(0) instanceof ClaferConstraint) {
+				featureConstraints.addAll((ArrayList<ClaferConstraint>) targetArrayListOfDataToBeDisplayed);
 
-				for (String featureConstraintUnderConsideration : (ArrayList<String>) targetArrayListOfDataToBeDisplayed) {
+				for (ClaferConstraint featureConstraintUnderConsideration : (ArrayList<ClaferConstraint>) targetArrayListOfDataToBeDisplayed) {
 					featureConstraints.add(featureConstraintUnderConsideration);
 					addFeatureConstraint(featureConstraintUnderConsideration, false);
 				}
@@ -79,12 +80,12 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		}
 	}
 
-	public void addFeatureConstraint(String featureConstraintUnderConsideration, boolean showRemoveButton) {
+	public void addFeatureConstraint(ClaferConstraint featureConstraintUnderConsideration, boolean showRemoveButton) {
 		featureConstraints.add(featureConstraintUnderConsideration);
 		addFeatureConstraintUI(featureConstraintUnderConsideration, showRemoveButton);
 	}
 
-	private void addFeatureConstraintUI(String featureConstraintUnderConsideration, boolean showRemoveButton) {
+	private void addFeatureConstraintUI(ClaferConstraint featureConstraintUnderConsideration, boolean showRemoveButton) {
 		GroupConstraint groupConstraint = new GroupConstraint((Composite) getContent(), SWT.NONE, featureConstraintUnderConsideration, showRemoveButton);
 		groupConstraint.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT + 200, 29);
 
@@ -112,8 +113,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		featureProperties.remove(featureProperty);
 	}
 
-	public void removeFeatureConstraint(String featureConstraint) {
-		featureConstraints.remove(featureConstraint);
+	public void removeFeatureConstraint(ClaferConstraint constraint) {
+		featureConstraints.remove(constraint);
 	}
 
 	@Override
@@ -144,7 +145,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	/**
 	 * @return the featureConstraints
 	 */
-	public ArrayList<String> getFeatureConstraints() {
+	public ArrayList<ClaferConstraint> getFeatureConstraints() {
 		return featureConstraints;
 	}
 
@@ -166,7 +167,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 				addFeaturePropertyUI(fp, true);
 			}
 		} else if (featureConstraints.size() > 0) {
-			for (String fc : featureConstraints) {
+			for (ClaferConstraint fc : featureConstraints) {
 				addFeatureConstraintUI(fc, true);
 			}
 		}

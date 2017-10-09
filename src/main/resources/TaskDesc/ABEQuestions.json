@@ -5,12 +5,12 @@
 			"answers":[
 				{"value":"Ciphertext Index Policy",
 				"claferDependencies":[
-				{"algorithm": "abe", "value":"CiphertextIndexPolicy","operator":"="}
+				{"algorithm": "abe", "value":"ABECiphertextIndexPolicy","operator":"="}
 				],"nextID" : "1" 
 				},
 				{"value":"Key Index Policy",
 				"claferDependencies":[
-				{"algorithm": "abe", "value":"KeyIndexPolicy","operator":"="}
+				{"algorithm": "abe", "value":"ABEKeyIndexPolicy","operator":"="}
 				],
 			    "defaultAnswer": true, "nextID" : "1"}]				
 		},

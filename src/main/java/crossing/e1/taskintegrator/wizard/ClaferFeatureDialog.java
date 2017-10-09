@@ -118,7 +118,7 @@ public class ClaferFeatureDialog extends Dialog {
 	}
 
 	private void addClaferProperty() {
-		FeatureProperty featureProperty = new FeatureProperty("TestProp " + String.valueOf(++globalFeaturesCounter), "TestVal");
+		FeatureProperty featureProperty = new FeatureProperty("", "");
 		featuresComposite.addFeatureProperty(featureProperty, true);
 	}
 

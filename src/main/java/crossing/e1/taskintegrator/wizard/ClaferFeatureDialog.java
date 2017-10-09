@@ -21,7 +21,7 @@ import crossing.e1.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 
 public class ClaferFeatureDialog extends Dialog {
 
-	private Text text;
+	private Text txtFeatureName;
 	private CompositeToHoldSmallerUIElements featuresComposite;
 	private CompositeToHoldSmallerUIElements constraintsComposite;
 	private int globalFeaturesCounter = 0; // TODO Debugging purposes (name dummy values meaningfully)
@@ -59,8 +59,8 @@ public class ClaferFeatureDialog extends Dialog {
 		Label lblFeatureName = new Label(container, SWT.NONE);
 		lblFeatureName.setText("Type in the name");
 
-		text = new Text(container, SWT.BORDER);
-		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		txtFeatureName = new Text(container, SWT.BORDER);
+		txtFeatureName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
 		Label lblInheritance = new Label(container, SWT.NONE);
 		lblInheritance.setText("Choose inheritance");

@@ -16,8 +16,13 @@ import org.eclipse.swt.widgets.Button;
 
 public class GroupAnswer extends Group {
 
-	private Text txtAnswer;
+	public Text txtAnswer;
+	//public ArrayList<Text> txtAnswers = new ArrayList<Text>();
+
 	private Answer answer;
+	private String getAnswer;
+	private int counter=0;
+	public ArrayList<Answer> answers;
 	
 	/**
 	 * Create the composite.
@@ -27,10 +32,14 @@ public class GroupAnswer extends Group {
 	 */
 	public GroupAnswer(Composite parent, int style, Answer answerParam, boolean showRemoveButton) {
 		super(parent, style);
+		counter++;
+		//answers.add(answerParam);
 		setAnswer(answerParam);
-		
+		//setTxtBoxAnswerId(answerId);
 		txtAnswer = new Text(this, SWT.BORDER);
 		txtAnswer.setBounds(3, 3, 420, 29);
+		//txtAnswer.setText("answers");
+		//setAnswerValue();
 		if (showRemoveButton) {
 			Button btnRemove = new Button(this, SWT.NONE);
 			btnRemove.setBounds(429, 3, 79, 31);
@@ -43,7 +52,7 @@ public class GroupAnswer extends Group {
 					confirmationMessageBox.setText("Deleting answer");
 					int response = confirmationMessageBox.open();
 					if (response == SWT.YES){
-			        ((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent()).deleteAnswer(answer);
+			        ((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent()).deleteAnswer(counter);
 			        }
 			        
 				}
@@ -52,9 +61,22 @@ public class GroupAnswer extends Group {
 		}
 	}
 
-	protected void deleteAnswer(){
+	//To save the answer
+	public String retrieveAnswer(){
+		getAnswer=txtAnswer.getText();
+		return getAnswer;
+	}
+	
+	public void setAnswerValue(){
+		answer.setValue(this.retrieveAnswer());
+	}
+	/*public void setTxtBoxAnswerId(int answerId){
+		this.answerId=answerId;
 		
 	}
+	public int getTxtBoxAnswerId(){
+		return answerId;
+	}*/
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
@@ -73,5 +95,6 @@ public class GroupAnswer extends Group {
 	 */
 	public void setAnswer(Answer answer) {
 		this.answer = answer;
+		//answer.setValue(txtAnswer.getText());
 	}
 }

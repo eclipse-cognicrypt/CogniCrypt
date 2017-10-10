@@ -22,7 +22,7 @@ import org.eclipse.swt.layout.GridData;
 
 public class CompositeGranularUIForHighLevelQuestions extends Composite {
 	private Text txtQuestionID;
-	private Text txtQuestion;
+	public Text txtQuestion;
 	private Text txtAnswerType;
 	private Text txtAnswers;
 	
@@ -63,6 +63,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		txtQuestionID.setBounds(94, 25, 162, 29);
 		
 		// update this part.
+		
 		txtQuestionID.setText(Integer.toString(question.getId()));
 		//txtQuestionID.setText("0");
 		
@@ -74,7 +75,10 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		txtQuestion.setEditable(false);
 		txtQuestion.setBounds(94, 57, 403, 29);
 		
-		txtQuestion.setText(question.getQuestionText());
+		setTextQuestion(question.getQuestionText());
+		//setTextQuestion("Test");
+
+		//txtQuestion.setText(question.getQuestionText());
 		//txtQuestion.setText("question");
 		
 		Label lblType = new Label(grpQuestionDetails, SWT.NONE);
@@ -103,20 +107,20 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		for(Answer answer : question.getAnswers()){
 			answerString.append(answer.getValue());
 			answerString.append(answer.isDefaultAnswer() ? "*" : "");
-			SUPER_SCRIPT = new AttributedString("c");
+			/*SUPER_SCRIPT = new AttributedString("c");
 			SUPER_SCRIPT.addAttribute(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
 			answerString.append(answer.getCodeDependencies().size()>0 ? "@" : "");
 			SUPER_SCRIPT = new AttributedString("x");
 			SUPER_SCRIPT.addAttribute(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
 			answerString.append(answer.getClaferDependencies().size()>0 ? "#" : "");
-			answerString.append("|");
+			*/answerString.append("|");
 		}
 			
 		
 		
 	
 		
-		txtAnswerType.setText("type");
+		txtAnswerType.setText(question.getQuestionType());
 		//txtAnswerType.setText(question.get);
 		
 		Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
@@ -150,5 +154,15 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 	 */
 	private void setQuestion(Question question) {
 		this.question = question;
+	}
+	public void setTextQuestion(String txtQuestion){
+		this.txtQuestion.setText(txtQuestion);
+	}
+	public String getTextQuestion(){
+		return txtQuestion.getText();
+	}
+	
+	public String getAnswerType(){
+		return txtAnswerType.getText();
 	}
 }

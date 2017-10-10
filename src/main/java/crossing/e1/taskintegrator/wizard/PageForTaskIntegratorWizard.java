@@ -5,6 +5,7 @@ package crossing.e1.taskintegrator.wizard;
 
 import java.util.ArrayList;
 
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -53,7 +54,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	 */
 	public void createControl(Composite parent) {
 		Composite container = new Composite(parent, SWT.BORDER);
-				
+		container.setBounds(0, 0, 1200, 500);
 		setControl(container);
 						
 		switch(this.getName()){
@@ -103,9 +104,29 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
 				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
 				Button btnAddQuestion = new Button(container, SWT.NONE);
-				btnAddQuestion.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
+				btnAddQuestion.setBounds(889, 10, 115, 29);
 				btnAddQuestion.setText("Add Question");
-				btnAddQuestion.addSelectionListener(new SelectionAdapter() {
+				QuestionDialog questionDialog = new QuestionDialog(parent.getShell());
+				Button qstnDialog= new Button(container,SWT.NONE);
+				qstnDialog.setBounds(889, 49, 115, 29);
+				qstnDialog.setText("Question Dialog");
+				qstnDialog.addSelectionListener(new SelectionAdapter(){
+					@Override
+					public void widgetSelected(SelectionEvent e){
+						//counter++;
+						int response =questionDialog.open();
+						//questionDialog.setQuestionText("Test");
+						if(response==Window.OK){
+							counter++;
+							Question tempQuestion = getDummyQuestion(questionDialog.getQuestionText(),questionDialog.getquestionType(),questionDialog.getAnswerValue());
+							
+							// Update the array list.							
+							compositeToHoldGranularUIElements.getListOfAllQuestions().add(tempQuestion);
+							compositeToHoldGranularUIElements.addQuestionUIElements(tempQuestion);
+						}
+					}
+				});
+/*				btnAddQuestion.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						counter++;
@@ -118,7 +139,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					}
 
 					
-				});
+				});*/
 				break;
 		}
 	}
@@ -149,12 +170,13 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		return tempFeature;
 		
 	}
-	private Question getDummyQuestion() {
+	private Question getDummyQuestion(String questionText, String questionType, ArrayList<Answer> answerValues) {
 		Question tempQuestion = new Question();
 		tempQuestion.setId(counter);
-		tempQuestion.setQuestionText("question?");
+		tempQuestion.setQuestionText(questionText);
+		tempQuestion.setQuestionType(questionType);
 		
-		Answer answer = new Answer();
+		/*Answer answer = new Answer();
 		answer.setValue("answer");
 		answer.setDefaultAnswer(false);
 		answer.setNextID(counter);
@@ -174,11 +196,12 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		
 		answer.setCodeDependencies(codeDependencies);
 		answer.setClaferDependencies(claferDependencies);
+		*/
+		/*ArrayList<Answer> answers = new ArrayList<Answer>();
+		answers=(ArrayList<Answer>)answerValues.clone();
+		*///answers.add(answer);
 		
-		ArrayList<Answer> answers = new ArrayList<Answer>();
-		answers.add(answer);
-		
-		tempQuestion.setAnswers(answers);
+		tempQuestion.setAnswers(answerValues);
 		
 		return tempQuestion;
 	}

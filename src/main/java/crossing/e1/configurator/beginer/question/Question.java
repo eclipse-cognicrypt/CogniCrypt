@@ -30,6 +30,7 @@ public class Question {
 	private Answer defaultAnswer;
 	private ArrayList<String> method;
 	private ArrayList<Integer> methodParamIds;
+	private String questionType;
 
 	public ArrayList<Answer> getAnswers() {
 		return this.answers;
@@ -110,6 +111,11 @@ public class Question {
 		}
 		return builder.toString();
 	}
-
-
+	
+	public String getQuestionType(){
+		return questionType;
+	}
+	public void setQuestionType(String questionType){
+	this.questionType=questionType;
+	}
 }

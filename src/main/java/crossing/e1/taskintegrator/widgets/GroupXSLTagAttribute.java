@@ -14,18 +14,29 @@ import org.eclipse.swt.events.SelectionEvent;
 
 public class GroupXSLTagAttribute extends Group {
 	private Text txtAttributeName;
+	private String selectedAttribute;
 
 	/**
 	 * Create the composite.
 	 * @param parent
 	 * @param style
 	 */
-	public GroupXSLTagAttribute(Composite parent, int style, boolean showRemoveButton) {
+	public GroupXSLTagAttribute(Composite parent, int style, boolean showRemoveButton, String[] listOfPossibleAttributes) {
 		super(parent, style);
 		setLayout(new RowLayout(SWT.HORIZONTAL));
 		
 		Combo cmbAttributeType = new Combo(this, SWT.NONE);
+		cmbAttributeType.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				setSelectedAttribute(cmbAttributeType.getText());
+			}
+		});
 		cmbAttributeType.setLayoutData(new RowData(148, SWT.DEFAULT));
+		
+		for(String attribute : listOfPossibleAttributes){
+			cmbAttributeType.add(attribute);
+		}
 		
 		txtAttributeName = new Text(this, SWT.BORDER);
 		txtAttributeName.setLayoutData(new RowData(167, SWT.DEFAULT));
@@ -46,5 +57,19 @@ public class GroupXSLTagAttribute extends Group {
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
+	}
+
+	/**
+	 * @return the selectedAttribute
+	 */
+	public String getSelectedAttribute() {
+		return selectedAttribute;
+	}
+
+	/**
+	 * @param selectedAttribute the selectedAttribute to set
+	 */
+	private void setSelectedAttribute(String selectedAttribute) {
+		this.selectedAttribute = selectedAttribute;
 	}
 }

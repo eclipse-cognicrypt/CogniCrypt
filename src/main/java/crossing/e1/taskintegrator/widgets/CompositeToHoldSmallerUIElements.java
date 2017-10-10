@@ -111,8 +111,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
 	
-	public void addXSLAttributeUI(String XSLTag, boolean showRemoveButton){
-		GroupXSLTagAttribute groupforXSLTagAttribute = new GroupXSLTagAttribute((Composite) getContent(), SWT.NONE, showRemoveButton);
+	public void addXSLAttributeUI(String XSLTag, boolean showRemoveButton, String[] listOfPossibleAttributes){
+		GroupXSLTagAttribute groupforXSLTagAttribute = new GroupXSLTagAttribute((Composite) getContent(), SWT.NONE, showRemoveButton, listOfPossibleAttributes);
 		groupforXSLTagAttribute.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT,
 			Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
 		

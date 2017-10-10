@@ -22,6 +22,9 @@ import org.eclipse.swt.events.SelectionEvent;
 
 public class XSLTagDialog extends Dialog {
 	private CompositeToHoldSmallerUIElements compositeForXSLAttributes;
+	private Button btnAddAttribute;
+	private Combo comboXSLTags;
+	
 	/**
 	 * Create the dialog.
 	 * @param parentShell
@@ -38,17 +41,19 @@ public class XSLTagDialog extends Dialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
 		
-		Combo comboXSLTags = new Combo(container, SWT.NONE);
+		comboXSLTags = new Combo(container, SWT.NONE);
+		
 		GridData gd_comboXSLTags = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_comboXSLTags.widthHint = 430;
 		comboXSLTags.setLayoutData(gd_comboXSLTags);
 		
 		for(XSLTags tag : Constants.XSLTags.values()){
-			comboXSLTags.add(tag.getXSLTagFaceName());
+			comboXSLTags.add(tag.getXSLTagFaceName());			
 		}
-		comboXSLTags.select(0);
 		
-		Button btnAddAttribute = new Button(container, SWT.NONE);
+		
+		
+		btnAddAttribute = new Button(container, SWT.NONE);
 		
 		btnAddAttribute.setText("Add Attribute");
 		
@@ -58,14 +63,42 @@ public class XSLTagDialog extends Dialog {
 		gd_compositeForProperties.heightHint = 150;
 		compositeForXSLAttributes.setLayoutData(gd_compositeForProperties);
 		
+		
+		// for the default selection. Moving it below all of the controls.
+		comboXSLTags.select(0);
+		setEnabledForAddAttributeButton();
+		
+		
 		btnAddAttribute.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				compositeForXSLAttributes.addXSLAttributeUI(comboXSLTags.getText(), true);
+				//compositeForXSLAttributes.addXSLAttributeUI(comboXSLTags.getText(), true, listOfPossibleAttributes);
 			}
 		});
-
+		
+		// Disable the add button if there are no attributes possible. E.g. the choose tag.
+		comboXSLTags.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				setEnabledForAddAttributeButton();
+			}
+		});
+		
 		return container;
+	}
+	
+	private void setEnabledForAddAttributeButton(){
+		
+		for(XSLTags xslTag: Constants.XSLTags.values()){
+			if(comboXSLTags.getText().equals(xslTag.getXSLTagFaceName())){
+				if(xslTag.getXSLAttributes() == null){
+					btnAddAttribute.setEnabled(false);
+				} else{
+					btnAddAttribute.setEnabled(true);
+				}						
+				break;
+			}
+		}
 	}
 
 	/**
@@ -75,7 +108,7 @@ public class XSLTagDialog extends Dialog {
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
-		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
+		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);		
 	}
 
 	/**

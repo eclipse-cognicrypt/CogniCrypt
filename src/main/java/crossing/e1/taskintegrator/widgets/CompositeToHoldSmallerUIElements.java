@@ -13,6 +13,7 @@ import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.taskintegrator.models.ClaferFeature;
 import crossing.e1.taskintegrator.models.FeatureProperty;
+import crossing.e1.taskintegrator.wizard.QuestionDialog;
 
 
 
@@ -23,6 +24,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	private ArrayList<String> featureConstraints;
 	private Text txtForFeatureConstraints;
 	private Composite composite;
+	public ArrayList<GroupAnswer> groupAnswers;
 	
 	private ArrayList<Answer> arrayAnswer;
 
@@ -41,6 +43,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setExpandHorizontal(true);
 		
 		arrayAnswer=new ArrayList<Answer>();
+		groupAnswers=new ArrayList<GroupAnswer>();
 
 		
 		composite = new Composite(this, SWT.NONE);
@@ -105,6 +108,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	
 	public void addAnswer(Answer answer, boolean showRemoveButton){
 		GroupAnswer groupForAnswer =  new GroupAnswer((Composite) getContent(), SWT.NONE, answer,showRemoveButton);
+		setListOfAllGroupAnswer(groupForAnswer);	
+//updateAnswerList();
 		groupForAnswer.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(),651,
 			39);
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
@@ -112,9 +117,22 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
 	
+	public void readAnswerValue(){
+		for(GroupAnswer gAnswer:groupAnswers){
+			gAnswer.getAnswer().setValue(gAnswer.retrieveAnswer());	
+		}
+		/**/
+	}
+	
 	//To delete the answer
-	public void deleteAnswer(Answer answerToBeDeleted){
-		arrayAnswer.remove(answerToBeDeleted);
+	public void deleteAnswer(int answerToBeDeleted){
+		int temp=answerToBeDeleted-1;
+		readAnswerValue();
+		groupAnswers.remove(temp);
+		//QuestionDialog dialog;
+
+		
+		//arrayAnswer.remove(answerToBeDeleted);
 		updateAnswerContainer();
 	}
 
@@ -128,9 +146,24 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setLowestWidgetYAxisValue(0);
 		setMinHeight(getLowestWidgetYAxisValue());
 		
-		for(Answer answerUnderConsideration: arrayAnswer){
-			addAnswer(answerUnderConsideration,true);
+		for(GroupAnswer answerUnderConsideration: groupAnswers){
+			/*answerUnderConsideration.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(),651,
+				39);
+			setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
+
+			setMinHeight(getLowestWidgetYAxisValue());
+*/
+			addAnswer(answerUnderConsideration.getAnswer(),true);
 		}
+	}
+	
+	public void setListOfAllGroupAnswer(GroupAnswer groupForAnswer){
+		groupAnswers.add(groupForAnswer);
+
+	}
+	
+	public ArrayList<GroupAnswer> getListOfAllGroupAnswer(){
+		return groupAnswers;
 	}
 	
 	@Override
@@ -171,4 +204,5 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	public ArrayList<Answer> getListOfAllAnswer() {
 		return arrayAnswer;
 	}
+	
 }

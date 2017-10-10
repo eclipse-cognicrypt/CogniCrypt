@@ -36,9 +36,16 @@ import org.eclipse.swt.events.SelectionAdapter;
 
 public class QuestionDialog extends Dialog {
 
-	private Text textQuestion;
+	public Text textQuestion;
 	private Label lblQuestionContent;
 	private int counter=0;
+	private String questionText;
+	private String questionType;
+	private ArrayList<Answer> answerValues;
+	private ArrayList<String> txtAnswer;
+	private Combo combo;
+	CompositeToHoldSmallerUIElements compositeToHoldAnswers;
+	//int answerId=0;
 
 	/**
 	 * Create the dialog.
@@ -96,7 +103,7 @@ public class QuestionDialog extends Dialog {
 		lblType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		lblType.setText("Type");
 
-		Combo combo = new Combo(composite, SWT.NONE);
+		combo = new Combo(composite, SWT.NONE);
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		combo.setItems(new String[] {Constants.GUIElements.combo.toString(),Constants.GUIElements.text.toString(),Constants.GUIElements.itemselection.toString(),Constants.GUIElements.button.toString()});
 		combo.select(-1);
@@ -109,7 +116,7 @@ public class QuestionDialog extends Dialog {
 			new Label(composite, SWT.NONE);
 			new Label(composite, SWT.NONE);
 			boolean showRemoveButton = true;
-			CompositeToHoldSmallerUIElements compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton);
+			compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton);
 			GridData gd_compositeToHoldAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 			gd_compositeToHoldAnswers.heightHint = 95;
 			gd_compositeToHoldAnswers.widthHint = 650;
@@ -121,6 +128,7 @@ public class QuestionDialog extends Dialog {
 				@ Override
 				public void widgetSelected(SelectionEvent e){
 					//compositeToHoldAnswers.setVisible(true);
+					//answerId++;
 					Answer tempAnswer = new Answer();
 					compositeToHoldAnswers.getListOfAllAnswer().add(tempAnswer);
 					compositeToHoldAnswers.addAnswer(tempAnswer, showRemoveButton);
@@ -154,8 +162,8 @@ public class QuestionDialog extends Dialog {
 				}
 			}
 		});
-
 		
+			
 		TabItem tbtmLinkAnswers = new TabItem(tabFolder, SWT.NONE);
 		tbtmLinkAnswers.setText("Link answers");
 
@@ -181,6 +189,58 @@ public class QuestionDialog extends Dialog {
 		return container;
 	}
 
+	//to save the question text and type
+	private void saveInput(){
+		 questionText=textQuestion.getText();
+		 questionType=combo.getText();
+		 compositeToHoldAnswers.readAnswerValue();
+		 answerValues=new ArrayList<Answer>();
+		 
+		 for(int i=0;i<compositeToHoldAnswers.getListOfAllAnswer().size();i++){
+			 answerValues.add(compositeToHoldAnswers.getListOfAllAnswer().get(i));
+			 //answerValues.add(compositeToHoldAnswers.getListOfAllGroupAnswer(groupForAnswer);)
+			/* System.out.println("Group Size" + compositeToHoldAnswers.getListOfAllGroupAnswer().size());
+			 for(GroupAnswer group :compositeToHoldAnswers.getListOfAllGroupAnswer()){
+				 answerValues.add(group.getAnswer());
+			*/ }
+			 //GroupAnswer group;
+			 for(int i =0;i<compositeToHoldAnswers.getListOfAllGroupAnswer().size();i++)
+				{
+					answerValues.get(i).setValue(compositeToHoldAnswers.getListOfAllGroupAnswer().get(i).retrieveAnswer());
+				}
+		 }
+		 /*for(Answer answer:answerValues){
+			 answer.setValue(compositeToHoldAnswers.groupForAnswer.txtAnswer.getText());
+		 }*/
+		 //answerValues=ArrayList<Answer>(compositeToHoldAnswers.getListOfAllAnswer());
+	
+	
+	@Override
+    protected void okPressed() {
+        saveInput();
+        super.okPressed();
+    }
+	public String getQuestionText(){
+		return questionText;
+	}
+	
+	public void setQuestionText(String questionText){
+		textQuestion.setText(questionText);		
+	}
+	public String getquestionType(){
+		return questionType;
+	}
+	
+	public void setQuestionType(String type){
+		combo.setText(type);
+		
+	}
+	
+	public ArrayList<Answer> getAnswerValue(){
+		//answerValues=(ArrayList<Answer>)compositeToHoldAnswers.getListOfAllAnswer();
+		return answerValues;
+	}
+	
 	/**
 	 * Create contents of the button bar.
 	 * 

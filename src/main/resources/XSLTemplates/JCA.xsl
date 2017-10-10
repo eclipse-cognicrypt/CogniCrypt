@@ -17,7 +17,7 @@ public class Enc {
 		public File encrypt(File file, SecretKey key) throws GeneralSecurityException, IOException { 
 		</xsl:when>  
 		<xsl:when test="//task/code/dataType='String'">
-		public String encrypt(String message, SecretKey key) throws GeneralSecurityException { 
+		public String encrypt(String message, SecretKey key) throws GeneralSecurityException, UnsupportedEncodingException { 
 		</xsl:when>      
         <xsl:otherwise>
 		public byte[] encrypt(byte[] data, SecretKey key) throws GeneralSecurityException { 
@@ -31,8 +31,7 @@ public class Enc {
 		c.init(Cipher.ENCRYPT_MODE, key, iv);
 		<xsl:choose>
 		<xsl:when test="//task/code/dataType='File'">
-		byte[] data = new byte[(int) file.length()];
-	    readFile(file, data);
+		byte[] data = Files.readAllBytes(file.toPath());	
 		</xsl:when>
 		<xsl:when test="//task/code/dataType='String'">
 		byte[] data = message.getBytes("UTF-8");
@@ -58,7 +57,7 @@ public class Enc {
 		System.arraycopy(res, 0, ret, ivb.length, res.length);
 		<xsl:choose>	
 		<xsl:when test="//task/code/dataType='File'">
-		writeFile(file, ret);
+		Files.write(file.toPath(), ret);
 		return file;
 		</xsl:when>
 		<xsl:when test="//task/code/dataType='String'">
@@ -83,8 +82,7 @@ public class Enc {
 	</xsl:choose>
 	<xsl:choose>
 		<xsl:when test="//task/code/dataType='File'">
-		byte[] ciphertext = new byte[(int) file.length()];
-		readFile(file,ciphertext);
+		byte[] ciphertext = Files.readAllBytes(file.toPath());
 		</xsl:when>
 		<xsl:when test="//task/code/dataType='String'">
 		byte[] ciphertext = Base64.getDecoder().decode(message);
@@ -115,7 +113,7 @@ public class Enc {
 	</xsl:choose>
 	<xsl:choose>
 		<xsl:when test="//task/code/dataType='File'">
-		writeFile(file, res);
+		Files.write(file.toPath(), res);
 		return file;
 		</xsl:when>
 		<xsl:when test="//task/code/dataType='String'">
@@ -126,22 +124,6 @@ public class Enc {
 		</xsl:otherwise>
 	</xsl:choose>
 	}
-	
-	<xsl:choose>
-	<xsl:when test="//task/code/dataType='File'">
-	public void readFile(File file, byte[] targetArray) throws IOException {
-			FileInputStream inputStream = new FileInputStream(file);
-		    inputStream.read(targetArray);
-		   	inputStream.close();
-		}
-		
-	public void writeFile(File file, byte[] srcArray) throws IOException {
-			FileOutputStream outputStream = new FileOutputStream(file);
-		    outputStream.write(srcArray);
-			outputStream.close();
-		}
-	</xsl:when>
-	</xsl:choose>
 }
 </xsl:result-document>
 </xsl:if>
@@ -191,7 +173,7 @@ public class Output {
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public <xsl:value-of select="//task/code/dataType"/> templateUsage(<xsl:value-of select="//task/code/dataType"/> data<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">, char[] pwd</xsl:if>) throws GeneralSecurityException<xsl:if test="//task/code/dataType='File'">, IOException</xsl:if>{
+	public <xsl:value-of select="//task/code/dataType"/> templateUsage(<xsl:value-of select="//task/code/dataType"/> data<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">, char[] pwd</xsl:if>) throws GeneralSecurityException<xsl:if test="//task/code/dataType='File'">, IOException</xsl:if><xsl:if test="//task/code/dataType='String'">, UnsupportedEncodingException</xsl:if>{
 		<xsl:choose>
         <xsl:when test="//task/algorithm[@type='KeyDerivationAlgorithm']">KeyDeriv kd = new KeyDeriv();
 		SecretKey key = kd.getKey(pwd); </xsl:when>

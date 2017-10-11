@@ -17,7 +17,7 @@ public class ClaferFeature {
 	private FeatureProperty featureInheritsFromForAbstract; // single key value pair of property. Clafer allows the inheritances to be of this type.
 	private FeatureConstraint featureInheritsFromForConcrete; // when defining a concrete feature.
 	private ArrayList<FeatureProperty> featureProperties; // <String name, String value>. The names in this collection cannot be repeated.
-	private ArrayList<String> featureConstraints; // each constraint will be generated as a "valid" string in the constraint generator pop up.
+	private ArrayList<ClaferConstraint> featureConstraints; // each constraint will be generated as a "valid" string in the constraint generator pop up.
 	/**
 	 * @param featureType
 	 * @param featureName
@@ -34,7 +34,7 @@ public class ClaferFeature {
 		this.setFeatureInheritsFromForConcrete(featureInheritsFromForConcrete);
 		this.featureProperties = new ArrayList<FeatureProperty>();
 		//this.setProperties(properties);
-		this.featureConstraints=new ArrayList<String>();
+		this.featureConstraints = new ArrayList<ClaferConstraint>();
 		//this.setFeatureConstraints(featureConstraints);
 	}
 	/**
@@ -100,7 +100,7 @@ public class ClaferFeature {
 	/**
 	 * @return the featureConstraints
 	 */
-	public ArrayList<String> getFeatureConstraints() {
+	public ArrayList<ClaferConstraint> getFeatureConstraints() {
 		return featureConstraints;
 	}
 	/**

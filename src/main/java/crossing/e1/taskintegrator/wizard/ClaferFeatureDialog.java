@@ -3,6 +3,8 @@ package crossing.e1.taskintegrator.wizard;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -18,7 +20,6 @@ import org.eclipse.swt.widgets.Text;
 
 import crossing.e1.configurator.Constants.FeatureType;
 import crossing.e1.taskintegrator.models.ClaferFeature;
-import crossing.e1.taskintegrator.models.FeatureConstraint;
 import crossing.e1.taskintegrator.models.FeatureProperty;
 import crossing.e1.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 
@@ -32,6 +33,8 @@ public class ClaferFeatureDialog extends Dialog {
 	private Button btnRadioAbstract;
 	private Button btnRadioConcrete;
 
+	private ClaferFeature resultClafer;
+
 	/**
 	 * Create the dialog.
 	 * @param parentShell
@@ -39,6 +42,8 @@ public class ClaferFeatureDialog extends Dialog {
 	public ClaferFeatureDialog(Shell parentShell) {
 		super(parentShell);
 		setShellStyle(SWT.CLOSE);
+
+		resultClafer = new ClaferFeature(null, "", null, null);
 	}
 
 	/**
@@ -57,15 +62,39 @@ public class ClaferFeatureDialog extends Dialog {
 		btnRadioAbstract = new Button(container, SWT.RADIO);
 		btnRadioAbstract.setSelection(true);
 		btnRadioAbstract.setText("Abstract");
+		btnRadioAbstract.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				resultClafer.setFeatureType(FeatureType.ABSTRACT);
+				super.widgetSelected(e);
+			}
+		});
 
 		btnRadioConcrete = new Button(container, SWT.RADIO);
 		btnRadioConcrete.setText("Concrete");
+		btnRadioConcrete.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				resultClafer.setFeatureType(FeatureType.CONCRETE);
+				super.widgetSelected(e);
+			}
+		});
 
 		Label lblFeatureName = new Label(container, SWT.NONE);
 		lblFeatureName.setText("Type in the name");
 
 		txtFeatureName = new Text(container, SWT.BORDER);
 		txtFeatureName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		txtFeatureName.addFocusListener(new FocusAdapter() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				resultClafer.setFeatureName(txtFeatureName.getText());
+				super.focusLost(e);
+			}
+		});
 
 		Label lblInheritance = new Label(container, SWT.NONE);
 		lblInheritance.setText("Choose inheritance");
@@ -142,26 +171,6 @@ public class ClaferFeatureDialog extends Dialog {
 	}
 
 	public ClaferFeature getResult() {
-		// prepare fields of ClaferFeature
-		FeatureType featureType;
-		String featureName;
-		FeatureProperty featureInheritsFromForAbstract;
-		FeatureConstraint featureInheritsFromForConcrete;
-
-		// fill ClaferFeature from user input
-		if (btnRadioAbstract.getSelection()) {
-			featureType = FeatureType.ABSTRACT;
-		} else {
-			featureType = FeatureType.CONCRETE;
-		}
-		
-		featureName = txtFeatureName.getText();
-		featureInheritsFromForAbstract = null;
-		featureInheritsFromForConcrete = null;
-
-		// TODO instantiate appropriately, should another constructor be created?
-		ClaferFeature resultClafer = new ClaferFeature(featureType, featureName, featureInheritsFromForAbstract, featureInheritsFromForConcrete);
-
 		resultClafer.getfeatureProperties().addAll(featuresComposite.getFeatureProperties());
 		resultClafer.getFeatureConstraints().addAll(constraintsComposite.getFeatureConstraints());
 

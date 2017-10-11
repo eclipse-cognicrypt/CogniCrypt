@@ -46,7 +46,7 @@ public class ClaferFeature {
 	/**
 	 * @param featureType the featureType to set
 	 */
-	private void setFeatureType(FeatureType featureType) {
+	public void setFeatureType(FeatureType featureType) {
 		this.featureType = featureType;
 	}
 	/**
@@ -58,7 +58,7 @@ public class ClaferFeature {
 	/**
 	 * @param featureName the featureName to set
 	 */
-	private void setFeatureName(String featureName) {
+	public void setFeatureName(String featureName) {
 		this.featureName = featureName;
 	}
 	/**
@@ -70,7 +70,7 @@ public class ClaferFeature {
 	/**
 	 * @param featureInheritsFromForAbstract the featureInheritsFromForAbstract to set
 	 */
-	private void setFeatureInheritsFromForAbstract(FeatureProperty featureInheritsFromForAbstract) {
+	public void setFeatureInheritsFromForAbstract(FeatureProperty featureInheritsFromForAbstract) {
 		this.featureInheritsFromForAbstract = featureInheritsFromForAbstract;
 	}
 	/**
@@ -82,7 +82,7 @@ public class ClaferFeature {
 	/**
 	 * @param featureInheritsFromForConcrete the featureInheritsFromForConcrete to set
 	 */
-	private void setFeatureInheritsFromForConcrete(FeatureConstraint featureInheritsFromForConcrete) {
+	public void setFeatureInheritsFromForConcrete(FeatureConstraint featureInheritsFromForConcrete) {
 		this.featureInheritsFromForConcrete = featureInheritsFromForConcrete;
 	}
 	/**

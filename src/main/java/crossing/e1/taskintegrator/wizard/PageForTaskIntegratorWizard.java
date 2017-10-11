@@ -7,15 +7,15 @@ import java.util.ArrayList;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.beginer.question.Answer;
@@ -81,12 +81,15 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						
 						// TODO dummy Clafer feature for testing only. Keep until the pop up is complete.
 						counter++;						
-						ClaferFeature tempFeature = getDummyClaferFeature();
-						
-						
-						// Update the array list.							
-						compositeToHoldGranularUIElements.getListOfAllClaferFeatures().add(tempFeature);
-						compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
+						ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell());
+						if (cfrFeatureDialog.open() == 0) {
+							ClaferFeature tempFeature = cfrFeatureDialog.getResult();
+
+							// Update the array list.							
+							compositeToHoldGranularUIElements.getListOfAllClaferFeatures().add(tempFeature);
+							compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
+						}
+
 					}
 
 					

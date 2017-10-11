@@ -16,6 +16,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import crossing.e1.configurator.Constants.FeatureType;
+import crossing.e1.taskintegrator.models.ClaferFeature;
+import crossing.e1.taskintegrator.models.FeatureConstraint;
 import crossing.e1.taskintegrator.models.FeatureProperty;
 import crossing.e1.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 
@@ -26,6 +29,8 @@ public class ClaferFeatureDialog extends Dialog {
 	private CompositeToHoldSmallerUIElements constraintsComposite;
 	private int globalFeaturesCounter = 0; // TODO Debugging purposes (name dummy values meaningfully)
 	private int globalConstraintsCounter = 0; // TODO Debugging purposes (name dummy values meaningfully)
+	private Button btnRadioAbstract;
+	private Button btnRadioConcrete;
 
 	/**
 	 * Create the dialog.
@@ -49,11 +54,11 @@ public class ClaferFeatureDialog extends Dialog {
 		lblType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		lblType.setText("Select the type");
 
-		Button btnRadioAbstract = new Button(container, SWT.RADIO);
+		btnRadioAbstract = new Button(container, SWT.RADIO);
 		btnRadioAbstract.setSelection(true);
 		btnRadioAbstract.setText("Abstract");
 
-		Button btnRadioConcrete = new Button(container, SWT.RADIO);
+		btnRadioConcrete = new Button(container, SWT.RADIO);
 		btnRadioConcrete.setText("Concrete");
 
 		Label lblFeatureName = new Label(container, SWT.NONE);
@@ -77,6 +82,8 @@ public class ClaferFeatureDialog extends Dialog {
 			}
 		});
 		btnAddProperty.setText("Add property");
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
 
 		featuresComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, null, true);
 		featuresComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
@@ -91,6 +98,8 @@ public class ClaferFeatureDialog extends Dialog {
 			}
 		});
 		btnAddConstraint.setText("Add constraint");
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
 
 		constraintsComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, null, true);
 		constraintsComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
@@ -130,5 +139,32 @@ public class ClaferFeatureDialog extends Dialog {
 		if (cfrConstraintDialog.open() == 0) {
 			constraintsComposite.addFeatureConstraint(cfrConstraintDialog.getResult(), true);
 		}
+	}
+
+	public ClaferFeature getResult() {
+		// prepare fields of ClaferFeature
+		FeatureType featureType;
+		String featureName;
+		FeatureProperty featureInheritsFromForAbstract;
+		FeatureConstraint featureInheritsFromForConcrete;
+
+		// fill ClaferFeature from user input
+		if (btnRadioAbstract.getSelection()) {
+			featureType = FeatureType.ABSTRACT;
+		} else {
+			featureType = FeatureType.CONCRETE;
+		}
+		
+		featureName = txtFeatureName.getText();
+		featureInheritsFromForAbstract = null;
+		featureInheritsFromForConcrete = null;
+
+		// TODO instantiate appropriately, should another constructor be created?
+		ClaferFeature resultClafer = new ClaferFeature(featureType, featureName, featureInheritsFromForAbstract, featureInheritsFromForConcrete);
+
+		resultClafer.getfeatureProperties().addAll(featuresComposite.getFeatureProperties());
+		resultClafer.getFeatureConstraints().addAll(constraintsComposite.getFeatureConstraints());
+
+		return resultClafer;
 	}
 }

@@ -59,24 +59,17 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 					featureConstraints = new ArrayList<ClaferConstraint>();
 				}
 			}
-
-			if (targetArrayListOfDataToBeDisplayed.get(0) instanceof FeatureProperty) {
-
-				featureProperties.addAll((ArrayList<FeatureProperty>) targetArrayListOfDataToBeDisplayed);
-
-				for (FeatureProperty featureUnderConsideration : (ArrayList<FeatureProperty>) targetArrayListOfDataToBeDisplayed) {
-					featureProperties.add(featureUnderConsideration);
-					addFeatureProperty(featureUnderConsideration, showRemoveButton);
-				}
-			} else if (targetArrayListOfDataToBeDisplayed.get(0) instanceof ClaferConstraint) {
-				featureConstraints.addAll((ArrayList<ClaferConstraint>) targetArrayListOfDataToBeDisplayed);
-
-				for (ClaferConstraint featureConstraintUnderConsideration : (ArrayList<ClaferConstraint>) targetArrayListOfDataToBeDisplayed) {
-					featureConstraints.add(featureConstraintUnderConsideration);
-					addFeatureConstraint(featureConstraintUnderConsideration, false);
+			if (targetArrayListOfDataToBeDisplayed.size() > 0) {
+				if (targetArrayListOfDataToBeDisplayed.get(0) instanceof FeatureProperty) {
+					for (FeatureProperty featureUnderConsideration : (ArrayList<FeatureProperty>) targetArrayListOfDataToBeDisplayed) {
+						addFeatureProperty(featureUnderConsideration, showRemoveButton);
+					}
+				} else if (targetArrayListOfDataToBeDisplayed.get(0) instanceof ClaferConstraint) {
+					for (ClaferConstraint featureConstraintUnderConsideration : (ArrayList<ClaferConstraint>) targetArrayListOfDataToBeDisplayed) {
+						addFeatureConstraint(featureConstraintUnderConsideration, showRemoveButton);
+					}
 				}
 			}
-
 		}
 	}
 

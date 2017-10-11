@@ -38,14 +38,13 @@ public class ClaferFeatureDialog extends Dialog {
 	 * @param parentShell
 	 */
 	public ClaferFeatureDialog(Shell parentShell) {
-		super(parentShell);
-		setShellStyle(SWT.CLOSE);
-
-		resultClafer = new ClaferFeature(FeatureType.ABSTRACT, "", null, null);
+		this(parentShell, new ClaferFeature(FeatureType.ABSTRACT, "", null, null));
 	}
 
 	public ClaferFeatureDialog(Shell parentShell, ClaferFeature modifiableClaferFeature) {
 		super(parentShell);
+		setShellStyle(SWT.CLOSE);
+
 		resultClafer = modifiableClaferFeature;
 	}
 

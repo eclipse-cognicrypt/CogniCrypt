@@ -43,6 +43,7 @@ public class ClaferFeatureDialog extends Dialog {
 		super(parentShell);
 		setShellStyle(SWT.CLOSE);
 
+		// TODO fix initialization
 		resultClafer = new ClaferFeature(null, "", null, null);
 	}
 

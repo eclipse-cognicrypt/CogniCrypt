@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import crossing.e1.configurator.Constants;
+import crossing.e1.taskintegrator.models.ClaferConstraint;
 import crossing.e1.taskintegrator.models.FeatureProperty;
 
 
@@ -16,7 +17,7 @@ import crossing.e1.taskintegrator.models.FeatureProperty;
 public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	private int lowestWidgetYAxisValue = Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS;
 	private ArrayList<FeatureProperty> featureProperties;
-	private ArrayList<String> featureConstraints;
+	private ArrayList<ClaferConstraint> featureConstraints;
 	private Composite composite;
 	
 
@@ -41,7 +42,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		composite.setLayout(null);
 		
 		featureProperties = new ArrayList<FeatureProperty>();
-		featureConstraints = new ArrayList<String>();
+		featureConstraints = new ArrayList<ClaferConstraint>();
 
 		addData(targetArrayListOfDataToBeDisplayed, showRemoveButton);
 
@@ -54,37 +55,30 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 			if (featureProperties == null && featureConstraints == null) {
 				if (targetArrayListOfDataToBeDisplayed.get(0) instanceof FeatureProperty) {
 					featureProperties = new ArrayList<FeatureProperty>();
-				} else if (targetArrayListOfDataToBeDisplayed.get(0) instanceof String) {
-					featureConstraints = new ArrayList<String>();
+				} else if (targetArrayListOfDataToBeDisplayed.get(0) instanceof ClaferConstraint) {
+					featureConstraints = new ArrayList<ClaferConstraint>();
 				}
 			}
-
-			if (targetArrayListOfDataToBeDisplayed.get(0) instanceof FeatureProperty) {
-
-				featureProperties.addAll((ArrayList<FeatureProperty>) targetArrayListOfDataToBeDisplayed);
-
-				for (FeatureProperty featureUnderConsideration : (ArrayList<FeatureProperty>) targetArrayListOfDataToBeDisplayed) {
-					featureProperties.add(featureUnderConsideration);
-					addFeatureProperty(featureUnderConsideration, showRemoveButton);
-				}
-			} else if (targetArrayListOfDataToBeDisplayed.get(0) instanceof String) {
-				featureConstraints.addAll((ArrayList<String>) targetArrayListOfDataToBeDisplayed);
-
-				for (String featureConstraintUnderConsideration : (ArrayList<String>) targetArrayListOfDataToBeDisplayed) {
-					featureConstraints.add(featureConstraintUnderConsideration);
-					addFeatureConstraint(featureConstraintUnderConsideration, false);
+			if (targetArrayListOfDataToBeDisplayed.size() > 0) {
+				if (targetArrayListOfDataToBeDisplayed.get(0) instanceof FeatureProperty) {
+					for (FeatureProperty featureUnderConsideration : (ArrayList<FeatureProperty>) targetArrayListOfDataToBeDisplayed) {
+						addFeatureProperty(featureUnderConsideration, showRemoveButton);
+					}
+				} else if (targetArrayListOfDataToBeDisplayed.get(0) instanceof ClaferConstraint) {
+					for (ClaferConstraint featureConstraintUnderConsideration : (ArrayList<ClaferConstraint>) targetArrayListOfDataToBeDisplayed) {
+						addFeatureConstraint(featureConstraintUnderConsideration, showRemoveButton);
+					}
 				}
 			}
-
 		}
 	}
 
-	public void addFeatureConstraint(String featureConstraintUnderConsideration, boolean showRemoveButton) {
+	public void addFeatureConstraint(ClaferConstraint featureConstraintUnderConsideration, boolean showRemoveButton) {
 		featureConstraints.add(featureConstraintUnderConsideration);
 		addFeatureConstraintUI(featureConstraintUnderConsideration, showRemoveButton);
 	}
 
-	private void addFeatureConstraintUI(String featureConstraintUnderConsideration, boolean showRemoveButton) {
+	private void addFeatureConstraintUI(ClaferConstraint featureConstraintUnderConsideration, boolean showRemoveButton) {
 		GroupConstraint groupConstraint = new GroupConstraint((Composite) getContent(), SWT.NONE, featureConstraintUnderConsideration, showRemoveButton);
 		groupConstraint.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT + 200, 29);
 
@@ -99,7 +93,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	}
 
 	private void addFeaturePropertyUI(FeatureProperty featureProperty, boolean showRemoveButton) {
-		GroupFeatureProperty groupForFeatureProperty = new GroupFeatureProperty((Composite) getContent(), SWT.NONE, featureProperty, showRemoveButton);
+		GroupFeatureProperty groupForFeatureProperty = new GroupFeatureProperty((Composite) getContent(), SWT.NONE, featureProperty, showRemoveButton, true);
 		groupForFeatureProperty.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT + 200,
 			Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
 
@@ -112,8 +106,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		featureProperties.remove(featureProperty);
 	}
 
-	public void removeFeatureConstraint(String featureConstraint) {
-		featureConstraints.remove(featureConstraint);
+	public void removeFeatureConstraint(ClaferConstraint constraint) {
+		featureConstraints.remove(constraint);
 	}
 
 	@Override
@@ -141,11 +135,19 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		return featureProperties;
 	}
 
+	public void setFeatureProperties(ArrayList<FeatureProperty> featureProperties) {
+		this.featureProperties = featureProperties;
+	}
+
 	/**
 	 * @return the featureConstraints
 	 */
-	public ArrayList<String> getFeatureConstraints() {
+	public ArrayList<ClaferConstraint> getFeatureConstraints() {
 		return featureConstraints;
+	}
+
+	public void setFeatureConstraints(ArrayList<ClaferConstraint> featureConstraints) {
+		this.featureConstraints = featureConstraints;
 	}
 
 	public void updateClaferContainer() {
@@ -166,7 +168,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 				addFeaturePropertyUI(fp, true);
 			}
 		} else if (featureConstraints.size() > 0) {
-			for (String fc : featureConstraints) {
+			for (ClaferConstraint fc : featureConstraints) {
 				addFeatureConstraintUI(fc, true);
 			}
 		}

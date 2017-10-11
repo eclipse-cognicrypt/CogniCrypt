@@ -7,21 +7,22 @@ import java.util.ArrayList;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.ClaferDependency;
 import crossing.e1.configurator.beginer.question.CodeDependency;
 import crossing.e1.configurator.beginer.question.Question;
+import crossing.e1.taskintegrator.models.ClaferConstraint;
 import crossing.e1.taskintegrator.models.ClaferFeature;
 import crossing.e1.taskintegrator.models.FeatureProperty;
 import crossing.e1.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
@@ -80,12 +81,15 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						
 						// TODO dummy Clafer feature for testing only. Keep until the pop up is complete.
 						counter++;						
-						ClaferFeature tempFeature = getDummyClaferFeature();
-						
-						
-						// Update the array list.							
-						compositeToHoldGranularUIElements.getListOfAllClaferFeatures().add(tempFeature);
-						compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
+						ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell());
+						if (cfrFeatureDialog.open() == 0) {
+							ClaferFeature tempFeature = cfrFeatureDialog.getResult();
+
+							// Update the array list.							
+							compositeToHoldGranularUIElements.getListOfAllClaferFeatures().add(tempFeature);
+							compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
+						}
+
 					}
 
 					
@@ -217,8 +221,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		ClaferFeature tempFeature = new ClaferFeature(
 			Constants.FeatureType.ABSTRACT,
 			Integer.toString(counter), // Counter as the name to make each addition identifiable.
-			new FeatureProperty("Enum", "integer"),
-			null);
+			"");
 		
 		// from symmetric encryption abstract Algorithm
 		tempFeature.getfeatureProperties().add(new FeatureProperty("name", "string"));
@@ -228,11 +231,11 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		tempFeature.getfeatureProperties().add(new FeatureProperty("classPerformance", "Performance"));
 		
 		// from symmetric encryption concrete SHA: Digest
-		tempFeature.getFeatureConstraints().add("outputSize = 160 || outputSize = 224 || outputSize = 256 || outputSize = 384 || outputSize = 512");
-		tempFeature.getFeatureConstraints().add("outputSize = 160 => performance = VeryFast && security = Weak");
-		tempFeature.getFeatureConstraints().add("outputSize = 224 => performance = Fast && security = Strong");
-		tempFeature.getFeatureConstraints().add("description = \"PBKDF2 key derivation\"");
-		tempFeature.getFeatureConstraints().add("security = cipher.security");
+		tempFeature.getFeatureConstraints().add(new ClaferConstraint("outputSize = 160 || outputSize = 224 || outputSize = 256 || outputSize = 384 || outputSize = 512"));
+		tempFeature.getFeatureConstraints().add(new ClaferConstraint("outputSize = 160 => performance = VeryFast && security = Weak"));
+		tempFeature.getFeatureConstraints().add(new ClaferConstraint("outputSize = 224 => performance = Fast && security = Strong"));
+		tempFeature.getFeatureConstraints().add(new ClaferConstraint("description = \"PBKDF2 key derivation\""));
+		tempFeature.getFeatureConstraints().add(new ClaferConstraint("security = cipher.security"));
 		
 		
 		return tempFeature;

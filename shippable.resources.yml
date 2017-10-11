@@ -8,24 +8,3 @@ resources:
     type: time
     seed:
       interval: "1 0 * * *"
-      
-  - name: cp-group1718_branch
-    type: gitRepo
-    integration: NightlyBranchIntegration
-    pointer:
-        sourceName: CROSSINGTUD/CogniCrypt
-        branch: cp-group1718
-        
-  - name: ti-group1718_branch
-    type: gitRepo
-    integration: NightlyBranchIntegration
-    pointer:
-        sourceName: CROSSINGTUD/CogniCrypt
-        branch: ti-group1718
-  
-  - name: ui-group1718_branch
-    type: gitRepo
-    integration: NightlyBranchIntegration
-    pointer:
-        sourceName: CROSSINGTUD/CogniCrypt
-        branch: ui-group1718

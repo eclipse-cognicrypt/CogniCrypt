@@ -41,7 +41,7 @@ public class GroupConstraint extends Group {
 
 			@Override
 			public void focusLost(org.eclipse.swt.events.FocusEvent e) {
-				System.out.println("Focus lost");
+				constraint.setConstraint(txtForFeatureConstraints.getText());
 				super.focusLost(e);
 			}
 		});

@@ -1,6 +1,8 @@
 package crossing.e1.taskintegrator.widgets;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.RowData;
@@ -38,6 +40,14 @@ public class GroupFeatureProperty extends Group {
 		txtPropertyName.setEditable(editable);
 		txtPropertyName.setLayoutData(new RowData(160, SWT.DEFAULT));
 		txtPropertyName.setText(featureProperty.getPropertyName());
+		txtPropertyName.addFocusListener(new FocusAdapter() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				featureProperty.setPropertyName(txtPropertyName.getText());
+				super.focusLost(e);
+			}
+		});
 		
 		Label lblNewLabel = new Label(this, SWT.NONE);
 		lblNewLabel.setText("Type of");
@@ -46,6 +56,14 @@ public class GroupFeatureProperty extends Group {
 		txtPropertyType.setEditable(editable);
 		txtPropertyType.setLayoutData(new RowData(160, SWT.DEFAULT));
 		txtPropertyType.setText(featureProperty.getPropertyType());
+		txtPropertyType.addFocusListener(new FocusAdapter() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				featureProperty.setPropertyType(txtPropertyType.getText());
+				super.focusLost(e);
+			}
+		});
 		
 		if (showRemoveButton) {
 			Button btnRemove = new Button(this, SWT.NONE);

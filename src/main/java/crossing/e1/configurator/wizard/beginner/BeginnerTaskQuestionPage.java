@@ -38,6 +38,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
@@ -165,26 +166,29 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	public boolean isPageComplete() {
 		boolean flag = true;
 		for (Question question : page.getContent()) {
+			if (question.getElement() == crossing.e1.configurator.Constants.GUIElements.button) {
+				return this.finish;
+			}
+
+			if (question.getElement() == crossing.e1.configurator.Constants.GUIElements.itemselection) {
+				return this.finish;
+			}
+
 			if (question.getEnteredAnswer() == null) {
-				flag = false;
+				return false;
 			}
 			if (question.getEnteredAnswer() != null && question.getEnteredAnswer().getValue().isEmpty()) {
-				flag = false;
-			}
-			if (question.getElement() == crossing.e1.configurator.Constants.GUIElements.button) {
-				flag = this.finish;
-			}
-			if (question.getElement() == crossing.e1.configurator.Constants.GUIElements.itemselection) {
-				flag = this.finish;
+				return false;
 			}
 
 		}
-		return flag;
+		return true;
 	}
 
 	@Override
 	public void createControl(final Composite parent) {
 		final Composite container = new Composite(parent, SWT.NONE);
+		List<Control> fields = new ArrayList<Control>();
 		container.setBounds(10, 10, 450, 200);
 		// Updated the number of columns to order the questions vertically.
 		final GridLayout layout = new GridLayout(1, false);
@@ -192,23 +196,27 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		container.setLayout(layout);
 		// If legacy JSON files are in effect.
 		if (page == null) {
-			createQuestionControl(container, this.quest,false);
+			createQuestionControl(container, this.quest);
 			Activator.getDefault().logError("Outdated json file is used for task " + this.task.getDescription() + ". Please update.");
 		} else {
-			int noOfQuestions=0;
 			// loop through the questions that are to be displayed on the page.
 			for (Question question : page.getContent()) {
-				if(++noOfQuestions==1)
-				createQuestionControl(container, question, true);
-				else
-					createQuestionControl(container, question, false);
+				createQuestionControl(container, question);
+			}
+			//setting focus to the first field on the page
+			for (Control control : container.getChildren()) {
+				fields.add(control);
+			}
+
+			if (!fields.isEmpty()) {
+				fields.get(0).setFocus();
 			}
 		}
 
 		setControl(container);
 	}
 
-	private void createQuestionControl(final Composite parent, final Question question, boolean oneQuestion) {
+	private void createQuestionControl(final Composite parent, final Question question) {
 
 		final List<Answer> answers = question.getAnswers();
 		final Composite container = getPanel(parent);
@@ -255,9 +263,10 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					question.setEnteredAnswer(a);
 					BeginnerTaskQuestionPage.this.setPageComplete(this.isPageComplete());
 				});
-				if(oneQuestion){
-				inputField.forceFocus();
-				}
+
+				/*
+				 * if(oneQuestion){ inputField.forceFocus(); }
+				 */
 				break;
 
 			case itemselection:

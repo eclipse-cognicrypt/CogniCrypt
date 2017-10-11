@@ -1,6 +1,8 @@
 package crossing.e1.taskintegrator.widgets;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -18,7 +20,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	private ArrayList<FeatureProperty> featureProperties;
 	private ArrayList<String> featureConstraints;
 	private Composite composite;
-	private ArrayList<String> XSLAttributes;
+	private Map<String, String> XSLAttributes; // <attributeName, actualAttributeString>
 	
 
 
@@ -44,7 +46,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		featureProperties = new ArrayList<FeatureProperty>();
 		featureConstraints = new ArrayList<String>();
 
-		setXSLAttributes(new ArrayList<String>());
+		setXSLAttributes(new HashMap<String, String>());
 		
 		addData(targetArrayListOfDataToBeDisplayed, showRemoveButton);
 
@@ -111,7 +113,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
 	
-	public void addXSLAttributeUI(String XSLTag, boolean showRemoveButton, String[] listOfPossibleAttributes){
+	public void addXSLAttributeUI(String XSLTag, boolean showRemoveButton, ArrayList<String> listOfPossibleAttributes){
 		GroupXSLTagAttribute groupforXSLTagAttribute = new GroupXSLTagAttribute((Composite) getContent(), SWT.NONE, showRemoveButton, listOfPossibleAttributes);
 		groupforXSLTagAttribute.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT,
 			Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
@@ -189,14 +191,14 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	/**
 	 * @return the xSLAttributes
 	 */
-	public ArrayList<String> getXSLAttributes() {
+	public Map<String,String> getXSLAttributes() {
 		return XSLAttributes;
 	}
 
 	/**
 	 * @param xSLAttributes the xSLAttributes to set
 	 */
-	private void setXSLAttributes(ArrayList<String> xSLAttributes) {
+	private void setXSLAttributes(Map<String,String> xSLAttributes) {
 		XSLAttributes = xSLAttributes;
 	}
 

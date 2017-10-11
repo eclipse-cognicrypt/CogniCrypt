@@ -181,10 +181,11 @@ public class ClaferFeatureDialog extends Dialog {
 	private void addClaferProperty() {
 		FeatureProperty featureProperty = new FeatureProperty("", "");
 		featuresComposite.addFeatureProperty(featureProperty, true);
+		resultClafer.setFeatureProperties(featuresComposite.getFeatureProperties());
 	}
 
 	private void addClaferConstraint() {
-		ClaferConstraintDialog cfrConstraintDialog = new ClaferConstraintDialog(getShell());
+		ClaferConstraintDialog cfrConstraintDialog = new ClaferConstraintDialog(getShell(), resultClafer);
 
 		// blocking call to Dialog.open() the dialog
 		// it returns 0 on success

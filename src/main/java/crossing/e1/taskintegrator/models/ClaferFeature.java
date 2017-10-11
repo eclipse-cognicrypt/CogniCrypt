@@ -91,22 +91,17 @@ public class ClaferFeature {
 	public ArrayList<FeatureProperty> getfeatureProperties() {
 		return featureProperties;
 	}
-	/**
-	 * @param properties the properties to set
-	 */
-	/*private void setProperties(HashMap<String, String> properties) {
-		this.properties = properties;
+
+	public void setFeatureProperties(ArrayList<FeatureProperty> featureProperties) {
+		this.featureProperties = featureProperties;
 	}
-	/**
-	 * @return the featureConstraints
-	 */
+
 	public ArrayList<ClaferConstraint> getFeatureConstraints() {
 		return featureConstraints;
 	}
-	/**
-	 * @param featureConstraints the featureConstraints to set
-	 */
-	/*private void setFeatureConstraints(ArrayList<String> featureConstraints) {
+
+	public void setFeatureConstraints(ArrayList<ClaferConstraint> featureConstraints) {
 		this.featureConstraints = featureConstraints;
-	}*/
+	}
+
 }

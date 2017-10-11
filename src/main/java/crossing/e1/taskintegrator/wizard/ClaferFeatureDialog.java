@@ -46,6 +46,11 @@ public class ClaferFeatureDialog extends Dialog {
 		resultClafer = new ClaferFeature(FeatureType.ABSTRACT, "", null, null);
 	}
 
+	public ClaferFeatureDialog(Shell parentShell, ClaferFeature modifiableClaferFeature) {
+		super(parentShell);
+		resultClafer = modifiableClaferFeature;
+	}
+
 	/**
 	 * Create contents of the dialog.
 	 * @param parent
@@ -82,6 +87,14 @@ public class ClaferFeatureDialog extends Dialog {
 			}
 		});
 
+		if (resultClafer.getFeatureType() == FeatureType.ABSTRACT) {
+			btnRadioAbstract.setSelection(true);
+			btnRadioConcrete.setSelection(false);
+		} else {
+			btnRadioAbstract.setSelection(false);
+			btnRadioConcrete.setSelection(true);
+		}
+
 		Label lblFeatureName = new Label(container, SWT.NONE);
 		lblFeatureName.setText("Type in the name");
 
@@ -95,6 +108,8 @@ public class ClaferFeatureDialog extends Dialog {
 				super.focusLost(e);
 			}
 		});
+
+		txtFeatureName.setText(resultClafer.getFeatureName());
 
 		Label lblInheritance = new Label(container, SWT.NONE);
 		lblInheritance.setText("Choose inheritance");
@@ -114,7 +129,7 @@ public class ClaferFeatureDialog extends Dialog {
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
-		featuresComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, null, true);
+		featuresComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getfeatureProperties(), true);
 		featuresComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		featuresComposite.setMinHeight(200);
 
@@ -130,7 +145,7 @@ public class ClaferFeatureDialog extends Dialog {
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
-		constraintsComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, null, true);
+		constraintsComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getFeatureConstraints(), true);
 		constraintsComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		constraintsComposite.setMinHeight(200);
 
@@ -171,8 +186,8 @@ public class ClaferFeatureDialog extends Dialog {
 	}
 
 	public ClaferFeature getResult() {
-		resultClafer.getfeatureProperties().addAll(featuresComposite.getFeatureProperties());
-		resultClafer.getFeatureConstraints().addAll(constraintsComposite.getFeatureConstraints());
+		resultClafer.setFeatureProperties(featuresComposite.getFeatureProperties());
+		resultClafer.setFeatureConstraints(constraintsComposite.getFeatureConstraints());
 
 		return resultClafer;
 	}

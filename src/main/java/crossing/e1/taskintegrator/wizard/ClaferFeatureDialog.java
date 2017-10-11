@@ -28,8 +28,6 @@ public class ClaferFeatureDialog extends Dialog {
 	private Text txtFeatureName;
 	private CompositeToHoldSmallerUIElements featuresComposite;
 	private CompositeToHoldSmallerUIElements constraintsComposite;
-	private int globalFeaturesCounter = 0; // TODO Debugging purposes (name dummy values meaningfully)
-	private int globalConstraintsCounter = 0; // TODO Debugging purposes (name dummy values meaningfully)
 	private Button btnRadioAbstract;
 	private Button btnRadioConcrete;
 

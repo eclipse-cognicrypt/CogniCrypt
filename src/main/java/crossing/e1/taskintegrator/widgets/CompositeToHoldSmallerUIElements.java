@@ -135,11 +135,19 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		return featureProperties;
 	}
 
+	public void setFeatureProperties(ArrayList<FeatureProperty> featureProperties) {
+		this.featureProperties = featureProperties;
+	}
+
 	/**
 	 * @return the featureConstraints
 	 */
 	public ArrayList<ClaferConstraint> getFeatureConstraints() {
 		return featureConstraints;
+	}
+
+	public void setFeatureConstraints(ArrayList<ClaferConstraint> featureConstraints) {
+		this.featureConstraints = featureConstraints;
 	}
 
 	public void updateClaferContainer() {

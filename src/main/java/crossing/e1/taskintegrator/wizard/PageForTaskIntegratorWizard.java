@@ -221,8 +221,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		ClaferFeature tempFeature = new ClaferFeature(
 			Constants.FeatureType.ABSTRACT,
 			Integer.toString(counter), // Counter as the name to make each addition identifiable.
-			new FeatureProperty("Enum", "integer"),
-			null);
+			"");
 		
 		// from symmetric encryption abstract Algorithm
 		tempFeature.getfeatureProperties().add(new FeatureProperty("name", "string"));

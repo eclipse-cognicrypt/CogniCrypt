@@ -58,15 +58,15 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		txtFeatureName.setText(claferFeature.getFeatureName());
 		
 		
-		if(claferFeature.getFeatureInheritsFromForAbstract()!=null){
+		if (!claferFeature.getFeatureInheritance().isEmpty()) {
 			Label lblInheritsFrom = new Label(grpClaferFeature, SWT.NONE);
-			lblInheritsFrom.setText("Inherits from");
-			GroupFeatureProperty grpClaferFeatureInheritance = new GroupFeatureProperty(
-																	grpClaferFeature, 
-																	SWT.BORDER, 
-																	claferFeature.getFeatureInheritsFromForAbstract(),
-																	false
-																	);
+			lblInheritsFrom.setText("Inherits from ");
+
+			Text txtFeatureInheritance;
+			txtFeatureInheritance = new Text(grpClaferFeature, SWT.BORDER);
+			txtFeatureInheritance.setEditable(false);
+			txtFeatureInheritance.setLayoutData(new RowData(160, SWT.DEFAULT));
+			txtFeatureInheritance.setText(claferFeature.getFeatureInheritance());
 		}
 		
 		if(claferFeature.getfeatureProperties().size()!=0){

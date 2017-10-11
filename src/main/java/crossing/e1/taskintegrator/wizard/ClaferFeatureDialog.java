@@ -38,7 +38,7 @@ public class ClaferFeatureDialog extends Dialog {
 	 * @param parentShell
 	 */
 	public ClaferFeatureDialog(Shell parentShell) {
-		this(parentShell, new ClaferFeature(FeatureType.ABSTRACT, "", null, null));
+		this(parentShell, new ClaferFeature(FeatureType.ABSTRACT, "", ""));
 	}
 
 	public ClaferFeatureDialog(Shell parentShell, ClaferFeature modifiableClaferFeature) {
@@ -113,6 +113,17 @@ public class ClaferFeatureDialog extends Dialog {
 
 		Combo comboInheritance = new Combo(container, SWT.NONE);
 		comboInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+
+		comboInheritance.addFocusListener(new FocusAdapter() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				resultClafer.setFeatureInheritance(comboInheritance.getText());
+				super.focusLost(e);
+			}
+		});
+
+		comboInheritance.setText(resultClafer.getFeatureInheritance());
 
 		Button btnAddProperty = new Button(container, SWT.NONE);
 		btnAddProperty.addSelectionListener(new SelectionAdapter() {

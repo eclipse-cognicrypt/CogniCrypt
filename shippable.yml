@@ -11,7 +11,7 @@ env:
   
 build:
   ci:
-   - git checkout NIGHTLYBUILD
+   - git checkout $NIGHTLYBUILD
    - cd mvn-parent
    - mvn clean verify surefire:test
    

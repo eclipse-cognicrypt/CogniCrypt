@@ -164,7 +164,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	@Override
 	public boolean isPageComplete() {
-		boolean flag = true;
 		for (Question question : page.getContent()) {
 			if (question.getElement() == crossing.e1.configurator.Constants.GUIElements.button) {
 				return this.finish;
@@ -188,7 +187,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	@Override
 	public void createControl(final Composite parent) {
 		final Composite container = new Composite(parent, SWT.NONE);
-		List<Control> fields = new ArrayList<Control>();
 		container.setBounds(10, 10, 450, 200);
 		// Updated the number of columns to order the questions vertically.
 		final GridLayout layout = new GridLayout(1, false);
@@ -204,15 +202,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				createQuestionControl(container, question);
 			}
 			//setting focus to the first field on the page
-			for (Control control : container.getChildren()) {
-				fields.add(control);
-			}
-
-			if (!fields.isEmpty()) {
-				fields.get(0).setFocus();
-			}
+			container.getChildren()[0].setFocus();
 		}
-
 		setControl(container);
 	}
 

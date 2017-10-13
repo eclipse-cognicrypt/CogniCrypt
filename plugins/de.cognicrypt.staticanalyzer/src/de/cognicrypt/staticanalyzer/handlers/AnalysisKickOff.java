@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.search.SearchMatch;
 import org.eclipse.jdt.core.search.SearchRequestor;
@@ -17,7 +18,7 @@ import de.cognicrypt.staticanalyzer.sootbridge.SootRunner;
 public class AnalysisKickOff {
 
 	private String mainClass;
-	private IProject curProj;
+	private IJavaProject curProj;
 	private ErrorMarkerGenerator errGen;
 
 	public boolean setUp() {
@@ -39,31 +40,34 @@ public class AnalysisKickOff {
 				}
 			}
 		};
-		
-		Utils.findMainMethodInCurrentProject(requestor);
-		curProj = Utils.getCurrentProject();
+		IProject ip = Utils.getCurrentProject();
+		try {
+			if (!ip.hasNature(JavaCore.NATURE_ID)) {
+				return false;
+			}
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e);
+			return false;
+		}
+		curProj = JavaCore.create(Utils.getCurrentProject());
+		Utils.findMainMethodInCurrentProject(curProj, requestor);
 		
 		return true;
 	}
 
 	public boolean run() {
-		 try {
-			if (curProj == null || !curProj.hasNature(JavaCore.NATURE_ID)){
-				 return false;
-			 }
-			//TODO Stefan, supply your CryptSLAnalysisListener as third argument here.
-			SootRunner.runSoot(JavaCore.create(curProj), mainClass, null);
-		} catch (CoreException e) {
-			Activator.getDefault().logError(e);
-			return false;
-		}
+		if (curProj == null){
+			 return false;
+		 }
+		//TODO Stefan, supply your CryptSLAnalysisListener as third argument here.
+		SootRunner.runSoot(curProj, mainClass, null);
 
 		return true;
 	}
 
 	public boolean cleanUp() {
 		try {
-			this.curProj.refreshLocal(IResource.DEPTH_INFINITE, null);
+			this.curProj.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 		} catch (CoreException e) {
 			Activator.getDefault().logError(e);
 			return false;

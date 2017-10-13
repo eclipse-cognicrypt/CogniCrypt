@@ -9,6 +9,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.IJavaSearchScope;
 import org.eclipse.jdt.core.search.SearchEngine;
@@ -22,7 +24,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.osgi.framework.Bundle;
-
 
 public class Utils {
 
@@ -41,22 +42,20 @@ public class Utils {
 				// running as application
 				return new File(inputPath);
 			} else {
-				final URL fileURL = bundle.getEntry(inputPath);
-				final URL resolvedURL = FileLocator.toFileURL(fileURL);
-				final URI uri = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
-				return new File(uri);
+				final URL resolvedURL = FileLocator.toFileURL(bundle.getEntry(inputPath));
+				return new File(new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null));
 			}
 		} catch (final Exception ex) {
-//			Activator.getDefault().logError(ex);
+			Activator.getDefault().logError(ex);
 		}
 
 		return null;
 	}
-	
+
 	public static IProject getCurrentProject() {
 		return getCurrentlyOpenFile().getProject();
 	}
-	
+
 	/**
 	 * This method returns the currently open editor as an {@link IEditorPart}.
 	 *
@@ -69,15 +68,16 @@ public class Utils {
 			public void run() {
 				setWindow(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
 			}
-			
+
 		});
 		if (window != null) {
 			return window.getActivePage().getActiveEditor();
 		}
 		return null;
 	}
-	
+
 	private static IWorkbenchWindow window = null;
+
 	protected static void setWindow(IWorkbenchWindow activeWorkbenchWindow) {
 		window = activeWorkbenchWindow;
 	}
@@ -109,19 +109,18 @@ public class Utils {
 		}
 		return null;
 	}
-	
-	public static void findMainMethodInCurrentProject(SearchRequestor requestor) {
+
+	public static void findMainMethodInCurrentProject(IJavaProject project, SearchRequestor requestor) {
 		SearchPattern sp = SearchPattern.createPattern("main", IJavaSearchConstants.METHOD, IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
-		
+
 		SearchEngine se = new SearchEngine();
-		final SearchParticipant[] searchParticipants = new SearchParticipant[]{SearchEngine.getDefaultSearchParticipant()};
-		final IJavaSearchScope scope = SearchEngine.createWorkspaceScope();
-		
+		final SearchParticipant[] searchParticipants = new SearchParticipant[] { SearchEngine.getDefaultSearchParticipant() };
+		final IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] { project });
+
 		try {
 			se.search(sp, searchParticipants, scope, requestor, null);
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Activator.getDefault().logError(e);
 		}
 	}
 

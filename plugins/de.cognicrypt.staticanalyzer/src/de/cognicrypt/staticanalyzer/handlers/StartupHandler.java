@@ -14,8 +14,8 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.IStartup;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import de.cognicrypt.staticanalyzer.Activator;
 
 
 /**
@@ -23,8 +23,6 @@ import org.slf4j.LoggerFactory;
  */
 public class StartupHandler implements IStartup {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(StartupHandler.class);
-	
 	private static final AfterBuildListener BUILD_LISTENER = new AfterBuildListener();
 
 	public void earlyStartup() {
@@ -74,7 +72,7 @@ public class StartupHandler implements IStartup {
 				ako.run();
 				ako.cleanUp();
 			} catch (CoreException e) {
-				LOGGER.debug("Internal error",e);
+				Activator.getDefault().logError(e, "Internal error");
 			}
 		}
 

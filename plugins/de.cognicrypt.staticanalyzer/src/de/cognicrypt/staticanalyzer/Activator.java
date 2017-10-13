@@ -1,5 +1,7 @@
 package de.cognicrypt.staticanalyzer;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -57,5 +59,25 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+	}
+	
+	private void log(final int severity, final String message, final Exception ex) {
+		getLog().log(new Status(severity, PLUGIN_ID, message, ex));
+	}
+
+	public void logError(final Exception ex) {
+		logError(ex, ex.getMessage());
+	}
+
+	public void logError(final Exception ex, final String message) {
+		log(IStatus.ERROR, message, ex);
+	}
+
+	public void logError(final String message) {
+		log(IStatus.ERROR, message, null);
+	}
+
+	public void logInfo(final String message) {
+		log(IStatus.INFO, message, null);
 	}
 }

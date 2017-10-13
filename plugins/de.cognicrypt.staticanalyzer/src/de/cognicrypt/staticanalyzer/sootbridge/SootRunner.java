@@ -25,6 +25,7 @@ import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
 import crypto.rules.StateNode;
+import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.Utils;
 import ideal.debug.IDebugger;
 import ideal.debug.NullDebugger;
@@ -46,7 +47,8 @@ public class SootRunner {
 		registerTransformers(reporter);
 		try {
 			runSoot(mainClass);
-		} catch(Throwable t) {
+		} catch(Exception t) {
+			Activator.getDefault().logError(t);
 		}
 	}
 
@@ -122,15 +124,6 @@ public class SootRunner {
 		}
 		return rules;
 	}
-	private static Set<String> extractClassNames(Collection<Set<String>> values) {
-		Set<String> res = new HashSet<String>();
-		for(Set<String> methodSignatures: values) {
-			for(String methodSig: methodSignatures) {
-				res.add(methodSig.substring(1,methodSig.indexOf(":")));
-			}
-		}
-		return res;
-	}
 	
 	private static List<String> projectClassPath(IJavaProject javaProject) {
 	    IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -149,7 +142,7 @@ public class SootRunner {
 	            }
 	            return urls;
 	    } catch (Exception e) {
-//	    	LOGGER.error("Error building project classpath",e);
+	    	Activator.getDefault().logError(e, "Error building project classpath");
 	    	return Lists.newArrayList();
 	    }
 	}

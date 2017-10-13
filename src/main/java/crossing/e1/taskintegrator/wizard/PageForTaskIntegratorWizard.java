@@ -5,6 +5,7 @@ package crossing.e1.taskintegrator.wizard;
 
 import java.util.ArrayList;
 
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -96,15 +97,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				//this.setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
 				//container.setLayout(new FillLayout(SWT.HORIZONTAL));
 				this.setCompositeForXsl(new CompositeForXsl(container, SWT.NONE));
-				//getCompositeForXsl().setBounds(0,0,887,500);
-				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);		
 				
-				/*//TODO move this combo box to the pop up.
-				Combo xslVariableCombo = new Combo(container, SWT.NONE);//displaying the tag to be included
-				xslVariableCombo.setBounds(900,0,155, 30);
-				xslVariableCombo.setItems(
-					new String[] { Constants.XSL_VARIABLE_TAG, Constants.XSL_SELECT_TAG, Constants.XSL_IF_TAG, Constants.XSL_RESULT_DOCUMENT, Constants.XSL_APPLY_TEMPLATES, Constants.XSL_CHOOSE_TAG, Constants.XSL_WHEN_TAG, Constants.XSL_OTHERWISE_TAG });
-				xslVariableCombo.select(0);*/
 				Button btnAddXSLTag = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
 				btnAddXSLTag.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
 				btnAddXSLTag.setText("Add Xsl Tag");
@@ -143,55 +136,18 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						
 						
 						XSLTagDialog dialog = new XSLTagDialog(getShell());
-						dialog.open();
+						//int test = dialog.open();
 						
-						//Retrieve the selected tag from the combo
-						/*String xslSelectedVariable = xslVariableCombo.getText();
-						String introduceTag = null;
-						//To check which xsl tag is selected and to include that xsl tag in the code
-						switch (xslSelectedVariable) {
-							case Constants.XSL_VARIABLE_TAG:
-								introduceTag = "<xsl:variable></xsl:variable>";
-								break;
-							case Constants.XSL_SELECT_TAG:
-								introduceTag = "<xsl:value-of select=\"\"/>";
-								break;
-							case Constants.XSL_IF_TAG:
-								introduceTag = "<xsl:if>";
-								break;
-							case Constants.XSL_RESULT_DOCUMENT:
-								introduceTag = "<xsl result-document href = \"\">";
-								break;
-							case Constants.XSL_APPLY_TEMPLATES:
-								introduceTag = "<xsl apply-templates select =\"\">";
-								break;
-							case Constants.XSL_CHOOSE_TAG:
-								introduceTag = "<xsl:choose></xsl:choose>";
-								break;
-							case Constants.XSL_WHEN_TAG:
-								introduceTag = "<xsl:when test =\"\"></xsl:when>";
-								break;
-							case Constants.XSL_OTHERWISE_TAG:
-								introduceTag = "<xsl:otherwise></xsl:otheriwse>";
-								break;
-
-						}*/
-						// To locate the position of the xsl tag to be introduce
-						/*Point selected = ((StyledText) getCompositeForXsl().getChildren()[0]).getSelection();
-						String xslTxtBoxContent = ((StyledText) getCompositeForXsl().getChildren()[0]).getText();
-						xslTxtBoxContent = xslTxtBoxContent.substring(0, selected.x) + introduceTag + xslTxtBoxContent.substring(selected.y, xslTxtBoxContent.length());
-						((StyledText) getCompositeForXsl().getChildren()[0]).setText(xslTxtBoxContent);*/
-
+						if(dialog.open() == Window.OK){
+							// To locate the position of the xsl tag to be introduce						
+							Point selected = getCompositeForXsl().getXslTxtBox().getSelection();
+							String xslTxtBoxContent = getCompositeForXsl().getXslTxtBox().getText();
+							xslTxtBoxContent = xslTxtBoxContent.substring(0, selected.x) + dialog.getTag().toString() + xslTxtBoxContent.substring(selected.y, xslTxtBoxContent.length());
+							getCompositeForXsl().getXslTxtBox().setText(xslTxtBoxContent);
+						}
+						
 					}
-				});
-
-				/*
-				 * xslVariableCombo.addSelectionListener(new SelectionAdapter() {
-				 * @Override public void widgetSelected(SelectionEvent e) { String xslSelectedVariable=xslVariableCombo.getText(); Point selected =
-				 * compositeToHoldGranularUIElements.xslTxtBox.getSelection(); String xslTxtBoxContent = compositeToHoldGranularUIElements.xslTxtBox.getText(); xslTxtBoxContent =
-				 * xslTxtBoxContent.substring(0, selected.x)+xslSelectedVariable+xslTxtBoxContent.substring(selected.y, xslTxtBoxContent.length());
-				 * compositeToHoldGranularUIElements.xslTxtBox.setText(xslTxtBoxContent); } });
-				 */
+				});				
 				break;
 			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
@@ -340,7 +296,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	/**
 	 * @return the compositeForXsl
 	 */
-	public Composite getCompositeForXsl() {
+	public CompositeForXsl getCompositeForXsl() {
 		return compositeForXsl;
 	}
 

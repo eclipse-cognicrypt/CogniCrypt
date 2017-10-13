@@ -9,6 +9,9 @@ import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Text;
+
+import crossing.e1.taskintegrator.models.XSLAttribute;
+
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.layout.RowData;
@@ -20,23 +23,24 @@ import org.eclipse.swt.events.FocusEvent;
 
 public class GroupXSLTagAttribute extends Group {
 	private Text txtAttributeName;
-	private String selectedAttributeName;
-	private String selectedAttributeData;
+	private XSLAttribute selectedAttribute;	
 
 	/**
 	 * Create the composite.
 	 * @param parent
 	 * @param style
 	 */
-	public GroupXSLTagAttribute(Composite parent, int style, boolean showRemoveButton, ArrayList<String> listOfPossibleAttributes) {
+	public GroupXSLTagAttribute(Composite parent, int style, boolean showRemoveButton, ArrayList<String> listOfPossibleAttributes, XSLAttribute attributeParam) {
 		super(parent, style);
 		setLayout(new RowLayout(SWT.HORIZONTAL));
+		
+		setSelectedAttribute(attributeParam);
 		
 		Combo cmbAttributeType = new Combo(this, SWT.NONE);
 		cmbAttributeType.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				setSelectedAttributeName(cmbAttributeType.getText());
+				getSelectedAttribute().setXSLAttributeName(cmbAttributeType.getText());
 			}
 		});
 		cmbAttributeType.setLayoutData(new RowData(148, SWT.DEFAULT));
@@ -50,11 +54,11 @@ public class GroupXSLTagAttribute extends Group {
 		
 		txtAttributeName = new Text(this, SWT.BORDER);
 		// Blank initial value.
-		setSelectedAttributeData("");
+		//setSelectedAttributeData("");
 		txtAttributeName.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent e) {
-				setSelectedAttributeData(txtAttributeName.getText());
+				selectedAttribute.setXSLAttributeData(txtAttributeName.getText());
 			}
 		});
 		txtAttributeName.setLayoutData(new RowData(167, SWT.DEFAULT));
@@ -81,28 +85,14 @@ public class GroupXSLTagAttribute extends Group {
 	/**
 	 * @return the selectedAttribute
 	 */
-	public String getSelectedAttributeName() {
-		return selectedAttributeName;
+	public XSLAttribute getSelectedAttribute() {
+		return selectedAttribute;
 	}
 
 	/**
 	 * @param selectedAttribute the selectedAttribute to set
 	 */
-	private void setSelectedAttributeName(String selectedAttribute) {
-		this.selectedAttributeName = selectedAttribute;
-	}
-
-	/**
-	 * @return the selectedAttributeData
-	 */
-	public String getSelectedAttributeData() {
-		return selectedAttributeData;
-	}
-
-	/**
-	 * @param selectedAttributeData the selectedAttributeData to set
-	 */
-	private void setSelectedAttributeData(String selectedAttributeData) {
-		this.selectedAttributeData = selectedAttributeData;
+	private void setSelectedAttribute(XSLAttribute selectedAttribute) {
+		this.selectedAttribute = selectedAttribute;
 	}
 }

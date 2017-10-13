@@ -14,6 +14,8 @@ import org.eclipse.swt.widgets.Shell;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.Constants.XSLTags;
+import crossing.e1.taskintegrator.models.XSLAttribute;
+import crossing.e1.taskintegrator.models.XSLTag;
 import crossing.e1.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 import crossing.e1.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 import crossing.e1.taskintegrator.widgets.GroupXSLTagAttribute;
@@ -33,6 +35,8 @@ public class XSLTagDialog extends Dialog {
 	private Button btnAddAttribute;
 	private Combo comboXSLTags;
 	private String currentSelectionStringOncomboXSLTags;
+	
+	private XSLTag tag;
 	
 	/**
 	 * Create the dialog.
@@ -85,7 +89,8 @@ public class XSLTagDialog extends Dialog {
 				ArrayList<String> possibleAttributes = getListOfPossibleAttributes(comboXSLTags.getText());
 				// If no more attributes possible.
 				if(possibleAttributes.size()>0){
-					compositeForXSLAttributes.addXSLAttributeUI(comboXSLTags.getText(), true, possibleAttributes);
+					// empty string as the XSL tag because the tag will initially be empty.
+					compositeForXSLAttributes.addXSLAttribute(new XSLAttribute("", ""), true, possibleAttributes);
 				} else{
 					MessageBox headsUpMessageBox = new MessageBox(getShell(), SWT.ICON_INFORMATION
 			            | SWT.OK);
@@ -145,8 +150,8 @@ public class XSLTagDialog extends Dialog {
 				
 		
 		 for(Control attribute : ((Composite)compositeForXSLAttributes.getContent()).getChildren()){			 
-			 if(listOfPossibleAttributes.contains(((GroupXSLTagAttribute) attribute).getSelectedAttributeName())){
-				 listOfPossibleAttributes.remove(((GroupXSLTagAttribute) attribute).getSelectedAttributeName());
+			 if(listOfPossibleAttributes.contains(((GroupXSLTagAttribute) attribute).getSelectedAttribute().getXSLAttributeName())){
+				 listOfPossibleAttributes.remove(((GroupXSLTagAttribute) attribute).getSelectedAttribute().getXSLAttributeName());
 			 }
 		 }
 		
@@ -188,6 +193,30 @@ public class XSLTagDialog extends Dialog {
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
+	 */
+	@Override
+	protected void okPressed() {
+		
+		Constants.XSLTags selectedTag = null;
+		ArrayList<XSLAttribute> attributesOnThisTag = new ArrayList<XSLAttribute>(); 
+		
+		for(Constants.XSLTags tagUnderConsideration : Constants.XSLTags.values()){
+			if(tagUnderConsideration.getXSLTagFaceName().equals(getCurrentSelectionStringOncomboXSLTags())){
+				selectedTag = tagUnderConsideration;
+			}
+		}
+		
+		
+		 for(Control attribute : ((Composite)compositeForXSLAttributes.getContent()).getChildren()){
+			 attributesOnThisTag.add(((GroupXSLTagAttribute) attribute).getSelectedAttribute());			 
+		 }
+		
+		setTag(new XSLTag(selectedTag, attributesOnThisTag));
+		super.okPressed();
+	}
+
 	/**
 	 * Return the initial size of the dialog.
 	 */
@@ -208,6 +237,20 @@ public class XSLTagDialog extends Dialog {
 	 */
 	private void setCurrentSelectionStringOncomboXSLTags(String currentSelectionStringOncomboXSLTags) {
 		this.currentSelectionStringOncomboXSLTags = currentSelectionStringOncomboXSLTags;
+	}
+
+	/**
+	 * @return the tag
+	 */
+	public XSLTag getTag() {
+		return tag;
+	}
+
+	/**
+	 * @param tag the tag to set
+	 */
+	private void setTag(XSLTag tag) {
+		this.tag = tag;
 	}
 
 }

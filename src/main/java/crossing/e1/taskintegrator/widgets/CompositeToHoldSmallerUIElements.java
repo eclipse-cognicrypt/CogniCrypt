@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Control;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.taskintegrator.models.FeatureProperty;
+import crossing.e1.taskintegrator.models.XSLAttribute;
 
 
 
@@ -20,7 +21,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	private ArrayList<FeatureProperty> featureProperties;
 	private ArrayList<String> featureConstraints;
 	private Composite composite;
-	private Map<String, String> XSLAttributes; // <attributeName, actualAttributeString>
+	private ArrayList<XSLAttribute> XSLAttributes; // <attributeName, actualAttributeString>
 	
 
 
@@ -46,7 +47,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		featureProperties = new ArrayList<FeatureProperty>();
 		featureConstraints = new ArrayList<String>();
 
-		setXSLAttributes(new HashMap<String, String>());
+		XSLAttributes = new ArrayList<XSLAttribute>();
 		
 		addData(targetArrayListOfDataToBeDisplayed, showRemoveButton);
 
@@ -113,8 +114,13 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
 	
-	public void addXSLAttributeUI(String XSLTag, boolean showRemoveButton, ArrayList<String> listOfPossibleAttributes){
-		GroupXSLTagAttribute groupforXSLTagAttribute = new GroupXSLTagAttribute((Composite) getContent(), SWT.NONE, showRemoveButton, listOfPossibleAttributes);
+	public void addXSLAttribute(XSLAttribute XSLAttrubuteParam, boolean showRemoveButton, ArrayList<String> listOfPossibleAttributes ){
+		XSLAttributes.add(XSLAttrubuteParam);
+		addXSLAttributeUI(XSLAttrubuteParam,showRemoveButton,listOfPossibleAttributes);
+	}
+	
+	private void addXSLAttributeUI(XSLAttribute XSLAttrubuteParam, boolean showRemoveButton, ArrayList<String> listOfPossibleAttributes){
+		GroupXSLTagAttribute groupforXSLTagAttribute = new GroupXSLTagAttribute((Composite) getContent(), SWT.NONE, showRemoveButton, listOfPossibleAttributes, XSLAttrubuteParam);
 		groupforXSLTagAttribute.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT,
 			Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
 		
@@ -184,6 +190,10 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 			for (String fc : featureConstraints) {
 				addFeatureConstraintUI(fc, true);
 			}
+		} else if(XSLAttributes.size() > 0){
+			for(XSLAttribute attribute : XSLAttributes){
+				//TODO this is for the remove functionality.
+			}
 		}
 
 	}
@@ -191,14 +201,15 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	/**
 	 * @return the xSLAttributes
 	 */
-	public Map<String,String> getXSLAttributes() {
+	public ArrayList<XSLAttribute> getXSLAttributes() {
 		return XSLAttributes;
 	}
 
 	/**
 	 * @param xSLAttributes the xSLAttributes to set
 	 */
-	private void setXSLAttributes(Map<String,String> xSLAttributes) {
+	// TODO use this somewhere
+	private void setXSLAttributes(ArrayList<XSLAttribute> xSLAttributes) {
 		XSLAttributes = xSLAttributes;
 	}
 

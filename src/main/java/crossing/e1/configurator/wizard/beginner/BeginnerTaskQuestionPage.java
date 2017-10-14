@@ -161,16 +161,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		for (Question question : page.getContent()) {
 			if (question.getElement() == crossing.e1.configurator.Constants.GUIElements.button) {
 				return this.finish;
-			}
-
-			if (question.getElement() == crossing.e1.configurator.Constants.GUIElements.itemselection) {
+			} else if (question.getElement() == crossing.e1.configurator.Constants.GUIElements.itemselection) {
 				return this.finish;
 			}
 
 			if (question.getEnteredAnswer() == null) {
 				return false;
-			}
-			if (question.getEnteredAnswer() != null && question.getEnteredAnswer().getValue().isEmpty()) {
+			} else if (question.getEnteredAnswer().getValue().isEmpty()) {
 				return false;
 			}
 

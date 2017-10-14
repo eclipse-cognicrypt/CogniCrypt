@@ -157,11 +157,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	}
 
 	@Override
-	public boolean canFlipToNextPage() {
-		return this.finish && isPageComplete();
-	}
-
-	@Override
 	public boolean isPageComplete() {
 		for (Question question : page.getContent()) {
 			if (question.getElement() == crossing.e1.configurator.Constants.GUIElements.button) {

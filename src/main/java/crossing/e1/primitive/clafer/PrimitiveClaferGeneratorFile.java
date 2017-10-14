@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class PrimitiveClaferGenerator {
+public class PrimitiveClaferGeneratorFile {
 
 	private File file;
 	private String path;
 
-	public PrimitiveClaferGenerator(File file, String path) {
+	public PrimitiveClaferGeneratorFile(File file, String path) {
 		this.file = file;
 		this.path=path;
 	}

@@ -22,6 +22,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -48,7 +49,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	private List<String> selectionValues;
 	public String selectedValue;
 	private String claferDepend = "";
-
+	private  int itr=0;
 	private final Page page;
 
 	/**
@@ -115,7 +116,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	 *        Updated this parameter in the constructor to accept the questionnaire instead of all the questions.
 	 * @param selectionValues
 	 */
-	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, final PrimitiveQuestionnaire PrimitiveQuestionnaire, final List<String> selectionValues) {
+	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, final PrimitiveQuestionnaire PrimitiveQuestionnaire, final List<String> selectionValues, int itr) {
 		super("Display Questions");
 		setTitle("Configuring Selected primitive: " + primitive.getName());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
@@ -124,6 +125,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		this.page = page;
 		this.primitive = primitive;
 		this.selectionValues = selectionValues;
+		this.itr=itr;
 	}
 
 	/**
@@ -141,6 +143,29 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		this.quest = quest;
 		this.page = null;
 		this.primitive = primitive;
+	}
+
+	public PrimitiveQuestionnairePage(final Question quest, final Primitive primitive, int itr) {
+		super("Display Quesitons");
+		setTitle("Configuring selected primitive:" + primitive.getName());
+		setDescription("Key sizes");
+		this.quest = quest;
+		this.page = null;
+		this.primitive = primitive;
+		this.itr = itr;
+		
+	}
+	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive,  int itr){
+		super("Display Questions");
+		setTitle("Configuring Selected primitive: " + primitive.getName());
+		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
+		this.page = page;
+		this.primitive = primitive;
+		this.selectionValues = selectionValues;
+		this.itr=itr;
+
+		//This variable needs to be initialized.
+		this.quest = null;
 	}
 
 	@Override
@@ -188,9 +213,8 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 				comboViewer.addSelectionChangedListener(selectedElement -> {
 					final IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
-					PrimitiveQuestionnairePage.this.selectionMap.put(question, (Answer) selection.getFirstElement());
-					claferDepend = answers.get(0).getClaferDependencies().get(0).getAlgorithm();
 					selectedValue = claferDepend + selection.getFirstElement();
+					this.itr=Integer.parseInt(selectedValue);
 				});
 				this.finish = true;
 				PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
@@ -300,48 +324,58 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 						Text text = (Text) event.widget;
 						claferDepend = answers.get(0).getClaferDependencies().get(0).getAlgorithm();
 						selectedValue = claferDepend + text.getText();
-
+						
 					}
 				});
 				this.finish = true;
 				PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
 				break;
-			case composed:
-				container.setLayout(new RowLayout());
-				Button[] radioButton = new Button[answers.size()];
-				for (int i = 0; i < answers.size(); i++) {
-					String ans = answers.get(i).getValue();
-					radioButton[i] = new Button(container, SWT.RADIO);
-					radioButton[i].setText(ans);
-				}
-				Text[] textField = new Text[answers.size()];
+case composed:
+	container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+	container.setLayout(new GridLayout(1, false));
+	Composite contentContainer = new Composite(container, SWT.NONE);
+	contentContainer.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+	contentContainer.setLayout(new GridLayout(4, false));
 
-				for (int i = 0; i < answers.size(); i++) {
-					textField[i] = new Text(container, SWT.SINGLE | SWT.BORDER);
-					radioButton[i].addSelectionListener(new SelectionAdapter() {
+	
 
-						@Override
-						public void widgetSelected(SelectionEvent e) {
-							Button source = (Button) e.getSource();
-							if (answers.get(getIndex(answers, source.getText())).getClaferDependencies() != null) {
-								claferDepend = answers.get(getIndex(answers, source.getText())).getClaferDependencies().get(0).getAlgorithm();
+	for (int j = 0; j < this.itr; j++) {
+		Button[] radioButton = new Button[answers.size()];
+			for (int i = 0; i < answers.size(); i++) {
+				String ans = answers.get(i).getValue();
+				radioButton[i] = new Button(contentContainer, SWT.RADIO);
+				radioButton[i].setText(ans);
 
+					}
+					Text[] textField = new Text[answers.size()];
+					for (int i = 0; i < answers.size(); i++) {
+						textField[i] = new Text(contentContainer, SWT.SINGLE | SWT.BORDER);
+						radioButton[i].addSelectionListener(new SelectionAdapter() {
+
+							@Override
+							public void widgetSelected(SelectionEvent e) {
+								Button source = (Button) e.getSource();
+								if (answers.get(getIndex(answers, source.getText())).getClaferDependencies() != null) {
+									claferDepend = answers.get(getIndex(answers, source.getText())).getClaferDependencies().get(0).getAlgorithm();
+
+								}
+								if (source.getText().equals("fixed size"))
+									textField[1].setEnabled(false);
+								else
+									textField[1].setEnabled(true);
 							}
-							if (source.getText().equals("fixed size"))
-								textField[1].setEnabled(false);
-							else
-								textField[1].setEnabled(true);
-						}
-					});
-					textField[i].addModifyListener(new ModifyListener() {
+						});
+						textField[i].addModifyListener(new ModifyListener() {
 
-						@Override
-						public void modifyText(ModifyEvent event) {
-							Text text = (Text) event.widget;
-							selectedValue = claferDepend + text.getText();
-						}
+							@Override
+							public void modifyText(ModifyEvent event) {
+								Text text = (Text) event.widget;
+								selectedValue = claferDepend + text.getText();
+							}
 
-					});
+						});
+
+					}
 
 				}
 				this.finish = true;
@@ -365,6 +399,9 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		}
 		return index;
 
+	}
+	public int getItr(){
+		return this.itr;
 	}
 
 	/**

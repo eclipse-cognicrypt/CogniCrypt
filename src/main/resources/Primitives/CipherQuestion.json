@@ -93,17 +93,24 @@
     "content":
     [{
       "id": "0",
-      "element": "text",
+      "element": "combo",
       "questionText": "How many keys include your algorithm ?",
       "answers": [{
-          "value": "",
-          "codeDependencies": [{
-            "option": "textsize",
-            "value": "true"
-          }],
+          "value": "1" },
+          {
+          "value": "2"},
+          {
+          "value": "3" },
+          {
+          "value": "4" },
+          {
+          "value": "5",
+        
           "defaultAnswer": true
+          
         }
-      ]
+      ],
+      "updateNextPage": true
     },
     {
       "id": "1",

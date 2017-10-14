@@ -50,7 +50,7 @@ public class IntegrationNewPrimitive extends Wizard {
 		return updateRound;
 	}
 
-	private void createPrimitivePage(final Page curPage, final PrimitiveQuestionnaire primitiveQuestionnaire) {
+	private void createPrimitivePage(final Page curPage, final PrimitiveQuestionnaire primitiveQuestionnaire, int itr) {
 		List<String> selection = null;
 		if (curPage.getContent().size() == 1) {
 			final Question curQuestion = curPage.getContent().get(0);
@@ -64,7 +64,7 @@ public class IntegrationNewPrimitive extends Wizard {
 			//			}
 		}
 		// Pass the questionnaire instead of the all of the questions. 
-		this.preferenceSelectionPage = new PrimitiveQuestionnairePage(curPage, this.primitiveQuestions.getPrimitive(), primitiveQuestionnaire, selection);
+		this.preferenceSelectionPage = new PrimitiveQuestionnairePage(curPage, this.primitiveQuestions.getPrimitive(), primitiveQuestionnaire, selection, itr);
 	}
 
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
@@ -94,6 +94,12 @@ public class IntegrationNewPrimitive extends Wizard {
 
 			this.constraints.put(entry.getKey(), entry.getValue());
 		}
+		if(primitiveQuestionPage.getItr()>0){
+			int itr=primitiveQuestionPage.getItr();
+			System.out.println("HERE is :"+ itr);
+			
+		}
+
 
 		if (this.primitiveQuestions.hasMorePages()) {
 			int nextID = -1;
@@ -109,7 +115,7 @@ public class IntegrationNewPrimitive extends Wizard {
 			}
 			if (nextID > -1) {
 				final Page curPage = this.primitiveQuestions.setPageByID(nextID);
-				createPrimitivePage(curPage, primitiveQuestions);
+				createPrimitivePage(curPage, primitiveQuestions, primitiveQuestionPage.getItr());
 				if (checkifInUpdateRound()) {
 					this.primitiveQuestions.previousPage();
 				}
@@ -134,7 +140,7 @@ public class IntegrationNewPrimitive extends Wizard {
 	}
 
 	public IWizardPage getPreviousPage(final IWizardPage currentPage) {
-		final boolean lastPage = currentPage instanceof InstanceListPage;
+		final boolean lastPage = currentPage instanceof PrimitivePages;
 		if (currentPage instanceof PrimitiveQuestionnairePage || lastPage) {
 			if (!this.primitiveQuestions.isFirstPage()) {
 				this.primitiveQuestions.previousPage();

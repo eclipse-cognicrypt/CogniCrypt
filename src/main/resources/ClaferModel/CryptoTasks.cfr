@@ -25,11 +25,16 @@ ECB : Mode
 CBC : Mode
 OFB : Mode
 
+//enum Provider
+abstract Provider : Enum
+JCA : Provider
+
 abstract Algorithm
     name -> string
     description -> string
     security -> Security
     performance -> Performance
+    provider -> Provider
 
 abstract Digest : Algorithm
     outputSize -> integer

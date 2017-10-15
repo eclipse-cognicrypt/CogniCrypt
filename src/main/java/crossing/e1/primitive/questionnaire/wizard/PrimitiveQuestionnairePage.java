@@ -47,9 +47,9 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	private HashMap<Question, Answer> selectionMap = new HashMap<Question, Answer>();
 	private boolean finish = false;
 	private List<String> selectionValues;
-	public String selectedValue;
+	public String selectedValue="";
 	private String claferDepend = "";
-	private  int itr=0;
+	private int itr = 0;
 	private final Page page;
 
 	/**
@@ -125,7 +125,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		this.page = page;
 		this.primitive = primitive;
 		this.selectionValues = selectionValues;
-		this.itr=itr;
+		this.itr = itr;
 	}
 
 	/**
@@ -153,16 +153,17 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		this.page = null;
 		this.primitive = primitive;
 		this.itr = itr;
-		
+
 	}
-	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive,  int itr){
+
+	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, int itr) {
 		super("Display Questions");
 		setTitle("Configuring Selected primitive: " + primitive.getName());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.page = page;
 		this.primitive = primitive;
 		this.selectionValues = selectionValues;
-		this.itr=itr;
+		this.itr = itr;
 
 		//This variable needs to be initialized.
 		this.quest = null;
@@ -213,8 +214,23 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 				comboViewer.addSelectionChangedListener(selectedElement -> {
 					final IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
-					selectedValue = claferDepend + selection.getFirstElement();
-					this.itr=Integer.parseInt(selectedValue);
+					if (answers.get(getIndex(answers, selection.getFirstElement().toString())).getClaferDependencies() != null) {
+						claferDepend = answers.get(getIndex(answers, selection.getFirstElement().toString())).getClaferDependencies().get(0).getAlgorithm();
+						if (selectedValue.isEmpty()) {
+							selectedValue = claferDepend + selection.getFirstElement();
+						} else {
+							if (!selectedValue.contains(selection.getFirstElement().toString())) {
+								selectedValue += "||" + claferDepend + selection.getFirstElement();
+
+							}
+						}
+					}
+					try {
+						this.itr = Integer.parseInt(selection.getFirstElement().toString());
+					} catch (Exception e) {
+
+					}
+
 				});
 				this.finish = true;
 				PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
@@ -222,7 +238,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				break;
 			case checkbox:
 				container.setLayout(new RowLayout(SWT.VERTICAL));
-				selectedValue = "";
 				Button[] checkbox = new Button[answers.size()];
 				for (int i = 0; i < answers.size(); i++) {
 					String ans = answers.get(i).getValue();
@@ -236,7 +251,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 							if (source.getSelection()) {
 								if (answers.get(getIndex(answers, source.getText())).getClaferDependencies() != null) {
 									claferDepend = answers.get(getIndex(answers, source.getText())).getClaferDependencies().get(0).getAlgorithm();
-									if (selectedValue.equals("")) {
+									if (selectedValue.isEmpty()) {
 										selectedValue = claferDepend + source.getText();
 									} else {
 										if (!selectedValue.contains(source.getText())) {
@@ -324,27 +339,25 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 						Text text = (Text) event.widget;
 						claferDepend = answers.get(0).getClaferDependencies().get(0).getAlgorithm();
 						selectedValue = claferDepend + text.getText();
-						
+
 					}
 				});
 				this.finish = true;
 				PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
 				break;
-case composed:
-	container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-	container.setLayout(new GridLayout(1, false));
-	Composite contentContainer = new Composite(container, SWT.NONE);
-	contentContainer.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-	contentContainer.setLayout(new GridLayout(4, false));
+			case composed:
+				container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+				container.setLayout(new GridLayout(1, false));
+				Composite contentContainer = new Composite(container, SWT.NONE);
+				contentContainer.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+				contentContainer.setLayout(new GridLayout(4, false));
 
-	
-
-	for (int j = 0; j < this.itr; j++) {
-		Button[] radioButton = new Button[answers.size()];
-			for (int i = 0; i < answers.size(); i++) {
-				String ans = answers.get(i).getValue();
-				radioButton[i] = new Button(contentContainer, SWT.RADIO);
-				radioButton[i].setText(ans);
+				for (int j = 0; j < this.itr; j++) {
+					Button[] radioButton = new Button[answers.size()];
+					for (int i = 0; i < answers.size(); i++) {
+						String ans = answers.get(i).getValue();
+						radioButton[i] = new Button(contentContainer, SWT.RADIO);
+						radioButton[i].setText(ans);
 
 					}
 					Text[] textField = new Text[answers.size()];
@@ -378,6 +391,7 @@ case composed:
 					}
 
 				}
+				this.itr = 0;
 				this.finish = true;
 				PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
 			default:
@@ -400,7 +414,8 @@ case composed:
 		return index;
 
 	}
-	public int getItr(){
+
+	public int getItr() {
 		return this.itr;
 	}
 
@@ -438,6 +453,7 @@ case composed:
 		if (prev != null && prev instanceof PrimitiveQuestionnairePage) {
 			return getWizard().getPreviousPage(this);
 		}
+//		prev.setPreviousPage(this.getNextPage());
 		return prev;
 	}
 

@@ -14,6 +14,8 @@ import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Page;
 import crossing.e1.configurator.beginer.question.Question;
 import crossing.e1.configurator.wizard.InstanceListPage;
+import crossing.e1.configurator.wizard.advanced.AdvancedUserValueSelectionPage;
+import crossing.e1.configurator.wizard.beginner.BeginnerTaskQuestionPage;
 import crossing.e1.primitive.questionnaire.wizard.PrimitiveQuestionnaire;
 import crossing.e1.primitive.questionnaire.wizard.PrimitiveQuestionnairePage;
 import crossing.e1.primitive.types.Primitive;
@@ -132,16 +134,17 @@ public class IntegrationNewPrimitive extends Wizard {
 				if (this.preferenceSelectionPage != null) {
 					addPage(this.preferenceSelectionPage);
 				}
-
+				
 				return this.preferenceSelectionPage;
 			}
 		}
+		
 		return currentPage;
 	}
 
 	public IWizardPage getPreviousPage(final IWizardPage currentPage) {
-		final boolean lastPage = currentPage instanceof PrimitivePages;
-		if (currentPage instanceof PrimitiveQuestionnairePage || lastPage) {
+		final boolean lastPage = currentPage instanceof InstanceListPage;
+		if (!checkifInUpdateRound() &&currentPage instanceof PrimitiveQuestionnairePage || lastPage) {
 			if (!this.primitiveQuestions.isFirstPage()) {
 				this.primitiveQuestions.previousPage();
 			}

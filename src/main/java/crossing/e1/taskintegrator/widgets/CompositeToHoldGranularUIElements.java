@@ -19,6 +19,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	private ArrayList<ClaferFeature> listOfAllClaferFeatures;
 	
 	private ArrayList<Question> listOfAllQuestions;
+	int counter;
 	
 	/**
 	 * Create the composite.  
@@ -154,8 +155,21 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 				break;
 			}
 		}
-		
 		updateClaferContainer();
+	}
+	
+	public void modifyHighLevelQuestion(Question originalQuestion, Question modifiedQuestion ){
+		for(Question questionUnderConsideration:listOfAllQuestions){
+			if(questionUnderConsideration.equals(originalQuestion)){
+				questionUnderConsideration.setQuestionText(modifiedQuestion.getQuestionText());
+				questionUnderConsideration.setQuestionType(modifiedQuestion.getQuestionType());
+				questionUnderConsideration.getAnswers().clear();
+				questionUnderConsideration.setAnswers(modifiedQuestion.getAnswers());
+				break;
+			}
+		}
+		//deleteQuestion(originalQuestion);
+		updateQuestionContainer();
 	}
 
 	@Override

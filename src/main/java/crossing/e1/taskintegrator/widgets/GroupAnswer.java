@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
@@ -36,7 +37,14 @@ public class GroupAnswer extends Group {
 			txtAnswer.setText(answer.getValue());
 		}
 		txtAnswer.setBounds(3, 3, 420, 29);
-	
+		
+		txtAnswer.addFocusListener(new FocusAdapter(){
+			@Override
+			public void focusLost(FocusEvent e){
+				answer.setValue(txtAnswer.getText());
+			}
+		});
+		
 		if (showRemoveButton) {
 			Button btnRemove = new Button(this, SWT.NONE);
 			btnRemove.setBounds(429, 3, 79, 31);
@@ -50,7 +58,7 @@ public class GroupAnswer extends Group {
 					int response = confirmationMessageBox.open();
 					if (response == SWT.YES){
 			        ((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent()).deleteAnswer(answer);
-			        ((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent()).updateAnswerContainer();
+			       // ((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent()).updateAnswerContainer();
 
 			        }
 			        
@@ -63,16 +71,16 @@ public class GroupAnswer extends Group {
 	/**
 	 * @return the answer text
 	 */
-	public String retrieveAnswer(){
+	/*public String retrieveAnswer(){
 		getAnswer=txtAnswer.getText();
 		return getAnswer;
 	}
-	/**
+	*//**
 	 * set the answer text
-	 */
+	 *//*
 	public void setAnswerValue(){
 		answer.setValue(this.retrieveAnswer());
-	}
+	}*/
 
 	@Override
 	protected void checkSubclass() {

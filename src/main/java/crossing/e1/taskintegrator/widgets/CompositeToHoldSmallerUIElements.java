@@ -108,7 +108,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	
 	public void addAnswer(Answer answer, boolean showRemoveButton){
 		GroupAnswer groupForAnswer =  new GroupAnswer((Composite) getContent(), SWT.NONE, answer,showRemoveButton);
-		setListOfAllGroupAnswer(groupForAnswer);	
 		groupForAnswer.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(),651,
 			39);
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
@@ -116,19 +115,11 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
 	
-	public void readAnswerValue(){
-		for(GroupAnswer gAnswer:groupAnswers){
-			gAnswer.getAnswer().setValue(gAnswer.retrieveAnswer());	
-		}
-		
-	}
-	
 	/**
 	 * To delete the answer
 	 * @param answerToBeDeleted
 	 */
 	public void deleteAnswer(Answer answerToBeDeleted){
-		readAnswerValue();
 		arrayAnswer.remove(answerToBeDeleted);
 		updateAnswerContainer();
 	}
@@ -148,20 +139,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 			}		
 	}
 	
-	/**
-	 * update the GroupAnswer array
-	 * @param groupForAnswer
-	 */
-	public void setListOfAllGroupAnswer(GroupAnswer groupForAnswer){
-		groupAnswers.add(groupForAnswer);
-
-	}
-	/**
-	 * @return the gropAnswers 
-	 */
-		public ArrayList<GroupAnswer> getListOfAllGroupAnswer(){
-		return groupAnswers;
-	}
 	
 	@Override
 	protected void checkSubclass() {
@@ -194,7 +171,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	public ArrayList<String> getFeatureConstraints() {
 		return featureConstraints;
 	}
-	
+		
 	/**
 	 * @return the listOfAllAnswer
 	 */

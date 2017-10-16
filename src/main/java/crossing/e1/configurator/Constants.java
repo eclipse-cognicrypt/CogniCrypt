@@ -48,6 +48,9 @@ public class Constants {
 	public static final String pathToPropertyfiles = rsrcPath + "Labels.properties";
 
 	// Task descriptions
+	
+	// Tooltip 
+	public static final String DESCRIPTION_BOX_TOOLTIP = "Here is the description for the cryptographic task that you have selected";
 
 	// if the next question page depends on user input, the Page object encodes this as a nextPageID as opposed to the one that the last page points to
 	public static final int QUESTION_PAGE_NO_STATIC_NEXT_PAGE_ID = -2;
@@ -94,7 +97,7 @@ public class Constants {
 
 	public static final String JAVA = "java";
 	public static final String ALGORITHM = "algorithm";
-	public static final String ADVANCED_MODE = "Advanced Mode";
+	public static final String GUIDED_MODE = "Use the guided mode for configuring the task";
 
 	public static final String Package = "Package";
 	public static final String Description = "description";
@@ -115,7 +118,8 @@ public class Constants {
 	public static final String INSTANCE_DETAILS = "Instance Details";
 	public static final String ARIAL = "Arial";
 	public static final String SELECT_JAVA_PROJECT = "Select a Java Project :";
-	public static final String SELECT_TASK = "Select Task :";
+	public static final String SELECT_TASK = "Select a Task :";
+	public static final String TASK_DESCRIPTION = "Task Description :";
 	public static final String NO_XML_INSTANCE_FILE_TO_WRITE = "No xml instance file to write.";
 	public static final String CLAFER_ALGORITHM = "_Algorithm";
 

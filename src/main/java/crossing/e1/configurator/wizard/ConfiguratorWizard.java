@@ -170,18 +170,18 @@ public class ConfiguratorWizard extends Wizard {
 		if (currentPage == this.taskListPage && this.taskListPage.isPageComplete()) {
 			this.claferModel = new ClaferModel(Utils.getResourceFromWithin(selectedTask.getModelFile()));
 
-			if (this.taskListPage.isAdvancedMode()) {
-				this.preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, (AstConcreteClafer) org.clafer.cli.Utils
-					.getModelChildByName(this.claferModel.getModel(), "c0_" + selectedTask.getName()));
+			if (this.taskListPage.isGuidedMode()) {
+				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile()); 
+				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(),null);
 			} else {
 				// Updated the calls to accommodate for the pages instead of questions.
 				//this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
 				//this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextQuestion(), this.beginnerQuestions.getTask());
 
 				// The 3rd parameter in this constructor call is benign, it only exists to call the constructor designed for pages
-				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
-				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(), null);
-			}
+				this.preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, (AstConcreteClafer) org.clafer.cli.Utils
+									.getModelChildByName(this.claferModel.getModel(), "c0_" + selectedTask.getName()));
+				   }
 			if (this.constraints != null) {
 				this.constraints = null;
 			}
@@ -194,9 +194,7 @@ public class ConfiguratorWizard extends Wizard {
 		 * If current page is either question or properties page (in Advanced mode)
 		 */
 		else if (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage) {
-			if (this.taskListPage.isAdvancedMode()) {
-				// TODO: Implement for Advanced Mode
-			} else {
+			if (this.taskListPage.isGuidedMode()) {
 				if (this.constraints == null) {
 					this.constraints = new HashMap<>();
 				}
@@ -244,9 +242,7 @@ public class ConfiguratorWizard extends Wizard {
 			final InstanceGenerator instanceGenerator = new InstanceGenerator(Utils.getResourceFromWithin(selectedTask.getModelFile())
 				.getAbsolutePath(), "c0_" + this.taskListPage.getSelectedTask().getName(), this.taskListPage.getSelectedTask().getDescription());
 
-			if (this.taskListPage.isAdvancedMode()) {
-				instanceGenerator.generateInstancesAdvancedUserMode(((AdvancedUserValueSelectionPage) currentPage).getConstraints());
-			} else {
+			if (this.taskListPage.isGuidedMode()) {
 				// running in beginner mode
 				instanceGenerator.generateInstances(this.constraints);
 			}
@@ -257,7 +253,7 @@ public class ConfiguratorWizard extends Wizard {
 				return this.instanceListPage;
 			} else {
 				if ("nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[3].getMethodName())) {
-					final String message = this.taskListPage.isAdvancedMode() ? Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE : Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER;
+					final String message = this.taskListPage.isGuidedMode() ? Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER : Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE;
 					MessageDialog.openError(new Shell(), "Error", message);
 				}
 			}

@@ -84,6 +84,7 @@
       "questionText": "Which multi-party-computation scenario do you want to implement?",
       "answers": [{
           "value": "Millionaire's Comparison",
+          "tooltip": "abc",
           "claferDependencies": [{
             "algorithm": "aby",
             "value": "Millionaire",
@@ -93,6 +94,7 @@
         },
         {
           "value": "Euclidean Distance",
+          "tooltip": "abc",
           "claferDependencies": [{
             "algorithm": "aby",
             "value": "Euclid",

@@ -194,6 +194,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				final ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY);
 				comboViewer.setContentProvider(ArrayContentProvider.getInstance());
 				comboViewer.setInput(answers);
+				
+				
 
 				comboViewer.addSelectionChangedListener(selectedElement -> {
 					final IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();

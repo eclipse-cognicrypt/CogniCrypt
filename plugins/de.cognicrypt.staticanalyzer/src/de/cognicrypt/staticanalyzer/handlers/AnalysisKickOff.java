@@ -1,7 +1,5 @@
 package de.cognicrypt.staticanalyzer.handlers;
 
-import java.io.PrintStream;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -13,13 +11,15 @@ import org.eclipse.jdt.core.search.SearchRequestor;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.Utils;
 import de.cognicrypt.staticanalyzer.results.ErrorMarkerGenerator;
+import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.staticanalyzer.sootbridge.SootRunner;
 
 public class AnalysisKickOff {
 
 	private String mainClass;
 	private IJavaProject curProj;
-	private ErrorMarkerGenerator errGen;
+	private static ErrorMarkerGenerator errGen;
+	private static ResultsCCUIListener resultsReporter;
 
 	public boolean setUp() {
 		if (errGen == null) {
@@ -27,6 +27,10 @@ public class AnalysisKickOff {
 		} else {
 			errGen.clearMarkers();
 		}
+		if (resultsReporter == null) {
+			resultsReporter = new ResultsCCUIListener(errGen);
+		}
+		
 		SearchRequestor requestor = new SearchRequestor() {
 
 			@Override
@@ -49,7 +53,7 @@ public class AnalysisKickOff {
 			Activator.getDefault().logError(e);
 			return false;
 		}
-		curProj = JavaCore.create(Utils.getCurrentProject());
+		curProj = JavaCore.create(ip);
 		Utils.findMainMethodInCurrentProject(curProj, requestor);
 		
 		return true;
@@ -59,8 +63,7 @@ public class AnalysisKickOff {
 		if (curProj == null){
 			 return false;
 		 }
-		//TODO Stefan, supply your CryptSLAnalysisListener as third argument here.
-		SootRunner.runSoot(curProj, mainClass, null);
+		SootRunner.runSoot(curProj, mainClass, resultsReporter);
 
 		return true;
 	}

@@ -3,11 +3,8 @@ package de.cognicrypt.staticanalyzer.sootbridge;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -20,7 +17,7 @@ import com.google.common.collect.Lists;
 import boomerang.cfg.ExtendedICFG;
 import boomerang.cfg.IExtendedICFG;
 import boomerang.preanalysis.PreparationTransformer;
-import crypto.analysis.CryptSLAnalysisListener;
+import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
@@ -41,7 +38,7 @@ import typestate.TypestateDomainValue;
 public class SootRunner {
 	private static final File RULES_DIR = Utils.getResourceFromWithin("/resources/CrySLRules/");
 	
-	public static void runSoot(IJavaProject project, String mainClass, CryptSLAnalysisListener reporter) {
+	public static void runSoot(IJavaProject project, String mainClass, CrySLAnalysisListener reporter) {
 		G.reset();
 		setSootOptions(project, mainClass);
 		registerTransformers(reporter);
@@ -52,7 +49,7 @@ public class SootRunner {
 		}
 	}
 
-	private static void registerTransformers(CryptSLAnalysisListener reporter) {
+	private static void registerTransformers(CrySLAnalysisListener reporter) {
 		PackManager.v().getPack("wjtp").add(new Transform("wjtp.prepare", new PreparationTransformer()));
 		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(reporter)));	
 	}
@@ -79,7 +76,7 @@ public class SootRunner {
 		Options.v().set_output_format(Options.output_format_none);
 	}
 
-	private static SceneTransformer createAnalysisTransformer(final CryptSLAnalysisListener reporter) {
+	private static SceneTransformer createAnalysisTransformer(final CrySLAnalysisListener reporter) {
 		return new SceneTransformer() {
 			
 			@Override
@@ -95,11 +92,6 @@ public class SootRunner {
 					}
 
 					@Override
-					public CryptSLAnalysisListener analysisListener() {
-						return reporter;
-					}
-
-					@Override
 					public IDebugger<TypestateDomainValue<StateNode>> debugger() {
 						return new NullDebugger<>();
 					}
@@ -110,6 +102,7 @@ public class SootRunner {
 					}
 
 				};
+				scanner.getAnalysisListener().addReportListener(reporter);
 				scanner.scan();
 			}
 		};

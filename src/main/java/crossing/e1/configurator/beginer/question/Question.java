@@ -30,7 +30,6 @@ public class Question {
 	private Answer defaultAnswer;
 	private ArrayList<String> method;
 	private ArrayList<Integer> methodParamIds;
-	private boolean updateNextPage ;
 	private Answer enteredAnswer;
 
 
@@ -72,9 +71,6 @@ public class Question {
 
 	public ArrayList<String> getMethod() {
 		return method;
-	}
-	public boolean getUpdate(){
-		return updateNextPage;
 	}
 
 	public ArrayList<Integer> getMethodParamIds() {

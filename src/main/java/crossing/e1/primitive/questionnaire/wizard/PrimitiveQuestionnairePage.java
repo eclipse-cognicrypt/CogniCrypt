@@ -51,6 +51,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	private String claferDepend = "";
 	private int itr = 0;
 	private final Page page;
+	int count;
 
 	/**
 	 * construct a page containing an element other than itemselection
@@ -296,23 +297,29 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
 				break;
 			case radiobutton:
+				
 				Button[] button = new Button[answers.size()];
-
+				
 				for (int i = 0; i < answers.size(); i++) {
 					String ans = answers.get(i).getValue();
 					button[i] = new Button(container, SWT.RADIO);
 					button[i].setText(ans);
+					count=i;
 					button[i].addSelectionListener(new SelectionAdapter() {
-
+						
 						@Override
 						public void widgetSelected(SelectionEvent e) {
 							Button source = (Button) e.getSource();
-
+							
 							if (source.getSelection()) {
-								if (answers.get(getIndex(answers, source.getText())).getClaferDependencies() != null) {
+								int index=getIndex(answers, source.getText());
+								if (answers.get(index).getClaferDependencies() != null) {
 									claferDepend = answers.get(getIndex(answers, source.getText())).getClaferDependencies().get(0).getAlgorithm();
 									selectedValue = claferDepend;
+									
 								}
+								
+								
 							}
 
 						}
@@ -391,7 +398,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 					}
 
 				}
-				this.itr = 0;
+				this.itr=0;
 				this.finish = true;
 				PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
 			default:
@@ -446,16 +453,17 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 		return titledPanel;
 	}
-
-	@Override
-	public IWizardPage getPreviousPage() {
-		final IWizardPage prev = super.getPreviousPage();
-		if (prev != null && prev instanceof PrimitiveQuestionnairePage) {
-			return getWizard().getPreviousPage(this);
-		}
-//		prev.setPreviousPage(this.getNextPage());
-		return prev;
-	}
+	
+//	@Override
+//	public IWizardPage getPreviousPage() {
+//		final IWizardPage prev = super.getPreviousPage();
+//		if (prev != null && prev instanceof PrimitiveQuestionnairePage) {
+//			return getWizard().getPreviousPage(this);
+//		}
+////		prev.setPreviousPage(this.getNextPage());
+//		
+//		return prev;
+//	}
 
 	public synchronized HashMap<Question, Answer> getSelection() {
 		return this.selectionMap;

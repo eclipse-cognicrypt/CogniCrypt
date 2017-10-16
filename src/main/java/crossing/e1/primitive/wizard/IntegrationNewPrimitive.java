@@ -142,15 +142,15 @@ public class IntegrationNewPrimitive extends Wizard {
 		return currentPage;
 	}
 
-	public IWizardPage getPreviousPage(final IWizardPage currentPage) {
-		final boolean lastPage = currentPage instanceof InstanceListPage;
-		if (!checkifInUpdateRound() &&currentPage instanceof PrimitiveQuestionnairePage || lastPage) {
-			if (!this.primitiveQuestions.isFirstPage()) {
-				this.primitiveQuestions.previousPage();
-			}
-		}
-		return super.getPreviousPage(currentPage);
-	}
+//	public IWizardPage getPreviousPage(final IWizardPage currentPage) {
+//		final boolean lastPage = currentPage instanceof InstanceListPage;
+//		if (!checkifInUpdateRound() &&currentPage instanceof PrimitiveQuestionnairePage) {
+//			if (!this.primitiveQuestions.isFirstPage()) {
+//				this.primitiveQuestions.previousPage();
+//			}
+//		}
+//		return super.getPreviousPage(currentPage);
+//	}
 
 	@Override
 	public boolean performFinish() {

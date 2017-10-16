@@ -87,6 +87,7 @@ public class XSLBasedGenerator {
 	public XSLBasedGenerator(final IProject targetProject, String provider) {
 		this.project = new DeveloperProject(targetProject);
 		this.provider = provider;
+		
 	}
 
 	/***

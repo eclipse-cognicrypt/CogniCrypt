@@ -5,10 +5,12 @@
       "element": "radiobutton",
       "questionText": "Please select the type of the Cipher",
       "answers": [{
-          "value": "Symmetric"
+          "value": "Symmetric",
+          "widgetIsSelected": false
         },
         {
           "value": "Asymmetric",
+          "widgetIsSelected": true,
           "defaultAnswer": true
         }
       ]
@@ -22,11 +24,13 @@
           "claferDependencies": [{
               "algorithm": "SymmetricBlockCipher"
            }
-          ]
+          ],
+          "widgetIsEnabled": true
         },
         {
           "value": "Stream",
-          "defaultAnswer": true
+          "defaultAnswer": true,
+          "widgetIsEnabled": true
         }
       ]
     }

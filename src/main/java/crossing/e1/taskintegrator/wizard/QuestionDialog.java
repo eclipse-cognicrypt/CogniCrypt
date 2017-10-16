@@ -194,7 +194,7 @@ public class QuestionDialog extends Dialog {
 			Label qstnTxt = new Label(composite_1, SWT.NONE);
 			qstnTxt.setText(question.getQuestionText());
 			
-			Label lblAnswers = new Label(container, SWT.NONE);
+			Label lblAnswers = new Label(composite_1, SWT.NONE);
 			lblAnswers.setText("Answers");
 			
 			Composite compositeForAnswers = new Composite(composite_1, SWT.NONE);

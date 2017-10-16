@@ -41,7 +41,7 @@ public class QuestionLinkingDialog extends Dialog {
 		gridLayout.numColumns = 2;
 
 		Label label = new Label(container, SWT.NONE);
-		label.setText("Question");
+		label.setText("Question: ");
 		
 		Label lblQuestionText = new Label(container, SWT.NONE);
 		lblQuestionText.setText(question.getQuestionText());

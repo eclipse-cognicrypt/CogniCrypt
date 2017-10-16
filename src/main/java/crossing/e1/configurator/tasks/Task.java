@@ -15,6 +15,7 @@
  */
 package crossing.e1.configurator.tasks;
 
+
 public class Task {
 
 	private String name;
@@ -31,7 +32,7 @@ public class Task {
 	public String getDescription() {
 		return this.description;
 	}
-
+	
 	public String getModelFile() {
 		return this.modelFile;
 	}
@@ -55,6 +56,7 @@ public class Task {
 	public void setDescription(final String description) {
 		this.description = description;
 	}
+	 
 
 	public void setModelFile(final String modelFile) {
 		this.modelFile = modelFile;

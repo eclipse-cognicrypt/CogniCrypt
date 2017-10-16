@@ -32,10 +32,14 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
+//import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Text;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.tasks.Task;
@@ -47,9 +51,11 @@ public class TaskSelectionPage extends WizardPage {
 
 	private Composite container;
 	private ComboViewer taskComboSelection;
-	private Button advancedModeCheckBox;
+	private Button guidedModeCheckBox;
 	private Label selectTaskLabel;
-	private IProject selectedProject = null;
+	private Label selectTaskLabel_1;
+	private IProject selectedProject = null;	
+	
 
 	public TaskSelectionPage() {
 		super(Labels.SELECT_TASK);
@@ -63,14 +69,16 @@ public class TaskSelectionPage extends WizardPage {
 
 		this.container = new Composite(parent, SWT.NONE);
 		this.container.setBounds(10, 10, 200, 300);
-		final GridLayout layout = new GridLayout(2, false);
-		//layout.numColumns = 4;
-		this.container.setLayout(layout);
+		container.setLayout(null);
 
 		this.selectTaskLabel = new Label(this.container, SWT.NONE);
+		this.selectTaskLabel.setBounds(5, 9, 111, 15);
 		this.selectTaskLabel.setText(Constants.SELECT_JAVA_PROJECT);
 
 		ComboViewer projectComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
+		Combo combo = projectComboSelection.getCombo();
+		combo.setEnabled(true);
+        combo.setBounds(153, 5, 393, 23);
 		projectComboSelection.setContentProvider(ArrayContentProvider.getInstance());
 
 		Map<String, IProject> javaProjects = new HashMap<String, IProject>();
@@ -99,10 +107,14 @@ public class TaskSelectionPage extends WizardPage {
 			}
 		}
 
-		this.selectTaskLabel = new Label(this.container, SWT.NONE);
-		this.selectTaskLabel.setText(Constants.SELECT_TASK);
+		this.selectTaskLabel_1 = new Label(this.container, SWT.NONE);
+		selectTaskLabel_1.setBounds(5, 37, 73, 15);
+		this.selectTaskLabel_1.setText(Constants.SELECT_TASK);
 
 		this.taskComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
+		Combo combo_1 = taskComboSelection.getCombo();
+		combo_1.setEnabled(true);
+		combo_1.setBounds(153, 33, 393, 23);
 		this.taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
 
 		final List<Task> tasks = TaskJSONReader.getTasks();
@@ -114,8 +126,11 @@ public class TaskSelectionPage extends WizardPage {
 				if (task instanceof Task) {
 					final Task current = (Task) task;
 					return current.getDescription();
+					
 				}
 				return super.getText(task);
+				
+				
 			}
 		});
 
@@ -124,18 +139,24 @@ public class TaskSelectionPage extends WizardPage {
 		this.taskComboSelection.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 			final Task selectedTask = (Task) selection.getFirstElement();
-
+			//final String b = selection.getFirstElement().toString();
 			TaskSelectionPage.this.taskComboSelection.refresh();
 			setPageComplete(selectedTask != null && this.selectedProject != null);
 		});
 
 		this.taskComboSelection.setSelection(new StructuredSelection(tasks.get(0)));
-
-		this.advancedModeCheckBox = new Button(this.container, SWT.CHECK);
-		this.advancedModeCheckBox.setText(Constants.ADVANCED_MODE);
-		this.advancedModeCheckBox.setSelection(false);
 		setControl(this.container);
-
+		
+		this.guidedModeCheckBox = new Button(container, SWT.CHECK);
+		this.guidedModeCheckBox.setEnabled(true);
+		this.guidedModeCheckBox.setBounds(5, 181, 261, 16);
+		this.guidedModeCheckBox.addSelectionListener(new SelectionAdapter() {
+		    @Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
+		this.guidedModeCheckBox.setText(Constants.GUIDED_MODE);
+		this.guidedModeCheckBox.setSelection(true);
 	}
 
 	public IProject getSelectedProject() {
@@ -151,7 +172,7 @@ public class TaskSelectionPage extends WizardPage {
 	 *
 	 * @return
 	 */
-	public boolean isAdvancedMode() {
-		return this.advancedModeCheckBox.getSelection();
+	public boolean isGuidedMode() {
+			return this.guidedModeCheckBox.getSelection();
 	}
 }

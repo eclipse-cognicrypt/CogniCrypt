@@ -1,7 +1,7 @@
 [
 		{
 			"name": "SymmetricEncryption",
-			"description": "Encrypt Data Using a Secret Key",
+			"description": "Encrypt Data Using a Secret",
 			"modelFile" : "src/main/resources/ClaferModel/SymmetricEncryptionTask.js",
 			"xmlFile" : "src/main/resources/TaskDesc/SymmetricEncryptionQuestions.json",
 			"additionalResources" : ""

@@ -1,5 +1,6 @@
 package crossing.e1.taskintegrator.widgets;
 
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.RowLayout;
 
@@ -7,11 +8,14 @@ import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Group;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Question;
+import crossing.e1.taskintegrator.wizard.QuestionDialog;
 
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.GridLayout;
@@ -41,13 +45,25 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		
 		setLayout(null);
 		
-		GroupModifyDeleteButtons grpModifyDeleteButtons = new GroupModifyDeleteButtons(this);
+		GroupModifyDeleteButtons grpModifyDeleteButtons = new GroupModifyDeleteButtons(this,question);
 		RowLayout rowLayout = (RowLayout) grpModifyDeleteButtons.getLayout();
 		rowLayout.marginLeft = 5;
 		rowLayout.marginTop = 5;
 		rowLayout.fill = true;
 		rowLayout.center = true;
 		grpModifyDeleteButtons.setBounds(10, 5, 571, 53);
+		
+		Button linkQstn=new Button(this,SWT.None);
+		linkQstn.setBounds(588,20,100,53);
+		linkQstn.setText("Link Question");
+		linkQstn.setVisible(false);
+		linkQstn.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e){
+				QuestionDialog link=new QuestionDialog(parent.getShell(),questionParam);
+				link.open();
+			}
+		});
 		
 		Group grpQuestionDetails = new Group(this, SWT.NONE);
 		grpQuestionDetails.setBounds(10, 62, 571, 180);
@@ -113,7 +129,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 			SUPER_SCRIPT = new AttributedString("x");
 			SUPER_SCRIPT.addAttribute(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
 			answerString.append(answer.getClaferDependencies().size()>0 ? "#" : "");
-			*/answerString.append("|");
+			*/answerString.append("||");
 		}
 			
 		

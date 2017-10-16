@@ -109,7 +109,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	public void addAnswer(Answer answer, boolean showRemoveButton){
 		GroupAnswer groupForAnswer =  new GroupAnswer((Composite) getContent(), SWT.NONE, answer,showRemoveButton);
 		setListOfAllGroupAnswer(groupForAnswer);	
-//updateAnswerList();
 		groupForAnswer.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(),651,
 			39);
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
@@ -121,18 +120,16 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		for(GroupAnswer gAnswer:groupAnswers){
 			gAnswer.getAnswer().setValue(gAnswer.retrieveAnswer());	
 		}
-		/**/
+		
 	}
 	
-	//To delete the answer
-	public void deleteAnswer(int answerToBeDeleted){
-		int temp=answerToBeDeleted-1;
+	/**
+	 * To delete the answer
+	 * @param answerToBeDeleted
+	 */
+	public void deleteAnswer(Answer answerToBeDeleted){
 		readAnswerValue();
-		groupAnswers.remove(temp);
-		//QuestionDialog dialog;
-
-		
-		//arrayAnswer.remove(answerToBeDeleted);
+		arrayAnswer.remove(answerToBeDeleted);
 		updateAnswerContainer();
 	}
 
@@ -146,23 +143,23 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setLowestWidgetYAxisValue(0);
 		setMinHeight(getLowestWidgetYAxisValue());
 		
-		for(GroupAnswer answerUnderConsideration: groupAnswers){
-			/*answerUnderConsideration.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(),651,
-				39);
-			setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
-
-			setMinHeight(getLowestWidgetYAxisValue());
-*/
-			addAnswer(answerUnderConsideration.getAnswer(),true);
-		}
+		for(Answer answer:arrayAnswer){
+				addAnswer(answer,true);
+			}		
 	}
 	
+	/**
+	 * update the GroupAnswer array
+	 * @param groupForAnswer
+	 */
 	public void setListOfAllGroupAnswer(GroupAnswer groupForAnswer){
 		groupAnswers.add(groupForAnswer);
 
 	}
-	
-	public ArrayList<GroupAnswer> getListOfAllGroupAnswer(){
+	/**
+	 * @return the gropAnswers 
+	 */
+		public ArrayList<GroupAnswer> getListOfAllGroupAnswer(){
 		return groupAnswers;
 	}
 	

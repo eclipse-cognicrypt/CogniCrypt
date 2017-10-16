@@ -40,17 +40,13 @@ public class QuestionDialog extends Dialog {
 
 	public Text textQuestion;
 	private Label lblQuestionContent;
-	private int counter = 0;
 	private String questionText;
 	private String questionType;
-	private ArrayList<Answer> answerValues;
-	private ArrayList<String> txtAnswer;
 	private Combo combo;
 	private CompositeToHoldSmallerUIElements compositeToHoldAnswers;
 	private Question question;
 	private Question questionDetails;
-	private CompositeToHoldGranularUIElements compositeToHoldGranularUIElements;
-	//int answerId=0;
+
 
 	/**
 	 * Create the dialog.
@@ -135,8 +131,6 @@ public class QuestionDialog extends Dialog {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				//compositeToHoldAnswers.setVisible(true);
-				//answerId++;
 				Answer tempAnswer = new Answer();
 				compositeToHoldAnswers.getListOfAllAnswer().add(tempAnswer);
 				compositeToHoldAnswers.addAnswer(tempAnswer, showRemoveButton);
@@ -151,6 +145,7 @@ public class QuestionDialog extends Dialog {
 			public void modifyText(ModifyEvent e) {
 				switch (combo.getText()) {
 					case "text":
+						btnAddAnswer.setVisible(false);
 						break;
 					case "combo":
 						boolean comboSelected = combo.getText().equalsIgnoreCase("combo") ? true : false;
@@ -257,25 +252,12 @@ public class QuestionDialog extends Dialog {
 		Question questionDetails = new Question();
 		questionDetails.setQuestionText(textQuestion.getText());
 		questionDetails.setQuestionType(combo.getText());
-		compositeToHoldAnswers.readAnswerValue();
-		answerValues = new ArrayList<Answer>();
-		for (int i = 0; i < compositeToHoldAnswers.getListOfAllAnswer().size(); i++) {
-			answerValues.add(compositeToHoldAnswers.getListOfAllAnswer().get(i));
-		}
-		for (int i = 0; i < compositeToHoldAnswers.getListOfAllGroupAnswer().size(); i++) {
-			answerValues.get(i).setValue(compositeToHoldAnswers.getListOfAllGroupAnswer().get(i).retrieveAnswer());
-		}
-		questionDetails.setAnswers(answerValues);
+		questionDetails.setAnswers(compositeToHoldAnswers.getListOfAllAnswer());
 		this.questionDetails = questionDetails;
 	}
 
 	public Question getQuestionDetails() {
 		return this.questionDetails;
-	}
-
-	public ArrayList<Answer> getAnswerValue() {
-		//answerValues=(ArrayList<Answer>)compositeToHoldAnswers.getListOfAllAnswer();
-		return answerValues;
 	}
 
 	/**

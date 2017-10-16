@@ -15,10 +15,12 @@
  */
 package crossing.e1.configurator.tasks;
 
+
 public class Task {
 
 	private String name;
 	private String description;
+	private String taskDescription;
 	private String modelFile;
 	private String xmlFile;
 	private boolean isSelected;
@@ -32,6 +34,10 @@ public class Task {
 		return this.description;
 	}
 
+	public String getTaskDescription() {
+		return this.taskDescription;
+	}  
+	
 	public String getModelFile() {
 		return this.modelFile;
 	}
@@ -55,6 +61,10 @@ public class Task {
 	public void setDescription(final String description) {
 		this.description = description;
 	}
+	
+	public void setTaskDescription(final String taskDescription) {
+		this.taskDescription = taskDescription;
+	}  
 
 	public void setModelFile(final String modelFile) {
 		this.modelFile = modelFile;

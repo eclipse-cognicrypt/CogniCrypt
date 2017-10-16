@@ -129,7 +129,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 			SUPER_SCRIPT = new AttributedString("x");
 			SUPER_SCRIPT.addAttribute(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
 			answerString.append(answer.getClaferDependencies().size()>0 ? "#" : "");
-			*/answerString.append("||");
+            */answerString.append("||");
 		}
 			
 		

@@ -10,6 +10,7 @@ import crossing.e1.configurator.beginer.question.Answer;
 import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
@@ -17,11 +18,8 @@ import org.eclipse.swt.widgets.Button;
 public class GroupAnswer extends Group {
 
 	public Text txtAnswer;
-	//public ArrayList<Text> txtAnswers = new ArrayList<Text>();
-
 	private Answer answer;
 	private String getAnswer;
-	private int counter=0;
 	public ArrayList<Answer> answers;
 	
 	/**
@@ -32,14 +30,13 @@ public class GroupAnswer extends Group {
 	 */
 	public GroupAnswer(Composite parent, int style, Answer answerParam, boolean showRemoveButton) {
 		super(parent, style);
-		counter++;
-		//answers.add(answerParam);
 		setAnswer(answerParam);
-		//setTxtBoxAnswerId(answerId);
 		txtAnswer = new Text(this, SWT.BORDER);
+		if(answer.getValue()!=null){
+			txtAnswer.setText(answer.getValue());
+		}
 		txtAnswer.setBounds(3, 3, 420, 29);
-		//txtAnswer.setText("answers");
-		//setAnswerValue();
+	
 		if (showRemoveButton) {
 			Button btnRemove = new Button(this, SWT.NONE);
 			btnRemove.setBounds(429, 3, 79, 31);
@@ -52,7 +49,9 @@ public class GroupAnswer extends Group {
 					confirmationMessageBox.setText("Deleting answer");
 					int response = confirmationMessageBox.open();
 					if (response == SWT.YES){
-			        ((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent()).deleteAnswer(counter);
+			        ((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent()).deleteAnswer(answer);
+			        ((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent()).updateAnswerContainer();
+
 			        }
 			        
 				}
@@ -61,22 +60,20 @@ public class GroupAnswer extends Group {
 		}
 	}
 
-	//To save the answer
+	/**
+	 * @return the answer text
+	 */
 	public String retrieveAnswer(){
 		getAnswer=txtAnswer.getText();
 		return getAnswer;
 	}
-	
+	/**
+	 * set the answer text
+	 */
 	public void setAnswerValue(){
 		answer.setValue(this.retrieveAnswer());
 	}
-	/*public void setTxtBoxAnswerId(int answerId){
-		this.answerId=answerId;
-		
-	}
-	public int getTxtBoxAnswerId(){
-		return answerId;
-	}*/
+
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
@@ -95,6 +92,5 @@ public class GroupAnswer extends Group {
 	 */
 	public void setAnswer(Answer answer) {
 		this.answer = answer;
-		//answer.setValue(txtAnswer.getText());
 	}
 }

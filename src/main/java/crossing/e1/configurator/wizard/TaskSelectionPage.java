@@ -52,13 +52,11 @@ public class TaskSelectionPage extends WizardPage {
 	private Composite container;
 	private ComboViewer taskComboSelection;
 	private Button guidedModeCheckBox;
+	private Label selectProjectLabel;
 	private Label selectTaskLabel;
-	private Label selectTaskLabel_1;
 	private Label taskDescription;
-	private IProject selectedProject = null;
 	private Text descriptionText;
-	
-	
+	private IProject selectedProject = null;
 
 	public TaskSelectionPage() {
 		super(Labels.SELECT_TASK);
@@ -74,9 +72,9 @@ public class TaskSelectionPage extends WizardPage {
 		this.container.setBounds(10, 10, 200, 300);
 		container.setLayout(null);
 
-		this.selectTaskLabel = new Label(this.container, SWT.NONE);
-		this.selectTaskLabel.setBounds(5, 9, 111, 15);
-		this.selectTaskLabel.setText(Constants.SELECT_JAVA_PROJECT);
+		this.selectProjectLabel = new Label(this.container, SWT.NONE);
+		this.selectProjectLabel.setBounds(5, 9, 111, 15);
+		this.selectProjectLabel.setText(Constants.SELECT_JAVA_PROJECT);
 
 		ComboViewer projectComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
 		Combo combo = projectComboSelection.getCombo();
@@ -110,9 +108,9 @@ public class TaskSelectionPage extends WizardPage {
 			}
 		}
 
-		this.selectTaskLabel_1 = new Label(this.container, SWT.NONE);
-		selectTaskLabel_1.setBounds(5, 37, 73, 15);
-		this.selectTaskLabel_1.setText(Constants.SELECT_TASK);
+		this.selectTaskLabel = new Label(this.container, SWT.NONE);
+		selectTaskLabel.setBounds(5, 37, 73, 15);
+		this.selectTaskLabel.setText(Constants.SELECT_TASK);
 
 		this.taskComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
 		Combo combo_1 = taskComboSelection.getCombo();
@@ -131,44 +129,44 @@ public class TaskSelectionPage extends WizardPage {
 					return current.getDescription();
 					
 				}
-				return super.getText(task);
-				
-				
+				return super.getText(task);			
 			}
 		});
 
 		this.taskComboSelection.setInput(tasks);
-
+		
+		// Adding description text for the cryptographic task selected
+		this.descriptionText = new Text(container, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		this.descriptionText.setToolTipText(Constants.DESCRIPTION_BOX_TOOLTIP);
+		this.descriptionText.setEditable(false);
+		this.descriptionText.setBounds(153, 61, 393, 95);
+		
 		this.taskComboSelection.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 			final Task selectedTask = (Task) selection.getFirstElement();
-			//final String b = selection.getFirstElement().toString();
 			TaskSelectionPage.this.taskComboSelection.refresh();
 			setPageComplete(selectedTask != null && this.selectedProject != null);
+			// To display the description text
+			this.descriptionText.setText(selectedTask.getTaskDescription())	;
 		});
 
 		this.taskComboSelection.setSelection(new StructuredSelection(tasks.get(0)));
 		setControl(this.container);
 		
+		//Label for task description
 		this.taskDescription = new Label(this.container, SWT.NONE);
 		this.taskDescription.setBounds(5, 61, 93, 15);
 		this.taskDescription.setText(Constants.TASK_DESCRIPTION);
 		
-		this.descriptionText = new Text(container, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-		this.descriptionText.setToolTipText(Constants.DESCRIPTION_BOX_TOOLTIP);
-		//this.descriptionText.setForeground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BORDER));
-		this.descriptionText.setEditable(false);
-		this.descriptionText.setText("")	;
-		
-		this.descriptionText.setBounds(153, 61, 393, 95);
-		
+		//Check box for going to guided mode
 		this.guidedModeCheckBox = new Button(container, SWT.CHECK);
 		this.guidedModeCheckBox.setEnabled(true);
 		this.guidedModeCheckBox.setBounds(5, 181, 261, 16);
 		this.guidedModeCheckBox.addSelectionListener(new SelectionAdapter() {
 		    @Override
 			public void widgetSelected(SelectionEvent e) {
-			}
+			
+		    }
 		});
 		this.guidedModeCheckBox.setText(Constants.GUIDED_MODE);
 		this.guidedModeCheckBox.setSelection(true);

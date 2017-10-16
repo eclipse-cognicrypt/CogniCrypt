@@ -54,10 +54,7 @@ public class TaskSelectionPage extends WizardPage {
 	private Button guidedModeCheckBox;
 	private Label selectTaskLabel;
 	private Label selectTaskLabel_1;
-	private Label taskDescription;
-	private IProject selectedProject = null;
-	private Text descriptionText;
-	
+	private IProject selectedProject = null;	
 	
 
 	public TaskSelectionPage() {
@@ -149,18 +146,6 @@ public class TaskSelectionPage extends WizardPage {
 
 		this.taskComboSelection.setSelection(new StructuredSelection(tasks.get(0)));
 		setControl(this.container);
-		
-		this.taskDescription = new Label(this.container, SWT.NONE);
-		this.taskDescription.setBounds(5, 61, 93, 15);
-		this.taskDescription.setText(Constants.TASK_DESCRIPTION);
-		
-		this.descriptionText = new Text(container, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-		this.descriptionText.setToolTipText(Constants.DESCRIPTION_BOX_TOOLTIP);
-		//this.descriptionText.setForeground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BORDER));
-		this.descriptionText.setEditable(false);
-		this.descriptionText.setText("")	;
-		
-		this.descriptionText.setBounds(153, 61, 393, 95);
 		
 		this.guidedModeCheckBox = new Button(container, SWT.CHECK);
 		this.guidedModeCheckBox.setEnabled(true);

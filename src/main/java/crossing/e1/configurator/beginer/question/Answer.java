@@ -22,8 +22,7 @@ import crossing.e1.configurator.Constants;
 public class Answer {
 
 	private String value;
-	//Anan added
-		private String tooltip;
+
 	private Boolean defaultAnswer;
 	private ArrayList<ClaferDependency> claferDependencies;
 	private ArrayList<CodeDependency> codeDependencies;
@@ -45,10 +44,7 @@ public class Answer {
 		return this.value;
 	}
 	
-	//Anan added
-	public String getToolTip() {
-		return this.tooltip;
-	}
+
 
 	public Boolean isDefaultAnswer() {
 		return this.defaultAnswer == null ? false : this.defaultAnswer;
@@ -73,10 +69,6 @@ public class Answer {
 	public void setValue(final String value) {
 		this.value = value;
 	}
-	//Anan added
-		public void setToolTip(final String tooltip) {
-			this.tooltip = tooltip;
-		}
 
 	@Override
 	public String toString() {

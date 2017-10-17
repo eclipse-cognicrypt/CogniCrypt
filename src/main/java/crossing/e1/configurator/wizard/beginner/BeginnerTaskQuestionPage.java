@@ -38,8 +38,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+//import org.eclipse.swt.widgets.ToolTip;
+import org.eclipse.swt.widgets.ToolTip;
 
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.beginer.question.Answer;
@@ -51,14 +54,15 @@ import crossing.e1.configurator.utilities.Labels;
 public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private final Question quest;
+
 	private final Task task;
 	// Removed the allquestions variable as it was not longer required.
 	private BeginnerModeQuestionnaire beginnerModeQuestionnaire;
 	private HashMap<Question, Answer> selectionMap = new HashMap<Question, Answer>();
 	private boolean finish = false;
 	private List<String> selectionValues;
-
 	private final Page page;
+	private Text note;
 
 	public int getCurrentPageID() {
 		return page.getId();
@@ -91,6 +95,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		setTitle("Configuring Selected Task: " + task.getDescription());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.quest = quest;
+		
 		this.task = task;
 		this.selectionValues = selectionValues;
 
@@ -185,7 +190,10 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private void createQuestionControl(final Composite parent, final Question question) {
 
+		
 		final List<Answer> answers = question.getAnswers();
+//		final String notes = question.getNote();
+	
 		final Composite container = getPanel(parent);
 		final Label label = new Label(container, SWT.TOP);
 		label.setText(question.getQuestionText());
@@ -195,13 +203,22 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				comboViewer.setContentProvider(ArrayContentProvider.getInstance());
 				comboViewer.setInput(answers);
 				
+//				comboViewer.setInput(notes);
+//				final String ans1 = answers.toString();
+//				final Answer ans1=new Answer();
+//				final ToolTip tip = new ToolTip(getShell(), SWT.BALLOON | SWT.ICON_INFORMATION);
+//				tip.setMessage("ans1.getNote()");
 				
-
 				comboViewer.addSelectionChangedListener(selectedElement -> {
 					final IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
 					BeginnerTaskQuestionPage.this.selectionMap.put(question, (Answer) selection.getFirstElement());
 					question.setEnteredAnswer((Answer) selection.getFirstElement());
 				});
+				
+				//for text box
+				this.note = new Text(parent,SWT.NONE);
+				this.note.setText(question.getNote());
+				
 				this.finish = true;
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
 				if (question.getEnteredAnswer() != null)
@@ -213,16 +230,20 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			case text:
 				final Text inputField = new Text(container, SWT.BORDER);
 				inputField.setSize(240, inputField.getSize().y);
-
+				
 				if (question.getEnteredAnswer() != null) {
 					final Answer a = question.getEnteredAnswer();
+					
 					inputField.setText(a.getValue());
 					a.getCodeDependencies().get(0).setValue(a.getValue());
 					this.finish = !inputField.getText().isEmpty();
 					BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
+					
 				}
-
+				
+				
 				inputField.addModifyListener(e -> {
+					
 					final Answer a = question.getDefaultAnswer();
 					final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?:\\\\-])", "\\\\");
 					a.setValue(cleanedInput);
@@ -230,7 +251,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					this.finish = !cleanedInput.isEmpty();
 					BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
 					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
-					question.setEnteredAnswer(a);
+					question.setEnteredAnswer(a);	
+					
 				});
 				inputField.forceFocus();
 				break;
@@ -488,6 +510,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 		}
 	}
+
 
 	@Override
 	public boolean equals(final Object obj) {

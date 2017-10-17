@@ -1,7 +1,9 @@
 [{
     "id": "0",
+   
     "content": [{
       "id": "0",
+       "note": "Server or Client!",
       "element": "combo",
       "questionText": "Are you implementing the server or the client side?",
       "answers": [{
@@ -23,10 +25,13 @@
         }
       ]
     }]
-  }, {
+  },
+  {
     "id": "1",
+   
     "content": [{
       "id": "1",
+       "note": "Ex: ip : 216.3.128.12 and port : 1.2.3.4:80",
       "questionText": "Do you know ip and port of the server?",
       "answers": [{
           "value": "Yes",
@@ -44,8 +49,10 @@
   },
   {
     "id": "2",
+ 
     "content": [{
       "id": "2",
+         "note": "abc",
       "element": "text",
       "questionText": "Please enter the server's ip.",
       "answers": [{
@@ -61,8 +68,10 @@
   },
   {
     "id": "3",
+  
     "content": [{
       "id": "3",
+        "note": "abc",
       "element": "text",
       "questionText": "Please enter the port of the server.",
       "answers": [{
@@ -78,13 +87,14 @@
   },
   {
     "id": "4",
+    
     "content": [{
       "id": "4",
+      "note": "Millionaires comparison:................,Euclidean Distance:.................",
       "element": "combo",
       "questionText": "Which multi-party-computation scenario do you want to implement?",
       "answers": [{
           "value": "Millionaire's Comparison",
-          "tooltip": "abc",
           "claferDependencies": [{
             "algorithm": "aby",
             "value": "Millionaire",
@@ -94,7 +104,6 @@
         },
         {
           "value": "Euclidean Distance",
-          "tooltip": "abc",
           "claferDependencies": [{
             "algorithm": "aby",
             "value": "Euclid",
@@ -108,8 +117,10 @@
   },
   {
     "id": "5",
+    
     "content": [{
       "id": "5",
+      "note": "abc",
       "element": "combo",
       "questionText": "What security level do you need?",
       "answers": [{

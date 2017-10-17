@@ -1,7 +1,9 @@
 [{
   "id": "0",
+  
   "content": [{
       "id": "0",
+      "note": "Giving security for the data",
       "questionText": "What is the level of security that you need for your data?",
       "answers": [{
           "value": "Very secure",
@@ -30,6 +32,7 @@
     },
     {
       "id": "1",
+      "note": "Do the user want to derive your key from the password that is created by the user before ?",
       "element": "combo",
       "questionText": "Should your key be derived from a user-specified password?",
       "answers": [{
@@ -59,6 +62,7 @@
     },
     {
       "id": "2",
+      "note": "How large is the size of data?",
       "element": "combo",
       "questionText": "Will your application regularly encrypt data chunks of several gigabytes?",
       "answers": [{

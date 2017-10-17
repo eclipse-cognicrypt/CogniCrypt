@@ -31,6 +31,8 @@ public class Question {
 	private ArrayList<String> method;
 	private ArrayList<Integer> methodParamIds;
 	private Answer enteredAnswer;
+	//Note
+		private String note;
 
 	public ArrayList<Answer> getAnswers() {
 		return this.answers;
@@ -60,6 +62,11 @@ public class Question {
 		return this.id;
 	}
 
+	//note
+	public String getNote() {
+		return this.note;
+	}
+	
 	public String getQuestionText() {
 		return this.questionText;
 	}
@@ -88,6 +95,12 @@ public class Question {
 		this.id = id;
 	}
 
+	//note
+	public void setNote(final String note) {
+		this.note = note;
+	}
+
+	
 	public void setQuestionText(final String questionText) {
 		this.questionText = questionText;
 	}
@@ -105,6 +118,7 @@ public class Question {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("ID: " + this.id + "\n");
 		builder.append(this.questionText + "\n");
+		builder.append(this.note + "\n");
 		for (final Answer answer : this.answers) {
 			builder.append("\t" + answer.getValue() + " [dependencies=" + answer.getClaferDependencies() + "], defaultValue=" + answer
 				.isDefaultAnswer() + ", next Question=" + answer.getNextID());

@@ -9,6 +9,12 @@ env:
   - NIGHTLYBUILD=ti-group1718
   - NIGHTLYBUILD=ui-group1718
   
+matrix:
+  allow_failures:
+   - env: NIGHTLYBUILD=cp-group1718
+   - env: NIGHTLYBUILD=ti-group1718
+   - env: NIGHTLYBUILD=ui-group1718
+  
 build:
   ci:
    - git checkout $NIGHTLYBUILD

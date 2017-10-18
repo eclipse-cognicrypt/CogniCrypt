@@ -229,6 +229,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				final Text inputField = new Text(container, SWT.BORDER);
 				inputField.setSize(240, inputField.getSize().y);
 				
+				inputField.setToolTipText(question.getTooltip());
+				
 				if (question.getEnteredAnswer() != null) {
 					final Answer a = question.getEnteredAnswer();
 					
@@ -252,6 +254,11 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					
 				});
 				inputField.forceFocus();
+				
+				//added descption box for the questions with tooltip 
+//				this.tooltip = new Text(parent,SWT.NULL);
+//				this.tooltip.setText(question.getTooltip());
+//				this.tooltip.setEnabled(false);
 				
 				break;
 

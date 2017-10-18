@@ -28,10 +28,9 @@
   },
   {
     "id": "1",
-   
     "content": [{
       "id": "1",
-       "note": "Ex: ip : 216.3.128.12 and port : 1.2.3.4:80",
+       "note": "If zou know the ip addres and port number select yes",
       "questionText": "Do you know ip and port of the server?",
       "answers": [{
           "value": "Yes",
@@ -49,10 +48,10 @@
   },
   {
     "id": "2",
- 
     "content": [{
       "id": "2",
-       "tooltip": "abc",
+      "note": "Server or Client!",
+      "tooltip": "Example : 216.3.128.12",
       "element": "text",
       "questionText": "Please enter the server's ip.",
       "answers": [{
@@ -68,10 +67,10 @@
   },
   {
     "id": "3",
-  
     "content": [{
       "id": "3",
-        "tooltip": "abc",
+      "note": "Server or Client!",
+      "tooltip": "Example : 1.2.3.4:80",
       "element": "text",
       "questionText": "Please enter the port of the server.",
       "answers": [{
@@ -87,7 +86,6 @@
   },
   {
     "id": "4",
-    
     "content": [{
       "id": "4",
       "note": "Millionaires comparison:................,Euclidean Distance:.................",
@@ -117,7 +115,6 @@
   },
   {
     "id": "5",
-    
     "content": [{
       "id": "5",
       "note": "abc",

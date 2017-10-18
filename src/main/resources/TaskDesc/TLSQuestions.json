@@ -1,9 +1,9 @@
 [{
     "id": "0",
-    "note": "abc",
     "content": [{
         "id": "0",
-        "tooltip": "abc", 
+    	"note": "abc",
+        "tooltip": "Example : /home/users/keystores/android.jks", 
         "element": "text",
         "questionText": "Please specify the path to your keystore.",
         "answers": [{
@@ -17,7 +17,8 @@
       },
       {
         "id": "1",
-        "tooltip": "abc",
+        "note": "abc",
+        "tooltip": "Secret password of keystore",
         "element": "text",
         "questionText": "Please give the password for your keystore.",
         "answers": [{
@@ -83,7 +84,7 @@
     "note": "abc",
     "content": [{
       "id": "4",
-      "tooltip": "abc",
+      "tooltip": "Example : 192.168.123.132",
       "element": "text",
       "questionText": "Enter host/ip.",
       "answers": [{
@@ -102,7 +103,7 @@
     "note": "abc",
     "content": [{
       "id": "5",
-      "tooltip": "abc",
+      "tooltip": "Example : 1.2.3.4:80",
       "element": "text",
       "questionText": "Enter port.",
       "answers": [{

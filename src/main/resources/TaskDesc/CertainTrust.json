@@ -11,8 +11,9 @@
 			"claferDependencies":[
 				{"algorithm":"op", "value":"NONE", "operator":"="}], "defaultAnswer": true, "nextID" : "3"},
 			{"value":"More",
-			"codeDependencies":[],  "nextID" : "1"}
-			]
+			"codeDependencies":[], 
+			"nextID" : "1"
+			}]
 		},
 		
 		{

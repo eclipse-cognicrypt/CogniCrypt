@@ -32,8 +32,10 @@ public class Question {
 	private ArrayList<Integer> methodParamIds;
 	private Answer enteredAnswer;
 	//Note
-		private String note;
-
+	private String note;
+	//Tooltip
+	private String tooltip;
+	
 	public ArrayList<Answer> getAnswers() {
 		return this.answers;
 	}
@@ -62,9 +64,14 @@ public class Question {
 		return this.id;
 	}
 
-	//note
+	//added get method for note
 	public String getNote() {
 		return this.note;
+	}
+	
+	//added get method for tooltip
+	public String getTooltip() {
+		return this.tooltip;
 	}
 	
 	public String getQuestionText() {
@@ -95,11 +102,15 @@ public class Question {
 		this.id = id;
 	}
 
-	//note
+	//added set method for note
 	public void setNote(final String note) {
 		this.note = note;
 	}
 
+	//added set method for tooltip
+	public void setTooltip(final String tooltip) {
+		this.tooltip = tooltip;
+	}
 	
 	public void setQuestionText(final String questionText) {
 		this.questionText = questionText;

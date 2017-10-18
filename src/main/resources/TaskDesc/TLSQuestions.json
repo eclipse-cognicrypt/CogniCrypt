@@ -3,6 +3,7 @@
     "note": "abc",
     "content": [{
         "id": "0",
+        "tooltip": "abc", 
         "element": "text",
         "questionText": "Please specify the path to your keystore.",
         "answers": [{
@@ -16,6 +17,7 @@
       },
       {
         "id": "1",
+        "tooltip": "abc",
         "element": "text",
         "questionText": "Please give the password for your keystore.",
         "answers": [{
@@ -81,6 +83,7 @@
     "note": "abc",
     "content": [{
       "id": "4",
+      "tooltip": "abc",
       "element": "text",
       "questionText": "Enter host/ip.",
       "answers": [{
@@ -99,6 +102,7 @@
     "note": "abc",
     "content": [{
       "id": "5",
+      "tooltip": "abc",
       "element": "text",
       "questionText": "Enter port.",
       "answers": [{

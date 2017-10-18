@@ -52,7 +52,7 @@
  
     "content": [{
       "id": "2",
-         "note": "abc",
+       "tooltip": "abc",
       "element": "text",
       "questionText": "Please enter the server's ip.",
       "answers": [{
@@ -71,7 +71,7 @@
   
     "content": [{
       "id": "3",
-        "note": "abc",
+        "tooltip": "abc",
       "element": "text",
       "questionText": "Please enter the port of the server.",
       "answers": [{

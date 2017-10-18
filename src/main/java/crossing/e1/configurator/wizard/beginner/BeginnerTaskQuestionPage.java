@@ -196,9 +196,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private void createQuestionControl(final Composite parent, final Question question) {
 
 		
-		final List<Answer> answers = question.getAnswers();
-//		final String notes = question.getNote();
-	
+		final List<Answer> answers = question.getAnswers();	
 		final Composite container = getPanel(parent);
 		final Label label = new Label(container, SWT.TOP);
 		label.setText(question.getQuestionText());
@@ -207,11 +205,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				final ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY);
 				comboViewer.setContentProvider(ArrayContentProvider.getInstance());
 				comboViewer.setInput(answers);
-				
-//				comboViewer.setInput(notes);
-//				final String ans1 = answers.toString();
-//				final ToolTip tip = new ToolTip(getShell(), SWT.BALLOON | SWT.ICON_INFORMATION);
-//				tip.setMessage(ans1.getNote());
 				
 				comboViewer.addSelectionChangedListener(selectedElement -> {
 					final IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
@@ -236,9 +229,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				final Text inputField = new Text(container, SWT.BORDER);
 				inputField.setSize(240, inputField.getSize().y);
 				
-				//added tooltip for inputfields
-				inputField.setToolTipText(question.getTooltip());
-				
 				if (question.getEnteredAnswer() != null) {
 					final Answer a = question.getEnteredAnswer();
 					
@@ -262,10 +252,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					
 				});
 				inputField.forceFocus();
-				
-				this.tooltip = new Text(parent,SWT.NULL);
-				this.tooltip.setText(question.getTooltip());
-				this.tooltip.setEnabled(false);
 				
 				break;
 

@@ -33,8 +33,6 @@ public class Question {
 	private Answer enteredAnswer;
 	//Note
 	private String note;
-	//Tooltip
-	private String tooltip;
 	
 	public ArrayList<Answer> getAnswers() {
 		return this.answers;
@@ -69,11 +67,7 @@ public class Question {
 		return this.note;
 	}
 	
-	//added get method for tooltip
-	public String getTooltip() {
-		return this.tooltip;
-	}
-	
+		
 	public String getQuestionText() {
 		return this.questionText;
 	}
@@ -105,11 +99,6 @@ public class Question {
 	//added set method for note
 	public void setNote(final String note) {
 		this.note = note;
-	}
-
-	//added set method for tooltip
-	public void setTooltip(final String tooltip) {
-		this.tooltip = tooltip;
 	}
 	
 	public void setQuestionText(final String questionText) {

@@ -19,6 +19,7 @@ public class CodeDependency {
 
 	private String option;
 	private String value;
+	
 
 	@Override
 	public boolean equals(final Object obj) {
@@ -56,6 +57,9 @@ public class CodeDependency {
 	public String getValue() {
 		return this.value;
 	}
+	
+
+
 
 	@Override
 	public int hashCode() {
@@ -73,6 +77,8 @@ public class CodeDependency {
 	public void setValue(final String value) {
 		this.value = value;
 	}
+	
+	
 
 	@Override
 	public String toString() {

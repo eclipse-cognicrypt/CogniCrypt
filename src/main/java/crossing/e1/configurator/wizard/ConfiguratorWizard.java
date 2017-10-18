@@ -221,6 +221,7 @@ public class ConfiguratorWizard extends Wizard {
 						if (checkifInUpdateRound()) {
 							this.beginnerQuestions.previousPage();
 						}
+						
 						final IWizardPage[] pages = getPages();
 						for (int i = 1; i < pages.length; i++) {
 							if (!(pages[i] instanceof BeginnerTaskQuestionPage)) {

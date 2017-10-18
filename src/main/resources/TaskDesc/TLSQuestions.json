@@ -2,6 +2,8 @@
     "id": "0",
     "content": [{
         "id": "0",
+    	"note": "abc",
+        "tooltip": "Example : /home/users/keystores/android.jks", 
         "element": "text",
         "questionText": "Please specify the path to your keystore.",
         "answers": [{
@@ -15,6 +17,8 @@
       },
       {
         "id": "1",
+        "note": "abc",
+        "tooltip": "Secret password of keystore",
         "element": "text",
         "questionText": "Please give the password for your keystore.",
         "answers": [{
@@ -31,6 +35,7 @@
   },
   {
     "id": "1",
+    "note": "abc",
     "content": [{
       "id": "2",
       "questionText": "Are you implementing the server or the client side?",
@@ -56,6 +61,7 @@
   },
   {
     "id": "2",
+    "note": "abc",
     "content": [{
       "id": "3",
       "questionText": "Do you know the host/ip?",
@@ -75,8 +81,10 @@
   },
   {
     "id": "3",
+    "note": "abc",
     "content": [{
       "id": "4",
+      "tooltip": "Example : 192.168.123.132",
       "element": "text",
       "questionText": "Enter host/ip.",
       "answers": [{
@@ -90,6 +98,8 @@
     },
     {
       "id": "5",
+      "note": "abc",
+      "tooltip": "Example : 1.2.3.4:80",
       "element": "text",
       "questionText": "Enter port.",
       "answers": [{
@@ -105,6 +115,7 @@
   },
   {
     "id": "4",
+    "note": "abc",
     "content": [{
       "id": "6",
       "element": "button",
@@ -126,6 +137,7 @@
   },
   {
     "id": "5",
+    "note": "abc",
     "content": [{
       "id": "7",
       "questionText": "We have compiled a default configuration that is secure and should work for most connections. Do you want to accept this configuration or would you like to change it?",
@@ -150,6 +162,7 @@
   },
   {
     "id": "6",
+    "note": "abc",
     "content": [{
       "id": "8",
       "element": "itemselection",

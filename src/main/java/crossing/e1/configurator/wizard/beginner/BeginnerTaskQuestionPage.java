@@ -32,14 +32,20 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+//import org.eclipse.swt.widgets.ToolTip;
+import org.eclipse.swt.widgets.ToolTip;
 
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.beginer.question.Answer;
@@ -57,8 +63,10 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private HashMap<Question, Answer> selectionMap = new HashMap<Question, Answer>();
 	private boolean finish = false;
 	private List<String> selectionValues;
-
 	private final Page page;
+	private Text note;
+
+	private Text tooltip;
 
 	public int getCurrentPageID() {
 		return page.getId();
@@ -215,6 +223,12 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					BeginnerTaskQuestionPage.this.selectionMap.put(question, (Answer) selection.getFirstElement());
 					question.setEnteredAnswer((Answer) selection.getFirstElement());
 				});
+				
+				//added description box for the questions
+				this.note = new Text(parent,SWT.NULL);
+				this.note.setText(question.getNote());
+				this.note.setEnabled(false);
+				
 				this.finish = true;
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
 				if (question.getEnteredAnswer() != null)
@@ -226,7 +240,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			case text:
 				final Text inputField = new Text(container, SWT.BORDER);
 				inputField.setSize(240, inputField.getSize().y);
-
+				
+				inputField.setToolTipText(question.getTooltip());
+				
 				if (question.getEnteredAnswer() != null) {
 					final Answer a = question.getEnteredAnswer();
 					inputField.setText(a.getValue());
@@ -249,6 +265,10 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				/*
 				 * if(oneQuestion){ inputField.forceFocus(); }
 				 */
+				//added descption box for the questions with tooltip 
+//				this.tooltip = new Text(parent,SWT.NULL);
+//				this.tooltip.setText(question.getTooltip());
+//				this.tooltip.setEnabled(false);
 				break;
 
 			case itemselection:

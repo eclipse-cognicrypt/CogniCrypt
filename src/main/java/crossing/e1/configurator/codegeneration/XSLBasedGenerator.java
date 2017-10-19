@@ -76,6 +76,7 @@ public class XSLBasedGenerator {
 	private DeveloperProject project;
 	private int startingPositionForRunMethod = -1;
 	private int startPosForImports = -1;
+	private String provider;
 
 	/**
 	 * Constructor to initialize the code template generator. If neither a java file is opened nor a project selected initialization fails.
@@ -83,8 +84,9 @@ public class XSLBasedGenerator {
 	 * @param targetProject
 	 *
 	 */
-	public XSLBasedGenerator(final IProject targetProject) {
+	public XSLBasedGenerator(final IProject targetProject, String provider) {
 		this.project = new DeveloperProject(targetProject);
+		this.provider = provider;
 	}
 
 	/***
@@ -98,7 +100,7 @@ public class XSLBasedGenerator {
 	 * @throws BadLocationException
 	 *
 	 */
-	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources) throws BadLocationException {
+	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources, final String providerName) throws BadLocationException {
 		try {
 			// Check whether directories and templates/model exist
 			final File claferOutputFiles = xmlInstanceFile != null && xmlInstanceFile.exists() ? xmlInstanceFile
@@ -114,29 +116,12 @@ public class XSLBasedGenerator {
 			transform(claferOutputFiles, xslFiles, temporaryOutputFile);
 
 			// Add additional resources like jar files
-			if (!pathToFolderWithAdditionalResources.isEmpty()) {
-				final File[] members = Utils.getResourceFromWithin(pathToFolderWithAdditionalResources).listFiles();
-				if (members == null) {
-					Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);
-				}
-				final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesinDevProject);
-				if (!libFolder.exists()) {
-					libFolder.create(true, true, null);
-				}
-				for (int i = 0; i < members.length; i++) {
-					final Path memberPath = members[i].toPath();
-					Files.copy(memberPath,
-						new File(this.project.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + memberPath
-							.getFileName()).toPath(),
-						StandardCopyOption.REPLACE_EXISTING);
-					final String filePath = members[i].toString();
-					final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.outerFileSeparator));
-					if (".jar".equals(cutPath.substring(cutPath.indexOf(".")))) {
-						if (!this.project.addJar(Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + members[i].getName())) {
-							return false;
-						}
-					}
-				}
+
+			if (!addAdditionalJarFiles(pathToFolderWithAdditionalResources)) {
+				return false;
+			}
+			if (!addAdditionalJarFiles(providerName)) {
+				return false;
 			}
 
 			// If there is a java file opened in the editor, insert glue code
@@ -168,6 +153,57 @@ public class XSLBasedGenerator {
 		if (cryptoPackage.getCompilationUnits().length == 0) {
 			this.project.removePackage(Constants.PackageName);
 		}
+	}
+
+	/**
+	 * This method allows to add the corresponding jar file
+	 * 
+	 * @param source
+	 *        is whether a provider or pathToFolderWithAdditionalResources
+	 * @return
+	 */
+	private boolean addAdditionalJarFiles(String source) {
+		try {
+
+			if (!source.isEmpty() && !source.equals(Constants.JCA)) {
+				String sourceFolder = "src/";
+				if (!source.startsWith(sourceFolder)) {
+					source = Constants.providerPath;
+				}
+				final File[] members = Utils.getResourceFromWithin(source).listFiles();
+				if (members == null) {
+					Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);
+				}
+				final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesinDevProject);
+				if (!libFolder.exists()) {
+					libFolder.create(true, true, null);
+				}
+				boolean JarIsAdded = false;
+				for (int i = 0; i < members.length && !JarIsAdded; i++) {
+
+					if (members[i].getName().equalsIgnoreCase(source + Constants.JAR) || source.startsWith(sourceFolder)) {
+						final Path memberPath = members[i].toPath();
+						Files.copy(memberPath, new File(this.project
+							.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + memberPath.getFileName())
+								.toPath(), StandardCopyOption.REPLACE_EXISTING);
+						final String filePath = members[i].toString();
+						final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.outerFileSeparator));
+						if (Constants.JAR.equals(cutPath.substring(cutPath.indexOf(".")))) {
+							if (!this.project.addJar(Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + members[i].getName())) {
+								return false;
+							}
+						}
+						JarIsAdded = true;
+					}
+				}
+			}
+		}
+
+		catch (IOException | CoreException e) {
+			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -395,5 +431,13 @@ public class XSLBasedGenerator {
 		final TransformerFactory tFactory = TransformerFactory.newInstance();
 		final Transformer transformer = tFactory.newTransformer(new StreamSource(xsltFile));
 		transformer.transform(new StreamSource(sourceFile), new StreamResult(new File(resultDir)));
+	}
+
+	public String getProvider() {
+		return this.provider;
+	}
+
+	public void setProvider(String provider) {
+		this.provider = provider;
 	}
 }

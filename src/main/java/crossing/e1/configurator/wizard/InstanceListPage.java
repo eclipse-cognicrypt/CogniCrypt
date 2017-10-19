@@ -181,9 +181,25 @@ public class InstanceListPage extends WizardPage implements Labels {
 				output.append(Constants.lineSeparator);
 			}
 		}
-
 		return output.toString();
 	}
+
+	/**
+	 * This method extracts the provider's name from the instanceDetails
+	 * @return
+	 */
+	public String getProviderFromInstance() {
+		String providerName = "";
+		String[] inst = this.instanceDetails.getText().split(System.getProperty("line.separator"));
+		for (int i = 0; i < inst.length; i++) {
+			if (inst[i].contains("Provider")) {
+				providerName=inst[i].split(": ")[1];
+				break;
+			}
+		}
+		return providerName;
+	}
+
 
 	public Task getTask() {
 		return this.selectedTask;

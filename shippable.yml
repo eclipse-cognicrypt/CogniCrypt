@@ -2,13 +2,22 @@ language: java
 
 jdk:
   - oraclejdk8
+
+env:
+  - NIGHTLYBUILD=master
+  - NIGHTLYBUILD=cp-group1718
+  - NIGHTLYBUILD=ti-group1718
+  - NIGHTLYBUILD=ui-group1718
+  
+matrix:
+  allow_failures:
+   - env: NIGHTLYBUILD=cp-group1718
+   - env: NIGHTLYBUILD=ti-group1718
+   - env: NIGHTLYBUILD=ui-group1718
   
 build:
   ci:
-   - mkdir -p shippable/testresults
-   - mkdir -p shippable/codecoverage
-
-  
+   - git checkout $NIGHTLYBUILD
    - cd mvn-parent
    - mvn clean verify surefire:test
    

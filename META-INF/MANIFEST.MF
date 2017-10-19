@@ -10,7 +10,9 @@ Require-Bundle: org.eclipse.ui,
  org.junit,
  org.eclipse.jdt.ui,
  org.eclipse.jface.text,
- org.eclipse.jdt.core
+ org.eclipse.jdt.core,
+ com.google.guava,
+ org.eclipse.emf.ecore
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/claferchocoig.jar,

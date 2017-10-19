@@ -532,8 +532,12 @@ public class CryptSLModelReader {
 			for (JvmFormalParameter par : meth.getParameters()) {
 				pars.add(new SimpleEntry<String, String>(par.getSimpleName(), par.getParameterType().getSimpleName()));
 			}
+			List<CryptSLMethod> crysl = new ArrayList<CryptSLMethod>();
+			
+			crysl.addAll(CryptSLReaderUtils.resolveAggregateToMethodeNames(fm.getRep()));
+			
 			methodSignatures.add(new CryptSLForbiddenMethod(new CryptSLMethod(meth.getDeclaringType().getIdentifier() + "." + meth
-				.getSimpleName(), pars, null, new SimpleEntry<String, String>("_", "AnyType")), false));
+				.getSimpleName(), pars, null, new SimpleEntry<String, String>("_", "AnyType")), false, crysl));
 		}
 		return methodSignatures;
 	}

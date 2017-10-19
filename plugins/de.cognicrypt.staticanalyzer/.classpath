@@ -5,6 +5,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="lib" path="lib/soot-trunk.jar"/>
-	<classpathentry kind="lib" path="lib/ideal-crossing-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="lib/ideal-crossing-0.0.1-SNAPSHOT-jar-with-dependencies.jar" sourcepath="/crypto-analysis-root"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

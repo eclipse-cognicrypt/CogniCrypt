@@ -1,6 +1,7 @@
 package de.cognicrypt.staticanalyzer.results;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -16,7 +17,9 @@ import crypto.analysis.ClassSpecification;
 import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.EnsuredCryptSLPredicate;
 import crypto.analysis.IAnalysisSeed;
+import crypto.rules.CryptSLConstraint;
 import crypto.rules.CryptSLPredicate;
+import crypto.rules.CryptSLValueConstraint;
 import crypto.rules.StateNode;
 import crypto.typestate.CallSiteWithParamIndex;
 import crypto.typestate.CryptoTypestateAnaylsisProblem.AdditionalBoomerangQuery;
@@ -24,7 +27,9 @@ import de.cognicrypt.staticanalyzer.Utils;
 import ideal.AnalysisSolver;
 import ideal.IFactAtStatement;
 import soot.SootClass;
+import soot.SootMethod;
 import soot.Unit;
+import soot.jimple.internal.JInvokeStmt;
 import typestate.TypestateDomainValue;
 import typestate.interfaces.ISLConstraint;
 
@@ -32,46 +37,99 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	private ErrorMarkerGenerator markerGenerator;
 	
-	
 	public ResultsCCUIListener(ErrorMarkerGenerator gen) {
 		markerGenerator = gen;
 	}
 	
 	@Override
-	public void constraintViolation(AnalysisSeedWithSpecification arg0, ISLConstraint arg1, StmtWithMethod arg2) {
-		System.out.println("Constraint " + arg1.toString() + " is violated.");
-		markerGenerator.addMarker(unitToResource(arg2), arg2.getStmt().getJavaSourceStartLineNumber(), "The constraint was violated");
+	public void constraintViolation(AnalysisSeedWithSpecification spec, ISLConstraint brokenConstraint, StmtWithMethod location) {
+		StringBuilder msg = new StringBuilder();
+		msg.append("The constraint ");
+		evaluateBrokenConstraint(brokenConstraint, msg); 
+		msg.append(" was violated.");
+		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartLineNumber(), msg.toString());
+	}
+
+	private void evaluateBrokenConstraint(ISLConstraint brokenConstraint, StringBuilder msg) {
+		//TODO: Add other constraint types
+		if (brokenConstraint instanceof CryptSLValueConstraint) {
+			evaluateValueConstraint(brokenConstraint, msg);
+		} else if (brokenConstraint instanceof CryptSLConstraint) {
+			final CryptSLConstraint cryptSLConstraint = (CryptSLConstraint) brokenConstraint;
+			evaluateValueConstraint(cryptSLConstraint.getRight(), msg);
+		}
+	}
+
+	private void evaluateValueConstraint(ISLConstraint brokenConstraint, StringBuilder msg) {
+		final CryptSLValueConstraint valCons = (CryptSLValueConstraint)brokenConstraint;
+		msg.append(valCons.getVarName());
+		msg.append(" € ");
+		for (String val : valCons.getValueRange()) {
+			msg.append(val);
+			msg.append(", ");
+		}
+		msg.deleteCharAt(msg.length() -2);
 	}
 
 	@Override
-	public void typestateErrorAt(AnalysisSeedWithSpecification arg0, StmtWithMethod arg1) {
-		System.out.print("Typestate Error " + arg1.getMethod().toString());
-		markerGenerator.addMarker(unitToResource(arg1), arg1.getStmt().getJavaSourceStartLineNumber(), "Typestate error");
+	public void typestateErrorAt(AnalysisSeedWithSpecification classSpecification, StmtWithMethod location, Collection<SootMethod> expectedCalls) {
+		StringBuilder msg = new StringBuilder();
 		
+		msg.append("Unexpected Method Call to");
+		msg.append(((JInvokeStmt)location.getStmt()).getInvokeExpr().getMethod().toString());
+		msg.append(". Expected a Call to  one of the Following Methods ");
+		Set<String> altMethods = new HashSet<String>();
+		for (SootMethod expectedCall : expectedCalls) {
+			altMethods.add(expectedCall.getName());
+		}
+		for (String methName : altMethods) {
+			msg.append(methName);
+			msg.append(", ");
+		}
+		msg.deleteCharAt(msg.length() -2);
+		msg.append(" Here.");
+		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartLineNumber(), msg.toString());
 	}
 
 	@Override
-	public void callToForbiddenMethod(ClassSpecification arg0, StmtWithMethod arg1) {
-		System.out.print("Call to forbidden method " + arg1.toString());
-		markerGenerator.addMarker(unitToResource(arg1), arg1.getStmt().getJavaSourceStartLineNumber(), "Call to forbidden method");
+	public void callToForbiddenMethod(ClassSpecification spec, StmtWithMethod location) {
+		StringBuilder msg = new StringBuilder();
+		msg.append("Call to forbidden method ");
+		msg.append(((JInvokeStmt)location.getStmt()).getInvokeExpr().getMethod().toString());
+		//TODO: Fix after #33
+		if (false) {
+			msg.append("Instead use call method");
+			msg.append("INSERT METHOD CALL HERE");
+		}
+		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartLineNumber(), msg.toString());
 	}
 	
 	@Override
-	public void missingPredicates(AnalysisSeedWithSpecification arg0, Set<CryptSLPredicate> arg1) {
-		System.out.print("Predicate is missing.");
-		markerGenerator.addMarker(null, 1, "Missing Predicate");
+	public void missingPredicates(AnalysisSeedWithSpecification spec, Set<CryptSLPredicate> missingPred) {
+		for (CryptSLPredicate pred : missingPred) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("Predicate ");
+			msg.append(pred.getPredName());
+			msg.append(" is missing.");
+			markerGenerator.addMarker(unitToResource(new StmtWithMethod(spec.getStmt(), spec.getMethod())), 1, msg.toString());
+		}
 	}
 
 	@Override
-	public void predicateContradiction(StmtWithMethod arg0, AccessGraph arg1, Entry<CryptSLPredicate, CryptSLPredicate> arg2) {
-		System.out.print("Predicate is missing.");
-		markerGenerator.addMarker(unitToResource(arg0), 1, "Predicate mismatch");
+	public void predicateContradiction(StmtWithMethod location, AccessGraph accessGraph, Entry<CryptSLPredicate, CryptSLPredicate> mismatchedPreds) {
+		markerGenerator.addMarker(unitToResource(location), 1, "Predicate mismatch");
 	}
 
 	//Untested
 	private IResource unitToResource(StmtWithMethod stmt) {
 		SootClass className = stmt.getMethod().getDeclaringClass();
 		return Utils.getCurrentProject().getFile("src/" + className.getName().replace(".", "/") + ".java");
+	}
+	
+	@Override
+	public void typestateErrorEndOfLifeCycle(AnalysisSeedWithSpecification classSpecification, StmtWithMethod stmt) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -167,5 +225,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	public void onSeedTimeout(IFactAtStatement arg0) {
 		// nothing
 	}
+
+
 
 }

@@ -140,9 +140,7 @@ public class Utils {
 		} else if ((Constants.WizardActionFromContextMenuFlag == false) && (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension()
 			.equalsIgnoreCase("java"))) {
 			currentProject = Utils.getCurrentlyOpenFile().getProject();
-		}
-
-		else if (Utils.checkIfJavaProjectSelected()) {
+		} else if (Utils.checkIfJavaProjectSelected()) {
 			currentProject = Utils.getIProjectFromSelection();
 		} else {
 			currentProject = null;

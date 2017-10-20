@@ -12,11 +12,11 @@ import de.cognicrypt.staticanalyzer.Activator;
 public class ErrorMarkerGenerator {
 
 	private List<IMarker> markers;
-	
+
 	public ErrorMarkerGenerator() {
 		markers = new ArrayList<IMarker>();
 	}
-	
+
 	public boolean addMarker(IResource res, int line, String message) {
 		if (!res.exists() || !res.isAccessible()) {
 			Activator.getDefault().logError("No resource to generate error marker for found.");
@@ -36,7 +36,7 @@ public class ErrorMarkerGenerator {
 		markers.add(marker);
 		return true;
 	}
-	
+
 	public Boolean clearMarkers() {
 		for (IMarker marker : markers) {
 			try {
@@ -49,5 +49,5 @@ public class ErrorMarkerGenerator {
 		markers.clear();
 		return true;
 	}
-	
+
 }

@@ -36,16 +36,16 @@ import typestate.interfaces.ISLConstraint;
 public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	private ErrorMarkerGenerator markerGenerator;
-	
+
 	public ResultsCCUIListener(ErrorMarkerGenerator gen) {
 		markerGenerator = gen;
 	}
-	
+
 	@Override
 	public void constraintViolation(AnalysisSeedWithSpecification spec, ISLConstraint brokenConstraint, StmtWithMethod location) {
 		StringBuilder msg = new StringBuilder();
 		msg.append("The constraint ");
-		evaluateBrokenConstraint(brokenConstraint, msg); 
+		evaluateBrokenConstraint(brokenConstraint, msg);
 		msg.append(" was violated.");
 		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartLineNumber(), msg.toString());
 	}
@@ -61,22 +61,22 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	private void evaluateValueConstraint(ISLConstraint brokenConstraint, StringBuilder msg) {
-		final CryptSLValueConstraint valCons = (CryptSLValueConstraint)brokenConstraint;
+		final CryptSLValueConstraint valCons = (CryptSLValueConstraint) brokenConstraint;
 		msg.append(valCons.getVarName());
 		msg.append(" € ");
 		for (String val : valCons.getValueRange()) {
 			msg.append(val);
 			msg.append(", ");
 		}
-		msg.deleteCharAt(msg.length() -2);
+		msg.deleteCharAt(msg.length() - 2);
 	}
 
 	@Override
 	public void typestateErrorAt(AnalysisSeedWithSpecification classSpecification, StmtWithMethod location, Collection<SootMethod> expectedCalls) {
 		StringBuilder msg = new StringBuilder();
-		
+
 		msg.append("Unexpected Method Call to");
-		msg.append(((JInvokeStmt)location.getStmt()).getInvokeExpr().getMethod().toString());
+		msg.append(((JInvokeStmt) location.getStmt()).getInvokeExpr().getMethod().toString());
 		msg.append(". Expected a Call to  one of the Following Methods ");
 		Set<String> altMethods = new HashSet<String>();
 		for (SootMethod expectedCall : expectedCalls) {
@@ -86,7 +86,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			msg.append(methName);
 			msg.append(", ");
 		}
-		msg.deleteCharAt(msg.length() -2);
+		msg.deleteCharAt(msg.length() - 2);
 		msg.append(" Here.");
 		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartLineNumber(), msg.toString());
 	}
@@ -95,7 +95,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	public void callToForbiddenMethod(ClassSpecification spec, StmtWithMethod location) {
 		StringBuilder msg = new StringBuilder();
 		msg.append("Call to forbidden method ");
-		msg.append(((JInvokeStmt)location.getStmt()).getInvokeExpr().getMethod().toString());
+		msg.append(((JInvokeStmt) location.getStmt()).getInvokeExpr().getMethod().toString());
 		//TODO: Fix after #33
 		if (false) {
 			msg.append("Instead use call method");
@@ -103,7 +103,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartLineNumber(), msg.toString());
 	}
-	
+
 	@Override
 	public void missingPredicates(AnalysisSeedWithSpecification spec, Set<CryptSLPredicate> missingPred) {
 		for (CryptSLPredicate pred : missingPred) {
@@ -125,11 +125,11 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		SootClass className = stmt.getMethod().getDeclaringClass();
 		return Utils.getCurrentProject().getFile("src/" + className.getName().replace(".", "/") + ".java");
 	}
-	
+
 	@Override
 	public void typestateErrorEndOfLifeCycle(AnalysisSeedWithSpecification classSpecification, StmtWithMethod stmt) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -140,92 +140,90 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	@Override
 	public void afterConstraintCheck(AnalysisSeedWithSpecification arg0) {
 		// nothing
-		
+
 	}
 
 	@Override
 	public void afterPredicateCheck(AnalysisSeedWithSpecification arg0) {
 		// nothing
-		
+
 	}
 
 	@Override
 	public void beforeAnalysis() {
 		// nothing
-		
+
 	}
 
 	@Override
 	public void beforeConstraintCheck(AnalysisSeedWithSpecification arg0) {
 		// nothing
-		
+
 	}
 
 	@Override
 	public void beforePredicateCheck(AnalysisSeedWithSpecification arg0) {
 		// nothing
-		
+
 	}
 
 	@Override
 	public void boomerangQueryFinished(IFactAtStatement arg0, AdditionalBoomerangQuery arg1) {
 		// nothing
-		
+
 	}
 
 	@Override
 	public void boomerangQueryStarted(IFactAtStatement arg0, AdditionalBoomerangQuery arg1) {
 		// nothing
-		
+
 	}
 
 	@Override
 	public void seedFinished(IAnalysisSeed arg0) {
 		// nothing
-		
+
 	}
 
 	@Override
 	public void seedStarted(IAnalysisSeed arg0) {
 		// nothing
-		
+
 	}
 
 	@Override
 	public void checkedConstraints(AnalysisSeedWithSpecification arg0, Collection<ISLConstraint> arg1) {
 		// nothing
-		
+
 	}
 
 	@Override
 	public void collectedValues(AnalysisSeedWithSpecification arg0, Multimap<CallSiteWithParamIndex, Unit> arg1) {
 		// nothing
-		
+
 	}
 
 	@Override
 	public void discoveredSeed(IAnalysisSeed arg0) {
 		// nothing
-		
+
 	}
 
 	@Override
 	public void ensuredPredicates(Table<Unit, AccessGraph, Set<EnsuredCryptSLPredicate>> arg0, Table<Unit, IAnalysisSeed, Set<CryptSLPredicate>> arg1, Table<Unit, IAnalysisSeed, Set<CryptSLPredicate>> arg2) {
 		// nothing
-		
+
 	}
 
 	@Override
 	public void onSeedFinished(IFactAtStatement arg0, AnalysisSolver<TypestateDomainValue<StateNode>> arg1) {
 		// nothing
-		
+
 	}
 
 	@Override
 	public void onSeedTimeout(IFactAtStatement arg0) {
 		// nothing
 	}
-
-
 
 }

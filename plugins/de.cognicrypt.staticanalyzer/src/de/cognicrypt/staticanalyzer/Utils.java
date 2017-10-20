@@ -53,7 +53,12 @@ public class Utils {
 	}
 
 	public static IProject getCurrentProject() {
-		return getCurrentlyOpenFile().getProject();
+		final IFile currentlyOpenFile = getCurrentlyOpenFile();
+		if (currentlyOpenFile == null) {
+			return null;
+		} else {
+			return currentlyOpenFile.getProject();
+		}
 	}
 
 	/**

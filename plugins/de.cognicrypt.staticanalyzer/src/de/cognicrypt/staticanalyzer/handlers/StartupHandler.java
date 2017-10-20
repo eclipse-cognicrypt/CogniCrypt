@@ -68,9 +68,11 @@ public class StartupHandler implements IStartup {
 				
 				AnalysisKickOff ako = new AnalysisKickOff();
 				
-				ako.setUp();
-				ako.run();
-				ako.cleanUp();
+				if (ako.setUp()) {
+					ako.run(); 
+					ako.cleanUp();
+				}
+				
 			} catch (CoreException e) {
 				Activator.getDefault().logError(e, "Internal error");
 			}

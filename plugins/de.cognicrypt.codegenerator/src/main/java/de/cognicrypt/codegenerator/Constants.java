@@ -41,12 +41,15 @@ public class Constants {
 	public static final String JavaNatureID = "org.eclipse.jdt.core.javanature";
 
 	private static final String rsrcPath = "src" + innerFileSeparator + "main" + innerFileSeparator + "resources" + innerFileSeparator;
-
+	public static final String providerPath = rsrcPath + "AdditionalResources" + innerFileSeparator + "Provider";
+	
+	
 	//JSON task file
 	public static final String jsonTaskFile = rsrcPath + "Tasks" + innerFileSeparator + "tasks.json";;
 
 	public static final String pathToPropertyfiles = rsrcPath + "Labels.properties";
 
+	
 	// Task descriptions
 
 	// if the next question page depends on user input, the Page object encodes this as a nextPageID as opposed to the one that the last page points to
@@ -93,6 +96,8 @@ public class Constants {
 	public static final String ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY = "No directory for additional resources found.";
 
 	public static final String JAVA = "java";
+	public static final String JCA = "JCA";
+	public static final String JAR = ".jar";
 	public static final String ALGORITHM = "algorithm";
 	public static final String ADVANCED_MODE = "Advanced Mode";
 
@@ -105,6 +110,7 @@ public class Constants {
 	public static final String Type = "type";
 	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List;" };
 
+	
 	// Types
 	public static final String INTEGER = "Integer";
 	public static final String STRING = "String";
@@ -123,3 +129,4 @@ public class Constants {
 	public static boolean WizardActionFromContextMenuFlag = false;
 	
 }
+

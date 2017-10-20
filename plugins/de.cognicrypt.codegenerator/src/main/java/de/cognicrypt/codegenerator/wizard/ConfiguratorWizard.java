@@ -326,16 +326,16 @@ public class ConfiguratorWizard extends Wizard {
 			try {
 				final XMLParser parser = new XMLParser();
 				parser.displayInstanceValues(this.instanceListPage.getValue(), this.constraints);
-
+				
 				// Initialize Code Generation
-				XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject());
+				XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject(), this.instanceListPage.getProviderFromInstance());
 
 				// Write Instance File into developer project
 				final String xmlInstancePath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
 				parser.writeClaferInstanceToFile(xmlInstancePath);
 
 				// Generate code template
-				ret &= codeGenerator.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources());
+				ret &= codeGenerator.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), codeGenerator.getProvider());
 
 				// Delete Instance File
 				FileHelper.deleteFile(xmlInstancePath);

@@ -68,7 +68,7 @@
           "value": "No",
           "codeDependencies": [],
           "defaultAnswer": true,
-          "nextID": "6"
+          "nextID": "5"
         }
       ]
     }]
@@ -87,12 +87,8 @@
         }],
         "defaultAnswer": true
       }]
-    }],
-    "nextID": "4"
-  },
-  {
-    "id": "4",
-    "content": [{
+    },
+    {
       "id": "5",
       "element": "text",
       "questionText": "Enter port.",
@@ -105,10 +101,10 @@
         "defaultAnswer": true
       }]
     }],
-    "nextID": "5"
+    "nextID": "4"
   },
   {
-    "id": "5",
+    "id": "4",
     "content": [{
       "id": "6",
       "element": "button",
@@ -126,10 +122,10 @@
         }
       ]
     }],
-    "nextID": "7"
+    "nextID": "5"
   },
   {
-    "id": "6",
+    "id": "5",
     "content": [{
       "id": "7",
       "questionText": "We have compiled a default configuration that is secure and should work for most connections. Do you want to accept this configuration or would you like to change it?",
@@ -147,13 +143,13 @@
         {
           "value": "Change.",
           "claferDependencies": [],
-          "nextID": "7"
+          "nextID": "6"
         }
       ]
     }]
   },
   {
-    "id": "7",
+    "id": "6",
     "content": [{
       "id": "8",
       "element": "itemselection",

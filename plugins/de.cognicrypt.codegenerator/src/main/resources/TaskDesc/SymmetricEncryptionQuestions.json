@@ -77,6 +77,34 @@
           "defaultAnswer": true
         }
       ]
+    },
+    {
+      "id": "3",
+      "element": "combo",
+      "questionText": "What type of data do you wish to encrypt?",
+      "answers": [{
+          "value": "Byte[]",
+          "codeDependencies": [{
+            "option": "dataType",
+            "value": "byte[]"
+          }],
+             "defaultAnswer": true     
+        },
+        {
+          "value": "File",
+          "codeDependencies": [{
+            "option": "dataType",
+            "value": "File"
+          }]
+        },
+        {
+          "value": "String",
+          "codeDependencies": [{
+            "option": "dataType",
+            "value": "String"
+          }]
+        }
+      ]
     }
   ],
   "nextID": "-1"

@@ -1,7 +1,6 @@
 package de.cognicrypt.staticanalyzer.handlers;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -14,6 +13,12 @@ import de.cognicrypt.staticanalyzer.results.ErrorMarkerGenerator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.staticanalyzer.sootbridge.SootRunner;
 
+/**
+ * This class prepares and triggers the analysis. After it has finished, it refreshes the project.
+ * 
+ * @author Stefan Krueger
+ *
+ */
 public class AnalysisKickOff {
 
 	private String mainClass;
@@ -21,6 +26,14 @@ public class AnalysisKickOff {
 	private static ErrorMarkerGenerator errGen;
 	private static ResultsCCUIListener resultsReporter;
 
+	/**
+	 * This method sets up the analysis by <br>
+	 * 1) Creating a {@link ErrorMarkerGenerator} <br>
+	 * 2) Creating a {@link ResultsCCUIListener} <br>
+	 * 3) Finding the current project's class with a main method <br>
+	 * 
+	 * @return <code>true</code>/<code>false</code> if setup (not) successful
+	 */
 	public boolean setUp() {
 		if (errGen == null) {
 			errGen = new ErrorMarkerGenerator();
@@ -59,23 +72,14 @@ public class AnalysisKickOff {
 		return true;
 	}
 
+	/**
+	 * This method executes the actual analysis.
+	 * @return <code>true</code>/<code>false</code> Soot runs successfully
+	 */
 	public boolean run() {
 		if (curProj == null) {
 			return false;
 		}
-		SootRunner.runSoot(curProj, mainClass, resultsReporter);
-
-		return true;
+		return SootRunner.runSoot(curProj, mainClass, resultsReporter);
 	}
-
-	public boolean cleanUp() {
-		try {
-			this.curProj.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
-		} catch (CoreException e) {
-			Activator.getDefault().logError(e);
-			return false;
-		}
-		return true;
-	}
-
 }

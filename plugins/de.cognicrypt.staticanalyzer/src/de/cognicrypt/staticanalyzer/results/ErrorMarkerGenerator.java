@@ -8,7 +8,14 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.Constants;
 
+/**
+ * This class handles error markers for crypto misuses.
+ * 
+ * @author Stefan Krueger
+ *
+ */
 public class ErrorMarkerGenerator {
 
 	private List<IMarker> markers;
@@ -17,14 +24,22 @@ public class ErrorMarkerGenerator {
 		markers = new ArrayList<IMarker>();
 	}
 
-	public boolean addMarker(IResource res, int line, String message) {
-		if (!res.exists() || !res.isAccessible()) {
-			Activator.getDefault().logError("No resource to generate error marker for found.");
+	/**
+	 * Adds crypto-misuse error marker with message {@link message} into file {@link sourceFile} at Line {@link line}. 
+	 * 
+	 * @param sourceFile File the marker is generated into
+	 * @param line Line the marker is generated at
+	 * @param message Error Message
+	 * @return <code>true</code>/<code>false</code> if error marker was (not) added successfully
+	 */
+	public boolean addMarker(IResource sourceFile, int line, String message) {
+		if (!sourceFile.exists() || !sourceFile.isAccessible()) {
+			Activator.getDefault().logError(Constants.NO_RES_FOUND);
 			return false;
 		}
 		IMarker marker;
 		try {
-			marker = res.createMarker(IMarker.PROBLEM);
+			marker = sourceFile.createMarker(IMarker.PROBLEM);
 			marker.setAttribute(IMarker.LINE_NUMBER, line);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
@@ -37,6 +52,10 @@ public class ErrorMarkerGenerator {
 		return true;
 	}
 
+	/**
+	 * Deletes markers from file and clears markers list.
+	 * @return <code>true</code>/<code>false</code> if all error markers were (not) deleted successfully
+	 */
 	public Boolean clearMarkers() {
 		boolean allMarkersDeleted = true;
 		for (IMarker marker : markers) {

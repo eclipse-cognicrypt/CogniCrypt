@@ -125,6 +125,12 @@ public class Utils {
 		return null;
 	}
 
+	/**
+	 * This method searches the passed project for the class that contains the main method.
+	 * 
+	 * @param project Project that is searched
+	 * @param requestor Object that handles the search results
+	 */
 	public static void findMainMethodInCurrentProject(IJavaProject project, SearchRequestor requestor) {
 		SearchPattern sp = SearchPattern.createPattern("main", IJavaSearchConstants.METHOD, IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
 

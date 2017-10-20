@@ -35,6 +35,12 @@ import soot.jimple.internal.JInvokeStmt;
 import typestate.TypestateDomainValue;
 import typestate.interfaces.ISLConstraint;
 
+/**
+ * This listener is notified of any misuses the analyis finds.
+ * 
+ * @author Stefan Krueger
+ *
+ */
 public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	private ErrorMarkerGenerator markerGenerator;

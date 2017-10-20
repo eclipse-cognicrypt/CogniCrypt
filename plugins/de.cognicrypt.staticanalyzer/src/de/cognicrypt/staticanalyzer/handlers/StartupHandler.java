@@ -17,9 +17,11 @@ import org.eclipse.ui.IStartup;
 
 import de.cognicrypt.staticanalyzer.Activator;
 
-
 /**
  * At startup, this handler registers a listener that will be informed after a build, whenever resources were changed.
+ * 
+ * @author Eric Bodden
+ * @author Stefan Krueger
  */
 public class StartupHandler implements IStartup {
 
@@ -28,57 +30,54 @@ public class StartupHandler implements IStartup {
 	public void earlyStartup() {
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(BUILD_LISTENER, IResourceChangeEvent.POST_BUILD);
 	}
-	
+
 	private static class AfterBuildListener implements IResourceChangeListener {
 
 		public void resourceChanged(IResourceChangeEvent event) {
 			try {
 				final Set<IJavaElement> changedJavaElements = new HashSet<IJavaElement>();
 				event.getDelta().accept(new IResourceDeltaVisitor() {
+
 					public boolean visit(IResourceDelta delta) throws CoreException {
-						switch(delta.getKind()) {
-						case IResourceDelta.ADDED:
-						case IResourceDelta.CHANGED:
-							IResource res = delta.getResource();
-							IJavaElement javaElement = JavaCore.create(res);
-							if(javaElement!=null) {
-//								if(res instanceof IProject) {
-//TODO allow for filtering of Android projects in plugin config
-//									if(!AnalysisDispatcher.isAndroidProject((IProject) res)) {
-//										don't care about non-Android projects
-//										return false;
-//									}
-//								}
-								if(javaElement instanceof ICompilationUnit) {
-									//only care if file contents changed
-									if((delta.getFlags() & IResourceDelta.CONTENT) != 0) {
-										changedJavaElements.add(javaElement);
+						switch (delta.getKind()) {
+							case IResourceDelta.ADDED:
+							case IResourceDelta.CHANGED:
+								IResource res = delta.getResource();
+								IJavaElement javaElement = JavaCore.create(res);
+								if (javaElement != null) {
+									//								if(res instanceof IProject) {
+									//TODO allow for filtering of Android projects in plugin config
+									//									if(!AnalysisDispatcher.isAndroidProject((IProject) res)) {
+									//										don't care about non-Android projects
+									//										return false;
+									//									}
+									//								}
+									if (javaElement instanceof ICompilationUnit) {
+										//only care if file contents changed
+										if ((delta.getFlags() & IResourceDelta.CONTENT) != 0) {
+											changedJavaElements.add(javaElement);
+										}
+										return false;
 									}
-									return false;
 								}
-							}
-						}					
+						}
 						return true;
 					}
 				});
-				if(changedJavaElements.isEmpty()) return;
-				
-//				IJavaElement[] changeArray = changedJavaElements.toArray(new IJavaElement[0]);
-//				AnalysisDispatcher.searchAndAnalyze(changeArray);
-				
+				if (changedJavaElements.isEmpty())
+					return;
+
 				AnalysisKickOff ako = new AnalysisKickOff();
-				
+
 				if (ako.setUp()) {
-					ako.run(); 
-					ako.cleanUp();
+					ako.run();
 				}
-				
+
 			} catch (CoreException e) {
 				Activator.getDefault().logError(e, "Internal error");
 			}
 		}
 
 	}
-
 
 }

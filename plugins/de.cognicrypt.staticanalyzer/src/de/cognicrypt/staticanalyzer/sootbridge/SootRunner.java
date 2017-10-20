@@ -35,25 +35,33 @@ import soot.jimple.toolkits.ide.icfg.JimpleBasedInterproceduralCFG;
 import soot.options.Options;
 import typestate.TypestateDomainValue;
 
+/**
+ * This runner triggers Soot.
+ * 
+ * @author Johannes Spaeth
+ * @author Eric Bodden
+ */
 public class SootRunner {
+
 	private static final File RULES_DIR = Utils.getResourceFromWithin("/resources/CrySLRules/");
-	
-	public static void runSoot(IJavaProject project, String mainClass, CrySLAnalysisListener reporter) {
+
+	public static boolean runSoot(IJavaProject project, String mainClass, CrySLAnalysisListener reporter) {
 		G.reset();
 		setSootOptions(project, mainClass);
 		registerTransformers(reporter);
 		try {
 			runSoot(mainClass);
-		} catch(Exception t) {
+		} catch (Exception t) {
 			Activator.getDefault().logError(t);
+			return false;
 		}
+		return true;
 	}
 
 	private static void registerTransformers(CrySLAnalysisListener reporter) {
 		PackManager.v().getPack("wjtp").add(new Transform("wjtp.prepare", new PreparationTransformer()));
-		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(reporter)));	
+		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(reporter)));
 	}
-
 
 	private static void runSoot(String mainClass) {
 		Scene.v().loadClassAndSupport(mainClass);
@@ -61,29 +69,28 @@ public class SootRunner {
 		PackManager.v().runPacks();
 	}
 
-
 	private static void setSootOptions(IJavaProject project, String mainClass) {
 		Options.v().set_soot_classpath(getSootClasspath(project));
 		Options.v().set_main_class(mainClass);
-		
+
 		Options.v().set_keep_line_number(true);
 		Options.v().set_prepend_classpath(true);
 		Options.v().set_allow_phantom_refs(true);
 		Options.v().set_whole_program(true);
 		Options.v().set_no_bodies_for_excluded(true);
-		
+
 		Options.v().setPhaseOption("cg.spark", "on");
 		Options.v().set_output_format(Options.output_format_none);
 	}
 
 	private static SceneTransformer createAnalysisTransformer(final CrySLAnalysisListener reporter) {
 		return new SceneTransformer() {
-			
+
 			@Override
 			protected void internalTransform(String phaseName, Map<String, String> options) {
 				final ExtendedICFG icfg = new ExtendedICFG(new JimpleBasedInterproceduralCFG(false));
-//				System.out.println("Soot Classes: "+ Scene.v().getClasses().size());
-//				System.out.println("Reachable Methods: "+ Scene.v().getReachableMethods().size());
+				//				System.out.println("Soot Classes: "+ Scene.v().getClasses().size());
+				//				System.out.println("Reachable Methods: "+ Scene.v().getReachableMethods().size());
 				CryptoScanner scanner = new CryptoScanner(getRules()) {
 
 					@Override
@@ -107,6 +114,7 @@ public class SootRunner {
 			}
 		};
 	}
+
 	private static List<CryptSLRule> getRules() {
 		List<CryptSLRule> rules = Lists.newArrayList();
 		File[] listFiles = RULES_DIR.listFiles();
@@ -117,31 +125,30 @@ public class SootRunner {
 		}
 		return rules;
 	}
-	
+
 	private static List<String> projectClassPath(IJavaProject javaProject) {
-	    IWorkspace workspace = ResourcesPlugin.getWorkspace();
-	    IClasspathEntry[] cp;
-	    try {
-	            cp = javaProject.getResolvedClasspath(true);
-	            List<String> urls = new ArrayList<>();
-	            URI uriString = workspace.getRoot().getFile(
-	                            javaProject.getOutputLocation()).getLocationURI();
-	            urls.add(new File(uriString).getAbsolutePath());
-	            for (IClasspathEntry entry : cp) {
-	            	if(entry.getEntryKind() == IClasspathEntry.CPE_SOURCE || entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY)
-	            		continue;
-                    File file = entry.getPath().toFile();
-                    urls.add(file.getAbsolutePath());
-	            }
-	            return urls;
-	    } catch (Exception e) {
-	    	Activator.getDefault().logError(e, "Error building project classpath");
-	    	return Lists.newArrayList();
-	    }
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IClasspathEntry[] cp;
+		try {
+			cp = javaProject.getResolvedClasspath(true);
+			List<String> urls = new ArrayList<>();
+			URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
+			urls.add(new File(uriString).getAbsolutePath());
+			for (IClasspathEntry entry : cp) {
+				if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE || entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY)
+					continue;
+				File file = entry.getPath().toFile();
+				urls.add(file.getAbsolutePath());
+			}
+			return urls;
+		} catch (Exception e) {
+			Activator.getDefault().logError(e, "Error building project classpath");
+			return Lists.newArrayList();
+		}
 	}
 
 	private static String getSootClasspath(IJavaProject javaProject) {
-	    return Joiner.on(File.pathSeparator).join(projectClassPath(javaProject));
+		return Joiner.on(File.pathSeparator).join(projectClassPath(javaProject));
 	}
 
 }

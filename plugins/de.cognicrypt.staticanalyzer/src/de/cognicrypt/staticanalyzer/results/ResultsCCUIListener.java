@@ -135,7 +135,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void predicateContradiction(StmtWithMethod location, AccessGraph accessGraph, Entry<CryptSLPredicate, CryptSLPredicate> mismatchedPreds) {
-		markerGenerator.addMarker(unitToResource(location), 1, "Predicate mismatch");
+		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartColumnNumber(), "Predicate mismatch");
 	}
 
 	//Untested

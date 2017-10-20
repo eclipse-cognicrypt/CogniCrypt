@@ -38,15 +38,21 @@ public class ErrorMarkerGenerator {
 	}
 
 	public Boolean clearMarkers() {
+		boolean allMarkersDeleted = true;
 		for (IMarker marker : markers) {
-			try {
-				marker.delete();
-			} catch (CoreException e) {
-				Activator.getDefault().logError(e);
-				return false;
-			}
+			allMarkersDeleted &= deleteMarker(marker);
 		}
 		markers.clear();
+		return allMarkersDeleted;
+	}
+
+	private boolean deleteMarker(IMarker marker) {
+		try {
+			marker.delete();
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e);
+			return false;
+		}
 		return true;
 	}
 

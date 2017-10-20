@@ -30,7 +30,7 @@ public class AnalysisKickOff {
 		if (resultsReporter == null) {
 			resultsReporter = new ResultsCCUIListener(errGen);
 		}
-		
+
 		SearchRequestor requestor = new SearchRequestor() {
 
 			@Override
@@ -46,7 +46,7 @@ public class AnalysisKickOff {
 		};
 		IProject ip = Utils.getCurrentProject();
 		try {
-			if (!ip.hasNature(JavaCore.NATURE_ID)) {
+			if (ip == null || !ip.hasNature(JavaCore.NATURE_ID)) {
 				return false;
 			}
 		} catch (CoreException e) {
@@ -55,14 +55,14 @@ public class AnalysisKickOff {
 		}
 		curProj = JavaCore.create(ip);
 		Utils.findMainMethodInCurrentProject(curProj, requestor);
-		
+
 		return true;
 	}
 
 	public boolean run() {
-		if (curProj == null){
-			 return false;
-		 }
+		if (curProj == null) {
+			return false;
+		}
 		SootRunner.runSoot(curProj, mainClass, resultsReporter);
 
 		return true;

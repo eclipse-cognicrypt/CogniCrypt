@@ -2,6 +2,7 @@ package de.cognicrypt.staticanalyzer.results;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -18,6 +19,7 @@ import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.EnsuredCryptSLPredicate;
 import crypto.analysis.IAnalysisSeed;
 import crypto.rules.CryptSLConstraint;
+import crypto.rules.CryptSLMethod;
 import crypto.rules.CryptSLPredicate;
 import crypto.rules.CryptSLValueConstraint;
 import crypto.rules.StateNode;
@@ -90,19 +92,29 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		msg.append(" Here.");
 		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartLineNumber(), msg.toString());
 	}
-
+	
 	@Override
-	public void callToForbiddenMethod(ClassSpecification spec, StmtWithMethod location) {
+	public void callToForbiddenMethod(ClassSpecification classSpecification, StmtWithMethod location, List<CryptSLMethod> alternatives) {
 		StringBuilder msg = new StringBuilder();
 		msg.append("Call to forbidden method ");
 		msg.append(((JInvokeStmt) location.getStmt()).getInvokeExpr().getMethod().toString());
-		//TODO: Fix after #33
-		if (false) {
-			msg.append("Instead use call method");
-			msg.append("INSERT METHOD CALL HERE");
+		if (!alternatives.isEmpty()) {
+			msg.append(". Instead, call method ");
+			for (CryptSLMethod alt : alternatives) {
+				final String methodName = alt.getMethodName();
+				msg.append(methodName.substring(methodName.lastIndexOf(".") + 1));
+				msg.append("(");
+				for (Entry<String, String> pars : alt.getParameters()) {
+					msg.append(pars.getValue());
+					msg.append(", ");
+				}
+				msg.replace(msg.length() -2, msg.length(), ")");
+			}
+			msg.append(".");
 		}
 		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartLineNumber(), msg.toString());
 	}
+
 
 	@Override
 	public void missingPredicates(AnalysisSeedWithSpecification spec, Set<CryptSLPredicate> missingPred) {
@@ -225,5 +237,4 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	public void onSeedTimeout(IFactAtStatement arg0) {
 		// nothing
 	}
-
 }

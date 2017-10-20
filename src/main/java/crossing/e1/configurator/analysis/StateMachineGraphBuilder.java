@@ -29,7 +29,10 @@ public class StateMachineGraphBuilder {
 	}
 	
 	public StateMachineGraph buildSMG() {
-		final StateNode initialNode = result.getNodes().get(0);
+		StateNode initialNode = null;
+		for (StateNode n : result.getNodes()) {
+			initialNode = n;
+		}
 		if (head != null) {
 			processHead(head, 0, HashMultimap.create(), initialNode);
 		} else {

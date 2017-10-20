@@ -1,7 +1,7 @@
-/target/
-/.metadata/
-/org.eclipse.core.runtime/
-/Layered.atxa
+**/target/
+**/.metadata/
+**org.eclipse.core.runtime/
+**/Layered.atxa
 **/.gitignore
 **/.DS_Store
 **/*.html

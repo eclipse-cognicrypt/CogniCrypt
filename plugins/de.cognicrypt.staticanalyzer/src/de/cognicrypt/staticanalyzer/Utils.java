@@ -67,14 +67,24 @@ public class Utils {
 	 * @return Current editor.
 	 */
 	public static IEditorPart getCurrentlyOpenEditor() {
-		Display.getDefault().asyncExec(new Runnable() {
+		final Display defaultDisplay = Display.getDefault();
+		final Runnable getWindow = new Runnable() {
 
 			@Override
 			public void run() {
 				setWindow(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
 			}
 
-		});
+		};
+		defaultDisplay.asyncExec(getWindow);
+		if (window == null) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				Activator.getDefault().logError(e);
+			}
+			defaultDisplay.asyncExec(getWindow);
+		}
 		if (window != null) {
 			return window.getActivePage().getActiveEditor();
 		}

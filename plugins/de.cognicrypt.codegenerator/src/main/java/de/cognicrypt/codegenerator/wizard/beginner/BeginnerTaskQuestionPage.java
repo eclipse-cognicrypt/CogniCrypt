@@ -157,8 +157,22 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	}
 
 	@Override
-	public boolean canFlipToNextPage() {
-		return this.finish && isPageComplete();
+	public boolean isPageComplete() {
+		for (Question question : page.getContent()) {
+			if (question.getElement() == de.cognicrypt.codegenerator.Constants.GUIElements.button) {
+				return this.finish;
+			} else if (question.getElement() == de.cognicrypt.codegenerator.Constants.GUIElements.itemselection) {
+				return this.finish;
+			}
+
+			if (question.getEnteredAnswer() == null) {
+				return false;
+			} else if (question.getEnteredAnswer().getValue().isEmpty()) {
+				return false;
+			}
+
+		}
+		return true;
 	}
 
 	@Override
@@ -178,8 +192,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			for (Question question : page.getContent()) {
 				createQuestionControl(container, question);
 			}
+			//setting focus to the first field on the page
+			container.getChildren()[0].setFocus();
 		}
-
 		setControl(container);
 	}
 
@@ -226,11 +241,14 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					a.setValue(cleanedInput);
 					a.getCodeDependencies().get(0).setValue(cleanedInput);
 					this.finish = !cleanedInput.isEmpty();
-					BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
 					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
 					question.setEnteredAnswer(a);
+					BeginnerTaskQuestionPage.this.setPageComplete(this.isPageComplete());
 				});
-				inputField.forceFocus();
+
+				/*
+				 * if(oneQuestion){ inputField.forceFocus(); }
+				 */
 				break;
 
 			case itemselection:

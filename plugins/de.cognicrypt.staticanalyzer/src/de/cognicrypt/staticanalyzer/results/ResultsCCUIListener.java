@@ -129,7 +129,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			msg.append("Predicate ");
 			msg.append(pred.getPredName());
 			msg.append(" is missing.");
-			markerGenerator.addMarker(unitToResource(new StmtWithMethod(spec.getStmt(), spec.getMethod())), 1, msg.toString());
+			markerGenerator.addMarker(unitToResource(new StmtWithMethod(spec.getStmt(), spec.getMethod())), spec.getStmt().getJavaSourceStartLineNumber(), msg.toString());
 		}
 	}
 

@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Text;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.taskintegrator.models.ClaferFeature;
+import crossing.e1.taskintegrator.wizard.ClaferFeatureDialog;
 
 
 public class CompositeGranularUIForClaferFeature extends Composite {
@@ -57,15 +58,15 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		txtFeatureName.setText(claferFeature.getFeatureName());
 		
 		
-		if(claferFeature.getFeatureInheritsFromForAbstract()!=null){
+		if (!claferFeature.getFeatureInheritance().isEmpty()) {
 			Label lblInheritsFrom = new Label(grpClaferFeature, SWT.NONE);
-			lblInheritsFrom.setText("Inherits from");
-			GroupFeatureProperty grpClaferFeatureInheritance = new GroupFeatureProperty(
-																	grpClaferFeature, 
-																	SWT.BORDER, 
-																	claferFeature.getFeatureInheritsFromForAbstract(),
-																	false
-																	);
+			lblInheritsFrom.setText("Inherits from ");
+
+			Text txtFeatureInheritance;
+			txtFeatureInheritance = new Text(grpClaferFeature, SWT.BORDER);
+			txtFeatureInheritance.setEditable(false);
+			txtFeatureInheritance.setLayoutData(new RowData(160, SWT.DEFAULT));
+			txtFeatureInheritance.setText(claferFeature.getFeatureInheritance());
 		}
 		
 		if(claferFeature.getfeatureProperties().size()!=0){
@@ -105,9 +106,12 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				
-				ClaferFeature modifiedClaferFeature = null; // this will come from the pop up.
+				ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), claferFeature);
+				if (cfrFeatureDialog.open() == 0) {
+					((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent()).modifyClaferFeature(claferFeature, cfrFeatureDialog.getResult());// (1) CompositeGranularUIForClaferFeature, (2) composite inside (3) CompositeToHoldGranularUIElements
+				}
 				
-				((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent()).modifyClaferFeature(claferFeature, modifiedClaferFeature);// (1) CompositeGranularUIForClaferFeature, (2) composite inside (3) CompositeToHoldGranularUIElements
+
 			}
 		});
 		FormData fd_btnModify = new FormData();

@@ -29,7 +29,7 @@ public class FeatureProperty{
 	/**
 	 * @param propertyName the propertyName to set
 	 */
-	private void setPropertyName(String propertyName) {
+	public void setPropertyName(String propertyName) {
 		this.propertyName = propertyName;
 	}
 	/**
@@ -41,7 +41,7 @@ public class FeatureProperty{
 	/**
 	 * @param propertyType the propertyType to set
 	 */
-	private void setPropertyType(String propertyType) {
+	public void setPropertyType(String propertyType) {
 		this.propertyType = propertyType;
 	}
 }

@@ -31,6 +31,7 @@ public class Question {
 	private ArrayList<String> method;
 	private ArrayList<Integer> methodParamIds;
 	private String questionType;
+	private Answer enteredAnswer;
 
 	public ArrayList<Answer> getAnswers() {
 		return this.answers;
@@ -67,7 +68,7 @@ public class Question {
 	public String getSelectionClafer() {
 		return this.selectionClafer;
 	}
-	
+
 	public ArrayList<String> getMethod() {
 		return method;
 	}
@@ -75,7 +76,7 @@ public class Question {
 	public ArrayList<Integer> getMethodParamIds() {
 		return methodParamIds;
 	}
-	
+
 	public void setAnswers(final ArrayList<Answer> answers) {
 		this.answers = answers;
 	}
@@ -91,11 +92,11 @@ public class Question {
 	public void setQuestionText(final String questionText) {
 		this.questionText = questionText;
 	}
-	
+
 	public void setMethod(final ArrayList<String> method) {
 		this.method = method;
 	}
-	
+
 	public void setMethodParamIds(final ArrayList<Integer> methodParamIds) {
 		this.methodParamIds = methodParamIds;
 	}
@@ -111,11 +112,22 @@ public class Question {
 		}
 		return builder.toString();
 	}
-	
-	public String getQuestionType(){
+
+	public String getQuestionType() {
 		return questionType;
 	}
-	public void setQuestionType(String questionType){
-	this.questionType=questionType;
+
+	public void setQuestionType(String questionType) {
+		this.questionType = questionType;
 	}
+
+	public Answer setEnteredAnswer(Answer enteredAnswer) {
+		this.enteredAnswer = enteredAnswer;
+		return this.enteredAnswer;
+	}
+
+	public Answer getEnteredAnswer() {
+		return this.enteredAnswer;
+	}
+
 }

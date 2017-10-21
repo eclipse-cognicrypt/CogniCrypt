@@ -1,11 +1,10 @@
 package crossing.e1.taskintegrator.wizard;
 
-import java.util.ArrayList;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -19,26 +18,34 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import crossing.e1.configurator.Constants.FeatureType;
 import crossing.e1.taskintegrator.models.ClaferFeature;
 import crossing.e1.taskintegrator.models.FeatureProperty;
 import crossing.e1.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 
 public class ClaferFeatureDialog extends Dialog {
 
-	private Text text;
-	private ArrayList<FeatureProperty> propertyList;
-	private Composite featureComposite;
-	private CompositeToHoldSmallerUIElements smallComp;
-	private ScrolledComposite scrolledComposite;
+	private Text txtFeatureName;
+	private CompositeToHoldSmallerUIElements featuresComposite;
+	private CompositeToHoldSmallerUIElements constraintsComposite;
+	private Button btnRadioAbstract;
+	private Button btnRadioConcrete;
+
+	private ClaferFeature resultClafer;
 
 	/**
 	 * Create the dialog.
 	 * @param parentShell
 	 */
 	public ClaferFeatureDialog(Shell parentShell) {
+		this(parentShell, new ClaferFeature(FeatureType.ABSTRACT, "", ""));
+	}
+
+	public ClaferFeatureDialog(Shell parentShell, ClaferFeature modifiableClaferFeature) {
 		super(parentShell);
-		setShellStyle(SWT.RESIZE);
-		propertyList = new ArrayList<>();
+		setShellStyle(SWT.CLOSE);
+
+		resultClafer = modifiableClaferFeature;
 	}
 
 	/**
@@ -50,47 +57,105 @@ public class ClaferFeatureDialog extends Dialog {
 		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new GridLayout(3, false));
 
-		Label lblSelectTheType = new Label(container, SWT.NONE);
-		lblSelectTheType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		lblSelectTheType.setText("Select the type");
+		Label lblType = new Label(container, SWT.NONE);
+		lblType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		lblType.setText("Select the type");
 
-		Button btnRadioButton = new Button(container, SWT.RADIO);
-		btnRadioButton.setSelection(true);
-		btnRadioButton.setText("Abstract");
+		btnRadioAbstract = new Button(container, SWT.RADIO);
+		btnRadioAbstract.setSelection(true);
+		btnRadioAbstract.setText("Abstract");
+		btnRadioAbstract.addSelectionListener(new SelectionAdapter() {
 
-		Button btnConcrete = new Button(container, SWT.RADIO);
-		btnConcrete.setText("Concrete");
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				resultClafer.setFeatureType(FeatureType.ABSTRACT);
+				super.widgetSelected(e);
+			}
+		});
 
-		Label lblTypeInThe = new Label(container, SWT.NONE);
-		lblTypeInThe.setText("Type in the name");
+		btnRadioConcrete = new Button(container, SWT.RADIO);
+		btnRadioConcrete.setText("Concrete");
+		btnRadioConcrete.addSelectionListener(new SelectionAdapter() {
 
-		text = new Text(container, SWT.BORDER);
-		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				resultClafer.setFeatureType(FeatureType.CONCRETE);
+				super.widgetSelected(e);
+			}
+		});
 
-		Label lblChooseInheritance = new Label(container, SWT.NONE);
-		lblChooseInheritance.setText("Choose inheritance");
+		if (resultClafer.getFeatureType() == FeatureType.ABSTRACT) {
+			btnRadioAbstract.setSelection(true);
+			btnRadioConcrete.setSelection(false);
+		} else {
+			btnRadioAbstract.setSelection(false);
+			btnRadioConcrete.setSelection(true);
+		}
 
-		Combo combo = new Combo(container, SWT.NONE);
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		Label lblFeatureName = new Label(container, SWT.NONE);
+		lblFeatureName.setText("Type in the name");
 
-		Button btnNewButton = new Button(container, SWT.NONE);
-		btnNewButton.addSelectionListener(new SelectionAdapter() {
+		txtFeatureName = new Text(container, SWT.BORDER);
+		txtFeatureName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		txtFeatureName.addFocusListener(new FocusAdapter() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				resultClafer.setFeatureName(txtFeatureName.getText());
+				super.focusLost(e);
+			}
+		});
+
+		txtFeatureName.setText(resultClafer.getFeatureName());
+
+		Label lblInheritance = new Label(container, SWT.NONE);
+		lblInheritance.setText("Choose inheritance");
+
+		Combo comboInheritance = new Combo(container, SWT.NONE);
+		comboInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+
+		comboInheritance.addFocusListener(new FocusAdapter() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				resultClafer.setFeatureInheritance(comboInheritance.getText());
+				super.focusLost(e);
+			}
+		});
+
+		comboInheritance.setText(resultClafer.getFeatureInheritance());
+
+		Button btnAddProperty = new Button(container, SWT.NONE);
+		btnAddProperty.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				addClaferProperty();
 			}
 		});
-		btnNewButton.setText("Add property");
+		btnAddProperty.setText("Add property");
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
 
-		propertyList.add(new FeatureProperty("name", "type"));
-
-		smallComp = new CompositeToHoldSmallerUIElements(container, SWT.NONE, propertyList, true);
-		smallComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
-		smallComp.setMinHeight(200);
+		featuresComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getfeatureProperties(), true);
+		featuresComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		featuresComposite.setMinHeight(200);
 
 		Button btnAddConstraint = new Button(container, SWT.NONE);
+		btnAddConstraint.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				addClaferConstraint();
+			}
+		});
 		btnAddConstraint.setText("Add constraint");
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+
+		constraintsComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getFeatureConstraints(), true);
+		constraintsComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		constraintsComposite.setMinHeight(200);
 
 		return container;
 	}
@@ -110,15 +175,29 @@ public class ClaferFeatureDialog extends Dialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(800, 600);
+		return new Point(800, 700);
 	}
 
 	private void addClaferProperty() {
-		propertyList.add(new FeatureProperty("TestProp", "TestVal"));
-		this.smallComp.addFeatureProperty(propertyList.get(propertyList.size() - 1), true);
+		FeatureProperty featureProperty = new FeatureProperty("", "");
+		featuresComposite.addFeatureProperty(featureProperty, true);
+		resultClafer.setFeatureProperties(featuresComposite.getFeatureProperties());
 	}
 
-	public void deleteClaferProperty(ClaferFeature cfrFeature) {
+	private void addClaferConstraint() {
+		ClaferConstraintDialog cfrConstraintDialog = new ClaferConstraintDialog(getShell(), resultClafer);
 
+		// blocking call to Dialog.open() the dialog
+		// it returns 0 on success
+		if (cfrConstraintDialog.open() == 0) {
+			constraintsComposite.addFeatureConstraint(cfrConstraintDialog.getResult(), true);
+		}
+	}
+
+	public ClaferFeature getResult() {
+		resultClafer.setFeatureProperties(featuresComposite.getFeatureProperties());
+		resultClafer.setFeatureConstraints(constraintsComposite.getFeatureConstraints());
+
+		return resultClafer;
 	}
 }

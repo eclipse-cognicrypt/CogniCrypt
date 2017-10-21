@@ -164,6 +164,16 @@ public class Constants {
 	public static final String WIDGET_CONTENT_EXISTING_LIBRARY = "Existing Library";
 	public static final String WIDGET_CONTENT_CUSTOM_LIBRARY = "Custom Library";
 	
+	//Constants for the drop down for the xsl tag on the xsl code page
+	public static final String XSL_VARIABLE_TAG="xslVariable";
+	public static final String XSL_SELECT_TAG="select";
+	public static final String XSL_IF_TAG ="if";
+	public static final String XSL_RESULT_DOCUMENT="result-document";
+	public static final String XSL_APPLY_TEMPLATES ="apply-templates";
+	public static final String XSL_CHOOSE_TAG="choose";
+	public static final String XSL_WHEN_TAG="when";
+	public static final String XSL_OTHERWISE_TAG="otherwise";
+	
 	// Default bounds for the composites
 	public static final Point DEFAULT_SIZE_FOR_TI_WIZARD = new Point(1000, 500);
 	public static final Rectangle RECTANGLE_FOR_COMPOSITES = new Rectangle(0, 0, 887, 500 - 10 -10 ); //897 - 10

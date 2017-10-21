@@ -6,6 +6,8 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -20,18 +22,34 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import crossing.e1.taskintegrator.models.ClaferConstraint;
+import crossing.e1.taskintegrator.models.ClaferFeature;
+import crossing.e1.taskintegrator.models.FeatureProperty;
+
 
 public class ClaferConstraintDialog extends Dialog {
 
 	private Text text;
+	private ClaferConstraint cfrConstraint;
+
+	private ClaferFeature cfrFeature;
 
 	/**
 	 * Create the dialog.
+	 * 
 	 * @param parentShell
+	 * @wbp.parser.constructor
 	 */
 	public ClaferConstraintDialog(Shell parentShell) {
 		super(parentShell);
 		setShellStyle(SWT.CLOSE | SWT.MAX | SWT.RESIZE | SWT.TITLE);
+
+		cfrConstraint = new ClaferConstraint();
+	}
+
+	public ClaferConstraintDialog(Shell parentShell, ClaferFeature cfrFeature) {
+		this(parentShell);
+		this.cfrFeature = cfrFeature;
 	}
 
 	/**
@@ -53,6 +71,21 @@ public class ClaferConstraintDialog extends Dialog {
 		gd_list.heightHint = 340;
 		gd_list.grabExcessHorizontalSpace = true;
 		list.setLayoutData(gd_list);
+
+		if (cfrFeature != null) {
+			for (FeatureProperty featureProperty : cfrFeature.getfeatureProperties()) {
+				list.add(featureProperty.getPropertyName());
+			}
+		}
+
+		list.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				text.insert(list.getSelection()[0]);
+				super.mouseDoubleClick(e);
+			}
+		});
 
 		Group group = new Group(container, SWT.NONE);
 		group.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
@@ -110,6 +143,16 @@ public class ClaferConstraintDialog extends Dialog {
 	@Override
 	protected Point getInitialSize() {
 		return new Point(600, 600);
+	}
+
+	@Override
+	protected void okPressed() {
+		cfrConstraint.setConstraint(text.getText());
+		super.okPressed();
+	}
+
+	public ClaferConstraint getResult() {
+		return cfrConstraint;
 	}
 
 }

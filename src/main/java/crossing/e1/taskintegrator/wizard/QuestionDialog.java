@@ -28,6 +28,8 @@ import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.ClaferDependency;
 import crossing.e1.configurator.beginer.question.CodeDependency;
 import crossing.e1.configurator.beginer.question.Question;
+import crossing.e1.taskintegrator.models.ClaferFeature;
+import crossing.e1.taskintegrator.models.FeatureProperty;
 import crossing.e1.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 import crossing.e1.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 import crossing.e1.taskintegrator.widgets.GroupAnswer;
@@ -46,16 +48,21 @@ public class QuestionDialog extends Dialog {
 	private CompositeToHoldSmallerUIElements compositeToHoldAnswers;
 	private Question question;
 	private Question questionDetails;
-
+	//private CompositeToHoldGranularUIElements compositeToHoldGranularUIElements ;
+	private ArrayList<ClaferFeature> claferFeatures;
+	int counter = 0;
+	private String featureSelected;
+	private ArrayList<String> operandItems;
 
 	/**
 	 * Create the dialog.
 	 * 
 	 * @param parentShell
 	 */
-	public QuestionDialog(Shell parentShell, Question question) {
+	public QuestionDialog(Shell parentShell, Question question, ArrayList<ClaferFeature> claferFeatures) {
 		super(parentShell);
 		this.question = question;
+		this.claferFeatures = claferFeatures;
 	}
 
 	/**
@@ -67,7 +74,10 @@ public class QuestionDialog extends Dialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new FillLayout(SWT.HORIZONTAL));
+		getShell().setMinimumSize(700, 400);
+		
 
+		
 		TabFolder tabFolder = new TabFolder(container, SWT.NONE);
 		tabFolder.addSelectionListener(new SelectionListener() {
 
@@ -126,7 +136,6 @@ public class QuestionDialog extends Dialog {
 		compositeToHoldAnswers.setLayoutData(gd_compositeToHoldAnswers);
 		compositeToHoldAnswers.setLayout(new FillLayout(SWT.HORIZONTAL));
 		compositeToHoldAnswers.setVisible(false);
-
 		btnAddAnswer.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -183,15 +192,17 @@ public class QuestionDialog extends Dialog {
 		tbtmLinkAnswers.setControl(composite_1);
 		composite_1.setLayout(new GridLayout(2, false));
 
-		Label lblQuestion_1 = new Label(composite_1, SWT.NONE);
-		lblQuestion_1.setText("Question");
 		if (question != null) {
+
+			Label lblQuestion_1 = new Label(composite_1, SWT.NONE);
+			lblQuestion_1.setText("Question:");
+
 			Label qstnTxt = new Label(composite_1, SWT.NONE);
 			qstnTxt.setText(question.getQuestionText());
-			
+
 			Label lblAnswers = new Label(composite_1, SWT.NONE);
-			lblAnswers.setText("Answers");
-			
+			lblAnswers.setText("Answers:");
+
 			Composite compositeForAnswers = new Composite(composite_1, SWT.NONE);
 			compositeForAnswers.setLayout(new GridLayout(2, false));
 			for (Answer answer : question.getAnswers()) {
@@ -204,18 +215,163 @@ public class QuestionDialog extends Dialog {
 				combo.add("Default");
 				for (int i = 1; i <= 5; i++) {
 					if (question.getId() != i)
-						combo.add("Quetsion id" + "i");
+						combo.add("Link to Question"+" "+i);
 				}
 			}
 		}
-		
+
 		TabItem tbtmLinkClaferFeatures = new TabItem(tabFolder, SWT.NONE);
 		tbtmLinkClaferFeatures.setText("Link Clafer features");
+
+		Composite composite_2 = new Composite(tabFolder, SWT.NONE);
+		tbtmLinkClaferFeatures.setControl(composite_2);
+		composite_2.setLayout(new GridLayout(2, false));
+
+		if (question != null) {
+			Label lblQuestion_2 = new Label(composite_2, SWT.NONE);
+			lblQuestion_2.setText("Question:");
+
+			Label qstnTxt_1 = new Label(composite_2, SWT.None);
+			qstnTxt_1.setText(question.getQuestionText());
+
+			Composite compositeForAnswers1 = new Composite(composite_2, SWT.None);
+			compositeForAnswers1.setLayout(new GridLayout(5, false));
+			GridData gd_compositeAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
+			gd_compositeAnswers.horizontalSpan = 2;
+			compositeForAnswers1.setLayoutData(gd_compositeAnswers);
+
+			Label lblEmpty = new Label(compositeForAnswers1, SWT.NONE);
+			lblEmpty.setText("Answers");
+
+			Label lblForAlgorithm = new Label(compositeForAnswers1, SWT.NONE);
+			lblForAlgorithm.setText("Select Algorithm");
+
+			Label lblForOperand = new Label(compositeForAnswers1, SWT.NONE);
+			lblForOperand.setText("Select Operand");
+
+			Label lblForValue = new Label(compositeForAnswers1, SWT.NONE);
+			lblForValue.setText("Select Operator");
+
+			Label lblForOperator = new Label(compositeForAnswers1, SWT.NONE);
+			lblForOperator.setText("Set Value");
+
+			claferFeatures = getClaferFeatures();
+
+			for (Answer answer : question.getAnswers()) {
+
+				Label lblCurrentAnswers = new Label(compositeForAnswers1, SWT.NONE);
+				lblCurrentAnswers.setText(answer.getValue());
+
+				Combo comboForAlgorithm = new Combo(compositeForAnswers1, SWT.NONE);
+				comboForAlgorithm.setVisible(true);
+				for (int i = 0; i < claferFeatures.size(); i++) {
+					comboForAlgorithm.add(claferFeatures.get(i).getFeatureName());
+					;
+				}
+
+				Combo comboForOperand = new Combo(compositeForAnswers1, SWT.NONE);
+				comboForOperand.setVisible(true);
+
+				Combo comboForOperator = new Combo(compositeForAnswers1, SWT.NONE);
+				comboForOperator.setVisible(true);
+				GridData gd_Operator = new GridData(SWT.FILL,SWT.NONE, true, true);			
+				comboForOperator.setLayoutData(gd_Operator);
+				comboForOperator.setItems(Constants.FeatureConstraintRelationship.EQUAL.toString(), Constants.FeatureConstraintRelationship.NOTEQUAL.toString(),
+					Constants.FeatureConstraintRelationship.LESSTHAN.toString(), Constants.FeatureConstraintRelationship.GREATERTHAN.toString(),
+					Constants.FeatureConstraintRelationship.LESSTHANEQUALTO.toString(), Constants.FeatureConstraintRelationship.GREATERTHANEQUALTO.toString(),
+					Constants.FeatureConstraintRelationship.AND.toString(),Constants.FeatureConstraintRelationship.OR.toString());
+				
+				/*comboForOperator.setItems("Equal"+"("+Constants.FeatureConstraintRelationship.EQUAL.toString()+")", "NOTEQUAL"+"("+Constants.FeatureConstraintRelationship.NOTEQUAL.toString()+")",
+					"LESSTHAN"+"("+Constants.FeatureConstraintRelationship.LESSTHAN.toString()+")", "GREATERTHAN"+"("+Constants.FeatureConstraintRelationship.GREATERTHAN.toString()+")",
+					"LESSTHANEQUALTO"+"("+Constants.FeatureConstraintRelationship.LESSTHANEQUALTO.toString()+")", "GREATERTHANEQUALTO"+"("+Constants.FeatureConstraintRelationship.GREATERTHANEQUALTO.toString()+")",
+					"AND"+"("+Constants.FeatureConstraintRelationship.AND.toString()+")","OR"+"("+Constants.FeatureConstraintRelationship.OR.toString()+")");
+				*/
+				
+				Text txtBoxValue=new Text(compositeForAnswers1,SWT.BORDER);
+				txtBoxValue.setVisible(true);
+				
+				comboForAlgorithm.addSelectionListener(new SelectionAdapter() {
+
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						featureSelected = comboForAlgorithm.getText();
+						comboForOperand.removeAll();
+						operandItems = new ArrayList<String>();
+						ArrayList<String> operandToAdd = itemsToAdd(featureSelected);
+						for (int i = 0; i < operandToAdd.size(); i++) {
+							comboForOperand.add(operandToAdd.get(i));
+						}
+					}
+				});
+			}
+		}
 
 		TabItem tbtmLink = new TabItem(tabFolder, SWT.NONE);
 		tbtmLink.setText("Link code");
 
 		return container;
+
+	}
+
+	private ArrayList<String> itemsToAdd(String featureSelected) {
+		for (ClaferFeature claferFeature : claferFeatures) {
+			if (claferFeature.getFeatureName().equalsIgnoreCase(featureSelected)) {
+				System.out.println(featureSelected);
+				for (FeatureProperty featureProperty : claferFeature.getfeatureProperties()) {
+					operandItems.add(featureProperty.getPropertyName());
+				}
+				if (claferFeature.getFeatureInheritsFromForAbstract() != null) {
+					FeatureProperty inheritProperty = claferFeature.getFeatureInheritsFromForAbstract();
+					featureSelected = inheritProperty.getPropertyName();
+					itemsToAdd(featureSelected);
+				}
+			}
+		}
+		return operandItems;
+	}
+
+	private ArrayList<ClaferFeature> getClaferFeatures() {
+		ClaferFeature algorithm = new ClaferFeature(Constants.FeatureType.ABSTRACT, "algorithm", // Counter as the name to make each addition identifiable.
+			null, null);
+
+		algorithm.getfeatureProperties().add(new FeatureProperty("name", "string"));
+		algorithm.getfeatureProperties().add(new FeatureProperty("description", "string"));
+		algorithm.getfeatureProperties().add(new FeatureProperty("security", "Security"));
+		algorithm.getfeatureProperties().add(new FeatureProperty("performance", "Performance"));
+		algorithm.getfeatureProperties().add(new FeatureProperty("classPerformance", "Performance"));
+
+		ClaferFeature cipher = new ClaferFeature(Constants.FeatureType.ABSTRACT, "cipher", // Counter as the name to make each addition identifiable.
+			new FeatureProperty("algorithm", null), null);
+
+		ClaferFeature symmetricCipher = new ClaferFeature(Constants.FeatureType.ABSTRACT, "symmetricCipher", // Counter as the name to make each addition identifiable.
+			new FeatureProperty("cipher", null), null);
+
+		symmetricCipher.getfeatureProperties().add(new FeatureProperty("keySize", "integer"));
+		symmetricCipher.getFeatureConstraints().add("classPerformance = Fast");
+
+		ClaferFeature symmetricBlockCipher = new ClaferFeature(Constants.FeatureType.ABSTRACT, "symmetricBlockCipher", // Counter as the name to make each addition identifiable.
+			new FeatureProperty("symmetricCipher", null), null);
+
+		symmetricBlockCipher.getfeatureProperties().add(new FeatureProperty("mode", "Mode"));
+		symmetricBlockCipher.getfeatureProperties().add(new FeatureProperty("padding", "Padding"));
+		symmetricBlockCipher.getFeatureConstraints().add("mode !=ECB");
+		symmetricBlockCipher.getFeatureConstraints().add("padding !=NoPadding");
+
+		ClaferFeature AES = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", // Counter as the name to make each addition identifiable.
+			new FeatureProperty("symmetricBlockCipher", null), null);
+		AES.getFeatureConstraints().add("description = Advanced Encryption Standard (AES) cipher");
+		AES.getFeatureConstraints().add("name = AES");
+		AES.getFeatureConstraints().add("keySize = 128 || keySize = 192 || keySize = 256");
+		AES.getFeatureConstraints().add("keySize = 128 => performance = VeryFast && security = Medium");
+		AES.getFeatureConstraints().add("keySize > 128 => performance = Fast && security = Strong");
+
+		claferFeatures.add(algorithm);
+		claferFeatures.add(cipher);
+		claferFeatures.add(symmetricCipher);
+		claferFeatures.add(symmetricBlockCipher);
+		claferFeatures.add(AES);
+
+		return claferFeatures;
 
 	}
 

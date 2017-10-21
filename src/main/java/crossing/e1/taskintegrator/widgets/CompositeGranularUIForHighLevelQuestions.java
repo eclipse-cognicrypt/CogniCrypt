@@ -6,6 +6,7 @@ import org.eclipse.swt.layout.RowLayout;
 
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
+import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -15,6 +16,7 @@ import org.eclipse.swt.widgets.Group;
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Question;
+import crossing.e1.taskintegrator.models.ClaferFeature;
 import crossing.e1.taskintegrator.wizard.QuestionDialog;
 
 import org.eclipse.swt.layout.RowData;
@@ -32,20 +34,22 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 	
 	private Question question;
 	private AttributedString SUPER_SCRIPT;
+	private ArrayList<ClaferFeature> claferFeatures;
 
 	/**
 	 * Create the composite.
 	 * @param parent
 	 * @param style
 	 */
-	public CompositeGranularUIForHighLevelQuestions(Composite parent, int style, Question questionParam) {
+	public CompositeGranularUIForHighLevelQuestions(Composite parent, int style, Question questionParam, ArrayList<ClaferFeature> claferFeatures) {
 		super(parent, SWT.BORDER);
 		
 		setQuestion(questionParam);
+		setClaferFeatures(claferFeatures);
 		
 		setLayout(null);
 		
-		GroupModifyDeleteButtons grpModifyDeleteButtons = new GroupModifyDeleteButtons(this,question);
+		GroupModifyDeleteButtons grpModifyDeleteButtons = new GroupModifyDeleteButtons(this,question,claferFeatures);
 		RowLayout rowLayout = (RowLayout) grpModifyDeleteButtons.getLayout();
 		rowLayout.marginLeft = 5;
 		rowLayout.marginTop = 5;
@@ -60,7 +64,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		linkQstn.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e){
-				QuestionDialog link=new QuestionDialog(parent.getShell(),questionParam);
+				QuestionDialog link=new QuestionDialog(parent.getShell(),questionParam,claferFeatures);
 				link.open();
 			}
 		});
@@ -171,6 +175,11 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 	private void setQuestion(Question question) {
 		this.question = question;
 	}
+	
+	private void setClaferFeatures(ArrayList<ClaferFeature> claferFeatures) {
+		this.claferFeatures = claferFeatures;
+	}
+	
 	public void setTextQuestion(String txtQuestion){
 		this.txtQuestion.setText(txtQuestion);
 	}

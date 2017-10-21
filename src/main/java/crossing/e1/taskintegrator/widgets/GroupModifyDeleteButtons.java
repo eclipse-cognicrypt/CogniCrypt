@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.MessageBox;
 
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Question;
+import crossing.e1.taskintegrator.models.ClaferFeature;
 import crossing.e1.taskintegrator.wizard.QuestionDialog;
 
 import org.eclipse.swt.layout.FormLayout;
@@ -31,7 +32,7 @@ public class GroupModifyDeleteButtons extends Group {
 	 * @param style
 	 */
 	int counter=0;
-	public GroupModifyDeleteButtons(Composite parent, Question questionParam) {
+	public GroupModifyDeleteButtons(Composite parent, Question questionParam,ArrayList<ClaferFeature> claferFeatures) {
 		super(parent, SWT.RIGHT_TO_LEFT);
 		RowLayout rowLayout = new RowLayout(SWT.HORIZONTAL);
 		setLayout(rowLayout);
@@ -56,7 +57,7 @@ public class GroupModifyDeleteButtons extends Group {
 		Button btnModify = new Button(this, SWT.NONE);
 		btnModify.setLayoutData(new RowData(66, SWT.DEFAULT));
 		btnModify.setText("Modify");
-		QuestionDialog qstnDialog=new QuestionDialog(parent.getShell(),questionParam);
+		QuestionDialog qstnDialog=new QuestionDialog(parent.getShell(),questionParam,claferFeatures);
 		btnModify.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e){

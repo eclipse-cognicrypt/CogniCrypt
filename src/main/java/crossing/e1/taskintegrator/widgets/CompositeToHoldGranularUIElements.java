@@ -102,14 +102,14 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	}
 	
 	
-	public void addQuestionUIElements(Question question){
+	public void addQuestionUIElements(Question question, ArrayList<ClaferFeature> claferFeatures){
 		// Update the array list.
 		//listOfAllClaferFeatures.add(claferFeature);
 		
 		CompositeGranularUIForHighLevelQuestions granularQuestion = new CompositeGranularUIForHighLevelQuestions
 			((Composite) this.getContent(), // the content composite of ScrolledComposite.
 			SWT.NONE, 
-			question);
+			question,claferFeatures);
 		granularQuestion.setBounds(
 			Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS, 
 			getLowestWidgetYAxisValue(), 
@@ -144,7 +144,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		
 		// add all the clafer features excluding the deleted one.
 		for(Question questionUnderConsideration : listOfAllQuestions){
-			addQuestionUIElements(questionUnderConsideration);
+			addQuestionUIElements(questionUnderConsideration,listOfAllClaferFeatures);
 		}
 	}
 	

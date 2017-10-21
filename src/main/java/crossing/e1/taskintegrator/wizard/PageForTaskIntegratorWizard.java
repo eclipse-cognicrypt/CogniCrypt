@@ -102,7 +102,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
 				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
-				QuestionDialog questionDialog = new QuestionDialog(parent.getShell(), null);
+				QuestionDialog questionDialog = new QuestionDialog(parent.getShell(), null,compositeToHoldGranularUIElements.getListOfAllClaferFeatures());
 				Button qstnDialog = new Button(container, SWT.NONE);
 				qstnDialog.setBounds(889, 10, 115, 29);
 				qstnDialog.setText("Add Question");
@@ -120,7 +120,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 							// Update the array list.							
 
 							compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
-							compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails);
+							compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails,compositeToHoldGranularUIElements.getListOfAllClaferFeatures());
 						}
 					}
 				});

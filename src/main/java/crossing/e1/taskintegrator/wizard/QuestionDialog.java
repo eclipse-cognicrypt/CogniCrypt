@@ -155,6 +155,7 @@ public class QuestionDialog extends Dialog {
 				switch (combo.getText()) {
 					case "text":
 						btnAddAnswer.setVisible(false);
+						compositeToHoldAnswers.setVisible(false);
 						break;
 					case "combo":
 						boolean comboSelected = combo.getText().equalsIgnoreCase("combo") ? true : false;

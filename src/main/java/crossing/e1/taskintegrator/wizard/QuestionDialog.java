@@ -28,6 +28,7 @@ import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.ClaferDependency;
 import crossing.e1.configurator.beginer.question.CodeDependency;
 import crossing.e1.configurator.beginer.question.Question;
+import crossing.e1.taskintegrator.models.ClaferConstraint;
 import crossing.e1.taskintegrator.models.ClaferFeature;
 import crossing.e1.taskintegrator.models.FeatureProperty;
 import crossing.e1.taskintegrator.widgets.CompositeToHoldGranularUIElements;
@@ -360,9 +361,9 @@ public class QuestionDialog extends Dialog {
 				for (FeatureProperty featureProperty : claferFeature.getfeatureProperties()) {
 					operandItems.add(featureProperty.getPropertyName());
 				}
-				if (claferFeature.getFeatureInheritsFromForAbstract() != null) {
-					FeatureProperty inheritProperty = claferFeature.getFeatureInheritsFromForAbstract();
-					featureSelected = inheritProperty.getPropertyName();
+				if (claferFeature.getFeatureInheritance()!= null) {
+					//FeatureProperty inheritProperty = claferFeature.getFeatureInheritsFromForAbstract();
+					featureSelected = claferFeature.getFeatureInheritance();
 					itemsToAdd(featureSelected);
 				}
 			}
@@ -372,7 +373,7 @@ public class QuestionDialog extends Dialog {
 
 	private ArrayList<ClaferFeature> getClaferFeatures() {
 		ClaferFeature algorithm = new ClaferFeature(Constants.FeatureType.ABSTRACT, "algorithm", // Counter as the name to make each addition identifiable.
-			null, null);
+			null);
 
 		algorithm.getfeatureProperties().add(new FeatureProperty("name", "string"));
 		algorithm.getfeatureProperties().add(new FeatureProperty("description", "string"));
@@ -381,29 +382,29 @@ public class QuestionDialog extends Dialog {
 		algorithm.getfeatureProperties().add(new FeatureProperty("classPerformance", "Performance"));
 
 		ClaferFeature cipher = new ClaferFeature(Constants.FeatureType.ABSTRACT, "cipher", // Counter as the name to make each addition identifiable.
-			new FeatureProperty("algorithm", null), null);
+			"algorithm");
 
 		ClaferFeature symmetricCipher = new ClaferFeature(Constants.FeatureType.ABSTRACT, "symmetricCipher", // Counter as the name to make each addition identifiable.
-			new FeatureProperty("cipher", null), null);
+			"cipher");
 
 		symmetricCipher.getfeatureProperties().add(new FeatureProperty("keySize", "integer"));
-		symmetricCipher.getFeatureConstraints().add("classPerformance = Fast");
+		symmetricCipher.getFeatureConstraints().add(new ClaferConstraint("classPerformance = Fast"));
 
 		ClaferFeature symmetricBlockCipher = new ClaferFeature(Constants.FeatureType.ABSTRACT, "symmetricBlockCipher", // Counter as the name to make each addition identifiable.
-			new FeatureProperty("symmetricCipher", null), null);
+			"symmetricCipher");
 
 		symmetricBlockCipher.getfeatureProperties().add(new FeatureProperty("mode", "Mode"));
 		symmetricBlockCipher.getfeatureProperties().add(new FeatureProperty("padding", "Padding"));
-		symmetricBlockCipher.getFeatureConstraints().add("mode !=ECB");
-		symmetricBlockCipher.getFeatureConstraints().add("padding !=NoPadding");
+		symmetricBlockCipher.getFeatureConstraints().add(new ClaferConstraint("mode !=ECB"));
+		symmetricBlockCipher.getFeatureConstraints().add(new ClaferConstraint("padding !=NoPadding"));
 
 		ClaferFeature AES = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", // Counter as the name to make each addition identifiable.
-			new FeatureProperty("symmetricBlockCipher", null), null);
-		AES.getFeatureConstraints().add("description = Advanced Encryption Standard (AES) cipher");
-		AES.getFeatureConstraints().add("name = AES");
-		AES.getFeatureConstraints().add("keySize = 128 || keySize = 192 || keySize = 256");
-		AES.getFeatureConstraints().add("keySize = 128 => performance = VeryFast && security = Medium");
-		AES.getFeatureConstraints().add("keySize > 128 => performance = Fast && security = Strong");
+	"symmetricBlockCipher");
+		AES.getFeatureConstraints().add(new ClaferConstraint("description = Advanced Encryption Standard (AES) cipher"));
+		AES.getFeatureConstraints().add(new ClaferConstraint("name = AES"));
+		AES.getFeatureConstraints().add(new ClaferConstraint("keySize = 128 || keySize = 192 || keySize = 256"));
+		AES.getFeatureConstraints().add(new ClaferConstraint("keySize = 128 => performance = VeryFast && security = Medium"));
+		AES.getFeatureConstraints().add(new ClaferConstraint("keySize > 128 => performance = Fast && security = Strong"));
 
 		claferFeatures.add(algorithm);
 		claferFeatures.add(cipher);

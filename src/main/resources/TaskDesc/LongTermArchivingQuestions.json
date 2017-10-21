@@ -2,7 +2,7 @@
     "id": "0",
     "content": [{
       "id": "0",
-      "note": "abc",
+      "note": "Note: abc",
       "element": "combo",
       "questionText": "Do you want to add new documents frequently?",
       "answers": [{
@@ -30,7 +30,7 @@
     "id": "1",
     "content": [{
       "id": "1",
-       "note": "abc",
+       "note": "Note: abc",
       "element": "combo",
       "questionText": "Do you want to protect large sets of documents?",
       "answers": [{
@@ -59,7 +59,7 @@
     "id": "2",
     "content": [{
       "id": "2",
-      "note": "abc",
+      "note": "Note: abc",
       "element": "combo",
       "questionText": "What kind of authority do you trust?",
       "answers": [{

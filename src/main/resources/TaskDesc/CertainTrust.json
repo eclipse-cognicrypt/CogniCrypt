@@ -1,7 +1,7 @@
 [
 		{
 			"id": "0",
-			"note": "abc",
+			"note": "Note: abc",
 			"element" : "questionText",
 			"questionText":"Do you want to evaluate the trustworthiness of one or more opinions?",
 			"answers":[
@@ -18,7 +18,7 @@
 		
 		{
 			"id" : "1",
-			"note": "abc",
+			"note": "Note: abc",
 			"element" : "text",
 			"questionText":"How many opinions do you want combine?",
 			"answers":[
@@ -30,7 +30,7 @@
 		},	
 		{
 			"id" : "2",
-			"note": "abc",
+			"note": "Note: abc",
 			"element" : "combo",
 			"questionText":"Please select an operator for combining the opinions",
 			"answers":[
@@ -61,7 +61,7 @@
 		},
 		{
 			"id" : "3",
-			"note": "abc",
+			"note": "Note: abc",
 			"element" : "text",
 			"questionText":"Please set the maximal expected number of evidence (>0)",
 			"answers":[
@@ -73,7 +73,7 @@
 		},		
 		{
 			"id": "4",
-			"note": "abc",
+			"note": "Note: abc",
 			"element" : "questionText",
 			"questionText":"Do you want to show user interface to visualize the expectation?",
 			"answers":[

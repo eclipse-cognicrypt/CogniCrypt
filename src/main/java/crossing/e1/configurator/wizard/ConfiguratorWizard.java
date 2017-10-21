@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -42,6 +43,7 @@ import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.ClaferDependency;
 import crossing.e1.configurator.beginer.question.Page;
 import crossing.e1.configurator.beginer.question.Question;
+import crossing.e1.configurator.codegeneration.CodeGenerator;
 import crossing.e1.configurator.codegeneration.XSLBasedGenerator;
 import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.utilities.FileHelper;
@@ -342,6 +344,21 @@ public class ConfiguratorWizard extends Wizard {
 				// Delete Instance File
 				FileHelper.deleteFile(xmlInstancePath);
 				codeGenerator.getDeveloperProject().refresh();
+
+				// New code generator
+				//String[] rules = { "AlgorithmParameters", "Cipher", "DHGenParameterSpec", "DHParameterSpec", "DSAGenParameterSpec", "DSAParameterSpec", "GCMParameterSpec", "HMACParameterSpec", "IvParameterSpec", "KeyGenerator", "KeyPair", "KeyPairGenerator", "KeyStore", "Mac", "MessageDigest", "PBEKeySpec", "PBEParameterSpec", "RSAKeyGenParameterSpec", "SecretKey", "SecretKeyFactory", "SecretKeySpec", "SecureRandom", "Signature" };
+				//String[] rules = { "DHGenParameterSpec", "DHParameterSpec"};
+				//String[] rules = { "KeyGenerator" };
+				String[] rules = { "SecretKey" };
+
+				for (String ruleName : rules) {
+					try {
+						CodeGenerator codeGeneratorNew = new CodeGenerator(ruleName);
+						codeGeneratorNew.next();
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(null, "Code generation for rule " + ruleName + " failed");
+					}
+				}
 
 			} catch (final IOException | CoreException | BadLocationException e) {
 				Activator.getDefault().logError(e);

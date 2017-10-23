@@ -67,7 +67,7 @@ public class XSLTagDialog extends Dialog {
 		compositeForXSLAttributes = new CompositeToHoldSmallerUIElements(container, SWT.NONE, null, true);
 		GridData gd_compositeForProperties = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_compositeForProperties.widthHint = 417;
-		gd_compositeForProperties.heightHint = 150;
+		gd_compositeForProperties.heightHint = 120;
 		compositeForXSLAttributes.setLayoutData(gd_compositeForProperties);
 		
 		

@@ -54,7 +54,11 @@ public class XSLTag {
 		}
 		
 		tagString.append(getXSLTagDetails().getXSLBeginTag());
-		tagString.insert(getXSLTagDetails().getXSLBeginTag().length()-1, attributeString.toString());
+		int VALUE_TO_GET_LOCATION_TO_INSERT_ATTRIBUTES = 1;
+		if(getXSLTagDetails().getXSLEndTag().equals("")){
+			VALUE_TO_GET_LOCATION_TO_INSERT_ATTRIBUTES = 2;
+		}
+		tagString.insert(getXSLTagDetails().getXSLBeginTag().length()-VALUE_TO_GET_LOCATION_TO_INSERT_ATTRIBUTES, attributeString.toString());
 		tagString.append(getXSLTagDetails().getXSLEndTag());
 		
 		return tagString.toString();

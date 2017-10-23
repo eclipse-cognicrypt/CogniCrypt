@@ -1,17 +1,23 @@
 package crossing.e1.taskintegrator.widgets;
 
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.RowLayout;
 
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
+import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Group;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.beginer.question.Answer;
 import crossing.e1.configurator.beginer.question.Question;
+import crossing.e1.taskintegrator.models.ClaferFeature;
+import crossing.e1.taskintegrator.wizard.QuestionDialog;
 
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.GridLayout;
@@ -22,68 +28,86 @@ import org.eclipse.swt.layout.GridData;
 
 public class CompositeGranularUIForHighLevelQuestions extends Composite {
 	private Text txtQuestionID;
-	private Text txtQuestion;
+	public Text txtQuestion;
 	private Text txtAnswerType;
 	private Text txtAnswers;
 	
 	private Question question;
 	private AttributedString SUPER_SCRIPT;
+	private ArrayList<ClaferFeature> claferFeatures;
 
 	/**
 	 * Create the composite.
 	 * @param parent
 	 * @param style
 	 */
-	public CompositeGranularUIForHighLevelQuestions(Composite parent, int style, Question questionParam) {
+	public CompositeGranularUIForHighLevelQuestions(Composite parent, int style, Question questionParam, ArrayList<ClaferFeature> claferFeatures) {
 		super(parent, SWT.BORDER);
 		
 		setQuestion(questionParam);
+		setClaferFeatures(claferFeatures);
 		
 		setLayout(null);
 		
-		GroupModifyDeleteButtons grpModifyDeleteButtons = new GroupModifyDeleteButtons(this);
+		GroupModifyDeleteButtons grpModifyDeleteButtons = new GroupModifyDeleteButtons(this,question,claferFeatures);
 		RowLayout rowLayout = (RowLayout) grpModifyDeleteButtons.getLayout();
 		rowLayout.marginLeft = 5;
 		rowLayout.marginTop = 5;
 		rowLayout.fill = true;
 		rowLayout.center = true;
-		grpModifyDeleteButtons.setBounds(10, 10, 471, 41);
+		grpModifyDeleteButtons.setBounds(10, 5, 571, 53);
+		
+		Button linkQstn=new Button(this,SWT.None);
+		linkQstn.setBounds(588,20,100,53);
+		linkQstn.setText("Link Question");
+		linkQstn.setVisible(false);
+		linkQstn.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e){
+				QuestionDialog link=new QuestionDialog(parent.getShell(),questionParam,claferFeatures);
+				link.open();
+			}
+		});
 		
 		Group grpQuestionDetails = new Group(this, SWT.NONE);
-		grpQuestionDetails.setBounds(10, 57, 471, 126);
+		grpQuestionDetails.setBounds(10, 62, 571, 180);
 		grpQuestionDetails.setLayout(null);
 		grpQuestionDetails.setText("Question details");
 		
 		Label lblQuestionId = new Label(grpQuestionDetails, SWT.NONE);
-		lblQuestionId.setBounds(5, 11, 66, 17);
+		lblQuestionId.setBounds(5, 30, 76, 17);
 		lblQuestionId.setText("Question id:");
 		
 		txtQuestionID = new Text(grpQuestionDetails, SWT.BORDER);
 		txtQuestionID.setEditable(false);
-		txtQuestionID.setBounds(76, 5, 162, 29);
+		txtQuestionID.setBounds(94, 25, 162, 29);
 		
 		// update this part.
+		
 		txtQuestionID.setText(Integer.toString(question.getId()));
 		//txtQuestionID.setText("0");
 		
 		Label lblQuestion = new Label(grpQuestionDetails, SWT.NONE);
-		lblQuestion.setBounds(18, 45, 53, 17);
+		lblQuestion.setBounds(5, 60, 58, 17);
 		lblQuestion.setText("Question:");
 		
 		txtQuestion = new Text(grpQuestionDetails, SWT.BORDER);
 		txtQuestion.setEditable(false);
-		txtQuestion.setBounds(76, 39, 384, 29);
+		txtQuestion.setBounds(94, 57, 403, 29);
 		
-		txtQuestion.setText(question.getQuestionText());
+		setTextQuestion(question.getQuestionText());
+		//setTextQuestion("Test");
+
+		//txtQuestion.setText(question.getQuestionText());
 		//txtQuestion.setText("question");
 		
 		Label lblType = new Label(grpQuestionDetails, SWT.NONE);
-		lblType.setBounds(244, 11, 30, 17);
+		lblType.setBounds(267, 30, 38, 20);
 		lblType.setText("Type:");
 		
 		txtAnswerType = new Text(grpQuestionDetails, SWT.BORDER);
 		txtAnswerType.setEditable(false);
-		txtAnswerType.setBounds(278, 5, 182, 29);
+		txtAnswerType.setBounds(315, 25, 182, 29);
 		
 		StringBuilder answerString = new StringBuilder();
 		
@@ -103,29 +127,29 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		for(Answer answer : question.getAnswers()){
 			answerString.append(answer.getValue());
 			answerString.append(answer.isDefaultAnswer() ? "*" : "");
-			SUPER_SCRIPT = new AttributedString("c");
+			/*SUPER_SCRIPT = new AttributedString("c");
 			SUPER_SCRIPT.addAttribute(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
 			answerString.append(answer.getCodeDependencies().size()>0 ? "@" : "");
 			SUPER_SCRIPT = new AttributedString("x");
 			SUPER_SCRIPT.addAttribute(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
 			answerString.append(answer.getClaferDependencies().size()>0 ? "#" : "");
-			answerString.append("|");
+            */answerString.append("||");
 		}
 			
 		
 		
 	
 		
-		txtAnswerType.setText("type");
+		txtAnswerType.setText(question.getQuestionType());
 		//txtAnswerType.setText(question.get);
 		
 		Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
-		lblAnswers.setBounds(20, 79, 51, 17);
+		lblAnswers.setBounds(5, 98, 55, 17);
 		lblAnswers.setText("Answers:");
 		
 		txtAnswers = new Text(grpQuestionDetails, SWT.BORDER);
 		txtAnswers.setEditable(false);
-		txtAnswers.setBounds(76, 73, 384, 29);
+		txtAnswers.setBounds(94, 92, 403, 29);
 		//txtAnswers.setText("answers");
 		txtAnswers.setText(answerString.toString());
 		
@@ -150,5 +174,20 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 	 */
 	private void setQuestion(Question question) {
 		this.question = question;
+	}
+	
+	private void setClaferFeatures(ArrayList<ClaferFeature> claferFeatures) {
+		this.claferFeatures = claferFeatures;
+	}
+	
+	public void setTextQuestion(String txtQuestion){
+		this.txtQuestion.setText(txtQuestion);
+	}
+	public String getTextQuestion(){
+		return txtQuestion.getText();
+	}
+	
+	public String getAnswerType(){
+		return txtAnswerType.getText();
 	}
 }

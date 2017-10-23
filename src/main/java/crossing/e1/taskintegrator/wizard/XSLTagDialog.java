@@ -86,20 +86,11 @@ public class XSLTagDialog extends Dialog {
 		btnAddAttribute.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ArrayList<String> possibleAttributes = getListOfPossibleAttributes(comboXSLTags.getText());
-				// If no more attributes possible.
-				if(possibleAttributes.size()>0){
-					// empty string as the XSL tag because the tag will initially be empty.
-					compositeForXSLAttributes.addXSLAttribute(new XSLAttribute("", ""), true, possibleAttributes);
-				} else{
-					MessageBox headsUpMessageBox = new MessageBox(getShell(), SWT.ICON_INFORMATION
-			            | SWT.OK);
-					headsUpMessageBox.setMessage("All possible attributes have been used up.");
-					headsUpMessageBox.setText("Cannot add attibutes");				
-			        headsUpMessageBox.open();
-				}
-				// TODO The dropdown for the attributes remains in an inconsistent state as we add new attributes.
-				// after the addition of each attribute, update all the groups with the current state of available attributes.
+						
+				//ArrayList<String> possibleAttributes = compositeForXSLAttributes.getListOfPossibleAttributes(comboXSLTags.getText());
+				// empty string as the XSL tag data and the first possible value as the name.
+				compositeForXSLAttributes.addXSLAttribute(true, comboXSLTags.getText());
+				compositeForXSLAttributes.updateDropDownsForXSLAttributes(compositeForXSLAttributes.getListOfPossibleAttributes(comboXSLTags.getText()));
 			}
 			
 		});
@@ -113,12 +104,14 @@ public class XSLTagDialog extends Dialog {
 				if(((Composite)compositeForXSLAttributes.getContent()).getChildren().length > 0){
 					MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING
 			            | SWT.YES | SWT.NO);
+					// TODO update the text shown here.
 					confirmationMessageBox.setMessage("Are you sure you wish to change the tag? All attibutes will be lost.");
 					confirmationMessageBox.setText("Changing the XSL tag");				
 			        int response = confirmationMessageBox.open();
 			        if (response == SWT.YES){
 						disposeAllAttributes();		
-						setCurrentSelectionStringOncomboXSLTags(comboXSLTags.getText());	
+						setCurrentSelectionStringOncomboXSLTags(comboXSLTags.getText());
+						compositeForXSLAttributes.updateDropDownsForXSLAttributes(compositeForXSLAttributes.getListOfPossibleAttributes(comboXSLTags.getText()));
 			        } else{
 			        	// If the user opts out of the change, replace the already changed value with the old one.
 			        	for(int i=0; i< comboXSLTags.getItemCount();i++){
@@ -128,7 +121,8 @@ public class XSLTagDialog extends Dialog {
 			        	}		        	
 			        }
 				}
-				setEnabledForAddAttributeButton();		
+				setEnabledForAddAttributeButton();	
+				
 			}
 			
 		});
@@ -136,7 +130,7 @@ public class XSLTagDialog extends Dialog {
 		return container;
 	}
 	
-	private ArrayList<String> getListOfPossibleAttributes(String selectionOnComboXSLTags) {
+	/*private ArrayList<String> getListOfPossibleAttributes(String selectionOnComboXSLTags) {
 		
 		ArrayList<String> listOfPossibleAttributes = new ArrayList<String>();
 		
@@ -157,7 +151,7 @@ public class XSLTagDialog extends Dialog {
 		
 		 //setEnabledForAddAttributeButton();
 		return listOfPossibleAttributes;
-	}
+	}*/
 	
 	private void disposeAllAttributes() {		
 		for(Control uiRepresentationOfXSLAttributes : ((Composite)compositeForXSLAttributes.getContent()).getChildren()){

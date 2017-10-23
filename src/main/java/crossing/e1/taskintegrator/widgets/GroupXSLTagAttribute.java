@@ -24,19 +24,20 @@ import org.eclipse.swt.events.FocusEvent;
 public class GroupXSLTagAttribute extends Group {
 	private Text txtAttributeName;
 	private XSLAttribute selectedAttribute;	
+	private Combo cmbAttributeType;
 
 	/**
 	 * Create the composite.
 	 * @param parent
 	 * @param style
 	 */
-	public GroupXSLTagAttribute(Composite parent, int style, boolean showRemoveButton, ArrayList<String> listOfPossibleAttributes, XSLAttribute attributeParam) {
+	public GroupXSLTagAttribute(Composite parent, int style, boolean showRemoveButton, XSLAttribute attributeParam) {
 		super(parent, style);
 		setLayout(new RowLayout(SWT.HORIZONTAL));
 		
 		setSelectedAttribute(attributeParam);
 		
-		Combo cmbAttributeType = new Combo(this, SWT.NONE);
+		cmbAttributeType = new Combo(this, SWT.NONE);
 		cmbAttributeType.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -44,12 +45,18 @@ public class GroupXSLTagAttribute extends Group {
 			}
 		});
 		cmbAttributeType.setLayoutData(new RowData(148, SWT.DEFAULT));
+		//cmbAttributeType.add(getSelectedAttribute().getXSLAttributeName());
+		//cmbAttributeType.select(0);
+		//cmbAttributeType.notifyListeners(SWT.Selection, new Event());
 		
-		for(String attribute : listOfPossibleAttributes){
-			cmbAttributeType.add(attribute);
-		}
-		cmbAttributeType.select(0);
-		cmbAttributeType.notifyListeners(SWT.Selection, new Event());
+		/*if(listOfPossibleAttributes != null){
+			for(String attribute : listOfPossibleAttributes){
+				cmbAttributeType.add(attribute);
+			}
+			cmbAttributeType.select(0);
+			cmbAttributeType.notifyListeners(SWT.Selection, new Event());
+		}*/
+		
 		//setSelectedAttributeName(cmbAttributeType.getText());
 		
 		txtAttributeName = new Text(this, SWT.BORDER);
@@ -68,13 +75,42 @@ public class GroupXSLTagAttribute extends Group {
 			btnRemove.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					// TODO 
+					((CompositeToHoldSmallerUIElements) getParent().getParent()).removeXSLAttribute((getSelectedAttribute()));
+					((CompositeToHoldSmallerUIElements) getParent().getParent()).updateClaferContainer(); 
 				}
 			});
 			btnRemove.setText("Remove");
 		}
 		
 
+	}
+	
+	public void updateAttributeDropDown(ArrayList<String> listOfPossibleAttributes){
+		if(listOfPossibleAttributes != null){
+			cmbAttributeType.removeAll();
+			
+			if(!getSelectedAttribute().getXSLAttributeName().equals("")){
+				cmbAttributeType.add(getSelectedAttribute().getXSLAttributeName());
+			}
+			
+			for(String attribute : listOfPossibleAttributes){
+				cmbAttributeType.add(attribute);
+			}
+			
+			if(getSelectedAttribute().getXSLAttributeName().equals("")){
+				cmbAttributeType.select(0);
+			} else {
+				for(int i=0; i<cmbAttributeType.getItems().length;i++){
+					if(cmbAttributeType.getItems()[i].equals(getSelectedAttribute().getXSLAttributeName())){
+						cmbAttributeType.select(i);
+					}
+				}
+			}
+			
+			
+			//cmbAttributeType.select(0);
+			cmbAttributeType.notifyListeners(SWT.Selection, new Event());
+		}
 	}
 
 	@Override

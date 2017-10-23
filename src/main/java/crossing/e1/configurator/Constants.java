@@ -239,10 +239,10 @@ public class Constants {
 		XSL_APPLY_TEMPLATES("Apply Templates","<xsl:apply-templates />","", new String[]{"select",
 																						"mode"
 																							}),
-		XSL_CHOOSE_TAG("Choose","<xsl:choose>","</xsl:choose>", null),
+		XSL_CHOOSE_TAG("Choose","<xsl:choose>","</xsl:choose>", new String[]{}),
 		XSL_WHEN_TAG("When","<xsl:when test =\"\">","</xsl:when>", new String[]{"select"
 																				}),
-		XSL_OTHERWISE_TAG("Otherwise","<xsl:otherwise>","</xsl:otheriwse>", null);
+		XSL_OTHERWISE_TAG("Otherwise","<xsl:otherwise>","</xsl:otheriwse>", new String[]{});
 		
 		private final String XSLTagFaceName;
 		private final String XSLBeginTag;

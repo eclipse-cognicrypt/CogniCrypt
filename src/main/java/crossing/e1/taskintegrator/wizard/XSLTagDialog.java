@@ -146,7 +146,7 @@ public class XSLTagDialog extends Dialog {
 		
 		for(XSLTags xslTag: Constants.XSLTags.values()){
 			if(comboXSLTags.getText().equals(xslTag.getXSLTagFaceName())){
-				if(xslTag.getXSLAttributes() == null){
+				if(xslTag.getXSLAttributes().length == 0){
 					btnAddAttribute.setEnabled(false);
 				} else{
 					btnAddAttribute.setEnabled(true);

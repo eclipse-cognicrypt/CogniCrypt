@@ -77,12 +77,9 @@ public class XSLTagDialog extends Dialog {
 		compositeForXSLAttributes.setLayoutData(gd_compositeForProperties);
 		
 		
-		// for the default selection. Moving it below all of the controls.
+		// Select the first one by default
 		comboXSLTags.select(0);
-		// Exception, need to set the value now, before notifying the listeners.
-		setCurrentSelectionStringOncomboXSLTags(comboXSLTags.getText());
-		comboXSLTags.notifyListeners(SWT.Selection, new Event());
-		
+				
 		btnAddAttribute.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -129,6 +126,8 @@ public class XSLTagDialog extends Dialog {
 			
 		});
 		
+		// Adding the notification of the selection listener for the default selection after the listener has been added.
+		comboXSLTags.notifyListeners(SWT.Selection, new Event());
 		return container;
 	}
 	

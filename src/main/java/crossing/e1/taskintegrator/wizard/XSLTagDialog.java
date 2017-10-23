@@ -158,7 +158,7 @@ public class XSLTagDialog extends Dialog {
 			uiRepresentationOfXSLAttributes.dispose();
 		}
 		
-		
+		compositeForXSLAttributes.getXSLAttributes().clear();
 		compositeForXSLAttributes.setLowestWidgetYAxisValue(0);
 	}
 	

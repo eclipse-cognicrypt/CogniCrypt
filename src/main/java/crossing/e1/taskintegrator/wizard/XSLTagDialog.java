@@ -120,6 +120,8 @@ public class XSLTagDialog extends Dialog {
 			        		}
 			        	}		        	
 			        }
+				} else {
+					setCurrentSelectionStringOncomboXSLTags(comboXSLTags.getText());
 				}
 				setEnabledForAddAttributeButton();	
 				

@@ -75,7 +75,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 		this.control = new Composite(parent, SWT.NONE);
 		final GridLayout layout = new GridLayout(3, false);
 		this.control.setLayout(layout);
-
+		
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
 		setPageComplete(false);
 		compositeControl.setLayout(new GridLayout(2, false));

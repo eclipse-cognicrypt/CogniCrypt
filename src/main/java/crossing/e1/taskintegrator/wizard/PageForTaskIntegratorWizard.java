@@ -14,9 +14,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.beginer.question.Answer;
@@ -103,35 +100,19 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				});
 				break;
 			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:
-				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
-				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);				
-				/*
-				 * Button btnAddXSLTag = new Button(container, SWT.NONE); btnAddXSLTag.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
-				 * btnAddXSLTag.setText("Add XSL tag"); btnAddXSLTag.addSelectionListener(new SelectionAdapter() {
-				 */	//this.setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
-					//container.setLayout(new FillLayout(SWT.HORIZONTAL));
+				
 				this.setCompositeForXsl(new CompositeForXsl(container, SWT.NONE));
-				//getCompositeForXsl().setBounds(0,0,887,500);
-				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);		
-
-				//TODO move this combo box to the pop up.
-				Combo xslVariableCombo = new Combo(container, SWT.NONE);//displaying the tag to be included
-				xslVariableCombo.setBounds(900, 0, 155, 30);
-				xslVariableCombo.setItems(
-					new String[] { Constants.XSL_VARIABLE_TAG, Constants.XSL_SELECT_TAG, Constants.XSL_IF_TAG, Constants.XSL_RESULT_DOCUMENT, Constants.XSL_APPLY_TEMPLATES, Constants.XSL_CHOOSE_TAG, Constants.XSL_WHEN_TAG, Constants.XSL_OTHERWISE_TAG });
-				xslVariableCombo.select(0);
+				
 				Button btnAddXSLTag = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
-				btnAddXSLTag.setBounds(1065, 0, 100, 30);
+				btnAddXSLTag.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
 				btnAddXSLTag.setText("Add Xsl Tag");
 
 				Button btnReadCode = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
-				btnReadCode.setBounds(1065, 33, 100, 30);
+				btnReadCode.setBounds(Constants.RECTANGLE_FOR_SECOND_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
 				btnReadCode.setText("Get the code");
-
-				btnReadCode.addSelectionListener(new SelectionAdapter() {
-
-					/*
-					 * (non-Javadoc)
+				
+				btnReadCode.addSelectionListener(new SelectionAdapter(){
+					/* (non-Javadoc)
 					 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
 					 */
 
@@ -139,67 +120,34 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					public void widgetSelected(SelectionEvent e) {
 
 						super.widgetSelected(e);
-
-						FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
-
-						fileDialog.setFilterExtensions(new String[] { "*.java", "*.xsl" });
-						fileDialog.setText("Choose the code file:");
-						((CompositeForXsl) getCompositeForXsl()).updateTheTextFieldWithFileData(fileDialog.open());
+						
+						FileDialog fileDialog = new FileDialog(getShell(),SWT.OPEN);
+						
+						fileDialog.setFilterExtensions(new String[] {"*.java","*.xsl"});
+				        fileDialog.setText("Choose the code file:");
+				        ((CompositeForXsl)getCompositeForXsl()).updateTheTextFieldWithFileData(fileDialog.open());  
 					}
 
+			        
 				});
 
 				btnAddXSLTag.addSelectionListener(new SelectionAdapter() {
 
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						//Retrieve the selected tag from the combo
-						String xslSelectedVariable = xslVariableCombo.getText();
-						String introduceTag = null;
-						//To check which xsl tag is selected and to include that xsl tag in the code
-						switch (xslSelectedVariable) {
-							case Constants.XSL_VARIABLE_TAG:
-								introduceTag = "<xsl:variable></xsl:variable>";
-								break;
-							case Constants.XSL_SELECT_TAG:
-								introduceTag = "<xsl:value-of select=\"\"/>";
-								break;
-							case Constants.XSL_IF_TAG:
-								introduceTag = "<xsl:if>";
-								break;
-							case Constants.XSL_RESULT_DOCUMENT:
-								introduceTag = "<xsl result-document href = \"\">";
-								break;
-							case Constants.XSL_APPLY_TEMPLATES:
-								introduceTag = "<xsl apply-templates select =\"\">";
-								break;
-							case Constants.XSL_CHOOSE_TAG:
-								introduceTag = "<xsl:choose></xsl:choose>";
-								break;
-							case Constants.XSL_WHEN_TAG:
-								introduceTag = "<xsl:when test =\"\"></xsl:when>";
-								break;
-							case Constants.XSL_OTHERWISE_TAG:
-								introduceTag = "<xsl:otherwise></xsl:otheriwse>";
-								break;
-
+						
+						
+						XSLTagDialog dialog = new XSLTagDialog(getShell());
+						if(dialog.open() == Window.OK){
+							// To locate the position of the xsl tag to be introduce						
+							Point selected = getCompositeForXsl().getXslTxtBox().getSelection();
+							String xslTxtBoxContent = getCompositeForXsl().getXslTxtBox().getText();
+							xslTxtBoxContent = xslTxtBoxContent.substring(0, selected.x) + dialog.getTag().toString() + xslTxtBoxContent.substring(selected.y, xslTxtBoxContent.length());
+							getCompositeForXsl().getXslTxtBox().setText(xslTxtBoxContent);
 						}
-						// To locate the position of the xsl tag to be introduce
-						Point selected = ((StyledText) getCompositeForXsl().getChildren()[0]).getSelection();
-						String xslTxtBoxContent = ((StyledText) getCompositeForXsl().getChildren()[0]).getText();
-						xslTxtBoxContent = xslTxtBoxContent.substring(0, selected.x) + introduceTag + xslTxtBoxContent.substring(selected.y, xslTxtBoxContent.length());
-						((StyledText) getCompositeForXsl().getChildren()[0]).setText(xslTxtBoxContent);
-
+						
 					}
-				});
-
-				/*
-				 * xslVariableCombo.addSelectionListener(new SelectionAdapter() {
-				 * @Override public void widgetSelected(SelectionEvent e) { String xslSelectedVariable=xslVariableCombo.getText(); Point selected =
-				 * compositeToHoldGranularUIElements.xslTxtBox.getSelection(); String xslTxtBoxContent = compositeToHoldGranularUIElements.xslTxtBox.getText(); xslTxtBoxContent =
-				 * xslTxtBoxContent.substring(0, selected.x)+xslSelectedVariable+xslTxtBoxContent.substring(selected.y, xslTxtBoxContent.length());
-				 * compositeToHoldGranularUIElements.xslTxtBox.setText(xslTxtBoxContent); } });
-				 */
+				});				
 				break;
 			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
@@ -229,7 +177,11 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				break;
 		}
 	}
-
+	
+	/**
+	 * For testing only. Remove later.
+	 * @return
+	 */
 	private ClaferFeature getDummyClaferFeature() {
 		/*
 		 * ClaferFeature tempFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, Integer.toString(counter), // Counter as the name to make each addition identifiable. new
@@ -255,41 +207,43 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		return tempFeature;
 
 	}
-
-	/*
-	 * private Question getDummyQuestion() { Question tempQuestion = new Question(); tempQuestion.setId(counter); tempQuestion.setQuestionText("question?"); Answer answer = new
-	 * Answer(); answer.setValue("answer"); answer.setDefaultAnswer(false); answer.setNextID(counter); ClaferDependency claferDependency = new ClaferDependency();
-	 * claferDependency.setAlgorithm("algoritm"); claferDependency.setOperand("operand"); claferDependency.setOperator(Constants.FeatureConstraintRelationship.AND.toString());
-	 * claferDependency.setValue("value"); ArrayList<ClaferDependency> claferDependencies = new ArrayList<ClaferDependency>(); claferDependencies.add(claferDependency);
-	 * CodeDependency codeDependency = new CodeDependency(); codeDependency.setOption("option"); codeDependency.setValue("value"); ArrayList<CodeDependency> codeDependencies = new
-	 * ArrayList<CodeDependency>(); codeDependencies.add(codeDependency); answer.setCodeDependencies(codeDependencies); answer.setClaferDependencies(claferDependencies);
-	 * ArrayList<Answer> answers = new ArrayList<Answer>(); answers.add(answer); tempQuestion.setAnswers(answers); return tempQuestion; }======= return tempFeature; }
+	
+	/**
+	 * For testing only. Remove later.
+	 * @return
 	 */
-	private Question getDummyQuestion(Question questionDetails) {
-		/*
-		 * Question tempQuestion = new Question(); tempQuestion.setId(counter); tempQuestion.setQuestionText(questionText); tempQuestion.setQuestionType(questionType);
-		 */
-		questionDetails.setId(counter);
-		questionDetails.setQuestionText(questionDetails.getQuestionText());
-		questionDetails.setQuestionType(questionDetails.getQuestionType());
-		questionDetails.setAnswers(questionDetails.getAnswers());
-
-		/*
-		 * Answer answer = new Answer(); answer.setValue("answer"); answer.setDefaultAnswer(false); answer.setNextID(counter); ClaferDependency claferDependency = new
-		 * ClaferDependency(); claferDependency.setAlgorithm("algoritm"); claferDependency.setOperand("operand");
-		 * claferDependency.setOperator(Constants.FeatureConstraintRelationship.AND.toString()); claferDependency.setValue("value"); ArrayList<ClaferDependency> claferDependencies
-		 * = new ArrayList<ClaferDependency>(); claferDependencies.add(claferDependency); CodeDependency codeDependency = new CodeDependency(); codeDependency.setOption("option");
-		 * codeDependency.setValue("value"); ArrayList<CodeDependency> codeDependencies = new ArrayList<CodeDependency>(); codeDependencies.add(codeDependency);
-		 * answer.setCodeDependencies(codeDependencies); answer.setClaferDependencies(claferDependencies);
-		 */
-		/*
-		 * ArrayList<Answer> answers = new ArrayList<Answer>(); answers=(ArrayList<Answer>)answerValues.clone();
-		 *///answers.add(answer);
-
-		/*
-		 * tempQuestion.setAnswers(answerValues); return tempQuestion;
-		 */
-		return questionDetails;
+	private Question getDummyQuestion() {
+		Question tempQuestion = new Question();
+		tempQuestion.setId(counter);
+		tempQuestion.setQuestionText("question?");
+		
+		Answer answer = new Answer();
+		answer.setValue("answer");
+		answer.setDefaultAnswer(false);
+		answer.setNextID(counter);
+		ClaferDependency claferDependency = new ClaferDependency();
+		claferDependency.setAlgorithm("algoritm");
+		claferDependency.setOperand("operand");
+		claferDependency.setOperator(Constants.FeatureConstraintRelationship.AND.toString());
+		claferDependency.setValue("value");
+		ArrayList<ClaferDependency> claferDependencies = new ArrayList<ClaferDependency>();
+		claferDependencies.add(claferDependency);		
+		
+		CodeDependency codeDependency = new CodeDependency();
+		codeDependency.setOption("option");
+		codeDependency.setValue("value");
+		ArrayList<CodeDependency> codeDependencies = new ArrayList<CodeDependency>();
+		codeDependencies.add(codeDependency);
+		
+		answer.setCodeDependencies(codeDependencies);
+		answer.setClaferDependencies(claferDependencies);
+		
+		ArrayList<Answer> answers = new ArrayList<Answer>();
+		answers.add(answer);
+		
+		tempQuestion.setAnswers(answers);
+		
+		return tempQuestion;
 	}
 
 	/*
@@ -347,7 +301,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	/**
 	 * @return the compositeForXsl
 	 */
-	public Composite getCompositeForXsl() {
+	public CompositeForXsl getCompositeForXsl() {
 		return compositeForXsl;
 	}
 

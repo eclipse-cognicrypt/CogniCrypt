@@ -196,8 +196,96 @@ public class Constants {
 	public static final int FEATURE_PROPERTY = 0;
 	public static final int FEATURE_CONSTRAINT = 1;
 	
-	
-	
+	// source for the contents of this enum : https://www.w3.org/TR/xslt20/
+	public static enum XSLTags{
+		XSL_VARIABLE_TAG("Variable","<xsl:variable>","</xsl:variable>", new String[]{"name",
+																					"select",
+																					"as"
+																					/*,
+																					 * "static",
+																					 * "visibility"*/
+																					}),
+		XSL_VALUE_OF_TAG("Value of","<xsl:value-of/>","", new String[]{"select", "separator" , "disable-output-escaping"}),
+		XSL_IF_TAG("If","<xsl:if>","</xsl:if>",new String[]{"test"}),
+		XSL_RESULT_DOCUMENT("Result Document","<xsl:result-document>","</xsl:result-document>", new String[]{"href",
+																											"format",
+																											"validation",
+																											"type",
+																											"method",
+																											"byte-order-mark",
+																											"cdata-section-elements",
+																											"doctype-public",
+																											"doctype-system",
+																											"encoding",
+																											"escape-uri-attributes",
+																											"include-content-type",
+																											"indent",
+																											"media-type",
+																											"normalization-form",
+																											"omit-xml-declaration",
+																											"standalone",
+																											"undeclare-prefixes",
+																											"use-character-maps",
+																											"output-version"
+																											/*,
+																											"allow-duplicate-names",
+																											"build-tree",
+																											"html-version",
+																											"item-separator",
+																											"json-node-output-method",
+																											"parameter-document",
+																											"suppress-indentation",*/																									
+																											}),
+		XSL_APPLY_TEMPLATES("Apply Templates","<xsl:apply-templates />","", new String[]{"select",
+																						"mode"
+																							}),
+		XSL_CHOOSE_TAG("Choose","<xsl:choose>","</xsl:choose>", new String[]{}),
+		XSL_WHEN_TAG("When","<xsl:when test =\"\">","</xsl:when>", new String[]{"select"
+																				}),
+		XSL_OTHERWISE_TAG("Otherwise","<xsl:otherwise>","</xsl:otheriwse>", new String[]{});
+		
+		private final String XSLTagFaceName;
+		private final String XSLBeginTag;
+		private final String XSLEndTag;
+		private final String[] XSLAttributes;
+		/**
+		 * @param XSLTagFaceNameParam
+		 * @param XSLBeginTagParam
+		 * @param XSLEndTagParam
+		 */
+		private XSLTags(String XSLTagFaceNameParam, String XSLBeginTagParam, String XSLEndTagParam, String[] XSLAttributesParam) {
+			XSLTagFaceName = XSLTagFaceNameParam;
+			XSLBeginTag = XSLBeginTagParam;
+			XSLEndTag = XSLEndTagParam;
+			XSLAttributes = XSLAttributesParam;
+		}
+		/**
+		 * @return the xSLTagFaceName
+		 */
+		public String getXSLTagFaceName() {
+			return XSLTagFaceName;
+		}
+		/**
+		 * @return the xSLBeginTag
+		 */
+		public String getXSLBeginTag() {
+			return XSLBeginTag;
+		}
+		/**
+		 * @return the xSLEndTag
+		 */
+		public String getXSLEndTag() {
+			return XSLEndTag;
+		}
+		/**
+		 * @return the xSLAttributes
+		 */
+		public String[] getXSLAttributes() {
+			return XSLAttributes;
+		}
+		
+		
+	}
 	
 	public static enum FeatureConstraintRelationship{
 		EQUAL("="),

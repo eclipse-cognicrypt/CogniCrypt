@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Button;
 
 
 public class CompositeForXsl extends Composite {
-
+	private StyledText xslTxtBox;
 	
 		public CompositeForXsl(Composite parent, int style) {
 			super(parent,SWT.BORDER);
@@ -26,25 +26,9 @@ public class CompositeForXsl extends Composite {
 			
 			//UI Widgets for xslPage
 			//Text xslTxtBox= new Text(this,SWT.MULTI|SWT.V_SCROLL);
-			StyledText xslTxtBox= new StyledText(this,SWT.FULL_SELECTION | SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL);
+			setXslTxtBox(new StyledText(this,SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL));
 			xslTxtBox.setBounds(0, 0, 887, 480);
 			xslTxtBox.setCursor(null);
-			
-			
-			
-			/*Combo xslComboVariable = new Combo(this,SWT.None);
-			xslComboVariable.setBounds(555,0,100,30);
-			xslComboVariable.setItems("Variable","Ravi","Rajiv","Andre");
-			xslComboVariable.select(0);
-			Button addXslTag = new Button(this, SWT.NONE);
-			addXslTag.setText("Add Xsl Tag");
-			addXslTag.setBounds(660, 0, 100, 30);*/
-			/*addXslTag.addSelectionListener(new SelectionAdapter(){
-				public void widgetSelected(SelectionEvent e){
-					
-				}
-			});
-			*/
 			
 		}
 		
@@ -88,6 +72,20 @@ public class CompositeForXsl extends Composite {
 			}
 			
 			((StyledText) this.getChildren()[0]).setText(dataFromFile.toString());
+		}
+
+		/**
+		 * @return the xslTxtBox
+		 */
+		public StyledText getXslTxtBox() {
+			return xslTxtBox;
+		}
+
+		/**
+		 * @param xslTxtBox the xslTxtBox to set
+		 */
+		private void setXslTxtBox(StyledText xslTxtBox) {
+			this.xslTxtBox = xslTxtBox;
 		}
 		
 	}

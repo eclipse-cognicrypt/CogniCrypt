@@ -62,6 +62,7 @@ public class GroupXSLTagAttribute extends Group {
 		txtAttributeName = new Text(this, SWT.BORDER);
 		// Blank initial value.
 		//setSelectedAttributeData("");
+		txtAttributeName.setText(getSelectedAttribute().getXSLAttributeData());
 		txtAttributeName.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent e) {

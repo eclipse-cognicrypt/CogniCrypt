@@ -225,11 +225,9 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 			
 			//updateDropDownsForXSLAttributes(getListOfPossibleAttributes());
 			
-			//TODO have a better check here.!
 			
-			if(getParent().getChildren()[0].getClass().getName().equals("Combo")){
-				updateDropDownsForXSLAttributes(getListOfPossibleAttributes(((Combo)getParent().getChildren()[0]).getText()));
-			}
+			updateDropDownsForXSLAttributes(getListOfPossibleAttributes(((Combo)getParent().getChildren()[0]).getText()));
+			
 			//Control[] testCOn = getParent().getChildren();
 			
 			

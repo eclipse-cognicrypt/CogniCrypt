@@ -96,9 +96,8 @@ public class XSLTagDialog extends Dialog {
 		comboXSLTags.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {		
-				// At this point the value of the selection has already been altered.
-				
-				if(((Composite)compositeForXSLAttributes.getContent()).getChildren().length > 0){
+				// If attributes have been added to the tag, ask for confirmation from the user.
+				if(compositeForXSLAttributes.getXSLAttributes().size() > 0){
 					MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING
 			            | SWT.YES | SWT.NO);
 					// TODO update the text shown here.

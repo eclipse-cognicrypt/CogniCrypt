@@ -55,7 +55,7 @@ public class XSLTag {
 		
 		tagString.append(getXSLTagDetails().getXSLBeginTag());
 		tagString.insert(getXSLTagDetails().getXSLBeginTag().length()-1, attributeString.toString());
-		tagString.append(getXSLTagDetails().getXSLBeginTag());
+		tagString.append(getXSLTagDetails().getXSLEndTag());
 		
 		return tagString.toString();
 	}

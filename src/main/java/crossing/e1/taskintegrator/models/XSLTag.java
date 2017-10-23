@@ -50,7 +50,11 @@ public class XSLTag {
 		StringBuilder attributeString = new StringBuilder();
 		
 		for(XSLAttribute attribute : getXSLAttributes()){
-			attributeString.append(" " + attribute.getXSLAttributeName() + "= \"" + attribute.getXSLAttributeData() + "\"");
+			attributeString.append(" ");
+			attributeString.append(attribute.getXSLAttributeName());
+			attributeString.append("= \"");
+			attributeString.append(attribute.getXSLAttributeData());
+			attributeString.append("\"");
 		}
 		
 		tagString.append(getXSLTagDetails().getXSLBeginTag());

@@ -6,8 +6,8 @@ import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.Constants.XSLTags;
 
 public class XSLTag {
-	private Constants.XSLTags XSLTagDetails;
-	private ArrayList<XSLAttribute> XSLAttributes;
+	private Constants.XSLTags XSLTagDetails; // Variable to hold all the XSL tag data.
+	private ArrayList<XSLAttribute> XSLAttributes; // Variable to hold the selected tag attributes.
 	/**
 	 * @param xSLTagDetails
 	 * @param xSLAttributes
@@ -18,13 +18,13 @@ public class XSLTag {
 		setXSLAttributes(xSLAttributes);
 	}
 	/**
-	 * @return the xSLTagDetails
+	 * @return XSLTagDetails the Tag details
 	 */
 	public Constants.XSLTags getXSLTagDetails() {
 		return XSLTagDetails;
 	}
 	/**
-	 * @param xSLTagDetails the xSLTagDetails to set
+	 * @param xSLTagDetails set the XSL tag details
 	 */
 	private void setXSLTagDetails(Constants.XSLTags xSLTagDetails) {
 		XSLTagDetails = xSLTagDetails;
@@ -49,6 +49,7 @@ public class XSLTag {
 		StringBuilder tagString = new StringBuilder();
 		StringBuilder attributeString = new StringBuilder();
 		
+		// Generate the string for the attributes.
 		for(XSLAttribute attribute : getXSLAttributes()){
 			attributeString.append(" ");
 			attributeString.append(attribute.getXSLAttributeName());
@@ -58,6 +59,7 @@ public class XSLTag {
 		}
 		
 		tagString.append(getXSLTagDetails().getXSLBeginTag());
+		// The location of the attribute string insertion changes if there is no end tag. e.g. <xsl:value-of/>
 		int VALUE_TO_GET_LOCATION_TO_INSERT_ATTRIBUTES = 1;
 		if(getXSLTagDetails().getXSLEndTag().equals("")){
 			VALUE_TO_GET_LOCATION_TO_INSERT_ATTRIBUTES = 2;

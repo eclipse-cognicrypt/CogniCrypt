@@ -15,8 +15,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.custom.StyledText;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.beginer.question.Answer;
@@ -94,8 +92,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				});
 				break;
 			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:
-				//this.setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
-				//container.setLayout(new FillLayout(SWT.HORIZONTAL));
+				
 				this.setCompositeForXsl(new CompositeForXsl(container, SWT.NONE));
 				
 				Button btnAddXSLTag = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
@@ -107,9 +104,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				btnReadCode.setText("Get the code");
 				
 				btnReadCode.addSelectionListener(new SelectionAdapter(){
-					
-					
-					
 					/* (non-Javadoc)
 					 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
 					 */
@@ -119,13 +113,11 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						
 						FileDialog fileDialog = new FileDialog(getShell(),SWT.OPEN);
 						
-						
 						fileDialog.setFilterExtensions(new String[] {"*.java","*.xsl"});
 				        fileDialog.setText("Choose the code file:");
 				        ((CompositeForXsl)getCompositeForXsl()).updateTheTextFieldWithFileData(fileDialog.open());  
 					}
 
-					
 			        
 				});
 				
@@ -136,8 +128,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						
 						
 						XSLTagDialog dialog = new XSLTagDialog(getShell());
-						//int test = dialog.open();
-						
 						if(dialog.open() == Window.OK){
 							// To locate the position of the xsl tag to be introduce						
 							Point selected = getCompositeForXsl().getXslTxtBox().getSelection();
@@ -173,7 +163,10 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		}
 	}
 	
-	
+	/**
+	 * For testing only. Remove later.
+	 * @return
+	 */
 	private ClaferFeature getDummyClaferFeature() {
 		ClaferFeature tempFeature = new ClaferFeature(
 			Constants.FeatureType.ABSTRACT,
@@ -199,6 +192,11 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		return tempFeature;
 		
 	}
+	
+	/**
+	 * For testing only. Remove later.
+	 * @return
+	 */
 	private Question getDummyQuestion() {
 		Question tempQuestion = new Question();
 		tempQuestion.setId(counter);

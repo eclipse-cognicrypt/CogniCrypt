@@ -35,6 +35,7 @@ public class GroupXSLTagAttribute extends Group {
 		super(parent, style);
 		setLayout(new RowLayout(SWT.HORIZONTAL));
 		
+		// Set the attribute object first.
 		setSelectedAttribute(attributeParam);
 		
 		cmbAttributeType = new Combo(this, SWT.NONE);
@@ -45,27 +46,13 @@ public class GroupXSLTagAttribute extends Group {
 			}
 		});
 		cmbAttributeType.setLayoutData(new RowData(148, SWT.DEFAULT));
-		//cmbAttributeType.add(getSelectedAttribute().getXSLAttributeName());
-		//cmbAttributeType.select(0);
-		//cmbAttributeType.notifyListeners(SWT.Selection, new Event());
-		
-		/*if(listOfPossibleAttributes != null){
-			for(String attribute : listOfPossibleAttributes){
-				cmbAttributeType.add(attribute);
-			}
-			cmbAttributeType.select(0);
-			cmbAttributeType.notifyListeners(SWT.Selection, new Event());
-		}*/
-		
-		//setSelectedAttributeName(cmbAttributeType.getText());
-		
+				
 		txtAttributeName = new Text(this, SWT.BORDER);
-		// Blank initial value.
-		//setSelectedAttributeData("");
 		txtAttributeName.setText(getSelectedAttribute().getXSLAttributeData());
 		txtAttributeName.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent e) {
+				// Update the data for the attribute on loosing focus.
 				selectedAttribute.setXSLAttributeData(txtAttributeName.getText());
 			}
 		});
@@ -86,21 +73,29 @@ public class GroupXSLTagAttribute extends Group {
 
 	}
 	
+	/**
+	 * The attribute drop down needs to be updated after changes have been made to keep them consistent.
+	 * @param listOfPossibleAttributes represents the possible attributes based on the attributes already selected.
+	 */
 	public void updateAttributeDropDown(ArrayList<String> listOfPossibleAttributes){
 		if(listOfPossibleAttributes != null){
 			cmbAttributeType.removeAll();
 			
+			// If the current selected attribute does not have an empty name, add the attribute to the dropdown.
 			if(!getSelectedAttribute().getXSLAttributeName().equals("")){
 				cmbAttributeType.add(getSelectedAttribute().getXSLAttributeName());
 			}
 			
+			// Add the list of possible attributes to the drop down.
 			for(String attribute : listOfPossibleAttributes){
 				cmbAttributeType.add(attribute);
 			}
 			
+			// If the current selection is empty select the first one by default. 
 			if(getSelectedAttribute().getXSLAttributeName().equals("")){
 				cmbAttributeType.select(0);
 			} else {
+				// Otherwise get the index of the stored attribute name from the list of elements and select it.
 				for(int i=0; i<cmbAttributeType.getItems().length;i++){
 					if(cmbAttributeType.getItems()[i].equals(getSelectedAttribute().getXSLAttributeName())){
 						cmbAttributeType.select(i);
@@ -108,8 +103,6 @@ public class GroupXSLTagAttribute extends Group {
 				}
 			}
 			
-			
-			//cmbAttributeType.select(0);
 			cmbAttributeType.notifyListeners(SWT.Selection, new Event());
 		}
 	}

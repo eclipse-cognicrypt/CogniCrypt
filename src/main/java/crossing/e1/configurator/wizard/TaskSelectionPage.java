@@ -40,6 +40,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.tasks.Task;
@@ -73,7 +74,7 @@ public class TaskSelectionPage extends WizardPage {
 		container.setLayout(null);
 
 		this.selectProjectLabel = new Label(this.container, SWT.NONE);
-		this.selectProjectLabel.setBounds(5, 9, 111, 15);
+		this.selectProjectLabel.setBounds(5, 8, 111, 15);
 		this.selectProjectLabel.setText(Constants.SELECT_JAVA_PROJECT);
 
 		ComboViewer projectComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
@@ -109,13 +110,13 @@ public class TaskSelectionPage extends WizardPage {
 		}
 
 		this.selectTaskLabel = new Label(this.container, SWT.NONE);
-		selectTaskLabel.setBounds(5, 37, 73, 15);
+		selectTaskLabel.setBounds(5, 48, 73, 15);
 		this.selectTaskLabel.setText(Constants.SELECT_TASK);
 
 		this.taskComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
 		Combo combo_1 = taskComboSelection.getCombo();
 		combo_1.setEnabled(true);
-		combo_1.setBounds(153, 33, 393, 23);
+		combo_1.setBounds(153, 45, 393, 23);
 		this.taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
 
 		final List<Task> tasks = TaskJSONReader.getTasks();
@@ -139,7 +140,7 @@ public class TaskSelectionPage extends WizardPage {
 		this.descriptionText = new Text(container, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		this.descriptionText.setToolTipText(Constants.DESCRIPTION_BOX_TOOLTIP);
 		this.descriptionText.setEditable(false);
-		this.descriptionText.setBounds(153, 61, 393, 95);
+		this.descriptionText.setBounds(153, 88, 393, 95);
 		
 		this.taskComboSelection.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
@@ -155,13 +156,13 @@ public class TaskSelectionPage extends WizardPage {
 		
 		//Label for task description
 		this.taskDescription = new Label(this.container, SWT.NONE);
-		this.taskDescription.setBounds(5, 61, 93, 15);
+		this.taskDescription.setBounds(5, 88, 93, 15);
 		this.taskDescription.setText(Constants.TASK_DESCRIPTION);
 		
 		//Check box for going to guided mode
 		this.guidedModeCheckBox = new Button(container, SWT.CHECK);
 		this.guidedModeCheckBox.setEnabled(true);
-		this.guidedModeCheckBox.setBounds(5, 181, 261, 16);
+		this.guidedModeCheckBox.setBounds(5, 208, 261, 16);
 		this.guidedModeCheckBox.addSelectionListener(new SelectionAdapter() {
 		    @Override
 			public void widgetSelected(SelectionEvent e) {
@@ -170,6 +171,9 @@ public class TaskSelectionPage extends WizardPage {
 		});
 		this.guidedModeCheckBox.setText(Constants.GUIDED_MODE);
 		this.guidedModeCheckBox.setSelection(true);
+		
+		//Adding Help content
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,"Help");
 	}
 
 	public IProject getSelectedProject() {

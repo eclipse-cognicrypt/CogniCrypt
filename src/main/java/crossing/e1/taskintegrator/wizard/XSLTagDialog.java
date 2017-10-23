@@ -50,7 +50,7 @@ public class XSLTagDialog extends Dialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
 		
-		comboXSLTags = new Combo(container, SWT.NONE);
+		comboXSLTags = new Combo(container, SWT.READ_ONLY);
 		
 		GridData gd_comboXSLTags = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_comboXSLTags.widthHint = 430;
@@ -73,6 +73,7 @@ public class XSLTagDialog extends Dialog {
 		
 		// Select the first one by default
 		comboXSLTags.select(0);
+		
 				
 		btnAddAttribute.addSelectionListener(new SelectionAdapter() {
 			@Override

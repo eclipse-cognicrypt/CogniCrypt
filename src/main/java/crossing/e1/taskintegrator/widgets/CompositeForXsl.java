@@ -26,7 +26,7 @@ public class CompositeForXsl extends Composite {
 			
 			//UI Widgets for xslPage
 			//Text xslTxtBox= new Text(this,SWT.MULTI|SWT.V_SCROLL);
-			setXslTxtBox(new StyledText(this,SWT.FULL_SELECTION | SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL));
+			setXslTxtBox(new StyledText(this,SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL));
 			xslTxtBox.setBounds(0, 0, 887, 480);
 			xslTxtBox.setCursor(null);
 			

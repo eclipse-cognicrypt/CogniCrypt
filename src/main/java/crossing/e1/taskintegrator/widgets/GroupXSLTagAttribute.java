@@ -38,7 +38,7 @@ public class GroupXSLTagAttribute extends Group {
 		// Set the attribute object first.
 		setSelectedAttribute(attributeParam);
 		
-		cmbAttributeType = new Combo(this, SWT.NONE);
+		cmbAttributeType = new Combo(this, SWT.READ_ONLY);
 		cmbAttributeType.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

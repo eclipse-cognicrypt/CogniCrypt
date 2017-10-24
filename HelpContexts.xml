@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contexts> 
+      <context  id="help_id" title="CogniCrypt"> 
+        <description>Sample:CogniCrypt helps you to generate the code for the task that you have selected....</description> 
+        <topic href="html/InitialPage.html"  label="Task Selection"/> 
+         <topic href="html/ConfigurationPage.html"  label="Task Configuration"/> 
+         <topic href="html/FinalPage.html"  label="Algorithm selection"/>
+      </context> 
+    </contexts> 

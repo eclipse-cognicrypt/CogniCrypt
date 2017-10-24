@@ -49,7 +49,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	private List<String> selectionValues;
 	public String selectedValue="";
 	private String claferDepend = "";
-	private int itr = 0;
+	private int iteration = 0;
 	private final Page page;
 	int count;
 
@@ -117,7 +117,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	 *        Updated this parameter in the constructor to accept the questionnaire instead of all the questions.
 	 * @param selectionValues
 	 */
-	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, final PrimitiveQuestionnaire PrimitiveQuestionnaire, final List<String> selectionValues, int itr) {
+	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, final PrimitiveQuestionnaire PrimitiveQuestionnaire, final List<String> selectionValues, int iteration) {
 		super("Display Questions");
 		setTitle("Configuring Selected primitive: " + primitive.getName());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
@@ -126,7 +126,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		this.page = page;
 		this.primitive = primitive;
 		this.selectionValues = selectionValues;
-		this.itr = itr;
+		this.iteration = iteration;
 	}
 
 	/**
@@ -146,25 +146,25 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		this.primitive = primitive;
 	}
 
-	public PrimitiveQuestionnairePage(final Question quest, final Primitive primitive, int itr) {
+	public PrimitiveQuestionnairePage(final Question quest, final Primitive primitive, int iteration) {
 		super("Display Quesitons");
 		setTitle("Configuring selected primitive:" + primitive.getName());
 		setDescription("Key sizes");
 		this.quest = quest;
 		this.page = null;
 		this.primitive = primitive;
-		this.itr = itr;
+		this.iteration = iteration;
 
 	}
 
-	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, int itr) {
+	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, int iteration) {
 		super("Display Questions");
 		setTitle("Configuring Selected primitive: " + primitive.getName());
 		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.page = page;
 		this.primitive = primitive;
 		this.selectionValues = selectionValues;
-		this.itr = itr;
+		this.iteration = iteration;
 
 		//This variable needs to be initialized.
 		this.quest = null;
@@ -227,7 +227,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 						}
 					}
 					try {
-						this.itr = Integer.parseInt(selection.getFirstElement().toString());
+						this.iteration = Integer.parseInt(selection.getFirstElement().toString());
 					} catch (Exception e) {
 
 					}
@@ -355,21 +355,24 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 			case composed:
 				container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 				container.setLayout(new GridLayout(1, false));
-				Composite contentContainer = new Composite(container, SWT.NONE);
-				contentContainer.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-				contentContainer.setLayout(new GridLayout(4, false));
-
-				for (int j = 0; j < this.itr; j++) {
+//				Composite contentContainer = new Composite(container, SWT.NONE);
+//				contentContainer.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+//				contentContainer.setLayout(new GridLayout(4, false));
+				Group[] group=new Group[iteration];
+				for (int j = 0; j < this.iteration; j++) {
+					group[j]=new Group(container,SWT.COLOR_WIDGET_NORMAL_SHADOW);
+					group[j].setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+					group[j].setLayout(new GridLayout(4, false));
 					Button[] radioButton = new Button[answers.size()];
 					for (int i = 0; i < answers.size(); i++) {
 						String ans = answers.get(i).getValue();
-						radioButton[i] = new Button(contentContainer, SWT.RADIO);
+						radioButton[i] = new Button(group[j], SWT.RADIO);
 						radioButton[i].setText(ans);
 
 					}
 					Text[] textField = new Text[answers.size()];
 					for (int i = 0; i < answers.size(); i++) {
-						textField[i] = new Text(contentContainer, SWT.SINGLE | SWT.BORDER);
+						textField[i] = new Text(group[j], SWT.SINGLE | SWT.BORDER);
 						radioButton[i].addSelectionListener(new SelectionAdapter() {
 
 							@Override
@@ -398,7 +401,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 					}
 
 				}
-				this.itr=0;
+				this.iteration=0;
 				this.finish = true;
 				PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
 			default:
@@ -422,8 +425,8 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 	}
 
-	public int getItr() {
-		return this.itr;
+	public int getIteration() {
+		return this.iteration;
 	}
 
 	/**

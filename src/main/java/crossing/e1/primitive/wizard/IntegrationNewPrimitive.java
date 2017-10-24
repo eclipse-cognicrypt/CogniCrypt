@@ -52,7 +52,7 @@ public class IntegrationNewPrimitive extends Wizard {
 		return updateRound;
 	}
 
-	private void createPrimitivePage(final Page curPage, final PrimitiveQuestionnaire primitiveQuestionnaire, int itr) {
+	private void createPrimitivePage(final Page curPage, final PrimitiveQuestionnaire primitiveQuestionnaire, int iteration) {
 		List<String> selection = null;
 		if (curPage.getContent().size() == 1) {
 			final Question curQuestion = curPage.getContent().get(0);
@@ -66,7 +66,7 @@ public class IntegrationNewPrimitive extends Wizard {
 			//			}
 		}
 		// Pass the questionnaire instead of the all of the questions. 
-		this.preferenceSelectionPage = new PrimitiveQuestionnairePage(curPage, this.primitiveQuestions.getPrimitive(), primitiveQuestionnaire, selection, itr);
+		this.preferenceSelectionPage = new PrimitiveQuestionnairePage(curPage, this.primitiveQuestions.getPrimitive(), primitiveQuestionnaire, selection, iteration);
 	}
 
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
@@ -96,9 +96,9 @@ public class IntegrationNewPrimitive extends Wizard {
 
 			this.constraints.put(entry.getKey(), entry.getValue());
 		}
-		if(primitiveQuestionPage.getItr()>0){
-			int itr=primitiveQuestionPage.getItr();
-			System.out.println("HERE is :"+ itr);
+		if(primitiveQuestionPage.getIteration()>0){
+			int iteration=primitiveQuestionPage.getIteration();
+			System.out.println("HERE is :"+ iteration);
 			
 		}
 
@@ -117,7 +117,7 @@ public class IntegrationNewPrimitive extends Wizard {
 			}
 			if (nextID > -1) {
 				final Page curPage = this.primitiveQuestions.setPageByID(nextID);
-				createPrimitivePage(curPage, primitiveQuestions, primitiveQuestionPage.getItr());
+				createPrimitivePage(curPage, primitiveQuestions, primitiveQuestionPage.getIteration());
 				if (checkifInUpdateRound()) {
 					this.primitiveQuestions.previousPage();
 				}

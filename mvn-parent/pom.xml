@@ -67,5 +67,6 @@
 	</build>
 	<modules>
 		<module>../plugins/de.cognicrypt.codegenerator/</module>
+		<module>../plugins/de.cognicrypt.staticanalyzer/</module>
 	</modules>
 </project>

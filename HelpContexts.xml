@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.contexts"?>
 <contexts> 
       <context  id="help_id" title="CogniCrypt"> 
         <description>Sample:CogniCrypt helps you to generate the code for the task that you have selected....</description> 

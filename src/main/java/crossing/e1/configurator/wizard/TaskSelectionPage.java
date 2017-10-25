@@ -71,9 +71,9 @@ public class TaskSelectionPage extends WizardPage {
 
 		this.container = new Composite(parent, SWT.NONE);
 		this.container.setBounds(10, 10, 200, 300);
-		container.setLayout(null);
+		this.container.setLayout(null);
 		
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "CogniCrypt.help_id");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "CROSSING.E1.CONFIGURATOR.help_id");
 
 		this.selectProjectLabel = new Label(this.container, SWT.NONE);
 		this.selectProjectLabel.setBounds(5, 5, 111, 15);

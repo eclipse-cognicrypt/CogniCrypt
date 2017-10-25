@@ -171,12 +171,21 @@
    </extension>
    
 <extension
-         point="org.eclipse.help.contexts">
-     <contexts
-         file="HelpContexts.xml"
-         plugin="CogniCrypt">
+       point="org.eclipse.help.contexts">
+     <contexts file="HelpContexts.xml">
       </contexts> 
- </extension>
+   </extension>
  
-     >
+<extension
+      point="org.eclipse.help.toc">
+      <toc file="toc.xml" primary="true" />
+   </extension>
+
+<extension point="org.eclipse.help.toc">
+       
+       <toc file="toc_Tasks.xml" />
+       <toc file="toc_TaskConfiguration.xml" />
+   </extension>
+ 
+     
 </plugin>

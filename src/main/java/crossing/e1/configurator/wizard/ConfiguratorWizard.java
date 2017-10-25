@@ -159,7 +159,7 @@ public class ConfiguratorWizard extends Wizard {
 			if (createdPages.containsKey(nextPageid)) {
 				return createdPages.get(nextPageid);
 			}
-
+			
 		}
 		if (currentPage instanceof TaskSelectionPage) {
 			createdPages.clear();
@@ -344,5 +344,5 @@ public class ConfiguratorWizard extends Wizard {
 		}
 		return ret;
 	}
-
+	
 }

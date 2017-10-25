@@ -70,6 +70,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 
 	@Override
 	public void createControl(final Composite parent) {
+		
 		ComboViewer algorithmClass;
 		Label labelInstanceList;
 		this.control = new Composite(parent, SWT.NONE);
@@ -77,6 +78,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 		this.control.setLayout(layout);
 		
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
+		
 		setPageComplete(false);
 		compositeControl.setLayout(new GridLayout(2, false));
 		labelInstanceList = new Label(compositeControl, SWT.NONE);
@@ -126,10 +128,8 @@ public class InstanceListPage extends WizardPage implements Labels {
 		algorithmClass.setSelection(selection);
 		new Label(control, SWT.NONE);
 		
-		
-	
 	}
-
+	
 	private void getInstanceDetails(final InstanceClafer inst, final Map<String, String> algorithms) {
 		String value = "";
 
@@ -223,4 +223,6 @@ public class InstanceListPage extends WizardPage implements Labels {
 	public void setValue(final InstanceClafer instanceClafer) {
 		this.value = instanceClafer;
 	}
+	
+	
 }

@@ -19,4 +19,4 @@ build:
   ci:
    - git checkout $NIGHTLYBUILD
    - cd mvn-parent
-   - mvn clean verify surefire:test
+   - mvn clean verify surefire:test --fail-at-end

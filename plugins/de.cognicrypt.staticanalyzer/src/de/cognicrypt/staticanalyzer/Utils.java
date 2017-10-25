@@ -1,0 +1,148 @@
+package de.cognicrypt.staticanalyzer;
+
+import java.io.File;
+import java.net.URI;
+import java.net.URL;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.search.IJavaSearchConstants;
+import org.eclipse.jdt.core.search.IJavaSearchScope;
+import org.eclipse.jdt.core.search.SearchEngine;
+import org.eclipse.jdt.core.search.SearchParticipant;
+import org.eclipse.jdt.core.search.SearchPattern;
+import org.eclipse.jdt.core.search.SearchRequestor;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
+import org.osgi.framework.Bundle;
+
+public class Utils {
+
+	/***
+	 * This method returns absolute path of a project-relative path.
+	 * 
+	 * @param inputPath
+	 *        project-relative path
+	 * @return absolute path
+	 */
+	public static File getResourceFromWithin(final String inputPath) {
+		try {
+			final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+
+			if (bundle == null) {
+				// running as application
+				return new File(inputPath);
+			} else {
+				final URL resolvedURL = FileLocator.toFileURL(bundle.getEntry(inputPath));
+				return new File(new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null));
+			}
+		} catch (final Exception ex) {
+			Activator.getDefault().logError(ex);
+		}
+
+		return null;
+	}
+
+	public static IProject getCurrentProject() {
+		final IFile currentlyOpenFile = getCurrentlyOpenFile();
+		if (currentlyOpenFile == null) {
+			return null;
+		} else {
+			return currentlyOpenFile.getProject();
+		}
+	}
+
+	/**
+	 * This method returns the currently open editor as an {@link IEditorPart}.
+	 *
+	 * @return Current editor.
+	 */
+	public static IEditorPart getCurrentlyOpenEditor() {
+		final Display defaultDisplay = Display.getDefault();
+		final Runnable getWindow = new Runnable() {
+
+			@Override
+			public void run() {
+				setWindow(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+			}
+
+		};
+		defaultDisplay.asyncExec(getWindow);
+		if (window == null) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				Activator.getDefault().logError(e);
+			}
+			defaultDisplay.asyncExec(getWindow);
+		}
+		if (window != null) {
+			return window.getActivePage().getActiveEditor();
+		}
+		return null;
+	}
+
+	private static IWorkbenchWindow window = null;
+
+	protected static void setWindow(IWorkbenchWindow activeWorkbenchWindow) {
+		window = activeWorkbenchWindow;
+	}
+
+	/**
+	 * Overload for {@link Utils#getCurrentlyOpenFile(IEditorPart) getCurrentlyOpenFile(IEditor part)}
+	 *
+	 * @return Currently open file.
+	 *
+	 */
+	public static IFile getCurrentlyOpenFile() {
+		return getCurrentlyOpenFile(getCurrentlyOpenEditor());
+	}
+
+	/**
+	 * This method gets the file that is currently opened in the editor as an {@link IFile}.
+	 *
+	 * @param part
+	 *        Editor part that contains the file.
+	 * @return Currently open file.
+	 */
+	public static IFile getCurrentlyOpenFile(final IEditorPart part) {
+		if (part != null) {
+			final IEditorInput editorInput = part.getEditorInput();
+			if (editorInput instanceof FileEditorInput) {
+				final FileEditorInput inputFile = (FileEditorInput) part.getEditorInput();
+				return inputFile.getFile();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * This method searches the passed project for the class that contains the main method.
+	 * 
+	 * @param project Project that is searched
+	 * @param requestor Object that handles the search results
+	 */
+	public static void findMainMethodInCurrentProject(IJavaProject project, SearchRequestor requestor) {
+		SearchPattern sp = SearchPattern.createPattern("main", IJavaSearchConstants.METHOD, IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
+
+		SearchEngine se = new SearchEngine();
+		final SearchParticipant[] searchParticipants = new SearchParticipant[] { SearchEngine.getDefaultSearchParticipant() };
+		final IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] { project });
+
+		try {
+			se.search(sp, searchParticipants, scope, requestor, null);
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e);
+		}
+	}
+
+}

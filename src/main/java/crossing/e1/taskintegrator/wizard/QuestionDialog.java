@@ -1,6 +1,7 @@
 package crossing.e1.taskintegrator.wizard;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -49,11 +50,12 @@ public class QuestionDialog extends Dialog {
 	private CompositeToHoldSmallerUIElements compositeToHoldAnswers;
 	private Question question;
 	private Question questionDetails;
-	//private CompositeToHoldGranularUIElements compositeToHoldGranularUIElements ;
 	private ArrayList<ClaferFeature> claferFeatures;
+	private ArrayList<Question> listOfAllQuestions;
 	int counter = 0;
 	private String featureSelected;
 	private ArrayList<String> operandItems;
+	private String currentQuestionType=null;
 
 	/**
 	 * Create the dialog.
@@ -66,6 +68,12 @@ public class QuestionDialog extends Dialog {
 		this.claferFeatures = claferFeatures;
 	}
 
+	public QuestionDialog(Shell parentShell, Question question, ArrayList<ClaferFeature> claferFeatures,ArrayList<Question> listOfAllQuestions) {
+		super(parentShell);
+		this.question = question;
+		this.claferFeatures = claferFeatures;
+		this.listOfAllQuestions=listOfAllQuestions;
+	}
 	/**
 	 * Create contents of the dialog.
 	 * 
@@ -148,7 +156,7 @@ public class QuestionDialog extends Dialog {
 			}
 
 		});
-
+		currentQuestionType=combo.getText();
 		combo.addModifyListener(new ModifyListener() {
 
 			@Override
@@ -157,18 +165,40 @@ public class QuestionDialog extends Dialog {
 					case "text":
 						btnAddAnswer.setVisible(false);
 						compositeToHoldAnswers.setVisible(false);
+						compositeToHoldAnswers.getListOfAllAnswer().clear();
+						compositeToHoldAnswers.updateAnswerContainer();
+						currentQuestionType="text";
 						break;
 					case "combo":
 						boolean comboSelected = combo.getText().equalsIgnoreCase("combo") ? true : false;
 						btnAddAnswer.setVisible(comboSelected);
+						if(!currentQuestionType.equalsIgnoreCase("combo")){
+						compositeToHoldAnswers.getListOfAllAnswer().clear();
+						compositeToHoldAnswers.updateAnswerContainer();
+						compositeToHoldAnswers.setVisible(false);
+						currentQuestionType="combo";
+						}
 						break;
 					case "itemselection":
+						//currentQuestionType="itemselection";
 						boolean itemSelected = combo.getText().equalsIgnoreCase("itemselection") ? true : false;
 						btnAddAnswer.setVisible(itemSelected);
+						if(!currentQuestionType.equalsIgnoreCase("itemselection")){
+						compositeToHoldAnswers.getListOfAllAnswer().clear();
+						compositeToHoldAnswers.updateAnswerContainer();
+						compositeToHoldAnswers.setVisible(false);
+						currentQuestionType="itemselection";
+						}
 						break;
 					case "button":
 						boolean buttonSelected = combo.getText().equalsIgnoreCase("button") ? true : false;
 						btnAddAnswer.setVisible(buttonSelected);
+						if(!currentQuestionType.equalsIgnoreCase("button")){
+						compositeToHoldAnswers.getListOfAllAnswer().clear();
+						compositeToHoldAnswers.updateAnswerContainer();
+						compositeToHoldAnswers.setVisible(false);
+						currentQuestionType="button";
+						}
 						break;
 					default:
 						break;
@@ -217,10 +247,19 @@ public class QuestionDialog extends Dialog {
 				Combo combo = new Combo(compositeForAnswers, SWT.DROP_DOWN);
 				combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 				combo.add("Default");
-				for (int i = 1; i <= 5; i++) {
+				for(int i=0;i<listOfAllQuestions.size();i++){
+					if(listOfAllQuestions.size()==1){
+						combo.add("Please add more questions to link the answers");
+					}
+					if(question.getId()!=listOfAllQuestions.get(i).getId()){
+						combo.add(listOfAllQuestions.get(i).getQuestionText());
+					}
+
+				}
+				/*for (int i = 1; i <= 5; i++) {
 					if (question.getId() != i)
 						combo.add("Link to Question"+" "+i);
-				}
+				}*/
 			}
 		}
 
@@ -419,6 +458,7 @@ public class QuestionDialog extends Dialog {
 	//to save the question text and type
 	private void saveInput() {
 		setQuestionDetails();
+		claferFeatures.clear();
 	}
 
 	@Override
@@ -449,6 +489,13 @@ public class QuestionDialog extends Dialog {
 		Question questionDetails = new Question();
 		questionDetails.setQuestionText(textQuestion.getText());
 		questionDetails.setQuestionType(combo.getText());
+		for(int i=0;i<compositeToHoldAnswers.getListOfAllAnswer().size();i++){
+			if(Objects.equals(compositeToHoldAnswers.getListOfAllAnswer().get(i).getValue(), null)){
+				compositeToHoldAnswers.deleteAnswer(compositeToHoldAnswers.getListOfAllAnswer().get(i));
+				compositeToHoldAnswers.updateAnswerContainer();
+				i--;
+			}
+		}
 		questionDetails.setAnswers(compositeToHoldAnswers.getListOfAllAnswer());
 		this.questionDetails = questionDetails;
 	}

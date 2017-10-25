@@ -57,7 +57,8 @@ public class GroupModifyDeleteButtons extends Group {
 		Button btnModify = new Button(this, SWT.NONE);
 		btnModify.setLayoutData(new RowData(66, SWT.DEFAULT));
 		btnModify.setText("Modify");
-		QuestionDialog qstnDialog=new QuestionDialog(parent.getShell(),questionParam,claferFeatures);
+		ArrayList<Question> listOfAllQuestions=((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getListOfAllQuestions();
+		QuestionDialog qstnDialog=new QuestionDialog(parent.getShell(),questionParam,claferFeatures,listOfAllQuestions);
 		btnModify.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e){

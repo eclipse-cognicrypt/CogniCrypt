@@ -85,6 +85,7 @@ public class Utils {
 			}
 			defaultDisplay.asyncExec(getWindow);
 		}
+		
 		if (window != null) {
 			return window.getActivePage().getActiveEditor();
 		}

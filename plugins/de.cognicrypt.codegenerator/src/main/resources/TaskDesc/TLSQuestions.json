@@ -1,0 +1,170 @@
+[{
+    "id": "0",
+    "content": [{
+        "id": "0",
+        "element": "text",
+        "questionText": "Please specify the path to your keystore.",
+        "answers": [{
+          "value": "",
+          "codeDependencies": [{
+            "option": "keystore",
+            "value": ""
+          }],
+          "defaultAnswer": true
+        }]
+      },
+      {
+        "id": "1",
+        "element": "text",
+        "questionText": "Please give the password for your keystore.",
+        "answers": [{
+          "value": "C:\\      ",
+          "codeDependencies": [{
+            "option": "keystorepassword",
+            "value": ""
+          }],
+          "defaultAnswer": true
+        }]
+      }
+    ],
+    "nextID": "1"
+  },
+  {
+    "id": "1",
+    "content": [{
+      "id": "2",
+      "questionText": "Are you implementing the server or the client side?",
+      "answers": [{
+          "value": "Server",
+          "codeDependencies": [{
+            "option": "server",
+            "value": "true"
+          }],
+          "nextID": "3"
+        },
+        {
+          "value": "Client",
+          "codeDependencies": [{
+            "option": "server",
+            "value": "false"
+          }],
+          "defaultAnswer": true,
+          "nextID": "2"
+        }
+      ]
+    }]
+  },
+  {
+    "id": "2",
+    "content": [{
+      "id": "3",
+      "questionText": "Do you know the host/ip?",
+      "answers": [{
+          "value": "Yes",
+          "codeDependencies": [],
+          "nextID": "3"
+        },
+        {
+          "value": "No",
+          "codeDependencies": [],
+          "defaultAnswer": true,
+          "nextID": "5"
+        }
+      ]
+    }]
+  },
+  {
+    "id": "3",
+    "content": [{
+      "id": "4",
+      "element": "text",
+      "questionText": "Enter host/ip.",
+      "answers": [{
+        "value": "",
+        "codeDependencies": [{
+          "option": "host",
+          "value": ""
+        }],
+        "defaultAnswer": true
+      }]
+    },
+    {
+      "id": "5",
+      "element": "text",
+      "questionText": "Enter port.",
+      "answers": [{
+        "value": "",
+        "codeDependencies": [{
+          "option": "port",
+          "value": ""
+        }],
+        "defaultAnswer": true
+      }]
+    }],
+    "nextID": "4"
+  },
+  {
+    "id": "4",
+    "content": [{
+      "id": "6",
+      "element": "button",
+      "questionText": "If you want test the connection to the host IP then click the \"Test\" button, else click \"Next\".",
+      "method": ["Test", "crossing.e1.configurator.wizard.TLSConnection", "testConnection"],
+      "methodParamIds": ["4", "5"],
+      "answers": [{
+          "value": "true",
+          "codeDependencies": []
+        },
+        {
+          "value": "false",
+          "codeDependencies": [],
+          "defaultAnswer": true
+        }
+      ]
+    }],
+    "nextID": "5"
+  },
+  {
+    "id": "5",
+    "content": [{
+      "id": "7",
+      "questionText": "We have compiled a default configuration that is secure and should work for most connections. Do you want to accept this configuration or would you like to change it?",
+      "answers": [{
+          "value": "Keep.",
+          "claferDependencies": [{
+            "algorithm": "ciphersuite",
+            "operand": "tlsProtocol;security",
+            "value": "|",
+            "operator": ">= TLS1_2;>Medium"
+          }],
+          "defaultAnswer": true,
+          "nextID": "-1"
+        },
+        {
+          "value": "Change.",
+          "claferDependencies": [],
+          "nextID": "6"
+        }
+      ]
+    }]
+  },
+  {
+    "id": "6",
+    "content": [{
+      "id": "8",
+      "element": "itemselection",
+      "selectionClafer": "CipherSuite",
+      "questionText": "Please select the cipher suites and tls protocol versions you would like to use.",
+      "answers": [{
+        "value": "",
+        "": [{
+          "refClafer": "",
+          "value": "",
+          "operator": ""
+        }],
+        "defaultAnswer": true,
+        "nextID": "-1"
+      }]
+    }]
+  }
+]

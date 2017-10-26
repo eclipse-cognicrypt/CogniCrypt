@@ -1,4 +1,4 @@
-package crossing.e1.taskintegrator.wizard;
+package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -23,18 +23,18 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 
-import crossing.e1.configurator.Constants;
-import crossing.e1.configurator.Constants.GUIElements;
-import crossing.e1.configurator.beginer.question.Answer;
-import crossing.e1.configurator.beginer.question.ClaferDependency;
-import crossing.e1.configurator.beginer.question.CodeDependency;
-import crossing.e1.configurator.beginer.question.Question;
-import crossing.e1.taskintegrator.models.ClaferConstraint;
-import crossing.e1.taskintegrator.models.ClaferFeature;
-import crossing.e1.taskintegrator.models.FeatureProperty;
-import crossing.e1.taskintegrator.widgets.CompositeToHoldGranularUIElements;
-import crossing.e1.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
-import crossing.e1.taskintegrator.widgets.GroupAnswer;
+import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.Constants.GUIElements;
+import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.question.ClaferDependency;
+import de.cognicrypt.codegenerator.question.CodeDependency;
+import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.GroupAnswer;
 
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;

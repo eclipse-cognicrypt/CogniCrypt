@@ -1,4 +1,4 @@
-package crossing.e1.taskintegrator.widgets;
+package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
-import crossing.e1.taskintegrator.models.ClaferConstraint;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 
 public class GroupConstraint extends Group {
 

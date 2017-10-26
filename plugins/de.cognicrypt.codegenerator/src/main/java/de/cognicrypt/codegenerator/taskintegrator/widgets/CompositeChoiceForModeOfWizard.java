@@ -1,7 +1,7 @@
 /**
  * 
  */
-package crossing.e1.taskintegrator.widgets;
+package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
@@ -16,7 +16,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.ModifyEvent;
 
-import crossing.e1.configurator.Constants;
+import de.cognicrypt.codegenerator.Constants;
 
 /**
  * @author rajiv

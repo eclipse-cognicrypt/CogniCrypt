@@ -1,4 +1,4 @@
-package crossing.e1.taskintegrator.widgets;
+package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Text;
 
-import crossing.e1.taskintegrator.models.XSLAttribute;
+import de.cognicrypt.codegenerator.taskintegrator.models.XSLAttribute;
 
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.layout.RowLayout;

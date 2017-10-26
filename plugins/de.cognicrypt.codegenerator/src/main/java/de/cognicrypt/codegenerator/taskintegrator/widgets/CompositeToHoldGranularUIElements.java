@@ -1,4 +1,4 @@
-package crossing.e1.taskintegrator.widgets;
+package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
 import java.util.ArrayList;
 
@@ -8,9 +8,9 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import crossing.e1.configurator.Constants;
-import crossing.e1.configurator.beginer.question.Question;
-import crossing.e1.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 
 
 public class CompositeToHoldGranularUIElements extends ScrolledComposite {

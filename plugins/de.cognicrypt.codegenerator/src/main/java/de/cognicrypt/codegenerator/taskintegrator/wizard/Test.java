@@ -1,4 +1,4 @@
-package crossing.e1.taskintegrator.wizard;
+package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;

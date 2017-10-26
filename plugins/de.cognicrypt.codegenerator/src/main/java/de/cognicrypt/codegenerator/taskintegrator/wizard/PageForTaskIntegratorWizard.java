@@ -1,7 +1,7 @@
 /**
  * 
  */
-package crossing.e1.taskintegrator.wizard;
+package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.util.ArrayList;
 
@@ -16,17 +16,17 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 
-import crossing.e1.configurator.Constants;
-import crossing.e1.configurator.beginer.question.Answer;
-import crossing.e1.configurator.beginer.question.ClaferDependency;
-import crossing.e1.configurator.beginer.question.CodeDependency;
-import crossing.e1.configurator.beginer.question.Question;
-import crossing.e1.taskintegrator.models.ClaferConstraint;
-import crossing.e1.taskintegrator.models.ClaferFeature;
-import crossing.e1.taskintegrator.models.FeatureProperty;
-import crossing.e1.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
-import crossing.e1.taskintegrator.widgets.CompositeForXsl;
-import crossing.e1.taskintegrator.widgets.CompositeToHoldGranularUIElements;
+import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.question.ClaferDependency;
+import de.cognicrypt.codegenerator.question.CodeDependency;
+import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 
 /**
  * @author rajiv

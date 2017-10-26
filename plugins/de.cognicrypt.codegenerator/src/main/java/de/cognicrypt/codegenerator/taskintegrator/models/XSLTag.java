@@ -1,9 +1,9 @@
-package crossing.e1.taskintegrator.models;
+package de.cognicrypt.codegenerator.taskintegrator.models;
 
 import java.util.ArrayList;
 
-import crossing.e1.configurator.Constants;
-import crossing.e1.configurator.Constants.XSLTags;
+import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.Constants.XSLTags;
 
 public class XSLTag {
 	private Constants.XSLTags XSLTagDetails; // Variable to hold all the XSL tag data.

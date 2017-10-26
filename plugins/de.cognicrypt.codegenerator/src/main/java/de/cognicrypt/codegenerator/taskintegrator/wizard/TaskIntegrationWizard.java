@@ -1,4 +1,4 @@
-package crossing.e1.taskintegrator.wizard;
+package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.nio.file.Paths;
 
@@ -7,10 +7,10 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import crossing.e1.configurator.Constants;
-import crossing.e1.taskintegrator.models.ModelAdvancedMode;
-import crossing.e1.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
-import crossing.e1.taskintegrator.widgets.CompositeToHoldGranularUIElements;
+import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 
 
 

@@ -1,11 +1,4 @@
-package crossing.e1.taskintegrator.widgets;
-
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Text;
-
-import crossing.e1.configurator.beginer.question.Answer;
+package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
 import java.util.ArrayList;
 
@@ -15,6 +8,12 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Text;
+
+import de.cognicrypt.codegenerator.question.Answer;
 
 public class GroupAnswer extends Group {
 

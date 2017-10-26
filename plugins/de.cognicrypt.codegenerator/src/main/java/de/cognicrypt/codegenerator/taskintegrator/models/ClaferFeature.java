@@ -1,11 +1,11 @@
 /**
  * 
  */
-package crossing.e1.taskintegrator.models;
+package de.cognicrypt.codegenerator.taskintegrator.models;
 
 import java.util.ArrayList;
 
-import crossing.e1.configurator.Constants.FeatureType;
+import de.cognicrypt.codegenerator.Constants.FeatureType;
 
 /**
  * @author rajiv

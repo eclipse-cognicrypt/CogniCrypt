@@ -1,4 +1,4 @@
-package crossing.e1.taskintegrator.wizard;
+package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.util.ArrayList;
 
@@ -10,12 +10,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 
-import crossing.e1.configurator.Constants;
-import crossing.e1.configurator.Constants.XSLTags;
-import crossing.e1.taskintegrator.models.XSLAttribute;
-import crossing.e1.taskintegrator.models.XSLTag;
-import crossing.e1.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
-import crossing.e1.taskintegrator.widgets.GroupXSLTagAttribute;
+import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.Constants.XSLTags;
+import de.cognicrypt.codegenerator.taskintegrator.models.XSLAttribute;
+import de.cognicrypt.codegenerator.taskintegrator.models.XSLTag;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.GroupXSLTagAttribute;
 
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.SWT;

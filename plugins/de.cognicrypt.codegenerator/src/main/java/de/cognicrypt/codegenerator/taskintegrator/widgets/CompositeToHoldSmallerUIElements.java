@@ -1,4 +1,4 @@
-package crossing.e1.taskintegrator.widgets;
+package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
 import java.util.ArrayList;
 
@@ -9,16 +9,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.MessageBox;
 
-import org.eclipse.swt.widgets.Text;
-import crossing.e1.configurator.Constants;
-import crossing.e1.configurator.Constants.XSLTags;
-import crossing.e1.configurator.beginer.question.Answer;
-import crossing.e1.configurator.beginer.question.Question;
-import crossing.e1.taskintegrator.models.ClaferFeature;
-import crossing.e1.taskintegrator.models.ClaferConstraint;
-import crossing.e1.taskintegrator.models.FeatureProperty;
-import crossing.e1.taskintegrator.models.XSLAttribute;
-import crossing.e1.taskintegrator.wizard.QuestionDialog;
+import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.Constants.XSLTags;
+import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
+import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.models.XSLAttribute;
 
 public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 

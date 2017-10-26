@@ -1,4 +1,4 @@
-package crossing.e1.taskintegrator.wizard;
+package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.util.ArrayList;
 
@@ -14,8 +14,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-import crossing.e1.configurator.beginer.question.Answer;
-import crossing.e1.configurator.beginer.question.Question;
+import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.question.Question;
 
 public class QuestionLinkingDialog extends Dialog {
 

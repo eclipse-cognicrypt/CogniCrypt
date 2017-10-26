@@ -1,4 +1,4 @@
-package crossing.e1.taskintegrator.wizard;
+package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -18,10 +18,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import crossing.e1.configurator.Constants.FeatureType;
-import crossing.e1.taskintegrator.models.ClaferFeature;
-import crossing.e1.taskintegrator.models.FeatureProperty;
-import crossing.e1.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
+import de.cognicrypt.codegenerator.Constants.FeatureType;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 
 public class ClaferFeatureDialog extends Dialog {
 

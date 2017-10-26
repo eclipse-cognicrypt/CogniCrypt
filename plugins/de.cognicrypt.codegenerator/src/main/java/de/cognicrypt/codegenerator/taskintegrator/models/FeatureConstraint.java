@@ -1,9 +1,9 @@
 /**
  * 
  */
-package crossing.e1.taskintegrator.models;
+package de.cognicrypt.codegenerator.taskintegrator.models;
 
-import crossing.e1.configurator.Constants.FeatureConstraintRelationship;
+import de.cognicrypt.codegenerator.Constants.FeatureConstraintRelationship;
 
 /**
  * @author rajiv

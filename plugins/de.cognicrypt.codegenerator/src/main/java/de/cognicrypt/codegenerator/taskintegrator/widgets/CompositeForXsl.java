@@ -1,4 +1,4 @@
-package crossing.e1.taskintegrator.widgets;
+package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
 import java.io.BufferedReader;
 import java.io.File;

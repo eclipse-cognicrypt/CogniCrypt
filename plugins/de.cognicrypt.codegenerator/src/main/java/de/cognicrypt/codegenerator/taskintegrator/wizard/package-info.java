@@ -3,4 +3,4 @@
  *
  * @author sics1718
  */
-package crossing.e1.taskintegrator.wizard;
+package de.cognicrypt.codegenerator.taskintegrator.wizard;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package crossing.e1.taskintegrator.models;
+package de.cognicrypt.codegenerator.taskintegrator.models;
 
 
 /**

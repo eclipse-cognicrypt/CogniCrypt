@@ -1,4 +1,4 @@
-package crossing.e1.taskintegrator.wizard;
+package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.util.ArrayList;
 
@@ -22,9 +22,9 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import crossing.e1.taskintegrator.models.ClaferConstraint;
-import crossing.e1.taskintegrator.models.ClaferFeature;
-import crossing.e1.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 
 
 public class ClaferConstraintDialog extends Dialog {

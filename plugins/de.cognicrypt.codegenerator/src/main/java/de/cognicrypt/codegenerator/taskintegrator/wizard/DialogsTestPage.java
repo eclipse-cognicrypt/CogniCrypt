@@ -1,4 +1,4 @@
-package crossing.e1.taskintegrator.wizard;
+package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.util.ArrayList;
 
@@ -10,9 +10,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import crossing.e1.configurator.Constants.GUIElements;
-import crossing.e1.configurator.beginer.question.Answer;
-import crossing.e1.configurator.beginer.question.Question;
+import de.cognicrypt.codegenerator.Constants.GUIElements;
+import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.question.Question;
 
 public class DialogsTestPage extends WizardPage {
 

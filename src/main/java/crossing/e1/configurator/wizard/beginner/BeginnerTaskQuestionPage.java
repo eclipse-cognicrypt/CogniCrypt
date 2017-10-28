@@ -32,20 +32,16 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 //import org.eclipse.swt.widgets.ToolTip;
-import org.eclipse.swt.widgets.ToolTip;
+import org.eclipse.ui.PlatformUI;
 
 import crossing.e1.configurator.Activator;
 import crossing.e1.configurator.beginer.question.Answer;
@@ -65,8 +61,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private List<String> selectionValues;
 	private final Page page;
 	private Text note;
+	private Composite container;
 
-	private Text tooltip;
+	//private Text tooltip;
 
 	public int getCurrentPageID() {
 		return page.getId();
@@ -185,11 +182,18 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	@Override
 	public void createControl(final Composite parent) {
-		final Composite container = new Composite(parent, SWT.NONE);
+		container = new Composite(parent, SWT.NONE);
 		container.setBounds(10, 10, 450, 200);
 		// Updated the number of columns to order the questions vertically.
 		final GridLayout layout = new GridLayout(1, false);
-
+		
+		/** To display the Help view after clicking the help icon
+		 * @param help_id_1 
+		 *        This id refers to HelpContexts_1.xml
+		 */
+		
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "CROSSING.E1.CONFIGURATOR.help_id_1");
+		
 		container.setLayout(layout);
 		// If legacy JSON files are in effect.
 		if (page == null) {
@@ -211,6 +215,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		final List<Answer> answers = question.getAnswers();
 		final Composite container = getPanel(parent);
 		final Label label = new Label(container, SWT.TOP);
+		
 		label.setText(question.getQuestionText());
 		switch (question.getElement()) {
 			case combo:
@@ -623,5 +628,11 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		result = prime * result + ((this.selectionValues == null) ? 0 : this.selectionValues.hashCode());
 		return result;
 	}
-
+	@Override
+	public void setVisible( boolean visible ) {
+	  super.setVisible( visible );
+	  if( visible ){
+	    container.setFocus();
+	  }
+	}
 }

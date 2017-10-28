@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.contexts"?>
 <contexts> 
-      <context  id="help_id" title="CogniCrypt"> 
+      <context  id="help_id_1" title="CogniCrypt"> 
         <description>Sample:CogniCrypt helps you to generate the code for the task that you have selected....</description> 
         <topic href="html/InitialPage.html"  label="Task Selection"/> 
          <topic href="html/ConfigurationPage.html"  label="Task Configuration"/> 

@@ -33,6 +33,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.ui.PlatformUI;
 
 import crossing.e1.configurator.utilities.Labels;
 import crossing.e1.featuremodel.clafer.ClaferModel;
@@ -109,11 +110,17 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 	@Override
 	public void createControl(final Composite parent) {
 		this.container = new Composite(parent, SWT.NONE);
-
 		this.container.setBounds(10, 10, 450, 200);
 		final GridLayout layout = new GridLayout();
 		this.container.setLayout(layout);
 		layout.numColumns = 1;
+		
+		/** To display the Help view after clicking the help icon
+		 * @param help_id_1 
+		 *        This id refers to HelpContexts_1.xml
+		 */
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "CROSSING.E1.CONFIGURATOR.help_id_2"); 
+		
 		//		try {
 		//			Group titledPanel = new Group(container, SWT.NONE);
 		//			titledPanel.setText("Global Constraints");
@@ -167,4 +174,11 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 		return PropertyWidget.status;
 	}
 
+	@Override
+	public void setVisible( boolean visible ) {
+	  super.setVisible( visible );
+	  if( visible ){
+	    container.setFocus();
+	  }
+	}
 }

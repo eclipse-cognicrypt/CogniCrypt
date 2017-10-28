@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.tasks.Task;
@@ -76,6 +77,12 @@ public class InstanceListPage extends WizardPage implements Labels {
 		this.control = new Composite(parent, SWT.NONE);
 		final GridLayout layout = new GridLayout(3, false);
 		this.control.setLayout(layout);
+		
+		/** To display the Help view after clicking the help icon
+		 * @param help_id_2 
+		 *        This id refers to HelpContexts_1.xml
+		 */
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "CROSSING.E1.CONFIGURATOR.help_id_2");
 		
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
 		
@@ -219,10 +226,18 @@ public class InstanceListPage extends WizardPage implements Labels {
 	public void setPageComplete(final boolean complete) {
 		super.setPageComplete(complete);
 	}
+	private boolean firstTimeShown = true;
 
+	@Override
+	public void setVisible( boolean visible ) {
+	  super.setVisible( visible );
+	  if( visible && firstTimeShown ) {
+	    firstTimeShown = false;
+	    control.setFocus();
+	  }
+	}
 	public void setValue(final InstanceClafer instanceClafer) {
 		this.value = instanceClafer;
 	}
-	
 	
 }

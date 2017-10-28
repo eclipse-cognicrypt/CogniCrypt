@@ -16,6 +16,7 @@
 package crossing.e1.configurator.actions;
 
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -64,6 +65,7 @@ public class WizardActionFromContextMenu implements IWorkbenchWindowActionDelega
 		Constants.WizardActionFromContextMenuFlag = true;
 		final WizardDialog dialog = new WizardDialog(new Shell(), new ConfiguratorWizard());
 		dialog.open();
+		//TrayDialog.setDialogHelpAvailable(true);
 	}
 
 	/**

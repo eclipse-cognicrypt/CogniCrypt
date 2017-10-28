@@ -41,7 +41,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-
 import crossing.e1.configurator.Constants;
 import crossing.e1.configurator.tasks.Task;
 import crossing.e1.configurator.tasks.TaskJSONReader;
@@ -73,8 +72,12 @@ public class TaskSelectionPage extends WizardPage {
 		this.container.setBounds(10, 10, 200, 300);
 		this.container.setLayout(null);
 		
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "CROSSING.E1.CONFIGURATOR.help_id");
-
+		/** To display the Help view after clicking the help icon
+		 * @param help_id_1 
+		 *        This id refers to HelpContexts_1.xml
+		 */
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "CROSSING.E1.CONFIGURATOR.help_id_1");
+		
 		this.selectProjectLabel = new Label(this.container, SWT.NONE);
 		this.selectProjectLabel.setBounds(5, 5, 111, 15);
 		this.selectProjectLabel.setText(Constants.SELECT_JAVA_PROJECT);
@@ -138,7 +141,7 @@ public class TaskSelectionPage extends WizardPage {
 
 		this.taskComboSelection.setInput(tasks);
 		
-		// Adding description text for the cryptographic task selected
+		// Adding description text for the cryptographic task that has been selected from the combo box
 		this.descriptionText = new Text(container, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		this.descriptionText.setToolTipText(Constants.DESCRIPTION_BOX_TOOLTIP);
 		this.descriptionText.setEditable(false);
@@ -168,12 +171,11 @@ public class TaskSelectionPage extends WizardPage {
 		this.guidedModeCheckBox.addSelectionListener(new SelectionAdapter() {
 		    @Override
 			public void widgetSelected(SelectionEvent e) {
-			
+				
 		    }
 		});
 		this.guidedModeCheckBox.setText(Constants.GUIDED_MODE);
 		this.guidedModeCheckBox.setSelection(true);
-		
 		
 	}
 
@@ -193,6 +195,12 @@ public class TaskSelectionPage extends WizardPage {
 	public boolean isGuidedMode() {
 			return this.guidedModeCheckBox.getSelection();
 	}
-	
-	
+
+	@Override
+	public void setVisible( boolean visible ) {
+	  super.setVisible( visible );
+	  if( visible ) {
+	    container.setFocus();
+	  }
+	}
 }

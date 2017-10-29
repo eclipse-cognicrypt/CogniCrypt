@@ -64,6 +64,7 @@ public class WizardActionFromContextMenu implements IWorkbenchWindowActionDelega
 		Constants.WizardActionFromContextMenuFlag = true;
 		final WizardDialog dialog = new WizardDialog(new Shell(), new ConfiguratorWizard());
 		dialog.open();
+		//TrayDialog.setDialogHelpAvailable(true);
 	}
 
 	/**

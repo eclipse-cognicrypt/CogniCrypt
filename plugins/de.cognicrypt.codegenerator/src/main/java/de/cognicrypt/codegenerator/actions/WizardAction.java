@@ -21,14 +21,8 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-<<<<<<< HEAD:src/main/java/crossing/e1/configurator/actions/WizardAction.java
-import crossing.e1.configurator.Constants;
-import crossing.e1.configurator.wizard.ConfiguratorWizard;
-=======
-
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.wizard.ConfiguratorWizard;
->>>>>>> master:plugins/de.cognicrypt.codegenerator/src/main/java/de/cognicrypt/codegenerator/actions/WizardAction.java
 
 /**
  * Our sample action implements workbench action delegate. The action proxy will be created by the workbench and shown in the UI. When the user tries to use the action, this

@@ -24,6 +24,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
 
+
 public class GroupModifyDeleteButtons extends Group {
 
 	/**
@@ -32,8 +33,11 @@ public class GroupModifyDeleteButtons extends Group {
 	 * @param style
 	 */
 	int counter=0;
-	public GroupModifyDeleteButtons(Composite parent, Question questionParam,ArrayList<ClaferFeature> claferFeatures) {
+	//private ArrayList<ClaferFeature> claferFeatures;
+
+	public GroupModifyDeleteButtons(Composite parent, Question questionParam) {
 		super(parent, SWT.RIGHT_TO_LEFT);
+		//setClaferFeatures(claferFeatures);
 		RowLayout rowLayout = new RowLayout(SWT.HORIZONTAL);
 		setLayout(rowLayout);
 		
@@ -58,7 +62,9 @@ public class GroupModifyDeleteButtons extends Group {
 		btnModify.setLayoutData(new RowData(66, SWT.DEFAULT));
 		btnModify.setText("Modify");
 		ArrayList<Question> listOfAllQuestions=((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getListOfAllQuestions();
-		QuestionDialog qstnDialog=new QuestionDialog(parent.getShell(),questionParam,claferFeatures,listOfAllQuestions);
+		ArrayList<ClaferFeature> listOfAllClaferFeatures=((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getListOfAllClaferFeatures();
+
+		QuestionDialog qstnDialog=new QuestionDialog(parent.getShell(),questionParam,listOfAllClaferFeatures,listOfAllQuestions);
 		btnModify.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e){
@@ -73,6 +79,9 @@ public class GroupModifyDeleteButtons extends Group {
 		this.setSize(SWT.DEFAULT, 40);
 	}
 
+/*	private void setClaferFeatures(ArrayList<ClaferFeature> claferFeatures) {
+		this.claferFeatures = claferFeatures;
+	}*/
 	
 	@Override
 	protected void checkSubclass() {

@@ -36,25 +36,16 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-<<<<<<< HEAD:src/main/java/crossing/e1/configurator/wizard/TaskSelectionPage.java
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-import crossing.e1.configurator.Constants;
-import crossing.e1.configurator.tasks.Task;
-import crossing.e1.configurator.tasks.TaskJSONReader;
-import crossing.e1.configurator.utilities.Labels;
-import crossing.e1.configurator.utilities.Utils;
-=======
-
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 import de.cognicrypt.codegenerator.utilities.Labels;
 import de.cognicrypt.codegenerator.utilities.Utils;
->>>>>>> master:plugins/de.cognicrypt.codegenerator/src/main/java/de/cognicrypt/codegenerator/wizard/TaskSelectionPage.java
 
 public class TaskSelectionPage extends WizardPage {
 

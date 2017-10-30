@@ -56,18 +56,26 @@ public class QuestionDialog extends Dialog {
 	private String featureSelected;
 	private ArrayList<String> operandItems;
 	private String currentQuestionType=null;
+	//widgets for Link answers Tab
+	private Combo comboForLinkAnswers;
+	
+	//widgets for Clafer Tab
+	private Combo comboForAlgorithm;
+	private Combo comboForOperand;
+	private Combo comboForOperator;
+	private Text txtBoxValue;
+	//Widgets for Code tab
 
 	/**
 	 * Create the dialog.
 	 * 
 	 * @param parentShell
 	 */
-	public QuestionDialog(Shell parentShell, Question question, ArrayList<ClaferFeature> claferFeatures) {
+	public QuestionDialog(Shell parentShell) {
 		super(parentShell);
-		this.question = question;
-		this.claferFeatures = claferFeatures;
+		this.question = null;
 	}
-
+	
 	public QuestionDialog(Shell parentShell, Question question, ArrayList<ClaferFeature> claferFeatures,ArrayList<Question> listOfAllQuestions) {
 		super(parentShell);
 		this.question = question;
@@ -158,9 +166,10 @@ public class QuestionDialog extends Dialog {
 		});
 		currentQuestionType=combo.getText();
 		combo.addModifyListener(new ModifyListener() {
-
+			
 			@Override
 			public void modifyText(ModifyEvent e) {
+				
 				switch (combo.getText()) {
 					case "text":
 						btnAddAnswer.setVisible(false);
@@ -227,7 +236,6 @@ public class QuestionDialog extends Dialog {
 		compositeForLinkAnswerTab.setLayout(new GridLayout(2, false));
 				
 		if (question != null) {
-
 			Label lblQuestion_1 = new Label(compositeForLinkAnswerTab, SWT.NONE);
 			lblQuestion_1.setText("Question:");
 
@@ -240,22 +248,45 @@ public class QuestionDialog extends Dialog {
 			Composite compositeForAnswers = new Composite(compositeForLinkAnswerTab, SWT.NONE);
 			compositeForAnswers.setLayout(new GridLayout(2, false));
 			for (Answer answer : question.getAnswers()) {
+				System.out.println(question.getQuestionText());
+
 				Label lblCurrentAnswer = new Label(compositeForAnswers, SWT.NONE);
 				lblCurrentAnswer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 				lblCurrentAnswer.setText(answer.getValue());
 
-				Combo combo = new Combo(compositeForAnswers, SWT.DROP_DOWN);
-				combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-				combo.add("Default");
+				comboForLinkAnswers = new Combo(compositeForAnswers, SWT.DROP_DOWN);
+				comboForLinkAnswers.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+				comboForLinkAnswers.add("Default");
 				for(int i=0;i<listOfAllQuestions.size();i++){
 					if(listOfAllQuestions.size()==1){
-						combo.add("Please add more questions to link the answers");
+						comboForLinkAnswers.add("Please add more questions to link the answers");
 					}
 					if(question.getId()!=listOfAllQuestions.get(i).getId()){
-						combo.add(listOfAllQuestions.get(i).getQuestionText());
+						comboForLinkAnswers.add(listOfAllQuestions.get(i).getQuestionText());
 					}
 
 				}
+				/*if(answer.getNextID()!=-2){
+					for(Question question :listOfAllQuestions){
+						if(question.getId()==answer.getNextID()){
+							comboForLinkAnswers.setText(question.getQuestionText());
+						}
+					}
+				}
+				comboForLinkAnswers.addModifyListener(new ModifyListener(){
+					@Override
+					public void modifyText(ModifyEvent e){
+						for (Question question:listOfAllQuestions){
+						if(question.getQuestionText().equalsIgnoreCase(comboForLinkAnswers.getText())){
+							System.out.println(question.getQuestionText());
+							answer.setNextID(question.getId());
+							break;
+						}
+						}
+						
+					}
+					
+				});*/
 				/*for (int i = 1; i <= 5; i++) {
 					if (question.getId() != i)
 						combo.add("Link to Question"+" "+i);
@@ -272,6 +303,9 @@ public class QuestionDialog extends Dialog {
 	
 
 		if (question != null) {
+			
+
+			
 			Label lblQuestion_2 = new Label(compositeForClaferTab, SWT.NONE);
 			lblQuestion_2.setText("Question:");
 
@@ -299,24 +333,24 @@ public class QuestionDialog extends Dialog {
 			Label lblForOperator = new Label(compositeForAnswers1, SWT.NONE);
 			lblForOperator.setText("Set Value");
 
-			claferFeatures = getClaferFeatures();
+			//claferFeatures = getClaferFeatures();
 
 			for (Answer answer : question.getAnswers()) {
 
 				Label lblCurrentAnswers = new Label(compositeForAnswers1, SWT.NONE);
 				lblCurrentAnswers.setText(answer.getValue());
 
-				Combo comboForAlgorithm = new Combo(compositeForAnswers1, SWT.NONE);
+			    comboForAlgorithm = new Combo(compositeForAnswers1, SWT.NONE);
 				comboForAlgorithm.setVisible(true);
 				for (int i = 0; i < claferFeatures.size(); i++) {
 					comboForAlgorithm.add(claferFeatures.get(i).getFeatureName());
-					;
+					
 				}
 
-				Combo comboForOperand = new Combo(compositeForAnswers1, SWT.NONE);
+				comboForOperand = new Combo(compositeForAnswers1, SWT.NONE);
 				comboForOperand.setVisible(true);
 
-				Combo comboForOperator = new Combo(compositeForAnswers1, SWT.NONE);
+				comboForOperator = new Combo(compositeForAnswers1, SWT.NONE);
 				comboForOperator.setVisible(true);
 				GridData gd_Operator = new GridData(SWT.FILL,SWT.NONE, true, true);			
 				comboForOperator.setLayoutData(gd_Operator);
@@ -331,7 +365,7 @@ public class QuestionDialog extends Dialog {
 					"AND"+"("+Constants.FeatureConstraintRelationship.AND.toString()+")","OR"+"("+Constants.FeatureConstraintRelationship.OR.toString()+")");
 				*/
 				
-				Text txtBoxValue=new Text(compositeForAnswers1,SWT.BORDER);
+				txtBoxValue=new Text(compositeForAnswers1,SWT.BORDER);
 				txtBoxValue.setVisible(true);
 				
 				comboForAlgorithm.addSelectionListener(new SelectionAdapter() {
@@ -458,7 +492,7 @@ public class QuestionDialog extends Dialog {
 	//to save the question text and type
 	private void saveInput() {
 		setQuestionDetails();
-		claferFeatures.clear();
+		//claferFeatures.clear();
 	}
 
 	@Override
@@ -496,7 +530,15 @@ public class QuestionDialog extends Dialog {
 				i--;
 			}
 		}
+		//compositeToHoldAnswers.getListOfAllAnswer()
 		questionDetails.setAnswers(compositeToHoldAnswers.getListOfAllAnswer());
+		if(question!=null){
+			System.out.println(question.getQuestionText());
+			for(Answer answer : question.getAnswers()){
+				//answer.setClaferDependencies()
+			}
+		}
+		//questionDetails.set
 		this.questionDetails = questionDetails;
 	}
 

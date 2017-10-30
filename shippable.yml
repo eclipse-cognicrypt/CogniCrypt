@@ -19,12 +19,4 @@ build:
   ci:
    - git checkout $NIGHTLYBUILD
    - cd mvn-parent
-   - mvn clean verify surefire:test
-   
-  on_success:
-   - cp ../target/surefire-reports/*.xml ../shippable/testresults/
-   - cd ../shippable/testresults
-   
-  on_failure:
-   - cp ../target/surefire-reports/*.xml ../shippable/testresults/
-   - cd ../shippable/testresults
+   - mvn clean verify surefire:test --fail-at-end

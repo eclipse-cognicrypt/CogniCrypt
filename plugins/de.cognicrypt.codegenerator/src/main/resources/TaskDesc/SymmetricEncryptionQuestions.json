@@ -1,0 +1,114 @@
+[{
+  "id": "0",
+  "content": [{
+      "id": "0",
+      "note": "Note: Giving security for the data",
+      "questionText": "What is the level of security that you need for your data?",
+      "answers": [{
+          "value": "Very secure",
+          "claferDependencies": [{
+            "algorithm": "cipher",
+            "operand": "keySize",
+            "value": "128",
+            "operator": ">"
+          }]
+        },
+        {
+          "value": "Secure",
+          "claferDependencies": [{
+            "algorithm": "cipher",
+            "operand": "keySize",
+            "value": "128",
+            "operator": ">="
+          }],
+          "defaultAnswer": true
+        },
+        {
+          "value": "Not important (I'm just testing for now and would prefer something fast)",
+          "claferDependencies": []
+        }
+      ]
+    },
+    {
+      "id": "1",
+      "note": "Note: Do the user want to derive your key from the password that is created by the user before ?",
+      "element": "combo",
+      "questionText": "Should your key be derived from a user-specified password?",
+      "answers": [{
+          "value": "Yes",
+          "claferDependencies": [{
+              "algorithm": "kda",
+              "value": "KeyDerivationAlgorithm",
+              "operator": "->"
+            },
+            {
+              "algorithm": "security",
+              "value": "min(cipher.security, kda.security)",
+              "operator": "="
+            }
+          ]
+        },
+        {
+          "value": "No",
+          "claferDependencies": [{
+            "algorithm": "security",
+            "value": "cipher.security",
+            "operator": "="
+          }],
+          "defaultAnswer": true
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "note": "Note: How large is the size of data?",
+      "element": "combo",
+      "questionText": "Will your application regularly encrypt data chunks of several gigabytes?",
+      "answers": [{
+          "value": "Yes",
+          "codeDependencies": [{
+            "option": "textsize",
+            "value": "true"
+          }]
+        },
+        {
+          "value": "No",
+          "codeDependencies": [{
+            "option": "textsize",
+            "value": "false"
+          }],
+          "defaultAnswer": true
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "element": "combo",
+      "questionText": "What type of data do you wish to encrypt?",
+      "answers": [{
+          "value": "Byte[]",
+          "codeDependencies": [{
+            "option": "dataType",
+            "value": "byte[]"
+          }],
+             "defaultAnswer": true     
+        },
+        {
+          "value": "File",
+          "codeDependencies": [{
+            "option": "dataType",
+            "value": "File"
+          }]
+        },
+        {
+          "value": "String",
+          "codeDependencies": [{
+            "option": "dataType",
+            "value": "String"
+          }]
+        }
+      ]
+    }
+  ],
+  "nextID": "-1"
+}]

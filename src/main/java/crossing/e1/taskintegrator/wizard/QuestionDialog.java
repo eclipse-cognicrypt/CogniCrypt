@@ -36,6 +36,8 @@ import crossing.e1.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 import crossing.e1.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 import crossing.e1.taskintegrator.widgets.GroupAnswer;
 
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -56,16 +58,7 @@ public class QuestionDialog extends Dialog {
 	private String featureSelected;
 	private ArrayList<String> operandItems;
 	private String currentQuestionType=null;
-	//widgets for Link answers Tab
-	private Combo comboForLinkAnswers;
 	
-	//widgets for Clafer Tab
-	private Combo comboForAlgorithm;
-	private Combo comboForOperand;
-	private Combo comboForOperator;
-	private Text txtBoxValue;
-	//Widgets for Code tab
-
 	/**
 	 * Create the dialog.
 	 * 
@@ -248,13 +241,13 @@ public class QuestionDialog extends Dialog {
 			Composite compositeForAnswers = new Composite(compositeForLinkAnswerTab, SWT.NONE);
 			compositeForAnswers.setLayout(new GridLayout(2, false));
 			for (Answer answer : question.getAnswers()) {
-				System.out.println(question.getQuestionText());
+				//System.out.println(question.getQuestionText());
 
 				Label lblCurrentAnswer = new Label(compositeForAnswers, SWT.NONE);
 				lblCurrentAnswer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 				lblCurrentAnswer.setText(answer.getValue());
 
-				comboForLinkAnswers = new Combo(compositeForAnswers, SWT.DROP_DOWN);
+				Combo comboForLinkAnswers = new Combo(compositeForAnswers, SWT.DROP_DOWN);
 				comboForLinkAnswers.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 				comboForLinkAnswers.add("Default");
 				for(int i=0;i<listOfAllQuestions.size();i++){
@@ -266,31 +259,36 @@ public class QuestionDialog extends Dialog {
 					}
 
 				}
-				/*if(answer.getNextID()!=-2){
+				if(answer.getNextID()!=-2){
 					for(Question question :listOfAllQuestions){
 						if(question.getId()==answer.getNextID()){
 							comboForLinkAnswers.setText(question.getQuestionText());
 						}
 					}
 				}
-				comboForLinkAnswers.addModifyListener(new ModifyListener(){
+				
+				comboForLinkAnswers.addSelectionListener(new SelectionAdapter(){
 					@Override
-					public void modifyText(ModifyEvent e){
+					public void widgetSelected(SelectionEvent e){
+						String comboTxt=comboForLinkAnswers.getText();
+						for(int i=0;i<listOfAllQuestions.size();i++){
+							if(listOfAllQuestions.get(i).getQuestionText().equalsIgnoreCase(comboTxt)){
+								answer.setNextID(listOfAllQuestions.get(i).getId());
+								System.out.println(answer.getNextID());
+							}
+						}
 						for (Question question:listOfAllQuestions){
-						if(question.getQuestionText().equalsIgnoreCase(comboForLinkAnswers.getText())){
-							System.out.println(question.getQuestionText());
-							answer.setNextID(question.getId());
-							break;
-						}
-						}
-						
+							if(question.getQuestionText().equalsIgnoreCase(comboForLinkAnswers.getText())){
+								System.out.println(question.getId());
+								answer.setNextID(question.getId());
+								System.out.println(answer.getNextID());
+								//break;
+							}
+							}	
 					}
 					
-				});*/
-				/*for (int i = 1; i <= 5; i++) {
-					if (question.getId() != i)
-						combo.add("Link to Question"+" "+i);
-				}*/
+				});
+				
 			}
 		}
 
@@ -340,17 +338,17 @@ public class QuestionDialog extends Dialog {
 				Label lblCurrentAnswers = new Label(compositeForAnswers1, SWT.NONE);
 				lblCurrentAnswers.setText(answer.getValue());
 
-			    comboForAlgorithm = new Combo(compositeForAnswers1, SWT.NONE);
+			    Combo comboForAlgorithm = new Combo(compositeForAnswers1, SWT.NONE);
 				comboForAlgorithm.setVisible(true);
 				for (int i = 0; i < claferFeatures.size(); i++) {
 					comboForAlgorithm.add(claferFeatures.get(i).getFeatureName());
 					
 				}
 
-				comboForOperand = new Combo(compositeForAnswers1, SWT.NONE);
+				Combo comboForOperand = new Combo(compositeForAnswers1, SWT.NONE);
 				comboForOperand.setVisible(true);
 
-				comboForOperator = new Combo(compositeForAnswers1, SWT.NONE);
+				Combo comboForOperator = new Combo(compositeForAnswers1, SWT.NONE);
 				comboForOperator.setVisible(true);
 				GridData gd_Operator = new GridData(SWT.FILL,SWT.NONE, true, true);			
 				comboForOperator.setLayoutData(gd_Operator);
@@ -365,7 +363,7 @@ public class QuestionDialog extends Dialog {
 					"AND"+"("+Constants.FeatureConstraintRelationship.AND.toString()+")","OR"+"("+Constants.FeatureConstraintRelationship.OR.toString()+")");
 				*/
 				
-				txtBoxValue=new Text(compositeForAnswers1,SWT.BORDER);
+				Text txtBoxValue=new Text(compositeForAnswers1,SWT.BORDER);
 				txtBoxValue.setVisible(true);
 				
 				comboForAlgorithm.addSelectionListener(new SelectionAdapter() {

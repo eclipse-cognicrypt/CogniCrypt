@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -58,6 +59,7 @@ public class QuestionDialog extends Dialog {
 	private String featureSelected;
 	private ArrayList<String> operandItems;
 	private String currentQuestionType = null;
+	private MessageBox instructionsMessageBox;
 
 	/**
 	 * Create the dialog.
@@ -96,6 +98,9 @@ public class QuestionDialog extends Dialog {
 				if (tabFolder.getSelectionIndex() == 1) {
 					System.out.println(tabFolder.getSelectionIndex());
 					//lblQuestionContent.setText(textQuestion.getText());
+					if(question==null){
+						instructionsMessageBox.open();
+					}
 				}
 			}
 
@@ -220,12 +225,26 @@ public class QuestionDialog extends Dialog {
 
 		TabItem tbtmLinkAnswers = new TabItem(tabFolder, SWT.NONE);
 		tbtmLinkAnswers.setText("Link answers");
+		
 
 		Composite compositeForLinkAnswerTab = new Composite(tabFolder, SWT.NONE);
 		tbtmLinkAnswers.setControl(compositeForLinkAnswerTab);
 		compositeForLinkAnswerTab.setLayout(new GridLayout(2, false));
+		
+		if(question==null){
+				instructionsMessageBox=new MessageBox(getShell(), SWT.ICON_WARNING | SWT.OK );
+				instructionsMessageBox.setMessage("Please at first completely fill the details of \"Question\" Tab and Click OK. "
+					+ " Then Click on \"modify\" Button to further fill the details in \"Link answers\" tab");
+		}
 
 		if (question != null) {
+			
+			if(question.getQuestionType().equalsIgnoreCase("text")){
+				Label lblMessage = new Label(compositeForLinkAnswerTab, SWT.NONE);
+				lblMessage.setText("This type of question does not need to link answers");
+
+			}
+			else{
 			Label lblQuestion_1 = new Label(compositeForLinkAnswerTab, SWT.NONE);
 			lblQuestion_1.setText("Question:");
 
@@ -234,19 +253,33 @@ public class QuestionDialog extends Dialog {
 
 			Label lblAnswers = new Label(compositeForLinkAnswerTab, SWT.NONE);
 			lblAnswers.setText("Answers:");
-
+			
 			Composite compositeForAnswers = new Composite(compositeForLinkAnswerTab, SWT.NONE);
 			compositeForAnswers.setLayout(new GridLayout(2, false));
+			
+			/*GridData gd_compositeForAnswers=new GridData(SWT.FILL, SWT.NONE, false, false);
+			gd_compositeForAnswers.horizontalSpan=2;
+			compositeForAnswers.setLayoutData(gd_compositeForAnswers);
+			*/
+			
 			for (Answer answer : question.getAnswers()) {
 				//System.out.println(question.getQuestionText());
 
-				Label lblCurrentAnswer = new Label(compositeForAnswers, SWT.NONE);
+				Text answerTxt=new Text(compositeForAnswers,SWT.BORDER);
+				GridData gd_answerTxt = new GridData(SWT.FILL, SWT.NONE, false, false);
+				gd_answerTxt.widthHint=120;
+				answerTxt.setLayoutData(gd_answerTxt);
+				answerTxt.setEditable(false);
+				
+				answerTxt.setText(answer.getValue());
+
+				/*Label lblCurrentAnswer = new Label(compositeForAnswers, SWT.NONE);
 				lblCurrentAnswer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 				lblCurrentAnswer.setText(answer.getValue());
-
+*/
 				Combo comboForLinkAnswers = new Combo(compositeForAnswers, SWT.DROP_DOWN);
 				comboForLinkAnswers.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-				comboForLinkAnswers.add("Default");
+				//comboForLinkAnswers.add("Default");
 				for (int i = 0; i < listOfAllQuestions.size(); i++) {
 					if (listOfAllQuestions.size() == 1) {
 						comboForLinkAnswers.add("Please add more questions to link the answers");
@@ -279,6 +312,7 @@ public class QuestionDialog extends Dialog {
 
 				});
 
+			}
 			}
 		}
 
@@ -629,7 +663,7 @@ public class QuestionDialog extends Dialog {
 		}
 		//questionDetails.set
 		this.questionDetails = questionDetails;
-	}
+		}
 
 	public Question getQuestionDetails() {
 		return this.questionDetails;

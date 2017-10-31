@@ -6,6 +6,7 @@ package de.cognicrypt.codegenerator.taskintegrator.wizard;
 import java.util.ArrayList;
 
 import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -40,6 +41,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	private CompositeForXsl compositeForXsl = null;
 
 	int counter = 0;// TODO for testing only.
+	protected ArrayList<ClaferFeature> cfrFeatures;
 
 	/**
 	 * Create the wizard.
@@ -136,9 +138,39 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 					@Override
 					public void widgetSelected(SelectionEvent e) {
+						ArrayList<ClaferFeature> cfrFeatures = null;
+						ArrayList<String> strFeatures = new ArrayList<>();
+
+						// get the Clafer creation page
+						for (IWizardPage page : getWizard().getPages()) {
+							if (page instanceof PageForTaskIntegratorWizard) {
+								PageForTaskIntegratorWizard pftiw = (PageForTaskIntegratorWizard) page;
+								if (pftiw.getName() == Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION) {
+									// get the Clafer features
+									if (pftiw.getCompositeToHoldGranularUIElements() instanceof CompositeToHoldGranularUIElements) {
+										CompositeToHoldGranularUIElements comp = (CompositeToHoldGranularUIElements) pftiw.getCompositeToHoldGranularUIElements();
+										cfrFeatures = comp.getListOfAllClaferFeatures();
+
+										// get all the Clafer features' properties
+										for (ClaferFeature cfrFtr : cfrFeatures) {
+											String ftrName = cfrFtr.getFeatureName();
+											for (FeatureProperty prop : cfrFtr.getfeatureProperties()) {
+												// prepend the feature name and add the property to dropdown entries
+												strFeatures.add(ftrName + "." + prop.getPropertyName());
+											}
+										}
+									}
+								}
+							}
+						}
+
+						XSLTagDialog dialog;
+						if (strFeatures.size() > 0) {
+							dialog = new XSLTagDialog(getShell(), strFeatures);
+						} else {
+							dialog = new XSLTagDialog(getShell());
+						}
 						
-						
-						XSLTagDialog dialog = new XSLTagDialog(getShell());
 						if(dialog.open() == Window.OK){
 							// To locate the position of the xsl tag to be introduce						
 							Point selected = getCompositeForXsl().getXslTxtBox().getSelection();

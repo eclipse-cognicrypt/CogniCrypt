@@ -32,6 +32,7 @@ public class XSLTagDialog extends Dialog {
 	private String currentSelectionStringOncomboXSLTags;
 	
 	private XSLTag tag;
+	private ArrayList<String> cfrFeatures;
 	
 	/**
 	 * Create the dialog.
@@ -44,6 +45,7 @@ public class XSLTagDialog extends Dialog {
 	public XSLTagDialog(Shell parentShell, ArrayList<String> cfrFeatures) {
 		this(parentShell);
 
+		this.cfrFeatures = cfrFeatures;
 	}
 
 	/**
@@ -83,9 +85,7 @@ public class XSLTagDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// Add the UI element for the attribute with the remove button, and pass the selected XSL tag.
-				ArrayList<String> possibleCfrFeatures = new ArrayList<>();
-				possibleCfrFeatures.add("ftr 1");
-				possibleCfrFeatures.add("ftr 2");
+				ArrayList<String> possibleCfrFeatures = cfrFeatures;
 				compositeForXSLAttributes.addXSLAttribute(true, comboXSLTags.getText(), possibleCfrFeatures);
 				// Update all the drop down menus for attribute UIs to keep them consistent after adding a new attribute.
 				ArrayList<String> possAttributes = compositeForXSLAttributes.getListOfPossibleAttributes(comboXSLTags.getText());

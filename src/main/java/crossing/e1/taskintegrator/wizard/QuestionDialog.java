@@ -473,9 +473,43 @@ public class QuestionDialog extends Dialog {
 
 				Text txtOption = new Text(answersCompositeToLinkCode, SWT.BORDER);
 				txtOption.setVisible(true);
-
+				
 				Text txtValue = new Text(answersCompositeToLinkCode, SWT.BORDER);
 				txtValue.setVisible(true);
+
+				CodeDependency codeDependency=new CodeDependency();
+
+				if(answer.getCodeDependencies()!=null){
+					for(CodeDependency cd:answer.getCodeDependencies() ){
+						if(cd.getOption()!=null){
+							txtOption.setText(cd.getOption());
+							codeDependency.setOption(txtOption.getText());
+						}
+						if(cd.getValue()!=null){
+							txtValue.setText(cd.getValue());
+							codeDependency.setValue(txtValue.getText());
+						}
+					}
+				}
+				
+				txtOption.addFocusListener(new FocusAdapter(){
+					@Override
+					public void focusLost(FocusEvent e){
+						codeDependency.setOption(txtOption.getText());
+					}
+				});
+				
+				txtValue.addFocusListener(new FocusAdapter(){
+					@Override
+					public void focusLost(FocusEvent e){
+						codeDependency.setValue(txtValue.getText());
+					}
+				});
+				
+				ArrayList<CodeDependency> codeDependencies=new ArrayList<CodeDependency>();
+				codeDependencies.add(codeDependency);
+				answer.setCodeDependencies(codeDependencies);
+				
 			}
 
 		}

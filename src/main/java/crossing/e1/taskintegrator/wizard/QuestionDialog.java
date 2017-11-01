@@ -247,8 +247,8 @@ public class QuestionDialog extends Dialog {
 		if (question != null) {
 
 			if (question.getQuestionType().equalsIgnoreCase("text")) {
-				Label lblMessage = new Label(compositeForLinkAnswerTab, SWT.NONE);
-				lblMessage.setText("This type of question does not need to link answers");
+				Label lblLinkAnswersTabMessage = new Label(compositeForLinkAnswerTab, SWT.NONE);
+				lblLinkAnswersTabMessage.setText("This type of question does not need to link answers");
 
 			} else {
 				Label lblQuestion_1 = new Label(compositeForLinkAnswerTab, SWT.NONE);
@@ -337,168 +337,175 @@ public class QuestionDialog extends Dialog {
 
 		if (question != null) {
 
-			Label lblQuestion_2 = new Label(compositeForClaferTab, SWT.NONE);
-			lblQuestion_2.setText("Question:");
+			if (question.getQuestionType().equalsIgnoreCase("text")) {
+				Label lblLinkFeatureTabMessage = new Label(compositeForClaferTab, SWT.NONE);
+				lblLinkFeatureTabMessage.setText("This type of question does not need to link features");
 
-			Label qstnTxt_1 = new Label(compositeForClaferTab, SWT.None);
-			qstnTxt_1.setText(question.getQuestionText());
+			} else {
+				Label lblQuestion_2 = new Label(compositeForClaferTab, SWT.NONE);
+				lblQuestion_2.setText("Question:");
 
-			Composite compositeForAnswers1 = new Composite(compositeForClaferTab, SWT.None);
-			compositeForAnswers1.setLayout(new GridLayout(5, false));
-			GridData gd_compositeAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
-			gd_compositeAnswers.horizontalSpan = 2;
-			compositeForAnswers1.setLayoutData(gd_compositeAnswers);
+				Label qstnTxt_1 = new Label(compositeForClaferTab, SWT.None);
+				qstnTxt_1.setText(question.getQuestionText());
 
-			Label lblEmpty = new Label(compositeForAnswers1, SWT.NONE);
-			lblEmpty.setText("Answers");
+				Composite compositeForAnswers1 = new Composite(compositeForClaferTab, SWT.None);
+				compositeForAnswers1.setLayout(new GridLayout(5, false));
+				GridData gd_compositeAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
+				gd_compositeAnswers.horizontalSpan = 2;
+				compositeForAnswers1.setLayoutData(gd_compositeAnswers);
 
-			Label lblForAlgorithm = new Label(compositeForAnswers1, SWT.NONE);
-			lblForAlgorithm.setText("Select Algorithm");
+				Label lblEmpty = new Label(compositeForAnswers1, SWT.NONE);
+				lblEmpty.setText("Answers");
 
-			Label lblForOperand = new Label(compositeForAnswers1, SWT.NONE);
-			lblForOperand.setText("Select Operand");
+				Label lblForAlgorithm = new Label(compositeForAnswers1, SWT.NONE);
+				lblForAlgorithm.setText("Select Algorithm");
 
-			Label lblForValue = new Label(compositeForAnswers1, SWT.NONE);
-			lblForValue.setText("Select Operator");
+				Label lblForOperand = new Label(compositeForAnswers1, SWT.NONE);
+				lblForOperand.setText("Select Operand");
 
-			Label lblForOperator = new Label(compositeForAnswers1, SWT.NONE);
-			lblForOperator.setText("Set Value");
+				Label lblForValue = new Label(compositeForAnswers1, SWT.NONE);
+				lblForValue.setText("Select Operator");
 
-			//claferFeatures = getClaferFeatures();
+				Label lblForOperator = new Label(compositeForAnswers1, SWT.NONE);
+				lblForOperator.setText("Set Value");
 
-			for (Answer answer : question.getAnswers()) {
+				//claferFeatures = getClaferFeatures();
 
-				Text txtBoxCurrentAnswer = new Text(compositeForAnswers1, SWT.BORDER);
-				GridData gd_txtBoxCurrentAnswer = new GridData(SWT.FILL, SWT.NONE, false, false);
-				gd_txtBoxCurrentAnswer.widthHint = 120;
-				txtBoxCurrentAnswer.setLayoutData(gd_txtBoxCurrentAnswer);
-				txtBoxCurrentAnswer.setEditable(false);
-				txtBoxCurrentAnswer.setText(answer.getValue());
+				for (Answer answer : question.getAnswers()) {
 
-				Combo comboForAlgorithm = new Combo(compositeForAnswers1, SWT.NONE);
-				GridData gd_comboForAlgorithm = new GridData(SWT.FILL, SWT.NONE, true, true);
-				gd_comboForAlgorithm.widthHint = 150;
-				comboForAlgorithm.setLayoutData(gd_comboForAlgorithm);
-				comboForAlgorithm.setVisible(true);
-				comboForAlgorithm.add("none");
+					Text txtBoxCurrentAnswer = new Text(compositeForAnswers1, SWT.BORDER);
+					GridData gd_txtBoxCurrentAnswer = new GridData(SWT.FILL, SWT.NONE, false, false);
+					gd_txtBoxCurrentAnswer.widthHint = 120;
+					txtBoxCurrentAnswer.setLayoutData(gd_txtBoxCurrentAnswer);
+					txtBoxCurrentAnswer.setEditable(false);
+					txtBoxCurrentAnswer.setText(answer.getValue());
 
-				for (int i = 0; i < claferFeatures.size(); i++) {
-					comboForAlgorithm.add(claferFeatures.get(i).getFeatureName());
-				}
+					Combo comboForAlgorithm = new Combo(compositeForAnswers1, SWT.NONE);
+					GridData gd_comboForAlgorithm = new GridData(SWT.FILL, SWT.NONE, true, true);
+					gd_comboForAlgorithm.widthHint = 150;
+					comboForAlgorithm.setLayoutData(gd_comboForAlgorithm);
+					comboForAlgorithm.setVisible(true);
+					comboForAlgorithm.add("none");
 
-				Combo comboForOperand = new Combo(compositeForAnswers1, SWT.NONE);
-				comboForOperand.setVisible(true);
-				GridData gd_comboForOperand = new GridData(SWT.FILL, SWT.NONE, true, true);
-				gd_comboForOperand.widthHint = 100;
-				comboForOperand.setLayoutData(gd_comboForOperand);
-
-				//comboForOperand.add("none");
-
-				Combo comboForOperator = new Combo(compositeForAnswers1, SWT.NONE);
-				comboForOperator.setVisible(true);
-				comboForOperator.add("none");
-				GridData gd_Operator = new GridData(SWT.FILL, SWT.NONE, true, true);
-				gd_Operator.widthHint = 100;
-				comboForOperator.setLayoutData(gd_Operator);
-				comboForOperator.setItems(Constants.FeatureConstraintRelationship.EQUAL.toString(), Constants.FeatureConstraintRelationship.NOTEQUAL.toString(),
-					Constants.FeatureConstraintRelationship.LESSTHAN.toString(), Constants.FeatureConstraintRelationship.GREATERTHAN.toString(),
-					Constants.FeatureConstraintRelationship.LESSTHANEQUALTO.toString(), Constants.FeatureConstraintRelationship.GREATERTHANEQUALTO.toString(),
-					Constants.FeatureConstraintRelationship.AND.toString(), Constants.FeatureConstraintRelationship.OR.toString());
-
-				/*
-				 * comboForOperator.setItems("Equal"+"("+Constants.FeatureConstraintRelationship.EQUAL.toString()+")",
-				 * "NOTEQUAL"+"("+Constants.FeatureConstraintRelationship.NOTEQUAL.toString()+")", "LESSTHAN"+"("+Constants.FeatureConstraintRelationship.LESSTHAN.toString()+")",
-				 * "GREATERTHAN"+"("+Constants.FeatureConstraintRelationship.GREATERTHAN.toString()+")",
-				 * "LESSTHANEQUALTO"+"("+Constants.FeatureConstraintRelationship.LESSTHANEQUALTO.toString()+")",
-				 * "GREATERTHANEQUALTO"+"("+Constants.FeatureConstraintRelationship.GREATERTHANEQUALTO.toString()+")",
-				 * "AND"+"("+Constants.FeatureConstraintRelationship.AND.toString()+")","OR"+"("+Constants.FeatureConstraintRelationship.OR.toString()+")");
-				 */
-
-				Text txtBoxValue = new Text(compositeForAnswers1, SWT.BORDER);
-				GridData gd_txtBoxValue = new GridData(SWT.FILL, SWT.NONE, true, true);
-				gd_txtBoxValue.widthHint = 150;
-				txtBoxValue.setLayoutData(gd_txtBoxValue);
-				txtBoxValue.setVisible(true);
-
-				ClaferDependency claferDependency = new ClaferDependency();
-
-				if (answer.getClaferDependencies() != null) {
-					for (ClaferDependency cf : answer.getClaferDependencies()) {
-						if (cf.getAlgorithm() != null) {
-							comboForAlgorithm.setText(cf.getAlgorithm());
-							claferDependency.setAlgorithm(comboForAlgorithm.getText());
-						}
-						if (cf.getOperand() != null) {
-							comboForOperand.setText(cf.getOperand());
-							claferDependency.setOperand(comboForOperand.getText());
-						}
-						if (cf.getOperator() != null) {
-							comboForOperator.setText(cf.getOperator());
-							claferDependency.setOperator(comboForOperator.getText());
-						}
-						if (cf.getValue() != null) {
-							txtBoxValue.setText(cf.getValue());
-							claferDependency.setValue(txtBoxValue.getText());
-						}
-					}
-				}
-				//adding the items to comboForOperand box depending on the comboForAlgorithm box value 
-				if (comboForAlgorithm.getText() != null) {
-					operandItems = new ArrayList<String>();
-					ArrayList<String> operandToAdd = itemsToAdd(comboForAlgorithm.getText());
-					for (int i = 0; i < operandToAdd.size(); i++) {
-						comboForOperand.add(operandToAdd.get(i));
+					for (int i = 0; i < claferFeatures.size(); i++) {
+						comboForAlgorithm.add(claferFeatures.get(i).getFeatureName());
 					}
 
-				}
+					Combo comboForOperand = new Combo(compositeForAnswers1, SWT.NONE);
+					comboForOperand.setVisible(true);
+					GridData gd_comboForOperand = new GridData(SWT.FILL, SWT.NONE, true, true);
+					gd_comboForOperand.widthHint = 100;
+					comboForOperand.setLayoutData(gd_comboForOperand);
 
-				comboForAlgorithm.addSelectionListener(new SelectionAdapter() {
+					//comboForOperand.add("none");
 
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						featureSelected = comboForAlgorithm.getText();
-						comboForOperand.removeAll();
+					Combo comboForOperator = new Combo(compositeForAnswers1, SWT.NONE);
+					comboForOperator.setVisible(true);
+					comboForOperator.add("none");
+					GridData gd_Operator = new GridData(SWT.FILL, SWT.NONE, true, true);
+					gd_Operator.widthHint = 100;
+					comboForOperator.setLayoutData(gd_Operator);
+					comboForOperator.setItems(Constants.FeatureConstraintRelationship.EQUAL.toString(), Constants.FeatureConstraintRelationship.NOTEQUAL.toString(),
+						Constants.FeatureConstraintRelationship.LESSTHAN.toString(), Constants.FeatureConstraintRelationship.GREATERTHAN.toString(),
+						Constants.FeatureConstraintRelationship.LESSTHANEQUALTO.toString(), Constants.FeatureConstraintRelationship.GREATERTHANEQUALTO.toString(),
+						Constants.FeatureConstraintRelationship.AND.toString(), Constants.FeatureConstraintRelationship.OR.toString());
+
+					/*
+					 * comboForOperator.setItems("Equal"+"("+Constants.FeatureConstraintRelationship.EQUAL.toString()+")",
+					 * "NOTEQUAL"+"("+Constants.FeatureConstraintRelationship.NOTEQUAL.toString()+")",
+					 * "LESSTHAN"+"("+Constants.FeatureConstraintRelationship.LESSTHAN.toString()+")",
+					 * "GREATERTHAN"+"("+Constants.FeatureConstraintRelationship.GREATERTHAN.toString()+")",
+					 * "LESSTHANEQUALTO"+"("+Constants.FeatureConstraintRelationship.LESSTHANEQUALTO.toString()+")",
+					 * "GREATERTHANEQUALTO"+"("+Constants.FeatureConstraintRelationship.GREATERTHANEQUALTO.toString()+")",
+					 * "AND"+"("+Constants.FeatureConstraintRelationship.AND.toString()+")","OR"+"("+Constants.FeatureConstraintRelationship.OR.toString()+")");
+					 */
+
+					Text txtBoxValue = new Text(compositeForAnswers1, SWT.BORDER);
+					GridData gd_txtBoxValue = new GridData(SWT.FILL, SWT.NONE, true, true);
+					gd_txtBoxValue.widthHint = 150;
+					txtBoxValue.setLayoutData(gd_txtBoxValue);
+					txtBoxValue.setVisible(true);
+
+					ClaferDependency claferDependency = new ClaferDependency();
+
+					if (answer.getClaferDependencies() != null) {
+						for (ClaferDependency cf : answer.getClaferDependencies()) {
+							if (cf.getAlgorithm() != null) {
+								comboForAlgorithm.setText(cf.getAlgorithm());
+								claferDependency.setAlgorithm(comboForAlgorithm.getText());
+							}
+							if (cf.getOperand() != null) {
+								comboForOperand.setText(cf.getOperand());
+								claferDependency.setOperand(comboForOperand.getText());
+							}
+							if (cf.getOperator() != null) {
+								comboForOperator.setText(cf.getOperator());
+								claferDependency.setOperator(comboForOperator.getText());
+							}
+							if (cf.getValue() != null) {
+								txtBoxValue.setText(cf.getValue());
+								claferDependency.setValue(txtBoxValue.getText());
+							}
+						}
+					}
+					//adding the items to comboForOperand box depending on the comboForAlgorithm box value 
+					if (comboForAlgorithm.getText() != null) {
 						operandItems = new ArrayList<String>();
-						ArrayList<String> operandToAdd = itemsToAdd(featureSelected);
+						ArrayList<String> operandToAdd = itemsToAdd(comboForAlgorithm.getText());
 						for (int i = 0; i < operandToAdd.size(); i++) {
 							comboForOperand.add(operandToAdd.get(i));
 						}
-						//to remove the previous operand selected of comboForOperand as value of comboForlgorithm is changed
-						if (answer.getClaferDependencies() != null) {
-							comboForOperand.setText("");
-							claferDependency.setOperand(comboForOperand.getText());
 
+					}
+
+					comboForAlgorithm.addSelectionListener(new SelectionAdapter() {
+
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+							featureSelected = comboForAlgorithm.getText();
+							comboForOperand.removeAll();
+							operandItems = new ArrayList<String>();
+							ArrayList<String> operandToAdd = itemsToAdd(featureSelected);
+							for (int i = 0; i < operandToAdd.size(); i++) {
+								comboForOperand.add(operandToAdd.get(i));
+							}
+							//to remove the previous operand selected of comboForOperand as value of comboForlgorithm is changed
+							if (answer.getClaferDependencies() != null) {
+								comboForOperand.setText("");
+								claferDependency.setOperand(comboForOperand.getText());
+
+							}
+							claferDependency.setAlgorithm(featureSelected);
+							//algorithmChanged=true;
 						}
-						claferDependency.setAlgorithm(featureSelected);
-						//algorithmChanged=true;
-					}
-				});
-				comboForOperand.addSelectionListener(new SelectionAdapter() {
+					});
+					comboForOperand.addSelectionListener(new SelectionAdapter() {
 
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						claferDependency.setOperand(comboForOperand.getText());
-					}
-				});
-				comboForOperator.addSelectionListener(new SelectionAdapter() {
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+							claferDependency.setOperand(comboForOperand.getText());
+						}
+					});
+					comboForOperator.addSelectionListener(new SelectionAdapter() {
 
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						claferDependency.setOperator(comboForOperator.getText());
-					}
-				});
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+							claferDependency.setOperator(comboForOperator.getText());
+						}
+					});
 
-				txtBoxValue.addFocusListener(new FocusAdapter() {
+					txtBoxValue.addFocusListener(new FocusAdapter() {
 
-					@Override
-					public void focusLost(FocusEvent e) {
-						claferDependency.setValue(txtBoxValue.getText());
-					}
-				});
+						@Override
+						public void focusLost(FocusEvent e) {
+							claferDependency.setValue(txtBoxValue.getText());
+						}
+					});
 
-				ArrayList<ClaferDependency> listOfClaferDependencies = new ArrayList<ClaferDependency>();
-				listOfClaferDependencies.add(claferDependency);
-				answer.setClaferDependencies(listOfClaferDependencies);
+					ArrayList<ClaferDependency> listOfClaferDependencies = new ArrayList<ClaferDependency>();
+					listOfClaferDependencies.add(claferDependency);
+					answer.setClaferDependencies(listOfClaferDependencies);
+				}
 			}
 		}
 
@@ -510,73 +517,90 @@ public class QuestionDialog extends Dialog {
 		compositeForLinkCodeTab.setLayout(new GridLayout(2, false));
 
 		if (question != null) {
-			Label question_3 = new Label(compositeForLinkCodeTab, SWT.None);
-			question_3.setText("Question: ");
 
-			Label question_3Txt = new Label(compositeForLinkCodeTab, SWT.None);
-			question_3Txt.setText(question.getQuestionText());
+			if (question.getQuestionType().equalsIgnoreCase("text")) {
+				Label lblLinkCodeTabMessage = new Label(compositeForLinkCodeTab, SWT.NONE);
+				lblLinkCodeTabMessage.setText("This type of question does not need to link code");
 
-			Composite answersCompositeToLinkCode = new Composite(compositeForLinkCodeTab, SWT.None);
-			answersCompositeToLinkCode.setLayout(new GridLayout(3, false));
-			GridData gd_LinkCode = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
-			answersCompositeToLinkCode.setLayoutData(gd_LinkCode);
+			} else {
+				Label question_3 = new Label(compositeForLinkCodeTab, SWT.None);
+				question_3.setText("Question: ");
 
-			Label lblAnswersLink = new Label(answersCompositeToLinkCode, SWT.None);
-			lblAnswersLink.setText("Answers");
+				Label question_3Txt = new Label(compositeForLinkCodeTab, SWT.None);
+				question_3Txt.setText(question.getQuestionText());
 
-			Label lblOption = new Label(answersCompositeToLinkCode, SWT.None);
-			lblOption.setText("Set Option");
+				Composite answersCompositeToLinkCode = new Composite(compositeForLinkCodeTab, SWT.None);
+				answersCompositeToLinkCode.setLayout(new GridLayout(3, false));
+				GridData gd_LinkCode = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
+				answersCompositeToLinkCode.setLayoutData(gd_LinkCode);
 
-			Label lblText = new Label(answersCompositeToLinkCode, SWT.NONE);
-			lblText.setText("Set Value");
+				Label lblAnswersLink = new Label(answersCompositeToLinkCode, SWT.None);
+				lblAnswersLink.setText("Answers");
 
-			for (Answer answer : question.getAnswers()) {
-				Label lblLinkAnswers = new Label(answersCompositeToLinkCode, SWT.None);
-				lblLinkAnswers.setText(answer.getValue());
+				Label lblOption = new Label(answersCompositeToLinkCode, SWT.None);
+				lblOption.setText("Set Option");
 
-				Text txtOption = new Text(answersCompositeToLinkCode, SWT.BORDER);
-				txtOption.setVisible(true);
+				Label lblText = new Label(answersCompositeToLinkCode, SWT.NONE);
+				lblText.setText("Set Value");
 
-				Text txtValue = new Text(answersCompositeToLinkCode, SWT.BORDER);
-				txtValue.setVisible(true);
+				for (Answer answer : question.getAnswers()) {
 
-				CodeDependency codeDependency = new CodeDependency();
+					Text txtBoxAnswers = new Text(answersCompositeToLinkCode, SWT.BORDER);
+					GridData gd_txtBoxAnswers = new GridData(SWT.FILL, SWT.CENTER, true, true);
+					gd_txtBoxAnswers.widthHint = 120;
+					txtBoxAnswers.setLayoutData(gd_txtBoxAnswers);
+					txtBoxAnswers.setEditable(false);
+					txtBoxAnswers.setText(answer.getValue());
 
-				if (answer.getCodeDependencies() != null) {
-					for (CodeDependency cd : answer.getCodeDependencies()) {
-						if (cd.getOption() != null) {
-							txtOption.setText(cd.getOption());
+					Text txtOption = new Text(answersCompositeToLinkCode, SWT.BORDER);
+					txtOption.setVisible(true);
+					GridData gd_txtOption = new GridData(SWT.FILL, SWT.CENTER, true, true);
+					gd_txtOption.widthHint = 100;
+
+					Text txtValue = new Text(answersCompositeToLinkCode, SWT.BORDER);
+					txtValue.setVisible(true);
+					GridData gd_txtValue = new GridData(SWT.FILL, SWT.CENTER, true, true);
+					gd_txtValue.widthHint = 100;
+					txtValue.setLayoutData(gd_txtValue);
+
+					CodeDependency codeDependency = new CodeDependency();
+
+					if (answer.getCodeDependencies() != null) {
+						for (CodeDependency cd : answer.getCodeDependencies()) {
+							if (cd.getOption() != null) {
+								txtOption.setText(cd.getOption());
+								codeDependency.setOption(txtOption.getText());
+							}
+							if (cd.getValue() != null) {
+								txtValue.setText(cd.getValue());
+								codeDependency.setValue(txtValue.getText());
+							}
+						}
+					}
+
+					txtOption.addFocusListener(new FocusAdapter() {
+
+						@Override
+						public void focusLost(FocusEvent e) {
 							codeDependency.setOption(txtOption.getText());
 						}
-						if (cd.getValue() != null) {
-							txtValue.setText(cd.getValue());
+					});
+
+					txtValue.addFocusListener(new FocusAdapter() {
+
+						@Override
+						public void focusLost(FocusEvent e) {
 							codeDependency.setValue(txtValue.getText());
 						}
-					}
+					});
+
+					ArrayList<CodeDependency> codeDependencies = new ArrayList<CodeDependency>();
+					codeDependencies.add(codeDependency);
+					answer.setCodeDependencies(codeDependencies);
+
 				}
 
-				txtOption.addFocusListener(new FocusAdapter() {
-
-					@Override
-					public void focusLost(FocusEvent e) {
-						codeDependency.setOption(txtOption.getText());
-					}
-				});
-
-				txtValue.addFocusListener(new FocusAdapter() {
-
-					@Override
-					public void focusLost(FocusEvent e) {
-						codeDependency.setValue(txtValue.getText());
-					}
-				});
-
-				ArrayList<CodeDependency> codeDependencies = new ArrayList<CodeDependency>();
-				codeDependencies.add(codeDependency);
-				answer.setCodeDependencies(codeDependencies);
-
 			}
-
 		}
 		return container;
 	}

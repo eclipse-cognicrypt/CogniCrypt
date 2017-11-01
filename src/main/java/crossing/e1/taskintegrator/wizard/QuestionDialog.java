@@ -59,7 +59,9 @@ public class QuestionDialog extends Dialog {
 	private String featureSelected;
 	private ArrayList<String> operandItems;
 	private String currentQuestionType = null;
-	private MessageBox instructionsMessageBox;
+	private MessageBox linkAnswersTabMessageBox;
+	private MessageBox linkFeaturesMessageBox;
+	private MessageBox linkCodeMessageBox;
 
 	/**
 	 * Create the dialog.
@@ -98,8 +100,14 @@ public class QuestionDialog extends Dialog {
 				if (tabFolder.getSelectionIndex() == 1) {
 					System.out.println(tabFolder.getSelectionIndex());
 					//lblQuestionContent.setText(textQuestion.getText());
-					if(question==null){
-						instructionsMessageBox.open();
+					if (question == null) {
+						linkAnswersTabMessageBox.open();
+					}
+				}
+
+				if (tabFolder.getSelectionIndex() == 2) {
+					if (question == null) {
+						linkFeaturesMessageBox.open();
 					}
 				}
 			}
@@ -225,94 +233,92 @@ public class QuestionDialog extends Dialog {
 
 		TabItem tbtmLinkAnswers = new TabItem(tabFolder, SWT.NONE);
 		tbtmLinkAnswers.setText("Link answers");
-		
 
 		Composite compositeForLinkAnswerTab = new Composite(tabFolder, SWT.NONE);
 		tbtmLinkAnswers.setControl(compositeForLinkAnswerTab);
 		compositeForLinkAnswerTab.setLayout(new GridLayout(2, false));
-		
-		if(question==null){
-				instructionsMessageBox=new MessageBox(getShell(), SWT.ICON_WARNING | SWT.OK );
-				instructionsMessageBox.setMessage("Please at first completely fill the details of \"Question\" Tab and Click OK. "
-					+ " Then Click on \"modify\" Button to further fill the details in \"Link answers\" tab");
+
+		if (question == null) {
+			linkAnswersTabMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.OK);
+			linkAnswersTabMessageBox.setMessage(
+				"Please at first completely fill the details of \"Question\" Tab and Click OK. " + " Then Click on \"modify\" Button to further fill the details in \"Link answers\" tab");
 		}
 
 		if (question != null) {
-			
-			if(question.getQuestionType().equalsIgnoreCase("text")){
+
+			if (question.getQuestionType().equalsIgnoreCase("text")) {
 				Label lblMessage = new Label(compositeForLinkAnswerTab, SWT.NONE);
 				lblMessage.setText("This type of question does not need to link answers");
 
-			}
-			else{
-			Label lblQuestion_1 = new Label(compositeForLinkAnswerTab, SWT.NONE);
-			lblQuestion_1.setText("Question:");
+			} else {
+				Label lblQuestion_1 = new Label(compositeForLinkAnswerTab, SWT.NONE);
+				lblQuestion_1.setText("Question:");
 
-			Label qstnTxt = new Label(compositeForLinkAnswerTab, SWT.NONE);
-			qstnTxt.setText(question.getQuestionText());
+				Label qstnTxt = new Label(compositeForLinkAnswerTab, SWT.NONE);
+				qstnTxt.setText(question.getQuestionText());
 
-			Label lblAnswers = new Label(compositeForLinkAnswerTab, SWT.NONE);
-			lblAnswers.setText("Answers:");
-			
-			Composite compositeForAnswers = new Composite(compositeForLinkAnswerTab, SWT.NONE);
-			compositeForAnswers.setLayout(new GridLayout(2, false));
-			
-			/*GridData gd_compositeForAnswers=new GridData(SWT.FILL, SWT.NONE, false, false);
-			gd_compositeForAnswers.horizontalSpan=2;
-			compositeForAnswers.setLayoutData(gd_compositeForAnswers);
-			*/
-			
-			for (Answer answer : question.getAnswers()) {
-				//System.out.println(question.getQuestionText());
+				Label lblAnswers = new Label(compositeForLinkAnswerTab, SWT.NONE);
+				lblAnswers.setText("Answers:");
 
-				Text answerTxt=new Text(compositeForAnswers,SWT.BORDER);
-				GridData gd_answerTxt = new GridData(SWT.FILL, SWT.NONE, false, false);
-				gd_answerTxt.widthHint=120;
-				answerTxt.setLayoutData(gd_answerTxt);
-				answerTxt.setEditable(false);
-				
-				answerTxt.setText(answer.getValue());
+				Composite compositeForAnswers = new Composite(compositeForLinkAnswerTab, SWT.NONE);
+				compositeForAnswers.setLayout(new GridLayout(2, false));
 
-				/*Label lblCurrentAnswer = new Label(compositeForAnswers, SWT.NONE);
-				lblCurrentAnswer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-				lblCurrentAnswer.setText(answer.getValue());
-*/
-				Combo comboForLinkAnswers = new Combo(compositeForAnswers, SWT.DROP_DOWN);
-				comboForLinkAnswers.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-				//comboForLinkAnswers.add("Default");
-				for (int i = 0; i < listOfAllQuestions.size(); i++) {
-					if (listOfAllQuestions.size() == 1) {
-						comboForLinkAnswers.add("Please add more questions to link the answers");
-					}
-					if (question.getId() != listOfAllQuestions.get(i).getId()) {
-						comboForLinkAnswers.add(listOfAllQuestions.get(i).getQuestionText());
-					}
+				/*
+				 * GridData gd_compositeForAnswers=new GridData(SWT.FILL, SWT.NONE, false, false); gd_compositeForAnswers.horizontalSpan=2;
+				 * compositeForAnswers.setLayoutData(gd_compositeForAnswers);
+				 */
 
-				}
-				if (answer.getNextID() != -2) {
-					for (Question question : listOfAllQuestions) {
-						if (question.getId() == answer.getNextID()) {
-							comboForLinkAnswers.setText(question.getQuestionText());
+				for (Answer answer : question.getAnswers()) {
+					//System.out.println(question.getQuestionText());
+
+					Text answerTxt = new Text(compositeForAnswers, SWT.BORDER);
+					GridData gd_answerTxt = new GridData(SWT.FILL, SWT.NONE, false, false);
+					gd_answerTxt.widthHint = 120;
+					answerTxt.setLayoutData(gd_answerTxt);
+					answerTxt.setEditable(false);
+
+					answerTxt.setText(answer.getValue());
+
+					/*
+					 * Label lblCurrentAnswer = new Label(compositeForAnswers, SWT.NONE); lblCurrentAnswer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+					 * lblCurrentAnswer.setText(answer.getValue());
+					 */
+					Combo comboForLinkAnswers = new Combo(compositeForAnswers, SWT.DROP_DOWN);
+					comboForLinkAnswers.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+					//comboForLinkAnswers.add("Default");
+					for (int i = 0; i < listOfAllQuestions.size(); i++) {
+						if (listOfAllQuestions.size() == 1) {
+							comboForLinkAnswers.add("Please add more questions to link the answers");
 						}
+						if (question.getId() != listOfAllQuestions.get(i).getId()) {
+							comboForLinkAnswers.add(listOfAllQuestions.get(i).getQuestionText());
+						}
+
 					}
-				}
-
-				comboForLinkAnswers.addSelectionListener(new SelectionAdapter() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
+					if (answer.getNextID() != -2) {
 						for (Question question : listOfAllQuestions) {
-							if (question.getQuestionText().equalsIgnoreCase(comboForLinkAnswers.getText())) {
-								System.out.println(question.getId());
-								answer.setNextID(question.getId());
-								System.out.println(answer.getNextID());
+							if (question.getId() == answer.getNextID()) {
+								comboForLinkAnswers.setText(question.getQuestionText());
 							}
 						}
 					}
 
-				});
+					comboForLinkAnswers.addSelectionListener(new SelectionAdapter() {
 
-			}
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+							for (Question question : listOfAllQuestions) {
+								if (question.getQuestionText().equalsIgnoreCase(comboForLinkAnswers.getText())) {
+									System.out.println(question.getId());
+									answer.setNextID(question.getId());
+									System.out.println(answer.getNextID());
+								}
+							}
+						}
+
+					});
+
+				}
 			}
 		}
 
@@ -322,6 +328,12 @@ public class QuestionDialog extends Dialog {
 		Composite compositeForClaferTab = new Composite(tabFolder, SWT.NONE);
 		tbtmLinkClaferFeatures.setControl(compositeForClaferTab);
 		compositeForClaferTab.setLayout(new GridLayout(2, false));
+
+		if (question == null) {
+			linkFeaturesMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.OK);
+			linkFeaturesMessageBox.setMessage(
+				"Please at first completely fill the details of \"Question\" Tab and Click OK. " + " Then Click on \"modify\" Button to further fill the details in \"Link Features\" tab");
+		}
 
 		if (question != null) {
 
@@ -355,27 +367,38 @@ public class QuestionDialog extends Dialog {
 			//claferFeatures = getClaferFeatures();
 
 			for (Answer answer : question.getAnswers()) {
-				
-				Label lblCurrentAnswers = new Label(compositeForAnswers1, SWT.NONE);
-				lblCurrentAnswers.setText(answer.getValue());
+
+				Text txtBoxCurrentAnswer = new Text(compositeForAnswers1, SWT.BORDER);
+				GridData gd_txtBoxCurrentAnswer = new GridData(SWT.FILL, SWT.NONE, false, false);
+				gd_txtBoxCurrentAnswer.widthHint = 120;
+				txtBoxCurrentAnswer.setLayoutData(gd_txtBoxCurrentAnswer);
+				txtBoxCurrentAnswer.setEditable(false);
+				txtBoxCurrentAnswer.setText(answer.getValue());
 
 				Combo comboForAlgorithm = new Combo(compositeForAnswers1, SWT.NONE);
+				GridData gd_comboForAlgorithm = new GridData(SWT.FILL, SWT.NONE, true, true);
+				gd_comboForAlgorithm.widthHint = 150;
+				comboForAlgorithm.setLayoutData(gd_comboForAlgorithm);
 				comboForAlgorithm.setVisible(true);
 				comboForAlgorithm.add("none");
-				
+
 				for (int i = 0; i < claferFeatures.size(); i++) {
 					comboForAlgorithm.add(claferFeatures.get(i).getFeatureName());
 				}
 
 				Combo comboForOperand = new Combo(compositeForAnswers1, SWT.NONE);
 				comboForOperand.setVisible(true);
+				GridData gd_comboForOperand = new GridData(SWT.FILL, SWT.NONE, true, true);
+				gd_comboForOperand.widthHint = 100;
+				comboForOperand.setLayoutData(gd_comboForOperand);
+
 				//comboForOperand.add("none");
-				
-			
+
 				Combo comboForOperator = new Combo(compositeForAnswers1, SWT.NONE);
 				comboForOperator.setVisible(true);
 				comboForOperator.add("none");
 				GridData gd_Operator = new GridData(SWT.FILL, SWT.NONE, true, true);
+				gd_Operator.widthHint = 100;
 				comboForOperator.setLayoutData(gd_Operator);
 				comboForOperator.setItems(Constants.FeatureConstraintRelationship.EQUAL.toString(), Constants.FeatureConstraintRelationship.NOTEQUAL.toString(),
 					Constants.FeatureConstraintRelationship.LESSTHAN.toString(), Constants.FeatureConstraintRelationship.GREATERTHAN.toString(),
@@ -392,40 +415,43 @@ public class QuestionDialog extends Dialog {
 				 */
 
 				Text txtBoxValue = new Text(compositeForAnswers1, SWT.BORDER);
+				GridData gd_txtBoxValue = new GridData(SWT.FILL, SWT.NONE, true, true);
+				gd_txtBoxValue.widthHint = 150;
+				txtBoxValue.setLayoutData(gd_txtBoxValue);
 				txtBoxValue.setVisible(true);
-				ClaferDependency claferDependency=new ClaferDependency();
 
-				if(answer.getClaferDependencies()!=null){
-					for(ClaferDependency cf:answer.getClaferDependencies()){
-						if(cf.getAlgorithm()!=null){
+				ClaferDependency claferDependency = new ClaferDependency();
+
+				if (answer.getClaferDependencies() != null) {
+					for (ClaferDependency cf : answer.getClaferDependencies()) {
+						if (cf.getAlgorithm() != null) {
 							comboForAlgorithm.setText(cf.getAlgorithm());
 							claferDependency.setAlgorithm(comboForAlgorithm.getText());
 						}
-						if(cf.getOperand()!=null){
+						if (cf.getOperand() != null) {
 							comboForOperand.setText(cf.getOperand());
 							claferDependency.setOperand(comboForOperand.getText());
 						}
-						if(cf.getOperator()!=null){
+						if (cf.getOperator() != null) {
 							comboForOperator.setText(cf.getOperator());
 							claferDependency.setOperator(comboForOperator.getText());
 						}
-						if(cf.getValue()!=null){
+						if (cf.getValue() != null) {
 							txtBoxValue.setText(cf.getValue());
-							claferDependency.setValue(txtBoxValue.getText());					
+							claferDependency.setValue(txtBoxValue.getText());
 						}
-						}
+					}
 				}
 				//adding the items to comboForOperand box depending on the comboForAlgorithm box value 
-				if(comboForAlgorithm.getText()!=null){
+				if (comboForAlgorithm.getText() != null) {
 					operandItems = new ArrayList<String>();
 					ArrayList<String> operandToAdd = itemsToAdd(comboForAlgorithm.getText());
 					for (int i = 0; i < operandToAdd.size(); i++) {
 						comboForOperand.add(operandToAdd.get(i));
 					}
-					
+
 				}
-				
-					
+
 				comboForAlgorithm.addSelectionListener(new SelectionAdapter() {
 
 					@Override
@@ -438,36 +464,39 @@ public class QuestionDialog extends Dialog {
 							comboForOperand.add(operandToAdd.get(i));
 						}
 						//to remove the previous operand selected of comboForOperand as value of comboForlgorithm is changed
-						if(answer.getClaferDependencies()!=null){
+						if (answer.getClaferDependencies() != null) {
 							comboForOperand.setText("");
 							claferDependency.setOperand(comboForOperand.getText());
-													
+
 						}
 						claferDependency.setAlgorithm(featureSelected);
 						//algorithmChanged=true;
 					}
 				});
-				comboForOperand.addSelectionListener(new SelectionAdapter(){
+				comboForOperand.addSelectionListener(new SelectionAdapter() {
+
 					@Override
-					public void widgetSelected(SelectionEvent e){
-						claferDependency.setOperand(comboForOperand.getText());						
+					public void widgetSelected(SelectionEvent e) {
+						claferDependency.setOperand(comboForOperand.getText());
 					}
 				});
-				comboForOperator.addSelectionListener(new SelectionAdapter(){
+				comboForOperator.addSelectionListener(new SelectionAdapter() {
+
 					@Override
-					public void widgetSelected(SelectionEvent e){
+					public void widgetSelected(SelectionEvent e) {
 						claferDependency.setOperator(comboForOperator.getText());
 					}
 				});
-				
-				txtBoxValue.addFocusListener(new FocusAdapter(){
+
+				txtBoxValue.addFocusListener(new FocusAdapter() {
+
 					@Override
-					public void focusLost(FocusEvent e){
+					public void focusLost(FocusEvent e) {
 						claferDependency.setValue(txtBoxValue.getText());
 					}
 				});
-				
-				ArrayList<ClaferDependency> listOfClaferDependencies=new ArrayList<ClaferDependency>();
+
+				ArrayList<ClaferDependency> listOfClaferDependencies = new ArrayList<ClaferDependency>();
 				listOfClaferDependencies.add(claferDependency);
 				answer.setClaferDependencies(listOfClaferDependencies);
 			}
@@ -507,43 +536,45 @@ public class QuestionDialog extends Dialog {
 
 				Text txtOption = new Text(answersCompositeToLinkCode, SWT.BORDER);
 				txtOption.setVisible(true);
-				
+
 				Text txtValue = new Text(answersCompositeToLinkCode, SWT.BORDER);
 				txtValue.setVisible(true);
 
-				CodeDependency codeDependency=new CodeDependency();
+				CodeDependency codeDependency = new CodeDependency();
 
-				if(answer.getCodeDependencies()!=null){
-					for(CodeDependency cd:answer.getCodeDependencies() ){
-						if(cd.getOption()!=null){
+				if (answer.getCodeDependencies() != null) {
+					for (CodeDependency cd : answer.getCodeDependencies()) {
+						if (cd.getOption() != null) {
 							txtOption.setText(cd.getOption());
 							codeDependency.setOption(txtOption.getText());
 						}
-						if(cd.getValue()!=null){
+						if (cd.getValue() != null) {
 							txtValue.setText(cd.getValue());
 							codeDependency.setValue(txtValue.getText());
 						}
 					}
 				}
-				
-				txtOption.addFocusListener(new FocusAdapter(){
+
+				txtOption.addFocusListener(new FocusAdapter() {
+
 					@Override
-					public void focusLost(FocusEvent e){
+					public void focusLost(FocusEvent e) {
 						codeDependency.setOption(txtOption.getText());
 					}
 				});
-				
-				txtValue.addFocusListener(new FocusAdapter(){
+
+				txtValue.addFocusListener(new FocusAdapter() {
+
 					@Override
-					public void focusLost(FocusEvent e){
+					public void focusLost(FocusEvent e) {
 						codeDependency.setValue(txtValue.getText());
 					}
 				});
-				
-				ArrayList<CodeDependency> codeDependencies=new ArrayList<CodeDependency>();
+
+				ArrayList<CodeDependency> codeDependencies = new ArrayList<CodeDependency>();
 				codeDependencies.add(codeDependency);
 				answer.setCodeDependencies(codeDependencies);
-				
+
 			}
 
 		}
@@ -663,7 +694,7 @@ public class QuestionDialog extends Dialog {
 		}
 		//questionDetails.set
 		this.questionDetails = questionDetails;
-		}
+	}
 
 	public Question getQuestionDetails() {
 		return this.questionDetails;

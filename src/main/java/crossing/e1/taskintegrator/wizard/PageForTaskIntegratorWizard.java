@@ -174,6 +174,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 							// Update the array list.
 							compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
 							compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails, claferPageComposite.getListOfAllClaferFeatures());
+							
 						}
 					}
 				});

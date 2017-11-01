@@ -257,19 +257,20 @@ public class QuestionDialog extends Dialog {
 				Label qstnTxt = new Label(compositeForLinkAnswerTab, SWT.NONE);
 				qstnTxt.setText(question.getQuestionText());
 
-				Label lblAnswers = new Label(compositeForLinkAnswerTab, SWT.NONE);
-				lblAnswers.setText("Answers:");
-
 				Composite compositeForAnswers = new Composite(compositeForLinkAnswerTab, SWT.NONE);
 				compositeForAnswers.setLayout(new GridLayout(2, false));
+				GridData gd_compositeForAnswers=new GridData();
+				gd_compositeForAnswers.horizontalSpan=2;
+				compositeForAnswers.setLayoutData(gd_compositeForAnswers);
+				
+				Label lblAnswers = new Label(compositeForAnswers, SWT.NONE);
+				lblAnswers.setText("Answers");
+				
+				Label lblSelectQuestion =new Label (compositeForAnswers, SWT.NONE);
+				lblSelectQuestion.setText("Select question");
 
-				/*
-				 * GridData gd_compositeForAnswers=new GridData(SWT.FILL, SWT.NONE, false, false); gd_compositeForAnswers.horizontalSpan=2;
-				 * compositeForAnswers.setLayoutData(gd_compositeForAnswers);
-				 */
 
 				for (Answer answer : question.getAnswers()) {
-					//System.out.println(question.getQuestionText());
 
 					Text answerTxt = new Text(compositeForAnswers, SWT.BORDER);
 					GridData gd_answerTxt = new GridData(SWT.FILL, SWT.NONE, false, false);

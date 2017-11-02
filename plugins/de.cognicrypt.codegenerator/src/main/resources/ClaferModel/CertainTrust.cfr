@@ -1,0 +1,60 @@
+abstract Enum
+
+//enum Security
+abstract Security : Enum -> integer
+NoSecurity: Security = 0
+Broken: Security = 1
+Weak: Security = 2
+Medium: Security = 3
+Strong: Security = 4
+
+abstract Operator
+	name -> string
+	description -> string
+	security -> Security
+		
+abstract Task
+    description -> string
+
+NONE: Operator
+	[name = "NONE"]
+	[description = "The operator NONE is do nothing."]
+	[security = Medium]
+
+OR: Operator
+	[name = "OR"]
+	[description = "The operator OR is applicable when opinions for two independent propositions form a new opinion reflecting the degree of truth for at least one out of both propositions."]
+	[security = Medium]
+
+AND: Operator
+	[name = "AND"]
+	[description = "The operator AND is applicable when opinions for two independent propositions are aggregated to produce a new opinion reflecting the degree of truth of both propositions simultaneously."]
+	[security = Medium]
+
+NOT: Operator
+	[name = "NOT"]
+	[description = "The operator NOT is applicable when an opinion about a proposition needs to be negated."]
+	[security = Medium]
+
+wFUSION: Operator
+	[name = "Weighted fusion"]
+	[description = "The operator Weighted fusion, is used to aggregate several opinions about the same thing."]
+	[security = Medium]
+
+cFUSION: Operator
+	[name = "Conflict-aware fusion"]
+	[description = "The operator Conflict-aware fusion, is additionally capable of dealing with the degree of conflict between opinions."]
+	[security = Medium]
+
+CertainTrust : Task
+ 	[description = "CertainTrust"]
+ 	op -> Operator
+ 	security -> integer
+ 	[security = op.security]
+ 	[op = NONE => security = 3]
+	[op = OR => security = 3]
+	[op = AND => security = 3]
+	[op = NOT => security = 3]
+	[op = wFUSION => security = 3]
+	[op = cFUSION => security = 3]
+	

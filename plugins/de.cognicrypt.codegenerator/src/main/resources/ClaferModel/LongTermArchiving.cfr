@@ -1,0 +1,36 @@
+abstract Enum
+
+abstract List : Enum
+Skip_List : List
+Simple_List : List
+Merkle_Tree_Sequence : List
+Notarial_Attestation_Wrapper : List
+
+abstract AddingDocuments : Enum
+Once : AddingDocuments
+MultipleTimes : AddingDocuments
+
+abstract NumberDocuments : Enum
+Single : NumberDocuments
+MultipleDocuments : NumberDocuments
+
+abstract TrustedAuthorities : Enum
+SignatureBased : TrustedAuthorities
+Notaries : TrustedAuthorities
+Both : TrustedAuthorities
+
+abstract Task
+	description -> string
+
+LongTermArchiving : Task
+	[description = "Securely Archive Files"]
+	list -> List
+	addDoc -> AddingDocuments
+	numDoc -> NumberDocuments
+	trust -> TrustedAuthorities
+	security -> integer
+	[security = 1]
+	[addDoc = MultipleTimes => list = Skip_List]
+	[numDoc = MultipleDocuments && addDoc = Once => list = Merkle_Tree_Sequence]
+	[numDoc = Single && addDoc = Once && trust = SignatureBased => list = Simple_List]
+	[numDoc = Single && addDoc = Once && (trust = Both || trust = Notaries) => list = Notarial_Attestation_Wrapper]

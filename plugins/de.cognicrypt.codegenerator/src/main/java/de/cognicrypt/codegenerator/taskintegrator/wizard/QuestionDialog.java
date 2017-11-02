@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
@@ -100,6 +101,7 @@ public class QuestionDialog extends Dialog {
 				if (tabFolder.getSelectionIndex() == 1) {
 					System.out.println(tabFolder.getSelectionIndex());
 					//lblQuestionContent.setText(textQuestion.getText());
+
 					if (question == null) {
 						linkAnswersTabMessageBox.open();
 					}
@@ -108,6 +110,12 @@ public class QuestionDialog extends Dialog {
 				if (tabFolder.getSelectionIndex() == 2) {
 					if (question == null) {
 						linkFeaturesMessageBox.open();
+					}
+				}
+
+				if (tabFolder.getSelectionIndex() == 3) {
+					if (question == null) {
+						linkCodeMessageBox.open();
 					}
 				}
 			}
@@ -137,10 +145,13 @@ public class QuestionDialog extends Dialog {
 		lblType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		lblType.setText("Type");
 
+		String comboItem1= "Drop down ";
+		String comboItem2= "text box";
+		String comboItem3= "itemSelection ( More than one answer selection possible )";
+		String comboItem4= "Radio Button";
 		combo = new Combo(composite, SWT.NONE);
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		combo.setItems(new String[] { Constants.GUIElements.combo.toString(), Constants.GUIElements.text.toString(), Constants.GUIElements.itemselection
-			.toString(), Constants.GUIElements.button.toString() });
+		combo.setItems(new String[] {comboItem1, comboItem2, comboItem3, comboItem4 });
 		combo.select(-1);
 
 		Button btnAddAnswer = new Button(composite, SWT.None);
@@ -176,42 +187,41 @@ public class QuestionDialog extends Dialog {
 			public void modifyText(ModifyEvent e) {
 
 				switch (combo.getText()) {
-					case "text":
+					case "text box":
 						btnAddAnswer.setVisible(false);
 						compositeToHoldAnswers.setVisible(false);
 						compositeToHoldAnswers.getListOfAllAnswer().clear();
 						compositeToHoldAnswers.updateAnswerContainer();
-						currentQuestionType = "text";
+						currentQuestionType = "text box";
 						break;
-					case "combo":
-						boolean comboSelected = combo.getText().equalsIgnoreCase("combo") ? true : false;
+					case "Drop down ":
+						boolean comboSelected = combo.getText().equalsIgnoreCase("Drop down ") ? true : false;
 						btnAddAnswer.setVisible(comboSelected);
-						if (!currentQuestionType.equalsIgnoreCase("combo")) {
+						if (!currentQuestionType.equalsIgnoreCase("combo (Drop down )")) {
 							compositeToHoldAnswers.getListOfAllAnswer().clear();
 							compositeToHoldAnswers.updateAnswerContainer();
 							compositeToHoldAnswers.setVisible(false);
-							currentQuestionType = "combo";
+							currentQuestionType = "Drop down ";
 						}
 						break;
-					case "itemselection":
-						//currentQuestionType="itemselection";
-						boolean itemSelected = combo.getText().equalsIgnoreCase("itemselection") ? true : false;
+					case "itemSelection ( More than one answer selection possible )":
+						boolean itemSelected = combo.getText().equalsIgnoreCase("itemSelection ( More than one answer selection possible )") ? true : false;
 						btnAddAnswer.setVisible(itemSelected);
 						if (!currentQuestionType.equalsIgnoreCase("itemselection")) {
 							compositeToHoldAnswers.getListOfAllAnswer().clear();
 							compositeToHoldAnswers.updateAnswerContainer();
 							compositeToHoldAnswers.setVisible(false);
-							currentQuestionType = "itemselection";
+							currentQuestionType = "itemSelection ( More than one answer selection possible )";
 						}
 						break;
-					case "button":
-						boolean buttonSelected = combo.getText().equalsIgnoreCase("button") ? true : false;
+					case "Radio Button":
+						boolean buttonSelected = combo.getText().equalsIgnoreCase("Radio Button") ? true : false;
 						btnAddAnswer.setVisible(buttonSelected);
-						if (!currentQuestionType.equalsIgnoreCase("button")) {
+						if (!currentQuestionType.equalsIgnoreCase("Radio Button")) {
 							compositeToHoldAnswers.getListOfAllAnswer().clear();
 							compositeToHoldAnswers.updateAnswerContainer();
 							compositeToHoldAnswers.setVisible(false);
-							currentQuestionType = "button";
+							currentQuestionType = "Radio Button";
 						}
 						break;
 					default:
@@ -246,7 +256,7 @@ public class QuestionDialog extends Dialog {
 
 		if (question != null) {
 
-			if (question.getQuestionType().equalsIgnoreCase("text")) {
+			if (question.getQuestionType().equalsIgnoreCase("text box")) {
 				Label lblLinkAnswersTabMessage = new Label(compositeForLinkAnswerTab, SWT.NONE);
 				lblLinkAnswersTabMessage.setText("This type of question does not need to link answers");
 
@@ -257,18 +267,22 @@ public class QuestionDialog extends Dialog {
 				Label qstnTxt = new Label(compositeForLinkAnswerTab, SWT.NONE);
 				qstnTxt.setText(question.getQuestionText());
 
+				/*
+				 * ScrolledComposite scroll = new ScrolledComposite(compositeForLinkAnswerTab,SWT.V_SCROLL); scroll.setLayout(new GridLayout(2, false)); GridData gd_scroll=new
+				 * GridData(); gd_scroll.horizontalSpan=2; gd_scroll.heightHint=300; gd_scroll.widthHint=600; scroll.setLayoutData(gd_scroll);
+				 */
+
 				Composite compositeForAnswers = new Composite(compositeForLinkAnswerTab, SWT.NONE);
 				compositeForAnswers.setLayout(new GridLayout(2, false));
-				GridData gd_compositeForAnswers=new GridData();
-				gd_compositeForAnswers.horizontalSpan=2;
+				GridData gd_compositeForAnswers = new GridData();
+				gd_compositeForAnswers.horizontalSpan = 2;
 				compositeForAnswers.setLayoutData(gd_compositeForAnswers);
-				
+
 				Label lblAnswers = new Label(compositeForAnswers, SWT.NONE);
 				lblAnswers.setText("Answers");
-				
-				Label lblSelectQuestion =new Label (compositeForAnswers, SWT.NONE);
-				lblSelectQuestion.setText("Select question");
 
+				Label lblSelectQuestion = new Label(compositeForAnswers, SWT.NONE);
+				lblSelectQuestion.setText("Select question");
 
 				for (Answer answer : question.getAnswers()) {
 
@@ -296,6 +310,7 @@ public class QuestionDialog extends Dialog {
 						}
 
 					}
+
 					if (answer.getNextID() != -2) {
 						for (Question question : listOfAllQuestions) {
 							if (question.getId() == answer.getNextID()) {
@@ -320,11 +335,15 @@ public class QuestionDialog extends Dialog {
 					});
 
 				}
+				/*
+				 * scroll.setContent(compositeForAnswers); scroll.setExpandHorizontal(true); scroll.setExpandVertical(true);
+				 * //scroll.setMinSize(compositeForAnswers.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+				 */
 			}
 		}
 
 		TabItem tbtmLinkClaferFeatures = new TabItem(tabFolder, SWT.NONE);
-		tbtmLinkClaferFeatures.setText("Link Clafer features");
+		tbtmLinkClaferFeatures.setText("Link features");
 
 		Composite compositeForClaferTab = new Composite(tabFolder, SWT.NONE);
 		tbtmLinkClaferFeatures.setControl(compositeForClaferTab);
@@ -338,7 +357,7 @@ public class QuestionDialog extends Dialog {
 
 		if (question != null) {
 
-			if (question.getQuestionType().equalsIgnoreCase("text")) {
+			if (question.getQuestionType().equalsIgnoreCase("text box")) {
 				Label lblLinkFeatureTabMessage = new Label(compositeForClaferTab, SWT.NONE);
 				lblLinkFeatureTabMessage.setText("This type of question does not need to link features");
 
@@ -359,10 +378,10 @@ public class QuestionDialog extends Dialog {
 				lblEmpty.setText("Answers");
 
 				Label lblForAlgorithm = new Label(compositeForAnswers1, SWT.NONE);
-				lblForAlgorithm.setText("Select Algorithm");
+				lblForAlgorithm.setText("Select Features");
 
 				Label lblForOperand = new Label(compositeForAnswers1, SWT.NONE);
-				lblForOperand.setText("Select Operand");
+				lblForOperand.setText("Select Properties");
 
 				Label lblForValue = new Label(compositeForAnswers1, SWT.NONE);
 				lblForValue.setText("Select Operator");
@@ -383,7 +402,7 @@ public class QuestionDialog extends Dialog {
 
 					Combo comboForAlgorithm = new Combo(compositeForAnswers1, SWT.NONE);
 					GridData gd_comboForAlgorithm = new GridData(SWT.FILL, SWT.NONE, true, true);
-					gd_comboForAlgorithm.widthHint = 150;
+					gd_comboForAlgorithm.widthHint = 130;
 					comboForAlgorithm.setLayoutData(gd_comboForAlgorithm);
 					comboForAlgorithm.setVisible(true);
 					comboForAlgorithm.add("none");
@@ -395,7 +414,7 @@ public class QuestionDialog extends Dialog {
 					Combo comboForOperand = new Combo(compositeForAnswers1, SWT.NONE);
 					comboForOperand.setVisible(true);
 					GridData gd_comboForOperand = new GridData(SWT.FILL, SWT.NONE, true, true);
-					gd_comboForOperand.widthHint = 100;
+					gd_comboForOperand.widthHint = 130;
 					comboForOperand.setLayoutData(gd_comboForOperand);
 
 					//comboForOperand.add("none");
@@ -423,7 +442,7 @@ public class QuestionDialog extends Dialog {
 
 					Text txtBoxValue = new Text(compositeForAnswers1, SWT.BORDER);
 					GridData gd_txtBoxValue = new GridData(SWT.FILL, SWT.NONE, true, true);
-					gd_txtBoxValue.widthHint = 150;
+					gd_txtBoxValue.widthHint = 140;
 					txtBoxValue.setLayoutData(gd_txtBoxValue);
 					txtBoxValue.setVisible(true);
 
@@ -517,9 +536,15 @@ public class QuestionDialog extends Dialog {
 		tbtmLink.setControl(compositeForLinkCodeTab);
 		compositeForLinkCodeTab.setLayout(new GridLayout(2, false));
 
+		if (question == null) {
+			linkCodeMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.OK);
+			linkCodeMessageBox.setMessage(
+				"Please at first completely fill the details of \"Question\" Tab and Click OK. " + " Then Click on \"modify\" Button to further fill the details in \"Link Code\" tab");
+		}
+
 		if (question != null) {
 
-			if (question.getQuestionType().equalsIgnoreCase("text")) {
+			if (question.getQuestionType().equalsIgnoreCase("text box")) {
 				Label lblLinkCodeTabMessage = new Label(compositeForLinkCodeTab, SWT.NONE);
 				lblLinkCodeTabMessage.setText("This type of question does not need to link code");
 
@@ -539,7 +564,7 @@ public class QuestionDialog extends Dialog {
 				lblAnswersLink.setText("Answers");
 
 				Label lblOption = new Label(answersCompositeToLinkCode, SWT.None);
-				lblOption.setText("Set Option");
+				lblOption.setText("Set Name");
 
 				Label lblText = new Label(answersCompositeToLinkCode, SWT.NONE);
 				lblText.setText("Set Value");
@@ -557,6 +582,7 @@ public class QuestionDialog extends Dialog {
 					txtOption.setVisible(true);
 					GridData gd_txtOption = new GridData(SWT.FILL, SWT.CENTER, true, true);
 					gd_txtOption.widthHint = 100;
+					txtOption.setLayoutData(gd_txtOption);
 
 					Text txtValue = new Text(answersCompositeToLinkCode, SWT.BORDER);
 					txtValue.setVisible(true);

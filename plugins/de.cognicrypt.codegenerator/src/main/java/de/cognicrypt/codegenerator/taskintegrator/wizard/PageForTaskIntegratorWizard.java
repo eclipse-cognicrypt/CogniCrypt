@@ -139,16 +139,17 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						ArrayList<ClaferFeature> cfrFeatures = null;
+						ArrayList<Question> questions = null;
 						ArrayList<String> strFeatures = new ArrayList<>();
 
-						// get the Clafer creation page
 						for (IWizardPage page : getWizard().getPages()) {
+							// get the Clafer creation page
 							if (page instanceof PageForTaskIntegratorWizard) {
 								PageForTaskIntegratorWizard pftiw = (PageForTaskIntegratorWizard) page;
-								if (pftiw.getName() == Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION) {
-									// get the Clafer features
-									if (pftiw.getCompositeToHoldGranularUIElements() instanceof CompositeToHoldGranularUIElements) {
-										CompositeToHoldGranularUIElements comp = (CompositeToHoldGranularUIElements) pftiw.getCompositeToHoldGranularUIElements();
+								if (pftiw.getCompositeToHoldGranularUIElements() instanceof CompositeToHoldGranularUIElements) {
+									CompositeToHoldGranularUIElements comp = (CompositeToHoldGranularUIElements) pftiw.getCompositeToHoldGranularUIElements();
+									if (pftiw.getName() == Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION) {
+										// get the Clafer features
 										cfrFeatures = comp.getListOfAllClaferFeatures();
 
 										// get all the Clafer features' properties
@@ -157,6 +158,15 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 											for (FeatureProperty prop : cfrFtr.getfeatureProperties()) {
 												// prepend the feature name and add the property to dropdown entries
 												strFeatures.add(ftrName + "." + prop.getPropertyName());
+											}
+										}
+									} else if (pftiw.getName() == Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS) {
+										questions = comp.getListOfAllQuestions();
+
+										for (Question question : questions) {
+											// TODO compare against Constants.GUIElements.text
+											if (question.getQuestionType().equals("text")) {
+												strFeatures.add("[Answer to \"" + question.getQuestionText() + "\"]");
 											}
 										}
 									}

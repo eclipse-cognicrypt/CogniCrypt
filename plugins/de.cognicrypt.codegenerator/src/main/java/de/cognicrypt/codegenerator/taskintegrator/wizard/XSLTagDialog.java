@@ -40,6 +40,7 @@ public class XSLTagDialog extends Dialog {
 	 */
 	public XSLTagDialog(Shell parentShell) {
 		super(parentShell);
+		setShellStyle(SWT.RESIZE);
 	}
 
 	public XSLTagDialog(Shell parentShell, ArrayList<String> cfrFeatures) {

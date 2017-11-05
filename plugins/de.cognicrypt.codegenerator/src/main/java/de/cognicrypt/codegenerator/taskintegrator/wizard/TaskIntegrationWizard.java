@@ -25,8 +25,6 @@ public class TaskIntegrationWizard extends Wizard {
 	@Override
 	public void addPages() {
 
-		this.addPage(new DialogsTestPage());
-
 		// Just add the mode selection page, since the rest of the pages may not be necessary based on the choices.
 		this.addPage(
 			new PageForTaskIntegratorWizard(

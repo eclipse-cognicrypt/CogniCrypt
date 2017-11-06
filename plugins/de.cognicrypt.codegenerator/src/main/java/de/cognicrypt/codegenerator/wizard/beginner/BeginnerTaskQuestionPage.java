@@ -29,8 +29,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-//import org.eclipse.swt.custom.StyleRange;
-//import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -61,7 +61,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private boolean finish = false;
 	private List<String> selectionValues;
 	private final Page page;
-	private Text  note;
+	private StyledText  note;
 	private Composite container;
 
 	public int getCurrentPageID() {
@@ -228,10 +228,10 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				});
 				
 				//added description box for the questions
-				this.note = new Text (parent,SWT.NULL);
+				this.note = new StyledText (parent,SWT.NULL);
 				this.note.setText(question.getNote());
-//				StyleRange styleRange = new StyleRange( 0, 5, null, null, SWT.BOLD );
-//				this.note.setStyleRanges( new StyleRange[]{ styleRange } );
+				StyleRange styleRange = new StyleRange( 0, 5, null, null, SWT.BOLD );
+				this.note.setStyleRanges( new StyleRange[]{ styleRange } );
 				this.note.setEnabled(false);
 				
 				this.finish = true;

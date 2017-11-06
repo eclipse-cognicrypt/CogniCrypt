@@ -1,5 +1,7 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
+import java.util.ArrayList;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -112,8 +114,9 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		btnModify.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				
-				ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), claferFeature);
+				ArrayList<ClaferFeature> listOfExistingClaferFeatures = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent())
+					.getListOfAllClaferFeatures();
+				ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), claferFeature, listOfExistingClaferFeatures);
 				if (cfrFeatureDialog.open() == 0) {
 					((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent()).modifyClaferFeature(claferFeature, cfrFeatureDialog.getResult());// (1) CompositeGranularUIForClaferFeature, (2) composite inside (3) CompositeToHoldGranularUIElements
 				}

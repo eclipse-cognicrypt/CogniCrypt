@@ -71,7 +71,8 @@ public class ClaferFeatureDialog extends Dialog {
 
 		btnRadioAbstract = new Button(container, SWT.RADIO);
 		btnRadioAbstract.setSelection(true);
-		btnRadioAbstract.setText("Abstract");
+		//btnRadioAbstract.setText("Abstract");
+		btnRadioAbstract.setText("Class");
 		btnRadioAbstract.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -82,7 +83,8 @@ public class ClaferFeatureDialog extends Dialog {
 		});
 
 		btnRadioConcrete = new Button(container, SWT.RADIO);
-		btnRadioConcrete.setText("Concrete");
+		//btnRadioConcrete.setText("Concrete");
+		btnRadioConcrete.setText("Instance");
 		btnRadioConcrete.addSelectionListener(new SelectionAdapter() {
 
 			@Override

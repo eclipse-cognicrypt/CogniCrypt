@@ -2,8 +2,8 @@
     "id": "0",
     "content": [{
       "id": "0",
+      "note": "Note: abc",
       "element": "combo",
-      "note":"",
       "questionText": "Do you want to add new documents frequently?",
       "answers": [{
           "value": "Yes",
@@ -30,8 +30,8 @@
     "id": "1",
     "content": [{
       "id": "1",
+       "note": "Note: abc",
       "element": "combo",
-      "note":"",
       "questionText": "Do you want to protect large sets of documents?",
       "answers": [{
           "value": "Yes",
@@ -59,11 +59,11 @@
     "id": "2",
     "content": [{
       "id": "2",
-      "note": "Note: Timestamping Authorities- Timestamping Authorities generate a timestamp on receiving a data, by signing the data with the current time.\nNotaries- Notaries verify properties (signature, certificate and attestation) of the data before signing the data with a date.",
+      "note": "Note: abc",
       "element": "combo",
       "questionText": "What kind of authority do you trust?",
       "answers": [{
-          "value": "Timestamping Authorities",
+          "value": "Timestamping authorities",
           "claferDependencies": [{
             "algorithm": "trust",
             "value": "SignatureBased",

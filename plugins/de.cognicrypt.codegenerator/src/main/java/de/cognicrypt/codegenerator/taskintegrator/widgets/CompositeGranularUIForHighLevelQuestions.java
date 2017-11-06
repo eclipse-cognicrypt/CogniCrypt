@@ -33,15 +33,15 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 	 * @param parent
 	 * @param style
 	 */
-	public CompositeGranularUIForHighLevelQuestions(Composite parent, int style, Question questionParam, ArrayList<ClaferFeature> claferFeatures) {
+	public CompositeGranularUIForHighLevelQuestions(Composite parent, int style, Question questionParam) {
 		super(parent, SWT.BORDER);
 		
 		setQuestion(questionParam);
-		setClaferFeatures(claferFeatures);
+		//setClaferFeatures(claferFeatures);
 		
 		setLayout(null);
 		
-		GroupModifyDeleteButtons grpModifyDeleteButtons = new GroupModifyDeleteButtons(this,question,claferFeatures);
+		GroupModifyDeleteButtons grpModifyDeleteButtons = new GroupModifyDeleteButtons(this,question);
 		RowLayout rowLayout = (RowLayout) grpModifyDeleteButtons.getLayout();
 		rowLayout.marginLeft = 5;
 		rowLayout.marginTop = 5;
@@ -56,9 +56,9 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		linkQstn.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e){
-				QuestionDialog link=new QuestionDialog(parent.getShell(),questionParam,claferFeatures);
+			/*	QuestionDialog link=new QuestionDialog(parent.getShell(),questionParam,claferFeatures);
 				link.open();
-			}
+			*/}
 		});
 		
 		Group grpQuestionDetails = new Group(this, SWT.NONE);
@@ -117,15 +117,17 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		}*/
 		
 		for(Answer answer : question.getAnswers()){
+			answerString.append("\"" );
 			answerString.append(answer.getValue());
 			answerString.append(answer.isDefaultAnswer() ? "*" : "");
+			answerString.append("\"");
 			/*SUPER_SCRIPT = new AttributedString("c");
 			SUPER_SCRIPT.addAttribute(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
 			answerString.append(answer.getCodeDependencies().size()>0 ? "@" : "");
 			SUPER_SCRIPT = new AttributedString("x");
 			SUPER_SCRIPT.addAttribute(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
 			answerString.append(answer.getClaferDependencies().size()>0 ? "#" : "");
-            */answerString.append("||");
+            */answerString.append(" | ");
 		}
 			
 		
@@ -168,10 +170,8 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		this.question = question;
 	}
 	
-	private void setClaferFeatures(ArrayList<ClaferFeature> claferFeatures) {
-		this.claferFeatures = claferFeatures;
-	}
 	
+
 	public void setTextQuestion(String txtQuestion){
 		this.txtQuestion.setText(txtQuestion);
 	}

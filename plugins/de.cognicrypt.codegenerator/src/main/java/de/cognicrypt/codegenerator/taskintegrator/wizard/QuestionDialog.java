@@ -70,12 +70,12 @@ public class QuestionDialog extends Dialog {
 	 * @param parentShell
 	 */
 	public QuestionDialog(Shell parentShell) {
-		super(parentShell);
-		this.question = null;
+		this(parentShell, null, null, null);
 	}
 
 	public QuestionDialog(Shell parentShell, Question question, ArrayList<ClaferFeature> claferFeatures, ArrayList<Question> listOfAllQuestions) {
 		super(parentShell);
+		setShellStyle(SWT.RESIZE);
 		this.question = question;
 		this.claferFeatures = claferFeatures;
 		this.listOfAllQuestions = listOfAllQuestions;

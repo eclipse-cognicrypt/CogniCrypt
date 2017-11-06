@@ -89,7 +89,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						 * compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
 						 */
 						counter++;
-						ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell());
+						ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), compositeToHoldGranularUIElements.getListOfAllClaferFeatures());
 						if (cfrFeatureDialog.open() == 0) {
 							ClaferFeature tempFeature = cfrFeatureDialog.getResult();
 

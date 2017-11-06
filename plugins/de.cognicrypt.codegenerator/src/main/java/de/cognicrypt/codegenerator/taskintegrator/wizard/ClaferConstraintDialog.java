@@ -34,7 +34,8 @@ public class ClaferConstraintDialog extends Dialog {
 	private Text text;
 	private ClaferConstraint cfrConstraint;
 
-	private ClaferFeature cfrFeature;
+	private ClaferFeature currentFeature;
+	private ArrayList<ClaferFeature> cfrFeatures;
 
 	/**
 	 * Create the dialog.
@@ -49,9 +50,10 @@ public class ClaferConstraintDialog extends Dialog {
 		cfrConstraint = new ClaferConstraint();
 	}
 
-	public ClaferConstraintDialog(Shell parentShell, ClaferFeature cfrFeature) {
+	public ClaferConstraintDialog(Shell parentShell, ClaferFeature currentFeature, ArrayList<ClaferFeature> cfrFeatures) {
 		this(parentShell);
-		this.cfrFeature = cfrFeature;
+		this.currentFeature = currentFeature;
+		this.cfrFeatures = cfrFeatures;
 	}
 
 	/**
@@ -74,9 +76,15 @@ public class ClaferConstraintDialog extends Dialog {
 		gd_list.grabExcessHorizontalSpace = true;
 		list.setLayoutData(gd_list);
 
-		if (cfrFeature != null) {
-			for (FeatureProperty featureProperty : cfrFeature.getfeatureProperties()) {
+		if (cfrFeatures != null) {
+			for (FeatureProperty featureProperty : currentFeature.getfeatureProperties()) {
 				list.add(featureProperty.getPropertyName());
+			}
+			for (ClaferFeature cfrFeature : cfrFeatures) {
+				list.add(cfrFeature.getFeatureName());
+				for (FeatureProperty featureProperty : cfrFeature.getfeatureProperties()) {
+					list.add(featureProperty.getPropertyName());
+				}
 			}
 		}
 

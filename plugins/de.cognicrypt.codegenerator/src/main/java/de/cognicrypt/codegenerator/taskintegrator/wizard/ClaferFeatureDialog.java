@@ -1,5 +1,7 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -32,6 +34,7 @@ public class ClaferFeatureDialog extends Dialog {
 	private Button btnRadioConcrete;
 
 	private ClaferFeature resultClafer;
+	private ArrayList<ClaferFeature> listOfExistingClaferFeatures;
 
 	/**
 	 * Create the dialog.
@@ -46,6 +49,11 @@ public class ClaferFeatureDialog extends Dialog {
 		setShellStyle(SWT.CLOSE);
 
 		resultClafer = modifiableClaferFeature;
+	}
+
+	public ClaferFeatureDialog(Shell shell, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
+		this(shell);
+		this.listOfExistingClaferFeatures = listOfExistingClaferFeatures;
 	}
 
 	/**
@@ -185,7 +193,7 @@ public class ClaferFeatureDialog extends Dialog {
 	}
 
 	private void addClaferConstraint() {
-		ClaferConstraintDialog cfrConstraintDialog = new ClaferConstraintDialog(getShell(), resultClafer);
+		ClaferConstraintDialog cfrConstraintDialog = new ClaferConstraintDialog(getShell(), resultClafer, listOfExistingClaferFeatures);
 
 		// blocking call to Dialog.open() the dialog
 		// it returns 0 on success

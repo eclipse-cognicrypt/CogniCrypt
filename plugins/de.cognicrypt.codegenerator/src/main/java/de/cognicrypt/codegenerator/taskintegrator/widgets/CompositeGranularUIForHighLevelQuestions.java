@@ -117,15 +117,17 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		}*/
 		
 		for(Answer answer : question.getAnswers()){
+			answerString.append("\"" );
 			answerString.append(answer.getValue());
 			answerString.append(answer.isDefaultAnswer() ? "*" : "");
+			answerString.append("\"");
 			/*SUPER_SCRIPT = new AttributedString("c");
 			SUPER_SCRIPT.addAttribute(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
 			answerString.append(answer.getCodeDependencies().size()>0 ? "@" : "");
 			SUPER_SCRIPT = new AttributedString("x");
 			SUPER_SCRIPT.addAttribute(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
 			answerString.append(answer.getClaferDependencies().size()>0 ? "#" : "");
-            */answerString.append("||");
+            */answerString.append(" | ");
 		}
 			
 		

@@ -36,23 +36,17 @@ public class ClaferFeatureDialog extends Dialog {
 	private ClaferFeature resultClafer;
 	private ArrayList<ClaferFeature> listOfExistingClaferFeatures;
 
-	/**
-	 * Create the dialog.
-	 * @param parentShell
-	 */
-	public ClaferFeatureDialog(Shell parentShell) {
-		this(parentShell, new ClaferFeature(FeatureType.ABSTRACT, "", ""));
-	}
 
-	public ClaferFeatureDialog(Shell parentShell, ClaferFeature modifiableClaferFeature) {
+	public ClaferFeatureDialog(Shell parentShell, ClaferFeature modifiableClaferFeature, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
 		super(parentShell);
 		setShellStyle(SWT.CLOSE);
 
 		resultClafer = modifiableClaferFeature;
+		this.listOfExistingClaferFeatures = listOfExistingClaferFeatures;
 	}
 
 	public ClaferFeatureDialog(Shell shell, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
-		this(shell);
+		this(shell, new ClaferFeature(FeatureType.ABSTRACT, "", ""), listOfExistingClaferFeatures);
 		this.listOfExistingClaferFeatures = listOfExistingClaferFeatures;
 	}
 

@@ -122,7 +122,7 @@ public class QuestionDialog extends Dialog {
 
 		Label lblType = new Label(composite, SWT.NONE);
 		lblType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		lblType.setText("Type");
+		lblType.setText("Answer type");
 
 		combo = new Combo(composite, SWT.NONE);
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -219,7 +219,7 @@ public class QuestionDialog extends Dialog {
 		
 				
 		TabItem tbtmLinkAnswers = new TabItem(tabFolder, SWT.NONE);
-		tbtmLinkAnswers.setText("Link answers");
+		tbtmLinkAnswers.setText("Link to other questions");
 		
 
 		Composite compositeForLinkAnswerTab = new Composite(tabFolder, SWT.NONE);
@@ -264,7 +264,7 @@ public class QuestionDialog extends Dialog {
 		}
 
 		TabItem tbtmLinkClaferFeatures = new TabItem(tabFolder, SWT.NONE);
-		tbtmLinkClaferFeatures.setText("Link Clafer features");
+		tbtmLinkClaferFeatures.setText("Link to variability constructs");
 
 		Composite compositeForClaferTab = new Composite(tabFolder, SWT.NONE);
 		tbtmLinkClaferFeatures.setControl(compositeForClaferTab);
@@ -351,7 +351,7 @@ public class QuestionDialog extends Dialog {
 		}
 
 		TabItem tbtmLink = new TabItem(tabFolder, SWT.NONE);
-		tbtmLink.setText("Link code");
+		tbtmLink.setText("Link to variables to use in code");
 		
 		Composite compositeForLinkCodeTab=new Composite(tabFolder,SWT.None);
 		tbtmLink.setControl(compositeForLinkCodeTab);

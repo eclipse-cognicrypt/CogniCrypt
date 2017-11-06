@@ -1,6 +1,8 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Map.Entry;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -92,25 +94,25 @@ public class ClaferConstraintDialog extends Dialog {
 		RowLayout rl_group = new RowLayout(SWT.HORIZONTAL);
 		group.setLayout(rl_group);
 
-		ArrayList<String> buttonTexts = new ArrayList<>();
-		buttonTexts.add(" NOT ");
-		buttonTexts.add(" EQUALS ");
-		buttonTexts.add(" AND ");
-		buttonTexts.add(" OR ");
-		buttonTexts.add(" implies ");
-		buttonTexts.add(" ( ");
-		buttonTexts.add(" ) ");
-		buttonTexts.add(" > ");
-		buttonTexts.add(" < ");
+		ArrayList<Entry<String, String>> buttonContents = new ArrayList<>();
+		buttonContents.add(new SimpleEntry<String, String>("NOT", " !"));
+		buttonContents.add(new SimpleEntry<String, String>("EQUALS", "="));
+		buttonContents.add(new SimpleEntry<String, String>("AND", " AND "));
+		buttonContents.add(new SimpleEntry<String, String>("OR", " OR "));
+		buttonContents.add(new SimpleEntry<String, String>("IMPLIES", " => "));
+		buttonContents.add(new SimpleEntry<String, String>("(", " ("));
+		buttonContents.add(new SimpleEntry<String, String>(")", ") "));
+		buttonContents.add(new SimpleEntry<String, String>(">", " > "));
+		buttonContents.add(new SimpleEntry<String, String>("<", " < "));
 
-		for (String btnText : buttonTexts) {
+		for (Entry<String, String> btn : buttonContents) {
 			Button newButton = new Button(group, SWT.PUSH);
-			newButton.setText(btnText);
+			newButton.setText(btn.getKey());
 			newButton.addListener(SWT.Selection, new Listener() {
 
 				@Override
 				public void handleEvent(Event arg0) {
-					text.insert(btnText);
+					text.insert(btn.getValue());
 
 				}
 			});

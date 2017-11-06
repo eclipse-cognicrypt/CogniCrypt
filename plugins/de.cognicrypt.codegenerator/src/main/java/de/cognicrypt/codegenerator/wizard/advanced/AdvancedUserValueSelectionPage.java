@@ -31,6 +31,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.PlatformUI;
@@ -91,7 +92,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 				createConstraints(inputClafer, inputClafer.getRef().getTargetType(), titledPanel);
 			} else if (!inputClafer.getRef().getTargetType().isPrimitive()) {
 				if (!ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()).equals(titledPanel.getText())) {
-					final Group childPanel = createPanel(ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()), titledPanel);
+					final Group childPanel = createPanel2(ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()), titledPanel);
 					createConstraints(inputClafer, inputClafer.getRef().getTargetType(), childPanel);
 				} else {
 					//same panel as main algorithm type (e.g., kda in secure pwd storage)
@@ -158,11 +159,26 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
 		titledPanel.setFont(boldFont);
 		final GridLayout layout2 = new GridLayout();
-
 		layout2.numColumns = 4;
 		titledPanel.setLayout(layout2);
-
+		titledPanel.setLayout((new RowLayout(SWT.VERTICAL)));
 		return titledPanel;
+	}
+	
+	private Group createPanel2(final String name, final Composite parent) {
+		final Group titledPanel2 = new Group(parent, SWT.LEFT);
+		titledPanel2.setText(name);
+		final Font boldFont = new Font(titledPanel2.getDisplay(), new FontData("Arial", 10, SWT.NONE));
+		titledPanel2.setFont(boldFont);
+		final GridLayout layout3 = new GridLayout();
+		layout3.numColumns = 4;
+		layout3.makeColumnsEqualWidth=true;
+		layout3.horizontalSpacing=0;
+		layout3.marginLeft=0;
+		titledPanel2.setLayout(layout3);
+		titledPanel2.setLayout((new RowLayout(SWT.HORIZONTAL)));
+		return titledPanel2;
+
 	}
 
 	public List<PropertyWidget> getConstraints() {

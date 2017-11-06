@@ -109,7 +109,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				Button btnAddXSLTag = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
 				btnAddXSLTag.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
 				btnAddXSLTag.setText("Add Xsl Tag");
-
 				Button btnReadCode = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
 				btnReadCode.setBounds(Constants.RECTANGLE_FOR_SECOND_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
 				btnReadCode.setText("Get the code");
@@ -195,12 +194,16 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
 				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
-				QuestionDialog questionDialog = new QuestionDialog(parent.getShell(), null, compositeToHoldGranularUIElements.getListOfAllClaferFeatures());
+				PageForTaskIntegratorWizard claferPage=(PageForTaskIntegratorWizard)(this.getPreviousPage().getPreviousPage());
+				CompositeToHoldGranularUIElements claferPageComposite=(CompositeToHoldGranularUIElements) claferPage.getCompositeToHoldGranularUIElements();
+
+				QuestionDialog questionDialog = new QuestionDialog(parent.getShell() /*compositeToHoldGranularUIElements.getListOfAllClaferFeatures()claferFeatures,claferPageComposite*/);
 				Button qstnDialog = new Button(container, SWT.NONE);
 				qstnDialog.setBounds(889, 10, 115, 29);
 				qstnDialog.setText("Add Question");
+				
 				qstnDialog.addSelectionListener(new SelectionAdapter() {
-
+				
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						int response = questionDialog.open();
@@ -210,10 +213,10 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 							Question questionDetails = questionDialog.getQuestionDetails();
 							questionDetails.setId(counter);
 
-							// Update the array list.							
-
+							// Update the array list.
 							compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
-							compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails, compositeToHoldGranularUIElements.getListOfAllClaferFeatures());
+							compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails, claferPageComposite.getListOfAllClaferFeatures());
+							
 						}
 					}
 				});

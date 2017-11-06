@@ -2,7 +2,7 @@
     "id": "0",
     "content": [{
       "id": "0",
-      "note": "Note: Server or Client!",
+      "note": "",
       "element": "combo",
       "questionText": "Are you implementing the server or the client side?",
       "answers": [{
@@ -29,7 +29,7 @@
     "id": "1",
     "content": [{
       "id": "1",
-       "note": "Note: If you know the ip addres and port number select yes",
+       "note": "",
       "questionText": "Do you know ip and port of the server?",
       "answers": [{
           "value": "Yes",
@@ -49,7 +49,7 @@
     "id": "2",
     "content": [{
       "id": "2",
-      "note": "Note: Server or Client!",
+      "note": "",
       "tooltip": "Example : 216.3.128.12",
       "element": "text",
       "questionText": "Please enter the server's ip.",
@@ -64,7 +64,7 @@
   },
   {
        "id": "3",
-      "note": "Note: Server or Client!",
+      "note": "",
       "tooltip": "Example : 1.2.3.4:80",
       "element": "text",
       "questionText": "Please enter the port of the server.",
@@ -83,7 +83,7 @@
     "id": "3",
     "content": [{
       "id": "4",
-      "note": "Note: Millionaires comparison:................,Euclidean Distance:.................",
+      "note": "Note: Euclidean Distance - The distance between the two parties is identified without disclosing each other's data.\nMillionaire's Comparison- The two parties enter a number and receive the name of the party who entered the bigger one, without revealing each other's inputs. ",
       "element": "combo",
       "questionText": "Which multi-party-computation scenario do you want to implement?",
       "answers": [{
@@ -112,7 +112,7 @@
     "id": "4",
     "content": [{
       "id": "5",
-      "note": "Note: abc",
+      "note": "",
       "element": "combo",
       "questionText": "What security level do you need?",
       "answers": [{

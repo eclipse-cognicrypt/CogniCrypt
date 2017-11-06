@@ -116,7 +116,7 @@ public class ClaferConstraintDialog extends Dialog {
 			});
 		}
 
-		text = new Text(container, SWT.BORDER | SWT.WRAP);
+		text = new Text(container, SWT.BORDER | SWT.WRAP | SWT.SINGLE);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 
 		return container;

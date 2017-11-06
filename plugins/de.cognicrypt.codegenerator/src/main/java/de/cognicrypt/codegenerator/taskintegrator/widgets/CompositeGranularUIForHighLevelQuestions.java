@@ -145,7 +145,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		//txtAnswers.setText("answers");
 		txtAnswers.setText(answerString.toString());
 		
-		this.setSize(SWT.DEFAULT, 190);
+		this.setSize(SWT.DEFAULT, 250);
 
 	}
 

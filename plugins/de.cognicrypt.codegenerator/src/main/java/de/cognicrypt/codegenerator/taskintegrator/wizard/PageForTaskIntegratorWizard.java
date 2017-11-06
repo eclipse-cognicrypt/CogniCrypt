@@ -202,7 +202,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
 				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
-				PageForTaskIntegratorWizard claferPage=(PageForTaskIntegratorWizard)(this.getPreviousPage().getPreviousPage());
+				// TODO change this to reliably determine the Clafer feature page
+				PageForTaskIntegratorWizard claferPage = (PageForTaskIntegratorWizard) (this.getPreviousPage());
 				CompositeToHoldGranularUIElements claferPageComposite=(CompositeToHoldGranularUIElements) claferPage.getCompositeToHoldGranularUIElements();
 
 				QuestionDialog questionDialog = new QuestionDialog(parent.getShell() /*compositeToHoldGranularUIElements.getListOfAllClaferFeatures()claferFeatures,claferPageComposite*/);

@@ -1,4 +1,4 @@
-package crossing.e1.primitive.wizard;
+package de.cognicrypt.codegenerator.primitive.wizard;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,16 +9,12 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 
-import crossing.e1.configurator.Constants.GUIElements;
-import crossing.e1.configurator.beginer.question.Answer;
-import crossing.e1.configurator.beginer.question.Page;
-import crossing.e1.configurator.beginer.question.Question;
-import crossing.e1.configurator.wizard.InstanceListPage;
-import crossing.e1.configurator.wizard.advanced.AdvancedUserValueSelectionPage;
-import crossing.e1.configurator.wizard.beginner.BeginnerTaskQuestionPage;
-import crossing.e1.primitive.questionnaire.wizard.PrimitiveQuestionnaire;
-import crossing.e1.primitive.questionnaire.wizard.PrimitiveQuestionnairePage;
-import crossing.e1.primitive.types.Primitive;
+import de.cognicrypt.codegenerator.primitive.questionnaire.wizard.PrimitiveQuestionnaire;
+import de.cognicrypt.codegenerator.primitive.questionnaire.wizard.PrimitiveQuestionnairePage;
+import de.cognicrypt.codegenerator.primitive.types.Primitive;
+import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.question.Page;
+import de.cognicrypt.codegenerator.question.Question;
 
 public class IntegrationNewPrimitive extends Wizard {
 

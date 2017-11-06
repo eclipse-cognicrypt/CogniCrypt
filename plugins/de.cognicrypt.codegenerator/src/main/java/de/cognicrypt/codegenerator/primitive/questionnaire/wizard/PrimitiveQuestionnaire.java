@@ -1,10 +1,10 @@
-package crossing.e1.primitive.questionnaire.wizard;
+package de.cognicrypt.codegenerator.primitive.questionnaire.wizard;
 
 import java.util.List;
 
-import crossing.e1.configurator.beginer.question.Page;
-import crossing.e1.configurator.beginer.question.Question;
-import crossing.e1.primitive.types.Primitive;
+import de.cognicrypt.codegenerator.primitive.types.Primitive;
+import de.cognicrypt.codegenerator.question.Page;
+import de.cognicrypt.codegenerator.question.Question;
 
 public class PrimitiveQuestionnaire{
 

@@ -1,4 +1,4 @@
-package crossing.e1.primitive.questionnaire.wizard;
+package de.cognicrypt.codegenerator.primitive.questionnaire.wizard;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -10,12 +10,12 @@ import java.util.Set;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import crossing.e1.configurator.Activator;
-import crossing.e1.configurator.beginer.question.Answer;
-import crossing.e1.configurator.beginer.question.Page;
-import crossing.e1.configurator.beginer.question.Question;
-import crossing.e1.configurator.utilities.Utils;
-import crossing.e1.primitive.types.Primitive;
+import de.cognicrypt.codegenerator.Activator;
+import de.cognicrypt.codegenerator.primitive.types.Primitive;
+import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.question.Page;
+import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.utilities.Utils;
 
 public class PrimitiveQuestionsJSONReader {
 

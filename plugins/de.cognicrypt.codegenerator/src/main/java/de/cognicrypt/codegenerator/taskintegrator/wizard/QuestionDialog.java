@@ -145,7 +145,8 @@ public class QuestionDialog extends Dialog {
 		String comboItem4= "Radio Button";
 		combo = new Combo(composite, SWT.NONE);
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		combo.setItems(new String[] {comboItem1, comboItem2, comboItem3, comboItem4 });
+		//combo.setItems(new String[] {comboItem1, comboItem2, comboItem3, comboItem4 });
+		combo.setItems(new String[] {comboItem1, comboItem2, comboItem4 });
 		combo.select(-1);
 
 		Button btnAddAnswer = new Button(composite, SWT.None);

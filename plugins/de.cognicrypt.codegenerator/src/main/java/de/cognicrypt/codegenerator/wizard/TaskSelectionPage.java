@@ -76,7 +76,7 @@ public class TaskSelectionPage extends WizardPage {
 		 * @param help_id_1 
 		 *        This id refers to HelpContexts_1.xml
 		 */
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "CROSSING.E1.CONFIGURATOR.help_id_1");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "de.cognicrypt.codegenerator.help_id_1");
 		
 		this.selectProjectLabel = new Label(this.container, SWT.NONE);
 		this.selectProjectLabel.setBounds(5, 5, 111, 15);

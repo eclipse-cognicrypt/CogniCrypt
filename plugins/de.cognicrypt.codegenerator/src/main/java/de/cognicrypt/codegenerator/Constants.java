@@ -167,7 +167,7 @@ public class Constants {
 	public static final String WIDGET_DATA_IS_GUIDED_MODE_FORCED = "isGuidedModeForced";
 	
 	// Constants for the drop down for the library type on the mode selection page
-	public static final String WIDGET_CONTENT_EXISTING_LIBRARY = "Existing Library";
+	public static final String WIDGET_CONTENT_EXISTING_LIBRARY = "No custom Library";
 	public static final String WIDGET_CONTENT_CUSTOM_LIBRARY = "Custom Library";
 	
 	//Constants for the drop down for the xsl tag on the xsl code page

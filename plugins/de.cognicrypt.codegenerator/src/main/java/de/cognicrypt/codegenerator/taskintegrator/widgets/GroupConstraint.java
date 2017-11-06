@@ -32,7 +32,9 @@ public class GroupConstraint extends Group {
 		setLayout(new RowLayout(SWT.HORIZONTAL));
 		
 		txtForFeatureConstraints = new Text(this, SWT.BORDER);
-		txtForFeatureConstraints.setEditable(false);
+		// TODO temp solution for the user study. Make the text box editable if the remove button is visisble, i.e. on the pop
+		// - up only.
+		txtForFeatureConstraints.setEditable(showRemoveButton);
 		txtForFeatureConstraints.setText(constraint.getConstraint());
 		txtForFeatureConstraints.setSize(200, 30);
 

@@ -118,7 +118,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 		 * @param help_id_1 
 		 *        This id refers to HelpContexts_1.xml
 		 */
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "CROSSING.E1.CONFIGURATOR.help_id_2"); 
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "de.cognicrypt.codegenerator.help_id_2"); 
 		
 //				try {
 //					Group titledPanel = new Group(container, SWT.NONE);

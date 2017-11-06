@@ -88,6 +88,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						 * compositeToHoldGranularUIElements.getListOfAllClaferFeatures().add(tempFeature);
 						 * compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
 						 */
+						
+						
 						counter++;
 						ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), compositeToHoldGranularUIElements.getListOfAllClaferFeatures());
 						if (cfrFeatureDialog.open() == 0) {
@@ -101,6 +103,12 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					}
 
 				});
+				// TODO for user study only.
+				
+				for(ClaferFeature tempFeature: getDummyClaferFeatures()){
+					compositeToHoldGranularUIElements.getListOfAllClaferFeatures().add(tempFeature);
+					compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
+				}
 				break;
 			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:
 				
@@ -252,6 +260,18 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 		return tempFeature;
 
+	}
+	
+	private ArrayList<ClaferFeature> getDummyClaferFeatures(){
+		ArrayList<ClaferFeature> tempFeatures = new ArrayList<ClaferFeature>();
+		ClaferFeature tempFeatureOne = new ClaferFeature(Constants.FeatureType.ABSTRACT, "race", "");
+		ClaferFeature tempFeatureTwo = new ClaferFeature(Constants.FeatureType.CONCRETE, "altmer", "race");
+		ClaferFeature tempFeatureThree = new ClaferFeature(Constants.FeatureType.CONCRETE, "dunmer", "race");
+		tempFeatures.add(tempFeatureOne);
+		tempFeatures.add(tempFeatureTwo);
+		tempFeatures.add(tempFeatureThree);
+		
+		return tempFeatures;
 	}
 	
 	/**

@@ -1,5 +1,5 @@
 
-package crossing.e1.primitive.questionnaire.wizard;
+package de.cognicrypt.codegenerator.primitive.questionnaire.wizard;
 
 import java.awt.Checkbox;
 import java.util.HashMap;
@@ -30,14 +30,13 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import crossing.e1.configurator.Activator;
-import crossing.e1.configurator.Constants;
-import crossing.e1.configurator.Constants.GUIElements;
-import crossing.e1.configurator.beginer.question.Answer;
-import crossing.e1.configurator.beginer.question.Page;
-import crossing.e1.configurator.beginer.question.Question;
-import crossing.e1.configurator.utilities.Labels;
-import crossing.e1.primitive.types.Primitive;
+import de.cognicrypt.codegenerator.Activator;
+import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.primitive.types.Primitive;
+import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.question.Page;
+import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.utilities.Labels;
 
 public class PrimitiveQuestionnairePage extends WizardPage {
 

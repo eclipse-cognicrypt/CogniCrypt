@@ -1,4 +1,4 @@
-package crossing.e1.primitive.types;
+package de.cognicrypt.codegenerator.primitive.types;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -8,9 +8,9 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import crossing.e1.configurator.Activator;
-import crossing.e1.configurator.Constants;
-import crossing.e1.configurator.utilities.Utils;
+import de.cognicrypt.codegenerator.Activator;
+import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.utilities.Utils;
 
 public class PrimitiveJSONReader {
 

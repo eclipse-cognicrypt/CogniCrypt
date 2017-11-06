@@ -30,14 +30,19 @@ import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.primitive.wizard.IntegrationNewPrimitive;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 import de.cognicrypt.codegenerator.utilities.Labels;
@@ -136,7 +141,26 @@ public class TaskSelectionPage extends WizardPage {
 		this.advancedModeCheckBox.setSelection(false);
 		setControl(this.container);
 
+		Button btnPrimitiveIntegration = new Button(container, SWT.NONE);
+		btnPrimitiveIntegration.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				 WizardDialog wizardDialog = new WizardDialog(parent.getShell(),new  IntegrationNewPrimitive());
+		           if (wizardDialog.open() == Window.CANCEL) {
+		               System.out.println("Ok pressed");
+		           } else {
+		               System.out.println("Cancel pressed");
+		           }
+			}
+		});
+		btnPrimitiveIntegration.setText("Primitive Integration");
+		new Label(container, SWT.NONE);
+
+	
 	}
+	 
+	
+
 
 	public IProject getSelectedProject() {
 		return this.selectedProject;

@@ -1,0 +1,252 @@
+[{
+  "id": "0",
+  "content": [{
+      "id": "0",
+      "element": "radiobutton",
+      "questionText": "Please select the type of the Cipher",
+      "answers": [{
+          "value": "Symmetric",
+          "widgetIsSelected": false
+        },
+        {
+          "value": "Asymmetric",
+          "widgetIsSelected": true,
+          "defaultAnswer": true
+        }
+      ]
+    },
+    {
+      "id": "1",
+      "element": "radiobutton",
+      "questionText": "Please select the type of the symmetric-key algorithm",
+      "answers": [{
+          "value": "Block",
+          "claferDependencies": [{
+              "algorithm": "SymmetricBlockCipher"
+           }
+          ],
+          "widgetIsEnabled": true
+        },
+        {
+          "value": "Stream",
+          "defaultAnswer": true,
+          "widgetIsEnabled": true
+        }
+      ]
+    }
+    ],
+    "nextID": "1"
+    },
+    {
+    "id": "1",
+    "content":
+    [{
+      "id": "0",
+      "element": "text",
+      "questionText": "Please enter the name of your algorithm",
+      "answers": [{
+          "value": "name",
+           "claferDependencies": [{
+              "algorithm": "name="
+           }
+          ],
+          "codeDependencies": [{
+            "option": "textsize",
+            "value": "true"
+          }],
+		"defaultAnswer": true       
+        }
+      ]
+    },
+    {
+     "id": "1",
+      "element": "text",
+      "questionText": "What is the name of the author/company?",
+      "answers": [{
+          "value": "",
+          "codeDependencies": [{
+            "option": "textsize",
+            "value": "true"
+          }]
+        }
+      ]
+    },
+     {
+     "id": "2",
+      "element": "textarea",
+      "questionText": "Please give a short description of your algorithm",
+      "answers": [{
+          "value": "",
+            "claferDependencies": [{
+              "algorithm": "description="
+           }
+          ],
+          "codeDependencies": [{
+            "option": "textsize",
+            "value": "true"
+          }],
+          "defaultAnswer": true
+        }
+      ]
+    }
+  ],
+  "nextID": "2"
+  },
+   {
+    "id": "2",
+    "content":
+    [{
+      "id": "0",
+      "element": "combo",
+      "questionText": "How many keys include your algorithm ?",
+      "answers": [{
+          "value": "1" },
+          {
+          "value": "2"},
+          {
+          "value": "3" },
+          {
+          "value": "4" },
+          {
+          "value": "5",
+        
+          "defaultAnswer": true
+          
+        }
+      ],
+      "updateNextPage": true
+    },
+    {
+      "id": "1",
+      "element": "text",
+      "questionText": "What is the block size of the cipher ?",
+      "answers": [{
+          "value": "",
+          "codeDependencies": [{
+            "option": "textsize",
+            "value": "true"
+          }],
+          "defaultAnswer": true
+        }
+      ]
+    }
+    ],
+  "nextID": "3"
+  },
+   {
+    "id": "3",
+    "content":
+    [{
+      "id": "0",
+      "element": "composed",
+      "questionText": "Please enter the key size of your algorithm \n ",
+      "answers": [{
+          "value": "fixed size",
+          "codeDependencies": [{
+            "option": "textsize",
+            "value": "true"
+          }],
+           "claferDependencies": [{
+              "algorithm": "keySize="
+           }
+          ]
+        },
+    {
+          "value": "Ranged size",
+          "codeDependencies": [{
+            "option": "textsize",
+            "value": "true"
+          }],
+          "defaultAnswer": true
+        }
+      ]
+    }
+    ],
+  "nextID": "4"
+},
+  {
+    "id": "4",
+    "content":
+    [{
+      "id": "0",
+      "element": "checkbox",
+      "questionText": "Please select modes of operation of your algorithm",
+      "answers": [{
+          "value": "CBC",
+           "claferDependencies": [{
+              "algorithm": "mode="
+           }
+          ]
+          },
+         {
+         "value": "OFB",
+          "claferDependencies": [{
+              "algorithm": "mode="
+           }
+          ]
+        },
+         {
+         "value": "CFB",
+          "claferDependencies": [{
+              "algorithm": "mode="
+           }
+          ]
+        },
+         {
+         "value": "CTR",
+          "claferDependencies": [{
+              "algorithm": "mode="
+           }
+          ]
+        },
+        {
+      "value":"other",
+      "defaultAnswer": "true"
+      }
+      ]
+    }
+    ],
+  "nextID": "5"
+},
+{
+	"id": "5",
+	"content":
+	[{
+		"id": "0",
+		"element": "combo",
+		"questionText": "Please select the padding used for your algorithm",
+		"answers": [{
+		"value": "OneAndZeroes Padding",
+		 "claferDependencies": [{
+              "algorithm": "Padding="
+           }
+          ]
+		},
+		{
+		"value" : "Zero Padding",
+		 "claferDependencies": [{
+              "algorithm": "Padding="
+           }
+          ]
+		},
+		{
+		"value":"PKCS7",
+		 "claferDependencies": [{
+              "algorithm": "Padding="
+           }
+          ]
+		},
+		{
+		"value": "No Padding",
+		 "claferDependencies": [{
+              "algorithm": "Padding="
+           }
+          ],
+		"defaultAnswer": "true"
+		}
+		]
+		}
+		],
+		"nextID": "-1"
+
+}]

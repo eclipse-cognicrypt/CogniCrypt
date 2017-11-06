@@ -1,4 +1,4 @@
-package crossing.e1.primitive.wizard;
+package de.cognicrypt.codegenerator.primitive.wizard;
 
 import java.util.List;
 
@@ -8,9 +8,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import crossing.e1.configurator.tasks.Task;
-import crossing.e1.primitive.types.Primitive;
-import crossing.e1.primitive.types.PrimitiveJSONReader;
+import de.cognicrypt.codegenerator.primitive.types.Primitive;
+import de.cognicrypt.codegenerator.primitive.types.PrimitiveJSONReader;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;

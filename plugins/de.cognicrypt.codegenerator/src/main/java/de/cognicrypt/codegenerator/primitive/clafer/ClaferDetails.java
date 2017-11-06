@@ -1,4 +1,4 @@
-package crossing.e1.primitive.clafer;
+package de.cognicrypt.codegenerator.primitive.clafer;
 
 
 public class ClaferDetails {

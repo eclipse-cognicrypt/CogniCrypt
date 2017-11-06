@@ -1,4 +1,4 @@
-package crossing.e1.primitive.types;
+package de.cognicrypt.codegenerator.primitive.types;
 
 public class Primitive {
 

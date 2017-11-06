@@ -1,4 +1,4 @@
-package crossing.e1.primitive.clafer;
+package de.cognicrypt.codegenerator.primitive.clafer;
 import java.util.HashSet;
 import java.util.Set;
 import org.clafer.ast.AstAbstractClafer;

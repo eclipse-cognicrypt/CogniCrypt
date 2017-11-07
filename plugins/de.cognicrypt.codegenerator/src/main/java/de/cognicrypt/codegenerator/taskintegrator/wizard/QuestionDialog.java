@@ -374,13 +374,13 @@ public class QuestionDialog extends Dialog {
 				lblEmpty.setText("Answers");
 
 				Label lblForAlgorithm = new Label(compositeForAnswers1, SWT.NONE);
-				lblForAlgorithm.setText("Select Features");
+				lblForAlgorithm.setText("Variability construct");
 
 				Label lblForOperand = new Label(compositeForAnswers1, SWT.NONE);
-				lblForOperand.setText("Select Properties");
+				lblForOperand.setText("Property");
 
 				Label lblForValue = new Label(compositeForAnswers1, SWT.NONE);
-				lblForValue.setText("Select Operator");
+				lblForValue.setText("Operator");
 
 				Label lblForOperator = new Label(compositeForAnswers1, SWT.NONE);
 				lblForOperator.setText("Set Value");

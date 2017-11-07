@@ -32,7 +32,7 @@
       "id": "1",
        "note": "",
       "element": "combo",
-      "questionText": "Do you want to protect large sets of documents?",
+      "questionText": "Do you want to protect large number of documents?",
       "answers": [{
           "value": "Yes",
           "claferDependencies": [{

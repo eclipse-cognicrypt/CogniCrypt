@@ -82,7 +82,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 		 * @param help_id_2 
 		 *        This id refers to HelpContexts_1.xml
 		 */
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "CROSSING.E1.CONFIGURATOR.help_id_2");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.help_id_3");
 		
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
 		

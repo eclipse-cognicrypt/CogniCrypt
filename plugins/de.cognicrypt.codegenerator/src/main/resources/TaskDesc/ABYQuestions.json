@@ -83,7 +83,7 @@
     "id": "3",
     "content": [{
       "id": "4",
-      "note": "Note: Euclidean Distance - The distance between the two parties is identified without disclosing each other's data.\nMillionaire's Comparison- The two parties enter a number and receive the name of the party who entered the bigger one, without revealing each other's inputs. ",
+      "note": "Note: Euclidean Distance -The distance between the two parties is identified without disclosing each other's data.\nMillionaire's Comparison- The two parties enter a number and receive the name of the party who entered the bigger one, without revealing each other's inputs. ",
       "element": "combo",
       "questionText": "Which Multi-Party Computation scenario do you want to implement?",
       "answers": [{

@@ -36,6 +36,9 @@ public class GroupFeatureProperty extends Group {
 		
 		setLayout(new RowLayout(SWT.HORIZONTAL));
 		
+		Label lblName = new Label(this, SWT.NONE);
+		lblName.setText("Name ");
+		
 		txtPropertyName = new Text(this, SWT.BORDER);
 		txtPropertyName.setEditable(editable);
 		txtPropertyName.setLayoutData(new RowData(160, SWT.DEFAULT));
@@ -50,7 +53,8 @@ public class GroupFeatureProperty extends Group {
 		});
 		
 		Label lblNewLabel = new Label(this, SWT.NONE);
-		lblNewLabel.setText("Type of");
+		lblNewLabel.setText("Inherits from ");
+		// inherits 
 		
 		txtPropertyType = new Text(this, SWT.BORDER);
 		txtPropertyType.setEditable(editable);

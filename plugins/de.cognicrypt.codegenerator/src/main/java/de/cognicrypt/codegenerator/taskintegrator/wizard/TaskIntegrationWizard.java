@@ -9,7 +9,6 @@ import org.eclipse.swt.widgets.Control;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
-import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 
 
@@ -25,8 +24,6 @@ public class TaskIntegrationWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-
-		this.addPage(new DialogsTestPage());
 
 		// Just add the mode selection page, since the rest of the pages may not be necessary based on the choices.
 		this.addPage(
@@ -45,16 +42,16 @@ public class TaskIntegrationWizard extends Wizard {
 
 		this.addPage(
 			new PageForTaskIntegratorWizard(
-			Constants.PAGE_NAME_FOR_XSL_FILE_CREATION,
-			Constants.PAGE_TITLE_FOR_XSL_FILE_CREATION,
-			Constants.PAGE_DESCRIPTION_FOR_XSL_FILE_CREATION
+				Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS,
+				Constants.PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS,
+				Constants.PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS
 			));
 
 		this.addPage(
 			new PageForTaskIntegratorWizard(
-			Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS,
-			Constants.PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS,
-			Constants.PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS
+				Constants.PAGE_NAME_FOR_XSL_FILE_CREATION,
+				Constants.PAGE_TITLE_FOR_XSL_FILE_CREATION,
+				Constants.PAGE_DESCRIPTION_FOR_XSL_FILE_CREATION
 			));
 	}
 

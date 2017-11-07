@@ -266,24 +266,49 @@ public class QuestionDialog extends Dialog {
 
 				Label qstnTxt = new Label(compositeForLinkAnswerTab, SWT.NONE);
 				qstnTxt.setText(question.getQuestionText());
-
-				/*
-				 * ScrolledComposite scroll = new ScrolledComposite(compositeForLinkAnswerTab,SWT.V_SCROLL); scroll.setLayout(new GridLayout(2, false)); GridData gd_scroll=new
-				 * GridData(); gd_scroll.horizontalSpan=2; gd_scroll.heightHint=300; gd_scroll.widthHint=600; scroll.setLayoutData(gd_scroll);
-				 */
+				
+				/* ScrolledComposite scroll = new ScrolledComposite( compositeForLinkAnswerTab, SWT.BORDER|SWT.V_SCROLL);
+				 scroll.setExpandVertical(true);
+				 scroll.setExpandHorizontal(true);
+				 GridData gd_scroll = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
+				 gd_scroll.horizontalSpan=2;
+				 gd_scroll.heightHint = 150;
+				 gd_scroll.widthHint = 600;
+				//
+				scroll.setLayoutData(gd_scroll);
+				// scroll.setLayout(new GridLayout(2, false)); 
+*/
+				 
 
 				Composite compositeForAnswers = new Composite(compositeForLinkAnswerTab, SWT.NONE);
 				compositeForAnswers.setLayout(new GridLayout(2, false));
-				GridData gd_compositeForAnswers = new GridData();
+				GridData gd_compositeForAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 				gd_compositeForAnswers.horizontalSpan = 2;
-				compositeForAnswers.setLayoutData(gd_compositeForAnswers);
-
+				/*gd_compositeForAnswers.heightHint=100;
+				gd_compositeForAnswers.widthHint=400;
+				*/compositeForAnswers.setLayoutData(gd_compositeForAnswers);
+				
 				Label lblAnswers = new Label(compositeForAnswers, SWT.NONE);
 				lblAnswers.setText("Answers");
 
 				Label lblSelectQuestion = new Label(compositeForAnswers, SWT.NONE);
-				lblSelectQuestion.setText("Select question");
+				lblSelectQuestion.setText("Select question");				
 
+				
+/*				CompositeForAnswers answerComposite=new CompositeForAnswers(compositeForLinkAnswerTab,question,listOfAllQuestions);
+				GridData gd_answerComposite = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
+				gd_answerComposite.heightHint = 125;
+				gd_answerComposite.widthHint = 520;
+				gd_answerComposite.horizontalSpan=2;
+				answerComposite.setLayoutData(gd_answerComposite);
+				answerComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
+				for(Answer answer: question.getAnswers()){
+					answerComposite.addAnswerUIElements(answer);
+
+				}
+				//answerComposite.addAnswerUIElements();
+*/
+				
 				for (Answer answer : question.getAnswers()) {
 
 					Text answerTxt = new Text(compositeForAnswers, SWT.BORDER);
@@ -295,8 +320,9 @@ public class QuestionDialog extends Dialog {
 					answerTxt.setText(answer.getValue());
 
 					/*
-					 * Label lblCurrentAnswer = new Label(compositeForAnswers, SWT.NONE); lblCurrentAnswer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-					 * lblCurrentAnswer.setText(answer.getValue());
+					 Label lblCurrentAnswer = new Label(compositeForAnswers, SWT.NONE); 
+					 lblCurrentAnswer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+					 lblCurrentAnswer.setText(answer.getValue());
 					 */
 					Combo comboForLinkAnswers = new Combo(compositeForAnswers, SWT.DROP_DOWN);
 					comboForLinkAnswers.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -334,7 +360,9 @@ public class QuestionDialog extends Dialog {
 
 					});
 
-				}
+			}
+				// scroll.setContent(compositeForAnswers);
+				 //scroll.setExpandHorizontal(true);
 				/*
 				 * scroll.setContent(compositeForAnswers); scroll.setExpandHorizontal(true); scroll.setExpandVertical(true);
 				 * //scroll.setMinSize(compositeForAnswers.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -425,20 +453,20 @@ public class QuestionDialog extends Dialog {
 					GridData gd_Operator = new GridData(SWT.FILL, SWT.NONE, true, true);
 					gd_Operator.widthHint = 100;
 					comboForOperator.setLayoutData(gd_Operator);
-					comboForOperator.setItems(Constants.FeatureConstraintRelationship.EQUAL.toString(), Constants.FeatureConstraintRelationship.NOTEQUAL.toString(),
+					/*comboForOperator.setItems(Constants.FeatureConstraintRelationship.EQUAL.toString(), Constants.FeatureConstraintRelationship.NOTEQUAL.toString(),
 						Constants.FeatureConstraintRelationship.LESSTHAN.toString(), Constants.FeatureConstraintRelationship.GREATERTHAN.toString(),
 						Constants.FeatureConstraintRelationship.LESSTHANEQUALTO.toString(), Constants.FeatureConstraintRelationship.GREATERTHANEQUALTO.toString(),
 						Constants.FeatureConstraintRelationship.AND.toString(), Constants.FeatureConstraintRelationship.OR.toString());
-
-					/*
-					 * comboForOperator.setItems("Equal"+"("+Constants.FeatureConstraintRelationship.EQUAL.toString()+")",
-					 * "NOTEQUAL"+"("+Constants.FeatureConstraintRelationship.NOTEQUAL.toString()+")",
-					 * "LESSTHAN"+"("+Constants.FeatureConstraintRelationship.LESSTHAN.toString()+")",
-					 * "GREATERTHAN"+"("+Constants.FeatureConstraintRelationship.GREATERTHAN.toString()+")",
-					 * "LESSTHANEQUALTO"+"("+Constants.FeatureConstraintRelationship.LESSTHANEQUALTO.toString()+")",
-					 * "GREATERTHANEQUALTO"+"("+Constants.FeatureConstraintRelationship.GREATERTHANEQUALTO.toString()+")",
-					 * "AND"+"("+Constants.FeatureConstraintRelationship.AND.toString()+")","OR"+"("+Constants.FeatureConstraintRelationship.OR.toString()+")");
-					 */
+*/
+				
+					 comboForOperator.setItems("Equal"+"("+Constants.FeatureConstraintRelationship.EQUAL.toString()+")",
+					 "NOTEQUAL"+"("+Constants.FeatureConstraintRelationship.NOTEQUAL.toString()+")",
+					 "LESSTHAN"+"("+Constants.FeatureConstraintRelationship.LESSTHAN.toString()+")",
+					 "GREATERTHAN"+"("+Constants.FeatureConstraintRelationship.GREATERTHAN.toString()+")",
+					 "LESSTHANEQUALTO"+"("+Constants.FeatureConstraintRelationship.LESSTHANEQUALTO.toString()+")",
+					 "GREATERTHANEQUALTO"+"("+Constants.FeatureConstraintRelationship.GREATERTHANEQUALTO.toString()+")",
+					 "AND"+"("+Constants.FeatureConstraintRelationship.AND.toString()+")","OR"+"("+Constants.FeatureConstraintRelationship.OR.toString()+")");
+					 
 
 					Text txtBoxValue = new Text(compositeForAnswers1, SWT.BORDER);
 					GridData gd_txtBoxValue = new GridData(SWT.FILL, SWT.NONE, true, true);

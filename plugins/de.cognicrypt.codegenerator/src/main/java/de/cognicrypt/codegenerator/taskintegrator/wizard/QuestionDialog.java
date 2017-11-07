@@ -142,7 +142,7 @@ public class QuestionDialog extends Dialog {
 		String comboItem1 = "Drop down ";
 		String comboItem2 = "text box";
 		String comboItem3 = "itemSelection ( More than one answer selection possible )";
-		String comboItem4 = "Radio Button";
+		String comboItem4 = "Button";
 		combo = new Combo(composite, SWT.READ_ONLY);
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		//combo.setItems(new String[] {comboItem1, comboItem2, comboItem3, comboItem4 });
@@ -212,14 +212,14 @@ public class QuestionDialog extends Dialog {
 							currentQuestionType = "itemSelection ( More than one answer selection possible )";
 						}
 						break;
-					case "Radio Button":
-						boolean buttonSelected = combo.getText().equalsIgnoreCase("Radio Button") ? true : false;
+					case "Button":
+						boolean buttonSelected = combo.getText().equalsIgnoreCase("Button") ? true : false;
 						btnAddAnswer.setVisible(buttonSelected);
-						if (!currentQuestionType.equalsIgnoreCase("Radio Button")) {
+						if (!currentQuestionType.equalsIgnoreCase("Button")) {
 							compositeToHoldAnswers.getListOfAllAnswer().clear();
 							compositeToHoldAnswers.updateAnswerContainer();
 							compositeToHoldAnswers.setVisible(false);
-							currentQuestionType = "Radio Button";
+							currentQuestionType = "Button";
 						}
 						break;
 					default:

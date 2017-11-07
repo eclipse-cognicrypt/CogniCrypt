@@ -117,6 +117,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		}*/
 		
 		for(Answer answer : question.getAnswers()){
+			//if(question.getQuestionType().equalsIgnoreCase(arg0)
 			answerString.append("\"" );
 			answerString.append(answer.getValue());
 			answerString.append(answer.isDefaultAnswer() ? "*" : "");
@@ -137,6 +138,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		txtAnswerType.setText(question.getQuestionType());
 		//txtAnswerType.setText(question.get);
 		
+		if(!question.getQuestionType().equalsIgnoreCase("text box")){
 		Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
 		lblAnswers.setBounds(5, 98, 55, 17);
 		lblAnswers.setText("Answers:");
@@ -146,6 +148,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		txtAnswers.setBounds(94, 92, 403, 29);
 		//txtAnswers.setText("answers");
 		txtAnswers.setText(answerString.toString());
+		}
 		
 		this.setSize(SWT.DEFAULT, 190);
 

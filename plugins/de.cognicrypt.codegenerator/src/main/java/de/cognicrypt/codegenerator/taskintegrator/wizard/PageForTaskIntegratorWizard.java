@@ -133,7 +133,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						
 						FileDialog fileDialog = new FileDialog(getShell(),SWT.OPEN);
 						
-						fileDialog.setFilterExtensions(new String[] {"*.java","*.xsl"});
+						fileDialog.setFilterExtensions(new String[] { "*.txt", "*.java", "*.xsl" });
 				        fileDialog.setText("Choose the code file:");
 				        ((CompositeForXsl)getCompositeForXsl()).updateTheTextFieldWithFileData(fileDialog.open());  
 					}

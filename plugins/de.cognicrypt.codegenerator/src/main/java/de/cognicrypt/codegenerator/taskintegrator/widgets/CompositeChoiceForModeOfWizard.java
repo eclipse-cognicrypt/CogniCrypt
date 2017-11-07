@@ -117,10 +117,10 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		Button btnLocationOfJSONFileBrowse = new Button(grpNonguidedMode, SWT.NONE);
 		btnLocationOfJSONFileBrowse.setText(Constants.LABEL_BROWSE_BUTTON);
 		btnLocationOfJSONFileBrowse.setBounds(421, 82, 56, Constants.UI_WIDGET_HEIGHT_NORMAL);
-		
+		/* TODO removed for the user study.
 		Button btnForceGuidedMode = new Button(grpNonguidedMode, SWT.CHECK);
 		btnForceGuidedMode.setBounds(10, 118, 142, Constants.UI_WIDGET_HEIGHT_NORMAL);
-		btnForceGuidedMode.setText("Force guided mode");	
+		btnForceGuidedMode.setText("Force guided mode");*/	
 
 		
 		// Creating empty/default data key value pairs.
@@ -133,8 +133,9 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		this.setData(Constants.WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED, cmbLibraryLocation.getText().equals(Constants.WIDGET_CONTENT_CUSTOM_LIBRARY) ? true : false);		
 		// true by default since the guided mode is selected by default.
 		this.setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_CHOSEN, btnDoYouWishToUseTheGuidedMode.getSelection());
-		// false by default since the guided mode is not forced by default. 
-		this.setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_FORCED,btnForceGuidedMode.getSelection());
+		// false by default since the guided mode is not forced by default.
+		// TODO removed for the user study.
+		//this.setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_FORCED,btnForceGuidedMode.getSelection());
 		
 		
 		// moved all the event listeners at the bottom.
@@ -153,13 +154,13 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 				grpLibraryWidgets.setVisible(isCustomLibraryRequired);				
 			}
 		});
-		
+		/* TODO removed for the user study.
 		btnForceGuidedMode.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				btnForceGuidedMode.getParent().getParent().getParent().setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_FORCED, btnForceGuidedMode.getSelection());
 			}
-		});
+		});*/
 		
 		// All the text box listeners.
 		txtLocationOfJSONFile.addModifyListener(new ModifyListener() {

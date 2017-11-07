@@ -4,10 +4,17 @@ import java.util.ArrayList;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import de.cognicrypt.codegenerator.Constants;
@@ -17,14 +24,6 @@ import de.cognicrypt.codegenerator.taskintegrator.models.XSLTag;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.GroupXSLTagAttribute;
 
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-
 
 public class XSLTagDialog extends Dialog {
 	private CompositeToHoldSmallerUIElements compositeForXSLAttributes;
@@ -33,6 +32,7 @@ public class XSLTagDialog extends Dialog {
 	private String currentSelectionStringOncomboXSLTags;
 	
 	private XSLTag tag;
+	private ArrayList<String> cfrFeatures;
 	
 	/**
 	 * Create the dialog.
@@ -40,6 +40,13 @@ public class XSLTagDialog extends Dialog {
 	 */
 	public XSLTagDialog(Shell parentShell) {
 		super(parentShell);
+		setShellStyle(SWT.RESIZE);
+	}
+
+	public XSLTagDialog(Shell parentShell, ArrayList<String> cfrFeatures) {
+		this(parentShell);
+
+		this.cfrFeatures = cfrFeatures;
 	}
 
 	/**
@@ -79,9 +86,11 @@ public class XSLTagDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// Add the UI element for the attribute with the remove button, and pass the selected XSL tag.
-				compositeForXSLAttributes.addXSLAttribute(true, comboXSLTags.getText());
-				// Update all the drop down menus for attribute UIs to keep them consistent after adding a new attribute. 
-				compositeForXSLAttributes.updateDropDownsForXSLAttributes(compositeForXSLAttributes.getListOfPossibleAttributes(comboXSLTags.getText()));
+				ArrayList<String> possibleCfrFeatures = cfrFeatures;
+				compositeForXSLAttributes.addXSLAttribute(true, comboXSLTags.getText(), possibleCfrFeatures);
+				// Update all the drop down menus for attribute UIs to keep them consistent after adding a new attribute.
+				ArrayList<String> possAttributes = compositeForXSLAttributes.getListOfPossibleAttributes(comboXSLTags.getText());
+				compositeForXSLAttributes.updateDropDownsForXSLAttributes(possAttributes);
 			}
 			
 		});

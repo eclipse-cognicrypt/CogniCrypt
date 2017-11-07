@@ -1,7 +1,6 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -11,8 +10,6 @@ import java.nio.file.Paths;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Button;
 
 
 
@@ -38,7 +35,8 @@ public class CompositeForXsl extends Composite {
 			
 			Path path = Paths.get(filePath);
 			
-			if(path.getFileName().toString().endsWith(".java") || path.getFileName().toString().endsWith(".JAVA")){
+		if (path.getFileName().toString().endsWith(".java") || path.getFileName().toString().endsWith(".JAVA") || path.getFileName().toString().endsWith(".txt") || path
+			.getFileName().toString().endsWith(".TXT")) {
 				dataFromFile.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 				dataFromFile.append("<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"2.0\">\n");
 				dataFromFile.append("<xsl:output method=\"text\"/>\n");
@@ -63,7 +61,8 @@ public class CompositeForXsl extends Composite {
 				e.printStackTrace();
 			}
 			
-			if(path.getFileName().toString().endsWith(".java") || path.getFileName().toString().endsWith(".JAVA")){
+		if (path.getFileName().toString().endsWith(".java") || path.getFileName().toString().endsWith(".JAVA") || path.getFileName().toString().endsWith(".txt") || path
+			.getFileName().toString().endsWith(".TXT")) {
 				dataFromFile.append("\n");
 				dataFromFile.append("</xsl:template>\n");
 				dataFromFile.append("</xsl:stylesheet>");

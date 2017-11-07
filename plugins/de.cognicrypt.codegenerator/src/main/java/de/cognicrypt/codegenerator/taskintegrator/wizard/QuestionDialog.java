@@ -6,7 +6,11 @@ import java.util.Objects;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
@@ -17,7 +21,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -26,7 +29,6 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.Constants.GUIElements;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.question.CodeDependency;
@@ -34,15 +36,7 @@ import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
-import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
-import de.cognicrypt.codegenerator.taskintegrator.widgets.GroupAnswer;
-
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
 
 public class QuestionDialog extends Dialog {
 
@@ -70,12 +64,12 @@ public class QuestionDialog extends Dialog {
 	 * @param parentShell
 	 */
 	public QuestionDialog(Shell parentShell) {
-		super(parentShell);
-		this.question = null;
+		this(parentShell, null, null, null);
 	}
 
 	public QuestionDialog(Shell parentShell, Question question, ArrayList<ClaferFeature> claferFeatures, ArrayList<Question> listOfAllQuestions) {
 		super(parentShell);
+		setShellStyle(SWT.RESIZE);
 		this.question = question;
 		this.claferFeatures = claferFeatures;
 		this.listOfAllQuestions = listOfAllQuestions;
@@ -143,7 +137,7 @@ public class QuestionDialog extends Dialog {
 
 		Label lblType = new Label(composite, SWT.NONE);
 		lblType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		lblType.setText("Type");
+		lblType.setText("Answer type");
 
 		String comboItem1 = "Drop down ";
 		String comboItem2 = "text box";
@@ -151,7 +145,8 @@ public class QuestionDialog extends Dialog {
 		String comboItem4 = "Radio Button";
 		combo = new Combo(composite, SWT.READ_ONLY);
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		combo.setItems(new String[] { comboItem1, comboItem2, comboItem3, comboItem4 });
+		//combo.setItems(new String[] {comboItem1, comboItem2, comboItem3, comboItem4 });
+		combo.setItems(new String[] {comboItem1, comboItem2, comboItem4 });
 		combo.select(-1);
 
 		Button btnAddAnswer = new Button(composite, SWT.None);
@@ -248,7 +243,8 @@ public class QuestionDialog extends Dialog {
 		}
 
 		TabItem tbtmLinkAnswers = new TabItem(tabFolder, SWT.NONE);
-		tbtmLinkAnswers.setText("Link answers");
+		tbtmLinkAnswers.setText("Link to other questions");
+		
 
 		Composite compositeForLinkAnswerTab = new Composite(tabFolder, SWT.NONE);
 		tbtmLinkAnswers.setControl(compositeForLinkAnswerTab);
@@ -361,7 +357,7 @@ public class QuestionDialog extends Dialog {
 		}
 
 		TabItem tbtmLinkClaferFeatures = new TabItem(tabFolder, SWT.NONE);
-		tbtmLinkClaferFeatures.setText("Link features");
+		tbtmLinkClaferFeatures.setText("Link to variability constructs");
 
 		Composite compositeForClaferTab = new Composite(tabFolder, SWT.NONE);
 		tbtmLinkClaferFeatures.setControl(compositeForClaferTab);
@@ -396,13 +392,13 @@ public class QuestionDialog extends Dialog {
 				lblEmpty.setText("Answers");
 
 				Label lblForAlgorithm = new Label(compositeForAnswers1, SWT.NONE);
-				lblForAlgorithm.setText("Select Features");
+				lblForAlgorithm.setText("Variability construct");
 
 				Label lblForOperand = new Label(compositeForAnswers1, SWT.NONE);
-				lblForOperand.setText("Select Properties");
+				lblForOperand.setText("Property");
 
 				Label lblForValue = new Label(compositeForAnswers1, SWT.NONE);
-				lblForValue.setText("Select Operator");
+				lblForValue.setText("Operator");
 
 				Label lblForOperator = new Label(compositeForAnswers1, SWT.NONE);
 				lblForOperator.setText("Set Value");
@@ -548,9 +544,9 @@ public class QuestionDialog extends Dialog {
 		}
 
 		TabItem tbtmLink = new TabItem(tabFolder, SWT.NONE);
-		tbtmLink.setText("Link code");
-
-		Composite compositeForLinkCodeTab = new Composite(tabFolder, SWT.None);
+		tbtmLink.setText("Link to variables to use in code");
+		
+		Composite compositeForLinkCodeTab=new Composite(tabFolder,SWT.None);
 		tbtmLink.setControl(compositeForLinkCodeTab);
 		compositeForLinkCodeTab.setLayout(new GridLayout(2, false));
 

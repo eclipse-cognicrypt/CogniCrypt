@@ -1,5 +1,7 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -32,20 +34,20 @@ public class ClaferFeatureDialog extends Dialog {
 	private Button btnRadioConcrete;
 
 	private ClaferFeature resultClafer;
+	private ArrayList<ClaferFeature> listOfExistingClaferFeatures;
 
-	/**
-	 * Create the dialog.
-	 * @param parentShell
-	 */
-	public ClaferFeatureDialog(Shell parentShell) {
-		this(parentShell, new ClaferFeature(FeatureType.ABSTRACT, "", ""));
-	}
 
-	public ClaferFeatureDialog(Shell parentShell, ClaferFeature modifiableClaferFeature) {
+	public ClaferFeatureDialog(Shell parentShell, ClaferFeature modifiableClaferFeature, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
 		super(parentShell);
 		setShellStyle(SWT.CLOSE);
 
 		resultClafer = modifiableClaferFeature;
+		this.listOfExistingClaferFeatures = listOfExistingClaferFeatures;
+	}
+
+	public ClaferFeatureDialog(Shell shell, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
+		this(shell, new ClaferFeature(FeatureType.ABSTRACT, "", ""), listOfExistingClaferFeatures);
+		this.listOfExistingClaferFeatures = listOfExistingClaferFeatures;
 	}
 
 	/**
@@ -63,7 +65,8 @@ public class ClaferFeatureDialog extends Dialog {
 
 		btnRadioAbstract = new Button(container, SWT.RADIO);
 		btnRadioAbstract.setSelection(true);
-		btnRadioAbstract.setText("Abstract");
+		//btnRadioAbstract.setText("Abstract");
+		btnRadioAbstract.setText("Class");
 		btnRadioAbstract.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -74,7 +77,8 @@ public class ClaferFeatureDialog extends Dialog {
 		});
 
 		btnRadioConcrete = new Button(container, SWT.RADIO);
-		btnRadioConcrete.setText("Concrete");
+		//btnRadioConcrete.setText("Concrete");
+		btnRadioConcrete.setText("Instance");
 		btnRadioConcrete.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -185,7 +189,7 @@ public class ClaferFeatureDialog extends Dialog {
 	}
 
 	private void addClaferConstraint() {
-		ClaferConstraintDialog cfrConstraintDialog = new ClaferConstraintDialog(getShell(), resultClafer);
+		ClaferConstraintDialog cfrConstraintDialog = new ClaferConstraintDialog(getShell(), resultClafer, listOfExistingClaferFeatures);
 
 		// blocking call to Dialog.open() the dialog
 		// it returns 0 on success

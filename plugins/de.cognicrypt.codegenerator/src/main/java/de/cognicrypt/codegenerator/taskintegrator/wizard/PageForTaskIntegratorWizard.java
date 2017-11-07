@@ -327,7 +327,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		 * Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION: return false; case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION: return false; case
 		 * Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS: return false; default: return false; }
 		 */
-		return true;
+		return super.canFlipToNextPage();
 
 	}
 

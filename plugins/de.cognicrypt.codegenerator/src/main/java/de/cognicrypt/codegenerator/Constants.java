@@ -122,6 +122,7 @@ public class Constants {
 	public static final int INT_HIGH = 600;
 	public static final int INT_LOW = -17;
 	public static final String INSTANCE_DETAILS = "Instance Details";
+	public static final String CODE_PREVIEW = "Code Preview";
 	public static final String ARIAL = "Arial";
 	public static final String SELECT_JAVA_PROJECT = "Select a Java Project :";
 	public static final String SELECT_TASK = "Select a Task :";

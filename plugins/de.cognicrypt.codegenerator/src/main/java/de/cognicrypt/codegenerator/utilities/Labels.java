@@ -30,8 +30,11 @@ public interface Labels {
 	Properties prop = new PropertiesFileReader(Constants.pathToPropertyfiles).getProperties();
 	// Strings for GUI elements
 	static final String ALGORITHM_SELECTION_PAGE = prop.getProperty("ALGORITHM_SELECTION_PAGE");
+	static final String DEFAULT_ALGORITHM_PAGE = prop.getProperty("DEFAULT_ALGORITHM_PAGE");
 	static final String DESCRIPTION_INSTANCE_LIST_PAGE = prop.getProperty("DESCRIPTION_INSTANCE_LIST_PAGE");
+	static final String DESCRIPTION_DEFAULT_ALGORITHM_PAGE = prop.getProperty("DESCRIPTION_DEFAULT_ALGORITHM_PAGE");
 	static final String instanceList = prop.getProperty("LABEL1");
+	static final String defaultAlgorithm = prop.getProperty("LABEL3");
 	static final String SELECT_TASK = prop.getProperty("SELECT_TASK");
 	static final String TASK_LIST = prop.getProperty("TASK_LIST");
 	static final String DESCRIPTION_TASK_SELECTION_PAGE = prop.getProperty("DESCRIPTION_TASK_SELECTION_PAGE");

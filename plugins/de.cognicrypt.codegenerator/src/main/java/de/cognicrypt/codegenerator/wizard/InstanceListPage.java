@@ -226,13 +226,11 @@ public class InstanceListPage extends WizardPage implements Labels {
 	public void setPageComplete(final boolean complete) {
 		super.setPageComplete(complete);
 	}
-	private boolean firstTimeShown = true;
 
 	@Override
 	public void setVisible( boolean visible ) {
 	  super.setVisible( visible );
-	  if( visible && firstTimeShown ) {
-	    firstTimeShown = false;
+	  if( visible ) {
 	    control.setFocus();
 	  }
 	}

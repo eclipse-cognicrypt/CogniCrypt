@@ -40,11 +40,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Activator;
+import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
@@ -226,13 +228,24 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					BeginnerTaskQuestionPage.this.selectionMap.put(question, (Answer) selection.getFirstElement());
 					question.setEnteredAnswer((Answer) selection.getFirstElement());
 				});
-				
+				new Label(parent, SWT.NONE);
+				new Label(parent, SWT.NONE);
 				//added description for questions
-				this.note = new Text (parent,SWT.NULL);
+				if(!question.getNote().equals("")){
+					
+				Group notePanel = new Group(parent, SWT.NONE);
+				notePanel.setText("Note:");
+				final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
+				notePanel.setFont(boldFont);
+								
+				this.note = new Text (notePanel,SWT.MULTI | SWT.WRAP);
+				this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
 				this.note.setText(question.getNote());
-//				StyleRange styleRange = new StyleRange( 0, 5, null, null, SWT.BOLD );
-//				this.note.setStyleRanges( new StyleRange[]{ styleRange } );
-				this.note.setEnabled(false);
+				this.note.setBounds(10, 20, 585, 50);
+				setControl(parent);
+				this.note.setEditable(false);
+				this.note.setEnabled(true);
+				}
 				
 				this.finish = true;
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);

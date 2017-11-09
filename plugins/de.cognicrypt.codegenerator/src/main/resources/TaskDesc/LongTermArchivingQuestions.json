@@ -59,7 +59,7 @@
     "id": "2",
     "content": [{
       "id": "2",
-      "note": "Note: Time Stamping Authority- Time Stamping Authority generates a timestamp on receiving a data, by signing the data with the current time.\nNotarial Attestation- Notarial Attestation verifies properties (signature, certificate and attestation) of the data before signing the data with a date.",
+      "note": "Time Stamping Authority- Time Stamping Authority generates a timestamp on receiving a data, by signing the data with the current time.\nNotarial Attestation- Notarial Attestation verifies properties (signature, certificate and attestation) of the data before signing the data with a date.",
       "element": "combo",
       "questionText": "What kind of authority do you trust?",
       "answers": [{

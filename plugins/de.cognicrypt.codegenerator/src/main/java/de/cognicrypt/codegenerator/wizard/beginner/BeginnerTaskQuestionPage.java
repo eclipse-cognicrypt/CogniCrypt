@@ -229,7 +229,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					question.setEnteredAnswer((Answer) selection.getFirstElement());
 				});
 				new Label(parent, SWT.NONE);
-				new Label(parent, SWT.NONE);
 				//added description for questions
 				if(!question.getNote().equals("")){
 					
@@ -241,7 +240,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				this.note = new Text (notePanel,SWT.MULTI | SWT.WRAP);
 				this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
 				this.note.setText(question.getNote());
-				this.note.setBounds(10, 20, 585, 50);
+				this.note.setBounds(10, 20, 585, 60);
 				setControl(parent);
 				this.note.setEditable(false);
 				this.note.setEnabled(true);

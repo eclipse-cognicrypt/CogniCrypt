@@ -228,7 +228,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					BeginnerTaskQuestionPage.this.selectionMap.put(question, (Answer) selection.getFirstElement());
 					question.setEnteredAnswer((Answer) selection.getFirstElement());
 				});
-				
+				new Label(parent, SWT.NONE);
 				//added description for questions
 				if(!question.getNote().equals("")){
 					

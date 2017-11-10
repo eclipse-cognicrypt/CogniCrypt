@@ -3,11 +3,9 @@ package de.cognicrypt.codegenerator.wizard;
 import java.util.Map;
 
 import org.clafer.instance.InstanceClafer;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+//import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridLayout;
@@ -45,7 +43,7 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 	
 	@Override
 	public void createControl(final Composite parent) {
-		ComboViewer algorithmClass;
+		Label algorithmClass;
 		Label labelDefaultAlgorithm;
 		this.control = new Composite(parent, SWT.NONE);
 		final GridLayout layout = new GridLayout(1, false);
@@ -61,19 +59,9 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		compositeControl.setLayout(new GridLayout(2, false));
 		labelDefaultAlgorithm = new Label(compositeControl, SWT.NONE);
 		labelDefaultAlgorithm.setText(Labels.defaultAlgorithm);
-		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
-		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
-		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-
-		algorithmClass.setInput(inst.keySet());
-
-		algorithmClass.setLabelProvider(new LabelProvider() {
-
-			@Override
-			public String getText(final Object element) {
-				return element.toString();
-			}
-		});
+		final Map<String, InstanceClafer> inst = this.instanceGenerator.getFirstInstance();//Only the first Instance,which is the most secure one, will be displayed
+		algorithmClass= new Label(compositeControl, SWT.NONE);
+		algorithmClass.setText(inst.keySet().toString());
 		
 		this.codePreviewPanel = new Group(this.control, SWT.NONE);
 		this.codePreviewPanel.setText(Constants.CODE_PREVIEW);

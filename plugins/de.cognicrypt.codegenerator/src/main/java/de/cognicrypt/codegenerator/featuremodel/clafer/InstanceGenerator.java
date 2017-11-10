@@ -76,6 +76,7 @@ public class InstanceGenerator {
 	private List<InstanceClafer> generatedInstances;
 	private final Map<Long, InstanceClafer> uniqueInstances;
 	private Map<String, InstanceClafer> displayNameToInstanceMap;
+	private Map<String, InstanceClafer> displayFirstNameToInstanceMap;
 	private final ClaferModel claferModel;
 	private String taskName;
 	private String taskDescription;
@@ -84,6 +85,7 @@ public class InstanceGenerator {
 	public InstanceGenerator(final String path, final String taskName, final String taskDescription) {
 		this.claferModel = new ClaferModel(path);
 		this.displayNameToInstanceMap = new HashMap<String, InstanceClafer>();
+		this.displayFirstNameToInstanceMap = new HashMap<String, InstanceClafer>();
 		this.uniqueInstances = new HashMap<>();
 		this.taskName = taskName;
 		this.taskDescription = taskDescription;
@@ -278,12 +280,26 @@ public class InstanceGenerator {
 				}
 
 				this.displayNameToInstanceMap.put(copyKey, sortedInst);
+				//a = this.displayNameToInstanceMap.get(key.equals(0));
 			}
 		}
 		final Map<String, InstanceClafer> treeMap = new TreeMap<>(this.displayNameToInstanceMap);
 		this.displayNameToInstanceMap = treeMap;
+		
 	}
-
+	/**
+	 * Method to Generate default instance for basic user. The first instance of the generated (and sorted) instances will be the default instance
+	 *
+	 */
+	private void generateFirstInstance(){
+		this.displayFirstNameToInstanceMap.clear();
+		//to get the first Instance
+		InstanceClafer firstInst=this.generatedInstances.get(0);
+		String key= getInstanceName(firstInst);
+		this.displayFirstNameToInstanceMap.put(key, firstInst);
+		final Map<String, InstanceClafer> treeMap1 = new TreeMap<>(this.displayFirstNameToInstanceMap);
+		this.displayFirstNameToInstanceMap = treeMap1;
+	}
 	/**
 	 * Method to Generate instances for basic user. Argument is a map of property(clafer) name and their values
 	 *
@@ -323,6 +339,7 @@ public class InstanceGenerator {
 		}
 		this.generatedInstances = new ArrayList<>(this.uniqueInstances.values());
 		generateInstanceMapping();
+		generateFirstInstance();
 		return this.generatedInstances;
 	}
 
@@ -428,7 +445,14 @@ public class InstanceGenerator {
 	public Map<String, InstanceClafer> getInstances() {
 		return this.displayNameToInstanceMap;
 	}
-
+	/**
+	 * gives the instances, key field for First Instance .
+	 *
+	 * @return
+	 */
+	public Map<String, InstanceClafer> getFirstInstance() {
+		return this.displayFirstNameToInstanceMap;
+	}
 	/**
 	 * Returns number of instances of the task
 	 *
@@ -465,6 +489,7 @@ public class InstanceGenerator {
 	 */
 	public void resetInstances() {
 		this.displayNameToInstanceMap = null;
+		this.displayFirstNameToInstanceMap=null;
 	}
 
 	public void setTaskDescription(final String taskDescription) {

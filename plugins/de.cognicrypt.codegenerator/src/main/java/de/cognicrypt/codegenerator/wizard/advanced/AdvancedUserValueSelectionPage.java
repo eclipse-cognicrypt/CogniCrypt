@@ -159,7 +159,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
 		titledPanel.setFont(boldFont);
 		final GridLayout layout2 = new GridLayout();
-		layout2.numColumns = 4;
+		layout2.numColumns = 2;
 		titledPanel.setLayout(layout2);
 		titledPanel.setLayout((new RowLayout(SWT.VERTICAL)));
 		return titledPanel;

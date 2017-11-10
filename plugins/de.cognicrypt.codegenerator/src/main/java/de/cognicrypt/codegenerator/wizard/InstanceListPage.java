@@ -42,6 +42,7 @@ import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.utilities.Labels;
+import org.eclipse.swt.widgets.Combo;
 
 /**
  * This class is responsible for displaying the instances the Clafer instance generator generated.
@@ -75,7 +76,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 		ComboViewer algorithmClass;
 		Label labelInstanceList;
 		this.control = new Composite(parent, SWT.NONE);
-		final GridLayout layout = new GridLayout(3, false);
+		final GridLayout layout = new GridLayout(1, false);
 		this.control.setLayout(layout);
 		
 		/** To display the Help view after clicking the help icon
@@ -92,6 +93,8 @@ public class InstanceListPage extends WizardPage implements Labels {
 		labelInstanceList.setText(Labels.instanceList);
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
 		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
+		Combo combo = algorithmClass.getCombo();
+		combo.setToolTipText(Constants.ALGORITHM_COMBO_TOOLTIP);
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
 
 		algorithmClass.setInput(inst.keySet());
@@ -114,17 +117,15 @@ public class InstanceListPage extends WizardPage implements Labels {
 				setPageComplete(true);
 			}
 		});
-		new Label(control, SWT.NONE);
-		new Label(control, SWT.NONE);
 
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
 		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
-		final Font boldFont = new Font(this.instancePropertiesPanel.getDisplay(), new FontData(Constants.ARIAL, 12, SWT.BOLD));
+		final Font boldFont = new Font(this.instancePropertiesPanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 		this.instancePropertiesPanel.setFont(boldFont);
 
 		this.instanceDetails = new Text(this.instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		this.instanceDetails.setLayoutData(new GridData(GridData.FILL_BOTH));
-		this.instanceDetails.setBounds(10, 20, 400, 200);
+		this.instanceDetails.setBounds(10, 20, 400, 180);
 		this.instanceDetails.setEditable(false);
 		/*
 		 * Initially instance properties panel will be hidden

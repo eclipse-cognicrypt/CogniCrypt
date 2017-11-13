@@ -27,6 +27,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	
 
 	private ArrayList<Answer> arrayAnswer;
+	private ArrayList<String> possibleCfrFeatures;
 
 	/**
 	 * Create the composite. Warnings suppressed for casting array lists.
@@ -105,9 +106,9 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 */
 	private void addFeatureConstraintUI(ClaferConstraint featureConstraintUnderConsideration, boolean showRemoveButton) {
 		GroupConstraint groupConstraint = new GroupConstraint((Composite) getContent(), SWT.NONE, featureConstraintUnderConsideration, showRemoveButton);
-		groupConstraint.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT + 200, 29);
+		groupConstraint.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT + 200, 39);
 
-		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 29);
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
 
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
@@ -142,14 +143,15 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * @param showRemoveButton
 	 * @param selectedTag
 	 */
-	public void addXSLAttribute(boolean showRemoveButton, String selectedTag ){		
+	public void addXSLAttribute(boolean showRemoveButton, String selectedTag, ArrayList<String> possibleCfrFeatures) {
 		ArrayList<String> possibleAttributes = getListOfPossibleAttributes(selectedTag);
+		this.possibleCfrFeatures = possibleCfrFeatures;
 		
 		if(possibleAttributes.size()>0){
 			// Add the first attribute on the list of possible attributes with empty tag data.
 			XSLAttribute xslAttribute = new XSLAttribute(possibleAttributes.get(0), "");
 			XSLAttributes.add(xslAttribute);
-			addXSLAttributeUI(xslAttribute,showRemoveButton);
+			addXSLAttributeUI(xslAttribute, possibleCfrFeatures, showRemoveButton);
 		} else{
 			// Show a message if all the possible attributes are exhausted. 
 			MessageBox headsUpMessageBox = new MessageBox(getShell(), SWT.ICON_INFORMATION
@@ -167,8 +169,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * @param XSLAttrubuteParam
 	 * @param showRemoveButton
 	 */
-	private void addXSLAttributeUI(XSLAttribute XSLAttrubuteParam, boolean showRemoveButton){		
-		GroupXSLTagAttribute groupforXSLTagAttribute = new GroupXSLTagAttribute((Composite) getContent(), SWT.NONE, showRemoveButton, XSLAttrubuteParam);
+	private void addXSLAttributeUI(XSLAttribute XSLAttrubuteParam, ArrayList<String> possibleCfrFeatures, boolean showRemoveButton) {
+		GroupXSLTagAttribute groupforXSLTagAttribute = new GroupXSLTagAttribute((Composite) getContent(), SWT.NONE, showRemoveButton, XSLAttrubuteParam, possibleCfrFeatures);
 		groupforXSLTagAttribute.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT,
 			Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
 		
@@ -311,7 +313,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 			}
 		} else if(XSLAttributes.size() > 0){
 			for(XSLAttribute attribute : XSLAttributes){
-				addXSLAttributeUI(attribute,true);
+				addXSLAttributeUI(attribute, possibleCfrFeatures, true);
 			}
 			// The drop downs need to be updated to keep them consistent with the existing data in the attributes.
 			updateDropDownsForXSLAttributes(getListOfPossibleAttributes(((Combo)getParent().getChildren()[0]).getText()));

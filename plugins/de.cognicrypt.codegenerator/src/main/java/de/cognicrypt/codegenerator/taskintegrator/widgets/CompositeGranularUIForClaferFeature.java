@@ -1,5 +1,7 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
+import java.util.ArrayList;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -44,12 +46,19 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		fd_grpClaferFeature.right = new FormAttachment(0, Constants.RIGHT_VALUE_FOR_GRANULAR_CLAFER_UI_SUB_ELEMENT);		
 		fd_grpClaferFeature.left = new FormAttachment(0, 3);
 		grpClaferFeature.setLayoutData(fd_grpClaferFeature);
-		grpClaferFeature.setText("Clafer feature");
+		//grpClaferFeature.setText("Clafer feature");
+		grpClaferFeature.setText("Variability Construct");
 		grpClaferFeature.setLayout(new RowLayout(SWT.HORIZONTAL));
 		yAxisValue = yAxisValue + 6;
 		
 		Label lblType = new Label(grpClaferFeature, SWT.NONE);
-		lblType.setText(claferFeature.getFeatureType().toString());
+		
+		if(claferFeature.getFeatureType().toString().equals(Constants.FeatureType.ABSTRACT.toString().toLowerCase())){
+			lblType.setText("Class name");
+		} else if(claferFeature.getFeatureType().toString().toLowerCase().equals(Constants.FeatureType.CONCRETE.toString().toLowerCase())){
+			lblType.setText("Instance name");
+		}
+		
 		
 		Text txtFeatureName;
 		txtFeatureName = new Text(grpClaferFeature, SWT.BORDER);
@@ -60,7 +69,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		
 		if (!claferFeature.getFeatureInheritance().isEmpty()) {
 			Label lblInheritsFrom = new Label(grpClaferFeature, SWT.NONE);
-			lblInheritsFrom.setText("Inherits from ");
+			lblInheritsFrom.setText("Inherits from class ");
 
 			Text txtFeatureInheritance;
 			txtFeatureInheritance = new Text(grpClaferFeature, SWT.BORDER);
@@ -105,8 +114,9 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		btnModify.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				
-				ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), claferFeature);
+				ArrayList<ClaferFeature> listOfExistingClaferFeatures = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent())
+					.getListOfAllClaferFeatures();
+				ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), claferFeature, listOfExistingClaferFeatures);
 				if (cfrFeatureDialog.open() == 0) {
 					((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent()).modifyClaferFeature(claferFeature, cfrFeatureDialog.getResult());// (1) CompositeGranularUIForClaferFeature, (2) composite inside (3) CompositeToHoldGranularUIElements
 				}

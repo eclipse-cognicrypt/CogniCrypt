@@ -6,6 +6,7 @@ package de.cognicrypt.codegenerator.taskintegrator.wizard;
 import java.util.ArrayList;
 
 import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -40,6 +41,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	private CompositeForXsl compositeForXsl = null;
 
 	int counter = 0;// TODO for testing only.
+	protected ArrayList<ClaferFeature> cfrFeatures;
 
 	/**
 	 * Create the wizard.
@@ -86,8 +88,10 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						 * compositeToHoldGranularUIElements.getListOfAllClaferFeatures().add(tempFeature);
 						 * compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
 						 */
+						
+						
 						counter++;
-						ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell());
+						ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), compositeToHoldGranularUIElements.getListOfAllClaferFeatures());
 						if (cfrFeatureDialog.open() == 0) {
 							ClaferFeature tempFeature = cfrFeatureDialog.getResult();
 
@@ -99,6 +103,12 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					}
 
 				});
+				// TODO for user study only.
+				
+				for(ClaferFeature tempFeature: getDummyClaferFeatures()){
+					compositeToHoldGranularUIElements.getListOfAllClaferFeatures().add(tempFeature);
+					compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
+				}
 				break;
 			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:
 				
@@ -107,7 +117,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				Button btnAddXSLTag = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
 				btnAddXSLTag.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
 				btnAddXSLTag.setText("Add Xsl Tag");
-
 				Button btnReadCode = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
 				btnReadCode.setBounds(Constants.RECTANGLE_FOR_SECOND_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
 				btnReadCode.setText("Get the code");
@@ -124,7 +133,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						
 						FileDialog fileDialog = new FileDialog(getShell(),SWT.OPEN);
 						
-						fileDialog.setFilterExtensions(new String[] {"*.java","*.xsl"});
+						fileDialog.setFilterExtensions(new String[] { "*.txt", "*.java", "*.xsl" });
 				        fileDialog.setText("Choose the code file:");
 				        ((CompositeForXsl)getCompositeForXsl()).updateTheTextFieldWithFileData(fileDialog.open());  
 					}
@@ -136,9 +145,49 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 					@Override
 					public void widgetSelected(SelectionEvent e) {
+						ArrayList<ClaferFeature> cfrFeatures = null;
+						ArrayList<Question> questions = null;
+						ArrayList<String> strFeatures = new ArrayList<>();
+
+						for (IWizardPage page : getWizard().getPages()) {
+							// get the Clafer creation page
+							if (page instanceof PageForTaskIntegratorWizard) {
+								PageForTaskIntegratorWizard pftiw = (PageForTaskIntegratorWizard) page;
+								if (pftiw.getCompositeToHoldGranularUIElements() instanceof CompositeToHoldGranularUIElements) {
+									CompositeToHoldGranularUIElements comp = (CompositeToHoldGranularUIElements) pftiw.getCompositeToHoldGranularUIElements();
+									if (pftiw.getName() == Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION) {
+										// get the Clafer features
+										cfrFeatures = comp.getListOfAllClaferFeatures();
+
+										// get all the Clafer features' properties
+										for (ClaferFeature cfrFtr : cfrFeatures) {
+											String ftrName = cfrFtr.getFeatureName();
+											for (FeatureProperty prop : cfrFtr.getfeatureProperties()) {
+												// prepend the feature name and add the property to dropdown entries
+												strFeatures.add(ftrName + "." + prop.getPropertyName());
+											}
+										}
+									} else if (pftiw.getName() == Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS) {
+										questions = comp.getListOfAllQuestions();
+
+										for (Question question : questions) {
+											// TODO compare against Constants.GUIElements.text
+											if (question.getQuestionType().equals("text")) {
+												strFeatures.add("[Answer to \"" + question.getQuestionText() + "\"]");
+											}
+										}
+									}
+								}
+							}
+						}
+
+						XSLTagDialog dialog;
+						if (strFeatures.size() > 0) {
+							dialog = new XSLTagDialog(getShell(), strFeatures);
+						} else {
+							dialog = new XSLTagDialog(getShell());
+						}
 						
-						
-						XSLTagDialog dialog = new XSLTagDialog(getShell());
 						if(dialog.open() == Window.OK){
 							// To locate the position of the xsl tag to be introduce						
 							Point selected = getCompositeForXsl().getXslTxtBox().getSelection();
@@ -153,12 +202,17 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
 				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
-				QuestionDialog questionDialog = new QuestionDialog(parent.getShell(), null, compositeToHoldGranularUIElements.getListOfAllClaferFeatures());
+				// TODO change this to reliably determine the Clafer feature page
+				PageForTaskIntegratorWizard claferPage = (PageForTaskIntegratorWizard) (this.getPreviousPage());
+				CompositeToHoldGranularUIElements claferPageComposite=(CompositeToHoldGranularUIElements) claferPage.getCompositeToHoldGranularUIElements();
+
+				QuestionDialog questionDialog = new QuestionDialog(parent.getShell() /*compositeToHoldGranularUIElements.getListOfAllClaferFeatures()claferFeatures,claferPageComposite*/);
 				Button qstnDialog = new Button(container, SWT.NONE);
 				qstnDialog.setBounds(889, 10, 115, 29);
 				qstnDialog.setText("Add Question");
+				
 				qstnDialog.addSelectionListener(new SelectionAdapter() {
-
+				
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						int response = questionDialog.open();
@@ -168,10 +222,10 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 							Question questionDetails = questionDialog.getQuestionDetails();
 							questionDetails.setId(counter);
 
-							// Update the array list.							
-
+							// Update the array list.
 							compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
-							compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails, compositeToHoldGranularUIElements.getListOfAllClaferFeatures());
+							compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails, claferPageComposite.getListOfAllClaferFeatures());
+							
 						}
 					}
 				});
@@ -207,6 +261,18 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 		return tempFeature;
 
+	}
+	
+	private ArrayList<ClaferFeature> getDummyClaferFeatures(){
+		ArrayList<ClaferFeature> tempFeatures = new ArrayList<ClaferFeature>();
+		ClaferFeature tempFeatureOne = new ClaferFeature(Constants.FeatureType.ABSTRACT, "race", "");
+		ClaferFeature tempFeatureTwo = new ClaferFeature(Constants.FeatureType.CONCRETE, "altmer", "race");
+		ClaferFeature tempFeatureThree = new ClaferFeature(Constants.FeatureType.CONCRETE, "dunmer", "race");
+		tempFeatures.add(tempFeatureOne);
+		tempFeatures.add(tempFeatureTwo);
+		tempFeatures.add(tempFeatureThree);
+		
+		return tempFeatures;
 	}
 	
 	/**
@@ -261,7 +327,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		 * Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION: return false; case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION: return false; case
 		 * Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS: return false; default: return false; }
 		 */
-		return true;
+		return super.canFlipToNextPage();
 
 	}
 

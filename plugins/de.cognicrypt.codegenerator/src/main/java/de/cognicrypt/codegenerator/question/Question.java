@@ -32,7 +32,11 @@ public class Question {
 	private ArrayList<Integer> methodParamIds;
 	private String questionType;
 	private Answer enteredAnswer;
-
+	//Note
+	private String note;
+	//tooltip
+	private String tooltip;
+	
 	public ArrayList<Answer> getAnswers() {
 		return this.answers;
 	}
@@ -61,6 +65,17 @@ public class Question {
 		return this.id;
 	}
 
+	//added get method for note
+	public String getNote() {
+		return this.note;
+	}
+	
+	//added get method for tooltip
+		public String getTooltip() {
+			return this.tooltip;
+		}
+	
+		
 	public String getQuestionText() {
 		return this.questionText;
 	}
@@ -89,6 +104,16 @@ public class Question {
 		this.id = id;
 	}
 
+	//added set method for note
+	public void setNote(final String note) {
+		this.note = note;
+	}
+	
+	//added set method for tooltip
+		public void getTooltip(final String tooltip) {
+			this.tooltip = tooltip;
+		}
+	
 	public void setQuestionText(final String questionText) {
 		this.questionText = questionText;
 	}
@@ -106,6 +131,7 @@ public class Question {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("ID: " + this.id + "\n");
 		builder.append(this.questionText + "\n");
+		builder.append(this.note + "\n");
 		for (final Answer answer : this.answers) {
 			builder.append("\t" + answer.getValue() + " [dependencies=" + answer.getClaferDependencies() + "], defaultValue=" + answer
 				.isDefaultAnswer() + ", next Question=" + answer.getNextID());

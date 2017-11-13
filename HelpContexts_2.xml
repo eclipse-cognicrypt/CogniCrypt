@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.contexts"?>
+<contexts> 
+      <context  id="help_id_2" title="CogniCrypt"> 
+        <description>CogniCrypt helps you to generate the code for the task that you have selected....</description> 
+        
+         <topic href="html/FinalPage.html"  label="Algorithm selection"/>
+      </context> 
+    </contexts> 

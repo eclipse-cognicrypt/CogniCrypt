@@ -2,7 +2,9 @@
   "id": "0",
   "content": [{
       "id": "0",
-      "questionText": "What is the level of security that you need for your data?",
+      "element":"combo",
+      "note": "",
+      "questionText": "What is the preferred security level for your data?",
       "answers": [{
           "value": "Very secure",
           "claferDependencies": [{
@@ -21,17 +23,14 @@
             "operator": ">="
           }],
           "defaultAnswer": true
-        },
-        {
-          "value": "Not important (I'm just testing for now and would prefer something fast)",
-          "claferDependencies": []
         }
       ]
     },
     {
       "id": "1",
+      "note": "",
       "element": "combo",
-      "questionText": "Should your key be derived from a user-specified password?",
+      "questionText": "Do you wish to derive the key for encryption from a user-specified password?",
       "answers": [{
           "value": "Yes",
           "claferDependencies": [{
@@ -59,8 +58,9 @@
     },
     {
       "id": "2",
+      "note": "",
       "element": "combo",
-      "questionText": "Will your application regularly encrypt data chunks of several gigabytes?",
+      "questionText": "Will your application encrypt several gigabytes of data regularly",
       "answers": [{
           "value": "Yes",
           "codeDependencies": [{
@@ -81,6 +81,7 @@
     {
       "id": "3",
       "element": "combo",
+      "note":"",
       "questionText": "What type of data do you wish to encrypt?",
       "answers": [{
           "value": "Byte[]",

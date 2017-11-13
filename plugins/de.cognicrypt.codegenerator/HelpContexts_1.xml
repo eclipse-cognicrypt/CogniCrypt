@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.contexts"?>
+<contexts> 
+      <context  id="help_id_1" title="CogniCrypt"> 
+        <description>CogniCrypt generates the code for the cryptographic task that you have selected. Guided mode simplifies your job!</description> 
+        <topic href="html/InitialPage.html"  label="Task Selection"/> 
+         <topic href="html/ConfigurationPage.html"  label="Task Configuration"/> 
+         <topic href="html/FinalPage.html"  label="Algorithm selection"/>
+      </context> 
+    </contexts> 

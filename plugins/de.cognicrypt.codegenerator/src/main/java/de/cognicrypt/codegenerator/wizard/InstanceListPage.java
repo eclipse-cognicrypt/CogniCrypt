@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
@@ -70,13 +71,21 @@ public class InstanceListPage extends WizardPage implements Labels {
 
 	@Override
 	public void createControl(final Composite parent) {
+		
 		ComboViewer algorithmClass;
 		Label labelInstanceList;
 		this.control = new Composite(parent, SWT.NONE);
-		final GridLayout layout = new GridLayout(1, false);
+		final GridLayout layout = new GridLayout(3, false);
 		this.control.setLayout(layout);
-
+		
+		/** To display the Help view after clicking the help icon
+		 * @param help_id_2 
+		 *        This id refers to HelpContexts_1.xml
+		 */
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.help_id_3");
+		
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
+		
 		setPageComplete(false);
 		compositeControl.setLayout(new GridLayout(2, false));
 		labelInstanceList = new Label(compositeControl, SWT.NONE);
@@ -105,6 +114,8 @@ public class InstanceListPage extends WizardPage implements Labels {
 				setPageComplete(true);
 			}
 		});
+		new Label(control, SWT.NONE);
+		new Label(control, SWT.NONE);
 
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
 		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
@@ -122,8 +133,10 @@ public class InstanceListPage extends WizardPage implements Labels {
 		setControl(this.control);
 		final ISelection selection = new StructuredSelection(inst.keySet().toArray()[0]);
 		algorithmClass.setSelection(selection);
+		new Label(control, SWT.NONE);
+		
 	}
-
+	
 	private void getInstanceDetails(final InstanceClafer inst, final Map<String, String> algorithms) {
 		String value = "";
 
@@ -213,8 +226,18 @@ public class InstanceListPage extends WizardPage implements Labels {
 	public void setPageComplete(final boolean complete) {
 		super.setPageComplete(complete);
 	}
+	private boolean firstTimeShown = true;
 
+	@Override
+	public void setVisible( boolean visible ) {
+	  super.setVisible( visible );
+	  if( visible && firstTimeShown ) {
+	    firstTimeShown = false;
+	    control.setFocus();
+	  }
+	}
 	public void setValue(final InstanceClafer instanceClafer) {
 		this.value = instanceClafer;
 	}
+	
 }

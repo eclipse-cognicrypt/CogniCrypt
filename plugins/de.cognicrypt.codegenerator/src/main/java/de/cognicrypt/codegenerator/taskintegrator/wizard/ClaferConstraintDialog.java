@@ -71,6 +71,8 @@ public class ClaferConstraintDialog extends Dialog {
 		ListViewer listViewer = new ListViewer(container, SWT.BORDER | SWT.V_SCROLL);
 		List list = listViewer.getList();
 
+		list.setToolTipText("Double-click to add");
+
 		GridData gd_list = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_list.heightHint = 340;
 		gd_list.grabExcessHorizontalSpace = true;

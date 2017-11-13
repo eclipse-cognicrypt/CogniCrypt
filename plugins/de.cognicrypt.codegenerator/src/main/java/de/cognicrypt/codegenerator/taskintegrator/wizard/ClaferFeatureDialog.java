@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.Constants.FeatureType;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
@@ -117,6 +118,14 @@ public class ClaferFeatureDialog extends Dialog {
 
 		Combo comboInheritance = new Combo(container, SWT.NONE);
 		comboInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+
+		// add existing abstract features to inheritance combo
+		// exclude the feature currently being modified
+		for (ClaferFeature cfr : listOfExistingClaferFeatures) {
+			if (cfr.getFeatureType() == Constants.FeatureType.ABSTRACT && !cfr.equals(resultClafer)) {
+				comboInheritance.add(cfr.getFeatureName().toString());
+			}
+		}
 
 		comboInheritance.addFocusListener(new FocusAdapter() {
 

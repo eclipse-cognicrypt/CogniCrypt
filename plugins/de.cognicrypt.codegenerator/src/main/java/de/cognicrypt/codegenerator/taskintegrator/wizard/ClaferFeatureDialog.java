@@ -35,7 +35,7 @@ public class ClaferFeatureDialog extends Dialog {
 	private Button btnRadioConcrete;
 
 	private ClaferFeature resultClafer;
-	private ArrayList<ClaferFeature> listOfExistingClaferFeatures;
+	private ArrayList<ClaferFeature> otherClaferFeatures;
 
 
 	public ClaferFeatureDialog(Shell parentShell, ClaferFeature modifiableClaferFeature, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
@@ -43,12 +43,20 @@ public class ClaferFeatureDialog extends Dialog {
 		setShellStyle(SWT.CLOSE);
 
 		resultClafer = modifiableClaferFeature;
-		this.listOfExistingClaferFeatures = listOfExistingClaferFeatures;
+
+		otherClaferFeatures = new ArrayList<ClaferFeature>(listOfExistingClaferFeatures.size());
+
+		// get abstract Clafer features that have already been created
+		// exclude the feature currently being modified
+		for (ClaferFeature cfr : listOfExistingClaferFeatures) {
+			if (cfr.getFeatureType() == Constants.FeatureType.ABSTRACT && !cfr.equals(resultClafer)) {
+				otherClaferFeatures.add(cfr);
+			}
+		}
 	}
 
 	public ClaferFeatureDialog(Shell shell, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
 		this(shell, new ClaferFeature(FeatureType.ABSTRACT, "", ""), listOfExistingClaferFeatures);
-		this.listOfExistingClaferFeatures = listOfExistingClaferFeatures;
 	}
 
 	/**
@@ -120,11 +128,8 @@ public class ClaferFeatureDialog extends Dialog {
 		comboInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
 		// add existing abstract features to inheritance combo
-		// exclude the feature currently being modified
-		for (ClaferFeature cfr : listOfExistingClaferFeatures) {
-			if (cfr.getFeatureType() == Constants.FeatureType.ABSTRACT && !cfr.equals(resultClafer)) {
-				comboInheritance.add(cfr.getFeatureName().toString());
-			}
+		for (ClaferFeature cfr : otherClaferFeatures) {
+			comboInheritance.add(cfr.getFeatureName().toString());
 		}
 
 		comboInheritance.addFocusListener(new FocusAdapter() {
@@ -150,7 +155,7 @@ public class ClaferFeatureDialog extends Dialog {
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
-		featuresComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getfeatureProperties(), true);
+		featuresComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getfeatureProperties(), true, otherClaferFeatures);
 		featuresComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		featuresComposite.setMinHeight(200);
 
@@ -166,7 +171,7 @@ public class ClaferFeatureDialog extends Dialog {
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
-		constraintsComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getFeatureConstraints(), true);
+		constraintsComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getFeatureConstraints(), true, otherClaferFeatures);
 		constraintsComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		constraintsComposite.setMinHeight(200);
 
@@ -193,12 +198,12 @@ public class ClaferFeatureDialog extends Dialog {
 
 	private void addClaferProperty() {
 		FeatureProperty featureProperty = new FeatureProperty("", "");
-		featuresComposite.addFeatureProperty(featureProperty, true);
+		featuresComposite.addFeatureProperty(featureProperty, true, otherClaferFeatures);
 		resultClafer.setFeatureProperties(featuresComposite.getFeatureProperties());
 	}
 
 	private void addClaferConstraint() {
-		ClaferConstraintDialog cfrConstraintDialog = new ClaferConstraintDialog(getShell(), resultClafer, listOfExistingClaferFeatures);
+		ClaferConstraintDialog cfrConstraintDialog = new ClaferConstraintDialog(getShell(), resultClafer, otherClaferFeatures);
 
 		// blocking call to Dialog.open() the dialog
 		// it returns 0 on success

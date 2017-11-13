@@ -13,6 +13,7 @@ import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.Constants.XSLTags;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 import de.cognicrypt.codegenerator.taskintegrator.models.XSLAttribute;
 
@@ -29,6 +30,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	private ArrayList<Answer> arrayAnswer;
 	private ArrayList<String> possibleCfrFeatures;
 
+	private ArrayList<ClaferFeature> listOfExistingClaferFeatures;
+
 	/**
 	 * Create the composite. Warnings suppressed for casting array lists.
 	 * 
@@ -37,7 +40,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * @param targetArrayListOfDataToBeDisplayed
 	 * @param showRemoveButton 
 	 */
-	public CompositeToHoldSmallerUIElements(Composite parent, int style, ArrayList<?> targetArrayListOfDataToBeDisplayed, boolean showRemoveButton) {
+	public CompositeToHoldSmallerUIElements(Composite parent, int style, ArrayList<?> targetArrayListOfDataToBeDisplayed, boolean showRemoveButton, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
 		super(parent, SWT.BORDER | SWT.V_SCROLL);
 		setExpandVertical(true);
 		setExpandHorizontal(true);
@@ -55,7 +58,9 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 
 		XSLAttributes = new ArrayList<XSLAttribute>();
 		
-		addData(targetArrayListOfDataToBeDisplayed, showRemoveButton);
+		this.listOfExistingClaferFeatures = listOfExistingClaferFeatures;
+
+		addData(targetArrayListOfDataToBeDisplayed, showRemoveButton, listOfExistingClaferFeatures);
 
 	}
 
@@ -65,7 +70,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * @param showRemoveButton
 	 */
 	@SuppressWarnings("unchecked")
-	private void addData(ArrayList<?> targetArrayListOfDataToBeDisplayed, boolean showRemoveButton) {
+	private void addData(ArrayList<?> targetArrayListOfDataToBeDisplayed, boolean showRemoveButton, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
 		if (targetArrayListOfDataToBeDisplayed != null) {
 
 			if (featureProperties == null && featureConstraints == null) {
@@ -78,7 +83,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 			if (targetArrayListOfDataToBeDisplayed.size() > 0) {
 				if (targetArrayListOfDataToBeDisplayed.get(0) instanceof FeatureProperty) {
 					for (FeatureProperty featureUnderConsideration : (ArrayList<FeatureProperty>) targetArrayListOfDataToBeDisplayed) {
-						addFeatureProperty(featureUnderConsideration, showRemoveButton);
+						addFeatureProperty(featureUnderConsideration, showRemoveButton, listOfExistingClaferFeatures);
 					}
 				} else if (targetArrayListOfDataToBeDisplayed.get(0) instanceof ClaferConstraint) {
 					for (ClaferConstraint featureConstraintUnderConsideration : (ArrayList<ClaferConstraint>) targetArrayListOfDataToBeDisplayed) {
@@ -118,9 +123,9 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * @param featureProperty
 	 * @param showRemoveButton
 	 */
-	public void addFeatureProperty(FeatureProperty featureProperty, boolean showRemoveButton) {
+	public void addFeatureProperty(FeatureProperty featureProperty, boolean showRemoveButton, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
 		featureProperties.add(featureProperty);
-		addFeaturePropertyUI(featureProperty, showRemoveButton);
+		addFeaturePropertyUI(featureProperty, showRemoveButton, listOfExistingClaferFeatures);
 	}
 
 	/**
@@ -128,8 +133,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * @param featureProperty
 	 * @param showRemoveButton
 	 */
-	private void addFeaturePropertyUI(FeatureProperty featureProperty, boolean showRemoveButton) {
-		GroupFeatureProperty groupForFeatureProperty = new GroupFeatureProperty((Composite) getContent(), SWT.NONE, featureProperty, showRemoveButton, true);
+	private void addFeaturePropertyUI(FeatureProperty featureProperty, boolean showRemoveButton, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
+		GroupFeatureProperty groupForFeatureProperty = new GroupFeatureProperty((Composite) getContent(), SWT.NONE, featureProperty, showRemoveButton, true, listOfExistingClaferFeatures);
 		groupForFeatureProperty.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT + 200,
 			Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
 
@@ -305,7 +310,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		// add all the feature properties excluding the deleted one.
 		if (featureProperties.size() > 0) {
 			for (FeatureProperty fp : featureProperties) {
-				addFeaturePropertyUI(fp, true);
+				addFeaturePropertyUI(fp, true, listOfExistingClaferFeatures);
 			}
 		} else if (featureConstraints.size() > 0) {
 			for (ClaferConstraint fc : featureConstraints) {

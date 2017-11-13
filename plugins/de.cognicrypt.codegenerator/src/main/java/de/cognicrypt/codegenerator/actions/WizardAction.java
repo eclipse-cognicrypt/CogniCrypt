@@ -21,7 +21,6 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.wizard.ConfiguratorWizard;
 
@@ -62,8 +61,15 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	@Override
 	public void run(final IAction action) {
 		Constants.WizardActionFromContextMenuFlag = false;
-		final WizardDialog dialog = new WizardDialog(new Shell(), new ConfiguratorWizard());
+		final WizardDialog dialog = new WizardDialog(new Shell(), new ConfiguratorWizard()){
+		@Override
+        protected void configureShell(Shell newShell) {
+		super.configureShell(newShell);
+		newShell.setSize(650,400);
+	
+	}	};
 		dialog.open();
+		
 	}
 
 	/**

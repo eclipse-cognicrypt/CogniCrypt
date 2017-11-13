@@ -2,10 +2,11 @@
     "id": "0",
     "content": [{
       "id": "0",
+      "note": "",
       "element": "combo",
-      "questionText": "Are you implementing the server or the client side?",
+      "questionText": "Where are you implementing?",
       "answers": [{
-          "value": "Server",
+          "value": "Server-side",
           "codeDependencies": [{
             "option": "server",
             "value": "true"
@@ -13,7 +14,7 @@
           "nextID": "2"
         },
         {
-          "value": "Client",
+          "value": "Client-side",
           "codeDependencies": [{
             "option": "server",
             "value": "false"
@@ -23,10 +24,12 @@
         }
       ]
     }]
-  }, {
+  },
+  {
     "id": "1",
     "content": [{
       "id": "1",
+       "note": "",
       "questionText": "Do you know ip and port of the server?",
       "answers": [{
           "value": "Yes",
@@ -46,8 +49,10 @@
     "id": "2",
     "content": [{
       "id": "2",
+      "note": "",
+      "tooltip": "Example : 216.3.128.12",
       "element": "text",
-      "questionText": "Please enter the server's ip.",
+      "questionText": "Please enter the server's ip",
       "answers": [{
         "value": "",
         "codeDependencies": [{
@@ -59,8 +64,10 @@
   },
   {
        "id": "3",
+      "note": "",
+      "tooltip": "Example : 1.2.3.4:80",
       "element": "text",
-      "questionText": "Please enter the port of the server.",
+      "questionText": "Please enter the port of the server",
       "answers": [{
         "value": "",
         "codeDependencies": [{
@@ -76,8 +83,9 @@
     "id": "3",
     "content": [{
       "id": "4",
+      "note": "Euclidean Distance -The distance between the two parties is identified without disclosing each other's data.\nMillionaire's Comparison- The two parties enter a number and receive the name of the party who entered the bigger one, without revealing each other's inputs. ",
       "element": "combo",
-      "questionText": "Which multi-party-computation scenario do you want to implement?",
+      "questionText": "Which Multi-Party Computation scenario do you want to implement?",
       "answers": [{
           "value": "Millionaire's Comparison",
           "claferDependencies": [{
@@ -104,8 +112,9 @@
     "id": "4",
     "content": [{
       "id": "5",
+      "note": "",
       "element": "combo",
-      "questionText": "What security level do you need?",
+      "questionText": "What is the preferred security level",
       "answers": [{
           "value": "Extra extra secure",
           "claferDependencies": [{

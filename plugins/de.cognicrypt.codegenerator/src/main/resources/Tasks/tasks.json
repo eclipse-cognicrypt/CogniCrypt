@@ -37,7 +37,7 @@
 		},
 		{
 			"name": "CertainTrust",
-			"description": "Selection support of trustworthy interaction partners",
+			"description": "Judging Trustworthiness of third parties",
 			"modelFile" : "src/main/resources/ClaferModel/CertainTrust.js",
 			"xmlFile" : "src/main/resources/TaskDesc/CertainTrustQuestion.json",
 			"additionalResources" : "src/main/resources/AdditionalResources/CertainTrust"

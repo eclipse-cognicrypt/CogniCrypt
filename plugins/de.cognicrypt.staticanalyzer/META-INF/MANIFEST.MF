@@ -14,4 +14,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/soot-trunk.jar,
  .,
- lib/ideal-crossing-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+ lib/ideal-crossing-0.0.1-SNAPSHOT-jar-with-dependencies.jar,
+ resources/

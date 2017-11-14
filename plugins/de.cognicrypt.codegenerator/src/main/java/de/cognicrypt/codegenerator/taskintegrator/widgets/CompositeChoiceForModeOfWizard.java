@@ -18,6 +18,9 @@ import org.eclipse.swt.events.ModifyEvent;
 
 import de.cognicrypt.codegenerator.Constants;
 import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormAttachment;
 
 /**
  * @author rajiv
@@ -39,29 +42,64 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		// All the UI widgets
 		Group grpChooseTheMode = new Group(this, SWT.NONE);
 		grpChooseTheMode.setText("Choose the mode of this Wizard");
-		//grpChooseTheMode.setBounds(10, 10, 508, 310);
-		RowLayout rl_grpChooseTheMode = new RowLayout(SWT.VERTICAL);
-		rl_grpChooseTheMode.center = true;
-		rl_grpChooseTheMode.fill = true;
-		grpChooseTheMode.setLayout(rl_grpChooseTheMode);
+		grpChooseTheMode.setLayout(new FormLayout());
 		
 		Label lblNameOfTheTask = new Label(grpChooseTheMode, SWT.NONE);
+		FormData fd_lblNameOfTheTask = new FormData();
+		fd_lblNameOfTheTask.right = new FormAttachment(100, -3);
+		fd_lblNameOfTheTask.top = new FormAttachment(0, 3);
+		fd_lblNameOfTheTask.left = new FormAttachment(0, 3);
+		lblNameOfTheTask.setLayoutData(fd_lblNameOfTheTask);
 		lblNameOfTheTask.setText("Name of the Task :");
 		
 		txtForTaskName = new Text(grpChooseTheMode, SWT.BORDER);
+		FormData fd_txtForTaskName = new FormData();
+		fd_txtForTaskName.right = new FormAttachment(100, -3);
+		fd_txtForTaskName.top = new FormAttachment(0, 23);
+		fd_txtForTaskName.left = new FormAttachment(0, 3);
+		txtForTaskName.setLayoutData(fd_txtForTaskName);
 		
 		Button btnCustomLibrary = new Button(grpChooseTheMode, SWT.CHECK);		
-		btnCustomLibrary.setText("Do you use a custom library?");
+		FormData fd_btnCustomLibrary = new FormData();
+		fd_btnCustomLibrary.right = new FormAttachment(100, -3);
+		fd_btnCustomLibrary.top = new FormAttachment(0, 55);
+		fd_btnCustomLibrary.left = new FormAttachment(0, 3);
+		btnCustomLibrary.setLayoutData(fd_btnCustomLibrary);
+		btnCustomLibrary.setText("Do you wish to use a custom library?");
 				
-		GroupBrowseForFile groupForLibraryFile = new GroupBrowseForFile(grpChooseTheMode,SWT.NONE,Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK,new String[] {"*.jar"},"Select file that contains the library");
-		groupForLibraryFile.setVisible(false);
+		
+		Group grpContainerGroupForLibrary = new Group(grpChooseTheMode, SWT.NONE);
+		FormData fd_grpContainerGroupForLibrary = new FormData();
+		fd_grpContainerGroupForLibrary.right = new FormAttachment(100, -3);
+		fd_grpContainerGroupForLibrary.top = new FormAttachment(0, 81);
+		fd_grpContainerGroupForLibrary.left = new FormAttachment(0, 3);
+		grpContainerGroupForLibrary.setLayoutData(fd_grpContainerGroupForLibrary);
+		grpContainerGroupForLibrary.setText("Custom Library");
+		grpContainerGroupForLibrary.setVisible(false);
+		RowLayout rl_grpContainerGroupForLibrary = new RowLayout(SWT.VERTICAL);
+		rl_grpContainerGroupForLibrary.fill = true;
+		grpContainerGroupForLibrary.setLayout(rl_grpContainerGroupForLibrary);
+		grpContainerGroupForLibrary.setVisible(false);
+		
+		new GroupBrowseForFile(grpContainerGroupForLibrary,SWT.NONE,Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK,new String[] {"*.jar"},"Select file that contains the library");
+		
 		
 		Button btnDoYouWishToUseTheGuidedMode = new Button(grpChooseTheMode, SWT.CHECK);
+		FormData fd_btnDoYouWishToUseTheGuidedMode = new FormData();
+		fd_btnDoYouWishToUseTheGuidedMode.right = new FormAttachment(100, -3);
+		fd_btnDoYouWishToUseTheGuidedMode.top = new FormAttachment(0, 159);
+		fd_btnDoYouWishToUseTheGuidedMode.left = new FormAttachment(0, 3);
+		btnDoYouWishToUseTheGuidedMode.setLayoutData(fd_btnDoYouWishToUseTheGuidedMode);
 		btnDoYouWishToUseTheGuidedMode.setText("Do you wish to use the guided mode?");
 		// guided mode by default.
 		btnDoYouWishToUseTheGuidedMode.setSelection(true);
 		
 		Group grpNonguidedMode = new Group(grpChooseTheMode, SWT.NONE);
+		FormData fd_grpNonguidedMode = new FormData();
+		fd_grpNonguidedMode.right = new FormAttachment(100, -3);
+		fd_grpNonguidedMode.top = new FormAttachment(0, 189);
+		fd_grpNonguidedMode.left = new FormAttachment(0, 3);
+		grpNonguidedMode.setLayoutData(fd_grpNonguidedMode);
 		grpNonguidedMode.setText("Non-Guided mode");
 		grpNonguidedMode.setVisible(false);
 		RowLayout rl_grpNonguidedMode = new RowLayout(SWT.VERTICAL);
@@ -109,7 +147,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				btnCustomLibrary.getParent().getParent().setData(Constants.WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED, btnCustomLibrary.getSelection());				
-				groupForLibraryFile.setVisible(btnCustomLibrary.getSelection());
+				grpContainerGroupForLibrary.setVisible(btnCustomLibrary.getSelection());
 			}
 		});
 		/* TODO removed for the user study.

@@ -13,10 +13,12 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.ModifyEvent;
 
 import de.cognicrypt.codegenerator.Constants;
+import org.eclipse.swt.layout.RowLayout;
 
 /**
  * @author rajiv
@@ -37,22 +39,23 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	public CompositeChoiceForModeOfWizard(Composite parent, int style) {
 		super(parent, SWT.BORDER);
 		this.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
-		setLayout(null);
+		setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		// All the UI widgets
 		Group grpChooseTheMode = new Group(this, SWT.NONE);
 		grpChooseTheMode.setText("Choose the mode of this Wizard");
-		grpChooseTheMode.setBounds(10, 10, 508, 310);
+		//grpChooseTheMode.setBounds(10, 10, 508, 310);
+		RowLayout rl_grpChooseTheMode = new RowLayout(SWT.VERTICAL);
+		rl_grpChooseTheMode.center = true;
+		rl_grpChooseTheMode.fill = true;
+		grpChooseTheMode.setLayout(rl_grpChooseTheMode);
 		
 		Label lblNameOfTheTask = new Label(grpChooseTheMode, SWT.NONE);
-		lblNameOfTheTask.setBounds(10, 10, 104, Constants.UI_WIDGET_HEIGHT_NORMAL);
 		lblNameOfTheTask.setText("Name of the Task :");
 		
-		txtForTaskName = new Text(grpChooseTheMode, SWT.NONE);
-		txtForTaskName.setBounds(120, 10, 379, Constants.UI_WIDGET_HEIGHT_NORMAL);
+		txtForTaskName = new Text(grpChooseTheMode, SWT.BORDER);
 				
 		Combo cmbLibraryLocation = new Combo(grpChooseTheMode, SWT.NONE);		
-		cmbLibraryLocation.setBounds(10, 46, 153, Constants.UI_WIDGET_HEIGHT_NORMAL);
 		cmbLibraryLocation.setItems(new String[] {Constants.WIDGET_CONTENT_EXISTING_LIBRARY, Constants.WIDGET_CONTENT_CUSTOM_LIBRARY});
 		// Choose existing library by default.
 		cmbLibraryLocation.select(0);
@@ -75,15 +78,16 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		btnBrowseForLibraryLocation.setText(Constants.LABEL_BROWSE_BUTTON);
 		
 		Button btnDoYouWishToUseTheGuidedMode = new Button(grpChooseTheMode, SWT.CHECK);		
-		btnDoYouWishToUseTheGuidedMode.setBounds(10, 82, 238, Constants.UI_WIDGET_HEIGHT_NORMAL);
 		btnDoYouWishToUseTheGuidedMode.setText("Do you wish to use the guided mode?");
 		// guided mode by default.
 		btnDoYouWishToUseTheGuidedMode.setSelection(true);
 		
 		Group grpNonguidedMode = new Group(grpChooseTheMode, SWT.NONE);
-		grpNonguidedMode.setBounds(10, 119, 489, 166);
 		grpNonguidedMode.setText("Non-Guided mode");
 		grpNonguidedMode.setVisible(false);
+		RowLayout rl_grpNonguidedMode = new RowLayout(SWT.VERTICAL);
+		rl_grpNonguidedMode.fill = true;
+		grpNonguidedMode.setLayout(rl_grpNonguidedMode);
 		
 		Label lblLocationOfClaferFile = new Label(grpNonguidedMode, SWT.NONE);
 		lblLocationOfClaferFile.setText("Location of the Clafer file :");

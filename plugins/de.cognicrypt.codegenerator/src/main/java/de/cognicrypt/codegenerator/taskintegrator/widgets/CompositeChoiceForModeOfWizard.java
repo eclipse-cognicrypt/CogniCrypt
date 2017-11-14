@@ -49,12 +49,10 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		lblNameOfTheTask.setText("Name of the Task :");
 		
 		txtForTaskName = new Text(grpChooseTheMode, SWT.BORDER);
-				
-		Combo cmbLibraryLocation = new Combo(grpChooseTheMode, SWT.NONE);
-		cmbLibraryLocation.setItems(new String[] {Constants.WIDGET_CONTENT_EXISTING_LIBRARY, Constants.WIDGET_CONTENT_CUSTOM_LIBRARY});
-		// Choose existing library by default.
-		cmbLibraryLocation.select(0);
 		
+		Button btnCustomLibrary = new Button(grpChooseTheMode, SWT.CHECK);		
+		btnCustomLibrary.setText("Do you use a custom library?");
+				
 		GroupBrowseForFile groupForLibraryFile = new GroupBrowseForFile(grpChooseTheMode,SWT.NONE,Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK,new String[] {"*.jar"},"Select file that contains the library");
 		groupForLibraryFile.setVisible(false);
 		
@@ -91,7 +89,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		this.setData(Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE, "");
 		this.setData(Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE, "");
 		// false by default since default selection is not using custom library.
-		this.setData(Constants.WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED, cmbLibraryLocation.getText().equals(Constants.WIDGET_CONTENT_CUSTOM_LIBRARY) ? true : false);		
+		this.setData(Constants.WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED, btnCustomLibrary.getSelection());		
 		// true by default since the guided mode is selected by default.
 		this.setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_CHOSEN, btnDoYouWishToUseTheGuidedMode.getSelection());
 		// false by default since the guided mode is not forced by default.
@@ -107,12 +105,11 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 				btnDoYouWishToUseTheGuidedMode.getParent().getParent().setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_CHOSEN, btnDoYouWishToUseTheGuidedMode.getSelection());
 				}
 			});
-		
-		cmbLibraryLocation.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {				
-				boolean isCustomLibraryRequired = cmbLibraryLocation.getText().equals(Constants.WIDGET_CONTENT_CUSTOM_LIBRARY) ? true : false;				
-				cmbLibraryLocation.getParent().getParent().setData(Constants.WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED, isCustomLibraryRequired);				
-				groupForLibraryFile.setVisible(isCustomLibraryRequired);				
+		btnCustomLibrary.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				btnCustomLibrary.getParent().getParent().setData(Constants.WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED, btnCustomLibrary.getSelection());				
+				groupForLibraryFile.setVisible(btnCustomLibrary.getSelection());
 			}
 		});
 		/* TODO removed for the user study.

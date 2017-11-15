@@ -795,11 +795,9 @@ public class HTIObserver implements Observer{
 <xsl:result-document href="Operator.java">
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
-
 public enum Operator {
 	NOT,AND,OR,wFUSION,cFUSION
 }
-
 </xsl:result-document>
 
 </xsl:when>

@@ -18,6 +18,8 @@ import crypto.analysis.ClassSpecification;
 import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.EnsuredCryptSLPredicate;
 import crypto.analysis.IAnalysisSeed;
+import crypto.rules.CryptSLArithmeticConstraint;
+import crypto.rules.CryptSLComparisonConstraint;
 import crypto.rules.CryptSLConstraint;
 import crypto.rules.CryptSLMethod;
 import crypto.rules.CryptSLPredicate;
@@ -59,12 +61,35 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	private void evaluateBrokenConstraint(ISLConstraint brokenConstraint, StringBuilder msg) {
-		//TODO: Add other constraint types
 		if (brokenConstraint instanceof CryptSLValueConstraint) {
 			evaluateValueConstraint(brokenConstraint, msg);
+		} else if (brokenConstraint instanceof CryptSLComparisonConstraint) {
+			CryptSLArithmeticConstraint brokenArthConstraint = (CryptSLArithmeticConstraint) brokenConstraint;
+			msg.append(brokenArthConstraint.getLeft());
+			msg.append(" ");
+			msg.append(brokenArthConstraint.getOperator());
+			msg.append(" ");
+			msg.append(brokenArthConstraint.getRight());
 		} else if (brokenConstraint instanceof CryptSLConstraint) {
 			final CryptSLConstraint cryptSLConstraint = (CryptSLConstraint) brokenConstraint;
-			evaluateValueConstraint(cryptSLConstraint.getRight(), msg);
+			switch (cryptSLConstraint.getOperator()) {
+				case and:
+					evaluateValueConstraint(cryptSLConstraint.getLeft(), msg);
+					msg.append(" or ");
+					evaluateValueConstraint(cryptSLConstraint.getRight(), msg);
+					break;
+				case implies:
+					evaluateValueConstraint(cryptSLConstraint.getRight(), msg);
+					break;
+				case or:
+					evaluateValueConstraint(cryptSLConstraint.getLeft(), msg);
+					msg.append(" or ");
+					evaluateValueConstraint(cryptSLConstraint.getRight(), msg);
+					break;
+				default:
+					break;
+			}
+			
 		}
 	}
 

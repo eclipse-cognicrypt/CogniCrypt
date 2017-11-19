@@ -360,7 +360,7 @@ public class ConfiguratorWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		boolean ret = false;
-		if (this.instanceListPage != null ) {
+		if (getContainer().getCurrentPage().getName().equals(Labels.ALGORITHM_SELECTION_PAGE ) ) {
 			ret = this.instanceListPage.isPageComplete();
 			try {
 				final XMLParser parser = new XMLParser();
@@ -368,6 +368,30 @@ public class ConfiguratorWizard extends Wizard {
 				
 				// Initialize Code Generation
 				XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject(), this.instanceListPage.getProviderFromInstance());
+
+				// Write Instance File into developer project
+				final String xmlInstancePath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
+				parser.writeClaferInstanceToFile(xmlInstancePath);
+
+				// Generate code template
+				ret &= codeGenerator.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), codeGenerator.getProvider());
+
+				// Delete Instance File
+				FileHelper.deleteFile(xmlInstancePath);
+				codeGenerator.getDeveloperProject().refresh();
+			} catch (final IOException | CoreException | BadLocationException e) {
+				Activator.getDefault().logError(e);
+				return false;
+			}
+		}
+		if ( getContainer().getCurrentPage().getName().equals(Labels.DEFAULT_ALGORITHM_PAGE ) ) {
+			ret = this.defaultAlgorithmPage.isPageComplete();
+			try {
+				final XMLParser parser = new XMLParser();
+				parser.displayInstanceValues(this.defaultAlgorithmPage.getValue(), this.constraints);
+				
+				// Initialize Code Generation
+				XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject());
 
 				// Write Instance File into developer project
 				final String xmlInstancePath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;

@@ -85,21 +85,19 @@ public class InstanceListPage extends WizardPage implements Labels {
 		 */
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.help_id_3");
 		
-		final Composite compositeControl = new Composite(this.control, SWT.NONE);
-		
+		final Composite compositeControl = new Composite(this.control, SWT.NONE);		
 		setPageComplete(false);
 		compositeControl.setLayout(new GridLayout(2, false));
 		labelInstanceList = new Label(compositeControl, SWT.NONE);
 		labelInstanceList.setText(Labels.instanceList);
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
+		//inst.keySet().remove(0);
 		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
 		Combo combo = algorithmClass.getCombo();
 		combo.setToolTipText(Constants.ALGORITHM_COMBO_TOOLTIP);
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-
 		algorithmClass.setInput(inst.keySet());
-
-		algorithmClass.setLabelProvider(new LabelProvider() {
+        algorithmClass.setLabelProvider(new LabelProvider() {
 
 			@Override
 			public String getText(final Object element) {

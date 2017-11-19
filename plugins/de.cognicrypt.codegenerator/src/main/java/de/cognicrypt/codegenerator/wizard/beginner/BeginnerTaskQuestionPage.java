@@ -237,11 +237,12 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 				notePanel.setFont(boldFont);
 								
-				this.note = new Text (notePanel,SWT.MULTI | SWT.WRAP);
+				this.note = new Text (notePanel,SWT.MULTI | SWT.WRAP );
 				this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
 				this.note.setText(question.getNote());
-				this.note.setBounds(10, 20, 585, 60);
-				setControl(parent);
+				this.note.setBounds(10,20,585,60);
+				this.note.setSize(note.computeSize(585, SWT.DEFAULT));
+				setControl(notePanel);
 				this.note.setEditable(false);
 				this.note.setEnabled(true);
 				}

@@ -280,7 +280,6 @@ public class InstanceGenerator {
 				}
 
 				this.displayNameToInstanceMap.put(copyKey, sortedInst);
-				//a = this.displayNameToInstanceMap.get(key.equals(0));
 			}
 		}
 		final Map<String, InstanceClafer> treeMap = new TreeMap<>(this.displayNameToInstanceMap);
@@ -296,6 +295,10 @@ public class InstanceGenerator {
 		//to get the first Instance
 		InstanceClafer firstInst=this.generatedInstances.get(0);
 		String key= getInstanceName(firstInst);
+		if (key.isEmpty()) {
+			key = firstInst.getChildren()[0].getRef().toString();
+		}
+		
 		this.displayFirstNameToInstanceMap.put(key, firstInst);
 		final Map<String, InstanceClafer> treeMap1 = new TreeMap<>(this.displayFirstNameToInstanceMap);
 		this.displayFirstNameToInstanceMap = treeMap1;

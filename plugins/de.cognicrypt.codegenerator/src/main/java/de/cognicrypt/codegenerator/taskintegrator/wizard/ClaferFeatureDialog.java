@@ -213,6 +213,10 @@ public class ClaferFeatureDialog extends Dialog {
 	}
 
 	public ClaferFeature getResult() {
+		// remove empty properties and constraints
+		featuresComposite.getFeatureProperties().removeIf(featureProp -> featureProp.getPropertyName().equals("") && featureProp.getPropertyType().equals(""));
+		constraintsComposite.getFeatureConstraints().removeIf(constraint -> constraint.getConstraint().equals(""));
+
 		resultClafer.setFeatureProperties(featuresComposite.getFeatureProperties());
 		resultClafer.setFeatureConstraints(constraintsComposite.getFeatureConstraints());
 

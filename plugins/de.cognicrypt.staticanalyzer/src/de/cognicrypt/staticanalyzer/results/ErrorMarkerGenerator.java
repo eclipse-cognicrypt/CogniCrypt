@@ -37,6 +37,17 @@ public class ErrorMarkerGenerator {
 			Activator.getDefault().logError(Constants.NO_RES_FOUND);
 			return false;
 		}
+		
+		for (IMarker marker : markers) {
+			try {
+				if (marker.getAttribute(IMarker.MESSAGE).equals(message) && marker.getAttribute(IMarker.LINE_NUMBER).equals(line) && sourceFile.getName().equals(marker.getResource().getName())) {
+					return true;
+				}
+			} catch (CoreException e) {
+				//If this throws an exception, it's better to simply create the error marker, even if it already exists.
+			}
+		}
+		
 		IMarker marker;
 		try {
 			marker = sourceFile.createMarker(IMarker.PROBLEM);

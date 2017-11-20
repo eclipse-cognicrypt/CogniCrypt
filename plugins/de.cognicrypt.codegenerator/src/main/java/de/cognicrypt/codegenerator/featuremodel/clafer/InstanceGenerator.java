@@ -81,6 +81,8 @@ public class InstanceGenerator {
 	private String taskName;
 	private String taskDescription;
 	private final AstClafer taskClafer;
+	private String a;
+	private int count;
 
 	public InstanceGenerator(final String path, final String taskName, final String taskDescription) {
 		this.claferModel = new ClaferModel(path);
@@ -263,10 +265,13 @@ public class InstanceGenerator {
 		} catch (Exception ex) {
 			Activator.getDefault().logError("Instances not sorted by security level. Be cautious");
 		}
+		//InstanceClafer sortedInst1=this.generatedInstances.remove(0);
 		for (InstanceClafer sortedInst : this.generatedInstances) {
+			
 			String key = getInstanceName(sortedInst);
 			if (key.isEmpty()) {
 				key = sortedInst.getChildren()[0].getRef().toString();
+				this.displayNameToInstanceMap.remove(key, sortedInst);
 			}
 			if (sortedInst.getType().getName().equals(this.taskName) && key.length() > 0) {
 				/**
@@ -277,9 +282,13 @@ public class InstanceGenerator {
 				String copyKey = key;
 				while (displayNameToInstanceMap.containsKey(copyKey)) {
 					copyKey = key + "(" + String.format("%02d", ++counter) + ")";
+					this.setComboDes1(counter);
 				}
 
 				this.displayNameToInstanceMap.put(copyKey, sortedInst);
+				this.setComboDes(key);
+				
+							
 			}
 		}
 		final Map<String, InstanceClafer> treeMap = new TreeMap<>(this.displayNameToInstanceMap);
@@ -297,8 +306,7 @@ public class InstanceGenerator {
 		String key= getInstanceName(firstInst);
 		if (key.isEmpty()) {
 			key = firstInst.getChildren()[0].getRef().toString();
-		}
-		
+		}		
 		this.displayFirstNameToInstanceMap.put(key, firstInst);
 		final Map<String, InstanceClafer> treeMap1 = new TreeMap<>(this.displayFirstNameToInstanceMap);
 		this.displayFirstNameToInstanceMap = treeMap1;
@@ -372,7 +380,6 @@ public class InstanceGenerator {
 		}
 		this.generatedInstances = new ArrayList<>(this.uniqueInstances.values());
 		generateInstanceMapping();
-
 		return this.generatedInstances;
 	}
 
@@ -446,7 +453,7 @@ public class InstanceGenerator {
 	 * @return
 	 */
 	public Map<String, InstanceClafer> getInstances() {
-		return this.displayNameToInstanceMap;
+		return 	this.displayNameToInstanceMap;
 	}
 	/**
 	 * gives the instances, key field for First Instance .
@@ -506,5 +513,21 @@ public class InstanceGenerator {
 	 */
 	public void setTaskName(final String taskName) {
 		this.taskName = taskName;
+	}
+	public void setComboDes(String a ){
+		this.a=a;
+		
+	}
+	public String getComboDes( ){
+		return a;
+		
+	}
+	public void setComboDes1(int count ){
+		this.count=count;
+		
+	}
+	public int getComboDes1(){
+		return count;
+
 	}
 }

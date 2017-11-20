@@ -125,7 +125,7 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 				getWizard().getContainer().updateButtons();
 			}
 		});
-		defaultAlgorithmCheckBox.setText("I like to generate the above code into my Java project");
+		defaultAlgorithmCheckBox.setText("I like to generate the code for the default algorithm into my Java project");
 		
 	}
 

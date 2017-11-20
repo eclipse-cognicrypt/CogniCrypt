@@ -84,6 +84,7 @@ public class TaskSelectionPage extends WizardPage {
 
 		ComboViewer projectComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
 		Combo combo = projectComboSelection.getCombo();
+		combo.setToolTipText("List of your Java projects");
 		combo.setEnabled(true);
         combo.setBounds(153, 5, 385, 23);
 		projectComboSelection.setContentProvider(ArrayContentProvider.getInstance());
@@ -120,6 +121,7 @@ public class TaskSelectionPage extends WizardPage {
 
 		this.taskComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
 		Combo combo_1 = taskComboSelection.getCombo();
+		combo_1.setToolTipText("Cryptographic tasks supported by CogniCrypt");
 		combo_1.setEnabled(true);
 		combo_1.setBounds(153, 45, 385, 23);
 		this.taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
@@ -166,6 +168,7 @@ public class TaskSelectionPage extends WizardPage {
 		
 		//Check box for going to guided mode
 		this.guidedModeCheckBox = new Button(container, SWT.CHECK);
+		guidedModeCheckBox.setToolTipText("If you do not use the guided mode, then you have to configure the algorithm by yourself");
 		this.guidedModeCheckBox.setEnabled(true);
 		this.guidedModeCheckBox.setBounds(5, 205, 261, 16);
 		this.guidedModeCheckBox.addSelectionListener(new SelectionAdapter() {

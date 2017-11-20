@@ -91,12 +91,19 @@ public class InstanceListPage extends WizardPage implements Labels {
 		labelInstanceList = new Label(compositeControl, SWT.NONE);
 		labelInstanceList.setText(Labels.instanceList);
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
-		//inst.keySet().remove(0);
 		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
+		// Remove the first algorithm combination (as this algorithm combination is already presented to the user as a default algorithm)
+		Object otherInstances = inst.keySet().toArray()[0];
+		inst.remove(otherInstances);
 		Combo combo = algorithmClass.getCombo();
+//		String key=instanceGenerator.getComboDes();
+//		int count=instanceGenerator.getComboDes1();
+//		combo.setToolTipText("There are " + String.format("%d",count ) +" variations of the algorithm "+key);
 		combo.setToolTipText(Constants.ALGORITHM_COMBO_TOOLTIP);
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
+		//All other algorithm combinations except the default algorithm
 		algorithmClass.setInput(inst.keySet());
+	    
         algorithmClass.setLabelProvider(new LabelProvider() {
 
 			@Override

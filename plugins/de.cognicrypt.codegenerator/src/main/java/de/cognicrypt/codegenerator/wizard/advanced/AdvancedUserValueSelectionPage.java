@@ -91,19 +91,21 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 				createConstraints(inputClafer, inputClafer.getRef().getTargetType(), titledPanel);
 			} else if (!inputClafer.getRef().getTargetType().isPrimitive()) {
 				if (!ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()).equals(titledPanel.getText())) {
+					if(inputClafer.getRef().getTargetType().hasChildren())
+					{
 					final Group childPanel = createPanel2(ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()), titledPanel);
-					createConstraints(inputClafer,inputClafer.getRef().getTargetType() , childPanel);					
+					createConstraints(inputClafer,inputClafer.getRef().getTargetType() , childPanel);		
+					}
 				} else {
 					//same panel as main algorithm type (e.g., kda in secure pwd storage)
 					createConstraints(inputClafer, inputClafer.getRef().getTargetType(), titledPanel);
-				}
+					}
 			}
 		}
 
 		if (inputClafer.getSuperClafer() != null) {
 			createConstraints(parent, inputClafer.getSuperClafer(), titledPanel);
 		}
-
 	}
 
 	@Override
@@ -145,14 +147,13 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 		// panel
 
 		for (final AstClafer taskAlgorithm : this.taskClafer.getChildren()) {
+			if(!taskAlgorithm.getRef().getTargetType().hasRef()){
 			final Group titledPanel =createPanel(ClaferModelUtils.removeScopePrefix(taskAlgorithm.getRef().getTargetType().getName()), this.container);
-			createConstraints(this.taskClafer, taskAlgorithm, titledPanel);
+				createConstraints(this.taskClafer, taskAlgorithm, titledPanel);	
 		}
-		
-
 		setControl(this.container);
 	}
-
+	}
 	private Group createPanel(final String name, final Composite parent) {
 		final Group titledPanel = new Group(parent, SWT.LEFT);
 		titledPanel.setText(name);

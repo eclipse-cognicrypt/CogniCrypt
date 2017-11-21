@@ -1,2 +1,2 @@
 abstract Algorithm
-	secLevel -> Security
+	securityLevel -> Security

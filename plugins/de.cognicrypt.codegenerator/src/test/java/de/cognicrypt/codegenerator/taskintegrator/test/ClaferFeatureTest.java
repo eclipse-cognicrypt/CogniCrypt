@@ -29,19 +29,15 @@ public class ClaferFeatureTest {
 
 		assertEquals(claferFeature.getfeatureProperties(), featureProperties);
 	}
+	
+	public static boolean filesEqual(String expectedFilename, String actualFilename) throws IOException {
+		Path expectedFilePath = Paths.get(expectedFilename);
+		Path actualFilePath = Paths.get(actualFilename);
 
-	@Test
-	public final void testFilesEqual() throws IOException {
-		String testFileFolder = "src/test/resources/taskintegrator/";
-		String testFile1 = testFileFolder + "testFile1.cfr";
-
-		Path file1 = Paths.get(testFile1);
-		Path file2 = Paths.get(testFile1);
-
-		byte[] f1 = Files.readAllBytes(file1);
-		byte[] f2 = Files.readAllBytes(file2);
-
-		assertTrue(Arrays.equals(f1, f2));
+		byte[] expectedBytes = Files.readAllBytes(expectedFilePath);
+		byte[] actualBytes = Files.readAllBytes(actualFilePath);
+		
+		return Arrays.equals(expectedBytes, actualBytes);
 	}
 
 }

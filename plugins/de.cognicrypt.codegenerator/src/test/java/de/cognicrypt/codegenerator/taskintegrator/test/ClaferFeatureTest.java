@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.junit.AfterClass;
 import org.junit.Test;
 
 import de.cognicrypt.codegenerator.Constants;
@@ -67,6 +68,20 @@ public class ClaferFeatureTest {
 
 		// compare the files
 		assertTrue(filesEqual(expectedFilename, actualFilename));
+	}
+	
+	@AfterClass
+	public final static void deleteFiles() throws IOException {
+		// gather all files to be deleted
+		ArrayList<String> temporaryFiles = new ArrayList<>();
+		temporaryFiles.add(testFileFolder + "testFile1_tmp.cfr");
+		
+		// generate the paths and delete the files
+		for (String filename : temporaryFiles) {
+			Path path = Paths.get(filename);
+			Files.delete(path);
+		}
+		
 	}
 
 }

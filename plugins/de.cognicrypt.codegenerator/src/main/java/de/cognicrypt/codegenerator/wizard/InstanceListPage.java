@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.clafer.instance.InstanceClafer;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
@@ -29,6 +31,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -92,18 +95,24 @@ public class InstanceListPage extends WizardPage implements Labels {
 		labelInstanceList.setText(Labels.instanceList);
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
 		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
-		// Remove the first algorithm combination (as this algorithm combination is already presented to the user as a default algorithm)
-		Object otherInstances = inst.keySet().toArray()[0];
-		inst.remove(otherInstances);
+		String firstInstance = inst.keySet().toArray()[0].toString();
 		Combo combo = algorithmClass.getCombo();
-//		String key=instanceGenerator.getComboDes();
-//		int count=instanceGenerator.getComboDes1();
-//		combo.setToolTipText("There are " + String.format("%d",count ) +" variations of the algorithm "+key);
-		combo.setToolTipText(Constants.ALGORITHM_COMBO_TOOLTIP);
+		String key=instanceGenerator.getComboDes();
+		int count=instanceGenerator.getComboDes1();
+		combo.setToolTipText("There are " + String.format("%d",count ) +" variations of the algorithm "+key);
+//		combo.setToolTipText(Constants.ALGORITHM_COMBO_TOOLTIP);
+		
+		//Display help assist for the first instance in the combo box
+		final ControlDecoration deco = new ControlDecoration(combo, SWT.TOP | SWT.RIGHT );
+        Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION)
+		.getImage();
+		
+		deco.setDescriptionText("This algorithm was presented to you previously,\n as the best algorithm combination.");
+		deco.setImage(image);
+		deco.setShowOnlyOnFocus(false);
+		
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-		//All other algorithm combinations except the default algorithm
-		algorithmClass.setInput(inst.keySet());
-	    
+		algorithmClass.setInput(inst.keySet());	
         algorithmClass.setLabelProvider(new LabelProvider() {
 
 			@Override
@@ -117,7 +126,13 @@ public class InstanceListPage extends WizardPage implements Labels {
 			final String b = selection.getFirstElement().toString();
 			setValue(InstanceListPage.this.instanceGenerator.getInstances().get(b));
 			InstanceListPage.this.instanceDetails.setText(getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(b)));
-
+			
+			if(!b.equals(firstInstance))
+				//hide the help assist if the selected algorithm is not the default algorithm
+				deco.hide();
+			else
+				deco.show();
+			
 			if (selection.size() > 0) {
 				setPageComplete(true);
 			}

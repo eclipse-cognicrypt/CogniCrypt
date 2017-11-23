@@ -88,11 +88,8 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		});
 		algorithmClass.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-			//InstanceListPage.this.instancePropertiesPanel.setVisible(true);
 			final String b = selection.getFirstElement().toString();
 			setValue(DefaultAlgorithmPage.this.instanceGenerator.getInstances().get(b));
-			//DefaultAlgorithmPage.this.instanceDetails.setText(getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(b)));
-
 			if (selection.size() > 0) {
 				setPageComplete(true);
 			}

@@ -295,22 +295,22 @@ public class InstanceGenerator {
 		this.displayNameToInstanceMap = treeMap;
 		
 	}
-	/**
-	 * Method to Generate default instance for basic user. The first instance of the generated (and sorted) instances will be the default instance
-	 *
-	 */
-	private void generateFirstInstance(){
-		this.displayFirstNameToInstanceMap.clear();
-		//to get the first Instance
-		InstanceClafer firstInst=this.generatedInstances.get(0);
-		String key= getInstanceName(firstInst);
-		if (key.isEmpty()) {
-			key = firstInst.getChildren()[0].getRef().toString();
-		}		
-		this.displayFirstNameToInstanceMap.put(key, firstInst);
-		final Map<String, InstanceClafer> treeMap1 = new TreeMap<>(this.displayFirstNameToInstanceMap);
-		this.displayFirstNameToInstanceMap = treeMap1;
-	}
+//	/**
+//	 * Method to Generate default instance for basic user. The first instance of the generated (and sorted) instances will be the default instance
+//	 *
+//	 */
+//	private void generateFirstInstance(){
+//		this.displayFirstNameToInstanceMap.clear();
+//		//to get the first Instance
+//		InstanceClafer firstInst=this.generatedInstances.get(0);
+//		String key= getInstanceName(firstInst);
+//		if (key.isEmpty()) {
+//			key = firstInst.getChildren()[0].getRef().toString();
+//		}		
+//		this.displayFirstNameToInstanceMap.put(key, firstInst);
+//		final Map<String, InstanceClafer> treeMap1 = new TreeMap<>(this.displayFirstNameToInstanceMap);
+//		this.displayFirstNameToInstanceMap = treeMap1;
+//	}
 	/**
 	 * Method to Generate instances for basic user. Argument is a map of property(clafer) name and their values
 	 *
@@ -350,7 +350,7 @@ public class InstanceGenerator {
 		}
 		this.generatedInstances = new ArrayList<>(this.uniqueInstances.values());
 		generateInstanceMapping();
-		generateFirstInstance();
+		//generateFirstInstance();
 		return this.generatedInstances;
 	}
 

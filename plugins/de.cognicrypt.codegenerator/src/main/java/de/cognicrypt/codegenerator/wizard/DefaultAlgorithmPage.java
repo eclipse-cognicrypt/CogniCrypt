@@ -3,23 +3,18 @@ package de.cognicrypt.codegenerator.wizard;
 import java.util.Map;
 
 import org.clafer.instance.InstanceClafer;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-//import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Text;
@@ -52,7 +47,7 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 	
 	@Override
 	public void createControl(final Composite parent) {
-		ComboViewer algorithmClass;
+		Label algorithmClass;
 		Label labelDefaultAlgorithm;
 		this.control = new Composite(parent, SWT.NONE);
 		final GridLayout layout = new GridLayout(1, false);
@@ -68,34 +63,16 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		compositeControl.setLayout(new GridLayout(2, false));
 		labelDefaultAlgorithm = new Label(compositeControl, SWT.NONE);
 		labelDefaultAlgorithm.setText(Labels.defaultAlgorithm);
-		final Map<String, InstanceClafer> inst = this.instanceGenerator.getFirstInstance();//Only the first Instance,which is the most secure one, will be displayed
-//		algorithmClass= new Label(compositeControl, SWT.NONE);
-//		algorithmClass.setText(inst.keySet().toString());
-//		setValue(DefaultAlgorithmPage.this.instanceGenerator.getFirstInstance().get(inst.toString()));
+		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();//Only the first Instance,which is the most secure one, will be displayed
 		
-		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
-		Combo combo = algorithmClass.getCombo();
-		combo.setEnabled(false);
-		combo.setToolTipText(Constants.ALGORITHM_COMBO_TOOLTIP);
-		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-		algorithmClass.setInput(inst.keySet());
-		algorithmClass.setLabelProvider(new LabelProvider() {
+		algorithmClass= new Label(compositeControl, SWT.NONE);
+		String firstInstance = inst.keySet().toArray()[0].toString();
+		algorithmClass.setText(firstInstance);
+		setValue(DefaultAlgorithmPage.this.instanceGenerator.getInstances().get(firstInstance));
+		setPageComplete(true);
 
-			@Override
-			public String getText(final Object element) {
-				return element.toString();
-			}
-		});
-		algorithmClass.addSelectionChangedListener(event -> {
-			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-			final String b = selection.getFirstElement().toString();
-			setValue(DefaultAlgorithmPage.this.instanceGenerator.getInstances().get(b));
-			if (selection.size() > 0) {
-				setPageComplete(true);
-			}
-		});
-		final ISelection selection = new StructuredSelection(inst.keySet().toArray()[0]);
-		algorithmClass.setSelection(selection);
+		algorithmClass.setToolTipText("Default Algorithm combination");
+
 		this.codePreviewPanel = new Group(this.control, SWT.NONE);
 		this.codePreviewPanel.setText(Constants.CODE_PREVIEW);
 		final Font boldFont = new Font(this.codePreviewPanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
@@ -108,6 +85,7 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		this.code.setEditable(false);	
 		new Label(control, SWT.NONE);
 		
+		code.setToolTipText("This is the preview of the code, that will be generated into your Java project");
 		
 		defaultAlgorithmCheckBox = new Button(control, SWT.CHECK);
 		defaultAlgorithmCheckBox.setSelection(true);
@@ -124,6 +102,15 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		});
 		defaultAlgorithmCheckBox.setText("I like to generate the code for the default algorithm into my Java project");
 		
+		final ControlDecoration deco = new ControlDecoration(defaultAlgorithmCheckBox, SWT.TOP | SWT.LEFT );
+        Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION)
+		.getImage();
+		
+		deco.setDescriptionText("If you want to view other possible algorithm combinations,\nplease uncheck and click 'Next'");
+		deco.setImage(image);
+		deco.setShowOnlyOnFocus(false);
+		
+			
 	}
 
 

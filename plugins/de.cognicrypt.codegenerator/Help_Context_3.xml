@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.contexts"?>
+<contexts> 
+      <context  id="help_id_3" title="CogniCrypt"> 
+        <description>Select any algorithm and hit finish!</description> 
+        
+         <topic href="html/ConfigurationPage.html"  label="Task Configuration"/>
+      </context> 
+    </contexts> 

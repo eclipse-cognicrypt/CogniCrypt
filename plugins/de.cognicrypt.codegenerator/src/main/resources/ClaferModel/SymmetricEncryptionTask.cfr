@@ -83,7 +83,7 @@ abstract KeyDerivationAlgorithm : Algorithm
 	digest -> Digest?
 	[outputSize = digest.outputSize]
 	[digest.security != Broken]
-	[iterations = 1000]//1000 is the accepted default number of iterations for a slow enough computation
+	[iterations = 65536]//1000 is the accepted default number of iterations for a slow enough computation
 
 abstract Digest : Algorithm
     outputSize -> integer

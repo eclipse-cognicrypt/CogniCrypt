@@ -5,6 +5,7 @@ package de.cognicrypt.codegenerator.taskintegrator.models;
 
 import java.util.ArrayList;
 
+import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.Constants.FeatureType;
 
 /**
@@ -82,6 +83,37 @@ public class ClaferFeature {
 
 	public void setFeatureConstraints(ArrayList<ClaferConstraint> featureConstraints) {
 		this.featureConstraints = featureConstraints;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder strRepresentation = new StringBuilder();
+		
+		if (featureType == Constants.FeatureType.ABSTRACT) {
+			strRepresentation.append("abstract ");
+		}
+		
+		strRepresentation.append(getFeatureName());
+		
+		if (!getFeatureInheritance().isEmpty()) {
+			strRepresentation.append(": ");
+			strRepresentation.append(getFeatureInheritance());
+		}
+		
+		for (FeatureProperty featureProperty : getfeatureProperties()) {
+			strRepresentation.append("\n\t");
+			strRepresentation.append(featureProperty.toString());			
+		}
+		
+		for (ClaferConstraint featureConstraint : getFeatureConstraints()) {
+			strRepresentation.append("\n\t[ ");
+			strRepresentation.append(featureConstraint.getConstraint());
+			strRepresentation.append(" ]");
+		}
+		
+		strRepresentation.append("\n");
+		
+		return strRepresentation.toString();
 	}
 
 }

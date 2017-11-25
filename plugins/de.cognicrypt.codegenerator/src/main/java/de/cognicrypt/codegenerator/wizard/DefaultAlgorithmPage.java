@@ -1,6 +1,22 @@
 package de.cognicrypt.codegenerator.wizard;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.fieldassist.ControlDecoration;
@@ -21,27 +37,34 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.ui.PlatformUI;
 
+import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
+import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.utilities.Labels;
+import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.XMLParser;
 
 
 public class DefaultAlgorithmPage extends WizardPage implements Labels {
 
 	private Composite control;
 	private Group codePreviewPanel;
-	private Task selectedTask;
+	private TaskSelectionPage taskSelectionPage;
 	private Button defaultAlgorithmCheckBox;
 	private Text code;
 	private final InstanceGenerator instanceGenerator;
 	private InstanceClafer value;
+	private ConfiguratorWizard configuratorWizard;
 
-	public DefaultAlgorithmPage(final InstanceGenerator inst,final Task selectedTask) {
+	public DefaultAlgorithmPage(final InstanceGenerator inst,final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
 		super(Labels.DEFAULT_ALGORITHM_PAGE);
-		setTitle("Best solution for task: " + selectedTask.getDescription());
+		setTitle("Best solution for task: " + taskSelectionPage.getSelectedTask().getDescription());
 		setDescription(Labels.DESCRIPTION_DEFAULT_ALGORITHM_PAGE);
 		this.instanceGenerator = inst;
+		this.taskSelectionPage = taskSelectionPage;
+		this.configuratorWizard = confWizard;
 	}
 
 	
@@ -85,6 +108,8 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		this.code.setEditable(false);	
 		new Label(control, SWT.NONE);
 		
+		this.code.setText(getCodePreview());
+		
 		code.setToolTipText("This is the preview of the code, that will be generated into your Java project");
 		
 		defaultAlgorithmCheckBox = new Button(control, SWT.CHECK);
@@ -114,10 +139,69 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 	}
 
 
-	public Task getTask() {
-		return this.selectedTask;
+	private String getCodePreview() {
+		XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject());
+		final String claferPreviewPath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
+		final XMLParser xmlparser = new XMLParser();
+		xmlparser.displayInstanceValues(this.getValue(), this.configuratorWizard.getConstraints());
+		try {
+			xmlparser.writeClaferInstanceToFile(claferPreviewPath);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "";
+		}
+
+		File claferPreviewFile = new File(claferPreviewPath);
+
+		// Check whether directories and templates/model exist
+		final File claferOutputFiles = claferPreviewFile != null && claferPreviewFile.exists() ? claferPreviewFile
+			: Utils.getResourceFromWithin(Constants.pathToClaferInstanceFolder + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
+		final File xslFile = Utils.getResourceFromWithin(Constants.pathToXSLFile);
+		if (!claferOutputFiles.exists() || !xslFile.exists()) {
+			Activator.getDefault().logError(Constants.FilesDoNotExistErrorMessage);
+			return "";
+		}
+		// Perform actual transformation by calling XSLT processor.
+
+		final String temporaryOutputFile = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.CodeGenerationCallFile;
+
+		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
+		final TransformerFactory tFactory = TransformerFactory.newInstance();
+		Transformer transformer;
+		try {
+			transformer = tFactory.newTransformer(new StreamSource(xslFile));
+		} catch (TransformerConfigurationException e) {
+			e.printStackTrace();
+			return "";
+		}
+		File outputFile = new File(temporaryOutputFile);
+		try {
+			transformer.transform(new StreamSource(claferPreviewFile), new StreamResult(outputFile));
+		} catch (TransformerException e) {
+			e.printStackTrace();
+			return "";
+		}
+
+		Path file = outputFile.toPath();
+		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+			StringBuilder sb = new StringBuilder();
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				sb.append(line);
+				sb.append("\n");
+			}
+
+			return sb.toString();
+		} catch (IOException x) {
+			System.err.println(x);
+		}
+
+		return "";
 	}
 
+	public TaskSelectionPage getTaskSelectionPage() {
+		return taskSelectionPage;
+	}
 	
 	public boolean isDefaultAlgorithm() {
 		return this.defaultAlgorithmCheckBox.getSelection();

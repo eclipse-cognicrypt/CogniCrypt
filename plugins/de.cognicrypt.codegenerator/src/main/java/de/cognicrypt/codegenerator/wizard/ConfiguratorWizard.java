@@ -256,7 +256,7 @@ public class ConfiguratorWizard extends Wizard {
             if(currentPage instanceof BeginnerTaskQuestionPage) {
             	//default algorithm page will be added only for beginner mode
 			if (instanceGenerator.getNoOfInstances() !=0) {
-				this.defaultAlgorithmPage = new DefaultAlgorithmPage(instanceGenerator,selectedTask);
+				this.defaultAlgorithmPage = new DefaultAlgorithmPage(instanceGenerator, taskListPage, this);
 				addPage(this.defaultAlgorithmPage);
 				return this.defaultAlgorithmPage;
 				

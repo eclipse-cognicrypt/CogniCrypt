@@ -71,7 +71,7 @@ public class XSLTagDialog extends Dialog {
 		btnAddAttribute = new Button(container, SWT.NONE);		
 		btnAddAttribute.setText("Add Attribute");
 		
-		compositeForXSLAttributes = new CompositeToHoldSmallerUIElements(container, SWT.NONE, null, true);
+		compositeForXSLAttributes = new CompositeToHoldSmallerUIElements(container, SWT.NONE, null, true, null);
 		GridData gd_compositeForProperties = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_compositeForProperties.widthHint = 417;
 		gd_compositeForProperties.heightHint = 120;

@@ -29,6 +29,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+//import org.eclipse.swt.custom.StyleRange;
+//import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -38,10 +40,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Activator;
+import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
@@ -57,8 +62,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private HashMap<Question, Answer> selectionMap = new HashMap<Question, Answer>();
 	private boolean finish = false;
 	private List<String> selectionValues;
-
 	private final Page page;
+	private Text note;
+	private Composite container;
 
 	public int getCurrentPageID() {
 		return page.getId();
@@ -177,11 +183,18 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	@Override
 	public void createControl(final Composite parent) {
-		final Composite container = new Composite(parent, SWT.NONE);
+		container = new Composite(parent, SWT.NONE);
 		container.setBounds(10, 10, 450, 200);
 		// Updated the number of columns to order the questions vertically.
 		final GridLayout layout = new GridLayout(1, false);
-
+		
+		/** To display the Help view after clicking the help icon
+		 * @param help_id_1 
+		 *        This id refers to HelpContexts_1.xml
+		 */
+		
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "de.cognicrypt.codegenerator.help_id_2");
+		
 		container.setLayout(layout);
 		// If legacy JSON files are in effect.
 		if (page == null) {
@@ -215,6 +228,24 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					BeginnerTaskQuestionPage.this.selectionMap.put(question, (Answer) selection.getFirstElement());
 					question.setEnteredAnswer((Answer) selection.getFirstElement());
 				});
+				new Label(parent, SWT.NONE);
+				//added description for questions
+				if(!question.getNote().equals("")){
+					
+				Group notePanel = new Group(parent, SWT.NONE);
+				notePanel.setText("Note:");
+				final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
+				notePanel.setFont(boldFont);
+								
+				this.note = new Text (notePanel,SWT.MULTI | SWT.WRAP);
+				this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
+				this.note.setText(question.getNote());
+				this.note.setBounds(10, 20, 585, 60);
+				setControl(parent);
+				this.note.setEditable(false);
+				this.note.setEnabled(true);
+				}
+				
 				this.finish = true;
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
 				if (question.getEnteredAnswer() != null)
@@ -226,7 +257,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			case text:
 				final Text inputField = new Text(container, SWT.BORDER);
 				inputField.setSize(240, inputField.getSize().y);
-
+				
+				inputField.setToolTipText(question.getTooltip());
+				
 				if (question.getEnteredAnswer() != null) {
 					final Answer a = question.getEnteredAnswer();
 					inputField.setText(a.getValue());
@@ -249,6 +282,10 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				/*
 				 * if(oneQuestion){ inputField.forceFocus(); }
 				 */
+				//added descption box for the questions with tooltip 
+//				this.tooltip = new Text(parent,SWT.NULL);
+//				this.tooltip.setText(question.getTooltip());
+//				this.tooltip.setEnabled(false);
 				break;
 
 			case itemselection:
@@ -603,5 +640,11 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		result = prime * result + ((this.selectionValues == null) ? 0 : this.selectionValues.hashCode());
 		return result;
 	}
-
+	@Override
+	public void setVisible( boolean visible ) {
+	  super.setVisible( visible );
+	  if( visible ){
+	    container.setFocus();
+	  }
+	}
 }

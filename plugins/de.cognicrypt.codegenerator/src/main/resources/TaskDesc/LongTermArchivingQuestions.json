@@ -2,6 +2,7 @@
     "id": "0",
     "content": [{
       "id": "0",
+      "note": "",
       "element": "combo",
       "questionText": "Do you want to add new documents frequently?",
       "answers": [{
@@ -29,8 +30,9 @@
     "id": "1",
     "content": [{
       "id": "1",
+       "note": "",
       "element": "combo",
-      "questionText": "Do you want to protect large sets of documents?",
+      "questionText": "Do you want to protect large number of documents?",
       "answers": [{
           "value": "Yes",
           "claferDependencies": [{
@@ -57,10 +59,11 @@
     "id": "2",
     "content": [{
       "id": "2",
+      "note": "Time Stamping Authority- Time Stamping Authority generates a timestamp on receiving a data, by signing the data with the current time.\nNotarial Attestation- Notarial Attestation verifies properties (signature, certificate and attestation) of the data before signing the data with a date.",
       "element": "combo",
       "questionText": "What kind of authority do you trust?",
       "answers": [{
-          "value": "Timestamping authorities",
+          "value": "Time Stamping Authority",
           "claferDependencies": [{
             "algorithm": "trust",
             "value": "SignatureBased",
@@ -69,7 +72,7 @@
           "nextID": "-1"
         },
         {
-          "value": "Notaries",
+          "value": "Notarial Attestation",
           "claferDependencies": [{
             "algorithm": "trust",
             "value": "Notaries",

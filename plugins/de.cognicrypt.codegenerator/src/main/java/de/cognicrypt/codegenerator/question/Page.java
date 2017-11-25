@@ -9,6 +9,7 @@ public class Page {
 	private int id;
 	private ArrayList<Question> content;
 	private int nextID = Constants.QUESTION_PAGE_NO_STATIC_NEXT_PAGE_ID;
+	private String helpID = "";
 
 	public int getId() {
 		return id;
@@ -32,6 +33,14 @@ public class Page {
 
 	public void setNextID(int nextID) {
 		this.nextID = nextID;
+	}
+	
+	public void setHelpID(String helpID) {
+		this.helpID = helpID;
+	}
+	
+	public String getHelpID() {
+		return helpID;
 	}
 
 }

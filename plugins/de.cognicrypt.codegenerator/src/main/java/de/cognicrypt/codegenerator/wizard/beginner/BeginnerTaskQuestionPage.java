@@ -180,6 +180,10 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		}
 		return true;
 	}
+	
+	public String getHelpId(Page page) {
+		return "de.cognicrypt.codegenerator." + page.getHelpID();
+	}
 
 	@Override
 	public void createControl(final Composite parent) {
@@ -193,7 +197,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		 *        This id refers to HelpContexts_1.xml
 		 */
 		
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "de.cognicrypt.codegenerator.help_id_2");
+		if (!page.getHelpID().isEmpty()) {
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(container, getHelpId(page));
+		}
 		
 		container.setLayout(layout);
 		// If legacy JSON files are in effect.

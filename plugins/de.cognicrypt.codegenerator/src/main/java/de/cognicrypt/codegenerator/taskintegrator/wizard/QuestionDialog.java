@@ -312,9 +312,10 @@ public class QuestionDialog extends Dialog {
 					 */
 					Combo comboForLinkAnswers = new Combo(compositeForAnswers, SWT.DROP_DOWN);
 					comboForLinkAnswers.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-					//comboForLinkAnswers.add("Default");
+					comboForLinkAnswers.add("Default");
 					for (int i = 0; i < listOfAllQuestions.size(); i++) {
 						if (listOfAllQuestions.size() == 1) {
+							comboForLinkAnswers.removeAll();
 							comboForLinkAnswers.add("Please add more questions to link the answers");
 						}
 						if (question.getId() != listOfAllQuestions.get(i).getId()) {
@@ -324,22 +325,30 @@ public class QuestionDialog extends Dialog {
 					}
 
 					if (answer.getNextID() != -2) {
-						for (Question question : listOfAllQuestions) {
-							if (question.getId() == answer.getNextID()) {
-								comboForLinkAnswers.setText(question.getQuestionText());
+						if(answer.getNextID()==-1){
+							comboForLinkAnswers.setText("Default");
+						} else {
+							for (Question question : listOfAllQuestions) {
+								if (question.getId() == answer.getNextID()) {
+									comboForLinkAnswers.setText(question.getQuestionText());
+								}
 							}
 						}
-					}
+					}					
 
 					comboForLinkAnswers.addSelectionListener(new SelectionAdapter() {
 
 						@Override
 						public void widgetSelected(SelectionEvent e) {
-							for (Question question : listOfAllQuestions) {
-								if (question.getQuestionText().equalsIgnoreCase(comboForLinkAnswers.getText())) {
-									System.out.println(question.getId());
-									answer.setNextID(question.getId());
-									System.out.println(answer.getNextID());
+							if(comboForLinkAnswers.getText().equalsIgnoreCase("Default")){
+								answer.setNextID(-1);
+							} else {
+								for (Question question : listOfAllQuestions) {
+									if (question.getQuestionText().equalsIgnoreCase(comboForLinkAnswers.getText())) {
+										System.out.println(question.getId());
+										answer.setNextID(question.getId());
+										System.out.println(answer.getNextID());
+									}
 								}
 							}
 						}

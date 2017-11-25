@@ -287,7 +287,7 @@ public class QuestionDialog extends Dialog {
 				lblAnswers.setText("Answers");
 
 				Label lblSelectQuestion = new Label(compositeForAnswers, SWT.NONE);
-				lblSelectQuestion.setText("Select question");
+				lblSelectQuestion.setText("Jump to question");
 
 				/*
 				 * CompositeForAnswers answerComposite=new CompositeForAnswers(compositeForLinkAnswerTab,question,listOfAllQuestions); GridData gd_answerComposite = new

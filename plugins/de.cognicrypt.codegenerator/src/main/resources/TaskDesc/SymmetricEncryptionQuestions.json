@@ -29,7 +29,7 @@
     {
       "id": "1",
       "note": "",
-      "element": "combo",
+      "element": "radio",
       "questionText": "Do you wish to derive the key for encryption from a user-specified password?",
       "answers": [{
           "value": "Yes",
@@ -59,7 +59,7 @@
     {
       "id": "2",
       "note": "",
-      "element": "combo",
+      "element": "radio",
       "questionText": "Will your application encrypt several gigabytes of data regularly",
       "answers": [{
           "value": "Yes",

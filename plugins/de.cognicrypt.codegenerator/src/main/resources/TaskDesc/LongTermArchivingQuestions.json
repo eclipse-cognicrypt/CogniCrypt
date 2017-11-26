@@ -3,7 +3,7 @@
     "content": [{
       "id": "0",
       "note": "",
-      "element": "combo",
+      "element": "radio",
       "questionText": "Do you want to add new documents frequently?",
       "answers": [{
           "value": "Yes",
@@ -31,7 +31,7 @@
     "content": [{
       "id": "1",
        "note": "",
-      "element": "combo",
+      "element": "radio",
       "questionText": "Do you want to protect large number of documents?",
       "answers": [{
           "value": "Yes",

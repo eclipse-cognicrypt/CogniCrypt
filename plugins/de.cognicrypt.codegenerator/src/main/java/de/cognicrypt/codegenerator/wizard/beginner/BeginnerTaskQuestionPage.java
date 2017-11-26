@@ -261,6 +261,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					String ans = answers.get(i).getValue();
 					radioButton[i] = new Button(container, SWT.RADIO);
 					radioButton[i].setText(ans);
+					new Label(container, SWT.NONE);
 				}
 				
 				for (int i = 0; i < answers.size(); i++) {
@@ -273,6 +274,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						}
 					});
 				}
+				
+				if (question.getEnteredAnswer() == null){
+					radioButton[0].setSelection(true);
+					BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(0));
+					question.setEnteredAnswer((Answer) answers.get(0));
+				}
+				
 				
 				this.finish = true;
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);	

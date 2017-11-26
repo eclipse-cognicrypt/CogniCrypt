@@ -64,7 +64,7 @@
     "id": "2",
     "content": [{
       "id": "3",
-      "element":"combo",
+      "element":"radio",
       "note": "",
       "questionText": "Do you know the host/ip?",
       "answers": [{

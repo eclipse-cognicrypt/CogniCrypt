@@ -164,10 +164,6 @@ public class PropertyWidget {
 		this.operatorComboViewer.addSelectionChangedListener(arg0 -> PropertyWidget.this.operatorComboViewer.refresh());
 
 		this.operatorComboViewer.setSelection(new StructuredSelection(values1.get(2)));
-
-		this.valueSpinner = new Spinner(container, SWT.BORDER | SWT.SINGLE);
-		this.valueSpinner.setValues(selection, min, max, digits, increment, pageincrement);
-		this.valueSpinner.setEnabled(false);
 		}
 		else
 		{

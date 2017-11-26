@@ -60,7 +60,7 @@
       "id": "2",
       "note": "",
       "element": "radio",
-      "questionText": "Will your application encrypt several gigabytes of data regularly",
+      "questionText": "Will your application encrypt several gigabytes of data regularly?",
       "answers": [{
           "value": "Yes",
           "codeDependencies": [{

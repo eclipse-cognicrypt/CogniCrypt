@@ -57,7 +57,6 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
@@ -188,15 +187,19 @@ public class InstanceListPage extends WizardPage implements Labels {
 		
 		Button codePreviewButton = new Button(control, SWT.NONE);
 		codePreviewButton.setText("Code Preview");
-		
 		codePreviewButton.addListener(SWT.Selection, new Listener() {
 		      public void handleEvent(Event event) {
-		        MessageBox messageBox = new MessageBox(new Shell());
+//		    	PopupDialog pop= new PopupDialog(new Shell(),3,true,true,true,true,true,"Code Preview",getCodePreview());
+//		    	pop.open();
+		        MessageBox messageBox = new MessageBox(new Shell(),SWT.OK);
 		        messageBox.setText("Code Preview");
-		        messageBox.setMessage("This is the code preview for the selected algorithm combination\n" + getCodePreview());
-		        messageBox.open();
+		        messageBox.setMessage(getCodePreview() );
+		        messageBox.open();		   		    	
 		        }
+		      
 		      });
+		
+		      
 
 	}
 	

@@ -65,7 +65,7 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 		@Override
         protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setSize(650,400);
+		//newShell.setSize(650,400);
 	
 	}	};
 		dialog.open();

@@ -2,8 +2,6 @@ package de.cognicrypt.codegenerator.wizard;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -41,7 +39,6 @@ import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
-import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.utilities.Labels;
 import de.cognicrypt.codegenerator.utilities.Utils;
 import de.cognicrypt.codegenerator.utilities.XMLParser;

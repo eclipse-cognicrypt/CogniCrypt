@@ -175,6 +175,7 @@
         <contexts file="HelpContexts_1.xml"/>
         <contexts file="HelpContexts_2.xml"/> 
         <contexts file="Help_Context_3.xml"/> 
+        <contexts file="src/main/resources/Help/SecurePasswordStorage.xml" />
    </extension>
 
 <extension

@@ -167,12 +167,12 @@ public class InstanceListPage extends WizardPage implements Labels {
 
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
 		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
-		this.instancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 		final Font boldFont = new Font(this.instancePropertiesPanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 		this.instancePropertiesPanel.setFont(boldFont);
 
 		this.instanceDetails = new Text(this.instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		this.instanceDetails.setLayoutData(new GridData(GridData.FILL_BOTH));
+		this.instanceDetails.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 		this.instanceDetails.setBounds(10, 20, 400, 180);
 		this.instanceDetails.setEditable(false);
 		/*

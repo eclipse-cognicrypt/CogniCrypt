@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -38,6 +40,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
@@ -187,7 +190,7 @@ public class TaskSelectionPage extends WizardPage {
 		//Check box for going to guided mode
 		this.guidedModeCheckBox = new Button(container, SWT.CHECK);
 		guidedModeCheckBox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		guidedModeCheckBox.setToolTipText("If you do not use the guided mode, then you have to configure the algorithm by yourself");
+		guidedModeCheckBox.setToolTipText("Guided mode configures the algorithm for you,\nbased on your answers to some simple questions.");
 		this.guidedModeCheckBox.setEnabled(true);
 		this.guidedModeCheckBox.addSelectionListener(new SelectionAdapter() {
 		    @Override
@@ -197,6 +200,13 @@ public class TaskSelectionPage extends WizardPage {
 		});
 		this.guidedModeCheckBox.setText(Constants.GUIDED_MODE);
 		this.guidedModeCheckBox.setSelection(true);
+		final ControlDecoration deco = new ControlDecoration(guidedModeCheckBox, SWT.TOP | SWT.LEFT );
+        Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION)
+		.getImage();
+		
+		deco.setDescriptionText("If you do not use the guided mode, then you have to \nconfigure the algorithm by yourself");
+		deco.setImage(image);
+		deco.setShowOnlyOnFocus(false);
 		
 	}
 

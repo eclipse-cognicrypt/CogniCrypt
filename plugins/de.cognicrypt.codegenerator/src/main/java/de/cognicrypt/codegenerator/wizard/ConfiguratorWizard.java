@@ -256,7 +256,7 @@ public class ConfiguratorWizard extends Wizard {
             if(currentPage instanceof BeginnerTaskQuestionPage) {
             	//default algorithm page will be added only for beginner mode
 			if (instanceGenerator.getNoOfInstances() !=0) {
-				this.defaultAlgorithmPage = new DefaultAlgorithmPage(instanceGenerator,selectedTask);
+				this.defaultAlgorithmPage = new DefaultAlgorithmPage(instanceGenerator, taskListPage, this);
 				addPage(this.defaultAlgorithmPage);
 				return this.defaultAlgorithmPage;
 				
@@ -272,7 +272,7 @@ public class ConfiguratorWizard extends Wizard {
             	//instance list page will be added after advanced user value selection page in advanced mode.
             	//(default algorithm page is not added in advanced mode)
     			if (instanceGenerator.getNoOfInstances() >0) {
-    				this.instanceListPage = new InstanceListPage(instanceGenerator,selectedTask);
+    				this.instanceListPage = new InstanceListPage(instanceGenerator,taskListPage, this);
     				addPage(this.instanceListPage);
     				return this.instanceListPage;
     				
@@ -297,7 +297,7 @@ public class ConfiguratorWizard extends Wizard {
 			}
 			//instance details page will be added after default algorithm page only if the number of instances is greater than 1
 			if(!this.defaultAlgorithmPage.isDefaultAlgorithm() && instanceGenerator.getNoOfInstances() >1){
-				this.instanceListPage = new InstanceListPage(instanceGenerator, selectedTask);
+				this.instanceListPage = new InstanceListPage(instanceGenerator, taskListPage, this);
 				addPage(this.instanceListPage);
 				return this.instanceListPage;
 			}

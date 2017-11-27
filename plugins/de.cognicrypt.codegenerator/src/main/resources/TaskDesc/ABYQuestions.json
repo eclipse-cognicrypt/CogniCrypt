@@ -30,6 +30,7 @@
     "content": [{
       "id": "1",
        "note": "",
+      "element": "radio",
       "questionText": "Do you know ip and port of the server?",
       "answers": [{
           "value": "Yes",

@@ -81,8 +81,8 @@ public class InstanceGenerator {
 	private String taskName;
 	private String taskDescription;
 	private final AstClafer taskClafer;
-	private String a;
-	private int count;
+	private String algorithmName;
+	private int algorithmCount;
 
 	public InstanceGenerator(final String path, final String taskName, final String taskDescription) {
 		this.claferModel = new ClaferModel(path);
@@ -282,11 +282,11 @@ public class InstanceGenerator {
 				String copyKey = key;
 				while (displayNameToInstanceMap.containsKey(copyKey)) {
 					copyKey = key + "(" + String.format("%02d", ++counter) + ")";
-					this.setComboDes1(counter);
+					this.setAlgorithmCount(counter);
 				}
 
 				this.displayNameToInstanceMap.put(copyKey, sortedInst);
-				this.setComboDes(key);
+				this.setAlgorithmName(key);
 				
 							
 			}
@@ -514,20 +514,20 @@ public class InstanceGenerator {
 	public void setTaskName(final String taskName) {
 		this.taskName = taskName;
 	}
-	public void setComboDes(String a ){
-		this.a=a;
+	public void setAlgorithmName(String algorithmName ){
+		this.algorithmName=algorithmName;
 		
 	}
-	public String getComboDes( ){
-		return a;
+	public String getAlgorithmName( ){
+		return algorithmName;
 		
 	}
-	public void setComboDes1(int count ){
-		this.count=count;
+	public void setAlgorithmCount(int algorithmCount ){
+		this.algorithmCount=algorithmCount;
 		
 	}
-	public int getComboDes1(){
-		return count;
+	public int getAlgorithmCount(){
+		return algorithmCount;
 
 	}
 }

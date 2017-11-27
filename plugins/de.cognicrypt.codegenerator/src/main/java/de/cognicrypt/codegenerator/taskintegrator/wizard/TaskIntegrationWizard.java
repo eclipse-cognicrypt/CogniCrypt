@@ -106,23 +106,6 @@ public class TaskIntegrationWizard extends Wizard {
 		return super.getNextPage(page);
 	}
 
-
-	/**
-	 * @return the objectForDataInNonGuidedMode
-	 */
-	public ModelAdvancedMode getObjectForDataInNonGuidedMode() {
-		return objectForDataInNonGuidedMode;
-	}
-
-
-
-	/**
-	 * @param objectForDataInNonGuidedMode the objectForDataInNonGuidedMode to set
-	 */
-	public void setObjectForDataInNonGuidedMode(ModelAdvancedMode objectForDataInNonGuidedMode) {
-		this.objectForDataInNonGuidedMode = objectForDataInNonGuidedMode;
-	}
-	
 	/**
 	 * Get the first page of this wizard that is of type {@link PageForTaskIntegratorWizard} and matches the given page name
 	 * 

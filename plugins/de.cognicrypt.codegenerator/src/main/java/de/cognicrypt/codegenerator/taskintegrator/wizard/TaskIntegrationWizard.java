@@ -1,7 +1,5 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
-import java.nio.file.Paths;
-
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Composite;
@@ -18,8 +16,6 @@ public class TaskIntegrationWizard extends Wizard {
 	public TaskIntegrationWizard() {
 
 	}
-
-
 
 	@Override
 	public void addPages() {
@@ -75,8 +71,6 @@ public class TaskIntegrationWizard extends Wizard {
 			}
 		}
 
-
-		
 		return false;
 	}
 

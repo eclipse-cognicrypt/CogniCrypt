@@ -7,7 +7,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -132,15 +131,12 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				grpNonguidedMode.setVisible(!btnDoYouWishToUseTheGuidedMode.getSelection());
-				//btnDoYouWishToUseTheGuidedMode.getParent().getParent().setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_CHOSEN, btnDoYouWishToUseTheGuidedMode.getSelection());
-				
 				getObjectForDataInNonGuidedMode().setGuidedModeChosen(btnDoYouWishToUseTheGuidedMode.getSelection());
 				}
 			});
 		btnCustomLibrary.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				//btnCustomLibrary.getParent().getParent().setData(Constants.WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED, btnCustomLibrary.getSelection());
+			public void widgetSelected(SelectionEvent e) {				
 				getObjectForDataInNonGuidedMode().setCustomLibraryRequired(btnCustomLibrary.getSelection());
 				grpContainerGroupForLibrary.setVisible(btnCustomLibrary.getSelection());
 			}
@@ -156,8 +152,6 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		
 		txtForTaskName.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				// First getParent() gives the group, the second getParent() gives the composite.
-				//txtForTaskName.getParent().getParent().setData(Constants.WIDGET_DATA_NAME_OF_THE_TASK, txtForTaskName.getText());
 				getObjectForDataInNonGuidedMode().setNameOfTheTask(txtForTaskName.getText());
 				
 				// TODO Validate!

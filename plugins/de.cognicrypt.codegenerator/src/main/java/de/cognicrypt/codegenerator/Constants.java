@@ -346,6 +346,7 @@ public class Constants {
 		
 	}
 	
+	// for the file utils for the task integrator.
 	public static final String JAR_FILE_DIRECTORY_PATH = rsrcPath + "AdditionalResources" + innerFileSeparator;
 	public static final String CFR_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModel" + innerFileSeparator;
 	public static final String JSON_FILE_DIRECTORY_PATH = rsrcPath + "TaskDesc" + innerFileSeparator;

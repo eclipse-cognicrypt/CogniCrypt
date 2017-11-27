@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package de.cognicrypt.codegenerator.taskintegrator.controllers;
 
 import java.io.File;
@@ -11,6 +14,11 @@ import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.utilities.Utils;
 
+/**
+ * @author rajiv
+ *
+ */
+
 public class FileUtilities {
 
 	private String taskName;	
@@ -19,7 +27,14 @@ public class FileUtilities {
 		super();
 		this.setTaskName(taskName);
 	}
-
+	
+	/**
+	 * Write the data from the pages to target location in the plugin.
+	 * @param claferFeatures
+	 * @param questions
+	 * @param xslFileContents
+	 * @param customLibLocation
+	 */
 	public void writeFiles(ArrayList<ClaferFeature> claferFeatures, ArrayList<Question> questions, String xslFileContents, File customLibLocation) {
 		writeCFRFile(claferFeatures);
 		writeJSONFile(questions);
@@ -27,6 +42,13 @@ public class FileUtilities {
 		writeFileFromPath(customLibLocation);
 	}
 	
+	/**
+	 * Copy the selected files to target location in the plugin.
+	 * @param cfrFileLocation
+	 * @param jsonFileLocation
+	 * @param xslFileLocation
+	 * @param customLibLocation
+	 */
 	public void writeFiles(File cfrFileLocation, File jsonFileLocation, File xslFileLocation, File customLibLocation) {
 		writeFileFromPath(cfrFileLocation);
 		writeFileFromPath(jsonFileLocation);
@@ -34,10 +56,18 @@ public class FileUtilities {
 		writeFileFromPath(customLibLocation);
 	}
 	
+	/**
+	 * 
+	 * @param claferFeatures
+	 */
 	private void writeCFRFile(ArrayList<ClaferFeature> claferFeatures) {
 		
 	}
 	
+	/**
+	 * 
+	 * @param existingFileLocation
+	 */
 	private void writeFileFromPath(File existingFileLocation) {
 		
 		if(existingFileLocation.exists() && !existingFileLocation.isDirectory()) {		
@@ -66,18 +96,34 @@ public class FileUtilities {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param questions
+	 */
 	private void writeJSONFile(ArrayList<Question> questions) {
 		
 	}
 	
+	/**
+	 * 
+	 * @param xslFileContents
+	 */
 	private void writeXSLFile(String xslFileContents) {
 		
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	private String getTaskName() {
 		return taskName;
 	}
-
+	
+	/**
+	 * 
+	 * @param taskName
+	 */
 	private void setTaskName(String taskName) {
 		this.taskName = taskName;
 	}

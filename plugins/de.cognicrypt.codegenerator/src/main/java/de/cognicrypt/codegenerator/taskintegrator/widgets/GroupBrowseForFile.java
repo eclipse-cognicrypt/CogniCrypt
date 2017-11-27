@@ -32,7 +32,7 @@ public class GroupBrowseForFile extends Group {
 	 */
 	public GroupBrowseForFile(Composite parent, int style, String labelText, String[] fileTypes, String stringOnFileDialog) {
 		super(parent, style);
-		// this object is required in the text box listener. Should not be called very often.
+		// this object is required in the text box listener. Should not be called too often.
 		setObjectForDataInNonGuidedMode(((CompositeChoiceForModeOfWizard) getParent().getParent().getParent()).getObjectForDataInNonGuidedMode());
 		setLayout(new GridLayout(3, false));
 		
@@ -42,7 +42,6 @@ public class GroupBrowseForFile extends Group {
 		textBox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
 		Button browseButton = new Button(this, SWT.NONE);	
 		browseButton.setText(Constants.LABEL_BROWSE_BUTTON);
-
 		
 		browseButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -50,13 +49,9 @@ public class GroupBrowseForFile extends Group {
 				textBox.setText(openFileDialog(fileTypes, stringOnFileDialog));
 			}
 		});
-		
-		
-		
+	
 		textBox.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				//textBox.getParent().getParent().getParent().getParent().setData(labelText, textBox.getText());
-				
+			public void modifyText(ModifyEvent e) {				
 				switch(labelText) {
 					case Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK :
 						getObjectForDataInNonGuidedMode().setLocationOfCustomLibrary(new File(textBox.getText()));
@@ -72,18 +67,21 @@ public class GroupBrowseForFile extends Group {
 						break;
 				}
 				
-				
-				
+				// This is needed to refresh the size of the controls.
 				getShell().layout(true, true);
-
-				final Point newSize = getShell().computeSize(SWT.DEFAULT, SWT.DEFAULT, true);  
-
+				final Point newSize = getShell().computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
 				getShell().setSize(newSize);		
 				// TODO Validate!
 			}
 		});
 	}
 	
+	/**
+	 * Open the file dialog and return the file path as a string.
+	 * @param fileTypes
+	 * @param stringOnFileDialog
+	 * @return The path selected
+	 */
 	private String openFileDialog(String[] fileTypes, String stringOnFileDialog){
 		FileDialog fileDialog = new FileDialog(getShell(),SWT.OPEN);		
         fileDialog.setFilterExtensions(fileTypes);

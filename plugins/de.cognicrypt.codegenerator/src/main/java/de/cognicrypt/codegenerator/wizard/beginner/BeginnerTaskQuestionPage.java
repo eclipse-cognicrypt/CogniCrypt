@@ -260,9 +260,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				for (int i = 0; i < answers.size(); i++) {
 					int count=i;
 					String ans = answers.get(i).getValue();
-					radioButton[i] = new Button(container, SWT.RADIO);
+					radioButton[i] = new Button(container, SWT.RADIO );
 					radioButton[i].setText(ans);
-					new Label(container, SWT.NONE);
+					new Label(container,SWT.NONE);
 					radioButton[i].addSelectionListener(new SelectionAdapter() {
 						@Override
 						public void widgetSelected(SelectionEvent e) {
@@ -271,7 +271,22 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						}
 					});
 				}
-				
+				if(!question.getNote().equals("")){
+					
+					Group notePanel = new Group(parent, SWT.NONE);
+					notePanel.setText("Note:");
+					final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
+					notePanel.setFont(boldFont);
+									
+					this.note = new Text (notePanel,SWT.MULTI | SWT.WRAP );
+					this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
+					this.note.setText(question.getNote());
+					this.note.setBounds(10,20,585,60);
+					this.note.setSize(note.computeSize(585, SWT.DEFAULT));
+					setControl(notePanel);
+					this.note.setEditable(false);
+					this.note.setEnabled(true);
+					}
 //				for (int i = 0; i < answers.size(); i++) {
 //					int count=i;
 //					radioButton[i].addSelectionListener(new SelectionAdapter() {

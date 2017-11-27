@@ -15,8 +15,22 @@
  */
 package de.cognicrypt.codegenerator.wizard;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.fieldassist.ControlDecoration;
@@ -35,17 +49,25 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-
+import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
-import de.cognicrypt.codegenerator.tasks.Task;
+import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.utilities.Labels;
+import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.XMLParser;
+
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Button;
 
 /**
  * This class is responsible for displaying the instances the Clafer instance generator generated.
@@ -59,13 +81,16 @@ public class InstanceListPage extends WizardPage implements Labels {
 	private final InstanceGenerator instanceGenerator;
 	private InstanceClafer value;
 	private Group instancePropertiesPanel;
-	private Task selectedTask;
+	private TaskSelectionPage taskSelectionPage;
+	private ConfiguratorWizard configuratorWizard;
 
-	public InstanceListPage(final InstanceGenerator inst, final Task selectedTask) {
+	public InstanceListPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
 		super(Labels.ALGORITHM_SELECTION_PAGE);
-		setTitle("Possible solutions for task: " + selectedTask.getDescription());
+		setTitle("Possible solutions for task: " + taskSelectionPage.getSelectedTask().getDescription());
 		setDescription(Labels.DESCRIPTION_INSTANCE_LIST_PAGE);
 		this.instanceGenerator = inst;
+		this.taskSelectionPage = taskSelectionPage;
+		this.configuratorWizard = confWizard;
 	}
 
 	@Override
@@ -79,7 +104,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 		ComboViewer algorithmClass;
 		Label labelInstanceList;
 		this.control = new Composite(parent, SWT.NONE);
-		final GridLayout layout = new GridLayout(1, false);
+		final GridLayout layout = new GridLayout(3, false);
 		this.control.setLayout(layout);
 		
 		/** To display the Help view after clicking the help icon
@@ -97,8 +122,8 @@ public class InstanceListPage extends WizardPage implements Labels {
 		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
 		String firstInstance = inst.keySet().toArray()[0].toString();
 		Combo combo = algorithmClass.getCombo();
-		String key=instanceGenerator.getComboDes();
-		int count=instanceGenerator.getComboDes1();
+		String key=instanceGenerator.getAlgorithmName();
+		int count=instanceGenerator.getAlgorithmCount();
 		combo.setToolTipText("There are " + String.format("%d",count ) +" variations of the algorithm "+key);
 //		combo.setToolTipText(Constants.ALGORITHM_COMBO_TOOLTIP);
 		
@@ -137,6 +162,8 @@ public class InstanceListPage extends WizardPage implements Labels {
 				setPageComplete(true);
 			}
 		});
+		new Label(control, SWT.NONE);
+		new Label(control, SWT.NONE);
 
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
 		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
@@ -156,6 +183,24 @@ public class InstanceListPage extends WizardPage implements Labels {
 		algorithmClass.setSelection(selection);
 		new Label(control, SWT.NONE);
 		
+		//Button to View the code that will be generated into the Java project
+		
+		Button codePreviewButton = new Button(control, SWT.NONE);
+		codePreviewButton.setText("Code Preview");
+		codePreviewButton.addListener(SWT.Selection, new Listener() {
+		      public void handleEvent(Event event) {
+//		    	PopupDialog pop= new PopupDialog(new Shell(),3,true,true,true,true,true,"Code Preview",getCodePreview());
+//		    	pop.open();
+		        MessageBox messageBox = new MessageBox(new Shell(),SWT.OK);
+		        messageBox.setText("Code Preview");
+		        messageBox.setMessage(getCodePreview() );
+		        messageBox.open();		   		    	
+		        }
+		      
+		      });
+		
+		      
+
 	}
 	
 	private void getInstanceDetails(final InstanceClafer inst, final Map<String, String> algorithms) {
@@ -234,9 +279,68 @@ public class InstanceListPage extends WizardPage implements Labels {
 		return providerName;
 	}
 
+	private String getCodePreview() {
+		XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject());
+		final String claferPreviewPath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
+		final XMLParser xmlparser = new XMLParser();
+		xmlparser.displayInstanceValues(this.getValue(), this.configuratorWizard.getConstraints());
+		try {
+			xmlparser.writeClaferInstanceToFile(claferPreviewPath);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "";
+		}
 
-	public Task getTask() {
-		return this.selectedTask;
+		File claferPreviewFile = new File(claferPreviewPath);
+
+		// Check whether directories and templates/model exist
+		final File claferOutputFiles = claferPreviewFile != null && claferPreviewFile.exists() ? claferPreviewFile
+			: Utils.getResourceFromWithin(Constants.pathToClaferInstanceFolder + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
+		final File xslFile = Utils.getResourceFromWithin(Constants.pathToXSLFile);
+		if (!claferOutputFiles.exists() || !xslFile.exists()) {
+			Activator.getDefault().logError(Constants.FilesDoNotExistErrorMessage);
+			return "";
+		}
+		// Perform actual transformation by calling XSLT processor.
+
+		final String temporaryOutputFile = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.CodeGenerationCallFile;
+
+		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
+		final TransformerFactory tFactory = TransformerFactory.newInstance();
+		Transformer transformer;
+		try {
+			transformer = tFactory.newTransformer(new StreamSource(xslFile));
+		} catch (TransformerConfigurationException e) {
+			e.printStackTrace();
+			return "";
+		}
+		File outputFile = new File(temporaryOutputFile);
+		try {
+			transformer.transform(new StreamSource(claferPreviewFile), new StreamResult(outputFile));
+		} catch (TransformerException e) {
+			e.printStackTrace();
+			return "";
+		}
+
+		Path file = outputFile.toPath();
+		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+			StringBuilder sb = new StringBuilder();
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				sb.append(line);
+				sb.append("\n");
+			}
+
+			return sb.toString();
+		} catch (IOException x) {
+			System.err.println(x);
+		}
+
+		return "";
+	}
+
+	public TaskSelectionPage getTaskSelectionPage() {
+		return taskSelectionPage;
 	}
 
 	public InstanceClafer getValue() {
@@ -258,5 +362,4 @@ public class InstanceListPage extends WizardPage implements Labels {
 	public void setValue(final InstanceClafer instanceClafer) {
 		this.value = instanceClafer;
 	}
-	
 }

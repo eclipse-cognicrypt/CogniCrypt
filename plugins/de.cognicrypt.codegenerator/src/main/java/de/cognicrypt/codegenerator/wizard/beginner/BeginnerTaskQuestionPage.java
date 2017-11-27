@@ -169,6 +169,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				return this.finish;
 			} else if (question.getElement() == de.cognicrypt.codegenerator.Constants.GUIElements.itemselection) {
 				return this.finish;
+			} else if (question.getElement() == de.cognicrypt.codegenerator.Constants.GUIElements.radio) {
+				return this.finish;
 			}
 
 			if (question.getEnteredAnswer() == null) {
@@ -258,6 +260,71 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					comboViewer.setSelection(new StructuredSelection(question.getEnteredAnswer()));
 				else
 					comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
+				break;
+			case radio:
+				Button[] radioButton = new Button[answers.size()];				
+				for (int i = 0; i < answers.size(); i++) {
+					int count=i;
+					String ans = answers.get(i).getValue();
+					radioButton[i] = new Button(container, SWT.RADIO );
+					radioButton[i].setText(ans);
+					new Label(container,SWT.NONE);
+					radioButton[i].addSelectionListener(new SelectionAdapter() {
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(count));
+							question.setEnteredAnswer((Answer) answers.get(count));
+						}
+					});
+				}
+				if(!question.getNote().equals("")){
+					
+					Group notePanel = new Group(parent, SWT.NONE);
+					notePanel.setText("Note:");
+					final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
+					notePanel.setFont(boldFont);
+									
+					this.note = new Text (notePanel,SWT.MULTI | SWT.WRAP );
+					this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
+					this.note.setText(question.getNote());
+					this.note.setBounds(10,20,585,60);
+					this.note.setSize(note.computeSize(585, SWT.DEFAULT));
+					setControl(notePanel);
+					this.note.setEditable(false);
+					this.note.setEnabled(true);
+					}
+//				for (int i = 0; i < answers.size(); i++) {
+//					int count=i;
+//					radioButton[i].addSelectionListener(new SelectionAdapter() {
+//						@Override
+//						public void widgetSelected(SelectionEvent e) {
+//							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(count));
+//							question.setEnteredAnswer((Answer) answers.get(count));
+//						}
+//					});
+//				}
+				
+				if (question.getEnteredAnswer() != null){
+					for (int i = 0; i < answers.size(); i++) {
+						if(radioButton[i].getText()==question.getEnteredAnswer().getValue()){
+							radioButton[i].setSelection(true);
+							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(i));
+							question.setEnteredAnswer((Answer) answers.get(i));
+						}
+					}
+				} else {
+					for (int i = 0; i < answers.size(); i++) {
+						if(radioButton[i].getText()==question.getDefaultAnswer().getValue()){
+							radioButton[i].setSelection(true);
+							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(i));
+							question.setEnteredAnswer((Answer) answers.get(i));
+						}
+					}
+				}
+				
+				
+				this.finish = true;
+				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);	
 				break;
 
 			case text:

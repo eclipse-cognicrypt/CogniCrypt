@@ -27,7 +27,7 @@ package de.cognicrypt.codegenerator;
 public class Constants {
 
 	public static enum GUIElements {
-		combo, text, itemselection,button
+		combo, text, itemselection,button,radio
 	}
 
 	//The plugin is bundled in a jar archive and the file separator within jar files is / (see: https://stackoverflow.com/questions/24749007/how-to-use-file-separator-for-a-jar-file-resource).
@@ -77,6 +77,7 @@ public class Constants {
 	public static final String pathToXSLFile = rsrcPath + "XSLTemplates" + innerFileSeparator + "JCA.xsl";
 	public static final String pathToClaferInstanceFolder = rsrcPath + "ClaferInstance" + innerFileSeparator;
 	public static final String pathToClaferInstanceFile = "claferInstance.xml";
+	public static final String pathToClaferPreviewFile = "claferPreview.xml";
 	public static final String NameOfTemporaryMethod = "templateUsage";
 	public static final String pathsForLibrariesinDevProject = "libs";
 

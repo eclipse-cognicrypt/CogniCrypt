@@ -117,31 +117,12 @@
       "element": "scale",
       "questionText": "What is the preferred security level",
       "answers": [{
-          "value": "Extra extra secure",
+          "value": "Less Secure",
           "claferDependencies": [{
             "algorithm": "security",
-            "value": "256",
+            "value": "80",
             "operator": "="
           }],
-          "nextID": "-1"
-        },
-        {
-          "value": "Extra secure",
-          "claferDependencies": [{
-            "algorithm": "security",
-            "value": "192",
-            "operator": "="
-          }],
-          "nextID": "-1"
-        },
-        {
-          "value": "Default",
-          "claferDependencies": [{
-            "algorithm": "security",
-            "value": "128",
-            "operator": "="
-          }],
-          "defaultAnswer": true,
           "nextID": "-1"
         },
         {
@@ -154,10 +135,29 @@
           "nextID": "-1"
         },
         {
-          "value": "Short",
+          "value": "Secure",
           "claferDependencies": [{
             "algorithm": "security",
-            "value": "80",
+            "value": "128",
+            "operator": "="
+          }],
+          "defaultAnswer": true,
+          "nextID": "-1"
+        },
+        {
+          "value": "Very secure",
+          "claferDependencies": [{
+            "algorithm": "security",
+            "value": "192",
+            "operator": "="
+          }],
+          "nextID": "-1"
+        },
+      	{
+          "value": "Very very secure",
+          "claferDependencies": [{
+            "algorithm": "security",
+            "value": "256",
             "operator": "="
           }],
           "nextID": "-1"

@@ -31,21 +31,21 @@ public class FileUtilities {
 		writeCFRFile(claferFeatures);
 		writeJSONFile(questions);
 		writeXSLFile(xslFileContents);
-		writeFileFromPath(customLibLocation, taskName);
+		writeFileFromPath(customLibLocation);
 	}
 	
 	public void writeFiles(File cfrFileLocation, File jsonFileLocation, File xslFileLocation, File customLibLocation) {
-		writeFileFromPath(cfrFileLocation, taskName);
-		writeFileFromPath(jsonFileLocation, taskName);
-		writeFileFromPath(xslFileLocation, taskName);
-		writeFileFromPath(customLibLocation, taskName);
+		writeFileFromPath(cfrFileLocation);
+		writeFileFromPath(jsonFileLocation);
+		writeFileFromPath(xslFileLocation);
+		writeFileFromPath(customLibLocation);
 	}
 	
 	private void writeCFRFile(ArrayList<ClaferFeature> claferFeatures) {
 		
 	}
 	
-	private void writeFileFromPath(File existingFileLocation, String taskName) {
+	private void writeFileFromPath(File existingFileLocation) {
 		
 		if(existingFileLocation.exists() && !existingFileLocation.isDirectory()) {		
 			File targetDirectory = null;

@@ -2,11 +2,14 @@ package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.util.ArrayList;
 
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -26,7 +29,7 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 
-public class ClaferFeatureDialog extends Dialog {
+public class ClaferFeatureDialog extends TitleAreaDialog {
 
 	private Text txtFeatureName;
 	private CompositeToHoldSmallerUIElements featuresComposite;
@@ -53,6 +56,8 @@ public class ClaferFeatureDialog extends Dialog {
 				otherClaferFeatures.add(cfr);
 			}
 		}
+
+		create();
 	}
 
 	public ClaferFeatureDialog(Shell shell, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
@@ -67,6 +72,12 @@ public class ClaferFeatureDialog extends Dialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new GridLayout(3, false));
+
+		setTitle("Variability modeling");
+		setMessage("Message");
+
+		new Label(container, 0);
+		new Label(container, 0);
 
 		Label lblType = new Label(container, SWT.NONE);
 		lblType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
@@ -114,6 +125,19 @@ public class ClaferFeatureDialog extends Dialog {
 			public void focusLost(FocusEvent e) {
 				resultClafer.setFeatureName(txtFeatureName.getText());
 				super.focusLost(e);
+			}
+		});
+
+		txtFeatureName.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent arg0) {
+				if (txtFeatureName.getText().contains(" ")) {
+					setMessage("The name must not contain any spaces", IMessageProvider.WARNING);
+				}
+				else {
+					setMessage(null);
+				}
 			}
 		});
 

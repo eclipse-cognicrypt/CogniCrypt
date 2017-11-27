@@ -52,9 +52,17 @@ public class Constants {
 	
 	// Task descriptions
 	
-	// Tooltip 
+	// Tooltip 	
+	public static final String PROJECTLIST_TOOLTIP="List of your Java projects";
+	public static final String TASKLIST_TOOLTIP="Cryptographic tasks supported by CogniCrypt";
 	public static final String DESCRIPTION_BOX_TOOLTIP = "Here is the description for the cryptographic task that you have selected";
+	public static final String GUIDEDMODE_TOOLTIP="Guided mode configures the algorithm for you,\nbased on your answers to some simple questions.";
+	public static final String DEFAULT_ALGORITHM_COMBINATION_TOOLTIP="Default Algorithm combination";
+	public static final String DEFAULT_CODE_TOOLTIP="This is the preview of the code, that will be generated into your Java project";
+	public static final String DEFAULT_CHECKBOX_TOOLTIP="If this checkbox is checked, the code for the above algorithm \nwill be generated into your java project";
 	public static final String ALGORITHM_COMBO_TOOLTIP = "The algorithm combinations are listed in a decreasing order of security level";
+	public static final String INSTANCE_DETAILS_TOOLTIP="Details of the selected algorithm combination";
+	
 	
 	// if the next question page depends on user input, the Page object encodes this as a nextPageID as opposed to the one that the last page points to
 	public static final int QUESTION_PAGE_NO_STATIC_NEXT_PAGE_ID = -2;

@@ -170,13 +170,9 @@ public class TaskIntegrationWizard extends Wizard {
 	 * @return if found, wizard page of type {@link PageForTaskIntegratorWizard}, else null
 	 */
 	public PageForTaskIntegratorWizard getTIPageByName(String needle) {
-		for (IWizardPage page : getPages()) {
-			if (PageForTaskIntegratorWizard.class.isInstance(page)) {
-				PageForTaskIntegratorWizard tiPage = (PageForTaskIntegratorWizard) page;
-				if (tiPage.getName() == needle) {
-					return tiPage;
-				}
-			}
+		IWizardPage page = getPage(needle);
+		if (PageForTaskIntegratorWizard.class.isInstance(page)) {
+			return (PageForTaskIntegratorWizard) page;
 		}
 		
 		return null;

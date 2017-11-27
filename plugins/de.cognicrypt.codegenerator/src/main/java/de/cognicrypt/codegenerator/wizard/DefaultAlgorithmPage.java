@@ -43,6 +43,7 @@ import de.cognicrypt.codegenerator.utilities.Labels;
 import de.cognicrypt.codegenerator.utilities.Utils;
 import de.cognicrypt.codegenerator.utilities.XMLParser;
 
+
 public class DefaultAlgorithmPage extends WizardPage implements Labels {
 
 	private Composite control;
@@ -54,7 +55,7 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 	private InstanceClafer value;
 	private ConfiguratorWizard configuratorWizard;
 
-	public DefaultAlgorithmPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
+	public DefaultAlgorithmPage(final InstanceGenerator inst,final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
 		super(Labels.DEFAULT_ALGORITHM_PAGE);
 		setTitle("Best solution for task: " + taskSelectionPage.getSelectedTask().getDescription());
 		setDescription(Labels.DESCRIPTION_DEFAULT_ALGORITHM_PAGE);
@@ -63,6 +64,7 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		this.configuratorWizard = confWizard;
 	}
 
+	
 	@Override
 	public void createControl(final Composite parent) {
 		Label algorithmClass;
@@ -70,69 +72,71 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		this.control = new Composite(parent, SWT.NONE);
 		final GridLayout layout = new GridLayout(1, false);
 		this.control.setLayout(layout);
-
-		/**
-		 * To display the Help view after clicking the help icon
-		 * 
-		 * @param help_id_2
+		
+		/** To display the Help view after clicking the help icon
+		 * @param help_id_2 
 		 *        This id refers to HelpContexts_1.xml
 		 */
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.help_id_3");
-
+		
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
 		compositeControl.setLayout(new GridLayout(2, false));
 		labelDefaultAlgorithm = new Label(compositeControl, SWT.NONE);
 		labelDefaultAlgorithm.setText(Labels.defaultAlgorithm);
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();//Only the first Instance,which is the most secure one, will be displayed
-
-		algorithmClass = new Label(compositeControl, SWT.NONE);
+		
+		algorithmClass= new Label(compositeControl, SWT.NONE);
 		String firstInstance = inst.keySet().toArray()[0].toString();
 		algorithmClass.setText(firstInstance);
 		setValue(DefaultAlgorithmPage.this.instanceGenerator.getInstances().get(firstInstance));
 		setPageComplete(true);
 
-		algorithmClass.setToolTipText("Default Algorithm combination");
+		algorithmClass.setToolTipText(Constants.DEFAULT_ALGORITHM_COMBINATION_TOOLTIP);
 
 		this.codePreviewPanel = new Group(this.control, SWT.NONE);
 		this.codePreviewPanel.setText(Constants.CODE_PREVIEW);
 		final Font boldFont = new Font(this.codePreviewPanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 		this.codePreviewPanel.setFont(boldFont);
 		setControl(this.control);
-
+		
 		this.code = new Text(this.codePreviewPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		this.code.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.code.setBounds(10, 20, 520, 146);
-		this.code.setEditable(false);
+		this.code.setEditable(false);	
 		new Label(control, SWT.NONE);
-
+		
 		this.code.setText(getCodePreview());
-
-		code.setToolTipText("This is the preview of the code, that will be generated into your Java project");
+		
+		code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
 
 		defaultAlgorithmCheckBox = new Button(control, SWT.CHECK);
 		defaultAlgorithmCheckBox.setSelection(true);
-		if (instanceGenerator.getNoOfInstances() == 1) {
+		if(instanceGenerator.getNoOfInstances()==1){
 			//if there is only one instance, then the user can generate the code only for the default algorithm combination. 
 			//Thus, the combo box will be disabled which prevents the user from moving to the next page. 
 			defaultAlgorithmCheckBox.setEnabled(false);
 		}
 		defaultAlgorithmCheckBox.addSelectionListener(new SelectionAdapter() {
-
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				getWizard().getContainer().updateButtons();
 			}
 		});
 		defaultAlgorithmCheckBox.setText("I like to generate the code for the default algorithm into my Java project");
-
-		final ControlDecoration deco = new ControlDecoration(defaultAlgorithmCheckBox, SWT.TOP | SWT.LEFT);
-		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage();
-
-		deco.setDescriptionText("If you want to view other possible algorithm combinations,\nplease uncheck and click 'Next'");
+		defaultAlgorithmCheckBox.setToolTipText(Constants.DEFAULT_CHECKBOX_TOOLTIP);
+		final ControlDecoration deco = new ControlDecoration(defaultAlgorithmCheckBox, SWT.TOP | SWT.LEFT );
+        Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION)
+		.getImage();
+		if (defaultAlgorithmCheckBox.isEnabled())
+		   deco.setDescriptionText("If you want to view other possible algorithm combinations \nmatching your requirements, please uncheck and click 'Next'");
+		else
+			deco.setDescriptionText("There are no other algorithm combinations matching your requirements.\nThe code for the above algorithm will be generated into your java project");
 		deco.setImage(image);
 		deco.setShowOnlyOnFocus(false);
-
+		
+			
 	}
+
 
 	private String getCodePreview() {
 		XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject());
@@ -181,12 +185,15 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 			StringBuilder sb = new StringBuilder();
 			String line = null;
-			while ((line = reader.readLine()) != null) {
-				sb.append(line);
-				sb.append("\n");
+			while ((line = reader.readLine()) != null ) {
+				 if(!line.startsWith("import")){					
+				    sb.append(line);
+				    sb.append("\n");
+				    				
+				}
 			}
-
-			return sb.toString();
+			
+			  return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
 		} catch (IOException x) {
 			System.err.println(x);
 		}
@@ -197,39 +204,41 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 	public TaskSelectionPage getTaskSelectionPage() {
 		return taskSelectionPage;
 	}
-
+	
 	public boolean isDefaultAlgorithm() {
 		return this.defaultAlgorithmCheckBox.getSelection();
-	}
-
+    }
+	
 	public InstanceClafer getValue() {
 		return this.value;
 	}
-
+	
+	
 	@Override
 	public void setPageComplete(final boolean complete) {
 		super.setPageComplete(complete);
 	}
-
+	
 	public void setValue(final InstanceClafer instanceClafer) {
 		this.value = instanceClafer;
 	}
-
+	
+	
 	@Override
 	public boolean canFlipToNextPage() {
 		//Can go to next page only if the check box is unchecked
-		if (this.defaultAlgorithmCheckBox.getSelection() == true)
-			return false;
+		if(this.defaultAlgorithmCheckBox.getSelection()==true)
+		return false;
 		return true;
-
+			
 	}
-
+	
 	@Override
-	public void setVisible(boolean visible) {
-		super.setVisible(visible);
-		if (visible) {
-			control.setFocus();
-		}
+	public void setVisible( boolean visible ) {
+	  super.setVisible( visible );
+	  if(visible) {
+	    control.setFocus();
+	  }
 	}
-
+	
 }

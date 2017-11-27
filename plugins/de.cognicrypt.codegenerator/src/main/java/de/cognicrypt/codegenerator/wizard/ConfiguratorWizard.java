@@ -85,9 +85,8 @@ public class ConfiguratorWizard extends Wizard {
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			Activator.getDefault().logError(e);
 		}
-
 		setWindowTitle("Cryptography Task Configurator");
-	}
+		}
 
 	@Override
 	public void addPages() {

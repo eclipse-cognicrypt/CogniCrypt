@@ -167,6 +167,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
 		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
+		this.instancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 		final Font boldFont = new Font(this.instancePropertiesPanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 		this.instancePropertiesPanel.setFont(boldFont);
 
@@ -327,11 +328,13 @@ public class InstanceListPage extends WizardPage implements Labels {
 			StringBuilder sb = new StringBuilder();
 			String line = null;
 			while ((line = reader.readLine()) != null) {
+				if(!line.startsWith("import")){
 				sb.append(line);
 				sb.append("\n");
 			}
+			}
 
-			return sb.toString();
+			return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
 		} catch (IOException x) {
 			System.err.println(x);
 		}

@@ -258,14 +258,11 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			case radio:
 				Button[] radioButton = new Button[answers.size()];				
 				for (int i = 0; i < answers.size(); i++) {
+					int count=i;
 					String ans = answers.get(i).getValue();
 					radioButton[i] = new Button(container, SWT.RADIO);
 					radioButton[i].setText(ans);
 					new Label(container, SWT.NONE);
-				}
-				
-				for (int i = 0; i < answers.size(); i++) {
-					int count=i;
 					radioButton[i].addSelectionListener(new SelectionAdapter() {
 						@Override
 						public void widgetSelected(SelectionEvent e) {
@@ -275,10 +272,33 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					});
 				}
 				
-				if (question.getEnteredAnswer() == null){
-					radioButton[0].setSelection(true);
-					BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(0));
-					question.setEnteredAnswer((Answer) answers.get(0));
+//				for (int i = 0; i < answers.size(); i++) {
+//					int count=i;
+//					radioButton[i].addSelectionListener(new SelectionAdapter() {
+//						@Override
+//						public void widgetSelected(SelectionEvent e) {
+//							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(count));
+//							question.setEnteredAnswer((Answer) answers.get(count));
+//						}
+//					});
+//				}
+				
+				if (question.getEnteredAnswer() != null){
+					for (int i = 0; i < answers.size(); i++) {
+						if(radioButton[i].getText()==question.getEnteredAnswer().getValue()){
+							radioButton[i].setSelection(true);
+							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(i));
+							question.setEnteredAnswer((Answer) answers.get(i));
+						}
+					}
+				} else {
+					for (int i = 0; i < answers.size(); i++) {
+						if(radioButton[i].getText()==question.getDefaultAnswer().getValue()){
+							radioButton[i].setSelection(true);
+							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(i));
+							question.setEnteredAnswer((Answer) answers.get(i));
+						}
+					}
 				}
 				
 				

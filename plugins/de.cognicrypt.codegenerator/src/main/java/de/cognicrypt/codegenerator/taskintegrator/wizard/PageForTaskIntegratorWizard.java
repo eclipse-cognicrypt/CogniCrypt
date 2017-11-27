@@ -81,14 +81,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-
-						// TODO dummy Clafer feature for testing only. Keep until the pop up is complete.
-						/*
-						 * counter++; ClaferFeature tempFeature = getDummyClaferFeature(); // Update the array list.
-						 * compositeToHoldGranularUIElements.getListOfAllClaferFeatures().add(tempFeature);
-						 * compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
-						 */
-						
 						
 						counter++;
 						ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), compositeToHoldGranularUIElements.getListOfAllClaferFeatures());
@@ -103,12 +95,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					}
 
 				});
-				// TODO for user study only.
-				
-				for(ClaferFeature tempFeature: getDummyClaferFeatures()){
-					compositeToHoldGranularUIElements.getListOfAllClaferFeatures().add(tempFeature);
-					compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
-				}
 				break;
 			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:
 				

@@ -314,17 +314,26 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				
 			case scale:
 
-				Scale[] scale = new Scale[answers.size()];
-				
-				for (int i = 0; i < answers.size(); i++) {
-				scale[i].setMaximum(answers.size());
-			    scale[i].setMinimum(0);
-			    scale[i].setPageIncrement(1);
-				String ans = answers.get(i).getValue();
-				scale[i].setToolTipText(ans);
-				scale[i].addSelectionListener(new SelectionAdapter() { 
+				Scale scale = new Scale(container, SWT.HORIZONTAL);
+				scale.setMaximum((answers.size())-1);
+				scale.setMinimum(0);
+				scale.setPageIncrement(1);
+			
+				for (int i = 0; i < answers.size(); i++) {	 		 
+				scale.addSelectionListener(new SelectionAdapter() {
+					
+					 @Override
+		                public void widgetSelected( SelectionEvent selectionEvent )
+		                    {
+						 	int num=scale.getSelection();
+						 	scale.setToolTipText(answers.get(num).getValue());
+						 	BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(num));
+							question.setEnteredAnswer((Answer) answers.get(num));
+		                    }
 			      });
 			    }
+				this.finish = true;
+				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);	
 				break;
 
 			case text:

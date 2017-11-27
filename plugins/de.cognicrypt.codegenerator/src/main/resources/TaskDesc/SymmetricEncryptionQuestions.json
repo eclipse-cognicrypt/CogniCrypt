@@ -5,16 +5,7 @@
       "element":"scale",
       "note": "",
       "questionText": "What is the preferred security level for your data?",
-      "answers": [{
-          "value": "Very Secure",
-          "claferDependencies": [{
-            "algorithm": "cipher",
-            "operand": "keySize",
-            "value": "128",
-            "operator": ">"
-          }]
-        },
-        {
+      "answers": [ {
           "value": "Secure",
           "claferDependencies": [{
             "algorithm": "cipher",
@@ -23,8 +14,17 @@
             "operator": ">="
           }],
           "defaultAnswer": true
+        },
+        {
+          "value": "Very Secure",
+          "claferDependencies": [{
+            "algorithm": "cipher",
+            "operand": "keySize",
+            "value": "128",
+            "operator": ">"
+          }]
         }
-      ]
+       ]
     },
     {
       "id": "1",

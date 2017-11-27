@@ -61,14 +61,13 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	 * @param parent
 	 */
 	public void createControl(Composite parent) {
-		Composite container = new Composite(parent, SWT.BORDER);
-		container.setBounds(0, 0, 1200, 500);
+		Composite container = new Composite(parent, SWT.NONE);
 		setControl(container);
 
 		switch (this.getName()) {
 			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
 				container.setLayout(new FillLayout(SWT.HORIZONTAL));
-				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE));
+				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE));				
 				break;
 			case Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));

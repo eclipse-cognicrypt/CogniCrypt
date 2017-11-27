@@ -46,7 +46,7 @@ public class Constants {
 	private static final String rsrcPath = "src" + innerFileSeparator + "main" + innerFileSeparator + "resources" + innerFileSeparator;
 	public static final String providerPath = rsrcPath + "AdditionalResources" + innerFileSeparator + "Provider";
 	
-	
+
 	//JSON task file
 	public static final String jsonTaskFile = rsrcPath + "Tasks" + innerFileSeparator + "tasks.json";;
 
@@ -346,7 +346,14 @@ public class Constants {
 		
 	}
 	
-	
+	public static final String JAR_FILE_DIRECTORY_PATH = rsrcPath + "AdditionalResources" + innerFileSeparator;
+	public static final String CFR_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModel" + innerFileSeparator;
+	public static final String JSON_FILE_DIRECTORY_PATH = rsrcPath + "TaskDesc" + innerFileSeparator;
+	public static final String XSL_FILE_DIRECTORY_PATH = rsrcPath + "XSLTemplates" + innerFileSeparator;
+	public static final String CFR_EXTENSION = ".cfr";
+	public static final String JAR_EXTENSION = ".jar";
+	public static final String JSON_EXTENSION = ".json";
+	public static final String XSL_EXTENSION = ".xsl";
 	
 	
 }

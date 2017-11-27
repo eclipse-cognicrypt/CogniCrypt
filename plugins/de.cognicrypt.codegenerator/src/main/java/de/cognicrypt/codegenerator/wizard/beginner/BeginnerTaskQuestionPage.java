@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
@@ -171,8 +172,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				return this.finish;
 			} else if (question.getElement() == de.cognicrypt.codegenerator.Constants.GUIElements.radio) {
 				return this.finish;
+			}else if (question.getElement() == de.cognicrypt.codegenerator.Constants.GUIElements.scale) {
+				return this.finish;
 			}
-
 			if (question.getEnteredAnswer() == null) {
 				return false;
 			} else if (question.getEnteredAnswer().getValue().isEmpty()) {
@@ -287,17 +289,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					this.note.setEditable(false);
 					this.note.setEnabled(true);
 					}
-//				for (int i = 0; i < answers.size(); i++) {
-//					int count=i;
-//					radioButton[i].addSelectionListener(new SelectionAdapter() {
-//						@Override
-//						public void widgetSelected(SelectionEvent e) {
-//							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(count));
-//							question.setEnteredAnswer((Answer) answers.get(count));
-//						}
-//					});
-//				}
-				
 				if (question.getEnteredAnswer() != null){
 					for (int i = 0; i < answers.size(); i++) {
 						if(radioButton[i].getText()==question.getEnteredAnswer().getValue()){
@@ -319,6 +310,21 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				
 				this.finish = true;
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);	
+				break;
+				
+			case scale:
+
+				Scale[] scale = new Scale[answers.size()];
+				
+				for (int i = 0; i < answers.size(); i++) {
+				scale[i].setMaximum(answers.size());
+			    scale[i].setMinimum(0);
+			    scale[i].setPageIncrement(1);
+				String ans = answers.get(i).getValue();
+				scale[i].setToolTipText(ans);
+				scale[i].addSelectionListener(new SelectionAdapter() { 
+			      });
+			    }
 				break;
 
 			case text:

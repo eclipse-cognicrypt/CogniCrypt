@@ -95,7 +95,7 @@ public class TaskSelectionPage extends WizardPage {
 		GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_combo.widthHint = 197;
 		projectCombo.setLayoutData(gd_combo);
-		projectCombo.setToolTipText("List of your Java projects");
+		projectCombo.setToolTipText(Constants.PROJECTLIST_TOOLTIP);
 		projectCombo.setEnabled(true);
 		projectComboSelection.setContentProvider(ArrayContentProvider.getInstance());
 
@@ -137,7 +137,7 @@ public class TaskSelectionPage extends WizardPage {
 		GridData gd_taskCombo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_taskCombo.widthHint = 223;
 		taskCombo.setLayoutData(gd_taskCombo);
-		taskCombo.setToolTipText("Cryptographic tasks supported by CogniCrypt");
+		taskCombo.setToolTipText(Constants.TASKLIST_TOOLTIP);
 		taskCombo.setEnabled(true);
 		this.taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
 
@@ -190,7 +190,7 @@ public class TaskSelectionPage extends WizardPage {
 		//Check box for going to guided mode
 		this.guidedModeCheckBox = new Button(container, SWT.CHECK);
 		guidedModeCheckBox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		guidedModeCheckBox.setToolTipText("Guided mode configures the algorithm for you,\nbased on your answers to some simple questions.");
+		guidedModeCheckBox.setToolTipText(Constants.GUIDEDMODE_TOOLTIP);
 		this.guidedModeCheckBox.setEnabled(true);
 		this.guidedModeCheckBox.addSelectionListener(new SelectionAdapter() {
 		    @Override

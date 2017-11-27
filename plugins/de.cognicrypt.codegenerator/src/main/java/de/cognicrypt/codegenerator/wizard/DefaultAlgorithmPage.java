@@ -91,7 +91,7 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		setValue(DefaultAlgorithmPage.this.instanceGenerator.getInstances().get(firstInstance));
 		setPageComplete(true);
 
-		algorithmClass.setToolTipText("Default Algorithm combination");
+		algorithmClass.setToolTipText(Constants.DEFAULT_ALGORITHM_COMBINATION_TOOLTIP);
 
 		this.codePreviewPanel = new Group(this.control, SWT.NONE);
 		this.codePreviewPanel.setText(Constants.CODE_PREVIEW);
@@ -107,7 +107,7 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		
 		this.code.setText(getCodePreview());
 		
-		code.setToolTipText("This is the preview of the code, that will be generated into your Java project");
+		code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
 		
 		defaultAlgorithmCheckBox = new Button(control, SWT.CHECK);
 		defaultAlgorithmCheckBox.setSelection(true);
@@ -123,7 +123,7 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 			}
 		});
 		defaultAlgorithmCheckBox.setText("I like to generate the code for the default algorithm into my Java project");
-		defaultAlgorithmCheckBox.setToolTipText("If this checkbox is checked, the code for the above algorithm \nwill be generated into your java project");
+		defaultAlgorithmCheckBox.setToolTipText(Constants.DEFAULT_CHECKBOX_TOOLTIP);
 		final ControlDecoration deco = new ControlDecoration(defaultAlgorithmCheckBox, SWT.TOP | SWT.LEFT );
         Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION)
 		.getImage();

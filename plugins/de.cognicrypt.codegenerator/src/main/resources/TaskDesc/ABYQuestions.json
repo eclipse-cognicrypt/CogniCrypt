@@ -145,7 +145,7 @@
           "nextID": "-1"
         },
         {
-          "value": "Very secure",
+          "value": "Very Secure",
           "claferDependencies": [{
             "algorithm": "security",
             "value": "192",
@@ -154,7 +154,7 @@
           "nextID": "-1"
         },
       	{
-          "value": "Very very secure",
+          "value": "Very Very Secure",
           "claferDependencies": [{
             "algorithm": "security",
             "value": "256",

@@ -2,11 +2,11 @@
   "id": "0",
   "content": [{
       "id": "0",
-      "element":"combo",
+      "element":"scale",
       "note": "",
       "questionText": "What is the preferred security level for your data?",
       "answers": [{
-          "value": "Very secure",
+          "value": "Very Secure",
           "claferDependencies": [{
             "algorithm": "cipher",
             "operand": "keySize",

@@ -331,13 +331,34 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					 @Override
 		                public void widgetSelected( SelectionEvent selectionEvent )
 		                    {
-						 	int num=scale.getSelection();
-						 	scale.setToolTipText(answers.get(num).getValue());
-						 	BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(num));
-							question.setEnteredAnswer((Answer) answers.get(num));
+						 	int selectionNum=scale.getSelection();
+						 	scale.setToolTipText(answers.get(selectionNum).getValue());
+						 	BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(selectionNum));
+							question.setEnteredAnswer((Answer) answers.get(selectionNum));
 		                    }
 			      });
 			    }
+				
+				if (question.getEnteredAnswer() != null){
+					for (int i = 0; i < answers.size(); i++) {
+						if(answers.get(i).getValue()==question.getEnteredAnswer().getValue()){
+							scale.setSelection(i);
+						 	scale.setToolTipText(answers.get(i).getValue());
+							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(i));
+							question.setEnteredAnswer((Answer) answers.get(i));
+						}
+					}
+				} else {
+					for (int i = 0; i < answers.size(); i++) {
+						if(answers.get(i).getValue()==question.getDefaultAnswer().getValue()){
+							scale.setSelection(i);
+						 	scale.setToolTipText(answers.get(i).getValue());
+							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(i));
+							question.setEnteredAnswer((Answer) answers.get(i));
+						}
+					}
+				}
+				
 				this.finish = true;
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);	
 				break;

@@ -17,6 +17,8 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.ModifyEvent;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
+
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
@@ -27,7 +29,8 @@ import org.eclipse.swt.layout.FormAttachment;
  *
  */
 public class CompositeChoiceForModeOfWizard extends Composite {
-	private Text txtForTaskName;
+	private ModelAdvancedMode objectForDataInNonGuidedMode;
+	
 
 	/**
 	 * Create the composite.
@@ -36,6 +39,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	 */
 	public CompositeChoiceForModeOfWizard(Composite parent, int style) {
 		super(parent, SWT.BORDER);
+		objectForDataInNonGuidedMode = new ModelAdvancedMode();
 		this.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		
@@ -52,7 +56,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		lblNameOfTheTask.setLayoutData(fd_lblNameOfTheTask);
 		lblNameOfTheTask.setText("Name of the Task :");
 		
-		txtForTaskName = new Text(grpChooseTheMode, SWT.BORDER);
+		Text txtForTaskName = new Text(grpChooseTheMode, SWT.BORDER);
 		FormData fd_txtForTaskName = new FormData();
 		fd_txtForTaskName.right = new FormAttachment(100, -3);
 		fd_txtForTaskName.top = new FormAttachment(0, 23);
@@ -110,43 +114,34 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		
 		new GroupBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE, new String[] {"*.cfr"}, "Select cfr file that contains the Clafer features");
 		
-		new GroupBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE, new String[] {"*.xsl"}, "Select xsl file that contains the code details");
+		new GroupBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE, new String[] {"*.xsl"}, "Select xsl file that contains the code details");
 		
-		new GroupBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE, new String[] {"*.json"}, "Select json file that contains the high level questions");
+		new GroupBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE, new String[] {"*.json"}, "Select json file that contains the high level questions");
 		
 		/* TODO removed for the user study.
 		Button btnForceGuidedMode = new Button(grpNonguidedMode, SWT.CHECK);
 		btnForceGuidedMode.setBounds(10, 118, 142, Constants.UI_WIDGET_HEIGHT_NORMAL);
 		btnForceGuidedMode.setText("Force guided mode");*/	
 
-		
-		// Creating empty/default data key value pairs.
-		this.setData(Constants.WIDGET_DATA_NAME_OF_THE_TASK, "");
-		this.setData(Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE, "");
-		this.setData(Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK, "");
-		this.setData(Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE, "");
-		this.setData(Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE, "");
-		// false by default since default selection is not using custom library.
-		this.setData(Constants.WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED, btnCustomLibrary.getSelection());		
-		// true by default since the guided mode is selected by default.
-		this.setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_CHOSEN, btnDoYouWishToUseTheGuidedMode.getSelection());
-		// false by default since the guided mode is not forced by default.
 		// TODO removed for the user study.
 		//this.setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_FORCED,btnForceGuidedMode.getSelection());
-		
+	
 		
 		// moved all the event listeners at the bottom.
 		btnDoYouWishToUseTheGuidedMode.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				grpNonguidedMode.setVisible(!btnDoYouWishToUseTheGuidedMode.getSelection());
-				btnDoYouWishToUseTheGuidedMode.getParent().getParent().setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_CHOSEN, btnDoYouWishToUseTheGuidedMode.getSelection());
+				//btnDoYouWishToUseTheGuidedMode.getParent().getParent().setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_CHOSEN, btnDoYouWishToUseTheGuidedMode.getSelection());
+				
+				getObjectForDataInNonGuidedMode().setGuidedModeChosen(btnDoYouWishToUseTheGuidedMode.getSelection());
 				}
 			});
 		btnCustomLibrary.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				btnCustomLibrary.getParent().getParent().setData(Constants.WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED, btnCustomLibrary.getSelection());				
+				//btnCustomLibrary.getParent().getParent().setData(Constants.WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED, btnCustomLibrary.getSelection());
+				getObjectForDataInNonGuidedMode().setCustomLibraryRequired(btnCustomLibrary.getSelection());
 				grpContainerGroupForLibrary.setVisible(btnCustomLibrary.getSelection());
 			}
 		});
@@ -162,7 +157,9 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		txtForTaskName.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				// First getParent() gives the group, the second getParent() gives the composite.
-				txtForTaskName.getParent().getParent().setData(Constants.WIDGET_DATA_NAME_OF_THE_TASK, txtForTaskName.getText());		
+				//txtForTaskName.getParent().getParent().setData(Constants.WIDGET_DATA_NAME_OF_THE_TASK, txtForTaskName.getText());
+				getObjectForDataInNonGuidedMode().setNameOfTheTask(txtForTaskName.getText());
+				
 				// TODO Validate!
 			}
 		});
@@ -177,5 +174,19 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	
 	public boolean validateTextBoxes(){
 		return true;
+	}
+
+	/**
+	 * @return the objectForDataInNonGuidedMode
+	 */
+	public ModelAdvancedMode getObjectForDataInNonGuidedMode() {
+		return objectForDataInNonGuidedMode;
+	}
+
+	/**
+	 * @param objectForDataInNonGuidedMode the objectForDataInNonGuidedMode to set
+	 */
+	public void setObjectForDataInNonGuidedMode(ModelAdvancedMode objectForDataInNonGuidedMode) {
+		this.objectForDataInNonGuidedMode = objectForDataInNonGuidedMode;
 	}
 }

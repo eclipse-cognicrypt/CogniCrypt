@@ -114,7 +114,7 @@
     "content": [{
       "id": "5",
       "note": "",
-      "element": "combo",
+      "element": "scale",
       "questionText": "What is the preferred security level",
       "answers": [{
           "value": "Extra extra secure",

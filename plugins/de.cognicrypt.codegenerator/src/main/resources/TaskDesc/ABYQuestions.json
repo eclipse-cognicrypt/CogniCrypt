@@ -135,7 +135,7 @@
           "nextID": "-1"
         },
         {
-          "value": "Default",
+          "value": "Secure",
           "claferDependencies": [{
             "algorithm": "security",
             "value": "128",

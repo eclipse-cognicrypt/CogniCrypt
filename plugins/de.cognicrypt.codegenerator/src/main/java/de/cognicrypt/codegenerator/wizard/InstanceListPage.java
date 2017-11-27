@@ -327,11 +327,13 @@ public class InstanceListPage extends WizardPage implements Labels {
 			StringBuilder sb = new StringBuilder();
 			String line = null;
 			while ((line = reader.readLine()) != null) {
+				if(!line.startsWith("import")){
 				sb.append(line);
 				sb.append("\n");
 			}
+			}
 
-			return sb.toString();
+			return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
 		} catch (IOException x) {
 			System.err.println(x);
 		}

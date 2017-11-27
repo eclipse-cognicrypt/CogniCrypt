@@ -123,12 +123,14 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 			}
 		});
 		defaultAlgorithmCheckBox.setText("I like to generate the code for the default algorithm into my Java project");
-		
+		defaultAlgorithmCheckBox.setToolTipText("If this checkbox is checked, the code for the above algorithm \nwill be generated into your java project");
 		final ControlDecoration deco = new ControlDecoration(defaultAlgorithmCheckBox, SWT.TOP | SWT.LEFT );
         Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION)
 		.getImage();
-		
-		deco.setDescriptionText("If you want to view other possible algorithm combinations,\nplease uncheck and click 'Next'");
+		if (defaultAlgorithmCheckBox.isEnabled())
+		   deco.setDescriptionText("If you want to view other possible algorithm combinations \nmatching your requirements, please uncheck and click 'Next'");
+		else
+			deco.setDescriptionText("There are no other algorithm combinations matching your requirements.\nThe code for the above algorithm will be generated into your java project");
 		deco.setImage(image);
 		deco.setShowOnlyOnFocus(false);
 		
@@ -183,12 +185,15 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 			StringBuilder sb = new StringBuilder();
 			String line = null;
-			while ((line = reader.readLine()) != null) {
-				sb.append(line);
-				sb.append("\n");
+			while ((line = reader.readLine()) != null ) {
+				 if(!line.startsWith("import")){					
+				    sb.append(line);
+				    sb.append("\n");
+				    				
+				}
 			}
-
-			return sb.toString();
+			
+			  return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
 		} catch (IOException x) {
 			System.err.println(x);
 		}

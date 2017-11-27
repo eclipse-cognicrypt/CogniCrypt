@@ -163,5 +163,25 @@ public class TaskIntegrationWizard extends Wizard {
 	public void setObjectForDataInNonGuidedMode(ModelAdvancedMode objectForDataInNonGuidedMode) {
 		this.objectForDataInNonGuidedMode = objectForDataInNonGuidedMode;
 	}
+	
+	/**
+	 * Get the first page of this wizard that is of type {@link PageForTaskIntegratorWizard} and matches the given page name
+	 * 
+	 * @param needle
+	 *        name of the page to be found
+	 * @return if found, wizard page of type {@link PageForTaskIntegratorWizard}, else null
+	 */
+	public PageForTaskIntegratorWizard getTIPageByName(String needle) {
+		for (IWizardPage page : getPages()) {
+			if (PageForTaskIntegratorWizard.class.isInstance(page)) {
+				PageForTaskIntegratorWizard tiPage = (PageForTaskIntegratorWizard) page;
+				if (tiPage.getName() == needle) {
+					return tiPage;
+				}
+			}
+		}
+		
+		return null;
+	}
 
 }

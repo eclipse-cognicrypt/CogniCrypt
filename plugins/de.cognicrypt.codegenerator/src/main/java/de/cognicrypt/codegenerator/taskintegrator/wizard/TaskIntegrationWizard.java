@@ -63,6 +63,8 @@ public class TaskIntegrationWizard extends Wizard {
 		 * TODO finish button behavior important for the mode selection page. Postponing this code to
 		 * a future time, but within the Sept milestone.
 		 */
+		
+		// TODO replace this.getpage() with Andre's implementation.
 		ModelAdvancedMode objectForDataInNonGuidedMode=  ((PageForTaskIntegratorWizard) this.getPage(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
 		FileUtilities fileUtilities = new FileUtilities(objectForDataInNonGuidedMode.getNameOfTheTask());
 		if(this.getContainer().getCurrentPage().getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)){

@@ -24,8 +24,6 @@ public class TaskIntegrationWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-
-		// Just add the mode selection page, since the rest of the pages may not be necessary based on the choices.
 		this.addPage(
 			new PageForTaskIntegratorWizard(
 			Constants.PAGE_NAME_FOR_MODE_OF_WIZARD,

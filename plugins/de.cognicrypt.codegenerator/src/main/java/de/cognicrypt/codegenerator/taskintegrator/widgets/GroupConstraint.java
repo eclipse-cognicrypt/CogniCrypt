@@ -19,9 +19,13 @@ public class GroupConstraint extends Group {
 
 	/**
 	 * Create the composite.
+	 * 
 	 * @param parent
+	 *        Composite that contains the constraint
 	 * @param style
-	 * @param showRemoveButton TODO
+	 *        SWT style identifiers
+	 * @param showRemoveButton
+	 *        whether or not to show a remove button next to the constraint
 	 */
 	public GroupConstraint(Composite parent, int style, ClaferConstraint constraint, boolean showRemoveButton) {
 		

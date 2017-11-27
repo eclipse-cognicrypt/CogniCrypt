@@ -46,6 +46,8 @@ import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 import de.cognicrypt.codegenerator.utilities.Labels;
 import de.cognicrypt.codegenerator.utilities.Utils;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.GridData;
 
 public class TaskSelectionPage extends WizardPage {
 
@@ -70,23 +72,28 @@ public class TaskSelectionPage extends WizardPage {
 
 		this.container = new Composite(parent, SWT.NONE);
 		this.container.setBounds(10, 10, 200, 300);
-		this.container.setLayout(null);
 		
 		/** To display the Help view after clicking the help icon
 		 * @param help_id_1 
 		 *        This id refers to HelpContexts_1.xml
 		 */
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "de.cognicrypt.codegenerator.help_id_1");
+		container.setLayout(new GridLayout(2, false));
 		
 		this.selectProjectLabel = new Label(this.container, SWT.NONE);
-		this.selectProjectLabel.setBounds(5, 5, 111, 15);
+		GridData gd_selectProjectLabel = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_selectProjectLabel.heightHint = 28;
+		gd_selectProjectLabel.widthHint = 143;
+		selectProjectLabel.setLayoutData(gd_selectProjectLabel);
 		this.selectProjectLabel.setText(Constants.SELECT_JAVA_PROJECT);
 
 		ComboViewer projectComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
-		Combo combo = projectComboSelection.getCombo();
-		combo.setToolTipText("List of your Java projects");
-		combo.setEnabled(true);
-        combo.setBounds(153, 5, 385, 23);
+		Combo projectCombo = projectComboSelection.getCombo();
+		GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_combo.widthHint = 197;
+		projectCombo.setLayoutData(gd_combo);
+		projectCombo.setToolTipText("List of your Java projects");
+		projectCombo.setEnabled(true);
 		projectComboSelection.setContentProvider(ArrayContentProvider.getInstance());
 
 		Map<String, IProject> javaProjects = new HashMap<String, IProject>();
@@ -116,14 +123,19 @@ public class TaskSelectionPage extends WizardPage {
 		}
 
 		this.selectTaskLabel = new Label(this.container, SWT.NONE);
-		selectTaskLabel.setBounds(5, 45, 73, 15);
+		GridData gd_selectTaskLabel = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_selectTaskLabel.heightHint = 28;
+		gd_selectTaskLabel.widthHint = 139;
+		selectTaskLabel.setLayoutData(gd_selectTaskLabel);
 		this.selectTaskLabel.setText(Constants.SELECT_TASK);
 
 		this.taskComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
-		Combo combo_1 = taskComboSelection.getCombo();
-		combo_1.setToolTipText("Cryptographic tasks supported by CogniCrypt");
-		combo_1.setEnabled(true);
-		combo_1.setBounds(153, 45, 385, 23);
+		Combo taskCombo = taskComboSelection.getCombo();
+		GridData gd_taskCombo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_taskCombo.widthHint = 223;
+		taskCombo.setLayoutData(gd_taskCombo);
+		taskCombo.setToolTipText("Cryptographic tasks supported by CogniCrypt");
+		taskCombo.setEnabled(true);
 		this.taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
 
 		final List<Task> tasks = TaskJSONReader.getTasks();
@@ -142,12 +154,21 @@ public class TaskSelectionPage extends WizardPage {
 		});
 
 		this.taskComboSelection.setInput(tasks);
+		//Label for task description
+		this.taskDescription = new Label(this.container, SWT.NONE);
+		GridData gd_taskDescription = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
+		gd_taskDescription.widthHint = 139;
+		taskDescription.setLayoutData(gd_taskDescription);
+		this.taskDescription.setText(Constants.TASK_DESCRIPTION);
 		
 		// Adding description text for the cryptographic task that has been selected from the combo box
 		this.descriptionText = new Text(container, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		GridData gd_descriptionText = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_descriptionText.widthHint = 297;
+		gd_descriptionText.heightHint = 96;
+		descriptionText.setLayoutData(gd_descriptionText);
 		this.descriptionText.setToolTipText(Constants.DESCRIPTION_BOX_TOOLTIP);
 		this.descriptionText.setEditable(false);
-		this.descriptionText.setBounds(153, 85, 385, 95);
 		
 		this.taskComboSelection.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
@@ -160,17 +181,14 @@ public class TaskSelectionPage extends WizardPage {
 
 		this.taskComboSelection.setSelection(new StructuredSelection(tasks.get(0)));
 		setControl(this.container);
-		
-		//Label for task description
-		this.taskDescription = new Label(this.container, SWT.NONE);
-		this.taskDescription.setBounds(5, 85, 93, 15);
-		this.taskDescription.setText(Constants.TASK_DESCRIPTION);
-		
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+			
 		//Check box for going to guided mode
 		this.guidedModeCheckBox = new Button(container, SWT.CHECK);
+		guidedModeCheckBox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 		guidedModeCheckBox.setToolTipText("If you do not use the guided mode, then you have to configure the algorithm by yourself");
 		this.guidedModeCheckBox.setEnabled(true);
-		this.guidedModeCheckBox.setBounds(5, 205, 261, 16);
 		this.guidedModeCheckBox.addSelectionListener(new SelectionAdapter() {
 		    @Override
 			public void widgetSelected(SelectionEvent e) {

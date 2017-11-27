@@ -20,8 +20,8 @@ public class TaskIntegrationWizardTest {
 		PageForTaskIntegratorWizard pageHighLevelQuestions = new PageForTaskIntegratorWizard(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS, Constants.PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS, Constants.PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS);
 		PageForTaskIntegratorWizard pageXSL = new PageForTaskIntegratorWizard(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION, Constants.PAGE_TITLE_FOR_XSL_FILE_CREATION, Constants.PAGE_DESCRIPTION_FOR_XSL_FILE_CREATION);
 
-		assertEquals(tiWizard.getTIPageByName(pageClafer, Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION));
-		assertEquals(tiWizard.getTIPageByName(null, ""));
+		assertEquals(pageClafer, tiWizard.getTIPageByName(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION));
+		assertEquals(null, tiWizard.getTIPageByName(""));
 	}
 
 }

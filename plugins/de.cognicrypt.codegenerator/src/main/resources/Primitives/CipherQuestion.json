@@ -200,8 +200,20 @@
           ]
         },
         {
-      "value":"other",
-      "defaultAnswer": "true"
+      "value":"PCBC",
+      "claferDependencies": [{
+      "algorithm": "mode="
+      }
+      ]
+      },
+		{
+		"value":"CTS",
+		"claferDepenedencies": [{
+		"algorithm": "mode=",
+		"defaultAnswer": "true"
+		}
+		] 
+    
       }
       ]
     }

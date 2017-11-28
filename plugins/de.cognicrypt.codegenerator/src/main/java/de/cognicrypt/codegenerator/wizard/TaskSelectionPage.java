@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.primitive.wizard.IntegrationNewPrimitive;
+import de.cognicrypt.codegenerator.primitive.wizard.PrimitiveIntegrationWizard;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 import de.cognicrypt.codegenerator.utilities.Labels;
@@ -145,7 +145,7 @@ public class TaskSelectionPage extends WizardPage {
 		btnPrimitiveIntegration.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				 WizardDialog wizardDialog = new WizardDialog(parent.getShell(),new  IntegrationNewPrimitive());
+				 WizardDialog wizardDialog = new WizardDialog(parent.getShell(),new  PrimitiveIntegrationWizard());
 		           if (wizardDialog.open() == Window.CANCEL) {
 		               System.out.println("Ok pressed");
 		           } else {

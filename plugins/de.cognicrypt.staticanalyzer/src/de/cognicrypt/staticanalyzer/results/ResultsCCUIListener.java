@@ -6,7 +6,13 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
@@ -27,6 +33,7 @@ import crypto.rules.CryptSLValueConstraint;
 import crypto.rules.StateNode;
 import crypto.typestate.CallSiteWithParamIndex;
 import crypto.typestate.CryptoTypestateAnaylsisProblem.AdditionalBoomerangQuery;
+import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.Utils;
 import ideal.AnalysisSolver;
 import ideal.IFactAtStatement;
@@ -89,7 +96,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 				default:
 					break;
 			}
-			
+
 		}
 	}
 
@@ -123,7 +130,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		msg.append(" Here.");
 		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartLineNumber(), msg.toString());
 	}
-	
+
 	@Override
 	public void callToForbiddenMethod(ClassSpecification classSpecification, StmtWithMethod location, List<CryptSLMethod> alternatives) {
 		StringBuilder msg = new StringBuilder();
@@ -139,13 +146,12 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 					msg.append(pars.getValue());
 					msg.append(", ");
 				}
-				msg.replace(msg.length() -2, msg.length(), ")");
+				msg.replace(msg.length() - 2, msg.length(), ")");
 			}
 			msg.append(".");
 		}
 		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartLineNumber(), msg.toString());
 	}
-
 
 	@Override
 	public void missingPredicates(AnalysisSeedWithSpecification spec, Set<CryptSLPredicate> missingPred) {
@@ -166,7 +172,15 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	//Untested
 	private IResource unitToResource(StmtWithMethod stmt) {
 		SootClass className = stmt.getMethod().getDeclaringClass();
-		return Utils.getCurrentProject().getFile("src/" + className.getName().replace(".", "/") + ".java");
+		final IProject currentProject = Utils.getCurrentProject();
+		try {
+			return Utils.findClassByName(className, currentProject);
+		} catch (ClassNotFoundException e) {
+			Activator.getDefault().logError(e);
+		}
+		//Fall-back path when retrieval of actual path fails. If it does, the statement below should be left untouched and the actual bug should be fixed.
+		return currentProject.getFile("src/" + className.getName().replace(".", "/") + ".java");
+		
 	}
 
 	@Override

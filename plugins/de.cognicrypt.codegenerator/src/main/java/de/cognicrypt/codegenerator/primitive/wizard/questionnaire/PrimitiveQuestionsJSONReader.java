@@ -1,4 +1,4 @@
-package de.cognicrypt.codegenerator.primitive.questionnaire.wizard;
+package de.cognicrypt.codegenerator.primitive.wizard.questionnaire;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

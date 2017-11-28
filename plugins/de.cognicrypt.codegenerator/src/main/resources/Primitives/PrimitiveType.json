@@ -1,6 +1,6 @@
 [
 		{
-			"name": "Cipher",
+			"name": "Symmetric Block Cipher",
 			"xmlFile" : "src/main/resources/Primitives/CipherQuestion.json"
 		},
 		{

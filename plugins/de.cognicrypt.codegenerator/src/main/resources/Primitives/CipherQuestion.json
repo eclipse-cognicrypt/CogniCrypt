@@ -1,44 +1,5 @@
 [{
-  "id": "0",
-  "content": [{
-      "id": "0",
-      "element": "radiobutton",
-      "questionText": "Please select the type of the Cipher",
-      "answers": [{
-          "value": "Symmetric",
-          "widgetIsSelected": false
-        },
-        {
-          "value": "Asymmetric",
-          "widgetIsSelected": true,
-          "defaultAnswer": true
-        }
-      ]
-    },
-    {
-      "id": "1",
-      "element": "radiobutton",
-      "questionText": "Please select the type of the symmetric-key algorithm",
-      "answers": [{
-          "value": "Block",
-          "claferDependencies": [{
-              "algorithm": "SymmetricBlockCipher"
-           }
-          ],
-          "widgetIsEnabled": true
-        },
-        {
-          "value": "Stream",
-          "defaultAnswer": true,
-          "widgetIsEnabled": true
-        }
-      ]
-    }
-    ],
-    "nextID": "1"
-    },
-    {
-    "id": "1",
+    "id": "0",
     "content":
     [{
       "id": "0",
@@ -90,10 +51,10 @@
       ]
     }
   ],
-  "nextID": "2"
+  "nextID": "1"
   },
    {
-    "id": "2",
+    "id": "1",
     "content":
     [{
       "id": "0",
@@ -131,10 +92,10 @@
       ]
     }
     ],
-  "nextID": "3"
+  "nextID": "2"
   },
    {
-    "id": "3",
+    "id": "2",
     "content":
     [{
       "id": "0",
@@ -162,10 +123,10 @@
       ]
     }
     ],
-  "nextID": "4"
+  "nextID": "3"
 },
   {
-    "id": "4",
+    "id": "3",
     "content":
     [{
       "id": "0",
@@ -218,10 +179,10 @@
       ]
     }
     ],
-  "nextID": "5"
+  "nextID": "4"
 },
 {
-	"id": "5",
+	"id": "4",
 	"content":
 	[{
 		"id": "0",

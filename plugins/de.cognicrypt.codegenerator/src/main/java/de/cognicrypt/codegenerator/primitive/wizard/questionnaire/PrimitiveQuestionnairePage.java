@@ -1,4 +1,4 @@
-package de.cognicrypt.codegenerator.primitive.questionnaire.wizard;
+package de.cognicrypt.codegenerator.primitive.wizard.questionnaire;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -10,17 +10,17 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 
-import de.cognicrypt.codegenerator.primitive.questionnaire.wizard.PrimitiveQuestionnaire;
-import de.cognicrypt.codegenerator.primitive.questionnaire.wizard.PrimitiveQuestionnairePage;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
 import de.cognicrypt.codegenerator.primitive.types.PrimitiveJSONReader;
+import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnaire;
+import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnairePage;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 
 public class PrimitiveIntegrationWizard extends Wizard {
 
-	PrimitivePages selectedPrimitivePage;
+	PrimitiveSelectionPage selectedPrimitivePage;
 	PrimitiveQuestionnaire primitiveQuestions;
 	WizardPage preferenceSelectionPage;
 	private LinkedHashMap<String, String> inputsMap = new LinkedHashMap<String, String>();
@@ -34,7 +34,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 	public void addPages() {
 
-		selectedPrimitivePage = new PrimitivePages();
+		selectedPrimitivePage = new PrimitiveSelectionPage();
 		setForcePreviousAndNextButtons(true);
 		addPage(selectedPrimitivePage);
 

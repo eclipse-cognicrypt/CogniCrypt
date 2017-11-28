@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 
-public class PrimitivePages extends WizardPage {
+public class PrimitiveSelectionPage extends WizardPage {
 
 	private ComboViewer primitiveComboSelection;
 	private Composite container;
@@ -26,7 +26,7 @@ public class PrimitivePages extends WizardPage {
 	/**
 	 * Create the wizard.
 	 */
-	public PrimitivePages() {
+	public PrimitiveSelectionPage() {
 		super("wizardPage");
 		setTitle("Primitive Integration");
 		setDescription("Algorithm Type");
@@ -79,7 +79,7 @@ public class PrimitivePages extends WizardPage {
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 			final Primitive selectedPrimitive = (Primitive) selection.getFirstElement();
 
-			PrimitivePages.this.primitiveComboSelection.refresh();
+			PrimitiveSelectionPage.this.primitiveComboSelection.refresh();
 			setPageComplete(selectedPrimitive != null);
 		});
 		this.primitiveComboSelection.setSelection(new StructuredSelection(primitives.get(0)));

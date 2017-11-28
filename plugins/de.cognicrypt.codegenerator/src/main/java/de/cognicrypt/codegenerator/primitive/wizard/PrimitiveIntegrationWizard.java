@@ -3,6 +3,7 @@ package de.cognicrypt.codegenerator.primitive.wizard;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.LinkedHashMap;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -12,28 +13,31 @@ import org.eclipse.jface.wizard.WizardPage;
 import de.cognicrypt.codegenerator.primitive.questionnaire.wizard.PrimitiveQuestionnaire;
 import de.cognicrypt.codegenerator.primitive.questionnaire.wizard.PrimitiveQuestionnairePage;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
+import de.cognicrypt.codegenerator.primitive.types.PrimitiveJSONReader;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 
-public class IntegrationNewPrimitive extends Wizard {
+public class PrimitiveIntegrationWizard extends Wizard {
 
 	PrimitivePages selectedPrimitivePage;
 	PrimitiveQuestionnaire primitiveQuestions;
 	WizardPage preferenceSelectionPage;
-	private HashMap<Question, Answer> constraints;
+	private LinkedHashMap<String, String> inputsMap = new LinkedHashMap<String, String>();
 	static String test = "";
-	StringBuilder data=new StringBuilder();
+	StringBuilder data = new StringBuilder();
 
-	public IntegrationNewPrimitive() {
+	public PrimitiveIntegrationWizard() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
 	public void addPages() {
+
 		selectedPrimitivePage = new PrimitivePages();
 		setForcePreviousAndNextButtons(true);
 		addPage(selectedPrimitivePage);
+
 	}
 
 	private boolean checkifInUpdateRound() {
@@ -52,14 +56,6 @@ public class IntegrationNewPrimitive extends Wizard {
 		List<String> selection = null;
 		if (curPage.getContent().size() == 1) {
 			final Question curQuestion = curPage.getContent().get(0);
-			//			if (curQuestion.getElement().equals(GUIElements.itemselection)) {
-			//				selection = new ArrayList<>();
-			//				for (final AstConcreteClafer childClafer : this.claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
-			//					if (childClafer.getSuperClafer().getName().endsWith(curQuestion.getSelectionClafer())) {
-			//						selection.add(ClaferModelUtils.removeScopePrefix(childClafer.getName()));
-			//					}
-			//				}
-			//			}
 		}
 		// Pass the questionnaire instead of the all of the questions. 
 		this.preferenceSelectionPage = new PrimitiveQuestionnairePage(curPage, this.primitiveQuestions.getPrimitive(), primitiveQuestionnaire, selection, iteration);
@@ -79,37 +75,24 @@ public class IntegrationNewPrimitive extends Wizard {
 			return this.preferenceSelectionPage;
 		}
 		final PrimitiveQuestionnairePage primitiveQuestionPage = (PrimitiveQuestionnairePage) currentPage;
-		final HashMap<Question, Answer> selectionMap = primitiveQuestionPage.getMap();
-		if (primitiveQuestionPage.selectedValue != null)
-			data.append("["+ primitiveQuestionPage.selectedValue + "]");
-			data.append("\n");
-//			test += "\n" + "[" + primitiveQuestionPage.selectedValue + "]";
+		LinkedHashMap<String, String> selectionMap = primitiveQuestionPage.getMap();
+		if (primitiveQuestionPage.getSelection() != null) {
+			for (String name : selectionMap.keySet()) {
 
-		for (Entry<Question, Answer> entry : selectionMap.entrySet()) {
-//			if (entry.getKey().getElement().equals(GUIElements.itemselection)) {
-//
-//			}
-
-			this.constraints.put(entry.getKey(), entry.getValue());
+				String key = name.toString();
+				String value = selectionMap.get(name).toString();
+				System.out.println(key + " " + value);
+				inputsMap.put(key, value);
+			}
 		}
-		if(primitiveQuestionPage.getIteration()>0){
-			int iteration=primitiveQuestionPage.getIteration();
-			System.out.println("HERE is :"+ iteration);
-			
-		}
-
 
 		if (this.primitiveQuestions.hasMorePages()) {
 			int nextID = -1;
 			if (primitiveQuestionPage.getPageNextID() > -2) {
 				nextID = primitiveQuestionPage.getPageNextID();
-			} else {
-				for (Entry<Question, Answer> entry : selectionMap.entrySet()) {
-					nextID = entry.getValue().getNextID();
-				}
 			}
 			if (nextID == 5) {
-				System.out.println(data.toString());
+
 			}
 			if (nextID > -1) {
 				final Page curPage = this.primitiveQuestions.setPageByID(nextID);
@@ -130,17 +113,16 @@ public class IntegrationNewPrimitive extends Wizard {
 				if (this.preferenceSelectionPage != null) {
 					addPage(this.preferenceSelectionPage);
 				}
-				
 				return this.preferenceSelectionPage;
 			}
 		}
-		
+
 		return currentPage;
 	}
 
 //	public IWizardPage getPreviousPage(final IWizardPage currentPage) {
-//		final boolean lastPage = currentPage instanceof InstanceListPage;
-//		if (!checkifInUpdateRound() &&currentPage instanceof PrimitiveQuestionnairePage) {
+//		final boolean lastPage = currentPage instanceof lastPage;
+//		if (!checkifInUpdateRound() && currentPage instanceof PrimitiveQuestionnairePage || lastPage) {
 //			if (!this.primitiveQuestions.isFirstPage()) {
 //				this.primitiveQuestions.previousPage();
 //			}

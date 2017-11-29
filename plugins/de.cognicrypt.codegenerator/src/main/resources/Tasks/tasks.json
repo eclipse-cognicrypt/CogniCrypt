@@ -34,13 +34,12 @@
 			"modelFile" : "src/main/resources/ClaferModel/ABY.js",
 			"xmlFile" : "src/main/resources/TaskDesc/ABYQuestions.json",
 			"additionalResources" : "src/main/resources/AdditionalResources/ABY"
-		}
-		,
+		},
 		{
 			"name": "CertainTrust",
-			"description": "CertainTrust",
+			"description": "Judging Trustworthiness of third parties",
 			"modelFile" : "src/main/resources/ClaferModel/CertainTrust.js",
-			"xmlFile" : "src/main/resources/TaskDesc/CertainTrust.json",
+			"xmlFile" : "src/main/resources/TaskDesc/CertainTrustQuestion.json",
 			"additionalResources" : "src/main/resources/AdditionalResources/CertainTrust"
 		}
 ]

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
@@ -37,6 +38,17 @@ public class ErrorMarkerGenerator {
 			Activator.getDefault().logError(Constants.NO_RES_FOUND);
 			return false;
 		}
+		
+		for (IMarker marker : markers) {
+			try {
+				if (marker.getAttribute(IMarker.MESSAGE).equals(message) && marker.getAttribute(IMarker.LINE_NUMBER).equals(line) && sourceFile.getName().equals(marker.getResource().getName())) {
+					return true;
+				}
+			} catch (CoreException e) {
+				//If this throws an exception, it's better to simply create the error marker, even if it already exists.
+			}
+		}
+		
 		IMarker marker;
 		try {
 			marker = sourceFile.createMarker(IMarker.PROBLEM);
@@ -56,18 +68,24 @@ public class ErrorMarkerGenerator {
 	 * Deletes markers from file and clears markers list.
 	 * @return <code>true</code>/<code>false</code> if all error markers were (not) deleted successfully
 	 */
-	public Boolean clearMarkers() {
+	public boolean clearMarkers() {
+		return clearMarkers(null);
+	}
+
+	public boolean clearMarkers(IProject curProj) {
 		boolean allMarkersDeleted = true;
 		for (IMarker marker : markers) {
-			allMarkersDeleted &= deleteMarker(marker);
+			allMarkersDeleted &= deleteMarker(marker, curProj);
 		}
 		markers.clear();
 		return allMarkersDeleted;
 	}
-
-	private boolean deleteMarker(IMarker marker) {
+	
+	private boolean deleteMarker(IMarker marker, IProject curProj) {
 		try {
-			marker.delete();
+			if (curProj.equals(marker.getResource().getProject())) {
+				marker.delete();
+			}
 		} catch (CoreException e) {
 			Activator.getDefault().logError(e);
 			return false;

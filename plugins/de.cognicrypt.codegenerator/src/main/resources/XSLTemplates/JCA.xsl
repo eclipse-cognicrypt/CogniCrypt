@@ -146,8 +146,9 @@ public class KeyDeriv {
          <xsl:otherwise> 1000 </xsl:otherwise>
 		 </xsl:choose>, <xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/keySize"/>);
 		SecretKeyFactory skf = SecretKeyFactory.getInstance("<xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/name"/>WithHmacSHA256");
-		
-		return new SecretKeySpec(skf.generateSecret(spec).getEncoded(), "<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>" );
+		SecretKeySpec ret = new SecretKeySpec(skf.generateSecret(spec).getEncoded(), "<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>" );
+		spec.clearPassword();
+		return ret;
 	}
 }
 </xsl:result-document>
@@ -178,6 +179,9 @@ public class Output {
         <xsl:when test="//task/algorithm[@type='KeyDerivationAlgorithm']">KeyDeriv kd = new KeyDeriv();
 		SecretKey key = kd.getKey(pwd); </xsl:when>
         <xsl:otherwise>KeyGenerator kg = KeyGenerator.getInstance("<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>");
+		<xsl:choose>
+		<xsl:when test="//task/algorithm[@type='SymmetricBlockCipher']/keySize &gt; 128">
+	 // KeySize > 128 needs unlimited strength policy files http://www.oracle.com/technetwork/java/javase/downloads</xsl:when></xsl:choose>
 		kg.init(<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/keySize"/>);
 		SecretKey key = kg.generateKey(); </xsl:otherwise>
 		</xsl:choose>	
@@ -795,11 +799,9 @@ public class HTIObserver implements Observer{
 <xsl:result-document href="Operator.java">
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
-
 public enum Operator {
 	NOT,AND,OR,wFUSION,cFUSION
 }
-
 </xsl:result-document>
 
 </xsl:when>

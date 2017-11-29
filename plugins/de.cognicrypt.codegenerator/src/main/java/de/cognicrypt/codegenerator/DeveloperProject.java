@@ -20,6 +20,7 @@
  */
 package de.cognicrypt.codegenerator;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 
@@ -139,6 +140,13 @@ public class DeveloperProject {
 		int result = 1;
 		result = prime * result + ((project == null) ? 0 : project.hashCode());
 		return result;
+	}
+	/**
+	 * @return Get all methods of the project
+	 */
+	public Method[] getMethodsfromProject(Class<?> testClass){
+		Class<?> classes=this.project.getClass();
+		return classes.getDeclaredMethods();
 	}
 
 	@Override

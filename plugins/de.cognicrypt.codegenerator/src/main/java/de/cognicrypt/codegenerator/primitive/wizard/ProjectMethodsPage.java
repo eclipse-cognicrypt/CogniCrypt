@@ -1,4 +1,4 @@
-package de.cognicrypt.codegenerator.primitive.wizard.provider;
+package de.cognicrypt.codegenerator.primitive.wizard;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.wizard.WizardPage;

@@ -54,9 +54,9 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		Label lblType = new Label(grpClaferFeature, SWT.NONE);
 		
 		if(claferFeature.getFeatureType().toString().equals(Constants.FeatureType.ABSTRACT.toString().toLowerCase())){
-			lblType.setText("Class name");
+			lblType.setText("Class");
 		} else if(claferFeature.getFeatureType().toString().toLowerCase().equals(Constants.FeatureType.CONCRETE.toString().toLowerCase())){
-			lblType.setText("Instance name");
+			lblType.setText("Instance");
 		}
 		
 		
@@ -69,7 +69,12 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		
 		if (!claferFeature.getFeatureInheritance().isEmpty()) {
 			Label lblInheritsFrom = new Label(grpClaferFeature, SWT.NONE);
-			lblInheritsFrom.setText("Inherits from class ");
+
+			if (claferFeature.getFeatureType() == Constants.FeatureType.ABSTRACT) {
+				lblInheritsFrom.setText("inherits from class");
+			} else if (claferFeature.getFeatureType() == Constants.FeatureType.CONCRETE) {
+				lblInheritsFrom.setText("implements");
+			}
 
 			Text txtFeatureInheritance;
 			txtFeatureInheritance = new Text(grpClaferFeature, SWT.BORDER);

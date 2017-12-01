@@ -132,12 +132,7 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 
 			@Override
 			public void modifyText(ModifyEvent arg0) {
-				if (txtFeatureName.getText().contains(" ")) {
-					setMessage("The name must not contain any spaces", IMessageProvider.WARNING);
-				}
-				else {
-					setMessage(null);
-				}
+				validate();
 			}
 		});
 
@@ -198,6 +193,26 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		constraintsComposite.setMinHeight(200);
 
 		return container;
+	}
+
+	private void validate() {
+		if (txtFeatureName.getText().contains(" ")) {
+			setMessage("The name must not contain any spaces", IMessageProvider.WARNING);
+			if (getButton(IDialogConstants.OK_ID) != null) {
+				getButton(IDialogConstants.OK_ID).setEnabled(false);
+			}
+
+		} else if (txtFeatureName.getText().isEmpty()) {
+			setMessage("Please enter a name", IMessageProvider.WARNING);
+			if (getButton(IDialogConstants.OK_ID) != null) {
+				getButton(IDialogConstants.OK_ID).setEnabled(false);
+			}
+		} else {
+			setMessage(null);
+			if (getButton(IDialogConstants.OK_ID) != null) {
+				getButton(IDialogConstants.OK_ID).setEnabled(true);
+			}
+		}
 	}
 
 	/**

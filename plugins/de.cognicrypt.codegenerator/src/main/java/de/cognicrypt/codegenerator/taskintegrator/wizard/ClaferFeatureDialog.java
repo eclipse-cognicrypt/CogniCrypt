@@ -37,6 +37,8 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 	private Button btnRadioAbstract;
 	private Button btnRadioConcrete;
 
+	private Label lblInheritance;
+
 	private ClaferFeature resultClafer;
 	private ArrayList<ClaferFeature> otherClaferFeatures;
 
@@ -86,11 +88,13 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		btnRadioAbstract = new Button(container, SWT.RADIO);
 		btnRadioAbstract.setSelection(true);
 		btnRadioAbstract.setText("Class");
+
 		btnRadioAbstract.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				resultClafer.setFeatureType(FeatureType.ABSTRACT);
+				validate();
 				super.widgetSelected(e);
 			}
 		});
@@ -102,6 +106,7 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				resultClafer.setFeatureType(FeatureType.CONCRETE);
+				validate();
 				super.widgetSelected(e);
 			}
 		});
@@ -138,8 +143,8 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 
 		txtFeatureName.setText(resultClafer.getFeatureName());
 
-		Label lblInheritance = new Label(container, SWT.NONE);
-		lblInheritance.setText("Choose inheritance");
+		lblInheritance = new Label(container, SWT.NONE);
+		lblInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 
 		Combo comboInheritance = new Combo(container, SWT.NONE);
 		comboInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
@@ -192,6 +197,8 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		constraintsComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		constraintsComposite.setMinHeight(200);
 
+		validate();
+
 		return container;
 	}
 
@@ -211,6 +218,15 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 			setMessage(null);
 			if (getButton(IDialogConstants.OK_ID) != null) {
 				getButton(IDialogConstants.OK_ID).setEnabled(true);
+			}
+		}
+
+		if (lblInheritance != null) {
+			if (btnRadioAbstract.getSelection()) {
+				lblInheritance.setText("Inherits from");
+
+			} else if (btnRadioConcrete.getSelection()) {
+				lblInheritance.setText("Implements");
 			}
 		}
 	}

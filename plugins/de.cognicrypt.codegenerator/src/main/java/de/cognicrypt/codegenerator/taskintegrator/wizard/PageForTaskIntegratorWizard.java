@@ -328,7 +328,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	/**
 	 * @return the compositeChoiceForModeOfWizard
 	 */
-	public Composite getCompositeChoiceForModeOfWizard() {
+	public CompositeChoiceForModeOfWizard getCompositeChoiceForModeOfWizard() {
 		return compositeChoiceForModeOfWizard;
 	}
 

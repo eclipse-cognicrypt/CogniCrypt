@@ -1,26 +1,21 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
-import java.nio.file.Paths;
-
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.taskintegrator.controllers.FileUtilities;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 
 
 
 public class TaskIntegrationWizard extends Wizard {
-	private ModelAdvancedMode objectForDataInNonGuidedMode;
-
 	public TaskIntegrationWizard() {
 
 	}
-
-
 
 	@Override
 	public void addPages() {
@@ -62,32 +57,18 @@ public class TaskIntegrationWizard extends Wizard {
 		 * TODO finish button behavior important for the mode selection page. Postponing this code to
 		 * a future time, but within the Sept milestone.
 		 */
+		
+		ModelAdvancedMode objectForDataInNonGuidedMode = getTIPageByName(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
+		FileUtilities fileUtilities = new FileUtilities(objectForDataInNonGuidedMode.getNameOfTheTask());
 		if(this.getContainer().getCurrentPage().getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)){
-			setDataForAdvancedMode(
-				((PageForTaskIntegratorWizard) this.getPage(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)).getCompositeChoiceForModeOfWizard()
-				);
-			if(
-				this.objectForDataInNonGuidedMode.isGuidedModeChosen() == false &&
-				this.objectForDataInNonGuidedMode.isGuidedModeForced() == false){
-				// and if the validations on all the text boxes is true, then close.
+			if(objectForDataInNonGuidedMode.isGuidedModeChosen() == false //&& this.objectForDataInNonGuidedMode.isGuidedModeForced() == false
+				){
+				fileUtilities.writeFiles(objectForDataInNonGuidedMode.getLocationOfClaferFile(), objectForDataInNonGuidedMode.getLocationOfJSONFile(), objectForDataInNonGuidedMode.getLocationOfXSLFile(), objectForDataInNonGuidedMode.getLocationOfCustomLibrary());			
 				return true;
 			}
 		}
 
-
-		/*
-		System.out.println(objectForDataInNonGuidedMode.getNameOfTheTask());
-		System.out.println(objectForDataInNonGuidedMode.getLocationOfCustomLibrary());
-		System.out.println(objectForDataInNonGuidedMode.getLocationOfClaferFile());
-		System.out.println(objectForDataInNonGuidedMode.getLocationOfJSONFile());
-		System.out.println(objectForDataInNonGuidedMode.getLocationOfXSLFile());
-
-		System.out.println(objectForDataInNonGuidedMode.isCustomLibraryRequired());
-		System.out.println(objectForDataInNonGuidedMode.isGuidedModeChosen());
-		System.out.println(objectForDataInNonGuidedMode.isGuidedModeForced());
-
-		return false;*/
-		return true;
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -124,44 +105,6 @@ public class TaskIntegrationWizard extends Wizard {
 		return super.getNextPage(page);
 	}
 
-
-
-	private void setDataForAdvancedMode(Composite compositeChoiceForModeOfWizard){
-		// Check if this call is from the initial call to the getNextPage.
-		if(compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK)!=null){
-			//TaskIntegrationWizard wizard = (TaskIntegrationWizard) this.getWizard();
-			setObjectForDataInNonGuidedMode(
-				new ModelAdvancedMode(
-					compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_NAME_OF_THE_TASK).toString(),
-					Paths.get(compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK).toString()),
-					Paths.get(compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE).toString()),
-					Paths.get(compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE).toString()),
-					Paths.get(compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE).toString()),
-					(boolean) compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED),
-					(boolean) compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_IS_GUIDED_MODE_CHOSEN),
-					(boolean) compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_IS_GUIDED_MODE_FORCED)
-						)
-					);
-		}
-
-	}
-
-	/**
-	 * @return the objectForDataInNonGuidedMode
-	 */
-	public ModelAdvancedMode getObjectForDataInNonGuidedMode() {
-		return objectForDataInNonGuidedMode;
-	}
-
-
-
-	/**
-	 * @param objectForDataInNonGuidedMode the objectForDataInNonGuidedMode to set
-	 */
-	public void setObjectForDataInNonGuidedMode(ModelAdvancedMode objectForDataInNonGuidedMode) {
-		this.objectForDataInNonGuidedMode = objectForDataInNonGuidedMode;
-	}
-	
 	/**
 	 * Get the first page of this wizard that is of type {@link PageForTaskIntegratorWizard} and matches the given page name
 	 * 

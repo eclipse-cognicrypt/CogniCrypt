@@ -123,7 +123,7 @@ public class ClaferConstraintDialog extends Dialog {
 				@Override
 				public void handleEvent(Event arg0) {
 					text.insert(btn.getValue());
-
+					text.setFocus();
 				}
 			});
 		}

@@ -38,6 +38,7 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 	private Button btnRadioConcrete;
 
 	private Label lblInheritance;
+	private Combo comboInheritance;
 
 	private ClaferFeature resultClafer;
 	private ArrayList<ClaferFeature> otherClaferFeatures;
@@ -146,7 +147,7 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		lblInheritance = new Label(container, SWT.NONE);
 		lblInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 
-		Combo comboInheritance = new Combo(container, SWT.NONE);
+		comboInheritance = new Combo(container, SWT.NONE);
 		comboInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
 		// add existing abstract features to inheritance combo
@@ -263,6 +264,13 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		if (cfrConstraintDialog.open() == 0) {
 			constraintsComposite.addFeatureConstraint(cfrConstraintDialog.getResult(), true);
 		}
+	}
+
+	@Override
+	protected void okPressed() {
+		resultClafer.setFeatureName(txtFeatureName.getText());
+		resultClafer.setFeatureInheritance(comboInheritance.getText());
+		super.okPressed();
 	}
 
 	public ClaferFeature getResult() {

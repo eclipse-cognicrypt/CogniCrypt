@@ -1,5 +1,6 @@
 [{
     "id": "0",
+    "helpID": "LongTermArchiving_Page0",
     "content": [{
       "id": "0",
       "note": "",
@@ -28,6 +29,7 @@
     }]
   }, {
     "id": "1",
+    "helpID": "LongTermArchiving_Page1",
     "content": [{
       "id": "1",
        "note": "",
@@ -57,6 +59,7 @@
   },
   {
     "id": "2",
+    "helpID": "LongTermArchiving_Page2",
     "content": [{
       "id": "2",
       "note": "\u2022 Time Stamping Authority: Time Stamping Authority generates a timestamp on receiving a data, by signing the data with the current time.\n\u2022 Notarial Attestation: Notarial Attestation verifies properties (signature, certificate and attestation) of the data before signing the data with a date.",

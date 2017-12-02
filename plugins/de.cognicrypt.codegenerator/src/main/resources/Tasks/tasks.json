@@ -10,7 +10,7 @@
 		{
 			"name": "SecurePassword",
 			"description": "Encode Password for Secure Storage",
-			"taskDescription": "This cryptographic task makes password cracking much more difficult for securing the passwords.",
+			"taskDescription": "This cryptographic task makes password cracking much more difficult and helps in securing the passwords.",
 			"modelFile" : "src/main/resources/ClaferModel/SecurePasswordStorage.js",
 			"xmlFile" : "src/main/resources/TaskDesc/SecurePasswordStorage.json",
 			"additionalResources" : ""

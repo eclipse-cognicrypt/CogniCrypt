@@ -82,7 +82,7 @@ public class TaskSelectionPage extends WizardPage {
 		 */
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "de.cognicrypt.codegenerator.help_id_1");
 		container.setLayout(new GridLayout(2, false));
-		
+
 		this.selectProjectLabel = new Label(this.container, SWT.NONE);
 		GridData gd_selectProjectLabel = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_selectProjectLabel.heightHint = 28;

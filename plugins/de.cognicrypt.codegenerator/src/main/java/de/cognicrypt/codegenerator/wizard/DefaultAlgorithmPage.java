@@ -92,9 +92,15 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		setPageComplete(true);
 
 		algorithmClass.setToolTipText(Constants.DEFAULT_ALGORITHM_COMBINATION_TOOLTIP);
-
+		
 		this.codePreviewPanel = new Group(this.control, SWT.NONE);
 		this.codePreviewPanel.setText(Constants.CODE_PREVIEW);
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns = 1;
+		this.codePreviewPanel.setLayout(gridLayout);
+		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
+		gridData.horizontalSpan = 1;
+		this.codePreviewPanel.setLayoutData(gridData);
 		final Font boldFont = new Font(this.codePreviewPanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 		this.codePreviewPanel.setFont(boldFont);
 		setControl(this.control);
@@ -104,6 +110,19 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		this.code.setBounds(10, 20, 520, 146);
 		this.code.setEditable(false);	
 		new Label(control, SWT.NONE);
+		
+
+//		this.codePreviewPanel = new Group(this.control, SWT.NONE);
+//		this.codePreviewPanel.setText(Constants.CODE_PREVIEW);
+//		final Font boldFont = new Font(this.codePreviewPanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
+//		this.codePreviewPanel.setFont(boldFont);
+//		setControl(this.control);
+//		
+//		this.code = new Text(this.codePreviewPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+//		this.code.setLayoutData(new GridData(GridData.FILL_BOTH));
+//		this.code.setBounds(10, 20, 520, 146);
+//		this.code.setEditable(false);	
+//		new Label(control, SWT.NONE);
 		
 		this.code.setText(getCodePreview());
 		

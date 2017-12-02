@@ -1,9 +1,10 @@
 [{
   "id": "0",
+  "helpID": "SymmetricEncryption_Page0",
   "content": [{
       "id": "0",
       "element":"scale",
-      "note": "",
+      "note": "",      
       "questionText": "What is the preferred security level for your data?",
       "answers": [ {
           "value": "Secure",
@@ -28,7 +29,7 @@
     },
     {
       "id": "1",
-      "note": "",
+      "note": "",      
       "element": "radio",
       "questionText": "Do you wish to derive the key for encryption from a user-specified password?",
       "answers": [{
@@ -58,7 +59,7 @@
     },
     {
       "id": "2",
-      "note": "",
+      "note": "",      
       "element": "radio",
       "questionText": "Will your application encrypt several gigabytes of data regularly?",
       "answers": [{
@@ -81,7 +82,7 @@
     {
       "id": "3",
       "element": "combo",
-      "note":"",
+      "note":"",      
       "questionText": "What type of data do you wish to encrypt?",
       "answers": [{
           "value": "Byte[]",

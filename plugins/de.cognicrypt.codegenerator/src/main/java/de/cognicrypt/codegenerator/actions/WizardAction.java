@@ -59,18 +59,17 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	@Override
-	public void run(final IAction action) {
-		Constants.WizardActionFromContextMenuFlag = false;
-		final WizardDialog dialog = new WizardDialog(new Shell (), new ConfiguratorWizard()){
-		@Override
-        protected void configureShell(Shell newShell) {
-		super.configureShell(newShell);
-		newShell.setSize(1150,900);
-	}
-		};
+	public void run(final IAction action) {		
+		Constants.WizardActionFromContextMenuFlag = false;		
+		final WizardDialog dialog = new WizardDialog(new Shell(), new ConfiguratorWizard()){			
+			@Override
+        protected void configureShell(Shell newShell) {				
+		       super.configureShell(newShell);		       
+		       newShell.setSize(1150,900);		
+		}	};
 		dialog.open();		
 	}
-
+	
 	/**
 	 * Selection in the workbench has been changed. We can change the state of the 'real' action here if we want, but this can only happen after the delegate has been created.
 	 *

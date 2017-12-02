@@ -198,15 +198,10 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		container = new Composite(sc, SWT.NONE);
 		container.setBounds(10, 10, 450, 200);
 		// Updated the number of columns to order the questions vertically.
+
 		final GridLayout layout = new GridLayout(1, true);
 
-		/**
-		 * To display the Help view after clicking the help icon
-		 * 
-		 * @param help_id_1
-		 *        This id refers to HelpContexts_1.xml
-		 */
-
+		// To display the Help view after clicking the help icon
 		if (!page.getHelpID().isEmpty()) {
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(container, getHelpId(page));
 		}
@@ -341,9 +336,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 
 			case scale:
-
-				Scale scale = new Scale(container, SWT.HORIZONTAL);
-				scale.setMaximum((answers.size()) - 1);
+				Scale scale = new Scale(container, SWT.HORIZONTAL );
+				scale.setMaximum((answers.size())-1);
 				scale.setMinimum(0);
 				scale.setPageIncrement(1);
 

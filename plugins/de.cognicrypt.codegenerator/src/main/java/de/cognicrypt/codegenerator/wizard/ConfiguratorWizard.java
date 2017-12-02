@@ -28,11 +28,13 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.clafer.ast.AstConcreteClafer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
@@ -86,6 +88,11 @@ public class ConfiguratorWizard extends Wizard {
 			Activator.getDefault().logError(e);
 		}
 		setWindowTitle("Cryptography Task Configurator");
+		ImageDescriptor image =
+            AbstractUIPlugin.
+                imageDescriptorFromPlugin("de.cognicrypt.codegenerator",
+                   "icons/cognicrypt-medium.png");
+        setDefaultPageImageDescriptor(image);        
 		}
 
 	@Override

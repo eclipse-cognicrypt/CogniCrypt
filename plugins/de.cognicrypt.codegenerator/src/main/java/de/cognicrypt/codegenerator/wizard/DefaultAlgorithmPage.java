@@ -86,7 +86,7 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		 * @param help_id_2 
 		 *        This id refers to HelpContexts_1.xml
 		 */
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.help_id_3");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.help_id_2");
 		
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
 		compositeControl.setLayout(new GridLayout(2, false));

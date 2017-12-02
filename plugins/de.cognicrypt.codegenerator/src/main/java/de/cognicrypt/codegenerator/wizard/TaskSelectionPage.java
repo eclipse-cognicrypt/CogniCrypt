@@ -34,13 +34,18 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 //import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
@@ -73,7 +78,10 @@ public class TaskSelectionPage extends WizardPage {
 	@Override
 	public void createControl(final Composite parent) {
 
-		this.container = new Composite(parent, SWT.NONE);
+		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		this.container = new Composite(sc, SWT.NONE);
 		this.container.setBounds(10, 10, 200, 300);
 		
 		/** To display the Help view after clicking the help icon
@@ -134,7 +142,7 @@ public class TaskSelectionPage extends WizardPage {
 
 		this.taskComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
 		Combo taskCombo = taskComboSelection.getCombo();
-		GridData gd_taskCombo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		GridData gd_taskCombo = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_taskCombo.widthHint = 223;
 		taskCombo.setLayoutData(gd_taskCombo);
 		taskCombo.setToolTipText(Constants.TASKLIST_TOOLTIP);
@@ -166,10 +174,28 @@ public class TaskSelectionPage extends WizardPage {
 		
 		// Adding description text for the cryptographic task that has been selected from the combo box
 		this.descriptionText = new Text(container, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-		GridData gd_descriptionText = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		//Hide scroll bar 
+		Listener scrollBarListener = new Listener (){
+		    @Override
+		    public void handleEvent(Event event) {
+		        Text t = (Text)event.widget;
+		        Rectangle r1 = t.getClientArea();
+		        // use r1.x as wHint instead of SWT.DEFAULT
+		        Rectangle r2 = t.computeTrim(r1.x, r1.y, r1.width, r1.height); 
+		        Point p = t.computeSize(r1.x,  SWT.DEFAULT,  true); 
+		        t.getVerticalBar().setVisible(r2.height <= p.y);
+		        if (event.type == SWT.Modify){
+		           t.getParent().layout(true);
+		        t.showSelection();
+		    }
+		}};
+		this.descriptionText.addListener(SWT.Resize, scrollBarListener);
+		this.descriptionText.addListener(SWT.Modify, scrollBarListener);
+		
+		GridData gd_descriptionText = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1);
 		gd_descriptionText.widthHint = 297;
 		gd_descriptionText.heightHint = 96;
-		descriptionText.setLayoutData(gd_descriptionText);
+		this.descriptionText.setLayoutData(gd_descriptionText);
 		this.descriptionText.setToolTipText(Constants.DESCRIPTION_BOX_TOOLTIP);
 		this.descriptionText.setEditable(false);
 		
@@ -207,6 +233,12 @@ public class TaskSelectionPage extends WizardPage {
 		deco.setDescriptionText("If you do not use the guided mode, then you have to \nconfigure the algorithm by yourself");
 		deco.setImage(image);
 		deco.setShowOnlyOnFocus(false);
+		
+		sc.setContent(container);
+		sc.setExpandHorizontal(true);
+		sc.setExpandVertical(true);
+		sc.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		setControl(sc);
 		
 	}
 

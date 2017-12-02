@@ -100,7 +100,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		this.quest = quest;
 		this.task = task;
 		this.selectionValues = selectionValues;
-
 		// This variable needs to be initialized.
 		this.page = null;
 	}
@@ -191,7 +190,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	@Override
 	public void createControl(final Composite parent) {
-		container = new Composite(parent, SWT.NONE);
+	
+		container = new Composite(parent, SWT.NONE|SWT.FILL);
 		container.setBounds(10, 10, 450, 200);
 		// Updated the number of columns to order the questions vertically.
 		final GridLayout layout = new GridLayout(1, false);
@@ -225,11 +225,11 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 		final List<Answer> answers = question.getAnswers();
 		final Composite container = getPanel(parent);
-		final Label label = new Label(container, SWT.TOP);
+		final Label label = new Label(container, SWT.TOP|SWT.FILL);
 		label.setText(question.getQuestionText());
 		switch (question.getElement()) {
 			case combo:
-				final ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY);
+				final ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY|SWT.FILL);
 				comboViewer.setContentProvider(ArrayContentProvider.getInstance());
 				comboViewer.setInput(answers);
 
@@ -238,23 +238,28 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					BeginnerTaskQuestionPage.this.selectionMap.put(question, (Answer) selection.getFirstElement());
 					question.setEnteredAnswer((Answer) selection.getFirstElement());
 				});
-				new Label(parent, SWT.NONE);
 				//added description for questions
-				if(!question.getNote().equals("")){
-					
-				Group notePanel = new Group(parent, SWT.NONE);
-				notePanel.setText("Note:");
-				final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
-				notePanel.setFont(boldFont);
-								
-				this.note = new Text (notePanel,SWT.MULTI | SWT.WRAP );
-				this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
-				this.note.setText(question.getNote());
-				this.note.setBounds(10,20,585,60);
-				this.note.setSize(note.computeSize(585, SWT.DEFAULT));
-				setControl(notePanel);
-				this.note.setEditable(false);
-				this.note.setEnabled(true);
+				if (!question.getNote().equals("")) {
+
+					Group notePanel = new Group(parent, SWT.NONE);
+					notePanel.setText("Note:");
+					GridLayout gridLayout = new GridLayout();
+					gridLayout.numColumns = 1;
+					notePanel.setLayout(gridLayout);
+					GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
+					gridData.horizontalSpan = 2;
+					notePanel.setLayoutData(gridData);
+					final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
+					notePanel.setFont(boldFont);
+
+					this.note = new Text(notePanel, SWT.MULTI | SWT.WRAP);
+					this.note.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+					this.note.setText(question.getNote());
+					this.note.setBounds(10, 20, 585, 60);
+					this.note.setSize(note.computeSize(585, SWT.DEFAULT));
+					setControl(notePanel);
+					this.note.setEditable(false);
+					this.note.setEnabled(true);
 				}
 				this.finish = true;
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
@@ -268,7 +273,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				for (int i = 0; i < answers.size(); i++) {
 					int count=i;
 					String ans = answers.get(i).getValue();
-					radioButton[i] = new Button(container, SWT.RADIO );
+					radioButton[i] = new Button(container, SWT.RADIO);
 					radioButton[i].setText(ans);
 					new Label(container,SWT.NONE);
 					radioButton[i].addSelectionListener(new SelectionAdapter() {
@@ -279,22 +284,47 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						}
 					});
 				}
+				new Label(parent, SWT.NONE);
 				if(!question.getNote().equals("")){
 					
 					Group notePanel = new Group(parent, SWT.NONE);
 					notePanel.setText("Note:");
+					GridLayout gridLayout = new GridLayout();
+					gridLayout.numColumns = 1;
+					notePanel.setLayout(gridLayout);
+					GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
+					gridData.horizontalSpan = 2;
+					notePanel.setLayoutData(gridData);
 					final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 					notePanel.setFont(boldFont);
 									
-					this.note = new Text (notePanel,SWT.MULTI | SWT.WRAP );
-					this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
+					this.note = new Text (notePanel,SWT.MULTI | SWT.WRAP);
+					this.note.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 					this.note.setText(question.getNote());
 					this.note.setBounds(10,20,585,60);
 					this.note.setSize(note.computeSize(585, SWT.DEFAULT));
 					setControl(notePanel);
 					this.note.setEditable(false);
 					this.note.setEnabled(true);
-					}
+				}
+				
+//				
+//				if(!question.getNote().equals("")){
+//					
+//					Group notePanel = new Group(parent, SWT.NONE);
+//					notePanel.setText("Note:");
+//					final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
+//					notePanel.setFont(boldFont);
+//									
+//					this.note = new Text (notePanel,SWT.MULTI | SWT.WRAP );
+//					this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
+//					this.note.setText(question.getNote());
+//					this.note.setBounds(10,20,585,60);
+//					this.note.setSize(note.computeSize(585, SWT.DEFAULT));
+//					setControl(notePanel);
+//					this.note.setEditable(false);
+//					this.note.setEnabled(true);
+//					}
 				if (question.getEnteredAnswer() != null){
 					for (int i = 0; i < answers.size(); i++) {
 						if(radioButton[i].getText()==question.getEnteredAnswer().getValue()){
@@ -364,7 +394,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 
 			case text:
-				final Text inputField = new Text(container, SWT.BORDER);
+				final Text inputField = new Text(container, SWT.BORDER );
 				inputField.setSize(240, inputField.getSize().y);
 				
 				inputField.setToolTipText(question.getTooltip());

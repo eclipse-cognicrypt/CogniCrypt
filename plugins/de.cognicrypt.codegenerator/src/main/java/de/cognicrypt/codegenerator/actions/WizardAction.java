@@ -18,6 +18,9 @@ package de.cognicrypt.codegenerator.actions;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
@@ -61,13 +64,15 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	@Override
 	public void run(final IAction action) {
 		Constants.WizardActionFromContextMenuFlag = false;
-		final WizardDialog dialog = new WizardDialog(new Shell(), new ConfiguratorWizard()){
+		Shell shell =new Shell();
+		final WizardDialog dialog = new WizardDialog(shell, new ConfiguratorWizard()){
 		@Override
         protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		//newShell.setSize(650,400);
-	
-	}	};
+		shell.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+//		newShell.setSize(800,480);
+	}
+		};
 		dialog.open();
 		
 	}

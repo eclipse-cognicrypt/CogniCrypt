@@ -42,14 +42,12 @@ public class Constants {
 
 	private static final String rsrcPath = "src" + innerFileSeparator + "main" + innerFileSeparator + "resources" + innerFileSeparator;
 	public static final String providerPath = rsrcPath + "AdditionalResources" + innerFileSeparator + "Provider";
-	
-	
+
 	//JSON task file
 	public static final String jsonTaskFile = rsrcPath + "Tasks" + innerFileSeparator + "tasks.json";;
 
 	public static final String pathToPropertyfiles = rsrcPath + "Labels.properties";
 
-	
 	// Task descriptions
 	
 	// Tooltip 	
@@ -72,7 +70,7 @@ public class Constants {
 
 	// the answer does not point to a next page, so in this case the page links to a next one statically
 	public static final int ANSWER_NO_NEXT_ID = -2;
-	
+
 	// the given answer makes the wizard end
 	public static final int ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID = -1;
 
@@ -123,7 +121,6 @@ public class Constants {
 	public static final String Type = "type";
 	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List;" };
 
-	
 	// Types
 	public static final String INTEGER = "Integer";
 	public static final String STRING = "String";
@@ -142,6 +139,5 @@ public class Constants {
 
 	//Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;
-	
-}
 
+}

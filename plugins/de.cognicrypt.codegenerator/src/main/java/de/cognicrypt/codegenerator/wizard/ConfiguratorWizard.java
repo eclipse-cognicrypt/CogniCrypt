@@ -124,7 +124,7 @@ public class ConfiguratorWizard extends Wizard {
 	 *        updated this variable from a list of questions to have access to the method to get specific Questions.
 	 */
 	private void createBeginnerPage(final Page curPage, final BeginnerModeQuestionnaire beginnerQuestionnaire) {
-
+		
 		List<String> selection = null;
 		if (curPage.getContent().size() == 1) {
 			final Question curQuestion = curPage.getContent().get(0);

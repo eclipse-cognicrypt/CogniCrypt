@@ -43,9 +43,12 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -100,10 +103,13 @@ public class InstanceListPage extends WizardPage implements Labels {
 
 	@Override
 	public void createControl(final Composite parent) {
-		
+
+		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
 		ComboViewer algorithmClass;
 		Label labelInstanceList;
-		this.control = new Composite(parent, SWT.NONE);
+		this.control = new Composite(sc, SWT.NONE);
 		final GridLayout layout = new GridLayout(3, false);
 		this.control.setLayout(layout);
 		
@@ -167,12 +173,37 @@ public class InstanceListPage extends WizardPage implements Labels {
 
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
 		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns = 1;
+		this.instancePropertiesPanel.setLayout(gridLayout);
+		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
+		gridData.horizontalSpan = 1;
 		this.instancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
-		this.instancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		this.instancePropertiesPanel.setLayoutData(gridData);
+//		this.instancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		final Font boldFont = new Font(this.instancePropertiesPanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 		this.instancePropertiesPanel.setFont(boldFont);
 
 		this.instanceDetails = new Text(this.instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		//Hide scroll bar 
+		Listener scrollBarListener = new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+				Text t = (Text) event.widget;
+				Rectangle r1 = t.getClientArea();
+				// use r1.x as wHint instead of SWT.DEFAULT
+				Rectangle r2 = t.computeTrim(r1.x, r1.y, r1.width, r1.height);
+				Point p = t.computeSize(r1.x, SWT.DEFAULT, true);
+				t.getVerticalBar().setVisible(r2.height <= p.y);
+				if (event.type == SWT.Modify) {
+					t.getParent().layout(true);
+					t.showSelection();
+				}
+			}
+		};
+		this.instanceDetails.addListener(SWT.Resize, scrollBarListener);
+		this.instanceDetails.addListener(SWT.Modify, scrollBarListener);
 		this.instanceDetails.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.instanceDetails.setBounds(10, 20, 400, 180);
 		this.instanceDetails.setEditable(false);
@@ -200,8 +231,13 @@ public class InstanceListPage extends WizardPage implements Labels {
 		        }
 		      
 		      });
-		
-		      
+
+		sc.setContent(this.control);
+		sc.setExpandHorizontal(true);
+		sc.setExpandVertical(true);
+		sc.setMinSize(this.control.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		setControl(sc);
+			
 
 	}
 	

@@ -21,13 +21,18 @@ import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -67,9 +72,13 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 	
 	@Override
 	public void createControl(final Composite parent) {
+
+		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
 		Label algorithmClass;
 		Label labelDefaultAlgorithm;
-		this.control = new Composite(parent, SWT.NONE);
+		this.control = new Composite(sc, SWT.NONE);
 		final GridLayout layout = new GridLayout(1, false);
 		this.control.setLayout(layout);
 		
@@ -105,25 +114,31 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		this.codePreviewPanel.setFont(boldFont);
 		setControl(this.control);
 		
-		this.code = new Text(this.codePreviewPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		this.code = new Text(this.codePreviewPanel, SWT.MULTI | SWT.WRAP|SWT.V_SCROLL);
+		//Hide scroll bar 
+		Listener scrollBarListener = new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+				Text t = (Text) event.widget;
+				Rectangle r1 = t.getClientArea();
+				// use r1.x as wHint instead of SWT.DEFAULT
+				Rectangle r2 = t.computeTrim(r1.x, r1.y, r1.width, r1.height);
+				Point p = t.computeSize(r1.x, SWT.DEFAULT, true);
+				t.getVerticalBar().setVisible(r2.height <= p.y);
+				if (event.type == SWT.Modify) {
+					t.getParent().layout(true);
+					t.showSelection();
+				}
+			}
+		};
+		this.code.addListener(SWT.Resize, scrollBarListener);
+		this.code.addListener(SWT.Modify, scrollBarListener);
+		
 		this.code.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.code.setBounds(10, 20, 520, 146);
 		this.code.setEditable(false);	
-		new Label(control, SWT.NONE);
-		
-
-//		this.codePreviewPanel = new Group(this.control, SWT.NONE);
-//		this.codePreviewPanel.setText(Constants.CODE_PREVIEW);
-//		final Font boldFont = new Font(this.codePreviewPanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
-//		this.codePreviewPanel.setFont(boldFont);
-//		setControl(this.control);
-//		
-//		this.code = new Text(this.codePreviewPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-//		this.code.setLayoutData(new GridData(GridData.FILL_BOTH));
-//		this.code.setBounds(10, 20, 520, 146);
-//		this.code.setEditable(false);	
-//		new Label(control, SWT.NONE);
-		
+		new Label(control, SWT.NONE);		
 		this.code.setText(getCodePreview());
 		
 		code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
@@ -153,6 +168,11 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		deco.setImage(image);
 		deco.setShowOnlyOnFocus(false);
 		
+		sc.setContent(this.control);
+		sc.setExpandHorizontal(true);
+		sc.setExpandVertical(true);
+		sc.setMinSize(this.control.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		setControl(sc);
 			
 	}
 

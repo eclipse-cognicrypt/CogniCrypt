@@ -37,6 +37,8 @@ public class ClaferConstraintDialog extends Dialog {
 	private ClaferFeature currentFeature;
 	private ArrayList<ClaferFeature> cfrFeatures;
 
+	private ClaferConstraint modifiedConstraint;
+
 	/**
 	 * Create the dialog.
 	 * 
@@ -54,6 +56,15 @@ public class ClaferConstraintDialog extends Dialog {
 		this(parentShell);
 		this.currentFeature = currentFeature;
 		this.cfrFeatures = cfrFeatures;
+	}
+
+	public ClaferConstraintDialog(Shell parentShell, ClaferFeature currentFeature, ArrayList<ClaferFeature> cfrFeatures, ClaferConstraint modifiedConstraint) {
+		this(parentShell, currentFeature, cfrFeatures);
+		this.modifiedConstraint = modifiedConstraint;
+	}
+
+	public ClaferFeature getClafer() {
+		return currentFeature;
 	}
 
 	/**
@@ -130,6 +141,10 @@ public class ClaferConstraintDialog extends Dialog {
 
 		text = new Text(container, SWT.BORDER | SWT.WRAP | SWT.SINGLE);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+
+		if (modifiedConstraint != null) {
+			text.setText(modifiedConstraint.getConstraint());
+		}
 
 		return container;
 	}

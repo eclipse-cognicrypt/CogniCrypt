@@ -16,6 +16,7 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 import de.cognicrypt.codegenerator.taskintegrator.models.XSLAttribute;
+import de.cognicrypt.codegenerator.taskintegrator.wizard.ClaferConstraintDialog;
 
 public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 
@@ -31,6 +32,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	private ArrayList<String> possibleCfrFeatures;
 
 	private ArrayList<ClaferFeature> listOfExistingClaferFeatures;
+
+	private ClaferFeature currentClaferFeature;
 
 	/**
 	 * Create the composite. Warnings suppressed for casting array lists.
@@ -62,6 +65,11 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 
 		addData(targetArrayListOfDataToBeDisplayed, showRemoveButton, listOfExistingClaferFeatures);
 
+	}
+
+	public CompositeToHoldSmallerUIElements(Composite parent, int style, ArrayList<?> targetArrayListOfDataToBeDisplayed, boolean showRemoveButton, ArrayList<ClaferFeature> listOfExistingClaferFeatures, ClaferFeature currentClaferFeature) {
+		this(parent, style, targetArrayListOfDataToBeDisplayed, showRemoveButton, listOfExistingClaferFeatures);
+		this.currentClaferFeature = currentClaferFeature;
 	}
 
 	/**
@@ -369,6 +377,15 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 */
 	public ArrayList<XSLAttribute> getXSLAttributes() {
 		return XSLAttributes;
+	}
+
+	public void modifyFeature(ClaferConstraint constraint) {
+		ClaferConstraintDialog cfrConstraintDialog = new ClaferConstraintDialog(getShell(), currentClaferFeature, listOfExistingClaferFeatures, constraint);
+		int id = featureConstraints.lastIndexOf(constraint); // blocking call to Dialog.open() the dialog // it returns 0 on success 
+		if (cfrConstraintDialog.open() == 0) {
+			featureConstraints.set(id, cfrConstraintDialog.getResult());
+		}
+
 	}
 
 }

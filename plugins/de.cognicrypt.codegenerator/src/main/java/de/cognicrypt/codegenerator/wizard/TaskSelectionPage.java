@@ -204,7 +204,7 @@ public class TaskSelectionPage extends WizardPage {
         Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION)
 		.getImage();
 		
-		deco.setDescriptionText("If you do not use the guided mode, then you have to \nconfigure the algorithm by yourself");
+		deco.setDescriptionText(Constants.GUIDED_MODE_CHECKBOX_INFO);
 		deco.setImage(image);
 		deco.setShowOnlyOnFocus(false);
 		

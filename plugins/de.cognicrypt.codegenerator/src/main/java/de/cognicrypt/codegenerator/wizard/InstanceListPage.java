@@ -125,14 +125,13 @@ public class InstanceListPage extends WizardPage implements Labels {
 		String key=instanceGenerator.getAlgorithmName();
 		int count=instanceGenerator.getAlgorithmCount();
 		combo.setToolTipText("There are " + String.format("%d",count ) +" variations of the algorithm "+key);
-//		combo.setToolTipText(Constants.ALGORITHM_COMBO_TOOLTIP);
 		
 		//Display help assist for the first instance in the combo box
 		final ControlDecoration deco = new ControlDecoration(combo, SWT.TOP | SWT.RIGHT );
         Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION)
 		.getImage();
 		
-		deco.setDescriptionText("This algorithm was presented to you previously,\n as the best algorithm combination.");
+		deco.setDescriptionText(Constants.DEFAULT_ALGORITHM_NOTIFICATION);
 		deco.setImage(image);
 		deco.setShowOnlyOnFocus(false);
 		
@@ -280,7 +279,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 		return providerName;
 	}
 
-	private String getCodePreview() {
+	public String getCodePreview() {
 		XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject());
 		final String claferPreviewPath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
 		final XMLParser xmlparser = new XMLParser();

@@ -166,13 +166,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	@Override
 	public boolean isPageComplete() {
 		for (Question question : page.getContent()) {
-			if (question.getElement() == de.cognicrypt.codegenerator.Constants.GUIElements.button) {
+			if (question.getElement().equals(de.cognicrypt.codegenerator.Constants.GUIElements.button)) {
 				return this.finish;
-			} else if (question.getElement() == de.cognicrypt.codegenerator.Constants.GUIElements.itemselection) {
+			} else if (question.getElement().equals(de.cognicrypt.codegenerator.Constants.GUIElements.itemselection)) {
 				return this.finish;
-			} else if (question.getElement() == de.cognicrypt.codegenerator.Constants.GUIElements.radio) {
+			} else if (question.getElement().equals(de.cognicrypt.codegenerator.Constants.GUIElements.radio)) {
 				return this.finish;
-			}else if (question.getElement() == de.cognicrypt.codegenerator.Constants.GUIElements.scale) {
+			}else if (question.getElement().equals(de.cognicrypt.codegenerator.Constants.GUIElements.scale)) {
 				return this.finish;
 			}
 			if (question.getEnteredAnswer() == null) {
@@ -383,14 +383,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					question.setEnteredAnswer(a);
 					BeginnerTaskQuestionPage.this.setPageComplete(this.isPageComplete());
 				});
-
-				/*
-				 * if(oneQuestion){ inputField.forceFocus(); }
-				 */
-				//added descption box for the questions with tooltip 
-//				this.tooltip = new Text(parent,SWT.NULL);
-//				this.tooltip.setText(question.getTooltip());
-//				this.tooltip.setEnabled(false);
 				break;
 
 			case itemselection:

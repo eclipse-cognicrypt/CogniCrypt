@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
+import de.cognicrypt.codegenerator.Constants;
 
 public class PropertyWidget {
 
@@ -48,7 +49,7 @@ public class PropertyWidget {
 	private AstAbstractClafer abstarctParentClafer;
 
 	private Button enablePropertyCheckBox;
-
+	private Constants constant;
 	/**
 	 * Method to create a widget for group properties, clafer level constraints
 	 *
@@ -155,7 +156,7 @@ public class PropertyWidget {
 		final Label propertyNameLabel = new Label(container, SWT.NONE);
 		propertyNameLabel.setText(propertyName);
 		
-		if(propertyName.equals("Security"))
+		if(propertyName.equals(Constants.Security))
 		{
 		this.operatorComboViewer = new ComboViewer(container, SWT.NONE);
 		this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());

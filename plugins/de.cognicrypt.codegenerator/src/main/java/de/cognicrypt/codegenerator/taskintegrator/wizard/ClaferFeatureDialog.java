@@ -46,7 +46,7 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 
 	public ClaferFeatureDialog(Shell parentShell, ClaferFeature modifiableClaferFeature, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
 		super(parentShell);
-		setShellStyle(SWT.CLOSE);
+		setShellStyle(SWT.RESIZE | SWT.CLOSE);
 
 		resultClafer = modifiableClaferFeature;
 

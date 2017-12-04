@@ -225,7 +225,7 @@ public class CryptSLModelReader {
 	}
 
 	private void storeRuletoFile(CryptSLRule rule, String className) {
-		String filePath = "C:\\Users\\stefank3\\git\\CROSSINGAnalysis\\CryptoAnalysis\\src\\test\\resources\\" + className + ".cryptslbin";
+		String filePath = "C:\\Users\\stefank3\\git\\CryptoAnalysis\\CryptoAnalysis\\src\\test\\resources\\" + className + ".cryptslbin";
 		FileOutputStream fileOut;
 		try {
 			fileOut = new FileOutputStream(filePath);
@@ -324,7 +324,7 @@ public class CryptSLModelReader {
 		if (cons instanceof ArithmeticExpression) {
 			ArithmeticExpression ae = (ArithmeticExpression) cons;
 			ae.getOperator().toString();
-			slci = new CryptSLArithmeticConstraint("0", "1", ArithOp.n);
+			slci = new CryptSLArithmeticConstraint(new CryptSLObject("0"), new CryptSLObject("1"), ArithOp.n);
 		} else if (cons instanceof LiteralExpression) {
 			LiteralExpression lit = (LiteralExpression) cons;
 			List<String> parList = new ArrayList<String>();
@@ -334,32 +334,7 @@ public class CryptSLModelReader {
 				}
 			}
 			if (lit.getCons() instanceof PreDefinedPredicates) {
-				String pred = ((PreDefinedPredicates) lit.getCons()).getPredName();
-				switch (pred) {
-					case "callTo":
-						List<ICryptSLPredicateParameter> methodsToBeCalled = new ArrayList<ICryptSLPredicateParameter>();
-						methodsToBeCalled.addAll(CryptSLReaderUtils.resolveAggregateToMethodeNames((SuperType) ((PreDefinedPredicates) lit.getCons()).getObj().get(0)));
-						slci = new CryptSLPredicate(null, pred, methodsToBeCalled, false);
-						break;
-					case "noCallTo":
-						List<ICryptSLPredicateParameter> methodsNotToBeCalled = new ArrayList<ICryptSLPredicateParameter>();
-						List<CryptSLMethod> resolvedMethodNames = CryptSLReaderUtils
-							.resolveAggregateToMethodeNames((Aggregate) ((PreDefinedPredicates) lit.getCons()).getObj().get(0));
-						for (CryptSLMethod csm : resolvedMethodNames) {
-							forbiddenMethods.add(new CryptSLForbiddenMethod(csm, true));
-							methodsNotToBeCalled.add(csm);
-						}
-						slci = new CryptSLPredicate(null, pred, methodsNotToBeCalled, false);
-						break;
-					case "neverTypeOf":
-						List<ICryptSLPredicateParameter> varNType = new ArrayList<ICryptSLPredicateParameter>();
-						varNType.add(new CryptSLObject(((de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0)).getName()));
-						varNType.add(new CryptSLObject(((PreDefinedPredicates) lit.getCons()).getType().getQualifiedName()));
-						slci = new CryptSLPredicate(null, pred, varNType, false);
-						break;
-					default:
-						new RuntimeException();
-				}
+				slci = getPredefinedPredicate(lit);
 			} else {
 				String part = lit.getCons().getPart();
 				if (part != null) {
@@ -424,7 +399,7 @@ public class CryptSLModelReader {
 					operator = ArithOp.n;
 				}
 
-				right = new CryptSLArithmeticConstraint(leftValue, rightValue, operator);
+				right = new CryptSLArithmeticConstraint(new CryptSLObject(leftValue), new CryptSLObject(rightValue), operator);
 			}
 			slci = new CryptSLComparisonConstraint(left, right, op);
 		} else if (cons instanceof UnaryPreExpression) {
@@ -504,9 +479,52 @@ public class CryptSLModelReader {
 		return slci;
 	}
 
+	private ISLConstraint getPredefinedPredicate(LiteralExpression lit) {
+		String pred = ((PreDefinedPredicates) lit.getCons()).getPredName();
+		ISLConstraint slci = null;
+		switch (pred) {
+			case "callTo":
+				List<ICryptSLPredicateParameter> methodsToBeCalled = new ArrayList<ICryptSLPredicateParameter>();
+				methodsToBeCalled.addAll(CryptSLReaderUtils.resolveAggregateToMethodeNames((SuperType) ((PreDefinedPredicates) lit.getCons()).getObj().get(0)));
+				slci = new CryptSLPredicate(null, pred, methodsToBeCalled, false);
+				break;
+			case "noCallTo":
+				List<ICryptSLPredicateParameter> methodsNotToBeCalled = new ArrayList<ICryptSLPredicateParameter>();
+				List<CryptSLMethod> resolvedMethodNames = CryptSLReaderUtils
+					.resolveAggregateToMethodeNames((Aggregate) ((PreDefinedPredicates) lit.getCons()).getObj().get(0));
+				for (CryptSLMethod csm : resolvedMethodNames) {
+					forbiddenMethods.add(new CryptSLForbiddenMethod(csm, true));
+					methodsNotToBeCalled.add(csm);
+				}
+				slci = new CryptSLPredicate(null, pred, methodsNotToBeCalled, false);
+				break;
+			case "neverTypeOf":
+				List<ICryptSLPredicateParameter> varNType = new ArrayList<ICryptSLPredicateParameter>();
+				varNType.add(new CryptSLObject(((de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0)).getName()));
+				varNType.add(new CryptSLObject(((PreDefinedPredicates) lit.getCons()).getType().getQualifiedName()));
+				slci = new CryptSLPredicate(null, pred, varNType, false);
+				break;
+			case "length":
+				List<ICryptSLPredicateParameter> variables = new ArrayList<ICryptSLPredicateParameter>();
+				variables.add(new CryptSLObject(((de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0)).getName()));
+				slci = new CryptSLPredicate(null, pred, variables, false);
+				break;
+			default:
+				new RuntimeException();
+		}
+		return slci;
+	}
+
 	private CryptSLArithmeticConstraint convertLiteralToArithmetic(Constraint expression) {
-		EObject name = ((LiteralExpression) expression).getCons().getName();
-		return new CryptSLArithmeticConstraint(getValueOfLiteral(name), "0", crypto.rules.CryptSLArithmeticConstraint.ArithOp.p);
+		final LiteralExpression cons = ((LiteralExpression) expression).getCons();
+		ICryptSLPredicateParameter name;
+		if (cons instanceof PreDefinedPredicates) {
+			name = getPredefinedPredicate((LiteralExpression) expression);
+		} else {
+			name = new CryptSLObject(getValueOfLiteral(cons.getName()));
+		}
+		
+		return new CryptSLArithmeticConstraint(name, new CryptSLObject("0"), crypto.rules.CryptSLArithmeticConstraint.ArithOp.p);
 	}
 
 	private String getValueOfLiteral(EObject name) {

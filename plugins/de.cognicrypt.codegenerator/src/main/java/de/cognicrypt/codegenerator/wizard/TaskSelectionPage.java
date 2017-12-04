@@ -86,14 +86,14 @@ public class TaskSelectionPage extends WizardPage {
 		this.selectProjectLabel = new Label(this.container, SWT.NONE);
 		GridData gd_selectProjectLabel = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_selectProjectLabel.heightHint = 28;
-		gd_selectProjectLabel.widthHint = 143;
+		gd_selectProjectLabel.widthHint = 158;
 		selectProjectLabel.setLayoutData(gd_selectProjectLabel);
 		this.selectProjectLabel.setText(Constants.SELECT_JAVA_PROJECT);
 
 		ComboViewer projectComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
 		Combo projectCombo = projectComboSelection.getCombo();
 		GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_combo.widthHint = 197;
+		gd_combo.widthHint = 356;
 		projectCombo.setLayoutData(gd_combo);
 		projectCombo.setToolTipText(Constants.PROJECTLIST_TOOLTIP);
 		projectCombo.setEnabled(true);

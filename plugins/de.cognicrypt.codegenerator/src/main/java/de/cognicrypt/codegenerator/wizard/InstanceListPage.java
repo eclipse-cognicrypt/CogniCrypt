@@ -83,7 +83,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 	private Group instancePropertiesPanel;
 	private TaskSelectionPage taskSelectionPage;
 	private ConfiguratorWizard configuratorWizard;
-
+  
 	public InstanceListPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
 		super(Labels.ALGORITHM_SELECTION_PAGE);
 		setTitle("Possible solutions for task: " + taskSelectionPage.getSelectedTask().getDescription());
@@ -107,10 +107,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 		final GridLayout layout = new GridLayout(3, false);
 		this.control.setLayout(layout);
 		
-		/** To display the Help view after clicking the help icon
-		 * @param help_id_2 
-		 *        This id refers to HelpContexts_1.xml
-		 */
+		//To display the Help view after clicking the help icon
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.help_id_3");
 		
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);		
@@ -151,12 +148,13 @@ public class InstanceListPage extends WizardPage implements Labels {
 			setValue(InstanceListPage.this.instanceGenerator.getInstances().get(b));
 			InstanceListPage.this.instanceDetails.setText(getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(b)));
 			
-			if(!b.equals(firstInstance))
+			if(!b.equals(firstInstance)){
 				//hide the help assist if the selected algorithm is not the default algorithm
 				deco.hide();
-			else
+			}
+			else{
 				deco.show();
-			
+			}
 			if (selection.size() > 0) {
 				setPageComplete(true);
 			}
@@ -189,8 +187,6 @@ public class InstanceListPage extends WizardPage implements Labels {
 		codePreviewButton.setText("Code Preview");
 		codePreviewButton.addListener(SWT.Selection, new Listener() {
 		      public void handleEvent(Event event) {
-//		    	PopupDialog pop= new PopupDialog(new Shell(),3,true,true,true,true,true,"Code Preview",getCodePreview());
-//		    	pop.open();
 		        MessageBox messageBox = new MessageBox(new Shell(),SWT.OK);
 		        messageBox.setText("Code Preview");
 		        messageBox.setMessage(getCodePreview() );
@@ -280,14 +276,14 @@ public class InstanceListPage extends WizardPage implements Labels {
 	}
 
 	public String getCodePreview() {
-		XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject());
+		XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(),this.getProviderFromInstance());
 		final String claferPreviewPath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
 		final XMLParser xmlparser = new XMLParser();
 		xmlparser.displayInstanceValues(this.getValue(), this.configuratorWizard.getConstraints());
 		try {
 			xmlparser.writeClaferInstanceToFile(claferPreviewPath);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e, Constants.WritingInstanceClaferErrorMessage);
 			return "";
 		}
 
@@ -311,14 +307,14 @@ public class InstanceListPage extends WizardPage implements Labels {
 		try {
 			transformer = tFactory.newTransformer(new StreamSource(xslFile));
 		} catch (TransformerConfigurationException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e, Constants.TransformerConfigurationErrorMessage);
 			return "";
 		}
 		File outputFile = new File(temporaryOutputFile);
 		try {
 			transformer.transform(new StreamSource(claferPreviewFile), new StreamResult(outputFile));
 		} catch (TransformerException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e, Constants.TransformerErrorMessage);
 			return "";
 		}
 
@@ -334,8 +330,8 @@ public class InstanceListPage extends WizardPage implements Labels {
 			}
 
 			return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
-		} catch (IOException x) {
-			System.err.println(x);
+		} catch (IOException e) {
+			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);			
 		}
 
 		return "";

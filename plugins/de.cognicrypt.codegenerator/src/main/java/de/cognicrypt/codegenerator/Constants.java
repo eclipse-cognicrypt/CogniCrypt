@@ -27,7 +27,7 @@ package de.cognicrypt.codegenerator;
 public class Constants {
 
 	public static enum GUIElements {
-		combo, text, itemselection, button
+		combo, text, itemselection,button,radio, scale
 	}
 
 	//The plugin is bundled in a jar archive and the file separator within jar files is / (see: https://stackoverflow.com/questions/24749007/how-to-use-file-separator-for-a-jar-file-resource).
@@ -49,7 +49,24 @@ public class Constants {
 	public static final String pathToPropertyfiles = rsrcPath + "Labels.properties";
 
 	// Task descriptions
-
+	
+	// Tooltip 	
+	public static final String PROJECTLIST_TOOLTIP="List of your Java projects";
+	public static final String TASKLIST_TOOLTIP="Cryptographic tasks supported by CogniCrypt";
+	public static final String DESCRIPTION_BOX_TOOLTIP = "Here is the description for the cryptographic task that you have selected";
+	public static final String GUIDEDMODE_TOOLTIP="Guided mode configures the algorithm for you,\nbased on your answers to some simple questions.";
+	public static final String DEFAULT_ALGORITHM_COMBINATION_TOOLTIP="Default Algorithm combination";
+	public static final String DEFAULT_CODE_TOOLTIP="This is the preview of the code, that will be generated into your Java project";
+	public static final String DEFAULT_CHECKBOX_TOOLTIP="If this checkbox is checked, the code for the above algorithm \nwill be generated into your java project after clicking 'Finish'";
+	public static final String ALGORITHM_COMBO_TOOLTIP = "The algorithm combinations are listed in a decreasing order of security level";
+	public static final String INSTANCE_DETAILS_TOOLTIP="Details of the selected algorithm combination";
+	
+	//Decoration
+	public static final String DEFAULT_ALGORITHM_CHECKBOX_ENABLE= "If you want to view other possible algorithm combinations \nmatching your requirements, please uncheck and click 'Next'";
+	public static final String DEFAULT_ALGORITHM_CHECKBOX_DISABLE= "There are no other algorithm combinations matching your requirements.\nThe code for the above algorithm will be generated into your java project";
+	public static final String DEFAULT_ALGORITHM_NOTIFICATION= "This algorithm was presented to you previously,\n as the best algorithm combination.";
+	public static final String GUIDED_MODE_CHECKBOX_INFO= "If you do not use the guided mode, then you have to \nconfigure the algorithm by yourself";
+	
 	// if the next question page depends on user input, the Page object encodes this as a nextPageID as opposed to the one that the last page points to
 	public static final int QUESTION_PAGE_NO_STATIC_NEXT_PAGE_ID = -2;
 
@@ -71,6 +88,7 @@ public class Constants {
 	public static final String pathToXSLFile = rsrcPath + "XSLTemplates" + innerFileSeparator + "JCA.xsl";
 	public static final String pathToClaferInstanceFolder = rsrcPath + "ClaferInstance" + innerFileSeparator;
 	public static final String pathToClaferInstanceFile = "claferInstance.xml";
+	public static final String pathToClaferPreviewFile = "claferPreview.xml";
 	public static final String NameOfTemporaryMethod = "templateUsage";
 	public static final String pathsForLibrariesinDevProject = "libs";
 
@@ -97,7 +115,8 @@ public class Constants {
 	public static final String JCA = "JCA";
 	public static final String JAR = ".jar";
 	public static final String ALGORITHM = "algorithm";
-	public static final String ADVANCED_MODE = "Advanced Mode";
+	public static final String GUIDED_MODE = "Use the guided mode for configuring the task";
+	public static final String DEFAULT_ALGORITHM_PAGE_CHECKBOX ="I like to generate the code for the default algorithm into my Java project";
 
 	public static final String Package = "Package";
 	public static final String Description = "description";
@@ -106,7 +125,8 @@ public class Constants {
 	public static final String Task = "task";
 	public static final String Code = "code";
 	public static final String Type = "type";
-	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List" };
+	public static final String Security = "security";
+	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List;" };
 
 	// Types
 	public static final String INTEGER = "Integer";
@@ -116,9 +136,11 @@ public class Constants {
 	public static final int INT_HIGH = 600;
 	public static final int INT_LOW = -17;
 	public static final String INSTANCE_DETAILS = "Instance Details";
+	public static final String CODE_PREVIEW = "Code Preview";
 	public static final String ARIAL = "Arial";
 	public static final String SELECT_JAVA_PROJECT = "Select a Java Project :";
-	public static final String SELECT_TASK = "Select Task :";
+	public static final String SELECT_TASK = "Select a Task :";
+	public static final String TASK_DESCRIPTION = "Task Description :";
 	public static final String NO_XML_INSTANCE_FILE_TO_WRITE = "No xml instance file to write.";
 	public static final String CLAFER_ALGORITHM = "_Algorithm";
 

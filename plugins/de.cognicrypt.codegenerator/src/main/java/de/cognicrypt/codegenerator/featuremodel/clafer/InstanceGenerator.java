@@ -76,14 +76,18 @@ public class InstanceGenerator {
 	private List<InstanceClafer> generatedInstances;
 	private final Map<Long, InstanceClafer> uniqueInstances;
 	private Map<String, InstanceClafer> displayNameToInstanceMap;
+	private Map<String, InstanceClafer> displayFirstNameToInstanceMap;
 	private final ClaferModel claferModel;
 	private String taskName;
 	private String taskDescription;
 	private final AstClafer taskClafer;
+	private String algorithmName;
+	private int algorithmCount;
 
 	public InstanceGenerator(final String path, final String taskName, final String taskDescription) {
 		this.claferModel = new ClaferModel(path);
 		this.displayNameToInstanceMap = new HashMap<String, InstanceClafer>();
+		this.displayFirstNameToInstanceMap = new HashMap<String, InstanceClafer>();
 		this.uniqueInstances = new HashMap<>();
 		this.taskName = taskName;
 		this.taskDescription = taskDescription;
@@ -261,10 +265,13 @@ public class InstanceGenerator {
 		} catch (Exception ex) {
 			Activator.getDefault().logError("Instances not sorted by security level. Be cautious");
 		}
+		//InstanceClafer sortedInst1=this.generatedInstances.remove(0);
 		for (InstanceClafer sortedInst : this.generatedInstances) {
+			
 			String key = getInstanceName(sortedInst);
 			if (key.isEmpty()) {
 				key = sortedInst.getChildren()[0].getRef().toString();
+				this.displayNameToInstanceMap.remove(key, sortedInst);
 			}
 			if (sortedInst.getType().getName().equals(this.taskName) && key.length() > 0) {
 				/**
@@ -275,15 +282,35 @@ public class InstanceGenerator {
 				String copyKey = key;
 				while (displayNameToInstanceMap.containsKey(copyKey)) {
 					copyKey = key + "(" + String.format("%02d", ++counter) + ")";
+					this.setAlgorithmCount(counter);
 				}
 
 				this.displayNameToInstanceMap.put(copyKey, sortedInst);
+				this.setAlgorithmName(key);
+				
+							
 			}
 		}
 		final Map<String, InstanceClafer> treeMap = new TreeMap<>(this.displayNameToInstanceMap);
 		this.displayNameToInstanceMap = treeMap;
+		
 	}
-
+//	/**
+//	 * Method to Generate default instance for basic user. The first instance of the generated (and sorted) instances will be the default instance
+//	 *
+//	 */
+//	private void generateFirstInstance(){
+//		this.displayFirstNameToInstanceMap.clear();
+//		//to get the first Instance
+//		InstanceClafer firstInst=this.generatedInstances.get(0);
+//		String key= getInstanceName(firstInst);
+//		if (key.isEmpty()) {
+//			key = firstInst.getChildren()[0].getRef().toString();
+//		}		
+//		this.displayFirstNameToInstanceMap.put(key, firstInst);
+//		final Map<String, InstanceClafer> treeMap1 = new TreeMap<>(this.displayFirstNameToInstanceMap);
+//		this.displayFirstNameToInstanceMap = treeMap1;
+//	}
 	/**
 	 * Method to Generate instances for basic user. Argument is a map of property(clafer) name and their values
 	 *
@@ -323,6 +350,7 @@ public class InstanceGenerator {
 		}
 		this.generatedInstances = new ArrayList<>(this.uniqueInstances.values());
 		generateInstanceMapping();
+		//generateFirstInstance();
 		return this.generatedInstances;
 	}
 
@@ -352,7 +380,6 @@ public class InstanceGenerator {
 		}
 		this.generatedInstances = new ArrayList<>(this.uniqueInstances.values());
 		generateInstanceMapping();
-
 		return this.generatedInstances;
 	}
 
@@ -426,9 +453,16 @@ public class InstanceGenerator {
 	 * @return
 	 */
 	public Map<String, InstanceClafer> getInstances() {
-		return this.displayNameToInstanceMap;
+		return 	this.displayNameToInstanceMap;
 	}
-
+	/**
+	 * gives the instances, key field for First Instance .
+	 *
+	 * @return
+	 */
+	public Map<String, InstanceClafer> getFirstInstance() {
+		return this.displayFirstNameToInstanceMap;
+	}
 	/**
 	 * Returns number of instances of the task
 	 *
@@ -465,6 +499,7 @@ public class InstanceGenerator {
 	 */
 	public void resetInstances() {
 		this.displayNameToInstanceMap = null;
+		this.displayFirstNameToInstanceMap=null;
 	}
 
 	public void setTaskDescription(final String taskDescription) {
@@ -478,5 +513,21 @@ public class InstanceGenerator {
 	 */
 	public void setTaskName(final String taskName) {
 		this.taskName = taskName;
+	}
+	public void setAlgorithmName(String algorithmName ){
+		this.algorithmName=algorithmName;
+		
+	}
+	public String getAlgorithmName( ){
+		return algorithmName;
+		
+	}
+	public void setAlgorithmCount(int algorithmCount ){
+		this.algorithmCount=algorithmCount;
+		
+	}
+	public int getAlgorithmCount(){
+		return algorithmCount;
+
 	}
 }

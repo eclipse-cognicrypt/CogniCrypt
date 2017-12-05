@@ -128,7 +128,7 @@ public class InstanceListPage extends WizardPage implements Labels {
         Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION)
 		.getImage();
 		
-		deco.setDescriptionText("This algorithm was presented to you previously,\n as the best algorithm combination.");
+		deco.setDescriptionText(Constants.DEFAULT_ALGORITHM_NOTIFICATION);
 		deco.setImage(image);
 		deco.setShowOnlyOnFocus(false);
 		
@@ -275,7 +275,7 @@ public class InstanceListPage extends WizardPage implements Labels {
 		return providerName;
 	}
 
-	private String getCodePreview() {
+	public String getCodePreview() {
 		XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(),this.getProviderFromInstance());
 		final String claferPreviewPath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
 		final XMLParser xmlparser = new XMLParser();

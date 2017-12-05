@@ -116,33 +116,9 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 		this.container.setLayout(layout);
 		layout.numColumns = 1;
 		
-		/** To display the Help view after clicking the help icon
-		 * @param help_id_1 
-		 *        This id refers to HelpContexts_1.xml
-		 */
+	    //To display the Help view after clicking the help icon
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "de.cognicrypt.codegenerator.help_id_2"); 
 		
-//				try {
-//					Group titledPanel = new Group(container, SWT.NONE);
-//					titledPanel.setText("Global Constraints");
-//					Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
-//					titledPanel.setFont(boldFont);
-//					GridLayout layout2 = new GridLayout();
-//					// sent number of columns in a widget
-//					layout2.numColumns = 4;
-//					titledPanel.setLayout(layout2);
-//					// List constraints from ENUMmap as group properties, under single
-//					// titled panel
-//					for (AstAbstractClafer groupPropertiesKey : PropertiesMapperUtil.getenumMap().keySet()) {
-//		
-//						userConstraints.add(new ComplexWidget(titledPanel, groupPropertiesKey,
-//								PropertiesMapperUtil.getenumMap().get(groupPropertiesKey)));
-//		
-//					}
-//				} catch (Exception e) {
-//					Activator.getDefault().logError(e);
-//				}
-//
 		// Add every constraints to its parent and group it as a separate titled
 		// panel
 

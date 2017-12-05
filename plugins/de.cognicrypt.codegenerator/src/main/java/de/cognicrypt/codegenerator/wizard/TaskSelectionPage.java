@@ -76,10 +76,7 @@ public class TaskSelectionPage extends WizardPage {
 		this.container = new Composite(parent, SWT.NONE);
 		this.container.setBounds(10, 10, 200, 300);
 		
-		/** To display the Help view after clicking the help icon
-		 * @param help_id_1 
-		 *        This id refers to HelpContexts_1.xml
-		 */
+		//To display the Help view after clicking the help icon
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "de.cognicrypt.codegenerator.help_id_1");
 		container.setLayout(new GridLayout(2, false));
 		

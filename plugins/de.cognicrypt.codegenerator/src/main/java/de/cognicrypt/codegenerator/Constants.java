@@ -95,6 +95,10 @@ public class Constants {
 	// Error Messages
 	public static final String NoFileOpenedErrorMessage = "There is no file opened to generate the source code in. Will generate output file instead.";
 	public static final String NoJavaFileOpenedErrorMessage = "The currently open file is not a java file. Will generate output file instead.";
+	public static final String CodePreviewErrorMessage="An error occured during code preview generation.";
+	public static final String TransformerErrorMessage="An error occured while performing a transformation ";
+	public static final String TransformerConfigurationErrorMessage="An error occured during creation of transformer";
+	public static final String WritingInstanceClaferErrorMessage="An error occured during";	
 	public static final String CodeGenerationErrorMessage = "An error occured during template generation.";
 	public static final String FilesDoNotExistErrorMessage = "At least one of the files necessary for template generation does not exist.";
 	public static final String NoRunMethodFoundInTemporaryOutputFileErrorMessage = "XSL Template does not contain method " + NameOfTemporaryMethod + ".";

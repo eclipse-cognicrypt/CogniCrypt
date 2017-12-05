@@ -104,12 +104,11 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public boolean canFinish() {
-		if (getContainer().getCurrentPage().getName().equals(Labels.DEFAULT_ALGORITHM_PAGE ))
+		String pageName =getContainer().getCurrentPage().getName();
+		if (pageName.equals(Labels.DEFAULT_ALGORITHM_PAGE )){
 			return(this.defaultAlgorithmPage.isDefaultAlgorithm());
-		else if(getContainer().getCurrentPage().getName().equals(Labels.ALGORITHM_SELECTION_PAGE ))
-				return true;		
-		else 
-			return false;
+		}
+		return (pageName.equals(Labels.ALGORITHM_SELECTION_PAGE ));
 	}
 
 	private boolean checkifInUpdateRound() {

@@ -43,7 +43,6 @@ import de.cognicrypt.codegenerator.utilities.Labels;
 import de.cognicrypt.codegenerator.utilities.Utils;
 import de.cognicrypt.codegenerator.utilities.XMLParser;
 
-
 public class DefaultAlgorithmPage extends WizardPage implements Labels {
 
 	private Composite control;
@@ -119,16 +118,16 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 				getWizard().getContainer().updateButtons();
 			}
 		});
-		defaultAlgorithmCheckBox.setText("I like to generate the code for the default algorithm into my Java project");
+		defaultAlgorithmCheckBox.setText(Constants.DEFAULT_ALGORITHM_PAGE_CHECKBOX);
 		defaultAlgorithmCheckBox.setToolTipText(Constants.DEFAULT_CHECKBOX_TOOLTIP);
 		final ControlDecoration deco = new ControlDecoration(defaultAlgorithmCheckBox, SWT.TOP | SWT.LEFT );
         Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION)
 		.getImage();
 		if (defaultAlgorithmCheckBox.isEnabled()){
-		   deco.setDescriptionText("If you want to view other possible algorithm combinations \nmatching your requirements, please uncheck and click 'Next'");
+		   deco.setDescriptionText(Constants.DEFAULT_ALGORITHM_CHECKBOX_ENABLE);
 		}
 		   else{
-			deco.setDescriptionText("There are no other algorithm combinations matching your requirements.\nThe code for the above algorithm will be generated into your java project");
+			deco.setDescriptionText(Constants.DEFAULT_ALGORITHM_CHECKBOX_DISABLE);
 		 }
 		deco.setImage(image);
 		deco.setShowOnlyOnFocus(false);			

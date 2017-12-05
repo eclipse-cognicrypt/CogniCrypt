@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toc label="CogniCrypt User Guide" topic="html/book.html">
+<topic label="Tasks">
+		<link toc="toc_Tasks.xml" />
+	</topic>
+	<topic label="Task Configuration">
+		<link toc="toc_TaskConfiguration.xml" />
+	</topic>
+</toc>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
@@ -170,4 +169,25 @@
          </action>
       </objectContribution>
    </extension>
+   
+   <extension
+       point="org.eclipse.help.contexts">
+        <contexts file="src/main/resources/Help/HelpContexts_1.xml"/>
+        <contexts file="src/main/resources/Help/HelpContexts_2.xml"/> 
+        <contexts file="src/main/resources/Help/Help_Context_3.xml"/> 
+        <contexts file="src/main/resources/Help/SymmetricEncryption.xml" />
+        <contexts file="src/main/resources/Help/SecurePasswordStorage.xml" />
+        <contexts file="src/main/resources/Help/SecureCommunication.xml" />
+        <contexts file="src/main/resources/Help/LongTermArchiving.xml" />
+        <contexts file="src/main/resources/Help/MultiPartyComputation.xml" />
+   </extension>
+
+<extension
+      point="org.eclipse.help.toc">
+      <toc file="toc.xml" primary="true" />
+      <toc file="toc_Tasks.xml" />
+      <toc file="toc_TaskConfiguration.xml" />
+   </extension>
+ 
+     
 </plugin>

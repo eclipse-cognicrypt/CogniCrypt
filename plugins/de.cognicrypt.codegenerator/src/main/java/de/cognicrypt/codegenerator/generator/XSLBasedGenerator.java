@@ -88,6 +88,10 @@ public class XSLBasedGenerator {
 		this.project = new DeveloperProject(targetProject);
 		this.provider = provider;
 	}
+	public XSLBasedGenerator(final IProject targetProject) {
+		this.project = new DeveloperProject(targetProject);
+		//this.provider = provider;
+	}
 
 	/***
 	 * Generation of code templates using XSL template and Clafer instance.
@@ -120,9 +124,9 @@ public class XSLBasedGenerator {
 			if (!addAdditionalJarFiles(pathToFolderWithAdditionalResources)) {
 				return false;
 			}
-			if (!addAdditionalJarFiles(providerName)) {
-				return false;
-			}
+//			if (!addAdditionalJarFiles(providerName)) {
+//				return false;
+//			}
 
 			// If there is a java file opened in the editor, insert glue code
 			// there, and remove temporary output file
@@ -167,9 +171,9 @@ public class XSLBasedGenerator {
 
 			if (!source.isEmpty() && !source.equals(Constants.JCA)) {
 				String sourceFolder = "src/";
-				if (!source.startsWith(sourceFolder)) {
-					source = Constants.providerPath;
-				}
+//				if (!source.startsWith(sourceFolder)) {
+//					source = Constants.providerPath;
+//				}
 				final File[] members = Utils.getResourceFromWithin(source).listFiles();
 				if (members == null) {
 					Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);

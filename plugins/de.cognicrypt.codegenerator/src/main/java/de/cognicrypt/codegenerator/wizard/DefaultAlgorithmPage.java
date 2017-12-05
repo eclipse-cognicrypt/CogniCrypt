@@ -105,7 +105,7 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		this.codePreviewPanel = new Group(this.control, SWT.NONE);
 		this.codePreviewPanel.setText(Constants.CODE_PREVIEW);
 		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 1;
+		gridLayout.horizontalSpacing = 10;
 		this.codePreviewPanel.setLayout(gridLayout);
 		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
 		gridData.horizontalSpan = 1;

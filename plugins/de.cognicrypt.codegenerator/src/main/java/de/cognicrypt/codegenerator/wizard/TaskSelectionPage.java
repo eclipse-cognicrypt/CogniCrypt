@@ -192,7 +192,7 @@ public class TaskSelectionPage extends WizardPage {
 		this.descriptionText.addListener(SWT.Resize, scrollBarListener);
 		this.descriptionText.addListener(SWT.Modify, scrollBarListener);
 		
-		GridData gd_descriptionText = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1);
+		GridData gd_descriptionText = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
 		gd_descriptionText.widthHint = 297;
 		gd_descriptionText.heightHint = 96;
 		this.descriptionText.setLayoutData(gd_descriptionText);

@@ -262,7 +262,7 @@ public class ConfiguratorWizard extends Wizard {
             if(currentPage instanceof BeginnerTaskQuestionPage) {
             	//default algorithm page will be added only for beginner mode
 			if (instanceGenerator.getNoOfInstances() !=0) {
-				this.defaultAlgorithmPage = new DefaultAlgorithmPage(instanceGenerator, taskListPage, this);
+				this.defaultAlgorithmPage = new DefaultAlgorithmPage(instanceGenerator, taskListPage, this );
 				addPage(this.defaultAlgorithmPage);
 				return this.defaultAlgorithmPage;
 				
@@ -397,7 +397,7 @@ public class ConfiguratorWizard extends Wizard {
 				parser.displayInstanceValues(this.defaultAlgorithmPage.getValue(), this.constraints);
 				
 				// Initialize Code Generation
-				XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject());
+				XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject(),this.defaultAlgorithmPage.getProviderFromInstance());
 
 				// Write Instance File into developer project
 				final String xmlInstancePath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;

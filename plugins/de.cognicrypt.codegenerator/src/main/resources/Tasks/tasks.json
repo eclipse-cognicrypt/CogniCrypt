@@ -2,6 +2,7 @@
 		{
 			"name": "SymmetricEncryption",
 			"description": "Encrypt Data Using a Secret Key",
+			"taskDescription": "This cryptographic task generates code that uses symmetric encryption to encrypt the data. The data is encrypted relatively quickly and securely. You can also protect enormous data with the help of this task.",
 			"modelFile" : "src/main/resources/ClaferModel/SymmetricEncryptionTask.js",
 			"xmlFile" : "src/main/resources/TaskDesc/SymmetricEncryptionQuestions.json",
 			"additionalResources" : ""
@@ -9,6 +10,7 @@
 		{
 			"name": "SecurePassword",
 			"description": "Encode Password for Secure Storage",
+			"taskDescription": "This cryptographic task makes password cracking much more difficult and helps in protecting the passwords. Security level for protection is selected according to your performance requirements.",
 			"modelFile" : "src/main/resources/ClaferModel/SecurePasswordStorage.js",
 			"xmlFile" : "src/main/resources/TaskDesc/SecurePasswordStorage.json",
 			"additionalResources" : ""
@@ -17,6 +19,7 @@
 		{
 			"name": "SecureCommunication",
 			"description": "Establish a Secure Network Connection",
+			"taskDescription": "This cryptographic task helps to communicate over a secure channel with the help of Transport Layer Security (TLS) protocol that may be used to secure web connections(HTTPS).",
 			"modelFile" : "src/main/resources/ClaferModel/TLSTask.js",
 			"xmlFile" : "src/main/resources/TaskDesc/TLSQuestions.json",
 			"additionalResources" : ""
@@ -24,6 +27,7 @@
 		{
 			"name": "LongTermArchiving",
 			"description": "Securely Archive Files",
+			"taskDescription": "This cryptographic task helps to maintain complete privacy of your documents. A large number of documents can be secured by this task. ",
 			"modelFile" : "src/main/resources/ClaferModel/LongTermArchiving.js",
 			"xmlFile" : "src/main/resources/TaskDesc/LongTermArchivingQuestions.json",
 			"additionalResources" : "src/main/resources/AdditionalResources/LongTermArchiving"
@@ -31,6 +35,7 @@
 		{
 			"name": "SECMUPACOMP",
 			"description": "Secure Multi-Party Computation",
+			"taskDescription": "This cryptographic task helps multiple parties to jointly compute a function over their respective inputs while keeping those inputs private.",
 			"modelFile" : "src/main/resources/ClaferModel/ABY.js",
 			"xmlFile" : "src/main/resources/TaskDesc/ABYQuestions.json",
 			"additionalResources" : "src/main/resources/AdditionalResources/ABY"
@@ -38,9 +43,10 @@
 		,
 		{
 			"name": "CertainTrust",
-			"description": "CertainTrust",
+			"description": "Judging Trustworthiness of third parties",
+			"taskDescription":"This task helps evaluating the trustworthiness of third partiy entities and, by extension, who to best interact with.",
 			"modelFile" : "src/main/resources/ClaferModel/CertainTrust.js",
-			"xmlFile" : "src/main/resources/TaskDesc/CertainTrust.json",
+			"xmlFile" : "src/main/resources/TaskDesc/CertainTrustQuestion.json",
 			"additionalResources" : "src/main/resources/AdditionalResources/CertainTrust"
 		}
 ]

@@ -6,11 +6,16 @@ import java.net.URL;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.IJavaSearchScope;
 import org.eclipse.jdt.core.search.SearchEngine;
@@ -24,6 +29,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.osgi.framework.Bundle;
+
+import soot.SootClass;
 
 public class Utils {
 
@@ -85,7 +92,7 @@ public class Utils {
 			}
 			defaultDisplay.asyncExec(getWindow);
 		}
-		
+
 		if (window != null) {
 			return window.getActivePage().getActiveEditor();
 		}
@@ -129,8 +136,10 @@ public class Utils {
 	/**
 	 * This method searches the passed project for the class that contains the main method.
 	 * 
-	 * @param project Project that is searched
-	 * @param requestor Object that handles the search results
+	 * @param project
+	 *        Project that is searched
+	 * @param requestor
+	 *        Object that handles the search results
 	 */
 	public static void findMainMethodInCurrentProject(IJavaProject project, SearchRequestor requestor) {
 		SearchPattern sp = SearchPattern.createPattern("main", IJavaSearchConstants.METHOD, IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
@@ -144,6 +153,27 @@ public class Utils {
 		} catch (CoreException e) {
 			Activator.getDefault().logError(e);
 		}
+	}
+
+	public static IResource findClassByName(SootClass className, final IProject currentProject) throws ClassNotFoundException {
+		try {
+			for (IPackageFragment l : JavaCore.create(currentProject).getPackageFragments()) {
+				for (ICompilationUnit cu : l.getCompilationUnits()) {
+					IJavaElement cuResource = JavaCore.create(cu.getCorrespondingResource());
+					String name = cuResource.getParent().getElementName() + "." + cuResource.getElementName();
+
+					if (name.startsWith(".")) {
+						name = name.substring(1);
+					}
+					if (name.startsWith(className.getName())) {
+						return cu.getCorrespondingResource();
+					}
+				}
+			}
+		} catch (JavaModelException e) {
+			throw new ClassNotFoundException("Class " + className + " not found.", e);
+		}
+		throw new ClassNotFoundException("Class " + className + " not found.");
 	}
 
 }

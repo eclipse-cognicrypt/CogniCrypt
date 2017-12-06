@@ -2,11 +2,14 @@ package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.util.ArrayList;
 
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -26,7 +29,7 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 
-public class ClaferFeatureDialog extends Dialog {
+public class ClaferFeatureDialog extends TitleAreaDialog {
 
 	private Text txtFeatureName;
 	private CompositeToHoldSmallerUIElements featuresComposite;
@@ -34,13 +37,16 @@ public class ClaferFeatureDialog extends Dialog {
 	private Button btnRadioAbstract;
 	private Button btnRadioConcrete;
 
+	private Label lblInheritance;
+	private Combo comboInheritance;
+
 	private ClaferFeature resultClafer;
 	private ArrayList<ClaferFeature> otherClaferFeatures;
 
 
 	public ClaferFeatureDialog(Shell parentShell, ClaferFeature modifiableClaferFeature, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
 		super(parentShell);
-		setShellStyle(SWT.CLOSE);
+		setShellStyle(SWT.RESIZE | SWT.CLOSE);
 
 		resultClafer = modifiableClaferFeature;
 
@@ -53,6 +59,8 @@ public class ClaferFeatureDialog extends Dialog {
 				otherClaferFeatures.add(cfr);
 			}
 		}
+
+		create();
 	}
 
 	public ClaferFeatureDialog(Shell shell, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
@@ -68,31 +76,38 @@ public class ClaferFeatureDialog extends Dialog {
 		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new GridLayout(3, false));
 
+		setTitle("Variability modeling");
+		setMessage("Message");
+
+		new Label(container, 0);
+		new Label(container, 0);
+
 		Label lblType = new Label(container, SWT.NONE);
 		lblType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		lblType.setText("Select the type");
 
 		btnRadioAbstract = new Button(container, SWT.RADIO);
 		btnRadioAbstract.setSelection(true);
-		//btnRadioAbstract.setText("Abstract");
 		btnRadioAbstract.setText("Class");
+
 		btnRadioAbstract.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				resultClafer.setFeatureType(FeatureType.ABSTRACT);
+				validate();
 				super.widgetSelected(e);
 			}
 		});
 
 		btnRadioConcrete = new Button(container, SWT.RADIO);
-		//btnRadioConcrete.setText("Concrete");
 		btnRadioConcrete.setText("Instance");
 		btnRadioConcrete.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				resultClafer.setFeatureType(FeatureType.CONCRETE);
+				validate();
 				super.widgetSelected(e);
 			}
 		});
@@ -119,12 +134,20 @@ public class ClaferFeatureDialog extends Dialog {
 			}
 		});
 
+		txtFeatureName.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent arg0) {
+				validate();
+			}
+		});
+
 		txtFeatureName.setText(resultClafer.getFeatureName());
 
-		Label lblInheritance = new Label(container, SWT.NONE);
-		lblInheritance.setText("Choose inheritance");
+		lblInheritance = new Label(container, SWT.NONE);
+		lblInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 
-		Combo comboInheritance = new Combo(container, SWT.NONE);
+		comboInheritance = new Combo(container, SWT.NONE);
 		comboInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
 		// add existing abstract features to inheritance combo
@@ -155,7 +178,7 @@ public class ClaferFeatureDialog extends Dialog {
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
-		featuresComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getfeatureProperties(), true, otherClaferFeatures);
+		featuresComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getfeatureProperties(), true, otherClaferFeatures, resultClafer);
 		featuresComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		featuresComposite.setMinHeight(200);
 
@@ -171,11 +194,42 @@ public class ClaferFeatureDialog extends Dialog {
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
-		constraintsComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getFeatureConstraints(), true, otherClaferFeatures);
+		constraintsComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getFeatureConstraints(), true, otherClaferFeatures, resultClafer);
 		constraintsComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		constraintsComposite.setMinHeight(200);
 
+		validate();
+
 		return container;
+	}
+
+	private void validate() {
+		if (txtFeatureName.getText().contains(" ")) {
+			setMessage("The name must not contain any spaces", IMessageProvider.WARNING);
+			if (getButton(IDialogConstants.OK_ID) != null) {
+				getButton(IDialogConstants.OK_ID).setEnabled(false);
+			}
+
+		} else if (txtFeatureName.getText().isEmpty()) {
+			setMessage("Please enter a name", IMessageProvider.WARNING);
+			if (getButton(IDialogConstants.OK_ID) != null) {
+				getButton(IDialogConstants.OK_ID).setEnabled(false);
+			}
+		} else {
+			setMessage(null);
+			if (getButton(IDialogConstants.OK_ID) != null) {
+				getButton(IDialogConstants.OK_ID).setEnabled(true);
+			}
+		}
+
+		if (lblInheritance != null) {
+			if (btnRadioAbstract.getSelection()) {
+				lblInheritance.setText("Inherits from");
+
+			} else if (btnRadioConcrete.getSelection()) {
+				lblInheritance.setText("Implements");
+			}
+		}
 	}
 
 	/**
@@ -186,6 +240,7 @@ public class ClaferFeatureDialog extends Dialog {
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
+		validate();
 	}
 
 	/**
@@ -210,6 +265,13 @@ public class ClaferFeatureDialog extends Dialog {
 		if (cfrConstraintDialog.open() == 0) {
 			constraintsComposite.addFeatureConstraint(cfrConstraintDialog.getResult(), true);
 		}
+	}
+
+	@Override
+	protected void okPressed() {
+		resultClafer.setFeatureName(txtFeatureName.getText());
+		resultClafer.setFeatureInheritance(comboInheritance.getText());
+		super.okPressed();
 	}
 
 	public ClaferFeature getResult() {

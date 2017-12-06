@@ -106,9 +106,8 @@ public class ClaferFeature {
 		}
 		
 		for (ClaferConstraint featureConstraint : getFeatureConstraints()) {
-			strRepresentation.append("\n\t[ ");
-			strRepresentation.append(featureConstraint.getConstraint());
-			strRepresentation.append(" ]");
+			strRepresentation.append("\n\t");
+			strRepresentation.append(featureConstraint.toString());
 		}
 		
 		strRepresentation.append("\n");

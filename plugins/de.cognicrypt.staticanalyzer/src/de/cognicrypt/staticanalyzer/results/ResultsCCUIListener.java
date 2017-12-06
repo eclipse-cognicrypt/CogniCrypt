@@ -6,7 +6,13 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
@@ -18,6 +24,8 @@ import crypto.analysis.ClassSpecification;
 import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.EnsuredCryptSLPredicate;
 import crypto.analysis.IAnalysisSeed;
+import crypto.rules.CryptSLArithmeticConstraint;
+import crypto.rules.CryptSLComparisonConstraint;
 import crypto.rules.CryptSLConstraint;
 import crypto.rules.CryptSLMethod;
 import crypto.rules.CryptSLPredicate;
@@ -25,6 +33,7 @@ import crypto.rules.CryptSLValueConstraint;
 import crypto.rules.StateNode;
 import crypto.typestate.CallSiteWithParamIndex;
 import crypto.typestate.CryptoTypestateAnaylsisProblem.AdditionalBoomerangQuery;
+import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.Utils;
 import ideal.AnalysisSolver;
 import ideal.IFactAtStatement;
@@ -59,12 +68,35 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	private void evaluateBrokenConstraint(ISLConstraint brokenConstraint, StringBuilder msg) {
-		//TODO: Add other constraint types
 		if (brokenConstraint instanceof CryptSLValueConstraint) {
 			evaluateValueConstraint(brokenConstraint, msg);
+		} else if (brokenConstraint instanceof CryptSLComparisonConstraint) {
+			CryptSLArithmeticConstraint brokenArthConstraint = (CryptSLArithmeticConstraint) brokenConstraint;
+			msg.append(brokenArthConstraint.getLeft());
+			msg.append(" ");
+			msg.append(brokenArthConstraint.getOperator());
+			msg.append(" ");
+			msg.append(brokenArthConstraint.getRight());
 		} else if (brokenConstraint instanceof CryptSLConstraint) {
 			final CryptSLConstraint cryptSLConstraint = (CryptSLConstraint) brokenConstraint;
-			evaluateValueConstraint(cryptSLConstraint.getRight(), msg);
+			switch (cryptSLConstraint.getOperator()) {
+				case and:
+					evaluateValueConstraint(cryptSLConstraint.getLeft(), msg);
+					msg.append(" or ");
+					evaluateValueConstraint(cryptSLConstraint.getRight(), msg);
+					break;
+				case implies:
+					evaluateValueConstraint(cryptSLConstraint.getRight(), msg);
+					break;
+				case or:
+					evaluateValueConstraint(cryptSLConstraint.getLeft(), msg);
+					msg.append(" or ");
+					evaluateValueConstraint(cryptSLConstraint.getRight(), msg);
+					break;
+				default:
+					break;
+			}
+
 		}
 	}
 
@@ -98,7 +130,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		msg.append(" Here.");
 		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartLineNumber(), msg.toString());
 	}
-	
+
 	@Override
 	public void callToForbiddenMethod(ClassSpecification classSpecification, StmtWithMethod location, List<CryptSLMethod> alternatives) {
 		StringBuilder msg = new StringBuilder();
@@ -114,13 +146,12 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 					msg.append(pars.getValue());
 					msg.append(", ");
 				}
-				msg.replace(msg.length() -2, msg.length(), ")");
+				msg.replace(msg.length() - 2, msg.length(), ")");
 			}
 			msg.append(".");
 		}
 		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartLineNumber(), msg.toString());
 	}
-
 
 	@Override
 	public void missingPredicates(AnalysisSeedWithSpecification spec, Set<CryptSLPredicate> missingPred) {
@@ -141,7 +172,15 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	//Untested
 	private IResource unitToResource(StmtWithMethod stmt) {
 		SootClass className = stmt.getMethod().getDeclaringClass();
-		return Utils.getCurrentProject().getFile("src/" + className.getName().replace(".", "/") + ".java");
+		final IProject currentProject = Utils.getCurrentProject();
+		try {
+			return Utils.findClassByName(className, currentProject);
+		} catch (ClassNotFoundException e) {
+			Activator.getDefault().logError(e);
+		}
+		//Fall-back path when retrieval of actual path fails. If it does, the statement below should be left untouched and the actual bug should be fixed.
+		return currentProject.getFile("src/" + className.getName().replace(".", "/") + ".java");
+		
 	}
 
 	@Override

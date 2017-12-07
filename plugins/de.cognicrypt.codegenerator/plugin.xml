@@ -181,9 +181,14 @@
    
    <extension
        point="org.eclipse.help.contexts">
-        <contexts file="HelpContexts_1.xml"/>
-        <contexts file="HelpContexts_2.xml"/> 
-        <contexts file="Help_Context_3.xml"/> 
+        <contexts file="src/main/resources/Help/TaskSelectionPage.xml"/>
+        <contexts file="src/main/resources/Help/DefaultAlgorithmPage.xml"/> 
+        <contexts file="src/main/resources/Help/InstanceListPage.xml"/> 
+        <contexts file="src/main/resources/Help/SymmetricEncryption.xml" />
+        <contexts file="src/main/resources/Help/SecurePasswordStorage.xml" />
+        <contexts file="src/main/resources/Help/SecureCommunication.xml" />
+        <contexts file="src/main/resources/Help/LongTermArchiving.xml" />
+        <contexts file="src/main/resources/Help/MultiPartyComputation.xml" />
    </extension>
 
 <extension

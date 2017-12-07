@@ -1,5 +1,6 @@
 package de.cognicrypt.crysl.reader;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,13 +20,11 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.xtext.common.types.JvmExecutable;
 import org.eclipse.xtext.common.types.JvmFormalParameter;
@@ -56,6 +55,7 @@ import crypto.rules.CryptSLValueConstraint;
 import crypto.rules.StateMachineGraph;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
+import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.Utils;
 import de.darmstadt.tu.crossing.CryptSL.ui.internal.CryptSLActivator;
 import de.darmstadt.tu.crossing.cryptSL.Aggregate;
@@ -151,9 +151,13 @@ public class CrySLModelReader {
 			CryptSLRule rule = new CryptSLRule(className, objects, forbiddenMethods, smg, constraints, actPreds);
 			System.out.println("===========================================");
 			System.out.println("");
-			storeRuletoFile(rule, className);
-			//String outputURI = storeModelToFile(resourceSet, eObject, className);
-			//loadModelFromFile(outputURI);
+			
+			storeRuletoFile(rule, Utils.getResourceFromWithin("resources/CrySLRules").getAbsolutePath() , className);
+			
+			String filePath = "C:\\Users\\stefank3\\git\\CryptoAnalysis\\CryptoAnalysis\\src\\test\\resources\\";
+			if ((new File(filePath)).exists()) {
+				storeRuletoFile(rule, filePath, className);
+			}
 		}
 
 	}
@@ -227,23 +231,22 @@ public class CrySLModelReader {
 		return objects;
 	}
 
-	private void storeRuletoFile(CryptSLRule rule, String className) {
-		String filePath = "C:\\Users\\stefank3\\git\\CryptoAnalysis\\CryptoAnalysis\\src\\test\\resources\\" + className + ".cryptslbin";
+	private void storeRuletoFile(CryptSLRule rule, String folderPath, String className) {
 		FileOutputStream fileOut;
 		try {
-			fileOut = new FileOutputStream(filePath);
+  			fileOut = new FileOutputStream(folderPath + "\\" + className + ".cryptslbin");
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
 			out.writeObject(rule);
 			out.close();
 			fileOut.close();
-			FileInputStream fileIn = new FileInputStream(filePath);
+			FileInputStream fileIn = new FileInputStream(folderPath + "\\" + className + ".cryptslbin");
 			ObjectInputStream in = new ObjectInputStream(fileIn);
 			in.readObject();
 			in.close();
 			fileIn.close();
 
 		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e);
 		}
 	}
 

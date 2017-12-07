@@ -39,7 +39,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.Constants.GUIElements;
-import de.cognicrypt.codegenerator.analysis.CryptSLModelReader;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModel;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
@@ -83,9 +82,8 @@ public class ConfiguratorWizard extends Wizard {
 		// Set the Look and Feel of the application to the operating
 		// system's look and feel.
 		try {
-			CryptSLModelReader csmr = new CryptSLModelReader();
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | CoreException | IOException e) {
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			Activator.getDefault().logError(e);
 		}
 		setWindowTitle("Cryptography Task Configurator");

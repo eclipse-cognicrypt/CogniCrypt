@@ -1,6 +1,9 @@
 package de.cognicrypt.staticanalyzer.handlers;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
@@ -15,6 +18,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.IStartup;
 
+import de.cognicrypt.crysl.reader.CrySLModelReader;
 import de.cognicrypt.staticanalyzer.Activator;
 
 /**
@@ -34,8 +38,9 @@ public class StartupHandler implements IStartup {
 	private static class AfterBuildListener implements IResourceChangeListener {
 
 		public void resourceChanged(IResourceChangeEvent event) {
+			final Set<IJavaElement> changedJavaElements = new HashSet<IJavaElement>();
+			final List<IResource> changedCrySLElements = new ArrayList<IResource>();
 			try {
-				final Set<IJavaElement> changedJavaElements = new HashSet<IJavaElement>();
 				event.getDelta().accept(new IResourceDeltaVisitor() {
 
 					public boolean visit(IResourceDelta delta) throws CoreException {
@@ -43,27 +48,37 @@ public class StartupHandler implements IStartup {
 							case IResourceDelta.ADDED:
 							case IResourceDelta.CHANGED:
 								IResource res = delta.getResource();
-								IJavaElement javaElement = JavaCore.create(res);
-								if (javaElement != null) {
-									if (javaElement instanceof ICompilationUnit) {
-										if ((delta.getFlags() & IResourceDelta.CONTENT) != 0) {
-											changedJavaElements.add(javaElement);
+								
+								if (res != null && res.getFileExtension() != null) {
+									try {
+										IJavaElement javaElement = JavaCore.create(res);
+										if (javaElement != null) {
+											if (javaElement instanceof ICompilationUnit) {
+												if ((delta.getFlags() & IResourceDelta.CONTENT) != 0) {
+													changedJavaElements.add(javaElement);
+												}
+												return false;
+											}
 										}
-										return false;
+									} catch (Exception ex) {
+										
+									}
+									if (res.getFileExtension().endsWith("cryptsl")) {
+										changedCrySLElements.add(res);
 									}
 								}
 						}
 						return true;
 					}
 				});
-				if (changedJavaElements.isEmpty()) {
-					return;
-				}
-
+			} catch (CoreException e) {
+			}
+			if (!changedJavaElements.isEmpty()) {
+			
 				Activator.getDefault().logInfo("Analysis has been triggered.");
 				
 				AnalysisKickOff ako = new AnalysisKickOff();
-
+	
 				if (ako.setUp()) {
 					if (ako.run()) {
 						Activator.getDefault().logInfo("Analysis has finished.");
@@ -73,10 +88,13 @@ public class StartupHandler implements IStartup {
 				} else {
 					Activator.getDefault().logInfo("Analysis has been canceled due to erroneous setup.");
 				}
-
-				
-			} catch (CoreException e) {
-				Activator.getDefault().logError(e, "Internal error");
+			}
+			if (!changedCrySLElements.isEmpty()) {
+				try {
+					new CrySLModelReader(changedCrySLElements.get(0));
+				} catch (ClassNotFoundException | CoreException | IOException e) {
+					Activator.getDefault().logError(e, "Updating CrySL rules failed.");
+				}
 			}
 		}
 

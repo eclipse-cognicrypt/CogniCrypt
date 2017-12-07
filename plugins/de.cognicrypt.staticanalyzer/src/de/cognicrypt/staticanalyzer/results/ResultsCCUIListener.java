@@ -8,17 +8,15 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 
-import boomerang.accessgraph.AccessGraph;
-import boomerang.util.StmtWithMethod;
+import boomerang.BackwardQuery;
+import boomerang.Query;
+import boomerang.WeightedBoomerang;
+import boomerang.jimple.Statement;
+import boomerang.jimple.Val;
 import crypto.analysis.AnalysisSeedWithSpecification;
 import crypto.analysis.ClassSpecification;
 import crypto.analysis.CrySLAnalysisListener;
@@ -30,18 +28,13 @@ import crypto.rules.CryptSLConstraint;
 import crypto.rules.CryptSLMethod;
 import crypto.rules.CryptSLPredicate;
 import crypto.rules.CryptSLValueConstraint;
-import crypto.rules.StateNode;
 import crypto.typestate.CallSiteWithParamIndex;
-import crypto.typestate.CryptoTypestateAnaylsisProblem.AdditionalBoomerangQuery;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.Utils;
-import ideal.AnalysisSolver;
-import ideal.IFactAtStatement;
 import soot.SootClass;
 import soot.SootMethod;
-import soot.Unit;
-import soot.jimple.internal.JInvokeStmt;
-import typestate.TypestateDomainValue;
+import sync.pds.solver.nodes.Node;
+import typestate.TransitionFunction;
 import typestate.interfaces.ISLConstraint;
 
 /**
@@ -57,15 +50,16 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	public ResultsCCUIListener(ErrorMarkerGenerator gen) {
 		markerGenerator = gen;
 	}
-
+	
 	@Override
-	public void constraintViolation(AnalysisSeedWithSpecification spec, ISLConstraint brokenConstraint, StmtWithMethod location) {
+	public void constraintViolation(AnalysisSeedWithSpecification arg0, ISLConstraint brokenConstraint, Statement location) {
 		StringBuilder msg = new StringBuilder();
 		msg.append("The constraint ");
 		evaluateBrokenConstraint(brokenConstraint, msg);
 		msg.append(" was violated.");
-		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartLineNumber(), msg.toString());
+		markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());		
 	}
+
 
 	private void evaluateBrokenConstraint(ISLConstraint brokenConstraint, StringBuilder msg) {
 		if (brokenConstraint instanceof CryptSLValueConstraint) {
@@ -112,30 +106,47 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	@Override
-	public void typestateErrorAt(AnalysisSeedWithSpecification classSpecification, StmtWithMethod location, Collection<SootMethod> expectedCalls) {
-		StringBuilder msg = new StringBuilder();
+	public void missingPredicates(AnalysisSeedWithSpecification spec, Set<CryptSLPredicate> missingPred) {
+		for (CryptSLPredicate pred : missingPred) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("Predicate ");
+			msg.append(pred.getPredName());
+			msg.append(" is missing.");
+			final Statement stmt = spec.stmt();
+			markerGenerator.addMarker(unitToResource(stmt), stmt.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
+		}
+	}
 
-		msg.append("Unexpected Method Call to");
-		msg.append(((JInvokeStmt) location.getStmt()).getInvokeExpr().getMethod().toString());
-		msg.append(". Expected a Call to  one of the Following Methods ");
-		Set<String> altMethods = new HashSet<String>();
-		for (SootMethod expectedCall : expectedCalls) {
-			altMethods.add(expectedCall.getName());
+	private IResource unitToResource(Statement stmt) {
+		SootClass className = stmt.getMethod().getDeclaringClass();
+		final IProject currentProject = Utils.getCurrentProject();
+		try {
+			return Utils.findClassByName(className, currentProject);
+		} catch (ClassNotFoundException e) {
+			Activator.getDefault().logError(e);
 		}
-		for (String methName : altMethods) {
-			msg.append(methName);
-			msg.append(", ");
-		}
-		msg.deleteCharAt(msg.length() - 2);
-		msg.append(" Here.");
-		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartLineNumber(), msg.toString());
+		//Fall-back path when retrieval of actual path fails. If it does, the statement below should be left untouched and the actual bug should be fixed.
+		return currentProject.getFile("src/" + className.getName().replace(".", "/") + ".java");
+		
 	}
 
 	@Override
-	public void callToForbiddenMethod(ClassSpecification classSpecification, StmtWithMethod location, List<CryptSLMethod> alternatives) {
+	public void boomerangQueryFinished(Query arg0, BackwardQuery arg1) {
+		// Nothing
+		
+	}
+
+	@Override
+	public void boomerangQueryStarted(Query arg0, BackwardQuery arg1) {
+		// Nothing
+		
+	}
+
+	@Override
+	public void callToForbiddenMethod(ClassSpecification arg0, Statement location, List<CryptSLMethod> alternatives) {
 		StringBuilder msg = new StringBuilder();
 		msg.append("Call to forbidden method ");
-		msg.append(((JInvokeStmt) location.getStmt()).getInvokeExpr().getMethod().toString());
+		msg.append(location.getMethod());
 		if (!alternatives.isEmpty()) {
 			msg.append(". Instead, call method ");
 			for (CryptSLMethod alt : alternatives) {
@@ -150,136 +161,117 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			}
 			msg.append(".");
 		}
-		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartLineNumber(), msg.toString());
-	}
-
-	@Override
-	public void missingPredicates(AnalysisSeedWithSpecification spec, Set<CryptSLPredicate> missingPred) {
-		for (CryptSLPredicate pred : missingPred) {
-			StringBuilder msg = new StringBuilder();
-			msg.append("Predicate ");
-			msg.append(pred.getPredName());
-			msg.append(" is missing.");
-			markerGenerator.addMarker(unitToResource(new StmtWithMethod(spec.getStmt(), spec.getMethod())), spec.getStmt().getJavaSourceStartLineNumber(), msg.toString());
-		}
-	}
-
-	@Override
-	public void predicateContradiction(StmtWithMethod location, AccessGraph accessGraph, Entry<CryptSLPredicate, CryptSLPredicate> mismatchedPreds) {
-		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartColumnNumber(), "Predicate mismatch");
-	}
-
-	//Untested
-	private IResource unitToResource(StmtWithMethod stmt) {
-		SootClass className = stmt.getMethod().getDeclaringClass();
-		final IProject currentProject = Utils.getCurrentProject();
-		try {
-			return Utils.findClassByName(className, currentProject);
-		} catch (ClassNotFoundException e) {
-			Activator.getDefault().logError(e);
-		}
-		//Fall-back path when retrieval of actual path fails. If it does, the statement below should be left untouched and the actual bug should be fixed.
-		return currentProject.getFile("src/" + className.getName().replace(".", "/") + ".java");
+		markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
+	
 		
 	}
 
 	@Override
-	public void typestateErrorEndOfLifeCycle(AnalysisSeedWithSpecification classSpecification, StmtWithMethod stmt) {
-		// TODO Auto-generated method stub
+	public void collectedValues(AnalysisSeedWithSpecification arg0, Multimap<CallSiteWithParamIndex, Statement> arg1) {
+		// Nothing
+		
+	}
 
+	@Override
+	public void ensuredPredicates(Table<Statement, Val, Set<EnsuredCryptSLPredicate>> arg0, Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> arg1, Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> arg2) {
+		// Nothing
+		
+	}
+
+	@Override
+	public void onSeedFinished(IAnalysisSeed arg0, WeightedBoomerang<TransitionFunction> arg1) {
+		// Nothing
+		
+	}
+
+	@Override
+	public void onSeedTimeout(Node<Statement, Val> arg0) {
+		//Nothing
+	}
+
+	@Override
+	public void predicateContradiction(Node<Statement, Val> location, Entry<CryptSLPredicate, CryptSLPredicate> arg1) {
+		markerGenerator.addMarker(unitToResource(location.stmt()), location.stmt().getUnit().get().getJavaSourceStartColumnNumber(), "Predicate mismatch");
+	}
+
+	@Override
+	public void typestateErrorAt(AnalysisSeedWithSpecification arg0, Statement location, Collection<SootMethod> expectedCalls) {
+		StringBuilder msg = new StringBuilder();
+
+		msg.append("Unexpected Method Call to");
+		msg.append(location.getMethod());
+		msg.append(". Expected a Call to  one of the Following Methods ");
+		Set<String> altMethods = new HashSet<String>();
+		for (SootMethod expectedCall : expectedCalls) {
+			altMethods.add(expectedCall.getName());
+		}
+		for (String methName : altMethods) {
+			msg.append(methName);
+			msg.append(", ");
+		}
+		msg.deleteCharAt(msg.length() - 2);
+		msg.append(" Here.");
+		markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
+		
+	}
+
+	@Override
+	public void typestateErrorEndOfLifeCycle(AnalysisSeedWithSpecification arg0, Statement arg1) {
+		// Nothing
+		
 	}
 
 	@Override
 	public void afterAnalysis() {
-		// nothing
+		// Nothing
+		
 	}
 
 	@Override
 	public void afterConstraintCheck(AnalysisSeedWithSpecification arg0) {
-		// nothing
-
+		// Nothing
+		
 	}
 
 	@Override
 	public void afterPredicateCheck(AnalysisSeedWithSpecification arg0) {
-		// nothing
-
+		// Nothing
+		
 	}
 
 	@Override
 	public void beforeAnalysis() {
-		// nothing
-
+		// Nothing
+		
 	}
 
 	@Override
 	public void beforeConstraintCheck(AnalysisSeedWithSpecification arg0) {
-		// nothing
-
+		// Nothing
+		
 	}
 
 	@Override
 	public void beforePredicateCheck(AnalysisSeedWithSpecification arg0) {
-		// nothing
-
-	}
-
-	@Override
-	public void boomerangQueryFinished(IFactAtStatement arg0, AdditionalBoomerangQuery arg1) {
-		// nothing
-
-	}
-
-	@Override
-	public void boomerangQueryStarted(IFactAtStatement arg0, AdditionalBoomerangQuery arg1) {
-		// nothing
-
-	}
-
-	@Override
-	public void seedFinished(IAnalysisSeed arg0) {
-		// nothing
-
+		// Nothing
+		
 	}
 
 	@Override
 	public void seedStarted(IAnalysisSeed arg0) {
-		// nothing
-
+		// Nothing
+		
 	}
 
 	@Override
 	public void checkedConstraints(AnalysisSeedWithSpecification arg0, Collection<ISLConstraint> arg1) {
-		// nothing
-
-	}
-
-	@Override
-	public void collectedValues(AnalysisSeedWithSpecification arg0, Multimap<CallSiteWithParamIndex, Unit> arg1) {
-		// nothing
-
+		// Nothing
+		
 	}
 
 	@Override
 	public void discoveredSeed(IAnalysisSeed arg0) {
-		// nothing
-
-	}
-
-	@Override
-	public void ensuredPredicates(Table<Unit, AccessGraph, Set<EnsuredCryptSLPredicate>> arg0, Table<Unit, IAnalysisSeed, Set<CryptSLPredicate>> arg1, Table<Unit, IAnalysisSeed, Set<CryptSLPredicate>> arg2) {
-		// nothing
-
-	}
-
-	@Override
-	public void onSeedFinished(IFactAtStatement arg0, AnalysisSolver<TypestateDomainValue<StateNode>> arg1) {
-		// nothing
-
-	}
-
-	@Override
-	public void onSeedTimeout(IFactAtStatement arg0) {
-		// nothing
+		// Nothing
+		
 	}
 }

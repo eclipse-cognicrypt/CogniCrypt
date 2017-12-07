@@ -14,18 +14,12 @@ import org.eclipse.jdt.core.IJavaProject;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
-import boomerang.cfg.ExtendedICFG;
-import boomerang.cfg.IExtendedICFG;
-import boomerang.preanalysis.PreparationTransformer;
 import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
-import crypto.rules.StateNode;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.Utils;
-import ideal.debug.IDebugger;
-import ideal.debug.NullDebugger;
 import soot.G;
 import soot.PackManager;
 import soot.Scene;
@@ -33,7 +27,6 @@ import soot.SceneTransformer;
 import soot.Transform;
 import soot.jimple.toolkits.ide.icfg.JimpleBasedInterproceduralCFG;
 import soot.options.Options;
-import typestate.TypestateDomainValue;
 
 /**
  * This runner triggers Soot.
@@ -59,7 +52,6 @@ public class SootRunner {
 	}
 
 	private static void registerTransformers(CrySLAnalysisListener reporter) {
-		PackManager.v().getPack("wjtp").add(new Transform("wjtp.prepare", new PreparationTransformer()));
 		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(reporter)));
 	}
 
@@ -88,19 +80,12 @@ public class SootRunner {
 
 			@Override
 			protected void internalTransform(String phaseName, Map<String, String> options) {
-				final ExtendedICFG icfg = new ExtendedICFG(new JimpleBasedInterproceduralCFG(false));
-				//				System.out.println("Soot Classes: "+ Scene.v().getClasses().size());
-				//				System.out.println("Reachable Methods: "+ Scene.v().getReachableMethods().size());
+				final JimpleBasedInterproceduralCFG icfg = new JimpleBasedInterproceduralCFG(false);
 				CryptoScanner scanner = new CryptoScanner(getRules()) {
 
 					@Override
-					public IExtendedICFG icfg() {
+					public JimpleBasedInterproceduralCFG icfg() {
 						return icfg;
-					}
-
-					@Override
-					public IDebugger<TypestateDomainValue<StateNode>> debugger() {
-						return new NullDebugger<>();
 					}
 
 					@Override

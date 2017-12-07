@@ -45,15 +45,7 @@ public class StartupHandler implements IStartup {
 								IResource res = delta.getResource();
 								IJavaElement javaElement = JavaCore.create(res);
 								if (javaElement != null) {
-									//								if(res instanceof IProject) {
-									//TODO allow for filtering of Android projects in plugin config
-									//									if(!AnalysisDispatcher.isAndroidProject((IProject) res)) {
-									//										don't care about non-Android projects
-									//										return false;
-									//									}
-									//								}
 									if (javaElement instanceof ICompilationUnit) {
-										//only care if file contents changed
 										if ((delta.getFlags() & IResourceDelta.CONTENT) != 0) {
 											changedJavaElements.add(javaElement);
 										}
@@ -64,15 +56,25 @@ public class StartupHandler implements IStartup {
 						return true;
 					}
 				});
-				if (changedJavaElements.isEmpty())
+				if (changedJavaElements.isEmpty()) {
 					return;
+				}
 
+				Activator.getDefault().logInfo("Analysis has been triggered.");
+				
 				AnalysisKickOff ako = new AnalysisKickOff();
 
 				if (ako.setUp()) {
-					ako.run();
+					if (ako.run()) {
+						Activator.getDefault().logInfo("Analysis has finished.");
+					} else {
+						Activator.getDefault().logInfo("Analysis has aborted.");
+					}
+				} else {
+					Activator.getDefault().logInfo("Analysis has been canceled due to erroneous setup.");
 				}
 
+				
 			} catch (CoreException e) {
 				Activator.getDefault().logError(e, "Internal error");
 			}

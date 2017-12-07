@@ -87,16 +87,17 @@ public class CryptSLModelReader {
 
 	private List<CryptSLForbiddenMethod> forbiddenMethods = null;
 	private StateMachineGraph smg = null;
+	final String pathToCrySLRules = "/CryptSL Examples/src/de/darmstadt/tu/crossing/";
 
 	public CryptSLModelReader() throws ClassNotFoundException, CoreException, IOException {
 		Injector injector = CryptSLActivator.getInstance().getInjector(CryptSLActivator.DE_DARMSTADT_TU_CROSSING_CRYPTSL);
 
 		XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
 
-		final IProject iproject = Utils.getIProjectFromSelection();
+		IProject iproject = Utils.getCurrentProject();
 		if (iproject == null) {
 			// if no project selected abort with error message
-			Activator.getDefault().logError(null, Constants.NoFileandNoProjectOpened);
+			iproject = Utils.createListOfJavaProjectsInCurrentWorkspace().get(0);
 		}
 		if (iproject.isOpen() && iproject.hasNature(Constants.JavaNatureID)) {
 			resourceSet.setClasspathURIContext(JavaCore.create(iproject));
@@ -106,13 +107,14 @@ public class CryptSLModelReader {
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 		List<String> exceptions = new ArrayList<String>();
 		exceptions.add("String.cryptsl");
-		for (IResource res : ResourcesPlugin.getWorkspace().getRoot().getFolder(Path.fromPortableString("/CryptSL Examples/src/de/darmstadt/tu/crossing/")).members()) {
+		
+		for (IResource res : ResourcesPlugin.getWorkspace().getRoot().getFolder(Path.fromPortableString(pathToCrySLRules)).members()) {
 			final String extension = res.getFileExtension();
 			final String fileName = res.getName();
 			if (!"cryptsl".equals(extension) || exceptions.contains(fileName)) { //!fileName.contains("Cipher.")) {
 				continue;
 			}
-			Resource resource = resourceSet.getResource(URI.createPlatformResourceURI("/CryptSL Examples/src/de/darmstadt/tu/crossing/" + fileName, true), true);
+			Resource resource = resourceSet.getResource(URI.createPlatformResourceURI(pathToCrySLRules + fileName, true), true);
 			EcoreUtil.resolveAll(resourceSet);
 			EObject eObject = resource.getContents().get(0);
 			Domainmodel dm = (Domainmodel) eObject;

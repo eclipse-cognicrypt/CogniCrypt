@@ -30,11 +30,11 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
@@ -52,18 +52,6 @@ import de.cognicrypt.codegenerator.Constants;
 @SuppressWarnings("restriction")
 public class Utils {
 
-	public static List<IProject> javaProjects;
-
-	/**
-	 * This method returns if a Java project is selected for code generation.
-	 *
-	 * @return <CODE>true</CODE>/<CODE>false</CODE> if library java project selected.
-	 */
-	public static boolean checkIfJavaProjectSelected() {
-		final IProject project = Utils.getIProjectFromSelection();
-		return (checkIfJavaProjectSelected(project));
-	}
-
 	/**
 	 * This method checks if a project passed as parameter is a Java project or not.
 	 * 
@@ -71,11 +59,11 @@ public class Utils {
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if project is Java project
 	 */
 	public static boolean checkIfJavaProjectSelected(final IProject project) {
-		final IJavaProject javaProject = JavaCore.create(project);
-		if (javaProject == null || !javaProject.exists()) {
+		try {
+			return project.hasNature(Constants.JavaNatureID);
+		} catch (CoreException e) {
 			return false;
 		}
-		return true;
 	}
 
 	public static List<IProject> createListOfJavaProjectsInCurrentWorkspace() {
@@ -134,19 +122,22 @@ public class Utils {
 	}
 
 	public static IProject getCurrentProject() {
-		IProject currentProject = null;
-		if (Constants.WizardActionFromContextMenuFlag == true) {
-			currentProject = Utils.getIProjectFromSelection();
-		} else if ((Constants.WizardActionFromContextMenuFlag == false) && (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension()
-			.equalsIgnoreCase("java"))) {
-			currentProject = Utils.getCurrentlyOpenFile().getProject();
-		} else if (Utils.checkIfJavaProjectSelected()) {
-			currentProject = Utils.getIProjectFromSelection();
-		} else {
-			currentProject = null;
+		final IProject selectedProject = Utils.getIProjectFromSelection();
+		if (selectedProject != null && Constants.WizardActionFromContextMenuFlag) {
+			return selectedProject;
 		}
-
-		return currentProject;
+		final IFile currentlyOpenFile = Utils.getCurrentlyOpenFile();
+		if (currentlyOpenFile != null) {
+			final IProject curProject = currentlyOpenFile.getProject();
+			if (checkIfJavaProjectSelected(curProject)) {
+				return curProject;
+			}
+		}
+		
+		if (selectedProject != null && checkIfJavaProjectSelected(selectedProject)) {
+			return selectedProject;
+		}
+		return null;
 	}
 
 	/**

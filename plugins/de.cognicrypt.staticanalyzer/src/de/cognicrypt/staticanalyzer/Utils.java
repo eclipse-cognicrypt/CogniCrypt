@@ -3,10 +3,13 @@ package de.cognicrypt.staticanalyzer;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
@@ -22,11 +25,15 @@ import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchParticipant;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.SearchRequestor;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.part.FileEditorInput;
 import org.osgi.framework.Bundle;
 
@@ -57,15 +64,6 @@ public class Utils {
 		}
 
 		return null;
-	}
-
-	public static IProject getCurrentProject() {
-		final IFile currentlyOpenFile = getCurrentlyOpenFile();
-		if (currentlyOpenFile == null) {
-			return null;
-		} else {
-			return currentlyOpenFile.getProject();
-		}
 	}
 
 	/**
@@ -174,6 +172,71 @@ public class Utils {
 			throw new ClassNotFoundException("Class " + className + " not found.", e);
 		}
 		throw new ClassNotFoundException("Class " + className + " not found.");
+	}
+	
+	/**
+	 * This method checks if a project passed as parameter is a Java project or not.
+	 * 
+	 * @param Iproject
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if project is Java project
+	 */
+	public static boolean checkIfJavaProjectSelected(final IProject project) {
+		try {
+			return project.hasNature("org.eclipse.jdt.core.javanature");
+		} catch (CoreException e) {
+			return false;
+		}
+	}
+
+	public static List<IProject> createListOfJavaProjectsInCurrentWorkspace() {
+		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+		final List<IProject> javaProjects = new ArrayList<>();
+		if (projects.length > 0) {
+			for (int i = 0; i < projects.length; i++) {
+				if (Utils.checkIfJavaProjectSelected(projects[i])) {
+					javaProjects.add(projects[i]);
+				}
+			}
+		}
+
+		return javaProjects;
+	}
+
+	public static IProject getCurrentProject() {
+		final IFile currentlyOpenFile = Utils.getCurrentlyOpenFile();
+		if (currentlyOpenFile != null) {
+			final IProject curProject = currentlyOpenFile.getProject();
+			if (checkIfJavaProjectSelected(curProject)) {
+				return curProject;
+			}
+		}
+		final IProject selectedProject = Utils.getIProjectFromSelection();
+		if (selectedProject != null && checkIfJavaProjectSelected(selectedProject)) {
+			return selectedProject;
+		}
+		return null;
+	}
+
+	/**
+	 * This method gets the project that is currently selected.
+	 *
+	 * @return Currently selected project.
+	 */
+	public static IProject getIProjectFromSelection() {
+		final ISelectionService selectionService = Workbench.getInstance().getActiveWorkbenchWindow().getSelectionService();
+		final ISelection selection = selectionService.getSelection();
+
+		IProject iproject = null;
+		if (selection instanceof IStructuredSelection) {
+			final Object element = ((IStructuredSelection) selection).getFirstElement();
+			if (element instanceof IResource) {
+				iproject = ((IResource) element).getProject();
+			} else if (element instanceof IJavaElement) {
+				final IJavaProject jProject = ((IJavaElement) element).getJavaProject();
+				iproject = jProject.getProject();
+			}
+		}
+		return iproject;
 	}
 
 }

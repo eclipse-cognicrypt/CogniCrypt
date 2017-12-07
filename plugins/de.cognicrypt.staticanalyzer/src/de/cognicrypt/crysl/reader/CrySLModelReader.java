@@ -18,12 +18,14 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.xtext.common.types.JvmExecutable;
 import org.eclipse.xtext.common.types.JvmFormalParameter;
@@ -106,13 +108,14 @@ public class CrySLModelReader {
 		List<String> exceptions = new ArrayList<String>();
 		exceptions.add("String.cryptsl");
 		
-		for (IResource res : ResourcesPlugin.getWorkspace().getRoot().getFolder(Path.fromPortableString(pathToCrySLRules)).members()) {
+		final IPath rulesFolder = crySLFile.getFullPath().removeLastSegments(1);
+		for (IResource res : ResourcesPlugin.getWorkspace().getRoot().getFolder(rulesFolder).members()) {
 			final String extension = res.getFileExtension();
 			final String fileName = res.getName();
 			if (!"cryptsl".equals(extension) || exceptions.contains(fileName)) { //!fileName.contains("Cipher.")) {
 				continue;
 			}
-			Resource resource = resourceSet.getResource(URI.createPlatformResourceURI(pathToCrySLRules + fileName, true), true);
+			Resource resource = resourceSet.getResource(URI.createPlatformResourceURI(rulesFolder.toPortableString() + "\\" + fileName, true), true);
 			EcoreUtil.resolveAll(resourceSet);
 			EObject eObject = resource.getContents().get(0);
 			Domainmodel dm = (Domainmodel) eObject;

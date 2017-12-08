@@ -41,29 +41,77 @@ import soot.SootClass;
 
 public class Utils {
 
-	/***
-	 * This method returns absolute path of a project-relative path.
-	 * 
-	 * @param inputPath
-	 *        project-relative path
-	 * @return absolute path
-	 */
-	public static File getResourceFromWithin(final String inputPath) {
-		try {
-			final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+	private static IWorkbenchWindow window = null;
 
-			if (bundle == null) {
-				// running as application
-				return new File(inputPath);
-			} else {
-				final URL resolvedURL = FileLocator.toFileURL(bundle.getEntry(inputPath));
-				return new File(new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null));
+	/**
+	 * This method checks if a project passed as parameter is a Java project or not.
+	 *
+	 * @param Iproject
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if project is Java project
+	 */
+	public static boolean checkIfJavaProjectSelected(final IProject project) {
+		try {
+			return project.hasNature("org.eclipse.jdt.core.javanature");
+		} catch (final CoreException e) {
+			return false;
+		}
+	}
+
+	public static List<IProject> createListOfJavaProjectsInCurrentWorkspace() {
+		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+		final List<IProject> javaProjects = new ArrayList<>();
+		if (projects.length > 0) {
+			for (int i = 0; i < projects.length; i++) {
+				if (Utils.checkIfJavaProjectSelected(projects[i])) {
+					javaProjects.add(projects[i]);
+				}
 			}
-		} catch (final Exception ex) {
-			Activator.getDefault().logError(ex);
 		}
 
-		return null;
+		return javaProjects;
+	}
+
+	public static IResource findClassByName(final SootClass className, final IProject currentProject) throws ClassNotFoundException {
+		try {
+			for (final IPackageFragment l : JavaCore.create(currentProject).getPackageFragments()) {
+				for (final ICompilationUnit cu : l.getCompilationUnits()) {
+					final IJavaElement cuResource = JavaCore.create(cu.getCorrespondingResource());
+					String name = cuResource.getParent().getElementName() + "." + cuResource.getElementName();
+
+					if (name.startsWith(".")) {
+						name = name.substring(1);
+					}
+					if (name.startsWith(className.getName())) {
+						return cu.getCorrespondingResource();
+					}
+				}
+			}
+		} catch (final JavaModelException e) {
+			throw new ClassNotFoundException("Class " + className + " not found.", e);
+		}
+		throw new ClassNotFoundException("Class " + className + " not found.");
+	}
+
+	/**
+	 * This method searches the passed project for the class that contains the main method.
+	 *
+	 * @param project
+	 *        Project that is searched
+	 * @param requestor
+	 *        Object that handles the search results
+	 */
+	public static void findMainMethodInCurrentProject(final IJavaProject project, final SearchRequestor requestor) {
+		final SearchPattern sp = SearchPattern.createPattern("main", IJavaSearchConstants.METHOD, IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
+
+		final SearchEngine se = new SearchEngine();
+		final SearchParticipant[] searchParticipants = new SearchParticipant[] { SearchEngine.getDefaultSearchParticipant() };
+		final IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] { project });
+
+		try {
+			se.search(sp, searchParticipants, scope, requestor, null);
+		} catch (final CoreException e) {
+			Activator.getDefault().logError(e);
+		}
 	}
 
 	/**
@@ -73,34 +121,21 @@ public class Utils {
 	 */
 	public static IEditorPart getCurrentlyOpenEditor() {
 		final Display defaultDisplay = Display.getDefault();
-		final Runnable getWindow = new Runnable() {
-
-			@Override
-			public void run() {
-				setWindow(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-			}
-
-		};
+		final Runnable getWindow = () -> setWindow(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
 		defaultDisplay.asyncExec(getWindow);
-		if (window == null) {
+		if (Utils.window == null) {
 			try {
 				Thread.sleep(500);
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				Activator.getDefault().logError(e);
 			}
 			defaultDisplay.asyncExec(getWindow);
 		}
 
-		if (window != null) {
-			return window.getActivePage().getActiveEditor();
+		if (Utils.window != null) {
+			return Utils.window.getActivePage().getActiveEditor();
 		}
 		return null;
-	}
-
-	private static IWorkbenchWindow window = null;
-
-	protected static void setWindow(IWorkbenchWindow activeWorkbenchWindow) {
-		window = activeWorkbenchWindow;
 	}
 
 	/**
@@ -129,77 +164,6 @@ public class Utils {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * This method searches the passed project for the class that contains the main method.
-	 * 
-	 * @param project
-	 *        Project that is searched
-	 * @param requestor
-	 *        Object that handles the search results
-	 */
-	public static void findMainMethodInCurrentProject(IJavaProject project, SearchRequestor requestor) {
-		SearchPattern sp = SearchPattern.createPattern("main", IJavaSearchConstants.METHOD, IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
-
-		SearchEngine se = new SearchEngine();
-		final SearchParticipant[] searchParticipants = new SearchParticipant[] { SearchEngine.getDefaultSearchParticipant() };
-		final IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] { project });
-
-		try {
-			se.search(sp, searchParticipants, scope, requestor, null);
-		} catch (CoreException e) {
-			Activator.getDefault().logError(e);
-		}
-	}
-
-	public static IResource findClassByName(SootClass className, final IProject currentProject) throws ClassNotFoundException {
-		try {
-			for (IPackageFragment l : JavaCore.create(currentProject).getPackageFragments()) {
-				for (ICompilationUnit cu : l.getCompilationUnits()) {
-					IJavaElement cuResource = JavaCore.create(cu.getCorrespondingResource());
-					String name = cuResource.getParent().getElementName() + "." + cuResource.getElementName();
-
-					if (name.startsWith(".")) {
-						name = name.substring(1);
-					}
-					if (name.startsWith(className.getName())) {
-						return cu.getCorrespondingResource();
-					}
-				}
-			}
-		} catch (JavaModelException e) {
-			throw new ClassNotFoundException("Class " + className + " not found.", e);
-		}
-		throw new ClassNotFoundException("Class " + className + " not found.");
-	}
-	
-	/**
-	 * This method checks if a project passed as parameter is a Java project or not.
-	 * 
-	 * @param Iproject
-	 * @return <CODE>true</CODE>/<CODE>false</CODE> if project is Java project
-	 */
-	public static boolean checkIfJavaProjectSelected(final IProject project) {
-		try {
-			return project.hasNature("org.eclipse.jdt.core.javanature");
-		} catch (CoreException e) {
-			return false;
-		}
-	}
-
-	public static List<IProject> createListOfJavaProjectsInCurrentWorkspace() {
-		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		final List<IProject> javaProjects = new ArrayList<>();
-		if (projects.length > 0) {
-			for (int i = 0; i < projects.length; i++) {
-				if (Utils.checkIfJavaProjectSelected(projects[i])) {
-					javaProjects.add(projects[i]);
-				}
-			}
-		}
-
-		return javaProjects;
 	}
 
 	public static IProject getCurrentProject() {
@@ -237,6 +201,35 @@ public class Utils {
 			}
 		}
 		return iproject;
+	}
+
+	/***
+	 * This method returns absolute path of a project-relative path.
+	 *
+	 * @param inputPath
+	 *        project-relative path
+	 * @return absolute path
+	 */
+	public static File getResourceFromWithin(final String inputPath) {
+		try {
+			final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+
+			if (bundle == null) {
+				// running as application
+				return new File(inputPath);
+			} else {
+				final URL resolvedURL = FileLocator.toFileURL(bundle.getEntry(inputPath));
+				return new File(new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null));
+			}
+		} catch (final Exception ex) {
+			Activator.getDefault().logError(ex);
+		}
+
+		return null;
+	}
+
+	protected static void setWindow(final IWorkbenchWindow activeWorkbenchWindow) {
+		Utils.window = activeWorkbenchWindow;
 	}
 
 }

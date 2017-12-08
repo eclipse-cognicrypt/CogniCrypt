@@ -148,7 +148,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		msg.append("Call to forbidden method ");
 		msg.append(location.getMethod());
 		if (!alternatives.isEmpty()) {
-			msg.append(". Instead, call method ");
+			msg.append(". Instead, call to method ");
 			for (CryptSLMethod alt : alternatives) {
 				final String methodName = alt.getMethodName();
 				msg.append(methodName.substring(methodName.lastIndexOf(".") + 1));
@@ -216,9 +216,13 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	@Override
-	public void typestateErrorEndOfLifeCycle(AnalysisSeedWithSpecification arg0, Statement arg1) {
-		// Nothing
-		
+	public void typestateErrorEndOfLifeCycle(AnalysisSeedWithSpecification seed, Statement location) {
+		StringBuilder msg = new StringBuilder();
+
+		msg.append("Operation with ");
+		msg.append(seed.getSpec().getRule().getClassName());
+		msg.append(" object not completed.");
+		markerGenerator.addMarker(unitToResource(location), seed.stmt().getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
 	}
 
 	@Override

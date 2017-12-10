@@ -1,11 +1,12 @@
 [{
     "id": "0",
+    "helpID": "SecureCommunication_Page0",
     "content": [{
         "id": "0",
     	"note": "",
         "tooltip": "Example : /home/users/keystores/android.jks", 
         "element": "text",
-        "questionText": "Please specify the path to your keystore",
+        "questionText": "Please specify the path to your keystore:",
         "answers": [{
           "value": "",
           "codeDependencies": [{
@@ -20,7 +21,7 @@
         "note": "",
         "tooltip": "Secret password of keystore",
         "element": "text",
-        "questionText": "Please give the password for your keystore",
+        "questionText": "Please give the password for your keystore:",
         "answers": [{
           "value": "C:\\      ",
           "codeDependencies": [{
@@ -64,7 +65,7 @@
     "id": "2",
     "content": [{
       "id": "3",
-      "element":"combo",
+      "element":"radio",
       "note": "",
       "questionText": "Do you know the host/ip?",
       "answers": [{
@@ -138,11 +139,11 @@
     "id": "5",
     "content": [{
       "id": "7",
-      "element":"combo",
+      "element":"radio",
       "note": "",
-      "questionText": "We have compiled a default configuration that is secure and works for most connections.\n Do you want to accept this configuration or would you like to change it?",
+      "questionText": "We have compiled a default configuration that is secure.\nDo you want to accept this configuration?",
       "answers": [{
-          "value": "Keep",
+          "value": "Yes",
           "claferDependencies": [{
             "algorithm": "ciphersuite",
             "operand": "tlsProtocol;security",
@@ -153,7 +154,7 @@
           "nextID": "-1"
         },
         {
-          "value": "Change.",
+          "value": "No",
           "claferDependencies": [],
           "nextID": "6"
         }

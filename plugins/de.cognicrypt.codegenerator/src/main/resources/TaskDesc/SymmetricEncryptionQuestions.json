@@ -1,20 +1,12 @@
 [{
   "id": "0",
+  "helpID": "SymmetricEncryption_Page0",
   "content": [{
       "id": "0",
-      "element":"combo",
-      "note": "",
+      "element":"scale",
+      "note": "",      
       "questionText": "What is the preferred security level for your data?",
-      "answers": [{
-          "value": "Very secure",
-          "claferDependencies": [{
-            "algorithm": "cipher",
-            "operand": "keySize",
-            "value": "128",
-            "operator": ">"
-          }]
-        },
-        {
+      "answers": [ {
           "value": "Secure",
           "claferDependencies": [{
             "algorithm": "cipher",
@@ -23,13 +15,22 @@
             "operator": ">="
           }],
           "defaultAnswer": true
+        },
+        {
+          "value": "Very Secure",
+          "claferDependencies": [{
+            "algorithm": "cipher",
+            "operand": "keySize",
+            "value": "128",
+            "operator": ">"
+          }]
         }
-      ]
+       ]
     },
     {
       "id": "1",
-      "note": "",
-      "element": "combo",
+      "note": "",      
+      "element": "radio",
       "questionText": "Do you wish to derive the key for encryption from a user-specified password?",
       "answers": [{
           "value": "Yes",
@@ -58,9 +59,9 @@
     },
     {
       "id": "2",
-      "note": "",
-      "element": "combo",
-      "questionText": "Will your application encrypt several gigabytes of data regularly",
+      "note": "",      
+      "element": "radio",
+      "questionText": "Will your application encrypt several gigabytes of data regularly?",
       "answers": [{
           "value": "Yes",
           "codeDependencies": [{
@@ -81,7 +82,7 @@
     {
       "id": "3",
       "element": "combo",
-      "note":"",
+      "note":"",      
       "questionText": "What type of data do you wish to encrypt?",
       "answers": [{
           "value": "Byte[]",

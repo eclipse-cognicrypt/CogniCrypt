@@ -74,8 +74,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 
 		if (inputClafer.hasChildren()) {
 			if (inputClafer.getGroupCard() != null && inputClafer.getGroupCard().getLow() >= 1) {
-				this.userConstraints
-					.add(new PropertyWidget(titledPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
+				this.userConstraints.add(new PropertyWidget(titledPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
 			} else {
 				for (final AstConcreteClafer childClafer : inputClafer.getChildren()) {
 					createConstraints(parent, childClafer, titledPanel);
@@ -85,26 +84,28 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 		if (inputClafer.hasRef()) {
 			if (inputClafer.getRef().getTargetType().isPrimitive() && !(inputClafer.getRef().getTargetType().getName().contains("string"))) {
 				if (!ClaferModelUtils.isAbstract(inputClafer)) {
-					this.userConstraints.add(
-						new PropertyWidget(titledPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
+					final Group childPanel = createPanel2("", titledPanel);
+					this.userConstraints.add(new PropertyWidget(childPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
 				}
 			} else if (PropertiesMapperUtil.getenumMap().containsKey(inputClafer.getRef().getTargetType())) {
 				createConstraints(inputClafer, inputClafer.getRef().getTargetType(), titledPanel);
 			} else if (!inputClafer.getRef().getTargetType().isPrimitive()) {
 				if (!ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()).equals(titledPanel.getText())) {
+					if(inputClafer.getRef().getTargetType().hasChildren())
+					{
 					final Group childPanel = createPanel2(ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()), titledPanel);
-					createConstraints(inputClafer, inputClafer.getRef().getTargetType(), childPanel);
+					createConstraints(inputClafer,inputClafer.getRef().getTargetType() , childPanel);		
+					}
 				} else {
 					//same panel as main algorithm type (e.g., kda in secure pwd storage)
 					createConstraints(inputClafer, inputClafer.getRef().getTargetType(), titledPanel);
-				}
+					}
 			}
 		}
 
 		if (inputClafer.getSuperClafer() != null) {
 			createConstraints(parent, inputClafer.getSuperClafer(), titledPanel);
 		}
-
 	}
 
 	@Override
@@ -115,51 +116,27 @@ public class AdvancedUserValueSelectionPage extends WizardPage implements Labels
 		this.container.setLayout(layout);
 		layout.numColumns = 1;
 		
-		/** To display the Help view after clicking the help icon
-		 * @param help_id_1 
-		 *        This id refers to HelpContexts_1.xml
-		 */
+	    //To display the Help view after clicking the help icon
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "de.cognicrypt.codegenerator.help_id_2"); 
 		
-//				try {
-//					Group titledPanel = new Group(container, SWT.NONE);
-//					titledPanel.setText("Global Constraints");
-//					Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
-//					titledPanel.setFont(boldFont);
-//					GridLayout layout2 = new GridLayout();
-//					// sent number of columns in a widget
-//					layout2.numColumns = 4;
-//					titledPanel.setLayout(layout2);
-//					// List constraints from ENUMmap as group properties, under single
-//					// titled panel
-//					for (AstAbstractClafer groupPropertiesKey : PropertiesMapperUtil.getenumMap().keySet()) {
-//		
-//						userConstraints.add(new ComplexWidget(titledPanel, groupPropertiesKey,
-//								PropertiesMapperUtil.getenumMap().get(groupPropertiesKey)));
-//		
-//					}
-//				} catch (Exception e) {
-//					Activator.getDefault().logError(e);
-//				}
-//
 		// Add every constraints to its parent and group it as a separate titled
 		// panel
 
 		for (final AstClafer taskAlgorithm : this.taskClafer.getChildren()) {
-			final Group titledPanel = createPanel(ClaferModelUtils.removeScopePrefix(taskAlgorithm.getRef().getTargetType().getName()), this.container);
-			createConstraints(this.taskClafer, taskAlgorithm, titledPanel);
+			if(!taskAlgorithm.getRef().getTargetType().hasRef()){
+			final Group titledPanel =createPanel(ClaferModelUtils.removeScopePrefix(taskAlgorithm.getRef().getTargetType().getName()), this.container);
+				createConstraints(this.taskClafer, taskAlgorithm, titledPanel);	
 		}
-
 		setControl(this.container);
 	}
-
+	}
 	private Group createPanel(final String name, final Composite parent) {
 		final Group titledPanel = new Group(parent, SWT.LEFT);
 		titledPanel.setText(name);
 		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
 		titledPanel.setFont(boldFont);
 		final GridLayout layout2 = new GridLayout();
-		layout2.numColumns = 4;
+		layout2.numColumns = 2;
 		titledPanel.setLayout(layout2);
 		titledPanel.setLayout((new RowLayout(SWT.VERTICAL)));
 		return titledPanel;

@@ -1,7 +1,9 @@
 package de.cognicrypt.staticanalyzer.handlers;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.search.SearchMatch;
@@ -35,10 +37,12 @@ public class AnalysisKickOff {
 	 * @return <code>true</code>/<code>false</code> if setup (not) successful
 	 */
 	public boolean setUp() {
+		IProject ip = Utils.getCurrentProject();
+		
 		if (errGen == null) {
 			errGen = new ErrorMarkerGenerator();
 		} else {
-			errGen.clearMarkers();
+			errGen.clearMarkers(ip);
 		}
 		if (resultsReporter == null) {
 			resultsReporter = new ResultsCCUIListener(errGen);
@@ -48,16 +52,22 @@ public class AnalysisKickOff {
 
 			@Override
 			public void acceptSearchMatch(SearchMatch match) throws CoreException {
-				String name = match.getResource().getProjectRelativePath().toString();
-				name = name.substring(name.indexOf('/') + 1);
-				name = name.replace("." + match.getResource().getFileExtension(), "");
-				name = name.replace("/", ".");
-				if (!name.isEmpty()) {
-					mainClass = name;
+				final IResource resource = match.getResource();
+				final IJavaElement classEl = JavaCore.create(resource);
+				int isClassFile = classEl.getElementType();
+				if (isClassFile == IJavaElement.CLASS_FILE || isClassFile == IJavaElement.COMPILATION_UNIT) {
+					String name = classEl.getParent().getElementName() + "." + classEl.getElementName();
+					
+					name = name.replace("." + resource.getFileExtension(), "");
+					if (name.startsWith(".")) {
+						name = name.substring(1);
+					}
+					if (!name.isEmpty()) {
+						mainClass = name;
+					}
 				}
 			}
 		};
-		IProject ip = Utils.getCurrentProject();
 		try {
 			if (ip == null || !ip.hasNature(JavaCore.NATURE_ID)) {
 				return false;

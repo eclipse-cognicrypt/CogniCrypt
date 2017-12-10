@@ -44,4 +44,9 @@ public class FeatureProperty{
 	public void setPropertyType(String propertyType) {
 		this.propertyType = propertyType;
 	}
+	
+	@Override
+	public String toString() {
+		return propertyName + " -> " + propertyType;
+	}
 }

@@ -142,7 +142,7 @@ public class QuestionDialog extends Dialog {
 		String comboItem1 = "Drop down ";
 		String comboItem2 = "text box";
 		String comboItem3 = "itemSelection ( More than one answer selection possible )";
-		String comboItem4 = "Button";
+		String comboItem4 = "Radio Button";
 		combo = new Combo(composite, SWT.READ_ONLY);
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		//combo.setItems(new String[] {comboItem1, comboItem2, comboItem3, comboItem4 });
@@ -157,7 +157,7 @@ public class QuestionDialog extends Dialog {
 		new Label(composite, SWT.NONE);
 		new Label(composite, SWT.NONE);
 		boolean showRemoveButton = true;
-		compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton);
+		compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton,null);
 		GridData gd_compositeToHoldAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 		gd_compositeToHoldAnswers.heightHint = 125;
 		gd_compositeToHoldAnswers.widthHint = 520;
@@ -212,14 +212,14 @@ public class QuestionDialog extends Dialog {
 							currentQuestionType = "itemSelection ( More than one answer selection possible )";
 						}
 						break;
-					case "Button":
-						boolean buttonSelected = combo.getText().equalsIgnoreCase("Button") ? true : false;
+					case "Radio Button":
+						boolean buttonSelected = combo.getText().equalsIgnoreCase("Radio Button") ? true : false;
 						btnAddAnswer.setVisible(buttonSelected);
-						if (!currentQuestionType.equalsIgnoreCase("Button")) {
+						if (!currentQuestionType.equalsIgnoreCase("Radio Button")) {
 							compositeToHoldAnswers.getListOfAllAnswer().clear();
 							compositeToHoldAnswers.updateAnswerContainer();
 							compositeToHoldAnswers.setVisible(false);
-							currentQuestionType = "Button";
+							currentQuestionType = "Radio Button";
 						}
 						break;
 					default:
@@ -287,7 +287,7 @@ public class QuestionDialog extends Dialog {
 				lblAnswers.setText("Answers");
 
 				Label lblSelectQuestion = new Label(compositeForAnswers, SWT.NONE);
-				lblSelectQuestion.setText("Select question");
+				lblSelectQuestion.setText("Jump to question");
 
 				/*
 				 * CompositeForAnswers answerComposite=new CompositeForAnswers(compositeForLinkAnswerTab,question,listOfAllQuestions); GridData gd_answerComposite = new
@@ -312,9 +312,10 @@ public class QuestionDialog extends Dialog {
 					 */
 					Combo comboForLinkAnswers = new Combo(compositeForAnswers, SWT.DROP_DOWN);
 					comboForLinkAnswers.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-					//comboForLinkAnswers.add("Default");
+					comboForLinkAnswers.add("Default");
 					for (int i = 0; i < listOfAllQuestions.size(); i++) {
 						if (listOfAllQuestions.size() == 1) {
+							comboForLinkAnswers.removeAll();
 							comboForLinkAnswers.add("Please add more questions to link the answers");
 						}
 						if (question.getId() != listOfAllQuestions.get(i).getId()) {
@@ -324,22 +325,30 @@ public class QuestionDialog extends Dialog {
 					}
 
 					if (answer.getNextID() != -2) {
-						for (Question question : listOfAllQuestions) {
-							if (question.getId() == answer.getNextID()) {
-								comboForLinkAnswers.setText(question.getQuestionText());
+						if(answer.getNextID()==-1){
+							comboForLinkAnswers.setText("Default");
+						} else {
+							for (Question question : listOfAllQuestions) {
+								if (question.getId() == answer.getNextID()) {
+									comboForLinkAnswers.setText(question.getQuestionText());
+								}
 							}
 						}
-					}
+					}					
 
 					comboForLinkAnswers.addSelectionListener(new SelectionAdapter() {
 
 						@Override
 						public void widgetSelected(SelectionEvent e) {
-							for (Question question : listOfAllQuestions) {
-								if (question.getQuestionText().equalsIgnoreCase(comboForLinkAnswers.getText())) {
-									System.out.println(question.getId());
-									answer.setNextID(question.getId());
-									System.out.println(answer.getNextID());
+							if(comboForLinkAnswers.getText().equalsIgnoreCase("Default")){
+								answer.setNextID(-1);
+							} else {
+								for (Question question : listOfAllQuestions) {
+									if (question.getQuestionText().equalsIgnoreCase(comboForLinkAnswers.getText())) {
+										System.out.println(question.getId());
+										answer.setNextID(question.getId());
+										System.out.println(answer.getNextID());
+									}
 								}
 							}
 						}

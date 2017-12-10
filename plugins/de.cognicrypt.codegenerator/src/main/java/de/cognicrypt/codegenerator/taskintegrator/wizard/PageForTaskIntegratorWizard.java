@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 
+import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.ClaferDependency;
@@ -80,14 +81,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-
-						// TODO dummy Clafer feature for testing only. Keep until the pop up is complete.
-						/*
-						 * counter++; ClaferFeature tempFeature = getDummyClaferFeature(); // Update the array list.
-						 * compositeToHoldGranularUIElements.getListOfAllClaferFeatures().add(tempFeature);
-						 * compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
-						 */
-						
 						
 						counter++;
 						ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), compositeToHoldGranularUIElements.getListOfAllClaferFeatures());
@@ -102,12 +95,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					}
 
 				});
-				// TODO for user study only.
-				
-				for(ClaferFeature tempFeature: getDummyClaferFeatures()){
-					compositeToHoldGranularUIElements.getListOfAllClaferFeatures().add(tempFeature);
-					compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
-				}
 				break;
 			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:
 				
@@ -201,8 +188,16 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
 				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
-				// TODO change this to reliably determine the Clafer feature page
-				PageForTaskIntegratorWizard claferPage = (PageForTaskIntegratorWizard) (this.getPreviousPage());
+
+				TaskIntegrationWizard tiWizard = null;
+
+				if (TaskIntegrationWizard.class.isInstance(getWizard())) {
+					tiWizard = (TaskIntegrationWizard) getWizard();
+				} else {
+					Activator.getDefault().logError("PageForTaskIntegratorWizard was instantiated by a wizard other than TaskIntegrationWizard");
+				}
+
+				PageForTaskIntegratorWizard claferPage = tiWizard.getTIPageByName(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION);
 				CompositeToHoldGranularUIElements claferPageComposite=(CompositeToHoldGranularUIElements) claferPage.getCompositeToHoldGranularUIElements();
 
 				QuestionDialog questionDialog = new QuestionDialog(parent.getShell() /*compositeToHoldGranularUIElements.getListOfAllClaferFeatures()claferFeatures,claferPageComposite*/);
@@ -333,7 +328,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	/**
 	 * @return the compositeChoiceForModeOfWizard
 	 */
-	public Composite getCompositeChoiceForModeOfWizard() {
+	public CompositeChoiceForModeOfWizard getCompositeChoiceForModeOfWizard() {
 		return compositeChoiceForModeOfWizard;
 	}
 

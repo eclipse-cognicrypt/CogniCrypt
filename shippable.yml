@@ -4,7 +4,7 @@ jdk:
   - oraclejdk8
 
 env:
-  - NIGHTLYBUILD=master
+  - NIGHTLYBUILD=$BRANCH
   - NIGHTLYBUILD=cp-group1718
   - NIGHTLYBUILD=ti-group1718
   - NIGHTLYBUILD=ui-group1718

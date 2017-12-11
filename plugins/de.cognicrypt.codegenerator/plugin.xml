@@ -15,11 +15,20 @@
             </separator>
          </menu>
          <action
+               class="de.cognicrypt.codegenerator.taskintegrator.actions.WizardAction"
+               icon="icons/cognicrypt.png"
+               id="de.cognicrypt.codegenerator.taskintegrator.actions.WizardAction"
+               label="&amp;Start Task Integration"
+               menubarPath="CogniCryptGroup"
+               toolbarPath="CogniCryptGroup"
+               tooltip="Integrate a Cryptographic Task into CogniCrypt">
+         </action>
+         <action
                class="de.cognicrypt.codegenerator.actions.WizardAction"
                icon="icons/cognicrypt.png"
                id="de.cognicrypt.codegenerator.actions.WizardAction"
                label="&amp;Start Code Generation"
-               menubarPath="CogniCryptMenu/CogniCryptGroup"
+               menubarPath="CogniCryptGroup"
                toolbarPath="CogniCryptGroup"
                tooltip="Generate Code For Cryptographic Task">
          </action>

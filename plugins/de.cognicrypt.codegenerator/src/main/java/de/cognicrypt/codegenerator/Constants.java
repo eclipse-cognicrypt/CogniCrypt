@@ -20,6 +20,9 @@
 
 package de.cognicrypt.codegenerator;
 
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+
 /**
  * This class comprises all constants that are used by the plugin.
  *
@@ -152,5 +155,225 @@ public class Constants {
 	//Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;
 	
+	// Constants for the Task Integrator Wizard.
+	// Page constants
+	
+	public static final String PAGE_NAME_FOR_MODE_OF_WIZARD = "pageForChoiceOfModeOfWizard";
+	public static final String PAGE_TITLE_FOR_MODE_OF_WIZARD = "Please select the mode for the wizard";
+	public static final String PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD = "Here you can update the basic details of the task, and the mode in which the wizard will run.";
+	
+	public static final String PAGE_NAME_FOR_CLAFER_FILE_CREATION = "pageForClaferFileCreation";
+	public static final String PAGE_TITLE_FOR_CLAFER_FILE_CREATION = "Add the variablity modelling here";
+	public static final String PAGE_DESCRIPTION_FOR_CLAFER_FILE_CREATION = "Here you can add features to the variability model here.";
+	
+	public static final String PAGE_NAME_FOR_XSL_FILE_CREATION = "pageForXSLFileCreation";
+	public static final String PAGE_TITLE_FOR_XSL_FILE_CREATION = "Add data for the code generation";
+	public static final String PAGE_DESCRIPTION_FOR_XSL_FILE_CREATION = "Here you can details for the code generation.";
+	
+	public static final String PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS = "pageForHighLevelQuestions";
+	public static final String PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS = "Add the high level qustions and their dependencies here";
+	public static final String PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS = "Here you can add the questions that will be asked to the end user, and the dependencies to the "+
+																			"variability modelling and the code generation.";
+	
+	// Widget constants
+	// Labels
+	public static final String LABEL_BROWSE_BUTTON = "Browse";
+	// Dimensions
+	public static final int UI_WIDGET_HEIGHT_NORMAL = 29;
+	// Constants for the composites
+	public static final String WIDGET_DATA_NAME_OF_THE_TASK = "NameOfTheTask";
+	public static final String WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK = "Location of the Library file";
+	public static final String WIDGET_DATA_LOCATION_OF_CLAFER_FILE = "Location of the Clafer file";
+	public static final String WIDGET_DATA_LOCATION_OF_XSL_FILE = "Location of the XSL file";
+	public static final String WIDGET_DATA_LOCATION_OF_JSON_FILE = "Location of the JSON file";
+	public static final String WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED = "isCustomLibraryRequired";
+	public static final String WIDGET_DATA_IS_GUIDED_MODE_CHOSEN = "isGuidedModeChosen";
+	public static final String WIDGET_DATA_IS_GUIDED_MODE_FORCED = "isGuidedModeForced";
+	
+	// Constants for the drop down for the library type on the mode selection page
+	public static final String WIDGET_CONTENT_EXISTING_LIBRARY = "No custom Library";
+	public static final String WIDGET_CONTENT_CUSTOM_LIBRARY = "Custom Library";
+	
+	//Constants for the drop down for the xsl tag on the xsl code page
+	public static final String XSL_VARIABLE_TAG="xslVariable";
+	public static final String XSL_SELECT_TAG="select";
+	public static final String XSL_IF_TAG ="if";
+	public static final String XSL_RESULT_DOCUMENT="result-document";
+	public static final String XSL_APPLY_TEMPLATES ="apply-templates";
+	public static final String XSL_CHOOSE_TAG="choose";
+	public static final String XSL_WHEN_TAG="when";
+	public static final String XSL_OTHERWISE_TAG="otherwise";
+	
+	// Default bounds for the composites
+	public static final Point DEFAULT_SIZE_FOR_TI_WIZARD = new Point(1050, 600);
+	public static final Rectangle RECTANGLE_FOR_COMPOSITES = new Rectangle(0, 0, 887, 500 - 10 -10 ); //897 - 10
+	public static final Rectangle RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES = new Rectangle(897, 10, 100, 29); //1000 - 83 - 10 -10
+	public static final Rectangle RECTANGLE_FOR_SECOND_BUTTON_FOR_NON_MODE_SELECTION_PAGES = new Rectangle(897, 49, 100, 29); //1000 - 83 - 10 -10
+	//public static final Rectangle RECTANGLE_FOR_GRANULAR_CLAFER_UI_ELEMENT = new Rectangle(10, 10, 744, 280);
+	public static final int WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT = 744;
+	public static final int HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT = 280;
+	
+	// Form  data for CompositeGranularUIForClaferFeature
+	public static final int RIGHT_VALUE_FOR_GRANULAR_CLAFER_UI_SUB_ELEMENT = 736;
+	
+	public static final int PADDING_BETWEEN_GRANULAR_UI_ELEMENTS = 10;
+	public static final int PADDING_BETWEEN_SMALLER_UI_ELEMENTS = 3;
+	
+	public static final int WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT = 409;
+	public static final int HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT = 37;
+	
+	// TypeOfTargetDataForSmallUIElements int values. Add the type of data that needs to be shown on the composite here.
+	public static final int FEATURE_PROPERTY = 0;
+	public static final int FEATURE_CONSTRAINT = 1;
+	
+	// source for the contents of this enum : https://www.w3.org/TR/xslt20/
+	public static enum XSLTags{
+		XSL_VARIABLE_TAG("Variable","<xsl:variable>","</xsl:variable>", new String[]{"name",
+																					"select",
+																					"as"
+																					/*,
+																					 * "static",
+																					 * "visibility"*/
+																					}),
+		XSL_VALUE_OF_TAG("Value of","<xsl:value-of/>","", new String[]{"select", "separator" , "disable-output-escaping"}),
+		XSL_IF_TAG("If","<xsl:if>","</xsl:if>",new String[]{"test"}),
+		XSL_RESULT_DOCUMENT("Result Document","<xsl:result-document>","</xsl:result-document>", new String[]{"href",
+																											"format",
+																											"validation",
+																											"type",
+																											"method",
+																											"byte-order-mark",
+																											"cdata-section-elements",
+																											"doctype-public",
+																											"doctype-system",
+																											"encoding",
+																											"escape-uri-attributes",
+																											"include-content-type",
+																											"indent",
+																											"media-type",
+																											"normalization-form",
+																											"omit-xml-declaration",
+																											"standalone",
+																											"undeclare-prefixes",
+																											"use-character-maps",
+																											"output-version"
+																											/*,
+																											"allow-duplicate-names",
+																											"build-tree",
+																											"html-version",
+																											"item-separator",
+																											"json-node-output-method",
+																											"parameter-document",
+																											"suppress-indentation",*/																									
+																											}),
+		XSL_APPLY_TEMPLATES("Apply Templates","<xsl:apply-templates />","", new String[]{"select",
+																						"mode"
+																							}),
+		XSL_CHOOSE_TAG("Choose","<xsl:choose>","</xsl:choose>", new String[]{}),
+		XSL_WHEN_TAG("When","<xsl:when test =\"\">","</xsl:when>", new String[]{"select"
+																				}),
+		XSL_OTHERWISE_TAG("Otherwise","<xsl:otherwise>","</xsl:otheriwse>", new String[]{});
+		
+		private final String XSLTagFaceName;
+		private final String XSLBeginTag;
+		private final String XSLEndTag;
+		private final String[] XSLAttributes;
+		/**
+		 * @param XSLTagFaceNameParam
+		 * @param XSLBeginTagParam
+		 * @param XSLEndTagParam
+		 */
+		private XSLTags(String XSLTagFaceNameParam, String XSLBeginTagParam, String XSLEndTagParam, String[] XSLAttributesParam) {
+			XSLTagFaceName = XSLTagFaceNameParam;
+			XSLBeginTag = XSLBeginTagParam;
+			XSLEndTag = XSLEndTagParam;
+			XSLAttributes = XSLAttributesParam;
+		}
+		/**
+		 * @return the xSLTagFaceName
+		 */
+		public String getXSLTagFaceName() {
+			return XSLTagFaceName;
+		}
+		/**
+		 * @return the xSLBeginTag
+		 */
+		public String getXSLBeginTag() {
+			return XSLBeginTag;
+		}
+		/**
+		 * @return the xSLEndTag
+		 */
+		public String getXSLEndTag() {
+			return XSLEndTag;
+		}
+		/**
+		 * @return the xSLAttributes
+		 */
+		public String[] getXSLAttributes() {
+			return XSLAttributes;
+		}
+		
+		
+	}
+	
+	public static enum FeatureConstraintRelationship{
+		EQUAL("="),
+		NOTEQUAL("!="),
+		LESSTHAN("<"),
+		GREATERTHAN(">"),
+		LESSTHANEQUALTO("<="),
+		GREATERTHANEQUALTO(">="),
+		AND("and"),
+		OR("or");
+		
+		private final String operatorValue;
+		
+		FeatureConstraintRelationship(String operatorValue){
+			this.operatorValue = operatorValue;
+		}
+
+		/**
+		 * @return the operatorValue
+		 */
+		public String getOperatorValue() {
+			return operatorValue;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Enum#toString()
+		 * Just return the operator value instead of the name.
+		 */
+		@Override
+		public String toString() {			
+			return  operatorValue;
+		}
+		
+		
+	}
+	
+	public static enum FeatureType{
+		CONCRETE,
+		ABSTRACT;
+
+		/* 
+		 * Although "concrete" is never used in the actual cfr file, "abstract" is used. Hence the toString() returns lower case.
+		 */
+		@Override
+		public String toString() {
+			return this.name().toLowerCase();
+		}
+		
+	}
+	
+	// for the file utils for the task integrator.
+	public static final String JAR_FILE_DIRECTORY_PATH = rsrcPath + "AdditionalResources" + innerFileSeparator;
+	public static final String CFR_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModel" + innerFileSeparator;
+	public static final String JSON_FILE_DIRECTORY_PATH = rsrcPath + "TaskDesc" + innerFileSeparator;
+	public static final String XSL_FILE_DIRECTORY_PATH = rsrcPath + "XSLTemplates" + innerFileSeparator;
+	public static final String CFR_EXTENSION = ".cfr";
+	public static final String JAR_EXTENSION = ".jar";
+	public static final String JSON_EXTENSION = ".json";
+	public static final String XSL_EXTENSION = ".xsl";
 }
 

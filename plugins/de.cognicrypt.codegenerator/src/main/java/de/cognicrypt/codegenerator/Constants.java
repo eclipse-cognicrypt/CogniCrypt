@@ -61,6 +61,11 @@ public class Constants {
 	public static final String ALGORITHM_COMBO_TOOLTIP = "The algorithm combinations are listed in a decreasing order of security level";
 	public static final String INSTANCE_DETAILS_TOOLTIP="Details of the selected algorithm combination";
 	
+	//Decoration
+	public static final String DEFAULT_ALGORITHM_CHECKBOX_ENABLE= "If you want to view other possible algorithm combinations \nmatching your requirements, please uncheck and click 'Next'";
+	public static final String DEFAULT_ALGORITHM_CHECKBOX_DISABLE= "There are no other algorithm combinations matching your requirements.\nThe code for the above algorithm will be generated into your java project";
+	public static final String DEFAULT_ALGORITHM_NOTIFICATION= "This algorithm was presented to you previously,\n as the best algorithm combination.";
+	public static final String GUIDED_MODE_CHECKBOX_INFO= "If you do not use the guided mode, then you have to \nconfigure the algorithm by yourself";
 	
 	// if the next question page depends on user input, the Page object encodes this as a nextPageID as opposed to the one that the last page points to
 	public static final int QUESTION_PAGE_NO_STATIC_NEXT_PAGE_ID = -2;
@@ -95,6 +100,10 @@ public class Constants {
 	// Error Messages
 	public static final String NoFileOpenedErrorMessage = "There is no file opened to generate the source code in. Will generate output file instead.";
 	public static final String NoJavaFileOpenedErrorMessage = "The currently open file is not a java file. Will generate output file instead.";
+	public static final String CodePreviewErrorMessage="An error occured during code preview generation.";
+	public static final String TransformerErrorMessage="An error occured while performing a transformation ";
+	public static final String TransformerConfigurationErrorMessage="An error occured during creation of transformer";
+	public static final String WritingInstanceClaferErrorMessage="An error occured during";	
 	public static final String CodeGenerationErrorMessage = "An error occured during template generation.";
 	public static final String FilesDoNotExistErrorMessage = "At least one of the files necessary for template generation does not exist.";
 	public static final String NoRunMethodFoundInTemporaryOutputFileErrorMessage = "XSL Template does not contain method " + NameOfTemporaryMethod + ".";
@@ -111,6 +120,7 @@ public class Constants {
 	public static final String JAR = ".jar";
 	public static final String ALGORITHM = "algorithm";
 	public static final String GUIDED_MODE = "Use the guided mode for configuring the task";
+	public static final String DEFAULT_ALGORITHM_PAGE_CHECKBOX ="I like to generate the code for the default algorithm into my Java project";
 
 	public static final String Package = "Package";
 	public static final String Description = "description";
@@ -119,7 +129,8 @@ public class Constants {
 	public static final String Task = "task";
 	public static final String Code = "code";
 	public static final String Type = "type";
-	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List;" };
+	public static final String Security = "security";
+	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List" };
 
 	
 	// Types

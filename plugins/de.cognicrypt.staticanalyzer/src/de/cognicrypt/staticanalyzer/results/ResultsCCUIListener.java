@@ -184,7 +184,16 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 		//Fall-back path when retrieval of actual path fails. If it does, the statement below should be left untouched and the actual bug should be fixed.
 		return currentProject.getFile("src/" + className.getName().replace(".", "/") + ".java");
+	}
+	
+	@Override
+	public void unevaluableConstraint(AnalysisSeedWithSpecification seed, ISLConstraint con, Statement location) {
+		final StringBuilder msg = new StringBuilder();
 
+		msg.append("Constraint ");
+		msg.append(con);
+		msg.append(" could not be evaluted due to insufficient information.");
+		this.markerGenerator.addMarker(unitToResource(location), seed.stmt().getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
 	}
 
 	@Override

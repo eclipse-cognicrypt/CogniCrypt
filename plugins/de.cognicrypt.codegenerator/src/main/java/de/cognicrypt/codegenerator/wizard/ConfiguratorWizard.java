@@ -182,7 +182,7 @@ public class ConfiguratorWizard extends Wizard {
 			this.claferModel = new ClaferModel(Utils.getResourceFromWithin(selectedTask.getModelFile()));
 
 			if (this.taskListPage.isGuidedMode()) {
-				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile()); 
+				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile()); 
 				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(),null);
 			} else {
 				// Updated the calls to accommodate for the pages instead of questions.

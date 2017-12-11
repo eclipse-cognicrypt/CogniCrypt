@@ -379,7 +379,7 @@ public class ConfiguratorWizard extends Wizard {
 				parser.writeClaferInstanceToFile(xmlInstancePath);
 
 				// Generate code template
-				ret &= codeGenerator.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), codeGenerator.getProvider());
+				ret &= codeGenerator.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), codeGenerator.getProvider(), this.taskListPage.getSelectedTask().getXslFile());
 
 				// Delete Instance File
 				FileHelper.deleteFile(xmlInstancePath);
@@ -403,7 +403,7 @@ public class ConfiguratorWizard extends Wizard {
 				parser.writeClaferInstanceToFile(xmlInstancePath);
 
 				// Generate code template
-				ret &= codeGenerator.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), codeGenerator.getProvider());
+				ret &= codeGenerator.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), codeGenerator.getProvider(), this.taskListPage.getSelectedTask().getXslFile());
 
 				// Delete Instance File
 				FileHelper.deleteFile(xmlInstancePath);

@@ -30,6 +30,7 @@ public class Question {
 	private Answer defaultAnswer;
 	private ArrayList<String> method;
 	private ArrayList<Integer> methodParamIds;
+	private String questionType;
 	private Answer enteredAnswer;
 	//Note
 	private String note;
@@ -136,6 +137,14 @@ public class Question {
 				.isDefaultAnswer() + ", next Question=" + answer.getNextID());
 		}
 		return builder.toString();
+	}
+
+	public String getQuestionType() {
+		return questionType;
+	}
+
+	public void setQuestionType(String questionType) {
+		this.questionType = questionType;
 	}
 
 	public Answer setEnteredAnswer(Answer enteredAnswer) {

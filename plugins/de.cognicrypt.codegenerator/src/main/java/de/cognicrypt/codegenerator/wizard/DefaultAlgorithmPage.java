@@ -22,6 +22,7 @@ import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
@@ -29,6 +30,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -103,7 +105,7 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.horizontalSpacing = 10;
 		this.codePreviewPanel.setLayout(gridLayout);
-		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
+		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
 		gridData.horizontalSpan = 1;
 		this.codePreviewPanel.setLayoutData(gridData);
 		final Font boldFont = new Font(this.codePreviewPanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
@@ -130,10 +132,13 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		};
 		this.code.addListener(SWT.Resize, scrollBarListener);
 		this.code.addListener(SWT.Modify, scrollBarListener);
-		
+
+		Display display = Display.getCurrent();
 		this.code.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.code.setBounds(10, 20, 520, 146);
-		this.code.setEditable(false);	
+		this.code.setEditable(false);
+		Color white = display.getSystemColor(SWT.COLOR_WHITE);
+		this.code.setBackground(white);
 		new Label(control, SWT.NONE);		
 		this.code.setText(getCodePreview());
 		

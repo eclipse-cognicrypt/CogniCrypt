@@ -1,7 +1,15 @@
 [
 		{
 			"name": "Symmetric Block Cipher",
-			"xmlFile" : "src/main/resources/Primitives/CipherQuestion.json"
+			"xmlFile" : "src/main/resources/Primitives/CipherQuestion.json",
+			"questions":[{
+			"id":0,
+			"questionText": "Please select the encryption method"},
+			{"id":1,
+			"questionText": "Please select the decryption method"},
+			{"id":2,
+			"questionText": "Please select the key generation method"}
+			]
 		},
 		{
 		  "name": "Message Digest",

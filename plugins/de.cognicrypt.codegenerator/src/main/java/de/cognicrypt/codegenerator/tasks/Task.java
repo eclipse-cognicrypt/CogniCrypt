@@ -25,6 +25,7 @@ public class Task {
 	private String questionsJSONFile;
 	private boolean isSelected;
 	private String additionalResources;
+	private String xslFile;
 
 	public String getAdditionalResources() {
 		return this.additionalResources;
@@ -80,6 +81,20 @@ public class Task {
 
 	public void setQuestionsJSONFile(final String questionsJSONFile) {
 		this.questionsJSONFile = questionsJSONFile;
+	}
+
+	/**
+	 * @return the xslFile
+	 */
+	public String getXslFile() {
+		return xslFile;
+	}
+
+	/**
+	 * @param xslFile the xslFile to set
+	 */
+	public void setXslFile(String xslFile) {
+		this.xslFile = xslFile;
 	}
 
 }

@@ -44,6 +44,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
@@ -52,6 +53,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -199,11 +201,14 @@ public class InstanceListPage extends WizardPage implements Labels {
 				}
 			}
 		};
+		Display display = Display.getCurrent();
 		this.instanceDetails.addListener(SWT.Resize, scrollBarListener);
 		this.instanceDetails.addListener(SWT.Modify, scrollBarListener);
 		this.instanceDetails.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.instanceDetails.setBounds(10, 20, 400, 180);
 		this.instanceDetails.setEditable(false);
+		Color white = display.getSystemColor(SWT.COLOR_WHITE);
+		this.instanceDetails.setBackground(white);
 		/*
 		 * Initially instance properties panel will be hidden
 		 */

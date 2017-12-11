@@ -22,7 +22,7 @@ public class Task {
 	private String description;
 	private String taskDescription;
 	private String modelFile;
-	private String xmlFile;
+	private String questionsJSONFile;
 	private boolean isSelected;
 	private String additionalResources;
 
@@ -46,8 +46,8 @@ public class Task {
 		return this.name;
 	}
 
-	public String getXmlFile() {
-		return this.xmlFile;
+	public String getQuestionsJSONFile() {
+		return this.questionsJSONFile;
 	}
 
 	public boolean isSelected() {
@@ -78,8 +78,8 @@ public class Task {
 		this.isSelected = isSelected;
 	}
 
-	public void setXmlFile(final String xmlFile) {
-		this.xmlFile = xmlFile;
+	public void setQuestionsJSONFile(final String questionsJSONFile) {
+		this.questionsJSONFile = questionsJSONFile;
 	}
 
 }

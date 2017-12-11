@@ -6,7 +6,7 @@
     	"note": "",
         "tooltip": "Example : /home/users/keystores/android.jks", 
         "element": "text",
-        "questionText": "Please specify the path to your keystore",
+        "questionText": "Please specify the path to your keystore:",
         "answers": [{
           "value": "",
           "codeDependencies": [{
@@ -21,7 +21,7 @@
         "note": "",
         "tooltip": "Secret password of keystore",
         "element": "text",
-        "questionText": "Please give the password for your keystore",
+        "questionText": "Please give the password for your keystore:",
         "answers": [{
           "value": "C:\\      ",
           "codeDependencies": [{

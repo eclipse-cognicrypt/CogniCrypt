@@ -84,10 +84,7 @@ public class TaskSelectionPage extends WizardPage {
 		this.container = new Composite(sc, SWT.NONE);
 		this.container.setBounds(10, 10, 200, 300);
 		
-		/** To display the Help view after clicking the help icon
-		 * @param help_id_1 
-		 *        This id refers to HelpContexts_1.xml
-		 */
+		//To display the Help view after clicking the help icon
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "de.cognicrypt.codegenerator.help_id_1");
 		container.setLayout(new GridLayout(2, false));
 
@@ -230,7 +227,7 @@ public class TaskSelectionPage extends WizardPage {
         Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION)
 		.getImage();
 		
-		deco.setDescriptionText("If you do not use the guided mode, then you have to \nconfigure the algorithm by yourself");
+		deco.setDescriptionText(Constants.GUIDED_MODE_CHECKBOX_INFO);
 		deco.setImage(image);
 		deco.setShowOnlyOnFocus(false);
 		

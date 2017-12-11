@@ -48,7 +48,6 @@ import de.cognicrypt.codegenerator.utilities.Labels;
 import de.cognicrypt.codegenerator.utilities.Utils;
 import de.cognicrypt.codegenerator.utilities.XMLParser;
 
-
 public class DefaultAlgorithmPage extends WizardPage implements Labels {
 
 	private Composite control;
@@ -82,10 +81,7 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		final GridLayout layout = new GridLayout(1, false);
 		this.control.setLayout(layout);
 		
-		/** To display the Help view after clicking the help icon
-		 * @param help_id_2 
-		 *        This id refers to HelpContexts_1.xml
-		 */
+		//To display the Help view after clicking the help icon
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.help_id_2");
 		
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
@@ -101,7 +97,7 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		setPageComplete(true);
 
 		algorithmClass.setToolTipText(Constants.DEFAULT_ALGORITHM_COMBINATION_TOOLTIP);
-		
+
 		this.codePreviewPanel = new Group(this.control, SWT.NONE);
 		this.codePreviewPanel.setText(Constants.CODE_PREVIEW);
 		GridLayout gridLayout = new GridLayout();
@@ -156,15 +152,17 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 				getWizard().getContainer().updateButtons();
 			}
 		});
-		defaultAlgorithmCheckBox.setText("I like to generate the code for the default algorithm into my Java project");
+		defaultAlgorithmCheckBox.setText(Constants.DEFAULT_ALGORITHM_PAGE_CHECKBOX);
 		defaultAlgorithmCheckBox.setToolTipText(Constants.DEFAULT_CHECKBOX_TOOLTIP);
 		final ControlDecoration deco = new ControlDecoration(defaultAlgorithmCheckBox, SWT.TOP | SWT.LEFT );
         Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION)
 		.getImage();
-		if (defaultAlgorithmCheckBox.isEnabled())
-		   deco.setDescriptionText("If you want to view other possible algorithm combinations \nmatching your requirements, please uncheck and click 'Next'");
-		else
-			deco.setDescriptionText("There are no other algorithm combinations matching your requirements.\nThe code for the above algorithm will be generated into your java project");
+		if (defaultAlgorithmCheckBox.isEnabled()){
+		   deco.setDescriptionText(Constants.DEFAULT_ALGORITHM_CHECKBOX_ENABLE);
+		}
+		   else{
+			deco.setDescriptionText(Constants.DEFAULT_ALGORITHM_CHECKBOX_DISABLE);
+		 }
 		deco.setImage(image);
 		deco.setShowOnlyOnFocus(false);
 		
@@ -176,16 +174,15 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 			
 	}
 
-
 	private String getCodePreview() {
-		XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject());
+		XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(),this.getProviderFromInstance());
 		final String claferPreviewPath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
 		final XMLParser xmlparser = new XMLParser();
 		xmlparser.displayInstanceValues(this.getValue(), this.configuratorWizard.getConstraints());
 		try {
 			xmlparser.writeClaferInstanceToFile(claferPreviewPath);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e, Constants.WritingInstanceClaferErrorMessage);
 			return "";
 		}
 
@@ -209,14 +206,14 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		try {
 			transformer = tFactory.newTransformer(new StreamSource(xslFile));
 		} catch (TransformerConfigurationException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e, Constants.TransformerConfigurationErrorMessage);
 			return "";
 		}
 		File outputFile = new File(temporaryOutputFile);
 		try {
 			transformer.transform(new StreamSource(claferPreviewFile), new StreamResult(outputFile));
 		} catch (TransformerException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e, Constants.TransformerErrorMessage);
 			return "";
 		}
 
@@ -227,14 +224,12 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 			while ((line = reader.readLine()) != null ) {
 				 if(!line.startsWith("import")){					
 				    sb.append(line);
-				    sb.append("\n");
-				    				
+				    sb.append(Constants.lineSeparator);				    				
 				}
-			}
-			
+			}			
 			  return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
-		} catch (IOException x) {
-			System.err.println(x);
+		} catch (IOException e) {
+			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
 		}
 
 		return "";
@@ -242,6 +237,11 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 
 	public TaskSelectionPage getTaskSelectionPage() {
 		return taskSelectionPage;
+	}
+	
+	public String getProviderFromInstance(){
+		String provider="JCA";
+		return provider;		
 	}
 	
 	public boolean isDefaultAlgorithm() {
@@ -266,8 +266,9 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 	@Override
 	public boolean canFlipToNextPage() {
 		//Can go to next page only if the check box is unchecked
-		if(this.defaultAlgorithmCheckBox.getSelection()==true)
-		return false;
+		if(this.defaultAlgorithmCheckBox.getSelection()==true){
+		  return !this.defaultAlgorithmCheckBox.getSelection();
+		}
 		return true;
 			
 	}

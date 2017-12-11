@@ -52,6 +52,7 @@ import crypto.rules.CryptSLPredicate;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLSplitter;
 import crypto.rules.CryptSLValueConstraint;
+import crypto.rules.ParEqualsPredicate;
 import crypto.rules.StateMachineGraph;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
@@ -119,7 +120,7 @@ public class CrySLModelReader {
 			final EObject eObject = resource.getContents().get(0);
 			final Domainmodel dm = (Domainmodel) eObject;
 			final EnsuresBlock ensure = dm.getEnsure();
-			final Map<CryptSLPredicate, SuperType> pre_preds = Maps.newHashMap();
+			final Map<ParEqualsPredicate, SuperType> pre_preds = Maps.newHashMap();
 			final DestroysBlock destroys = dm.getDestroy();
 			if (destroys != null) {
 				pre_preds.putAll(getKills(destroys.getPred()));
@@ -127,6 +128,7 @@ public class CrySLModelReader {
 			if (ensure != null) {
 				pre_preds.putAll(getPredicates(ensure.getPred()));
 			}
+			
 			this.smg = buildStateMachineGraph(dm.getOrder());
 			final ForbiddenBlock forbEvent = dm.getForbEvent();
 			this.forbiddenMethods = (forbEvent != null) ? getForbiddenMethods(forbEvent.getForb_methods()) : Lists.newArrayList();
@@ -137,10 +139,10 @@ public class CrySLModelReader {
 
 			final List<CryptSLPredicate> actPreds = Lists.newArrayList();
 
-			for (final CryptSLPredicate pred : pre_preds.keySet()) {
+			for (final ParEqualsPredicate pred : pre_preds.keySet()) {
 				final SuperType cond = pre_preds.get(pred);
 				if (cond == null) {
-					actPreds.add(pred);
+					actPreds.add(pred.tobasicPredicate());
 				} else {
 					actPreds.add(new CryptSLCondPredicate(pred.getBaseObject(), pred.getPredName(), pred.getParameters(), pred
 						.isNegated(), getStatesForMethods(CrySLReaderUtils.resolveAggregateToMethodeNames(cond))));
@@ -403,8 +405,8 @@ public class CrySLModelReader {
 		return methodSignatures;
 	}
 
-	private Map<? extends CryptSLPredicate, ? extends SuperType> getKills(final EList<Constraint> eList) {
-		final Map<CryptSLPredicate, SuperType> preds = new HashMap<>();
+	private Map<? extends ParEqualsPredicate, ? extends SuperType> getKills(final EList<Constraint> eList) {
+		final Map<ParEqualsPredicate, SuperType> preds = new HashMap<>();
 		for (final Constraint cons : eList) {
 			final Pred pred = (Pred) cons;
 			final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
@@ -425,9 +427,9 @@ public class CrySLModelReader {
 			final String meth = pred.getPredName();
 			final SuperType cond = pred.getLabelCond();
 			if (cond == null) {
-				preds.put(new CryptSLPredicate(null, meth, variables, true), null);
+				preds.put(new ParEqualsPredicate(null, meth, variables, true), null);
 			} else {
-				preds.put(new CryptSLPredicate(null, meth, variables, true), cond);
+				preds.put(new ParEqualsPredicate(null, meth, variables, true), cond);
 			}
 
 		}
@@ -479,8 +481,8 @@ public class CrySLModelReader {
 		return slci;
 	}
 
-	private Map<CryptSLPredicate, SuperType> getPredicates(final List<Constraint> predList) {
-		final Map<CryptSLPredicate, SuperType> preds = new HashMap<>();
+	private Map<? extends ParEqualsPredicate, ? extends SuperType> getPredicates(final List<Constraint> predList) {
+		final Map<ParEqualsPredicate, SuperType> preds = new HashMap<>();
 		for (final Constraint cons : predList) {
 			final Pred pred = (Pred) cons;
 			final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
@@ -506,16 +508,10 @@ public class CrySLModelReader {
 			}
 			final String meth = pred.getPredName();
 			final SuperType cond = pred.getLabelCond();
-			//			CryptSLObject bobj = null;
-			//			if (pred.getRet().getVal() == null) {
-			//				bobj = new CryptSLObject("this");
-			//			} else {
-			//				bobj = new CryptSLObject(((LiteralExpression) pred.getRet().getVal().getLit().getName()).getValue().getName());
-			//			}
 			if (cond == null) {
-				preds.put(new CryptSLPredicate(null, meth, variables, false), null);
+				preds.put(new ParEqualsPredicate(null, meth, variables, false), null);
 			} else {
-				preds.put(new CryptSLPredicate(null, meth, variables, false), cond);
+				preds.put(new ParEqualsPredicate(null, meth, variables, false), cond);
 			}
 
 		}

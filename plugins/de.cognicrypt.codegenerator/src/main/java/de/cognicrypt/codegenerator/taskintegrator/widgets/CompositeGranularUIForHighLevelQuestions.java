@@ -8,6 +8,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -27,6 +28,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 	private Question question;
 	private AttributedString SUPER_SCRIPT;
 	private ArrayList<ClaferFeature> claferFeatures;
+	//private int spaceToDisplayAns;
 
 	/**
 	 * Create the composite.
@@ -130,25 +132,66 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 			answerString.append(answer.getClaferDependencies().size()>0 ? "#" : "");
             */answerString.append(" | ");
 		}
+
+		txtAnswerType.setText(question.getQuestionType());		
+		
+		if (question.getQuestionType().equalsIgnoreCase("Drop down")) {
+			Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
+			lblAnswers.setBounds(5, 98, 55, 17);
+			lblAnswers.setText("Answers:");
+
+			Combo comboForAnswers = new Combo(grpQuestionDetails, SWT.READ_ONLY);
+			comboForAnswers.setBounds(94, 92, 403, 29);
+
+			for (Answer answer : question.getAnswers()) {
+				comboForAnswers.add(answer.getValue());
+			}
+		} 
+		else if(question.getQuestionType().equalsIgnoreCase("Radio Button")){
+			Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
+			lblAnswers.setBounds(5, 98, 55, 17);
+			lblAnswers.setText("Answers:");
+			int count=question.getAnswers().size();
+
 			
-		
-		
+			Button[] btn=new Button[count];
+			int spaceToDisplayAns=70;
+			
+			if (count == 2) {
+				for (int i = 0; i < count; i++) {
+					btn[i] = new Button(grpQuestionDetails, SWT.RADIO);
+					btn[i].setBounds(spaceToDisplayAns, 92, 210, 29);
+					btn[i].setText(question.getAnswers().get(i).getValue());
+					if (spaceToDisplayAns < 500) {
+						spaceToDisplayAns = spaceToDisplayAns + 220;
+					}
+				}
+
+			} else if (count > 2) {
+				for (int i = 0; i < count; i++) {
+					btn[i] = new Button(grpQuestionDetails, SWT.RADIO);
+					btn[i].setBounds(spaceToDisplayAns, 92, 80, 29);
+					btn[i].setText(question.getAnswers().get(i).getValue());
+					if (spaceToDisplayAns < 500) {
+						spaceToDisplayAns = spaceToDisplayAns + 85;
+					}
+				}
+
+			}
+			
+			
+
+		}
 	
-		
-		txtAnswerType.setText(question.getQuestionType());
-		//txtAnswerType.setText(question.get);
-		
-		if(!question.getQuestionType().equalsIgnoreCase("text box")){
+		else if(question.getQuestionType().equalsIgnoreCase("text box")){
 		Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
 		lblAnswers.setBounds(5, 98, 55, 17);
 		lblAnswers.setText("Answers:");
 		
-		txtAnswers = new Text(grpQuestionDetails, SWT.BORDER);
-		txtAnswers.setEditable(false);
-		txtAnswers.setBounds(94, 92, 403, 29);
-		//txtAnswers.setText("answers");
-		txtAnswers.setText(answerString.toString());
-		}
+		Text txtBox=new Text(grpQuestionDetails,SWT.BORDER);
+		txtBox.setBounds(94, 92, 403, 29);
+		
+	}
 		
 		this.setSize(SWT.DEFAULT, 250);
 

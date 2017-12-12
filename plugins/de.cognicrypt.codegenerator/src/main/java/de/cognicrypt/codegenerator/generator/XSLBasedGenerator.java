@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -62,7 +63,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.DeveloperProject;
-import de.cognicrypt.codegenerator.utilities.Tuple;
 import de.cognicrypt.codegenerator.utilities.Utils;
 
 /**
@@ -88,6 +88,7 @@ public class XSLBasedGenerator {
 		this.project = new DeveloperProject(targetProject);
 		this.provider = provider;
 	}
+
 	/***
 	 * Generation of code templates using XSL template and Clafer instance.
 	 *
@@ -184,7 +185,8 @@ public class XSLBasedGenerator {
 						final Path memberPath = members[i].toPath();
 						Files.copy(memberPath, new File(this.project
 							.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + memberPath.getFileName())
-								.toPath(), StandardCopyOption.REPLACE_EXISTING);
+								.toPath(),
+							StandardCopyOption.REPLACE_EXISTING);
 						final String filePath = members[i].toString();
 						final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.outerFileSeparator));
 						if (Constants.JAR.equals(cutPath.substring(cutPath.indexOf(".")))) {
@@ -274,41 +276,8 @@ public class XSLBasedGenerator {
 	}
 
 	/**
-	 * <<<<<<< HEAD This method initializes the code template generator. If neither a java file is opened nor a project selected initialization fails.
-	 * 
-	 * @param targetProject
-	 *
-	 * @return <Code>true</Code>/<Code>false</Code> if initialization successful/failed.
-	 */
-	public boolean initCodeGeneration(final IProject targetProject) {
-
-		this.project = new DeveloperProject(targetProject);
-		// Commented in April 2017. If at least June 2017 and this has not
-		// caused issues, remove this method altogether and replace it with a regular constructor.
-		// this.currentFile = Utils.getCurrentlyOpenFile();
-		// this.fileOpened = this.currentFile != null;
-		// if (this.currentFile != null &&
-		// Constants.JAVA.equals(this.currentFile.getFileExtension())) {
-		// // Get currently opened file to
-		// this.project = new DeveloperProject(this.currentFile.getProject());
-		// } else {
-		// // if no open file, get selected project
-		// final IProject iproject = targetProject;
-		// if (iproject == null) {
-		// // if no project selected abort with error message
-		// Activator.getDefault().logError(null,
-		// Constants.NoFileandNoProjectOpened);
-		// return false;
-		// }
-		// Activator.getDefault().logInfo(Constants.NoFileOpenedErrorMessage);
-		// this.project = new DeveloperProject(iproject);
-		// }
-		return true;
-	}
-
-	/**
-	 * ======= >>>>>>> master If a file was open when the code generation was started, this method inserts the glue code that calls the generated classes directly into the opened
-	 * file and removes the temporary output file. If no file was open this method is skipped and the temporary output file is not removed.
+	 * If a file was open when the code generation was started, this method inserts the glue code that calls the generated classes directly into the opened file and removes the
+	 * temporary output file. If no file was open this method is skipped and the temporary output file is not removed.
 	 *
 	 * @param temporaryOutputFile
 	 *        Path to temporary output file.
@@ -333,9 +302,8 @@ public class XSLBasedGenerator {
 
 		int cursorPos = cursorPosition.getOffset();
 		final String docContent = currentlyOpenDocument.get();
-		final TreeSet<Tuple<Integer, Integer>> methLims = new TreeSet<>();
-		Tuple<Integer, Integer> classlims;
-		classlims = new Tuple<>(0, 0);
+		final TreeSet<SimpleEntry<Integer, Integer>> methLims = new TreeSet<>();
+		final SimpleEntry<Integer, SimpleEntry<Integer, Integer>> classlims = new SimpleEntry<>(0, null);
 
 		final ASTParser astp = ASTParser.newParser(AST.JLS8);
 		astp.setSource(docContent.toCharArray());
@@ -345,33 +313,30 @@ public class XSLBasedGenerator {
 
 			@Override
 			public boolean visit(final MethodDeclaration node) {
-				methLims.add(new Tuple<>(node.getStartPosition(), node.getStartPosition() + node.getLength()));
+				methLims.add(new SimpleEntry<Integer, Integer>(node.getStartPosition(), node.getStartPosition() + node.getLength()));
 				return super.visit(node);
 			}
 
 			@Override
 			public boolean visit(final TypeDeclaration node) {
-				classlims.x = node.getStartPosition();
-				classlims.y = node.getStartPosition() + node.getLength();
+				classlims.setValue(new SimpleEntry<Integer, Integer>(node.getStartPosition(), node.getStartPosition() + node.getLength()));
 				return super.visit(node);
 			}
 		};
 		cu.accept(astVisitor);
 
 		// Check and correct cursor position
-		// 1. case: cursor is outside the class -> set cursor position to end of
-		// the class
-		// 2. case: it is inside the class but also inside a method -> set
-		// cursor position two right after the method
-		if (classlims.x < cursorPos || cursorPos < classlims.y) {
-			cursorPos = classlims.y - 2;
+		// 1. case: cursor is outside the class -> set cursor position to end of the class
+		// 2. case: it is inside the class but also inside a method -> set cursor position two right after the method
+		if (classlims.getValue().getKey() < cursorPos || cursorPos < classlims.getValue().getValue()) {
+			cursorPos = classlims.getValue().getValue() - 2;
 		} else {
-			for (final Tuple<Integer, Integer> meth : methLims) {
-				if (meth.x.intValue() > cursorPos) {
+			for (final SimpleEntry<Integer, Integer> meth : methLims) {
+				if (meth.getKey().intValue() > cursorPos) {
 					break;
 				}
-				if (meth.x.intValue() <= cursorPos && meth.y.intValue() >= cursorPos) {
-					cursorPos = meth.y.intValue() + 2;
+				if (meth.getKey().intValue() <= cursorPos && meth.getValue().intValue() >= cursorPos) {
+					cursorPos = meth.getValue().intValue() + 2;
 					break;
 				}
 			}
@@ -394,20 +359,14 @@ public class XSLBasedGenerator {
 	 */
 	private void organizeImports(final IEditorPart editor) throws CoreException {
 		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
-		final ICompilationUnit[] compilationUnitsInCryptoPackage = this.project.getPackagesOfProject(Constants.PackageName).getCompilationUnits();
-		for (int i = 0; i < compilationUnitsInCryptoPackage.length; i++) {
-			organizeImportsActionForAllFilesTouchedDuringGeneration.run(compilationUnitsInCryptoPackage[i]);
+		for (ICompilationUnit compUnit : this.project.getPackagesOfProject(Constants.PackageName).getCompilationUnits()) {
+			organizeImportsActionForAllFilesTouchedDuringGeneration.run(compUnit);
 		}
 		organizeImportsActionForAllFilesTouchedDuringGeneration.run(JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor)));
 		editor.doSave(null);
 	}
 
-	protected void setPosForClassDecl(final int start, final int end) {
-		// classlims = new Tuple<Integer, Integer>(start, end);
-	}
-
 	private void setPosForRunMethod(final int start, final int end) {
-
 		this.startingPositionForRunMethod = start;
 		this.endingPositionForRunMethod = end;
 	}
@@ -427,8 +386,7 @@ public class XSLBasedGenerator {
 	private void transform(final File sourceFile, final File xsltFile, final String resultDir) throws TransformerException {
 		// TODO: currently, only one xml file is used
 		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
-		final TransformerFactory tFactory = TransformerFactory.newInstance();
-		final Transformer transformer = tFactory.newTransformer(new StreamSource(xsltFile));
+		final Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(xsltFile));
 		transformer.transform(new StreamSource(sourceFile), new StreamResult(new File(resultDir)));
 	}
 

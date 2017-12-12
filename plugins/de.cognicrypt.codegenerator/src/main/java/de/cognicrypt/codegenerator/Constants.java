@@ -26,7 +26,7 @@ package de.cognicrypt.codegenerator;
  */
 public class Constants {
 
-	public static enum GUIElements {
+	public enum GUIElements {
 		combo, text, itemselection,button,radio, scale
 	}
 
@@ -35,7 +35,7 @@ public class Constants {
 	public static final String innerFileSeparator = "/";
 
 	//Use this file separator for all paths outside the plugin space.
-	public static final String outerFileSeparator = System.getProperty("file.separator");;
+	public static final String outerFileSeparator = System.getProperty("file.separator");
 	public static final String lineSeparator = System.getProperty("line.separator");
 
 	public static final String JavaNatureID = "org.eclipse.jdt.core.javanature";
@@ -44,7 +44,7 @@ public class Constants {
 	public static final String providerPath = rsrcPath + "AdditionalResources" + innerFileSeparator + "Provider";
 
 	//JSON task file
-	public static final String jsonTaskFile = rsrcPath + "Tasks" + innerFileSeparator + "tasks.json";;
+	public static final String jsonTaskFile = rsrcPath + "Tasks" + innerFileSeparator + "tasks.json";
 
 	public static final String pathToPropertyfiles = rsrcPath + "Labels.properties";
 
@@ -147,7 +147,20 @@ public class Constants {
 	public static final String TASK_DESCRIPTION = "Task Description :";
 	public static final String NO_XML_INSTANCE_FILE_TO_WRITE = "No xml instance file to write.";
 	public static final String CLAFER_ALGORITHM = "_Algorithm";
+	
+	public static final String ALGORITHM_SELECTION_PAGE = "Algorithm Selection Page";
+	public static final String DEFAULT_ALGORITHM_PAGE = "Default Algorithm Page";
+	public static final String DESCRIPTION_INSTANCE_LIST_PAGE = "Available algorithm combinations matching your requirements are listed below";
+	public static final String DESCRIPTION_DEFAULT_ALGORITHM_PAGE = "Best algorithm combination and the code matching your requirements is shown below";
+	public static final String instanceList = "Select an algorithm combination";
+	public static final String defaultAlgorithm = "Algorithm combination:";
+	public static final String TASK_LIST = "Select Task";
+	public static final String DESCRIPTION_TASK_SELECTION_PAGE = "Which cryptography task would you like to perform?";
+	public static final String DESCRIPTION_VALUE_SELECTION_PAGE = "The following questions help to find the algorithm configuration most suited for your needs";
+	public static final String PROPERTIES = "Algorithm Preferences";
+	public static final String SELECT_PROPERTIES = "Select Properties";
 
+	
 	//Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;
 

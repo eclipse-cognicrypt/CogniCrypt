@@ -139,7 +139,7 @@ public class QuestionDialog extends Dialog {
 		lblType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		lblType.setText("Answer type");
 
-		String comboItem1 = "Drop down ";
+		String comboItem1 = "Drop down";
 		String comboItem2 = "text box";
 		String comboItem3 = "itemSelection ( More than one answer selection possible )";
 		String comboItem4 = "Radio Button";
@@ -192,14 +192,14 @@ public class QuestionDialog extends Dialog {
 						txtAnswer.setValue("");
 						question.getAnswers().add(txtAnswer);
 						break;
-					case "Drop down ":
-						boolean comboSelected = combo.getText().equalsIgnoreCase("Drop down ") ? true : false;
+					case "Drop down":
+						boolean comboSelected = combo.getText().equalsIgnoreCase("Drop down") ? true : false;
 						btnAddAnswer.setVisible(comboSelected);
-						if (!currentQuestionType.equalsIgnoreCase("combo (Drop down )")) {
+						if (!currentQuestionType.equalsIgnoreCase("Drop down")) {
 							compositeToHoldAnswers.getListOfAllAnswer().clear();
 							compositeToHoldAnswers.updateAnswerContainer();
 							compositeToHoldAnswers.setVisible(false);
-							currentQuestionType = "Drop down ";
+							currentQuestionType = "Drop down";
 						}
 						break;
 					case "itemSelection ( More than one answer selection possible )":

@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -95,7 +96,6 @@ public class QuestionDialog extends Dialog {
 				if (tabFolder.getSelectionIndex() == 1) {
 					System.out.println(tabFolder.getSelectionIndex());
 					//lblQuestionContent.setText(textQuestion.getText());
-
 					if (question == null) {
 						linkAnswersTabMessageBox.open();
 					}
@@ -146,7 +146,7 @@ public class QuestionDialog extends Dialog {
 		combo = new Combo(composite, SWT.READ_ONLY);
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		//combo.setItems(new String[] {comboItem1, comboItem2, comboItem3, comboItem4 });
-		combo.setItems(new String[] {comboItem1, comboItem2, comboItem4 });
+		combo.setItems(new String[] { comboItem1, comboItem2, comboItem4 });
 		combo.select(-1);
 
 		Button btnAddAnswer = new Button(composite, SWT.None);
@@ -157,7 +157,7 @@ public class QuestionDialog extends Dialog {
 		new Label(composite, SWT.NONE);
 		new Label(composite, SWT.NONE);
 		boolean showRemoveButton = true;
-		compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton,null);
+		compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton, null);
 		GridData gd_compositeToHoldAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 		gd_compositeToHoldAnswers.heightHint = 125;
 		gd_compositeToHoldAnswers.widthHint = 520;
@@ -244,7 +244,6 @@ public class QuestionDialog extends Dialog {
 
 		TabItem tbtmLinkAnswers = new TabItem(tabFolder, SWT.NONE);
 		tbtmLinkAnswers.setText("Link to other questions");
-		
 
 		Composite compositeForLinkAnswerTab = new Composite(tabFolder, SWT.NONE);
 		tbtmLinkAnswers.setControl(compositeForLinkAnswerTab);
@@ -325,7 +324,7 @@ public class QuestionDialog extends Dialog {
 					}
 
 					if (answer.getNextID() != -2) {
-						if(answer.getNextID()==-1){
+						if (answer.getNextID() == -1) {
 							comboForLinkAnswers.setText("Default");
 						} else {
 							for (Question question : listOfAllQuestions) {
@@ -334,13 +333,13 @@ public class QuestionDialog extends Dialog {
 								}
 							}
 						}
-					}					
+					}
 
 					comboForLinkAnswers.addSelectionListener(new SelectionAdapter() {
 
 						@Override
 						public void widgetSelected(SelectionEvent e) {
-							if(comboForLinkAnswers.getText().equalsIgnoreCase("Default")){
+							if (comboForLinkAnswers.getText().equalsIgnoreCase("Default")) {
 								answer.setNextID(-1);
 							} else {
 								for (Question question : listOfAllQuestions) {
@@ -397,7 +396,10 @@ public class QuestionDialog extends Dialog {
 				gd_compositeAnswers.horizontalSpan = 2;
 				compositeForAnswers1.setLayoutData(gd_compositeAnswers);
 
-				Label lblEmpty = new Label(compositeForAnswers1, SWT.NONE);
+				/*
+				 * CompositeToHoldSmallerUIElements compositeForAnswers11= new CompositeToHoldSmallerUIElements(compositeForClaferTab, SWT.NONE, null, false,null);
+				 * compositeForAnswers11.setLayout(new GridLayout(5, false)); compositeForAnswers11.setLayoutData(gd_compositeAnswers);
+				 */ Label lblEmpty = new Label(compositeForAnswers1, SWT.NONE);
 				lblEmpty.setText("Answers");
 
 				Label lblForAlgorithm = new Label(compositeForAnswers1, SWT.NONE);
@@ -554,8 +556,8 @@ public class QuestionDialog extends Dialog {
 
 		TabItem tbtmLink = new TabItem(tabFolder, SWT.NONE);
 		tbtmLink.setText("Link to variables to use in code");
-		
-		Composite compositeForLinkCodeTab=new Composite(tabFolder,SWT.None);
+
+		Composite compositeForLinkCodeTab = new Composite(tabFolder, SWT.None);
 		tbtmLink.setControl(compositeForLinkCodeTab);
 		compositeForLinkCodeTab.setLayout(new GridLayout(2, false));
 
@@ -636,76 +638,34 @@ public class QuestionDialog extends Dialog {
 				Label question_3Txt = new Label(compositeForLinkCodeTab, SWT.None);
 				question_3Txt.setText(question.getQuestionText());
 
-				Composite answersCompositeToLinkCode = new Composite(compositeForLinkCodeTab, SWT.None);
-				answersCompositeToLinkCode.setLayout(new GridLayout(3, false));
-				GridData gd_LinkCode = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
-				answersCompositeToLinkCode.setLayoutData(gd_LinkCode);
+				// Group answersCompositeToLinkCode containing the headers of the table
+				Group answersCompositeToLinkCode = new Group(compositeForLinkCodeTab, SWT.NONE);
+				GridData gd_answersCompositeToLinkCode = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
+				answersCompositeToLinkCode.setLayoutData(gd_answersCompositeToLinkCode);
 
 				Label lblAnswersLink = new Label(answersCompositeToLinkCode, SWT.None);
+				lblAnswersLink.setBounds(5, 5, 210, 25);
 				lblAnswersLink.setText("Answers");
 
 				Label lblOption = new Label(answersCompositeToLinkCode, SWT.None);
+				lblOption.setBounds(225, 5, 200, 25);
 				lblOption.setText("Set Name");
 
 				Label lblText = new Label(answersCompositeToLinkCode, SWT.NONE);
+				lblText.setBounds(430, 5, 200, 25);
 				lblText.setText("Set Value");
 
+				//To create a scrollable Composite to display all the answers with the required input fields 
+				CompositeToHoldSmallerUIElements answerCompositeForLinkCodeTab = new CompositeToHoldSmallerUIElements(compositeForLinkCodeTab, SWT.NONE, null, false, null);
+				GridData gd_LinkCode = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
+				gd_LinkCode.heightHint = 200;
+				gd_LinkCode.widthHint = 700;
+				answerCompositeForLinkCodeTab.setLayoutData(gd_LinkCode);
+				answerCompositeForLinkCodeTab.setLayout(new GridLayout(3, false));
+
 				for (Answer answer : question.getAnswers()) {
-
-					Text txtBoxAnswers = new Text(answersCompositeToLinkCode, SWT.BORDER);
-					GridData gd_txtBoxAnswers = new GridData(SWT.FILL, SWT.CENTER, true, true);
-					gd_txtBoxAnswers.widthHint = 120;
-					txtBoxAnswers.setLayoutData(gd_txtBoxAnswers);
-					txtBoxAnswers.setEditable(false);
-					txtBoxAnswers.setText(answer.getValue());
-
-					Text txtOption = new Text(answersCompositeToLinkCode, SWT.BORDER);
-					txtOption.setVisible(true);
-					GridData gd_txtOption = new GridData(SWT.FILL, SWT.CENTER, true, true);
-					gd_txtOption.widthHint = 100;
-					txtOption.setLayoutData(gd_txtOption);
-
-					Text txtValue = new Text(answersCompositeToLinkCode, SWT.BORDER);
-					txtValue.setVisible(true);
-					GridData gd_txtValue = new GridData(SWT.FILL, SWT.CENTER, true, true);
-					gd_txtValue.widthHint = 100;
-					txtValue.setLayoutData(gd_txtValue);
-
-					CodeDependency codeDependency = new CodeDependency();
-
-					if (answer.getCodeDependencies() != null) {
-						for (CodeDependency cd : answer.getCodeDependencies()) {
-							if (cd.getOption() != null) {
-								txtOption.setText(cd.getOption());
-								codeDependency.setOption(txtOption.getText());
-							}
-							if (cd.getValue() != null) {
-								txtValue.setText(cd.getValue());
-								codeDependency.setValue(txtValue.getText());
-							}
-						}
-					}
-
-					txtOption.addFocusListener(new FocusAdapter() {
-
-						@Override
-						public void focusLost(FocusEvent e) {
-							codeDependency.setOption(txtOption.getText());
-						}
-					});
-
-					txtValue.addFocusListener(new FocusAdapter() {
-
-						@Override
-						public void focusLost(FocusEvent e) {
-							codeDependency.setValue(txtValue.getText());
-						}
-					});
-
-					ArrayList<CodeDependency> codeDependencies = new ArrayList<CodeDependency>();
-					codeDependencies.add(codeDependency);
-					answer.setCodeDependencies(codeDependencies);
-
+					//To add the widgets and data inside answerCompositeForLinkCodeTab
+					answerCompositeForLinkCodeTab.addELementsInCodeTabQuestionDialog(answer);
 				}
 
 			}

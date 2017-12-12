@@ -8,11 +8,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
@@ -25,7 +20,6 @@ import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.EnsuredCryptSLPredicate;
 import crypto.analysis.IAnalysisSeed;
 import crypto.rules.CryptSLArithmeticConstraint;
-import crypto.rules.CryptSLComparisonConstraint;
 import crypto.rules.CryptSLConstraint;
 import crypto.rules.CryptSLMethod;
 import crypto.rules.CryptSLPredicate;
@@ -52,7 +46,7 @@ import typestate.interfaces.ISLConstraint;
  */
 public class ResultsCCUIListener extends CrySLAnalysisListener {
 
-	private ErrorMarkerGenerator markerGenerator;
+	private final ErrorMarkerGenerator markerGenerator;
 
 	public ResultsCCUIListener(ErrorMarkerGenerator gen) {
 		markerGenerator = gen;
@@ -70,7 +64,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	private void evaluateBrokenConstraint(ISLConstraint brokenConstraint, StringBuilder msg) {
 		if (brokenConstraint instanceof CryptSLValueConstraint) {
 			evaluateValueConstraint(brokenConstraint, msg);
-		} else if (brokenConstraint instanceof CryptSLComparisonConstraint) {
+		} else if (brokenConstraint instanceof CryptSLArithmeticConstraint) {
 			CryptSLArithmeticConstraint brokenArthConstraint = (CryptSLArithmeticConstraint) brokenConstraint;
 			msg.append(brokenArthConstraint.getLeft());
 			msg.append(" ");
@@ -118,7 +112,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		msg.append("Unexpected Method Call to");
 		msg.append(((JInvokeStmt) location.getStmt()).getInvokeExpr().getMethod().toString());
 		msg.append(". Expected a Call to  one of the Following Methods ");
-		Set<String> altMethods = new HashSet<String>();
+		Set<String> altMethods = new HashSet<>();
 		for (SootMethod expectedCall : expectedCalls) {
 			altMethods.add(expectedCall.getName());
 		}
@@ -169,7 +163,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartColumnNumber(), "Predicate mismatch");
 	}
 
-	//Untested
 	private IResource unitToResource(StmtWithMethod stmt) {
 		SootClass className = stmt.getMethod().getDeclaringClass();
 		final IProject currentProject = Utils.getCurrentProject();

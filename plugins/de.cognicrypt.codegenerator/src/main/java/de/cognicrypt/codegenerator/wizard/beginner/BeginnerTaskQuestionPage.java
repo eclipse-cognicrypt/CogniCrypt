@@ -260,7 +260,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					createNote(parent, question);
 				}
 				Answer evalAnswer = question.getEnteredAnswer();
-				if (evalAnswer != null) {
+				if (evalAnswer == null) {
 					evalAnswer = question.getDefaultAnswer();
 				}
 				for (int i = 0; i < answers.size(); i++) {

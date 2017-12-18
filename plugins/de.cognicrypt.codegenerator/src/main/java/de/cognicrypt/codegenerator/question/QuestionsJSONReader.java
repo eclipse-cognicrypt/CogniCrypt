@@ -95,7 +95,7 @@ public class QuestionsJSONReader {
 	 * @return Questions
 	 */
 	public List<Question> getQuestions(final Task task) {
-		return getQuestions(task.getXmlFile());
+		return getQuestions(task.getQuestionsJSONFile());
 	}
 	
 	/***
@@ -106,7 +106,7 @@ public class QuestionsJSONReader {
 	 * @return Pages
 	 */
 	public List<Page> getPages(final Task task) {
-		return getPages(task.getXmlFile());
+		return getPages(task.getQuestionsJSONFile());
 	}
 	
 	/**

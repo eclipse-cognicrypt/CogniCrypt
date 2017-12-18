@@ -3,6 +3,7 @@
 	"content":[{
 			"id":"0",
 			"element" : "combo",
+			"note": "",
 			"questionText":"Do you want to evaluate the trustworthiness of one or more opinions?",
 			"answers":[{
 				"value":"One",
@@ -29,6 +30,7 @@
 			"content":[{
 			"id":"1",
 			"element" : "text",
+			"note": "",
 			"questionText":"How many opinions do you want combine?",
 			"answers":[{
 				"value":"",
@@ -46,6 +48,7 @@
 			"content":[{
 			"id":"2",
 			"element" : "combo",
+			"note": "",
 			"questionText":"Please select an operator for combining the opinions",
 			"answers":[{
 				"value":"AND", 
@@ -108,6 +111,7 @@
 			"content":[{
 			"id":"3",
 			"element":"text",
+			"note": "",
 			"questionText":"Please set the maximal expected number of evidence (>0)",
 			"answers":[{
 				"value":"",
@@ -125,6 +129,7 @@
 			"content":[{
 			"id":"4",
 			"element" : "radio",
+			"note": "",
 			"questionText":"Do you want to show user interface to visualize the expectation?",
 			"answers":[{
 				"value":"Yes",

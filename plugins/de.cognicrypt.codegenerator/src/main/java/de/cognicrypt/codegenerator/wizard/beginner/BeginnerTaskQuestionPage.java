@@ -41,9 +41,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Scale;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
@@ -232,6 +234,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		final List<Answer> answers = question.getAnswers();
 		final Composite container = getPanel(parent);
 		final Label label = new Label(container, SWT.TOP | SWT.FILL);
+		GridData gd_question= new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_question.widthHint = 550;
+		label.setLayoutData(gd_question);
 		label.setText(question.getQuestionText());
 		switch (question.getElement()) {
 			case combo:

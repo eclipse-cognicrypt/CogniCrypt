@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
@@ -137,7 +138,16 @@ public class FileUtilities {
 	 * @param claferFeatures
 	 */
 	private void writeCFRFile(ArrayList<ClaferFeature> claferFeatures) {
-		
+		File cfrFile = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.CFR_EXTENSION);
+		try {
+			FileWriter writer = new FileWriter(cfrFile);
+			for (ClaferFeature cfrFeature : claferFeatures) {
+				writer.write(cfrFeature.toString());
+			}
+			writer.close();
+		} catch (IOException e) {
+			Activator.getDefault().logError(e);
+		}
 	}
 		
 	/**

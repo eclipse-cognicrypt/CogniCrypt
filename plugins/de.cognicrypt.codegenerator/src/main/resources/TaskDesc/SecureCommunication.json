@@ -120,7 +120,7 @@
       "id": "6",
       "element": "button",
       "questionText": "Click \"Test\" button, if you want to test the connection to the host IP else click \"Next\".",
-      "method": ["Test", "crossing.e1.configurator.wizard.TLSConnection", "testConnection"],
+      "method": ["Test", "de.cognicrypt.codegenerateor.wizard.TLSConnection", "testConnection"],
       "methodParamIds": ["4", "5"],
       "answers": [{
           "value": "true",

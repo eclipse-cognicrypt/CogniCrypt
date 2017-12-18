@@ -78,15 +78,15 @@ public class FileUtilities {
 			try {
 				
 				if(existingFileLocation.getPath().endsWith(Constants.CFR_EXTENSION)) {
-					targetDirectory= new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTaskName() + Constants.CFR_EXTENSION);
+					targetDirectory = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.CFR_EXTENSION);
 				} else if(existingFileLocation.getPath().endsWith(Constants.JSON_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTaskName() + Constants.JSON_EXTENSION);
+					targetDirectory = new File(Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.JSON_EXTENSION);
 				} else if(existingFileLocation.getPath().endsWith(Constants.XSL_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH), getTaskName() + Constants.XSL_EXTENSION);
+					targetDirectory = new File(Utils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XSL_EXTENSION);
 				} else if(existingFileLocation.getPath().endsWith(Constants.JAR_EXTENSION)) {
-					File tempDirectory = new File(Utils.getResourceFromWithin(Constants.JAR_FILE_DIRECTORY_PATH), getTaskName() + Constants.innerFileSeparator);
+					File tempDirectory = new File(Utils.getResourceFromWithin(Constants.JAR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.innerFileSeparator);
 					tempDirectory.mkdir();
-					targetDirectory = new File(tempDirectory, getTaskName() + Constants.JAR_EXTENSION);
+					targetDirectory = new File(tempDirectory, getTrimmedTaskName() + Constants.JAR_EXTENSION);
 				} else {
 					throw new Exception("Unknown file type.");
 				}
@@ -162,6 +162,15 @@ public class FileUtilities {
 		return taskName;
 	}
 	
+	/**
+	 * get machine-readable task name
+	 * 
+	 * @return task name without non-alphanumerics
+	 */
+	private String getTrimmedTaskName() {
+		return getTaskName().replaceAll("[^A-Za-z0-9]", "");
+	}
+
 	/**
 	 * 
 	 * @param taskName

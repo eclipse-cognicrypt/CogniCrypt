@@ -248,11 +248,11 @@ public class PWHasher {
 	}
 
 	private static String toBase64(byte[] array) {
-		return DatatypeConverter.printBase64Binary(array);
+		return Base64.getEncoder().encodeToString(array);
 	}
 
 	private static byte[] fromBase64(String hash) {
-		return DatatypeConverter.parseBase64Binary(hash);
+		return Base64.getDecoder().decode(hash);
 	}
 }
 </xsl:result-document>

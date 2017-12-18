@@ -41,10 +41,10 @@
 			"name": "SECMUPACOMP",
 			"description": "Secure Multi-Party Computation",
 			"taskDescription": "This cryptographic task helps multiple parties to jointly compute a function over their respective inputs while keeping those inputs private.",
-			"modelFile" : "src/main/resources/ClaferModel/ABY.js",
-			"questionsJSONFile" : "src/main/resources/TaskDesc/ABYQuestions.json",
-			"additionalResources" : "src/main/resources/AdditionalResources/ABY",
-			"xslFile" : "src/main/resources/XSLTemplates/JCA.xsl"
+			"modelFile" : "src/main/resources/ClaferModel/SECMUPACOMP.js",
+			"questionsJSONFile" : "src/main/resources/TaskDesc/SECMUPACOMP.json",
+			"additionalResources" : "src/main/resources/AdditionalResources/SECMUPACOMP",
+			"xslFile" : "src/main/resources/XSLTemplates/SECMUPACOMP.xsl"
 		}
 		,
 		{

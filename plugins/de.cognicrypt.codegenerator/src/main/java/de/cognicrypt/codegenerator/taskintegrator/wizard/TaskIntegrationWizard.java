@@ -1,13 +1,19 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
+import java.io.File;
+import java.util.ArrayList;
+
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.FileUtilities;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 
 
@@ -68,6 +74,23 @@ public class TaskIntegrationWizard extends Wizard {
 				fileUtilities.writeTaskToJSONFile(objectForDataInNonGuidedMode.getTask());
 				return true;
 			}
+		} else {
+
+			// collect input to task-related files from individual pages
+			ArrayList<ClaferFeature> claferFeatures = ((CompositeToHoldGranularUIElements) ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION))
+				.getCompositeToHoldGranularUIElements()).getListOfAllClaferFeatures();
+			ArrayList<Question> questions = ((CompositeToHoldGranularUIElements) ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS))
+				.getCompositeToHoldGranularUIElements()).getListOfAllQuestions();
+			String xslFileContents = ((CompositeForXsl) ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)).getCompositeForXsl()).getXslTxtBox()
+				.getText();
+
+			// FIXME ObjectForDataInNonGuidedMode is only used in non-guided mode but custom library location is always needed
+			// ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode().getLocationOfCustomLibrary();
+			File customLibLocation = null;
+
+			fileUtilities.writeFiles(claferFeatures, questions, xslFileContents, customLibLocation);
+
+			return true;
 		}
 
 		return false;

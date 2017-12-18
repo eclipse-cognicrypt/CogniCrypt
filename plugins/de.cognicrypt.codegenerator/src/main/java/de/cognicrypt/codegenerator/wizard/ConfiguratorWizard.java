@@ -49,7 +49,6 @@ import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.utilities.FileHelper;
-import de.cognicrypt.codegenerator.utilities.Labels;
 import de.cognicrypt.codegenerator.utilities.Utils;
 import de.cognicrypt.codegenerator.utilities.XMLParser;
 import de.cognicrypt.codegenerator.wizard.advanced.AdvancedUserValueSelectionPage;
@@ -75,25 +74,23 @@ public class ConfiguratorWizard extends Wizard {
 	private ClaferModel claferModel;
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
-	private HashMap<Integer, IWizardPage> createdPages = new HashMap<Integer, IWizardPage>();
+	private final HashMap<Integer, IWizardPage> createdPages;
 
 	public ConfiguratorWizard() {
 		super();
 		// Set the Look and Feel of the application to the operating
 		// system's look and feel.
 		try {
-
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			Activator.getDefault().logError(e);
 		}
 		setWindowTitle("Cryptography Task Configurator");
-		ImageDescriptor image =
-            AbstractUIPlugin.
-                imageDescriptorFromPlugin("de.cognicrypt.codegenerator",
-                   "icons/cognicrypt-medium.png");
-        setDefaultPageImageDescriptor(image);        
-		}
+		ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "icons/cognicrypt-medium.png");
+		setDefaultPageImageDescriptor(image);
+
+		createdPages = new HashMap<>();
+	}
 
 	@Override
 	public void addPages() {
@@ -104,11 +101,11 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public boolean canFinish() {
-		String pageName =getContainer().getCurrentPage().getName();
-		if (pageName.equals(Labels.DEFAULT_ALGORITHM_PAGE )){
-			return(this.defaultAlgorithmPage.isDefaultAlgorithm());
+		String pageName = getContainer().getCurrentPage().getName();
+		if (pageName.equals(Constants.DEFAULT_ALGORITHM_PAGE)) {
+			return (this.defaultAlgorithmPage.isDefaultAlgorithm());
 		}
-		return (pageName.equals(Labels.ALGORITHM_SELECTION_PAGE ));
+		return (pageName.equals(Constants.ALGORITHM_SELECTION_PAGE));
 	}
 
 	private boolean checkifInUpdateRound() {
@@ -170,7 +167,7 @@ public class ConfiguratorWizard extends Wizard {
 			if (createdPages.containsKey(nextPageid)) {
 				return createdPages.get(nextPageid);
 			}
-			
+
 		}
 		if (currentPage instanceof TaskSelectionPage) {
 			createdPages.clear();
@@ -185,14 +182,9 @@ public class ConfiguratorWizard extends Wizard {
 				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile()); 
 				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(),null);
 			} else {
-				// Updated the calls to accommodate for the pages instead of questions.
-				//this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getXmlFile());
-				//this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextQuestion(), this.beginnerQuestions.getTask());
-
-				// The 3rd parameter in this constructor call is benign, it only exists to call the constructor designed for pages
 				this.preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, (AstConcreteClafer) org.clafer.cli.Utils
-									.getModelChildByName(this.claferModel.getModel(), "c0_" + selectedTask.getName()));
-				   }
+					.getModelChildByName(this.claferModel.getModel(), "c0_" + selectedTask.getName()));
+			}
 			if (this.constraints != null) {
 				this.constraints = null;
 			}
@@ -218,7 +210,6 @@ public class ConfiguratorWizard extends Wizard {
 					if (entry.getKey().getElement().equals(GUIElements.itemselection)) {
 						handleItemSelection(entry);
 					}
-
 					this.constraints.put(entry.getKey(), entry.getValue());
 				}
 
@@ -232,7 +223,7 @@ public class ConfiguratorWizard extends Wizard {
 						if (checkifInUpdateRound()) {
 							this.beginnerQuestions.previousPage();
 						}
-						
+
 						final IWizardPage[] pages = getPages();
 						for (int i = 1; i < pages.length; i++) {
 							if (!(pages[i] instanceof BeginnerTaskQuestionPage)) {
@@ -258,41 +249,39 @@ public class ConfiguratorWizard extends Wizard {
 				// running in beginner mode
 				instanceGenerator.generateInstances(this.constraints);
 			}
-            if(currentPage instanceof BeginnerTaskQuestionPage) {
-            	//default algorithm page will be added only for beginner mode
-			if (instanceGenerator.getNoOfInstances() !=0) {
-				this.defaultAlgorithmPage = new DefaultAlgorithmPage(instanceGenerator, taskListPage, this );
-				addPage(this.defaultAlgorithmPage);
-				return this.defaultAlgorithmPage;
-				
-				
-			} else {
-				if ("nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[3].getMethodName())) {
-					final String message = Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER ;
-					MessageDialog.openError(new Shell(), "Error", message);
+			if (currentPage instanceof BeginnerTaskQuestionPage) {
+				//default algorithm page will be added only for beginner mode
+				if (instanceGenerator.getNoOfInstances() != 0) {
+					this.defaultAlgorithmPage = new DefaultAlgorithmPage(instanceGenerator, taskListPage, this);
+					addPage(this.defaultAlgorithmPage);
+					return this.defaultAlgorithmPage;
+
+				} else {
+					if ("nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[3].getMethodName())) {
+						final String message = Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER;
+						MessageDialog.openError(new Shell(), "Error", message);
+					}
+				}
+			} else if (currentPage instanceof AdvancedUserValueSelectionPage) {
+				//instance list page will be added after advanced user value selection page in advanced mode.
+				//(default algorithm page is not added in advanced mode)
+				if (instanceGenerator.getNoOfInstances() > 0) {
+					this.instanceListPage = new InstanceListPage(instanceGenerator, taskListPage, this);
+					addPage(this.instanceListPage);
+					return this.instanceListPage;
+
+				} else {
+					if ("nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[3].getMethodName())) {
+						//final String message = this.taskListPage.isGuidedMode() ? Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER : Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE;
+						final String message = Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE;
+						MessageDialog.openError(new Shell(), "Error", message);
+					}
 				}
 			}
-            }
-            else if(currentPage instanceof AdvancedUserValueSelectionPage) {
-            	//instance list page will be added after advanced user value selection page in advanced mode.
-            	//(default algorithm page is not added in advanced mode)
-    			if (instanceGenerator.getNoOfInstances() >0) {
-    				this.instanceListPage = new InstanceListPage(instanceGenerator,taskListPage, this);
-    				addPage(this.instanceListPage);
-    				return this.instanceListPage;
-    				
-    			} else {
-    				if ("nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[3].getMethodName())) {
-    					//final String message = this.taskListPage.isGuidedMode() ? Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER : Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE;
-    					final String message = Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE;
-    					MessageDialog.openError(new Shell(), "Error", message);
-    				}
-    			}
-                }
-			
+
 		}
 		//adding instance details page after default algorithm page in beginner mode
-		else if (currentPage instanceof DefaultAlgorithmPage){
+		else if (currentPage instanceof DefaultAlgorithmPage) {
 			final InstanceGenerator instanceGenerator = new InstanceGenerator(Utils.getResourceFromWithin(selectedTask.getModelFile())
 				.getAbsolutePath(), "c0_" + this.taskListPage.getSelectedTask().getName(), this.taskListPage.getSelectedTask().getDescription());
 
@@ -301,7 +290,7 @@ public class ConfiguratorWizard extends Wizard {
 				instanceGenerator.generateInstances(this.constraints);
 			}
 			//instance details page will be added after default algorithm page only if the number of instances is greater than 1
-			if(!this.defaultAlgorithmPage.isDefaultAlgorithm() && instanceGenerator.getNoOfInstances() >1){
+			if (!this.defaultAlgorithmPage.isDefaultAlgorithm() && instanceGenerator.getNoOfInstances() > 1) {
 				this.instanceListPage = new InstanceListPage(instanceGenerator, taskListPage, this);
 				addPage(this.instanceListPage);
 				return this.instanceListPage;
@@ -320,7 +309,7 @@ public class ConfiguratorWizard extends Wizard {
 	 */
 	@Override
 	public IWizardPage getPreviousPage(final IWizardPage currentPage) {
-		final boolean lastPage = currentPage instanceof InstanceListPage || currentPage instanceof DefaultAlgorithmPage ;
+		final boolean lastPage = currentPage instanceof InstanceListPage || currentPage instanceof DefaultAlgorithmPage;
 		if (!checkifInUpdateRound() && (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage || lastPage)) {
 			if (!this.beginnerQuestions.isFirstPage()) {
 				this.beginnerQuestions.previousPage();
@@ -365,12 +354,12 @@ public class ConfiguratorWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		boolean ret = false;
-		if (getContainer().getCurrentPage().getName().equals(Labels.ALGORITHM_SELECTION_PAGE ) ) {
+		if (Constants.ALGORITHM_SELECTION_PAGE.equals(getContainer().getCurrentPage().getName())) {
 			ret = this.instanceListPage.isPageComplete();
 			try {
 				final XMLParser parser = new XMLParser();
 				parser.displayInstanceValues(this.instanceListPage.getValue(), this.constraints);
-				
+
 				// Initialize Code Generation
 				XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject(), this.instanceListPage.getProviderFromInstance());
 
@@ -389,14 +378,14 @@ public class ConfiguratorWizard extends Wizard {
 				return false;
 			}
 		}
-		if ( getContainer().getCurrentPage().getName().equals(Labels.DEFAULT_ALGORITHM_PAGE ) ) {
+		if (Constants.DEFAULT_ALGORITHM_PAGE.equals(getContainer().getCurrentPage().getName())) {
 			ret = this.defaultAlgorithmPage.isPageComplete();
 			try {
 				final XMLParser parser = new XMLParser();
 				parser.displayInstanceValues(this.defaultAlgorithmPage.getValue(), this.constraints);
-				
+
 				// Initialize Code Generation
-				XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject(),this.defaultAlgorithmPage.getProviderFromInstance());
+				XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject(), this.defaultAlgorithmPage.getProviderFromInstance());
 
 				// Write Instance File into developer project
 				final String xmlInstancePath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
@@ -415,7 +404,8 @@ public class ConfiguratorWizard extends Wizard {
 		}
 		return ret;
 	}
-	public  HashMap<Question, Answer> getConstraints(){
+
+	public HashMap<Question, Answer> getConstraints() {
 		return constraints;
 	}
 }

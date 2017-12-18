@@ -50,7 +50,9 @@ public class FileUtilities {
 		writeCFRFile(claferFeatures);
 		writeJSONFile(questions);
 		writeXSLFile(xslFileContents);
-		copyFileFromPath(customLibLocation);
+		if (customLibLocation != null) {
+			copyFileFromPath(customLibLocation);
+		}
 	}
 	
 	/**

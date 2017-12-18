@@ -80,7 +80,7 @@ public class Constants {
 	public static final int ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID = -1;
 
 	// Clafer Instance Generation
-	public static final String claferPath = rsrcPath + "ClaferModel" + innerFileSeparator + "SymmetricEncryptionTask.js";
+	public static final String claferPath = rsrcPath + "ClaferModel" + innerFileSeparator + "SymmetricEncryption.js";
 	public static final String PATH_FOR_CONFIG_XML = "/Configurator.xml";
 	public static final String XML_FILE_NAME = rsrcPath + "ClaferModel/Encrypt_CryptoTasks.xml";
 

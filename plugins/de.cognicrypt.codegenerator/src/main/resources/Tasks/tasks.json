@@ -33,9 +33,9 @@
 			"description": "Securely Archive Files",
 			"taskDescription": "This cryptographic task helps to maintain complete privacy of your documents. A large number of documents can be secured by this task. ",
 			"modelFile" : "src/main/resources/ClaferModel/LongTermArchiving.js",
-			"questionsJSONFile" : "src/main/resources/TaskDesc/LongTermArchivingQuestions.json",
+			"questionsJSONFile" : "src/main/resources/TaskDesc/LongTermArchiving.json",
 			"additionalResources" : "src/main/resources/AdditionalResources/LongTermArchiving",
-			"xslFile" : "src/main/resources/XSLTemplates/JCA.xsl"
+			"xslFile" : "src/main/resources/XSLTemplates/LongTermArchiving.xsl"
 		},
 		{
 			"name": "SECMUPACOMP",

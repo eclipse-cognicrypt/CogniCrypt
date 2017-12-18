@@ -3,10 +3,10 @@
 			"name": "SymmetricEncryption",
 			"description": "Encrypt Data Using a Secret Key",
 			"taskDescription": "This cryptographic task generates code that uses symmetric encryption to encrypt the data. The data is encrypted relatively quickly and securely. You can also protect enormous data with the help of this task.",
-			"modelFile" : "src/main/resources/ClaferModel/SymmetricEncryptionTask.js",
-			"questionsJSONFile" : "src/main/resources/TaskDesc/SymmetricEncryptionQuestions.json",
+			"modelFile" : "src/main/resources/ClaferModel/SymmetricEncryption.js",
+			"questionsJSONFile" : "src/main/resources/TaskDesc/SymmetricEncryption.json",
 			"additionalResources" : "",
-			"xslFile" : "src/main/resources/XSLTemplates/JCA.xsl"
+			"xslFile" : "src/main/resources/XSLTemplates/SymmetricEncryption.xsl"
 			
 		},
 		{

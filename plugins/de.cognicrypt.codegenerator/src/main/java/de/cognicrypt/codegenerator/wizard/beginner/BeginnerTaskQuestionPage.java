@@ -35,6 +35,7 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
@@ -45,7 +46,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Scale;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
@@ -385,6 +385,12 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 
 			case text:
+				Display display = Display.getCurrent();
+				Label mandatory = new Label(container, SWT.NONE);
+				Color red = display.getSystemColor(SWT.COLOR_RED);
+				mandatory.setText("*");
+				mandatory.setForeground(red);
+								
 				final Text inputField = new Text(container, SWT.BORDER);
 				inputField.setSize(240, inputField.getSize().y);
 
@@ -407,7 +413,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
 					question.setEnteredAnswer(a);
 					BeginnerTaskQuestionPage.this.setPageComplete(this.isPageComplete());
-				});
+				});				
 				break;
 
 			case itemselection:

@@ -102,17 +102,19 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 
 		this.codePreviewPanel = new Group(this.control, SWT.NONE);
 		this.codePreviewPanel.setText(Constants.CODE_PREVIEW);
+//		this.codePreviewPanel.setSize(400, 400);
 		GridLayout gridLayout = new GridLayout();
-		gridLayout.horizontalSpacing = 10;
+//		gridLayout.horizontalSpacing = 10;
 		this.codePreviewPanel.setLayout(gridLayout);
-		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
+		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
 		gridData.horizontalSpan = 1;
+		gridData.heightHint=200;
 		this.codePreviewPanel.setLayoutData(gridData);
 		final Font boldFont = new Font(this.codePreviewPanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 		this.codePreviewPanel.setFont(boldFont);
 		setControl(this.control);
 		
-		this.code = new Text(this.codePreviewPanel, SWT.MULTI | SWT.WRAP|SWT.V_SCROLL);
+		this.code = new Text(this.codePreviewPanel, SWT.MULTI | SWT.V_SCROLL | SWT.WRAP);
 		//Hide scroll bar 
 		Listener scrollBarListener = new Listener() {
 

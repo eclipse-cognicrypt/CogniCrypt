@@ -279,6 +279,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				else
 					comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
 				break;
+				
 			case radio:
 				Button[] radioButton = new Button[answers.size()];
 				for (int i = 0; i < answers.size(); i++) {
@@ -342,10 +343,24 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 
 			case scale:
-				Scale scale = new Scale(container, SWT.HORIZONTAL );
-				scale.setMaximum((answers.size())-1);
+				for (int i = 0; i < answers.size(); i++) {
+					if (i == 0) {
+						Label label1 = new Label(container, SWT.NONE);
+						label1.setText(answers.get(i).getValue());
+					} 
+				}
+		
+				Scale scale = new Scale(container, SWT.HORIZONTAL);
+				scale.setMaximum((answers.size()) - 1);
 				scale.setMinimum(0);
 				scale.setPageIncrement(1);
+				
+				for (int i = 0; i < answers.size(); i++) {
+					if (i == (answers.size() - 1)) {
+						Label label2 = new Label(container, SWT.NONE);
+						label2.setText(answers.get(i).getValue());
+					}
+				}
 
 				for (int i = 0; i < answers.size(); i++) {
 					scale.addSelectionListener(new SelectionAdapter() {

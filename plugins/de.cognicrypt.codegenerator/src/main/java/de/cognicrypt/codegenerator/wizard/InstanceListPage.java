@@ -175,8 +175,9 @@ public class InstanceListPage extends WizardPage implements Labels {
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 1;
 		this.instancePropertiesPanel.setLayout(gridLayout);
-		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
+		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
 		gridData.horizontalSpan = 1;
+		gridData.heightHint=200;
 		this.instancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 		this.instancePropertiesPanel.setLayoutData(gridData);
 //		this.instancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));

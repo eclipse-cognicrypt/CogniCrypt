@@ -254,8 +254,15 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * 
 	 */
 	public void addELementsInCodeTabQuestionDialog(Answer answer) {
-		GroupForCodeTab groupCode = new GroupForCodeTab((Composite) getContent(), SWT.NONE, answer);
-		groupCode.setBounds(5, getLowestWidgetYAxisValue(), 690, 39);
+		GroupForCodeTab group = new GroupForCodeTab((Composite) getContent(), SWT.NONE, answer);
+		group.setBounds(5, getLowestWidgetYAxisValue(), 690, 39);
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
+		setMinHeight(getLowestWidgetYAxisValue());
+	}
+	
+	public void addElementsInClaferTabQuestionDialog(Answer answer, ArrayList<ClaferFeature> claferFeatures){
+		GroupForClaferTab group = new GroupForClaferTab((Composite) getContent(), SWT.NONE, answer, claferFeatures);
+		group.setBounds(5, getLowestWidgetYAxisValue(), 690, 39);
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
 		setMinHeight(getLowestWidgetYAxisValue());
 	}

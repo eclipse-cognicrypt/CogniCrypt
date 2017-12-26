@@ -389,7 +389,8 @@ public class QuestionDialog extends Dialog {
 
 				Label qstnTxt_1 = new Label(compositeForClaferTab, SWT.None);
 				qstnTxt_1.setText(question.getQuestionText());
-
+				
+				//Group containing the headers
 				Group groupHeaderClaferTab = new Group(compositeForClaferTab, SWT.NONE);
 				GridData gd_groupHeaderClaferTab = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 				groupHeaderClaferTab.setLayoutData(gd_groupHeaderClaferTab);
@@ -413,7 +414,8 @@ public class QuestionDialog extends Dialog {
 				Label lblForOperator = new Label(groupHeaderClaferTab, SWT.NONE);
 				lblForOperator.setBounds(545, 5, 130, 25);
 				lblForOperator.setText("Set Value");
-
+				
+				//widgets for answer and clafer depenedencies are added in ansScrollCompositeForClaferTab
 				CompositeToHoldSmallerUIElements ansScrollCompositeForClaferTab = new CompositeToHoldSmallerUIElements(compositeForClaferTab, SWT.NONE, null, false, null);
 				GridData gd_LinkCode = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 				gd_LinkCode.heightHint = 200;

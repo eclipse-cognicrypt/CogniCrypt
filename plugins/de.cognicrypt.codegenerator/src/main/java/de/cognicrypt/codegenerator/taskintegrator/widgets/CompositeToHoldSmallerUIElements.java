@@ -260,6 +260,14 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
 	
+
+	/**
+	 * Add the widgets and data inside the scrollable composite for clafer dependency tab
+	 * 
+	 * @param answer
+	 * @param claferFeatures list of all clafer features created in the clafer page
+	 * 
+	 */
 	public void addElementsInClaferTabQuestionDialog(Answer answer, ArrayList<ClaferFeature> claferFeatures){
 		GroupForClaferTab group = new GroupForClaferTab((Composite) getContent(), SWT.NONE, answer, claferFeatures);
 		group.setBounds(5, getLowestWidgetYAxisValue(), 690, 39);

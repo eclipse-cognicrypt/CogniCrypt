@@ -87,7 +87,7 @@ public class GroupForClaferTab extends Group {
 				}
 			}
 		}
-		
+
 		//adding the items to comboForOperand box depending on the comboForAlgorithm box value 
 		if (comboForAlgorithm.getText() != null) {
 			operandItems = new ArrayList<String>();
@@ -98,6 +98,7 @@ public class GroupForClaferTab extends Group {
 
 		}
 
+		//set the clafer dependency operand field depending upon the selected feature
 		comboForAlgorithm.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -118,6 +119,8 @@ public class GroupForClaferTab extends Group {
 				claferDependency.setAlgorithm(featureSelected);
 			}
 		});
+
+		//set the clafer dependency operand field depending upon the operand/property selected
 		comboForOperand.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -125,6 +128,7 @@ public class GroupForClaferTab extends Group {
 				claferDependency.setOperand(comboForOperand.getText());
 			}
 		});
+		//set the clafer dependency operator field 
 		comboForOperator.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -132,7 +136,7 @@ public class GroupForClaferTab extends Group {
 				claferDependency.setOperator(comboForOperator.getText());
 			}
 		});
-
+		//set the clafer dependency value field
 		txtBoxValue.addFocusListener(new FocusAdapter() {
 
 			@Override
@@ -148,10 +152,11 @@ public class GroupForClaferTab extends Group {
 	}
 
 	/**
-	 * @param featureSelected feature selected in the comboForFeatures
+	 * @param featureSelected
+	 *        feature selected in the comboForFeatures
 	 * @return the list of operand to be added in the comboForOperand box depending on the featureSelected
 	 */
-	
+
 	private ArrayList<String> itemsToAdd(String featureSelected) {
 		for (ClaferFeature claferFeature : claferFeatures) {
 			if (claferFeature.getFeatureName().equalsIgnoreCase(featureSelected)) {
@@ -166,9 +171,10 @@ public class GroupForClaferTab extends Group {
 		}
 		return operandItems;
 	}
-	
+
 	/**
-	 * @param claferFeatures list of all clafer features created in the clafer page
+	 * @param claferFeatures
+	 *        list of all clafer features created in the clafer page
 	 */
 	private void setClaferFeatures(ArrayList<ClaferFeature> claferFeatures) {
 		this.claferFeatures = claferFeatures;

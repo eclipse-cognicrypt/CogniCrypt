@@ -59,7 +59,7 @@
     [{
       "id": "0",
       "element": "combo",
-      "questionText": "How many keys include your algorithm ?",
+      "questionText": "How many keys have your algorithm ?",
       "answers": [{
           "value": "1" },
           {
@@ -80,7 +80,7 @@
     {
       "id": "1",
       "element": "text",
-      "questionText": "What is the block size of the cipher ?",
+      "questionText": "What is the block size of the cipher ?(in bits)",
       "answers": [{
           "value": "",
           "codeDependencies": [{
@@ -186,7 +186,7 @@
 	"content":
 	[{
 		"id": "0",
-		"element": "combo",
+		"element": "checkbox",
 		"questionText": "Please select the padding used for your algorithm",
 		"answers": [{
 		"value": "OneAndZeroes Padding",

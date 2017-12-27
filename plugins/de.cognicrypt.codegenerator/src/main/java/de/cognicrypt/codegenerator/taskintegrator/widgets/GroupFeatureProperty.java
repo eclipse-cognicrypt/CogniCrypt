@@ -29,11 +29,14 @@ public class GroupFeatureProperty extends Group {
 
 	/**
 	 * Create the composite.
+	 * 
 	 * @param parent
+	 *        Composite that contains the feature property
 	 * @param style
-	 * @param showRemoveButton TODO
+	 *        SWT style identifiers
+	 * @param showRemoveButton
+	 *        whether or not to show a remove button next to the feature property
 	 */
-		
 	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam, boolean showRemoveButton, boolean editable, ArrayList<ClaferFeature> otherClaferFeatures) {
 		super(parent, SWT.BORDER);
 		// Set the model for use first.

@@ -268,7 +268,10 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				new Label(container, SWT.NONE);
 				new Label(container, SWT.NONE);
 				final Text inputField = new Text(container, SWT.BORDER);
-				inputField.setSize(100, inputField.getSize().y);
+				GridData data = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
+				data.widthHint = 100;
+				inputField.setLayoutData(data);
+//				inputField.setSize(500, inputField.getSize().y);
 				if (question.getEnteredAnswer() != null) {
 					this.finish = !inputField.getText().isEmpty();
 					PrimitiveQuestionnairePage.this.setPageComplete(this.finish);

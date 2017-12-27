@@ -262,105 +262,39 @@ public class QuestionDialog extends Dialog {
 				lblLinkAnswersTabMessage.setText("This type of question does not need to link answers");
 
 			} else {
+								
 				Label lblQuestion_1 = new Label(compositeForLinkAnswerTab, SWT.NONE);
 				lblQuestion_1.setText("Question:");
 
 				Label qstnTxt = new Label(compositeForLinkAnswerTab, SWT.NONE);
 				qstnTxt.setText(question.getQuestionText());
 
-				/*
-				 * ScrolledComposite scroll = new ScrolledComposite( compositeForLinkAnswerTab, SWT.BORDER|SWT.V_SCROLL); scroll.setExpandVertical(true);
-				 * scroll.setExpandHorizontal(true); GridData gd_scroll = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1); gd_scroll.horizontalSpan=2; gd_scroll.heightHint =
-				 * 150; gd_scroll.widthHint = 600; // scroll.setLayoutData(gd_scroll); // scroll.setLayout(new GridLayout(2, false));
-				 */
+				//Group containing the headers
+				Group groupHeaderLinkAnswer = new Group(compositeForLinkAnswerTab, SWT.NONE);
+				GridData gd_groupHeaderLinkAnswer = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
+				groupHeaderLinkAnswer.setLayoutData(gd_groupHeaderLinkAnswer);
 
-				Composite compositeForAnswers = new Composite(compositeForLinkAnswerTab, SWT.NONE);
-				compositeForAnswers.setLayout(new GridLayout(2, false));
-				GridData gd_compositeForAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
-				gd_compositeForAnswers.horizontalSpan = 2;
-				/*
-				 * gd_compositeForAnswers.heightHint=100; gd_compositeForAnswers.widthHint=400;
-				 */compositeForAnswers.setLayoutData(gd_compositeForAnswers);
-
-				Label lblAnswers = new Label(compositeForAnswers, SWT.NONE);
+				Label lblAnswers = new Label(groupHeaderLinkAnswer, SWT.NONE);
+				lblAnswers.setBounds(5, 5, 150, 25);
 				lblAnswers.setText("Answers");
 
-				Label lblSelectQuestion = new Label(compositeForAnswers, SWT.NONE);
+				Label lblSelectQuestion = new Label(groupHeaderLinkAnswer, SWT.NONE);
+				lblSelectQuestion.setBounds(180, 5, 530, 25);
 				lblSelectQuestion.setText("Jump to question");
+				
+			
+			    // Scroll composite containing the needed widgets for linking the answers
+			
+				CompositeToHoldSmallerUIElements scrollCompositeForAnswers = new CompositeToHoldSmallerUIElements(compositeForLinkAnswerTab, SWT.NONE, null, false, null);
+				GridData gd_LinkAns= new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
+				gd_LinkAns.heightHint = 200;
+				gd_LinkAns.widthHint = 700;
+				scrollCompositeForAnswers.setLayoutData(gd_LinkAns);
+				scrollCompositeForAnswers.setLayout(new GridLayout(2, false));
 
-				/*
-				 * CompositeForAnswers answerComposite=new CompositeForAnswers(compositeForLinkAnswerTab,question,listOfAllQuestions); GridData gd_answerComposite = new
-				 * GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1); gd_answerComposite.heightHint = 125; gd_answerComposite.widthHint = 520; gd_answerComposite.horizontalSpan=2;
-				 * answerComposite.setLayoutData(gd_answerComposite); answerComposite.setLayout(new FillLayout(SWT.HORIZONTAL)); for(Answer answer: question.getAnswers()){
-				 * answerComposite.addAnswerUIElements(answer); } //answerComposite.addAnswerUIElements();
-				 */
-
-				for (Answer answer : question.getAnswers()) {
-
-					Text answerTxt = new Text(compositeForAnswers, SWT.BORDER);
-					GridData gd_answerTxt = new GridData(SWT.FILL, SWT.NONE, false, false);
-					gd_answerTxt.widthHint = 120;
-					answerTxt.setLayoutData(gd_answerTxt);
-					answerTxt.setEditable(false);
-
-					answerTxt.setText(answer.getValue());
-
-					/*
-					 * Label lblCurrentAnswer = new Label(compositeForAnswers, SWT.NONE); lblCurrentAnswer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-					 * lblCurrentAnswer.setText(answer.getValue());
-					 */
-					Combo comboForLinkAnswers = new Combo(compositeForAnswers, SWT.DROP_DOWN);
-					comboForLinkAnswers.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-					comboForLinkAnswers.add("Default");
-					for (int i = 0; i < listOfAllQuestions.size(); i++) {
-						if (listOfAllQuestions.size() == 1) {
-							comboForLinkAnswers.removeAll();
-							comboForLinkAnswers.add("Please add more questions to link the answers");
-						}
-						if (question.getId() != listOfAllQuestions.get(i).getId()) {
-							comboForLinkAnswers.add(listOfAllQuestions.get(i).getQuestionText());
-						}
-
-					}
-
-					if (answer.getNextID() != -2) {
-						if (answer.getNextID() == -1) {
-							comboForLinkAnswers.setText("Default");
-						} else {
-							for (Question question : listOfAllQuestions) {
-								if (question.getId() == answer.getNextID()) {
-									comboForLinkAnswers.setText(question.getQuestionText());
-								}
-							}
-						}
-					}
-
-					comboForLinkAnswers.addSelectionListener(new SelectionAdapter() {
-
-						@Override
-						public void widgetSelected(SelectionEvent e) {
-							if (comboForLinkAnswers.getText().equalsIgnoreCase("Default")) {
-								answer.setNextID(-1);
-							} else {
-								for (Question question : listOfAllQuestions) {
-									if (question.getQuestionText().equalsIgnoreCase(comboForLinkAnswers.getText())) {
-										System.out.println(question.getId());
-										answer.setNextID(question.getId());
-										System.out.println(answer.getNextID());
-									}
-								}
-							}
-						}
-
-					});
-
+				for(Answer answer: question.getAnswers()){
+					scrollCompositeForAnswers.addElementsOfLinkAnswer(answer, question, listOfAllQuestions);
 				}
-				// scroll.setContent(compositeForAnswers);
-				//scroll.setExpandHorizontal(true);
-				/*
-				 * scroll.setContent(compositeForAnswers); scroll.setExpandHorizontal(true); scroll.setExpandVertical(true);
-				 * //scroll.setMinSize(compositeForAnswers.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-				 */
 			}
 		}
 

@@ -271,7 +271,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 
 	/**
 	 * Add the widgets and data inside the scrollable composite for clafer dependency tab
-	 * 
 	 * @param answer
 	 * @param claferFeatures list of all clafer features created in the clafer page
 	 * 
@@ -282,7 +281,18 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
-
+	
+	/**
+	 * Add the widgets and data inside the scrollable composite for Link Answer
+	 * @param currentQuestion
+	 * @param listOfAllQuestions
+	 */
+	public void addElementsOfLinkAnswer(Answer answer, Question currentQuestion, ArrayList<Question> listOfAllQuestions){
+		GroupForLinkAnswer group = new GroupForLinkAnswer((Composite) getContent(), SWT.NONE, answer, currentQuestion, listOfAllQuestions);
+		group.setBounds(5, getLowestWidgetYAxisValue(), 690, 39);
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
+		setMinHeight(getLowestWidgetYAxisValue());
+	}
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components

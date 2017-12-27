@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?NLS TYPE="org.eclipse.help.contexts"?>
-<contexts> 
-      <context  id="help_id_2" title="CogniCrypt"> 
-        <description>Just answer few questions and you are done!</description> 
-        
-         <topic href="html/FinalPage.html"  label="Algorithm selection"/>
-      </context> 
-    </contexts> 

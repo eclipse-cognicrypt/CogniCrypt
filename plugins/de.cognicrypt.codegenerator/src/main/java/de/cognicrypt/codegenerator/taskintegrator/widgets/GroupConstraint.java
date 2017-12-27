@@ -19,9 +19,13 @@ public class GroupConstraint extends Group {
 
 	/**
 	 * Create the composite.
+	 * 
 	 * @param parent
+	 *        Composite that contains the constraint
 	 * @param style
-	 * @param showRemoveButton TODO
+	 *        SWT style identifiers
+	 * @param showRemoveButton
+	 *        whether or not to show a remove button next to the constraint
 	 */
 	public GroupConstraint(Composite parent, int style, ClaferConstraint constraint, boolean showRemoveButton) {
 		
@@ -32,13 +36,10 @@ public class GroupConstraint extends Group {
 		setLayout(new RowLayout(SWT.HORIZONTAL));
 		
 		txtForFeatureConstraints = new Text(this, SWT.BORDER);
-		// TODO temp solution for the user study. Make the text box editable if the remove button is visisble, i.e. on the pop
-		// - up only.
-		txtForFeatureConstraints.setEditable(showRemoveButton);
+		txtForFeatureConstraints.setEditable(false);
 		txtForFeatureConstraints.setText(constraint.getConstraint());
 		txtForFeatureConstraints.setSize(200, 30);
 
-		// TODO add useful listener here
 		txtForFeatureConstraints.addFocusListener(new FocusAdapter() {
 
 			@Override
@@ -49,6 +50,18 @@ public class GroupConstraint extends Group {
 		});
 
 		if (showRemoveButton) {
+			Button btnModify = new Button(this, SWT.NONE);
+			btnModify.setText("Modify");
+			btnModify.setSize(70, 30);
+			btnModify.addSelectionListener(new SelectionAdapter() {
+
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					((CompositeToHoldSmallerUIElements) getParent().getParent()).modifyFeature(constraint);
+					((CompositeToHoldSmallerUIElements) getParent().getParent()).updateClaferContainer();
+				}
+			});
+
 			Button btnRemove = new Button(this, SWT.NONE);
 			btnRemove.setText("Remove");
 			btnRemove.setSize(70, 30);

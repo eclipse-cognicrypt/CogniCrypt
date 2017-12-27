@@ -20,4 +20,9 @@ public class ClaferConstraint {
 		this.constraint = constraint;
 	}
 
+	@Override
+	public String toString() {
+		return "[ " + getConstraint() + " ]";
+	}
+
 }

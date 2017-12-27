@@ -88,7 +88,6 @@ public class XSLBasedGenerator {
 		this.project = new DeveloperProject(targetProject);
 		this.provider = provider;
 	}
-
 	/***
 	 * Generation of code templates using XSL template and Clafer instance.
 	 *

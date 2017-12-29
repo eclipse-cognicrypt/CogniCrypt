@@ -40,6 +40,11 @@ public class TaskIntegrationWizard extends Wizard {
 				Constants.PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS
 			));
 
+		this.addPage(new PageForTaskIntegratorWizard(
+			Constants.PAGE_NAME_FOR_LINK_ANSWERS,
+			Constants.PAGE_TITLE_FOR_LINK_ANSWERS,
+			Constants.PAGE_DESCIPTION_FOR_LINK_ANSWERS));
+		
 		this.addPage(
 			new PageForTaskIntegratorWizard(
 				Constants.PAGE_NAME_FOR_XSL_FILE_CREATION,

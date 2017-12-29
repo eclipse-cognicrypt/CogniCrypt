@@ -68,7 +68,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		switch (this.getName()) {
 			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
 				container.setLayout(new FillLayout(SWT.HORIZONTAL));
-				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE));				
+				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE));
 				break;
 			case Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
@@ -81,7 +81,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						
+
 						counter++;
 						ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), compositeToHoldGranularUIElements.getListOfAllClaferFeatures());
 						if (cfrFeatureDialog.open() == 0) {
@@ -97,18 +97,19 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				});
 				break;
 			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:
-				
+
 				this.setCompositeForXsl(new CompositeForXsl(container, SWT.NONE));
-				
+
 				Button btnAddXSLTag = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
 				btnAddXSLTag.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
 				btnAddXSLTag.setText("Add Xsl Tag");
 				Button btnReadCode = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
 				btnReadCode.setBounds(Constants.RECTANGLE_FOR_SECOND_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
 				btnReadCode.setText("Get the code");
-				
-				btnReadCode.addSelectionListener(new SelectionAdapter(){
-					/* (non-Javadoc)
+
+				btnReadCode.addSelectionListener(new SelectionAdapter() {
+					/*
+					 * (non-Javadoc)
 					 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
 					 */
 
@@ -116,15 +117,14 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					public void widgetSelected(SelectionEvent e) {
 
 						super.widgetSelected(e);
-						
-						FileDialog fileDialog = new FileDialog(getShell(),SWT.OPEN);
-						
+
+						FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
+
 						fileDialog.setFilterExtensions(new String[] { "*.txt", "*.java", "*.xsl" });
-				        fileDialog.setText("Choose the code file:");
-				        ((CompositeForXsl)getCompositeForXsl()).updateTheTextFieldWithFileData(fileDialog.open());  
+						fileDialog.setText("Choose the code file:");
+						((CompositeForXsl) getCompositeForXsl()).updateTheTextFieldWithFileData(fileDialog.open());
 					}
 
-			        
 				});
 
 				btnAddXSLTag.addSelectionListener(new SelectionAdapter() {
@@ -173,17 +173,18 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						} else {
 							dialog = new XSLTagDialog(getShell());
 						}
-						
-						if(dialog.open() == Window.OK){
+
+						if (dialog.open() == Window.OK) {
 							// To locate the position of the xsl tag to be introduce						
 							Point selected = getCompositeForXsl().getXslTxtBox().getSelection();
 							String xslTxtBoxContent = getCompositeForXsl().getXslTxtBox().getText();
-							xslTxtBoxContent = xslTxtBoxContent.substring(0, selected.x) + dialog.getTag().toString() + xslTxtBoxContent.substring(selected.y, xslTxtBoxContent.length());
+							xslTxtBoxContent = xslTxtBoxContent.substring(0, selected.x) + dialog.getTag().toString() + xslTxtBoxContent.substring(selected.y,
+								xslTxtBoxContent.length());
 							getCompositeForXsl().getXslTxtBox().setText(xslTxtBoxContent);
 						}
-						
+
 					}
-				});				
+				});
 				break;
 			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
@@ -198,15 +199,16 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				}
 
 				PageForTaskIntegratorWizard claferPage = tiWizard.getTIPageByName(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION);
-				CompositeToHoldGranularUIElements claferPageComposite=(CompositeToHoldGranularUIElements) claferPage.getCompositeToHoldGranularUIElements();
+				CompositeToHoldGranularUIElements claferPageComposite = (CompositeToHoldGranularUIElements) claferPage.getCompositeToHoldGranularUIElements();
 
-				QuestionDialog questionDialog = new QuestionDialog(parent.getShell() /*compositeToHoldGranularUIElements.getListOfAllClaferFeatures()claferFeatures,claferPageComposite*/);
+				QuestionDialog questionDialog = new QuestionDialog(parent
+					.getShell() /* compositeToHoldGranularUIElements.getListOfAllClaferFeatures()claferFeatures,claferPageComposite */);
 				Button qstnDialog = new Button(container, SWT.NONE);
 				qstnDialog.setBounds(889, 10, 115, 29);
 				qstnDialog.setText("Add Question");
-				
+
 				qstnDialog.addSelectionListener(new SelectionAdapter() {
-				
+
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						int response = questionDialog.open();
@@ -218,7 +220,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 							// Update the array list.
 							compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
-							compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails, claferPageComposite.getListOfAllClaferFeatures(),false);
+							compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails, claferPageComposite.getListOfAllClaferFeatures(), false);
 						}
 					}
 				});
@@ -226,65 +228,68 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			case Constants.PAGE_NAME_FOR_LINK_ANSWERS:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
 				this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
-			break;
+				break;
 		}
 	}
-	
-	public IWizardPage getNextPage() 
-	{ 
-		 boolean isNextPressed = "nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[2].getMethodName());
+
+	/**
+	 * Overwriting the getNextPage method to extract the list of all questions
+	 * from highLevelQuestion page and forward the data to pageForLinkAnswers at runtime
+	 */
+	public IWizardPage getNextPage() {
+		boolean isNextPressed = "nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[2].getMethodName());
 		if (isNextPressed) {
 			boolean validatedNextPress = this.nextPressed(this);
 			if (!validatedNextPress) {
 				return this;
 			}
 		}
-    return super.getNextPage();
+		return super.getNextPage();
 
 	}
-	
-protected boolean nextPressed(IWizardPage page){
-	boolean ValidateNextPress=true;
-	try{
-		if(page.getName().equals(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS)){
-			PageForTaskIntegratorWizard highLevelQuestionPage=(PageForTaskIntegratorWizard)page;
-			CompositeToHoldGranularUIElements highLevelQuestionPageComposite=(CompositeToHoldGranularUIElements) highLevelQuestionPage.getCompositeToHoldGranularUIElements();
-			IWizardPage nextPage= super.getNextPage();
-			System.out.println(nextPage.getName());
-			ArrayList<Question> listOfAllQuestions=highLevelQuestionPageComposite.getListOfAllQuestions();
-			
-			
+
+	/**
+	 * Extract data from highLevelQuestions page and forward it to pageForLinkAnswers at runtime
+	 * 
+	 * @param page
+	 *        highLevelQuestions page is received
+	 * @return true always
+	 */
+	protected boolean nextPressed(IWizardPage page) {
+		boolean ValidateNextPress = true;
+		try {
+			if (page.getName().equals(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS)) {
+				PageForTaskIntegratorWizard highLevelQuestionPage = (PageForTaskIntegratorWizard) page;
+				CompositeToHoldGranularUIElements highLevelQuestionPageComposite = (CompositeToHoldGranularUIElements) highLevelQuestionPage.getCompositeToHoldGranularUIElements();
+				IWizardPage nextPage = super.getNextPage();
+				ArrayList<Question> listOfAllQuestions = highLevelQuestionPageComposite.getListOfAllQuestions();
 				if (nextPage instanceof PageForTaskIntegratorWizard) {
 					PageForTaskIntegratorWizard pftiw = (PageForTaskIntegratorWizard) nextPage;
 					if (pftiw.getCompositeToHoldGranularUIElements() instanceof CompositeToHoldGranularUIElements) {
 						CompositeToHoldGranularUIElements comp = (CompositeToHoldGranularUIElements) pftiw.getCompositeToHoldGranularUIElements();
-						System.out.println("compmsize"+comp.getListOfAllQuestions().size());
-						if(comp.getListOfAllQuestions().size()>0){
+						if (comp.getListOfAllQuestions().size() > 0) {
 							comp.deleteAllQuestion();
-							
-							
 						}
-						System.out.println("After clear"+comp.getListOfAllQuestions().size());
-						System.out.println("Question size"+listOfAllQuestions.size());
-							for (Question question : listOfAllQuestions) {
-									comp.getListOfAllQuestions().add(question);
-									comp.addQuestionUIElements(question, null, true);
-								
-								
-							}
-						
+						for (Question question : listOfAllQuestions) {
+							comp.getListOfAllQuestions().add(question);
+							comp.addQuestionUIElements(question, null, true);
+
+						}
+
 					}
 				}
-		}	
-	
-	}catch(Exception ex) {
-        System.out.println("Error validation when pressing Next: " + ex);
-		
+			}
+
+		} catch (Exception ex) {
+			System.out.println("Error validation when pressing Next: " + ex);
+
+		}
+		return ValidateNextPress;
 	}
-	return ValidateNextPress;
-}
+
 	/**
 	 * For testing only. Remove later.
+	 * 
 	 * @return
 	 */
 	private ClaferFeature getDummyClaferFeature() {
@@ -312,8 +317,8 @@ protected boolean nextPressed(IWizardPage page){
 		return tempFeature;
 
 	}
-	
-	private ArrayList<ClaferFeature> getDummyClaferFeatures(){
+
+	private ArrayList<ClaferFeature> getDummyClaferFeatures() {
 		ArrayList<ClaferFeature> tempFeatures = new ArrayList<ClaferFeature>();
 		ClaferFeature tempFeatureOne = new ClaferFeature(Constants.FeatureType.ABSTRACT, "race", "");
 		ClaferFeature tempFeatureTwo = new ClaferFeature(Constants.FeatureType.CONCRETE, "altmer", "race");
@@ -321,19 +326,20 @@ protected boolean nextPressed(IWizardPage page){
 		tempFeatures.add(tempFeatureOne);
 		tempFeatures.add(tempFeatureTwo);
 		tempFeatures.add(tempFeatureThree);
-		
+
 		return tempFeatures;
 	}
-	
+
 	/**
 	 * For testing only. Remove later.
+	 * 
 	 * @return
 	 */
 	private Question getDummyQuestion() {
 		Question tempQuestion = new Question();
 		tempQuestion.setId(counter);
 		tempQuestion.setQuestionText("question?");
-		
+
 		Answer answer = new Answer();
 		answer.setValue("answer");
 		answer.setDefaultAnswer(false);
@@ -344,22 +350,22 @@ protected boolean nextPressed(IWizardPage page){
 		claferDependency.setOperator(Constants.FeatureConstraintRelationship.AND.toString());
 		claferDependency.setValue("value");
 		ArrayList<ClaferDependency> claferDependencies = new ArrayList<ClaferDependency>();
-		claferDependencies.add(claferDependency);		
-		
+		claferDependencies.add(claferDependency);
+
 		CodeDependency codeDependency = new CodeDependency();
 		codeDependency.setOption("option");
 		codeDependency.setValue("value");
 		ArrayList<CodeDependency> codeDependencies = new ArrayList<CodeDependency>();
 		codeDependencies.add(codeDependency);
-		
+
 		answer.setCodeDependencies(codeDependencies);
 		answer.setClaferDependencies(claferDependencies);
-		
+
 		ArrayList<Answer> answers = new ArrayList<Answer>();
 		answers.add(answer);
-		
+
 		tempQuestion.setAnswers(answers);
-		
+
 		return tempQuestion;
 	}
 
@@ -430,6 +436,5 @@ protected boolean nextPressed(IWizardPage page){
 		this.compositeForXsl = compositeForXsl;
 
 	}
-
 
 }

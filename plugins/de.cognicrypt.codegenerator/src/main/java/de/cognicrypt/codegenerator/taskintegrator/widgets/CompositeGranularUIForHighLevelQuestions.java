@@ -23,27 +23,23 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 	private Text txtQuestionID;
 	public Text txtQuestion;
 	private Text txtAnswerType;
-	private Text txtAnswers;
 	
 	private Question question;
 	private AttributedString SUPER_SCRIPT;
-	private ArrayList<ClaferFeature> claferFeatures;
-	//private int spaceToDisplayAns;
 
 	/**
 	 * Create the composite.
 	 * @param parent
 	 * @param style
 	 */
-	public CompositeGranularUIForHighLevelQuestions(Composite parent, int style, Question questionParam) {
+	public CompositeGranularUIForHighLevelQuestions(Composite parent, int style, Question questionParam, boolean linkAnswerPage) {
 		super(parent, SWT.BORDER);
 		
 		setQuestion(questionParam);
-		//setClaferFeatures(claferFeatures);
 		
 		setLayout(null);
 		
-		GroupModifyDeleteButtons grpModifyDeleteButtons = new GroupModifyDeleteButtons(this,question);
+		GroupModifyDeleteButtons grpModifyDeleteButtons = new GroupModifyDeleteButtons(this, question);
 		RowLayout rowLayout = (RowLayout) grpModifyDeleteButtons.getLayout();
 		rowLayout.marginLeft = 5;
 		rowLayout.marginTop = 5;
@@ -51,57 +47,71 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		rowLayout.center = true;
 		grpModifyDeleteButtons.setBounds(10, 5, 571, 53);
 		
-		Button linkQstn=new Button(this,SWT.None);
-		linkQstn.setBounds(588,20,100,53);
+		//Only visible for "pageForHighLevelQuestions" page
+		grpModifyDeleteButtons.setVisible(!linkAnswerPage);
+
+		Button linkQstn = new Button(this, SWT.None);
+		linkQstn.setBounds(588, 50, 100, 53);
 		linkQstn.setText("Link Question");
-		linkQstn.setVisible(false);
-		linkQstn.addSelectionListener(new SelectionAdapter(){
+
+		//Visible only for the "pageForLinkAnswers" page 
+		linkQstn.setVisible(linkAnswerPage);
+
+		linkQstn.addSelectionListener(new SelectionAdapter() {
+
 			@Override
-			public void widgetSelected(SelectionEvent e){
-			/*	QuestionDialog link=new QuestionDialog(parent.getShell(),questionParam,claferFeatures);
-				link.open();
-			*/}
+			public void widgetSelected(SelectionEvent e) {
+				/*
+				 * to create and use the link question dialog object
+				 */}
 		});
 		
+			
+		
+		
 		Group grpQuestionDetails = new Group(this, SWT.NONE);
-		grpQuestionDetails.setBounds(10, 62, 571, 180);
+		/***
+		 * resizing the height of the grpQuestionDetails depending upon the page
+		 */
+		if(!linkAnswerPage){
+		grpQuestionDetails.setBounds(10, 62, 571, 150);
+		}
+		else if(linkAnswerPage){
+			grpQuestionDetails.setBounds(10, 5, 571, 150);
+
+		}
 		grpQuestionDetails.setLayout(null);
 		grpQuestionDetails.setText("Question details");
 		
 		Label lblQuestionId = new Label(grpQuestionDetails, SWT.NONE);
-		lblQuestionId.setBounds(5, 30, 76, 17);
+		lblQuestionId.setBounds(5, 35, 76, 17);
 		lblQuestionId.setText("Question id:");
 		
 		txtQuestionID = new Text(grpQuestionDetails, SWT.BORDER);
 		txtQuestionID.setEditable(false);
-		txtQuestionID.setBounds(94, 25, 162, 29);
+		txtQuestionID.setBounds(94, 30, 162, 29);
 		
 		// update this part.
 		
 		txtQuestionID.setText(Integer.toString(question.getId()));
-		//txtQuestionID.setText("0");
 		
 		Label lblQuestion = new Label(grpQuestionDetails, SWT.NONE);
-		lblQuestion.setBounds(5, 60, 58, 17);
+		lblQuestion.setBounds(5, 70, 58, 17);
 		lblQuestion.setText("Question:");
 		
 		txtQuestion = new Text(grpQuestionDetails, SWT.BORDER);
 		txtQuestion.setEditable(false);
-		txtQuestion.setBounds(94, 57, 403, 29);
+		txtQuestion.setBounds(94, 67, 403, 29);
 		
 		setTextQuestion(question.getQuestionText());
-		//setTextQuestion("Test");
-
-		//txtQuestion.setText(question.getQuestionText());
-		//txtQuestion.setText("question");
-		
+				
 		Label lblType = new Label(grpQuestionDetails, SWT.NONE);
-		lblType.setBounds(267, 30, 38, 20);
+		lblType.setBounds(267, 35, 38, 20);
 		lblType.setText("Type:");
 		
 		txtAnswerType = new Text(grpQuestionDetails, SWT.BORDER);
 		txtAnswerType.setEditable(false);
-		txtAnswerType.setBounds(315, 25, 182, 29);
+		txtAnswerType.setBounds(315, 30, 182, 29);
 		
 		StringBuilder answerString = new StringBuilder();
 		
@@ -133,30 +143,27 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
             */answerString.append(" | ");
 		}
 
-		txtAnswerType.setText(question.getQuestionType());		
-		
+		txtAnswerType.setText(question.getQuestionType());
+
+		Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
+		lblAnswers.setBounds(5, 108, 55, 17);
+		lblAnswers.setText("Answers:");
+		Combo comboForAnswers = new Combo(grpQuestionDetails, SWT.READ_ONLY);
+		comboForAnswers.setBounds(94, 102, 403, 29);
+
+		/**
+		 * Following 'if' conditions checks the question type and then
+		 * creates the widgets to display the answer as the question type
+		 */
 		if (question.getQuestionType().equalsIgnoreCase("Drop down")) {
-			Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
-			lblAnswers.setBounds(5, 98, 55, 17);
-			lblAnswers.setText("Answers:");
-
-			Combo comboForAnswers = new Combo(grpQuestionDetails, SWT.READ_ONLY);
-			comboForAnswers.setBounds(94, 92, 403, 29);
-
 			for (Answer answer : question.getAnswers()) {
 				comboForAnswers.add(answer.getValue());
 			}
-		} 
-		else if(question.getQuestionType().equalsIgnoreCase("Radio Button")){
-			Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
-			lblAnswers.setBounds(5, 98, 55, 17);
-			lblAnswers.setText("Answers:");
-			int count=question.getAnswers().size();
+		} else if (question.getQuestionType().equalsIgnoreCase("Radio Button")) {
+			int count = question.getAnswers().size();
+			Button[] btn = new Button[count];
+			int spaceToDisplayAns = 70;
 
-			
-			Button[] btn=new Button[count];
-			int spaceToDisplayAns=70;
-			
 			if (count == 2) {
 				for (int i = 0; i < count; i++) {
 					btn[i] = new Button(grpQuestionDetails, SWT.RADIO);
@@ -178,21 +185,14 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 				}
 
 			}
-			
-			
 
 		}
-	
-		else if(question.getQuestionType().equalsIgnoreCase("text box")){
-		Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
-		lblAnswers.setBounds(5, 98, 55, 17);
-		lblAnswers.setText("Answers:");
-		
-		Text txtBox=new Text(grpQuestionDetails,SWT.BORDER);
-		txtBox.setBounds(94, 92, 403, 29);
-		
-	}
-		
+
+		else if (question.getQuestionType().equalsIgnoreCase("text box")) {
+			Text txtBox = new Text(grpQuestionDetails, SWT.BORDER);
+			txtBox.setBounds(94, 92, 403, 29);
+		}
+
 		this.setSize(SWT.DEFAULT, 250);
 
 	}

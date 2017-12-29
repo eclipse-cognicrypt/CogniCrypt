@@ -242,61 +242,6 @@ public class QuestionDialog extends Dialog {
 
 		}
 
-		TabItem tbtmLinkAnswers = new TabItem(tabFolder, SWT.NONE);
-		tbtmLinkAnswers.setText("Link to other questions");
-
-		Composite compositeForLinkAnswerTab = new Composite(tabFolder, SWT.NONE);
-		tbtmLinkAnswers.setControl(compositeForLinkAnswerTab);
-		compositeForLinkAnswerTab.setLayout(new GridLayout(2, false));
-
-		if (question == null) {
-			linkAnswersTabMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.OK);
-			linkAnswersTabMessageBox.setMessage(
-				"Please at first completely fill the details of \"Question\" Tab and Click OK. " + " Then Click on \"modify\" Button to further fill the details in \"Link answers\" tab");
-		}
-
-		if (question != null) {
-
-			if (question.getQuestionType().equalsIgnoreCase("text box")) {
-				Label lblLinkAnswersTabMessage = new Label(compositeForLinkAnswerTab, SWT.NONE);
-				lblLinkAnswersTabMessage.setText("This type of question does not need to link answers");
-
-			} else {
-								
-				Label lblQuestion_1 = new Label(compositeForLinkAnswerTab, SWT.NONE);
-				lblQuestion_1.setText("Question:");
-
-				Label qstnTxt = new Label(compositeForLinkAnswerTab, SWT.NONE);
-				qstnTxt.setText(question.getQuestionText());
-
-				//Group containing the headers
-				Group groupHeaderLinkAnswer = new Group(compositeForLinkAnswerTab, SWT.NONE);
-				GridData gd_groupHeaderLinkAnswer = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
-				groupHeaderLinkAnswer.setLayoutData(gd_groupHeaderLinkAnswer);
-
-				Label lblAnswers = new Label(groupHeaderLinkAnswer, SWT.NONE);
-				lblAnswers.setBounds(5, 5, 150, 25);
-				lblAnswers.setText("Answers");
-
-				Label lblSelectQuestion = new Label(groupHeaderLinkAnswer, SWT.NONE);
-				lblSelectQuestion.setBounds(180, 5, 530, 25);
-				lblSelectQuestion.setText("Jump to question");
-				
-			
-			    // Scroll composite containing the needed widgets for linking the answers
-			
-				CompositeToHoldSmallerUIElements scrollCompositeForAnswers = new CompositeToHoldSmallerUIElements(compositeForLinkAnswerTab, SWT.NONE, null, false, null);
-				GridData gd_LinkAns= new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
-				gd_LinkAns.heightHint = 200;
-				gd_LinkAns.widthHint = 700;
-				scrollCompositeForAnswers.setLayoutData(gd_LinkAns);
-				scrollCompositeForAnswers.setLayout(new GridLayout(2, false));
-
-				for(Answer answer: question.getAnswers()){
-					scrollCompositeForAnswers.addElementsOfLinkAnswer(answer, question, listOfAllQuestions);
-				}
-			}
-		}
 
 		TabItem tbtmLinkClaferFeatures = new TabItem(tabFolder, SWT.NONE);
 		tbtmLinkClaferFeatures.setText("Link to variability constructs");

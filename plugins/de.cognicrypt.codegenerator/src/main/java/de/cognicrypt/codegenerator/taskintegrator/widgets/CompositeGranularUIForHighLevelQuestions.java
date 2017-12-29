@@ -62,7 +62,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				/*
-				 * to create and use the link question dialog object
+				 * to create a link question box dialog and use that dialog to update the details
 				 */}
 		});
 		
@@ -104,7 +104,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		txtQuestion.setBounds(94, 67, 403, 29);
 		
 		setTextQuestion(question.getQuestionText());
-				
+
 		Label lblType = new Label(grpQuestionDetails, SWT.NONE);
 		lblType.setBounds(267, 35, 38, 20);
 		lblType.setText("Type:");
@@ -148,14 +148,16 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
 		lblAnswers.setBounds(5, 108, 55, 17);
 		lblAnswers.setText("Answers:");
-		Combo comboForAnswers = new Combo(grpQuestionDetails, SWT.READ_ONLY);
-		comboForAnswers.setBounds(94, 102, 403, 29);
-
+		
 		/**
-		 * Following 'if' conditions checks the question type and then
+		 * Following if conditions checks the question type and then
 		 * creates the widgets to display the answer as the question type
 		 */
 		if (question.getQuestionType().equalsIgnoreCase("Drop down")) {
+			
+			Combo comboForAnswers = new Combo(grpQuestionDetails, SWT.READ_ONLY);
+			comboForAnswers.setBounds(94, 102, 403, 29);
+
 			for (Answer answer : question.getAnswers()) {
 				comboForAnswers.add(answer.getValue());
 			}
@@ -190,7 +192,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 
 		else if (question.getQuestionType().equalsIgnoreCase("text box")) {
 			Text txtBox = new Text(grpQuestionDetails, SWT.BORDER);
-			txtBox.setBounds(94, 92, 403, 29);
+			txtBox.setBounds(94, 102, 403, 29);
 		}
 
 		this.setSize(SWT.DEFAULT, 250);

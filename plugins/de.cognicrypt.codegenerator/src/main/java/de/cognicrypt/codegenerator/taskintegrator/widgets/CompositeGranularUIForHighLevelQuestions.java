@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Text;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.wizard.LinkAnswerDialog;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.QuestionDialog;
 
 public class CompositeGranularUIForHighLevelQuestions extends Composite {
@@ -52,18 +53,23 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 
 		Button linkQstn = new Button(this, SWT.None);
 		linkQstn.setBounds(588, 50, 100, 53);
-		linkQstn.setText("Link Question");
+		linkQstn.setText("Link Answer");
 
 		//Visible only for the "pageForLinkAnswers" page 
 		linkQstn.setVisible(linkAnswerPage);
 
+		//opens the LinkAnswerDialog
 		linkQstn.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				/*
-				 * to create a link question box dialog and use that dialog to update the details
-				 */}
+				
+				//retrieves the list of all questions
+				ArrayList<Question> listOfAllQuestions=((CompositeToHoldGranularUIElements)linkQstn.getParent().getParent().getParent()).getListOfAllQuestions();
+				LinkAnswerDialog linkAnsDialog = new LinkAnswerDialog(parent.getShell(), question, listOfAllQuestions);
+				linkAnsDialog.open();
+			
+			}
 		});
 		
 			
@@ -165,11 +171,18 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 			int count = question.getAnswers().size();
 			Button[] btn = new Button[count];
 			int spaceToDisplayAns = 70;
-
+			
+			if(count==1){
+				btn[0] = new Button(grpQuestionDetails, SWT.RADIO);
+				btn[0].setBounds(spaceToDisplayAns, 102, 210, 29);
+				btn[0].setText(question.getAnswers().get(0).getValue());
+				
+			}
+			
 			if (count == 2) {
 				for (int i = 0; i < count; i++) {
 					btn[i] = new Button(grpQuestionDetails, SWT.RADIO);
-					btn[i].setBounds(spaceToDisplayAns, 92, 210, 29);
+					btn[i].setBounds(spaceToDisplayAns, 102, 210, 29);
 					btn[i].setText(question.getAnswers().get(i).getValue());
 					if (spaceToDisplayAns < 500) {
 						spaceToDisplayAns = spaceToDisplayAns + 220;
@@ -179,7 +192,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 			} else if (count > 2) {
 				for (int i = 0; i < count; i++) {
 					btn[i] = new Button(grpQuestionDetails, SWT.RADIO);
-					btn[i].setBounds(spaceToDisplayAns, 92, 80, 29);
+					btn[i].setBounds(spaceToDisplayAns, 102, 80, 29);
 					btn[i].setText(question.getAnswers().get(i).getValue());
 					if (spaceToDisplayAns < 500) {
 						spaceToDisplayAns = spaceToDisplayAns + 85;

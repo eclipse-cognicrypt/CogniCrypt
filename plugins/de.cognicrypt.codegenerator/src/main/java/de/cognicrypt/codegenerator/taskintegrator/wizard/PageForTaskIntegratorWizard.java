@@ -187,7 +187,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				break;
 			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
-				//this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
+				this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
 
 				TaskIntegrationWizard tiWizard = null;
 
@@ -218,15 +218,71 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 							// Update the array list.
 							compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
-							compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails, claferPageComposite.getListOfAllClaferFeatures());
-							
+							compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails, claferPageComposite.getListOfAllClaferFeatures(),false);
 						}
 					}
 				});
 				break;
+			case Constants.PAGE_NAME_FOR_LINK_ANSWERS:
+				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
+				this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
+			break;
 		}
 	}
 	
+	public IWizardPage getNextPage() 
+	{ 
+		 boolean isNextPressed = "nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[2].getMethodName());
+		if (isNextPressed) {
+			boolean validatedNextPress = this.nextPressed(this);
+			if (!validatedNextPress) {
+				return this;
+			}
+		}
+    return super.getNextPage();
+
+	}
+	
+protected boolean nextPressed(IWizardPage page){
+	boolean ValidateNextPress=true;
+	try{
+		if(page.getName().equals(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS)){
+			PageForTaskIntegratorWizard highLevelQuestionPage=(PageForTaskIntegratorWizard)page;
+			CompositeToHoldGranularUIElements highLevelQuestionPageComposite=(CompositeToHoldGranularUIElements) highLevelQuestionPage.getCompositeToHoldGranularUIElements();
+			IWizardPage nextPage= super.getNextPage();
+			System.out.println(nextPage.getName());
+			ArrayList<Question> listOfAllQuestions=highLevelQuestionPageComposite.getListOfAllQuestions();
+			
+			
+				if (nextPage instanceof PageForTaskIntegratorWizard) {
+					PageForTaskIntegratorWizard pftiw = (PageForTaskIntegratorWizard) nextPage;
+					if (pftiw.getCompositeToHoldGranularUIElements() instanceof CompositeToHoldGranularUIElements) {
+						CompositeToHoldGranularUIElements comp = (CompositeToHoldGranularUIElements) pftiw.getCompositeToHoldGranularUIElements();
+						System.out.println("compmsize"+comp.getListOfAllQuestions().size());
+						if(comp.getListOfAllQuestions().size()>0){
+							comp.deleteAllQuestion();
+							
+							
+						}
+						System.out.println("After clear"+comp.getListOfAllQuestions().size());
+						System.out.println("Question size"+listOfAllQuestions.size());
+							for (Question question : listOfAllQuestions) {
+									comp.getListOfAllQuestions().add(question);
+									comp.addQuestionUIElements(question, null, true);
+								
+								
+							}
+						
+					}
+				}
+		}	
+	
+	}catch(Exception ex) {
+        System.out.println("Error validation when pressing Next: " + ex);
+		
+	}
+	return ValidateNextPress;
+}
 	/**
 	 * For testing only. Remove later.
 	 * @return
@@ -374,4 +430,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		this.compositeForXsl = compositeForXsl;
 
 	}
+
+
 }

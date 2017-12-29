@@ -102,24 +102,27 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	}
 	
 	
-	public void addQuestionUIElements(Question question, ArrayList<ClaferFeature> claferFeatures){
+	public void addQuestionUIElements(Question question, ArrayList<ClaferFeature> claferFeatures, boolean linkAnswerPage) {
 		// Update the array list.
 		//listOfAllClaferFeatures.add(claferFeature);
 		setClaferFeatures(claferFeatures);
 
-		CompositeGranularUIForHighLevelQuestions granularQuestion = new CompositeGranularUIForHighLevelQuestions
-			((Composite) this.getContent(), // the content composite of ScrolledComposite.
-			SWT.NONE, 
-			question);
-		granularQuestion.setBounds(
-			Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS, 
-			getLowestWidgetYAxisValue(), 
-			Constants.WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT, 
+		CompositeGranularUIForHighLevelQuestions granularQuestion = new CompositeGranularUIForHighLevelQuestions((Composite) this.getContent(), // the content composite of ScrolledComposite.
+			SWT.NONE, question, linkAnswerPage);
+
+		//heightOfTheGranularComposite variable is used to determine the height of the granular Composite
+		int heightOfTheGranularComposite = 0;
+		if (linkAnswerPage) {
+			heightOfTheGranularComposite = granularQuestion.getSize().y - 55;
+		} else if (!linkAnswerPage) {
+			heightOfTheGranularComposite = granularQuestion.getSize().y;
+		}
+		granularQuestion.setBounds(Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT,
 			//Constants.HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT
-			granularQuestion.getSize().y);
-		
+			heightOfTheGranularComposite);
+
 		//granularQuestion.setSize(SWT.DEFAULT, granularQuestion.getSize().y);
-		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + granularQuestion.getSize().y);
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + heightOfTheGranularComposite);
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
 	
@@ -129,6 +132,17 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 				
 		updateQuestionContainer();
 		
+	}
+	
+	/**	 
+	 * executes when next button of "highLevelQuestion" is pressed
+	 * deletes listOfAllQuestions of "pageForLinkAnswers"
+	 * to refresh the question list of "pagForLinkAnswers"
+	 */
+	public void deleteAllQuestion(){
+		listOfAllQuestions.clear();
+		
+		updateQuestionContainer();
 	}
 	
 	private void updateQuestionContainer() {
@@ -145,7 +159,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		
 		// add all the clafer features excluding the deleted one.
 		for(Question questionUnderConsideration : listOfAllQuestions){
-			addQuestionUIElements(questionUnderConsideration,listOfAllClaferFeatures);
+			addQuestionUIElements(questionUnderConsideration,listOfAllClaferFeatures,false);
 		}
 	}
 	

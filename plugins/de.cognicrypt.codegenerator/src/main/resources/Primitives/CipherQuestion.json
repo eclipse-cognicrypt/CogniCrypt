@@ -61,7 +61,8 @@
       "element": "combo",
       "questionText": "How many keys have your algorithm ?",
       "answers": [{
-          "value": "1" },
+          "value": "1",
+          "defaultAnswer": true },
           {
           "value": "2"},
           {
@@ -69,10 +70,7 @@
           {
           "value": "4" },
           {
-          "value": "5",
-        
-          "defaultAnswer": true
-          
+          "value": "5"
         }
       ],
       "updateNextPage": true
@@ -80,7 +78,7 @@
     {
       "id": "1",
       "element": "text",
-      "questionText": "What is the block size of the cipher ?(in bits)",
+      "questionText": "What is the block size of the cipher ?(bits)",
       "answers": [{
           "value": "",
           "codeDependencies": [{

@@ -23,8 +23,9 @@ private DeveloperProject project;
 		final Composite container = new Composite(parent, SWT.NULL);
 		container.setBounds(10, 10, 200, 300);
 		final GridLayout layout = new GridLayout(1, false);
+		container.setLayout(layout);
 		Combo combo=new Combo(container, SWT.NULL);
-		combo.add("hi");
+		
 		
 		
 		

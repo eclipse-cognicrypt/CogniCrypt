@@ -64,7 +64,7 @@ public class WizardActionFromContextMenu implements IWorkbenchWindowActionDelega
 		Constants.WizardActionFromContextMenuFlag = true;
 		final WizardDialog dialog = new WizardDialog(new Shell(), new ConfiguratorWizard());
 		dialog.open();
-	}
+		}
 
 	/**
 	 * Selection in the workbench has been changed. We can change the state of the 'real' action here if we want, but this can only happen after the delegate has been created.

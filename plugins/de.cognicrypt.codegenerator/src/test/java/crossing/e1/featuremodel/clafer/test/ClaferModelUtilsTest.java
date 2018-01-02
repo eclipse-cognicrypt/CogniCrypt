@@ -69,7 +69,7 @@ public class ClaferModelUtilsTest {
 	}
 
 	/**
-	 * Test method for {@link crossing.e1.featuremodel.clafer.test.ClaferModelUtils#isAbstract(org.clafer.ast.AstClafer)} .
+	 * Test method for {@link crossing.e1.featuremodel.clafer.test.ClaferModelUtils#isConcrete(org.clafer.ast.AstClafer)} .
 	 */
 	@Test
 	public final void testIsAbstract() {

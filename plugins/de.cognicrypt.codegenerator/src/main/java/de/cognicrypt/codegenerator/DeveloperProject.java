@@ -136,10 +136,7 @@ public class DeveloperProject {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((project == null) ? 0 : project.hashCode());
-		return result;
+		return 31 + ((project == null) ? 0 : project.hashCode());
 	}
 	/**
 	 * @return Get all methods of the project
@@ -159,10 +156,7 @@ public class DeveloperProject {
 		}
 		if (obj instanceof DeveloperProject) {
 			DeveloperProject other = (DeveloperProject) obj;
-			if (this.project == null || other.project != null) {
-				return false;
-			}
-			return this.project.equals(other.project);
+			return !(this.project == null || other.project != null) && this.project.equals(other.project);
 		} else if (obj instanceof IProject) {
 			IProject other = (IProject) obj;
 			return this.project.equals(other);
@@ -178,6 +172,7 @@ public class DeveloperProject {
 		try {
 			IPackageFragment delPackage = getPackagesOfProject(packageName);
 			delPackage.delete(true, null);
+			return true;
 		} catch (CoreException e) {
 			Activator.getDefault().logError(e);
 		}

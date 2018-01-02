@@ -7,7 +7,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -35,44 +34,43 @@ public class StartupHandler implements IStartup {
 
 		public void resourceChanged(IResourceChangeEvent event) {
 			try {
-				final Set<IJavaElement> changedJavaElements = new HashSet<IJavaElement>();
-				event.getDelta().accept(new IResourceDeltaVisitor() {
-
-					public boolean visit(IResourceDelta delta) throws CoreException {
-						switch (delta.getKind()) {
-							case IResourceDelta.ADDED:
-							case IResourceDelta.CHANGED:
-								IResource res = delta.getResource();
-								IJavaElement javaElement = JavaCore.create(res);
-								if (javaElement != null) {
-									//								if(res instanceof IProject) {
-									//TODO allow for filtering of Android projects in plugin config
-									//									if(!AnalysisDispatcher.isAndroidProject((IProject) res)) {
-									//										don't care about non-Android projects
-									//										return false;
-									//									}
-									//								}
-									if (javaElement instanceof ICompilationUnit) {
-										//only care if file contents changed
-										if ((delta.getFlags() & IResourceDelta.CONTENT) != 0) {
-											changedJavaElements.add(javaElement);
-										}
-										return false;
+				final Set<IJavaElement> changedJavaElements = new HashSet<>();
+				event.getDelta().accept(delta -> {
+					switch (delta.getKind()) {
+						case IResourceDelta.ADDED:
+						case IResourceDelta.CHANGED:
+							IResource res = delta.getResource();
+							IJavaElement javaElement = JavaCore.create(res);
+							if (javaElement != null) {
+								if (javaElement instanceof ICompilationUnit) {
+									if ((delta.getFlags() & IResourceDelta.CONTENT) != 0) {
+										changedJavaElements.add(javaElement);
 									}
+									return false;
 								}
-						}
-						return true;
+							}
 					}
+					return true;
 				});
-				if (changedJavaElements.isEmpty())
+				if (changedJavaElements.isEmpty()) {
 					return;
+				}
 
+				Activator.getDefault().logInfo("Analysis has been triggered.");
+				
 				AnalysisKickOff ako = new AnalysisKickOff();
 
 				if (ako.setUp()) {
-					ako.run();
+					if (ako.run()) {
+						Activator.getDefault().logInfo("Analysis has finished.");
+					} else {
+						Activator.getDefault().logInfo("Analysis has aborted.");
+					}
+				} else {
+					Activator.getDefault().logInfo("Analysis has been canceled due to erroneous setup.");
 				}
 
+				
 			} catch (CoreException e) {
 				Activator.getDefault().logError(e, "Internal error");
 			}

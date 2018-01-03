@@ -2,9 +2,14 @@ package de.cognicrypt.codegenerator.taskintegrator.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,6 +17,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.clafer.javascript.Javascript;
+import org.clafer.javascript.JavascriptFile;
 import org.junit.AfterClass;
 import org.junit.Test;
 
@@ -70,6 +77,55 @@ public class ClaferFeatureTest {
 		assertTrue(filesEqual(expectedFilename, actualFilename));
 	}
 	
+	@Test
+	public final void testSolveClaferFeature() throws IOException {
+		String fileName = testFileFolder + "testFile2.cfr";
+		File inputFile;
+		try {
+			ProcessBuilder processBuilder = new ProcessBuilder("clafer", "-k", "-m", "choco", fileName);
+			processBuilder.redirectErrorStream(true);
+			Process compilerProcess = processBuilder.start();
+
+			InputStream is = compilerProcess.getInputStream();
+			InputStreamReader isr = new InputStreamReader(is);
+			BufferedReader br = new BufferedReader(isr);
+			String line;
+
+			while ((line = br.readLine()) != null) {
+				System.out.println(line);
+			}
+			compilerProcess.waitFor();
+			
+			if (compilerProcess.exitValue() != 0) {
+				System.out.println("Clafer compilation error: make sure your model is correct. Aborting...");
+			}
+		} catch (Exception e) {
+			System.out.println("Abnormal Clafer compiler termination. Aborting...");
+			e.printStackTrace();
+		}
+
+		// replace the extension to .js
+		int extPos = fileName.lastIndexOf(".");
+		if (extPos != -1) {
+			fileName = fileName.substring(0, extPos) + ".js";
+		}
+
+		// change the inputFile to the resulting .js file
+		inputFile = new File(fileName);
+
+		// run the different modes
+		JavascriptFile javascriptFile = null;
+		try {
+			System.out.println("=========== Parsing+Typechecking " + fileName + "  =============");
+			javascriptFile = Javascript.readModel(inputFile);
+		} catch (Exception e) {
+			System.out.println("Unhandled compilation error occured. Please report this problem.");
+			System.out.println(e.getMessage());
+		}
+
+		fail("Not yet implemented");
+	}
+
 	@AfterClass
 	public final static void deleteFiles() throws IOException {
 		// gather all files to be deleted

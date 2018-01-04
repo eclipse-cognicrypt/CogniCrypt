@@ -72,7 +72,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		updateClaferContainer();
 	}
 
-	private void updateClaferContainer() {
+	public void updateClaferContainer() {
 		Composite compositeContentOfThisScrolledComposite = (Composite)this.getContent();
 		
 		// first dispose all the granular UI elements (which includes the deleted one).

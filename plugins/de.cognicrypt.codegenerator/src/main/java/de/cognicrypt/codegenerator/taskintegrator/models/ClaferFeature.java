@@ -115,9 +115,44 @@ public class ClaferFeature {
 		return strRepresentation.toString();
 	}
 
+	/**
+	 * Implement features that this Clafer uses for inheritance or as property types if missing in featureList and add them to the list
+	 * 
+	 * @param featureList
+	 *        haystack list for missing features and to be updated with new features
+	 */
 	public void implementMissingFeatures(ArrayList<ClaferFeature> featureList) {
-		// TODO Auto-generated method stub
+		// find missing inherited feature
+		boolean parentFound = false;
+		for (ClaferFeature cfrFeature : featureList) {
+			if (cfrFeature.getFeatureName().equals(getFeatureInheritance())) {
+				parentFound = true;
+				break;
+			}
+		}
+		
+		// implement missing inherited feature
+		if (!parentFound) {
+			ClaferFeature parentFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, getFeatureInheritance(), "");
+			featureList.add(parentFeature);
+		}
+		
+		// find missing property types
+		for (FeatureProperty fp : getfeatureProperties()) {
+			boolean propertyTypeFound = false;
+			for (ClaferFeature cfrFeature : featureList) {
+				if (cfrFeature.getFeatureName().equals(fp.getPropertyType())) {
+					propertyTypeFound = true;
+					break;
+				}
+			}
 
+			// implement missing property types			
+			if (!propertyTypeFound) {
+				ClaferFeature propertyTypeFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, fp.getPropertyType(), "");
+				featureList.add(propertyTypeFeature);
+			}
+		}
 	}
 
 }

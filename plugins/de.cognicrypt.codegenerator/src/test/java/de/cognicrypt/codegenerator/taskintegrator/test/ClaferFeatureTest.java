@@ -78,6 +78,11 @@ public class ClaferFeatureTest {
 	}
 	
 	@Test
+	public final void testWriteCFRFile() {
+		fail("Not yet implemented");
+	}
+
+	@Test
 	public final void testSolveClaferFeature() throws IOException {
 		String fileName = testFileFolder + "testFile2.cfr";
 		File inputFile;

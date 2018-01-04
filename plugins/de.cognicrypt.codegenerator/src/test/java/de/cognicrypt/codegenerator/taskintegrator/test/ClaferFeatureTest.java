@@ -84,7 +84,19 @@ public class ClaferFeatureTest {
 
 	@Test
 	public final void testImplementMissingFeatures() {
-		fail("Not yet implemented");
+		ArrayList<ClaferFeature> featureList = new ArrayList<>();
+		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "Algorithm");
+		cfrFeature.implementMissingFeatures(featureList);
+		
+		boolean featureFound = false;
+		for (ClaferFeature currentFeature : featureList) {
+			if (currentFeature.getFeatureName().equals("Algorithm")) {
+				featureFound = true;
+				break;
+			}
+		}
+
+		assertTrue(featureFound);
 	}
 
 	@Test

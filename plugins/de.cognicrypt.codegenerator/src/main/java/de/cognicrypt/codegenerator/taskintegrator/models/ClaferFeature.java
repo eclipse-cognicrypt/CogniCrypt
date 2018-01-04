@@ -115,4 +115,9 @@ public class ClaferFeature {
 		return strRepresentation.toString();
 	}
 
+	public void implementMissingFeatures(ArrayList<ClaferFeature> featureList) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

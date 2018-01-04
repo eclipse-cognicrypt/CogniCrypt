@@ -4,12 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,8 +14,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.clafer.javascript.Javascript;
-import org.clafer.javascript.JavascriptFile;
 import org.junit.AfterClass;
 import org.junit.Test;
 
@@ -112,51 +107,52 @@ public class ClaferFeatureTest {
 
 	@Test
 	public final void testSolveClaferFeature() throws IOException {
-		String fileName = testFileFolder + "testFile2.cfr";
-		File inputFile;
+		String temporaryCfrFile = testFileFolder + "testFile2_tmp.cfr";
+
+		/**
+		 * Create Clafer feature
+		 * abstract Algorithm
+		 *   securityLevel -> Security
+		 */
+		ClaferFeature algoFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Algorithm", "");
+		ArrayList<FeatureProperty> propertyList = new ArrayList<>();
+		propertyList.add(new FeatureProperty("securityLevel", "Security"));
+		algoFeature.setFeatureProperties(propertyList);
+
+		// add feature to an empty list
+		ArrayList<ClaferFeature> featureList = new ArrayList<>();
+		featureList.add(algoFeature);
+
+		// automatically create missing features (a concrete Clafer Security is supposed to be created)
+		algoFeature.implementMissingFeatures(featureList);
+
+		// serialize Clafer model to file
+		StringBuilder sb = new StringBuilder();
+		for (ClaferFeature cfrFeature : featureList) {
+			sb.append(cfrFeature.toString());
+		}
+		FileWriter fileWriter = new FileWriter(temporaryCfrFile);
+		fileWriter.write(sb.toString());
+		fileWriter.close();
+
+		// try compilation
 		try {
-			ProcessBuilder processBuilder = new ProcessBuilder("clafer", "-k", "-m", "choco", fileName);
+			ProcessBuilder processBuilder = new ProcessBuilder("clafer", "-k", "-m", "choco", temporaryCfrFile);
 			processBuilder.redirectErrorStream(true);
 			Process compilerProcess = processBuilder.start();
 
-			InputStream is = compilerProcess.getInputStream();
-			InputStreamReader isr = new InputStreamReader(is);
-			BufferedReader br = new BufferedReader(isr);
-			String line;
-
-			while ((line = br.readLine()) != null) {
-				System.out.println(line);
-			}
 			compilerProcess.waitFor();
-			
+
 			if (compilerProcess.exitValue() != 0) {
-				System.out.println("Clafer compilation error: make sure your model is correct. Aborting...");
+				fail("Clafer compilation error: make sure your model is correct. Aborting...");
 			}
+
+			// make sure the compilation exits with value 0
+			assertEquals(0, compilerProcess.exitValue());
+
 		} catch (Exception e) {
-			System.out.println("Abnormal Clafer compiler termination. Aborting...");
-			e.printStackTrace();
+			fail("Abnormal Clafer compiler termination. Aborting...");
 		}
-
-		// replace the extension to .js
-		int extPos = fileName.lastIndexOf(".");
-		if (extPos != -1) {
-			fileName = fileName.substring(0, extPos) + ".js";
-		}
-
-		// change the inputFile to the resulting .js file
-		inputFile = new File(fileName);
-
-		// run the different modes
-		JavascriptFile javascriptFile = null;
-		try {
-			System.out.println("=========== Parsing+Typechecking " + fileName + "  =============");
-			javascriptFile = Javascript.readModel(inputFile);
-		} catch (Exception e) {
-			System.out.println("Unhandled compilation error occured. Please report this problem.");
-			System.out.println(e.getMessage());
-		}
-
-		fail("Not yet implemented");
 	}
 
 	@AfterClass
@@ -164,7 +160,8 @@ public class ClaferFeatureTest {
 		// gather all files to be deleted
 		ArrayList<String> temporaryFiles = new ArrayList<>();
 		temporaryFiles.add(testFileFolder + "testFile1_tmp.cfr");
-		temporaryFiles.add(testFileFolder + "testFile2.js");
+		temporaryFiles.add(testFileFolder + "testFile2_tmp.cfr");
+		temporaryFiles.add(testFileFolder + "testFile2_tmp.js");
 		
 		// generate the paths and delete the files
 		for (String filename : temporaryFiles) {

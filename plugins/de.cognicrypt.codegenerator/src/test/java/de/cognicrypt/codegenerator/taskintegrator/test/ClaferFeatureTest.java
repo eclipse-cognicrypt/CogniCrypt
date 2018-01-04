@@ -153,6 +153,7 @@ public class ClaferFeatureTest {
 		// gather all files to be deleted
 		ArrayList<String> temporaryFiles = new ArrayList<>();
 		temporaryFiles.add(testFileFolder + "testFile1_tmp.cfr");
+		temporaryFiles.add(testFileFolder + "testFile2.js");
 		
 		// generate the paths and delete the files
 		for (String filename : temporaryFiles) {

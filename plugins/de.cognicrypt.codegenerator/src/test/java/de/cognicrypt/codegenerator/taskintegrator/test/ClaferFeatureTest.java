@@ -100,6 +100,17 @@ public class ClaferFeatureTest {
 	}
 
 	@Test
+	public final void testNoEmptyFeatures() {
+		ArrayList<ClaferFeature> featureList = new ArrayList<>();
+		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "");
+		cfrFeature.implementMissingFeatures(featureList);
+
+		for (ClaferFeature currentFeature : featureList) {
+			assertTrue(!currentFeature.getFeatureName().isEmpty());
+		}
+	}
+
+	@Test
 	public final void testSolveClaferFeature() throws IOException {
 		String fileName = testFileFolder + "testFile2.cfr";
 		File inputFile;

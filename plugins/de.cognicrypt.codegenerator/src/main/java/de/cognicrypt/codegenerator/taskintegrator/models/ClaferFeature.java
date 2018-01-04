@@ -123,20 +123,22 @@ public class ClaferFeature {
 	 */
 	public void implementMissingFeatures(ArrayList<ClaferFeature> featureList) {
 		// find missing inherited feature
-		boolean parentFound = false;
-		for (ClaferFeature cfrFeature : featureList) {
-			if (cfrFeature.getFeatureName().equals(getFeatureInheritance())) {
-				parentFound = true;
-				break;
+		if (!getFeatureInheritance().isEmpty()) {
+			boolean parentFound = false;
+			for (ClaferFeature cfrFeature : featureList) {
+				if (cfrFeature.getFeatureName().equals(getFeatureInheritance())) {
+					parentFound = true;
+					break;
+				}
+			}
+
+			// implement missing inherited feature
+			if (!parentFound) {
+				ClaferFeature parentFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, getFeatureInheritance(), "");
+				featureList.add(parentFeature);
 			}
 		}
-		
-		// implement missing inherited feature
-		if (!parentFound) {
-			ClaferFeature parentFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, getFeatureInheritance(), "");
-			featureList.add(parentFeature);
-		}
-		
+
 		// find missing property types
 		for (FeatureProperty fp : getfeatureProperties()) {
 			boolean propertyTypeFound = false;

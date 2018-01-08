@@ -20,6 +20,8 @@
 
 package de.cognicrypt.codegenerator;
 
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -229,6 +231,14 @@ public class Constants {
 	//public static final Rectangle RECTANGLE_FOR_GRANULAR_CLAFER_UI_ELEMENT = new Rectangle(10, 10, 744, 280);
 	public static final int WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT = 744;
 	public static final int HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT = 280;
+	
+	public static final int SINGLE_LINE_TEXT_BOX_LIMIT = 256;
+	public static final int MULTI_LINE_TEXT_BOX_LIMIT = 2560;
+	
+	public static final Image DEC_INFORMATION = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage();
+	public static final Image DEC_ERROR = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage();
+	public static final Image DEC_REQUIRED = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED).getImage();
+	public static final Image DEC_WARNING = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_WARNING).getImage();
 	
 	// Form  data for CompositeGranularUIForClaferFeature
 	public static final int RIGHT_VALUE_FOR_GRANULAR_CLAFER_UI_SUB_ELEMENT = 736;

@@ -4,6 +4,11 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
 import org.eclipse.swt.widgets.Composite;
+
+import java.util.List;
+
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Label;
@@ -11,12 +16,15 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.ModifyEvent;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
+import de.cognicrypt.codegenerator.tasks.Task;
+import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.layout.GridLayout;
@@ -29,15 +37,20 @@ import org.eclipse.swt.layout.GridData;
 public class CompositeChoiceForModeOfWizard extends Composite {
 	private ModelAdvancedMode objectForDataInNonGuidedMode;
 	private Text txtDescriptionOfTask;
-	
+	private List<Task> existingTasks;
+	private ControlDecoration decNameOfTheTask;
 
 	/**
 	 * Create the composite.
 	 * @param parent
 	 * @param style
 	 */
-	public CompositeChoiceForModeOfWizard(Composite parent, int style) {
+	public CompositeChoiceForModeOfWizard(Composite parent, int style) {		
 		super(parent, SWT.BORDER);
+		
+		// these tasks are required for validation of the new task that is being added.
+		existingTasks = TaskJSONReader.getTasks();
+		
 		objectForDataInNonGuidedMode = new ModelAdvancedMode();
 		this.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
@@ -48,10 +61,15 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		grpChooseTheMode.setLayout(new GridLayout(1, false));
 		
 		Label lblNameOfTheTask = new Label(grpChooseTheMode, SWT.NONE);
-		lblNameOfTheTask.setText("Name of the Task :");
+		lblNameOfTheTask.setText("Name of the Task ");
+		decNameOfTheTask = new ControlDecoration(lblNameOfTheTask, SWT.TOP | SWT.RIGHT);
+		//decNameOfTheTask.setDescriptionText(Constants.GUIDED_MODE_CHECKBOX_INFO);
+		decNameOfTheTask.setImage(Constants.DEC_REQUIRED);
+		decNameOfTheTask.setShowOnlyOnFocus(false);
 		
 		Text txtForTaskName = new Text(grpChooseTheMode, SWT.BORDER);
 		txtForTaskName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		txtForTaskName.setTextLimit(Constants.SINGLE_LINE_TEXT_BOX_LIMIT);
 		
 		Label lblDescriptionOfThe = new Label(grpChooseTheMode, SWT.NONE);
 		lblDescriptionOfThe.setText("Description of the Task :");
@@ -60,6 +78,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		GridData gd_txtDescriptionOfTask = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_txtDescriptionOfTask.heightHint = 67;
 		txtDescriptionOfTask.setLayoutData(gd_txtDescriptionOfTask);
+		txtDescriptionOfTask.setTextLimit(Constants.MULTI_LINE_TEXT_BOX_LIMIT);
 		
 		Button btnCustomLibrary = new Button(grpChooseTheMode, SWT.CHECK);
 		btnCustomLibrary.setText("Do you wish to use a custom library?");
@@ -133,15 +152,33 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		
 		txtForTaskName.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				getObjectForDataInNonGuidedMode().setNameOfTheTask(txtForTaskName.getText());
+				String tempName = txtForTaskName.getText().trim();
+				boolean validString = true;
+				// Validation : check whether the name already exists.
 				
-				// TODO Validate!
+				for (Task task : existingTasks) {
+					if (task.getName().equals(tempName) || task.getDescription().equals(tempName)) {
+						validString = false;						
+						break;
+					}
+				}
+				
+				if (validString) {
+					getObjectForDataInNonGuidedMode().setNameOfTheTask(tempName);
+					decNameOfTheTask.setImage(Constants.DEC_REQUIRED);
+					decNameOfTheTask.setDescriptionText("This is a required field.");
+				} else {
+					decNameOfTheTask.setImage(Constants.DEC_ERROR);
+					decNameOfTheTask.setDescriptionText("A task with this name already exists.");
+					decNameOfTheTask.showHoverText(decNameOfTheTask.getDescriptionText());					
+				}
+				
 			}
 		});
 		
 		txtDescriptionOfTask.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				getObjectForDataInNonGuidedMode().setTaskDescription(txtDescriptionOfTask.getText());
+				getObjectForDataInNonGuidedMode().setTaskDescription(txtDescriptionOfTask.getText().trim());
 				//TODO Validate!
 			}
 		});

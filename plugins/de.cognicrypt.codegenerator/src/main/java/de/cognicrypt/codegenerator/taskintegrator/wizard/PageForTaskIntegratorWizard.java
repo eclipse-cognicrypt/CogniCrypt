@@ -16,6 +16,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.MessageBox;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
@@ -87,6 +88,13 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						if (cfrFeatureDialog.open() == 0) {
 							ClaferFeature tempFeature = cfrFeatureDialog.getResult();
 							tempFeature.implementMissingFeatures(compositeToHoldGranularUIElements.getListOfAllClaferFeatures());
+							
+							// inform user that features have been created automatically
+							// TODO only show message if new features implemented
+							MessageBox dialog = new MessageBox(getShell(), SWT.ICON_INFORMATION | SWT.OK);
+							dialog.setText("Additional features created");
+							dialog.setMessage("Some of the used features didn't exist yet. We have created them for you.");
+							dialog.open();
 
 							// Update the array list.							
 							compositeToHoldGranularUIElements.getListOfAllClaferFeatures().add(tempFeature);

@@ -175,4 +175,14 @@ public class ClaferFeature {
 		}
 	}
 
+	public void printModel(ArrayList<ClaferFeature> claferModel) {
+		// TODO This should not be an class method
+		StringBuilder sb = new StringBuilder();
+		for (ClaferFeature cfrFeature : claferModel) {
+			sb.append(cfrFeature.toString());
+		}
+		
+		System.out.println(sb);
+	}
+	
 }

@@ -175,6 +175,40 @@ public class ClaferFeature {
 		}
 	}
 
+	public void removeUnusedFeatures(ArrayList<ClaferFeature> featureList) {
+		for (ClaferFeature cfrFeature : featureList) {
+			// check usage of cfrFeature			
+			boolean used = false;
+			if (cfrFeature.hasProperties()) {
+				used = true;
+			}
+			if (cfrFeature.hasConstraints()) {
+				used = true;
+			}
+			
+			// if abstract and somebody inherits -> used
+			for (ClaferFeature refFeature : featureList) {
+				if (refFeature.getFeatureInheritance() == cfrFeature.getFeatureName()) {
+					// usage found: refFeature inherits from cfrFeature
+					used = true;
+				}
+			}
+
+			for (ClaferFeature refFeature : featureList) {
+				for (FeatureProperty featureProp : refFeature.getfeatureProperties()) {
+					if (featureProp.getPropertyType() == cfrFeature.getFeatureName()) {
+						// usage found: featureProp is of type cfrFeature
+						used = true;
+					}
+				}
+			}
+
+			if (!used) {
+				System.out.println(cfrFeature.getFeatureName() + " unused");
+			}
+		}
+	}
+
 	public void printModel(ArrayList<ClaferFeature> claferModel) {
 		// TODO This should not be an class method
 		StringBuilder sb = new StringBuilder();

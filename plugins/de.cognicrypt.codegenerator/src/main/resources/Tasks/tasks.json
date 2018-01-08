@@ -52,7 +52,7 @@
 			"description": "Judging Trustworthiness of third parties",
 			"taskDescription":"This task helps evaluating the trustworthiness of third partiy entities and, by extension, who to best interact with.",
 			"modelFile" : "src/main/resources/ClaferModel/CertainTrust.js",
-			"questionsJSONFile" : "src/main/resources/TaskDesc/CertainTrustQuestions.json",
+			"questionsJSONFile" : "src/main/resources/TaskDesc/CertainTrust.json",
 			"additionalResources" : "src/main/resources/AdditionalResources/CertainTrust",
 			"xslFile" : "src/main/resources/XSLTemplates/CertainTrust.xsl"
 		}

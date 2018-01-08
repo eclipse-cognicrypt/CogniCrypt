@@ -94,6 +94,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 							// rebuild the UI
 							compositeToHoldGranularUIElements.updateClaferContainer();
+							tempFeature.removeUnusedFeatures(compositeToHoldGranularUIElements.getListOfAllClaferFeatures());
 						}
 
 					}

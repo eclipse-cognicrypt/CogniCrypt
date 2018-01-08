@@ -76,6 +76,20 @@ public class ClaferFeature {
 	public void setFeatureProperties(ArrayList<FeatureProperty> featureProperties) {
 		this.featureProperties = featureProperties;
 	}
+	
+	public boolean hasProperties() {
+		return !featureProperties.isEmpty();
+	}
+	
+	public boolean hasProperty(String needle) {
+		for (FeatureProperty featureProperty : getfeatureProperties()) {
+			if (featureProperty.getPropertyName() == needle) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 
 	public ArrayList<ClaferConstraint> getFeatureConstraints() {
 		return featureConstraints;
@@ -83,6 +97,10 @@ public class ClaferFeature {
 
 	public void setFeatureConstraints(ArrayList<ClaferConstraint> featureConstraints) {
 		this.featureConstraints = featureConstraints;
+	}
+	
+	public boolean hasConstraints() {
+		return !featureConstraints.isEmpty();
 	}
 
 	@Override

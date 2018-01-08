@@ -36,6 +36,8 @@ public class Question {
 	private String note;
 	//tooltip
 	private String tooltip;
+	//TextType
+	private String textType;
 	
 	public ArrayList<Answer> getAnswers() {
 		return this.answers;
@@ -71,10 +73,14 @@ public class Question {
 	}
 	
 	//added get method for tooltip
-		public String getTooltip() {
-			return this.tooltip;
-		}
+	public String getTooltip() {
+		return this.tooltip;
+	}
 	
+	//added the type of the text
+	public String getTextType() {
+		return this.textType;
+	}
 		
 	public String getQuestionText() {
 		return this.questionText;
@@ -110,9 +116,14 @@ public class Question {
 	}
 	
 	//added set method for tooltip
-		public void getTooltip(final String tooltip) {
-			this.tooltip = tooltip;
-		}
+	public void setTooltip(final String tooltip) {
+		this.tooltip = tooltip;
+	}
+	
+	//added set method for the type of text
+	public void setTextType(final String textType) {
+		this.textType = textType;
+	}
 	
 	public void setQuestionText(final String questionText) {
 		this.questionText = questionText;

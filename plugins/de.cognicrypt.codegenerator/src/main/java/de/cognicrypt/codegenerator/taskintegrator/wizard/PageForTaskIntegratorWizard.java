@@ -50,10 +50,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	public PageForTaskIntegratorWizard(String name, String title, String description) {
 		super(name);
 		setTitle(title);
-		setDescription(description);
-
-		// TODO improve the next button selection functionality.
-		//this.setPageComplete(false);		
+		setDescription(description);		
+		this.setPageComplete(false);		
 	}
 
 	/**
@@ -68,7 +66,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		switch (this.getName()) {
 			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
 				container.setLayout(new FillLayout(SWT.HORIZONTAL));
-				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE));
+				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE, this));
 				break;
 			case Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));

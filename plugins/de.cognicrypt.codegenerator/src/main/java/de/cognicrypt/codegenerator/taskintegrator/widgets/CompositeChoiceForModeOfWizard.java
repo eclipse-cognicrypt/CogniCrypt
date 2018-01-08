@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 import java.util.List;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Label;
@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.ModifyEvent;
@@ -38,18 +37,20 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	private ModelAdvancedMode objectForDataInNonGuidedMode;
 	private Text txtDescriptionOfTask;
 	private List<Task> existingTasks;
-	private ControlDecoration decNameOfTheTask;
+	private ControlDecoration decNameOfTheTask; // class variable to be able to access it in the events.
+	private WizardPage theLocalContainerPage;
 
 	/**
 	 * Create the composite.
 	 * @param parent
 	 * @param style
 	 */
-	public CompositeChoiceForModeOfWizard(Composite parent, int style) {		
+	public CompositeChoiceForModeOfWizard(Composite parent, int style, WizardPage theContainerPage) {		
 		super(parent, SWT.BORDER);
 		
 		// these tasks are required for validation of the new task that is being added.
 		existingTasks = TaskJSONReader.getTasks();
+		setTheLocalContainerPage(theContainerPage);
 		
 		objectForDataInNonGuidedMode = new ModelAdvancedMode();
 		this.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
@@ -109,8 +110,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		rl_grpNonguidedMode.fill = true;
 		grpNonguidedMode.setLayout(rl_grpNonguidedMode);
 		
-		
-		
+				
 		new GroupBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE, new String[] {"*.cfr"}, "Select cfr file that contains the Clafer features");
 		
 		new GroupBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE, new String[] {"*.xsl"}, "Select xsl file that contains the code details");
@@ -167,10 +167,12 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 					getObjectForDataInNonGuidedMode().setNameOfTheTask(tempName);
 					decNameOfTheTask.setImage(Constants.DEC_REQUIRED);
 					decNameOfTheTask.setDescriptionText("This is a required field.");
+					theLocalContainerPage.setPageComplete(true);
 				} else {
 					decNameOfTheTask.setImage(Constants.DEC_ERROR);
 					decNameOfTheTask.setDescriptionText("A task with this name already exists.");
-					decNameOfTheTask.showHoverText(decNameOfTheTask.getDescriptionText());					
+					decNameOfTheTask.showHoverText(decNameOfTheTask.getDescriptionText());
+					theLocalContainerPage.setPageComplete(false);
 				}
 				
 			}
@@ -207,5 +209,21 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	 */
 	public void setObjectForDataInNonGuidedMode(ModelAdvancedMode objectForDataInNonGuidedMode) {
 		this.objectForDataInNonGuidedMode = objectForDataInNonGuidedMode;
+	}
+
+	/**
+	 * Get the local copy of the wizard page that is the parent container for this composite.
+	 * @return
+	 */
+	public WizardPage getTheLocalContainerPage() {
+		return theLocalContainerPage;
+	}
+
+	/**
+	 * Set the local copy of the wizard page that is the parent container for this composite.
+	 * @param theLocalContainerPage
+	 */
+	public void setTheLocalContainerPage(WizardPage theLocalContainerPage) {
+		this.theLocalContainerPage = theLocalContainerPage;
 	}
 }

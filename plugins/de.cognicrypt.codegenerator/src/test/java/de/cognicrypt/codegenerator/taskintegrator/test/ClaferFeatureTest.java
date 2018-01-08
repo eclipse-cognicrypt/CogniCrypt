@@ -154,6 +154,30 @@ public class ClaferFeatureTest {
 			fail("Abnormal Clafer compiler termination. Aborting...");
 		}
 	}
+	
+	@Test
+	public final void testRemoveUnusedFeatures() {
+		ClaferFeature featureA = new ClaferFeature(Constants.FeatureType.CONCRETE, "A", "B");
+		ArrayList<FeatureProperty> propertiesA = new ArrayList<>();
+		propertiesA.add(new FeatureProperty("1", "x"));
+		propertiesA.add(new FeatureProperty("2", "y"));
+		featureA.setFeatureProperties(propertiesA);
+		
+		ArrayList<ClaferFeature> featureList = new ArrayList<>();
+		featureList.add(featureA);
+		
+		featureA.implementMissingFeatures(featureList);
+		
+		// change the type of property 1 to x
+		// y will be unused
+		propertiesA.get(1).setPropertyType("x");
+		
+		featureA.removeUnusedFeatures(featureList);
+		
+		featureA.printModel(featureList);
+		
+		fail("Not implemented yet!");
+	}
 
 	@AfterClass
 	public final static void deleteFiles() throws IOException {

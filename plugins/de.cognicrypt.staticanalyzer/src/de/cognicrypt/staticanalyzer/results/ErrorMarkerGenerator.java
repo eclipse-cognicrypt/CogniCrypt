@@ -19,10 +19,10 @@ import de.cognicrypt.staticanalyzer.Constants;
  */
 public class ErrorMarkerGenerator {
 
-	private List<IMarker> markers;
+	private final List<IMarker> markers;
 
 	public ErrorMarkerGenerator() {
-		markers = new ArrayList<IMarker>();
+		markers = new ArrayList<>();
 	}
 
 	/**

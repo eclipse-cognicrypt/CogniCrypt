@@ -29,7 +29,7 @@ import org.eclipse.swt.graphics.Rectangle;
  */
 public class Constants {
 
-	public static enum GUIElements {
+	public enum GUIElements {
 		combo, text, itemselection,button,radio, scale
 	}
 
@@ -38,7 +38,7 @@ public class Constants {
 	public static final String innerFileSeparator = "/";
 
 	//Use this file separator for all paths outside the plugin space.
-	public static final String outerFileSeparator = System.getProperty("file.separator");;
+	public static final String outerFileSeparator = System.getProperty("file.separator");
 	public static final String lineSeparator = System.getProperty("line.separator");
 
 	public static final String JavaNatureID = "org.eclipse.jdt.core.javanature";
@@ -47,7 +47,7 @@ public class Constants {
 	public static final String providerPath = rsrcPath + "AdditionalResources" + innerFileSeparator + "Provider";
 
 	//JSON task file
-	public static final String jsonTaskFile = rsrcPath + "Tasks" + innerFileSeparator + "tasks.json";;
+	public static final String jsonTaskFile = rsrcPath + "Tasks" + innerFileSeparator + "tasks.json";
 
 	public static final String pathToPropertyfiles = rsrcPath + "Labels.properties";
 
@@ -83,7 +83,7 @@ public class Constants {
 	public static final int ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID = -1;
 
 	// Clafer Instance Generation
-	public static final String claferPath = rsrcPath + "ClaferModel" + innerFileSeparator + "SymmetricEncryptionTask.js";
+	public static final String claferPath = rsrcPath + "ClaferModel" + innerFileSeparator + "SymmetricEncryption.js";
 	public static final String PATH_FOR_CONFIG_XML = "/Configurator.xml";
 	public static final String XML_FILE_NAME = rsrcPath + "ClaferModel/Encrypt_CryptoTasks.xml";
 
@@ -133,7 +133,7 @@ public class Constants {
 	public static final String Code = "code";
 	public static final String Type = "type";
 	public static final String Security = "security";
-	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List;" };
+	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List","java.util.Base64" };
 
 	// Types
 	public static final String INTEGER = "Integer";
@@ -150,7 +150,20 @@ public class Constants {
 	public static final String TASK_DESCRIPTION = "Task Description :";
 	public static final String NO_XML_INSTANCE_FILE_TO_WRITE = "No xml instance file to write.";
 	public static final String CLAFER_ALGORITHM = "_Algorithm";
+	
+	public static final String ALGORITHM_SELECTION_PAGE = "Algorithm Selection Page";
+	public static final String DEFAULT_ALGORITHM_PAGE = "Default Algorithm Page";
+	public static final String DESCRIPTION_INSTANCE_LIST_PAGE = "Available algorithm combinations matching your requirements are listed below";
+	public static final String DESCRIPTION_DEFAULT_ALGORITHM_PAGE = "Best algorithm combination and the code matching your requirements is shown below";
+	public static final String instanceList = "Select an algorithm combination";
+	public static final String defaultAlgorithm = "Algorithm combination:";
+	public static final String TASK_LIST = "Select Task";
+	public static final String DESCRIPTION_TASK_SELECTION_PAGE = "Which cryptography task would you like to perform?";
+	public static final String DESCRIPTION_VALUE_SELECTION_PAGE = "The following questions help to find the algorithm configuration most suited for your needs";
+	public static final String PROPERTIES = "Algorithm Preferences";
+	public static final String SELECT_PROPERTIES = "Select Properties";
 
+	
 	//Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;
 	
@@ -170,9 +183,14 @@ public class Constants {
 	public static final String PAGE_DESCRIPTION_FOR_XSL_FILE_CREATION = "Here you can details for the code generation.";
 	
 	public static final String PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS = "pageForHighLevelQuestions";
-	public static final String PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS = "Add the high level qustions and their dependencies here";
+	public static final String PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS = "Add the high level questions and their dependencies here";
 	public static final String PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS = "Here you can add the questions that will be asked to the end user, and the dependencies to the "+
 																			"variability modelling and the code generation.";
+	
+	public static final String PAGE_NAME_FOR_LINK_ANSWERS = "pageForLinkAnswers";
+	public static final String PAGE_TITLE_FOR_LINK_ANSWERS = "Select the question that needs to be linked to another question";
+	public static final String PAGE_DESCIPTION_FOR_LINK_ANSWERS = "Here you can configure which question should be displayed next upon selection of a particular answer of the current question"+
+																	"by clicking the Link Answer button.";
 	
 	// Widget constants
 	// Labels
@@ -374,6 +392,38 @@ public class Constants {
 	public static final String JAR_EXTENSION = ".jar";
 	public static final String JSON_EXTENSION = ".json";
 	public static final String XSL_EXTENSION = ".xsl";
+	
+	//constants to be used for creation of json file
+	public static final String openSquareBracket = "[";
+	public static final String closeSquareBracket = "]";
+	public static final String openCurlyBrace = "{";
+	public static final String closeCurlyBrace = "}";
+	public static final String commaOperator =",";
+	public static final String colonOperator = ":";
+	public static final String quotationMark = "\"";
+	public static final String taskIDField = "id";
+	public static final String taskIDValue = "0";
+	public static final String helpIDField = "helpID";
+	public static final String contentFieldName = "content";
+	public static final String qstnIDField = "id";
+	public static final String elementField = "element";
+	public static final String noteField = "note";
+	public static final String qstnTxtField = "question Text";
+	public static final String answersField = "answers";
+	public static final String valueField = "value";
+	public static final String claferDependenciesField = "claferDependencies";
+	public static final String algorithmField = "algorithm";
+	public static final String operandField = "operand";
+	public static final String operatorField = "operator";
+	public static final String defaultAnswerField = "defaultAnswer";
+	public static final String nextIDField = "nextID";
+	public static final String codeDependenciesField = "codeDependencies";
+	public static final String optionField = "option";
+
+	
+	
+	
+	
 	
 	
 }

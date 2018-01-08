@@ -115,7 +115,7 @@ public class ClaferModel {
 		try {
 			this.jsFile = Javascript.readModel(file, Javascript.newEngine());
 
-			setModelName("Cyrptography Task Configurator");
+			setModelName("Cryptography Task Configurator");
 			final AstModel astModel = getModel();
 			setEnumList(astModel);
 
@@ -172,10 +172,8 @@ public class ClaferModel {
 					setChildrenList(parentClafer, in, name);
 				}
 			}
-			if (inputClafer.hasRef()) {
-				if (inputClafer.getRef().getTargetType().isPrimitive() == false) {
-					setChildrenList(parentClafer, inputClafer.getRef().getTargetType(), name);
-				}
+			if (inputClafer.hasRef() && !inputClafer.getRef().getTargetType().isPrimitive()) {
+				setChildrenList(parentClafer, inputClafer.getRef().getTargetType(), name);
 			}
 			if (inputClafer.getSuperClafer() != null) {
 				setChildrenList(parentClafer, inputClafer.getSuperClafer(), name);
@@ -192,14 +190,13 @@ public class ClaferModel {
 	 */
 	public void setEnumList(final AstModel model) {
 		PropertiesMapperUtil.resetEnumMap();
-		for (final AstAbstractClafer object : model.getAbstracts()) {
-			if (object.getName().contains("Enum") == true) {
-				for (final AstClafer clafer : object.getSubs()) {
+		for (final AstAbstractClafer abstractClafer : model.getAbstracts()) {
+			if (abstractClafer.getName().contains("Enum")) {
+				for (final AstClafer clafer : abstractClafer.getSubs()) {
 					/**
 					 * construct a map of tasks, key is a clafer description and value is actual clafer. Key will be used in Wizard, as an input for taskList combo box
 					 */
 					PropertiesMapperUtil.getenumMap().put((AstAbstractClafer) clafer, ((AstAbstractClafer) clafer).getSubs());
-
 				}
 			}
 		}

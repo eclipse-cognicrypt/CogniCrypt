@@ -4,14 +4,22 @@ import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.Constants.XSLTags;
 import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.question.CodeDependency;
+import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
@@ -26,7 +34,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	private Composite composite;
 	public ArrayList<GroupAnswer> groupAnswers;
 	private ArrayList<XSLAttribute> XSLAttributes; // <attributeName, actualAttributeString>
-	
 
 	private ArrayList<Answer> arrayAnswer;
 	private ArrayList<String> possibleCfrFeatures;
@@ -41,7 +48,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * @param parent
 	 * @param style
 	 * @param targetArrayListOfDataToBeDisplayed
-	 * @param showRemoveButton 
+	 * @param showRemoveButton
 	 */
 	public CompositeToHoldSmallerUIElements(Composite parent, int style, ArrayList<?> targetArrayListOfDataToBeDisplayed, boolean showRemoveButton, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
 		super(parent, SWT.BORDER | SWT.V_SCROLL);
@@ -60,7 +67,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		featureConstraints = new ArrayList<ClaferConstraint>();
 
 		XSLAttributes = new ArrayList<XSLAttribute>();
-		
+
 		this.listOfExistingClaferFeatures = listOfExistingClaferFeatures;
 
 		addData(targetArrayListOfDataToBeDisplayed, showRemoveButton, listOfExistingClaferFeatures);
@@ -74,6 +81,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 
 	/**
 	 * If data is provided before hand, add it to the composite. This is specifically used for clafer.
+	 * 
 	 * @param targetArrayListOfDataToBeDisplayed
 	 * @param showRemoveButton
 	 */
@@ -101,7 +109,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param featureConstraintUnderConsideration
@@ -150,7 +158,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
-	
+
 	/**
 	 * 
 	 * @param showRemoveButton
@@ -159,24 +167,22 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	public void addXSLAttribute(boolean showRemoveButton, String selectedTag, ArrayList<String> possibleCfrFeatures) {
 		ArrayList<String> possibleAttributes = getListOfPossibleAttributes(selectedTag);
 		this.possibleCfrFeatures = possibleCfrFeatures;
-		
-		if(possibleAttributes.size()>0){
+
+		if (possibleAttributes.size() > 0) {
 			// Add the first attribute on the list of possible attributes with empty tag data.
 			XSLAttribute xslAttribute = new XSLAttribute(possibleAttributes.get(0), "");
 			XSLAttributes.add(xslAttribute);
 			addXSLAttributeUI(xslAttribute, possibleCfrFeatures, showRemoveButton);
-		} else{
+		} else {
 			// Show a message if all the possible attributes are exhausted. 
-			MessageBox headsUpMessageBox = new MessageBox(getShell(), SWT.ICON_INFORMATION
-	            | SWT.OK);
+			MessageBox headsUpMessageBox = new MessageBox(getShell(), SWT.ICON_INFORMATION | SWT.OK);
 			headsUpMessageBox.setMessage("All possible attributes have been used up.");
-			headsUpMessageBox.setText("Cannot add attributes");				
-	        headsUpMessageBox.open();
+			headsUpMessageBox.setText("Cannot add attributes");
+			headsUpMessageBox.open();
 		}
-		
-		
+
 	}
-	
+
 	/**
 	 * 
 	 * @param XSLAttrubuteParam
@@ -186,7 +192,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		GroupXSLTagAttribute groupforXSLTagAttribute = new GroupXSLTagAttribute((Composite) getContent(), SWT.NONE, showRemoveButton, XSLAttrubuteParam, possibleCfrFeatures);
 		groupforXSLTagAttribute.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT,
 			Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
-		
+
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
 
 		setMinHeight(getLowestWidgetYAxisValue());
@@ -207,12 +213,12 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	public void removeFeatureConstraint(ClaferConstraint constraint) {
 		featureConstraints.remove(constraint);
 	}
-	
+
 	/**
 	 * 
 	 * @param xslAttribute
 	 */
-	public void removeXSLAttribute(XSLAttribute xslAttribute){
+	public void removeXSLAttribute(XSLAttribute xslAttribute) {
 		getXSLAttributes().remove(xslAttribute);
 	}
 
@@ -249,6 +255,44 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		}
 	}
 
+	/**
+	 * Add the widgets and data inside the scrollable composite for Link code tab
+	 * 
+	 * @param answer
+	 * 
+	 */
+	public void addELementsInCodeTabQuestionDialog(Answer answer) {
+		GroupForCodeTab group = new GroupForCodeTab((Composite) getContent(), SWT.NONE, answer);
+		group.setBounds(5, getLowestWidgetYAxisValue(), 690, 39);
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
+		setMinHeight(getLowestWidgetYAxisValue());
+	}
+	
+
+	/**
+	 * Add the widgets and data inside the scrollable composite for clafer dependency tab
+	 * @param answer
+	 * @param claferFeatures list of all clafer features created in the clafer page
+	 * 
+	 */
+	public void addElementsInClaferTabQuestionDialog(Answer answer, ArrayList<ClaferFeature> claferFeatures){
+		GroupForClaferTab group = new GroupForClaferTab((Composite) getContent(), SWT.NONE, answer, claferFeatures);
+		group.setBounds(5, getLowestWidgetYAxisValue(), 690, 39);
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
+		setMinHeight(getLowestWidgetYAxisValue());
+	}
+	
+	/**
+	 * Add the widgets and data inside the scrollable composite for Link Answer
+	 * @param currentQuestion
+	 * @param listOfAllQuestions
+	 */
+	public void addElementsOfLinkAnswer(Answer answer, Question currentQuestion, ArrayList<Question> listOfAllQuestions){
+		GroupForLinkAnswer group = new GroupForLinkAnswer((Composite) getContent(), SWT.NONE, answer, currentQuestion, listOfAllQuestions);
+		group.setBounds(5, getLowestWidgetYAxisValue(), 690, 39);
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
+		setMinHeight(getLowestWidgetYAxisValue());
+	}
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
@@ -298,8 +342,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		this.featureConstraints = featureConstraints;
 	}
 
-	
-	
 	/**
 	 * TODO update the name of this method.
 	 */
@@ -324,51 +366,51 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 			for (ClaferConstraint fc : featureConstraints) {
 				addFeatureConstraintUI(fc, true);
 			}
-		} else if(XSLAttributes.size() > 0){
-			for(XSLAttribute attribute : XSLAttributes){
+		} else if (XSLAttributes.size() > 0) {
+			for (XSLAttribute attribute : XSLAttributes) {
 				addXSLAttributeUI(attribute, possibleCfrFeatures, true);
 			}
 			// The drop downs need to be updated to keep them consistent with the existing data in the attributes.
-			updateDropDownsForXSLAttributes(getListOfPossibleAttributes(((Combo)getParent().getChildren()[0]).getText()));
-			
+			updateDropDownsForXSLAttributes(getListOfPossibleAttributes(((Combo) getParent().getChildren()[0]).getText()));
+
 		}
 
 	}
-	
+
 	/**
 	 * 
 	 * @param listOfPossibleAttributes
 	 */
-	public void updateDropDownsForXSLAttributes(ArrayList<String> listOfPossibleAttributes){
-		for(Control attribute : ((Composite)getContent()).getChildren()){
-			((GroupXSLTagAttribute)attribute).updateAttributeDropDown(listOfPossibleAttributes);
+	public void updateDropDownsForXSLAttributes(ArrayList<String> listOfPossibleAttributes) {
+		for (Control attribute : ((Composite) getContent()).getChildren()) {
+			((GroupXSLTagAttribute) attribute).updateAttributeDropDown(listOfPossibleAttributes);
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param selectionOnComboXSLTags
 	 * @return
 	 */
 	public ArrayList<String> getListOfPossibleAttributes(String selectionOnComboXSLTags) {
-		
+
 		ArrayList<String> listOfPossibleAttributes = new ArrayList<String>();
-		
+
 		// Populate with all the possible attributes first.
-		for(XSLTags XSLTag : Constants.XSLTags.values()){
-			if(XSLTag.getXSLTagFaceName().equals(selectionOnComboXSLTags)){
-				for(String attribute : XSLTag.getXSLAttributes()){
+		for (XSLTags XSLTag : Constants.XSLTags.values()) {
+			if (XSLTag.getXSLTagFaceName().equals(selectionOnComboXSLTags)) {
+				for (String attribute : XSLTag.getXSLAttributes()) {
 					listOfPossibleAttributes.add(attribute);
 				}
 			}
 		}
 		// Remove the attributes that already exist in the list.
-		 for(XSLAttribute attribute : XSLAttributes){
-			 if(listOfPossibleAttributes.contains(attribute.getXSLAttributeName())){
-				 listOfPossibleAttributes.remove(attribute.getXSLAttributeName());
-			 }
-		 }
-		
+		for (XSLAttribute attribute : XSLAttributes) {
+			if (listOfPossibleAttributes.contains(attribute.getXSLAttributeName())) {
+				listOfPossibleAttributes.remove(attribute.getXSLAttributeName());
+			}
+		}
+
 		return listOfPossibleAttributes;
 	}
 

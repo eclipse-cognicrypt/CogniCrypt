@@ -36,7 +36,6 @@ import static org.clafer.ast.Asts.local;
 import static org.clafer.ast.Asts.union;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -86,8 +85,8 @@ public class InstanceGenerator {
 
 	public InstanceGenerator(final String path, final String taskName, final String taskDescription) {
 		this.claferModel = new ClaferModel(path);
-		this.displayNameToInstanceMap = new HashMap<String, InstanceClafer>();
-		this.displayFirstNameToInstanceMap = new HashMap<String, InstanceClafer>();
+		this.displayNameToInstanceMap = new HashMap<>();
+		this.displayFirstNameToInstanceMap = new HashMap<>();
 		this.uniqueInstances = new HashMap<>();
 		this.taskName = taskName;
 		this.taskDescription = taskDescription;
@@ -196,7 +195,7 @@ public class InstanceGenerator {
 				final AstConcreteClafer parent = (AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getParentClafer().getName());
 				final List<AstConcreteClafer> operand = new ArrayList<>();
 				operand.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getChildClafer().getName()));
-				if (operand != null && !ClaferModelUtils.isAbstract(operand.get(0))) {
+				if (operand != null && ClaferModelUtils.isConcrete(operand.get(0))) {
 					addConstraints(parent, operand, operator, value);
 				}
 			}
@@ -242,7 +241,7 @@ public class InstanceGenerator {
 		 * sort all the instances, to have an user friendly display
 		 */
 		try {
-			Collections.sort(this.generatedInstances, new Comparator<InstanceClafer>() {
+			this.generatedInstances.sort(new Comparator<InstanceClafer>() {
 
 				@Override
 				public int compare(InstanceClafer left, InstanceClafer right) {
@@ -264,9 +263,9 @@ public class InstanceGenerator {
 			});
 		} catch (Exception ex) {
 			Activator.getDefault().logError("Instances not sorted by security level. Be cautious");
-		}		
+		}
 		for (InstanceClafer sortedInst : this.generatedInstances) {
-			
+
 			String key = getInstanceName(sortedInst);
 			if (key.isEmpty()) {
 				key = sortedInst.getChildren()[0].getRef().toString();
@@ -286,14 +285,12 @@ public class InstanceGenerator {
 
 				this.displayNameToInstanceMap.put(copyKey, sortedInst);
 				this.setAlgorithmName(key);
-				
-							
+
 			}
 		}
-		final Map<String, InstanceClafer> treeMap = new TreeMap<>(this.displayNameToInstanceMap);
-		this.displayNameToInstanceMap = treeMap;
-		
+		this.displayNameToInstanceMap = new TreeMap<>(this.displayNameToInstanceMap);
 	}
+
 	/**
 	 * Method to Generate instances for basic user. Argument is a map of property(clafer) name and their values
 	 *
@@ -366,18 +363,20 @@ public class InstanceGenerator {
 	}
 
 	private AstBoolExpr getFunctionFromOperator(final AstSetExpr operandLeftClafer, final AstSetExpr operandRightClafer, final String operator) {
-		if (operator.equals("=")) {
-			return equal(operandLeftClafer, operandRightClafer);
-		} else if (operator.equals("<")) {
-			return lessThan(operandLeftClafer, operandRightClafer);
-		} else if (operator.equals(">")) {
-			return greaterThan(operandLeftClafer, operandRightClafer);
-		} else if (operator.equals("<=")) {
-			return lessThanEqual(operandLeftClafer, operandRightClafer);
-		} else if (operator.equals(">=")) {
-			return greaterThanEqual(operandLeftClafer, operandRightClafer);
+		switch (operator) {
+			case "=":
+				return equal(operandLeftClafer, operandRightClafer);
+			case "<":
+				return lessThan(operandLeftClafer, operandRightClafer);
+			case ">":
+				return greaterThan(operandLeftClafer, operandRightClafer);
+			case "<=":
+				return lessThanEqual(operandLeftClafer, operandRightClafer);
+			case ">=":
+				return greaterThanEqual(operandLeftClafer, operandRightClafer);
+			default:
+				return null;
 		}
-		return null;
 	}
 
 	/**
@@ -411,7 +410,7 @@ public class InstanceGenerator {
 					if (currentInstanceName.length() > 0) {
 						final String childInstanceName = getInstanceName(childClafer);
 						if (childInstanceName.length() > 0) {
-							currentInstanceName = currentInstanceName + "+" + childInstanceName;
+							currentInstanceName += "+" + childInstanceName;
 						}
 					} else {
 						currentInstanceName = getInstanceName(childClafer);
@@ -435,8 +434,9 @@ public class InstanceGenerator {
 	 * @return
 	 */
 	public Map<String, InstanceClafer> getInstances() {
-		return 	this.displayNameToInstanceMap;
+		return this.displayNameToInstanceMap;
 	}
+
 	/**
 	 * gives the instances, key field for First Instance .
 	 *
@@ -445,6 +445,7 @@ public class InstanceGenerator {
 	public Map<String, InstanceClafer> getFirstInstance() {
 		return this.displayFirstNameToInstanceMap;
 	}
+
 	/**
 	 * Returns number of instances of the task
 	 *
@@ -481,7 +482,7 @@ public class InstanceGenerator {
 	 */
 	public void resetInstances() {
 		this.displayNameToInstanceMap = null;
-		this.displayFirstNameToInstanceMap=null;
+		this.displayFirstNameToInstanceMap = null;
 	}
 
 	public void setTaskDescription(final String taskDescription) {
@@ -496,19 +497,23 @@ public class InstanceGenerator {
 	public void setTaskName(final String taskName) {
 		this.taskName = taskName;
 	}
-	public void setAlgorithmName(String algorithmName ){
-		this.algorithmName=algorithmName;
-		
+
+	public void setAlgorithmName(String algorithmName) {
+		this.algorithmName = algorithmName;
+
 	}
-	public String getAlgorithmName( ){
+
+	public String getAlgorithmName() {
 		return algorithmName;
-		
+
 	}
-	public void setAlgorithmCount(int algorithmCount ){
-		this.algorithmCount=algorithmCount;
-		
+
+	public void setAlgorithmCount(int algorithmCount) {
+		this.algorithmCount = algorithmCount;
+
 	}
-	public int getAlgorithmCount(){
+
+	public int getAlgorithmCount() {
 		return algorithmCount;
 
 	}

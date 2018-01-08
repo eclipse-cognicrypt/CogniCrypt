@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -35,6 +37,8 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -43,8 +47,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
@@ -69,7 +75,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private final Page page;
 	private Text note;
 	private Composite container;
-
+	public Text text;
+	final String string =
+		"^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+		"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+		"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+		"([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+	
 	public int getCurrentPageID() {
 		return page.getId();
 	}
@@ -81,6 +93,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	 *        question that will be displayed on the page
 	 * @param task
 	 *        task for which the page is created
+	 * @wbp.parser.constructor
 	 */
 	public BeginnerTaskQuestionPage(final Question quest, final Task task) {
 		this(quest, task, null);
@@ -399,38 +412,176 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
 				break;
 
-			case text:
+			case text:				
 				Display display = Display.getCurrent();
 				Label mandatory = new Label(container, SWT.NONE);
 				Color red = display.getSystemColor(SWT.COLOR_RED);
 				mandatory.setText("*");
 				mandatory.setForeground(red);
-								
-				final Text inputField = new Text(container, SWT.BORDER);
+							
+				if(question.getTextType().equals("password"))
+				{
+				final Text inputField = new Text(container, SWT.BORDER| SWT.PASSWORD| SWT.SINGLE);
 				inputField.setSize(240, inputField.getSize().y);
-
 				inputField.setToolTipText(question.getTooltip());
+				
+				Button checkBox = new Button(container, SWT.CHECK);
+				checkBox.setText("Show Password");
+				
+//				Label passwordInfo = new Label(container, SWT.NONE);
+//				passwordInfo.setText("");
+					
+				checkBox.addSelectionListener(new SelectionAdapter() {
 
-				if (question.getEnteredAnswer() != null) {
-					final Answer a = question.getEnteredAnswer();
-					inputField.setText(a.getValue());
-					a.getCodeDependencies().get(0).setValue(a.getValue());
-					this.finish = !inputField.getText().isEmpty();
-					BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+							inputField.setEchoChar( '\0' );
+					}
+				});
+				text(question, inputField);
 				}
+				else if(question.getTextType().equals("integer"))
+				{
+					final Text inputField = new Text(container, SWT.BORDER);
+					inputField.setSize(240, inputField.getSize().y);
+					inputField.setToolTipText(question.getTooltip());
+					
+					inputField.addListener(SWT.Verify, new Listener() {
+					      public void handleEvent(Event e) {
+					        String string = e.text;
+					        char[] chars = new char[string.length()];
+					        string.getChars(0, chars.length, chars, 0);
+					        for (int i = 0; i < chars.length; i++) {
+					          if (!('0' <= chars[i] && chars[i] <= '9')) {
+					            e.doit = false;
+					            return;
+					          }
+					        }
+					      }
+					    });
+					
+					text(question, inputField);	
+				}	
+				else if(question.getTextType().equals("port number"))
+				{
+					final Text inputField = new Text(container, SWT.BORDER);
+					inputField.setSize(240, inputField.getSize().y);
+					inputField.setToolTipText(question.getTooltip());
+					
+					inputField.addVerifyListener(new VerifyListener() {  
+					    @Override  
+					    public void verifyText(VerifyEvent e) {
+					        /* Notice how we combine the old and new below */
+					        String currentText = ((Text)e.widget).getText();
+					        String port =  currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
+					        try{  
+					            int portNum = Integer.valueOf(port);  
+					            if(portNum <0 || portNum > 65535){  
+					                e.doit = false;  
+					            }  
+					        }  
+					        catch(NumberFormatException ex){  
+					            if(!port.equals(""))
+					                e.doit = false;  
+					        }  
+					    }  
+					});
+				}
+				else if(question.getTextType().equals("ip address"))
+				{
+					final Text inputField = new Text(container, SWT.BORDER);
+					inputField.setSize(240, inputField.getSize().y);
+					inputField.setToolTipText(question.getTooltip());
+					
+					
+					inputField.addVerifyListener(new VerifyListener() {  
+					    @Override  
+					    public void verifyText(VerifyEvent e) {
+					        /* Notice how we combine the old and new below */
+					        String currentText = ((Text)e.widget).getText();
+					        String pattern1 ="((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\\.|$)){4}";
+					        String ip =  currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
+					        try{  
+					        	Pattern pattern = Pattern.compile(pattern1);
+					        	Matcher matcher = pattern.matcher(ip);
+					            if(matcher.equals(pattern)){  
+					                e.doit = true;  
+					            }  
+					        }  
+					        catch(NumberFormatException ex){  
+					            if(!ip.equals(""))
+					                e.doit = false;  
+					        }  
+					    }  
+					});
+					
+					
 
-				inputField.addModifyListener(e -> {
-					final Answer a = question.getDefaultAnswer();
-					final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?:\\\\-])", "\\\\");
-					a.setValue(cleanedInput);
-					a.getCodeDependencies().get(0).setValue(cleanedInput);
-					this.finish = !cleanedInput.isEmpty();
-					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
-					question.setEnteredAnswer(a);
-					BeginnerTaskQuestionPage.this.setPageComplete(this.isPageComplete());
-				});				
+//					inputField.addListener(SWT.Verify, new Listener() {
+//					      public void handleEvent(Event e) {
+//								final String string =
+//									"^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+//									"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+//									"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+//									"([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+//					        char[] chars = new char[string.length()];
+//					        string.getChars(0, chars.length, chars, 0);
+//					        for (int i = 0; i < chars.length; i++) {
+//					          if (!('0' <= chars[i] && chars[i] <= '9')) {
+//					            e.doit = false;
+//					            return;
+//					          }
+//					        }
+//					      }
+//					    });
+					
+//					text(question, inputField);	
+				}	
+				else{
+					final Text inputField = new Text(container, SWT.BORDER);
+					inputField.setSize(240, inputField.getSize().y);
+					inputField.setToolTipText(question.getTooltip());
+					
+					
+					text(question, inputField);	
+				}
 				break;
-
+				
+				
+				
+				
+				
+//				Display display = Display.getCurrent();
+//				Label mandatory = new Label(container, SWT.NONE);
+//				Color red = display.getSystemColor(SWT.COLOR_RED);
+//				mandatory.setText("*");
+//				mandatory.setForeground(red);
+//								
+//				final Text inputField = new Text(container, SWT.BORDER);
+//				inputField.setSize(240, inputField.getSize().y);
+//
+//				inputField.setToolTipText(question.getTooltip());
+//
+//				if (question.getEnteredAnswer() != null) {
+//					final Answer a = question.getEnteredAnswer();
+//					inputField.setText(a.getValue());
+//					a.getCodeDependencies().get(0).setValue(a.getValue());
+//					this.finish = !inputField.getText().isEmpty();
+//					BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
+//				}
+//
+//				inputField.addModifyListener(e -> {
+//					final Answer a = question.getDefaultAnswer();
+//					final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?:\\\\-])", "\\\\");
+//					a.setValue(cleanedInput);
+//					a.getCodeDependencies().get(0).setValue(cleanedInput);
+//					this.finish = !cleanedInput.isEmpty();
+//					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
+//					question.setEnteredAnswer(a);
+//					BeginnerTaskQuestionPage.this.setPageComplete(this.isPageComplete());
+//				});				
+//				break;
+//
 			case itemselection:
 				new Label(container, SWT.NONE);
 				new Label(container, SWT.NONE);
@@ -789,5 +940,26 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		if (visible) {
 			container.setFocus();
 		}
+	}
+	
+	public void text(Question question, Text inputField){
+		if (question.getEnteredAnswer() != null) {
+			final Answer a = question.getEnteredAnswer();
+			inputField.setText(a.getValue());
+			a.getCodeDependencies().get(0).setValue(a.getValue());
+			this.finish = !inputField.getText().isEmpty();
+			BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
+		}
+
+		inputField.addModifyListener(e -> {
+			final Answer a = question.getDefaultAnswer();
+			final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?:\\\\-])", "\\\\");
+			a.setValue(cleanedInput);
+			a.getCodeDependencies().get(0).setValue(cleanedInput);
+			this.finish = !cleanedInput.isEmpty();
+			BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
+			question.setEnteredAnswer(a);
+			BeginnerTaskQuestionPage.this.setPageComplete(this.isPageComplete());
+		});
 	}
 }

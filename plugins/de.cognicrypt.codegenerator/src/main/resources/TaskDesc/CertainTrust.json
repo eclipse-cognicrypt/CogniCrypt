@@ -20,6 +20,7 @@
 			"id" : "1",
 			"note": "Note: abc",
 			"element" : "text",
+       		 "textType":"integer",
 			"questionText":"How many opinions do you want combine?",
 			"answers":[
 				{"value":"",

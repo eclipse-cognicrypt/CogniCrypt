@@ -205,12 +205,13 @@ public class ClaferFeature {
 
 			if (!used) {
 				System.out.println(cfrFeature.getFeatureName() + " unused");
+				// TODO actually remove the redundant features (ask for confirmation first?)
 			}
 		}
 	}
 
 	public void printModel(ArrayList<ClaferFeature> claferModel) {
-		// TODO This should not be an class method
+		// TODO This should not be a class method
 		StringBuilder sb = new StringBuilder();
 		for (ClaferFeature cfrFeature : claferModel) {
 			sb.append(cfrFeature.toString());

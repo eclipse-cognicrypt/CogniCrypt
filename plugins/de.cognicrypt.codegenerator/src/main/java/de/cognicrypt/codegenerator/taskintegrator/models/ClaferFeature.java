@@ -188,7 +188,7 @@ public class ClaferFeature {
 			
 			// if abstract and somebody inherits -> used
 			for (ClaferFeature refFeature : claferModel) {
-				if (refFeature.getFeatureInheritance() == cfrFeature.getFeatureName()) {
+				if (refFeature.getFeatureInheritance().equals(cfrFeature.getFeatureName())) {
 					// usage found: refFeature inherits from cfrFeature
 					used = true;
 				}
@@ -196,7 +196,7 @@ public class ClaferFeature {
 
 			for (ClaferFeature refFeature : claferModel) {
 				for (FeatureProperty featureProp : refFeature.getfeatureProperties()) {
-					if (featureProp.getPropertyType() == cfrFeature.getFeatureName()) {
+					if (featureProp.getPropertyType().equals(cfrFeature.getFeatureName())) {
 						// usage found: featureProp is of type cfrFeature
 						used = true;
 					}

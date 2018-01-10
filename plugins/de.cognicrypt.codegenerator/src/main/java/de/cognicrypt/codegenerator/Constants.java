@@ -375,5 +375,8 @@ public class Constants {
 	public static final String JSON_EXTENSION = ".json";
 	public static final String XSL_EXTENSION = ".xsl";
 	
+	public static final String FEATURE_PROPERTY_TYPE_RELATION = "is of type";
+	public static final String FEATURE_PROPERTY_NAME = "Name";
+	public static final String FEATURE_PROPERTY_REMOVE = "Remove";
 	
 }

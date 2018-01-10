@@ -91,6 +91,14 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		}
 	}
 	
+	/**
+	 * updates a given feature with a new version
+	 *
+	 * @param originalClaferFeature
+	 *        the feature to be updated
+	 * @param modifiedClaferFeature
+	 *        the updated version of the feature
+	 */
 	public void modifyClaferFeature(ClaferFeature originalClaferFeature, ClaferFeature modifiedClaferFeature ){
 		for (ClaferFeature featureUnderConsideration : claferModel) {
 			if(featureUnderConsideration.equals(originalClaferFeature)){

@@ -143,7 +143,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * @param showRemoveButton
 	 */
 	private void addFeaturePropertyUI(FeatureProperty featureProperty, boolean showRemoveButton, ClaferModel claferModel) {
-		GroupFeatureProperty groupForFeatureProperty = new GroupFeatureProperty((Composite) getContent(), SWT.NONE, featureProperty, showRemoveButton, true, claferModel);
+		GroupFeatureProperty groupForFeatureProperty = new GroupFeatureProperty((Composite) getContent(), SWT.NONE, featureProperty, showRemoveButton, claferModel);
 		groupForFeatureProperty.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT + 200,
 			Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
 

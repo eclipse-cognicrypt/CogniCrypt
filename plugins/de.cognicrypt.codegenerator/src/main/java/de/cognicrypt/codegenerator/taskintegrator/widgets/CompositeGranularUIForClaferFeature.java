@@ -143,7 +143,6 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 
 					// rebuild the UI
 					comp.updateClaferContainer();
-					resultFeature.removeUnusedFeatures(claferModel);
 				}
 
 			}

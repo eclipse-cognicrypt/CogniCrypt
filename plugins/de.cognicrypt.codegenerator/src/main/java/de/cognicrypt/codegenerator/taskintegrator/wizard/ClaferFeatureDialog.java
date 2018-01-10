@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.Constants.FeatureType;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
@@ -54,7 +53,8 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		// get abstract Clafer features that have already been created
 		// exclude the feature currently being modified
 		for (ClaferFeature cfr : claferModel) {
-			if (cfr.getFeatureType() == Constants.FeatureType.ABSTRACT && !cfr.equals(resultClafer)) {
+			// TODO reconsider which Clafers have to be listed where
+			if (!cfr.equals(resultClafer)) {
 				this.claferModel.add(cfr);
 			}
 		}

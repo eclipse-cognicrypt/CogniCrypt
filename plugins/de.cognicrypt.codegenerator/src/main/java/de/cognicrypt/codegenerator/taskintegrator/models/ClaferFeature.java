@@ -185,7 +185,10 @@ public class ClaferFeature {
 		return addedFeatures;
 	}
 
-	public void removeUnusedFeatures(ClaferModel claferModel) {
+	public ClaferModel getUnusedFeatures(ClaferModel claferModel) {
+		// TODO switch logic, copy list and delete everything that is used
+		ClaferModel unusedFeatures = new ClaferModel();
+		
 		for (ClaferFeature cfrFeature : claferModel) {
 			// check usage of cfrFeature			
 			boolean used = false;
@@ -214,10 +217,11 @@ public class ClaferFeature {
 			}
 
 			if (!used) {
-				System.out.println(cfrFeature.getFeatureName() + " unused");
-				// TODO actually remove the redundant features (ask for confirmation first?)
+				unusedFeatures.add(cfrFeature);
 			}
 		}
+		
+		return unusedFeatures;
 	}
 
 	public void printModel(ClaferModel claferModel) {

@@ -172,7 +172,7 @@ public class ClaferFeatureTest {
 		propertiesA.add(new FeatureProperty("1", "x"));
 		propertiesA.add(new FeatureProperty("2", "y"));
 		featureA.setFeatureProperties(propertiesA);
-		
+
 		ClaferModel claferModel = new ClaferModel();
 		claferModel.add(featureA);
 		
@@ -182,11 +182,18 @@ public class ClaferFeatureTest {
 		// y will be unused
 		propertiesA.get(1).setPropertyType("x");
 		
-		featureA.removeUnusedFeatures(claferModel);
+		// look for y in the model of unused features
+		ClaferModel unusedFeatures =  featureA.getUnusedFeatures(claferModel);
+		ClaferFeature featureY = null;
+		for (ClaferFeature cfrFeature : unusedFeatures) {
+			if (cfrFeature.getFeatureName().equals("y")) {
+				featureY = cfrFeature;
+			}
+		}
 		
-		featureA.printModel(claferModel);
-		
-		fail("Not implemented yet!");
+		// assert one feature is unused and assert it to be y
+		assertTrue(unusedFeatures.getClaferModel().size() == 1);
+		assertTrue(unusedFeatures.getClaferModel().get(0) == featureY);
 	}
 
 	@AfterClass

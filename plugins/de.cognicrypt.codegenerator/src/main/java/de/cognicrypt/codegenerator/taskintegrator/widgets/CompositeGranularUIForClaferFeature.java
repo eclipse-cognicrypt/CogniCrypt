@@ -122,12 +122,29 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		btnModify.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ClaferModel claferModel = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent()).getClaferModel();
+				CompositeToHoldGranularUIElements comp = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent());
+				ClaferModel claferModel = comp.getClaferModel();
 				ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), claferFeature, claferModel);
+
+				// remember parent for widgets will be disposed
+				Composite parent = getParent();
+
 				if (cfrFeatureDialog.open() == 0) {
-					((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent()).modifyClaferFeature(claferFeature, cfrFeatureDialog.getResult());// (1) CompositeGranularUIForClaferFeature, (2) composite inside (3) CompositeToHoldGranularUIElements
+					ClaferFeature resultFeature = cfrFeatureDialog.getResult();
+					((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent()).modifyClaferFeature(claferFeature, resultFeature);
+					resultFeature.implementMissingFeatures(claferModel);
+
+					// inform user that features have been created automatically
+					// TODO only show message if new features implemented
+					MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.OK);
+					dialog.setText("Additional features created");
+					dialog.setMessage("Some of the used features didn't exist yet. We have created them for you.");
+					dialog.open();
+
+					// rebuild the UI
+					comp.updateClaferContainer();
+					resultFeature.removeUnusedFeatures(claferModel);
 				}
-				
 
 			}
 		});

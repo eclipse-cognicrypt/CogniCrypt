@@ -26,6 +26,7 @@ import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
@@ -84,10 +85,10 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					public void widgetSelected(SelectionEvent e) {
 						
 						counter++;
-						ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), compositeToHoldGranularUIElements.getListOfAllClaferFeatures());
+						ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), compositeToHoldGranularUIElements.getClaferModel());
 						if (cfrFeatureDialog.open() == 0) {
 							ClaferFeature tempFeature = cfrFeatureDialog.getResult();
-							tempFeature.implementMissingFeatures(compositeToHoldGranularUIElements.getListOfAllClaferFeatures());
+							tempFeature.implementMissingFeatures(compositeToHoldGranularUIElements.getClaferModel());
 							
 							// inform user that features have been created automatically
 							// TODO only show message if new features implemented
@@ -97,12 +98,12 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 							dialog.open();
 
 							// Update the array list.							
-							compositeToHoldGranularUIElements.getListOfAllClaferFeatures().add(tempFeature);
+							compositeToHoldGranularUIElements.getClaferModel().add(tempFeature);
 							compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
 
 							// rebuild the UI
 							compositeToHoldGranularUIElements.updateClaferContainer();
-							tempFeature.removeUnusedFeatures(compositeToHoldGranularUIElements.getListOfAllClaferFeatures());
+							tempFeature.removeUnusedFeatures(compositeToHoldGranularUIElements.getClaferModel());
 						}
 
 					}
@@ -144,7 +145,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						ArrayList<ClaferFeature> cfrFeatures = null;
+						ClaferModel claferModel = null;
 						ArrayList<Question> questions = null;
 						ArrayList<String> strFeatures = new ArrayList<>();
 
@@ -156,10 +157,10 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 									CompositeToHoldGranularUIElements comp = (CompositeToHoldGranularUIElements) pftiw.getCompositeToHoldGranularUIElements();
 									if (pftiw.getName() == Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION) {
 										// get the Clafer features
-										cfrFeatures = comp.getListOfAllClaferFeatures();
+										claferModel = comp.getClaferModel();
 
 										// get all the Clafer features' properties
-										for (ClaferFeature cfrFtr : cfrFeatures) {
+										for (ClaferFeature cfrFtr : claferModel) {
 											String ftrName = cfrFtr.getFeatureName();
 											for (FeatureProperty prop : cfrFtr.getfeatureProperties()) {
 												// prepend the feature name and add the property to dropdown entries
@@ -231,7 +232,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 							// Update the array list.
 							compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
-							compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails, claferPageComposite.getListOfAllClaferFeatures());
+							compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails, claferPageComposite.getClaferModel());
 							
 						}
 					}

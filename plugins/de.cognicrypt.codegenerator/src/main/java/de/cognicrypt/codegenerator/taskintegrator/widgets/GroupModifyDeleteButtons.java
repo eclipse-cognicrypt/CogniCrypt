@@ -1,27 +1,21 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.MessageBox;
-
-import de.cognicrypt.codegenerator.question.Answer;
-import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
-import de.cognicrypt.codegenerator.taskintegrator.wizard.QuestionDialog;
-
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Button;
-
 import java.util.ArrayList;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.MessageBox;
+
+import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
+import de.cognicrypt.codegenerator.taskintegrator.wizard.QuestionDialog;
 
 
 
@@ -62,9 +56,9 @@ public class GroupModifyDeleteButtons extends Group {
 		btnModify.setLayoutData(new RowData(66, SWT.DEFAULT));
 		btnModify.setText("Modify");
 		ArrayList<Question> listOfAllQuestions=((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getListOfAllQuestions();
-		ArrayList<ClaferFeature> listOfAllClaferFeatures=((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getListOfAllClaferFeatures();
+		ClaferModel claferModel = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getClaferModel();
 
-		QuestionDialog qstnDialog=new QuestionDialog(parent.getShell(),questionParam,listOfAllClaferFeatures,listOfAllQuestions);
+		QuestionDialog qstnDialog = new QuestionDialog(parent.getShell(), questionParam, claferModel, listOfAllQuestions);
 		btnModify.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e){

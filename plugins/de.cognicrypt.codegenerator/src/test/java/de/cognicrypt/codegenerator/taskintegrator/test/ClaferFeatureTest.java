@@ -19,6 +19,7 @@ import org.junit.Test;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 
 public class ClaferFeatureTest {
@@ -79,12 +80,12 @@ public class ClaferFeatureTest {
 
 	@Test
 	public final void testImplementMissingFeatures() {
-		ArrayList<ClaferFeature> featureList = new ArrayList<>();
+		ClaferModel claferModel = new ClaferModel();
 		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "Algorithm");
-		cfrFeature.implementMissingFeatures(featureList);
+		cfrFeature.implementMissingFeatures(claferModel);
 		
 		boolean featureFound = false;
-		for (ClaferFeature currentFeature : featureList) {
+		for (ClaferFeature currentFeature : claferModel) {
 			if (currentFeature.getFeatureName().equals("Algorithm")) {
 				featureFound = true;
 				break;
@@ -96,11 +97,11 @@ public class ClaferFeatureTest {
 
 	@Test
 	public final void testNoEmptyFeatures() {
-		ArrayList<ClaferFeature> featureList = new ArrayList<>();
+		ClaferModel claferModel = new ClaferModel();
 		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "");
-		cfrFeature.implementMissingFeatures(featureList);
+		cfrFeature.implementMissingFeatures(claferModel);
 
-		for (ClaferFeature currentFeature : featureList) {
+		for (ClaferFeature currentFeature : claferModel) {
 			assertTrue(!currentFeature.getFeatureName().isEmpty());
 		}
 	}
@@ -120,15 +121,15 @@ public class ClaferFeatureTest {
 		algoFeature.setFeatureProperties(propertyList);
 
 		// add feature to an empty list
-		ArrayList<ClaferFeature> featureList = new ArrayList<>();
-		featureList.add(algoFeature);
+		ClaferModel claferModel = new ClaferModel();
+		claferModel.add(algoFeature);
 
 		// automatically create missing features (a concrete Clafer Security is supposed to be created)
-		algoFeature.implementMissingFeatures(featureList);
+		algoFeature.implementMissingFeatures(claferModel);
 
 		// serialize Clafer model to file
 		StringBuilder sb = new StringBuilder();
-		for (ClaferFeature cfrFeature : featureList) {
+		for (ClaferFeature cfrFeature : claferModel) {
 			sb.append(cfrFeature.toString());
 		}
 		FileWriter fileWriter = new FileWriter(temporaryCfrFile);
@@ -163,18 +164,18 @@ public class ClaferFeatureTest {
 		propertiesA.add(new FeatureProperty("2", "y"));
 		featureA.setFeatureProperties(propertiesA);
 		
-		ArrayList<ClaferFeature> featureList = new ArrayList<>();
-		featureList.add(featureA);
+		ClaferModel claferModel = new ClaferModel();
+		claferModel.add(featureA);
 		
-		featureA.implementMissingFeatures(featureList);
+		featureA.implementMissingFeatures(claferModel);
 		
 		// change the type of property 1 to x
 		// y will be unused
 		propertiesA.get(1).setPropertyType("x");
 		
-		featureA.removeUnusedFeatures(featureList);
+		featureA.removeUnusedFeatures(claferModel);
 		
-		featureA.printModel(featureList);
+		featureA.printModel(claferModel);
 		
 		fail("Not implemented yet!");
 	}

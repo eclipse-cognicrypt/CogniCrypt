@@ -12,6 +12,7 @@ import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.FileUtilities;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
@@ -77,8 +78,8 @@ public class TaskIntegrationWizard extends Wizard {
 		} else {
 
 			// collect input to task-related files from individual pages
-			ArrayList<ClaferFeature> claferFeatures = ((CompositeToHoldGranularUIElements) ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION))
-				.getCompositeToHoldGranularUIElements()).getListOfAllClaferFeatures();
+			ClaferModel claferModel = ((CompositeToHoldGranularUIElements) ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION))
+				.getCompositeToHoldGranularUIElements()).getClaferModel();
 			ArrayList<Question> questions = ((CompositeToHoldGranularUIElements) ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS))
 				.getCompositeToHoldGranularUIElements()).getListOfAllQuestions();
 			String xslFileContents = ((CompositeForXsl) ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)).getCompositeForXsl()).getXslTxtBox()
@@ -88,7 +89,7 @@ public class TaskIntegrationWizard extends Wizard {
 			// ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode().getLocationOfCustomLibrary();
 			File customLibLocation = null;
 
-			fileUtilities.writeFiles(claferFeatures, questions, xslFileContents, customLibLocation);
+			fileUtilities.writeFiles(claferModel, questions, xslFileContents, customLibLocation);
 
 			return true;
 		}

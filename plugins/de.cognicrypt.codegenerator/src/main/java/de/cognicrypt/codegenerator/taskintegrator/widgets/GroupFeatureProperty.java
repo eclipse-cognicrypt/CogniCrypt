@@ -1,7 +1,5 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
-import java.util.ArrayList;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -51,7 +49,7 @@ public class GroupFeatureProperty extends Group {
 		setLayout(new RowLayout(SWT.HORIZONTAL));
 		
 		Label lblName = new Label(this, SWT.NONE);
-		lblName.setText("Name ");
+		lblName.setText(Constants.FEATURE_PROPERTY_NAME);
 		
 		txtPropertyName = new Text(this, SWT.BORDER);
 		txtPropertyName.setEditable(editable);
@@ -67,8 +65,7 @@ public class GroupFeatureProperty extends Group {
 		});
 		
 		Label lblNewLabel = new Label(this, SWT.NONE);
-		lblNewLabel.setText("Inherits from ");
-		// inherits 
+		lblNewLabel.setText(Constants.FEATURE_PROPERTY_TYPE_RELATION);
 		
 		if (!showRemoveButton) {
 
@@ -108,7 +105,7 @@ public class GroupFeatureProperty extends Group {
 		if (showRemoveButton) {
 
 			Button btnRemove = new Button(this, SWT.NONE);
-			btnRemove.setText("Remove");
+			btnRemove.setText(Constants.FEATURE_PROPERTY_REMOVE);
 			btnRemove.addSelectionListener(new SelectionAdapter() {
 
 				@Override

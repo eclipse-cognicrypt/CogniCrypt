@@ -82,17 +82,10 @@ public class ClaferFeatureTest {
 	public final void testImplementMissingFeatures() {
 		ClaferModel claferModel = new ClaferModel();
 		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "Algorithm");
-		cfrFeature.implementMissingFeatures(claferModel);
-		
-		boolean featureFound = false;
-		for (ClaferFeature currentFeature : claferModel) {
-			if (currentFeature.getFeatureName().equals("Algorithm")) {
-				featureFound = true;
-				break;
-			}
-		}
-
-		assertTrue(featureFound);
+				
+		ClaferModel addedFeatures = cfrFeature.implementMissingFeatures(claferModel); 
+		assertTrue(addedFeatures.getClaferModel().size() == 1);
+		assertTrue(addedFeatures.getClaferModel().get(0).getFeatureName().equals("Algorithm"));
 	}
 
 	@Test

@@ -39,7 +39,7 @@ public class GroupFeatureProperty extends Group {
 	 * @param editable
 	 * @param claferModel
 	 */
-	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam, boolean showRemoveButton, boolean editable, ClaferModel claferModel) {
+	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam, boolean showRemoveButton, ClaferModel claferModel) {
 		super(parent, SWT.BORDER);
 		// Set the model for use first.
 		this.setFeatureProperty(featurePropertyParam);
@@ -52,7 +52,7 @@ public class GroupFeatureProperty extends Group {
 		lblName.setText(Constants.FEATURE_PROPERTY_NAME);
 		
 		txtPropertyName = new Text(this, SWT.BORDER);
-		txtPropertyName.setEditable(editable);
+		txtPropertyName.setEditable(showRemoveButton);
 		txtPropertyName.setLayoutData(new RowData(160, SWT.DEFAULT));
 		txtPropertyName.setText(featureProperty.getPropertyName());
 		txtPropertyName.addFocusListener(new FocusAdapter() {
@@ -70,7 +70,7 @@ public class GroupFeatureProperty extends Group {
 		if (!showRemoveButton) {
 
 			txtPropertyType = new Text(this, SWT.BORDER);
-			txtPropertyType.setEditable(editable);
+			txtPropertyType.setEditable(showRemoveButton);
 			txtPropertyType.setLayoutData(new RowData(160, SWT.DEFAULT));
 			txtPropertyType.setText(featureProperty.getPropertyType());
 			txtPropertyType.addFocusListener(new FocusAdapter() {
@@ -116,10 +116,6 @@ public class GroupFeatureProperty extends Group {
 				}
 			});
 		}
-	}
-
-	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam, boolean showRemoveButton, ClaferModel claferModel) {
-		this(parent, style, featurePropertyParam, showRemoveButton, false, claferModel);
 	}
 
 	@Override

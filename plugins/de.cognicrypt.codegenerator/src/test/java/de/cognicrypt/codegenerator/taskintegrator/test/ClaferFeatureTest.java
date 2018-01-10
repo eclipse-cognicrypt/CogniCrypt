@@ -96,9 +96,25 @@ public class ClaferFeatureTest {
 	}
 
 	@Test
-	public final void testNoEmptyFeatures() {
+	public final void testNoEmptyFeatureInheritance() {
 		ClaferModel claferModel = new ClaferModel();
 		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "");
+		cfrFeature.implementMissingFeatures(claferModel);
+
+		for (ClaferFeature currentFeature : claferModel) {
+			assertTrue(!currentFeature.getFeatureName().isEmpty());
+		}
+	}
+	
+	@Test
+	public final void testNoEmptyPropertyType() {
+		ClaferModel claferModel = new ClaferModel();
+		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "A", "B");
+		ArrayList<FeatureProperty> featureProperties = new ArrayList<>();
+		featureProperties.add(new FeatureProperty("1", ""));
+		featureProperties.add(new FeatureProperty("2", ""));
+		claferModel.add(cfrFeature);
+		cfrFeature.setFeatureProperties(featureProperties);
 		cfrFeature.implementMissingFeatures(claferModel);
 
 		for (ClaferFeature currentFeature : claferModel) {

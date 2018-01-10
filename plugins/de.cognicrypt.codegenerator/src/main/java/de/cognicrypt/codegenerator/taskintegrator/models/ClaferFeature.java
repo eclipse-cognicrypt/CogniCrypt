@@ -139,11 +139,11 @@ public class ClaferFeature {
 	 * @param featureList
 	 *        haystack list for missing features and to be updated with new features
 	 */
-	public void implementMissingFeatures(ArrayList<ClaferFeature> featureList) {
+	public void implementMissingFeatures(ClaferModel claferModel) {
 		// find missing inherited feature
 		if (!getFeatureInheritance().isEmpty()) {
 			boolean parentFound = false;
-			for (ClaferFeature cfrFeature : featureList) {
+			for (ClaferFeature cfrFeature : claferModel) {
 				if (cfrFeature.getFeatureName().equals(getFeatureInheritance())) {
 					parentFound = true;
 					break;
@@ -153,14 +153,14 @@ public class ClaferFeature {
 			// implement missing inherited feature
 			if (!parentFound) {
 				ClaferFeature parentFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, getFeatureInheritance(), "");
-				featureList.add(parentFeature);
+				claferModel.add(parentFeature);
 			}
 		}
 
 		// find missing property types
 		for (FeatureProperty fp : getfeatureProperties()) {
 			boolean propertyTypeFound = false;
-			for (ClaferFeature cfrFeature : featureList) {
+			for (ClaferFeature cfrFeature : claferModel) {
 				if (cfrFeature.getFeatureName().equals(fp.getPropertyType())) {
 					propertyTypeFound = true;
 					break;
@@ -170,13 +170,13 @@ public class ClaferFeature {
 			// implement missing property types			
 			if (!propertyTypeFound) {
 				ClaferFeature propertyTypeFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, fp.getPropertyType(), "");
-				featureList.add(propertyTypeFeature);
+				claferModel.add(propertyTypeFeature);
 			}
 		}
 	}
 
-	public void removeUnusedFeatures(ArrayList<ClaferFeature> featureList) {
-		for (ClaferFeature cfrFeature : featureList) {
+	public void removeUnusedFeatures(ClaferModel claferModel) {
+		for (ClaferFeature cfrFeature : claferModel) {
 			// check usage of cfrFeature			
 			boolean used = false;
 			if (cfrFeature.hasProperties()) {
@@ -187,14 +187,14 @@ public class ClaferFeature {
 			}
 			
 			// if abstract and somebody inherits -> used
-			for (ClaferFeature refFeature : featureList) {
+			for (ClaferFeature refFeature : claferModel) {
 				if (refFeature.getFeatureInheritance() == cfrFeature.getFeatureName()) {
 					// usage found: refFeature inherits from cfrFeature
 					used = true;
 				}
 			}
 
-			for (ClaferFeature refFeature : featureList) {
+			for (ClaferFeature refFeature : claferModel) {
 				for (FeatureProperty featureProp : refFeature.getfeatureProperties()) {
 					if (featureProp.getPropertyType() == cfrFeature.getFeatureName()) {
 						// usage found: featureProp is of type cfrFeature
@@ -210,7 +210,7 @@ public class ClaferFeature {
 		}
 	}
 
-	public void printModel(ArrayList<ClaferFeature> claferModel) {
+	public void printModel(ClaferModel claferModel) {
 		// TODO This should not be a class method
 		StringBuilder sb = new StringBuilder();
 		for (ClaferFeature cfrFeature : claferModel) {

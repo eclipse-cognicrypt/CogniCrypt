@@ -23,6 +23,7 @@ import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.utilities.Utils;
 
@@ -42,13 +43,13 @@ public class FileUtilities {
 	
 	/**
 	 * Write the data from the pages to target location in the plugin.
-	 * @param claferFeatures
+	 * @param claferModel
 	 * @param questions
 	 * @param xslFileContents
 	 * @param customLibLocation
 	 */
-	public void writeFiles(ArrayList<ClaferFeature> claferFeatures, ArrayList<Question> questions, String xslFileContents, File customLibLocation) {
-		writeCFRFile(claferFeatures);
+	public void writeFiles(ClaferModel claferModel, ArrayList<Question> questions, String xslFileContents, File customLibLocation) {
+		writeCFRFile(claferModel);
 		writeJSONFile(questions);
 		writeXSLFile(xslFileContents);
 		if (customLibLocation != null) {
@@ -135,13 +136,13 @@ public class FileUtilities {
 		
 	/**
 	 * 
-	 * @param claferFeatures
+	 * @param claferModel
 	 */
-	private void writeCFRFile(ArrayList<ClaferFeature> claferFeatures) {
+	private void writeCFRFile(ClaferModel claferModel) {
 		File cfrFile = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.CFR_EXTENSION);
 		try {
 			FileWriter writer = new FileWriter(cfrFile);
-			for (ClaferFeature cfrFeature : claferFeatures) {
+			for (ClaferFeature cfrFeature : claferModel) {
 				writer.write(cfrFeature.toString());
 			}
 			writer.close();

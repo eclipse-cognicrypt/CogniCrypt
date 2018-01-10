@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 
 public class GroupFeatureProperty extends Group {
@@ -25,7 +26,7 @@ public class GroupFeatureProperty extends Group {
 	private Text txtPropertyName;
 	private Text txtPropertyType;
 	private Combo comboPropertyType;
-	private ArrayList<ClaferFeature> listOfExistingClaferFeatures;
+	private ClaferModel claferModel;
 
 	/**
 	 * Create the composite.
@@ -34,16 +35,19 @@ public class GroupFeatureProperty extends Group {
 	 *        Composite that contains the feature property
 	 * @param style
 	 *        SWT style identifiers
+	 * @param featurePropertyParam
 	 * @param showRemoveButton
 	 *        whether or not to show a remove button next to the feature property
+	 * @param editable
+	 * @param claferModel
 	 */
-	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam, boolean showRemoveButton, boolean editable, ArrayList<ClaferFeature> otherClaferFeatures) {
+	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam, boolean showRemoveButton, boolean editable, ClaferModel claferModel) {
 		super(parent, SWT.BORDER);
 		// Set the model for use first.
 		this.setFeatureProperty(featurePropertyParam);
 		
 		
-		this.listOfExistingClaferFeatures = otherClaferFeatures;
+		this.claferModel = claferModel;
 		setLayout(new RowLayout(SWT.HORIZONTAL));
 		
 		Label lblName = new Label(this, SWT.NONE);
@@ -95,7 +99,7 @@ public class GroupFeatureProperty extends Group {
 				}
 			});
 
-			for (ClaferFeature cfr : otherClaferFeatures) {
+			for (ClaferFeature cfr : claferModel) {
 				comboPropertyType.add(cfr.getFeatureName().toString());
 			}
 
@@ -117,8 +121,8 @@ public class GroupFeatureProperty extends Group {
 		}
 	}
 
-	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam, boolean showRemoveButton, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
-		this(parent, style, featurePropertyParam, showRemoveButton, false, listOfExistingClaferFeatures);
+	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam, boolean showRemoveButton, ClaferModel claferModel) {
+		this(parent, style, featurePropertyParam, showRemoveButton, false, claferModel);
 	}
 
 	@Override

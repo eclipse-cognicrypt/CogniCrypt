@@ -168,7 +168,7 @@ public class ClaferFeature {
 			}
 
 			// implement missing property types			
-			if (!propertyTypeFound) {
+			if (!fp.getPropertyType().isEmpty() && !propertyTypeFound) {
 				ClaferFeature propertyTypeFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, fp.getPropertyType(), "");
 				claferModel.add(propertyTypeFeature);
 			}

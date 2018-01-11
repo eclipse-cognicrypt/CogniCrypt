@@ -90,7 +90,7 @@
       "id": "4",
       "tooltip": "Example : 192.168.123.132",
       "element": "text",
-        "textType":"",
+      "textType":"ip address",
       "questionText": "Please enter host/ip",
       "answers": [{
         "value": "",
@@ -101,10 +101,11 @@
         "defaultAnswer": true
       }]
     },
-    {
+   	{
       "id": "5",
-      "tooltip": "Example : 1.2.3.4:80",
-      "element": "textPort",
+      "tooltip": "Example : 25486",
+      "element": "text",
+      "textType":"port number",
       "questionText": "Please enter port",
       "answers": [{
         "value": "",

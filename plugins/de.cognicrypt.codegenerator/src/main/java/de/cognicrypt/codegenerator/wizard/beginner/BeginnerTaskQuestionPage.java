@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
+import javax.swing.text.Utilities;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -486,27 +489,47 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					        }  
 					    }  
 					});
+					text(question, inputField);
 				}
 				else if(question.getTextType().equals("ip address"))
 				{
 					final Text inputField = new Text(container, SWT.BORDER);
 					inputField.setSize(240, inputField.getSize().y);
 					inputField.setToolTipText(question.getTooltip());
-					
-					
+						
 					inputField.addVerifyListener(new VerifyListener() {  
 					    @Override  
 					    public void verifyText(VerifyEvent e) {
-					        /* Notice how we combine the old and new below */
 					        String currentText = ((Text)e.widget).getText();
-					        String pattern1 ="((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\\.|$)){4}";
 					        String ip =  currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
-					        try{  
-					        	Pattern pattern = Pattern.compile(pattern1);
-					        	Matcher matcher = pattern.matcher(ip);
-					            if(matcher.equals(pattern)){  
-					                e.doit = true;  
-					            }  
+					        try{   
+					            if(ip!=null && !ip.isEmpty() ){
+					                String [] ipAddress = ip.split("\\.");
+					                if(ipAddress.length > 4 ){
+					                    e.doit= false;
+					                    
+					                }
+					                for(int i=0;i<=ipAddress.length-1;i++){
+					                    int j=Integer.parseInt(ipAddress[i]);
+					                    if(j<0 || j>255){
+					                    	e.doit= false;
+
+					                    }
+					                }
+
+									if (ipAddress.length == 4) {
+										if (ip.endsWith(".")) {
+											e.doit = false;
+										}
+									}
+
+									if ( ip.endsWith("..") ) {
+					                	e.doit= false;
+					                }
+					                if ( ip.startsWith(".") ) {
+					                	e.doit= false;
+					                }
+					            }
 					        }  
 					        catch(NumberFormatException ex){  
 					            if(!ip.equals(""))
@@ -514,35 +537,12 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					        }  
 					    }  
 					});
-					
-					
-
-//					inputField.addListener(SWT.Verify, new Listener() {
-//					      public void handleEvent(Event e) {
-//								final String string =
-//									"^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
-//									"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
-//									"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
-//									"([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
-//					        char[] chars = new char[string.length()];
-//					        string.getChars(0, chars.length, chars, 0);
-//					        for (int i = 0; i < chars.length; i++) {
-//					          if (!('0' <= chars[i] && chars[i] <= '9')) {
-//					            e.doit = false;
-//					            return;
-//					          }
-//					        }
-//					      }
-//					    });
-					
-//					text(question, inputField);	
+					text(question, inputField);
 				}	
 				else{
 					final Text inputField = new Text(container, SWT.BORDER);
 					inputField.setSize(240, inputField.getSize().y);
 					inputField.setToolTipText(question.getTooltip());
-					
-					
 					text(question, inputField);	
 				}
 				break;

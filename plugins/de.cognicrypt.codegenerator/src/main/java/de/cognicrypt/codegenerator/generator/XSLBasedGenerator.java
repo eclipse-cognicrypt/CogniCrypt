@@ -96,16 +96,18 @@ public class XSLBasedGenerator {
 	 *        xml model that details the algorithm configuration chosen by the user.
 	 * @param pathToFolderWithAdditionalResources
 	 *        If additional files need to be generated into a developer's project, they are in this folder.
+	 * @param pathToXSLFile 
+	 *		  path to the XSL file is read from the Tasks.json file instead of a constant.		
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if transformation successful/failed.
 	 * @throws BadLocationException
 	 *
 	 */
-	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources, final String providerName) throws BadLocationException {
+	public boolean generateCodeTemplates(final File xmlInstanceFile, final String pathToFolderWithAdditionalResources, final String providerName, final String pathToXSLFile) throws BadLocationException {
 		try {
 			// Check whether directories and templates/model exist
 			final File claferOutputFiles = xmlInstanceFile != null && xmlInstanceFile.exists() ? xmlInstanceFile
 				: Utils.getResourceFromWithin(Constants.pathToClaferInstanceFolder + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
-			final File xslFiles = Utils.getResourceFromWithin(Constants.pathToXSLFile);
+			final File xslFiles = Utils.getResourceFromWithin(pathToXSLFile);
 			if (!claferOutputFiles.exists() || !xslFiles.exists()) {
 				Activator.getDefault().logError(Constants.FilesDoNotExistErrorMessage);
 				return false;

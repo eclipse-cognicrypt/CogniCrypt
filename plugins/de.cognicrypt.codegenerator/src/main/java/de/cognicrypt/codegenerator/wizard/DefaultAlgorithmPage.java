@@ -149,7 +149,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 		// Check whether directories and templates/model exist
 		final File claferOutputFiles = claferPreviewFile != null && claferPreviewFile.exists() ? claferPreviewFile
 			: Utils.getResourceFromWithin(Constants.pathToClaferInstanceFolder + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
-		final File xslFile = Utils.getResourceFromWithin(Constants.pathToXSLFile);
+		final File xslFile = Utils.getResourceFromWithin(this.taskSelectionPage.getSelectedTask().getXslFile());
 		if (!claferOutputFiles.exists() || !xslFile.exists()) {
 			Activator.getDefault().logError(Constants.FilesDoNotExistErrorMessage);
 			return "";

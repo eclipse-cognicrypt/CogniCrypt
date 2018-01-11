@@ -22,9 +22,10 @@ public class Task {
 	private String description;
 	private String taskDescription;
 	private String modelFile;
-	private String xmlFile;
+	private String questionsJSONFile;
 	private boolean isSelected;
 	private String additionalResources;
+	private String xslFile;
 
 	public String getAdditionalResources() {
 		return this.additionalResources;
@@ -46,8 +47,8 @@ public class Task {
 		return this.name;
 	}
 
-	public String getXmlFile() {
-		return this.xmlFile;
+	public String getQuestionsJSONFile() {
+		return this.questionsJSONFile;
 	}
 
 	public boolean isSelected() {
@@ -78,8 +79,22 @@ public class Task {
 		this.isSelected = isSelected;
 	}
 
-	public void setXmlFile(final String xmlFile) {
-		this.xmlFile = xmlFile;
+	public void setQuestionsJSONFile(final String questionsJSONFile) {
+		this.questionsJSONFile = questionsJSONFile;
+	}
+
+	/**
+	 * @return the xslFile
+	 */
+	public String getXslFile() {
+		return xslFile;
+	}
+
+	/**
+	 * @param xslFile the xslFile to set
+	 */
+	public void setXslFile(String xslFile) {
+		this.xslFile = xslFile;
 	}
 
 }

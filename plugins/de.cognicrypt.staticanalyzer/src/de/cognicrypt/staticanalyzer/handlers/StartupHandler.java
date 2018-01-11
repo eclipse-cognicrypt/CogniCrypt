@@ -54,10 +54,13 @@ public class StartupHandler implements IStartup {
 									}
 								} catch (final Exception ex) {
 
+									return false;
+
 								}
 								if (res.getFileExtension().endsWith("cryptsl")) {
 									changedCrySLElements.add(res);
 								}
+
 							}
 					}
 					return true;

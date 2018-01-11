@@ -48,22 +48,22 @@ import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.Constants.GUIElements;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
-import de.cognicrypt.codegenerator.utilities.Labels;
 
 public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private final Question quest;
 	private final Task task;
-	// Removed the allquestions variable as it was not longer required.
-	private BeginnerModeQuestionnaire beginnerModeQuestionnaire;
-	private HashMap<Question, Answer> selectionMap = new HashMap<Question, Answer>();
-	private boolean finish = false;
-	private List<String> selectionValues;
 	private final Page page;
+
+	private boolean finish = false;
+	private BeginnerModeQuestionnaire beginnerModeQuestionnaire;
+	private HashMap<Question, Answer> selectionMap = new HashMap<>();
+	private List<String> selectionValues;
 	private Text note;
 	private Composite container;
 
@@ -96,7 +96,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	public BeginnerTaskQuestionPage(final Question quest, final Task task, final List<String> selectionValues) {
 		super("Display Questions");
 		setTitle("Configuring Selected Task: " + task.getDescription());
-		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
+		setDescription(Constants.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.quest = quest;
 		this.task = task;
 		this.selectionValues = selectionValues;
@@ -118,7 +118,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	public BeginnerTaskQuestionPage(final Page page, final Task task, final List<String> selectionValues) {
 		super("Display Questions");
 		setTitle("Configuring Selected Task: " + task.getDescription());
-		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
+		setDescription(Constants.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.page = page;
 		this.task = task;
 		this.selectionValues = selectionValues;
@@ -138,7 +138,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	public BeginnerTaskQuestionPage(final Page page, final Task task, final BeginnerModeQuestionnaire beginnerModeQuestionnaire, final List<String> selectionValues) {
 		super("Display Questions");
 		setTitle("Configuring Selected Task: " + task.getDescription());
-		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
+		setDescription(Constants.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.beginnerModeQuestionnaire = beginnerModeQuestionnaire;
 		this.quest = null;
 		this.page = page;
@@ -156,7 +156,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	public BeginnerTaskQuestionPage(final BeginnerModeQuestionnaire beginnerModeQuestionnaire, final Question quest, final Task task) {
 		super("Display Questions");
 		setTitle("Configuring Selected Task: " + task.getDescription());
-		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
+		setDescription(Constants.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.beginnerModeQuestionnaire = beginnerModeQuestionnaire;
 		this.quest = quest;
 		this.page = null;
@@ -166,25 +166,17 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	@Override
 	public boolean isPageComplete() {
 		for (Question question : page.getContent()) {
-			if (question.getElement().equals(de.cognicrypt.codegenerator.Constants.GUIElements.button)) {
-				return this.finish;
-			} else if (question.getElement().equals(de.cognicrypt.codegenerator.Constants.GUIElements.itemselection)) {
-				return this.finish;
-			} else if (question.getElement().equals(de.cognicrypt.codegenerator.Constants.GUIElements.radio)) {
-				return this.finish;
-			}else if (question.getElement().equals(de.cognicrypt.codegenerator.Constants.GUIElements.scale)) {
-				return this.finish;
-			}
-			if (question.getEnteredAnswer() == null) {
-				return false;
-			} else if (question.getEnteredAnswer().getValue().isEmpty()) {
+			final Answer answer = question.getEnteredAnswer();
+			if (answer == null || answer.getValue().isEmpty()) {
 				return false;
 			}
-
+			if (Arrays.asList((new GUIElements[] { GUIElements.button, GUIElements.itemselection, GUIElements.radio, GUIElements.scale })).contains(question.getElement())) {
+				return this.finish;
+			}
 		}
 		return true;
 	}
-	
+
 	public String getHelpId(Page page) {
 		return "de.cognicrypt.codegenerator." + page.getHelpID();
 	}
@@ -195,12 +187,12 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		container.setBounds(10, 10, 450, 200);
 		// Updated the number of columns to order the questions vertically.
 		final GridLayout layout = new GridLayout(1, false);
-		
+
 		// To display the Help view after clicking the help icon		
 		if (!page.getHelpID().isEmpty()) {
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(container, getHelpId(page));
 		}
-		
+
 		container.setLayout(layout);
 		// If legacy JSON files are in effect.
 		if (page == null) {
@@ -236,38 +228,27 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				});
 				new Label(parent, SWT.NONE);
 				//added description for questions
-				if(!question.getNote().equals("")){
-					
-				Group notePanel = new Group(parent, SWT.NONE);
-				notePanel.setText("Note:");
-				final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
-				notePanel.setFont(boldFont);
-								
-				this.note = new Text (notePanel,SWT.MULTI | SWT.WRAP );
-				this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
-				this.note.setText(question.getNote());
-				this.note.setBounds(10,20,585,60);
-				this.note.setSize(note.computeSize(585, SWT.DEFAULT));
-				setControl(notePanel);
-				this.note.setEditable(false);
-				this.note.setEnabled(true);
+				if (!question.getNote().isEmpty()) {
+					createNote(parent, question);
 				}
 				this.finish = true;
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
-				if (question.getEnteredAnswer() != null)
+				if (question.getEnteredAnswer() != null) {
 					comboViewer.setSelection(new StructuredSelection(question.getEnteredAnswer()));
-				else
+				} else {
 					comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
+				}
 				break;
 			case radio:
-				Button[] radioButton = new Button[answers.size()];				
+				Button[] radioButton = new Button[answers.size()];
 				for (int i = 0; i < answers.size(); i++) {
-					int count=i;
+					int count = i;
 					String ans = answers.get(i).getValue();
-					radioButton[i] = new Button(container, SWT.RADIO );
+					radioButton[i] = new Button(container, SWT.RADIO);
 					radioButton[i].setText(ans);
-					new Label(container,SWT.NONE);
+					new Label(container, SWT.NONE);
 					radioButton[i].addSelectionListener(new SelectionAdapter() {
+
 						@Override
 						public void widgetSelected(SelectionEvent e) {
 							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(count));
@@ -275,96 +256,73 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						}
 					});
 				}
-				if(!question.getNote().equals("")){
-					
-					Group notePanel = new Group(parent, SWT.NONE);
-					notePanel.setText("Note:");
-					final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
-					notePanel.setFont(boldFont);
-									
-					this.note = new Text (notePanel,SWT.MULTI | SWT.WRAP );
-					this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
-					this.note.setText(question.getNote());
-					this.note.setBounds(10,20,585,60);
-					this.note.setSize(note.computeSize(585, SWT.DEFAULT));
-					setControl(notePanel);
-					this.note.setEditable(false);
-					this.note.setEnabled(true);
-					}
-				if (question.getEnteredAnswer() != null){
-					for (int i = 0; i < answers.size(); i++) {
-						if(radioButton[i].getText()==question.getEnteredAnswer().getValue()){
-							radioButton[i].setSelection(true);
-							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(i));
-							question.setEnteredAnswer((Answer) answers.get(i));
-						}
-					}
-				} else {
-					for (int i = 0; i < answers.size(); i++) {
-						if(radioButton[i].getText()==question.getDefaultAnswer().getValue()){
-							radioButton[i].setSelection(true);
-							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(i));
-							question.setEnteredAnswer((Answer) answers.get(i));
-						}
+				if (!question.getNote().isEmpty()) {
+					createNote(parent, question);
+				}
+				Answer evalAnswer = question.getEnteredAnswer();
+				if (evalAnswer == null) {
+					evalAnswer = question.getDefaultAnswer();
+				}
+				for (int i = 0; i < answers.size(); i++) {
+					if (radioButton[i].getText().equals(evalAnswer.getValue())) {
+						radioButton[i].setSelection(true);
+						BeginnerTaskQuestionPage.this.selectionMap.put(question, evalAnswer);
+						question.setEnteredAnswer(evalAnswer);
 					}
 				}
-				
-				
-				this.finish = true;
-				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);	
+
+				BeginnerTaskQuestionPage.this.setPageComplete(this.finish = true);
 				break;
-				
+
 			case scale:
 
-				Scale scale = new Scale(container, SWT.HORIZONTAL );
-				scale.setMaximum((answers.size())-1);
+				Scale scale = new Scale(container, SWT.HORIZONTAL);
+				scale.setMaximum((answers.size()) - 1);
 				scale.setMinimum(0);
 				scale.setPageIncrement(1);
-			
-				for (int i = 0; i < answers.size(); i++) {	 		 
-				scale.addSelectionListener(new SelectionAdapter() {
-					
-					 @Override
-		                public void widgetSelected( SelectionEvent selectionEvent )
-		                    {
-						 	int selectionNum=scale.getSelection();
-						 	scale.setToolTipText(answers.get(selectionNum).getValue());
-						 	BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(selectionNum));
+
+				for (int i = 0; i < answers.size(); i++) {
+					scale.addSelectionListener(new SelectionAdapter() {
+
+						@Override
+						public void widgetSelected(SelectionEvent selectionEvent) {
+							int selectionNum = scale.getSelection();
+							scale.setToolTipText(answers.get(selectionNum).getValue());
+							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(selectionNum));
 							question.setEnteredAnswer((Answer) answers.get(selectionNum));
-		                    }
-			      });
-			    }
-				
-				if (question.getEnteredAnswer() != null){
+						}
+					});
+				}
+
+				if (question.getEnteredAnswer() != null) {
 					for (int i = 0; i < answers.size(); i++) {
-						if(answers.get(i).getValue()==question.getEnteredAnswer().getValue()){
+						if (answers.get(i).getValue().equals(question.getEnteredAnswer().getValue())) {
 							scale.setSelection(i);
-						 	scale.setToolTipText(answers.get(i).getValue());
+							scale.setToolTipText(answers.get(i).getValue());
 							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(i));
 							question.setEnteredAnswer((Answer) answers.get(i));
 						}
 					}
 				} else {
 					for (int i = 0; i < answers.size(); i++) {
-						if(answers.get(i).getValue()==question.getDefaultAnswer().getValue()){
+						if (answers.get(i).getValue().equals(question.getDefaultAnswer().getValue())) {
 							scale.setSelection(i);
-						 	scale.setToolTipText(answers.get(i).getValue());
+							scale.setToolTipText(answers.get(i).getValue());
 							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(i));
 							question.setEnteredAnswer((Answer) answers.get(i));
 						}
 					}
 				}
-				
-				this.finish = true;
-				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);	
+
+				BeginnerTaskQuestionPage.this.setPageComplete(this.finish = true);
 				break;
 
 			case text:
 				final Text inputField = new Text(container, SWT.BORDER);
 				inputField.setSize(240, inputField.getSize().y);
-				
+
 				inputField.setToolTipText(question.getTooltip());
-				
+
 				if (question.getEnteredAnswer() != null) {
 					final Answer a = question.getEnteredAnswer();
 					inputField.setText(a.getValue());
@@ -612,7 +570,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							final boolean methodResult = Boolean.parseBoolean(resStringArray[0]);
 							final String feedbackString = resStringArray[1];
 
-							if (methodResult == true) {
+							if (methodResult) {
 								question.getDefaultAnswer().setNextID(question.getAnswers().get(0).getNextID());
 							} else {
 								question.getDefaultAnswer().setNextID(question.getAnswers().get(1).getNextID());
@@ -637,6 +595,22 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			default:
 				break;
 		}
+	}
+
+	private void createNote(final Composite parent, final Question question) {
+		Group notePanel = new Group(parent, SWT.NONE);
+		notePanel.setText("Note:");
+		final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
+		notePanel.setFont(boldFont);
+
+		this.note = new Text(notePanel, SWT.MULTI | SWT.WRAP);
+		this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
+		this.note.setText(question.getNote());
+		this.note.setBounds(10, 20, 585, 60);
+		this.note.setSize(note.computeSize(585, SWT.DEFAULT));
+		setControl(notePanel);
+		this.note.setEditable(false);
+		this.note.setEnabled(true);
 	}
 
 	@Override
@@ -737,11 +711,12 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		result = prime * result + ((this.selectionValues == null) ? 0 : this.selectionValues.hashCode());
 		return result;
 	}
+
 	@Override
-	public void setVisible( boolean visible ) {
-	  super.setVisible( visible );
-	  if( visible ){
-	    container.setFocus();
-	  }
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		if (visible) {
+			container.setFocus();
+		}
 	}
 }

@@ -119,7 +119,7 @@ public class Utils {
 	 *
 	 * @return Current editor.
 	 */
-	public static IEditorPart getCurrentlyOpenEditor() {
+	private static IEditorPart getCurrentlyOpenEditor() {
 		final Display defaultDisplay = Display.getDefault();
 		final Runnable getWindow = () -> setWindow(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
 		defaultDisplay.asyncExec(getWindow);
@@ -144,7 +144,7 @@ public class Utils {
 	 * @return Currently open file.
 	 *
 	 */
-	public static IFile getCurrentlyOpenFile() {
+	private static IFile getCurrentlyOpenFile() {
 		return getCurrentlyOpenFile(getCurrentlyOpenEditor());
 	}
 
@@ -155,7 +155,7 @@ public class Utils {
 	 *        Editor part that contains the file.
 	 * @return Currently open file.
 	 */
-	public static IFile getCurrentlyOpenFile(final IEditorPart part) {
+	private static IFile getCurrentlyOpenFile(final IEditorPart part) {
 		if (part != null) {
 			final IEditorInput editorInput = part.getEditorInput();
 			if (editorInput instanceof FileEditorInput) {

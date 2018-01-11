@@ -64,9 +64,10 @@ public class SootRunner {
 	}
 
 	private static List<CryptSLRule> getRules() {
-		final List<CryptSLRule> rules = Lists.newArrayList();
-		final File[] listFiles = SootRunner.RULES_DIR.listFiles();
-		for (final File file : listFiles) {
+		List<CryptSLRule> rules = Lists.newArrayList();
+		File[] listFiles = RULES_DIR.listFiles();
+		assert listFiles != null;
+		for (File file : listFiles) {
 			if (file.getName().endsWith(".cryptslbin")) {
 				rules.add(CryptSLRuleReader.readFromFile(file));
 			}

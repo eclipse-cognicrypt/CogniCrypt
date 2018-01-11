@@ -122,6 +122,7 @@ public class Utils {
 	}
 
 	public static IProject getCurrentProject() {
+	
 		final IProject selectedProject = Utils.getIProjectFromSelection();
 		if (selectedProject != null && Constants.WizardActionFromContextMenuFlag) {
 			return selectedProject;

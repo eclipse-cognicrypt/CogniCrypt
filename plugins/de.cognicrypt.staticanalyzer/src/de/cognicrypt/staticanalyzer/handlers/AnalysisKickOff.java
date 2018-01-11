@@ -29,18 +29,6 @@ public class AnalysisKickOff {
 	private IJavaProject curProj;
 
 	/**
-	 * This method executes the actual analysis.
-	 * 
-	 * @return <code>true</code>/<code>false</code> Soot runs successfully
-	 */
-	public boolean run() {
-		if (this.curProj == null) {
-			return false;
-		}
-		return SootRunner.runSoot(this.curProj, this.mainClass, AnalysisKickOff.resultsReporter);
-	}
-
-	/**
 	 * This method sets up the analysis by <br>
 	 * 1) Creating a {@link ErrorMarkerGenerator} <br>
 	 * 2) Creating a {@link ResultsCCUIListener} <br>
@@ -92,5 +80,13 @@ public class AnalysisKickOff {
 		Utils.findMainMethodInCurrentProject(this.curProj, requestor);
 
 		return true;
+	}
+
+	/**
+	 * This method executes the actual analysis.
+	 * @return <code>true</code>/<code>false</code> Soot runs successfully
+	 */
+	public boolean run() {
+		return curProj != null && SootRunner.runSoot(curProj, mainClass, resultsReporter);
 	}
 }

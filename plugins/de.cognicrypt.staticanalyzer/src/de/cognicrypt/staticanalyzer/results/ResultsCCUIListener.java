@@ -23,7 +23,6 @@ import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.EnsuredCryptSLPredicate;
 import crypto.analysis.IAnalysisSeed;
 import crypto.rules.CryptSLArithmeticConstraint;
-import crypto.rules.CryptSLComparisonConstraint;
 import crypto.rules.CryptSLConstraint;
 import crypto.rules.CryptSLMethod;
 import crypto.rules.CryptSLPredicate;
@@ -85,8 +84,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	private void evaluateBrokenConstraint(final ISLConstraint brokenConstraint, final StringBuilder msg) {
 		if (brokenConstraint instanceof CryptSLValueConstraint) {
 			evaluateValueConstraint(brokenConstraint, msg);
-		} else if (brokenConstraint instanceof CryptSLComparisonConstraint) {
-			final CryptSLArithmeticConstraint brokenArthConstraint = (CryptSLArithmeticConstraint) brokenConstraint;
+		} else if (brokenConstraint instanceof CryptSLArithmeticConstraint) {
+			CryptSLArithmeticConstraint brokenArthConstraint = (CryptSLArithmeticConstraint) brokenConstraint;
 			msg.append(brokenArthConstraint.getLeft());
 			msg.append(" ");
 			msg.append(brokenArthConstraint.getOperator());
@@ -161,7 +160,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		msg.deleteCharAt(msg.length() - 2);
 		msg.append(" Here.");
 		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
-
 	}
 
 	@Override
@@ -176,6 +174,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	private IResource unitToResource(final Statement stmt) {
 		final SootClass className = stmt.getMethod().getDeclaringClass();
+
 		final IProject currentProject = Utils.getCurrentProject();
 		try {
 			return Utils.findClassByName(className, currentProject);

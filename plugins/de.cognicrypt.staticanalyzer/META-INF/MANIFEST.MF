@@ -10,13 +10,14 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources,
  org.eclipse.ui.ide,
  org.eclipse.jdt.core,
- de.darmstadt.tu.crossing.CryptSL.ui,
  org.eclipse.xtext,
- org.eclipse.xtext.common.types.ui,
- de.darmstadt.tu.crossing.CryptSL
+ org.eclipse.xtext.common.types.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/soot-trunk.jar,
  .,
  resources/,
- lib/cognicrypt-maven-plugin-1.0-SNAPSHOT.jar
+ lib/cognicrypt-maven-plugin-1.0-SNAPSHOT.jar,
+ lib/de.darmstadt.tu.crossing.CryptSL_1.0.0.CogniCrypt.jar,
+ lib/de.darmstadt.tu.crossing.CryptSL.ide_1.0.0.CogniCrypt.jar,
+ lib/de.darmstadt.tu.crossing.CryptSL.ui_1.0.0.CogniCrypt.jar

@@ -16,6 +16,7 @@ import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 
 public class GroupForClaferTab extends Group {
@@ -24,7 +25,8 @@ public class GroupForClaferTab extends Group {
 	private ArrayList<String> operandItems;
 	ArrayList<ClaferFeature> claferFeatures;
 
-	public GroupForClaferTab(Composite parent, int style, Answer answer, ArrayList<ClaferFeature> claferFeatures) {
+	// FIXME the parameter claferModel seems to be unused
+	public GroupForClaferTab(Composite parent, int style, Answer answer, ClaferModel claferModel) {
 		super(parent, style);
 		setClaferFeatures(claferFeatures);
 		//Non-editable Text Box shows the answer value

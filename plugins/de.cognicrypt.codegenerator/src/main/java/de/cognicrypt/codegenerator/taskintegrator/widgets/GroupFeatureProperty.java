@@ -1,7 +1,5 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
-import java.util.ArrayList;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -18,6 +16,7 @@ import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 
 public class GroupFeatureProperty extends Group {
@@ -25,7 +24,7 @@ public class GroupFeatureProperty extends Group {
 	private Text txtPropertyName;
 	private Text txtPropertyType;
 	private Combo comboPropertyType;
-	private ArrayList<ClaferFeature> listOfExistingClaferFeatures;
+	private ClaferModel claferModel;
 
 	/**
 	 * Create the composite.
@@ -34,23 +33,26 @@ public class GroupFeatureProperty extends Group {
 	 *        Composite that contains the feature property
 	 * @param style
 	 *        SWT style identifiers
+	 * @param featurePropertyParam
 	 * @param showRemoveButton
 	 *        whether or not to show a remove button next to the feature property
+	 * @param editable
+	 * @param claferModel
 	 */
-	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam, boolean showRemoveButton, boolean editable, ArrayList<ClaferFeature> otherClaferFeatures) {
+	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam, boolean showRemoveButton, ClaferModel claferModel) {
 		super(parent, SWT.BORDER);
 		// Set the model for use first.
 		this.setFeatureProperty(featurePropertyParam);
 		
 		
-		this.listOfExistingClaferFeatures = otherClaferFeatures;
+		this.claferModel = claferModel;
 		setLayout(new RowLayout(SWT.HORIZONTAL));
 		
 		Label lblName = new Label(this, SWT.NONE);
-		lblName.setText("Name ");
+		lblName.setText(Constants.FEATURE_PROPERTY_NAME);
 		
 		txtPropertyName = new Text(this, SWT.BORDER);
-		txtPropertyName.setEditable(editable);
+		txtPropertyName.setEditable(showRemoveButton);
 		txtPropertyName.setLayoutData(new RowData(160, SWT.DEFAULT));
 		txtPropertyName.setText(featureProperty.getPropertyName());
 		txtPropertyName.addFocusListener(new FocusAdapter() {
@@ -63,13 +65,12 @@ public class GroupFeatureProperty extends Group {
 		});
 		
 		Label lblNewLabel = new Label(this, SWT.NONE);
-		lblNewLabel.setText("Inherits from ");
-		// inherits 
+		lblNewLabel.setText(Constants.FEATURE_PROPERTY_TYPE_RELATION);
 		
 		if (!showRemoveButton) {
 
 			txtPropertyType = new Text(this, SWT.BORDER);
-			txtPropertyType.setEditable(editable);
+			txtPropertyType.setEditable(showRemoveButton);
 			txtPropertyType.setLayoutData(new RowData(160, SWT.DEFAULT));
 			txtPropertyType.setText(featureProperty.getPropertyType());
 			txtPropertyType.addFocusListener(new FocusAdapter() {
@@ -95,7 +96,7 @@ public class GroupFeatureProperty extends Group {
 				}
 			});
 
-			for (ClaferFeature cfr : otherClaferFeatures) {
+			for (ClaferFeature cfr : claferModel) {
 				comboPropertyType.add(cfr.getFeatureName().toString());
 			}
 
@@ -104,7 +105,7 @@ public class GroupFeatureProperty extends Group {
 		if (showRemoveButton) {
 
 			Button btnRemove = new Button(this, SWT.NONE);
-			btnRemove.setText("Remove");
+			btnRemove.setText(Constants.FEATURE_PROPERTY_REMOVE);
 			btnRemove.addSelectionListener(new SelectionAdapter() {
 
 				@Override
@@ -115,10 +116,6 @@ public class GroupFeatureProperty extends Group {
 				}
 			});
 		}
-	}
-
-	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam, boolean showRemoveButton, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
-		this(parent, style, featurePropertyParam, showRemoveButton, false, listOfExistingClaferFeatures);
 	}
 
 	@Override

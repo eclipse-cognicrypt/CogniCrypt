@@ -36,6 +36,7 @@ import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 
@@ -49,7 +50,7 @@ public class QuestionDialog extends Dialog {
 	private CompositeToHoldSmallerUIElements compositeToHoldAnswers;
 	private Question question;
 	private Question questionDetails;
-	private ArrayList<ClaferFeature> claferFeatures;
+	private ClaferModel claferModel;
 	private ArrayList<Question> listOfAllQuestions;
 	int counter = 0;
 	private String featureSelected;
@@ -68,11 +69,11 @@ public class QuestionDialog extends Dialog {
 		this(parentShell, null, null, null);
 	}
 
-	public QuestionDialog(Shell parentShell, Question question, ArrayList<ClaferFeature> claferFeatures, ArrayList<Question> listOfAllQuestions) {
+	public QuestionDialog(Shell parentShell, Question question, ClaferModel claferModel, ArrayList<Question> listOfAllQuestions) {
 		super(parentShell);
 		setShellStyle(SWT.RESIZE);
 		this.question = question;
-		this.claferFeatures = claferFeatures;
+		this.claferModel = claferModel;
 		this.listOfAllQuestions = listOfAllQuestions;
 	}
 
@@ -304,7 +305,7 @@ public class QuestionDialog extends Dialog {
 
 				for (Answer answer : question.getAnswers()) {
 					//To add the widgets and data inside answerCompositeForLinkCodeTab
-					ansScrollCompositeForClaferTab.addElementsInClaferTabQuestionDialog(answer, claferFeatures);
+					ansScrollCompositeForClaferTab.addElementsInClaferTabQuestionDialog(answer, claferModel);
 				}
 
 			}
@@ -429,7 +430,7 @@ public class QuestionDialog extends Dialog {
 	}
 
 	private ArrayList<String> itemsToAdd(String featureSelected) {
-		for (ClaferFeature claferFeature : claferFeatures) {
+		for (ClaferFeature claferFeature : claferModel) {
 			if (claferFeature.getFeatureName().equalsIgnoreCase(featureSelected)) {
 				System.out.println(featureSelected);
 				for (FeatureProperty featureProperty : claferFeature.getfeatureProperties()) {
@@ -445,7 +446,7 @@ public class QuestionDialog extends Dialog {
 		return operandItems;
 	}
 
-	private ArrayList<ClaferFeature> getClaferFeatures() {
+	private ClaferModel getClaferFeatures() {
 		ClaferFeature algorithm = new ClaferFeature(Constants.FeatureType.ABSTRACT, "algorithm", // Counter as the name to make each addition identifiable.
 			null);
 
@@ -480,13 +481,13 @@ public class QuestionDialog extends Dialog {
 		AES.getFeatureConstraints().add(new ClaferConstraint("keySize = 128 => performance = VeryFast && security = Medium"));
 		AES.getFeatureConstraints().add(new ClaferConstraint("keySize > 128 => performance = Fast && security = Strong"));
 
-		claferFeatures.add(algorithm);
-		claferFeatures.add(cipher);
-		claferFeatures.add(symmetricCipher);
-		claferFeatures.add(symmetricBlockCipher);
-		claferFeatures.add(AES);
+		claferModel.add(algorithm);
+		claferModel.add(cipher);
+		claferModel.add(symmetricCipher);
+		claferModel.add(symmetricBlockCipher);
+		claferModel.add(AES);
 
-		return claferFeatures;
+		return claferModel;
 
 	}
 

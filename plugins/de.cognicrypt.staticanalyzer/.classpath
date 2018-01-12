@@ -6,5 +6,8 @@
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="lib" path="lib/soot-trunk.jar"/>
 	<classpathentry kind="lib" path="lib/cognicrypt-maven-plugin-1.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/de.darmstadt.tu.crossing.CryptSL_1.0.0.CogniCrypt.jar"/>
+	<classpathentry kind="lib" path="lib/de.darmstadt.tu.crossing.CryptSL.ide_1.0.0.CogniCrypt.jar"/>
+	<classpathentry kind="lib" path="lib/de.darmstadt.tu.crossing.CryptSL.ui_1.0.0.CogniCrypt.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.clafer.ast.AstClafer;
-import org.clafer.ast.AstConcreteClafer;
 import org.clafer.instance.InstanceClafer;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -48,7 +47,7 @@ import de.cognicrypt.codegenerator.question.Question;
  * @author Stefan Krueger
  *
  */
-public class XMLParser implements Labels {
+public class XMLParser {
 
 	private Document document = null;
 	private String enumParent = null;
@@ -104,7 +103,7 @@ public class XMLParser implements Labels {
 						if (ref instanceof InstanceClafer) {
 							text = ClaferModelUtils.removeScopePrefix(((InstanceClafer) in.getRef()).getType().getName());
 						} else if (ref instanceof Integer) {
-							text = ((Integer) ref).toString();
+							text = ref.toString();
 						} else if (ref instanceof String) {
 							text = (String) ref;
 						} else {
@@ -143,24 +142,25 @@ public class XMLParser implements Labels {
 						displayInstanceXML(in, parent);
 					}
 				}
-			} else if (inst.hasRef() && inst.getType().isPrimitive() != true && inst.getRef().getClass().toString().contains(Constants.INTEGER) == false && inst.getRef().getClass()
-				.toString().contains(Constants.STRING) == false && inst.getRef().getClass().toString().contains(Constants.BOOLEAN) == false) {
+				return;
+			}
+
+			final String refClass;
+			if (inst.hasRef() && !inst.getType().isPrimitive() && (refClass = inst.getRef().getClass().toString()) != null && !refClass.contains(Constants.INTEGER) && !refClass.contains(Constants.STRING) && !refClass.contains(Constants.BOOLEAN)) {
 				this.enumParent = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
 				this.enumParent = Character.toLowerCase(this.enumParent.charAt(0)) + this.enumParent.substring(1);
 				displayInstanceXML((InstanceClafer) inst.getRef(), parent);
 			} else if (PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())) {
 				String superClaferName = ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName());
 				superClaferName = Character.toLowerCase(superClaferName.charAt(0)) + superClaferName.substring(1);
-				// Removed if-else block after re-factoring, while the following statement in both blocks was identical
 				parent.addElement(this.enumParent).addText(ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", ""));
-
 			} else {
 				String instName = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
 				instName = Character.toLowerCase(instName.charAt(0)) + instName.substring(1);
 				if (inst.hasRef()) {
 					parent.addElement(instName).addText(inst.getRef().toString().replace("\"", ""));
 				} else {
-					String instparentName = ClaferModelUtils.removeScopePrefix(((AstConcreteClafer) inst.getType()).getParent().getName());
+					String instparentName = ClaferModelUtils.removeScopePrefix(inst.getType().getParent().getName());
 					instparentName = Character.toLowerCase(instparentName.charAt(0)) + instparentName.substring(1);
 					parent.addElement(instparentName).addText(instName);
 				}

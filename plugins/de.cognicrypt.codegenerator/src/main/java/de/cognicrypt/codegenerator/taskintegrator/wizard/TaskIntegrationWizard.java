@@ -1,6 +1,7 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.eclipse.jface.wizard.IWizardPage;
@@ -47,6 +48,11 @@ public class TaskIntegrationWizard extends Wizard {
 				Constants.PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS
 			));
 
+		this.addPage(new PageForTaskIntegratorWizard(
+			Constants.PAGE_NAME_FOR_LINK_ANSWERS,
+			Constants.PAGE_TITLE_FOR_LINK_ANSWERS,
+			Constants.PAGE_DESCIPTION_FOR_LINK_ANSWERS));
+		
 		this.addPage(
 			new PageForTaskIntegratorWizard(
 				Constants.PAGE_NAME_FOR_XSL_FILE_CREATION,
@@ -71,8 +77,7 @@ public class TaskIntegrationWizard extends Wizard {
 		if(this.getContainer().getCurrentPage().getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)){
 			if(objectForDataInNonGuidedMode.isGuidedModeChosen() == false //&& this.objectForDataInNonGuidedMode.isGuidedModeForced() == false
 				){
-				fileUtilities.writeFiles(objectForDataInNonGuidedMode.getLocationOfClaferFile(), objectForDataInNonGuidedMode.getLocationOfJSONFile(), objectForDataInNonGuidedMode.getLocationOfXSLFile(), objectForDataInNonGuidedMode.getLocationOfCustomLibrary());
-				fileUtilities.writeTaskToJSONFile(objectForDataInNonGuidedMode.getTask());
+				fileUtilities.writeFiles(objectForDataInNonGuidedMode.getLocationOfClaferFile(), objectForDataInNonGuidedMode.getLocationOfJSONFile(), objectForDataInNonGuidedMode.getLocationOfXSLFile(),null);			
 				return true;
 			}
 		} else {
@@ -93,7 +98,26 @@ public class TaskIntegrationWizard extends Wizard {
 
 			return true;
 		}
-
+		
+		/*
+		 * for retrieving the details of questions
+		 */
+		if(this.getContainer().getCurrentPage().getName().equals(Constants.PAGE_NAME_FOR_LINK_ANSWERS)){
+		PageForTaskIntegratorWizard linkAnsPage=(PageForTaskIntegratorWizard)getTIPageByName(Constants.PAGE_NAME_FOR_LINK_ANSWERS);
+		CompositeToHoldGranularUIElements linkAnsPageComposite=(CompositeToHoldGranularUIElements)linkAnsPage.getCompositeToHoldGranularUIElements();
+		ArrayList<Question> listOfAllQuestions = linkAnsPageComposite.getListOfAllQuestions();
+		System.out.println(listOfAllQuestions.size());
+		FileUtilities writeJsonFile = new FileUtilities(objectForDataInNonGuidedMode.getNameOfTheTask());
+		try {
+			writeJsonFile.writeFiles(null, listOfAllQuestions, null, null);
+			//writeJsonFile.writeJSONFile(listOfAllQuestions);
+		}/* catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/finally{
+			return true;
+		}
+		}
 		return false;
 	}
 

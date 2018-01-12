@@ -87,9 +87,6 @@ public class AnalysisKickOff {
 	 * @return <code>true</code>/<code>false</code> Soot runs successfully
 	 */
 	public boolean run() {
-		if (curProj == null) {
-			return false;
-		}
-		return SootRunner.runSoot(curProj, mainClass, resultsReporter);
+		return curProj != null && SootRunner.runSoot(curProj, mainClass, resultsReporter);
 	}
 }

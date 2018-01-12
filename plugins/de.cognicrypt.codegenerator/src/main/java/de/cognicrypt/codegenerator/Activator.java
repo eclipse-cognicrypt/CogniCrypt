@@ -22,9 +22,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import de.cognicrypt.codegenerator.utilities.Labels;
-
-public class Activator extends AbstractUIPlugin implements Labels {
+public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "de.cognicrypt.codegenerator"; //$NON-NLS-1$

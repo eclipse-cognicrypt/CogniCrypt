@@ -2,6 +2,7 @@ package de.cognicrypt.staticanalyzer.results;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -27,6 +28,7 @@ import crypto.rules.CryptSLConstraint;
 import crypto.rules.CryptSLMethod;
 import crypto.rules.CryptSLPredicate;
 import crypto.rules.CryptSLValueConstraint;
+import crypto.rules.TransitionEdge;
 import crypto.typestate.CallSiteWithParamIndex;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.Utils;
@@ -35,6 +37,7 @@ import soot.SootMethod;
 import sync.pds.solver.nodes.Node;
 import typestate.TransitionFunction;
 import typestate.interfaces.ISLConstraint;
+
 
 /**
  * This listener is notified of any misuses the analysis finds.
@@ -163,13 +166,26 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	@Override
-	public void typestateErrorEndOfLifeCycle(final AnalysisSeedWithSpecification seed, final Statement location) {
+	public void typestateErrorEndOfLifeCycle(final AnalysisSeedWithSpecification seed, final Val value, final Statement location, Set<TransitionEdge> expectedCalls) {
 		final StringBuilder msg = new StringBuilder();
 
 		msg.append("Operation with ");
-		msg.append(seed.getSpec().getRule().getClassName());
-		msg.append(" object not completed.");
-		this.markerGenerator.addMarker(unitToResource(location), seed.stmt().getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
+		final String type = value.value().getType().getEscapedName();
+		msg.append(type.substring(type.lastIndexOf('.') + 1));
+		msg.append(" object not completed. Expected call to ");
+		
+		final Iterator<TransitionEdge> expectedIterator = expectedCalls.iterator();
+		while (expectedIterator.hasNext()) {
+			final String methodName = expectedIterator.next().getLabel().get(0).getMethodName();
+			
+			msg.append(methodName.substring(methodName.lastIndexOf('.') + 1));
+			msg.append("()");
+			if (expectedIterator.hasNext()) {
+				msg.append(" or ");
+			}
+		}
+		
+		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
 	}
 
 	private IResource unitToResource(final Statement stmt) {

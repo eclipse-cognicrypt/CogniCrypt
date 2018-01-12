@@ -296,7 +296,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 				if (question.getEnteredAnswer() != null) {
 					for (int i = 0; i < answers.size(); i++) {
-						if (answers.get(i).getValue() == question.getEnteredAnswer().getValue()) {
+						if (answers.get(i).getValue().equals(question.getEnteredAnswer().getValue())) {
 							scale.setSelection(i);
 							scale.setToolTipText(answers.get(i).getValue());
 							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(i));
@@ -305,7 +305,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					}
 				} else {
 					for (int i = 0; i < answers.size(); i++) {
-						if (answers.get(i).getValue() == question.getDefaultAnswer().getValue()) {
+						if (answers.get(i).getValue().equals(question.getDefaultAnswer().getValue())) {
 							scale.setSelection(i);
 							scale.setToolTipText(answers.get(i).getValue());
 							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(i));
@@ -314,8 +314,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					}
 				}
 
-				this.finish = true;
-				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
+				BeginnerTaskQuestionPage.this.setPageComplete(this.finish = true);
 				break;
 
 			case text:

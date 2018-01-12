@@ -482,36 +482,37 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 
 			case itemselection:
-				new Label(container, SWT.NONE);
-				new Label(container, SWT.NONE);
-				new Label(container, SWT.NONE);
-
-				final org.eclipse.swt.widgets.List itemList = new org.eclipse.swt.widgets.List(container, SWT.LEFT | SWT.MULTI | SWT.V_SCROLL);
-
-				final Composite composite = new Composite(container, SWT.CENTER);
-				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
-				gridData.horizontalSpan = 2;
-				composite.setLayoutData(gridData);
+				final Composite compositeControl = new Composite(parent, SWT.NONE);
+				GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
+				compositeControl.setLayoutData(gridData);
+				compositeControl.setLayout(new GridLayout(4, false));
+				
+				final org.eclipse.swt.widgets.List itemList = new org.eclipse.swt.widgets.List(compositeControl,SWT.LEFT | SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+				GridData myGrid = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+				myGrid.widthHint = 270;
+				myGrid.heightHint = 180;
+				itemList.setLayoutData(myGrid);
+				
+				final Composite composite = new Composite(compositeControl, SWT.NONE);
 				composite.setLayout(new GridLayout(1, false));
-
-				gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
-
-				final Button moveRightButton = new Button(composite, SWT.TOP);
-				moveRightButton.setLayoutData(gridData);
-
+		
+				final Button moveRightButton = new Button(composite, SWT.TOP );
 				final Button moveLeftButton = new Button(composite, SWT.BOTTOM);
-
-				moveRightButton.setText("-Select->");
+				
+			    moveRightButton.setText("  -Select->  ");
 				moveLeftButton.setText("<-Deselect-");
 				moveRightButton.setEnabled(false);
 				moveLeftButton.setEnabled(false);
 
-				final org.eclipse.swt.widgets.List selectedItemList = new org.eclipse.swt.widgets.List(container, SWT.RIGHT | SWT.MULTI | SWT.V_SCROLL);
-				selectedItemList.setEnabled(false);
-
+				final org.eclipse.swt.widgets.List selectedItemList = new org.eclipse.swt.widgets.List(compositeControl, SWT.RIGHT| SWT.BORDER | SWT.MULTI | SWT.V_SCROLL );
+				myGrid = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+				myGrid.widthHint = 270;
+				myGrid.heightHint = 180;
+				selectedItemList.setLayoutData(myGrid);								
+				
 				for (final String value : this.selectionValues) {
 					itemList.add(value);
-					selectedItemList.add("                                                                           ");
+					//selectedItemList.add("                                                                                       ");
 				}
 
 				itemList.addSelectionListener(new SelectionListener() {
@@ -633,6 +634,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					}
 				});
 				break;
+
 
 			case button:
 				for (int i = 0; i < 3; i++) {

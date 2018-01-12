@@ -265,7 +265,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					String ans = answers.get(i).getValue();
 					radioButton[i] = new Button(container, SWT.RADIO);
 					radioButton[i].setText(ans);
-//					new Label(container, SWT.NONE);
+					new Label(container, SWT.NONE);
 					radioButton[i].addSelectionListener(new SelectionAdapter() {
 
 						@Override

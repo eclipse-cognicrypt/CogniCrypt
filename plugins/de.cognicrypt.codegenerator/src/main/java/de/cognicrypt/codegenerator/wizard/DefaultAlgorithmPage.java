@@ -23,34 +23,33 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
-import de.cognicrypt.codegenerator.utilities.Labels;
 import de.cognicrypt.codegenerator.utilities.Utils;
 import de.cognicrypt.codegenerator.utilities.XMLParser;
 
-public class DefaultAlgorithmPage extends WizardPage implements Labels {
+public class DefaultAlgorithmPage extends WizardPage {
 
 	private Composite control;
 	private Group codePreviewPanel;
@@ -62,9 +61,9 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 	private ConfiguratorWizard configuratorWizard;
 
 	public DefaultAlgorithmPage(final InstanceGenerator inst,final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
-		super(Labels.DEFAULT_ALGORITHM_PAGE);
+		super(Constants.DEFAULT_ALGORITHM_PAGE);
 		setTitle("Best solution for task: " + taskSelectionPage.getSelectedTask().getDescription());
-		setDescription(Labels.DESCRIPTION_DEFAULT_ALGORITHM_PAGE);
+		setDescription(Constants.DESCRIPTION_DEFAULT_ALGORITHM_PAGE);
 		this.instanceGenerator = inst;
 		this.taskSelectionPage = taskSelectionPage;
 		this.configuratorWizard = confWizard;
@@ -89,7 +88,7 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
 		compositeControl.setLayout(new GridLayout(2, false));
 		labelDefaultAlgorithm = new Label(compositeControl, SWT.NONE);
-		labelDefaultAlgorithm.setText(Labels.defaultAlgorithm);
+		labelDefaultAlgorithm.setText(Constants.defaultAlgorithm);
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();//Only the first Instance,which is the most secure one, will be displayed
 		
 		algorithmClass= new Label(compositeControl, SWT.NONE);
@@ -198,7 +197,7 @@ public class DefaultAlgorithmPage extends WizardPage implements Labels {
 		// Check whether directories and templates/model exist
 		final File claferOutputFiles = claferPreviewFile != null && claferPreviewFile.exists() ? claferPreviewFile
 			: Utils.getResourceFromWithin(Constants.pathToClaferInstanceFolder + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
-		final File xslFile = Utils.getResourceFromWithin(Constants.pathToXSLFile);
+		final File xslFile = Utils.getResourceFromWithin(this.taskSelectionPage.getSelectedTask().getXslFile());
 		if (!claferOutputFiles.exists() || !xslFile.exists()) {
 			Activator.getDefault().logError(Constants.FilesDoNotExistErrorMessage);
 			return "";

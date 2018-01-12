@@ -71,7 +71,7 @@ public class Question {
 	public String getNote() {
 		return this.note;
 	}
-	
+
 	//added get method for tooltip
 	public String getTooltip() {
 		return this.tooltip;
@@ -114,7 +114,7 @@ public class Question {
 	public void setNote(final String note) {
 		this.note = note;
 	}
-	
+
 	//added set method for tooltip
 	public void setTooltip(final String tooltip) {
 		this.tooltip = tooltip;
@@ -140,9 +140,14 @@ public class Question {
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append("ID: " + this.id + "\n");
-		builder.append(this.questionText + "\n");
-		builder.append(this.note + "\n");
+		builder.append("ID: ");
+		builder.append(this.id);
+		builder.append(Constants.lineSeparator);
+		builder.append(this.questionText);
+		builder.append(Constants.lineSeparator);
+		builder.append(this.note);
+		builder.append(Constants.lineSeparator);
+
 		for (final Answer answer : this.answers) {
 			builder.append("\t" + answer.getValue() + " [dependencies=" + answer.getClaferDependencies() + "], defaultValue=" + answer
 				.isDefaultAnswer() + ", next Question=" + answer.getNextID());
@@ -159,8 +164,7 @@ public class Question {
 	}
 
 	public Answer setEnteredAnswer(Answer enteredAnswer) {
-		this.enteredAnswer = enteredAnswer;
-		return this.enteredAnswer;
+		return this.enteredAnswer = enteredAnswer;
 	}
 
 	public Answer getEnteredAnswer() {

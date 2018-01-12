@@ -22,12 +22,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-
-import javax.swing.text.Utilities;
-
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -546,42 +540,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					text(question, inputField);	
 				}
 				break;
-				
-				
-				
-				
-				
-//				Display display = Display.getCurrent();
-//				Label mandatory = new Label(container, SWT.NONE);
-//				Color red = display.getSystemColor(SWT.COLOR_RED);
-//				mandatory.setText("*");
-//				mandatory.setForeground(red);
-//								
-//				final Text inputField = new Text(container, SWT.BORDER);
-//				inputField.setSize(240, inputField.getSize().y);
-//
-//				inputField.setToolTipText(question.getTooltip());
-//
-//				if (question.getEnteredAnswer() != null) {
-//					final Answer a = question.getEnteredAnswer();
-//					inputField.setText(a.getValue());
-//					a.getCodeDependencies().get(0).setValue(a.getValue());
-//					this.finish = !inputField.getText().isEmpty();
-//					BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
-//				}
-//
-//				inputField.addModifyListener(e -> {
-//					final Answer a = question.getDefaultAnswer();
-//					final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?:\\\\-])", "\\\\");
-//					a.setValue(cleanedInput);
-//					a.getCodeDependencies().get(0).setValue(cleanedInput);
-//					this.finish = !cleanedInput.isEmpty();
-//					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
-//					question.setEnteredAnswer(a);
-//					BeginnerTaskQuestionPage.this.setPageComplete(this.isPageComplete());
-//				});				
-//				break;
-//
+
 			case itemselection:
 				new Label(container, SWT.NONE);
 				new Label(container, SWT.NONE);

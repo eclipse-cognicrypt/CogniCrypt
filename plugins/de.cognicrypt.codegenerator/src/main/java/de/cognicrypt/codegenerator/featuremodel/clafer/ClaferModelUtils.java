@@ -96,15 +96,15 @@ public class ClaferModelUtils {
 	 * @param astClafer
 	 * @return
 	 */
-	public static boolean isAbstract(final AstClafer astClafer) {
-		Boolean isAbstract = false;
+	public static boolean isConcrete(final AstClafer astClafer) {
+		Boolean isConcrete = true;
 		if (astClafer.hasRef()) {
-			isAbstract = astClafer.getRef().getTargetType().getClass().toGenericString().contains("AstAbstractClafer");
+			isConcrete = !astClafer.getRef().getTargetType().getClass().toGenericString().contains("AstAbstractClafer");
 		}
 		if (astClafer.getClass().toGenericString().contains("AstAbstractClafer")) {
-			isAbstract = true;
+			isConcrete = false;
 		}
-		return isAbstract;
+		return isConcrete;
 	}
 
 	/**

@@ -18,7 +18,6 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -40,6 +39,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Activator;
@@ -101,13 +101,11 @@ public class DefaultAlgorithmPage extends WizardPage {
 
 		this.codePreviewPanel = new Group(this.control, SWT.NONE);
 		this.codePreviewPanel.setText(Constants.CODE_PREVIEW);
-//		this.codePreviewPanel.setSize(400, 400);
 		GridLayout gridLayout = new GridLayout();
-//		gridLayout.horizontalSpacing = 10;
 		this.codePreviewPanel.setLayout(gridLayout);
 		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
 		gridData.horizontalSpan = 1;
-		gridData.heightHint=200;
+		gridData.heightHint = 200;
 		this.codePreviewPanel.setLayoutData(gridData);
 		final Font boldFont = new Font(this.codePreviewPanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 		this.codePreviewPanel.setFont(boldFont);
@@ -146,7 +144,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 		code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
 
 		defaultAlgorithmCheckBox = new Button(control, SWT.CHECK);
-		defaultAlgorithmCheckBox.setSelection(true);
+		defaultAlgorithmCheckBox.setSelection(false);
 		if(instanceGenerator.getNoOfInstances()==1){
 			//if there is only one instance, then the user can generate the code only for the default algorithm combination. 
 			//Thus, the combo box will be disabled which prevents the user from moving to the next page. 
@@ -160,9 +158,9 @@ public class DefaultAlgorithmPage extends WizardPage {
 		});
 		defaultAlgorithmCheckBox.setText(Constants.DEFAULT_ALGORITHM_PAGE_CHECKBOX);
 		defaultAlgorithmCheckBox.setToolTipText(Constants.DEFAULT_CHECKBOX_TOOLTIP);
-		final ControlDecoration deco = new ControlDecoration(defaultAlgorithmCheckBox, SWT.TOP | SWT.LEFT );
-        Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION)
-		.getImage();
+		
+		final ControlDecoration deco = new ControlDecoration(defaultAlgorithmCheckBox, SWT.TOP | SWT.RIGHT );
+        Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
 		if (defaultAlgorithmCheckBox.isEnabled()){
 		   deco.setDescriptionText(Constants.DEFAULT_ALGORITHM_CHECKBOX_ENABLE);
 		}
@@ -271,9 +269,9 @@ public class DefaultAlgorithmPage extends WizardPage {
 	
 	@Override
 	public boolean canFlipToNextPage() {
-		//Can go to next page only if the check box is unchecked
-		if(this.defaultAlgorithmCheckBox.getSelection()==true){
-		  return !this.defaultAlgorithmCheckBox.getSelection();
+		//Can go to next page only if the check box is checked
+		if(this.defaultAlgorithmCheckBox.getSelection()!=true){
+		  return this.defaultAlgorithmCheckBox.getSelection();
 		}
 		return true;
 			

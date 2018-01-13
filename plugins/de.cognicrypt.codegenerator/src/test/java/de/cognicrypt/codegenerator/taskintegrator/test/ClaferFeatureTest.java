@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -135,8 +134,8 @@ public class ClaferFeatureTest {
 
 		// automatically create missing features (a concrete Clafer Security is supposed to be created)
 		claferModel.implementMissingFeatures(algoFeature);
-
-		assertTrue(claferModel.compile(temporaryCfrFile));
+		claferModel.toFile(temporaryCfrFile);
+		assertTrue(ClaferModel.compile(temporaryCfrFile));
 	}
 	
 	@Test

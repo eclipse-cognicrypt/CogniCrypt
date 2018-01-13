@@ -132,15 +132,5 @@ public class ClaferFeature {
 		
 		return strRepresentation.toString();
 	}
-
-	public void printModel(ClaferModel claferModel) {
-		// TODO This should not be a class method
-		StringBuilder sb = new StringBuilder();
-		for (ClaferFeature cfrFeature : claferModel) {
-			sb.append(cfrFeature.toString());
-		}
-		
-		System.out.println(sb);
-	}
 	
 }

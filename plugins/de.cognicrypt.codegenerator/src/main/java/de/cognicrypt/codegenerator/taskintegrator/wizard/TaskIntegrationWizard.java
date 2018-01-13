@@ -1,7 +1,6 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import org.eclipse.jface.wizard.IWizardPage;
@@ -12,7 +11,6 @@ import org.eclipse.swt.widgets.Control;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.FileUtilities;
-import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
@@ -79,6 +77,12 @@ public class TaskIntegrationWizard extends Wizard {
 				){
 				fileUtilities.writeFiles(objectForDataInNonGuidedMode.getLocationOfClaferFile(), objectForDataInNonGuidedMode.getLocationOfJSONFile(), objectForDataInNonGuidedMode.getLocationOfXSLFile(),objectForDataInNonGuidedMode.getLocationOfCustomLibrary());
 				fileUtilities.writeTaskToJSONFile(objectForDataInNonGuidedMode.getTask());
+
+				// try to compile the Clafer file
+				// TODO error handling missing
+				String claferFilename = Constants.CFR_FILE_DIRECTORY_PATH + fileUtilities.getTrimmedTaskName() + Constants.CFR_EXTENSION;
+				ClaferModel.compile(claferFilename);
+
 				return true;
 			}
 		} else {

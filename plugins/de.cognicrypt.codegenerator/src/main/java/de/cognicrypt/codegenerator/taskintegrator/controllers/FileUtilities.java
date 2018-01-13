@@ -25,7 +25,6 @@ import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.utilities.Utils;
@@ -331,7 +330,7 @@ public class FileUtilities {
 	 * 
 	 * @return task name without non-alphanumerics
 	 */
-	private String getTrimmedTaskName() {
+	public String getTrimmedTaskName() {
 		return getTaskName().replaceAll("[^A-Za-z0-9]", "");
 	}
 

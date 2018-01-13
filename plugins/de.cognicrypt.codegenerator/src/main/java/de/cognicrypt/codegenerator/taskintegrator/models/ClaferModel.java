@@ -146,13 +146,13 @@ public class ClaferModel implements Iterable<ClaferFeature> {
 	}
 
 	/**
-	 * write the model into a file with the given name and try to compile it
+	 * write the model into a file
 	 * 
 	 * @param filename
-	 *        file to write and compile
-	 * @return success of the compilation
+	 *        {@link String} filename of the file to write
+	 * @return success of the writing as a {@link Boolean}
 	 */
-	public boolean compile(String filename) {
+	public boolean toFile(String filename) {
 		try {
 			FileWriter fileWriter = new FileWriter(filename);
 			fileWriter.write(this.toString());
@@ -162,6 +162,17 @@ public class ClaferModel implements Iterable<ClaferFeature> {
 			return false;
 		}
 
+		return true;
+	}
+
+	/**
+	 * try to compile the model in a given file
+	 * 
+	 * @param filename
+	 *        {@link String} filename of the .cfr file to compile
+	 * @return {@link Boolean} success of the compilation
+	 */
+	public static boolean compile(String filename) {
 		// try compilation
 		try {
 			ProcessBuilder processBuilder = new ProcessBuilder("clafer", "-k", "-m", "choco", filename);

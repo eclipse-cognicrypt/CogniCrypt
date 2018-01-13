@@ -68,8 +68,10 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		
 		// Initialize the decorator for the label for the text box. 
 		setDecNameOfTheTask(new ControlDecoration(lblNameOfTheTask, SWT.TOP | SWT.RIGHT));
-		getDecNameOfTheTask().setImage(Constants.DEC_REQUIRED);
 		getDecNameOfTheTask().setShowOnlyOnFocus(false);
+		getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
+		getDecNameOfTheTask().setDescriptionText("Please enter a valid name for the Task.");
+		getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
 		
 		Text txtForTaskName = new Text(grpChooseTheMode, SWT.BORDER);
 		txtForTaskName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));

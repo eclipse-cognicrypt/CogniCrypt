@@ -150,9 +150,7 @@ public class FileUtilities {
 		File cfrFile = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.CFR_EXTENSION);
 		try {
 			FileWriter writer = new FileWriter(cfrFile);
-			for (ClaferFeature cfrFeature : claferModel) {
-				writer.write(cfrFeature.toString());
-			}
+			writer.write(claferModel.toString());
 			writer.close();
 		} catch (IOException e) {
 			Activator.getDefault().logError(e);

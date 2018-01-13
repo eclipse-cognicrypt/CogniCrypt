@@ -35,7 +35,7 @@ public class ClaferFeatureTest {
 		ClaferFeature claferFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, "testFeature", "");
 		claferFeature.setFeatureProperties(featureProperties);
 
-		assertEquals(claferFeature.getfeatureProperties(), featureProperties);
+		assertEquals(claferFeature.getFeatureProperties(), featureProperties);
 	}
 	
 	public static boolean filesEqual(String expectedFilename, String actualFilename) throws IOException {
@@ -55,7 +55,7 @@ public class ClaferFeatureTest {
 
 		// programmatically created Clafer feature
 		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Algorithm", "");
-		cfrFeature.getfeatureProperties().add(new FeatureProperty("securityLevel", "Security"));
+		cfrFeature.getFeatureProperties().add(new FeatureProperty("securityLevel", "Security"));
 
 		// generate file from ClaferFeature instance
 		String actualFilename = testFileFolder + "testFile1_tmp.cfr";

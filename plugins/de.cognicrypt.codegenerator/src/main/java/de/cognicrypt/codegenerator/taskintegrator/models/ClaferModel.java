@@ -74,7 +74,7 @@ public class ClaferModel implements Iterable<ClaferFeature> {
 		}
 
 		// find missing property types
-		for (FeatureProperty fp : refFeature.getfeatureProperties()) {
+		for (FeatureProperty fp : refFeature.getFeatureProperties()) {
 			boolean propertyTypeFound = false;
 			for (ClaferFeature cfrFeature : claferModel) {
 				if (cfrFeature.getFeatureName().equals(fp.getPropertyType())) {
@@ -126,7 +126,7 @@ public class ClaferModel implements Iterable<ClaferFeature> {
 			}
 
 			for (ClaferFeature refFeature : claferModel) {
-				for (FeatureProperty featureProp : refFeature.getfeatureProperties()) {
+				for (FeatureProperty featureProp : refFeature.getFeatureProperties()) {
 					if (featureProp.getPropertyType().equals(cfrFeature.getFeatureName())) {
 						// usage found: featureProp is of type cfrFeature
 						used = true;

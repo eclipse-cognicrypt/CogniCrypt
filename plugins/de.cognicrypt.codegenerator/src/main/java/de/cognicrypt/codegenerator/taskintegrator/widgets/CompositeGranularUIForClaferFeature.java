@@ -82,7 +82,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 			txtFeatureInheritance.setText(claferFeature.getFeatureInheritance());
 		}
 		
-		if(claferFeature.getfeatureProperties().size()!=0){
+		if(claferFeature.getFeatureProperties().size()!=0){
 			Group grpClaferFeatureProperties = new Group(this, SWT.NONE);
 			FormData fd_grpClaferFeatureProperties = new FormData();
 			fd_grpClaferFeatureProperties.top = new FormAttachment(0, yAxisValue);//116
@@ -95,7 +95,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 			grpClaferFeatureProperties.setText("Clafer feature properties");
 			CompositeToHoldGranularUIElements comp = ((CompositeToHoldGranularUIElements) getParent().getParent());
 			CompositeToHoldSmallerUIElements compositeToHoldClaferFeatureProperties = new CompositeToHoldSmallerUIElements(grpClaferFeatureProperties, SWT.NONE, claferFeature
-				.getfeatureProperties(), false, comp.getClaferModel());
+				.getFeatureProperties(), false, comp.getClaferModel());
 			yAxisValue = yAxisValue + 6;
 		}
 		

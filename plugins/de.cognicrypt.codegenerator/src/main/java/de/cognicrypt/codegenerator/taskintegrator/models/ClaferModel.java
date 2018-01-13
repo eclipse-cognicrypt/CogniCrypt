@@ -1,8 +1,5 @@
 package de.cognicrypt.codegenerator.taskintegrator.models;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;

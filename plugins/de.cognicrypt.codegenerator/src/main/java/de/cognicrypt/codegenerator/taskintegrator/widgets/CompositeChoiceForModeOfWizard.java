@@ -157,28 +157,11 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		
 		txtForTaskName.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
+				
 				String tempName = txtForTaskName.getText().trim();
-				boolean validString = true;
-				// Validation : check whether the name already exists.
-				
-				for (Task task : getExistingTasks()) {
-					if (task.getName().equals(tempName) || task.getDescription().equals(tempName)) {
-						validString = false;						
-						break;
-					}
-				}
-				
-				if (validString) {
+				if (validateTaskName(tempName)) {
 					getObjectForDataInNonGuidedMode().setNameOfTheTask(tempName);
-					getDecNameOfTheTask().setImage(Constants.DEC_REQUIRED);
-					getDecNameOfTheTask().setDescriptionText("This is a required field.");
-					getTheLocalContainerPage().setPageComplete(true);
-				} else {
-					getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
-					getDecNameOfTheTask().setDescriptionText("A task with this name already exists.");
-					getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
-					getTheLocalContainerPage().setPageComplete(false);
-				}
+				}	
 				
 			}
 		});
@@ -198,8 +181,29 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		// Disable the check that prevents subclassing of SWT components
 	}
 	
-	public boolean validateTextBoxes(){
-		return true;
+	public boolean validateTaskName(String tempName){
+		boolean validString = true;
+		// Validation : check whether the name already exists.
+		
+		for (Task task : getExistingTasks()) {
+			if (task.getName().equals(tempName) || task.getDescription().equals(tempName)) {
+				validString = false;						
+				break;
+			}
+		}
+		
+		if (validString) {
+			getDecNameOfTheTask().setImage(Constants.DEC_REQUIRED);
+			getDecNameOfTheTask().setDescriptionText("This is a required field.");
+			getTheLocalContainerPage().setPageComplete(true);
+		} else {
+			getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
+			getDecNameOfTheTask().setDescriptionText("A task with this name already exists.");
+			getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
+			getTheLocalContainerPage().setPageComplete(false);
+		}
+		
+		return validString;
 	}
 
 	/**

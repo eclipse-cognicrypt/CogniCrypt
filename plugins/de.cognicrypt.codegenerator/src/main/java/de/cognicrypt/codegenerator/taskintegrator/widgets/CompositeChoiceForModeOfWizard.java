@@ -38,7 +38,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	private Text txtDescriptionOfTask;
 	private List<Task> existingTasks;
 	private ControlDecoration decNameOfTheTask; // class variable to be able to access it in the events.
-	private WizardPage theLocalContainerPage;
+	private WizardPage theLocalContainerPage; // this is needed to set whether the page has been completed yet or not.
 
 	/**
 	 * Create the composite.
@@ -167,12 +167,12 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 					getObjectForDataInNonGuidedMode().setNameOfTheTask(tempName);
 					decNameOfTheTask.setImage(Constants.DEC_REQUIRED);
 					decNameOfTheTask.setDescriptionText("This is a required field.");
-					theLocalContainerPage.setPageComplete(true);
+					getTheLocalContainerPage().setPageComplete(true);
 				} else {
 					decNameOfTheTask.setImage(Constants.DEC_ERROR);
 					decNameOfTheTask.setDescriptionText("A task with this name already exists.");
 					decNameOfTheTask.showHoverText(decNameOfTheTask.getDescriptionText());
-					theLocalContainerPage.setPageComplete(false);
+					getTheLocalContainerPage().setPageComplete(false);
 				}
 				
 			}

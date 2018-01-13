@@ -183,7 +183,7 @@ public class ClaferFeatureTest {
 		propertiesA.get(1).setPropertyType("x");
 		
 		// look for y in the model of unused features
-		ClaferModel unusedFeatures =  featureA.getUnusedFeatures(claferModel);
+		ClaferModel unusedFeatures = claferModel.getUnusedFeatures();
 		ClaferFeature featureY = null;
 		for (ClaferFeature cfrFeature : unusedFeatures) {
 			if (cfrFeature.getFeatureName().equals("y")) {

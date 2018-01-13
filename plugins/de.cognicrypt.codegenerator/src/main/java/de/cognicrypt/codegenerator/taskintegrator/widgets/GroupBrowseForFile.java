@@ -46,7 +46,10 @@ public class GroupBrowseForFile extends Group {
 		browseButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {						        
-				textBox.setText(openFileDialog(fileTypes, stringOnFileDialog));
+				String selectedFile = openFileDialog(fileTypes, stringOnFileDialog);
+				if (selectedFile != null) {
+					textBox.setText(selectedFile);
+				}
 			}
 		});
 	

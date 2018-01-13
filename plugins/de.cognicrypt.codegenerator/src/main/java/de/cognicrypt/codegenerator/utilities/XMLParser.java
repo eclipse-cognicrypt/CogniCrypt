@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.clafer.ast.AstClafer;
-import org.clafer.ast.AstConcreteClafer;
 import org.clafer.instance.InstanceClafer;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -146,9 +145,8 @@ public class XMLParser {
 				return;
 			}
 
-			final String refClass = inst.getRef().getClass().toString();
-			if (inst.hasRef() && !inst.getType().isPrimitive() && !refClass.contains(Constants.INTEGER) && !refClass.contains(Constants.STRING) && !refClass
-				.contains(Constants.BOOLEAN)) {
+			final String refClass;
+			if (inst.hasRef() && !inst.getType().isPrimitive() && (refClass = inst.getRef().getClass().toString()) != null && !refClass.contains(Constants.INTEGER) && !refClass.contains(Constants.STRING) && !refClass.contains(Constants.BOOLEAN)) {
 				this.enumParent = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
 				this.enumParent = Character.toLowerCase(this.enumParent.charAt(0)) + this.enumParent.substring(1);
 				displayInstanceXML((InstanceClafer) inst.getRef(), parent);

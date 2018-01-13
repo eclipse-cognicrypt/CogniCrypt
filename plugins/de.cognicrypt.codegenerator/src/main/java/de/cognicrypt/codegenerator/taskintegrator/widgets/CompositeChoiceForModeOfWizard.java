@@ -38,6 +38,8 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	private Text txtDescriptionOfTask;
 	private List<Task> existingTasks;
 	private ControlDecoration decNameOfTheTask; // class variable to be able to access it in the events.
+	
+
 	private WizardPage theLocalContainerPage; // this is needed to set whether the page has been completed yet or not.
 
 	/**
@@ -45,14 +47,14 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	 * @param parent
 	 * @param style
 	 */
-	public CompositeChoiceForModeOfWizard(Composite parent, int style, WizardPage theContainerPage) {		
+	public CompositeChoiceForModeOfWizard(Composite parent, int style, WizardPage theContainerPageForValidation) {		
 		super(parent, SWT.BORDER);
 		
 		// these tasks are required for validation of the new task that is being added.
-		existingTasks = TaskJSONReader.getTasks();
-		setTheLocalContainerPage(theContainerPage);
+		setExistingTasks(TaskJSONReader.getTasks());
+		setTheLocalContainerPage(theContainerPageForValidation);
 		
-		objectForDataInNonGuidedMode = new ModelAdvancedMode();
+		setObjectForDataInNonGuidedMode(new ModelAdvancedMode());
 		this.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		
@@ -63,10 +65,10 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		
 		Label lblNameOfTheTask = new Label(grpChooseTheMode, SWT.NONE);
 		lblNameOfTheTask.setText("Name of the Task ");
-		decNameOfTheTask = new ControlDecoration(lblNameOfTheTask, SWT.TOP | SWT.RIGHT);
+		setDecNameOfTheTask(new ControlDecoration(lblNameOfTheTask, SWT.TOP | SWT.RIGHT));
 		//decNameOfTheTask.setDescriptionText(Constants.GUIDED_MODE_CHECKBOX_INFO);
-		decNameOfTheTask.setImage(Constants.DEC_REQUIRED);
-		decNameOfTheTask.setShowOnlyOnFocus(false);
+		getDecNameOfTheTask().setImage(Constants.DEC_REQUIRED);
+		getDecNameOfTheTask().setShowOnlyOnFocus(false);
 		
 		Text txtForTaskName = new Text(grpChooseTheMode, SWT.BORDER);
 		txtForTaskName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -75,11 +77,11 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		Label lblDescriptionOfThe = new Label(grpChooseTheMode, SWT.NONE);
 		lblDescriptionOfThe.setText("Description of the Task :");
 		
-		txtDescriptionOfTask = new Text(grpChooseTheMode, SWT.BORDER | SWT.WRAP | SWT.MULTI);		
+		setTxtDescriptionOfTask(new Text(grpChooseTheMode, SWT.BORDER | SWT.WRAP | SWT.MULTI));		
 		GridData gd_txtDescriptionOfTask = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_txtDescriptionOfTask.heightHint = 67;
-		txtDescriptionOfTask.setLayoutData(gd_txtDescriptionOfTask);
-		txtDescriptionOfTask.setTextLimit(Constants.MULTI_LINE_TEXT_BOX_LIMIT);
+		getTxtDescriptionOfTask().setLayoutData(gd_txtDescriptionOfTask);
+		getTxtDescriptionOfTask().setTextLimit(Constants.MULTI_LINE_TEXT_BOX_LIMIT);
 		
 		Button btnCustomLibrary = new Button(grpChooseTheMode, SWT.CHECK);
 		btnCustomLibrary.setText("Do you wish to use a custom library?");
@@ -94,7 +96,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		grpContainerGroupForLibrary.setLayout(rl_grpContainerGroupForLibrary);
 		grpContainerGroupForLibrary.setVisible(false);
 		
-		new GroupBrowseForFile(grpContainerGroupForLibrary,SWT.NONE,Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK,new String[] {"*.jar"},"Select file that contains the library");
+		new GroupBrowseForFile(grpContainerGroupForLibrary,SWT.NONE,Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK,new String[] {"*.jar"},"Select file that contains the library", getTheLocalContainerPage());
 		
 		
 		Button btnDoYouWishToUseTheGuidedMode = new Button(grpChooseTheMode, SWT.CHECK);
@@ -111,11 +113,11 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		grpNonguidedMode.setLayout(rl_grpNonguidedMode);
 		
 				
-		new GroupBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE, new String[] {"*.cfr"}, "Select cfr file that contains the Clafer features");
+		new GroupBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE, new String[] {"*.cfr"}, "Select cfr file that contains the Clafer features", getTheLocalContainerPage());
 		
-		new GroupBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE, new String[] {"*.xsl"}, "Select xsl file that contains the code details");
+		new GroupBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE, new String[] {"*.xsl"}, "Select xsl file that contains the code details", getTheLocalContainerPage());
 		
-		new GroupBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE, new String[] {"*.json"}, "Select json file that contains the high level questions");
+		new GroupBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE, new String[] {"*.json"}, "Select json file that contains the high level questions", getTheLocalContainerPage());
 		
 		/* TODO removed for the user study.
 		Button btnForceGuidedMode = new Button(grpNonguidedMode, SWT.CHECK);
@@ -156,7 +158,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 				boolean validString = true;
 				// Validation : check whether the name already exists.
 				
-				for (Task task : existingTasks) {
+				for (Task task : getExistingTasks()) {
 					if (task.getName().equals(tempName) || task.getDescription().equals(tempName)) {
 						validString = false;						
 						break;
@@ -165,22 +167,22 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 				
 				if (validString) {
 					getObjectForDataInNonGuidedMode().setNameOfTheTask(tempName);
-					decNameOfTheTask.setImage(Constants.DEC_REQUIRED);
-					decNameOfTheTask.setDescriptionText("This is a required field.");
+					getDecNameOfTheTask().setImage(Constants.DEC_REQUIRED);
+					getDecNameOfTheTask().setDescriptionText("This is a required field.");
 					getTheLocalContainerPage().setPageComplete(true);
 				} else {
-					decNameOfTheTask.setImage(Constants.DEC_ERROR);
-					decNameOfTheTask.setDescriptionText("A task with this name already exists.");
-					decNameOfTheTask.showHoverText(decNameOfTheTask.getDescriptionText());
+					getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
+					getDecNameOfTheTask().setDescriptionText("A task with this name already exists.");
+					getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
 					getTheLocalContainerPage().setPageComplete(false);
 				}
 				
 			}
 		});
 		
-		txtDescriptionOfTask.addModifyListener(new ModifyListener() {
+		getTxtDescriptionOfTask().addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				getObjectForDataInNonGuidedMode().setTaskDescription(txtDescriptionOfTask.getText().trim());
+				getObjectForDataInNonGuidedMode().setTaskDescription(getTxtDescriptionOfTask().getText().trim());
 				//TODO Validate!
 			}
 		});
@@ -225,5 +227,52 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	 */
 	public void setTheLocalContainerPage(WizardPage theLocalContainerPage) {
 		this.theLocalContainerPage = theLocalContainerPage;
+	}
+
+	/**
+	 * @return the decNameOfTheTask
+	 */
+	public ControlDecoration getDecNameOfTheTask() {
+		return decNameOfTheTask;
+	}
+
+	
+	/**
+	 * @param decNameOfTheTask the decNameOfTheTask to set
+	 */
+	public void setDecNameOfTheTask(ControlDecoration decNameOfTheTask) {
+		this.decNameOfTheTask = decNameOfTheTask;
+	}
+
+	
+	/**
+	 * @return the txtDescriptionOfTask
+	 */
+	public Text getTxtDescriptionOfTask() {
+		return txtDescriptionOfTask;
+	}
+
+	
+	/**
+	 * @param txtDescriptionOfTask the txtDescriptionOfTask to set
+	 */
+	public void setTxtDescriptionOfTask(Text txtDescriptionOfTask) {
+		this.txtDescriptionOfTask = txtDescriptionOfTask;
+	}
+
+	
+	/**
+	 * @return the existingTasks
+	 */
+	public List<Task> getExistingTasks() {
+		return existingTasks;
+	}
+
+	
+	/**
+	 * @param existingTasks the existingTasks to set
+	 */
+	public void setExistingTasks(List<Task> existingTasks) {
+		this.existingTasks = existingTasks;
 	}
 }

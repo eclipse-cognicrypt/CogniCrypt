@@ -17,6 +17,7 @@
     <Import>javax.crypto.spec.SecretKeySpec</Import>
     <Import>java.security.spec.InvalidKeySpecException</Import>
     <Import>java.util.List</Import>
+    <Import>java.util.Base64</Import>
   </Imports>
   <algorithm type="Digest">
     <outputSize>256</outputSize>

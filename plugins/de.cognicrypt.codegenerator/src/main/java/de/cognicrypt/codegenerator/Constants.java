@@ -60,13 +60,13 @@ public class Constants {
 	public static final String GUIDEDMODE_TOOLTIP="Guided mode configures the algorithm for you,\nbased on your answers to some simple questions.";
 	public static final String DEFAULT_ALGORITHM_COMBINATION_TOOLTIP="Default Algorithm combination";
 	public static final String DEFAULT_CODE_TOOLTIP="This is the preview of the code, that will be generated into your Java project";
-	public static final String DEFAULT_CHECKBOX_TOOLTIP="If this checkbox is checked, the code for the above algorithm \nwill be generated into your java project after clicking 'Finish'";
+	public static final String DEFAULT_CHECKBOX_TOOLTIP="If you want to view other possible algorithm combinations \nmatching your requirements, please check this box and click 'Next'";
 	public static final String ALGORITHM_COMBO_TOOLTIP = "The algorithm combinations are listed in a decreasing order of security level";
 	public static final String INSTANCE_DETAILS_TOOLTIP="Details of the selected algorithm combination";
 	
 	//Decoration
-	public static final String DEFAULT_ALGORITHM_CHECKBOX_ENABLE= "If you want to view other possible algorithm combinations \nmatching your requirements, please uncheck and click 'Next'";
-	public static final String DEFAULT_ALGORITHM_CHECKBOX_DISABLE= "There are no other algorithm combinations matching your requirements.\nThe code for the above algorithm will be generated into your java project";
+	public static final String DEFAULT_ALGORITHM_CHECKBOX_ENABLE= "If this checkbox is unchecked, the code for the above algorithm \nwill be generated into your java project after clicking 'Finish'";
+	public static final String DEFAULT_ALGORITHM_CHECKBOX_DISABLE= "There are no other algorithm combinations matching your requirements.\nThe code for the above algorithm will be generated into your java project on clicking 'Finish'";
 	public static final String DEFAULT_ALGORITHM_NOTIFICATION= "This algorithm was presented to you previously,\n as the best algorithm combination.";
 	public static final String GUIDED_MODE_CHECKBOX_INFO= "If you do not use the guided mode, then you have to \nconfigure the algorithm by yourself";
 	
@@ -123,7 +123,7 @@ public class Constants {
 	public static final String JAR = ".jar";
 	public static final String ALGORITHM = "algorithm";
 	public static final String GUIDED_MODE = "Use the guided mode for configuring the task";
-	public static final String DEFAULT_ALGORITHM_PAGE_CHECKBOX ="I like to generate the code for the default algorithm into my Java project";
+	public static final String DEFAULT_ALGORITHM_PAGE_CHECKBOX ="Show other possible algorithm combinations";
 
 	public static final String Package = "Package";
 	public static final String Description = "description";

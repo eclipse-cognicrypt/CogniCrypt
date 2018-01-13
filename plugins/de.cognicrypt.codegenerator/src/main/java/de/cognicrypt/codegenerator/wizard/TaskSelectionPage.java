@@ -26,7 +26,6 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -35,7 +34,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-//import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -48,6 +46,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Constants;
@@ -171,7 +170,7 @@ public class TaskSelectionPage extends WizardPage {
 		gd_descriptionText.widthHint = 297;
 		gd_descriptionText.heightHint = 96;
 		descriptionText.setLayoutData(gd_descriptionText);
-		descriptionText.setToolTipText(Constants.DESCRIPTION_BOX_TOOLTIP);
+		descriptionText.setToolTipText("Description for the selected cryptographic task ");
 		descriptionText.setEditable(false);
 
 		//Hide scroll bar 
@@ -220,8 +219,8 @@ public class TaskSelectionPage extends WizardPage {
 		});
 		this.guidedModeCheckBox.setText(Constants.GUIDED_MODE);
 		this.guidedModeCheckBox.setSelection(true);
-		final ControlDecoration deco = new ControlDecoration(guidedModeCheckBox, SWT.TOP | SWT.LEFT);
-		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage();
+		final ControlDecoration deco = new ControlDecoration(guidedModeCheckBox, SWT.RIGHT);
+		Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
 
 		deco.setDescriptionText(Constants.GUIDED_MODE_CHECKBOX_INFO);
 		deco.setImage(image);

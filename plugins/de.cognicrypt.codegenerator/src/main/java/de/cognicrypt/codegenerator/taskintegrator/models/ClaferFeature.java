@@ -69,7 +69,7 @@ public class ClaferFeature {
 	/**
 	 * @return the properties
 	 */
-	public ArrayList<FeatureProperty> getfeatureProperties() {
+	public ArrayList<FeatureProperty> getFeatureProperties() {
 		return featureProperties;
 	}
 
@@ -82,7 +82,7 @@ public class ClaferFeature {
 	}
 	
 	public boolean hasProperty(String needle) {
-		for (FeatureProperty featureProperty : getfeatureProperties()) {
+		for (FeatureProperty featureProperty : getFeatureProperties()) {
 			if (featureProperty.getPropertyName() == needle) {
 				return true;
 			}
@@ -118,7 +118,7 @@ public class ClaferFeature {
 			strRepresentation.append(getFeatureInheritance());
 		}
 		
-		for (FeatureProperty featureProperty : getfeatureProperties()) {
+		for (FeatureProperty featureProperty : getFeatureProperties()) {
 			strRepresentation.append("\n\t");
 			strRepresentation.append(featureProperty.toString());			
 		}

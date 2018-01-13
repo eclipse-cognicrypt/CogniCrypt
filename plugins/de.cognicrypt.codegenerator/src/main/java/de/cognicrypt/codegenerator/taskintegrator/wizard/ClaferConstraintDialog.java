@@ -91,12 +91,12 @@ public class ClaferConstraintDialog extends Dialog {
 		list.setLayoutData(gd_list);
 
 		if (claferModel != null) {
-			for (FeatureProperty featureProperty : currentFeature.getfeatureProperties()) {
+			for (FeatureProperty featureProperty : currentFeature.getFeatureProperties()) {
 				list.add(featureProperty.getPropertyName());
 			}
 			for (ClaferFeature cfrFeature : claferModel) {
 				list.add(cfrFeature.getFeatureName());
-				for (FeatureProperty featureProperty : cfrFeature.getfeatureProperties()) {
+				for (FeatureProperty featureProperty : cfrFeature.getFeatureProperties()) {
 					list.add(featureProperty.getPropertyName());
 				}
 			}

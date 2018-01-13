@@ -163,7 +163,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 										// get all the Clafer features' properties
 										for (ClaferFeature cfrFtr : claferModel) {
 											String ftrName = cfrFtr.getFeatureName();
-											for (FeatureProperty prop : cfrFtr.getfeatureProperties()) {
+											for (FeatureProperty prop : cfrFtr.getFeatureProperties()) {
 												// prepend the feature name and add the property to dropdown entries
 												strFeatures.add(ftrName + "." + prop.getPropertyName());
 											}

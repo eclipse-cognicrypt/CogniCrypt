@@ -65,8 +65,9 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		
 		Label lblNameOfTheTask = new Label(grpChooseTheMode, SWT.NONE);
 		lblNameOfTheTask.setText("Name of the Task ");
+		
+		// Initialize the decorator for the label for the text box. 
 		setDecNameOfTheTask(new ControlDecoration(lblNameOfTheTask, SWT.TOP | SWT.RIGHT));
-		//decNameOfTheTask.setDescriptionText(Constants.GUIDED_MODE_CHECKBOX_INFO);
 		getDecNameOfTheTask().setImage(Constants.DEC_REQUIRED);
 		getDecNameOfTheTask().setShowOnlyOnFocus(false);
 		

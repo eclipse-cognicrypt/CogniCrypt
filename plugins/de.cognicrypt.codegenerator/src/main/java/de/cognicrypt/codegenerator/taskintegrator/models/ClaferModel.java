@@ -97,4 +97,48 @@ public class ClaferModel implements Iterable<ClaferFeature> {
 		
 		return addedFeatures;
 	}
+
+	/**
+	 * get a model containing the unused features of this model
+	 * 
+	 * @return
+	 */
+	public ClaferModel getUnusedFeatures() {
+		// TODO switch logic, copy list and delete everything that is used
+		ClaferModel unusedFeatures = new ClaferModel();
+
+		for (ClaferFeature cfrFeature : claferModel) {
+			// check usage of cfrFeature			
+			boolean used = false;
+			if (cfrFeature.hasProperties()) {
+				used = true;
+			}
+			if (cfrFeature.hasConstraints()) {
+				used = true;
+			}
+
+			// if abstract and somebody inherits -> used
+			for (ClaferFeature refFeature : claferModel) {
+				if (refFeature.getFeatureInheritance().equals(cfrFeature.getFeatureName())) {
+					// usage found: refFeature inherits from cfrFeature
+					used = true;
+				}
+			}
+
+			for (ClaferFeature refFeature : claferModel) {
+				for (FeatureProperty featureProp : refFeature.getfeatureProperties()) {
+					if (featureProp.getPropertyType().equals(cfrFeature.getFeatureName())) {
+						// usage found: featureProp is of type cfrFeature
+						used = true;
+					}
+				}
+			}
+
+			if (!used) {
+				unusedFeatures.add(cfrFeature);
+			}
+		}
+
+		return unusedFeatures;
+	}
 }

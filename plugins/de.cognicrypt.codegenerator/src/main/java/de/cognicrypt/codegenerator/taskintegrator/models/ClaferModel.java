@@ -31,4 +31,16 @@ public class ClaferModel implements Iterable<ClaferFeature> {
 	public Iterator iterator() {
 		return claferModel.iterator();
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		// use the iterator to serialize all children
+		for (ClaferFeature cfrFeature : this) {
+			sb.append(cfrFeature);
+		}
+		
+		return sb.toString();
+	}
 }

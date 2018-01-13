@@ -96,7 +96,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 							dialog.setMessage("Some of the used features don't exist yet. Should we create them for you?");
 							
 							if (dialog.open() == SWT.YES) {
-								tempFeature.implementMissingFeatures(compositeToHoldGranularUIElements.getClaferModel());
+								compositeToHoldGranularUIElements.getClaferModel().implementMissingFeatures(tempFeature);
 							}
 
 							// Update the array list.							

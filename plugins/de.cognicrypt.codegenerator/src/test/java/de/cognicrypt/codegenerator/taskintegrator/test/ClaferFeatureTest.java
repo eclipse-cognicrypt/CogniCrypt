@@ -83,7 +83,7 @@ public class ClaferFeatureTest {
 		ClaferModel claferModel = new ClaferModel();
 		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "Algorithm");
 				
-		ClaferModel addedFeatures = cfrFeature.implementMissingFeatures(claferModel); 
+		ClaferModel addedFeatures = claferModel.implementMissingFeatures(cfrFeature); 
 		assertTrue(addedFeatures.getClaferModel().size() == 1);
 		assertTrue(addedFeatures.getClaferModel().get(0).getFeatureName().equals("Algorithm"));
 	}
@@ -92,7 +92,7 @@ public class ClaferFeatureTest {
 	public final void testNoEmptyFeatureInheritance() {
 		ClaferModel claferModel = new ClaferModel();
 		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "");
-		cfrFeature.implementMissingFeatures(claferModel);
+		claferModel.implementMissingFeatures(cfrFeature);
 
 		for (ClaferFeature currentFeature : claferModel) {
 			assertTrue(!currentFeature.getFeatureName().isEmpty());
@@ -108,7 +108,7 @@ public class ClaferFeatureTest {
 		featureProperties.add(new FeatureProperty("2", ""));
 		claferModel.add(cfrFeature);
 		cfrFeature.setFeatureProperties(featureProperties);
-		cfrFeature.implementMissingFeatures(claferModel);
+		claferModel.implementMissingFeatures(cfrFeature);
 
 		for (ClaferFeature currentFeature : claferModel) {
 			assertTrue(!currentFeature.getFeatureName().isEmpty());
@@ -134,7 +134,7 @@ public class ClaferFeatureTest {
 		claferModel.add(algoFeature);
 
 		// automatically create missing features (a concrete Clafer Security is supposed to be created)
-		algoFeature.implementMissingFeatures(claferModel);
+		claferModel.implementMissingFeatures(algoFeature);
 
 		// serialize Clafer model to file
 		StringBuilder sb = new StringBuilder();
@@ -176,7 +176,7 @@ public class ClaferFeatureTest {
 		ClaferModel claferModel = new ClaferModel();
 		claferModel.add(featureA);
 		
-		featureA.implementMissingFeatures(claferModel);
+		claferModel.implementMissingFeatures(featureA);
 		
 		// change the type of property 1 to x
 		// y will be unused

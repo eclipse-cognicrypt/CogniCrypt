@@ -140,7 +140,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 					dialog.setMessage("Some of the used features don't exist yet. Should we create them for you?");
 					
 					if (dialog.open() == SWT.YES) {
-						resultFeature.implementMissingFeatures(claferModel);
+						claferModel.implementMissingFeatures(resultFeature);
 					}
 
 					// rebuild the UI

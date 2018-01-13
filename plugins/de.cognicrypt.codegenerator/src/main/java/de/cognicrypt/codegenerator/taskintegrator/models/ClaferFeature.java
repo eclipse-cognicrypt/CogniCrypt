@@ -133,58 +133,6 @@ public class ClaferFeature {
 		return strRepresentation.toString();
 	}
 
-	/**
-	 * Implement features that this Clafer uses for inheritance or as property types if missing in the model and add them
-	 * 
-	 * @param claferModel
-	 *        model to be updated with missing features
-	 * @return a model containing only those features that have been added
-	 */
-	public ClaferModel implementMissingFeatures(ClaferModel claferModel) {
-		ClaferModel addedFeatures = new ClaferModel();
-		
-		// find missing inherited feature
-		if (!getFeatureInheritance().isEmpty()) {
-			boolean parentFound = false;
-			for (ClaferFeature cfrFeature : claferModel) {
-				if (cfrFeature.getFeatureName().equals(getFeatureInheritance())) {
-					parentFound = true;
-					break;
-				}
-			}
-
-			// remember missing inherited feature
-			if (!parentFound) {
-				ClaferFeature parentFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, getFeatureInheritance(), "");
-				addedFeatures.add(parentFeature);
-			}
-		}
-
-		// find missing property types
-		for (FeatureProperty fp : getfeatureProperties()) {
-			boolean propertyTypeFound = false;
-			for (ClaferFeature cfrFeature : claferModel) {
-				if (cfrFeature.getFeatureName().equals(fp.getPropertyType())) {
-					propertyTypeFound = true;
-					break;
-				}
-			}
-
-			// remember missing property types			
-			if (!fp.getPropertyType().isEmpty() && !propertyTypeFound) {
-				ClaferFeature propertyTypeFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, fp.getPropertyType(), "");
-				addedFeatures.add(propertyTypeFeature);
-			}
-		}
-		
-		// add all missing features
-		for (ClaferFeature cfrFeature : addedFeatures) {
-			claferModel.add(cfrFeature);
-		}
-		
-		return addedFeatures;
-	}
-
 	public ClaferModel getUnusedFeatures(ClaferModel claferModel) {
 		// TODO switch logic, copy list and delete everything that is used
 		ClaferModel unusedFeatures = new ClaferModel();

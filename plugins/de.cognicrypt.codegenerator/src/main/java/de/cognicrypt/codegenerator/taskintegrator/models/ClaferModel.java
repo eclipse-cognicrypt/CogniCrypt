@@ -1,8 +1,14 @@
 package de.cognicrypt.codegenerator.taskintegrator.models;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 
 public class ClaferModel implements Iterable<ClaferFeature> {
@@ -140,5 +146,43 @@ public class ClaferModel implements Iterable<ClaferFeature> {
 		}
 
 		return unusedFeatures;
+	}
+
+	/**
+	 * write the model into a file with the given name and try to compile it
+	 * 
+	 * @param filename
+	 *        file to write and compile
+	 * @return success of the compilation
+	 */
+	public boolean compile(String filename) {
+		try {
+			FileWriter fileWriter = new FileWriter(filename);
+			fileWriter.write(this.toString());
+			fileWriter.close();
+		} catch (IOException ex) {
+			Activator.getDefault().logError(ex);
+			return false;
+		}
+
+		// try compilation
+		try {
+			ProcessBuilder processBuilder = new ProcessBuilder("clafer", "-k", "-m", "choco", filename);
+			processBuilder.redirectErrorStream(true);
+			Process compilerProcess = processBuilder.start();
+
+			compilerProcess.waitFor();
+
+			if (compilerProcess.exitValue() != 0) {
+				System.out.println("Clafer compilation error: make sure your model is correct. Aborting...");
+				return false;
+			}
+
+		} catch (Exception ex) {
+			Activator.getDefault().logError(ex);
+			return false;
+		}
+
+		return true;
 	}
 }

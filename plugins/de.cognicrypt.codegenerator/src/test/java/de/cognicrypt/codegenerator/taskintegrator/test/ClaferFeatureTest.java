@@ -116,7 +116,7 @@ public class ClaferFeatureTest {
 	}
 
 	@Test
-	public final void testSolveClaferFeature() throws IOException {
+	public final void testCompileClaferFeature() throws IOException {
 		String temporaryCfrFile = testFileFolder + "testFile2_tmp.cfr";
 
 		/**
@@ -136,33 +136,7 @@ public class ClaferFeatureTest {
 		// automatically create missing features (a concrete Clafer Security is supposed to be created)
 		claferModel.implementMissingFeatures(algoFeature);
 
-		// serialize Clafer model to file
-		StringBuilder sb = new StringBuilder();
-		for (ClaferFeature cfrFeature : claferModel) {
-			sb.append(cfrFeature.toString());
-		}
-		FileWriter fileWriter = new FileWriter(temporaryCfrFile);
-		fileWriter.write(sb.toString());
-		fileWriter.close();
-
-		// try compilation
-		try {
-			ProcessBuilder processBuilder = new ProcessBuilder("clafer", "-k", "-m", "choco", temporaryCfrFile);
-			processBuilder.redirectErrorStream(true);
-			Process compilerProcess = processBuilder.start();
-
-			compilerProcess.waitFor();
-
-			if (compilerProcess.exitValue() != 0) {
-				fail("Clafer compilation error: make sure your model is correct. Aborting...");
-			}
-
-			// make sure the compilation exits with value 0
-			assertEquals(0, compilerProcess.exitValue());
-
-		} catch (Exception e) {
-			fail("Abnormal Clafer compiler termination. Aborting...");
-		}
+		assertTrue(claferModel.compile(temporaryCfrFile));
 	}
 	
 	@Test

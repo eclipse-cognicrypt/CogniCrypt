@@ -37,7 +37,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	private ModelAdvancedMode objectForDataInNonGuidedMode;
 	private Text txtDescriptionOfTask;
 	private List<Task> existingTasks;
-	private ControlDecoration decNameOfTheTask; // class variable to be able to access it in the events.
+	private ControlDecoration decNameOfTheTask; // Decoration variable to be able to access it in the events.
 	
 
 	private WizardPage theLocalContainerPage; // this is needed to set whether the page has been completed yet or not.

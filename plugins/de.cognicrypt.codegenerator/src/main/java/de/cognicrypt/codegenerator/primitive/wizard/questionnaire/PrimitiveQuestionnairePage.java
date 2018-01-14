@@ -244,6 +244,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 									if (selectedValue.isEmpty()) {
 										selectedValue = source.getText();
 										selectionMap.put(claferDepend, selectedValue);
+//										<claferDepend> selectedValue </claferDepend>
 
 									} else if  (!selectedValue.contains(source.getText())) {
 											selectedValue += "||" + source.getText();

@@ -32,7 +32,6 @@ import de.cognicrypt.codegenerator.primitive.types.Primitive;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.utilities.Labels;
 import de.cognicrypt.codegenerator.wizard.beginner.BeginnerTaskQuestionPage;
 
 public class PrimitiveQuestionnairePage extends WizardPage {
@@ -75,7 +74,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	public PrimitiveQuestionnairePage(final Question quest, final Primitive primitive, final List<String> selectionValues) {
 		super("Display Questions");
 		setTitle("Configuring Selected primitive: " + primitive.getName());
-		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
+		setDescription("");
 		this.quest = quest;
 		this.primitive = primitive;
 
@@ -96,7 +95,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, final List<String> selectionValues) {
 		super("Display Questions");
 		//		setTitle("Configuring Selected primitive: " + primitive.getName());
-		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
+		setDescription("");
 		this.page = page;
 		this.primitive = primitive;
 
@@ -115,7 +114,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, final PrimitiveQuestionnaire PrimitiveQuestionnaire, final List<String> selectionValues, int iteration) {
 		super("Display Questions");
 		setTitle("Configuring Selected primitive: " + primitive.getName());
-		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
+		setDescription("");
 		this.PrimitiveQuestionnaire = PrimitiveQuestionnaire;
 		this.quest = null;
 		this.page = page;
@@ -133,7 +132,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	public PrimitiveQuestionnairePage(final PrimitiveQuestionnaire PrimitiveQuestionnaire, final Question quest, final Primitive primitive) {
 		super("Display Questions");
 		setTitle("Configuring Selected primitive: " + primitive.getName());
-		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
+		setDescription("");
 		this.PrimitiveQuestionnaire = PrimitiveQuestionnaire;
 		this.quest = quest;
 		this.page = null;
@@ -154,7 +153,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, int iteration) {
 		super("Display Questions");
 		setTitle("Configuring Selected primitive: " + primitive.getName());
-		setDescription(Labels.DESCRIPTION_VALUE_SELECTION_PAGE);
+		setDescription("");
 		this.page = page;
 		this.primitive = primitive;
 		this.iteration = iteration;
@@ -225,6 +224,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
 				break;
 			case checkbox:
+				new Label(container, SWT.NULL);
 				container.setLayout(new RowLayout(SWT.VERTICAL));
 				Button[] checkbox = new Button[answers.size()];
 				for (int i = 0; i < answers.size(); i++) {
@@ -268,10 +268,9 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				new Label(container, SWT.NONE);
 				new Label(container, SWT.NONE);
 				new Label(container, SWT.NONE);
-				final Text inputField = new Text(container, SWT.BORDER);
 				GridData data = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
 				data.widthHint = 100;
-				inputField.setLayoutData(data);
+				final Text inputField = new Text(container, SWT.BORDER);
 //				inputField.setSize(500, inputField.getSize().y);
 				if (question.getEnteredAnswer() != null) {
 					this.finish = !inputField.getText().isEmpty();
@@ -281,8 +280,11 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 					claferDepend = answers.get(0).getClaferDependencies().get(0).getAlgorithm();
 					if (claferDepend.equals("Block size")) {
 						inputField.addVerifyListener(verifyDecimal);
+//						data.widthHint=10;
 					}
-
+					
+					inputField.setLayoutData(data);
+					
 					inputField.addModifyListener(e -> {
 						this.finish = !selectedValue.isEmpty();
 						selectedValue = inputField.getText();

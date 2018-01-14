@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
+import de.cognicrypt.codegenerator.Constants;
 
 public class PropertyWidget {
 
@@ -48,7 +49,7 @@ public class PropertyWidget {
 	private AstAbstractClafer abstarctParentClafer;
 
 	private Button enablePropertyCheckBox;
-
+	private Constants constant;
 	/**
 	 * Method to create a widget for group properties, clafer level constraints
 	 *
@@ -125,7 +126,13 @@ public class PropertyWidget {
 		values.add("=");
 		values.add("<=");
 		values.add(">=");
-
+		
+		//Security dropdown
+		final List<String> values1 = new ArrayList<>();
+		values1.add("Low");
+		values1.add("Medium");
+		values1.add("High");
+		
 		// To create a tab in the first column
 		final Label emptySpace = new Label(container, SWT.NONE);
 		emptySpace.setText("	");
@@ -148,7 +155,19 @@ public class PropertyWidget {
 
 		final Label propertyNameLabel = new Label(container, SWT.NONE);
 		propertyNameLabel.setText(propertyName);
+		
+		if(propertyName.equals(Constants.Security))
+		{
+		this.operatorComboViewer = new ComboViewer(container, SWT.NONE);
+		this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
+		this.operatorComboViewer.setInput(values1);
 
+		this.operatorComboViewer.addSelectionChangedListener(arg0 -> PropertyWidget.this.operatorComboViewer.refresh());
+
+		this.operatorComboViewer.setSelection(new StructuredSelection(values1.get(2)));
+		}
+		else
+		{
 		this.operatorComboViewer = new ComboViewer(container, SWT.NONE);
 		this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
 		this.operatorComboViewer.setInput(values);
@@ -160,6 +179,8 @@ public class PropertyWidget {
 		this.valueSpinner = new Spinner(container, SWT.BORDER | SWT.SINGLE);
 		this.valueSpinner.setValues(selection, min, max, digits, increment, pageincrement);
 		this.valueSpinner.setEnabled(false);
+	
+		}
 	}
 
 	public AstAbstractClafer getAbstarctParentClafer() {

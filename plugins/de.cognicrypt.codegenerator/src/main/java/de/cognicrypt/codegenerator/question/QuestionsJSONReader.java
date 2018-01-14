@@ -47,7 +47,7 @@ public class QuestionsJSONReader {
 	 * @return questions
 	 */
 	public List<Question> getQuestions(final String filePath) {
-		List<Question> questions = new ArrayList<Question>();
+		List<Question> questions = new ArrayList<>();
 		try {
 			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(filePath)));
 			final Gson gson = new Gson();
@@ -72,7 +72,7 @@ public class QuestionsJSONReader {
 	 * 			Return a list of all the pages in the JSON file.
 	 */
 	public List<Page> getPages(final String filePath) {
-		List<Page> pages = new ArrayList<Page>();
+		List<Page> pages = new ArrayList<>();
 		try {
 			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(filePath)));
 			final Gson gson = new Gson();

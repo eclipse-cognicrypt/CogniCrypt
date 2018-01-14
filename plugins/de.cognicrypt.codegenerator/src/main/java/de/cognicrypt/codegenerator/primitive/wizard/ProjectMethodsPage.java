@@ -25,12 +25,7 @@ private DeveloperProject project;
 		final GridLayout layout = new GridLayout(1, false);
 		container.setLayout(layout);
 		Combo combo=new Combo(container, SWT.NULL);
-		
-		
-		
-		
-		
-		
+		parent.setSize(250,250);
 		setControl(container);
 
 	}

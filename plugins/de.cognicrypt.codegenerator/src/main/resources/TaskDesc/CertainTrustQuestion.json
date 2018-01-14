@@ -124,7 +124,7 @@
 			"id": "4",
 			"content":[{
 			"id":"4",
-			"element" : "combo",
+			"element" : "radio",
 			"questionText":"Do you want to show user interface to visualize the expectation?",
 			"answers":[{
 				"value":"Yes",

@@ -22,6 +22,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 	PrimitiveSelectionPage selectedPrimitivePage;
 	PrimitiveQuestionnaire primitiveQuestions;
+	ProjectMethodsPage methodsPage;
 	WizardPage preferenceSelectionPage;
 	private LinkedHashMap<String, String> inputsMap = new LinkedHashMap<String, String>();
 	static String test = "";
@@ -91,9 +92,6 @@ public class PrimitiveIntegrationWizard extends Wizard {
 			if (primitiveQuestionPage.getPageNextID() > -2) {
 				nextID = primitiveQuestionPage.getPageNextID();
 			}
-			if (nextID == 5) {
-
-			}
 			if (nextID > -1) {
 				final Page curPage = this.primitiveQuestions.setPageByID(nextID);
 				createPrimitivePage(curPage, primitiveQuestions, primitiveQuestionPage.getIteration());
@@ -116,6 +114,12 @@ public class PrimitiveIntegrationWizard extends Wizard {
 				return this.preferenceSelectionPage;
 			}
 		}
+		
+			this.methodsPage=new ProjectMethodsPage();
+			addPage(this.methodsPage);
+			
+			
+		
 
 		return currentPage;
 	}

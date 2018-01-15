@@ -133,10 +133,6 @@ public class TaskIntegrationWizard extends Wizard {
 			System.out.println("");
 		}
 		
-		
-		if (page.getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)) {
-		return null;
-		}
 		return super.getNextPage(page);
 	}
 

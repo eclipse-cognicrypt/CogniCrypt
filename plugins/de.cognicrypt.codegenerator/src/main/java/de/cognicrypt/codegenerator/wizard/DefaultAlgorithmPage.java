@@ -1,3 +1,19 @@
+/**
+ * Copyright 2015-2017 Technische Universitaet Darmstadt
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package de.cognicrypt.codegenerator.wizard;
 
 import java.io.BufferedReader;
@@ -59,6 +75,14 @@ public class DefaultAlgorithmPage extends WizardPage {
 	private final InstanceGenerator instanceGenerator;
 	private InstanceClafer value;
 	private ConfiguratorWizard configuratorWizard;
+	
+	/**
+	 * This class is responsible for displaying an algorithm as the best solution,
+	 * based on the answers given by the user for the previous questions.
+	 * It also allows the users to view other possible algorithms matching their requirements,
+	 * by the selection of the check box.
+	 * 
+	 */
 
 	public DefaultAlgorithmPage(final InstanceGenerator inst,final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
 		super(Constants.DEFAULT_ALGORITHM_PAGE);
@@ -91,6 +115,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 		labelDefaultAlgorithm.setText(Constants.defaultAlgorithm);
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();//Only the first Instance,which is the most secure one, will be displayed
 		
+		//display the default algorithm
 		algorithmClass= new Label(compositeControl, SWT.NONE);
 		String firstInstance = inst.keySet().toArray()[0].toString();
 		algorithmClass.setText(firstInstance);
@@ -99,6 +124,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 
 		algorithmClass.setToolTipText(Constants.DEFAULT_ALGORITHM_COMBINATION_TOOLTIP);
 
+		//Preview of the code for the default algorithm, which will be generated in to the Java project
 		this.codePreviewPanel = new Group(this.control, SWT.NONE);
 		this.codePreviewPanel.setText(Constants.CODE_PREVIEW);
 		GridLayout gridLayout = new GridLayout();
@@ -143,11 +169,12 @@ public class DefaultAlgorithmPage extends WizardPage {
 		
 		code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
 
+		//this checkbox should be checked, to move to the next page.
 		defaultAlgorithmCheckBox = new Button(control, SWT.CHECK);
 		defaultAlgorithmCheckBox.setSelection(false);
 		if(instanceGenerator.getNoOfInstances()==1){
 			//if there is only one instance, then the user can generate the code only for the default algorithm combination. 
-			//Thus, the combo box will be disabled which prevents the user from moving to the next page. 
+			//Thus, the check box will be disabled which prevents the user from moving to the next page. 
 			defaultAlgorithmCheckBox.setEnabled(false);
 		}
 		defaultAlgorithmCheckBox.addSelectionListener(new SelectionAdapter() {
@@ -177,7 +204,12 @@ public class DefaultAlgorithmPage extends WizardPage {
 		setControl(sc);
 			
 	}
-
+	
+	/**
+	 * Preview of the code, for the default algorithm configuration/instance is displayed by calling this method .
+	 * 
+	 * @return preview of the code that will be generated in the Java project for provided default algorithm configuration
+	 */
 	private String getCodePreview() {
 		XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(),this.getProviderFromInstance());
 		final String claferPreviewPath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;

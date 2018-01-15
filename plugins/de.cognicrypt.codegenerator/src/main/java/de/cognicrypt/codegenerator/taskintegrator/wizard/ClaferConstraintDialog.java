@@ -85,9 +85,8 @@ public class ClaferConstraintDialog extends Dialog {
 
 		list.setToolTipText("Double-click to add");
 
-		GridData gd_list = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		GridData gd_list = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		gd_list.heightHint = 340;
-		gd_list.grabExcessHorizontalSpace = true;
 		list.setLayoutData(gd_list);
 
 		if (claferModel != null) {

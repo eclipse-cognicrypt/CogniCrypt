@@ -144,7 +144,7 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		txtFeatureName.setText(resultClafer.getFeatureName());
 
 		lblInheritance = new Label(container, SWT.NONE);
-		lblInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
+		lblInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		comboInheritance = new Combo(container, SWT.NONE);
 		comboInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));

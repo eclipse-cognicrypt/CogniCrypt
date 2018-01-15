@@ -230,7 +230,13 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 			}
 		}
 		
-		if (validString) {
+		
+		if (tempName.equals("")) {
+			getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
+			getDecNameOfTheTask().setDescriptionText("ERROR: The Task name cannot be empty. Please enter a valid name for the Task.");
+//			getTheLocalContainerPage().setPageComplete(true);
+			getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
+		}else if (validString) {
 			getDecNameOfTheTask().setImage(Constants.DEC_REQUIRED);
 			getDecNameOfTheTask().setDescriptionText("This is a required field.");
 //			getTheLocalContainerPage().setPageComplete(true);

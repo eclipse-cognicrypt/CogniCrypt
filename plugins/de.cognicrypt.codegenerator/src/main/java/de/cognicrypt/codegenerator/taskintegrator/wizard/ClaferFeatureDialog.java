@@ -178,7 +178,7 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		new Label(container, SWT.NONE);
 
 		featuresComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getFeatureProperties(), true, claferModel, resultClafer);
-		featuresComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		featuresComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 		featuresComposite.setMinHeight(200);
 
 		Button btnAddConstraint = new Button(container, SWT.NONE);
@@ -194,7 +194,7 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		new Label(container, SWT.NONE);
 
 		constraintsComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getFeatureConstraints(), true, claferModel, resultClafer);
-		constraintsComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		constraintsComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 		constraintsComposite.setMinHeight(200);
 
 		validate();

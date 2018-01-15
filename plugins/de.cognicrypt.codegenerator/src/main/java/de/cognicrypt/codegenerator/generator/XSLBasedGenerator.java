@@ -63,6 +63,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.DeveloperProject;
+import de.cognicrypt.codegenerator.utilities.ComparableEntry;
 import de.cognicrypt.codegenerator.utilities.Utils;
 
 /**
@@ -315,13 +316,13 @@ public class XSLBasedGenerator {
 
 			@Override
 			public boolean visit(final MethodDeclaration node) {
-				methLims.add(new SimpleEntry<Integer, Integer>(node.getStartPosition(), node.getStartPosition() + node.getLength()));
+				methLims.add(new ComparableEntry<Integer, Integer>(node.getStartPosition(), node.getStartPosition() + node.getLength()));
 				return super.visit(node);
 			}
 
 			@Override
 			public boolean visit(final TypeDeclaration node) {
-				classlims.setValue(new SimpleEntry<Integer, Integer>(node.getStartPosition(), node.getStartPosition() + node.getLength()));
+				classlims.setValue(new ComparableEntry<Integer, Integer>(node.getStartPosition(), node.getStartPosition() + node.getLength()));
 				return super.visit(node);
 			}
 		};
@@ -386,7 +387,6 @@ public class XSLBasedGenerator {
 	 *         see {@link javax.xml.transform.Transformer#transform(javax.xml.transform.Source, javax.xml.transform.Result) transform()}
 	 */
 	private void transform(final File sourceFile, final File xsltFile, final String resultDir) throws TransformerException {
-		// TODO: currently, only one xml file is used
 		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
 		final Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(xsltFile));
 		transformer.transform(new StreamSource(sourceFile), new StreamResult(new File(resultDir)));

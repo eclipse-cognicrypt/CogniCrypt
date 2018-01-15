@@ -15,7 +15,9 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Group;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
@@ -29,6 +31,7 @@ import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.GroupBrowseForFile;
 
 /**
  * @author rajiv
@@ -235,13 +238,17 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	 * from highLevelQuestion page and forward the data to pageForLinkAnswers at runtime
 	 */
 	public IWizardPage getNextPage() {
-		boolean isNextPressed = "nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[2].getMethodName());
-		if (isNextPressed) {
-			boolean validatedNextPress = this.nextPressed(this);
-			if (!validatedNextPress) {
-				return this;
-			}
-		}
+//		boolean isNextPressed = "nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[2].getMethodName());
+//		if (isNextPressed) {
+//			boolean validatedNextPress = this.nextPressed(this);
+//			if (!validatedNextPress) {
+//				return this;
+//			}
+//		}
+		
+//		if (this.getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)) {
+//			return null;
+//		}
 		return super.getNextPage();
 
 	}
@@ -383,6 +390,37 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		 */
 		return super.canFlipToNextPage();
 
+	}
+	/**
+	 * This method will check whether all the validations on the page were successful. The page is set to incomplete if any of the validations have an ERROR.
+	 */
+	public void checkIfModeSelectionPageIsComplete() {		
+		boolean errorOnFileWidgets = false;
+		for (Control control : ((Group)getCompositeChoiceForModeOfWizard().getChildren()[0]).getChildren()) {
+			if (control.getClass().getName().equals("org.eclipse.swt.widgets.Group") && control.isVisible()) {
+				
+				for (Control subGroup : ((Group)control).getChildren()) {					
+					if (subGroup.getClass().getName().equals("de.cognicrypt.codegenerator.taskintegrator.widgets.GroupBrowseForFile")) {
+						GroupBrowseForFile tempVaraiable = (GroupBrowseForFile) subGroup;
+						System.out.println((tempVaraiable).getDecFilePath().getDescriptionText());
+						if ((tempVaraiable).getDecFilePath().getDescriptionText().contains("ERROR")) {
+							errorOnFileWidgets = true;
+						}
+					}
+					
+				}	
+				
+			}
+		}		
+		
+		boolean errorOnTaskName = getCompositeChoiceForModeOfWizard().getDecNameOfTheTask().getDescriptionText().contains("ERROR");
+
+		if (errorOnTaskName || errorOnFileWidgets) {
+			setPageComplete(false);
+			
+		} else {
+			setPageComplete(true);
+		}
 	}
 
 	/**

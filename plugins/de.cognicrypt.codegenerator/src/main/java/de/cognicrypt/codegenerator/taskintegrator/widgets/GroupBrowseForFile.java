@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
+import de.cognicrypt.codegenerator.taskintegrator.wizard.PageForTaskIntegratorWizard;
 
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
@@ -26,14 +27,14 @@ import org.eclipse.swt.layout.GridData;
 
 public class GroupBrowseForFile extends Group {
 	private ModelAdvancedMode objectForDataInNonGuidedMode;
-	private WizardPage theLocalContainerPage; // this is needed to set whether the page has been completed yet or not.
-	private ControlDecoration decNameOfTheTask; // Decoration variable to be able to access it in the events.
+	private PageForTaskIntegratorWizard theLocalContainerPage; // this is needed to set whether the page has been completed yet or not.
+	private ControlDecoration decFilePath; // Decoration variable to be able to access it in the events.
 	/**
 	 * Create the composite.
 	 * @param parent
 	 * @param style
 	 */
-	public GroupBrowseForFile(Composite parent, int style, String labelText, String[] fileTypes, String stringOnFileDialog, WizardPage theContainerpageForValidation) {
+	public GroupBrowseForFile(Composite parent, int style, String labelText, String[] fileTypes, String stringOnFileDialog, PageForTaskIntegratorWizard theContainerpageForValidation) {
 		super(parent, style);
 		// this object is required in the text box listener. Should not be called too often.
 		setObjectForDataInNonGuidedMode(((CompositeChoiceForModeOfWizard) getParent().getParent().getParent()).getObjectForDataInNonGuidedMode());
@@ -47,16 +48,16 @@ public class GroupBrowseForFile extends Group {
 		label.setText(labelText);		
 		
 		// Initialize the decorator for the label for the text box. 
-		setDecNameOfTheTask(new ControlDecoration(label, SWT.TOP | SWT.RIGHT));
-		getDecNameOfTheTask().setShowOnlyOnFocus(false);
+		setDecFilePath(new ControlDecoration(label, SWT.TOP | SWT.RIGHT));
+		getDecFilePath().setShowOnlyOnFocus(false);
 		// Initially the text box will be empty. Error displayed for the same.
-		if (this.isVisible()) {
-			getTheLocalContainerPage().setPageComplete(false);
-		}
+//		if (this.isVisible()) {
+//			getTheLocalContainerPage().setPageComplete(false);
+//		}
 		
-		getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
-		getDecNameOfTheTask().setDescriptionText("Please choose a valid file.");
-		getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
+		getDecFilePath().setImage(Constants.DEC_ERROR);
+		getDecFilePath().setDescriptionText("ERROR: Please choose a valid file.");
+		getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
 		
 		
 		Text textBox = new Text(this, SWT.BORDER);			 
@@ -75,17 +76,18 @@ public class GroupBrowseForFile extends Group {
 			public void modifyText(ModifyEvent e) {				
 				File tempFileVariable = new File(textBox.getText());
 				// Validate the file
-				if (!tempFileVariable.exists() && !tempFileVariable.isDirectory() && !tempFileVariable.canRead() && textBox.getParent().isVisible()) {
-					getTheLocalContainerPage().setPageComplete(false);
-					getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
-					getDecNameOfTheTask().setDescriptionText("There is a problem with the selected file. Please choose a valid one.");
-					getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
+				if (!tempFileVariable.exists() && !tempFileVariable.isDirectory() && !tempFileVariable.canRead() && textBox.getParent().isVisible()) {//					
+					getDecFilePath().setImage(Constants.DEC_ERROR);
+					getDecFilePath().setDescriptionText("ERROR: There is a problem with the selected file. Please choose a valid one.");
+					getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
+//					getTheLocalContainerPage().setPageComplete(false);
+					getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 				} else {
 					// If there are no problems with the file, save the location.
-					getTheLocalContainerPage().setPageComplete(true);
-					getDecNameOfTheTask().setImage(null);
-					getDecNameOfTheTask().setDescriptionText(null);
-					getDecNameOfTheTask().showHoverText(null);
+
+					getDecFilePath().setImage(null);
+					getDecFilePath().setDescriptionText("");
+					getDecFilePath().showHoverText("");
 					switch(labelText) {
 						case Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK :
 							getObjectForDataInNonGuidedMode().setLocationOfCustomLibrary(tempFileVariable);
@@ -100,6 +102,9 @@ public class GroupBrowseForFile extends Group {
 							getObjectForDataInNonGuidedMode().setLocationOfJSONFile(tempFileVariable);
 							break;
 					}
+					
+//					getTheLocalContainerPage().setPageComplete(true);
+					getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 				}
 				
 				
@@ -146,29 +151,29 @@ public class GroupBrowseForFile extends Group {
 	/**
 	 * @return the theLocalContainerPage
 	 */
-	public WizardPage getTheLocalContainerPage() {
+	public PageForTaskIntegratorWizard getTheLocalContainerPage() {
 		return theLocalContainerPage;
 	}
 
 	/**
 	 * @param theLocalContainerPage the theLocalContainerPage to set
 	 */
-	public void setTheLocalContainerPage(WizardPage theLocalContainerPage) {
+	public void setTheLocalContainerPage(PageForTaskIntegratorWizard theLocalContainerPage) {
 		this.theLocalContainerPage = theLocalContainerPage;
 	}
 
 	/**
 	 * @return the decNameOfTheTask
 	 */
-	public ControlDecoration getDecNameOfTheTask() {
-		return decNameOfTheTask;
+	public ControlDecoration getDecFilePath() {
+		return decFilePath;
 	}
 
 	/**
 	 * @param decNameOfTheTask the decNameOfTheTask to set
 	 */
-	public void setDecNameOfTheTask(ControlDecoration decNameOfTheTask) {
-		this.decNameOfTheTask = decNameOfTheTask;
+	public void setDecFilePath(ControlDecoration decFilePath) {
+		this.decFilePath = decFilePath;
 	}
 
 }

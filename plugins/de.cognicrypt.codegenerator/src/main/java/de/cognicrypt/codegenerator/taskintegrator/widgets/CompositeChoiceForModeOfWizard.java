@@ -8,6 +8,8 @@ import org.eclipse.swt.widgets.Composite;
 import java.util.List;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -22,6 +24,7 @@ import org.eclipse.swt.events.ModifyEvent;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
+import de.cognicrypt.codegenerator.taskintegrator.wizard.PageForTaskIntegratorWizard;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 
@@ -40,14 +43,14 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	private ControlDecoration decNameOfTheTask; // Decoration variable to be able to access it in the events.
 	
 
-	private WizardPage theLocalContainerPage; // this is needed to set whether the page has been completed yet or not.
+	private PageForTaskIntegratorWizard theLocalContainerPage; // this is needed to set whether the page has been completed yet or not.
 
 	/**
 	 * Create the composite.
 	 * @param parent
 	 * @param style
 	 */
-	public CompositeChoiceForModeOfWizard(Composite parent, int style, WizardPage theContainerPageForValidation) {		
+	public CompositeChoiceForModeOfWizard(Composite parent, int style, PageForTaskIntegratorWizard theContainerPageForValidation) {		
 		super(parent, SWT.BORDER);
 		
 		// these tasks are required for validation of the new task that is being added.
@@ -70,7 +73,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		setDecNameOfTheTask(new ControlDecoration(lblNameOfTheTask, SWT.TOP | SWT.RIGHT));
 		getDecNameOfTheTask().setShowOnlyOnFocus(false);
 		getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
-		getDecNameOfTheTask().setDescriptionText("Please enter a valid name for the Task.");
+		getDecNameOfTheTask().setDescriptionText("ERROR: The Task name cannot be empty. Please enter a valid name for the Task.");
 		getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
 		
 		Text txtForTaskName = new Text(grpChooseTheMode, SWT.BORDER);
@@ -135,15 +138,47 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		btnDoYouWishToUseTheGuidedMode.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				grpNonguidedMode.setVisible(!btnDoYouWishToUseTheGuidedMode.getSelection());
-				getObjectForDataInNonGuidedMode().setGuidedModeChosen(btnDoYouWishToUseTheGuidedMode.getSelection());
+				boolean tempSelectionStatus = btnDoYouWishToUseTheGuidedMode.getSelection();
+				grpNonguidedMode.setVisible(!tempSelectionStatus);
+				getObjectForDataInNonGuidedMode().setGuidedModeChosen(tempSelectionStatus);
+				
+//				if (((GroupBrowseForFile)grpNonguidedMode.getChildren()[0]).getDecNameOfTheTask().getImage().equals(FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage())) {
+//					getTheLocalContainerPage().setPageComplete(tempSelectionStatus);
+//				}
+				getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
+				
+				if (!tempSelectionStatus) {
+					for (IWizardPage page : getTheLocalContainerPage().getWizard().getPages()) {
+						if (!page.getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)) {
+							((WizardPage)page).setPageComplete(!tempSelectionStatus);
+						}
+					}
+				} 
+				
 				}
 			});
 		btnCustomLibrary.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {				
-				getObjectForDataInNonGuidedMode().setCustomLibraryRequired(btnCustomLibrary.getSelection());
-				grpContainerGroupForLibrary.setVisible(btnCustomLibrary.getSelection());
+			public void widgetSelected(SelectionEvent e) {		
+				boolean tempSelectionStatus = btnCustomLibrary.getSelection();
+				getObjectForDataInNonGuidedMode().setCustomLibraryRequired(tempSelectionStatus);
+				grpContainerGroupForLibrary.setVisible(tempSelectionStatus);
+				
+				
+//				if (!((GroupBrowseForFile)grpContainerGroupForLibrary.getChildren()[0]).getDecNameOfTheTask().getDescriptionText().contains("ERROR") && tempSelectionStatus 
+//					&& !getDecNameOfTheTask().getDescriptionText().contains("ERROR")) {
+//					getTheLocalContainerPage().setPageComplete(true);
+//				} else {
+//					getTheLocalContainerPage().setPageComplete(false);
+//				}
+					
+				getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
+				
+//				if (((GroupBrowseForFile)grpContainerGroupForLibrary.getChildren()[0]).getDecNameOfTheTask().getDescriptionText().contains("ERROR") && grpContainerGroupForLibrary.isVisible()) {
+//					getTheLocalContainerPage().setPageComplete(false);
+//				} else if (!grpContainerGroupForLibrary.isVisible() && getDecNameOfTheTask().getDescriptionText().contains("ERROR")) {
+//					
+//				}
 			}
 		});
 		/* TODO removed for the user study.
@@ -172,6 +207,9 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 				//TODO Validate!
 			}
 		});
+		
+		
+		//getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 				
 				
 	}
@@ -186,7 +224,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		// Validation : check whether the name already exists.
 		
 		for (Task task : getExistingTasks()) {
-			if (task.getName().equals(tempName) || task.getDescription().equals(tempName)) {
+			if (task.getName().toLowerCase().equals(tempName.toLowerCase()) || task.getDescription().toLowerCase().equals(tempName.toLowerCase())) {
 				validString = false;						
 				break;
 			}
@@ -195,12 +233,14 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		if (validString) {
 			getDecNameOfTheTask().setImage(Constants.DEC_REQUIRED);
 			getDecNameOfTheTask().setDescriptionText("This is a required field.");
-			getTheLocalContainerPage().setPageComplete(true);
+//			getTheLocalContainerPage().setPageComplete(true);
+			getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 		} else {
 			getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
-			getDecNameOfTheTask().setDescriptionText("A task with this name already exists.");
+			getDecNameOfTheTask().setDescriptionText("ERROR: A task with this name already exists.");
 			getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
-			getTheLocalContainerPage().setPageComplete(false);
+//			getTheLocalContainerPage().setPageComplete(false);
+			getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 		}
 		
 		return validString;
@@ -224,7 +264,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	 * Get the local copy of the wizard page that is the parent container for this composite.
 	 * @return
 	 */
-	public WizardPage getTheLocalContainerPage() {
+	public PageForTaskIntegratorWizard getTheLocalContainerPage() {
 		return theLocalContainerPage;
 	}
 
@@ -232,7 +272,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	 * Set the local copy of the wizard page that is the parent container for this composite.
 	 * @param theLocalContainerPage
 	 */
-	public void setTheLocalContainerPage(WizardPage theLocalContainerPage) {
+	public void setTheLocalContainerPage(PageForTaskIntegratorWizard theLocalContainerPage) {
 		this.theLocalContainerPage = theLocalContainerPage;
 	}
 

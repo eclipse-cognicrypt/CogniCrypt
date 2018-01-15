@@ -30,8 +30,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-//import org.eclipse.swt.custom.StyleRange;
-//import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -233,6 +231,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		gd_question.widthHint = 550;
 		label.setLayoutData(gd_question);
 		label.setText(question.getQuestionText());
+		new Label(parent, SWT.NONE);
 		switch (question.getElement()) {
 			case combo:
 				final ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.FILL);
@@ -265,7 +264,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					String ans = answers.get(i).getValue();
 					radioButton[i] = new Button(container, SWT.RADIO);
 					radioButton[i].setText(ans);
-//					new Label(container, SWT.NONE);
 					radioButton[i].addSelectionListener(new SelectionAdapter() {
 
 						@Override
@@ -364,15 +362,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				
 				Button checkBox = new Button(container, SWT.CHECK);
 				checkBox.setText("Show Password");
-				
-//				Label passwordInfo = new Label(container, SWT.NONE);
-//				passwordInfo.setText("");
 					
 				checkBox.addSelectionListener(new SelectionAdapter() {
 
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 							inputField.setEchoChar( '\0' );
+							getWizard().getContainer().updateButtons();
 					}
 				});
 				text(question, inputField);
@@ -743,7 +739,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 		notePanel.setFont(boldFont);
 
-		this.note = new Text(notePanel, SWT.MULTI | SWT.WRAP);
+		this.note = new Text(notePanel, SWT.MULTI | SWT.WRAP );
 		this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.note.setText(question.getNote());
 		this.note.setBounds(10, 20, 585, 60);

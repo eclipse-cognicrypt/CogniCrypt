@@ -67,7 +67,7 @@ public class Constants {
 	//Decoration
 	public static final String DEFAULT_ALGORITHM_CHECKBOX_ENABLE= "If this checkbox is unchecked, the code for the above algorithm \nwill be generated into your java project after clicking 'Finish'";
 	public static final String DEFAULT_ALGORITHM_CHECKBOX_DISABLE= "There are no other algorithm combinations matching your requirements.\nThe code for the above algorithm will be generated into your java project on clicking 'Finish'";
-	public static final String DEFAULT_ALGORITHM_NOTIFICATION= "This algorithm was presented to you previously,\n as the best algorithm combination.";
+	public static final String DEFAULT_ALGORITHM_NOTIFICATION= "This algorithm was presented to you previously, as the best algorithm combination.";
 	public static final String GUIDED_MODE_CHECKBOX_INFO= "If you do not use the guided mode, then you have to \nconfigure the algorithm by yourself";
 	
 	// if the next question page depends on user input, the Page object encodes this as a nextPageID as opposed to the one that the last page points to
@@ -156,8 +156,8 @@ public class Constants {
 	public static final String DEFAULT_ALGORITHM_PAGE = "Default Algorithm Page";
 	public static final String DESCRIPTION_INSTANCE_LIST_PAGE = "Available algorithm combinations matching your requirements are listed below";
 	public static final String DESCRIPTION_DEFAULT_ALGORITHM_PAGE = "Best algorithm combination and the code matching your requirements is shown below";
-	public static final String instanceList = "Select an algorithm combination";
-	public static final String defaultAlgorithm = "Algorithm combination:";
+	public static final String instanceList = "Select an algorithm combination: ";
+	public static final String defaultAlgorithm = "Algorithm combination: ";
 	public static final String TASK_LIST = "Select Task";
 	public static final String DESCRIPTION_TASK_SELECTION_PAGE = "Which cryptography task would you like to perform?";
 	public static final String DESCRIPTION_VALUE_SELECTION_PAGE = "The following questions help to find the algorithm configuration most suited for your needs";

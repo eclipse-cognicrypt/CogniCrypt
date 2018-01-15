@@ -91,6 +91,7 @@ public class InstanceListPage extends WizardPage {
 	private TaskSelectionPage taskSelectionPage;
 	private ConfiguratorWizard configuratorWizard;
 	private Text infoText;
+	private int algorithmIndex;
   
 	public InstanceListPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
@@ -426,8 +427,12 @@ public class InstanceListPage extends WizardPage {
 		return this.value;
 	}
 
+	public void setSelectionIndex(int selectionIndex){
+	    algorithmIndex = selectionIndex;
+	}
+	
 	public int getSelectionIndex(){
-		return 0;
+		return algorithmIndex;
 	}
 	
 	@Override

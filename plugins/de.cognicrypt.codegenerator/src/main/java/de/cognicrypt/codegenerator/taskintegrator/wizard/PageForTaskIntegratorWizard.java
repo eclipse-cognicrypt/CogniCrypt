@@ -13,6 +13,8 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
@@ -63,6 +65,9 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		Composite container = new Composite(parent, SWT.NONE);
 		setControl(container);
 
+		// make the page layout two-column
+		container.setLayout(new GridLayout(2, false));
+
 		switch (this.getName()) {
 			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
 				container.setLayout(new FillLayout(SWT.HORIZONTAL));
@@ -70,10 +75,11 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				break;
 			case Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
-				compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
+				// fill the available space on the with the big composite
+				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 				Button btnAddFeature = new Button(container, SWT.NONE);
-				btnAddFeature.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
+				btnAddFeature.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 				btnAddFeature.setText("Add Feature");
 				btnAddFeature.addSelectionListener(new SelectionAdapter() {
 
@@ -109,13 +115,15 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				break;
 			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:
 
-				this.setCompositeForXsl(new CompositeForXsl(container, SWT.NONE));
+				setCompositeForXsl(new CompositeForXsl(container, SWT.NONE));
+				// fill the available space on the with the big composite
+				getCompositeForXsl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
 
 				Button btnAddXSLTag = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
-				btnAddXSLTag.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
+				btnAddXSLTag.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 				btnAddXSLTag.setText("Add Xsl Tag");
 				Button btnReadCode = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
-				btnReadCode.setBounds(Constants.RECTANGLE_FOR_SECOND_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
+				btnReadCode.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 				btnReadCode.setText("Get the code");
 
 				btnReadCode.addSelectionListener(new SelectionAdapter() {
@@ -199,7 +207,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				break;
 			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
-				this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
+				// fill the available space on the with the big composite
+				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 				TaskIntegrationWizard tiWizard = null;
 
@@ -212,10 +221,9 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				PageForTaskIntegratorWizard claferPage = tiWizard.getTIPageByName(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION);
 				CompositeToHoldGranularUIElements claferPageComposite = (CompositeToHoldGranularUIElements) claferPage.getCompositeToHoldGranularUIElements();
 
-				QuestionDialog questionDialog = new QuestionDialog(parent
-					.getShell() /* compositeToHoldGranularUIElements.getListOfAllClaferFeatures()claferFeatures,claferPageComposite */);
+				QuestionDialog questionDialog = new QuestionDialog(parent.getShell());
 				Button qstnDialog = new Button(container, SWT.NONE);
-				qstnDialog.setBounds(889, 10, 115, 29);
+				qstnDialog.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 				qstnDialog.setText("Add Question");
 
 				qstnDialog.addSelectionListener(new SelectionAdapter() {
@@ -238,7 +246,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				break;
 			case Constants.PAGE_NAME_FOR_LINK_ANSWERS:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
-				this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
+				// fill the available space on the with the big composite
+				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 				break;
 		}
 	}

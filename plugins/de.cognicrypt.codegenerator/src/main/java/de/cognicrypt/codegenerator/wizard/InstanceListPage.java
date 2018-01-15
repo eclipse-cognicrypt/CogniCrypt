@@ -43,6 +43,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -57,9 +59,12 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
@@ -89,6 +94,9 @@ public class InstanceListPage extends WizardPage {
 	private TaskSelectionPage taskSelectionPage;
 	private ConfiguratorWizard configuratorWizard;
 	private Text infoText;
+	private Text algorithmVariation;
+	private int algorithmIndex;
+	private String comboSelection;
   
 	public InstanceListPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
@@ -145,7 +153,57 @@ public class InstanceListPage extends WizardPage {
 		final ControlDecoration deco = new ControlDecoration(infoText, SWT.RIGHT);
 		Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
 		deco.setImage(image);
-		deco.setShowOnlyOnFocus(false);		
+		deco.setShowOnlyOnFocus(false);	
+		
+		new Label(control, SWT.NONE);
+		new Label(control, SWT.NONE);		
+		algorithmVariation = new Text(control, SWT.RIGHT);
+		algorithmVariation.setEditable(false);
+		
+		
+		//Setting popup menu
+				Text textField = new Text(control, SWT.NONE);
+				textField.setText("Previously Viewed");
+				textField.setEditable(false);
+				
+				final Tree tree = new Tree(control, SWT.BORDER | SWT.MULTI);
+				
+				Menu popupmenu = new Menu(textField);
+				tree.setMenu(popupmenu);
+			    for (int i = 0; i < 12; i++) {
+			      TreeItem item = new TreeItem(tree, SWT.NONE);
+			      item.setText("Item " + i);
+			    }
+				//textField.setMenu(popupmenu);
+//				MenuItem item = new MenuItem(popupmenu, SWT.NONE);
+//				item.setText("");
+		
+		final ControlDecoration deco1 = new ControlDecoration(algorithmVariation, SWT.LEFT); 
+		deco1.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_BACK));
+		deco1.setShowOnlyOnFocus(false);
+		
+		deco1.addSelectionListener(new SelectionAdapter() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int a= getSelectionIndex();
+					if(a != 0){	
+						a=a-1;
+				       combo.select(a);
+				       setSelectionIndex(a);
+				  }
+			}
+		});		
+		
+		final ControlDecoration deco2 = new ControlDecoration(algorithmVariation, SWT.RIGHT); 
+		deco2.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_FORWARD));
+		deco2.setShowOnlyOnFocus(false);
+		deco2.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				System.out.println("hello");
+			}
+		});
 				
 		algorithmClass.setLabelProvider(new LabelProvider() {
 
@@ -157,9 +215,15 @@ public class InstanceListPage extends WizardPage {
 		algorithmClass.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 			InstanceListPage.this.instancePropertiesPanel.setVisible(true);
-			final String selectedAlgorithm = selection.getFirstElement().toString();			
+			final String selectedAlgorithm = selection.getFirstElement().toString();
+			int index = combo.getSelectionIndex();		
+			setSelectionIndex(index);			
+			algorithmVariation.setText("  Variation  "+ (getSelectionIndex()+1) +" / " +String.format("%d  ",count ));	
+			algorithmVariation.setEditable(false);
 			setValue(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm));
 			InstanceListPage.this.instanceDetails.setText(getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
+            setAlgorithm(selectedAlgorithm);
+            //item.setText(getAlgorithm());
 			if (!selectedAlgorithm.equals(firstInstance)) {
 				//hide the help assist and the text if the selected algorithm is not the default algorithm
 				deco.hide();
@@ -171,7 +235,7 @@ public class InstanceListPage extends WizardPage {
 			if (selection.size() > 0) {
 				setPageComplete(true);
 			}
-		});			
+		});				
 		new Label(control, SWT.NONE);
 		new Label(control, SWT.NONE);
 		
@@ -393,12 +457,28 @@ public class InstanceListPage extends WizardPage {
 		return this.value;
 	}
 	
+	public void setSelectionIndex(int selectionIndex){
+	    algorithmIndex = selectionIndex;
+	}
+	
+	public int getSelectionIndex(){
+		return algorithmIndex;
+	}
+	
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		if (visible) {
 			control.setFocus();
 		}
+	}
+	
+	public void setAlgorithm(String selectedAlgorithm){
+		this.comboSelection = selectedAlgorithm;
+	}
+
+	public String getAlgorithm(){
+		return comboSelection;
 	}
 	
 }

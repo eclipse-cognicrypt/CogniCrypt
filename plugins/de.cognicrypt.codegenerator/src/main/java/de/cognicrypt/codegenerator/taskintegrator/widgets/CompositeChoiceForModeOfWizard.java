@@ -140,12 +140,14 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				boolean tempSelectionStatus = btnDoYouWishToUseTheGuidedMode.getSelection();
 				grpNonguidedMode.setVisible(!tempSelectionStatus);
-				getObjectForDataInNonGuidedMode().setGuidedModeChosen(tempSelectionStatus);
+				getObjectForDataInNonGuidedMode().setGuidedModeChosen(!tempSelectionStatus);
 				
 //				if (((GroupBrowseForFile)grpNonguidedMode.getChildren()[0]).getDecNameOfTheTask().getImage().equals(FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage())) {
 //					getTheLocalContainerPage().setPageComplete(tempSelectionStatus);
 //				}
 				getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
+				
+				
 				
 				if (!tempSelectionStatus) {
 					for (IWizardPage page : getTheLocalContainerPage().getWizard().getPages()) {
@@ -154,6 +156,9 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 						}
 					}
 				} 
+				
+//				getTheLocalContainerPage().getNextPage();
+//				getTheLocalContainerPage().setPageComplete(getTheLocalContainerPage().isPageComplete());
 				
 				}
 			});
@@ -222,6 +227,8 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	public boolean validateTaskName(String tempName){
 		boolean validString = true;
 		// Validation : check whether the name already exists.
+		
+		
 		
 		for (Task task : getExistingTasks()) {
 			if (task.getName().toLowerCase().equals(tempName.toLowerCase()) || task.getDescription().toLowerCase().equals(tempName.toLowerCase())) {

@@ -74,6 +74,9 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new GridLayout(3, false));
+		
+		// restrict resizing the dialog below a minimum
+		getShell().setMinimumSize(500, 600);
 
 		setTitle("Variability modeling");
 		setMessage("Message");

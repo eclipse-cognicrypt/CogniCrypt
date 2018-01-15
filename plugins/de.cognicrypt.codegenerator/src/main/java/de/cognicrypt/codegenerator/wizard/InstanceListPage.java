@@ -43,6 +43,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -138,7 +140,7 @@ public class InstanceListPage extends WizardPage {
 		//Display help assist for the first instance in the combo box
 		new Label(control, SWT.NONE);
 		new Label(control, SWT.NONE);
-		infoText = new Text(control, SWT.BORDER);
+		infoText = new Text(control, SWT.BORDER | SWT.WRAP );
 		infoText.setEditable(false);
 		infoText.setText(Constants.DEFAULT_ALGORITHM_NOTIFICATION);
 		infoText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));		
@@ -173,10 +175,10 @@ public class InstanceListPage extends WizardPage {
 			if (selection.size() > 0) {
 				setPageComplete(true);
 			}
-		});
-			
+		});			
 		new Label(control, SWT.NONE);
 		new Label(control, SWT.NONE);
+		
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
 		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
 		GridLayout gridLayout = new GridLayout();
@@ -243,6 +245,42 @@ public class InstanceListPage extends WizardPage {
 		sc.setExpandVertical(true);
 		sc.setMinSize(this.control.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		setControl(sc);
+		
+		Composite a = new Composite(control, SWT.CENTER);
+    	GridLayout g = new GridLayout(1,false);
+		a.setLayout(g);
+		
+		Text algorithmVariation = new Text(a, SWT.RIGHT);
+		algorithmVariation.setText("  Variation  "+ (getSelectionIndex()+1) +" / " +String.format("%d  ",count ));	
+		algorithmVariation.setEditable(false);
+		
+		final ControlDecoration deco1 = new ControlDecoration(algorithmVariation, SWT.LEFT); 
+		deco1.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_BACK));
+		deco1.setShowOnlyOnFocus(false);
+		deco1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (getSelectionIndex()!=0){
+				    int temp=getSelectionIndex();
+				    temp=temp-1;
+				    combo.select(temp);
+				    System.out.println(temp);
+				}
+				
+			
+			}
+		});
+		
+		final ControlDecoration deco2 = new ControlDecoration(algorithmVariation, SWT.RIGHT); 
+		deco2.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_FORWARD));
+		deco2.setShowOnlyOnFocus(false);
+		deco2.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				System.out.println("hello");
+			}
+		});
+
 	}
 
 	private void getInstanceDetails(final InstanceClafer inst, final Map<String, String> algorithms) {
@@ -388,6 +426,10 @@ public class InstanceListPage extends WizardPage {
 		return this.value;
 	}
 
+	public int getSelectionIndex(){
+		return 0;
+	}
+	
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);

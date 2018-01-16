@@ -41,6 +41,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -88,7 +89,7 @@ public class InstanceListPage extends WizardPage {
 	private Group instancePropertiesPanel;
 	private TaskSelectionPage taskSelectionPage;
 	private ConfiguratorWizard configuratorWizard;
-  
+	
 	public InstanceListPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
 		setTitle("Possible solutions for task: " + taskSelectionPage.getSelectedTask().getDescription());
@@ -216,6 +217,19 @@ public class InstanceListPage extends WizardPage {
 		final ISelection selection = new StructuredSelection(inst.keySet().toArray()[0]);
 		algorithmClass.setSelection(selection);
 		new Label(control, SWT.NONE);
+		
+		
+		//Button to compare the algorithm in the Java project
+
+		Button compareAlgorithmButton = new Button(control, SWT.NONE);
+		compareAlgorithmButton.setText("Compare Algorithm");
+		compareAlgorithmButton.addListener(SWT.Selection, new Listener() {
+
+			public void handleEvent(Event event) {
+				final WizardDialog dialog = new WizardDialog(new Shell(), new CompareWizard());
+				dialog.open();
+			}
+		});
 
 		//Button to View the code that will be generated into the Java project
 

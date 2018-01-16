@@ -30,12 +30,15 @@ public class Question {
 	private Answer defaultAnswer;
 	private ArrayList<String> method;
 	private ArrayList<Integer> methodParamIds;
+	private String questionType;
 	private Answer enteredAnswer;
 	//Note
 	private String note;
 	//tooltip
 	private String tooltip;
-
+	//TextType
+	private String textType;
+	
 	public ArrayList<Answer> getAnswers() {
 		return this.answers;
 	}
@@ -73,7 +76,12 @@ public class Question {
 	public String getTooltip() {
 		return this.tooltip;
 	}
-
+	
+	//added the type of the text
+	public String getTextType() {
+		return this.textType;
+	}
+		
 	public String getQuestionText() {
 		return this.questionText;
 	}
@@ -108,10 +116,15 @@ public class Question {
 	}
 
 	//added set method for tooltip
-	public void getTooltip(final String tooltip) {
+	public void setTooltip(final String tooltip) {
 		this.tooltip = tooltip;
 	}
-
+	
+	//added set method for the type of text
+	public void setTextType(final String textType) {
+		this.textType = textType;
+	}
+	
 	public void setQuestionText(final String questionText) {
 		this.questionText = questionText;
 	}
@@ -140,6 +153,14 @@ public class Question {
 				.isDefaultAnswer() + ", next Question=" + answer.getNextID());
 		}
 		return builder.toString();
+	}
+
+	public String getQuestionType() {
+		return questionType;
+	}
+
+	public void setQuestionType(String questionType) {
+		this.questionType = questionType;
 	}
 
 	public Answer setEnteredAnswer(Answer enteredAnswer) {

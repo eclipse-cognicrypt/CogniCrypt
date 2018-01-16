@@ -56,6 +56,7 @@
       "note": "",
       "tooltip": "Example : 216.3.128.12",
       "element": "text",
+       "textType":"ip address",
       "questionText": "Please enter the server's ip",
       "answers": [{
         "value": "",
@@ -71,6 +72,7 @@
       "note": "",
       "tooltip": "Example : 1.2.3.4:80",
       "element": "text",
+       "textType":"port number",
       "questionText": "Please enter the port of the server",
       "answers": [{
         "value": "",

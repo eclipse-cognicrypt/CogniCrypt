@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -86,6 +87,21 @@ public class ClaferConstraintDialog extends Dialog {
 		treeViewer.setInput(new String[] { "abstract A", "B", "C", "D" });
 		treeViewer.expandAll();
 		treeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		treeViewer.getControl().addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				if (treeViewer.getSelection() instanceof TreeSelection) {
+					TreeSelection ts = (TreeSelection) treeViewer.getSelection();
+					if (ts.getFirstElement() instanceof String) {
+						String firstElem = (String) ts.getFirstElement();
+						text.insert(firstElem);
+					}
+				}
+				super.mouseDoubleClick(e);
+			}
+		});
 
 		ListViewer listViewer = new ListViewer(container, SWT.BORDER | SWT.V_SCROLL);
 		List list = listViewer.getList();

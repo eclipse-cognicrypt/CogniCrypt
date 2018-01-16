@@ -34,7 +34,6 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
@@ -62,6 +61,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Activator;
@@ -89,7 +89,8 @@ public class InstanceListPage extends WizardPage {
 	private Group instancePropertiesPanel;
 	private TaskSelectionPage taskSelectionPage;
 	private ConfiguratorWizard configuratorWizard;
-	
+	private Text infoText;
+  
 	public InstanceListPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
 		setTitle("Possible solutions for task: " + taskSelectionPage.getSelectedTask().getDescription());
@@ -132,16 +133,21 @@ public class InstanceListPage extends WizardPage {
 		int count = instanceGenerator.getAlgorithmCount();
 		combo.setToolTipText("There are " + String.format("%d", count) + " variations of the algorithm " + key);
 
-		//Display help assist for the first instance in the combo box
-		final ControlDecoration deco = new ControlDecoration(combo, SWT.TOP | SWT.RIGHT);
-		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage();
-
-		deco.setDescriptionText(Constants.DEFAULT_ALGORITHM_NOTIFICATION);
-		deco.setImage(image);
-		deco.setShowOnlyOnFocus(false);
-
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
 		algorithmClass.setInput(inst.keySet());
+		
+		//Display help assist for the first instance in the combo box
+		new Label(control, SWT.NONE);
+		new Label(control, SWT.NONE);
+		infoText = new Text(control, SWT.BORDER | SWT.WRAP );
+		infoText.setEditable(false);
+		infoText.setText(Constants.DEFAULT_ALGORITHM_NOTIFICATION);
+		infoText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));		
+		final ControlDecoration deco = new ControlDecoration(infoText, SWT.RIGHT);
+		Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
+		deco.setImage(image);
+		deco.setShowOnlyOnFocus(false);		
+				
 		algorithmClass.setLabelProvider(new LabelProvider() {
 
 			@Override
@@ -152,23 +158,24 @@ public class InstanceListPage extends WizardPage {
 		algorithmClass.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 			InstanceListPage.this.instancePropertiesPanel.setVisible(true);
-			final String b = selection.getFirstElement().toString();
-			setValue(InstanceListPage.this.instanceGenerator.getInstances().get(b));
-			InstanceListPage.this.instanceDetails.setText(getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(b)));
-
-			if (!b.equals(firstInstance)) {
-				//hide the help assist if the selected algorithm is not the default algorithm
+			final String selectedAlgorithm = selection.getFirstElement().toString();			
+			setValue(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm));
+			InstanceListPage.this.instanceDetails.setText(getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
+			if (!selectedAlgorithm.equals(firstInstance)) {
+				//hide the help assist and the text if the selected algorithm is not the default algorithm
 				deco.hide();
+				infoText.setVisible(false);
 			} else {
-				deco.show();
+				infoText.setVisible(true);
+				deco.show();				
 			}
 			if (selection.size() > 0) {
 				setPageComplete(true);
 			}
-		});
+		});			
 		new Label(control, SWT.NONE);
 		new Label(control, SWT.NONE);
-
+		
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
 		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
 		GridLayout gridLayout = new GridLayout();
@@ -179,7 +186,6 @@ public class InstanceListPage extends WizardPage {
 		gridData.heightHint=200;
 		this.instancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 		this.instancePropertiesPanel.setLayoutData(gridData);
-//		this.instancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		final Font boldFont = new Font(this.instancePropertiesPanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 		this.instancePropertiesPanel.setFont(boldFont);
 
@@ -191,7 +197,6 @@ public class InstanceListPage extends WizardPage {
 			public void handleEvent(Event event) {
 				Text t = (Text) event.widget;
 				Rectangle r1 = t.getClientArea();
-				// use r1.x as wHint instead of SWT.DEFAULT
 				Rectangle r2 = t.computeTrim(r1.x, r1.y, r1.width, r1.height);
 				Point p = t.computeSize(r1.x, SWT.DEFAULT, true);
 				t.getVerticalBar().setVisible(r2.height <= p.y);
@@ -209,9 +214,8 @@ public class InstanceListPage extends WizardPage {
 		this.instanceDetails.setEditable(false);
 		Color white = display.getSystemColor(SWT.COLOR_WHITE);
 		this.instanceDetails.setBackground(white);
-		/*
-		 * Initially instance properties panel will be hidden
-		 */
+		
+		// Initially instance properties panel will be hidden		
 		this.instancePropertiesPanel.setVisible(false);
 		setControl(this.control);
 		final ISelection selection = new StructuredSelection(inst.keySet().toArray()[0]);
@@ -248,7 +252,8 @@ public class InstanceListPage extends WizardPage {
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);
 		sc.setMinSize(this.control.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		setControl(sc);
+		setControl(sc);				
+	    
 	}
 
 	private void getInstanceDetails(final InstanceClafer inst, final Map<String, String> algorithms) {
@@ -324,6 +329,11 @@ public class InstanceListPage extends WizardPage {
 		return "";
 	}
 
+	/**
+	 * Preview of the code, for the algorithm configuration/instance selected from the combobox, can be displayed by calling this method .
+	 * 
+	 * @return preview of the code that will be generated in the Java project for chosen algorithm configuration
+	 */
 	public String getCodePreview() {
 		XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(), this.getProviderFromInstance());
 		final String claferPreviewPath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
@@ -389,11 +399,15 @@ public class InstanceListPage extends WizardPage {
 	public TaskSelectionPage getTaskSelectionPage() {
 		return taskSelectionPage;
 	}
-
+	
+	public void setValue(final InstanceClafer instanceClafer) {
+		this.value = instanceClafer;
+	}
+	
 	public InstanceClafer getValue() {
 		return this.value;
 	}
-
+	
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
@@ -401,8 +415,5 @@ public class InstanceListPage extends WizardPage {
 			control.setFocus();
 		}
 	}
-
-	public void setValue(final InstanceClafer instanceClafer) {
-		this.value = instanceClafer;
-	}
+	
 }

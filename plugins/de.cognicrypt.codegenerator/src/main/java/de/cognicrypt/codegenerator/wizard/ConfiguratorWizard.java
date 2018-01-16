@@ -103,9 +103,10 @@ public class ConfiguratorWizard extends Wizard {
 	public boolean canFinish() {
 		String pageName = getContainer().getCurrentPage().getName();
 		if (pageName.equals(Constants.DEFAULT_ALGORITHM_PAGE)) {
-			return (this.defaultAlgorithmPage.isDefaultAlgorithm());
+			return (!this.defaultAlgorithmPage.isDefaultAlgorithm());
 		}
 		return (pageName.equals(Constants.ALGORITHM_SELECTION_PAGE));
+		
 	}
 
 	private boolean checkifInUpdateRound() {
@@ -290,7 +291,7 @@ public class ConfiguratorWizard extends Wizard {
 				instanceGenerator.generateInstances(this.constraints);
 			}
 			//instance details page will be added after default algorithm page only if the number of instances is greater than 1
-			if (!this.defaultAlgorithmPage.isDefaultAlgorithm() && instanceGenerator.getNoOfInstances() > 1) {
+			if (this.defaultAlgorithmPage.isDefaultAlgorithm() && instanceGenerator.getNoOfInstances() > 1) {
 				this.instanceListPage = new InstanceListPage(instanceGenerator, taskListPage, this);
 				addPage(this.instanceListPage);
 				return this.instanceListPage;

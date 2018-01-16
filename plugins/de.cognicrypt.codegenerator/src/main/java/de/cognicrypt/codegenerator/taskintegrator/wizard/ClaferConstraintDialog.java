@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -28,7 +29,7 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
-
+import de.cognicrypt.codegenerator.taskintegrator.widgets.ClaferModelContentProvider;
 
 public class ClaferConstraintDialog extends Dialog {
 
@@ -79,6 +80,12 @@ public class ClaferConstraintDialog extends Dialog {
 		container.setLayout(gl_container);
 
 		getShell().setMinimumSize(600, 400);
+
+		TreeViewer treeViewer = new TreeViewer(container);
+		treeViewer.setContentProvider(new ClaferModelContentProvider());
+		treeViewer.setInput(new String[] { "abstract A", "B", "C", "D" });
+		treeViewer.expandAll();
+		treeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		ListViewer listViewer = new ListViewer(container, SWT.BORDER | SWT.V_SCROLL);
 		List list = listViewer.getList();

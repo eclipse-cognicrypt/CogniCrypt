@@ -3,7 +3,6 @@ package de.cognicrypt.codegenerator.taskintegrator.widgets;
 import java.io.File;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -50,11 +49,8 @@ public class GroupBrowseForFile extends Group {
 		// Initialize the decorator for the label for the text box. 
 		setDecFilePath(new ControlDecoration(label, SWT.TOP | SWT.RIGHT));
 		getDecFilePath().setShowOnlyOnFocus(false);
-		// Initially the text box will be empty. Error displayed for the same.
-//		if (this.isVisible()) {
-//			getTheLocalContainerPage().setPageComplete(false);
-//		}
 		
+		// Initial error state.
 		getDecFilePath().setImage(Constants.DEC_ERROR);
 		getDecFilePath().setDescriptionText("ERROR: Please choose a valid file.");
 		getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
@@ -75,16 +71,15 @@ public class GroupBrowseForFile extends Group {
 		textBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {				
 				File tempFileVariable = new File(textBox.getText());
-				// Validate the file
+				// Validate the file IO.
 				if (!tempFileVariable.exists() && !tempFileVariable.isDirectory() && !tempFileVariable.canRead() && textBox.getParent().isVisible()) {//					
 					getDecFilePath().setImage(Constants.DEC_ERROR);
 					getDecFilePath().setDescriptionText("ERROR: There is a problem with the selected file. Please choose a valid one.");
 					getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
-//					getTheLocalContainerPage().setPageComplete(false);
+					// Check if the page can be set to completed.
 					getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 				} else {
-					// If there are no problems with the file, save the location.
-
+					// If there are no problems with the file, revert the error decoration and store the locations.
 					getDecFilePath().setImage(null);
 					getDecFilePath().setDescriptionText("");
 					getDecFilePath().showHoverText("");
@@ -103,10 +98,9 @@ public class GroupBrowseForFile extends Group {
 							break;
 					}
 					
-//					getTheLocalContainerPage().setPageComplete(true);
+					// Check if the page can be set to completed.
 					getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 				}
-				
 				
 				// This is needed to refresh the size of the controls.
 				getShell().layout(true, true);
@@ -135,6 +129,7 @@ public class GroupBrowseForFile extends Group {
 	}
 
 	/**
+	 * Return the object with the basic data of the task.
 	 * @return the objectForDataInNonGuidedMode
 	 */
 	private ModelAdvancedMode getObjectForDataInNonGuidedMode() {
@@ -142,6 +137,7 @@ public class GroupBrowseForFile extends Group {
 	}
 
 	/**
+	 * This object stores the basic data of the task that is being handled.
 	 * @param objectForDataInNonGuidedMode the objectForDataInNonGuidedMode to set
 	 */
 	private void setObjectForDataInNonGuidedMode(ModelAdvancedMode objectForDataInNonGuidedMode) {
@@ -149,6 +145,7 @@ public class GroupBrowseForFile extends Group {
 	}
 
 	/**
+	 * Return the container wizard page object.
 	 * @return the theLocalContainerPage
 	 */
 	public PageForTaskIntegratorWizard getTheLocalContainerPage() {
@@ -156,6 +153,7 @@ public class GroupBrowseForFile extends Group {
 	}
 
 	/**
+	 * This object is required to set the completion of the page for the mode selection page behavior.
 	 * @param theLocalContainerPage the theLocalContainerPage to set
 	 */
 	public void setTheLocalContainerPage(PageForTaskIntegratorWizard theLocalContainerPage) {
@@ -170,9 +168,10 @@ public class GroupBrowseForFile extends Group {
 	}
 
 	/**
+	 * Keep the decorator object as global to allow access in the event listeners.
 	 * @param decNameOfTheTask the decNameOfTheTask to set
 	 */
-	public void setDecFilePath(ControlDecoration decFilePath) {
+	private void setDecFilePath(ControlDecoration decFilePath) {
 		this.decFilePath = decFilePath;
 	}
 

@@ -1,6 +1,5 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import org.eclipse.jface.wizard.IWizardPage;
@@ -62,17 +61,14 @@ public class TaskIntegrationWizard extends Wizard {
 	 */
 	@Override
 	public boolean performFinish() {
-		/*
-		 * TODO finish button behavior important for the mode selection page. Postponing this code to
-		 * a future time, but within the Sept milestone.
-		 */
-		
+
 		ModelAdvancedMode objectForDataInNonGuidedMode = getTIPageByName(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
 		objectForDataInNonGuidedMode.setTask();
 		FileUtilities fileUtilities = new FileUtilities(objectForDataInNonGuidedMode.getNameOfTheTask());
 		if(this.getContainer().getCurrentPage().getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)){
 			if(objectForDataInNonGuidedMode.isGuidedModeChosen() == false //&& this.objectForDataInNonGuidedMode.isGuidedModeForced() == false
 				){
+				// Check if the contents of the provided files are valid.
 				if (fileUtilities.writeFiles(objectForDataInNonGuidedMode.getLocationOfClaferFile(), objectForDataInNonGuidedMode.getLocationOfJSONFile(), objectForDataInNonGuidedMode.getLocationOfXSLFile(), objectForDataInNonGuidedMode.getLocationOfCustomLibrary())) {
 					fileUtilities.writeTaskToJSONFile(objectForDataInNonGuidedMode.getTask());
 					return true;
@@ -104,6 +100,7 @@ public class TaskIntegrationWizard extends Wizard {
 		}
 		return false;
 	}
+
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#getNextPage(org.eclipse.jface.wizard.IWizardPage)

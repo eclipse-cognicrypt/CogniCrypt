@@ -3,12 +3,9 @@
  */
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
-import org.eclipse.swt.widgets.Composite;
-
 import java.util.List;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -28,6 +25,7 @@ import de.cognicrypt.codegenerator.taskintegrator.wizard.PageForTaskIntegratorWi
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
@@ -39,10 +37,8 @@ import org.eclipse.swt.layout.GridData;
 public class CompositeChoiceForModeOfWizard extends Composite {
 	private ModelAdvancedMode objectForDataInNonGuidedMode;
 	private Text txtDescriptionOfTask;
-	private List<Task> existingTasks;
+	private List<Task> existingTasks; // retuired to validate the task name that is chosen by the user.
 	private ControlDecoration decNameOfTheTask; // Decoration variable to be able to access it in the events.
-	
-
 	private PageForTaskIntegratorWizard theLocalContainerPage; // this is needed to set whether the page has been completed yet or not.
 
 	/**
@@ -72,6 +68,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		// Initialize the decorator for the label for the text box. 
 		setDecNameOfTheTask(new ControlDecoration(lblNameOfTheTask, SWT.TOP | SWT.RIGHT));
 		getDecNameOfTheTask().setShowOnlyOnFocus(false);
+		// Set the initial error state.
 		getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
 		getDecNameOfTheTask().setDescriptionText("ERROR: The Task name cannot be empty. Please enter a valid name for the Task.");
 		getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
@@ -107,7 +104,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		
 		Button btnDoYouWishToUseTheGuidedMode = new Button(grpChooseTheMode, SWT.CHECK);
 		btnDoYouWishToUseTheGuidedMode.setText("Do you wish to use the guided mode?");
-		// guided mode by default.
+		// Guided mode set by default.
 		btnDoYouWishToUseTheGuidedMode.setSelection(true);
 		getObjectForDataInNonGuidedMode().setGuidedModeChosen(btnDoYouWishToUseTheGuidedMode.getSelection());
 		
@@ -140,53 +137,39 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				boolean tempSelectionStatus = btnDoYouWishToUseTheGuidedMode.getSelection();
+				// If the guided mode is selected, hide the widgets to get the location of the files required for the task.
 				grpNonguidedMode.setVisible(!tempSelectionStatus);
+				// Set the data value.
 				getObjectForDataInNonGuidedMode().setGuidedModeChosen(tempSelectionStatus);
 				
-//				if (((GroupBrowseForFile)grpNonguidedMode.getChildren()[0]).getDecNameOfTheTask().getImage().equals(FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage())) {
-//					getTheLocalContainerPage().setPageComplete(tempSelectionStatus);
-//				}
+				// Check if the page can be set to completed.
 				getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 				
-				
-				
+				// If the guided mode is not selected, the rest of the pages are set to completed. This is to allow the finish button to be enabled on the first page.
 				if (!tempSelectionStatus) {
 					for (IWizardPage page : getTheLocalContainerPage().getWizard().getPages()) {
 						if (!page.getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)) {
 							((WizardPage)page).setPageComplete(!tempSelectionStatus);
+							}
 						}
 					}
-				} 
-				
-//				getTheLocalContainerPage().getNextPage();
-//				getTheLocalContainerPage().setPageComplete(getTheLocalContainerPage().isPageComplete());
-				
 				}
 			});
+		
 		btnCustomLibrary.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {		
 				boolean tempSelectionStatus = btnCustomLibrary.getSelection();
+				// Show the widget to get the file data if the check box is selected.
 				getObjectForDataInNonGuidedMode().setCustomLibraryRequired(tempSelectionStatus);
+				// Set the data value.
 				grpContainerGroupForLibrary.setVisible(tempSelectionStatus);
 				
-				
-//				if (!((GroupBrowseForFile)grpContainerGroupForLibrary.getChildren()[0]).getDecNameOfTheTask().getDescriptionText().contains("ERROR") && tempSelectionStatus 
-//					&& !getDecNameOfTheTask().getDescriptionText().contains("ERROR")) {
-//					getTheLocalContainerPage().setPageComplete(true);
-//				} else {
-//					getTheLocalContainerPage().setPageComplete(false);
-//				}
-					
+				// Check if the page can be completed.
 				getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
-				
-//				if (((GroupBrowseForFile)grpContainerGroupForLibrary.getChildren()[0]).getDecNameOfTheTask().getDescriptionText().contains("ERROR") && grpContainerGroupForLibrary.isVisible()) {
-//					getTheLocalContainerPage().setPageComplete(false);
-//				} else if (!grpContainerGroupForLibrary.isVisible() && getDecNameOfTheTask().getDescriptionText().contains("ERROR")) {
-//					
-//				}
 			}
 		});
+		
 		/* TODO removed for the user study.
 		btnForceGuidedMode.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -194,7 +177,6 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 				btnForceGuidedMode.getParent().getParent().getParent().setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_FORCED, btnForceGuidedMode.getSelection());
 			}
 		});*/
-		
 		
 		txtForTaskName.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -210,13 +192,9 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		getTxtDescriptionOfTask().addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				getObjectForDataInNonGuidedMode().setTaskDescription(getTxtDescriptionOfTask().getText().trim());
-				//TODO Validate!
+				//TODO Check if validation is required.
 			}
 		});
-		
-		
-		//getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
-				
 				
 	}
 
@@ -227,10 +205,8 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	
 	public boolean validateTaskName(String tempName){
 		boolean validString = true;
+		
 		// Validation : check whether the name already exists.
-		
-		
-		
 		for (Task task : getExistingTasks()) {
 			if (task.getName().toLowerCase().equals(tempName.toLowerCase()) || task.getDescription().toLowerCase().equals(tempName.toLowerCase())) {
 				validString = false;						
@@ -238,22 +214,24 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 			}
 		}
 		
-		
 		if (tempName.equals("")) {
 			getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
 			getDecNameOfTheTask().setDescriptionText("ERROR: The Task name cannot be empty. Please enter a valid name for the Task.");
-//			getTheLocalContainerPage().setPageComplete(true);
+			
+			// Check if the page can be set to completed.
 			getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 		}else if (validString) {
 			getDecNameOfTheTask().setImage(Constants.DEC_REQUIRED);
 			getDecNameOfTheTask().setDescriptionText("This is a required field.");
-//			getTheLocalContainerPage().setPageComplete(true);
+			
+			// Check if the page can be set to completed.
 			getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 		} else {
 			getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
 			getDecNameOfTheTask().setDescriptionText("ERROR: A task with this name already exists.");
 			getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
-//			getTheLocalContainerPage().setPageComplete(false);
+			
+			// Check if the page can be set to completed.
 			getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 		}
 		
@@ -261,6 +239,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	}
 
 	/**
+	 * Return the basic data of the task.
 	 * @return the objectForDataInNonGuidedMode
 	 */
 	public ModelAdvancedMode getObjectForDataInNonGuidedMode() {
@@ -268,6 +247,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	}
 
 	/**
+	 * This object contains the basic data of the task.
 	 * @param objectForDataInNonGuidedMode the objectForDataInNonGuidedMode to set
 	 */
 	public void setObjectForDataInNonGuidedMode(ModelAdvancedMode objectForDataInNonGuidedMode) {
@@ -299,6 +279,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 
 	
 	/**
+	 * The decorator is is global variable to be accessible in event listners.
 	 * @param decNameOfTheTask the decNameOfTheTask to set
 	 */
 	public void setDecNameOfTheTask(ControlDecoration decNameOfTheTask) {

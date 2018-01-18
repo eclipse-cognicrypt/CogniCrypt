@@ -238,13 +238,13 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	 * from highLevelQuestion page and forward the data to pageForLinkAnswers at runtime
 	 */
 	public IWizardPage getNextPage() {
-//		boolean isNextPressed = "nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[2].getMethodName());
-//		if (isNextPressed) {
-//			boolean validatedNextPress = this.nextPressed(this);
-//			if (!validatedNextPress) {
-//				return this;
-//			}
-//		}
+		boolean isNextPressed = "nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[2].getMethodName());
+		if (isNextPressed) {
+			boolean validatedNextPress = this.nextPressed(this);
+			if (!validatedNextPress) {
+				return this;
+			}
+		}
 		
 		if (this.getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD) && !getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode().isGuidedModeChosen()) {
 			return null;

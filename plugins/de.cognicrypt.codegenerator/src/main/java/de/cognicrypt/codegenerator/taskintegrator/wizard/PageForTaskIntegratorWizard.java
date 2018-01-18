@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.MessageBox;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
@@ -27,6 +28,7 @@ import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
@@ -84,13 +86,26 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					public void widgetSelected(SelectionEvent e) {
 
 						counter++;
-						ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), compositeToHoldGranularUIElements.getListOfAllClaferFeatures());
+						ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), compositeToHoldGranularUIElements.getClaferModel());
 						if (cfrFeatureDialog.open() == 0) {
 							ClaferFeature tempFeature = cfrFeatureDialog.getResult();
+							
+							// inform user that features have been created automatically
+							// TODO only show message if new features can be implemented
+							MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.YES | SWT.NO);
+							dialog.setText("Additional features can be created");
+							dialog.setMessage("Some of the used features don't exist yet. Should we create them for you?");
+							
+							if (dialog.open() == SWT.YES) {
+								tempFeature.implementMissingFeatures(compositeToHoldGranularUIElements.getClaferModel());
+							}
 
 							// Update the array list.							
-							compositeToHoldGranularUIElements.getListOfAllClaferFeatures().add(tempFeature);
+							compositeToHoldGranularUIElements.getClaferModel().add(tempFeature);
 							compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
+
+							// rebuild the UI
+							compositeToHoldGranularUIElements.updateClaferContainer();
 						}
 
 					}
@@ -132,7 +147,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						ArrayList<ClaferFeature> cfrFeatures = null;
+						ClaferModel claferModel = null;
 						ArrayList<Question> questions = null;
 						ArrayList<String> strFeatures = new ArrayList<>();
 
@@ -144,10 +159,10 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 									CompositeToHoldGranularUIElements comp = (CompositeToHoldGranularUIElements) pftiw.getCompositeToHoldGranularUIElements();
 									if (pftiw.getName() == Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION) {
 										// get the Clafer features
-										cfrFeatures = comp.getListOfAllClaferFeatures();
+										claferModel = comp.getClaferModel();
 
 										// get all the Clafer features' properties
-										for (ClaferFeature cfrFtr : cfrFeatures) {
+										for (ClaferFeature cfrFtr : claferModel) {
 											String ftrName = cfrFtr.getFeatureName();
 											for (FeatureProperty prop : cfrFtr.getfeatureProperties()) {
 												// prepend the feature name and add the property to dropdown entries
@@ -221,7 +236,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 							// Update the array list.
 							compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
-							compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails, claferPageComposite.getListOfAllClaferFeatures(), false);
+							compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails, claferPageComposite.getClaferModel(), false);
 						}
 					}
 				});

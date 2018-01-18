@@ -26,12 +26,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.utilities.Utils;
 
@@ -51,13 +53,13 @@ public class FileUtilities {
 	
 	/**
 	 * Write the data from the pages to target location in the plugin.
-	 * @param claferFeatures
+	 * @param claferModel
 	 * @param questions
 	 * @param xslFileContents
 	 * @param customLibLocation
 	 */
-	public void writeFiles(ArrayList<ClaferFeature> claferFeatures, ArrayList<Question> questions, String xslFileContents, File customLibLocation) {
-		writeCFRFile(claferFeatures);
+	public void writeFiles(ClaferModel claferModel, ArrayList<Question> questions, String xslFileContents, File customLibLocation) {
+		writeCFRFile(claferModel);
 		try {
 			writeJSONFile(questions);
 		} catch (IOException e) {
@@ -65,7 +67,9 @@ public class FileUtilities {
 			e.printStackTrace();
 		}
 		writeXSLFile(xslFileContents);
-		copyFileFromPath(customLibLocation);
+		if (customLibLocation != null) {
+			copyFileFromPath(customLibLocation);
+		}
 	}
 	
 	/**
@@ -163,15 +167,15 @@ public class FileUtilities {
 			try {
 				
 				if(existingFileLocation.getPath().endsWith(Constants.CFR_EXTENSION)) {
-					targetDirectory= new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTaskName() + Constants.CFR_EXTENSION);
+					targetDirectory = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.CFR_EXTENSION);
 				} else if(existingFileLocation.getPath().endsWith(Constants.JSON_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTaskName() + Constants.JSON_EXTENSION);
+					targetDirectory = new File(Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.JSON_EXTENSION);
 				} else if(existingFileLocation.getPath().endsWith(Constants.XSL_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH), getTaskName() + Constants.XSL_EXTENSION);
+					targetDirectory = new File(Utils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XSL_EXTENSION);
 				} else if(existingFileLocation.getPath().endsWith(Constants.JAR_EXTENSION)) {
-					File tempDirectory = new File(Utils.getResourceFromWithin(Constants.JAR_FILE_DIRECTORY_PATH), getTaskName() + Constants.innerFileSeparator);
+					File tempDirectory = new File(Utils.getResourceFromWithin(Constants.JAR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.innerFileSeparator);
 					tempDirectory.mkdir();
-					targetDirectory = new File(tempDirectory, getTaskName() + Constants.JAR_EXTENSION);
+					targetDirectory = new File(tempDirectory, getTrimmedTaskName() + Constants.JAR_EXTENSION);
 				} else {
 					throw new Exception("Unknown file type.");
 				}
@@ -211,10 +215,19 @@ public class FileUtilities {
 		
 	/**
 	 * 
-	 * @param claferFeatures
+	 * @param claferModel
 	 */
-	private void writeCFRFile(ArrayList<ClaferFeature> claferFeatures) {
-		
+	private void writeCFRFile(ClaferModel claferModel) {
+		File cfrFile = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.CFR_EXTENSION);
+		try {
+			FileWriter writer = new FileWriter(cfrFile);
+			for (ClaferFeature cfrFeature : claferModel) {
+				writer.write(cfrFeature.toString());
+			}
+			writer.close();
+		} catch (IOException e) {
+			Activator.getDefault().logError(e);
+		}
 	}
 		
 	/**
@@ -387,6 +400,16 @@ public class FileUtilities {
 	}
 	
 	/**
+	 * get machine-readable task name
+	 * 
+	 * @return task name without non-alphanumerics
+	 */
+	private String getTrimmedTaskName() {
+		return getTaskName().replaceAll("[^A-Za-z0-9]", "");
+	}
+
+	/**
+	 * 
 	 * Set the name of the task that is being written to File. The names of the result files are set based on the provided task name.
 	 * @param taskName
 	 */

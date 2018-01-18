@@ -91,14 +91,17 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						if (cfrFeatureDialog.open() == 0) {
 							ClaferFeature tempFeature = cfrFeatureDialog.getResult();
 							
-							// inform user that features have been created automatically
-							// TODO only show message if new features can be implemented
-							MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.YES | SWT.NO);
-							dialog.setText("Additional features can be created");
-							dialog.setMessage("Some of the used features don't exist yet. Should we create them for you?");
-							
-							if (dialog.open() == SWT.YES) {
-								compositeToHoldGranularUIElements.getClaferModel().implementMissingFeatures(tempFeature);
+							// if features are missing, ask the user whether to implement them							
+							ClaferModel missingFeatures = compositeToHoldGranularUIElements.getClaferModel().getMissingFeatures(tempFeature);
+
+							if (!missingFeatures.getClaferModel().isEmpty()) {
+								MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.YES | SWT.NO);
+								dialog.setText("Additional features can be created");
+								dialog.setMessage("Some of the used features don't exist yet. Should we create them for you?");
+
+								if (dialog.open() == SWT.YES) {
+									compositeToHoldGranularUIElements.getClaferModel().implementMissingFeatures(tempFeature);
+								}
 							}
 
 							// Update the array list.							

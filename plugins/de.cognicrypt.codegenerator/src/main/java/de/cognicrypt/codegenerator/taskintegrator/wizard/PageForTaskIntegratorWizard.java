@@ -247,8 +247,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 //		}
 		
 		if (this.getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD) && !getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode().isGuidedModeChosen()) {
-			System.out.println(this.getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD));
-			System.out.println(getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode().isGuidedModeChosen());
 			return null;
 		}
 		

@@ -70,7 +70,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		getDecNameOfTheTask().setShowOnlyOnFocus(false);
 		// Set the initial error state.
 		getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
-		getDecNameOfTheTask().setDescriptionText("ERROR: The Task name cannot be empty. Please enter a valid name for the Task.");
+		getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_TASK_NAME);
 		getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
 		
 		Text txtForTaskName = new Text(grpChooseTheMode, SWT.BORDER);
@@ -214,19 +214,19 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		
 		if (tempName.equals("")) {
 			getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
-			getDecNameOfTheTask().setDescriptionText("ERROR: The Task name cannot be empty. Please enter a valid name for the Task.");
+			getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_TASK_NAME);
 			
 			// Check if the page can be set to completed.
 			getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 		}else if (validString) {
 			getDecNameOfTheTask().setImage(Constants.DEC_REQUIRED);
-			getDecNameOfTheTask().setDescriptionText("This is a required field.");
+			getDecNameOfTheTask().setDescriptionText(Constants.MESSAGE_REQUIRED_FIELD);
 			
 			// Check if the page can be set to completed.
 			getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 		} else {
 			getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
-			getDecNameOfTheTask().setDescriptionText("ERROR: A task with this name already exists.");
+			getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_DUPLICATE_TASK_NAME);
 			getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
 			
 			// Check if the page can be set to completed.

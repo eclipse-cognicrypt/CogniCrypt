@@ -52,7 +52,7 @@ public class GroupBrowseForFile extends Group {
 		
 		// Initial error state.
 		getDecFilePath().setImage(Constants.DEC_ERROR);
-		getDecFilePath().setDescriptionText("ERROR: Please choose a valid file.");
+		getDecFilePath().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_FILE_NAME);
 		getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
 		
 		
@@ -74,7 +74,7 @@ public class GroupBrowseForFile extends Group {
 				// Validate the file IO.
 				if (!tempFileVariable.exists() && !tempFileVariable.isDirectory() && !tempFileVariable.canRead() && textBox.getParent().isVisible()) {//					
 					getDecFilePath().setImage(Constants.DEC_ERROR);
-					getDecFilePath().setDescriptionText("ERROR: There is a problem with the selected file. Please choose a valid one.");
+					getDecFilePath().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_UNABLE_TO_READ_FILE);
 					getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
 					// Check if the page can be set to completed.
 					getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();

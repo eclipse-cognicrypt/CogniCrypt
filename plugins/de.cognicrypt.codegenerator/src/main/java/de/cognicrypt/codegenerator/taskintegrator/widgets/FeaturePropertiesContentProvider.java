@@ -1,0 +1,56 @@
+package de.cognicrypt.codegenerator.taskintegrator.widgets;
+
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
+
+public class FeaturePropertiesContentProvider implements ITreeContentProvider {
+
+	@Override
+	public Object[] getChildren(Object inputElement) {
+		if (inputElement instanceof ClaferFeature) {
+			ClaferFeature inputFeature = (ClaferFeature) inputElement;
+			return inputFeature.getFeatureProperties().toArray();
+		}
+		return null;
+	}
+
+	@Override
+	public Object[] getElements(Object inputElement) {
+		if (inputElement instanceof ClaferModel) {
+			ClaferModel inputModel = (ClaferModel) inputElement;
+
+			ClaferModel withPropertiesOnly = new ClaferModel();
+
+			for (ClaferFeature cfrFeature : inputModel) {
+				if (cfrFeature.hasProperties()) {
+					withPropertiesOnly.add(cfrFeature);
+				}
+			}
+
+			return withPropertiesOnly.getClaferModel().toArray();
+		}
+		return ArrayContentProvider.getInstance().getElements(inputElement);
+	}
+
+	@Override
+	public Object getParent(Object arg0) {
+		// return null if the parent cannot be computed
+		return null;
+	}
+
+	@Override
+	public boolean hasChildren(Object inputElement) {
+		if (inputElement instanceof ClaferModel) {
+			ClaferModel inputModel = (ClaferModel) inputElement;
+			return !inputModel.getClaferModel().isEmpty();
+		} else if (inputElement instanceof ClaferFeature) {
+			ClaferFeature inputFeature = (ClaferFeature) inputElement;
+			return inputFeature.hasProperties();
+		}
+		return false;
+	}
+
+}

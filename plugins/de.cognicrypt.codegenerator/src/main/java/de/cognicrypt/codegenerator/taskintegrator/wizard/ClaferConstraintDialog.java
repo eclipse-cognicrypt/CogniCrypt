@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -21,7 +20,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -116,36 +114,6 @@ public class ClaferConstraintDialog extends Dialog {
 						text.insert(propertyClicked.getPropertyName());
 					}
 				}
-				super.mouseDoubleClick(e);
-			}
-		});
-
-		ListViewer listViewer = new ListViewer(container, SWT.BORDER | SWT.V_SCROLL);
-		List list = listViewer.getList();
-
-		list.setToolTipText("Double-click to add");
-
-		GridData gd_list = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-		gd_list.heightHint = 340;
-		list.setLayoutData(gd_list);
-
-		if (claferModel != null) {
-			for (FeatureProperty featureProperty : currentFeature.getFeatureProperties()) {
-				list.add(featureProperty.getPropertyName());
-			}
-			for (ClaferFeature cfrFeature : claferModel) {
-				list.add(cfrFeature.getFeatureName());
-				for (FeatureProperty featureProperty : cfrFeature.getFeatureProperties()) {
-					list.add(featureProperty.getPropertyName());
-				}
-			}
-		}
-
-		list.addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mouseDoubleClick(MouseEvent e) {
-				text.insert(list.getSelection()[0]);
 				super.mouseDoubleClick(e);
 			}
 		});

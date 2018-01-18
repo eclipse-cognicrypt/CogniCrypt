@@ -68,13 +68,13 @@ public class ClaferModel implements Iterable<ClaferFeature> {
 	}
 
 	/**
-	 * Implement missing inheritance or property types in this model with respect to a given feature
+	 * get missing inheritance or property types in this model with respect to a given feature
 	 * 
 	 * @param refFeature
 	 *        reference feature to sift for unimplemented features
 	 * @return a model containing only those features that have been added
 	 */
-	public ClaferModel implementMissingFeatures(ClaferFeature refFeature) {
+	public ClaferModel getMissingFeatures(ClaferFeature refFeature) {
 		ClaferModel addedFeatures = new ClaferModel();
 		
 		// find missing inherited feature
@@ -111,12 +111,24 @@ public class ClaferModel implements Iterable<ClaferFeature> {
 			}
 		}
 		
-		// add all missing features
-		for (ClaferFeature cfrFeature : addedFeatures) {
-			claferModel.add(cfrFeature);
+		return addedFeatures;
+	}
+
+	/**
+	 * add the missing features according to getMissingFeatures method
+	 * 
+	 * @param refFeature
+	 *        reference feature to consider for search of unused features
+	 * @return a model containing only those features that have been added
+	 */
+	public ClaferModel implementMissingFeatures(ClaferFeature refFeature) {
+		ClaferModel missingFeatures = getMissingFeatures(refFeature);
+
+		for (ClaferFeature missingFeature : missingFeatures) {
+			add(missingFeature);
 		}
 		
-		return addedFeatures;
+		return missingFeatures;
 	}
 
 	/**

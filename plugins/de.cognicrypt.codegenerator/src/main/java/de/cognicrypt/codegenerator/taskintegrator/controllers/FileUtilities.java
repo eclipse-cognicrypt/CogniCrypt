@@ -146,6 +146,11 @@ public class FileUtilities {
         }
 	}
 
+	/**
+	 * Validate the provided CFR file before copying it to the target location.
+	 * @param cfrFileLocation
+	 * @return a boolean value for the validity of the file.
+	 */
 	private boolean validateCFRFile(File cfrFileLocation) {
 		// TODO Auto-generated method stub
 		return false;
@@ -202,15 +207,9 @@ public class FileUtilities {
 			gson.toJson(tasks, new TypeToken<List<Task>>() {}.getType(), writer);
 			writer.close();
 			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
 	}
 		
 	/**

@@ -31,6 +31,7 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.FeaturePropertiesContentProvider;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.FeaturePropertiesLabelProvider;
 
 public class ClaferConstraintDialog extends Dialog {
 
@@ -84,6 +85,7 @@ public class ClaferConstraintDialog extends Dialog {
 
 		TreeViewer treeViewer = new TreeViewer(container);
 		treeViewer.setContentProvider(new FeaturePropertiesContentProvider());
+		treeViewer.setLabelProvider(new FeaturePropertiesLabelProvider());
 		treeViewer.setInput(claferModel);
 		treeViewer.expandAll();
 		treeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));

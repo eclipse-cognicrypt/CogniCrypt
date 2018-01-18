@@ -42,6 +42,14 @@ public class ClaferModel implements Iterable<ClaferFeature> {
 		return featureFound;
 	}
 
+	/**
+	 * get a shallow copy of the ClaferModel that contains a shallow copy of the feature list (new list but same feature objects)
+	 */
+	@Override
+	public ClaferModel clone() {
+		return new ClaferModel((ArrayList<ClaferFeature>) claferModel.clone());
+	}
+
 	@Override
 	public Iterator iterator() {
 		return claferModel.iterator();

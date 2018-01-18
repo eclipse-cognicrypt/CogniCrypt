@@ -21,15 +21,9 @@ public class FeaturePropertiesContentProvider implements ITreeContentProvider {
 	public Object[] getElements(Object inputElement) {
 		if (inputElement instanceof ClaferModel) {
 			ClaferModel inputModel = (ClaferModel) inputElement;
+			ClaferModel withPropertiesOnly = inputModel.clone();
 
-			ClaferModel withPropertiesOnly = new ClaferModel();
-
-			for (ClaferFeature cfrFeature : inputModel) {
-				if (cfrFeature.hasProperties()) {
-					withPropertiesOnly.add(cfrFeature);
-				}
-			}
-
+			withPropertiesOnly.getClaferModel().removeIf(x -> !x.hasProperties());
 			return withPropertiesOnly.getClaferModel().toArray();
 		}
 		return ArrayContentProvider.getInstance().getElements(inputElement);

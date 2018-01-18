@@ -1,5 +1,6 @@
 package de.cognicrypt.codegenerator.taskintegrator.test;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -11,7 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -36,16 +36,6 @@ public class ClaferFeatureTest {
 
 		assertEquals(claferFeature.getFeatureProperties(), featureProperties);
 	}
-	
-	public static boolean filesEqual(String expectedFilename, String actualFilename) throws IOException {
-		Path expectedFilePath = Paths.get(expectedFilename);
-		Path actualFilePath = Paths.get(actualFilename);
-
-		byte[] expectedBytes = Files.readAllBytes(expectedFilePath);
-		byte[] actualBytes = Files.readAllBytes(actualFilePath);
-		
-		return Arrays.equals(expectedBytes, actualBytes);
-	}
 
 	@Test
 	public final void testClaferFeatureToString() throws IOException {
@@ -69,7 +59,9 @@ public class ClaferFeatureTest {
 		}
 
 		// compare the files
-		assertTrue(filesEqual(expectedFilename, actualFilename));
+		Object[] expectedLines = Files.readAllLines(Paths.get(expectedFilename)).toArray();
+		Object[] actualLines = Files.readAllLines(Paths.get(actualFilename)).toArray();
+		assertArrayEquals(expectedLines, actualLines);
 	}
 	
 	@Test
@@ -196,6 +188,11 @@ public class ClaferFeatureTest {
 		// assert one feature is unused and assert it to be y
 		assertTrue(unusedFeatures.getClaferModel().size() == 1);
 		assertTrue(unusedFeatures.getClaferModel().get(0) == featureY);
+	}
+
+	@Test
+	public final void testGetParentFeatureOfProperty() {
+		fail("Not yet implemented");
 	}
 
 	@AfterClass

@@ -104,6 +104,7 @@ public class ClaferConstraintDialog extends Dialog {
 					}
 					// add to text field if property name clicked
 					else if (ts.getFirstElement() instanceof FeatureProperty) {
+						// TODO here, not only the property name but also the feature name has to be added
 						FeatureProperty firstElem = (FeatureProperty) ts.getFirstElement();
 						text.insert(firstElem.getPropertyName());
 					}

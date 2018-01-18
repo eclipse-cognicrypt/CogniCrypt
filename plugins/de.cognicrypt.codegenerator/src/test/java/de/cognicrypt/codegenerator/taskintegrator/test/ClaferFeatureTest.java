@@ -190,6 +190,11 @@ public class ClaferFeatureTest {
 		assertTrue(unusedFeatures.getClaferModel().get(0) == featureY);
 	}
 
+	@Test
+	public final void testGetParentFeatureOfProperty() {
+		fail("Not yet implemented");
+	}
+
 	@AfterClass
 	public final static void deleteFiles() throws IOException {
 		// gather all files to be deleted

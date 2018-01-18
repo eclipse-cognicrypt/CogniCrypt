@@ -32,6 +32,16 @@ public class ClaferModel implements Iterable<ClaferFeature> {
 		claferModel.remove(claferFeature);
 	}
 
+	public boolean hasFeature(String featureName) {
+		boolean featureFound = false;
+		
+		for (ClaferFeature cfrFeature : claferModel) {
+			featureFound |= cfrFeature.getFeatureName().equals(featureName);
+		}
+
+		return featureFound;
+	}
+
 	@Override
 	public Iterator iterator() {
 		return claferModel.iterator();

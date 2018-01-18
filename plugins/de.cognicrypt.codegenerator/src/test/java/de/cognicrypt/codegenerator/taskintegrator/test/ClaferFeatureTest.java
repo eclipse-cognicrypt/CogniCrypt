@@ -120,6 +120,14 @@ public class ClaferFeatureTest {
 	}
 	
 	@Test
+	public final void testHasFeature() {
+		ClaferModel claferModel = new ClaferModel();
+		claferModel.add(new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", ""));
+
+		assertTrue(claferModel.hasFeature("AES"));
+	}
+
+	@Test
 	public final void testNoEmptyPropertyType() {
 		ClaferModel claferModel = new ClaferModel();
 		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "A", "B");

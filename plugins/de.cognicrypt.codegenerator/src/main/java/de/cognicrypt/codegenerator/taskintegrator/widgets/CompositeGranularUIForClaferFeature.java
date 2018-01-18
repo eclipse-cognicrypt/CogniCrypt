@@ -133,14 +133,17 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 					ClaferFeature resultFeature = cfrFeatureDialog.getResult();
 					((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent()).modifyClaferFeature(claferFeature, resultFeature);
 
-					// inform user that features have been created automatically
-					// TODO only show message if new features can be implemented
-					MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.YES | SWT.NO);
-					dialog.setText("Additional features can be created");
-					dialog.setMessage("Some of the used features don't exist yet. Should we create them for you?");
-					
-					if (dialog.open() == SWT.YES) {
-						claferModel.implementMissingFeatures(resultFeature);
+					// if features are missing, ask the user whether to implement them							
+					ClaferModel missingFeatures = claferModel.getMissingFeatures(resultFeature);
+
+					if (!missingFeatures.getClaferModel().isEmpty()) {
+						MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.YES | SWT.NO);
+						dialog.setText("Additional features can be created");
+						dialog.setMessage("Some of the used features don't exist yet. Should we create them for you?");
+
+						if (dialog.open() == SWT.YES) {
+							claferModel.implementMissingFeatures(resultFeature);
+						}
 					}
 
 					// rebuild the UI

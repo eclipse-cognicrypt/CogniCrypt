@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 
 
@@ -35,7 +36,7 @@ public class ClaferConstraintDialog extends Dialog {
 	private ClaferConstraint cfrConstraint;
 
 	private ClaferFeature currentFeature;
-	private ArrayList<ClaferFeature> cfrFeatures;
+	private ClaferModel claferModel;
 
 	private ClaferConstraint modifiedConstraint;
 
@@ -52,14 +53,14 @@ public class ClaferConstraintDialog extends Dialog {
 		cfrConstraint = new ClaferConstraint();
 	}
 
-	public ClaferConstraintDialog(Shell parentShell, ClaferFeature currentFeature, ArrayList<ClaferFeature> cfrFeatures) {
+	public ClaferConstraintDialog(Shell parentShell, ClaferFeature currentFeature, ClaferModel claferModel) {
 		this(parentShell);
 		this.currentFeature = currentFeature;
-		this.cfrFeatures = cfrFeatures;
+		this.claferModel = claferModel;
 	}
 
-	public ClaferConstraintDialog(Shell parentShell, ClaferFeature currentFeature, ArrayList<ClaferFeature> cfrFeatures, ClaferConstraint modifiedConstraint) {
-		this(parentShell, currentFeature, cfrFeatures);
+	public ClaferConstraintDialog(Shell parentShell, ClaferFeature currentFeature, ClaferModel claferModel, ClaferConstraint modifiedConstraint) {
+		this(parentShell, currentFeature, claferModel);
 		this.modifiedConstraint = modifiedConstraint;
 	}
 
@@ -89,11 +90,11 @@ public class ClaferConstraintDialog extends Dialog {
 		gd_list.grabExcessHorizontalSpace = true;
 		list.setLayoutData(gd_list);
 
-		if (cfrFeatures != null) {
+		if (claferModel != null) {
 			for (FeatureProperty featureProperty : currentFeature.getfeatureProperties()) {
 				list.add(featureProperty.getPropertyName());
 			}
-			for (ClaferFeature cfrFeature : cfrFeatures) {
+			for (ClaferFeature cfrFeature : claferModel) {
 				list.add(cfrFeature.getFeatureName());
 				for (FeatureProperty featureProperty : cfrFeature.getfeatureProperties()) {
 					list.add(featureProperty.getPropertyName());

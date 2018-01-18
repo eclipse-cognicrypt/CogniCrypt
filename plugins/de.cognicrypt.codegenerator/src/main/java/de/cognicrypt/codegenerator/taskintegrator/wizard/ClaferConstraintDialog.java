@@ -86,7 +86,12 @@ public class ClaferConstraintDialog extends Dialog {
 		TreeViewer treeViewer = new TreeViewer(container);
 		treeViewer.setContentProvider(new FeaturePropertiesContentProvider());
 		treeViewer.setLabelProvider(new FeaturePropertiesLabelProvider());
-		treeViewer.setInput(claferModel);
+
+		// create a temporary clafer model that contains the current model as well as the feature currently being created
+		ClaferModel tempModel = claferModel.clone();
+		tempModel.add(currentFeature);
+
+		treeViewer.setInput(tempModel);
 		treeViewer.expandAll();
 		treeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 

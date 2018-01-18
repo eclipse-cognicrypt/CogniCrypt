@@ -381,7 +381,7 @@ public class FileUtilities {
 	}
 	
 	/**
-	 * 
+	 * Return the name of that task that is set for the file writes..
 	 * @return
 	 */
 	private String getTaskName() {
@@ -389,7 +389,7 @@ public class FileUtilities {
 	}
 	
 	/**
-	 * 
+	 * Set the name of the task that is being written to File. The names of the result files are set based on the provided task name.
 	 * @param taskName
 	 */
 	private void setTaskName(String taskName) {

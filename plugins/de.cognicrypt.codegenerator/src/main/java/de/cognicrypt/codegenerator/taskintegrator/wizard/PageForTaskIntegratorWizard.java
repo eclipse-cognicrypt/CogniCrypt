@@ -399,13 +399,15 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	 */
 	public void checkIfModeSelectionPageIsComplete() {		
 		boolean errorOnFileWidgets = false;
+		// The first child of the composite is a group. Get the children of this group to iterated over.
 		for (Control control : ((Group)getCompositeChoiceForModeOfWizard().getChildren()[0]).getChildren()) {
+			// Check if the child is an instance of group and is visible.
 			if (control.getClass().getName().equals("org.eclipse.swt.widgets.Group") && control.isVisible()) {
 				
+				// Get the children of this group and iterate over them. These are the widgets that get the file data. This loop generalizes for all these widgets.
 				for (Control subGroup : ((Group)control).getChildren()) {					
 					if (subGroup.getClass().getName().equals("de.cognicrypt.codegenerator.taskintegrator.widgets.GroupBrowseForFile")) {
 						GroupBrowseForFile tempVaraiable = (GroupBrowseForFile) subGroup;
-						System.out.println((tempVaraiable).getDecFilePath().getDescriptionText());
 						if ((tempVaraiable).getDecFilePath().getDescriptionText().contains("ERROR")) {
 							errorOnFileWidgets = true;
 						}
@@ -416,8 +418,10 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			}
 		}		
 		
+		// Check if validation failed on the task name.
 		boolean errorOnTaskName = getCompositeChoiceForModeOfWizard().getDecNameOfTheTask().getDescriptionText().contains("ERROR");
-
+		
+		// Set the page to incomplete if the validation failed on any of the text boxes.
 		if (errorOnTaskName || errorOnFileWidgets) {
 			setPageComplete(false);
 			
@@ -427,6 +431,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	}
 
 	/**
+	 * Return the composite for the first page, i.e. to choose the mode of the wizard.
 	 * @return the compositeChoiceForModeOfWizard
 	 */
 	public CompositeChoiceForModeOfWizard getCompositeChoiceForModeOfWizard() {
@@ -434,6 +439,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	}
 
 	/**
+	 * The composite is maintained as a global variable to have access to it as part of the page object.
 	 * @param compositeChoiceForModeOfWizard
 	 *        the compositeChoiceForModeOfWizard to set
 	 */
@@ -449,6 +455,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	}
 
 	/**
+	 * The composite is maintained as a global variable to have access to it as part of the page object.
 	 * @param compositeToHoldGranularUIElements
 	 *        the compositeToHoldGranularUIElements to set
 	 */
@@ -461,6 +468,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	}
 
 	/**
+	 * Return the composite for the XSL page.
 	 * @return the compositeForXsl
 	 */
 	public CompositeForXsl getCompositeForXsl() {
@@ -468,6 +476,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	}
 
 	/**
+	 * The composite is maintained as a global variable to have access to it as part of the page object.
 	 * @param compositeForXsl
 	 *        the compositeForXsl to set
 	 */

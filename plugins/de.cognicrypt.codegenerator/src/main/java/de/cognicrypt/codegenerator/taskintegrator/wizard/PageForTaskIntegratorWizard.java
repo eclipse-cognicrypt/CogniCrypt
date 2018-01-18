@@ -406,7 +406,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				for (Control subGroup : ((Group)control).getChildren()) {					
 					if (subGroup instanceof GroupBrowseForFile) {
 						GroupBrowseForFile tempVaraiable = (GroupBrowseForFile) subGroup;
-						if ((tempVaraiable).getDecFilePath().getDescriptionText().contains("ERROR")) {
+						if ((tempVaraiable).getDecFilePath().getDescriptionText().contains(Constants.ERROR)) {
 							errorOnFileWidgets = true;
 						}
 					}
@@ -417,7 +417,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		}		
 		
 		// Check if validation failed on the task name.
-		boolean errorOnTaskName = getCompositeChoiceForModeOfWizard().getDecNameOfTheTask().getDescriptionText().contains("ERROR");
+		boolean errorOnTaskName = getCompositeChoiceForModeOfWizard().getDecNameOfTheTask().getDescriptionText().contains(Constants.ERROR);
 		
 		// Set the page to incomplete if the validation failed on any of the text boxes.
 		if (errorOnTaskName || errorOnFileWidgets) {

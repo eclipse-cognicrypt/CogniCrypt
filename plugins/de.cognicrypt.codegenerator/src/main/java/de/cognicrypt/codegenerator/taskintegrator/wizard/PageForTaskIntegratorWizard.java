@@ -400,11 +400,11 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		// The first child of the composite is a group. Get the children of this group to iterated over.
 		for (Control control : ((Group)getCompositeChoiceForModeOfWizard().getChildren()[0]).getChildren()) {
 			// Check if the child is an instance of group and is visible.
-			if (control.getClass().getName().equals("org.eclipse.swt.widgets.Group") && control.isVisible()) {
+			if (control instanceof Group && control.isVisible()) {
 				
 				// Get the children of this group and iterate over them. These are the widgets that get the file data. This loop generalizes for all these widgets.
 				for (Control subGroup : ((Group)control).getChildren()) {					
-					if (subGroup.getClass().getName().equals("de.cognicrypt.codegenerator.taskintegrator.widgets.GroupBrowseForFile")) {
+					if (subGroup instanceof GroupBrowseForFile) {
 						GroupBrowseForFile tempVaraiable = (GroupBrowseForFile) subGroup;
 						if ((tempVaraiable).getDecFilePath().getDescriptionText().contains("ERROR")) {
 							errorOnFileWidgets = true;

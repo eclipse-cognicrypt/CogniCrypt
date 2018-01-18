@@ -99,9 +99,7 @@ public class FileUtilities {
 			try {
 				customLib = new ZipFile(customLibLocation);
 				Enumeration<? extends ZipEntry> e = customLib.entries();
-		        while(e.hasMoreElements()) {
-		            validFile = true;
-		        }
+				validFile = true;
 		        customLib.close();
 			} catch (IOException ex) {
 				ex.printStackTrace();

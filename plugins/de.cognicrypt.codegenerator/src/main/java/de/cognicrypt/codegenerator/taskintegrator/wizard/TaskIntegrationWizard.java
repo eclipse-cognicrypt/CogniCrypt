@@ -1,5 +1,6 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.eclipse.jface.wizard.IWizardPage;
@@ -10,7 +11,6 @@ import org.eclipse.swt.widgets.Control;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.FileUtilities;
-import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;

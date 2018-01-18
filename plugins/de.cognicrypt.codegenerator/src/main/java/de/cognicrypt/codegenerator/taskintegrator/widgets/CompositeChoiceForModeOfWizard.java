@@ -109,6 +109,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		btnDoYouWishToUseTheGuidedMode.setText("Do you wish to use the guided mode?");
 		// guided mode by default.
 		btnDoYouWishToUseTheGuidedMode.setSelection(true);
+		getObjectForDataInNonGuidedMode().setGuidedModeChosen(btnDoYouWishToUseTheGuidedMode.getSelection());
 		
 		Group grpNonguidedMode = new Group(grpChooseTheMode, SWT.NONE);
 		grpNonguidedMode.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
@@ -140,7 +141,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				boolean tempSelectionStatus = btnDoYouWishToUseTheGuidedMode.getSelection();
 				grpNonguidedMode.setVisible(!tempSelectionStatus);
-				getObjectForDataInNonGuidedMode().setGuidedModeChosen(!tempSelectionStatus);
+				getObjectForDataInNonGuidedMode().setGuidedModeChosen(tempSelectionStatus);
 				
 //				if (((GroupBrowseForFile)grpNonguidedMode.getChildren()[0]).getDecNameOfTheTask().getImage().equals(FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage())) {
 //					getTheLocalContainerPage().setPageComplete(tempSelectionStatus);

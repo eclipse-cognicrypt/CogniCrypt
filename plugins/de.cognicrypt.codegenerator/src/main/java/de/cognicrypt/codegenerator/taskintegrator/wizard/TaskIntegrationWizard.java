@@ -73,9 +73,13 @@ public class TaskIntegrationWizard extends Wizard {
 		if(this.getContainer().getCurrentPage().getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)){
 			if(objectForDataInNonGuidedMode.isGuidedModeChosen() == false //&& this.objectForDataInNonGuidedMode.isGuidedModeForced() == false
 				){
-				fileUtilities.writeFiles(objectForDataInNonGuidedMode.getLocationOfClaferFile(), objectForDataInNonGuidedMode.getLocationOfJSONFile(), objectForDataInNonGuidedMode.getLocationOfXSLFile(), objectForDataInNonGuidedMode.getLocationOfCustomLibrary());
-				fileUtilities.writeTaskToJSONFile(objectForDataInNonGuidedMode.getTask());
-				return true;
+				if (fileUtilities.writeFiles(objectForDataInNonGuidedMode.getLocationOfClaferFile(), objectForDataInNonGuidedMode.getLocationOfJSONFile(), objectForDataInNonGuidedMode.getLocationOfXSLFile(), objectForDataInNonGuidedMode.getLocationOfCustomLibrary())) {
+					fileUtilities.writeTaskToJSONFile(objectForDataInNonGuidedMode.getTask());
+					return true;
+				} else {
+					return false;
+				}
+				
 			}
 		}
 		

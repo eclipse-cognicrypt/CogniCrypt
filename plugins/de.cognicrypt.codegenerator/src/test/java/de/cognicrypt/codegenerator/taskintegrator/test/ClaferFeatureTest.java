@@ -88,6 +88,27 @@ public class ClaferFeatureTest {
 	}
 
 	@Test
+	public final void testNoDuplicateFeaturesImplemented() {
+		ClaferModel claferModel = new ClaferModel();
+		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "Algorithm");
+		claferModel.add(cfrFeature);
+
+		cfrFeature.getFeatureProperties().add(new FeatureProperty("p1", "int"));
+		cfrFeature.getFeatureProperties().add(new FeatureProperty("p2", "int"));
+		cfrFeature.getFeatureProperties().add(new FeatureProperty("p3", "int"));
+
+		claferModel.implementMissingFeatures(cfrFeature);
+
+		for (ClaferFeature refFeature : claferModel) {
+			for (ClaferFeature curFeature : claferModel) {
+				if (refFeature != curFeature && refFeature.getFeatureName().equals(curFeature.getFeatureName())) {
+					fail("Conflicting features named \"" + refFeature.getFeatureName() + "\" found");
+				}
+			}
+		}
+	}
+
+	@Test
 	public final void testNoEmptyFeatureInheritance() {
 		ClaferModel claferModel = new ClaferModel();
 		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "");
@@ -98,6 +119,14 @@ public class ClaferFeatureTest {
 		}
 	}
 	
+	@Test
+	public final void testHasFeature() {
+		ClaferModel claferModel = new ClaferModel();
+		claferModel.add(new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", ""));
+
+		assertTrue(claferModel.hasFeature("AES"));
+	}
+
 	@Test
 	public final void testNoEmptyPropertyType() {
 		ClaferModel claferModel = new ClaferModel();

@@ -94,9 +94,16 @@ public class ClaferConstraintDialog extends Dialog {
 			public void mouseDoubleClick(MouseEvent e) {
 				if (treeViewer.getSelection() instanceof TreeSelection) {
 					TreeSelection ts = (TreeSelection) treeViewer.getSelection();
-					if (ts.getFirstElement() instanceof String) {
-						String firstElem = (String) ts.getFirstElement();
-						text.insert(firstElem);
+
+					// toggle expansion if feature name clicked
+					if (ts.getFirstElement() instanceof ClaferFeature) {
+						Object selectedElem = ts.getFirstElement();
+						treeViewer.setExpandedState(selectedElem, !treeViewer.getExpandedState(selectedElem));
+					}
+					// add to text field if property name clicked
+					else if (ts.getFirstElement() instanceof FeatureProperty) {
+						FeatureProperty firstElem = (FeatureProperty) ts.getFirstElement();
+						text.insert(firstElem.getPropertyName());
 					}
 				}
 				super.mouseDoubleClick(e);

@@ -1,6 +1,5 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
@@ -26,7 +25,7 @@ public class FeaturePropertiesContentProvider implements ITreeContentProvider {
 			withPropertiesOnly.getClaferModel().removeIf(x -> !x.hasProperties());
 			return withPropertiesOnly.getClaferModel().toArray();
 		}
-		return ArrayContentProvider.getInstance().getElements(inputElement);
+		return new Object[] {};
 	}
 
 	@Override

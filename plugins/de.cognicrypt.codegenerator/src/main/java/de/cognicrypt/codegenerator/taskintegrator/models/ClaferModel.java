@@ -211,4 +211,23 @@ public class ClaferModel implements Iterable<ClaferFeature> {
 
 		return true;
 	}
+
+	/**
+	 * get the parent feature of a property
+	 * 
+	 * @param referenceProperty
+	 *        reference of the property to be found
+	 * @return first {@link ClaferFeature} that contains a matching reference to the given property
+	 */
+	public ClaferFeature getParentFeatureOfProperty(FeatureProperty referenceProperty) {
+		for (ClaferFeature cfrFeature : claferModel) {
+			for (FeatureProperty featureProperty : cfrFeature.getFeatureProperties()) {
+				// check, if this property is pointed to by referenceProperty
+				if (featureProperty == referenceProperty) {
+					return cfrFeature;
+				}
+			}
+		}
+		return null;
+	}
 }

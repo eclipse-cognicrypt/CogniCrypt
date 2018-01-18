@@ -140,19 +140,17 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 				// If the guided mode is selected, hide the widgets to get the location of the files required for the task.
 				grpNonguidedMode.setVisible(!tempSelectionStatus);
 				// Set the data value.
-				getObjectForDataInNonGuidedMode().setGuidedModeChosen(tempSelectionStatus);
+				getObjectForDataInNonGuidedMode().setGuidedModeChosen(tempSelectionStatus);				
+				
+				// If the guided mode is not selected, the rest of the pages are set to completed. This is to allow the finish button to be enabled on the first page.
+				for (IWizardPage page : getTheLocalContainerPage().getWizard().getPages()) {
+					if (!page.getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)) {
+						((WizardPage)page).setPageComplete(!tempSelectionStatus);
+						}
+					}
 				
 				// Check if the page can be set to completed.
 				getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
-				
-				// If the guided mode is not selected, the rest of the pages are set to completed. This is to allow the finish button to be enabled on the first page.
-				if (!tempSelectionStatus) {
-					for (IWizardPage page : getTheLocalContainerPage().getWizard().getPages()) {
-						if (!page.getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)) {
-							((WizardPage)page).setPageComplete(!tempSelectionStatus);
-							}
-						}
-					}
 				}
 			});
 		

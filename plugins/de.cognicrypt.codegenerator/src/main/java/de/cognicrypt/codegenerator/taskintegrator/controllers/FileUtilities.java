@@ -13,7 +13,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.stream.StreamSource;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -68,14 +76,81 @@ public class FileUtilities {
 	 * @param xslFileLocation
 	 * @param customLibLocation
 	 */
-	public void writeFiles(File cfrFileLocation, File jsonFileLocation, File xslFileLocation, File customLibLocation) {
+	public boolean writeFiles(File cfrFileLocation, File jsonFileLocation, File xslFileLocation, File customLibLocation) {
 		
-		copyFileFromPath(cfrFileLocation);
-		copyFileFromPath(jsonFileLocation);
-		copyFileFromPath(xslFileLocation);
-		copyFileFromPath(customLibLocation);
+		if (validateCFRFile(cfrFileLocation) && validateJSONFile(jsonFileLocation) && validateXSLFile(xslFileLocation) && validateJARFile(customLibLocation)) {
+			copyFileFromPath(cfrFileLocation);		
+			copyFileFromPath(jsonFileLocation);		
+			copyFileFromPath(xslFileLocation);
+			copyFileFromPath(customLibLocation);
+			return true;
+		}
+		return false;
 	}
 	
+	/**
+	 * Validate the provided JAR file before copying it to the target location.
+	 * @param customLibLocation
+	 * @return a boolean value for the validity of the file.
+	 */
+	private boolean validateJARFile(File customLibLocation) {
+		
+	        ZipFile customLib;
+	        boolean validFile = false;
+			try {
+				customLib = new ZipFile(customLibLocation);
+				Enumeration<? extends ZipEntry> e = customLib.entries();
+		        while(e.hasMoreElements()) {
+		            validFile = true;
+		        }
+		        customLib.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				return false;
+			} 
+	        
+	    return validFile;
+		
+	}
+
+	/**
+	 * Validate the provided XSL file before copying it to the target location.
+	 * @param xslFileLocation
+	 * @return a boolean value for the validity of the file.
+	 */
+	private boolean validateXSLFile(File xslFileLocation) {
+		try {
+			TransformerFactory.newInstance().newTransformer(new StreamSource(xslFileLocation));			
+		} catch (TransformerConfigurationException | TransformerFactoryConfigurationError e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Validate the provided JSON file before copying it to the target location.
+	 * @param jsonFileLocation
+	 * @return a boolean value for the validity of the file.
+	 */
+	private boolean validateJSONFile(File jsonFileLocation) {			
+		Gson gson = new Gson();
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(jsonFileLocation));
+            gson.fromJson(reader, Object.class);
+            reader.close();            
+            return true;
+        } catch (com.google.gson.JsonSyntaxException | IOException ex) {
+        	ex.printStackTrace();
+            return false;
+        }
+	}
+
+	private boolean validateCFRFile(File cfrFileLocation) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	/**
 	 * Copy the given file to the appropriate location. 
 	 * @param existingFileLocation

@@ -34,6 +34,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
@@ -151,7 +152,7 @@ public class InstanceListPage extends WizardPage {
 		infoText.setText(Constants.DEFAULT_ALGORITHM_NOTIFICATION);
 		infoText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));		
 		final ControlDecoration deco = new ControlDecoration(infoText, SWT.RIGHT);
-		Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
+		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage();		
 		deco.setImage(image);
 		deco.setShowOnlyOnFocus(false);	
 		

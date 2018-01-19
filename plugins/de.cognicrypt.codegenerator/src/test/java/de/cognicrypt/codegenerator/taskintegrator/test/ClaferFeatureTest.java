@@ -63,11 +63,6 @@ public class ClaferFeatureTest {
 		Object[] actualLines = Files.readAllLines(Paths.get(actualFilename)).toArray();
 		assertArrayEquals(expectedLines, actualLines);
 	}
-	
-	@Test
-	public final void testWriteCFRFile() {
-		fail("Not yet implemented");
-	}
 
 	@Test
 	public final void testImplementMissingFeatures() {

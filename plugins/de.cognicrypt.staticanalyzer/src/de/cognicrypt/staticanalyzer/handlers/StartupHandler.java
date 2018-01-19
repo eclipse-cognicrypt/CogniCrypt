@@ -1,7 +1,7 @@
 package de.cognicrypt.staticanalyzer.handlers;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.internal.core.JavaProject;
 import org.eclipse.ui.IStartup;
 
 import de.cognicrypt.staticanalyzer.Activator;
@@ -33,8 +34,10 @@ public class StartupHandler implements IStartup {
 	private static class AfterBuildListener implements IResourceChangeListener {
 
 		public void resourceChanged(IResourceChangeEvent event) {
+			Activator.getDefault().logInfo("ResourcechangeListener has been triggered.");
 			try {
-				final Set<IJavaElement> changedJavaElements = new HashSet<>();
+				final List<IJavaElement> changedJavaElements = new ArrayList<>();
+				
 				event.getDelta().accept(delta -> {
 					switch (delta.getKind()) {
 						case IResourceDelta.ADDED:
@@ -47,12 +50,36 @@ public class StartupHandler implements IStartup {
 										changedJavaElements.add(javaElement);
 									}
 									return false;
+									
 								}
 							}
 					}
 					return true;
 				});
+				
 				if (changedJavaElements.isEmpty()) {
+					for (IResourceDelta ev : event.getDelta().getAffectedChildren()) {
+						ev.accept(delta -> {
+						switch (delta.getKind()) {
+							case IResourceDelta.ADDED:
+							case IResourceDelta.CHANGED:
+								IResource res = delta.getResource();
+								IJavaElement javaElement = JavaCore.create(res);
+								if (javaElement != null) {
+									if (javaElement instanceof JavaProject) {
+										if ((delta.getFlags() & IResourceDelta.OPEN) != 0) {
+											changedJavaElements.add(javaElement);
+										}
+										return false;
+									}
+								}
+							}
+							return true;
+						});
+					}
+				}
+				if (changedJavaElements.isEmpty()) {
+					Activator.getDefault().logInfo("No changed resource found. Abort.");
 					return;
 				}
 
@@ -60,7 +87,7 @@ public class StartupHandler implements IStartup {
 				
 				AnalysisKickOff ako = new AnalysisKickOff();
 
-				if (ako.setUp()) {
+				if (ako.setUp(changedJavaElements.get(0))) {
 					if (ako.run()) {
 						Activator.getDefault().logInfo("Analysis has finished.");
 					} else {
@@ -74,6 +101,10 @@ public class StartupHandler implements IStartup {
 			} catch (CoreException e) {
 				Activator.getDefault().logError(e, "Internal error");
 			}
+		}
+
+		private void fetchChangedElement(final List<IJavaElement> changedJavaElements, IResourceDelta ev) throws CoreException {
+			
 		}
 
 	}

@@ -362,13 +362,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				
 				Button checkBox = new Button(container, SWT.CHECK);
 				checkBox.setText("Show Password");
-					
 				checkBox.addSelectionListener(new SelectionAdapter() {
-
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-							inputField.setEchoChar( '\0' );
-							getWizard().getContainer().updateButtons();
+						//if(checkBox.getSelection() == true)
+						inputField.setEchoChar( '\0' );
+						//getWizard().getContainer().updateButtons();
+					
 					}
 				});
 				text(question, inputField);
@@ -404,7 +404,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					inputField.addVerifyListener(new VerifyListener() {  
 					    @Override  
 					    public void verifyText(VerifyEvent e) {
-					        /* Notice how we combine the old and new below */
 					        String currentText = ((Text)e.widget).getText();
 					        String port =  currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
 					        try{  
@@ -736,15 +735,22 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private void createNote(final Composite parent, final Question question) {
 		Group notePanel = new Group(parent, SWT.NONE);
 		notePanel.setText("Note:");
+		GridLayout gridLayout = new GridLayout();
+		notePanel.setLayout(gridLayout);
+		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
+		gridData.horizontalSpan = 1;
+		notePanel.setLayoutData(gridData);
 		final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 		notePanel.setFont(boldFont);
+		notePanel.pack();
+		setControl(parent);
 
 		this.note = new Text(notePanel, SWT.MULTI | SWT.WRAP );
 		this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.note.setText(question.getNote());
-		this.note.setBounds(10, 20, 585, 60);
-		this.note.setSize(note.computeSize(585, SWT.DEFAULT));
-		setControl(notePanel);
+		//this.note.setBounds(10, 20, 520, 60);
+		//this.note.setSize(note.computeSize(585, SWT.DEFAULT));
+		this.note.pack();
 		this.note.setEditable(false);
 		this.note.setEnabled(true);
 	}

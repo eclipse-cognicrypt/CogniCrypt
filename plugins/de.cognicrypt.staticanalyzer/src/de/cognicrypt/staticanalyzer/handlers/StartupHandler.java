@@ -2,9 +2,7 @@ package de.cognicrypt.staticanalyzer.handlers;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -15,6 +13,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.internal.core.JavaProject;
 import org.eclipse.ui.IStartup;
 
 import de.cognicrypt.crysl.reader.CrySLModelReader;
@@ -32,8 +31,9 @@ public class StartupHandler implements IStartup {
 
 		@Override
 		public void resourceChanged(final IResourceChangeEvent event) {
-			final Set<IJavaElement> changedJavaElements = new HashSet<>();
 			final List<IResource> changedCrySLElements = new ArrayList<>();
+			final List<IJavaElement> changedJavaElements = new ArrayList<>();
+			Activator.getDefault().logInfo("ResourcechangeListener has been triggered.");
 			try {
 				event.getDelta().accept(delta -> {
 					switch (delta.getKind()) {
@@ -53,9 +53,7 @@ public class StartupHandler implements IStartup {
 										}
 									}
 								} catch (final Exception ex) {
-
 									return false;
-
 								}
 								if (res.getFileExtension().endsWith("cryptsl")) {
 									changedCrySLElements.add(res);
@@ -65,23 +63,48 @@ public class StartupHandler implements IStartup {
 					}
 					return true;
 				});
-			} catch (final CoreException e) {}
-			if (!changedJavaElements.isEmpty()) {
-
-				Activator.getDefault().logInfo("Analysis has been triggered.");
-
-				final AnalysisKickOff ako = new AnalysisKickOff();
-
-				if (ako.setUp()) {
-					if (ako.run()) {
-						Activator.getDefault().logInfo("Analysis has finished.");
-					} else {
-						Activator.getDefault().logInfo("Analysis has aborted.");
+			
+				if (changedJavaElements.isEmpty()) {
+					for (IResourceDelta ev : event.getDelta().getAffectedChildren()) {
+						ev.accept(delta -> {
+						switch (delta.getKind()) {
+							case IResourceDelta.ADDED:
+							case IResourceDelta.CHANGED:
+								IResource res = delta.getResource();
+								IJavaElement javaElement = JavaCore.create(res);
+								if (javaElement != null) {
+									if (javaElement instanceof JavaProject) {
+										if ((delta.getFlags() & IResourceDelta.OPEN) != 0) {
+											changedJavaElements.add(javaElement);
+										}
+										return false;
+									}
+								}
+							}
+							return true;
+						});
 					}
-				} else {
-					Activator.getDefault().logInfo("Analysis has been canceled due to erroneous setup.");
 				}
+			} catch (final CoreException e) {}
+			if (changedJavaElements.isEmpty()) {
+				Activator.getDefault().logInfo("No changed resource found. Abort.");
+				return;
 			}
+
+			Activator.getDefault().logInfo("Analysis has been triggered.");
+
+			final AnalysisKickOff ako = new AnalysisKickOff();
+
+			if (ako.setUp(changedJavaElements.get(0))) {
+				if (ako.run()) {
+					Activator.getDefault().logInfo("Analysis has finished.");
+				} else {
+					Activator.getDefault().logInfo("Analysis has aborted.");
+				}
+			} else {
+				Activator.getDefault().logInfo("Analysis has been canceled due to erroneous setup.");
+			}
+			
 			if (!changedCrySLElements.isEmpty()) {
 				try {
 					new CrySLModelReader(changedCrySLElements.get(0));
@@ -90,7 +113,6 @@ public class StartupHandler implements IStartup {
 				}
 			}
 		}
-
 	}
 
 	private static final AfterBuildListener BUILD_LISTENER = new AfterBuildListener();

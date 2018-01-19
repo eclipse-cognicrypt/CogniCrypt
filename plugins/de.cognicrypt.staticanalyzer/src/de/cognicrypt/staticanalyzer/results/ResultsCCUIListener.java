@@ -48,9 +48,11 @@ import typestate.interfaces.ISLConstraint;
 public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	private final ErrorMarkerGenerator markerGenerator;
-
-	public ResultsCCUIListener(final ErrorMarkerGenerator gen) {
-		this.markerGenerator = gen;
+	private final IProject currentProject;
+	
+	public ResultsCCUIListener(final IProject curProj, final ErrorMarkerGenerator gen) {
+		currentProject = curProj;
+		markerGenerator = gen;
 	}
 
 	@Override
@@ -77,10 +79,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void constraintViolation(final AnalysisSeedWithSpecification arg0, final ISLConstraint brokenConstraint, final Statement location) {
-		final StringBuilder msg = new StringBuilder();
-		msg.append("The constraint ");
+		StringBuilder msg = new StringBuilder();
 		evaluateBrokenConstraint(brokenConstraint, msg);
-		msg.append(" was violated.");
 		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
 	}
 
@@ -120,12 +120,13 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	private void evaluateValueConstraint(final ISLConstraint brokenConstraint, final StringBuilder msg) {
 		final CryptSLValueConstraint valCons = (CryptSLValueConstraint) brokenConstraint;
 		msg.append(valCons.getVarName());
-		msg.append(" € ");
-		for (final String val : valCons.getValueRange()) {
+		msg.append(" should be any of {");
+		for (String val : valCons.getValueRange()) {
 			msg.append(val);
 			msg.append(", ");
 		}
-		msg.deleteCharAt(msg.length() - 2);
+		msg.deleteCharAt(msg.length() - 3);
+		msg.append('}');
 	}
 
 	@Override
@@ -191,7 +192,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	private IResource unitToResource(final Statement stmt) {
 		final SootClass className = stmt.getMethod().getDeclaringClass();
 
-		final IProject currentProject = Utils.getCurrentProject();
 		try {
 			return Utils.findClassByName(className, currentProject);
 		} catch (final ClassNotFoundException e) {

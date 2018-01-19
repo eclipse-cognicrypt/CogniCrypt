@@ -34,18 +34,25 @@ public class AnalysisKickOff {
 	 * 2) Creating a {@link ResultsCCUIListener} <br>
 	 * 3) Finding the current project's class with a main method <br>
 	 *
+	 * @param iJavaElement 
+	 * 
 	 * @return <code>true</code>/<code>false</code> if setup (not) successful
 	 */
-	public boolean setUp() {
-		final IProject ip = Utils.getCurrentProject();
-
+	public boolean setUp(IJavaElement iJavaElement) {
+		IProject ip = null;
+		if (iJavaElement == null) {
+			ip = Utils.getCurrentProject();
+		} else {
+			ip = iJavaElement.getJavaProject().getProject();
+		}
+		
 		if (AnalysisKickOff.errGen == null) {
 			AnalysisKickOff.errGen = new ErrorMarkerGenerator();
 		} else {
 			AnalysisKickOff.errGen.clearMarkers(ip);
 		}
 		if (AnalysisKickOff.resultsReporter == null) {
-			AnalysisKickOff.resultsReporter = new ResultsCCUIListener(AnalysisKickOff.errGen);
+			AnalysisKickOff.resultsReporter = new ResultsCCUIListener(ip, AnalysisKickOff.errGen);
 		}
 
 		final SearchRequestor requestor = new SearchRequestor() {

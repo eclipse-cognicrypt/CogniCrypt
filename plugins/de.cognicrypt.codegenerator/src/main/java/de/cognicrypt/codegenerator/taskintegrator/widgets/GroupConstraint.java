@@ -4,6 +4,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
@@ -34,12 +36,12 @@ public class GroupConstraint extends Group {
 		// Set the model for use first.
 		this.setConstraint(constraint);
 		
-		setLayout(new RowLayout(SWT.HORIZONTAL));
+		setLayout(new GridLayout(3, false));
 		
 		txtForFeatureConstraints = new Text(this, SWT.BORDER);
 		txtForFeatureConstraints.setEditable(false);
 		txtForFeatureConstraints.setText(constraint.getConstraint());
-		txtForFeatureConstraints.setLayoutData(new RowData(240, SWT.DEFAULT));
+		txtForFeatureConstraints.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		txtForFeatureConstraints.addFocusListener(new FocusAdapter() {
 

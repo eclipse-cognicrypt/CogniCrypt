@@ -62,7 +62,6 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wb.swt.ResourceManager;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
@@ -145,8 +144,7 @@ public class InstanceListPage extends WizardPage {
 		infoText.setText(Constants.DEFAULT_ALGORITHM_NOTIFICATION);
 		infoText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));		
 		final ControlDecoration deco = new ControlDecoration(infoText, SWT.RIGHT);
-		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage();
-		deco.setImage(ResourceManager.getPluginImage("de.cognicrypt.codegenerator", "icons/light_bulb_icon.png"));		
+		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage();		
 		deco.setImage(image);
 		deco.setShowOnlyOnFocus(false);		
 				

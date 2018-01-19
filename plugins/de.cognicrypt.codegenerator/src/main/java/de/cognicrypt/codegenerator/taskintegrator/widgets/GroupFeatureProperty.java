@@ -40,7 +40,7 @@ public class GroupFeatureProperty extends Group {
 	 * @param claferModel
 	 */
 	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam, boolean showRemoveButton, ClaferModel claferModel) {
-		super(parent, SWT.BORDER);
+		super(parent, SWT.NONE);
 		// Set the model for use first.
 		this.setFeatureProperty(featurePropertyParam);
 		

@@ -265,7 +265,15 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			return null;
 		}
 		
-		return super.getNextPage();
+		
+		/*
+		 * This is for debugging only. To be removed for the final version.
+		 * TODO Please add checks on the pages after mode selection to mark those pages as completed, or restrict the finish button.
+		 */
+		IWizardPage nextPage = super.getNextPage();
+		((WizardPage)nextPage).setPageComplete(true);
+		
+		return nextPage;
 
 	}
 

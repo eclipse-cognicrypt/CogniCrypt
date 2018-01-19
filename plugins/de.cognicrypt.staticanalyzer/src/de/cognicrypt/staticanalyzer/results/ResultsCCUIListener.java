@@ -47,8 +47,10 @@ import typestate.interfaces.ISLConstraint;
 public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	private final ErrorMarkerGenerator markerGenerator;
-
-	public ResultsCCUIListener(ErrorMarkerGenerator gen) {
+	private final IProject currentProject;
+	
+	public ResultsCCUIListener(IProject curProj, ErrorMarkerGenerator gen) {
+		currentProject = curProj;
 		markerGenerator = gen;
 	}
 
@@ -164,7 +166,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	private IResource unitToResource(StmtWithMethod stmt) {
 		SootClass className = stmt.getMethod().getDeclaringClass();
-		final IProject currentProject = Utils.getCurrentProject();
 		try {
 			return Utils.findClassByName(className, currentProject);
 		} catch (ClassNotFoundException e) {

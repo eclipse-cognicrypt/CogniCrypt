@@ -78,11 +78,6 @@ public class TaskIntegrationWizard extends Wizard {
 				fileUtilities.writeFiles(objectForDataInNonGuidedMode.getLocationOfClaferFile(), objectForDataInNonGuidedMode.getLocationOfJSONFile(), objectForDataInNonGuidedMode.getLocationOfXSLFile(),objectForDataInNonGuidedMode.getLocationOfCustomLibrary());
 				fileUtilities.writeTaskToJSONFile(objectForDataInNonGuidedMode.getTask());
 
-				// try to compile the Clafer file
-				// TODO error handling missing
-				String claferFilename = Constants.CFR_FILE_DIRECTORY_PATH + fileUtilities.getTrimmedTaskName() + Constants.CFR_EXTENSION;
-				ClaferModel.compile(claferFilename);
-
 				return true;
 			}
 		} else {

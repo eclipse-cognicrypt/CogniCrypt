@@ -53,7 +53,7 @@ public class GroupFeatureProperty extends Group {
 		
 		txtPropertyName = new Text(this, SWT.BORDER);
 		txtPropertyName.setEditable(showRemoveButton);
-		txtPropertyName.setLayoutData(new RowData(160, SWT.DEFAULT));
+		txtPropertyName.setLayoutData(new RowData(130, SWT.DEFAULT));
 		txtPropertyName.setText(featureProperty.getPropertyName());
 		txtPropertyName.addFocusListener(new FocusAdapter() {
 
@@ -71,7 +71,7 @@ public class GroupFeatureProperty extends Group {
 
 			txtPropertyType = new Text(this, SWT.BORDER);
 			txtPropertyType.setEditable(showRemoveButton);
-			txtPropertyType.setLayoutData(new RowData(160, SWT.DEFAULT));
+			txtPropertyType.setLayoutData(new RowData(130, SWT.DEFAULT));
 			txtPropertyType.setText(featureProperty.getPropertyType());
 			txtPropertyType.addFocusListener(new FocusAdapter() {
 
@@ -84,7 +84,7 @@ public class GroupFeatureProperty extends Group {
 		} else {
 
 			comboPropertyType = new Combo(this, SWT.NONE);
-			comboPropertyType.setLayoutData(new RowData(160, SWT.DEFAULT));
+			comboPropertyType.setLayoutData(new RowData(130, SWT.DEFAULT));
 			comboPropertyType.setText(featureProperty.getPropertyType());
 			comboPropertyType.addFocusListener(new FocusAdapter() {
 

@@ -4,6 +4,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -38,7 +39,7 @@ public class GroupConstraint extends Group {
 		txtForFeatureConstraints = new Text(this, SWT.BORDER);
 		txtForFeatureConstraints.setEditable(false);
 		txtForFeatureConstraints.setText(constraint.getConstraint());
-		txtForFeatureConstraints.setSize(200, 30);
+		txtForFeatureConstraints.setLayoutData(new RowData(240, SWT.DEFAULT));
 
 		txtForFeatureConstraints.addFocusListener(new FocusAdapter() {
 

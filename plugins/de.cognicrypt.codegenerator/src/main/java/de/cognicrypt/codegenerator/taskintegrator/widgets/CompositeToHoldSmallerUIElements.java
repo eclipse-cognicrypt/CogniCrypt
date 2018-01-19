@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -54,9 +57,10 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		groupAnswers = new ArrayList<GroupAnswer>();
 
 		composite = new Composite(this, SWT.NONE);
+		composite.setLayout(new GridLayout());
+
 		setContent(composite);
 		setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		composite.setLayout(null);
 
 		featureProperties = new ArrayList<FeatureProperty>();
 		featureConstraints = new ArrayList<ClaferConstraint>();
@@ -121,12 +125,10 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * @param showRemoveButton
 	 */
 	private void addFeatureConstraintUI(ClaferConstraint featureConstraintUnderConsideration, boolean showRemoveButton) {
-		GroupConstraint groupConstraint = new GroupConstraint((Composite) getContent(), SWT.NONE, featureConstraintUnderConsideration, showRemoveButton);
-		groupConstraint.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT + 200, 39);
-
-		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
-
-		setMinHeight(getLowestWidgetYAxisValue());
+		GroupConstraint groupConstraint = new GroupConstraint(composite, SWT.NONE, featureConstraintUnderConsideration, showRemoveButton);
+		groupConstraint.setLayoutData(new GridData());
+		setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		composite.pack();
 	}
 
 	/**
@@ -145,13 +147,10 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * @param showRemoveButton
 	 */
 	private void addFeaturePropertyUI(FeatureProperty featureProperty, boolean showRemoveButton, ClaferModel claferModel) {
-		GroupFeatureProperty groupForFeatureProperty = new GroupFeatureProperty((Composite) getContent(), SWT.NONE, featureProperty, showRemoveButton, claferModel);
-		groupForFeatureProperty.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT + 200,
-			Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
-
-		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
-
-		setMinHeight(getLowestWidgetYAxisValue());
+		GroupFeatureProperty groupForFeatureProperty = new GroupFeatureProperty(composite, SWT.NONE, featureProperty, showRemoveButton, claferModel);
+		groupForFeatureProperty.setLayoutData(new GridData());
+		setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		composite.pack();
 	}
 
 	/**
@@ -347,10 +346,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		for (Control uiRepresentationOfClaferFeatures : compositeContentOfThisScrolledComposite.getChildren()) {
 			uiRepresentationOfClaferFeatures.dispose();
 		}
-
-		// update the size values.
-		setLowestWidgetYAxisValue(0);
-		setMinHeight(getLowestWidgetYAxisValue());
 
 		// add all the feature properties excluding the deleted one.
 		if (featureProperties.size() > 0) {

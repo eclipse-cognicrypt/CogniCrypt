@@ -43,6 +43,13 @@ public class FileUtilities {
 		this.setTaskName(taskName);
 	}
 	
+	private boolean compileCFRFile() {
+		// try to compile the Clafer file
+		// TODO error handling missing
+		String claferFilename = Constants.CFR_FILE_DIRECTORY_PATH + getTrimmedTaskName() + Constants.CFR_EXTENSION;
+		return ClaferModel.compile(claferFilename);
+	}
+
 	/**
 	 * Write the data from the pages to target location in the plugin.
 	 * @param claferModel
@@ -52,6 +59,7 @@ public class FileUtilities {
 	 */
 	public void writeFiles(ClaferModel claferModel, ArrayList<Question> questions, String xslFileContents, File customLibLocation) {
 		writeCFRFile(claferModel);
+		compileCFRFile();
 		try {
 			writeJSONFile(questions);
 		} catch (IOException e) {
@@ -74,6 +82,7 @@ public class FileUtilities {
 	public void writeFiles(File cfrFileLocation, File jsonFileLocation, File xslFileLocation, File customLibLocation) {
 		
 		copyFileFromPath(cfrFileLocation);
+		compileCFRFile();
 		copyFileFromPath(jsonFileLocation);
 		copyFileFromPath(xslFileLocation);
 		copyFileFromPath(customLibLocation);
@@ -330,7 +339,7 @@ public class FileUtilities {
 	 * 
 	 * @return task name without non-alphanumerics
 	 */
-	public String getTrimmedTaskName() {
+	private String getTrimmedTaskName() {
 		return getTaskName().replaceAll("[^A-Za-z0-9]", "");
 	}
 

@@ -192,7 +192,36 @@ public class ClaferFeatureTest {
 
 	@Test
 	public final void testGetParentFeatureOfProperty() {
-		fail("Not yet implemented");
+		ClaferModel claferModel = new ClaferModel();
+		ClaferFeature featureA = new ClaferFeature(Constants.FeatureType.CONCRETE, "A", "B");
+
+		ArrayList<FeatureProperty> propertiesA = new ArrayList<>();
+		
+
+		FeatureProperty propertyA1 = new FeatureProperty("1", "x");
+		FeatureProperty propertyA2 = new FeatureProperty("2", "y");
+		propertiesA.add(propertyA1);
+		propertiesA.add(propertyA2);
+		featureA.setFeatureProperties(propertiesA);
+		ClaferFeature featureB = new ClaferFeature(Constants.FeatureType.ABSTRACT, "B", "");
+
+		ClaferFeature featureC = new ClaferFeature(Constants.FeatureType.CONCRETE, "C", "");
+
+		// create the same properties as or A on purpose
+		// they are stored in different objects and should not be found
+		ArrayList<FeatureProperty> propertiesC = new ArrayList<>();
+		propertiesC.add(new FeatureProperty("1", "x"));
+		propertiesC.add(new FeatureProperty("2", "y"));
+		featureC.setFeatureProperties(propertiesA);
+
+		claferModel.add(featureA);
+		claferModel.add(featureB);
+		claferModel.add(featureC);
+
+		System.out.println();
+		
+		assertEquals(featureA, claferModel.getParentFeatureOfProperty(propertyA1));
+		assertEquals(null, claferModel.getParentFeatureOfProperty(new FeatureProperty("1", "x")));
 	}
 
 	@AfterClass

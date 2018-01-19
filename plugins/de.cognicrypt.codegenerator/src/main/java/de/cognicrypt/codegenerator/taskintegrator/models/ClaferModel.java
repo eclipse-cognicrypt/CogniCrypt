@@ -230,7 +230,7 @@ public class ClaferModel implements Iterable<ClaferFeature> {
 	}
 
 	/**
-	 * get the parent feature of a property
+	 * Get the parent feature of a property. Note, that this method finds a feature containing the given reference and does not check equality in terms of values.
 	 * 
 	 * @param referenceProperty
 	 *        reference of the property to be found

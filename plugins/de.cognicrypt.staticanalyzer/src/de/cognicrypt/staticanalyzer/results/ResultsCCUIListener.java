@@ -55,9 +55,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	@Override
 	public void constraintViolation(AnalysisSeedWithSpecification spec, ISLConstraint brokenConstraint, StmtWithMethod location) {
 		StringBuilder msg = new StringBuilder();
-		msg.append("The constraint ");
 		evaluateBrokenConstraint(brokenConstraint, msg);
-		msg.append(" was violated.");
 		markerGenerator.addMarker(unitToResource(location), location.getStmt().getJavaSourceStartLineNumber(), msg.toString());
 	}
 
@@ -97,12 +95,13 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	private void evaluateValueConstraint(ISLConstraint brokenConstraint, StringBuilder msg) {
 		final CryptSLValueConstraint valCons = (CryptSLValueConstraint) brokenConstraint;
 		msg.append(valCons.getVarName());
-		msg.append(" € ");
+		msg.append(" should be any of {");
 		for (String val : valCons.getValueRange()) {
 			msg.append(val);
 			msg.append(", ");
 		}
-		msg.deleteCharAt(msg.length() - 2);
+		msg.deleteCharAt(msg.length() - 3);
+		msg.append('}');
 	}
 
 	@Override

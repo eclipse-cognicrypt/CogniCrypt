@@ -104,6 +104,11 @@ public class ClaferModel implements Iterable<ClaferFeature> {
 				}
 			}
 
+			// prevent implementing features repeatedly
+			if (addedFeatures.hasFeature(fp.getPropertyType())) {
+				propertyTypeFound = true;
+			}
+
 			// remember missing property types			
 			if (!fp.getPropertyType().isEmpty() && !propertyTypeFound) {
 				ClaferFeature propertyTypeFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, fp.getPropertyType(), "");

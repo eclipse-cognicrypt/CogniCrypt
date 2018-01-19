@@ -126,7 +126,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 */
 	private void addFeatureConstraintUI(ClaferConstraint featureConstraintUnderConsideration, boolean showRemoveButton) {
 		GroupConstraint groupConstraint = new GroupConstraint(composite, SWT.NONE, featureConstraintUnderConsideration, showRemoveButton);
-		groupConstraint.setLayoutData(new GridData());
+		groupConstraint.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		composite.pack();
 	}
@@ -148,7 +148,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 */
 	private void addFeaturePropertyUI(FeatureProperty featureProperty, boolean showRemoveButton, ClaferModel claferModel) {
 		GroupFeatureProperty groupForFeatureProperty = new GroupFeatureProperty(composite, SWT.NONE, featureProperty, showRemoveButton, claferModel);
-		groupForFeatureProperty.setLayoutData(new GridData());
+		groupForFeatureProperty.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		composite.pack();
 	}

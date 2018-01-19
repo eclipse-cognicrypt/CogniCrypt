@@ -5,6 +5,8 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
@@ -46,14 +48,14 @@ public class GroupFeatureProperty extends Group {
 		
 		
 		this.claferModel = claferModel;
-		setLayout(new RowLayout(SWT.HORIZONTAL));
+		setLayout(new GridLayout(5, false));
 		
 		Label lblName = new Label(this, SWT.NONE);
 		lblName.setText(Constants.FEATURE_PROPERTY_NAME);
 		
 		txtPropertyName = new Text(this, SWT.BORDER);
 		txtPropertyName.setEditable(showRemoveButton);
-		txtPropertyName.setLayoutData(new RowData(130, SWT.DEFAULT));
+		txtPropertyName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		txtPropertyName.setText(featureProperty.getPropertyName());
 		txtPropertyName.addFocusListener(new FocusAdapter() {
 
@@ -71,7 +73,7 @@ public class GroupFeatureProperty extends Group {
 
 			txtPropertyType = new Text(this, SWT.BORDER);
 			txtPropertyType.setEditable(showRemoveButton);
-			txtPropertyType.setLayoutData(new RowData(130, SWT.DEFAULT));
+			txtPropertyType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 			txtPropertyType.setText(featureProperty.getPropertyType());
 			txtPropertyType.addFocusListener(new FocusAdapter() {
 
@@ -84,7 +86,7 @@ public class GroupFeatureProperty extends Group {
 		} else {
 
 			comboPropertyType = new Combo(this, SWT.NONE);
-			comboPropertyType.setLayoutData(new RowData(130, SWT.DEFAULT));
+			comboPropertyType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 			comboPropertyType.setText(featureProperty.getPropertyType());
 			comboPropertyType.addFocusListener(new FocusAdapter() {
 

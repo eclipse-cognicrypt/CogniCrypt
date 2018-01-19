@@ -426,6 +426,7 @@ public class Constants {
 	
 	
 	
+	public static final String[] CLAFER_RESERVED_WORDS = { "abstract", "all", "assert", "disj", "else", "enum", "if", "in", "lone", "max", "maximize", "min", "minimize", "mux", "no", "not", "one", "opt", "or", "product", "some", "sum", "then", "xor" };
 	
 	
 	

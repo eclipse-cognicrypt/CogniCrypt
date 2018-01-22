@@ -37,7 +37,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		setClaferFeature(claferFeatureParam);
 		setLayout(new FormLayout());
 		
-		Group grpClaferFeature = new Group(this, SWT.BORDER);
+		Group grpClaferFeature = new Group(this, SWT.NONE);
 		FormData fd_grpClaferFeature = new FormData();
 		fd_grpClaferFeature.top = new FormAttachment(0, yAxisValue); //40
 		yAxisValue = yAxisValue + 70;

@@ -49,11 +49,9 @@ public class GroupModifyDeleteButtons extends Group {
 		        }
 			}
 		});
-		btnDelete.setLayoutData(new RowData(66, SWT.DEFAULT));
 		btnDelete.setText("Delete");
 		
 		Button btnModify = new Button(this, SWT.NONE);
-		btnModify.setLayoutData(new RowData(66, SWT.DEFAULT));
 		btnModify.setText("Modify");
 		ArrayList<Question> listOfAllQuestions=((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getListOfAllQuestions();
 		ClaferModel claferModel = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getClaferModel();
@@ -70,7 +68,6 @@ public class GroupModifyDeleteButtons extends Group {
 			}
 		});
 
-		this.setSize(SWT.DEFAULT, 40);
 	}
 
 /*	private void setClaferFeatures(ArrayList<ClaferFeature> claferFeatures) {

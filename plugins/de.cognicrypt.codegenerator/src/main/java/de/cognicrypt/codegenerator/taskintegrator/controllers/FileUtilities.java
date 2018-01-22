@@ -90,7 +90,12 @@ public class FileUtilities {
 		
 		if (validateCFRFile(cfrFileLocation) && validateJSONFile(jsonFileLocation) && validateXSLFile(xslFileLocation) && validateJARFile(customLibLocation)) {
 			copyFileFromPath(cfrFileLocation);		
-			copyFileFromPath(jsonFileLocation);		
+
+			// TODO see if compilation should be done in the validation step or not
+			String cfrFilename = cfrFileLocation.getAbsolutePath();
+			copyFileFromPath(new File(cfrFilename.substring(0, cfrFilename.lastIndexOf(".") + 1) + Constants.JS_EXTENSION));
+
+			copyFileFromPath(jsonFileLocation);
 			copyFileFromPath(xslFileLocation);
 			copyFileFromPath(customLibLocation);
 			return true;
@@ -160,8 +165,7 @@ public class FileUtilities {
 	 * @return a boolean value for the validity of the file.
 	 */
 	private boolean validateCFRFile(File cfrFileLocation) {
-		// TODO Auto-generated method stub
-		return true;
+		return ClaferModel.compile(cfrFileLocation.getAbsolutePath());
 	}
 
 	/**
@@ -175,6 +179,8 @@ public class FileUtilities {
 				
 				if(existingFileLocation.getPath().endsWith(Constants.CFR_EXTENSION)) {
 					targetDirectory = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.CFR_EXTENSION);
+				} else if (existingFileLocation.getPath().endsWith(Constants.JS_EXTENSION)) {
+					targetDirectory = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.JS_EXTENSION);
 				} else if(existingFileLocation.getPath().endsWith(Constants.JSON_EXTENSION)) {
 					targetDirectory = new File(Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.JSON_EXTENSION);
 				} else if(existingFileLocation.getPath().endsWith(Constants.XSL_EXTENSION)) {

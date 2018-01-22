@@ -77,8 +77,19 @@ public class ClaferFeature {
 		this.featureProperties = featureProperties;
 	}
 	
+	/**
+	 * @return true if the feature has non-empty properties, false otherwise
+	 */
 	public boolean hasProperties() {
-		return !featureProperties.isEmpty();
+		if (!featureProperties.isEmpty()) {
+			// check for a non-empty feature property
+			for (FeatureProperty featureProperty : getFeatureProperties()) {
+				if (!featureProperty.getPropertyName().isEmpty()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	public boolean hasProperty(String needle) {

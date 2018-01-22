@@ -88,17 +88,22 @@ public class FileUtilities {
 	 */
 	public boolean writeFiles(File cfrFileLocation, File jsonFileLocation, File xslFileLocation, File customLibLocation) {
 		
-		if (validateCFRFile(cfrFileLocation) && validateJSONFile(jsonFileLocation) && validateXSLFile(xslFileLocation) && validateJARFile(customLibLocation)) {
-			copyFileFromPath(cfrFileLocation);		
-
-			// TODO see if compilation should be done in the validation step or not
-			String cfrFilename = cfrFileLocation.getAbsolutePath();
-			copyFileFromPath(new File(cfrFilename.substring(0, cfrFilename.lastIndexOf(".") + 1) + Constants.JS_EXTENSION));
-
-			copyFileFromPath(jsonFileLocation);
-			copyFileFromPath(xslFileLocation);
-			copyFileFromPath(customLibLocation);
-			return true;
+		// custom library location is optional.
+		if (customLibLocation != null) {
+			if (validateCFRFile(cfrFileLocation) && validateJSONFile(jsonFileLocation) && validateXSLFile(xslFileLocation) && validateJARFile(customLibLocation)) {
+				copyFileFromPath(cfrFileLocation);		
+				copyFileFromPath(jsonFileLocation);		
+				copyFileFromPath(xslFileLocation);
+				copyFileFromPath(customLibLocation);
+				return true;
+			}
+		} else {
+			if (validateCFRFile(cfrFileLocation) && validateJSONFile(jsonFileLocation) && validateXSLFile(xslFileLocation)) {
+				copyFileFromPath(cfrFileLocation);		
+				copyFileFromPath(jsonFileLocation);		
+				copyFileFromPath(xslFileLocation);
+				return true;
+			}
 		}
 		return false;
 	}

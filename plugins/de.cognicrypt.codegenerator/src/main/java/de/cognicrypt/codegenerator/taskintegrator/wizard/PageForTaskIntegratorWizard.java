@@ -13,6 +13,8 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -22,11 +24,7 @@ import org.eclipse.swt.widgets.MessageBox;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.question.Answer;
-import de.cognicrypt.codegenerator.question.ClaferDependency;
-import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
@@ -68,6 +66,9 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		Composite container = new Composite(parent, SWT.NONE);
 		setControl(container);
 
+		// make the page layout two-column
+		container.setLayout(new GridLayout(2, false));
+
 		switch (this.getName()) {
 			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
 				container.setLayout(new FillLayout(SWT.HORIZONTAL));
@@ -75,10 +76,11 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				break;
 			case Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
-				compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
+				// fill the available space on the with the big composite
+				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 				Button btnAddFeature = new Button(container, SWT.NONE);
-				btnAddFeature.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
+				btnAddFeature.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 				btnAddFeature.setText("Add Feature");
 				btnAddFeature.addSelectionListener(new SelectionAdapter() {
 
@@ -90,14 +92,17 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						if (cfrFeatureDialog.open() == 0) {
 							ClaferFeature tempFeature = cfrFeatureDialog.getResult();
 							
-							// inform user that features have been created automatically
-							// TODO only show message if new features can be implemented
-							MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.YES | SWT.NO);
-							dialog.setText("Additional features can be created");
-							dialog.setMessage("Some of the used features don't exist yet. Should we create them for you?");
-							
-							if (dialog.open() == SWT.YES) {
-								tempFeature.implementMissingFeatures(compositeToHoldGranularUIElements.getClaferModel());
+							// if features are missing, ask the user whether to implement them							
+							ClaferModel missingFeatures = compositeToHoldGranularUIElements.getClaferModel().getMissingFeatures(tempFeature);
+
+							if (!missingFeatures.getClaferModel().isEmpty()) {
+								MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.YES | SWT.NO);
+								dialog.setText("Additional features can be created");
+								dialog.setMessage("Some of the used features don't exist yet. Should we create them for you?");
+
+								if (dialog.open() == SWT.YES) {
+									compositeToHoldGranularUIElements.getClaferModel().implementMissingFeatures(tempFeature);
+								}
 							}
 
 							// Update the array list.							
@@ -114,13 +119,15 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				break;
 			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:
 
-				this.setCompositeForXsl(new CompositeForXsl(container, SWT.NONE));
+				setCompositeForXsl(new CompositeForXsl(container, SWT.NONE));
+				// fill the available space on the with the big composite
+				getCompositeForXsl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
 
 				Button btnAddXSLTag = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
-				btnAddXSLTag.setBounds(Constants.RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
+				btnAddXSLTag.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 				btnAddXSLTag.setText("Add Xsl Tag");
 				Button btnReadCode = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
-				btnReadCode.setBounds(Constants.RECTANGLE_FOR_SECOND_BUTTON_FOR_NON_MODE_SELECTION_PAGES);
+				btnReadCode.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 				btnReadCode.setText("Get the code");
 
 				btnReadCode.addSelectionListener(new SelectionAdapter() {
@@ -138,7 +145,11 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 						fileDialog.setFilterExtensions(new String[] { "*.txt", "*.java", "*.xsl" });
 						fileDialog.setText("Choose the code file:");
-						((CompositeForXsl) getCompositeForXsl()).updateTheTextFieldWithFileData(fileDialog.open());
+
+						String fileDialogResult = fileDialog.open();
+						if (fileDialogResult != null) {
+							((CompositeForXsl) getCompositeForXsl()).updateTheTextFieldWithFileData(fileDialogResult);
+						}
 					}
 
 				});
@@ -164,7 +175,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 										// get all the Clafer features' properties
 										for (ClaferFeature cfrFtr : claferModel) {
 											String ftrName = cfrFtr.getFeatureName();
-											for (FeatureProperty prop : cfrFtr.getfeatureProperties()) {
+											for (FeatureProperty prop : cfrFtr.getFeatureProperties()) {
 												// prepend the feature name and add the property to dropdown entries
 												strFeatures.add(ftrName + "." + prop.getPropertyName());
 											}
@@ -204,7 +215,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				break;
 			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
-				this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
+				// fill the available space on the with the big composite
+				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 				TaskIntegrationWizard tiWizard = null;
 
@@ -217,10 +229,9 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				PageForTaskIntegratorWizard claferPage = tiWizard.getTIPageByName(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION);
 				CompositeToHoldGranularUIElements claferPageComposite = (CompositeToHoldGranularUIElements) claferPage.getCompositeToHoldGranularUIElements();
 
-				QuestionDialog questionDialog = new QuestionDialog(parent
-					.getShell() /* compositeToHoldGranularUIElements.getListOfAllClaferFeatures()claferFeatures,claferPageComposite */);
+				QuestionDialog questionDialog = new QuestionDialog(parent.getShell());
 				Button qstnDialog = new Button(container, SWT.NONE);
-				qstnDialog.setBounds(889, 10, 115, 29);
+				qstnDialog.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 				qstnDialog.setText("Add Question");
 
 				qstnDialog.addSelectionListener(new SelectionAdapter() {
@@ -243,7 +254,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				break;
 			case Constants.PAGE_NAME_FOR_LINK_ANSWERS:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
-				this.compositeToHoldGranularUIElements.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
+				// fill the available space on the with the big composite
+				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 				break;
 		}
 	}
@@ -314,88 +326,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 		}
 		return ValidateNextPress;
-	}
-
-	/**
-	 * For testing only. Remove later.
-	 * 
-	 * @return
-	 */
-	private ClaferFeature getDummyClaferFeature() {
-		/*
-		 * ClaferFeature tempFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, Integer.toString(counter), // Counter as the name to make each addition identifiable. new
-		 * FeatureProperty("Enum", "integer"), null);
-		 */ClaferFeature tempFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, Integer.toString(counter), // Counter as the name to make each addition identifiable.
-			"");
-
-		// from symmetric encryption abstract Algorithm
-		tempFeature.getfeatureProperties().add(new FeatureProperty("name", "string"));
-		tempFeature.getfeatureProperties().add(new FeatureProperty("description", "string"));
-		tempFeature.getfeatureProperties().add(new FeatureProperty("security", "Security"));
-		tempFeature.getfeatureProperties().add(new FeatureProperty("performance", "Performance"));
-		tempFeature.getfeatureProperties().add(new FeatureProperty("classPerformance", "Performance"));
-
-		// from symmetric encryption concrete SHA: Digest
-
-		tempFeature.getFeatureConstraints().add(new ClaferConstraint("outputSize = 160 || outputSize = 224 || outputSize = 256 || outputSize = 384 || outputSize = 512"));
-		tempFeature.getFeatureConstraints().add(new ClaferConstraint("outputSize = 160 => performance = VeryFast && security = Weak"));
-		tempFeature.getFeatureConstraints().add(new ClaferConstraint("outputSize = 224 => performance = Fast && security = Strong"));
-		tempFeature.getFeatureConstraints().add(new ClaferConstraint("description = \"PBKDF2 key derivation\""));
-		tempFeature.getFeatureConstraints().add(new ClaferConstraint("security = cipher.security"));
-
-		return tempFeature;
-
-	}
-
-	private ArrayList<ClaferFeature> getDummyClaferFeatures() {
-		ArrayList<ClaferFeature> tempFeatures = new ArrayList<ClaferFeature>();
-		ClaferFeature tempFeatureOne = new ClaferFeature(Constants.FeatureType.ABSTRACT, "race", "");
-		ClaferFeature tempFeatureTwo = new ClaferFeature(Constants.FeatureType.CONCRETE, "altmer", "race");
-		ClaferFeature tempFeatureThree = new ClaferFeature(Constants.FeatureType.CONCRETE, "dunmer", "race");
-		tempFeatures.add(tempFeatureOne);
-		tempFeatures.add(tempFeatureTwo);
-		tempFeatures.add(tempFeatureThree);
-
-		return tempFeatures;
-	}
-
-	/**
-	 * For testing only. Remove later.
-	 * 
-	 * @return
-	 */
-	private Question getDummyQuestion() {
-		Question tempQuestion = new Question();
-		tempQuestion.setId(counter);
-		tempQuestion.setQuestionText("question?");
-
-		Answer answer = new Answer();
-		answer.setValue("answer");
-		answer.setDefaultAnswer(false);
-		answer.setNextID(counter);
-		ClaferDependency claferDependency = new ClaferDependency();
-		claferDependency.setAlgorithm("algoritm");
-		claferDependency.setOperand("operand");
-		claferDependency.setOperator(Constants.FeatureConstraintRelationship.AND.toString());
-		claferDependency.setValue("value");
-		ArrayList<ClaferDependency> claferDependencies = new ArrayList<ClaferDependency>();
-		claferDependencies.add(claferDependency);
-
-		CodeDependency codeDependency = new CodeDependency();
-		codeDependency.setOption("option");
-		codeDependency.setValue("value");
-		ArrayList<CodeDependency> codeDependencies = new ArrayList<CodeDependency>();
-		codeDependencies.add(codeDependency);
-
-		answer.setCodeDependencies(codeDependencies);
-		answer.setClaferDependencies(claferDependencies);
-
-		ArrayList<Answer> answers = new ArrayList<Answer>();
-		answers.add(answer);
-
-		tempQuestion.setAnswers(answers);
-
-		return tempQuestion;
 	}
 
 	/*

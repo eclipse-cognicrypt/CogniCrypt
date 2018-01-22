@@ -37,7 +37,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		setClaferFeature(claferFeatureParam);
 		setLayout(new FormLayout());
 		
-		Group grpClaferFeature = new Group(this, SWT.BORDER);
+		Group grpClaferFeature = new Group(this, SWT.NONE);
 		FormData fd_grpClaferFeature = new FormData();
 		fd_grpClaferFeature.top = new FormAttachment(0, yAxisValue); //40
 		yAxisValue = yAxisValue + 70;
@@ -82,7 +82,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 			txtFeatureInheritance.setText(claferFeature.getFeatureInheritance());
 		}
 		
-		if(claferFeature.getfeatureProperties().size()!=0){
+		if(claferFeature.getFeatureProperties().size()!=0){
 			Group grpClaferFeatureProperties = new Group(this, SWT.NONE);
 			FormData fd_grpClaferFeatureProperties = new FormData();
 			fd_grpClaferFeatureProperties.top = new FormAttachment(0, yAxisValue);//116
@@ -95,7 +95,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 			grpClaferFeatureProperties.setText("Clafer feature properties");
 			CompositeToHoldGranularUIElements comp = ((CompositeToHoldGranularUIElements) getParent().getParent());
 			CompositeToHoldSmallerUIElements compositeToHoldClaferFeatureProperties = new CompositeToHoldSmallerUIElements(grpClaferFeatureProperties, SWT.NONE, claferFeature
-				.getfeatureProperties(), false, comp.getClaferModel());
+				.getFeatureProperties(), false, comp.getClaferModel());
 			yAxisValue = yAxisValue + 6;
 		}
 		
@@ -133,14 +133,17 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 					ClaferFeature resultFeature = cfrFeatureDialog.getResult();
 					((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent()).modifyClaferFeature(claferFeature, resultFeature);
 
-					// inform user that features have been created automatically
-					// TODO only show message if new features can be implemented
-					MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.YES | SWT.NO);
-					dialog.setText("Additional features can be created");
-					dialog.setMessage("Some of the used features don't exist yet. Should we create them for you?");
-					
-					if (dialog.open() == SWT.YES) {
-						resultFeature.implementMissingFeatures(claferModel);
+					// if features are missing, ask the user whether to implement them							
+					ClaferModel missingFeatures = claferModel.getMissingFeatures(resultFeature);
+
+					if (!missingFeatures.getClaferModel().isEmpty()) {
+						MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.YES | SWT.NO);
+						dialog.setText("Additional features can be created");
+						dialog.setMessage("Some of the used features don't exist yet. Should we create them for you?");
+
+						if (dialog.open() == SWT.YES) {
+							claferModel.implementMissingFeatures(resultFeature);
+						}
 					}
 
 					// rebuild the UI

@@ -433,7 +433,7 @@ public class QuestionDialog extends Dialog {
 		for (ClaferFeature claferFeature : claferModel) {
 			if (claferFeature.getFeatureName().equalsIgnoreCase(featureSelected)) {
 				System.out.println(featureSelected);
-				for (FeatureProperty featureProperty : claferFeature.getfeatureProperties()) {
+				for (FeatureProperty featureProperty : claferFeature.getFeatureProperties()) {
 					operandItems.add(featureProperty.getPropertyName());
 				}
 				if (claferFeature.getFeatureInheritance() != null) {
@@ -450,11 +450,11 @@ public class QuestionDialog extends Dialog {
 		ClaferFeature algorithm = new ClaferFeature(Constants.FeatureType.ABSTRACT, "algorithm", // Counter as the name to make each addition identifiable.
 			null);
 
-		algorithm.getfeatureProperties().add(new FeatureProperty("name", "string"));
-		algorithm.getfeatureProperties().add(new FeatureProperty("description", "string"));
-		algorithm.getfeatureProperties().add(new FeatureProperty("security", "Security"));
-		algorithm.getfeatureProperties().add(new FeatureProperty("performance", "Performance"));
-		algorithm.getfeatureProperties().add(new FeatureProperty("classPerformance", "Performance"));
+		algorithm.getFeatureProperties().add(new FeatureProperty("name", "string"));
+		algorithm.getFeatureProperties().add(new FeatureProperty("description", "string"));
+		algorithm.getFeatureProperties().add(new FeatureProperty("security", "Security"));
+		algorithm.getFeatureProperties().add(new FeatureProperty("performance", "Performance"));
+		algorithm.getFeatureProperties().add(new FeatureProperty("classPerformance", "Performance"));
 
 		ClaferFeature cipher = new ClaferFeature(Constants.FeatureType.ABSTRACT, "cipher", // Counter as the name to make each addition identifiable.
 			"algorithm");
@@ -462,14 +462,14 @@ public class QuestionDialog extends Dialog {
 		ClaferFeature symmetricCipher = new ClaferFeature(Constants.FeatureType.ABSTRACT, "symmetricCipher", // Counter as the name to make each addition identifiable.
 			"cipher");
 
-		symmetricCipher.getfeatureProperties().add(new FeatureProperty("keySize", "integer"));
+		symmetricCipher.getFeatureProperties().add(new FeatureProperty("keySize", "integer"));
 		symmetricCipher.getFeatureConstraints().add(new ClaferConstraint("classPerformance = Fast"));
 
 		ClaferFeature symmetricBlockCipher = new ClaferFeature(Constants.FeatureType.ABSTRACT, "symmetricBlockCipher", // Counter as the name to make each addition identifiable.
 			"symmetricCipher");
 
-		symmetricBlockCipher.getfeatureProperties().add(new FeatureProperty("mode", "Mode"));
-		symmetricBlockCipher.getfeatureProperties().add(new FeatureProperty("padding", "Padding"));
+		symmetricBlockCipher.getFeatureProperties().add(new FeatureProperty("mode", "Mode"));
+		symmetricBlockCipher.getFeatureProperties().add(new FeatureProperty("padding", "Padding"));
 		symmetricBlockCipher.getFeatureConstraints().add(new ClaferConstraint("mode !=ECB"));
 		symmetricBlockCipher.getFeatureConstraints().add(new ClaferConstraint("padding !=NoPadding"));
 

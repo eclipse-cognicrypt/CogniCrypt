@@ -32,7 +32,6 @@ import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.utilities.Utils;
@@ -51,6 +50,13 @@ public class FileUtilities {
 		this.setTaskName(taskName);
 	}
 	
+	private boolean compileCFRFile() {
+		// try to compile the Clafer file
+		// TODO error handling missing
+		String claferFilename = Constants.CFR_FILE_DIRECTORY_PATH + getTrimmedTaskName() + Constants.CFR_EXTENSION;
+		return ClaferModel.compile(claferFilename);
+	}
+
 	/**
 	 * Write the data from the pages to target location in the plugin.
 	 * @param claferModel
@@ -60,6 +66,7 @@ public class FileUtilities {
 	 */
 	public void writeFiles(ClaferModel claferModel, ArrayList<Question> questions, String xslFileContents, File customLibLocation) {
 		writeCFRFile(claferModel);
+		compileCFRFile();
 		try {
 			writeJSONFile(questions);
 		} catch (IOException e) {
@@ -83,7 +90,12 @@ public class FileUtilities {
 		
 		if (validateCFRFile(cfrFileLocation) && validateJSONFile(jsonFileLocation) && validateXSLFile(xslFileLocation) && validateJARFile(customLibLocation)) {
 			copyFileFromPath(cfrFileLocation);		
-			copyFileFromPath(jsonFileLocation);		
+
+			// TODO see if compilation should be done in the validation step or not
+			String cfrFilename = cfrFileLocation.getAbsolutePath();
+			copyFileFromPath(new File(cfrFilename.substring(0, cfrFilename.lastIndexOf(".") + 1) + Constants.JS_EXTENSION));
+
+			copyFileFromPath(jsonFileLocation);
 			copyFileFromPath(xslFileLocation);
 			copyFileFromPath(customLibLocation);
 			return true;
@@ -153,8 +165,7 @@ public class FileUtilities {
 	 * @return a boolean value for the validity of the file.
 	 */
 	private boolean validateCFRFile(File cfrFileLocation) {
-		// TODO Auto-generated method stub
-		return true;
+		return ClaferModel.compile(cfrFileLocation.getAbsolutePath());
 	}
 
 	/**
@@ -168,6 +179,8 @@ public class FileUtilities {
 				
 				if(existingFileLocation.getPath().endsWith(Constants.CFR_EXTENSION)) {
 					targetDirectory = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.CFR_EXTENSION);
+				} else if (existingFileLocation.getPath().endsWith(Constants.JS_EXTENSION)) {
+					targetDirectory = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.JS_EXTENSION);
 				} else if(existingFileLocation.getPath().endsWith(Constants.JSON_EXTENSION)) {
 					targetDirectory = new File(Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.JSON_EXTENSION);
 				} else if(existingFileLocation.getPath().endsWith(Constants.XSL_EXTENSION)) {
@@ -221,9 +234,7 @@ public class FileUtilities {
 		File cfrFile = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.CFR_EXTENSION);
 		try {
 			FileWriter writer = new FileWriter(cfrFile);
-			for (ClaferFeature cfrFeature : claferModel) {
-				writer.write(cfrFeature.toString());
-			}
+			writer.write(claferModel.toString());
 			writer.close();
 		} catch (IOException e) {
 			Activator.getDefault().logError(e);

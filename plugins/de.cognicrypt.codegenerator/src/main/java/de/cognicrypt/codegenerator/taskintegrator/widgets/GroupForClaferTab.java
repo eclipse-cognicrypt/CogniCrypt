@@ -162,7 +162,7 @@ public class GroupForClaferTab extends Group {
 	private ArrayList<String> itemsToAdd(String featureSelected) {
 		for (ClaferFeature claferFeature : claferFeatures) {
 			if (claferFeature.getFeatureName().equalsIgnoreCase(featureSelected)) {
-				for (FeatureProperty featureProperty : claferFeature.getfeatureProperties()) {
+				for (FeatureProperty featureProperty : claferFeature.getFeatureProperties()) {
 					operandItems.add(featureProperty.getPropertyName());
 				}
 				if (claferFeature.getFeatureInheritance() != null) {

@@ -1,9 +1,12 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.viewers.ITreeContentProvider;
 
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
+import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 
 public class FeaturePropertiesContentProvider implements ITreeContentProvider {
 
@@ -11,7 +14,10 @@ public class FeaturePropertiesContentProvider implements ITreeContentProvider {
 	public Object[] getChildren(Object inputElement) {
 		if (inputElement instanceof ClaferFeature) {
 			ClaferFeature inputFeature = (ClaferFeature) inputElement;
-			return inputFeature.getFeatureProperties().toArray();
+			ArrayList<FeatureProperty> filteredProperties = (ArrayList<FeatureProperty>) inputFeature.getFeatureProperties().clone();
+			filteredProperties.removeIf(x -> x.getPropertyName().isEmpty());
+
+			return filteredProperties.toArray();
 		}
 		return null;
 	}
@@ -20,10 +26,10 @@ public class FeaturePropertiesContentProvider implements ITreeContentProvider {
 	public Object[] getElements(Object inputElement) {
 		if (inputElement instanceof ClaferModel) {
 			ClaferModel inputModel = (ClaferModel) inputElement;
-			ClaferModel withPropertiesOnly = inputModel.clone();
+			ClaferModel filteredModel = inputModel.clone();
 
-			withPropertiesOnly.getClaferModel().removeIf(x -> !x.hasProperties());
-			return withPropertiesOnly.getClaferModel().toArray();
+			filteredModel.getClaferModel().removeIf(x -> x.getFeatureName().isEmpty() || !x.hasProperties());
+			return filteredModel.getClaferModel().toArray();
 		}
 		return new Object[] {};
 	}

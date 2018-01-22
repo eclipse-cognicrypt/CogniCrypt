@@ -93,6 +93,9 @@ public class FileUtilities {
 			if (validateCFRFile(cfrFileLocation) && validateJSONFile(jsonFileLocation) && validateXSLFile(xslFileLocation) && validateJARFile(customLibLocation)) {
 				copyFileFromPath(cfrFileLocation);		
 				copyFileFromPath(jsonFileLocation);		
+			    // TODO see if compilation should be done in the validation step or not 
+			    String cfrFilename = cfrFileLocation.getAbsolutePath(); 
+			    copyFileFromPath(new File(cfrFilename.substring(0, cfrFilename.lastIndexOf(".") + 1) + Constants.JS_EXTENSION)); 
 				copyFileFromPath(xslFileLocation);
 				copyFileFromPath(customLibLocation);
 				return true;
@@ -101,6 +104,9 @@ public class FileUtilities {
 			if (validateCFRFile(cfrFileLocation) && validateJSONFile(jsonFileLocation) && validateXSLFile(xslFileLocation)) {
 				copyFileFromPath(cfrFileLocation);		
 				copyFileFromPath(jsonFileLocation);		
+			    // TODO see if compilation should be done in the validation step or not 
+			    String cfrFilename = cfrFileLocation.getAbsolutePath(); 
+			    copyFileFromPath(new File(cfrFilename.substring(0, cfrFilename.lastIndexOf(".") + 1) + Constants.JS_EXTENSION)); 
 				copyFileFromPath(xslFileLocation);
 				return true;
 			}

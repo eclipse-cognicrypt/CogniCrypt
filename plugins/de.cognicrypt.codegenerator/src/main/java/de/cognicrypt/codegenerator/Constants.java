@@ -406,6 +406,7 @@ public class Constants {
 	public static final String JSON_FILE_DIRECTORY_PATH = rsrcPath + "TaskDesc" + innerFileSeparator;
 	public static final String XSL_FILE_DIRECTORY_PATH = rsrcPath + "XSLTemplates" + innerFileSeparator;
 	public static final String CFR_EXTENSION = ".cfr";
+	public static final String JS_EXTENSION = ".js";
 	public static final String JAR_EXTENSION = ".jar";
 	public static final String JSON_EXTENSION = ".json";
 	public static final String XSL_EXTENSION = ".xsl";
@@ -443,6 +444,7 @@ public class Constants {
 	
 	
 	
+	public static final String[] CLAFER_RESERVED_WORDS = { "abstract", "all", "assert", "disj", "else", "enum", "if", "in", "lone", "max", "maximize", "min", "minimize", "mux", "no", "not", "one", "opt", "or", "product", "some", "sum", "then", "xor" };
 	
 	
 	

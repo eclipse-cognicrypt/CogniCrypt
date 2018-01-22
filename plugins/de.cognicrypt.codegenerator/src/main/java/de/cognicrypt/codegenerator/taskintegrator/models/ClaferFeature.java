@@ -69,7 +69,7 @@ public class ClaferFeature {
 	/**
 	 * @return the properties
 	 */
-	public ArrayList<FeatureProperty> getfeatureProperties() {
+	public ArrayList<FeatureProperty> getFeatureProperties() {
 		return featureProperties;
 	}
 
@@ -77,12 +77,28 @@ public class ClaferFeature {
 		this.featureProperties = featureProperties;
 	}
 	
+	/**
+	 * @return true if the feature has non-empty properties, false otherwise
+	 */
 	public boolean hasProperties() {
-		return !featureProperties.isEmpty();
+		if (!featureProperties.isEmpty()) {
+			// check for a non-empty feature property
+			for (FeatureProperty featureProperty : getFeatureProperties()) {
+				if (!featureProperty.getPropertyName().isEmpty()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
+	/**
+	 * @param needle
+	 *        {@link String} name of the property searched for
+	 * @return true if the feature has a property with the given name, false otherwise
+	 */
 	public boolean hasProperty(String needle) {
-		for (FeatureProperty featureProperty : getfeatureProperties()) {
+		for (FeatureProperty featureProperty : getFeatureProperties()) {
 			if (featureProperty.getPropertyName() == needle) {
 				return true;
 			}
@@ -118,7 +134,7 @@ public class ClaferFeature {
 			strRepresentation.append(getFeatureInheritance());
 		}
 		
-		for (FeatureProperty featureProperty : getfeatureProperties()) {
+		for (FeatureProperty featureProperty : getFeatureProperties()) {
 			strRepresentation.append("\n\t");
 			strRepresentation.append(featureProperty.toString());			
 		}
@@ -131,107 +147,6 @@ public class ClaferFeature {
 		strRepresentation.append("\n");
 		
 		return strRepresentation.toString();
-	}
-
-	/**
-	 * Implement features that this Clafer uses for inheritance or as property types if missing in the model and add them
-	 * 
-	 * @param claferModel
-	 *        model to be updated with missing features
-	 * @return a model containing only those features that have been added
-	 */
-	public ClaferModel implementMissingFeatures(ClaferModel claferModel) {
-		ClaferModel addedFeatures = new ClaferModel();
-		
-		// find missing inherited feature
-		if (!getFeatureInheritance().isEmpty()) {
-			boolean parentFound = false;
-			for (ClaferFeature cfrFeature : claferModel) {
-				if (cfrFeature.getFeatureName().equals(getFeatureInheritance())) {
-					parentFound = true;
-					break;
-				}
-			}
-
-			// remember missing inherited feature
-			if (!parentFound) {
-				ClaferFeature parentFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, getFeatureInheritance(), "");
-				addedFeatures.add(parentFeature);
-			}
-		}
-
-		// find missing property types
-		for (FeatureProperty fp : getfeatureProperties()) {
-			boolean propertyTypeFound = false;
-			for (ClaferFeature cfrFeature : claferModel) {
-				if (cfrFeature.getFeatureName().equals(fp.getPropertyType())) {
-					propertyTypeFound = true;
-					break;
-				}
-			}
-
-			// remember missing property types			
-			if (!fp.getPropertyType().isEmpty() && !propertyTypeFound) {
-				ClaferFeature propertyTypeFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, fp.getPropertyType(), "");
-				addedFeatures.add(propertyTypeFeature);
-			}
-		}
-		
-		// add all missing features
-		for (ClaferFeature cfrFeature : addedFeatures) {
-			claferModel.add(cfrFeature);
-		}
-		
-		return addedFeatures;
-	}
-
-	public ClaferModel getUnusedFeatures(ClaferModel claferModel) {
-		// TODO switch logic, copy list and delete everything that is used
-		ClaferModel unusedFeatures = new ClaferModel();
-		
-		for (ClaferFeature cfrFeature : claferModel) {
-			// check usage of cfrFeature			
-			boolean used = false;
-			if (cfrFeature.hasProperties()) {
-				used = true;
-			}
-			if (cfrFeature.hasConstraints()) {
-				used = true;
-			}
-			
-			// if abstract and somebody inherits -> used
-			for (ClaferFeature refFeature : claferModel) {
-				if (refFeature.getFeatureInheritance().equals(cfrFeature.getFeatureName())) {
-					// usage found: refFeature inherits from cfrFeature
-					used = true;
-				}
-			}
-
-			for (ClaferFeature refFeature : claferModel) {
-				for (FeatureProperty featureProp : refFeature.getfeatureProperties()) {
-					if (featureProp.getPropertyType().equals(cfrFeature.getFeatureName())) {
-						// usage found: featureProp is of type cfrFeature
-						used = true;
-					}
-				}
-			}
-
-			if (!used) {
-				unusedFeatures.add(cfrFeature);
-			}
-		}
-		
-		return unusedFeatures;
-	}
-
-	public void printModel(ClaferModel claferModel) {
-		// TODO This should not be a class method
-		StringBuilder sb = new StringBuilder();
-		for (ClaferFeature cfrFeature : claferModel) {
-			sb.append(cfrFeature.toString());
-		}
-		
-		System.out.println(sb);
 	}
 	
 }

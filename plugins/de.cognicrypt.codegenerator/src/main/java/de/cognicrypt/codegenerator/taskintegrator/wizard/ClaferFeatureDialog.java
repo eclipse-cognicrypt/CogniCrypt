@@ -73,7 +73,10 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
-		container.setLayout(new GridLayout(3, false));
+		container.setLayout(new GridLayout(3, true));
+		
+		// restrict resizing the dialog below a minimum
+		getShell().setMinimumSize(520, 600);
 
 		setTitle("Variability modeling");
 		setMessage("Message");
@@ -144,7 +147,7 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		txtFeatureName.setText(resultClafer.getFeatureName());
 
 		lblInheritance = new Label(container, SWT.NONE);
-		lblInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
+		lblInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		comboInheritance = new Combo(container, SWT.NONE);
 		comboInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
@@ -177,9 +180,10 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
-		featuresComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getfeatureProperties(), true, claferModel, resultClafer);
-		featuresComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
-		featuresComposite.setMinHeight(200);
+		featuresComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getFeatureProperties(), true, claferModel, resultClafer);
+		GridData gdPropertiesComposite = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
+		gdPropertiesComposite.minimumHeight = 100;
+		featuresComposite.setLayoutData(gdPropertiesComposite);
 
 		Button btnAddConstraint = new Button(container, SWT.NONE);
 		btnAddConstraint.addSelectionListener(new SelectionAdapter() {
@@ -194,8 +198,9 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		new Label(container, SWT.NONE);
 
 		constraintsComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getFeatureConstraints(), true, claferModel, resultClafer);
-		constraintsComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
-		constraintsComposite.setMinHeight(200);
+		GridData gdConstraintsComposite = gdPropertiesComposite;
+		gdConstraintsComposite.minimumHeight = 100;
+		constraintsComposite.setLayoutData(gdConstraintsComposite);
 
 		validate();
 

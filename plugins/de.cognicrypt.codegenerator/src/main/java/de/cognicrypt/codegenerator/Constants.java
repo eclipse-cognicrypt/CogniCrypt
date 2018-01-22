@@ -20,6 +20,8 @@
 
 package de.cognicrypt.codegenerator;
 
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -117,6 +119,13 @@ public class Constants {
 	public static final String PLEASE_SELECT = "Please select project directory to launch the configurator";
 	public static final String ERROR_MESSAGE_NO_PROJECT = "There is no Java project in your workspace. Please create one and restart CogniCrypt.";
 	public static final String ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY = "No directory for additional resources found.";
+	public static final String ERROR = "ERROR: ";
+	public static final String ERROR_MESSAGE_BLANK_FILE_NAME = "Please choose a valid file.";
+	public static final String ERROR_MESSAGE_UNABLE_TO_READ_FILE = "There is a problem with the selected file. Please choose a valid one.";
+	public static final String ERROR_MESSAGE_DUPLICATE_TASK_NAME = "A task with this name already exists.";
+	public static final String MESSAGE_REQUIRED_FIELD = "This is a required field.";
+	public static final String ERROR_MESSAGE_BLANK_TASK_NAME = "The Task name cannot be empty. Please enter a valid name for the Task.";
+	
 
 	public static final String JAVA = "java";
 	public static final String JCA = "JCA";
@@ -229,6 +238,14 @@ public class Constants {
 	//public static final Rectangle RECTANGLE_FOR_GRANULAR_CLAFER_UI_ELEMENT = new Rectangle(10, 10, 744, 280);
 	public static final int WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT = 744;
 	public static final int HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT = 280;
+	
+	public static final int SINGLE_LINE_TEXT_BOX_LIMIT = 256;
+	public static final int MULTI_LINE_TEXT_BOX_LIMIT = 2560;
+	
+	public static final Image DEC_INFORMATION = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage();
+	public static final Image DEC_ERROR = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage();
+	public static final Image DEC_REQUIRED = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED).getImage();
+	public static final Image DEC_WARNING = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_WARNING).getImage();
 	
 	// Form  data for CompositeGranularUIForClaferFeature
 	public static final int RIGHT_VALUE_FOR_GRANULAR_CLAFER_UI_SUB_ELEMENT = 736;

@@ -92,6 +92,11 @@ public class ClaferFeature {
 		return false;
 	}
 	
+	/**
+	 * @param needle
+	 *        {@link String} name of the property searched for
+	 * @return true if the feature has a property with the given name, false otherwise
+	 */
 	public boolean hasProperty(String needle) {
 		for (FeatureProperty featureProperty : getFeatureProperties()) {
 			if (featureProperty.getPropertyName() == needle) {

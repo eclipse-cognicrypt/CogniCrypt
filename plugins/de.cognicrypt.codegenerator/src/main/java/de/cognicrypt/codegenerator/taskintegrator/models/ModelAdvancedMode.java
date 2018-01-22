@@ -30,6 +30,25 @@ public class ModelAdvancedMode {
 		super();
 		this.task = new Task();
 	}
+	
+	/**
+	 * Generate a name for the task based on the input given by the user and return it.
+	 * @param stringTaskName
+	 * @return
+	 */
+	private String getMachineReadableName(String stringTaskName) {
+		String[] split = stringTaskName.split(" ");
+		StringBuilder machineReadable = new StringBuilder();
+		if (stringTaskName.length() > 0) {
+			for (String string : split) {
+				machineReadable.append(string.substring(0,1).toUpperCase());
+				machineReadable.append(string.substring(1));
+			}
+		}
+		
+		return machineReadable.toString();
+	}
+	
 	/**
 	 * @return the nameOfTheTask
 	 */
@@ -40,8 +59,9 @@ public class ModelAdvancedMode {
 	 * @param nameOfTheTask the nameOfTheTask to set
 	 */
 	public void setNameOfTheTask(String nameOfTheTask) {
-		this.nameOfTheTask = nameOfTheTask;
-	}
+		this.nameOfTheTask = getMachineReadableName(nameOfTheTask); // generate the task name that will be used as the machine readable identifier for the task.
+		this.setDescription(nameOfTheTask); // This is the human readable name entered by the user.
+	}	
 	/**
 	 * @return the locationOfCustomLibrary
 	 */

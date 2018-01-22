@@ -17,7 +17,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.MessageBox;
 
 import de.cognicrypt.codegenerator.Activator;
@@ -29,6 +31,7 @@ import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.GroupBrowseForFile;
 
 /**
  * @author rajiv
@@ -50,10 +53,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	public PageForTaskIntegratorWizard(String name, String title, String description) {
 		super(name);
 		setTitle(title);
-		setDescription(description);
-
-		// TODO improve the next button selection functionality.
-		//this.setPageComplete(false);		
+		setDescription(description);		
+		this.setPageComplete(false);		
 	}
 
 	/**
@@ -71,7 +72,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		switch (this.getName()) {
 			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
 				container.setLayout(new FillLayout(SWT.HORIZONTAL));
-				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE));
+				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE, this));				
 				break;
 			case Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
@@ -271,7 +272,20 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				return this;
 			}
 		}
-		return super.getNextPage();
+		
+		if (this.getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD) && !getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode().isGuidedModeChosen()) {
+			return null;
+		}
+		
+		
+		/*
+		 * This is for debugging only. To be removed for the final version.
+		 * TODO Please add checks on the pages after mode selection to mark those pages as completed, or restrict the finish button.
+		 */
+		IWizardPage nextPage = super.getNextPage();
+		((WizardPage)nextPage).setPageComplete(true);
+		
+		return nextPage;
 
 	}
 
@@ -331,8 +345,44 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		return super.canFlipToNextPage();
 
 	}
+	/**
+	 * This method will check whether all the validations on the page were successful. The page is set to incomplete if any of the validations have an ERROR.
+	 */
+	public void checkIfModeSelectionPageIsComplete() {		
+		boolean errorOnFileWidgets = false;
+		// The first child of the composite is a group. Get the children of this group to iterated over.
+		for (Control control : ((Group)getCompositeChoiceForModeOfWizard().getChildren()[0]).getChildren()) {
+			// Check if the child is an instance of group and is visible.
+			if (control instanceof Group && control.isVisible()) {
+				
+				// Get the children of this group and iterate over them. These are the widgets that get the file data. This loop generalizes for all these widgets.
+				for (Control subGroup : ((Group)control).getChildren()) {					
+					if (subGroup instanceof GroupBrowseForFile) {
+						GroupBrowseForFile tempVaraiable = (GroupBrowseForFile) subGroup;
+						if ((tempVaraiable).getDecFilePath().getDescriptionText().contains(Constants.ERROR)) {
+							errorOnFileWidgets = true;
+						}
+					}
+					
+				}	
+				
+			}
+		}		
+		
+		// Check if validation failed on the task name.
+		boolean errorOnTaskName = getCompositeChoiceForModeOfWizard().getDecNameOfTheTask().getDescriptionText().contains(Constants.ERROR);
+		
+		// Set the page to incomplete if the validation failed on any of the text boxes.
+		if (errorOnTaskName || errorOnFileWidgets) {
+			setPageComplete(false);
+			
+		} else {
+			setPageComplete(true);
+		}
+	}
 
 	/**
+	 * Return the composite for the first page, i.e. to choose the mode of the wizard.
 	 * @return the compositeChoiceForModeOfWizard
 	 */
 	public CompositeChoiceForModeOfWizard getCompositeChoiceForModeOfWizard() {
@@ -340,6 +390,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	}
 
 	/**
+	 * The composite is maintained as a global variable to have access to it as part of the page object.
 	 * @param compositeChoiceForModeOfWizard
 	 *        the compositeChoiceForModeOfWizard to set
 	 */
@@ -355,6 +406,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	}
 
 	/**
+	 * The composite is maintained as a global variable to have access to it as part of the page object.
 	 * @param compositeToHoldGranularUIElements
 	 *        the compositeToHoldGranularUIElements to set
 	 */
@@ -367,6 +419,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	}
 
 	/**
+	 * Return the composite for the XSL page.
 	 * @return the compositeForXsl
 	 */
 	public CompositeForXsl getCompositeForXsl() {
@@ -374,6 +427,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	}
 
 	/**
+	 * The composite is maintained as a global variable to have access to it as part of the page object.
 	 * @param compositeForXsl
 	 *        the compositeForXsl to set
 	 */

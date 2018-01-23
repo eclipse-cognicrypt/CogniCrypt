@@ -152,28 +152,33 @@ public class InstanceGenerator {
 			}
 			taskAlgorithm.addConstraint(equal(joinRef(join($this(), rightOperand)), constraint));
 		} else if (operator.equals("|")) {
-
+			
 			final String[] claferNames = value.split(";");
 			//The constraint that is created looks like [all $consName : taskAlgorithm | $consName.algorithmProperty claferNames[0] && ...]
 			final AstLocal tmpClafer = local("suite");
 			final AstDecl decl = decl(tmpClafer, join($this(), taskAlgorithm));
 			AstBoolExpr boolExp = null;
-			final AstSetExpr operandLeftClafer = joinRef(join(joinRef(tmpClafer), rightOperand));
 			if (claferNames.length == 1) {
+				final AstSetExpr operandLeftClafer = joinRef(join(joinRef(tmpClafer), rightOperand));
 				final String[] opSquare = claferNames[0].split(" ");
 				final AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(rightOperand.getParent().getParent(), "c0_" + opSquare[1])));
 				boolExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, opSquare[0]);
 			} else {
+				// join($this(), c0_ciphersuites))], 
+				// and(
+				// greaterThanEqual(joinRef(joinRef(join(joinRef(suite), c0_tlsProtocol))), joinRef(global(c0_TLS1_2))), 
+				// greaterThan(joinRef(join(joinRef(suite), c1_security)), joinRef(global(c0_Medium))))));
 				for (int i = 0; i < claferNames.length; i++) {
 					if (i == 0) {
+						final AstSetExpr operandLeftClafer = joinRef(joinRef(join(joinRef(tmpClafer), rightOperand)));
 						final String[] opSquare = claferNames[i].split(" ");
-						final AstSetExpr operandRightClafer = joinRef(
-							global(ClaferModelUtils.findClaferByName(algorithmProperty.get(i++).getParent().getParent(), "c0_" + opSquare[1])));
-						boolExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, operator);
+						final AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(algorithmProperty.get(i++).getParent().getParent(), opSquare[1])));
+						boolExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, opSquare[0]);
 					}
 					final String[] opSquare = claferNames[i].split(" ");
-					final AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(algorithmProperty.get(i).getParent().getParent(), "c0_" + opSquare[1])));
-					final AstBoolExpr addExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, operator);
+					final AstSetExpr operandLeftClafer = joinRef(join(joinRef(tmpClafer), algorithmProperty.get(i)));
+					final AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(algorithmProperty.get(i).getParent().getParent(), opSquare[1])));
+					final AstBoolExpr addExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, opSquare[0]);
 					boolExp = and(boolExp, addExp);
 				}
 			}
@@ -208,6 +213,7 @@ public class InstanceGenerator {
 	 */
 	// FIXME include group operator
 	private void basicModeHandler(final AstModel astModel, final AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {
+		taskClafer.getConstraints().get(1).getExpr();
 		for (final Entry<Question, Answer> entry : qAMap.entrySet()) {
 			Answer answer = entry.getValue();
 			if (answer.getClaferDependencies() != null) {
@@ -215,15 +221,15 @@ public class InstanceGenerator {
 					if ("->".equals(claferDependency.getOperator())) {
 						ClaferModelUtils.createClafer(taskClafer, claferDependency.getAlgorithm(), claferDependency.getValue());
 					} else {
-						final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + claferDependency.getAlgorithm());
+						final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, claferDependency.getAlgorithm());
 						final List<AstConcreteClafer> propertyClafer = new ArrayList<>();
 						final String operand = claferDependency.getOperand();
 						if (operand != null && operand.contains(";")) {
 							for (final String name : operand.split(";")) {
-								propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + name));
+								propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer.getParent(), name));
 							}
 						} else {
-							propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + operand));
+							propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer.getParent(), operand));
 						}
 						addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), claferDependency.getValue());
 					}

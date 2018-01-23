@@ -641,7 +641,8 @@ SSL_RSA_WITH_NULL_MD5 : CipherSuite
 SecureCommunication : Task  
 	[description = "Establish a Secure Network Connection"]
 	ciphersuites -> CipherSuite 7..*
+	[all suite : ciphersuites | suite.tlsProtocol >= TLS1_2 && suite.security > Medium]
 	tlsVersion -> TLS_Version
 	[tlsVersion = TLS1_2]
-	security -> integer
-	[security = min(ciphersuites.security)]
+	secComsecurity -> integer
+	[secComsecurity = min(ciphersuites.security)]

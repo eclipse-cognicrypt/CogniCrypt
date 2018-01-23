@@ -4,30 +4,44 @@ import java.io.File;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.PageForTaskIntegratorWizard;
 
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
-
 
 public class GroupBrowseForFile extends Group {
 	private ModelAdvancedMode objectForDataInNonGuidedMode;
 	private PageForTaskIntegratorWizard theLocalContainerPage; // this is needed to set whether the page has been completed yet or not.
 	private ControlDecoration decFilePath; // Decoration variable to be able to access it in the events.
+	private Label lblLocation;
+	private Text txtFilename;
+	private Label lblStatus;
+	
+	private Listener onFileChangedListener;
+	
+	public GroupBrowseForFile(Composite parent, int style, String labelText, String[] fileTypes, String stringOnFileDialog, PageForTaskIntegratorWizard theContainerpageForValidation, Listener listener) {
+		this(parent, style, labelText, fileTypes, stringOnFileDialog, theContainerpageForValidation);
+		this.onFileChangedListener = listener;
+	}
+
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -39,15 +53,15 @@ public class GroupBrowseForFile extends Group {
 		setObjectForDataInNonGuidedMode(((CompositeChoiceForModeOfWizard) getParent().getParent().getParent()).getObjectForDataInNonGuidedMode());
 		
 		setTheLocalContainerPage(theContainerpageForValidation);
-		GridLayout gridLayout = new GridLayout(3, false);
+		GridLayout gridLayout = new GridLayout(4, false);
 		gridLayout.horizontalSpacing = 8;
 		setLayout(gridLayout);
 		
-		Label label = new Label(this, SWT.NONE);
-		label.setText(labelText);		
+		lblLocation = new Label(this, SWT.NONE);
+		lblLocation.setText(labelText);		
 		
 		// Initialize the decorator for the label for the text box. 
-		setDecFilePath(new ControlDecoration(label, SWT.TOP | SWT.RIGHT));
+		setDecFilePath(new ControlDecoration(lblLocation, SWT.TOP | SWT.RIGHT));
 		getDecFilePath().setShowOnlyOnFocus(false);
 		
 		// Initial error state.
@@ -56,8 +70,8 @@ public class GroupBrowseForFile extends Group {
 		getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
 		
 		
-		Text textBox = new Text(this, SWT.BORDER);			 
-		textBox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+		txtFilename = new Text(this, SWT.BORDER);			 
+		txtFilename.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
 		Button browseButton = new Button(this, SWT.NONE);	
 		browseButton.setText(Constants.LABEL_BROWSE_BUTTON);
 		
@@ -66,16 +80,20 @@ public class GroupBrowseForFile extends Group {
 			public void widgetSelected(SelectionEvent e) {						        
 				String selectedFile = openFileDialog(fileTypes, stringOnFileDialog);
 				if (selectedFile != null) {
-					textBox.setText(selectedFile);
+					txtFilename.setText(selectedFile);
+					lblStatus.setText("");
+					if (onFileChangedListener != null) {
+						onFileChangedListener.handleEvent(new Event());
+					}
 				}
 			}
 		});
 	
-		textBox.addModifyListener(new ModifyListener() {
+		txtFilename.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {				
-				File tempFileVariable = new File(textBox.getText());
+				File tempFileVariable = new File(txtFilename.getText());
 				// Validate the file IO.
-				if (!tempFileVariable.exists() && !tempFileVariable.isDirectory() && !tempFileVariable.canRead() && textBox.getParent().isVisible()) {//					
+				if (!tempFileVariable.exists() && !tempFileVariable.isDirectory() && !tempFileVariable.canRead() && txtFilename.getParent().isVisible()) {//					
 					getDecFilePath().setImage(Constants.DEC_ERROR);
 					getDecFilePath().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_UNABLE_TO_READ_FILE);
 					getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
@@ -91,7 +109,7 @@ public class GroupBrowseForFile extends Group {
 							getObjectForDataInNonGuidedMode().setLocationOfCustomLibrary(tempFileVariable);
 							break;
 						case Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE: 
-							getObjectForDataInNonGuidedMode().setLocationOfClaferFile(new File(textBox.getText()));
+							getObjectForDataInNonGuidedMode().setLocationOfClaferFile(new File(txtFilename.getText()));
 							break;
 						case Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE: 
 							getObjectForDataInNonGuidedMode().setLocationOfXSLFile(tempFileVariable);
@@ -100,6 +118,15 @@ public class GroupBrowseForFile extends Group {
 							getObjectForDataInNonGuidedMode().setLocationOfJSONFile(tempFileVariable);
 							break;
 					}
+					
+					txtFilename.addFocusListener(new FocusAdapter() {
+
+						@Override
+						public void focusLost(FocusEvent e) {
+							onFileChangedListener.handleEvent(new Event());
+							super.focusLost(e);
+						}
+					});
 					
 					// Check if the page can be set to completed.
 					getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
@@ -111,6 +138,11 @@ public class GroupBrowseForFile extends Group {
 				getShell().setSize(newSize);	
 			}
 		});
+		
+		lblStatus = new Label(this, SWT.NONE);
+		lblStatus.setData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
+		lblStatus.setSize(200, SWT.DEFAULT);
+		lblStatus.setText("");
 	}
 	
 	/**
@@ -176,6 +208,18 @@ public class GroupBrowseForFile extends Group {
 	 */
 	private void setDecFilePath(ControlDecoration decFilePath) {
 		this.decFilePath = decFilePath;
+	}
+
+	public Text getFilenameTextbox() {
+		return txtFilename;
+	}
+
+	public Label getLocationLabel() {
+		return lblLocation;
+	}
+	
+	public Label getStatusLabel() {
+		return lblStatus;
 	}
 
 }

@@ -60,13 +60,9 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.ui.PlatformUI;
@@ -154,7 +150,6 @@ public class InstanceListPage extends WizardPage {
 		new Label(control, SWT.NONE);
 		new Label(control, SWT.NONE);
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
-//		ToolBar toolBar = new ToolBar(this.instancePropertiesPanel, SWT.TOP );
 		this.instanceDetails = new Text(this.instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		
 		Composite composite_Control = new Composite(this.instancePropertiesPanel, SWT.BOTTOM | SWT.CENTER);
@@ -244,37 +239,6 @@ public class InstanceListPage extends WizardPage {
 		this.instancePropertiesPanel.setLayoutData(gridData);
 		final Font boldFont = new Font(this.instancePropertiesPanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 		this.instancePropertiesPanel.setFont(boldFont);
-		
-		//ToolBar toolBar = new ToolBar(this.instancePropertiesPanel, SWT.TOP );
-//		toolBar.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-//		Menu menu = new Menu(getShell(), SWT.POP_UP);
-//		toolBar.setMenu(menu);
-//		MenuItem mi = new MenuItem(menu, SWT.CASCADE);	
-//		int i=0;
-//		mi.setText(inst.keySet().toArray()[i].toString());	
-//		
-//		ToolItem tltmViewedAlg = new ToolItem(toolBar, SWT.NONE);
-//		tltmViewedAlg.addSelectionListener(new SelectionAdapter() {
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				if(e.detail == SWT.ARROW){
-//					System.out.println("hiii");
-//				}
-//			}
-//			});
-//		tltmViewedAlg.addListener(SWT.Selection, new Listener() {
-//		      public void handleEvent(Event event) {
-//		        if (event.detail == SWT.ARROW) {
-//		          Rectangle rect = tltmViewedAlg.getBounds();
-//		          Point pt = new Point(rect.x, rect.y + rect.height);
-//		          pt = toolBar.toDisplay(pt);
-//		          menu.setLocation(pt.x, pt.y);
-//		          menu.setVisible(true);
-//		        }
-//		      }
-//		    });
-//		
-//		tltmViewedAlg.setText("History");		
 		
 		//Hide scroll bar in instance details text box
 		Listener scrollBarListener = new Listener() {

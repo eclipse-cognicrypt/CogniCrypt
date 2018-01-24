@@ -68,5 +68,8 @@
 	<modules>
 		<module>../plugins/de.cognicrypt.codegenerator/</module>
 		<module>../plugins/de.cognicrypt.staticanalyzer/</module>
+		<module>../features/de.cognicrypt.codegenerator.feature/</module>
+		<module>../features/de.cognicrypt.staticanalyzer.feature/</module>
+		<module>../repository/</module>
 	</modules>
 </project>

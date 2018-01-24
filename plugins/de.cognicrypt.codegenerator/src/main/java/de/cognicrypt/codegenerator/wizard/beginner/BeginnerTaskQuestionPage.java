@@ -333,7 +333,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 				inputField.addModifyListener(e -> {
 					final Answer a = question.getDefaultAnswer();
-					final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?:\\\\-])", "\\\\");
+					final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?\\\\-])", "\\\\");
 					a.setValue(cleanedInput);
 					a.getCodeDependencies().get(0).setValue(cleanedInput);
 					this.finish = !cleanedInput.isEmpty();

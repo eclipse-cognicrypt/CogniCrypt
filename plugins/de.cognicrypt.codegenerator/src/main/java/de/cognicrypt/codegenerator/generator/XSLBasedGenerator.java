@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -49,6 +50,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.ui.actions.FormatAllAction;
 import org.eclipse.jdt.ui.actions.OrganizeImportsAction;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -294,6 +296,7 @@ public class XSLBasedGenerator {
 	 */
 	private boolean insertCallCodeIntoOpenFile(final String temporaryOutputFile) throws BadLocationException, CoreException, IOException {
 		final IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
+		
 		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {
 			Activator.getDefault().logError(null,
 				"Could not open access the editor of the file. Therefore, an outputfile " + "containing calls to the generated classes in the Crypto package was generated.");
@@ -349,6 +352,7 @@ public class XSLBasedGenerator {
 		currentlyOpenDocument.replace(cursorPos, 0, callsForGenClasses[1]);
 		currentlyOpenDocument.replace(imports, 0, callsForGenClasses[0] + Constants.lineSeparator);
 		this.project.refresh();
+		
 		organizeImports(currentlyOpenEditor);
 		return true;
 	}
@@ -362,10 +366,16 @@ public class XSLBasedGenerator {
 	 */
 	private void organizeImports(final IEditorPart editor) throws CoreException {
 		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
-		for (ICompilationUnit compUnit : this.project.getPackagesOfProject(Constants.PackageName).getCompilationUnits()) {
-			organizeImportsActionForAllFilesTouchedDuringGeneration.run(compUnit);
-		}
-		organizeImportsActionForAllFilesTouchedDuringGeneration.run(JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor)));
+		FormatAllAction faa = new FormatAllAction(editor.getSite());
+		
+		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageName).getCompilationUnits();
+		faa.runOnMultiple(generatedCUnits);
+		organizeImportsActionForAllFilesTouchedDuringGeneration.runOnMultiple(generatedCUnits);
+		
+		final ICompilationUnit outputClass = JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor));
+		organizeImportsActionForAllFilesTouchedDuringGeneration.run(outputClass);
+		faa.runOnMultiple(new ICompilationUnit[]{outputClass});
+		
 		editor.doSave(null);
 	}
 

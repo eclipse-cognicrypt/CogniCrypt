@@ -37,7 +37,7 @@ import typestate.TypestateDomainValue;
 
 /**
  * This runner triggers Soot.
- * 
+ *
  * @author Johannes Spaeth
  * @author Eric Bodden
  */
@@ -45,31 +45,31 @@ public class SootRunner {
 
 	private static final File RULES_DIR = Utils.getResourceFromWithin("/resources/CrySLRules/");
 
-	public static boolean runSoot(IJavaProject project, String mainClass, CrySLAnalysisListener reporter) {
+	public static boolean runSoot(final IJavaProject project, final String mainClass, final CrySLAnalysisListener reporter) {
 		G.reset();
 		setSootOptions(project, mainClass);
 		registerTransformers(reporter);
 		try {
 			runSoot(mainClass);
-		} catch (Exception t) {
+		} catch (final Exception t) {
 			Activator.getDefault().logError(t);
 			return false;
 		}
 		return true;
 	}
 
-	private static void registerTransformers(CrySLAnalysisListener reporter) {
+	private static void registerTransformers(final CrySLAnalysisListener reporter) {
 		PackManager.v().getPack("wjtp").add(new Transform("wjtp.prepare", new PreparationTransformer()));
 		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(reporter)));
 	}
 
-	private static void runSoot(String mainClass) {
+	private static void runSoot(final String mainClass) {
 		Scene.v().loadClassAndSupport(mainClass);
 		Scene.v().loadNecessaryClasses();
 		PackManager.v().runPacks();
 	}
 
-	private static void setSootOptions(IJavaProject project, String mainClass) {
+	private static void setSootOptions(final IJavaProject project, final String mainClass) {
 		Options.v().set_soot_classpath(getSootClasspath(project));
 		Options.v().set_main_class(mainClass);
 
@@ -87,11 +87,11 @@ public class SootRunner {
 		return new SceneTransformer() {
 
 			@Override
-			protected void internalTransform(String phaseName, Map<String, String> options) {
+			protected void internalTransform(final String phaseName, final Map<String, String> options) {
 				final ExtendedICFG icfg = new ExtendedICFG(new JimpleBasedInterproceduralCFG(false));
 				//				System.out.println("Soot Classes: "+ Scene.v().getClasses().size());
 				//				System.out.println("Reachable Methods: "+ Scene.v().getReachableMethods().size());
-				CryptoScanner scanner = new CryptoScanner(getRules()) {
+				final CryptoScanner scanner = new CryptoScanner(getRules()) {
 
 					@Override
 					public IExtendedICFG icfg() {
@@ -116,10 +116,10 @@ public class SootRunner {
 	}
 
 	private static List<CryptSLRule> getRules() {
-		List<CryptSLRule> rules = Lists.newArrayList();
-		File[] listFiles = RULES_DIR.listFiles();
+		final List<CryptSLRule> rules = Lists.newArrayList();
+		final File[] listFiles = SootRunner.RULES_DIR.listFiles();
 		assert listFiles != null;
-		for (File file : listFiles) {
+		for (final File file : listFiles) {
 			if (file.getName().endsWith(".cryptslbin")) {
 				rules.add(CryptSLRuleReader.readFromFile(file));
 			}
@@ -127,28 +127,29 @@ public class SootRunner {
 		return rules;
 	}
 
-	private static List<String> projectClassPath(IJavaProject javaProject) {
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+	private static List<String> projectClassPath(final IJavaProject javaProject) {
+		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IClasspathEntry[] cp;
 		try {
 			cp = javaProject.getResolvedClasspath(true);
-			List<String> urls = new ArrayList<>();
-			URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
+			final List<String> urls = new ArrayList<>();
+			final URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
 			urls.add(new File(uriString).getAbsolutePath());
-			for (IClasspathEntry entry : cp) {
-				if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE || entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY)
+			for (final IClasspathEntry entry : cp) {
+				if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE || entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
 					continue;
-				File file = entry.getPath().toFile();
+				}
+				final File file = entry.getPath().toFile();
 				urls.add(file.getAbsolutePath());
 			}
 			return urls;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			Activator.getDefault().logError(e, "Error building project classpath");
 			return Lists.newArrayList();
 		}
 	}
 
-	private static String getSootClasspath(IJavaProject javaProject) {
+	private static String getSootClasspath(final IJavaProject javaProject) {
 		return Joiner.on(File.pathSeparator).join(projectClassPath(javaProject));
 	}
 

@@ -36,8 +36,9 @@ public class ClaferModelUtils {
 			return inputClafer;
 		} else {
 			if (inputClafer.hasChildren()) {
-				final AstConcreteClafer foundChildClafer = inputClafer.getChildren().stream().filter(child -> getNameWithoutScope(child.getName()).equals(name)).findFirst().orElse(null);
-				if (foundChildClafer != null) { 
+				final AstConcreteClafer foundChildClafer = inputClafer.getChildren().stream().filter(child -> getNameWithoutScope(child.getName()).equals(name)).findFirst()
+					.orElse(null);
+				if (foundChildClafer != null) {
 					return foundChildClafer;
 				} else {
 					for (final AstConcreteClafer childClafer : inputClafer.getChildren()) {
@@ -45,14 +46,14 @@ public class ClaferModelUtils {
 						if (foundClafer != null) {
 							return foundClafer;
 						}
-					}	
-				};
-				
-				
+					}
+				}
+				;
+
 			}
 			if (inputClafer instanceof AstAbstractClafer) {
 				for (final AstAbstractClafer abstractChildClafer : ((AstAbstractClafer) inputClafer).getAbstractChildren()) {
-					AstClafer foundClafer = findClaferByName(abstractChildClafer, name);
+					final AstClafer foundClafer = findClaferByName(abstractChildClafer, name);
 					if (foundClafer != null) {
 						return foundClafer;
 					}
@@ -88,8 +89,8 @@ public class ClaferModelUtils {
 		return inputClafer.getName();
 	}
 
-	public static AstConcreteClafer createClafer(AstClafer taskClafer, String name, String type) {
-		AstConcreteClafer newClafer = taskClafer.addChild(name).withCard(1, 1);
+	public static AstConcreteClafer createClafer(final AstClafer taskClafer, final String name, final String type) {
+		final AstConcreteClafer newClafer = taskClafer.addChild(name).withCard(1, 1);
 		newClafer.refTo(ClaferModelUtils.findClaferByName(taskClafer.getParent(), type));
 		return newClafer;
 	}

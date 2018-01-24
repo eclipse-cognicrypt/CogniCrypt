@@ -118,7 +118,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 		layout.numColumns = 1;
 
 		//To display the Help view after clicking the help icon
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "de.cognicrypt.codegenerator.help_id_2");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.container, "de.cognicrypt.codegenerator.help_id_2");
 
 		// Add every constraints to its parent and group it as a separate titled
 		// panel
@@ -169,10 +169,10 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 	}
 
 	@Override
-	public void setVisible(boolean visible) {
+	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
 		if (visible) {
-			container.setFocus();
+			this.container.setFocus();
 		}
 	}
 }

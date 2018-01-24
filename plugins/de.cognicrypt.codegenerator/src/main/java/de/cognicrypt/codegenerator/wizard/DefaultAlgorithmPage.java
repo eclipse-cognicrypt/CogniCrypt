@@ -46,14 +46,14 @@ public class DefaultAlgorithmPage extends WizardPage {
 
 	private Composite control;
 	private Group codePreviewPanel;
-	private TaskSelectionPage taskSelectionPage;
+	private final TaskSelectionPage taskSelectionPage;
 	private Button defaultAlgorithmCheckBox;
 	private Text code;
 	private final InstanceGenerator instanceGenerator;
 	private InstanceClafer value;
-	private ConfiguratorWizard configuratorWizard;
+	private final ConfiguratorWizard configuratorWizard;
 
-	public DefaultAlgorithmPage(final InstanceGenerator inst,final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
+	public DefaultAlgorithmPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, final ConfiguratorWizard confWizard) {
 		super(Constants.DEFAULT_ALGORITHM_PAGE);
 		setTitle("Best solution for task: " + taskSelectionPage.getSelectedTask().getDescription());
 		setDescription(Constants.DESCRIPTION_DEFAULT_ALGORITHM_PAGE);
@@ -62,7 +62,6 @@ public class DefaultAlgorithmPage extends WizardPage {
 		this.configuratorWizard = confWizard;
 	}
 
-	
 	@Override
 	public void createControl(final Composite parent) {
 		Label algorithmClass;
@@ -70,18 +69,18 @@ public class DefaultAlgorithmPage extends WizardPage {
 		this.control = new Composite(parent, SWT.NONE);
 		final GridLayout layout = new GridLayout(1, false);
 		this.control.setLayout(layout);
-		
+
 		//To display the Help view after clicking the help icon
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.help_id_2");
-		
+
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
 		compositeControl.setLayout(new GridLayout(2, false));
 		labelDefaultAlgorithm = new Label(compositeControl, SWT.NONE);
 		labelDefaultAlgorithm.setText(Constants.defaultAlgorithm);
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();//Only the first Instance,which is the most secure one, will be displayed
-		
-		algorithmClass= new Label(compositeControl, SWT.NONE);
-		String firstInstance = inst.keySet().toArray()[0].toString();
+
+		algorithmClass = new Label(compositeControl, SWT.NONE);
+		final String firstInstance = inst.keySet().toArray()[0].toString();
 		algorithmClass.setText(firstInstance);
 		setValue(DefaultAlgorithmPage.this.instanceGenerator.getInstances().get(firstInstance));
 		setPageComplete(true);
@@ -93,58 +92,57 @@ public class DefaultAlgorithmPage extends WizardPage {
 		final Font boldFont = new Font(this.codePreviewPanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 		this.codePreviewPanel.setFont(boldFont);
 		setControl(this.control);
-		
+
 		this.code = new Text(this.codePreviewPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		this.code.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.code.setBounds(10, 20, 520, 146);
-		this.code.setEditable(false);	
-		new Label(control, SWT.NONE);
-		
-		this.code.setText(getCodePreview());
-		
-		code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
+		this.code.setEditable(false);
+		new Label(this.control, SWT.NONE);
 
-		defaultAlgorithmCheckBox = new Button(control, SWT.CHECK);
-		defaultAlgorithmCheckBox.setSelection(true);
-		if(instanceGenerator.getNoOfInstances()==1){
-			//if there is only one instance, then the user can generate the code only for the default algorithm combination. 
-			//Thus, the combo box will be disabled which prevents the user from moving to the next page. 
-			defaultAlgorithmCheckBox.setEnabled(false);
+		this.code.setText(getCodePreview());
+
+		this.code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
+
+		this.defaultAlgorithmCheckBox = new Button(this.control, SWT.CHECK);
+		this.defaultAlgorithmCheckBox.setSelection(true);
+		if (this.instanceGenerator.getNoOfInstances() == 1) {
+			//if there is only one instance, then the user can generate the code only for the default algorithm combination.
+			//Thus, the combo box will be disabled which prevents the user from moving to the next page.
+			this.defaultAlgorithmCheckBox.setEnabled(false);
 		}
-		defaultAlgorithmCheckBox.addSelectionListener(new SelectionAdapter() {
+		this.defaultAlgorithmCheckBox.addSelectionListener(new SelectionAdapter() {
+
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				getWizard().getContainer().updateButtons();
 			}
 		});
-		defaultAlgorithmCheckBox.setText(Constants.DEFAULT_ALGORITHM_PAGE_CHECKBOX);
-		defaultAlgorithmCheckBox.setToolTipText(Constants.DEFAULT_CHECKBOX_TOOLTIP);
-		final ControlDecoration deco = new ControlDecoration(defaultAlgorithmCheckBox, SWT.TOP | SWT.LEFT );
-        Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION)
-		.getImage();
-		if (defaultAlgorithmCheckBox.isEnabled()){
-		   deco.setDescriptionText(Constants.DEFAULT_ALGORITHM_CHECKBOX_ENABLE);
-		}
-		   else{
+		this.defaultAlgorithmCheckBox.setText(Constants.DEFAULT_ALGORITHM_PAGE_CHECKBOX);
+		this.defaultAlgorithmCheckBox.setToolTipText(Constants.DEFAULT_CHECKBOX_TOOLTIP);
+		final ControlDecoration deco = new ControlDecoration(this.defaultAlgorithmCheckBox, SWT.TOP | SWT.LEFT);
+		final Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage();
+		if (this.defaultAlgorithmCheckBox.isEnabled()) {
+			deco.setDescriptionText(Constants.DEFAULT_ALGORITHM_CHECKBOX_ENABLE);
+		} else {
 			deco.setDescriptionText(Constants.DEFAULT_ALGORITHM_CHECKBOX_DISABLE);
-		 }
+		}
 		deco.setImage(image);
-		deco.setShowOnlyOnFocus(false);			
+		deco.setShowOnlyOnFocus(false);
 	}
 
 	private String getCodePreview() {
-		XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(),this.getProviderFromInstance());
+		final XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(), getProviderFromInstance());
 		final String claferPreviewPath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
 		final XMLParser xmlparser = new XMLParser();
-		xmlparser.displayInstanceValues(this.getValue(), this.configuratorWizard.getConstraints());
+		xmlparser.displayInstanceValues(getValue(), this.configuratorWizard.getConstraints());
 		try {
 			xmlparser.writeClaferInstanceToFile(claferPreviewPath);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Activator.getDefault().logError(e, Constants.WritingInstanceClaferErrorMessage);
 			return "";
 		}
 
-		File claferPreviewFile = new File(claferPreviewPath);
+		final File claferPreviewFile = new File(claferPreviewPath);
 
 		// Check whether directories and templates/model exist
 		final File claferOutputFiles = claferPreviewFile != null && claferPreviewFile.exists() ? claferPreviewFile
@@ -163,30 +161,30 @@ public class DefaultAlgorithmPage extends WizardPage {
 		Transformer transformer;
 		try {
 			transformer = tFactory.newTransformer(new StreamSource(xslFile));
-		} catch (TransformerConfigurationException e) {
+		} catch (final TransformerConfigurationException e) {
 			Activator.getDefault().logError(e, Constants.TransformerConfigurationErrorMessage);
 			return "";
 		}
-		File outputFile = new File(temporaryOutputFile);
+		final File outputFile = new File(temporaryOutputFile);
 		try {
 			transformer.transform(new StreamSource(claferPreviewFile), new StreamResult(outputFile));
-		} catch (TransformerException e) {
+		} catch (final TransformerException e) {
 			Activator.getDefault().logError(e, Constants.TransformerErrorMessage);
 			return "";
 		}
 
-		Path file = outputFile.toPath();
+		final Path file = outputFile.toPath();
 		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-			StringBuilder sb = new StringBuilder();
+			final StringBuilder sb = new StringBuilder();
 			String line = null;
-			while ((line = reader.readLine()) != null ) {
-				 if(!line.startsWith("import")){					
-				    sb.append(line);
-				    sb.append(Constants.lineSeparator);				    				
+			while ((line = reader.readLine()) != null) {
+				if (!line.startsWith("import")) {
+					sb.append(line);
+					sb.append(Constants.lineSeparator);
 				}
-			}			
-			  return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
-		} catch (IOException e) {
+			}
+			return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
+		} catch (final IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
 		}
 
@@ -194,49 +192,47 @@ public class DefaultAlgorithmPage extends WizardPage {
 	}
 
 	public TaskSelectionPage getTaskSelectionPage() {
-		return taskSelectionPage;
+		return this.taskSelectionPage;
 	}
-	
-	public String getProviderFromInstance(){
-		String provider="JCA";
-		return provider;		
+
+	public String getProviderFromInstance() {
+		final String provider = "JCA";
+		return provider;
 	}
-	
+
 	public boolean isDefaultAlgorithm() {
 		return this.defaultAlgorithmCheckBox.getSelection();
-    }
-	
+	}
+
 	public InstanceClafer getValue() {
 		return this.value;
 	}
-	
-	
+
 	@Override
 	public void setPageComplete(final boolean complete) {
 		super.setPageComplete(complete);
 	}
-	
+
 	public void setValue(final InstanceClafer instanceClafer) {
 		this.value = instanceClafer;
 	}
-	
-	
+
 	@Override
 	public boolean canFlipToNextPage() {
 		//Can go to next page only if the check box is unchecked
-		if(this.defaultAlgorithmCheckBox.getSelection()==true){
-		  return !this.defaultAlgorithmCheckBox.getSelection();
+		if (this.defaultAlgorithmCheckBox.getSelection() == true) {
+			return !this.defaultAlgorithmCheckBox.getSelection();
 		}
 		return true;
-			
+
 	}
-	
+
 	@Override
-	public void setVisible( boolean visible ) {
-	  super.setVisible( visible );
-	  if(visible) {
-	    control.setFocus();
-	  }
+	public void setVisible(final boolean visible) {
+		super.setVisible(visible);
+		if (visible) {
+			this.control.setFocus();
+		}
 	}
-	
+
 }

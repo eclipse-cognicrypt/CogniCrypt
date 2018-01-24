@@ -19,7 +19,22 @@
  */
 package de.cognicrypt.codegenerator.featuremodel.clafer;
 
-import static org.clafer.ast.Asts.*;
+import static org.clafer.ast.Asts.$this;
+import static org.clafer.ast.Asts.all;
+import static org.clafer.ast.Asts.and;
+import static org.clafer.ast.Asts.constant;
+import static org.clafer.ast.Asts.decl;
+import static org.clafer.ast.Asts.equal;
+import static org.clafer.ast.Asts.global;
+import static org.clafer.ast.Asts.greaterThan;
+import static org.clafer.ast.Asts.greaterThanEqual;
+import static org.clafer.ast.Asts.join;
+import static org.clafer.ast.Asts.joinRef;
+import static org.clafer.ast.Asts.lessThan;
+import static org.clafer.ast.Asts.lessThanEqual;
+import static org.clafer.ast.Asts.local;
+import static org.clafer.ast.Asts.min;
+import static org.clafer.ast.Asts.union;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -110,12 +125,12 @@ public class InstanceGenerator {
 						String[] operands = value.split("\\.");
 						if (operands.length == 2) {
 							final AstClafer operand = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), operands[0]);
-							taskClafer.addConstraint(equal(joinRef(join($this(), taskAlgorithm)),
+							this.taskClafer.addConstraint(equal(joinRef(join($this(), taskAlgorithm)),
 								joinRef(joinRef(join(joinRef(join($this(), operand)), ClaferModelUtils.findClaferByName(operand, operands[1]))))));
 						} else if (value.contains("min(")) {
-							AstSetExpr left = joinRef(join($this(), taskAlgorithm));
+							final AstSetExpr left = joinRef(join($this(), taskAlgorithm));
 							AstSetExpr joined = null;
-							for (String operand : value.substring(4, value.length() - 1).split(",")) {
+							for (final String operand : value.substring(4, value.length() - 1).split(",")) {
 								operands = operand.split("\\.");
 								for (int i = 0; i < operands.length; i++) {
 									operands[i] = operands[i].trim();
@@ -128,8 +143,8 @@ public class InstanceGenerator {
 										joinRef(joinRef(join(joinRef(join($this(), operandClafer)), ClaferModelUtils.findClaferByName(operandClafer, operands[1])))));
 								}
 							}
-							AstSetExpr right = min(joined);
-							taskClafer.addConstraint(equal(left, right));
+							final AstSetExpr right = min(joined);
+							this.taskClafer.addConstraint(equal(left, right));
 						} else {
 							final AstAbstractClafer taskClafer = (AstAbstractClafer) taskAlgorithm.getRef().getTargetType();
 							for (final AstClafer subClafer : taskClafer.getSubs()) {
@@ -221,7 +236,7 @@ public class InstanceGenerator {
 	// FIXME include group operator
 	private void basicModeHandler(final AstModel astModel, final AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {
 		for (final Entry<Question, Answer> entry : qAMap.entrySet()) {
-			Answer answer = entry.getValue();
+			final Answer answer = entry.getValue();
 			if (answer.getClaferDependencies() != null) {
 				for (final ClaferDependency claferDependency : answer.getClaferDependencies()) {
 					if ("->".equals(claferDependency.getOperator())) {
@@ -256,14 +271,14 @@ public class InstanceGenerator {
 			this.generatedInstances.sort(new Comparator<InstanceClafer>() {
 
 				@Override
-				public int compare(InstanceClafer left, InstanceClafer right) {
+				public int compare(final InstanceClafer left, final InstanceClafer right) {
 					return -Integer.compare(getSecurityLevel(left), getSecurityLevel(right));
 				}
 
-				private Integer getSecurityLevel(InstanceClafer instance) {
-					for (InstanceClafer innerInst : instance.getChildren()) {
+				private Integer getSecurityLevel(final InstanceClafer instance) {
+					for (final InstanceClafer innerInst : instance.getChildren()) {
 						if (innerInst.getType().getName().contains("security")) {
-							Object level = innerInst.getRef();
+							final Object level = innerInst.getRef();
 							if (level instanceof Integer) {
 								return (Integer) level;
 							}
@@ -273,10 +288,10 @@ public class InstanceGenerator {
 				}
 
 			});
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			Activator.getDefault().logError("Instances not sorted by security level. Be cautious");
 		}
-		for (InstanceClafer sortedInst : this.generatedInstances) {
+		for (final InstanceClafer sortedInst : this.generatedInstances) {
 
 			String key = getInstanceName(sortedInst);
 			if (key.isEmpty()) {
@@ -290,13 +305,13 @@ public class InstanceGenerator {
 				 */
 				int counter = 1;
 				String copyKey = key;
-				while (displayNameToInstanceMap.containsKey(copyKey)) {
+				while (this.displayNameToInstanceMap.containsKey(copyKey)) {
 					copyKey = key + "(" + String.format("%02d", ++counter) + ")";
-					this.setAlgorithmCount(counter);
+					setAlgorithmCount(counter);
 				}
 
 				this.displayNameToInstanceMap.put(copyKey, sortedInst);
-				this.setAlgorithmName(key);
+				setAlgorithmName(key);
 
 			}
 		}
@@ -510,23 +525,23 @@ public class InstanceGenerator {
 		this.taskName = taskName;
 	}
 
-	public void setAlgorithmName(String algorithmName) {
+	public void setAlgorithmName(final String algorithmName) {
 		this.algorithmName = algorithmName;
 
 	}
 
 	public String getAlgorithmName() {
-		return algorithmName;
+		return this.algorithmName;
 
 	}
 
-	public void setAlgorithmCount(int algorithmCount) {
+	public void setAlgorithmCount(final int algorithmCount) {
 		this.algorithmCount = algorithmCount;
 
 	}
 
 	public int getAlgorithmCount() {
-		return algorithmCount;
+		return this.algorithmCount;
 
 	}
 }

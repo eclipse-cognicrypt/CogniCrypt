@@ -146,7 +146,8 @@ public class XMLParser {
 			}
 
 			final String refClass;
-			if (inst.hasRef() && !inst.getType().isPrimitive() && (refClass = inst.getRef().getClass().toString()) != null && !refClass.contains(Constants.INTEGER) && !refClass.contains(Constants.STRING) && !refClass.contains(Constants.BOOLEAN)) {
+			if (inst.hasRef() && !inst.getType().isPrimitive() && (refClass = inst.getRef().getClass().toString()) != null && !refClass.contains(Constants.INTEGER) && !refClass
+				.contains(Constants.STRING) && !refClass.contains(Constants.BOOLEAN)) {
 				this.enumParent = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
 				this.enumParent = Character.toLowerCase(this.enumParent.charAt(0)) + this.enumParent.substring(1);
 				displayInstanceXML((InstanceClafer) inst.getRef(), parent);

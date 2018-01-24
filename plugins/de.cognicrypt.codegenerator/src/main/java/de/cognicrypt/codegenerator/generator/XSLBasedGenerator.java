@@ -26,7 +26,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -76,18 +75,18 @@ public class XSLBasedGenerator {
 
 	private int endingPositionForRunMethod = -1;
 	private int endPosForImports = -1;
-	private DeveloperProject project;
+	private final DeveloperProject project;
 	private int startingPositionForRunMethod = -1;
 	private int startPosForImports = -1;
 	private String provider;
 
 	/**
 	 * Constructor to initialize the code template generator. If neither a java file is opened nor a project selected initialization fails.
-	 * 
+	 *
 	 * @param targetProject
 	 *
 	 */
-	public XSLBasedGenerator(final IProject targetProject, String provider) {
+	public XSLBasedGenerator(final IProject targetProject, final String provider) {
 		this.project = new DeveloperProject(targetProject);
 		this.provider = provider;
 	}
@@ -99,8 +98,8 @@ public class XSLBasedGenerator {
 	 *        xml model that details the algorithm configuration chosen by the user.
 	 * @param pathToFolderWithAdditionalResources
 	 *        If additional files need to be generated into a developer's project, they are in this folder.
-	 * @param pathToXSLFile 
-	 *		  path to the XSL file is read from the Tasks.json file instead of a constant.		
+	 * @param pathToXSLFile
+	 *        path to the XSL file is read from the Tasks.json file instead of a constant.
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if transformation successful/failed.
 	 * @throws BadLocationException
 	 *
@@ -133,9 +132,9 @@ public class XSLBasedGenerator {
 			// there, and remove temporary output file
 			// Otherwise keep the output file
 			// In any case, organize imports
-			IFile currentlyOpenFile = Utils.getCurrentlyOpenFile();
+			final IFile currentlyOpenFile = Utils.getCurrentlyOpenFile();
 
-			if (currentlyOpenFile != null && project.equals(currentlyOpenFile.getProject())) {
+			if (currentlyOpenFile != null && this.project.equals(currentlyOpenFile.getProject())) {
 				insertCallCodeIntoOpenFile(temporaryOutputFile);
 				removeCryptoPackageIfEmpty();
 			} else {
@@ -154,7 +153,7 @@ public class XSLBasedGenerator {
 	}
 
 	private void removeCryptoPackageIfEmpty() throws CoreException {
-		IPackageFragment cryptoPackage = this.project.getPackagesOfProject(Constants.PackageName);
+		final IPackageFragment cryptoPackage = this.project.getPackagesOfProject(Constants.PackageName);
 		if (cryptoPackage.getCompilationUnits().length == 0) {
 			this.project.removePackage(Constants.PackageName);
 		}
@@ -162,7 +161,7 @@ public class XSLBasedGenerator {
 
 	/**
 	 * This method allows to add the corresponding jar file
-	 * 
+	 *
 	 * @param source
 	 *        is whether a provider or pathToFolderWithAdditionalResources
 	 * @return
@@ -171,7 +170,7 @@ public class XSLBasedGenerator {
 		try {
 
 			if (!source.isEmpty() && !source.equals(Constants.JCA)) {
-				String sourceFolder = "src/";
+				final String sourceFolder = "src/";
 				if (!source.startsWith(sourceFolder)) {
 					source = Constants.providerPath;
 				}
@@ -296,7 +295,7 @@ public class XSLBasedGenerator {
 	 */
 	private boolean insertCallCodeIntoOpenFile(final String temporaryOutputFile) throws BadLocationException, CoreException, IOException {
 		final IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
-		
+
 		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {
 			Activator.getDefault().logError(null,
 				"Could not open access the editor of the file. Therefore, an outputfile " + "containing calls to the generated classes in the Crypto package was generated.");
@@ -319,13 +318,13 @@ public class XSLBasedGenerator {
 
 			@Override
 			public boolean visit(final MethodDeclaration node) {
-				methLims.add(new ComparableEntry<Integer, Integer>(node.getStartPosition(), node.getStartPosition() + node.getLength()));
+				methLims.add(new ComparableEntry<>(node.getStartPosition(), node.getStartPosition() + node.getLength()));
 				return super.visit(node);
 			}
 
 			@Override
 			public boolean visit(final TypeDeclaration node) {
-				classlims.setValue(new ComparableEntry<Integer, Integer>(node.getStartPosition(), node.getStartPosition() + node.getLength()));
+				classlims.setValue(new ComparableEntry<>(node.getStartPosition(), node.getStartPosition() + node.getLength()));
 				return super.visit(node);
 			}
 		};
@@ -352,7 +351,7 @@ public class XSLBasedGenerator {
 		currentlyOpenDocument.replace(cursorPos, 0, callsForGenClasses[1]);
 		currentlyOpenDocument.replace(imports, 0, callsForGenClasses[0] + Constants.lineSeparator);
 		this.project.refresh();
-		
+
 		organizeImports(currentlyOpenEditor);
 		return true;
 	}
@@ -366,16 +365,16 @@ public class XSLBasedGenerator {
 	 */
 	private void organizeImports(final IEditorPart editor) throws CoreException {
 		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
-		FormatAllAction faa = new FormatAllAction(editor.getSite());
-		
+		final FormatAllAction faa = new FormatAllAction(editor.getSite());
+
 		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageName).getCompilationUnits();
 		faa.runOnMultiple(generatedCUnits);
 		organizeImportsActionForAllFilesTouchedDuringGeneration.runOnMultiple(generatedCUnits);
-		
+
 		final ICompilationUnit outputClass = JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor));
 		organizeImportsActionForAllFilesTouchedDuringGeneration.run(outputClass);
-		faa.runOnMultiple(new ICompilationUnit[]{outputClass});
-		
+		faa.runOnMultiple(new ICompilationUnit[] { outputClass });
+
 		editor.doSave(null);
 	}
 
@@ -406,7 +405,7 @@ public class XSLBasedGenerator {
 		return this.provider;
 	}
 
-	public void setProvider(String provider) {
+	public void setProvider(final String provider) {
 		this.provider = provider;
 	}
 }

@@ -31,6 +31,7 @@ import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -157,6 +158,7 @@ public class TaskSelectionPage extends WizardPage {
 		});
 
 		this.taskComboSelection.setInput(tasks);
+		this.taskComboSelection.setComparator(new ViewerComparator());
 		//Label for task description
 		Label taskDescription = new Label(this.container, SWT.NONE);
 		GridData gd_taskDescription = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);

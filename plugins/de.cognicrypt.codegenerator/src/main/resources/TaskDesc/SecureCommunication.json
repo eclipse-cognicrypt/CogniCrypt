@@ -193,7 +193,7 @@
 						"claferDependencies": [
 							{
 								"algorithm": "ciphersuites",
-								"operand": "tlsProtocol;security",
+								"operand": "tlsProtocol;suiteSecurity",
 								"operator": "|",
 								"value": ">= TLS1_2;> Medium"
 							}

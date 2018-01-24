@@ -19,21 +19,7 @@
  */
 package de.cognicrypt.codegenerator.featuremodel.clafer;
 
-import static org.clafer.ast.Asts.$this;
-import static org.clafer.ast.Asts.all;
-import static org.clafer.ast.Asts.and;
-import static org.clafer.ast.Asts.constant;
-import static org.clafer.ast.Asts.decl;
-import static org.clafer.ast.Asts.equal;
-import static org.clafer.ast.Asts.global;
-import static org.clafer.ast.Asts.greaterThan;
-import static org.clafer.ast.Asts.greaterThanEqual;
-import static org.clafer.ast.Asts.join;
-import static org.clafer.ast.Asts.joinRef;
-import static org.clafer.ast.Asts.lessThan;
-import static org.clafer.ast.Asts.lessThanEqual;
-import static org.clafer.ast.Asts.local;
-import static org.clafer.ast.Asts.union;
+import static org.clafer.ast.Asts.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -121,17 +107,42 @@ public class InstanceGenerator {
 					if (rightOperand != null) {
 						taskAlgorithm.addConstraint(equal(joinRef(join(joinRef($this()), rightOperand)), constant(value)));
 					} else {
-						final AstAbstractClafer taskClafer = (AstAbstractClafer) taskAlgorithm.getRef().getTargetType();
-						for (final AstClafer subClafer : taskClafer.getSubs()) {
-							if (subClafer.getName().endsWith(value)) {
-								taskAlgorithm.addConstraint(equal(joinRef($this()), global(subClafer)));
-								break;
+						String[] operands = value.split("\\.");
+						if (operands.length == 2) {
+							final AstClafer operand = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), operands[0]);
+							taskClafer.addConstraint(equal(joinRef(join($this(), taskAlgorithm)),
+								joinRef(joinRef(join(joinRef(join($this(), operand)), ClaferModelUtils.findClaferByName(operand, operands[1]))))));
+						} else if (value.contains("min(")) {
+							AstSetExpr left = joinRef(join($this(), taskAlgorithm));
+							AstSetExpr joined = null;
+							for (String operand : value.substring(4, value.length() - 1).split(",")) {
+								operands = operand.split("\\.");
+								for (int i = 0; i < operands.length; i++) {
+									operands[i] = operands[i].trim();
+								}
+								final AstClafer operandClafer = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), operands[0]);
+								if (joined == null) {
+									joined = joinRef(joinRef(join(joinRef(join($this(), operandClafer)), ClaferModelUtils.findClaferByName(operandClafer, operands[1]))));
+								} else {
+									joined = union(joined,
+										joinRef(joinRef(join(joinRef(join($this(), operandClafer)), ClaferModelUtils.findClaferByName(operandClafer, operands[1])))));
+								}
+							}
+							AstSetExpr right = min(joined);
+							taskClafer.addConstraint(equal(left, right));
+						} else {
+							final AstAbstractClafer taskClafer = (AstAbstractClafer) taskAlgorithm.getRef().getTargetType();
+							for (final AstClafer subClafer : taskClafer.getSubs()) {
+								if (subClafer.getName().endsWith(value)) {
+									taskAlgorithm.addConstraint(equal(joinRef($this()), global(subClafer)));
+									break;
+								}
 							}
 						}
 					}
 				} else {
 					taskAlgorithm.getParent().addConstraint(getFunctionFromOperator(joinRef(joinRef(join(joinRef(join($this(), taskAlgorithm)), rightOperand))),
-						joinRef(global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent().getParent(), "c0_" + value))), operator));
+						joinRef(global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent().getParent(), value))), operator));
 				}
 			}
 
@@ -144,15 +155,15 @@ public class InstanceGenerator {
 			} else {
 				for (int j = 0; j < length; j++) {
 					if (j == 0) {
-						constraint = global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j++]));
+						constraint = global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), claferNames[j++]));
 					}
-					final AstClafer astC = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j]);
+					final AstClafer astC = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), claferNames[j]);
 					constraint = union(constraint, global(astC));
 				}
 			}
 			taskAlgorithm.addConstraint(equal(joinRef(join($this(), rightOperand)), constraint));
 		} else if (operator.equals("|")) {
-			
+
 			final String[] claferNames = value.split(";");
 			//The constraint that is created looks like [all $consName : taskAlgorithm | $consName.algorithmProperty claferNames[0] && ...]
 			final AstLocal tmpClafer = local("suite");
@@ -161,13 +172,9 @@ public class InstanceGenerator {
 			if (claferNames.length == 1) {
 				final AstSetExpr operandLeftClafer = joinRef(join(joinRef(tmpClafer), rightOperand));
 				final String[] opSquare = claferNames[0].split(" ");
-				final AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(rightOperand.getParent().getParent(), "c0_" + opSquare[1])));
+				final AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(rightOperand.getParent().getParent(), opSquare[1])));
 				boolExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, opSquare[0]);
 			} else {
-				// join($this(), c0_ciphersuites))], 
-				// and(
-				// greaterThanEqual(joinRef(joinRef(join(joinRef(suite), c0_tlsProtocol))), joinRef(global(c0_TLS1_2))), 
-				// greaterThan(joinRef(join(joinRef(suite), c1_security)), joinRef(global(c0_Medium))))));
 				for (int i = 0; i < claferNames.length; i++) {
 					if (i == 0) {
 						final AstSetExpr operandLeftClafer = joinRef(joinRef(join(joinRef(tmpClafer), rightOperand)));
@@ -213,7 +220,6 @@ public class InstanceGenerator {
 	 */
 	// FIXME include group operator
 	private void basicModeHandler(final AstModel astModel, final AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {
-		taskClafer.getConstraints().get(1).getExpr();
 		for (final Entry<Question, Answer> entry : qAMap.entrySet()) {
 			Answer answer = entry.getValue();
 			if (answer.getClaferDependencies() != null) {

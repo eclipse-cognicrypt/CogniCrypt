@@ -22,7 +22,7 @@ import de.cognicrypt.codegenerator.Constants;
 public class Answer {
 
 	private String value;
-	
+
 	private Boolean defaultAnswer;
 	private ArrayList<ClaferDependency> claferDependencies;
 	private ArrayList<CodeDependency> codeDependencies;
@@ -67,7 +67,7 @@ public class Answer {
 	public void setValue(final String value) {
 		this.value = value;
 	}
-	
+
 	@Override
 	public String toString() {
 		//the combo viewer calls the toString() method so just display the value

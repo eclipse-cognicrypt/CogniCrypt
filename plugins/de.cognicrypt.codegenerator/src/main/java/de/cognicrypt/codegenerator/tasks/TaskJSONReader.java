@@ -33,18 +33,18 @@ public class TaskJSONReader {
 
 	public static List<Task> getTasks() {
 
-		if (tasks == null) {
+		if (TaskJSONReader.tasks == null) {
 			try {
-				BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(Constants.jsonTaskFile)));
+				final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(Constants.jsonTaskFile)));
 				final Gson gson = new Gson();
-				tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {}.getType());
+				TaskJSONReader.tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {}.getType());
 
 			} catch (final FileNotFoundException e) {
 				Activator.getDefault().logError(e);
 			}
 		}
 
-		return tasks;
+		return TaskJSONReader.tasks;
 	}
 
 }

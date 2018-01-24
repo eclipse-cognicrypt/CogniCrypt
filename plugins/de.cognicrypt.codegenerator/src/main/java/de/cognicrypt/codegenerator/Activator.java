@@ -36,7 +36,7 @@ public class Activator extends AbstractUIPlugin {
 	 * @return the shared instance
 	 */
 	public static Activator getDefault() {
-		return plugin;
+		return Activator.plugin;
 	}
 
 	/**
@@ -47,7 +47,7 @@ public class Activator extends AbstractUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(final String path) {
-		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+		return imageDescriptorFromPlugin(Activator.PLUGIN_ID, path);
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class Activator extends AbstractUIPlugin {
 	public Activator() {}
 
 	private void log(final int severity, final String message, final Exception ex) {
-		getLog().log(new Status(severity, PLUGIN_ID, message, ex));
+		getLog().log(new Status(severity, Activator.PLUGIN_ID, message, ex));
 	}
 
 	public void logError(final Exception ex) {
@@ -78,12 +78,12 @@ public class Activator extends AbstractUIPlugin {
 	@Override
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
-		plugin = this;
+		Activator.plugin = this;
 	}
 
 	@Override
 	public void stop(final BundleContext context) throws Exception {
-		plugin = null;
+		Activator.plugin = null;
 		super.stop(context);
 	}
 }

@@ -51,10 +51,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -80,10 +78,10 @@ public class InstanceListPage extends WizardPage {
 	private final InstanceGenerator instanceGenerator;
 	private InstanceClafer value;
 	private Group instancePropertiesPanel;
-	private TaskSelectionPage taskSelectionPage;
-	private ConfiguratorWizard configuratorWizard;
+	private final TaskSelectionPage taskSelectionPage;
+	private final ConfiguratorWizard configuratorWizard;
 
-	public InstanceListPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
+	public InstanceListPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, final ConfiguratorWizard confWizard) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
 		setTitle("Possible solutions for task: " + taskSelectionPage.getSelectedTask().getDescription());
 		setDescription(Constants.DESCRIPTION_INSTANCE_LIST_PAGE);
@@ -116,15 +114,15 @@ public class InstanceListPage extends WizardPage {
 		labelInstanceList.setText(Constants.instanceList);
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
 		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
-		String firstInstance = inst.keySet().toArray()[0].toString();
-		Combo combo = algorithmClass.getCombo();
-		String key = instanceGenerator.getAlgorithmName();
-		int count = instanceGenerator.getAlgorithmCount();
+		final String firstInstance = inst.keySet().toArray()[0].toString();
+		final Combo combo = algorithmClass.getCombo();
+		final String key = this.instanceGenerator.getAlgorithmName();
+		final int count = this.instanceGenerator.getAlgorithmCount();
 		combo.setToolTipText("There are " + String.format("%d", count) + " variations of the algorithm " + key);
 
 		//Display help assist for the first instance in the combo box
 		final ControlDecoration deco = new ControlDecoration(combo, SWT.TOP | SWT.RIGHT);
-		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage();
+		final Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage();
 
 		deco.setDescriptionText(Constants.DEFAULT_ALGORITHM_NOTIFICATION);
 		deco.setImage(image);
@@ -156,8 +154,8 @@ public class InstanceListPage extends WizardPage {
 				setPageComplete(true);
 			}
 		});
-		new Label(control, SWT.NONE);
-		new Label(control, SWT.NONE);
+		new Label(this.control, SWT.NONE);
+		new Label(this.control, SWT.NONE);
 
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
 		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
@@ -176,21 +174,17 @@ public class InstanceListPage extends WizardPage {
 		setControl(this.control);
 		final ISelection selection = new StructuredSelection(inst.keySet().toArray()[0]);
 		algorithmClass.setSelection(selection);
-		new Label(control, SWT.NONE);
+		new Label(this.control, SWT.NONE);
 
 		//Button to View the code that will be generated into the Java project
 
-		Button codePreviewButton = new Button(control, SWT.NONE);
+		final Button codePreviewButton = new Button(this.control, SWT.NONE);
 		codePreviewButton.setText("Code Preview");
-		codePreviewButton.addListener(SWT.Selection, new Listener() {
-
-			public void handleEvent(Event event) {
-				MessageBox messageBox = new MessageBox(new Shell(), SWT.OK);
-				messageBox.setText("Code Preview");
-				messageBox.setMessage(getCodePreview());
-				messageBox.open();
-			}
-
+		codePreviewButton.addListener(SWT.Selection, event -> {
+			final MessageBox messageBox = new MessageBox(new Shell(), SWT.OK);
+			messageBox.setText("Code Preview");
+			messageBox.setMessage(getCodePreview());
+			messageBox.open();
 		});
 
 	}
@@ -237,11 +231,11 @@ public class InstanceListPage extends WizardPage {
 	 */
 	private String getInstanceProperties(final InstanceClafer inst) {
 		final Map<String, String> algorithms = new HashMap<>();
-		for (InstanceClafer child : inst.getChildren()) {
+		for (final InstanceClafer child : inst.getChildren()) {
 			getInstanceDetails(child, algorithms);
 		}
 
-		StringBuilder output = new StringBuilder();
+		final StringBuilder output = new StringBuilder();
 		for (final Map.Entry<String, String> entry : algorithms.entrySet()) {
 			final String key = entry.getKey();
 			final String value = entry.getValue();
@@ -256,11 +250,11 @@ public class InstanceListPage extends WizardPage {
 
 	/**
 	 * This method extracts the provider's name from the instanceDetails
-	 * 
+	 *
 	 * @return
 	 */
 	public String getProviderFromInstance() {
-		for (String instance : this.instanceDetails.getText().split(Constants.lineSeparator)) {
+		for (final String instance : this.instanceDetails.getText().split(Constants.lineSeparator)) {
 			if (instance.contains("Provider")) {
 				return instance.split(": ")[1];
 			}
@@ -269,18 +263,18 @@ public class InstanceListPage extends WizardPage {
 	}
 
 	public String getCodePreview() {
-		XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(), this.getProviderFromInstance());
+		final XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(), getProviderFromInstance());
 		final String claferPreviewPath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
 		final XMLParser xmlparser = new XMLParser();
-		xmlparser.displayInstanceValues(this.getValue(), this.configuratorWizard.getConstraints());
+		xmlparser.displayInstanceValues(getValue(), this.configuratorWizard.getConstraints());
 		try {
 			xmlparser.writeClaferInstanceToFile(claferPreviewPath);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Activator.getDefault().logError(e, Constants.WritingInstanceClaferErrorMessage);
 			return "";
 		}
 
-		File claferPreviewFile = new File(claferPreviewPath);
+		final File claferPreviewFile = new File(claferPreviewPath);
 
 		// Check whether directories and templates/model exist
 		final File claferOutputFiles = claferPreviewFile != null && claferPreviewFile.exists() ? claferPreviewFile
@@ -299,21 +293,21 @@ public class InstanceListPage extends WizardPage {
 		Transformer transformer;
 		try {
 			transformer = tFactory.newTransformer(new StreamSource(xslFile));
-		} catch (TransformerConfigurationException e) {
+		} catch (final TransformerConfigurationException e) {
 			Activator.getDefault().logError(e, Constants.TransformerConfigurationErrorMessage);
 			return "";
 		}
-		File outputFile = new File(temporaryOutputFile);
+		final File outputFile = new File(temporaryOutputFile);
 		try {
 			transformer.transform(new StreamSource(claferPreviewFile), new StreamResult(outputFile));
-		} catch (TransformerException e) {
+		} catch (final TransformerException e) {
 			Activator.getDefault().logError(e, Constants.TransformerErrorMessage);
 			return "";
 		}
 
-		Path file = outputFile.toPath();
+		final Path file = outputFile.toPath();
 		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-			StringBuilder sb = new StringBuilder();
+			final StringBuilder sb = new StringBuilder();
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				if (!line.startsWith("import")) {
@@ -323,7 +317,7 @@ public class InstanceListPage extends WizardPage {
 			}
 
 			return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
 		}
 
@@ -331,7 +325,7 @@ public class InstanceListPage extends WizardPage {
 	}
 
 	public TaskSelectionPage getTaskSelectionPage() {
-		return taskSelectionPage;
+		return this.taskSelectionPage;
 	}
 
 	public InstanceClafer getValue() {
@@ -339,10 +333,10 @@ public class InstanceListPage extends WizardPage {
 	}
 
 	@Override
-	public void setVisible(boolean visible) {
+	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
 		if (visible) {
-			control.setFocus();
+			this.control.setFocus();
 		}
 	}
 

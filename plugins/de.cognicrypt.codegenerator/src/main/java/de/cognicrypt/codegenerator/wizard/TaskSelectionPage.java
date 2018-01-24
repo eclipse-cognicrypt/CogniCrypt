@@ -214,7 +214,6 @@ public class TaskSelectionPage extends WizardPage {
 		guidedModeCheckBox.setToolTipText(Constants.GUIDEDMODE_TOOLTIP);
 		this.guidedModeCheckBox.setEnabled(true);
 		this.guidedModeCheckBox.addSelectionListener(new SelectionAdapter() {
-
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 

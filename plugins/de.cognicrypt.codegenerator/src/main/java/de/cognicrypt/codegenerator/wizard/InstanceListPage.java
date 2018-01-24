@@ -61,12 +61,14 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.ISharedImages;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Activator;
@@ -76,9 +78,6 @@ import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.utilities.Utils;
 import de.cognicrypt.codegenerator.utilities.XMLParser;
-
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Button;
 
 /**
  * This class is responsible for displaying the instances the Clafer instance generator generated.
@@ -94,10 +93,6 @@ public class InstanceListPage extends WizardPage {
 	private Group instancePropertiesPanel;
 	private TaskSelectionPage taskSelectionPage;
 	private ConfiguratorWizard configuratorWizard;
-	private Text infoText;
-	private Text algorithmVariation;
-	private int algorithmIndex;
-	private String comboSelection;
   
 	public InstanceListPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
@@ -147,9 +142,9 @@ public class InstanceListPage extends WizardPage {
 		//Display help assist for the first instance in the combo box
 		new Label(control, SWT.NONE);
 		new Label(control, SWT.NONE);
-		infoText = new Text(control, SWT.BORDER | SWT.WRAP );
-		infoText.setEditable(false);
+		Text infoText = new Text(control, SWT.BORDER | SWT.WRAP );
 		infoText.setText(Constants.DEFAULT_ALGORITHM_NOTIFICATION);
+		infoText.setEditable(false);
 		infoText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));		
 		final ControlDecoration deco = new ControlDecoration(infoText, SWT.RIGHT);
 		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage();		
@@ -157,55 +152,51 @@ public class InstanceListPage extends WizardPage {
 		deco.setShowOnlyOnFocus(false);	
 		
 		new Label(control, SWT.NONE);
-		new Label(control, SWT.NONE);		
-		algorithmVariation = new Text(control, SWT.RIGHT);
-		algorithmVariation.setEditable(false);
+		new Label(control, SWT.NONE);
+		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
+//		ToolBar toolBar = new ToolBar(this.instancePropertiesPanel, SWT.TOP );
+		this.instanceDetails = new Text(this.instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		
+		Composite composite_Control = new Composite(this.instancePropertiesPanel, SWT.BOTTOM | SWT.CENTER);
+		composite_Control.setLayoutData(new GridData(SWT.CENTER, GridData.FILL, true, false));
+		composite_Control.setLayout(new GridLayout(3, true)); 
 		
-		//Setting popup menu
-				Text textField = new Text(control, SWT.NONE);
-				textField.setText("Previously Viewed");
-				textField.setEditable(false);
-				
-				final Tree tree = new Tree(control, SWT.BORDER | SWT.MULTI);
-				
-				Menu popupmenu = new Menu(textField);
-				tree.setMenu(popupmenu);
-			    for (int i = 0; i < 12; i++) {
-			      TreeItem item = new TreeItem(tree, SWT.NONE);
-			      item.setText("Item " + i);
-			    }
-				//textField.setMenu(popupmenu);
-//				MenuItem item = new MenuItem(popupmenu, SWT.NONE);
-//				item.setText("");
-		
-		final ControlDecoration deco1 = new ControlDecoration(algorithmVariation, SWT.LEFT); 
-		deco1.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_BACK));
-		deco1.setShowOnlyOnFocus(false);
-		
-		deco1.addSelectionListener(new SelectionAdapter() {
-			
+		//Back button to go to the previous algorithm in the combo box
+		Button backIcon = new Button(composite_Control, SWT.CENTER | SWT.BOTTOM);
+		backIcon.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		backIcon.setText("<");		
+		backIcon.addSelectionListener(new SelectionAdapter() {			
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				int a= getSelectionIndex();
-					if(a != 0){	
-						a=a-1;
-				       combo.select(a);
-				       setSelectionIndex(a);
-				  }
-			}
-		});		
-		
-		final ControlDecoration deco2 = new ControlDecoration(algorithmVariation, SWT.RIGHT); 
-		deco2.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_FORWARD));
-		deco2.setShowOnlyOnFocus(false);
-		deco2.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				System.out.println("hello");
+			public void widgetSelected(SelectionEvent e) {				
+				int temp = combo.getSelectionIndex();
+				if (temp != 0){							
+					temp = temp - 1;
+				    final ISelection selection = new StructuredSelection(inst.keySet().toArray()[temp]);
+					algorithmClass.setSelection(selection);
+				    }
 			}
 		});
+		
+		//Label that displays the current algorithm variation and the total number of variations
+		Label algorithmVariation = new Label(composite_Control, SWT.CENTER | SWT.BOTTOM);
+		algorithmVariation.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+		
+		//Button to go to the next algorithm in the combo box
+		Button nextIcon = new Button(composite_Control, SWT.CENTER | SWT.BOTTOM);
+		nextIcon.setText(">");
+		nextIcon.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int temp = combo.getSelectionIndex();
+				if (temp != (count-1)){
+					temp = temp + 1;
+			        final ISelection selection = new StructuredSelection(inst.keySet().toArray()[temp]);
+				    algorithmClass.setSelection(selection);				    
+				}
 				
+			}
+		});
+		
 		algorithmClass.setLabelProvider(new LabelProvider() {
 
 			@Override
@@ -216,34 +207,35 @@ public class InstanceListPage extends WizardPage {
 		algorithmClass.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 			InstanceListPage.this.instancePropertiesPanel.setVisible(true);
-			final String selectedAlgorithm = selection.getFirstElement().toString();
-			int index = combo.getSelectionIndex();		
-			setSelectionIndex(index);			
-			algorithmVariation.setText("  Variation  "+ (getSelectionIndex()+1) +" / " +String.format("%d  ",count ));	
-			algorithmVariation.setEditable(false);
+			final String selectedAlgorithm = selection.getFirstElement().toString();	
 			setValue(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm));
 			InstanceListPage.this.instanceDetails.setText(getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
-            setAlgorithm(selectedAlgorithm);
-            //item.setText(getAlgorithm());
+			int index = combo.getSelectionIndex();
+			algorithmVariation.setText("  Variation  " + (index + 1) + " / " + String.format("%d  ",count ));
 			if (!selectedAlgorithm.equals(firstInstance)) {
 				//hide the help assist and the text if the selected algorithm is not the default algorithm
 				deco.hide();
-				infoText.setVisible(false);
+				infoText.setVisible(false);	
+				backIcon.setEnabled(true);
 			} else {
 				infoText.setVisible(true);
-				deco.show();				
+				deco.show();
+				//disable back button if the selected algorithm in the combo box is the first instance
+				backIcon.setEnabled(false);
+			}
+			if (combo.getSelectionIndex() == count-1){
+				//disable next button if the selected algorithm in the combo box is the last instance
+				nextIcon.setEnabled(false);
+			} else {
+				nextIcon.setEnabled(true);
 			}
 			if (selection.size() > 0) {
 				setPageComplete(true);
 			}
-		});				
-		new Label(control, SWT.NONE);
-		new Label(control, SWT.NONE);
+		});		
 		
-		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
 		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
 		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 1;
 		this.instancePropertiesPanel.setLayout(gridLayout);
 		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
 		gridData.horizontalSpan = 1;
@@ -252,11 +244,40 @@ public class InstanceListPage extends WizardPage {
 		this.instancePropertiesPanel.setLayoutData(gridData);
 		final Font boldFont = new Font(this.instancePropertiesPanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 		this.instancePropertiesPanel.setFont(boldFont);
-
-		this.instanceDetails = new Text(this.instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-		//Hide scroll bar 
+		
+		//ToolBar toolBar = new ToolBar(this.instancePropertiesPanel, SWT.TOP );
+//		toolBar.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+//		Menu menu = new Menu(getShell(), SWT.POP_UP);
+//		toolBar.setMenu(menu);
+//		MenuItem mi = new MenuItem(menu, SWT.CASCADE);	
+//		int i=0;
+//		mi.setText(inst.keySet().toArray()[i].toString());	
+//		
+//		ToolItem tltmViewedAlg = new ToolItem(toolBar, SWT.NONE);
+//		tltmViewedAlg.addSelectionListener(new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				if(e.detail == SWT.ARROW){
+//					System.out.println("hiii");
+//				}
+//			}
+//			});
+//		tltmViewedAlg.addListener(SWT.Selection, new Listener() {
+//		      public void handleEvent(Event event) {
+//		        if (event.detail == SWT.ARROW) {
+//		          Rectangle rect = tltmViewedAlg.getBounds();
+//		          Point pt = new Point(rect.x, rect.y + rect.height);
+//		          pt = toolBar.toDisplay(pt);
+//		          menu.setLocation(pt.x, pt.y);
+//		          menu.setVisible(true);
+//		        }
+//		      }
+//		    });
+//		
+//		tltmViewedAlg.setText("History");		
+		
+		//Hide scroll bar in instance details text box
 		Listener scrollBarListener = new Listener() {
-
 			@Override
 			public void handleEvent(Event event) {
 				Text t = (Text) event.widget;
@@ -282,12 +303,13 @@ public class InstanceListPage extends WizardPage {
 		// Initially instance properties panel will be hidden		
 		this.instancePropertiesPanel.setVisible(false);
 		setControl(this.control);
+		
 		final ISelection selection = new StructuredSelection(inst.keySet().toArray()[0]);
 		algorithmClass.setSelection(selection);
 		new Label(control, SWT.NONE);
 
 		//Button to View the code that will be generated into the Java project
-		Button codePreviewButton = new Button(control, SWT.NONE);
+		Button codePreviewButton = new Button(this.control, SWT.NONE);
 		codePreviewButton.setText("Code Preview");
 		codePreviewButton.addListener(SWT.Selection, new Listener() {
 		      public void handleEvent(Event event) {
@@ -302,8 +324,7 @@ public class InstanceListPage extends WizardPage {
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);
 		sc.setMinSize(this.control.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		setControl(sc);				
-	    
+		setControl(sc);		
 	}
 
 	private void getInstanceDetails(final InstanceClafer inst, final Map<String, String> algorithms) {
@@ -458,28 +479,12 @@ public class InstanceListPage extends WizardPage {
 		return this.value;
 	}
 	
-	public void setSelectionIndex(int selectionIndex){
-	    algorithmIndex = selectionIndex;
-	}
-	
-	public int getSelectionIndex(){
-		return algorithmIndex;
-	}
-	
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		if (visible) {
 			control.setFocus();
 		}
-	}
-	
-	public void setAlgorithm(String selectedAlgorithm){
-		this.comboSelection = selectedAlgorithm;
-	}
-
-	public String getAlgorithm(){
-		return comboSelection;
 	}
 	
 }

@@ -90,7 +90,7 @@ public class ClaferModelUtils {
 
 	public static AstConcreteClafer createClafer(AstClafer taskClafer, String name, String type) {
 		AstConcreteClafer newClafer = taskClafer.addChild(name).withCard(1, 1);
-		newClafer.refTo(ClaferModelUtils.findClaferByName(taskClafer.getParent(), "c0_" + type));
+		newClafer.refTo(ClaferModelUtils.findClaferByName(taskClafer.getParent(), type));
 		return newClafer;
 	}
 

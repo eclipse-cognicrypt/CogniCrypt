@@ -111,6 +111,7 @@ public class TaskSelectionPage extends WizardPage {
 			projectComboSelection.setSelection(new StructuredSelection(projectComboSelection.getElementAt(0)));
 		} else {
 			projectComboSelection.setInput(javaProjects.keySet().toArray());
+			projectComboSelection.setComparator(new ViewerComparator());
 			projectComboSelection.addSelectionChangedListener(event -> {
 				final IStructuredSelection selected = (IStructuredSelection) event.getSelection();
 				this.selectedProject = javaProjects.get(selected.getFirstElement());

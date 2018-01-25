@@ -40,6 +40,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISelectionService;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.Workbench;
@@ -92,6 +93,23 @@ public class Utils {
 		return javaProjects;
 	}
 
+	
+	
+	/**
+	 * This method returns the currently open page as an {@link IWorkbenchPage}.
+	 *
+	 * @return Current editor.
+	 */
+	public static IWorkbenchPage getCurrentlyOpenPage() {
+		final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		if (window != null) {
+			return window.getActivePage();
+		}
+		return null;
+	}
+	
+	
+	
 	/**
 	 * This method returns the currently open editor as an {@link IEditorPart}.
 	 *

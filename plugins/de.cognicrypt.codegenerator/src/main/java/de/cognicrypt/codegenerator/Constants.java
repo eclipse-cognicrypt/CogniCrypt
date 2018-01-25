@@ -20,6 +20,8 @@
 
 package de.cognicrypt.codegenerator;
 
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -117,6 +119,13 @@ public class Constants {
 	public static final String PLEASE_SELECT = "Please select project directory to launch the configurator";
 	public static final String ERROR_MESSAGE_NO_PROJECT = "There is no Java project in your workspace. Please create one and restart CogniCrypt.";
 	public static final String ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY = "No directory for additional resources found.";
+	public static final String ERROR = "ERROR: ";
+	public static final String ERROR_MESSAGE_BLANK_FILE_NAME = "Please choose a valid file.";
+	public static final String ERROR_MESSAGE_UNABLE_TO_READ_FILE = "There is a problem with the selected file. Please choose a valid one.";
+	public static final String ERROR_MESSAGE_DUPLICATE_TASK_NAME = "A task with this name already exists.";
+	public static final String MESSAGE_REQUIRED_FIELD = "This is a required field.";
+	public static final String ERROR_MESSAGE_BLANK_TASK_NAME = "The Task name cannot be empty. Please enter a valid name for the Task.";
+	
 
 	public static final String JAVA = "java";
 	public static final String JCA = "JCA";
@@ -184,9 +193,14 @@ public class Constants {
 	public static final String PAGE_DESCRIPTION_FOR_XSL_FILE_CREATION = "Here you can details for the code generation.";
 	
 	public static final String PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS = "pageForHighLevelQuestions";
-	public static final String PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS = "Add the high level qustions and their dependencies here";
+	public static final String PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS = "Add the high level questions and their dependencies here";
 	public static final String PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS = "Here you can add the questions that will be asked to the end user, and the dependencies to the "+
 																			"variability modelling and the code generation.";
+	
+	public static final String PAGE_NAME_FOR_LINK_ANSWERS = "pageForLinkAnswers";
+	public static final String PAGE_TITLE_FOR_LINK_ANSWERS = "Select the question that needs to be linked to another question";
+	public static final String PAGE_DESCIPTION_FOR_LINK_ANSWERS = "Here you can configure which question should be displayed next upon selection of a particular answer of the current question"+
+																	"by clicking the Link Answer button.";
 	
 	// Widget constants
 	// Labels
@@ -225,6 +239,14 @@ public class Constants {
 	//public static final Rectangle RECTANGLE_FOR_GRANULAR_CLAFER_UI_ELEMENT = new Rectangle(10, 10, 744, 280);
 	public static final int WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT = 744;
 	public static final int HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT = 280;
+	
+	public static final int SINGLE_LINE_TEXT_BOX_LIMIT = 256;
+	public static final int MULTI_LINE_TEXT_BOX_LIMIT = 2560;
+	
+	public static final Image DEC_INFORMATION = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage();
+	public static final Image DEC_ERROR = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage();
+	public static final Image DEC_REQUIRED = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED).getImage();
+	public static final Image DEC_WARNING = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_WARNING).getImage();
 	
 	// Form  data for CompositeGranularUIForClaferFeature
 	public static final int RIGHT_VALUE_FOR_GRANULAR_CLAFER_UI_SUB_ELEMENT = 736;
@@ -385,8 +407,42 @@ public class Constants {
 	public static final String JSON_FILE_DIRECTORY_PATH = rsrcPath + "TaskDesc" + innerFileSeparator;
 	public static final String XSL_FILE_DIRECTORY_PATH = rsrcPath + "XSLTemplates" + innerFileSeparator;
 	public static final String CFR_EXTENSION = ".cfr";
+	public static final String JS_EXTENSION = ".js";
 	public static final String JAR_EXTENSION = ".jar";
 	public static final String JSON_EXTENSION = ".json";
 	public static final String XSL_EXTENSION = ".xsl";
+	
+	//constants to be used for creation of json file
+	public static final String openSquareBracket = "[";
+	public static final String closeSquareBracket = "]";
+	public static final String openCurlyBrace = "{";
+	public static final String closeCurlyBrace = "}";
+	public static final String commaOperator =",";
+	public static final String colonOperator = ":";
+	public static final String quotationMark = "\"";
+	public static final String taskIDField = "id";
+	public static final String taskIDValue = "0";
+	public static final String helpIDField = "helpID";
+	public static final String contentFieldName = "content";
+	public static final String qstnIDField = "id";
+	public static final String elementField = "element";
+	public static final String noteField = "note";
+	public static final String qstnTxtField = "question Text";
+	public static final String answersField = "answers";
+	public static final String valueField = "value";
+	public static final String claferDependenciesField = "claferDependencies";
+	public static final String algorithmField = "algorithm";
+	public static final String operandField = "operand";
+	public static final String operatorField = "operator";
+	public static final String defaultAnswerField = "defaultAnswer";
+	public static final String nextIDField = "nextID";
+	public static final String codeDependenciesField = "codeDependencies";
+	public static final String optionField = "option";
+
+	public static final String FEATURE_PROPERTY_TYPE_RELATION = "is of type";
+	public static final String FEATURE_PROPERTY_NAME = "Name";
+	public static final String FEATURE_PROPERTY_REMOVE = "Remove";
+	
+	public static final String[] CLAFER_RESERVED_WORDS = { "abstract", "all", "assert", "disj", "else", "enum", "if", "in", "lone", "max", "maximize", "min", "minimize", "mux", "no", "not", "one", "opt", "or", "product", "some", "sum", "then", "xor" };
 }
 

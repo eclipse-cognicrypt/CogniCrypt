@@ -128,12 +128,13 @@ public class InstanceListPage extends WizardPage {
 		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
 		String firstInstance = inst.keySet().toArray()[0].toString();
 		Combo combo = algorithmClass.getCombo();
-		String key = instanceGenerator.getAlgorithmName();
-		int count = instanceGenerator.getAlgorithmCount();
-		combo.setToolTipText("There are " + String.format("%d", count) + " variations of the algorithm " + key);
-
+	
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-		algorithmClass.setInput(inst.keySet());
+		algorithmClass.setInput(inst.keySet());		
+		String key = instanceGenerator.getAlgorithmName();
+		
+		int count = combo.getItemCount();		
+		combo.setToolTipText("There are " + String.format("%d", count) + " variations of the algorithm " + key);
 		
 		//Display help assist for the first instance in the combo box
 		new Label(control, SWT.NONE);

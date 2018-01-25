@@ -267,6 +267,7 @@ public class InstanceGenerator {
 		for (InstanceClafer sortedInst : this.generatedInstances) {
 
 			String key = getInstanceName(sortedInst);
+			
 			if (key.isEmpty()) {
 				key = sortedInst.getChildren()[0].getRef().toString();
 				this.displayNameToInstanceMap.remove(key, sortedInst);
@@ -285,12 +286,10 @@ public class InstanceGenerator {
 
 				this.displayNameToInstanceMap.put(copyKey, sortedInst);
 				this.setAlgorithmName(key);
-
 			}
 		}
 		this.displayNameToInstanceMap = new TreeMap<>(this.displayNameToInstanceMap);
 	}
-
 	/**
 	 * Method to Generate instances for basic user. Argument is a map of property(clafer) name and their values
 	 *

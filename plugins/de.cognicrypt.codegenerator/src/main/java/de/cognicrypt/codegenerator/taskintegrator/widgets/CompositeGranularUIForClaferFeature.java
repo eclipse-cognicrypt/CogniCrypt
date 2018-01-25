@@ -1,7 +1,5 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
-import java.util.ArrayList;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -20,6 +18,7 @@ import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.ClaferFeatureDialog;
 
 
@@ -38,7 +37,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		setClaferFeature(claferFeatureParam);
 		setLayout(new FormLayout());
 		
-		Group grpClaferFeature = new Group(this, SWT.BORDER);
+		Group grpClaferFeature = new Group(this, SWT.NONE);
 		FormData fd_grpClaferFeature = new FormData();
 		fd_grpClaferFeature.top = new FormAttachment(0, yAxisValue); //40
 		yAxisValue = yAxisValue + 70;
@@ -83,7 +82,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 			txtFeatureInheritance.setText(claferFeature.getFeatureInheritance());
 		}
 		
-		if(claferFeature.getfeatureProperties().size()!=0){
+		if(claferFeature.getFeatureProperties().size()!=0){
 			Group grpClaferFeatureProperties = new Group(this, SWT.NONE);
 			FormData fd_grpClaferFeatureProperties = new FormData();
 			fd_grpClaferFeatureProperties.top = new FormAttachment(0, yAxisValue);//116
@@ -94,8 +93,9 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 			grpClaferFeatureProperties.setLayoutData(fd_grpClaferFeatureProperties);
 			grpClaferFeatureProperties.setLayout(new FillLayout(SWT.HORIZONTAL));
 			grpClaferFeatureProperties.setText("Clafer feature properties");
+			CompositeToHoldGranularUIElements comp = ((CompositeToHoldGranularUIElements) getParent().getParent());
 			CompositeToHoldSmallerUIElements compositeToHoldClaferFeatureProperties = new CompositeToHoldSmallerUIElements(grpClaferFeatureProperties, SWT.NONE, claferFeature
-				.getfeatureProperties(), false, null);
+				.getFeatureProperties(), false, comp.getClaferModel());
 			yAxisValue = yAxisValue + 6;
 		}
 		
@@ -111,8 +111,9 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 			grpClaferFeatureConstraints.setLayoutData(fd_grpClaferFeatureConstraints);
 			grpClaferFeatureConstraints.setText("Clafer feature constraints");
 			grpClaferFeatureConstraints.setLayout(new FillLayout(SWT.HORIZONTAL));
+			CompositeToHoldGranularUIElements comp = ((CompositeToHoldGranularUIElements) getParent().getParent());
 			CompositeToHoldSmallerUIElements compositeToHoldClaferFeatureConstraints = new CompositeToHoldSmallerUIElements(grpClaferFeatureConstraints, SWT.NONE, claferFeature
-				.getFeatureConstraints(), false, null);
+				.getFeatureConstraints(), false, comp.getClaferModel());
 			yAxisValue = yAxisValue + 6;
 		}
 		
@@ -121,13 +122,33 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		btnModify.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ArrayList<ClaferFeature> listOfExistingClaferFeatures = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent())
-					.getListOfAllClaferFeatures();
-				ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), claferFeature, listOfExistingClaferFeatures);
+				CompositeToHoldGranularUIElements comp = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent());
+				ClaferModel claferModel = comp.getClaferModel();
+				ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), claferFeature, claferModel);
+
+				// remember parent for widgets will be disposed
+				Composite parent = getParent();
+
 				if (cfrFeatureDialog.open() == 0) {
-					((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent()).modifyClaferFeature(claferFeature, cfrFeatureDialog.getResult());// (1) CompositeGranularUIForClaferFeature, (2) composite inside (3) CompositeToHoldGranularUIElements
+					ClaferFeature resultFeature = cfrFeatureDialog.getResult();
+					((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent()).modifyClaferFeature(claferFeature, resultFeature);
+
+					// if features are missing, ask the user whether to implement them							
+					ClaferModel missingFeatures = claferModel.getMissingFeatures(resultFeature);
+
+					if (!missingFeatures.getClaferModel().isEmpty()) {
+						MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.YES | SWT.NO);
+						dialog.setText("Additional features can be created");
+						dialog.setMessage("Some of the used features don't exist yet. Should we create them for you?");
+
+						if (dialog.open() == SWT.YES) {
+							claferModel.implementMissingFeatures(resultFeature);
+						}
+					}
+
+					// rebuild the UI
+					comp.updateClaferContainer();
 				}
-				
 
 			}
 		});

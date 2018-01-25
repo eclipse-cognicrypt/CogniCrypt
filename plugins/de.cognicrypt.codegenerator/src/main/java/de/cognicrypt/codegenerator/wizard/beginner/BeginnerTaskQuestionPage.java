@@ -244,8 +244,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					question.setEnteredAnswer((Answer) selection.getFirstElement());
 				});
 				new Label(parent, SWT.NONE);
-				//added description for questions
-				
+				//added description for questions				
 				if (!question.getNote().isEmpty()) {
 					createNote(parent, question);
 				}

@@ -20,6 +20,7 @@
 package de.cognicrypt.codegenerator.generator;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -56,6 +57,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
@@ -114,13 +116,31 @@ public class XSLBasedGenerator {
 				Activator.getDefault().logError(Constants.FilesDoNotExistErrorMessage);
 				return false;
 			}
-			// Perform actual transformation by calling XSLT processor.
+
 			final String srcPath = this.project.getProjectPath() + Constants.innerFileSeparator + this.project.getSourcePath();
-			final String temporaryOutputFile = srcPath + Constants.CodeGenerationCallFile;
+			String temporaryOutputFile = srcPath + Constants.CodeGenerationCallFile;
+
+			// If Output.java exists create OutputTemp.java
+			Path p = Paths.get(temporaryOutputFile);
+			boolean tempFlag;
+			if (Files.exists(p)) {
+				StringBuilder a = new StringBuilder(temporaryOutputFile);
+				a.insert(temporaryOutputFile.length() - 5, "Temp");
+				temporaryOutputFile = a.toString();
+				Activator.getDefault().logInfo("Output.java is existing -> Create OutputTemp.java: " + temporaryOutputFile);
+				tempFlag = true;
+			} else {
+				Activator.getDefault().logInfo("Create Output.java: " + temporaryOutputFile);
+				tempFlag = false;
+			}
+
+			// Perform actual transformation by calling XSLT processor.
 			transform(claferOutputFiles, xslFiles, temporaryOutputFile);
 
-			// Add additional resources like jar files
+			// Trim the Output.java
+			trimFile(temporaryOutputFile);
 
+			// Add additional resources like jar files
 			if (!addAdditionalJarFiles(pathToFolderWithAdditionalResources)) {
 				return false;
 			}
@@ -128,14 +148,22 @@ public class XSLBasedGenerator {
 				return false;
 			}
 
-			// If there is a java file opened in the editor, insert glue code
-			// there, and remove temporary output file
-			// Otherwise keep the output file
-			// In any case, organize imports
 			final IFile currentlyOpenFile = Utils.getCurrentlyOpenFile();
+			if (currentlyOpenFile != null && project.equals(currentlyOpenFile.getProject())) {
+				Activator.getDefault().logInfo("Current file is open: " + currentlyOpenFile.getName());
 
-			if (currentlyOpenFile != null && this.project.equals(currentlyOpenFile.getProject())) {
-				insertCallCodeIntoOpenFile(temporaryOutputFile);
+				if (checkFileForString(currentlyOpenFile.getRawLocation().toOSString(), Constants.AUTHOR)) {
+					Activator.getDefault().logInfo("Current file: " + currentlyOpenFile.getName() + " contains the @Author tag");
+					insertCallCodeIntoFile(temporaryOutputFile, true, true, tempFlag);
+					removeCryptoPackageIfEmpty();
+				} else {
+					Activator.getDefault().logInfo("Current file: " + currentlyOpenFile.getName() + " DOESN'T contain the @Author tag");
+					insertCallCodeIntoFile(temporaryOutputFile, true, false, tempFlag);
+					removeCryptoPackageIfEmpty();
+				}
+			} else if (tempFlag == true) {
+				Activator.getDefault().logInfo("No file is open");
+				insertCallCodeIntoFile(temporaryOutputFile, false, false, tempFlag);
 				removeCryptoPackageIfEmpty();
 			} else {
 				this.project.refresh();
@@ -152,6 +180,10 @@ public class XSLBasedGenerator {
 		return true;
 	}
 
+	/**
+	 * 
+	 * @throws CoreException
+	 */
 	private void removeCryptoPackageIfEmpty() throws CoreException {
 		final IPackageFragment cryptoPackage = this.project.getPackagesOfProject(Constants.PackageName);
 		if (cryptoPackage.getCompilationUnits().length == 0) {
@@ -293,17 +325,26 @@ public class XSLBasedGenerator {
 	 * @throws CoreException
 	 *         See {@link DeveloperProject.crossing.opencce.cryptogen.CryptoProject#refresh() refresh()}
 	 */
-	private boolean insertCallCodeIntoOpenFile(final String temporaryOutputFile) throws BadLocationException, CoreException, IOException {
-		final IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
+	private boolean insertCallCodeIntoFile(final String temporaryOutputFile, boolean openFileFlag, boolean authorFlag, boolean tempFlag) throws BadLocationException, CoreException, IOException {
 
+		//Later not necessary
+		IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
+
+		if ((openFileFlag && authorFlag) || !openFileFlag) {
+			openOutputFile(temporaryOutputFile, tempFlag);
+			currentlyOpenPart = Utils.getCurrentlyOpenEditor();
+		} else {
+			currentlyOpenPart = Utils.getCurrentlyOpenEditor();
+		}
 		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {
 			Activator.getDefault().logError(null,
 				"Could not open access the editor of the file. Therefore, an outputfile " + "containing calls to the generated classes in the Crypto package was generated.");
 			return false;
 		}
-		final ITextEditor currentlyOpenEditor = (ITextEditor) currentlyOpenPart;
-		final IDocument currentlyOpenDocument = currentlyOpenEditor.getDocumentProvider().getDocument(currentlyOpenEditor.getEditorInput());
-		final ITextSelection cursorPosition = (ITextSelection) currentlyOpenPart.getSite().getSelectionProvider().getSelection();
+
+		ITextEditor currentlyOpenEditor = (ITextEditor) currentlyOpenPart;
+		IDocument currentlyOpenDocument = currentlyOpenEditor.getDocumentProvider().getDocument(currentlyOpenEditor.getEditorInput());
+		ITextSelection cursorPosition = (ITextSelection) currentlyOpenPart.getSite().getSelectionProvider().getSelection();
 
 		int cursorPos = cursorPosition.getOffset();
 		final String docContent = currentlyOpenDocument.get();
@@ -346,14 +387,43 @@ public class XSLBasedGenerator {
 				}
 			}
 		}
+
 		final int imports = docContent.startsWith("package") ? docContent.indexOf(Constants.lineSeparator) : 0;
 		final String[] callsForGenClasses = getCallsForGenClasses(temporaryOutputFile);
 		currentlyOpenDocument.replace(cursorPos, 0, callsForGenClasses[1]);
 		currentlyOpenDocument.replace(imports, 0, callsForGenClasses[0] + Constants.lineSeparator);
-		this.project.refresh();
+		currentlyOpenEditor.doSave(null);
 
+		if (currentlyOpenEditor.getTitle().equals(Constants.AdditionalOutputFile)) {
+			closeEditor(currentlyOpenEditor);
+		}
+
+		this.project.refresh();
 		organizeImports(currentlyOpenEditor);
 		return true;
+	}
+
+	private void openOutputFile(String temporaryOutputFile, boolean tempFlag) {
+		System.out.println(temporaryOutputFile);
+		IFile output = null;
+
+		if (tempFlag) {
+			StringBuilder sb = new StringBuilder(temporaryOutputFile);
+			sb.delete(temporaryOutputFile.length() - 9, temporaryOutputFile.length() - 5);
+			output = this.project.getIFile(sb.toString());
+		} else {
+			output = this.project.getIFile(temporaryOutputFile);
+		}
+		IWorkbenchPage page = Utils.getCurrentlyOpenPage();
+		try {
+			final IEditorPart editor = IDE.openEditor(page, output);
+			this.project.refresh();
+		} catch (PartInitException e) {
+			e.printStackTrace();
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	/**
@@ -365,16 +435,13 @@ public class XSLBasedGenerator {
 	 */
 	private void organizeImports(final IEditorPart editor) throws CoreException {
 		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
-		final FormatAllAction faa = new FormatAllAction(editor.getSite());
+		final ICompilationUnit[] compilationUnitsInCryptoPackage = this.project.getPackagesOfProject(Constants.PackageName).getCompilationUnits();
 
-		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageName).getCompilationUnits();
-		faa.runOnMultiple(generatedCUnits);
-		organizeImportsActionForAllFilesTouchedDuringGeneration.runOnMultiple(generatedCUnits);
+		for (int i = 0; i < compilationUnitsInCryptoPackage.length; i++) {
+			organizeImportsActionForAllFilesTouchedDuringGeneration.run(compilationUnitsInCryptoPackage[i]);
+		}
 
-		final ICompilationUnit outputClass = JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor));
-		organizeImportsActionForAllFilesTouchedDuringGeneration.run(outputClass);
-		faa.runOnMultiple(new ICompilationUnit[] { outputClass });
-
+		organizeImportsActionForAllFilesTouchedDuringGeneration.run(JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor)));
 		editor.doSave(null);
 	}
 
@@ -399,6 +466,58 @@ public class XSLBasedGenerator {
 		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
 		final Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(xsltFile));
 		transformer.transform(new StreamSource(sourceFile), new StreamResult(new File(resultDir)));
+	}
+
+	/**
+	 * Check if a file contains a String
+	 * 
+	 * @param filePath
+	 *        Path to the file.
+	 * @param s
+	 *        Pattern String
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if insertion successful/failed.
+	 * @throws IOException
+	 */
+	private boolean checkFileForString(final String filePath, String s) throws IOException {
+
+		final File f = new File(filePath);
+		if (!(f.exists() && Files.isReadable(f.toPath()))) {
+			return false;
+		}
+
+		final List<String> content = Files.readAllLines(Paths.get(filePath));
+		final StringBuilder contentBuilder = new StringBuilder();
+		for (final String el : content) {
+			contentBuilder.append(el);
+			contentBuilder.append(Constants.lineSeparator);
+		}
+		final String contentString = contentBuilder.toString();
+		return contentString.contains(s);
+	}
+
+	private void trimFile(final String filePath) throws IOException {
+		final File f = new File(filePath);
+		if (!(f.exists() && Files.isReadable(f.toPath()))) {
+			System.out.println("wrong filepath");
+		}
+
+		final List<String> content = Files.readAllLines(Paths.get(filePath));
+		final StringBuilder contentBuilder = new StringBuilder();
+		for (final String el : content) {
+			contentBuilder.append(el);
+			contentBuilder.append(Constants.lineSeparator);
+		}
+		final String contentString = contentBuilder.toString().trim();
+		FileWriter writer = new FileWriter(f);
+		writer.write(contentString);
+		writer.close();
+	}
+
+	private void closeEditor(IEditorPart editorPart) {
+		IWorkbenchPage workbenchPage = Utils.getCurrentlyOpenPage();
+		if (workbenchPage != null) {
+			workbenchPage.closeEditor(editorPart, true);
+		}
 	}
 
 	public String getProvider() {

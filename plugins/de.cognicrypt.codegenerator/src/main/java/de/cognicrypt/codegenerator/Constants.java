@@ -91,9 +91,10 @@ public class Constants {
 	public static final String pathToClaferPreviewFile = "claferPreview.xml";
 	public static final String NameOfTemporaryMethod = "templateUsage";
 	public static final String pathsForLibrariesinDevProject = "libs";
+	public static final String AUTHOR = "@author CogniCrypt";
 
 	// Output of Code Generation
-	private static final String AdditionalOutputFile = "Output.java";
+	public static final String AdditionalOutputFile = "Output.java";
 	public static final String PackageName = "Crypto";
 	public static final String CodeGenerationCallFile = Constants.innerFileSeparator + Constants.PackageName + Constants.innerFileSeparator + Constants.AdditionalOutputFile;
 

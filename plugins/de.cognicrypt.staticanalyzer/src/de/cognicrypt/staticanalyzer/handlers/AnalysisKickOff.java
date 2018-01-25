@@ -33,11 +33,17 @@ public class AnalysisKickOff {
 	 * 1) Creating a {@link ErrorMarkerGenerator} <br>
 	 * 2) Creating a {@link ResultsCCUIListener} <br>
 	 * 3) Finding the current project's class with a main method <br>
+	 * @param iJavaElement 
 	 * 
 	 * @return <code>true</code>/<code>false</code> if setup (not) successful
 	 */
-	public boolean setUp() {
-		IProject ip = Utils.getCurrentProject();
+	public boolean setUp(IJavaElement iJavaElement) {
+		IProject ip = null;
+		if (iJavaElement == null) {
+			ip = Utils.getCurrentProject();
+		} else {
+			ip = iJavaElement.getJavaProject().getProject();
+		}
 		
 		if (errGen == null) {
 			errGen = new ErrorMarkerGenerator();
@@ -45,7 +51,7 @@ public class AnalysisKickOff {
 			errGen.clearMarkers(ip);
 		}
 		if (resultsReporter == null) {
-			resultsReporter = new ResultsCCUIListener(errGen);
+			resultsReporter = new ResultsCCUIListener(ip, errGen);
 		}
 
 		SearchRequestor requestor = new SearchRequestor() {

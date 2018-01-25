@@ -34,6 +34,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
@@ -44,6 +45,8 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -61,7 +64,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.ISharedImages;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Activator;
@@ -71,9 +75,6 @@ import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.utilities.Utils;
 import de.cognicrypt.codegenerator.utilities.XMLParser;
-
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Button;
 
 /**
  * This class is responsible for displaying the instances the Clafer instance generator generated.
@@ -89,7 +90,6 @@ public class InstanceListPage extends WizardPage {
 	private Group instancePropertiesPanel;
 	private TaskSelectionPage taskSelectionPage;
 	private ConfiguratorWizard configuratorWizard;
-	private Text infoText;
   
 	public InstanceListPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
@@ -139,15 +139,60 @@ public class InstanceListPage extends WizardPage {
 		//Display help assist for the first instance in the combo box
 		new Label(control, SWT.NONE);
 		new Label(control, SWT.NONE);
-		infoText = new Text(control, SWT.BORDER | SWT.WRAP );
-		infoText.setEditable(false);
+		Text infoText = new Text(control, SWT.BORDER | SWT.WRAP );
 		infoText.setText(Constants.DEFAULT_ALGORITHM_NOTIFICATION);
+		infoText.setEditable(false);
 		infoText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));		
 		final ControlDecoration deco = new ControlDecoration(infoText, SWT.RIGHT);
-		Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
+		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage();		
 		deco.setImage(image);
-		deco.setShowOnlyOnFocus(false);		
+		deco.setShowOnlyOnFocus(false);	
+		
+		new Label(control, SWT.NONE);
+		new Label(control, SWT.NONE);
+		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
+		this.instanceDetails = new Text(this.instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		
+		Composite composite_Control = new Composite(this.instancePropertiesPanel, SWT.BOTTOM | SWT.CENTER);
+		composite_Control.setLayoutData(new GridData(SWT.CENTER, GridData.FILL, true, false));
+		composite_Control.setLayout(new GridLayout(3, true)); 
+		
+		//Back button to go to the previous algorithm in the combo box
+		Button backIcon = new Button(composite_Control, SWT.CENTER | SWT.BOTTOM);
+		backIcon.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		backIcon.setText("<");		
+		backIcon.addSelectionListener(new SelectionAdapter() {			
+			@Override
+			public void widgetSelected(SelectionEvent e) {				
+				int temp = combo.getSelectionIndex();
+				if (temp != 0){							
+					temp = temp - 1;
+				    final ISelection selection = new StructuredSelection(inst.keySet().toArray()[temp]);
+					algorithmClass.setSelection(selection);
+				    }
+			}
+		});
+		
+		//Label that displays the current algorithm variation and the total number of variations
+		Label algorithmVariation = new Label(composite_Control, SWT.CENTER | SWT.BOTTOM);
+		algorithmVariation.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+		
+		//Button to go to the next algorithm in the combo box
+		Button nextIcon = new Button(composite_Control, SWT.CENTER | SWT.BOTTOM);
+		nextIcon.setText(">");
+		nextIcon.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int temp = combo.getSelectionIndex();
+				if (temp != (count-1)){
+					temp = temp + 1;
+			        final ISelection selection = new StructuredSelection(inst.keySet().toArray()[temp]);
+				    algorithmClass.setSelection(selection);				    
+				}
 				
+			}
+		});
+		
 		algorithmClass.setLabelProvider(new LabelProvider() {
 
 			@Override
@@ -158,28 +203,35 @@ public class InstanceListPage extends WizardPage {
 		algorithmClass.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 			InstanceListPage.this.instancePropertiesPanel.setVisible(true);
-			final String selectedAlgorithm = selection.getFirstElement().toString();			
+			final String selectedAlgorithm = selection.getFirstElement().toString();	
 			setValue(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm));
 			InstanceListPage.this.instanceDetails.setText(getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
+			int index = combo.getSelectionIndex();
+			algorithmVariation.setText("  Variation  " + (index + 1) + " / " + String.format("%d  ",count ));
 			if (!selectedAlgorithm.equals(firstInstance)) {
 				//hide the help assist and the text if the selected algorithm is not the default algorithm
 				deco.hide();
-				infoText.setVisible(false);
+				infoText.setVisible(false);	
+				backIcon.setEnabled(true);
 			} else {
 				infoText.setVisible(true);
-				deco.show();				
+				deco.show();
+				//disable back button if the selected algorithm in the combo box is the first instance
+				backIcon.setEnabled(false);
+			}
+			if (combo.getSelectionIndex() == count-1){
+				//disable next button if the selected algorithm in the combo box is the last instance
+				nextIcon.setEnabled(false);
+			} else {
+				nextIcon.setEnabled(true);
 			}
 			if (selection.size() > 0) {
 				setPageComplete(true);
 			}
-		});			
-		new Label(control, SWT.NONE);
-		new Label(control, SWT.NONE);
+		});		
 		
-		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
 		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
 		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 1;
 		this.instancePropertiesPanel.setLayout(gridLayout);
 		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
 		gridData.horizontalSpan = 1;
@@ -188,11 +240,9 @@ public class InstanceListPage extends WizardPage {
 		this.instancePropertiesPanel.setLayoutData(gridData);
 		final Font boldFont = new Font(this.instancePropertiesPanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 		this.instancePropertiesPanel.setFont(boldFont);
-
-		this.instanceDetails = new Text(this.instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-		//Hide scroll bar 
+		
+		//Hide scroll bar in instance details text box
 		Listener scrollBarListener = new Listener() {
-
 			@Override
 			public void handleEvent(Event event) {
 				Text t = (Text) event.widget;
@@ -218,6 +268,7 @@ public class InstanceListPage extends WizardPage {
 		// Initially instance properties panel will be hidden		
 		this.instancePropertiesPanel.setVisible(false);
 		setControl(this.control);
+		
 		final ISelection selection = new StructuredSelection(inst.keySet().toArray()[0]);
 		algorithmClass.setSelection(selection);
 		new Label(control, SWT.NONE);
@@ -236,8 +287,7 @@ public class InstanceListPage extends WizardPage {
 		});
 
 		//Button to View the code that will be generated into the Java project
-
-		Button codePreviewButton = new Button(control, SWT.NONE);
+		Button codePreviewButton = new Button(this.control, SWT.NONE);
 		codePreviewButton.setText("Code Preview");
 		codePreviewButton.addListener(SWT.Selection, new Listener() {
 		      public void handleEvent(Event event) {
@@ -252,8 +302,7 @@ public class InstanceListPage extends WizardPage {
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);
 		sc.setMinSize(this.control.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		setControl(sc);				
-	    
+		setControl(sc);		
 	}
 
 	private void getInstanceDetails(final InstanceClafer inst, final Map<String, String> algorithms) {

@@ -6,7 +6,8 @@ import java.util.Map.Entry;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.TreeSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -19,15 +20,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
-
+import de.cognicrypt.codegenerator.taskintegrator.widgets.FeaturePropertiesContentProvider;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.FeaturePropertiesLabelProvider;
 
 public class ClaferConstraintDialog extends Dialog {
 
@@ -35,7 +37,7 @@ public class ClaferConstraintDialog extends Dialog {
 	private ClaferConstraint cfrConstraint;
 
 	private ClaferFeature currentFeature;
-	private ArrayList<ClaferFeature> cfrFeatures;
+	private ClaferModel claferModel;
 
 	private ClaferConstraint modifiedConstraint;
 
@@ -52,14 +54,14 @@ public class ClaferConstraintDialog extends Dialog {
 		cfrConstraint = new ClaferConstraint();
 	}
 
-	public ClaferConstraintDialog(Shell parentShell, ClaferFeature currentFeature, ArrayList<ClaferFeature> cfrFeatures) {
+	public ClaferConstraintDialog(Shell parentShell, ClaferFeature currentFeature, ClaferModel claferModel) {
 		this(parentShell);
 		this.currentFeature = currentFeature;
-		this.cfrFeatures = cfrFeatures;
+		this.claferModel = claferModel;
 	}
 
-	public ClaferConstraintDialog(Shell parentShell, ClaferFeature currentFeature, ArrayList<ClaferFeature> cfrFeatures, ClaferConstraint modifiedConstraint) {
-		this(parentShell, currentFeature, cfrFeatures);
+	public ClaferConstraintDialog(Shell parentShell, ClaferFeature currentFeature, ClaferModel claferModel, ClaferConstraint modifiedConstraint) {
+		this(parentShell, currentFeature, claferModel);
 		this.modifiedConstraint = modifiedConstraint;
 	}
 
@@ -79,33 +81,39 @@ public class ClaferConstraintDialog extends Dialog {
 
 		getShell().setMinimumSize(600, 400);
 
-		ListViewer listViewer = new ListViewer(container, SWT.BORDER | SWT.V_SCROLL);
-		List list = listViewer.getList();
+		TreeViewer treeViewer = new TreeViewer(container);
+		treeViewer.setContentProvider(new FeaturePropertiesContentProvider());
+		treeViewer.setLabelProvider(new FeaturePropertiesLabelProvider());
 
-		list.setToolTipText("Double-click to add");
+		// create a temporary clafer model that contains the current model as well as the feature currently being created
+		ClaferModel tempModel = claferModel.clone();
+		tempModel.add(currentFeature);
 
-		GridData gd_list = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_list.heightHint = 340;
-		gd_list.grabExcessHorizontalSpace = true;
-		list.setLayoutData(gd_list);
+		treeViewer.setInput(tempModel);
+		treeViewer.expandAll();
+		treeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		if (cfrFeatures != null) {
-			for (FeatureProperty featureProperty : currentFeature.getfeatureProperties()) {
-				list.add(featureProperty.getPropertyName());
-			}
-			for (ClaferFeature cfrFeature : cfrFeatures) {
-				list.add(cfrFeature.getFeatureName());
-				for (FeatureProperty featureProperty : cfrFeature.getfeatureProperties()) {
-					list.add(featureProperty.getPropertyName());
-				}
-			}
-		}
-
-		list.addMouseListener(new MouseAdapter() {
+		treeViewer.getControl().addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				text.insert(list.getSelection()[0]);
+				if (treeViewer.getSelection() instanceof TreeSelection) {
+					TreeSelection ts = (TreeSelection) treeViewer.getSelection();
+
+					// toggle expansion if feature name clicked
+					if (ts.getFirstElement() instanceof ClaferFeature) {
+						Object selectedElem = ts.getFirstElement();
+						treeViewer.setExpandedState(selectedElem, !treeViewer.getExpandedState(selectedElem));
+					}
+					// add to text field if property name clicked
+					else if (ts.getFirstElement() instanceof FeatureProperty) {
+						FeatureProperty propertyClicked = (FeatureProperty) ts.getFirstElement();
+						ClaferFeature parentFeature = ((ClaferModel) treeViewer.getInput()).getParentFeatureOfProperty(propertyClicked);
+						text.insert(parentFeature.getFeatureName());
+						text.insert(".");
+						text.insert(propertyClicked.getPropertyName());
+					}
+				}
 				super.mouseDoubleClick(e);
 			}
 		});

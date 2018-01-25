@@ -6,15 +6,12 @@
 <xsl:variable name="Rounds"> <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/iterations"/> </xsl:variable>
 <xsl:variable name="outputSize"> <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/algorithm[@type='Digest']/outputSize"/> </xsl:variable>
 
-
-
-
 <xsl:if test="//task[@description='SecureCommunication']">
 <xsl:choose><xsl:when test="//task/code/server='true'">
 <xsl:result-document href="TLSServer.java">
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
-
+/** @author CogniCrypt */
 public class TLSServer {	
 	private static SSLServerSocket sslServersocket = null;
 	private static List&lt;TLSConnection&gt; sslConnections = null;
@@ -73,7 +70,7 @@ public class TLSServer {
 <xsl:result-document href="TLSConnection.java">
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
-
+/** @author CogniCrypt */
 public class TLSConnection {
 
 	private SSLSocket sslSocket = null; 
@@ -140,7 +137,7 @@ public class Output {
 <xsl:result-document href="TLSClient.java">
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
-
+/** @author CogniCrypt */
 public class TLSClient {	
 	private static SSLSocket sslsocket = null;
 	private static BufferedWriter bufW = null;

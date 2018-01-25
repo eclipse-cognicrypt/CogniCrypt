@@ -13,6 +13,7 @@ package <xsl:value-of select="//task/Package"/>;
 <xsl:apply-templates select="//Import"/>
 import java.util.List;
 
+/** @author CogniCrypt */
 public class LongTermArchivingClient {
 
 	private ArchivingSystem archivingSystem;

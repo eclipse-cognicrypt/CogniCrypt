@@ -188,21 +188,13 @@ public class ClaferModelTest {
 		cfrFeatureA.setFeatureProperties(featureProperties);
 		claferModel.add(cfrFeatureA);
 		
-		FileOutputStream fos;
-		try {
-			fos = new FileOutputStream("t.tmp");
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-
-			oos.writeObject(claferModel);
-
-			oos.close();
-			fos.close();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (!claferModel.toBinary("t.tmp")) {
+			fail("Serialization failed");
 		}
 
 		ClaferModel modelFromBinaries = ClaferModel.createFromBinaries("t.tmp");
+		
+		fail("Not yet implemented");
 	}
 
 	@AfterClass

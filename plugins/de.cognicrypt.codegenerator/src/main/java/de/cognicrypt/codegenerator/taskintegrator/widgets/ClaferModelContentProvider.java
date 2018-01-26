@@ -8,7 +8,7 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 
-public class FeaturePropertiesContentProvider implements ITreeContentProvider {
+public class ClaferModelContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object[] getChildren(Object inputElement) {

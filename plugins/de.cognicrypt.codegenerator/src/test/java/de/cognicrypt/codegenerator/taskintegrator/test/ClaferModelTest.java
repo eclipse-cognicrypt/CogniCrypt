@@ -202,18 +202,7 @@ public class ClaferModelTest {
 			e.printStackTrace();
 		}
 
-		try {
-			FileInputStream fis = new FileInputStream("t.tmp");
-			ObjectInputStream ois = new ObjectInputStream(fis);
-
-			ClaferModel cfrModel = (ClaferModel) ois.readObject();
-
-			ois.close();
-			fis.close();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		ClaferModel modelFromBinaries = ClaferModel.createFromBinaries("t.tmp");
 	}
 
 	@AfterClass

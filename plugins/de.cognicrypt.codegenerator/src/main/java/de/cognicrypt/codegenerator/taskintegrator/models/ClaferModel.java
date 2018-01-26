@@ -1,7 +1,9 @@
 package de.cognicrypt.codegenerator.taskintegrator.models;
 
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -249,5 +251,25 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 			}
 		}
 		return null;
+	}
+	
+	public static ClaferModel createFromBinaries(String filename) {
+		ClaferModel result = null;
+		
+		try {
+			FileInputStream fis = new FileInputStream(filename);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+
+			result = (ClaferModel) ois.readObject();
+
+			ois.close();
+			fis.close();
+		} catch (IOException ex) {
+			Activator.getDefault().logError(ex);
+		} catch (ClassNotFoundException ex) {
+			Activator.getDefault().logError(ex);
+		}
+		
+		return result;
 	}
 }

@@ -7,7 +7,7 @@ import org.eclipse.swt.graphics.Image;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 
-public class FeaturePropertiesLabelProvider implements ILabelProvider {
+public class ClaferModelLabelProvider implements ILabelProvider {
 
 	@Override
 	public void addListener(ILabelProviderListener arg0) {

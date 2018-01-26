@@ -1,9 +1,11 @@
 package de.cognicrypt.codegenerator.taskintegrator.models;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -253,6 +255,37 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 		return null;
 	}
 	
+	/**
+	 * serialize the model into a binary
+	 * 
+	 * @param filename target filename as a {@link String}
+	 * @return success of the serialization
+	 */
+	public boolean toBinary(String filename) {
+		try {
+			FileOutputStream fos = new FileOutputStream(filename);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+			oos.writeObject(this);
+
+			oos.close();
+			fos.close();
+
+			return true;
+		} catch (Exception ex) {
+			Activator.getDefault().logError(ex);
+		}
+
+		return false;
+	}
+
+	/**
+	 * factory method to create an instance from a binary
+	 * 
+	 * @param filename
+	 *        source filename as a {@link String}
+	 * @return {@link ClaferModel} instance if successful, <code>null</code> else
+	 */
 	public static ClaferModel createFromBinaries(String filename) {
 		ClaferModel result = null;
 		
@@ -264,9 +297,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 
 			ois.close();
 			fis.close();
-		} catch (IOException ex) {
-			Activator.getDefault().logError(ex);
-		} catch (ClassNotFoundException ex) {
+		} catch (Exception ex) {
 			Activator.getDefault().logError(ex);
 		}
 		

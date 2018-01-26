@@ -2,13 +2,16 @@ package de.cognicrypt.codegenerator.taskintegrator.models;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 
-public class ClaferModel implements Iterable<ClaferFeature> {
+public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
+
+	private static final long serialVersionUID = -6369043905278063238L;
 
 	private ArrayList<ClaferFeature> claferModel;
 

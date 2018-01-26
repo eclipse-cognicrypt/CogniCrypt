@@ -3,6 +3,7 @@
  */
 package de.cognicrypt.codegenerator.taskintegrator.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import de.cognicrypt.codegenerator.Constants;
@@ -12,7 +13,10 @@ import de.cognicrypt.codegenerator.Constants.FeatureType;
  * @author rajiv
  *
  */
-public class ClaferFeature {
+public class ClaferFeature implements Serializable {
+
+	private static final long serialVersionUID = -6403607301359530383L;
+
 	private FeatureType featureType;
 	private String featureName;
 	private String featureInheritance;

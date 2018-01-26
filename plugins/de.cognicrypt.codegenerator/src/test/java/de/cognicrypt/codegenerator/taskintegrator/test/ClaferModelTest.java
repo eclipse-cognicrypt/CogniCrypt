@@ -13,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -182,16 +181,22 @@ public class ClaferModelTest {
 
 	@Test
 	public final void testModelSerialization() {
+		ClaferModel claferModel = new ClaferModel();
+		ClaferFeature cfrFeatureA = new ClaferFeature(Constants.FeatureType.ABSTRACT, "A", "");
+		ArrayList<FeatureProperty> featureProperties = new ArrayList<>();
+		featureProperties.add(new FeatureProperty("size", "int"));
+		cfrFeatureA.setFeatureProperties(featureProperties);
+		claferModel.add(cfrFeatureA);
+		
 		FileOutputStream fos;
 		try {
 			fos = new FileOutputStream("t.tmp");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 
-			oos.writeInt(12345);
-			oos.writeObject("Today");
-			oos.writeObject(new Date());
+			oos.writeObject(claferModel);
 
 			oos.close();
+			fos.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -201,11 +206,10 @@ public class ClaferModelTest {
 			FileInputStream fis = new FileInputStream("t.tmp");
 			ObjectInputStream ois = new ObjectInputStream(fis);
 
-			int i = ois.readInt();
-			String today = (String) ois.readObject();
-			Date date = (Date) ois.readObject();
+			ClaferModel cfrModel = (ClaferModel) ois.readObject();
 
 			ois.close();
+			fis.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

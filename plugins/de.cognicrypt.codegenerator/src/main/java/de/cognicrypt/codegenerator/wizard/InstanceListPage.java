@@ -133,8 +133,13 @@ public class InstanceListPage extends WizardPage {
 		algorithmClass.setInput(inst.keySet());		
 		String key = instanceGenerator.getAlgorithmName();
 		
-		int count = combo.getItemCount();		
-		combo.setToolTipText("There are " + String.format("%d", count) + " variations of the algorithm " + key);
+		int count = combo.getItemCount();
+		int variationCount = instanceGenerator.getAlgorithmCount();
+		if(count > variationCount){
+		    combo.setToolTipText("There are " + String.format("%d", count) + " algorithms ");
+		} else {
+			combo.setToolTipText("There are " + String.format("%d", variationCount) + " variations of the algorithm " + key);
+		}
 		
 		//Display help assist for the first instance in the combo box
 		new Label(control, SWT.NONE);
@@ -207,7 +212,11 @@ public class InstanceListPage extends WizardPage {
 			setValue(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm));
 			InstanceListPage.this.instanceDetails.setText(getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
 			int index = combo.getSelectionIndex();
-			algorithmVariation.setText("  Variation  " + (index + 1) + " / " + String.format("%d  ",count ));
+			if(count > variationCount){
+			    algorithmVariation.setText("  Algorithm  " + (index + 1) + " / " + String.format("%d  ",count ));
+			} else {
+				algorithmVariation.setText("  Variation  " + (index + 1) + " / " + String.format("%d  ",variationCount ));
+			}
 			if (!selectedAlgorithm.equals(firstInstance)) {
 				//hide the help assist and the text if the selected algorithm is not the default algorithm
 				deco.hide();

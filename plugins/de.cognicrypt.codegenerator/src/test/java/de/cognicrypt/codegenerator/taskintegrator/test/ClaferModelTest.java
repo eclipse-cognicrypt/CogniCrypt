@@ -4,11 +4,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -173,6 +178,38 @@ public class ClaferModelTest {
 
 		assertEquals(featureA, claferModel.getParentFeatureOfProperty(propertyA1));
 		assertEquals(null, claferModel.getParentFeatureOfProperty(new FeatureProperty("1", "x")));
+	}
+
+	@Test
+	public final void testModelSerialization() {
+		FileOutputStream fos;
+		try {
+			fos = new FileOutputStream("t.tmp");
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+			oos.writeInt(12345);
+			oos.writeObject("Today");
+			oos.writeObject(new Date());
+
+			oos.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			FileInputStream fis = new FileInputStream("t.tmp");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+
+			int i = ois.readInt();
+			String today = (String) ois.readObject();
+			Date date = (Date) ois.readObject();
+
+			ois.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@AfterClass

@@ -82,7 +82,8 @@ public class ClaferConstraintDialog extends Dialog {
 		getShell().setMinimumSize(600, 400);
 
 		TreeViewer treeViewer = new TreeViewer(container);
-		treeViewer.setContentProvider(new ClaferModelContentProvider());
+		// TODO be more readable about these predicates
+		treeViewer.setContentProvider(new ClaferModelContentProvider(feat -> feat.getFeatureName().isEmpty() || !feat.hasProperties(), prop -> prop.getPropertyName().isEmpty()));
 		treeViewer.setLabelProvider(new FeaturePropertiesLabelProvider());
 
 		// create a temporary clafer model that contains the current model as well as the feature currently being created

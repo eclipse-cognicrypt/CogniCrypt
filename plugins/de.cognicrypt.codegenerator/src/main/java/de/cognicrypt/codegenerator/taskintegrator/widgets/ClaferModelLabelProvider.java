@@ -35,10 +35,10 @@ public class ClaferModelLabelProvider implements ILabelProvider {
 	public String getText(Object inputElement) {
 		if (inputElement instanceof ClaferFeature) {
 			ClaferFeature inputFeature = (ClaferFeature) inputElement;
-			return inputFeature.getFeatureName();
+			return inputFeature.toString(false);
 		} else if (inputElement instanceof FeatureProperty) {
 			FeatureProperty inputProperty = (FeatureProperty) inputElement;
-			return inputProperty.getPropertyName();
+			return inputProperty.toString();
 		}
 		return null;
 	}

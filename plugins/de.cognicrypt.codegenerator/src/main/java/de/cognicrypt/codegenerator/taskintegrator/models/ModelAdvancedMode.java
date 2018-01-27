@@ -162,7 +162,7 @@ public class ModelAdvancedMode {
 		task.setDescription(getDescription());
 		task.setModelFile(Constants.CFR_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.JS_EXTENSION);
 		task.setQuestionsJSONFile(Constants.JSON_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.JSON_EXTENSION);
-		task.setTaskDescription(getTaskDescription());
+		task.setTaskDescription(getTaskDescription()== null ? "" : getTaskDescription());
 		task.setXslFile(Constants.XSL_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.XSL_EXTENSION);
 		task.setAdditionalResources(Constants.JAR_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.innerFileSeparator + getNameOfTheTask() + Constants.JAR_EXTENSION);
 	}

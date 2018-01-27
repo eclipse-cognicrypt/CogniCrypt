@@ -75,6 +75,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 		// use the iterator to serialize all children
 		for (ClaferFeature cfrFeature : this) {
 			sb.append(cfrFeature);
+			sb.append("\n");
 		}
 		
 		return sb.toString();

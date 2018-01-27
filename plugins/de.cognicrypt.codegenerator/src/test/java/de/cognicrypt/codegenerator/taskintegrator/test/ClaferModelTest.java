@@ -4,7 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -173,6 +177,24 @@ public class ClaferModelTest {
 
 		assertEquals(featureA, claferModel.getParentFeatureOfProperty(propertyA1));
 		assertEquals(null, claferModel.getParentFeatureOfProperty(new FeatureProperty("1", "x")));
+	}
+
+	@Test
+	public final void testModelSerialization() {
+		ClaferModel claferModel = new ClaferModel();
+		ClaferFeature cfrFeatureA = new ClaferFeature(Constants.FeatureType.ABSTRACT, "A", "");
+		ArrayList<FeatureProperty> featureProperties = new ArrayList<>();
+		featureProperties.add(new FeatureProperty("size", "int"));
+		cfrFeatureA.setFeatureProperties(featureProperties);
+		claferModel.add(cfrFeatureA);
+		
+		if (!claferModel.toBinary("t.tmp")) {
+			fail("Serialization failed");
+		}
+
+		ClaferModel modelFromBinaries = ClaferModel.createFromBinaries("t.tmp");
+		
+		fail("Not yet implemented");
 	}
 
 	@AfterClass

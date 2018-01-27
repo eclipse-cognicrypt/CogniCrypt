@@ -137,8 +137,11 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						// TODO remove hard-coded path
-						compositeToHoldGranularUIElements.getClaferModel().toBinary("/home/sics/exported_features.dat");
+						FileDialog saveDialog = new FileDialog(getShell(), SWT.SAVE);
+						String targetFilename = saveDialog.open();
+						if (targetFilename != null) {
+							compositeToHoldGranularUIElements.getClaferModel().toBinary(targetFilename);
+						}
 						super.widgetSelected(e);
 					}
 				});

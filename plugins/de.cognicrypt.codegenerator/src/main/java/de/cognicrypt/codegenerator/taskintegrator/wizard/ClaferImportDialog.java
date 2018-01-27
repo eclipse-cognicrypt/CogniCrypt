@@ -29,6 +29,7 @@ import de.cognicrypt.codegenerator.taskintegrator.widgets.ClaferModelLabelProvid
 public class ClaferImportDialog extends Dialog {
 	
 	private TreeViewer treeViewer;
+	ClaferModel resultModel;
 
 	protected ClaferImportDialog(Shell parentShell) {
 		super(parentShell);
@@ -67,6 +68,7 @@ public class ClaferImportDialog extends Dialog {
 					
 					ClaferModel importedModel = ClaferModel.createFromBinaries(selectedFile);
 					if (importedModel != null) {
+						resultModel = importedModel;
 						treeViewer.setInput(importedModel);
 						treeViewer.expandAll();
 					}
@@ -127,6 +129,10 @@ public class ClaferImportDialog extends Dialog {
 	@Override
 	protected void okPressed() {
 		super.okPressed();
+	}
+	
+	public ClaferModel getResult() {
+		return resultModel;
 	}
 
 }

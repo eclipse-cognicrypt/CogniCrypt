@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -44,10 +45,14 @@ public class ClaferImportDialog extends Dialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
-		GridLayout gl_container = new GridLayout(2, false);
+		GridLayout gl_container = new GridLayout(3, false);
 		container.setLayout(gl_container);
 
 		getShell().setMinimumSize(600, 400);
+
+		Label lblLocation = new Label(container, SWT.NONE);
+		lblLocation.setText("Location: ");
+		lblLocation.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 
 		Text textBox = new Text(container, SWT.BORDER);			 
 		textBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -80,7 +85,7 @@ public class ClaferImportDialog extends Dialog {
 		treeViewer.setContentProvider(new ClaferModelContentProvider());
 		treeViewer.setLabelProvider(new ClaferModelLabelProvider());
 
-		treeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		treeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 
 		treeViewer.getControl().addMouseListener(new MouseAdapter() {
 

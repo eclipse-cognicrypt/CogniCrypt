@@ -2,7 +2,6 @@ package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -29,7 +28,6 @@ import de.cognicrypt.codegenerator.taskintegrator.widgets.ClaferModelLabelProvid
 
 public class ClaferImportDialog extends Dialog {
 	
-	private ListViewer listViewer;
 	private TreeViewer treeViewer;
 
 	protected ClaferImportDialog(Shell parentShell) {

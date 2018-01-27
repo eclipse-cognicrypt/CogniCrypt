@@ -6,9 +6,11 @@ package de.cognicrypt.codegenerator.taskintegrator.controllers;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -410,7 +412,22 @@ public class FileUtilities {
 	 * @param xslFileContents
 	 */
 	private void writeXSLFile(String xslFileContents) {
+		File xslFile = new File(Utils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XSL_EXTENSION);
 		
+		try {
+			PrintWriter writer = new PrintWriter(xslFile);
+			writer.println(xslFileContents);
+			writer.flush();
+			writer.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (!validateXSLFile(xslFile)) {
+			xslFile.delete();
+			//TODO a better way to handle the exception.			
+		}
 	}
 	
 	/**

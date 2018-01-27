@@ -1,14 +1,21 @@
 package de.cognicrypt.codegenerator.taskintegrator.models;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 
-public class ClaferModel implements Iterable<ClaferFeature> {
+public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
+
+	private static final long serialVersionUID = -6369043905278063238L;
 
 	private ArrayList<ClaferFeature> claferModel;
 
@@ -26,6 +33,12 @@ public class ClaferModel implements Iterable<ClaferFeature> {
 	
 	public void add(ClaferFeature claferFeature) {
 		claferModel.add(claferFeature);
+	}
+	
+	public void add(ClaferModel claferModel) {
+		for (ClaferFeature cfrFeature : claferModel) {
+			add(cfrFeature);
+		}
 	}
 	
 	public void remove(ClaferFeature claferFeature) {
@@ -246,5 +259,54 @@ public class ClaferModel implements Iterable<ClaferFeature> {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * serialize the model into a binary
+	 * 
+	 * @param filename target filename as a {@link String}
+	 * @return success of the serialization
+	 */
+	public boolean toBinary(String filename) {
+		try {
+			FileOutputStream fos = new FileOutputStream(filename);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+			oos.writeObject(this);
+
+			oos.close();
+			fos.close();
+
+			return true;
+		} catch (Exception ex) {
+			Activator.getDefault().logError(ex);
+		}
+
+		return false;
+	}
+
+	/**
+	 * factory method to create an instance from a binary
+	 * 
+	 * @param filename
+	 *        source filename as a {@link String}
+	 * @return {@link ClaferModel} instance if successful, <code>null</code> else
+	 */
+	public static ClaferModel createFromBinaries(String filename) {
+		ClaferModel result = null;
+		
+		try {
+			FileInputStream fis = new FileInputStream(filename);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+
+			result = (ClaferModel) ois.readObject();
+
+			ois.close();
+			fis.close();
+		} catch (Exception ex) {
+			Activator.getDefault().logError(ex);
+		}
+		
+		return result;
 	}
 }

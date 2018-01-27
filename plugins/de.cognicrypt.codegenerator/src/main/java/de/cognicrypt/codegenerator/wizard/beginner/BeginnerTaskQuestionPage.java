@@ -291,7 +291,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(selectionNum));
 							question.setEnteredAnswer((Answer) answers.get(selectionNum));
 						}
-					});
+					
+						});
 				}
 
 				if (question.getEnteredAnswer() != null) {
@@ -720,15 +721,3 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		}
 	}
 }
-© 2018 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Help
-Contact GitHub
-API
-Training
-Shop
-Blog
-About

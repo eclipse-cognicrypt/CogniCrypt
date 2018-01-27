@@ -6,6 +6,13 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+/**
+ * This class is responsible for displaying the methods related to the custom algorithm
+ * For instance, in case of primitive of type symmetric block cipher, the required methods are encryption an decryption.  
+ * 
+ * @author Ahmed Ben Tahar
+ */
+
 public class MethodSelectorPage extends WizardPage {
 
 	private Label question;
@@ -22,18 +29,18 @@ public class MethodSelectorPage extends WizardPage {
 		setControl(container);
 
 		question = new Label(container, SWT.NULL);
-		question.setBounds(39, 33, 214, 21);
+		question.setBounds(10, 33, 214, 21);
 		question.setText("Please select the encryption method");
 
 		Combo combo = new Combo(container, SWT.NONE);
-		combo.setBounds(39, 60, 188, 23);
+		combo.setBounds(10, 60, 188, 23);
 
 		Label label = new Label(container, SWT.NONE);
 		label.setText("Please select the decryption method");
-		label.setBounds(39, 121, 214, 21);
+		label.setBounds(10, 123, 214, 21);
 
 		Combo combo_1 = new Combo(container, SWT.NONE);
-		combo_1.setBounds(39, 148, 188, 23);
+		combo_1.setBounds(10, 150, 188, 23);
 
 	}
 }

@@ -143,7 +143,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 						FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
 
-						fileDialog.setFilterExtensions(new String[] { "*.txt", "*.java", "*.xsl" });
+						fileDialog.setFilterExtensions(new String[] {"*.xsl", "*.java", "*.txt" });
 						fileDialog.setText("Choose the code file:");
 
 						String fileDialogResult = fileDialog.open();
@@ -155,12 +155,13 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				});
 
 				btnAddXSLTag.addSelectionListener(new SelectionAdapter() {
-
+					
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						ClaferModel claferModel = null;
 						ArrayList<Question> questions = null;
 						ArrayList<String> strFeatures = new ArrayList<>();
+						
 
 						for (IWizardPage page : getWizard().getPages()) {
 							// get the Clafer creation page
@@ -188,6 +189,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 											if (question.getQuestionType().equals("text")) {
 												strFeatures.add("[Answer to \"" + question.getQuestionText() + "\"]");
 											}
+											
+											
 										}
 									}
 								}
@@ -283,8 +286,10 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		 * TODO Please add checks on the pages after mode selection to mark those pages as completed, or restrict the finish button.
 		 */
 		IWizardPage nextPage = super.getNextPage();
-		((WizardPage)nextPage).setPageComplete(true);
-		
+		if (nextPage != null) {
+			((WizardPage)nextPage).setPageComplete(true);
+		}
+				
 		return nextPage;
 
 	}

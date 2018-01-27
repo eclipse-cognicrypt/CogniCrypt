@@ -14,6 +14,9 @@ public class ClaferModelContentProvider implements ITreeContentProvider {
 	private Predicate<? super ClaferFeature> featureFilter;
 	private Predicate<? super FeatureProperty> propertyFilter;
 	
+	/**
+	 * create a {@link ClaferModelContentProvider} that yields all of the content's elements
+	 */
 	public ClaferModelContentProvider() {
 		this(null, null);
 	}

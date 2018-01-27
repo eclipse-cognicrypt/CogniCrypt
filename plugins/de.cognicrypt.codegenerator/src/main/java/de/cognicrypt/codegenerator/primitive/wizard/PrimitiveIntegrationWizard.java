@@ -22,19 +22,17 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 	PrimitiveSelectionPage selectedPrimitivePage;
 	PrimitiveQuestionnaire primitiveQuestions;
-	ProjectMethodsPage methodsPage;
+	JavaProjectBrowserPage projectBrowserPage;
+	MethodSelectorPage methodSelectionPage;
 	WizardPage preferenceSelectionPage;
 	private LinkedHashMap<String, String> inputsMap = new LinkedHashMap<String, String>();
-	static String test = "";
 	StringBuilder data = new StringBuilder();
 
 	public PrimitiveIntegrationWizard() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public void addPages() {
-
 		selectedPrimitivePage = new PrimitiveSelectionPage();
 		setForcePreviousAndNextButtons(true);
 		addPage(selectedPrimitivePage);
@@ -75,6 +73,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 			return this.preferenceSelectionPage;
 		}
+		else if (currentPage.getPreviousPage() == this.selectedPrimitivePage){
 		final PrimitiveQuestionnairePage primitiveQuestionPage = (PrimitiveQuestionnairePage) currentPage;
 		LinkedHashMap<String, String> selectionMap = primitiveQuestionPage.getMap();
 		if (primitiveQuestionPage.getSelection() != null) {
@@ -92,6 +91,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 			if (primitiveQuestionPage.getPageNextID() > -2) {
 				nextID = primitiveQuestionPage.getPageNextID();
 			}
+			
 			if (nextID > -1) {
 				final Page curPage = this.primitiveQuestions.setPageByID(nextID);
 				createPrimitivePage(curPage, primitiveQuestions, primitiveQuestionPage.getIteration());
@@ -110,29 +110,37 @@ public class PrimitiveIntegrationWizard extends Wizard {
 				}
 				if (this.preferenceSelectionPage != null) {
 					addPage(this.preferenceSelectionPage);
+
 				}
 				return this.preferenceSelectionPage;
-			}
+			} 
+		}
 		}
 		
-			this.methodsPage=new ProjectMethodsPage();
-			addPage(this.methodsPage);
+		else if(currentPage instanceof PrimitiveQuestionnairePage){
+				this.projectBrowserPage= new JavaProjectBrowserPage("test");
+				addPage(this.projectBrowserPage);
+				return this.projectBrowserPage;
+			}
+		else if(currentPage instanceof JavaProjectBrowserPage){
+				this.methodSelectionPage= new MethodSelectorPage("hz");
+				addPage(this.methodSelectionPage);
+				return this.methodSelectionPage;
+			}
 			
-			
-		
-
+	
 		return currentPage;
 	}
 
-//	public IWizardPage getPreviousPage(final IWizardPage currentPage) {
-//		final boolean lastPage = currentPage instanceof lastPage;
-//		if (!checkifInUpdateRound() && currentPage instanceof PrimitiveQuestionnairePage || lastPage) {
-//			if (!this.primitiveQuestions.isFirstPage()) {
-//				this.primitiveQuestions.previousPage();
-//			}
-//		}
-//		return super.getPreviousPage(currentPage);
-//	}
+	//	public IWizardPage getPreviousPage(final IWizardPage currentPage) {
+	//		final boolean lastPage = currentPage instanceof lastPage;
+	//		if (!checkifInUpdateRound() && currentPage instanceof PrimitiveQuestionnairePage || lastPage) {
+	//			if (!this.primitiveQuestions.isFirstPage()) {
+	//				this.primitiveQuestions.previousPage();
+	//			}
+	//		}
+	//		return super.getPreviousPage(currentPage);
+	//	}
 
 	@Override
 	public boolean performFinish() {

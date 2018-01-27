@@ -35,6 +35,12 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 		claferModel.add(claferFeature);
 	}
 	
+	public void add(ClaferModel claferModel) {
+		for (ClaferFeature cfrFeature : claferModel) {
+			add(cfrFeature);
+		}
+	}
+	
 	public void remove(ClaferFeature claferFeature) {
 		claferModel.remove(claferFeature);
 	}

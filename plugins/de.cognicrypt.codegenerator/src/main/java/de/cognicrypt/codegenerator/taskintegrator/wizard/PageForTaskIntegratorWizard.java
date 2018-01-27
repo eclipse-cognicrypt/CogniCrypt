@@ -125,7 +125,10 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						ClaferImportDialog claferImportDialog = new ClaferImportDialog(getShell());
-						claferImportDialog.open();
+						if (claferImportDialog.open() == 0) {
+							compositeToHoldGranularUIElements.getClaferModel().add(claferImportDialog.getResult());
+							compositeToHoldGranularUIElements.updateClaferContainer();
+						}
 						super.widgetSelected(e);
 					}
 				});

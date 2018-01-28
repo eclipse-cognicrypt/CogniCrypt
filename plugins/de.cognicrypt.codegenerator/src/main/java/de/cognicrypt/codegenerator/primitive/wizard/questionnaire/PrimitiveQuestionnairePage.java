@@ -173,7 +173,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		container.setBounds(10, 10, 200, 300);
 		// Updated the number of columns to order the questions vertically.
 		final GridLayout layout = new GridLayout(1, false);
-		container.getShell().setSize(525, 401);
 		container.setLayout(layout);
 		// If legacy JSON files are in effect.
 		if (page == null) {

@@ -276,7 +276,11 @@ public class DefaultAlgorithmPage extends WizardPage {
 			  return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
 		} catch (IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
-		}
+		} finally {
+			File outputFolder = outputFile.getParentFile();
+			outputFolder.delete();
+         	claferPreviewFile.delete();
+		}	
 
 		return "";
 	}

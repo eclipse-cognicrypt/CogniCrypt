@@ -1,7 +1,5 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
-import java.util.ArrayList;
-
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -23,9 +21,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.Constants.FeatureType;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 
@@ -41,30 +39,31 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 	private Combo comboInheritance;
 
 	private ClaferFeature resultClafer;
-	private ArrayList<ClaferFeature> otherClaferFeatures;
+	private ClaferModel claferModel;
 
 
-	public ClaferFeatureDialog(Shell parentShell, ClaferFeature modifiableClaferFeature, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
+	public ClaferFeatureDialog(Shell parentShell, ClaferFeature modifiableClaferFeature, ClaferModel claferModel) {
 		super(parentShell);
 		setShellStyle(SWT.RESIZE | SWT.CLOSE);
 
 		resultClafer = modifiableClaferFeature;
 
-		otherClaferFeatures = new ArrayList<ClaferFeature>(listOfExistingClaferFeatures.size());
+		this.claferModel = new ClaferModel();
 
 		// get abstract Clafer features that have already been created
 		// exclude the feature currently being modified
-		for (ClaferFeature cfr : listOfExistingClaferFeatures) {
-			if (cfr.getFeatureType() == Constants.FeatureType.ABSTRACT && !cfr.equals(resultClafer)) {
-				otherClaferFeatures.add(cfr);
+		for (ClaferFeature cfr : claferModel) {
+			// TODO reconsider which Clafers have to be listed where
+			if (!cfr.equals(resultClafer)) {
+				this.claferModel.add(cfr);
 			}
 		}
 
 		create();
 	}
 
-	public ClaferFeatureDialog(Shell shell, ArrayList<ClaferFeature> listOfExistingClaferFeatures) {
-		this(shell, new ClaferFeature(FeatureType.ABSTRACT, "", ""), listOfExistingClaferFeatures);
+	public ClaferFeatureDialog(Shell shell, ClaferModel claferModel) {
+		this(shell, new ClaferFeature(FeatureType.ABSTRACT, "", ""), claferModel);
 	}
 
 	/**
@@ -74,7 +73,10 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
-		container.setLayout(new GridLayout(3, false));
+		container.setLayout(new GridLayout(3, true));
+		
+		// restrict resizing the dialog below a minimum
+		getShell().setMinimumSize(520, 600);
 
 		setTitle("Variability modeling");
 		setMessage("Message");
@@ -145,13 +147,13 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		txtFeatureName.setText(resultClafer.getFeatureName());
 
 		lblInheritance = new Label(container, SWT.NONE);
-		lblInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
+		lblInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		comboInheritance = new Combo(container, SWT.NONE);
 		comboInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
 		// add existing abstract features to inheritance combo
-		for (ClaferFeature cfr : otherClaferFeatures) {
+		for (ClaferFeature cfr : claferModel) {
 			comboInheritance.add(cfr.getFeatureName().toString());
 		}
 
@@ -178,9 +180,10 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
-		featuresComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getfeatureProperties(), true, otherClaferFeatures, resultClafer);
-		featuresComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
-		featuresComposite.setMinHeight(200);
+		featuresComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getFeatureProperties(), true, claferModel, resultClafer);
+		GridData gdPropertiesComposite = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
+		gdPropertiesComposite.minimumHeight = 100;
+		featuresComposite.setLayoutData(gdPropertiesComposite);
 
 		Button btnAddConstraint = new Button(container, SWT.NONE);
 		btnAddConstraint.addSelectionListener(new SelectionAdapter() {
@@ -194,9 +197,10 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
-		constraintsComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getFeatureConstraints(), true, otherClaferFeatures, resultClafer);
-		constraintsComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
-		constraintsComposite.setMinHeight(200);
+		constraintsComposite = new CompositeToHoldSmallerUIElements(container, SWT.NONE, resultClafer.getFeatureConstraints(), true, claferModel, resultClafer);
+		GridData gdConstraintsComposite = gdPropertiesComposite;
+		gdConstraintsComposite.minimumHeight = 100;
+		constraintsComposite.setLayoutData(gdConstraintsComposite);
 
 		validate();
 
@@ -253,12 +257,12 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 
 	private void addClaferProperty() {
 		FeatureProperty featureProperty = new FeatureProperty("", "");
-		featuresComposite.addFeatureProperty(featureProperty, true, otherClaferFeatures);
+		featuresComposite.addFeatureProperty(featureProperty, true, claferModel);
 		resultClafer.setFeatureProperties(featuresComposite.getFeatureProperties());
 	}
 
 	private void addClaferConstraint() {
-		ClaferConstraintDialog cfrConstraintDialog = new ClaferConstraintDialog(getShell(), resultClafer, otherClaferFeatures);
+		ClaferConstraintDialog cfrConstraintDialog = new ClaferConstraintDialog(getShell(), resultClafer, claferModel);
 
 		// blocking call to Dialog.open() the dialog
 		// it returns 0 on success

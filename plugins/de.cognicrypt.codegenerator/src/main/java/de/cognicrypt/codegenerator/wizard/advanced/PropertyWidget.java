@@ -156,7 +156,7 @@ public class PropertyWidget {
 		final Label propertyNameLabel = new Label(container, SWT.NONE);
 		propertyNameLabel.setText(propertyName);
 		
-		if(propertyName.equals(Constants.Security))
+		if(propertyName.equals(Constants.Security) || propertyName.equals(Constants.Performance) || propertyName.equals(Constants.CipherSecurity))
 		{
 		this.operatorComboViewer = new ComboViewer(container, SWT.NONE);
 		this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());

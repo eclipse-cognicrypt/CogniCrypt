@@ -73,7 +73,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 			return this.preferenceSelectionPage;
 		}
-		else if (currentPage.getPreviousPage() == this.selectedPrimitivePage){
+		else if (currentPage.getPreviousPage() == this.selectedPrimitivePage || currentPage instanceof PrimitiveQuestionnairePage){
 		final PrimitiveQuestionnairePage primitiveQuestionPage = (PrimitiveQuestionnairePage) currentPage;
 		LinkedHashMap<String, String> selectionMap = primitiveQuestionPage.getMap();
 		if (primitiveQuestionPage.getSelection() != null) {
@@ -94,6 +94,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 			
 			if (nextID > -1) {
 				final Page curPage = this.primitiveQuestions.setPageByID(nextID);
+				System.out.println(primitiveQuestions.getCurrentPageID());
 				createPrimitivePage(curPage, primitiveQuestions, primitiveQuestionPage.getIteration());
 				if (checkifInUpdateRound()) {
 					this.primitiveQuestions.previousPage();
@@ -114,14 +115,14 @@ public class PrimitiveIntegrationWizard extends Wizard {
 				}
 				return this.preferenceSelectionPage;
 			} 
-		}
-		}
-		
-		else if(currentPage instanceof PrimitiveQuestionnairePage){
+			else{
 				this.projectBrowserPage= new JavaProjectBrowserPage("test");
 				addPage(this.projectBrowserPage);
 				return this.projectBrowserPage;
 			}
+		}
+		}
+		
 		else if(currentPage instanceof JavaProjectBrowserPage){
 				this.methodSelectionPage= new MethodSelectorPage("hz");
 				addPage(this.methodSelectionPage);

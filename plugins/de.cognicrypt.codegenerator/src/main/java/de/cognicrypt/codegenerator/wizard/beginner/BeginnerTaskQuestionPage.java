@@ -244,8 +244,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					question.setEnteredAnswer((Answer) selection.getFirstElement());
 				});
 				new Label(parent, SWT.NONE);
-				//added description for questions
-				
+				//added description for questions				
 				if (!question.getNote().isEmpty()) {
 					createNote(parent, question);
 				}
@@ -356,19 +355,22 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							
 				if(question.getTextType().equals("password"))
 				{
-				final Text inputField = new Text(container, SWT.BORDER| SWT.PASSWORD| SWT.SINGLE);
+				final Text inputField = new Text(container, SWT.BORDER | SWT.PASSWORD | SWT.SINGLE);
 				inputField.setSize(240, inputField.getSize().y);
 				inputField.setToolTipText(question.getTooltip());
 				
+				//Check box to show/hide password
 				Button checkBox = new Button(container, SWT.CHECK);
 				checkBox.setText("Show Password");
+				checkBox.setSelection(false);
 				checkBox.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						//if(checkBox.getSelection() == true)
-						inputField.setEchoChar( '\0' );
-						//getWizard().getContainer().updateButtons();
-					
+						if(checkBox.getSelection() == true){
+							inputField.setEchoChar( '\0' );
+						} else {	
+							inputField.setEchoChar((char) 0x25cf);
+						}					
 					}
 				});
 				text(question, inputField);

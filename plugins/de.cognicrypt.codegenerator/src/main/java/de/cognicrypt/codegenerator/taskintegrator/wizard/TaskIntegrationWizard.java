@@ -1,13 +1,19 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
+import java.io.File;
+import java.util.ArrayList;
+
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.FileUtilities;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 
 
@@ -40,6 +46,11 @@ public class TaskIntegrationWizard extends Wizard {
 				Constants.PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS
 			));
 
+		this.addPage(new PageForTaskIntegratorWizard(
+			Constants.PAGE_NAME_FOR_LINK_ANSWERS,
+			Constants.PAGE_TITLE_FOR_LINK_ANSWERS,
+			Constants.PAGE_DESCIPTION_FOR_LINK_ANSWERS));
+		
 		this.addPage(
 			new PageForTaskIntegratorWizard(
 				Constants.PAGE_NAME_FOR_XSL_FILE_CREATION,
@@ -53,23 +64,63 @@ public class TaskIntegrationWizard extends Wizard {
 	 */
 	@Override
 	public boolean performFinish() {
-		/*
-		 * TODO finish button behavior important for the mode selection page. Postponing this code to
-		 * a future time, but within the Sept milestone.
-		 */
-		
+
 		ModelAdvancedMode objectForDataInNonGuidedMode = getTIPageByName(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
+		objectForDataInNonGuidedMode.setTask();
 		FileUtilities fileUtilities = new FileUtilities(objectForDataInNonGuidedMode.getNameOfTheTask());
 		if(this.getContainer().getCurrentPage().getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)){
 			if(objectForDataInNonGuidedMode.isGuidedModeChosen() == false //&& this.objectForDataInNonGuidedMode.isGuidedModeForced() == false
 				){
-				fileUtilities.writeFiles(objectForDataInNonGuidedMode.getLocationOfClaferFile(), objectForDataInNonGuidedMode.getLocationOfJSONFile(), objectForDataInNonGuidedMode.getLocationOfXSLFile(), objectForDataInNonGuidedMode.getLocationOfCustomLibrary());			
-				return true;
+				// Check if the contents of the provided files are valid.
+				if (fileUtilities.writeFiles(objectForDataInNonGuidedMode.getLocationOfClaferFile(), objectForDataInNonGuidedMode.getLocationOfJSONFile(), objectForDataInNonGuidedMode.getLocationOfXSLFile(), objectForDataInNonGuidedMode.getLocationOfCustomLibrary())) {
+					fileUtilities.writeTaskToJSONFile(objectForDataInNonGuidedMode.getTask());
+					return true;
+				} else {
+					return false;
+				}
+				
 			}
-		}
+		} else {
 
+			// collect input to task-related files from individual pages
+			ClaferModel claferModel = ((CompositeToHoldGranularUIElements) ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION))
+				.getCompositeToHoldGranularUIElements()).getClaferModel();
+			ArrayList<Question> questions = ((CompositeToHoldGranularUIElements) ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS))
+				.getCompositeToHoldGranularUIElements()).getListOfAllQuestions();
+			String xslFileContents = ((CompositeForXsl) ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)).getCompositeForXsl()).getXslTxtBox()
+				.getText();
+
+			// FIXME ObjectForDataInNonGuidedMode is only used in non-guided mode but custom library location is always needed
+			// ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode().getLocationOfCustomLibrary();
+			File customLibLocation = null;
+
+			fileUtilities.writeFiles(claferModel, questions, xslFileContents, customLibLocation);
+
+			return true;
+		}
+		
+		/*
+		 * for retrieving the details of questions
+		 */
+		if(this.getContainer().getCurrentPage().getName().equals(Constants.PAGE_NAME_FOR_LINK_ANSWERS)){
+		PageForTaskIntegratorWizard linkAnsPage=(PageForTaskIntegratorWizard)getTIPageByName(Constants.PAGE_NAME_FOR_LINK_ANSWERS);
+		CompositeToHoldGranularUIElements linkAnsPageComposite=(CompositeToHoldGranularUIElements)linkAnsPage.getCompositeToHoldGranularUIElements();
+		ArrayList<Question> listOfAllQuestions = linkAnsPageComposite.getListOfAllQuestions();
+		System.out.println(listOfAllQuestions.size());
+		FileUtilities writeJsonFile = new FileUtilities(objectForDataInNonGuidedMode.getNameOfTheTask());
+		try {
+			writeJsonFile.writeFiles(null, listOfAllQuestions, null, null);
+			//writeJsonFile.writeJSONFile(listOfAllQuestions);
+		}/* catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/finally{
+			return true;
+		}
+		}
 		return false;
 	}
+
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#getNextPage(org.eclipse.jface.wizard.IWizardPage)
@@ -102,6 +153,7 @@ public class TaskIntegrationWizard extends Wizard {
 			Control granContro[] = ((Composite) granComp).getChildren();
 			System.out.println("");
 		}
+		
 		return super.getNextPage(page);
 	}
 

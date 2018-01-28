@@ -81,6 +81,10 @@
       "questionText": "What is the block size of the cipher ?(bits)",
       "answers": [{
           "value": "",
+           "claferDependencies": [{
+              "algorithm": "Block size"
+           }
+          ],
           "codeDependencies": [{
             "option": "textsize",
             "value": "true"

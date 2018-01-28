@@ -5,6 +5,9 @@ package de.cognicrypt.codegenerator.taskintegrator.models;
 
 import java.io.File;
 
+import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.tasks.Task;
+
 /**
  * @author rajiv
  *
@@ -18,8 +21,34 @@ public class ModelAdvancedMode {
 	private boolean isCustomLibraryRequired;
 	private boolean isGuidedModeChosen;
 	//private boolean isGuidedModeForced;
+	private Task task;
+	private String description;
+	private String taskDescription;
 	
 
+	public ModelAdvancedMode() {
+		super();
+		this.task = new Task();
+	}
+	
+	/**
+	 * Generate a name for the task based on the input given by the user and return it.
+	 * @param stringTaskName
+	 * @return
+	 */
+	private String getMachineReadableName(String stringTaskName) {
+		String[] split = stringTaskName.split(" ");
+		StringBuilder machineReadable = new StringBuilder();
+		if (stringTaskName.length() > 0) {
+			for (String string : split) {
+				machineReadable.append(string.substring(0,1).toUpperCase());
+				machineReadable.append(string.substring(1));
+			}
+		}
+		
+		return machineReadable.toString();
+	}
+	
 	/**
 	 * @return the nameOfTheTask
 	 */
@@ -30,8 +59,9 @@ public class ModelAdvancedMode {
 	 * @param nameOfTheTask the nameOfTheTask to set
 	 */
 	public void setNameOfTheTask(String nameOfTheTask) {
-		this.nameOfTheTask = nameOfTheTask;
-	}
+		this.nameOfTheTask = getMachineReadableName(nameOfTheTask); // generate the task name that will be used as the machine readable identifier for the task.
+		this.setDescription(nameOfTheTask); // This is the human readable name entered by the user.
+	}	
 	/**
 	 * @return the locationOfCustomLibrary
 	 */
@@ -117,5 +147,47 @@ public class ModelAdvancedMode {
 	 */
 	public void setCustomLibraryRequired(boolean isCustomLibraryRequired) {
 		this.isCustomLibraryRequired = isCustomLibraryRequired;
+	}
+	/**
+	 * @return the task
+	 */
+	public Task getTask() {
+		return task;
+	}
+	/**
+	 * Generate the Task instance from the advanced mode model.
+	 */
+	public void setTask() {
+		task.setName(getNameOfTheTask());
+		task.setDescription(getDescription());
+		task.setModelFile(Constants.CFR_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.CFR_EXTENSION);
+		task.setQuestionsJSONFile(Constants.JSON_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.JSON_EXTENSION);
+		task.setTaskDescription(getTaskDescription());
+		task.setXslFile(Constants.XSL_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.XSL_EXTENSION);
+		task.setAdditionalResources(Constants.JAR_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.innerFileSeparator + getNameOfTheTask() + Constants.JAR_EXTENSION);
+	}
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	/**
+	 * @return the taskDescryption
+	 */
+	public String getTaskDescription() {
+		return taskDescription;
+	}
+	/**
+	 * @param taskDescription the taskDescryption to set
+	 */
+	public void setTaskDescription(String taskDescription) {
+		this.taskDescription = taskDescription;
 	}
 }

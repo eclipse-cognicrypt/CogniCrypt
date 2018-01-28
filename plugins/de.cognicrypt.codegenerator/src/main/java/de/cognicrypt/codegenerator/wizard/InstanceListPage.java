@@ -90,6 +90,7 @@ public class InstanceListPage extends WizardPage {
 	private Group instancePropertiesPanel;
 	private TaskSelectionPage taskSelectionPage;
 	private ConfiguratorWizard configuratorWizard;
+	private CompareWizard compareWizard;
   
 	public InstanceListPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
@@ -98,6 +99,15 @@ public class InstanceListPage extends WizardPage {
 		this.instanceGenerator = inst;
 		this.taskSelectionPage = taskSelectionPage;
 		this.configuratorWizard = confWizard;
+	}
+
+	public InstanceListPage(InstanceGenerator inst, TaskSelectionPage taskSelectionPage, CompareWizard compWizard) {
+		super(Constants.ALGORITHM_SELECTION_PAGE);
+		setTitle("Possible solutions for task: " + taskSelectionPage.getSelectedTask().getDescription());
+		setDescription(Constants.DESCRIPTION_INSTANCE_LIST_PAGE);
+		this.instanceGenerator = inst;
+		this.taskSelectionPage = taskSelectionPage;
+		this.compareWizard = compWizard;
 	}
 
 	@Override

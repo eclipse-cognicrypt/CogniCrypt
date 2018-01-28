@@ -15,7 +15,6 @@
  */
 package de.cognicrypt.codegenerator.tasks;
 
-
 public class Task {
 
 	private String name;
@@ -37,8 +36,8 @@ public class Task {
 
 	public String getTaskDescription() {
 		return this.taskDescription;
-	}  
-	
+	}
+
 	public String getModelFile() {
 		return this.modelFile;
 	}
@@ -62,10 +61,10 @@ public class Task {
 	public void setDescription(final String description) {
 		this.description = description;
 	}
-	
+
 	public void setTaskDescription(final String taskDescription) {
 		this.taskDescription = taskDescription;
-	}  
+	}
 
 	public void setModelFile(final String modelFile) {
 		this.modelFile = modelFile;
@@ -87,13 +86,14 @@ public class Task {
 	 * @return the xslFile
 	 */
 	public String getXslFile() {
-		return xslFile;
+		return this.xslFile;
 	}
 
 	/**
-	 * @param xslFile the xslFile to set
+	 * @param xslFile
+	 *        the xslFile to set
 	 */
-	public void setXslFile(String xslFile) {
+	public void setXslFile(final String xslFile) {
 		this.xslFile = xslFile;
 	}
 

@@ -86,10 +86,10 @@ public class ConfiguratorWizard extends Wizard {
 			Activator.getDefault().logError(e);
 		}
 		setWindowTitle("Cryptography Task Configurator");
-		ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "icons/cognicrypt-medium.png");
+		final ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "icons/cognicrypt-medium.png");
 		setDefaultPageImageDescriptor(image);
 
-		createdPages = new HashMap<>();
+		this.createdPages = new HashMap<>();
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class ConfiguratorWizard extends Wizard {
 
 	@Override
 	public boolean canFinish() {
-		String pageName = getContainer().getCurrentPage().getName();
+		final String pageName = getContainer().getCurrentPage().getName();
 		if (pageName.equals(Constants.DEFAULT_ALGORITHM_PAGE)) {
 			return (this.defaultAlgorithmPage.isDefaultAlgorithm());
 		}
@@ -121,7 +121,7 @@ public class ConfiguratorWizard extends Wizard {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param curPage
 	 * @param beginnerQuestionnaire
 	 *        updated this variable from a list of questions to have access to the method to get specific Questions.
@@ -140,7 +140,7 @@ public class ConfiguratorWizard extends Wizard {
 				}
 			}
 		}
-		// Pass the questionnaire instead of the all of the questions. 
+		// Pass the questionnaire instead of the all of the questions.
 		this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curPage, this.beginnerQuestions.getTask(), beginnerQuestionnaire, selection);
 	}
 
@@ -157,20 +157,20 @@ public class ConfiguratorWizard extends Wizard {
 		int nextPageid = -1;
 		// if page was already created, return the existing object
 		if (currentPage instanceof BeginnerTaskQuestionPage) {
-			createdPages.put(((BeginnerTaskQuestionPage) currentPage).getCurrentPageID(), currentPage);
+			this.createdPages.put(((BeginnerTaskQuestionPage) currentPage).getCurrentPageID(), currentPage);
 			this.beginnerQuestions.getCurrentPageID();
-			BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
+			final BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
 
 			if (this.beginnerQuestions.hasMorePages()) {
 				nextPageid = beginnerTaskQuestionPage.getPageNextID();
 			}
-			if (createdPages.containsKey(nextPageid)) {
-				return createdPages.get(nextPageid);
+			if (this.createdPages.containsKey(nextPageid)) {
+				return this.createdPages.get(nextPageid);
 			}
 
 		}
 		if (currentPage instanceof TaskSelectionPage) {
-			createdPages.clear();
+			this.createdPages.clear();
 		}
 
 		// if page is shown for the first time, create the new object
@@ -179,8 +179,8 @@ public class ConfiguratorWizard extends Wizard {
 			this.claferModel = new ClaferModel(Utils.getResourceFromWithin(selectedTask.getModelFile()));
 
 			if (this.taskListPage.isGuidedMode()) {
-				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile()); 
-				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(),null);
+				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile());
+				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(), null);
 			} else {
 				this.preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, (AstConcreteClafer) org.clafer.cli.Utils
 					.getModelChildByName(this.claferModel.getModel(), "c0_" + selectedTask.getName()));
@@ -206,7 +206,7 @@ public class ConfiguratorWizard extends Wizard {
 				final HashMap<Question, Answer> selectionMap = beginnerTaskQuestionPage.getMap();
 
 				// Looping through all the entries that were added to the BeginnerTaskQuestionPage
-				for (Entry<Question, Answer> entry : selectionMap.entrySet()) {
+				for (final Entry<Question, Answer> entry : selectionMap.entrySet()) {
 					if (entry.getKey().getElement().equals(GUIElements.itemselection)) {
 						handleItemSelection(entry);
 					}
@@ -214,12 +214,12 @@ public class ConfiguratorWizard extends Wizard {
 				}
 
 				if (this.beginnerQuestions.hasMorePages()) {
-					int nextID = beginnerTaskQuestionPage.getPageNextID();
+					final int nextID = beginnerTaskQuestionPage.getPageNextID();
 
 					if (nextID > -1) {
 						final Page curPage = this.beginnerQuestions.setPageByID(nextID);
-						// Pass the variable for the questionnaire here instead of all the questions. 
-						createBeginnerPage(curPage, beginnerQuestions);
+						// Pass the variable for the questionnaire here instead of all the questions.
+						createBeginnerPage(curPage, this.beginnerQuestions);
 						if (checkifInUpdateRound()) {
 							this.beginnerQuestions.previousPage();
 						}
@@ -252,7 +252,7 @@ public class ConfiguratorWizard extends Wizard {
 			if (currentPage instanceof BeginnerTaskQuestionPage) {
 				//default algorithm page will be added only for beginner mode
 				if (instanceGenerator.getNoOfInstances() != 0) {
-					this.defaultAlgorithmPage = new DefaultAlgorithmPage(instanceGenerator, taskListPage, this);
+					this.defaultAlgorithmPage = new DefaultAlgorithmPage(instanceGenerator, this.taskListPage, this);
 					addPage(this.defaultAlgorithmPage);
 					return this.defaultAlgorithmPage;
 
@@ -266,7 +266,7 @@ public class ConfiguratorWizard extends Wizard {
 				//instance list page will be added after advanced user value selection page in advanced mode.
 				//(default algorithm page is not added in advanced mode)
 				if (instanceGenerator.getNoOfInstances() > 0) {
-					this.instanceListPage = new InstanceListPage(instanceGenerator, taskListPage, this);
+					this.instanceListPage = new InstanceListPage(instanceGenerator, this.taskListPage, this);
 					addPage(this.instanceListPage);
 					return this.instanceListPage;
 
@@ -291,7 +291,7 @@ public class ConfiguratorWizard extends Wizard {
 			}
 			//instance details page will be added after default algorithm page only if the number of instances is greater than 1
 			if (!this.defaultAlgorithmPage.isDefaultAlgorithm() && instanceGenerator.getNoOfInstances() > 1) {
-				this.instanceListPage = new InstanceListPage(instanceGenerator, taskListPage, this);
+				this.instanceListPage = new InstanceListPage(instanceGenerator, this.taskListPage, this);
 				addPage(this.instanceListPage);
 				return this.instanceListPage;
 			}
@@ -361,14 +361,15 @@ public class ConfiguratorWizard extends Wizard {
 				parser.displayInstanceValues(this.instanceListPage.getValue(), this.constraints);
 
 				// Initialize Code Generation
-				XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject(), this.instanceListPage.getProviderFromInstance());
+				final XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject(), this.instanceListPage.getProviderFromInstance());
 
 				// Write Instance File into developer project
 				final String xmlInstancePath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
 				parser.writeClaferInstanceToFile(xmlInstancePath);
 
 				// Generate code template
-				ret &= codeGenerator.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), codeGenerator.getProvider(), this.taskListPage.getSelectedTask().getXslFile());
+				ret &= codeGenerator.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), codeGenerator.getProvider(),
+					this.taskListPage.getSelectedTask().getXslFile());
 
 				// Delete Instance File
 				FileHelper.deleteFile(xmlInstancePath);
@@ -385,14 +386,15 @@ public class ConfiguratorWizard extends Wizard {
 				parser.displayInstanceValues(this.defaultAlgorithmPage.getValue(), this.constraints);
 
 				// Initialize Code Generation
-				XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject(), this.defaultAlgorithmPage.getProviderFromInstance());
+				final XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject(), this.defaultAlgorithmPage.getProviderFromInstance());
 
 				// Write Instance File into developer project
 				final String xmlInstancePath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
 				parser.writeClaferInstanceToFile(xmlInstancePath);
 
 				// Generate code template
-				ret &= codeGenerator.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), codeGenerator.getProvider(), this.taskListPage.getSelectedTask().getXslFile());
+				ret &= codeGenerator.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), codeGenerator.getProvider(),
+					this.taskListPage.getSelectedTask().getXslFile());
 
 				// Delete Instance File
 				FileHelper.deleteFile(xmlInstancePath);
@@ -409,7 +411,7 @@ public class ConfiguratorWizard extends Wizard {
 
 
 	public HashMap<Question, Answer> getConstraints() {
-		return constraints;
+		return this.constraints;
 	}
 }
 

@@ -21,6 +21,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.wizard.ConfiguratorWizard;
 
@@ -59,17 +60,19 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	@Override
-	public void run(final IAction action) {		
-		Constants.WizardActionFromContextMenuFlag = false;		
-		final WizardDialog dialog = new WizardDialog(new Shell(), new ConfiguratorWizard()){			
+	public void run(final IAction action) {
+		Constants.WizardActionFromContextMenuFlag = false;
+		final WizardDialog dialog = new WizardDialog(new Shell(), new ConfiguratorWizard()) {
+
 			@Override
-        protected void configureShell(Shell newShell) {				
-		       super.configureShell(newShell);		       
-		       //newShell.setSize(650,400);		
-		}	};
-		dialog.open();		
+			protected void configureShell(final Shell newShell) {
+				super.configureShell(newShell);
+				//newShell.setSize(650,400);		
+			}
+		};
+		dialog.open();
 	}
-	
+
 	/**
 	 * Selection in the workbench has been changed. We can change the state of the 'real' action here if we want, but this can only happen after the delegate has been created.
 	 *

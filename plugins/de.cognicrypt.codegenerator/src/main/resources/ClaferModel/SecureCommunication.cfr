@@ -38,7 +38,7 @@ GCM : Mode
 abstract Algorithm
 	name -> string
 	description -> string
-	security -> Security
+	algorithmSecurity -> Security
 	performance -> Performance
 	classPerformance -> Performance 
 
@@ -81,7 +81,7 @@ AES128GCM : SymmetricBlockCipher
 	[description = "Advanced Encryption Standard (AES) cipher"]
 	[keySize = 128]
 	[performance = VeryFast]
-	[security = Medium]
+	[algorithmSecurity = Medium]
 	[mode = GCM]
 
 AES128CBC : SymmetricBlockCipher
@@ -89,7 +89,7 @@ AES128CBC : SymmetricBlockCipher
 	[description = "Advanced Encryption Standard (AES) cipher"]
 	[keySize = 128]
 	[performance = VeryFast]
-	[security = Medium]
+	[algorithmSecurity = Medium]
 	[mode = CBC]
 
 AES256GCM : SymmetricBlockCipher
@@ -97,7 +97,7 @@ AES256GCM : SymmetricBlockCipher
 	[description = "Advanced Encryption Standard (AES) cipher"]
 	[keySize = 256]
 	[performance = Fast]
-	[security = Strong]
+	[algorithmSecurity = Strong]
 	[mode = GCM]
 
 AES256CBC : SymmetricBlockCipher
@@ -105,7 +105,7 @@ AES256CBC : SymmetricBlockCipher
 	[description = "Advanced Encryption Standard (AES) cipher"]
 	[keySize = 256]
 	[performance = Fast]
-	[security = Strong]
+	[algorithmSecurity = Strong]
 	[mode = CBC]
 
 
@@ -114,7 +114,7 @@ TDES : SymmetricBlockCipher
 	[description = "Triple Data Encryption Algorithm Encrypt-Decrypt-Encrypt mode"]
 	[keySize = 168]
 	[performance = VeryFast]
-	[security = Weak]
+	[algorithmSecurity = Weak]
 
 //SymmetricStreamCiphersAlgorithms
 
@@ -123,42 +123,42 @@ RC4128 : StreamCipher
 	[description = "RC4 (Rivest Cipher 4)"]
 	[keySize = 128]
 	[performance = VeryFast]
-	[security = Broken]
+	[algorithmSecurity = Broken]
 
 RC440 : StreamCipher
 	[name = "RC4"]
 	[description = "RC4 (Rivest Cipher 4)"]
 	[keySize = 40]
 	[performance = VeryFast]
-	[security = Broken]
+	[algorithmSecurity = Broken]
 
 // DigestAlgorithms
 SHA256: Digest
 	[description = "SHA-256 digest"]
 	[name = "SHA-256"]
 	[outputSize = 256]
-	[security = Strong]
+	[algorithmSecurity = Strong]
 	[performance = Fast]
 
 SHA384: Digest
 	[description = "SHA-384 digest"]
 	[name = "SHA-384"]
 	[outputSize = 384]
-	[security = Strong]
+	[algorithmSecurity = Strong]
 	[performance = VerySlow]
 
 SHA1: Digest
 	[name = "SHA-1"]
 	[description = "SHA-1 digest"]
 	[performance = VeryFast]
-	[security = Weak]
+	[algorithmSecurity = Weak]
 	[outputSize = 160]		
 
 MD5: Digest
 	[name = "MD5"]
 	[description = "MD5 digest"]
 	[performance = VeryFast]
-	[security = Broken]
+	[algorithmSecurity = Broken]
 	[outputSize = 128]	
 			
 
@@ -166,56 +166,56 @@ MD5: Digest
 ECDHE : KeyAgreementAlgorithm 
 	[name = "ECDHE"]
 	[description = "Key exchange algorithm"]
-	[security = Strong]
+	[algorithmSecurity = Strong]
 	[performance = VeryFast]	
 
 ECDH : KeyAgreementAlgorithm 
 	[name = "ECDH"]
 	[description = "Key exchange algorithm"]
-	[security = Medium]
+	[algorithmSecurity = Medium]
 	[performance = VeryFast]
 
 DHE : KeyAgreementAlgorithm 
 	[name = "DHE"]
 	[description = "Key exchange algorithm"]
-	[security = Strong]
+	[algorithmSecurity = Strong]
 	[performance = Fast]
 
 DH : KeyAgreementAlgorithm 
 	[name = "DH"]
 	[description = "Key exchange algorithm"]
-	[security = Medium]
+	[algorithmSecurity = Medium]
 	[performance = Fast]
 
 //DigitalSigAlgms
 ECDSA : DigitalSignatureAlgm
 	[name = "ECDSA"]
 	[description = "Digital signature"]
-	[security = Strong]
+	[algorithmSecurity = Strong]
 	[performance = VeryFast]
 
 DSS : DigitalSignatureAlgm
 	[name = "DSS"]
 	[description = "Digital signature"]
-	[security = Strong]
+	[algorithmSecurity = Strong]
 	[performance = Fast]
 
 RSA_Sig : DigitalSignatureAlgm
 	[name = "RSA"]
 	[description = "RSA Algm"]
-	[security = Strong]
+	[algorithmSecurity = Strong]
 	[performance = Slow]
 
 RSA_Asymm : AsymmetricCipher
 	[name = "RSA"]
 	[description = "RSA Algm"]
-	[security = Strong]
+	[algorithmSecurity = Strong]
 	[performance = VerySlow]
 
 RSA_KeyAgr : KeyAgreementAlgorithm
 	[name = "RSA"]
 	[description = "RSA Algm"]
-	[security = Medium]
+	[algorithmSecurity = Medium]
 	[performance = Slow]
 
 abstract CipherSuite
@@ -227,12 +227,12 @@ abstract CipherSuite
 	[messageAuth = SHA384 || messageAuth = SHA256 => tlsProtocol >= TLS1_2]
 	
 	cipherSecurity -> integer
-	[cipherSecurity = (if cipher then cipher.security.ref else 0)]
-	security -> integer   
-	[security = min(
-		messageAuth.security, 
-		keyAgreement.security, 
-		signature.security, 
+	[cipherSecurity = (if cipher then cipher.algorithmSecurity.ref else 0)]
+	suiteSecurity -> integer   
+	[suiteSecurity = min(
+		messageAuth.algorithmSecurity, 
+		keyAgreement.algorithmSecurity, 
+		signature.algorithmSecurity, 
 		cipherSecurity)]
 	performance -> integer
 	[performance = min(signature.classPerformance, keyAgreement.classPerformance, cipher.classPerformance, messageAuth.classPerformance)]
@@ -643,5 +643,5 @@ SecureCommunication : Task
 	ciphersuites -> CipherSuite 7..*
 	tlsVersion -> TLS_Version
 	[tlsVersion = TLS1_2]
-	security -> integer
-	[security = min(ciphersuites.security)]
+	secComsecurity -> integer
+	[secComsecurity = min(ciphersuites.suiteSecurity)]

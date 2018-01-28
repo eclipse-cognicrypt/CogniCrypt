@@ -76,32 +76,32 @@ public class TaskSelectionPage extends WizardPage {
 		this.container.setBounds(10, 10, 200, 300);
 
 		//To display the Help view after clicking the help icon
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "de.cognicrypt.codegenerator.help_id_1");
-		container.setLayout(new GridLayout(2, false));
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.container, "de.cognicrypt.codegenerator.help_id_1");
+		this.container.setLayout(new GridLayout(2, false));
 
-		Label selectProjectLabel = new Label(this.container, SWT.NONE);
-		GridData gd_selectProjectLabel = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		final Label selectProjectLabel = new Label(this.container, SWT.NONE);
+		final GridData gd_selectProjectLabel = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_selectProjectLabel.heightHint = 28;
 		gd_selectProjectLabel.widthHint = 158;
 		selectProjectLabel.setLayoutData(gd_selectProjectLabel);
 		selectProjectLabel.setText(Constants.SELECT_JAVA_PROJECT);
 
-		ComboViewer projectComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
-		Combo projectCombo = projectComboSelection.getCombo();
-		GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		final ComboViewer projectComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
+		final Combo projectCombo = projectComboSelection.getCombo();
+		final GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_combo.widthHint = 356;
 		projectCombo.setLayoutData(gd_combo);
 		projectCombo.setToolTipText(Constants.PROJECTLIST_TOOLTIP);
 		projectCombo.setEnabled(true);
 		projectComboSelection.setContentProvider(ArrayContentProvider.getInstance());
 
-		Map<String, IProject> javaProjects = new HashMap<>();
-		for (IProject project : Utils.createListOfJavaProjectsInCurrentWorkspace()) {
+		final Map<String, IProject> javaProjects = new HashMap<>();
+		for (final IProject project : Utils.createListOfJavaProjectsInCurrentWorkspace()) {
 			javaProjects.put(project.getName(), project);
 		}
 
 		if (javaProjects.isEmpty()) {
-			String[] errorMessage = { Constants.ERROR_MESSAGE_NO_PROJECT };
+			final String[] errorMessage = { Constants.ERROR_MESSAGE_NO_PROJECT };
 			projectComboSelection.setInput(errorMessage);
 			projectComboSelection.setSelection(new StructuredSelection(projectComboSelection.getElementAt(0)));
 		} else {
@@ -113,7 +113,7 @@ public class TaskSelectionPage extends WizardPage {
 
 			});
 
-			IProject currentProject = Utils.getCurrentProject();
+			final IProject currentProject = Utils.getCurrentProject();
 			if (currentProject == null) {
 				projectComboSelection.setSelection(new StructuredSelection(projectComboSelection.getElementAt(0)));
 			} else {
@@ -121,16 +121,16 @@ public class TaskSelectionPage extends WizardPage {
 			}
 		}
 
-		Label selectTaskLabel = new Label(this.container, SWT.NONE);
-		GridData gd_selectTaskLabel = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		final Label selectTaskLabel = new Label(this.container, SWT.NONE);
+		final GridData gd_selectTaskLabel = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_selectTaskLabel.heightHint = 28;
 		gd_selectTaskLabel.widthHint = 139;
 		selectTaskLabel.setLayoutData(gd_selectTaskLabel);
 		selectTaskLabel.setText(Constants.SELECT_TASK);
 
 		this.taskComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
-		Combo taskCombo = taskComboSelection.getCombo();
-		GridData gd_taskCombo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		final Combo taskCombo = this.taskComboSelection.getCombo();
+		final GridData gd_taskCombo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_taskCombo.widthHint = 223;
 		taskCombo.setLayoutData(gd_taskCombo);
 		taskCombo.setToolTipText(Constants.TASKLIST_TOOLTIP);
@@ -154,15 +154,15 @@ public class TaskSelectionPage extends WizardPage {
 
 		this.taskComboSelection.setInput(tasks);
 		//Label for task description
-		Label taskDescription = new Label(this.container, SWT.NONE);
-		GridData gd_taskDescription = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
+		final Label taskDescription = new Label(this.container, SWT.NONE);
+		final GridData gd_taskDescription = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
 		gd_taskDescription.widthHint = 139;
 		taskDescription.setLayoutData(gd_taskDescription);
 		taskDescription.setText(Constants.TASK_DESCRIPTION);
 
 		// Adding description text for the cryptographic task that has been selected from the combo box
-		Text descriptionText = new Text(container, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-		GridData gd_descriptionText = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		final Text descriptionText = new Text(this.container, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		final GridData gd_descriptionText = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_descriptionText.widthHint = 297;
 		gd_descriptionText.heightHint = 96;
 		descriptionText.setLayoutData(gd_descriptionText);
@@ -180,25 +180,25 @@ public class TaskSelectionPage extends WizardPage {
 
 		this.taskComboSelection.setSelection(new StructuredSelection(tasks.get(0)));
 		setControl(this.container);
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
+		new Label(this.container, SWT.NONE);
+		new Label(this.container, SWT.NONE);
 
 		//Check box for going to guided mode
-		this.guidedModeCheckBox = new Button(container, SWT.CHECK);
-		guidedModeCheckBox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		guidedModeCheckBox.setToolTipText(Constants.GUIDEDMODE_TOOLTIP);
+		this.guidedModeCheckBox = new Button(this.container, SWT.CHECK);
+		this.guidedModeCheckBox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+		this.guidedModeCheckBox.setToolTipText(Constants.GUIDEDMODE_TOOLTIP);
 		this.guidedModeCheckBox.setEnabled(true);
 		this.guidedModeCheckBox.addSelectionListener(new SelectionAdapter() {
 
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 
 			}
 		});
 		this.guidedModeCheckBox.setText(Constants.GUIDED_MODE);
 		this.guidedModeCheckBox.setSelection(true);
-		final ControlDecoration deco = new ControlDecoration(guidedModeCheckBox, SWT.TOP | SWT.LEFT);
-		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage();
+		final ControlDecoration deco = new ControlDecoration(this.guidedModeCheckBox, SWT.TOP | SWT.LEFT);
+		final Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage();
 
 		deco.setDescriptionText(Constants.GUIDED_MODE_CHECKBOX_INFO);
 		deco.setImage(image);
@@ -243,10 +243,10 @@ public class TaskSelectionPage extends WizardPage {
 	}
 
 	@Override
-	public void setVisible(boolean visible) {
+	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
 		if (visible) {
-			container.setFocus();
+			this.container.setFocus();
 		}
 	}
 }

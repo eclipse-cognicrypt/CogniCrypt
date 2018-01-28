@@ -20,9 +20,9 @@ Bundle-ClassPath: lib/claferchocoig.jar,
  .,
  src/main/resources/,
  src/main/java/,
- lib/saxon9pe.jar,
  lib/gson-2.3.1.jar,
- lib/dom4j-2.0.0.jar
+ lib/dom4j-2.0.0.jar,
+ lib/saxon9he.jar
 Import-Package: org.eclipse.jdt.core,
  org.eclipse.jdt.core.dom,
  org.eclipse.jdt.ui.actions,

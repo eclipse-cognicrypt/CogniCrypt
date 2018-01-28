@@ -75,6 +75,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 	private final InstanceGenerator instanceGenerator;
 	private InstanceClafer value;
 	private ConfiguratorWizard configuratorWizard;
+	private CompareWizard compareWizard;
 	
 	/**
 	 * This class is responsible for displaying an algorithm as the best solution,
@@ -91,6 +92,15 @@ public class DefaultAlgorithmPage extends WizardPage {
 		this.instanceGenerator = inst;
 		this.taskSelectionPage = taskSelectionPage;
 		this.configuratorWizard = confWizard;
+	}
+	
+	public DefaultAlgorithmPage(final InstanceGenerator inst,final TaskSelectionPage taskSelectionPage, CompareWizard compWizard) {
+		super(Constants.DEFAULT_ALGORITHM_PAGE);
+		setTitle("Best solution for task: " + taskSelectionPage.getSelectedTask().getDescription());
+		setDescription(Constants.DESCRIPTION_DEFAULT_ALGORITHM_PAGE);
+		this.instanceGenerator = inst;
+		this.taskSelectionPage = taskSelectionPage;
+		this.compareWizard = compWizard;
 	}
 
 	

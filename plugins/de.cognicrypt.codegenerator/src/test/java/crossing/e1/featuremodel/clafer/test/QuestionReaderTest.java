@@ -28,42 +28,42 @@ public class QuestionReaderTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
-		qjr = new QuestionsJSONReader();
+		QuestionReaderTest.qjr = new QuestionsJSONReader();
 	}
 
 	String testFileFolder = "src/test/resources/testQuestions/";
-	String testFile1 = testFileFolder + "TestQuestions1.json";
-	String testFile2 = testFileFolder + "TestQuestions2.json";
-	String testFile3 = testFileFolder + "TestQuestions3.json";
-	String testFile4 = testFileFolder + "TestQuestions4.json";
-	String testFile5 = testFileFolder + "TestQuestions5.json";
+	String testFile1 = this.testFileFolder + "TestQuestions1.json";
+	String testFile2 = this.testFileFolder + "TestQuestions2.json";
+	String testFile3 = this.testFileFolder + "TestQuestions3.json";
+	String testFile4 = this.testFileFolder + "TestQuestions4.json";
+	String testFile5 = this.testFileFolder + "TestQuestions5.json";
 
 	@Test
 	/***
 	 * This test method should always perform a successful read. Create new methods for more failing test cases.
 	 */
 	public final void testGetQuestionsCorrect() {
-		qjr.getPages(this.testFile1);
+		QuestionReaderTest.qjr.getPages(this.testFile1);
 	}
 
 	@Test(expected = JsonSyntaxException.class)
 	public final void testGetQuestionsExceptionJSONSyntaxError() {
-		qjr.getPages(this.testFile5);
+		QuestionReaderTest.qjr.getPages(this.testFile5);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public final void testGetQuestionsExceptionMissingID() {
-		qjr.getPages(this.testFile2);
+		QuestionReaderTest.qjr.getPages(this.testFile2);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public final void testGetQuestionsExceptionMissingNextID() {
-		qjr.getPages(this.testFile3);
+		QuestionReaderTest.qjr.getPages(this.testFile3);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public final void testGetQuestionsExceptionNoDefaultAnswer() {
-		qjr.getPages(this.testFile4);
+		QuestionReaderTest.qjr.getPages(this.testFile4);
 	}
 
 }

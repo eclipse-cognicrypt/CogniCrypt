@@ -84,11 +84,11 @@ public class Question {
 	}
 
 	public ArrayList<String> getMethod() {
-		return method;
+		return this.method;
 	}
 
 	public ArrayList<Integer> getMethodParamIds() {
-		return methodParamIds;
+		return this.methodParamIds;
 	}
 
 	public void setAnswers(final ArrayList<Answer> answers) {
@@ -143,7 +143,7 @@ public class Question {
 		return builder.toString();
 	}
 
-	public Answer setEnteredAnswer(Answer enteredAnswer) {
+	public Answer setEnteredAnswer(final Answer enteredAnswer) {
 		return this.enteredAnswer = enteredAnswer;
 	}
 

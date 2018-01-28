@@ -165,7 +165,8 @@ public class InstanceListPage extends WizardPage {
 		//Back button to go to the previous algorithm in the combo box
 		Button backIcon = new Button(composite_Control, SWT.CENTER | SWT.BOTTOM);
 		backIcon.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		backIcon.setText("<");		
+		backIcon.setText("<");	
+		backIcon.setToolTipText("Previous");
 		backIcon.addSelectionListener(new SelectionAdapter() {			
 			@Override
 			public void widgetSelected(SelectionEvent e) {				
@@ -185,6 +186,7 @@ public class InstanceListPage extends WizardPage {
 		//Button to go to the next algorithm in the combo box
 		Button nextIcon = new Button(composite_Control, SWT.CENTER | SWT.BOTTOM);
 		nextIcon.setText(">");
+		nextIcon.setToolTipText("Next");
 		nextIcon.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

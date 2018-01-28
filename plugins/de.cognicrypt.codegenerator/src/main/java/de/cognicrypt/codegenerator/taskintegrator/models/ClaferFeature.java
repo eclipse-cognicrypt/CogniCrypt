@@ -69,12 +69,42 @@ public class ClaferFeature {
 	/**
 	 * @return the properties
 	 */
-	public ArrayList<FeatureProperty> getfeatureProperties() {
+	public ArrayList<FeatureProperty> getFeatureProperties() {
 		return featureProperties;
 	}
 
 	public void setFeatureProperties(ArrayList<FeatureProperty> featureProperties) {
 		this.featureProperties = featureProperties;
+	}
+	
+	/**
+	 * @return true if the feature has non-empty properties, false otherwise
+	 */
+	public boolean hasProperties() {
+		if (!featureProperties.isEmpty()) {
+			// check for a non-empty feature property
+			for (FeatureProperty featureProperty : getFeatureProperties()) {
+				if (!featureProperty.getPropertyName().isEmpty()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * @param needle
+	 *        {@link String} name of the property searched for
+	 * @return true if the feature has a property with the given name, false otherwise
+	 */
+	public boolean hasProperty(String needle) {
+		for (FeatureProperty featureProperty : getFeatureProperties()) {
+			if (featureProperty.getPropertyName() == needle) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	public ArrayList<ClaferConstraint> getFeatureConstraints() {
@@ -83,6 +113,10 @@ public class ClaferFeature {
 
 	public void setFeatureConstraints(ArrayList<ClaferConstraint> featureConstraints) {
 		this.featureConstraints = featureConstraints;
+	}
+	
+	public boolean hasConstraints() {
+		return !featureConstraints.isEmpty();
 	}
 
 	@Override
@@ -100,7 +134,7 @@ public class ClaferFeature {
 			strRepresentation.append(getFeatureInheritance());
 		}
 		
-		for (FeatureProperty featureProperty : getfeatureProperties()) {
+		for (FeatureProperty featureProperty : getFeatureProperties()) {
 			strRepresentation.append("\n\t");
 			strRepresentation.append(featureProperty.toString());			
 		}
@@ -114,5 +148,5 @@ public class ClaferFeature {
 		
 		return strRepresentation.toString();
 	}
-
+	
 }

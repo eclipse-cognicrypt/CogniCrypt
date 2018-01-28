@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Answer;
-import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
@@ -95,7 +94,6 @@ public class QuestionDialog extends Dialog {
 			public void widgetSelected(SelectionEvent arg0) {
 				// TODO Auto-generated method stub
 				if (tabFolder.getSelectionIndex() == 1) {
-					System.out.println(tabFolder.getSelectionIndex());
 					//lblQuestionContent.setText(textQuestion.getText());
 					if (question == null) {
 						linkAnswersTabMessageBox.open();

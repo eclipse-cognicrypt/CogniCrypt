@@ -39,8 +39,11 @@ public class GroupForClaferTab extends Group {
 		Combo comboForAlgorithm = new Combo(this, SWT.READ_ONLY);
 		comboForAlgorithm.setBounds(130, 5, 130, 25);
 		comboForAlgorithm.add("none");
-		for (int i = 0; i < claferFeatures.size(); i++) {
-			comboForAlgorithm.add(claferFeatures.get(i).getFeatureName());
+		// FIXME handle the claferFeatures == null case properly
+		if (claferFeatures != null) {
+			for (int i = 0; i < claferFeatures.size(); i++) {
+				comboForAlgorithm.add(claferFeatures.get(i).getFeatureName());
+			}
 		}
 
 		// Shows list of properties specific to selected feature or algo 
@@ -160,6 +163,10 @@ public class GroupForClaferTab extends Group {
 	 */
 
 	private ArrayList<String> itemsToAdd(String featureSelected) {
+		// FIXME handle the claferFeatures == null case properly
+		if (claferFeatures == null) {
+			return new ArrayList<>();
+		}
 		for (ClaferFeature claferFeature : claferFeatures) {
 			if (claferFeature.getFeatureName().equalsIgnoreCase(featureSelected)) {
 				for (FeatureProperty featureProperty : claferFeature.getFeatureProperties()) {

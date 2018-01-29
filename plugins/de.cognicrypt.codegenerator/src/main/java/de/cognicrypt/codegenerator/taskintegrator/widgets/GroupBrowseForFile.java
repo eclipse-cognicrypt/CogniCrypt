@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.UIConstants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.PageForTaskIntegratorWizard;
 
@@ -51,7 +52,7 @@ public class GroupBrowseForFile extends Group {
 		getDecFilePath().setShowOnlyOnFocus(false);
 		
 		// Initial error state.
-		getDecFilePath().setImage(Constants.DEC_ERROR);
+		getDecFilePath().setImage(UIConstants.DEC_ERROR);
 		getDecFilePath().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_FILE_NAME);
 		getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
 		
@@ -76,7 +77,7 @@ public class GroupBrowseForFile extends Group {
 				File tempFileVariable = new File(textBox.getText());
 				// Validate the file IO.
 				if (!tempFileVariable.exists() && !tempFileVariable.isDirectory() && !tempFileVariable.canRead() && textBox.getParent().isVisible()) {//					
-					getDecFilePath().setImage(Constants.DEC_ERROR);
+					getDecFilePath().setImage(UIConstants.DEC_ERROR);
 					getDecFilePath().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_UNABLE_TO_READ_FILE);
 					getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
 					// Check if the page can be set to completed.

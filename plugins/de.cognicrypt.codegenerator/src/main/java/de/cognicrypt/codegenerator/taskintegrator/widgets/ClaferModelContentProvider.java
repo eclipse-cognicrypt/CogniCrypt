@@ -24,8 +24,10 @@ public class ClaferModelContentProvider implements ITreeContentProvider {
 	/**
 	 * create a {@link ClaferModelContentProvider} with filters attached
 	 * 
-	 * @param featureFilter remove {@link ClaferFeature}s that this predicate applies to (returns true for)
-	 * @param propertyFilter remove {@link FeatureProperty}s that this predicate applies to (returns true for)
+	 * @param featureFilter
+	 *        display {@link ClaferFeature}s that this predicate applies to (returns true for)
+	 * @param propertyFilter
+	 *        display {@link FeatureProperty}s that this predicate applies to (returns true for)
 	 */
 	public ClaferModelContentProvider(Predicate<? super ClaferFeature> featureFilter, Predicate<? super FeatureProperty> propertyFilter) {
 		this.featureFilter = featureFilter;
@@ -39,7 +41,7 @@ public class ClaferModelContentProvider implements ITreeContentProvider {
 			ArrayList<FeatureProperty> filteredProperties = (ArrayList<FeatureProperty>) inputFeature.getFeatureProperties().clone();
 			
 			if (propertyFilter != null) {
-				filteredProperties.removeIf(propertyFilter);
+				filteredProperties.removeIf(propertyFilter.negate());
 			}
 
 			return filteredProperties.toArray();
@@ -54,7 +56,7 @@ public class ClaferModelContentProvider implements ITreeContentProvider {
 			ClaferModel filteredModel = inputModel.clone();
 
 			if (featureFilter != null) {
-				filteredModel.getClaferModel().removeIf(featureFilter);
+				filteredModel.getClaferModel().removeIf(featureFilter.negate());
 			}
 			return filteredModel.getClaferModel().toArray();
 		}

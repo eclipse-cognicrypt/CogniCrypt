@@ -98,6 +98,11 @@ public class GroupFeatureProperty extends Group {
 				}
 			});
 
+			// suggest Clafer primitives as as type
+			for (String primitive : Constants.CLAFER_PRIMITIVE_TYPES) {
+				comboPropertyType.add(primitive);
+			}
+
 			for (ClaferFeature cfr : claferModel) {
 				comboPropertyType.add(cfr.getFeatureName().toString());
 			}

@@ -69,6 +69,15 @@ public class ClaferConstraintDialog extends Dialog {
 		return currentFeature;
 	}
 
+	private void appendConstraint(String addition) {
+		if (!text.getText().isEmpty() && !text.getText().endsWith(" ")) {
+			text.insert(" ");
+		}
+
+		text.insert(addition);
+		text.setFocus();
+	}
+
 	/**
 	 * Create contents of the dialog.
 	 * @param parent
@@ -83,7 +92,7 @@ public class ClaferConstraintDialog extends Dialog {
 
 		TreeViewer treeViewer = new TreeViewer(container);
 		// TODO be more readable about these predicates
-		treeViewer.setContentProvider(new ClaferModelContentProvider(feat -> !feat.getFeatureName().isEmpty() && feat.hasProperties(), prop -> !prop.getPropertyName().isEmpty()));
+		treeViewer.setContentProvider(new ClaferModelContentProvider(feat -> !feat.getFeatureName().isEmpty(), prop -> !prop.getPropertyName().isEmpty()));
 		treeViewer.setLabelProvider(new ClaferModelLabelProvider());
 
 		// create a temporary clafer model that contains the current model as well as the feature currently being created
@@ -101,18 +110,25 @@ public class ClaferConstraintDialog extends Dialog {
 				if (treeViewer.getSelection() instanceof TreeSelection) {
 					TreeSelection ts = (TreeSelection) treeViewer.getSelection();
 
-					// toggle expansion if feature name clicked
+					// add feature name to text field if feature name clicked
 					if (ts.getFirstElement() instanceof ClaferFeature) {
-						Object selectedElem = ts.getFirstElement();
-						treeViewer.setExpandedState(selectedElem, !treeViewer.getExpandedState(selectedElem));
+						ClaferFeature featureClicked = (ClaferFeature) ts.getFirstElement();
+						appendConstraint(featureClicked.getFeatureName());
 					}
 					// add to text field if property name clicked
 					else if (ts.getFirstElement() instanceof FeatureProperty) {
 						FeatureProperty propertyClicked = (FeatureProperty) ts.getFirstElement();
 						ClaferFeature parentFeature = ((ClaferModel) treeViewer.getInput()).getParentFeatureOfProperty(propertyClicked);
-						text.insert(parentFeature.getFeatureName());
-						text.insert(".");
-						text.insert(propertyClicked.getPropertyName());
+
+						StringBuilder addition = new StringBuilder();
+
+						if (parentFeature != currentFeature) {
+							addition.append(parentFeature.getFeatureName());
+							addition.append(".");
+						}
+						addition.append(propertyClicked.getPropertyName());
+
+						appendConstraint(addition.toString());
 					}
 				}
 				super.mouseDoubleClick(e);
@@ -125,15 +141,15 @@ public class ClaferConstraintDialog extends Dialog {
 		group.setLayout(rl_group);
 
 		ArrayList<Entry<String, String>> buttonContents = new ArrayList<>();
-		buttonContents.add(new SimpleEntry<String, String>("NOT", " !"));
+		buttonContents.add(new SimpleEntry<String, String>("NOT", "!="));
 		buttonContents.add(new SimpleEntry<String, String>("EQUALS", "="));
-		buttonContents.add(new SimpleEntry<String, String>("AND", " AND "));
-		buttonContents.add(new SimpleEntry<String, String>("OR", " OR "));
-		buttonContents.add(new SimpleEntry<String, String>("IMPLIES", " => "));
-		buttonContents.add(new SimpleEntry<String, String>("(", " ("));
-		buttonContents.add(new SimpleEntry<String, String>(")", ") "));
-		buttonContents.add(new SimpleEntry<String, String>(">", " > "));
-		buttonContents.add(new SimpleEntry<String, String>("<", " < "));
+		buttonContents.add(new SimpleEntry<String, String>("AND", "AND"));
+		buttonContents.add(new SimpleEntry<String, String>("OR", "OR"));
+		buttonContents.add(new SimpleEntry<String, String>("IMPLIES", "=>"));
+		buttonContents.add(new SimpleEntry<String, String>("(", "("));
+		buttonContents.add(new SimpleEntry<String, String>(")", ")"));
+		buttonContents.add(new SimpleEntry<String, String>(">", ">"));
+		buttonContents.add(new SimpleEntry<String, String>("<", "<"));
 
 		for (Entry<String, String> btn : buttonContents) {
 			Button newButton = new Button(group, SWT.PUSH);
@@ -142,8 +158,7 @@ public class ClaferConstraintDialog extends Dialog {
 
 				@Override
 				public void handleEvent(Event arg0) {
-					text.insert(btn.getValue());
-					text.setFocus();
+					appendConstraint(btn.getValue());
 				}
 			});
 		}

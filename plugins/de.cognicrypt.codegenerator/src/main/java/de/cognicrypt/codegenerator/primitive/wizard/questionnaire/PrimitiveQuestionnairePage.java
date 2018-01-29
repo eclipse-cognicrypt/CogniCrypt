@@ -94,8 +94,8 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	 */
 	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, final List<String> selectionValues) {
 		super("Display Questions");
-		//		setTitle("Configuring Selected primitive: " + primitive.getName());
-		setDescription("");
+		setTitle("Integrating a new primitive: " + primitive.getName());
+		setDescription("Entering data related to the primitive");
 		this.page = page;
 		this.primitive = primitive;
 
@@ -113,8 +113,8 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	 */
 	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, final PrimitiveQuestionnaire PrimitiveQuestionnaire, final List<String> selectionValues, int iteration) {
 		super("Display Questions");
-		setTitle("Configuring Selected primitive: " + primitive.getName());
-		setDescription("");
+		setTitle("Integrating a new primitive: " + primitive.getName());
+		setDescription("Entering data related to the primitive");
 		this.PrimitiveQuestionnaire = PrimitiveQuestionnaire;
 		this.quest = null;
 		this.page = page;
@@ -131,8 +131,8 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	 */
 	public PrimitiveQuestionnairePage(final PrimitiveQuestionnaire PrimitiveQuestionnaire, final Question quest, final Primitive primitive) {
 		super("Display Questions");
-		setTitle("Configuring Selected primitive: " + primitive.getName());
-		setDescription("");
+		setTitle("Integrating a new primitive: " + primitive.getName());
+		setDescription("Entering data related to the primitive");
 		this.PrimitiveQuestionnaire = PrimitiveQuestionnaire;
 		this.quest = quest;
 		this.page = null;
@@ -141,8 +141,8 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 	public PrimitiveQuestionnairePage(final Question quest, final Primitive primitive, int iteration) {
 		super("Display Quesitons");
-		setTitle("Configuring selected primitive:" + primitive.getName());
-		setDescription("Key sizes");
+		setTitle("Integrating a new primitive: " + primitive.getName());
+		setDescription("Entering data related to the primitive");
 		this.quest = quest;
 		this.page = null;
 		this.primitive = primitive;
@@ -152,8 +152,8 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, int iteration) {
 		super("Display Questions");
-		setTitle("Configuring Selected primitive: " + primitive.getName());
-		setDescription("");
+		setTitle("Integrating a new primitive: " + primitive.getName());
+		setDescription("Entering data related to the primitive");
 		this.page = page;
 		this.primitive = primitive;
 		this.iteration = iteration;
@@ -271,6 +271,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				data.widthHint = 100;
 				final Text inputField = new Text(container, SWT.BORDER);
 //				inputField.setSize(500, inputField.getSize().y);
+				inputField.setLayoutData(data);
 				if (question.getEnteredAnswer() != null) {
 					this.finish = !inputField.getText().isEmpty();
 					PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
@@ -279,10 +280,11 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 					claferDepend = answers.get(0).getClaferDependencies().get(0).getAlgorithm();
 					if (claferDepend.equals("Block size")) {
 						inputField.addVerifyListener(verifyDecimal);
-//						data.widthHint=10;
+						data.widthHint=50;
+						inputField.setLayoutData(data);
 					}
 					
-					inputField.setLayoutData(data);
+					
 					
 					inputField.addModifyListener(e -> {
 						this.finish = !selectedValue.isEmpty();

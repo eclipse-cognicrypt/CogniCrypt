@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
@@ -61,6 +62,19 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	@Override
 	public ClaferModel clone() {
 		return new ClaferModel((ArrayList<ClaferFeature>) claferModel.clone());
+	}
+
+	/**
+	 * return a shallow copy containing only features that the predicate is true for
+	 * 
+	 * @param predicate
+	 *        {@link Predicate}&lt;? super {@link ClaferFeature}&gt; to test on the features
+	 * @return {@link ClaferModel} containing references to the successfully filtered features
+	 */
+	public ClaferModel getIf(Predicate<? super ClaferFeature> predicate) {
+		ClaferModel shallowCopy = this.clone();
+		shallowCopy.getClaferModel().removeIf(predicate.negate());
+		return shallowCopy;
 	}
 
 	@Override

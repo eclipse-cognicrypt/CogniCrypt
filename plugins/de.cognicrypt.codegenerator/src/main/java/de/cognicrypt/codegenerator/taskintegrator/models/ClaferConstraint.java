@@ -1,6 +1,10 @@
 package de.cognicrypt.codegenerator.taskintegrator.models;
 
-public class ClaferConstraint {
+import java.io.Serializable;
+
+public class ClaferConstraint implements Serializable {
+
+	private static final long serialVersionUID = 466282011383992518L;
 
 	private String constraint;
 

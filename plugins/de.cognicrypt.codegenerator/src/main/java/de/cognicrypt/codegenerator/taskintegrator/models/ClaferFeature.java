@@ -3,6 +3,7 @@
  */
 package de.cognicrypt.codegenerator.taskintegrator.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import de.cognicrypt.codegenerator.Constants;
@@ -12,7 +13,10 @@ import de.cognicrypt.codegenerator.Constants.FeatureType;
  * @author rajiv
  *
  */
-public class ClaferFeature {
+public class ClaferFeature implements Serializable {
+
+	private static final long serialVersionUID = -6403607301359530383L;
+
 	private FeatureType featureType;
 	private String featureName;
 	private String featureInheritance;
@@ -121,6 +125,16 @@ public class ClaferFeature {
 
 	@Override
 	public String toString() {
+		return toString(true);
+	}
+	
+	/**
+	 * return a {@link String} representing of the feature
+	 * 
+	 * @param includeChildren {@link Boolean} whether to include properties and constraints in the output
+	 * @return {@link String} representation of the Clafer
+	 */
+	public String toString(boolean includeChildren) {
 		StringBuilder strRepresentation = new StringBuilder();
 		
 		if (featureType == Constants.FeatureType.ABSTRACT) {
@@ -134,19 +148,23 @@ public class ClaferFeature {
 			strRepresentation.append(getFeatureInheritance());
 		}
 		
-		for (FeatureProperty featureProperty : getFeatureProperties()) {
-			strRepresentation.append("\n\t");
-			strRepresentation.append(featureProperty.toString());			
+		if (includeChildren) {
+
+			for (FeatureProperty featureProperty : getFeatureProperties()) {
+				strRepresentation.append("\n\t");
+				strRepresentation.append(featureProperty.toString());
+			}
+
+			for (ClaferConstraint featureConstraint : getFeatureConstraints()) {
+				strRepresentation.append("\n\t");
+				strRepresentation.append(featureConstraint.toString());
+			}
+
+			strRepresentation.append("\n");
+
 		}
 		
-		for (ClaferConstraint featureConstraint : getFeatureConstraints()) {
-			strRepresentation.append("\n\t");
-			strRepresentation.append(featureConstraint.toString());
-		}
-		
-		strRepresentation.append("\n");
-		
-		return strRepresentation.toString();
+		return strRepresentation.toString();		
 	}
 	
 }

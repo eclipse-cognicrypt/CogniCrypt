@@ -20,6 +20,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.ModifyEvent;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.UIConstants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.PageForTaskIntegratorWizard;
 import de.cognicrypt.codegenerator.tasks.Task;
@@ -69,7 +70,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		setDecNameOfTheTask(new ControlDecoration(lblNameOfTheTask, SWT.TOP | SWT.RIGHT));
 		getDecNameOfTheTask().setShowOnlyOnFocus(false);
 		// Set the initial error state.
-		getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
+		getDecNameOfTheTask().setImage(UIConstants.DEC_ERROR);
 		getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_TASK_NAME);
 		getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
 		
@@ -213,19 +214,19 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		}
 		
 		if (tempName.equals("")) {
-			getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
+			getDecNameOfTheTask().setImage(UIConstants.DEC_ERROR);
 			getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_TASK_NAME);
 			
 			// Check if the page can be set to completed.
 			getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 		}else if (validString) {
-			getDecNameOfTheTask().setImage(Constants.DEC_REQUIRED);
+			getDecNameOfTheTask().setImage(UIConstants.DEC_REQUIRED);
 			getDecNameOfTheTask().setDescriptionText(Constants.MESSAGE_REQUIRED_FIELD);
 			
 			// Check if the page can be set to completed.
 			getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 		} else {
-			getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
+			getDecNameOfTheTask().setImage(UIConstants.DEC_ERROR);
 			getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_DUPLICATE_TASK_NAME);
 			getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
 			

@@ -38,6 +38,20 @@ public class ClaferModelTest {
 	}
 
 	@Test
+	public final void testDoNotImplementPrimitiveTypes() {
+		ClaferModel claferModel = new ClaferModel();
+		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
+		ArrayList<FeatureProperty> featureProperties = new ArrayList<>();
+		featureProperties.add(new FeatureProperty("number", "integer"));
+		featureProperties.add(new FeatureProperty("characters", "string"));
+		cfrFeature.setFeatureProperties(featureProperties);
+
+		ClaferModel missingFeatures = claferModel.getMissingFeatures(cfrFeature);
+
+		assertTrue(missingFeatures.getClaferModel().size() == 0);
+	}
+
+	@Test
 	public final void testNoDuplicateFeaturesImplemented() {
 		ClaferModel claferModel = new ClaferModel();
 		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "Algorithm");

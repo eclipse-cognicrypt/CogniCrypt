@@ -111,6 +111,15 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 		// find missing property types
 		for (FeatureProperty fp : refFeature.getFeatureProperties()) {
 			boolean propertyTypeFound = false;
+
+			// do not implement Clafer primitives
+			for (String primitive : Constants.CLAFER_PRIMITIVE_TYPES) {
+				if (primitive.equals(fp.getPropertyType())) {
+					propertyTypeFound = true;
+					break;
+				}
+			}
+
 			for (ClaferFeature cfrFeature : claferModel) {
 				if (cfrFeature.getFeatureName().equals(fp.getPropertyType())) {
 					propertyTypeFound = true;

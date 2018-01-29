@@ -25,9 +25,8 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	/**
 	 * Create the composite.  
 	 * @param parent
-	 * @param style
 	 */
-	public CompositeToHoldGranularUIElements(Composite parent, int style, String pageName) {
+	public CompositeToHoldGranularUIElements(Composite parent, String pageName) {
 		super(parent, SWT.BORDER | SWT.V_SCROLL);
 		
 		claferModel = new ClaferModel();
@@ -56,7 +55,6 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		
 		CompositeGranularUIForClaferFeature granularClaferFeature = new CompositeGranularUIForClaferFeature
 			((Composite) this.getContent(), // the content composite of ScrolledComposite.
-			SWT.NONE, 
 			claferFeature);
 		granularClaferFeature.setBounds(
 			Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS, 

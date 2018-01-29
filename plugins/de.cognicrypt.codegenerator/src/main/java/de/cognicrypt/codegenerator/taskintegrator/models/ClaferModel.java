@@ -56,6 +56,16 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 		return featureFound;
 	}
 
+	public ClaferFeature getFeature(String featureName) {
+		for (ClaferFeature cfrFeature : this) {
+			if (cfrFeature.getFeatureName().equals(featureName)) {
+				return cfrFeature;
+			}
+		}
+		
+		return null;
+	}
+
 	/**
 	 * get a shallow copy of the ClaferModel that contains a shallow copy of the feature list (new list but same feature objects)
 	 */

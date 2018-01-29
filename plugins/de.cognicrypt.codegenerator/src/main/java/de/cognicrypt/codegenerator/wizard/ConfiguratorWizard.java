@@ -372,7 +372,7 @@ public class ConfiguratorWizard extends Wizard {
 					this.taskListPage.getSelectedTask().getXslFile());
 
 				// Delete Instance File
-				FileHelper.deleteFile(xmlInstancePath);
+//				FileHelper.deleteFile(xmlInstancePath);
 				codeGenerator.getDeveloperProject().refresh();
 			} catch (final IOException | CoreException | BadLocationException e) {
 				Activator.getDefault().logError(e);
@@ -397,7 +397,7 @@ public class ConfiguratorWizard extends Wizard {
 					this.taskListPage.getSelectedTask().getXslFile());
 
 				// Delete Instance File
-				FileHelper.deleteFile(xmlInstancePath);
+//				FileHelper.deleteFile(xmlInstancePath);
 				codeGenerator.getDeveloperProject().refresh();
 			} catch (final IOException | CoreException | BadLocationException e) {
 				Activator.getDefault().logError(e);

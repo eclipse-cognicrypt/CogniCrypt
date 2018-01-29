@@ -111,6 +111,17 @@ public class ClaferFeature implements Serializable {
 		return false;
 	}
 
+	public ArrayList<FeatureProperty> getInheritedProperties(ClaferModel refModel) {
+		ArrayList<FeatureProperty> inheritedProperties = (ArrayList<FeatureProperty>) getFeatureProperties().clone();
+
+		ClaferFeature parentFeature = refModel.getFeature(getFeatureInheritance());
+		if (parentFeature != null) {
+			inheritedProperties.addAll(parentFeature.getInheritedProperties(refModel));
+		}
+
+		return inheritedProperties;
+	}
+
 	public ArrayList<ClaferConstraint> getFeatureConstraints() {
 		return featureConstraints;
 	}

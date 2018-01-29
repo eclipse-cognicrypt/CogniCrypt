@@ -6,10 +6,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+
+import de.cognicrypt.codegenerator.taskintegrator.controllers.XmlRegion;
+import de.cognicrypt.codegenerator.taskintegrator.controllers.XmlRegionAnalyzer;
 
 
 
@@ -22,10 +29,10 @@ public class CompositeForXsl extends Composite {
 			setLayout(null);
 			
 			//UI Widgets for xslPage
-			//Text xslTxtBox= new Text(this,SWT.MULTI|SWT.V_SCROLL);
 			setXslTxtBox(new StyledText(this,SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL));
 			xslTxtBox.setBounds(0, 0, 887, 480);
 			xslTxtBox.setCursor(null);
+			
 			
 		}
 		
@@ -69,8 +76,63 @@ public class CompositeForXsl extends Composite {
 				
 				
 			}
-			
-			((StyledText) this.getChildren()[0]).setText(dataFromFile.toString());
+		
+		List<XmlRegion> regions = new XmlRegionAnalyzer().analyzeXml(dataFromFile.toString());
+		
+		List<StyleRange> ranges =  computeStyle(regions);
+		xslTxtBox.setText(dataFromFile.toString());
+		
+		for (StyleRange styleRange : ranges) {
+			xslTxtBox.setStyleRange(styleRange);
+		}
+		
+		
+		
+		}
+
+		private List<StyleRange> computeStyle(List<XmlRegion> regions) {
+			List<StyleRange> styleRanges = new ArrayList<StyleRange> ();
+		    for( XmlRegion xr : regions ) {
+		 
+		        // The style itself depends on the region type
+		        // In this example, we use colors from the system
+		        StyleRange sr = new StyleRange();
+		        switch( xr.getXmlRegionType()) {
+		            case MARKUP:
+		                sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN);
+		                break;
+		 
+		            case ATTRIBUTE:
+		                sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_DARK_RED);
+		                break;
+		                
+		            case ATTRIBUTE_VALUE: 
+		            	sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
+		            	break;
+		            
+		            case MARKUP_VALUE: 
+		            	sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_DARK_GRAY);
+		            	break;
+		            case COMMENT: 
+		            	sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
+		            	break;
+		            case INSTRUCTION: 
+		            	sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
+		            	break;
+		            case CDATA: 
+		            	sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN);
+		            	break;
+		            case WHITESPACE: break;
+		            default: break;
+		        }
+		 
+		        // Define the position and limit
+		        sr.start = xr.getStart();
+		        sr.length = xr.getEnd() - xr.getStart();
+		        styleRanges.add( sr );
+		    }
+		 
+		    return styleRanges;
 		}
 
 		/**
@@ -86,6 +148,7 @@ public class CompositeForXsl extends Composite {
 		private void setXslTxtBox(StyledText xslTxtBox) {
 			this.xslTxtBox = xslTxtBox;
 		}
+
 		
 	}
 

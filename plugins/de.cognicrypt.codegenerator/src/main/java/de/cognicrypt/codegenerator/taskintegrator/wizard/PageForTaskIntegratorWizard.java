@@ -77,7 +77,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE, this));				
 				break;
 			case Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION:
-				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
+				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, this.getName()));
 				// fill the available space on the with the big composite
 				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
 
@@ -263,7 +263,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				});
 				break;
 			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
-				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
+				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, this.getName()));
 				// fill the available space on the with the big composite
 				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -302,7 +302,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				});
 				break;
 			case Constants.PAGE_NAME_FOR_LINK_ANSWERS:
-				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
+				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, this.getName()));
 				// fill the available space on the with the big composite
 				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 				break;

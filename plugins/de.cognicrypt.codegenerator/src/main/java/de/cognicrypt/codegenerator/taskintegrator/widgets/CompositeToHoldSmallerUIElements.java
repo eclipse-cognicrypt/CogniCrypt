@@ -42,12 +42,13 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * Create the composite. Warnings suppressed for casting array lists.
 	 * 
 	 * @param parent
-	 * @param style
+	 * @param style TODO
 	 * @param targetArrayListOfDataToBeDisplayed
 	 * @param showRemoveButton
 	 */
 	public CompositeToHoldSmallerUIElements(Composite parent, int style, ArrayList<?> targetArrayListOfDataToBeDisplayed, boolean showRemoveButton, ClaferModel claferModel) {
-		super(parent, SWT.BORDER | SWT.V_SCROLL);
+		super(parent, style | SWT.V_SCROLL);
+
 		setExpandVertical(true);
 		setExpandHorizontal(true);
 

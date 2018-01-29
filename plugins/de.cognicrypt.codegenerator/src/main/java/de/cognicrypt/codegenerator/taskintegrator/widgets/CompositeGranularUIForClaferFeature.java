@@ -29,9 +29,8 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 	/**
 	 * Create the composite.
 	 * @param parent
-	 * @param style
 	 */
-	public CompositeGranularUIForClaferFeature(Composite parent, int style, ClaferFeature claferFeatureParam) {
+	public CompositeGranularUIForClaferFeature(Composite parent, ClaferFeature claferFeatureParam) {
 		super(parent, SWT.BORDER);
 		// set the clafer feature first.
 		setClaferFeature(claferFeatureParam);

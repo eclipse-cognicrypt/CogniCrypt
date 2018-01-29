@@ -6,16 +6,13 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 
-public class GroupConstraint extends Group {
+public class GroupConstraint extends Composite {
 
 	private ClaferConstraint constraint;
 	private Text txtForFeatureConstraints;

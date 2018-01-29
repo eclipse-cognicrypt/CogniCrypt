@@ -3,12 +3,16 @@
  */
 package de.cognicrypt.codegenerator.taskintegrator.models;
 
+import java.io.Serializable;
 
 /**
  * @author rajiv
  *
  */
-public class FeatureProperty{
+public class FeatureProperty implements Serializable {
+
+	private static final long serialVersionUID = -5360875525100852395L;
+
 	private String propertyName;
 	private String propertyType;
 	/**

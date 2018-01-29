@@ -48,6 +48,11 @@ public class CompositeForXsl extends Composite {
 				dataFromFile.append("<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"2.0\">\n");
 				dataFromFile.append("<xsl:output method=\"text\"/>\n");
 				dataFromFile.append("<xsl:template match=\"/\">\n");
+				// TODO for demo only. This data will be generated based on the XML document,.
+				dataFromFile.append("<xsl:if test=\"//task[@description='LongTermArchiving']\">\n");
+				dataFromFile.append("<xsl:result-document href=\"LongTermArchivingClient.java\">\n");
+				dataFromFile.append("package <xsl:value-of select=\"//task/Package\"/>; \n");
+				dataFromFile.append("<xsl:apply-templates select=\"//Import\"/>\n");
 				
 			}
 			
@@ -71,6 +76,9 @@ public class CompositeForXsl extends Composite {
 		if (path.getFileName().toString().endsWith(".java") || path.getFileName().toString().endsWith(".JAVA") || path.getFileName().toString().endsWith(".txt") || path
 			.getFileName().toString().endsWith(".TXT")) {
 				dataFromFile.append("\n");
+				dataFromFile.append("</xsl:template>\n");
+				dataFromFile.append("<xsl:template match=\"Import\">\n");
+				dataFromFile.append("import <xsl:value-of select=\".\"/>;\n");
 				dataFromFile.append("</xsl:template>\n");
 				dataFromFile.append("</xsl:stylesheet>");
 				

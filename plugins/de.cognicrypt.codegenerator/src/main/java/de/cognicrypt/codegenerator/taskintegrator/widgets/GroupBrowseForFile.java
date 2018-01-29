@@ -9,6 +9,8 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
@@ -20,9 +22,6 @@ import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.UIConstants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.PageForTaskIntegratorWizard;
-
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
 
 
 public class GroupBrowseForFile extends Group {

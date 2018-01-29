@@ -1,5 +1,7 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
+import java.util.function.Predicate;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -21,6 +23,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.Constants.FeatureType;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
@@ -152,8 +155,11 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		comboInheritance = new Combo(container, SWT.NONE);
 		comboInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
+		comboInheritance.add("");
+
 		// add existing abstract features to inheritance combo
-		for (ClaferFeature cfr : claferModel) {
+		Predicate<? super ClaferFeature> isInheritanceCandidate = ftr -> ftr != resultClafer && ftr.getFeatureType() != Constants.FeatureType.CONCRETE;
+		for (ClaferFeature cfr : claferModel.getIf(isInheritanceCandidate)) {
 			comboInheritance.add(cfr.getFeatureName().toString());
 		}
 

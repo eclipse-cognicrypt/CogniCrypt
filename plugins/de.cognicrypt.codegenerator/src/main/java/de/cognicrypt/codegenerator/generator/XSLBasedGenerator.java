@@ -405,7 +405,7 @@ public class XSLBasedGenerator {
 	}
 
 	/**
-	 * This method prepared the path for the Output.java.
+	 * This method prepares the path for the Output.java.
 	 * 
 	 * @param temporaryOutputFile
 	 * @param tempFlag
@@ -425,15 +425,15 @@ public class XSLBasedGenerator {
 		try {
 			final IEditorPart editor = IDE.openEditor(page, output);
 			this.project.refresh();
-		} catch (PartInitException e) {
-			e.printStackTrace();
-			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
 		} catch (CoreException e) {
 			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
 		}
 
 	}
 
+	
+	
+	
 	/**
 	 * This method organizes imports for all generated files and the file, in which the call code for the generated classes is inserted.
 	 *
@@ -442,7 +442,7 @@ public class XSLBasedGenerator {
 	 * @throws CoreException
 	 */
 	private void organizeImports(final IEditorPart editor) throws CoreException {
-		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
+		/*final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
 		final ICompilationUnit[] compilationUnitsInCryptoPackage = this.project.getPackagesOfProject(Constants.PackageName).getCompilationUnits();
 
 		for (int i = 0; i < compilationUnitsInCryptoPackage.length; i++) {
@@ -451,6 +451,22 @@ public class XSLBasedGenerator {
 
 		organizeImportsActionForAllFilesTouchedDuringGeneration.run(JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor)));
 		editor.doSave(null);
+		*/
+		
+		
+		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
+		final FormatAllAction faa = new FormatAllAction(editor.getSite());
+
+		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageName).getCompilationUnits();
+		faa.runOnMultiple(generatedCUnits);
+		organizeImportsActionForAllFilesTouchedDuringGeneration.runOnMultiple(generatedCUnits);
+
+		final ICompilationUnit outputClass = JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor));
+		organizeImportsActionForAllFilesTouchedDuringGeneration.run(outputClass);
+		faa.runOnMultiple(new ICompilationUnit[] { outputClass });
+
+		editor.doSave(null);
+		 
 	}
 
 	private void setPosForRunMethod(final int start, final int end) {

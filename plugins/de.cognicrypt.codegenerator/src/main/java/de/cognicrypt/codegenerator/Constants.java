@@ -91,13 +91,24 @@ public class Constants {
 	public static final String pathToClaferPreviewFile = "claferPreview.xml";
 	public static final String NameOfTemporaryMethod = "templateUsage";
 	public static final String pathsForLibrariesinDevProject = "libs";
-	public static final String AUTHOR = "@author CogniCrypt";
+	public static final String AuthorTag = "@author CogniCrypt";
 
 	// Output of Code Generation
 	public static final String AdditionalOutputFile = "Output.java";
+	public static final String AdditionalOutputTempFile = "OutputTemp.java";
+	public static final String TempSuffix = "Temp";
 	public static final String PackageName = "Crypto";
 	public static final String CodeGenerationCallFile = Constants.innerFileSeparator + Constants.PackageName + Constants.innerFileSeparator + Constants.AdditionalOutputFile;
 
+	// File info for Code Generation
+	public static final String OpenFile = "Current file is open: ";
+	public static final String CloseFile = "No file is open";
+	public static final String ContainsAuthorTag = "Current open file contains \""+AuthorTag+"\": ";
+	public static final String ContainsNotAuthorTag = "Current open file DOESN'T contain \""+AuthorTag+"\": ";
+	public static final String CreateOutput = "Create: "+AdditionalOutputFile;
+	public static final String CreateOutputTemp = AdditionalOutputFile+" exists! Create: "+AdditionalOutputTempFile;
+
+	
 	// Error Messages
 	public static final String NoFileOpenedErrorMessage = "There is no file opened to generate the source code in. Will generate output file instead.";
 	public static final String NoJavaFileOpenedErrorMessage = "The currently open file is not a java file. Will generate output file instead.";

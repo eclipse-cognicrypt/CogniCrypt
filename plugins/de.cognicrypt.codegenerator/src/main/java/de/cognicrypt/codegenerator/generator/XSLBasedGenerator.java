@@ -67,6 +67,7 @@ import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.utilities.ComparableEntry;
+import de.cognicrypt.codegenerator.utilities.FileHelper;
 import de.cognicrypt.codegenerator.utilities.Utils;
 
 /**
@@ -121,24 +122,24 @@ public class XSLBasedGenerator {
 			String temporaryOutputFile = srcPath + Constants.CodeGenerationCallFile;
 
 			// If Output.java exists create OutputTemp.java
-			Path p = Paths.get(temporaryOutputFile);
+			Path path = Paths.get(temporaryOutputFile);
 			boolean tempFlag;
-			if (Files.exists(p)) {
-				StringBuilder a = new StringBuilder(temporaryOutputFile);
-				a.insert(temporaryOutputFile.length() - 5, "Temp");
-				temporaryOutputFile = a.toString();
-				Activator.getDefault().logInfo("Output.java is existing -> Create OutputTemp.java: " + temporaryOutputFile);
+			if (Files.exists(path)) {
+				StringBuilder sb = new StringBuilder(temporaryOutputFile);
+				sb.insert(temporaryOutputFile.length() - 5, Constants.TempSuffix);
+				temporaryOutputFile = sb.toString();
+				Activator.getDefault().logInfo(Constants.CreateOutputTemp);
 				tempFlag = true;
 			} else {
-				Activator.getDefault().logInfo("Create Output.java: " + temporaryOutputFile);
+				Activator.getDefault().logInfo(Constants.CreateOutput);
 				tempFlag = false;
 			}
 
 			// Perform actual transformation by calling XSLT processor.
 			transform(claferOutputFiles, xslFiles, temporaryOutputFile);
 
-			// Trim the Output.java
-			trimFile(temporaryOutputFile);
+			// Trim Output.java
+			FileHelper.trimFile(temporaryOutputFile);
 
 			// Add additional resources like jar files
 			if (!addAdditionalJarFiles(pathToFolderWithAdditionalResources)) {
@@ -150,19 +151,19 @@ public class XSLBasedGenerator {
 
 			final IFile currentlyOpenFile = Utils.getCurrentlyOpenFile();
 			if (currentlyOpenFile != null && project.equals(currentlyOpenFile.getProject())) {
-				Activator.getDefault().logInfo("Current file is open: " + currentlyOpenFile.getName());
+				Activator.getDefault().logInfo(Constants.OpenFile + currentlyOpenFile.getName());
 
-				if (checkFileForString(currentlyOpenFile.getRawLocation().toOSString(), Constants.AUTHOR)) {
-					Activator.getDefault().logInfo("Current file: " + currentlyOpenFile.getName() + " contains the @Author tag");
+				if (FileHelper.checkFileForString(currentlyOpenFile.getRawLocation().toOSString(), Constants.AuthorTag)) {
+					Activator.getDefault().logInfo(Constants.ContainsAuthorTag + currentlyOpenFile.getName());
 					insertCallCodeIntoFile(temporaryOutputFile, true, true, tempFlag);
 					removeCryptoPackageIfEmpty();
 				} else {
-					Activator.getDefault().logInfo("Current file: " + currentlyOpenFile.getName() + " DOESN'T contain the @Author tag");
+					Activator.getDefault().logInfo(Constants.ContainsNotAuthorTag + currentlyOpenFile.getName());
 					insertCallCodeIntoFile(temporaryOutputFile, true, false, tempFlag);
 					removeCryptoPackageIfEmpty();
 				}
-			} else if (tempFlag == true) {
-				Activator.getDefault().logInfo("No file is open");
+			} else if (tempFlag) {
+				Activator.getDefault().logInfo(Constants.CloseFile);
 				insertCallCodeIntoFile(temporaryOutputFile, false, false, tempFlag);
 				removeCryptoPackageIfEmpty();
 			} else {
@@ -395,7 +396,7 @@ public class XSLBasedGenerator {
 		currentlyOpenEditor.doSave(null);
 
 		if (currentlyOpenEditor.getTitle().equals(Constants.AdditionalOutputFile)) {
-			closeEditor(currentlyOpenEditor);
+			Utils.closeEditor(currentlyOpenEditor);
 		}
 
 		this.project.refresh();
@@ -403,6 +404,12 @@ public class XSLBasedGenerator {
 		return true;
 	}
 
+	/**
+	 * This method prepared the path for the Output.java.
+	 * 
+	 * @param temporaryOutputFile
+	 * @param tempFlag
+	 */
 	private void openOutputFile(String temporaryOutputFile, boolean tempFlag) {
 		System.out.println(temporaryOutputFile);
 		IFile output = null;
@@ -420,8 +427,9 @@ public class XSLBasedGenerator {
 			this.project.refresh();
 		} catch (PartInitException e) {
 			e.printStackTrace();
+			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
 		} catch (CoreException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
 		}
 
 	}
@@ -466,58 +474,6 @@ public class XSLBasedGenerator {
 		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
 		final Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(xsltFile));
 		transformer.transform(new StreamSource(sourceFile), new StreamResult(new File(resultDir)));
-	}
-
-	/**
-	 * Check if a file contains a String
-	 * 
-	 * @param filePath
-	 *        Path to the file.
-	 * @param s
-	 *        Pattern String
-	 * @return <CODE>true</CODE>/<CODE>false</CODE> if insertion successful/failed.
-	 * @throws IOException
-	 */
-	private boolean checkFileForString(final String filePath, String s) throws IOException {
-
-		final File f = new File(filePath);
-		if (!(f.exists() && Files.isReadable(f.toPath()))) {
-			return false;
-		}
-
-		final List<String> content = Files.readAllLines(Paths.get(filePath));
-		final StringBuilder contentBuilder = new StringBuilder();
-		for (final String el : content) {
-			contentBuilder.append(el);
-			contentBuilder.append(Constants.lineSeparator);
-		}
-		final String contentString = contentBuilder.toString();
-		return contentString.contains(s);
-	}
-
-	private void trimFile(final String filePath) throws IOException {
-		final File f = new File(filePath);
-		if (!(f.exists() && Files.isReadable(f.toPath()))) {
-			System.out.println("wrong filepath");
-		}
-
-		final List<String> content = Files.readAllLines(Paths.get(filePath));
-		final StringBuilder contentBuilder = new StringBuilder();
-		for (final String el : content) {
-			contentBuilder.append(el);
-			contentBuilder.append(Constants.lineSeparator);
-		}
-		final String contentString = contentBuilder.toString().trim();
-		FileWriter writer = new FileWriter(f);
-		writer.write(contentString);
-		writer.close();
-	}
-
-	private void closeEditor(IEditorPart editorPart) {
-		IWorkbenchPage workbenchPage = Utils.getCurrentlyOpenPage();
-		if (workbenchPage != null) {
-			workbenchPage.closeEditor(editorPart, true);
-		}
 	}
 
 	public String getProvider() {

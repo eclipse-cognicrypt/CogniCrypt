@@ -19,9 +19,8 @@ public class GroupAnswer extends Group {
 
 	public Text txtAnswer;
 	private Answer answer;
-	private String getAnswer;
 	public ArrayList<Answer> answers;
-	
+
 	/**
 	 * Create the composite.
 	 * 
@@ -31,36 +30,74 @@ public class GroupAnswer extends Group {
 	public GroupAnswer(Composite parent, int style, Answer answerParam, boolean showRemoveButton) {
 		super(parent, style);
 		setAnswer(answerParam);
+
 		txtAnswer = new Text(this, SWT.BORDER);
-		if(answer.getValue()!=null){
+		if (answer.getValue() != null) {
 			txtAnswer.setText(answer.getValue());
 		}
-		txtAnswer.setBounds(3, 3, 420, 29);
-		
-		txtAnswer.addFocusListener(new FocusAdapter(){
+		txtAnswer.setBounds(3, 3, 406, 29);
+
+		txtAnswer.addFocusListener(new FocusAdapter() {
+
 			@Override
-			public void focusLost(FocusEvent e){
+			public void focusLost(FocusEvent e) {
 				answer.setValue(txtAnswer.getText());
 			}
 		});
-		
+
+		Button defaultAnswer = new Button(this, SWT.RADIO);
+		defaultAnswer.setBounds(413, 3, 128, 31);
+		ArrayList<Button> btnList = ((CompositeToHoldSmallerUIElements) defaultAnswer.getParent().getParent().getParent()).getDefaulAnswerBtnList();
+		btnList.add(defaultAnswer);
+		defaultAnswer.setText("Default Answer");
+		if (answer.isDefaultAnswer()) {
+			defaultAnswer.setSelection(true);
+		}
+
+		defaultAnswer.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+
+				/**
+				 * When user changes the default answer the following loop removes the previous selection and then current selected default answer value is set to true
+				 */
+				for (Button btn : ((CompositeToHoldSmallerUIElements) defaultAnswer.getParent().getParent().getParent()).getDefaulAnswerBtnList()) {
+					btn.setSelection(false);
+				}
+				defaultAnswer.setSelection(true);
+
+				/**
+				 * sets the default answer to true for the current answer and for all other answer to false
+				 */
+				for (Answer ans : ((CompositeToHoldSmallerUIElements) defaultAnswer.getParent().getParent().getParent()).getListOfAllAnswer()) {
+					if (ans.equals(answer)) {
+						answer.setDefaultAnswer(true);
+					} else {
+						ans.setDefaultAnswer(false);
+					}
+				}
+
+			}
+		});
+
 		if (showRemoveButton) {
 			Button btnRemove = new Button(this, SWT.NONE);
-			btnRemove.setBounds(429, 3, 79, 31);
+			btnRemove.setBounds(547, 3, 80, 31);
 			btnRemove.setText("Remove");
 			btnRemove.addSelectionListener(new SelectionAdapter() {
+
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
 					confirmationMessageBox.setMessage("This information will be lost. Do you really want to delete?");
 					confirmationMessageBox.setText("Deleting answer");
 					int response = confirmationMessageBox.open();
-					if (response == SWT.YES){
-			        ((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent()).deleteAnswer(answer);
-			       // ((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent()).updateAnswerContainer();
+					if (response == SWT.YES) {
+						((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent()).deleteAnswer(answer);
+						btnList.remove(defaultAnswer);
+					}
 
-			        }
-			        
 				}
 
 			});
@@ -70,16 +107,13 @@ public class GroupAnswer extends Group {
 	/**
 	 * @return the answer text
 	 */
-	/*public String retrieveAnswer(){
-		getAnswer=txtAnswer.getText();
-		return getAnswer;
-	}
-	*//**
-	 * set the answer text
-	 *//*
-	public void setAnswerValue(){
-		answer.setValue(this.retrieveAnswer());
-	}*/
+	/*
+	 * public String retrieveAnswer(){ getAnswer=txtAnswer.getText(); return getAnswer; }
+	 *//**
+		 * set the answer text
+		 *//*
+		 * public void setAnswerValue(){ answer.setValue(this.retrieveAnswer()); }
+		 */
 
 	@Override
 	protected void checkSubclass() {

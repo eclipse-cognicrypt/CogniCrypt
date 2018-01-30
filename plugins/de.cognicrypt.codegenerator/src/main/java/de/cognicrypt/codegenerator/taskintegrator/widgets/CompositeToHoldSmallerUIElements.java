@@ -6,6 +6,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -34,6 +35,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	private ArrayList<Answer> arrayAnswer;
 	private ArrayList<String> possibleCfrFeatures;
 
+	private ArrayList<Button> btnList;
+	
 	private ClaferModel claferModel;
 
 	private ClaferFeature currentClaferFeature;
@@ -53,6 +56,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 
 		arrayAnswer = new ArrayList<Answer>();
 		groupAnswers = new ArrayList<GroupAnswer>();
+	    btnList = new ArrayList<Button>();
 
 		composite = new Composite(this, SWT.NONE);
 		composite.setLayout(new GridLayout());
@@ -216,7 +220,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 
 	public void addAnswer(Answer answer, boolean showRemoveButton) {
 		GroupAnswer groupForAnswer = new GroupAnswer((Composite) getContent(), SWT.NONE, answer, showRemoveButton);
-		groupForAnswer.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), 651, 39);
+		groupForAnswer.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), 690, 39);
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
 
 		setMinHeight(getLowestWidgetYAxisValue());
@@ -229,6 +233,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 */
 	public void deleteAnswer(Answer answerToBeDeleted) {
 		arrayAnswer.remove(answerToBeDeleted);
+		btnList.clear();
 		updateAnswerContainer();
 	}
 
@@ -245,6 +250,13 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		for (Answer answer : arrayAnswer) {
 			addAnswer(answer, true);
 		}
+	}
+	
+	/**
+	 * @return the btnList List of radio buttons for default Answer field
+	 */
+	public ArrayList<Button> getDefaulAnswerBtnList() {
+		return btnList;
 	}
 
 	/**

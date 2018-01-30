@@ -93,8 +93,6 @@ public class Utils {
 		return javaProjects;
 	}
 
-	
-	
 	/**
 	 * This method returns the currently open page as an {@link IWorkbenchPage}.
 	 *
@@ -107,9 +105,18 @@ public class Utils {
 		}
 		return null;
 	}
-	
-	
-	
+
+	/** This method close the currently open editor
+	 * 
+	 * @param editorPart
+	 */
+	public static void closeEditor(IEditorPart editorPart) {
+		IWorkbenchPage workbenchPage = Utils.getCurrentlyOpenPage();
+		if (workbenchPage != null) {
+			workbenchPage.closeEditor(editorPart, true);
+		}
+	}
+
 	/**
 	 * This method returns the currently open editor as an {@link IEditorPart}.
 	 *

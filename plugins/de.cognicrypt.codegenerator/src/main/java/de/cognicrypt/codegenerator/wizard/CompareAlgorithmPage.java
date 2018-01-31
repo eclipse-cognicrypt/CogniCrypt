@@ -23,69 +23,54 @@ package de.cognicrypt.codegenerator.wizard;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.clafer.collection.Cons;
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
+import org.eclipse.swt.widgets.Combo;
 
 public class CompareAlgorithmPage extends WizardPage {
 
-	private Composite container;
 	private IProject selectedProject = null;
 	Text text1;
 	private Composite control;
 	private Group instancePropertiesPanel;
 	private Group instancePropertiesPanel1;
-	private Text instanceDetails;
-	private InstanceClafer value;
-	
-	private TaskSelectionPage taskSelectionPage;
-	private ConfiguratorWizard configuratorWizard;
-	private CompareWizard CompareWizard;
+	private InstanceListPage instanceListPage;
 	private InstanceGenerator instanceGenerator;
-
-
-	public CompareAlgorithmPage() {
-		// TODO Auto-generated constructor stub
-		super("abc");
-		setTitle("ABC");
-		setDescription("abc");
-
-	}
-
-	public CompareAlgorithmPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, CompareWizard compWizard) {
-		// TODO Auto-generated constructor stub
-		super("abc");
-		setTitle("ABC");
-		setDescription("abc");
-		this.instanceGenerator = inst;
-		this.taskSelectionPage = taskSelectionPage;
-		this.CompareWizard = compWizard;
+	private Text instanceDetails;
+	private Text instanceDetails1;
+	private InstanceClafer value;
+	public CompareAlgorithmPage(InstanceListPage instanceListPage, InstanceGenerator instanceGenerator) {
+		super(Constants.COMPARE_ALGORITHM_PAGE);
+		setTitle(Constants.COMPARE_TITLE);
+		setDescription(Constants.COMPARE_DESCRIPTION);
+		this.instanceListPage = instanceListPage;
+		this.instanceGenerator = instanceGenerator;
 	}
 
 	@Override
@@ -97,170 +82,147 @@ public class CompareAlgorithmPage extends WizardPage {
 		Label labelInstanceList;
 		this.control = new Composite(sc, SWT.NONE);
 		GridLayout layout = new GridLayout();
+		layout.numColumns = 2;
 		this.control.setLayout(layout);
-
+		
+		//Second Set
+		ComboViewer algorithmClass1;
+		Label labelInstanceList1;
+		
 		//To display the Help view after clicking the help icon
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.help_id_3");
+
+		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
 		
+		//First set of Algorithm Combinations
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
 		setPageComplete(false);
 		compositeControl.setLayout(new GridLayout(2, false));
 		labelInstanceList = new Label(compositeControl, SWT.NONE);
 		labelInstanceList.setText(Constants.instanceList);
-//		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
+		
 		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
-//		String firstInstance = inst.keySet().toArray()[0].toString();
-		Combo combo = algorithmClass.getCombo();
-//		String key = instanceGenerator.getAlgorithmName();
-//		int count = instanceGenerator.getAlgorithmCount();
-//		combo.setToolTipText("There are " + String.format("%d", count) + " variations of the algorithm " + key);
-//
-//		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-//		algorithmClass.setInput(inst.keySet());
+		Object algorithmCombination=instanceListPage.getAlgorithmCombinations();
+		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
+		algorithmClass.setInput(algorithmCombination);
+		final ISelection defaultAlgorithm = new StructuredSelection(inst.keySet().toArray()[0]);
+		algorithmClass.setSelection(defaultAlgorithm);
 		
-		//Display help assist for the first instance in the combo box
-		new Label(control, SWT.NONE);
-		new Label(control, SWT.NONE);
-		Text infoText = new Text(control, SWT.BORDER | SWT.WRAP );
-		infoText.setText(Constants.DEFAULT_ALGORITHM_NOTIFICATION);
-		infoText.setEditable(false);
-		infoText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));		
-		final ControlDecoration deco = new ControlDecoration(infoText, SWT.RIGHT);
-		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage();		
-		deco.setImage(image);
-		deco.setShowOnlyOnFocus(false);	
+		//Second set of Algorithm Combinations
+		final Composite compositeControl1 = new Composite(this.control, SWT.NONE);
+		compositeControl1.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+		setPageComplete(false);
+		compositeControl1.setLayout(new GridLayout(2, false));
+		labelInstanceList1 = new Label(compositeControl1, SWT.NONE);
+		labelInstanceList1.setText(Constants.instanceList);
 		
-		new Label(control, SWT.NONE);
-		new Label(control, SWT.NONE);
+		algorithmClass1 = new ComboViewer(compositeControl1, SWT.DROP_DOWN| SWT.READ_ONLY);
+		algorithmClass1.setContentProvider(ArrayContentProvider.getInstance());
+		algorithmClass1.setInput(algorithmCombination);
+		algorithmClass1.setSelection(defaultAlgorithm);
+		
+		//First set of Instance details
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
+		instancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 		this.instanceDetails = new Text(this.instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+	
+		algorithmClass.addSelectionChangedListener(event -> {
+			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+			CompareAlgorithmPage.this.instancePropertiesPanel.setVisible(true);
+			final String selectedAlgorithm = selection.getFirstElement().toString();	
+			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm));
+			CompareAlgorithmPage.this.instanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
+		});
 		
-		Composite composite_Control = new Composite(this.instancePropertiesPanel, SWT.BOTTOM | SWT.CENTER);
-		composite_Control.setLayoutData(new GridData(SWT.CENTER, GridData.FILL, true, false));
-		composite_Control.setLayout(new GridLayout(3, true)); 
-//		
-//		//Back button to go to the previous algorithm in the combo box
-//				Button backIcon = new Button(composite_Control, SWT.CENTER | SWT.BOTTOM);
-//				backIcon.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-//				backIcon.setText("<");		
-//				backIcon.addSelectionListener(new SelectionAdapter() {			
-//					@Override
-//					public void widgetSelected(SelectionEvent e) {				
-//						int temp = combo.getSelectionIndex();
-//						if (temp != 0){							
-//							temp = temp - 1;
-//						    final ISelection selection = new StructuredSelection(inst.keySet().toArray()[temp]);
-//							algorithmClass.setSelection(selection);
-//						    }
-//					}
-//				});
-//				
-//				//Label that displays the current algorithm variation and the total number of variations
-//				Label algorithmVariation = new Label(composite_Control, SWT.CENTER | SWT.BOTTOM);
-//				algorithmVariation.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
-//				
-//				//Button to go to the next algorithm in the combo box
-//				Button nextIcon = new Button(composite_Control, SWT.CENTER | SWT.BOTTOM);
-//				nextIcon.setText(">");
-//				nextIcon.addSelectionListener(new SelectionAdapter() {
-//					@Override
-//					public void widgetSelected(SelectionEvent e) {
-//						int temp = combo.getSelectionIndex();
-//						if (temp != (count-1)){
-//							temp = temp + 1;
-//					        final ISelection selection = new StructuredSelection(inst.keySet().toArray()[temp]);
-//						    algorithmClass.setSelection(selection);				    
-//						}
-//						
-//					}
-//				});
-//				
-//				algorithmClass.setLabelProvider(new LabelProvider() {
-//
-//					@Override
-//					public String getText(final Object element) {
-//						return element.toString();
-//					}
-//				});
-//				algorithmClass.addSelectionChangedListener(event -> {
-//					final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-//					CompareAlgorithmPage.this.instancePropertiesPanel.setVisible(true);
-//					final String selectedAlgorithm = selection.getFirstElement().toString();	
-//					setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm));
-//					CompareAlgorithmPage.this.instanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
-//					int index = combo.getSelectionIndex();
-//					algorithmVariation.setText("  Variation  " + (index + 1) + " / " + String.format("%d  ",count ));
-//					if (!selectedAlgorithm.equals(firstInstance)) {
-//						//hide the help assist and the text if the selected algorithm is not the default algorithm
-//						deco.hide();
-//						infoText.setVisible(false);	
-//						backIcon.setEnabled(true);
-//					} else {
-//						infoText.setVisible(true);
-//						deco.show();
-//						//disable back button if the selected algorithm in the combo box is the first instance
-//						backIcon.setEnabled(false);
-//					}
-//					if (combo.getSelectionIndex() == count-1){
-//						//disable next button if the selected algorithm in the combo box is the last instance
-//						nextIcon.setEnabled(false);
-//					} else {
-//						nextIcon.setEnabled(true);
-//					}
-//					if (selection.size() > 0) {
-//						setPageComplete(true);
-//					}
-//				});		
-//		
-		
-		
-		
-		
-		instancePropertiesPanel = new Group(this.control, SWT.NONE);
-		instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
+		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
 		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 1;
-		instancePropertiesPanel.setLayout(gridLayout);
-		GridData gridData = new GridData(SWT.NONE, SWT.NONE, true, true);
+		this.instancePropertiesPanel.setLayout(gridLayout);
+		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
 		gridData.horizontalSpan = 1;
-		gridData.heightHint = 200;
-		instancePropertiesPanel.setLayoutData(gridData);
+		gridData.heightHint=200;
+		this.instancePropertiesPanel.setLayoutData(gridData);
+		this.instancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 
-//		//SecondPart
-//		final Composite compositeControl1 = new Composite(this.control, SWT.NONE);
-//		setPageComplete(false);
-//		compositeControl1.setLayout(new GridLayout(2, false));
-//		labelInstanceList = new Label(compositeControl1, SWT.NONE);
-//		labelInstanceList.setText(Constants.instanceList);
-////				final Map<String, InstanceClafer> inst = instanceGenerator.getInstances();
-//		algorithmClass = new ComboViewer(compositeControl1, SWT.DROP_DOWN | SWT.READ_ONLY);
-//		//		String firstInstance = inst.keySet().toArray()[0].toString();
-//		//		Combo combo = algorithmClass.getCombo();
-//		//		String key = instanceGenerator.getAlgorithmName();
-//		//		int count = instanceGenerator.getAlgorithmCount();
-//		//		combo.setToolTipText("There are " + String.format("%d", count) + " variations of the algorithm " + key);
-//
-////				algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-////				algorithmClass.setInput("abc");
-//
-//		instancePropertiesPanel1 = new Group(this.control, SWT.NONE);
-//		instancePropertiesPanel1.setText(Constants.INSTANCE_DETAILS);
-//		GridLayout gridLayout1= new GridLayout();
-//		gridLayout1.numColumns = 1;
-//		instancePropertiesPanel1.setLayout(gridLayout1);
-//		GridData gridData1 = new GridData(SWT.NONE, SWT.NONE, true, true);
-//		gridData1.horizontalSpan = 1;
-//		gridData1.heightHint = 200;
-//		instancePropertiesPanel1.setLayoutData(gridData1);
+		//Hide scroll bar in instance details text box
+		Listener scrollBarListener = new Listener() {
 
+			@Override
+			public void handleEvent(Event event) {
+				Text t = (Text) event.widget;
+				Rectangle r1 = t.getClientArea();
+				Rectangle r2 = t.computeTrim(r1.x, r1.y, r1.width, r1.height);
+				Point p = t.computeSize(r1.x, SWT.DEFAULT, true);
+				t.getVerticalBar().setVisible(r2.height <= p.y);
+				if (event.type == SWT.Modify) {
+					t.getParent().layout(true);
+					t.showSelection();
+				}
+			}
+		};
+		Display display = Display.getCurrent();
+		this.instanceDetails.addListener(SWT.Resize, scrollBarListener);
+		this.instanceDetails.addListener(SWT.Modify, scrollBarListener);
+		GridData gd_instanceDetails = new GridData(GridData.FILL_BOTH);
+		gd_instanceDetails.widthHint = 157;
+		this.instanceDetails.setLayoutData(gd_instanceDetails);
+		this.instanceDetails.setBounds(10, 20, 400, 180);
+		this.instanceDetails.setEditable(false);
+		Color white = display.getSystemColor(SWT.COLOR_WHITE);
+		this.instanceDetails.setBackground(white);
+		
+		//Second set of Instance details
+		this.instancePropertiesPanel1 = new Group(this.control, SWT.NONE);
+		instancePropertiesPanel1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		this.instanceDetails1 = new Text(this.instancePropertiesPanel1, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		
+		algorithmClass1.addSelectionChangedListener(event -> {
+			final IStructuredSelection selection1 = (IStructuredSelection) event.getSelection();
+			CompareAlgorithmPage.this.instancePropertiesPanel1.setVisible(true);
+			final String selectedAlgorithm1 = selection1.getFirstElement().toString();	
+			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm1));
+			CompareAlgorithmPage.this.instanceDetails1.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm1)));
+		});
+		
+		this.instancePropertiesPanel1.setText(Constants.INSTANCE_DETAILS);
+		GridLayout gridLayout1 = new GridLayout();
+		this.instancePropertiesPanel1.setLayout(gridLayout1);
+		GridData gridData1 = new GridData(SWT.FILL, GridData.FILL, true, true);
+		gridData1.widthHint = 60;
+		gridData1.horizontalSpan = 1;
+		gridData1.heightHint=89;
+		this.instancePropertiesPanel.setLayoutData(gridData1);
+		this.instancePropertiesPanel1.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
+
+		//Hide scroll bar in instance details text box
+		Listener scrollBarListener1 = new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+				Text t = (Text) event.widget;
+				Rectangle r1 = t.getClientArea();
+				Rectangle r2 = t.computeTrim(r1.x, r1.y, r1.width, r1.height);
+				Point p = t.computeSize(r1.x, SWT.DEFAULT, true);
+				t.getVerticalBar().setVisible(r2.height <= p.y);
+				if (event.type == SWT.Modify) {
+					t.getParent().layout(true);
+					t.showSelection();
+				}
+			}
+		};
+		Display display1 = Display.getCurrent();
+		this.instanceDetails1.addListener(SWT.Resize, scrollBarListener1);
+		this.instanceDetails1.addListener(SWT.Modify, scrollBarListener1);
+		this.instanceDetails1.setLayoutData(new GridData(GridData.FILL_BOTH));
+		this.instanceDetails1.setBounds(10, 20, 400, 180);
+		this.instanceDetails1.setEditable(false);
+		Color white1 = display1.getSystemColor(SWT.COLOR_WHITE);
+		this.instanceDetails1.setBackground(white1);
+		
 		sc.setContent(this.control);
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);
 		sc.setMinSize(this.control.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		setControl(sc);
-		//        setControl(container);
-		//        setPageComplete(false);
-
 	}
 
 	public String getText1() {
@@ -281,6 +243,9 @@ public class CompareAlgorithmPage extends WizardPage {
 	
 	public void setValue(final InstanceClafer instanceClafer) {
 		this.value = instanceClafer;
+	}	
+	public InstanceClafer getValue() {
+		return this.value;
 	}
 	
 	private String getInstanceProperties(final InstanceClafer inst) {

@@ -90,7 +90,7 @@ public class InstanceListPage extends WizardPage {
 	private Group instancePropertiesPanel;
 	private TaskSelectionPage taskSelectionPage;
 	private ConfiguratorWizard configuratorWizard;
-	private CompareWizard compareWizard;
+	private Object algorithmCombinaton;
   
 	public InstanceListPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
@@ -99,15 +99,6 @@ public class InstanceListPage extends WizardPage {
 		this.instanceGenerator = inst;
 		this.taskSelectionPage = taskSelectionPage;
 		this.configuratorWizard = confWizard;
-	}
-
-	public InstanceListPage(InstanceGenerator inst, TaskSelectionPage taskSelectionPage, CompareWizard compWizard) {
-		super(Constants.ALGORITHM_SELECTION_PAGE);
-		setTitle("Possible solutions for task: " + taskSelectionPage.getSelectedTask().getDescription());
-		setDescription(Constants.DESCRIPTION_INSTANCE_LIST_PAGE);
-		this.instanceGenerator = inst;
-		this.taskSelectionPage = taskSelectionPage;
-		this.compareWizard = compWizard;
 	}
 
 	@Override
@@ -145,6 +136,8 @@ public class InstanceListPage extends WizardPage {
 
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
 		algorithmClass.setInput(inst.keySet());
+		
+		setAlgorithmCombinations(algorithmClass.getInput());
 		
 		//Display help assist for the first instance in the combo box
 		new Label(control, SWT.NONE);
@@ -285,13 +278,15 @@ public class InstanceListPage extends WizardPage {
 		
 		
 		//Button to compare the algorithm in the Java project
+		
+		InstanceListPage instanceListPage = this;
 
 		Button compareAlgorithmButton = new Button(control, SWT.NONE);
 		compareAlgorithmButton.setText("Compare Algorithm");
 		compareAlgorithmButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event event) {
-				final WizardDialog dialog = new WizardDialog(new Shell(), new CompareWizard());
+				final WizardDialog dialog = new WizardDialog(new Shell(), new CompareWizard(instanceListPage, instanceGenerator));
 				dialog.open();
 			}
 		});
@@ -355,7 +350,7 @@ public class InstanceListPage extends WizardPage {
 	 *        instance currently selected in the combo box
 	 * @return details for chosen algorithm configuration
 	 */
-	private String getInstanceProperties(final InstanceClafer inst) {
+	String getInstanceProperties(final InstanceClafer inst) {
 		final Map<String, String> algorithms = new HashMap<>();
 		for (InstanceClafer child : inst.getChildren()) {
 			getInstanceDetails(child, algorithms);
@@ -473,6 +468,17 @@ public class InstanceListPage extends WizardPage {
 		if (visible) {
 			control.setFocus();
 		}
+	}
+
+	public Object getAlgorithmCombinations() {
+		// TODO Auto-generated method stub
+		return this.algorithmCombinaton;
+	}
+
+	public void setAlgorithmCombinations(Object input) {
+		// TODO Auto-generated method stub
+		this.algorithmCombinaton = input;
+		
 	}
 	
 }

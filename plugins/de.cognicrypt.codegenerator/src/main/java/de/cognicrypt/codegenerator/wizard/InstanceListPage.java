@@ -136,7 +136,7 @@ public class InstanceListPage extends WizardPage {
 		int count = combo.getItemCount();
 		int variationCount = instanceGenerator.getAlgorithmCount();
 		if(count > variationCount){
-		    combo.setToolTipText("There are " + String.format("%d", count) + " algorithms ");
+		    combo.setToolTipText("There are " + String.format("%d", count) + " solutions ");
 		} else {
 			combo.setToolTipText("There are " + String.format("%d", variationCount) + " variations of the algorithm " + key);
 		}
@@ -215,7 +215,7 @@ public class InstanceListPage extends WizardPage {
 			InstanceListPage.this.instanceDetails.setText(getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
 			int index = combo.getSelectionIndex();
 			if(count > variationCount){
-			    algorithmVariation.setText("  Algorithm  " + (index + 1) + " / " + String.format("%d  ",count ));
+			    algorithmVariation.setText("  Solution  " + (index + 1) + " / " + String.format("%d  ",count ));
 			} else {
 				algorithmVariation.setText("  Variation  " + (index + 1) + " / " + String.format("%d  ",variationCount ));
 			}
@@ -307,28 +307,29 @@ public class InstanceListPage extends WizardPage {
 		String value;
 
 		if (!inst.getType().getRef().getTargetType().isPrimitive()) {
-			String algo = Constants.ALGORITHM + " :" + ClaferModelUtils.removeScopePrefix(inst.getType().getRef().getTargetType().getName()) + Constants.lineSeparator;
+			String algo = Constants.ALGORITHM + " : " + ClaferModelUtils.removeScopePrefix(inst.getType().getRef().getTargetType().getName().replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2")) + Constants.lineSeparator;			
 			algorithms.put(algo, "");
 
 			final InstanceClafer instan = (InstanceClafer) inst.getRef();
 			for (final InstanceClafer in : instan.getChildren()) {
 				if (in.getType().getRef() != null && !in.getType().getRef().getTargetType().isPrimitive()) {
-					final String superName = ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName());
+					final String superName = ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName().replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2"));
 					if (!superName.equals("Enum")) {
 						getInstanceDetails(in, algorithms);
 						continue;
 					}
 				}
-				value = "\t" + ClaferModelUtils.removeScopePrefix(in.getType().getName()) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
+				value = "\t" + ClaferModelUtils.removeScopePrefix(in.getType().getName().replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
 				if (value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
 					value = value.substring(0, value.indexOf("->") - 1);
+					value = value.replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2");
 				}
 				value = value.replace("\n", "") + Constants.lineSeparator;	// having only one \n at the end of string
 				algorithms.put(algo, algorithms.get(algo) + value);
 			}
 			// Above for loop over children hasn't been executed, then following if
 			if (!instan.hasChildren()) {
-				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName()) + " : " + inst.getRef().toString().replace("\"", "");
+				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2")) + " : " + inst.getRef().toString();
 				algo = algorithms.keySet().iterator().next();
 				algorithms.put(algo, algorithms.get(algo) + value);
 			}

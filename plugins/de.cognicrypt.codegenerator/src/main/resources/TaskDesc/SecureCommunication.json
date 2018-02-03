@@ -6,7 +6,7 @@
     	"note": "",
         "tooltip": "Example : /home/users/keystores/android.jks", 
         "element": "text",
-       "textType":"",
+       "textType":"browse",
         "questionText": "Please specify the path to your keystore:",
         "answers": [{
           "value": "",

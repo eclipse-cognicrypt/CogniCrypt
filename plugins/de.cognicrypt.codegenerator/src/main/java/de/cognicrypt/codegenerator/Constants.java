@@ -175,10 +175,11 @@ public class Constants {
 	public static final String PROPERTIES = "Algorithm Preferences";
 	public static final String SELECT_PROPERTIES = "Select Properties";
 	
-	
+	//Compare algorithm page
 	public static final String COMPARE_ALGORITHM_PAGE = "Compare Algorithm Page";
 	public static final String COMPARE_TITLE = "Compare two Algorithms";
 	public static final String COMPARE_DESCRIPTION = "Select the Algorithms for comparing";
+	public static final String COMPARE_LABEL = "Instance details of";
 	
 	
 	//Flags for default project selection

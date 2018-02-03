@@ -29,6 +29,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
@@ -45,6 +46,8 @@ public class PropertyWidget {
 	private AstClafer parentClafer;
 	private AstConcreteClafer childClafer;
 	private final ComboViewer operatorComboViewer;
+	private Combo operatorCombo;
+	private Combo valuesComboBox;
 	private boolean isGroupConstraint = false;
 	private AstAbstractClafer abstarctParentClafer;
 
@@ -76,6 +79,8 @@ public class PropertyWidget {
 		this.operatorComboViewer = new ComboViewer(container, SWT.NONE);
 		this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
 		this.operatorComboViewer.setInput(values);
+		operatorCombo = operatorComboViewer.getCombo();
+		operatorCombo.setEnabled(false);
 
 		final ArrayList<String> propertyNames = new ArrayList<>();
 		for (final AstClafer propertyClafer : claferProperties) {
@@ -88,6 +93,7 @@ public class PropertyWidget {
 		final ComboViewer valuesCombo = new ComboViewer(container, SWT.NONE);
 		valuesCombo.setContentProvider(ArrayContentProvider.getInstance());
 		valuesCombo.setInput(propertyNames);
+		valuesComboBox = valuesCombo.getCombo();
 
 		valuesCombo.addSelectionChangedListener(arg0 -> {
 			status = true;
@@ -147,8 +153,12 @@ public class PropertyWidget {
 				final Button button = (Button) e.widget;
 				if (button.getSelection()) {
 					PropertyWidget.this.valueSpinner.setEnabled(true);
+//					operatorCombo.setEnabled(true);
+//					valuesComboBox.setEnabled(true);
 				} else {
 					PropertyWidget.this.valueSpinner.setEnabled(false);
+//					operatorCombo.setEnabled(false);
+//					valuesComboBox.setEnabled(false);
 				}
 			}
 		});
@@ -156,7 +166,7 @@ public class PropertyWidget {
 		final Label propertyNameLabel = new Label(container, SWT.NONE);
 		propertyNameLabel.setText(propertyName);
 		
-		if(propertyName.equals(Constants.Security))
+		if(propertyName.equals(Constants.Security) || propertyName.equals(Constants.Performance) || propertyName.equals(Constants.CipherSecurity))
 		{
 		this.operatorComboViewer = new ComboViewer(container, SWT.NONE);
 		this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());

@@ -42,8 +42,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -244,8 +246,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					question.setEnteredAnswer((Answer) selection.getFirstElement());
 				});
 				new Label(parent, SWT.NONE);
-				//added description for questions
-				
+				//added description for questions				
 				if (!question.getNote().isEmpty()) {
 					createNote(parent, question);
 				}
@@ -353,18 +354,40 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				Color red = display.getSystemColor(SWT.COLOR_RED);
 				mandatory.setText("*");
 				mandatory.setForeground(red);
-							
-				if(question.getTextType().equals("password"))
-				{
-				final Text inputField = new Text(container, SWT.BORDER| SWT.PASSWORD| SWT.SINGLE);
-				inputField.setSize(240, inputField.getSize().y);
-				inputField.setToolTipText(question.getTooltip());
 				
-				Button checkBox = new Button(container, SWT.CHECK);
-				checkBox.setText("Show Password");
-				checkBox.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
+				//Adding Browse Button
+				if(question.getTextType().equals("browse")){
+					final Text inputField = new Text(container, SWT.BORDER );
+					inputField.setSize(240, inputField.getSize().y);
+					inputField.setToolTipText(question.getTooltip());
+					
+					Button browseButton = new Button(container, SWT.PUSH);
+					browseButton.setText("Browse");
+					browseButton.addSelectionListener(new SelectionAdapter() {
+			            public void widgetSelected(SelectionEvent e) {
+			                FileDialog dialog = new FileDialog(getShell(), SWT.NULL);
+			                String path = dialog.open();
+			                if (path != null) {
+			                	inputField.setText(path);
+			                }
+			            }
+
+			        });
+					text(question, inputField);
+				}
+					
+				else if(question.getTextType().equals("password")){
+				    final Text inputField = new Text(container, SWT.BORDER | SWT.PASSWORD | SWT.SINGLE);
+				    inputField.setSize(240, inputField.getSize().y);
+				    inputField.setToolTipText(question.getTooltip());
+				
+				//Check box to show/hide password
+				    Button checkBox = new Button(container, SWT.CHECK);
+				    checkBox.setText("Show Password");
+				    checkBox.setSelection(false);
+				    checkBox.addSelectionListener(new SelectionAdapter() {
+					    @Override
+					    public void widgetSelected(SelectionEvent e) {
 						if(checkBox.getSelection() == true){
 							inputField.setEchoChar( '\0' );
 						} else {	

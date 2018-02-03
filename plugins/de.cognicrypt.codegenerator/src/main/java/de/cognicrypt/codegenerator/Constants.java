@@ -130,7 +130,7 @@ public class Constants {
 	public static final String JAVA = "java";
 	public static final String JCA = "JCA";
 	public static final String JAR = ".jar";
-	public static final String ALGORITHM = "algorithm";
+	public static final String ALGORITHM = "Algorithm";
 	public static final String GUIDED_MODE = "Use the guided mode for configuring the task";
 	public static final String DEFAULT_ALGORITHM_PAGE_CHECKBOX ="Show other possible algorithm combinations";
 
@@ -142,6 +142,8 @@ public class Constants {
 	public static final String Code = "code";
 	public static final String Type = "type";
 	public static final String Security = "Security";
+	public static final String Performance = "Performance";
+	public static final String CipherSecurity = "CipherSecurity";
 	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List","java.util.Base64" };
 
 	

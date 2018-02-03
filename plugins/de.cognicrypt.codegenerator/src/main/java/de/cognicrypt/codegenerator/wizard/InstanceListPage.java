@@ -128,12 +128,18 @@ public class InstanceListPage extends WizardPage {
 		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
 		String firstInstance = inst.keySet().toArray()[0].toString();
 		Combo combo = algorithmClass.getCombo();
-		String key = instanceGenerator.getAlgorithmName();
-		int count = instanceGenerator.getAlgorithmCount();
-		combo.setToolTipText("There are " + String.format("%d", count) + " variations of the algorithm " + key);
-
+	
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-		algorithmClass.setInput(inst.keySet());
+		algorithmClass.setInput(inst.keySet());		
+		String key = instanceGenerator.getAlgorithmName();
+		
+		int count = combo.getItemCount();
+		int variationCount = instanceGenerator.getAlgorithmCount();
+		if(count > variationCount){
+		    combo.setToolTipText("There are " + String.format("%d", count) + " solutions ");
+		} else {
+			combo.setToolTipText("There are " + String.format("%d", variationCount) + " variations of the algorithm " + key);
+		}
 		
 		//Display help assist for the first instance in the combo box
 		new Label(control, SWT.NONE);
@@ -159,7 +165,8 @@ public class InstanceListPage extends WizardPage {
 		//Back button to go to the previous algorithm in the combo box
 		Button backIcon = new Button(composite_Control, SWT.CENTER | SWT.BOTTOM);
 		backIcon.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		backIcon.setText("<");		
+		backIcon.setText("<");	
+		backIcon.setToolTipText("Previous");
 		backIcon.addSelectionListener(new SelectionAdapter() {			
 			@Override
 			public void widgetSelected(SelectionEvent e) {				
@@ -179,6 +186,7 @@ public class InstanceListPage extends WizardPage {
 		//Button to go to the next algorithm in the combo box
 		Button nextIcon = new Button(composite_Control, SWT.CENTER | SWT.BOTTOM);
 		nextIcon.setText(">");
+		nextIcon.setToolTipText("Next");
 		nextIcon.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -206,7 +214,11 @@ public class InstanceListPage extends WizardPage {
 			setValue(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm));
 			InstanceListPage.this.instanceDetails.setText(getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
 			int index = combo.getSelectionIndex();
-			algorithmVariation.setText("  Variation  " + (index + 1) + " / " + String.format("%d  ",count ));
+			if(count > variationCount){
+			    algorithmVariation.setText("  Solution  " + (index + 1) + " / " + String.format("%d  ",count ));
+			} else {
+				algorithmVariation.setText("  Variation  " + (index + 1) + " / " + String.format("%d  ",variationCount ));
+			}
 			if (!selectedAlgorithm.equals(firstInstance)) {
 				//hide the help assist and the text if the selected algorithm is not the default algorithm
 				deco.hide();
@@ -295,28 +307,29 @@ public class InstanceListPage extends WizardPage {
 		String value;
 
 		if (!inst.getType().getRef().getTargetType().isPrimitive()) {
-			String algo = Constants.ALGORITHM + " :" + ClaferModelUtils.removeScopePrefix(inst.getType().getRef().getTargetType().getName()) + Constants.lineSeparator;
+			String algo = Constants.ALGORITHM + " : " + ClaferModelUtils.removeScopePrefix(inst.getType().getRef().getTargetType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + Constants.lineSeparator;			
 			algorithms.put(algo, "");
 
 			final InstanceClafer instan = (InstanceClafer) inst.getRef();
 			for (final InstanceClafer in : instan.getChildren()) {
 				if (in.getType().getRef() != null && !in.getType().getRef().getTargetType().isPrimitive()) {
-					final String superName = ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName());
+					final String superName = ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2"));
 					if (!superName.equals("Enum")) {
 						getInstanceDetails(in, algorithms);
 						continue;
 					}
 				}
-				value = "\t" + ClaferModelUtils.removeScopePrefix(in.getType().getName()) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
+				value = "\t" + ClaferModelUtils.removeScopePrefix(in.getType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
 				if (value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
 					value = value.substring(0, value.indexOf("->") - 1);
+					value = value.replaceAll("([a-z0-9])([A-Z])","$1 $2");
 				}
 				value = value.replace("\n", "") + Constants.lineSeparator;	// having only one \n at the end of string
 				algorithms.put(algo, algorithms.get(algo) + value);
 			}
 			// Above for loop over children hasn't been executed, then following if
 			if (!instan.hasChildren()) {
-				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName()) + " : " + inst.getRef().toString().replace("\"", "");
+				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + " : " + inst.getRef().toString();
 				algo = algorithms.keySet().iterator().next();
 				algorithms.put(algo, algorithms.get(algo) + value);
 			}
@@ -347,7 +360,7 @@ public class InstanceListPage extends WizardPage {
 				output.append(Constants.lineSeparator);
 			}
 		}
-		return output.toString();
+		return output.toString().replaceAll("([a-z0-9])([A-Z])","$1 $2");
 	}
 
 	/**

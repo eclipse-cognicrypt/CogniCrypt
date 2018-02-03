@@ -23,7 +23,6 @@ package de.cognicrypt.codegenerator.wizard;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.clafer.collection.Cons;
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -51,7 +50,6 @@ import org.eclipse.ui.PlatformUI;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
-import org.eclipse.swt.widgets.Combo;
 
 public class CompareAlgorithmPage extends WizardPage {
 
@@ -99,7 +97,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		setPageComplete(false);
 		compositeControl.setLayout(new GridLayout(2, false));
 		labelInstanceList = new Label(compositeControl, SWT.NONE);
-		labelInstanceList.setText(Constants.instanceList);
+		labelInstanceList.setText(Constants.COMPARE_LABEL);
 		
 		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
 		Object algorithmCombination=instanceListPage.getAlgorithmCombinations();
@@ -112,7 +110,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		setPageComplete(false);
 		compositeControl1.setLayout(new GridLayout(2, false));
 		labelInstanceList1 = new Label(compositeControl1, SWT.NONE);
-		labelInstanceList1.setText(Constants.instanceList);
+		labelInstanceList1.setText(Constants.COMPARE_LABEL);
 		
 		algorithmClass1 = new ComboViewer(compositeControl1, SWT.DROP_DOWN| SWT.READ_ONLY);
 		algorithmClass1.setContentProvider(ArrayContentProvider.getInstance());
@@ -131,12 +129,13 @@ public class CompareAlgorithmPage extends WizardPage {
 			CompareAlgorithmPage.this.instanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
 		});
 		
-		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
+//		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
 		GridLayout gridLayout = new GridLayout();
 		this.instancePropertiesPanel.setLayout(gridLayout);
 		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
+		gridData.widthHint = 60;
 		gridData.horizontalSpan = 1;
-		gridData.heightHint=200;
+		gridData.heightHint=89;
 		this.instancePropertiesPanel.setLayoutData(gridData);
 		this.instancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 
@@ -180,14 +179,14 @@ public class CompareAlgorithmPage extends WizardPage {
 			CompareAlgorithmPage.this.instanceDetails1.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm1)));
 		});
 		
-		this.instancePropertiesPanel1.setText(Constants.INSTANCE_DETAILS);
+//		this.instancePropertiesPanel1.setText(Constants.INSTANCE_DETAILS);
 		GridLayout gridLayout1 = new GridLayout();
 		this.instancePropertiesPanel1.setLayout(gridLayout1);
 		GridData gridData1 = new GridData(SWT.FILL, GridData.FILL, true, true);
 		gridData1.widthHint = 60;
 		gridData1.horizontalSpan = 1;
 		gridData1.heightHint=89;
-		this.instancePropertiesPanel.setLayoutData(gridData1);
+		this.instancePropertiesPanel1.setLayoutData(gridData1);
 		this.instancePropertiesPanel1.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 
 		//Hide scroll bar in instance details text box

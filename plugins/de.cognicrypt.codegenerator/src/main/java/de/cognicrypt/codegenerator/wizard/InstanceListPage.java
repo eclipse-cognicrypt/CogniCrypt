@@ -307,29 +307,29 @@ public class InstanceListPage extends WizardPage {
 		String value;
 
 		if (!inst.getType().getRef().getTargetType().isPrimitive()) {
-			String algo = Constants.ALGORITHM + " : " + ClaferModelUtils.removeScopePrefix(inst.getType().getRef().getTargetType().getName().replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2")) + Constants.lineSeparator;			
+			String algo = Constants.ALGORITHM + " : " + ClaferModelUtils.removeScopePrefix(inst.getType().getRef().getTargetType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + Constants.lineSeparator;			
 			algorithms.put(algo, "");
 
 			final InstanceClafer instan = (InstanceClafer) inst.getRef();
 			for (final InstanceClafer in : instan.getChildren()) {
 				if (in.getType().getRef() != null && !in.getType().getRef().getTargetType().isPrimitive()) {
-					final String superName = ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName().replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2"));
+					final String superName = ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2"));
 					if (!superName.equals("Enum")) {
 						getInstanceDetails(in, algorithms);
 						continue;
 					}
 				}
-				value = "\t" + ClaferModelUtils.removeScopePrefix(in.getType().getName().replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
+				value = "\t" + ClaferModelUtils.removeScopePrefix(in.getType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
 				if (value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
 					value = value.substring(0, value.indexOf("->") - 1);
-					value = value.replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2");
+					value = value.replaceAll("([a-z0-9])([A-Z])","$1 $2");
 				}
 				value = value.replace("\n", "") + Constants.lineSeparator;	// having only one \n at the end of string
 				algorithms.put(algo, algorithms.get(algo) + value);
 			}
 			// Above for loop over children hasn't been executed, then following if
 			if (!instan.hasChildren()) {
-				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2")) + " : " + inst.getRef().toString();
+				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + " : " + inst.getRef().toString();
 				algo = algorithms.keySet().iterator().next();
 				algorithms.put(algo, algorithms.get(algo) + value);
 			}
@@ -360,7 +360,7 @@ public class InstanceListPage extends WizardPage {
 				output.append(Constants.lineSeparator);
 			}
 		}
-		return output.toString();
+		return output.toString().replaceAll("([a-z0-9])([A-Z])","$1 $2");
 	}
 
 	/**

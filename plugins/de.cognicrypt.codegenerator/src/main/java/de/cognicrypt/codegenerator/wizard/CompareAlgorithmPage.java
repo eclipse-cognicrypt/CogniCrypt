@@ -105,8 +105,6 @@ public class CompareAlgorithmPage extends WizardPage {
 		Object algorithmCombination=instanceListPage.getAlgorithmCombinations();
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
 		algorithmClass.setInput(algorithmCombination);
-		final ISelection defaultAlgorithm = new StructuredSelection(inst.keySet().toArray()[0]);
-		algorithmClass.setSelection(defaultAlgorithm);
 		
 		//Second set of Algorithm Combinations
 		final Composite compositeControl1 = new Composite(this.control, SWT.NONE);
@@ -119,7 +117,6 @@ public class CompareAlgorithmPage extends WizardPage {
 		algorithmClass1 = new ComboViewer(compositeControl1, SWT.DROP_DOWN| SWT.READ_ONLY);
 		algorithmClass1.setContentProvider(ArrayContentProvider.getInstance());
 		algorithmClass1.setInput(algorithmCombination);
-		algorithmClass1.setSelection(defaultAlgorithm);
 		
 		//First set of Instance details
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
@@ -217,6 +214,11 @@ public class CompareAlgorithmPage extends WizardPage {
 		this.instanceDetails1.setEditable(false);
 		Color white1 = display1.getSystemColor(SWT.COLOR_WHITE);
 		this.instanceDetails1.setBackground(white1);
+		
+
+		final ISelection defaultAlgorithm = new StructuredSelection(inst.keySet().toArray()[0]);
+		algorithmClass.setSelection(defaultAlgorithm);
+		algorithmClass1.setSelection(defaultAlgorithm);
 		
 		sc.setContent(this.control);
 		sc.setExpandHorizontal(true);

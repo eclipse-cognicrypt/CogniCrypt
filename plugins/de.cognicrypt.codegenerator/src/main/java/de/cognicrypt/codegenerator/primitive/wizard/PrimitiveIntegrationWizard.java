@@ -124,7 +124,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		}
 		
 		else if(currentPage instanceof JavaProjectBrowserPage){
-				this.methodSelectionPage= new MethodSelectorPage("hz");
+				this.methodSelectionPage= new MethodSelectorPage(this.projectBrowserPage.getSelectedFile());
 				addPage(this.methodSelectionPage);
 				return this.methodSelectionPage;
 			}

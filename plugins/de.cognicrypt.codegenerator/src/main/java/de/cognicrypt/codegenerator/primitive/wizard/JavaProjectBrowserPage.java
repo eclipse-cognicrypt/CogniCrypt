@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -14,6 +15,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+
+import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnairePage;
 
 /**
  * 
@@ -75,8 +78,13 @@ public class JavaProjectBrowserPage extends WizardPage {
 					}
 
 				});
+				text.addModifyListener(e -> {
+					this.selectedJavaFile=new File(getAbsolutePath());
+					System.out.println(getAbsolutePath());
+				});
+				
 	}
-
+	
 	public void displayFiles(String[] files) {
 		for (int i = 0; files != null && i < files.length; i++) {
 			text.setText(files[i]);
@@ -85,10 +93,13 @@ public class JavaProjectBrowserPage extends WizardPage {
 		}
 	}
 
-	// Test if the file selected is Java project or not
-	public boolean isJavaProject(File file) {
-    
-		return true;
+	// Get the absolute path of the selected file 
+	private String getAbsolutePath() {
+		return text.getText();
+	}
+	
+	public File getSelectedFile(){
+		return this.selectedJavaFile;
 	}
 	
 

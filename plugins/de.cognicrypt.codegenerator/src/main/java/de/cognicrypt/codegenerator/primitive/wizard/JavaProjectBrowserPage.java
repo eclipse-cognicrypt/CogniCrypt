@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Text;
 public class JavaProjectBrowserPage extends WizardPage {
 
 	Text text;
+	File selectedJavaFile;
 
 	public JavaProjectBrowserPage(String pageName) {
 		super(pageName);
@@ -60,6 +61,8 @@ public class JavaProjectBrowserPage extends WizardPage {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						FileDialog dialog = new FileDialog(btnBrowse.getShell(), SWT.NULL);
+						dialog.setFilterExtensions(new String [] {"*.java"});
+						dialog.setFilterPath("c:\\");
 						String path = dialog.open();
 						if (path != null) {
 

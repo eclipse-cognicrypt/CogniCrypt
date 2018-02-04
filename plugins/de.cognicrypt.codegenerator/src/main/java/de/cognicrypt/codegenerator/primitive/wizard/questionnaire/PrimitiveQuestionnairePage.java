@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Text;
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
+import de.cognicrypt.codegenerator.primitive.utilities.WriteXML;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
@@ -48,6 +49,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	private final Page page;
 	private String rangedSize;
 	private MyVerifyListener verifyDecimal = new MyVerifyListener();
+	
 
 	/**
 	 * construct a page containing an element other than itemselection
@@ -464,6 +466,13 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 	public synchronized LinkedHashMap<String, String> getSelection() {
 		return this.selectionMap;
+	}
+	
+	public String getSelectedValue(){
+		return this.selectedValue;
+	}
+	public String getClaferDepend(){
+		return this.claferDepend;
 	}
 
 }

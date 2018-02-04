@@ -20,7 +20,10 @@ public class WriteXML {
 	Document doc;
 	Element rootElement;
 
-	public WriteXML() throws ParserConfigurationException {
+	public WriteXML() {
+		
+	}
+	public void createDocument() throws ParserConfigurationException{
 		this.docFactory = DocumentBuilderFactory.newInstance();
 		this.docBuilder = docFactory.newDocumentBuilder();
 		this.doc = docBuilder.newDocument();
@@ -32,9 +35,10 @@ public class WriteXML {
 		doc.appendChild(rootElement);
 	}
 
-	public void addElement(String element) {
-		Element staff = doc.createElement(element);
-		this.rootElement.appendChild(staff);
+	public void addElement(String name, String value) {
+		Element element = doc.createElement(name);
+		element.appendChild(doc.createTextNode(value));
+		this.rootElement.appendChild(element);
 	}
 
 	// write the content into xml file

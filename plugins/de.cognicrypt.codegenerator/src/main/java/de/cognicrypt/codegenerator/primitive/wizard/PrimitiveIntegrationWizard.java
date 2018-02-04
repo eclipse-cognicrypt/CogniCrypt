@@ -1,22 +1,25 @@
 package de.cognicrypt.codegenerator.primitive.wizard;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
+import java.io.File;
 import java.util.LinkedHashMap;
+import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 
+import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
-import de.cognicrypt.codegenerator.primitive.types.PrimitiveJSONReader;
+import de.cognicrypt.codegenerator.primitive.utilities.WriteXML;
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnaire;
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnairePage;
-import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.utilities.Utils;
 
 public class PrimitiveIntegrationWizard extends Wizard {
 
@@ -27,6 +30,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	WizardPage preferenceSelectionPage;
 	private LinkedHashMap<String, String> inputsMap = new LinkedHashMap<String, String>();
 	StringBuilder data = new StringBuilder();
+	WriteXML writeXML=new WriteXML();
 
 	public PrimitiveIntegrationWizard() {
 		super();
@@ -76,6 +80,13 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		else if (currentPage.getPreviousPage() == this.selectedPrimitivePage || currentPage instanceof PrimitiveQuestionnairePage){
 		final PrimitiveQuestionnairePage primitiveQuestionPage = (PrimitiveQuestionnairePage) currentPage;
 		LinkedHashMap<String, String> selectionMap = primitiveQuestionPage.getMap();
+		try {
+			writeXML.createDocument();
+			writeXML.setRoot("SymmetricBlockCipher");
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (primitiveQuestionPage.getSelection() != null) {
 			for (String name : selectionMap.keySet()) {
 
@@ -105,6 +116,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 						continue;
 					}
 					final PrimitiveQuestionnairePage oldPage = (PrimitiveQuestionnairePage) pages[i];
+					writeXML.addElement("test"+i, "test");
 					if (oldPage.equals(this.preferenceSelectionPage)) {
 						return oldPage;
 					}
@@ -124,6 +136,14 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		}
 		
 		else if(currentPage instanceof JavaProjectBrowserPage){
+				File xmlFile=new File("c:\\test\\newfile.xml");
+				try {
+					writeXML.isCreated(xmlFile);
+				} catch (TransformerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println(xmlFile.getAbsolutePath()+" and "+xmlFile.getName());
 				this.methodSelectionPage= new MethodSelectorPage(this.projectBrowserPage.getSelectedFile());
 				addPage(this.methodSelectionPage);
 				return this.methodSelectionPage;

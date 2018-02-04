@@ -1,5 +1,10 @@
 package de.cognicrypt.codegenerator.primitive.wizard;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
@@ -16,11 +21,12 @@ import org.eclipse.swt.widgets.Label;
 public class MethodSelectorPage extends WizardPage {
 
 	private Label question;
-
-	public MethodSelectorPage(String pageName) {
-		super(pageName);
+	private File javaFile;
+	public MethodSelectorPage(File file) {
+		super("Method Selector");
 		setTitle("Methods Selector");
 		setDescription("Getting methods-related algorithm");
+		this.javaFile=file;
 	}
 
 	@Override
@@ -41,6 +47,8 @@ public class MethodSelectorPage extends WizardPage {
 
 		Combo combo_1 = new Combo(container, SWT.NONE);
 		combo_1.setBounds(10, 150, 188, 23);
-
+		combo_1.add(this.javaFile.getName());
+	
+		
 	}
 }

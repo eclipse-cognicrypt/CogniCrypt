@@ -86,21 +86,23 @@ public class StartupHandler implements IStartup {
 					}
 				}
 			} catch (final CoreException e) {}
-			if (changedJavaElements.isEmpty()) {
+			
+			if (changedJavaElements.isEmpty() && changedCrySLElements.isEmpty()) {
 				Activator.getDefault().logInfo("No changed resource found. Abort.");
 				return;
 			}
-
-			final AnalysisKickOff ako = new AnalysisKickOff();
-
-			if (ako.setUp(changedJavaElements.get(0))) {
-				if (ako.run()) {
-					Activator.getDefault().logInfo("Analysis has finished.");
+			if (!changedJavaElements.isEmpty()) {
+				final AnalysisKickOff ako = new AnalysisKickOff();
+	
+				if (ako.setUp(changedJavaElements.get(0))) {
+					if (ako.run()) {
+						Activator.getDefault().logInfo("Analysis has finished.");
+					} else {
+						Activator.getDefault().logInfo("Analysis has aborted.");
+					}
 				} else {
-					Activator.getDefault().logInfo("Analysis has aborted.");
+					Activator.getDefault().logInfo("Analysis has been canceled due to erroneous setup.");
 				}
-			} else {
-				Activator.getDefault().logInfo("Analysis has been canceled due to erroneous setup.");
 			}
 			
 			if (!changedCrySLElements.isEmpty()) {

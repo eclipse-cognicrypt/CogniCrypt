@@ -41,6 +41,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -89,6 +90,7 @@ public class InstanceListPage extends WizardPage {
 	private Group instancePropertiesPanel;
 	private TaskSelectionPage taskSelectionPage;
 	private ConfiguratorWizard configuratorWizard;
+	private Object algorithmCombinaton;
   
 	public InstanceListPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
@@ -140,6 +142,8 @@ public class InstanceListPage extends WizardPage {
 		} else {
 			combo.setToolTipText("There are " + String.format("%d", variationCount) + " variations of the algorithm " + key);
 		}
+		
+		setAlgorithmCombinations(algorithmClass.getInput());
 		
 		//Display help assist for the first instance in the combo box
 		new Label(control, SWT.NONE);
@@ -283,6 +287,21 @@ public class InstanceListPage extends WizardPage {
 		final ISelection selection = new StructuredSelection(inst.keySet().toArray()[0]);
 		algorithmClass.setSelection(selection);
 		new Label(control, SWT.NONE);
+		
+		
+		//Button to compare the algorithm in the Java project
+		
+		InstanceListPage instanceListPage = this;
+
+		Button compareAlgorithmButton = new Button(control, SWT.NONE);
+		compareAlgorithmButton.setText("Compare Algorithm");
+		compareAlgorithmButton.addListener(SWT.Selection, new Listener() {
+
+			public void handleEvent(Event event) {
+				final WizardDialog dialog = new WizardDialog(new Shell(), new CompareWizard(instanceListPage, instanceGenerator));
+				dialog.open();
+			}
+		});
 
 		//Button to View the code that will be generated into the Java project
 		Button codePreviewButton = new Button(this.control, SWT.NONE);
@@ -344,7 +363,7 @@ public class InstanceListPage extends WizardPage {
 	 *        instance currently selected in the combo box
 	 * @return details for chosen algorithm configuration
 	 */
-	private String getInstanceProperties(final InstanceClafer inst) {
+	String getInstanceProperties(final InstanceClafer inst) {
 		final Map<String, String> algorithms = new HashMap<>();
 		for (InstanceClafer child : inst.getChildren()) {
 			getInstanceDetails(child, algorithms);
@@ -462,6 +481,17 @@ public class InstanceListPage extends WizardPage {
 		if (visible) {
 			control.setFocus();
 		}
+	}
+
+	public Object getAlgorithmCombinations() {
+		// TODO Auto-generated method stub
+		return this.algorithmCombinaton;
+	}
+
+	public void setAlgorithmCombinations(Object input) {
+		// TODO Auto-generated method stub
+		this.algorithmCombinaton = input;
+		
 	}
 	
 }

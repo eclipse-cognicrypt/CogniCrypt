@@ -24,6 +24,8 @@ import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.EnsuredCryptSLPredicate;
 import crypto.analysis.IAnalysisSeed;
 import crypto.rules.CryptSLArithmeticConstraint;
+import crypto.rules.CryptSLComparisonConstraint;
+import crypto.rules.CryptSLComparisonConstraint.CompOp;
 import crypto.rules.CryptSLConstraint;
 import crypto.rules.CryptSLMethod;
 import crypto.rules.CryptSLPredicate;
@@ -37,7 +39,6 @@ import soot.SootMethod;
 import sync.pds.solver.nodes.Node;
 import typestate.TransitionFunction;
 import typestate.interfaces.ISLConstraint;
-
 
 /**
  * This listener is notified of any misuses the analysis finds.
@@ -102,6 +103,13 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			msg.append(brokenArthConstraint.getOperator());
 			msg.append(" ");
 			msg.append(brokenArthConstraint.getRight());
+		} else if (brokenConstraint instanceof CryptSLComparisonConstraint) {
+			final CryptSLComparisonConstraint brokenCompCons = (CryptSLComparisonConstraint) brokenConstraint;
+			msg.append("Variable " + brokenCompCons.getLeft().getLeft().getName());
+			msg.append("must be ");
+			msg.append(evaluateCompOp(brokenCompCons.getOperator()));
+			msg.append(brokenCompCons.getRight().getLeft().getName());
+			brokenCompCons.getName();
 		} else if (brokenConstraint instanceof CryptSLConstraint) {
 			final CryptSLConstraint cryptSLConstraint = (CryptSLConstraint) brokenConstraint;
 			switch (cryptSLConstraint.getOperator()) {
@@ -122,6 +130,21 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 					break;
 			}
 
+		}
+	}
+
+	private String evaluateCompOp(CompOp operator) {
+		switch (operator) {
+			case ge:
+				return " at least ";
+			case g:
+				return " greater than ";
+			case l:
+				return " lesser than ";
+			case le:
+				return " at most ";
+			default:
+				return "equal to";
 		}
 	}
 
@@ -182,11 +205,11 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final String type = value.value().getType().getEscapedName();
 		msg.append(type.substring(type.lastIndexOf('.') + 1));
 		msg.append(" object not completed. Expected call to ");
-		
+
 		final Iterator<TransitionEdge> expectedIterator = expectedCalls.iterator();
 		while (expectedIterator.hasNext()) {
 			final String methodName = expectedIterator.next().getLabel().get(0).getMethodName();
-			
+
 			msg.append(methodName.substring(methodName.lastIndexOf('.') + 1));
 			msg.append("()");
 			if (expectedIterator.hasNext()) {
@@ -206,11 +229,10 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		//Fall-back path when retrieval of actual path fails. If it does, the statement below should be left untouched and the actual bug should be fixed.
 		return this.currentProject.getFile("src/" + className.getName().replace(".", "/") + ".java");
 	}
-	
+
 	@Override
 	public void unevaluableConstraint(AnalysisSeedWithSpecification seed, ISLConstraint con, Statement location) {
 		final StringBuilder msg = new StringBuilder();
-
 
 		msg.append("Constraint ");
 		msg.append(con);

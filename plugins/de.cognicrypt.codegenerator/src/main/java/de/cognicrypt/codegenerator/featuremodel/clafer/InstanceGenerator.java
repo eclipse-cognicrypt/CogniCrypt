@@ -319,7 +319,7 @@ public class InstanceGenerator {
 					this.uniqueInstances.put(hashValueOfInstance, instance);
 					redundantCounter = 0;
 				}
-				if (this.uniqueInstances.size() > 110) {
+				if (this.uniqueInstances.size() > 100) {
 					break;
 				}
 			}

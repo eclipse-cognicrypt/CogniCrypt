@@ -51,7 +51,7 @@ public class AnalysisKickOff {
 		} else {
 			AnalysisKickOff.errGen.clearMarkers(ip);
 		}
-		if (AnalysisKickOff.resultsReporter == null) {
+		if (AnalysisKickOff.resultsReporter == null || !AnalysisKickOff.resultsReporter.getReporterProject().equals(ip)) {
 			AnalysisKickOff.resultsReporter = new ResultsCCUIListener(ip, AnalysisKickOff.errGen);
 		}
 

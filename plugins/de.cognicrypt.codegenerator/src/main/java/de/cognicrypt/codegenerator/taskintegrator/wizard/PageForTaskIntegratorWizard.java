@@ -31,6 +31,7 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeClaferFeedback;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.GroupBrowseForFile;
@@ -161,6 +162,9 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						super.widgetSelected(e);
 					}
 				});
+
+				CompositeClaferFeedback feedbackComposite = new CompositeClaferFeedback(container, SWT.BORDER);
+				feedbackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
 				break;
 			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:

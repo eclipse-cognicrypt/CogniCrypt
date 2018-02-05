@@ -164,6 +164,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				});
 
 				CompositeClaferFeedback feedbackComposite = new CompositeClaferFeedback(container, SWT.BORDER);
+				((CompositeToHoldGranularUIElements) getCompositeToHoldGranularUIElements()).setCompositeClaferFeedback(feedbackComposite);
 				feedbackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
 				break;

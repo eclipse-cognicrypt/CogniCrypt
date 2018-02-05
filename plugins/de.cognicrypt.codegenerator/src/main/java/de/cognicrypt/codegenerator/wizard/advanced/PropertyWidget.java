@@ -33,8 +33,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
-import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
 
 public class PropertyWidget {
 
@@ -49,7 +49,7 @@ public class PropertyWidget {
 	private AstAbstractClafer abstarctParentClafer;
 
 	private Button enablePropertyCheckBox;
-	private Constants constant;
+
 	/**
 	 * Method to create a widget for group properties, clafer level constraints
 	 *
@@ -81,7 +81,7 @@ public class PropertyWidget {
 		for (final AstClafer propertyClafer : claferProperties) {
 			propertyNames.add(ClaferModelUtils.removeScopePrefix(propertyClafer.getName()));
 		}
-		this.operatorComboViewer.addSelectionChangedListener(arg0 -> status = true);
+		this.operatorComboViewer.addSelectionChangedListener(arg0 -> PropertyWidget.status = true);
 
 		this.operatorComboViewer.setSelection(new StructuredSelection(values.get(2)));
 
@@ -90,7 +90,7 @@ public class PropertyWidget {
 		valuesCombo.setInput(propertyNames);
 
 		valuesCombo.addSelectionChangedListener(arg0 -> {
-			status = true;
+			PropertyWidget.status = true;
 			final String selection = valuesCombo.getSelection().toString();
 			for (final AstClafer property : claferProperties) {
 				if (selection.equals(ClaferModelUtils.removeScopePrefix(property.getName()))) {
@@ -126,13 +126,13 @@ public class PropertyWidget {
 		values.add("=");
 		values.add("<=");
 		values.add(">=");
-		
+
 		//Security dropdown
 		final List<String> values1 = new ArrayList<>();
 		values1.add("Low");
 		values1.add("Medium");
 		values1.add("High");
-		
+
 		// To create a tab in the first column
 		final Label emptySpace = new Label(container, SWT.NONE);
 		emptySpace.setText("	");
@@ -155,31 +155,28 @@ public class PropertyWidget {
 
 		final Label propertyNameLabel = new Label(container, SWT.NONE);
 		propertyNameLabel.setText(propertyName);
-		
-		if(propertyName.equals(Constants.Security))
-		{
-		this.operatorComboViewer = new ComboViewer(container, SWT.NONE);
-		this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
-		this.operatorComboViewer.setInput(values1);
 
-		this.operatorComboViewer.addSelectionChangedListener(arg0 -> PropertyWidget.this.operatorComboViewer.refresh());
+		if (propertyName.equals(Constants.Security)) {
+			this.operatorComboViewer = new ComboViewer(container, SWT.NONE);
+			this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
+			this.operatorComboViewer.setInput(values1);
 
-		this.operatorComboViewer.setSelection(new StructuredSelection(values1.get(2)));
-		}
-		else
-		{
-		this.operatorComboViewer = new ComboViewer(container, SWT.NONE);
-		this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
-		this.operatorComboViewer.setInput(values);
+			this.operatorComboViewer.addSelectionChangedListener(arg0 -> PropertyWidget.this.operatorComboViewer.refresh());
 
-		this.operatorComboViewer.addSelectionChangedListener(arg0 -> PropertyWidget.this.operatorComboViewer.refresh());
+			this.operatorComboViewer.setSelection(new StructuredSelection(values1.get(2)));
+		} else {
+			this.operatorComboViewer = new ComboViewer(container, SWT.NONE);
+			this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
+			this.operatorComboViewer.setInput(values);
 
-		this.operatorComboViewer.setSelection(new StructuredSelection(values.get(2)));
+			this.operatorComboViewer.addSelectionChangedListener(arg0 -> PropertyWidget.this.operatorComboViewer.refresh());
 
-		this.valueSpinner = new Spinner(container, SWT.BORDER | SWT.SINGLE);
-		this.valueSpinner.setValues(selection, min, max, digits, increment, pageincrement);
-		this.valueSpinner.setEnabled(false);
-	
+			this.operatorComboViewer.setSelection(new StructuredSelection(values.get(2)));
+
+			this.valueSpinner = new Spinner(container, SWT.BORDER | SWT.SINGLE);
+			this.valueSpinner.setValues(selection, min, max, digits, increment, pageincrement);
+			this.valueSpinner.setEnabled(false);
+
 		}
 	}
 

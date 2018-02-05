@@ -44,6 +44,7 @@ public class SootRunner {
 			@Override
 			protected void internalTransform(final String phaseName, final Map<String, String> options) {
 				final JimpleBasedInterproceduralCFG icfg = new JimpleBasedInterproceduralCFG(false);
+
 				final CryptoScanner scanner = new CryptoScanner(getRules()) {
 
 					@Override
@@ -64,19 +65,15 @@ public class SootRunner {
 	}
 
 	private static List<CryptSLRule> getRules() {
-		List<CryptSLRule> rules = Lists.newArrayList();
-		File[] listFiles = RULES_DIR.listFiles();
+		final List<CryptSLRule> rules = Lists.newArrayList();
+		final File[] listFiles = SootRunner.RULES_DIR.listFiles();
 		assert listFiles != null;
-		for (File file : listFiles) {
+		for (final File file : listFiles) {
 			if (file.getName().endsWith(".cryptslbin")) {
 				rules.add(CryptSLRuleReader.readFromFile(file));
 			}
 		}
 		return rules;
-	}
-
-	private static String getSootClasspath(final IJavaProject javaProject) {
-		return Joiner.on(File.pathSeparator).join(projectClassPath(javaProject));
 	}
 
 	private static List<String> projectClassPath(final IJavaProject javaProject) {
@@ -101,9 +98,6 @@ public class SootRunner {
 		}
 	}
 
-	private static void registerTransformers(final CrySLAnalysisListener reporter) {
-		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(reporter)));
-	}
 
 	public static boolean runSoot(final IJavaProject project, final String mainClass, final CrySLAnalysisListener reporter) {
 		G.reset();
@@ -136,6 +130,16 @@ public class SootRunner {
 
 		Options.v().setPhaseOption("cg.spark", "on");
 		Options.v().set_output_format(Options.output_format_none);
+
+	}
+	
+
+	private static void registerTransformers(CrySLAnalysisListener reporter) {
+		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(reporter)));
+	}
+	
+	private static String getSootClasspath(final IJavaProject javaProject) {
+		return Joiner.on(File.pathSeparator).join(projectClassPath(javaProject));
 	}
 
 }

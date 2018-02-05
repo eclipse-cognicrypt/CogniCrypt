@@ -33,6 +33,7 @@ import static org.clafer.ast.Asts.joinRef;
 import static org.clafer.ast.Asts.lessThan;
 import static org.clafer.ast.Asts.lessThanEqual;
 import static org.clafer.ast.Asts.local;
+import static org.clafer.ast.Asts.min;
 import static org.clafer.ast.Asts.union;
 
 import java.util.ArrayList;
@@ -121,17 +122,42 @@ public class InstanceGenerator {
 					if (rightOperand != null) {
 						taskAlgorithm.addConstraint(equal(joinRef(join(joinRef($this()), rightOperand)), constant(value)));
 					} else {
-						final AstAbstractClafer taskClafer = (AstAbstractClafer) taskAlgorithm.getRef().getTargetType();
-						for (final AstClafer subClafer : taskClafer.getSubs()) {
-							if (subClafer.getName().endsWith(value)) {
-								taskAlgorithm.addConstraint(equal(joinRef($this()), global(subClafer)));
-								break;
+						String[] operands = value.split("\\.");
+						if (operands.length == 2) {
+							final AstClafer operand = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), operands[0]);
+							this.taskClafer.addConstraint(equal(joinRef(join($this(), taskAlgorithm)),
+								joinRef(joinRef(join(joinRef(join($this(), operand)), ClaferModelUtils.findClaferByName(operand, operands[1]))))));
+						} else if (value.contains("min(")) {
+							final AstSetExpr left = joinRef(join($this(), taskAlgorithm));
+							AstSetExpr joined = null;
+							for (final String operand : value.substring(4, value.length() - 1).split(",")) {
+								operands = operand.split("\\.");
+								for (int i = 0; i < operands.length; i++) {
+									operands[i] = operands[i].trim();
+								}
+								final AstClafer operandClafer = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), operands[0]);
+								if (joined == null) {
+									joined = joinRef(joinRef(join(joinRef(join($this(), operandClafer)), ClaferModelUtils.findClaferByName(operandClafer, operands[1]))));
+								} else {
+									joined = union(joined,
+										joinRef(joinRef(join(joinRef(join($this(), operandClafer)), ClaferModelUtils.findClaferByName(operandClafer, operands[1])))));
+								}
+							}
+							final AstSetExpr right = min(joined);
+							this.taskClafer.addConstraint(equal(left, right));
+						} else {
+							final AstAbstractClafer taskClafer = (AstAbstractClafer) taskAlgorithm.getRef().getTargetType();
+							for (final AstClafer subClafer : taskClafer.getSubs()) {
+								if (subClafer.getName().endsWith(value)) {
+									taskAlgorithm.addConstraint(equal(joinRef($this()), global(subClafer)));
+									break;
+								}
 							}
 						}
 					}
 				} else {
 					taskAlgorithm.getParent().addConstraint(getFunctionFromOperator(joinRef(joinRef(join(joinRef(join($this(), taskAlgorithm)), rightOperand))),
-						joinRef(global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent().getParent(), "c0_" + value))), operator));
+						joinRef(global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent().getParent(), value))), operator));
 				}
 			}
 
@@ -144,9 +170,9 @@ public class InstanceGenerator {
 			} else {
 				for (int j = 0; j < length; j++) {
 					if (j == 0) {
-						constraint = global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j++]));
+						constraint = global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), claferNames[j++]));
 					}
-					final AstClafer astC = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j]);
+					final AstClafer astC = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), claferNames[j]);
 					constraint = union(constraint, global(astC));
 				}
 			}
@@ -158,22 +184,23 @@ public class InstanceGenerator {
 			final AstLocal tmpClafer = local("suite");
 			final AstDecl decl = decl(tmpClafer, join($this(), taskAlgorithm));
 			AstBoolExpr boolExp = null;
-			final AstSetExpr operandLeftClafer = joinRef(join(joinRef(tmpClafer), rightOperand));
 			if (claferNames.length == 1) {
+				final AstSetExpr operandLeftClafer = joinRef(join(joinRef(tmpClafer), rightOperand));
 				final String[] opSquare = claferNames[0].split(" ");
-				final AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(rightOperand.getParent().getParent(), "c0_" + opSquare[1])));
+				final AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(rightOperand.getParent().getParent(), opSquare[1])));
 				boolExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, opSquare[0]);
 			} else {
 				for (int i = 0; i < claferNames.length; i++) {
 					if (i == 0) {
+						final AstSetExpr operandLeftClafer = joinRef(joinRef(join(joinRef(tmpClafer), rightOperand)));
 						final String[] opSquare = claferNames[i].split(" ");
-						final AstSetExpr operandRightClafer = joinRef(
-							global(ClaferModelUtils.findClaferByName(algorithmProperty.get(i++).getParent().getParent(), "c0_" + opSquare[1])));
-						boolExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, operator);
+						final AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(algorithmProperty.get(i++).getParent().getParent(), opSquare[1])));
+						boolExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, opSquare[0]);
 					}
 					final String[] opSquare = claferNames[i].split(" ");
-					final AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(algorithmProperty.get(i).getParent().getParent(), "c0_" + opSquare[1])));
-					final AstBoolExpr addExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, operator);
+					final AstSetExpr operandLeftClafer = joinRef(join(joinRef(tmpClafer), algorithmProperty.get(i)));
+					final AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(algorithmProperty.get(i).getParent().getParent(), opSquare[1])));
+					final AstBoolExpr addExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, opSquare[0]);
 					boolExp = and(boolExp, addExp);
 				}
 			}
@@ -209,21 +236,21 @@ public class InstanceGenerator {
 	// FIXME include group operator
 	private void basicModeHandler(final AstModel astModel, final AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {
 		for (final Entry<Question, Answer> entry : qAMap.entrySet()) {
-			Answer answer = entry.getValue();
+			final Answer answer = entry.getValue();
 			if (answer.getClaferDependencies() != null) {
 				for (final ClaferDependency claferDependency : answer.getClaferDependencies()) {
 					if ("->".equals(claferDependency.getOperator())) {
 						ClaferModelUtils.createClafer(taskClafer, claferDependency.getAlgorithm(), claferDependency.getValue());
 					} else {
-						final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + claferDependency.getAlgorithm());
+						final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, claferDependency.getAlgorithm());
 						final List<AstConcreteClafer> propertyClafer = new ArrayList<>();
 						final String operand = claferDependency.getOperand();
 						if (operand != null && operand.contains(";")) {
 							for (final String name : operand.split(";")) {
-								propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + name));
+								propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer.getParent(), name));
 							}
 						} else {
-							propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + operand));
+							propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer.getParent(), operand));
 						}
 						addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), claferDependency.getValue());
 					}
@@ -244,14 +271,14 @@ public class InstanceGenerator {
 			this.generatedInstances.sort(new Comparator<InstanceClafer>() {
 
 				@Override
-				public int compare(InstanceClafer left, InstanceClafer right) {
+				public int compare(final InstanceClafer left, final InstanceClafer right) {
 					return -Integer.compare(getSecurityLevel(left), getSecurityLevel(right));
 				}
 
-				private Integer getSecurityLevel(InstanceClafer instance) {
-					for (InstanceClafer innerInst : instance.getChildren()) {
+				private Integer getSecurityLevel(final InstanceClafer instance) {
+					for (final InstanceClafer innerInst : instance.getChildren()) {
 						if (innerInst.getType().getName().contains("security")) {
-							Object level = innerInst.getRef();
+							final Object level = innerInst.getRef();
 							if (level instanceof Integer) {
 								return (Integer) level;
 							}
@@ -261,10 +288,10 @@ public class InstanceGenerator {
 				}
 
 			});
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			Activator.getDefault().logError("Instances not sorted by security level. Be cautious");
 		}
-		for (InstanceClafer sortedInst : this.generatedInstances) {
+		for (final InstanceClafer sortedInst : this.generatedInstances) {
 
 			String key = getInstanceName(sortedInst);
 			if (key.isEmpty()) {
@@ -278,13 +305,13 @@ public class InstanceGenerator {
 				 */
 				int counter = 1;
 				String copyKey = key;
-				while (displayNameToInstanceMap.containsKey(copyKey)) {
+				while (this.displayNameToInstanceMap.containsKey(copyKey)) {
 					copyKey = key + "(" + String.format("%02d", ++counter) + ")";
-					this.setAlgorithmCount(counter);
+					setAlgorithmCount(counter);
 				}
 
 				this.displayNameToInstanceMap.put(copyKey, sortedInst);
-				this.setAlgorithmName(key);
+				setAlgorithmName(key);
 
 			}
 		}
@@ -498,23 +525,23 @@ public class InstanceGenerator {
 		this.taskName = taskName;
 	}
 
-	public void setAlgorithmName(String algorithmName) {
+	public void setAlgorithmName(final String algorithmName) {
 		this.algorithmName = algorithmName;
 
 	}
 
 	public String getAlgorithmName() {
-		return algorithmName;
+		return this.algorithmName;
 
 	}
 
-	public void setAlgorithmCount(int algorithmCount) {
+	public void setAlgorithmCount(final int algorithmCount) {
 		this.algorithmCount = algorithmCount;
 
 	}
 
 	public int getAlgorithmCount() {
-		return algorithmCount;
+		return this.algorithmCount;
 
 	}
 }

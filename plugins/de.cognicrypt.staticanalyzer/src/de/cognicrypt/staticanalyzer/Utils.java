@@ -92,27 +92,6 @@ public class Utils {
 		throw new ClassNotFoundException("Class " + className + " not found.");
 	}
 
-	/**
-	 * This method searches the passed project for the class that contains the main method.
-	 *
-	 * @param project
-	 *        Project that is searched
-	 * @param requestor
-	 *        Object that handles the search results
-	 */
-	public static void findMainMethodInCurrentProject(final IJavaProject project, final SearchRequestor requestor) {
-		final SearchPattern sp = SearchPattern.createPattern("main", IJavaSearchConstants.METHOD, IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
-
-		final SearchEngine se = new SearchEngine();
-		final SearchParticipant[] searchParticipants = new SearchParticipant[] { SearchEngine.getDefaultSearchParticipant() };
-		final IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] { project });
-
-		try {
-			se.search(sp, searchParticipants, scope, requestor, null);
-		} catch (final CoreException e) {
-			Activator.getDefault().logError(e);
-		}
-	}
 
 	/**
 	 * This method returns the currently open editor as an {@link IEditorPart}.
@@ -180,6 +159,28 @@ public class Utils {
 		}
 		return null;
 	}
+	
+	/**
+	 * This method searches the passed project for the class that contains the main method.
+	 *
+	 * @param project
+	 *        Project that is searched
+	 * @param requestor
+	 *        Object that handles the search results
+	 */
+	public static void findMainMethodInCurrentProject(final IJavaProject project, final SearchRequestor requestor) {
+		final SearchPattern sp = SearchPattern.createPattern("main", IJavaSearchConstants.METHOD, IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
+
+		final SearchEngine se = new SearchEngine();
+		final SearchParticipant[] searchParticipants = new SearchParticipant[] { SearchEngine.getDefaultSearchParticipant() };
+		final IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] { project });
+
+		try {
+			se.search(sp, searchParticipants, scope, requestor, null);
+		} catch (final CoreException e) {
+			Activator.getDefault().logError(e);
+		}
+	}
 
 	/**
 	 * This method gets the project that is currently selected.
@@ -200,6 +201,7 @@ public class Utils {
 				iproject = jProject.getProject();
 			}
 		}
+		
 		return iproject;
 	}
 

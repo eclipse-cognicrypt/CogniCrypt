@@ -41,7 +41,7 @@
             },
             {
               "algorithm": "security",
-              "value": "min(cipher.security, kda.security)",
+              "value": "min(cipher.algorithmSecurity, kda.algorithmSecurity)",
               "operator": "="
             }
           ]
@@ -50,7 +50,7 @@
           "value": "No",
           "claferDependencies": [{
             "algorithm": "security",
-            "value": "cipher.security",
+            "value": "cipher.algorithmSecurity",
             "operator": "="
           }],
           "defaultAnswer": true

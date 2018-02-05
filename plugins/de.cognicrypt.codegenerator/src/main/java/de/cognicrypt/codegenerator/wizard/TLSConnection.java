@@ -21,19 +21,19 @@
 package de.cognicrypt.codegenerator.wizard;
 
 import java.io.IOException;
+
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 import de.cognicrypt.codegenerator.Activator;
 
-
-public class TLSConnection { 
+public class TLSConnection {
 
 	public TLSConnection() {}
 
 	/**
 	 * The method testConnection check if it possible to establish a ssl connection to the host ip.
-	 * 
+	 *
 	 * @param host
 	 *        ip
 	 * @param port

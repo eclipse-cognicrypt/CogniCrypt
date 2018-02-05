@@ -62,18 +62,18 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private boolean finish = false;
 	private BeginnerModeQuestionnaire beginnerModeQuestionnaire;
-	private HashMap<Question, Answer> selectionMap = new HashMap<>();
+	private final HashMap<Question, Answer> selectionMap = new HashMap<>();
 	private List<String> selectionValues;
 	private Text note;
 	private Composite container;
 
 	public int getCurrentPageID() {
-		return page.getId();
+		return this.page.getId();
 	}
 
 	/**
 	 * construct a page containing an element other than itemselection
-	 * 
+	 *
 	 * @param quest
 	 *        question that will be displayed on the page
 	 * @param task
@@ -85,7 +85,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	/**
 	 * construct a page containing a single question
-	 * 
+	 *
 	 * @param quest
 	 *        question that will be displayed on the page
 	 * @param task
@@ -106,7 +106,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param page
 	 *        page contains the questions that need to be displayed.
 	 * @param task
@@ -128,7 +128,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param page
 	 * @param task
 	 * @param beginnerModeQuestionnaire
@@ -147,7 +147,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param beginnerModeQuestionnaire
 	 *        Updated this parameter in the constructor to accept the questionnaire instead of all the questions.
 	 * @param quest
@@ -165,7 +165,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	@Override
 	public boolean isPageComplete() {
-		for (Question question : page.getContent()) {
+		for (final Question question : this.page.getContent()) {
 			final Answer answer = question.getEnteredAnswer();
 			if (answer == null || answer.getValue().isEmpty()) {
 				return false;
@@ -177,36 +177,36 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		return true;
 	}
 
-	public String getHelpId(Page page) {
+	public String getHelpId(final Page page) {
 		return "de.cognicrypt.codegenerator." + page.getHelpID();
 	}
 
 	@Override
 	public void createControl(final Composite parent) {
-		container = new Composite(parent, SWT.NONE);
-		container.setBounds(10, 10, 450, 200);
+		this.container = new Composite(parent, SWT.NONE);
+		this.container.setBounds(10, 10, 450, 200);
 		// Updated the number of columns to order the questions vertically.
 		final GridLayout layout = new GridLayout(1, false);
 
-		// To display the Help view after clicking the help icon		
-		if (!page.getHelpID().isEmpty()) {
-			PlatformUI.getWorkbench().getHelpSystem().setHelp(container, getHelpId(page));
+		// To display the Help view after clicking the help icon
+		if (!this.page.getHelpID().isEmpty()) {
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(this.container, getHelpId(this.page));
 		}
 
-		container.setLayout(layout);
+		this.container.setLayout(layout);
 		// If legacy JSON files are in effect.
-		if (page == null) {
-			createQuestionControl(container, this.quest);
+		if (this.page == null) {
+			createQuestionControl(this.container, this.quest);
 			Activator.getDefault().logError("Outdated json file is used for task " + this.task.getDescription() + ". Please update.");
 		} else {
 			// loop through the questions that are to be displayed on the page.
-			for (Question question : page.getContent()) {
-				createQuestionControl(container, question);
+			for (final Question question : this.page.getContent()) {
+				createQuestionControl(this.container, question);
 			}
 			//setting focus to the first field on the page
-			container.getChildren()[0].setFocus();
+			this.container.getChildren()[0].setFocus();
 		}
-		setControl(container);
+		setControl(this.container);
 	}
 
 	private void createQuestionControl(final Composite parent, final Question question) {
@@ -240,19 +240,19 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				}
 				break;
 			case radio:
-				Button[] radioButton = new Button[answers.size()];
+				final Button[] radioButton = new Button[answers.size()];
 				for (int i = 0; i < answers.size(); i++) {
-					int count = i;
-					String ans = answers.get(i).getValue();
+					final int count = i;
+					final String ans = answers.get(i).getValue();
 					radioButton[i] = new Button(container, SWT.RADIO);
 					radioButton[i].setText(ans);
 					new Label(container, SWT.NONE);
 					radioButton[i].addSelectionListener(new SelectionAdapter() {
 
 						@Override
-						public void widgetSelected(SelectionEvent e) {
+						public void widgetSelected(final SelectionEvent e) {
 							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(count));
-							question.setEnteredAnswer((Answer) answers.get(count));
+							question.setEnteredAnswer(answers.get(count));
 						}
 					});
 				}
@@ -276,7 +276,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 			case scale:
 
-				Scale scale = new Scale(container, SWT.HORIZONTAL);
+				final Scale scale = new Scale(container, SWT.HORIZONTAL);
 				scale.setMaximum((answers.size()) - 1);
 				scale.setMinimum(0);
 				scale.setPageIncrement(1);
@@ -285,11 +285,11 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					scale.addSelectionListener(new SelectionAdapter() {
 
 						@Override
-						public void widgetSelected(SelectionEvent selectionEvent) {
-							int selectionNum = scale.getSelection();
+						public void widgetSelected(final SelectionEvent selectionEvent) {
+							final int selectionNum = scale.getSelection();
 							scale.setToolTipText(answers.get(selectionNum).getValue());
 							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(selectionNum));
-							question.setEnteredAnswer((Answer) answers.get(selectionNum));
+							question.setEnteredAnswer(answers.get(selectionNum));
 						}
 					});
 				}
@@ -300,7 +300,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							scale.setSelection(i);
 							scale.setToolTipText(answers.get(i).getValue());
 							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(i));
-							question.setEnteredAnswer((Answer) answers.get(i));
+							question.setEnteredAnswer(answers.get(i));
 						}
 					}
 				} else {
@@ -309,7 +309,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							scale.setSelection(i);
 							scale.setToolTipText(answers.get(i).getValue());
 							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(i));
-							question.setEnteredAnswer((Answer) answers.get(i));
+							question.setEnteredAnswer(answers.get(i));
 						}
 					}
 				}
@@ -333,13 +333,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 				inputField.addModifyListener(e -> {
 					final Answer a = question.getDefaultAnswer();
-					final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?:\\\\-])", "\\\\");
+					final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?\\\\-])", "\\\\");
 					a.setValue(cleanedInput);
 					a.getCodeDependencies().get(0).setValue(cleanedInput);
 					this.finish = !cleanedInput.isEmpty();
 					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
 					question.setEnteredAnswer(a);
-					BeginnerTaskQuestionPage.this.setPageComplete(this.isPageComplete());
+					BeginnerTaskQuestionPage.this.setPageComplete(isPageComplete());
 				});
 				break;
 
@@ -423,10 +423,10 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							final String[] sel = itemList.getSelection();
 							Answer ans = null;
 							// Since this part is for the item selection, there will only be a single entry for this page.
-							for (Entry<Question, Answer> selectionEntry : BeginnerTaskQuestionPage.this.selectionMap.entrySet()) {
+							for (final Entry<Question, Answer> selectionEntry : BeginnerTaskQuestionPage.this.selectionMap.entrySet()) {
 								ans = selectionEntry.getValue();
 							}
-							StringBuilder checkedElement = new StringBuilder();
+							final StringBuilder checkedElement = new StringBuilder();
 							if (ans == null) {
 								ans = new Answer();
 								// TODO Why is this -1? Does it still make sense after having introduced multiple questions per page?
@@ -469,7 +469,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 							Answer ans = null;
 							// Since this part is for the item selection, there will only be a single entry for this page.
-							for (Entry<Question, Answer> selectionEntry : BeginnerTaskQuestionPage.this.selectionMap.entrySet()) {
+							for (final Entry<Question, Answer> selectionEntry : BeginnerTaskQuestionPage.this.selectionMap.entrySet()) {
 								ans = selectionEntry.getValue();
 							}
 							if (ans == null) {
@@ -536,7 +536,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					String value = null;
 
 					for (int i = 0; i < methodParamIds.size(); i++) {
-						// Updated this code to pull just specific questions from the questionnaire. 
+						// Updated this code to pull just specific questions from the questionnaire.
 						// getQuestionByID may return null in case of a bad json file. Updated the catch block.
 						value = this.beginnerModeQuestionnaire.getQuestionByID(methodParamIds.get(i)).getAnswers().get(0).getValue();
 
@@ -598,7 +598,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	}
 
 	private void createNote(final Composite parent, final Question question) {
-		Group notePanel = new Group(parent, SWT.NONE);
+		final Group notePanel = new Group(parent, SWT.NONE);
 		notePanel.setText("Note:");
 		final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 		notePanel.setFont(boldFont);
@@ -607,7 +607,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.note.setText(question.getNote());
 		this.note.setBounds(10, 20, 585, 60);
-		this.note.setSize(note.computeSize(585, SWT.DEFAULT));
+		this.note.setSize(this.note.computeSize(585, SWT.DEFAULT));
 		setControl(notePanel);
 		this.note.setEditable(false);
 		this.note.setEnabled(true);
@@ -661,23 +661,23 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return returns the id of the current page.
 	 */
 	public int getPageMap() {
-		return page.getId();
+		return this.page.getId();
 	}
 
 	public int getPageNextID() {
 		int nextID = -1;
-		if (page != null) {
-			nextID = page.getNextID();
+		if (this.page != null) {
+			nextID = this.page.getNextID();
 		}
-		if (nextID > -2)
+		if (nextID > -2) {
 			return nextID;
-		else {
+		} else {
 			// in this case there would only be one question on a page, thus only have a single selection.
-			for (Entry<Question, Answer> entry : selectionMap.entrySet()) {
+			for (final Entry<Question, Answer> entry : this.selectionMap.entrySet()) {
 				return entry.getValue().getNextID();
 			}
 		}
@@ -713,10 +713,10 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	}
 
 	@Override
-	public void setVisible(boolean visible) {
+	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
 		if (visible) {
-			container.setFocus();
+			this.container.setFocus();
 		}
 	}
 }

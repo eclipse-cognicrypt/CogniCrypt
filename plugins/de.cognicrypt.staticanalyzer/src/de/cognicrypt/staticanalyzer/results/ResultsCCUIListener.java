@@ -49,10 +49,10 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	private final ErrorMarkerGenerator markerGenerator;
 	private final IProject currentProject;
-	
+
 	public ResultsCCUIListener(final IProject curProj, final ErrorMarkerGenerator gen) {
-		currentProject = curProj;
-		markerGenerator = gen;
+		this.currentProject = curProj;
+		this.markerGenerator = gen;
 	}
 
 	@Override
@@ -75,6 +75,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			msg.append(".");
 		}
 		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
+
 	}
 
 	@Override
@@ -88,7 +89,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		if (brokenConstraint instanceof CryptSLValueConstraint) {
 			evaluateValueConstraint(brokenConstraint, msg);
 		} else if (brokenConstraint instanceof CryptSLArithmeticConstraint) {
-			CryptSLArithmeticConstraint brokenArthConstraint = (CryptSLArithmeticConstraint) brokenConstraint;
+			final CryptSLArithmeticConstraint brokenArthConstraint = (CryptSLArithmeticConstraint) brokenConstraint;
 			msg.append(brokenArthConstraint.getLeft());
 			msg.append(" ");
 			msg.append(brokenArthConstraint.getOperator());
@@ -121,7 +122,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final CryptSLValueConstraint valCons = (CryptSLValueConstraint) brokenConstraint;
 		msg.append(valCons.getVarName());
 		msg.append(" should be any of {");
-		for (String val : valCons.getValueRange()) {
+		for (final String val : valCons.getValueRange()) {
 			msg.append(val);
 			msg.append(", ");
 		}
@@ -147,7 +148,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	@Override
-	public void typestateErrorAt(final AnalysisSeedWithSpecification arg0, final Statement location, final Collection<SootMethod> expectedCalls) {
+	public void typestateErrorAt(final AnalysisSeedWithSpecification seed, final Statement location, final Collection<SootMethod> expectedCalls) {
 		final StringBuilder msg = new StringBuilder();
 
 		msg.append("Unexpected Method Call to");
@@ -185,25 +186,24 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 				msg.append(" or ");
 			}
 		}
-		
 		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
 	}
 
 	private IResource unitToResource(final Statement stmt) {
 		final SootClass className = stmt.getMethod().getDeclaringClass();
-
 		try {
-			return Utils.findClassByName(className, currentProject);
+			return Utils.findClassByName(className, this.currentProject);
 		} catch (final ClassNotFoundException e) {
 			Activator.getDefault().logError(e);
 		}
 		//Fall-back path when retrieval of actual path fails. If it does, the statement below should be left untouched and the actual bug should be fixed.
-		return currentProject.getFile("src/" + className.getName().replace(".", "/") + ".java");
+		return this.currentProject.getFile("src/" + className.getName().replace(".", "/") + ".java");
 	}
 	
 	@Override
 	public void unevaluableConstraint(AnalysisSeedWithSpecification seed, ISLConstraint con, Statement location) {
 		final StringBuilder msg = new StringBuilder();
+
 
 		msg.append("Constraint ");
 		msg.append(con);
@@ -214,19 +214,16 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	@Override
 	public void afterAnalysis() {
 		// Nothing
-
 	}
 
 	@Override
 	public void afterConstraintCheck(final AnalysisSeedWithSpecification arg0) {
-		// Nothing
-
+		// nothing
 	}
 
 	@Override
 	public void afterPredicateCheck(final AnalysisSeedWithSpecification arg0) {
 		// Nothing
-
 	}
 
 	@Override
@@ -238,55 +235,46 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	@Override
 	public void beforeConstraintCheck(final AnalysisSeedWithSpecification arg0) {
 		// Nothing
-
 	}
 
 	@Override
 	public void beforePredicateCheck(final AnalysisSeedWithSpecification arg0) {
 		// Nothing
-
 	}
 
 	@Override
 	public void boomerangQueryFinished(final Query arg0, final BackwardQuery arg1) {
 		// Nothing
-
 	}
 
 	@Override
 	public void boomerangQueryStarted(final Query arg0, final BackwardQuery arg1) {
 		// Nothing
-
 	}
 
 	@Override
 	public void checkedConstraints(final AnalysisSeedWithSpecification arg0, final Collection<ISLConstraint> arg1) {
 		// Nothing
-
 	}
 
 	@Override
 	public void collectedValues(final AnalysisSeedWithSpecification arg0, final Multimap<CallSiteWithParamIndex, Statement> arg1) {
 		// Nothing
-
 	}
 
 	@Override
 	public void discoveredSeed(final IAnalysisSeed arg0) {
 		// Nothing
-
 	}
 
 	@Override
 	public void ensuredPredicates(final Table<Statement, Val, Set<EnsuredCryptSLPredicate>> arg0, final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> arg1, final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> arg2) {
 		// Nothing
-
 	}
 
 	@Override
 	public void onSeedFinished(final IAnalysisSeed arg0, final WeightedBoomerang<TransitionFunction> arg1) {
 		// Nothing
-
 	}
 
 	@Override
@@ -297,7 +285,5 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	@Override
 	public void seedStarted(final IAnalysisSeed arg0) {
 		// Nothing
-
 	}
-
 }

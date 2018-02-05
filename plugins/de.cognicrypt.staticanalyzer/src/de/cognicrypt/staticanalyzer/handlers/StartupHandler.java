@@ -27,6 +27,7 @@ import de.cognicrypt.staticanalyzer.Activator;
  */
 public class StartupHandler implements IStartup {
 
+
 	private static class AfterBuildListener implements IResourceChangeListener {
 
 		@Override
@@ -35,12 +36,12 @@ public class StartupHandler implements IStartup {
 			final List<IJavaElement> changedJavaElements = new ArrayList<>();
 			Activator.getDefault().logInfo("ResourcechangeListener has been triggered.");
 			try {
+
 				event.getDelta().accept(delta -> {
 					switch (delta.getKind()) {
 						case IResourceDelta.ADDED:
 						case IResourceDelta.CHANGED:
 							final IResource res = delta.getResource();
-
 							if (res != null && res.getFileExtension() != null) {
 								try {
 									final IJavaElement javaElement = JavaCore.create(res);
@@ -63,23 +64,22 @@ public class StartupHandler implements IStartup {
 					}
 					return true;
 				});
-			
 				if (changedJavaElements.isEmpty()) {
-					for (IResourceDelta ev : event.getDelta().getAffectedChildren()) {
+					for (final IResourceDelta ev : event.getDelta().getAffectedChildren()) {
 						ev.accept(delta -> {
-						switch (delta.getKind()) {
-							case IResourceDelta.ADDED:
-							case IResourceDelta.CHANGED:
-								IResource res = delta.getResource();
-								IJavaElement javaElement = JavaCore.create(res);
-								if (javaElement != null) {
-									if (javaElement instanceof JavaProject) {
-										if ((delta.getFlags() & IResourceDelta.OPEN) != 0) {
-											changedJavaElements.add(javaElement);
+							switch (delta.getKind()) {
+								case IResourceDelta.ADDED:
+								case IResourceDelta.CHANGED:
+									final IResource res = delta.getResource();
+									final IJavaElement javaElement = JavaCore.create(res);
+									if (javaElement != null) {
+										if (javaElement instanceof JavaProject) {
+											if ((delta.getFlags() & IResourceDelta.OPEN) != 0) {
+												changedJavaElements.add(javaElement);
+											}
+											return false;
 										}
-										return false;
 									}
-								}
 							}
 							return true;
 						});
@@ -90,8 +90,6 @@ public class StartupHandler implements IStartup {
 				Activator.getDefault().logInfo("No changed resource found. Abort.");
 				return;
 			}
-
-			Activator.getDefault().logInfo("Analysis has been triggered.");
 
 			final AnalysisKickOff ako = new AnalysisKickOff();
 
@@ -111,11 +109,13 @@ public class StartupHandler implements IStartup {
 				} catch (ClassNotFoundException | CoreException | IOException e) {
 					Activator.getDefault().logError(e, "Updating CrySL rules failed.");
 				}
+
 			}
 		}
 	}
 
 	private static final AfterBuildListener BUILD_LISTENER = new AfterBuildListener();
+
 
 	@Override
 	public void earlyStartup() {

@@ -18,6 +18,23 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 
 	/**
+	 * The constructor
+	 */
+	public Activator() {}
+
+	@Override
+	public void start(final BundleContext context) throws Exception {
+		super.start(context);
+		Activator.plugin = this;
+	}
+
+	@Override
+	public void stop(final BundleContext context) throws Exception {
+		Activator.plugin = null;
+		super.stop(context);
+	}
+
+	/**
 	 * Returns the shared instance
 	 *
 	 * @return the shared instance
@@ -36,11 +53,6 @@ public class Activator extends AbstractUIPlugin {
 	public static ImageDescriptor getImageDescriptor(final String path) {
 		return imageDescriptorFromPlugin(Activator.PLUGIN_ID, path);
 	}
-
-	/**
-	 * The constructor
-	 */
-	public Activator() {}
 
 	private void log(final int severity, final String message, final Exception ex) {
 		getLog().log(new Status(severity, Activator.PLUGIN_ID, message, ex));
@@ -62,15 +74,4 @@ public class Activator extends AbstractUIPlugin {
 		log(IStatus.INFO, message, null);
 	}
 
-	@Override
-	public void start(final BundleContext context) throws Exception {
-		super.start(context);
-		Activator.plugin = this;
-	}
-
-	@Override
-	public void stop(final BundleContext context) throws Exception {
-		Activator.plugin = null;
-		super.stop(context);
-	}
 }

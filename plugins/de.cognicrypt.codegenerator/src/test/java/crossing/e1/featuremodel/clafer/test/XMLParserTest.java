@@ -28,6 +28,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModel;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.question.Answer;
@@ -81,7 +82,14 @@ public class XMLParserTest {
 
 	@Test
 	public void testXMLValidity() throws DocumentException, IOException {
-		final String validXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<task description=\"Main\"><Package>Crypto</Package><Imports><Import>java.security.InvalidAlgorithmParameterException</Import><Import>java.security.InvalidKeyException</Import><Import>java.security.NoSuchAlgorithmException</Import><Import>java.security.NoSuchAlgorithmException</Import><Import>javax.crypto.SecretKey</Import><Import>javax.crypto.BadPaddingException</Import><Import>javax.crypto.Cipher</Import><Import>javax.crypto.IllegalBlockSizeException</Import><Import>javax.crypto.NoSuchPaddingException</Import><Import>java.security.SecureRandom</Import><Import>javax.crypto.spec.IvParameterSpec</Import><Import>javax.crypto.spec.SecretKeySpec</Import><Import>java.security.spec.InvalidKeySpecException</Import><Import>java.util.List</Import><Import>java.util.Base64</Import></Imports><algorithm type=\"Digest\"><outputSize>256</outputSize><name>SHA3-256</name><performance>3</performance><status>secure</status></algorithm><code/></task>";
+		StringBuilder importBuilder = new StringBuilder();
+		for (String importSt : Constants.xmlimportsarr) {
+			importBuilder.append("<Import>");
+			importBuilder.append(importSt);
+			importBuilder.append("</Import>");
+		}
+		
+		final String validXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<task description=\"Main\"><Package>Crypto</Package><Imports>"+ importBuilder.toString() + "</Imports><algorithm type=\"Digest\"><outputSize>256</outputSize><name>SHA3-256</name><performance>3</performance><status>secure</status></algorithm><code/></task>";
 		final XMLParser xmlparser = new XMLParser();
 
 		final String xml = xmlparser.displayInstanceValues(this.inst, this.constraints);

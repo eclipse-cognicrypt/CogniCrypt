@@ -52,7 +52,7 @@ public class DeveloperProject {
 	/***
 	 * The method adds one library to the developer's project physical and build path. In the context of the overall tool, this is necessary when the user chooses a task that comes
 	 * with additional libraries.
-	 * 
+	 *
 	 * @param pathToJar
 	 *        path to library to be added
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if library was (not) added successfully.
@@ -88,7 +88,7 @@ public class DeveloperProject {
 
 	/***
 	 * This method retrieves a package of the name {@linkplain name} that is in the developer's project.
-	 * 
+	 *
 	 * @param name
 	 *        name of the package
 	 * @return package as {@link org.eclipse.jdt.core.IPackageFragment IPackageFragment}
@@ -113,7 +113,7 @@ public class DeveloperProject {
 	 */
 	public String getSourcePath() throws CoreException {
 		if (this.project.isOpen() && this.project.hasNature(Constants.JavaNatureID)) {
-			for (IClasspathEntry entry : JavaCore.create(this.project).getResolvedClasspath(true)) {
+			for (final IClasspathEntry entry : JavaCore.create(this.project).getResolvedClasspath(true)) {
 				if (entry.getContentKind() == IPackageFragmentRoot.K_SOURCE) {
 					return entry.getPath().removeFirstSegments(1).toOSString();
 				}
@@ -135,11 +135,11 @@ public class DeveloperProject {
 
 	@Override
 	public int hashCode() {
-		return 31 + ((project == null) ? 0 : project.hashCode());
+		return 31 + ((this.project == null) ? 0 : this.project.hashCode());
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -147,25 +147,26 @@ public class DeveloperProject {
 			return false;
 		}
 		if (obj instanceof DeveloperProject) {
-			DeveloperProject other = (DeveloperProject) obj;
+			final DeveloperProject other = (DeveloperProject) obj;
 			return !(this.project == null || other.project != null) && this.project.equals(other.project);
 		} else if (obj instanceof IProject) {
-			IProject other = (IProject) obj;
+			final IProject other = (IProject) obj;
 			return this.project.equals(other);
 		}
 		return false;
 	}
 
+	@Override
 	public String toString() {
-		return project.getName() + "(" + getProjectPath() + ")";
+		return this.project.getName() + "(" + getProjectPath() + ")";
 	}
 
-	public Boolean removePackage(String packageName) {
+	public Boolean removePackage(final String packageName) {
 		try {
-			IPackageFragment delPackage = getPackagesOfProject(packageName);
+			final IPackageFragment delPackage = getPackagesOfProject(packageName);
 			delPackage.delete(true, null);
 			return true;
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
 

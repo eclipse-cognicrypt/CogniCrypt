@@ -174,7 +174,13 @@ public class Constants {
 	public static final String DESCRIPTION_VALUE_SELECTION_PAGE = "The following questions help to find the algorithm configuration most suited for your needs";
 	public static final String PROPERTIES = "Algorithm Preferences";
 	public static final String SELECT_PROPERTIES = "Select Properties";
-
+	
+	//Compare algorithm page
+	public static final String COMPARE_ALGORITHM_PAGE = "Compare Algorithm Page";
+	public static final String COMPARE_TITLE = "Compare two Algorithms";
+	public static final String COMPARE_DESCRIPTION = "Select the Algorithms for comparing";
+	public static final String COMPARE_LABEL = "Instance details of";
+	
 	
 	//Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;

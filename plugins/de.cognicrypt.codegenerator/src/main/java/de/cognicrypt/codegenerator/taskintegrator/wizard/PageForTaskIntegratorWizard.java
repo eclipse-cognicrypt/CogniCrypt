@@ -3,6 +3,8 @@
  */
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import org.eclipse.jface.window.Window;
@@ -77,7 +79,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			case Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
 				// fill the available space on the with the big composite
-				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
 
 				Button btnAddFeature = new Button(container, SWT.NONE);
 				btnAddFeature.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
@@ -116,6 +118,50 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					}
 
 				});
+
+				Button importFeatures = new Button(container, SWT.NONE);
+				importFeatures.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
+				importFeatures.setText("Import Features");
+				importFeatures.addSelectionListener(new SelectionAdapter() {
+
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						ClaferImportDialog claferImportDialog = new ClaferImportDialog(getShell());
+						if (claferImportDialog.open() == 0) {
+							compositeToHoldGranularUIElements.getClaferModel().add(claferImportDialog.getResult());
+							compositeToHoldGranularUIElements.updateClaferContainer();
+						}
+						super.widgetSelected(e);
+					}
+				});
+				
+				Button exportFeatures = new Button(container, SWT.NONE);
+				exportFeatures.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
+				exportFeatures.setText("Export Features");
+				exportFeatures.addSelectionListener(new SelectionAdapter() {
+
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						FileDialog saveDialog = new FileDialog(getShell(), SWT.SAVE);
+						LocalDateTime date = LocalDateTime.now();
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HHmm");
+						saveDialog.setFileName(date.format(formatter) + ".dat");
+						String[] filterNames = new String[] { "CogniCrypt binary Clafer model (*.dat)", "Human-readable non-importable Clafer file (*.cfr)" };
+						String[] filterExtensions = new String[] { "*.dat", "*.cfr" };
+						saveDialog.setFilterNames(filterNames);
+						saveDialog.setFilterExtensions(filterExtensions);
+						String targetFilename = saveDialog.open();
+						if (targetFilename != null) {
+							if (targetFilename.endsWith(".dat")) {
+								compositeToHoldGranularUIElements.getClaferModel().toBinary(targetFilename);
+							} else if (targetFilename.endsWith(".cfr")) {
+								compositeToHoldGranularUIElements.getClaferModel().toFile(targetFilename);
+							}
+						}
+						super.widgetSelected(e);
+					}
+				});
+
 				break;
 			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:
 
@@ -143,7 +189,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 						FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
 
-						fileDialog.setFilterExtensions(new String[] { "*.txt", "*.java", "*.xsl" });
+						fileDialog.setFilterExtensions(new String[] {"*.xsl", "*.java", "*.txt" });
 						fileDialog.setText("Choose the code file:");
 
 						String fileDialogResult = fileDialog.open();
@@ -155,12 +201,13 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				});
 
 				btnAddXSLTag.addSelectionListener(new SelectionAdapter() {
-
+					
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						ClaferModel claferModel = null;
 						ArrayList<Question> questions = null;
 						ArrayList<String> strFeatures = new ArrayList<>();
+						
 
 						for (IWizardPage page : getWizard().getPages()) {
 							// get the Clafer creation page
@@ -188,6 +235,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 											if (question.getQuestionType().equals("text")) {
 												strFeatures.add("[Answer to \"" + question.getQuestionText() + "\"]");
 											}
+											
+											
 										}
 									}
 								}
@@ -283,8 +332,10 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		 * TODO Please add checks on the pages after mode selection to mark those pages as completed, or restrict the finish button.
 		 */
 		IWizardPage nextPage = super.getNextPage();
-		((WizardPage)nextPage).setPageComplete(true);
-		
+		if (nextPage != null) {
+			((WizardPage)nextPage).setPageComplete(true);
+		}
+				
 		return nextPage;
 
 	}

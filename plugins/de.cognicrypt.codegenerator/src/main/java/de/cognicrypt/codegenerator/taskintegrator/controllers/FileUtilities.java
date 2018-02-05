@@ -6,9 +6,11 @@ package de.cognicrypt.codegenerator.taskintegrator.controllers;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -88,29 +90,29 @@ public class FileUtilities {
 	 */
 	public boolean writeFiles(File cfrFileLocation, File jsonFileLocation, File xslFileLocation, File customLibLocation) {
 		
-		// custom library location is optional.
-		if (customLibLocation != null) {
-			if (validateCFRFile(cfrFileLocation) && validateJSONFile(jsonFileLocation) && validateXSLFile(xslFileLocation) && validateJARFile(customLibLocation)) {
-				copyFileFromPath(cfrFileLocation);		
-				copyFileFromPath(jsonFileLocation);		
-			    // TODO see if compilation should be done in the validation step or not 
-			    String cfrFilename = cfrFileLocation.getAbsolutePath(); 
-			    copyFileFromPath(new File(cfrFilename.substring(0, cfrFilename.lastIndexOf(".") + 1) + Constants.JS_EXTENSION)); 
-				copyFileFromPath(xslFileLocation);
-				copyFileFromPath(customLibLocation);
-				return true;
+		if (validateCFRFile(cfrFileLocation) && validateJSONFile(jsonFileLocation) && validateXSLFile(xslFileLocation)) {
+
+			// custom library location is optional.
+			if (customLibLocation != null) {
+				if (!validateJARFile(customLibLocation)) {
+					return false;
+				} else {
+					copyFileFromPath(customLibLocation);
+				}
 			}
-		} else {
-			if (validateCFRFile(cfrFileLocation) && validateJSONFile(jsonFileLocation) && validateXSLFile(xslFileLocation)) {
-				copyFileFromPath(cfrFileLocation);		
-				copyFileFromPath(jsonFileLocation);		
-			    // TODO see if compilation should be done in the validation step or not 
-			    String cfrFilename = cfrFileLocation.getAbsolutePath(); 
-			    copyFileFromPath(new File(cfrFilename.substring(0, cfrFilename.lastIndexOf(".") + 1) + Constants.JS_EXTENSION)); 
-				copyFileFromPath(xslFileLocation);
-				return true;
-			}
+
+			copyFileFromPath(cfrFileLocation);
+			copyFileFromPath(jsonFileLocation);
+
+			String cfrFilename = cfrFileLocation.getAbsolutePath();
+			String jsFilename = cfrFilename.substring(0, cfrFilename.lastIndexOf(".")) + Constants.JS_EXTENSION;
+			copyFileFromPath(new File(jsFilename));
+
+			copyFileFromPath(xslFileLocation);
+
+			return true;
 		}
+
 		return false;
 	}
 	
@@ -410,7 +412,22 @@ public class FileUtilities {
 	 * @param xslFileContents
 	 */
 	private void writeXSLFile(String xslFileContents) {
+		File xslFile = new File(Utils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XSL_EXTENSION);
 		
+		try {
+			PrintWriter writer = new PrintWriter(xslFile);
+			writer.println(xslFileContents);
+			writer.flush();
+			writer.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (!validateXSLFile(xslFile)) {
+			xslFile.delete();
+			//TODO a better way to handle the exception.			
+		}
 	}
 	
 	/**

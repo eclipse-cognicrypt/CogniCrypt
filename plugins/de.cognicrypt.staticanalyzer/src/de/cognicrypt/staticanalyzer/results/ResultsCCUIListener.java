@@ -87,15 +87,14 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	@Override
-	public void constraintViolation(final AnalysisSeedWithSpecification arg0, final ISLConstraint brokenConstraint, final Statement location) {
-		StringBuilder msg = new StringBuilder();
-		evaluateBrokenConstraint(brokenConstraint, msg);
-		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
+	public void constraintViolation(final AnalysisSeedWithSpecification seed, final ISLConstraint brokenConstraint, final Statement location) {
+		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), evaluateBrokenConstraint(brokenConstraint));
 	}
 
-	private void evaluateBrokenConstraint(final ISLConstraint brokenConstraint, final StringBuilder msg) {
+	private String evaluateBrokenConstraint(final ISLConstraint brokenConstraint) {
+		StringBuilder msg = new StringBuilder();
 		if (brokenConstraint instanceof CryptSLValueConstraint) {
-			evaluateValueConstraint(brokenConstraint, msg);
+			return evaluateValueConstraint((CryptSLValueConstraint) brokenConstraint);
 		} else if (brokenConstraint instanceof CryptSLArithmeticConstraint) {
 			final CryptSLArithmeticConstraint brokenArthConstraint = (CryptSLArithmeticConstraint) brokenConstraint;
 			msg.append(brokenArthConstraint.getLeft());
@@ -105,32 +104,35 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			msg.append(brokenArthConstraint.getRight());
 		} else if (brokenConstraint instanceof CryptSLComparisonConstraint) {
 			final CryptSLComparisonConstraint brokenCompCons = (CryptSLComparisonConstraint) brokenConstraint;
-			msg.append("Variable " + brokenCompCons.getLeft().getLeft().getName());
+			msg.append("Variable ");
+			msg.append(brokenCompCons.getLeft().getLeft().getName());
 			msg.append("must be ");
 			msg.append(evaluateCompOp(brokenCompCons.getOperator()));
 			msg.append(brokenCompCons.getRight().getLeft().getName());
-			brokenCompCons.getName();
 		} else if (brokenConstraint instanceof CryptSLConstraint) {
 			final CryptSLConstraint cryptSLConstraint = (CryptSLConstraint) brokenConstraint;
+			final CryptSLValueConstraint leftSide = (CryptSLValueConstraint) cryptSLConstraint.getLeft();
+			final CryptSLValueConstraint rightSide = (CryptSLValueConstraint) cryptSLConstraint.getRight();
 			switch (cryptSLConstraint.getOperator()) {
 				case and:
-					evaluateValueConstraint(cryptSLConstraint.getLeft(), msg);
+					msg.append(evaluateValueConstraint(leftSide));
 					msg.append(" or ");
-					evaluateValueConstraint(cryptSLConstraint.getRight(), msg);
+					msg.append(evaluateValueConstraint(rightSide));
 					break;
 				case implies:
-					evaluateValueConstraint(cryptSLConstraint.getRight(), msg);
+					msg.append(evaluateValueConstraint(rightSide));
 					break;
 				case or:
-					evaluateValueConstraint(cryptSLConstraint.getLeft(), msg);
-					msg.append(" or ");
-					evaluateValueConstraint(cryptSLConstraint.getRight(), msg);
+					msg.append(evaluateValueConstraint(leftSide));
+					msg.append(" and ");
+					msg.append(evaluateValueConstraint(rightSide));
 					break;
 				default:
 					break;
 			}
 
 		}
+		return msg.toString();
 	}
 
 	private String evaluateCompOp(CompOp operator) {
@@ -148,16 +150,16 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 	}
 
-	private void evaluateValueConstraint(final ISLConstraint brokenConstraint, final StringBuilder msg) {
-		final CryptSLValueConstraint valCons = (CryptSLValueConstraint) brokenConstraint;
-		msg.append(valCons.getVarName());
+	private String evaluateValueConstraint(final CryptSLValueConstraint brokenConstraint) {
+		StringBuilder msg = new StringBuilder();
+		msg.append(brokenConstraint.getVarName());
 		msg.append(" should be any of {");
-		for (final String val : valCons.getValueRange()) {
+		for (final String val : brokenConstraint.getValueRange()) {
 			msg.append(val);
 			msg.append(", ");
 		}
 		msg.deleteCharAt(msg.length() - 3);
-		msg.append('}');
+		return msg.append('}').toString();
 	}
 
 	@Override

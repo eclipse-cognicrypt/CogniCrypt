@@ -55,6 +55,13 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		this.markerGenerator = gen;
 	}
 
+	/**
+	 * @return the currentProject
+	 */
+	public IProject getReporterProject() {
+		return currentProject;
+	}
+
 	@Override
 	public void callToForbiddenMethod(final ClassSpecification arg0, final Statement location, final List<CryptSLMethod> alternatives) {
 		final StringBuilder msg = new StringBuilder();

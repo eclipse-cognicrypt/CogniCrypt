@@ -54,7 +54,7 @@ public class Utils {
 
 	/**
 	 * This method checks if a project passed as parameter is a Java project or not.
-	 * 
+	 *
 	 * @param Iproject
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if project is Java project
 	 */
@@ -165,7 +165,7 @@ public class Utils {
 
 	/***
 	 * This method returns absolute path of a project-relative path.
-	 * 
+	 *
 	 * @param inputPath
 	 *        project-relative path
 	 * @return absolute path

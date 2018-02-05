@@ -33,19 +33,19 @@ public class AnalysisKickOff {
 	 * 1) Creating a {@link ErrorMarkerGenerator} <br>
 	 * 2) Creating a {@link ResultsCCUIListener} <br>
 	 * 3) Finding the current project's class with a main method <br>
-	 *
-	 * @param iJavaElement 
 	 * 
+	 * @param iJavaElement
+	 *
 	 * @return <code>true</code>/<code>false</code> if setup (not) successful
 	 */
-	public boolean setUp(IJavaElement iJavaElement) {
+	public boolean setUp(final IJavaElement iJavaElement) {
 		IProject ip = null;
 		if (iJavaElement == null) {
 			ip = Utils.getCurrentProject();
 		} else {
 			ip = iJavaElement.getJavaProject().getProject();
 		}
-		
+
 		if (AnalysisKickOff.errGen == null) {
 			AnalysisKickOff.errGen = new ErrorMarkerGenerator();
 		} else {
@@ -91,9 +91,10 @@ public class AnalysisKickOff {
 
 	/**
 	 * This method executes the actual analysis.
+	 * 
 	 * @return <code>true</code>/<code>false</code> Soot runs successfully
 	 */
 	public boolean run() {
-		return curProj != null && SootRunner.runSoot(curProj, mainClass, resultsReporter);
+		return this.curProj != null && SootRunner.runSoot(this.curProj, this.mainClass, AnalysisKickOff.resultsReporter);
 	}
 }

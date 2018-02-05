@@ -31,20 +31,29 @@ public class ClaferModelUtils {
 	 * Method to find a clafer with a given name in whole model
 	 */
 	public static AstClafer findClaferByName(final AstClafer inputClafer, final String name) {
-		if (inputClafer.getName().equalsIgnoreCase(name)) {
+		final String inputName = getNameWithoutScope(inputClafer.getName());
+		if (inputName.equalsIgnoreCase(name)) {
 			return inputClafer;
 		} else {
 			if (inputClafer.hasChildren()) {
-				for (final AstConcreteClafer childClafer : inputClafer.getChildren()) {
-					final AstClafer foundClafer = findClaferByName(childClafer, name);
-					if (foundClafer != null) {
-						return foundClafer;
+				final AstConcreteClafer foundChildClafer = inputClafer.getChildren().stream().filter(child -> getNameWithoutScope(child.getName()).equals(name)).findFirst()
+					.orElse(null);
+				if (foundChildClafer != null) {
+					return foundChildClafer;
+				} else {
+					for (final AstConcreteClafer childClafer : inputClafer.getChildren()) {
+						final AstClafer foundClafer = findClaferByName(childClafer, name);
+						if (foundClafer != null) {
+							return foundClafer;
+						}
 					}
 				}
+				;
+
 			}
 			if (inputClafer instanceof AstAbstractClafer) {
 				for (final AstAbstractClafer abstractChildClafer : ((AstAbstractClafer) inputClafer).getAbstractChildren()) {
-					AstClafer foundClafer = findClaferByName(abstractChildClafer, name);
+					final AstClafer foundClafer = findClaferByName(abstractChildClafer, name);
 					if (foundClafer != null) {
 						return foundClafer;
 					}
@@ -80,14 +89,19 @@ public class ClaferModelUtils {
 		return inputClafer.getName();
 	}
 
-	public static AstConcreteClafer createClafer(AstClafer taskClafer, String name, String type) {
-		AstConcreteClafer newClafer = taskClafer.addChild(name).withCard(1, 1);
-		newClafer.refTo(ClaferModelUtils.findClaferByName(taskClafer.getParent(), "c0_" + type));
+	public static AstConcreteClafer createClafer(final AstClafer taskClafer, final String name, final String type) {
+		final AstConcreteClafer newClafer = taskClafer.addChild(name).withCard(1, 1);
+		newClafer.refTo(ClaferModelUtils.findClaferByName(taskClafer.getParent(), type));
 		return newClafer;
 	}
 
 	public static String getNameWithoutScope(final String input) {
-		return input.substring(input.indexOf("_") + 1);
+		final int underScoreIndex = input.indexOf("_");
+		if (underScoreIndex >= 0) {
+			return input.substring(underScoreIndex + 1);
+		} else {
+			return input;
+		}
 	}
 
 	/**

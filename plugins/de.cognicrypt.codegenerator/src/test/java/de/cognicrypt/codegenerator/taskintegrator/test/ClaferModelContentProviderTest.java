@@ -4,8 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-
-public class FeaturePropertiesContentProviderTest {
+public class ClaferModelContentProviderTest {
 
 	@Test
 	public void testGetChildren() {

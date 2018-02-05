@@ -50,9 +50,8 @@ public class PropertyWidget {
 	private Combo valuesComboBox;
 	private boolean isGroupConstraint = false;
 	private AstAbstractClafer abstarctParentClafer;
-
 	private Button enablePropertyCheckBox;
-	private Constants constant;
+
 	/**
 	 * Method to create a widget for group properties, clafer level constraints
 	 *
@@ -94,6 +93,7 @@ public class PropertyWidget {
 		valuesCombo.setContentProvider(ArrayContentProvider.getInstance());
 		valuesCombo.setInput(propertyNames);
 		valuesComboBox = valuesCombo.getCombo();
+		valuesComboBox.setEnabled(false);
 
 		valuesCombo.addSelectionChangedListener(arg0 -> {
 			status = true;
@@ -153,12 +153,12 @@ public class PropertyWidget {
 				final Button button = (Button) e.widget;
 				if (button.getSelection()) {
 					PropertyWidget.this.valueSpinner.setEnabled(true);
-//					operatorCombo.setEnabled(true);
-//					valuesComboBox.setEnabled(true);
+					operatorCombo.setEnabled(true);
+					valuesComboBox.setEnabled(true);
 				} else {
 					PropertyWidget.this.valueSpinner.setEnabled(false);
-//					operatorCombo.setEnabled(false);
-//					valuesComboBox.setEnabled(false);
+					operatorCombo.setEnabled(false);
+					valuesComboBox.setEnabled(false);
 				}
 			}
 		});
@@ -221,6 +221,10 @@ public class PropertyWidget {
 
 	public boolean isEnabled() {
 		return this.valueSpinner.isEnabled();
+	}
+	
+	public boolean isEnabledPropertyCheckBox() {
+		return this.enablePropertyCheckBox.isEnabled();
 	}
 
 	/**

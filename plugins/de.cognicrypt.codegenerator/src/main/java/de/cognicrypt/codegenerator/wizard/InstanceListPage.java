@@ -50,8 +50,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -252,24 +250,7 @@ public class InstanceListPage extends WizardPage {
 		final Font boldFont = new Font(this.instancePropertiesPanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 		this.instancePropertiesPanel.setFont(boldFont);
 		
-		//Hide scroll bar in instance details text box
-		Listener scrollBarListener = new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				Text t = (Text) event.widget;
-				Rectangle r1 = t.getClientArea();
-				Rectangle r2 = t.computeTrim(r1.x, r1.y, r1.width, r1.height);
-				Point p = t.computeSize(r1.x, SWT.DEFAULT, true);
-				t.getVerticalBar().setVisible(r2.height <= p.y);
-				if (event.type == SWT.Modify) {
-					t.getParent().layout(true);
-					t.showSelection();
-				}
-			}
-		};
 		Display display = Display.getCurrent();
-		this.instanceDetails.addListener(SWT.Resize, scrollBarListener);
-		this.instanceDetails.addListener(SWT.Modify, scrollBarListener);
 		this.instanceDetails.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.instanceDetails.setBounds(10, 20, 400, 180);
 		this.instanceDetails.setEditable(false);

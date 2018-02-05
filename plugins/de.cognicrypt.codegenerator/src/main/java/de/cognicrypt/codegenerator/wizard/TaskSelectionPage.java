@@ -175,6 +175,7 @@ public class TaskSelectionPage extends WizardPage {
 		descriptionText.setLayoutData(gd_descriptionText);
 		descriptionText.setToolTipText("Description for the selected cryptographic task ");
 		descriptionText.setEditable(false);
+		descriptionText.setCursor(null);
 
 		//Hide scroll bar 
 		Listener scrollBarListener = new Listener (){

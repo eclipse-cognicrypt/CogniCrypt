@@ -75,7 +75,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 		if (inputClafer.hasChildren()) {
 			if (inputClafer.getGroupCard() != null && inputClafer.getGroupCard().getLow() >= 1) {
 				this.userConstraints
-					.add(new PropertyWidget(titledPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")), 1, 0, 1024, 0, 1, 1));
+					.add(new PropertyWidget(titledPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
 			} else {
 				for (final AstConcreteClafer childClafer : inputClafer.getChildren()) {
 					createConstraints(parent, childClafer, titledPanel);

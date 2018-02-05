@@ -34,9 +34,11 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -71,7 +73,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 	private Group codePreviewPanel;
 	private TaskSelectionPage taskSelectionPage;
 	private Button defaultAlgorithmCheckBox;
-	private Text code;
+	private StyledText code;
 	private final InstanceGenerator instanceGenerator;
 	private InstanceClafer value;
 	private ConfiguratorWizard configuratorWizard;
@@ -137,26 +139,28 @@ public class DefaultAlgorithmPage extends WizardPage {
 		this.codePreviewPanel.setFont(boldFont);
 		setControl(this.control);
 		
-		this.code = new Text(this.codePreviewPanel, SWT.MULTI | SWT.V_SCROLL | SWT.WRAP);
-		//Hide scroll bar 
-		Listener scrollBarListener = new Listener() {
-
-			@Override
-			public void handleEvent(Event event) {
-				Text t = (Text) event.widget;
-				Rectangle r1 = t.getClientArea();
-				// use r1.x as wHint instead of SWT.DEFAULT
-				Rectangle r2 = t.computeTrim(r1.x, r1.y, r1.width, r1.height);
-				Point p = t.computeSize(r1.x, SWT.DEFAULT, true);
-				t.getVerticalBar().setVisible(r2.height <= p.y);
-				if (event.type == SWT.Modify) {
-					t.getParent().layout(true);
-					t.showSelection();
-				}
-			}
-		};
-		this.code.addListener(SWT.Resize, scrollBarListener);
-		this.code.addListener(SWT.Modify, scrollBarListener);
+		SourceViewer viewer = new SourceViewer(this.codePreviewPanel, null, SWT.V_SCROLL);
+		viewer.getTextWidget();
+		this.code = new StyledText(this.codePreviewPanel, SWT.MULTI | SWT.V_SCROLL | SWT.WRAP);
+//		//Hide scroll bar 
+//		Listener scrollBarListener = new Listener() {
+//
+//			@Override
+//			public void handleEvent(Event event) {
+//				StyledText t = (StyledText) event.widget;
+//				Rectangle r1 = t.getClientArea();
+//				// use r1.x as wHint instead of SWT.DEFAULT
+//				Rectangle r2 = t.computeTrim(r1.x, r1.y, r1.width, r1.height);
+//				Point p = t.computeSize(r1.x, SWT.DEFAULT, true);
+//				t.getVerticalBar().setVisible(r2.height <= p.y);
+//				if (event.type == SWT.Modify) {
+//					t.getParent().layout(true);
+//					t.showSelection();
+//				}
+//			}
+//		};
+//		this.code.addListener(SWT.Resize, scrollBarListener);
+//		this.code.addListener(SWT.Modify, scrollBarListener);
 
 		Display display = Display.getCurrent();
 		this.code.setLayoutData(new GridData(GridData.FILL_BOTH));

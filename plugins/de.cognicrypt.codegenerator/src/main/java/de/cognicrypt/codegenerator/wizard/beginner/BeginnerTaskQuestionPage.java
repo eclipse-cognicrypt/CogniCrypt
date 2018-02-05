@@ -42,7 +42,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
@@ -229,7 +228,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		final List<Answer> answers = question.getAnswers();
 		final Composite container = getPanel(parent);
 		final Label label = new Label(container, SWT.TOP | SWT.FILL);
-		GridData gd_question= new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		GridData gd_question= new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
 		gd_question.widthHint = 550;
 		label.setLayoutData(gd_question);
 		label.setText(question.getQuestionText());
@@ -355,7 +354,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				mandatory.setText("*");
 				mandatory.setForeground(red);
 				
-				//Adding Browse Button
+				//Adding Browse Button for text field that expects a path as input
 				if(question.getTextType().equals("browse")){
 					final Text inputField = new Text(container, SWT.BORDER );
 					inputField.setSize(240, inputField.getSize().y);

@@ -93,8 +93,12 @@ public class TaskIntegrationWizard extends Wizard {
 			// FIXME ObjectForDataInNonGuidedMode is only used in non-guided mode but custom library location is always needed
 			// ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode().getLocationOfCustomLibrary();
 			File customLibLocation = null;
+			
+			ModelAdvancedMode objectForDataInGuidedMode = getTIPageByName(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
+			objectForDataInGuidedMode.setTask();
 
 			fileUtilities.writeFiles(claferModel, questions, xslFileContents, customLibLocation);
+			fileUtilities.writeTaskToJSONFile(objectForDataInGuidedMode.getTask());
 
 			return true;
 		}

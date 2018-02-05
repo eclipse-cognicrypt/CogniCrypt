@@ -28,8 +28,8 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
-import de.cognicrypt.codegenerator.taskintegrator.widgets.FeaturePropertiesContentProvider;
-import de.cognicrypt.codegenerator.taskintegrator.widgets.FeaturePropertiesLabelProvider;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.ClaferModelContentProvider;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.ClaferModelLabelProvider;
 
 public class ClaferConstraintDialog extends Dialog {
 
@@ -82,8 +82,9 @@ public class ClaferConstraintDialog extends Dialog {
 		getShell().setMinimumSize(600, 400);
 
 		TreeViewer treeViewer = new TreeViewer(container);
-		treeViewer.setContentProvider(new FeaturePropertiesContentProvider());
-		treeViewer.setLabelProvider(new FeaturePropertiesLabelProvider());
+		// TODO be more readable about these predicates
+		treeViewer.setContentProvider(new ClaferModelContentProvider(feat -> feat.getFeatureName().isEmpty() || !feat.hasProperties(), prop -> prop.getPropertyName().isEmpty()));
+		treeViewer.setLabelProvider(new ClaferModelLabelProvider());
 
 		// create a temporary clafer model that contains the current model as well as the feature currently being created
 		ClaferModel tempModel = claferModel.clone();

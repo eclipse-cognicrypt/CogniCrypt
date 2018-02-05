@@ -158,7 +158,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			msg.append(val);
 			msg.append(", ");
 		}
-		msg.deleteCharAt(msg.length() - 3);
+		msg.delete(msg.length() - 2, msg.length());
 		return msg.append('}').toString();
 	}
 

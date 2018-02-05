@@ -18,6 +18,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	private String targetPageName;
 	private int lowestWidgetYAxisValue = Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS;
 	private ClaferModel claferModel;
+	private CompositeClaferFeedback compositeClaferFeedback;
 	
 	private ArrayList<Question> listOfAllQuestions;
 	int counter;
@@ -89,6 +90,10 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		}
 	}
 	
+	public void setCompositeClaferFeedback(CompositeClaferFeedback compositeClaferFeedback) {
+		this.compositeClaferFeedback = compositeClaferFeedback;
+	}
+
 	/**
 	 * updates a given feature with a new version
 	 *
@@ -106,6 +111,8 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		}
 		
 		updateClaferContainer();
+
+		compositeClaferFeedback.setFeedback("modified Clafer feature");
 	}
 	
 	public void addQuestionUIElements(Question question, ClaferModel claferModel, boolean linkAnswerPage) {

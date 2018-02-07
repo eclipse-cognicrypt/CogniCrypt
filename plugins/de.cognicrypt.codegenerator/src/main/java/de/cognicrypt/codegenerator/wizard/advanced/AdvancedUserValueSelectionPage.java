@@ -135,7 +135,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 	private Group createPanel(final String name, final Composite parent) {
 		final Group titledPanel = new Group(parent, SWT.LEFT);
 		titledPanel.setText(name);
-		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 12, SWT.BOLD));
+		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 11, SWT.BOLD));
 		titledPanel.setFont(boldFont);
 		final GridLayout layout2 = new GridLayout();
 		layout2.numColumns = 2;

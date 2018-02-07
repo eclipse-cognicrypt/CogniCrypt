@@ -182,7 +182,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		}
 		return true;
 	}
-	
+
 	public String getHelpId(Page page) {
 		return "de.cognicrypt.codegenerator." + page.getHelpID();
 	}
@@ -196,7 +196,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		container = new Composite(sc, SWT.NONE);
 		container.setBounds(10, 10, 450, 200);
 		// Updated the number of columns to order the questions vertically.
-        final GridLayout layout = new GridLayout(1, false);
+		final GridLayout layout = new GridLayout(1, false);
 
 		// To display the Help view after clicking the help icon		
 		if (!page.getHelpID().isEmpty()) {
@@ -299,12 +299,12 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						label1.setText(answers.get(i).getValue());
 					} 
 				}
-		
+
 				Scale scale = new Scale(container, SWT.HORIZONTAL);
 				scale.setMaximum((answers.size()) - 1);
 				scale.setMinimum(0);
 				scale.setPageIncrement(1);
-				
+
 				for (int i = 0; i < answers.size(); i++) {
 					if (i == (answers.size() - 1)) {
 						Label label2 = new Label(container, SWT.NONE);
@@ -357,120 +357,120 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				final Text inputField = new Text(container, SWT.BORDER );
 				inputField.setLayoutData(new GridData(100, 15));
 				inputField.setToolTipText(question.getTooltip());
-				
+
 				//Adding Browse Button for text field that expects a path as input
 				if(question.getTextType().equals("browse")){
 					inputField.setLayoutData(new GridData(300, 15));
-					
+
 					Button browseButton = new Button(container, SWT.PUSH);
-					browseButton.setText("Browse");
+					browseButton.setText(Constants.LABEL_BROWSE_BUTTON);
 					browseButton.addSelectionListener(new SelectionAdapter() {
-			            public void widgetSelected(SelectionEvent e) {
-			                FileDialog dialog = new FileDialog(getShell(), SWT.NULL);
-			                String path = dialog.open();
-			                if (path != null) {
-			                	inputField.setText(path);
-			                }
-			            }
-			        });
+						public void widgetSelected(SelectionEvent e) {
+							FileDialog dialog = new FileDialog(getShell(), SWT.NULL);
+							String path = dialog.open();
+							if (path != null) {
+								inputField.setText(path);
+							}
+						}
+					});
 					text(question, inputField);
 				}					
 				else if(question.getTextType().equals("password")) {
-				    inputField.setLayoutData(new GridData(120, 15));
+					inputField.setLayoutData(new GridData(120, 15));
 					inputField.setEchoChar((char) 0x25cf);
-					
-				    //Check box to show/hide password
-				    Button checkBox = new Button(container, SWT.CHECK);
-				    checkBox.setText("Show Password");
-				    checkBox.setSelection(false);
-				    checkBox.addSelectionListener(new SelectionAdapter() {
-					    @Override
-					    public void widgetSelected(SelectionEvent e) {
-						if(checkBox.getSelection() == true){
-							inputField.setEchoChar( '\0' );
-						} else {	
-							inputField.setEchoChar((char) 0x25cf);
-						}					
-					}
-				});
-				text(question, inputField);
+
+					//Check box to show/hide password
+					Button checkBox = new Button(container, SWT.CHECK);
+					checkBox.setText(Constants.SHOW_PASSWORD_CHECKBOX);
+					checkBox.setSelection(false);
+					checkBox.addSelectionListener(new SelectionAdapter() {
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+							if(checkBox.getSelection() == true){
+								inputField.setEchoChar( '\0' );
+							} else {	
+								inputField.setEchoChar((char) 0x25cf);
+							}					
+						}
+					});
+					text(question, inputField);
 				}
 				else if(question.getTextType().equals("integer"))
 				{
 					inputField.addListener(SWT.Verify, new Listener() {
-					      public void handleEvent(Event e) {
-					        String string = e.text;
-					        char[] chars = new char[string.length()];
-					        string.getChars(0, chars.length, chars, 0);
-					        for (int i = 0; i < chars.length; i++) {
-					          if (!('0' <= chars[i] && chars[i] <= '9')) {
-					            e.doit = false;
-					            return;
-					          }
-					        }
-					      }
-					    });
-					
+						public void handleEvent(Event e) {
+							String string = e.text;
+							char[] chars = new char[string.length()];
+							string.getChars(0, chars.length, chars, 0);
+							for (int i = 0; i < chars.length; i++) {
+								if (!('0' <= chars[i] && chars[i] <= '9')) {
+									e.doit = false;
+									return;
+								}
+							}
+						}
+					});
+
 					text(question, inputField);	
 				}	
 				else if(question.getTextType().equals("port number"))
 				{
 					inputField.addVerifyListener(new VerifyListener() {  
-					    @Override  
-					    public void verifyText(VerifyEvent e) {
-					        String currentText = ((Text)e.widget).getText();
-					        String port =  currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
-					        try{  
-					            int portNum = Integer.valueOf(port);  
-					            if(portNum <0 || portNum > 65535){  
-					                e.doit = false;  
-					            }  
-					        }  
-					        catch(NumberFormatException ex){  
-					            if(!port.equals(""))
-					                e.doit = false;  
-					        }  
-					    }  
+						@Override  
+						public void verifyText(VerifyEvent e) {
+							String currentText = ((Text)e.widget).getText();
+							String port =  currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
+							try{  
+								int portNum = Integer.valueOf(port);  
+								if(portNum <0 || portNum > 65535){  
+									e.doit = false;  
+								}  
+							}  
+							catch(NumberFormatException ex){  
+								if(!port.equals(""))
+									e.doit = false;  
+							}  
+						}  
 					});
 					text(question, inputField);
 				}
 				else if(question.getTextType().equals("ip address"))
 				{						
 					inputField.addVerifyListener(new VerifyListener() {  
-					    @Override  
-					    public void verifyText(VerifyEvent e) {
-					        String currentText = ((Text)e.widget).getText();
-					        String ip =  currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
-					        try{   
-					            if(ip!=null && !ip.isEmpty() ){
-					                String [] ipAddress = ip.split("\\.");
-					                if(ipAddress.length > 4 ){
-					                    e.doit= false;					                    
-					                }
-					                for(int i=0;i<=ipAddress.length-1;i++){
-					                    int j=Integer.parseInt(ipAddress[i]);
-					                    if(j<0 || j>255){
-					                    	e.doit= false;
-					                    }
-					                }
+						@Override  
+						public void verifyText(VerifyEvent e) {
+							String currentText = ((Text)e.widget).getText();
+							String ip =  currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
+							try{   
+								if(ip!=null && !ip.isEmpty() ){
+									String [] ipAddress = ip.split("\\.");
+									if(ipAddress.length > 4 ){
+										e.doit= false;					                    
+									}
+									for(int i=0;i<=ipAddress.length-1;i++){
+										int j=Integer.parseInt(ipAddress[i]);
+										if(j<0 || j>255){
+											e.doit= false;
+										}
+									}
 									if (ipAddress.length == 4) {
 										if (ip.endsWith(".")) {
 											e.doit = false;
 										}
 									}
 									if ( ip.endsWith("..") ) {
-					                	e.doit= false;
-					                }
-					                if ( ip.startsWith(".") ) {
-					                	e.doit= false;
-					                }
-					            }
-					        }  
-					        catch(NumberFormatException ex){  
-					            if(!ip.equals(""))
-					                e.doit = false;  
-					        }  
-					    }  
+										e.doit= false;
+									}
+									if ( ip.startsWith(".") ) {
+										e.doit= false;
+									}
+								}
+							}  
+							catch(NumberFormatException ex){  
+								if(!ip.equals(""))
+									e.doit = false;  
+							}  
+						}  
 					});
 					text(question, inputField);
 				} else {
@@ -483,20 +483,20 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
 				compositeControl.setLayoutData(gridData);
 				compositeControl.setLayout(new GridLayout(4, false));
-				
+
 				final org.eclipse.swt.widgets.List itemList = new org.eclipse.swt.widgets.List(compositeControl,SWT.LEFT | SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
 				GridData myGrid = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 				myGrid.widthHint = 270;
 				myGrid.heightHint = 180;
 				itemList.setLayoutData(myGrid);
-				
+
 				final Composite composite = new Composite(compositeControl, SWT.NONE);
 				composite.setLayout(new GridLayout(1, false));
-		
+
 				final Button moveRightButton = new Button(composite, SWT.TOP );
 				final Button moveLeftButton = new Button(composite, SWT.BOTTOM);
-				
-			    moveRightButton.setText("  -Select->  ");
+
+				moveRightButton.setText("  -Select->  ");
 				moveLeftButton.setText("<-Deselect-");
 				moveRightButton.setEnabled(false);
 				moveLeftButton.setEnabled(false);
@@ -506,7 +506,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				myGrid.widthHint = 270;
 				myGrid.heightHint = 180;
 				selectedItemList.setLayoutData(myGrid);								
-				
+
 				for (final String value : this.selectionValues) {
 					itemList.add(value);
 					//selectedItemList.add("                                                                                       ");
@@ -525,7 +525,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							final org.eclipse.swt.widgets.List sel = (org.eclipse.swt.widgets.List) e.getSource();
 							moveRightButton.setEnabled(sel.getSelectionCount() > 0);
 						}
-
 					}
 				});
 
@@ -542,7 +541,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							final org.eclipse.swt.widgets.List sel = (org.eclipse.swt.widgets.List) e.getSource();
 							moveLeftButton.setEnabled(sel.getSelectionCount() > 0);
 						}
-
 					}
 				});
 
@@ -631,7 +629,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					}
 				});
 				break;
-
 
 			case button:
 				for (int i = 0; i < 3; i++) {
@@ -750,8 +747,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		this.note = new Text(notePanel, SWT.MULTI | SWT.WRAP );
 		this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.note.setText(question.getNote());
-		//this.note.setBounds(10, 20, 520, 60);
-		//this.note.setSize(note.computeSize(585, SWT.DEFAULT));
 		this.note.pack();
 		this.note.setEditable(false);
 		this.note.setEnabled(true);
@@ -863,7 +858,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			container.setFocus();
 		}
 	}
-	
+
 	public void text(Question question, Text inputField){
 		if (question.getEnteredAnswer() != null) {
 			final Answer a = question.getEnteredAnswer();

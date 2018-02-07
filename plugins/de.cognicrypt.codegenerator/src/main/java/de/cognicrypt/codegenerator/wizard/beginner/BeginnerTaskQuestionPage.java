@@ -353,12 +353,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				Color red = display.getSystemColor(SWT.COLOR_RED);
 				mandatory.setText("*");
 				mandatory.setForeground(red);
+				final Text inputField = new Text(container, SWT.BORDER );
+				inputField.setLayoutData(new GridData(100, 15));
+				inputField.setToolTipText(question.getTooltip());
 				
 				//Adding Browse Button for text field that expects a path as input
 				if(question.getTextType().equals("browse")){
-					final Text inputField = new Text(container, SWT.BORDER );
-					inputField.setSize(240, inputField.getSize().y);
-					inputField.setToolTipText(question.getTooltip());
+					inputField.setLayoutData(new GridData(300, 15));
 					
 					Button browseButton = new Button(container, SWT.PUSH);
 					browseButton.setText("Browse");
@@ -370,17 +371,14 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			                	inputField.setText(path);
 			                }
 			            }
-
 			        });
 					text(question, inputField);
-				}
+				}					
+				else if(question.getTextType().equals("password")) {
+				    inputField.setLayoutData(new GridData(120, 15));
+					inputField.setEchoChar((char) 0x25cf);
 					
-				else if(question.getTextType().equals("password")){
-				    final Text inputField = new Text(container, SWT.BORDER | SWT.PASSWORD | SWT.SINGLE);
-				    inputField.setSize(240, inputField.getSize().y);
-				    inputField.setToolTipText(question.getTooltip());
-				
-				//Check box to show/hide password
+				    //Check box to show/hide password
 				    Button checkBox = new Button(container, SWT.CHECK);
 				    checkBox.setText("Show Password");
 				    checkBox.setSelection(false);
@@ -398,10 +396,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				}
 				else if(question.getTextType().equals("integer"))
 				{
-					final Text inputField = new Text(container, SWT.BORDER);
-					inputField.setSize(240, inputField.getSize().y);
-					inputField.setToolTipText(question.getTooltip());
-					
 					inputField.addListener(SWT.Verify, new Listener() {
 					      public void handleEvent(Event e) {
 					        String string = e.text;
@@ -420,10 +414,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				}	
 				else if(question.getTextType().equals("port number"))
 				{
-					final Text inputField = new Text(container, SWT.BORDER);
-					inputField.setSize(240, inputField.getSize().y);
-					inputField.setToolTipText(question.getTooltip());
-					
 					inputField.addVerifyListener(new VerifyListener() {  
 					    @Override  
 					    public void verifyText(VerifyEvent e) {
@@ -444,11 +434,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					text(question, inputField);
 				}
 				else if(question.getTextType().equals("ip address"))
-				{
-					final Text inputField = new Text(container, SWT.BORDER);
-					inputField.setSize(240, inputField.getSize().y);
-					inputField.setToolTipText(question.getTooltip());
-						
+				{						
 					inputField.addVerifyListener(new VerifyListener() {  
 					    @Override  
 					    public void verifyText(VerifyEvent e) {
@@ -458,23 +444,19 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					            if(ip!=null && !ip.isEmpty() ){
 					                String [] ipAddress = ip.split("\\.");
 					                if(ipAddress.length > 4 ){
-					                    e.doit= false;
-					                    
+					                    e.doit= false;					                    
 					                }
 					                for(int i=0;i<=ipAddress.length-1;i++){
 					                    int j=Integer.parseInt(ipAddress[i]);
 					                    if(j<0 || j>255){
 					                    	e.doit= false;
-
 					                    }
 					                }
-
 									if (ipAddress.length == 4) {
 										if (ip.endsWith(".")) {
 											e.doit = false;
 										}
 									}
-
 									if ( ip.endsWith("..") ) {
 					                	e.doit= false;
 					                }
@@ -490,11 +472,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					    }  
 					});
 					text(question, inputField);
-				}	
-				else{
-					final Text inputField = new Text(container, SWT.BORDER);
-					inputField.setSize(240, inputField.getSize().y);
-					inputField.setToolTipText(question.getTooltip());
+				} else {
 					text(question, inputField);	
 				}
 				break;

@@ -23,12 +23,12 @@ public class GroupForClaferTab extends Group {
 
 	private String featureSelected;
 	private ArrayList<String> operandItems;
-	ArrayList<ClaferFeature> claferFeatures;
+	ClaferModel claferModel;
 
 	// FIXME the parameter claferModel seems to be unused
 	public GroupForClaferTab(Composite parent, int style, Answer answer, ClaferModel claferModel) {
 		super(parent, style);
-		setClaferFeatures(claferFeatures);
+		setClaferModel(claferModel);
 		//Non-editable Text Box shows the answer value
 		Text txtBoxCurrentAnswer = new Text(this, SWT.BORDER);
 		txtBoxCurrentAnswer.setBounds(5, 5, 120, 25);
@@ -39,8 +39,11 @@ public class GroupForClaferTab extends Group {
 		Combo comboForAlgorithm = new Combo(this, SWT.READ_ONLY);
 		comboForAlgorithm.setBounds(130, 5, 130, 25);
 		comboForAlgorithm.add("none");
-		for (int i = 0; i < claferFeatures.size(); i++) {
-			comboForAlgorithm.add(claferFeatures.get(i).getFeatureName());
+		// FIXME handle the claferFeatures == null case properly
+		if (claferModel != null) {
+			for (ClaferFeature claferFeature : claferModel) {
+				comboForAlgorithm.add(claferFeature.getFeatureName());
+			}
 		}
 
 		// Shows list of properties specific to selected feature or algo 
@@ -160,7 +163,11 @@ public class GroupForClaferTab extends Group {
 	 */
 
 	private ArrayList<String> itemsToAdd(String featureSelected) {
-		for (ClaferFeature claferFeature : claferFeatures) {
+		// FIXME handle the claferFeatures == null case properly
+		if (claferModel == null) {
+			return new ArrayList<>();
+		}
+		for (ClaferFeature claferFeature : claferModel) {
 			if (claferFeature.getFeatureName().equalsIgnoreCase(featureSelected)) {
 				for (FeatureProperty featureProperty : claferFeature.getFeatureProperties()) {
 					operandItems.add(featureProperty.getPropertyName());
@@ -178,8 +185,8 @@ public class GroupForClaferTab extends Group {
 	 * @param claferFeatures
 	 *        list of all clafer features created in the clafer page
 	 */
-	private void setClaferFeatures(ArrayList<ClaferFeature> claferFeatures) {
-		this.claferFeatures = claferFeatures;
+	private void setClaferModel(ClaferModel claferModel) {
+		this.claferModel = claferModel;
 	}
 
 	@Override

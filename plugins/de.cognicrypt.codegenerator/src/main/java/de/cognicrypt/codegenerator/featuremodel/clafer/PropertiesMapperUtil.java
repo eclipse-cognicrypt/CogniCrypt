@@ -26,7 +26,9 @@ public class PropertiesMapperUtil {
 	 * Reset group properties
 	 */
 	public static void resetEnumMap() {
-		PropertiesMapperUtil.enumMap.clear();
+		if (PropertiesMapperUtil.enumMap != null) {
+			PropertiesMapperUtil.enumMap.clear();
+		}
 	}
 
 	/**

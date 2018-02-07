@@ -53,19 +53,24 @@ public class DefaultAlgorithmPage extends WizardPage {
 	private InstanceClafer value;
 	private final ConfiguratorWizard configuratorWizard;
 
-	public DefaultAlgorithmPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, final ConfiguratorWizard confWizard) {
+	/**
+	 * Constructor for DefaultAlgorithmPage.
+	 * 
+	 * @param instGen Instance Generator
+	 * @param taskSelectionPage Page to select task
+	 * @param confWizard Configurator wizard
+	 */
+	public DefaultAlgorithmPage(final InstanceGenerator instGen, final TaskSelectionPage taskSelectionPage, final ConfiguratorWizard confWizard) {
 		super(Constants.DEFAULT_ALGORITHM_PAGE);
 		setTitle("Best solution for task: " + taskSelectionPage.getSelectedTask().getDescription());
 		setDescription(Constants.DESCRIPTION_DEFAULT_ALGORITHM_PAGE);
-		this.instanceGenerator = inst;
+		this.instanceGenerator = instGen;
 		this.taskSelectionPage = taskSelectionPage;
 		this.configuratorWizard = confWizard;
 	}
 
 	@Override
 	public void createControl(final Composite parent) {
-		Label algorithmClass;
-		Label labelDefaultAlgorithm;
 		this.control = new Composite(parent, SWT.NONE);
 		final GridLayout layout = new GridLayout(1, false);
 		this.control.setLayout(layout);
@@ -75,11 +80,11 @@ public class DefaultAlgorithmPage extends WizardPage {
 
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
 		compositeControl.setLayout(new GridLayout(2, false));
-		labelDefaultAlgorithm = new Label(compositeControl, SWT.NONE);
+		Label labelDefaultAlgorithm = new Label(compositeControl, SWT.NONE);
 		labelDefaultAlgorithm.setText(Constants.defaultAlgorithm);
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();//Only the first Instance,which is the most secure one, will be displayed
 
-		algorithmClass = new Label(compositeControl, SWT.NONE);
+		Label algorithmClass = new Label(compositeControl, SWT.NONE);
 		final String firstInstance = inst.keySet().toArray()[0].toString();
 		algorithmClass.setText(firstInstance);
 		setValue(DefaultAlgorithmPage.this.instanceGenerator.getInstances().get(firstInstance));

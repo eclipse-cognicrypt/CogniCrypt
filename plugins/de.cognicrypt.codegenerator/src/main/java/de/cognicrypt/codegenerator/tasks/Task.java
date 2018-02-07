@@ -68,6 +68,7 @@ public class Task {
 	}
 
 	/**
+	 * Getter method of style sheet.
 	 * @return the xslFile
 	 */
 	public String getXslFile() {
@@ -75,6 +76,7 @@ public class Task {
 	}
 
 	/**
+	 * Setter method for style sheet.
 	 * @param xslFile
 	 *        the xslFile to set
 	 */

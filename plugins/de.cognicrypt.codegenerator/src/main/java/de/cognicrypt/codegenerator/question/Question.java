@@ -25,19 +25,25 @@ public class Question {
 		return this.answers;
 	}
 
+	/**
+	 * Retrieves the default answer of the question.
+	 * @return Default answer
+	 */
 	public Answer getDefaultAnswer() {
 		if (this.defaultAnswer == null) {
 			for (final Answer answer : this.answers) {
 				if (answer.isDefaultAnswer()) {
-					this.defaultAnswer = answer;
-					break;
+					return this.defaultAnswer = answer;
 				}
 			}
 		}
-
 		return this.defaultAnswer;
 	}
 
+	/**
+	 * Retrieves the widget the question should be displayed as.
+	 * @return GUI widget associated with the question
+	 */
 	public GUIElements getElement() {
 		if (this.element == null || this.element.name().isEmpty()) {
 			setElement(Constants.GUIElements.combo);
@@ -92,7 +98,6 @@ public class Question {
 		this.note = note;
 	}
 
-	//added set method for tooltip
 	public void getTooltip(final String tooltip) {
 		this.tooltip = tooltip;
 	}

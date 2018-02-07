@@ -50,7 +50,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 		}
 	}
 
-	public void createConstraints(final AstClafer parent, final AstClafer inputClafer, final Group titledPanel) {
+	private void createConstraints(final AstClafer parent, final AstClafer inputClafer, final Group titledPanel) {
 
 		if (inputClafer.hasChildren()) {
 			if (inputClafer.getGroupCard() != null && inputClafer.getGroupCard().getLow() >= 1) {

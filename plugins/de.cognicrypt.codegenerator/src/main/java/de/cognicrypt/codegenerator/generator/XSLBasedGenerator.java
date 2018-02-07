@@ -159,7 +159,7 @@ public class XSLBasedGenerator {
 				if (members == null) {
 					Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);
 				}
-				final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesinDevProject);
+				final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesInDevProject);
 				if (!libFolder.exists()) {
 					libFolder.create(true, true, null);
 				}
@@ -169,13 +169,13 @@ public class XSLBasedGenerator {
 					if (members[i].getName().equalsIgnoreCase(source + Constants.JAR) || source.startsWith(sourceFolder)) {
 						final Path memberPath = members[i].toPath();
 						Files.copy(memberPath, new File(this.project
-							.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + memberPath.getFileName())
+							.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesInDevProject + Constants.outerFileSeparator + memberPath.getFileName())
 								.toPath(),
 							StandardCopyOption.REPLACE_EXISTING);
 						final String filePath = members[i].toString();
 						final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.outerFileSeparator));
 						if (Constants.JAR.equals(cutPath.substring(cutPath.indexOf(".")))) {
-							if (!this.project.addJar(Constants.pathsForLibrariesinDevProject + Constants.outerFileSeparator + members[i].getName())) {
+							if (!this.project.addJar(Constants.pathsForLibrariesInDevProject + Constants.outerFileSeparator + members[i].getName())) {
 								return false;
 							}
 						}

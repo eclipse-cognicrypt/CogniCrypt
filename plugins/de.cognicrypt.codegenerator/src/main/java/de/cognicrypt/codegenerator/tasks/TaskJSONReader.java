@@ -14,8 +14,12 @@ import de.cognicrypt.codegenerator.utilities.Utils;
 
 public class TaskJSONReader {
 
-	private volatile static List<Task> tasks;
-
+	private static volatile List<Task> tasks;
+	
+	/**
+	 * Getter method for tasks. 
+	 * @return List of Tasks in JSON file
+	 */
 	public static List<Task> getTasks() {
 
 		if (TaskJSONReader.tasks == null) {

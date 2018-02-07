@@ -8,11 +8,16 @@ import java.nio.file.Paths;
 import de.cognicrypt.codegenerator.Activator;
 
 /**
- * A helper class which writes string content to a file and it will be saved under project directory
+ * A helper class for files.
  */
 public class FileHelper {
 
-	public static int deleteFile(final String fileName) {
+	/**
+	 * Deletes file with given name.
+	 * @param fileName Path to file to be deleted.
+	 * @return <Code>True</Code>/<Code>False</Code> if deletion of file succeeded/failed.
+	 */
+	public static boolean deleteFile(final String fileName) {
 		try {
 			final File f = new File(fileName);
 			if (f.exists()) {
@@ -20,9 +25,9 @@ public class FileHelper {
 			}
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e);
-			return 1;
+			return false;
 		}
-		return 0;
+		return true;
 	}
 
 }

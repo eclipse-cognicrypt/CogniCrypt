@@ -14,7 +14,7 @@
 <xsl:result-document href="PWHasher.java">
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
-
+/** @author CogniCrypt */
 public class PWHasher {	
 	//adopted code from https://github.com/defuse/password-hashing
 	

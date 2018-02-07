@@ -56,15 +56,17 @@ public class Constants {
 	// Task descriptions
 	
 	// Tooltip 	
-	public static final String PROJECTLIST_TOOLTIP="List of your Java projects";
-	public static final String TASKLIST_TOOLTIP="Cryptographic tasks supported by CogniCrypt";
+	public static final String PROJECTLIST_TOOLTIP = "List of your Java projects";
+	public static final String TASKLIST_TOOLTIP = "Cryptographic tasks supported by CogniCrypt";
 	public static final String DESCRIPTION_BOX_TOOLTIP = "Here is the description for the cryptographic task that you have selected";
-	public static final String GUIDEDMODE_TOOLTIP="Guided mode configures the algorithm for you,\nbased on your answers to some simple questions.";
-	public static final String DEFAULT_ALGORITHM_COMBINATION_TOOLTIP="Default Algorithm combination";
-	public static final String DEFAULT_CODE_TOOLTIP="This is the preview of the code, that will be generated into your Java project";
-	public static final String DEFAULT_CHECKBOX_TOOLTIP="If you want to view other possible algorithm combinations \nmatching your requirements, please check this box and click 'Next'";
+	public static final String GUIDEDMODE_TOOLTIP = "Guided mode configures the algorithm for you,\nbased on your answers to some simple questions.";
+	public static final String DEFAULT_ALGORITHM_COMBINATION_TOOLTIP = "Default Algorithm combination";
+	public static final String DEFAULT_CODE_TOOLTIP = "This is the preview of the code, that will be generated into your Java project";
+	public static final String DEFAULT_CHECKBOX_TOOLTIP = "If you want to view other possible algorithm combinations \nmatching your requirements, please check this box and click 'Next'";
 	public static final String ALGORITHM_COMBO_TOOLTIP = "The algorithm combinations are listed in a decreasing order of security level";
-	public static final String INSTANCE_DETAILS_TOOLTIP="Details of the selected algorithm combination";
+	public static final String INSTANCE_DETAILS_TOOLTIP = "Details of the selected algorithm combination";
+	public static final String PREVIOUS_ALGORITHM_BUTTON = "Previous";
+	public static final String NEXT_ALGORITHM_BUTTON = "Next";
 	
 	//Decoration
 	public static final String DEFAULT_ALGORITHM_CHECKBOX_ENABLE= "If this checkbox is unchecked, the code for the above algorithm \nwill be generated into your java project after clicking 'Finish'";
@@ -133,6 +135,7 @@ public class Constants {
 	public static final String ALGORITHM = "Algorithm";
 	public static final String GUIDED_MODE = "Use the guided mode for configuring the task";
 	public static final String DEFAULT_ALGORITHM_PAGE_CHECKBOX ="Show other possible algorithm combinations";
+	public static final String SHOW_PASSWORD_CHECKBOX ="Show Password";
 
 	public static final String Package = "Package";
 	public static final String Description = "description";
@@ -176,9 +179,9 @@ public class Constants {
 	public static final String SELECT_PROPERTIES = "Select Properties";
 	
 	//Compare algorithm page
-	public static final String COMPARE_ALGORITHM_PAGE = "Compare Algorithm Page";
-	public static final String COMPARE_TITLE = "Compare two Algorithms";
-	public static final String COMPARE_DESCRIPTION = "Select the Algorithms for comparing";
+	public static final String COMPARE_ALGORITHM_PAGE = "Compare Algorithms Page";
+	public static final String COMPARE_TITLE = "Compare Two Algorithms";
+	public static final String COMPARE_DESCRIPTION = "Select the algorithms that you wish to compare. Their respective properties will be shown in the boxes below.";
 	public static final String COMPARE_LABEL = "Instance details of";
 	
 	
@@ -213,8 +216,12 @@ public class Constants {
 	// Widget constants
 	// Labels
 	public static final String LABEL_BROWSE_BUTTON = "Browse";
+	public static final String LABEL_CODE_PREVIEW_BUTTON = "Code Preview";
+	public static final String LABEL_COMPARE_ALGORITHMS_BUTTON = "Compare Algorithms";
+	
 	// Dimensions
 	public static final int UI_WIDGET_HEIGHT_NORMAL = 29;
+	
 	// Constants for the composites
 	public static final String WIDGET_DATA_NAME_OF_THE_TASK = "NameOfTheTask";
 	public static final String WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK = "Location of the Library file";
@@ -224,7 +231,7 @@ public class Constants {
 	public static final String WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED = "isCustomLibraryRequired";
 	public static final String WIDGET_DATA_IS_GUIDED_MODE_CHOSEN = "isGuidedModeChosen";
 	public static final String WIDGET_DATA_IS_GUIDED_MODE_FORCED = "isGuidedModeForced";
-	
+		
 	// Constants for the drop down for the library type on the mode selection page
 	public static final String WIDGET_CONTENT_EXISTING_LIBRARY = "No custom Library";
 	public static final String WIDGET_CONTENT_CUSTOM_LIBRARY = "Custom Library";

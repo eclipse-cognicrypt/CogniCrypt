@@ -1,6 +1,7 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
 import java.util.ArrayList;
+import java.util.function.Predicate;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 
@@ -8,14 +9,38 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 
-public class FeaturePropertiesContentProvider implements ITreeContentProvider {
+public class ClaferModelContentProvider implements ITreeContentProvider {
+	
+	private Predicate<? super ClaferFeature> featureFilter;
+	private Predicate<? super FeatureProperty> propertyFilter;
+	
+	/**
+	 * create a {@link ClaferModelContentProvider} that yields all of the content's elements
+	 */
+	public ClaferModelContentProvider() {
+		this(null, null);
+	}
+	
+	/**
+	 * create a {@link ClaferModelContentProvider} with filters attached
+	 * 
+	 * @param featureFilter remove {@link ClaferFeature}s that this predicate applies to (returns true for)
+	 * @param propertyFilter remove {@link FeatureProperty}s that this predicate applies to (returns true for)
+	 */
+	public ClaferModelContentProvider(Predicate<? super ClaferFeature> featureFilter, Predicate<? super FeatureProperty> propertyFilter) {
+		this.featureFilter = featureFilter;
+		this.propertyFilter = propertyFilter;
+	}
 
 	@Override
 	public Object[] getChildren(Object inputElement) {
 		if (inputElement instanceof ClaferFeature) {
 			ClaferFeature inputFeature = (ClaferFeature) inputElement;
 			ArrayList<FeatureProperty> filteredProperties = (ArrayList<FeatureProperty>) inputFeature.getFeatureProperties().clone();
-			filteredProperties.removeIf(x -> x.getPropertyName().isEmpty());
+			
+			if (propertyFilter != null) {
+				filteredProperties.removeIf(propertyFilter);
+			}
 
 			return filteredProperties.toArray();
 		}
@@ -28,7 +53,9 @@ public class FeaturePropertiesContentProvider implements ITreeContentProvider {
 			ClaferModel inputModel = (ClaferModel) inputElement;
 			ClaferModel filteredModel = inputModel.clone();
 
-			filteredModel.getClaferModel().removeIf(x -> x.getFeatureName().isEmpty() || !x.hasProperties());
+			if (featureFilter != null) {
+				filteredModel.getClaferModel().removeIf(featureFilter);
+			}
 			return filteredModel.getClaferModel().toArray();
 		}
 		return new Object[] {};

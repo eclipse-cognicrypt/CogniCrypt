@@ -7,7 +7,7 @@ import org.eclipse.swt.graphics.Image;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 
-public class FeaturePropertiesLabelProvider implements ILabelProvider {
+public class ClaferModelLabelProvider implements ILabelProvider {
 
 	@Override
 	public void addListener(ILabelProviderListener arg0) {
@@ -35,10 +35,10 @@ public class FeaturePropertiesLabelProvider implements ILabelProvider {
 	public String getText(Object inputElement) {
 		if (inputElement instanceof ClaferFeature) {
 			ClaferFeature inputFeature = (ClaferFeature) inputElement;
-			return inputFeature.getFeatureName();
+			return inputFeature.toString(false);
 		} else if (inputElement instanceof FeatureProperty) {
 			FeatureProperty inputProperty = (FeatureProperty) inputElement;
-			return inputProperty.getPropertyName();
+			return inputProperty.toString();
 		}
 		return null;
 	}

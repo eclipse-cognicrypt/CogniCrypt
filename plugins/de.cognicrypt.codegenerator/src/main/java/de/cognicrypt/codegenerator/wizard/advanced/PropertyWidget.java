@@ -205,7 +205,17 @@ public class PropertyWidget {
 	}
 
 	public String getOperator() {
-		return ((IStructuredSelection) this.operatorComboViewer.getSelection()).getFirstElement().toString();
+		String temp = ((IStructuredSelection) this.operatorComboViewer.getSelection()).getFirstElement().toString();
+//		if (temp.equals("High")){
+//			return ">";
+//		} else if (temp.equals("Medium")){
+//			return "=";
+//		} else if  (temp.equals("Low")){
+//			return "<";
+//		} else {
+//			return temp;
+//		}
+		return temp;
 	}
 
 	/**

@@ -25,13 +25,13 @@ public class DeveloperProject {
 	 */
 	private final IProject project;
 
-	public DeveloperProject(final IProject _project) {
-		this.project = _project;
+	public DeveloperProject(final IProject developerProject) {
+		this.project = developerProject;
 	}
 
-	/***
-	 * The method adds one library to the developer's project physical and build path. In the context of the overall tool, this is necessary when the user chooses a task that comes
-	 * with additional libraries.
+	/**
+	 * The method adds one library to the developer's project physical and build path. In the context of the overall tool, 
+	 * this is necessary when the user chooses a task that comes with additional libraries.
 	 *
 	 * @param pathToJar
 	 *        path to library to be added
@@ -55,18 +55,25 @@ public class DeveloperProject {
 		return false;
 	}
 
-	/***
-	 * @see {@link org.eclipse.core.resources.IProject#getFolder() IProject.getFolder()}
+	/**
+	 * Retrieves folder from developer package
+	 * @param name Project-relative path to folder 
+	 * @see org.eclipse.core.resources.IProject#getFolder(String) IProject.getFolder()
 	 */
 	public IFolder getFolder(final String name) {
 		return this.project.getFolder(name);
 	}
 
+	/**
+	 * Retrieves file from developer package
+	 * @param path Project-relative path to file
+	 * @see org.eclipse.core.resources.IProject#getFile(String) IProject.getFile()
+	 */
 	public IFile getIFile(final String path) {
 		return this.project.getFile(path.substring(path.indexOf(this.project.getName()) + this.project.getName().length()));
 	}
 
-	/***
+	/**
 	 * This method retrieves a package of the name {@linkplain name} that is in the developer's project.
 	 *
 	 * @param name
@@ -103,7 +110,7 @@ public class DeveloperProject {
 	}
 
 	/**
-	 * @return Refreshes the project.
+	 * Refreshes the project.
 	 * @throws CoreException
 	 *         See {@link org.eclipse.core.resources.IResource#refreshLocal(int, org.eclipse.core.runtime.IProgressMonitor) refreshLocal()}
 	 */
@@ -141,6 +148,11 @@ public class DeveloperProject {
 		return this.project.getName() + "(" + getProjectPath() + ")";
 	}
 
+	/**
+	 * Removes package from developer project.
+	 * @param packageName name of package that is removed
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if package removal was successful/failed.
+	 */
 	public Boolean removePackage(final String packageName) {
 		try {
 			final IPackageFragment delPackage = getPackagesOfProject(packageName);
@@ -149,7 +161,6 @@ public class DeveloperProject {
 		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
-
 		return false;
 	}
 

@@ -24,7 +24,7 @@ import de.cognicrypt.codegenerator.utilities.Utils;
  */
 public class QuestionsJSONReader {
 
-	/***
+	/**
 	 * This method reads all questions of one task using the file path to the question file.
 	 *
 	 * @param filePath
@@ -47,7 +47,7 @@ public class QuestionsJSONReader {
 		return questions;
 	}
 
-	/***
+	/**
 	 * This method reads all pages of one task using the file path to the JSON file.
 	 *
 	 * @param filePath
@@ -70,7 +70,7 @@ public class QuestionsJSONReader {
 		return pages;
 	}
 
-	/***
+	/**
 	 * This method reads all questions of one task.
 	 *
 	 * @param task
@@ -81,7 +81,7 @@ public class QuestionsJSONReader {
 		return getQuestions(task.getQuestionsJSONFile());
 	}
 
-	/***
+	/**
 	 * This method reads all pages of one task.
 	 *
 	 * @param task
@@ -95,7 +95,7 @@ public class QuestionsJSONReader {
 	/**
 	 * Check the validity of the pages and the questions contained in them.
 	 * 
-	 * @param pages
+	 * @param pages List of all read pages
 	 */
 	private void checkReadPages(final List<Page> pages) {
 		final Set<Integer> ids = new HashSet<>();

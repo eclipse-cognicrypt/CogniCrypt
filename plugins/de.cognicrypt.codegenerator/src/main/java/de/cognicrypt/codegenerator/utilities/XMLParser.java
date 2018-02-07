@@ -23,6 +23,8 @@ import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
 
 /**
+ * This class handles XML files.
+ * 
  * @author Mohammad Zahraee
  * @author Ram Kamath
  * @author Stefan Krueger
@@ -34,7 +36,7 @@ public class XMLParser {
 	private String enumParent = null;
 
 	/**
-	 * builds xml document, returns it's string representation
+	 * Builds xml document, returns its string representation.
 	 *
 	 * @param inst
 	 *        Clafer instance/algorithm configuration selected to be generated
@@ -108,9 +110,6 @@ public class XMLParser {
 		return this.document.asXML();
 	}
 
-	/**
-	 * Adds XML of inst to parent element
-	 */
 	private void displayInstanceXML(final InstanceClafer inst, final Element parent) {
 		try {
 			if (inst.hasChildren()) {

@@ -8,12 +8,12 @@ import org.clafer.ast.AstClafer;
 
 public class PropertiesMapperUtil {
 
-	private volatile static HashMap<AstAbstractClafer, List<AstClafer>> enumMap = null;
+	private static volatile HashMap<AstAbstractClafer, List<AstClafer>> enumMap = null;
 
 	/**
-	 * used when there is an enum in the properties
+	 * Used when there is an enum in the properties
 	 *
-	 * @return
+	 * @return properties map
 	 */
 	public static HashMap<AstAbstractClafer, List<AstClafer>> getenumMap() {
 		if (PropertiesMapperUtil.enumMap == null) {
@@ -23,17 +23,15 @@ public class PropertiesMapperUtil {
 	}
 
 	/**
-	 * reset group properties
+	 * Reset group properties
 	 */
 	public static void resetEnumMap() {
-		PropertiesMapperUtil.enumMap = null;
+		PropertiesMapperUtil.enumMap.clear();
 	}
 
 	/**
-	 * private Constructor for singleton pattern
+	 * Private constructor for singleton pattern
 	 */
-	private PropertiesMapperUtil() {
-
-	}
+	private PropertiesMapperUtil() {}
 
 }

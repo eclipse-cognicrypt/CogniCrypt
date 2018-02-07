@@ -73,7 +73,7 @@ public class TaskSelectionPage extends WizardPage {
 		projectComboSelection.setContentProvider(ArrayContentProvider.getInstance());
 
 		final Map<String, IProject> javaProjects = new HashMap<>();
-		for (final IProject project : Utils.createListOfJavaProjectsInCurrentWorkspace()) {
+		for (final IProject project : Utils.retrieveAllJavaProjectsInWorkspace()) {
 			javaProjects.put(project.getName(), project);
 		}
 
@@ -192,7 +192,7 @@ public class TaskSelectionPage extends WizardPage {
 	}
 
 	/**
-	 * Helper method to UI , this flag decides the second page of the wizard
+	 * Helper method to UI , this flag decides the second page of the wizard.
 	 *
 	 * @return
 	 */

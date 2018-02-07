@@ -7,7 +7,9 @@ import org.clafer.instance.InstanceClafer;
 import de.cognicrypt.codegenerator.Constants;
 
 /**
- * @author Ram InstanceClaferHash extends InstanceClafer by overriding only hashCode method
+ * InstanceClaferHash extends InstanceClafer to only override {@link InstanceClaferHash#hashCode() hashcode()}
+ * 
+ * @author Ram Kamath
  */
 public class InstanceClaferHash extends InstanceClafer {
 
@@ -15,10 +17,9 @@ public class InstanceClaferHash extends InstanceClafer {
 		super(inputInstance.getType(), inputInstance.getId(), inputInstance.getRef(), inputInstance.getChildren());
 	}
 
-	public int getHashCode() {
-		/**
-		 * Method calculates hash for all the children and ORs it with hashcode for ID ,Type and Ref
-		 */
+	@Override
+	public int hashCode() {
+		//Iterates through individual instanceClafer values and summed value is ORed with hash value of id,ref and type.
 		int hashToChildrenInstances = 0;
 		for (final InstanceClafer childInstanceClafer : this.getChildren()) {
 			InstanceClaferHash tempInstanceHash = null;
@@ -30,7 +31,7 @@ public class InstanceClaferHash extends InstanceClafer {
 				 */
 				tempInstanceHash = new InstanceClaferHash((InstanceClafer) childInstanceClafer.getRef());
 				if (tempInstanceHash != null) {
-					hashToChildrenInstances += tempInstanceHash.getHashCode();
+					hashToChildrenInstances += tempInstanceHash.hashCode();
 				}
 				/**
 				 * add hashcode from standard object.hasCode() method for primitive types
@@ -42,13 +43,5 @@ public class InstanceClaferHash extends InstanceClafer {
 			}
 		}
 		return getType().hashCode() ^ getId() ^ hashToChildrenInstances ^ Objects.hash(getRef());
-	}
-
-	/**
-	 * Iterates through individual instanceClafer values and summed value is ORed with hash value of id,ref and type.
-	 */
-	@Override
-	public int hashCode() {
-		return getHashCode();
 	}
 }

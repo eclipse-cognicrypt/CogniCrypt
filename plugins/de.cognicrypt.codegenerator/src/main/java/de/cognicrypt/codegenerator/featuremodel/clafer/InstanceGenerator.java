@@ -65,19 +65,28 @@ public class InstanceGenerator {
 	private String algorithmName;
 	private int algorithmCount;
 
-	public InstanceGenerator(final String path, final String taskName, final String taskDescription) {
-		this.claferModel = new ClaferModel(path);
+	/**
+	 * Constructor for Instance Generator
+	 * 
+	 * @param pathToModel
+	 *        Absolute path to model
+	 * @param nameOfTaskClafer
+	 *        Task clafer
+	 * @param taskDescription
+	 *        Description of selected task
+	 */
+	public InstanceGenerator(final String pathToModel, final String nameOfTaskClafer, final String taskDescription) {
+		this.claferModel = new ClaferModel(pathToModel);
 		this.displayNameToInstanceMap = new HashMap<>();
 		this.displayFirstNameToInstanceMap = new HashMap<>();
 		this.uniqueInstances = new HashMap<>();
-		this.taskName = taskName;
+		this.taskName = nameOfTaskClafer;
 		this.taskDescription = taskDescription;
-		this.taskClafer = Utils.getModelChildByName(this.claferModel.getModel(), taskName);
+		this.taskClafer = Utils.getModelChildByName(this.claferModel.getModel(), nameOfTaskClafer);
 	}
 
 	/**
-	 *
-	 * method used by both basic and advanced user operations to add constraints to clafers before instance generation
+	 * Method used by both basic and advanced user operations to add constraints to clafers before instance generation
 	 *
 	 * @param taskAlgorithm
 	 *        Higher-level Clafer
@@ -189,12 +198,6 @@ public class InstanceGenerator {
 		}
 	}
 
-	/**
-	 * This method is to parse the map of clafers and apply their values as constraints before instance generation, used only in advanceduserMode
-	 *
-	 * @param taskClafer
-	 * @param propertiesMap
-	 */
 	private void advancedModeHandler(final AstModel astModel, final AstClafer taskClafer, final List<PropertyWidget> constraints) {
 		for (final PropertyWidget constraint : constraints) {
 			if (constraint.isEnabled() && !constraint.isGroupConstraint()) { //not sure why we need this check but keeping it from Ram's code till we figure it out
@@ -210,11 +213,6 @@ public class InstanceGenerator {
 		}
 	}
 
-	/**
-	 * BasicModeHandler will take <Question, answer> map as a parameter where the key of the map is a question, answer is the selected answer for a given question each answer has
-	 * been further iterated to apply associated dependencies
-	 */
-	// FIXME include group operator
 	private void basicModeHandler(final AstModel astModel, final AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {
 		for (final Entry<Question, Answer> entry : qAMap.entrySet()) {
 			final Answer answer = entry.getValue();
@@ -240,14 +238,9 @@ public class InstanceGenerator {
 		}
 	}
 
-	/**
-	 * this method is part of instance generation process , creates a mapping instance name and instance Object
-	 */
 	private void generateInstanceMapping() {
 		this.displayNameToInstanceMap.clear();
-		/**
-		 * sort all the instances, to have an user friendly display
-		 */
+		// sort all the instances, to have an user friendly display
 		try {
 			this.generatedInstances.sort(new Comparator<InstanceClafer>() {
 
@@ -280,10 +273,7 @@ public class InstanceGenerator {
 				this.displayNameToInstanceMap.remove(key, sortedInst);
 			}
 			if (sortedInst.getType().getName().equals(this.taskName) && key.length() > 0) {
-				/**
-				 * Check if any instance has same name , if yes add numerical values as suffix
-				 *
-				 */
+				// Check if any instance has same name , if yes add numerical values as suffix
 				int counter = 1;
 				String copyKey = key;
 				while (this.displayNameToInstanceMap.containsKey(copyKey)) {
@@ -300,15 +290,16 @@ public class InstanceGenerator {
 	}
 
 	/**
-	 * Method to Generate instances for basic user. Argument is a map of property(clafer) name and their values
+	 * Method to generate instances for basic user.
 	 *
-	 * @param map
-	 * @return
+	 * @param questAnswerMap
+	 *        Map mapping questions to user-given answers.
+	 * @return List of generated Instance
 	 */
-	public List<InstanceClafer> generateInstances(final HashMap<Question, Answer> map) {
+	public List<InstanceClafer> generateInstances(final HashMap<Question, Answer> questAnswerMap) {
 		final AstModel astModel = this.claferModel.getModel();
 		try {
-			basicModeHandler(astModel, this.taskClafer, map);
+			basicModeHandler(astModel, this.taskClafer, questAnswerMap);
 
 			this.solver = ClaferCompiler.compile(astModel,
 				this.claferModel.getScope().toBuilder()
@@ -342,15 +333,15 @@ public class InstanceGenerator {
 	}
 
 	/**
-	 * Method to generate instances in an advanced user mode, takes map with claer and their values as parameterF
-	 *
-	 * @param propertiesMap
-	 * @return
+	 * Method to generate instances in an advanced user mode.
+	 * 
+	 * @param constraints
+	 *        List of constraints set by the user
+	 * @return List of generated Instance
 	 */
 	public List<InstanceClafer> generateInstancesAdvancedUserMode(final List<PropertyWidget> constraints) {
 		final AstModel model = this.claferModel.getModel();
 		try {
-
 			//PropertiesMapperUtil.getTaskLabelsMap().get(getTaskDescription());
 			advancedModeHandler(model, this.taskClafer, constraints);
 
@@ -390,12 +381,9 @@ public class InstanceGenerator {
 	/**
 	 * Returns the hash value of the instance passed as an argument
 	 *
-	 * @param inst
-	 * @return
+	 * @see InstanceClaferHash#hashCode() 
 	 */
 	private long getHashValueOfInstance(final InstanceClafer inst) {
-		// TODO: Why child at position 0, why is 0 returned if there is no
-		// child?
 		int hash = 37;
 		for (final InstanceClafer child : inst.getChildren()) {
 			hash *= new InstanceClaferHash(child).hashCode();
@@ -404,13 +392,7 @@ public class InstanceGenerator {
 		return hash;
 	}
 
-	/**
-	 * Used by instanceMapping method to find the instance name
-	 *
-	 * @param inst
-	 * @return
-	 */
-	public String getInstanceName(final InstanceClafer inst) {
+	private String getInstanceName(final InstanceClafer inst) {
 		String currentInstanceName = "";
 		try {
 			if (inst.hasChildren()) {

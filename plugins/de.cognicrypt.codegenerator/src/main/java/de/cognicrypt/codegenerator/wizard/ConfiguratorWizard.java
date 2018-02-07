@@ -105,13 +105,12 @@ public class ConfiguratorWizard extends Wizard {
 	}
 
 	/**
-	 *
-	 * @param curPage
+	 * Creates a new {@link BeginnerTaskQuestionPage}.
+	 * @param curPage Current page
 	 * @param beginnerQuestionnaire
 	 *        updated this variable from a list of questions to have access to the method to get specific Questions.
 	 */
 	private void createBeginnerPage(final Page curPage, final BeginnerModeQuestionnaire beginnerQuestionnaire) {
-
 		List<String> selection = null;
 		if (curPage.getContent().size() == 1) {
 			final Question curQuestion = curPage.getContent().get(0);
@@ -129,7 +128,7 @@ public class ConfiguratorWizard extends Wizard {
 	}
 
 	/**
-	 * This method returns the next page. If current page is task list or any but the last question page, the first/next question page is returned. If the current page is the the
+	 * This method returns the next page. If current page is task list or any but the last question page, the first/next question page is returned. If the current page is the
 	 * last question page, the instance list page is returned.
 	 *
 	 * @param currentPage
@@ -176,11 +175,10 @@ public class ConfiguratorWizard extends Wizard {
 				addPage(this.preferenceSelectionPage);
 			}
 			return this.preferenceSelectionPage;
-		}
-		/**
-		 * If current page is either question or properties page (in Advanced mode)
-		 */
-		else if (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage) {
+		} else if (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage) {
+			/**
+			 * If current page is either question or properties page (in Advanced mode)
+			 */
 			if (this.taskListPage.isGuidedMode()) {
 				if (this.constraints == null) {
 					this.constraints = new HashMap<>();
@@ -227,7 +225,7 @@ public class ConfiguratorWizard extends Wizard {
 			}
 
 			final InstanceGenerator instanceGenerator = new InstanceGenerator(Utils.getResourceFromWithin(selectedTask.getModelFile())
-				.getAbsolutePath(), "c0_" + this.taskListPage.getSelectedTask().getName(), this.taskListPage.getSelectedTask().getDescription());
+				.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
 
 			if (this.taskListPage.isGuidedMode()) {
 				// running in beginner mode
@@ -256,7 +254,6 @@ public class ConfiguratorWizard extends Wizard {
 
 				} else {
 					if ("nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[3].getMethodName())) {
-						//final String message = this.taskListPage.isGuidedMode() ? Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER : Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE;
 						final String message = Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE;
 						MessageDialog.openError(new Shell(), "Error", message);
 					}
@@ -267,7 +264,7 @@ public class ConfiguratorWizard extends Wizard {
 		//adding instance details page after default algorithm page in beginner mode
 		else if (currentPage instanceof DefaultAlgorithmPage) {
 			final InstanceGenerator instanceGenerator = new InstanceGenerator(Utils.getResourceFromWithin(selectedTask.getModelFile())
-				.getAbsolutePath(), "c0_" + this.taskListPage.getSelectedTask().getName(), this.taskListPage.getSelectedTask().getDescription());
+				.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
 
 			if (this.taskListPage.isGuidedMode()) {
 				// running in beginner mode
@@ -356,7 +353,7 @@ public class ConfiguratorWizard extends Wizard {
 					this.taskListPage.getSelectedTask().getXslFile());
 
 				// Delete Instance File
-//				FileHelper.deleteFile(xmlInstancePath);
+				//				FileHelper.deleteFile(xmlInstancePath);
 				codeGenerator.getDeveloperProject().refresh();
 			} catch (final IOException | CoreException | BadLocationException e) {
 				Activator.getDefault().logError(e);
@@ -381,7 +378,7 @@ public class ConfiguratorWizard extends Wizard {
 					this.taskListPage.getSelectedTask().getXslFile());
 
 				// Delete Instance File
-//				FileHelper.deleteFile(xmlInstancePath);
+				//				FileHelper.deleteFile(xmlInstancePath);
 				codeGenerator.getDeveloperProject().refresh();
 			} catch (final IOException | CoreException | BadLocationException e) {
 				Activator.getDefault().logError(e);

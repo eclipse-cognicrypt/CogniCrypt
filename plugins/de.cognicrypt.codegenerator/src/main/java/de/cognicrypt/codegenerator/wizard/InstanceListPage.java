@@ -234,9 +234,9 @@ public class InstanceListPage extends WizardPage {
 	}
 
 	/**
-	 * This method extracts the provider's name from the instanceDetails
+	 * This method extracts the provider's name from the instanceDetails.
 	 *
-	 * @return
+	 * @return Provider name
 	 */
 	public String getProviderFromInstance() {
 		for (final String instance : this.instanceDetails.getText().split(Constants.lineSeparator)) {
@@ -247,6 +247,10 @@ public class InstanceListPage extends WizardPage {
 		return "";
 	}
 
+	/**
+	 * Assembles code-preview text. 
+	 * @return code snippet
+	 */
 	public String getCodePreview() {
 		final XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(), getProviderFromInstance());
 		final String claferPreviewPath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;

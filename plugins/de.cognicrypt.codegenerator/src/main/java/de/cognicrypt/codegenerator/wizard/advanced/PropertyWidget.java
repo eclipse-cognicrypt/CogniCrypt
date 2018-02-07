@@ -28,6 +28,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -43,14 +45,12 @@ public class PropertyWidget {
 	// TO BE FIXED
 	protected static boolean status = false;
 	private Spinner valueSpinner;
+	private Button enablePropertyCheckBox;
 	private AstClafer parentClafer;
 	private AstConcreteClafer childClafer;
 	private final ComboViewer operatorComboViewer;
-	private Combo operatorCombo;
-	private Combo valuesComboBox;
 	private boolean isGroupConstraint = false;
 	private AstAbstractClafer abstarctParentClafer;
-	private Button enablePropertyCheckBox;
 
 	/**
 	 * Method to create a widget for group properties, clafer level constraints
@@ -78,8 +78,6 @@ public class PropertyWidget {
 		this.operatorComboViewer = new ComboViewer(container, SWT.NONE);
 		this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
 		this.operatorComboViewer.setInput(values);
-		operatorCombo = operatorComboViewer.getCombo();
-		operatorCombo.setEnabled(false);
 
 		final ArrayList<String> propertyNames = new ArrayList<>();
 		for (final AstClafer propertyClafer : claferProperties) {
@@ -92,8 +90,6 @@ public class PropertyWidget {
 		final ComboViewer valuesCombo = new ComboViewer(container, SWT.NONE);
 		valuesCombo.setContentProvider(ArrayContentProvider.getInstance());
 		valuesCombo.setInput(propertyNames);
-		valuesComboBox = valuesCombo.getCombo();
-		valuesComboBox.setEnabled(false);
 
 		valuesCombo.addSelectionChangedListener(arg0 -> {
 			status = true;
@@ -104,7 +100,6 @@ public class PropertyWidget {
 				}
 			}
 		});
-
 		valuesCombo.setSelection(new StructuredSelection(propertyNames.get(0)));
 
 	}
@@ -124,6 +119,7 @@ public class PropertyWidget {
 	 * @param pageincrement
 	 */
 	public PropertyWidget(final Composite container, final AstClafer parentClafer, final AstConcreteClafer childClafer, final String propertyName, final int selection, final int min, final int max, final int digits, final int increment, final int pageincrement) {
+		container.setLayout(new GridLayout(5, false));
 		setChildClafer(childClafer);
 		setParentClafer(parentClafer);
 		final List<String> values = new ArrayList<>();
@@ -132,13 +128,13 @@ public class PropertyWidget {
 		values.add("=");
 		values.add("<=");
 		values.add(">=");
-		
+
 		//Security dropdown
 		final List<String> values1 = new ArrayList<>();
 		values1.add("Low");
 		values1.add("Medium");
 		values1.add("High");
-		
+
 		// To create a tab in the first column
 		final Label emptySpace = new Label(container, SWT.NONE);
 		emptySpace.setText("	");
@@ -146,50 +142,52 @@ public class PropertyWidget {
 		this.enablePropertyCheckBox = new Button(container, SWT.CHECK);
 		this.enablePropertyCheckBox.setSelection(false);
 
-		this.enablePropertyCheckBox.addSelectionListener(new SelectionAdapter() {
+		final Label propertyNameLabel = new Label(container, SWT.NONE);
+		propertyNameLabel.setText(propertyName.replaceAll("([a-z0-9])([A-Z])","$1 $2"));		
+		propertyNameLabel.setLayoutData(new GridData (80, 15));
 
+		this.operatorComboViewer = new ComboViewer(container, SWT.CENTER);
+		Combo operatorCombo = this.operatorComboViewer.getCombo();
+		operatorCombo.setEnabled(false);
+		operatorCombo.setLayoutData(new GridData (45, 15));
+
+		this.valueSpinner = new Spinner(container, SWT.BORDER | SWT.SINGLE);
+		this.valueSpinner.setEnabled(false);
+		this.valueSpinner.setLayoutData(new GridData (25, 15));
+		
+		this.enablePropertyCheckBox.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				final Button button = (Button) e.widget;
 				if (button.getSelection()) {
-					PropertyWidget.this.valueSpinner.setEnabled(true);
+					if(PropertyWidget.this.valueSpinner.isVisible()){
+						PropertyWidget.this.valueSpinner.setEnabled(true);
+					} 
 					operatorCombo.setEnabled(true);
-					valuesComboBox.setEnabled(true);
 				} else {
-					PropertyWidget.this.valueSpinner.setEnabled(false);
+					if(PropertyWidget.this.valueSpinner.isVisible()){
+						PropertyWidget.this.valueSpinner.setEnabled(false);
+					}
 					operatorCombo.setEnabled(false);
-					valuesComboBox.setEnabled(false);
 				}
 			}
 		});
 
-		final Label propertyNameLabel = new Label(container, SWT.NONE);
-		propertyNameLabel.setText(propertyName);
-		
-		if(propertyName.equals(Constants.Security) || propertyName.equals(Constants.Performance) || propertyName.equals(Constants.CipherSecurity))
+		if(propertyName.equals(Constants.Security) | propertyName.equals(Constants.Performance) |  propertyName.equals(Constants.CipherSecurity) )
 		{
-		this.operatorComboViewer = new ComboViewer(container, SWT.NONE);
-		this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
-		this.operatorComboViewer.setInput(values1);
-
-		this.operatorComboViewer.addSelectionChangedListener(arg0 -> PropertyWidget.this.operatorComboViewer.refresh());
-
-		this.operatorComboViewer.setSelection(new StructuredSelection(values1.get(2)));
-		}
-		else
-		{
-		this.operatorComboViewer = new ComboViewer(container, SWT.NONE);
-		this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
-		this.operatorComboViewer.setInput(values);
-
-		this.operatorComboViewer.addSelectionChangedListener(arg0 -> PropertyWidget.this.operatorComboViewer.refresh());
-
-		this.operatorComboViewer.setSelection(new StructuredSelection(values.get(2)));
-
-		this.valueSpinner = new Spinner(container, SWT.BORDER | SWT.SINGLE);
-		this.valueSpinner.setValues(selection, min, max, digits, increment, pageincrement);
-		this.valueSpinner.setEnabled(false);
-	
+			this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
+			this.operatorComboViewer.setInput(values1);
+			this.operatorComboViewer.addSelectionChangedListener(arg0 -> PropertyWidget.this.operatorComboViewer.refresh());
+			this.operatorComboViewer.setSelection(new StructuredSelection(values1.get(2)));
+			
+			this.valueSpinner.setVisible(false);
+		} else	{
+			this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
+			this.operatorComboViewer.setInput(values);
+			this.operatorComboViewer.addSelectionChangedListener(arg0 -> PropertyWidget.this.operatorComboViewer.refresh());
+			this.operatorComboViewer.setSelection(new StructuredSelection(values.get(2)));
+			
+			this.valueSpinner.setValues(selection, min, max, digits, increment, pageincrement);
 		}
 	}
 
@@ -205,17 +203,17 @@ public class PropertyWidget {
 	}
 
 	public String getOperator() {
-		String temp = ((IStructuredSelection) this.operatorComboViewer.getSelection()).getFirstElement().toString();
-//		if (temp.equals("High")){
-//			return ">";
-//		} else if (temp.equals("Medium")){
-//			return "=";
-//		} else if  (temp.equals("Low")){
-//			return "<";
-//		} else {
-//			return temp;
-//		}
-		return temp;
+		String comboSelection = ((IStructuredSelection) this.operatorComboViewer.getSelection()).getFirstElement().toString();
+		//TODO: assign proper operators for High, Medium, Low
+		if (comboSelection.equals("High")){
+			return ">";
+		} else if (comboSelection.equals("Medium")){
+			return "=";
+		} else if (comboSelection.equals("Low")){
+			return "<";
+		} else {
+			return comboSelection;
+		}
 	}
 
 	/**
@@ -226,15 +224,21 @@ public class PropertyWidget {
 	}
 
 	public String getValue() {
-		return String.valueOf(this.valueSpinner.getSelection());
+		String comboSelection = ((IStructuredSelection) this.operatorComboViewer.getSelection()).getFirstElement().toString();
+		////TODO: assign proper spinner values for High, Medium, Low
+		if (comboSelection.equals("High")){
+			return "8";
+		} else if (comboSelection.equals("Medium")){
+			return "4";
+		} else if (comboSelection.equals("Low")){
+			return "1";
+		} else {
+			return String.valueOf(this.valueSpinner.getSelection());
+		}		
 	}
 
 	public boolean isEnabled() {
 		return this.valueSpinner.isEnabled();
-	}
-	
-	public boolean isEnabledPropertyCheckBox() {
-		return this.enablePropertyCheckBox.isEnabled();
 	}
 
 	/**
@@ -276,5 +280,5 @@ public class PropertyWidget {
 	public String toString() {
 		return "[parent:" + this.parentClafer.getName() + ", child: " + this.childClafer
 			.getName() + ", operator: " + getOperator() + ", value:" + getValue() + ", isGroupConstraint: " + this.isGroupConstraint + "]";
-	}
+	}	
 }

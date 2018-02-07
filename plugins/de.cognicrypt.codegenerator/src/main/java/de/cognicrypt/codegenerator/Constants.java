@@ -106,7 +106,10 @@ public class Constants {
 	public static final String PLEASE_SELECT = "Please select project directory to launch the configurator";
 	public static final String ERROR_MESSAGE_NO_PROJECT = "There is no Java project in your workspace. Please create one and restart CogniCrypt.";
 	public static final String ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY = "No directory for additional resources found.";
+	public static final String ERROR_MESSAGE_NO_FILE = "No file found";
 
+	
+	
 	public static final String JAVA = "java";
 	public static final String JCA = "JCA";
 	public static final String JAR = ".jar";

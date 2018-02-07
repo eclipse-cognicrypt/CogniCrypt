@@ -309,13 +309,12 @@ public class XSLBasedGenerator {
 	 */
 	private boolean insertCallCodeIntoFile(final String temporaryOutputFile, boolean openFileFlag, boolean authorFlag, boolean tempFlag) throws BadLocationException, CoreException, IOException {
 
-		//Later not necessary
-		IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
-
+		IEditorPart currentlyOpenPart = null;
 		if ((openFileFlag && authorFlag) || !openFileFlag) {
 			openOutputFile(temporaryOutputFile, tempFlag);
 			currentlyOpenPart = Utils.getCurrentlyOpenEditor();
 		} else {
+			IDE.openEditor(Utils.getCurrentlyOpenPage(), Utils.getCurrentlyOpenFile());
 			currentlyOpenPart = Utils.getCurrentlyOpenEditor();
 		}
 		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {
@@ -375,12 +374,7 @@ public class XSLBasedGenerator {
 		currentlyOpenDocument.replace(cursorPos, 0, callsForGenClasses[1]);
 		currentlyOpenDocument.replace(imports, 0, callsForGenClasses[0] + Constants.lineSeparator);
 		currentlyOpenEditor.doSave(null);
-
-		if (currentlyOpenEditor.getTitle().equals(Constants.AdditionalOutputFile)) {
-			Utils.closeEditor(currentlyOpenEditor);
-		}
-
-		this.project.refresh();
+		//this.project.refresh();
 		organizeImports(currentlyOpenEditor);
 		return true;
 	}
@@ -404,7 +398,7 @@ public class XSLBasedGenerator {
 		}
 		IWorkbenchPage page = Utils.getCurrentlyOpenPage();
 		try {
-			final IEditorPart editor = IDE.openEditor(page, output);
+			IDE.openEditor(page, output);
 			this.project.refresh();
 		} catch (CoreException e) {
 			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
@@ -412,9 +406,6 @@ public class XSLBasedGenerator {
 
 	}
 
-	
-	
-	
 	/**
 	 * This method organizes imports for all generated files and the file, in which the call code for the generated classes is inserted.
 	 *
@@ -423,31 +414,22 @@ public class XSLBasedGenerator {
 	 * @throws CoreException
 	 */
 	private void organizeImports(final IEditorPart editor) throws CoreException {
-		/*final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
-		final ICompilationUnit[] compilationUnitsInCryptoPackage = this.project.getPackagesOfProject(Constants.PackageName).getCompilationUnits();
 
-		for (int i = 0; i < compilationUnitsInCryptoPackage.length; i++) {
-			organizeImportsActionForAllFilesTouchedDuringGeneration.run(compilationUnitsInCryptoPackage[i]);
-		}
+		IFile openFile = Utils.getCurrentlyOpenFile();
+		Utils.closeEditor(editor);
+		this.project.refresh();
 
-		organizeImportsActionForAllFilesTouchedDuringGeneration.run(JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor)));
-		editor.doSave(null);
-		*/
-		
-		
 		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
 		final FormatAllAction faa = new FormatAllAction(editor.getSite());
-
 		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageName).getCompilationUnits();
 		faa.runOnMultiple(generatedCUnits);
 		organizeImportsActionForAllFilesTouchedDuringGeneration.runOnMultiple(generatedCUnits);
 
-		final ICompilationUnit outputClass = JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor));
-		organizeImportsActionForAllFilesTouchedDuringGeneration.run(outputClass);
-		faa.runOnMultiple(new ICompilationUnit[] { outputClass });
-
+		final ICompilationUnit openClass = JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor));
+		organizeImportsActionForAllFilesTouchedDuringGeneration.run(openClass);
+		faa.runOnMultiple(new ICompilationUnit[] { openClass });
 		editor.doSave(null);
-		 
+		IDE.openEditor(Utils.getCurrentlyOpenPage(), openFile);
 	}
 
 	private void setPosForRunMethod(final int start, final int end) {

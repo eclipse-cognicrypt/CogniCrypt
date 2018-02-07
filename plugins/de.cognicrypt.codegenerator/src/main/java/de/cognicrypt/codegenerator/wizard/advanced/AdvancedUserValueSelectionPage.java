@@ -87,14 +87,14 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 				if (ClaferModelUtils.isConcrete(inputClafer)) {
 					final Group childPanel = createPanel2("", titledPanel);
 					this.userConstraints.add(
-						new PropertyWidget(childPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")), 1, 0, 1024, 0, 1, 1));
+						new PropertyWidget(childPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
 				}
 			} else if (PropertiesMapperUtil.getenumMap().containsKey(inputClafer.getRef().getTargetType())) {
 				createConstraints(inputClafer, inputClafer.getRef().getTargetType(), titledPanel);
 			} else if (!inputClafer.getRef().getTargetType().isPrimitive()) {
 				if (!ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()).equals(titledPanel.getText())) {
 					if (inputClafer.getRef().getTargetType().hasChildren()) {
-						final Group childPanel = createPanel2(ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")), titledPanel);
+						final Group childPanel = createPanel2(ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()), titledPanel);
 						createConstraints(inputClafer, inputClafer.getRef().getTargetType(), childPanel);
 					}
 				} else {
@@ -125,7 +125,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 
 		for (final AstClafer taskAlgorithm : this.taskClafer.getChildren()) {
 			if (!taskAlgorithm.getRef().getTargetType().hasRef()) {
-				final Group titledPanel = createPanel(ClaferModelUtils.removeScopePrefix(taskAlgorithm.getRef().getTargetType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")), this.container);
+				final Group titledPanel = createPanel(ClaferModelUtils.removeScopePrefix(taskAlgorithm.getRef().getTargetType().getName()), this.container);
 				createConstraints(this.taskClafer, taskAlgorithm, titledPanel);
 			}
 			setControl(this.container);

@@ -23,8 +23,7 @@ import javax.ws.rs.core.Response;
 import de.tu_darmstadt.cs.cdc.mops.services.ServiceType;
 import org.apache.commons.io.IOUtils;
 import de.tu_darmstadt.cs.cdc.mops.model.archiving_system.Document;
-				
-				/** @author CogniCrypt */
+
 				public class LongTermArchivingClient {
 
 				private ArchivingSystem archivingSystem;
@@ -36,15 +35,39 @@ import de.tu_darmstadt.cs.cdc.mops.model.archiving_system.Document;
 				this.archivingSystem = (ArchivingSystem)
 				ServiceClientCreator.createServiceClient(ServiceType.ARCHIVING_SYSTEM, url + "/archiving-system");
 
-package <xsl:value-of select="//Package"/>; 
-<xsl:apply-templates select="//Import"/>	
-public class Output {
-	public void templateUsage(String archiveName) throws ServiceClientCreationException, InternalServiceErrorException, IOException  {
-		LongTermArchivingClient ltac = new LongTermArchivingClient();
-		Archive a = ltac.createArchive(archiveName);
-	}
-}
-</xsl:if>
+				archiveConfig = new ArchiveConfiguration();
+				archiveConfig.setDataStructure(DataStructureType.
+				<xsl:choose>
+					<xsl:when test="//task/element/List='Merkle_Tree_Sequence'">
+						MERKLE_TREE_SEQUENCE
+					</xsl:when>
+					<xsl:when test="//task/element/List='Skip_List'">
+						SKIPLIST
+					</xsl:when>
+					<xsl:when test="//task/element/List='Notarial_Attestation_Wrapper'">
+						NOTARIAL_ATTESTATION_WRAPPER
+					</xsl:when>
+					<xsl:otherwise>
+						SIMPLE_LIST
+					</xsl:otherwise>
+				</xsl:choose>);
+				archiveConfig.setScheme(Scheme.MODULAR);
+				archiveConfig.setAddingNewDocuments(<xsl:choose><xsl:when test="//task/element/AddDoc='Once'">false</xsl:when><xsl:otherwise>true</xsl:otherwise></xsl:choose>);
+				archiveConfig.setMultipleDocuments(<xsl:choose><xsl:when test="//task/element/NumDoc='Single'">false</xsl:when><xsl:otherwise>true</xsl:otherwise></xsl:choose>);
+				Set&lt;AttestationTechnique&gt; attsTec = new HashSet&lt;AttestationTechnique&gt;();
+				<xsl:if test="//task//element//Trust='Both'">
+					attsTec.add(AttestationTechnique.SIGNATURE_BASED_TIMESTAMPING);
+					attsTec.add(AttestationTechnique.NOTARISATION);
+				</xsl:if>
+				<xsl:if test="//task//element//Trust='SignatureBased'">
+					attsTec.add(AttestationTechnique.SIGNATURE_BASED_TIMESTAMPING);
+				</xsl:if>
+				<xsl:if test="//task//element//Trust='Notaries'">
+					attsTec.add(AttestationTechnique.NOTARISATION);
+				</xsl:if>
+				archiveConfig.setAttestationTechniques(attsTec);
+				}
+				}
 
 				public Archive createArchive(String archiveName) throws
 				InternalServiceErrorException, IOException {

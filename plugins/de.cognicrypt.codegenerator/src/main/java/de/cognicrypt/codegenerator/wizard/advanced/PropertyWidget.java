@@ -137,18 +137,24 @@ public class PropertyWidget {
 		values1.add("Medium");
 		values1.add("High");
 
-		// To create a tab in the first column
-			final Label emptySpace = new Label(container, SWT.NONE);			
-			//emptySpace.setText("");
+		// To create indentation before the check boxes
+		final Label emptySpace = new Label(container, SWT.NONE);			
+		Composite temp = container.getParent();
+		// TODO: count the total number of parents of the outermost group using some function
+		// Now, it is explicitly given as 10
+		for(int i = 0; i < 10; i++){
+			if(temp != null){
+				temp = temp.getParent();
+				emptySpace.setText("      ");
+			} else {
+				//if the checkbox belongs to outermost group, then it needs more indentation 
+				//to align properly with the combo boxes of inner groups 
+				emptySpace.setText("         ");
+			}
+		}
 
 		this.enablePropertyCheckBox = new Button(container, SWT.CHECK);
 		this.enablePropertyCheckBox.setSelection(false);
-		
-		if(this.enablePropertyCheckBox.getParent().getParent().getParent().getParent().getParent().getParent().getParent().getParent().getParent().getParent().getParent() != null){
-			emptySpace.setText("     ");
-		} else {
-			emptySpace.setText("       ");
-		}
 		
 		final Label propertyNameLabel = new Label(container, SWT.NONE);
 		propertyNameLabel.setText(propertyName.replaceAll("([a-z0-9])([A-Z])","$1 $2"));		

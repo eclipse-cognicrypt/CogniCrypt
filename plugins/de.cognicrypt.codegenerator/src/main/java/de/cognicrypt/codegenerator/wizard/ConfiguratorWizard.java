@@ -183,7 +183,7 @@ public class ConfiguratorWizard extends Wizard {
 				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile()); 
 				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(),null);
 			} else {
-				this.preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, (AstConcreteClafer) org.clafer.cli.Utils
+				this.preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, selectedTask, (AstConcreteClafer) org.clafer.cli.Utils
 					.getModelChildByName(this.claferModel.getModel(), "c0_" + selectedTask.getName()));
 			}
 			if (this.constraints != null) {

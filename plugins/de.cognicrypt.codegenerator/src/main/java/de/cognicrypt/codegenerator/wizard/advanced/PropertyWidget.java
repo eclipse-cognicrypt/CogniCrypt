@@ -149,11 +149,11 @@ public class PropertyWidget {
 		this.operatorComboViewer = new ComboViewer(container, SWT.CENTER);
 		Combo operatorCombo = this.operatorComboViewer.getCombo();
 		operatorCombo.setEnabled(false);
-		operatorCombo.setLayoutData(new GridData (45, 15));
+		operatorCombo.setLayoutData(new GridData (40, 15));
 
 		this.valueSpinner = new Spinner(container, SWT.BORDER | SWT.SINGLE);
 		this.valueSpinner.setEnabled(false);
-		this.valueSpinner.setLayoutData(new GridData (25, 15));
+		this.valueSpinner.setLayoutData(new GridData (35, 15));
 		
 		this.enablePropertyCheckBox.addSelectionListener(new SelectionAdapter() {
 			@Override

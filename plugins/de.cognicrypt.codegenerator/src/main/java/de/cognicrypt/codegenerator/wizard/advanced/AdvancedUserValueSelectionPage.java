@@ -148,7 +148,6 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 			titledPanel.setText("Security Level");
 		} else {
 			titledPanel.setText(name.replaceAll("([a-z0-9])([A-Z])","$1 $2"));		 
-			//titledPanel.setText(name);
 		}
 		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 10, SWT.BOLD));
 		titledPanel.setFont(boldFont);

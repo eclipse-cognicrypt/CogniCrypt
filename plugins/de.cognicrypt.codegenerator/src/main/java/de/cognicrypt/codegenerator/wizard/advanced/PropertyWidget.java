@@ -146,12 +146,12 @@ public class PropertyWidget {
 		propertyNameLabel.setText(propertyName.replaceAll("([a-z0-9])([A-Z])","$1 $2"));		
 		propertyNameLabel.setLayoutData(new GridData (80, 15));
 
-		this.operatorComboViewer = new ComboViewer(container, SWT.CENTER);
+		this.operatorComboViewer = new ComboViewer(container, SWT.FILL);
 		Combo operatorCombo = this.operatorComboViewer.getCombo();
 		operatorCombo.setEnabled(false);
 		operatorCombo.setLayoutData(new GridData (40, 15));
 
-		this.valueSpinner = new Spinner(container, SWT.BORDER | SWT.SINGLE);
+		this.valueSpinner = new Spinner(container, SWT.BORDER | SWT.SINGLE | SWT.FILL);
 		this.valueSpinner.setEnabled(false);
 		this.valueSpinner.setLayoutData(new GridData (35, 15));
 		

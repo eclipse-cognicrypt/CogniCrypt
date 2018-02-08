@@ -33,7 +33,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.PlatformUI;
@@ -88,16 +87,19 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 		if (inputClafer.hasRef()) {
 			if (inputClafer.getRef().getTargetType().isPrimitive() && !(inputClafer.getRef().getTargetType().getName().contains("string"))) {
 				if (ClaferModelUtils.isConcrete(inputClafer)) {
-					final Group childPanel = createPanel2("", titledPanel);
+					Composite childComposite = new Composite (titledPanel, SWT.NONE);
+					childComposite.setLayout(new GridLayout(4, false));
+					GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
+					childComposite.setLayoutData(gridData);
 					this.userConstraints.add(
-						new PropertyWidget(childPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
+						new PropertyWidget(childComposite, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
 				}
 			} else if (PropertiesMapperUtil.getenumMap().containsKey(inputClafer.getRef().getTargetType())) {
 				createConstraints(inputClafer, inputClafer.getRef().getTargetType(), titledPanel);
 			} else if (!inputClafer.getRef().getTargetType().isPrimitive()) {
 				if (!ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()).equals(titledPanel.getText())) {
 					if (inputClafer.getRef().getTargetType().hasChildren()) {
-						final Group childPanel = createPanel2(ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()), titledPanel);
+						final Group childPanel = createPanel(ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()), titledPanel);
 						createConstraints(inputClafer, inputClafer.getRef().getTargetType(), childPanel);
 					}
 				} else {
@@ -148,21 +150,20 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 		titledPanel.setLayout(new GridLayout(1, false));
 		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
 		titledPanel.setLayoutData(gridData);
-		//titledPanel.setLayout((new RowLayout(SWT.VERTICAL)));
 		return titledPanel;
 	}
 
-	private Group createPanel2(final String name, final Composite parent) {
-		final Group titledPanel2 = new Group(parent,SWT.NONE);
-		titledPanel2.setText(name);
-		final Font boldFont = new Font(titledPanel2.getDisplay(), new FontData("Arial", 10, SWT.NONE));
-		titledPanel2.setFont(boldFont);
-		titledPanel2.setLayout(new GridLayout(4, false));
-		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
-		titledPanel2.setLayoutData(gridData);
-		//titledPanel2.setLayout((new RowLayout(SWT.HORIZONTAL)));
-		return titledPanel2;
-	}
+//	private Group createPanel2(final String name, final Composite parent) {
+//		final Group titledPanel2 = new Group(parent,SWT.NONE);
+//		titledPanel2.setText(name);
+//		final Font boldFont = new Font(titledPanel2.getDisplay(), new FontData("Arial", 10, SWT.NONE));
+//		titledPanel2.setFont(boldFont);
+//		titledPanel2.setLayout(new GridLayout(4, false));
+//		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
+//		titledPanel2.setLayoutData(gridData);
+//		titledPanel2.setLayout((new RowLayout(SWT.HORIZONTAL)));
+//		return titledPanel2;
+//	}
 
 	public List<PropertyWidget> getConstraints() {
 		return this.userConstraints;

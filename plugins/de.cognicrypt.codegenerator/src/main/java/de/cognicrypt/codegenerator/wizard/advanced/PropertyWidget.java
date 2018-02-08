@@ -119,7 +119,9 @@ public class PropertyWidget {
 	 * @param pageincrement
 	 */
 	public PropertyWidget(final Composite container, final AstClafer parentClafer, final AstConcreteClafer childClafer, final String propertyName, final int selection, final int min, final int max, final int digits, final int increment, final int pageincrement) {
-		container.setLayout(new GridLayout(5, false));
+		GridLayout layout = new GridLayout(5, false);
+		//layout.marginLeft = 50;
+		container.setLayout(layout);
 		setChildClafer(childClafer);
 		setParentClafer(parentClafer);
 		final List<String> values = new ArrayList<>();
@@ -136,12 +138,18 @@ public class PropertyWidget {
 		values1.add("High");
 
 		// To create a tab in the first column
-		final Label emptySpace = new Label(container, SWT.NONE);
-		emptySpace.setText("	");
+			final Label emptySpace = new Label(container, SWT.NONE);			
+			//emptySpace.setText("");
 
 		this.enablePropertyCheckBox = new Button(container, SWT.CHECK);
 		this.enablePropertyCheckBox.setSelection(false);
-
+		
+		if(this.enablePropertyCheckBox.getParent().getParent().getParent().getParent().getParent().getParent().getParent().getParent().getParent().getParent().getParent() != null){
+			emptySpace.setText("     ");
+		} else {
+			emptySpace.setText("       ");
+		}
+		
 		final Label propertyNameLabel = new Label(container, SWT.NONE);
 		propertyNameLabel.setText(propertyName.replaceAll("([a-z0-9])([A-Z])","$1 $2"));		
 		propertyNameLabel.setLayoutData(new GridData (80, 15));

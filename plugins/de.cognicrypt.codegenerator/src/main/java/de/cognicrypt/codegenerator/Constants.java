@@ -184,6 +184,10 @@ public class Constants {
 	public static final String COMPARE_DESCRIPTION = "Select the algorithms that you wish to compare. Their respective properties will be shown in the boxes below.";
 	public static final String COMPARE_LABEL = "Instance details of";
 	
+	// Code Preview Page
+	public static final String CODE_PREVIEW_PAGE = "Code Preview Page";
+	public static final String CODE_PREVIEW_PAGE_TITLE = "Code preview for the selected solution ";
+	public static final String CODE_PREVIEW_PAGE_DESCRIPTION = "The preview of the code that will be generated in your Java project is shown below.";	
 	
 	//Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;

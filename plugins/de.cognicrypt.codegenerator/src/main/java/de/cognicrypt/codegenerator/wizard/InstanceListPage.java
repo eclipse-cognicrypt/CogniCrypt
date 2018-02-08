@@ -274,18 +274,14 @@ public class InstanceListPage extends WizardPage {
 		codePreviewButton.setText(Constants.LABEL_CODE_PREVIEW_BUTTON);
 		codePreviewButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
-//				MessageBox messageBox = new MessageBox(new Shell(),SWT.OK);
-//				messageBox.setText(Constants.LABEL_CODE_PREVIEW_BUTTON);
-//				messageBox.setMessage(getCodePreview() );
-//				messageBox.open();	
+				//Opens a new wizard to show the code preview 
 				final WizardDialog dialog = new WizardDialog(new Shell(), new CodePreviewWizard(instanceListPage, instanceGenerator)){
 					protected void configureShell(Shell newShell) {
 						super.configureShell(newShell);
 						newShell.setSize(650, 500);
 					}
 				};
-				dialog.open();
-				
+				dialog.open();				
 			}						      
 		});
 

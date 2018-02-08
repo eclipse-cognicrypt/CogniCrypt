@@ -97,7 +97,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 			} else if (PropertiesMapperUtil.getenumMap().containsKey(inputClafer.getRef().getTargetType())) {
 				createConstraints(inputClafer, inputClafer.getRef().getTargetType(), titledPanel);
 			} else if (!inputClafer.getRef().getTargetType().isPrimitive()) {
-				if (!ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()).equals(titledPanel.getText())) {
+				if (!ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()).equals(titledPanel.getText().replaceAll("\\s",""))) {
 					if (inputClafer.getRef().getTargetType().hasChildren()) {
 						final Group childPanel = createPanel(ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()), titledPanel);
 						createConstraints(inputClafer, inputClafer.getRef().getTargetType(), childPanel);
@@ -144,26 +144,19 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 
 	private Group createPanel(final String name, final Composite parent) {
 		final Group titledPanel = new Group(parent, SWT.NONE);
-		titledPanel.setText(name);
-		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 11, SWT.BOLD));
+		if (name.equals("Int")){
+			titledPanel.setText("Security Level");
+		} else {
+			titledPanel.setText(name.replaceAll("([a-z0-9])([A-Z])","$1 $2"));		 
+			//titledPanel.setText(name);
+		}
+		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 10, SWT.BOLD));
 		titledPanel.setFont(boldFont);
 		titledPanel.setLayout(new GridLayout(1, false));
 		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
 		titledPanel.setLayoutData(gridData);
 		return titledPanel;
 	}
-
-//	private Group createPanel2(final String name, final Composite parent) {
-//		final Group titledPanel2 = new Group(parent,SWT.NONE);
-//		titledPanel2.setText(name);
-//		final Font boldFont = new Font(titledPanel2.getDisplay(), new FontData("Arial", 10, SWT.NONE));
-//		titledPanel2.setFont(boldFont);
-//		titledPanel2.setLayout(new GridLayout(4, false));
-//		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
-//		titledPanel2.setLayoutData(gridData);
-//		titledPanel2.setLayout((new RowLayout(SWT.HORIZONTAL)));
-//		return titledPanel2;
-//	}
 
 	public List<PropertyWidget> getConstraints() {
 		return this.userConstraints;

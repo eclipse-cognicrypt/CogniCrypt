@@ -59,7 +59,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Combo;
@@ -270,21 +269,27 @@ public class InstanceListPage extends WizardPage {
 		new Label(control, SWT.NONE);
 
 		//Button to View the code that will be generated into the Java project
+		InstanceListPage instanceListPage = this;
 		Button codePreviewButton = new Button(this.control, SWT.NONE);
 		codePreviewButton.setText(Constants.LABEL_CODE_PREVIEW_BUTTON);
 		codePreviewButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
-				MessageBox messageBox = new MessageBox(new Shell(),SWT.OK);
-				messageBox.setText(Constants.LABEL_CODE_PREVIEW_BUTTON);
-				messageBox.setMessage(getCodePreview() );
-				messageBox.open();	
+//				MessageBox messageBox = new MessageBox(new Shell(),SWT.OK);
+//				messageBox.setText(Constants.LABEL_CODE_PREVIEW_BUTTON);
+//				messageBox.setMessage(getCodePreview() );
+//				messageBox.open();	
+				final WizardDialog dialog = new WizardDialog(new Shell(), new CodePreviewWizard(instanceListPage, instanceGenerator)){
+					protected void configureShell(Shell newShell) {
+						super.configureShell(newShell);
+						newShell.setSize(650, 500);
+					}
+				};
+				dialog.open();
+				
 			}						      
 		});
 
 		//Button to compare two selected algorithms 
-
-		InstanceListPage instanceListPage = this;
-
 		Button compareAlgorithmButton = new Button(control, SWT.NONE);
 		compareAlgorithmButton.addSelectionListener(new SelectionAdapter() {
 			@Override

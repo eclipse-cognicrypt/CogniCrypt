@@ -55,6 +55,7 @@ public class CompareAlgorithmPage extends WizardPage {
 	private Text instanceDetails;
 	private Text instanceDetails1;
 	private InstanceClafer value;
+	
 	public CompareAlgorithmPage(InstanceListPage instanceListPage, InstanceGenerator instanceGenerator) {
 		super(Constants.COMPARE_ALGORITHM_PAGE);
 		setTitle(Constants.COMPARE_TITLE);

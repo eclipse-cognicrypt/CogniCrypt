@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.clafer.ast.AstClafer;
@@ -44,7 +45,7 @@ public class XMLParser {
 	 *        constraints of task that need to be encoded in the xml file
 	 * @return content of xml instance file as String object
 	 */
-	public String displayInstanceValues(final InstanceClafer inst, final HashMap<Question, Answer> constraints) {
+	public Document displayInstanceValues(final InstanceClafer inst, final Map<Question, Answer> constraints) {
 		this.document = DocumentHelper.createDocument();
 		final Element taskElem = this.document.addElement(Constants.Task);
 		if (inst != null && inst.hasChildren()) {
@@ -107,7 +108,7 @@ public class XMLParser {
 				}
 			}
 		}
-		return this.document.asXML();
+		return this.document;
 	}
 
 	private void displayInstanceXML(final InstanceClafer inst, final Element parent) {
@@ -169,7 +170,7 @@ public class XMLParser {
 	 * @throws IOException
 	 *         See {@link org.dom4j.io.XMLWriter#write(Document) write()} and {@link org.dom4j.io.XMLWriter#close() close()}
 	 */
-	public void writeClaferInstanceToFile(final String path) throws IOException {
+	public void writeXMLToFile(final String path) throws IOException {
 		if (this.document != null) {
 			final OutputFormat format = OutputFormat.createPrettyPrint();
 			final XMLWriter writer = new XMLWriter(new FileWriter(path), format);

@@ -56,7 +56,7 @@ public class XMLParserTest {
 
 		final XMLParser xmlparser = new XMLParser();
 		xmlparser.displayInstanceValues(this.inst, this.constraints);
-		xmlparser.writeClaferInstanceToFile(this.xmlTestFilePath);
+		xmlparser.writeXMLToFile(this.xmlTestFilePath);
 
 		final FileInputStream testFile = new FileInputStream(this.xmlTestFilePath);
 		testFile.read(generatedBytes);
@@ -77,7 +77,7 @@ public class XMLParserTest {
 		final String validXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<task description=\"Main\"><Package>Crypto</Package><Imports>"+ importBuilder.toString() + "</Imports><algorithm type=\"Digest\"><outputSize>256</outputSize><name>SHA3-256</name><performance>3</performance><status>secure</status></algorithm><code/></task>";
 		final XMLParser xmlparser = new XMLParser();
 
-		final String xml = xmlparser.displayInstanceValues(this.inst, this.constraints);
+		final String xml = xmlparser.displayInstanceValues(this.inst, this.constraints).asXML();
 		assertEquals(validXML, xml);
 	}
 }

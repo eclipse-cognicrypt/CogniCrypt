@@ -355,19 +355,20 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				mandatory.setText("*");
 				mandatory.setForeground(red);
 				final Text inputField = new Text(container, SWT.BORDER );
-				inputField.setLayoutData(new GridData(100, 15));
+				inputField.setLayoutData(new GridData(100, 13));
 				inputField.setToolTipText(question.getTooltip());
 
 				//Adding Browse Button for text field that expects a path as input
 				if(question.getTextType().equals("browse")){
-					inputField.setLayoutData(new GridData(300, 15));
+					inputField.setLayoutData(new GridData(300, 13));
 
 					Button browseButton = new Button(container, SWT.PUSH);
 					browseButton.setText(Constants.LABEL_BROWSE_BUTTON);
 					browseButton.addSelectionListener(new SelectionAdapter() {
 						public void widgetSelected(SelectionEvent e) {
-							FileDialog dialog = new FileDialog(getShell(), SWT.NULL);
-							String path = dialog.open();
+							FileDialog fileDialog = new FileDialog(getShell(), SWT.NULL);
+							fileDialog.setFilterExtensions(new String[] {"*.txt" });
+							String path = fileDialog.open();
 							if (path != null) {
 								inputField.setText(path);
 							}
@@ -376,7 +377,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					text(question, inputField);
 				}					
 				else if(question.getTextType().equals("password")) {
-					inputField.setLayoutData(new GridData(120, 15));
+					inputField.setLayoutData(new GridData(120, 13));
 					inputField.setEchoChar((char) 0x25cf);
 
 					//Check box to show/hide password

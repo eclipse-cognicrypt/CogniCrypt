@@ -169,7 +169,6 @@ public class CompareAlgorithmPage extends WizardPage {
 		Color white1 = display1.getSystemColor(SWT.COLOR_WHITE);
 		this.instanceDetails1.setBackground(white1);
 
-
 		final ISelection defaultAlgorithm = new StructuredSelection(inst.keySet().toArray()[0]);
 		algorithmClass.setSelection(defaultAlgorithm);
 		algorithmClass1.setSelection(defaultAlgorithm);

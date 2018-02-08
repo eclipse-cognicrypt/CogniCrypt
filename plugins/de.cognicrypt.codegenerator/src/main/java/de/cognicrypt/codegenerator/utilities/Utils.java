@@ -91,14 +91,14 @@ public class Utils {
 		return null;
 	}
 
-	/** This method close the currently open editor
+	/** This method closes the currently open editor.
 	 * 
-	 * @param editorPart
+	 * @param editor
 	 */
-	public static void closeEditor(IEditorPart editorPart) {
+	public static void closeEditor(IEditorPart editor) {
 		IWorkbenchPage workbenchPage = Utils.getCurrentlyOpenPage();
 		if (workbenchPage != null) {
-			workbenchPage.closeEditor(editorPart, true);
+			workbenchPage.closeEditor(editor, true);
 		}
 	}
 

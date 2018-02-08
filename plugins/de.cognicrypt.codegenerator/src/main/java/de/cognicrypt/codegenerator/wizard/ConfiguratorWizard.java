@@ -355,7 +355,7 @@ public class ConfiguratorWizard extends Wizard {
 				// Delete Instance File
 				//				FileHelper.deleteFile(xmlInstancePath);
 				codeGenerator.getDeveloperProject().refresh();
-			} catch (final IOException | CoreException | BadLocationException e) {
+			} catch (final IOException | CoreException e) {
 				Activator.getDefault().logError(e);
 				return false;
 			}
@@ -380,7 +380,7 @@ public class ConfiguratorWizard extends Wizard {
 				// Delete Instance File
 				//				FileHelper.deleteFile(xmlInstancePath);
 				codeGenerator.getDeveloperProject().refresh();
-			} catch (final IOException | CoreException | BadLocationException e) {
+			} catch (final IOException | CoreException e) {
 				Activator.getDefault().logError(e);
 				return false;
 			}

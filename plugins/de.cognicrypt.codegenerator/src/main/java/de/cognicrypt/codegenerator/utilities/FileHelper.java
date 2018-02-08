@@ -43,21 +43,13 @@ public class FileHelper {
 	 * @return If the file contains the String <CODE>true</CODE> otherwise <CODE>false</CODE>
 	 * @throws IOException
 	 */
-	public static boolean checkFileForString(final String filePath, String s) throws IOException {
-
+	public static boolean checkFileForString(final String filePath, String searchString) throws IOException {
 		final File f = new File(filePath);
 		if (!(f.exists() && Files.isReadable(f.toPath()))) {
 			return false;
 		}
 
-		final List<String> content = Files.readAllLines(Paths.get(filePath));
-		final StringBuilder contentBuilder = new StringBuilder();
-		for (final String el : content) {
-			contentBuilder.append(el);
-			contentBuilder.append(Constants.lineSeparator);
-		}
-		final String contentString = contentBuilder.toString();
-		return contentString.contains(s);
+		return Files.readAllLines(Paths.get(filePath)).stream().anyMatch(line -> line.contains(searchString));
 	}
 
 	/**
@@ -72,15 +64,9 @@ public class FileHelper {
 			System.out.println("wrong filepath");
 		}
 
-		final List<String> content = Files.readAllLines(Paths.get(filePath));
-		final StringBuilder contentBuilder = new StringBuilder();
-		for (final String el : content) {
-			contentBuilder.append(el);
-			contentBuilder.append(Constants.lineSeparator);
-		}
-		final String contentString = contentBuilder.toString().trim();
+		final String contentStringAlt = String.join(Constants.lineSeparator, Files.readAllLines(Paths.get(filePath))).trim();
 		FileWriter writer = new FileWriter(f);
-		writer.write(contentString);
+		writer.write(contentStringAlt);
 		writer.close();
 	}
 

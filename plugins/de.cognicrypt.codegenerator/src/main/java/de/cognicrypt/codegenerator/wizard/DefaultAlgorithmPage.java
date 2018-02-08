@@ -7,14 +7,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.fieldassist.ControlDecoration;
@@ -38,9 +34,10 @@ import org.eclipse.ui.PlatformUI;
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
+import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
-import de.cognicrypt.codegenerator.utilities.Utils;
-import de.cognicrypt.codegenerator.utilities.XMLParser;
+import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.question.Question;
 
 public class DefaultAlgorithmPage extends WizardPage {
 
@@ -50,23 +47,23 @@ public class DefaultAlgorithmPage extends WizardPage {
 	private Button defaultAlgorithmCheckBox;
 	private Text code;
 	private final InstanceGenerator instanceGenerator;
+	private Map<Question, Answer> constraints;
 	private InstanceClafer value;
-	private final ConfiguratorWizard configuratorWizard;
 
 	/**
 	 * Constructor for DefaultAlgorithmPage.
 	 * 
 	 * @param instGen Instance Generator
+	 * @param constraints 
 	 * @param taskSelectionPage Page to select task
-	 * @param confWizard Configurator wizard
 	 */
-	public DefaultAlgorithmPage(final InstanceGenerator instGen, final TaskSelectionPage taskSelectionPage, final ConfiguratorWizard confWizard) {
+	public DefaultAlgorithmPage(final InstanceGenerator instGen, HashMap<Question, Answer> constraints, final TaskSelectionPage taskSelectionPage) {
 		super(Constants.DEFAULT_ALGORITHM_PAGE);
 		setTitle("Best solution for task: " + taskSelectionPage.getSelectedTask().getDescription());
 		setDescription(Constants.DESCRIPTION_DEFAULT_ALGORITHM_PAGE);
 		this.instanceGenerator = instGen;
 		this.taskSelectionPage = taskSelectionPage;
-		this.configuratorWizard = confWizard;
+		this.constraints = constraints;
 	}
 
 	@Override
@@ -104,7 +101,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 		this.code.setEditable(false);
 		new Label(this.control, SWT.NONE);
 
-		this.code.setText(getCodePreview());
+		this.code.setText(compileCodePreview());
 
 		this.code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
 
@@ -135,50 +132,20 @@ public class DefaultAlgorithmPage extends WizardPage {
 		deco.setShowOnlyOnFocus(false);
 	}
 
-	private String getCodePreview() {
-		final XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(), getProviderFromInstance());
+	private String compileCodePreview() {
+		final CodeGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(), this.taskSelectionPage.getSelectedTask().getXslFile());
 		final String claferPreviewPath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
-		final XMLParser xmlparser = new XMLParser();
-		xmlparser.displayInstanceValues(getValue(), this.configuratorWizard.getConstraints());
-		try {
-			xmlparser.writeClaferInstanceToFile(claferPreviewPath);
-		} catch (final IOException e) {
-			Activator.getDefault().logError(e, Constants.WritingInstanceClaferErrorMessage);
-			return "";
-		}
-
-		final File claferPreviewFile = new File(claferPreviewPath);
-
-		// Check whether directories and templates/model exist
-		final File claferOutputFiles = claferPreviewFile != null && claferPreviewFile.exists() ? claferPreviewFile
-			: Utils.getResourceFromWithin(Constants.pathToClaferInstanceFolder + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
-		final File xslFile = Utils.getResourceFromWithin(this.taskSelectionPage.getSelectedTask().getXslFile());
-		if (!claferOutputFiles.exists() || !xslFile.exists()) {
-			Activator.getDefault().logError(Constants.FilesDoNotExistErrorMessage);
-			return "";
-		}
-		// Perform actual transformation by calling XSLT processor.
-
+		Configuration codePreviewConfig = new Configuration(value, this.constraints, claferPreviewPath);
 		final String temporaryOutputFile = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.CodeGenerationCallFile;
 
-		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
-		final TransformerFactory tFactory = TransformerFactory.newInstance();
-		Transformer transformer;
 		try {
-			transformer = tFactory.newTransformer(new StreamSource(xslFile));
-		} catch (final TransformerConfigurationException e) {
-			Activator.getDefault().logError(e, Constants.TransformerConfigurationErrorMessage);
-			return "";
-		}
-		final File outputFile = new File(temporaryOutputFile);
-		try {
-			transformer.transform(new StreamSource(claferPreviewFile), new StreamResult(outputFile));
-		} catch (final TransformerException e) {
+			((XSLBasedGenerator) codeGenerator).transform(codePreviewConfig.persistConf(), temporaryOutputFile);
+		} catch (TransformerException | IOException e) {
 			Activator.getDefault().logError(e, Constants.TransformerErrorMessage);
 			return "";
 		}
-
-		final Path file = outputFile.toPath();
+		
+		final Path file = new File(temporaryOutputFile).toPath();
 		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 			final StringBuilder sb = new StringBuilder();
 			String line = null;
@@ -198,11 +165,6 @@ public class DefaultAlgorithmPage extends WizardPage {
 
 	public TaskSelectionPage getTaskSelectionPage() {
 		return this.taskSelectionPage;
-	}
-
-	public String getProviderFromInstance() {
-		final String provider = "JCA";
-		return provider;
 	}
 
 	public boolean isDefaultAlgorithm() {
@@ -229,7 +191,6 @@ public class DefaultAlgorithmPage extends WizardPage {
 			return !this.defaultAlgorithmCheckBox.getSelection();
 		}
 		return true;
-
 	}
 
 	@Override

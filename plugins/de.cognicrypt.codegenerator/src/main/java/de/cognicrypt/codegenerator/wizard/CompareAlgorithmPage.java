@@ -48,8 +48,8 @@ public class CompareAlgorithmPage extends WizardPage {
 	private IProject selectedProject = null;
 	Text text1;
 	private Composite control;
-	private Group instancePropertiesPanel;
-	private Group instancePropertiesPanel1;
+	private Group firstInstancePropertiesPanel;
+	private Group secondInstancePropertiesPanel;
 	private InstanceListPage instanceListPage;
 	private InstanceGenerator instanceGenerator;
 	private Text instanceDetails;
@@ -69,16 +69,16 @@ public class CompareAlgorithmPage extends WizardPage {
 		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		ComboViewer algorithmClass;
-		Label labelInstanceList;
+		ComboViewer firstAlgorithmClass;
+		Label firstLabelInstanceList;
 		this.control = new Composite(sc, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		this.control.setLayout(layout);
 
 		//Second Set
-		ComboViewer algorithmClass1;
-		Label labelInstanceList1;
+		ComboViewer secondAlgorithmClass;
+		Label secondLabelInstanceList;
 
 		//To display the Help view after clicking the help icon
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.help_id_3");
@@ -89,47 +89,47 @@ public class CompareAlgorithmPage extends WizardPage {
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
 		setPageComplete(false);
 		compositeControl.setLayout(new GridLayout(2, false));
-		labelInstanceList = new Label(compositeControl, SWT.NONE);
-		labelInstanceList.setText(Constants.COMPARE_LABEL);
+		firstLabelInstanceList = new Label(compositeControl, SWT.NONE);
+		firstLabelInstanceList.setText(Constants.COMPARE_LABEL);
 
-		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
+		firstAlgorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
 		Object algorithmCombination=instanceListPage.getAlgorithmCombinations();
-		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-		algorithmClass.setInput(algorithmCombination);
+		firstAlgorithmClass.setContentProvider(ArrayContentProvider.getInstance());
+		firstAlgorithmClass.setInput(algorithmCombination);
 
 		//Second set of Algorithm Combinations
 		final Composite compositeControl1 = new Composite(this.control, SWT.NONE);
 		compositeControl1.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
 		setPageComplete(false);
 		compositeControl1.setLayout(new GridLayout(2, false));
-		labelInstanceList1 = new Label(compositeControl1, SWT.NONE);
-		labelInstanceList1.setText(Constants.COMPARE_LABEL);
+		secondLabelInstanceList = new Label(compositeControl1, SWT.NONE);
+		secondLabelInstanceList.setText(Constants.COMPARE_LABEL);
 
-		algorithmClass1 = new ComboViewer(compositeControl1, SWT.DROP_DOWN| SWT.READ_ONLY);
-		algorithmClass1.setContentProvider(ArrayContentProvider.getInstance());
-		algorithmClass1.setInput(algorithmCombination);
+		secondAlgorithmClass = new ComboViewer(compositeControl1, SWT.DROP_DOWN| SWT.READ_ONLY);
+		secondAlgorithmClass.setContentProvider(ArrayContentProvider.getInstance());
+		secondAlgorithmClass.setInput(algorithmCombination);
 
 		//First set of Instance details
-		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
-		instancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-		this.instanceDetails = new Text(this.instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		this.firstInstancePropertiesPanel = new Group(this.control, SWT.NONE);
+		firstInstancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		this.instanceDetails = new Text(this.firstInstancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 
-		algorithmClass.addSelectionChangedListener(event -> {
+		firstAlgorithmClass.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-			CompareAlgorithmPage.this.instancePropertiesPanel.setVisible(true);
+			CompareAlgorithmPage.this.firstInstancePropertiesPanel.setVisible(true);
 			final String selectedAlgorithm = selection.getFirstElement().toString();	
 			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm));
 			CompareAlgorithmPage.this.instanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
 		});
 
 		GridLayout gridLayout = new GridLayout();
-		this.instancePropertiesPanel.setLayout(gridLayout);
+		this.firstInstancePropertiesPanel.setLayout(gridLayout);
 		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
 		gridData.widthHint = 60;
 		gridData.horizontalSpan = 1;
 		gridData.heightHint=89;
-		this.instancePropertiesPanel.setLayoutData(gridData);
-		this.instancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
+		this.firstInstancePropertiesPanel.setLayoutData(gridData);
+		this.firstInstancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 
 		Display display = Display.getCurrent();
 		GridData gd_instanceDetails = new GridData(GridData.FILL_BOTH);
@@ -141,26 +141,26 @@ public class CompareAlgorithmPage extends WizardPage {
 		this.instanceDetails.setBackground(white);
 
 		//Second set of Instance details
-		this.instancePropertiesPanel1 = new Group(this.control, SWT.NONE);
-		instancePropertiesPanel1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-		this.instanceDetails1 = new Text(this.instancePropertiesPanel1, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		this.secondInstancePropertiesPanel = new Group(this.control, SWT.NONE);
+		secondInstancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		this.instanceDetails1 = new Text(this.secondInstancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 
-		algorithmClass1.addSelectionChangedListener(event -> {
+		secondAlgorithmClass.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection1 = (IStructuredSelection) event.getSelection();
-			CompareAlgorithmPage.this.instancePropertiesPanel1.setVisible(true);
+			CompareAlgorithmPage.this.secondInstancePropertiesPanel.setVisible(true);
 			final String selectedAlgorithm1 = selection1.getFirstElement().toString();	
 			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm1));
 			CompareAlgorithmPage.this.instanceDetails1.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm1)));
 		});
 
 		GridLayout gridLayout1 = new GridLayout();
-		this.instancePropertiesPanel1.setLayout(gridLayout1);
+		this.secondInstancePropertiesPanel.setLayout(gridLayout1);
 		GridData gridData1 = new GridData(SWT.FILL, GridData.FILL, true, true);
 		gridData1.widthHint = 60;
 		gridData1.horizontalSpan = 1;
 		gridData1.heightHint=89;
-		this.instancePropertiesPanel1.setLayoutData(gridData1);
-		this.instancePropertiesPanel1.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
+		this.secondInstancePropertiesPanel.setLayoutData(gridData1);
+		this.secondInstancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 
 		Display display1 = Display.getCurrent();
 		this.instanceDetails1.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -170,8 +170,8 @@ public class CompareAlgorithmPage extends WizardPage {
 		this.instanceDetails1.setBackground(white1);
 
 		final ISelection defaultAlgorithm = new StructuredSelection(inst.keySet().toArray()[0]);
-		algorithmClass.setSelection(defaultAlgorithm);
-		algorithmClass1.setSelection(defaultAlgorithm);
+		firstAlgorithmClass.setSelection(defaultAlgorithm);
+		secondAlgorithmClass.setSelection(defaultAlgorithm);
 
 		sc.setContent(this.control);
 		sc.setExpandHorizontal(true);

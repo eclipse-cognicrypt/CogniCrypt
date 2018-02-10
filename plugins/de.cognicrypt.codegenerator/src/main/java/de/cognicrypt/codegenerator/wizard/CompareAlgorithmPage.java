@@ -52,8 +52,8 @@ public class CompareAlgorithmPage extends WizardPage {
 	private Group secondInstancePropertiesPanel;
 	private InstanceListPage instanceListPage;
 	private InstanceGenerator instanceGenerator;
-	private Text instanceDetails;
-	private Text instanceDetails1;
+	private Text firstInstanceDetails;
+	private Text secondInstanceDetails;
 	private InstanceClafer value;
 	
 	public CompareAlgorithmPage(InstanceListPage instanceListPage, InstanceGenerator instanceGenerator) {
@@ -112,14 +112,14 @@ public class CompareAlgorithmPage extends WizardPage {
 		//First set of Instance details
 		this.firstInstancePropertiesPanel = new Group(this.control, SWT.NONE);
 		firstInstancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-		this.instanceDetails = new Text(this.firstInstancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		this.firstInstanceDetails = new Text(this.firstInstancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 
 		firstAlgorithmClass.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 			CompareAlgorithmPage.this.firstInstancePropertiesPanel.setVisible(true);
 			final String selectedAlgorithm = selection.getFirstElement().toString();	
 			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm));
-			CompareAlgorithmPage.this.instanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
+			CompareAlgorithmPage.this.firstInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
 		});
 
 		GridLayout gridLayout = new GridLayout();
@@ -132,42 +132,33 @@ public class CompareAlgorithmPage extends WizardPage {
 		this.firstInstancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 
 		Display display = Display.getCurrent();
-		GridData gd_instanceDetails = new GridData(GridData.FILL_BOTH);
-		gd_instanceDetails.widthHint = 157;
-		this.instanceDetails.setLayoutData(gd_instanceDetails);
-		this.instanceDetails.setBounds(10, 20, 400, 180);
-		this.instanceDetails.setEditable(false);
+		this.firstInstanceDetails.setLayoutData(new GridData(GridData.FILL_BOTH));
+		this.firstInstanceDetails.setBounds(10, 20, 400, 180);
+		this.firstInstanceDetails.setEditable(false);
 		Color white = display.getSystemColor(SWT.COLOR_WHITE);
-		this.instanceDetails.setBackground(white);
+		this.firstInstanceDetails.setBackground(white);
 
 		//Second set of Instance details
 		this.secondInstancePropertiesPanel = new Group(this.control, SWT.NONE);
 		secondInstancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-		this.instanceDetails1 = new Text(this.secondInstancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		this.secondInstanceDetails = new Text(this.secondInstancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 
 		secondAlgorithmClass.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection1 = (IStructuredSelection) event.getSelection();
 			CompareAlgorithmPage.this.secondInstancePropertiesPanel.setVisible(true);
 			final String selectedAlgorithm1 = selection1.getFirstElement().toString();	
 			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm1));
-			CompareAlgorithmPage.this.instanceDetails1.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm1)));
+			CompareAlgorithmPage.this.secondInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm1)));
 		});
 
-		GridLayout gridLayout1 = new GridLayout();
-		this.secondInstancePropertiesPanel.setLayout(gridLayout1);
-		GridData gridData1 = new GridData(SWT.FILL, GridData.FILL, true, true);
-		gridData1.widthHint = 60;
-		gridData1.horizontalSpan = 1;
-		gridData1.heightHint=89;
-		this.secondInstancePropertiesPanel.setLayoutData(gridData1);
+		this.secondInstancePropertiesPanel.setLayout(gridLayout);
+		this.secondInstancePropertiesPanel.setLayoutData(gridData);
 		this.secondInstancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 
-		Display display1 = Display.getCurrent();
-		this.instanceDetails1.setLayoutData(new GridData(GridData.FILL_BOTH));
-		this.instanceDetails1.setBounds(10, 20, 400, 180);
-		this.instanceDetails1.setEditable(false);
-		Color white1 = display1.getSystemColor(SWT.COLOR_WHITE);
-		this.instanceDetails1.setBackground(white1);
+		this.secondInstanceDetails.setLayoutData(new GridData(GridData.FILL_BOTH));
+		this.secondInstanceDetails.setBounds(10, 20, 400, 180);
+		this.secondInstanceDetails.setEditable(false);
+		this.secondInstanceDetails.setBackground(white);
 
 		final ISelection defaultAlgorithm = new StructuredSelection(inst.keySet().toArray()[0]);
 		firstAlgorithmClass.setSelection(defaultAlgorithm);

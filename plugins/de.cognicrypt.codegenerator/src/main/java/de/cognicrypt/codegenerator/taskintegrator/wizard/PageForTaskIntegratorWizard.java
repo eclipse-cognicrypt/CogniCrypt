@@ -80,7 +80,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			case Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, this.getName()));
 				// fill the available space on the with the big composite
-				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
+				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 4));
 
 				Button btnAddFeature = new Button(container, SWT.NONE);
 				btnAddFeature.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
@@ -118,6 +118,20 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 					}
 
+				});
+
+				Button btnAddPattern = new Button(container, SWT.NONE);
+				btnAddPattern.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
+				btnAddPattern.setText("Add Pattern");
+				btnAddPattern.addSelectionListener(new SelectionAdapter() {
+
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						ClaferFeaturePatternDialog patternDialog = new ClaferFeaturePatternDialog(getShell());
+						// TODO implement feature creation
+						patternDialog.open();
+						super.widgetSelected(e);
+					}
 				});
 
 				Button importFeatures = new Button(container, SWT.NONE);

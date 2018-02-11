@@ -48,6 +48,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 	private Composite container;
 	private final List<PropertyWidget> userConstraints = new ArrayList<>();
 	private final AstConcreteClafer taskClafer;
+	int i;
 
 	public AdvancedUserValueSelectionPage(final ClaferModel claferModel, Task task, final AstConcreteClafer taskClafer) {
 		super(Constants.SELECT_PROPERTIES);
@@ -77,7 +78,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 		if (inputClafer.hasChildren()) {
 			if (inputClafer.getGroupCard() != null && inputClafer.getGroupCard().getLow() >= 1) {
 				this.userConstraints
-					.add(new PropertyWidget(titledPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
+				.add(new PropertyWidget(titledPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
 			} else {
 				for (final AstConcreteClafer childClafer : inputClafer.getChildren()) {
 					createConstraints(parent, childClafer, titledPanel);
@@ -90,7 +91,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 					Composite childComposite = new Composite (titledPanel, SWT.NONE);
 					childComposite.setLayout(new GridLayout(4, false));
 					GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
-					childComposite.setLayoutData(gridData);
+					childComposite.setLayoutData(gridData);										
 					this.userConstraints.add(
 						new PropertyWidget(childComposite, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
 				}
@@ -118,7 +119,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 	public void createControl(final Composite parent) {
 		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		
+
 		this.container = new Composite(sc, SWT.NONE);
 		this.container.setBounds(20, 10, 350, 200);
 		final GridLayout layout = new GridLayout();

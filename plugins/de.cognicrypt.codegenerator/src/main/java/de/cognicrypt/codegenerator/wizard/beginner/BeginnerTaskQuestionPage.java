@@ -229,7 +229,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		final Composite container = getPanel(parent);
 		final Label label = new Label(container, SWT.TOP | SWT.FILL);
 		GridData gd_question= new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
-		gd_question.widthHint = 550;
+		gd_question.widthHint = 450;
 		label.setLayoutData(gd_question);
 		label.setText(question.getQuestionText());
 		new Label(parent, SWT.NONE);
@@ -367,7 +367,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					browseButton.addSelectionListener(new SelectionAdapter() {
 						public void widgetSelected(SelectionEvent e) {
 							FileDialog fileDialog = new FileDialog(getShell(), SWT.NULL);
-							fileDialog.setFilterExtensions(new String[] {"*.txt" });
+							fileDialog.setFilterExtensions(new String[] {"*.jks" });
 							String path = fileDialog.open();
 							if (path != null) {
 								inputField.setText(path);
@@ -416,6 +416,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				}	
 				else if(question.getTextType().equals("port number"))
 				{
+					inputField.setToolTipText(Constants.PORT_NUMBER_TOOLTIP);
 					inputField.addVerifyListener(new VerifyListener() {  
 						@Override  
 						public void verifyText(VerifyEvent e) {
@@ -436,7 +437,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					text(question, inputField);
 				}
 				else if(question.getTextType().equals("ip address"))
-				{						
+				{	
+					inputField.setToolTipText(Constants.IP_ADDRESS_TOOLTIP);
 					inputField.addVerifyListener(new VerifyListener() {  
 						@Override  
 						public void verifyText(VerifyEvent e) {

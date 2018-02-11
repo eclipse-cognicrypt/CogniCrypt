@@ -70,6 +70,14 @@ public class ClaferFeature implements Serializable {
 		this.featureInheritance = featureInheritance;
 	}
 
+	public boolean inheritsFrom(String parentFeature) {
+		return getFeatureInheritance().equals(parentFeature);
+	}
+
+	public boolean inheritsFrom(ClaferFeature parentFeature) {
+		return inheritsFrom(parentFeature.getFeatureInheritance());
+	}
+
 	/**
 	 * @return the properties
 	 */

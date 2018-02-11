@@ -181,7 +181,7 @@ public class Constants {
 	//Compare algorithm page
 	public static final String COMPARE_ALGORITHM_PAGE = "Compare Algorithms Page";
 	public static final String COMPARE_TITLE = "Compare Two Algorithms";
-	public static final String COMPARE_DESCRIPTION = "Select the algorithms that you wish to compare. Their respective properties will be shown in the boxes below.";
+	public static final String COMPARE_DESCRIPTION = "Select the algorithms that you wish to compare. Their properties will be shown in the corresponding boxes below.";
 	public static final String COMPARE_LABEL = "Instance details of";
 	
 	// Code Preview Page

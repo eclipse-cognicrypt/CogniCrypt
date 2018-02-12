@@ -21,17 +21,23 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
+
 public class ClaferFeaturePatternDialog extends Dialog {
 
 	private Composite compositeOptions;
 	private ScrolledComposite compositeScrolledOptions;
 	
+	private String patternName;
 	private ArrayList<StringBuilder> options;
 
 	public ClaferFeaturePatternDialog(Shell parentShell) {
 		super(parentShell);
 		setShellStyle(SWT.RESIZE | SWT.CLOSE);
 
+		patternName = "";
 		options = new ArrayList<>();
 	}
 
@@ -61,6 +67,14 @@ public class ClaferFeaturePatternDialog extends Dialog {
 
 		Text txtName = new Text(container, SWT.BORDER);
 		txtName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		txtName.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent arg0) {
+				patternName = txtName.getText();
+				
+			}
+		});
 
 		Button btnAddOption = new Button(container, SWT.BORDER);
 		btnAddOption.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
@@ -141,8 +155,14 @@ public class ClaferFeaturePatternDialog extends Dialog {
 		return new Point(800, 700);
 	}
 
-	public ArrayList<StringBuilder> getResult() {
-		return options;
+	public ClaferModel getResultModel() {
+		ClaferModel resultModel = new ClaferModel();
+		resultModel.add(new ClaferFeature(Constants.FeatureType.ABSTRACT, patternName, "Enum"));
+		for (StringBuilder sb : options) {
+			resultModel.add(new ClaferFeature(Constants.FeatureType.CONCRETE, sb.toString(), patternName));
+		}
+
+		return resultModel;
 	}
 
 }

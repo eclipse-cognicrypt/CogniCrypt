@@ -49,7 +49,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	private final Page page;
 	private String rangedSize;
 	private MyVerifyListener verifyDecimal = new MyVerifyListener();
-	
 
 	/**
 	 * construct a page containing an element other than itemselection
@@ -210,8 +209,8 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 					final IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
 					if (answers.get(pageUtility.getIndex(answers, selection.getFirstElement().toString())).getClaferDependencies() != null) {
 						claferDepend = answers.get(pageUtility.getIndex(answers, selection.getFirstElement().toString())).getClaferDependencies().get(0).getAlgorithm();
-							selectionMap.put(claferDepend, selection.getFirstElement().toString());
-						
+						selectionMap.put(claferDepend, selection.getFirstElement().toString());
+
 					}
 					try {
 						this.iteration = Integer.parseInt(selection.getFirstElement().toString());
@@ -238,32 +237,31 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 						public void widgetSelected(SelectionEvent e) {
 							Button source = (Button) e.getSource();
 							if (source.getSelection()) {
-								
+
 								if (answers.get(pageUtility.getIndex(answers, source.getText())).getClaferDependencies() != null) {
 									claferDepend = answers.get(pageUtility.getIndex(answers, source.getText())).getClaferDependencies().get(0).getAlgorithm();
 								}
-									if (selectedValue.isEmpty()) {
-										selectedValue = source.getText();
-										selectionMap.put(claferDepend, selectedValue);
-//										<claferDepend> selectedValue </claferDepend>
+								if (selectedValue.isEmpty()) {
+									selectedValue = source.getText();
+									selectionMap.put(claferDepend, selectedValue);
+									//									
 
-									} else if  (!selectedValue.contains(source.getText())) {
-											selectedValue += "||" + source.getText();
-											selectionMap.put(claferDepend, selectedValue);
-										}
-								
-							} else {
-								selectedValue = selectedValue.replace("||" + source.getText(), "");
-								selectionMap.put(claferDepend, selectedValue);
-								if(selectedValue.equals("")){
+								} else if (!selectedValue.contains(source.getText())) {
+									selectedValue += "|" + source.getText();
+									selectionMap.put(claferDepend, selectedValue);
 								}
+
+							} else {
+								selectedValue = selectedValue.replace("|" + source.getText(), "");
+								selectionMap.put(claferDepend, selectedValue);
+								if (selectedValue.equals("")) {}
 							}
 						}
 					});
-					this.finish=true;
+					this.finish = true;
 					PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
 				}
-				
+
 				break;
 			case text:
 				new Label(container, SWT.NONE);
@@ -272,7 +270,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				GridData data = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
 				data.widthHint = 100;
 				final Text inputField = new Text(container, SWT.BORDER);
-//				inputField.setSize(500, inputField.getSize().y);
+				//				inputField.setSize(500, inputField.getSize().y);
 				inputField.setLayoutData(data);
 				if (question.getEnteredAnswer() != null) {
 					this.finish = !inputField.getText().isEmpty();
@@ -280,14 +278,12 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				}
 				if (answers.get(0).getClaferDependencies() != null) {
 					claferDepend = answers.get(0).getClaferDependencies().get(0).getAlgorithm();
-					if (claferDepend.equals("Block size")) {
+					if (claferDepend.equals(Constants.BLOCK_SIZE)) {
 						inputField.addVerifyListener(verifyDecimal);
-						data.widthHint=50;
+						data.widthHint = 50;
 						inputField.setLayoutData(data);
 					}
-					
-					
-					
+
 					inputField.addModifyListener(e -> {
 						this.finish = !selectedValue.isEmpty();
 						selectedValue = inputField.getText();
@@ -356,7 +352,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 					group[j].setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 					group[j].setLayout(new GridLayout(4, false));
 					Button[] radioButton = new Button[answers.size()];
-					String key = "Keysize n°" + (j + 1);
+					String key = "Keysize" + (j + 1);
 					for (int i = 0; i < answers.size(); i++) {
 						String ans = answers.get(i).getValue();
 						radioButton[i] = new Button(group[j], SWT.RADIO);
@@ -377,7 +373,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 								if (answers.get(pageUtility.getIndex(answers, source.getText())).getClaferDependencies() != null) {
 									claferDepend = answers.get(pageUtility.getIndex(answers, source.getText())).getClaferDependencies().get(0).getAlgorithm();
 								}
-								if (source.getText().equals("fixed size")) {
+								if (source.getText().equals(Constants.FIXED_SIZE)) {
 									textField[0].setEnabled(true);
 									textField[1].setEnabled(false);
 								}
@@ -467,11 +463,12 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	public synchronized LinkedHashMap<String, String> getSelection() {
 		return this.selectionMap;
 	}
-	
-	public String getSelectedValue(){
+
+	public String getSelectedValue() {
 		return this.selectedValue;
 	}
-	public String getClaferDepend(){
+
+	public String getClaferDepend() {
 		return this.claferDepend;
 	}
 

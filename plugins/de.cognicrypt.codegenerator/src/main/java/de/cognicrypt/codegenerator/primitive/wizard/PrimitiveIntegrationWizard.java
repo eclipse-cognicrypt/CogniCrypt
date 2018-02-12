@@ -158,7 +158,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	public boolean performFinish() {
 
 		//Generation of xml file for xsl
-		File xmlFile =new File("C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\xmlFile.xml"); //Change local
+		File xmlFile =new File("C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XML\\xmlFile.xml"); //Change local
 		xmlFileForXSL = new WriteXML();
 		try{
 			xmlFileForXSL.createDocument();

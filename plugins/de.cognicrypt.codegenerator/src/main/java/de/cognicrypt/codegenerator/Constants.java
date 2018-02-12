@@ -55,6 +55,12 @@ public class Constants {
 	
 	public static final String jsonPrimitiveTypesFile = rsrcPath + "Primitives" + innerFileSeparator + "PrimitiveType.json";
 	
+	//XML & XSL for Primitive 
+	public static final String primitivesPath = Constants.rsrcPath + "Primitives";
+	public static final String xmlFile = primitivesPath + innerFileSeparator + "XML" + innerFileSeparator + "xmlFile.xml";
+	
+	public static final String cipherSpiXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "CipherSPI.xsl";
+	public static final String providerClass = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "providerClass.xsl";
 
 	// Task descriptions
 

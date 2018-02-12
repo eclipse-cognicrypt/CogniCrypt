@@ -138,19 +138,19 @@ public class PropertyWidget {
 		values1.add("High");
 
 		// To create indentation before the check boxes
-		final Label emptySpace = new Label(container, SWT.NONE);	
-		emptySpace.setText("      ");
-		Composite temp = container.getParent();		
+		final Label emptySpace = new Label(container, SWT.NONE);
+		emptySpace.setText("	");
+		Composite temp = container.getParent();
 		// TODO: count the total number of parents of the outermost group using some function
 		// Now, the outermost group has 11 parents. So, a for loop from 0 to 10 is used. 
 		//(inner groups have one additional parent)
-		for(int i = 0; i < 10; i++){
-			if(temp != null){				
-				temp = temp.getParent();								
+		for (int i = 0; i < 10; i++) {
+			if (temp != null) {
+				temp = temp.getParent();
 			} else {
 				//if the checkbox belongs to outermost group, then it needs more indentation 
 				//to align properly with the combo boxes of inner groups 
-				emptySpace.setText("         ");
+				emptySpace.setText("	   ");
 			}
 		}
 
@@ -158,29 +158,26 @@ public class PropertyWidget {
 		this.enablePropertyCheckBox.setSelection(false);
 
 		final Label propertyNameLabel = new Label(container, SWT.NONE);
-		propertyNameLabel.setText(propertyName.replaceAll("([a-z0-9])([A-Z])","$1 $2"));		
-		propertyNameLabel.setLayoutData(new GridData (80, 15));
+		propertyNameLabel.setText(propertyName.replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
+		propertyNameLabel.setLayoutData(new GridData(100, 20));
 
 		this.operatorComboViewer = new ComboViewer(container, SWT.FILL);
 		Combo operatorCombo = this.operatorComboViewer.getCombo();
 		operatorCombo.setEnabled(false);
-		operatorCombo.setLayoutData(new GridData (40, 15));
-
-		this.valueSpinner = new Spinner(container, SWT.BORDER | SWT.SINGLE | SWT.FILL);
-		this.valueSpinner.setEnabled(false);
-		this.valueSpinner.setLayoutData(new GridData (35, 15));
+		operatorCombo.setLayoutData(new GridData(45, 15));
 
 		this.enablePropertyCheckBox.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				final Button button = (Button) e.widget;
 				if (button.getSelection()) {
-					if(PropertyWidget.this.valueSpinner.isVisible()){
+					if (PropertyWidget.this.valueSpinner != null) {
 						PropertyWidget.this.valueSpinner.setEnabled(true);
-					} 
+					}
 					operatorCombo.setEnabled(true);
 				} else {
-					if(PropertyWidget.this.valueSpinner.isVisible()){
+					if (PropertyWidget.this.valueSpinner != null) {
 						PropertyWidget.this.valueSpinner.setEnabled(false);
 					}
 					operatorCombo.setEnabled(false);
@@ -188,20 +185,20 @@ public class PropertyWidget {
 			}
 		});
 
-		if(propertyName.equals(Constants.Security) | propertyName.equals(Constants.Performance) |  propertyName.equals(Constants.CipherSecurity) )
-		{
+		if (propertyName.equals(Constants.Security) | propertyName.equals(Constants.Performance) | propertyName.equals(Constants.CipherSecurity)) {
 			this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
 			this.operatorComboViewer.setInput(values1);
 			this.operatorComboViewer.addSelectionChangedListener(arg0 -> PropertyWidget.this.operatorComboViewer.refresh());
 			this.operatorComboViewer.setSelection(new StructuredSelection(values1.get(2)));
-
-			this.valueSpinner.setVisible(false);
-		} else	{
+		} else {
 			this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
 			this.operatorComboViewer.setInput(values);
 			this.operatorComboViewer.addSelectionChangedListener(arg0 -> PropertyWidget.this.operatorComboViewer.refresh());
 			this.operatorComboViewer.setSelection(new StructuredSelection(values.get(2)));
 
+			this.valueSpinner = new Spinner(container, SWT.BORDER | SWT.SINGLE | SWT.FILL);
+			this.valueSpinner.setEnabled(false);
+			this.valueSpinner.setLayoutData(new GridData(40, 15));
 			this.valueSpinner.setValues(selection, min, max, digits, increment, pageincrement);
 		}
 	}
@@ -220,7 +217,7 @@ public class PropertyWidget {
 	public String getOperator() {
 		String comboSelection = ((IStructuredSelection) this.operatorComboViewer.getSelection()).getFirstElement().toString();
 		//TODO: assign proper operators for High, Medium, Low
-		if (comboSelection.equals("High") | comboSelection.equals("Medium") | comboSelection.equals("Low")){
+		if (comboSelection.equals("High") | comboSelection.equals("Medium") | comboSelection.equals("Low")) {
 			return "=";
 		} else {
 			return comboSelection;
@@ -237,15 +234,15 @@ public class PropertyWidget {
 	public String getValue() {
 		String comboSelection = ((IStructuredSelection) this.operatorComboViewer.getSelection()).getFirstElement().toString();
 		////TODO: assign proper spinner values for High, Medium, Low
-		if (comboSelection.equals("High")){
+		if (comboSelection.equals("High")) {
 			return "4";
-		} else if (comboSelection.equals("Medium")){
+		} else if (comboSelection.equals("Medium")) {
 			return "3";
-		} else if (comboSelection.equals("Low")){
+		} else if (comboSelection.equals("Low")) {
 			return "2";
 		} else {
 			return String.valueOf(this.valueSpinner.getSelection());
-		}		
+		}
 	}
 
 	public boolean isEnabled() {
@@ -291,5 +288,5 @@ public class PropertyWidget {
 	public String toString() {
 		return "[parent:" + this.parentClafer.getName() + ", child: " + this.childClafer
 			.getName() + ", operator: " + getOperator() + ", value:" + getValue() + ", isGroupConstraint: " + this.isGroupConstraint + "]";
-	}	
+	}
 }

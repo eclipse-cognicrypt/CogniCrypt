@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.transform.Transformer;
@@ -56,6 +57,7 @@ import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.utilities.Utils;
@@ -71,6 +73,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 	private final InstanceGenerator instanceGenerator;
 	private InstanceClafer value;
 	private ConfiguratorWizard configuratorWizard;
+	private String provider;
 
 	/**
 	 * This class is responsible for displaying an algorithm as the best solution,
@@ -115,6 +118,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 		String firstInstance = inst.keySet().toArray()[0].toString();
 		algorithmClass.setText(firstInstance);
 		setValue(DefaultAlgorithmPage.this.instanceGenerator.getInstances().get(firstInstance));
+		getInstanceProperties(DefaultAlgorithmPage.this.instanceGenerator.getInstances().get(firstInstance));
 		setPageComplete(true);
 
 		algorithmClass.setToolTipText(Constants.DEFAULT_ALGORITHM_COMBINATION_TOOLTIP);
@@ -163,7 +167,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 		final ControlDecoration deco = new ControlDecoration(defaultAlgorithmCheckBox, SWT.TOP | SWT.RIGHT );
 		Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
 		if (defaultAlgorithmCheckBox.isEnabled()){
-			deco.setDescriptionText(Constants.DEFAULT_ALGORITHM_CHECKBOX_ENABLE);
+			deco.hide();
 		}
 		else{
 			deco.setDescriptionText(Constants.DEFAULT_ALGORITHM_CHECKBOX_DISABLE);
@@ -244,7 +248,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 			File outputFolder = outputFile.getParentFile();
 			outputFolder.delete();
 			claferPreviewFile.delete();
-		}	
+		}
 
 		return "";
 	}
@@ -253,15 +257,81 @@ public class DefaultAlgorithmPage extends WizardPage {
 		return taskSelectionPage;
 	}
 
+	private void getInstanceDetails(final InstanceClafer inst, final Map<String, String> algorithms) {
+		String value;
+
+		if (!inst.getType().getRef().getTargetType().isPrimitive()) {
+			String algo = Constants.ALGORITHM + " : " + ClaferModelUtils.removeScopePrefix(inst.getType().getRef().getTargetType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + Constants.lineSeparator;			
+			algorithms.put(algo, "");
+
+			final InstanceClafer instan = (InstanceClafer) inst.getRef();
+			for (final InstanceClafer in : instan.getChildren()) {
+				if (in.getType().getRef() != null && !in.getType().getRef().getTargetType().isPrimitive()) {
+					final String superName = ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2"));
+					if (!superName.equals("Enum")) {
+						getInstanceDetails(in, algorithms);
+						continue;
+					}
+				}
+				value = "\t" + ClaferModelUtils.removeScopePrefix(in.getType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
+				if (value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
+					value = value.substring(0, value.indexOf("->") - 1);
+					value = value.replaceAll("([a-z0-9])([A-Z])","$1 $2");
+				}
+				// To get the provider of the instance
+				if(ClaferModelUtils.removeScopePrefix(in.getType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")).equals("Provider")){
+					setProviderForInstance((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");					
+				}
+				
+				value = value.replace("\n", "") + Constants.lineSeparator;	// having only one \n at the end of string
+				algorithms.put(algo, algorithms.get(algo) + value);
+			}
+			// Above for loop over children hasn't been executed, then following if
+			if (!instan.hasChildren()) {
+				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + " : " + inst.getRef().toString();
+				algo = algorithms.keySet().iterator().next();
+				algorithms.put(algo, algorithms.get(algo) + value);
+			}
+		}
+	}
+	
+	
+	String getInstanceProperties(final InstanceClafer inst) {
+		final Map<String, String> algorithms = new HashMap<>();
+		for (InstanceClafer child : inst.getChildren()) {
+			getInstanceDetails(child, algorithms);
+		}
+
+		StringBuilder output = new StringBuilder();
+		for (final Map.Entry<String, String> entry : algorithms.entrySet()) {
+			final String key = entry.getKey();
+			final String value = entry.getValue();
+			if (!value.isEmpty()) {
+				output.append(key);
+				output.append(value);
+				output.append(Constants.lineSeparator);
+			}
+		}
+		return output.toString().replaceAll("([a-z0-9])([A-Z])","$1 $2");
+	}
+	
+	
+	private void setProviderForInstance(String provider) {
+		this.provider = provider;
+	}
+
 	public String getProviderFromInstance(){
-		String provider="JCA";
-		return provider;		
+		return this.provider.replace("\n", "");
 	}
 
 	public boolean isDefaultAlgorithm() {
 		return this.defaultAlgorithmCheckBox.getSelection();
 	}
 
+	public void setValue(final InstanceClafer instanceClafer) {
+		this.value = instanceClafer;
+	}
+	
 	public InstanceClafer getValue() {
 		return this.value;
 	}
@@ -272,9 +342,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 		super.setPageComplete(complete);
 	}
 
-	public void setValue(final InstanceClafer instanceClafer) {
-		this.value = instanceClafer;
-	}
+	
 
 
 	@Override

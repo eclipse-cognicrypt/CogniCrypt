@@ -67,6 +67,8 @@ public class Constants {
 	public static final String INSTANCE_DETAILS_TOOLTIP = "Details of the selected algorithm combination";
 	public static final String PREVIOUS_ALGORITHM_BUTTON = "Previous";
 	public static final String NEXT_ALGORITHM_BUTTON = "Next";
+	public static final String PORT_NUMBER_TOOLTIP = "Example: 65535";
+	public static final String IP_ADDRESS_TOOLTIP = "Example: 255.255.255.255";	
 	
 	//Decoration
 	public static final String DEFAULT_ALGORITHM_CHECKBOX_ENABLE= "If this checkbox is unchecked, the code for the above algorithm \nwill be generated into your java project after clicking 'Finish'";
@@ -181,7 +183,7 @@ public class Constants {
 	//Compare algorithm page
 	public static final String COMPARE_ALGORITHM_PAGE = "Compare Algorithms Page";
 	public static final String COMPARE_TITLE = "Compare Two Algorithms";
-	public static final String COMPARE_DESCRIPTION = "Select the algorithms that you wish to compare. Their respective properties will be shown in the boxes below.";
+	public static final String COMPARE_DESCRIPTION = "Select the algorithms that you wish to compare. Their properties will be shown in the corresponding boxes below.";
 	public static final String COMPARE_LABEL = "Instance details of";
 	
 	// Code Preview Page

@@ -119,7 +119,9 @@ public class PropertyWidget {
 	 * @param pageincrement
 	 */
 	public PropertyWidget(final Composite container, final AstClafer parentClafer, final AstConcreteClafer childClafer, final String propertyName, final int selection, final int min, final int max, final int digits, final int increment, final int pageincrement) {
-		container.setLayout(new GridLayout(5, false));
+		GridLayout layout = new GridLayout(5, false);
+		//layout.marginLeft = 50;
+		container.setLayout(layout);
 		setChildClafer(childClafer);
 		setParentClafer(parentClafer);
 		final List<String> values = new ArrayList<>();
@@ -135,9 +137,22 @@ public class PropertyWidget {
 		values1.add("Medium");
 		values1.add("High");
 
-		// To create a tab in the first column
-		final Label emptySpace = new Label(container, SWT.NONE);
-		emptySpace.setText("	");
+		// To create indentation before the check boxes
+		final Label emptySpace = new Label(container, SWT.NONE);	
+		emptySpace.setText("      ");
+		Composite temp = container.getParent();		
+		// TODO: count the total number of parents of the outermost group using some function
+		// Now, the outermost group has 11 parents. So, a for loop from 0 to 10 is used. 
+		//(inner groups have one additional parent)
+		for(int i = 0; i < 10; i++){
+			if(temp != null){				
+				temp = temp.getParent();								
+			} else {
+				//if the checkbox belongs to outermost group, then it needs more indentation 
+				//to align properly with the combo boxes of inner groups 
+				emptySpace.setText("         ");
+			}
+		}
 
 		this.enablePropertyCheckBox = new Button(container, SWT.CHECK);
 		this.enablePropertyCheckBox.setSelection(false);
@@ -154,7 +169,7 @@ public class PropertyWidget {
 		this.valueSpinner = new Spinner(container, SWT.BORDER | SWT.SINGLE | SWT.FILL);
 		this.valueSpinner.setEnabled(false);
 		this.valueSpinner.setLayoutData(new GridData (35, 15));
-		
+
 		this.enablePropertyCheckBox.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
@@ -179,14 +194,14 @@ public class PropertyWidget {
 			this.operatorComboViewer.setInput(values1);
 			this.operatorComboViewer.addSelectionChangedListener(arg0 -> PropertyWidget.this.operatorComboViewer.refresh());
 			this.operatorComboViewer.setSelection(new StructuredSelection(values1.get(2)));
-			
+
 			this.valueSpinner.setVisible(false);
 		} else	{
 			this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
 			this.operatorComboViewer.setInput(values);
 			this.operatorComboViewer.addSelectionChangedListener(arg0 -> PropertyWidget.this.operatorComboViewer.refresh());
 			this.operatorComboViewer.setSelection(new StructuredSelection(values.get(2)));
-			
+
 			this.valueSpinner.setValues(selection, min, max, digits, increment, pageincrement);
 		}
 	}
@@ -205,12 +220,8 @@ public class PropertyWidget {
 	public String getOperator() {
 		String comboSelection = ((IStructuredSelection) this.operatorComboViewer.getSelection()).getFirstElement().toString();
 		//TODO: assign proper operators for High, Medium, Low
-		if (comboSelection.equals("High")){
-			return ">";
-		} else if (comboSelection.equals("Medium")){
+		if (comboSelection.equals("High") | comboSelection.equals("Medium") | comboSelection.equals("Low")){
 			return "=";
-		} else if (comboSelection.equals("Low")){
-			return "<";
 		} else {
 			return comboSelection;
 		}
@@ -227,11 +238,11 @@ public class PropertyWidget {
 		String comboSelection = ((IStructuredSelection) this.operatorComboViewer.getSelection()).getFirstElement().toString();
 		////TODO: assign proper spinner values for High, Medium, Low
 		if (comboSelection.equals("High")){
-			return "8";
-		} else if (comboSelection.equals("Medium")){
 			return "4";
+		} else if (comboSelection.equals("Medium")){
+			return "3";
 		} else if (comboSelection.equals("Low")){
-			return "1";
+			return "2";
 		} else {
 			return String.valueOf(this.valueSpinner.getSelection());
 		}		

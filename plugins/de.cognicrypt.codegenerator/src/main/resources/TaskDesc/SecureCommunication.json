@@ -23,7 +23,7 @@
         "tooltip": "Secret password of keystore",
         "element": "text",
        "textType":"password",
-        "questionText": "Please give the password for your keystore:",
+        "questionText": "Please enter the password for your keystore:",
         "answers": [{
           "value": "C:\\      ",
           "codeDependencies": [{
@@ -69,7 +69,7 @@
       "id": "3",
       "element":"radio",
       "note": "",
-      "questionText": "Do you know the host/ip?",
+      "questionText": "Do you know the IP address and port number?",
       "answers": [{
           "value": "Yes",
           "codeDependencies": [],
@@ -88,10 +88,9 @@
     "id": "3",
     "content": [{
       "id": "4",
-      "tooltip": "Example : 192.168.123.132",
       "element": "text",
        "textType":"ip address",
-      "questionText": "Please enter host/ip",
+      "questionText": "Please enter the IP address:",
       "answers": [{
         "value": "",
         "codeDependencies": [{
@@ -103,10 +102,9 @@
     },
     {
       "id": "5",
-      "tooltip": "Example : 1.2.3.4:80",
       "element": "text",
        "textType":"port number",
-      "questionText": "Please enter port",
+      "questionText": "Please enter the port number:",
       "answers": [{
         "value": "",
         "codeDependencies": [{
@@ -171,7 +169,7 @@
       "id": "8",
       "element": "itemselection",
       "selectionClafer": "CipherSuite",
-      "questionText": "Please select the cipher suites and TLS protocol versions you would like to use.",
+      "questionText": "Please select the cipher suites and TLS protocol versions you would like to use:",
       "answers": [{
         "value": "",
         "": [{

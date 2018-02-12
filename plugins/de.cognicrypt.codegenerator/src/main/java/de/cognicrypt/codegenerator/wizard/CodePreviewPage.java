@@ -61,6 +61,7 @@ public class CodePreviewPage extends WizardPage{
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
 		this.control.setLayout(layout);
+		setPageComplete(false);
 
 		//Preview of the code for the selected solution, which will be generated in to the Java project
 		this.codePreviewPanel = new Group(this.control, SWT.NONE);

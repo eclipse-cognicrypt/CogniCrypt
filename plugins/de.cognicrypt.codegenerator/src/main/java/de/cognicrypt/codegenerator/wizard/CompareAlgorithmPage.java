@@ -29,6 +29,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -52,10 +53,13 @@ public class CompareAlgorithmPage extends WizardPage {
 	private Group secondInstancePropertiesPanel;
 	private InstanceListPage instanceListPage;
 	private InstanceGenerator instanceGenerator;
-	private Text firstInstanceDetails;
-	private Text secondInstanceDetails;
+	private StyledText firstInstanceDetails;
+	private StyledText secondInstanceDetails;
 	private InstanceClafer value;
-	
+	private String algorithmSelected;
+	private String algorithmSelectedSecond;
+	private String algorithmSelectedFirst;
+
 	public CompareAlgorithmPage(InstanceListPage instanceListPage, InstanceGenerator instanceGenerator) {
 		super(Constants.COMPARE_ALGORITHM_PAGE);
 		setTitle(Constants.COMPARE_TITLE);
@@ -93,7 +97,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		firstLabelInstanceList.setText(Constants.COMPARE_LABEL);
 
 		firstAlgorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
-		Object algorithmCombination=instanceListPage.getAlgorithmCombinations();
+		Object algorithmCombination = instanceListPage.getAlgorithmCombinations();
 		firstAlgorithmClass.setContentProvider(ArrayContentProvider.getInstance());
 		firstAlgorithmClass.setInput(algorithmCombination);
 
@@ -105,30 +109,32 @@ public class CompareAlgorithmPage extends WizardPage {
 		secondLabelInstanceList = new Label(compositeControl1, SWT.NONE);
 		secondLabelInstanceList.setText(Constants.COMPARE_LABEL);
 
-		secondAlgorithmClass = new ComboViewer(compositeControl1, SWT.DROP_DOWN| SWT.READ_ONLY);
+		secondAlgorithmClass = new ComboViewer(compositeControl1, SWT.DROP_DOWN | SWT.READ_ONLY);
 		secondAlgorithmClass.setContentProvider(ArrayContentProvider.getInstance());
 		secondAlgorithmClass.setInput(algorithmCombination);
 
 		//First set of Instance details
 		this.firstInstancePropertiesPanel = new Group(this.control, SWT.NONE);
 		firstInstancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-		this.firstInstanceDetails = new Text(this.firstInstancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		this.firstInstanceDetails = new StyledText(this.firstInstancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 
 		firstAlgorithmClass.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 			CompareAlgorithmPage.this.firstInstancePropertiesPanel.setVisible(true);
-			final String selectedAlgorithm = selection.getFirstElement().toString();	
-			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm));
-			CompareAlgorithmPage.this.firstInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
+			final String selectedAlgorithmFirst = selection.getFirstElement().toString();
+			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmFirst));
+			CompareAlgorithmPage.this.firstInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmFirst)));
+			setHighlightFirst(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmFirst)));
+			compareHighlight();
 		});
 
 		GridLayout gridLayout = new GridLayout();
 		this.firstInstancePropertiesPanel.setLayout(gridLayout);
-		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
-		gridData.widthHint = 60;
-		gridData.horizontalSpan = 1;
-		gridData.heightHint=89;
-		this.firstInstancePropertiesPanel.setLayoutData(gridData);
+		GridData gridDataFirst = new GridData(GridData.FILL, GridData.FILL, true, true);
+		gridDataFirst.widthHint = 60;
+		gridDataFirst.horizontalSpan = 1;
+		gridDataFirst.heightHint = 89;
+		this.firstInstancePropertiesPanel.setLayoutData(gridDataFirst);
 		this.firstInstancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 
 		Display display = Display.getCurrent();
@@ -141,22 +147,29 @@ public class CompareAlgorithmPage extends WizardPage {
 		//Second set of Instance details
 		this.secondInstancePropertiesPanel = new Group(this.control, SWT.NONE);
 		secondInstancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-		this.secondInstanceDetails = new Text(this.secondInstancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		this.secondInstanceDetails = new StyledText(this.secondInstancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 
 		secondAlgorithmClass.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection1 = (IStructuredSelection) event.getSelection();
 			CompareAlgorithmPage.this.secondInstancePropertiesPanel.setVisible(true);
-			final String selectedAlgorithm1 = selection1.getFirstElement().toString();	
-			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm1));
-			CompareAlgorithmPage.this.secondInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm1)));
+			final String selectedAlgorithmSecond = selection1.getFirstElement().toString();
+			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmSecond));
+			CompareAlgorithmPage.this.secondInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmSecond)));
+			setHighlightSecond(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmSecond)));
+			compareHighlight();
+
 		});
 
 		this.secondInstancePropertiesPanel.setLayout(gridLayout);
-		this.secondInstancePropertiesPanel.setLayoutData(gridData);
+		GridData gridDataSecond = new GridData(GridData.FILL, GridData.FILL, true, true);
+		gridDataSecond.widthHint = 60;
+		gridDataSecond.horizontalSpan = 1;
+		gridDataSecond.heightHint = 89;
+		this.secondInstancePropertiesPanel.setLayoutData(gridDataSecond);
 		this.secondInstancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 
 		this.secondInstanceDetails.setLayoutData(new GridData(GridData.FILL_BOTH));
-		this.secondInstanceDetails.setBounds(10, 20, 400, 180);
+		this.secondInstanceDetails.setBounds(10, 20, 259, 207);
 		this.secondInstanceDetails.setEditable(false);
 		this.secondInstanceDetails.setBackground(white);
 
@@ -194,29 +207,33 @@ public class CompareAlgorithmPage extends WizardPage {
 		String value;
 
 		if (!inst.getType().getRef().getTargetType().isPrimitive()) {
-			String algo = Constants.ALGORITHM + " :" + ClaferModelUtils.removeScopePrefix(inst.getType().getRef().getTargetType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + Constants.lineSeparator;
+			String algo = Constants.ALGORITHM + " :" + ClaferModelUtils
+				.removeScopePrefix(inst.getType().getRef().getTargetType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + Constants.lineSeparator;
 			algorithms.put(algo, "");
 
 			final InstanceClafer instan = (InstanceClafer) inst.getRef();
 			for (final InstanceClafer in : instan.getChildren()) {
 				if (in.getType().getRef() != null && !in.getType().getRef().getTargetType().isPrimitive()) {
-					final String superName = ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2"));
+					final String superName = ClaferModelUtils
+						.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
 					if (!superName.equals("Enum")) {
 						getInstanceDetails(in, algorithms);
 						continue;
 					}
 				}
-				value = "\t" + ClaferModelUtils.removeScopePrefix(in.getType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
+				value = "\t" + ClaferModelUtils.removeScopePrefix(
+					in.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
 				if (value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
 					value = value.substring(0, value.indexOf("->") - 1);
-					value = value.replaceAll("([a-z0-9])([A-Z])","$1 $2");
+					value = value.replaceAll("([a-z0-9])([A-Z])", "$1 $2");
 				}
 				value = value.replace("\n", "") + Constants.lineSeparator;	// having only one \n at the end of string
 				algorithms.put(algo, algorithms.get(algo) + value);
 			}
 			// Above for loop over children hasn't been executed, then following if
 			if (!instan.hasChildren()) {
-				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + " : " + inst.getRef().toString().replace("\"", "");
+				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + inst.getRef().toString()
+					.replace("\"", "");
 				algo = algorithms.keySet().iterator().next();
 				algorithms.put(algo, algorithms.get(algo) + value);
 			}
@@ -241,8 +258,44 @@ public class CompareAlgorithmPage extends WizardPage {
 
 	public void setValue(final InstanceClafer instanceClafer) {
 		this.value = instanceClafer;
-	}	
+	}
+
 	public InstanceClafer getValue() {
 		return this.value;
+	}
+
+	public void setHighlightFirst(final String algorithmSelectedFirst) {
+		this.algorithmSelectedFirst = algorithmSelectedFirst;
+	}
+
+	public String getHighlightFirst() {
+		return this.algorithmSelectedFirst;
+	}
+
+	public void setHighlightSecond(final String algorithmSelectedSecond) {
+		this.algorithmSelectedSecond = algorithmSelectedSecond;
+	}
+
+	public String getHighlightSecond() {
+		return this.algorithmSelectedSecond;
+	}
+	
+	public void compareHighlight()
+	{
+		Display display = Display.getCurrent();
+		String firstAlgorithmHighlight = getHighlightFirst();
+		String secondAlgorithmHighlight = getHighlightSecond();
+		Color yellow = display.getSystemColor(SWT.COLOR_YELLOW);
+		Color white = display.getSystemColor(SWT.COLOR_WHITE);
+
+		if (!firstAlgorithmHighlight.equals(secondAlgorithmHighlight)) {
+			secondInstanceDetails.setBackground(yellow);
+			firstInstanceDetails.setBackground(yellow);
+		}
+		else
+		{
+			secondInstanceDetails.setBackground(white);
+			firstInstanceDetails.setBackground(white);
+		}
 	}
 }

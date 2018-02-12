@@ -268,36 +268,48 @@ public class InstanceListPage extends WizardPage {
 		algorithmClass.setSelection(selection);
 		new Label(control, SWT.NONE);
 
+
+		final Composite composite = new Composite(control, SWT.NONE);
+		composite.setLayout(new GridLayout(1, false));
+		
 		//Button to View the code that will be generated into the Java project
 		InstanceListPage instanceListPage = this;
-		Button codePreviewButton = new Button(this.control, SWT.NONE);
+		Button codePreviewButton = new Button(composite, SWT.NONE);
+		GridData gd_codePreviewButton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_codePreviewButton.widthHint = 149;
+		codePreviewButton.setLayoutData(gd_codePreviewButton);
 		codePreviewButton.setText(Constants.LABEL_CODE_PREVIEW_BUTTON);
 		codePreviewButton.addListener(SWT.Selection, new Listener() {
+
 			public void handleEvent(Event event) {
 				//Opens a new wizard to show the code preview 
-				final WizardDialog dialog = new WizardDialog(new Shell(), new CodePreviewWizard(instanceListPage, instanceGenerator)){
+				final WizardDialog dialog = new WizardDialog(new Shell(), new CodePreviewWizard(instanceListPage, instanceGenerator)) {
+
 					protected void configureShell(Shell newShell) {
 						super.configureShell(newShell);
 						newShell.setSize(650, 500);
 					}
 				};
-				dialog.open();				
-			}						      
+				dialog.open();
+			}
 		});
 
+		new Label(composite, SWT.NONE);
+		
 		//Button to compare two selected algorithms 
-		Button compareAlgorithmButton = new Button(control, SWT.NONE);
+		Button compareAlgorithmButton = new Button(composite, SWT.NONE);
 		compareAlgorithmButton.addSelectionListener(new SelectionAdapter() {
+
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-			}
+			public void widgetSelected(SelectionEvent e) {}
 		});
 		compareAlgorithmButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 		compareAlgorithmButton.setText(Constants.LABEL_COMPARE_ALGORITHMS_BUTTON);
 		compareAlgorithmButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event event) {
-				final WizardDialog dialog = new WizardDialog(new Shell(), new CompareWizard(instanceListPage, instanceGenerator)){
+				final WizardDialog dialog = new WizardDialog(new Shell(), new CompareWizard(instanceListPage, instanceGenerator)) {
+
 					protected void configureShell(Shell newShell) {
 						super.configureShell(newShell);
 						newShell.setSize(800, 500);
@@ -306,6 +318,7 @@ public class InstanceListPage extends WizardPage {
 				dialog.open();
 			}
 		});
+		new Label(control, SWT.NONE);
 		new Label(control, SWT.NONE);
 		new Label(control, SWT.NONE);
 		sc.setContent(this.control);

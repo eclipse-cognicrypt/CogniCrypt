@@ -3,8 +3,6 @@
  */
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import org.eclipse.jface.window.Window;
@@ -22,7 +20,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.MessageBox;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
@@ -31,7 +28,6 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
-import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeClaferFeedback;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.GroupBrowseForFile;
@@ -43,7 +39,7 @@ import de.cognicrypt.codegenerator.taskintegrator.widgets.GroupBrowseForFile;
 public class PageForTaskIntegratorWizard extends WizardPage {
 
 	private CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard = null;
-	private CompositeToHoldGranularUIElements compositeToHoldGranularUIElements = null;
+	protected CompositeToHoldGranularUIElements compositeToHoldGranularUIElements = null;
 
 	private CompositeForXsl compositeForXsl = null;
 
@@ -76,116 +72,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
 				container.setLayout(new FillLayout(SWT.HORIZONTAL));
 				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE, this));				
-				break;
-			case Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION:
-				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, this.getName()));
-				// fill the available space on the with the big composite
-				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 4));
-
-				Button btnAddFeature = new Button(container, SWT.NONE);
-				btnAddFeature.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
-				btnAddFeature.setText("Add Feature");
-				btnAddFeature.addSelectionListener(new SelectionAdapter() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-
-						counter++;
-						ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), compositeToHoldGranularUIElements.getClaferModel());
-						if (cfrFeatureDialog.open() == 0) {
-							ClaferFeature tempFeature = cfrFeatureDialog.getResult();
-							
-							// if features are missing, ask the user whether to implement them							
-							ClaferModel missingFeatures = compositeToHoldGranularUIElements.getClaferModel().getMissingFeatures(tempFeature);
-
-							if (!missingFeatures.getClaferModel().isEmpty()) {
-								MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.YES | SWT.NO);
-								dialog.setText("Additional features can be created");
-								dialog.setMessage("Some of the used features don't exist yet. Should we create them for you?");
-
-								if (dialog.open() == SWT.YES) {
-									compositeToHoldGranularUIElements.getClaferModel().implementMissingFeatures(tempFeature);
-								}
-							}
-
-							// Update the array list.							
-							compositeToHoldGranularUIElements.getClaferModel().add(tempFeature);
-							compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
-
-							// rebuild the UI
-							compositeToHoldGranularUIElements.updateClaferContainer();
-						}
-
-					}
-
-				});
-
-				Button btnAddPattern = new Button(container, SWT.NONE);
-				btnAddPattern.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
-				btnAddPattern.setText("Add Pattern");
-				btnAddPattern.addSelectionListener(new SelectionAdapter() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						ClaferFeaturePatternDialog patternDialog = new ClaferFeaturePatternDialog(getShell());
-						if (patternDialog.open() == 0) {
-							for (ClaferFeature cfrFeature : patternDialog.getResultModel()) {
-								compositeToHoldGranularUIElements.getClaferModel().add(cfrFeature);
-								compositeToHoldGranularUIElements.addGranularClaferUIElements(cfrFeature);
-								compositeToHoldGranularUIElements.updateClaferContainer();
-							}
-						}
-						super.widgetSelected(e);
-					}
-				});
-
-				Button importFeatures = new Button(container, SWT.NONE);
-				importFeatures.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
-				importFeatures.setText("Import Features");
-				importFeatures.addSelectionListener(new SelectionAdapter() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						ClaferImportDialog claferImportDialog = new ClaferImportDialog(getShell());
-						if (claferImportDialog.open() == 0) {
-							compositeToHoldGranularUIElements.getClaferModel().add(claferImportDialog.getResult());
-							compositeToHoldGranularUIElements.updateClaferContainer();
-						}
-						super.widgetSelected(e);
-					}
-				});
-				
-				Button exportFeatures = new Button(container, SWT.NONE);
-				exportFeatures.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
-				exportFeatures.setText("Export Features");
-				exportFeatures.addSelectionListener(new SelectionAdapter() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						FileDialog saveDialog = new FileDialog(getShell(), SWT.SAVE);
-						LocalDateTime date = LocalDateTime.now();
-						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HHmm");
-						saveDialog.setFileName(date.format(formatter) + ".dat");
-						String[] filterNames = new String[] { "CogniCrypt binary Clafer model (*.dat)", "Human-readable non-importable Clafer file (*.cfr)" };
-						String[] filterExtensions = new String[] { "*.dat", "*.cfr" };
-						saveDialog.setFilterNames(filterNames);
-						saveDialog.setFilterExtensions(filterExtensions);
-						String targetFilename = saveDialog.open();
-						if (targetFilename != null) {
-							if (targetFilename.endsWith(".dat")) {
-								compositeToHoldGranularUIElements.getClaferModel().toBinary(targetFilename);
-							} else if (targetFilename.endsWith(".cfr")) {
-								compositeToHoldGranularUIElements.getClaferModel().toFile(targetFilename);
-							}
-						}
-						super.widgetSelected(e);
-					}
-				});
-
-				CompositeClaferFeedback feedbackComposite = new CompositeClaferFeedback(container, SWT.BORDER);
-				((CompositeToHoldGranularUIElements) getCompositeToHoldGranularUIElements()).setCompositeClaferFeedback(feedbackComposite);
-				feedbackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
 				break;
 			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:
 

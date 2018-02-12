@@ -1,9 +1,15 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -17,10 +23,16 @@ import org.eclipse.swt.widgets.Text;
 
 public class ClaferFeaturePatternDialog extends Dialog {
 
+	private Composite compositeOptions;
+	private ScrolledComposite compositeScrolledOptions;
 	
+	private ArrayList<StringBuilder> options;
+
 	public ClaferFeaturePatternDialog(Shell parentShell) {
 		super(parentShell);
 		setShellStyle(SWT.RESIZE | SWT.CLOSE);
+
+		options = new ArrayList<>();
 	}
 
 	/**
@@ -50,28 +62,59 @@ public class ClaferFeaturePatternDialog extends Dialog {
 		Text txtName = new Text(container, SWT.BORDER);
 		txtName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
-		Button btnAddOption = new Button(container, SWT.NONE);
+		Button btnAddOption = new Button(container, SWT.BORDER);
 		btnAddOption.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		btnAddOption.setText("Add option");
+		btnAddOption.addSelectionListener(new SelectionAdapter() {
 
-		ScrolledComposite compositeScrolledOptions = new ScrolledComposite(container, SWT.BORDER);
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				StringBuilder strOption = new StringBuilder();
+				options.add(strOption);
+
+				Text txtOption = new Text(compositeOptions, SWT.BORDER);
+				txtOption.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+				txtOption.setText("Text");
+				txtOption.addModifyListener(new ModifyListener() {
+
+					@Override
+					public void modifyText(ModifyEvent arg0) {
+						strOption.delete(0, strOption.length());
+						strOption.append(txtOption.getText());
+
+					}
+				});
+
+				Button btnRemove = new Button(compositeOptions, SWT.NONE);
+				btnRemove.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+				btnRemove.setText("Remove");
+				btnRemove.addSelectionListener(new SelectionAdapter() {
+
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						txtOption.dispose();
+						btnRemove.dispose();
+						options.remove(strOption);
+
+						compositeOptions.layout();
+						super.widgetSelected(e);
+					}
+				});
+
+				compositeOptions.layout();
+				compositeScrolledOptions.setMinSize(compositeOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+				super.widgetSelected(e);
+			}
+		});
+
+		compositeScrolledOptions = new ScrolledComposite(container, SWT.BORDER | SWT.V_SCROLL);
 		compositeScrolledOptions.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		compositeScrolledOptions.setLayout(new GridLayout(1, false));
 
-		Composite compositeOptions = new Composite(compositeScrolledOptions, SWT.NONE);
+		compositeOptions = new Composite(compositeScrolledOptions, SWT.NONE);
 		compositeOptions.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		compositeOptions.setLayout(new GridLayout(2, false));
 		compositeScrolledOptions.setContent(compositeOptions);
-
-		for (int i = 0; i < 4; i++) {
-			Text firstOption = new Text(compositeOptions, SWT.NONE);
-			firstOption.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-			firstOption.setText("Test");
-		}
-
-		Button testButton = new Button(compositeOptions, SWT.NONE);
-		testButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
-		testButton.setText("Test");
 
 		compositeScrolledOptions.setExpandHorizontal(true);
 		compositeScrolledOptions.setExpandVertical(true);
@@ -96,6 +139,10 @@ public class ClaferFeaturePatternDialog extends Dialog {
 	@Override
 	protected Point getInitialSize() {
 		return new Point(800, 700);
+	}
+
+	public ArrayList<StringBuilder> getResult() {
+		return options;
 	}
 
 }

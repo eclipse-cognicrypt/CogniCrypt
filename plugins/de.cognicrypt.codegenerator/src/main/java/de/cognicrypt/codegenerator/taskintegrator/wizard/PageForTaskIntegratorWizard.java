@@ -128,8 +128,14 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						ClaferFeaturePatternDialog patternDialog = new ClaferFeaturePatternDialog(getShell());
-						// TODO implement feature creation
-						patternDialog.open();
+						if (patternDialog.open() == 0) {
+							for (StringBuilder sb : patternDialog.getResult()) {
+								ClaferFeature newFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, sb.toString(), "");
+								compositeToHoldGranularUIElements.getClaferModel().add(newFeature);
+								compositeToHoldGranularUIElements.addGranularClaferUIElements(newFeature);
+								compositeToHoldGranularUIElements.updateClaferContainer();
+							}
+						}
 						super.widgetSelected(e);
 					}
 				});

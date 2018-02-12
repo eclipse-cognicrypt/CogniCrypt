@@ -8,11 +8,13 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
 import de.cognicrypt.codegenerator.primitive.utilities.WriteXML;
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnaire;
@@ -30,7 +32,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	WizardPage preferenceSelectionPage;
 	private LinkedHashMap<String, String> inputsMap = new LinkedHashMap<String, String>();
 	StringBuilder data = new StringBuilder();
-	WriteXML writeXML=new WriteXML();
+	WriteXML xmlFileForXSL;
 
 	public PrimitiveIntegrationWizard() {
 		super();
@@ -76,80 +78,69 @@ public class PrimitiveIntegrationWizard extends Wizard {
 			}
 
 			return this.preferenceSelectionPage;
-		}
-		else if (currentPage.getPreviousPage() == this.selectedPrimitivePage || currentPage instanceof PrimitiveQuestionnairePage){
-		final PrimitiveQuestionnairePage primitiveQuestionPage = (PrimitiveQuestionnairePage) currentPage;
-		LinkedHashMap<String, String> selectionMap = primitiveQuestionPage.getMap();
-		try {
-			writeXML.createDocument();
-			writeXML.setRoot("SymmetricBlockCipher");
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if (primitiveQuestionPage.getSelection() != null) {
-			for (String name : selectionMap.keySet()) {
-
-				String key = name.toString();
-				String value = selectionMap.get(name).toString();
-				System.out.println(key + " " + value);
-				inputsMap.put(key, value);
-			}
-		}
-
-		if (this.primitiveQuestions.hasMorePages()) {
-			int nextID = -1;
-			if (primitiveQuestionPage.getPageNextID() > -2) {
-				nextID = primitiveQuestionPage.getPageNextID();
-			}
+		} else if (currentPage.getPreviousPage() == this.selectedPrimitivePage || currentPage instanceof PrimitiveQuestionnairePage) {
+			final PrimitiveQuestionnairePage primitiveQuestionPage = (PrimitiveQuestionnairePage) currentPage;
+			LinkedHashMap<String, String> selectionMap = primitiveQuestionPage.getMap();
 			
-			if (nextID > -1) {
-				final Page curPage = this.primitiveQuestions.setPageByID(nextID);
-				System.out.println(primitiveQuestions.getCurrentPageID());
-				createPrimitivePage(curPage, primitiveQuestions, primitiveQuestionPage.getIteration());
-				if (checkifInUpdateRound()) {
-					this.primitiveQuestions.previousPage();
-				}
-				final IWizardPage[] pages = getPages();
-				for (int i = 1; i < pages.length; i++) {
-					if (!(pages[i] instanceof PrimitiveQuestionnairePage)) {
-						continue;
-					}
-					final PrimitiveQuestionnairePage oldPage = (PrimitiveQuestionnairePage) pages[i];
-					writeXML.addElement("test"+i, "test");
-					if (oldPage.equals(this.preferenceSelectionPage)) {
-						return oldPage;
-					}
-				}
-				if (this.preferenceSelectionPage != null) {
-					addPage(this.preferenceSelectionPage);
+			if (primitiveQuestionPage.getSelection() != null) {
+				for (String name : selectionMap.keySet()) {
+
+					String key = name.toString();
+					String value = selectionMap.get(name).toString();
+					System.out.println(key + " " + value);
+					inputsMap.put(key, value);
+					System.out.println("combien?");
 
 				}
-				return this.preferenceSelectionPage;
-			} 
-			else{
-				this.projectBrowserPage= new JavaProjectBrowserPage("test");
-				addPage(this.projectBrowserPage);
-				return this.projectBrowserPage;
 			}
-		}
-		}
-		
-		else if(currentPage instanceof JavaProjectBrowserPage){
-				File xmlFile=new File("c:\\test\\newfile.xml");
-				try {
-					writeXML.isCreated(xmlFile);
-				} catch (TransformerException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+
+			if (this.primitiveQuestions.hasMorePages()) {
+				int nextID = -1;
+				if (primitiveQuestionPage.getPageNextID() > -2) {
+					nextID = primitiveQuestionPage.getPageNextID();
 				}
-				System.out.println(xmlFile.getAbsolutePath()+" and "+xmlFile.getName());
-				this.methodSelectionPage= new MethodSelectorPage(this.projectBrowserPage.getSelectedFile());
-				addPage(this.methodSelectionPage);
-				return this.methodSelectionPage;
+
+				if (nextID > -1) {
+					final Page curPage = this.primitiveQuestions.setPageByID(nextID);
+					System.out.println(primitiveQuestions.getCurrentPageID());
+					createPrimitivePage(curPage, primitiveQuestions, primitiveQuestionPage.getIteration());
+					if (checkifInUpdateRound()) {
+						this.primitiveQuestions.previousPage();
+					}
+					final IWizardPage[] pages = getPages();
+					for (int i = 1; i < pages.length; i++) {
+						if (!(pages[i] instanceof PrimitiveQuestionnairePage)) {
+							continue;
+						}
+						final PrimitiveQuestionnairePage oldPage = (PrimitiveQuestionnairePage) pages[i];
+						
+						if (oldPage.equals(this.preferenceSelectionPage)) {
+							
+							return oldPage;
+						}
+					}
+					if (this.preferenceSelectionPage != null) {
+					
+						addPage(this.preferenceSelectionPage);
+
+					}
+					return this.preferenceSelectionPage;
+				} else {
+					this.projectBrowserPage = new JavaProjectBrowserPage("test");
+					addPage(this.projectBrowserPage);
+					return this.projectBrowserPage;
+				}
 			}
+		}
+
+		else if (currentPage instanceof JavaProjectBrowserPage) {
 			
-	
+			
+			this.methodSelectionPage = new MethodSelectorPage(this.projectBrowserPage.getSelectedFile());
+			addPage(this.methodSelectionPage);
+			return this.methodSelectionPage;
+		}
+
 		return currentPage;
 	}
 
@@ -166,7 +157,31 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 
-		// TODO Auto-generated method stub
+		//Generation of xml file for xsl
+		File xmlFile =new File("C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\xmlFile.xml"); //Change local
+		xmlFileForXSL = new WriteXML();
+		try{
+			xmlFileForXSL.createDocument();
+			xmlFileForXSL.setRoot("SymmetricBlockCipher");
+			for (String name : inputsMap.keySet()) {
+
+				String key = name.toString();
+				String value = inputsMap.get(name).toString();
+				xmlFileForXSL.addElement(name.trim(), value);
+				System.out.println(name + value);
+		
+
+			}
+			xmlFileForXSL.isCreated(xmlFile);
+			System.out.println(xmlFile.getAbsolutePath() + " and " + xmlFile.getName());
+		}
+		catch(ParserConfigurationException | TransformerException e){
+			e.printStackTrace();
+		}
+		File xslFile=new File("C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\testxsl.xsl");
+		System.out.println("Le fichier existe ?"+xslFile.exists());
+		//Code generation 
+		
 		return true;
 	}
 

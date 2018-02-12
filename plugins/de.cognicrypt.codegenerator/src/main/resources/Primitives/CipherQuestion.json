@@ -8,7 +8,7 @@
       "answers": [{
           "value": "name",
            "claferDependencies": [{
-              "algorithm": "name="
+              "algorithm": "name"
            }
           ],
           "codeDependencies": [{
@@ -39,7 +39,7 @@
       "answers": [{
           "value": "",
             "claferDependencies": [{
-              "algorithm": "description="
+              "algorithm": "description"
            }
           ],
           "codeDependencies": [{
@@ -82,7 +82,7 @@
       "answers": [{
           "value": "",
            "claferDependencies": [{
-              "algorithm": "Block size"
+              "algorithm": "Blocksize"
            }
           ],
           "codeDependencies": [{
@@ -110,7 +110,7 @@
             "value": "true"
           }],
            "claferDependencies": [{
-              "algorithm": "keySize="
+              "algorithm": "keySize"
            }
           ]
         },
@@ -137,42 +137,42 @@
       "answers": [{
           "value": "CBC",
            "claferDependencies": [{
-              "algorithm": "mode="
+              "algorithm": "mode"
            }
           ]
           },
          {
          "value": "OFB",
           "claferDependencies": [{
-              "algorithm": "mode="
+              "algorithm": "mode"
            }
           ]
         },
          {
          "value": "CFB",
           "claferDependencies": [{
-              "algorithm": "mode="
+              "algorithm": "mode"
            }
           ]
         },
          {
          "value": "CTR",
           "claferDependencies": [{
-              "algorithm": "mode="
+              "algorithm": "mode"
            }
           ]
         },
         {
       "value":"PCBC",
       "claferDependencies": [{
-      "algorithm": "mode="
+      "algorithm": "mode"
       }
       ]
       },
 		{
 		"value":"CTS",
 		"claferDepenedencies": [{
-		"algorithm": "mode=",
+		"algorithm": "mode",
 		"defaultAnswer": "true"
 		}
 		] 
@@ -193,28 +193,28 @@
 		"answers": [{
 		"value": "OneAndZeroes Padding",
 		 "claferDependencies": [{
-              "algorithm": "Padding="
+              "algorithm": "Padding"
            }
           ]
 		},
 		{
-		"value" : "Zero Padding",
+		"value" : "ZeroPadding",
 		 "claferDependencies": [{
-              "algorithm": "Padding="
+              "algorithm": "Padding"
            }
           ]
 		},
 		{
 		"value":"PKCS7",
 		 "claferDependencies": [{
-              "algorithm": "Padding="
+              "algorithm": "Padding"
            }
           ]
 		},
 		{
-		"value": "No Padding",
+		"value": "NoPadding",
 		 "claferDependencies": [{
-              "algorithm": "Padding="
+              "algorithm": "Padding"
            }
           ],
 		"defaultAnswer": "true"

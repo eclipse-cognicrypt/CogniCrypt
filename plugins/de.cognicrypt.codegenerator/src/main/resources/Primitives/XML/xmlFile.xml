@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SymmetricBlockCipher>
+   <name>SICS</name>
+   <Blocksize>200</Blocksize>
+   <Keysize1>256</Keysize1>
+   <mode>CBC|OFB|CFB|CTR</mode>
+   <Padding>Zero Padding|PKCS7|No Padding</Padding>
+</SymmetricBlockCipher>

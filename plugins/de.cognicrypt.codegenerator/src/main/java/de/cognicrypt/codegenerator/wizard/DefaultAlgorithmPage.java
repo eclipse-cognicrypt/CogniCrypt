@@ -188,7 +188,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 	 * 
 	 * @return preview of the code that will be generated in the Java project for provided default algorithm configuration
 	 */
-	private String getCodePreview() {
+	public String getCodePreview() {
 		XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(),this.getProviderFromInstance());
 		final String claferPreviewPath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
 		final XMLParser xmlparser = new XMLParser();
@@ -257,7 +257,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 		return taskSelectionPage;
 	}
 
-	private void getInstanceDetails(final InstanceClafer inst, final Map<String, String> algorithms) {
+	public void getInstanceDetails(final InstanceClafer inst, final Map<String, String> algorithms) {
 		String value;
 
 		if (!inst.getType().getRef().getTargetType().isPrimitive()) {

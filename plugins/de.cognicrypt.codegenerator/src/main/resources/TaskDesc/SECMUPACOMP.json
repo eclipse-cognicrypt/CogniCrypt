@@ -54,10 +54,9 @@
     "content": [{
       "id": "2",
       "note": "",
-      "tooltip": "Example : 216.3.128.12",
       "element": "text",
-       "textType":"ip address",
-      "questionText": "Please enter the server's ip",
+      "textType":"ip address",
+      "questionText": "Please enter the IP address of the server:",
       "answers": [{
         "value": "",
         "codeDependencies": [{
@@ -70,10 +69,9 @@
   {
        "id": "3",
       "note": "",
-      "tooltip": "Example : 1.2.3.4:80",
       "element": "text",
-       "textType":"port number",
-      "questionText": "Please enter the port of the server",
+      "textType":"port number",
+      "questionText": "Please enter the port number of the server:",
       "answers": [{
         "value": "",
         "codeDependencies": [{
@@ -122,7 +120,7 @@
       "id": "5",
       "note": "",
       "element": "scale",
-      "questionText": "What is the preferred security level",
+      "questionText": "What is the preferred security level?",
       "answers": [{
           "value": "Less Secure",
           "claferDependencies": [{

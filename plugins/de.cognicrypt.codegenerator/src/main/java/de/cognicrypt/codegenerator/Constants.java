@@ -168,7 +168,7 @@ public class Constants {
 	public static final String PROPERTIES = "Algorithm Preferences";
 	public static final String SELECT_PROPERTIES = "Select Properties";
 	public static final String FIXED_SIZE = "fixed size";
-	public static final String BLOCK_SIZE="Block size";
+	public static final String BLOCK_SIZE="Blocksize";
 
 	//Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;

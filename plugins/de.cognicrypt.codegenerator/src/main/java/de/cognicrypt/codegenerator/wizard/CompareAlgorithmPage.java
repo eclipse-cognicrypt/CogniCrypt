@@ -55,7 +55,7 @@ public class CompareAlgorithmPage extends WizardPage {
 	private Text firstInstanceDetails;
 	private Text secondInstanceDetails;
 	private InstanceClafer value;
-	
+
 	public CompareAlgorithmPage(InstanceListPage instanceListPage, InstanceGenerator instanceGenerator) {
 		super(Constants.COMPARE_ALGORITHM_PAGE);
 		setTitle(Constants.COMPARE_TITLE);
@@ -93,7 +93,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		firstLabelInstanceList.setText(Constants.COMPARE_LABEL);
 
 		firstAlgorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
-		Object algorithmCombination=instanceListPage.getAlgorithmCombinations();
+		Object algorithmCombination = instanceListPage.getAlgorithmCombinations();
 		firstAlgorithmClass.setContentProvider(ArrayContentProvider.getInstance());
 		firstAlgorithmClass.setInput(algorithmCombination);
 
@@ -105,7 +105,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		secondLabelInstanceList = new Label(compositeControl1, SWT.NONE);
 		secondLabelInstanceList.setText(Constants.COMPARE_LABEL);
 
-		secondAlgorithmClass = new ComboViewer(compositeControl1, SWT.DROP_DOWN| SWT.READ_ONLY);
+		secondAlgorithmClass = new ComboViewer(compositeControl1, SWT.DROP_DOWN | SWT.READ_ONLY);
 		secondAlgorithmClass.setContentProvider(ArrayContentProvider.getInstance());
 		secondAlgorithmClass.setInput(algorithmCombination);
 
@@ -117,7 +117,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		firstAlgorithmClass.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 			CompareAlgorithmPage.this.firstInstancePropertiesPanel.setVisible(true);
-			final String selectedAlgorithm = selection.getFirstElement().toString();	
+			final String selectedAlgorithm = selection.getFirstElement().toString();
 			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm));
 			CompareAlgorithmPage.this.firstInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
 		});
@@ -127,7 +127,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
 		gridData.widthHint = 60;
 		gridData.horizontalSpan = 1;
-		gridData.heightHint=89;
+		gridData.heightHint = 89;
 		this.firstInstancePropertiesPanel.setLayoutData(gridData);
 		this.firstInstancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 
@@ -146,7 +146,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		secondAlgorithmClass.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection1 = (IStructuredSelection) event.getSelection();
 			CompareAlgorithmPage.this.secondInstancePropertiesPanel.setVisible(true);
-			final String selectedAlgorithm1 = selection1.getFirstElement().toString();	
+			final String selectedAlgorithm1 = selection1.getFirstElement().toString();
 			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm1));
 			CompareAlgorithmPage.this.secondInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm1)));
 		});
@@ -194,29 +194,33 @@ public class CompareAlgorithmPage extends WizardPage {
 		String value;
 
 		if (!inst.getType().getRef().getTargetType().isPrimitive()) {
-			String algo = Constants.ALGORITHM + " :" + ClaferModelUtils.removeScopePrefix(inst.getType().getRef().getTargetType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + Constants.lineSeparator;
+			String algo = Constants.ALGORITHM + " :" + ClaferModelUtils
+				.removeScopePrefix(inst.getType().getRef().getTargetType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + Constants.lineSeparator;
 			algorithms.put(algo, "");
 
 			final InstanceClafer instan = (InstanceClafer) inst.getRef();
 			for (final InstanceClafer in : instan.getChildren()) {
 				if (in.getType().getRef() != null && !in.getType().getRef().getTargetType().isPrimitive()) {
-					final String superName = ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2"));
+					final String superName = ClaferModelUtils
+						.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
 					if (!superName.equals("Enum")) {
 						getInstanceDetails(in, algorithms);
 						continue;
 					}
 				}
-				value = "\t" + ClaferModelUtils.removeScopePrefix(in.getType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
+				value = "\t" + ClaferModelUtils.removeScopePrefix(
+					in.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
 				if (value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
 					value = value.substring(0, value.indexOf("->") - 1);
-					value = value.replaceAll("([a-z0-9])([A-Z])","$1 $2");
+					value = value.replaceAll("([a-z0-9])([A-Z])", "$1 $2");
 				}
 				value = value.replace("\n", "") + Constants.lineSeparator;	// having only one \n at the end of string
 				algorithms.put(algo, algorithms.get(algo) + value);
 			}
 			// Above for loop over children hasn't been executed, then following if
 			if (!instan.hasChildren()) {
-				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + " : " + inst.getRef().toString().replace("\"", "");
+				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + inst.getRef().toString()
+					.replace("\"", "");
 				algo = algorithms.keySet().iterator().next();
 				algorithms.put(algo, algorithms.get(algo) + value);
 			}
@@ -241,7 +245,8 @@ public class CompareAlgorithmPage extends WizardPage {
 
 	public void setValue(final InstanceClafer instanceClafer) {
 		this.value = instanceClafer;
-	}	
+	}
+
 	public InstanceClafer getValue() {
 		return this.value;
 	}

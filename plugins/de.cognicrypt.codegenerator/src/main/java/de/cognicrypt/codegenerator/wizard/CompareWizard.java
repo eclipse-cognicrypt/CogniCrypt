@@ -43,7 +43,7 @@ public class CompareWizard extends Wizard {
 		setWindowTitle("Cryptography Task Configurator");
 		ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "icons/cognicrypt-medium.png");
 		setDefaultPageImageDescriptor(image);
-		
+
 		this.instanceListPage = instanceListPage;
 		this.instanceGenerator = instanceGenerator;
 	}
@@ -59,6 +59,5 @@ public class CompareWizard extends Wizard {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 }

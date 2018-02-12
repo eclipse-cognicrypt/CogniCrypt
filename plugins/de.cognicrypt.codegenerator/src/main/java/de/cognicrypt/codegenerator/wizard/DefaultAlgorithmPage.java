@@ -76,14 +76,12 @@ public class DefaultAlgorithmPage extends WizardPage {
 	private String provider;
 
 	/**
-	 * This class is responsible for displaying an algorithm as the best solution,
-	 * based on the answers given by the user for the previous questions.
-	 * It also allows the users to view other possible algorithms matching their requirements,
-	 * by the selection of the check box.
+	 * This class is responsible for displaying an algorithm as the best solution, based on the answers given by the user for the previous questions. It also allows the users to
+	 * view other possible algorithms matching their requirements, by the selection of the check box.
 	 * 
 	 */
 
-	public DefaultAlgorithmPage(final InstanceGenerator inst,final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
+	public DefaultAlgorithmPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
 		super(Constants.DEFAULT_ALGORITHM_PAGE);
 		setTitle("Best solution for task: " + taskSelectionPage.getSelectedTask().getDescription());
 		setDescription(Constants.DESCRIPTION_DEFAULT_ALGORITHM_PAGE);
@@ -114,7 +112,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();//Only the first Instance,which is the most secure one, will be displayed
 
 		//display the default algorithm
-		algorithmClass= new Label(compositeControl, SWT.NONE);
+		algorithmClass = new Label(compositeControl, SWT.NONE);
 		String firstInstance = inst.keySet().toArray()[0].toString();
 		algorithmClass.setText(firstInstance);
 		setValue(DefaultAlgorithmPage.this.instanceGenerator.getInstances().get(firstInstance));
@@ -143,19 +141,20 @@ public class DefaultAlgorithmPage extends WizardPage {
 		this.code.setEditable(false);
 		Color white = display.getSystemColor(SWT.COLOR_WHITE);
 		this.code.setBackground(white);
-		new Label(control, SWT.NONE);		
-		this.code.setText(getCodePreview());		
+		new Label(control, SWT.NONE);
+		this.code.setText(getCodePreview());
 		this.code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
 
 		//this checkbox should be checked, to move to the next page.
 		defaultAlgorithmCheckBox = new Button(control, SWT.CHECK);
 		defaultAlgorithmCheckBox.setSelection(false);
-		if(instanceGenerator.getNoOfInstances()==1){
+		if (instanceGenerator.getNoOfInstances() == 1) {
 			//if there is only one instance, then the user can generate the code only for the default algorithm combination. 
 			//Thus, the check box will be disabled which prevents the user from moving to the next page. 
 			defaultAlgorithmCheckBox.setEnabled(false);
 		}
 		defaultAlgorithmCheckBox.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				getWizard().getContainer().updateButtons();
@@ -164,12 +163,11 @@ public class DefaultAlgorithmPage extends WizardPage {
 		defaultAlgorithmCheckBox.setText(Constants.DEFAULT_ALGORITHM_PAGE_CHECKBOX);
 		defaultAlgorithmCheckBox.setToolTipText(Constants.DEFAULT_CHECKBOX_TOOLTIP);
 
-		final ControlDecoration deco = new ControlDecoration(defaultAlgorithmCheckBox, SWT.TOP | SWT.RIGHT );
+		final ControlDecoration deco = new ControlDecoration(defaultAlgorithmCheckBox, SWT.TOP | SWT.RIGHT);
 		Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
-		if (defaultAlgorithmCheckBox.isEnabled()){
+		if (defaultAlgorithmCheckBox.isEnabled()) {
 			deco.hide();
-		}
-		else{
+		} else {
 			deco.setDescriptionText(Constants.DEFAULT_ALGORITHM_CHECKBOX_DISABLE);
 		}
 		deco.setImage(image);
@@ -189,7 +187,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 	 * @return preview of the code that will be generated in the Java project for provided default algorithm configuration
 	 */
 	public String getCodePreview() {
-		XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(),this.getProviderFromInstance());
+		XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(), this.getProviderFromInstance());
 		final String claferPreviewPath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
 		final XMLParser xmlparser = new XMLParser();
 		xmlparser.displayInstanceValues(this.getValue(), this.configuratorWizard.getConstraints());
@@ -235,12 +233,12 @@ public class DefaultAlgorithmPage extends WizardPage {
 		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 			StringBuilder sb = new StringBuilder();
 			String line = null;
-			while ((line = reader.readLine()) != null ) {
-				if(!line.startsWith("import")){					
+			while ((line = reader.readLine()) != null) {
+				if (!line.startsWith("import")) {
 					sb.append(line);
-					sb.append(Constants.lineSeparator);				    				
+					sb.append(Constants.lineSeparator);
 				}
-			}			
+			}
 			return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
 		} catch (IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
@@ -261,41 +259,43 @@ public class DefaultAlgorithmPage extends WizardPage {
 		String value;
 
 		if (!inst.getType().getRef().getTargetType().isPrimitive()) {
-			String algo = Constants.ALGORITHM + " : " + ClaferModelUtils.removeScopePrefix(inst.getType().getRef().getTargetType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + Constants.lineSeparator;			
+			String algo = Constants.ALGORITHM + " : " + ClaferModelUtils
+				.removeScopePrefix(inst.getType().getRef().getTargetType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + Constants.lineSeparator;
 			algorithms.put(algo, "");
 
 			final InstanceClafer instan = (InstanceClafer) inst.getRef();
 			for (final InstanceClafer in : instan.getChildren()) {
 				if (in.getType().getRef() != null && !in.getType().getRef().getTargetType().isPrimitive()) {
-					final String superName = ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2"));
+					final String superName = ClaferModelUtils
+						.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
 					if (!superName.equals("Enum")) {
 						getInstanceDetails(in, algorithms);
 						continue;
 					}
 				}
-				value = "\t" + ClaferModelUtils.removeScopePrefix(in.getType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
+				value = "\t" + ClaferModelUtils.removeScopePrefix(
+					in.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
 				if (value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
 					value = value.substring(0, value.indexOf("->") - 1);
-					value = value.replaceAll("([a-z0-9])([A-Z])","$1 $2");
+					value = value.replaceAll("([a-z0-9])([A-Z])", "$1 $2");
 				}
 				// To get the provider of the instance
-				if(ClaferModelUtils.removeScopePrefix(in.getType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")).equals("Provider")){
-					setProviderForInstance((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");					
+				if (ClaferModelUtils.removeScopePrefix(in.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")).equals("Provider")) {
+					setProviderForInstance((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
 				}
-				
+
 				value = value.replace("\n", "") + Constants.lineSeparator;	// having only one \n at the end of string
 				algorithms.put(algo, algorithms.get(algo) + value);
 			}
 			// Above for loop over children hasn't been executed, then following if
 			if (!instan.hasChildren()) {
-				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + " : " + inst.getRef().toString();
+				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + inst.getRef().toString();
 				algo = algorithms.keySet().iterator().next();
 				algorithms.put(algo, algorithms.get(algo) + value);
 			}
 		}
 	}
-	
-	
+
 	String getInstanceProperties(final InstanceClafer inst) {
 		final Map<String, String> algorithms = new HashMap<>();
 		for (InstanceClafer child : inst.getChildren()) {
@@ -312,15 +312,14 @@ public class DefaultAlgorithmPage extends WizardPage {
 				output.append(Constants.lineSeparator);
 			}
 		}
-		return output.toString().replaceAll("([a-z0-9])([A-Z])","$1 $2");
+		return output.toString().replaceAll("([a-z0-9])([A-Z])", "$1 $2");
 	}
-	
-	
+
 	private void setProviderForInstance(String provider) {
 		this.provider = provider;
 	}
 
-	public String getProviderFromInstance(){
+	public String getProviderFromInstance() {
 		return this.provider.replace("\n", "");
 	}
 
@@ -331,24 +330,20 @@ public class DefaultAlgorithmPage extends WizardPage {
 	public void setValue(final InstanceClafer instanceClafer) {
 		this.value = instanceClafer;
 	}
-	
+
 	public InstanceClafer getValue() {
 		return this.value;
 	}
-
 
 	@Override
 	public void setPageComplete(final boolean complete) {
 		super.setPageComplete(complete);
 	}
 
-	
-
-
 	@Override
 	public boolean canFlipToNextPage() {
 		//Can go to next page only if the check box is checked
-		if(this.defaultAlgorithmCheckBox.getSelection()!=true){
+		if (this.defaultAlgorithmCheckBox.getSelection() != true) {
 			return this.defaultAlgorithmCheckBox.getSelection();
 		}
 		return true;
@@ -356,9 +351,9 @@ public class DefaultAlgorithmPage extends WizardPage {
 	}
 
 	@Override
-	public void setVisible( boolean visible ) {
-		super.setVisible( visible );
-		if(visible) {
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		if (visible) {
 			control.setFocus();
 		}
 	}

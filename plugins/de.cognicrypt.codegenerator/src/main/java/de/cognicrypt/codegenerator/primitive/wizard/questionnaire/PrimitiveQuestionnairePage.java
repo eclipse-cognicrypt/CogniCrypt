@@ -123,33 +123,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		this.iteration = iteration;
 	}
 
-	/**
-	 * 
-	 * @param PrimitiveQuestionnaire
-	 *        Updated this parameter in the constructor to accept the questionnaire instead of all the questions.
-	 * @param quest
-	 * @param primitive
-	 */
-	public PrimitiveQuestionnairePage(final PrimitiveQuestionnaire PrimitiveQuestionnaire, final Question quest, final Primitive primitive) {
-		super("Display Questions");
-		setTitle("Integrating a new primitive: " + primitive.getName());
-		setDescription("Entering data related to the primitive");
-		this.PrimitiveQuestionnaire = PrimitiveQuestionnaire;
-		this.quest = quest;
-		this.page = null;
-		this.primitive = primitive;
-	}
 
-	public PrimitiveQuestionnairePage(final Question quest, final Primitive primitive, int iteration) {
-		super("Display Quesitons");
-		setTitle("Integrating a new primitive: " + primitive.getName());
-		setDescription("Entering data related to the primitive");
-		this.quest = quest;
-		this.page = null;
-		this.primitive = primitive;
-		this.iteration = iteration;
-
-	}
 
 	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, int iteration) {
 		super("Display Questions");

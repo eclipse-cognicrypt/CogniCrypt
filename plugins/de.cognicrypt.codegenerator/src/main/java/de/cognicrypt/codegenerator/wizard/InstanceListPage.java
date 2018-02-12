@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.transform.Transformer;
@@ -67,7 +66,6 @@ import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.utilities.Utils;
@@ -88,14 +86,16 @@ public class InstanceListPage extends WizardPage {
 	private TaskSelectionPage taskSelectionPage;
 	private ConfiguratorWizard configuratorWizard;
 	private Object algorithmCombinaton;
+	private DefaultAlgorithmPage defaultAlgorithmPage;
 
-	public InstanceListPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard) {
+	public InstanceListPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard, DefaultAlgorithmPage defaultAlgorithmPage ) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
 		setTitle("Possible solutions for task: " + taskSelectionPage.getSelectedTask().getDescription());
 		setDescription(Constants.DESCRIPTION_INSTANCE_LIST_PAGE);
 		this.instanceGenerator = inst;
 		this.taskSelectionPage = taskSelectionPage;
 		this.configuratorWizard = confWizard;
+		this.defaultAlgorithmPage = defaultAlgorithmPage;
 	}
 
 	@Override
@@ -213,7 +213,7 @@ public class InstanceListPage extends WizardPage {
 			InstanceListPage.this.instancePropertiesPanel.setVisible(true);
 			final String selectedAlgorithm = selection.getFirstElement().toString();	
 			setValue(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm));
-			InstanceListPage.this.instanceDetails.setText(getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
+			InstanceListPage.this.instanceDetails.setText(defaultAlgorithmPage.getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
 			int index = combo.getSelectionIndex();
 			if(count > variationCount){
 				algorithmVariation.setText("  Solution  " + (index + 1) + " / " + String.format("%d  ",count ));
@@ -315,65 +315,6 @@ public class InstanceListPage extends WizardPage {
 		setControl(sc);		
 	}
 
-	private void getInstanceDetails(final InstanceClafer inst, final Map<String, String> algorithms) {
-		String value;
-
-		if (!inst.getType().getRef().getTargetType().isPrimitive()) {
-			String algo = Constants.ALGORITHM + " : " + ClaferModelUtils.removeScopePrefix(inst.getType().getRef().getTargetType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + Constants.lineSeparator;			
-			algorithms.put(algo, "");
-
-			final InstanceClafer instan = (InstanceClafer) inst.getRef();
-			for (final InstanceClafer in : instan.getChildren()) {
-				if (in.getType().getRef() != null && !in.getType().getRef().getTargetType().isPrimitive()) {
-					final String superName = ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2"));
-					if (!superName.equals("Enum")) {
-						getInstanceDetails(in, algorithms);
-						continue;
-					}
-				}
-				value = "\t" + ClaferModelUtils.removeScopePrefix(in.getType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
-				if (value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
-					value = value.substring(0, value.indexOf("->") - 1);
-					value = value.replaceAll("([a-z0-9])([A-Z])","$1 $2");
-				}
-				value = value.replace("\n", "") + Constants.lineSeparator;	// having only one \n at the end of string
-				algorithms.put(algo, algorithms.get(algo) + value);
-			}
-			// Above for loop over children hasn't been executed, then following if
-			if (!instan.hasChildren()) {
-				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])","$1 $2")) + " : " + inst.getRef().toString();
-				algo = algorithms.keySet().iterator().next();
-				algorithms.put(algo, algorithms.get(algo) + value);
-			}
-		}
-	}
-
-	/**
-	 * The user might select an algorithm configuration/instance from the combobox. This method returns the details of the currently selected algorithm, which is passed as a
-	 * parameter.
-	 *
-	 * @param inst
-	 *        instance currently selected in the combo box
-	 * @return details for chosen algorithm configuration
-	 */
-	String getInstanceProperties(final InstanceClafer inst) {
-		final Map<String, String> algorithms = new HashMap<>();
-		for (InstanceClafer child : inst.getChildren()) {
-			getInstanceDetails(child, algorithms);
-		}
-
-		StringBuilder output = new StringBuilder();
-		for (final Map.Entry<String, String> entry : algorithms.entrySet()) {
-			final String key = entry.getKey();
-			final String value = entry.getValue();
-			if (!value.isEmpty()) {
-				output.append(key);
-				output.append(value);
-				output.append(Constants.lineSeparator);
-			}
-		}
-		return output.toString().replaceAll("([a-z0-9])([A-Z])","$1 $2");
-	}
 
 	/**
 	 * This method extracts the provider's name from the instanceDetails

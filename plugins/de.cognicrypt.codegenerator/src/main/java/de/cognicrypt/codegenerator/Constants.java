@@ -225,6 +225,12 @@ public class Constants {
 	public static final String LABEL_CODE_PREVIEW_BUTTON = "Code Preview";
 	public static final String LABEL_COMPARE_ALGORITHMS_BUTTON = "Compare Algorithms";
 	
+	//Text type
+	public static final String BROWSE = "Browse";
+	public static final String PASSWORD = "Password";
+	public static final String PORT_NUMBER = "Port number";
+	public static final String IP_ADDRESS = "Ip address";
+	
 	// Dimensions
 	public static final int UI_WIDGET_HEIGHT_NORMAL = 29;
 	

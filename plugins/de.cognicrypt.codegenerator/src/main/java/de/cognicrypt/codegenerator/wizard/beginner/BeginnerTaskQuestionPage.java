@@ -359,7 +359,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				inputField.setToolTipText(question.getTooltip());
 
 				//Adding Browse Button for text field that expects a path as input
-				if(question.getTextType().equals("browse")){
+				if(question.getTextType().equals(Constants.BROWSE)){
 					inputField.setLayoutData(new GridData(300, SWT.DEFAULT));
 
 					Button browseButton = new Button(container, SWT.PUSH);
@@ -376,7 +376,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					});
 					text(question, inputField);
 				}					
-				else if(question.getTextType().equals("password")) {
+				else if(question.getTextType().equals(Constants.PASSWORD)) {
 					inputField.setLayoutData(new GridData(120, SWT.DEFAULT));
 					inputField.setEchoChar((char) 0x25cf);
 
@@ -396,7 +396,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					});
 					text(question, inputField);
 				}
-				else if(question.getTextType().equals("integer"))
+				else if(question.getTextType().equals(Constants.INTEGER))
 				{
 					inputField.addListener(SWT.Verify, new Listener() {
 						public void handleEvent(Event e) {
@@ -414,7 +414,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 					text(question, inputField);	
 				}	
-				else if(question.getTextType().equals("port number"))
+				else if(question.getTextType().equals(Constants.PORT_NUMBER))
 				{
 					inputField.setToolTipText(Constants.PORT_NUMBER_TOOLTIP);
 					inputField.addVerifyListener(new VerifyListener() {  
@@ -436,7 +436,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					});
 					text(question, inputField);
 				}
-				else if(question.getTextType().equals("ip address"))
+				else if(question.getTextType().equals(Constants.IP_ADDRESS))
 				{	
 					inputField.setToolTipText(Constants.IP_ADDRESS_TOOLTIP);
 					inputField.addVerifyListener(new VerifyListener() {  

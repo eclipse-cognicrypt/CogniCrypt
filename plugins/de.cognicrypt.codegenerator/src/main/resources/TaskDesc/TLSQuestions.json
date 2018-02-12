@@ -22,7 +22,7 @@
         "note": "",
         "tooltip": "Secret password of keystore",
         "element": "text",
-        "textType":"password",
+        "textType":"Password",
         "questionText": "Please give the password for your keystore:",
         "answers": [{
           "value": "C:\\      ",

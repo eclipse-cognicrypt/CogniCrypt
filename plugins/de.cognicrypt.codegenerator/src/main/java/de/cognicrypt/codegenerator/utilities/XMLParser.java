@@ -1,28 +1,10 @@
-/**
- * Copyright 2015-2017 Technische Universitaet Darmstadt
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * @author Ram Kamath
- *
- */
 package de.cognicrypt.codegenerator.utilities;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.clafer.ast.AstClafer;
@@ -42,6 +24,8 @@ import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
 
 /**
+ * This class handles XML files.
+ * 
  * @author Mohammad Zahraee
  * @author Ram Kamath
  * @author Stefan Krueger
@@ -53,7 +37,7 @@ public class XMLParser {
 	private String enumParent = null;
 
 	/**
-	 * builds xml document, returns it's string representation
+	 * Builds xml document, returns its string representation.
 	 *
 	 * @param inst
 	 *        Clafer instance/algorithm configuration selected to be generated
@@ -61,7 +45,7 @@ public class XMLParser {
 	 *        constraints of task that need to be encoded in the xml file
 	 * @return content of xml instance file as String object
 	 */
-	public String displayInstanceValues(final InstanceClafer inst, final HashMap<Question, Answer> constraints) {
+	public Document displayInstanceValues(final InstanceClafer inst, final Map<Question, Answer> constraints) {
 		this.document = DocumentHelper.createDocument();
 		final Element taskElem = this.document.addElement(Constants.Task);
 		if (inst != null && inst.hasChildren()) {
@@ -124,12 +108,9 @@ public class XMLParser {
 				}
 			}
 		}
-		return this.document.asXML();
+		return this.document;
 	}
 
-	/**
-	 * Adds XML of inst to parent element
-	 */
 	private void displayInstanceXML(final InstanceClafer inst, final Element parent) {
 		try {
 			if (inst.hasChildren()) {
@@ -189,7 +170,7 @@ public class XMLParser {
 	 * @throws IOException
 	 *         See {@link org.dom4j.io.XMLWriter#write(Document) write()} and {@link org.dom4j.io.XMLWriter#close() close()}
 	 */
-	public void writeClaferInstanceToFile(final String path) throws IOException {
+	public void writeXMLToFile(final String path) throws IOException {
 		if (this.document != null) {
 			final OutputFormat format = OutputFormat.createPrettyPrint();
 			final XMLWriter writer = new XMLWriter(new FileWriter(path), format);

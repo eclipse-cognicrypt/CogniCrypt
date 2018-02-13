@@ -4,9 +4,6 @@ import java.util.AbstractMap.SimpleEntry;
 
 public class ComparableEntry<K, V> extends SimpleEntry<K, V> implements Comparable<ComparableEntry<K, V>> {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -7202623997902577640L;
 
 	public ComparableEntry(final K key, final V value) {

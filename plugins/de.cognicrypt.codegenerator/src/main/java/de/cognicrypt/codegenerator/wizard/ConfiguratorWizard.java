@@ -1,22 +1,5 @@
-/**
- * Copyright 2015-2017 Technische Universitaet Darmstadt
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package de.cognicrypt.codegenerator.wizard;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,10 +9,9 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.clafer.ast.AstConcreteClafer;
-import org.eclipse.core.runtime.CoreException;
+import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -39,18 +21,18 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.Constants.GUIElements;
+import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModel;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
+import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
-import de.cognicrypt.codegenerator.utilities.FileHelper;
 import de.cognicrypt.codegenerator.utilities.Utils;
-import de.cognicrypt.codegenerator.utilities.XMLParser;
 import de.cognicrypt.codegenerator.wizard.advanced.AdvancedUserValueSelectionPage;
 import de.cognicrypt.codegenerator.wizard.beginner.BeginnerModeQuestionnaire;
 import de.cognicrypt.codegenerator.wizard.beginner.BeginnerTaskQuestionPage;
@@ -121,13 +103,14 @@ public class ConfiguratorWizard extends Wizard {
 	}
 
 	/**
-	 *
+	 * Creates a new {@link BeginnerTaskQuestionPage}.
+	 * 
 	 * @param curPage
+	 *        Current page
 	 * @param beginnerQuestionnaire
 	 *        updated this variable from a list of questions to have access to the method to get specific Questions.
 	 */
 	private void createBeginnerPage(final Page curPage, final BeginnerModeQuestionnaire beginnerQuestionnaire) {
-
 		List<String> selection = null;
 		if (curPage.getContent().size() == 1) {
 			final Question curQuestion = curPage.getContent().get(0);
@@ -145,8 +128,8 @@ public class ConfiguratorWizard extends Wizard {
 	}
 
 	/**
-	 * This method returns the next page. If current page is task list or any but the last question page, the first/next question page is returned. If the current page is the the
-	 * last question page, the instance list page is returned.
+	 * This method returns the next page. If current page is task list or any but the last question page, the first/next question page is returned. If the current page is the last
+	 * question page, the instance list page is returned.
 	 *
 	 * @param currentPage
 	 *        current page
@@ -192,11 +175,10 @@ public class ConfiguratorWizard extends Wizard {
 				addPage(this.preferenceSelectionPage);
 			}
 			return this.preferenceSelectionPage;
-		}
-		/**
-		 * If current page is either question or properties page (in Advanced mode)
-		 */
-		else if (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage) {
+		} else if (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage) {
+			/**
+			 * If current page is either question or properties page (in Advanced mode)
+			 */
 			if (this.taskListPage.isGuidedMode()) {
 				if (this.constraints == null) {
 					this.constraints = new HashMap<>();
@@ -243,7 +225,7 @@ public class ConfiguratorWizard extends Wizard {
 			}
 
 			final InstanceGenerator instanceGenerator = new InstanceGenerator(Utils.getResourceFromWithin(selectedTask.getModelFile())
-				.getAbsolutePath(), "c0_" + this.taskListPage.getSelectedTask().getName(), this.taskListPage.getSelectedTask().getDescription());
+				.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
 
 			if (this.taskListPage.isGuidedMode()) {
 				// running in beginner mode
@@ -252,7 +234,7 @@ public class ConfiguratorWizard extends Wizard {
 			if (currentPage instanceof BeginnerTaskQuestionPage) {
 				//default algorithm page will be added only for beginner mode
 				if (instanceGenerator.getNoOfInstances() != 0) {
-					this.defaultAlgorithmPage = new DefaultAlgorithmPage(instanceGenerator, this.taskListPage, this);
+					this.defaultAlgorithmPage = new DefaultAlgorithmPage(instanceGenerator, this.constraints, this.taskListPage);
 					addPage(this.defaultAlgorithmPage);
 					return this.defaultAlgorithmPage;
 
@@ -266,13 +248,12 @@ public class ConfiguratorWizard extends Wizard {
 				//instance list page will be added after advanced user value selection page in advanced mode.
 				//(default algorithm page is not added in advanced mode)
 				if (instanceGenerator.getNoOfInstances() > 0) {
-					this.instanceListPage = new InstanceListPage(instanceGenerator, this.taskListPage, this);
+					this.instanceListPage = new InstanceListPage(instanceGenerator, this.constraints, this.taskListPage);
 					addPage(this.instanceListPage);
 					return this.instanceListPage;
 
 				} else {
 					if ("nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[3].getMethodName())) {
-						//final String message = this.taskListPage.isGuidedMode() ? Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER : Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE;
 						final String message = Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE;
 						MessageDialog.openError(new Shell(), "Error", message);
 					}
@@ -283,7 +264,7 @@ public class ConfiguratorWizard extends Wizard {
 		//adding instance details page after default algorithm page in beginner mode
 		else if (currentPage instanceof DefaultAlgorithmPage) {
 			final InstanceGenerator instanceGenerator = new InstanceGenerator(Utils.getResourceFromWithin(selectedTask.getModelFile())
-				.getAbsolutePath(), "c0_" + this.taskListPage.getSelectedTask().getName(), this.taskListPage.getSelectedTask().getDescription());
+				.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
 
 			if (this.taskListPage.isGuidedMode()) {
 				// running in beginner mode
@@ -291,7 +272,7 @@ public class ConfiguratorWizard extends Wizard {
 			}
 			//instance details page will be added after default algorithm page only if the number of instances is greater than 1
 			if (!this.defaultAlgorithmPage.isDefaultAlgorithm() && instanceGenerator.getNoOfInstances() > 1) {
-				this.instanceListPage = new InstanceListPage(instanceGenerator, this.taskListPage, this);
+				this.instanceListPage = new InstanceListPage(instanceGenerator, this.constraints, this.taskListPage);
 				addPage(this.instanceListPage);
 				return this.instanceListPage;
 			}
@@ -354,56 +335,25 @@ public class ConfiguratorWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		boolean ret = false;
-		if (Constants.ALGORITHM_SELECTION_PAGE.equals(getContainer().getCurrentPage().getName())) {
+		InstanceClafer instance = null;
+		final String currentPageName = getContainer().getCurrentPage().getName();
+		if (Constants.ALGORITHM_SELECTION_PAGE.equals(currentPageName)) {
 			ret = this.instanceListPage.isPageComplete();
-			try {
-				final XMLParser parser = new XMLParser();
-				parser.displayInstanceValues(this.instanceListPage.getValue(), this.constraints);
-
-				// Initialize Code Generation
-				final XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject(), this.instanceListPage.getProviderFromInstance());
-
-				// Write Instance File into developer project
-				final String xmlInstancePath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
-				parser.writeClaferInstanceToFile(xmlInstancePath);
-
-				// Generate code template
-				ret &= codeGenerator.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), codeGenerator.getProvider(),
-					this.taskListPage.getSelectedTask().getXslFile());
-
-				// Delete Instance File
-//				FileHelper.deleteFile(xmlInstancePath);
-				codeGenerator.getDeveloperProject().refresh();
-			} catch (final IOException | CoreException | BadLocationException e) {
-				Activator.getDefault().logError(e);
-				return false;
-			}
-		}
-		if (Constants.DEFAULT_ALGORITHM_PAGE.equals(getContainer().getCurrentPage().getName())) {
+			instance = this.instanceListPage.getValue();
+		} else if (Constants.DEFAULT_ALGORITHM_PAGE.equals(currentPageName)) {
 			ret = this.defaultAlgorithmPage.isPageComplete();
-			try {
-				final XMLParser parser = new XMLParser();
-				parser.displayInstanceValues(this.defaultAlgorithmPage.getValue(), this.constraints);
-
-				// Initialize Code Generation
-				final XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject(), this.defaultAlgorithmPage.getProviderFromInstance());
-
-				// Write Instance File into developer project
-				final String xmlInstancePath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
-				parser.writeClaferInstanceToFile(xmlInstancePath);
-
-				// Generate code template
-				ret &= codeGenerator.generateCodeTemplates(new File(xmlInstancePath), this.taskListPage.getSelectedTask().getAdditionalResources(), codeGenerator.getProvider(),
-					this.taskListPage.getSelectedTask().getXslFile());
-
-				// Delete Instance File
-//				FileHelper.deleteFile(xmlInstancePath);
-				codeGenerator.getDeveloperProject().refresh();
-			} catch (final IOException | CoreException | BadLocationException e) {
-				Activator.getDefault().logError(e);
-				return false;
-			}
+			instance = this.defaultAlgorithmPage.getValue();
 		}
+
+		// Initialize Code Generation
+		final Task selectedTask = this.taskListPage.getSelectedTask();
+		final CodeGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject(), selectedTask.getXslFile());
+		final DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+
+		// Generate code template
+		ret &= codeGenerator.generateCodeTemplates(
+			new Configuration(instance, this.constraints, developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile),
+			selectedTask.getAdditionalResources());
 		return ret;
 	}
 

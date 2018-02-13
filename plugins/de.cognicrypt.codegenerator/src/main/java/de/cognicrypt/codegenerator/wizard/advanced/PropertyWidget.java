@@ -1,18 +1,3 @@
-/**
- * Copyright 2015-2017 Technische Universitaet Darmstadt
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package de.cognicrypt.codegenerator.wizard.advanced;
 
 import java.util.ArrayList;
@@ -38,20 +23,18 @@ import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
 
 public class PropertyWidget {
 
-	// TODO THIS IS A WORKAROUND TO STOP INSTANCE GENERATION ON PAGE LOAD, NEEDS
-	// TO BE FIXED
 	protected static boolean status = false;
 	private Spinner valueSpinner;
 	private AstClafer parentClafer;
 	private AstConcreteClafer childClafer;
 	private final ComboViewer operatorComboViewer;
 	private boolean isGroupConstraint = false;
-	private AstAbstractClafer abstarctParentClafer;
+	private AstAbstractClafer abstractParentClafer;
 
 	private Button enablePropertyCheckBox;
 
 	/**
-	 * Method to create a widget for group properties, clafer level constraints
+	 * Constructor to create a widget for group properties, clafer level constraints.
 	 *
 	 * @param container
 	 * @param claferMain
@@ -59,7 +42,7 @@ public class PropertyWidget {
 	 */
 	public PropertyWidget(final Composite container, final AstAbstractClafer claferMain, final List<AstClafer> claferProperties) {
 		setGroupConstraint(true);
-		setAbstarctParentClafer(claferMain);
+		setAbstractParentClafer(claferMain);
 		setChildClafer((AstConcreteClafer) claferProperties.get(0));
 		final List<String> values = new ArrayList<>();
 		values.add("<");
@@ -181,11 +164,12 @@ public class PropertyWidget {
 	}
 
 	public AstAbstractClafer getAbstarctParentClafer() {
-		return this.abstarctParentClafer;
+		return this.abstractParentClafer;
 	}
 
 	/**
-	 * @return the childClafer
+	 * Getter for child clafer.
+	 * @return Child clafer
 	 */
 	public AstConcreteClafer getChildClafer() {
 		return this.childClafer;
@@ -196,7 +180,8 @@ public class PropertyWidget {
 	}
 
 	/**
-	 * @return the parentClafer
+	 * Getter method for parent clafer.
+	 * @return Parent clafer
 	 */
 	public AstClafer getParentClafer() {
 		return this.parentClafer;
@@ -211,17 +196,19 @@ public class PropertyWidget {
 	}
 
 	/**
-	 * @return the isGroupConstraint
+	 * Getter method for isGroupConstraint
+	 * @return <Code>true</code>/<code>false</code> if property is group constraint
 	 */
 	public boolean isGroupConstraint() {
 		return this.isGroupConstraint;
 	}
 
-	public void setAbstarctParentClafer(final AstAbstractClafer abstarctParentClafer) {
-		this.abstarctParentClafer = abstarctParentClafer;
+	public void setAbstractParentClafer(final AstAbstractClafer abstractParentClafer) {
+		this.abstractParentClafer = abstractParentClafer;
 	}
 
 	/**
+	 * Setter method for child clafer.
 	 * @param childClafer
 	 *        the childClafer to set
 	 */
@@ -230,6 +217,7 @@ public class PropertyWidget {
 	}
 
 	/**
+	 * Setter method for whether property is a group constraint.
 	 * @param isGroupConstraint
 	 *        the isGroupConstraint to set
 	 */
@@ -238,6 +226,7 @@ public class PropertyWidget {
 	}
 
 	/**
+	 * Setter method for parent clafer.
 	 * @param parentClafer
 	 *        the parentClafer to set
 	 */

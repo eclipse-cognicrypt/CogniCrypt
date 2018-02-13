@@ -6,14 +6,11 @@
 <xsl:variable name="Rounds"> <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/iterations"/> </xsl:variable>
 <xsl:variable name="outputSize"> <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/algorithm[@type='Digest']/outputSize"/> </xsl:variable>
 
-
-
-
 <xsl:if test="//task[@description='CertainTrust']">
 <xsl:result-document href="CertainTrustUtils.java">
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
-
+/** @author CogniCrypt */
 public class CertainTrustUtils {
 	public static CertainTrust[] createMultipleCertainTrustObj(int count, int n){
 		
@@ -62,7 +59,7 @@ public class CertainTrustUtils {
 <xsl:result-document href="CertainTrustView.java">
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
-
+/** @author CogniCrypt */
 public class CertainTrustView extends JFrame{
 
 	private static final long serialVersionUID = -8391833921510126856L;
@@ -153,7 +150,7 @@ public class CertainTrustView extends JFrame{
 <xsl:result-document href="HTIObserver.java">
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
-
+/** @author CogniCrypt */
 public class HTIObserver implements Observer{
 
 	private CertainTrust[] ctObjArray;
@@ -196,6 +193,7 @@ public class HTIObserver implements Observer{
 <xsl:result-document href="Operator.java">
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
+/** @author CogniCrypt */
 public enum Operator {
 	NOT,AND,OR,wFUSION,cFUSION
 }

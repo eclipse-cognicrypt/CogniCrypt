@@ -1,8 +1,11 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.eclipse.core.runtime.ICoreRunnable;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -10,6 +13,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
@@ -19,6 +23,7 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeClaferFeedback;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
+import de.cognicrypt.codegenerator.utilities.Utils;
 
 public class ClaferPage extends PageForTaskIntegratorWizard {
 
@@ -68,6 +73,8 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 					compositeToHoldGranularUIElements.getClaferModel().add(tempFeature);
 					compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
 					compositeToHoldGranularUIElements.updateClaferContainer();
+
+					checkModel();
 				}
 
 			}
@@ -89,6 +96,9 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 						compositeToHoldGranularUIElements.updateClaferContainer();
 					}
 				}
+
+				checkModel();
+
 				super.widgetSelected(e);
 			}
 		});
@@ -111,6 +121,9 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 
 				lblFeaturesImported.setText("Features imported");
 				feedbackComposite.layout();
+				
+				checkModel();
+				
 				super.widgetSelected(e);
 			}
 		});
@@ -146,6 +159,40 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 		((CompositeToHoldGranularUIElements) getCompositeToHoldGranularUIElements()).setCompositeClaferFeedback(feedbackComposite);
 		feedbackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
+	}
+
+	public boolean checkModel() {
+
+		Label lblFeedback = new Label(feedbackComposite, SWT.NONE);
+		CompositeToHoldGranularUIElements comp = compositeToHoldGranularUIElements;
+
+		Job compileJob = Job.create("Compile Clafer model", (ICoreRunnable) monitor -> {
+			// UI updates can only be run in the display thread, 
+			// so do them via Display.getDefault() 
+			Display.getDefault().asyncExec(new Runnable() {
+
+				public void run() {
+
+					lblFeedback.setText(" (compiling...)");
+
+					// do the tedious work
+					File cfrFile = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), "temporaryModel" + Constants.CFR_EXTENSION);
+					comp.getClaferModel().toFile(cfrFile.getAbsolutePath());
+					if (ClaferModel.compile(cfrFile.getAbsolutePath())) {
+						lblFeedback.setText("Compilation successful");
+						System.out.println("Compilation successful");
+					} else {
+						lblFeedback.setText("Compilation error");
+						System.out.println("Compilation error");
+					}
+				}
+			});
+		});
+
+		// start the asynchronous task 
+		compileJob.schedule();
+
+		return false;
 	}
 
 }

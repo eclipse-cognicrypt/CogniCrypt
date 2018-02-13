@@ -37,7 +37,7 @@ import de.cognicrypt.codegenerator.Constants;
  *
  */
 
-public class CodePreviewPage extends WizardPage{
+public class CodePreviewPage extends WizardPage {
 
 	private InstanceListPage instanceListPage;
 	private Composite control;
@@ -84,10 +84,9 @@ public class CodePreviewPage extends WizardPage{
 		//setting the backgroud color of the code
 		Color white = display.getSystemColor(SWT.COLOR_WHITE);
 		this.code.setBackground(white);
-		new Label(control, SWT.NONE);		
-		this.code.setText(instanceListPage.getCodePreview());		
-		this.code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);	
-
+		new Label(control, SWT.NONE);
+		this.code.setText(instanceListPage.getCodePreview());
+		this.code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
 
 		sc.setContent(this.control);
 		sc.setExpandHorizontal(true);

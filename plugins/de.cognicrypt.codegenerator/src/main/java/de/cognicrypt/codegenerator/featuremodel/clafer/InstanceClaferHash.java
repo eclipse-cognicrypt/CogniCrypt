@@ -1,18 +1,3 @@
-/**
- * Copyright 2015-2017 Technische Universitaet Darmstadt
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package de.cognicrypt.codegenerator.featuremodel.clafer;
 
 import java.util.Objects;
@@ -22,7 +7,9 @@ import org.clafer.instance.InstanceClafer;
 import de.cognicrypt.codegenerator.Constants;
 
 /**
- * @author Ram InstanceClaferHash extends InstanceClafer by overriding only hashCode method
+ * InstanceClaferHash extends InstanceClafer to only override {@link InstanceClaferHash#hashCode() hashcode()}
+ * 
+ * @author Ram Kamath
  */
 public class InstanceClaferHash extends InstanceClafer {
 
@@ -30,10 +17,9 @@ public class InstanceClaferHash extends InstanceClafer {
 		super(inputInstance.getType(), inputInstance.getId(), inputInstance.getRef(), inputInstance.getChildren());
 	}
 
-	public int getHashCode() {
-		/**
-		 * Method calculates hash for all the children and ORs it with hashcode for ID ,Type and Ref
-		 */
+	@Override
+	public int hashCode() {
+		//Iterates through individual instanceClafer values and summed value is ORed with hash value of id,ref and type.
 		int hashToChildrenInstances = 0;
 		for (final InstanceClafer childInstanceClafer : this.getChildren()) {
 			InstanceClaferHash tempInstanceHash = null;
@@ -45,7 +31,7 @@ public class InstanceClaferHash extends InstanceClafer {
 				 */
 				tempInstanceHash = new InstanceClaferHash((InstanceClafer) childInstanceClafer.getRef());
 				if (tempInstanceHash != null) {
-					hashToChildrenInstances += tempInstanceHash.getHashCode();
+					hashToChildrenInstances += tempInstanceHash.hashCode();
 				}
 				/**
 				 * add hashcode from standard object.hasCode() method for primitive types
@@ -57,13 +43,5 @@ public class InstanceClaferHash extends InstanceClafer {
 			}
 		}
 		return getType().hashCode() ^ getId() ^ hashToChildrenInstances ^ Objects.hash(getRef());
-	}
-
-	/**
-	 * Iterates through individual instanceClafer values and summed value is ORed with hash value of id,ref and type.
-	 */
-	@Override
-	public int hashCode() {
-		return getHashCode();
 	}
 }

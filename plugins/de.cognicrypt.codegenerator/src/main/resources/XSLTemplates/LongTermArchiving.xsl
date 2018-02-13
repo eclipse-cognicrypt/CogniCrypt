@@ -42,7 +42,7 @@ import de.tu_darmstadt.cs.cdc.mops.model.archiving_system.Document;
 						MERKLE_TREE_SEQUENCE
 					</xsl:when>
 					<xsl:when test="//task/element/List='Skip_List'">
-						SKIPLIST0
+						SKIPLIST
 					</xsl:when>
 					<xsl:when test="//task/element/List='Notarial_Attestation_Wrapper'">
 						NOTARIAL_ATTESTATION_WRAPPER

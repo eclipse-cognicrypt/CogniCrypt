@@ -21,6 +21,8 @@ import java.util.Map;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
@@ -31,6 +33,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -59,6 +62,8 @@ public class CompareAlgorithmPage extends WizardPage {
 	private String algorithmSelected;
 	private String algorithmSelectedSecond;
 	private String algorithmSelectedFirst;
+	private Text notifyText;
+	private Composite control1;
 
 	public CompareAlgorithmPage(InstanceListPage instanceListPage, InstanceGenerator instanceGenerator) {
 		super(Constants.COMPARE_ALGORITHM_PAGE);
@@ -79,7 +84,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		this.control.setLayout(layout);
-
+		
 		//Second Set
 		ComboViewer secondAlgorithmClass;
 		Label secondLabelInstanceList;
@@ -88,6 +93,18 @@ public class CompareAlgorithmPage extends WizardPage {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.help_id_3");
 
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
+		
+		notifyText = new Text(this.control, SWT.BORDER|SWT.WRAP);
+		notifyText.setText(Constants.COMPARE_SAME_ALGORITHM);
+		notifyText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		notifyText.setEditable(false);
+		notifyText.setVisible(false);		
+		ControlDecoration deco = new ControlDecoration(notifyText, SWT.RIGHT);
+		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage();		
+		deco.setImage(image);
+		deco.setShowOnlyOnFocus(true);	
+		
+		new Label(control, SWT.NONE);
 
 		//First set of Algorithm Combinations
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
@@ -160,7 +177,8 @@ public class CompareAlgorithmPage extends WizardPage {
 
 		});
 
-		this.secondInstancePropertiesPanel.setLayout(gridLayout);
+		GridLayout gridLayout1 = new GridLayout();
+		this.secondInstancePropertiesPanel.setLayout(gridLayout1);
 		GridData gridDataSecond = new GridData(GridData.FILL, GridData.FILL, true, true);
 		gridDataSecond.widthHint = 60;
 		gridDataSecond.horizontalSpan = 1;
@@ -289,11 +307,13 @@ public class CompareAlgorithmPage extends WizardPage {
 		Color white = display.getSystemColor(SWT.COLOR_WHITE);
 
 		if (!firstAlgorithmHighlight.equals(secondAlgorithmHighlight)) {
+			notifyText.setVisible(false);
 			secondInstanceDetails.setBackground(yellow);
 			firstInstanceDetails.setBackground(yellow);
 		}
 		else
 		{
+			notifyText.setVisible(true);
 			secondInstanceDetails.setBackground(white);
 			firstInstanceDetails.setBackground(white);
 		}

@@ -145,7 +145,7 @@ public class InstanceListPage extends WizardPage {
 		//Display help assist for the first instance in the combo box
 		new Label(control, SWT.NONE);
 		new Label(control, SWT.NONE);
-		Text infoText = new Text(control, SWT.BORDER | SWT.WRAP );
+		Text infoText = new Text(control, SWT.BORDER | SWT.WRAP);
 		infoText.setText(Constants.DEFAULT_ALGORITHM_NOTIFICATION);
 		infoText.setEditable(false);
 		infoText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));		

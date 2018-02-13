@@ -75,6 +75,7 @@ public class Constants {
 	public static final String DEFAULT_ALGORITHM_CHECKBOX_DISABLE= "There are no other algorithm combinations matching your requirements.\nThe code for the above algorithm will be generated into your java project on clicking 'Finish'";
 	public static final String DEFAULT_ALGORITHM_NOTIFICATION= "This algorithm was presented to you previously, as the best algorithm combination.";
 	public static final String GUIDED_MODE_CHECKBOX_INFO= "If you do not use the guided mode, then you have to \nconfigure the algorithm by yourself";
+	public static final String COMPARE_SAME_ALGORITHM= "Algorithm combinations are same";
 	
 	// if the next question page depends on user input, the Page object encodes this as a nextPageID as opposed to the one that the last page points to
 	public static final int QUESTION_PAGE_NO_STATIC_NEXT_PAGE_ID = -2;

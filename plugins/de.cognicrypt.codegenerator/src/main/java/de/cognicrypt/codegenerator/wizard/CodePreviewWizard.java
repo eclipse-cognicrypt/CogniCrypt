@@ -31,7 +31,7 @@ import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
  *
  */
 
-public class CodePreviewWizard extends Wizard{
+public class CodePreviewWizard extends Wizard {
 
 	private CodePreviewPage codePreviewPage;
 	private InstanceListPage instanceListPage;
@@ -58,7 +58,6 @@ public class CodePreviewWizard extends Wizard{
 		this.codePreviewPage = new CodePreviewPage(instanceListPage);
 		addPage(this.codePreviewPage);
 	}
-
 
 	@Override
 	public boolean performFinish() {

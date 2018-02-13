@@ -143,6 +143,9 @@ public class CompareAlgorithmPage extends WizardPage {
 			CompareAlgorithmPage.this.firstInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmFirst)));
 			setHighlightFirst(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmFirst)));
 			compareHighlight();
+			final String selectedAlgorithm = selection.getFirstElement().toString();
+			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm));
+			CompareAlgorithmPage.this.firstInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
 		});
 
 		GridLayout gridLayout = new GridLayout();
@@ -152,6 +155,11 @@ public class CompareAlgorithmPage extends WizardPage {
 		gridDataFirst.horizontalSpan = 1;
 		gridDataFirst.heightHint = 89;
 		this.firstInstancePropertiesPanel.setLayoutData(gridDataFirst);
+		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
+		gridData.widthHint = 60;
+		gridData.horizontalSpan = 1;
+		gridData.heightHint = 89;
+		this.firstInstancePropertiesPanel.setLayoutData(gridData);
 		this.firstInstancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 
 		Display display = Display.getCurrent();
@@ -175,6 +183,9 @@ public class CompareAlgorithmPage extends WizardPage {
 			setHighlightSecond(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmSecond)));
 			compareHighlight();
 
+			final String selectedAlgorithm1 = selection1.getFirstElement().toString();
+			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm1));
+			CompareAlgorithmPage.this.secondInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm1)));
 		});
 
 		GridLayout gridLayout1 = new GridLayout();

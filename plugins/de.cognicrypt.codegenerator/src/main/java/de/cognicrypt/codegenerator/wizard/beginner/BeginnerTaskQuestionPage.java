@@ -227,9 +227,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 		final List<Answer> answers = question.getAnswers();
 		final Composite container = getPanel(parent);
-		final Label label = new Label(container, SWT.TOP | SWT.FILL);
+		final Label label = new Label(container, SWT.TOP | SWT.FILL | SWT.WRAP);
 		GridData gd_question= new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
-		gd_question.widthHint = 450;
+		gd_question.widthHint = 550;
 		label.setLayoutData(gd_question);
 		label.setText(question.getQuestionText());
 		new Label(parent, SWT.NONE);
@@ -355,12 +355,12 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				mandatory.setText("*");
 				mandatory.setForeground(red);
 				final Text inputField = new Text(container, SWT.BORDER );
-				inputField.setLayoutData(new GridData(100, 13));
+				inputField.setLayoutData(new GridData(100, SWT.DEFAULT));
 				inputField.setToolTipText(question.getTooltip());
 
 				//Adding Browse Button for text field that expects a path as input
 				if(question.getTextType().equals(Constants.BROWSE)){
-					inputField.setLayoutData(new GridData(300, 13));
+					inputField.setLayoutData(new GridData(300, SWT.DEFAULT));
 
 					Button browseButton = new Button(container, SWT.PUSH);
 					browseButton.setText(Constants.LABEL_BROWSE_BUTTON);
@@ -377,7 +377,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					text(question, inputField);
 				}					
 				else if(question.getTextType().equals(Constants.PASSWORD)) {
-					inputField.setLayoutData(new GridData(120, 13));
+					inputField.setLayoutData(new GridData(120, SWT.DEFAULT));
 					inputField.setEchoChar((char) 0x25cf);
 
 					//Check box to show/hide password

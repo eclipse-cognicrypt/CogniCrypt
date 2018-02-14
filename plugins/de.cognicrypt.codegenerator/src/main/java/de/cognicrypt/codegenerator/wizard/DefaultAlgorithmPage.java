@@ -140,7 +140,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 		Display display = Display.getCurrent();
 		this.code.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.code.setBounds(10, 20, 520, 146);
-		this.code.setEditable(false);
+		this.code.setEditable(true);
 		//change font style of the code in the preview panel
 		final Font Styledfont = new Font(this.codePreviewPanel.getDisplay(), new FontData("Courier New", 10, SWT.WRAP ));
 		this.code.setFont(Styledfont);
@@ -255,7 +255,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 					sb.append(Constants.lineSeparator);
 				}
 			}
-			lineStyler.parseBlockComments(sb.toString());
+			//lineStyler.parseBlockComments(sb.toString());
 			return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
 		} catch (IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
@@ -333,11 +333,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 	}
 
 	private void setProviderForInstance(String provider) {
-		if (provider != null) {
 			this.provider = provider;
-		} else {
-			this.provider = "";
-		}
 	}
 
 	public String getProviderFromInstance() {

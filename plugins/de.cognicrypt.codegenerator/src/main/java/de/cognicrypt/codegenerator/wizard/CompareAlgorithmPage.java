@@ -18,6 +18,7 @@ package de.cognicrypt.codegenerator.wizard;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.core.resources.IProject;
@@ -243,15 +244,13 @@ public class CompareAlgorithmPage extends WizardPage {
 			final InstanceClafer instan = (InstanceClafer) inst.getRef();
 			for (final InstanceClafer in : instan.getChildren()) {
 				if (in.getType().getRef() != null && !in.getType().getRef().getTargetType().isPrimitive()) {
-					final String superName = ClaferModelUtils
-						.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
+					final String superName = ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
 					if (!superName.equals("Enum")) {
 						getInstanceDetails(in, algorithms);
 						continue;
 					}
 				}
-				value = "\t" + ClaferModelUtils.removeScopePrefix(
-					in.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
+				value = "\t" + ClaferModelUtils.removeScopePrefix(in.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
 				if (value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
 					value = value.substring(0, value.indexOf("->") - 1);
 					value = value.replaceAll("([a-z0-9])([A-Z])", "$1 $2");
@@ -261,8 +260,7 @@ public class CompareAlgorithmPage extends WizardPage {
 			}
 			// Above for loop over children hasn't been executed, then following if
 			if (!instan.hasChildren()) {
-				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + inst.getRef().toString()
-					.replace("\"", "");
+				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + inst.getRef().toString().replace("\"", "");
 				algo = algorithms.keySet().iterator().next();
 				algorithms.put(algo, algorithms.get(algo) + value);
 			}
@@ -311,22 +309,25 @@ public class CompareAlgorithmPage extends WizardPage {
 	
 	public void compareHighlight()
 	{
+		
 		Display display = Display.getCurrent();
 		String firstAlgorithmHighlight = getHighlightFirst();
 		String secondAlgorithmHighlight = getHighlightSecond();
-		Color yellow = display.getSystemColor(SWT.COLOR_YELLOW);
-		Color white = display.getSystemColor(SWT.COLOR_WHITE);
-
+		Color red = display.getSystemColor(SWT.COLOR_RED);
+		Color black = display.getSystemColor(SWT.COLOR_BLACK);
+		int n = firstAlgorithmHighlight.length();
+		System.out.println(n);
+		
 		if (!firstAlgorithmHighlight.equals(secondAlgorithmHighlight)) {
 			notifyText.setVisible(false);
-			secondInstanceDetails.setBackground(yellow);
-			firstInstanceDetails.setBackground(yellow);
+			secondInstanceDetails.setForeground(red);
+			firstInstanceDetails.setForeground(red);
 		}
 		else
 		{
 			notifyText.setVisible(true);
-			secondInstanceDetails.setBackground(white);
-			firstInstanceDetails.setBackground(white);
+			secondInstanceDetails.setForeground(black);
+			firstInstanceDetails.setForeground(black);
 		}
 	}
 }

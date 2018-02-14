@@ -73,7 +73,7 @@ public class JavaLineStyler implements LineStyleListener {
 	void initializeColors() {
 		Display display = Display.getDefault();
 		colors = new Color[] { new Color(display, new RGB(0, 0, 0)), // black
-				new Color(display, new RGB(95, 159, 95)), // green
+				new Color(display, new RGB(66, 111, 66)), // green
 				new Color(display, new RGB(0, 0, 255)), // blue
 				new Color(display, new RGB(128, 0, 64)) // purple
 		};

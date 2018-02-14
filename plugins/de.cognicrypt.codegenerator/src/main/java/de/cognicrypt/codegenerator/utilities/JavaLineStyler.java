@@ -1,3 +1,19 @@
+/**
+ * Copyright 2015-2017 Technische Universitaet Darmstadt
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package de.cognicrypt.codegenerator.utilities;
 
 import java.io.IOException;
@@ -120,8 +136,7 @@ public class JavaLineStyler implements LineStyleListener {
 				Color color = getColor(token);
 				// Only create a style if the token color is different than the
 				// widget's default foreground color and the token's style is
-				// not
-				// bold. Keywords are bolded.
+				// not bold. Keywords are bolded.
 				if ((!color.equals(defaultFgColor)) || (token == KEY)) {
 					StyleRange style = new StyleRange(scanner.getStartOffset() + event.lineOffset, scanner.getLength(), color, null);
 					if (token == KEY) {
@@ -130,8 +145,7 @@ public class JavaLineStyler implements LineStyleListener {
 					if (styles.isEmpty()) {
 						styles.addElement(style);
 					} else {
-						// Merge similar styles. Doing so will improve
-						// performance.
+						// Merge similar styles. Doing so will improve performance.
 						lastStyle = (StyleRange) styles.lastElement();
 						if (lastStyle.similarTo(style) && (lastStyle.start + lastStyle.length == style.start)) {
 							lastStyle.length += style.length;

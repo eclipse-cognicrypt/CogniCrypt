@@ -68,6 +68,7 @@ import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
+import de.cognicrypt.codegenerator.utilities.JavaLineStyler;
 import de.cognicrypt.codegenerator.utilities.Utils;
 import de.cognicrypt.codegenerator.utilities.XMLParser;
 
@@ -87,6 +88,7 @@ public class InstanceListPage extends WizardPage {
 	private ConfiguratorWizard configuratorWizard;
 	private Object algorithmCombinaton;
 	private DefaultAlgorithmPage defaultAlgorithmPage;
+	private JavaLineStyler lineStyler;
 
 	public InstanceListPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard, DefaultAlgorithmPage defaultAlgorithmPage) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
@@ -108,7 +110,7 @@ public class InstanceListPage extends WizardPage {
 
 		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
+		
 		ComboViewer algorithmClass;
 		Label labelInstanceList;
 		this.control = new Composite(sc, SWT.NONE);
@@ -399,10 +401,11 @@ public class InstanceListPage extends WizardPage {
 			while ((line = reader.readLine()) != null) {
 				if (!line.startsWith("import")) {
 					sb.append(line);
-					sb.append("\n");
+					sb.append("\n");					
 				}
 			}
-
+			lineStyler = new JavaLineStyler();
+			lineStyler.parseBlockComments(sb.toString());
 			return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
 		} catch (IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);

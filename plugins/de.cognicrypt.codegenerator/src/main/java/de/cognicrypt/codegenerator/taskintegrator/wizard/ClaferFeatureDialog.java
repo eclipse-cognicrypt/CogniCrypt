@@ -204,7 +204,7 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		new Label(container, SWT.NONE);
 
 		constraintsComposite = new CompositeToHoldSmallerUIElements(container, SWT.BORDER, resultClafer.getFeatureConstraints(), true, claferModel, resultClafer);
-		GridData gdConstraintsComposite = gdPropertiesComposite;
+		GridData gdConstraintsComposite = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
 		gdConstraintsComposite.minimumHeight = 100;
 		constraintsComposite.setLayoutData(gdConstraintsComposite);
 

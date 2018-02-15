@@ -164,7 +164,6 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 	public boolean checkModel() {
 
 		Label lblFeedback = new Label(feedbackComposite, SWT.NONE);
-		CompositeToHoldGranularUIElements comp = compositeToHoldGranularUIElements;
 
 		Job compileJob = Job.create("Compile Clafer model", (ICoreRunnable) monitor -> {
 			// UI updates can only be run in the display thread, 
@@ -177,7 +176,7 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 
 					// do the tedious work
 					File cfrFile = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), "temporaryModel" + Constants.CFR_EXTENSION);
-					comp.getClaferModel().toFile(cfrFile.getAbsolutePath());
+					compositeToHoldGranularUIElements.getClaferModel().toFile(cfrFile.getAbsolutePath());
 					if (ClaferModel.compile(cfrFile.getAbsolutePath())) {
 						lblFeedback.setText("Compilation successful");
 						System.out.println("Compilation successful");

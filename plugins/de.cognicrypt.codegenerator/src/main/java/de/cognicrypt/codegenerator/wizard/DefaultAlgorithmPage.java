@@ -38,6 +38,7 @@ import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -51,7 +52,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
@@ -60,6 +60,7 @@ import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
+import de.cognicrypt.codegenerator.utilities.JavaLineStyler;
 import de.cognicrypt.codegenerator.utilities.Utils;
 import de.cognicrypt.codegenerator.utilities.XMLParser;
 
@@ -68,11 +69,12 @@ public class DefaultAlgorithmPage extends WizardPage {
 	private Composite control;
 	private Group codePreviewPanel;
 	private TaskSelectionPage taskSelectionPage;
-	private Button defaultAlgorithmCheckBox;
-	private Text code;
-	private final InstanceGenerator instanceGenerator;
-	private InstanceClafer value;
 	private ConfiguratorWizard configuratorWizard;
+	private JavaLineStyler lineStyler;
+	private final InstanceGenerator instanceGenerator;
+	private Button defaultAlgorithmCheckBox;
+	private StyledText code;
+	private InstanceClafer value;
 	private String provider;
 
 	/**
@@ -134,14 +136,31 @@ public class DefaultAlgorithmPage extends WizardPage {
 		this.codePreviewPanel.setFont(boldFont);
 		setControl(this.control);
 
-		this.code = new Text(this.codePreviewPanel, SWT.MULTI | SWT.V_SCROLL | SWT.WRAP);
+		this.code = new StyledText(this.codePreviewPanel, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP);
 		Display display = Display.getCurrent();
 		this.code.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.code.setBounds(10, 20, 520, 146);
-		this.code.setEditable(false);
+		this.code.setEditable(true);
+		//change font style of the code in the preview panel
+		final Font Styledfont = new Font(this.codePreviewPanel.getDisplay(), new FontData("Courier New", 10, SWT.WRAP ));
+		this.code.setFont(Styledfont);
+		lineStyler = new JavaLineStyler();
+		//Parsing the block comments to highlight them in the code preview			
+		lineStyler.parseBlockComments(getCodePreview());
+		//syntax highlighting in the code preview
+		this.code.addLineStyleListener(lineStyler);				
+		//setting the background color of the code
 		Color white = display.getSystemColor(SWT.COLOR_WHITE);
 		this.code.setBackground(white);
 		new Label(control, SWT.NONE);
+		//Display the formatted code
+		Display displayedCode = this.code.getDisplay();
+		displayedCode.asyncExec(new Runnable() {
+
+			public void run() {
+				code.setText(getCodePreview());
+			}
+		});
 		this.code.setText(getCodePreview());
 		this.code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
 
@@ -230,16 +249,19 @@ public class DefaultAlgorithmPage extends WizardPage {
 		}
 
 		Path file = outputFile.toPath();
-		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+		try (InputStream in = Files.newInputStream(file); 
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 			StringBuilder sb = new StringBuilder();
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				if (!line.startsWith("import")) {
 					sb.append(line);
 					sb.append(Constants.lineSeparator);
-				}
+				} 
 			}
-			return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
+			//removing the blank lines in the code preview
+			String codePreview = sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
+			return codePreview;
 		} catch (IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
 		} finally {
@@ -247,12 +269,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 			outputFolder.delete();
 			claferPreviewFile.delete();
 		}
-
 		return "";
-	}
-
-	public TaskSelectionPage getTaskSelectionPage() {
-		return taskSelectionPage;
 	}
 
 	public void getInstanceDetails(final InstanceClafer inst, final Map<String, String> algorithms) {
@@ -280,7 +297,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 					value = value.replaceAll("([a-z0-9])([A-Z])", "$1 $2");
 				}
 				// To get the provider of the instance
-				if (ClaferModelUtils.removeScopePrefix(in.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")).equals("Provider")) {
+				if (ClaferModelUtils.removeScopePrefix(in.getType().getName()).equals("Provider")) {
 					setProviderForInstance((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
 				}
 
@@ -316,15 +333,23 @@ public class DefaultAlgorithmPage extends WizardPage {
 	}
 
 	private void setProviderForInstance(String provider) {
-		this.provider = provider;
+			this.provider = provider;
 	}
 
 	public String getProviderFromInstance() {
-		return this.provider.replace("\n", "");
+		if (this.provider != null) {
+			return this.provider.replace("\n", "");
+		} else {
+			return "";
+		}
 	}
 
 	public boolean isDefaultAlgorithm() {
 		return this.defaultAlgorithmCheckBox.getSelection();
+	}
+	
+	public TaskSelectionPage getTaskSelectionPage() {
+		return taskSelectionPage;
 	}
 
 	public void setValue(final InstanceClafer instanceClafer) {
@@ -347,7 +372,6 @@ public class DefaultAlgorithmPage extends WizardPage {
 			return this.defaultAlgorithmCheckBox.getSelection();
 		}
 		return true;
-
 	}
 
 	@Override

@@ -108,7 +108,7 @@ public class InstanceListPage extends WizardPage {
 
 		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
+		
 		ComboViewer algorithmClass;
 		Label labelInstanceList;
 		this.control = new Composite(sc, SWT.NONE);
@@ -393,17 +393,19 @@ public class InstanceListPage extends WizardPage {
 		}
 
 		Path file = outputFile.toPath();
-		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+		try (InputStream in = Files.newInputStream(file); 
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 			StringBuilder sb = new StringBuilder();
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				if (!line.startsWith("import")) {
 					sb.append(line);
-					sb.append("\n");
+					sb.append("\n");					
 				}
-			}
-
-			return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
+			}			
+			//removing the blank lines in the code preview
+			String codePreview = sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
+			return codePreview;
 		} catch (IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
 		} finally {

@@ -78,7 +78,7 @@ public class ClaferFeaturePatternDialog extends Dialog {
 			}
 		});
 
-		Button btnAddOption = new Button(container, SWT.BORDER);
+		Button btnAddOption = new Button(container, SWT.NONE);
 		btnAddOption.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		btnAddOption.setText("Add option");
 		btnAddOption.addSelectionListener(new SelectionAdapter() {
@@ -90,7 +90,6 @@ public class ClaferFeaturePatternDialog extends Dialog {
 
 				Text txtOption = new Text(compositeOptions, SWT.BORDER);
 				txtOption.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-				txtOption.setText("Text");
 				txtOption.addModifyListener(new ModifyListener() {
 
 					@Override

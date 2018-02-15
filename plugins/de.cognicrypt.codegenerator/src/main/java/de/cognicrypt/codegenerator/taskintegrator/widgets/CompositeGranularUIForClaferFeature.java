@@ -38,7 +38,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		setLayout(new GridLayout(2, false));
 		
 
-		Group grpClaferFeature = new Group(this, SWT.BORDER);
+		Group grpClaferFeature = new Group(this, SWT.NONE);
 		grpClaferFeature.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
 		grpClaferFeature.setText("Variability Construct");
 		grpClaferFeature.setLayout(new GridLayout(4, false));

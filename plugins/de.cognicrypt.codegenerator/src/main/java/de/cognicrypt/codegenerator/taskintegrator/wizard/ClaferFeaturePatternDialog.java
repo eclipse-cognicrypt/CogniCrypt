@@ -59,7 +59,9 @@ public class ClaferFeaturePatternDialog extends Dialog {
 
 		Combo comboPattern = new Combo(container, SWT.NONE);
 		comboPattern.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		comboPattern.add("Enum");
+		comboPattern.add("Enumeration");
+		comboPattern.add("Ordered Enumeration");
+		comboPattern.select(0);
 
 		Label lblName = new Label(container, SWT.NONE);
 		lblName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));

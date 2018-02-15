@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -39,32 +39,18 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		
 		setExpandHorizontal(true);		
 		setExpandVertical(true);
-		setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
-		setLayout(new RowLayout(SWT.HORIZONTAL));
+		setLayout(new GridLayout(2, false));
 		
 		// All the granular UI elements will be added to this composite for the ScrolledComposite to work.
 		Composite contentComposite = new Composite(this, SWT.NONE);
+		contentComposite.setLayout(new GridLayout(1, false));
 		setContent(contentComposite);
-		setMinSize(contentComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));		
-		contentComposite.setLayout(null);	
-
+		setMinSize(contentComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 	
 	public void addGranularClaferUIElements(ClaferFeature claferFeature){
-		// Update the array list.
-		//listOfAllClaferFeatures.add(claferFeature);
-		
-		CompositeGranularUIForClaferFeature granularClaferFeature = new CompositeGranularUIForClaferFeature
-			((Composite) this.getContent(), // the content composite of ScrolledComposite.
-			claferFeature);
-		granularClaferFeature.setBounds(
-			Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS, 
-			getLowestWidgetYAxisValue(), 
-			Constants.WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT, 
-			//Constants.HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT
-			granularClaferFeature.getSize().y);
-		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + granularClaferFeature.getSize().y);
-		setMinHeight(getLowestWidgetYAxisValue());
+		new CompositeGranularUIForClaferFeature((Composite) this.getContent(), claferFeature);
+		setMinSize(((Composite) getContent()).computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
 	public void deleteClaferFeature(ClaferFeature featureToBeDeleted) {

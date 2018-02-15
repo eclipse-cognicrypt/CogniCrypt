@@ -52,7 +52,10 @@ public class GroupFeatureProperty extends Composite {
 		
 		txtPropertyName = new Text(this, SWT.BORDER);
 		txtPropertyName.setEditable(showRemoveButton);
-		txtPropertyName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		// do not claim space for all of the text if not available
+		gridData.widthHint = 0;
+		txtPropertyName.setLayoutData(gridData);
 		txtPropertyName.setText(featureProperty.getPropertyName());
 		txtPropertyName.addFocusListener(new FocusAdapter() {
 
@@ -70,7 +73,7 @@ public class GroupFeatureProperty extends Composite {
 
 			txtPropertyType = new Text(this, SWT.BORDER);
 			txtPropertyType.setEditable(showRemoveButton);
-			txtPropertyType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+			txtPropertyType.setLayoutData(gridData);
 			txtPropertyType.setText(featureProperty.getPropertyType());
 			txtPropertyType.addFocusListener(new FocusAdapter() {
 
@@ -83,7 +86,7 @@ public class GroupFeatureProperty extends Composite {
 		} else {
 
 			comboPropertyType = new Combo(this, SWT.NONE);
-			comboPropertyType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+			comboPropertyType.setLayoutData(gridData);
 			comboPropertyType.setText(featureProperty.getPropertyType());
 			comboPropertyType.addFocusListener(new FocusAdapter() {
 

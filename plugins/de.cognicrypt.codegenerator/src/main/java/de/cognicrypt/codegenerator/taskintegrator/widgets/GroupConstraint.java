@@ -36,9 +36,12 @@ public class GroupConstraint extends Composite {
 		setLayout(new GridLayout(3, false));
 		
 		txtForFeatureConstraints = new Text(this, SWT.BORDER);
+		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		// do not claim space for all of the text if not available
+		gridData.widthHint = 0;
+		txtForFeatureConstraints.setLayoutData(gridData);
 		txtForFeatureConstraints.setEditable(false);
 		txtForFeatureConstraints.setText(constraint.getConstraint());
-		txtForFeatureConstraints.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		txtForFeatureConstraints.addFocusListener(new FocusAdapter() {
 
@@ -52,7 +55,6 @@ public class GroupConstraint extends Composite {
 		if (showRemoveButton) {
 			Button btnModify = new Button(this, SWT.NONE);
 			btnModify.setText("Modify");
-			btnModify.setSize(70, 30);
 			btnModify.addSelectionListener(new SelectionAdapter() {
 
 				@Override
@@ -64,7 +66,6 @@ public class GroupConstraint extends Composite {
 
 			Button btnRemove = new Button(this, SWT.NONE);
 			btnRemove.setText("Remove");
-			btnRemove.setSize(70, 30);
 			btnRemove.addSelectionListener(new SelectionAdapter() {
 
 				@Override

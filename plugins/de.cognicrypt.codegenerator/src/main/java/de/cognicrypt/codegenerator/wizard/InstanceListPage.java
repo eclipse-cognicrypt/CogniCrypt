@@ -68,7 +68,6 @@ import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
-import de.cognicrypt.codegenerator.utilities.JavaLineStyler;
 import de.cognicrypt.codegenerator.utilities.Utils;
 import de.cognicrypt.codegenerator.utilities.XMLParser;
 
@@ -88,7 +87,6 @@ public class InstanceListPage extends WizardPage {
 	private ConfiguratorWizard configuratorWizard;
 	private Object algorithmCombinaton;
 	private DefaultAlgorithmPage defaultAlgorithmPage;
-	private JavaLineStyler lineStyler;
 
 	public InstanceListPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard, DefaultAlgorithmPage defaultAlgorithmPage) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
@@ -395,7 +393,8 @@ public class InstanceListPage extends WizardPage {
 		}
 
 		Path file = outputFile.toPath();
-		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+		try (InputStream in = Files.newInputStream(file); 
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 			StringBuilder sb = new StringBuilder();
 			String line = null;
 			while ((line = reader.readLine()) != null) {
@@ -403,10 +402,10 @@ public class InstanceListPage extends WizardPage {
 					sb.append(line);
 					sb.append("\n");					
 				}
-			}
-			lineStyler = new JavaLineStyler();
-			lineStyler.parseBlockComments(sb.toString());
-			return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
+			}			
+			//removing the blank lines in the code preview
+			String codePreview = sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
+			return codePreview;
 		} catch (IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
 		} finally {

@@ -145,8 +145,11 @@ public class DefaultAlgorithmPage extends WizardPage {
 		final Font Styledfont = new Font(this.codePreviewPanel.getDisplay(), new FontData("Courier New", 10, SWT.WRAP ));
 		this.code.setFont(Styledfont);
 		lineStyler = new JavaLineStyler();
-		this.code.addLineStyleListener(lineStyler);
-		//setting the backgroud color of the code
+		//Parsing the block comments to highlight them in the code preview			
+		lineStyler.parseBlockComments(getCodePreview());
+		//syntax highlighting in the code preview
+		this.code.addLineStyleListener(lineStyler);				
+		//setting the background color of the code
 		Color white = display.getSystemColor(SWT.COLOR_WHITE);
 		this.code.setBackground(white);
 		new Label(control, SWT.NONE);
@@ -246,17 +249,19 @@ public class DefaultAlgorithmPage extends WizardPage {
 		}
 
 		Path file = outputFile.toPath();
-		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+		try (InputStream in = Files.newInputStream(file); 
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 			StringBuilder sb = new StringBuilder();
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				if (!line.startsWith("import")) {
 					sb.append(line);
 					sb.append(Constants.lineSeparator);
-				}
+				} 
 			}
-			//lineStyler.parseBlockComments(sb.toString());
-			return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
+			//removing the blank lines in the code preview
+			String codePreview = sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
+			return codePreview;
 		} catch (IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
 		} finally {
@@ -264,12 +269,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 			outputFolder.delete();
 			claferPreviewFile.delete();
 		}
-
 		return "";
-	}
-
-	public TaskSelectionPage getTaskSelectionPage() {
-		return taskSelectionPage;
 	}
 
 	public void getInstanceDetails(final InstanceClafer inst, final Map<String, String> algorithms) {
@@ -347,6 +347,10 @@ public class DefaultAlgorithmPage extends WizardPage {
 	public boolean isDefaultAlgorithm() {
 		return this.defaultAlgorithmCheckBox.getSelection();
 	}
+	
+	public TaskSelectionPage getTaskSelectionPage() {
+		return taskSelectionPage;
+	}
 
 	public void setValue(final InstanceClafer instanceClafer) {
 		this.value = instanceClafer;
@@ -368,7 +372,6 @@ public class DefaultAlgorithmPage extends WizardPage {
 			return this.defaultAlgorithmCheckBox.getSelection();
 		}
 		return true;
-
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public class GroupConstraint extends Composite {
 	 */
 	public GroupConstraint(Composite parent, int style, ClaferConstraint constraint, boolean showRemoveButton) {
 		
-		super(parent, SWT.NONE);
+		super(parent, style);
 		// Set the model for use first.
 		this.setConstraint(constraint);
 		

@@ -2,7 +2,6 @@ abstract Enum
 
 //enum Security
 abstract Security : Enum -> integer
-NoSecurity: Security = 0
 Broken: Security = 1
 Weak: Security = 2
 Medium: Security = 3
@@ -20,103 +19,116 @@ abstract Padding: Enum
 NoPadding : Padding
 PKCS5Padding : Padding
 
+//enum AsymmetricPadding
+abstract AsymmetricPadding: Enum -> string
+OAEPWithSHA1 : AsymmetricPadding = "OAEPWithSHA-1AndMGF1Padding"
+OAEPWithSHA256 : AsymmetricPadding = "OAEPWithSHA-256AndMGF1Padding"
+
 //enum Mode
 abstract Mode : Enum
 ECB : Mode
 CBC : Mode
+PCBC: Mode
+CTR : Mode
+CTS : Mode
+CFB : Mode
 OFB : Mode
-GCM : Mode
+//GCM : Mode
 
-abstract XQuantum : Enum
-pre  : XQuantum 
-post : XQuantum
-
-abstract AttackModel : Enum
- CPA : AttackModel
- CCA1 : AttackModel 
- CCA2 : AttackModel
- SC : AttackModel
+//enum Provider
+abstract Provider: Enum
+JCA : Provider
 
 abstract Algorithm
-    name -> string
-    description -> string
-    security -> Security
-    performance -> Performance
+	name -> string
+	description -> string
+	algorithmSecurity -> Security
+	performance -> Performance
+	classPerformance -> Performance
+	provider -> Provider
 
 abstract Cipher : Algorithm
-	secProperty -> AttackModel
-	quantum -> XQuantum
-	
+
 abstract SymmetricCipher : Cipher
-    keySize -> integer
+ 	keySize -> integer
+	[classPerformance = Fast]
 
 abstract SymmetricBlockCipher : SymmetricCipher
-    mode -> Mode
-    padding -> Padding
-    [mode != ECB]
-    [mode = CBC => padding != NoPadding]
+	mode -> Mode
+	padding -> Padding
+	[mode != ECB]
+	[padding != NoPadding]
 
-//Ciphers
-AES128 : SymmetricBlockCipher
-	[name = "AES"]
-	[description = "Advanced Encryption Standard (AES) cipher"]s
-	[keySize = 128]
-	[performance = VeryFast]
-	[security = Medium]
+abstract Task
+    description -> string
 
-AES192 : SymmetricBlockCipher
-	[name = "AES"]
-	[description = "Advanced Encryption Standard (AES) cipher"]s
-	[keySize = 192]
-	[performance = Fast]
-	[security = Strong]
-	
+xor SymmetricCiphers
+	AES: SymmetricBlockCipher
+		[description = "Advanced Encryption Standard (AES) cipher"]
+		[name = "AES"]
+		[keySize = 128 || 
+			keySize = 192 || 
+			keySize = 256]
+		[keySize = 128 => performance = VeryFast 
+							&& algorithmSecurity = Medium]
+		[keySize > 128 => performance = Fast 
+							&& algorithmSecurity = Strong]
 
-AES256 : SymmetricBlockCipher
-	[name = "AES"]
-	[description = "Advanced Encryption Standard (AES) cipher"]s
-	[keySize = 256]
-	[performance = Fast]
-	[security = Strong]
-	
+	DES: SymmetricBlockCipher
+	    [description = "DES encryption"]
+	    [name = "DES"]
+	    [performance = VeryFast ]
+	    [algorithmSecurity = Broken ]
+	    [keySize = 56 ]
+
+abstract KeyDerivationAlgorithm : Algorithm
+	iterations -> integer
+	outputSize -> integer
+	digest -> Digest?
+	[outputSize = digest.outputSize]
+	[digest.algorithmSecurity >= Broken]
+	[iterations = 65536]//1000 is the accepted default number of iterations for a slow enough computation
+
+abstract Digest : Algorithm
+    outputSize -> integer
+
+SHA: Digest
+	[name = "SHA"]
+	[description = "SHAdigest"]
+	[outputSize = 160 || outputSize = 224 || outputSize = 256 || outputSize = 384 || outputSize = 512]
+	[outputSize = 160 => performance = VeryFast && algorithmSecurity = Weak]
+	[outputSize = 224 => performance = Fast && algorithmSecurity = Strong]
+	[outputSize = 256 => performance = Fast && algorithmSecurity = Strong]
+	[outputSize = 384 => performance = Fast && algorithmSecurity = Strong]
+	[outputSize = 512 => performance = Slow && algorithmSecurity = Strong]
+
+pbkdf2 : KeyDerivationAlgorithm
+	[name = "PBKDF2"]
+	[description = "PBKDF2 key derivation"]
+	[performance = Slow]
+	[digest]
+	[algorithmSecurity.ref = digest.algorithmSecurity.ref]	
+		
 abstract AsymmetricCipher : Cipher
+	mode -> Mode
 	keySizePub -> integer
 	keySizeSec -> integer
-	performanceEnc -> Performance
-	performanceDec -> Performance
-
-RSA: AsymmetricCipher
-    [ name = "RSA" ]
-    [ description = "RSA Algm"]
-    [ security = Strong ]
-    [ performance = Slow ]
-    [ keySizePub = 4 ]
-    [ keySizeSec = keySizePub ]
-
-abstract LatticeBasedCipher: AsymmetricCipher
-	messageSize -> integer
-	cipherSize -> integer
-	n -> integer
-	q -> integer 
-
-// 1 - 128, 2 = 192, 3 = 256, 20 = 2053, 40 = 4093
-// https://web.eecs.umich.edu/~cpeikert/pubs/lwe-analysis.pdf (p. 17 of 21)
-// 6 = 6.77, 7 = 8.35, 8 = 8, 9 = 8.87
-
-LP: LatticeBasedCipher
-    [ name = "LP" ]
-    [ description = "Linder-Peikert Scheme"]
-    [ messageSize = 1 || messageSize = 2 || messageSize = 3 ]
-    [ n = 1 || n = 2 || n = 3 || n = 4 ]
-    [ q =  20 || q = 40 ] // Technically, this line is not necessary.
-    s -> integer
-    [ s = 6 || s = 9 || s = 7 || s = 8 ] // Technically, this line is not necessary.
-    [ quantum = post ]
-    [ n = 1 => q = 20 && s = 6 && security = Broken && cipherSize = 22 * messageSize ]
-    [ n = 2 => q = 40 && s = 9 && security = Weak   && cipherSize = 30 * messageSize ]
-    [ n = 3 => q = 40 && s = 7 && security = Medium && cipherSize = 36 * messageSize ]
-    [ n = 4 => q = 40 && s = 8 && security = Strong && cipherSize = 42 * messageSize ]
-    [ keySizePub = n * n * 25]
-    [ keySizeSec = n * 26 ]
-    [ performanceEnc = Slow ]
-    [ performanceDec = Fast ]
+	performance -> Performance
+	padding -> AsymmetricPadding
+	
+xor AsymmetricCiphers
+    RSA: AsymmetricCipher
+    [name = "RSA" ]
+    [description = "RSA Algorithm"]
+    [mode = ECB]
+    [keySizePub = 2048 || keySizePub = 4096]
+    [keySizePub = 2048 => performance = Slow && algorithmSecurity = Medium && padding = OAEPWithSHA1]
+    [keySizePub > 2048 => performance = Slow && algorithmSecurity = Strong && padding = OAEPWithSHA256]	    
+    [keySizeSec = keySizePub ]
+	
+    
+HybridEncryption : Task
+	[description = "HybridEncryption"]
+	symmetricCipher -> SymmetricBlockCipher
+	asymmetricCipher -> AsymmetricCipher
+	security -> integer

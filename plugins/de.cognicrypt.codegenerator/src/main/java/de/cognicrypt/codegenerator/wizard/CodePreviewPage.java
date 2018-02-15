@@ -64,7 +64,7 @@ public class CodePreviewPage extends WizardPage {
 		setPageComplete(false);
 
 		JavaLineStyler lineStyler = new JavaLineStyler();
-
+		
 		//Preview of the code for the selected solution, which will be generated in to the Java project
 		this.codePreviewPanel = new Group(this.control, SWT.NONE);
 		this.codePreviewPanel.setText(Constants.CODE_PREVIEW);
@@ -86,8 +86,11 @@ public class CodePreviewPage extends WizardPage {
 		//change font style of the code in the preview panel
 		final Font Styledfont = new Font(this.codePreviewPanel.getDisplay(), new FontData("Courier New", 10, SWT.WRAP ));
 		this.code.setFont(Styledfont);
+		//Parsing the block comments to highlight them in the code preview		
+		lineStyler.parseBlockComments(instanceListPage.getCodePreview());
+		//syntax highlighting in the code preview
 		this.code.addLineStyleListener(lineStyler);
-		//setting the backgroud color of the code
+		//setting the background color of the code
 		Color white = display.getSystemColor(SWT.COLOR_WHITE);
 		this.code.setBackground(white);
 		new Label(control, SWT.NONE);

@@ -55,7 +55,10 @@ public class CompositeBrowseForFile extends Composite {
 		
 		
 		Text textBox = new Text(this, SWT.BORDER);			 
-		textBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		GridData gdTextBox = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		// do not claim space for all the text if not available
+		gdTextBox.widthHint = 0;
+		textBox.setLayoutData(gdTextBox);
 		Button browseButton = new Button(this, SWT.NONE);	
 		browseButton.setText(Constants.LABEL_BROWSE_BUTTON);
 		

@@ -4,11 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,6 +31,20 @@ public class ClaferModelTest {
 		ClaferModel addedFeatures = claferModel.implementMissingFeatures(cfrFeature);
 		assertTrue(addedFeatures.getClaferModel().size() == 1);
 		assertTrue(addedFeatures.getClaferModel().get(0).getFeatureName().equals("Algorithm"));
+	}
+
+	@Test
+	public final void testDoNotImplementPrimitiveTypes() {
+		ClaferModel claferModel = new ClaferModel();
+		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
+		ArrayList<FeatureProperty> featureProperties = new ArrayList<>();
+		featureProperties.add(new FeatureProperty("number", "integer"));
+		featureProperties.add(new FeatureProperty("characters", "string"));
+		cfrFeature.setFeatureProperties(featureProperties);
+
+		ClaferModel missingFeatures = claferModel.getMissingFeatures(cfrFeature);
+
+		assertTrue(missingFeatures.getClaferModel().size() == 0);
 	}
 
 	@Test

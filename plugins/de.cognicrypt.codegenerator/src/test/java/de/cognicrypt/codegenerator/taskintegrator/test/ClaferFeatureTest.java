@@ -2,6 +2,7 @@ package de.cognicrypt.codegenerator.taskintegrator.test;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import org.junit.Test;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 
 public class ClaferFeatureTest {
@@ -59,6 +61,33 @@ public class ClaferFeatureTest {
 		Object[] expectedLines = Files.readAllLines(Paths.get(expectedFilename)).toArray();
 		Object[] actualLines = Files.readAllLines(Paths.get(actualFilename)).toArray();
 		assertArrayEquals(expectedLines, actualLines);
+	}
+
+	@Test
+	public final void testGetInheritedProperties() {
+		ClaferModel claferModel = new ClaferModel();
+		ClaferFeature featureA = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Z", "");
+
+		ArrayList<FeatureProperty> propertiesA = new ArrayList<FeatureProperty>();
+		FeatureProperty expectedProperty = new FeatureProperty("prop", "integer");
+		propertiesA.add(expectedProperty);
+		featureA.setFeatureProperties(propertiesA);
+
+		ClaferFeature featureB = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Y", "Z");
+		ClaferFeature featureC = new ClaferFeature(Constants.FeatureType.CONCRETE, "X", "Y");
+
+		claferModel.add(featureA);
+		claferModel.add(featureB);
+		claferModel.add(featureC);
+
+		ArrayList<FeatureProperty> inheritedPropertiesC = featureC.getInheritedProperties(claferModel);
+		assertTrue(inheritedPropertiesC.contains(expectedProperty));
+
+		ArrayList<FeatureProperty> inheritedPropertiesB = featureB.getInheritedProperties(claferModel);
+		assertTrue(inheritedPropertiesB.contains(expectedProperty));
+
+		ArrayList<FeatureProperty> inheritedPropertiesA = featureA.getInheritedProperties(claferModel);
+		assertTrue(inheritedPropertiesA.contains(expectedProperty));
 	}
 
 	@AfterClass

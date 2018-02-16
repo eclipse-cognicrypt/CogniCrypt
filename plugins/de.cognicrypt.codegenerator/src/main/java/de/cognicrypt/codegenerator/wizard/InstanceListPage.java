@@ -314,7 +314,7 @@ public class InstanceListPage extends WizardPage {
 
 					protected void configureShell(Shell newShell) {
 						super.configureShell(newShell);
-						newShell.setSize(800, 500);
+						newShell.setSize(1000, 600);
 					}
 				};
 				dialog.open();

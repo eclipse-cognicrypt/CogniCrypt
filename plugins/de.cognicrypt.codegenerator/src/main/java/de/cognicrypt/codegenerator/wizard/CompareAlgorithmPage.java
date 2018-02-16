@@ -18,8 +18,6 @@ package de.cognicrypt.codegenerator.wizard;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
-
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.fieldassist.ControlDecoration;
@@ -60,12 +58,9 @@ public class CompareAlgorithmPage extends WizardPage {
 	private StyledText firstInstanceDetails;
 	private StyledText secondInstanceDetails;
 	private InstanceClafer value;
-	private String algorithmSelected;
 	private String algorithmSelectedSecond;
 	private String algorithmSelectedFirst;
 	private Text notifyText;
-	private Composite control1;
-
 	public CompareAlgorithmPage(InstanceListPage instanceListPage, InstanceGenerator instanceGenerator) {
 		super(Constants.COMPARE_ALGORITHM_PAGE);
 		setTitle(Constants.COMPARE_TITLE);
@@ -85,7 +80,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		this.control.setLayout(layout);
-		
+
 		//Second Set
 		ComboViewer secondAlgorithmClass;
 		Label secondLabelInstanceList;
@@ -94,17 +89,17 @@ public class CompareAlgorithmPage extends WizardPage {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.help_id_3");
 
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
-		
-		notifyText = new Text(this.control, SWT.BORDER|SWT.WRAP);
+
+		notifyText = new Text(this.control, SWT.BORDER | SWT.WRAP);
 		notifyText.setText(Constants.COMPARE_SAME_ALGORITHM);
 		notifyText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		notifyText.setEditable(false);
-		notifyText.setVisible(false);		
+		notifyText.setVisible(false);
 		ControlDecoration deco = new ControlDecoration(notifyText, SWT.RIGHT);
-		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage();		
+		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage();
 		deco.setImage(image);
-		deco.setShowOnlyOnFocus(true);	
-		
+		deco.setShowOnlyOnFocus(true);
+
 		new Label(control, SWT.NONE);
 
 		//First set of Algorithm Combinations
@@ -144,9 +139,6 @@ public class CompareAlgorithmPage extends WizardPage {
 			CompareAlgorithmPage.this.firstInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmFirst)));
 			setHighlightFirst(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmFirst)));
 			compareHighlight();
-			final String selectedAlgorithm = selection.getFirstElement().toString();
-			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm));
-			CompareAlgorithmPage.this.firstInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
 		});
 
 		GridLayout gridLayout = new GridLayout();
@@ -183,14 +175,9 @@ public class CompareAlgorithmPage extends WizardPage {
 			CompareAlgorithmPage.this.secondInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmSecond)));
 			setHighlightSecond(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmSecond)));
 			compareHighlight();
-
-			final String selectedAlgorithm1 = selection1.getFirstElement().toString();
-			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm1));
-			CompareAlgorithmPage.this.secondInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithm1)));
 		});
 
-		GridLayout gridLayout1 = new GridLayout();
-		this.secondInstancePropertiesPanel.setLayout(gridLayout1);
+		this.secondInstancePropertiesPanel.setLayout(gridLayout);
 		GridData gridDataSecond = new GridData(GridData.FILL, GridData.FILL, true, true);
 		gridDataSecond.widthHint = 60;
 		gridDataSecond.horizontalSpan = 1;
@@ -244,13 +231,15 @@ public class CompareAlgorithmPage extends WizardPage {
 			final InstanceClafer instan = (InstanceClafer) inst.getRef();
 			for (final InstanceClafer in : instan.getChildren()) {
 				if (in.getType().getRef() != null && !in.getType().getRef().getTargetType().isPrimitive()) {
-					final String superName = ClaferModelUtils.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
+					final String superName = ClaferModelUtils
+						.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
 					if (!superName.equals("Enum")) {
 						getInstanceDetails(in, algorithms);
 						continue;
 					}
 				}
-				value = "\t" + ClaferModelUtils.removeScopePrefix(in.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
+				value = "\t" + ClaferModelUtils.removeScopePrefix(
+					in.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
 				if (value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
 					value = value.substring(0, value.indexOf("->") - 1);
 					value = value.replaceAll("([a-z0-9])([A-Z])", "$1 $2");
@@ -260,9 +249,50 @@ public class CompareAlgorithmPage extends WizardPage {
 			}
 			// Above for loop over children hasn't been executed, then following if
 			if (!instan.hasChildren()) {
-				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + inst.getRef().toString().replace("\"", "");
+				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + inst.getRef().toString()
+					.replace("\"", "");
 				algo = algorithms.keySet().iterator().next();
 				algorithms.put(algo, algorithms.get(algo) + value);
+			}
+		}
+	}
+
+	public void compareHighlight() {
+		Display display = Display.getCurrent();
+		String firstAlgorithmHighlight = getHighlightFirst();
+		String secondAlgorithmHighlight = getHighlightSecond();
+		Color cyan = display.getSystemColor(SWT.COLOR_CYAN);
+		Color white = display.getSystemColor(SWT.COLOR_WHITE);
+
+		int n;
+		String[] firstHalf1;
+		String[] firstHalf2;
+
+		String[] lines1 = firstAlgorithmHighlight.split("\n");
+		String[] lines2 = secondAlgorithmHighlight.split("\n");
+
+		int i = lines1.length - 1;
+		int j = lines2.length - 1;
+
+		if (i > j) {
+			n = i;
+		} else {
+			n = j;
+		}
+
+		for (i = 0; i < n; i++) {
+			for (int k = 0; k < n; k++) {
+				firstHalf1 = lines1[i].split(":");
+				firstHalf2 = lines2[k].split(":");
+				if (firstHalf1[0].equals(firstHalf2[0])) {
+					if (!firstHalf1[1].equals(firstHalf2[1])) {
+						secondInstanceDetails.setLineBackground(k, 1, cyan);
+						firstInstanceDetails.setLineBackground(k, 1, cyan);
+					} else {
+						secondInstanceDetails.setLineBackground(k, 1, white);
+						firstInstanceDetails.setLineBackground(k, 1, white);
+					}
+				}
 			}
 		}
 	}
@@ -305,29 +335,5 @@ public class CompareAlgorithmPage extends WizardPage {
 
 	public String getHighlightSecond() {
 		return this.algorithmSelectedSecond;
-	}
-	
-	public void compareHighlight()
-	{
-		
-		Display display = Display.getCurrent();
-		String firstAlgorithmHighlight = getHighlightFirst();
-		String secondAlgorithmHighlight = getHighlightSecond();
-		Color red = display.getSystemColor(SWT.COLOR_RED);
-		Color black = display.getSystemColor(SWT.COLOR_BLACK);
-		int n = firstAlgorithmHighlight.length();
-		System.out.println(n);
-		
-		if (!firstAlgorithmHighlight.equals(secondAlgorithmHighlight)) {
-			notifyText.setVisible(false);
-			secondInstanceDetails.setForeground(red);
-			firstInstanceDetails.setForeground(red);
-		}
-		else
-		{
-			notifyText.setVisible(true);
-			secondInstanceDetails.setForeground(black);
-			firstInstanceDetails.setForeground(black);
-		}
 	}
 }

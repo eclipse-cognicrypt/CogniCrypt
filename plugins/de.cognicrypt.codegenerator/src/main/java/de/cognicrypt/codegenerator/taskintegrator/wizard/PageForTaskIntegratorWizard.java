@@ -12,7 +12,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -27,10 +26,10 @@ import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeBrowseForFile;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
-import de.cognicrypt.codegenerator.taskintegrator.widgets.GroupBrowseForFile;
 
 /**
  * @author rajiv
@@ -66,12 +65,12 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		setControl(container);
 
 		// make the page layout two-column
+		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		container.setLayout(new GridLayout(2, false));
 
 		switch (this.getName()) {
 			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
-				container.setLayout(new FillLayout(SWT.HORIZONTAL));
-				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE, this));				
+				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE, this));
 				break;
 			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:
 
@@ -318,8 +317,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				
 				// Get the children of this group and iterate over them. These are the widgets that get the file data. This loop generalizes for all these widgets.
 				for (Control subGroup : ((Group)control).getChildren()) {					
-					if (subGroup instanceof GroupBrowseForFile) {
-						GroupBrowseForFile tempVaraiable = (GroupBrowseForFile) subGroup;
+					if (subGroup instanceof CompositeBrowseForFile) {
+						CompositeBrowseForFile tempVaraiable = (CompositeBrowseForFile) subGroup;
 						if ((tempVaraiable).getDecFilePath().getDescriptionText().contains(Constants.ERROR)) {
 							errorOnFileWidgets = true;
 						}

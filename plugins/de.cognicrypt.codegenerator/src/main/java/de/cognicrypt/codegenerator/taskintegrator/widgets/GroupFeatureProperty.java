@@ -7,12 +7,9 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
@@ -21,7 +18,7 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 
-public class GroupFeatureProperty extends Group {
+public class GroupFeatureProperty extends Composite {
 	private FeatureProperty featureProperty;
 	private Text txtPropertyName;
 	private Text txtPropertyType;
@@ -42,7 +39,7 @@ public class GroupFeatureProperty extends Group {
 	 * @param claferModel
 	 */
 	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam, boolean showRemoveButton, ClaferModel claferModel) {
-		super(parent, SWT.NONE);
+		super(parent, style);
 		// Set the model for use first.
 		this.setFeatureProperty(featurePropertyParam);
 		
@@ -55,7 +52,10 @@ public class GroupFeatureProperty extends Group {
 		
 		txtPropertyName = new Text(this, SWT.BORDER);
 		txtPropertyName.setEditable(showRemoveButton);
-		txtPropertyName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		// do not claim space for all of the text if not available
+		gridData.widthHint = 0;
+		txtPropertyName.setLayoutData(gridData);
 		txtPropertyName.setText(featureProperty.getPropertyName());
 		txtPropertyName.addFocusListener(new FocusAdapter() {
 
@@ -73,7 +73,7 @@ public class GroupFeatureProperty extends Group {
 
 			txtPropertyType = new Text(this, SWT.BORDER);
 			txtPropertyType.setEditable(showRemoveButton);
-			txtPropertyType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+			txtPropertyType.setLayoutData(gridData);
 			txtPropertyType.setText(featureProperty.getPropertyType());
 			txtPropertyType.addFocusListener(new FocusAdapter() {
 
@@ -86,7 +86,7 @@ public class GroupFeatureProperty extends Group {
 		} else {
 
 			comboPropertyType = new Combo(this, SWT.NONE);
-			comboPropertyType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+			comboPropertyType.setLayoutData(gridData);
 			comboPropertyType.setText(featureProperty.getPropertyType());
 			comboPropertyType.addFocusListener(new FocusAdapter() {
 
@@ -97,6 +97,11 @@ public class GroupFeatureProperty extends Group {
 
 				}
 			});
+
+			// suggest Clafer primitives as as type
+			for (String primitive : Constants.CLAFER_PRIMITIVE_TYPES) {
+				comboPropertyType.add(primitive);
+			}
 
 			for (ClaferFeature cfr : claferModel) {
 				comboPropertyType.add(cfr.getFeatureName().toString());

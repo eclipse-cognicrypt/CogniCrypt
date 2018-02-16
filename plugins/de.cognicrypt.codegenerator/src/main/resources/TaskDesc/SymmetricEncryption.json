@@ -28,10 +28,10 @@
        ]
     },
     {
-      "id": "1",
-      "note": "",      
+      "id": "1",      
       "element": "radio",
       "questionText": "Do you wish to derive the key for encryption from a user-specified password?",
+      "note": "If you decide against a user-specified password, you will have to take care of key handling yourself.",
       "answers": [{
           "value": "Yes",
           "claferDependencies": [{
@@ -41,24 +41,29 @@
             },
             {
               "algorithm": "security",
-              "value": "min(cipher.security, kda.security)",
+              "value": "min(cipher.algorithmSecurity, kda.algorithmSecurity)",
               "operator": "="
             }
-          ]
+          ],
+          "defaultAnswer": true
         },
         {
           "value": "No",
           "claferDependencies": [{
             "algorithm": "security",
-            "value": "cipher.security",
+            "value": "cipher.algorithmSecurity",
             "operator": "="
-          }],
-          "defaultAnswer": true
+          }]
         }
       ]
-    },
-    {
-      "id": "2",
+    }
+  ],
+  "nextID": "1"
+},{
+  "id": "1",
+  "helpID": "SymmetricEncryption_Page0",
+  "content": [{
+      "id": "0",
       "note": "",      
       "element": "radio",
       "questionText": "Will your application encrypt several gigabytes of data regularly?",
@@ -80,7 +85,7 @@
       ]
     },
     {
-      "id": "3",
+      "id": "1",
       "element": "combo",
       "note":"",      
       "questionText": "What type of data do you wish to encrypt?",
@@ -108,6 +113,7 @@
         }
       ]
     }
-  ],
+    ],
   "nextID": "-1"
-}]
+  }
+]

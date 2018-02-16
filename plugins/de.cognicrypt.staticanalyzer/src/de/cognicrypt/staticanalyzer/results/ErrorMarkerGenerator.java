@@ -13,7 +13,7 @@ import de.cognicrypt.staticanalyzer.Constants;
 
 /**
  * This class handles error markers for crypto misuses.
- * 
+ *
  * @author Stefan Krueger
  *
  */
@@ -22,33 +22,37 @@ public class ErrorMarkerGenerator {
 	private final List<IMarker> markers;
 
 	public ErrorMarkerGenerator() {
-		markers = new ArrayList<>();
+		this.markers = new ArrayList<>();
 	}
 
 	/**
-	 * Adds crypto-misuse error marker with message {@link message} into file {@link sourceFile} at Line {@link line}. 
-	 * 
-	 * @param sourceFile File the marker is generated into
-	 * @param line Line the marker is generated at
-	 * @param message Error Message
+	 * Adds crypto-misuse error marker with message {@link message} into file {@link sourceFile} at Line {@link line}.
+	 *
+	 * @param sourceFile
+	 *        File the marker is generated into
+	 * @param line
+	 *        Line the marker is generated at
+	 * @param message
+	 *        Error Message
 	 * @return <code>true</code>/<code>false</code> if error marker was (not) added successfully
 	 */
-	public boolean addMarker(IResource sourceFile, int line, String message) {
+	public boolean addMarker(final IResource sourceFile, final int line, final String message) {
 		if (!sourceFile.exists() || !sourceFile.isAccessible()) {
 			Activator.getDefault().logError(Constants.NO_RES_FOUND);
 			return false;
 		}
-		
-		for (IMarker marker : markers) {
+
+		for (final IMarker marker : this.markers) {
 			try {
-				if (marker.getAttribute(IMarker.MESSAGE).equals(message) && marker.getAttribute(IMarker.LINE_NUMBER).equals(line) && sourceFile.getName().equals(marker.getResource().getName())) {
+				if (marker.getAttribute(IMarker.MESSAGE).equals(message) && marker.getAttribute(IMarker.LINE_NUMBER).equals(line) && sourceFile.getName()
+					.equals(marker.getResource().getName())) {
 					return true;
 				}
-			} catch (CoreException e) {
+			} catch (final CoreException e) {
 				//If this throws an exception, it's better to simply create the error marker, even if it already exists.
 			}
 		}
-		
+
 		IMarker marker;
 		try {
 			marker = sourceFile.createMarker(IMarker.PROBLEM);
@@ -56,37 +60,38 @@ public class ErrorMarkerGenerator {
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 			return false;
 		}
-		markers.add(marker);
+		this.markers.add(marker);
 		return true;
 	}
 
 	/**
 	 * Deletes markers from file and clears markers list.
+	 * 
 	 * @return <code>true</code>/<code>false</code> if all error markers were (not) deleted successfully
 	 */
 	public boolean clearMarkers() {
 		return clearMarkers(null);
 	}
 
-	public boolean clearMarkers(IProject curProj) {
+	public boolean clearMarkers(final IProject curProj) {
 		boolean allMarkersDeleted = true;
-		for (IMarker marker : markers) {
+		for (final IMarker marker : this.markers) {
 			allMarkersDeleted &= deleteMarker(marker, curProj);
 		}
-		markers.clear();
+		this.markers.clear();
 		return allMarkersDeleted;
 	}
-	
-	private boolean deleteMarker(IMarker marker, IProject curProj) {
+
+	private boolean deleteMarker(final IMarker marker, final IProject curProj) {
 		try {
 			if (curProj.equals(marker.getResource().getProject())) {
 				marker.delete();
 			}
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 			return false;
 		}

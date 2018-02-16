@@ -10,7 +10,7 @@
 <xsl:result-document href="Enc.java">
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
-
+/** @author CogniCrypt */
 public class Enc {	
 		<xsl:choose>
 		<xsl:when test="//task/code/dataType='File'">
@@ -134,7 +134,7 @@ public class Enc {
 <xsl:result-document href="KeyDeriv.java">
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>
-
+/** @author CogniCrypt */	
 public class KeyDeriv {
 	
 	public SecretKey getKey(char[] pwd) throws GeneralSecurityException {
@@ -154,23 +154,7 @@ public class KeyDeriv {
 </xsl:result-document>
 </xsl:if>
 
-package <xsl:value-of select="//Package"/>; 
-<xsl:apply-templates select="//Import"/>	
-public class Output {
-	public byte[] templateUsage(byte[] data<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">, char[] pwd</xsl:if>) throws GeneralSecurityException  {
-		<xsl:choose>
-        <xsl:when test="//task/algorithm[@type='KeyDerivationAlgorithm']">KeyDeriv kd = new KeyDeriv();
-		SecretKey key = kd.getKey(pwd); </xsl:when>
-        <xsl:otherwise>SecretKeySpec key = getKey(); </xsl:otherwise>
-		</xsl:choose>		
-		
-		Enc enc = new Enc();
-		return enc.encrypt(data, key);
-	}
-}
-</xsl:if>
 
-<xsl:if test="//task[@description='SymmetricEncryption']">
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {

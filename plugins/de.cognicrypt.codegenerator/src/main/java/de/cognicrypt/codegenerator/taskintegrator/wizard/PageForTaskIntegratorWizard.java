@@ -7,12 +7,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.clafer.instance.InstanceClafer;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
@@ -296,7 +298,13 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 									} // clafer dependency check
 									if (answer.getCodeDependencies() != null) {
 										for (CodeDependency codeDependency : answer.getCodeDependencies()) {
-											xmlStrings.get(0).elementByID(Constants.Code).addElement(codeDependency.getOption()).addText(codeDependency.getValue() + "");
+											//xmlStrings.get(0).elementByID(Constants.Code).addElement(codeDependency.getOption()).addText(codeDependency.getValue() + "");
+											Element root = xmlStrings.get(0).getRootElement();
+
+											for (Iterator<Element> element = root.elementIterator(Constants.Code); element.hasNext();) {
+												Element codeElement = element.next();
+												codeElement.addElement(codeDependency.getOption()).addText(codeDependency.getValue() + "");
+										    }
 										} // code dependency loop
 									} // code dependency check
 								} // answer loop

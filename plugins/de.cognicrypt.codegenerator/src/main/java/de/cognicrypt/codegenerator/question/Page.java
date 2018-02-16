@@ -12,35 +12,35 @@ public class Page {
 	private String helpID = "";
 
 	public int getId() {
-		return id;
+		return this.id;
 	}
 
 	public ArrayList<Question> getContent() {
-		return content;
+		return this.content;
 	}
 
 	public int getNextID() {
-		return nextID;
+		return this.nextID;
 	}
 
-	public void setId(int id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
-	public void setContent(ArrayList<Question> content) {
+	public void setContent(final ArrayList<Question> content) {
 		this.content = content;
 	}
 
-	public void setNextID(int nextID) {
+	public void setNextID(final int nextID) {
 		this.nextID = nextID;
 	}
-	
-	public void setHelpID(String helpID) {
+
+	public void setHelpID(final String helpID) {
 		this.helpID = helpID;
 	}
-	
+
 	public String getHelpID() {
-		return helpID;
+		return this.helpID;
 	}
 
 }

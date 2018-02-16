@@ -71,6 +71,7 @@ import de.darmstadt.tu.crossing.cryptSL.ForbMethod;
 import de.darmstadt.tu.crossing.cryptSL.ForbiddenBlock;
 import de.darmstadt.tu.crossing.cryptSL.Literal;
 import de.darmstadt.tu.crossing.cryptSL.LiteralExpression;
+import de.darmstadt.tu.crossing.cryptSL.Object;
 import de.darmstadt.tu.crossing.cryptSL.ObjectDecl;
 import de.darmstadt.tu.crossing.cryptSL.PreDefinedPredicates;
 import de.darmstadt.tu.crossing.cryptSL.Pred;
@@ -80,6 +81,7 @@ import de.darmstadt.tu.crossing.cryptSL.SuParList;
 import de.darmstadt.tu.crossing.cryptSL.SuperType;
 import de.darmstadt.tu.crossing.cryptSL.UnaryPreExpression;
 import de.darmstadt.tu.crossing.cryptSL.UseBlock;
+import de.darmstadt.tu.crossing.cryptSL.impl.ObjectImpl;
 import typestate.interfaces.ICryptSLPredicateParameter;
 import typestate.interfaces.ISLConstraint;
 
@@ -87,11 +89,10 @@ public class CrySLModelReader {
 
 	private List<CryptSLForbiddenMethod> forbiddenMethods = null;
 	private StateMachineGraph smg = null;
-	final String pathToCrySLRules = "/CryptSL Examples/src/de/darmstadt/tu/crossing/";
+	private String curClass = "";
 
 	public CrySLModelReader(final IResource crySLFile) throws ClassNotFoundException, CoreException, IOException {
 		final Injector injector = CryptSLActivator.getInstance().getInjector(CryptSLActivator.DE_DARMSTADT_TU_CROSSING_CRYPTSL);
-
 		final XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
 
 		IProject iproject = crySLFile.getProject();
@@ -119,6 +120,7 @@ public class CrySLModelReader {
 			EcoreUtil.resolveAll(resourceSet);
 			final EObject eObject = resource.getContents().get(0);
 			final Domainmodel dm = (Domainmodel) eObject;
+			curClass = dm.getJavaType().getQualifiedName();
 			final EnsuresBlock ensure = dm.getEnsure();
 			final Map<ParEqualsPredicate, SuperType> pre_preds = Maps.newHashMap();
 			final DestroysBlock destroys = dm.getDestroy();
@@ -128,7 +130,7 @@ public class CrySLModelReader {
 			if (ensure != null) {
 				pre_preds.putAll(getPredicates(ensure.getPred()));
 			}
-			
+
 			this.smg = buildStateMachineGraph(dm.getOrder());
 			final ForbiddenBlock forbEvent = dm.getForbEvent();
 			this.forbiddenMethods = (forbEvent != null) ? getForbiddenMethods(forbEvent.getForb_methods()) : Lists.newArrayList();
@@ -189,15 +191,18 @@ public class CrySLModelReader {
 					if (var.getVal() != null) {
 						final LiteralExpression lit = var.getVal();
 
-						final String variable = filterQuotes(((LiteralExpression) lit.getLit().getName()).getValue().getName());
+						ObjectImpl object = (ObjectImpl) ((LiteralExpression) lit.getLit().getName()).getValue();
+						String type = ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName();
+						String variable = object.getName();
+
 						final String part = var.getVal().getPart();
 						if (part != null) {
-							variables.add(new CryptSLObject(variable, new CryptSLSplitter(Integer.parseInt(lit.getInd()), filterQuotes(lit.getSplit()))));
+							variables.add(new CryptSLObject(variable, type, new CryptSLSplitter(Integer.parseInt(lit.getInd()), filterQuotes(lit.getSplit()))));
 						} else {
-							variables.add(new CryptSLObject(variable));
+							variables.add(new CryptSLObject(variable, type));
 						}
 					} else {
-						variables.add(new CryptSLObject("_"));
+						variables.add(new CryptSLObject("_", "null"));
 					}
 				}
 			}
@@ -213,10 +218,16 @@ public class CrySLModelReader {
 		if (cons instanceof PreDefinedPredicates) {
 			name = getPredefinedPredicate((LiteralExpression) expression);
 		} else {
-			name = new CryptSLObject(getValueOfLiteral(cons.getName()));
+			EObject constraint = cons.getName();
+			String object = getValueOfLiteral(constraint);
+			if (constraint instanceof LiteralExpression) {
+				name = new CryptSLObject(object, ((ObjectDecl) ((ObjectImpl) ((LiteralExpression) constraint).getValue()).eContainer()).getObjectType().getQualifiedName());
+			} else {
+				name = new CryptSLObject(object, "int");
+			}
 		}
 
-		return new CryptSLArithmeticConstraint(name, new CryptSLObject("0"), crypto.rules.CryptSLArithmeticConstraint.ArithOp.p);
+		return new CryptSLArithmeticConstraint(name, new CryptSLObject("0", "int"), crypto.rules.CryptSLArithmeticConstraint.ArithOp.p);
 	}
 
 	private String filterQuotes(final String dirty) {
@@ -232,7 +243,7 @@ public class CrySLModelReader {
 		if (cons instanceof ArithmeticExpression) {
 			final ArithmeticExpression ae = (ArithmeticExpression) cons;
 			ae.getOperator().toString();
-			slci = new CryptSLArithmeticConstraint(new CryptSLObject("0"), new CryptSLObject("1"), ArithOp.n);
+			slci = new CryptSLArithmeticConstraint(new CryptSLObject("0", "int"), new CryptSLObject("1", "int"), ArithOp.n);
 		} else if (cons instanceof LiteralExpression) {
 			final LiteralExpression lit = (LiteralExpression) cons;
 			final List<String> parList = new ArrayList<>();
@@ -247,15 +258,18 @@ public class CrySLModelReader {
 				final String part = lit.getCons().getPart();
 				if (part != null) {
 					final LiteralExpression name = (LiteralExpression) lit.getCons().getLit().getName();
-					final CryptSLObject variable = new CryptSLObject(name.getValue()
-						.getName(), new CryptSLSplitter(Integer.parseInt(lit.getCons().getInd()), filterQuotes(lit.getCons().getSplit())));
+
+					SuperType object = name.getValue();
+					final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType()
+						.getQualifiedName(), new CryptSLSplitter(Integer.parseInt(lit.getCons().getInd()), filterQuotes(lit.getCons().getSplit())));
 					slci = new CryptSLValueConstraint(variable, parList);
 				} else {
 					LiteralExpression name = (LiteralExpression) lit.getCons().getName();
 					if (name == null) {
 						name = (LiteralExpression) lit.getCons().getLit().getName();
 					}
-					final CryptSLObject variable = new CryptSLObject(name.getValue().getName());
+					SuperType object = name.getValue();
+					final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName());
 					slci = new CryptSLValueConstraint(variable, parList);
 				}
 			}
@@ -307,7 +321,10 @@ public class CrySLModelReader {
 					operator = ArithOp.n;
 				}
 
-				right = new CryptSLArithmeticConstraint(new CryptSLObject(leftValue), new CryptSLObject(rightValue), operator);
+				right = new CryptSLArithmeticConstraint(new CryptSLObject(leftValue, ((ObjectDecl) ((LiteralExpression) ((LiteralExpression) ar.getLeftExpression()).getCons()
+					.getName()).getValue().eContainer()).getObjectType()
+						.getQualifiedName()), new CryptSLObject(rightValue, ((ObjectDecl) ((LiteralExpression) ((LiteralExpression) ar.getRightExpression()).getCons().getName())
+							.getValue().eContainer()).getObjectType().getQualifiedName()), operator);
 			}
 			slci = new CryptSLComparisonConstraint(left, right, op);
 		} else if (cons instanceof UnaryPreExpression) {
@@ -316,19 +333,7 @@ public class CrySLModelReader {
 			final Pred innerPredicate = (Pred) un.getEnclosedExpression();
 			if (innerPredicate.getParList() != null) {
 				for (final SuPar sup : innerPredicate.getParList().getParameters()) {
-					if (sup.getVal() == null) {
-						vars.add(new CryptSLObject("_"));
-					} else {
-						final LiteralExpression lit = sup.getVal();
-
-						final String variable = filterQuotes(((LiteralExpression) lit.getLit().getName()).getValue().getName());
-						final String part = sup.getVal().getPart();
-						if (part != null) {
-							vars.add(new CryptSLObject(variable, new CryptSLSplitter(Integer.parseInt(lit.getInd()), filterQuotes(lit.getSplit()))));
-						} else {
-							vars.add(new CryptSLObject(variable));
-						}
-					}
+					vars.add(new CryptSLObject("_", "null"));
 				}
 			}
 			slci = new CryptSLPredicate(null, innerPredicate.getPredName(), vars, true);
@@ -339,27 +344,9 @@ public class CrySLModelReader {
 				final SuParList parList = ((Pred) cons).getParList();
 				if (parList != null) {
 					for (final SuPar sup : parList.getParameters()) {
-						if (sup.getVal() == null) {
-							vars.add(new CryptSLObject("_"));
-						} else {
-							final LiteralExpression lit = sup.getVal();
-
-							final String variable = filterQuotes(((LiteralExpression) lit.getLit().getName()).getValue().getName());
-							final String part = sup.getVal().getPart();
-							if (part != null) {
-								vars.add(new CryptSLObject(variable, new CryptSLSplitter(Integer.parseInt(lit.getInd()), filterQuotes(lit.getSplit()))));
-							} else {
-								vars.add(new CryptSLObject(variable));
-							}
-						}
+						vars.add(new CryptSLObject("_", "null"));
 					}
 				}
-				//				CryptSLObject bobj = null;
-				//				if (cons.getRet().getVal() == null) {
-				//					bobj = new CryptSLObject("this");
-				//				} else {
-				//					bobj = new CryptSLObject(((LiteralExpression) cons.getRet().getVal().getLit().getName()).getValue().getName());
-				//				}
 				slci = new CryptSLPredicate(null, ((Pred) cons).getPredName(), vars, false);
 			}
 		} else if (cons instanceof Constraint) {
@@ -414,13 +401,16 @@ public class CrySLModelReader {
 			if (pred.getParList() != null) {
 				for (final SuPar var : pred.getParList().getParameters()) {
 					if (var.getVal() != null) {
-						String name = ((LiteralExpression) var.getVal().getLit().getName()).getValue().getName();
+						ObjectImpl object = (ObjectImpl) ((LiteralExpression) var.getVal().getLit().getName()).getValue();
+						String name = object.getName();
+						String type = ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName();
 						if (name == null) {
 							name = "this";
+							type = curClass;
 						}
-						variables.add(new CryptSLObject(name));
+						variables.add(new CryptSLObject(name, type));
 					} else {
-						variables.add(new CryptSLObject("_"));
+						variables.add(new CryptSLObject("_", "null"));
 					}
 				}
 			}
@@ -466,13 +456,18 @@ public class CrySLModelReader {
 				break;
 			case "neverTypeOf":
 				final List<ICryptSLPredicateParameter> varNType = new ArrayList<>();
-				varNType.add(new CryptSLObject(((de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0)).getName()));
-				varNType.add(new CryptSLObject(((PreDefinedPredicates) lit.getCons()).getType().getQualifiedName()));
+				Object object = (de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0);
+				String type = ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName();
+				varNType.add(new CryptSLObject(object.getName(), type));
+				String qualifiedName = ((PreDefinedPredicates) lit.getCons()).getType().getQualifiedName();
+				varNType.add(new CryptSLObject(qualifiedName, "null"));
 				slci = new CryptSLPredicate(null, pred, varNType, false);
 				break;
 			case "length":
 				final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
-				variables.add(new CryptSLObject(((de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0)).getName()));
+				Object objectL = (de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0);
+				String typeL = ((ObjectDecl) objectL.eContainer()).getObjectType().getQualifiedName();
+				variables.add(new CryptSLObject(objectL.getName(), typeL));
 				slci = new CryptSLPredicate(null, pred, variables, false);
 				break;
 			default:
@@ -491,16 +486,19 @@ public class CrySLModelReader {
 				boolean firstPar = true;
 				for (final SuPar var : pred.getParList().getParameters()) {
 					if (var.getVal() != null) {
-						String name = ((LiteralExpression) var.getVal().getLit().getName()).getValue().getName();
+						ObjectImpl object = (ObjectImpl) ((LiteralExpression) var.getVal().getLit().getName()).getValue();
+						String type = ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName();
+						String name = object.getName();
 						if (name == null) {
 							name = "this";
+							type = curClass;
 						}
-						variables.add(new CryptSLObject(name));
+						variables.add(new CryptSLObject(name, type));
 					} else {
 						if (firstPar) {
-							variables.add(new CryptSLObject("this"));
+							variables.add(new CryptSLObject("this", curClass));
 						} else {
-							variables.add(new CryptSLObject("_"));
+							variables.add(new CryptSLObject("_", "null"));
 						}
 					}
 					firstPar = false;

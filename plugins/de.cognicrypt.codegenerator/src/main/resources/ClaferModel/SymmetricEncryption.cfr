@@ -37,7 +37,7 @@ JCA : Provider
 abstract Algorithm
 	name -> string
 	description -> string
-	security -> Security
+	algorithmSecurity -> Security
 	performance -> Performance
 	classPerformance -> Performance
 	provider -> Provider
@@ -66,15 +66,15 @@ xor Ciphers
 			keySize = 192 || 
 			keySize = 256]
 		[keySize = 128 => performance = VeryFast 
-							&& security = Medium]
+							&& algorithmSecurity = Medium]
 		[keySize > 128 => performance = Fast 
-							&& security = Strong]
+							&& algorithmSecurity = Strong]
 
 	DES: SymmetricBlockCipher
 	    [description = "DES encryption"]
 	    [name = "DES"]
 	    [performance = VeryFast ]
-	    [security = Broken ]
+	    [algorithmSecurity = Broken ]
 	    [keySize = 56 ]
 
 abstract KeyDerivationAlgorithm : Algorithm
@@ -82,7 +82,7 @@ abstract KeyDerivationAlgorithm : Algorithm
 	outputSize -> integer
 	digest -> Digest?
 	[outputSize = digest.outputSize]
-	[digest.security != Broken]
+	[digest.algorithmSecurity >= Broken]
 	[iterations = 65536]//1000 is the accepted default number of iterations for a slow enough computation
 
 abstract Digest : Algorithm
@@ -92,21 +92,20 @@ SHA: Digest
 	[name = "SHA"]
 	[description = "SHAdigest"]
 	[outputSize = 160 || outputSize = 224 || outputSize = 256 || outputSize = 384 || outputSize = 512]
-	[outputSize = 160 => performance = VeryFast && security = Weak]
-	[outputSize = 224 => performance = Fast && security = Strong]
-	[outputSize = 256 => performance = Fast && security = Strong]
-	[outputSize = 384 => performance = Fast && security = Strong]
-	[outputSize = 512 => performance = Slow && security = Strong]
+	[outputSize = 160 => performance = VeryFast && algorithmSecurity = Weak]
+	[outputSize = 224 => performance = Fast && algorithmSecurity = Strong]
+	[outputSize = 256 => performance = Fast && algorithmSecurity = Strong]
+	[outputSize = 384 => performance = Fast && algorithmSecurity = Strong]
+	[outputSize = 512 => performance = Slow && algorithmSecurity = Strong]
 
 pbkdf2 : KeyDerivationAlgorithm
 	[name = "PBKDF2"]
 	[description = "PBKDF2 key derivation"]
 	[performance = Slow]
 	[digest]
-	[security.ref = digest.security.ref]	    
+	[algorithmSecurity.ref = digest.algorithmSecurity.ref]	    
 
 SymmetricEncryption : Task
 	[description = "Encrypt Data Using a Secret Key"]
 	cipher -> SymmetricBlockCipher
 	security -> integer
-	[security = cipher.security]

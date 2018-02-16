@@ -23,19 +23,26 @@ import crypto.analysis.ClassSpecification;
 import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.EnsuredCryptSLPredicate;
 import crypto.analysis.IAnalysisSeed;
+import crypto.analysis.LocatedCrySLPredicate;
 import crypto.rules.CryptSLArithmeticConstraint;
 import crypto.rules.CryptSLComparisonConstraint;
 import crypto.rules.CryptSLComparisonConstraint.CompOp;
 import crypto.rules.CryptSLConstraint;
 import crypto.rules.CryptSLMethod;
+import crypto.rules.CryptSLObject;
 import crypto.rules.CryptSLPredicate;
 import crypto.rules.CryptSLValueConstraint;
 import crypto.rules.TransitionEdge;
 import crypto.typestate.CallSiteWithParamIndex;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.Utils;
+import soot.ArrayType;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.Type;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.Constant;
 import sync.pds.solver.nodes.Node;
 import typestate.TransitionFunction;
 import typestate.interfaces.ISLConstraint;
@@ -168,8 +175,56 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			final StringBuilder msg = new StringBuilder();
 			msg.append("Predicate ");
 			msg.append(pred.getPredName());
-			msg.append(" is missing.");
-			final Statement stmt = spec.stmt();
+			msg.append(" is missing for ");
+			Statement stmt = null;
+			if (pred instanceof LocatedCrySLPredicate) {
+				stmt = ((LocatedCrySLPredicate) pred).getLocation();
+				for (ValueBox parameter : stmt.getUnit().get().getInvokeExpr().getUseBoxes()) {
+					Value value = parameter.getValue();
+					if (!(value instanceof Constant)) {
+						boolean neverFound = true;
+						for (CallSiteWithParamIndex a : spec.getExtractedValues().keySet()) {
+							if (a.getVarName().equals(pred.getParameters().get(0).getName())) {
+								if (a.fact().value().getType().equals(parameter.getValue().getType())) {
+									String varName = parameter.getValue().toString();
+									if (varName.matches("\\$[a-z][0-9]+")) {
+										msg.append("object of type ");
+										msg.append(parameter.getValue().getType().toQuotedString());
+										neverFound = false;
+									} else {
+										msg.append("variable ");
+										msg.append(varName);
+										neverFound = false;
+									}
+									break;
+								}
+							}
+						}
+						if (neverFound) {
+							Type valueType = value.getType();
+							String type = (valueType instanceof ArrayType) ? ((ArrayType) valueType).getArrayElementType().toQuotedString() : valueType.toQuotedString();
+							if (((CryptSLObject) pred.getParameters().get(0)).getJavaType().equals(type)) {
+								String varName = parameter.getValue().toString();
+								if (varName.matches("\\$[a-z][0-9]+")) {
+									msg.append("object of type ");
+									msg.append(parameter.getValue().getType().toQuotedString());
+									neverFound = false;
+								} else {
+									msg.append("variable ");
+									msg.append(varName);
+									neverFound = false;
+								}
+								break;
+							}
+						}
+					}
+				}
+			} else {
+				stmt = spec.stmt();
+				msg.append("variable ");
+				msg.append(spec.var().value().toString());
+			}
+			msg.append(".");
 			this.markerGenerator.addMarker(unitToResource(stmt), stmt.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
 		}
 	}

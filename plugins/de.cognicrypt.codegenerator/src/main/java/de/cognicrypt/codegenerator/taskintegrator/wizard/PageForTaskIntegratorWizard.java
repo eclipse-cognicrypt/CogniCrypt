@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.clafer.instance.InstanceClafer;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
@@ -31,6 +34,7 @@ import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.ClaferDependency;
+import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.question.QuestionsJSONReader;
@@ -228,7 +232,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						InstanceGenerator instanceGenerator = new InstanceGenerator(jsFilePath, "c0_" + taskName, taskDescription);
 						
 						// This will contain the xml strings that are generated for every -> operator encountered.
-						List<String> xmlStrings = new ArrayList<String>();
+						List<Document> xmlStrings = new ArrayList<Document>();
 
 						XMLParser xmlParser = new XMLParser();
 						// this will remain empty for the first instance, that contains no -> operators.
@@ -237,7 +241,23 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						// get the number of children on the instance generation where there are no constraints.
 						//int numberOfChildren = initialInstance.getChildren().length;
 						// Get the instance value for the blank constraint.
-						xmlStrings.add(xmlParser.displayInstanceValues(initialInstance, constraints));
+						//xmlStrings.add(xmlParser.displayInstanceValues(initialInstance, constraints));
+
+						try {
+							xmlStrings.add(DocumentHelper.parseText(xmlParser.displayInstanceValues(initialInstance, constraints)));
+						} catch (DocumentException e2) {
+							// TODO Auto-generated catch block
+							e2.printStackTrace();
+						}
+
+						//						DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+						//						try {
+						//							DocumentBuilder builder = factory.newDocumentBuilder();
+						//							xmlStrings.add((Document) builder.parse(new InputSource(new StringReader(xmlParser.displayInstanceValues(initialInstance, constraints)))));
+						//						} catch (ParserConfigurationException | SAXException | IOException e1) {
+						//							// TODO Auto-generated catch block
+						//							e1.printStackTrace();
+						//						}
 
 						// Questions needed to get the answer that has a constraint with the -> operator.
 						QuestionsJSONReader reader = new QuestionsJSONReader();
@@ -248,22 +268,44 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 							for (Question question : page.getContent()) {
 								for (Answer answer : question.getAnswers()) {
 									if (answer.getClaferDependencies() != null) {
-										for (final ClaferDependency claferDependency : answer.getClaferDependencies()) {
+										for (ClaferDependency claferDependency : answer.getClaferDependencies()) {
 											if ("->".equals(claferDependency.getOperator())) {
 												// We only require a single instance where the new algorithm will be added using the -> operator
 												// to that end, created method instead of more nested loops here.
-												xmlStrings.add(getXMLForNewAlgorithmInsertion(question, answer, xmlParser, instanceGenerator, claferDependency));
+												//												factory = DocumentBuilderFactory.newInstance();
+												//												try {
+												//													DocumentBuilder builder = factory.newDocumentBuilder();
+												//													xmlStrings.add(
+												//														(Document) builder.parse(new InputSource(new StringReader(getXMLForNewAlgorithmInsertion(question, answer, xmlParser,
+												//															instanceGenerator, claferDependency)))));
+												//												} catch (ParserConfigurationException | SAXException | IOException e1) {
+												//													// TODO Auto-generated catch block
+												//													e1.printStackTrace();
+												//												}
+												//xmlStrings.add(getXMLForNewAlgorithmInsertion(question, answer, xmlParser, instanceGenerator, claferDependency));
+												try {
+													xmlStrings.add(
+														DocumentHelper.parseText(getXMLForNewAlgorithmInsertion(question, answer, xmlParser, instanceGenerator, claferDependency)));
+												} catch (DocumentException e1) {
+													// TODO Auto-generated catch block
+													e1.printStackTrace();
+												}
 
 											}
 										} // clafer dependency loop
 									} // clafer dependency check
+									if (answer.getCodeDependencies() != null) {
+										for (CodeDependency codeDependency : answer.getCodeDependencies()) {
+											xmlStrings.get(0).elementByID(Constants.Code).addElement(codeDependency.getOption()).addText(codeDependency.getValue() + "");
+										} // code dependency loop
+									} // code dependency check
 								} // answer loop
 							} // question loop
 						} // page loop
 
 
-						for (String xmlString : xmlStrings) {
-							System.out.println(xmlString);
+						for (Document xmlString : xmlStrings) {
+							System.out.println(xmlString.asXML());
 						}
 
 

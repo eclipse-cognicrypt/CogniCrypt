@@ -1,23 +1,3 @@
-/**
- * Copyright 2015-2017 Technische Universitaet Darmstadt
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- * @author Ram Kamath
- *
- */
 package de.cognicrypt.codegenerator.wizard.advanced;
 
 import java.util.ArrayList;
@@ -70,7 +50,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 		}
 	}
 
-	public void createConstraints(final AstClafer parent, final AstClafer inputClafer, final Group titledPanel) {
+	private void createConstraints(final AstClafer parent, final AstClafer inputClafer, final Group titledPanel) {
 
 		if (inputClafer.hasChildren()) {
 			if (inputClafer.getGroupCard() != null && inputClafer.getGroupCard().getLow() >= 1) {
@@ -118,7 +98,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 		layout.numColumns = 1;
 
 		//To display the Help view after clicking the help icon
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "de.cognicrypt.codegenerator.help_id_2");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.container, "de.cognicrypt.codegenerator.help_id_2");
 
 		// Add every constraints to its parent and group it as a separate titled
 		// panel
@@ -169,10 +149,10 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 	}
 
 	@Override
-	public void setVisible(boolean visible) {
+	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
 		if (visible) {
-			container.setFocus();
+			this.container.setFocus();
 		}
 	}
 }

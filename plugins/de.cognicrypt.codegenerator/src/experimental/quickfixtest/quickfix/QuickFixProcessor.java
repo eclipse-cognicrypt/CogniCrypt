@@ -17,11 +17,11 @@ import de.cognicrypt.codegenerator.Activator;
 
 /**
  * Quickfix Processor that checks for the specific ProblemID of the Marker and then gets the IJavaCompletionProposal for it.
- * 
+ *
  * The completion proposal is the thing that could be seen as the actual Quickfix.
- * 
+ *
  * Gets invoked automatically by Eclipse once a Java Problem is found.
- * 
+ *
  * @author Patrick Hill
  *
  */
@@ -33,7 +33,8 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 	/**
 	 * getCorrections Method that gets invoked if hasCorrections returns true Returns a new completion proposal for the specific problem
 	 */
-	public IJavaCompletionProposal[] getCorrections(IInvocationContext context, IProblemLocation[] locations) throws CoreException {
+	@Override
+	public IJavaCompletionProposal[] getCorrections(final IInvocationContext context, final IProblemLocation[] locations) throws CoreException {
 		if (locations == null || locations.length == 0) {
 			/*
 			 * https://bugs.eclipse.org/444120 Eclipse can call this method even when there are no markers, then this case would occur.
@@ -46,18 +47,19 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			/**
 			 * apply Method that applys the Quickfix/CompletionProposal Currently replaces the text of the example case "cypher.getinstance('AES')" with
 			 * "cypher.getinstance('AES/CBC/PKCS5PADDING')"
-			 * 
+			 *
 			 * @param d
 			 *        Document or File for which the Quickfix is supposed to work
 			 */
-			public void apply(IDocument d) {
+			@Override
+			public void apply(final IDocument d) {
 				try {
 					d.replace(context.getSelectionOffset(), context.getSelectionLength(), "Cipher.getInstance(\"AES/CBC/PKCS5PADDING\")");
-					context.getCompilationUnit().getResource().deleteMarkers(MARKER_TYPE, false, IResource.DEPTH_ZERO);
-				} catch (CoreException e) {
+					context.getCompilationUnit().getResource().deleteMarkers(QuickFixProcessor.MARKER_TYPE, false, IResource.DEPTH_ZERO);
+				} catch (final CoreException e) {
 					Activator.getDefault().logError(e);
 					e.printStackTrace();
-				} catch (BadLocationException e) {
+				} catch (final BadLocationException e) {
 					Activator.getDefault().logError(e);
 					e.printStackTrace();
 				}
@@ -66,6 +68,7 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			/**
 			 * Not used in the example
 			 */
+			@Override
 			public String getAdditionalProposalInfo() {
 				return null;
 			}
@@ -73,6 +76,7 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			/**
 			 * Not used in the example
 			 */
+			@Override
 			public IContextInformation getContextInformation() {
 				return null;
 			}
@@ -80,14 +84,16 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			/**
 			 * Display String for the Quickfix
 			 */
+			@Override
 			public String getDisplayString() {
-				String display = "Change to a more secure Encryption";
+				final String display = "Change to a more secure Encryption";
 				return display;
 			}
 
 			/**
 			 * Not used in the example
 			 */
+			@Override
 			public Image getImage() {
 				return null;
 			}
@@ -95,13 +101,15 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			/**
 			 * Not used in the example
 			 */
-			public Point getSelection(IDocument document) {
+			@Override
+			public Point getSelection(final IDocument document) {
 				return null;
 			}
 
 			/**
 			 * Used to define the relevance of a Quickfix
 			 */
+			@Override
 			public int getRelevance() {
 				return 1;
 			}
@@ -111,8 +119,9 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 	/**
 	 * hasCorrections checks if the Problem is supposed to be solved by this Quickfix Processor
 	 */
-	public boolean hasCorrections(ICompilationUnit unit, int problemId) {
-		return problemId == JDT_PROBLEM_ID;
+	@Override
+	public boolean hasCorrections(final ICompilationUnit unit, final int problemId) {
+		return problemId == QuickFixProcessor.JDT_PROBLEM_ID;
 	}
 
 }

@@ -61,6 +61,7 @@ public class CompareAlgorithmPage extends WizardPage {
 	private String algorithmSelectedSecond;
 	private String algorithmSelectedFirst;
 	private Text notifyText;
+	private String algorithmSelected;
 	public CompareAlgorithmPage(InstanceListPage instanceListPage, InstanceGenerator instanceGenerator) {
 		super(Constants.COMPARE_ALGORITHM_PAGE);
 		setTitle(Constants.COMPARE_TITLE);
@@ -132,12 +133,20 @@ public class CompareAlgorithmPage extends WizardPage {
 		this.firstInstanceDetails = new StyledText(this.firstInstancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 
 		firstAlgorithmClass.addSelectionChangedListener(event -> {
+			String selectedAlgorithmSecond = getSelectedAlgorithmSecond();
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 			CompareAlgorithmPage.this.firstInstancePropertiesPanel.setVisible(true);
 			final String selectedAlgorithmFirst = selection.getFirstElement().toString();
+			setSelectedAlgorithmFirst(selectedAlgorithmFirst);
 			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmFirst));
 			CompareAlgorithmPage.this.firstInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmFirst)));
 			setHighlightFirst(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmFirst)));
+			if(!selectedAlgorithmFirst.equals(selectedAlgorithmSecond)){
+				notifyText.setVisible(false);
+			}
+			else{
+				notifyText.setVisible(true);
+			}
 			compareHighlight();
 		});
 
@@ -168,12 +177,20 @@ public class CompareAlgorithmPage extends WizardPage {
 		this.secondInstanceDetails = new StyledText(this.secondInstancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 
 		secondAlgorithmClass.addSelectionChangedListener(event -> {
+			String selectedAlgorithmFirst = getSelectedAlgorithmFirst();
 			final IStructuredSelection selection1 = (IStructuredSelection) event.getSelection();
 			CompareAlgorithmPage.this.secondInstancePropertiesPanel.setVisible(true);
 			final String selectedAlgorithmSecond = selection1.getFirstElement().toString();
+			setSelectedAlgorithmSecond(selectedAlgorithmSecond);
 			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmSecond));
 			CompareAlgorithmPage.this.secondInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmSecond)));
 			setHighlightSecond(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmSecond)));
+			if(!selectedAlgorithmFirst.equals(selectedAlgorithmSecond)){
+				notifyText.setVisible(false);
+			}
+			else{
+				notifyText.setVisible(true);
+			}
 			compareHighlight();
 		});
 
@@ -258,6 +275,7 @@ public class CompareAlgorithmPage extends WizardPage {
 	}
 
 	public void compareHighlight() {
+		
 		Display display = Display.getCurrent();
 		String firstAlgorithmHighlight = getHighlightFirst();
 		String secondAlgorithmHighlight = getHighlightSecond();
@@ -336,4 +354,21 @@ public class CompareAlgorithmPage extends WizardPage {
 	public String getHighlightSecond() {
 		return this.algorithmSelectedSecond;
 	}
+	
+	public void setSelectedAlgorithmFirst(final String algorithmSelected) {
+		this.algorithmSelected = algorithmSelected;
+	}
+
+	public String getSelectedAlgorithmFirst() {
+		return this.algorithmSelected;
+	}
+	public void setSelectedAlgorithmSecond(final String algorithmSelected) {
+		this.algorithmSelected = algorithmSelected;
+	}
+
+	public String getSelectedAlgorithmSecond() {
+		return this.algorithmSelected;
+
+	}
+	
 }

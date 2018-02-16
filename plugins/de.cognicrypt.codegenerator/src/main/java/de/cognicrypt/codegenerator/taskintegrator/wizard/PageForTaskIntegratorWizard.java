@@ -6,14 +6,16 @@ package de.cognicrypt.codegenerator.taskintegrator.wizard;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
+import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -26,14 +28,20 @@ import org.eclipse.swt.widgets.MessageBox;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
+import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.question.ClaferDependency;
+import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.question.QuestionsJSONReader;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
-import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.GroupBrowseForFile;
+import de.cognicrypt.codegenerator.utilities.XMLParser;
 
 /**
  * @author rajiv
@@ -204,12 +212,62 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						ClaferModel claferModel = null;
-						ArrayList<Question> questions = null;
-						ArrayList<String> strFeatures = new ArrayList<>();
 						
 
-						for (IWizardPage page : getWizard().getPages()) {
+
+						//Composite test = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompositeChoiceForModeOfWizard();
+
+						// this is needed to get the name and the description of the task from the wizard.
+						ModelAdvancedMode objectForDataInGuidedMode = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD))
+							.getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
+						String taskName = objectForDataInGuidedMode.getNameOfTheTask();
+						String taskDescription = objectForDataInGuidedMode.getTaskDescription();
+
+						//TODO not implemented yet. We need the location of the js file that is created from the provided clafer model. 
+						String jsFilePath = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getJSFilePath();
+						InstanceGenerator instanceGenerator = new InstanceGenerator(jsFilePath, "c0_" + taskName, taskDescription);
+						
+						// This will contain the xml strings that are generated for every -> operator encountered.
+						List<String> xmlStrings = new ArrayList<String>();
+
+						XMLParser xmlParser = new XMLParser();
+						// this will remain empty for the first instance, that contains no -> operators.
+						HashMap<Question, Answer> constraints = new HashMap<>();
+						InstanceClafer initialInstance = instanceGenerator.generateInstances(constraints).get(0);
+						// get the number of children on the instance generation where there are no constraints.
+						//int numberOfChildren = initialInstance.getChildren().length;
+						// Get the instance value for the blank constraint.
+						xmlStrings.add(xmlParser.displayInstanceValues(initialInstance, constraints));
+
+						// Questions needed to get the answer that has a constraint with the -> operator.
+						QuestionsJSONReader reader = new QuestionsJSONReader();
+						// TODO update this to read the data generated in the questions page.
+						List<Page> pages = reader.getPages("/src/main/resources/TaskDesc/SymmetricEncryption.json");
+
+						for (Page page : pages) {
+							for (Question question : page.getContent()) {
+								for (Answer answer : question.getAnswers()) {
+									if (answer.getClaferDependencies() != null) {
+										for (final ClaferDependency claferDependency : answer.getClaferDependencies()) {
+											if ("->".equals(claferDependency.getOperator())) {
+												// We only require a single instance where the new algorithm will be added using the -> operator
+												// to that end, created method instead of more nested loops here.
+												xmlStrings.add(getXMLForNewAlgorithmInsertion(question, answer, xmlParser, instanceGenerator, claferDependency));
+
+											}
+										} // clafer dependency loop
+									} // clafer dependency check
+								} // answer loop
+							} // question loop
+						} // page loop
+
+
+						for (String xmlString : xmlStrings) {
+							System.out.println(xmlString);
+						}
+
+
+						/*for (IWizardPage page : getWizard().getPages()) {
 							// get the Clafer creation page
 							if (page instanceof PageForTaskIntegratorWizard) {
 								PageForTaskIntegratorWizard pftiw = (PageForTaskIntegratorWizard) page;
@@ -241,9 +299,9 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 									}
 								}
 							}
-						}
+						}*/
 
-						XSLTagDialog dialog;
+						/*XSLTagDialog dialog;
 						if (strFeatures.size() > 0) {
 							dialog = new XSLTagDialog(getShell(), strFeatures);
 						} else {
@@ -257,8 +315,38 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 							xslTxtBoxContent = xslTxtBoxContent.substring(0, selected.x) + dialog.getTag().toString() + xslTxtBoxContent.substring(selected.y,
 								xslTxtBoxContent.length());
 							getCompositeForXsl().getXslTxtBox().setText(xslTxtBoxContent);
-						}
+						}*/
 
+					}
+
+					/**
+					 * This method is created to be able to exit the nested loops as soon as the correct instance is found.
+					 * 
+					 * @param question
+					 *        The question object from the outer loop.
+					 * @param answer
+					 *        The answer object from the outer loop.
+					 * @param xmlParser
+					 *        This object is needed to generate the xml string.
+					 * @param instanceGenerator
+					 *        This object is needed to generate the instances
+					 * @param claferDependency
+					 *        The claferDependency from the outer loop
+					 * @return
+					 */
+					private String getXMLForNewAlgorithmInsertion(Question question, Answer answer, XMLParser xmlParser, InstanceGenerator instanceGenerator, ClaferDependency claferDependency) {
+						HashMap<Question, Answer> constraints = new HashMap<>();
+						constraints.put(question, answer);
+						String constraintOnType = claferDependency.getAlgorithm();
+						for (InstanceClafer instance : instanceGenerator.generateInstances(constraints)) {
+							for (InstanceClafer childInstance : instance.getChildren()) {
+								// check if the name of the constraint on the clafer instance is the same as the one on the clafer dependency from the outer loop.
+								if (childInstance.getType().getName().equals(constraintOnType)) {
+									return xmlParser.displayInstanceValues(instance, constraints);
+								}
+							} // child instance loop
+						} // instance loop
+						return "";
 					}
 				});
 				break;
@@ -309,6 +397,10 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		}
 	}
 
+	public String getJSFilePath() {
+		return "/home/rajiv/git/CogniCrypt/plugins/de.cognicrypt.codegenerator/src/main/resources/ClaferModel/SymmetricEncryption.js";
+	}
+
 	/**
 	 * Overwriting the getNextPage method to extract the list of all questions
 	 * from highLevelQuestion page and forward the data to pageForLinkAnswers at runtime
@@ -326,7 +418,9 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			return null;
 		}
 		
-		
+		if (this.getName().equals(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)) {
+
+		}
 		/*
 		 * This is for debugging only. To be removed for the final version.
 		 * TODO Please add checks on the pages after mode selection to mark those pages as completed, or restrict the finish button.

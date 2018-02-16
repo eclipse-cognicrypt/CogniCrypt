@@ -70,6 +70,14 @@ public class ClaferFeature implements Serializable {
 		this.featureInheritance = featureInheritance;
 	}
 
+	public boolean inheritsFrom(String parentFeature) {
+		return getFeatureInheritance().equals(parentFeature);
+	}
+
+	public boolean inheritsFrom(ClaferFeature parentFeature) {
+		return inheritsFrom(parentFeature.getFeatureInheritance());
+	}
+
 	/**
 	 * @return the properties
 	 */
@@ -109,6 +117,17 @@ public class ClaferFeature implements Serializable {
 		}
 		
 		return false;
+	}
+
+	public ArrayList<FeatureProperty> getInheritedProperties(ClaferModel refModel) {
+		ArrayList<FeatureProperty> inheritedProperties = (ArrayList<FeatureProperty>) getFeatureProperties().clone();
+
+		ClaferFeature parentFeature = refModel.getFeature(getFeatureInheritance());
+		if (parentFeature != null) {
+			inheritedProperties.addAll(parentFeature.getInheritedProperties(refModel));
+		}
+
+		return inheritedProperties;
 	}
 
 	public ArrayList<ClaferConstraint> getFeatureConstraints() {

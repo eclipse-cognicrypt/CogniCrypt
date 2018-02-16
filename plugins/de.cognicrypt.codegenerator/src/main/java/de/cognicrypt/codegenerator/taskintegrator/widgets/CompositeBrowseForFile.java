@@ -8,23 +8,21 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.UIConstants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.PageForTaskIntegratorWizard;
 
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
 
-
-public class GroupBrowseForFile extends Group {
+public class CompositeBrowseForFile extends Composite {
 	private ModelAdvancedMode objectForDataInNonGuidedMode;
 	private PageForTaskIntegratorWizard theLocalContainerPage; // this is needed to set whether the page has been completed yet or not.
 	private ControlDecoration decFilePath; // Decoration variable to be able to access it in the events.
@@ -33,7 +31,7 @@ public class GroupBrowseForFile extends Group {
 	 * @param parent
 	 * @param style
 	 */
-	public GroupBrowseForFile(Composite parent, int style, String labelText, String[] fileTypes, String stringOnFileDialog, PageForTaskIntegratorWizard theContainerpageForValidation) {
+	public CompositeBrowseForFile(Composite parent, int style, String labelText, String[] fileTypes, String stringOnFileDialog, PageForTaskIntegratorWizard theContainerpageForValidation) {
 		super(parent, style);
 		// this object is required in the text box listener. Should not be called too often.
 		setObjectForDataInNonGuidedMode(((CompositeChoiceForModeOfWizard) getParent().getParent().getParent()).getObjectForDataInNonGuidedMode());
@@ -51,13 +49,16 @@ public class GroupBrowseForFile extends Group {
 		getDecFilePath().setShowOnlyOnFocus(false);
 		
 		// Initial error state.
-		getDecFilePath().setImage(Constants.DEC_ERROR);
+		getDecFilePath().setImage(UIConstants.DEC_ERROR);
 		getDecFilePath().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_FILE_NAME);
 		getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
 		
 		
 		Text textBox = new Text(this, SWT.BORDER);			 
-		textBox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+		GridData gdTextBox = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		// do not claim space for all the text if not available
+		gdTextBox.widthHint = 0;
+		textBox.setLayoutData(gdTextBox);
 		Button browseButton = new Button(this, SWT.NONE);	
 		browseButton.setText(Constants.LABEL_BROWSE_BUTTON);
 		
@@ -76,7 +77,7 @@ public class GroupBrowseForFile extends Group {
 				File tempFileVariable = new File(textBox.getText());
 				// Validate the file IO.
 				if (!tempFileVariable.exists() && !tempFileVariable.isDirectory() && !tempFileVariable.canRead() && textBox.getParent().isVisible()) {//					
-					getDecFilePath().setImage(Constants.DEC_ERROR);
+					getDecFilePath().setImage(UIConstants.DEC_ERROR);
 					getDecFilePath().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_UNABLE_TO_READ_FILE);
 					getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
 					// Check if the page can be set to completed.
@@ -104,11 +105,6 @@ public class GroupBrowseForFile extends Group {
 					// Check if the page can be set to completed.
 					getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 				}
-				
-				// This is needed to refresh the size of the controls.
-				getShell().layout(true, true);
-				final Point newSize = getShell().computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
-				getShell().setSize(newSize);	
 			}
 		});
 	}

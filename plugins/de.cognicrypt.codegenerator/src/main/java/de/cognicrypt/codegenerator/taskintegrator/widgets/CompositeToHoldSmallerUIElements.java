@@ -42,12 +42,13 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * Create the composite. Warnings suppressed for casting array lists.
 	 * 
 	 * @param parent
-	 * @param style
+	 * @param style TODO
 	 * @param targetArrayListOfDataToBeDisplayed
 	 * @param showRemoveButton
 	 */
 	public CompositeToHoldSmallerUIElements(Composite parent, int style, ArrayList<?> targetArrayListOfDataToBeDisplayed, boolean showRemoveButton, ClaferModel claferModel) {
-		super(parent, SWT.BORDER | SWT.V_SCROLL);
+		super(parent, style | SWT.V_SCROLL);
+
 		setExpandVertical(true);
 		setExpandHorizontal(true);
 
@@ -55,7 +56,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		groupAnswers = new ArrayList<GroupAnswer>();
 
 		composite = new Composite(this, SWT.NONE);
-		composite.setLayout(new GridLayout());
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+		composite.setLayout(new GridLayout(1, false));
 
 		setContent(composite);
 		setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -126,7 +128,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		GroupConstraint groupConstraint = new GroupConstraint(composite, SWT.NONE, featureConstraintUnderConsideration, showRemoveButton);
 		groupConstraint.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		composite.pack();
+		composite.layout();
 	}
 
 	/**
@@ -148,7 +150,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		GroupFeatureProperty groupForFeatureProperty = new GroupFeatureProperty(composite, SWT.NONE, featureProperty, showRemoveButton, claferModel);
 		groupForFeatureProperty.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		composite.pack();
+		composite.layout();
 	}
 
 	/**

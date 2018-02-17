@@ -70,7 +70,6 @@ public class QuestionDialog extends Dialog {
 
 	public QuestionDialog(Shell parentShell, Question question, ClaferModel claferModel, ArrayList<Question> listOfAllQuestions) {
 		super(parentShell);
-		setShellStyle(SWT.RESIZE);
 		this.question = question;
 		this.claferModel = claferModel;
 		this.listOfAllQuestions = listOfAllQuestions;
@@ -86,6 +85,7 @@ public class QuestionDialog extends Dialog {
 		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new FillLayout(SWT.HORIZONTAL));
 		getShell().setMinimumSize(700, 400);
+		
 
 		TabFolder tabFolder = new TabFolder(container, SWT.NONE);
 		tabFolder.addSelectionListener(new SelectionListener() {
@@ -94,19 +94,12 @@ public class QuestionDialog extends Dialog {
 			public void widgetSelected(SelectionEvent arg0) {
 				// TODO Auto-generated method stub
 				if (tabFolder.getSelectionIndex() == 1) {
-					//lblQuestionContent.setText(textQuestion.getText());
-					if (question == null) {
-						linkAnswersTabMessageBox.open();
-					}
-				}
-
-				if (tabFolder.getSelectionIndex() == 2) {
-					if (question == null) {
+					if(question==null){
 						linkFeaturesMessageBox.open();
 					}
 				}
 
-				if (tabFolder.getSelectionIndex() == 3) {
+				if (tabFolder.getSelectionIndex() == 2) {
 					if (question == null) {
 						linkCodeMessageBox.open();
 					}
@@ -119,7 +112,7 @@ public class QuestionDialog extends Dialog {
 
 			}
 		});
-
+				
 		TabItem tbtmQuestion = new TabItem(tabFolder, SWT.NONE);
 		tbtmQuestion.setText("Question");
 
@@ -133,7 +126,7 @@ public class QuestionDialog extends Dialog {
 
 		textQuestion = new Text(composite, SWT.BORDER);
 		textQuestion.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-
+	
 		Label lblType = new Label(composite, SWT.NONE);
 		lblType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		lblType.setText("Answer type");
@@ -158,8 +151,8 @@ public class QuestionDialog extends Dialog {
 		boolean showRemoveButton = true;
 		compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton, null);
 		GridData gd_compositeToHoldAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
-		gd_compositeToHoldAnswers.heightHint = 125;
-		gd_compositeToHoldAnswers.widthHint = 520;
+		gd_compositeToHoldAnswers.heightHint = 135;
+		gd_compositeToHoldAnswers.widthHint = 690;
 		compositeToHoldAnswers.setLayoutData(gd_compositeToHoldAnswers);
 		compositeToHoldAnswers.setLayout(new FillLayout(SWT.HORIZONTAL));
 		compositeToHoldAnswers.setVisible(false);
@@ -175,6 +168,7 @@ public class QuestionDialog extends Dialog {
 
 		});
 		currentQuestionType = combo.getText();
+		
 		combo.addModifyListener(new ModifyListener() {
 
 			@Override
@@ -186,10 +180,11 @@ public class QuestionDialog extends Dialog {
 						compositeToHoldAnswers.setVisible(false);
 						compositeToHoldAnswers.getListOfAllAnswer().clear();
 						compositeToHoldAnswers.updateAnswerContainer();
+						Answer emptyAnswer=new Answer();
+						emptyAnswer.setDefaultAnswer(true);
+						emptyAnswer.setValue("");
+						compositeToHoldAnswers.getListOfAllAnswer().add(emptyAnswer);
 						currentQuestionType = "text box";
-						Answer txtAnswer = new Answer();
-						txtAnswer.setValue("");
-						question.getAnswers().add(txtAnswer);
 						break;
 					case "Drop down":
 						boolean comboSelected = combo.getText().equalsIgnoreCase("Drop down") ? true : false;
@@ -252,7 +247,7 @@ public class QuestionDialog extends Dialog {
 		if (question == null) {
 			linkFeaturesMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.OK);
 			linkFeaturesMessageBox.setMessage(
-				"Please at first completely fill the details of \"Question\" Tab and Click OK. " + " Then Click on \"modify\" Button to further fill the details in \"Link Features\" tab");
+				"Please at first completely fill the details of \"Question\" Tab and Click OK. " + " Then Click on \"modify\" Button to further fill the details in \"Link to variability constructs\" tab");
 		}
 
 		if (question != null) {
@@ -302,7 +297,7 @@ public class QuestionDialog extends Dialog {
 				ansScrollCompositeForClaferTab.setLayout(new GridLayout(3, false));
 
 				for (Answer answer : question.getAnswers()) {
-					//To add the widgets and data inside answerCompositeForLinkCodeTab
+					//To add the widgets and data inside ansScrollCompositeForClaferTab
 					ansScrollCompositeForClaferTab.addElementsInClaferTabQuestionDialog(answer, claferModel);
 				}
 
@@ -318,7 +313,7 @@ public class QuestionDialog extends Dialog {
 		if (question == null) {
 			linkCodeMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.OK);
 			linkCodeMessageBox.setMessage(
-				"Please at first completely fill the details of \"Question\" Tab and Click OK. " + " Then Click on \"modify\" Button to further fill the details in \"Link Code\" tab");
+				"Please at first completely fill the details of \"Question\" Tab and Click OK. " + " Then Click on \"modify\" Button to further fill the details in \"Link to variables to use in code\" tab");
 		}
 
 		if (question != null) {
@@ -530,15 +525,9 @@ public class QuestionDialog extends Dialog {
 				i--;
 			}
 		}
+		
 		//compositeToHoldAnswers.getListOfAllAnswer()
 		questionDetails.setAnswers(compositeToHoldAnswers.getListOfAllAnswer());
-		if (question != null) {
-			System.out.println(question.getQuestionText());
-			for (Answer answer : question.getAnswers()) {
-				//answer.setClaferDependencies()
-			}
-		}
-		//questionDetails.set
 		this.questionDetails = questionDetails;
 	}
 

@@ -185,6 +185,9 @@ public class FileUtilities {
 	 * @return a boolean value for the validity of the file.
 	 */
 	private boolean validateCFRFile(File cfrFileLocation) {
+		//return ClaferModel.compile(cfrFileLocation.getAbsolutePath());
+		
+		//for checking the JSON file creation commented out the above line
 		return true;
 	}
 

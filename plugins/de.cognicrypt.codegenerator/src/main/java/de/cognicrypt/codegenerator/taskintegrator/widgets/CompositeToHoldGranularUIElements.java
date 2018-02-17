@@ -138,11 +138,24 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	public void deleteQuestion(Question questionToBeDeleted){		
 		
 		listOfAllQuestions.remove(questionToBeDeleted);
-				
+		updateQuestionsID();		
 		updateQuestionContainer();
 		
 	}
 	
+	/**
+	 * updates the question Id everytime
+	 * when a question is deleted
+	 */
+	
+	private void updateQuestionsID() {
+		int qID=0;
+		for(Question qstn: listOfAllQuestions){
+			qstn.setId(qID++);
+		}
+		
+	}
+
 	/**	 
 	 * executes when next button of "highLevelQuestion" is pressed
 	 * deletes listOfAllQuestions of "pageForLinkAnswers"

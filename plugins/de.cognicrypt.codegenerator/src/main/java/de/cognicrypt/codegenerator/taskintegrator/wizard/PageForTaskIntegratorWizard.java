@@ -288,11 +288,12 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						int response = questionDialog.open();
+						int qID=compositeToHoldGranularUIElements.getListOfAllQuestions().size();
 						if (response == Window.OK) {
 							counter++;
 							//Question questionDetails = getDummyQuestion(questionDialog.getQuestionText(),questionDialog.getquestionType(),questionDialog.getAnswerValue());
 							Question questionDetails = questionDialog.getQuestionDetails();
-							questionDetails.setId(counter);
+							questionDetails.setId(qID);
 
 							// Update the array list.
 							compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
@@ -314,28 +315,16 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	 * from highLevelQuestion page and forward the data to pageForLinkAnswers at runtime
 	 */
 	public IWizardPage getNextPage() {
-		boolean isNextPressed = "nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[2].getMethodName());
-		if (isNextPressed) {
-			boolean validatedNextPress = this.nextPressed(this);
-			if (!validatedNextPress) {
-				return this;
-			}
-		}
-		
-		if (this.getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD) && !getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode().isGuidedModeChosen()) {
-			return null;
-		}
-		
-		
+		boolean validatedNextPress = this.nextPressed(this);
 		/*
-		 * This is for debugging only. To be removed for the final version.
-		 * TODO Please add checks on the pages after mode selection to mark those pages as completed, or restrict the finish button.
+		 * This is for debugging only. To be removed for the final version. TODO Please add checks on the pages after mode selection to mark those pages as completed, or restrict
+		 * the finish button.
 		 */
 		IWizardPage nextPage = super.getNextPage();
 		if (nextPage != null) {
-			((WizardPage)nextPage).setPageComplete(true);
+			((WizardPage) nextPage).setPageComplete(true);
 		}
-				
+
 		return nextPage;
 
 	}

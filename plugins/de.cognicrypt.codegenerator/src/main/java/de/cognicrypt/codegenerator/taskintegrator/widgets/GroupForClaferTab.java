@@ -23,7 +23,7 @@ public class GroupForClaferTab extends Group {
 
 	private String featureSelected;
 	private ArrayList<String> operandItems;
-	ClaferModel claferModel;
+	private ClaferModel claferModel;
 
 	// FIXME the parameter claferModel seems to be unused
 	public GroupForClaferTab(Composite parent, int style, Answer answer, ClaferModel claferModel) {
@@ -42,7 +42,10 @@ public class GroupForClaferTab extends Group {
 		// FIXME handle the claferFeatures == null case properly
 		if (claferModel != null) {
 			for (ClaferFeature claferFeature : claferModel) {
-				comboForAlgorithm.add(claferFeature.getFeatureName());
+				//add the claferFeature only if it has properties
+				if (claferFeature.hasProperties()) {
+					comboForAlgorithm.add(claferFeature.getFeatureName());
+				}
 			}
 		}
 

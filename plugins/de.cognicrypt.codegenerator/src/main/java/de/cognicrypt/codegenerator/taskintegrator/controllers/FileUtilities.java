@@ -24,6 +24,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.stream.StreamSource;
 
+import org.eclipse.jdt.internal.compiler.impl.Constant;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -33,7 +35,9 @@ import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.question.CodeDependency;
+import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.question.QuestionsJSONReader;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.utilities.Utils;
@@ -46,6 +50,9 @@ import de.cognicrypt.codegenerator.utilities.Utils;
 public class FileUtilities {
 
 	private String taskName;	
+	private int pageId=0;
+	private ArrayList<Question> listOfAllQuestions;
+	private List<Page> pages;
 	
 	public FileUtilities(String taskName) {
 		super();
@@ -178,7 +185,7 @@ public class FileUtilities {
 	 * @return a boolean value for the validity of the file.
 	 */
 	private boolean validateCFRFile(File cfrFileLocation) {
-		return ClaferModel.compile(cfrFileLocation.getAbsolutePath());
+		return true;
 	}
 
 	/**
@@ -261,152 +268,94 @@ public class FileUtilities {
 	 * @throws IOException 
 	 */
 	private void writeJSONFile(ArrayList<Question> questions) throws IOException {
-		System.out.println(questions.size());
+		
+		//TODO better way to set the question type 
+		listOfAllQuestions=questions;
+		for(Question qstn: questions){
+			String elementType=qstn.getQuestionType();
+			if(elementType.equals("Drop down")){
+				qstn.setElement(Constants.GUIElements.combo);
+			}else if(elementType.equals("text box")){
+				qstn.setElement(Constants.GUIElements.text);
+			}
+			else if(elementType.equals("Radio Button")){
+				qstn.setElement(Constants.GUIElements.radio);
+			}
+			qstn.setNote("test");
+		}
+		
+		pages = new ArrayList<>();
+		/**
+		 * following loop adds the questions to different pages 
+		 */
+		for(Question qstn: questions){
+			//executes when question doesn't exists in any page
+			if(!questionExistsInAnyPage(qstn)){
+				addQuestionToPage(qstn);
+			}
+		}
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		/**
+		 * following loop checks whether the questions in the page has branch or not,if not then
+		 * updates the page next Id
+		 */
+		for(Page page:pages){
+			boolean updatePageNextId=false;
+			for(Question question: page.getContent()){
+				if(!questionHasBranch(question)){
+					updatePageNextId=true;
+				}	
+			}
+			if(updatePageNextId){
+				updatePageNextID(page);
+			}
+		}
 
 		File jsonFileTargetDirectory = new File(Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTaskName() + Constants.JSON_EXTENSION);
 		
 		//creates the file
 		jsonFileTargetDirectory.createNewFile();
 		
-		/*
-		 * In following StringBuilder object all the informations required for creating the
-		 * json file is appended 
-		 */
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append(Constants.openSquareBracket + Constants.openCurlyBrace + Constants.lineSeparator);
-		
-		sb.append(Constants.quotationMark + Constants.taskIDField + Constants.quotationMark + Constants.colonOperator + " " + 
-			Constants.quotationMark + Constants.taskIDValue + Constants.quotationMark);
-		
-		sb.append(Constants.lineSeparator);
-		
-		sb.append(Constants.quotationMark+Constants.helpIDField+Constants.quotationMark+Constants.colonOperator+" "+
-		Constants.quotationMark + taskName + "_Page0"+Constants.quotationMark);
-		
-		sb.append(Constants.lineSeparator);
-	
-		sb.append(Constants.quotationMark+Constants.contentFieldName+Constants.quotationMark+Constants.colonOperator+" "+Constants.openSquareBracket);
-		
-		//Counter used for creating the question json object 
-		int moreQuestions=0;
-		for(Question question: questions){
-			sb.append(Constants.openCurlyBrace+Constants.lineSeparator);
-			sb.append(Constants.quotationMark+Constants.qstnIDField+Constants.quotationMark+Constants.colonOperator+" ");
-			sb.append(Constants.quotationMark+question.getId()+Constants.quotationMark+Constants.commaOperator+Constants.lineSeparator);
-			sb.append(Constants.quotationMark+Constants.elementField+Constants.quotationMark+Constants.colonOperator+" "+
-			Constants.quotationMark+question.getQuestionType()+Constants.quotationMark+Constants.commaOperator+Constants.lineSeparator);
-			sb.append(Constants.quotationMark+Constants.noteField+Constants.quotationMark+Constants.colonOperator+" "+Constants.quotationMark+" "+Constants.quotationMark
-				+Constants.commaOperator+Constants.lineSeparator);
-			sb.append(Constants.quotationMark+Constants.qstnTxtField+Constants.quotationMark+Constants.colonOperator+" "+
-				Constants.quotationMark+question.getQuestionText()+Constants.quotationMark+Constants.commaOperator+Constants.lineSeparator);
-			sb.append(Constants.quotationMark+Constants.answersField+Constants.quotationMark+Constants.colonOperator+" "+
-				Constants.openSquareBracket);
-			
-		//to be use for creating the array of answersdetails as json object
-			int i=0;
-			for (Answer answer : question.getAnswers()) {
-				sb.append(Constants.openCurlyBrace+Constants.lineSeparator);
-				sb.append(Constants.quotationMark + Constants.valueField + Constants.quotationMark + Constants.colonOperator + " " + Constants.quotationMark + answer
-					.getValue() + Constants.quotationMark);
-				//Executes when clafer dependency list is not empty
-				int claferCounter=0;
-				if (answer.getClaferDependencies() != null) {
-					sb.append(Constants.commaOperator + Constants.lineSeparator+Constants.quotationMark + Constants.claferDependenciesField + Constants.quotationMark + Constants.colonOperator + " " + Constants.openSquareBracket );
-					for (ClaferDependency cd : answer.getClaferDependencies()) {
-						claferCounter++;
-						sb.append(Constants.openCurlyBrace + Constants.lineSeparator);
-						sb.append(Constants.quotationMark + Constants.algorithmField + Constants.quotationMark + Constants.colonOperator + " " + Constants.quotationMark + cd
-							.getAlgorithm() + Constants.quotationMark + Constants.commaOperator + Constants.lineSeparator);
-						sb.append(Constants.quotationMark + Constants.operandField + Constants.quotationMark + Constants.colonOperator + " " + Constants.quotationMark + cd
-							.getOperand() + Constants.quotationMark + Constants.commaOperator + Constants.lineSeparator);
-						sb.append(Constants.quotationMark + Constants.valueField + Constants.quotationMark + Constants.colonOperator + " " + Constants.quotationMark + cd
-							.getValue() + Constants.quotationMark + Constants.commaOperator + Constants.lineSeparator);
-						sb.append(Constants.quotationMark + Constants.operatorField + Constants.quotationMark + Constants.colonOperator + " " + Constants.quotationMark + cd
-							.getOperator() + Constants.quotationMark + Constants.lineSeparator);
-						sb.append(Constants.closeCurlyBrace);
-						if(answer.getClaferDependencies().size()<claferCounter){
-							sb.append(Constants.commaOperator);
-						}
-					}
-					sb.append(Constants.closeSquareBracket );
-				}
-				
-				//Executes when code dependency list is not empty
-				int codeCounter=0;
-				if(answer.getCodeDependencies()!=null){
-					
-					sb.append(Constants.commaOperator+Constants.lineSeparator+Constants.quotationMark+Constants.codeDependenciesField+Constants.quotationMark+Constants.colonOperator+" "+
-						Constants.openSquareBracket);
-					for(CodeDependency cd: answer.getCodeDependencies()){
-						codeCounter++;
-						sb.append(Constants.openCurlyBrace+Constants.lineSeparator);
-						sb.append(Constants.quotationMark+Constants.optionField+Constants.quotationMark+Constants.colonOperator+" "+
-						Constants.quotationMark+cd.getOption()+Constants.quotationMark+Constants.commaOperator+Constants.lineSeparator);
-					sb.append(Constants.quotationMark+Constants.valueField+Constants.quotationMark+Constants.colonOperator+""+
-						Constants.quotationMark+cd.getValue()+Constants.quotationMark+Constants.lineSeparator+Constants.closeCurlyBrace);
-					
-					if(answer.getCodeDependencies().size()<codeCounter){
-						sb.append(Constants.commaOperator);
-					}
-					}
-				sb.append(Constants.closeSquareBracket);
-				}
-				
-				//checks if current answer is default or not
-				if(answer.isDefaultAnswer()){
-					sb.append(Constants.commaOperator+Constants.lineSeparator+Constants.quotationMark+Constants.defaultAnswerField+Constants.quotationMark+Constants.colonOperator+" "+
-						Constants.quotationMark+"true");
-				}
-				
-				//checks if answer is linked to other question
-				if(answer.getNextID()!=-2){
-				sb.append(Constants.commaOperator+Constants.lineSeparator+Constants.quotationMark+Constants.nextIDField+Constants.quotationMark+Constants.colonOperator+" "+
-					Constants.quotationMark+answer.getNextID()+Constants.quotationMark+Constants.lineSeparator);
-				}
-				sb.append(Constants.closeCurlyBrace);
-				i++;
-				//checks if more answers are there to be added 
-				if(question.getAnswers().size()>i){
-					sb.append(Constants.commaOperator+Constants.lineSeparator);
-				}
-			}
-			
-			sb.append(Constants.closeSquareBracket+Constants.lineSeparator+Constants.closeCurlyBrace);
-			moreQuestions++;
-			//checks if there are more questions to be added 
-			if(questions.size()>moreQuestions){
-				sb.append(Constants.commaOperator+Constants.lineSeparator);
-			}
-			
-		}
-		sb.append(Constants.closeSquareBracket+Constants.lineSeparator+Constants.closeCurlyBrace+Constants.closeSquareBracket);
-		
+
 		//creates the writer object for json file  
 		FileWriter writerForJsonFile = new FileWriter(jsonFileTargetDirectory);
-		String jsonData= sb +"";
-		
+
 		try{
 		//write the data into the .json file  
-			writerForJsonFile.write(jsonData);
+				writerForJsonFile.write(gson.toJson(pages));
 		}
 		finally{
 		writerForJsonFile.flush();
 		writerForJsonFile.close();
 		}
-
-		/*//creates a FileReader object for json file
-		FileReader readerForJsonFile = new FileReader(jsonFileTargetDirectory);
-		char[] r = new char[10];
-		readerForJsonFile.read(r);
 		
-		for(char a : r ){
-			System.out.println(a);
-			readerForJsonFile.close();
-		}
-		System.out.println(questions.size());*/
+		
+
 	}
 	
+	
+	/**
+	 * Update the page next ID
+	 * @param page
+	 */
+	private void updatePageNextID(Page page) {
+		/**
+		 * case 1: if the page is the last page in the list 
+		 * then sets the page nextID to -1
+		 */
+		if(page.getId()==pages.size()-1){
+			System.out.println("Last Page"+page.getId());
+
+			page.setNextID(Constants.QUESTION_PAGE_LAST_PAGE_NEXT_ID);
+		}
+		/**
+		 * case 2: if the page is not last page then sets the current page NextId to next pageID in the list 
+		 */
+		else{
+			page.setNextID(page.getId()+1);
+		}
+	}
+
 	/**
 	 * 
 	 * @param xslFileContents
@@ -424,10 +373,10 @@ public class FileUtilities {
 			e.printStackTrace();
 		}
 		
-		if (!validateXSLFile(xslFile)) {
+		/*if (!validateXSLFile(xslFile)) {
 			xslFile.delete();
 			//TODO a better way to handle the exception.			
-		}
+		}*/
 	}
 	
 	/**
@@ -456,4 +405,223 @@ public class FileUtilities {
 		this.taskName = taskName;
 	}
 
+	
+	/**
+	 * Decides whether the question should be added to new page or to a existing page
+	 * @param qstn  quetsion that is to be added to ap page
+	 */
+	
+	void addQuestionToPage(Question qstn){
+		
+		/**
+		 *  case 1: if question is the first question then adds it to new page
+		 */
+		if(isFirstQuestion(qstn)){
+			addQuestionToNewPage(qstn);
+		}
+		/**
+		 * case 2: if question has branch then adds it to a new page
+		 */
+		else if(questionHasBranch(qstn)){
+			addQuestionToNewPage(qstn);
+		}
+		else{
+			Question previousQuestion = findPreviousQuestion(qstn);
+			Page previousQuestionPage = findPageContainingPreviousQuestion(previousQuestion);
+		/**
+		 * case 3: executes when previous question has branch
+		 * then adds the current question to a new page
+		 */
+			if(questionHasBranch(previousQuestion)){
+				addQuestionToNewPage(qstn);
+			}
+			/**
+			 * case 4: executes when page containing previous question has
+			 * 3 question then adds the current question to the new page
+			 */
+			else if(previousQuestionPage.getContent().size()==3){
+				System.out.println(previousQuestionPage.getId() +" "+"has 3 question");
+				addQuestionToNewPage(qstn);
+			}
+			/**
+			 * if all four case are false then adds current question to 
+			 * the page containing previous question
+			 */
+			else{
+				addQuestionToExistingPage(previousQuestionPage,qstn);
+			}		
+		}
+			
+	}
+	
+	/**
+	 * 
+	 * @param qstn
+	 * @return true if the current question is the first question in the list of Questions
+	 */
+	boolean isFirstQuestion(Question qstn){
+		if(qstn.getId()==0){
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * 
+	 * @param qstn
+	 * @return true if question has branch otherwise false
+	 */
+	private boolean questionHasBranch(Question qstn) {
+		if(qstn.getElement().equals(Constants.GUIElements.text)){
+			return false;
+		}
+		else{
+			ArrayList<Answer> answers = qstn.getAnswers();
+			for(int i=1; i<answers.size();i++){
+				if(answers.get(0).getNextID()!=answers.get(i).getNextID()){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 *  
+	 * @param qstn
+	 * @return the previous question 
+	 */
+	private Question findPreviousQuestion(Question qstn) {
+		for (Question question : listOfAllQuestions) {
+			if (question.getId() == qstn.getId() - 1) {
+				return question;
+			}
+		}
+		return null;
+	}
+	
+		
+	/**
+	 * checks if question exists in any page or not
+	 * 
+	 * @param qstn the question
+	 * @return true if the qstn exists in any page otherwise false
+	 */
+	boolean questionExistsInAnyPage(Question qstn) {
+		for (Page page : pages) {
+			for (Question question : page.getContent()) {
+				if (question.getId() == qstn.getId()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Adds the question to a new page
+	 * @param qstn
+	 */
+	void addQuestionToNewPage(Question qstn){
+		Page page = new Page();
+		page.setId(pageId);
+		pageId++;
+		ArrayList<Question> question = new ArrayList<>();
+		page.setContent(question);
+		page.getContent().add(qstn);
+		pages.add(page);
+		/**
+		 * executes when question has branch
+		 */
+		if(questionHasBranch(qstn)){
+			updateAnsNextIdToPageId(qstn);
+		}
+		
+	}
+	
+	/**
+	 * adds the current question to the page which contains the previous question
+	 * @param previousQuestionPage
+	 * @param question 
+	 */
+	private void addQuestionToExistingPage(Page previousQuestionPage, Question qstn) {
+		previousQuestionPage.getContent().add(qstn);
+		updateAnsNextIdToPageId(qstn);
+		
+	}
+	/**
+	 * Updates the answer nextID to the page ID containing the question which answer next ID points to
+	 * @param qstn
+	 */
+	private void updateAnsNextIdToPageId(Question qstn) {
+
+		if(!qstn.getElement().equals(Constants.GUIElements.text)){
+			for (Answer ans : qstn.getAnswers()) {
+				if (ans.getNextID() != Constants.ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID) {
+					/**
+					 * if the user has not selected any option of comboForLinkAnswer in LinkAnswerDialog box 
+					 * then Sets the answer next Id to the next questionID in the listOfAllQuestions
+					 */
+					if (ans.getNextID() == Constants.ANSWER_NO_NEXT_ID) {
+						ans.setNextID(qstn.getId() + 1);
+					}
+					Question linkedQuestion = questionWithId(ans.getNextID());
+					/**
+					 * if linkQuestion exists in any page then update the answer next id to the page id containing the question
+					 */
+					if (questionExistsInAnyPage(linkedQuestion)) {
+						Page pg = findPageContainingPreviousQuestion(linkedQuestion);
+						ans.setNextID(pg.getId());
+					}
+
+					/**
+					 * executes when linked question is not in the list of pages
+					 */
+					else {
+						ans.setNextID(pageId);
+						addQuestionToNewPage(linkedQuestion);
+					}
+				}
+
+			}
+		}
+
+	}
+
+	/**
+	 * Return the question with ID equal to id
+	 * @param id
+	 * @return the question 
+	 */
+	Question questionWithId(int id) {
+		for (Question question : listOfAllQuestions) {
+			if (question.getId() == id) {
+				return question;			}
+		}
+		return null;
+	}
+
+	
+	/**
+	 * find the page which contains the given question
+	 * @param qstn the question
+	 * @return the page
+	 */
+	
+	Page findPageContainingPreviousQuestion(Question qstn){
+		for(Page page:pages){
+			for(Question question: page.getContent()){
+				if(question.equals(qstn)){
+					return page;
+				}
+			}
+		}
+		return null;
+	}
+
+	
+
 }
+
+

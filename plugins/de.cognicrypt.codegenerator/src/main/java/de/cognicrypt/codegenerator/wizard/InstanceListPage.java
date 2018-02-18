@@ -283,10 +283,12 @@ public class InstanceListPage extends WizardPage {
 		codePreviewButton.setText(Constants.LABEL_CODE_PREVIEW_BUTTON);
 		codePreviewButton.addListener(SWT.Selection, new Listener() {
 
+			@Override
 			public void handleEvent(Event event) {
 				//Opens a new wizard to show the code preview 
 				final WizardDialog dialog = new WizardDialog(new Shell(), new CodePreviewWizard(instanceListPage, instanceGenerator)) {
 
+					@Override
 					protected void configureShell(Shell newShell) {
 						super.configureShell(newShell);
 						newShell.setSize(650, 500);
@@ -309,9 +311,11 @@ public class InstanceListPage extends WizardPage {
 		compareAlgorithmButton.setText(Constants.LABEL_COMPARE_ALGORITHMS_BUTTON);
 		compareAlgorithmButton.addListener(SWT.Selection, new Listener() {
 
+			@Override
 			public void handleEvent(Event event) {
 				final WizardDialog dialog = new WizardDialog(new Shell(), new CompareWizard(instanceListPage, instanceGenerator)) {
 
+					@Override
 					protected void configureShell(Shell newShell) {
 						super.configureShell(newShell);
 						newShell.setSize(1000, 600);

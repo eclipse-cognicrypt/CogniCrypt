@@ -241,7 +241,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		String value;
 
 		if (!inst.getType().getRef().getTargetType().isPrimitive()) {
-			String algo = Constants.ALGORITHM + " :" + ClaferModelUtils
+			String algo = Constants.ALGORITHM + " : " + ClaferModelUtils
 				.removeScopePrefix(inst.getType().getRef().getTargetType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + Constants.lineSeparator;
 			algorithms.put(algo, "");
 
@@ -275,22 +275,25 @@ public class CompareAlgorithmPage extends WizardPage {
 	}
 
 	public void compareHighlight() {
-		
+
 		Display display = Display.getCurrent();
 		String firstAlgorithmHighlight = getHighlightFirst();
 		String secondAlgorithmHighlight = getHighlightSecond();
 		Color cyan = display.getSystemColor(SWT.COLOR_CYAN);
 		Color white = display.getSystemColor(SWT.COLOR_WHITE);
+		int n, m;
 
-		int n;
+		String[] partFirstInstanceDetails = firstAlgorithmHighlight.split("\r\n\r\n");
+		String[] partSecondInstanceDetails = secondAlgorithmHighlight.split("\r\n\r\n");
+
+		String[] lines1;
+		String[] lines2;
+
 		String[] firstHalf1;
 		String[] firstHalf2;
 
-		String[] lines1 = firstAlgorithmHighlight.split("\n");
-		String[] lines2 = secondAlgorithmHighlight.split("\n");
-
-		int i = lines1.length - 1;
-		int j = lines2.length - 1;
+		int i = partFirstInstanceDetails.length - 1;
+		int j = partSecondInstanceDetails.length - 1;
 
 		if (i > j) {
 			n = i;
@@ -298,22 +301,50 @@ public class CompareAlgorithmPage extends WizardPage {
 			n = j;
 		}
 
-		for (i = 0; i < n; i++) {
-			for (int k = 0; k < n; k++) {
-				firstHalf1 = lines1[i].split(":");
-				firstHalf2 = lines2[k].split(":");
-				if (firstHalf1[0].equals(firstHalf2[0])) {
-					if (!firstHalf1[1].equals(firstHalf2[1])) {
-						secondInstanceDetails.setLineBackground(k, 1, cyan);
-						firstInstanceDetails.setLineBackground(k, 1, cyan);
-					} else {
-						secondInstanceDetails.setLineBackground(k, 1, white);
-						firstInstanceDetails.setLineBackground(k, 1, white);
+		int t = 0;
+		for (i = 0, j=0; i <= n; i++,j++) {
+
+//			for (j = 0; j < n; j++) {
+
+				lines1 = partFirstInstanceDetails[i].split("\r\n\t");
+				lines2 = partSecondInstanceDetails[j].split("\r\n\t");
+
+				int k = lines1.length - 1;
+				int l = lines2.length - 1;
+
+				if (k > l) {
+					m = k;
+				} else {
+					m = l;
+				}
+				
+				
+				for (k = 0; k < m; k++, t++) {
+					firstHalf1 = lines1[k].split(" : ");
+					for (l = 0; l < m; l++) {
+
+						firstHalf2 = lines2[l].split(" : ");
+
+						if (firstHalf1[0].equals(firstHalf2[0])) {
+
+							if (!firstHalf1[1].equals(firstHalf2[1])) {
+								secondInstanceDetails.setLineBackground(t, 1, cyan);
+								firstInstanceDetails.setLineBackground(t, 1, cyan);
+							} else {
+
+								secondInstanceDetails.setLineBackground(t, 1, white);
+								firstInstanceDetails.setLineBackground(t, 1, white);
+
+							}
+							break;
+						}						
 					}
 				}
-			}
+				t=t+2;
+//			}
 		}
 	}
+			
 
 	public String getText1() {
 		return text1.getText();

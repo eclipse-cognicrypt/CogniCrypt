@@ -5,16 +5,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
-
 import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
 import de.cognicrypt.codegenerator.primitive.utilities.WriteXML;
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnaire;
@@ -81,7 +82,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		} else if (currentPage.getPreviousPage() == this.selectedPrimitivePage || currentPage instanceof PrimitiveQuestionnairePage) {
 			final PrimitiveQuestionnairePage primitiveQuestionPage = (PrimitiveQuestionnairePage) currentPage;
 			LinkedHashMap<String, String> selectionMap = primitiveQuestionPage.getMap();
-			
+
 			if (primitiveQuestionPage.getSelection() != null) {
 				for (String name : selectionMap.keySet()) {
 
@@ -113,14 +114,14 @@ public class PrimitiveIntegrationWizard extends Wizard {
 							continue;
 						}
 						final PrimitiveQuestionnairePage oldPage = (PrimitiveQuestionnairePage) pages[i];
-						
+
 						if (oldPage.equals(this.preferenceSelectionPage)) {
-							
+
 							return oldPage;
 						}
 					}
 					if (this.preferenceSelectionPage != null) {
-					
+
 						addPage(this.preferenceSelectionPage);
 
 					}
@@ -134,8 +135,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		}
 
 		else if (currentPage instanceof JavaProjectBrowserPage) {
-			
-			
+
 			this.methodSelectionPage = new MethodSelectorPage(this.projectBrowserPage.getSelectedFile());
 			addPage(this.methodSelectionPage);
 			return this.methodSelectionPage;
@@ -153,14 +153,19 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	//		}
 	//		return super.getPreviousPage(currentPage);
 	//	}
+	private void transform(final File sourceFile, final File xsltFile, final String resultDir) throws TransformerException {
+		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
+		final Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(xsltFile));
+		transformer.transform(new StreamSource(sourceFile), new StreamResult(new File(resultDir)));
+	}
 
 	@Override
 	public boolean performFinish() {
 
 		//Generation of xml file for xsl
-		File xmlFile =new File("C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XML\\xmlFile.xml"); //Change local
+		final File xmlFile = Utils.getResourceFromWithin(Constants.xmlFilePath);
 		xmlFileForXSL = new WriteXML();
-		try{
+		try {
 			xmlFileForXSL.createDocument();
 			xmlFileForXSL.setRoot("SymmetricBlockCipher");
 			for (String name : inputsMap.keySet()) {
@@ -169,22 +174,51 @@ public class PrimitiveIntegrationWizard extends Wizard {
 				String value = inputsMap.get(name).toString();
 				xmlFileForXSL.addElement(name.trim(), value);
 				System.out.println(name + value);
-		
 
 			}
 			xmlFileForXSL.isCreated(xmlFile);
-			System.out.println(xmlFile.getAbsolutePath() + " and " + xmlFile.getName());
-		}
-		catch(ParserConfigurationException | TransformerException e){
+			
+		} catch (ParserConfigurationException | TransformerException e) {
 			e.printStackTrace();
 		}
-		File xslFile=new File("C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\testxsl.xsl");
-		System.out.println("Le fichier existe ?"+xslFile.exists());
-		//Code generation 
 		
+		
+		//Code generation 
+		final File xslFile = Utils.getResourceFromWithin(Constants.cipherSpiXSL);
+		try {
+			transform(xmlFile, xslFile, "C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\test.java");
+		} catch (TransformerException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+//	}
+//		try{
+//		
+//		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+//		javax.xml.parsers.DocumentBuilder builder = factory.newDocumentBuilder();
+//		StreamSource styleSource = new StreamSource(xslFile);
+//		Transformer t = TransformerFactory.newInstance().newTransformer(styleSource);
+//		Document xml = builder.parse(xmlFile);
+//		File resultFile = new File("C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\test.txt");
+//		StreamResult result = new StreamResult(resultFile);
+//		//transformation 
+//		t.transform(new DOMSource(xml), result);
+//	
+//		}
+//		catch(TransformerException | ParserConfigurationException | SAXException | IOException e){
+//			e.printStackTrace();
+//		}
 		return true;
 	}
 
+	public boolean canFinish(){
+		final String pageName = getContainer().getCurrentPage().getName();
+		if (pageName.equals(Constants.METHODS_SELECTION_PAGE)) { //name of the last page
+			return true;
+		}
+		return (pageName.equals(Constants.METHODS_SELECTION_PAGE));
+	}
 	public boolean performCancel() {
 		boolean ans = MessageDialog.openConfirm(getShell(), "Confirmation", "Are you sure to close without integrating the new primitve?");
 		if (ans)

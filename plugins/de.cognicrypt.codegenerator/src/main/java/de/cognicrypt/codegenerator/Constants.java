@@ -57,7 +57,7 @@ public class Constants {
 	
 	//XML & XSL for Primitive 
 	public static final String primitivesPath = Constants.rsrcPath + "Primitives";
-	public static final String xmlFile = primitivesPath + innerFileSeparator + "XML" + innerFileSeparator + "xmlFile.xml";
+	public static final String xmlFilePath = primitivesPath + innerFileSeparator + "XML" + innerFileSeparator + "xmlFile.xml";
 	
 	public static final String cipherSpiXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "CipherSPI.xsl";
 	public static final String providerClass = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "providerClass.xsl";
@@ -175,6 +175,7 @@ public class Constants {
 	public static final String SELECT_PROPERTIES = "Select Properties";
 	public static final String FIXED_SIZE = "fixed size";
 	public static final String BLOCK_SIZE="Blocksize";
+	public static final String METHODS_SELECTION_PAGE= "Methods Selector";
 
 	//Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;

@@ -7,11 +7,11 @@
 <xsl:variable name="outputSize"> <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/algorithm[@type='Digest']/outputSize"/> </xsl:variable>
 
 <xsl:if test="//task/algorithm[@type='SymmetricBlockCipher']">
-<xsl:result-document href="Enc.java">
+<xsl:result-document href="SymmetricEnc.java">
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
 /** @author CogniCrypt */
-public class Enc {	
+public class SymmetricEnc {	
 		<xsl:choose>
 		<xsl:when test="//task/code/dataType='File'">
 		public File encrypt(File file, SecretKey key) throws GeneralSecurityException, IOException { 
@@ -128,66 +128,73 @@ public class Enc {
 </xsl:result-document>
 </xsl:if>
 
-<xsl:if test="//task[@description='SymmetricEncryption']">
-
-<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">
-<xsl:result-document href="KeyDeriv.java">
-package <xsl:value-of select="//Package"/>; 
+<xsl:if test="//task/algorithm[@type='AsymmetricCipher']">
+<xsl:result-document href="PublicKeyEnc.java">
+package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
-/** @author CogniCrypt */	
-public class KeyDeriv {
+/** @author CogniCrypt */
+public class PublicKeyEnc {	
+
+	public byte[] encrypt(SecretKey sessionKey, PublicKey publicKey) throws GeneralSecurityException { 
 	
-	public SecretKey getKey(char[] pwd) throws GeneralSecurityException {
-		byte[] salt = new byte[16];
-		SecureRandom.getInstanceStrong().nextBytes(salt);
-		
-		PBEKeySpec spec = new PBEKeySpec(pwd, salt, <xsl:choose>
-         <xsl:when test="$Rounds > 1000"> <xsl:value-of select="$Rounds"/> </xsl:when>
-         <xsl:otherwise> 1000 </xsl:otherwise>
-		 </xsl:choose>, <xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/keySize"/>);
-		SecretKeyFactory skf = SecretKeyFactory.getInstance("<xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/name"/>WithHmacSHA256");
-		SecretKeySpec ret = new SecretKeySpec(skf.generateSecret(spec).getEncoded(), "<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>" );
-		spec.clearPassword();
-		return ret;
+	Cipher c = Cipher.getInstance("<xsl:value-of select="//task/algorithm[@type='AsymmetricCipher']/name"/>/<xsl:value-of select="//task/algorithm[@type='AsymmetricCipher']/mode"/>/<xsl:value-of select="//task/algorithm[@type='AsymmetricCipher']/padding"/>");
+	c.init(Cipher.WRAP_MODE, publicKey);
+	byte[] sessionKeyBytes = c.wrap(sessionKey);
+	return sessionKeyBytes;
 	}
 }
 </xsl:result-document>
 </xsl:if>
 
+<xsl:if test="//task[@description='HybridEncryption']">
 
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public <xsl:value-of select="//task/code/dataType"/> templateUsage(<xsl:value-of select="//task/code/dataType"/> data<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">, char[] pwd</xsl:if>) throws GeneralSecurityException<xsl:if test="//task/code/dataType='File'">, IOException</xsl:if><xsl:if test="//task/code/dataType='String'">, UnsupportedEncodingException</xsl:if>{
-		<xsl:choose>
-        <xsl:when test="//task/algorithm[@type='KeyDerivationAlgorithm']">KeyDeriv kd = new KeyDeriv();
-		SecretKey key = kd.getKey(pwd); </xsl:when>
-        <xsl:otherwise>KeyGenerator kg = KeyGenerator.getInstance("<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>");
-		<xsl:choose>
-		<xsl:when test="//task/algorithm[@type='SymmetricBlockCipher']/keySize &gt; 128">
-	 // KeySize > 128 needs unlimited strength policy files http://www.oracle.com/technetwork/java/javase/downloads</xsl:when></xsl:choose>
-		kg.init(<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/keySize"/>);
-		SecretKey key = kg.generateKey(); </xsl:otherwise>
-		</xsl:choose>	
-		Enc enc = new Enc();
-		<xsl:choose>
-		<xsl:when test="//task/code/dataType='File'">
-        File encFile = enc.encrypt(data, key);
-        //enc.decrypt(encFile, key);
-        return encFile;
-		</xsl:when>   
+	public void templateUsage(<xsl:value-of select="//task/code/dataType"/> data<xsl:if test="//task/code/keypair='false'">, PublicKey publicKey</xsl:if>) throws GeneralSecurityException<xsl:if test="//task/code/dataType='File'">, IOException</xsl:if><xsl:if test="//task/code/dataType='String'">, UnsupportedEncodingException</xsl:if>{
+		
+		KeyManagment km = new KeyManagment();
+        SecretKey sessionKey = km.generateSessionKey(<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/keySize"/>);
+		SymmetricEnc symEnc = new SymmetricEnc();
+		<xsl:choose><xsl:when test="//task/code/dataType='File'">
+        File encFile = symEnc.encrypt(data, sessionKey);</xsl:when>   
 		<xsl:when test="//task/code/dataType='String'">
-        String encMessage = enc.encrypt(data, key);
-        enc.decrypt(encMessage, key);
-      	return encMessage;
-		</xsl:when>     
-         <xsl:otherwise>
-        byte[] ciphertext = enc.encrypt(data, key);
-        return ciphertext;
-        </xsl:otherwise>
+        String encMessage = symEnc.encrypt(data, sessionKey);</xsl:when>     
+        <xsl:otherwise>
+        byte[] ciphertext = symEnc.encrypt(data, sessionKey);</xsl:otherwise>
+        </xsl:choose>
+		<xsl:choose><xsl:when test="//task/code/keypair='true'">
+		KeyPair keyPair = km.generateKeyPair(<xsl:value-of select="//task/algorithm[@type='AsymmetricCipher']/keySizePub"/>);
+		</xsl:when></xsl:choose>
+		PublicKeyEnc keyEnc = new PublicKeyEnc();		
+		<xsl:choose><xsl:when test="//task/code/keypair='true'">
+		byte[] encSessionKey = keyEnc.encrypt(sessionKey,keyPair.getPublic());</xsl:when>
+		<xsl:otherwise>
+        byte[] encSessionKey = keyEnc.encrypt(sessionKey,publicKey);</xsl:otherwise>
         </xsl:choose>
 	}
 }
+
+<xsl:result-document href="KeyManagment.java">
+package <xsl:value-of select="//task/Package"/>; 
+<xsl:apply-templates select="//Import"/>
+/** @author CogniCrypt */
+public class KeyManagment{
+	
+	public SecretKey generateSessionKey(int keySize) throws NoSuchAlgorithmException {
+		KeyGenerator kg = KeyGenerator.getInstance("<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>");
+		kg.init(keySize);
+		return kg.generateKey();
+	}
+	<xsl:if test="//task/code/keypair='true'">	
+	public KeyPair generateKeyPair(int keySize) throws NoSuchAlgorithmException{
+		KeyPairGenerator kpg = KeyPairGenerator.getInstance("<xsl:value-of select="//task/algorithm[@type='AsymmetricCipher']/name"/>");
+		kpg.initialize(keySize);
+        return kpg.generateKeyPair();
+	}
+	</xsl:if>
+}
+</xsl:result-document>
 </xsl:if>
 
 </xsl:template>

@@ -176,7 +176,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 				System.out.println(name + value);
 
 			}
-			xmlFileForXSL.isCreated(xmlFile);
+			xmlFileForXSL.transformXSL(xmlFile);
 			
 		} catch (ParserConfigurationException | TransformerException e) {
 			e.printStackTrace();

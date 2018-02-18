@@ -42,7 +42,7 @@ public class WriteXML {
 	}
 
 	// write the content into xml file
-	public void isCreated(File xmlFile) throws TransformerException {
+	public void transformXSL(File xmlFile) throws TransformerException {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");

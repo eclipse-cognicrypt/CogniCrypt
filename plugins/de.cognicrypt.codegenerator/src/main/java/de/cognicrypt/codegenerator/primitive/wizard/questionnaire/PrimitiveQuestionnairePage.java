@@ -49,6 +49,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	private final Page page;
 	private String rangedSize;
 	private MyVerifyListener verifyDecimal = new MyVerifyListener();
+	
 
 	/**
 	 * construct a page containing an element other than itemselection
@@ -266,6 +267,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 						PrimitiveQuestionnairePage.this.setPageComplete(this.isPageComplete());
 
 					});
+				
 				}
 				break;
 			case radiobutton:

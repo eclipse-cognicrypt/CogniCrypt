@@ -23,7 +23,7 @@ public class MethodSelectorPage extends WizardPage {
 	private Label question;
 	private File javaFile;
 	public MethodSelectorPage(File file) {
-		super("Method Selector");
+		super("Methods Selector");
 		setTitle("Methods Selector");
 		setDescription("Getting methods-related algorithm");
 		this.javaFile=file;

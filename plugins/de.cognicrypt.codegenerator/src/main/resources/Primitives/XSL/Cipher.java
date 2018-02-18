@@ -1,7 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-<xsl:output method="text"/>
-<xsl:template match="/">
 
 
 
@@ -22,28 +18,26 @@ import javax.crypto.ShortBufferException;
 
 import java.util.Arrays;
 
-public class <xsl:value-of select="SymmetricBlockCipher/name" />Cipher extends CipherSpi {
+public class hiuhCipher extends CipherSpi {
 
  @Override
  protected void engineSetMode(String mode) throws NoSuchAlgorithmException {
- String[] allowedModes="<xsl:value-of select="SymmetricBlockCipher/mode"></xsl:value-of>".split("\\|");
+ String[] allowedModes="PCBC".split("||");
  if (!Arrays.asList(allowedModes).contains(mode))
   throw new NoSuchAlgorithmException();
  }
 
  @Override
  protected void engineSetPadding(String padding) throws NoSuchPaddingException {
-  String[] allowedPaddings="<xsl:value-of select="SymmetricBlockCipher/Padding"></xsl:value-of>".split("\\|");
+  String[] allowedPaddings="PKCS7|ZeroPadding".split("\\|");
  if (!Arrays.asList(allowedPaddings).contains(padding))
   throw new NoSuchPaddingException();
  }
   @Override
  protected int engineGetBlockSize() {
-  return <xsl:value-of select="SymmetricBlockCipher/Blocksize" />;
+  return 25;
  }
  
  
 }
 
-</xsl:template>
-</xsl:stylesheet>

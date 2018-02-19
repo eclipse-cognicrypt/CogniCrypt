@@ -1,23 +1,3 @@
-/**
- * Copyright 2015-2017 Technische Universitaet Darmstadt
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * @author Stefan Krueger
- *
- */
-
 package de.cognicrypt.codegenerator;
 
 /**
@@ -50,17 +30,18 @@ public class Constants {
 
 	// Task descriptions
 
-	// Tooltip
+	// Tooltip 	
 	public static final String PROJECTLIST_TOOLTIP = "List of your Java projects";
 	public static final String TASKLIST_TOOLTIP = "Cryptographic tasks supported by CogniCrypt";
 	public static final String DESCRIPTION_BOX_TOOLTIP = "Here is the description for the cryptographic task that you have selected";
 	public static final String GUIDEDMODE_TOOLTIP = "Guided mode configures the algorithm for you,\nbased on your answers to some simple questions.";
 	public static final String DEFAULT_ALGORITHM_COMBINATION_TOOLTIP = "Default Algorithm combination";
 	public static final String DEFAULT_CODE_TOOLTIP = "This is the preview of the code, that will be generated into your Java project";
-	public static final String DEFAULT_CHECKBOX_TOOLTIP = "If this checkbox is checked, the code for the above algorithm \nwill be generated into your java project after clicking 'Finish'";
+	public static final String DEFAULT_CHECKBOX_TOOLTIP = "If you want to view other possible algorithm combinations \nmatching your requirements, please check this box and click 'Next'";
 	public static final String ALGORITHM_COMBO_TOOLTIP = "The algorithm combinations are listed in a decreasing order of security level";
 	public static final String INSTANCE_DETAILS_TOOLTIP = "Details of the selected algorithm combination";
-
+	public static final String PORT_NUMBER_TOOLTIP = "Example: 65535";
+	public static final String IP_ADDRESS_TOOLTIP = "Example: 255.255.255.255";
 	//Decoration
 	public static final String DEFAULT_ALGORITHM_CHECKBOX_ENABLE = "If you want to view other possible algorithm combinations \nmatching your requirements, please uncheck and click 'Next'";
 	public static final String DEFAULT_ALGORITHM_CHECKBOX_DISABLE = "There are no other algorithm combinations matching your requirements.\nThe code for the above algorithm will be generated into your java project";
@@ -90,13 +71,25 @@ public class Constants {
 	public static final String pathToClaferInstanceFile = "claferInstance.xml";
 	public static final String pathToClaferPreviewFile = "claferPreview.xml";
 	public static final String NameOfTemporaryMethod = "templateUsage";
-	public static final String pathsForLibrariesinDevProject = "libs";
+	public static final String pathsForLibrariesInDevProject = "libs";
+	public static final String AuthorTag = "@author CogniCrypt";
 
 	// Output of Code Generation
-	private static final String AdditionalOutputFile = "Output.java";
+	public static final String AdditionalOutputFile = "Output.java";
+	public static final String AdditionalOutputTempFile = "OutputTemp.java";
+	public static final String TempSuffix = "Temp";
 	public static final String PackageName = "Crypto";
 	public static final String CodeGenerationCallFile = Constants.innerFileSeparator + Constants.PackageName + Constants.innerFileSeparator + Constants.AdditionalOutputFile;
 
+	// File info for Code Generation
+	public static final String OpenFile = "Current file is open: ";
+	public static final String CloseFile = "No file is open";
+	public static final String ContainsAuthorTag = "Current open file contains \""+AuthorTag+"\": ";
+	public static final String ContainsNotAuthorTag = "Current open file DOESN'T contain \""+AuthorTag+"\": ";
+	public static final String CreateOutput = "Create: "+AdditionalOutputFile;
+	public static final String CreateOutputTemp = AdditionalOutputFile+" exists! Create: "+AdditionalOutputTempFile;
+
+	
 	// Error Messages
 	public static final String NoFileOpenedErrorMessage = "There is no file opened to generate the source code in. Will generate output file instead.";
 	public static final String NoJavaFileOpenedErrorMessage = "The currently open file is not a java file. Will generate output file instead.";
@@ -114,9 +107,12 @@ public class Constants {
 	public static final String PLEASE_SELECT = "Please select project directory to launch the configurator";
 	public static final String ERROR_MESSAGE_NO_PROJECT = "There is no Java project in your workspace. Please create one and restart CogniCrypt.";
 	public static final String ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY = "No directory for additional resources found.";
+	public static final String ERROR_MESSAGE_NO_FILE = "No file found";
 
+	
+	
 	public static final String JAVA = "java";
-	public static final String JCA = "JCA";
+	public static final String DEFAULT_PROVIDER = "JCA";
 	public static final String JAR = ".jar";
 	public static final String ALGORITHM = "algorithm";
 	public static final String GUIDED_MODE = "Use the guided mode for configuring the task";
@@ -130,7 +126,7 @@ public class Constants {
 	public static final String Code = "code";
 	public static final String Type = "type";
 	public static final String Security = "security";
-	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List", "java.util.Base64" };
+	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List", "java.util.Base64", "java.io.InputStream", "java.io.OutputStream"};
 
 	// Types
 	public static final String INTEGER = "Integer";
@@ -159,7 +155,33 @@ public class Constants {
 	public static final String DESCRIPTION_VALUE_SELECTION_PAGE = "The following questions help to find the algorithm configuration most suited for your needs";
 	public static final String PROPERTIES = "Algorithm Preferences";
 	public static final String SELECT_PROPERTIES = "Select Properties";
+	// Code Preview Page
+	public static final String CODE_PREVIEW_PAGE = "Code Preview Page";
+	public static final String CODE_PREVIEW_PAGE_TITLE = "Code preview for the selected solution ";
+	public static final String CODE_PREVIEW_PAGE_DESCRIPTION = "The preview of the code that will be generated in your Java project is shown below.";
+	//Compare algorithm page
+	public static final String COMPARE_ALGORITHM_PAGE = "Compare Algorithms Page";
+	public static final String COMPARE_TITLE = "Compare Two Algorithms";
+	public static final String COMPARE_DESCRIPTION = "Select the algorithms that you wish to compare. Their properties will be shown in the corresponding boxes below.";
+	public static final String COMPARE_LABEL = "Instance details of";
 
+	public static final String COMPARE_SAME_ALGORITHM = "Algorithm combinations are same";
+	public static final String PREVIOUS_ALGORITHM_BUTTON = "Previous";
+	public static final String NEXT_ALGORITHM_BUTTON = "Next";
+
+	public static final String Performance = "Performance";
+	public static final String LABEL_BROWSE_BUTTON = "Browse";
+	public static final String LABEL_CODE_PREVIEW_BUTTON = "Code Preview";
+	public static final String LABEL_COMPARE_ALGORITHMS_BUTTON = "Compare Algorithms";
+	;
+	public static final String CipherSecurity = "CipherSecurity";
+
+	//Text type
+	public static final String BROWSE = "Browse";
+	public static final String PASSWORD = "Password";
+	public static final String PORT_NUMBER = "Port number";
+	public static final String IP_ADDRESS = "Ip address";
+	public static final String SHOW_PASSWORD_CHECKBOX = "Show Password";
 	//Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;
 

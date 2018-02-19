@@ -1,18 +1,3 @@
-/**
- * Copyright 2015-2017 Technische Universitaet Darmstadt
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package de.cognicrypt.codegenerator.wizard;
 
 import java.io.BufferedReader;
@@ -22,19 +7,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -53,24 +33,25 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
+import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
-import de.cognicrypt.codegenerator.utilities.Utils;
-import de.cognicrypt.codegenerator.utilities.XMLParser;
+import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.question.Question;
 
 /**
  * This class is responsible for displaying the instances the Clafer instance generator generated.
@@ -84,19 +65,16 @@ public class InstanceListPage extends WizardPage {
 	private final InstanceGenerator instanceGenerator;
 	private InstanceClafer value;
 	private Group instancePropertiesPanel;
-	private TaskSelectionPage taskSelectionPage;
-	private ConfiguratorWizard configuratorWizard;
-	private Object algorithmCombinaton;
-	private DefaultAlgorithmPage defaultAlgorithmPage;
+	private final TaskSelectionPage taskSelectionPage;
+	private Map<Question, Answer> constraints;
 
-	public InstanceListPage(final InstanceGenerator inst, final TaskSelectionPage taskSelectionPage, ConfiguratorWizard confWizard, DefaultAlgorithmPage defaultAlgorithmPage) {
+	public InstanceListPage(final InstanceGenerator inst, Map<Question, Answer> constraints, final TaskSelectionPage taskSelectionPage) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
 		setTitle("Possible solutions for task: " + taskSelectionPage.getSelectedTask().getDescription());
 		setDescription(Constants.DESCRIPTION_INSTANCE_LIST_PAGE);
 		this.instanceGenerator = inst;
 		this.taskSelectionPage = taskSelectionPage;
-		this.configuratorWizard = confWizard;
-		this.defaultAlgorithmPage = defaultAlgorithmPage;
+		this.constraints = constraints;
 	}
 
 	@Override
@@ -126,12 +104,9 @@ public class InstanceListPage extends WizardPage {
 		labelInstanceList.setText(Constants.instanceList);
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
 		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
-		String firstInstance = inst.keySet().toArray()[0].toString();
-		Combo combo = algorithmClass.getCombo();
-
-		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-		algorithmClass.setInput(inst.keySet());
-		String key = instanceGenerator.getAlgorithmName();
+		final String firstInstance = inst.keySet().toArray()[0].toString();
+		final Combo combo = algorithmClass.getCombo();
+		final String key = this.instanceGenerator.getAlgorithmName();
 
 		int count = combo.getItemCount();
 		int variationCount = instanceGenerator.getAlgorithmCount();
@@ -144,14 +119,10 @@ public class InstanceListPage extends WizardPage {
 		setAlgorithmCombinations(algorithmClass.getInput());
 
 		//Display help assist for the first instance in the combo box
-		new Label(control, SWT.NONE);
-		new Label(control, SWT.NONE);
-		Text infoText = new Text(control, SWT.BORDER | SWT.WRAP);
-		infoText.setText(Constants.DEFAULT_ALGORITHM_NOTIFICATION);
-		infoText.setEditable(false);
-		infoText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		final ControlDecoration deco = new ControlDecoration(infoText, SWT.RIGHT);
-		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage();
+		final ControlDecoration deco = new ControlDecoration(combo, SWT.TOP | SWT.RIGHT);
+		final Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage();
+
+		deco.setDescriptionText(Constants.DEFAULT_ALGORITHM_NOTIFICATION);
 		deco.setImage(image);
 		deco.setShowOnlyOnFocus(false);
 
@@ -245,6 +216,8 @@ public class InstanceListPage extends WizardPage {
 				setPageComplete(true);
 			}
 		});
+		new Label(this.control, SWT.NONE);
+		new Label(this.control, SWT.NONE);
 
 		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
 		GridLayout gridLayout = new GridLayout();
@@ -270,33 +243,20 @@ public class InstanceListPage extends WizardPage {
 
 		final ISelection selection = new StructuredSelection(inst.keySet().toArray()[0]);
 		algorithmClass.setSelection(selection);
-		new Label(control, SWT.NONE);
+		new Label(this.control, SWT.NONE);
 
 		final Composite composite = new Composite(control, SWT.NONE);
 		composite.setLayout(new GridLayout(1, false));
 
 		//Button to View the code that will be generated into the Java project
-		InstanceListPage instanceListPage = this;
-		Button codePreviewButton = new Button(composite, SWT.NONE);
-		GridData gd_codePreviewButton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_codePreviewButton.widthHint = 149;
-		codePreviewButton.setLayoutData(gd_codePreviewButton);
-		codePreviewButton.setText(Constants.LABEL_CODE_PREVIEW_BUTTON);
-		codePreviewButton.addListener(SWT.Selection, new Listener() {
 
-			@Override
-			public void handleEvent(Event event) {
-				//Opens a new wizard to show the code preview 
-				final WizardDialog dialog = new WizardDialog(new Shell(), new CodePreviewWizard(instanceListPage, instanceGenerator)) {
-
-					@Override
-					protected void configureShell(Shell newShell) {
-						super.configureShell(newShell);
-						newShell.setSize(650, 500);
-					}
-				};
-				dialog.open();
-			}
+		final Button codePreviewButton = new Button(this.control, SWT.NONE);
+		codePreviewButton.setText("Code Preview");
+		codePreviewButton.addListener(SWT.Selection, event -> {
+			final MessageBox messageBox = new MessageBox(new Shell(), SWT.OK);
+			messageBox.setText("Code Preview");
+			messageBox.setMessage(compileCodePreview());
+			messageBox.open();
 		});
 
 		new Label(composite, SWT.NONE);
@@ -323,6 +283,7 @@ public class InstanceListPage extends WizardPage {
 					}
 				};
 				dialog.open();
+
 			}
 		});
 		new Label(control, SWT.NONE);
@@ -336,82 +297,61 @@ public class InstanceListPage extends WizardPage {
 	}
 
 	/**
-	 * This method extracts the provider's name from the instanceDetails
-	 * 
-	 * @return
+	 * The user might select an algorithm configuration/instance from the combobox. This method returns the details of the currently selected algorithm, which is passed as a
+	 * parameter.
+	 *
+	 * @param inst
+	 *        instance currently selected in the combo box
+	 * @return details for chosen algorithm configuration
 	 */
-	public String getProviderFromInstance() {
-		for (String instance : this.instanceDetails.getText().split(Constants.lineSeparator)) {
-			if (instance.contains("Provider")) {
-				return instance.split(": ")[1];
+	private String getInstanceProperties(final InstanceClafer inst) {
+		final Map<String, String> algorithms = new HashMap<>();
+		for (final InstanceClafer child : inst.getChildren()) {
+			getInstanceDetails(child, algorithms);
+		}
+
+		final StringBuilder output = new StringBuilder();
+		for (final Map.Entry<String, String> entry : algorithms.entrySet()) {
+			final String key = entry.getKey();
+			final String value = entry.getValue();
+			if (!value.isEmpty()) {
+				output.append(key);
+				output.append(value);
+				output.append(Constants.lineSeparator);
 			}
 		}
-		return "";
+		return output.toString();
 	}
 
 	/**
-	 * Preview of the code, for the algorithm configuration/instance selected from the combobox, can be displayed by calling this method .
-	 * 
-	 * @return preview of the code that will be generated in the Java project for chosen algorithm configuration
+	 * Assembles code-preview text. 
+	 * @return code snippet
 	 */
-	public String getCodePreview() {
-		XSLBasedGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(), this.getProviderFromInstance());
+	public String compileCodePreview() {
+		final CodeGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(), this.taskSelectionPage.getSelectedTask().getXslFile());
 		final String claferPreviewPath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
-		final XMLParser xmlparser = new XMLParser();
-		xmlparser.displayInstanceValues(this.getValue(), this.configuratorWizard.getConstraints());
-		try {
-			xmlparser.writeClaferInstanceToFile(claferPreviewPath);
-		} catch (IOException e) {
-			Activator.getDefault().logError(e, Constants.WritingInstanceClaferErrorMessage);
-			return "";
-		}
-
-		File claferPreviewFile = new File(claferPreviewPath);
-
-		// Check whether directories and templates/model exist
-		final File claferOutputFiles = claferPreviewFile != null && claferPreviewFile.exists() ? claferPreviewFile
-			: Utils.getResourceFromWithin(Constants.pathToClaferInstanceFolder + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
-		final File xslFile = Utils.getResourceFromWithin(this.taskSelectionPage.getSelectedTask().getXslFile());
-		if (!claferOutputFiles.exists() || !xslFile.exists()) {
-			Activator.getDefault().logError(Constants.FilesDoNotExistErrorMessage);
-			return "";
-		}
-		// Perform actual transformation by calling XSLT processor.
-
+		Configuration codePreviewConfig = new Configuration(value, this.constraints, claferPreviewPath);
 		final String temporaryOutputFile = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.CodeGenerationCallFile;
 
-		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
-		final TransformerFactory tFactory = TransformerFactory.newInstance();
-		Transformer transformer;
 		try {
-			transformer = tFactory.newTransformer(new StreamSource(xslFile));
-		} catch (TransformerConfigurationException e) {
-			Activator.getDefault().logError(e, Constants.TransformerConfigurationErrorMessage);
-			return "";
-		}
-		File outputFile = new File(temporaryOutputFile);
-		try {
-			transformer.transform(new StreamSource(claferPreviewFile), new StreamResult(outputFile));
-		} catch (TransformerException e) {
+			((XSLBasedGenerator) codeGenerator).transform(codePreviewConfig.persistConf(), temporaryOutputFile);
+		} catch (TransformerException | IOException e) {
 			Activator.getDefault().logError(e, Constants.TransformerErrorMessage);
 			return "";
 		}
-
-		Path file = outputFile.toPath();
-		try (InputStream in = Files.newInputStream(file); 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-			StringBuilder sb = new StringBuilder();
+		
+		final Path file = new File(temporaryOutputFile).toPath();
+		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+			final StringBuilder sb = new StringBuilder();
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				if (!line.startsWith("import")) {
 					sb.append(line);
-					sb.append("\n");					
+					sb.append(Constants.lineSeparator);
 				}
-			}			
-			//removing the blank lines in the code preview
-			String codePreview = sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
-			return codePreview;
-		} catch (IOException e) {
+			}
+			return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
+		} catch (final IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
 		} finally {
 			File outputFolder = outputFile.getParentFile();
@@ -423,7 +363,7 @@ public class InstanceListPage extends WizardPage {
 	}
 
 	public TaskSelectionPage getTaskSelectionPage() {
-		return taskSelectionPage;
+		return this.taskSelectionPage;
 	}
 
 	public void setValue(final InstanceClafer instanceClafer) {
@@ -435,10 +375,10 @@ public class InstanceListPage extends WizardPage {
 	}
 
 	@Override
-	public void setVisible(boolean visible) {
+	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
 		if (visible) {
-			control.setFocus();
+			this.control.setFocus();
 		}
 	}
 

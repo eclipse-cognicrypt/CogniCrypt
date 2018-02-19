@@ -19,7 +19,7 @@ import de.cognicrypt.staticanalyzer.Activator;
 
 /**
  * At startup, this handler registers a listener that will be informed after a build, whenever resources were changed.
- * 
+ *
  * @author Eric Bodden
  * @author Stefan Krueger
  */
@@ -27,52 +27,54 @@ public class StartupHandler implements IStartup {
 
 	private static final AfterBuildListener BUILD_LISTENER = new AfterBuildListener();
 
+	@Override
 	public void earlyStartup() {
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(BUILD_LISTENER, IResourceChangeEvent.POST_BUILD);
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(StartupHandler.BUILD_LISTENER, IResourceChangeEvent.POST_BUILD);
 	}
 
 	private static class AfterBuildListener implements IResourceChangeListener {
 
-		public void resourceChanged(IResourceChangeEvent event) {
+		@Override
+		public void resourceChanged(final IResourceChangeEvent event) {
 			Activator.getDefault().logInfo("ResourcechangeListener has been triggered.");
 			try {
 				final List<IJavaElement> changedJavaElements = new ArrayList<>();
-				
+
 				event.getDelta().accept(delta -> {
 					switch (delta.getKind()) {
 						case IResourceDelta.ADDED:
 						case IResourceDelta.CHANGED:
-							IResource res = delta.getResource();
-							IJavaElement javaElement = JavaCore.create(res);
+							final IResource res = delta.getResource();
+							final IJavaElement javaElement = JavaCore.create(res);
 							if (javaElement != null) {
 								if (javaElement instanceof ICompilationUnit) {
 									if ((delta.getFlags() & IResourceDelta.CONTENT) != 0) {
 										changedJavaElements.add(javaElement);
 									}
 									return false;
-									
+
 								}
 							}
 					}
 					return true;
 				});
-				
+
 				if (changedJavaElements.isEmpty()) {
-					for (IResourceDelta ev : event.getDelta().getAffectedChildren()) {
+					for (final IResourceDelta ev : event.getDelta().getAffectedChildren()) {
 						ev.accept(delta -> {
-						switch (delta.getKind()) {
-							case IResourceDelta.ADDED:
-							case IResourceDelta.CHANGED:
-								IResource res = delta.getResource();
-								IJavaElement javaElement = JavaCore.create(res);
-								if (javaElement != null) {
-									if (javaElement instanceof JavaProject) {
-										if ((delta.getFlags() & IResourceDelta.OPEN) != 0) {
-											changedJavaElements.add(javaElement);
+							switch (delta.getKind()) {
+								case IResourceDelta.ADDED:
+								case IResourceDelta.CHANGED:
+									final IResource res = delta.getResource();
+									final IJavaElement javaElement = JavaCore.create(res);
+									if (javaElement != null) {
+										if (javaElement instanceof JavaProject) {
+											if ((delta.getFlags() & IResourceDelta.OPEN) != 0) {
+												changedJavaElements.add(javaElement);
+											}
+											return false;
 										}
-										return false;
 									}
-								}
 							}
 							return true;
 						});
@@ -84,8 +86,8 @@ public class StartupHandler implements IStartup {
 				}
 
 				Activator.getDefault().logInfo("Analysis has been triggered.");
-				
-				AnalysisKickOff ako = new AnalysisKickOff();
+
+				final AnalysisKickOff ako = new AnalysisKickOff();
 
 				if (ako.setUp(changedJavaElements.get(0))) {
 					if (ako.run()) {
@@ -97,14 +99,9 @@ public class StartupHandler implements IStartup {
 					Activator.getDefault().logInfo("Analysis has been canceled due to erroneous setup.");
 				}
 
-				
-			} catch (CoreException e) {
+			} catch (final CoreException e) {
 				Activator.getDefault().logError(e, "Internal error");
 			}
-		}
-
-		private void fetchChangedElement(final List<IJavaElement> changedJavaElements, IResourceDelta ev) throws CoreException {
-			
 		}
 
 	}

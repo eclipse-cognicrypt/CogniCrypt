@@ -4,25 +4,22 @@ import java.util.AbstractMap.SimpleEntry;
 
 public class ComparableEntry<K, V> extends SimpleEntry<K, V> implements Comparable<ComparableEntry<K, V>> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -7202623997902577640L;
 
-	public ComparableEntry(K key, V value) {
+	public ComparableEntry(final K key, final V value) {
 		super(key, value);
 	}
 
 	@Override
-	public int compareTo(ComparableEntry<K, V> comp) {
-		if (this.equals(comp)) {
+	public int compareTo(final ComparableEntry<K, V> comp) {
+		if (equals(comp)) {
 			return 0;
 		}
-		if (!(this.getKey() instanceof Comparable && comp.getKey() instanceof Comparable && this.getValue() instanceof Comparable && comp.getValue() instanceof Comparable)) {
+		if (!(getKey() instanceof Comparable && comp.getKey() instanceof Comparable && getValue() instanceof Comparable && comp.getValue() instanceof Comparable)) {
 			return -1;
 		} else {
 			@SuppressWarnings("unchecked")
-			final Comparable<K> thisX = (Comparable<K>) this.getKey();
+			final Comparable<K> thisX = (Comparable<K>) getKey();
 			return thisX.compareTo(comp.getKey());
 		}
 	}

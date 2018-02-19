@@ -19,24 +19,23 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.MethodInvocation;
-
-import de.cognicrypt.codegenerator.Activator;
-
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.MethodInvocation;
+
+import de.cognicrypt.codegenerator.Activator;
 
 /**
  * Builder Class used to set a Marker to a part of a specific resource, that matches the predefined pattern. This would probably be done by the analysis later, as it would find
  * such an "error" and could then directly add such a Marker.
- * 
+ *
  * Currently only works for the specific example "cypher.getinstance('AES')"
- * 
+ *
  * Can be enabled by right clicking the Project and then selecting Configure->Enable QFBuilder For testing purposes consider disabling the auto build feature to initiate a manual
  * full build
- * 
+ *
  * @author Patrick Hill
  */
 
@@ -53,7 +52,7 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 
 	/**
 	 * addMarker Method that adds a Marker to a File, which can then be displayed as an error/warning in the IDE.
-	 * 
+	 *
 	 * @param file
 	 *        the IResource of the File to which the Marker is added
 	 * @param message
@@ -65,9 +64,9 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 	 * @param end
 	 *        the number of the end character for the Marker
 	 */
-	private void addMarker(IResource file, String message, int lineNumber, int start, int end) {
+	private void addMarker(final IResource file, final String message, int lineNumber, final int start, final int end) {
 		try {
-			IMarker marker = file.createMarker(MARKER_TYPE);
+			final IMarker marker = file.createMarker(ProblemMarkerBuilder.MARKER_TYPE);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 			if (lineNumber == -1) {
@@ -78,27 +77,27 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 			marker.setAttribute(IMarker.CHAR_END, end);
 			// IJavaModelMarker is important for the Quickfix Processor to work
 			// correctly
-			marker.setAttribute(IJavaModelMarker.ID, JDT_PROBLEM_ID);
-		} catch (CoreException e) {}
+			marker.setAttribute(IJavaModelMarker.ID, ProblemMarkerBuilder.JDT_PROBLEM_ID);
+		} catch (final CoreException e) {}
 	}
 
 	/**
 	 * printProblemIDs Method to print out all JDT Problem IDs which are taken by default. Used to find a not taken, unique ID, which can be used for the specific Marker.
 	 */
 	public void printProblemIDs() {
-		Field[] fields = org.eclipse.jdt.core.compiler.IProblem.class.getFields();
-		List<Integer> ints = new ArrayList<>();
-		for (Field field : fields) {
+		final Field[] fields = org.eclipse.jdt.core.compiler.IProblem.class.getFields();
+		final List<Integer> ints = new ArrayList<>();
+		for (final Field field : fields) {
 			try {
 				ints.add(field.getInt(null));
-			} catch (IllegalArgumentException e) {
+			} catch (final IllegalArgumentException e) {
 				Activator.getDefault().logError(e);
-			} catch (IllegalAccessException e) {
+			} catch (final IllegalAccessException e) {
 				Activator.getDefault().logError(e);
 			}
 		}
 		Collections.sort(ints);
-		for (Integer integer : ints) {
+		for (final Integer integer : ints) {
 			// this prints the JDT Problem IDs if you have to pick a new one
 			// call this method.
 			System.out.println(integer);
@@ -108,16 +107,16 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 
 	/**
 	 * startMarking Method that starts the Marking process by getting the IPackageFragments
-	 * 
+	 *
 	 * @param project
 	 *        Needed for getting the PackageFragments
 	 * @throws JavaModelException
 	 * @throws CoreException
 	 */
-	private void startMarking(IProject project) throws JavaModelException, CoreException {
+	private void startMarking(final IProject project) throws JavaModelException, CoreException {
 		if (project.isNatureEnabled("org.eclipse.jdt.core.javanature")) {
-			IPackageFragment[] packages = JavaCore.create(project).getPackageFragments();
-			for (IPackageFragment mypackage : packages) {
+			final IPackageFragment[] packages = JavaCore.create(project).getPackageFragments();
+			for (final IPackageFragment mypackage : packages) {
 				getUnitForParser(mypackage);
 			}
 		}
@@ -125,14 +124,14 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 
 	/**
 	 * getUnitForParser Method to get the CompilationUnits from the PackageFragments and start the parsing process from there
-	 * 
+	 *
 	 * @param mypackage
 	 *        IPackageFragment from startMarking
 	 * @throws JavaModelException
 	 */
-	private void getUnitForParser(IPackageFragment mypackage) throws JavaModelException {
+	private void getUnitForParser(final IPackageFragment mypackage) throws JavaModelException {
 		if (mypackage.getKind() == IPackageFragmentRoot.K_SOURCE) {
-			for (ICompilationUnit unit : mypackage.getCompilationUnits()) {
+			for (final ICompilationUnit unit : mypackage.getCompilationUnits()) {
 				setupParser(unit);
 			}
 		}
@@ -140,35 +139,36 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 
 	/**
 	 * setupParser Method that sets up the Parser and creates a visitor for a specific unit
-	 * 
+	 *
 	 * @param unit
 	 *        Unit from getUnitForParser
 	 */
-	private void setupParser(ICompilationUnit unit) {
-		ASTParser parser = ASTParser.newParser(AST.JLS8);
+	private void setupParser(final ICompilationUnit unit) {
+		final ASTParser parser = ASTParser.newParser(AST.JLS8);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setSource(unit);
 		parser.setResolveBindings(true);
-		CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 		cu.accept(createMarkerVisitor(unit, cu));
 	}
 
 	/**
 	 * createMarkerVisitor Creates the Visitor that goes through the unit and sets the Marker based on a case, which is currently hard coded as cypher.getinstance('AES').
-	 * 
+	 *
 	 * @param unit
 	 *        Unit from getUnitForParser
 	 * @param cu
 	 *        same as unit but different type
 	 * @return visitor for the unit
 	 */
-	private ASTVisitor createMarkerVisitor(ICompilationUnit unit, CompilationUnit cu) {
-		ASTVisitor visitor = new ASTVisitor() {
+	private ASTVisitor createMarkerVisitor(final ICompilationUnit unit, final CompilationUnit cu) {
+		final ASTVisitor visitor = new ASTVisitor() {
 
-			public boolean visit(MethodInvocation node) {
-				int lineNumber = cu.getLineNumber(node.getStartPosition()) - 1;
+			@Override
+			public boolean visit(final MethodInvocation node) {
+				final int lineNumber = cu.getLineNumber(node.getStartPosition()) - 1;
 				if ("getInstance".equals(node.getName().toString()) && "Cipher".equals(node.getExpression().toString())) {
-					List<Expression> l = node.arguments();
+					final List<Expression> l = node.arguments();
 					if (!l.isEmpty()) {
 						if ("AES".equals(l.get(0).resolveConstantExpressionValue()) && l.size() == 1) {
 							addMarker(unit.getResource(), "Error found", lineNumber, node.getStartPosition(), node.getStartPosition() + node.getLength());
@@ -184,14 +184,15 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 	/**
 	 * build The standard method that gets called by eclipse when initiating a build for its specified Nature
 	 */
-	protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
+	@Override
+	protected IProject[] build(final int kind, final Map args, final IProgressMonitor monitor) throws CoreException {
 		clean(null);
-		parser = ASTParser.newParser(AST.JLS8);
-		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-		IProject project = getProject();
+		this.parser = ASTParser.newParser(AST.JLS8);
+		this.parser.setKind(ASTParser.K_COMPILATION_UNIT);
+		final IProject project = getProject();
 		try {
 			startMarking(project);
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
 		return null;
@@ -200,7 +201,8 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 	/**
 	 * clean Method to clean a file of its Markers. Needs to be done before adding new ones
 	 */
-	protected void clean(IProgressMonitor monitor) throws CoreException {
-		getProject().deleteMarkers(MARKER_TYPE, true, IResource.DEPTH_INFINITE);
+	@Override
+	protected void clean(final IProgressMonitor monitor) throws CoreException {
+		getProject().deleteMarkers(ProblemMarkerBuilder.MARKER_TYPE, true, IResource.DEPTH_INFINITE);
 	}
 }

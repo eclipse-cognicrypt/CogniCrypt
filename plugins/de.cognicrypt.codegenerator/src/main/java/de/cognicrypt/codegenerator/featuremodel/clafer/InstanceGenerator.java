@@ -1,22 +1,3 @@
-/**
- * Copyright 2015-2017 Technische Universitaet Darmstadt
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * @author Ram Kamath
- *
- */
 package de.cognicrypt.codegenerator.featuremodel.clafer;
 
 import static org.clafer.ast.Asts.$this;
@@ -33,6 +14,7 @@ import static org.clafer.ast.Asts.joinRef;
 import static org.clafer.ast.Asts.lessThan;
 import static org.clafer.ast.Asts.lessThanEqual;
 import static org.clafer.ast.Asts.local;
+import static org.clafer.ast.Asts.min;
 import static org.clafer.ast.Asts.union;
 
 import java.util.ArrayList;
@@ -83,19 +65,28 @@ public class InstanceGenerator {
 	private String algorithmName;
 	private int algorithmCount;
 
-	public InstanceGenerator(final String path, final String taskName, final String taskDescription) {
-		this.claferModel = new ClaferModel(path);
+	/**
+	 * Constructor for Instance Generator
+	 * 
+	 * @param pathToModel
+	 *        Absolute path to model
+	 * @param nameOfTaskClafer
+	 *        Task clafer
+	 * @param taskDescription
+	 *        Description of selected task
+	 */
+	public InstanceGenerator(final String pathToModel, final String nameOfTaskClafer, final String taskDescription) {
+		this.claferModel = new ClaferModel(pathToModel);
 		this.displayNameToInstanceMap = new HashMap<>();
 		this.displayFirstNameToInstanceMap = new HashMap<>();
 		this.uniqueInstances = new HashMap<>();
-		this.taskName = taskName;
+		this.taskName = nameOfTaskClafer;
 		this.taskDescription = taskDescription;
-		this.taskClafer = Utils.getModelChildByName(this.claferModel.getModel(), taskName);
+		this.taskClafer = Utils.getModelChildByName(this.claferModel.getModel(), nameOfTaskClafer);
 	}
 
 	/**
-	 *
-	 * method used by both basic and advanced user operations to add constraints to clafers before instance generation
+	 * Method used by both basic and advanced user operations to add constraints to clafers before instance generation
 	 *
 	 * @param taskAlgorithm
 	 *        Higher-level Clafer
@@ -121,17 +112,42 @@ public class InstanceGenerator {
 					if (rightOperand != null) {
 						taskAlgorithm.addConstraint(equal(joinRef(join(joinRef($this()), rightOperand)), constant(value)));
 					} else {
-						final AstAbstractClafer taskClafer = (AstAbstractClafer) taskAlgorithm.getRef().getTargetType();
-						for (final AstClafer subClafer : taskClafer.getSubs()) {
-							if (subClafer.getName().endsWith(value)) {
-								taskAlgorithm.addConstraint(equal(joinRef($this()), global(subClafer)));
-								break;
+						String[] operands = value.split("\\.");
+						if (operands.length == 2) {
+							final AstClafer operand = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), operands[0]);
+							this.taskClafer.addConstraint(equal(joinRef(join($this(), taskAlgorithm)),
+								joinRef(joinRef(join(joinRef(join($this(), operand)), ClaferModelUtils.findClaferByName(operand, operands[1]))))));
+						} else if (value.contains("min(")) {
+							final AstSetExpr left = joinRef(join($this(), taskAlgorithm));
+							AstSetExpr joined = null;
+							for (final String operand : value.substring(4, value.length() - 1).split(",")) {
+								operands = operand.split("\\.");
+								for (int i = 0; i < operands.length; i++) {
+									operands[i] = operands[i].trim();
+								}
+								final AstClafer operandClafer = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), operands[0]);
+								if (joined == null) {
+									joined = joinRef(joinRef(join(joinRef(join($this(), operandClafer)), ClaferModelUtils.findClaferByName(operandClafer, operands[1]))));
+								} else {
+									joined = union(joined,
+										joinRef(joinRef(join(joinRef(join($this(), operandClafer)), ClaferModelUtils.findClaferByName(operandClafer, operands[1])))));
+								}
+							}
+							final AstSetExpr right = min(joined);
+							this.taskClafer.addConstraint(equal(left, right));
+						} else {
+							final AstAbstractClafer taskClafer = (AstAbstractClafer) taskAlgorithm.getRef().getTargetType();
+							for (final AstClafer subClafer : taskClafer.getSubs()) {
+								if (subClafer.getName().endsWith(value)) {
+									taskAlgorithm.addConstraint(equal(joinRef($this()), global(subClafer)));
+									break;
+								}
 							}
 						}
 					}
 				} else {
 					taskAlgorithm.getParent().addConstraint(getFunctionFromOperator(joinRef(joinRef(join(joinRef(join($this(), taskAlgorithm)), rightOperand))),
-						joinRef(global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent().getParent(), "c0_" + value))), operator));
+						joinRef(global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent().getParent(), value))), operator));
 				}
 			}
 
@@ -144,9 +160,9 @@ public class InstanceGenerator {
 			} else {
 				for (int j = 0; j < length; j++) {
 					if (j == 0) {
-						constraint = global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j++]));
+						constraint = global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), claferNames[j++]));
 					}
-					final AstClafer astC = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), "c0_" + claferNames[j]);
+					final AstClafer astC = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), claferNames[j]);
 					constraint = union(constraint, global(astC));
 				}
 			}
@@ -158,22 +174,23 @@ public class InstanceGenerator {
 			final AstLocal tmpClafer = local("suite");
 			final AstDecl decl = decl(tmpClafer, join($this(), taskAlgorithm));
 			AstBoolExpr boolExp = null;
-			final AstSetExpr operandLeftClafer = joinRef(join(joinRef(tmpClafer), rightOperand));
 			if (claferNames.length == 1) {
+				final AstSetExpr operandLeftClafer = joinRef(join(joinRef(tmpClafer), rightOperand));
 				final String[] opSquare = claferNames[0].split(" ");
-				final AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(rightOperand.getParent().getParent(), "c0_" + opSquare[1])));
+				final AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(rightOperand.getParent().getParent(), opSquare[1])));
 				boolExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, opSquare[0]);
 			} else {
 				for (int i = 0; i < claferNames.length; i++) {
 					if (i == 0) {
+						final AstSetExpr operandLeftClafer = joinRef(joinRef(join(joinRef(tmpClafer), rightOperand)));
 						final String[] opSquare = claferNames[i].split(" ");
-						final AstSetExpr operandRightClafer = joinRef(
-							global(ClaferModelUtils.findClaferByName(algorithmProperty.get(i++).getParent().getParent(), "c0_" + opSquare[1])));
-						boolExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, operator);
+						final AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(algorithmProperty.get(i++).getParent().getParent(), opSquare[1])));
+						boolExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, opSquare[0]);
 					}
 					final String[] opSquare = claferNames[i].split(" ");
-					final AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(algorithmProperty.get(i).getParent().getParent(), "c0_" + opSquare[1])));
-					final AstBoolExpr addExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, operator);
+					final AstSetExpr operandLeftClafer = joinRef(join(joinRef(tmpClafer), algorithmProperty.get(i)));
+					final AstSetExpr operandRightClafer = joinRef(global(ClaferModelUtils.findClaferByName(algorithmProperty.get(i).getParent().getParent(), opSquare[1])));
+					final AstBoolExpr addExp = getFunctionFromOperator(operandLeftClafer, operandRightClafer, opSquare[0]);
 					boolExp = and(boolExp, addExp);
 				}
 			}
@@ -181,12 +198,6 @@ public class InstanceGenerator {
 		}
 	}
 
-	/**
-	 * This method is to parse the map of clafers and apply their values as constraints before instance generation, used only in advanceduserMode
-	 *
-	 * @param taskClafer
-	 * @param propertiesMap
-	 */
 	private void advancedModeHandler(final AstModel astModel, final AstClafer taskClafer, final List<PropertyWidget> constraints) {
 		for (final PropertyWidget constraint : constraints) {
 			if (constraint.isEnabled() && !constraint.isGroupConstraint()) { //not sure why we need this check but keeping it from Ram's code till we figure it out
@@ -202,28 +213,23 @@ public class InstanceGenerator {
 		}
 	}
 
-	/**
-	 * BasicModeHandler will take <Question, answer> map as a parameter where the key of the map is a question, answer is the selected answer for a given question each answer has
-	 * been further iterated to apply associated dependencies
-	 */
-	// FIXME include group operator
 	private void basicModeHandler(final AstModel astModel, final AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {
 		for (final Entry<Question, Answer> entry : qAMap.entrySet()) {
-			Answer answer = entry.getValue();
+			final Answer answer = entry.getValue();
 			if (answer.getClaferDependencies() != null) {
 				for (final ClaferDependency claferDependency : answer.getClaferDependencies()) {
 					if ("->".equals(claferDependency.getOperator())) {
 						ClaferModelUtils.createClafer(taskClafer, claferDependency.getAlgorithm(), claferDependency.getValue());
 					} else {
-						final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, "c0_" + claferDependency.getAlgorithm());
+						final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, claferDependency.getAlgorithm());
 						final List<AstConcreteClafer> propertyClafer = new ArrayList<>();
 						final String operand = claferDependency.getOperand();
 						if (operand != null && operand.contains(";")) {
 							for (final String name : operand.split(";")) {
-								propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + name));
+								propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer.getParent(), name));
 							}
 						} else {
-							propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer, "c0_" + operand));
+							propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer.getParent(), operand));
 						}
 						addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), claferDependency.getValue());
 					}
@@ -232,26 +238,21 @@ public class InstanceGenerator {
 		}
 	}
 
-	/**
-	 * this method is part of instance generation process , creates a mapping instance name and instance Object
-	 */
 	private void generateInstanceMapping() {
 		this.displayNameToInstanceMap.clear();
-		/**
-		 * sort all the instances, to have an user friendly display
-		 */
+		// sort all the instances, to have an user friendly display
 		try {
 			this.generatedInstances.sort(new Comparator<InstanceClafer>() {
 
 				@Override
-				public int compare(InstanceClafer left, InstanceClafer right) {
+				public int compare(final InstanceClafer left, final InstanceClafer right) {
 					return -Integer.compare(getSecurityLevel(left), getSecurityLevel(right));
 				}
 
-				private Integer getSecurityLevel(InstanceClafer instance) {
-					for (InstanceClafer innerInst : instance.getChildren()) {
+				private Integer getSecurityLevel(final InstanceClafer instance) {
+					for (final InstanceClafer innerInst : instance.getChildren()) {
 						if (innerInst.getType().getName().contains("security")) {
-							Object level = innerInst.getRef();
+							final Object level = innerInst.getRef();
 							if (level instanceof Integer) {
 								return (Integer) level;
 							}
@@ -261,10 +262,10 @@ public class InstanceGenerator {
 				}
 
 			});
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			Activator.getDefault().logError("Instances not sorted by security level. Be cautious");
 		}
-		for (InstanceClafer sortedInst : this.generatedInstances) {
+		for (final InstanceClafer sortedInst : this.generatedInstances) {
 
 			String key = getInstanceName(sortedInst);
 			
@@ -273,15 +274,12 @@ public class InstanceGenerator {
 				this.displayNameToInstanceMap.remove(key, sortedInst);
 			}
 			if (sortedInst.getType().getName().equals(this.taskName) && key.length() > 0) {
-				/**
-				 * Check if any instance has same name , if yes add numerical values as suffix
-				 *
-				 */
+				// Check if any instance has same name , if yes add numerical values as suffix
 				int counter = 1;
 				String copyKey = key;
-				while (displayNameToInstanceMap.containsKey(copyKey)) {
+				while (this.displayNameToInstanceMap.containsKey(copyKey)) {
 					copyKey = key + "(" + String.format("%02d", ++counter) + ")";
-					this.setAlgorithmCount(counter);
+					setAlgorithmCount(counter);
 				}
 
 				this.displayNameToInstanceMap.put(copyKey, sortedInst);
@@ -291,15 +289,16 @@ public class InstanceGenerator {
 		this.displayNameToInstanceMap = new TreeMap<>(this.displayNameToInstanceMap);
 	}
 	/**
-	 * Method to Generate instances for basic user. Argument is a map of property(clafer) name and their values
+	 * Method to generate instances for basic user.
 	 *
-	 * @param map
-	 * @return
+	 * @param questAnswerMap
+	 *        Map mapping questions to user-given answers.
+	 * @return List of generated Instance
 	 */
-	public List<InstanceClafer> generateInstances(final HashMap<Question, Answer> map) {
+	public List<InstanceClafer> generateInstances(final HashMap<Question, Answer> questAnswerMap) {
 		final AstModel astModel = this.claferModel.getModel();
 		try {
-			basicModeHandler(astModel, this.taskClafer, map);
+			basicModeHandler(astModel, this.taskClafer, questAnswerMap);
 
 			this.solver = ClaferCompiler.compile(astModel,
 				this.claferModel.getScope().toBuilder()
@@ -333,15 +332,15 @@ public class InstanceGenerator {
 	}
 
 	/**
-	 * Method to generate instances in an advanced user mode, takes map with claer and their values as parameterF
-	 *
-	 * @param propertiesMap
-	 * @return
+	 * Method to generate instances in an advanced user mode.
+	 * 
+	 * @param constraints
+	 *        List of constraints set by the user
+	 * @return List of generated Instance
 	 */
 	public List<InstanceClafer> generateInstancesAdvancedUserMode(final List<PropertyWidget> constraints) {
 		final AstModel model = this.claferModel.getModel();
 		try {
-
 			//PropertiesMapperUtil.getTaskLabelsMap().get(getTaskDescription());
 			advancedModeHandler(model, this.taskClafer, constraints);
 
@@ -381,12 +380,9 @@ public class InstanceGenerator {
 	/**
 	 * Returns the hash value of the instance passed as an argument
 	 *
-	 * @param inst
-	 * @return
+	 * @see InstanceClaferHash#hashCode() 
 	 */
 	private long getHashValueOfInstance(final InstanceClafer inst) {
-		// TODO: Why child at position 0, why is 0 returned if there is no
-		// child?
 		int hash = 37;
 		for (final InstanceClafer child : inst.getChildren()) {
 			hash *= new InstanceClaferHash(child).hashCode();
@@ -395,13 +391,7 @@ public class InstanceGenerator {
 		return hash;
 	}
 
-	/**
-	 * Used by instanceMapping method to find the instance name
-	 *
-	 * @param inst
-	 * @return
-	 */
-	public String getInstanceName(final InstanceClafer inst) {
+	private String getInstanceName(final InstanceClafer inst) {
 		String currentInstanceName = "";
 		try {
 			if (inst.hasChildren()) {
@@ -497,23 +487,23 @@ public class InstanceGenerator {
 		this.taskName = taskName;
 	}
 
-	public void setAlgorithmName(String algorithmName) {
+	public void setAlgorithmName(final String algorithmName) {
 		this.algorithmName = algorithmName;
 
 	}
 
 	public String getAlgorithmName() {
-		return algorithmName;
+		return this.algorithmName;
 
 	}
 
-	public void setAlgorithmCount(int algorithmCount) {
+	public void setAlgorithmCount(final int algorithmCount) {
 		this.algorithmCount = algorithmCount;
 
 	}
 
 	public int getAlgorithmCount() {
-		return algorithmCount;
+		return this.algorithmCount;
 
 	}
 }

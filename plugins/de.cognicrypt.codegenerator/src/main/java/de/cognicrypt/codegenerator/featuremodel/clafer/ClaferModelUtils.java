@@ -1,62 +1,59 @@
-/**
- * Copyright 2015-2017 Technische Universitaet Darmstadt
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- * @author Ram Kamath
- *
- */
 package de.cognicrypt.codegenerator.featuremodel.clafer;
 
 import org.clafer.ast.AstAbstractClafer;
 import org.clafer.ast.AstClafer;
 import org.clafer.ast.AstConcreteClafer;
-import org.clafer.ast.AstConstraint;
 
+/**
+ * This class provides helper methods for handling clafer models.
+ * 
+ * @author Ram Kamath
+ * @author Stefan Krueger
+ */
 public class ClaferModelUtils {
 
 	/**
 	 * Method to find a clafer with a given name in whole model
+	 * @param startingClafer Starting point for search in the clafer model
+	 * @param name name of Clafer that is searched for
+	 * @return Requested clafer or <CODE>null</CODE> if clafer was not found
 	 */
-	public static AstClafer findClaferByName(final AstClafer inputClafer, final String name) {
-		if (inputClafer.getName().equalsIgnoreCase(name)) {
-			return inputClafer;
+	public static AstClafer findClaferByName(final AstClafer startingClafer, final String name) {
+		final String inputName = getNameWithoutScope(startingClafer.getName());
+		if (inputName.equalsIgnoreCase(name)) {
+			return startingClafer;
 		} else {
-			if (inputClafer.hasChildren()) {
-				for (final AstConcreteClafer childClafer : inputClafer.getChildren()) {
-					final AstClafer foundClafer = findClaferByName(childClafer, name);
-					if (foundClafer != null) {
-						return foundClafer;
+			if (startingClafer.hasChildren()) {
+				final AstConcreteClafer foundChildClafer = startingClafer.getChildren().stream().filter(child -> getNameWithoutScope(child.getName()).equals(name)).findFirst()
+					.orElse(null);
+				if (foundChildClafer != null) {
+					return foundChildClafer;
+				} else {
+					for (final AstConcreteClafer childClafer : startingClafer.getChildren()) {
+						final AstClafer foundClafer = findClaferByName(childClafer, name);
+						if (foundClafer != null) {
+							return foundClafer;
+						}
 					}
 				}
+				;
+
 			}
-			if (inputClafer instanceof AstAbstractClafer) {
-				for (final AstAbstractClafer abstractChildClafer : ((AstAbstractClafer) inputClafer).getAbstractChildren()) {
-					AstClafer foundClafer = findClaferByName(abstractChildClafer, name);
+			if (startingClafer instanceof AstAbstractClafer) {
+				for (final AstAbstractClafer abstractChildClafer : ((AstAbstractClafer) startingClafer).getAbstractChildren()) {
+					final AstClafer foundClafer = findClaferByName(abstractChildClafer, name);
 					if (foundClafer != null) {
 						return foundClafer;
 					}
 				}
 			}
 
-			if (inputClafer.hasRef()) {
-				return findClaferByName(inputClafer.getRef().getTargetType(), name);
+			if (startingClafer.hasRef()) {
+				return findClaferByName(startingClafer.getRef().getTargetType(), name);
 			}
 
-			if (inputClafer.getSuperClafer() != null) {
-				return findClaferByName(inputClafer.getSuperClafer(), name);
+			if (startingClafer.getSuperClafer() != null) {
+				return findClaferByName(startingClafer.getSuperClafer(), name);
 			}
 
 			return null;
@@ -65,46 +62,44 @@ public class ClaferModelUtils {
 	}
 
 	/**
-	 * Method takes AstClafer as an input and returns a description of the clafer if exist, returns name of the clafer otherwise
+	 * Creates a new clafer in the model.
+	 * 
+	 * @param parentClafer clafer the new clafer is a subclafer to
+	 * @param name Name of new clafer
+	 * @param type Type of new clafer 
+	 * @return newly created clafer
 	 */
-	// FIXME check if this method is used in any commented code
-	public static String getDescription(final AstClafer inputClafer) {
-		for (final AstConstraint child : inputClafer.getConstraints()) {
-			final String expr = child.getExpr().toString();
-			final int indexEqSign = expr.indexOf('=');
-			if (expr.substring(0, indexEqSign > 0 ? indexEqSign : 1).contains("escription . ref")) {
-				// return without Quotes,hence replaced the "" with empty
-				return expr.substring(indexEqSign + 1, expr.length()).replace("\"", "");
-			}
-		}
-		return inputClafer.getName();
-	}
-
-	public static AstConcreteClafer createClafer(AstClafer taskClafer, String name, String type) {
-		AstConcreteClafer newClafer = taskClafer.addChild(name).withCard(1, 1);
-		newClafer.refTo(ClaferModelUtils.findClaferByName(taskClafer.getParent(), "c0_" + type));
+	public static AstConcreteClafer createClafer(final AstClafer parentClafer, final String name, final String type) {
+		final AstConcreteClafer newClafer = parentClafer.addChild(name).withCard(1, 1);
+		newClafer.refTo(ClaferModelUtils.findClaferByName(parentClafer.getParent(), type));
 		return newClafer;
 	}
 
-	public static String getNameWithoutScope(final String input) {
-		return input.substring(input.indexOf("_") + 1);
+	private static String getNameWithoutScope(final String input) {
+		final int underScoreIndex = input.indexOf("_");
+		if (underScoreIndex >= 0) {
+			return input.substring(underScoreIndex + 1);
+		} else {
+			return input;
+		}
 	}
 
 	/**
-	 * method to check if the given clafer is an abstract clafer
+	 * Method to check if the given clafer is abstract
 	 *
-	 * @param astClafer
-	 * @return
+	 * @param astClafer clafer that is checked
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if passed clafer is concrete/abstract.
 	 */
 	public static boolean isConcrete(final AstClafer astClafer) {
 		Boolean isConcrete = true;
 		if (astClafer.hasRef()) {
 			isConcrete = !astClafer.getRef().getTargetType().getClass().toGenericString().contains("AstAbstractClafer");
 		}
-		if (astClafer.getClass().toGenericString().contains("AstAbstractClafer")) {
-			isConcrete = false;
+		if (!isConcrete || astClafer.getClass().toGenericString().contains("AstAbstractClafer")) {
+			return false;
+		} else {
+			return true;
 		}
-		return isConcrete;
 	}
 
 	/**

@@ -19,9 +19,10 @@ public class ProblemMarkerNature implements IProjectNature {
 
 	private IProject project;
 
+	@Override
 	public void configure() throws CoreException {
-		IProjectDescription desc = project.getDescription();
-		ICommand[] commands = desc.getBuildSpec();
+		final IProjectDescription desc = this.project.getDescription();
+		final ICommand[] commands = desc.getBuildSpec();
 
 		for (int i = 0; i < commands.length; ++i) {
 			if (commands[i].getBuilderName().equals(ProblemMarkerBuilder.BUILDER_ID)) {
@@ -29,35 +30,38 @@ public class ProblemMarkerNature implements IProjectNature {
 			}
 		}
 
-		ICommand[] newCommands = new ICommand[commands.length + 1];
+		final ICommand[] newCommands = new ICommand[commands.length + 1];
 		System.arraycopy(commands, 0, newCommands, 0, commands.length);
-		ICommand command = desc.newCommand();
+		final ICommand command = desc.newCommand();
 		command.setBuilderName(ProblemMarkerBuilder.BUILDER_ID);
 		newCommands[newCommands.length - 1] = command;
 		desc.setBuildSpec(newCommands);
-		project.setDescription(desc, null);
+		this.project.setDescription(desc, null);
 	}
 
+	@Override
 	public void deconfigure() throws CoreException {
-		IProjectDescription description = getProject().getDescription();
-		ICommand[] commands = description.getBuildSpec();
+		final IProjectDescription description = getProject().getDescription();
+		final ICommand[] commands = description.getBuildSpec();
 		for (int i = 0; i < commands.length; ++i) {
 			if (commands[i].getBuilderName().equals(ProblemMarkerBuilder.BUILDER_ID)) {
-				ICommand[] newCommands = new ICommand[commands.length - 1];
+				final ICommand[] newCommands = new ICommand[commands.length - 1];
 				System.arraycopy(commands, 0, newCommands, 0, i);
 				System.arraycopy(commands, i + 1, newCommands, i, commands.length - i - 1);
 				description.setBuildSpec(newCommands);
-				project.setDescription(description, null);
+				this.project.setDescription(description, null);
 				return;
 			}
 		}
 	}
 
+	@Override
 	public IProject getProject() {
-		return project;
+		return this.project;
 	}
 
-	public void setProject(IProject project) {
+	@Override
+	public void setProject(final IProject project) {
 		this.project = project;
 	}
 

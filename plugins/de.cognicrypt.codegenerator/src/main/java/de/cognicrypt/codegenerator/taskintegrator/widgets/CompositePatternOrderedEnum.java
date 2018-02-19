@@ -39,6 +39,9 @@ public class CompositePatternOrderedEnum extends Composite {
 
 				compositeOptions.layout();
 				compositeScrolledOptions.setMinSize(compositeOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+
+				setMoveButtonsEnabled();
+
 				super.widgetSelected(e);
 			}
 		});
@@ -85,6 +88,7 @@ public class CompositePatternOrderedEnum extends Composite {
 		}
 		
 		swapTexts(targetIndex, targetIndex - 1);
+		setMoveButtonsEnabled();
 	}
 
 	public void moveDown(CompositeSortableTextItem targetComposite) {
@@ -96,14 +100,33 @@ public class CompositePatternOrderedEnum extends Composite {
 		}
 
 		swapTexts(targetIndex, targetIndex + 1);
+		setMoveButtonsEnabled();
 	}
 
 	public void remove(CompositeSortableTextItem targetComposite) {
 		sortableTextItems.remove(targetComposite);
 		targetComposite.dispose();
 
+		setMoveButtonsEnabled();
+
 		compositeOptions.layout();
 		compositeScrolledOptions.setMinSize(compositeOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+	}
+
+	/**
+	 * set the buttons move up and move down to enabled or disabled depending on their position in the list
+	 */
+	private void setMoveButtonsEnabled() {
+		for (CompositeSortableTextItem item : sortableTextItems) {
+			item.setMoveButtonsEnabled();
+		}
+		
+		if (sortableTextItems.size() == 1) {
+			sortableTextItems.get(0).setMoveButtonsEnabled(false, false);
+		} else if (sortableTextItems.size() > 1) {
+			sortableTextItems.get(0).setMoveButtonsEnabled(false, true);
+			sortableTextItems.get(sortableTextItems.size() - 1).setMoveButtonsEnabled(true, false);
+		}
 	}
 
 	public ArrayList<String> getElements() {

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.clafer.instance.InstanceClafer;
 import org.dom4j.Attribute;
@@ -207,11 +209,10 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 							System.out.println(xmlDocument.asXML());
 						}
 
-						getTagValueTagData().forEach((key, value) -> {
-							System.out.println(key + " " + value);
+						SortedSet<String> keys = new TreeSet<String>(getTagValueTagData().keySet());
+						for (String key : keys) {
+							System.out.println(key + " " + getTagValueTagData().get(key));
 						}
-						);
-
 
 						/*for (IWizardPage page : getWizard().getPages()) {
 							// get the Clafer creation page
@@ -271,6 +272,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					 */
 					private void processXMLDocument(Document xmlDocument) {
 						Element root = xmlDocument.getRootElement();
+						// send a slash as a parameter to keep the recursive method as generic as possible.
 						processElement(root, "", Constants.SLASH, true);
 					}
 
@@ -295,34 +297,20 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						tagDataForXSLDocument.append(Constants.SLASH);
 						tagDataForXSLDocument.append(xmlElement.getName());
 
+
+
 						int builderDisplayDataSizeTillRoot = tagNameToBeDisplayed.length();
 						int builderTagDataSizeTillRoot = tagDataForXSLDocument.length();
 
-						for (Iterator<Attribute> attribute = xmlElement.attributeIterator(); attribute.hasNext();) {
-							Attribute attributeData = attribute.next();
-							// TODO the name of the task can be fixed here based on what is chosen before.	
 
-							if (tagNameToBeDisplayed.length() > builderDisplayDataSizeTillRoot) {
-								tagNameToBeDisplayed.delete(builderDisplayDataSizeTillRoot, tagNameToBeDisplayed.length());
-							}
-
-							if (tagDataForXSLDocument.length() > builderTagDataSizeTillRoot) {
-								tagDataForXSLDocument.delete(builderTagDataSizeTillRoot, tagDataForXSLDocument.length());
-							}
-
-							tagNameToBeDisplayed.append(Constants.DOT);
-							tagNameToBeDisplayed.append(attributeData.getName());
-
-							tagDataForXSLDocument.append(Constants.ATTRIBUTE_BEGIN);
-							tagDataForXSLDocument.append(attributeData.getName());
-							tagDataForXSLDocument.append(Constants.ATTRIBUTE_END);
-
+						if (xmlElement.attributeCount() == 0 && !xmlElement.elementIterator().hasNext()) {
+							// adding the tag, if there are no attributes.
 							getTagValueTagData().put(tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString());
-						}
+						} else {
+							for (Iterator<Attribute> attribute = xmlElement.attributeIterator(); attribute.hasNext();) {
+								Attribute attributeData = attribute.next();
+								// TODO the name of the task can be fixed here based on what is chosen before.	
 
-						for (Iterator<Element> element = xmlElement.elementIterator(); element.hasNext();) {
-							Element currentElement = element.next();
-							if (!currentElement.getName().equals("Imports")) {
 								if (tagNameToBeDisplayed.length() > builderDisplayDataSizeTillRoot) {
 									tagNameToBeDisplayed.delete(builderDisplayDataSizeTillRoot, tagNameToBeDisplayed.length());
 								}
@@ -330,6 +318,31 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 								if (tagDataForXSLDocument.length() > builderTagDataSizeTillRoot) {
 									tagDataForXSLDocument.delete(builderTagDataSizeTillRoot, tagDataForXSLDocument.length());
 								}
+
+								tagNameToBeDisplayed.append(Constants.DOT);
+								tagNameToBeDisplayed.append("@" + attributeData.getName());
+
+								tagDataForXSLDocument.append(Constants.ATTRIBUTE_BEGIN);
+								tagDataForXSLDocument.append(attributeData.getName());
+								tagDataForXSLDocument.append(Constants.ATTRIBUTE_END);
+
+								getTagValueTagData().put(tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString());
+							}
+						}
+
+						for (Iterator<Element> element = xmlElement.elementIterator(); element.hasNext();) {
+							Element currentElement = element.next();
+							// do not consider the imports tag. The data is not relevant.
+							if (!currentElement.getName().equals("Imports")) {
+								if (tagNameToBeDisplayed.length() > builderDisplayDataSizeTillRoot) {
+									tagNameToBeDisplayed.delete(builderDisplayDataSizeTillRoot, tagNameToBeDisplayed.length());
+								}
+								if (isRoot || !xmlElement.elementIterator(currentElement.getName()).hasNext()) {
+									if (tagDataForXSLDocument.length() > builderTagDataSizeTillRoot) {
+										tagDataForXSLDocument.delete(builderTagDataSizeTillRoot, tagDataForXSLDocument.length());
+									}
+								}
+								// recursive call
 								processElement(currentElement, tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString(), false);
 							}
 						}

@@ -22,6 +22,7 @@ import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositePatternEnum;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositePatternOrderedEnum;
 
 public class ClaferFeaturePatternDialog extends Dialog {
 
@@ -113,7 +114,8 @@ public class ClaferFeaturePatternDialog extends Dialog {
 		} else if (selectedPattern.equals("Ordered Enumeration")) {
 			Activator.getDefault().logError("Feature not implemented yet");
 			System.out.println("Ordered enum selected");
-			//new ClaferFeaturePatternOrderedEnum(compositePatternDetails);
+			CompositePatternOrderedEnum compositePatternOrderedEnum = new CompositePatternOrderedEnum(compositePatternDetails);
+			compositePatternOrderedEnum.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		}
 
 		compositePatternDetails.layout();
@@ -153,6 +155,8 @@ public class ClaferFeaturePatternDialog extends Dialog {
 			for (StringBuilder sb : compositePatternEnum.getElements()) {
 				resultModel.add(new ClaferFeature(Constants.FeatureType.CONCRETE, sb.toString(), patternName));
 			}
+		} else if (compositePatternDetails.getChildren().length > 0 && compositePatternDetails.getChildren()[0] instanceof CompositePatternOrderedEnum) {
+			CompositePatternOrderedEnum compositePatternOrderedEnum = ((CompositePatternOrderedEnum) compositePatternDetails.getChildren()[0]);
 		}
 	}
 

@@ -18,12 +18,9 @@ public class CompositePatternOrderedEnum extends Composite {
 	
 	private ArrayList<CompositeSortableTextItem> sortableTextItems;
 
-	private ArrayList<StringBuilder> options;
-
 	public CompositePatternOrderedEnum(Composite parent) {
 		super(parent, SWT.NONE);
 		
-		options = new ArrayList<>();
 		sortableTextItems = new ArrayList<>();
 
 		setLayout(new GridLayout(1, false));
@@ -36,7 +33,6 @@ public class CompositePatternOrderedEnum extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				StringBuilder strOption = new StringBuilder();
-				options.add(strOption);
 
 				CompositeSortableTextItem compositeSortableTextItem = new CompositeSortableTextItem(compositeOptions);
 				compositeSortableTextItem.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -112,8 +108,14 @@ public class CompositePatternOrderedEnum extends Composite {
 		compositeScrolledOptions.setMinSize(compositeOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
-	public ArrayList<StringBuilder> getElements() {
-		return options;
+	public ArrayList<String> getElements() {
+		ArrayList<String> resultStrings = new ArrayList<>();
+
+		for (CompositeSortableTextItem refItem : sortableTextItems) {
+			resultStrings.add(refItem.getText());
+		}
+
+		return resultStrings;
 	}
 
 }

@@ -84,7 +84,7 @@ public class QuestionDialog extends Dialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new FillLayout(SWT.HORIZONTAL));
-		getShell().setMinimumSize(700, 400);
+		getShell().setMinimumSize(900, 400);
 		
 
 		TabFolder tabFolder = new TabFolder(container, SWT.NONE);
@@ -152,7 +152,7 @@ public class QuestionDialog extends Dialog {
 		compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton, null);
 		GridData gd_compositeToHoldAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 		gd_compositeToHoldAnswers.heightHint = 135;
-		gd_compositeToHoldAnswers.widthHint = 690;
+		gd_compositeToHoldAnswers.widthHint = 890;
 		compositeToHoldAnswers.setLayoutData(gd_compositeToHoldAnswers);
 		compositeToHoldAnswers.setLayout(new FillLayout(SWT.HORIZONTAL));
 		compositeToHoldAnswers.setVisible(false);
@@ -273,33 +273,34 @@ public class QuestionDialog extends Dialog {
 				ansLabel.setText("Answers");
 
 				Label lblForAlgorithm = new Label(groupHeaderClaferTab, SWT.NONE);
-				lblForAlgorithm.setBounds(140, 5, 130, 25);
+				lblForAlgorithm.setBounds(240, 5, 135, 25);
 				lblForAlgorithm.setText("Variability construct");
 
 				Label lblForOperand = new Label(groupHeaderClaferTab, SWT.NONE);
-				lblForOperand.setBounds(275, 5, 130, 25);
+				lblForOperand.setBounds(410, 5, 100, 25);
 				lblForOperand.setText("Property");
 
 				Label lblForValue = new Label(groupHeaderClaferTab, SWT.NONE);
-				lblForValue.setBounds(410, 5, 130, 25);
+				lblForValue.setBounds(520, 5, 130, 25);
 				lblForValue.setText("Operator");
 
 				Label lblForOperator = new Label(groupHeaderClaferTab, SWT.NONE);
-				lblForOperator.setBounds(545, 5, 130, 25);
+				lblForOperator.setBounds(655, 5, 130, 25);
 				lblForOperator.setText("Set Value");
 				
 				//widgets for answer and clafer depenedencies are added in ansScrollCompositeForClaferTab
 				CompositeToHoldSmallerUIElements ansScrollCompositeForClaferTab = new CompositeToHoldSmallerUIElements(compositeForClaferTab, SWT.NONE, null, false, null);
 				GridData gd_LinkCode = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 				gd_LinkCode.heightHint = 200;
-				gd_LinkCode.widthHint = 700;
+				gd_LinkCode.widthHint = 890;
 				ansScrollCompositeForClaferTab.setLayoutData(gd_LinkCode);
 				ansScrollCompositeForClaferTab.setLayout(new GridLayout(3, false));
 
 				for (Answer answer : question.getAnswers()) {
-					//To add the widgets and data inside ansScrollCompositeForClaferTab
-					ansScrollCompositeForClaferTab.addElementsInClaferTabQuestionDialog(answer, claferModel);
+					ansScrollCompositeForClaferTab.getListOfAllAnswer().add(answer);
 				}
+				//To add the widgets and data inside ansScrollCompositeForClaferTab
+				ansScrollCompositeForClaferTab.callAddElementsInClaferTabQuestionDialog(claferModel);
 
 			}
 		}

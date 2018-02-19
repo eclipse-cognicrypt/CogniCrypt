@@ -55,7 +55,7 @@
       "id": "2",
       "note": "",
       "element": "text",
-      "textType":"ip address",
+      "textType":"Ip address",
       "questionText": "Please enter the IP address of the server:",
       "answers": [{
         "value": "",
@@ -70,7 +70,7 @@
        "id": "3",
       "note": "",
       "element": "text",
-      "textType":"port number",
+      "textType":"Port number",
       "questionText": "Please enter the port number of the server:",
       "answers": [{
         "value": "",

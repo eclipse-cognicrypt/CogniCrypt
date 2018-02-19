@@ -74,7 +74,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	public void callToForbiddenMethod(final ClassSpecification arg0, final Statement location, final List<CryptSLMethod> alternatives) {
 		final StringBuilder msg = new StringBuilder();
 		msg.append("Call to forbidden method ");
-		msg.append(location.getMethod());
+		msg.append(location.getUnit().get().getInvokeExpr().getMethod().getDavaDeclaration());
 		if (!alternatives.isEmpty()) {
 			msg.append(". Instead, call to method ");
 			for (final CryptSLMethod alt : alternatives) {

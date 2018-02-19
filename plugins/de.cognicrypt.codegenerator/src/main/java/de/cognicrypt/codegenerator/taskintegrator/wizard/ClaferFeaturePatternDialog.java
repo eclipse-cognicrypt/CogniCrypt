@@ -26,6 +26,7 @@ import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositePatternEnum;
 public class ClaferFeaturePatternDialog extends Dialog {
 
 	private Composite compositePatternDetails;
+	private Combo comboPattern;
 	
 	private String patternName;
 	private ClaferModel resultModel;
@@ -53,7 +54,7 @@ public class ClaferFeaturePatternDialog extends Dialog {
 		lblPattern.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		lblPattern.setText("Pattern");
 
-		Combo comboPattern = new Combo(container, SWT.NONE);
+		comboPattern = new Combo(container, SWT.NONE);
 		comboPattern.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		comboPattern.add("Enumeration");
 		comboPattern.add("Ordered Enumeration");
@@ -63,23 +64,7 @@ public class ClaferFeaturePatternDialog extends Dialog {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				// TODO consider outsourcing patterns into a simple Map<String, PatternComposite>,
-				// where PatternComposite is an interface providing the appropriate getResult method
-				// TODO change to actually consider the name of the selected pattern
-				if (compositePatternDetails.getChildren().length > 0) {
-					compositePatternDetails.getChildren()[0].dispose();
-				}
-				if (comboPattern.getSelectionIndex() == 0) {
-					CompositePatternEnum compositePatternEnum = new CompositePatternEnum(compositePatternDetails);
-					compositePatternEnum.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-					System.out.println("Enum selected");
-				} else if (comboPattern.getSelectionIndex() == 1) {
-					Activator.getDefault().logError("Feature not implemented yet");
-					System.out.println("Ordered enum selected");
-					//new ClaferFeaturePatternOrderedEnum(compositePatternDetails);
-				}
-
-				compositePatternDetails.layout();
+				updatePatternDetailsComposite();
 			}
 			
 			@Override
@@ -108,7 +93,30 @@ public class ClaferFeaturePatternDialog extends Dialog {
 		compositePatternDetails.setLayout(new GridLayout(1, false));
 		compositePatternDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
+		updatePatternDetailsComposite();
+
 		return container;
+	}
+
+	private void updatePatternDetailsComposite() {
+		String selectedPattern = comboPattern.getText();
+
+		// TODO consider outsourcing patterns into a simple Map<String, PatternComposite>,
+		// where PatternComposite is an interface providing the appropriate getResult method
+		if (compositePatternDetails.getChildren().length > 0) {
+			compositePatternDetails.getChildren()[0].dispose();
+		}
+		if (selectedPattern.equals("Enumeration")) {
+			CompositePatternEnum compositePatternEnum = new CompositePatternEnum(compositePatternDetails);
+			compositePatternEnum.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+			System.out.println("Enum selected");
+		} else if (selectedPattern.equals("Ordered Enumeration")) {
+			Activator.getDefault().logError("Feature not implemented yet");
+			System.out.println("Ordered enum selected");
+			//new ClaferFeaturePatternOrderedEnum(compositePatternDetails);
+		}
+
+		compositePatternDetails.layout();
 	}
 
 	/**

@@ -14,6 +14,8 @@ import org.eclipse.swt.widgets.Text;
 public class CompositeSortableTextItem extends Composite {
 
 	private Text txtOption;
+	private Button btnUp;
+	private Button btnDown;
 
 	public CompositeSortableTextItem(Composite parent) {
 		super(parent, SWT.NONE);
@@ -23,7 +25,7 @@ public class CompositeSortableTextItem extends Composite {
 		txtOption = new Text(this, SWT.BORDER);
 		txtOption.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
-		Button btnUp = new Button(this, SWT.NONE);
+		btnUp = new Button(this, SWT.NONE);
 		btnUp.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		btnUp.setText("up");
 		btnUp.addSelectionListener(new SelectionListener() {
@@ -43,7 +45,7 @@ public class CompositeSortableTextItem extends Composite {
 			}
 		});
 
-		Button btnDown = new Button(this, SWT.NONE);
+		btnDown = new Button(this, SWT.NONE);
 		btnDown.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		btnDown.setText("down");
 		btnDown.addSelectionListener(new SelectionListener() {
@@ -87,6 +89,26 @@ public class CompositeSortableTextItem extends Composite {
 
 	public void setText(String text) {
 		txtOption.setText(text);
+	}
+
+	/**
+	 * enable both the move up and the move down button
+	 */
+	public void setMoveButtonsEnabled() {
+		setMoveButtonsEnabled(true, true);
+	}
+
+	/**
+	 * enable or disable the buttons move up and move down according to boolean flags
+	 * 
+	 * @param upEnabled
+	 *        desired state of the button move up
+	 * @param downEnabled
+	 *        desired state of the button move down
+	 */
+	public void setMoveButtonsEnabled(boolean upEnabled, boolean downEnabled) {
+		btnUp.setEnabled(upEnabled);
+		btnDown.setEnabled(downEnabled);
 	}
 
 }

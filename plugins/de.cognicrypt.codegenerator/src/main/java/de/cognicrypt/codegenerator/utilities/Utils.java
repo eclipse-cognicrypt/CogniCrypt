@@ -1,23 +1,3 @@
-/**
- * Copyright 2015-2017 Technische Universitaet Darmstadt
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- * @author Sarah Nadi
- *
- */
 package de.cognicrypt.codegenerator.utilities;
 
 import java.io.File;
@@ -40,6 +20,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISelectionService;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.Workbench;
@@ -61,13 +42,14 @@ public class Utils {
 	 */
 	public static boolean checkIfJavaProjectSelected() {
 		final IProject project = Utils.getIProjectFromSelection();
-		return (checkIfJavaProjectSelected(project));
+		return checkIfJavaProjectSelected(project);
 	}
 
 	/**
 	 * This method checks if a project passed as parameter is a Java project or not.
-	 * 
-	 * @param Iproject
+	 *
+	 * @param project
+	 *        project to be checked
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if project is Java project
 	 */
 	public static boolean checkIfJavaProjectSelected(final IProject project) {
@@ -78,7 +60,12 @@ public class Utils {
 		return true;
 	}
 
-	public static List<IProject> createListOfJavaProjectsInCurrentWorkspace() {
+	/**
+	 * Compiles a list of all Java Projects in the workspace.
+	 * 
+	 * @return List of Java Projects as {@link IProject}
+	 */
+	public static List<IProject> retrieveAllJavaProjectsInWorkspace() {
 		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		final List<IProject> javaProjects = new ArrayList<>();
 		if (projects.length > 0) {
@@ -88,8 +75,31 @@ public class Utils {
 				}
 			}
 		}
-
 		return javaProjects;
+	}
+
+	/**
+	 * This method returns the currently open page as an {@link IWorkbenchPage}.
+	 *
+	 * @return Current editor.
+	 */
+	public static IWorkbenchPage getCurrentlyOpenPage() {
+		final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		if (window != null) {
+			return window.getActivePage();
+		}
+		return null;
+	}
+
+	/** This method closes the currently open editor.
+	 * 
+	 * @param editor
+	 */
+	public static void closeEditor(IEditorPart editor) {
+		IWorkbenchPage workbenchPage = Utils.getCurrentlyOpenPage();
+		if (workbenchPage != null) {
+			workbenchPage.closeEditor(editor, true);
+		}
 	}
 
 	/**
@@ -106,7 +116,7 @@ public class Utils {
 	}
 
 	/**
-	 * Overload for {@link Utils#getCurrentlyOpenFile(IEditorPart) getCurrentlyOpenFile(IEditor part)}
+	 * Overload for {@link Utils#getCurrentlyOpenFile(IEditorPart) getCurrentlyOpenFile(IEditor part)}.
 	 *
 	 * @return Currently open file.
 	 *
@@ -133,20 +143,27 @@ public class Utils {
 		return null;
 	}
 
+	/**
+	 * Retrieves the current project. There are several options for what counts as the 'current' project. First, if CogniCrypt was started through context menu, the project
+	 * right-clicked is the current project. Second, if the currently opened file is a Java file, its project is returned. Third, if the currently selected project, is a Java
+	 * project, it is returned. If none of these conditions is fulfilled, <code>null</code> is returned.
+	 * 
+	 * @return Current project/<code>null</code> if project could be retrieved succesfully.
+	 */
 	public static IProject getCurrentProject() {
-		IProject currentProject = null;
+		final IProject selectedProject = Utils.getIProjectFromSelection();
 		if (Constants.WizardActionFromContextMenuFlag) {
-			currentProject = Utils.getIProjectFromSelection();
-		} else if (!Constants.WizardActionFromContextMenuFlag && (Utils.getCurrentlyOpenFile() != null && Utils.getCurrentlyOpenFile().getFileExtension()
-			.equalsIgnoreCase("java"))) {
-			currentProject = Utils.getCurrentlyOpenFile().getProject();
-		} else if (Utils.checkIfJavaProjectSelected()) {
-			currentProject = Utils.getIProjectFromSelection();
+			return selectedProject;
 		} else {
-			currentProject = null;
+			final IFile currentlyOpenFile = Utils.getCurrentlyOpenFile();
+			if (currentlyOpenFile != null && currentlyOpenFile.getFileExtension().equalsIgnoreCase("java")) {
+				return currentlyOpenFile.getProject();
+			} else if (Utils.checkIfJavaProjectSelected(selectedProject)) {
+				return selectedProject;
+			} else {
+				return null;
+			}
 		}
-
-		return currentProject;
 	}
 
 	/**
@@ -158,22 +175,21 @@ public class Utils {
 		final ISelectionService selectionService = Workbench.getInstance().getActiveWorkbenchWindow().getSelectionService();
 		final ISelection selection = selectionService.getSelection();
 
-		IProject iproject = null;
 		if (selection instanceof IStructuredSelection) {
 			final Object element = ((IStructuredSelection) selection).getFirstElement();
 			if (element instanceof IResource) {
-				iproject = ((IResource) element).getProject();
+				return ((IResource) element).getProject();
 			} else if (element instanceof IJavaElement) {
 				final IJavaProject jProject = ((IJavaElement) element).getJavaProject();
-				iproject = jProject.getProject();
+				return jProject.getProject();
 			}
 		}
-		return iproject;
+		return null;
 	}
 
-	/***
+	/**
 	 * This method returns absolute path of a project-relative path.
-	 * 
+	 *
 	 * @param inputPath
 	 *        project-relative path
 	 * @return absolute path

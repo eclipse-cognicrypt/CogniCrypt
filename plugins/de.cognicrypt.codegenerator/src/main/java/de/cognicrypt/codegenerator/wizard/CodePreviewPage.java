@@ -87,7 +87,7 @@ public class CodePreviewPage extends WizardPage {
 		final Font Styledfont = new Font(this.codePreviewPanel.getDisplay(), new FontData("Courier New", 10, SWT.WRAP ));
 		this.code.setFont(Styledfont);
 		//Parsing the block comments to highlight them in the code preview		
-		lineStyler.parseBlockComments(instanceListPage.getCodePreview());
+		lineStyler.parseBlockComments(instanceListPage.compileCodePreview());
 		//syntax highlighting in the code preview
 		this.code.addLineStyleListener(lineStyler);
 		//setting the background color of the code
@@ -99,10 +99,10 @@ public class CodePreviewPage extends WizardPage {
 		displayedCode.asyncExec(new Runnable() {
 
 			public void run() {
-				code.setText(instanceListPage.getCodePreview());
+				code.setText(instanceListPage.compileCodePreview());
 			}
 		});
-		this.code.setText(instanceListPage.getCodePreview());
+		this.code.setText(instanceListPage.compileCodePreview());
 		this.code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
 
 		sc.setContent(this.control);

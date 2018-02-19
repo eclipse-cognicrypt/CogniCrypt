@@ -32,8 +32,6 @@ public class CompositePatternOrderedEnum extends Composite {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				StringBuilder strOption = new StringBuilder();
-
 				CompositeSortableTextItem compositeSortableTextItem = new CompositeSortableTextItem(compositeOptions);
 				compositeSortableTextItem.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 

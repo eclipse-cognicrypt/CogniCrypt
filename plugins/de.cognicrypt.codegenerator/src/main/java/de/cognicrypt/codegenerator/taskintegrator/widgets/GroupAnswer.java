@@ -35,7 +35,7 @@ public class GroupAnswer extends Group {
 		if (answer.getValue() != null) {
 			txtAnswer.setText(answer.getValue());
 		}
-		txtAnswer.setBounds(3, 3, 406, 29);
+		txtAnswer.setBounds(3, 3, 606, 29);
 
 		txtAnswer.addFocusListener(new FocusAdapter() {
 
@@ -46,7 +46,7 @@ public class GroupAnswer extends Group {
 		});
 
 		Button defaultAnswer = new Button(this, SWT.RADIO);
-		defaultAnswer.setBounds(413, 3, 128, 31);
+		defaultAnswer.setBounds(613, 3, 128, 31);
 		ArrayList<Button> btnList = ((CompositeToHoldSmallerUIElements) defaultAnswer.getParent().getParent().getParent()).getDefaulAnswerBtnList();
 		btnList.add(defaultAnswer);
 		defaultAnswer.setText("Default Answer");
@@ -83,7 +83,7 @@ public class GroupAnswer extends Group {
 
 		if (showRemoveButton) {
 			Button btnRemove = new Button(this, SWT.NONE);
-			btnRemove.setBounds(547, 3, 80, 31);
+			btnRemove.setBounds(746, 3, 80, 31);
 			btnRemove.setText("Remove");
 			btnRemove.addSelectionListener(new SelectionAdapter() {
 

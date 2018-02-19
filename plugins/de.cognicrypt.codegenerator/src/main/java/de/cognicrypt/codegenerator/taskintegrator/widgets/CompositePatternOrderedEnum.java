@@ -15,12 +15,12 @@ public class CompositePatternOrderedEnum extends Composite {
 
 	private Composite compositeOptions;
 	private ScrolledComposite compositeScrolledOptions;
-	
+
 	private ArrayList<CompositeSortableTextItem> sortableTextItems;
 
 	public CompositePatternOrderedEnum(Composite parent) {
 		super(parent, SWT.NONE);
-		
+
 		sortableTextItems = new ArrayList<>();
 
 		setLayout(new GridLayout(1, false));
@@ -62,14 +62,14 @@ public class CompositePatternOrderedEnum extends Composite {
 
 	private int getItemPosition(CompositeSortableTextItem needleItem) {
 		int index = -1;
-		
-		for (int i=0; i < sortableTextItems.size(); i++) {
+
+		for (int i = 0; i < sortableTextItems.size(); i++) {
 			CompositeSortableTextItem refComposite = sortableTextItems.get(i);
 			if (refComposite == needleItem) {
 				index = i;
 			}
 		}
-		
+
 		return index;
 	}
 
@@ -86,7 +86,7 @@ public class CompositePatternOrderedEnum extends Composite {
 		if (targetIndex == -1 || targetIndex == 0) {
 			return;
 		}
-		
+
 		swapTexts(targetIndex, targetIndex - 1);
 		setMoveButtonsEnabled();
 	}

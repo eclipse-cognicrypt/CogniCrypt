@@ -15,20 +15,11 @@
             </separator>
          </menu>
          <action
-               class="de.cognicrypt.codegenerator.taskintegrator.actions.WizardAction"
-               icon="icons/cognicrypt.png"
-               id="de.cognicrypt.codegenerator.taskintegrator.actions.WizardAction"
-               label="&amp;Start Task Integration"
-               menubarPath="CogniCryptGroup"
-               toolbarPath="CogniCryptGroup"
-               tooltip="Integrate a Cryptographic Task into CogniCrypt">
-         </action>
-         <action
                class="de.cognicrypt.codegenerator.actions.WizardAction"
                icon="icons/cognicrypt.png"
                id="de.cognicrypt.codegenerator.actions.WizardAction"
                label="&amp;Start Code Generation"
-               menubarPath="CogniCryptGroup"
+               menubarPath="CogniCryptMenu/CogniCryptGroup"
                toolbarPath="CogniCryptGroup"
                tooltip="Generate Code For Cryptographic Task">
          </action>
@@ -197,6 +188,14 @@
       <toc file="toc_Tasks.xml" />
       <toc file="toc_TaskConfiguration.xml" />
    </extension>
+<extension
+      id="CogniCrypt"
+      point="org.eclipse.core.runtime.products">
+   <product
+         application="org.eclipse.ui.ide.workbench"
+         name="CogniCrypt">
+   </product>
+</extension>
  
      
 </plugin>

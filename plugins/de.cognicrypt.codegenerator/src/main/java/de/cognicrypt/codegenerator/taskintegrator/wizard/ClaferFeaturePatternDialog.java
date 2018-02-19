@@ -1,19 +1,15 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
-import java.util.ArrayList;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -21,24 +17,24 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositePatternEnum;
 
 public class ClaferFeaturePatternDialog extends Dialog {
 
-	private Composite compositeOptions;
-	private ScrolledComposite compositeScrolledOptions;
+	private Composite compositePatternDetails;
 	
 	private String patternName;
-	private ArrayList<StringBuilder> options;
+	private ClaferModel resultModel;
 
 	public ClaferFeaturePatternDialog(Shell parentShell) {
 		super(parentShell);
 		setShellStyle(SWT.RESIZE | SWT.CLOSE);
 
 		patternName = "";
-		options = new ArrayList<>();
 	}
 
 	/**
@@ -63,6 +59,36 @@ public class ClaferFeaturePatternDialog extends Dialog {
 		comboPattern.add("Ordered Enumeration");
 		comboPattern.select(0);
 
+		comboPattern.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				// TODO consider outsourcing patterns into a simple Map<String, PatternComposite>,
+				// where PatternComposite is an interface providing the appropriate getResult method
+				// TODO change to actually consider the name of the selected pattern
+				if (compositePatternDetails.getChildren().length > 0) {
+					compositePatternDetails.getChildren()[0].dispose();
+				}
+				if (comboPattern.getSelectionIndex() == 0) {
+					CompositePatternEnum compositePatternEnum = new CompositePatternEnum(compositePatternDetails);
+					compositePatternEnum.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+					System.out.println("Enum selected");
+				} else if (comboPattern.getSelectionIndex() == 1) {
+					Activator.getDefault().logError("Feature not implemented yet");
+					System.out.println("Ordered enum selected");
+					//new ClaferFeaturePatternOrderedEnum(compositePatternDetails);
+				}
+
+				compositePatternDetails.layout();
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+
 		Label lblName = new Label(container, SWT.NONE);
 		lblName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		lblName.setText("Name");
@@ -78,62 +104,9 @@ public class ClaferFeaturePatternDialog extends Dialog {
 			}
 		});
 
-		Button btnAddOption = new Button(container, SWT.NONE);
-		btnAddOption.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
-		btnAddOption.setText("Add option");
-		btnAddOption.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				StringBuilder strOption = new StringBuilder();
-				options.add(strOption);
-
-				Text txtOption = new Text(compositeOptions, SWT.BORDER);
-				txtOption.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-				txtOption.addModifyListener(new ModifyListener() {
-
-					@Override
-					public void modifyText(ModifyEvent arg0) {
-						strOption.delete(0, strOption.length());
-						strOption.append(txtOption.getText());
-
-					}
-				});
-
-				Button btnRemove = new Button(compositeOptions, SWT.NONE);
-				btnRemove.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
-				btnRemove.setText("Remove");
-				btnRemove.addSelectionListener(new SelectionAdapter() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						txtOption.dispose();
-						btnRemove.dispose();
-						options.remove(strOption);
-
-						compositeOptions.layout();
-						super.widgetSelected(e);
-					}
-				});
-
-				compositeOptions.layout();
-				compositeScrolledOptions.setMinSize(compositeOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-				super.widgetSelected(e);
-			}
-		});
-
-		compositeScrolledOptions = new ScrolledComposite(container, SWT.BORDER | SWT.V_SCROLL);
-		compositeScrolledOptions.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		compositeScrolledOptions.setLayout(new GridLayout(1, false));
-
-		compositeOptions = new Composite(compositeScrolledOptions, SWT.NONE);
-		compositeOptions.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		compositeOptions.setLayout(new GridLayout(2, false));
-		compositeScrolledOptions.setContent(compositeOptions);
-
-		compositeScrolledOptions.setExpandHorizontal(true);
-		compositeScrolledOptions.setExpandVertical(true);
-		compositeScrolledOptions.setMinSize(compositeOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		compositePatternDetails = new Composite(container, SWT.NONE);
+		compositePatternDetails.setLayout(new GridLayout(1, false));
+		compositePatternDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
 		return container;
 	}
@@ -156,13 +129,26 @@ public class ClaferFeaturePatternDialog extends Dialog {
 		return new Point(800, 700);
 	}
 
-	public ClaferModel getResultModel() {
-		ClaferModel resultModel = new ClaferModel();
-		resultModel.add(new ClaferFeature(Constants.FeatureType.ABSTRACT, patternName, "Enum"));
-		for (StringBuilder sb : options) {
-			resultModel.add(new ClaferFeature(Constants.FeatureType.CONCRETE, sb.toString(), patternName));
-		}
+	@Override
+	protected void okPressed() {
+		saveResultModel();
+		super.okPressed();
+	}
 
+	private void saveResultModel() {
+		resultModel = new ClaferModel();
+
+		if (compositePatternDetails.getChildren().length > 0 && compositePatternDetails.getChildren()[0] instanceof CompositePatternEnum) {
+			CompositePatternEnum compositePatternEnum = ((CompositePatternEnum) compositePatternDetails.getChildren()[0]);
+
+			resultModel.add(new ClaferFeature(Constants.FeatureType.ABSTRACT, patternName, "Enum"));
+			for (StringBuilder sb : compositePatternEnum.getElements()) {
+				resultModel.add(new ClaferFeature(Constants.FeatureType.CONCRETE, sb.toString(), patternName));
+			}
+		}
+	}
+
+	public ClaferModel getResultModel() {
 		return resultModel;
 	}
 

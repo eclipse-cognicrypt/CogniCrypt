@@ -27,7 +27,12 @@ public class GroupForCodeTab extends Group {
 		Text txtOption = new Text(this, SWT.BORDER);
 		txtOption.setBounds(220, 5, 200, 25);
 		txtOption.setVisible(true);
-		
+		txtOption.setEditable(false);
+		if(answer.getValue().length()>20){
+			txtOption.setText(answer.getValue().substring(0,30)+"....");
+		}else{
+			txtOption.setText(answer.getValue());
+		}
 		//Code dependency text field
 		Text txtValue = new Text(this, SWT.BORDER);
 		txtValue.setBounds(425,5, 200, 25);

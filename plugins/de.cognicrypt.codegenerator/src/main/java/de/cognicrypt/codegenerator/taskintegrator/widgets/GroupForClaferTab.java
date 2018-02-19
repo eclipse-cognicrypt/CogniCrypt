@@ -7,6 +7,7 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -24,140 +25,182 @@ public class GroupForClaferTab extends Group {
 	private String featureSelected;
 	private ArrayList<String> operandItems;
 	private ClaferModel claferModel;
+	private int lowestWidgetYAxisValue = 5;
+	private ArrayList<ClaferDependency> claferDependencies;
 
 	// FIXME the parameter claferModel seems to be unused
-	public GroupForClaferTab(Composite parent, int style, Answer answer, ClaferModel claferModel) {
+	public GroupForClaferTab(Composite parent, int style, Answer answer, ClaferModel claferModel, boolean showClaferWidgets) {
 		super(parent, style);
 		setClaferModel(claferModel);
+
 		//Non-editable Text Box shows the answer value
 		Text txtBoxCurrentAnswer = new Text(this, SWT.BORDER);
 		txtBoxCurrentAnswer.setBounds(5, 5, 120, 25);
 		txtBoxCurrentAnswer.setEditable(false);
 		txtBoxCurrentAnswer.setText(answer.getValue());
 
-		//Combo for displaying all the features created in Clafer page
-		Combo comboForAlgorithm = new Combo(this, SWT.READ_ONLY);
-		comboForAlgorithm.setBounds(130, 5, 130, 25);
-		comboForAlgorithm.add("none");
-		// FIXME handle the claferFeatures == null case properly
-		if (claferModel != null) {
-			for (ClaferFeature claferFeature : claferModel) {
-				//add the claferFeature only if it has properties
-				if (claferFeature.hasProperties()) {
-					comboForAlgorithm.add(claferFeature.getFeatureName());
+		//Add Clafer Dependencies button
+		Button addMore = new Button(this, SWT.None);
+		addMore.setBounds(130, 5, 100, 25);
+		addMore.setText("Add");
+
+		addMore.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ClaferDependency cd = new ClaferDependency();
+				if (!showClaferWidgets && answer.getClaferDependencies()==null) {
+					ArrayList<ClaferDependency> claferDependencies = new ArrayList<>();
+					answer.setClaferDependencies(claferDependencies);
 				}
+				answer.getClaferDependencies().add(cd);
+				((CompositeToHoldSmallerUIElements) addMore.getParent().getParent().getParent()).updateClaferTab(claferModel, answer);
 			}
-		}
+		});
 
-		// Shows list of properties specific to selected feature or algo 
-
-		Combo comboForOperand = new Combo(this, SWT.NONE);
-		comboForOperand.setVisible(true);
-		comboForOperand.setBounds(265, 5, 130, 25);
-
-		//Combo containing all the operators
-		Combo comboForOperator = new Combo(this, SWT.READ_ONLY);
-		comboForOperator.setBounds(400, 5, 110, 25);
-		comboForOperator.setItems("(" + Constants.FeatureConstraintRelationship.EQUAL.toString() + ")" + "Equal",
-			"(" + Constants.FeatureConstraintRelationship.NOTEQUAL.toString() + ")" + "NOTEQUAL",
-			"(" + Constants.FeatureConstraintRelationship.LESSTHAN.toString() + ")" + "LESSTHAN",
-			"(" + Constants.FeatureConstraintRelationship.GREATERTHAN.toString() + ")" + "GREATERTHAN",
-			"(" + Constants.FeatureConstraintRelationship.LESSTHANEQUALTO.toString() + ")" + "LESSTHANEQUALTO",
-			"(" + Constants.FeatureConstraintRelationship.GREATERTHANEQUALTO.toString() + ")" + "GREATERTHANEQUALTO",
-			"(" + Constants.FeatureConstraintRelationship.AND.toString() + ")" + "AND", "(" + Constants.FeatureConstraintRelationship.OR.toString() + ")" + "OR");
-
-		//To retrieve value from the user
-		Text txtBoxValue = new Text(this, SWT.BORDER);
-		txtBoxValue.setBounds(515, 5, 120, 25);
-
-		ClaferDependency claferDependency = new ClaferDependency();
-
-		/*
-		 * To display the details of clafer dependencies stored for each answer when the clafer tab is reselected
+		/**
+		 * executes when showClaferWidgets value is true or the list of clafer dependencies is not null
 		 */
-		if (answer.getClaferDependencies() != null) {
-			for (ClaferDependency cf : answer.getClaferDependencies()) {
-				if (cf.getAlgorithm() != null) {
-					comboForAlgorithm.setText(cf.getAlgorithm());
-					claferDependency.setAlgorithm(comboForAlgorithm.getText());
+		if (showClaferWidgets || answer.getClaferDependencies() != null) {
+
+			for (ClaferDependency claferDependency : answer.getClaferDependencies()) {
+				Group claferWidgets = new Group(this, SWT.NONE);
+				claferWidgets.setBounds(235, getLowestWidgetYAxisValue(), 655, 34);
+				
+				//Combo for displaying all the features created in Clafer page
+				Combo comboForAlgorithm = new Combo(claferWidgets, SWT.READ_ONLY);
+				comboForAlgorithm.setBounds(0, 0, 135, 25);
+
+				if (claferModel != null) {
+					for (ClaferFeature claferFeature : claferModel) {
+						//add the claferFeature only if it has properties
+						if (claferFeature.hasProperties()) {
+							comboForAlgorithm.add(claferFeature.getFeatureName());
+						}
+					}
 				}
-				if (cf.getOperand() != null) {
-					comboForOperand.setText(cf.getOperand());
-					claferDependency.setOperand(comboForOperand.getText());
+
+				// Shows list of properties specific to selected feature 
+				Combo comboForOperand = new Combo(claferWidgets, SWT.NONE);
+				comboForOperand.setVisible(true);
+				comboForOperand.setBounds(140, 0, 130, 25);
+
+				//Combo containing all the operators
+				Combo comboForOperator = new Combo(claferWidgets, SWT.READ_ONLY);
+				comboForOperator.setBounds(275, 0, 110, 25);
+				comboForOperator.setItems("(" + Constants.FeatureConstraintRelationship.EQUAL.toString() + ")" + "Equal",
+					"(" + Constants.FeatureConstraintRelationship.NOTEQUAL.toString() + ")" + "NOTEQUAL",
+					"(" + Constants.FeatureConstraintRelationship.LESSTHAN.toString() + ")" + "LESSTHAN",
+					"(" + Constants.FeatureConstraintRelationship.GREATERTHAN.toString() + ")" + "GREATERTHAN",
+					"(" + Constants.FeatureConstraintRelationship.LESSTHANEQUALTO.toString() + ")" + "LESSTHANEQUALTO",
+					"(" + Constants.FeatureConstraintRelationship.GREATERTHANEQUALTO.toString() + ")" + "GREATERTHANEQUALTO",
+					"(" + Constants.FeatureConstraintRelationship.AND.toString() + ")" + "AND", "(" + Constants.FeatureConstraintRelationship.OR.toString() + ")" + "OR");
+
+				//To retrieve value from the user
+				Text txtBoxValue = new Text(claferWidgets, SWT.BORDER);
+				txtBoxValue.setBounds(390, 0, 120, 25);
+				
+				//Upon click the button removes the current ClaferDependency
+				Button btnRemove = new Button(claferWidgets, SWT.None);
+				btnRemove.setBounds(515, 0, 100, 25);
+				btnRemove.setText("Remove");
+				btnRemove.addSelectionListener(new SelectionAdapter() {
+
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						//	answer.getClaferDependencies().remove(claferDependency);
+						((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent().getParent()).deleteClaferDependency(answer, claferDependency,
+							claferModel);
+					}
+				});
+
+				/*
+				 * To display the details of clafer dependencies stored for each answer
+				 */
+				if (claferDependency != null) {
+					if (claferDependency.getAlgorithm() != null) {
+						comboForAlgorithm.setText(claferDependency.getAlgorithm());
+						claferDependency.setAlgorithm(comboForAlgorithm.getText());
+					}
+					if (claferDependency.getOperand() != null) {
+						comboForOperand.setText(claferDependency.getOperand());
+						claferDependency.setOperand(comboForOperand.getText());
+					}
+					if (claferDependency.getOperator() != null) {
+						comboForOperator.setText(claferDependency.getOperator());
+						claferDependency.setOperator(comboForOperator.getText());
+					}
+					if (claferDependency.getValue() != null) {
+						txtBoxValue.setText(claferDependency.getValue());
+						claferDependency.setValue(txtBoxValue.getText());
+					}
+
 				}
-				if (cf.getOperator() != null) {
-					comboForOperator.setText(cf.getOperator());
-					claferDependency.setOperator(comboForOperator.getText());
+
+				//adding the items to comboForOperand box depending on the comboForAlgorithm box value 
+				if (comboForAlgorithm.getText() != null) {
+					operandItems = new ArrayList<String>();
+					ArrayList<String> operandToAdd = itemsToAdd(comboForAlgorithm.getText());
+					for (int i = 0; i < operandToAdd.size(); i++) {
+						comboForOperand.add(operandToAdd.get(i));
+					}
+
 				}
-				if (cf.getValue() != null) {
-					txtBoxValue.setText(cf.getValue());
-					claferDependency.setValue(txtBoxValue.getText());
-				}
+
+				//set the clafer dependency operand field depending upon the selected feature
+				comboForAlgorithm.addSelectionListener(new SelectionAdapter() {
+
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						featureSelected = comboForAlgorithm.getText();
+						comboForOperand.removeAll();
+						operandItems = new ArrayList<String>();
+						ArrayList<String> operandToAdd = itemsToAdd(featureSelected);
+						for (int i = 0; i < operandToAdd.size(); i++) {
+							comboForOperand.add(operandToAdd.get(i));
+						}
+						//to remove the previous operand selected as value of comboForlgorithm is changed
+						if (answer.getClaferDependencies() != null) {
+							comboForOperand.setText("");
+							claferDependency.setOperand(comboForOperand.getText());
+
+						}
+						claferDependency.setAlgorithm(featureSelected);
+					}
+				});
+
+				//set the clafer dependency operand field depending upon the operand/property selected
+				comboForOperand.addSelectionListener(new SelectionAdapter() {
+
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						claferDependency.setOperand(comboForOperand.getText());
+					}
+				});
+				//set the clafer dependency operator field 
+				comboForOperator.addSelectionListener(new SelectionAdapter() {
+
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						claferDependency.setOperator(comboForOperator.getText());
+					}
+				});
+				//set the clafer dependency value field
+				txtBoxValue.addFocusListener(new FocusAdapter() {
+
+					@Override
+					public void focusLost(FocusEvent e) {
+						claferDependency.setValue(txtBoxValue.getText());
+					}
+				});
+
+				setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 34);
 			}
+
 		}
-
-		//adding the items to comboForOperand box depending on the comboForAlgorithm box value 
-		if (comboForAlgorithm.getText() != null) {
-			operandItems = new ArrayList<String>();
-			ArrayList<String> operandToAdd = itemsToAdd(comboForAlgorithm.getText());
-			for (int i = 0; i < operandToAdd.size(); i++) {
-				comboForOperand.add(operandToAdd.get(i));
-			}
-
-		}
-
-		//set the clafer dependency operand field depending upon the selected feature
-		comboForAlgorithm.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				featureSelected = comboForAlgorithm.getText();
-				comboForOperand.removeAll();
-				operandItems = new ArrayList<String>();
-				ArrayList<String> operandToAdd = itemsToAdd(featureSelected);
-				for (int i = 0; i < operandToAdd.size(); i++) {
-					comboForOperand.add(operandToAdd.get(i));
-				}
-				//to remove the previous operand selected as value of comboForlgorithm is changed
-				if (answer.getClaferDependencies() != null) {
-					comboForOperand.setText("");
-					claferDependency.setOperand(comboForOperand.getText());
-
-				}
-				claferDependency.setAlgorithm(featureSelected);
-			}
-		});
-
-		//set the clafer dependency operand field depending upon the operand/property selected
-		comboForOperand.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				claferDependency.setOperand(comboForOperand.getText());
-			}
-		});
-		//set the clafer dependency operator field 
-		comboForOperator.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				claferDependency.setOperator(comboForOperator.getText());
-			}
-		});
-		//set the clafer dependency value field
-		txtBoxValue.addFocusListener(new FocusAdapter() {
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				claferDependency.setValue(txtBoxValue.getText());
-			}
-		});
-
-		ArrayList<ClaferDependency> listOfClaferDependencies = new ArrayList<ClaferDependency>();
-		listOfClaferDependencies.add(claferDependency);
-		answer.setClaferDependencies(listOfClaferDependencies);
 
 	}
+
 
 	/**
 	 * @param featureSelected
@@ -195,6 +238,22 @@ public class GroupForClaferTab extends Group {
 	@Override
 	protected void checkSubclass() {
 		// To disable the check that prevents subclassing of SWT components
+	}
+
+	public int getLowestWidgetYAxisValue() {
+		return lowestWidgetYAxisValue;
+	}
+
+	public void setLowestWidgetYAxisValue(int lowestWidgetYAxisValue) {
+		this.lowestWidgetYAxisValue = lowestWidgetYAxisValue + 5;
+	}
+
+	public ArrayList<ClaferDependency> getClaferDependencies() {
+		return claferDependencies;
+	}
+
+	public void setClaferDependencies(ArrayList<ClaferDependency> claferDependencies) {
+		this.claferDependencies = claferDependencies;
 	}
 
 }

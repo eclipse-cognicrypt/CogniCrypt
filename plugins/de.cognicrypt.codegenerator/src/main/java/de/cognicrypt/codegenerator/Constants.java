@@ -387,8 +387,8 @@ public class Constants {
 		
 	}
 	
-	public static final String DOUBLE_SLASH = "//";
-	public static final String ATTRIBUTE_BEGIN = "/[@";
+	public static final String SLASH = "/";
+	public static final String ATTRIBUTE_BEGIN = "[@";
 	public static final String ATTRIBUTE_END = "=\'\']";
 	public static final String DOT = ".";
 

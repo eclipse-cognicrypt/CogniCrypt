@@ -267,53 +267,99 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 					}
 
+					/**
+					 * 
+					 * @param xmlDocument
+					 */
 					private void processXMLDocument(Document xmlDocument) {
 						Element root = xmlDocument.getRootElement();
-						StringBuilder tagNameToBeDisplayed = new StringBuilder();
-						StringBuilder tagDataForXSLDocument = new StringBuilder();
 
-						for (Iterator<Attribute> attribute = root.attributeIterator(); attribute.hasNext();) {
-							Attribute attributeData = attribute.next();
-							// TODO the name of the task can be fixed here based on what is chosen before.							
-							tagNameToBeDisplayed.append(root.getName());
-							tagNameToBeDisplayed.append(Constants.DOT);
-							tagNameToBeDisplayed.append(attributeData.getName());
-							tagDataForXSLDocument.append(Constants.DOUBLE_SLASH);
-							tagDataForXSLDocument.append(root.getName());
-							tagDataForXSLDocument.append(Constants.ATTRIBUTE_BEGIN);
-							tagDataForXSLDocument.append(attributeData.getName());
-							tagDataForXSLDocument.append(Constants.ATTRIBUTE_END);
-
-							getTagValueTagData().put(tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString());
-						}
+						processElement(root, "", Constants.SLASH, true);
 
 						for (Iterator<Element> element = root.elementIterator("algorithm"); element.hasNext();) {
-							Element algorithmNode = element.next();
-							tagNameToBeDisplayed = new StringBuilder();
-							tagDataForXSLDocument = new StringBuilder();
+							Element algorithmElement = element.next();
+
+							StringBuilder tagNameToBeDisplayed = new StringBuilder();
+							StringBuilder tagDataForXSLDocument = new StringBuilder();
+
+							tagDataForXSLDocument.append(Constants.SLASH);
+							tagDataForXSLDocument.append(root.getName());
+
 							tagNameToBeDisplayed.append(root.getName());
-							tagNameToBeDisplayed.append(Constants.DOT);
+
+							processElement(algorithmElement, tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString(), false);
+							
+							/*tagNameToBeDisplayed.append(Constants.DOT);
 							tagNameToBeDisplayed.append(algorithmNode.getName());
-							int builderDisplayDataSize = tagNameToBeDisplayed.length();
-							int builderTagDataSize = tagDataForXSLDocument.length();
 
 							for (Iterator<Attribute> attribute = root.attributeIterator(); attribute.hasNext();) {
 								Attribute attributeData = attribute.next();
-								tagNameToBeDisplayed.delete(builderDisplayDataSize, tagNameToBeDisplayed.length());
-								tagDataForXSLDocument.delete(builderTagDataSize, tagDataForXSLDocument.length());
+								tagNameToBeDisplayed.delete(builderDisplayDataSizeTillRoot, tagNameToBeDisplayed.length());
+								tagDataForXSLDocument.delete(builderTagDataSizeTillRoot, tagDataForXSLDocument.length());
+
 								tagNameToBeDisplayed.append(Constants.DOT);
 								tagNameToBeDisplayed.append(attributeData.getName());
-								tagDataForXSLDocument.append(Constants.DOUBLE_SLASH);
+
+								tagDataForXSLDocument.append(Constants.SLASH);
+								tagDataForXSLDocument.append(Constants.SLASH);
 								tagDataForXSLDocument.append(root.getName());
-								tagDataForXSLDocument.append(Constants.DOUBLE_SLASH);
+								tagDataForXSLDocument.append(Constants.SLASH);
 								tagDataForXSLDocument.append(algorithmNode.getName());
 								tagDataForXSLDocument.append(Constants.ATTRIBUTE_BEGIN);
 								tagDataForXSLDocument.append(attributeData.getName());
 								tagDataForXSLDocument.append(Constants.ATTRIBUTE_END);
 
 								getTagValueTagData().put(tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString());
+							}*/
+
+						}
+
+					}
+
+					/**
+					 * 
+					 * @param xmlElement
+					 * @param existingNameToBeDisplayed
+					 * @param existingDataForXSLDocument
+					 * @param isRoot
+					 */
+					private void processElement(Element xmlElement, String existingNameToBeDisplayed, String existingDataForXSLDocument, boolean isRoot) {
+						StringBuilder tagNameToBeDisplayed = new StringBuilder();
+						StringBuilder tagDataForXSLDocument = new StringBuilder();
+
+						tagNameToBeDisplayed.append(existingNameToBeDisplayed);
+						tagDataForXSLDocument.append(existingDataForXSLDocument);
+
+						if (!isRoot) {
+							tagNameToBeDisplayed.append(Constants.DOT);
+						}
+						tagNameToBeDisplayed.append(xmlElement.getName());
+						tagDataForXSLDocument.append(Constants.SLASH);
+						tagDataForXSLDocument.append(xmlElement.getName());
+
+						int builderDisplayDataSizeTillRoot = tagNameToBeDisplayed.length();
+						int builderTagDataSizeTillRoot = tagDataForXSLDocument.length();
+
+						for (Iterator<Attribute> attribute = xmlElement.attributeIterator(); attribute.hasNext();) {
+							Attribute attributeData = attribute.next();
+							// TODO the name of the task can be fixed here based on what is chosen before.	
+
+							if (tagNameToBeDisplayed.length() > builderDisplayDataSizeTillRoot) {
+								tagNameToBeDisplayed.delete(builderDisplayDataSizeTillRoot, tagNameToBeDisplayed.length());
 							}
 
+							if (tagDataForXSLDocument.length() > builderTagDataSizeTillRoot) {
+								tagDataForXSLDocument.delete(builderTagDataSizeTillRoot, tagDataForXSLDocument.length());
+							}
+
+							tagNameToBeDisplayed.append(Constants.DOT);
+							tagNameToBeDisplayed.append(attributeData.getName());
+
+							tagDataForXSLDocument.append(Constants.ATTRIBUTE_BEGIN);
+							tagDataForXSLDocument.append(attributeData.getName());
+							tagDataForXSLDocument.append(Constants.ATTRIBUTE_END);
+
+							getTagValueTagData().put(tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString());
 						}
 
 					}

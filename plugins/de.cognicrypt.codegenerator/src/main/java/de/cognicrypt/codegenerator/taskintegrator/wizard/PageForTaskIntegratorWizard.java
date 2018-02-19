@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.clafer.instance.InstanceClafer;
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.eclipse.jface.window.Window;
@@ -56,14 +57,19 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	int counter = 0;// TODO for testing only.
 	protected ArrayList<ClaferFeature> cfrFeatures;
 
+	private HashMap<String, String> tagValueTagData;
+
+
 	/**
 	 * Create the wizard.
 	 */
 	public PageForTaskIntegratorWizard(String name, String title, String description) {
 		super(name);
 		setTitle(title);
-		setDescription(description);		
-		this.setPageComplete(false);		
+		setDescription(description);
+		this.setPageComplete(false);
+		// The String to display, and the constructed string for the XSL document.
+		setTagValueTagData(new HashMap<>());
 	}
 
 	/**
@@ -194,9 +200,19 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						} // page loop
 
 
-						for (Document xmlString : xmlStrings) {
-							System.out.println(xmlString.asXML());
+						for (Document xmlDocument : xmlStrings) {
+
+							processXMLDocument(xmlDocument);
+
+							
+
+							System.out.println(xmlDocument.asXML());
 						}
+
+						getTagValueTagData().forEach((key, value) -> {
+							System.out.println(key + " " + value);
+						}
+						);
 
 
 						/*for (IWizardPage page : getWizard().getPages()) {
@@ -248,6 +264,57 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 								xslTxtBoxContent.length());
 							getCompositeForXsl().getXslTxtBox().setText(xslTxtBoxContent);
 						}*/
+
+					}
+
+					private void processXMLDocument(Document xmlDocument) {
+						Element root = xmlDocument.getRootElement();
+						StringBuilder tagNameToBeDisplayed = new StringBuilder();
+						StringBuilder tagDataForXSLDocument = new StringBuilder();
+
+						for (Iterator<Attribute> attribute = root.attributeIterator(); attribute.hasNext();) {
+							Attribute attributeData = attribute.next();
+							// TODO the name of the task can be fixed here based on what is chosen before.							
+							tagNameToBeDisplayed.append(root.getName());
+							tagNameToBeDisplayed.append(Constants.DOT);
+							tagNameToBeDisplayed.append(attributeData.getName());
+							tagDataForXSLDocument.append(Constants.DOUBLE_SLASH);
+							tagDataForXSLDocument.append(root.getName());
+							tagDataForXSLDocument.append(Constants.ATTRIBUTE_BEGIN);
+							tagDataForXSLDocument.append(attributeData.getName());
+							tagDataForXSLDocument.append(Constants.ATTRIBUTE_END);
+
+							getTagValueTagData().put(tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString());
+						}
+
+						for (Iterator<Element> element = root.elementIterator("algorithm"); element.hasNext();) {
+							Element algorithmNode = element.next();
+							tagNameToBeDisplayed = new StringBuilder();
+							tagDataForXSLDocument = new StringBuilder();
+							tagNameToBeDisplayed.append(root.getName());
+							tagNameToBeDisplayed.append(Constants.DOT);
+							tagNameToBeDisplayed.append(algorithmNode.getName());
+							int builderDisplayDataSize = tagNameToBeDisplayed.length();
+							int builderTagDataSize = tagDataForXSLDocument.length();
+
+							for (Iterator<Attribute> attribute = root.attributeIterator(); attribute.hasNext();) {
+								Attribute attributeData = attribute.next();
+								tagNameToBeDisplayed.delete(builderDisplayDataSize, tagNameToBeDisplayed.length());
+								tagDataForXSLDocument.delete(builderTagDataSize, tagDataForXSLDocument.length());
+								tagNameToBeDisplayed.append(Constants.DOT);
+								tagNameToBeDisplayed.append(attributeData.getName());
+								tagDataForXSLDocument.append(Constants.DOUBLE_SLASH);
+								tagDataForXSLDocument.append(root.getName());
+								tagDataForXSLDocument.append(Constants.DOUBLE_SLASH);
+								tagDataForXSLDocument.append(algorithmNode.getName());
+								tagDataForXSLDocument.append(Constants.ATTRIBUTE_BEGIN);
+								tagDataForXSLDocument.append(attributeData.getName());
+								tagDataForXSLDocument.append(Constants.ATTRIBUTE_END);
+
+								getTagValueTagData().put(tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString());
+							}
+
+						}
 
 					}
 
@@ -511,6 +578,21 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	public void setCompositeForXsl(CompositeForXsl compositeForXsl) {
 		this.compositeForXsl = compositeForXsl;
 
+	}
+
+	/**
+	 * @return the tagValueTagData
+	 */
+	public HashMap<String, String> getTagValueTagData() {
+		return tagValueTagData;
+	}
+
+	/**
+	 * @param tagValueTagData
+	 *        the tagValueTagData to set
+	 */
+	public void setTagValueTagData(HashMap<String, String> tagValueTagData) {
+		this.tagValueTagData = tagValueTagData;
 	}
 
 }

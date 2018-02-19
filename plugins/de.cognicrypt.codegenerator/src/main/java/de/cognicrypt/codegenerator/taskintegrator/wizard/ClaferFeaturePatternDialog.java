@@ -156,7 +156,7 @@ public class ClaferFeaturePatternDialog extends Dialog {
 			resultModel.add(new ClaferFeature(Constants.FeatureType.ABSTRACT, patternName, "Enum -> integer"));
 			for (int i = 0; i < compositePatternOrderedEnum.getElements().size(); i++) {
 				String str = compositePatternOrderedEnum.getElements().get(i);
-				resultModel.add(new ClaferFeature(Constants.FeatureType.CONCRETE, str.toString(), patternName + " = " + i));
+				resultModel.add(new ClaferFeature(Constants.FeatureType.CONCRETE, str.toString(), patternName + " = " + (i + 1)));
 			}
 		}
 	}

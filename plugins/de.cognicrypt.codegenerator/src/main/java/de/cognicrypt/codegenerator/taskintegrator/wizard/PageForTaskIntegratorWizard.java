@@ -204,8 +204,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 							processXMLDocument(xmlDocument);
 
-							
-
 							System.out.println(xmlDocument.asXML());
 						}
 
@@ -273,47 +271,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					 */
 					private void processXMLDocument(Document xmlDocument) {
 						Element root = xmlDocument.getRootElement();
-
 						processElement(root, "", Constants.SLASH, true);
-
-						for (Iterator<Element> element = root.elementIterator("algorithm"); element.hasNext();) {
-							Element algorithmElement = element.next();
-
-							StringBuilder tagNameToBeDisplayed = new StringBuilder();
-							StringBuilder tagDataForXSLDocument = new StringBuilder();
-
-							tagDataForXSLDocument.append(Constants.SLASH);
-							tagDataForXSLDocument.append(root.getName());
-
-							tagNameToBeDisplayed.append(root.getName());
-
-							processElement(algorithmElement, tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString(), false);
-							
-							/*tagNameToBeDisplayed.append(Constants.DOT);
-							tagNameToBeDisplayed.append(algorithmNode.getName());
-
-							for (Iterator<Attribute> attribute = root.attributeIterator(); attribute.hasNext();) {
-								Attribute attributeData = attribute.next();
-								tagNameToBeDisplayed.delete(builderDisplayDataSizeTillRoot, tagNameToBeDisplayed.length());
-								tagDataForXSLDocument.delete(builderTagDataSizeTillRoot, tagDataForXSLDocument.length());
-
-								tagNameToBeDisplayed.append(Constants.DOT);
-								tagNameToBeDisplayed.append(attributeData.getName());
-
-								tagDataForXSLDocument.append(Constants.SLASH);
-								tagDataForXSLDocument.append(Constants.SLASH);
-								tagDataForXSLDocument.append(root.getName());
-								tagDataForXSLDocument.append(Constants.SLASH);
-								tagDataForXSLDocument.append(algorithmNode.getName());
-								tagDataForXSLDocument.append(Constants.ATTRIBUTE_BEGIN);
-								tagDataForXSLDocument.append(attributeData.getName());
-								tagDataForXSLDocument.append(Constants.ATTRIBUTE_END);
-
-								getTagValueTagData().put(tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString());
-							}*/
-
-						}
-
 					}
 
 					/**
@@ -362,6 +320,19 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 							getTagValueTagData().put(tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString());
 						}
 
+						for (Iterator<Element> element = xmlElement.elementIterator(); element.hasNext();) {
+							Element currentElement = element.next();
+							if (!currentElement.getName().equals("Imports")) {
+								if (tagNameToBeDisplayed.length() > builderDisplayDataSizeTillRoot) {
+									tagNameToBeDisplayed.delete(builderDisplayDataSizeTillRoot, tagNameToBeDisplayed.length());
+								}
+
+								if (tagDataForXSLDocument.length() > builderTagDataSizeTillRoot) {
+									tagDataForXSLDocument.delete(builderTagDataSizeTillRoot, tagDataForXSLDocument.length());
+								}
+								processElement(currentElement, tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString(), false);
+							}
+						}
 					}
 
 					/**

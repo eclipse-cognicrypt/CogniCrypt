@@ -43,6 +43,7 @@ import soot.Type;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.Constant;
+import soot.jimple.internal.JAssignStmt;
 import sync.pds.solver.nodes.Node;
 import typestate.TransitionFunction;
 import typestate.interfaces.ISLConstraint;
@@ -95,12 +96,29 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void constraintViolation(final AnalysisSeedWithSpecification seed, final ISLConstraint brokenConstraint, final Statement location) {
-		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), evaluateBrokenConstraint(brokenConstraint));
+		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), evaluateBrokenConstraint(brokenConstraint, location));
 	}
 
-	private String evaluateBrokenConstraint(final ISLConstraint brokenConstraint) {
+	private String evaluateBrokenConstraint(final ISLConstraint brokenConstraint, Statement location) {
 		StringBuilder msg = new StringBuilder();
-		if (brokenConstraint instanceof CryptSLValueConstraint) {
+		if (brokenConstraint instanceof CryptSLPredicate) {
+			CryptSLPredicate brokenPred = (CryptSLPredicate) brokenConstraint;
+
+			switch (brokenPred.getPredName()) {
+				case "neverTypeOf":
+
+					if (location.getUnit().get() instanceof JAssignStmt) {
+						msg.append("Variable ");
+						msg.append(((JAssignStmt) location.getUnit().get()).getLeftOp());
+					} else {
+						msg.append("This variable");
+					}
+					msg.append(" must not be of type ");
+					msg.append(brokenPred.getParameters().get(1).getName());
+					msg.append(".");
+					break;
+			}
+		} else if (brokenConstraint instanceof CryptSLValueConstraint) {
 			return evaluateValueConstraint((CryptSLValueConstraint) brokenConstraint);
 		} else if (brokenConstraint instanceof CryptSLArithmeticConstraint) {
 			final CryptSLArithmeticConstraint brokenArthConstraint = (CryptSLArithmeticConstraint) brokenConstraint;

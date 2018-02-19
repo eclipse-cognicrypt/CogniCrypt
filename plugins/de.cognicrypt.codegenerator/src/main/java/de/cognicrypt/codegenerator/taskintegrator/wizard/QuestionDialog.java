@@ -335,14 +335,22 @@ public class QuestionDialog extends Dialog {
 				Text txtOption = new Text(compositeForLinkCodeTab, SWT.BORDER);
 				txtOption.setVisible(true);
 				GridData gd_txtOption = new GridData(/* SWT.FILL, SWT.CENTER, true, true */);
-				gd_txtOption.widthHint = 100;
+				gd_txtOption.widthHint = 200;
 				txtOption.setLayoutData(gd_txtOption);
+				if(question.getQuestionText().length()>20){
+					txtOption.setText(question.getQuestionText().substring(0, 30)+"....");	
+				}else{
+					txtOption.setText(question.getQuestionText());
+				}
+				txtOption.setEditable(false);
 
 				Text txtValue = new Text(compositeForLinkCodeTab, SWT.BORDER);
 				txtValue.setVisible(true);
 				GridData gd_txtValue = new GridData(/* SWT.FILL, SWT.CENTER, true, true */);
-				gd_txtValue.widthHint = 100;
+				gd_txtValue.widthHint = 200;
 				txtValue.setLayoutData(gd_txtValue);
+				txtValue.setText("");
+				txtValue.setEditable(false);
 
 				CodeDependency codeDependency = new CodeDependency();
 				for (Answer answer : question.getAnswers()) {

@@ -244,6 +244,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		String value;
 
 		if (!inst.getType().getRef().getTargetType().isPrimitive()) {
+			//line separators (\r\n)
 			String algo = Constants.ALGORITHM + " : " + ClaferModelUtils
 				.removeScopePrefix(inst.getType().getRef().getTargetType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + Constants.lineSeparator;
 			algorithms.put(algo, "");

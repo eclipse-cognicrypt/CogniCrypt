@@ -44,6 +44,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -79,7 +80,7 @@ import de.cognicrypt.codegenerator.utilities.XMLParser;
 public class InstanceListPage extends WizardPage {
 
 	private Composite control;
-	private Text instanceDetails;
+	private StyledText instanceDetails;
 	private final InstanceGenerator instanceGenerator;
 	private InstanceClafer value;
 	private Group instancePropertiesPanel;
@@ -157,7 +158,7 @@ public class InstanceListPage extends WizardPage {
 		new Label(control, SWT.NONE);
 		new Label(control, SWT.NONE);
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
-		this.instanceDetails = new Text(this.instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		this.instanceDetails = new StyledText(this.instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 
 		Composite composite_Control = new Composite(this.instancePropertiesPanel, SWT.BOTTOM | SWT.CENTER);
 		composite_Control.setLayoutData(new GridData(SWT.CENTER, GridData.FILL, true, false));

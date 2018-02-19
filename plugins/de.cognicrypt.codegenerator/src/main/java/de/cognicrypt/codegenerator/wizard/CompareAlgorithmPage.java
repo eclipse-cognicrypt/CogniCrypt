@@ -272,6 +272,7 @@ public class CompareAlgorithmPage extends WizardPage {
 			if (!instan.hasChildren()) {
 				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + inst.getRef().toString()
 					.replace("\"", "");
+				value = value.replace("\n", "") + Constants.lineSeparator;
 				algo = algorithms.keySet().iterator().next();
 				algorithms.put(algo, algorithms.get(algo) + value);
 			}
@@ -284,11 +285,11 @@ public class CompareAlgorithmPage extends WizardPage {
 		String firstAlgorithmHighlight = getHighlightFirst();
 		String secondAlgorithmHighlight = getHighlightSecond();
 		Color cyan = display.getSystemColor(SWT.COLOR_CYAN);
-		Color white = display.getSystemColor(SWT.COLOR_WHITE);
+		Color transparent = display.getSystemColor(SWT.COLOR_TRANSPARENT);
 		int n, m;
 
-		String[] partFirstInstanceDetails = firstAlgorithmHighlight.split("\r\n\r\n");
-		String[] partSecondInstanceDetails = secondAlgorithmHighlight.split("\r\n\r\n");
+		String[] partFirstInstanceDetails = firstAlgorithmHighlight.split("\n\r\n");
+		String[] partSecondInstanceDetails = secondAlgorithmHighlight.split("\n\r\n");
 
 		String[] lines1;
 		String[] lines2;
@@ -355,11 +356,11 @@ public class CompareAlgorithmPage extends WizardPage {
 									//getting the index of the current key in the block
 									pos1 = new ArrayList<String>(firstPart.get(x).keySet()).indexOf(key);
 									//highlighting the line which is calculated by adding pos1 with the t offset
-									firstInstanceDetails.setLineBackground(t + pos1, 1, white);
+									firstInstanceDetails.setLineBackground(t + pos1, 1, transparent);
 									//getting the index of the current key in the block
 									pos2 = new ArrayList<String>(secondPart.get(y).keySet()).indexOf(key);
 									//highlighting the line which is calculated by adding pos2 with the s offset
-									secondInstanceDetails.setLineBackground(s + pos2, 1, white);
+									secondInstanceDetails.setLineBackground(s + pos2, 1, transparent);
 								} else {
 									//getting the index of the current key in the block
 									pos1 = new ArrayList<String>(firstPart.get(x).keySet()).indexOf(key);

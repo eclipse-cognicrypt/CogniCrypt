@@ -3,8 +3,6 @@ package de.cognicrypt.codegenerator.taskintegrator.wizard;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
@@ -15,11 +13,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 
-import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositePattern;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositePatternEnum;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositePatternOrderedEnum;
 
@@ -28,14 +25,11 @@ public class ClaferFeaturePatternDialog extends Dialog {
 	private Composite compositePatternDetails;
 	private Combo comboPattern;
 	
-	private String patternName;
 	private ClaferModel resultModel;
 
 	public ClaferFeaturePatternDialog(Shell parentShell) {
 		super(parentShell);
 		setShellStyle(SWT.RESIZE | SWT.CLOSE);
-
-		patternName = "";
 	}
 
 	/**
@@ -70,21 +64,6 @@ public class ClaferFeaturePatternDialog extends Dialog {
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
 				// TODO Auto-generated method stub
-				
-			}
-		});
-
-		Label lblName = new Label(container, SWT.NONE);
-		lblName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		lblName.setText("Name");
-
-		Text txtName = new Text(container, SWT.BORDER);
-		txtName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		txtName.addModifyListener(new ModifyListener() {
-			
-			@Override
-			public void modifyText(ModifyEvent arg0) {
-				patternName = txtName.getText();
 				
 			}
 		});
@@ -142,22 +121,11 @@ public class ClaferFeaturePatternDialog extends Dialog {
 	}
 
 	private void saveResultModel() {
-		resultModel = new ClaferModel();
-
-		if (compositePatternDetails.getChildren().length > 0 && compositePatternDetails.getChildren()[0] instanceof CompositePatternEnum) {
-			CompositePatternEnum compositePatternEnum = ((CompositePatternEnum) compositePatternDetails.getChildren()[0]);
-
-			resultModel.add(new ClaferFeature(Constants.FeatureType.ABSTRACT, patternName, "Enum"));
-			for (StringBuilder sb : compositePatternEnum.getElements()) {
-				resultModel.add(new ClaferFeature(Constants.FeatureType.CONCRETE, sb.toString(), patternName));
-			}
-		} else if (compositePatternDetails.getChildren().length > 0 && compositePatternDetails.getChildren()[0] instanceof CompositePatternOrderedEnum) {
-			CompositePatternOrderedEnum compositePatternOrderedEnum = ((CompositePatternOrderedEnum) compositePatternDetails.getChildren()[0]);
-			resultModel.add(new ClaferFeature(Constants.FeatureType.ABSTRACT, patternName, "Enum -> integer"));
-			for (int i = 0; i < compositePatternOrderedEnum.getElements().size(); i++) {
-				String str = compositePatternOrderedEnum.getElements().get(i);
-				resultModel.add(new ClaferFeature(Constants.FeatureType.CONCRETE, str.toString(), patternName + " = " + (i + 1)));
-			}
+		if (compositePatternDetails.getChildren().length > 0 && compositePatternDetails.getChildren()[0] instanceof CompositePattern) {
+			CompositePattern compositePatternEnum = (CompositePattern) compositePatternDetails.getChildren()[0];
+			resultModel = compositePatternEnum.getResultModel();
+		} else {
+			Activator.getDefault().logError("Unknown return from the Clafer pattern dialog");
 		}
 	}
 

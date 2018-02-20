@@ -14,18 +14,18 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-public class CompositePatternEnum extends Composite {
+import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 
-	private Composite compositeOptions;
-	private ScrolledComposite compositeScrolledOptions;
+public class CompositePatternEnum extends CompositePattern {
 	
 	private ArrayList<StringBuilder> options;
 
 	public CompositePatternEnum(Composite parent) {
-		super(parent, SWT.NONE);
+		super(parent);
 		
 		options = new ArrayList<>();
-		setLayout(new GridLayout(1, false));
 
 		Button btnAddOption = new Button(this, SWT.NONE);
 		btnAddOption.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
@@ -85,8 +85,13 @@ public class CompositePatternEnum extends Composite {
 		compositeScrolledOptions.setMinSize(compositeOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
-	public ArrayList<StringBuilder> getElements() {
-		return options;
+	public ClaferModel getResultModel() {
+		ClaferModel resultModel = new ClaferModel();
+		resultModel.add(new ClaferFeature(Constants.FeatureType.ABSTRACT, patternName, "Enum"));
+		for (StringBuilder sb : options) {
+			resultModel.add(new ClaferFeature(Constants.FeatureType.CONCRETE, sb.toString(), patternName));
+		}
+		return resultModel;
 	}
 
 }

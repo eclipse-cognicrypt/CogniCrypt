@@ -11,19 +11,18 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-public class CompositePatternOrderedEnum extends Composite {
+import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 
-	private Composite compositeOptions;
-	private ScrolledComposite compositeScrolledOptions;
+public class CompositePatternOrderedEnum extends CompositePattern {
 
 	private ArrayList<CompositeSortableTextItem> sortableTextItems;
 
 	public CompositePatternOrderedEnum(Composite parent) {
-		super(parent, SWT.NONE);
+		super(parent);
 
 		sortableTextItems = new ArrayList<>();
-
-		setLayout(new GridLayout(1, false));
 
 		Button btnAddOption = new Button(this, SWT.NONE);
 		btnAddOption.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
@@ -131,14 +130,15 @@ public class CompositePatternOrderedEnum extends Composite {
 		}
 	}
 
-	public ArrayList<String> getElements() {
-		ArrayList<String> resultStrings = new ArrayList<>();
-
-		for (CompositeSortableTextItem refItem : sortableTextItems) {
-			resultStrings.add(refItem.getText());
+	public ClaferModel getResultModel() {
+		ClaferModel resultModel = new ClaferModel();
+		resultModel.add(new ClaferFeature(Constants.FeatureType.ABSTRACT, patternName, "Enum -> integer"));
+		for (int i = 0; i < sortableTextItems.size(); i++) {
+			String str = sortableTextItems.get(i).getText();
+			resultModel.add(new ClaferFeature(Constants.FeatureType.CONCRETE, str.toString(), patternName + " = " + (i + 1)));
 		}
 
-		return resultStrings;
+		return resultModel;
 	}
 
 }

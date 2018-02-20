@@ -272,21 +272,7 @@ public class FileUtilities {
 	 */
 	private void writeJSONFile(ArrayList<Question> questions) throws IOException {
 		
-		//TODO better way to set the question type 
-		listOfAllQuestions=questions;
-		for(Question qstn: questions){
-			String elementType=qstn.getQuestionType();
-			if(elementType.equals("Drop down")){
-				qstn.setElement(Constants.GUIElements.combo);
-			}else if(elementType.equals("text box")){
-				qstn.setElement(Constants.GUIElements.text);
-			}
-			else if(elementType.equals("Radio Button")){
-				qstn.setElement(Constants.GUIElements.radio);
-			}
-			qstn.setNote("test");
-		}
-		
+		listOfAllQuestions = questions;
 		pages = new ArrayList<>();
 		/**
 		 * following loop adds the questions to different pages 
@@ -318,7 +304,7 @@ public class FileUtilities {
 		
 		//creates the file
 		jsonFileTargetDirectory.createNewFile();
-		
+		System.out.println(gson.toJson(listOfAllQuestions));
 
 		//creates the writer object for json file  
 		FileWriter writerForJsonFile = new FileWriter(jsonFileTargetDirectory);
@@ -326,6 +312,7 @@ public class FileUtilities {
 		try{
 		//write the data into the .json file  
 				writerForJsonFile.write(gson.toJson(pages));
+			System.out.println(gson.toJson(pages));
 		}
 		finally{
 		writerForJsonFile.flush();

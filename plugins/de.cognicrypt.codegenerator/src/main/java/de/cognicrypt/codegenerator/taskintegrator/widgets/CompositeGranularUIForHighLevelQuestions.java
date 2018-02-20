@@ -17,6 +17,8 @@ import org.eclipse.swt.widgets.Text;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
+import de.cognicrypt.codegenerator.taskintegrator.wizard.AddDependenciesDialog;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.LinkAnswerDialog;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.QuestionDialog;
 
@@ -51,6 +53,23 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		//Only visible for "pageForHighLevelQuestions" page
 		grpModifyDeleteButtons.setVisible(!linkAnswerPage);
 
+		Button addDependencies = new Button(this, SWT.WRAP);
+		addDependencies.setBounds(588, 50, 150, 103);
+		addDependencies.setText("Click to\nLink Variability\nconstruct and \n Link code");
+		addDependencies.setToolTipText("Click to Link variability construct and variables to use in code");
+		//Only visible for "pageForHighLevelQuestions" page
+		addDependencies.setVisible(!linkAnswerPage);
+
+		addDependencies.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ClaferModel claferModel = ((CompositeToHoldGranularUIElements) addDependencies.getParent().getParent().getParent()).getClaferModel();
+				AddDependenciesDialog addDependenciesDialog = new AddDependenciesDialog(parent.getShell(), question, claferModel);
+				addDependenciesDialog.open();
+			}
+		});
+
 		Button linkQstn = new Button(this, SWT.None);
 		linkQstn.setBounds(588, 50, 100, 53);
 		linkQstn.setText("Link Answer");
@@ -72,9 +91,9 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 			}
 		});
 		
-			
 		
 		
+
 		Group grpQuestionDetails = new Group(this, SWT.NONE);
 		/***
 		 * resizing the height of the grpQuestionDetails depending upon the page

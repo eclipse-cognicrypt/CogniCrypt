@@ -8,11 +8,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 
 public class CompositeSortableTextItem extends Composite {
 
+	private Label lblPosition;
 	private Text txtOption;
 	private Button btnUp;
 	private Button btnDown;
@@ -20,7 +22,10 @@ public class CompositeSortableTextItem extends Composite {
 	public CompositeSortableTextItem(Composite parent) {
 		super(parent, SWT.NONE);
 
-		setLayout(new GridLayout(4, false));
+		setLayout(new GridLayout(5, false));
+
+		lblPosition = new Label(this, SWT.NONE);
+		lblPosition.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 
 		txtOption = new Text(this, SWT.BORDER);
 		txtOption.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -89,6 +94,11 @@ public class CompositeSortableTextItem extends Composite {
 
 	public void setText(String text) {
 		txtOption.setText(text);
+	}
+
+	public void setPosition(int position) {
+		lblPosition.setText(String.valueOf(position));
+		layout();
 	}
 
 	/**

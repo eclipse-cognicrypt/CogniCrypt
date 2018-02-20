@@ -40,7 +40,7 @@ public class CompositePatternOrderedEnum extends Composite {
 				compositeOptions.layout();
 				compositeScrolledOptions.setMinSize(compositeOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
-				setMoveButtonsEnabled();
+				updatePatternItemWidgets();
 
 				super.widgetSelected(e);
 			}
@@ -88,7 +88,7 @@ public class CompositePatternOrderedEnum extends Composite {
 		}
 
 		swapTexts(targetIndex, targetIndex - 1);
-		setMoveButtonsEnabled();
+		updatePatternItemWidgets();
 	}
 
 	public void moveDown(CompositeSortableTextItem targetComposite) {
@@ -100,25 +100,27 @@ public class CompositePatternOrderedEnum extends Composite {
 		}
 
 		swapTexts(targetIndex, targetIndex + 1);
-		setMoveButtonsEnabled();
+		updatePatternItemWidgets();
 	}
 
 	public void remove(CompositeSortableTextItem targetComposite) {
 		sortableTextItems.remove(targetComposite);
 		targetComposite.dispose();
 
-		setMoveButtonsEnabled();
+		updatePatternItemWidgets();
 
 		compositeOptions.layout();
 		compositeScrolledOptions.setMinSize(compositeOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
 	/**
-	 * set the buttons move up and move down to enabled or disabled depending on their position in the list
+	 * update list positions and set the move buttons to enabled or disabled
 	 */
-	private void setMoveButtonsEnabled() {
-		for (CompositeSortableTextItem item : sortableTextItems) {
+	private void updatePatternItemWidgets() {
+		for (int i = 0; i < sortableTextItems.size(); i++) {
+			CompositeSortableTextItem item = sortableTextItems.get(i);
 			item.setMoveButtonsEnabled();
+			item.setPosition(i + 1);
 		}
 		
 		if (sortableTextItems.size() == 1) {

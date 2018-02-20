@@ -411,32 +411,10 @@ public class Constants {
 	public static final String JSON_EXTENSION = ".json";
 	public static final String XSL_EXTENSION = ".xsl";
 	
-	//constants to be used for creation of json file
-	public static final String openSquareBracket = "[";
-	public static final String closeSquareBracket = "]";
-	public static final String openCurlyBrace = "{";
-	public static final String closeCurlyBrace = "}";
-	public static final String commaOperator =",";
-	public static final String colonOperator = ":";
-	public static final String quotationMark = "\"";
-	public static final String taskIDField = "id";
-	public static final String taskIDValue = "0";
-	public static final String helpIDField = "helpID";
-	public static final String contentFieldName = "content";
-	public static final String qstnIDField = "id";
-	public static final String elementField = "element";
-	public static final String noteField = "note";
-	public static final String qstnTxtField = "question Text";
-	public static final String answersField = "answers";
-	public static final String valueField = "value";
-	public static final String claferDependenciesField = "claferDependencies";
-	public static final String algorithmField = "algorithm";
-	public static final String operandField = "operand";
-	public static final String operatorField = "operator";
-	public static final String defaultAnswerField = "defaultAnswer";
-	public static final String nextIDField = "nextID";
-	public static final String codeDependenciesField = "codeDependencies";
-	public static final String optionField = "option";
+	//for the list of items to be included inside the combo of the questionTab
+	public static final String dropDown = "Drop down";
+	public static final String textBox = "Text box";
+	public static final String radioButton = "Radio button";
 
 	public static final String FEATURE_PROPERTY_TYPE_RELATION = "is of type";
 	public static final String FEATURE_PROPERTY_NAME = "Name";

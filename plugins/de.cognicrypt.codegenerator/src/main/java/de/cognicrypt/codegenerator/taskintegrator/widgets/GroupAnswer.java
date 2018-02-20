@@ -53,6 +53,7 @@ public class GroupAnswer extends Group {
 		if (answer.isDefaultAnswer()) {
 			defaultAnswer.setSelection(true);
 		}
+		defaultAnswer.setToolTipText("the answer that will be automatically selected when question appears for the first time");
 
 		defaultAnswer.addSelectionListener(new SelectionAdapter() {
 

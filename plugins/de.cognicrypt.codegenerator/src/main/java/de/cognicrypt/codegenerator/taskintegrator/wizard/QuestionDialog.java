@@ -131,15 +131,10 @@ public class QuestionDialog extends Dialog {
 		lblType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		lblType.setText("Answer type");
 
-		String comboItem1 = "Drop down";
-		String comboItem2 = "text box";
-		String comboItem3 = "itemSelection ( More than one answer selection possible )";
-		String comboItem4 = "Radio Button";
 		combo = new Combo(composite, SWT.READ_ONLY);
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		//combo.setItems(new String[] {comboItem1, comboItem2, comboItem3, comboItem4 });
-		combo.setItems(new String[] { comboItem1, comboItem2, comboItem4 });
 		combo.select(-1);
+		combo.setItems(Constants.dropDown, Constants.textBox, Constants.radioButton);
 
 		Button btnAddAnswer = new Button(composite, SWT.None);
 		btnAddAnswer.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
@@ -175,7 +170,7 @@ public class QuestionDialog extends Dialog {
 			public void modifyText(ModifyEvent e) {
 
 				switch (combo.getText()) {
-					case "text box":
+					case Constants.textBox:
 						btnAddAnswer.setVisible(false);
 						compositeToHoldAnswers.setVisible(false);
 						compositeToHoldAnswers.getListOfAllAnswer().clear();
@@ -184,36 +179,26 @@ public class QuestionDialog extends Dialog {
 						emptyAnswer.setDefaultAnswer(true);
 						emptyAnswer.setValue("");
 						compositeToHoldAnswers.getListOfAllAnswer().add(emptyAnswer);
-						currentQuestionType = "text box";
+						currentQuestionType = Constants.textBox;
 						break;
-					case "Drop down":
-						boolean comboSelected = combo.getText().equalsIgnoreCase("Drop down") ? true : false;
+					case Constants.dropDown:
+						boolean comboSelected = combo.getText().equalsIgnoreCase(Constants.dropDown) ? true : false;
 						btnAddAnswer.setVisible(comboSelected);
-						if (!currentQuestionType.equalsIgnoreCase("Drop down")) {
+						if (!currentQuestionType.equalsIgnoreCase(Constants.dropDown)) {
 							compositeToHoldAnswers.getListOfAllAnswer().clear();
 							compositeToHoldAnswers.updateAnswerContainer();
 							compositeToHoldAnswers.setVisible(false);
-							currentQuestionType = "Drop down";
+							currentQuestionType = Constants.dropDown;
 						}
 						break;
-					case "itemSelection ( More than one answer selection possible )":
-						boolean itemSelected = combo.getText().equalsIgnoreCase("itemSelection ( More than one answer selection possible )") ? true : false;
-						btnAddAnswer.setVisible(itemSelected);
-						if (!currentQuestionType.equalsIgnoreCase("itemselection")) {
-							compositeToHoldAnswers.getListOfAllAnswer().clear();
-							compositeToHoldAnswers.updateAnswerContainer();
-							compositeToHoldAnswers.setVisible(false);
-							currentQuestionType = "itemSelection ( More than one answer selection possible )";
-						}
-						break;
-					case "Radio Button":
-						boolean buttonSelected = combo.getText().equalsIgnoreCase("Radio Button") ? true : false;
+					case Constants.radioButton:
+						boolean buttonSelected = combo.getText().equalsIgnoreCase(Constants.radioButton) ? true : false;
 						btnAddAnswer.setVisible(buttonSelected);
-						if (!currentQuestionType.equalsIgnoreCase("Radio Button")) {
+						if (!currentQuestionType.equalsIgnoreCase(Constants.radioButton)) {
 							compositeToHoldAnswers.getListOfAllAnswer().clear();
 							compositeToHoldAnswers.updateAnswerContainer();
 							compositeToHoldAnswers.setVisible(false);
-							currentQuestionType = "Radio Button";
+							currentQuestionType = Constants.radioButton;
 						}
 						break;
 					default:
@@ -230,7 +215,7 @@ public class QuestionDialog extends Dialog {
 				compositeToHoldAnswers.addAnswer(answer, showRemoveButton);
 				compositeToHoldAnswers.setVisible(true);
 			}
-			if (question.getQuestionType().equalsIgnoreCase("text box")) {
+			if (question.getQuestionType().equalsIgnoreCase(Constants.textBox)) {
 				compositeToHoldAnswers.setVisible(false);
 			}
 
@@ -252,7 +237,7 @@ public class QuestionDialog extends Dialog {
 
 		if (question != null) {
 
-			if (question.getQuestionType().equalsIgnoreCase("text box")) {
+			if (question.getQuestionType().equalsIgnoreCase(Constants.textBox)) {
 				Label lblLinkFeatureTabMessage = new Label(compositeForClaferTab, SWT.NONE);
 				lblLinkFeatureTabMessage.setText("This type of question does not need to link features");
 
@@ -319,7 +304,7 @@ public class QuestionDialog extends Dialog {
 
 		if (question != null) {
 
-			if (question.getQuestionType().equalsIgnoreCase("text box")) {
+			if (question.getQuestionType().equalsIgnoreCase(Constants.textBox)) {
 				Label question_3 = new Label(compositeForLinkCodeTab, SWT.None);
 				question_3.setText("Question: ");
 
@@ -527,6 +512,9 @@ public class QuestionDialog extends Dialog {
 		Question questionDetails = new Question();
 		questionDetails.setQuestionText(textQuestion.getText());
 		questionDetails.setQuestionType(combo.getText());
+		setQuestionElement(questionDetails, combo.getText());
+
+		//this loop executes to delete empty text boxes in the question dialog
 		for (int i = 0; i < compositeToHoldAnswers.getListOfAllAnswer().size(); i++) {
 			if (Objects.equals(compositeToHoldAnswers.getListOfAllAnswer().get(i).getValue(), null)) {
 				compositeToHoldAnswers.deleteAnswer(compositeToHoldAnswers.getListOfAllAnswer().get(i));
@@ -535,11 +523,60 @@ public class QuestionDialog extends Dialog {
 			}
 		}
 		
-		//compositeToHoldAnswers.getListOfAllAnswer()
 		questionDetails.setAnswers(compositeToHoldAnswers.getListOfAllAnswer());
+		checkQuestionHasDefaultAnswer(questionDetails);
 		this.questionDetails = questionDetails;
+
 	}
 
+	/**
+	 * sets the question element depending on the question type selected
+	 * @param question
+	 * @param element the value selected for the question type 
+	 */
+	private void setQuestionElement(Question question, String element) {
+		/**
+		 * case 1: if the the question type is selected as drop down then sets the element to combo
+		 */
+		if (element.equals(Constants.dropDown)) {
+			question.setElement(Constants.GUIElements.combo);
+		}
+		/**
+		 * case 2: sets the question element to text if the question type is text box
+		 */
+		else if (element.equals(Constants.textBox)) {
+			question.setElement(Constants.GUIElements.text);
+		}
+		/**
+		 * case 3: sets the question element to text if the question type is radio button
+		 */
+		else if (element.equals(Constants.radioButton)) {
+			question.setElement(Constants.GUIElements.button);
+		}
+	}
+
+	/**
+	 * checks if for the question default answer is selected or not if no answer is selected as default answer then the function sets the first answer as the default answer of the
+	 * particular question
+	 */
+	public void checkQuestionHasDefaultAnswer(Question question) {
+		boolean hasDefaultAnswer = false;
+		for (Answer answer : question.getAnswers()) {
+			if (answer.isDefaultAnswer()) {
+				hasDefaultAnswer = true;
+			}
+		}
+		if (!hasDefaultAnswer) {
+			if (question.getAnswers().size() > 0) {
+				question.getAnswers().get(0).setDefaultAnswer(true);
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @return the question
+	 */
 	public Question getQuestionDetails() {
 		return this.questionDetails;
 	}

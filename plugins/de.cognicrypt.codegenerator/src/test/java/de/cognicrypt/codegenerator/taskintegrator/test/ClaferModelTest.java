@@ -41,10 +41,14 @@ public class ClaferModelTest {
 		featureProperties.add(new FeatureProperty("number", "integer"));
 		featureProperties.add(new FeatureProperty("characters", "string"));
 		cfrFeature.setFeatureProperties(featureProperties);
+		claferModel.add(cfrFeature);
 
-		ClaferModel missingFeatures = claferModel.getMissingFeatures(cfrFeature);
+		claferModel.add(new ClaferFeature(Constants.FeatureType.CONCRETE, "myInt", "integer"));
+		claferModel.add(new ClaferFeature(Constants.FeatureType.ABSTRACT, "myDouble", "double"));
 
-		assertTrue(missingFeatures.getClaferModel().size() == 0);
+		for (ClaferFeature refFeature : claferModel) {
+			assertTrue(claferModel.getMissingFeatures(refFeature).getClaferModel().size() == 0);
+		}
 	}
 
 	@Test

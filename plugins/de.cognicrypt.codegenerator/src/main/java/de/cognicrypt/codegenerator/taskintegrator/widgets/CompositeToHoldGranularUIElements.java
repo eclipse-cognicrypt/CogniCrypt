@@ -1,6 +1,7 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -115,7 +116,6 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		// Update the array list.
 		//listOfAllClaferFeatures.add(claferFeature);
 		setClaferModel(claferModel);
-
 		CompositeGranularUIForHighLevelQuestions granularQuestion = new CompositeGranularUIForHighLevelQuestions((Composite) this.getContent(), // the content composite of ScrolledComposite.
 			SWT.NONE, question, linkAnswerPage);
 
@@ -133,8 +133,54 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		//granularQuestion.setSize(SWT.DEFAULT, granularQuestion.getSize().y);
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + heightOfTheGranularComposite);
 		setMinHeight(getLowestWidgetYAxisValue());
+
+	}
+
+	/**
+	 * 
+	 * @param question
+	 *        the question that is to be move up in the list
+	 */
+	public void moveUpTheQuestion(Question question) {
+		int questionToBeMoveUp = 0;
+		int questionToBeMoveDown = 0;
+		for(Question qstn:listOfAllQuestions){
+		if(qstn.getId()==question.getId()){
+				questionToBeMoveUp = qstn.getId();
+		}else if(qstn.getId()==question.getId()-1){
+				questionToBeMoveDown = qstn.getId();
+		}
+		}
+		Collections.swap(listOfAllQuestions, questionToBeMoveUp, questionToBeMoveDown);
+		updateQuestionsID();
+		updateQuestionContainer();
 	}
 	
+	/**
+	 * 
+	 * @param question
+	 *        the question that is to be move down in the list
+	 */
+	public void moveDownTheQuestion(Question question) {
+		int questionToBeMoveUp = 0;
+		int questionToBeMoveDown = 0;
+		for (Question qstn : listOfAllQuestions) {
+			if (qstn.getId() == question.getId()) {
+				questionToBeMoveUp = qstn.getId();
+			} else if (qstn.getId() == question.getId() + 1) {
+				questionToBeMoveDown = qstn.getId();
+			}
+		}
+		Collections.swap(listOfAllQuestions, questionToBeMoveUp, questionToBeMoveDown);
+		updateQuestionsID();
+		updateQuestionContainer();
+	}
+
+	/**
+	 * 
+	 * @param questionToBeDeleted
+	 *        the question to be deleted
+	 */
 	public void deleteQuestion(Question questionToBeDeleted){		
 		
 		listOfAllQuestions.remove(questionToBeDeleted);
@@ -163,7 +209,6 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	 */
 	public void deleteAllQuestion(){
 		listOfAllQuestions.clear();
-		
 		updateQuestionContainer();
 	}
 	

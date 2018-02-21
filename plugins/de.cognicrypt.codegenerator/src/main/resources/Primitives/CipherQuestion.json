@@ -4,7 +4,7 @@
     [{
       "id": "0",
       "element": "text",
-      "questionText": "Please enter the name of your algorithm",
+      "questionText": "Name of the Algorithm: ",
       "answers": [{
           "value": "name",
            "claferDependencies": [{
@@ -22,7 +22,7 @@
     {
      "id": "1",
       "element": "text",
-      "questionText": "What is the name of the author/company?",
+      "questionText": "Name of the Author/Company: ",
       "answers": [{
           "value": "",
           "codeDependencies": [{
@@ -35,7 +35,7 @@
      {
      "id": "2",
       "element": "textarea",
-      "questionText": "Please give a short description of your algorithm",
+      "questionText": "Algorithm description: ",
       "answers": [{
           "value": "",
             "claferDependencies": [{

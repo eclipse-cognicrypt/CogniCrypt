@@ -11,6 +11,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -149,7 +150,10 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		container.setBounds(10, 10, 200, 300);
 		// Updated the number of columns to order the questions vertically.
 		final GridLayout layout = new GridLayout(1, false);
+		GridData gridData = new GridData();
+		gridData.widthHint = 150;
 		container.setLayout(layout);
+		container.setLayoutData(gridData);
 		// If legacy JSON files are in effect.
 		if (page == null) {
 			createQuestionControl(container, this.quest);
@@ -158,6 +162,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 			// loop through the questions that are to be displayed on the page.
 			for (Question question : page.getContent()) {
 				createQuestionControl(container, question);
+				
 			}
 		}
 
@@ -173,9 +178,9 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		label.setText(question.getQuestionText());
 		switch (question.getElement()) {
 			case combo:
-				new Label(container, SWT.NONE);
-				new Label(container, SWT.NONE);
-				new Label(container, SWT.NONE);
+//				new Label(container, SWT.NONE);
+//				new Label(container, SWT.NONE);
+//				new Label(container, SWT.NONE);
 				final ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY);
 				comboViewer.setContentProvider(ArrayContentProvider.getInstance());
 				comboViewer.setInput(answers);
@@ -239,11 +244,11 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 				break;
 			case text:
-				new Label(container, SWT.NONE);
-				new Label(container, SWT.NONE);
-				new Label(container, SWT.NONE);
-				GridData data = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
-				data.widthHint = 100;
+//				new Label(container, SWT.NONE);
+//				new Label(container, SWT.NONE);
+//				new Label(container, SWT.NONE);
+				GridData data = new GridData(SWT.FILL, SWT.FILL, true, false);
+				//data.widthHint = 100;
 				final Text inputField = new Text(container, SWT.BORDER);
 				//				inputField.setSize(500, inputField.getSize().y);
 				inputField.setLayoutData(data);
@@ -255,8 +260,9 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 					claferDepend = answers.get(0).getClaferDependencies().get(0).getAlgorithm();
 					if (claferDepend.equals(Constants.BLOCK_SIZE)) {
 						inputField.addVerifyListener(verifyDecimal);
-						data.widthHint = 50;
-						inputField.setLayoutData(data);
+						//data.widthHint = 50;
+						GridData data1 = new GridData(SWT.FILL, SWT.FILL, true, false);
+						inputField.setLayoutData(data1);
 					}
 
 					inputField.addModifyListener(e -> {
@@ -298,16 +304,17 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
 				break;
 			case textarea:
-				new Label(container, SWT.NONE);
-				new Label(container, SWT.NONE);
-				new Label(container, SWT.NONE);
-				final Text inputDescription = new Text(container, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
-				inputDescription.setSize(150, inputDescription.getSize().y);
+//				new Label(container, SWT.NONE);
+//				new Label(container, SWT.NONE);
+//				new Label(container, SWT.NONE);
+				final Text inputDescription = new Text(container, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL );
+				//inputDescription.setSize(150, inputDescription.getSize().y);
 				// Define a minimum width
-				final GridData gridData = new GridData();
+				final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
 				gridData.widthHint = 230;
 				gridData.heightHint = 60;
 				inputDescription.setLayoutData(gridData);
+				//inputDescription.setAlwaysShowScrollBars(false);
 				inputDescription.addModifyListener(new ModifyListener() {
 
 					@Override

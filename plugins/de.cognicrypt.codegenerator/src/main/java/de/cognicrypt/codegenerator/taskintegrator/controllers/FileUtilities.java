@@ -283,7 +283,7 @@ public class FileUtilities {
 				addQuestionToPage(qstn);
 			}
 		}
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
 		/**
 		 * following loop checks whether the questions in the page has branch or not,if not then
 		 * updates the page next Id

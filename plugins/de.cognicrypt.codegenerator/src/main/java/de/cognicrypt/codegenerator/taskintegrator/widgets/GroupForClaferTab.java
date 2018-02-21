@@ -88,13 +88,10 @@ public class GroupForClaferTab extends Group {
 				//Combo containing all the operators
 				Combo comboForOperator = new Combo(claferWidgets, SWT.READ_ONLY);
 				comboForOperator.setBounds(275, 0, 110, 25);
-				comboForOperator.setItems("(" + Constants.FeatureConstraintRelationship.EQUAL.toString() + ")" + "Equal",
-					"(" + Constants.FeatureConstraintRelationship.NOTEQUAL.toString() + ")" + "NOTEQUAL",
-					"(" + Constants.FeatureConstraintRelationship.LESSTHAN.toString() + ")" + "LESSTHAN",
-					"(" + Constants.FeatureConstraintRelationship.GREATERTHAN.toString() + ")" + "GREATERTHAN",
-					"(" + Constants.FeatureConstraintRelationship.LESSTHANEQUALTO.toString() + ")" + "LESSTHANEQUALTO",
-					"(" + Constants.FeatureConstraintRelationship.GREATERTHANEQUALTO.toString() + ")" + "GREATERTHANEQUALTO",
-					"(" + Constants.FeatureConstraintRelationship.AND.toString() + ")" + "AND", "(" + Constants.FeatureConstraintRelationship.OR.toString() + ")" + "OR");
+				comboForOperator.setItems(Constants.FeatureConstraintRelationship.EQUAL.toString(), Constants.FeatureConstraintRelationship.NOTEQUAL.toString(),
+					Constants.FeatureConstraintRelationship.LESSTHAN.toString(), Constants.FeatureConstraintRelationship.GREATERTHAN.toString(),
+					Constants.FeatureConstraintRelationship.LESSTHANEQUALTO.toString(), Constants.FeatureConstraintRelationship.GREATERTHANEQUALTO.toString(),
+					Constants.FeatureConstraintRelationship.AND.toString(), Constants.FeatureConstraintRelationship.OR.toString());
 
 				//To retrieve value from the user
 				Text txtBoxValue = new Text(claferWidgets, SWT.BORDER);

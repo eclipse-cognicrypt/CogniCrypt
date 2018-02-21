@@ -10,6 +10,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.GridData;
 
 /**
  * This class is responsible for displaying the methods related to the custom algorithm
@@ -33,21 +35,22 @@ public class MethodSelectorPage extends WizardPage {
 	public void createControl(Composite parent) {
 		Composite container = new Composite(parent, SWT.NULL);
 		setControl(container);
+		container.setLayout(new GridLayout(2, false));
 
 		question = new Label(container, SWT.NULL);
-		question.setBounds(10, 33, 214, 21);
-		question.setText("Please select the encryption method");
+		question.setText("Select the encryption method:");
 
 		Combo combo = new Combo(container, SWT.NONE);
-		combo.setBounds(10, 60, 188, 23);
+		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
 
-		Label label = new Label(container, SWT.NONE);
-		label.setText("Please select the decryption method");
-		label.setBounds(10, 123, 214, 21);
-
-		Combo combo_1 = new Combo(container, SWT.NONE);
-		combo_1.setBounds(10, 150, 188, 23);
-		combo_1.add(this.javaFile.getName());
+		Label lblSelectTheDecryption = new Label(container, SWT.NONE);
+		lblSelectTheDecryption.setText("Select the decryption method:");
+		
+				Combo combo_1 = new Combo(container, SWT.NONE);
+				combo_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+				combo_1.add(this.javaFile.getName());
 	
 		
 	}

@@ -16,6 +16,8 @@ import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.layout.GridData;
 
 public class PrimitiveSelectionPage extends WizardPage {
 
@@ -40,7 +42,7 @@ public class PrimitiveSelectionPage extends WizardPage {
 	public void createControl(Composite parent) {
 		this.container = new Composite(parent, SWT.NULL);
 		this.container.setBounds(10, 10, 200, 300);
-		final GridLayout layout = new GridLayout(4, false);
+		final GridLayout layout = new GridLayout(3, false);
 		this.container.setLayout(layout);
 		final List<Primitive> primitives = PrimitiveJSONReader.getPrimitiveTypes();
 
@@ -48,41 +50,37 @@ public class PrimitiveSelectionPage extends WizardPage {
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
+		
+				Label lblPleaseChooseThe = new Label(container, SWT.NONE);
+				lblPleaseChooseThe.setText("Please choose the type of algorithm:");
 		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
+		
+				this.primitiveComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
+				Combo combo = primitiveComboSelection.getCombo();
+				combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+				this.primitiveComboSelection.setContentProvider(ArrayContentProvider.getInstance());
+				this.primitiveComboSelection.setLabelProvider(new LabelProvider() {
 
-		Label lblPleaseChooseThe = new Label(container, SWT.NONE);
-		lblPleaseChooseThe.setText("Please choose the type of algorithm");
-		new Label(container, SWT.NONE);
-
-		this.primitiveComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
-		this.primitiveComboSelection.setContentProvider(ArrayContentProvider.getInstance());
-		this.primitiveComboSelection.setLabelProvider(new LabelProvider() {
-
-			@Override
-			public String getText(final Object primitive) {
-				if (primitive instanceof Primitive) {
-					final Primitive current = (Primitive) primitive;
-					return current.getName();
-				}
-				return super.getText(primitive);
-			}
-		});
-		// add primitives in combo
-		this.primitiveComboSelection.setInput(primitives);
-
-		this.primitiveComboSelection.addSelectionChangedListener(event -> {
-			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-			final Primitive selectedPrimitive = (Primitive) selection.getFirstElement();
-
-			PrimitiveSelectionPage.this.primitiveComboSelection.refresh();
-			setPageComplete(selectedPrimitive != null);
-		});
-		this.primitiveComboSelection.setSelection(new StructuredSelection(primitives.get(0)));
+					@Override
+					public String getText(final Object primitive) {
+						if (primitive instanceof Primitive) {
+							final Primitive current = (Primitive) primitive;
+							return current.getName();
+						}
+						return super.getText(primitive);
+					}
+				});
+				// add primitives in combo
+				this.primitiveComboSelection.setInput(primitives);
+				
+						this.primitiveComboSelection.addSelectionChangedListener(event -> {
+							final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+							final Primitive selectedPrimitive = (Primitive) selection.getFirstElement();
+				
+							PrimitiveSelectionPage.this.primitiveComboSelection.refresh();
+							setPageComplete(selectedPrimitive != null);
+						});
+						this.primitiveComboSelection.setSelection(new StructuredSelection(primitives.get(0)));
 	}
 
 	public Primitive getSelectedPrimitive() {

@@ -53,8 +53,19 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		//Only visible for "pageForHighLevelQuestions" page
 		grpModifyDeleteButtons.setVisible(!linkAnswerPage);
 
+		GroupUpDownButtons grpUpDownButtons = new GroupUpDownButtons(this, question);
+		RowLayout upDownRowLayout = (RowLayout) grpModifyDeleteButtons.getLayout();
+		upDownRowLayout.marginLeft = 5;
+		upDownRowLayout.marginTop = 5;
+		upDownRowLayout.fill = true;
+		upDownRowLayout.center = true;
+		grpUpDownButtons.setBounds(588, 5, 150, 53);
+
+		//
+		grpUpDownButtons.setVisible(!linkAnswerPage);
+
 		Button addDependencies = new Button(this, SWT.WRAP);
-		addDependencies.setBounds(588, 50, 150, 103);
+		addDependencies.setBounds(588, 75, 150, 103);
 		addDependencies.setText("Click to\nLink Variability\nconstruct and \n Link code");
 		addDependencies.setToolTipText("Click to Link variability construct and variables to use in code");
 		//Only visible for "pageForHighLevelQuestions" page

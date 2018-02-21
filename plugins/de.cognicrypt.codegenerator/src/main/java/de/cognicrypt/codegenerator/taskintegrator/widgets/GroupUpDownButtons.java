@@ -48,6 +48,26 @@ public class GroupUpDownButtons extends Group {
 
 			}
 		});
+		/**
+		 * Both up and down buttons are disables if the list has only one question
+		 */
+		if (listOfAllQuestions.size() == 1) {
+			upBtn.setEnabled(false);
+			downBtn.setEnabled(false);
+		} else {
+			/**
+			 * disables the up button if current question is the first question
+			 */
+			if (currentQuestion.getId() == 0) {
+				upBtn.setEnabled(false);
+			}
+			/**
+			 * disables the down button if current question is the last question
+			 */
+			else if (currentQuestion.getId() == listOfAllQuestions.size() - 1) {
+				downBtn.setEnabled(false);
+			}
+		}
 
 	}
 

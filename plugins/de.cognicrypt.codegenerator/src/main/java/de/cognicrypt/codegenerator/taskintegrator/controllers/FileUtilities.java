@@ -547,34 +547,48 @@ public class FileUtilities {
 	private void updateAnsNextIdToPageId(Question qstn) {
 
 		if(!qstn.getElement().equals(Constants.GUIElements.text)){
-			for (Answer ans : qstn.getAnswers()) {
-				if (ans.getNextID() != Constants.ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID) {
-					/**
-					 * if the user has not selected any option of comboForLinkAnswer in LinkAnswerDialog box 
-					 * then Sets the answer next Id to the next questionID in the listOfAllQuestions
-					 */
-					if (ans.getNextID() == Constants.ANSWER_NO_NEXT_ID) {
-						ans.setNextID(qstn.getId() + 1);
-					}
-					Question linkedQuestion = questionWithId(ans.getNextID());
-					/**
-					 * if linkQuestion exists in any page then update the answer next id to the page id containing the question
-					 */
-					if (questionExistsInAnyPage(linkedQuestion)) {
-						Page pg = findPageContainingPreviousQuestion(linkedQuestion);
-						ans.setNextID(pg.getId());
-					}
-
-					/**
-					 * executes when linked question is not in the list of pages
-					 */
-					else {
-						ans.setNextID(pageId);
-						addQuestionToNewPage(linkedQuestion);
-					}
+			/**
+			 * if the question is the last question then sets the answer next ID to -1
+			 */
+			if (qstn.getId() == listOfAllQuestions.size() - 1) {
+				for (Answer ans : qstn.getAnswers()) {
+					ans.setNextID(Constants.ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID);
 				}
-
 			}
+			/**
+			 * executes when the current question is not the last question
+			 */
+			else if (qstn.getId() != listOfAllQuestions.size() - 1) {
+				for (Answer ans : qstn.getAnswers()) {
+					if (ans.getNextID() != Constants.ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID) {
+						/**
+						 * if the user has not selected any option of comboForLinkAnswer in LinkAnswerDialog box then Sets the answer next Id to the next questionID in the
+						 * listOfAllQuestions
+						 */
+						if (ans.getNextID() == Constants.ANSWER_NO_NEXT_ID) {
+							ans.setNextID(qstn.getId() + 1);
+						}
+						Question linkedQuestion = questionWithId(ans.getNextID());
+						/**
+						 * if linkQuestion exists in any page then update the answer next id to the page id containing the question
+						 */
+						if (questionExistsInAnyPage(linkedQuestion)) {
+							Page pg = findPageContainingPreviousQuestion(linkedQuestion);
+							ans.setNextID(pg.getId());
+						}
+
+						/**
+						 * executes when linked question is not in the list of pages
+						 */
+						else {
+							ans.setNextID(pageId);
+							addQuestionToNewPage(linkedQuestion);
+						}
+					}
+
+				}
+			}
+
 		}
 
 	}

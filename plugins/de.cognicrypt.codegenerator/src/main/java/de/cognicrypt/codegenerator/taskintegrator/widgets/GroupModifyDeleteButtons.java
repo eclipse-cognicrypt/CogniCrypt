@@ -25,7 +25,7 @@ public class GroupModifyDeleteButtons extends Group {
 	 * @param parent
 	 * @param style
 	 */
-	int counter=0;
+	int counter = 0;
 	//private ArrayList<ClaferFeature> claferFeatures;
 
 	public GroupModifyDeleteButtons(Composite parent, Question questionParam) {
@@ -52,12 +52,12 @@ public class GroupModifyDeleteButtons extends Group {
 		
 		Button btnModify = new Button(this, SWT.NONE);
 		btnModify.setText("Modify");
-		ArrayList<Question> listOfAllQuestions=((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getListOfAllQuestions();
-		ClaferModel claferModel = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getClaferModel();
 
 		btnModify.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e){
+				ArrayList<Question> listOfAllQuestions = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getListOfAllQuestions();
+				ClaferModel claferModel = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getClaferModel();
 				QuestionDialog qstnDialog = new QuestionDialog(parent.getShell(), questionParam, claferModel, listOfAllQuestions);
 				int response=qstnDialog.open();
 				if(response==Window.OK){

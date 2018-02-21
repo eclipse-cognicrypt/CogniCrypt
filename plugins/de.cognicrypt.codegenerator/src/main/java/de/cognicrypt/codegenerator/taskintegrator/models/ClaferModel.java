@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
@@ -55,12 +56,35 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 		return featureFound;
 	}
 
+	public ClaferFeature getFeature(String featureName) {
+		for (ClaferFeature cfrFeature : this) {
+			if (cfrFeature.getFeatureName().equals(featureName)) {
+				return cfrFeature;
+			}
+		}
+		
+		return null;
+	}
+
 	/**
 	 * get a shallow copy of the ClaferModel that contains a shallow copy of the feature list (new list but same feature objects)
 	 */
 	@Override
 	public ClaferModel clone() {
 		return new ClaferModel((ArrayList<ClaferFeature>) claferModel.clone());
+	}
+
+	/**
+	 * return a shallow copy containing only features that the predicate is true for
+	 * 
+	 * @param predicate
+	 *        {@link Predicate}&lt;? super {@link ClaferFeature}&gt; to test on the features
+	 * @return {@link ClaferModel} containing references to the successfully filtered features
+	 */
+	public ClaferModel getIf(Predicate<? super ClaferFeature> predicate) {
+		ClaferModel shallowCopy = this.clone();
+		shallowCopy.getClaferModel().removeIf(predicate.negate());
+		return shallowCopy;
 	}
 
 	@Override
@@ -111,6 +135,15 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 		// find missing property types
 		for (FeatureProperty fp : refFeature.getFeatureProperties()) {
 			boolean propertyTypeFound = false;
+
+			// do not implement Clafer primitives
+			for (String primitive : Constants.CLAFER_PRIMITIVE_TYPES) {
+				if (primitive.equals(fp.getPropertyType())) {
+					propertyTypeFound = true;
+					break;
+				}
+			}
+
 			for (ClaferFeature cfrFeature : claferModel) {
 				if (cfrFeature.getFeatureName().equals(fp.getPropertyType())) {
 					propertyTypeFound = true;

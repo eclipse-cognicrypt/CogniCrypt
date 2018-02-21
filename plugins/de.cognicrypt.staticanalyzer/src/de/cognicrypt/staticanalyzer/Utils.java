@@ -36,7 +36,7 @@ public class Utils {
 
 	/***
 	 * This method returns absolute path of a project-relative path.
-	 * 
+	 *
 	 * @param inputPath
 	 *        project-relative path
 	 * @return absolute path
@@ -77,25 +77,25 @@ public class Utils {
 		final Display defaultDisplay = Display.getDefault();
 		final Runnable getWindow = () -> setWindow(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
 		defaultDisplay.asyncExec(getWindow);
-		if (window == null) {
+		if (Utils.window == null) {
 			try {
 				Thread.sleep(500);
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				Activator.getDefault().logError(e);
 			}
 			defaultDisplay.asyncExec(getWindow);
 		}
 
-		if (window != null) {
-			return window.getActivePage().getActiveEditor();
+		if (Utils.window != null) {
+			return Utils.window.getActivePage().getActiveEditor();
 		}
 		return null;
 	}
 
 	private static IWorkbenchWindow window = null;
 
-	private static void setWindow(IWorkbenchWindow activeWorkbenchWindow) {
-		window = activeWorkbenchWindow;
+	private static void setWindow(final IWorkbenchWindow activeWorkbenchWindow) {
+		Utils.window = activeWorkbenchWindow;
 	}
 
 	/**
@@ -128,31 +128,31 @@ public class Utils {
 
 	/**
 	 * This method searches the passed project for the class that contains the main method.
-	 * 
+	 *
 	 * @param project
 	 *        Project that is searched
 	 * @param requestor
 	 *        Object that handles the search results
 	 */
-	public static void findMainMethodInCurrentProject(IJavaProject project, SearchRequestor requestor) {
-		SearchPattern sp = SearchPattern.createPattern("main", IJavaSearchConstants.METHOD, IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
+	public static void findMainMethodInCurrentProject(final IJavaProject project, final SearchRequestor requestor) {
+		final SearchPattern sp = SearchPattern.createPattern("main", IJavaSearchConstants.METHOD, IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
 
-		SearchEngine se = new SearchEngine();
+		final SearchEngine se = new SearchEngine();
 		final SearchParticipant[] searchParticipants = new SearchParticipant[] { SearchEngine.getDefaultSearchParticipant() };
 		final IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] { project });
 
 		try {
 			se.search(sp, searchParticipants, scope, requestor, null);
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
 	}
 
-	public static IResource findClassByName(SootClass className, final IProject currentProject) throws ClassNotFoundException {
+	public static IResource findClassByName(final SootClass className, final IProject currentProject) throws ClassNotFoundException {
 		try {
-			for (IPackageFragment l : JavaCore.create(currentProject).getPackageFragments()) {
-				for (ICompilationUnit cu : l.getCompilationUnits()) {
-					IJavaElement cuResource = JavaCore.create(cu.getCorrespondingResource());
+			for (final IPackageFragment l : JavaCore.create(currentProject).getPackageFragments()) {
+				for (final ICompilationUnit cu : l.getCompilationUnits()) {
+					final IJavaElement cuResource = JavaCore.create(cu.getCorrespondingResource());
 					String name = cuResource.getParent().getElementName() + "." + cuResource.getElementName();
 
 					if (name.startsWith(".")) {
@@ -163,7 +163,7 @@ public class Utils {
 					}
 				}
 			}
-		} catch (JavaModelException e) {
+		} catch (final JavaModelException e) {
 			throw new ClassNotFoundException("Class " + className + " not found.", e);
 		}
 		throw new ClassNotFoundException("Class " + className + " not found.");

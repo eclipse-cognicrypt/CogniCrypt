@@ -1,18 +1,3 @@
-/**
- * Copyright 2015-2017 Technische Universitaet Darmstadt
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package de.cognicrypt.codegenerator.question;
 
 import java.io.BufferedReader;
@@ -32,16 +17,16 @@ import de.cognicrypt.codegenerator.utilities.Utils;
 
 /**
  * This class reads all questions and answers of one task.
- * 
+ *
  * @author Sarah Nadi
  * @author Stefan Krueger
  *
  */
 public class QuestionsJSONReader {
 
-	/***
+	/**
 	 * This method reads all questions of one task using the file path to the question file.
-	 * 
+	 *
 	 * @param filePath
 	 *        path to the file that contains all questions for one task.
 	 * @return questions
@@ -61,15 +46,13 @@ public class QuestionsJSONReader {
 		}
 		return questions;
 	}
-	
-	
-	/***
+
+	/**
 	 * This method reads all pages of one task using the file path to the JSON file.
-	 * 
-	 * @param filePath 
-	 * 			Path to the file that contains all questions for one task.
-	 * @return pages 
-	 * 			Return a list of all the pages in the JSON file.
+	 *
+	 * @param filePath
+	 *        Path to the file that contains all questions for one task.
+	 * @return pages Return a list of all the pages in the JSON file.
 	 */
 	public List<Page> getPages(final String filePath) {
 		List<Page> pages = new ArrayList<>();
@@ -87,9 +70,9 @@ public class QuestionsJSONReader {
 		return pages;
 	}
 
-	/***
+	/**
 	 * This method reads all questions of one task.
-	 * 
+	 *
 	 * @param task
 	 *        task whose questions should be read
 	 * @return Questions
@@ -97,10 +80,10 @@ public class QuestionsJSONReader {
 	public List<Question> getQuestions(final Task task) {
 		return getQuestions(task.getQuestionsJSONFile());
 	}
-	
-	/***
+
+	/**
 	 * This method reads all pages of one task.
-	 * 
+	 *
 	 * @param task
 	 *        task whose questions should be read
 	 * @return Pages
@@ -108,12 +91,13 @@ public class QuestionsJSONReader {
 	public List<Page> getPages(final Task task) {
 		return getPages(task.getQuestionsJSONFile());
 	}
-	
+
 	/**
 	 * Check the validity of the pages and the questions contained in them.
-	 * @param pages
+	 * 
+	 * @param pages List of all read pages
 	 */
-	private void checkReadPages(List<Page> pages) {
+	private void checkReadPages(final List<Page> pages) {
 		final Set<Integer> ids = new HashSet<>();
 		if (pages.size() < 1) {
 			throw new IllegalArgumentException("There are no pages for this task.");
@@ -122,13 +106,13 @@ public class QuestionsJSONReader {
 			if (!ids.add(page.getId())) {
 				throw new IllegalArgumentException("Each page must have a unique ID.");
 			}
-			
+
 			// Check the validity of questions for each page.
 			checkReadQuestions(page.getContent());
 		}
 	}
 
-	private void checkReadQuestions(List<Question> questions) {
+	private void checkReadQuestions(final List<Question> questions) {
 		final Set<Integer> ids = new HashSet<>();
 		if (questions.size() < 1) {
 			throw new IllegalArgumentException("There are no questions for this task.");
@@ -144,7 +128,7 @@ public class QuestionsJSONReader {
 		}
 	}
 
-	private void checkNextIDs(List<Page> pages) {
+	private void checkNextIDs(final List<Page> pages) {
 		for (final Page page : pages) {
 			if (page.getNextID() == -2) {
 				for (final Question question : page.getContent()) {

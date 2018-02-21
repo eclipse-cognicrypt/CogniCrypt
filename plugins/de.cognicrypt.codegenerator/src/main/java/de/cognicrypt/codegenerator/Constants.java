@@ -1,27 +1,5 @@
-/**
- * Copyright 2015-2017 Technische Universitaet Darmstadt
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * @author Stefan Krueger
- *
- */
-
 package de.cognicrypt.codegenerator;
 
-import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -32,7 +10,7 @@ import org.eclipse.swt.graphics.Rectangle;
 public class Constants {
 
 	public enum GUIElements {
-		combo, text, itemselection,button,radio, scale
+		combo, text, itemselection, button, radio, scale
 	}
 
 	//The plugin is bundled in a jar archive and the file separator within jar files is / (see: https://stackoverflow.com/questions/24749007/how-to-use-file-separator-for-a-jar-file-resource).
@@ -45,33 +23,33 @@ public class Constants {
 
 	public static final String JavaNatureID = "org.eclipse.jdt.core.javanature";
 
-	private static final String rsrcPath = "src" + innerFileSeparator + "main" + innerFileSeparator + "resources" + innerFileSeparator;
-	public static final String providerPath = rsrcPath + "AdditionalResources" + innerFileSeparator + "Provider";
+	private static final String rsrcPath = "src" + Constants.innerFileSeparator + "main" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator;
+	public static final String providerPath = Constants.rsrcPath + "AdditionalResources" + Constants.innerFileSeparator + "Provider";
 
 	//JSON task file
-	public static final String jsonTaskFile = rsrcPath + "Tasks" + innerFileSeparator + "tasks.json";
+	public static final String jsonTaskFile = Constants.rsrcPath + "Tasks" + Constants.innerFileSeparator + "tasks.json";
 
-	public static final String pathToPropertyfiles = rsrcPath + "Labels.properties";
+	public static final String pathToPropertyfiles = Constants.rsrcPath + "Labels.properties";
 
 	// Task descriptions
-	
-	// Tooltip 	
-	public static final String PROJECTLIST_TOOLTIP="List of your Java projects";
-	public static final String TASKLIST_TOOLTIP="Cryptographic tasks supported by CogniCrypt";
+
+	// Tooltip
+	public static final String PROJECTLIST_TOOLTIP = "List of your Java projects";
+	public static final String TASKLIST_TOOLTIP = "Cryptographic tasks supported by CogniCrypt";
 	public static final String DESCRIPTION_BOX_TOOLTIP = "Here is the description for the cryptographic task that you have selected";
-	public static final String GUIDEDMODE_TOOLTIP="Guided mode configures the algorithm for you,\nbased on your answers to some simple questions.";
-	public static final String DEFAULT_ALGORITHM_COMBINATION_TOOLTIP="Default Algorithm combination";
-	public static final String DEFAULT_CODE_TOOLTIP="This is the preview of the code, that will be generated into your Java project";
-	public static final String DEFAULT_CHECKBOX_TOOLTIP="If this checkbox is checked, the code for the above algorithm \nwill be generated into your java project after clicking 'Finish'";
+	public static final String GUIDEDMODE_TOOLTIP = "Guided mode configures the algorithm for you,\nbased on your answers to some simple questions.";
+	public static final String DEFAULT_ALGORITHM_COMBINATION_TOOLTIP = "Default Algorithm combination";
+	public static final String DEFAULT_CODE_TOOLTIP = "This is the preview of the code, that will be generated into your Java project";
+	public static final String DEFAULT_CHECKBOX_TOOLTIP = "If this checkbox is checked, the code for the above algorithm \nwill be generated into your java project after clicking 'Finish'";
 	public static final String ALGORITHM_COMBO_TOOLTIP = "The algorithm combinations are listed in a decreasing order of security level";
-	public static final String INSTANCE_DETAILS_TOOLTIP="Details of the selected algorithm combination";
-	
+	public static final String INSTANCE_DETAILS_TOOLTIP = "Details of the selected algorithm combination";
+
 	//Decoration
-	public static final String DEFAULT_ALGORITHM_CHECKBOX_ENABLE= "If you want to view other possible algorithm combinations \nmatching your requirements, please uncheck and click 'Next'";
-	public static final String DEFAULT_ALGORITHM_CHECKBOX_DISABLE= "There are no other algorithm combinations matching your requirements.\nThe code for the above algorithm will be generated into your java project";
-	public static final String DEFAULT_ALGORITHM_NOTIFICATION= "This algorithm was presented to you previously,\n as the best algorithm combination.";
-	public static final String GUIDED_MODE_CHECKBOX_INFO= "If you do not use the guided mode, then you have to \nconfigure the algorithm by yourself";
-	
+	public static final String DEFAULT_ALGORITHM_CHECKBOX_ENABLE = "If you want to view other possible algorithm combinations \nmatching your requirements, please uncheck and click 'Next'";
+	public static final String DEFAULT_ALGORITHM_CHECKBOX_DISABLE = "There are no other algorithm combinations matching your requirements.\nThe code for the above algorithm will be generated into your java project";
+	public static final String DEFAULT_ALGORITHM_NOTIFICATION = "This algorithm was presented to you previously,\n as the best algorithm combination.";
+	public static final String GUIDED_MODE_CHECKBOX_INFO = "If you do not use the guided mode, then you have to \nconfigure the algorithm by yourself";
+
 	// if the next question page depends on user input, the Page object encodes this as a nextPageID as opposed to the one that the last page points to
 	public static final int QUESTION_PAGE_NO_STATIC_NEXT_PAGE_ID = -2;
 
@@ -85,33 +63,45 @@ public class Constants {
 	public static final int ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID = -1;
 
 	// Clafer Instance Generation
-	public static final String claferPath = rsrcPath + "ClaferModel" + innerFileSeparator + "SymmetricEncryption.js";
+	public static final String claferPath = Constants.rsrcPath + "ClaferModel" + Constants.innerFileSeparator + "SymmetricEncryption.js";
 	public static final String PATH_FOR_CONFIG_XML = "/Configurator.xml";
-	public static final String XML_FILE_NAME = rsrcPath + "ClaferModel/Encrypt_CryptoTasks.xml";
+	public static final String XML_FILE_NAME = Constants.rsrcPath + "ClaferModel/Encrypt_CryptoTasks.xml";
 
 	// Input for Code Generation
-	public static final String pathToXSLFile = rsrcPath + "XSLTemplates" + innerFileSeparator + "JCA.xsl";
-	public static final String pathToClaferInstanceFolder = rsrcPath + "ClaferInstance" + innerFileSeparator;
+	public static final String pathToXSLFile = Constants.rsrcPath + "XSLTemplates" + Constants.innerFileSeparator + "JCA.xsl";
+	public static final String pathToClaferInstanceFolder = Constants.rsrcPath + "ClaferInstance" + Constants.innerFileSeparator;
 	public static final String pathToClaferInstanceFile = "claferInstance.xml";
 	public static final String pathToClaferPreviewFile = "claferPreview.xml";
 	public static final String NameOfTemporaryMethod = "templateUsage";
-	public static final String pathsForLibrariesinDevProject = "libs";
+	public static final String pathsForLibrariesInDevProject = "libs";
+	public static final String AuthorTag = "@author CogniCrypt";
 
 	// Output of Code Generation
-	private static final String AdditionalOutputFile = "Output.java";
+	public static final String AdditionalOutputFile = "Output.java";
+	public static final String AdditionalOutputTempFile = "OutputTemp.java";
+	public static final String TempSuffix = "Temp";
 	public static final String PackageName = "Crypto";
-	public static final String CodeGenerationCallFile = innerFileSeparator + Constants.PackageName + innerFileSeparator + AdditionalOutputFile;
+	public static final String CodeGenerationCallFile = Constants.innerFileSeparator + Constants.PackageName + Constants.innerFileSeparator + Constants.AdditionalOutputFile;
 
+	// File info for Code Generation
+	public static final String OpenFile = "Current file is open: ";
+	public static final String CloseFile = "No file is open";
+	public static final String ContainsAuthorTag = "Current open file contains \""+AuthorTag+"\": ";
+	public static final String ContainsNotAuthorTag = "Current open file DOESN'T contain \""+AuthorTag+"\": ";
+	public static final String CreateOutput = "Create: "+AdditionalOutputFile;
+	public static final String CreateOutputTemp = AdditionalOutputFile+" exists! Create: "+AdditionalOutputTempFile;
+
+	
 	// Error Messages
 	public static final String NoFileOpenedErrorMessage = "There is no file opened to generate the source code in. Will generate output file instead.";
 	public static final String NoJavaFileOpenedErrorMessage = "The currently open file is not a java file. Will generate output file instead.";
-	public static final String CodePreviewErrorMessage="An error occured during code preview generation.";
-	public static final String TransformerErrorMessage="An error occured while performing a transformation ";
-	public static final String TransformerConfigurationErrorMessage="An error occured during creation of transformer";
-	public static final String WritingInstanceClaferErrorMessage="An error occured during";	
+	public static final String CodePreviewErrorMessage = "An error occured during code preview generation.";
+	public static final String TransformerErrorMessage = "An error occured while performing a transformation ";
+	public static final String TransformerConfigurationErrorMessage = "An error occured during creation of transformer";
+	public static final String WritingInstanceClaferErrorMessage = "An error occured during";
 	public static final String CodeGenerationErrorMessage = "An error occured during template generation.";
 	public static final String FilesDoNotExistErrorMessage = "At least one of the files necessary for template generation does not exist.";
-	public static final String NoRunMethodFoundInTemporaryOutputFileErrorMessage = "XSL Template does not contain method " + NameOfTemporaryMethod + ".";
+	public static final String NoRunMethodFoundInTemporaryOutputFileErrorMessage = "XSL Template does not contain method " + Constants.NameOfTemporaryMethod + ".";
 	public static final String NoTemporaryOutputFile = "Temporary output file does not exist.";
 	public static final String NoFileandNoProjectOpened = "No file opened and no project selected.";
 	public static final String NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE = "No possible combinations are available for chosen values. Please modify your preferences and try agin.\n \n You can use  \n>= insted of >\n<= instead of <\nto make your selection generic.";
@@ -119,6 +109,7 @@ public class Constants {
 	public static final String PLEASE_SELECT = "Please select project directory to launch the configurator";
 	public static final String ERROR_MESSAGE_NO_PROJECT = "There is no Java project in your workspace. Please create one and restart CogniCrypt.";
 	public static final String ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY = "No directory for additional resources found.";
+	public static final String ERROR_MESSAGE_NO_FILE = "No file found";
 	public static final String ERROR = "ERROR: ";
 	public static final String ERROR_MESSAGE_BLANK_FILE_NAME = "Please choose a valid file.";
 	public static final String ERROR_MESSAGE_UNABLE_TO_READ_FILE = "There is a problem with the selected file. Please choose a valid one.";
@@ -127,12 +118,14 @@ public class Constants {
 	public static final String ERROR_MESSAGE_BLANK_TASK_NAME = "The Task name cannot be empty. Please enter a valid name for the Task.";
 	
 
+	
+	
 	public static final String JAVA = "java";
-	public static final String JCA = "JCA";
+	public static final String DEFAULT_PROVIDER = "JCA";
 	public static final String JAR = ".jar";
 	public static final String ALGORITHM = "algorithm";
 	public static final String GUIDED_MODE = "Use the guided mode for configuring the task";
-	public static final String DEFAULT_ALGORITHM_PAGE_CHECKBOX ="I like to generate the code for the default algorithm into my Java project";
+	public static final String DEFAULT_ALGORITHM_PAGE_CHECKBOX = "I like to generate the code for the default algorithm into my Java project";
 
 	public static final String Package = "Package";
 	public static final String Description = "description";
@@ -142,7 +135,7 @@ public class Constants {
 	public static final String Code = "code";
 	public static final String Type = "type";
 	public static final String Security = "security";
-	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List","java.util.Base64" };
+	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List", "java.util.Base64", "java.io.InputStream", "java.io.OutputStream"};
 
 	// Types
 	public static final String INTEGER = "Integer";
@@ -159,7 +152,7 @@ public class Constants {
 	public static final String TASK_DESCRIPTION = "Task Description :";
 	public static final String NO_XML_INSTANCE_FILE_TO_WRITE = "No xml instance file to write.";
 	public static final String CLAFER_ALGORITHM = "_Algorithm";
-	
+
 	public static final String ALGORITHM_SELECTION_PAGE = "Algorithm Selection Page";
 	public static final String DEFAULT_ALGORITHM_PAGE = "Default Algorithm Page";
 	public static final String DESCRIPTION_INSTANCE_LIST_PAGE = "Available algorithm combinations matching your requirements are listed below";
@@ -172,7 +165,6 @@ public class Constants {
 	public static final String PROPERTIES = "Algorithm Preferences";
 	public static final String SELECT_PROPERTIES = "Select Properties";
 
-	
 	//Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;
 	
@@ -241,11 +233,6 @@ public class Constants {
 	
 	public static final int SINGLE_LINE_TEXT_BOX_LIMIT = 256;
 	public static final int MULTI_LINE_TEXT_BOX_LIMIT = 2560;
-	
-	public static final Image DEC_INFORMATION = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage();
-	public static final Image DEC_ERROR = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage();
-	public static final Image DEC_REQUIRED = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED).getImage();
-	public static final Image DEC_WARNING = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_WARNING).getImage();
 	
 	// Form  data for CompositeGranularUIForClaferFeature
 	public static final int RIGHT_VALUE_FOR_GRANULAR_CLAFER_UI_SUB_ELEMENT = 736;
@@ -423,6 +410,7 @@ public class Constants {
 	
 	
 	public static final String[] CLAFER_RESERVED_WORDS = { "abstract", "all", "assert", "disj", "else", "enum", "if", "in", "lone", "max", "maximize", "min", "minimize", "mux", "no", "not", "one", "opt", "or", "product", "some", "sum", "then", "xor" };
+	public static final String[] CLAFER_PRIMITIVE_TYPES = { "integer", "double", "real", "string" };
 	
 	
 	

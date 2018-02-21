@@ -1,18 +1,3 @@
-/**
- * Copyright 2015-2017 Technische Universitaet Darmstadt
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package crossing.e1.featuremodel.clafer.test;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -28,6 +13,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModel;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.question.Answer;
@@ -70,7 +56,7 @@ public class XMLParserTest {
 
 		final XMLParser xmlparser = new XMLParser();
 		xmlparser.displayInstanceValues(this.inst, this.constraints);
-		xmlparser.writeClaferInstanceToFile(this.xmlTestFilePath);
+		xmlparser.writeXMLToFile(this.xmlTestFilePath);
 
 		final FileInputStream testFile = new FileInputStream(this.xmlTestFilePath);
 		testFile.read(generatedBytes);
@@ -81,10 +67,17 @@ public class XMLParserTest {
 
 	@Test
 	public void testXMLValidity() throws DocumentException, IOException {
-		final String validXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<task description=\"Main\"><Package>Crypto</Package><Imports><Import>java.security.InvalidAlgorithmParameterException</Import><Import>java.security.InvalidKeyException</Import><Import>java.security.NoSuchAlgorithmException</Import><Import>java.security.NoSuchAlgorithmException</Import><Import>javax.crypto.SecretKey</Import><Import>javax.crypto.BadPaddingException</Import><Import>javax.crypto.Cipher</Import><Import>javax.crypto.IllegalBlockSizeException</Import><Import>javax.crypto.NoSuchPaddingException</Import><Import>java.security.SecureRandom</Import><Import>javax.crypto.spec.IvParameterSpec</Import><Import>javax.crypto.spec.SecretKeySpec</Import><Import>java.security.spec.InvalidKeySpecException</Import><Import>java.util.List</Import><Import>java.util.Base64</Import></Imports><algorithm type=\"Digest\"><outputSize>256</outputSize><name>SHA3-256</name><performance>3</performance><status>secure</status></algorithm><code/></task>";
+		StringBuilder importBuilder = new StringBuilder();
+		for (String importSt : Constants.xmlimportsarr) {
+			importBuilder.append("<Import>");
+			importBuilder.append(importSt);
+			importBuilder.append("</Import>");
+		}
+		
+		final String validXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<task description=\"Main\"><Package>Crypto</Package><Imports>"+ importBuilder.toString() + "</Imports><algorithm type=\"Digest\"><outputSize>256</outputSize><name>SHA3-256</name><performance>3</performance><status>secure</status></algorithm><code/></task>";
 		final XMLParser xmlparser = new XMLParser();
 
-		final String xml = xmlparser.displayInstanceValues(this.inst, this.constraints);
+		final String xml = xmlparser.displayInstanceValues(this.inst, this.constraints).asXML();
 		assertEquals(validXML, xml);
 	}
 }

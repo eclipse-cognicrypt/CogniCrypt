@@ -1,23 +1,3 @@
-/**
- * Copyright 2015-2017 Technische Universitaet Darmstadt
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- * @author Stefan Krueger
- *
- */
 package de.cognicrypt.codegenerator;
 
 import java.util.Arrays;
@@ -45,14 +25,14 @@ public class DeveloperProject {
 	 */
 	private final IProject project;
 
-	public DeveloperProject(final IProject _project) {
-		this.project = _project;
+	public DeveloperProject(final IProject developerProject) {
+		this.project = developerProject;
 	}
 
-	/***
-	 * The method adds one library to the developer's project physical and build path. In the context of the overall tool, this is necessary when the user chooses a task that comes
-	 * with additional libraries.
-	 * 
+	/**
+	 * The method adds one library to the developer's project physical and build path. In the context of the overall tool, 
+	 * this is necessary when the user chooses a task that comes with additional libraries.
+	 *
 	 * @param pathToJar
 	 *        path to library to be added
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if library was (not) added successfully.
@@ -75,20 +55,27 @@ public class DeveloperProject {
 		return false;
 	}
 
-	/***
-	 * @see {@link org.eclipse.core.resources.IProject#getFolder() IProject.getFolder()}
+	/**
+	 * Retrieves folder from developer package
+	 * @param name Project-relative path to folder 
+	 * @see org.eclipse.core.resources.IProject#getFolder(String) IProject.getFolder()
 	 */
 	public IFolder getFolder(final String name) {
 		return this.project.getFolder(name);
 	}
 
+	/**
+	 * Retrieves file from developer package
+	 * @param path Project-relative path to file
+	 * @see org.eclipse.core.resources.IProject#getFile(String) IProject.getFile()
+	 */
 	public IFile getIFile(final String path) {
 		return this.project.getFile(path.substring(path.indexOf(this.project.getName()) + this.project.getName().length()));
 	}
 
-	/***
+	/**
 	 * This method retrieves a package of the name {@linkplain name} that is in the developer's project.
-	 * 
+	 *
 	 * @param name
 	 *        name of the package
 	 * @return package as {@link org.eclipse.jdt.core.IPackageFragment IPackageFragment}
@@ -113,7 +100,7 @@ public class DeveloperProject {
 	 */
 	public String getSourcePath() throws CoreException {
 		if (this.project.isOpen() && this.project.hasNature(Constants.JavaNatureID)) {
-			for (IClasspathEntry entry : JavaCore.create(this.project).getResolvedClasspath(true)) {
+			for (final IClasspathEntry entry : JavaCore.create(this.project).getResolvedClasspath(true)) {
 				if (entry.getContentKind() == IPackageFragmentRoot.K_SOURCE) {
 					return entry.getPath().removeFirstSegments(1).toOSString();
 				}
@@ -123,7 +110,7 @@ public class DeveloperProject {
 	}
 
 	/**
-	 * @return Refreshes the project.
+	 * Refreshes the project.
 	 * @throws CoreException
 	 *         See {@link org.eclipse.core.resources.IResource#refreshLocal(int, org.eclipse.core.runtime.IProgressMonitor) refreshLocal()}
 	 */
@@ -135,11 +122,11 @@ public class DeveloperProject {
 
 	@Override
 	public int hashCode() {
-		return 31 + ((project == null) ? 0 : project.hashCode());
+		return 31 + ((this.project == null) ? 0 : this.project.hashCode());
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -147,28 +134,33 @@ public class DeveloperProject {
 			return false;
 		}
 		if (obj instanceof DeveloperProject) {
-			DeveloperProject other = (DeveloperProject) obj;
+			final DeveloperProject other = (DeveloperProject) obj;
 			return !(this.project == null || other.project != null) && this.project.equals(other.project);
 		} else if (obj instanceof IProject) {
-			IProject other = (IProject) obj;
+			final IProject other = (IProject) obj;
 			return this.project.equals(other);
 		}
 		return false;
 	}
 
+	@Override
 	public String toString() {
-		return project.getName() + "(" + getProjectPath() + ")";
+		return this.project.getName() + "(" + getProjectPath() + ")";
 	}
 
-	public Boolean removePackage(String packageName) {
+	/**
+	 * Removes package from developer project.
+	 * @param packageName name of package that is removed
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if package removal was successful/failed.
+	 */
+	public Boolean removePackage(final String packageName) {
 		try {
-			IPackageFragment delPackage = getPackagesOfProject(packageName);
+			final IPackageFragment delPackage = getPackagesOfProject(packageName);
 			delPackage.delete(true, null);
 			return true;
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
-
 		return false;
 	}
 

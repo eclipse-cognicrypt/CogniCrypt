@@ -18,6 +18,8 @@
     <Import>java.security.spec.InvalidKeySpecException</Import>
     <Import>java.util.List</Import>
     <Import>java.util.Base64</Import>
+    <Import>java.io.InputStream</Import>
+    <Import>java.io.OutputStream</Import>
   </Imports>
   <algorithm type="Digest">
     <outputSize>256</outputSize>

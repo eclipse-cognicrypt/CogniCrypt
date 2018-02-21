@@ -9,26 +9,24 @@ import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.UIConstants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.PageForTaskIntegratorWizard;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
-
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
 
 /**
  * @author rajiv
@@ -47,19 +45,20 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	 * @param style
 	 */
 	public CompositeChoiceForModeOfWizard(Composite parent, int style, PageForTaskIntegratorWizard theContainerPageForValidation) {		
-		super(parent, SWT.BORDER);
+		super(parent, style);
 		
 		// these tasks are required for validation of the new task that is being added.
 		setExistingTasks(TaskJSONReader.getTasks());
 		setTheLocalContainerPage(theContainerPageForValidation);
 		
 		setObjectForDataInNonGuidedMode(new ModelAdvancedMode());
-		this.setBounds(Constants.RECTANGLE_FOR_COMPOSITES);
-		setLayout(new FillLayout(SWT.HORIZONTAL));
+		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		setLayout(new GridLayout(1, false));
 		
 		// All the UI widgets
 		Group grpChooseTheMode = new Group(this, SWT.NONE);
 		grpChooseTheMode.setText("Choose the mode of this Wizard");
+		grpChooseTheMode.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		grpChooseTheMode.setLayout(new GridLayout(1, false));
 		
 		Label lblNameOfTheTask = new Label(grpChooseTheMode, SWT.NONE);
@@ -69,7 +68,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		setDecNameOfTheTask(new ControlDecoration(lblNameOfTheTask, SWT.TOP | SWT.RIGHT));
 		getDecNameOfTheTask().setShowOnlyOnFocus(false);
 		// Set the initial error state.
-		getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
+		getDecNameOfTheTask().setImage(UIConstants.DEC_ERROR);
 		getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_TASK_NAME);
 		getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
 		
@@ -91,15 +90,13 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 				
 		
 		Group grpContainerGroupForLibrary = new Group(grpChooseTheMode, SWT.NONE);
-		grpContainerGroupForLibrary.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		grpContainerGroupForLibrary.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		grpContainerGroupForLibrary.setText("Custom Library");
 		grpContainerGroupForLibrary.setVisible(false);
-		RowLayout rl_grpContainerGroupForLibrary = new RowLayout(SWT.VERTICAL);
-		rl_grpContainerGroupForLibrary.fill = true;
-		grpContainerGroupForLibrary.setLayout(rl_grpContainerGroupForLibrary);
-		grpContainerGroupForLibrary.setVisible(false);
+		grpContainerGroupForLibrary.setLayout(new GridLayout(1, false));
 		
-		new GroupBrowseForFile(grpContainerGroupForLibrary,SWT.NONE,Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK,new String[] {"*.jar"},"Select file that contains the library", getTheLocalContainerPage());
+		CompositeBrowseForFile compLib = new CompositeBrowseForFile(grpContainerGroupForLibrary, SWT.NONE, Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK, new String[] { "*.jar" }, "Select file that contains the library", getTheLocalContainerPage());
+		compLib.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		
 		Button btnDoYouWishToUseTheGuidedMode = new Button(grpChooseTheMode, SWT.CHECK);
@@ -109,20 +106,20 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		getObjectForDataInNonGuidedMode().setGuidedModeChosen(btnDoYouWishToUseTheGuidedMode.getSelection());
 		
 		Group grpNonguidedMode = new Group(grpChooseTheMode, SWT.NONE);
-		grpNonguidedMode.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		grpNonguidedMode.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		grpNonguidedMode.setText("Non-Guided mode");
 		grpNonguidedMode.setVisible(false);
-		RowLayout rl_grpNonguidedMode = new RowLayout(SWT.VERTICAL);
-		rl_grpNonguidedMode.fill = true;
-		grpNonguidedMode.setLayout(rl_grpNonguidedMode);
+		grpNonguidedMode.setLayout(new GridLayout(1, false));
 		
-				
-		new GroupBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE, new String[] {"*.cfr"}, "Select cfr file that contains the Clafer features", getTheLocalContainerPage());
+		CompositeBrowseForFile compCfr = new CompositeBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE, new String[] { "*.cfr" }, "Select cfr file that contains the Clafer features", getTheLocalContainerPage());
+		compCfr.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		CompositeBrowseForFile compXsl = new CompositeBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE, new String[] { "*.xsl" }, "Select xsl file that contains the code details", getTheLocalContainerPage());
+		compXsl.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		CompositeBrowseForFile compJson = new CompositeBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE, new String[] { "*.json" }, "Select json file that contains the high level questions", getTheLocalContainerPage());
+		compJson.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
-		new GroupBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE, new String[] {"*.xsl"}, "Select xsl file that contains the code details", getTheLocalContainerPage());
-		
-		new GroupBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE, new String[] {"*.json"}, "Select json file that contains the high level questions", getTheLocalContainerPage());
-		
+		layout();
+
 		/* TODO removed for the user study.
 		Button btnForceGuidedMode = new Button(grpNonguidedMode, SWT.CHECK);
 		btnForceGuidedMode.setBounds(10, 118, 142, Constants.UI_WIDGET_HEIGHT_NORMAL);
@@ -213,19 +210,19 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		}
 		
 		if (tempName.equals("")) {
-			getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
+			getDecNameOfTheTask().setImage(UIConstants.DEC_ERROR);
 			getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_TASK_NAME);
 			
 			// Check if the page can be set to completed.
 			getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 		}else if (validString) {
-			getDecNameOfTheTask().setImage(Constants.DEC_REQUIRED);
+			getDecNameOfTheTask().setImage(UIConstants.DEC_REQUIRED);
 			getDecNameOfTheTask().setDescriptionText(Constants.MESSAGE_REQUIRED_FIELD);
 			
 			// Check if the page can be set to completed.
 			getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 		} else {
-			getDecNameOfTheTask().setImage(Constants.DEC_ERROR);
+			getDecNameOfTheTask().setImage(UIConstants.DEC_ERROR);
 			getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_DUPLICATE_TASK_NAME);
 			getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
 			

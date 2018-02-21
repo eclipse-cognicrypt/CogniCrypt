@@ -32,12 +32,7 @@ public class TaskIntegrationWizard extends Wizard {
 			Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD
 			));
 
-		this.addPage(
-			new PageForTaskIntegratorWizard(
-			Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION,
-			Constants.PAGE_TITLE_FOR_CLAFER_FILE_CREATION,
-			Constants.PAGE_DESCRIPTION_FOR_CLAFER_FILE_CREATION
-			));
+		this.addPage(new ClaferPage());
 
 		this.addPage(
 			new PageForTaskIntegratorWizard(

@@ -3,8 +3,6 @@
  */
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import org.eclipse.jface.window.Window;
@@ -14,7 +12,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -22,7 +19,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.MessageBox;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
@@ -30,10 +26,10 @@ import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeBrowseForFile;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
-import de.cognicrypt.codegenerator.taskintegrator.widgets.GroupBrowseForFile;
 
 /**
  * @author rajiv
@@ -42,7 +38,7 @@ import de.cognicrypt.codegenerator.taskintegrator.widgets.GroupBrowseForFile;
 public class PageForTaskIntegratorWizard extends WizardPage {
 
 	private CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard = null;
-	private CompositeToHoldGranularUIElements compositeToHoldGranularUIElements = null;
+	protected CompositeToHoldGranularUIElements compositeToHoldGranularUIElements = null;
 
 	private CompositeForXsl compositeForXsl = null;
 
@@ -69,99 +65,12 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		setControl(container);
 
 		// make the page layout two-column
+		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		container.setLayout(new GridLayout(2, false));
 
 		switch (this.getName()) {
 			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
-				container.setLayout(new FillLayout(SWT.HORIZONTAL));
-				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE, this));				
-				break;
-			case Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION:
-				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
-				// fill the available space on the with the big composite
-				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
-
-				Button btnAddFeature = new Button(container, SWT.NONE);
-				btnAddFeature.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
-				btnAddFeature.setText("Add Feature");
-				btnAddFeature.addSelectionListener(new SelectionAdapter() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-
-						counter++;
-						ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), compositeToHoldGranularUIElements.getClaferModel());
-						if (cfrFeatureDialog.open() == 0) {
-							ClaferFeature tempFeature = cfrFeatureDialog.getResult();
-							
-							// if features are missing, ask the user whether to implement them							
-							ClaferModel missingFeatures = compositeToHoldGranularUIElements.getClaferModel().getMissingFeatures(tempFeature);
-
-							if (!missingFeatures.getClaferModel().isEmpty()) {
-								MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.YES | SWT.NO);
-								dialog.setText("Additional features can be created");
-								dialog.setMessage("Some of the used features don't exist yet. Should we create them for you?");
-
-								if (dialog.open() == SWT.YES) {
-									compositeToHoldGranularUIElements.getClaferModel().implementMissingFeatures(tempFeature);
-								}
-							}
-
-							// Update the array list.							
-							compositeToHoldGranularUIElements.getClaferModel().add(tempFeature);
-							compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
-
-							// rebuild the UI
-							compositeToHoldGranularUIElements.updateClaferContainer();
-						}
-
-					}
-
-				});
-
-				Button importFeatures = new Button(container, SWT.NONE);
-				importFeatures.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
-				importFeatures.setText("Import Features");
-				importFeatures.addSelectionListener(new SelectionAdapter() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						ClaferImportDialog claferImportDialog = new ClaferImportDialog(getShell());
-						if (claferImportDialog.open() == 0) {
-							compositeToHoldGranularUIElements.getClaferModel().add(claferImportDialog.getResult());
-							compositeToHoldGranularUIElements.updateClaferContainer();
-						}
-						super.widgetSelected(e);
-					}
-				});
-				
-				Button exportFeatures = new Button(container, SWT.NONE);
-				exportFeatures.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
-				exportFeatures.setText("Export Features");
-				exportFeatures.addSelectionListener(new SelectionAdapter() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						FileDialog saveDialog = new FileDialog(getShell(), SWT.SAVE);
-						LocalDateTime date = LocalDateTime.now();
-						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HHmm");
-						saveDialog.setFileName(date.format(formatter) + ".dat");
-						String[] filterNames = new String[] { "CogniCrypt binary Clafer model (*.dat)", "Human-readable non-importable Clafer file (*.cfr)" };
-						String[] filterExtensions = new String[] { "*.dat", "*.cfr" };
-						saveDialog.setFilterNames(filterNames);
-						saveDialog.setFilterExtensions(filterExtensions);
-						String targetFilename = saveDialog.open();
-						if (targetFilename != null) {
-							if (targetFilename.endsWith(".dat")) {
-								compositeToHoldGranularUIElements.getClaferModel().toBinary(targetFilename);
-							} else if (targetFilename.endsWith(".cfr")) {
-								compositeToHoldGranularUIElements.getClaferModel().toFile(targetFilename);
-							}
-						}
-						super.widgetSelected(e);
-					}
-				});
-
+				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE, this));
 				break;
 			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:
 
@@ -263,7 +172,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				});
 				break;
 			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
-				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
+				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, this.getName()));
 				// fill the available space on the with the big composite
 				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -305,7 +214,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				});
 				break;
 			case Constants.PAGE_NAME_FOR_LINK_ANSWERS:
-				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, SWT.NONE, this.getName()));
+				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, this.getName()));
 				// fill the available space on the with the big composite
 				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 				break;
@@ -399,8 +308,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				
 				// Get the children of this group and iterate over them. These are the widgets that get the file data. This loop generalizes for all these widgets.
 				for (Control subGroup : ((Group)control).getChildren()) {					
-					if (subGroup instanceof GroupBrowseForFile) {
-						GroupBrowseForFile tempVaraiable = (GroupBrowseForFile) subGroup;
+					if (subGroup instanceof CompositeBrowseForFile) {
+						CompositeBrowseForFile tempVaraiable = (CompositeBrowseForFile) subGroup;
 						if ((tempVaraiable).getDecFilePath().getDescriptionText().contains(Constants.ERROR)) {
 							errorOnFileWidgets = true;
 						}

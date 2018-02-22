@@ -22,7 +22,8 @@ import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositePatternOrdere
 
 public class ClaferFeaturePatternDialog extends Dialog {
 
-	private Composite compositePatternDetails;
+	private Composite compositePatternDetailsContainer;
+	private CompositePattern compositePatternDetails;
 	private Combo comboPattern;
 	
 	private ClaferModel resultModel;
@@ -68,9 +69,9 @@ public class ClaferFeaturePatternDialog extends Dialog {
 			}
 		});
 
-		compositePatternDetails = new Composite(container, SWT.NONE);
-		compositePatternDetails.setLayout(new GridLayout(1, false));
-		compositePatternDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		compositePatternDetailsContainer = new Composite(container, SWT.NONE);
+		compositePatternDetailsContainer.setLayout(new GridLayout(1, false));
+		compositePatternDetailsContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
 		updatePatternDetailsComposite();
 
@@ -82,18 +83,18 @@ public class ClaferFeaturePatternDialog extends Dialog {
 
 		// TODO consider outsourcing patterns into a simple Map<String, PatternComposite>,
 		// where PatternComposite is an interface providing the appropriate getResult method
-		if (compositePatternDetails.getChildren().length > 0) {
-			compositePatternDetails.getChildren()[0].dispose();
+		if (compositePatternDetails != null) {
+			compositePatternDetails.dispose();
 		}
 		if (selectedPattern.equals("Enumeration")) {
-			CompositePatternEnum compositePatternEnum = new CompositePatternEnum(compositePatternDetails);
-			compositePatternEnum.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+			compositePatternDetails = new CompositePatternEnum(compositePatternDetailsContainer);
+			compositePatternDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		} else if (selectedPattern.equals("Ordered Enumeration")) {
-			CompositePatternOrderedEnum compositePatternOrderedEnum = new CompositePatternOrderedEnum(compositePatternDetails);
-			compositePatternOrderedEnum.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+			compositePatternDetails = new CompositePatternOrderedEnum(compositePatternDetailsContainer);
+			compositePatternDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		}
 
-		compositePatternDetails.layout();
+		compositePatternDetailsContainer.layout();
 	}
 
 	/**
@@ -121,9 +122,8 @@ public class ClaferFeaturePatternDialog extends Dialog {
 	}
 
 	private void saveResultModel() {
-		if (compositePatternDetails.getChildren().length > 0 && compositePatternDetails.getChildren()[0] instanceof CompositePattern) {
-			CompositePattern compositePatternEnum = (CompositePattern) compositePatternDetails.getChildren()[0];
-			resultModel = compositePatternEnum.getResultModel();
+		if (compositePatternDetails != null && compositePatternDetails instanceof CompositePattern) {
+			resultModel = compositePatternDetails.getResultModel();
 		} else {
 			Activator.getDefault().logError("Unknown return from the Clafer pattern dialog");
 		}

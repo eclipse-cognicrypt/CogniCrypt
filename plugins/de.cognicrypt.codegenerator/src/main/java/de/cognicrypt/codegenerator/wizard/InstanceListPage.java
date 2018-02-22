@@ -67,6 +67,9 @@ public class InstanceListPage extends WizardPage {
 	private Group instancePropertiesPanel;
 	private final TaskSelectionPage taskSelectionPage;
 	private Map<Question, Answer> constraints;
+	private Object algorithmCombinaton;
+	private DefaultAlgorithmPage defaultAlgorithmPage;
+	private InstanceListPage instanceListPage;
 
 	public InstanceListPage(final InstanceGenerator inst, Map<Question, Answer> constraints, final TaskSelectionPage taskSelectionPage) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
@@ -198,10 +201,8 @@ public class InstanceListPage extends WizardPage {
 			if (!selectedAlgorithm.equals(firstInstance)) {
 				//hide the help assist and the text if the selected algorithm is not the default algorithm
 				deco.hide();
-				infoText.setVisible(false);
 				backIcon.setEnabled(true);
 			} else {
-				infoText.setVisible(true);
 				deco.show();
 				//disable back button if the selected algorithm in the combo box is the first instance
 				backIcon.setEnabled(false);
@@ -297,33 +298,6 @@ public class InstanceListPage extends WizardPage {
 	}
 
 	/**
-	 * The user might select an algorithm configuration/instance from the combobox. This method returns the details of the currently selected algorithm, which is passed as a
-	 * parameter.
-	 *
-	 * @param inst
-	 *        instance currently selected in the combo box
-	 * @return details for chosen algorithm configuration
-	 */
-	private String getInstanceProperties(final InstanceClafer inst) {
-		final Map<String, String> algorithms = new HashMap<>();
-		for (final InstanceClafer child : inst.getChildren()) {
-			getInstanceDetails(child, algorithms);
-		}
-
-		final StringBuilder output = new StringBuilder();
-		for (final Map.Entry<String, String> entry : algorithms.entrySet()) {
-			final String key = entry.getKey();
-			final String value = entry.getValue();
-			if (!value.isEmpty()) {
-				output.append(key);
-				output.append(value);
-				output.append(Constants.lineSeparator);
-			}
-		}
-		return output.toString();
-	}
-
-	/**
 	 * Assembles code-preview text. 
 	 * @return code snippet
 	 */
@@ -353,10 +327,6 @@ public class InstanceListPage extends WizardPage {
 			return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
-		} finally {
-			File outputFolder = outputFile.getParentFile();
-			outputFolder.delete();
-			claferPreviewFile.delete();
 		}
 
 		return "";

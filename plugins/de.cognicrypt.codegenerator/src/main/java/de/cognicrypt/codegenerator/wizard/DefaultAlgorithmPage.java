@@ -49,6 +49,7 @@ import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
@@ -65,6 +66,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 	private final InstanceGenerator instanceGenerator;
 	private Map<Question, Answer> constraints;
 	private InstanceClafer value;
+	private String provider;
 
 	/**
 	 * Constructor for DefaultAlgorithmPage.
@@ -182,14 +184,82 @@ public class DefaultAlgorithmPage extends WizardPage {
 			return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
-		} finally {
-			File outputFolder = outputFile.getParentFile();
-			outputFolder.delete();
-			claferPreviewFile.delete();
-		}
+		} 
 		return "";
 	}
+	
+	public void getInstanceDetails(final InstanceClafer inst, final Map<String, String> algorithms) {
+		String value;
 
+		if (!inst.getType().getRef().getTargetType().isPrimitive()) {
+			String algo = Constants.ALGORITHM + " : " + ClaferModelUtils
+				.removeScopePrefix(inst.getType().getRef().getTargetType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + Constants.lineSeparator;
+			algorithms.put(algo, "");
+
+			final InstanceClafer instan = (InstanceClafer) inst.getRef();
+			for (final InstanceClafer in : instan.getChildren()) {
+				if (in.getType().getRef() != null && !in.getType().getRef().getTargetType().isPrimitive()) {
+					final String superName = ClaferModelUtils
+						.removeScopePrefix(in.getType().getRef().getTargetType().getSuperClafer().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
+					if (!superName.equals("Enum")) {
+						getInstanceDetails(in, algorithms);
+						continue;
+					}
+				}
+				value = "\t" + ClaferModelUtils.removeScopePrefix(
+					in.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
+				if (value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
+					value = value.substring(0, value.indexOf("->") - 1);
+					value = value.replaceAll("([a-z0-9])([A-Z])", "$1 $2");
+				}
+				// To get the provider of the instance
+				if (ClaferModelUtils.removeScopePrefix(in.getType().getName()).equals("Provider")) {
+					setProviderForInstance((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
+				}
+
+				value = value.replace("\n", "") + Constants.lineSeparator;	// having only one \n at the end of string
+				algorithms.put(algo, algorithms.get(algo) + value);
+			}
+			// Above for loop over children hasn't been executed, then following if
+			if (!instan.hasChildren()) {
+				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + inst.getRef().toString();
+				algo = algorithms.keySet().iterator().next();
+				algorithms.put(algo, algorithms.get(algo) + value);
+			}
+		}
+	}
+
+	String getInstanceProperties(final InstanceClafer inst) {
+		final Map<String, String> algorithms = new HashMap<>();
+		for (InstanceClafer child : inst.getChildren()) {
+			getInstanceDetails(child, algorithms);
+		}
+
+		StringBuilder output = new StringBuilder();
+		for (final Map.Entry<String, String> entry : algorithms.entrySet()) {
+			final String key = entry.getKey();
+			final String value = entry.getValue();
+			if (!value.isEmpty()) {
+				output.append(key);
+				output.append(value);
+				output.append(Constants.lineSeparator);
+			}
+		}
+		return output.toString().replaceAll("([a-z0-9])([A-Z])", "$1 $2");
+	}
+	
+	private void setProviderForInstance(String provider) {
+		this.provider = provider;
+}
+
+public String getProviderFromInstance() {
+	if (this.provider != null) {
+		return this.provider.replace("\n", "");
+	} else {
+		return "";
+	}
+}
+	
 	public TaskSelectionPage getTaskSelectionPage() {
 		return this.taskSelectionPage;
 	}

@@ -141,4 +141,10 @@ public class CompositePatternOrderedEnum extends CompositePattern {
 		return resultModel;
 	}
 
+	@Override
+	public boolean validate() {
+		// TODO Auto-generated method stub
+		return super.validate();
+	}
+
 }

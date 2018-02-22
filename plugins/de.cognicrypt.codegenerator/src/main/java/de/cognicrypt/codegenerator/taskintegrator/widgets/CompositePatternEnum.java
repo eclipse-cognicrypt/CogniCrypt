@@ -45,6 +45,7 @@ public class CompositePatternEnum extends CompositePattern {
 					public void modifyText(ModifyEvent arg0) {
 						strOption.delete(0, strOption.length());
 						strOption.append(txtOption.getText());
+						CompositePatternEnum.this.notifyListeners(SWT.Selection, null);
 
 					}
 				});
@@ -60,10 +61,14 @@ public class CompositePatternEnum extends CompositePattern {
 						btnRemove.dispose();
 						options.remove(strOption);
 
+						CompositePatternEnum.this.notifyListeners(SWT.Selection, null);
+
 						compositeOptions.layout();
 						super.widgetSelected(e);
 					}
 				});
+
+				CompositePatternEnum.this.notifyListeners(SWT.Selection, null);
 
 				compositeOptions.layout();
 				compositeScrolledOptions.setMinSize(compositeOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -92,6 +97,12 @@ public class CompositePatternEnum extends CompositePattern {
 			resultModel.add(new ClaferFeature(Constants.FeatureType.CONCRETE, sb.toString(), patternName));
 		}
 		return resultModel;
+	}
+
+	@Override
+	public boolean validate() {
+		// TODO Auto-generated method stub
+		return super.validate();
 	}
 
 }

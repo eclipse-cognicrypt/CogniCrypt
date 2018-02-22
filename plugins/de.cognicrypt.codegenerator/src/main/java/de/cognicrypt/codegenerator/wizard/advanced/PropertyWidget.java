@@ -103,7 +103,6 @@ public class PropertyWidget {
 	 */
 	public PropertyWidget(final Composite container, final AstClafer parentClafer, final AstConcreteClafer childClafer, final String propertyName, final int selection, final int min, final int max, final int digits, final int increment, final int pageincrement) {
 		GridLayout layout = new GridLayout(5, false);
-		//layout.marginLeft = 50;
 		container.setLayout(layout);
 		setChildClafer(childClafer);
 		setParentClafer(parentClafer);
@@ -133,7 +132,7 @@ public class PropertyWidget {
 			} else {
 				//if the checkbox belongs to outermost group, then it needs more indentation 
 				//to align properly with the combo boxes of inner groups 
-				emptySpace.setText("	   ");
+				emptySpace.setText("	  ");
 			}
 		}
 

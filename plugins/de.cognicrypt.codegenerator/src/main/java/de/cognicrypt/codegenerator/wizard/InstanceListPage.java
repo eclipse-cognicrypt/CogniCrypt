@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.transform.TransformerException;
@@ -15,6 +14,7 @@ import javax.xml.transform.TransformerException;
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -41,8 +41,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Activator;
@@ -69,14 +69,14 @@ public class InstanceListPage extends WizardPage {
 	private Map<Question, Answer> constraints;
 	private Object algorithmCombinaton;
 	private DefaultAlgorithmPage defaultAlgorithmPage;
-	private InstanceListPage instanceListPage;
 
-	public InstanceListPage(final InstanceGenerator inst, Map<Question, Answer> constraints, final TaskSelectionPage taskSelectionPage) {
+	public InstanceListPage(final InstanceGenerator inst, Map<Question, Answer> constraints, final TaskSelectionPage taskSelectionPage, final DefaultAlgorithmPage defaultAlgorithmPage) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
 		setTitle("Possible solutions for task: " + taskSelectionPage.getSelectedTask().getDescription());
 		setDescription(Constants.DESCRIPTION_INSTANCE_LIST_PAGE);
 		this.instanceGenerator = inst;
 		this.taskSelectionPage = taskSelectionPage;
+		this.defaultAlgorithmPage = defaultAlgorithmPage;
 		this.constraints = constraints;
 	}
 
@@ -90,7 +90,7 @@ public class InstanceListPage extends WizardPage {
 
 		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		
+
 		ComboViewer algorithmClass;
 		Label labelInstanceList;
 		this.control = new Composite(sc, SWT.NONE);
@@ -107,9 +107,12 @@ public class InstanceListPage extends WizardPage {
 		labelInstanceList.setText(Constants.instanceList);
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
 		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
-		final String firstInstance = inst.keySet().toArray()[0].toString();
-		final Combo combo = algorithmClass.getCombo();
-		final String key = this.instanceGenerator.getAlgorithmName();
+		String firstInstance = inst.keySet().toArray()[0].toString();
+		Combo combo = algorithmClass.getCombo();
+
+		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
+		algorithmClass.setInput(inst.keySet());
+		String key = instanceGenerator.getAlgorithmName();
 
 		int count = combo.getItemCount();
 		int variationCount = instanceGenerator.getAlgorithmCount();
@@ -122,10 +125,14 @@ public class InstanceListPage extends WizardPage {
 		setAlgorithmCombinations(algorithmClass.getInput());
 
 		//Display help assist for the first instance in the combo box
-		final ControlDecoration deco = new ControlDecoration(combo, SWT.TOP | SWT.RIGHT);
-		final Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage();
-
-		deco.setDescriptionText(Constants.DEFAULT_ALGORITHM_NOTIFICATION);
+		new Label(control, SWT.NONE);
+		new Label(control, SWT.NONE);
+		Text infoText = new Text(control, SWT.BORDER | SWT.WRAP);
+		infoText.setText(Constants.DEFAULT_ALGORITHM_NOTIFICATION);
+		infoText.setEditable(false);
+		infoText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		final ControlDecoration deco = new ControlDecoration(infoText, SWT.RIGHT);
+		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage();
 		deco.setImage(image);
 		deco.setShowOnlyOnFocus(false);
 
@@ -191,7 +198,7 @@ public class InstanceListPage extends WizardPage {
 			final String selectedAlgorithm = selection.getFirstElement().toString();
 			setValue(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm));
 			InstanceListPage.this.instanceDetails
-			.setText(defaultAlgorithmPage.getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
+				.setText(defaultAlgorithmPage.getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
 			int index = combo.getSelectionIndex();
 			if (count > variationCount) {
 				algorithmVariation.setText("  Solution  " + (index + 1) + " / " + String.format("%d  ", count));
@@ -201,8 +208,10 @@ public class InstanceListPage extends WizardPage {
 			if (!selectedAlgorithm.equals(firstInstance)) {
 				//hide the help assist and the text if the selected algorithm is not the default algorithm
 				deco.hide();
+				infoText.setVisible(false);
 				backIcon.setEnabled(true);
 			} else {
+				infoText.setVisible(true);
 				deco.show();
 				//disable back button if the selected algorithm in the combo box is the first instance
 				backIcon.setEnabled(false);
@@ -217,8 +226,6 @@ public class InstanceListPage extends WizardPage {
 				setPageComplete(true);
 			}
 		});
-		new Label(this.control, SWT.NONE);
-		new Label(this.control, SWT.NONE);
 
 		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
 		GridLayout gridLayout = new GridLayout();
@@ -244,20 +251,33 @@ public class InstanceListPage extends WizardPage {
 
 		final ISelection selection = new StructuredSelection(inst.keySet().toArray()[0]);
 		algorithmClass.setSelection(selection);
-		new Label(this.control, SWT.NONE);
+		new Label(control, SWT.NONE);
 
 		final Composite composite = new Composite(control, SWT.NONE);
 		composite.setLayout(new GridLayout(1, false));
 
 		//Button to View the code that will be generated into the Java project
+		InstanceListPage instanceListPage = this;
+		Button codePreviewButton = new Button(composite, SWT.NONE);
+		GridData gd_codePreviewButton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_codePreviewButton.widthHint = 149;
+		codePreviewButton.setLayoutData(gd_codePreviewButton);
+		codePreviewButton.setText(Constants.LABEL_CODE_PREVIEW_BUTTON);
+		codePreviewButton.addListener(SWT.Selection, new Listener() {
 
-		final Button codePreviewButton = new Button(this.control, SWT.NONE);
-		codePreviewButton.setText("Code Preview");
-		codePreviewButton.addListener(SWT.Selection, event -> {
-			final MessageBox messageBox = new MessageBox(new Shell(), SWT.OK);
-			messageBox.setText("Code Preview");
-			messageBox.setMessage(compileCodePreview());
-			messageBox.open();
+			@Override
+			public void handleEvent(Event event) {
+				//Opens a new wizard to show the code preview 
+				final WizardDialog dialog = new WizardDialog(new Shell(), new CodePreviewWizard(instanceListPage, instanceGenerator)) {
+
+					@Override
+					protected void configureShell(Shell newShell) {
+						super.configureShell(newShell);
+						newShell.setSize(650, 500);
+					}
+				};
+				dialog.open();
+			}
 		});
 
 		new Label(composite, SWT.NONE);
@@ -284,7 +304,6 @@ public class InstanceListPage extends WizardPage {
 					}
 				};
 				dialog.open();
-
 			}
 		});
 		new Label(control, SWT.NONE);
@@ -298,7 +317,8 @@ public class InstanceListPage extends WizardPage {
 	}
 
 	/**
-	 * Assembles code-preview text. 
+	 * Assembles code-preview text.
+	 * 
 	 * @return code snippet
 	 */
 	public String compileCodePreview() {
@@ -313,7 +333,7 @@ public class InstanceListPage extends WizardPage {
 			Activator.getDefault().logError(e, Constants.TransformerErrorMessage);
 			return "";
 		}
-		
+
 		final Path file = new File(temporaryOutputFile).toPath();
 		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 			final StringBuilder sb = new StringBuilder();

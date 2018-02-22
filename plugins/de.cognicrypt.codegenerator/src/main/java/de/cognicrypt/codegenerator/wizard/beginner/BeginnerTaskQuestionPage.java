@@ -339,20 +339,21 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				Color red = display.getSystemColor(SWT.COLOR_RED);
 				mandatory.setText("*");
 				mandatory.setForeground(red);
-				final Text inputField = new Text(container, SWT.BORDER );
+				final Text inputField = new Text(container, SWT.BORDER);
 				inputField.setLayoutData(new GridData(100, SWT.DEFAULT));
 				inputField.setToolTipText(question.getTooltip());
 
 				//Adding Browse Button for text field that expects a path as input
-				if(question.getTextType().equals(Constants.BROWSE)){
+				if (question.getTextType().equals(Constants.BROWSE)) {
 					inputField.setLayoutData(new GridData(300, SWT.DEFAULT));
 
 					Button browseButton = new Button(container, SWT.PUSH);
-					browseButton.setText(Constants.LABEL_BROWSE_BUTTON);
+					browseButton.setText(Constants.BROWSE);
 					browseButton.addSelectionListener(new SelectionAdapter() {
+
 						public void widgetSelected(SelectionEvent e) {
 							FileDialog fileDialog = new FileDialog(getShell(), SWT.NULL);
-							fileDialog.setFilterExtensions(new String[] {"*.jks" });
+							fileDialog.setFilterExtensions(new String[] { "*.jks" });
 							String path = fileDialog.open();
 							if (path != null) {
 								inputField.setText(path);
@@ -360,8 +361,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						}
 					});
 					text(question, inputField);
-				}					
-				else if(question.getTextType().equals(Constants.PASSWORD)) {
+				} else if (question.getTextType().equals(Constants.PASSWORD)) {
 					inputField.setLayoutData(new GridData(120, SWT.DEFAULT));
 					inputField.setEchoChar((char) 0x25cf);
 
@@ -370,20 +370,20 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					checkBox.setText(Constants.SHOW_PASSWORD_CHECKBOX);
 					checkBox.setSelection(false);
 					checkBox.addSelectionListener(new SelectionAdapter() {
+
 						@Override
 						public void widgetSelected(SelectionEvent e) {
-							if(checkBox.getSelection() == true){
-								inputField.setEchoChar( '\0' );
-							} else {	
+							if (checkBox.getSelection() == true) {
+								inputField.setEchoChar('\0');
+							} else {
 								inputField.setEchoChar((char) 0x25cf);
-							}					
+							}
 						}
 					});
 					text(question, inputField);
-				}
-				else if(question.getTextType().equals(Constants.INTEGER))
-				{
+				} else if (question.getTextType().equals(Constants.INTEGER)) {
 					inputField.addListener(SWT.Verify, new Listener() {
+
 						public void handleEvent(Event e) {
 							String string = e.text;
 							char[] chars = new char[string.length()];
@@ -397,48 +397,45 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						}
 					});
 
-					text(question, inputField);	
-				}	
-				else if(question.getTextType().equals(Constants.PORT_NUMBER))
-				{
+					text(question, inputField);
+				} else if (question.getTextType().equals(Constants.PORT_NUMBER)) {
 					inputField.setToolTipText(Constants.PORT_NUMBER_TOOLTIP);
-					inputField.addVerifyListener(new VerifyListener() {  
-						@Override  
+					inputField.addVerifyListener(new VerifyListener() {
+
+						@Override
 						public void verifyText(VerifyEvent e) {
-							String currentText = ((Text)e.widget).getText();
-							String port =  currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
-							try{  
-								int portNum = Integer.valueOf(port);  
-								if(portNum <0 || portNum > 65535){  
-									e.doit = false;  
-								}  
-							}  
-							catch(NumberFormatException ex){  
-								if(!port.equals(""))
-									e.doit = false;  
-							}  
-						}  
+							String currentText = ((Text) e.widget).getText();
+							String port = currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
+							try {
+								int portNum = Integer.valueOf(port);
+								if (portNum < 0 || portNum > 65535) {
+									e.doit = false;
+								}
+							} catch (NumberFormatException ex) {
+								if (!port.equals(""))
+									e.doit = false;
+							}
+						}
 					});
 					text(question, inputField);
-				}
-				else if(question.getTextType().equals(Constants.IP_ADDRESS))
-				{	
+				} else if (question.getTextType().equals(Constants.IP_ADDRESS)) {
 					inputField.setToolTipText(Constants.IP_ADDRESS_TOOLTIP);
-					inputField.addVerifyListener(new VerifyListener() {  
-						@Override  
+					inputField.addVerifyListener(new VerifyListener() {
+
+						@Override
 						public void verifyText(VerifyEvent e) {
-							String currentText = ((Text)e.widget).getText();
-							String ip =  currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
-							try{   
-								if(ip!=null && !ip.isEmpty() ){
-									String [] ipAddress = ip.split("\\.");
-									if(ipAddress.length > 4 ){
-										e.doit= false;					                    
+							String currentText = ((Text) e.widget).getText();
+							String ip = currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
+							try {
+								if (ip != null && !ip.isEmpty()) {
+									String[] ipAddress = ip.split("\\.");
+									if (ipAddress.length > 4) {
+										e.doit = false;
 									}
-									for(int i=0;i<=ipAddress.length-1;i++){
-										int j=Integer.parseInt(ipAddress[i]);
-										if(j<0 || j>255){
-											e.doit= false;
+									for (int i = 0; i <= ipAddress.length - 1; i++) {
+										int j = Integer.parseInt(ipAddress[i]);
+										if (j < 0 || j > 255) {
+											e.doit = false;
 										}
 									}
 									if (ipAddress.length == 4) {
@@ -446,34 +443,23 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 											e.doit = false;
 										}
 									}
-									if ( ip.endsWith("..") ) {
-										e.doit= false;
+									if (ip.endsWith("..")) {
+										e.doit = false;
 									}
-									if ( ip.startsWith(".") ) {
-										e.doit= false;
+									if (ip.startsWith(".")) {
+										e.doit = false;
 									}
 								}
-							}  
-							catch(NumberFormatException ex){  
-								if(!ip.equals(""))
-									e.doit = false;  
-							}  
-						}  
+							} catch (NumberFormatException ex) {
+								if (!ip.equals(""))
+									e.doit = false;
+							}
+						}
 					});
 					text(question, inputField);
 				} else {
-					text(question, inputField);	
+					text(question, inputField);
 				}
-				inputField.addModifyListener(e -> {
-					final Answer a = question.getDefaultAnswer();
-					final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?\\\\-])", "\\\\");
-					a.setValue(cleanedInput);
-					a.getCodeDependencies().get(0).setValue(cleanedInput);
-					this.finish = !cleanedInput.isEmpty();
-					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
-					question.setEnteredAnswer(a);
-					BeginnerTaskQuestionPage.this.setPageComplete(isPageComplete());
-				});
 				break;
 
 			case itemselection:
@@ -482,7 +468,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				compositeControl.setLayoutData(gridData);
 				compositeControl.setLayout(new GridLayout(4, false));
 
-				final org.eclipse.swt.widgets.List itemList = new org.eclipse.swt.widgets.List(compositeControl,SWT.LEFT | SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+				final org.eclipse.swt.widgets.List itemList = new org.eclipse.swt.widgets.List(compositeControl, SWT.LEFT | SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
 				GridData myGrid = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 				myGrid.widthHint = 270;
 				myGrid.heightHint = 180;
@@ -491,7 +477,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				final Composite composite = new Composite(compositeControl, SWT.NONE);
 				composite.setLayout(new GridLayout(1, false));
 
-				final Button moveRightButton = new Button(composite, SWT.TOP );
+				final Button moveRightButton = new Button(composite, SWT.TOP);
 				final Button moveLeftButton = new Button(composite, SWT.BOTTOM);
 
 				moveRightButton.setText("  -Select->  ");
@@ -499,11 +485,11 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				moveRightButton.setEnabled(false);
 				moveLeftButton.setEnabled(false);
 
-				final org.eclipse.swt.widgets.List selectedItemList = new org.eclipse.swt.widgets.List(compositeControl, SWT.RIGHT| SWT.BORDER | SWT.MULTI | SWT.V_SCROLL );
+				final org.eclipse.swt.widgets.List selectedItemList = new org.eclipse.swt.widgets.List(compositeControl, SWT.RIGHT | SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
 				myGrid = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 				myGrid.widthHint = 270;
 				myGrid.heightHint = 180;
-				selectedItemList.setLayoutData(myGrid);								
+				selectedItemList.setLayoutData(myGrid);
 
 				for (final String value : this.selectionValues) {
 					itemList.add(value);

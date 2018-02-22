@@ -65,6 +65,7 @@ public class CompareAlgorithmPage extends WizardPage {
 	private String algorithmSelectedFirst;
 	private Text notifyText;
 	private String algorithmSelected;
+
 	public CompareAlgorithmPage(InstanceListPage instanceListPage, InstanceGenerator instanceGenerator) {
 		super(Constants.COMPARE_ALGORITHM_PAGE);
 		setTitle(Constants.COMPARE_TITLE);
@@ -144,10 +145,9 @@ public class CompareAlgorithmPage extends WizardPage {
 			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmFirst));
 			CompareAlgorithmPage.this.firstInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmFirst)));
 			setHighlightFirst(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmFirst)));
-			if(!selectedAlgorithmFirst.equals(selectedAlgorithmSecond)){
+			if (!selectedAlgorithmFirst.equals(selectedAlgorithmSecond)) {
 				notifyText.setVisible(false);
-			}
-			else{
+			} else {
 				notifyText.setVisible(true);
 			}
 			compareHighlight();
@@ -188,10 +188,9 @@ public class CompareAlgorithmPage extends WizardPage {
 			setValue(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmSecond));
 			CompareAlgorithmPage.this.secondInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmSecond)));
 			setHighlightSecond(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmSecond)));
-			if(!selectedAlgorithmFirst.equals(selectedAlgorithmSecond)){
+			if (!selectedAlgorithmFirst.equals(selectedAlgorithmSecond)) {
 				notifyText.setVisible(false);
-			}
-			else{
+			} else {
 				notifyText.setVisible(true);
 			}
 			compareHighlight();
@@ -240,11 +239,10 @@ public class CompareAlgorithmPage extends WizardPage {
 		return output.toString();
 	}
 
-	private void getInstanceDetails(final InstanceClafer inst, final Map<String, String> algorithms) {
+	public void getInstanceDetails(final InstanceClafer inst, final Map<String, String> algorithms) {
 		String value;
 
 		if (!inst.getType().getRef().getTargetType().isPrimitive()) {
-			//line separators (\r\n)
 			String algo = Constants.ALGORITHM + " : " + ClaferModelUtils
 				.removeScopePrefix(inst.getType().getRef().getTargetType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + Constants.lineSeparator;
 			algorithms.put(algo, "");
@@ -265,14 +263,13 @@ public class CompareAlgorithmPage extends WizardPage {
 					value = value.substring(0, value.indexOf("->") - 1);
 					value = value.replaceAll("([a-z0-9])([A-Z])", "$1 $2");
 				}
+
 				value = value.replace("\n", "") + Constants.lineSeparator;	// having only one \n at the end of string
 				algorithms.put(algo, algorithms.get(algo) + value);
 			}
 			// Above for loop over children hasn't been executed, then following if
 			if (!instan.hasChildren()) {
-				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + inst.getRef().toString()
-					.replace("\"", "");
-				value = value.replace("\n", "") + Constants.lineSeparator;
+				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + inst.getRef().toString();
 				algo = algorithms.keySet().iterator().next();
 				algorithms.put(algo, algorithms.get(algo) + value);
 			}
@@ -286,17 +283,16 @@ public class CompareAlgorithmPage extends WizardPage {
 		String secondAlgorithmHighlight = getHighlightSecond();
 		Color cyan = display.getSystemColor(SWT.COLOR_CYAN);
 		Color transparent = display.getSystemColor(SWT.COLOR_TRANSPARENT);
-		int n, m;
 
-		String[] partFirstInstanceDetails = firstAlgorithmHighlight.split("\n\r\n");
-		String[] partSecondInstanceDetails = secondAlgorithmHighlight.split("\n\r\n");
+		String[] partFirstInstanceDetails = firstAlgorithmHighlight.split("\r\n\r\n");
+		String[] partSecondInstanceDetails = secondAlgorithmHighlight.split("\r\n\r\n");
 
 		String[] lines1;
 		String[] lines2;
-		
+
 		String[] firstHalf1;
 		String[] firstHalf2;
-		
+
 		/*
 		 * The two windows are being declared into 2 separate ArrayLists in the following section. Each ArrayList is a collection of LinkedHashMaps which contains each of the
 		 * blocks of data. Each line in the block are arranged as key value pairs in the LinkedHashMap
@@ -389,9 +385,8 @@ public class CompareAlgorithmPage extends WizardPage {
 			t = t + firstPart.get(x).size() + 1;
 
 		}
-		
+
 	}
-			
 
 	public String getText1() {
 		return text1.getText();
@@ -432,7 +427,7 @@ public class CompareAlgorithmPage extends WizardPage {
 	public String getHighlightSecond() {
 		return this.algorithmSelectedSecond;
 	}
-	
+
 	public void setSelectedAlgorithmFirst(final String algorithmSelected) {
 		this.algorithmSelected = algorithmSelected;
 	}
@@ -440,6 +435,7 @@ public class CompareAlgorithmPage extends WizardPage {
 	public String getSelectedAlgorithmFirst() {
 		return this.algorithmSelected;
 	}
+
 	public void setSelectedAlgorithmSecond(final String algorithmSelected) {
 		this.algorithmSelected = algorithmSelected;
 	}
@@ -448,5 +444,5 @@ public class CompareAlgorithmPage extends WizardPage {
 		return this.algorithmSelected;
 
 	}
-	
+
 }

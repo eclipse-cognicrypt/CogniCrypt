@@ -36,21 +36,23 @@ public class MethodSelectorPage extends WizardPage {
 		Composite container = new Composite(parent, SWT.NULL);
 		setControl(container);
 		container.setLayout(new GridLayout(2, false));
-
-		question = new Label(container, SWT.NULL);
-		question.setText("Select the encryption method:");
-
-		Combo combo = new Combo(container, SWT.NONE);
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-
-		Label lblSelectTheDecryption = new Label(container, SWT.NONE);
-		lblSelectTheDecryption.setText("Select the decryption method:");
+				new Label(container, SWT.NONE);
 		
-				Combo combo_1 = new Combo(container, SWT.NONE);
-				combo_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-				combo_1.add(this.javaFile.getName());
+				question = new Label(container, SWT.NULL);
+				question.setText("Select the encryption method:");
+		
+				Combo combo = new Combo(container, SWT.NONE);
+				combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+				new Label(container, SWT.NONE);
+						new Label(container, SWT.NONE);
+				
+						Label lblSelectTheDecryption = new Label(container, SWT.NONE);
+						lblSelectTheDecryption.setText("Select the decryption method:");
+				
+						Combo combo_1 = new Combo(container, SWT.NONE);
+						combo_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+						combo_1.add(this.javaFile.getName());
 	
 		
 	}

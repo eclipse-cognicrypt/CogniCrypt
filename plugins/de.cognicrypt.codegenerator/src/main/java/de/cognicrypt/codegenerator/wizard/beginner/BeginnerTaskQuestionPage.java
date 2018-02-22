@@ -178,8 +178,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		container = new Composite(sc, SWT.NONE);
-		container.setBounds(10, 10, 450, 200);
+		this.container = new Composite(sc, SWT.NONE);
+		this.container.setBounds(10, 10, 450, 200);
 		// Updated the number of columns to order the questions vertically.
 		final GridLayout layout = new GridLayout(1, false);
 
@@ -334,6 +334,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 
 			case text:
+				
 				Display display = Display.getCurrent();
 				Label mandatory = new Label(container, SWT.NONE);
 				Color red = display.getSystemColor(SWT.COLOR_RED);

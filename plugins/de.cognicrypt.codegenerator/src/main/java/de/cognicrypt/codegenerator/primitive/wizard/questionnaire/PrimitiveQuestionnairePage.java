@@ -117,7 +117,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, final PrimitiveQuestionnaire PrimitiveQuestionnaire, final List<String> selectionValues, int iteration) {
 		super("Display Questions");
 		setTitle("Integrating a new primitive: " + primitive.getName());
-		setDescription("Entering data related to the primitive");
+		setDescription("Please enter the following data related to the primitive.");
 		this.PrimitiveQuestionnaire = PrimitiveQuestionnaire;
 		this.quest = null;
 		this.page = page;
@@ -129,8 +129,8 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, int iteration) {
 		super("Display Questions");
-		setTitle("Integrating a new primitive: " + primitive.getName());
-		setDescription("Entering data related to the primitive");
+		setTitle("Integrating new Primitive: " + primitive.getName());
+		setDescription("Please enter the following data related to the primitive.");
 		this.page = page;
 		this.primitive = primitive;
 		this.iteration = iteration;
@@ -151,9 +151,10 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		// Updated the number of columns to order the questions vertically.
 		final GridLayout layout = new GridLayout(1, false);
 		GridData gridData = new GridData();
-		gridData.widthHint = 150;
-		container.setLayout(layout);
+		gridData.widthHint = 100;
 		container.setLayoutData(gridData);
+		container.setLayout(layout);
+
 		// If legacy JSON files are in effect.
 		if (page == null) {
 			createQuestionControl(container, this.quest);
@@ -161,8 +162,14 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		} else {
 			// loop through the questions that are to be displayed on the page.
 			for (Question question : page.getContent()) {
+//				Composite c = new Composite(container, SWT.NONE);
+//				GridLayout gl = new GridLayout(1, false);
+//				c.setLayout(gl);
+//				GridData gridData = new GridData(SWT.FILL, SWT.FILL , true, false);
+//				
+//				c.setLayoutData(gridData);				
 				createQuestionControl(container, question);
-				
+
 			}
 		}
 
@@ -174,13 +181,14 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		pageUtility = new PrimitiveQuestionPageUtility();
 		final List<Answer> answers = question.getAnswers();
 		final Composite container = getPanel(parent);
+		container.setLayout(new GridLayout(2, false));
 		final Label label = new Label(container, SWT.TOP);
+		GridData gridData = new GridData();
+		gridData.widthHint = 280;
+		label.setLayoutData(gridData);
 		label.setText(question.getQuestionText());
 		switch (question.getElement()) {
 			case combo:
-//				new Label(container, SWT.NONE);
-//				new Label(container, SWT.NONE);
-//				new Label(container, SWT.NONE);
 				final ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY);
 				comboViewer.setContentProvider(ArrayContentProvider.getInstance());
 				comboViewer.setInput(answers);
@@ -205,11 +213,19 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				break;
 			case checkbox:
 				new Label(container, SWT.NULL);
-				container.setLayout(new RowLayout(SWT.VERTICAL));
+				new Label(container, SWT.NULL);
+				new Label(container, SWT.NULL);
+				Composite container_1 = new Composite(container, SWT.NULL);				
+				container_1.setLayout(new GridLayout(2, false));
+				//container_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+				//container_1.setLayout(new RowLayout(SWT.VERTICAL));
+				Label[] emptySpace = new Label[answers.size()];
 				Button[] checkbox = new Button[answers.size()];
-				for (int i = 0; i < answers.size(); i++) {
+				for (int i = 0; i < answers.size(); i++) {					
 					String ans = answers.get(i).getValue();
-					checkbox[i] = new Button(container, SWT.CHECK);
+					emptySpace[i] =  new Label(container_1, SWT.NONE);
+					emptySpace[i].setText("     ");
+					checkbox[i] = new Button(container_1, SWT.CHECK);
 					checkbox[i].setText(ans);
 					checkbox[i].addSelectionListener(new SelectionAdapter() {
 
@@ -224,7 +240,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 								if (selectedValue.isEmpty()) {
 									selectedValue = source.getText();
 									selectionMap.put(claferDepend, selectedValue);
-									//									
+															
 
 								} else if (!selectedValue.contains(source.getText())) {
 									selectedValue += "|" + source.getText();
@@ -243,15 +259,11 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				}
 
 				break;
-			case text:
-//				new Label(container, SWT.NONE);
-//				new Label(container, SWT.NONE);
-//				new Label(container, SWT.NONE);
-				GridData data = new GridData(SWT.FILL, SWT.FILL, true, false);
-				//data.widthHint = 100;
-				final Text inputField = new Text(container, SWT.BORDER);
-				//				inputField.setSize(500, inputField.getSize().y);
-				inputField.setLayoutData(data);
+				
+			case text:				
+				final Text inputField = new Text(container, SWT.BORDER | SWT.FILL);
+				//inputField.setSize(500, inputField.getSize().y);				
+				inputField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 				if (question.getEnteredAnswer() != null) {
 					this.finish = !inputField.getText().isEmpty();
 					PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
@@ -261,8 +273,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 					if (claferDepend.equals(Constants.BLOCK_SIZE)) {
 						inputField.addVerifyListener(verifyDecimal);
 						//data.widthHint = 50;
-						GridData data1 = new GridData(SWT.FILL, SWT.FILL, true, false);
-						inputField.setLayoutData(data1);
 					}
 
 					inputField.addModifyListener(e -> {
@@ -303,18 +313,13 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				this.finish = true;
 				PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
 				break;
+				
 			case textarea:
-//				new Label(container, SWT.NONE);
-//				new Label(container, SWT.NONE);
-//				new Label(container, SWT.NONE);
-				final Text inputDescription = new Text(container, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL );
-				//inputDescription.setSize(150, inputDescription.getSize().y);
-				// Define a minimum width
-				final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
-				gridData.widthHint = 230;
-				gridData.heightHint = 60;
-				inputDescription.setLayoutData(gridData);
-				//inputDescription.setAlwaysShowScrollBars(false);
+				final Text inputDescription = new Text(container, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
+				//inputDescription.setBounds(30, 40, 260, 80);
+				GridData gridData_1 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+				gridData_1.heightHint = 124;
+				inputDescription.setLayoutData(gridData_1);
 				inputDescription.addModifyListener(new ModifyListener() {
 
 					@Override

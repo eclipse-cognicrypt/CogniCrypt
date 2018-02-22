@@ -219,11 +219,11 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		}
 		return (pageName.equals(Constants.METHODS_SELECTION_PAGE));
 	}
-	public boolean performCancel() {
-		boolean ans = MessageDialog.openConfirm(getShell(), "Confirmation", "Are you sure to close without integrating the new primitve?");
-		if (ans)
-			return true;
-		else
-			return false;
-	}
+//	public boolean performCancel() {
+//		boolean ans = MessageDialog.openConfirm(getShell(), "Confirmation", "Are you sure to close without integrating the new primitve?");
+//		if (ans)
+//			return true;
+//		else
+//			return false;
+//	}
 }

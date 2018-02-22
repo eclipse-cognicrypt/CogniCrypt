@@ -44,9 +44,10 @@ public class JavaProjectBrowserPage extends WizardPage {
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		Label question = new Label(container, SWT.NULL);
-		question.setText("Select a Java Project:");
+		question.setText("Select a Java Project: ");
 		
 				text = new Text(container, SWT.BORDER | SWT.READ_ONLY);
+				text.setEditable(true);
 				//gd_text.widthHint = 107;
 				text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 				text.addModifyListener(e -> {

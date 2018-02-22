@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Text;
 
 public class PrimitiveSelectionPage extends WizardPage {
 
@@ -31,7 +32,7 @@ public class PrimitiveSelectionPage extends WizardPage {
 	public PrimitiveSelectionPage() {
 		super("wizardPage");
 		setTitle("Primitive Integration");
-		setDescription("Algorithm Type");
+		setDescription("Please select the type of the algorithm that you wish to integrate.");
 	}
 
 	/**
@@ -52,12 +53,14 @@ public class PrimitiveSelectionPage extends WizardPage {
 		new Label(container, SWT.NONE);
 		
 				Label lblPleaseChooseThe = new Label(container, SWT.NONE);
-				lblPleaseChooseThe.setText("Please choose the type of algorithm:");
+				lblPleaseChooseThe.setText("Select the Algorithm type:  ");
 		new Label(container, SWT.NONE);
 		
 				this.primitiveComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
 				Combo combo = primitiveComboSelection.getCombo();
-				combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+				GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+				gd_combo.widthHint = 205;
+				combo.setLayoutData(gd_combo);
 				this.primitiveComboSelection.setContentProvider(ArrayContentProvider.getInstance());
 				this.primitiveComboSelection.setLabelProvider(new LabelProvider() {
 

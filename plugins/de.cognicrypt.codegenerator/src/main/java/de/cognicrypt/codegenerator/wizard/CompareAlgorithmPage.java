@@ -64,7 +64,8 @@ public class CompareAlgorithmPage extends WizardPage {
 	private String algorithmSelectedSecond;
 	private String algorithmSelectedFirst;
 	private Text notifyText;
-	private String algorithmSelected;
+	private String algorithmSelected;	
+	
 	public CompareAlgorithmPage(InstanceListPage instanceListPage, InstanceGenerator instanceGenerator) {
 		super(Constants.COMPARE_ALGORITHM_PAGE);
 		setTitle(Constants.COMPARE_TITLE);

@@ -199,7 +199,9 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		//Create Provider jarFile 
 		File folder = Utils.getResourceFromWithin(Constants.TransformedFiles);
 		File[] listOfFiles = (folder).listFiles();
-		
+
+		String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" };
+		providerJar.createManifest("Ahmed", classPaths);
 		providerJar.createJarArchive(new File("C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\test.jar"),
 			listOfFiles);
 

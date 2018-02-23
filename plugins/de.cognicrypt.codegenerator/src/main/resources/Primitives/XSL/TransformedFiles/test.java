@@ -30,14 +30,14 @@ public class AhmedCipher extends CipherSpi {
 
 	@Override
 	 protected void engineSetPadding(String padding) throws NoSuchPaddingException {
-	  String[] allowedPaddings="ZeroPadding|OneAndZeroes Padding".split("\\|");
+	  String[] allowedPaddings="PKCS7|ZeroPadding".split("\\|");
 	 if (!Arrays.asList(allowedPaddings).contains(padding))
 	  throw new NoSuchPaddingException();
 	 }
 
 	@Override
 	 protected int engineGetBlockSize() {
-	  return 20;
+	  return 200;
 	 }
 	 
 	@Override

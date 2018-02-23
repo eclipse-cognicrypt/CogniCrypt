@@ -15,8 +15,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
+
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
+import de.cognicrypt.codegenerator.primitive.utilities.CreateJarFile;
 import de.cognicrypt.codegenerator.primitive.utilities.WriteXML;
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnaire;
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnairePage;
@@ -34,6 +36,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	private LinkedHashMap<String, String> inputsMap = new LinkedHashMap<String, String>();
 	StringBuilder data = new StringBuilder();
 	WriteXML xmlFileForXSL;
+	CreateJarFile providerJar = new CreateJarFile();
 
 	public PrimitiveIntegrationWizard() {
 		super();
@@ -177,48 +180,41 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 			}
 			xmlFileForXSL.transformXSL(xmlFile);
-			
+
 		} catch (ParserConfigurationException | TransformerException e) {
 			e.printStackTrace();
 		}
-		
-		
+
 		//Code generation 
 		final File xslFile = Utils.getResourceFromWithin(Constants.cipherSpiXSL);
 		try {
-			transform(xmlFile, xslFile, "C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\test.java");
+			transform(xmlFile, xslFile,
+				"C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\TransformedFiles\\test.java");
 		} catch (TransformerException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-//	}
-//		try{
-//		
-//		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//		javax.xml.parsers.DocumentBuilder builder = factory.newDocumentBuilder();
-//		StreamSource styleSource = new StreamSource(xslFile);
-//		Transformer t = TransformerFactory.newInstance().newTransformer(styleSource);
-//		Document xml = builder.parse(xmlFile);
-//		File resultFile = new File("C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\test.txt");
-//		StreamResult result = new StreamResult(resultFile);
-//		//transformation 
-//		t.transform(new DOMSource(xml), result);
-//	
-//		}
-//		catch(TransformerException | ParserConfigurationException | SAXException | IOException e){
-//			e.printStackTrace();
-//		}
+
+		//Create Provider jarFile 
+		File folder = Utils.getResourceFromWithin(Constants.TransformedFiles);
+		File[] listOfFiles = (folder).listFiles();
+
+		String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" };
+		providerJar.createManifest("Ahmed", classPaths);
+		providerJar.createJarArchive(new File("C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\test.jar"),
+			listOfFiles);
+
 		return true;
 	}
 
-	public boolean canFinish(){
+	public boolean canFinish() {
 		final String pageName = getContainer().getCurrentPage().getName();
 		if (pageName.equals(Constants.METHODS_SELECTION_PAGE)) { //name of the last page
 			return true;
 		}
 		return (pageName.equals(Constants.METHODS_SELECTION_PAGE));
 	}
+
 //	public boolean performCancel() {
 //		boolean ans = MessageDialog.openConfirm(getShell(), "Confirmation", "Are you sure to close without integrating the new primitve?");
 //		if (ans)

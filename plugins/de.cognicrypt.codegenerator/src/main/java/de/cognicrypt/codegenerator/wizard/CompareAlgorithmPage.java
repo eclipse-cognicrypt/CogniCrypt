@@ -255,6 +255,7 @@ public class CompareAlgorithmPage extends WizardPage {
 			if (!instan.hasChildren()) {
 				value = "\t" + ClaferModelUtils.removeScopePrefix(inst.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + inst.getRef().toString();
 				algo = algorithms.keySet().iterator().next();
+				value = value.replace("\n", "") + Constants.lineSeparator;	// having only one \n at the end of string
 				algorithms.put(algo, algorithms.get(algo) + value);
 			}
 		}
@@ -268,8 +269,8 @@ public class CompareAlgorithmPage extends WizardPage {
 		Color cyan = display.getSystemColor(SWT.COLOR_CYAN);
 		Color transparent = display.getSystemColor(SWT.COLOR_TRANSPARENT);
 
-		String[] partFirstInstanceDetails = firstAlgorithmHighlight.split("\r\n\r\n");
-		String[] partSecondInstanceDetails = secondAlgorithmHighlight.split("\r\n\r\n");
+		String[] partFirstInstanceDetails = firstAlgorithmHighlight.split("\n\r\n");
+		String[] partSecondInstanceDetails = secondAlgorithmHighlight.split("\n\r\n");
 
 		String[] lines1;
 		String[] lines2;

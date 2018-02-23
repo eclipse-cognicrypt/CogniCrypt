@@ -48,6 +48,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	private final Page page;
 	private String rangedSize;
 	private MyVerifyListener verifyDecimal = new MyVerifyListener();
+	private Text note;
 	
 
 	/**
@@ -195,7 +196,11 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 					}
 
-				});
+				});				
+				//to create a text if the questions have 'note' to display
+				if (!question.getNote().isEmpty()) {
+					createNote(parent, question);
+				}
 				this.finish = true;
 				PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
 				comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
@@ -423,6 +428,23 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		} else {
 			return Constants.QUESTION_PAGE_NO_STATIC_NEXT_PAGE_ID;
 		}
+	}
+	//to add the note below the question
+	private void createNote(final Composite parent, final Question question) {
+		final Group notePanel = new Group(parent, SWT.NONE);
+		notePanel.setText("Note:");
+		final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
+		notePanel.setFont(boldFont);
+
+		this.note = new Text(notePanel, SWT.MULTI | SWT.WRAP);
+		this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
+		this.note.setText(question.getNote());
+		this.note.setBounds(10, 20, 585, 60);
+		this.note.setSize(this.note.computeSize(585, SWT.DEFAULT));
+		setControl(notePanel);
+		this.note.setEditable(false);
+		this.note.setEnabled(true);
+		new Label(parent, SWT.NULL);
 	}
 
 	private Composite getPanel(final Composite parent) {

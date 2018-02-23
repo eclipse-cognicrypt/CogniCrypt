@@ -19,11 +19,13 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 
 public class CompositePatternOrderedEnum extends CompositePattern {
 
+	private boolean sortable;
 	private ArrayList<CompositeSortableTextItem> sortableTextItems;
 
-	public CompositePatternOrderedEnum(Composite parent) {
+	public CompositePatternOrderedEnum(Composite parent, boolean sortable) {
 		super(parent);
 
+		this.sortable = sortable;
 		sortableTextItems = new ArrayList<>();
 
 		Button btnAddOption = new Button(this, SWT.NONE);
@@ -33,7 +35,7 @@ public class CompositePatternOrderedEnum extends CompositePattern {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				CompositeSortableTextItem compositeSortableTextItem = new CompositeSortableTextItem(compositeOptions);
+				CompositeSortableTextItem compositeSortableTextItem = new CompositeSortableTextItem(compositeOptions, sortable);
 				compositeSortableTextItem.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 				sortableTextItems.add(compositeSortableTextItem);
@@ -134,10 +136,28 @@ public class CompositePatternOrderedEnum extends CompositePattern {
 
 	public ClaferModel getResultModel() {
 		ClaferModel resultModel = new ClaferModel();
-		resultModel.add(new ClaferFeature(Constants.FeatureType.ABSTRACT, patternName, "Enum -> integer"));
+
+		String parentFeatureInheritance;
+
+		if (sortable) {
+			parentFeatureInheritance = "Enum -> integer";
+		} else {
+			parentFeatureInheritance = "Enum";
+		}
+		resultModel.add(new ClaferFeature(Constants.FeatureType.ABSTRACT, patternName, parentFeatureInheritance));
+
 		for (int i = 0; i < sortableTextItems.size(); i++) {
 			String str = sortableTextItems.get(i).getText();
-			resultModel.add(new ClaferFeature(Constants.FeatureType.CONCRETE, str.toString(), patternName + " = " + (i + 1)));
+			StringBuilder childFeatureInheritance = new StringBuilder();
+
+			childFeatureInheritance.append(patternName);
+
+			if (sortable) {
+				childFeatureInheritance.append(" = ");
+				childFeatureInheritance.append(String.valueOf(i + 1));
+			}
+
+			resultModel.add(new ClaferFeature(Constants.FeatureType.CONCRETE, str.toString(), childFeatureInheritance.toString()));
 		}
 
 		return resultModel;

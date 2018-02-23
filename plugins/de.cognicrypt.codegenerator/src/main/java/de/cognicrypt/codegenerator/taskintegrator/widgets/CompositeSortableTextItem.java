@@ -23,10 +23,12 @@ public class CompositeSortableTextItem extends Composite {
 	private Button btnDown;
 	private ControlDecoration decorationOption;
 
-	public CompositeSortableTextItem(Composite parent) {
+	public CompositeSortableTextItem(Composite parent, boolean sortable) {
 		super(parent, SWT.NONE);
 
 		setLayout(new GridLayout(5, false));
+
+		// label and text box
 
 		lblPosition = new Label(this, SWT.NONE);
 		lblPosition.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
@@ -44,45 +46,53 @@ public class CompositeSortableTextItem extends Composite {
 			}
 		});
 
-		btnUp = new Button(this, SWT.NONE);
-		btnUp.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
-		btnUp.setText("up");
-		btnUp.addSelectionListener(new SelectionListener() {
+		// move buttons
 
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-				if (getParent().getParent().getParent() instanceof CompositePatternOrderedEnum) {
-					CompositePatternOrderedEnum compositePatternOrderedEnum = (CompositePatternOrderedEnum) getParent().getParent().getParent();
-					compositePatternOrderedEnum.moveUp(CompositeSortableTextItem.this);
+		if (sortable) {
+
+			btnUp = new Button(this, SWT.NONE);
+			btnUp.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+			btnUp.setText("up");
+			btnUp.addSelectionListener(new SelectionListener() {
+
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					if (getParent().getParent().getParent() instanceof CompositePatternOrderedEnum) {
+						CompositePatternOrderedEnum compositePatternOrderedEnum = (CompositePatternOrderedEnum) getParent().getParent().getParent();
+						compositePatternOrderedEnum.moveUp(CompositeSortableTextItem.this);
+					}
 				}
-			}
 
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {
+					// TODO Auto-generated method stub
 
-			}
-		});
-
-		btnDown = new Button(this, SWT.NONE);
-		btnDown.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
-		btnDown.setText("down");
-		btnDown.addSelectionListener(new SelectionListener() {
-
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-				if (getParent().getParent().getParent() instanceof CompositePatternOrderedEnum) {
-					CompositePatternOrderedEnum compositePatternOrderedEnum = (CompositePatternOrderedEnum) getParent().getParent().getParent();
-					compositePatternOrderedEnum.moveDown(CompositeSortableTextItem.this);
 				}
-			}
+			});
 
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
+			btnDown = new Button(this, SWT.NONE);
+			btnDown.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+			btnDown.setText("down");
+			btnDown.addSelectionListener(new SelectionListener() {
 
-			}
-		});
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					if (getParent().getParent().getParent() instanceof CompositePatternOrderedEnum) {
+						CompositePatternOrderedEnum compositePatternOrderedEnum = (CompositePatternOrderedEnum) getParent().getParent().getParent();
+						compositePatternOrderedEnum.moveDown(CompositeSortableTextItem.this);
+					}
+				}
+
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {
+					// TODO Auto-generated method stub
+
+				}
+			});
+
+		}
+
+		// remove button
 
 		Button btnRemove = new Button(this, SWT.NONE);
 		btnRemove.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
@@ -131,8 +141,10 @@ public class CompositeSortableTextItem extends Composite {
 	 *        desired state of the button move down
 	 */
 	public void setMoveButtonsEnabled(boolean upEnabled, boolean downEnabled) {
-		btnUp.setEnabled(upEnabled);
-		btnDown.setEnabled(downEnabled);
+		if (btnUp != null && btnDown != null) {
+			btnUp.setEnabled(upEnabled);
+			btnDown.setEnabled(downEnabled);
+		}
 	}
 
 	public void showValidationError(Image image, String descriptionText) {

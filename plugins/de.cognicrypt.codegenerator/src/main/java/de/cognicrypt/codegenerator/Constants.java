@@ -39,9 +39,9 @@ public class Constants {
 	public static final String primitivesPath = Constants.rsrcPath + "Primitives";
 	public static final String xmlFilePath = primitivesPath + innerFileSeparator + "XML" + innerFileSeparator + "xmlFile.xml";
 	
-	public static final String cipherSpiXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "CipherSPI.xsl";
-	public static final String providerClass = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "providerClass.xsl";
-
+	public static final String cipherSpiXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template"+ innerFileSeparator + "CipherSPI.xsl";
+	public static final String providerClass = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template"+ innerFileSeparator + "providerClass.xsl";
+	public static final String TransformedFiles= primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "TransformedFiles";
 	// Task descriptions
 
 	// Tooltip

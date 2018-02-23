@@ -1,4 +1,7 @@
-
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+<xsl:output method="text"/>
+<xsl:template match="/">
 
 
 
@@ -19,25 +22,25 @@ import javax.crypto.ShortBufferException;
 
 import java.util.Arrays;
 
-public class AhmedCipher extends CipherSpi {
+public class <xsl:value-of select="SymmetricBlockCipher/name" />Cipher extends CipherSpi {
 
  @Override
 	 protected void engineSetMode(String mode) throws NoSuchAlgorithmException {
-	 String[] allowedModes="CFB|CTR".split("\\|");
+	 String[] allowedModes="<xsl:value-of select="SymmetricBlockCipher/mode"></xsl:value-of>".split("\\|");
 	 if (!Arrays.asList(allowedModes).contains(mode))
 	  throw new NoSuchAlgorithmException();
 	 }
 
 	@Override
 	 protected void engineSetPadding(String padding) throws NoSuchPaddingException {
-	  String[] allowedPaddings="ZeroPadding|OneAndZeroes Padding".split("\\|");
+	  String[] allowedPaddings="<xsl:value-of select="SymmetricBlockCipher/Padding"></xsl:value-of>".split("\\|");
 	 if (!Arrays.asList(allowedPaddings).contains(padding))
 	  throw new NoSuchPaddingException();
 	 }
 
 	@Override
 	 protected int engineGetBlockSize() {
-	  return 20;
+	  return <xsl:value-of select="SymmetricBlockCipher/Blocksize" />;
 	 }
 	 
 	@Override
@@ -104,3 +107,5 @@ public class AhmedCipher extends CipherSpi {
  
 }
 
+</xsl:template>
+</xsl:stylesheet>

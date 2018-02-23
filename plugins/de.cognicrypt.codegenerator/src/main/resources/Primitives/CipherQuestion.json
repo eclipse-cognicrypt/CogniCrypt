@@ -4,6 +4,7 @@
     [{
       "id": "0",
       "element": "text",
+      "note": "",
       "questionText": "Name of the Algorithm: ",
       "answers": [{
           "value": "name",
@@ -22,6 +23,7 @@
     {
      "id": "1",
       "element": "text",
+      "note": "",
       "questionText": "Name of the Author/Company: ",
       "answers": [{
           "value": "",
@@ -35,6 +37,7 @@
      {
      "id": "2",
       "element": "textarea",
+      "note": "",
       "questionText": "Algorithm description: ",
       "answers": [{
           "value": "",
@@ -59,7 +62,8 @@
     [{
       "id": "0",
       "element": "combo",
-      "questionText": "How many keys have your algorithm ?",
+      "note": "Please specify the number of keys your algorithm has...",
+      "questionText": "How many keys does your algorithm have ?",
       "answers": [{
           "value": "1",
           "defaultAnswer": true },
@@ -78,6 +82,7 @@
     {
       "id": "1",
       "element": "text",
+      "note": "",
       "questionText": "Block size of the cipher(in bits):",
       "answers": [{
           "value": "",
@@ -102,6 +107,7 @@
     [{
       "id": "0",
       "element": "composed",
+      "note": "",
       "questionText": "Enter the key size of your algorithm: \n ",
       "answers": [{
           "value": "fixed size",
@@ -133,6 +139,7 @@
     [{
       "id": "0",
       "element": "checkbox",
+      "note": "",
       "questionText": "Choose the Modes of Operation of your algorithm:",
       "answers": [{
           "value": "CBC",
@@ -189,6 +196,7 @@
 	[{
 		"id": "0",
 		"element": "checkbox",
+		"note": "",
 		"questionText": "Choose the Paddings used for your algorithm:",
 		"answers": [{
 		"value": "OneAndZeroes Padding",

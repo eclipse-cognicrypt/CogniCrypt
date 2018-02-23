@@ -53,13 +53,13 @@ public class PrimitiveSelectionPage extends WizardPage {
 		new Label(container, SWT.NONE);
 		
 				Label lblPleaseChooseThe = new Label(container, SWT.NONE);
-				lblPleaseChooseThe.setText("Select the Algorithm type:  ");
+				lblPleaseChooseThe.setText("Select the Algorithm type:       ");
 		new Label(container, SWT.NONE);
 		
 				this.primitiveComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
 				Combo combo = primitiveComboSelection.getCombo();
 				GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-				gd_combo.widthHint = 205;
+				gd_combo.widthHint = 140;
 				combo.setLayoutData(gd_combo);
 				this.primitiveComboSelection.setContentProvider(ArrayContentProvider.getInstance());
 				this.primitiveComboSelection.setLabelProvider(new LabelProvider() {

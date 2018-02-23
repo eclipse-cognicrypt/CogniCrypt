@@ -78,7 +78,7 @@
     {
       "id": "1",
       "element": "text",
-      "questionText": "What is the block size of the cipher ?(bits)",
+      "questionText": "Block size of the cipher(in bits):",
       "answers": [{
           "value": "",
            "claferDependencies": [{
@@ -102,7 +102,7 @@
     [{
       "id": "0",
       "element": "composed",
-      "questionText": "Please enter the key size of your algorithm \n ",
+      "questionText": "Enter the key size of your algorithm: \n ",
       "answers": [{
           "value": "fixed size",
           "codeDependencies": [{
@@ -133,7 +133,7 @@
     [{
       "id": "0",
       "element": "checkbox",
-      "questionText": "Please select modes of operation of your algorithm",
+      "questionText": "Choose the Modes of Operation of your algorithm:",
       "answers": [{
           "value": "CBC",
            "claferDependencies": [{
@@ -189,7 +189,7 @@
 	[{
 		"id": "0",
 		"element": "checkbox",
-		"questionText": "Please select the padding used for your algorithm",
+		"questionText": "Choose the Paddings used for your algorithm:",
 		"answers": [{
 		"value": "OneAndZeroes Padding",
 		 "claferDependencies": [{

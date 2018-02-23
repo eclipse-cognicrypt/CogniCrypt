@@ -11,7 +11,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -20,7 +19,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -73,6 +71,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	 *        primitive for which the page is created
 	 * @param selectionValues
 	 *        list of selectable strings if element type of quest is itemselection, null otherwise
+	 * @wbp.parser.constructor
 	 */
 	public PrimitiveQuestionnairePage(final Question quest, final Primitive primitive, final List<String> selectionValues) {
 		super("Display Questions");
@@ -98,7 +97,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, final List<String> selectionValues) {
 		super("Display Questions");
 		setTitle("Integrating a new primitive: " + primitive.getName());
-		setDescription("Entering data related to the primitive");
+		setDescription("Please enter the following data related to the primitive.");
 		this.page = page;
 		this.primitive = primitive;
 
@@ -150,24 +149,14 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		container.setBounds(10, 10, 200, 300);
 		// Updated the number of columns to order the questions vertically.
 		final GridLayout layout = new GridLayout(1, false);
-		GridData gridData = new GridData();
-		gridData.widthHint = 100;
-		container.setLayoutData(gridData);
 		container.setLayout(layout);
-
 		// If legacy JSON files are in effect.
 		if (page == null) {
 			createQuestionControl(container, this.quest);
 			Activator.getDefault().logError("Outdated json file is used for task " + this.primitive.getName() + ". Please update.");
 		} else {
 			// loop through the questions that are to be displayed on the page.
-			for (Question question : page.getContent()) {
-//				Composite c = new Composite(container, SWT.NONE);
-//				GridLayout gl = new GridLayout(1, false);
-//				c.setLayout(gl);
-//				GridData gridData = new GridData(SWT.FILL, SWT.FILL , true, false);
-//				
-//				c.setLayoutData(gridData);				
+			for (Question question : page.getContent()) {			
 				createQuestionControl(container, question);
 
 			}
@@ -182,9 +171,9 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		final List<Answer> answers = question.getAnswers();
 		final Composite container = getPanel(parent);
 		container.setLayout(new GridLayout(2, false));
-		final Label label = new Label(container, SWT.TOP);
-		GridData gridData = new GridData();
-		gridData.widthHint = 280;
+		final Label label = new Label(container, SWT.NONE);
+		GridData gridData = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
+		gridData.widthHint = 260;
 		label.setLayoutData(gridData);
 		label.setText(question.getQuestionText());
 		switch (question.getElement()) {
@@ -217,8 +206,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				new Label(container, SWT.NULL);
 				Composite container_1 = new Composite(container, SWT.NULL);				
 				container_1.setLayout(new GridLayout(2, false));
-				//container_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-				//container_1.setLayout(new RowLayout(SWT.VERTICAL));
 				Label[] emptySpace = new Label[answers.size()];
 				Button[] checkbox = new Button[answers.size()];
 				for (int i = 0; i < answers.size(); i++) {					
@@ -261,9 +248,11 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				break;
 				
 			case text:				
-				final Text inputField = new Text(container, SWT.BORDER | SWT.FILL);
-				//inputField.setSize(500, inputField.getSize().y);				
-				inputField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+				final Text inputField = new Text(container, SWT.BORDER | SWT.FILL);	
+				GridData textBoxtGridData = new GridData(GridData.FILL, GridData.FILL, true, false);
+				textBoxtGridData.widthHint = 268;
+				inputField.setLayoutData(textBoxtGridData);
+				
 				if (question.getEnteredAnswer() != null) {
 					this.finish = !inputField.getText().isEmpty();
 					PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
@@ -272,7 +261,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 					claferDepend = answers.get(0).getClaferDependencies().get(0).getAlgorithm();
 					if (claferDepend.equals(Constants.BLOCK_SIZE)) {
 						inputField.addVerifyListener(verifyDecimal);
-						//data.widthHint = 50;
 					}
 
 					inputField.addModifyListener(e -> {
@@ -315,10 +303,10 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				break;
 				
 			case textarea:
-				final Text inputDescription = new Text(container, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
-				//inputDescription.setBounds(30, 40, 260, 80);
-				GridData gridData_1 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+				final Text inputDescription = new Text(container, SWT.MULTI | SWT.WRAP| SWT.BORDER | SWT.V_SCROLL);
+				GridData gridData_1 = new GridData(SWT.FILL, SWT.CENTER, true, false);
 				gridData_1.heightHint = 124;
+				gridData_1.widthHint = 250;
 				inputDescription.setLayoutData(gridData_1);
 				inputDescription.addModifyListener(new ModifyListener() {
 
@@ -331,6 +319,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 					}
 				});
 				break;
+				
 			case composed:
 				container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 				container.setLayout(new GridLayout(1, false));

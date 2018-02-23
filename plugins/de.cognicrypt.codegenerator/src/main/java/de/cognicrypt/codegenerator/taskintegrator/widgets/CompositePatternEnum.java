@@ -22,6 +22,14 @@ public class CompositePatternEnum extends CompositePattern {
 	private boolean sortable;
 	private ArrayList<CompositeSortableTextItem> sortableTextItems;
 
+	/**
+	 * instantiate the pattern composite with optional ordering functionality
+	 * 
+	 * @param parent
+	 *        parent {@link Composite}
+	 * @param sortable
+	 *        <code>true</code> if the enumeration items should be sortable, <code>false</code> otherwise
+	 */
 	public CompositePatternEnum(Composite parent, boolean sortable) {
 		super(parent);
 
@@ -134,6 +142,10 @@ public class CompositePatternEnum extends CompositePattern {
 		}
 	}
 
+	/**
+	 * Get the result model depending on whether items in this enumeration are ordered or not. This will return a reference Clafer as a parent and the enumeration items as its
+	 * children when the sortable field of the object set to <code>true</code>.
+	 */
 	public ClaferModel getResultModel() {
 		ClaferModel resultModel = new ClaferModel();
 

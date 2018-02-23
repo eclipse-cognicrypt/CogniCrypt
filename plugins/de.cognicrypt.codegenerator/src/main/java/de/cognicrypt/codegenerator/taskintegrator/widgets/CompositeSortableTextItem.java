@@ -57,8 +57,8 @@ public class CompositeSortableTextItem extends Composite {
 
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
-					if (getParent().getParent().getParent() instanceof CompositePatternOrderedEnum) {
-						CompositePatternOrderedEnum compositePatternOrderedEnum = (CompositePatternOrderedEnum) getParent().getParent().getParent();
+					if (getParent().getParent().getParent() instanceof CompositePatternEnum) {
+						CompositePatternEnum compositePatternOrderedEnum = (CompositePatternEnum) getParent().getParent().getParent();
 						compositePatternOrderedEnum.moveUp(CompositeSortableTextItem.this);
 					}
 				}
@@ -77,8 +77,8 @@ public class CompositeSortableTextItem extends Composite {
 
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
-					if (getParent().getParent().getParent() instanceof CompositePatternOrderedEnum) {
-						CompositePatternOrderedEnum compositePatternOrderedEnum = (CompositePatternOrderedEnum) getParent().getParent().getParent();
+					if (getParent().getParent().getParent() instanceof CompositePatternEnum) {
+						CompositePatternEnum compositePatternOrderedEnum = (CompositePatternEnum) getParent().getParent().getParent();
 						compositePatternOrderedEnum.moveDown(CompositeSortableTextItem.this);
 					}
 				}
@@ -102,8 +102,8 @@ public class CompositeSortableTextItem extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 
-				if (getParent().getParent().getParent() instanceof CompositePatternOrderedEnum) {
-					CompositePatternOrderedEnum compositePatternOrderedEnum = (CompositePatternOrderedEnum) getParent().getParent().getParent();
+				if (getParent().getParent().getParent() instanceof CompositePatternEnum) {
+					CompositePatternEnum compositePatternOrderedEnum = (CompositePatternEnum) getParent().getParent().getParent();
 					compositePatternOrderedEnum.remove(CompositeSortableTextItem.this);
 				}
 

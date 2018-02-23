@@ -17,12 +17,12 @@ import de.cognicrypt.codegenerator.UIConstants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 
-public class CompositePatternOrderedEnum extends CompositePattern {
+public class CompositePatternEnum extends CompositePattern {
 
 	private boolean sortable;
 	private ArrayList<CompositeSortableTextItem> sortableTextItems;
 
-	public CompositePatternOrderedEnum(Composite parent, boolean sortable) {
+	public CompositePatternEnum(Composite parent, boolean sortable) {
 		super(parent);
 
 		this.sortable = sortable;

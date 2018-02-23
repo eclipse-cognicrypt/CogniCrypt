@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Shell;
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositePattern;
-import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositePatternOrderedEnum;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositePatternEnum;
 
 public class ClaferFeaturePatternDialog extends Dialog {
 
@@ -105,10 +105,10 @@ public class ClaferFeaturePatternDialog extends Dialog {
 			compositePatternDetails.dispose();
 		}
 		if (selectedPattern.equals("Enumeration")) {
-			compositePatternDetails = new CompositePatternOrderedEnum(compositePatternDetailsContainer, false);
+			compositePatternDetails = new CompositePatternEnum(compositePatternDetailsContainer, false);
 			compositePatternDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		} else if (selectedPattern.equals("Ordered Enumeration")) {
-			compositePatternDetails = new CompositePatternOrderedEnum(compositePatternDetailsContainer, true);
+			compositePatternDetails = new CompositePatternEnum(compositePatternDetailsContainer, true);
 			compositePatternDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		}
 

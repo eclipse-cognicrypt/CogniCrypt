@@ -29,7 +29,7 @@ public class JavaProjectBrowserPage extends WizardPage {
 
 	public JavaProjectBrowserPage(String pageName) {
 		super(pageName);
-		setDescription("Getting the algorithm project");
+		setDescription("Please choose the Algorithm project from your computer.");
 		setTitle("File browser");
 	}
 

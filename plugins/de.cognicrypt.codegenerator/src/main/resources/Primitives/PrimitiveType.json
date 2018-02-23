@@ -4,11 +4,11 @@
 			"xmlFile" : "src/main/resources/Primitives/CipherQuestion.json",
 			"questions":[{
 			"id":0,
-			"questionText": "Please select the encryption method: "},
+			"questionText": "Select the encryption method: "},
 			{"id":1,
-			"questionText": "Please select the decryption method: "},
+			"questionText": "Select the decryption method: "},
 			{"id":2,
-			"questionText": "Please select the key generation method:"}
+			"questionText": "Select the key generation method:"}
 			]
 		},
 		{

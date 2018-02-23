@@ -40,10 +40,12 @@ public class MethodSelectorPage extends WizardPage {
 				new Label(container, SWT.NONE);
 		
 				question = new Label(container, SWT.NULL);
-				question.setText("Select the encryption method:");
+				question.setText("Select the encryption method:   ");
 		
 				Combo combo = new Combo(container, SWT.NONE);
-				combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+				GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+				gd_combo.widthHint = 140;
+				combo.setLayoutData(gd_combo );
 				new Label(container, SWT.NONE);
 						new Label(container, SWT.NONE);
 				

@@ -1,6 +1,7 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -12,6 +13,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.UIConstants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 
@@ -143,8 +145,22 @@ public class CompositePatternOrderedEnum extends CompositePattern {
 
 	@Override
 	public boolean validate() {
-		// TODO Auto-generated method stub
-		return super.validate();
+		boolean itemsValid = true;
+
+		// check that items are unique
+		HashSet<String> itemNames = new HashSet<>();
+
+		for (CompositeSortableTextItem textItem : sortableTextItems) {
+			// adding to the HashSet will return false if item already in set
+			if (!textItem.getText().isEmpty() && !itemNames.add(textItem.getText())) {
+				textItem.showValidationError(UIConstants.DEC_ERROR, "The name already exists.");
+				itemsValid = false;
+			} else {
+				textItem.hideValidationError();
+			}
+		}
+
+		return itemsValid && super.validate();
 	}
 
 }

@@ -1,9 +1,13 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
+import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -11,13 +15,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-
 public class CompositeSortableTextItem extends Composite {
 
 	private Label lblPosition;
 	private Text txtOption;
 	private Button btnUp;
 	private Button btnDown;
+	private ControlDecoration decorationOption;
 
 	public CompositeSortableTextItem(Composite parent) {
 		super(parent, SWT.NONE);
@@ -26,9 +30,19 @@ public class CompositeSortableTextItem extends Composite {
 
 		lblPosition = new Label(this, SWT.NONE);
 		lblPosition.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+		
+		decorationOption = new ControlDecoration(lblPosition, SWT.RIGHT | SWT.TOP);
 
 		txtOption = new Text(this, SWT.BORDER);
 		txtOption.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		txtOption.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent arg0) {
+				((CompositePattern) getParent().getParent().getParent()).notifyListeners(SWT.Selection, null);
+
+			}
+		});
 
 		btnUp = new Button(this, SWT.NONE);
 		btnUp.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
@@ -119,6 +133,16 @@ public class CompositeSortableTextItem extends Composite {
 	public void setMoveButtonsEnabled(boolean upEnabled, boolean downEnabled) {
 		btnUp.setEnabled(upEnabled);
 		btnDown.setEnabled(downEnabled);
+	}
+
+	public void showValidationError(Image image, String descriptionText) {
+		decorationOption.setImage(image);
+		decorationOption.setDescriptionText(descriptionText);
+		decorationOption.show();
+	}
+
+	public void hideValidationError() {
+		decorationOption.hide();
 	}
 
 }

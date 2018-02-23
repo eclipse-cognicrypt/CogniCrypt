@@ -23,6 +23,14 @@ public class CompositeSortableTextItem extends Composite {
 	private Button btnDown;
 	private ControlDecoration decorationOption;
 
+	/**
+	 * instantiate the composite with a text box, a remove button and optional move up and down buttons
+	 * 
+	 * @param parent
+	 *        parent {@link Composite}
+	 * @param sortable
+	 *        <code>true</code> if up and down buttons should be shown, <code>false</code> otherwise
+	 */
 	public CompositeSortableTextItem(Composite parent, boolean sortable) {
 		super(parent, SWT.NONE);
 

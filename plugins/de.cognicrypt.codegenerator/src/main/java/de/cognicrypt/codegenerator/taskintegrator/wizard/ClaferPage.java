@@ -194,4 +194,21 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 		return false;
 	}
 
+	/**
+	 * get the path to the ClaferModel as a compiled javascript file
+	 * 
+	 * @return {@link String} object that contains the absolute path to the compiled Clafer model, <code>null</code> if compilation failed
+	 *
+	 */
+	public String getCompiledClaferModelPath() {
+		File cfrFile = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), "currentClaferModel" + Constants.CFR_EXTENSION);
+		compositeToHoldGranularUIElements.getClaferModel().toFile(cfrFile.getAbsolutePath());
+
+		if (ClaferModel.compile(cfrFile.getAbsolutePath())) {
+			return new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), "currentClaferModel" + Constants.JS_EXTENSION).getAbsolutePath();
+		}
+
+		return null;
+	}
+
 }

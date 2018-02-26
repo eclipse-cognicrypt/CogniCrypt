@@ -1,6 +1,7 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
 import java.util.ArrayList;
+import java.util.SortedSet;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -32,7 +33,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	private ArrayList<XSLAttribute> XSLAttributes; // <attributeName, actualAttributeString>
 
 	private ArrayList<Answer> arrayAnswer;
-	private ArrayList<String> possibleCfrFeatures;
+	private SortedSet<String> possibleCfrFeatures;
 
 	private ClaferModel claferModel;
 
@@ -158,15 +159,15 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * @param showRemoveButton
 	 * @param selectedTag
 	 */
-	public void addXSLAttribute(boolean showRemoveButton, String selectedTag, ArrayList<String> possibleCfrFeatures) {
+	public void addXSLAttribute(boolean showRemoveButton, String selectedTag, SortedSet<String> possibleCfrFeatures2) {
 		ArrayList<String> possibleAttributes = getListOfPossibleAttributes(selectedTag);
-		this.possibleCfrFeatures = possibleCfrFeatures;
+		this.possibleCfrFeatures = possibleCfrFeatures2;
 
 		if (possibleAttributes.size() > 0) {
 			// Add the first attribute on the list of possible attributes with empty tag data.
 			XSLAttribute xslAttribute = new XSLAttribute(possibleAttributes.get(0), "");
 			XSLAttributes.add(xslAttribute);
-			addXSLAttributeUI(xslAttribute, possibleCfrFeatures, showRemoveButton);
+			addXSLAttributeUI(xslAttribute, possibleCfrFeatures2, showRemoveButton);
 		} else {
 			// Show a message if all the possible attributes are exhausted. 
 			MessageBox headsUpMessageBox = new MessageBox(getShell(), SWT.ICON_INFORMATION | SWT.OK);
@@ -182,8 +183,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * @param XSLAttrubuteParam
 	 * @param showRemoveButton
 	 */
-	private void addXSLAttributeUI(XSLAttribute XSLAttrubuteParam, ArrayList<String> possibleCfrFeatures, boolean showRemoveButton) {
-		GroupXSLTagAttribute groupforXSLTagAttribute = new GroupXSLTagAttribute((Composite) getContent(), SWT.NONE, showRemoveButton, XSLAttrubuteParam, possibleCfrFeatures);
+	private void addXSLAttributeUI(XSLAttribute XSLAttrubuteParam, SortedSet<String> possibleCfrFeatures2, boolean showRemoveButton) {
+		GroupXSLTagAttribute groupforXSLTagAttribute = new GroupXSLTagAttribute((Composite) getContent(), SWT.NONE, showRemoveButton, XSLAttrubuteParam, possibleCfrFeatures2);
 		groupforXSLTagAttribute.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT,
 			Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
 

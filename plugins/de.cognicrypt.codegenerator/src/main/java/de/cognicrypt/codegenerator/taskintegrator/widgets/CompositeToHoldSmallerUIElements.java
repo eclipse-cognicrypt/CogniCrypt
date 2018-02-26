@@ -283,7 +283,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * 
 	 */
 	public void addElementsInClaferTabQuestionDialog(Answer answer, ClaferModel claferModel, boolean showClaferWidgets) {
-		GroupForClaferTab group = new GroupForClaferTab((Composite) getContent(), SWT.NONE, answer, claferModel, showClaferWidgets);
+		CompositeForClaferTab group = new CompositeForClaferTab((Composite) getContent(), SWT.NONE, answer, claferModel, showClaferWidgets);
 		/**
 		 * case 1: if the showClaferWidgets value is true or the list of clafer Dependecies is not null
 		 * then the following loop executes

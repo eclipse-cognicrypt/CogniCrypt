@@ -1,9 +1,12 @@
 package de.cognicrypt.codegenerator.taskintegrator.models;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -262,6 +265,14 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 			Process compilerProcess = processBuilder.start();
 
 			compilerProcess.waitFor();
+
+			// print compilation output to command line
+			InputStream processStdOutput = compilerProcess.getInputStream();
+			BufferedReader br = new BufferedReader(new InputStreamReader(processStdOutput));
+			String line;
+			while ((line = br.readLine()) != null) {
+				System.out.println(line);
+			}
 
 			if (compilerProcess.exitValue() != 0) {
 				System.out.println("Clafer compilation error: make sure your model is correct. Aborting...");

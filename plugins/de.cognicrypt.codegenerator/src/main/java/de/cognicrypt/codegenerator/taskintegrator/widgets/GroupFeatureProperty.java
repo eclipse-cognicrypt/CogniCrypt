@@ -67,7 +67,11 @@ public class GroupFeatureProperty extends Composite {
 		});
 		
 		Label lblNewLabel = new Label(this, SWT.NONE);
-		lblNewLabel.setText(Constants.FEATURE_PROPERTY_TYPE_RELATION);
+		if (featureProperty.getPropertyType().contains("=")) {
+			lblNewLabel.setText(Constants.FEATURE_PROPERTY_TYPE_REFERENCE_RELATION);
+		} else {
+			lblNewLabel.setText(Constants.FEATURE_PROPERTY_TYPE_RELATION);
+		}
 		
 		if (!showRemoveButton) {
 

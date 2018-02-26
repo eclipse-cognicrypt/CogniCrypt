@@ -5,6 +5,8 @@ package de.cognicrypt.codegenerator.taskintegrator.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.Constants.FeatureType;
@@ -128,6 +130,35 @@ public class ClaferFeature implements Serializable {
 		}
 
 		return inheritedProperties;
+	}
+
+	/**
+	 * get the set of Clafer features this feature relies on, which implies its parent feature and its properties' types
+	 * 
+	 * @return {@link Set}<{@link String}> of Clafer features names
+	 */
+	public Set<String> getDependencies() {
+		HashSet<String> dependencies = new HashSet<>();
+
+		if (!getFeatureInheritance().isEmpty()) {
+			if (getFeatureInheritance().contains(("->"))) {
+				for (String feature : getFeatureInheritance().split(" -> ")) {
+					dependencies.add(feature);
+				}
+			} else {
+				dependencies.add(getFeatureInheritance());
+			}
+		}
+
+		for (FeatureProperty fp : getFeatureProperties()) {
+			if (fp.getPropertyType().contains("=")) {
+				dependencies.add(fp.getPropertyType().split("=")[0]);
+			} else {
+				dependencies.add(fp.getPropertyType());
+			}
+		}
+
+		return dependencies;
 	}
 
 	public ArrayList<ClaferConstraint> getFeatureConstraints() {

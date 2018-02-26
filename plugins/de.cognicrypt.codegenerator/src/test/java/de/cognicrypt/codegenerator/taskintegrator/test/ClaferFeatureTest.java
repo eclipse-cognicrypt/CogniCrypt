@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -88,6 +89,13 @@ public class ClaferFeatureTest {
 
 		ArrayList<FeatureProperty> inheritedPropertiesA = featureA.getInheritedProperties(claferModel);
 		assertTrue(inheritedPropertiesA.contains(expectedProperty));
+	}
+
+	@Test
+	public final void testGetDependencies() {
+		ClaferFeature feature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Security", "Enum -> integer");
+		Set<String> dependencies = feature.getDependencies();
+		assertEquals(2, dependencies.size());
 	}
 
 	@AfterClass

@@ -214,6 +214,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 							System.out.println(key + " " + getTagValueTagData().get(key));
 						}
 
+
 						/*for (IWizardPage page : getWizard().getPages()) {
 							// get the Clafer creation page
 							if (page instanceof PageForTaskIntegratorWizard) {
@@ -337,7 +338,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 								if (tagNameToBeDisplayed.length() > builderDisplayDataSizeTillRoot) {
 									tagNameToBeDisplayed.delete(builderDisplayDataSizeTillRoot, tagNameToBeDisplayed.length());
 								}
-								if (isRoot || !xmlElement.elementIterator(currentElement.getName()).hasNext()) {
+
+								if (isRoot) {
 									if (tagDataForXSLDocument.length() > builderTagDataSizeTillRoot) {
 										tagDataForXSLDocument.delete(builderTagDataSizeTillRoot, tagDataForXSLDocument.length());
 									}

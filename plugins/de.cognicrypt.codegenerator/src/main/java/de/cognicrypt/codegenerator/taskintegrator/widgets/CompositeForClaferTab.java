@@ -20,7 +20,7 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 
-public class GroupForClaferTab extends Group {
+public class CompositeForClaferTab extends Composite {
 
 	private String featureSelected;
 	private ArrayList<String> operandItems;
@@ -29,7 +29,7 @@ public class GroupForClaferTab extends Group {
 	private ArrayList<ClaferDependency> claferDependencies;
 
 	// FIXME the parameter claferModel seems to be unused
-	public GroupForClaferTab(Composite parent, int style, Answer answer, ClaferModel claferModel, boolean showClaferWidgets) {
+	public CompositeForClaferTab(Composite parent, int style, Answer answer, ClaferModel claferModel, boolean showClaferWidgets) {
 		super(parent, style);
 		setClaferModel(claferModel);
 
@@ -54,6 +54,8 @@ public class GroupForClaferTab extends Group {
 					answer.setClaferDependencies(claferDependencies);
 				}
 				answer.getClaferDependencies().add(cd);
+				System.out.println(answer.getClaferDependencies().size());
+
 				((CompositeToHoldSmallerUIElements) addMore.getParent().getParent().getParent()).updateClaferTab(claferModel, answer);
 			}
 		});
@@ -64,7 +66,7 @@ public class GroupForClaferTab extends Group {
 		if (showClaferWidgets || answer.getClaferDependencies() != null) {
 
 			for (ClaferDependency claferDependency : answer.getClaferDependencies()) {
-				Group claferWidgets = new Group(this, SWT.NONE);
+				Composite claferWidgets = new Composite(this, SWT.NONE);
 				claferWidgets.setBounds(235, getLowestWidgetYAxisValue(), 655, 34);
 				
 				//Combo for displaying all the features created in Clafer page

@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.clafer.instance.InstanceClafer;
 import org.dom4j.Attribute;
@@ -134,10 +132,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						
-
-
-						//Composite test = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompositeChoiceForModeOfWizard();
-
 						// this is needed to get the name and the description of the task from the wizard.
 						ModelAdvancedMode objectForDataInGuidedMode = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD))
 							.getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
@@ -155,21 +149,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						// this will remain empty for the first instance, that contains no -> operators.
 						HashMap<Question, Answer> constraints = new HashMap<>();
 						InstanceClafer initialInstance = instanceGenerator.generateInstances(constraints).get(0);
-						// get the number of children on the instance generation where there are no constraints.
-						//int numberOfChildren = initialInstance.getChildren().length;
-						// Get the instance value for the blank constraint.
-						//xmlStrings.add(xmlParser.displayInstanceValues(initialInstance, constraints));
-
 						xmlStrings.add(xmlParser.displayInstanceValues(initialInstance, constraints));
-
-						//						DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-						//						try {
-						//							DocumentBuilder builder = factory.newDocumentBuilder();
-						//							xmlStrings.add((Document) builder.parse(new InputSource(new StringReader(xmlParser.displayInstanceValues(initialInstance, constraints)))));
-						//						} catch (ParserConfigurationException | SAXException | IOException e1) {
-						//							// TODO Auto-generated catch block
-						//							e1.printStackTrace();
-						//						}
 
 						// Questions needed to get the answer that has a constraint with the -> operator.
 						QuestionsJSONReader reader = new QuestionsJSONReader();
@@ -202,28 +182,21 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 							} // question loop
 						} // page loop
 
-
+						// Process each xml document that is generated.
 						for (Document xmlDocument : xmlStrings) {
-
 							processXMLDocument(xmlDocument);
-
-							System.out.println(xmlDocument.asXML());
 						}
 
-						SortedSet<String> keys = new TreeSet<String>(getTagValueTagData().keySet());
-						//						for (String key : keys) {
-						//							System.out.println(key + " " + getTagValueTagData().get(key));
-						//						}
-
 						XSLTagDialog dialog;
-						if (keys.size() > 0) {
+						// Show an empty dialog if no clafer feature has been defined.
+						if (getTagValueTagData().size() > 0) {
 							dialog = new XSLTagDialog(getShell(), getTagValueTagData());
 						} else {
 							dialog = new XSLTagDialog(getShell());
 						}
 
 						if (dialog.open() == Window.OK) {
-							// To locate the position of the xsl tag to be introduce						
+							// To locate the position of the xsl tag to be introduced in the code.				
 							Point selected = getCompositeForXsl().getXslTxtBox().getSelection();
 							String xslTxtBoxContent = getCompositeForXsl().getXslTxtBox().getText();
 							xslTxtBoxContent = xslTxtBoxContent.substring(0, selected.x) + dialog.getTag().toString() + xslTxtBoxContent.substring(selected.y,
@@ -231,47 +204,13 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 							getCompositeForXsl().getXslTxtBox().setText(xslTxtBoxContent);
 						}
 
-						/*for (IWizardPage page : getWizard().getPages()) {
-							// get the Clafer creation page
-							if (page instanceof PageForTaskIntegratorWizard) {
-								PageForTaskIntegratorWizard pftiw = (PageForTaskIntegratorWizard) page;
-								if (pftiw.getCompositeToHoldGranularUIElements() instanceof CompositeToHoldGranularUIElements) {
-									CompositeToHoldGranularUIElements comp = (CompositeToHoldGranularUIElements) pftiw.getCompositeToHoldGranularUIElements();
-									if (pftiw.getName() == Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION) {
-										// get the Clafer features
-										claferModel = comp.getClaferModel();
-
-										// get all the Clafer features' properties
-										for (ClaferFeature cfrFtr : claferModel) {
-											String ftrName = cfrFtr.getFeatureName();
-											for (FeatureProperty prop : cfrFtr.getFeatureProperties()) {
-												// prepend the feature name and add the property to dropdown entries
-												strFeatures.add(ftrName + "." + prop.getPropertyName());
-											}
-										}
-									} else if (pftiw.getName() == Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS) {
-										questions = comp.getListOfAllQuestions();
-
-										for (Question question : questions) {
-											// TODO compare against Constants.GUIElements.text
-											if (question.getQuestionType().equals("text")) {
-												strFeatures.add("[Answer to \"" + question.getQuestionText() + "\"]");
-											}
-											
-											
-										}
-									}
-								}
-							}
-						}*/
-
-						
-
 					}
 
 					/**
+					 * Process the XML document here to generate values to be displayed to the user for selection.
 					 * 
 					 * @param xmlDocument
+					 *        The serialized object representing the generated XML string.
 					 */
 					private void processXMLDocument(Document xmlDocument) {
 						Element root = xmlDocument.getRootElement();
@@ -280,11 +219,16 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					}
 
 					/**
+					 * This method will process each element individually, and is called recursively to process nested tags.
 					 * 
 					 * @param xmlElement
+					 *        The element under consideration.
 					 * @param existingNameToBeDisplayed
+					 *        The string that will be displayed to the user for selection.
 					 * @param existingDataForXSLDocument
+					 *        The actual string that will be added to the code base on the selection that is done by the user.
 					 * @param isRoot
+					 *        true if the element is the root element.
 					 */
 					private void processElement(Element xmlElement, String existingNameToBeDisplayed, String existingDataForXSLDocument, boolean isRoot) {
 						StringBuilder tagNameToBeDisplayed = new StringBuilder();
@@ -299,8 +243,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						tagNameToBeDisplayed.append(xmlElement.getName());
 						tagDataForXSLDocument.append(Constants.SLASH);
 						tagDataForXSLDocument.append(xmlElement.getName());
-
-
 
 						int builderDisplayDataSizeTillRoot = tagNameToBeDisplayed.length();
 						int builderTagDataSizeTillRoot = tagDataForXSLDocument.length();

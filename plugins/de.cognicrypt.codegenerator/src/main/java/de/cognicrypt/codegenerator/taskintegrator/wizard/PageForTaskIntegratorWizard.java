@@ -202,6 +202,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 							xslTxtBoxContent = xslTxtBoxContent.substring(0, selected.x) + dialog.getTag().toString() + xslTxtBoxContent.substring(selected.y,
 								xslTxtBoxContent.length());
 							getCompositeForXsl().getXslTxtBox().setText(xslTxtBoxContent);
+							getCompositeForXsl().colorizeTextBox();
 						}
 
 					}

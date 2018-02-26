@@ -33,9 +33,7 @@ import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.question.CodeDependency;
-import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.question.QuestionsJSONReader;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeBrowseForFile;
@@ -152,12 +150,15 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						xmlStrings.add(xmlParser.displayInstanceValues(initialInstance, constraints));
 
 						// Questions needed to get the answer that has a constraint with the -> operator.
-						QuestionsJSONReader reader = new QuestionsJSONReader();
+						//QuestionsJSONReader reader = new QuestionsJSONReader();
 						// TODO update this to read the data generated in the questions page.
-						List<Page> pages = reader.getPages("/src/main/resources/TaskDesc/SymmetricEncryption.json");
 
-						for (Page page : pages) {
-							for (Question question : page.getContent()) {
+						List<Question> questions = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_LINK_ANSWERS)).getCompositeToHoldGranularUIElements()
+							.getListOfAllQuestions();
+						//List<Page> pages = reader.getPages("/src/main/resources/TaskDesc/SymmetricEncryption.json");
+
+						//for (Page page : pages) {
+						for (Question question : questions) {
 								for (Answer answer : question.getAnswers()) {
 									if (answer.getClaferDependencies() != null) {
 										for (ClaferDependency claferDependency : answer.getClaferDependencies()) {
@@ -180,7 +181,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 									} // code dependency check
 								} // answer loop
 							} // question loop
-						} // page loop
+						//} // page loop
 
 						// Process each xml document that is generated.
 						for (Document xmlDocument : xmlStrings) {
@@ -393,8 +394,13 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		}
 	}
 
+	/**
+	 * Get the location of the compiled Javascript file.
+	 * 
+	 * @return the location of the JS file in the form of a string.
+	 */
 	public String getJSFilePath() {
-		return "/home/rajiv/git/CogniCrypt/plugins/de.cognicrypt.codegenerator/src/main/resources/ClaferModel/SymmetricEncryption.js";
+		return ((ClaferPage) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompiledClaferModelPath();
 	}
 
 	/**
@@ -542,7 +548,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	/**
 	 * @return the compositeToHoldGranularUIElements
 	 */
-	public Composite getCompositeToHoldGranularUIElements() {
+	public CompositeToHoldGranularUIElements getCompositeToHoldGranularUIElements() {
 		return compositeToHoldGranularUIElements;
 	}
 

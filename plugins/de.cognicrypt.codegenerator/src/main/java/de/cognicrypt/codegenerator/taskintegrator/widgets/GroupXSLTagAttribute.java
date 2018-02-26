@@ -1,6 +1,7 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
 import java.util.ArrayList;
+import java.util.SortedSet;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
@@ -14,13 +15,11 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.taskintegrator.models.XSLAttribute;
 
 
 public class GroupXSLTagAttribute extends Group {
-	private Text txtAttributeName;
 	private XSLAttribute selectedAttribute;	
 	private Combo cmbAttributeType;
 	private Combo cmbAttributeName;
@@ -30,7 +29,7 @@ public class GroupXSLTagAttribute extends Group {
 	 * @param parent
 	 * @param style
 	 */
-	public GroupXSLTagAttribute(Composite parent, int style, boolean showRemoveButton, XSLAttribute attributeParam, ArrayList<String> possibleCfrFeatures) {
+	public GroupXSLTagAttribute(Composite parent, int style, boolean showRemoveButton, XSLAttribute attributeParam, SortedSet<String> possibleCfrFeatures) {
 		super(parent, style);
 		setLayout(new RowLayout(SWT.HORIZONTAL));
 		
@@ -142,4 +141,5 @@ public class GroupXSLTagAttribute extends Group {
 	private void setSelectedAttribute(XSLAttribute selectedAttribute) {
 		this.selectedAttribute = selectedAttribute;
 	}
+
 }

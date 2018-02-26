@@ -1,6 +1,7 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
 import java.util.ArrayList;
+import java.util.SortedSet;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -32,7 +33,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	private ArrayList<XSLAttribute> XSLAttributes; // <attributeName, actualAttributeString>
 
 	private ArrayList<Answer> arrayAnswer;
-	private ArrayList<String> possibleCfrFeatures;
+	private SortedSet<String> possibleCfrFeatures;
 
 	private ClaferModel claferModel;
 
@@ -158,7 +159,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * @param showRemoveButton
 	 * @param selectedTag
 	 */
-	public void addXSLAttribute(boolean showRemoveButton, String selectedTag, ArrayList<String> possibleCfrFeatures) {
+	public void addXSLAttribute(boolean showRemoveButton, String selectedTag, SortedSet<String> possibleCfrFeatures) {
 		ArrayList<String> possibleAttributes = getListOfPossibleAttributes(selectedTag);
 		this.possibleCfrFeatures = possibleCfrFeatures;
 
@@ -182,7 +183,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * @param XSLAttrubuteParam
 	 * @param showRemoveButton
 	 */
-	private void addXSLAttributeUI(XSLAttribute XSLAttrubuteParam, ArrayList<String> possibleCfrFeatures, boolean showRemoveButton) {
+	private void addXSLAttributeUI(XSLAttribute XSLAttrubuteParam, SortedSet<String> possibleCfrFeatures, boolean showRemoveButton) {
 		GroupXSLTagAttribute groupforXSLTagAttribute = new GroupXSLTagAttribute((Composite) getContent(), SWT.NONE, showRemoveButton, XSLAttrubuteParam, possibleCfrFeatures);
 		groupforXSLTagAttribute.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT,
 			Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);

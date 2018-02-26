@@ -23,13 +23,13 @@ import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
-import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 
 public class AddDependenciesDialog extends Dialog {
 
 	private Question question;
 	private ClaferModel claferModel;
+	private Text variableTxtBoxForCodeTab;
 
 	public AddDependenciesDialog(Shell parentShell, Question question, ClaferModel claferModel) {
 		super(parentShell);
@@ -58,7 +58,7 @@ public class AddDependenciesDialog extends Dialog {
 
 		if (question != null) {
 
-			if (question.getQuestionType().equalsIgnoreCase(Constants.textBox)) {
+			if (question.getElement().equals(Constants.GUIElements.text)) {
 				Label lblLinkFeatureTabMessage = new Label(compositeForClaferTab, SWT.NONE);
 				lblLinkFeatureTabMessage.setText("This type of question does not need to link to variability constructs");
 
@@ -124,7 +124,8 @@ public class AddDependenciesDialog extends Dialog {
 
 		if (question != null) {
 
-			if (question.getQuestionType().equalsIgnoreCase(Constants.textBox)) {
+			if (question.getElement().equals(Constants.GUIElements.text)) {
+
 				Label question_3 = new Label(compositeForLinkCodeTab, SWT.None);
 				question_3.setText("Question: ");
 
@@ -132,22 +133,13 @@ public class AddDependenciesDialog extends Dialog {
 				question_3Txt.setText(question.getQuestionText());
 
 				Label lblOption = new Label(compositeForLinkCodeTab, SWT.None);
-				lblOption.setText("Set Name");
+				lblOption.setText("Variable Name");
 
 				Label lblText = new Label(compositeForLinkCodeTab, SWT.NONE);
 				lblText.setText("Set Value");
 
-				Text txtOption = new Text(compositeForLinkCodeTab, SWT.BORDER);
-				txtOption.setVisible(true);
-				GridData gd_txtOption = new GridData(/* SWT.FILL, SWT.CENTER, true, true */);
-				gd_txtOption.widthHint = 200;
-				txtOption.setLayoutData(gd_txtOption);
-				if (question.getQuestionText().length() > 20) {
-					txtOption.setText(question.getQuestionText().substring(0, 30) + "....");
-				} else {
-					txtOption.setText(question.getQuestionText());
-				}
-				txtOption.setEditable(false);
+				variableTxtBoxForCodeTab = new Text(compositeForLinkCodeTab, SWT.BORDER);
+				setTextOfVariableTxtBox();
 
 				Text txtValue = new Text(compositeForLinkCodeTab, SWT.BORDER);
 				txtValue.setVisible(true);
@@ -162,8 +154,8 @@ public class AddDependenciesDialog extends Dialog {
 					if (answer.getCodeDependencies() != null) {
 						for (CodeDependency cd : answer.getCodeDependencies()) {
 							if (cd.getOption() != null) {
-								txtOption.setText(cd.getOption());
-								codeDependency.setOption(txtOption.getText());
+								variableTxtBoxForCodeTab.setText(cd.getOption());
+								codeDependency.setOption(variableTxtBoxForCodeTab.getText());
 							}
 							if (cd.getValue() != null) {
 								txtValue.setText(cd.getValue());
@@ -172,11 +164,11 @@ public class AddDependenciesDialog extends Dialog {
 						}
 					}
 
-					txtOption.addFocusListener(new FocusAdapter() {
+					variableTxtBoxForCodeTab.addFocusListener(new FocusAdapter() {
 
 						@Override
 						public void focusLost(FocusEvent e) {
-							codeDependency.setOption(txtOption.getText());
+							codeDependency.setOption(variableTxtBoxForCodeTab.getText());
 						}
 					});
 
@@ -204,8 +196,14 @@ public class AddDependenciesDialog extends Dialog {
 				Label question_3Txt = new Label(compositeForLinkCodeTab, SWT.None);
 				question_3Txt.setText(question.getQuestionText());
 
-				// Group answersCompositeToLinkCode containing the headers of the table
-				Group answersCompositeToLinkCode = new Group(compositeForLinkCodeTab, SWT.NONE);
+				Label variableName = new Label(compositeForLinkCodeTab, SWT.None);
+				variableName.setText("Variable Name:");
+
+				variableTxtBoxForCodeTab = new Text(compositeForLinkCodeTab, SWT.BORDER);
+				setTextOfVariableTxtBox();
+
+				// Composite answersCompositeToLinkCode containing the headers of the table
+				Composite answersCompositeToLinkCode = new Composite(compositeForLinkCodeTab, SWT.NONE);
 				GridData gd_answersCompositeToLinkCode = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 				answersCompositeToLinkCode.setLayoutData(gd_answersCompositeToLinkCode);
 
@@ -213,12 +211,8 @@ public class AddDependenciesDialog extends Dialog {
 				lblAnswersLink.setBounds(5, 5, 210, 25);
 				lblAnswersLink.setText("Answers");
 
-				Label lblOption = new Label(answersCompositeToLinkCode, SWT.None);
-				lblOption.setBounds(225, 5, 200, 25);
-				lblOption.setText("Set Name");
-
 				Label lblText = new Label(answersCompositeToLinkCode, SWT.NONE);
-				lblText.setBounds(430, 5, 200, 25);
+				lblText.setBounds(225, 5, 200, 25);
 				lblText.setText("Set Value");
 
 				//To create a scrollable Composite to display all the answers with the required input fields 
@@ -241,20 +235,106 @@ public class AddDependenciesDialog extends Dialog {
 
 	}
 
+	/**
+	 * sets the vale of variable name text box in code tab
+	 */
+	private void setTextOfVariableTxtBox() {
+		boolean valueSet = false;
+		for (Answer answer : question.getAnswers()) {
+			if (answer.getCodeDependencies() != null) {
+				for (CodeDependency cd : answer.getCodeDependencies()) {
+					if (cd.getOption() != null) {
+						variableTxtBoxForCodeTab.setText(cd.getOption());
+						valueSet = true;
+						break;
+					}
+
+				}
+			}
+			break;
+		}
+		if (!valueSet) {
+			variableTxtBoxForCodeTab.setText(getCapitaliseQuestionText(question.getQuestionText()));
+			System.out.println(variableTxtBoxForCodeTab.getText());
+		}
+	}
+
+	/**
+	 * Capitalize the first letter of each word of question text
+	 *
+	 * @param questionText
+	 *        the question text
+	 * @return the capitalize text
+	 */
+	private String getCapitaliseQuestionText(String questionText) {
+		// TODO Auto-generated method stub
+		String trimmedQuestionText = questionText.trim().replaceAll(" +", " ");
+		String[] arr = trimmedQuestionText.split(" ");
+		System.out.println(arr);
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < arr.length; i++) {
+			sb.append(Character.toUpperCase(arr[i].charAt(0))).append(arr[i].substring(1));
+		}
+
+		return sb.toString();
+
+	}
+
+	/**
+	 * 
+	 * @return the question
+	 */
 	public Question getQuestion() {
 		return question;
 	}
 
+	/**
+	 * 
+	 * @param question
+	 *        sets the question
+	 */
 	public void setQuestion(Question question) {
 		this.question = question;
 	}
 
+	/**
+	 * 
+	 * @return the clafer model
+	 */
 	public ClaferModel getClaferModel() {
 		return claferModel;
 	}
 
+	/**
+	 * 
+	 * @param claferModel
+	 *        sets the clafer model
+	 */
 	public void setClaferModel(ClaferModel claferModel) {
 		this.claferModel = claferModel;
+	}
+
+	@Override
+	protected void okPressed() {
+		saveCodeTabInput();
+		super.okPressed();
+	}
+
+	/**
+	 * sets the code dependency option field of each answer of the question
+	 */
+	private void saveCodeTabInput() {
+		for (Answer answer : question.getAnswers()) {
+			for (CodeDependency cd : answer.getCodeDependencies()) {
+				if (variableTxtBoxForCodeTab.getText().equals("")) {
+					cd.setOption(getCapitaliseQuestionText(question.getQuestionText()));
+				} else {
+					cd.setOption(variableTxtBoxForCodeTab.getText());
+				}
+			}
+		}
+
 	}
 
 }

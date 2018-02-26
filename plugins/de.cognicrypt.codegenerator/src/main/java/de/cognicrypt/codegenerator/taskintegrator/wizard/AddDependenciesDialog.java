@@ -158,7 +158,7 @@ public class AddDependenciesDialog extends Dialog {
 							}
 							if (cd.getValue() != null) {
 								txtValue.setText(cd.getValue());
-								codeDependency.setValue(txtValue.getText());
+								codeDependency.setValue("");
 							}
 						}
 					}
@@ -175,9 +175,10 @@ public class AddDependenciesDialog extends Dialog {
 
 						@Override
 						public void focusLost(FocusEvent e) {
-							codeDependency.setValue(txtValue.getText());
+							codeDependency.setValue("");
 						}
 					});
+					codeDependency.setValue("");
 
 					ArrayList<CodeDependency> codeDependencies = new ArrayList<CodeDependency>();
 					codeDependencies.add(codeDependency);
@@ -331,7 +332,12 @@ public class AddDependenciesDialog extends Dialog {
 				} else {
 					cd.setOption(variableTxtBoxForCodeTab.getText());
 				}
+
+				if (question.getElement().equals(Constants.GUIElements.text)) {
+					cd.setValue("");
+				}
 			}
+
 		}
 
 	}

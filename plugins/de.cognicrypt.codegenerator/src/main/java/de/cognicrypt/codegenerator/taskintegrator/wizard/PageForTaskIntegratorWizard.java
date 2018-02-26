@@ -328,9 +328,29 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 								tagDataForXSLDocument.append(Constants.ATTRIBUTE_END);
 
 								getTagValueTagData().put(tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString());
+								
+								// Adding the loop for the remaining elements within the attribute loop to have unique tags based on the attributes. 
+								for (Iterator<Element> element = xmlElement.elementIterator(); element.hasNext();) {
+									Element currentElement = element.next();
+									// do not consider the imports tag. The data is not relevant.
+									if (!currentElement.getName().equals("Imports")) {
+										if (tagNameToBeDisplayed.length() > builderDisplayDataSizeTillRoot) {
+											tagNameToBeDisplayed.delete(builderDisplayDataSizeTillRoot, tagNameToBeDisplayed.length());
+										}
+
+										if (isRoot) {
+											if (tagDataForXSLDocument.length() > builderTagDataSizeTillRoot) {
+												tagDataForXSLDocument.delete(builderTagDataSizeTillRoot, tagDataForXSLDocument.length());
+											}
+										}
+										// recursive call
+										processElement(currentElement, tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString(), false);
+									}
+								}
 							}
 						}
 
+						// A similar loop outside the attribute loop to check the tags that are not nested.
 						for (Iterator<Element> element = xmlElement.elementIterator(); element.hasNext();) {
 							Element currentElement = element.next();
 							// do not consider the imports tag. The data is not relevant.

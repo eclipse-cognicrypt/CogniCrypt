@@ -74,6 +74,8 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		for(ClaferFeature featureUnderConsideration : claferModel){
 			addGranularClaferUIElements(featureUnderConsideration);
 		}
+
+		((Composite) this.getContent()).layout();
 	}
 	
 	public void setCompositeClaferFeedback(CompositeClaferFeedback compositeClaferFeedback) {

@@ -14,7 +14,7 @@ import de.cognicrypt.codegenerator.question.CodeDependency;
 
 public class GroupForCodeTab extends Group {
 
-	public GroupForCodeTab(Composite parent, int style, Answer answer ) {
+	public GroupForCodeTab(Composite parent, int style, Answer answer) {
 		super(parent, style);
 		
 	    // Non-editable text box containing answer value
@@ -22,44 +22,22 @@ public class GroupForCodeTab extends Group {
 		txtBoxAnswers.setBounds(5, 5, 210, 25);
 		txtBoxAnswers.setEditable(false);
 		txtBoxAnswers.setText(answer.getValue());
-		
-		//Code dependency option field
-		Text txtOption = new Text(this, SWT.BORDER);
-		txtOption.setBounds(220, 5, 200, 25);
-		txtOption.setVisible(true);
-		txtOption.setEditable(false);
-		if(answer.getValue().length()>20){
-			txtOption.setText(answer.getValue().substring(0,30)+"....");
-		}else{
-			txtOption.setText(answer.getValue());
-		}
+
 		//Code dependency text field
 		Text txtValue = new Text(this, SWT.BORDER);
-		txtValue.setBounds(425,5, 200, 25);
+		txtValue.setBounds(220, 5, 200, 25);
 		txtValue.setVisible(true);
 		
 		CodeDependency codeDependency = new CodeDependency();
 
 		if (answer.getCodeDependencies() != null) {
 			for (CodeDependency cd : answer.getCodeDependencies()) {
-				if (cd.getOption() != null) {
-					txtOption.setText(cd.getOption());
-					codeDependency.setOption(txtOption.getText());
-				}
 				if (cd.getValue() != null) {
 					txtValue.setText(cd.getValue());
 					codeDependency.setValue(txtValue.getText());
 				}
 			}
 		}
-
-		txtOption.addFocusListener(new FocusAdapter() {
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				codeDependency.setOption(txtOption.getText());
-			}
-		});
 
 		txtValue.addFocusListener(new FocusAdapter() {
 

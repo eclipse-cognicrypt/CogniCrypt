@@ -138,56 +138,61 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 						//TODO not implemented yet. We need the location of the js file that is created from the provided clafer model. 
 						String jsFilePath = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getJSFilePath();
-						InstanceGenerator instanceGenerator = new InstanceGenerator(jsFilePath, "c0_" + taskName, taskDescription);
-						
-						// This will contain the xml strings that are generated for every -> operator encountered.
-						List<Document> xmlStrings = new ArrayList<Document>();
+						if (jsFilePath != null) {
+							InstanceGenerator instanceGenerator = new InstanceGenerator(jsFilePath, "c0_" + taskName, taskDescription);
 
-						XMLParser xmlParser = new XMLParser();
-						// this will remain empty for the first instance, that contains no -> operators.
-						HashMap<Question, Answer> constraints = new HashMap<>();
-						InstanceClafer initialInstance = instanceGenerator.generateInstances(constraints).get(0);
-						xmlStrings.add(xmlParser.displayInstanceValues(initialInstance, constraints));
+							// This will contain the xml strings that are generated for every -> operator encountered.
+							List<Document> xmlStrings = new ArrayList<Document>();
 
-						// Questions needed to get the answer that has a constraint with the -> operator.
-						//QuestionsJSONReader reader = new QuestionsJSONReader();
-						// TODO update this to read the data generated in the questions page.
+							XMLParser xmlParser = new XMLParser();
+							// this will remain empty for the first instance, that contains no -> operators.
+							HashMap<Question, Answer> constraints = new HashMap<>();
+							List<InstanceClafer> instances = instanceGenerator.generateInstances(constraints);
+							if (instances.size() > 0) {
+								InstanceClafer initialInstance = instanceGenerator.generateInstances(constraints).get(0);
+								xmlStrings.add(xmlParser.displayInstanceValues(initialInstance, constraints));
 
-						List<Question> questions = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_LINK_ANSWERS)).getCompositeToHoldGranularUIElements()
-							.getListOfAllQuestions();
-						//List<Page> pages = reader.getPages("/src/main/resources/TaskDesc/SymmetricEncryption.json");
+								// Questions needed to get the answer that has a constraint with the -> operator.
+								//QuestionsJSONReader reader = new QuestionsJSONReader();
+								// TODO update this to read the data generated in the questions page.
 
-						//for (Page page : pages) {
-						for (Question question : questions) {
-								for (Answer answer : question.getAnswers()) {
-									if (answer.getClaferDependencies() != null) {
-										for (ClaferDependency claferDependency : answer.getClaferDependencies()) {
-											if ("->".equals(claferDependency.getOperator())) {
-												xmlStrings.add(getXMLForNewAlgorithmInsertion(question, answer, xmlParser, instanceGenerator, claferDependency));
+								List<Question> questions = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_LINK_ANSWERS))
+									.getCompositeToHoldGranularUIElements().getListOfAllQuestions();
+								//List<Page> pages = reader.getPages("/src/main/resources/TaskDesc/SymmetricEncryption.json");
 
-											}
-										} // clafer dependency loop
-									} // clafer dependency check
-									if (answer.getCodeDependencies() != null) {
-										for (CodeDependency codeDependency : answer.getCodeDependencies()) {
-											//xmlStrings.get(0).elementByID(Constants.Code).addElement(codeDependency.getOption()).addText(codeDependency.getValue() + "");
-											Element root = xmlStrings.get(0).getRootElement();
+								//for (Page page : pages) {
+								for (Question question : questions) {
+									for (Answer answer : question.getAnswers()) {
+										if (answer.getClaferDependencies() != null) {
+											for (ClaferDependency claferDependency : answer.getClaferDependencies()) {
+												if ("->".equals(claferDependency.getOperator())) {
+													xmlStrings.add(getXMLForNewAlgorithmInsertion(question, answer, xmlParser, instanceGenerator, claferDependency));
 
-											for (Iterator<Element> element = root.elementIterator(Constants.Code); element.hasNext();) {
-												Element codeElement = element.next();
-												codeElement.addElement(codeDependency.getOption()).addText(codeDependency.getValue() + "");
-										    }
-										} // code dependency loop
-									} // code dependency check
-								} // answer loop
-							} // question loop
-						//} // page loop
+												}
+											} // clafer dependency loop
+										} // clafer dependency check
+										if (answer.getCodeDependencies() != null) {
+											for (CodeDependency codeDependency : answer.getCodeDependencies()) {
+												//xmlStrings.get(0).elementByID(Constants.Code).addElement(codeDependency.getOption()).addText(codeDependency.getValue() + "");
+												Element root = xmlStrings.get(0).getRootElement();
 
-						// Process each xml document that is generated.
-						for (Document xmlDocument : xmlStrings) {
-							processXMLDocument(xmlDocument);
+												for (Iterator<Element> element = root.elementIterator(Constants.Code); element.hasNext();) {
+													Element codeElement = element.next();
+													codeElement.addElement(codeDependency.getOption()).addText(codeDependency.getValue() + "");
+												}
+											} // code dependency loop
+										} // code dependency check
+									} // answer loop
+								} // question loop
+									//} // page loop
+
+								// Process each xml document that is generated.
+								for (Document xmlDocument : xmlStrings) {
+									processXMLDocument(xmlDocument);
+								}
+							}
+
 						}
-
 						XSLTagDialog dialog;
 						// Show an empty dialog if no clafer feature has been defined.
 						if (getTagValueTagData().size() > 0) {

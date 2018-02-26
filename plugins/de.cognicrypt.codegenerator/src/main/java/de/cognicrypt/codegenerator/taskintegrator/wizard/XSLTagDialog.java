@@ -202,9 +202,12 @@ public class XSLTagDialog extends Dialog {
 		 }
 
 		// Replace all the place holder values with the appropriate tag data.
+
 		for (XSLAttribute xslAttribute : attributesOnThisTag) {
-			xslAttribute.setXSLAttributeData(
-				(valuesForTagData.get(xslAttribute.getXSLAttributeData()) == null) ? xslAttribute.getXSLAttributeData() : valuesForTagData.get(xslAttribute.getXSLAttributeData()));
+			if (valuesForTagData != null) {
+				xslAttribute.setXSLAttributeData((valuesForTagData.get(xslAttribute.getXSLAttributeData()) == null) ? xslAttribute.getXSLAttributeData()
+					: valuesForTagData.get(xslAttribute.getXSLAttributeData()));
+			}
 		}
 		
 		setTag(new XSLTag(selectedTag, attributesOnThisTag));

@@ -7,13 +7,13 @@ import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 
-public class SegregateQuestionIntoPages {
+public class SegregatesQuestionsIntoPages {
 
 	private ArrayList<Question> listOfAllQuestions;
 	private ArrayList<Page> pages;
 	private int pageId = 0;
 
-	public SegregateQuestionIntoPages(ArrayList<Question> listOfAllQuestions) {
+	public SegregatesQuestionsIntoPages(ArrayList<Question> listOfAllQuestions) {
 		setListOfAllQuestions(listOfAllQuestions);
 		pages = new ArrayList<>();
 		setPages(pages);

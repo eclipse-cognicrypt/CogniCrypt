@@ -63,6 +63,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
+		Display display = Display.getCurrent();
 		ComboViewer firstAlgorithmClass;
 		Label firstLabelInstanceList;
 		this.control = new Composite(sc, SWT.NONE);
@@ -79,10 +80,11 @@ public class CompareAlgorithmPage extends WizardPage {
 
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
 
-		notifyText = new Text(this.control, SWT.BORDER | SWT.WRAP);
+		Color red = display.getSystemColor(SWT.COLOR_RED);
+		notifyText = new Text(control, SWT.WRAP| SWT.TRANSPARENT);
 		notifyText.setText(Constants.COMPARE_SAME_ALGORITHM);
 		notifyText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		notifyText.setEditable(false);
+		notifyText.setForeground(red);
 		notifyText.setVisible(false);
 		ControlDecoration deco = new ControlDecoration(notifyText, SWT.RIGHT);
 		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage();
@@ -131,9 +133,12 @@ public class CompareAlgorithmPage extends WizardPage {
 			setHighlightFirst(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmFirst)));
 			if (!selectedAlgorithmFirst.equals(selectedAlgorithmSecond)) {
 				notifyText.setVisible(false);
+				deco.hide();
 			} else {
 				notifyText.setVisible(true);
+				deco.show();
 			}
+			
 			compareHighlight();
 		});
 
@@ -151,7 +156,6 @@ public class CompareAlgorithmPage extends WizardPage {
 		this.firstInstancePropertiesPanel.setLayoutData(gridData);
 		this.firstInstancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 
-		Display display = Display.getCurrent();
 		this.firstInstanceDetails.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.firstInstanceDetails.setBounds(10, 20, 400, 180);
 		this.firstInstanceDetails.setEditable(false);
@@ -174,8 +178,10 @@ public class CompareAlgorithmPage extends WizardPage {
 			setHighlightSecond(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmSecond)));
 			if (!selectedAlgorithmFirst.equals(selectedAlgorithmSecond)) {
 				notifyText.setVisible(false);
+				deco.hide();
 			} else {
 				notifyText.setVisible(true);
+				deco.show();
 			}
 			compareHighlight();
 		});
@@ -268,14 +274,13 @@ public class CompareAlgorithmPage extends WizardPage {
 		String secondAlgorithmHighlight = getHighlightSecond();
 		Color cyan = display.getSystemColor(SWT.COLOR_CYAN);
 		Color transparent = display.getSystemColor(SWT.COLOR_TRANSPARENT);
-
+		
 		String[] partFirstInstanceDetails = firstAlgorithmHighlight.split("\n\r\n");
-		String[] partSecondInstanceDetails = secondAlgorithmHighlight.split("\n\r\n");
-
 		String[] lines1;
-		String[] lines2;
-
 		String[] firstHalf1;
+		
+		String[] partSecondInstanceDetails = secondAlgorithmHighlight.split("\n\r\n");
+		String[] lines2;
 		String[] firstHalf2;
 
 		/*
@@ -352,15 +357,17 @@ public class CompareAlgorithmPage extends WizardPage {
 									//highlighting the line which is calculated by adding pos2 with the s offset
 									secondInstanceDetails.setLineBackground(s + pos2, 1, cyan);
 								}
-							} else {
-								//show red
-							}
+							} 
+//							else {
+//								//show red
+//							}
 						}
 						break;
 					}
-				} else {
-					//show the block red
-				}
+				} 
+//				else {
+//					//show the block red
+//				}
 				//offsetting the block length by adding the current block size to s
 				s = s + secondPart.get(y).size() + 1;
 			}

@@ -51,38 +51,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	private MyVerifyListener verifyDecimal = new MyVerifyListener();
 	
 
-	/**
-	 * construct a page containing an element other than itemselection
-	 * 
-	 * @param quest
-	 *        question that will be displayed on the page
-	 * @param primitive
-	 *        primitive for which the page is created
-	 */
-	public PrimitiveQuestionnairePage(final Question quest, final Primitive primitive) {
-		this(quest, primitive, null);
-	}
-
-	/**
-	 * construct a page containing a single question
-	 * 
-	 * @param quest
-	 *        question that will be displayed on the page
-	 * @param primitive
-	 *        primitive for which the page is created
-	 * @param selectionValues
-	 *        list of selectable strings if element type of quest is itemselection, null otherwise
-	 */
-	public PrimitiveQuestionnairePage(final Question quest, final Primitive primitive, final List<String> selectionValues) {
-		super("Display Questions");
-		setTitle("Configuring Selected primitive: " + primitive.getName());
-		setDescription("");
-		this.quest = quest;
-		this.primitive = primitive;
-
-		// This variable needs to be initialized.
-		this.page = null;
-	}
 
 	/**
 	 * 
@@ -122,20 +90,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		this.page = page;
 		this.primitive = primitive;
 		this.iteration = iteration;
-	}
-
-
-
-	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, int iteration) {
-		super("Display Questions");
-		setTitle("Integrating a new primitive: " + primitive.getName());
-		setDescription("Entering data related to the primitive");
-		this.page = page;
-		this.primitive = primitive;
-		this.iteration = iteration;
-
-		//This variable needs to be initialized.
-		this.quest = null;
 	}
 
 	@Override

@@ -11,7 +11,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
@@ -74,27 +73,27 @@ public class AddDependenciesDialog extends Dialog {
 				qstnTxt_1.setText(question.getQuestionText());
 
 				//Group containing the headers
-				Group groupHeaderClaferTab = new Group(compositeForClaferTab, SWT.NONE);
+				Composite compositeHeaderClaferTab = new Composite(compositeForClaferTab, SWT.NONE);
 				GridData gd_groupHeaderClaferTab = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
-				groupHeaderClaferTab.setLayoutData(gd_groupHeaderClaferTab);
+				compositeHeaderClaferTab.setLayoutData(gd_groupHeaderClaferTab);
 
-				Label ansLabel = new Label(groupHeaderClaferTab, SWT.NONE);
+				Label ansLabel = new Label(compositeHeaderClaferTab, SWT.NONE);
 				ansLabel.setBounds(5, 5, 130, 25);
 				ansLabel.setText("Answers");
 
-				Label lblForAlgorithm = new Label(groupHeaderClaferTab, SWT.NONE);
+				Label lblForAlgorithm = new Label(compositeHeaderClaferTab, SWT.NONE);
 				lblForAlgorithm.setBounds(240, 5, 135, 25);
 				lblForAlgorithm.setText("Variability construct");
 
-				Label lblForOperand = new Label(groupHeaderClaferTab, SWT.NONE);
+				Label lblForOperand = new Label(compositeHeaderClaferTab, SWT.NONE);
 				lblForOperand.setBounds(410, 5, 100, 25);
 				lblForOperand.setText("Property");
 
-				Label lblForValue = new Label(groupHeaderClaferTab, SWT.NONE);
+				Label lblForValue = new Label(compositeHeaderClaferTab, SWT.NONE);
 				lblForValue.setBounds(520, 5, 130, 25);
 				lblForValue.setText("Operator");
 
-				Label lblForOperator = new Label(groupHeaderClaferTab, SWT.NONE);
+				Label lblForOperator = new Label(compositeHeaderClaferTab, SWT.NONE);
 				lblForOperator.setBounds(655, 5, 130, 25);
 				lblForOperator.setText("Set Value");
 

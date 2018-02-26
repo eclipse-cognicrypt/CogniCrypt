@@ -13,6 +13,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
@@ -26,12 +28,12 @@ public class CompositeForXsl extends Composite {
 	
 		public CompositeForXsl(Composite parent, int style) {
 			super(parent,SWT.BORDER);
-			this.setBounds(0,0,887,500);
-			setLayout(null);
+		//this.setBounds(0,0,887,500);
+		setLayout(new GridLayout(2, false));
 			
 			//UI Widgets for xslPage
 			setXslTxtBox(new StyledText(this,SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL));
-			xslTxtBox.setBounds(0, 0, 887, 480);
+		xslTxtBox.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
 			xslTxtBox.setCursor(null);
 			
 			

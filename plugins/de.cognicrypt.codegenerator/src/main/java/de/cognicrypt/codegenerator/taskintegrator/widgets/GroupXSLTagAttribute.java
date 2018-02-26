@@ -15,13 +15,11 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.taskintegrator.models.XSLAttribute;
 
 
 public class GroupXSLTagAttribute extends Group {
-	private Text txtAttributeName;
 	private XSLAttribute selectedAttribute;	
 	private Combo cmbAttributeType;
 	private Combo cmbAttributeName;
@@ -143,4 +141,5 @@ public class GroupXSLTagAttribute extends Group {
 	private void setSelectedAttribute(XSLAttribute selectedAttribute) {
 		this.selectedAttribute = selectedAttribute;
 	}
+
 }

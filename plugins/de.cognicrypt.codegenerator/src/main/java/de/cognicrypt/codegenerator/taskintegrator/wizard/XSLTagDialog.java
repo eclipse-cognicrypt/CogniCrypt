@@ -49,6 +49,7 @@ public class XSLTagDialog extends Dialog {
 
 	public XSLTagDialog(Shell parentShell, HashMap<String, String> valuesForTagData) {
 		this(parentShell);
+		// accept all the possible values to be displayed along with their corresponding tag data.
 		this.setValuesForTagData(valuesForTagData);
 		this.cfrFeatures = new TreeSet<String>(getValuesForTagData().keySet());
 	}

@@ -269,7 +269,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * 
 	 */
 	public void addELementsInCodeTabQuestionDialog(Answer answer) {
-		GroupForCodeTab group = new GroupForCodeTab((Composite) getContent(), SWT.NONE, answer);
+		CompositeForCodeTab group = new CompositeForCodeTab((Composite) getContent(), SWT.NONE, answer);
 		group.setBounds(5, getLowestWidgetYAxisValue(), 690, 39);
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
 		setMinHeight(getLowestWidgetYAxisValue());

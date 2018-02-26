@@ -12,9 +12,9 @@ import org.eclipse.swt.widgets.Text;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.CodeDependency;
 
-public class GroupForCodeTab extends Group {
+public class CompositeForCodeTab extends Composite {
 
-	public GroupForCodeTab(Composite parent, int style, Answer answer) {
+	public CompositeForCodeTab(Composite parent, int style, Answer answer) {
 		super(parent, style);
 		
 	    // Non-editable text box containing answer value

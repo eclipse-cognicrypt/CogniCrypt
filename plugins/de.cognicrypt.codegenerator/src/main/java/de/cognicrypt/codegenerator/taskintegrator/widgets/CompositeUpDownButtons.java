@@ -12,9 +12,9 @@ import org.eclipse.swt.widgets.Group;
 
 import de.cognicrypt.codegenerator.question.Question;
 
-public class GroupUpDownButtons extends Group {
+public class CompositeUpDownButtons extends Composite {
 
-	public GroupUpDownButtons(Composite parent, Question currentQuestion) {
+	public CompositeUpDownButtons(Composite parent, Question currentQuestion) {
 		super(parent, SWT.LEFT_TO_RIGHT);
 
 		RowLayout rowLayout = new RowLayout(SWT.HORIZONTAL);

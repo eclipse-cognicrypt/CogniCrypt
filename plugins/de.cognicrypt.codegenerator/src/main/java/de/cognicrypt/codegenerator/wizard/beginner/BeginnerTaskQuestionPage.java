@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -343,7 +342,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				final Text inputField = new Text(container, SWT.BORDER);
 				inputField.setLayoutData(new GridData(100, SWT.DEFAULT));
 				inputField.setToolTipText(question.getTooltip());
-
 				//Adding Browse Button for text field that expects a path as input
 				if (question.getTextType().equals(Constants.BROWSE)) {
 					inputField.setLayoutData(new GridData(300, SWT.DEFAULT));
@@ -358,9 +356,10 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							String path = fileDialog.open();
 							if (path != null) {
 								inputField.setText(path);
-							}
-						}
-					});
+								}
+							}							
+					});	
+
 					text(question, inputField);
 				} else if (question.getTextType().equals(Constants.PASSWORD)) {
 					inputField.setLayoutData(new GridData(120, SWT.DEFAULT));
@@ -383,17 +382,23 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					});
 					text(question, inputField);
 				} else if (question.getTextType().equals(Constants.INTEGER)) {
+					Label errorMessage = new Label(container, SWT.NONE|SWT.WRAP);
 					inputField.addListener(SWT.Verify, new Listener() {
 
+						@Override
 						public void handleEvent(Event e) {
 							String string = e.text;
 							char[] chars = new char[string.length()];
 							string.getChars(0, chars.length, chars, 0);
 							for (int i = 0; i < chars.length; i++) {
 								if (!('0' <= chars[i] && chars[i] <= '9')) {
+									errorMessage.setVisible(true);
+									errorMessage.setText("!Only integers expected");
+									errorMessage.setForeground(red);
 									e.doit = false;
 									return;
 								}
+								errorMessage.setVisible(false);
 							}
 						}
 					});

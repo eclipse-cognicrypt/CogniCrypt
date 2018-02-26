@@ -68,7 +68,9 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		if (!claferFeature.getFeatureInheritance().isEmpty()) {
 			Label lblInheritsFrom = new Label(grpClaferFeature, SWT.NONE);
 
-			if (claferFeature.getFeatureType() == Constants.FeatureType.ABSTRACT) {
+			if (claferFeature.getFeatureInheritance().contains("->")) {
+				lblInheritsFrom.setText("assigns");
+			} else if (claferFeature.getFeatureType() == Constants.FeatureType.ABSTRACT) {
 				lblInheritsFrom.setText("inherits from class");
 			} else if (claferFeature.getFeatureType() == Constants.FeatureType.CONCRETE) {
 				lblInheritsFrom.setText("implements");

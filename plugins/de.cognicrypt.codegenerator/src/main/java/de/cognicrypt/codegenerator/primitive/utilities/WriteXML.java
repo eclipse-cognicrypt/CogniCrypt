@@ -19,7 +19,9 @@ public class WriteXML {
 	DocumentBuilder docBuilder;
 	Document doc;
 	Element rootElement;
-
+/**
+ * Generate the xml file related to the xsl
+ */
 	public WriteXML() {
 		
 	}

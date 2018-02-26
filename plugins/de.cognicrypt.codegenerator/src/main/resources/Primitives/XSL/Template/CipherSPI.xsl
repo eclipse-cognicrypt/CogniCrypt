@@ -2,8 +2,8 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
 <xsl:output method="text"/>
 <xsl:template match="/">
-
-
+<xsl:variable name="class"><xsl:value-of select="//SymmetricBlockCipher/name" />Cipher</xsl:variable>
+<xsl:result-document href="{$class}.java">
 
 import java.security.AlgorithmParameters;
 import java.security.InvalidAlgorithmParameterException;
@@ -22,7 +22,7 @@ import javax.crypto.ShortBufferException;
 
 import java.util.Arrays;
 
-public class <xsl:value-of select="SymmetricBlockCipher/name" />Cipher extends CipherSpi {
+public class <xsl:value-of select="$class"></xsl:value-of>  extends CipherSpi {
 
  @Override
 	 protected void engineSetMode(String mode) throws NoSuchAlgorithmException {
@@ -106,6 +106,7 @@ public class <xsl:value-of select="SymmetricBlockCipher/name" />Cipher extends C
  
  
 }
+</xsl:result-document>
 
 </xsl:template>
 </xsl:stylesheet>

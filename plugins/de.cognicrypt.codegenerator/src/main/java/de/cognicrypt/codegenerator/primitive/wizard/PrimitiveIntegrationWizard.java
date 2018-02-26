@@ -1,6 +1,7 @@
 package de.cognicrypt.codegenerator.primitive.wizard;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,9 +18,12 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 
+import com.example.java.ceasar.CaesarCipher;
+import com.example.java.ceasar.CaesarProvider;
+
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
-import de.cognicrypt.codegenerator.primitive.utilities.CreateJarFile;
+import de.cognicrypt.codegenerator.primitive.utilities.ProviderFile;
 import de.cognicrypt.codegenerator.primitive.utilities.WriteXML;
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnaire;
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnairePage;
@@ -37,7 +41,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	private LinkedHashMap<String, String> inputsMap = new LinkedHashMap<String, String>();
 	StringBuilder data = new StringBuilder();
 	WriteXML xmlFileForXSL;
-	CreateJarFile providerJar = new CreateJarFile();
+	ProviderFile providerJar = new ProviderFile("Test");
 
 	public PrimitiveIntegrationWizard() {
 		super();
@@ -165,7 +169,8 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-
+	
+		
 		//Generation of xml file for xsl
 		final File xmlFile = Utils.getResourceFromWithin(Constants.xmlFilePath);
 		xmlFileForXSL = new WriteXML();
@@ -190,18 +195,26 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		final File xslFile = Utils.getResourceFromWithin(Constants.cipherSpiXSL);
 		try {
 			transform(xmlFile, xslFile,
-				"C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\TransformedFiles\\test.java");
+				"C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\TransformedFiles\\"+inputsMap.get("name")+"Cipher.java");
 		} catch (TransformerException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
-		//Create Provider jarFile 
+		
+		//Generation of .class files from the transformed .java files
 		File folder = Utils.getResourceFromWithin(Constants.TransformedFiles);
 		File[] listOfFiles = (folder).listFiles();
-
+		for(File file: listOfFiles){
+			try {
+				providerJar.GenerateClassFile(file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		//Create Provider jarFile 
 		String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" };
-		providerJar.createManifest("Ahmed", classPaths);
+		providerJar.createManifest("someOwner", classPaths);
 		providerJar.createJarArchive(new File("C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\test.jar"),
 			listOfFiles);
 

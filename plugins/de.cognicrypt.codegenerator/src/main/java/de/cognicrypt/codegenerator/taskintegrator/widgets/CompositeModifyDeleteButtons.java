@@ -18,7 +18,7 @@ import de.cognicrypt.codegenerator.taskintegrator.wizard.QuestionDialog;
 
 
 
-public class GroupModifyDeleteButtons extends Group {
+public class CompositeModifyDeleteButtons extends Composite {
 
 	/**
 	 * Create the composite.
@@ -28,13 +28,14 @@ public class GroupModifyDeleteButtons extends Group {
 	int counter = 0;
 	//private ArrayList<ClaferFeature> claferFeatures;
 
-	public GroupModifyDeleteButtons(Composite parent, Question questionParam) {
+	public CompositeModifyDeleteButtons(Composite parent, Question questionParam) {
 		super(parent, SWT.RIGHT_TO_LEFT);
 		//setClaferFeatures(claferFeatures);
 		RowLayout rowLayout = new RowLayout(SWT.HORIZONTAL);
 		setLayout(rowLayout);
 		
 		Button btnDelete = new Button(this, SWT.NONE);
+		btnDelete.setToolTipText("Click to delete the question");
 		btnDelete.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -52,6 +53,7 @@ public class GroupModifyDeleteButtons extends Group {
 		
 		Button btnModify = new Button(this, SWT.NONE);
 		btnModify.setText("Modify");
+		btnModify.setToolTipText("Click to modify the question details");
 
 		btnModify.addSelectionListener(new SelectionAdapter(){
 			@Override

@@ -42,24 +42,24 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		
 		setLayout(null);
 		
-		GroupModifyDeleteButtons grpModifyDeleteButtons = new GroupModifyDeleteButtons(this, question);
+		CompositeModifyDeleteButtons grpModifyDeleteButtons = new CompositeModifyDeleteButtons(this, question);
 		RowLayout rowLayout = (RowLayout) grpModifyDeleteButtons.getLayout();
 		rowLayout.marginLeft = 5;
 		rowLayout.marginTop = 5;
 		rowLayout.fill = true;
 		rowLayout.center = true;
-		grpModifyDeleteButtons.setBounds(10, 5, 571, 53);
+		grpModifyDeleteButtons.setBounds(10, 5, 571, 35);
 		
 		//Only visible for "pageForHighLevelQuestions" page
 		grpModifyDeleteButtons.setVisible(!linkAnswerPage);
 
-		GroupUpDownButtons grpUpDownButtons = new GroupUpDownButtons(this, question);
+		CompositeUpDownButtons grpUpDownButtons = new CompositeUpDownButtons(this, question);
 		RowLayout upDownRowLayout = (RowLayout) grpModifyDeleteButtons.getLayout();
 		upDownRowLayout.marginLeft = 5;
 		upDownRowLayout.marginTop = 5;
 		upDownRowLayout.fill = true;
 		upDownRowLayout.center = true;
-		grpUpDownButtons.setBounds(588, 5, 150, 53);
+		grpUpDownButtons.setBounds(588, 5, 150, 35);
 
 		//
 		grpUpDownButtons.setVisible(!linkAnswerPage);
@@ -110,7 +110,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		 * resizing the height of the grpQuestionDetails depending upon the page
 		 */
 		if(!linkAnswerPage){
-		grpQuestionDetails.setBounds(10, 62, 571, 150);
+			grpQuestionDetails.setBounds(10, 50, 571, 150);
 		}
 		else if(linkAnswerPage){
 			grpQuestionDetails.setBounds(10, 5, 571, 150);

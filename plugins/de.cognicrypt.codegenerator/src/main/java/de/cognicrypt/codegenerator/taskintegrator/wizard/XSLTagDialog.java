@@ -1,6 +1,7 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.util.ArrayList;
+import java.util.SortedSet;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -32,7 +33,7 @@ public class XSLTagDialog extends Dialog {
 	private String currentSelectionStringOncomboXSLTags;
 	
 	private XSLTag tag;
-	private ArrayList<String> cfrFeatures;
+	private SortedSet<String> cfrFeatures;
 	
 	/**
 	 * Create the dialog.
@@ -43,10 +44,10 @@ public class XSLTagDialog extends Dialog {
 		setShellStyle(SWT.RESIZE);
 	}
 
-	public XSLTagDialog(Shell parentShell, ArrayList<String> cfrFeatures) {
+	public XSLTagDialog(Shell parentShell, SortedSet<String> keysForCFRFeatures) {
 		this(parentShell);
 
-		this.cfrFeatures = cfrFeatures;
+		this.cfrFeatures = keysForCFRFeatures;
 	}
 
 	/**
@@ -86,7 +87,7 @@ public class XSLTagDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// Add the UI element for the attribute with the remove button, and pass the selected XSL tag.
-				ArrayList<String> possibleCfrFeatures = cfrFeatures;
+				SortedSet<String> possibleCfrFeatures = cfrFeatures;
 				compositeForXSLAttributes.addXSLAttribute(true, comboXSLTags.getText(), possibleCfrFeatures);
 				// Update all the drop down menus for attribute UIs to keep them consistent after adding a new attribute.
 				ArrayList<String> possAttributes = compositeForXSLAttributes.getListOfPossibleAttributes(comboXSLTags.getText());

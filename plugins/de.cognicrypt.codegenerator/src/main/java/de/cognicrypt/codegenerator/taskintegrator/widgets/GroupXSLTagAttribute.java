@@ -1,6 +1,7 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
 import java.util.ArrayList;
+import java.util.SortedSet;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
@@ -30,7 +31,7 @@ public class GroupXSLTagAttribute extends Group {
 	 * @param parent
 	 * @param style
 	 */
-	public GroupXSLTagAttribute(Composite parent, int style, boolean showRemoveButton, XSLAttribute attributeParam, ArrayList<String> possibleCfrFeatures) {
+	public GroupXSLTagAttribute(Composite parent, int style, boolean showRemoveButton, XSLAttribute attributeParam, SortedSet<String> possibleCfrFeatures) {
 		super(parent, style);
 		setLayout(new RowLayout(SWT.HORIZONTAL));
 		

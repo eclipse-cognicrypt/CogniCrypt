@@ -20,6 +20,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -210,10 +211,25 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						}
 
 						SortedSet<String> keys = new TreeSet<String>(getTagValueTagData().keySet());
-						for (String key : keys) {
-							System.out.println(key + " " + getTagValueTagData().get(key));
+						//						for (String key : keys) {
+						//							System.out.println(key + " " + getTagValueTagData().get(key));
+						//						}
+
+						XSLTagDialog dialog;
+						if (keys.size() > 0) {
+							dialog = new XSLTagDialog(getShell(), keys);
+						} else {
+							dialog = new XSLTagDialog(getShell());
 						}
 
+						if (dialog.open() == Window.OK) {
+							// To locate the position of the xsl tag to be introduce						
+							Point selected = getCompositeForXsl().getXslTxtBox().getSelection();
+							String xslTxtBoxContent = getCompositeForXsl().getXslTxtBox().getText();
+							xslTxtBoxContent = xslTxtBoxContent.substring(0, selected.x) + dialog.getTag().toString() + xslTxtBoxContent.substring(selected.y,
+								xslTxtBoxContent.length());
+							getCompositeForXsl().getXslTxtBox().setText(xslTxtBoxContent);
+						}
 
 						/*for (IWizardPage page : getWizard().getPages()) {
 							// get the Clafer creation page
@@ -249,21 +265,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 							}
 						}*/
 
-						/*XSLTagDialog dialog;
-						if (strFeatures.size() > 0) {
-							dialog = new XSLTagDialog(getShell(), strFeatures);
-						} else {
-							dialog = new XSLTagDialog(getShell());
-						}
-
-						if (dialog.open() == Window.OK) {
-							// To locate the position of the xsl tag to be introduce						
-							Point selected = getCompositeForXsl().getXslTxtBox().getSelection();
-							String xslTxtBoxContent = getCompositeForXsl().getXslTxtBox().getText();
-							xslTxtBoxContent = xslTxtBoxContent.substring(0, selected.x) + dialog.getTag().toString() + xslTxtBoxContent.substring(selected.y,
-								xslTxtBoxContent.length());
-							getCompositeForXsl().getXslTxtBox().setText(xslTxtBoxContent);
-						}*/
+						
 
 					}
 

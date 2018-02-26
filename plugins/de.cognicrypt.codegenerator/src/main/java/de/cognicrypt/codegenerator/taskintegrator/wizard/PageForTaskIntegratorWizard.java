@@ -217,7 +217,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 						XSLTagDialog dialog;
 						if (keys.size() > 0) {
-							dialog = new XSLTagDialog(getShell(), keys);
+							dialog = new XSLTagDialog(getShell(), getTagValueTagData());
 						} else {
 							dialog = new XSLTagDialog(getShell());
 						}

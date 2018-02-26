@@ -1,7 +1,9 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -34,6 +36,7 @@ public class XSLTagDialog extends Dialog {
 	
 	private XSLTag tag;
 	private SortedSet<String> cfrFeatures;
+	private HashMap<String, String> valuesForTagData;
 	
 	/**
 	 * Create the dialog.
@@ -44,10 +47,10 @@ public class XSLTagDialog extends Dialog {
 		setShellStyle(SWT.RESIZE);
 	}
 
-	public XSLTagDialog(Shell parentShell, SortedSet<String> keysForCFRFeatures) {
+	public XSLTagDialog(Shell parentShell, HashMap<String, String> valuesForTagData) {
 		this(parentShell);
-
-		this.cfrFeatures = keysForCFRFeatures;
+		this.setValuesForTagData(valuesForTagData);
+		this.cfrFeatures = new TreeSet<String>(getValuesForTagData().keySet());
 	}
 
 	/**
@@ -196,6 +199,12 @@ public class XSLTagDialog extends Dialog {
 		 for(Control attribute : ((Composite)compositeForXSLAttributes.getContent()).getChildren()){
 			 attributesOnThisTag.add(((GroupXSLTagAttribute) attribute).getSelectedAttribute());			 
 		 }
+
+		// Replace all the place holder values with the appropriate tag data.
+		for (XSLAttribute xslAttribute : attributesOnThisTag) {
+			xslAttribute.setXSLAttributeData(
+				(valuesForTagData.get(xslAttribute.getXSLAttributeData()) == null) ? xslAttribute.getXSLAttributeData() : valuesForTagData.get(xslAttribute.getXSLAttributeData()));
+		}
 		
 		setTag(new XSLTag(selectedTag, attributesOnThisTag));
 		super.okPressed();
@@ -235,6 +244,20 @@ public class XSLTagDialog extends Dialog {
 	 */
 	private void setTag(XSLTag tag) {
 		this.tag = tag;
+	}
+
+	/**
+	 * @return the valuesForTagData
+	 */
+	public HashMap<String, String> getValuesForTagData() {
+		return valuesForTagData;
+	}
+
+	/**
+	 * @param valuesForTagData the valuesForTagData to set
+	 */
+	public void setValuesForTagData(HashMap<String, String> valuesForTagData) {
+		this.valuesForTagData = valuesForTagData;
 	}
 
 }

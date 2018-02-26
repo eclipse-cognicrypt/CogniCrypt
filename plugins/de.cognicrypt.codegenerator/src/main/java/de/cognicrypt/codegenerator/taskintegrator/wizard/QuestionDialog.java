@@ -297,16 +297,19 @@ public class QuestionDialog extends Dialog {
 		questionDetails.setQuestionType(combo.getText());
 		setQuestionElement(questionDetails, combo.getText());
 
-		//this loop executes to delete empty text boxes in the question dialog
-		for (int i = 0; i < compositeToHoldAnswers.getListOfAllAnswer().size(); i++) {
-			if (Objects.equals(compositeToHoldAnswers.getListOfAllAnswer().get(i).getValue(), null) || Objects.equals(compositeToHoldAnswers.getListOfAllAnswer().get(i).getValue(),
-				"")) {
-				compositeToHoldAnswers.deleteAnswer(compositeToHoldAnswers.getListOfAllAnswer().get(i));
-				compositeToHoldAnswers.updateAnswerContainer();
-				i--;
+		/**
+		 * Executes only if the question type is not text this loop executes to delete empty text boxes in the question dialog
+		 */
+		if (!questionDetails.getElement().equals(Constants.GUIElements.text)) {
+			for (int i = 0; i < compositeToHoldAnswers.getListOfAllAnswer().size(); i++) {
+				if (Objects.equals(compositeToHoldAnswers.getListOfAllAnswer().get(i).getValue(), null) || Objects
+					.equals(compositeToHoldAnswers.getListOfAllAnswer().get(i).getValue(), "")) {
+					compositeToHoldAnswers.deleteAnswer(compositeToHoldAnswers.getListOfAllAnswer().get(i));
+					compositeToHoldAnswers.updateAnswerContainer();
+					i--;
+				}
 			}
 		}
-		
 		questionDetails.setAnswers(compositeToHoldAnswers.getListOfAllAnswer());
 		checkQuestionHasDefaultAnswer(questionDetails);
 		this.questionDetails = questionDetails;

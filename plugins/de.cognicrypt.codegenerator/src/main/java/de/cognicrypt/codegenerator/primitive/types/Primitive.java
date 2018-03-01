@@ -9,19 +9,19 @@ public class Primitive {
 	private String name;
 	private String xmlFile;
 	private boolean isSelected;
-	private ArrayList<MethodsQuestions> questions; 
+	private String xslFile;
 
 	public String getName() {
 		return this.name;
 	}
 
+	public String getXslFile(){
+		return this.xslFile;
+	}
 	public String getXmlFile() {
 		return this.xmlFile;
 	}
 	
-	public ArrayList<MethodsQuestions> getQuestions(){
-		return this.questions;
-	}
 
 	public boolean isSelected() {
 		return this.isSelected;
@@ -29,6 +29,10 @@ public class Primitive {
 
 	public void setXmlFile(String xml) {
 		this.xmlFile = xml;
+	}
+	
+	public void setXslFile(String xsl){
+		this.xslFile=xsl;
 	}
 
 	public void setName(final String name) {
@@ -38,8 +42,6 @@ public class Primitive {
 	public void setSelected(final boolean isSelected) {
 		this.isSelected = isSelected;
 	}
-	public void setQuestions(ArrayList<MethodsQuestions> questions){
-		this.questions=questions;
-	}
+	
 
 }

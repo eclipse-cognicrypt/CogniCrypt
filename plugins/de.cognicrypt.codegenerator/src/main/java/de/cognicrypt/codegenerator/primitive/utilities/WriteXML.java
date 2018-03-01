@@ -1,18 +1,24 @@
 package de.cognicrypt.codegenerator.primitive.utilities;
 
 import java.io.File;
+import java.io.IOException;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 public class WriteXML {
 
 	DocumentBuilderFactory docFactory;
@@ -44,7 +50,7 @@ public class WriteXML {
 	}
 
 	// write the content into xml file
-	public void transformXSL(File xmlFile) throws TransformerException {
+	public void transformXml(File xmlFile) throws TransformerException {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
@@ -60,6 +66,18 @@ public class WriteXML {
 		System.out.println("File saved!");
 	}
 	
+	
+	public void transformXsl(File xslFile, File xmlFile) throws ParserConfigurationException, TransformerFactoryConfigurationError, SAXException, IOException, TransformerException{
+		 docFactory = DocumentBuilderFactory.newInstance();
+		javax.xml.parsers.DocumentBuilder builder = docFactory.newDocumentBuilder();
+		StreamSource styleSource = new StreamSource(xslFile);
+			Transformer t = TransformerFactory.newInstance().newTransformer(styleSource);
+		Document xml = builder.parse(xmlFile);
+			File resultFile = new File("C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\test.java");
+			StreamResult result = new StreamResult(resultFile);
+			//transformation 
+		t.transform(new DOMSource(xml), result);
+	}
 	
 
 	

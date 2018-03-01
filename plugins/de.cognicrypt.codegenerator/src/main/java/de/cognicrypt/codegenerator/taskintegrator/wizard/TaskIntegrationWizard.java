@@ -5,8 +5,10 @@ import java.util.ArrayList;
 
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.MessageBox;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Question;
@@ -66,11 +68,18 @@ public class TaskIntegrationWizard extends Wizard {
 		if(this.getContainer().getCurrentPage().getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)){
 			if(objectForDataInNonGuidedMode.isGuidedModeChosen() == false //&& this.objectForDataInNonGuidedMode.isGuidedModeForced() == false
 				){
+				
+				String fileWriteAttemptResult = fileUtilities.writeFiles(objectForDataInNonGuidedMode.getLocationOfClaferFile(), objectForDataInNonGuidedMode.getLocationOfJSONFile(),
+					objectForDataInNonGuidedMode.getLocationOfXSLFile(), objectForDataInNonGuidedMode.getLocationOfCustomLibrary());
 				// Check if the contents of the provided files are valid.
-				if (fileUtilities.writeFiles(objectForDataInNonGuidedMode.getLocationOfClaferFile(), objectForDataInNonGuidedMode.getLocationOfJSONFile(), objectForDataInNonGuidedMode.getLocationOfXSLFile(), objectForDataInNonGuidedMode.getLocationOfCustomLibrary())) {
+				if (fileWriteAttemptResult.equals("")) {
 					fileUtilities.writeTaskToJSONFile(objectForDataInNonGuidedMode.getTask());
 					return true;
 				} else {
+					MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
+					errorBox.setText("Problems with the provided files.");
+					errorBox.setMessage(fileWriteAttemptResult);
+					errorBox.open();
 					return false;
 				}
 				
@@ -85,17 +94,22 @@ public class TaskIntegrationWizard extends Wizard {
 			String xslFileContents = ((CompositeForXsl) ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)).getCompositeForXsl()).getXslTxtBox()
 				.getText();
 
-			// FIXME ObjectForDataInNonGuidedMode is only used in non-guided mode but custom library location is always needed
-			// ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode().getLocationOfCustomLibrary();
 			File customLibLocation = null;
 			
 			ModelAdvancedMode objectForDataInGuidedMode = getTIPageByName(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
 			objectForDataInGuidedMode.setTask();
 
-			fileUtilities.writeFiles(claferModel, questions, xslFileContents, customLibLocation);
-			fileUtilities.writeTaskToJSONFile(objectForDataInGuidedMode.getTask());
-
-			return true;
+			String fileWriteAttemptResult = fileUtilities.writeFiles(claferModel, questions, xslFileContents, customLibLocation);
+			if (fileWriteAttemptResult.equals("")) {
+				fileUtilities.writeTaskToJSONFile(objectForDataInNonGuidedMode.getTask());
+				return true;
+			} else {
+				MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
+				errorBox.setText("Problems with the provided data.");
+				errorBox.setMessage(fileWriteAttemptResult);
+				errorBox.open();
+				return false;
+			}
 		}
 		
 		/*

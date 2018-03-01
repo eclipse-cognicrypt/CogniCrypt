@@ -122,21 +122,24 @@ public class FileUtilities {
 	 * @return a boolean value for the validity of the file.
 	 */
 	private boolean validateJARFile(File customLibLocation) {
-		
-	        ZipFile customLib;
-	        boolean validFile = false;
-			try {
-				customLib = new ZipFile(customLibLocation);
-				Enumeration<? extends ZipEntry> e = customLib.entries();
-				validFile = true;
-		        customLib.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-				return false;
-			} 
-	        
-	    return validFile;
-		
+		boolean validFile = true;
+		// Loop through the files, since the custom library is a directory.
+		if (customLibLocation.isDirectory()) {
+			for (File tmpLibLocation : customLibLocation.listFiles()) {
+				if (tmpLibLocation.getPath().endsWith(Constants.JAR_EXTENSION)) {
+					ZipFile customLib;
+					try {
+						customLib = new ZipFile(tmpLibLocation);
+						Enumeration<? extends ZipEntry> e = customLib.entries();
+						customLib.close();
+					} catch (IOException ex) {
+						ex.printStackTrace();
+						return false;
+					}
+				}
+			}
+		}
+		return validFile;
 	}
 
 	/**
@@ -186,7 +189,7 @@ public class FileUtilities {
 	 * @param existingFileLocation
 	 */	
 	private void copyFileFromPath(File existingFileLocation) {
-		if(existingFileLocation.exists() && !existingFileLocation.isDirectory()) {		
+		if (existingFileLocation.exists() && !existingFileLocation.isDirectory()) {
 			File targetDirectory = null;
 			try {
 				
@@ -198,18 +201,29 @@ public class FileUtilities {
 					targetDirectory = new File(Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.JSON_EXTENSION);
 				} else if(existingFileLocation.getPath().endsWith(Constants.XSL_EXTENSION)) {
 					targetDirectory = new File(Utils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XSL_EXTENSION);
-				} else if(existingFileLocation.getPath().endsWith(Constants.JAR_EXTENSION)) {
-					File tempDirectory = new File(Utils.getResourceFromWithin(Constants.JAR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.innerFileSeparator);
-					tempDirectory.mkdir();
-					targetDirectory = new File(tempDirectory, getTrimmedTaskName() + Constants.JAR_EXTENSION);
 				} else {
 					throw new Exception("Unknown file type.");
 				}
 			
-				Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING,StandardCopyOption.COPY_ATTRIBUTES);
-				
+				if (targetDirectory != null) {
+					Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+				}
+
 			} catch (Exception e) {				
 				e.printStackTrace();
+			}
+			// If we are dealing with a custom library location.
+		} else if (existingFileLocation.exists() && existingFileLocation.isDirectory()) {
+			File tempDirectory = new File(Utils.getResourceFromWithin(Constants.JAR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.innerFileSeparator);
+			tempDirectory.mkdir();
+			// Loop through all the containing files.
+			for (File customLibFile : existingFileLocation.listFiles()) {
+				File tmpFile = new File(tempDirectory.toString() + Constants.SLASH + customLibFile.getName());
+				try {
+					Files.copy(customLibFile.toPath(), tmpFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

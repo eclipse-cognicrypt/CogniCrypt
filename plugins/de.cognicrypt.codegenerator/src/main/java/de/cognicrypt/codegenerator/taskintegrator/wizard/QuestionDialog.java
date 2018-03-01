@@ -6,13 +6,10 @@ import java.util.Objects;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -21,9 +18,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -31,33 +26,21 @@ import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Answer;
-import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
-import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
-import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 
 public class QuestionDialog extends Dialog {
 
 	public Text textQuestion;
-	private Label lblQuestionContent;
 	private String questionText;
 	private String questionType;
 	private Combo combo;
 	private CompositeToHoldSmallerUIElements compositeToHoldAnswers;
 	private Question question;
 	private Question questionDetails;
-	private ClaferModel claferModel;
-	private ArrayList<Question> listOfAllQuestions;
 	int counter = 0;
-	private String featureSelected;
-	private ArrayList<String> operandItems;
 	private String currentQuestionType = null;
-	private MessageBox linkAnswersTabMessageBox;
-	private MessageBox linkFeaturesMessageBox;
-	private MessageBox linkCodeMessageBox;
 
 	/**
 	 * Create the dialog.
@@ -71,8 +54,6 @@ public class QuestionDialog extends Dialog {
 	public QuestionDialog(Shell parentShell, Question question, ClaferModel claferModel, ArrayList<Question> listOfAllQuestions) {
 		super(parentShell);
 		this.question = question;
-		this.claferModel = claferModel;
-		this.listOfAllQuestions = listOfAllQuestions;
 	}
 
 	/**
@@ -184,81 +165,27 @@ public class QuestionDialog extends Dialog {
 
 		if (question != null) {
 			textQuestion.setText(question.getQuestionText());
-			combo.setText(question.getQuestionType());
+			if (question.getElement().equals(Constants.GUIElements.combo)) {
+				combo.setText(Constants.dropDown);
+			} else if (question.getElement().equals(Constants.GUIElements.radio)) {
+				combo.setText(Constants.radioButton);
+			} else if (question.getElement().equals(Constants.GUIElements.text)) {
+				combo.setText(Constants.textBox);
+
+			}
+			//combo.setText(question.getQuestionType());
 			for (Answer answer : question.getAnswers()) {
 				compositeToHoldAnswers.getListOfAllAnswer().add(answer);
 				compositeToHoldAnswers.addAnswer(answer, showRemoveButton);
 				compositeToHoldAnswers.setVisible(true);
 			}
-			if (question.getQuestionType().equalsIgnoreCase(Constants.textBox)) {
+			if (question.getElement().equals(Constants.GUIElements.text)) {
 				compositeToHoldAnswers.setVisible(false);
 			}
 
 		}
 
 		return container;
-	}
-
-	private ArrayList<String> itemsToAdd(String featureSelected) {
-		for (ClaferFeature claferFeature : claferModel) {
-			if (claferFeature.getFeatureName().equalsIgnoreCase(featureSelected)) {
-				System.out.println(featureSelected);
-				for (FeatureProperty featureProperty : claferFeature.getFeatureProperties()) {
-					operandItems.add(featureProperty.getPropertyName());
-				}
-				if (claferFeature.getFeatureInheritance() != null) {
-					//FeatureProperty inheritProperty = claferFeature.getFeatureInheritsFromForAbstract();
-					featureSelected = claferFeature.getFeatureInheritance();
-					itemsToAdd(featureSelected);
-				}
-			}
-		}
-		return operandItems;
-	}
-
-	private ClaferModel getClaferFeatures() {
-		ClaferFeature algorithm = new ClaferFeature(Constants.FeatureType.ABSTRACT, "algorithm", // Counter as the name to make each addition identifiable.
-			null);
-
-		algorithm.getFeatureProperties().add(new FeatureProperty("name", "string"));
-		algorithm.getFeatureProperties().add(new FeatureProperty("description", "string"));
-		algorithm.getFeatureProperties().add(new FeatureProperty("security", "Security"));
-		algorithm.getFeatureProperties().add(new FeatureProperty("performance", "Performance"));
-		algorithm.getFeatureProperties().add(new FeatureProperty("classPerformance", "Performance"));
-
-		ClaferFeature cipher = new ClaferFeature(Constants.FeatureType.ABSTRACT, "cipher", // Counter as the name to make each addition identifiable.
-			"algorithm");
-
-		ClaferFeature symmetricCipher = new ClaferFeature(Constants.FeatureType.ABSTRACT, "symmetricCipher", // Counter as the name to make each addition identifiable.
-			"cipher");
-
-		symmetricCipher.getFeatureProperties().add(new FeatureProperty("keySize", "integer"));
-		symmetricCipher.getFeatureConstraints().add(new ClaferConstraint("classPerformance = Fast"));
-
-		ClaferFeature symmetricBlockCipher = new ClaferFeature(Constants.FeatureType.ABSTRACT, "symmetricBlockCipher", // Counter as the name to make each addition identifiable.
-			"symmetricCipher");
-
-		symmetricBlockCipher.getFeatureProperties().add(new FeatureProperty("mode", "Mode"));
-		symmetricBlockCipher.getFeatureProperties().add(new FeatureProperty("padding", "Padding"));
-		symmetricBlockCipher.getFeatureConstraints().add(new ClaferConstraint("mode !=ECB"));
-		symmetricBlockCipher.getFeatureConstraints().add(new ClaferConstraint("padding !=NoPadding"));
-
-		ClaferFeature AES = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", // Counter as the name to make each addition identifiable.
-			"symmetricBlockCipher");
-		AES.getFeatureConstraints().add(new ClaferConstraint("description = Advanced Encryption Standard (AES) cipher"));
-		AES.getFeatureConstraints().add(new ClaferConstraint("name = AES"));
-		AES.getFeatureConstraints().add(new ClaferConstraint("keySize = 128 || keySize = 192 || keySize = 256"));
-		AES.getFeatureConstraints().add(new ClaferConstraint("keySize = 128 => performance = VeryFast && security = Medium"));
-		AES.getFeatureConstraints().add(new ClaferConstraint("keySize > 128 => performance = Fast && security = Strong"));
-
-		claferModel.add(algorithm);
-		claferModel.add(cipher);
-		claferModel.add(symmetricCipher);
-		claferModel.add(symmetricBlockCipher);
-		claferModel.add(AES);
-
-		return claferModel;
-
 	}
 
 	//to save the question text and type
@@ -294,7 +221,6 @@ public class QuestionDialog extends Dialog {
 	public void setQuestionDetails() {
 		Question questionDetails = new Question();
 		questionDetails.setQuestionText(textQuestion.getText());
-		questionDetails.setQuestionType(combo.getText());
 		setQuestionElement(questionDetails, combo.getText());
 
 		/**
@@ -338,7 +264,7 @@ public class QuestionDialog extends Dialog {
 		 * case 3: sets the question element to text if the question type is radio button
 		 */
 		else if (element.equals(Constants.radioButton)) {
-			question.setElement(Constants.GUIElements.button);
+			question.setElement(Constants.GUIElements.radio);
 		}
 	}
 

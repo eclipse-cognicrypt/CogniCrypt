@@ -1,9 +1,5 @@
 package de.cognicrypt.codegenerator.primitive.wizard.questionnaire;
 
-import java.text.Format;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -18,7 +14,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -28,10 +23,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
@@ -39,11 +32,9 @@ import org.eclipse.ui.PlatformUI;
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
-import de.cognicrypt.codegenerator.primitive.utilities.WriteXML;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.wizard.beginner.BeginnerTaskQuestionPage;
 
 public class PrimitiveQuestionnairePage extends WizardPage {
 
@@ -58,7 +49,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	private int iteration = 0;
 	private final Page page;
 	private String rangedSize;
-	private MyVerifyListener verifyDecimal = new MyVerifyListener();
 	private Text note;
 	ControlDecoration deco;
 	
@@ -113,7 +103,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		setDescription("Please enter the following data related to the primitive.");
 		this.page = page;
 		this.primitive = primitive;
-
 		//This variable needs to be initialized.
 		this.quest = null;
 	}
@@ -515,5 +504,4 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	public String getClaferDepend() {
 		return this.claferDepend;
 	}
-
 }

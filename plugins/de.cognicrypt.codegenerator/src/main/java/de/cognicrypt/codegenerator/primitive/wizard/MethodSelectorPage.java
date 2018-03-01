@@ -5,17 +5,24 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Text;
 
 /**
- * This class is responsible for displaying the methods related to the custom algorithm
- * For instance, in case of primitive of type symmetric block cipher, the required methods are encryption an decryption.  
+ * This class is responsible for displaying the methods related to the custom algorithm For instance, in case of primitive of type symmetric block cipher, the required methods are
+ * encryption an decryption.
  * 
  * @author Ahmed Ben Tahar
  */
@@ -24,11 +31,12 @@ public class MethodSelectorPage extends WizardPage {
 
 	private Label question;
 	private File javaFile;
+
 	public MethodSelectorPage(File file) {
 		super("Methods Selector");
 		setTitle("Methods Selector");
 		setDescription("Getting methods-related algorithm");
-		this.javaFile=file;
+		this.javaFile = file;
 	}
 
 	@Override
@@ -37,25 +45,31 @@ public class MethodSelectorPage extends WizardPage {
 		setControl(container);
 		container.setLayout(new GridLayout(2, false));
 		new Label(container, SWT.NONE);
-				new Label(container, SWT.NONE);
-		
-				question = new Label(container, SWT.NULL);
-				question.setText("Select the encryption method:   ");
-		
-				Combo combo = new Combo(container, SWT.NONE);
-				GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-				gd_combo.widthHint = 140;
-				combo.setLayoutData(gd_combo );
-				new Label(container, SWT.NONE);
-						new Label(container, SWT.NONE);
-				
-						Label lblSelectTheDecryption = new Label(container, SWT.NONE);
-						lblSelectTheDecryption.setText("Select the decryption method:");
-				
-						Combo combo_1 = new Combo(container, SWT.NONE);
-						combo_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-						combo_1.add(this.javaFile.getName());
-	
-		
+		new Label(container, SWT.NONE);
+
+		question = new Label(container, SWT.NULL);
+		question.setText("Select the encryption method:   ");
+
+		//Field assist
+		final ControlDecoration deco = new ControlDecoration(question, SWT.TOP | SWT.RIGHT);
+		Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
+		deco.setDescriptionText("Sample text");
+		deco.setImage(image);
+		deco.setShowOnlyOnFocus(false);
+
+		Combo combo = new Combo(container, SWT.NONE);
+		GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_combo.widthHint = 140;
+		combo.setLayoutData(gd_combo);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+
+		Label lblSelectTheDecryption = new Label(container, SWT.NONE);
+		lblSelectTheDecryption.setText("Select the decryption method:");
+
+		Combo combo_1 = new Combo(container, SWT.NONE);
+		combo_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		combo_1.add(this.javaFile.getName());
+
 	}
 }

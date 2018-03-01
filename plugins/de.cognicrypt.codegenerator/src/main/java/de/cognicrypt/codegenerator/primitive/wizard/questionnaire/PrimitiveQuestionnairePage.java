@@ -1,10 +1,13 @@
 package de.cognicrypt.codegenerator.primitive.wizard.questionnaire;
 
+import java.text.Format;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -15,15 +18,23 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
@@ -49,6 +60,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	private String rangedSize;
 	private MyVerifyListener verifyDecimal = new MyVerifyListener();
 	private Text note;
+	ControlDecoration deco;
 	
 
 	/**
@@ -182,6 +194,10 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				final ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY);
 				comboViewer.setContentProvider(ArrayContentProvider.getInstance());
 				comboViewer.setInput(answers);
+				GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+				gd_combo.minimumWidth = 50;
+				Combo comboItem = comboViewer.getCombo();
+				comboItem.setLayoutData(gd_combo);
 
 				comboViewer.addSelectionChangedListener(selectedElement -> {
 					final IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
@@ -254,9 +270,9 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				
 			case text:				
 				final Text inputField = new Text(container, SWT.BORDER | SWT.FILL);	
-				GridData textBoxtGridData = new GridData(GridData.FILL, GridData.FILL, true, false);
-				textBoxtGridData.widthHint = 268;
-				inputField.setLayoutData(textBoxtGridData);
+				GridData textBoxGridData = new GridData(GridData.FILL, GridData.FILL, true, false);
+				textBoxGridData.widthHint = 268;
+				inputField.setLayoutData(textBoxGridData);
 				
 				if (question.getEnteredAnswer() != null) {
 					this.finish = !inputField.getText().isEmpty();
@@ -265,7 +281,8 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				if (answers.get(0).getClaferDependencies() != null) {
 					claferDepend = answers.get(0).getClaferDependencies().get(0).getAlgorithm();
 					if (claferDepend.equals(Constants.BLOCK_SIZE)) {
-						inputField.addVerifyListener(verifyDecimal);
+						textBoxGridData.widthHint = SWT.DEFAULT;
+						inputField.addVerifyListener(PrimitiveQuestionnairePage::ensureTextContainsOnlyDigits);
 					}
 
 					inputField.addModifyListener(e -> {
@@ -327,7 +344,8 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				
 			case composed:
 				container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-				container.setLayout(new GridLayout(1, false));
+				container.setLayout(new GridLayout(1, false));				
+				
 				Group[] group = new Group[iteration];
 				for (int j = 0; j < this.iteration; j++) {
 					group[j] = new Group(container, SWT.COLOR_WIDGET_NORMAL_SHADOW);
@@ -345,7 +363,10 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 					for (int i = 0; i < answers.size(); i++) {
 						textField[i] = new Text(group[j], SWT.SINGLE | SWT.BORDER);
 						textField[i].setEnabled(false);
-						textField[i].addVerifyListener(verifyDecimal);
+						textField[i].addVerifyListener(PrimitiveQuestionnairePage::ensureTextContainsOnlyDigits);
+						
+						
+						
 						radioButton[i].addSelectionListener(new SelectionAdapter() {
 
 							@Override
@@ -364,38 +385,54 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 									textField[0].setEnabled(true);
 									textField[1].setEnabled(true);
 								}
+								
 							}
 						});
 					}
-
-					textField[0].addModifyListener(new ModifyListener() {
-
-						@Override
-						public void modifyText(ModifyEvent event) {
-							getWizard().getContainer().updateButtons();
-
-							Text text = (Text) event.widget;
+					textField[0].addModifyListener(e -> {						
+							getWizard().getContainer().updateButtons();							
 							claferDepend = answers.get(0).getClaferDependencies().get(0).getAlgorithm();
-							selectedValue = text.getText();
+							selectedValue = textField[0].getText();
 							selectionMap.put(key, selectedValue);
 							rangedSize = selectedValue;
-							PrimitiveQuestionnairePage.this.finish = !text.getText().isEmpty();
-							PrimitiveQuestionnairePage.this.setPageComplete(PrimitiveQuestionnairePage.this.finish);
-						}
+							PrimitiveQuestionnairePage.this.finish = !textField[0].getText().isEmpty();
+							PrimitiveQuestionnairePage.this.setPageComplete(PrimitiveQuestionnairePage.this.finish);							
 					});
 
-					textField[1].addModifyListener(new ModifyListener() {
+					textField[1].addModifyListener(e -> {
+						getWizard().getContainer().updateButtons();
+						PrimitiveQuestionnairePage.this.setPageComplete(false);
+						selectedValue = textField[1].getText();
+						selectionMap.put(key, rangedSize + "-" + selectedValue);
+						PrimitiveQuestionnairePage.this.finish = !textField[1].getText().isEmpty();
+						PrimitiveQuestionnairePage.this.setPageComplete(PrimitiveQuestionnairePage.this.finish);
 
-						@Override
-						public void modifyText(ModifyEvent event) {
-							PrimitiveQuestionnairePage.this.setPageComplete(false);
-							Text text = (Text) event.widget;
-							selectedValue = text.getText();
-							selectionMap.put(key, rangedSize + "-" + selectedValue);
-							PrimitiveQuestionnairePage.this.finish = !text.getText().isEmpty();
-							PrimitiveQuestionnairePage.this.setPageComplete(PrimitiveQuestionnairePage.this.finish);
+						//Checking if the integer in the second field is greater than the first field
+						if (textField[0] != null && textField[1] != null) {
+							String startRange = textField[0].getText();
+							int startRangeInt = Integer.valueOf(startRange);
+							System.out.print(startRangeInt);
+							String endRange = textField[1].getText();
+							int endRangeInt = Integer.valueOf(endRange);
+							System.out.print(endRangeInt);
 
+							//Field assit for Error message
+							deco = new ControlDecoration(textField[1], SWT.TOP | SWT.RIGHT | SWT.WRAP);
+							Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_DEC_FIELD_ERROR);
+							deco.setDescriptionText("The value in the second text field should be greater than the value in first text field");
+							deco.setImage(image);
+							deco.setShowOnlyOnFocus(false);
+							deco.hide();
+
+							if (endRangeInt > startRangeInt) {
+								deco.hide();
+							} else {
+								deco.show();
+							}
+						} else {
+							//deco.hide();
 						}
+
 					});
 
 				}
@@ -406,6 +443,13 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		}
 	}
 
+	//to ensure if the input text field contains only integers
+	private static void ensureTextContainsOnlyDigits(VerifyEvent e) {
+		String string = e.text;
+		e.doit = string.matches("\\d*");
+		return;
+	}
+	
 	public LinkedHashMap<String, String> getMap() {
 		return this.selectionMap;
 	}
@@ -429,6 +473,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 			return Constants.QUESTION_PAGE_NO_STATIC_NEXT_PAGE_ID;
 		}
 	}
+	
 	//to add the note below the question
 	private void createNote(final Composite parent, final Question question) {
 		final Group notePanel = new Group(parent, SWT.NONE);
@@ -446,7 +491,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		this.note.setEnabled(true);
 		new Label(parent, SWT.NULL);
 	}
-
+	
 	private Composite getPanel(final Composite parent) {
 		final Composite titledPanel = new Composite(parent, SWT.NONE);
 		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 9, SWT.BOLD));

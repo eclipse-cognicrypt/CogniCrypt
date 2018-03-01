@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
@@ -149,6 +150,14 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		txtAnswerType.setEditable(false);
 		txtAnswerType.setBounds(315, 30, 182, 29);
 		
+		if (question.getElement().equals(Constants.GUIElements.combo)) {
+			txtAnswerType.setText(Constants.dropDown);
+		} else if (question.getElement().equals(Constants.GUIElements.text)) {
+			txtAnswerType.setText(Constants.textBox);
+		} else if (question.getElement().equals(Constants.GUIElements.radio)) {
+			txtAnswerType.setText(Constants.radioButton);
+		}
+
 		StringBuilder answerString = new StringBuilder();
 		
 		/*for(Answer answer : question.getAnswers()){
@@ -179,7 +188,6 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
             */answerString.append(" | ");
 		}
 
-		txtAnswerType.setText(question.getQuestionType());
 
 		Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
 		lblAnswers.setBounds(5, 108, 55, 17);
@@ -189,15 +197,16 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		 * Following if conditions checks the question type and then
 		 * creates the widgets to display the answer as the question type
 		 */
-		if (question.getQuestionType().equalsIgnoreCase("Drop down")) {
-			
+		if (question.getElement().equals(Constants.GUIElements.combo)) {
+
 			Combo comboForAnswers = new Combo(grpQuestionDetails, SWT.READ_ONLY);
 			comboForAnswers.setBounds(94, 102, 403, 29);
 
 			for (Answer answer : question.getAnswers()) {
 				comboForAnswers.add(answer.getValue());
 			}
-		} else if (question.getQuestionType().equalsIgnoreCase("Radio Button")) {
+		} else if (question.getElement().equals(Constants.GUIElements.radio)) {
+
 			int count = question.getAnswers().size();
 			Button[] btn = new Button[count];
 			int spaceToDisplayAns = 70;
@@ -233,7 +242,8 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 
 		}
 
-		else if (question.getQuestionType().equalsIgnoreCase("text box")) {
+		else if (question.getElement().equals(Constants.GUIElements.text)) {
+
 			Text txtBox = new Text(grpQuestionDetails, SWT.BORDER);
 			txtBox.setBounds(94, 102, 403, 29);
 		}

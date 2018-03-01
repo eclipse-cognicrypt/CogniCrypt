@@ -235,7 +235,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		for(Question questionUnderConsideration:listOfAllQuestions){
 			if(questionUnderConsideration.equals(originalQuestion)){
 				questionUnderConsideration.setQuestionText(modifiedQuestion.getQuestionText());
-				questionUnderConsideration.setQuestionType(modifiedQuestion.getQuestionType());
+				questionUnderConsideration.setElement(modifiedQuestion.getElement());
 				questionUnderConsideration.getAnswers().clear();
 				questionUnderConsideration.setAnswers(modifiedQuestion.getAnswers());
 				break;

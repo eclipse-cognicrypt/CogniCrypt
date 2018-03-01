@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.MessageBox;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
@@ -112,15 +113,23 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 						super.widgetSelected(e);
 
+						if (getCompositeForXsl().getXslTxtBox().getText().trim().length() > 0) {
+							MessageBox infoBox = new MessageBox(getShell(), SWT.ICON_INFORMATION | SWT.OK);
+							infoBox.setText("Updating code");
+							infoBox.setMessage(
+								"Some code already appears to be added. \n\nIf you choose an XSL file, all of the existing code will be replaced. If you choose a Java or text file, the contents of said file will be added at the location of the cursor.");
+							infoBox.open();
+						}
 						FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
 
-						fileDialog.setFilterExtensions(new String[] {"*.xsl", "*.java", "*.txt" });
+						fileDialog.setFilterExtensions(new String[] { "*.xsl", "*.java", "*.txt" });
 						fileDialog.setText("Choose the code file:");
 
 						String fileDialogResult = fileDialog.open();
 						if (fileDialogResult != null) {
 							((CompositeForXsl) getCompositeForXsl()).updateTheTextFieldWithFileData(fileDialogResult);
 						}
+
 					}
 
 				});

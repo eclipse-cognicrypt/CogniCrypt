@@ -200,7 +200,7 @@ public class Constants {
 	public static final int UI_WIDGET_HEIGHT_NORMAL = 29;
 	// Constants for the composites
 	public static final String WIDGET_DATA_NAME_OF_THE_TASK = "NameOfTheTask";
-	public static final String WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK = "Location of the Library file";
+	public static final String WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK = "Location of the Library";
 	public static final String WIDGET_DATA_LOCATION_OF_CLAFER_FILE = "Location of the Clafer file";
 	public static final String WIDGET_DATA_LOCATION_OF_XSL_FILE = "Location of the XSL file";
 	public static final String WIDGET_DATA_LOCATION_OF_JSON_FILE = "Location of the JSON file";

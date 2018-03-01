@@ -95,7 +95,8 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		grpContainerGroupForLibrary.setVisible(false);
 		grpContainerGroupForLibrary.setLayout(new GridLayout(1, false));
 		
-		CompositeBrowseForFile compLib = new CompositeBrowseForFile(grpContainerGroupForLibrary, SWT.NONE, Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK, new String[] { "*.jar" }, "Select file that contains the library", getTheLocalContainerPage());
+		// Updated the composite to deal with directory instead of a jar file for the custom library.
+		CompositeBrowseForFile compLib = new CompositeBrowseForFile(grpContainerGroupForLibrary, SWT.NONE, Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK, null, "Select file that contains the library", getTheLocalContainerPage());
 		compLib.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		

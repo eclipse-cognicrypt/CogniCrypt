@@ -136,7 +136,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						String taskName = objectForDataInGuidedMode.getNameOfTheTask();
 						String taskDescription = objectForDataInGuidedMode.getTaskDescription();
 
-						//TODO not implemented yet. We need the location of the js file that is created from the provided clafer model. 
+						// Get the path for the javascript file from the clafer page.
 						String jsFilePath = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getJSFilePath();
 						if (jsFilePath != null) {
 							InstanceGenerator instanceGenerator = new InstanceGenerator(jsFilePath, "c0_" + taskName, taskDescription);

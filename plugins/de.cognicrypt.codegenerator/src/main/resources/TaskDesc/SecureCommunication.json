@@ -127,7 +127,7 @@
 			},
 			{
 				"id": "5",
-				"tooltip": "Example : 1.2.3.4:80",
+				"tooltip": "Example: 80",
 				"element": "text",
 				"questionText": "Please enter port",
 				"answers": [
@@ -136,7 +136,7 @@
 						"codeDependencies": [
 							{
 								"option": "port",
-								"value": ""
+								"value": "443"
 							}
 						],
 						"defaultAnswer": true
@@ -244,7 +244,7 @@
 		"content": [
 			{			
 				"id": "9",
-				"tooltip": "Example : 1.2.3.4:80",
+				"tooltip": "Example: 80",
 				"element": "text",
 				"questionText": "Please enter port",
 				"answers": [
@@ -253,7 +253,7 @@
 						"codeDependencies": [
 							{
 								"option": "port",
-								"value": ""
+								"value": "443"
 							}
 						],
 						"defaultAnswer": true

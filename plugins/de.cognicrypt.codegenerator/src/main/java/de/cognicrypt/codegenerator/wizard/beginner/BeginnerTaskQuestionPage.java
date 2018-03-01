@@ -305,7 +305,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			case text:
 				final Text inputField = new Text(container, SWT.BORDER);
 				inputField.setSize(240, inputField.getSize().y);
-
 				inputField.setToolTipText(question.getTooltip());
 
 				if (question.getEnteredAnswer() != null) {
@@ -326,6 +325,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					question.setEnteredAnswer(a);
 					BeginnerTaskQuestionPage.this.setPageComplete(isPageComplete());
 				});
+				inputField.setText(question.getDefaultAnswer().getCodeDependencies().get(0).getValue());
 				break;
 
 			case itemselection:
@@ -566,8 +566,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 							BeginnerTaskQuestionPage.this.finish = methodResult;
 							BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish);
-
-							//							BeginnerTaskQuestionPage.this.selectionMap.put(question, ans);
 						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
 							Activator.getDefault().logError(e1);
 						}

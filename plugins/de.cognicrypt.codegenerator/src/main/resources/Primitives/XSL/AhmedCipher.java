@@ -1,10 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-<xsl:output method="text"/>
-<xsl:template match="/">
-<xsl:variable name="class"><xsl:value-of select="//SymmetricBlockCipher/name" />Cipher</xsl:variable>
-<xsl:variable name="OutputFile"><xsl:value-of select="$class" />.java</xsl:variable>
-<xsl:result-document href="{$OutputFile}">
 
 import java.security.AlgorithmParameters;
 import java.security.InvalidAlgorithmParameterException;
@@ -23,27 +16,27 @@ import javax.crypto.ShortBufferException;
 
 import java.util.Arrays;
 
-public class <xsl:value-of select="$class"></xsl:value-of>  extends CipherSpi {
-
- @Override
-	 protected void engineSetMode(String mode) throws NoSuchAlgorithmException {
-	 String[] allowedModes="<xsl:value-of select="SymmetricBlockCipher/mode"></xsl:value-of>".split("\\|");
-	 if (!Arrays.asList(allowedModes).contains(<xsl:value-of select="$OutputFile"></xsl:value-of>))
-	  throw new NoSuchAlgorithmException();
-	 }
+public class AhmedCipher extends CipherSpi {
 
 	@Override
-	 protected void engineSetPadding(String padding) throws NoSuchPaddingException {
-	  String[] allowedPaddings="<xsl:value-of select="SymmetricBlockCipher/Padding"></xsl:value-of>".split("\\|");
-	 if (!Arrays.asList(allowedPaddings).contains(padding))
-	  throw new NoSuchPaddingException();
-	 }
+	protected void engineSetMode(String mode) throws NoSuchAlgorithmException {
+		String[] allowedModes = "CTR|CFB".split("\\|");
+		if (!Arrays.asList(allowedModes).contains(AhmedCipher.java))
+			throw new NoSuchAlgorithmException();
+	}
 
 	@Override
-	 protected int engineGetBlockSize() {
-	  return <xsl:value-of select="SymmetricBlockCipher/Blocksize" />;
-	 }
-	 
+	protected void engineSetPadding(String padding) throws NoSuchPaddingException {
+		String[] allowedPaddings = "ZeroPadding|PKCS7".split("\\|");
+		if (!Arrays.asList(allowedPaddings).contains(padding))
+			throw new NoSuchPaddingException();
+	}
+
+	@Override
+	protected int engineGetBlockSize() {
+		return 200;
+	}
+
 	@Override
 	protected byte[] engineDoFinal(byte[] arg0, int arg1, int arg2) throws IllegalBlockSizeException, BadPaddingException {
 		// TODO Auto-generated method stub
@@ -77,19 +70,19 @@ public class <xsl:value-of select="$class"></xsl:value-of>  extends CipherSpi {
 	@Override
 	protected void engineInit(int arg0, Key arg1, SecureRandom arg2) throws InvalidKeyException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	protected void engineInit(int arg0, Key arg1, AlgorithmParameterSpec arg2, SecureRandom arg3) throws InvalidKeyException, InvalidAlgorithmParameterException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	protected void engineInit(int arg0, Key arg1, AlgorithmParameters arg2, SecureRandom arg3) throws InvalidKeyException, InvalidAlgorithmParameterException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -103,11 +96,5 @@ public class <xsl:value-of select="$class"></xsl:value-of>  extends CipherSpi {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
- 
- 
-}
-</xsl:result-document>
 
-</xsl:template>
-</xsl:stylesheet>
+}

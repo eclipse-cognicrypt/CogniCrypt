@@ -51,7 +51,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	private String rangedSize;
 	private Text note;
 	ControlDecoration deco;
-	
 
 	/**
 	 * construct a page containing an element other than itemselection
@@ -126,8 +125,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		this.iteration = iteration;
 	}
 
-
-
 	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, int iteration) {
 		super("Display Questions");
 		setTitle("Integrating new Primitive: " + primitive.getName());
@@ -158,7 +155,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 			Activator.getDefault().logError("Outdated json file is used for task " + this.primitive.getName() + ". Please update.");
 		} else {
 			// loop through the questions that are to be displayed on the page.
-			for (Question question : page.getContent()) {			
+			for (Question question : page.getContent()) {
 				createQuestionControl(container, question);
 
 			}
@@ -201,7 +198,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 					}
 
-				});				
+				});
 				//to create a text if the questions have 'note' to display
 				if (!question.getNote().isEmpty()) {
 					createNote(parent, question);
@@ -210,17 +207,18 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
 				comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
 				break;
+				
 			case checkbox:
 				new Label(container, SWT.NULL);
 				new Label(container, SWT.NULL);
 				new Label(container, SWT.NULL);
-				Composite container_1 = new Composite(container, SWT.NULL);				
+				Composite container_1 = new Composite(container, SWT.NULL);
 				container_1.setLayout(new GridLayout(2, false));
 				Label[] emptySpace = new Label[answers.size()];
 				Button[] checkbox = new Button[answers.size()];
-				for (int i = 0; i < answers.size(); i++) {					
+				for (int i = 0; i < answers.size(); i++) {
 					String ans = answers.get(i).getValue();
-					emptySpace[i] =  new Label(container_1, SWT.NONE);
+					emptySpace[i] = new Label(container_1, SWT.NONE);
 					emptySpace[i].setText("     ");
 					checkbox[i] = new Button(container_1, SWT.CHECK);
 					checkbox[i].setText(ans);
@@ -237,7 +235,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 								if (selectedValue.isEmpty()) {
 									selectedValue = source.getText();
 									selectionMap.put(claferDepend, selectedValue);
-															
 
 								} else if (!selectedValue.contains(source.getText())) {
 									selectedValue += "|" + source.getText();
@@ -256,13 +253,13 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				}
 
 				break;
-				
-			case text:				
-				final Text inputField = new Text(container, SWT.BORDER | SWT.FILL);	
+
+			case text:
+				final Text inputField = new Text(container, SWT.BORDER | SWT.FILL);
 				GridData textBoxGridData = new GridData(GridData.FILL, GridData.FILL, true, false);
 				textBoxGridData.widthHint = 268;
 				inputField.setLayoutData(textBoxGridData);
-				
+
 				if (question.getEnteredAnswer() != null) {
 					this.finish = !inputField.getText().isEmpty();
 					PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
@@ -282,11 +279,11 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 						PrimitiveQuestionnairePage.this.setPageComplete(this.isPageComplete());
 
 					});
-				
+
 				}
 				break;
+				
 			case radiobutton:
-
 				Button[] button = new Button[answers.size()];
 
 				for (int i = 0; i < answers.size(); i++) {
@@ -312,9 +309,9 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				this.finish = true;
 				PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
 				break;
-				
+
 			case textarea:
-				final Text inputDescription = new Text(container, SWT.MULTI | SWT.WRAP| SWT.BORDER | SWT.V_SCROLL);
+				final Text inputDescription = new Text(container, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.V_SCROLL);
 				GridData gridData_1 = new GridData(SWT.FILL, SWT.CENTER, true, false);
 				gridData_1.heightHint = 124;
 				gridData_1.widthHint = 250;
@@ -330,11 +327,11 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 					}
 				});
 				break;
-				
+
 			case composed:
 				container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-				container.setLayout(new GridLayout(1, false));				
-				
+				container.setLayout(new GridLayout(1, false));
+
 				Group[] group = new Group[iteration];
 				for (int j = 0; j < this.iteration; j++) {
 					group[j] = new Group(container, SWT.COLOR_WIDGET_NORMAL_SHADOW);
@@ -353,9 +350,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 						textField[i] = new Text(group[j], SWT.SINGLE | SWT.BORDER);
 						textField[i].setEnabled(false);
 						textField[i].addVerifyListener(PrimitiveQuestionnairePage::ensureTextContainsOnlyDigits);
-						
-						
-						
+
 						radioButton[i].addSelectionListener(new SelectionAdapter() {
 
 							@Override
@@ -374,18 +369,18 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 									textField[0].setEnabled(true);
 									textField[1].setEnabled(true);
 								}
-								
+
 							}
 						});
 					}
-					textField[0].addModifyListener(e -> {						
-							getWizard().getContainer().updateButtons();							
-							claferDepend = answers.get(0).getClaferDependencies().get(0).getAlgorithm();
-							selectedValue = textField[0].getText();
-							selectionMap.put(key, selectedValue);
-							rangedSize = selectedValue;
-							PrimitiveQuestionnairePage.this.finish = !textField[0].getText().isEmpty();
-							PrimitiveQuestionnairePage.this.setPageComplete(PrimitiveQuestionnairePage.this.finish);							
+					textField[0].addModifyListener(e -> {
+						getWizard().getContainer().updateButtons();
+						claferDepend = answers.get(0).getClaferDependencies().get(0).getAlgorithm();
+						selectedValue = textField[0].getText();
+						selectionMap.put(key, selectedValue);
+						rangedSize = selectedValue;
+						PrimitiveQuestionnairePage.this.finish = !textField[0].getText().isEmpty();
+						PrimitiveQuestionnairePage.this.setPageComplete(PrimitiveQuestionnairePage.this.finish);
 					});
 
 					textField[1].addModifyListener(e -> {
@@ -438,7 +433,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		e.doit = string.matches("\\d*");
 		return;
 	}
-	
+
 	public LinkedHashMap<String, String> getMap() {
 		return this.selectionMap;
 	}
@@ -462,7 +457,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 			return Constants.QUESTION_PAGE_NO_STATIC_NEXT_PAGE_ID;
 		}
 	}
-	
+
 	//to add the note below the question
 	private void createNote(final Composite parent, final Question question) {
 		final Group notePanel = new Group(parent, SWT.NONE);
@@ -480,7 +475,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		this.note.setEnabled(true);
 		new Label(parent, SWT.NULL);
 	}
-	
+
 	private Composite getPanel(final Composite parent) {
 		final Composite titledPanel = new Composite(parent, SWT.NONE);
 		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 9, SWT.BOLD));

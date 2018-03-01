@@ -86,7 +86,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		getTxtDescriptionOfTask().setTextLimit(Constants.MULTI_LINE_TEXT_BOX_LIMIT);
 		
 		Button btnCustomLibrary = new Button(grpChooseTheMode, SWT.CHECK);
-		btnCustomLibrary.setText("Do you wish to use a custom library?");
+		btnCustomLibrary.setText("Include a custom library");
 				
 		
 		Group grpContainerGroupForLibrary = new Group(grpChooseTheMode, SWT.NONE);
@@ -101,7 +101,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		
 		
 		Button btnDoYouWishToUseTheGuidedMode = new Button(grpChooseTheMode, SWT.CHECK);
-		btnDoYouWishToUseTheGuidedMode.setText("Do you wish to use the guided mode?");
+		btnDoYouWishToUseTheGuidedMode.setText("Use the guided mode");
 		// Guided mode set by default.
 		btnDoYouWishToUseTheGuidedMode.setSelection(true);
 		getObjectForDataInNonGuidedMode().setGuidedModeChosen(btnDoYouWishToUseTheGuidedMode.getSelection());

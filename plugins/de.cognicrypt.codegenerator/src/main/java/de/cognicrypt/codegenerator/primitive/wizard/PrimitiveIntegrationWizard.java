@@ -11,7 +11,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -37,9 +36,12 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	StringBuilder data = new StringBuilder();
 	WriteXML xmlFileForXSL;
 	CreateJarFile providerJar = new CreateJarFile();
+	int pageId;
 
 	public PrimitiveIntegrationWizard() {
 		super();
+		//Add page number to window title
+		setWindowTitle(getWindowTitle());
 	}
 
 	public void addPages() {
@@ -65,6 +67,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		List<String> selection = null;
 		if (curPage.getContent().size() == 1) {
 			final Question curQuestion = curPage.getContent().get(0);
+			System.out.print(curQuestion.getId());
 		}
 		// Pass the questionnaire instead of the all of the questions. 
 		this.preferenceSelectionPage = new PrimitiveQuestionnairePage(curPage, this.primitiveQuestions.getPrimitive(), primitiveQuestionnaire, selection, iteration);
@@ -102,11 +105,12 @@ public class PrimitiveIntegrationWizard extends Wizard {
 				int nextID = -1;
 				if (primitiveQuestionPage.getPageNextID() > -2) {
 					nextID = primitiveQuestionPage.getPageNextID();
+					setPageId(primitiveQuestions.getCurrentPageID());
 				}
 
 				if (nextID > -1) {
 					final Page curPage = this.primitiveQuestions.setPageByID(nextID);
-					System.out.println(primitiveQuestions.getCurrentPageID());
+					setPageId(primitiveQuestions.getCurrentPageID());
 					createPrimitivePage(curPage, primitiveQuestions, primitiveQuestionPage.getIteration());
 					if (checkifInUpdateRound()) {
 						this.primitiveQuestions.previousPage();
@@ -135,6 +139,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 					return this.projectBrowserPage;
 				}
 			}
+
 		}
 
 		else if (currentPage instanceof JavaProjectBrowserPage) {
@@ -147,15 +152,50 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		return currentPage;
 	}
 
-	//	public IWizardPage getPreviousPage(final IWizardPage currentPage) {
-	//		final boolean lastPage = currentPage instanceof lastPage;
-	//		if (!checkifInUpdateRound() && currentPage instanceof PrimitiveQuestionnairePage || lastPage) {
-	//			if (!this.primitiveQuestions.isFirstPage()) {
-	//				this.primitiveQuestions.previousPage();
-	//			}
-	//		}
-	//		return super.getPreviousPage(currentPage);
-	//	}
+//		public IWizardPage getPreviousPage(final IWizardPage currentPage) {
+//			final boolean lastPage = currentPage instanceof lastPage;
+//			if (!checkifInUpdateRound() && currentPage instanceof PrimitiveQuestionnairePage || lastPage) {
+//				if (!this.primitiveQuestions.isFirstPage()) {
+//					this.primitiveQuestions.previousPage();
+//				}
+//			}
+//			return super.getPreviousPage(currentPage);
+//		}
+	
+
+	private void setPageId(int pageId) {
+		this.pageId = pageId;
+
+	}
+
+	public String getPageId() {
+		//incrementing the page id to get the correct page number
+		int pageNumber = this.pageId + 2;
+		String pageNumberText = "-" + Integer.toString(pageNumber) + "-";
+		return pageNumberText;
+
+	}
+
+	//Adding page numbers to the window
+	@Override
+	public String getWindowTitle() {
+		if (getContainer() != null) {
+			IWizardPage currentPage = getContainer().getCurrentPage();
+			if (currentPage == selectedPrimitivePage)
+				return "-1-";
+			else if (currentPage == preferenceSelectionPage)
+				return (getPageId());
+			else if (currentPage == projectBrowserPage)
+				return "-7-";
+			else if (currentPage == methodSelectionPage)
+				return "-8-";
+		}
+
+		return "Primitive Integration";
+
+	}
+
+	
 	private void transform(final File sourceFile, final File xsltFile, final String resultDir) throws TransformerException {
 		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
 		final Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(xsltFile));
@@ -173,7 +213,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 			xmlFileForXSL.setRoot("SymmetricBlockCipher");
 			for (String name : inputsMap.keySet()) {
 
-				String key = name.toString();
+				//String key = name.toString();
 				String value = inputsMap.get(name).toString();
 				xmlFileForXSL.addElement(name.trim(), value);
 				System.out.println(name + value);
@@ -206,7 +246,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 		return true;
 	}
-
+	
 	public boolean canFinish() {
 		final String pageName = getContainer().getCurrentPage().getName();
 		if (pageName.equals(Constants.METHODS_SELECTION_PAGE)) { //name of the last page

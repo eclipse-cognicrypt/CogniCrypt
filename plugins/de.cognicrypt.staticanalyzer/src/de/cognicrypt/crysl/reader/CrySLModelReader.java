@@ -114,7 +114,7 @@ public class CrySLModelReader {
 		for (final IResource res : ResourcesPlugin.getWorkspace().getRoot().getFolder(rulesFolder).members()) {
 			final String extension = res.getFileExtension();
 			final String fileName = res.getName();
-			if (!"cryptsl".equals(extension) || exceptions.contains(fileName)) { //!fileName.contains("Cipher.")) {
+			if (!"cryptsl".equals(extension) || exceptions.contains(fileName)) { //|| !fileName.contains("Signature.")) {  
 				continue;
 			}
 			final Resource resource = resourceSet.getResource(URI.createPlatformResourceURI(rulesFolder.toPortableString() + "\\" + fileName, true), true);

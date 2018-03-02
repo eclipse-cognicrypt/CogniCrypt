@@ -122,9 +122,23 @@ public class StateMachineGraphBuilder {
 			}
 
 			if (rightElOp != null && ("+".equals(rightElOp) || "*".equals(rightElOp))) {
-				final List<TransitionEdge> outgoingEdges = getOutgoingEdge(rightPrev, prevNode);
-				for (final TransitionEdge outgoingEdge : outgoingEdges) {
-					addRegularEdge(outgoingEdge.getLabel(), prevNode, outgoingEdge.to(), true);
+				List<TransitionEdge> outgoingEdges = new ArrayList<TransitionEdge>();
+				if ("|".equals(orderOp)) {
+					List<TransitionEdge> tmpOutgoingEdges = getOutgoingEdge(leftPrev, null);
+					for (final TransitionEdge outgoingEdge : tmpOutgoingEdges) {
+						if (isReachable(outgoingEdge.to(), prevNode, new ArrayList<StateNode>())) {
+							outgoingEdges.addAll(getOutgoingEdge(outgoingEdge.to(), prevNode));
+						}
+					}
+					for (final TransitionEdge outgoingEdge : outgoingEdges) {
+						addRegularEdge(outgoingEdge.getLabel(), prevNode, outgoingEdge.from(), true);
+					}
+
+				} else {
+					outgoingEdges.addAll(getOutgoingEdge(rightPrev, prevNode));
+					for (final TransitionEdge outgoingEdge : outgoingEdges) {
+						addRegularEdge(outgoingEdge.getLabel(), prevNode, outgoingEdge.to(), true);
+					}
 				}
 			}
 
@@ -153,8 +167,6 @@ public class StateMachineGraphBuilder {
 			if ("|".equals(orderOp)) {
 				leftOvers.put(level + 1, new HashMap.SimpleEntry<>(orderOp, prevNode));
 				prevNode = process(right, level + 1, leftOvers, leftPrev);
-			} else if ((returnToNode = isOr(level, leftOvers)) != null) {
-				prevNode = process(right, level + 1, leftOvers, returnToNode);
 			} else {
 				prevNode = process(right, level + 1, leftOvers, prevNode);
 			}
@@ -205,6 +217,18 @@ public class StateMachineGraphBuilder {
 		}
 		leftOvers.removeAll(level);
 		return prevNode;
+	}
+
+	private boolean isReachable(StateNode stateNode, StateNode prevNode, List<StateNode> skippable) {
+		for (TransitionEdge edge : getOutgoingEdge(stateNode, stateNode)) {
+			if (edge.to().equals(prevNode)) {
+				return true;
+			} else if (!skippable.contains(edge.to())) {
+				skippable.add(edge.to());
+				return isReachable(edge.to(), prevNode, skippable);
+			}
+		}
+		return false;
 	}
 
 	private void processHead(final Expression curLevel, final int level, final Multimap<Integer, Map.Entry<String, StateNode>> leftOvers, StateNode prevNode) {

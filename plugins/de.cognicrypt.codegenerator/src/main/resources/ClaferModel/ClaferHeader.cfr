@@ -1,0 +1,25 @@
+abstract Enum
+
+//enum Padding
+abstract Padding: Enum 
+NoPadding : Padding
+PKCS5Padding : Padding
+
+//enum Mode
+abstract Mode : Enum
+ECB : Mode
+CBC : Mode
+PCBC: Mode
+CTR : Mode
+CTS : Mode
+CFB : Mode
+OFB : Mode
+GCM : Mode
+
+abstract Algorithm
+  name -> string
+  description -> string
+  author -> string
+  KeySize -> int
+  BlockSize -> int
+  

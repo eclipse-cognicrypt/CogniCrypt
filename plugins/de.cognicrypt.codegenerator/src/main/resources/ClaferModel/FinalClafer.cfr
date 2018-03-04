@@ -22,9 +22,11 @@ abstract Algorithm
   author -> string
   KeySize -> int
   BlockSize -> int
-[name=sjadbb]
-[description=sdkjfbsfd]
-[Blocksize=64]
-[Keysize1=3641]
-[mode=CFB|CTR]
-[Padding=PKCS7]
+  
+[name = Algo]
+[description = This is description]
+[Blocksize = 64]
+[Keysize1 = 213]
+[Keysize2 = 133-233]
+[mode = OFB|CFB]
+[Padding = ZeroPadding|PKCS7]

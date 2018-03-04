@@ -162,10 +162,12 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
+
 		/**
 		 * @author Anusha and Taran
 		 *
 		 */
+
 		ClaferGenerator.copyBaseFile();
 		for (IWizardPage page : getPages()) {
 			if (page instanceof PrimitiveQuestionnairePage) {

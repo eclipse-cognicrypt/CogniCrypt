@@ -16,9 +16,8 @@ import java.util.LinkedHashMap;
  */
 public abstract class ClaferGenerator {
 
-
 	/**
-	 * Creates a clafer model in a file in the local machine
+	 * Write the User Input into new File
 	 *
 	 * @return
 	 */
@@ -32,18 +31,18 @@ public abstract class ClaferGenerator {
 
 			// TODO Auto-generated method stub
 			for (String key : userInput.keySet()) {
-				bw.write("[" + key + "=" + userInput.get(key) + "]" + "\r\n");// appends the string to the file
-				System.out.println("[" + key + "=" + userInput.get(key) + "]" + "\r\n");
+				bw.write("[" + key + " = " + userInput.get(key) + "]" + "\r\n");// appends the string to the file
+				System.out.println("[" + key + " = " + userInput.get(key) + "]" + "\r\n");
 			}
 			bw.close();
 		} catch (IOException ioe) {
 			System.err.println("IOException: " + ioe.getMessage());
 		}
 	}
-//	C:\Users\singh\git\CogniCrypt-CPTaran\plugins\de.cognicrypt.codegenerator\src\main\resources\ClaferModel\ClaferHeader.cfr
-//	CogniCrypt-Code Generator/src/main/resources/ClaferModel/ClaferHeader.cfr
+
+	//	File Path
+
 	private static String src = "C:\\Users\\singh\\git\\CogniCrypt-CPTaran\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\ClaferModel\\ClaferHeader.cfr";
-//	private static String src = "CogniCrypt-Code Generator\\src\\main\\resources\\ClaferModel\\ClaferHeader.cfr";
 	private static String filename = "C:\\Users\\singh\\git\\CogniCrypt-CPTaran\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\ClaferModel\\FinalClafer.cfr";
 
 	//	Copy the Static Part into New created file

@@ -40,9 +40,11 @@ public abstract class ClaferGenerator {
 			System.err.println("IOException: " + ioe.getMessage());
 		}
 	}
-
-	private static String src = "C:\\Users\\singh\\Desktop\\ClaferFile\\BaseFile.txt";
-	private static String filename = "C:\\Users\\singh\\Desktop\\ClaferFile\\FINALCLAFER.txt";
+//	C:\Users\singh\git\CogniCrypt-CPTaran\plugins\de.cognicrypt.codegenerator\src\main\resources\ClaferModel\ClaferHeader.cfr
+//	CogniCrypt-Code Generator/src/main/resources/ClaferModel/ClaferHeader.cfr
+	private static String src = "C:\\Users\\singh\\git\\CogniCrypt-CPTaran\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\ClaferModel\\ClaferHeader.cfr";
+//	private static String src = "CogniCrypt-Code Generator\\src\\main\\resources\\ClaferModel\\ClaferHeader.cfr";
+	private static String filename = "C:\\Users\\singh\\git\\CogniCrypt-CPTaran\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\ClaferModel\\FinalClafer.cfr";
 
 	//	Copy the Static Part into New created file
 

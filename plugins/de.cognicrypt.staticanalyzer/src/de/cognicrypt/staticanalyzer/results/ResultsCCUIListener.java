@@ -277,7 +277,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final StringBuilder msg = new StringBuilder();
 
 		msg.append("Operation with ");
-		final String type = value.value().getType().getEscapedName();
+		final String type = value.value().getType().toQuotedString();
 		msg.append(type.substring(type.lastIndexOf('.') + 1));
 		msg.append(" object not completed. Expected call to ");
 

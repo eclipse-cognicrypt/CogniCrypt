@@ -4,8 +4,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import crossing.e1.primitiveintegration.test.PageUtilityTest;
+import crossing.e1.primitiveintegration.test.ProviderFileWriterTest;
+
 @RunWith(Suite.class)
-@SuiteClasses({ ClaferModelUtilsTest.class, QuestionReaderTest.class, XMLParserTest.class })
+@SuiteClasses({ ClaferModelUtilsTest.class, QuestionReaderTest.class, XMLParserTest.class, PageUtilityTest.class, ProviderFileWriterTest.class })
 public class AllTests {
 
 }

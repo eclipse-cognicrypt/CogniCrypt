@@ -66,7 +66,7 @@ public class JavaProjectBrowserPage extends WizardPage {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						FileDialog dialog = new FileDialog(btnBrowse.getShell(), SWT.NULL);
-						dialog.setFilterExtensions(new String [] {"*.java"});
+						dialog.setFilterExtensions(new String [] {"*.class"});
 						dialog.setFilterPath("c:\\");
 						String path = dialog.open();
 						if (path != null) {

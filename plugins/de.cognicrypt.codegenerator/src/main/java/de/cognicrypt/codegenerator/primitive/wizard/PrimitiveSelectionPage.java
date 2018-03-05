@@ -18,14 +18,11 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Text;
 
 public class PrimitiveSelectionPage extends WizardPage {
 
 	private ComboViewer primitiveComboSelection;
 	private Composite container;
-	private Label selectTaskLabel;
-
 	/**
 	 * Create the wizard.
 	 */
@@ -89,8 +86,9 @@ public class PrimitiveSelectionPage extends WizardPage {
 	public Primitive getSelectedPrimitive() {
 		return (Primitive) ((IStructuredSelection) this.primitiveComboSelection.getSelection()).getFirstElement();
 	}
-public boolean canFlipToNextPage(){
-	return true;
-}
+
+	public boolean canFlipToNextPage() {
+		return true;
+	}
 
 }

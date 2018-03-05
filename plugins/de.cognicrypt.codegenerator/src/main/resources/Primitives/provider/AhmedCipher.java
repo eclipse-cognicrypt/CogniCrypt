@@ -1,7 +1,5 @@
 
 
-
-
 import java.security.AlgorithmParameters;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -19,11 +17,11 @@ import javax.crypto.ShortBufferException;
 
 import java.util.Arrays;
 
-public class AhmedCipher extends CipherSpi {
+public class AhmedCipher  extends CipherSpi {
 
  @Override
 	 protected void engineSetMode(String mode) throws NoSuchAlgorithmException {
-	 String[] allowedModes="CFB|CTR".split("\\|");
+	 String[] allowedModes="CFB|PCBC".split("\\|");
 	 if (!Arrays.asList(allowedModes).contains(mode))
 	  throw new NoSuchAlgorithmException();
 	 }
@@ -103,4 +101,3 @@ public class AhmedCipher extends CipherSpi {
  
  
 }
-

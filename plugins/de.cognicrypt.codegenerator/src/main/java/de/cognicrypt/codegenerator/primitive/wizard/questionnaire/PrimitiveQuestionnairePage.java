@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
-import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
 import de.cognicrypt.codegenerator.question.Answer;
@@ -40,7 +39,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 	private final Question quest;
 	private final Primitive primitive;
-	private PrimitiveQuestionnaire PrimitiveQuestionnaire;
 	private LinkedHashMap<String, String> selectionMap = new LinkedHashMap<String, String>();
 	private PrimitiveQuestionPageUtility pageUtility;
 	private boolean finish = false;
@@ -52,39 +50,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	private Text note;
 	ControlDecoration deco;
 
-	/**
-	 * construct a page containing an element other than itemselection
-	 * 
-	 * @param quest
-	 *        question that will be displayed on the page
-	 * @param primitive
-	 *        primitive for which the page is created
-	 */
-	public PrimitiveQuestionnairePage(final Question quest, final Primitive primitive) {
-		this(quest, primitive, null);
-	}
-
-	/**
-	 * construct a page containing a single question
-	 * 
-	 * @param quest
-	 *        question that will be displayed on the page
-	 * @param primitive
-	 *        primitive for which the page is created
-	 * @param selectionValues
-	 *        list of selectable strings if element type of quest is itemselection, null otherwise
-	 * @wbp.parser.constructor
-	 */
-	public PrimitiveQuestionnairePage(final Question quest, final Primitive primitive, final List<String> selectionValues) {
-		super("Display Questions");
-		setTitle("Configuring Selected primitive: " + primitive.getName());
-		setDescription("");
-		this.quest = quest;
-		this.primitive = primitive;
-
-		// This variable needs to be initialized.
-		this.page = null;
-	}
 
 	/**
 	 * 
@@ -118,23 +83,10 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		super("Display Questions");
 		setTitle("Integrating a new primitive: " + primitive.getName());
 		setDescription("Please enter the following data related to the primitive.");
-		this.PrimitiveQuestionnaire = PrimitiveQuestionnaire;
 		this.quest = null;
 		this.page = page;
 		this.primitive = primitive;
 		this.iteration = iteration;
-	}
-
-	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, int iteration) {
-		super("Display Questions");
-		setTitle("Integrating new Primitive: " + primitive.getName());
-		setDescription("Please enter the following data related to the primitive.");
-		this.page = page;
-		this.primitive = primitive;
-		this.iteration = iteration;
-
-		//This variable needs to be initialized.
-		this.quest = null;
 	}
 
 	@Override
@@ -152,12 +104,10 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		// If legacy JSON files are in effect.
 		if (page == null) {
 			createQuestionControl(container, this.quest);
-			Activator.getDefault().logError("Outdated json file is used for task " + this.primitive.getName() + ". Please update.");
 		} else {
 			// loop through the questions that are to be displayed on the page.
 			for (Question question : page.getContent()) {
 				createQuestionControl(container, question);
-
 			}
 		}
 
@@ -231,6 +181,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 								if (answers.get(pageUtility.getIndex(answers, source.getText())).getClaferDependencies() != null) {
 									claferDepend = answers.get(pageUtility.getIndex(answers, source.getText())).getClaferDependencies().get(0).getAlgorithm();
+									System.out.println("Check this one: "+pageUtility.getIndex(answers, source.getText().toString()));
 								}
 								if (selectedValue.isEmpty()) {
 									selectedValue = source.getText();

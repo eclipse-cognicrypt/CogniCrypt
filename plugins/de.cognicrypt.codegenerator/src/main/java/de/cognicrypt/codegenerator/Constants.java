@@ -40,8 +40,12 @@ public class Constants {
 	public static final String xmlFilePath = primitivesPath + innerFileSeparator + "XML" + innerFileSeparator + "xmlFile.xml";
 	
 	public static final String cipherSpiXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template"+ innerFileSeparator + "CipherSPI.xsl";
-	public static final String providerClass = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template"+ innerFileSeparator + "providerClass.xsl";
-	public static final String TransformedFiles= primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "TransformedFiles";
+	public static final String providerClassXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template"+ innerFileSeparator + "providerClass.xsl";
+	public static final String transformedFiles= primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "TransformedFiles";
+	//Jar file location - Provider
+	public static final String PROVIDER_FOLDER= primitivesPath + innerFileSeparator + "provider"; 
+	public static final String PROVIDER_JAR_File=PROVIDER_FOLDER+ innerFileSeparator +"provider.jar";
+	
 	// Task descriptions
 
 	// Tooltip

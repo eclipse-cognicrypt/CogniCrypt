@@ -35,6 +35,7 @@ import crypto.rules.CryptSLValueConstraint;
 import crypto.rules.TransitionEdge;
 import crypto.typestate.CallSiteWithParamIndex;
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.Constants;
 import de.cognicrypt.staticanalyzer.Utils;
 import soot.ArrayType;
 import soot.SootClass;
@@ -74,10 +75,10 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	@Override
 	public void callToForbiddenMethod(final ClassSpecification arg0, final Statement location, final List<CryptSLMethod> alternatives) {
 		final StringBuilder msg = new StringBuilder();
-		msg.append("Call to forbidden method ");
+		msg.append("Detected call to forbidden method ");
 		msg.append(location.getUnit().get().getInvokeExpr().getMethod().getDavaDeclaration());
 		if (!alternatives.isEmpty()) {
-			msg.append(". Instead, call to method ");
+			msg.append(". Instead, call method ");
 			for (final CryptSLMethod alt : alternatives) {
 				final String methodName = alt.getMethodName();
 				msg.append(methodName.substring(methodName.lastIndexOf(".") + 1));
@@ -91,15 +92,15 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			msg.append(".");
 		}
 		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
-
 	}
 
 	@Override
 	public void constraintViolation(final AnalysisSeedWithSpecification seed, final ISLConstraint brokenConstraint, final Statement location) {
-		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), evaluateBrokenConstraint(brokenConstraint, location));
+		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(),
+			evaluateBrokenConstraint(seed, brokenConstraint, location));
 	}
 
-	private String evaluateBrokenConstraint(final ISLConstraint brokenConstraint, Statement location) {
+	private String evaluateBrokenConstraint(AnalysisSeedWithSpecification seed, final ISLConstraint brokenConstraint, Statement location) {
 		StringBuilder msg = new StringBuilder();
 		if (brokenConstraint instanceof CryptSLPredicate) {
 			CryptSLPredicate brokenPred = (CryptSLPredicate) brokenConstraint;
@@ -119,7 +120,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 					break;
 			}
 		} else if (brokenConstraint instanceof CryptSLValueConstraint) {
-			return evaluateValueConstraint((CryptSLValueConstraint) brokenConstraint);
+			return evaluateValueConstraint(seed, (CryptSLValueConstraint) brokenConstraint, location);
 		} else if (brokenConstraint instanceof CryptSLArithmeticConstraint) {
 			final CryptSLArithmeticConstraint brokenArthConstraint = (CryptSLArithmeticConstraint) brokenConstraint;
 			msg.append(brokenArthConstraint.getLeft());
@@ -140,17 +141,17 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			final CryptSLValueConstraint rightSide = (CryptSLValueConstraint) cryptSLConstraint.getRight();
 			switch (cryptSLConstraint.getOperator()) {
 				case and:
-					msg.append(evaluateValueConstraint(leftSide));
+					msg.append(evaluateValueConstraint(seed, leftSide, location));
 					msg.append(" or ");
-					msg.append(evaluateValueConstraint(rightSide));
+					msg.append(evaluateValueConstraint(seed, rightSide, location));
 					break;
 				case implies:
-					msg.append(evaluateValueConstraint(rightSide));
+					msg.append(evaluateValueConstraint(seed, rightSide, location));
 					break;
 				case or:
-					msg.append(evaluateValueConstraint(leftSide));
+					msg.append(evaluateValueConstraint(seed, leftSide, location));
 					msg.append(" and ");
-					msg.append(evaluateValueConstraint(rightSide));
+					msg.append(evaluateValueConstraint(seed, rightSide, location));
 					break;
 				default:
 					break;
@@ -175,9 +176,9 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 	}
 
-	private String evaluateValueConstraint(final CryptSLValueConstraint brokenConstraint) {
-		StringBuilder msg = new StringBuilder();
-		msg.append(brokenConstraint.getVarName());
+	private String evaluateValueConstraint(AnalysisSeedWithSpecification seed, final CryptSLValueConstraint brokenConstraint, Statement location) {
+		CryptSLObject crySLVar = brokenConstraint.getVar();
+		StringBuilder msg = new StringBuilder(extractVarName(seed, location, crySLVar));
 		msg.append(" should be any of {");
 		for (final String val : brokenConstraint.getValueRange()) {
 			msg.append(val);
@@ -185,6 +186,57 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 		msg.delete(msg.length() - 2, msg.length());
 		return msg.append('}').toString();
+	}
+
+	private String extractVarName(AnalysisSeedWithSpecification seed, Statement location, CryptSLObject crySLVar) {
+		StringBuilder msg = new StringBuilder();
+		for (ValueBox par : location.getUnit().get().getInvokeExpr().getUseBoxes()) {
+			Value value = par.getValue();
+			if (!(value instanceof Constant)) {
+				boolean neverFound = true;
+				for (CallSiteWithParamIndex a : seed.getExtractedValues().keySet()) {
+					if (a.getVarName().equals(crySLVar.getVarName())) {
+						if (a.fact().value().getType().equals(par.getValue().getType())) {
+							String varName = par.getValue().toString();
+							if (varName.matches("\\$[a-z][0-9]+")) {
+								msg.append(Constants.OBJECT_OF_TYPE);
+								msg.append(par.getValue().getType().toQuotedString());
+								neverFound = false;
+							} else {
+								msg.append(Constants.VAR);
+								msg.append(varName);
+								neverFound = false;
+							}
+							break;
+						}
+					}
+					if (neverFound) {
+						Type valueType = value.getType();
+						String type = (valueType instanceof ArrayType) ? ((ArrayType) valueType).getArrayElementType().toQuotedString() : valueType.toQuotedString();
+						if (crySLVar.getJavaType().equals(type)) {
+							String varName = par.getValue().toString();
+							if (varName.matches("\\$[a-z][0-9]+")) {
+								msg.append(Constants.OBJECT_OF_TYPE);
+								msg.append(par.getValue().getType().toQuotedString());
+								neverFound = false;
+							} else {
+								msg.append(Constants.VAR);
+								msg.append(varName);
+								neverFound = false;
+							}
+							break;
+						}
+					}
+				}
+			} else {
+				if (((Constant) value).getType().toQuotedString().equals(crySLVar.getJavaType())) {
+					msg.append(Constants.OBJECT_OF_TYPE);
+					msg.append(crySLVar.getJavaType());
+
+				}
+			}
+		}
+		return msg.toString();
 	}
 
 	@Override
@@ -197,49 +249,10 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			Statement stmt = null;
 			if (pred instanceof LocatedCrySLPredicate) {
 				stmt = ((LocatedCrySLPredicate) pred).getLocation();
-				for (ValueBox parameter : stmt.getUnit().get().getInvokeExpr().getUseBoxes()) {
-					Value value = parameter.getValue();
-					if (!(value instanceof Constant)) {
-						boolean neverFound = true;
-						for (CallSiteWithParamIndex a : spec.getExtractedValues().keySet()) {
-							if (a.getVarName().equals(pred.getParameters().get(0).getName())) {
-								if (a.fact().value().getType().equals(parameter.getValue().getType())) {
-									String varName = parameter.getValue().toString();
-									if (varName.matches("\\$[a-z][0-9]+")) {
-										msg.append("object of type ");
-										msg.append(parameter.getValue().getType().toQuotedString());
-										neverFound = false;
-									} else {
-										msg.append("variable ");
-										msg.append(varName);
-										neverFound = false;
-									}
-									break;
-								}
-							}
-						}
-						if (neverFound) {
-							Type valueType = value.getType();
-							String type = (valueType instanceof ArrayType) ? ((ArrayType) valueType).getArrayElementType().toQuotedString() : valueType.toQuotedString();
-							if (((CryptSLObject) pred.getParameters().get(0)).getJavaType().equals(type)) {
-								String varName = parameter.getValue().toString();
-								if (varName.matches("\\$[a-z][0-9]+")) {
-									msg.append("object of type ");
-									msg.append(parameter.getValue().getType().toQuotedString());
-									neverFound = false;
-								} else {
-									msg.append("variable ");
-									msg.append(varName);
-									neverFound = false;
-								}
-								break;
-							}
-						}
-					}
-				}
+				msg.append(extractVarName(spec, stmt, (CryptSLObject) pred.getParameters().get(0)));
 			} else {
 				stmt = spec.stmt();
-				msg.append("variable ");
+				msg.append(Constants.VAR);
 				msg.append(spec.var().value().toString());
 			}
 			msg.append(".");
@@ -277,7 +290,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final StringBuilder msg = new StringBuilder();
 
 		msg.append("Operation with ");
-		final String type = value.value().getType().getEscapedName();
+		final String type = value.value().getType().toQuotedString();
 		msg.append(type.substring(type.lastIndexOf('.') + 1));
 		msg.append(" object not completed. Expected call to ");
 
@@ -301,7 +314,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		} catch (final ClassNotFoundException e) {
 			Activator.getDefault().logError(e);
 		}
-		//Fall-back path when retrieval of actual path fails. If it does, the statement below should be left untouched and the actual bug should be fixed.
+		//Fall-back path when retrieval of actual path fails. If the statement below fails, it should be left untouched as the actual bug is above.
 		return this.currentProject.getFile("src/" + className.getName().replace(".", "/") + ".java");
 	}
 

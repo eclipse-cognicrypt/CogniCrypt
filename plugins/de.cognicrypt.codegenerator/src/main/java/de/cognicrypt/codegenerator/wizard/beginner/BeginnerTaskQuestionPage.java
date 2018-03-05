@@ -48,12 +48,12 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	private final Question quest;
 	private final Task task;
-	// Removed the allquestions variable as it was not longer required.
-	private BeginnerModeQuestionnaire beginnerModeQuestionnaire;
-	private HashMap<Question, Answer> selectionMap = new HashMap<Question, Answer>();
-	private boolean finish = false;
-	private List<String> selectionValues;
 	private final Page page;
+
+	private boolean finish = false;
+	private BeginnerModeQuestionnaire beginnerModeQuestionnaire;
+	private final HashMap<Question, Answer> selectionMap = new HashMap<>();
+	private List<String> selectionValues;
 	private Text note;
 	private Composite container;
 
@@ -161,7 +161,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				return false;
 			}
 			if (Arrays.asList((new GUIElements[] { GUIElements.button, GUIElements.itemselection, GUIElements.radio, GUIElements.scale })).contains(question.getElement())) {
-				return this.finish;		
+				return this.finish;
 			}
 		}
 		return true;
@@ -515,6 +515,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							final org.eclipse.swt.widgets.List sel = (org.eclipse.swt.widgets.List) e.getSource();
 							moveRightButton.setEnabled(sel.getSelectionCount() > 0);
 						}
+
 					}
 				});
 
@@ -531,6 +532,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							final org.eclipse.swt.widgets.List sel = (org.eclipse.swt.widgets.List) e.getSource();
 							moveLeftButton.setEnabled(sel.getSelectionCount() > 0);
 						}
+
 					}
 				});
 
@@ -598,7 +600,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							}
 							if (ans == null) {
 								ans = new Answer();
-								// TODO Why is this -1? Does it still make sense after having introduced multiple questions per page?
 								ans.setNextID(-1);
 							}
 							String checkedElement = ans.getValue();
@@ -695,14 +696,17 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							final String feedbackString = resStringArray[1];
 
 							if (methodResult) {
-								question.getDefaultAnswer().setNextID(question.getAnswers().get(0).getNextID());
+								question.setEnteredAnswer(question.getAnswers().get(0));
 							} else {
-								question.getDefaultAnswer().setNextID(question.getAnswers().get(1).getNextID());
+								question.setEnteredAnswer(question.getAnswers().get(1));
 							}
 
 							feedbackLabel.setText(feedbackString);
 							feedbackLabel.getParent().pack();
 							methodButton.setEnabled(false);
+
+							BeginnerTaskQuestionPage.this.finish = methodResult;
+							BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish);
 						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
 							Activator.getDefault().logError(e1);
 						}
@@ -711,9 +715,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				});
 
 				this.finish = true;
-				final Answer ans = question.getDefaultAnswer();
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
-				BeginnerTaskQuestionPage.this.selectionMap.put(question, ans);
+
 				break;
 
 			default:

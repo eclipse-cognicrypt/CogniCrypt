@@ -51,7 +51,7 @@
 				"id": "2",
 				"element": "combo",
 				"note": "",
-				"questionText": "Where are you implementing?",
+				"questionText": "What are you implementing?",
 				"answers": [
 					{
 						"value": "Server-side",
@@ -61,7 +61,7 @@
 								"value": "true"
 							}
 						],
-						"nextID": "3"
+						"nextID": "7"
 					},
 					{
 						"value": "Client-side",
@@ -127,7 +127,7 @@
 			},
 			{
 				"id": "5",
-				"tooltip": "Example : 1.2.3.4:80",
+				"tooltip": "Example: 80",
 				"element": "text",
 				"questionText": "Please enter port",
 				"answers": [
@@ -136,7 +136,7 @@
 						"codeDependencies": [
 							{
 								"option": "port",
-								"value": ""
+								"value": "443"
 							}
 						],
 						"defaultAnswer": true
@@ -166,12 +166,15 @@
 					{
 						"value": "true",
 						"codeDependencies": [
-						]
+						], 
+						"nextID": "5"
+						
 					},
 					{
 						"value": "false",
 						"codeDependencies": [
-						],
+						], 
+						"nextID": "5",
 						"defaultAnswer": true
 					}
 				]
@@ -235,5 +238,29 @@
 				]
 			}
 		]
+	},
+	{
+		"id": "7",
+		"content": [
+			{			
+				"id": "9",
+				"tooltip": "Example: 80",
+				"element": "text",
+				"questionText": "Please enter port",
+				"answers": [
+					{
+						"value": "",
+						"codeDependencies": [
+							{
+								"option": "port",
+								"value": "443"
+							}
+						],
+						"defaultAnswer": true
+					}
+				]
+			}
+		],
+		"nextID": "5"
 	}
 ]

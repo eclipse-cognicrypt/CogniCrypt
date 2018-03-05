@@ -12,8 +12,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.internal.core.JavaProject;
 import org.eclipse.ui.IStartup;
 
 import de.cognicrypt.crysl.reader.CrySLModelReader;
@@ -26,7 +26,6 @@ import de.cognicrypt.staticanalyzer.Activator;
  * @author Stefan Krueger
  */
 public class StartupHandler implements IStartup {
-
 
 	private static class AfterBuildListener implements IResourceChangeListener {
 
@@ -73,7 +72,7 @@ public class StartupHandler implements IStartup {
 									final IResource res = delta.getResource();
 									final IJavaElement javaElement = JavaCore.create(res);
 									if (javaElement != null) {
-										if (javaElement instanceof JavaProject) {
+										if (javaElement instanceof IJavaProject) {
 											if ((delta.getFlags() & IResourceDelta.OPEN) != 0) {
 												changedJavaElements.add(javaElement);
 											}
@@ -86,14 +85,14 @@ public class StartupHandler implements IStartup {
 					}
 				}
 			} catch (final CoreException e) {}
-			
+
 			if (changedJavaElements.isEmpty() && changedCrySLElements.isEmpty()) {
 				Activator.getDefault().logInfo("No changed resource found. Abort.");
 				return;
 			}
 			if (!changedJavaElements.isEmpty()) {
 				final AnalysisKickOff ako = new AnalysisKickOff();
-	
+
 				if (ako.setUp(changedJavaElements.get(0))) {
 					if (ako.run()) {
 						Activator.getDefault().logInfo("Analysis has finished.");
@@ -104,7 +103,7 @@ public class StartupHandler implements IStartup {
 					Activator.getDefault().logInfo("Analysis has been canceled due to erroneous setup.");
 				}
 			}
-			
+
 			if (!changedCrySLElements.isEmpty()) {
 				try {
 					new CrySLModelReader(changedCrySLElements.get(0));
@@ -117,7 +116,6 @@ public class StartupHandler implements IStartup {
 	}
 
 	private static final AfterBuildListener BUILD_LISTENER = new AfterBuildListener();
-
 
 	@Override
 	public void earlyStartup() {

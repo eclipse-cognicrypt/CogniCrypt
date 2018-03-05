@@ -6,6 +6,11 @@
 <xsl:variable name="Rounds"> <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/iterations"/> </xsl:variable>
 <xsl:variable name="outputSize"> <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/algorithm[@type='Digest']/outputSize"/> </xsl:variable>
 
+<xsl:result-document href="config.properties">
+pwd="<xsl:value-of select="//task/code/keystorepassword"/>"
+</xsl:result-document>
+
+
 <xsl:if test="//task[@description='SecureCommunication']">
 <xsl:choose><xsl:when test="//task/code/server='true'">
 <xsl:result-document href="TLSServer.java">
@@ -15,10 +20,28 @@ package <xsl:value-of select="//task/Package"/>;
 public class TLSServer {	
 	private static SSLServerSocket sslServersocket = null;
 	private static List&lt;TLSConnection&gt; sslConnections = null;
+	private static Properties prop = new Properties();
+	private static InputStream input = null;
+	private static String pwd = null; 
 			
 	public TLSServer(int port) {
 			System.setProperty("javax.net.ssl.keyStore","<xsl:value-of select="//task/code/keystore"/>");
-        System.setProperty("javax.net.ssl.keyStorePassword","<xsl:value-of select="//task/code/keystorepassword"/>");
+			try {
+				input = new FileInputStream("config.properties");
+				prop.load(input);
+				pwd = prop.getProperty("pwd"); 
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			} finally {
+				if (input != null) {
+					try {
+						input.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+        	System.setProperty("javax.net.ssl.keyStorePassword",pwd);
 	        SSLServerSocketFactory sslServerSocketFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
 		try {
 			sslServersocket = (SSLServerSocket) sslServerSocketFactory.createServerSocket(<xsl:choose><xsl:when test="//task/code/port"><xsl:value-of select="//task/code/port"/></xsl:when>

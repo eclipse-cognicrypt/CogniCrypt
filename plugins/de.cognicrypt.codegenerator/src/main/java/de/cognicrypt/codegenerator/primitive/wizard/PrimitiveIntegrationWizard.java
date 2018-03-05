@@ -20,6 +20,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.eclipse.core.internal.refresh.RefreshJob;
+import org.eclipse.jdt.ui.actions.RefreshAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
@@ -31,9 +33,10 @@ import com.example.java.ceasar.CaesarCipher;
 import com.example.java.ceasar.CaesarProvider;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
 import de.cognicrypt.codegenerator.primitive.utilities.ProviderFile;
-import de.cognicrypt.codegenerator.primitive.utilities.WriteXML;
+import de.cognicrypt.codegenerator.primitive.utilities.XsltWriter;
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnaire;
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnairePage;
 import de.cognicrypt.codegenerator.question.Page;
@@ -50,7 +53,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	WizardPage preferenceSelectionPage;
 	private LinkedHashMap<String, String> inputsMap = new LinkedHashMap<String, String>();
 	StringBuilder data = new StringBuilder();
-	WriteXML xmlFileForXSL;
+	XsltWriter xsltWriter;
 	ProviderFile providerJar = new ProviderFile("Test");
 	Primitive selectedPrimitive;
 
@@ -87,7 +90,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	}
 
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
-		 selectedPrimitive = this.selectedPrimitivePage.getSelectedPrimitive();
+		selectedPrimitive = this.selectedPrimitivePage.getSelectedPrimitive();
 		if (currentPage == this.selectedPrimitivePage && this.selectedPrimitivePage.isPageComplete()) {
 
 			this.primitiveQuestions = new PrimitiveQuestionnaire(selectedPrimitive, selectedPrimitive.getXmlFile());
@@ -163,40 +166,25 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		return currentPage;
 	}
 
-	//	public IWizardPage getPreviousPage(final IWizardPage currentPage) {
-	//		final boolean lastPage = currentPage instanceof lastPage;
-	//		if (!checkifInUpdateRound() && currentPage instanceof PrimitiveQuestionnairePage || lastPage) {
-	//			if (!this.primitiveQuestions.isFirstPage()) {
-	//				this.primitiveQuestions.previousPage();
-	//			}
-	//		}
-	//		return super.getPreviousPage(currentPage);
-	//	}
-	private void transform(final File sourceFile, final File xsltFile, final String resultDir) throws TransformerException {
-		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
-		final Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(xsltFile));
-		transformer.transform(new StreamSource(sourceFile), new StreamResult(new File(resultDir)));
-	}
 
 	@Override
 	public boolean performFinish() {
-	
 		
 		//Generation of xml file for xsl
 		final File xmlFile = Utils.getResourceFromWithin(Constants.xmlFilePath);
-		xmlFileForXSL = new WriteXML();
+		xsltWriter = new XsltWriter();
 		try {
-			xmlFileForXSL.createDocument();
-			xmlFileForXSL.setRoot("SymmetricBlockCipher");
+			xsltWriter.createDocument();
+			xsltWriter.setRoot("SymmetricBlockCipher");
 			for (String name : inputsMap.keySet()) {
 
 				String key = name.toString();
 				String value = inputsMap.get(name).toString();
-				xmlFileForXSL.addElement(name.trim(), value);
+				xsltWriter.addElement(name.trim(), value);
 				System.out.println(name + value);
 
 			}
-			xmlFileForXSL.transformXml(xmlFile);
+			xsltWriter.transformXml(xmlFile);
 
 		} catch (ParserConfigurationException | TransformerException e) {
 			e.printStackTrace();
@@ -205,35 +193,39 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		//Code generation 
 		final File xslFile = Utils.getResourceFromWithin(selectedPrimitive.getXslFile());
 		try {
-//			File temporaryOutputFile=new File();
-//			transform(xmlFile, xslFile,temporaryOutputFile.getPath());
-			xmlFileForXSL.transformXsl(xslFile, xmlFile);
-			
+			//			File temporaryOutputFile=new File();
+			//			transform(xmlFile, xslFile,temporaryOutputFile.getPath());
+			xsltWriter.transformXsl(xslFile, xmlFile);
+
 		} catch (TransformerException | SAXException | IOException | ParserConfigurationException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		//Generation of .class files from the transformed .java files
-		File folder = Utils.getResourceFromWithin(Constants.TransformedFiles);
-		File[] listOfFiles = (folder).listFiles();
-		for(File file: listOfFiles){
-			 System.setProperty("java.home", "C:\\Program Files\\Java\\jdk1.8.0_131");
-			    System.out.println(System.getProperty("java.home"));
-			 JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-			   StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
 
-			   Iterable<? extends JavaFileObject> compilationUnits1 =
-			       fileManager.getJavaFileObjectsFromFiles(Arrays.asList(file));
-			   compiler.getTask(null, fileManager, null, null, null, compilationUnits1).call();
+		//Generation of .class files from the transformed .java files
+		File folder = Utils.getResourceFromWithin(Constants.transformedFiles);
+		File[] listOfFiles = (folder).listFiles();
+		for (File file : listOfFiles) {
+			System.setProperty("java.home", "C:\\Program Files\\Java\\jdk1.8.0_131");
+			System.out.println(System.getProperty("java.home"));
+			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+			StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+
+			Iterable<? extends JavaFileObject> compilationUnits1 = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(file));
+			compiler.getTask(null, fileManager, null, null, null, compilationUnits1).call();
 		}
-		
+
 		//Create Provider jarFile 
 		String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" };
-		providerJar.createManifest("someOwner", classPaths);
-		providerJar.createJarArchive(new File("C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\test.jar"),
-			listOfFiles);
-
+		providerJar.createManifest("some owner", classPaths);
+		
+		providerJar.createJarArchive(Utils.getResourceFromWithin(Constants.PROVIDER_JAR_File),folder.listFiles());
+		
+		//delete archived files 
+		for(File file: folder.listFiles()){
+			file.delete();
+		}
+		
 		return true;
 	}
 

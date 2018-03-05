@@ -88,8 +88,9 @@ public class PrimitiveSelectionPage extends WizardPage {
 	public Primitive getSelectedPrimitive() {
 		return (Primitive) ((IStructuredSelection) this.primitiveComboSelection.getSelection()).getFirstElement();
 	}
-public boolean canFlipToNextPage(){
-	return true;
-}
+
+	public boolean canFlipToNextPage() {
+		return true;
+	}
 
 }

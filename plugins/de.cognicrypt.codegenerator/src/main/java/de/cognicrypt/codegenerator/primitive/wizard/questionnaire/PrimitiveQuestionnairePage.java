@@ -1,7 +1,5 @@
 package de.cognicrypt.codegenerator.primitive.wizard.questionnaire;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -29,17 +27,14 @@ import org.eclipse.swt.widgets.Text;
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
-import de.cognicrypt.codegenerator.primitive.utilities.WriteXML;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.wizard.beginner.BeginnerTaskQuestionPage;
 
 public class PrimitiveQuestionnairePage extends WizardPage {
 
 	private final Question quest;
 	private final Primitive primitive;
-	private PrimitiveQuestionnaire PrimitiveQuestionnaire;
 	private LinkedHashMap<String, String> selectionMap = new LinkedHashMap<String, String>();
 	private PrimitiveQuestionPageUtility pageUtility;
 	private boolean finish = false;
@@ -85,7 +80,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		super("Display Questions");
 		setTitle("Integrating a new primitive: " + primitive.getName());
 		setDescription("Entering data related to the primitive");
-		this.PrimitiveQuestionnaire = PrimitiveQuestionnaire;
 		this.quest = null;
 		this.page = page;
 		this.primitive = primitive;
@@ -107,7 +101,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		// If legacy JSON files are in effect.
 		if (page == null) {
 			createQuestionControl(container, this.quest);
-			Activator.getDefault().logError("Outdated json file is used for task " + this.primitive.getName() + ". Please update.");
 		} else {
 			// loop through the questions that are to be displayed on the page.
 			for (Question question : page.getContent()) {
@@ -139,6 +132,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 					if (answers.get(pageUtility.getIndex(answers, selection.getFirstElement().toString())).getClaferDependencies() != null) {
 						claferDepend = answers.get(pageUtility.getIndex(answers, selection.getFirstElement().toString())).getClaferDependencies().get(0).getAlgorithm();
 						selectionMap.put(claferDepend, selection.getFirstElement().toString());
+						
 
 					}
 					try {
@@ -169,6 +163,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 								if (answers.get(pageUtility.getIndex(answers, source.getText())).getClaferDependencies() != null) {
 									claferDepend = answers.get(pageUtility.getIndex(answers, source.getText())).getClaferDependencies().get(0).getAlgorithm();
+									System.out.println("Check this one: "+pageUtility.getIndex(answers, source.getText().toString()));
 								}
 								if (selectedValue.isEmpty()) {
 									selectedValue = source.getText();

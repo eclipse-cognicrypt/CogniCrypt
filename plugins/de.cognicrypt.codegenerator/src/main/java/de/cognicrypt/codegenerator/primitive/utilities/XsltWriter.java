@@ -19,19 +19,22 @@ import javax.xml.transform.stream.StreamSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-public class WriteXML {
+
+public class XsltWriter {
 
 	DocumentBuilderFactory docFactory;
 	DocumentBuilder docBuilder;
 	Document doc;
 	Element rootElement;
-/**
- * Generate the xml file related to the xsl
- */
-	public WriteXML() {
-		
+
+	/**
+	 * Generate the xml file related to the xsl
+	 */
+	public XsltWriter() {
+
 	}
-	public void createDocument() throws ParserConfigurationException{
+
+	public void createDocument() throws ParserConfigurationException {
 		this.docFactory = DocumentBuilderFactory.newInstance();
 		this.docBuilder = docFactory.newDocumentBuilder();
 		this.doc = docBuilder.newDocument();
@@ -57,7 +60,6 @@ public class WriteXML {
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		DOMSource source = new DOMSource(this.doc);
 		StreamResult result = new StreamResult(xmlFile);
-		
 
 		// Output to console for testing
 		// StreamResult result = new StreamResult(System.out);
@@ -65,22 +67,18 @@ public class WriteXML {
 		transformer.transform(source, result);
 		System.out.println("File saved!");
 	}
-	
-	
-	public void transformXsl(File xslFile, File xmlFile) throws ParserConfigurationException, TransformerFactoryConfigurationError, SAXException, IOException, TransformerException{
-		 docFactory = DocumentBuilderFactory.newInstance();
+
+	public void transformXsl(File xslFile, File xmlFile) throws ParserConfigurationException, TransformerFactoryConfigurationError, SAXException, IOException, TransformerException {
+		docFactory = DocumentBuilderFactory.newInstance();
 		javax.xml.parsers.DocumentBuilder builder = docFactory.newDocumentBuilder();
 		StreamSource styleSource = new StreamSource(xslFile);
-			Transformer t = TransformerFactory.newInstance().newTransformer(styleSource);
+		Transformer t = TransformerFactory.newInstance().newTransformer(styleSource);
 		Document xml = builder.parse(xmlFile);
-			File resultFile = new File("C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\test.java");
-			StreamResult result = new StreamResult(resultFile);
-			//transformation 
+		File resultFile = new File("C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\TransformedFiles\\test.java");
+		StreamResult result = new StreamResult(resultFile);
+		//transformation 
 		t.transform(new DOMSource(xml), result);
+		resultFile.delete();
 	}
-	
-
-	
-	
 
 }

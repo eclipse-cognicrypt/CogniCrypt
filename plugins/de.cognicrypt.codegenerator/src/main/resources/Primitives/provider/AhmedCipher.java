@@ -1,4 +1,5 @@
 
+
 import java.security.AlgorithmParameters;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -16,27 +17,27 @@ import javax.crypto.ShortBufferException;
 
 import java.util.Arrays;
 
-public class AhmedCipher extends CipherSpi {
+public class AhmedCipher  extends CipherSpi {
+
+ @Override
+	 protected void engineSetMode(String mode) throws NoSuchAlgorithmException {
+	 String[] allowedModes="CFB|PCBC".split("\\|");
+	 if (!Arrays.asList(allowedModes).contains(mode))
+	  throw new NoSuchAlgorithmException();
+	 }
 
 	@Override
-	protected void engineSetMode(String mode) throws NoSuchAlgorithmException {
-		String[] allowedModes = "CTR|CFB".split("\\|");
-		if (!Arrays.asList(allowedModes).contains(AhmedCipher.java))
-			throw new NoSuchAlgorithmException();
-	}
+	 protected void engineSetPadding(String padding) throws NoSuchPaddingException {
+	  String[] allowedPaddings="PKCS7|ZeroPadding".split("\\|");
+	 if (!Arrays.asList(allowedPaddings).contains(padding))
+	  throw new NoSuchPaddingException();
+	 }
 
 	@Override
-	protected void engineSetPadding(String padding) throws NoSuchPaddingException {
-		String[] allowedPaddings = "ZeroPadding|PKCS7".split("\\|");
-		if (!Arrays.asList(allowedPaddings).contains(padding))
-			throw new NoSuchPaddingException();
-	}
-
-	@Override
-	protected int engineGetBlockSize() {
-		return 200;
-	}
-
+	 protected int engineGetBlockSize() {
+	  return 200;
+	 }
+	 
 	@Override
 	protected byte[] engineDoFinal(byte[] arg0, int arg1, int arg2) throws IllegalBlockSizeException, BadPaddingException {
 		// TODO Auto-generated method stub
@@ -70,19 +71,19 @@ public class AhmedCipher extends CipherSpi {
 	@Override
 	protected void engineInit(int arg0, Key arg1, SecureRandom arg2) throws InvalidKeyException {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	protected void engineInit(int arg0, Key arg1, AlgorithmParameterSpec arg2, SecureRandom arg3) throws InvalidKeyException, InvalidAlgorithmParameterException {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	protected void engineInit(int arg0, Key arg1, AlgorithmParameters arg2, SecureRandom arg3) throws InvalidKeyException, InvalidAlgorithmParameterException {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -96,5 +97,7 @@ public class AhmedCipher extends CipherSpi {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
+	
+ 
+ 
 }

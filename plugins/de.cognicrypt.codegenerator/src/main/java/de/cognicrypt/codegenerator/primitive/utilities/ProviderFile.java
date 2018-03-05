@@ -44,7 +44,7 @@ public class ProviderFile {
 	 * @param archiveFile
 	 *        The generated jar
 	 * @param tobeJared
-	 *        Files to add in the jar file
+	 *        Files to add into the jar file
 	 *        
 	 */
 	public void createJarArchive(File archiveFile, File[] tobeJared) {
@@ -56,7 +56,7 @@ public class ProviderFile {
 
 			for (int i = 0; i < tobeJared.length; i++) {
 				if (tobeJared[i] == null || !tobeJared[i].exists() || tobeJared[i].isDirectory())
-					continue; // Just in case...
+					continue;
 				System.out.println("Adding " + tobeJared[i].getName());
 
 				// Add archive entry
@@ -132,17 +132,6 @@ public class ProviderFile {
 
 //		}
 	}
-	
-	/**
-	 * This method execute a command line to get .class file from a .java
-	 * 
-	 * @param javaFile
-	 * @throws IOException
-	 */
-	public void GenerateClassFile(File javaFile) throws IOException{
-		Process pro=Runtime.getRuntime().exec("javac "+javaFile.getName());
-	}
-	
 	
 	
 

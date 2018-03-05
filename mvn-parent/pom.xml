@@ -20,7 +20,7 @@
 		</repository>
 		<repository>
 			<id>cryptsl</id>
-			<url>file:C:/Uni/Arbeit/cryptsl/CryptSL/de.darmstadt.tu.crossing.CryptSL.repository/target/repository</url> <!-- or an http:// based one if available -->
+			<url>http://download.eclipse.org/cognicrypt/</url>
 			<layout>p2</layout>
 		</repository>
 		<repository>

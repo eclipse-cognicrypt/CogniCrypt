@@ -2,14 +2,8 @@
 		{
 			"name": "Symmetric Block Cipher",
 			"xmlFile" : "src/main/resources/Primitives/CipherQuestion.json",
-			"questions":[{
-			"id":0,
-			"questionText": "Select the encryption method: "},
-			{"id":1,
-			"questionText": "Select the decryption method: "},
-			{"id":2,
-			"questionText": "Select the key generation method:"}
-			]
+			"xslFile" : "src/main/resources/primitives/xsl/template/CipherSPI.xsl"
+			
 		},
 		{
 		  "name": "Message Digest",

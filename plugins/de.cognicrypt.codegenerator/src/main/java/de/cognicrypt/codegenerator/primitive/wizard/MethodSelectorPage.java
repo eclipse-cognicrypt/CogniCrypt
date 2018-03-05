@@ -65,5 +65,26 @@ public class MethodSelectorPage extends WizardPage {
 		decryptionCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		decryptionCombo.add(this.javaFile.getName());
 
+//		Class cls;
+//		try {
+//			cls = loadClass(this.javaFile.getPath());
+//			decryptionCombo.add(cls.getName());
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		
+
 	}
+//	public Class loadClass( String ClassFolder) throws Exception {
+//		return null;
+//		URLClassLoader loader = new URLClassLoader(new URL []{
+//			new URL("file://"+this.javaFile)
+//		});
+//		  String className = je.getName().substring(0,je.getName().length()-6);
+//		    className = className.replace('/', '.');
+//		    Class c = cl.loadClass(className);
+//		return loader.getClass();
+//	}
 }

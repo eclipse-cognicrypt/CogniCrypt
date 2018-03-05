@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SymmetricBlockCipher>
+<<<<<<< HEAD
    <name>juhih</name>
    <Keysize1>2</Keysize1>
    <Keysize2>5-2</Keysize2>
    <mode>OFB</mode>
+=======
+   <name>iuhi</name>
+   <Blocksize>20</Blocksize>
+   <Keysize1>200</Keysize1>
+   <mode>CTR|CFB</mode>
+   <Padding>PKCS7|ZeroPadding</Padding>
+>>>>>>> refs/heads/cp-group1718
 </SymmetricBlockCipher>

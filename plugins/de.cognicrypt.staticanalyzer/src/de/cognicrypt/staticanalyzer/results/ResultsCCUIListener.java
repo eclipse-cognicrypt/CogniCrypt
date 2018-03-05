@@ -75,8 +75,9 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	@Override
 	public void callToForbiddenMethod(final ClassSpecification arg0, final Statement location, final List<CryptSLMethod> alternatives) {
 		final StringBuilder msg = new StringBuilder();
-		msg.append("Detected call to forbidden method ");
-		msg.append(location.getUnit().get().getInvokeExpr().getMethod().getDavaDeclaration());
+		msg.append("Detected call to forbidden method");
+		String methodDecl = location.getUnit().get().getInvokeExpr().getMethod().getDavaDeclaration();
+		msg.append(methodDecl.substring(methodDecl.indexOf(" ")));
 		if (!alternatives.isEmpty()) {
 			msg.append(". Instead, call method ");
 			for (final CryptSLMethod alt : alternatives) {
@@ -304,6 +305,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 				msg.append(" or ");
 			}
 		}
+		msg.append(".");
 		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
 	}
 
@@ -321,7 +323,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	@Override
 	public void unevaluableConstraint(AnalysisSeedWithSpecification seed, ISLConstraint con, Statement location) {
 		final StringBuilder msg = new StringBuilder();
-
 		msg.append("Constraint ");
 		msg.append(con);
 		msg.append(" could not be evaluted due to insufficient information.");

@@ -8,7 +8,7 @@ import de.cognicrypt.codegenerator.question.Answer;
 
 public class PrimitiveQuestionPageUtility {
 
-		/* This method return the index of the answer that has value in it
+		/* This method returns the index of the answer that has value in it
 		 * 
 		 * return @index
 		 */
@@ -26,7 +26,7 @@ public class PrimitiveQuestionPageUtility {
 		 * 
 		 * 
 		 */
-		public String getOutputFromButton(String claferDepend, Button source){
+		public String getOutputFromWidget(String claferDepend, Button source){
 			return claferDepend + source.getSelection();
 		
 		}

@@ -101,9 +101,9 @@ public class CompareAlgorithmPage extends WizardPage {
 		firstLabelInstanceList.setText(Constants.COMPARE_LABEL);
 
 		firstAlgorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
-		Object algorithmCombination = instanceListPage.getAlgorithmCombinations();
+		Object algorithmCombinationFirst = instanceListPage.getAlgorithmCombinations();
 		firstAlgorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-		firstAlgorithmClass.setInput(algorithmCombination);
+		firstAlgorithmClass.setInput(algorithmCombinationFirst);
 
 		//Second set of Algorithm Combinations
 		final Composite compositeControl1 = new Composite(this.control, SWT.NONE);
@@ -114,8 +114,9 @@ public class CompareAlgorithmPage extends WizardPage {
 		secondLabelInstanceList.setText(Constants.COMPARE_LABEL);
 
 		secondAlgorithmClass = new ComboViewer(compositeControl1, SWT.DROP_DOWN | SWT.READ_ONLY);
+		Object algorithmCombinationSecond = instanceListPage.getAlgorithmCombinations();
 		secondAlgorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-		secondAlgorithmClass.setInput(algorithmCombination);
+		secondAlgorithmClass.setInput(algorithmCombinationSecond);
 
 		//First set of Instance details
 		this.firstInstancePropertiesPanel = new Group(this.control, SWT.NONE);
@@ -139,7 +140,7 @@ public class CompareAlgorithmPage extends WizardPage {
 				deco.show();
 			}
 			
-			compareHighlight();
+//			compareHighlight();
 		});
 
 		GridLayout gridLayout = new GridLayout();
@@ -149,11 +150,6 @@ public class CompareAlgorithmPage extends WizardPage {
 		gridDataFirst.horizontalSpan = 1;
 		gridDataFirst.heightHint = 89;
 		this.firstInstancePropertiesPanel.setLayoutData(gridDataFirst);
-		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
-		gridData.widthHint = 60;
-		gridData.horizontalSpan = 1;
-		gridData.heightHint = 89;
-		this.firstInstancePropertiesPanel.setLayoutData(gridData);
 		this.firstInstancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 
 		this.firstInstanceDetails.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -202,7 +198,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		final ISelection defaultAlgorithm = new StructuredSelection(inst.keySet().toArray()[0]);
 		firstAlgorithmClass.setSelection(defaultAlgorithm);
 		secondAlgorithmClass.setSelection(defaultAlgorithm);
-
+		
 		sc.setContent(this.control);
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);

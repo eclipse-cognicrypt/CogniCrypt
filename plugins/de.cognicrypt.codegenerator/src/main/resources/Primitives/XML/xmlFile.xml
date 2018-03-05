@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SymmetricBlockCipher>
-   <name>iuhi</name>
-   <Blocksize>20</Blocksize>
+   <name>Sics </name>
+   <Blocksize>200</Blocksize>
    <Keysize1>200</Keysize1>
-   <mode>CTR|CFB</mode>
-   <Padding>PKCS7|ZeroPadding</Padding>
+   <mode>CFB|CTR</mode>
+   <Padding>ZeroPadding|PKCS7</Padding>
 </SymmetricBlockCipher>

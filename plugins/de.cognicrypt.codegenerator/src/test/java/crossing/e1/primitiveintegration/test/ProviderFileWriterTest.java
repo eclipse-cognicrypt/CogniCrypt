@@ -43,12 +43,11 @@ public class ProviderFileWriterTest {
 
 	}
 
-	public boolean check(File[] files, String element) {
+	private boolean check(File[] files, String element) {
 		boolean elementExists = false;
 		for (int i = 0; i < files.length; i++) {
 			if (files[i].isFile() && !files[i].getName().endsWith(".jar")) {
 				if (files[i].getName().equals(element))
-					System.out.println(files[i].getName() + " = " + element);
 				elementExists = true;
 			}
 		}

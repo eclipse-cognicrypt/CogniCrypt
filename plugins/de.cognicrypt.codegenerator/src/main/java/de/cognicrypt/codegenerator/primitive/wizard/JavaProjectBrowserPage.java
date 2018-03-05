@@ -29,7 +29,7 @@ public class JavaProjectBrowserPage extends WizardPage {
 
 	public JavaProjectBrowserPage(String pageName) {
 		super(pageName);
-		setDescription("Getting the algorithm project");
+		setDescription("Please choose the Algorithm project from your computer.");
 		setTitle("File browser");
 	}
 
@@ -39,22 +39,24 @@ public class JavaProjectBrowserPage extends WizardPage {
 		setControl(container);
 		container.setBounds(10, 10, 200, 300);
 
-		container.setLayout(new GridLayout(2, true));
+		container.setLayout(new GridLayout(3, false));
+		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		Label question = new Label(container, SWT.NULL);
-		question.setText("Please select your Java Project from your local");
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-				new Label(container, SWT.NONE);
+		question.setText("Select a Java Project: ");
 		
 				text = new Text(container, SWT.BORDER | SWT.READ_ONLY);
-				GridData gd_text = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-				gd_text.widthHint = 242;
-				text.setLayoutData(gd_text);
+				text.setEditable(true);
+				//gd_text.widthHint = 107;
+				text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+				text.addModifyListener(e -> {
+					this.selectedJavaFile=new File(getAbsolutePath());
+					System.out.println(getAbsolutePath());
+				});
 		
 				Button btnBrowse = new Button(container, SWT.PUSH);
-				GridData gd_btnBrowse = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+				GridData gd_btnBrowse = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
 				gd_btnBrowse.widthHint = 85;
 				btnBrowse.setLayoutData(gd_btnBrowse);
 				btnBrowse.setBounds(295, 140, 75, 25);
@@ -77,10 +79,6 @@ public class JavaProjectBrowserPage extends WizardPage {
 						}
 					}
 
-				});
-				text.addModifyListener(e -> {
-					this.selectedJavaFile=new File(getAbsolutePath());
-					System.out.println(getAbsolutePath());
 				});
 				
 	}

@@ -1,8 +1,8 @@
 package de.cognicrypt.codegenerator.primitive.wizard;
 
 import java.io.File;
+
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -11,29 +11,14 @@ import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
-import org.eclipse.core.internal.refresh.RefreshJob;
-import org.eclipse.jdt.ui.actions.RefreshAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import com.example.java.ceasar.CaesarCipher;
-import com.example.java.ceasar.CaesarProvider;
-
 import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
 import de.cognicrypt.codegenerator.primitive.utilities.ProviderFile;
 import de.cognicrypt.codegenerator.primitive.utilities.XsltWriter;
@@ -41,7 +26,6 @@ import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuest
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnairePage;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.utilities.FileHelper;
 import de.cognicrypt.codegenerator.utilities.Utils;
 
 public class PrimitiveIntegrationWizard extends Wizard {
@@ -56,9 +40,12 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	XsltWriter xsltWriter;
 	ProviderFile providerJar = new ProviderFile("Test");
 	Primitive selectedPrimitive;
+	int pageId;
 
 	public PrimitiveIntegrationWizard() {
 		super();
+		//Add page number to window title
+		setWindowTitle(getWindowTitle());
 	}
 
 	public void addPages() {
@@ -84,6 +71,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		List<String> selection = null;
 		if (curPage.getContent().size() == 1) {
 			final Question curQuestion = curPage.getContent().get(0);
+			System.out.print(curQuestion.getId());
 		}
 		// Pass the questionnaire instead of the all of the questions. 
 		this.preferenceSelectionPage = new PrimitiveQuestionnairePage(curPage, this.primitiveQuestions.getPrimitive(), primitiveQuestionnaire, selection, iteration);
@@ -121,11 +109,12 @@ public class PrimitiveIntegrationWizard extends Wizard {
 				int nextID = -1;
 				if (primitiveQuestionPage.getPageNextID() > -2) {
 					nextID = primitiveQuestionPage.getPageNextID();
+					setPageId(primitiveQuestions.getCurrentPageID());
 				}
 
 				if (nextID > -1) {
 					final Page curPage = this.primitiveQuestions.setPageByID(nextID);
-					System.out.println(primitiveQuestions.getCurrentPageID());
+					setPageId(primitiveQuestions.getCurrentPageID());
 					createPrimitivePage(curPage, primitiveQuestions, primitiveQuestionPage.getIteration());
 					if (checkifInUpdateRound()) {
 						this.primitiveQuestions.previousPage();
@@ -166,9 +155,42 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		return currentPage;
 	}
 
+	private void setPageId(int pageId) {
+		this.pageId = pageId;
+
+	}
+
+	public String getPageId() {
+		//incrementing the page id to get the correct page number
+		int pageNumber = this.pageId + 2;
+		String pageNumberText = "-" + Integer.toString(pageNumber) + "-";
+		return pageNumberText;
+
+	}
+
+	//Adding page numbers to the window
+	@Override
+	public String getWindowTitle() {
+		if (getContainer() != null) {
+			IWizardPage currentPage = getContainer().getCurrentPage();
+			if (currentPage == selectedPrimitivePage)
+				return "-1-";
+			else if (currentPage == preferenceSelectionPage)
+				return (getPageId());
+			else if (currentPage == projectBrowserPage)
+				return "-7-";
+			else if (currentPage == methodSelectionPage)
+				return "-8-";
+		}
+
+		return "Primitive Integration";
+
+	}
+
+
 	@Override
 	public boolean performFinish() {
-
+		
 		//Generation of xml file for xsl
 		final File xmlFile = Utils.getResourceFromWithin(Constants.xmlFilePath);
 		xsltWriter = new XsltWriter();
@@ -217,14 +239,14 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		//Create Provider jarFile 
 		String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" };
 		providerJar.createManifest("some owner", classPaths);
-
-		providerJar.createJarArchive(Utils.getResourceFromWithin(Constants.PROVIDER_JAR_File), folder.listFiles());
-
+		
+		providerJar.createJarArchive(Utils.getResourceFromWithin(Constants.PROVIDER_JAR_File),folder.listFiles());
+		
 		//delete archived files 
-		for (File file : folder.listFiles()) {
+		for(File file: folder.listFiles()){
 			file.delete();
 		}
-
+		
 		return true;
 	}
 
@@ -236,11 +258,11 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		return (pageName.equals(Constants.METHODS_SELECTION_PAGE));
 	}
 
-	public boolean performCancel() {
-		boolean ans = MessageDialog.openConfirm(getShell(), "Confirmation", "Are you sure to close without integrating the new primitve?");
-		if (ans)
-			return true;
-		else
-			return false;
-	}
+//	public boolean performCancel() {
+//		boolean ans = MessageDialog.openConfirm(getShell(), "Confirmation", "Are you sure to close without integrating the new primitve?");
+//		if (ans)
+//			return true;
+//		else
+//			return false;
+//	}
 }

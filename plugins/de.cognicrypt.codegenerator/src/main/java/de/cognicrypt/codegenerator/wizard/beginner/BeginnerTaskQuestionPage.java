@@ -306,7 +306,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			case text:
 				final Text inputField = new Text(container, SWT.BORDER);
 				inputField.setSize(240, inputField.getSize().y);
-
 				inputField.setToolTipText(question.getTooltip());
 
 				if (question.getEnteredAnswer() != null) {

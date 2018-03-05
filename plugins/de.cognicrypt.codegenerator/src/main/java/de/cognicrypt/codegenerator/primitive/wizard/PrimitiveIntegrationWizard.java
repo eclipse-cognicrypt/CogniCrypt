@@ -166,10 +166,9 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		return currentPage;
 	}
 
-
 	@Override
 	public boolean performFinish() {
-		
+
 		//Generation of xml file for xsl
 		final File xmlFile = Utils.getResourceFromWithin(Constants.xmlFilePath);
 		xsltWriter = new XsltWriter();
@@ -218,14 +217,14 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		//Create Provider jarFile 
 		String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" };
 		providerJar.createManifest("some owner", classPaths);
-		
-		providerJar.createJarArchive(Utils.getResourceFromWithin(Constants.PROVIDER_JAR_File),folder.listFiles());
-		
+
+		providerJar.createJarArchive(Utils.getResourceFromWithin(Constants.PROVIDER_JAR_File), folder.listFiles());
+
 		//delete archived files 
-		for(File file: folder.listFiles()){
+		for (File file : folder.listFiles()) {
 			file.delete();
 		}
-		
+
 		return true;
 	}
 

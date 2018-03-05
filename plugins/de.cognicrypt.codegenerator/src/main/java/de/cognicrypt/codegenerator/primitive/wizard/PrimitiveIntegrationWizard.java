@@ -2,7 +2,6 @@ package de.cognicrypt.codegenerator.primitive.wizard;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -11,29 +10,15 @@ import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
-import org.eclipse.core.internal.refresh.RefreshJob;
-import org.eclipse.jdt.ui.actions.RefreshAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import com.example.java.ceasar.CaesarCipher;
-import com.example.java.ceasar.CaesarProvider;
-
 import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
 import de.cognicrypt.codegenerator.primitive.utilities.ProviderFile;
 import de.cognicrypt.codegenerator.primitive.utilities.XsltWriter;
@@ -41,7 +26,6 @@ import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuest
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnairePage;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.utilities.FileHelper;
 import de.cognicrypt.codegenerator.utilities.Utils;
 
 public class PrimitiveIntegrationWizard extends Wizard {

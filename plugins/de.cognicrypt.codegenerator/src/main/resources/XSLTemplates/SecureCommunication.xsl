@@ -6,10 +6,17 @@
 <xsl:variable name="Rounds"> <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/iterations"/> </xsl:variable>
 <xsl:variable name="outputSize"> <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/algorithm[@type='Digest']/outputSize"/> </xsl:variable>
 
-<xsl:result-document href="config.properties">
+
+<xsl:variable name="filename">
+	<xsl:choose>
+		<xsl:when test="//task/code/server='true'">serverConfig.properties</xsl:when>
+		<xsl:otherwise>clientConfig.properties</xsl:otherwise>
+	</xsl:choose>
+</xsl:variable>
+
+<xsl:result-document href="{$filename}">
 pwd="<xsl:value-of select="//task/code/keystorepassword"/>"
 </xsl:result-document>
-
 
 <xsl:if test="//task[@description='SecureCommunication']">
 <xsl:choose><xsl:when test="//task/code/server='true'">
@@ -27,7 +34,7 @@ public class TLSServer {
 	public TLSServer(int port) {
 			System.setProperty("javax.net.ssl.keyStore","<xsl:value-of select="//task/code/keystore"/>");
 			try {
-				input = new FileInputStream("config.properties");
+				input = new FileInputStream("serverConfig.properties");
 				prop.load(input);
 				pwd = prop.getProperty("pwd"); 
 			} catch (IOException ex) {

@@ -76,7 +76,7 @@ public class ClaferModelContentProvider implements ITreeContentProvider {
 			return !inputModel.getClaferModel().isEmpty();
 		} else if (inputElement instanceof ClaferFeature) {
 			ClaferFeature inputFeature = (ClaferFeature) inputElement;
-			return inputFeature.hasProperties();
+			return inputFeature.hasPropertiesSatisfying(propertyFilter);
 		}
 		return false;
 	}

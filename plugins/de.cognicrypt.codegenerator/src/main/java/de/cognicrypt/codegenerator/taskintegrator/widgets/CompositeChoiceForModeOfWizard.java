@@ -5,6 +5,8 @@ package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.ICoreRunnable;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
@@ -17,12 +19,16 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.UIConstants;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.PageForTaskIntegratorWizard;
 import de.cognicrypt.codegenerator.tasks.Task;
@@ -38,6 +44,8 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	private List<Task> existingTasks; // retuired to validate the task name that is chosen by the user.
 	private ControlDecoration decNameOfTheTask; // Decoration variable to be able to access it in the events.
 	private PageForTaskIntegratorWizard theLocalContainerPage; // this is needed to set whether the page has been completed yet or not.
+
+	private CompositeBrowseForFile compCfr;
 
 	/**
 	 * Create the composite.
@@ -111,8 +119,42 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		grpNonguidedMode.setVisible(false);
 		grpNonguidedMode.setLayout(new GridLayout(1, false));
 		
-		CompositeBrowseForFile compCfr = new CompositeBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE, new String[] { "*.cfr" }, "Select cfr file that contains the Clafer features", getTheLocalContainerPage());
+		compCfr = new CompositeBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE, new String[] { "*.cfr" }, "Select cfr file that contains the Clafer features", getTheLocalContainerPage(), new Listener() {
+
+			@Override
+			public void handleEvent(Event arg0) {
+				System.out.println("Custom event handler triggered");
+
+				Job compileJob = Job.create("Compile Clafer model", (ICoreRunnable) monitor -> {
+					// UI updates can only be run in the display thread,
+					// so do them via Display.getDefault()
+					Display.getDefault().asyncExec(new Runnable() {
+
+						public void run() {
+							compCfr.getDecFilePath().setDescriptionText(" (compiling...)");
+							compCfr.getDecFilePath().setImage(UIConstants.DEC_INFORMATION);
+
+							// do the tedious work
+							String fileToCompile = compCfr.getText();
+
+							if (ClaferModel.compile(fileToCompile)) {
+								compCfr.getDecFilePath().setDescriptionText("Compilation successful");
+								compCfr.getDecFilePath().setImage(UIConstants.DEC_INFORMATION);
+							} else {
+								compCfr.getDecFilePath().setDescriptionText("Compilation error");
+								compCfr.getDecFilePath().setImage(UIConstants.DEC_ERROR);
+							}
+						}
+					});
+				});
+				// start the asynchronous task
+				compileJob.schedule();
+
+			}
+		});
+
 		compCfr.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+
 		CompositeBrowseForFile compXsl = new CompositeBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE, new String[] { "*.xsl" }, "Select xsl file that contains the code details", getTheLocalContainerPage());
 		compXsl.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		CompositeBrowseForFile compJson = new CompositeBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE, new String[] { "*.json" }, "Select json file that contains the high level questions", getTheLocalContainerPage());

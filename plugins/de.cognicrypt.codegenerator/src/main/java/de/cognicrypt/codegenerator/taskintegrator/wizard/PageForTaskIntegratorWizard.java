@@ -12,10 +12,14 @@ import org.clafer.instance.InstanceClafer;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.eclipse.jface.viewers.TreeSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -36,7 +40,10 @@ import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.ClaferModelContentProvider;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.ClaferModelLabelProvider;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeBrowseForFile;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
@@ -58,6 +65,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	protected ArrayList<ClaferFeature> cfrFeatures;
 
 	private HashMap<String, String> tagValueTagData;
+
+	TreeViewer treeViewer;
 
 
 	/**
@@ -360,6 +369,42 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						return null;
 					}
 				});
+
+				treeViewer = new TreeViewer(container);
+
+				// only list features, not their properties
+				treeViewer.setContentProvider(new ClaferModelContentProvider(feat -> true, prop -> false));
+				treeViewer.setLabelProvider(new ClaferModelLabelProvider());
+
+				ClaferModel inputModel = (((TaskIntegrationWizard) this.getWizard()).getTIPageByName(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION))
+					.getCompositeToHoldGranularUIElements().getClaferModel();
+
+				treeViewer.setInput(inputModel);
+				treeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+				treeViewer.getControl().addMouseListener(new MouseAdapter() {
+
+					@Override
+					public void mouseDoubleClick(MouseEvent e) {
+						if (treeViewer.getSelection() instanceof TreeSelection) {
+							TreeSelection ts = (TreeSelection) treeViewer.getSelection();
+
+							// add feature name to XSL code if feature name clicked
+							if (ts.getFirstElement() instanceof ClaferFeature) {
+								ClaferFeature featureClicked = (ClaferFeature) ts.getFirstElement();
+
+								Point selected = getCompositeForXsl().getXslTxtBox().getSelection();
+								String xslTxtBoxContent = getCompositeForXsl().getXslTxtBox().getText();
+								xslTxtBoxContent = xslTxtBoxContent.substring(0, selected.x) + featureClicked.getFeatureName() + xslTxtBoxContent.substring(selected.y,
+									xslTxtBoxContent.length());
+								getCompositeForXsl().getXslTxtBox().setText(xslTxtBoxContent);
+								getCompositeForXsl().colorizeTextBox();
+							}
+						}
+						super.mouseDoubleClick(e);
+					}
+				});
+
 				break;
 			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, this.getName()));
@@ -444,6 +489,13 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		IWizardPage nextPage = super.getNextPage();
 		if (nextPage != null) {
 			((WizardPage)nextPage).setPageComplete(true);
+
+			// refresh the TreeViewer when coming to the XSL page
+			if (nextPage.getName().equals(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)) {
+				if (((PageForTaskIntegratorWizard) nextPage).treeViewer != null) {
+					((PageForTaskIntegratorWizard) nextPage).treeViewer.refresh();
+				}
+			}
 		}
 				
 		return nextPage;

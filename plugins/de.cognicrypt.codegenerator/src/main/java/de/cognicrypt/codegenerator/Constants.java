@@ -387,6 +387,11 @@ public class Constants {
 		
 	}
 	
+	public static final String SLASH = "/";
+	public static final String ATTRIBUTE_BEGIN = "[@";
+	public static final String ATTRIBUTE_END = "=\'\']";
+	public static final String DOT = ".";
+
 	// for the file utils for the task integrator.
 	public static final String JAR_FILE_DIRECTORY_PATH = rsrcPath + "AdditionalResources" + innerFileSeparator;
 	public static final String CFR_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModel" + innerFileSeparator;

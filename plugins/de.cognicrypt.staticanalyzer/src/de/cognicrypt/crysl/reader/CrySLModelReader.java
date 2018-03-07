@@ -33,7 +33,6 @@ import org.eclipse.xtext.common.types.access.jdt.JdtTypeProviderFactory;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 
-import com.google.common.base.CharMatcher;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Injector;
@@ -198,7 +197,7 @@ public class CrySLModelReader {
 
 						final String part = var.getVal().getPart();
 						if (part != null) {
-							variables.add(new CryptSLObject(variable, type, new CryptSLSplitter(Integer.parseInt(lit.getInd()), filterQuotes(lit.getSplit()))));
+							variables.add(new CryptSLObject(variable, type, new CryptSLSplitter(Integer.parseInt(lit.getInd()), Utils.filterQuotes(lit.getSplit()))));
 						} else {
 							variables.add(new CryptSLObject(variable, type));
 						}
@@ -231,10 +230,6 @@ public class CrySLModelReader {
 		return new CryptSLArithmeticConstraint(name, new CryptSLObject("0", "int"), crypto.rules.CryptSLArithmeticConstraint.ArithOp.p);
 	}
 
-	private String filterQuotes(final String dirty) {
-		return CharMatcher.anyOf("\"").removeFrom(dirty);
-	}
-
 	private ISLConstraint getConstraint(final Constraint cons) {
 		if (cons == null) {
 			return null;
@@ -250,7 +245,7 @@ public class CrySLModelReader {
 			final List<String> parList = new ArrayList<>();
 			if (lit.getLitsleft() != null) {
 				for (final Literal a : lit.getLitsleft().getParameters()) {
-					parList.add(filterQuotes(a.getVal()));
+					parList.add(Utils.filterQuotes(a.getVal()));
 				}
 			}
 			if (lit.getCons() instanceof PreDefinedPredicates) {
@@ -263,7 +258,7 @@ public class CrySLModelReader {
 					SuperType object = name.getValue();
 					final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType()
 						.getQualifiedName(), new CryptSLSplitter(Integer
-							.parseInt(((ArrayElements) lit.getCons()).getCons().getInd()), filterQuotes(((ArrayElements) lit.getCons()).getCons().getSplit())));
+							.parseInt(((ArrayElements) lit.getCons()).getCons().getInd()), Utils.filterQuotes(((ArrayElements) lit.getCons()).getCons().getSplit())));
 					slci = new CryptSLValueConstraint(variable, parList);
 				} else {
 					LiteralExpression name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getName();
@@ -548,7 +543,7 @@ public class CrySLModelReader {
 		} else {
 			value = ((Literal) name).getVal();
 		}
-		return filterQuotes(value);
+		return Utils.filterQuotes(value);
 	}
 
 	private void storeRuletoFile(final CryptSLRule rule, final String folderPath, final String className) {

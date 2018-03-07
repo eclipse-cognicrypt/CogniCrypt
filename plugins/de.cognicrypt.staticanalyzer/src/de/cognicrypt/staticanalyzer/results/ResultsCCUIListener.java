@@ -31,6 +31,7 @@ import crypto.rules.CryptSLConstraint;
 import crypto.rules.CryptSLMethod;
 import crypto.rules.CryptSLObject;
 import crypto.rules.CryptSLPredicate;
+import crypto.rules.CryptSLSplitter;
 import crypto.rules.CryptSLValueConstraint;
 import crypto.rules.TransitionEdge;
 import crypto.typestate.CallSiteWithParamIndex;
@@ -138,21 +139,21 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			msg.append(brokenCompCons.getRight().getLeft().getName());
 		} else if (brokenConstraint instanceof CryptSLConstraint) {
 			final CryptSLConstraint cryptSLConstraint = (CryptSLConstraint) brokenConstraint;
-			final CryptSLValueConstraint leftSide = (CryptSLValueConstraint) cryptSLConstraint.getLeft();
-			final CryptSLValueConstraint rightSide = (CryptSLValueConstraint) cryptSLConstraint.getRight();
+			final ISLConstraint leftSide = cryptSLConstraint.getLeft();
+			final ISLConstraint rightSide = cryptSLConstraint.getRight();
 			switch (cryptSLConstraint.getOperator()) {
 				case and:
-					msg.append(evaluateValueConstraint(seed, leftSide, location));
+					msg.append(evaluateBrokenConstraint(seed, leftSide, location));
 					msg.append(" or ");
-					msg.append(evaluateValueConstraint(seed, rightSide, location));
+					msg.append(evaluateBrokenConstraint(seed, rightSide, location));
 					break;
 				case implies:
-					msg.append(evaluateValueConstraint(seed, rightSide, location));
+					msg.append(evaluateBrokenConstraint(seed, rightSide, location));
 					break;
 				case or:
-					msg.append(evaluateValueConstraint(seed, leftSide, location));
+					msg.append(evaluateBrokenConstraint(seed, leftSide, location));
 					msg.append(" and ");
-					msg.append(evaluateValueConstraint(seed, rightSide, location));
+					msg.append(evaluateBrokenConstraint(seed, rightSide, location));
 					break;
 				default:
 					break;
@@ -180,9 +181,25 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	private String evaluateValueConstraint(AnalysisSeedWithSpecification seed, final CryptSLValueConstraint brokenConstraint, Statement location) {
 		CryptSLObject crySLVar = brokenConstraint.getVar();
 		StringBuilder msg = new StringBuilder(extractVarName(seed, location, crySLVar));
-		msg.append(" should be any of {");
+
+		msg.append(" should be any of ");
+		CryptSLSplitter splitter = brokenConstraint.getVar().getSplitter();
+		if (splitter != null) {
+			String[] splitValues = Utils.filterQuotes(location.getUnit().get().getInvokeExpr().getUseBoxes().get(0).getValue().toString()).split(splitter.getSplitter());
+			if (splitValues.length >= splitter.getIndex()) {
+				for (int i = 0; i < splitter.getIndex(); i++) {
+					msg.append(splitValues[i]);
+					msg.append(splitter.getSplitter());
+				}
+			}
+		}
+		msg.append("{");
 		for (final String val : brokenConstraint.getValueRange()) {
-			msg.append(val);
+			if (val.isEmpty()) {
+				msg.append("Empty String");
+			} else {
+				msg.append(val);
+			}
 			msg.append(", ");
 		}
 		msg.delete(msg.length() - 2, msg.length());
@@ -231,9 +248,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 				}
 			} else {
 				if (((Constant) value).getType().toQuotedString().equals(crySLVar.getJavaType())) {
-					msg.append(Constants.OBJECT_OF_TYPE);
-					msg.append(crySLVar.getJavaType());
-
+					msg.append(value);
 				}
 			}
 		}
@@ -270,9 +285,9 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	public void typestateErrorAt(final AnalysisSeedWithSpecification seed, final Statement location, final Collection<SootMethod> expectedCalls) {
 		final StringBuilder msg = new StringBuilder();
 
-		msg.append("Unexpected Method Call to");
+		msg.append("Unexpected method call to");
 		msg.append(location.getMethod());
-		msg.append(". Expected a Call to  one of the Following Methods ");
+		msg.append(". Expected a call to  one of the following methods ");
 		final Set<String> altMethods = new HashSet<>();
 		for (final SootMethod expectedCall : expectedCalls) {
 			altMethods.add(expectedCall.getName());
@@ -282,7 +297,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			msg.append(", ");
 		}
 		msg.deleteCharAt(msg.length() - 2);
-		msg.append(" Here.");
+		msg.append(" here.");
 		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
 	}
 

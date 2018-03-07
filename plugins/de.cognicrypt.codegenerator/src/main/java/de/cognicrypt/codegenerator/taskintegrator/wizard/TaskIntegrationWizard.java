@@ -34,12 +34,7 @@ public class TaskIntegrationWizard extends Wizard {
 
 		this.addPage(new ClaferPage());
 
-		this.addPage(
-			new PageForTaskIntegratorWizard(
-				Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS,
-				Constants.PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS,
-				Constants.PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS
-			));
+		this.addPage(new QuestionsPage());
 
 		this.addPage(new PageForTaskIntegratorWizard(
 			Constants.PAGE_NAME_FOR_LINK_ANSWERS,

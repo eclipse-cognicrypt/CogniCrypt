@@ -6,20 +6,15 @@ package de.cognicrypt.codegenerator.taskintegrator.wizard;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 
-import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
@@ -70,45 +65,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		switch (this.getName()) {
 			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
 				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE, this));
-				break;
-			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
-				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, this.getName()));
-				// fill the available space on the with the big composite
-				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-				TaskIntegrationWizard tiWizard = null;
-
-				if (TaskIntegrationWizard.class.isInstance(getWizard())) {
-					tiWizard = (TaskIntegrationWizard) getWizard();
-				} else {
-					Activator.getDefault().logError("PageForTaskIntegratorWizard was instantiated by a wizard other than TaskIntegrationWizard");
-				}
-
-				PageForTaskIntegratorWizard claferPage = tiWizard.getTIPageByName(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION);
-				CompositeToHoldGranularUIElements claferPageComposite = (CompositeToHoldGranularUIElements) claferPage.getCompositeToHoldGranularUIElements();
-
-				QuestionDialog questionDialog = new QuestionDialog(parent.getShell());
-				Button qstnDialog = new Button(container, SWT.NONE);
-				qstnDialog.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
-				qstnDialog.setText("Add Question");
-
-				qstnDialog.addSelectionListener(new SelectionAdapter() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						int response = questionDialog.open();
-						if (response == Window.OK) {
-							counter++;
-							//Question questionDetails = getDummyQuestion(questionDialog.getQuestionText(),questionDialog.getquestionType(),questionDialog.getAnswerValue());
-							Question questionDetails = questionDialog.getQuestionDetails();
-							questionDetails.setId(counter);
-
-							// Update the array list.
-							compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
-							compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails, claferPageComposite.getClaferModel(), false);
-						}
-					}
-				});
 				break;
 			case Constants.PAGE_NAME_FOR_LINK_ANSWERS:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, this.getName()));

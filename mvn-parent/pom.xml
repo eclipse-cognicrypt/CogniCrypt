@@ -20,7 +20,7 @@
 		</repository>
 		<repository>
 			<id>cryptsl</id>
-			<url>http://download.eclipse.org/cognicrypt/</url>
+			<url>https://it.crossing.tu-darmstadt.de/cognicrypt/</url>
 			<layout>p2</layout>
 		</repository>
 		<repository>

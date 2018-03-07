@@ -38,8 +38,9 @@ public class TLSServer {
 	public TLSServer(int port) {
 			System.setProperty("javax.net.ssl.keyStore","<xsl:value-of select="//task/code/keystore"/>");
 			try {
-				// TODO Resolve path so that it can be executed when the function is called outside of the package
-				input = new FileInputStream("../" + "<xsl:value-of select="//task/Package"/>"+ "/serverConfig.properties");
+				// If you move the generated code in another package (default of CogniCrypt is Crypto),
+				// you need to change the parameter (replacing Crypto with the package name).
+				input = Object.class.getClass().getResourceAsStream("/Crypto/serverConfig.properties");
 				prop.load(input);
 				pwd = prop.getProperty("serverpwd"); 
 			} catch (IOException ex) {
@@ -193,7 +194,9 @@ public class TLSClient {
 			String pwd = null;
 			System.setProperty("javax.net.ssl.trustStore","<xsl:value-of select="//task/code/keystore"/>");
 			try {
-				input = new FileInputStream("clientConfig.properties");
+				// If you move the generated code in another package (default of CogniCrypt is Crypto),
+				// you need to change the parameter (replacing Crypto with the package name).
+				input = Object.class.getClass().getResourceAsStream("/Crypto/clientConfig.properties");
 				prop.load(input);
 				pwd = prop.getProperty("clientpwd"); 
 			} catch (IOException ex) {

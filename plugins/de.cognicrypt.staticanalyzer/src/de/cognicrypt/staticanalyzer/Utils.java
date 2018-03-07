@@ -37,6 +37,8 @@ import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.part.FileEditorInput;
 import org.osgi.framework.Bundle;
 
+import com.google.common.base.CharMatcher;
+
 import soot.SootClass;
 
 public class Utils {
@@ -232,6 +234,10 @@ public class Utils {
 
 	protected static void setWindow(final IWorkbenchWindow activeWorkbenchWindow) {
 		Utils.window = activeWorkbenchWindow;
+	}
+
+	public static String filterQuotes(final String dirty) {
+		return CharMatcher.anyOf("\"").removeFrom(dirty);
 	}
 
 }

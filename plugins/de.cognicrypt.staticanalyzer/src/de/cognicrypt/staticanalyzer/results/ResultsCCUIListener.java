@@ -77,8 +77,10 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	public void callToForbiddenMethod(final ClassSpecification arg0, final Statement location, final List<CryptSLMethod> alternatives) {
 		final StringBuilder msg = new StringBuilder();
 		msg.append("Detected call to forbidden method");
-		String methodDecl = location.getUnit().get().getInvokeExpr().getMethod().getDavaDeclaration();
-		msg.append(methodDecl.substring(methodDecl.indexOf(" ")));
+		SootMethod method = location.getUnit().get().getInvokeExpr().getMethod();
+		String methodDecl = method.getSubSignature();
+		msg.append(
+			methodDecl.substring(methodDecl.indexOf(" ")).replace("<init>", method.getDeclaringClass().getShortJavaStyleName()));
 		if (!alternatives.isEmpty()) {
 			msg.append(". Instead, call method ");
 			for (final CryptSLMethod alt : alternatives) {
@@ -259,9 +261,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	public void missingPredicates(final AnalysisSeedWithSpecification spec, final Set<CryptSLPredicate> missingPred) {
 		for (final CryptSLPredicate pred : missingPred) {
 			final StringBuilder msg = new StringBuilder();
-			msg.append("Predicate ");
-			msg.append(pred.getPredName());
-			msg.append(" is missing for ");
 			Statement stmt = null;
 			if (pred instanceof LocatedCrySLPredicate) {
 				stmt = ((LocatedCrySLPredicate) pred).getLocation();
@@ -270,6 +269,17 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 				stmt = spec.stmt();
 				msg.append(Constants.VAR);
 				msg.append(spec.var().value().toString());
+			}
+			msg.append(" was not properly ");
+			String predName = pred.getPredName();
+			int index = Utils.getFirstIndexofUCL(predName);
+			
+			if (index == -1) {
+				msg.append(predName);
+			} else {
+				msg.append(predName.substring(0, index));
+				msg.append(" as ");
+				msg.append(predName.substring(index).toLowerCase());
 			}
 			msg.append(".");
 			this.markerGenerator.addMarker(unitToResource(stmt), stmt.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
@@ -305,11 +315,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	public void typestateErrorEndOfLifeCycle(final AnalysisSeedWithSpecification seed, final Val value, final Statement location, Set<TransitionEdge> expectedCalls) {
 		final StringBuilder msg = new StringBuilder();
 
-		msg.append("Operation with ");
-		final String type = value.value().getType().toQuotedString();
-		msg.append(type.substring(type.lastIndexOf('.') + 1));
-		msg.append(" object not completed. Expected call to ");
-
+		msg.append("Missing call ");
+		//		msg.append(" object not completed. Expected call to ");
 		final Iterator<TransitionEdge> expectedIterator = expectedCalls.iterator();
 		while (expectedIterator.hasNext()) {
 			final String methodName = expectedIterator.next().getLabel().get(0).getMethodName();
@@ -320,6 +327,9 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 				msg.append(" or ");
 			}
 		}
+		msg.append(" on object ");
+		final String type = value.value().getType().toQuotedString();
+		msg.append(type.substring(type.lastIndexOf('.') + 1));
 		msg.append(".");
 		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
 	}

@@ -6,4 +6,6 @@ public class Constants {
 	public static final String OBJECT_OF_TYPE = "Object of type ";
 	public static final String VAR = "variable ";
 
+	public static final String OUTER_FILE_SEPARATOR = System.getProperty("file.separator");
+
 }

@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalInt;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -238,6 +239,15 @@ public class Utils {
 
 	public static String filterQuotes(final String dirty) {
 		return CharMatcher.anyOf("\"").removeFrom(dirty);
+	}
+
+	public static int getFirstIndexofUCL(String searchString) {
+		OptionalInt index = searchString.chars().filter(n -> Character.isUpperCase(n)).findFirst();
+		if (index.isPresent()) {
+			return searchString.indexOf(index.getAsInt());
+		} else {
+			return -1;
+		}
 	}
 
 }

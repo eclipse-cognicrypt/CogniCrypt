@@ -46,12 +46,7 @@ public class TaskIntegrationWizard extends Wizard {
 			Constants.PAGE_TITLE_FOR_LINK_ANSWERS,
 			Constants.PAGE_DESCIPTION_FOR_LINK_ANSWERS));
 		
-		this.addPage(
-			new PageForTaskIntegratorWizard(
-				Constants.PAGE_NAME_FOR_XSL_FILE_CREATION,
-				Constants.PAGE_TITLE_FOR_XSL_FILE_CREATION,
-				Constants.PAGE_DESCRIPTION_FOR_XSL_FILE_CREATION
-			));
+		this.addPage(new XslPage());
 	}
 
 	/* (non-Javadoc)
@@ -82,7 +77,7 @@ public class TaskIntegrationWizard extends Wizard {
 				.getCompositeToHoldGranularUIElements()).getClaferModel();
 			ArrayList<Question> questions = ((CompositeToHoldGranularUIElements) ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS))
 				.getCompositeToHoldGranularUIElements()).getListOfAllQuestions();
-			String xslFileContents = ((CompositeForXsl) ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)).getCompositeForXsl()).getXslTxtBox()
+			String xslFileContents = ((CompositeForXsl) ((XslPage) getPage(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)).getCompositeForXsl()).getXslTxtBox()
 				.getText();
 
 			// FIXME ObjectForDataInNonGuidedMode is only used in non-guided mode but custom library location is always needed

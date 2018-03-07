@@ -9,12 +9,12 @@
 <xsl:choose>
 	<xsl:when test="//task/code/server='true'">
 		<xsl:result-document href="serverConfig.properties">
-			serverpwd="<xsl:value-of select="//task/code/keystorepassword"/>"
+			pwd="<xsl:value-of select="//task/code/keystorepassword"/>"
 		</xsl:result-document>
 	</xsl:when>
 	<xsl:otherwise>
 		<xsl:result-document href="clientConfig.properties">
-			clientpwd="<xsl:value-of select="//task/code/keystorepassword"/>"
+			pwd="<xsl:value-of select="//task/code/keystorepassword"/>"
 		</xsl:result-document>
 	</xsl:otherwise>
 </xsl:choose>
@@ -42,7 +42,7 @@ public class TLSServer {
 				// you need to change the parameter (replacing Crypto with the package name).
 				input = Object.class.getClass().getResourceAsStream("/Crypto/serverConfig.properties");
 				prop.load(input);
-				pwd = prop.getProperty("serverpwd"); 
+				pwd = prop.getProperty("pwd"); 
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			} finally {
@@ -198,7 +198,7 @@ public class TLSClient {
 				// you need to change the parameter (replacing Crypto with the package name).
 				input = Object.class.getClass().getResourceAsStream("/Crypto/clientConfig.properties");
 				prop.load(input);
-				pwd = prop.getProperty("clientpwd"); 
+				pwd = prop.getProperty("pwd"); 
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			} finally {

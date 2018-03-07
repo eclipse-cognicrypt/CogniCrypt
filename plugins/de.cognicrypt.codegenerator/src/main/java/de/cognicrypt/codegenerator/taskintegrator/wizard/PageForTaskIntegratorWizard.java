@@ -4,7 +4,14 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
+import org.clafer.instance.InstanceClafer;
+import org.dom4j.Attribute;
+import org.dom4j.Document;
+import org.dom4j.Element;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
@@ -19,17 +26,22 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.MessageBox;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
+import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.question.ClaferDependency;
+import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
-import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
-import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeBrowseForFile;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
+import de.cognicrypt.codegenerator.utilities.XMLParser;
 
 /**
  * @author rajiv
@@ -45,14 +57,19 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	int counter = 0;// TODO for testing only.
 	protected ArrayList<ClaferFeature> cfrFeatures;
 
+	private HashMap<String, String> tagValueTagData;
+
+
 	/**
 	 * Create the wizard.
 	 */
 	public PageForTaskIntegratorWizard(String name, String title, String description) {
 		super(name);
 		setTitle(title);
-		setDescription(description);		
-		this.setPageComplete(false);		
+		setDescription(description);
+		this.setPageComplete(false);
+		// The String to display, and the constructed string for the XSL document.
+		setTagValueTagData(new HashMap<>());
 	}
 
 	/**
@@ -96,15 +113,23 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 						super.widgetSelected(e);
 
+						if (getCompositeForXsl().getXslTxtBox().getText().trim().length() > 0) {
+							MessageBox infoBox = new MessageBox(getShell(), SWT.ICON_INFORMATION | SWT.OK);
+							infoBox.setText("Updating code");
+							infoBox.setMessage(
+								"Some code already appears to be added. \n\nIf you choose an XSL file, all of the existing code will be replaced. If you choose a Java or text file, the contents of said file will be added at the location of the cursor.");
+							infoBox.open();
+						}
 						FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
 
-						fileDialog.setFilterExtensions(new String[] {"*.xsl", "*.java", "*.txt" });
+						fileDialog.setFilterExtensions(new String[] { "*.xsl", "*.java", "*.txt" });
 						fileDialog.setText("Choose the code file:");
 
 						String fileDialogResult = fileDialog.open();
 						if (fileDialogResult != null) {
 							((CompositeForXsl) getCompositeForXsl()).updateTheTextFieldWithFileData(fileDialogResult);
 						}
+
 					}
 
 				});
@@ -113,61 +138,226 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						ClaferModel claferModel = null;
-						ArrayList<Question> questions = null;
-						ArrayList<String> strFeatures = new ArrayList<>();
 						
+						// this is needed to get the name and the description of the task from the wizard.
+						ModelAdvancedMode objectForDataInGuidedMode = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD))
+							.getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
+						String taskName = objectForDataInGuidedMode.getNameOfTheTask();
+						String taskDescription = objectForDataInGuidedMode.getTaskDescription();
 
-						for (IWizardPage page : getWizard().getPages()) {
-							// get the Clafer creation page
-							if (page instanceof PageForTaskIntegratorWizard) {
-								PageForTaskIntegratorWizard pftiw = (PageForTaskIntegratorWizard) page;
-								if (pftiw.getCompositeToHoldGranularUIElements() instanceof CompositeToHoldGranularUIElements) {
-									CompositeToHoldGranularUIElements comp = (CompositeToHoldGranularUIElements) pftiw.getCompositeToHoldGranularUIElements();
-									if (pftiw.getName() == Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION) {
-										// get the Clafer features
-										claferModel = comp.getClaferModel();
+						// Get the path for the javascript file from the clafer page.
+						String jsFilePath = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getJSFilePath();
+						if (jsFilePath != null) {
+							InstanceGenerator instanceGenerator = new InstanceGenerator(jsFilePath, "c0_" + taskName, taskDescription);
 
-										// get all the Clafer features' properties
-										for (ClaferFeature cfrFtr : claferModel) {
-											String ftrName = cfrFtr.getFeatureName();
-											for (FeatureProperty prop : cfrFtr.getFeatureProperties()) {
-												// prepend the feature name and add the property to dropdown entries
-												strFeatures.add(ftrName + "." + prop.getPropertyName());
-											}
-										}
-									} else if (pftiw.getName() == Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS) {
-										questions = comp.getListOfAllQuestions();
+							// This will contain the xml strings that are generated for every -> operator encountered.
+							List<Document> xmlStrings = new ArrayList<Document>();
 
-										for (Question question : questions) {
-											// TODO compare against Constants.GUIElements.text
-											if (question.getQuestionType().equals("text")) {
-												strFeatures.add("[Answer to \"" + question.getQuestionText() + "\"]");
-											}
-											
-											
-										}
-									}
+							XMLParser xmlParser = new XMLParser();
+							// this will remain empty for the first instance, that contains no -> operators.
+							HashMap<Question, Answer> constraints = new HashMap<>();
+							List<InstanceClafer> instances = instanceGenerator.generateInstances(constraints);
+							if (instances.size() > 0) {
+								InstanceClafer initialInstance = instanceGenerator.generateInstances(constraints).get(0);
+								xmlStrings.add(xmlParser.displayInstanceValues(initialInstance, constraints));
+
+								// Questions needed to get the answer that has a constraint with the -> operator.
+								//QuestionsJSONReader reader = new QuestionsJSONReader();
+								// TODO update this to read the data generated in the questions page.
+
+								List<Question> questions = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_LINK_ANSWERS))
+									.getCompositeToHoldGranularUIElements().getListOfAllQuestions();
+								//List<Page> pages = reader.getPages("/src/main/resources/TaskDesc/SymmetricEncryption.json");
+
+								//for (Page page : pages) {
+								for (Question question : questions) {
+									for (Answer answer : question.getAnswers()) {
+										if (answer.getClaferDependencies() != null) {
+											for (ClaferDependency claferDependency : answer.getClaferDependencies()) {
+												if ("->".equals(claferDependency.getOperator())) {
+													xmlStrings.add(getXMLForNewAlgorithmInsertion(question, answer, xmlParser, instanceGenerator, claferDependency));
+
+												}
+											} // clafer dependency loop
+										} // clafer dependency check
+										if (answer.getCodeDependencies() != null) {
+											for (CodeDependency codeDependency : answer.getCodeDependencies()) {
+												//xmlStrings.get(0).elementByID(Constants.Code).addElement(codeDependency.getOption()).addText(codeDependency.getValue() + "");
+												Element root = xmlStrings.get(0).getRootElement();
+
+												for (Iterator<Element> element = root.elementIterator(Constants.Code); element.hasNext();) {
+													Element codeElement = element.next();
+													codeElement.addElement(codeDependency.getOption()).addText(codeDependency.getValue() + "");
+												}
+											} // code dependency loop
+										} // code dependency check
+									} // answer loop
+								} // question loop
+									//} // page loop
+
+								// Process each xml document that is generated.
+								for (Document xmlDocument : xmlStrings) {
+									processXMLDocument(xmlDocument);
 								}
 							}
-						}
 
+						}
 						XSLTagDialog dialog;
-						if (strFeatures.size() > 0) {
-							dialog = new XSLTagDialog(getShell(), strFeatures);
+						// Show an empty dialog if no clafer feature has been defined.
+						if (getTagValueTagData().size() > 0) {
+							dialog = new XSLTagDialog(getShell(), getTagValueTagData());
 						} else {
 							dialog = new XSLTagDialog(getShell());
 						}
 
 						if (dialog.open() == Window.OK) {
-							// To locate the position of the xsl tag to be introduce						
+							// To locate the position of the xsl tag to be introduced in the code.				
 							Point selected = getCompositeForXsl().getXslTxtBox().getSelection();
 							String xslTxtBoxContent = getCompositeForXsl().getXslTxtBox().getText();
 							xslTxtBoxContent = xslTxtBoxContent.substring(0, selected.x) + dialog.getTag().toString() + xslTxtBoxContent.substring(selected.y,
 								xslTxtBoxContent.length());
 							getCompositeForXsl().getXslTxtBox().setText(xslTxtBoxContent);
+							getCompositeForXsl().colorizeTextBox();
 						}
 
+					}
+
+					/**
+					 * Process the XML document here to generate values to be displayed to the user for selection.
+					 * 
+					 * @param xmlDocument
+					 *        The serialized object representing the generated XML string.
+					 */
+					private void processXMLDocument(Document xmlDocument) {
+						Element root = xmlDocument.getRootElement();
+						// send a slash as a parameter to keep the recursive method as generic as possible.
+						processElement(root, "", Constants.SLASH, true);
+					}
+
+					/**
+					 * This method will process each element individually, and is called recursively to process nested tags.
+					 * 
+					 * @param xmlElement
+					 *        The element under consideration.
+					 * @param existingNameToBeDisplayed
+					 *        The string that will be displayed to the user for selection.
+					 * @param existingDataForXSLDocument
+					 *        The actual string that will be added to the code base on the selection that is done by the user.
+					 * @param isRoot
+					 *        true if the element is the root element.
+					 */
+					private void processElement(Element xmlElement, String existingNameToBeDisplayed, String existingDataForXSLDocument, boolean isRoot) {
+						StringBuilder tagNameToBeDisplayed = new StringBuilder();
+						StringBuilder tagDataForXSLDocument = new StringBuilder();
+
+						tagNameToBeDisplayed.append(existingNameToBeDisplayed);
+						tagDataForXSLDocument.append(existingDataForXSLDocument);
+
+						if (!isRoot) {
+							tagNameToBeDisplayed.append(Constants.DOT);
+						}
+						tagNameToBeDisplayed.append(xmlElement.getName());
+						tagDataForXSLDocument.append(Constants.SLASH);
+						tagDataForXSLDocument.append(xmlElement.getName());
+
+						int builderDisplayDataSizeTillRoot = tagNameToBeDisplayed.length();
+						int builderTagDataSizeTillRoot = tagDataForXSLDocument.length();
+
+
+						if (xmlElement.attributeCount() == 0 && !xmlElement.elementIterator().hasNext()) {
+							// adding the tag, if there are no attributes.
+							getTagValueTagData().put(tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString());
+						} else {
+							for (Iterator<Attribute> attribute = xmlElement.attributeIterator(); attribute.hasNext();) {
+								Attribute attributeData = attribute.next();
+								// TODO the name of the task can be fixed here based on what is chosen before.	
+
+								if (tagNameToBeDisplayed.length() > builderDisplayDataSizeTillRoot) {
+									tagNameToBeDisplayed.delete(builderDisplayDataSizeTillRoot, tagNameToBeDisplayed.length());
+								}
+
+								if (tagDataForXSLDocument.length() > builderTagDataSizeTillRoot) {
+									tagDataForXSLDocument.delete(builderTagDataSizeTillRoot, tagDataForXSLDocument.length());
+								}
+
+								tagNameToBeDisplayed.append(Constants.DOT);
+								tagNameToBeDisplayed.append("@" + attributeData.getName());
+
+								tagDataForXSLDocument.append(Constants.ATTRIBUTE_BEGIN);
+								tagDataForXSLDocument.append(attributeData.getName());
+								tagDataForXSLDocument.append(Constants.ATTRIBUTE_END);
+
+								getTagValueTagData().put(tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString());
+								
+								// Adding the loop for the remaining elements within the attribute loop to have unique tags based on the attributes. 
+								for (Iterator<Element> element = xmlElement.elementIterator(); element.hasNext();) {
+									Element currentElement = element.next();
+									// do not consider the imports tag. The data is not relevant.
+									if (!currentElement.getName().equals("Imports")) {
+										if (tagNameToBeDisplayed.length() > builderDisplayDataSizeTillRoot) {
+											tagNameToBeDisplayed.delete(builderDisplayDataSizeTillRoot, tagNameToBeDisplayed.length());
+										}
+
+										if (isRoot) {
+											if (tagDataForXSLDocument.length() > builderTagDataSizeTillRoot) {
+												tagDataForXSLDocument.delete(builderTagDataSizeTillRoot, tagDataForXSLDocument.length());
+											}
+										}
+										// recursive call
+										processElement(currentElement, tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString(), false);
+									}
+								}
+							}
+						}
+
+						// A similar loop outside the attribute loop to check the tags that are not nested.
+						for (Iterator<Element> element = xmlElement.elementIterator(); element.hasNext();) {
+							Element currentElement = element.next();
+							// do not consider the imports tag. The data is not relevant.
+							if (!currentElement.getName().equals("Imports")) {
+								if (tagNameToBeDisplayed.length() > builderDisplayDataSizeTillRoot) {
+									tagNameToBeDisplayed.delete(builderDisplayDataSizeTillRoot, tagNameToBeDisplayed.length());
+								}
+
+								if (isRoot) {
+									if (tagDataForXSLDocument.length() > builderTagDataSizeTillRoot) {
+										tagDataForXSLDocument.delete(builderTagDataSizeTillRoot, tagDataForXSLDocument.length());
+									}
+								}
+								// recursive call
+								processElement(currentElement, tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString(), false);
+							}
+						}
+					}
+
+					/**
+					 * This method is created to be able to exit the nested loops as soon as the correct instance is found.
+					 * 
+					 * @param question
+					 *        The question object from the outer loop.
+					 * @param answer
+					 *        The answer object from the outer loop.
+					 * @param xmlParser
+					 *        This object is needed to generate the xml string.
+					 * @param instanceGenerator
+					 *        This object is needed to generate the instances
+					 * @param claferDependency
+					 *        The claferDependency from the outer loop
+					 * @return
+					 */
+					private Document getXMLForNewAlgorithmInsertion(Question question, Answer answer, XMLParser xmlParser, InstanceGenerator instanceGenerator, ClaferDependency claferDependency) {
+						HashMap<Question, Answer> constraints = new HashMap<>();
+						constraints.put(question, answer);
+						String constraintOnType = claferDependency.getAlgorithm();
+						for (InstanceClafer instance : instanceGenerator.generateInstances(constraints)) {
+							for (InstanceClafer childInstance : instance.getChildren()) {
+								// check if the name of the constraint on the clafer instance is the same as the one on the clafer dependency from the outer loop.
+								if (childInstance.getType().getName().equals(constraintOnType)) {
+									return xmlParser.displayInstanceValues(instance, constraints);
+								}
+							} // child instance loop
+						} // instance loop
+						return null;
 					}
 				});
 				break;
@@ -219,6 +409,15 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	}
 
 	/**
+	 * Get the location of the compiled Javascript file.
+	 * 
+	 * @return the location of the JS file in the form of a string.
+	 */
+	public String getJSFilePath() {
+		return ((ClaferPage) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompiledClaferModelPath();
+	}
+
+	/**
 	 * Overwriting the getNextPage method to extract the list of all questions
 	 * from highLevelQuestion page and forward the data to pageForLinkAnswers at runtime
 	 */
@@ -235,7 +434,9 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			return null;
 		}
 		
-		
+		if (this.getName().equals(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)) {
+
+		}
 		/*
 		 * This is for debugging only. To be removed for the final version.
 		 * TODO Please add checks on the pages after mode selection to mark those pages as completed, or restrict the finish button.
@@ -361,7 +562,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	/**
 	 * @return the compositeToHoldGranularUIElements
 	 */
-	public Composite getCompositeToHoldGranularUIElements() {
+	public CompositeToHoldGranularUIElements getCompositeToHoldGranularUIElements() {
 		return compositeToHoldGranularUIElements;
 	}
 
@@ -394,6 +595,21 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	public void setCompositeForXsl(CompositeForXsl compositeForXsl) {
 		this.compositeForXsl = compositeForXsl;
 
+	}
+
+	/**
+	 * @return the tagValueTagData
+	 */
+	public HashMap<String, String> getTagValueTagData() {
+		return tagValueTagData;
+	}
+
+	/**
+	 * @param tagValueTagData
+	 *        the tagValueTagData to set
+	 */
+	public void setTagValueTagData(HashMap<String, String> tagValueTagData) {
+		this.tagValueTagData = tagValueTagData;
 	}
 
 }

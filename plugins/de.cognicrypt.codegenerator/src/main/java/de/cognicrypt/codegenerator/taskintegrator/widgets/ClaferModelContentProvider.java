@@ -71,10 +71,7 @@ public class ClaferModelContentProvider implements ITreeContentProvider {
 
 	@Override
 	public boolean hasChildren(Object inputElement) {
-		if (inputElement instanceof ClaferModel) {
-			ClaferModel inputModel = (ClaferModel) inputElement;
-			return !inputModel.getClaferModel().isEmpty();
-		} else if (inputElement instanceof ClaferFeature) {
+		if (inputElement instanceof ClaferFeature) {
 			ClaferFeature inputFeature = (ClaferFeature) inputElement;
 			if (propertyFilter != null) {
 				return inputFeature.hasPropertiesSatisfying(propertyFilter);

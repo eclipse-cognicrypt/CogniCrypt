@@ -26,9 +26,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
-
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
@@ -75,23 +74,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		ComboViewer secondAlgorithmClass;
 		Label secondLabelInstanceList;
 
-		//To display the Help view after clicking the help icon
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.help_id_3");
-
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
-
-		Color red = display.getSystemColor(SWT.COLOR_RED);
-		notifyText = new Text(control, SWT.WRAP| SWT.TRANSPARENT);
-		notifyText.setText(Constants.COMPARE_SAME_ALGORITHM);
-		notifyText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		notifyText.setForeground(red);
-		notifyText.setVisible(false);
-		ControlDecoration deco = new ControlDecoration(notifyText, SWT.RIGHT);
-		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage();
-		deco.setImage(image);
-		deco.setShowOnlyOnFocus(true);
-
-		new Label(control, SWT.NONE);
 
 		//First set of Algorithm Combinations
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
@@ -117,11 +100,19 @@ public class CompareAlgorithmPage extends WizardPage {
 		Object algorithmCombinationSecond = instanceListPage.getAlgorithmCombinations();
 		secondAlgorithmClass.setContentProvider(ArrayContentProvider.getInstance());
 		secondAlgorithmClass.setInput(algorithmCombinationSecond);
+		notifyText = new Text(control, SWT.WRAP| SWT.BORDER);
+		notifyText.setText(Constants.COMPARE_SAME_ALGORITHM);
+		notifyText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+		notifyText.setEditable(false);
+		ControlDecoration deco = new ControlDecoration(notifyText, SWT.RIGHT);
+		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage();
+		deco.setImage(image);
 
 		//First set of Instance details
 		this.firstInstancePropertiesPanel = new Group(this.control, SWT.NONE);
 		firstInstancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 		this.firstInstanceDetails = new StyledText(this.firstInstancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		this.firstInstanceDetails.setAlwaysShowScrollBars(false);
 
 		firstAlgorithmClass.addSelectionChangedListener(event -> {
 			String selectedAlgorithmSecond = getSelectedAlgorithmSecond();
@@ -133,14 +124,14 @@ public class CompareAlgorithmPage extends WizardPage {
 			CompareAlgorithmPage.this.firstInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmFirst)));
 			setHighlightFirst(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmFirst)));
 			if (!selectedAlgorithmFirst.equals(selectedAlgorithmSecond)) {
-				notifyText.setVisible(false);
 				deco.hide();
+				notifyText.setVisible(false);				
 			} else {
 				notifyText.setVisible(true);
 				deco.show();
 			}
 			
-//			compareHighlight();
+			compareHighlight();
 		});
 
 		GridLayout gridLayout = new GridLayout();
@@ -162,6 +153,10 @@ public class CompareAlgorithmPage extends WizardPage {
 		this.secondInstancePropertiesPanel = new Group(this.control, SWT.NONE);
 		secondInstancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		this.secondInstanceDetails = new StyledText(this.secondInstancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		this.secondInstanceDetails.setAlwaysShowScrollBars(false);
+		
+		//Tandem horizontal scrolling
+		handleVerticalScrolling(firstInstanceDetails, secondInstanceDetails);
 
 		secondAlgorithmClass.addSelectionChangedListener(event -> {
 			String selectedAlgorithmFirst = getSelectedAlgorithmFirst();
@@ -182,7 +177,7 @@ public class CompareAlgorithmPage extends WizardPage {
 			compareHighlight();
 		});
 
-		this.secondInstancePropertiesPanel.setLayout(gridLayout);
+		this.secondInstancePropertiesPanel.setLayout(new GridLayout());
 		GridData gridDataSecond = new GridData(GridData.FILL, GridData.FILL, true, true);
 		gridDataSecond.widthHint = 60;
 		gridDataSecond.horizontalSpan = 1;
@@ -191,7 +186,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		this.secondInstancePropertiesPanel.setToolTipText(Constants.INSTANCE_DETAILS_TOOLTIP);
 
 		this.secondInstanceDetails.setLayoutData(new GridData(GridData.FILL_BOTH));
-		this.secondInstanceDetails.setBounds(10, 20, 259, 207);
+		this.secondInstanceDetails.setBounds(10, 20, 259, 216);
 		this.secondInstanceDetails.setEditable(false);
 		this.secondInstanceDetails.setBackground(white);
 
@@ -206,6 +201,24 @@ public class CompareAlgorithmPage extends WizardPage {
 		setControl(sc);
 	}
 
+    // To automatically scroll the contents of one text if the scroll bar of the other text is scrolled.
+	private static void handleVerticalScrolling(StyledText leftInstanceDetails, StyledText rightInstanceDetails)
+	{
+	    ScrollBar left = leftInstanceDetails.getVerticalBar();
+	    ScrollBar right = rightInstanceDetails.getVerticalBar();
+
+	    left.addListener(SWT.Selection, e ->
+	    {
+	        int y = leftInstanceDetails.getTopPixel();
+	        rightInstanceDetails.setTopPixel(y);
+	    });
+	    right.addListener(SWT.Selection, e ->
+	    {
+	        int y = rightInstanceDetails.getTopPixel();
+	        leftInstanceDetails.setTopPixel(y);
+	    });
+	}
+	
 	private String getInstanceProperties(final InstanceClafer inst) {
 		final Map<String, String> algorithms = new HashMap<>();
 		for (InstanceClafer child : inst.getChildren()) {

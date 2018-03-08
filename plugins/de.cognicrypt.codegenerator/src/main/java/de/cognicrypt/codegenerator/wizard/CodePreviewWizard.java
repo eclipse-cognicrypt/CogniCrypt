@@ -3,6 +3,7 @@ package de.cognicrypt.codegenerator.wizard;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -34,6 +35,8 @@ public class CodePreviewWizard extends Wizard {
 		setDefaultPageImageDescriptor(image);
 
 		this.instanceListPage = instanceListPage;
+		//To hide the help icon
+		TrayDialog.setDialogHelpAvailable(false);
 	}
 
 	@Override

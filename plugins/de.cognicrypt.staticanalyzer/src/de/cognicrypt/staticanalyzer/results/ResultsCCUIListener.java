@@ -3,7 +3,6 @@ package de.cognicrypt.staticanalyzer.results;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -19,21 +18,23 @@ import boomerang.WeightedBoomerang;
 import boomerang.jimple.Statement;
 import boomerang.jimple.Val;
 import crypto.analysis.AnalysisSeedWithSpecification;
-import crypto.analysis.ClassSpecification;
 import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.EnsuredCryptSLPredicate;
 import crypto.analysis.IAnalysisSeed;
 import crypto.analysis.LocatedCrySLPredicate;
+import crypto.analysis.errors.AbstractError;
+import crypto.analysis.errors.ConstraintError;
+import crypto.analysis.errors.ForbiddenMethodError;
+import crypto.analysis.errors.IncompleteOperationError;
+import crypto.analysis.errors.TypestateError;
 import crypto.rules.CryptSLArithmeticConstraint;
 import crypto.rules.CryptSLComparisonConstraint;
 import crypto.rules.CryptSLComparisonConstraint.CompOp;
 import crypto.rules.CryptSLConstraint;
-import crypto.rules.CryptSLMethod;
 import crypto.rules.CryptSLObject;
 import crypto.rules.CryptSLPredicate;
 import crypto.rules.CryptSLSplitter;
 import crypto.rules.CryptSLValueConstraint;
-import crypto.rules.TransitionEdge;
 import crypto.typestate.CallSiteWithParamIndex;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.Constants;
@@ -44,7 +45,9 @@ import soot.SootMethod;
 import soot.Type;
 import soot.Value;
 import soot.ValueBox;
+import soot.jimple.AssignStmt;
 import soot.jimple.Constant;
+import soot.jimple.Stmt;
 import soot.jimple.internal.JAssignStmt;
 import sync.pds.solver.nodes.Node;
 import typestate.TransitionFunction;
@@ -74,44 +77,47 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	@Override
-	public void callToForbiddenMethod(final ClassSpecification arg0, final Statement location, final List<CryptSLMethod> alternatives) {
+	public void reportError(AbstractError error) {
+		String message = "";
+		if (error instanceof ConstraintError) {
+			ConstraintError consError = (ConstraintError) error;
+			message = evaluateBrokenConstraint(consError.getExtractedValues(), consError.getBrokenConstraint(), consError.getErrorLocation());
+		} else if (error instanceof ForbiddenMethodError) {
+			ForbiddenMethodError err = (ForbiddenMethodError) error;
+			message = callToForbiddenMethod(err.getErrorLocation().getUnit().get().getInvokeExpr().getMethod(), err.getAlternatives());
+		} else if (error instanceof TypestateError) {
+			TypestateError err = (TypestateError) error;
+			message = typestateErrorAt(err.getErrorLocation().getMethod(), err.getExpectedMethodCalls());
+		} else if (error instanceof IncompleteOperationError) {
+			IncompleteOperationError err = (IncompleteOperationError) error;
+			message = typestateErrorEndOfLifeCycle(err.getErrorVariable(), err.getExpectedMethodCalls());
+		}
+		this.markerGenerator.addMarker(unitToResource(error.getErrorLocation()), error.getErrorLocation().getUnit().get().getJavaSourceStartLineNumber(), message);
+	}
+
+	public String callToForbiddenMethod(final SootMethod foundCall, final Collection<SootMethod> alternatives) {
 		final StringBuilder msg = new StringBuilder();
 		msg.append("Detected call to forbidden method");
-		SootMethod method = location.getUnit().get().getInvokeExpr().getMethod();
-		String methodDecl = method.getSubSignature();
-		msg.append(
-			methodDecl.substring(methodDecl.indexOf(" ")).replace("<init>", method.getDeclaringClass().getShortJavaStyleName()));
+		String methodDecl = foundCall.getSubSignature();
+		msg.append(methodDecl.substring(methodDecl.indexOf(" ")).replace("<init>", foundCall.getDeclaringClass().getShortJavaStyleName()));
 		if (!alternatives.isEmpty()) {
 			msg.append(". Instead, call method ");
-			for (final CryptSLMethod alt : alternatives) {
-				final String methodName = alt.getMethodName();
-				msg.append(methodName.substring(methodName.lastIndexOf(".") + 1));
-				msg.append("(");
-				for (final Entry<String, String> pars : alt.getParameters()) {
-					msg.append(pars.getValue());
-					msg.append(", ");
-				}
-				msg.replace(msg.length() - 2, msg.length(), ")");
+			for (final SootMethod alt : alternatives) {
+				String altMethodDecl = alt.getSubSignature();
+				msg.append(altMethodDecl.substring(altMethodDecl.indexOf(" ")).replace("<init>", alt.getDeclaringClass().getShortJavaStyleName()));
 			}
 			msg.append(".");
 		}
-		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
+		return msg.toString();
 	}
 
-	@Override
-	public void constraintViolation(final AnalysisSeedWithSpecification seed, final ISLConstraint brokenConstraint, final Statement location) {
-		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(),
-			evaluateBrokenConstraint(seed, brokenConstraint, location));
-	}
-
-	private String evaluateBrokenConstraint(AnalysisSeedWithSpecification seed, final ISLConstraint brokenConstraint, Statement location) {
+	private String evaluateBrokenConstraint(Multimap<CallSiteWithParamIndex, Statement> extractedValues, final ISLConstraint brokenConstraint, Statement location) {
 		StringBuilder msg = new StringBuilder();
 		if (brokenConstraint instanceof CryptSLPredicate) {
 			CryptSLPredicate brokenPred = (CryptSLPredicate) brokenConstraint;
 
 			switch (brokenPred.getPredName()) {
 				case "neverTypeOf":
-
 					if (location.getUnit().get() instanceof JAssignStmt) {
 						msg.append("Variable ");
 						msg.append(((JAssignStmt) location.getUnit().get()).getLeftOp());
@@ -124,7 +130,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 					break;
 			}
 		} else if (brokenConstraint instanceof CryptSLValueConstraint) {
-			return evaluateValueConstraint(seed, (CryptSLValueConstraint) brokenConstraint, location);
+			return evaluateValueConstraint(extractedValues, (CryptSLValueConstraint) brokenConstraint, location);
 		} else if (brokenConstraint instanceof CryptSLArithmeticConstraint) {
 			final CryptSLArithmeticConstraint brokenArthConstraint = (CryptSLArithmeticConstraint) brokenConstraint;
 			msg.append(brokenArthConstraint.getLeft());
@@ -145,17 +151,17 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			final ISLConstraint rightSide = cryptSLConstraint.getRight();
 			switch (cryptSLConstraint.getOperator()) {
 				case and:
-					msg.append(evaluateBrokenConstraint(seed, leftSide, location));
+					msg.append(evaluateBrokenConstraint(extractedValues, leftSide, location));
 					msg.append(" or ");
-					msg.append(evaluateBrokenConstraint(seed, rightSide, location));
+					msg.append(evaluateBrokenConstraint(extractedValues, rightSide, location));
 					break;
 				case implies:
-					msg.append(evaluateBrokenConstraint(seed, rightSide, location));
+					msg.append(evaluateBrokenConstraint(extractedValues, rightSide, location));
 					break;
 				case or:
-					msg.append(evaluateBrokenConstraint(seed, leftSide, location));
+					msg.append(evaluateBrokenConstraint(extractedValues, leftSide, location));
 					msg.append(" and ");
-					msg.append(evaluateBrokenConstraint(seed, rightSide, location));
+					msg.append(evaluateBrokenConstraint(extractedValues, rightSide, location));
 					break;
 				default:
 					break;
@@ -180,14 +186,20 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 	}
 
-	private String evaluateValueConstraint(AnalysisSeedWithSpecification seed, final CryptSLValueConstraint brokenConstraint, Statement location) {
+	private String evaluateValueConstraint(Multimap<CallSiteWithParamIndex, Statement> extractedValues, final CryptSLValueConstraint brokenConstraint, Statement location) {
 		CryptSLObject crySLVar = brokenConstraint.getVar();
-		StringBuilder msg = new StringBuilder(extractVarName(seed, location, crySLVar));
+		StringBuilder msg = new StringBuilder(extractVarName(extractedValues, location, crySLVar));
 
 		msg.append(" should be any of ");
 		CryptSLSplitter splitter = brokenConstraint.getVar().getSplitter();
 		if (splitter != null) {
-			String[] splitValues = Utils.filterQuotes(location.getUnit().get().getInvokeExpr().getUseBoxes().get(0).getValue().toString()).split(splitter.getSplitter());
+			Stmt stmt = location.getUnit().get();
+			String[] splitValues;
+			if (stmt instanceof AssignStmt) {
+				splitValues = Utils.filterQuotes(((AssignStmt) stmt).getRightOp().toString()).split(splitter.getSplitter());
+			} else {
+				splitValues = Utils.filterQuotes(stmt.getInvokeExpr().getUseBoxes().get(0).getValue().toString()).split(splitter.getSplitter());
+			}
 			if (splitValues.length >= splitter.getIndex()) {
 				for (int i = 0; i < splitter.getIndex(); i++) {
 					msg.append(splitValues[i]);
@@ -208,13 +220,21 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		return msg.append('}').toString();
 	}
 
-	private String extractVarName(AnalysisSeedWithSpecification seed, Statement location, CryptSLObject crySLVar) {
+	private String extractVarName(Multimap<CallSiteWithParamIndex, Statement> extractedValues, Statement location, CryptSLObject crySLVar) {
 		StringBuilder msg = new StringBuilder();
-		for (ValueBox par : location.getUnit().get().getInvokeExpr().getUseBoxes()) {
+		Stmt allocSite = location.getUnit().get();
+		if (allocSite instanceof AssignStmt) {
+			AssignStmt as = (AssignStmt) allocSite;
+			msg.append(Constants.VAR);
+			msg.append(as.getLeftOp().toString());
+			return msg.toString();
+		}
+
+		for (ValueBox par : allocSite.getInvokeExpr().getUseBoxes()) {
 			Value value = par.getValue();
 			if (!(value instanceof Constant)) {
 				boolean neverFound = true;
-				for (CallSiteWithParamIndex a : seed.getExtractedValues().keySet()) {
+				for (CallSiteWithParamIndex a : extractedValues.keySet()) {
 					if (a.getVarName().equals(crySLVar.getVarName())) {
 						if (a.fact().value().getType().equals(par.getValue().getType())) {
 							String varName = par.getValue().toString();
@@ -264,7 +284,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			Statement stmt = null;
 			if (pred instanceof LocatedCrySLPredicate) {
 				stmt = ((LocatedCrySLPredicate) pred).getLocation();
-				msg.append(extractVarName(spec, stmt, (CryptSLObject) pred.getParameters().get(0)));
+				msg.append(extractVarName(spec.getExtractedValues(), stmt, (CryptSLObject) pred.getParameters().get(0)));
 			} else {
 				stmt = spec.stmt();
 				msg.append(Constants.VAR);
@@ -273,7 +293,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			msg.append(" was not properly ");
 			String predName = pred.getPredName();
 			int index = Utils.getFirstIndexofUCL(predName);
-			
+
 			if (index == -1) {
 				msg.append(predName);
 			} else {
@@ -291,12 +311,11 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		this.markerGenerator.addMarker(unitToResource(location.stmt()), location.stmt().getUnit().get().getJavaSourceStartColumnNumber(), "Predicate mismatch");
 	}
 
-	@Override
-	public void typestateErrorAt(final AnalysisSeedWithSpecification seed, final Statement location, final Collection<SootMethod> expectedCalls) {
+	public String typestateErrorAt(final SootMethod foundMethod, final Collection<SootMethod> expectedCalls) {
 		final StringBuilder msg = new StringBuilder();
 
 		msg.append("Unexpected method call to");
-		msg.append(location.getMethod());
+		msg.append(foundMethod);
 		msg.append(". Expected a call to  one of the following methods ");
 		final Set<String> altMethods = new HashSet<>();
 		for (final SootMethod expectedCall : expectedCalls) {
@@ -308,21 +327,18 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 		msg.deleteCharAt(msg.length() - 2);
 		msg.append(" here.");
-		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
+		return msg.toString();
 	}
 
-	@Override
-	public void typestateErrorEndOfLifeCycle(final AnalysisSeedWithSpecification seed, final Val value, final Statement location, Set<TransitionEdge> expectedCalls) {
+	public String typestateErrorEndOfLifeCycle(final Val value, Collection<SootMethod> expectedCalls) {
 		final StringBuilder msg = new StringBuilder();
 
 		msg.append("Missing call ");
-		//		msg.append(" object not completed. Expected call to ");
-		final Iterator<TransitionEdge> expectedIterator = expectedCalls.iterator();
+		final Iterator<SootMethod> expectedIterator = expectedCalls.iterator();
 		while (expectedIterator.hasNext()) {
-			final String methodName = expectedIterator.next().getLabel().get(0).getMethodName();
-
-			msg.append(methodName.substring(methodName.lastIndexOf('.') + 1));
-			msg.append("()");
+			SootMethod expCall = expectedIterator.next();
+			String methodDecl = expCall.getSubSignature();
+			msg.append(methodDecl.substring(methodDecl.indexOf(" ")).replace("<init>", expCall.getDeclaringClass().getShortJavaStyleName()));
 			if (expectedIterator.hasNext()) {
 				msg.append(" or ");
 			}
@@ -331,7 +347,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final String type = value.value().getType().toQuotedString();
 		msg.append(type.substring(type.lastIndexOf('.') + 1));
 		msg.append(".");
-		this.markerGenerator.addMarker(unitToResource(location), location.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
+		return msg.toString();
 	}
 
 	private IResource unitToResource(final Statement stmt) {
@@ -429,4 +445,5 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	public void seedStarted(final IAnalysisSeed arg0) {
 		// Nothing
 	}
+
 }

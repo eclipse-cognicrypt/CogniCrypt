@@ -2,19 +2,20 @@ abstract Enum
 
 //enum Padding
 abstract Padding: Enum 
+OneAndZeroesPadding: Padding
+ZeroPadding: Padding
+PKCS7Padding : Padding
 NoPadding : Padding
-PKCS5Padding : Padding
 
 //enum Mode
 abstract Mode : Enum
-ECB : Mode
 CBC : Mode
-PCBC: Mode
-CTR : Mode
-CTS : Mode
-CFB : Mode
 OFB : Mode
-GCM : Mode
+CFB : Mode
+CTR : Mode
+PCBC: Mode
+CTS : Mode
+
 
 abstract Algorithm
   name -> string
@@ -22,11 +23,19 @@ abstract Algorithm
   author -> string
   KeySize -> int
   BlockSize -> int
+
+abstract Cipher : Algorithm
+
+abstract SymmetricCipher : Cipher
+	keySize -> integer
+	[classPerformance = Fast]
+
+abstract SymmetricBlockCipher : SymmetricCipher
   
-[name = Algo]
-[description = This is description]
+[name = Final]
+[description = This is final clafer generation with path into project]
 [Blocksize = 64]
-[Keysize1 = 213]
-[Keysize2 = 133-233]
+[Keysize1 = 64]
+[Keysize2 = 222-333]
 [mode = OFB|CFB]
-[Padding = ZeroPadding|PKCS7]
+[Padding = PKCS7|ZeroPadding]

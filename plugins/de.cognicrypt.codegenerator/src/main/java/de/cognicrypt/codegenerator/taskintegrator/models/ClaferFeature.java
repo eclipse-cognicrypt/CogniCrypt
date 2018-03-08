@@ -210,7 +210,9 @@ public class ClaferFeature implements Serializable {
 				strRepresentation.append(featureConstraint.toString());
 			}
 
-			strRepresentation.append("\n");
+			if (!getFeatureProperties().isEmpty() || !getFeatureConstraints().isEmpty()) {
+				strRepresentation.append("\n");
+			}
 
 		}
 		

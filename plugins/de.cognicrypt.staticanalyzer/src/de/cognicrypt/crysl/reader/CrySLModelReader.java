@@ -56,6 +56,7 @@ import crypto.rules.StateMachineGraph;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.Constants;
 import de.cognicrypt.staticanalyzer.Utils;
 import de.darmstadt.tu.crossing.CryptSL.ui.internal.CryptSLActivator;
 import de.darmstadt.tu.crossing.cryptSL.ArithmeticExpression;
@@ -116,7 +117,10 @@ public class CrySLModelReader {
 			if (!"cryptsl".equals(extension) || exceptions.contains(fileName)) { //|| !fileName.contains("Signature.")) {  
 				continue;
 			}
-			final Resource resource = resourceSet.getResource(URI.createPlatformResourceURI(rulesFolder.toPortableString() + "\\" + fileName, true), true);
+			final Resource resource = resourceSet.getResource(
+					URI.createPlatformResourceURI(
+							rulesFolder.toPortableString() + Constants.OUTER_FILE_SEPARATOR + fileName, true),
+					true);
 			EcoreUtil.resolveAll(resourceSet);
 			final EObject eObject = resource.getContents().get(0);
 			final Domainmodel dm = (Domainmodel) eObject;

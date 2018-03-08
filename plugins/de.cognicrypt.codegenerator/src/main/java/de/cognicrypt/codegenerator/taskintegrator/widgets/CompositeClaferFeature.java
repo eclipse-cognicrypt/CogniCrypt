@@ -18,7 +18,7 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.ClaferFeatureDialog;
 
 
-public class CompositeGranularUIForClaferFeature extends Composite {
+public class CompositeClaferFeature extends Composite {
 	private ClaferFeature claferFeature;
 	private int yAxisValue = 40; // begin at 40 for the "top" value.
 
@@ -26,7 +26,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 	 * Create the composite.
 	 * @param parent
 	 */
-	public CompositeGranularUIForClaferFeature(Composite parent, ClaferFeature claferFeatureParam) {
+	public CompositeClaferFeature(Composite parent, ClaferFeature claferFeatureParam) {
 		super(parent, SWT.BORDER);
 		// set the clafer feature first.
 		setClaferFeature(claferFeatureParam);

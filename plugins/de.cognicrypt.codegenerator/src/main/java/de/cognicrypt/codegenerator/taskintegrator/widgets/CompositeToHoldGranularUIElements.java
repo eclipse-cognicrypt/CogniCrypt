@@ -49,7 +49,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	}
 	
 	public void addGranularClaferUIElements(ClaferFeature claferFeature){
-		new CompositeGranularUIForClaferFeature((Composite) this.getContent(), claferFeature);
+		new CompositeClaferFeature((Composite) this.getContent(), claferFeature);
 		setMinSize(((Composite) getContent()).computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 

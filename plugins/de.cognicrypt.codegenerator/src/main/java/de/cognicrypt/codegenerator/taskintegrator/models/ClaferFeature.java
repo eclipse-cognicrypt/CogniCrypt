@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.Constants.FeatureType;
@@ -92,7 +93,7 @@ public class ClaferFeature implements Serializable {
 	}
 	
 	/**
-	 * @return true if the feature has non-empty properties, false otherwise
+	 * @return <code>true</code> if the feature has non-empty properties, <code>false</code> otherwise
 	 */
 	public boolean hasProperties() {
 		if (!featureProperties.isEmpty()) {
@@ -106,6 +107,25 @@ public class ClaferFeature implements Serializable {
 		return false;
 	}
 	
+	/**
+	 * check whether the {@link ClaferFeature} has properties meeting a given constraint
+	 * 
+	 * @param predicate
+	 *        {@link Predicate} that has to be satisfied by at least one {@link FeatureProperty}
+	 * @return <code>true</code> if the feature has non-empty properties that satisfy the predicate, <code>false</code> otherwise
+	 */
+	public boolean hasPropertiesSatisfying(Predicate<? super FeatureProperty> predicate) {
+		if (!featureProperties.isEmpty()) {
+			// check for a non-empty feature property
+			for (FeatureProperty featureProperty : getFeatureProperties()) {
+				if (!featureProperty.getPropertyName().isEmpty() && predicate.test(featureProperty)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * @param needle
 	 *        {@link String} name of the property searched for
@@ -210,7 +230,9 @@ public class ClaferFeature implements Serializable {
 				strRepresentation.append(featureConstraint.toString());
 			}
 
-			strRepresentation.append("\n");
+			if (!getFeatureProperties().isEmpty() || !getFeatureConstraints().isEmpty()) {
+				strRepresentation.append("\n");
+			}
 
 		}
 		

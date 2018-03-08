@@ -438,7 +438,7 @@ public class Constants {
 	
 	
 	public static final String[] CLAFER_RESERVED_WORDS = { "abstract", "all", "assert", "disj", "else", "enum", "if", "in", "lone", "max", "maximize", "min", "minimize", "mux", "no", "not", "one", "opt", "or", "product", "some", "sum", "then", "xor" };
-	public static final String[] CLAFER_PRIMITIVE_TYPES = { "integer", "double", "real", "string" };
+	public static final String[] CLAFER_PRIMITIVE_TYPES = { "integer", "int", "double", "real", "string" };
 	
 	
 	

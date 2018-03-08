@@ -2,6 +2,7 @@ package de.cognicrypt.codegenerator.wizard;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,7 +14,9 @@ import java.util.Map;
 import javax.xml.transform.TransformerException;
 
 import org.clafer.instance.InstanceClafer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -31,8 +34,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
@@ -145,6 +151,8 @@ public class DefaultAlgorithmPage extends WizardPage {
 		});
 		this.code.setText(compileCodePreview());
 		this.code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
+		this.code.setAlwaysShowScrollBars(false);
+ 
 
 		//this checkbox should be checked, to move to the next page.
 		defaultAlgorithmCheckBox = new Button(control, SWT.CHECK);
@@ -173,6 +181,13 @@ public class DefaultAlgorithmPage extends WizardPage {
 		}
 		deco.setImage(image);
 		deco.setShowOnlyOnFocus(false);
+		
+		
+//		IWorkbenchPart workbenchPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart(); 
+//		IFile file = (IFile) workbenchPart.getSite().getPage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
+//		if (file == null) throw new FileNotFoundException();
+//		String content = IOUtils.toString(file.getContents(), file.getCharset());
+		
 
 		sc.setContent(this.control);
 		sc.setExpandHorizontal(true);
@@ -181,6 +196,16 @@ public class DefaultAlgorithmPage extends WizardPage {
 		setControl(sc);
 	}
 
+	public String getCurrentEditorContent() {
+	    final IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+	        .getActiveEditor();
+	    if (!(editor instanceof ITextEditor)) return null;
+	    ITextEditor ite = (ITextEditor)editor;
+	    IDocument doc = ite.getDocumentProvider().getDocument(ite.getEditorInput());
+	    return doc.get();
+	}
+	
+	
 	private String compileCodePreview() {
 		final CodeGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(), this.taskSelectionPage.getSelectedTask().getXslFile());
 		final String claferPreviewPath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;

@@ -88,6 +88,7 @@ public class CodePreviewPage extends WizardPage {
 		});
 		this.code.setText(instanceListPage.compileCodePreview());
 		this.code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
+		this.code.setAlwaysShowScrollBars(false);
 
 		sc.setContent(this.control);
 		sc.setExpandHorizontal(true);

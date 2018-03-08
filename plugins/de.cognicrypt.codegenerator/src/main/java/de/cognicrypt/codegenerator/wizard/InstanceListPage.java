@@ -244,6 +244,7 @@ public class InstanceListPage extends WizardPage {
 		this.instanceDetails.setEditable(false);
 		Color white = display.getSystemColor(SWT.COLOR_WHITE);
 		this.instanceDetails.setBackground(white);
+		this.instanceDetails.setAlwaysShowScrollBars(false);
 
 		// Initially instance properties panel will be hidden		
 		this.instancePropertiesPanel.setVisible(false);
@@ -259,7 +260,7 @@ public class InstanceListPage extends WizardPage {
 		//Button to View the code that will be generated into the Java project
 		InstanceListPage instanceListPage = this;
 		Button codePreviewButton = new Button(composite, SWT.NONE);
-		GridData gd_codePreviewButton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		GridData gd_codePreviewButton = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_codePreviewButton.widthHint = 149;
 		codePreviewButton.setLayoutData(gd_codePreviewButton);
 		codePreviewButton.setText(Constants.LABEL_CODE_PREVIEW_BUTTON);
@@ -273,7 +274,7 @@ public class InstanceListPage extends WizardPage {
 					@Override
 					protected void configureShell(Shell newShell) {
 						super.configureShell(newShell);
-						newShell.setSize(650, 500);
+						//newShell.setSize(650, 500);
 					}
 				};
 				dialog.open();
@@ -289,7 +290,7 @@ public class InstanceListPage extends WizardPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {}
 		});
-		compareAlgorithmButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+		compareAlgorithmButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		compareAlgorithmButton.setText(Constants.LABEL_COMPARE_ALGORITHMS_BUTTON);
 		compareAlgorithmButton.addListener(SWT.Selection, new Listener() {
 

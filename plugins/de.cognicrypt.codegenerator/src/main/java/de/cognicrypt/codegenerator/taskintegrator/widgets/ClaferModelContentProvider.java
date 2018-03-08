@@ -49,6 +49,13 @@ public class ClaferModelContentProvider implements ITreeContentProvider {
 		return null;
 	}
 
+	/**
+	 * get the elements when setInput is called, can only be called on {@link ClaferModel} in this ContentProvider
+	 * 
+	 * @param inputElement
+	 *        an input element of type {@link ClaferModel}
+	 * @return returns the Clafer features of the model as {@link Object}[], empty {@link Object}[] if input type wrong
+	 */
 	@Override
 	public Object[] getElements(Object inputElement) {
 		if (inputElement instanceof ClaferModel) {
@@ -63,20 +70,27 @@ public class ClaferModelContentProvider implements ITreeContentProvider {
 		return new Object[] {};
 	}
 
+	/**
+	 * @return always returns null as the ClaferModel only links downwards
+	 */
 	@Override
 	public Object getParent(Object arg0) {
 		// return null if the parent cannot be computed
 		return null;
 	}
 
+	/**
+	 * @return <code>true</code> for {@link ClaferFeature}s that have properties matching the propertyFilter
+	 */
 	@Override
 	public boolean hasChildren(Object inputElement) {
-		if (inputElement instanceof ClaferModel) {
-			ClaferModel inputModel = (ClaferModel) inputElement;
-			return !inputModel.getClaferModel().isEmpty();
-		} else if (inputElement instanceof ClaferFeature) {
+		if (inputElement instanceof ClaferFeature) {
 			ClaferFeature inputFeature = (ClaferFeature) inputElement;
-			return inputFeature.hasProperties();
+			if (propertyFilter != null) {
+				return inputFeature.hasPropertiesSatisfying(propertyFilter);
+			} else {
+				return inputFeature.hasProperties();
+			}
 		}
 		return false;
 	}

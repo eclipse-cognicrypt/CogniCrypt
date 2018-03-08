@@ -17,16 +17,16 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.ClaferFeatureDialog;
 
+public class CompositeClaferFeature extends Composite {
 
-public class CompositeGranularUIForClaferFeature extends Composite {
 	private ClaferFeature claferFeature;
-	private int yAxisValue = 40; // begin at 40 for the "top" value.
 
 	/**
 	 * Create the composite.
+	 * 
 	 * @param parent
 	 */
-	public CompositeGranularUIForClaferFeature(Composite parent, ClaferFeature claferFeatureParam) {
+	public CompositeClaferFeature(Composite parent, ClaferFeature claferFeatureParam) {
 		super(parent, SWT.BORDER);
 		// set the clafer feature first.
 		setClaferFeature(claferFeatureParam);
@@ -36,26 +36,24 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		setLayoutData(gridData);
 
 		setLayout(new GridLayout(2, false));
-		
 
 		Group grpClaferFeature = new Group(this, SWT.NONE);
 		grpClaferFeature.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
 		grpClaferFeature.setText("Variability Construct");
 		grpClaferFeature.setLayout(new GridLayout(4, false));
-		
+
 		Button btnModify = new Button(this, SWT.NONE);
 		Button btnDelete = new Button(this, SWT.NONE);
 
 		Label lblType = new Label(grpClaferFeature, SWT.NONE);
 		lblType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
-		
-		if(claferFeature.getFeatureType().toString().equals(Constants.FeatureType.ABSTRACT.toString().toLowerCase())){
+
+		if (claferFeature.getFeatureType().toString().equals(Constants.FeatureType.ABSTRACT.toString().toLowerCase())) {
 			lblType.setText("Class");
-		} else if(claferFeature.getFeatureType().toString().toLowerCase().equals(Constants.FeatureType.CONCRETE.toString().toLowerCase())){
+		} else if (claferFeature.getFeatureType().toString().toLowerCase().equals(Constants.FeatureType.CONCRETE.toString().toLowerCase())) {
 			lblType.setText("Instance");
 		}
-		
-		
+
 		Text txtFeatureName;
 		txtFeatureName = new Text(grpClaferFeature, SWT.BORDER);
 		txtFeatureName.setEditable(false);
@@ -63,8 +61,7 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 		gdFeatureName.widthHint = 0;
 		txtFeatureName.setLayoutData(gdFeatureName);
 		txtFeatureName.setText(claferFeature.getFeatureName());
-		
-		
+
 		if (!claferFeature.getFeatureInheritance().isEmpty()) {
 			Label lblInheritsFrom = new Label(grpClaferFeature, SWT.NONE);
 
@@ -84,8 +81,8 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 			txtFeatureInheritance.setLayoutData(gdFeatureInheritance);
 			txtFeatureInheritance.setText(claferFeature.getFeatureInheritance());
 		}
-		
-		if(claferFeature.getFeatureProperties().size()!=0){
+
+		if (claferFeature.getFeatureProperties().size() != 0) {
 			Group grpClaferFeatureProperties = new Group(this, SWT.NONE);
 			grpClaferFeatureProperties.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 2, 1));
 			grpClaferFeatureProperties.setLayout(new GridLayout(1, false));
@@ -96,8 +93,8 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 			GridData gdPropertiesComposite = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
 			smallerElements.setLayoutData(gdPropertiesComposite);
 		}
-		
-		if(claferFeature.getFeatureConstraints().size()!=0){
+
+		if (claferFeature.getFeatureConstraints().size() != 0) {
 			Group grpClaferFeatureConstraints = new Group(this, SWT.NONE);
 			grpClaferFeatureConstraints.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 2, 1));
 			grpClaferFeatureConstraints.setText("Clafer feature constraints");
@@ -108,9 +105,10 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 			GridData gdConstraintsComposite = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
 			smallerElements.setLayoutData(gdConstraintsComposite);
 		}
-		
+
 		btnModify.setText("Modify");
 		btnModify.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				CompositeToHoldGranularUIElements comp = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent());
@@ -146,18 +144,18 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 
 		btnDelete.setText("Delete");
 		btnDelete.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				
-				MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING
-		            | SWT.YES | SWT.NO);
+
+				MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
 				confirmationMessageBox.setMessage("This information will be lost. Do you really want to delete?");
 				confirmationMessageBox.setText("Deleting Clafer Feature");
-		        int response = confirmationMessageBox.open();
-		        if (response == SWT.YES){
-		        	((CompositeToHoldGranularUIElements) btnDelete.getParent().getParent().getParent()).deleteClaferFeature(claferFeature);// (1) CompositeGranularUIForClaferFeature, (2) composite inside (3) CompositeToHoldGranularUIElements
-		        }
-		          
+				int response = confirmationMessageBox.open();
+				if (response == SWT.YES) {
+					((CompositeToHoldGranularUIElements) btnDelete.getParent().getParent().getParent()).deleteClaferFeature(claferFeature);
+				}
+
 			}
 		});
 	}
@@ -175,7 +173,8 @@ public class CompositeGranularUIForClaferFeature extends Composite {
 	}
 
 	/**
-	 * @param claferFeature the claferFeature to set
+	 * @param claferFeature
+	 *        the claferFeature to set
 	 */
 	private void setClaferFeature(ClaferFeature claferFeature) {
 		this.claferFeature = claferFeature;

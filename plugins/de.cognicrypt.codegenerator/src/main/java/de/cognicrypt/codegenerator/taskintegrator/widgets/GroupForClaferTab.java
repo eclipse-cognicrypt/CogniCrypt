@@ -25,7 +25,6 @@ public class GroupForClaferTab extends Group {
 	private ArrayList<String> operandItems;
 	ClaferModel claferModel;
 
-	// FIXME the parameter claferModel seems to be unused
 	public GroupForClaferTab(Composite parent, int style, Answer answer, ClaferModel claferModel) {
 		super(parent, style);
 		setClaferModel(claferModel);

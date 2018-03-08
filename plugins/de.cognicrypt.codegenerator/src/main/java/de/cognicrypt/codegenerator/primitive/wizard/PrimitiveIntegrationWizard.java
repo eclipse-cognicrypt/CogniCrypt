@@ -168,7 +168,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		 *
 		 */
 
-		ClaferGenerator.copyBaseFile();
+		ClaferGenerator.copyClaferHeader();
 		for (IWizardPage page : getPages()) {
 			if (page instanceof PrimitiveQuestionnairePage) {
 				PrimitiveQuestionnairePage questionnairePage = (PrimitiveQuestionnairePage) page;

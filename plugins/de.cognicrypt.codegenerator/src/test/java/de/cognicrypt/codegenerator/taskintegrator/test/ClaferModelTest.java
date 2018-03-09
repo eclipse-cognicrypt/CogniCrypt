@@ -22,6 +22,7 @@ import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 public class ClaferModelTest {
 
 	public static final String testFileFolder = "src/test/resources/taskintegrator/";
+	public static final ArrayList<String> testFiles = new ArrayList<>();
 
 	@Test
 	public final void testImplementMissingFeatures() {
@@ -128,6 +129,10 @@ public class ClaferModelTest {
 		claferModel.implementMissingFeatures(algoFeature);
 		claferModel.toFile(temporaryCfrFile);
 		assertTrue(ClaferModel.compile(temporaryCfrFile));
+
+		// remember for clean-up
+		testFiles.add("testFile2_tmp.cfr");
+		testFiles.add("testFile2_tmp.js");
 	}
 
 	@Test
@@ -210,19 +215,16 @@ public class ClaferModelTest {
 		ClaferModel modelFromBinaries = ClaferModel.createFromBinaries(testFileFolder + "serializationTest.tmp");
 		assertEquals(1, modelFromBinaries.getClaferModel().size());
 		assertEquals("A", modelFromBinaries.getClaferModel().get(0).getFeatureName());
+
+		// remember for clean-up
+		testFiles.add("serializationTest.tmp");
 	}
 
 	@AfterClass
 	public final static void deleteFiles() throws IOException {
-		// gather all files to be deleted
-		ArrayList<String> temporaryFiles = new ArrayList<>();
-		temporaryFiles.add(testFileFolder + "testFile2_tmp.cfr");
-		temporaryFiles.add(testFileFolder + "testFile2_tmp.js");
-		temporaryFiles.add(testFileFolder + "serializationTest.tmp");
-
 		// generate the paths and delete the files
-		for (String filename : temporaryFiles) {
-			Path path = Paths.get(filename);
+		for (String filename : testFiles) {
+			Path path = Paths.get(testFileFolder + filename);
 			if (Files.exists(path)) {
 				Files.delete(path);
 			}

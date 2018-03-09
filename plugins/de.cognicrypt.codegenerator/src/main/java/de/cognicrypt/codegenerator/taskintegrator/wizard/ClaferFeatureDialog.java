@@ -27,7 +27,7 @@ import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.Constants.FeatureType;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
-import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 
 public class ClaferFeatureDialog extends TitleAreaDialog {
@@ -262,7 +262,7 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 	}
 
 	private void addClaferProperty() {
-		FeatureProperty featureProperty = new FeatureProperty("", "");
+		ClaferProperty featureProperty = new ClaferProperty("", "");
 		featuresComposite.addFeatureProperty(featureProperty, true, claferModel);
 		resultClafer.setFeatureProperties(featuresComposite.getFeatureProperties());
 	}

@@ -203,13 +203,13 @@ public class ClaferModelTest {
 		cfrFeatureA.setFeatureProperties(featureProperties);
 		claferModel.add(cfrFeatureA);
 		
-		if (!claferModel.toBinary("t.tmp")) {
+		if (!claferModel.toBinary(testFileFolder + "serializationTest.tmp")) {
 			fail("Serialization failed");
 		}
 
-		ClaferModel modelFromBinaries = ClaferModel.createFromBinaries("t.tmp");
-		
-		fail("Not yet implemented");
+		ClaferModel modelFromBinaries = ClaferModel.createFromBinaries(testFileFolder + "serializationTest.tmp");
+		assertEquals(1, modelFromBinaries.getClaferModel().size());
+		assertEquals("A", modelFromBinaries.getClaferModel().get(0).getFeatureName());
 	}
 
 	@AfterClass
@@ -218,11 +218,14 @@ public class ClaferModelTest {
 		ArrayList<String> temporaryFiles = new ArrayList<>();
 		temporaryFiles.add(testFileFolder + "testFile2_tmp.cfr");
 		temporaryFiles.add(testFileFolder + "testFile2_tmp.js");
+		temporaryFiles.add(testFileFolder + "serializationTest.tmp");
 
 		// generate the paths and delete the files
 		for (String filename : temporaryFiles) {
 			Path path = Paths.get(filename);
-			Files.delete(path);
+			if (Files.exists(path)) {
+				Files.delete(path);
+			}
 		}
 
 	}

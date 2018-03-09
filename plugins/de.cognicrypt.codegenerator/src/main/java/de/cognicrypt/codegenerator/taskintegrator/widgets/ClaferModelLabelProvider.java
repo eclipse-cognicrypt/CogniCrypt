@@ -5,7 +5,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
-import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 
 public class ClaferModelLabelProvider implements ILabelProvider {
 
@@ -36,8 +36,8 @@ public class ClaferModelLabelProvider implements ILabelProvider {
 		if (inputElement instanceof ClaferFeature) {
 			ClaferFeature inputFeature = (ClaferFeature) inputElement;
 			return inputFeature.toString(false);
-		} else if (inputElement instanceof FeatureProperty) {
-			FeatureProperty inputProperty = (FeatureProperty) inputElement;
+		} else if (inputElement instanceof ClaferProperty) {
+			ClaferProperty inputProperty = (ClaferProperty) inputElement;
 			return inputProperty.toString();
 		}
 		return null;

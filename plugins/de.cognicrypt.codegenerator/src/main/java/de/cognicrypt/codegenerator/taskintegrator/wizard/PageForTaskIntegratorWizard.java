@@ -22,10 +22,6 @@ import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeBrowseForFile
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 
-/**
- * @author rajiv
- *
- */
 public class PageForTaskIntegratorWizard extends WizardPage {
 
 	private CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard = null;
@@ -178,12 +174,12 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	public void checkIfModeSelectionPageIsComplete() {		
 		boolean errorOnFileWidgets = false;
 		// The first child of the composite is a group. Get the children of this group to iterated over.
-		for (Control control : ((Group)getCompositeChoiceForModeOfWizard().getChildren()[0]).getChildren()) {
+		for (Control control : ((Composite) getCompositeChoiceForModeOfWizard().getChildren()[0]).getChildren()) {
 			// Check if the child is an instance of group and is visible.
 			if (control instanceof Group && control.isVisible()) {
 				
 				// Get the children of this group and iterate over them. These are the widgets that get the file data. This loop generalizes for all these widgets.
-				for (Control subGroup : ((Group)control).getChildren()) {					
+				for (Control subGroup : ((Composite) control).getChildren()) {
 					if (subGroup instanceof CompositeBrowseForFile) {
 						CompositeBrowseForFile tempVaraiable = (CompositeBrowseForFile) subGroup;
 						if ((tempVaraiable).getDecFilePath().getDescriptionText().contains(Constants.ERROR)) {

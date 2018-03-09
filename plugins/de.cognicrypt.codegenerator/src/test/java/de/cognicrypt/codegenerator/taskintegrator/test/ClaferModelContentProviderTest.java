@@ -12,7 +12,7 @@ import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
-import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.ClaferModelContentProvider;
 
 public class ClaferModelContentProviderTest {
@@ -28,8 +28,8 @@ public class ClaferModelContentProviderTest {
 		ClaferFeature taskFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Task", "");
 		claferModel.add(taskFeature);
 
-		ArrayList<FeatureProperty> taskProperties = new ArrayList<>();
-		taskProperties.add(new FeatureProperty("description", "string"));
+		ArrayList<ClaferProperty> taskProperties = new ArrayList<>();
+		taskProperties.add(new ClaferProperty("description", "string"));
 
 		taskFeature.setFeatureProperties(taskProperties);
 

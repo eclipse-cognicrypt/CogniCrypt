@@ -22,10 +22,6 @@ import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeBrowseForFile
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 
-/**
- * @author rajiv
- *
- */
 public class PageForTaskIntegratorWizard extends WizardPage {
 
 	private CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard = null;

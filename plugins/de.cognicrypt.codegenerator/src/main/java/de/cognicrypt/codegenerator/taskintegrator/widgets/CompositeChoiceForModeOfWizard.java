@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
@@ -64,12 +63,11 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		setLayout(new GridLayout(1, false));
 		
 		// All the UI widgets
-		Group grpChooseTheMode = new Group(this, SWT.NONE);
-		grpChooseTheMode.setText("Choose the mode of this Wizard");
-		grpChooseTheMode.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		grpChooseTheMode.setLayout(new GridLayout(1, false));
+		Composite compositeChooseTheMode = new Composite(this, SWT.NONE);
+		compositeChooseTheMode.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		compositeChooseTheMode.setLayout(new GridLayout(1, false));
 		
-		Label lblNameOfTheTask = new Label(grpChooseTheMode, SWT.NONE);
+		Label lblNameOfTheTask = new Label(compositeChooseTheMode, SWT.NONE);
 		lblNameOfTheTask.setText("Name of the Task ");
 		
 		// Initialize the decorator for the label for the text box. 
@@ -80,46 +78,44 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_TASK_NAME);
 		getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
 		
-		Text txtForTaskName = new Text(grpChooseTheMode, SWT.BORDER);
+		Text txtForTaskName = new Text(compositeChooseTheMode, SWT.BORDER);
 		txtForTaskName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		txtForTaskName.setTextLimit(Constants.SINGLE_LINE_TEXT_BOX_LIMIT);
 		
-		Label lblDescriptionOfThe = new Label(grpChooseTheMode, SWT.NONE);
+		Label lblDescriptionOfThe = new Label(compositeChooseTheMode, SWT.NONE);
 		lblDescriptionOfThe.setText("Description of the Task :");
 		
-		setTxtDescriptionOfTask(new Text(grpChooseTheMode, SWT.BORDER | SWT.WRAP | SWT.MULTI));		
+		setTxtDescriptionOfTask(new Text(compositeChooseTheMode, SWT.BORDER | SWT.WRAP | SWT.MULTI));		
 		GridData gd_txtDescriptionOfTask = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_txtDescriptionOfTask.heightHint = 67;
 		getTxtDescriptionOfTask().setLayoutData(gd_txtDescriptionOfTask);
 		getTxtDescriptionOfTask().setTextLimit(Constants.MULTI_LINE_TEXT_BOX_LIMIT);
 		
-		Button btnCustomLibrary = new Button(grpChooseTheMode, SWT.CHECK);
+		Button btnCustomLibrary = new Button(compositeChooseTheMode, SWT.CHECK);
 		btnCustomLibrary.setText("Do you wish to use a custom library?");
 				
 		
-		Group grpContainerGroupForLibrary = new Group(grpChooseTheMode, SWT.NONE);
-		grpContainerGroupForLibrary.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		grpContainerGroupForLibrary.setText("Custom Library");
-		grpContainerGroupForLibrary.setVisible(false);
-		grpContainerGroupForLibrary.setLayout(new GridLayout(1, false));
+		Composite compositeContainerGroupForLibrary = new Composite(compositeChooseTheMode, SWT.NONE);
+		compositeContainerGroupForLibrary.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		compositeContainerGroupForLibrary.setVisible(false);
+		compositeContainerGroupForLibrary.setLayout(new GridLayout(1, false));
 		
-		CompositeBrowseForFile compLib = new CompositeBrowseForFile(grpContainerGroupForLibrary, SWT.NONE, Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK, new String[] { "*.jar" }, "Select file that contains the library", getTheLocalContainerPage());
+		CompositeBrowseForFile compLib = new CompositeBrowseForFile(compositeContainerGroupForLibrary, SWT.NONE, Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK, new String[] { "*.jar" }, "Select file that contains the library", getTheLocalContainerPage());
 		compLib.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		
-		Button btnDoYouWishToUseTheGuidedMode = new Button(grpChooseTheMode, SWT.CHECK);
+		Button btnDoYouWishToUseTheGuidedMode = new Button(compositeChooseTheMode, SWT.CHECK);
 		btnDoYouWishToUseTheGuidedMode.setText("Do you wish to use the guided mode?");
 		// Guided mode set by default.
 		btnDoYouWishToUseTheGuidedMode.setSelection(true);
 		getObjectForDataInNonGuidedMode().setGuidedModeChosen(btnDoYouWishToUseTheGuidedMode.getSelection());
 		
-		Group grpNonguidedMode = new Group(grpChooseTheMode, SWT.NONE);
-		grpNonguidedMode.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-		grpNonguidedMode.setText("Non-Guided mode");
-		grpNonguidedMode.setVisible(false);
-		grpNonguidedMode.setLayout(new GridLayout(1, false));
+		Composite compositeNonguidedMode = new Composite(compositeChooseTheMode, SWT.NONE);
+		compositeNonguidedMode.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		compositeNonguidedMode.setVisible(false);
+		compositeNonguidedMode.setLayout(new GridLayout(1, false));
 		
-		compCfr = new CompositeBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE, new String[] { "*.cfr" }, "Select cfr file that contains the Clafer features", getTheLocalContainerPage(), new Listener() {
+		compCfr = new CompositeBrowseForFile(compositeNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE, new String[] { "*.cfr" }, "Select cfr file that contains the Clafer features", getTheLocalContainerPage(), new Listener() {
 
 			@Override
 			public void handleEvent(Event arg0) {
@@ -155,21 +151,12 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 
 		compCfr.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
-		CompositeBrowseForFile compXsl = new CompositeBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE, new String[] { "*.xsl" }, "Select xsl file that contains the code details", getTheLocalContainerPage());
+		CompositeBrowseForFile compXsl = new CompositeBrowseForFile(compositeNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE, new String[] { "*.xsl" }, "Select xsl file that contains the code details", getTheLocalContainerPage());
 		compXsl.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		CompositeBrowseForFile compJson = new CompositeBrowseForFile(grpNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE, new String[] { "*.json" }, "Select json file that contains the high level questions", getTheLocalContainerPage());
+		CompositeBrowseForFile compJson = new CompositeBrowseForFile(compositeNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE, new String[] { "*.json" }, "Select json file that contains the high level questions", getTheLocalContainerPage());
 		compJson.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		layout();
-
-		/* TODO removed for the user study.
-		Button btnForceGuidedMode = new Button(grpNonguidedMode, SWT.CHECK);
-		btnForceGuidedMode.setBounds(10, 118, 142, Constants.UI_WIDGET_HEIGHT_NORMAL);
-		btnForceGuidedMode.setText("Force guided mode");*/	
-
-		// TODO removed for the user study.
-		//this.setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_FORCED,btnForceGuidedMode.getSelection());
-	
 		
 		// moved all the event listeners at the bottom.
 		btnDoYouWishToUseTheGuidedMode.addSelectionListener(new SelectionAdapter() {
@@ -177,7 +164,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				boolean tempSelectionStatus = btnDoYouWishToUseTheGuidedMode.getSelection();
 				// If the guided mode is selected, hide the widgets to get the location of the files required for the task.
-				grpNonguidedMode.setVisible(!tempSelectionStatus);
+				compositeNonguidedMode.setVisible(!tempSelectionStatus);
 				// Set the data value.
 				getObjectForDataInNonGuidedMode().setGuidedModeChosen(tempSelectionStatus);				
 				
@@ -200,7 +187,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 				// Show the widget to get the file data if the check box is selected.
 				getObjectForDataInNonGuidedMode().setCustomLibraryRequired(tempSelectionStatus);
 				// Set the data value.
-				grpContainerGroupForLibrary.setVisible(tempSelectionStatus);
+				compositeContainerGroupForLibrary.setVisible(tempSelectionStatus);
 				
 				// Check if the page can be completed.
 				getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();

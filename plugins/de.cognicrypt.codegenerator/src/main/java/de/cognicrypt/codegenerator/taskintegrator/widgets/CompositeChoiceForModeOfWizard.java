@@ -33,10 +33,6 @@ import de.cognicrypt.codegenerator.taskintegrator.wizard.PageForTaskIntegratorWi
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 
-/**
- * @author rajiv
- *
- */
 public class CompositeChoiceForModeOfWizard extends Composite {
 	private ModelAdvancedMode objectForDataInNonGuidedMode;
 	private Text txtDescriptionOfTask;

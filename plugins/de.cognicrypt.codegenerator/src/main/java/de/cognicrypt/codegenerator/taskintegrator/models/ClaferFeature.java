@@ -12,10 +12,6 @@ import java.util.function.Predicate;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.Constants.FeatureType;
 
-/**
- * @author rajiv
- *
- */
 public class ClaferFeature implements Serializable {
 
 	private static final long serialVersionUID = -6403607301359530383L;

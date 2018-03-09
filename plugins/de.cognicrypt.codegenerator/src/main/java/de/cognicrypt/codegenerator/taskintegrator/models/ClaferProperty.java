@@ -5,10 +5,6 @@ package de.cognicrypt.codegenerator.taskintegrator.models;
 
 import java.io.Serializable;
 
-/**
- * @author rajiv
- *
- */
 public class ClaferProperty implements Serializable {
 
 	private static final long serialVersionUID = -5360875525100852395L;

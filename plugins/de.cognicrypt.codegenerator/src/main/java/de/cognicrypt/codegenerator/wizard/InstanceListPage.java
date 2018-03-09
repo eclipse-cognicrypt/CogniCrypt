@@ -126,8 +126,7 @@ public class InstanceListPage extends WizardPage {
 		} else {
 			combo.setToolTipText("There are " + String.format("%d", variationCount) + " variations of the algorithm " + key);
 		}
-		//for compare algorithm page
-		setAlgorithmCombinations(algorithmClass.getInput());
+		
 
 		//Display help assist for the first instance in the combo box
 		new Label(control, SWT.NONE);
@@ -387,6 +386,10 @@ public class InstanceListPage extends WizardPage {
 			}
 			
 				backIcon.setEnabled(false);
+				
+				
+				//for compare algorithm page
+				setAlgorithmCombinations(tempAlgorithmGroup.keySet());
 
 			
 		});

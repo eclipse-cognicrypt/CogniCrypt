@@ -26,6 +26,7 @@ import crypto.analysis.errors.AbstractError;
 import crypto.analysis.errors.ConstraintError;
 import crypto.analysis.errors.ForbiddenMethodError;
 import crypto.analysis.errors.IncompleteOperationError;
+import crypto.analysis.errors.PredicateError;
 import crypto.analysis.errors.TypestateError;
 import crypto.rules.CryptSLArithmeticConstraint;
 import crypto.rules.CryptSLComparisonConstraint;
@@ -91,6 +92,9 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		} else if (error instanceof IncompleteOperationError) {
 			IncompleteOperationError err = (IncompleteOperationError) error;
 			message = typestateErrorEndOfLifeCycle(err.getErrorVariable(), err.getExpectedMethodCalls());
+		} else if (error instanceof PredicateError) {
+			PredicateError predErr = (PredicateError) error;
+			message = missingPredicates(predErr.getContradictedPredicate(), predErr.getExtractedValues());
 		}
 		this.markerGenerator.addMarker(unitToResource(error.getErrorLocation()), error.getErrorLocation().getUnit().get().getJavaSourceStartLineNumber(), message);
 	}
@@ -223,7 +227,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	private String extractVarName(Multimap<CallSiteWithParamIndex, Statement> extractedValues, Statement location, CryptSLObject crySLVar) {
 		StringBuilder msg = new StringBuilder();
 		Stmt allocSite = location.getUnit().get();
-		if (allocSite instanceof AssignStmt) {
+		if (allocSite instanceof AssignStmt && ((AssignStmt) allocSite).getLeftOp().getType().toQuotedString().equals(crySLVar.getJavaType())) {
 			AssignStmt as = (AssignStmt) allocSite;
 			msg.append(Constants.VAR);
 			msg.append(as.getLeftOp().toString());
@@ -277,33 +281,23 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		return msg.toString();
 	}
 
-	@Override
-	public void missingPredicates(final AnalysisSeedWithSpecification spec, final Set<CryptSLPredicate> missingPred) {
-		for (final CryptSLPredicate pred : missingPred) {
-			final StringBuilder msg = new StringBuilder();
-			Statement stmt = null;
-			if (pred instanceof LocatedCrySLPredicate) {
-				stmt = ((LocatedCrySLPredicate) pred).getLocation();
-				msg.append(extractVarName(spec.getExtractedValues(), stmt, (CryptSLObject) pred.getParameters().get(0)));
-			} else {
-				stmt = spec.stmt();
-				msg.append(Constants.VAR);
-				msg.append(spec.var().value().toString());
-			}
-			msg.append(" was not properly ");
-			String predName = pred.getPredName();
-			int index = Utils.getFirstIndexofUCL(predName);
+	public String missingPredicates(final LocatedCrySLPredicate missingPred, Multimap<CallSiteWithParamIndex, Statement> extractedValues) {
+		final StringBuilder msg = new StringBuilder();
+		Statement stmt = ((LocatedCrySLPredicate) missingPred).getLocation();
+		msg.append(extractVarName(extractedValues, stmt, (CryptSLObject) missingPred.getParameters().get(0)));
+		msg.append(" was not properly ");
+		String predName = missingPred.getPredName();
+		int index = Utils.getFirstIndexofUCL(predName);
 
-			if (index == -1) {
-				msg.append(predName);
-			} else {
-				msg.append(predName.substring(0, index));
-				msg.append(" as ");
-				msg.append(predName.substring(index).toLowerCase());
-			}
-			msg.append(".");
-			this.markerGenerator.addMarker(unitToResource(stmt), stmt.getUnit().get().getJavaSourceStartLineNumber(), msg.toString());
+		if (index == -1) {
+			msg.append(predName);
+		} else {
+			msg.append(predName.substring(0, index));
+			msg.append(" as ");
+			msg.append(predName.substring(index).toLowerCase());
 		}
+		msg.append(".");
+		return msg.toString();
 	}
 
 	@Override
@@ -344,8 +338,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			}
 		}
 		msg.append(" on object ");
-		final String type = value.value().getType().toQuotedString();
-		msg.append(type.substring(type.lastIndexOf('.') + 1));
+		msg.append(value.value());
 		msg.append(".");
 		return msg.toString();
 	}

@@ -62,7 +62,8 @@ public class InstanceGenerator {
 	private String taskName;
 	private String taskDescription;
 	private final AstClafer taskClafer;
-	private String algorithmName;
+	private ArrayList<String> algorithmName = new ArrayList<>();
+	private ArrayList<TreeMap<String, InstanceClafer>> separatedAlgorithms = new ArrayList<TreeMap<String, InstanceClafer>>();
 	private int algorithmCount;
 
 	/**
@@ -265,13 +266,20 @@ public class InstanceGenerator {
 		} catch (final Exception ex) {
 			Activator.getDefault().logError("Instances not sorted by security level. Be cautious");
 		}
+		ArrayList<TreeMap<String, InstanceClafer>> separatedCombinations = new ArrayList<>();
+		separatedCombinations.add(new TreeMap<String, InstanceClafer>());
+		int x = 0;
+		int flag=0;
 		for (final InstanceClafer sortedInst : this.generatedInstances) {
-
 			String key = getInstanceName(sortedInst);
 			
 			if (key.isEmpty()) {
 				key = sortedInst.getChildren()[0].getRef().toString();
 				this.displayNameToInstanceMap.remove(key, sortedInst);
+			}
+			if(flag==1){
+				separatedCombinations.add(new TreeMap<String, InstanceClafer>());
+				flag=0;
 			}
 			if (sortedInst.getType().getName().equals(this.taskName) && key.length() > 0) {
 				// Check if any instance has same name , if yes add numerical values as suffix
@@ -283,9 +291,25 @@ public class InstanceGenerator {
 				}
 
 				this.displayNameToInstanceMap.put(copyKey, sortedInst);
-				this.setAlgorithmName(key);
+				separatedCombinations.get(x).put(copyKey, sortedInst);
+			}else{
+				x++;
+				flag=1;
 			}
+			this.setAlgorithmNames(key);
+			
+			/*
+			 * Test snippet
+			 */
+//			if (displayNameToInstanceMap.size() == 18) {
+//				key = "DES";
+//				this.displayNameToInstanceMap.put("DES", sortedInst);
+//				this.displayNameToInstanceMap.put("DES(01)", sortedInst);
+//				this.setAlgorithmNames(key);
+//			}
+			//end of test snippet
 		}
+		this.setSeparatedAlgorithms(separatedCombinations);
 		this.displayNameToInstanceMap = new TreeMap<>(this.displayNameToInstanceMap);
 	}
 	/**
@@ -487,12 +511,13 @@ public class InstanceGenerator {
 		this.taskName = taskName;
 	}
 
-	public void setAlgorithmName(final String algorithmName) {
-		this.algorithmName = algorithmName;
-
+	public void setAlgorithmNames(final String algorithmName) {
+		if(!this.algorithmName.contains(algorithmName)){
+			this.algorithmName.add(algorithmName);
+		}
 	}
 
-	public String getAlgorithmName() {
+	public ArrayList<String> getAlgorithmNames() {
 		return this.algorithmName;
 
 	}
@@ -505,5 +530,13 @@ public class InstanceGenerator {
 	public int getAlgorithmCount() {
 		return this.algorithmCount;
 
+	}
+
+	public ArrayList<TreeMap<String, InstanceClafer>> getSeparatedAlgorithms() {
+		return separatedAlgorithms;
+	}
+
+	public void setSeparatedAlgorithms(ArrayList<TreeMap<String, InstanceClafer>> separatedAlgorithms) {
+		this.separatedAlgorithms = separatedAlgorithms;
 	}
 }

@@ -69,6 +69,7 @@ public class InstanceListPage extends WizardPage {
 	private Map<Question, Answer> constraints;
 	private Object algorithmCombinaton;
 	private DefaultAlgorithmPage defaultAlgorithmPage;
+	private int currentIndex; 
 
 	public InstanceListPage(final InstanceGenerator inst, Map<Question, Answer> constraints, final TaskSelectionPage taskSelectionPage, final DefaultAlgorithmPage defaultAlgorithmPage) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
@@ -90,7 +91,7 @@ public class InstanceListPage extends WizardPage {
 
 		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
+		setCurrentIndex(0);
 		ComboViewer algorithmClass;
 		Label labelInstanceList;
 		this.control = new Composite(sc, SWT.NONE);
@@ -111,8 +112,9 @@ public class InstanceListPage extends WizardPage {
 		Combo combo = algorithmClass.getCombo();
 
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-		algorithmClass.setInput(inst.keySet());
-		String key = instanceGenerator.getAlgorithmName();
+//		algorithmClass.setInput(inst.keySet());
+		algorithmClass.setInput(this.instanceGenerator.getAlgorithmNames());
+		String key = instanceGenerator.getAlgorithmNames().get(0);
 
 		int count = combo.getItemCount();
 		int variationCount = instanceGenerator.getAlgorithmCount();
@@ -121,7 +123,7 @@ public class InstanceListPage extends WizardPage {
 		} else {
 			combo.setToolTipText("There are " + String.format("%d", variationCount) + " variations of the algorithm " + key);
 		}
-
+		//for compare algorithm page
 		setAlgorithmCombinations(algorithmClass.getInput());
 
 		//Display help assist for the first instance in the combo box
@@ -154,12 +156,19 @@ public class InstanceListPage extends WizardPage {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				/*
+				 * commenting for logic change of separated algorithms
+
 				int temp = combo.getSelectionIndex();
 				if (temp != 0) {
 					temp = temp - 1;
 					final ISelection selection = new StructuredSelection(inst.keySet().toArray()[temp]);
 					algorithmClass.setSelection(selection);
 				}
+				*/
+				int temp=combo.getSelectionIndex();
+				
+				
 			}
 		});
 
@@ -380,6 +389,14 @@ public class InstanceListPage extends WizardPage {
 	public void setAlgorithmCombinations(Object input) {
 		this.algorithmCombinaton = input;
 
+	}
+
+	public int getCurrentIndex() {
+		return currentIndex;
+	}
+
+	public void setCurrentIndex(int currentIndex) {
+		this.currentIndex = currentIndex;
 	}
 
 }

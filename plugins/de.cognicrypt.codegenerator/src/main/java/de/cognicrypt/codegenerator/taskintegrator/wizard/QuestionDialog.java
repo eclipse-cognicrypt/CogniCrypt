@@ -36,7 +36,7 @@ import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
-import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 
 public class QuestionDialog extends Dialog {
@@ -431,7 +431,7 @@ public class QuestionDialog extends Dialog {
 		for (ClaferFeature claferFeature : claferModel) {
 			if (claferFeature.getFeatureName().equalsIgnoreCase(featureSelected)) {
 				System.out.println(featureSelected);
-				for (FeatureProperty featureProperty : claferFeature.getFeatureProperties()) {
+				for (ClaferProperty featureProperty : claferFeature.getFeatureProperties()) {
 					operandItems.add(featureProperty.getPropertyName());
 				}
 				if (claferFeature.getFeatureInheritance() != null) {
@@ -448,11 +448,11 @@ public class QuestionDialog extends Dialog {
 		ClaferFeature algorithm = new ClaferFeature(Constants.FeatureType.ABSTRACT, "algorithm", // Counter as the name to make each addition identifiable.
 			null);
 
-		algorithm.getFeatureProperties().add(new FeatureProperty("name", "string"));
-		algorithm.getFeatureProperties().add(new FeatureProperty("description", "string"));
-		algorithm.getFeatureProperties().add(new FeatureProperty("security", "Security"));
-		algorithm.getFeatureProperties().add(new FeatureProperty("performance", "Performance"));
-		algorithm.getFeatureProperties().add(new FeatureProperty("classPerformance", "Performance"));
+		algorithm.getFeatureProperties().add(new ClaferProperty("name", "string"));
+		algorithm.getFeatureProperties().add(new ClaferProperty("description", "string"));
+		algorithm.getFeatureProperties().add(new ClaferProperty("security", "Security"));
+		algorithm.getFeatureProperties().add(new ClaferProperty("performance", "Performance"));
+		algorithm.getFeatureProperties().add(new ClaferProperty("classPerformance", "Performance"));
 
 		ClaferFeature cipher = new ClaferFeature(Constants.FeatureType.ABSTRACT, "cipher", // Counter as the name to make each addition identifiable.
 			"algorithm");
@@ -460,14 +460,14 @@ public class QuestionDialog extends Dialog {
 		ClaferFeature symmetricCipher = new ClaferFeature(Constants.FeatureType.ABSTRACT, "symmetricCipher", // Counter as the name to make each addition identifiable.
 			"cipher");
 
-		symmetricCipher.getFeatureProperties().add(new FeatureProperty("keySize", "integer"));
+		symmetricCipher.getFeatureProperties().add(new ClaferProperty("keySize", "integer"));
 		symmetricCipher.getFeatureConstraints().add(new ClaferConstraint("classPerformance = Fast"));
 
 		ClaferFeature symmetricBlockCipher = new ClaferFeature(Constants.FeatureType.ABSTRACT, "symmetricBlockCipher", // Counter as the name to make each addition identifiable.
 			"symmetricCipher");
 
-		symmetricBlockCipher.getFeatureProperties().add(new FeatureProperty("mode", "Mode"));
-		symmetricBlockCipher.getFeatureProperties().add(new FeatureProperty("padding", "Padding"));
+		symmetricBlockCipher.getFeatureProperties().add(new ClaferProperty("mode", "Mode"));
+		symmetricBlockCipher.getFeatureProperties().add(new ClaferProperty("padding", "Padding"));
 		symmetricBlockCipher.getFeatureConstraints().add(new ClaferConstraint("mode !=ECB"));
 		symmetricBlockCipher.getFeatureConstraints().add(new ClaferConstraint("padding !=NoPadding"));
 

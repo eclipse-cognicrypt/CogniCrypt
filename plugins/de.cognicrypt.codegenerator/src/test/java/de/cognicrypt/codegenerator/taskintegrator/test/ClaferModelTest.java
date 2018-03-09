@@ -16,7 +16,7 @@ import org.junit.Test;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
-import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 
 
 public class ClaferModelTest {
@@ -38,9 +38,9 @@ public class ClaferModelTest {
 	public final void testDoNotImplementPrimitiveTypes() {
 		ClaferModel claferModel = new ClaferModel();
 		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
-		ArrayList<FeatureProperty> featureProperties = new ArrayList<>();
-		featureProperties.add(new FeatureProperty("number", "integer"));
-		featureProperties.add(new FeatureProperty("characters", "string"));
+		ArrayList<ClaferProperty> featureProperties = new ArrayList<>();
+		featureProperties.add(new ClaferProperty("number", "integer"));
+		featureProperties.add(new ClaferProperty("characters", "string"));
 		cfrFeature.setFeatureProperties(featureProperties);
 		claferModel.add(cfrFeature);
 
@@ -59,9 +59,9 @@ public class ClaferModelTest {
 		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "Algorithm");
 		claferModel.add(cfrFeature);
 
-		cfrFeature.getFeatureProperties().add(new FeatureProperty("p1", "int"));
-		cfrFeature.getFeatureProperties().add(new FeatureProperty("p2", "int"));
-		cfrFeature.getFeatureProperties().add(new FeatureProperty("p3", "int"));
+		cfrFeature.getFeatureProperties().add(new ClaferProperty("p1", "int"));
+		cfrFeature.getFeatureProperties().add(new ClaferProperty("p2", "int"));
+		cfrFeature.getFeatureProperties().add(new ClaferProperty("p3", "int"));
 
 		claferModel.implementMissingFeatures(cfrFeature);
 
@@ -97,9 +97,9 @@ public class ClaferModelTest {
 	public final void testNoEmptyPropertyType() {
 		ClaferModel claferModel = new ClaferModel();
 		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "A", "B");
-		ArrayList<FeatureProperty> featureProperties = new ArrayList<>();
-		featureProperties.add(new FeatureProperty("1", ""));
-		featureProperties.add(new FeatureProperty("2", ""));
+		ArrayList<ClaferProperty> featureProperties = new ArrayList<>();
+		featureProperties.add(new ClaferProperty("1", ""));
+		featureProperties.add(new ClaferProperty("2", ""));
 		claferModel.add(cfrFeature);
 		cfrFeature.setFeatureProperties(featureProperties);
 		claferModel.implementMissingFeatures(cfrFeature);
@@ -117,8 +117,8 @@ public class ClaferModelTest {
 		 * Create Clafer feature abstract Algorithm securityLevel -> Security
 		 */
 		ClaferFeature algoFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Algorithm", "");
-		ArrayList<FeatureProperty> propertyList = new ArrayList<>();
-		propertyList.add(new FeatureProperty("securityLevel", "Security"));
+		ArrayList<ClaferProperty> propertyList = new ArrayList<>();
+		propertyList.add(new ClaferProperty("securityLevel", "Security"));
 		algoFeature.setFeatureProperties(propertyList);
 
 		// add feature to an empty list
@@ -138,9 +138,9 @@ public class ClaferModelTest {
 	@Test
 	public final void testRemoveUnusedFeatures() {
 		ClaferFeature featureA = new ClaferFeature(Constants.FeatureType.CONCRETE, "A", "B");
-		ArrayList<FeatureProperty> propertiesA = new ArrayList<>();
-		propertiesA.add(new FeatureProperty("1", "x"));
-		propertiesA.add(new FeatureProperty("2", "y"));
+		ArrayList<ClaferProperty> propertiesA = new ArrayList<>();
+		propertiesA.add(new ClaferProperty("1", "x"));
+		propertiesA.add(new ClaferProperty("2", "y"));
 		featureA.setFeatureProperties(propertiesA);
 
 		ClaferModel claferModel = new ClaferModel();
@@ -171,10 +171,10 @@ public class ClaferModelTest {
 		ClaferModel claferModel = new ClaferModel();
 		ClaferFeature featureA = new ClaferFeature(Constants.FeatureType.CONCRETE, "A", "B");
 
-		ArrayList<FeatureProperty> propertiesA = new ArrayList<>();
+		ArrayList<ClaferProperty> propertiesA = new ArrayList<>();
 
-		FeatureProperty propertyA1 = new FeatureProperty("1", "x");
-		FeatureProperty propertyA2 = new FeatureProperty("2", "y");
+		ClaferProperty propertyA1 = new ClaferProperty("1", "x");
+		ClaferProperty propertyA2 = new ClaferProperty("2", "y");
 		propertiesA.add(propertyA1);
 		propertiesA.add(propertyA2);
 		featureA.setFeatureProperties(propertiesA);
@@ -184,9 +184,9 @@ public class ClaferModelTest {
 
 		// create the same properties as or A on purpose
 		// they are stored in different objects and should not be found
-		ArrayList<FeatureProperty> propertiesC = new ArrayList<>();
-		propertiesC.add(new FeatureProperty("1", "x"));
-		propertiesC.add(new FeatureProperty("2", "y"));
+		ArrayList<ClaferProperty> propertiesC = new ArrayList<>();
+		propertiesC.add(new ClaferProperty("1", "x"));
+		propertiesC.add(new ClaferProperty("2", "y"));
 		featureC.setFeatureProperties(propertiesA);
 
 		claferModel.add(featureA);
@@ -196,15 +196,15 @@ public class ClaferModelTest {
 		System.out.println();
 
 		assertEquals(featureA, claferModel.getParentFeatureOfProperty(propertyA1));
-		assertEquals(null, claferModel.getParentFeatureOfProperty(new FeatureProperty("1", "x")));
+		assertEquals(null, claferModel.getParentFeatureOfProperty(new ClaferProperty("1", "x")));
 	}
 
 	@Test
 	public final void testModelSerialization() {
 		ClaferModel claferModel = new ClaferModel();
 		ClaferFeature cfrFeatureA = new ClaferFeature(Constants.FeatureType.ABSTRACT, "A", "");
-		ArrayList<FeatureProperty> featureProperties = new ArrayList<>();
-		featureProperties.add(new FeatureProperty("size", "int"));
+		ArrayList<ClaferProperty> featureProperties = new ArrayList<>();
+		featureProperties.add(new ClaferProperty("size", "int"));
 		cfrFeatureA.setFeatureProperties(featureProperties);
 		claferModel.add(cfrFeatureA);
 		

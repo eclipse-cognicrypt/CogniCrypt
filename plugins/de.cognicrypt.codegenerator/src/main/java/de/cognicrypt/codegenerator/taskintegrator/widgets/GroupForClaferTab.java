@@ -17,7 +17,7 @@ import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
-import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 
 public class GroupForClaferTab extends Group {
 
@@ -168,7 +168,7 @@ public class GroupForClaferTab extends Group {
 		}
 		for (ClaferFeature claferFeature : claferModel) {
 			if (claferFeature.getFeatureName().equalsIgnoreCase(featureSelected)) {
-				for (FeatureProperty featureProperty : claferFeature.getFeatureProperties()) {
+				for (ClaferProperty featureProperty : claferFeature.getFeatureProperties()) {
 					operandItems.add(featureProperty.getPropertyName());
 				}
 				if (claferFeature.getFeatureInheritance() != null) {

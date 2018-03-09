@@ -121,6 +121,14 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 		// find missing inherited feature
 		if (!refFeature.getFeatureInheritance().isEmpty()) {
 			boolean parentFound = false;
+
+			for (String primitive : Constants.CLAFER_PRIMITIVE_TYPES) {
+				if (primitive.equals(refFeature.getFeatureInheritance())) {
+					parentFound = true;
+					break;
+				}
+			}
+
 			for (ClaferFeature cfrFeature : claferModel) {
 				if (cfrFeature.getFeatureName().equals(refFeature.getFeatureInheritance())) {
 					parentFound = true;

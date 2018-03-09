@@ -47,7 +47,8 @@ public class ClaferModelTest {
 		claferModel.add(new ClaferFeature(Constants.FeatureType.ABSTRACT, "myDouble", "double"));
 
 		for (ClaferFeature refFeature : claferModel) {
-			assertTrue(claferModel.getMissingFeatures(refFeature).getClaferModel().size() == 0);
+			ClaferModel missingFeatures = claferModel.getMissingFeatures(refFeature);
+			assertTrue(missingFeatures.getClaferModel().size() == 0);
 		}
 	}
 

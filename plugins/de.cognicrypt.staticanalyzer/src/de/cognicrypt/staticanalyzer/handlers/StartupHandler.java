@@ -1,5 +1,6 @@
 package de.cognicrypt.staticanalyzer.handlers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,10 +12,11 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.internal.core.JavaProject;
 import org.eclipse.ui.IStartup;
 
+import de.cognicrypt.crysl.reader.CrySLModelReader;
 import de.cognicrypt.staticanalyzer.Activator;
 
 /**
@@ -25,40 +27,42 @@ import de.cognicrypt.staticanalyzer.Activator;
  */
 public class StartupHandler implements IStartup {
 
-	private static final AfterBuildListener BUILD_LISTENER = new AfterBuildListener();
-
-	@Override
-	public void earlyStartup() {
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(StartupHandler.BUILD_LISTENER, IResourceChangeEvent.POST_BUILD);
-	}
-
 	private static class AfterBuildListener implements IResourceChangeListener {
 
 		@Override
 		public void resourceChanged(final IResourceChangeEvent event) {
+			final List<IResource> changedCrySLElements = new ArrayList<>();
+			final List<IJavaElement> changedJavaElements = new ArrayList<>();
 			Activator.getDefault().logInfo("ResourcechangeListener has been triggered.");
 			try {
-				final List<IJavaElement> changedJavaElements = new ArrayList<>();
 
 				event.getDelta().accept(delta -> {
 					switch (delta.getKind()) {
 						case IResourceDelta.ADDED:
 						case IResourceDelta.CHANGED:
 							final IResource res = delta.getResource();
-							final IJavaElement javaElement = JavaCore.create(res);
-							if (javaElement != null) {
-								if (javaElement instanceof ICompilationUnit) {
-									if ((delta.getFlags() & IResourceDelta.CONTENT) != 0) {
-										changedJavaElements.add(javaElement);
+							if (res != null && res.getFileExtension() != null) {
+								try {
+									final IJavaElement javaElement = JavaCore.create(res);
+									if (javaElement != null) {
+										if (javaElement instanceof ICompilationUnit) {
+											if ((delta.getFlags() & IResourceDelta.CONTENT) != 0) {
+												changedJavaElements.add(javaElement);
+											}
+											return false;
+										}
 									}
+								} catch (final Exception ex) {
 									return false;
-
 								}
+								if (res.getFileExtension().endsWith("cryptsl")) {
+									changedCrySLElements.add(res);
+								}
+
 							}
 					}
 					return true;
 				});
-
 				if (changedJavaElements.isEmpty()) {
 					for (final IResourceDelta ev : event.getDelta().getAffectedChildren()) {
 						ev.accept(delta -> {
@@ -68,7 +72,7 @@ public class StartupHandler implements IStartup {
 									final IResource res = delta.getResource();
 									final IJavaElement javaElement = JavaCore.create(res);
 									if (javaElement != null) {
-										if (javaElement instanceof JavaProject) {
+										if (javaElement instanceof IJavaProject) {
 											if ((delta.getFlags() & IResourceDelta.OPEN) != 0) {
 												changedJavaElements.add(javaElement);
 											}
@@ -80,13 +84,13 @@ public class StartupHandler implements IStartup {
 						});
 					}
 				}
-				if (changedJavaElements.isEmpty()) {
-					Activator.getDefault().logInfo("No changed resource found. Abort.");
-					return;
-				}
+			} catch (final CoreException e) {}
 
-				Activator.getDefault().logInfo("Analysis has been triggered.");
-
+			if (changedJavaElements.isEmpty() && changedCrySLElements.isEmpty()) {
+				Activator.getDefault().logInfo("No changed resource found. Abort.");
+				return;
+			}
+			if (!changedJavaElements.isEmpty()) {
 				final AnalysisKickOff ako = new AnalysisKickOff();
 
 				if (ako.setUp(changedJavaElements.get(0))) {
@@ -98,12 +102,24 @@ public class StartupHandler implements IStartup {
 				} else {
 					Activator.getDefault().logInfo("Analysis has been canceled due to erroneous setup.");
 				}
+			}
 
-			} catch (final CoreException e) {
-				Activator.getDefault().logError(e, "Internal error");
+			if (!changedCrySLElements.isEmpty()) {
+				try {
+					new CrySLModelReader(changedCrySLElements.get(0));
+				} catch (ClassNotFoundException | CoreException | IOException e) {
+					Activator.getDefault().logError(e, "Updating CrySL rules failed.");
+				}
+
 			}
 		}
+	}
 
+	private static final AfterBuildListener BUILD_LISTENER = new AfterBuildListener();
+
+	@Override
+	public void earlyStartup() {
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(StartupHandler.BUILD_LISTENER, IResourceChangeEvent.POST_BUILD);
 	}
 
 }

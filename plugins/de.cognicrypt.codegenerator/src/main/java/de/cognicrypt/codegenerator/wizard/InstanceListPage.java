@@ -138,7 +138,7 @@ public class InstanceListPage extends WizardPage {
 		final ControlDecoration deco = new ControlDecoration(infoText, SWT.RIGHT);
 		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage();
 		deco.setImage(image);
-		deco.setShowOnlyOnFocus(false);
+//		deco.setShowOnlyOnFocus(false);
 
 		new Label(control, SWT.NONE);
 		new Label(control, SWT.NONE);
@@ -386,7 +386,9 @@ public class InstanceListPage extends WizardPage {
 			}
 			
 				backIcon.setEnabled(false);
-				
+				if(tempAlgorithmGroup.size()==1){
+					nextIcon.setEnabled(false);
+				}
 				
 				//for compare algorithm page
 				setAlgorithmCombinations(tempAlgorithmGroup.keySet());

@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author rajiv
  *
  */
-public class FeatureProperty implements Serializable {
+public class ClaferProperty implements Serializable {
 
 	private static final long serialVersionUID = -5360875525100852395L;
 
@@ -19,7 +19,7 @@ public class FeatureProperty implements Serializable {
 	 * @param propertyName
 	 * @param propertyType
 	 */
-	public FeatureProperty(String propertyName, String propertyType) {
+	public ClaferProperty(String propertyName, String propertyType) {
 		super();
 		this.setPropertyName(propertyName);
 		this.setPropertyType(propertyType);

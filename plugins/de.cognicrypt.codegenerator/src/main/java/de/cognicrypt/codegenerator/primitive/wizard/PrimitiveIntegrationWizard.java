@@ -31,6 +31,7 @@ import de.cognicrypt.codegenerator.utilities.Utils;
 public class PrimitiveIntegrationWizard extends Wizard {
 
 	PrimitiveSelectionPage selectedPrimitivePage;
+	PrimitiveQuestionnairePage primitiveQuestionsPage;
 	PrimitiveQuestionnaire primitiveQuestions;
 	JavaProjectBrowserPage projectBrowserPage;
 	MethodSelectorPage methodSelectionPage;

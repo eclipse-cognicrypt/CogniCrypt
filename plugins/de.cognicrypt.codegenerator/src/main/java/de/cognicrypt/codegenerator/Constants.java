@@ -175,8 +175,11 @@ public class Constants {
 	public static final String FIXED_SIZE = "fixed size";
 	public static final String BLOCK_SIZE="Blocksize";
 	public static final String METHODS_SELECTION_PAGE= "Methods Selector";
-
+	public static final String DESCRIPTION_KEYSIZES="The keysize can fixed or variable sized"; 
+	
 	//Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;
+	
+	
 
 }

@@ -418,7 +418,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 		this.note = new Text(notePanel, SWT.MULTI | SWT.WRAP);
 		this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
-		this.note.setText(question.getNote());
+		this.note.setText(Constants.DESCRIPTION_KEYSIZES);
 		this.note.setBounds(10, 20, 585, 60);
 		this.note.setSize(this.note.computeSize(585, SWT.DEFAULT));
 		setControl(notePanel);

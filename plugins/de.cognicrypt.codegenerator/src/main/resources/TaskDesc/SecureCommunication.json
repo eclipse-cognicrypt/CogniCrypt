@@ -249,6 +249,7 @@
 				"id": "9",
 				"tooltip": "Example: 80",
 				"element": "text",
+				"textType": "Port number",
 				"questionText": "Please enter port",
 				"answers": [
 					{

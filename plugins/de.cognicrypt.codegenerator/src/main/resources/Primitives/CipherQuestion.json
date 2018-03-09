@@ -5,18 +5,13 @@
       "id": "0",
       "element": "text",
       "note": "",
-      "questionText": "Name of the Algorithm: ",
+      "questionText": "Name of your algorithm ? ",
       "answers": [{
           "value": "name",
            "claferDependencies": [{
               "algorithm": "name"
            }
-          ],
-          "codeDependencies": [{
-            "option": "textsize",
-            "value": "true"
-          }],
-		"defaultAnswer": true       
+          ]    
         }
       ]
     },
@@ -62,7 +57,7 @@
     [{
       "id": "0",
       "element": "combo",
-      "note": "Please specify the number of keys your algorithm has...",
+      "note": "Please specify the number of keysizes your algorithm has...",
       "questionText": "How many keys does your algorithm have ?",
       "answers": [{
           "value": "1",
@@ -197,7 +192,7 @@
 		"id": "0",
 		"element": "checkbox",
 		"note": "",
-		"questionText": "Choose the Paddings used for your algorithm:",
+		"questionText": "Select the list of allowed Paddings in your algorithm:",
 		"answers": [{
 		"value": "OneAndZeroes Padding",
 		 "claferDependencies": [{
@@ -224,8 +219,8 @@
 		 "claferDependencies": [{
               "algorithm": "Padding"
            }
-          ],
-		"defaultAnswer": "true"
+          ]
+		
 		}
 		]
 		}

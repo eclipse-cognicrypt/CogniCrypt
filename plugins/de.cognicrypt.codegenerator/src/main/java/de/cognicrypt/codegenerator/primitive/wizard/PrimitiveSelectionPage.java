@@ -49,8 +49,8 @@ public class PrimitiveSelectionPage extends WizardPage {
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		
-				Label lblPleaseChooseThe = new Label(container, SWT.NONE);
-				lblPleaseChooseThe.setText("Select the Algorithm type:       ");
+				Label AlgorithmType = new Label(container, SWT.NONE);
+				AlgorithmType.setText("What kind of algorithm do you want to integrate?       ");
 		new Label(container, SWT.NONE);
 		
 				this.primitiveComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);

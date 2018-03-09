@@ -1,6 +1,0 @@
-Manifest-Version: 1.0.0
-Specification-Title: Custom Provider
-Name: com/java/Provider.class
-Content-Type: JCE Provider
-Created-By: some owner
-

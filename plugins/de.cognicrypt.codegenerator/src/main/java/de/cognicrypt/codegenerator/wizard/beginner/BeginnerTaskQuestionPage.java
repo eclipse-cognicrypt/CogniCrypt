@@ -7,6 +7,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -216,7 +222,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		gd_question.widthHint = 550;
 		label.setLayoutData(gd_question);
 		label.setText(question.getQuestionText());
-		new Label(parent, SWT.NONE);
+		Display display = Display.getCurrent();
+		Color red = display.getSystemColor(SWT.COLOR_RED);
+//		Label mandatory = new Label(container, SWT.NONE);
+//		mandatory.setText("*");
+//		mandatory.setForeground(red);
+//		new Label(parent, SWT.NONE);
+		
 		switch (question.getElement()) {
 			case combo:
 				final ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.FILL);
@@ -334,14 +346,17 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 			case text:
 				
-				Display display = Display.getCurrent();
-				Label mandatory = new Label(container, SWT.NONE);
-				Color red = display.getSystemColor(SWT.COLOR_RED);
-				mandatory.setText("*");
-				mandatory.setForeground(red);
 				final Text inputField = new Text(container, SWT.BORDER);
 				inputField.setLayoutData(new GridData(100, SWT.DEFAULT));
 				inputField.setToolTipText(question.getTooltip());
+				
+				
+				ControlDecoration deco = new ControlDecoration(inputField, SWT.LEFT | SWT.TOP);
+				FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
+				deco.setImage(fieldDecoration.getImage());
+				deco.hide();
+			
+				
 				//Adding Browse Button for text field that expects a path as input
 				if (question.getTextType().equals(Constants.BROWSE)) {
 					inputField.setLayoutData(new GridData(300, SWT.DEFAULT));
@@ -382,7 +397,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					});
 					text(question, inputField);
 				} else if (question.getTextType().equals(Constants.INTEGER)) {
-					Label errorMessage = new Label(container, SWT.NONE|SWT.WRAP);
 					inputField.addListener(SWT.Verify, new Listener() {
 
 						@Override
@@ -392,14 +406,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							string.getChars(0, chars.length, chars, 0);
 							for (int i = 0; i < chars.length; i++) {
 								if (!('0' <= chars[i] && chars[i] <= '9')) {
-									errorMessage.setVisible(true);
-									errorMessage.setText("!Only integers expected");
-									errorMessage.setForeground(red);
+									deco.show();
+									deco.showHoverText("Expected an integer >0");
 									e.doit = false;
 									return;
 								}
-								errorMessage.setVisible(false);
 							}
+							deco.hide();
 						}
 					});
 
@@ -410,15 +423,20 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 						@Override
 						public void verifyText(VerifyEvent e) {
+							deco.hide();
 							String currentText = ((Text) e.widget).getText();
 							String port = currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
 							try {
 								int portNum = Integer.valueOf(port);
 								if (portNum < 0 || portNum > 65535) {
+									deco.show();
+									deco.showHoverText("Must be an integer >65535");
 									e.doit = false;
 								}
 							} catch (NumberFormatException ex) {
 								if (!port.equals(""))
+									deco.show();
+									deco.showHoverText("Expected an integer >65535");
 									e.doit = false;
 							}
 						}
@@ -426,39 +444,59 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					text(question, inputField);
 				} else if (question.getTextType().equals(Constants.IP_ADDRESS)) {
 					inputField.setToolTipText(Constants.IP_ADDRESS_TOOLTIP);
+					
 					inputField.addVerifyListener(new VerifyListener() {
 
 						@Override
 						public void verifyText(VerifyEvent e) {
+							
 							String currentText = ((Text) e.widget).getText();
 							String ip = currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
 							try {
 								if (ip != null && !ip.isEmpty()) {
 									String[] ipAddress = ip.split("\\.");
+									deco.hide();
 									if (ipAddress.length > 4) {
+										deco.show();
+										deco.showHoverText("Expected format 255.255.255.255");
 										e.doit = false;
 									}
+									deco.hide();
 									for (int i = 0; i <= ipAddress.length - 1; i++) {
 										int j = Integer.parseInt(ipAddress[i]);
 										if (j < 0 || j > 255) {
+											deco.show();
+											deco.showHoverText("Expected format 255.255.255.255");
 											e.doit = false;
 										}
 									}
+									deco.hide();
 									if (ipAddress.length == 4) {
 										if (ip.endsWith(".")) {
+											deco.show();
+											deco.showHoverText("Expected format 255.255.255.255");
 											e.doit = false;
 										}
 									}
+									deco.hide();
 									if (ip.endsWith("..")) {
+										deco.show();
+										deco.showHoverText("Expected format 255.255.255.255");
 										e.doit = false;
 									}
+									deco.hide();
 									if (ip.startsWith(".")) {
+										deco.show();
+										deco.showHoverText("Expected format 255.255.255.255");
 										e.doit = false;
 									}
 								}
 							} catch (NumberFormatException ex) {
-								if (!ip.equals(""))
+								if (!ip.equals("")){
+									deco.show();
+									deco.showHoverText("Expected format 255.255.255.255");
 									e.doit = false;
+								}
 							}
 						}
 					});
@@ -875,4 +913,43 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			BeginnerTaskQuestionPage.this.setPageComplete(this.isPageComplete());
 		});
 	}
+	
+//	public static void validate(final String ip){
+//		Pattern pat;
+//		Matcher match;
+//		String ip4 = "IPv4";
+//		String ip6 = "IPv6";
+//		String non = "Neither";
+//		final String ipv4 = 
+//				"^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+//				"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+//				"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+//				"([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+//		final String ipv6 = 
+//				"^[0-9a-f]{1,4}:" + "[0-9a-f]{1,4}:" +
+//				"[0-9a-f]{1,4}:" + "[0-9a-f]{1,4}:" +
+//				"[0-9a-f]{1,4}:" + "[0-9a-f]{1,4}:" +
+//				"[0-9a-f]{1,4}:" + "[0-9a-f]{1,4}$";
+//		
+//		if(ip.indexOf(".")>0){
+//			pat = Pattern.compile(ipv4);
+//			match = pat.matcher(ip);
+//			if(match.matches()){
+//				System.out.println(ip4);
+//			}else{
+//				e.doit = false;
+//			}
+//		}else if (ip.indexOf(":")>0){
+//			pat = Pattern.compile(ipv6);
+//			match = pat.matcher(ip);
+//			if(match.matches()){
+//				System.out.println(ip6);
+//			}else{
+//				System.out.println(non);
+//			}
+//		}else{
+//			System.out.println(non);
+//		}
+//	}
+
 }

@@ -174,7 +174,7 @@ public class InstanceListPage extends WizardPage {
 
 				InstanceListPage.this.instanceDetails.setText(defaultAlgorithmPage.getInstanceProperties(tempAlgorithmGroup.get(tempKey)));
 				setCurrentIndex(tempIndex);
-				algorithmVariation.setText("       " + getSelectedItem() + "  Variations:  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
+				algorithmVariation.setText("       "+ "  Variations:  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
 				if (combo.getSelectionIndex() == 0 && getCurrentIndex() == 1) {
 					//hide the help assist and the text if the selected algorithm is not the default algorithm
 					deco.show();
@@ -212,7 +212,7 @@ public class InstanceListPage extends WizardPage {
 				setValue(tempAlgorithmGroup.get(tempKey));
 				InstanceListPage.this.instanceDetails.setText(defaultAlgorithmPage.getInstanceProperties(tempAlgorithmGroup.get(tempKey)));
 				setCurrentIndex(tempIndex);
-				algorithmVariation.setText("       " + getSelectedItem() + "  Variations:  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
+				algorithmVariation.setText("       " +"  Variations:  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
 
 				if (combo.getSelectionIndex() == 0 && getCurrentIndex() == 1) {
 					//hide the help assist and the text if the selected algorithm is not the default algorithm
@@ -258,7 +258,7 @@ public class InstanceListPage extends WizardPage {
 			setValue(tempAlgorithmGroup.get(selectedAlgorithm));
 			InstanceListPage.this.instanceDetails.setText(defaultAlgorithmPage.getInstanceProperties(tempAlgorithmGroup.get(selectedAlgorithm)));
 			setCurrentIndex(1);
-			algorithmVariation.setText("       " + selectedAlgorithm + "  Variations:  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
+			algorithmVariation.setText("       "+ "  Variations:  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
 
 			if (combo.getSelectionIndex() == 0 && getCurrentIndex() == 1) {
 				//hide the help assist and the text if the selected algorithm is not the default algorithm

@@ -45,8 +45,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.swt.graphics.Point;
-
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
@@ -111,7 +109,6 @@ public class InstanceListPage extends WizardPage {
 		labelInstanceList.setText(Constants.instanceList);
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
 		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
-		String firstInstance = inst.keySet().toArray()[0].toString();
 		Combo combo = algorithmClass.getCombo();
 
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
@@ -177,7 +174,7 @@ public class InstanceListPage extends WizardPage {
 
 				InstanceListPage.this.instanceDetails.setText(defaultAlgorithmPage.getInstanceProperties(tempAlgorithmGroup.get(tempKey)));
 				setCurrentIndex(tempIndex);
-				algorithmVariation.setText("       " + getSelectedItem() + "  Solution  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
+				algorithmVariation.setText("       " + getSelectedItem() + "  Variations:  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
 				if (combo.getSelectionIndex() == 0 && getCurrentIndex() == 1) {
 					//hide the help assist and the text if the selected algorithm is not the default algorithm
 					deco.show();
@@ -215,7 +212,7 @@ public class InstanceListPage extends WizardPage {
 				setValue(tempAlgorithmGroup.get(tempKey));
 				InstanceListPage.this.instanceDetails.setText(defaultAlgorithmPage.getInstanceProperties(tempAlgorithmGroup.get(tempKey)));
 				setCurrentIndex(tempIndex);
-				algorithmVariation.setText("       " + getSelectedItem() + "  Solution  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
+				algorithmVariation.setText("       " + getSelectedItem() + "  Variations:  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
 
 				if (combo.getSelectionIndex() == 0 && getCurrentIndex() == 1) {
 					//hide the help assist and the text if the selected algorithm is not the default algorithm
@@ -261,7 +258,7 @@ public class InstanceListPage extends WizardPage {
 			setValue(tempAlgorithmGroup.get(selectedAlgorithm));
 			InstanceListPage.this.instanceDetails.setText(defaultAlgorithmPage.getInstanceProperties(tempAlgorithmGroup.get(selectedAlgorithm)));
 			setCurrentIndex(1);
-			algorithmVariation.setText("       " + selectedAlgorithm + "  Solution  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
+			algorithmVariation.setText("       " + selectedAlgorithm + "  Variations:  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
 
 			if (combo.getSelectionIndex() == 0 && getCurrentIndex() == 1) {
 				//hide the help assist and the text if the selected algorithm is not the default algorithm

@@ -7,9 +7,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -25,14 +22,12 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
@@ -222,13 +217,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		gd_question.widthHint = 550;
 		label.setLayoutData(gd_question);
 		label.setText(question.getQuestionText());
-		Display display = Display.getCurrent();
-		Color red = display.getSystemColor(SWT.COLOR_RED);
-//		Label mandatory = new Label(container, SWT.NONE);
-//		mandatory.setText("*");
-//		mandatory.setForeground(red);
-//		new Label(parent, SWT.NONE);
-		
 		switch (question.getElement()) {
 			case combo:
 				final ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.FILL);
@@ -430,13 +418,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 								int portNum = Integer.valueOf(port);
 								if (portNum < 0 || portNum > 65535) {
 									deco.show();
-									deco.showHoverText("Must be an integer >65535");
+									deco.showHoverText("Must be an integer < 65535");
 									e.doit = false;
 								}
 							} catch (NumberFormatException ex) {
 								if (!port.equals(""))
 									deco.show();
-									deco.showHoverText("Expected an integer >65535");
+									deco.showHoverText("Expected an integer < 65535");
 									e.doit = false;
 							}
 						}
@@ -471,7 +459,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 										}
 									}
 									deco.hide();
-									if (ipAddress.length == 4) {
+									if (ipAddress.length== 4) {
 										if (ip.endsWith(".")) {
 											deco.show();
 											deco.showHoverText("Expected format 255.255.255.255");

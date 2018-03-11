@@ -172,6 +172,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 		defaultAlgorithmCheckBox.setText(Constants.DEFAULT_ALGORITHM_PAGE_CHECKBOX);
 		defaultAlgorithmCheckBox.setToolTipText(Constants.DEFAULT_CHECKBOX_TOOLTIP);
 
+		//Show the info icon if the check box is disabled
 		final ControlDecoration deco = new ControlDecoration(defaultAlgorithmCheckBox, SWT.TOP | SWT.RIGHT);
 		Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
 		if (defaultAlgorithmCheckBox.isEnabled()) {

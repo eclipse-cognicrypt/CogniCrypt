@@ -73,4 +73,5 @@ public class Activator extends AbstractUIPlugin {
 	public void logInfo(final String message) {
 		log(IStatus.INFO, message, null);
 	}
+
 }

@@ -14,18 +14,12 @@ import org.eclipse.jdt.core.IJavaProject;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
-import boomerang.cfg.ExtendedICFG;
-import boomerang.cfg.IExtendedICFG;
-import boomerang.preanalysis.PreparationTransformer;
 import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
-import crypto.rules.StateNode;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.Utils;
-import ideal.debug.IDebugger;
-import ideal.debug.NullDebugger;
 import soot.G;
 import soot.PackManager;
 import soot.Scene;
@@ -33,7 +27,6 @@ import soot.SceneTransformer;
 import soot.Transform;
 import soot.jimple.toolkits.ide.icfg.JimpleBasedInterproceduralCFG;
 import soot.options.Options;
-import typestate.TypestateDomainValue;
 
 /**
  * This runner triggers Soot.
@@ -45,62 +38,18 @@ public class SootRunner {
 
 	private static final File RULES_DIR = Utils.getResourceFromWithin("/resources/CrySLRules/");
 
-	public static boolean runSoot(final IJavaProject project, final String mainClass, final CrySLAnalysisListener reporter) {
-		G.reset();
-		setSootOptions(project, mainClass);
-		registerTransformers(reporter);
-		try {
-			runSoot(mainClass);
-		} catch (final Exception t) {
-			Activator.getDefault().logError(t);
-			return false;
-		}
-		return true;
-	}
-
-	private static void registerTransformers(final CrySLAnalysisListener reporter) {
-		PackManager.v().getPack("wjtp").add(new Transform("wjtp.prepare", new PreparationTransformer()));
-		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(reporter)));
-	}
-
-	private static void runSoot(final String mainClass) {
-		Scene.v().loadClassAndSupport(mainClass);
-		Scene.v().loadNecessaryClasses();
-		PackManager.v().runPacks();
-	}
-
-	private static void setSootOptions(final IJavaProject project, final String mainClass) {
-		Options.v().set_soot_classpath(getSootClasspath(project));
-		Options.v().set_main_class(mainClass);
-
-		Options.v().set_keep_line_number(true);
-		Options.v().set_prepend_classpath(true);
-		Options.v().set_allow_phantom_refs(true);
-		Options.v().set_whole_program(true);
-		Options.v().set_no_bodies_for_excluded(true);
-
-		Options.v().setPhaseOption("cg.spark", "on");
-		Options.v().set_output_format(Options.output_format_none);
-	}
-
 	private static SceneTransformer createAnalysisTransformer(final CrySLAnalysisListener reporter) {
 		return new SceneTransformer() {
 
 			@Override
 			protected void internalTransform(final String phaseName, final Map<String, String> options) {
-				final ExtendedICFG icfg = new ExtendedICFG(new JimpleBasedInterproceduralCFG(false));
-				//				System.out.println("Soot Classes: "+ Scene.v().getClasses().size());
-				//				System.out.println("Reachable Methods: "+ Scene.v().getReachableMethods().size());
+				final JimpleBasedInterproceduralCFG icfg = new JimpleBasedInterproceduralCFG(false);
+
 				final CryptoScanner scanner = new CryptoScanner(getRules()) {
 
 					@Override
-					public IExtendedICFG icfg() {
+					public JimpleBasedInterproceduralCFG icfg() {
 						return icfg;
-					}
-
-					@Override
-					public IDebugger<TypestateDomainValue<StateNode>> debugger() {
-						return new NullDebugger<>();
 					}
 
 					@Override
@@ -149,6 +98,46 @@ public class SootRunner {
 		}
 	}
 
+
+	public static boolean runSoot(final IJavaProject project, final String mainClass, final CrySLAnalysisListener reporter) {
+		G.reset();
+		setSootOptions(project, mainClass);
+		registerTransformers(reporter);
+		try {
+			runSoot(mainClass);
+		} catch (final Exception t) {
+			Activator.getDefault().logError(t);
+			return false;
+		}
+		return true;
+	}
+
+	private static void runSoot(final String mainClass) {
+		Scene.v().loadClassAndSupport(mainClass);
+		Scene.v().loadNecessaryClasses();
+		PackManager.v().runPacks();
+	}
+
+	private static void setSootOptions(final IJavaProject project, final String mainClass) {
+		Options.v().set_soot_classpath(getSootClasspath(project));
+		Options.v().set_main_class(mainClass);
+
+		Options.v().set_keep_line_number(true);
+		Options.v().set_prepend_classpath(true);
+		Options.v().set_allow_phantom_refs(true);
+		Options.v().set_whole_program(true);
+		Options.v().set_no_bodies_for_excluded(true);
+		
+		Options.v().setPhaseOption("cg.spark", "on");
+		Options.v().setPhaseOption("jb", "use-original-names:true");
+		Options.v().set_output_format(Options.output_format_none);
+	}
+	
+
+	private static void registerTransformers(CrySLAnalysisListener reporter) {
+		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(reporter)));
+	}
+	
 	private static String getSootClasspath(final IJavaProject javaProject) {
 		return Joiner.on(File.pathSeparator).join(projectClassPath(javaProject));
 	}

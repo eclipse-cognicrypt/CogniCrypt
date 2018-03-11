@@ -227,7 +227,6 @@ public class AddDependenciesDialog extends Dialog {
 					//To add the widgets and data inside answerCompositeForLinkCodeTab
 					answerCompositeForLinkCodeTab.addELementsInCodeTabQuestionDialog(answer);
 				}
-
 			}
 		}
 
@@ -330,7 +329,9 @@ public class AddDependenciesDialog extends Dialog {
 				if (variableTxtBoxForCodeTab.getText().equals("")) {
 					cd.setOption(getCapitaliseQuestionText(question.getQuestionText()));
 				} else {
+					if (cd.getValue() != null) {
 					cd.setOption(variableTxtBoxForCodeTab.getText());
+					}
 				}
 
 				if (question.getElement().equals(Constants.GUIElements.text)) {

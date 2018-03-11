@@ -194,20 +194,31 @@ public class TaskSelectionPage extends WizardPage {
 		this.guidedModeCheckBox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 		this.guidedModeCheckBox.setToolTipText(Constants.GUIDEDMODE_TOOLTIP);
 		this.guidedModeCheckBox.setEnabled(true);
+
+		//Show info icon when the user unchecks the Guided-mode checkbox
+		final ControlDecoration deco = new ControlDecoration(guidedModeCheckBox, SWT.RIGHT);
+		Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
+		deco.setDescriptionText(Constants.GUIDED_MODE_CHECKBOX_INFO);
+		deco.hide();
+		deco.setImage(image);
+		deco.setShowOnlyOnFocus(false);
+
 		this.guidedModeCheckBox.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-
+				if(guidedModeCheckBox.getSelection() != true){
+					deco.show();
+				} 
+				else {
+					deco.hide();
+				}
 			}
 		});
 		this.guidedModeCheckBox.setText(Constants.GUIDED_MODE);
 		this.guidedModeCheckBox.setSelection(true);
-		final ControlDecoration deco = new ControlDecoration(guidedModeCheckBox, SWT.RIGHT);
-		Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
-
-		deco.setDescriptionText(Constants.GUIDED_MODE_CHECKBOX_INFO);
-		deco.setImage(image);
-		deco.setShowOnlyOnFocus(false);
+		
+		
 
 		sc.setContent(container);
 		sc.setExpandHorizontal(true);

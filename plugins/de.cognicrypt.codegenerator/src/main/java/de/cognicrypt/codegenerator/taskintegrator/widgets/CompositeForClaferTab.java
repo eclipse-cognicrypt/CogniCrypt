@@ -10,7 +10,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
@@ -18,7 +17,7 @@ import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
-import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 
 public class CompositeForClaferTab extends Composite {
 
@@ -214,7 +213,7 @@ public class CompositeForClaferTab extends Composite {
 		}
 		for (ClaferFeature claferFeature : claferModel) {
 			if (claferFeature.getFeatureName().equalsIgnoreCase(featureSelected)) {
-				for (FeatureProperty featureProperty : claferFeature.getFeatureProperties()) {
+				for (ClaferProperty featureProperty : claferFeature.getFeatureProperties()) {
 					operandItems.add(featureProperty.getPropertyName());
 				}
 				if (claferFeature.getFeatureInheritance() != null) {

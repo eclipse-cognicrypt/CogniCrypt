@@ -17,25 +17,23 @@ PCBC: Mode
 CTS : Mode
 
 
-abstract Algorithm
+abstract Cipher
   name -> string
   description -> string
   author -> string
   KeySize -> int
   BlockSize -> int
 
-abstract Cipher : Algorithm
-
 abstract SymmetricCipher : Cipher
-	keySize -> integer
-	[classPerformance = Fast]
 
-abstract SymmetricBlockCipher : SymmetricCipher
+
+
   
-[name = Final]
-[description = This is final clafer generation with path into project]
-[Blocksize = 64]
-[Keysize1 = 64]
-[Keysize2 = 222-333]
-[mode = OFB|CFB]
-[Padding = PKCS7|ZeroPadding]
+SHA : SymmetricCipher
+	[name = SHA]
+	[description = This is desc]
+	[Blocksize = 64]
+	[Keysize1 = 211]
+	[Keysize2 = 222-333]
+	[mode = OFB|CFB]
+	[Padding = ZeroPadding|PKCS7]

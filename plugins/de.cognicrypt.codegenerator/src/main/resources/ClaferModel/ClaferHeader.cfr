@@ -17,18 +17,12 @@ PCBC: Mode
 CTS : Mode
 
 
-abstract Algorithm
+abstract Cipher
   name -> string
   description -> string
   author -> string
   KeySize -> int
   BlockSize -> int
 
-abstract Cipher : Algorithm
-
 abstract SymmetricCipher : Cipher
-	keySize -> integer
-	[classPerformance = Fast]
-
-abstract SymmetricBlockCipher : SymmetricCipher
   

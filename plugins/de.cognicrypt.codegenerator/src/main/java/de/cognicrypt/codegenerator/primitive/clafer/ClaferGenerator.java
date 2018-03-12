@@ -19,22 +19,18 @@ import de.cognicrypt.codegenerator.utilities.Utils;
 public abstract class ClaferGenerator {
 
 	//	Copy the Static Part into New created file
-
 	public static void copyClaferHeader() {
 		InputStream input = null;
 		OutputStream output = null;
-
 		try {
 			input = new FileInputStream(Utils.getResourceFromWithin(Constants.claferHeader));
 			output = new FileOutputStream(Utils.getResourceFromWithin(Constants.claferFooter));
 			byte[] buf = new byte[1024];
 			int bytesRead;
-
 			while ((bytesRead = input.read(buf)) > 0) {
 				output.write(buf, 0, bytesRead);
 			}
-			//			output.write("abstract Algorithm : ".getBytes());
-
+			//			output.write(": SymmetricCipher".getBytes());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -42,12 +38,10 @@ public abstract class ClaferGenerator {
 			try {
 				input.close();
 				output.close();
-
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 		}
 	}
 
@@ -59,20 +53,19 @@ public abstract class ClaferGenerator {
 
 	public static void printClafer(LinkedHashMap<String, String> userInput) {
 		BufferedWriter bw;
-
 		try {
-
 			bw = new BufferedWriter(new FileWriter(Utils.getResourceFromWithin(Constants.claferFooter), true)); // the true will append the new data
-
 			// TODO Auto-generated method stub
 			for (String key : userInput.keySet()) {
-				bw.write("[" + key + " = " + userInput.get(key) + "]" + "\r\n"); // appends the string to the file
-				System.out.println("[" + key + " = " + userInput.get(key) + "]" + "\r\n");
+				if (key != null && key.equals("name")) {
+					bw.write(userInput.get(key) + " : SymmetricCipher" + "\r\n");
+				}
+				bw.write("\t" + "[" + key + " = " + userInput.get(key) + "]" + "\r\n"); // appends the string to the file
+				System.out.println("\t" + "[" + key + " = " + userInput.get(key) + "]" + "\r\n");
 			}
 			bw.close();
 		} catch (IOException ioe) {
 			System.err.println("IOException: " + ioe.getMessage());
 		}
 	}
-
 }

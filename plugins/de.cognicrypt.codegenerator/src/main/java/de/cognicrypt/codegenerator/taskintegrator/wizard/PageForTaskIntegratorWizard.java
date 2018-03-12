@@ -4,46 +4,34 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 
-import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
-import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
-import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeBrowseForFile;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeChoiceForModeOfWizard;
-import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
 
-/**
- * @author rajiv
- *
- */
 public class PageForTaskIntegratorWizard extends WizardPage {
 
 	private CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard = null;
 	protected CompositeToHoldGranularUIElements compositeToHoldGranularUIElements = null;
 
-	private CompositeForXsl compositeForXsl = null;
-
 	int counter = 0;// TODO for testing only.
 	protected ArrayList<ClaferFeature> cfrFeatures;
+
+	private HashMap<String, String> tagValueTagData;
+
 
 	/**
 	 * Create the wizard.
@@ -51,8 +39,10 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	public PageForTaskIntegratorWizard(String name, String title, String description) {
 		super(name);
 		setTitle(title);
-		setDescription(description);		
-		this.setPageComplete(false);		
+		setDescription(description);
+		this.setPageComplete(false);
+		// The String to display, and the constructed string for the XSL document.
+		setTagValueTagData(new HashMap<>());
 	}
 
 	/**
@@ -72,147 +62,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
 				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE, this));
 				break;
-			case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION:
-
-				setCompositeForXsl(new CompositeForXsl(container, SWT.NONE));
-				// fill the available space on the with the big composite
-				getCompositeForXsl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
-
-				Button btnAddXSLTag = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
-				btnAddXSLTag.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
-				btnAddXSLTag.setText("Add Xsl Tag");
-				Button btnReadCode = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
-				btnReadCode.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
-				btnReadCode.setText("Get the code");
-
-				btnReadCode.addSelectionListener(new SelectionAdapter() {
-					/*
-					 * (non-Javadoc)
-					 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-					 */
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-
-						super.widgetSelected(e);
-
-						FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
-
-						fileDialog.setFilterExtensions(new String[] {"*.xsl", "*.java", "*.txt" });
-						fileDialog.setText("Choose the code file:");
-
-						String fileDialogResult = fileDialog.open();
-						if (fileDialogResult != null) {
-							((CompositeForXsl) getCompositeForXsl()).updateTheTextFieldWithFileData(fileDialogResult);
-						}
-					}
-
-				});
-
-				btnAddXSLTag.addSelectionListener(new SelectionAdapter() {
-					
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						ClaferModel claferModel = null;
-						ArrayList<Question> questions = null;
-						ArrayList<String> strFeatures = new ArrayList<>();
-						
-
-						for (IWizardPage page : getWizard().getPages()) {
-							// get the Clafer creation page
-							if (page instanceof PageForTaskIntegratorWizard) {
-								PageForTaskIntegratorWizard pftiw = (PageForTaskIntegratorWizard) page;
-								if (pftiw.getCompositeToHoldGranularUIElements() instanceof CompositeToHoldGranularUIElements) {
-									CompositeToHoldGranularUIElements comp = (CompositeToHoldGranularUIElements) pftiw.getCompositeToHoldGranularUIElements();
-									if (pftiw.getName() == Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION) {
-										// get the Clafer features
-										claferModel = comp.getClaferModel();
-
-										// get all the Clafer features' properties
-										for (ClaferFeature cfrFtr : claferModel) {
-											String ftrName = cfrFtr.getFeatureName();
-											for (FeatureProperty prop : cfrFtr.getFeatureProperties()) {
-												// prepend the feature name and add the property to dropdown entries
-												strFeatures.add(ftrName + "." + prop.getPropertyName());
-											}
-										}
-									} else if (pftiw.getName() == Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS) {
-										questions = comp.getListOfAllQuestions();
-
-										for (Question question : questions) {
-											// TODO compare against Constants.GUIElements.text
-											if (question.getQuestionType().equals("text")) {
-												strFeatures.add("[Answer to \"" + question.getQuestionText() + "\"]");
-											}
-											
-											
-										}
-									}
-								}
-							}
-						}
-
-						XSLTagDialog dialog;
-						if (strFeatures.size() > 0) {
-							dialog = new XSLTagDialog(getShell(), strFeatures);
-						} else {
-							dialog = new XSLTagDialog(getShell());
-						}
-
-						if (dialog.open() == Window.OK) {
-							// To locate the position of the xsl tag to be introduce						
-							Point selected = getCompositeForXsl().getXslTxtBox().getSelection();
-							String xslTxtBoxContent = getCompositeForXsl().getXslTxtBox().getText();
-							xslTxtBoxContent = xslTxtBoxContent.substring(0, selected.x) + dialog.getTag().toString() + xslTxtBoxContent.substring(selected.y,
-								xslTxtBoxContent.length());
-							getCompositeForXsl().getXslTxtBox().setText(xslTxtBoxContent);
-						}
-
-					}
-				});
-				break;
-			case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
-				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, this.getName()));
-				// fill the available space on the with the big composite
-				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-				TaskIntegrationWizard tiWizard = null;
-
-				if (TaskIntegrationWizard.class.isInstance(getWizard())) {
-					tiWizard = (TaskIntegrationWizard) getWizard();
-				} else {
-					Activator.getDefault().logError("PageForTaskIntegratorWizard was instantiated by a wizard other than TaskIntegrationWizard");
-				}
-
-				PageForTaskIntegratorWizard claferPage = tiWizard.getTIPageByName(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION);
-				CompositeToHoldGranularUIElements claferPageComposite = (CompositeToHoldGranularUIElements) claferPage.getCompositeToHoldGranularUIElements();
-
-				QuestionDialog questionDialog = new QuestionDialog(parent.getShell());
-				Button qstnDialog = new Button(container, SWT.NONE);
-				qstnDialog.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
-				qstnDialog.setText("Add Question");
-
-				qstnDialog.addSelectionListener(new SelectionAdapter() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						int response = questionDialog.open();
-						int qID=compositeToHoldGranularUIElements.getListOfAllQuestions().size();
-						if (response == Window.OK) {
-							counter++;
-							//Question questionDetails = getDummyQuestion(questionDialog.getQuestionText(),questionDialog.getquestionType(),questionDialog.getAnswerValue());
-							Question questionDetails = questionDialog.getQuestionDetails();
-							questionDetails.setId(qID);
-
-							// Update the array list.
-							compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
-							compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails, claferPageComposite.getClaferModel(), false);
-							compositeToHoldGranularUIElements.updateQuestionContainer();
-
-						}
-					}
-				});
-				break;
 			case Constants.PAGE_NAME_FOR_LINK_ANSWERS:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, this.getName()));
 				// fill the available space on the with the big composite
@@ -222,11 +71,34 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	}
 
 	/**
+	 * Get the location of the compiled Javascript file.
+	 * 
+	 * @return the location of the JS file in the form of a string.
+	 */
+	public String getJSFilePath() {
+		return ((ClaferPage) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompiledClaferModelPath();
+	}
+
+	/**
 	 * Overwriting the getNextPage method to extract the list of all questions
 	 * from highLevelQuestion page and forward the data to pageForLinkAnswers at runtime
 	 */
 	public IWizardPage getNextPage() {
-		boolean validatedNextPress = this.nextPressed(this);
+		boolean isNextPressed = "nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[2].getMethodName());
+		if (isNextPressed) {
+			boolean validatedNextPress = this.nextPressed(this);
+			if (!validatedNextPress) {
+				return this;
+			}
+		}
+		
+		if (this.getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD) && !getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode().isGuidedModeChosen()) {
+			return null;
+		}
+		
+		if (this.getName().equals(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)) {
+
+		}
 		/*
 		 * This is for debugging only. To be removed for the final version. TODO Please add checks on the pages after mode selection to mark those pages as completed, or restrict
 		 * the finish button.
@@ -302,12 +174,12 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	public void checkIfModeSelectionPageIsComplete() {		
 		boolean errorOnFileWidgets = false;
 		// The first child of the composite is a group. Get the children of this group to iterated over.
-		for (Control control : ((Group)getCompositeChoiceForModeOfWizard().getChildren()[0]).getChildren()) {
+		for (Control control : ((Composite) getCompositeChoiceForModeOfWizard().getChildren()[0]).getChildren()) {
 			// Check if the child is an instance of group and is visible.
 			if (control instanceof Group && control.isVisible()) {
 				
 				// Get the children of this group and iterate over them. These are the widgets that get the file data. This loop generalizes for all these widgets.
-				for (Control subGroup : ((Group)control).getChildren()) {					
+				for (Control subGroup : ((Composite) control).getChildren()) {
 					if (subGroup instanceof CompositeBrowseForFile) {
 						CompositeBrowseForFile tempVaraiable = (CompositeBrowseForFile) subGroup;
 						if ((tempVaraiable).getDecFilePath().getDescriptionText().contains(Constants.ERROR)) {
@@ -352,7 +224,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	/**
 	 * @return the compositeToHoldGranularUIElements
 	 */
-	public Composite getCompositeToHoldGranularUIElements() {
+	public CompositeToHoldGranularUIElements getCompositeToHoldGranularUIElements() {
 		return compositeToHoldGranularUIElements;
 	}
 
@@ -370,21 +242,18 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	}
 
 	/**
-	 * Return the composite for the XSL page.
-	 * @return the compositeForXsl
+	 * @return the tagValueTagData
 	 */
-	public CompositeForXsl getCompositeForXsl() {
-		return compositeForXsl;
+	public HashMap<String, String> getTagValueTagData() {
+		return tagValueTagData;
 	}
 
 	/**
-	 * The composite is maintained as a global variable to have access to it as part of the page object.
-	 * @param compositeForXsl
-	 *        the compositeForXsl to set
+	 * @param tagValueTagData
+	 *        the tagValueTagData to set
 	 */
-	public void setCompositeForXsl(CompositeForXsl compositeForXsl) {
-		this.compositeForXsl = compositeForXsl;
-
+	public void setTagValueTagData(HashMap<String, String> tagValueTagData) {
+		this.tagValueTagData = tagValueTagData;
 	}
 
 }

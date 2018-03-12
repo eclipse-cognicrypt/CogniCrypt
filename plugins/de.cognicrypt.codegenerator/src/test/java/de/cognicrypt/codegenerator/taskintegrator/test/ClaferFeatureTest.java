@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -18,7 +19,7 @@ import org.junit.Test;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
-import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 
 public class ClaferFeatureTest {
 
@@ -26,9 +27,9 @@ public class ClaferFeatureTest {
 
 	@Test
 	public final void testPropertyAmount() {
-		ArrayList<FeatureProperty> featureProperties = new ArrayList<>();
+		ArrayList<ClaferProperty> featureProperties = new ArrayList<>();
 		for (int i = 0; i < 9; i++) {
-			featureProperties.add(new FeatureProperty("featureProperty" + String.valueOf(i), "propertyType"));
+			featureProperties.add(new ClaferProperty("featureProperty" + String.valueOf(i), "propertyType"));
 		}
 		ClaferFeature claferFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, "testFeature", "");
 		claferFeature.setFeatureProperties(featureProperties);
@@ -43,7 +44,7 @@ public class ClaferFeatureTest {
 
 		// programmatically created Clafer feature
 		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Algorithm", "");
-		cfrFeature.getFeatureProperties().add(new FeatureProperty("securityLevel", "Security"));
+		cfrFeature.getFeatureProperties().add(new ClaferProperty("securityLevel", "Security"));
 
 		// generate file from ClaferFeature instance
 		String actualFilename = testFileFolder + "testFile1_tmp.cfr";
@@ -68,8 +69,8 @@ public class ClaferFeatureTest {
 		ClaferModel claferModel = new ClaferModel();
 		ClaferFeature featureA = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Z", "");
 
-		ArrayList<FeatureProperty> propertiesA = new ArrayList<FeatureProperty>();
-		FeatureProperty expectedProperty = new FeatureProperty("prop", "integer");
+		ArrayList<ClaferProperty> propertiesA = new ArrayList<ClaferProperty>();
+		ClaferProperty expectedProperty = new ClaferProperty("prop", "integer");
 		propertiesA.add(expectedProperty);
 		featureA.setFeatureProperties(propertiesA);
 
@@ -80,14 +81,21 @@ public class ClaferFeatureTest {
 		claferModel.add(featureB);
 		claferModel.add(featureC);
 
-		ArrayList<FeatureProperty> inheritedPropertiesC = featureC.getInheritedProperties(claferModel);
+		ArrayList<ClaferProperty> inheritedPropertiesC = featureC.getInheritedProperties(claferModel);
 		assertTrue(inheritedPropertiesC.contains(expectedProperty));
 
-		ArrayList<FeatureProperty> inheritedPropertiesB = featureB.getInheritedProperties(claferModel);
+		ArrayList<ClaferProperty> inheritedPropertiesB = featureB.getInheritedProperties(claferModel);
 		assertTrue(inheritedPropertiesB.contains(expectedProperty));
 
-		ArrayList<FeatureProperty> inheritedPropertiesA = featureA.getInheritedProperties(claferModel);
+		ArrayList<ClaferProperty> inheritedPropertiesA = featureA.getInheritedProperties(claferModel);
 		assertTrue(inheritedPropertiesA.contains(expectedProperty));
+	}
+
+	@Test
+	public final void testGetDependencies() {
+		ClaferFeature feature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Security", "Enum -> integer");
+		Set<String> dependencies = feature.getDependencies();
+		assertEquals(2, dependencies.size());
 	}
 
 	@AfterClass

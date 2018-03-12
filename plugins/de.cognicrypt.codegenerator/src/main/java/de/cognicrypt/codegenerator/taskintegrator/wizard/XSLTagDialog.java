@@ -1,6 +1,9 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -32,7 +35,8 @@ public class XSLTagDialog extends Dialog {
 	private String currentSelectionStringOncomboXSLTags;
 	
 	private XSLTag tag;
-	private ArrayList<String> cfrFeatures;
+	private SortedSet<String> cfrFeatures;
+	private HashMap<String, String> valuesForTagData;
 	
 	/**
 	 * Create the dialog.
@@ -43,10 +47,11 @@ public class XSLTagDialog extends Dialog {
 		setShellStyle(SWT.RESIZE);
 	}
 
-	public XSLTagDialog(Shell parentShell, ArrayList<String> cfrFeatures) {
+	public XSLTagDialog(Shell parentShell, HashMap<String, String> valuesForTagData) {
 		this(parentShell);
-
-		this.cfrFeatures = cfrFeatures;
+		// accept all the possible values to be displayed along with their corresponding tag data.
+		this.setValuesForTagData(valuesForTagData);
+		this.cfrFeatures = new TreeSet<String>(getValuesForTagData().keySet());
 	}
 
 	/**
@@ -86,7 +91,7 @@ public class XSLTagDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// Add the UI element for the attribute with the remove button, and pass the selected XSL tag.
-				ArrayList<String> possibleCfrFeatures = cfrFeatures;
+				SortedSet<String> possibleCfrFeatures = cfrFeatures;
 				compositeForXSLAttributes.addXSLAttribute(true, comboXSLTags.getText(), possibleCfrFeatures);
 				// Update all the drop down menus for attribute UIs to keep them consistent after adding a new attribute.
 				ArrayList<String> possAttributes = compositeForXSLAttributes.getListOfPossibleAttributes(comboXSLTags.getText());
@@ -195,6 +200,15 @@ public class XSLTagDialog extends Dialog {
 		 for(Control attribute : ((Composite)compositeForXSLAttributes.getContent()).getChildren()){
 			 attributesOnThisTag.add(((GroupXSLTagAttribute) attribute).getSelectedAttribute());			 
 		 }
+
+		// Replace all the place holder values with the appropriate tag data.
+
+		for (XSLAttribute xslAttribute : attributesOnThisTag) {
+			if (valuesForTagData != null) {
+				xslAttribute.setXSLAttributeData((valuesForTagData.get(xslAttribute.getXSLAttributeData()) == null) ? xslAttribute.getXSLAttributeData()
+					: valuesForTagData.get(xslAttribute.getXSLAttributeData()));
+			}
+		}
 		
 		setTag(new XSLTag(selectedTag, attributesOnThisTag));
 		super.okPressed();
@@ -234,6 +248,20 @@ public class XSLTagDialog extends Dialog {
 	 */
 	private void setTag(XSLTag tag) {
 		this.tag = tag;
+	}
+
+	/**
+	 * @return the valuesForTagData
+	 */
+	public HashMap<String, String> getValuesForTagData() {
+		return valuesForTagData;
+	}
+
+	/**
+	 * @param valuesForTagData the valuesForTagData to set
+	 */
+	public void setValuesForTagData(HashMap<String, String> valuesForTagData) {
+		this.valuesForTagData = valuesForTagData;
 	}
 
 }

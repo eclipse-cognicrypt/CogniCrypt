@@ -50,7 +50,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	}
 	
 	public void addGranularClaferUIElements(ClaferFeature claferFeature){
-		new CompositeGranularUIForClaferFeature((Composite) this.getContent(), claferFeature);
+		new CompositeClaferFeature((Composite) this.getContent(), claferFeature);
 		setMinSize(((Composite) getContent()).computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
@@ -75,6 +75,8 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		for(ClaferFeature featureUnderConsideration : claferModel){
 			addGranularClaferUIElements(featureUnderConsideration);
 		}
+
+		((Composite) this.getContent()).layout();
 	}
 	
 	public void setCompositeClaferFeedback(CompositeClaferFeedback compositeClaferFeedback) {

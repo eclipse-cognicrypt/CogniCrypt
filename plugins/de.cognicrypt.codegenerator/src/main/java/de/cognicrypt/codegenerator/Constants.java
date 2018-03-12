@@ -387,6 +387,11 @@ public class Constants {
 		
 	}
 	
+	public static final String SLASH = "/";
+	public static final String ATTRIBUTE_BEGIN = "[@";
+	public static final String ATTRIBUTE_END = "=\'\']";
+	public static final String DOT = ".";
+
 	// for the file utils for the task integrator.
 	public static final String JAR_FILE_DIRECTORY_PATH = rsrcPath + "AdditionalResources" + innerFileSeparator;
 	public static final String CFR_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModel" + innerFileSeparator;
@@ -404,13 +409,14 @@ public class Constants {
 	public static final String radioButton = "Radio button";
 
 	public static final String FEATURE_PROPERTY_TYPE_RELATION = "is of type";
+	public static final String FEATURE_PROPERTY_TYPE_REFERENCE_RELATION = "translates to";
 	public static final String FEATURE_PROPERTY_NAME = "Name";
 	public static final String FEATURE_PROPERTY_REMOVE = "Remove";
 	
 	
 	
 	public static final String[] CLAFER_RESERVED_WORDS = { "abstract", "all", "assert", "disj", "else", "enum", "if", "in", "lone", "max", "maximize", "min", "minimize", "mux", "no", "not", "one", "opt", "or", "product", "some", "sum", "then", "xor" };
-	public static final String[] CLAFER_PRIMITIVE_TYPES = { "integer", "double", "real", "string" };
+	public static final String[] CLAFER_PRIMITIVE_TYPES = { "integer", "int", "double", "real", "string" };
 	
 	
 	

@@ -42,11 +42,6 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.utilities.Utils;
 
-/**
- * @author rajiv
- *
- */
-
 public class FileUtilities {
 
 	private String taskName;	

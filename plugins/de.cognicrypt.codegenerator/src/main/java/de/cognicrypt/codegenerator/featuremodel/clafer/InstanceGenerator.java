@@ -308,19 +308,21 @@ public class InstanceGenerator {
 
 			int redundantCounter = 0;
 			while (this.solver.find()) {
-				final InstanceClafer instance = this.solver.instance().getTopClafers()[this.solver.instance().getTopClafers().length - 1];
-				final long hashValueOfInstance = getHashValueOfInstance(instance);
+				if (this.solver.instance().getTopClafers().length > 0) {
+					final InstanceClafer instance = this.solver.instance().getTopClafers()[this.solver.instance().getTopClafers().length - 1];
+					final long hashValueOfInstance = getHashValueOfInstance(instance);
 
-				if (this.uniqueInstances.containsKey(hashValueOfInstance)) {
-					if (++redundantCounter > 1000) {
+					if (this.uniqueInstances.containsKey(hashValueOfInstance)) {
+						if (++redundantCounter > 1000) {
+							break;
+						}
+					} else {
+						this.uniqueInstances.put(hashValueOfInstance, instance);
+						redundantCounter = 0;
+					}
+					if (this.uniqueInstances.size() > 100) {
 						break;
 					}
-				} else {
-					this.uniqueInstances.put(hashValueOfInstance, instance);
-					redundantCounter = 0;
-				}
-				if (this.uniqueInstances.size() > 100) {
-					break;
 				}
 			}
 

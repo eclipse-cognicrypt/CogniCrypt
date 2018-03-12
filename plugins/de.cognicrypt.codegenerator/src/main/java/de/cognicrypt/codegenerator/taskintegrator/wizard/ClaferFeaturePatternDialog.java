@@ -1,44 +1,37 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
-import java.util.ArrayList;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 
-import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositePattern;
+import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositePatternEnum;
 
 public class ClaferFeaturePatternDialog extends Dialog {
 
-	private Composite compositeOptions;
-	private ScrolledComposite compositeScrolledOptions;
+	private Composite compositePatternDetailsContainer;
+	private CompositePattern compositePatternDetails;
+	private Combo comboPattern;
 	
-	private String patternName;
-	private ArrayList<StringBuilder> options;
+	private ClaferModel resultModel;
 
 	public ClaferFeaturePatternDialog(Shell parentShell) {
 		super(parentShell);
 		setShellStyle(SWT.RESIZE | SWT.CLOSE);
-
-		patternName = "";
-		options = new ArrayList<>();
 	}
 
 	/**
@@ -57,85 +50,79 @@ public class ClaferFeaturePatternDialog extends Dialog {
 		lblPattern.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		lblPattern.setText("Pattern");
 
-		Combo comboPattern = new Combo(container, SWT.NONE);
+		comboPattern = new Combo(container, SWT.NONE);
 		comboPattern.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		comboPattern.add("Enumeration");
 		comboPattern.add("Ordered Enumeration");
 		comboPattern.select(0);
 
-		Label lblName = new Label(container, SWT.NONE);
-		lblName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		lblName.setText("Name");
-
-		Text txtName = new Text(container, SWT.BORDER);
-		txtName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		txtName.addModifyListener(new ModifyListener() {
+		comboPattern.addSelectionListener(new SelectionListener() {
 			
 			@Override
-			public void modifyText(ModifyEvent arg0) {
-				patternName = txtName.getText();
+			public void widgetSelected(SelectionEvent arg0) {
+				updatePatternDetailsComposite();
+				validate();
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
 				
 			}
 		});
 
-		Button btnAddOption = new Button(container, SWT.NONE);
-		btnAddOption.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
-		btnAddOption.setText("Add option");
-		btnAddOption.addSelectionListener(new SelectionAdapter() {
+		compositePatternDetailsContainer = new Composite(container, SWT.NONE);
+		compositePatternDetailsContainer.setLayout(new GridLayout(1, false));
+		compositePatternDetailsContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				StringBuilder strOption = new StringBuilder();
-				options.add(strOption);
-
-				Text txtOption = new Text(compositeOptions, SWT.BORDER);
-				txtOption.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-				txtOption.addModifyListener(new ModifyListener() {
-
-					@Override
-					public void modifyText(ModifyEvent arg0) {
-						strOption.delete(0, strOption.length());
-						strOption.append(txtOption.getText());
-
-					}
-				});
-
-				Button btnRemove = new Button(compositeOptions, SWT.NONE);
-				btnRemove.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
-				btnRemove.setText("Remove");
-				btnRemove.addSelectionListener(new SelectionAdapter() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						txtOption.dispose();
-						btnRemove.dispose();
-						options.remove(strOption);
-
-						compositeOptions.layout();
-						super.widgetSelected(e);
-					}
-				});
-
-				compositeOptions.layout();
-				compositeScrolledOptions.setMinSize(compositeOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-				super.widgetSelected(e);
-			}
-		});
-
-		compositeScrolledOptions = new ScrolledComposite(container, SWT.BORDER | SWT.V_SCROLL);
-		compositeScrolledOptions.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		compositeScrolledOptions.setLayout(new GridLayout(1, false));
-
-		compositeOptions = new Composite(compositeScrolledOptions, SWT.NONE);
-		compositeOptions.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		compositeOptions.setLayout(new GridLayout(2, false));
-		compositeScrolledOptions.setContent(compositeOptions);
-
-		compositeScrolledOptions.setExpandHorizontal(true);
-		compositeScrolledOptions.setExpandVertical(true);
-		compositeScrolledOptions.setMinSize(compositeOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		updatePatternDetailsComposite();
+		validate();
 
 		return container;
+	}
+
+	private void validate() {
+		boolean contentValid = compositePatternDetails.validate();
+
+		if (contentValid) {
+			if (getButton(IDialogConstants.OK_ID) != null) {
+				getButton(IDialogConstants.OK_ID).setEnabled(true);
+			}
+		} else {
+			if (getButton(IDialogConstants.OK_ID) != null) {
+				getButton(IDialogConstants.OK_ID).setEnabled(false);
+			}
+		}
+
+	}
+
+	private void updatePatternDetailsComposite() {
+		String selectedPattern = comboPattern.getText();
+
+		// TODO consider outsourcing patterns into a simple Map<String, PatternComposite>,
+		// where PatternComposite is an interface providing the appropriate getResult method
+		if (compositePatternDetails != null) {
+			compositePatternDetails.dispose();
+		}
+		if (selectedPattern.equals("Enumeration")) {
+			compositePatternDetails = new CompositePatternEnum(compositePatternDetailsContainer, false);
+			compositePatternDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		} else if (selectedPattern.equals("Ordered Enumeration")) {
+			compositePatternDetails = new CompositePatternEnum(compositePatternDetailsContainer, true);
+			compositePatternDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		}
+
+		Listener validationListener = new Listener() {
+
+			@Override
+			public void handleEvent(Event arg0) {
+				validate();
+			}
+		};
+
+		compositePatternDetails.addListener(SWT.Selection, validationListener);
+
+		compositePatternDetailsContainer.layout();
 	}
 
 	/**
@@ -146,6 +133,7 @@ public class ClaferFeaturePatternDialog extends Dialog {
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
+		validate();
 	}
 
 	/**
@@ -156,13 +144,21 @@ public class ClaferFeaturePatternDialog extends Dialog {
 		return new Point(800, 700);
 	}
 
-	public ClaferModel getResultModel() {
-		ClaferModel resultModel = new ClaferModel();
-		resultModel.add(new ClaferFeature(Constants.FeatureType.ABSTRACT, patternName, "Enum"));
-		for (StringBuilder sb : options) {
-			resultModel.add(new ClaferFeature(Constants.FeatureType.CONCRETE, sb.toString(), patternName));
-		}
+	@Override
+	protected void okPressed() {
+		saveResultModel();
+		super.okPressed();
+	}
 
+	private void saveResultModel() {
+		if (compositePatternDetails != null && compositePatternDetails instanceof CompositePattern) {
+			resultModel = compositePatternDetails.getResultModel();
+		} else {
+			Activator.getDefault().logError("Unknown return from the Clafer pattern dialog");
+		}
+	}
+
+	public ClaferModel getResultModel() {
 		return resultModel;
 	}
 

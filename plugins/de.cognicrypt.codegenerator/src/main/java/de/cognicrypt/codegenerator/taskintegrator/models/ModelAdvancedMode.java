@@ -8,11 +8,8 @@ import java.io.File;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.tasks.Task;
 
-/**
- * @author rajiv
- *
- */
 public class ModelAdvancedMode {
+
 	private String nameOfTheTask;	
 	private File locationOfCustomLibrary;
 	private File locationOfClaferFile;

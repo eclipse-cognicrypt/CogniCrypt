@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Text;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
-import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.ClaferModelContentProvider;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.ClaferModelLabelProvider;
 
@@ -116,8 +116,8 @@ public class ClaferConstraintDialog extends Dialog {
 						appendConstraint(featureClicked.getFeatureName());
 					}
 					// add to text field if property name clicked
-					else if (ts.getFirstElement() instanceof FeatureProperty) {
-						FeatureProperty propertyClicked = (FeatureProperty) ts.getFirstElement();
+					else if (ts.getFirstElement() instanceof ClaferProperty) {
+						ClaferProperty propertyClicked = (ClaferProperty) ts.getFirstElement();
 						ClaferFeature parentFeature = ((ClaferModel) treeViewer.getInput()).getParentFeatureOfProperty(propertyClicked);
 
 						StringBuilder addition = new StringBuilder();

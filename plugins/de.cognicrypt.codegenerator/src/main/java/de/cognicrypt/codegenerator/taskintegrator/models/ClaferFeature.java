@@ -12,10 +12,6 @@ import java.util.function.Predicate;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.Constants.FeatureType;
 
-/**
- * @author rajiv
- *
- */
 public class ClaferFeature implements Serializable {
 
 	private static final long serialVersionUID = -6403607301359530383L;
@@ -23,7 +19,7 @@ public class ClaferFeature implements Serializable {
 	private FeatureType featureType;
 	private String featureName;
 	private String featureInheritance;
-	private ArrayList<FeatureProperty> featureProperties; // <String name, String value>. The names in this collection cannot be repeated.
+	private ArrayList<ClaferProperty> featureProperties; // <String name, String value>. The names in this collection cannot be repeated.
 	private ArrayList<ClaferConstraint> featureConstraints; // each constraint will be generated as a "valid" string in the constraint generator pop up.
 	/**
 	 * @param featureType
@@ -37,7 +33,7 @@ public class ClaferFeature implements Serializable {
 		this.setFeatureType(featureType);
 		this.setFeatureName(featureName);
 		this.setFeatureInheritance(featureInheritance);
-		this.featureProperties = new ArrayList<FeatureProperty>();
+		this.featureProperties = new ArrayList<ClaferProperty>();
 		this.featureConstraints = new ArrayList<ClaferConstraint>();
 	}
 	/**
@@ -84,11 +80,11 @@ public class ClaferFeature implements Serializable {
 	/**
 	 * @return the properties
 	 */
-	public ArrayList<FeatureProperty> getFeatureProperties() {
+	public ArrayList<ClaferProperty> getFeatureProperties() {
 		return featureProperties;
 	}
 
-	public void setFeatureProperties(ArrayList<FeatureProperty> featureProperties) {
+	public void setFeatureProperties(ArrayList<ClaferProperty> featureProperties) {
 		this.featureProperties = featureProperties;
 	}
 	
@@ -98,7 +94,7 @@ public class ClaferFeature implements Serializable {
 	public boolean hasProperties() {
 		if (!featureProperties.isEmpty()) {
 			// check for a non-empty feature property
-			for (FeatureProperty featureProperty : getFeatureProperties()) {
+			for (ClaferProperty featureProperty : getFeatureProperties()) {
 				if (!featureProperty.getPropertyName().isEmpty()) {
 					return true;
 				}
@@ -111,13 +107,13 @@ public class ClaferFeature implements Serializable {
 	 * check whether the {@link ClaferFeature} has properties meeting a given constraint
 	 * 
 	 * @param predicate
-	 *        {@link Predicate} that has to be satisfied by at least one {@link FeatureProperty}
+	 *        {@link Predicate} that has to be satisfied by at least one {@link ClaferProperty}
 	 * @return <code>true</code> if the feature has non-empty properties that satisfy the predicate, <code>false</code> otherwise
 	 */
-	public boolean hasPropertiesSatisfying(Predicate<? super FeatureProperty> predicate) {
+	public boolean hasPropertiesSatisfying(Predicate<? super ClaferProperty> predicate) {
 		if (!featureProperties.isEmpty()) {
 			// check for a non-empty feature property
-			for (FeatureProperty featureProperty : getFeatureProperties()) {
+			for (ClaferProperty featureProperty : getFeatureProperties()) {
 				if (!featureProperty.getPropertyName().isEmpty() && predicate.test(featureProperty)) {
 					return true;
 				}
@@ -132,7 +128,7 @@ public class ClaferFeature implements Serializable {
 	 * @return true if the feature has a property with the given name, false otherwise
 	 */
 	public boolean hasProperty(String needle) {
-		for (FeatureProperty featureProperty : getFeatureProperties()) {
+		for (ClaferProperty featureProperty : getFeatureProperties()) {
 			if (featureProperty.getPropertyName() == needle) {
 				return true;
 			}
@@ -141,8 +137,8 @@ public class ClaferFeature implements Serializable {
 		return false;
 	}
 
-	public ArrayList<FeatureProperty> getInheritedProperties(ClaferModel refModel) {
-		ArrayList<FeatureProperty> inheritedProperties = (ArrayList<FeatureProperty>) getFeatureProperties().clone();
+	public ArrayList<ClaferProperty> getInheritedProperties(ClaferModel refModel) {
+		ArrayList<ClaferProperty> inheritedProperties = (ArrayList<ClaferProperty>) getFeatureProperties().clone();
 
 		ClaferFeature parentFeature = refModel.getFeature(getFeatureInheritance());
 		if (parentFeature != null) {
@@ -170,7 +166,7 @@ public class ClaferFeature implements Serializable {
 			}
 		}
 
-		for (FeatureProperty fp : getFeatureProperties()) {
+		for (ClaferProperty fp : getFeatureProperties()) {
 			if (fp.getPropertyType().contains("=")) {
 				dependencies.add(fp.getPropertyType().split("=")[0]);
 			} else {
@@ -220,7 +216,7 @@ public class ClaferFeature implements Serializable {
 		
 		if (includeChildren) {
 
-			for (FeatureProperty featureProperty : getFeatureProperties()) {
+			for (ClaferProperty featureProperty : getFeatureProperties()) {
 				strRepresentation.append("\n\t");
 				strRepresentation.append(featureProperty.toString());
 			}
@@ -230,7 +226,9 @@ public class ClaferFeature implements Serializable {
 				strRepresentation.append(featureConstraint.toString());
 			}
 
-			strRepresentation.append("\n");
+			if (!getFeatureProperties().isEmpty() || !getFeatureConstraints().isEmpty()) {
+				strRepresentation.append("\n");
+			}
 
 		}
 		

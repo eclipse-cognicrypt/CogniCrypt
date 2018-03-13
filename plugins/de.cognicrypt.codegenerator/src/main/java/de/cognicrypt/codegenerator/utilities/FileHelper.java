@@ -6,8 +6,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.ICompilationUnit;
+
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.DeveloperProject;
 
 /**
  * A helper class for files.
@@ -45,7 +49,7 @@ public class FileHelper {
 	public static boolean checkFileForString(final String filePath, String searchString) throws IOException {
 		final File f = new File(filePath);
 		if (!(f.exists() && Files.isReadable(f.toPath()))) {
-			return false;
+			throw new IOException();
 		}
 
 		return Files.readAllLines(Paths.get(filePath)).stream().anyMatch(line -> line.contains(searchString));
@@ -60,7 +64,7 @@ public class FileHelper {
 	public static void trimFile(final String filePath) throws IOException {
 		final File f = new File(filePath);
 		if (!(f.exists() && Files.isReadable(f.toPath()))) {
-			System.out.println("wrong filepath");
+			throw new IOException();
 		}
 
 		final String contentStringAlt = String.join(Constants.lineSeparator, Files.readAllLines(Paths.get(filePath))).trim();
@@ -68,5 +72,4 @@ public class FileHelper {
 		writer.write(contentStringAlt);
 		writer.close();
 	}
-
 }

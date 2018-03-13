@@ -93,7 +93,7 @@ Except as expressly stated in Sections 2(a) and 2(b) above, Recipient receives n
    </license>
 
    <url>
-      <update url="http://download.cognicrypt.org/cognicrypt"/>
+      <update url="http://download.eclipse.org/cognicrypt"/>
    </url>
 
    <requires>

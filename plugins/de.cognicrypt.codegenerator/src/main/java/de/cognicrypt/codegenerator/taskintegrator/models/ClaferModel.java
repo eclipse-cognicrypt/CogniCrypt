@@ -121,6 +121,14 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 		// find missing inherited feature
 		if (!refFeature.getFeatureInheritance().isEmpty()) {
 			boolean parentFound = false;
+
+			for (String primitive : Constants.CLAFER_PRIMITIVE_TYPES) {
+				if (primitive.equals(refFeature.getFeatureInheritance())) {
+					parentFound = true;
+					break;
+				}
+			}
+
 			for (ClaferFeature cfrFeature : claferModel) {
 				if (cfrFeature.getFeatureName().equals(refFeature.getFeatureInheritance())) {
 					parentFound = true;
@@ -136,7 +144,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 		}
 
 		// find missing property types
-		for (FeatureProperty fp : refFeature.getFeatureProperties()) {
+		for (ClaferProperty fp : refFeature.getFeatureProperties()) {
 			boolean propertyTypeFound = false;
 
 			// do not implement Clafer primitives
@@ -214,7 +222,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 			}
 
 			for (ClaferFeature refFeature : claferModel) {
-				for (FeatureProperty featureProp : refFeature.getFeatureProperties()) {
+				for (ClaferProperty featureProp : refFeature.getFeatureProperties()) {
 					if (featureProp.getPropertyType().equals(cfrFeature.getFeatureName())) {
 						// usage found: featureProp is of type cfrFeature
 						used = true;
@@ -294,9 +302,9 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	 *        reference of the property to be found
 	 * @return first {@link ClaferFeature} that contains a matching reference to the given property
 	 */
-	public ClaferFeature getParentFeatureOfProperty(FeatureProperty referenceProperty) {
+	public ClaferFeature getParentFeatureOfProperty(ClaferProperty referenceProperty) {
 		for (ClaferFeature cfrFeature : claferModel) {
-			for (FeatureProperty featureProperty : cfrFeature.getFeatureProperties()) {
+			for (ClaferProperty featureProperty : cfrFeature.getFeatureProperties()) {
 				// check, if this property is pointed to by referenceProperty
 				if (featureProperty == referenceProperty) {
 					return cfrFeature;

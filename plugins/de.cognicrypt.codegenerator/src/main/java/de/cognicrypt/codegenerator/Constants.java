@@ -201,9 +201,11 @@ public class Constants {
 	// Constants for the composites
 	public static final String WIDGET_DATA_NAME_OF_THE_TASK = "NameOfTheTask";
 	public static final String WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK = "Location of the Library";
+	public static final String WIDGET_DATA_LIBRARY_LOCATION_OF_THE_HELP_FILE = "Location of the Help file";
 	public static final String WIDGET_DATA_LOCATION_OF_CLAFER_FILE = "Location of the Clafer file";
 	public static final String WIDGET_DATA_LOCATION_OF_XSL_FILE = "Location of the XSL file";
 	public static final String WIDGET_DATA_LOCATION_OF_JSON_FILE = "Location of the JSON file";
+	public static final String WIDGET_DATA_LOCATION_OF_HELP_FILE = "Location of the Help file";
 	public static final String WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED = "isCustomLibraryRequired";
 	public static final String WIDGET_DATA_IS_GUIDED_MODE_CHOSEN = "isGuidedModeChosen";
 	public static final String WIDGET_DATA_IS_GUIDED_MODE_FORCED = "isGuidedModeForced";
@@ -397,11 +399,14 @@ public class Constants {
 	public static final String CFR_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModel" + innerFileSeparator;
 	public static final String JSON_FILE_DIRECTORY_PATH = rsrcPath + "TaskDesc" + innerFileSeparator;
 	public static final String XSL_FILE_DIRECTORY_PATH = rsrcPath + "XSLTemplates" + innerFileSeparator;
+	public static final String HELP_FILE_DIRECTORY_PATH = rsrcPath + "Help" + innerFileSeparator;
 	public static final String CFR_EXTENSION = ".cfr";
 	public static final String JS_EXTENSION = ".js";
 	public static final String JAR_EXTENSION = ".jar";
 	public static final String JSON_EXTENSION = ".json";
 	public static final String XSL_EXTENSION = ".xsl";
+	public static final String XML_EXTENSION = ".xml";
+	public static final String PLUGIN_XML_FILE = innerFileSeparator + "plugin.xml";
 	
 	//for the list of items to be included inside the combo of the questionTab
 	public static final String dropDown = "Drop down";

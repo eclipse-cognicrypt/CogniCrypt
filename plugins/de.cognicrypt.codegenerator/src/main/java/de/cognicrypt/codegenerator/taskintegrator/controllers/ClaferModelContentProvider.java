@@ -1,4 +1,4 @@
-package de.cognicrypt.codegenerator.taskintegrator.widgets;
+package de.cognicrypt.codegenerator.taskintegrator.controllers;
 
 import java.util.ArrayList;
 import java.util.function.Predicate;

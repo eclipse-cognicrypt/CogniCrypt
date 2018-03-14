@@ -24,12 +24,12 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import de.cognicrypt.codegenerator.taskintegrator.controllers.ClaferModelContentProvider;
+import de.cognicrypt.codegenerator.taskintegrator.controllers.ClaferModelLabelProvider;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
-import de.cognicrypt.codegenerator.taskintegrator.widgets.ClaferModelContentProvider;
-import de.cognicrypt.codegenerator.taskintegrator.widgets.ClaferModelLabelProvider;
 
 public class ClaferConstraintDialog extends Dialog {
 

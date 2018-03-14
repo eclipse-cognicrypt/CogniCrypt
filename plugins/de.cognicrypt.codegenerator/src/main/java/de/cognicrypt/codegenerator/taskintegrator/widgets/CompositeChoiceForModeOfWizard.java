@@ -88,7 +88,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		getTxtDescriptionOfTask().setTextLimit(Constants.MULTI_LINE_TEXT_BOX_LIMIT);
 		
 		Button btnCustomLibrary = new Button(compositeChooseTheMode, SWT.CHECK);
-		btnCustomLibrary.setText("Do you wish to use a custom library?");
+		btnCustomLibrary.setText("Include a custom library");
 				
 		
 		Composite compositeContainerGroupForLibrary = new Composite(compositeChooseTheMode, SWT.NONE);
@@ -96,12 +96,13 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		compositeContainerGroupForLibrary.setVisible(false);
 		compositeContainerGroupForLibrary.setLayout(new GridLayout(1, false));
 		
-		CompositeBrowseForFile compLib = new CompositeBrowseForFile(compositeContainerGroupForLibrary, SWT.NONE, Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK, new String[] { "*.jar" }, "Select file that contains the library", getTheLocalContainerPage());
+		// Updated the composite to deal with directory instead of a jar file for the custom library.
+		CompositeBrowseForFile compLib = new CompositeBrowseForFile(compositeContainerGroupForLibrary, SWT.NONE, Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK, null, "Select file that contains the library", getTheLocalContainerPage());
 		compLib.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		
 		Button btnDoYouWishToUseTheGuidedMode = new Button(compositeChooseTheMode, SWT.CHECK);
-		btnDoYouWishToUseTheGuidedMode.setText("Do you wish to use the guided mode?");
+		btnDoYouWishToUseTheGuidedMode.setText("Use the guided mode");
 		// Guided mode set by default.
 		btnDoYouWishToUseTheGuidedMode.setSelection(true);
 		getObjectForDataInNonGuidedMode().setGuidedModeChosen(btnDoYouWishToUseTheGuidedMode.getSelection());

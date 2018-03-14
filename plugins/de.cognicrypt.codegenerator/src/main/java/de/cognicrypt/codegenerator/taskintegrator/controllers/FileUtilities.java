@@ -24,20 +24,14 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.stream.StreamSource;
 
-import org.eclipse.jdt.internal.compiler.impl.Constant;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.question.Answer;
-import de.cognicrypt.codegenerator.question.ClaferDependency;
-import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.question.QuestionsJSONReader;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.utilities.Utils;
@@ -45,15 +39,26 @@ import de.cognicrypt.codegenerator.utilities.Utils;
 public class FileUtilities {
 
 	private String taskName;	
+	private StringBuilder errors; // Maintain all the errors to display them on the wizard.
 	private int pageId=0;
 	private ArrayList<Question> listOfAllQuestions;
 	private List<Page> pages;
 	
+	/**
+	 * The class needs to be initialized with a task name, as it is used extensively in the methods.
+	 * 
+	 * @param taskName
+	 */
 	public FileUtilities(String taskName) {
 		super();
 		this.setTaskName(taskName);
+		setErrors(new StringBuilder());
 	}
-	
+
+	/**
+	 * 
+	 * @return the result of the comilation.
+	 */
 	private boolean compileCFRFile() {
 		// try to compile the Clafer file
 		// TODO error handling missing
@@ -68,7 +73,7 @@ public class FileUtilities {
 	 * @param xslFileContents
 	 * @param customLibLocation
 	 */
-	public void writeFiles(ClaferModel claferModel, ArrayList<Question> questions, String xslFileContents, File customLibLocation) {
+	public String writeFiles(ClaferModel claferModel, ArrayList<Question> questions, String xslFileContents, File customLibLocation) {
 		writeCFRFile(claferModel);
 		compileCFRFile();
 		try {
@@ -81,6 +86,7 @@ public class FileUtilities {
 		if (customLibLocation != null) {
 			copyFileFromPath(customLibLocation);
 		}
+		return errors.toString();
 	}
 	
 	/**
@@ -90,15 +96,17 @@ public class FileUtilities {
 	 * @param xslFileLocation
 	 * @param customLibLocation
 	 */
-	public boolean writeFiles(File cfrFileLocation, File jsonFileLocation, File xslFileLocation, File customLibLocation) {
+	public String writeFiles(File cfrFileLocation, File jsonFileLocation, File xslFileLocation, File customLibLocation) {
 		
-		if (validateCFRFile(cfrFileLocation) && validateJSONFile(jsonFileLocation) && validateXSLFile(xslFileLocation)) {
+		boolean isCFRFileValid = validateCFRFile(cfrFileLocation);
+		boolean isJSONFileValid = validateJSONFile(jsonFileLocation);
+		boolean isXSLFileValid = validateXSLFile(xslFileLocation);
+
+		if (isCFRFileValid && isJSONFileValid && isXSLFileValid) {
 
 			// custom library location is optional.
 			if (customLibLocation != null) {
-				if (!validateJARFile(customLibLocation)) {
-					return false;
-				} else {
+				if (validateJARFile(customLibLocation)) {
 					copyFileFromPath(customLibLocation);
 				}
 			}
@@ -112,33 +120,48 @@ public class FileUtilities {
 
 			copyFileFromPath(xslFileLocation);
 
-			return true;
 		}
 
-		return false;
+		return errors.toString();
 	}
-	
+
+	/**
+	 * For the sake of reusability.
+	 * 
+	 * @param fileName
+	 */
+	private void appendFileErrors(String fileName) {
+		errors.append("The contents of the file ");
+		errors.append(fileName);
+		errors.append(" are invalid.");
+		errors.append("\n");
+	}
+
 	/**
 	 * Validate the provided JAR file before copying it to the target location.
 	 * @param customLibLocation
 	 * @return a boolean value for the validity of the file.
 	 */
 	private boolean validateJARFile(File customLibLocation) {
-		
-	        ZipFile customLib;
-	        boolean validFile = false;
-			try {
-				customLib = new ZipFile(customLibLocation);
-				Enumeration<? extends ZipEntry> e = customLib.entries();
-				validFile = true;
-		        customLib.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-				return false;
-			} 
-	        
-	    return validFile;
-		
+		boolean validFile = true;
+		// Loop through the files, since the custom library is a directory.
+		if (customLibLocation.isDirectory()) {
+			for (File tmpLibLocation : customLibLocation.listFiles()) {
+				if (tmpLibLocation.getPath().endsWith(Constants.JAR_EXTENSION)) {
+					ZipFile customLib;
+					try {
+						customLib = new ZipFile(tmpLibLocation);
+						Enumeration<? extends ZipEntry> e = customLib.entries();
+						customLib.close();
+					} catch (IOException ex) {
+						ex.printStackTrace();
+						appendFileErrors(tmpLibLocation.getName());
+						return false;
+					}
+				}
+			}
+		}
+		return validFile;
 	}
 
 	/**
@@ -151,6 +174,7 @@ public class FileUtilities {
 			TransformerFactory.newInstance().newTransformer(new StreamSource(xslFileLocation));			
 		} catch (TransformerConfigurationException | TransformerFactoryConfigurationError e) {
 			e.printStackTrace();
+			appendFileErrors(xslFileLocation.getName());
 			return false;
 		}
 		return true;
@@ -170,6 +194,7 @@ public class FileUtilities {
             return true;
         } catch (com.google.gson.JsonSyntaxException | IOException ex) {
         	ex.printStackTrace();
+			appendFileErrors(jsonFileLocation.getName());
             return false;
         }
 	}
@@ -180,10 +205,13 @@ public class FileUtilities {
 	 * @return a boolean value for the validity of the file.
 	 */
 	private boolean validateCFRFile(File cfrFileLocation) {
-		//return ClaferModel.compile(cfrFileLocation.getAbsolutePath());
-		
-		//for checking the JSON file creation commented out the above line
-		return true;
+		boolean compilationResult = ClaferModel.compile(cfrFileLocation.getAbsolutePath());
+		if (!compilationResult) {
+			appendFileErrors(cfrFileLocation.getName());
+			errors.append("Compilation failed.");
+			errors.append("\n");
+		}
+		return compilationResult;
 	}
 
 	/**
@@ -191,7 +219,7 @@ public class FileUtilities {
 	 * @param existingFileLocation
 	 */	
 	private void copyFileFromPath(File existingFileLocation) {
-		if(existingFileLocation.exists() && !existingFileLocation.isDirectory()) {		
+		if (existingFileLocation.exists() && !existingFileLocation.isDirectory()) {
 			File targetDirectory = null;
 			try {
 				
@@ -203,18 +231,35 @@ public class FileUtilities {
 					targetDirectory = new File(Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.JSON_EXTENSION);
 				} else if(existingFileLocation.getPath().endsWith(Constants.XSL_EXTENSION)) {
 					targetDirectory = new File(Utils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XSL_EXTENSION);
-				} else if(existingFileLocation.getPath().endsWith(Constants.JAR_EXTENSION)) {
-					File tempDirectory = new File(Utils.getResourceFromWithin(Constants.JAR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.innerFileSeparator);
-					tempDirectory.mkdir();
-					targetDirectory = new File(tempDirectory, getTrimmedTaskName() + Constants.JAR_EXTENSION);
 				} else {
 					throw new Exception("Unknown file type.");
 				}
 			
-				Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING,StandardCopyOption.COPY_ATTRIBUTES);
-				
+				if (targetDirectory != null) {
+					Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+				}
+
 			} catch (Exception e) {				
 				e.printStackTrace();
+				errors.append("There was a problem copying file ");
+				errors.append(existingFileLocation.getName());
+				errors.append("\n");
+			}
+			// If we are dealing with a custom library location.
+		} else if (existingFileLocation.exists() && existingFileLocation.isDirectory()) {
+			File tempDirectory = new File(Utils.getResourceFromWithin(Constants.JAR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.innerFileSeparator);
+			tempDirectory.mkdir();
+			// Loop through all the containing files.
+			for (File customLibFile : existingFileLocation.listFiles()) {
+				File tmpFile = new File(tempDirectory.toString() + Constants.SLASH + customLibFile.getName());
+				try {
+					Files.copy(customLibFile.toPath(), tmpFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+				} catch (IOException e) {
+					e.printStackTrace();
+					errors.append("There was a problem copying file ");
+					errors.append(existingFileLocation.getName());
+					errors.append("\n");
+				}
 			}
 		}
 	}
@@ -241,6 +286,7 @@ public class FileUtilities {
 			
 		} catch (IOException e) {
 			e.printStackTrace();
+			errors.append("There was a problem updating the task file.\n");
 		}
 	}
 		
@@ -256,6 +302,7 @@ public class FileUtilities {
 			writer.close();
 		} catch (IOException e) {
 			Activator.getDefault().logError(e);
+			errors.append("There was a problem writing the Clafer model.\n");
 		}
 	}
 		
@@ -301,14 +348,14 @@ public class FileUtilities {
 			writer.flush();
 			writer.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			errors.append("There was a problem wrting the XSL data.\n");
 		}
 		
-		/*if (!validateXSLFile(xslFile)) {
+		if (!validateXSLFile(xslFile)) {
 			xslFile.delete();
-			//TODO a better way to handle the exception.			
-		}*/
+			errors.append("The XSL data is invalid.\n");
+		}
 	}
 	
 	/**
@@ -337,10 +384,20 @@ public class FileUtilities {
 		this.taskName = taskName;
 	}
 
-	
-		
-	
-	
+	/**
+	 * @return the list of errors.
+	 */
+	public StringBuilder getErrors() {
+		return errors;
+	}
+
+	/**
+	 * @param set
+	 *        the string builder to maintain the list of errors.
+	 */
+	public void setErrors(StringBuilder errors) {
+		this.errors = errors;
+	}
 
 }
 

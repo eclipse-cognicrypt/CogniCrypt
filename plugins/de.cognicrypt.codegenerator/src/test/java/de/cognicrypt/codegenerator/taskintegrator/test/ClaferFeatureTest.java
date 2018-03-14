@@ -114,4 +114,25 @@ public class ClaferFeatureTest {
 		
 	}
 
+	@Test
+	public final void testHasProperties() {
+		// test without properties
+		ClaferFeature cfrFeatureNoProperties = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
+		assertEquals(false, cfrFeatureNoProperties.hasProperties());
+
+		// test with only empty properties
+		ClaferFeature cfrFeatureEmpty = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
+		ArrayList<ClaferProperty> emptyProperties = new ArrayList<>();
+		emptyProperties.add(new ClaferProperty("", ""));
+		cfrFeatureEmpty.setFeatureProperties(emptyProperties);
+		assertEquals(false, cfrFeatureEmpty.hasProperties());
+
+		// test with properties
+		ClaferFeature cfrFeatureNonEmpty = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
+		ArrayList<ClaferProperty> properties = new ArrayList<>();
+		properties.add(new ClaferProperty("keysize", "integer"));
+		cfrFeatureNonEmpty.setFeatureProperties(properties);
+		assertEquals(true, cfrFeatureNonEmpty.hasProperties());
+	}
+
 }

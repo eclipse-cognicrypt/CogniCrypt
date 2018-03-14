@@ -15,6 +15,7 @@ import de.cognicrypt.codegenerator.utilities.Utils;
 public class QuestionsJSONReaderTI {
 
 	/**
+	 * This method reads all questions of the file
 	 * 
 	 * @param filePath
 	 *        the path of the file
@@ -33,6 +34,7 @@ public class QuestionsJSONReaderTI {
 	}
 
 	/**
+	 * This method reads all pages of the file
 	 * 
 	 * @param filePath
 	 *        the path of the file

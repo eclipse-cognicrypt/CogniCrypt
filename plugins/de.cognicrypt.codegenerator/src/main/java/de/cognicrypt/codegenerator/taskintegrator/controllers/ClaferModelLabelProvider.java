@@ -1,4 +1,4 @@
-package de.cognicrypt.codegenerator.taskintegrator.widgets;
+package de.cognicrypt.codegenerator.taskintegrator.controllers;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;

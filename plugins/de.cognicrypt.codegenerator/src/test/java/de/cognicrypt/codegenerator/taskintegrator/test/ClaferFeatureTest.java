@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -93,9 +94,28 @@ public class ClaferFeatureTest {
 
 	@Test
 	public final void testGetDependencies() {
-		ClaferFeature feature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Security", "Enum -> integer");
-		Set<String> dependencies = feature.getDependencies();
+		// test a single reference clafer
+		ClaferFeature refClafer = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Security", "Enum -> integer");
+		Set<String> dependencies = refClafer.getDependencies();
 		assertEquals(2, dependencies.size());
+
+		// test an instance of the reference clafer
+		ClaferFeature refClaferInstance = new ClaferFeature(Constants.FeatureType.CONCRETE, "Broken", "Security = 0");
+		Set<String> refClaferDeps = refClaferInstance.getDependencies();
+		assertTrue(refClaferDeps.contains("Security"));
+
+		// test a rather common clafer
+		ClaferFeature securityClafer = new ClaferFeature(Constants.FeatureType.CONCRETE, "Security", "Enum");
+		ArrayList<ClaferProperty> securityProperties = new ArrayList<>();
+		securityProperties.add(new ClaferProperty("keysize", "integer"));
+		securityProperties.add(new ClaferProperty("blocksize", "Blocksize"));
+		securityClafer.setFeatureProperties(securityProperties);
+
+		Set<String> securityDeps = securityClafer.getDependencies();
+		assertTrue(securityDeps.contains("Enum"));
+		assertTrue(securityDeps.contains("integer"));
+		assertTrue(securityDeps.contains("Blocksize"));
+		assertEquals(3, securityDeps.size());
 	}
 
 	@AfterClass
@@ -104,12 +124,78 @@ public class ClaferFeatureTest {
 		ArrayList<String> temporaryFiles = new ArrayList<>();
 		temporaryFiles.add(testFileFolder + "testFile1_tmp.cfr");
 		
-		// generate the paths and delete the files
+		// generate the paths and delete the files if they exist
 		for (String filename : temporaryFiles) {
 			Path path = Paths.get(filename);
-			Files.delete(path);
+			if (Files.exists(path)) {
+				Files.delete(path);
+			}
 		}
 		
 	}
 
+	@Test
+	public final void testHasProperties() {
+		// test without properties
+		ClaferFeature cfrFeatureNoProperties = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
+		assertEquals(false, cfrFeatureNoProperties.hasProperties());
+
+		// test with only empty properties
+		ClaferFeature cfrFeatureEmpty = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
+		ArrayList<ClaferProperty> emptyProperties = new ArrayList<>();
+		emptyProperties.add(new ClaferProperty("", ""));
+		cfrFeatureEmpty.setFeatureProperties(emptyProperties);
+		assertEquals(false, cfrFeatureEmpty.hasProperties());
+
+		// test with properties
+		ClaferFeature cfrFeatureNonEmpty = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
+		ArrayList<ClaferProperty> properties = new ArrayList<>();
+		properties.add(new ClaferProperty("keysize", "integer"));
+		cfrFeatureNonEmpty.setFeatureProperties(properties);
+		assertEquals(true, cfrFeatureNonEmpty.hasProperties());
+	}
+
+	@Test
+	public final void hasPropertySatisfying() {
+		Predicate<? super ClaferProperty> constraintIntType = (e -> e.getPropertyType().equals("integer"));
+		Predicate<? super ClaferProperty> constraintStringType = (e -> e.getPropertyType().equals("string"));
+
+		// test without properties
+		ClaferFeature cfrFeatureNoProperties = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
+		assertEquals(false, cfrFeatureNoProperties.hasPropertiesSatisfying(constraintIntType));
+		assertEquals(false, cfrFeatureNoProperties.hasPropertiesSatisfying(constraintStringType));
+
+		// test with only empty properties
+		ClaferFeature cfrFeatureEmpty = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
+		ArrayList<ClaferProperty> emptyProperties = new ArrayList<>();
+		emptyProperties.add(new ClaferProperty("", ""));
+		cfrFeatureEmpty.setFeatureProperties(emptyProperties);
+		assertEquals(false, cfrFeatureEmpty.hasPropertiesSatisfying(constraintIntType));
+		assertEquals(false, cfrFeatureEmpty.hasPropertiesSatisfying(constraintStringType));
+
+		// test with two different constraints
+		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
+		ArrayList<ClaferProperty> properties = new ArrayList<>();
+		properties.add(new ClaferProperty("keysize", "integer"));
+		properties.add(new ClaferProperty("rounds", "integer"));
+		cfrFeature.setFeatureProperties(properties);
+
+		assertEquals(true, cfrFeature.hasPropertiesSatisfying(constraintIntType));
+		assertEquals(false, cfrFeature.hasPropertiesSatisfying(constraintStringType));
+	}
+
+	@Test
+	public final void hasPropertyNeedle() {
+		String needleKeysize = "keysize";
+		String needleBlocksize = "blocksize";
+
+		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
+		ArrayList<ClaferProperty> properties = new ArrayList<>();
+		properties.add(new ClaferProperty("keysize", "integer"));
+		properties.add(new ClaferProperty("rounds", "integer"));
+		cfrFeature.setFeatureProperties(properties);
+
+		assertEquals(true, cfrFeature.hasProperty(needleKeysize));
+		assertEquals(false, cfrFeature.hasProperty(needleBlocksize));
+	}
 }

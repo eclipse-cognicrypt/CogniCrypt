@@ -35,10 +35,23 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 		return claferModel;
 	}
 	
+	/**
+	 * @return number of clafers in this model as an int
+	 */
+	public int getFeatureCount() {
+		return claferModel.size();
+	}
+
 	public void add(ClaferFeature claferFeature) {
 		claferModel.add(claferFeature);
 	}
 	
+	/**
+	 * add all of the clafers from the given {@link ClaferModel} to this instance
+	 *
+	 * @param claferModel
+	 *        model the children of which are to be added
+	 */
 	public void add(ClaferModel claferModel) {
 		for (ClaferFeature cfrFeature : claferModel) {
 			add(cfrFeature);
@@ -49,6 +62,13 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 		claferModel.remove(claferFeature);
 	}
 
+	/**
+	 * check whether the model contains a clafer with the given name
+	 *
+	 * @param featureName
+	 *        needle as a {@link String}
+	 * @return boolean success of the search
+	 */
 	public boolean hasFeature(String featureName) {
 		boolean featureFound = false;
 		
@@ -59,6 +79,13 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 		return featureFound;
 	}
 
+	/**
+	 * get a clafer from the model by name
+	 *
+	 * @param featureName
+	 *        needle as a {@link String}
+	 * @return {@link ClaferFeature} with the given name, <code>null</code> if not found
+	 */
 	public ClaferFeature getFeature(String featureName) {
 		for (ClaferFeature cfrFeature : this) {
 			if (cfrFeature.getFeatureName().equals(featureName)) {
@@ -90,11 +117,17 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 		return shallowCopy;
 	}
 
+	/**
+	 * return an iterator over the Clafer features in the model
+	 */
 	@Override
 	public Iterator iterator() {
 		return claferModel.iterator();
 	}
 	
+	/**
+	 * return a {@link String} representation of the complete model in Clafer syntax
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -179,7 +212,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 
 	/**
 	 * add the missing features according to getMissingFeatures method
-	 * 
+	 *
 	 * @param refFeature
 	 *        reference feature to consider for search of unused features
 	 * @return a model containing only those features that have been added

@@ -14,6 +14,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
@@ -30,9 +31,10 @@ public class CompositeBrowseForFile extends Composite {
 	private ModelAdvancedMode objectForDataInNonGuidedMode;
 	private PageForTaskIntegratorWizard theLocalContainerPage; // this is needed to set whether the page has been completed yet or not.
 	private ControlDecoration decFilePath; // Decoration variable to be able to access it in the events.
-	private Text textBox;
-
+	
 	private Listener onFileChangedListener;
+
+	private Text textBox;
 
 	public CompositeBrowseForFile(Composite parent, int style, String labelText, String[] fileTypes, String stringOnFileDialog, PageForTaskIntegratorWizard theContainerpageForValidation, Listener listener) {
 		this(parent, style, labelText, fileTypes, stringOnFileDialog, theContainerpageForValidation);
@@ -40,11 +42,16 @@ public class CompositeBrowseForFile extends Composite {
 	}
 
 	/**
-	 * Create the composite.
+	 * Pass the file types that need to be selected, and the string that needs to be displayed. Pass null in the fileTypes if you wish to select a directory.
+	 * 
 	 * @param parent
 	 * @param style
+	 * @param labelText
+	 * @param fileTypes
+	 * @param stringOnDialog
+	 * @param theContainerpageForValidation
 	 */
-	public CompositeBrowseForFile(Composite parent, int style, String labelText, String[] fileTypes, String stringOnFileDialog, PageForTaskIntegratorWizard theContainerpageForValidation) {
+	public CompositeBrowseForFile(Composite parent, int style, String labelText, String[] fileTypes, String stringOnDialog, PageForTaskIntegratorWizard theContainerpageForValidation) {
 		super(parent, style);
 		// this object is required in the text box listener. Should not be called too often.
 		setObjectForDataInNonGuidedMode(((CompositeChoiceForModeOfWizard) getParent().getParent().getParent()).getObjectForDataInNonGuidedMode());
@@ -77,22 +84,33 @@ public class CompositeBrowseForFile extends Composite {
 		
 		browseButton.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {						        
-				String selectedFile = openFileDialog(fileTypes, stringOnFileDialog);
-				if (selectedFile != null) {
-					textBox.setText(selectedFile);
+			public void widgetSelected(SelectionEvent e) {
+				String selectedPath = "";
+				// If null is passed in the file types, the directory selection dialog will be displayed.
+				if (fileTypes == null) {
+					selectedPath = openDirectoryDialog(stringOnDialog);
+					if (selectedPath != null) {
+						textBox.setText(selectedPath);
 					if (onFileChangedListener != null) {
 						onFileChangedListener.handleEvent(new Event());
 					}
+					}
+				} else {
+					selectedPath = openFileDialog(fileTypes, stringOnDialog);
+					if (selectedPath != null) {
+						textBox.setText(selectedPath);
+					}
 				}
+
 			}
 		});
 	
 		textBox.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {				
+			public void modifyText(ModifyEvent e) {
+
 				File tempFileVariable = new File(textBox.getText());
-				// Validate the file IO.
-				if (!tempFileVariable.exists() && !tempFileVariable.isDirectory() && !tempFileVariable.canRead() && textBox.getParent().isVisible()) {//					
+				// Validate the file IO. The directory check is removed.
+				if ((!tempFileVariable.exists() || !tempFileVariable.canRead()) && textBox.getParent().isVisible()) {//					
 					getDecFilePath().setImage(UIConstants.DEC_ERROR);
 					getDecFilePath().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_UNABLE_TO_READ_FILE);
 					getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
@@ -103,21 +121,21 @@ public class CompositeBrowseForFile extends Composite {
 					getDecFilePath().setImage(null);
 					getDecFilePath().setDescriptionText("");
 					getDecFilePath().showHoverText("");
-					switch(labelText) {
-						case Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK :
+					switch (labelText) {
+						case Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK:
 							getObjectForDataInNonGuidedMode().setLocationOfCustomLibrary(tempFileVariable);
 							break;
-						case Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE: 
+						case Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE:
 							getObjectForDataInNonGuidedMode().setLocationOfClaferFile(new File(textBox.getText()));
 							break;
-						case Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE: 
+						case Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE:
 							getObjectForDataInNonGuidedMode().setLocationOfXSLFile(tempFileVariable);
 							break;
-						case Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE: 
+						case Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE:
 							getObjectForDataInNonGuidedMode().setLocationOfJSONFile(tempFileVariable);
 							break;
 					}
-					
+
 					// Check if the page can be set to completed.
 					getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 				}
@@ -147,6 +165,18 @@ public class CompositeBrowseForFile extends Composite {
         fileDialog.setFilterExtensions(fileTypes);
         fileDialog.setText(stringOnFileDialog);
 		return fileDialog.open();
+	}
+
+	/**
+	 * Open the directorDialog for the custom library, and return the path.
+	 * 
+	 * @param stringOnDirectoryDialog
+	 * @return the selected path.
+	 */
+	private String openDirectoryDialog(String stringOnDirectoryDialog) {
+		DirectoryDialog directoryDialog = new DirectoryDialog(getShell(), SWT.OPEN);
+		directoryDialog.setText(stringOnDirectoryDialog);
+		return directoryDialog.open();
 	}
 
 	@Override

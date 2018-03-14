@@ -165,4 +165,18 @@ public class ClaferFeatureTest {
 		assertEquals(false, cfrFeature.hasPropertiesSatisfying(constraintStringType));
 	}
 
+	@Test
+	public final void hasPropertyNeedle() {
+		String needleKeysize = "keysize";
+		String needleBlocksize = "blocksize";
+
+		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
+		ArrayList<ClaferProperty> properties = new ArrayList<>();
+		properties.add(new ClaferProperty("keysize", "integer"));
+		properties.add(new ClaferProperty("rounds", "integer"));
+		cfrFeature.setFeatureProperties(properties);
+
+		assertEquals(true, cfrFeature.hasProperty(needleKeysize));
+		assertEquals(false, cfrFeature.hasProperty(needleBlocksize));
+	}
 }

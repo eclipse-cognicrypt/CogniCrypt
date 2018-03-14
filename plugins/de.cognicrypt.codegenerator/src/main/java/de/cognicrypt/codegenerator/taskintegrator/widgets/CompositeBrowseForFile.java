@@ -4,6 +4,8 @@ import java.io.File;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -13,8 +15,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
@@ -28,6 +32,15 @@ public class CompositeBrowseForFile extends Composite {
 	private PageForTaskIntegratorWizard theLocalContainerPage; // this is needed to set whether the page has been completed yet or not.
 	private ControlDecoration decFilePath; // Decoration variable to be able to access it in the events.
 	
+	private Listener onFileChangedListener;
+
+	private Text textBox;
+
+	public CompositeBrowseForFile(Composite parent, int style, String labelText, String[] fileTypes, String stringOnFileDialog, PageForTaskIntegratorWizard theContainerpageForValidation, Listener listener) {
+		this(parent, style, labelText, fileTypes, stringOnFileDialog, theContainerpageForValidation);
+		this.onFileChangedListener = listener;
+	}
+
 	/**
 	 * Pass the file types that need to be selected, and the string that needs to be displayed. Pass null in the fileTypes if you wish to select a directory.
 	 * 
@@ -61,7 +74,7 @@ public class CompositeBrowseForFile extends Composite {
 		getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
 		
 		
-		Text textBox = new Text(this, SWT.BORDER);			 
+		textBox = new Text(this, SWT.BORDER);
 		GridData gdTextBox = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		// do not claim space for all the text if not available
 		gdTextBox.widthHint = 0;
@@ -78,6 +91,9 @@ public class CompositeBrowseForFile extends Composite {
 					selectedPath = openDirectoryDialog(stringOnDialog);
 					if (selectedPath != null) {
 						textBox.setText(selectedPath);
+					if (onFileChangedListener != null) {
+						onFileChangedListener.handleEvent(new Event());
+					}
 					}
 				} else {
 					selectedPath = openFileDialog(fileTypes, stringOnDialog);
@@ -123,6 +139,17 @@ public class CompositeBrowseForFile extends Composite {
 					// Check if the page can be set to completed.
 					getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 				}
+			}
+		});
+
+		textBox.addFocusListener(new FocusAdapter() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				if (onFileChangedListener != null) {
+					onFileChangedListener.handleEvent(new Event());
+				}
+				super.focusLost(e);
 			}
 		});
 	}
@@ -187,6 +214,10 @@ public class CompositeBrowseForFile extends Composite {
 	 */
 	public void setTheLocalContainerPage(PageForTaskIntegratorWizard theLocalContainerPage) {
 		this.theLocalContainerPage = theLocalContainerPage;
+	}
+
+	public String getText() {
+		return textBox.getText();
 	}
 
 	/**

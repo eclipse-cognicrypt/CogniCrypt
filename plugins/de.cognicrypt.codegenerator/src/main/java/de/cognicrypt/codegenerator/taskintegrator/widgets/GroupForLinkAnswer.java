@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
+import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 
@@ -37,37 +38,39 @@ public class GroupForLinkAnswer extends Group {
 		 */
 		Combo comboForLinkAnswers = new Combo(this, SWT.READ_ONLY);
 		comboForLinkAnswers.setBounds(165, 5, 460, 25);
-		comboForLinkAnswers.add("Default");
 		
-		for (int i = 0; i < listOfAllQuestions.size(); i++) {
-			
-			/**
-			 * Executes when the total no. of question created for a task is equal to one
-			 */
-			if (listOfAllQuestions.size() == 1) {
-				comboForLinkAnswers.removeAll();
-				comboForLinkAnswers.add("Please add more questions to link the answers");
+		if (listOfAllQuestions.size() == 1) {
+			comboForLinkAnswers.removeAll();
+			comboForLinkAnswers.add("Please add more questions to link the answers");
+		} else {
+			if(currentQuestion.getId()!=listOfAllQuestions.size()-1){
+				/**
+				 * Adds Default option to the combo when the current question is not the last question in the list
+				 * Upon Default selection means the answer points to the next question in the list
+				 */
+				comboForLinkAnswers.add("Default");
+			}
+			comboForLinkAnswers.add("End Questionnaire");
+			for (Question qstn: listOfAllQuestions){
+				if(currentQuestion.getId()<qstn.getId()){
+					comboForLinkAnswers.add(qstn.getQuestionText());
+				}
 			}
 			
-			/**
-			 * adding all the list of questions to the combo box
-			 * excluding the current question
-			 */
-			if (currentQuestion.getId() != listOfAllQuestions.get(i).getId()) {
-				comboForLinkAnswers.add(listOfAllQuestions.get(i).getQuestionText());
-			}
-
 		}
-
+		
+		
+		
 		/**
 		 * Executes when the link answer dialog is opened for the 
 		 * second time to edit the stored data
 		 */
-		if (answer.getNextID() != -2) {
+		if (answer.getNextID() != Constants.ANSWER_NO_NEXT_ID) {
 
-			if (answer.getNextID() == -1) {
-				comboForLinkAnswers.setText("Default");
-			} else {
+			if (answer.getNextID() == Constants.ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID) {
+				comboForLinkAnswers.setText("End Questionnaire");
+			}
+			else {
 				for (Question question : listOfAllQuestions) {
 					if (question.getId() == answer.getNextID()) {
 						comboForLinkAnswers.setText(question.getQuestionText());
@@ -83,8 +86,10 @@ public class GroupForLinkAnswer extends Group {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (comboForLinkAnswers.getText().equalsIgnoreCase("Default")) {
-					answer.setNextID(-1);
+				if (comboForLinkAnswers.getText().equalsIgnoreCase("End Questionnaire")) {
+					answer.setNextID(Constants.ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID);
+				} else if(comboForLinkAnswers.getText().equalsIgnoreCase("Default")){
+					answer.setNextID(currentQuestion.getId()+1);					
 				} else {
 					for (Question question : listOfAllQuestions) {
 						if (question.getQuestionText().equalsIgnoreCase(comboForLinkAnswers.getText())) {

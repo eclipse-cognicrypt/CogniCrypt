@@ -16,10 +16,10 @@ import org.eclipse.swt.widgets.Text;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
-import de.cognicrypt.codegenerator.taskintegrator.models.FeatureProperty;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 
 public class GroupFeatureProperty extends Composite {
-	private FeatureProperty featureProperty;
+	private ClaferProperty featureProperty;
 	private Text txtPropertyName;
 	private Text txtPropertyType;
 	private Combo comboPropertyType;
@@ -38,7 +38,7 @@ public class GroupFeatureProperty extends Composite {
 	 * @param editable
 	 * @param claferModel
 	 */
-	public GroupFeatureProperty(Composite parent, int style, FeatureProperty featurePropertyParam, boolean showRemoveButton, ClaferModel claferModel) {
+	public GroupFeatureProperty(Composite parent, int style, ClaferProperty featurePropertyParam, boolean showRemoveButton, ClaferModel claferModel) {
 		super(parent, style);
 		// Set the model for use first.
 		this.setFeatureProperty(featurePropertyParam);
@@ -137,14 +137,14 @@ public class GroupFeatureProperty extends Composite {
 	/**
 	 * @return the featureProperty
 	 */
-	public FeatureProperty getFeatureProperty() {
+	public ClaferProperty getFeatureProperty() {
 		return featureProperty;
 	}
 
 	/**
 	 * @param featureProperty the featureProperty to set
 	 */
-	private void setFeatureProperty(FeatureProperty featureProperty) {
+	private void setFeatureProperty(ClaferProperty featureProperty) {
 		this.featureProperty = featureProperty;
 	}
 

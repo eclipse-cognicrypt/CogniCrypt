@@ -94,9 +94,28 @@ public class ClaferFeatureTest {
 
 	@Test
 	public final void testGetDependencies() {
-		ClaferFeature feature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Security", "Enum -> integer");
-		Set<String> dependencies = feature.getDependencies();
+		// test a single reference clafer
+		ClaferFeature refClafer = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Security", "Enum -> integer");
+		Set<String> dependencies = refClafer.getDependencies();
 		assertEquals(2, dependencies.size());
+
+		// test an instance of the reference clafer
+		ClaferFeature refClaferInstance = new ClaferFeature(Constants.FeatureType.CONCRETE, "Broken", "Security = 0");
+		Set<String> refClaferDeps = refClaferInstance.getDependencies();
+		assertTrue(refClaferDeps.contains("Security"));
+
+		// test a rather common clafer
+		ClaferFeature securityClafer = new ClaferFeature(Constants.FeatureType.CONCRETE, "Security", "Enum");
+		ArrayList<ClaferProperty> securityProperties = new ArrayList<>();
+		securityProperties.add(new ClaferProperty("keysize", "integer"));
+		securityProperties.add(new ClaferProperty("blocksize", "Blocksize"));
+		securityClafer.setFeatureProperties(securityProperties);
+
+		Set<String> securityDeps = securityClafer.getDependencies();
+		assertTrue(securityDeps.contains("Enum"));
+		assertTrue(securityDeps.contains("integer"));
+		assertTrue(securityDeps.contains("Blocksize"));
+		assertEquals(3, securityDeps.size());
 	}
 
 	@AfterClass

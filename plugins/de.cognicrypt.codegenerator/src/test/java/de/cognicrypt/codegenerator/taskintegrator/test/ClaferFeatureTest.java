@@ -104,10 +104,12 @@ public class ClaferFeatureTest {
 		ArrayList<String> temporaryFiles = new ArrayList<>();
 		temporaryFiles.add(testFileFolder + "testFile1_tmp.cfr");
 		
-		// generate the paths and delete the files
+		// generate the paths and delete the files if they exist
 		for (String filename : temporaryFiles) {
 			Path path = Paths.get(filename);
-			Files.delete(path);
+			if (Files.exists(path)) {
+				Files.delete(path);
+			}
 		}
 		
 	}

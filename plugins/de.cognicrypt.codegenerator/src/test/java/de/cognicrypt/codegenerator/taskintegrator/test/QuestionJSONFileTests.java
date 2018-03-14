@@ -2,9 +2,7 @@ package de.cognicrypt.codegenerator.taskintegrator.test;
 
 import static org.junit.Assert.*;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+
 import java.util.ArrayList;
 
 import org.junit.BeforeClass;
@@ -12,21 +10,21 @@ import org.junit.Test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
-import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.question.QuestionsJSONReader;
+import de.cognicrypt.codegenerator.question.QuestionsJSONReaderTI;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.SegregatesQuestionsIntoPages;
-import de.cognicrypt.codegenerator.utilities.Utils;
 
 public class QuestionJSONFileTests {
 
 	static QuestionsJSONReader qjr;
+	static QuestionsJSONReaderTI qjrTI;
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		QuestionJSONFileTests.qjr = new QuestionsJSONReader();
+		QuestionJSONFileTests.qjrTI = new QuestionsJSONReaderTI();
 	}
 
 	private String testFileFolder = "src/test/resources/taskintegrator/testQuestionsTI/";
@@ -48,7 +46,8 @@ public class QuestionJSONFileTests {
 	public void AllQuestionsInOnePage() {
 		originalQuestionList = new ArrayList<>();
 		expectedNumberOfPages = 1;
-		originalQuestionList = readQuestionsFromFile(testQuestions3in1);
+		originalQuestionList = QuestionJSONFileTests.qjrTI.readQuestionsFromFile(testQuestions3in1);
+		//originalQuestionList = readQuestionsFromFile(testQuestions3in1);
 		SegregatesQuestionsIntoPages questionToPages = new SegregatesQuestionsIntoPages(originalQuestionList);
 		//checks whether the page array format is correct or not
 		QuestionJSONFileTests.qjr.checkReadPages(questionToPages.getPages());
@@ -62,7 +61,8 @@ public class QuestionJSONFileTests {
 	public void OneOfThePagesContainsMultipleQuestion() {
 		originalQuestionList = new ArrayList<>();
 		expectedNumberOfPages = 5;
-		originalQuestionList = readQuestionsFromFile(testQuestions6in5);
+		originalQuestionList = QuestionJSONFileTests.qjrTI.readQuestionsFromFile(testQuestions6in5);
+		//originalQuestionList = readQuestionsFromFile(testQuestions3in1);
 		SegregatesQuestionsIntoPages questionToPages = new SegregatesQuestionsIntoPages(originalQuestionList);
 		//checks whether the page array format is correct or not
 		QuestionJSONFileTests.qjr.checkReadPages(questionToPages.getPages());
@@ -76,7 +76,7 @@ public class QuestionJSONFileTests {
 	public void EachPageContainsThreeQuestions() {
 		originalQuestionList = new ArrayList<>();
 		expectedNumberOfPages = 2;
-		originalQuestionList = readQuestionsFromFile(testQuestions6in2);
+		originalQuestionList = QuestionJSONFileTests.qjrTI.readQuestionsFromFile(testQuestions6in2);
 		SegregatesQuestionsIntoPages questionToPages = new SegregatesQuestionsIntoPages(originalQuestionList);
 		//checks whether the page array format is correct or not
 		QuestionJSONFileTests.qjr.checkReadPages(questionToPages.getPages());
@@ -90,7 +90,7 @@ public class QuestionJSONFileTests {
 	public void SixQuestionsIntoThreePages() {
 		originalQuestionList = new ArrayList<>();
 		expectedNumberOfPages = 3;
-		originalQuestionList = readQuestionsFromFile(testQuestions6in3);
+		originalQuestionList = QuestionJSONFileTests.qjrTI.readQuestionsFromFile(testQuestions6in3);
 		SegregatesQuestionsIntoPages questionToPages = new SegregatesQuestionsIntoPages(originalQuestionList);
 		//checks whether the page array format is correct or not
 		QuestionJSONFileTests.qjr.checkReadPages(questionToPages.getPages());
@@ -104,7 +104,7 @@ public class QuestionJSONFileTests {
 	public void OneQuestionHasBranch() {
 		originalQuestionList = new ArrayList<>();
 		expectedNumberOfPages = 4;
-		originalQuestionList = readQuestionsFromFile(testQuestions7in4);
+		originalQuestionList = QuestionJSONFileTests.qjrTI.readQuestionsFromFile(testQuestions7in4);
 		SegregatesQuestionsIntoPages questionToPages = new SegregatesQuestionsIntoPages(originalQuestionList);
 		//checks whether the page array format is correct or not
 		QuestionJSONFileTests.qjr.checkReadPages(questionToPages.getPages());
@@ -118,7 +118,7 @@ public class QuestionJSONFileTests {
 	public void EightQuestionsIntoFourPages() {
 		originalQuestionList = new ArrayList<>();
 		expectedNumberOfPages = 4;
-		originalQuestionList = readQuestionsFromFile(testQuestions8in4);
+		originalQuestionList = QuestionJSONFileTests.qjrTI.readQuestionsFromFile(testQuestions8in4);
 		SegregatesQuestionsIntoPages questionToPages = new SegregatesQuestionsIntoPages(originalQuestionList);
 		//checks whether the page array format is correct or not
 		QuestionJSONFileTests.qjr.checkReadPages(questionToPages.getPages());
@@ -132,30 +132,11 @@ public class QuestionJSONFileTests {
 	public void FourQuestionsHasBranch() {
 		originalQuestionList = new ArrayList<>();
 		expectedNumberOfPages = 10;
-		originalQuestionList = readQuestionsFromFile(testQuestions10in10);
+		originalQuestionList = QuestionJSONFileTests.qjrTI.readQuestionsFromFile(testQuestions10in10);
 		SegregatesQuestionsIntoPages questionToPages = new SegregatesQuestionsIntoPages(originalQuestionList);
 		//checks whether the page array format is correct or not
 		QuestionJSONFileTests.qjr.checkReadPages(questionToPages.getPages());
 		assertEquals(expectedNumberOfPages, questionToPages.getPages().size());
-	}
-
-
-	/**
-	 * 
-	 * @param filePath
-	 *        the path of the file
-	 * @return list of all questions contained in the file
-	 */
-	public ArrayList<Question> readQuestionsFromFile(String filePath) {
-		ArrayList<Question> originalQuestionList = new ArrayList<>();
-		try {
-			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(filePath)));
-			Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-			originalQuestionList = gson.fromJson(reader, new TypeToken<ArrayList<Question>>() {}.getType());
-		} catch (FileNotFoundException e) {
-			Activator.getDefault().logError(e);
-		}
-		return originalQuestionList;
 	}
 
 }

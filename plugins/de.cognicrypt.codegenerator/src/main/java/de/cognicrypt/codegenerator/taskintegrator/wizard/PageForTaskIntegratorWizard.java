@@ -6,6 +6,7 @@ package de.cognicrypt.codegenerator.taskintegrator.wizard;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -31,6 +32,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	protected ArrayList<ClaferFeature> cfrFeatures;
 
 	private HashMap<String, String> tagValueTagData;
+
+	TreeViewer treeViewer;
 
 
 	/**
@@ -100,14 +103,21 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 		}
 		/*
-		 * This is for debugging only. To be removed for the final version.
-		 * TODO Please add checks on the pages after mode selection to mark those pages as completed, or restrict the finish button.
+		 * This is for debugging only. To be removed for the final version. TODO Please add checks on the pages after mode selection to mark those pages as completed, or restrict
+		 * the finish button.
 		 */
 		IWizardPage nextPage = super.getNextPage();
 		if (nextPage != null) {
-			((WizardPage)nextPage).setPageComplete(true);
+			((WizardPage) nextPage).setPageComplete(true);
+
+			// refresh the TreeViewer when coming to the XSL page 
+			if (nextPage.getName().equals(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)) {
+				if (((PageForTaskIntegratorWizard) nextPage).treeViewer != null) {
+					((PageForTaskIntegratorWizard) nextPage).treeViewer.refresh();
+				}
+			}
 		}
-				
+
 		return nextPage;
 
 	}

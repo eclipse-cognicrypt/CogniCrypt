@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -133,6 +134,35 @@ public class ClaferFeatureTest {
 		properties.add(new ClaferProperty("keysize", "integer"));
 		cfrFeatureNonEmpty.setFeatureProperties(properties);
 		assertEquals(true, cfrFeatureNonEmpty.hasProperties());
+	}
+
+	@Test
+	public final void hasPropertySatisfying() {
+		Predicate<? super ClaferProperty> constraintIntType = (e -> e.getPropertyType().equals("integer"));
+		Predicate<? super ClaferProperty> constraintStringType = (e -> e.getPropertyType().equals("string"));
+
+		// test without properties
+		ClaferFeature cfrFeatureNoProperties = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
+		assertEquals(false, cfrFeatureNoProperties.hasPropertiesSatisfying(constraintIntType));
+		assertEquals(false, cfrFeatureNoProperties.hasPropertiesSatisfying(constraintStringType));
+
+		// test with only empty properties
+		ClaferFeature cfrFeatureEmpty = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
+		ArrayList<ClaferProperty> emptyProperties = new ArrayList<>();
+		emptyProperties.add(new ClaferProperty("", ""));
+		cfrFeatureEmpty.setFeatureProperties(emptyProperties);
+		assertEquals(false, cfrFeatureEmpty.hasPropertiesSatisfying(constraintIntType));
+		assertEquals(false, cfrFeatureEmpty.hasPropertiesSatisfying(constraintStringType));
+
+		// test with two different constraints
+		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
+		ArrayList<ClaferProperty> properties = new ArrayList<>();
+		properties.add(new ClaferProperty("keysize", "integer"));
+		properties.add(new ClaferProperty("rounds", "integer"));
+		cfrFeature.setFeatureProperties(properties);
+
+		assertEquals(true, cfrFeature.hasPropertiesSatisfying(constraintIntType));
+		assertEquals(false, cfrFeature.hasPropertiesSatisfying(constraintStringType));
 	}
 
 }

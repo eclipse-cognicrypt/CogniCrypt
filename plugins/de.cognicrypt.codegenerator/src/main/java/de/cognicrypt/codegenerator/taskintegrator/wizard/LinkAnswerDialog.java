@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 
+import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
@@ -58,7 +59,7 @@ public class LinkAnswerDialog extends Dialog {
 		compositeForLinkAnswerTab.setLayout(new GridLayout(2, false));
 		
 		//executes when the question type is text
-		if (question.getQuestionType().equalsIgnoreCase("text box")) {
+		if (question.getElement().equals(Constants.GUIElements.text)) {
 			Label lblLinkAnswersTabMessage = new Label(compositeForLinkAnswerTab, SWT.NONE);
 			lblLinkAnswersTabMessage.setText("This type of question does not need to link answers");
 

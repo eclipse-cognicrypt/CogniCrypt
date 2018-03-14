@@ -14,9 +14,12 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
+import de.cognicrypt.codegenerator.taskintegrator.wizard.AddDependenciesDialog;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.LinkAnswerDialog;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.QuestionDialog;
 
@@ -40,16 +43,44 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		
 		setLayout(null);
 		
-		GroupModifyDeleteButtons grpModifyDeleteButtons = new GroupModifyDeleteButtons(this, question);
+		CompositeModifyDeleteButtons grpModifyDeleteButtons = new CompositeModifyDeleteButtons(this, question);
 		RowLayout rowLayout = (RowLayout) grpModifyDeleteButtons.getLayout();
 		rowLayout.marginLeft = 5;
 		rowLayout.marginTop = 5;
 		rowLayout.fill = true;
 		rowLayout.center = true;
-		grpModifyDeleteButtons.setBounds(10, 5, 571, 53);
+		grpModifyDeleteButtons.setBounds(10, 5, 571, 35);
 		
 		//Only visible for "pageForHighLevelQuestions" page
 		grpModifyDeleteButtons.setVisible(!linkAnswerPage);
+
+		CompositeUpDownButtons grpUpDownButtons = new CompositeUpDownButtons(this, question);
+		RowLayout upDownRowLayout = (RowLayout) grpModifyDeleteButtons.getLayout();
+		upDownRowLayout.marginLeft = 5;
+		upDownRowLayout.marginTop = 5;
+		upDownRowLayout.fill = true;
+		upDownRowLayout.center = true;
+		grpUpDownButtons.setBounds(588, 5, 150, 35);
+
+		//
+		grpUpDownButtons.setVisible(!linkAnswerPage);
+
+		Button addDependencies = new Button(this, SWT.WRAP);
+		addDependencies.setBounds(588, 75, 150, 103);
+		addDependencies.setText("Click to\nLink Variability\nconstruct and \n Link code");
+		addDependencies.setToolTipText("Click to Link variability construct and variables to use in code");
+		//Only visible for "pageForHighLevelQuestions" page
+		addDependencies.setVisible(!linkAnswerPage);
+
+		addDependencies.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ClaferModel claferModel = ((CompositeToHoldGranularUIElements) addDependencies.getParent().getParent().getParent()).getClaferModel();
+				AddDependenciesDialog addDependenciesDialog = new AddDependenciesDialog(parent.getShell(), question, claferModel);
+				addDependenciesDialog.open();
+			}
+		});
 
 		Button linkQstn = new Button(this, SWT.None);
 		linkQstn.setBounds(588, 50, 100, 53);
@@ -72,15 +103,15 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 			}
 		});
 		
-			
 		
 		
+
 		Group grpQuestionDetails = new Group(this, SWT.NONE);
 		/***
 		 * resizing the height of the grpQuestionDetails depending upon the page
 		 */
 		if(!linkAnswerPage){
-		grpQuestionDetails.setBounds(10, 62, 571, 150);
+			grpQuestionDetails.setBounds(10, 50, 571, 150);
 		}
 		else if(linkAnswerPage){
 			grpQuestionDetails.setBounds(10, 5, 571, 150);
@@ -119,6 +150,14 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		txtAnswerType.setEditable(false);
 		txtAnswerType.setBounds(315, 30, 182, 29);
 		
+		if (question.getElement().equals(Constants.GUIElements.combo)) {
+			txtAnswerType.setText(Constants.dropDown);
+		} else if (question.getElement().equals(Constants.GUIElements.text)) {
+			txtAnswerType.setText(Constants.textBox);
+		} else if (question.getElement().equals(Constants.GUIElements.radio)) {
+			txtAnswerType.setText(Constants.radioButton);
+		}
+
 		StringBuilder answerString = new StringBuilder();
 		
 		/*for(Answer answer : question.getAnswers()){
@@ -149,7 +188,6 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
             */answerString.append(" | ");
 		}
 
-		txtAnswerType.setText(question.getQuestionType());
 
 		Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
 		lblAnswers.setBounds(5, 108, 55, 17);
@@ -159,15 +197,16 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		 * Following if conditions checks the question type and then
 		 * creates the widgets to display the answer as the question type
 		 */
-		if (question.getQuestionType().equalsIgnoreCase("Drop down")) {
-			
+		if (question.getElement().equals(Constants.GUIElements.combo)) {
+
 			Combo comboForAnswers = new Combo(grpQuestionDetails, SWT.READ_ONLY);
 			comboForAnswers.setBounds(94, 102, 403, 29);
 
 			for (Answer answer : question.getAnswers()) {
 				comboForAnswers.add(answer.getValue());
 			}
-		} else if (question.getQuestionType().equalsIgnoreCase("Radio Button")) {
+		} else if (question.getElement().equals(Constants.GUIElements.radio)) {
+
 			int count = question.getAnswers().size();
 			Button[] btn = new Button[count];
 			int spaceToDisplayAns = 70;
@@ -203,7 +242,8 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 
 		}
 
-		else if (question.getQuestionType().equalsIgnoreCase("text box")) {
+		else if (question.getElement().equals(Constants.GUIElements.text)) {
+
 			Text txtBox = new Text(grpQuestionDetails, SWT.BORDER);
 			txtBox.setBounds(94, 102, 403, 29);
 		}

@@ -134,6 +134,9 @@ public class CompositeBrowseForFile extends Composite {
 						case Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE:
 							getObjectForDataInNonGuidedMode().setLocationOfJSONFile(tempFileVariable);
 							break;
+						case Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_HELP_FILE:
+							getObjectForDataInNonGuidedMode().setLocationOfHelpXMLFile(tempFileVariable);
+							break;
 					}
 
 					// Check if the page can be set to completed.

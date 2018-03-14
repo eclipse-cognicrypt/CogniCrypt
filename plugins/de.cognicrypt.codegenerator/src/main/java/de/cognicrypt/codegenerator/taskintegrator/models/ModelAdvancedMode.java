@@ -15,6 +15,7 @@ public class ModelAdvancedMode {
 	private File locationOfClaferFile;
 	private File locationOfXSLFile;
 	private File locationOfJSONFile;
+	private File locationOfHelpXMLFile;
 	private boolean isCustomLibraryRequired;
 	private boolean isGuidedModeChosen;
 	//private boolean isGuidedModeForced;
@@ -186,5 +187,19 @@ public class ModelAdvancedMode {
 	 */
 	public void setTaskDescription(String taskDescription) {
 		this.taskDescription = taskDescription;
+	}
+
+	/**
+	 * @return the locationOfHelpXMLFile
+	 */
+	public File getLocationOfHelpXMLFile() {
+		return locationOfHelpXMLFile;
+	}
+
+	/**
+	 * @param locationOfHelpXMLFile the locationOfHelpXMLFile to set
+	 */
+	public void setLocationOfHelpXMLFile(File locationOfHelpXMLFile) {
+		this.locationOfHelpXMLFile = locationOfHelpXMLFile;
 	}
 }

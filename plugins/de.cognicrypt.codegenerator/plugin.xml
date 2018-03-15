@@ -196,6 +196,9 @@
          name="CogniCrypt">
    </product>
 </extension>
+<extension
+      point="org.eclipse.compare.contentViewers">
+</extension>
  
      
 </plugin>

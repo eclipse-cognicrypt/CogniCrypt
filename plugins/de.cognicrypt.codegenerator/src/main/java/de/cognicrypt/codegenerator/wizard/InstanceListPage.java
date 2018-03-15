@@ -12,6 +12,7 @@ import java.util.Map;
 import javax.xml.transform.TransformerException;
 
 import org.clafer.instance.InstanceClafer;
+import org.eclipse.compare.CompareUI;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -268,16 +269,18 @@ public class InstanceListPage extends WizardPage {
 
 			@Override
 			public void handleEvent(Event event) {
-				//Opens a new wizard to show the code preview 
-				final WizardDialog dialog = new WizardDialog(new Shell(), new CodePreviewWizard(instanceListPage, instanceGenerator)) {
-
-					@Override
-					protected void configureShell(Shell newShell) {
-						super.configureShell(newShell);
-						//newShell.setSize(650, 500);
-					}
-				};
-				dialog.open();
+//				//Opens a new wizard to show the code preview 
+//				final WizardDialog dialog = new WizardDialog(new Shell(), new CodePreviewWizard(instanceListPage, instanceGenerator)) {
+//
+//					@Override
+//					protected void configureShell(Shell newShell) {
+//						super.configureShell(newShell);
+//						//newShell.setSize(650, 500);
+//					}
+//				};
+//				dialog.open();
+				
+				 CompareUI.openCompareDialog(new CompareInput(instanceListPage));
 			}
 		});
 

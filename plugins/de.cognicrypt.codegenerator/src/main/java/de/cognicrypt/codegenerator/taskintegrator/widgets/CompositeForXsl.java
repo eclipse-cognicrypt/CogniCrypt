@@ -1,6 +1,5 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -9,9 +8,8 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 
-import de.cognicrypt.codegenerator.taskintegrator.controllers.XSLStringGeneration;
+import de.cognicrypt.codegenerator.taskintegrator.controllers.XSLStringGenerationAndManipulation;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.XmlRegion;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.XmlRegionAnalyzer;
 
@@ -39,7 +37,7 @@ public class CompositeForXsl extends Composite {
 	 */
 	public void updateTheTextFieldWithFileData(String filePath) {
 
-		getXslTxtBox().setText(XSLStringGeneration.generateXSLStringFromPath(filePath, getXslTxtBox().getText(), getXslTxtBox().getSelection(), null));
+		getXslTxtBox().setText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(filePath, getXslTxtBox().getText(), getXslTxtBox().getSelection(), null));
 
 		colorizeTextBox();
 	}
@@ -49,67 +47,12 @@ public class CompositeForXsl extends Composite {
 	 */
 	public void colorizeTextBox() {
 		List<XmlRegion> regions = new XmlRegionAnalyzer().analyzeXml(xslTxtBox.getText());
-		List<StyleRange> ranges = computeStyle(regions);
+		List<StyleRange> ranges = XSLStringGenerationAndManipulation.computeStyleForXMLRegions(regions);
 
 		for (StyleRange styleRange : ranges) {
 			getXslTxtBox().setStyleRange(styleRange);
 		}
 
-	}
-
-
-	/**
-	 * Set the colors to all the {@link XmlRegion}.
-	 * 
-	 * @param regions
-	 *        the List of {@link XmlRegion}
-	 * @return returns the {@link StyleRange} for the given code.
-	 */
-	private List<StyleRange> computeStyle(List<XmlRegion> regions) {
-		List<StyleRange> styleRanges = new ArrayList<StyleRange>();
-		for (XmlRegion xr : regions) {
-
-			// The style itself depends on the region type
-			// In this example, we use colors from the system
-			StyleRange sr = new StyleRange();
-			switch (xr.getXmlRegionType()) {
-				case MARKUP:
-					sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN);
-					break;
-
-				case ATTRIBUTE:
-					sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_DARK_RED);
-					break;
-
-				case ATTRIBUTE_VALUE:
-					sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
-					break;
-
-				case MARKUP_VALUE:
-					sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_DARK_GRAY);
-					break;
-				case COMMENT:
-					sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
-					break;
-				case INSTRUCTION:
-					sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
-					break;
-				case CDATA:
-					sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN);
-					break;
-				case WHITESPACE:
-					break;
-				default:
-					break;
-			}
-
-			// Define the position and limit
-			sr.start = xr.getStart();
-			sr.length = xr.getEnd() - xr.getStart();
-			styleRanges.add(sr);
-		}
-
-		return styleRanges;
 	}
 
 	/**

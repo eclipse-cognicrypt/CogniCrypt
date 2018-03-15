@@ -9,10 +9,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Display;
 
-public class XSLStringGeneration {
+public class XSLStringGenerationAndManipulation {
 
 	/**
 	 * 
@@ -97,6 +102,60 @@ public class XSLStringGeneration {
 			e.printStackTrace();
 		}
 
+	}
+
+	/**
+	 * Set the colors to all the {@link XmlRegion}.
+	 * 
+	 * @param regions
+	 *        the List of {@link XmlRegion}
+	 * @return returns the {@link StyleRange} for the given code.
+	 */
+	public static List<StyleRange> computeStyleForXMLRegions(List<XmlRegion> regions) {
+		List<StyleRange> styleRanges = new ArrayList<StyleRange>();
+		for (XmlRegion xr : regions) {
+
+			// The style itself depends on the region type
+			// In this example, we use colors from the system
+			StyleRange sr = new StyleRange();
+			switch (xr.getXmlRegionType()) {
+				case MARKUP:
+					sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN);
+					break;
+
+				case ATTRIBUTE:
+					sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_DARK_RED);
+					break;
+
+				case ATTRIBUTE_VALUE:
+					sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
+					break;
+
+				case MARKUP_VALUE:
+					sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_DARK_GRAY);
+					break;
+				case COMMENT:
+					sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
+					break;
+				case INSTRUCTION:
+					sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
+					break;
+				case CDATA:
+					sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN);
+					break;
+				case WHITESPACE:
+					break;
+				default:
+					break;
+			}
+
+			// Define the position and limit
+			sr.start = xr.getStart();
+			sr.length = xr.getEnd() - xr.getStart();
+			styleRanges.add(sr);
+		}
+
+		return styleRanges;
 	}
 
 }

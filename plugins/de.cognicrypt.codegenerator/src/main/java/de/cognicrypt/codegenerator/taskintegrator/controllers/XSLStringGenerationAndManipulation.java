@@ -45,6 +45,8 @@ public class XSLStringGenerationAndManipulation {
 					dataFromFile.append("\n");
 					appendTextFromFileToStringBuilder(dataFromFile, filePath);
 					dataFromFile.append("\n");
+					dataFromFile.append("</xsl:result-document>");
+					dataFromFile.append("\n");
 					dataFromFile.append(existingText.substring(selected.y, existingText.length()));
 
 				} else {

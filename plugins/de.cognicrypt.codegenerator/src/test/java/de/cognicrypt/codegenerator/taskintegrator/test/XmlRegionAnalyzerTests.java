@@ -654,7 +654,7 @@ public class XmlRegionAnalyzerTests {
 	 */
 	@Test
 	public void testExampleThatFailed_1() throws Exception {
-		String test = loadResource("/src/test/java/de/cognicrypt/codegenerator/taskintegrator/test/StackOverflowExample.xml");
+		String test = loadResource("/src/test/java/de/cognicrypt/codegenerator/taskintegrator/test/resources/taskintegrator/XSLTests/StackOverflowExample.xml");
 		assertTrue(test != null);
 
 		XmlRegionAnalyzer analyzer = new XmlRegionAnalyzer();

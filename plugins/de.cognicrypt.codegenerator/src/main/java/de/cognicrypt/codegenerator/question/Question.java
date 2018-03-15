@@ -18,7 +18,7 @@ public class Question {
 	private String questionType;
 	private Answer enteredAnswer;
 	//Note
-	private String note;
+	private String note = "";
 	//tooltip
 	private String tooltip;
 

@@ -288,7 +288,7 @@ public class FileUtilities {
 			tempDirectory.mkdir();
 			// Loop through all the containing files.
 			for (File customLibFile : existingFileLocation.listFiles()) {
-				File tmpFile = new File(tempDirectory.toString() + Constants.SLASH + customLibFile.getName());
+				File tmpFile = new File(tempDirectory.toString() + Constants.innerFileSeparator + customLibFile.getName());
 				try {
 					Files.copy(customLibFile.toPath(), tmpFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
 				} catch (IOException e) {

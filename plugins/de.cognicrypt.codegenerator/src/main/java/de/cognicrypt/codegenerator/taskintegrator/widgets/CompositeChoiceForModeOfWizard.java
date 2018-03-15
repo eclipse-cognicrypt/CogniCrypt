@@ -86,7 +86,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		gd_txtDescriptionOfTask.heightHint = 67;
 		getTxtDescriptionOfTask().setLayoutData(gd_txtDescriptionOfTask);
 		getTxtDescriptionOfTask().setTextLimit(Constants.MULTI_LINE_TEXT_BOX_LIMIT);
-		
+
 		Button btnCustomLibrary = new Button(compositeChooseTheMode, SWT.CHECK);
 		btnCustomLibrary.setText("Include a custom library");
 				
@@ -152,6 +152,8 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		compXsl.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		CompositeBrowseForFile compJson = new CompositeBrowseForFile(compositeNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE, new String[] { "*.json" }, "Select json file that contains the high level questions", getTheLocalContainerPage());
 		compJson.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		CompositeBrowseForFile compositeHelp = new CompositeBrowseForFile(compositeNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_HELP_FILE, new String[] { "*.xml" }, "Select file that contains the help data", getTheLocalContainerPage());
+		compositeHelp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		layout();
 		

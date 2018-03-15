@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.xml.transform.TransformerException;
 
@@ -45,7 +46,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
@@ -70,6 +70,8 @@ public class InstanceListPage extends WizardPage {
 	private Map<Question, Answer> constraints;
 	private Object algorithmCombinaton;
 	private DefaultAlgorithmPage defaultAlgorithmPage;
+	private int currentIndex;
+	private String selectedItem;
 
 	public InstanceListPage(final InstanceGenerator inst, Map<Question, Answer> constraints, final TaskSelectionPage taskSelectionPage, final DefaultAlgorithmPage defaultAlgorithmPage) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
@@ -91,7 +93,7 @@ public class InstanceListPage extends WizardPage {
 
 		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
+		setCurrentIndex(0);
 		ComboViewer algorithmClass;
 		Label labelInstanceList;
 		this.control = new Composite(sc, SWT.NONE);
@@ -108,12 +110,12 @@ public class InstanceListPage extends WizardPage {
 		labelInstanceList.setText(Constants.instanceList);
 		final Map<String, InstanceClafer> inst = this.instanceGenerator.getInstances();
 		algorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
-		String firstInstance = inst.keySet().toArray()[0].toString();
 		Combo combo = algorithmClass.getCombo();
 
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-		algorithmClass.setInput(inst.keySet());
-		String key = instanceGenerator.getAlgorithmName();
+		//		algorithmClass.setInput(inst.keySet());
+		algorithmClass.setInput(this.instanceGenerator.getAlgorithmNames());
+		String key = instanceGenerator.getAlgorithmNames().get(0);
 
 		int count = combo.getItemCount();
 		int variationCount = instanceGenerator.getAlgorithmCount();
@@ -122,8 +124,6 @@ public class InstanceListPage extends WizardPage {
 		} else {
 			combo.setToolTipText("There are " + String.format("%d", variationCount) + " variations of the algorithm " + key);
 		}
-
-		setAlgorithmCombinations(algorithmClass.getInput());
 
 		//Display help assist for the first instance in the combo box
 		new Label(control, SWT.NONE);
@@ -135,7 +135,7 @@ public class InstanceListPage extends WizardPage {
 		final ControlDecoration deco = new ControlDecoration(infoText, SWT.RIGHT);
 		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage();
 		deco.setImage(image);
-		deco.setShowOnlyOnFocus(false);
+		//		deco.setShowOnlyOnFocus(false);
 
 		new Label(control, SWT.NONE);
 		new Label(control, SWT.NONE);
@@ -151,18 +151,6 @@ public class InstanceListPage extends WizardPage {
 		backIcon.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		backIcon.setText("<");
 		backIcon.setToolTipText(Constants.PREVIOUS_ALGORITHM_BUTTON);
-		backIcon.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				int temp = combo.getSelectionIndex();
-				if (temp != 0) {
-					temp = temp - 1;
-					final ISelection selection = new StructuredSelection(inst.keySet().toArray()[temp]);
-					algorithmClass.setSelection(selection);
-				}
-			}
-		});
 
 		//Label that displays the current algorithm variation and the total number of variations
 		Label algorithmVariation = new Label(composite_Control, SWT.CENTER | SWT.BOTTOM);
@@ -172,17 +160,83 @@ public class InstanceListPage extends WizardPage {
 		Button nextIcon = new Button(composite_Control, SWT.CENTER | SWT.BOTTOM);
 		nextIcon.setText(">");
 		nextIcon.setToolTipText(Constants.NEXT_ALGORITHM_BUTTON);
+
+		backIcon.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int temp = combo.getSelectionIndex();
+				TreeMap<String, InstanceClafer> tempAlgorithmGroup = InstanceListPage.this.instanceGenerator.getSeparatedAlgorithms().get(temp);
+
+				//				setValue(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm));
+				int tempIndex = getCurrentIndex() - 1;
+				String tempKey = (String) tempAlgorithmGroup.keySet().toArray()[tempIndex - 1];
+				setValue(tempAlgorithmGroup.get(tempKey));
+
+				InstanceListPage.this.instanceDetails.setText(defaultAlgorithmPage.getInstanceProperties(tempAlgorithmGroup.get(tempKey)));
+				setCurrentIndex(tempIndex);
+				algorithmVariation.setText("       "+ "  Variations:  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
+				if (combo.getSelectionIndex() == 0 && getCurrentIndex() == 1) {
+					//hide the help assist and the text if the selected algorithm is not the default algorithm
+					deco.show();
+					infoText.setVisible(true);
+				} else {
+					infoText.setVisible(false);
+					deco.hide();
+					//disable back button if the selected algorithm in the combo box is the first instance
+				}
+
+				if (getCurrentIndex() == 1) {
+					backIcon.setEnabled(false);
+				} else {
+					backIcon.setEnabled(true);
+				}
+
+				if (getCurrentIndex() == tempAlgorithmGroup.size()) {
+					//disable next button if the selected algorithm in the combo box is the last instance
+					nextIcon.setEnabled(false);
+				} else {
+					nextIcon.setEnabled(true);
+				}
+			}
+		});
+
 		nextIcon.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				int temp = combo.getSelectionIndex();
-				if (temp != (count - 1)) {
-					temp = temp + 1;
-					final ISelection selection = new StructuredSelection(inst.keySet().toArray()[temp]);
-					algorithmClass.setSelection(selection);
+				TreeMap<String, InstanceClafer> tempAlgorithmGroup = InstanceListPage.this.instanceGenerator.getSeparatedAlgorithms().get(temp);
+
+				int tempIndex = getCurrentIndex() + 1;
+				String tempKey = (String) tempAlgorithmGroup.keySet().toArray()[tempIndex - 1];
+				setValue(tempAlgorithmGroup.get(tempKey));
+				InstanceListPage.this.instanceDetails.setText(defaultAlgorithmPage.getInstanceProperties(tempAlgorithmGroup.get(tempKey)));
+				setCurrentIndex(tempIndex);
+				algorithmVariation.setText("       " +"  Variations:  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
+
+				if (combo.getSelectionIndex() == 0 && getCurrentIndex() == 1) {
+					//hide the help assist and the text if the selected algorithm is not the default algorithm
+					deco.show();
+					infoText.setVisible(true);
+				} else {
+					infoText.setVisible(false);
+					deco.hide();
+					//disable back button if the selected algorithm in the combo box is the first instance
 				}
 
+				if (getCurrentIndex() == 1) {
+					backIcon.setEnabled(false);
+				} else {
+					backIcon.setEnabled(true);
+				}
+
+				if (getCurrentIndex() == tempAlgorithmGroup.size()) {
+					//disable next button if the selected algorithm in the combo box is the last instance
+					nextIcon.setEnabled(false);
+				} else {
+					nextIcon.setEnabled(true);
+				}
 			}
 		});
 
@@ -194,38 +248,37 @@ public class InstanceListPage extends WizardPage {
 			}
 		});
 		algorithmClass.addSelectionChangedListener(event -> {
+			int temp = combo.getSelectionIndex();
+			TreeMap<String, InstanceClafer> tempAlgorithmGroup = InstanceListPage.this.instanceGenerator.getSeparatedAlgorithms().get(temp);
+
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 			InstanceListPage.this.instancePropertiesPanel.setVisible(true);
 			final String selectedAlgorithm = selection.getFirstElement().toString();
-			setValue(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm));
-			InstanceListPage.this.instanceDetails
-				.setText(defaultAlgorithmPage.getInstanceProperties(InstanceListPage.this.instanceGenerator.getInstances().get(selectedAlgorithm)));
-			int index = combo.getSelectionIndex();
-			if (count > variationCount) {
-				algorithmVariation.setText("  Solution  " + (index + 1) + " / " + String.format("%d  ", count));
-			} else {
-				algorithmVariation.setText("  Variation  " + (index + 1) + " / " + String.format("%d  ", variationCount));
-			}
-			if (!selectedAlgorithm.equals(firstInstance)) {
+
+			setSelectedItem(selectedAlgorithm);
+			setValue(tempAlgorithmGroup.get(selectedAlgorithm));
+			InstanceListPage.this.instanceDetails.setText(defaultAlgorithmPage.getInstanceProperties(tempAlgorithmGroup.get(selectedAlgorithm)));
+			setCurrentIndex(1);
+			algorithmVariation.setText("       "+ "  Variations:  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
+
+			if (combo.getSelectionIndex() == 0 && getCurrentIndex() == 1) {
 				//hide the help assist and the text if the selected algorithm is not the default algorithm
-				deco.hide();
-				infoText.setVisible(false);
-				backIcon.setEnabled(true);
-			} else {
-				infoText.setVisible(true);
 				deco.show();
-				//disable back button if the selected algorithm in the combo box is the first instance
-				backIcon.setEnabled(false);
-			}
-			if (combo.getSelectionIndex() == count - 1) {
-				//disable next button if the selected algorithm in the combo box is the last instance
-				nextIcon.setEnabled(false);
+				infoText.setVisible(true);
 			} else {
-				nextIcon.setEnabled(true);
+				infoText.setVisible(false);
+				deco.hide();
+				//disable back button if the selected algorithm in the combo box is the first instance
 			}
-			if (selection.size() > 0) {
-				setPageComplete(true);
+
+			backIcon.setEnabled(false);
+			if (tempAlgorithmGroup.size() == 1) {
+				nextIcon.setEnabled(false);
 			}
+
+			//for compare algorithm page
+			setAlgorithmCombinations(tempAlgorithmGroup.keySet());
+
 		});
 
 		this.instancePropertiesPanel.setText(Constants.INSTANCE_DETAILS);
@@ -383,6 +436,22 @@ public class InstanceListPage extends WizardPage {
 	public void setAlgorithmCombinations(Object input) {
 		this.algorithmCombinaton = input;
 
+	}
+
+	public int getCurrentIndex() {
+		return currentIndex;
+	}
+
+	public void setCurrentIndex(int currentIndex) {
+		this.currentIndex = currentIndex;
+	}
+
+	public String getSelectedItem() {
+		return selectedItem;
+	}
+
+	public void setSelectedItem(String selectedItem) {
+		this.selectedItem = selectedItem;
 	}
 
 }

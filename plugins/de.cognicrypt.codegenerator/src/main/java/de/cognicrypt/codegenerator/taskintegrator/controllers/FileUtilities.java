@@ -25,6 +25,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.stream.StreamSource;
 
+import org.clafer.ast.AstClafer;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -240,12 +241,18 @@ public class FileUtilities {
 	 */
 	private boolean validateCFRFile(File cfrFileLocation) {
 		boolean compilationResult = ClaferModel.compile(cfrFileLocation.getAbsolutePath());
-		if (!compilationResult) {
+		String cfrFilename = cfrFileLocation.getAbsolutePath();
+		String jsFilename = cfrFilename.substring(0, cfrFilename.lastIndexOf(".")) + Constants.JS_EXTENSION;
+		de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModel claferModel = new de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModel(jsFilename);
+		AstClafer taskClafer = org.clafer.cli.Utils.getModelChildByName(claferModel.getModel(), "c0_" + getTrimmedTaskName());
+		boolean isValidationSuccessful = compilationResult && taskClafer != null;
+		if (!isValidationSuccessful) {
 			appendFileErrors(cfrFileLocation.getName());
-			errors.append("Compilation failed.");
+			errors
+				.append("Either the compilation failed, or the provided name for the Task does not match the one in the Clafer model. Please note : the name must be capitalized.");
 			errors.append("\n");
 		}
-		return compilationResult;
+		return isValidationSuccessful;
 	}
 
 	/**

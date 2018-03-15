@@ -1,6 +1,7 @@
 package de.cognicrypt.codegenerator.taskintegrator.controllers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Answer;
@@ -69,7 +70,7 @@ public class SegregatesQuestionsIntoPages {
 	 *        the question
 	 * @return true if the qstn exists in any page otherwise false
 	 */
-	boolean questionExistsInAnyPage(Question qstn) {
+	private boolean questionExistsInAnyPage(Question qstn) {
 		for (Page page : pages) {
 			for (Question question : page.getContent()) {
 				if (question.getId() == qstn.getId()) {
@@ -87,7 +88,7 @@ public class SegregatesQuestionsIntoPages {
 	 *        quetsion that is to be added to ap page
 	 */
 
-	void addQuestionToPage(Question qstn) {
+	private void addQuestionToPage(Question qstn) {
 
 		/**
 		 * case 1: if question is the first question then adds it to new page
@@ -113,7 +114,6 @@ public class SegregatesQuestionsIntoPages {
 			 * case 4: executes when page containing previous question has 3 question then adds the current question to the new page
 			 */
 			else if (previousQuestionPage.getContent().size() == 3) {
-				System.out.println(previousQuestionPage.getId() + " " + "has 3 question");
 				addQuestionToNewPage(qstn);
 			}
 			/**
@@ -132,7 +132,7 @@ public class SegregatesQuestionsIntoPages {
 	 * 
 	 * @param qstn
 	 */
-	void addQuestionToNewPage(Question qstn) {
+	private void addQuestionToNewPage(Question qstn) {
 		Page page = new Page();
 		page.setId(pageId);
 		pageId++;
@@ -154,7 +154,7 @@ public class SegregatesQuestionsIntoPages {
 	 * @param qstn
 	 * @return true if the current question is the first question in the list of Questions
 	 */
-	boolean isFirstQuestion(Question qstn) {
+	private boolean isFirstQuestion(Question qstn) {
 		if (qstn.getId() == 0) {
 			return true;
 		}
@@ -202,8 +202,6 @@ public class SegregatesQuestionsIntoPages {
 	 */
 	private void addQuestionToExistingPage(Page previousQuestionPage, Question qstn) {
 		previousQuestionPage.getContent().add(qstn);
-		updateAnsNextIdToPageId(qstn);
-
 	}
 
 	/**
@@ -226,34 +224,47 @@ public class SegregatesQuestionsIntoPages {
 			 * executes when the current question is not the last question
 			 */
 			else if (qstn.getId() != listOfAllQuestions.size() - 1) {
+				ArrayList<Integer> ansNextIds = new ArrayList<>();
 				for (Answer ans : qstn.getAnswers()) {
-					if (ans.getNextID() != Constants.ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID) {
-						/**
-						 * if the user has not selected any option of comboForLinkAnswer in LinkAnswerDialog box then Sets the answer next Id to the next questionID in the
-						 * listOfAllQuestions
-						 */
-						if (ans.getNextID() == Constants.ANSWER_NO_NEXT_ID) {
-							ans.setNextID(qstn.getId() + 1);
-						}
-						Question linkedQuestion = questionWithId(ans.getNextID());
-						/**
-						 * if linkQuestion exists in any page then update the answer next id to the page id containing the question
-						 */
-						if (questionExistsInAnyPage(linkedQuestion)) {
-							Page pg = findPageContainingPreviousQuestion(linkedQuestion);
-							ans.setNextID(pg.getId());
-						}
+					ansNextIds.add(ans.getNextID());
+				}
+				//sort the array to create the pages and add questions in it in order
+				Collections.sort(ansNextIds);
 
-						/**
-						 * executes when linked question is not in the list of pages
-						 */
-						else {
-							ans.setNextID(pageId);
-							addQuestionToNewPage(linkedQuestion);
+				for (int nextId : ansNextIds) {
+					//executes only if the next id points to some question in the list 
+					if (nextId >= 0) {
+						Answer ans = findAnswer(qstn.getAnswers(), nextId);
+						if (ans.getNextID() != Constants.ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID) {
+							/**
+							 * if the user has not selected any option of comboForLinkAnswer in LinkAnswerDialog box then Sets the answer next Id to the next questionID in the
+							 * listOfAllQuestions
+							 */
+							if (ans.getNextID() == Constants.ANSWER_NO_NEXT_ID) {
+								ans.setNextID(qstn.getId() + 1);
+							}
+							Question linkedQuestion = questionWithId(ans.getNextID());
+							/**
+							 * if linkQuestion exists in any page then update the answer next id to the page id containing the question
+							 */
+							if (questionExistsInAnyPage(linkedQuestion)) {
+								Page pg = findPageContainingPreviousQuestion(linkedQuestion);
+								ans.setNextID(pg.getId());
+							}
+
+							/**
+							 * executes when linked question is not in the list of pages
+							 */
+							else {
+								ans.setNextID(pageId);
+								addQuestionToNewPage(linkedQuestion);
+							}
 						}
 					}
 
+
 				}
+
 			}
 
 		}
@@ -266,7 +277,7 @@ public class SegregatesQuestionsIntoPages {
 	 * @param id
 	 * @return the question
 	 */
-	Question questionWithId(int id) {
+	private Question questionWithId(int id) {
 		for (Question question : listOfAllQuestions) {
 			if (question.getId() == id) {
 				return question;
@@ -283,7 +294,7 @@ public class SegregatesQuestionsIntoPages {
 	 * @return the page
 	 */
 
-	Page findPageContainingPreviousQuestion(Question qstn) {
+	private Page findPageContainingPreviousQuestion(Question qstn) {
 		for (Page page : pages) {
 			for (Question question : page.getContent()) {
 				if (question.equals(qstn)) {
@@ -304,8 +315,6 @@ public class SegregatesQuestionsIntoPages {
 		 * case 1: if the page is the last page in the list then sets the page nextID to -1
 		 */
 		if (page.getId() == pages.size() - 1) {
-			System.out.println("Last Page" + page.getId());
-
 			page.setNextID(Constants.QUESTION_PAGE_LAST_PAGE_NEXT_ID);
 		}
 		/**
@@ -316,6 +325,23 @@ public class SegregatesQuestionsIntoPages {
 		}
 	}
 
+	/**
+	 * 
+	 * @param answers
+	 *        list of answers
+	 * @param nextId
+	 *        answer next id
+	 * @return the answer whose next id is equal to nextId
+	 */
+	private Answer findAnswer(ArrayList<Answer> answers, int nextId) {
+		for (Answer answer : answers) {
+			if (answer.getNextID() == nextId) {
+				return answer;
+			}
+		}
+		return null;
+
+	}
 	/**
 	 * 
 	 * @return the page array

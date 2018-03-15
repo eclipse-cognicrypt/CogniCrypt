@@ -1,0 +1,147 @@
+[
+  {
+    "id": 0,
+    "element": "combo",
+    "questionText": "Q0?",
+    "answers": [
+      {
+        "nextID": 1,
+        "value": "ans1",
+        "defaultAnswer": true
+      },
+      {
+        "value": "ans2",
+        "nextID": 2
+      }
+    ]
+  },
+  {
+    "id": 1,
+    "element": "radio",
+    "questionText": "Q1?",
+    "answers": [
+      {
+        "value": "ans1",
+        "defaultAnswer": true
+      },
+      {
+        "value": "ans2"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "element": "text",
+    "questionText": "Q2?",
+    "answers": [
+      {
+        "value": "",
+        "defaultAnswer": true
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "element": "radio",
+    "questionText": "Q3?",
+    "answers": [
+      {
+        "nextID": 4,
+        "value": "ans1",
+        "defaultAnswer": true
+      },
+      {
+        "nextID": 5,
+        "value": "ans2"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "element": "radio",
+    "questionText": "Q3?",
+    "answers": [
+      {
+        "value": "ans1",
+        "defaultAnswer": true
+      },
+      {
+        "value": "ans2"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "element": "radio",
+    "questionText": "Q4?",
+    "answers": [
+      {
+        "value": "ans1",
+        "defaultAnswer": true
+      },
+      {
+        "value": "ans2"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "element": "combo",
+    "questionText": "Q5?",
+    "answers": [
+      {
+        "nextID": 7,
+        "value": "ans1",
+        "defaultAnswer": true
+      },
+      {
+        "nextID": 8,
+        "value": "ans2"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "element": "combo",
+    "questionText": "Q5?",
+    "answers": [
+      {
+        "value": "ans1",
+        "defaultAnswer": true
+      },
+      {
+        "value": "ans2"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "element": "combo",
+    "questionText": "Q5?",
+    "answers": [
+      {
+        "nextID": 9,
+        "value": "ans1",
+        "defaultAnswer": true
+      },
+      {
+        "nextID": -1,
+        "value": "ans2"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "element": "combo",
+    "questionText": "Q5?",
+    "answers": [
+      {
+        "value": "ans1",
+        "defaultAnswer": true
+      },
+      {
+        "value": "ans2"
+      }
+    ]
+  }
+]

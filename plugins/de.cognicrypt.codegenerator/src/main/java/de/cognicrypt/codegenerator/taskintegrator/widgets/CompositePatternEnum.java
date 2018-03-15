@@ -12,9 +12,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.UIConstants;
-import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.controllers.ClaferPatternEnumGenerator;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 
 public class CompositePatternEnum extends CompositePattern {
@@ -147,30 +146,13 @@ public class CompositePatternEnum extends CompositePattern {
 	 * children when the sortable field of the object set to <code>true</code>.
 	 */
 	public ClaferModel getResultModel() {
-		ClaferModel resultModel = new ClaferModel();
-
-		String parentFeatureInheritance;
-
-		if (sortable) {
-			parentFeatureInheritance = "Enum -> integer";
-		} else {
-			parentFeatureInheritance = "Enum";
+		ArrayList<String> userInput = new ArrayList<>();
+		for (CompositeSortableTextItem comp : sortableTextItems) {
+			userInput.add(comp.getText());
 		}
-		resultModel.add(new ClaferFeature(Constants.FeatureType.ABSTRACT, patternName, parentFeatureInheritance));
 
-		for (int i = 0; i < sortableTextItems.size(); i++) {
-			String str = sortableTextItems.get(i).getText();
-			StringBuilder childFeatureInheritance = new StringBuilder();
-
-			childFeatureInheritance.append(patternName);
-
-			if (sortable) {
-				childFeatureInheritance.append(" = ");
-				childFeatureInheritance.append(String.valueOf(i + 1));
-			}
-
-			resultModel.add(new ClaferFeature(Constants.FeatureType.CONCRETE, str.toString(), childFeatureInheritance.toString()));
-		}
+		ClaferPatternEnumGenerator generator = new ClaferPatternEnumGenerator(patternName, sortable);
+		ClaferModel resultModel = generator.getClaferModel(userInput);
 
 		return resultModel;
 	}

@@ -8,11 +8,13 @@ import java.util.HashMap;
 
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
+import org.eclipse.swt.graphics.Point;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.Constants.XSLTags;
+import de.cognicrypt.codegenerator.taskintegrator.controllers.XSLStringGenerationAndManipulation;
 import de.cognicrypt.codegenerator.taskintegrator.models.XSLAttribute;
 import de.cognicrypt.codegenerator.taskintegrator.models.XSLTag;
 
@@ -45,21 +47,8 @@ public class XSLTests {
 			System.out.println("Tag under consideration : " + tag.getXSLTagDetails().getXSLTagFaceName());
 			boolean validTag = false;
 			StringBuilder dataFromFile = new StringBuilder();
-			dataFromFile.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-			dataFromFile.append("<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"2.0\">\n");
-			dataFromFile.append("<xsl:output method=\"text\"/>\n");
-			dataFromFile.append("<xsl:template match=\"/\">\n");
-			dataFromFile.append("package <xsl:value-of select=\"//task/Package\"/>; \n");
-			dataFromFile.append("<xsl:apply-templates select=\"//Import\"/>\n");
 
-			dataFromFile.append(tag.toString());
-
-			dataFromFile.append("\n");
-			dataFromFile.append("</xsl:template>\n");
-			dataFromFile.append("<xsl:template match=\"Import\">\n");
-			dataFromFile.append("import <xsl:value-of select=\".\"/>;\n");
-			dataFromFile.append("</xsl:template>\n");
-			dataFromFile.append("</xsl:stylesheet>");
+			dataFromFile.append(XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), tag.toString()));
 
 			try {
 				DocumentHelper.parseText(dataFromFile.toString());

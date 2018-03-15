@@ -29,51 +29,39 @@ public class XSLStringGenerationAndManipulation {
 	public static String generateXSLStringFromPath(String filePath, String existingText, Point selected, String stringToAdd) {
 		StringBuilder dataFromFile = new StringBuilder();
 
-		Path path = Paths.get(filePath);
+		String xslStringBeforeAddingText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"2.0\">\n<xsl:output method=\"text\"/>\n<xsl:template match=\"/\">\npackage <xsl:value-of select=\"//task/Package\"/>; \n<xsl:apply-templates select=\"//Import\"/>\n";
+		String xslStringAfterAddingText = "\n</xsl:template>\n<xsl:template match=\"Import\">\nimport <xsl:value-of select=\".\"/>;\n</xsl:template>\n</xsl:stylesheet>";
 
-		if (path.getFileName().toString().endsWith(".java") || path.getFileName().toString().endsWith(".JAVA") || path.getFileName().toString().endsWith(".txt") || path
-			.getFileName().toString().endsWith(".TXT")) {
+		if (filePath != null) {
+			Path path = Paths.get(filePath);
+			if (path.getFileName().toString().endsWith(".java") || path.getFileName().toString().endsWith(".JAVA") || path.getFileName().toString().endsWith(".txt") || path
+				.getFileName().toString().endsWith(".TXT")) {
 
-			// Check if the XSL tags have already been created. If yes then add the text at the cursor location.
-			if (existingText.contains("<?xml version=") || existingText.contains("<xsl:stylesheet xmlns:xsl=")) {
-				dataFromFile.append(existingText.substring(0, selected.x));
-				dataFromFile.append("\n");
-				dataFromFile.append("<xsl:result-document href=\"\">");
-				dataFromFile.append("\n");
-				if (filePath == null) {
-					dataFromFile.append(stringToAdd);
-				} else {
+				// Check if the XSL tags have already been created. If yes then add the text at the cursor location.
+				if (existingText.contains("<?xml version=") || existingText.contains("<xsl:stylesheet xmlns:xsl=")) {
+					dataFromFile.append(existingText.substring(0, selected.x));
+					dataFromFile.append("\n");
+					dataFromFile.append("<xsl:result-document href=\"\">");
+					dataFromFile.append("\n");
 					appendTextFromFileToStringBuilder(dataFromFile, filePath);
+					dataFromFile.append("\n");
+					dataFromFile.append(existingText.substring(selected.y, existingText.length()));
+
+				} else {
+					dataFromFile.append(xslStringBeforeAddingText);
+					appendTextFromFileToStringBuilder(dataFromFile, filePath);
+					dataFromFile.append(xslStringAfterAddingText);
 				}
-				dataFromFile.append("\n");
-				dataFromFile.append(existingText.substring(selected.y, existingText.length()));
 
 			} else {
-				dataFromFile.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-				dataFromFile.append("<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"2.0\">\n");
-				dataFromFile.append("<xsl:output method=\"text\"/>\n");
-				dataFromFile.append("<xsl:template match=\"/\">\n");
-				dataFromFile.append("package <xsl:value-of select=\"//task/Package\"/>; \n");
-				dataFromFile.append("<xsl:apply-templates select=\"//Import\"/>\n");
-
-				if (filePath == null) {
-					dataFromFile.append(stringToAdd);
-				} else {
-					appendTextFromFileToStringBuilder(dataFromFile, filePath);
-				}
-
-
-				dataFromFile.append("\n");
-				dataFromFile.append("</xsl:template>\n");
-				dataFromFile.append("<xsl:template match=\"Import\">\n");
-				dataFromFile.append("import <xsl:value-of select=\".\"/>;\n");
-				dataFromFile.append("</xsl:template>\n");
-				dataFromFile.append("</xsl:stylesheet>");
+				appendTextFromFileToStringBuilder(dataFromFile, filePath);
 			}
-
 		} else {
-			appendTextFromFileToStringBuilder(dataFromFile, filePath);
+			dataFromFile.append(xslStringBeforeAddingText);
+			dataFromFile.append(stringToAdd);
+			dataFromFile.append(xslStringAfterAddingText);
 		}
+
 
 		return dataFromFile.toString();
 	}

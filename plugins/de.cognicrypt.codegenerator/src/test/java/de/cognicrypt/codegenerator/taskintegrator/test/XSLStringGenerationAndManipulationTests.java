@@ -35,6 +35,9 @@ public class XSLStringGenerationAndManipulationTests {
 	File txtXSLFileWithExistingXSLPath = null;
 	String testResourceLocation = null;
 
+	/**
+	 * Fill the file paths.
+	 */
 	@Before
 	public void getxslFileFromMainResources() {
 		// get the first file from the list of active xsl files for the test.
@@ -164,6 +167,11 @@ public class XSLStringGenerationAndManipulationTests {
 		assertTrue(txtGenerated.asXML().equals(txtExisting.asXML()));
 	}
 
+	/**
+	 * Basic test for the region analyzer. The Functionality is tested in another test suite.
+	 * 
+	 * @throws IOException
+	 */
 	@Test
 	public void testComputeStyleForXMLRegions() throws IOException {
 		File testFile = Utils.getResourceFromWithin(testResourceLocation + "StackOverflowExample.xml");

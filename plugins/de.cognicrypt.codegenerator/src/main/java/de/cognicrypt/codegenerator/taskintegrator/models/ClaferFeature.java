@@ -161,17 +161,15 @@ public class ClaferFeature implements Serializable {
 				for (String feature : getFeatureInheritance().split(" -> ")) {
 					dependencies.add(feature);
 				}
+			} else if (getFeatureInheritance().contains("=")) {
+				dependencies.add(getFeatureInheritance().replaceAll("\\s+", "").split("=")[0]);
 			} else {
 				dependencies.add(getFeatureInheritance());
 			}
 		}
 
 		for (ClaferProperty fp : getFeatureProperties()) {
-			if (fp.getPropertyType().contains("=")) {
-				dependencies.add(fp.getPropertyType().split("=")[0]);
-			} else {
-				dependencies.add(fp.getPropertyType());
-			}
+			dependencies.add(fp.getPropertyType());
 		}
 
 		return dependencies;

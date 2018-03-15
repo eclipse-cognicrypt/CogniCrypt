@@ -6,6 +6,22 @@
 <xsl:variable name="Rounds"> <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/iterations"/> </xsl:variable>
 <xsl:variable name="outputSize"> <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/algorithm[@type='Digest']/outputSize"/> </xsl:variable>
 
+<xsl:choose>
+	<xsl:when test="//task/code/server='true'">
+		<xsl:result-document href="serverConfig.properties">
+			pwd="<xsl:value-of select="//task/code/keystorepassword"/>"
+		</xsl:result-document>
+	</xsl:when>
+	<xsl:otherwise>
+		<xsl:result-document href="clientConfig.properties">
+			pwd="<xsl:value-of select="//task/code/keystorepassword"/>"
+		</xsl:result-document>
+	</xsl:otherwise>
+</xsl:choose>
+
+<xsl:variable name="filename"><xsl:choose><xsl:when test="//task/code/server='true'">serverConfig.properties</xsl:when><xsl:otherwise>clientConfig.properties</xsl:otherwise></xsl:choose></xsl:variable>
+
+
 <xsl:if test="//task[@description='SecureCommunication']">
 <xsl:choose><xsl:when test="//task/code/server='true'">
 <xsl:result-document href="TLSServer.java">
@@ -15,10 +31,30 @@ package <xsl:value-of select="//task/Package"/>;
 public class TLSServer {	
 	private static SSLServerSocket sslServersocket = null;
 	private static List&lt;TLSConnection&gt; sslConnections = null;
+	private static Properties prop = new Properties();
+	private static InputStream input = null;
+	private static String pwd = null; 
 			
 	public TLSServer(int port) {
 			System.setProperty("javax.net.ssl.keyStore","<xsl:value-of select="//task/code/keystore"/>");
-        System.setProperty("javax.net.ssl.keyStorePassword","<xsl:value-of select="//task/code/keystorepassword"/>");
+			try {
+				// If you move the generated code in another package (default of CogniCrypt is Crypto),
+				// you need to change the parameter (replacing Crypto with the package name).
+				input = Object.class.getClass().getResourceAsStream("/Crypto/serverConfig.properties");
+				prop.load(input);
+				pwd = prop.getProperty("pwd"); 
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			} finally {
+				if (input != null) {
+					try {
+						input.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+        	System.setProperty("javax.net.ssl.keyStorePassword",pwd);
 	        SSLServerSocketFactory sslServerSocketFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
 		try {
 			sslServersocket = (SSLServerSocket) sslServerSocketFactory.createServerSocket(<xsl:choose><xsl:when test="//task/code/port"><xsl:value-of select="//task/code/port"/></xsl:when>
@@ -153,8 +189,28 @@ public class TLSClient {
          <xsl:otherwise>,int port</xsl:otherwise>
 		 </xsl:choose>
 		 	) {
+			Properties prop = new Properties();
+			InputStream input = null;
+			String pwd = null;
 			System.setProperty("javax.net.ssl.trustStore","<xsl:value-of select="//task/code/keystore"/>");
-        System.setProperty("javax.net.ssl.trustStorePassword","<xsl:value-of select="//task/code/keystorepassword"/>");
+			try {
+				// If you move the generated code in another package (default of CogniCrypt is Crypto),
+				// you need to change the parameter (replacing Crypto with the package name).
+				input = Object.class.getClass().getResourceAsStream("/Crypto/clientConfig.properties");
+				prop.load(input);
+				pwd = prop.getProperty("pwd"); 
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			} finally {
+				if (input != null) {
+					try {
+						input.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+          System.setProperty("javax.net.ssl.trustStorePassword",pwd);
 	        SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 		try {
 			sslsocket = (SSLSocket) sslsocketfactory.createSocket(<xsl:choose>

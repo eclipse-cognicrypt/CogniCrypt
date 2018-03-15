@@ -281,110 +281,112 @@ public class CompareAlgorithmPage extends WizardPage {
 		Display display = Display.getCurrent();
 		String firstAlgorithmHighlight = getHighlightFirst();
 		String secondAlgorithmHighlight = getHighlightSecond();
-		Color cyan = display.getSystemColor(SWT.COLOR_CYAN);
-		Color transparent = display.getSystemColor(SWT.COLOR_TRANSPARENT);
-		
-		String[] partFirstInstanceDetails = firstAlgorithmHighlight.split("\n\r\n");
-		String[] lines1;
-		String[] firstHalf1;
-		
-		String[] partSecondInstanceDetails = secondAlgorithmHighlight.split("\n\r\n");
-		String[] lines2;
-		String[] firstHalf2;
+		if (secondAlgorithmHighlight != null) {
+			Color cyan = display.getSystemColor(SWT.COLOR_CYAN);
+			Color transparent = display.getSystemColor(SWT.COLOR_TRANSPARENT);
 
-		/*
-		 * The two windows are being declared into 2 separate ArrayLists in the following section. Each ArrayList is a collection of LinkedHashMaps which contains each of the
-		 * blocks of data. Each line in the block are arranged as key value pairs in the LinkedHashMap
-		 */
-		ArrayList<LinkedHashMap<String, String>> firstPart = new ArrayList<LinkedHashMap<String, String>>();
-		//Initializing the LinkedHashMaps for later use
-		for (int i = 0; i < partFirstInstanceDetails.length; i++) {
-			firstPart.add(new LinkedHashMap<String, String>());
-		}
-		//Populating the LinkedHashMaps with the lines(Key Value Pairs) and adding it to the ArrayList
-		for (int x = 0; x < partFirstInstanceDetails.length; x++) {
-			lines1 = partFirstInstanceDetails[x].split("\r\n\t");
-			for (int y = 0; y < lines1.length; y++) {
-				firstHalf1 = lines1[y].split(" : ");
-				firstPart.get(x).put(firstHalf1[0], firstHalf1[1]);
+			String[] partFirstInstanceDetails = firstAlgorithmHighlight.split("\n\r\n");
+			String[] lines1;
+			String[] firstHalf1;
+
+			String[] partSecondInstanceDetails = secondAlgorithmHighlight.split("\n\r\n");
+			String[] lines2;
+			String[] firstHalf2;
+
+			/*
+			 * The two windows are being declared into 2 separate ArrayLists in the following section. Each ArrayList is a collection of LinkedHashMaps which contains each of the
+			 * blocks of data. Each line in the block are arranged as key value pairs in the LinkedHashMap
+			 */
+			ArrayList<LinkedHashMap<String, String>> firstPart = new ArrayList<LinkedHashMap<String, String>>();
+			//Initializing the LinkedHashMaps for later use
+			for (int i = 0; i < partFirstInstanceDetails.length; i++) {
+				firstPart.add(new LinkedHashMap<String, String>());
+			}
+			//Populating the LinkedHashMaps with the lines(Key Value Pairs) and adding it to the ArrayList
+			for (int x = 0; x < partFirstInstanceDetails.length; x++) {
+				lines1 = partFirstInstanceDetails[x].split("\r\n\t");
+				for (int y = 0; y < lines1.length; y++) {
+					firstHalf1 = lines1[y].split(" : ");
+					firstPart.get(x).put(firstHalf1[0], firstHalf1[1]);
+				}
+
 			}
 
-		}
-
-		ArrayList<LinkedHashMap<String, String>> secondPart = new ArrayList<LinkedHashMap<String, String>>();
-		//Initializing the LinkedHashMaps for later use
-		for (int i = 0; i < partSecondInstanceDetails.length; i++) {
-			secondPart.add(new LinkedHashMap<String, String>());
-		}
-		//Populating the LinkedHashMaps with the lines(Key Value Pairs) and adding it to the ArrayList
-		for (int x = 0; x < partSecondInstanceDetails.length; x++) {
-			lines2 = partSecondInstanceDetails[x].split("\r\n\t");
-			for (int y = 0; y < lines2.length; y++) {
-				firstHalf2 = lines2[y].split(" : ");
-				secondPart.get(x).put(firstHalf2[0], firstHalf2[1]);
+			ArrayList<LinkedHashMap<String, String>> secondPart = new ArrayList<LinkedHashMap<String, String>>();
+			//Initializing the LinkedHashMaps for later use
+			for (int i = 0; i < partSecondInstanceDetails.length; i++) {
+				secondPart.add(new LinkedHashMap<String, String>());
 			}
+			//Populating the LinkedHashMaps with the lines(Key Value Pairs) and adding it to the ArrayList
+			for (int x = 0; x < partSecondInstanceDetails.length; x++) {
+				lines2 = partSecondInstanceDetails[x].split("\r\n\t");
+				for (int y = 0; y < lines2.length; y++) {
+					firstHalf2 = lines2[y].split(" : ");
+					secondPart.get(x).put(firstHalf2[0], firstHalf2[1]);
+				}
 
-		}
-		String key = null;
-		String value = null;
-		int t = 0;		//position inside the first styled text box
-		int s = 0;		//position inside the second styled text box
-		int pos1;		//position inside a particular block of the first styled text box
-		int pos2;		//position inside a particular block of the second styled text box
-		int y;
-		//first loop with x parameter loops through each block in the first styled text box
-		for (int x = 0; x < firstPart.size(); x++) {
-			//second loop with y parameter loops through each block in the second styled text box
-			for (y = 0; y < secondPart.size(); y++) {
-				//comparing the values for the 'Algorithm' Key
-				String firstKey = (String) (firstPart.get(x).keySet().toArray())[0];
-				String firstValue = firstPart.get(x).get(firstKey);
-				if (secondPart.get(y).containsKey(firstKey)) {
-					if (secondPart.get(y).get(firstKey).equals(firstValue)) {
-						Iterator<String> iterator1 = firstPart.get(x).keySet().iterator();
-						while (iterator1.hasNext()) {
-							key = (String) iterator1.next();
-							value = firstPart.get(x).get(key);
-							if (secondPart.get(y).containsKey(key)) {
-								if (secondPart.get(y).get(key).equals(value)) {
+			}
+			String key = null;
+			String value = null;
+			int t = 0;		//position inside the first styled text box
+			int s = 0;		//position inside the second styled text box
+			int pos1;		//position inside a particular block of the first styled text box
+			int pos2;		//position inside a particular block of the second styled text box
+			int y;
+			//first loop with x parameter loops through each block in the first styled text box
+			for (int x = 0; x < firstPart.size(); x++) {
+				//second loop with y parameter loops through each block in the second styled text box
+				for (y = 0; y < secondPart.size(); y++) {
+					//comparing the values for the 'Algorithm' Key
+					String firstKey = (String) (firstPart.get(x).keySet().toArray())[0];
+					String firstValue = firstPart.get(x).get(firstKey);
+					if (secondPart.get(y).containsKey(firstKey)) {
+						if (secondPart.get(y).get(firstKey).equals(firstValue)) {
+							Iterator<String> iterator1 = firstPart.get(x).keySet().iterator();
+							while (iterator1.hasNext()) {
+								key = (String) iterator1.next();
+								value = firstPart.get(x).get(key);
+								if (secondPart.get(y).containsKey(key)) {
+									if (secondPart.get(y).get(key).equals(value)) {
 
-									//getting the index of the current key in the block
-									pos1 = new ArrayList<String>(firstPart.get(x).keySet()).indexOf(key);
-									//highlighting the line which is calculated by adding pos1 with the t offset
-									firstInstanceDetails.setLineBackground(t + pos1, 1, transparent);
-									//getting the index of the current key in the block
-									pos2 = new ArrayList<String>(secondPart.get(y).keySet()).indexOf(key);
-									//highlighting the line which is calculated by adding pos2 with the s offset
-									secondInstanceDetails.setLineBackground(s + pos2, 1, transparent);
-								} else {
-									//getting the index of the current key in the block
-									pos1 = new ArrayList<String>(firstPart.get(x).keySet()).indexOf(key);
-									//highlighting the line which is calculated by adding pos1 with the t offset
-									firstInstanceDetails.setLineBackground(t + pos1, 1, cyan);
-									//getting the index of the current key in the block
-									pos2 = new ArrayList<String>(secondPart.get(y).keySet()).indexOf(key);
-									//highlighting the line which is calculated by adding pos2 with the s offset
-									secondInstanceDetails.setLineBackground(s + pos2, 1, cyan);
+										//getting the index of the current key in the block
+										pos1 = new ArrayList<String>(firstPart.get(x).keySet()).indexOf(key);
+										//highlighting the line which is calculated by adding pos1 with the t offset
+										firstInstanceDetails.setLineBackground(t + pos1, 1, transparent);
+										//getting the index of the current key in the block
+										pos2 = new ArrayList<String>(secondPart.get(y).keySet()).indexOf(key);
+										//highlighting the line which is calculated by adding pos2 with the s offset
+										secondInstanceDetails.setLineBackground(s + pos2, 1, transparent);
+									} else {
+										//getting the index of the current key in the block
+										pos1 = new ArrayList<String>(firstPart.get(x).keySet()).indexOf(key);
+										//highlighting the line which is calculated by adding pos1 with the t offset
+										firstInstanceDetails.setLineBackground(t + pos1, 1, cyan);
+										//getting the index of the current key in the block
+										pos2 = new ArrayList<String>(secondPart.get(y).keySet()).indexOf(key);
+										//highlighting the line which is calculated by adding pos2 with the s offset
+										secondInstanceDetails.setLineBackground(s + pos2, 1, cyan);
+									}
 								}
-							} 
-//							else {
-//								//show red
-//							}
+								//								else {
+								//									//show red
+								//								}
+							}
+							break;
 						}
-						break;
 					}
-				} 
-//				else {
-//					//show the block red
-//				}
-				//offsetting the block length by adding the current block size to s
-				s = s + secondPart.get(y).size() + 1;
-			}
-			//resetting the offset as the second block comparison will begin from the start again with the main loop iteration.
-			s = 0;
-			//offsetting the block length by adding the current block size to t
-			t = t + firstPart.get(x).size() + 1;
+					//					else {
+					//						//show the block red
+					//					}
+					//offsetting the block length by adding the current block size to s
+					s = s + secondPart.get(y).size() + 1;
+				}
+				//resetting the offset as the second block comparison will begin from the start again with the main loop iteration.
+				s = 0;
+				//offsetting the block length by adding the current block size to t
+				t = t + firstPart.get(x).size() + 1;
 
+			}
 		}
 
 	}

@@ -14,13 +14,13 @@ public class Validation_ipAddress {
 		int Output1 = ipAddress.validationIpAddress("255.255.255.255");
 		assertEquals(0, Output1);
 		int Output2 = ipAddress.validationIpAddress("256.255.255.255.255");
-		assertEquals(1, Output2);
+		assertEquals(2, Output2);
 		int Output3 = ipAddress.validationIpAddress("233.0");
 		assertEquals(1, Output3);
 		int Output4 = ipAddress.validationIpAddress("a.a.a.a");
 		assertEquals(1, Output4);
 		int Output5 = ipAddress.validationIpAddress(".");
-		assertEquals(1, Output5);
+		assertEquals(2, Output5);
 		int Output6 = ipAddress.validationIpAddress("2.0.0.0");
 		assertEquals(0, Output6);
 		int Output7 = ipAddress.validationIpAddress(".255.255.255");

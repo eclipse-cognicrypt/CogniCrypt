@@ -422,10 +422,11 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 									e.doit = false;
 								}
 							} catch (NumberFormatException ex) {
-								if (!port.equals(""))
+								if (!port.equals("")){
 									deco.show();
 									deco.showHoverText("Expected an integer < 65535");
 									e.doit = false;
+								}
 							}
 						}
 					});
@@ -444,36 +445,37 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 								if (ip != null && !ip.isEmpty()) {
 									String[] ipAddress = ip.split("\\.");
 									deco.hide();
-									if (ipAddress.length > 4) {
-										deco.show();
-										deco.showHoverText("Expected format 255.255.255.255");
-										e.doit = false;
-									}
-									deco.hide();
-									for (int i = 0; i <= ipAddress.length - 1; i++) {
-										int j = Integer.parseInt(ipAddress[i]);
-										if (j < 0 || j > 255) {
+									if (ipAddress.length == 4) {
+										deco.hide();
+										for (int i = 0; i <= ipAddress.length - 1; i++) {
+											int j = Integer.parseInt(ipAddress[i]);
+											if (j < 0 || j > 255) {
+												deco.show();
+												deco.showHoverText("Expected format 255.255.255.255");
+												e.doit = false;
+											}
+										}
+										deco.hide();
+										if (ipAddress.length == 4) {
+											if (ip.endsWith(".")) {
+												deco.show();
+												deco.showHoverText("Expected format 255.255.255.255");
+												e.doit = false;
+											}
+										}
+										deco.hide();
+										if (ip.endsWith("..")) {
 											deco.show();
 											deco.showHoverText("Expected format 255.255.255.255");
 											e.doit = false;
 										}
-									}
-									deco.hide();
-									if (ipAddress.length== 4) {
-										if (ip.endsWith(".")) {
+										deco.hide();
+										if (ip.startsWith(".")) {
 											deco.show();
 											deco.showHoverText("Expected format 255.255.255.255");
 											e.doit = false;
 										}
-									}
-									deco.hide();
-									if (ip.endsWith("..")) {
-										deco.show();
-										deco.showHoverText("Expected format 255.255.255.255");
-										e.doit = false;
-									}
-									deco.hide();
-									if (ip.startsWith(".")) {
+									}else{
 										deco.show();
 										deco.showHoverText("Expected format 255.255.255.255");
 										e.doit = false;

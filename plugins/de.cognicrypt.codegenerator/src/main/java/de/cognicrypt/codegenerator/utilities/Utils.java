@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -91,7 +92,8 @@ public class Utils {
 		return null;
 	}
 
-	/** This method closes the currently open editor.
+	/**
+	 * This method closes the currently open editor.
 	 * 
 	 * @param editor
 	 */
@@ -206,6 +208,27 @@ public class Utils {
 				final URL resolvedURL = FileLocator.toFileURL(fileURL);
 				final URI uri = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
 				return new File(uri);
+			}
+		} catch (final Exception ex) {
+			Activator.getDefault().logError(ex);
+		}
+
+		return null;
+	}
+
+	public static File getFinalClaferFile(final String inputPath) {
+		try {
+			final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+
+			if (bundle == null) {
+				// running as application
+				return new File(inputPath);
+			} else {
+				final URL fileURL = bundle.getEntry(inputPath);
+				final URL resolvedURL = FileLocator.toFileURL(fileURL);
+				final URI uri = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
+				String filename = uri.getPath().replace("FinalClafer", "FinalClafer" + new Date().getTime());
+				return new File(filename);
 			}
 		} catch (final Exception ex) {
 			Activator.getDefault().logError(ex);

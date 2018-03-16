@@ -32,17 +32,20 @@ public class Constants {
 
 	public static final String jsonPrimitiveTypesFile = rsrcPath + "Primitives" + innerFileSeparator + "PrimitiveType.json";
 
-	//	Clafer related file
-	public static final String claferHeader = rsrcPath + "ClaferModel" + innerFileSeparator + "ClaferHeader.cfr";
-	public static final String claferFooter = rsrcPath + "ClaferModel" + innerFileSeparator + "FinalClafer.cfr";
+	//	public static final String claferFooter = rsrcPath + "ClaferModel" + innerFileSeparator + "FinalClafer.cfr";
 
 	//XML & XSL for Primitive 
 	public static final String primitivesPath = Constants.rsrcPath + "Primitives";
+
 	public static final String xmlFilePath = primitivesPath + innerFileSeparator + "XML" + innerFileSeparator + "xmlFile.xml";
 
 	public static final String cipherSpiXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template" + innerFileSeparator + "CipherSPI.xsl";
 	public static final String providerClass = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template" + innerFileSeparator + "providerClass.xsl";
 	public static final String TransformedFiles = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "TransformedFiles";
+
+	//	Clafer related file
+	public static final String claferHeader = rsrcPath + "Primitives" + innerFileSeparator + "ClaferHeader.cfr";
+	public static final String claferFooter = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClafer.cfr";
 	// Task descriptions
 
 	// Tooltip

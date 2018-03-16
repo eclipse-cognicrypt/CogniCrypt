@@ -168,11 +168,11 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		 *
 		 */
 
-		ClaferGenerator.copyClaferHeader();
+		File finalClafer = ClaferGenerator.copyClaferHeader();
 		for (IWizardPage page : getPages()) {
 			if (page instanceof PrimitiveQuestionnairePage) {
 				PrimitiveQuestionnairePage questionnairePage = (PrimitiveQuestionnairePage) page;
-				ClaferGenerator.printClafer(questionnairePage.getSelection());
+				ClaferGenerator.printClafer(questionnairePage.getSelection(), finalClafer);
 
 			}
 		}

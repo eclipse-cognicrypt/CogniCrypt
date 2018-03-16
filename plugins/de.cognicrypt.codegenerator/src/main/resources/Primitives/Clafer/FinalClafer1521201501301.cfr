@@ -25,15 +25,14 @@ abstract Cipher
   BlockSize -> int
 
 abstract SymmetricCipher : Cipher
-
-
-
   
-SHA : SymmetricCipher
-	[name = SHA]
-	[description = This is desc]
+SICS : SymmetricCipher
+	[name = SICS]
+	[description = This is Description of SICS algorithm on Friday 12.57pm
+i.e 
+16032018125733]
 	[Blocksize = 64]
-	[Keysize1 = 211]
-	[Keysize2 = 222-333]
-	[mode = OFB|CFB]
-	[Padding = ZeroPadding|PKCS7]
+	[Keysize1 = 647]
+	[Keysize2 = 333-534]
+	[mode = OFB|CFB|CTR]
+	[Padding = PKCS7|ZeroPadding]

@@ -1,6 +1,7 @@
 package de.cognicrypt.codegenerator.primitive.clafer;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -19,12 +20,14 @@ import de.cognicrypt.codegenerator.utilities.Utils;
 public abstract class ClaferGenerator {
 
 	//	Copy the Static Part into New created file
-	public static void copyClaferHeader() {
+	public static File copyClaferHeader() {
 		InputStream input = null;
 		OutputStream output = null;
+		File finalClafer = null;
 		try {
+			finalClafer = (Utils.getFinalClaferFile(Constants.claferFooter));
 			input = new FileInputStream(Utils.getResourceFromWithin(Constants.claferHeader));
-			output = new FileOutputStream(Utils.getResourceFromWithin(Constants.claferFooter));
+			output = new FileOutputStream(finalClafer);
 			byte[] buf = new byte[1024];
 			int bytesRead;
 			while ((bytesRead = input.read(buf)) > 0) {
@@ -43,6 +46,7 @@ public abstract class ClaferGenerator {
 				e.printStackTrace();
 			}
 		}
+		return finalClafer;
 	}
 
 	/**
@@ -51,10 +55,11 @@ public abstract class ClaferGenerator {
 	 * @return
 	 */
 
-	public static void printClafer(LinkedHashMap<String, String> userInput) {
+	public static void printClafer(LinkedHashMap<String, String> userInput, File finalClafer) {
+
 		BufferedWriter bw;
 		try {
-			bw = new BufferedWriter(new FileWriter(Utils.getResourceFromWithin(Constants.claferFooter), true)); // the true will append the new data
+			bw = new BufferedWriter(new FileWriter(finalClafer, true)); // the true will append the new data
 			// TODO Auto-generated method stub
 			for (String key : userInput.keySet()) {
 				if (key != null && key.equals("name")) {

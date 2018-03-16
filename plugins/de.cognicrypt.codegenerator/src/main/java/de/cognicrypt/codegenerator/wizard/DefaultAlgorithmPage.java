@@ -2,7 +2,6 @@ package de.cognicrypt.codegenerator.wizard;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,7 +13,6 @@ import java.util.Map;
 import javax.xml.transform.TransformerException;
 
 import org.clafer.instance.InstanceClafer;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.wizard.WizardPage;
@@ -36,7 +34,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 

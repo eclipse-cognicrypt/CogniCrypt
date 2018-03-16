@@ -45,42 +45,37 @@ public class Validation {
 
 		//count=0 is the input accepting case 
 		//count=1 is the error case
-		
 		int count = 0;
 		String ip = testInput;
-		try {
-			if (ip != null && !ip.isEmpty()) {
-				String[] ipAddress = ip.split("\\.");
-				if (ipAddress.length == 4) {
-					
+
+			try {
+				if (ip != null && !ip.isEmpty()) {
+					String[] ipAddress = ip.split("\\.");
+					count = 0;
+					if (ipAddress.length > 4 || ipAddress.length < 4) {
+						count++;
+					}
 					for (int i = 0; i <= ipAddress.length - 1; i++) {
 						int j = Integer.parseInt(ipAddress[i]);
-						if (j < 0 || j > 255 || j < 0) {
+						if (j < 0 || j > 255) {
 							count++;
 						}
 					}
-					if (ip.endsWith(".")) {
-						count++;
-					}
-
 					if (ip.endsWith("..")) {
 						count++;
 					}
-
 					if (ip.startsWith(".")) {
 						count++;
 					}
+					
 				}
-				else{
+			} catch (NumberFormatException ex) {
+				if (!ip.equals("")){
 					count++;
 				}
-
-			}
-		} catch (NumberFormatException ex) {
-			if (!ip.equals("")){
-				count++;
-			}
+	
 		}
 		return count;
 	}
-}
+	}
+

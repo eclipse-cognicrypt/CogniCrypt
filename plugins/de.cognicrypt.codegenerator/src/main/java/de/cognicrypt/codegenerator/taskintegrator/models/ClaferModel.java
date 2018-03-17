@@ -155,15 +155,24 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 		if (!refFeature.getFeatureInheritance().isEmpty()) {
 			boolean parentFound = false;
 
+			// TODO consider trimming whitespaces from the string before splitting
+			String needleFeature;
+
+			if (refFeature.getFeatureInheritance().contains("->")) {
+				needleFeature = refFeature.getFeatureInheritance().split(" -> ")[0];
+			} else {
+				needleFeature = refFeature.getFeatureInheritance();
+			}
+
 			for (String primitive : Constants.CLAFER_PRIMITIVE_TYPES) {
-				if (primitive.equals(refFeature.getFeatureInheritance())) {
+				if (primitive.equals(needleFeature)) {
 					parentFound = true;
 					break;
 				}
 			}
 
 			for (ClaferFeature cfrFeature : claferModel) {
-				if (cfrFeature.getFeatureName().equals(refFeature.getFeatureInheritance())) {
+				if (cfrFeature.getFeatureName().equals(needleFeature)) {
 					parentFound = true;
 					break;
 				}
@@ -171,7 +180,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 
 			// remember missing inherited feature
 			if (!parentFound) {
-				ClaferFeature parentFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, refFeature.getFeatureInheritance(), "");
+				ClaferFeature parentFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, needleFeature, "");
 				addedFeatures.add(parentFeature);
 			}
 		}

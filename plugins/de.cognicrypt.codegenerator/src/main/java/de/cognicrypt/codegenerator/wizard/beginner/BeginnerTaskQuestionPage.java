@@ -438,19 +438,19 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 						@Override
 						public void verifyText(VerifyEvent e) {
-							
 							String currentText = ((Text) e.widget).getText();
 							String ip = currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
+							String[] ipAddress = ip.split("\\.");
+							int i= 0;
 							try {
 								if (!ip.isEmpty()) {
-									String[] ipAddress = ip.split("\\.");
 									deco.hide();
 									if (ipAddress.length > 4) {
 										deco.show();
 										deco.showHoverText("Expected format 255.255.255.255");
 										e.doit = false;
 									}
-									for (int i = 0; i <= ipAddress.length - 1; i++) {
+									for (i = 0; i <= ipAddress.length - 1; i++) {
 										int j = Integer.parseInt(ipAddress[i]);
 										if (j < 0 || j > 255) {
 											deco.show();
@@ -458,16 +458,24 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 											e.doit = false;
 										}
 									}
-									if (ip.endsWith("..")) {
+									if (ip.endsWith("..") || ip.startsWith(".")) {
 										deco.show();
 										deco.showHoverText("Expected format 255.255.255.255");
-										e.doit = false;
+										e.doit=false;
 									}
-									if (ip.startsWith(".")) {
+									if (ip.endsWith(".") || ip.endsWith("[0-9]") ) {
 										deco.show();
 										deco.showHoverText("Expected format 255.255.255.255");
-										e.doit = false;
 									}
+									if(i==4 && ip.endsWith(".")){
+										deco.show();
+										deco.showHoverText("Expected format 255.255.255.255");
+										e.doit=false;											
+									}
+//									if( i<4 && ip.endsWith("\\d")){
+//										deco.show();
+//										deco.showHoverText("Expected format 255.255.255.255");										
+//									}
 								}
 							} catch (NumberFormatException ex) {
 								if (!ip.equals("")){

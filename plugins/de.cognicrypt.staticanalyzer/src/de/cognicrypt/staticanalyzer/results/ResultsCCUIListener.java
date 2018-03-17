@@ -21,13 +21,13 @@ import crypto.analysis.AnalysisSeedWithSpecification;
 import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.EnsuredCryptSLPredicate;
 import crypto.analysis.IAnalysisSeed;
-import crypto.analysis.LocatedCrySLPredicate;
 import crypto.analysis.errors.AbstractError;
 import crypto.analysis.errors.ConstraintError;
 import crypto.analysis.errors.ForbiddenMethodError;
 import crypto.analysis.errors.IncompleteOperationError;
-import crypto.analysis.errors.PredicateError;
+import crypto.analysis.errors.RequiredPredicateError;
 import crypto.analysis.errors.TypestateError;
+import crypto.interfaces.ISLConstraint;
 import crypto.rules.CryptSLArithmeticConstraint;
 import crypto.rules.CryptSLComparisonConstraint;
 import crypto.rules.CryptSLComparisonConstraint.CompOp;
@@ -52,7 +52,6 @@ import soot.jimple.Stmt;
 import soot.jimple.internal.JAssignStmt;
 import sync.pds.solver.nodes.Node;
 import typestate.TransitionFunction;
-import typestate.interfaces.ISLConstraint;
 
 /**
  * This listener is notified of any misuses the analysis finds.
@@ -92,8 +91,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		} else if (error instanceof IncompleteOperationError) {
 			IncompleteOperationError err = (IncompleteOperationError) error;
 			message = typestateErrorEndOfLifeCycle(err.getErrorVariable(), err.getExpectedMethodCalls());
-		} else if (error instanceof PredicateError) {
-			PredicateError predErr = (PredicateError) error;
+		} else if (error instanceof RequiredPredicateError) {
+			RequiredPredicateError predErr = (RequiredPredicateError) error;
 			message = missingPredicates(predErr.getContradictedPredicate(), predErr.getExtractedValues());
 		}
 		this.markerGenerator.addMarker(unitToResource(error.getErrorLocation()), error.getErrorLocation().getUnit().get().getJavaSourceStartLineNumber(), message);
@@ -281,9 +280,9 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		return msg.toString();
 	}
 
-	public String missingPredicates(final LocatedCrySLPredicate missingPred, Multimap<CallSiteWithParamIndex, Statement> extractedValues) {
+	public String missingPredicates(final CryptSLPredicate missingPred, Multimap<CallSiteWithParamIndex, Statement> extractedValues) {
 		final StringBuilder msg = new StringBuilder();
-		Statement stmt = ((LocatedCrySLPredicate) missingPred).getLocation();
+		Statement stmt = missingPred.getLocation();
 		msg.append(extractVarName(extractedValues, stmt, (CryptSLObject) missingPred.getParameters().get(0)));
 		msg.append(" was not properly ");
 		String predName = missingPred.getPredName();

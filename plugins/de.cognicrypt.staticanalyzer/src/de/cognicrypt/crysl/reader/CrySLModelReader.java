@@ -37,6 +37,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Injector;
 
+import crypto.interfaces.ICryptSLPredicateParameter;
+import crypto.interfaces.ISLConstraint;
 import crypto.rules.CryptSLArithmeticConstraint;
 import crypto.rules.CryptSLArithmeticConstraint.ArithOp;
 import crypto.rules.CryptSLComparisonConstraint;
@@ -83,8 +85,6 @@ import de.darmstadt.tu.crossing.cryptSL.SuperType;
 import de.darmstadt.tu.crossing.cryptSL.UnaryPreExpression;
 import de.darmstadt.tu.crossing.cryptSL.UseBlock;
 import de.darmstadt.tu.crossing.cryptSL.impl.ObjectImpl;
-import typestate.interfaces.ICryptSLPredicateParameter;
-import typestate.interfaces.ISLConstraint;
 
 public class CrySLModelReader {
 

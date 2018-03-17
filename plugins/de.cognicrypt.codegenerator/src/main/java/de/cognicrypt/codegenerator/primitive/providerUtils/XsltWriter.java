@@ -1,4 +1,4 @@
-package de.cognicrypt.codegenerator.primitive.utilities;
+package de.cognicrypt.codegenerator.primitive.providerUtils;
 
 import java.io.File;
 import java.io.IOException;

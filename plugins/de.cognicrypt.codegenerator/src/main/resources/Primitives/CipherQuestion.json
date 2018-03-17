@@ -103,7 +103,7 @@
       "id": "0",
       "element": "composed",
       "note": "",
-      "questionText": "Enter the key size of your algorithm: \n ",
+      "questionText": "What are the keysizes of your algorithm: \n ",
       "answers": [{
           "value": "fixed size",
           "codeDependencies": [{

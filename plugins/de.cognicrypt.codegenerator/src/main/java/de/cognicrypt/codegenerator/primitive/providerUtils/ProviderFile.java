@@ -1,4 +1,4 @@
-package de.cognicrypt.codegenerator.primitive.utilities;
+package de.cognicrypt.codegenerator.primitive.providerUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -129,6 +129,13 @@ public class ProviderFile {
 //		    Class c = cl.loadClass(className);
 
 //		}
+	}
+	/**
+	 * Compile files 
+	 * @param files
+	 */
+	public void compileFiles(File[] files) {
+		
 	}
 	
 	

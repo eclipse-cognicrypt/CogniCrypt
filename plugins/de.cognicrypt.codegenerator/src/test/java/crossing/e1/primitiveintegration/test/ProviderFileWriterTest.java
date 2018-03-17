@@ -8,9 +8,9 @@ package crossing.e1.primitiveintegration.test;
  import java.util.jar.JarEntry;
  import java.util.jar.JarFile;
  import org.junit.Test;
- 
- import de.cognicrypt.codegenerator.primitive.utilities.ProviderFile;
- import de.cognicrypt.codegenerator.utilities.Utils;
+
+import de.cognicrypt.codegenerator.primitive.providerUtils.ProviderFile;
+import de.cognicrypt.codegenerator.utilities.Utils;
  
  public class ProviderFileWriterTest {
  

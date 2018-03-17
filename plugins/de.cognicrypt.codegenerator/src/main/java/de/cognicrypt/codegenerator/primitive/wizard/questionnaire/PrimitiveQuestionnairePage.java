@@ -378,7 +378,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		}
 	}
 
-	//to ensure if the input text field contains only integers
+	//ensure if the input text field contains only integers
 	private static void ensureTextContainsOnlyDigits(VerifyEvent e) {
 		String string = e.text;
 		e.doit = string.matches("\\d*");
@@ -409,7 +409,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		}
 	}
 
-	//to add the note below the question
+	//add the note below the question
 	private void createNote(final Composite parent, final Question question) {
 		final Group notePanel = new Group(parent, SWT.NONE);
 		notePanel.setText("Note:");

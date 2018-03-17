@@ -1,11 +1,23 @@
 package de.cognicrypt.codegenerator.primitive.wizard;
 
 import java.io.File;
-import java.lang.reflect.Method;
-
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.search.IJavaSearchConstants;
+import org.eclipse.jdt.core.search.IJavaSearchScope;
+import org.eclipse.jdt.core.search.SearchEngine;
+import org.eclipse.jdt.core.search.SearchParticipant;
+import org.eclipse.jdt.core.search.SearchPattern;
+import org.eclipse.jdt.core.search.SearchRequestor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -16,7 +28,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnairePage;
+
 
 /**
  * 
@@ -26,6 +38,7 @@ public class JavaProjectBrowserPage extends WizardPage {
 
 	Text text;
 	File selectedJavaFile;
+	String path;
 
 	public JavaProjectBrowserPage(String pageName) {
 		super(pageName);
@@ -66,9 +79,9 @@ public class JavaProjectBrowserPage extends WizardPage {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						FileDialog dialog = new FileDialog(btnBrowse.getShell(), SWT.NULL);
-						dialog.setFilterExtensions(new String [] {"*.java"});
+						dialog.setFilterExtensions(new String [] {".project"});
 						dialog.setFilterPath("c:\\");
-						String path = dialog.open();
+						 path = dialog.open();
 						if (path != null) {
 
 							File file = new File(path);
@@ -77,9 +90,28 @@ public class JavaProjectBrowserPage extends WizardPage {
 							else
 								displayFiles(file.list());
 						}
+						try {
+						IProjectDescription description = ResourcesPlugin
+							   .getWorkspace().loadProjectDescription(new Path(path));
+						IProject project = ResourcesPlugin.getWorkspace()
+							   .getRoot().getProject(description.getName());
+							project.create(description, null);
+							project.open(null); 
+							project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+							System.out.println("le projet existe:"+project.exists());
+							SearchRequestor request = null;
+							findMainMethodInCurrentProject((IJavaProject) project, request );
+							
+						}
+						catch(CoreException e1) {
+							e1.printStackTrace();
+						}
 					}
 
 				});
+				
+			
+				
 				
 	}
 	
@@ -88,6 +120,20 @@ public class JavaProjectBrowserPage extends WizardPage {
 			text.setText(files[i]);
 			text.setEditable(true);
 
+		}
+	}
+	
+	public static void findMainMethodInCurrentProject(final IJavaProject project, final SearchRequestor requestor) {
+		final SearchPattern sp = SearchPattern.createPattern("main", IJavaSearchConstants.METHOD, IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
+
+		final SearchEngine se = new SearchEngine();
+		final SearchParticipant[] searchParticipants = new SearchParticipant[] { SearchEngine.getDefaultSearchParticipant() };
+		final IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] { project });
+
+		try {
+			se.search(sp, searchParticipants, scope, requestor, null);
+		} catch (final CoreException e) {
+			e.printStackTrace();
 		}
 	}
 

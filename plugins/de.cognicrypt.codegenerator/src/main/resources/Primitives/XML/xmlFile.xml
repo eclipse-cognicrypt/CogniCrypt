@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SymmetricBlockCipher>
-   <name>CryptoX</name>
-   <description>This is a symmetric block cipher</description>
-   <Blocksize>300</Blocksize>
-   <Keysize1>256</Keysize1>
+   <name>ag</name>
+   <Blocksize>200</Blocksize>
+   <Keysize1>300</Keysize1>
    <mode>CFB|CTR</mode>
-   <Padding>PKCS7|ZeroPadding</Padding>
+   <Padding>ZeroPadding|PKCS7</Padding>
 </SymmetricBlockCipher>

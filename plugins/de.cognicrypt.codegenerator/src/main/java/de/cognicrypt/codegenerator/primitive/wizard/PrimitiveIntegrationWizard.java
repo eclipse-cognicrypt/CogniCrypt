@@ -19,9 +19,9 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.xml.sax.SAXException;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.primitive.providerUtils.ProviderFile;
+import de.cognicrypt.codegenerator.primitive.providerUtils.XsltWriter;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
-import de.cognicrypt.codegenerator.primitive.utilities.ProviderFile;
-import de.cognicrypt.codegenerator.primitive.utilities.XsltWriter;
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnaire;
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnairePage;
 import de.cognicrypt.codegenerator.question.Page;

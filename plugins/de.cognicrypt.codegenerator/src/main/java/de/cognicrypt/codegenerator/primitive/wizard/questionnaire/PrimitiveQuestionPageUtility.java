@@ -26,7 +26,7 @@ public class PrimitiveQuestionPageUtility {
 		 * 
 		 * 
 		 */
-		public String getOutputFromWidget(String claferDepend, Button source){
+		public String getIntputFromWidget(String claferDepend, Button source){
 			return claferDepend + source.getSelection();
 		
 		}

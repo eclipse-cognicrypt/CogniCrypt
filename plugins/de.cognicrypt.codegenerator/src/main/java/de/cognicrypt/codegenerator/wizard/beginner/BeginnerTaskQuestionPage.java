@@ -472,10 +472,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 										deco.showHoverText("Expected format 255.255.255.255");
 										e.doit=false;											
 									}
-//									if( i<4 && ip.endsWith("\\d")){
-//										deco.show();
-//										deco.showHoverText("Expected format 255.255.255.255");										
-//									}
 								}
 							} catch (NumberFormatException ex) {
 								if (!ip.equals("")){

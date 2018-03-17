@@ -47,25 +47,29 @@ public class Validation {
 		//count=1 is the error case
 		int count = 0;
 		String ip = testInput;
+		int i= 0;
 
 			try {
-				if (ip != null && !ip.isEmpty()) {
+				if (!ip.isEmpty()) {
 					String[] ipAddress = ip.split("\\.");
 					count = 0;
-					if (ipAddress.length > 4 || ipAddress.length < 4) {
+					if (ipAddress.length > 4) {
 						count++;
 					}
-					for (int i = 0; i <= ipAddress.length - 1; i++) {
+					for (i = 0; i <= ipAddress.length - 1; i++) {
 						int j = Integer.parseInt(ipAddress[i]);
 						if (j < 0 || j > 255) {
 							count++;
 						}
 					}
-					if (ip.endsWith("..")) {
+					if (ip.endsWith("..")|| ip.startsWith(".")) {
 						count++;
 					}
-					if (ip.startsWith(".")) {
+					if (ip.endsWith(".") || ip.endsWith("[0-9]") ) {
 						count++;
+					}
+					if(i==4 && ip.endsWith(".")){
+						count++;					
 					}
 					
 				}

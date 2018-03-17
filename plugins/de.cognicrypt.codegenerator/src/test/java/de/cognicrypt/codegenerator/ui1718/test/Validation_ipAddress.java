@@ -15,8 +15,8 @@ public class Validation_ipAddress {
 		assertEquals(0, Output1);
 		int Output2 = ipAddress.validationIpAddress("256.255.255.255.255");
 		assertEquals(2, Output2);
-		int Output3 = ipAddress.validationIpAddress("233.0");
-		assertEquals(1, Output3);
+		int Output3 = ipAddress.validationIpAddress("0.0.0.0");
+		assertEquals(0, Output3);
 		int Output4 = ipAddress.validationIpAddress("a.a.a.a");
 		assertEquals(1, Output4);
 		int Output5 = ipAddress.validationIpAddress(".");

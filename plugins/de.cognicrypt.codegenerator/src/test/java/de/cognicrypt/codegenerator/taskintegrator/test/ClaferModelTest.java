@@ -25,13 +25,27 @@ public class ClaferModelTest {
 	public static final ArrayList<String> testFiles = new ArrayList<>();
 
 	@Test
-	public final void testImplementMissingFeatures() {
+	public final void testGetMissingFeatures() {
 		ClaferModel claferModel = new ClaferModel();
-		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "Algorithm");
+		ClaferFeature aesFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "Algorithm");
+		ClaferFeature securityFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Security", "Enum -> integer");
+		ClaferFeature performanceFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Performance", "Enum->integer");
 
-		ClaferModel addedFeatures = claferModel.implementMissingFeatures(cfrFeature);
-		assertTrue(addedFeatures.getClaferModel().size() == 1);
-		assertTrue(addedFeatures.getClaferModel().get(0).getFeatureName().equals("Algorithm"));
+		claferModel.add(aesFeature);
+		claferModel.add(securityFeature);
+		claferModel.add(performanceFeature);
+
+		ClaferModel missingFeaturesAES = claferModel.getMissingFeatures(aesFeature);
+		assertEquals(1, missingFeaturesAES.getClaferModel().size());
+		assertTrue(missingFeaturesAES.getClaferModel().get(0).getFeatureName().equals("Algorithm"));
+
+		ClaferModel missingFeaturesSecurity = claferModel.getMissingFeatures(securityFeature);
+		assertEquals(1, missingFeaturesSecurity.getClaferModel().size());
+		assertEquals(ClaferFeature.class, missingFeaturesSecurity.getFeature("Enum").getClass());
+
+		ClaferModel missingFeaturesPerformance = claferModel.getMissingFeatures(performanceFeature);
+		assertEquals(1, missingFeaturesPerformance.getClaferModel().size());
+		assertEquals(ClaferFeature.class, missingFeaturesPerformance.getFeature("Enum").getClass());
 	}
 
 	@Test

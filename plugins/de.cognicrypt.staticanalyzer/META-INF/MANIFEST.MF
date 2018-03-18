@@ -14,7 +14,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.xtext.common.types.ui,
  de.darmstadt.tu.crossing.CryptSL;bundle-version="1.0.0",
  de.darmstadt.tu.crossing.CryptSL.ide;bundle-version="1.0.0",
- de.darmstadt.tu.crossing.CryptSL.ui;bundle-version="1.0.0"
+ de.darmstadt.tu.crossing.CryptSL.ui;bundle-version="1.0.0",
+ org.eclipse.emf.common,
+ org.eclipse.m2e.maven.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,

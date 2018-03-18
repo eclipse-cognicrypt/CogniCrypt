@@ -181,7 +181,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 								if (answers.get(pageUtility.getIndex(answers, source.getText())).getClaferDependencies() != null) {
 									claferDepend = answers.get(pageUtility.getIndex(answers, source.getText())).getClaferDependencies().get(0).getAlgorithm();
-									System.out.println("Check this one: "+pageUtility.getIndex(answers, source.getText().toString()));
+								
 								}
 								if (selectedValue.isEmpty()) {
 									selectedValue = source.getText();
@@ -372,7 +372,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 				}
 				this.iteration = 0;
-				System.out.println(PrimitiveQuestionnairePage.this.finish);
 			default:
 				break;
 		}

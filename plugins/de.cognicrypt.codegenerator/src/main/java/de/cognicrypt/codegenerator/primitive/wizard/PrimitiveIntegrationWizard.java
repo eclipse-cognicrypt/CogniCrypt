@@ -99,9 +99,9 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 					String key = name.toString();
 					String value = selectionMap.get(name).toString();
-					System.out.println(key + " " + value);
+					
 					inputsMap.put(key, value);
-					System.out.println("combien?");
+					
 
 				}
 			}
@@ -148,7 +148,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 		else if (currentPage instanceof JavaProjectBrowserPage) {
 
-			this.methodSelectionPage = new MethodSelectorPage(this.projectBrowserPage.getSelectedFile());
+			this.methodSelectionPage = new MethodSelectorPage(this.projectBrowserPage.getAbsolutePath());
 			addPage(this.methodSelectionPage);
 			return this.methodSelectionPage;
 		}
@@ -203,7 +203,6 @@ public class PrimitiveIntegrationWizard extends Wizard {
 				String key = name.toString();
 				String value = inputsMap.get(name).toString();
 				xsltWriter.addElement(name.trim(), value);
-				System.out.println(name + value);
 
 			}
 			xsltWriter.transformXml(xmlFile);

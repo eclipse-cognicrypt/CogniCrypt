@@ -125,7 +125,7 @@ public class Constants {
 	public static final String ERROR_MESSAGE_NO_PROJECT = "There is no Java project in your workspace. Please create one and restart CogniCrypt.";
 	public static final String ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY = "No directory for additional resources found.";
 	public static final String ERROR_MESSAGE_NO_FILE = "No file found";
-
+	public static final String NOT_JAVA_PROJECT="The nature of the project is not Java";
 	
 	
 	public static final String JAVA = "java";

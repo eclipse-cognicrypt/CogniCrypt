@@ -27,6 +27,7 @@ import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuest
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnairePage;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.utilities.Utils;
 
 public class PrimitiveIntegrationWizard extends Wizard {
 
@@ -99,9 +100,8 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 					String key = name.toString();
 					String value = selectionMap.get(name).toString();
-					
+
 					inputsMap.put(key, value);
-					
 
 				}
 			}
@@ -188,10 +188,12 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 	}
 
-
 	@Override
 	public boolean performFinish() {
-		
+		//Clafer
+		File finalClafer = ClaferGenerator.copyClaferHeader();
+				ClaferGenerator.printClafer(inputsMap, finalClafer);
+			
 		//Generation of xml file for xsl
 		final File xmlFile = Utils.getResourceFromWithin(Constants.xmlFilePath);
 		xsltWriter = new XsltWriter();
@@ -199,42 +201,17 @@ public class PrimitiveIntegrationWizard extends Wizard {
 			xsltWriter.createDocument();
 			xsltWriter.setRoot("SymmetricBlockCipher");
 			for (String name : inputsMap.keySet()) {
-
-		File finalClafer = ClaferGenerator.copyClaferHeader();
-		for (IWizardPage page : getPages()) {
-			if (page instanceof PrimitiveQuestionnairePage) {
-				PrimitiveQuestionnairePage questionnairePage = (PrimitiveQuestionnairePage) page;
-				ClaferGenerator.printClafer(questionnairePage.getSelection(), finalClafer);
 				String key = name.toString();
 				String value = inputsMap.get(name).toString();
 				xsltWriter.addElement(name.trim(), value);
-
 			}
 			xsltWriter.transformXml(xmlFile);
-
-		} catch (ParserConfigurationException | TransformerException e) {
-			e.printStackTrace();
 		}
-		/**
-		 * //Generation of xml file for xsl final File xmlFile = Utils.getResourceFromWithin(Constants.xmlFilePath); xmlFileForXSL = new WriteXML(); try {
-		 * xmlFileForXSL.createDocument(); xmlFileForXSL.setRoot("SymmetricBlockCipher"); for (String name : inputsMap.keySet()) {
-		 * 
-		 * String key = name.toString(); String value = inputsMap.get(name).toString(); xmlFileForXSL.addElement(name.trim(), value); System.out.println(name + value);
-		 * 
-		 * } xmlFileForXSL.transformXSL(xmlFile);
-		 * 
-		 * } catch (ParserConfigurationException | TransformerException e) { e.printStackTrace(); }
-		 * 
-		 * //Code generation final File xslFile = Utils.getResourceFromWithin(Constants.cipherSpiXSL); try { transform(xmlFile, xslFile,
-		 * "C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\TransformedFiles\\test.java"); } catch
-		 * (TransformerException e1) { // TODO Auto-generated catch block e1.printStackTrace(); }
-		 * 
-		 * //Create Provider jarFile File folder = Utils.getResourceFromWithin(Constants.TransformedFiles); File[] listOfFiles = (folder).listFiles();
-		 * 
-		 * String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" }; providerJar.createManifest("Ahmed", classPaths); providerJar.createJarArchive(new
-		 * File("C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\test.jar"), listOfFiles);
-		 */
-
+			catch (ParserConfigurationException | TransformerException e) {
+			e.printStackTrace();
+			}
+		
+		
 		//Code generation 
 		final File xslFile = Utils.getResourceFromWithin(selectedPrimitive.getXslFile());
 		try {
@@ -273,6 +250,10 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		
 		return true;
 	}
+			
+		
+}
+
 
 	//		public boolean canFinish() {
 	//			final String pageName = getContainer().getCurrentPage().getName();
@@ -289,4 +270,3 @@ public class PrimitiveIntegrationWizard extends Wizard {
 //		else
 //			return false;
 //	}
-}

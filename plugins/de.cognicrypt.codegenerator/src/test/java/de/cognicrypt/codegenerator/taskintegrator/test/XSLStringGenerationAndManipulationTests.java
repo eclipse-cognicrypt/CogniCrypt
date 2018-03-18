@@ -206,9 +206,9 @@ public class XSLStringGenerationAndManipulationTests {
 				}
 			}
 
-			/*XSLStringGenerationAndManipulation.getListOfValidSuggestionsForXSLTags(task.getModelFile(), task.getName(), task.getDescription(), questions, tagValueTagData);
+			XSLStringGenerationAndManipulation.getListOfValidSuggestionsForXSLTags(task.getModelFile(), task.getName(), task.getDescription(), questions, tagValueTagData);
 
-			System.out.println(task.getName());
+			/*System.out.println(task.getName());
 
 			for (String key : tagValueTagData.keySet()) {
 				System.out.println(key + " --> " + tagValueTagData.get(key));

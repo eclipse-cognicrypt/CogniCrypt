@@ -95,17 +95,12 @@ public class XSLStringGenerationAndManipulationTests {
 	 * 
 	 * @param file
 	 * @return
+	 * @throws DocumentException
 	 */
-	public Document readDocFomFile(File file) {
+	public Document readDocFomFile(File file) throws DocumentException {
 		SAXReader reader = new SAXReader();
 		reader.setValidation(false);
-		try {
-			return reader.read(file.getAbsolutePath());
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return reader.read(file.getAbsolutePath());
 	}
 
 	/**
@@ -147,7 +142,6 @@ public class XSLStringGenerationAndManipulationTests {
 	@Test
 	public void testGenerateXSLStringFromPathWithXSLText() throws DocumentException {
 		boolean generatedFileValidity = false;
-		String test = XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), "\n\n");
 		Document xslGenerated = DocumentHelper
 			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(xslFilePath.getAbsolutePath(),
 				XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), "\n\n"), new Point(266, 266), null));

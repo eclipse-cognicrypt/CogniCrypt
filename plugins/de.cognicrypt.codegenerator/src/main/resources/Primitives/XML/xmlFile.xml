@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SymmetricBlockCipher>
    <name>Ahmed</name>
+   <description>fzoifzo</description>
    <Blocksize>200</Blocksize>
    <Keysize1>300</Keysize1>
-   <mode>CFB|CTR</mode>
-   <Padding>PKCS7|ZeroPadding</Padding>
+   <mode>OFB|CFB</mode>
+   <Padding>ZeroPadding|PKCS7</Padding>
 </SymmetricBlockCipher>

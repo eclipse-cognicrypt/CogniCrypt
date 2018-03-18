@@ -306,7 +306,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			case text:
 				final Text inputField = new Text(container, SWT.BORDER);
 				inputField.setSize(240, inputField.getSize().y);
-
 				inputField.setToolTipText(question.getTooltip());
 
 				if (question.getEnteredAnswer() != null) {
@@ -327,6 +326,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					question.setEnteredAnswer(a);
 					BeginnerTaskQuestionPage.this.setPageComplete(isPageComplete());
 				});
+				inputField.setText(question.getDefaultAnswer().getCodeDependencies().get(0).getValue());
 				break;
 
 			case itemselection:
@@ -460,7 +460,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							}
 							if (ans == null) {
 								ans = new Answer();
-								// TODO Why is this -1? Does it still make sense after having introduced multiple questions per page?
 								ans.setNextID(-1);
 							}
 							String checkedElement = ans.getValue();
@@ -557,14 +556,17 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							final String feedbackString = resStringArray[1];
 
 							if (methodResult) {
-								question.getDefaultAnswer().setNextID(question.getAnswers().get(0).getNextID());
+								question.setEnteredAnswer(question.getAnswers().get(0));
 							} else {
-								question.getDefaultAnswer().setNextID(question.getAnswers().get(1).getNextID());
+								question.setEnteredAnswer(question.getAnswers().get(1));
 							}
 
 							feedbackLabel.setText(feedbackString);
 							feedbackLabel.getParent().pack();
 							methodButton.setEnabled(false);
+
+							BeginnerTaskQuestionPage.this.finish = methodResult;
+							BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish);
 						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
 							Activator.getDefault().logError(e1);
 						}
@@ -573,9 +575,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				});
 
 				this.finish = true;
-				final Answer ans = question.getDefaultAnswer();
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
-				BeginnerTaskQuestionPage.this.selectionMap.put(question, ans);
+
 				break;
 
 			default:

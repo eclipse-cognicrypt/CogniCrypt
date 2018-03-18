@@ -4,7 +4,6 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -30,7 +29,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	int counter = 0;// TODO for testing only.
 	protected ArrayList<ClaferFeature> cfrFeatures;
 
-	private HashMap<String, String> tagValueTagData;
 
 	TreeViewer treeViewer;
 
@@ -43,8 +41,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		setTitle(title);
 		setDescription(description);
 		this.setPageComplete(false);
-		// The String to display, and the constructed string for the XSL document.
-		setTagValueTagData(new HashMap<>());
 	}
 
 	/**
@@ -248,21 +244,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 	public int getCounter() {
 		return counter;
-	}
-
-	/**
-	 * @return the tagValueTagData
-	 */
-	public HashMap<String, String> getTagValueTagData() {
-		return tagValueTagData;
-	}
-
-	/**
-	 * @param tagValueTagData
-	 *        the tagValueTagData to set
-	 */
-	public void setTagValueTagData(HashMap<String, String> tagValueTagData) {
-		this.tagValueTagData = tagValueTagData;
 	}
 
 }

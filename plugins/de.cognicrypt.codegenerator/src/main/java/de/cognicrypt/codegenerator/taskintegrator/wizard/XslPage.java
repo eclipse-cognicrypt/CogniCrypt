@@ -1,5 +1,6 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.jface.viewers.TreeSelection;
@@ -32,8 +33,13 @@ public class XslPage extends PageForTaskIntegratorWizard {
 
 	private CompositeForXsl compositeForXsl = null;
 
+	private HashMap<String, String> tagValueTagData;
+
 	public XslPage() {
 		super(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION, Constants.PAGE_TITLE_FOR_XSL_FILE_CREATION, Constants.PAGE_DESCRIPTION_FOR_XSL_FILE_CREATION);
+
+		// The String to display, and the constructed string for the XSL document.
+		setTagValueTagData(new HashMap<>());
 	}
 
 	@Override
@@ -177,8 +183,24 @@ public class XslPage extends PageForTaskIntegratorWizard {
 	 * @param compositeForXsl
 	 *        the compositeForXsl to set
 	 */
-	public void setCompositeForXsl(CompositeForXsl compositeForXsl) {
+	private void setCompositeForXsl(CompositeForXsl compositeForXsl) {
 		this.compositeForXsl = compositeForXsl;
 
 	}
+
+	/**
+	 * @return the tagValueTagData
+	 */
+	public HashMap<String, String> getTagValueTagData() {
+		return tagValueTagData;
+	}
+
+	/**
+	 * @param tagValueTagData
+	 *        the tagValueTagData to set
+	 */
+	public void setTagValueTagData(HashMap<String, String> tagValueTagData) {
+		this.tagValueTagData = tagValueTagData;
+	}
+
 }

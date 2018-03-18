@@ -1,9 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SymmetricBlockCipher>
-   <name>Ahmed</name>
-   <description>fzoifzo</description>
-   <Blocksize>200</Blocksize>
-   <Keysize1>300</Keysize1>
+   <name>SICS</name>
+   <name>SICS</name>
+   <name>SICS</name>
+   <name>SICS</name>
+   <name>SICS</name>
+   <description>This is new Version of Primitive Integration</description>
+   <description>This is new Version of Primitive Integration</description>
+   <description>This is new Version of Primitive Integration</description>
+   <description>This is new Version of Primitive Integration</description>
+   <description>This is new Version of Primitive Integration</description>
+   <Blocksize>64</Blocksize>
+   <Blocksize>64</Blocksize>
+   <Blocksize>64</Blocksize>
+   <Blocksize>64</Blocksize>
+   <Blocksize>64</Blocksize>
+   <Keysize1>355</Keysize1>
+   <Keysize1>355</Keysize1>
+   <Keysize1>355</Keysize1>
+   <Keysize1>355</Keysize1>
+   <Keysize1>355</Keysize1>
+   <Keysize2>222-333</Keysize2>
+   <Keysize2>222-333</Keysize2>
+   <Keysize2>222-333</Keysize2>
+   <Keysize2>222-333</Keysize2>
+   <Keysize2>222-333</Keysize2>
    <mode>OFB|CFB</mode>
-   <Padding>ZeroPadding|PKCS7</Padding>
+   <mode>OFB|CFB</mode>
+   <mode>OFB|CFB</mode>
+   <mode>OFB|CFB</mode>
+   <mode>OFB|CFB</mode>
+   <Padding>ZeroPadding</Padding>
+   <Padding>ZeroPadding</Padding>
+   <Padding>ZeroPadding</Padding>
+   <Padding>ZeroPadding</Padding>
+   <Padding>ZeroPadding</Padding>
 </SymmetricBlockCipher>

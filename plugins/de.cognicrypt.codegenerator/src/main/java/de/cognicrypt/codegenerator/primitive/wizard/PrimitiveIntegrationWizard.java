@@ -1,7 +1,6 @@
 package de.cognicrypt.codegenerator.primitive.wizard;
 
 import java.io.File;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -13,20 +12,22 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.xml.sax.SAXException;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.primitive.clafer.ClaferGenerator;
 import de.cognicrypt.codegenerator.primitive.providerUtils.ProviderFile;
 import de.cognicrypt.codegenerator.primitive.providerUtils.XsltWriter;
-import de.cognicrypt.codegenerator.primitive.clafer.ClaferGenerator;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnaire;
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnairePage;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.utilities.Utils;
 
 public class PrimitiveIntegrationWizard extends Wizard {
 
@@ -99,9 +100,8 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 					String key = name.toString();
 					String value = selectionMap.get(name).toString();
-					
+
 					inputsMap.put(key, value);
-					
 
 				}
 			}
@@ -185,13 +185,11 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		}
 
 		return "Primitive Integration";
-
 	}
-
 
 	@Override
 	public boolean performFinish() {
-		
+
 		//Generation of xml file for xsl
 		final File xmlFile = Utils.getResourceFromWithin(Constants.xmlFilePath);
 		xsltWriter = new XsltWriter();
@@ -200,18 +198,20 @@ public class PrimitiveIntegrationWizard extends Wizard {
 			xsltWriter.setRoot("SymmetricBlockCipher");
 			for (String name : inputsMap.keySet()) {
 
-		File finalClafer = ClaferGenerator.copyClaferHeader();
-		for (IWizardPage page : getPages()) {
-			if (page instanceof PrimitiveQuestionnairePage) {
-				PrimitiveQuestionnairePage questionnairePage = (PrimitiveQuestionnairePage) page;
-				ClaferGenerator.printClafer(questionnairePage.getSelection(), finalClafer);
-				String key = name.toString();
-				String value = inputsMap.get(name).toString();
-				xsltWriter.addElement(name.trim(), value);
+				File finalClafer = ClaferGenerator.copyClaferHeader();
+				for (IWizardPage page : getPages()) {
+					if (page instanceof PrimitiveQuestionnairePage) {
+						PrimitiveQuestionnairePage questionnairePage = (PrimitiveQuestionnairePage) page;
+						ClaferGenerator.printClafer(questionnairePage.getSelection(), finalClafer);
+						String key = name.toString();
+						String value = inputsMap.get(name).toString();
+						xsltWriter.addElement(name.trim(), value);
 
+					}
+					xsltWriter.transformXml(xmlFile);
+
+				}
 			}
-			xsltWriter.transformXml(xmlFile);
-
 		} catch (ParserConfigurationException | TransformerException e) {
 			e.printStackTrace();
 		}
@@ -263,14 +263,14 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		//Create Provider jarFile 
 		String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" };
 		providerJar.createManifest("some owner", classPaths);
-		
-		providerJar.createJarArchive(Utils.getResourceFromWithin(Constants.PROVIDER_JAR_File),folder.listFiles());
-		
+
+		providerJar.createJarArchive(Utils.getResourceFromWithin(Constants.PROVIDER_JAR_File), folder.listFiles());
+
 		//delete archived files 
-		for(File file: folder.listFiles()){
+		for (File file : folder.listFiles()) {
 			file.delete();
 		}
-		
+
 		return true;
 	}
 
@@ -282,11 +282,11 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	//			return (pageName.equals(Constants.METHODS_SELECTION_PAGE));
 	//		}
 
-//	public boolean performCancel() {
-//		boolean ans = MessageDialog.openConfirm(getShell(), "Confirmation", "Are you sure to close without integrating the new primitve?");
-//		if (ans)
-//			return true;
-//		else
-//			return false;
-//	}
+	//	public boolean performCancel() {
+	//		boolean ans = MessageDialog.openConfirm(getShell(), "Confirmation", "Are you sure to close without integrating the new primitve?");
+	//		if (ans)
+	//			return true;
+	//		else
+	//			return false;
+	//	}
 }

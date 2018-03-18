@@ -33,7 +33,6 @@ public abstract class ClaferGenerator {
 			while ((bytesRead = input.read(buf)) > 0) {
 				output.write(buf, 0, bytesRead);
 			}
-			//			output.write(": SymmetricCipher".getBytes());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -56,7 +55,6 @@ public abstract class ClaferGenerator {
 	 */
 
 	public static void printClafer(LinkedHashMap<String, String> userInput, File finalClafer) {
-
 		BufferedWriter bw;
 		try {
 			bw = new BufferedWriter(new FileWriter(finalClafer, true)); // the true will append the new data

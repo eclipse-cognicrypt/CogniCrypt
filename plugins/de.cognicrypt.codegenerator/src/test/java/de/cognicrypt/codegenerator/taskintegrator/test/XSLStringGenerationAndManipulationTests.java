@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.dom4j.Document;
@@ -19,9 +21,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.question.Page;
+import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.question.QuestionsJSONReader;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.XSLStringGenerationAndManipulation;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.XmlRegion;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.XmlRegionAnalyzer;
+import de.cognicrypt.codegenerator.tasks.Task;
+import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 import de.cognicrypt.codegenerator.utilities.Utils;
 
 public class XSLStringGenerationAndManipulationTests {
@@ -186,4 +193,32 @@ public class XSLStringGenerationAndManipulationTests {
 		assertTrue(ranges.size() == 26839);
 	}
 
+	@Test
+	public void testXMLGenerationFromTasks() {
+		List<Task> tasks = TaskJSONReader.getTasks();
+		for (Task task : tasks) {
+			HashMap<String, String> tagValueTagData = new HashMap<>();
+			List<Question> questions = new ArrayList<>();
+			QuestionsJSONReader quesJSONReader = new QuestionsJSONReader();
+			for (Page page : quesJSONReader.getPages(task.getQuestionsJSONFile())) {
+				for (Question question : page.getContent()) {
+					questions.add(question);
+				}
+			}
+			XSLStringGenerationAndManipulation.getListOfValidSuggestionsForXSLTags(task.getModelFile(), task.getName(), task.getDescription(), questions, tagValueTagData);
+			// Check if the generated XMLs contain the package node.
+			assertTrue(tagValueTagData.values().contains("//task/Package"));
+			// Check if the Task contains attribute description and a node description.
+			assertTrue(tagValueTagData.values().contains("//task[@description='']"));
+			assertTrue(tagValueTagData.values().contains("//task/description"));
+			// Check if there is at least one algorithm
+			assertTrue(tagValueTagData.values().contains("//task/algorithm[@type='']"));
+			assertTrue(tagValueTagData.values().contains("//task/algorithm[@type='']/name"));
+
+			/*
+			 * for (String key : tagValueTagData.keySet()) { System.out.println(key + " --> " + tagValueTagData.get(key)); }
+			 */
+
+		}
+	}
 }

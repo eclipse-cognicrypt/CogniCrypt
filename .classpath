@@ -1,227 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="plugins/de.cognicrypt.codegenerator/src/experimental"/>
-	<classpathentry kind="src" path="plugins/de.cognicrypt.codegenerator/src/main/java"/>
-	<classpathentry kind="src" path="plugins/de.cognicrypt.codegenerator/src/test/java"/>
-	<classpathentry kind="src" path="plugins/de.cognicrypt.staticanalyzer/src"/>
-	<classpathentry exported="true" kind="lib" path="plugins/de.cognicrypt.codegenerator/lib/claferchocoig.jar"/>
-	<classpathentry exported="true" kind="lib" path="plugins/de.cognicrypt.codegenerator/lib/dom4j-2.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="plugins/de.cognicrypt.codegenerator/lib/gson-2.3.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="plugins/de.cognicrypt.codegenerator/lib/LongTermArchiving.jar"/>
-	<classpathentry exported="true" kind="lib" path="plugins/de.cognicrypt.codegenerator/lib/saxon9pe.jar"/>
-	<classpathentry exported="true" kind="lib" path="plugins/de.cognicrypt.codegenerator/src/main/resources/AdditionalResources/ABY/ABY.jar"/>
-	<classpathentry exported="true" kind="lib" path="plugins/de.cognicrypt.codegenerator/src/main/resources/AdditionalResources/CertainTrust/CertainTrust.jar"/>
-	<classpathentry exported="true" kind="lib" path="plugins/de.cognicrypt.codegenerator/src/main/resources/AdditionalResources/LongTermArchiving/LongTermArchiving.jar"/>
-	<classpathentry exported="true" kind="lib" path="plugins/de.cognicrypt.staticanalyzer/lib/ideal-crossing-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
-	<classpathentry exported="true" kind="lib" path="plugins/de.cognicrypt.staticanalyzer/lib/soot-trunk.jar"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Ahmed/.p2/pool/plugins/org.eclipse.jface_3.12.2.v20170113-2113.jar" sourcepath="C:/Users/Ahmed/.p2/pool/plugins/org.eclipse.jface_3.12.2.v20170113-2113.jar">
-		<accessrules>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/action/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/action/images/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/bindings/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/bindings/keys/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/bindings/keys/formatting/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/commands/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/contexts/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/dialogs/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/dialogs/images/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/fieldassist/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/fieldassist/images/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/images/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jface/internal/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jface/internal/provisional/action/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/layout/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/menus/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/operation/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/preference/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/preference/images/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/resource/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/util/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/viewers/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/viewers/deferred/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/window/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/wizard/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jface/wizard/images/*"/>
-			<accessrule ignoreifbetter="true" kind="nonaccessible" pattern="**/*"/>
-		</accessrules>
+	<classpathentry exported="true" kind="lib" path="lib/saxon9pe.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Ahmed/.p2/pool/plugins/org.eclipse.core.resources_3.11.1.v20161107-2032.jar" sourcepath="C:/Users/Ahmed/.p2/pool/plugins/org.eclipse.core.resources_3.11.1.v20161107-2032.jar">
-		<accessrules>
-			<accessrule kind="discouraged" pattern="org/eclipse/core/internal/dtree/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/core/internal/events/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/core/internal/localstore/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/core/internal/properties/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/core/internal/propertytester/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/core/internal/refresh/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/core/internal/resources/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/core/internal/resources/mapping/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/core/internal/resources/projectvariables/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/core/internal/resources/refresh/win32/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/core/internal/utils/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/core/internal/watson/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/core/resources/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/core/resources/filtermatchers/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/core/resources/mapping/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/core/resources/refresh/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/core/resources/team/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/core/resources/variableresolvers/*"/>
-			<accessrule ignoreifbetter="true" kind="nonaccessible" pattern="**/*"/>
-		</accessrules>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Ahmed/.p2/pool/plugins/org.eclipse.core.commands_3.8.1.v20161221-1651.jar" sourcepath="C:/Users/Ahmed/.p2/pool/plugins/org.eclipse.core.commands_3.8.1.v20161221-1651.jar">
-		<accessrules>
-			<accessrule kind="accessible" pattern="org/eclipse/core/commands/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/core/commands/common/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/core/commands/contexts/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/core/commands/operations/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/core/commands/util/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/core/internal/commands/operations/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/core/internal/commands/util/*"/>
-			<accessrule ignoreifbetter="true" kind="nonaccessible" pattern="**/*"/>
-		</accessrules>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Ahmed/.p2/pool/plugins/org.eclipse.equinox.common_3.8.0.v20160509-1230.jar" sourcepath="C:/Users/Ahmed/.p2/pool/plugins/org.eclipse.equinox.common_3.8.0.v20160509-1230.jar">
-		<accessrules>
-			<accessrule kind="discouraged" pattern="org/eclipse/core/internal/boot/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/core/internal/runtime/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/core/runtime/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/equinox/events/*"/>
-			<accessrule ignoreifbetter="true" kind="nonaccessible" pattern="**/*"/>
-		</accessrules>
+	<classpathentry kind="src" path="src/experimental"/>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Ahmed/.p2/pool/plugins/org.eclipse.ui.workbench_3.108.3.v20170216-1539.jar" sourcepath="C:/Users/Ahmed/.p2/pool/plugins/org.eclipse.ui.workbench_3.108.3.v20170216-1539.jar">
-		<accessrules>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/about/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/actions/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/activities/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/application/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/branding/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/browser/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/commands/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/contexts/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/databinding/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/dialogs/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/dnd/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/fieldassist/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/handlers/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/help/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/about/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/actions/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/activities/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/activities/ws/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/application/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/browser/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/commands/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/contexts/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/decorators/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/dialogs/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/dialogs/cpd/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/dnd/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/e4/compatibility/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/editorsupport/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/expressions/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/handlers/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/help/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/intro/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/keys/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/keys/model/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/layout/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/menus/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/misc/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/model/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/operations/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/part/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/preferences/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/progress/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/provisional/application/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/quickaccess/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/registry/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/services/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/splash/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/statushandlers/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/testing/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/themes/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/tweaklets/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/util/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/wizards/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/ui/internal/wizards/preferences/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/intro/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/keys/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/menus/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/model/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/operations/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/part/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/plugin/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/preferences/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/progress/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/services/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/splash/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/statushandlers/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/swt/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/themes/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/views/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/ui/wizards/*"/>
-			<accessrule ignoreifbetter="true" kind="nonaccessible" pattern="**/*"/>
-		</accessrules>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Ahmed/.p2/pool/plugins/org.eclipse.jdt.core_3.12.3.v20170228-1205.jar" sourcepath="C:/Users/Ahmed/.p2/pool/plugins/org.eclipse.jdt.core_3.12.3.v20170228-1205.jar">
-		<accessrules>
-			<accessrule kind="accessible" pattern="org/eclipse/jdt/core/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jdt/core/compiler/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jdt/core/compiler/batch/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jdt/core/dom/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jdt/core/dom/rewrite/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jdt/core/eval/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jdt/core/formatter/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jdt/core/index/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jdt/core/jdom/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jdt/core/search/*"/>
-			<accessrule kind="accessible" pattern="org/eclipse/jdt/core/util/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/codeassist/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/codeassist/complete/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/codeassist/impl/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/codeassist/select/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/compiler/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/compiler/ast/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/compiler/batch/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/compiler/classfmt/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/compiler/codegen/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/compiler/env/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/compiler/flow/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/compiler/impl/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/compiler/lookup/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/compiler/parser/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/compiler/parser/diagnose/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/compiler/problem/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/compiler/util/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/core/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/core/builder/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/core/dom/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/core/dom/rewrite/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/core/eval/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/core/hierarchy/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/core/index/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/core/jdom/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/core/search/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/core/search/indexing/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/core/search/matching/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/core/search/processing/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/core/util/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/eval/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/formatter/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/formatter/linewrap/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/formatter/old/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/compiler/apt/dispatch/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/compiler/apt/model/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/compiler/apt/util/*"/>
-			<accessrule kind="accessible" pattern="META-INF/services/*"/>
-			<accessrule kind="discouraged" pattern="org/eclipse/jdt/internal/compiler/tool/*"/>
-			<accessrule ignoreifbetter="true" kind="nonaccessible" pattern="**/*"/>
-		</accessrules>
+	<classpathentry exported="true" kind="lib" path="lib/gson-2.3.1.jar"/>
+	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/LongTermArchiving.jar"/>
+	<classpathentry kind="lib" path="lib/dom4j-2.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/claferchocoig.jar"/>
+	<classpathentry kind="lib" path="lib/crossing.crypto.interfaces-20-SNAPSHOT.jar" sourcepath="/crossing.crypto.interfaces"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

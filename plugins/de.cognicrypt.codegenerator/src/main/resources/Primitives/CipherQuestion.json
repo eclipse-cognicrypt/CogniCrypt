@@ -4,25 +4,22 @@
     [{
       "id": "0",
       "element": "text",
-      "questionText": "Please enter the name of your algorithm",
+      "note": "",
+      "questionText": "Name of your algorithm ? ",
       "answers": [{
           "value": "name",
            "claferDependencies": [{
               "algorithm": "name"
            }
-          ],
-          "codeDependencies": [{
-            "option": "textsize",
-            "value": "true"
-          }],
-		"defaultAnswer": true       
+          ]    
         }
       ]
     },
     {
      "id": "1",
       "element": "text",
-      "questionText": "What is the name of the author/company?",
+      "note": "",
+      "questionText": "Name of the Author/Company: ",
       "answers": [{
           "value": "",
           "codeDependencies": [{
@@ -35,7 +32,8 @@
      {
      "id": "2",
       "element": "textarea",
-      "questionText": "Please give a short description of your algorithm",
+      "note": "",
+      "questionText": "Algorithm description: ",
       "answers": [{
           "value": "",
             "claferDependencies": [{
@@ -59,7 +57,8 @@
     [{
       "id": "0",
       "element": "combo",
-      "questionText": "How many keys have your algorithm ?",
+      "note": "Please specify the number of keysizes your algorithm has...",
+      "questionText": "How many keys does your algorithm have ?",
       "answers": [{
           "value": "1",
           "defaultAnswer": true },
@@ -78,7 +77,8 @@
     {
       "id": "1",
       "element": "text",
-      "questionText": "What is the block size of the cipher ?(bits)",
+      "note": "",
+      "questionText": "Block size of the cipher(in bits):",
       "answers": [{
           "value": "",
            "claferDependencies": [{
@@ -102,7 +102,8 @@
     [{
       "id": "0",
       "element": "composed",
-      "questionText": "Please enter the key size of your algorithm \n ",
+      "note": "",
+      "questionText": "What are the keysizes of your algorithm: \n ",
       "answers": [{
           "value": "fixed size",
           "codeDependencies": [{
@@ -133,7 +134,8 @@
     [{
       "id": "0",
       "element": "checkbox",
-      "questionText": "Please select modes of operation of your algorithm",
+      "note": "",
+      "questionText": "Choose the Modes of Operation of your algorithm:",
       "answers": [{
           "value": "CBC",
            "claferDependencies": [{
@@ -189,7 +191,8 @@
 	[{
 		"id": "0",
 		"element": "checkbox",
-		"questionText": "Please select the padding used for your algorithm",
+		"note": "",
+		"questionText": "Select the list of allowed Paddings in your algorithm:",
 		"answers": [{
 		"value": "OneAndZeroes Padding",
 		 "claferDependencies": [{
@@ -216,8 +219,8 @@
 		 "claferDependencies": [{
               "algorithm": "Padding"
            }
-          ],
-		"defaultAnswer": "true"
+          ]
+		
 		}
 		]
 		}

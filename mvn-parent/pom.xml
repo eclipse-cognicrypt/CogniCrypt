@@ -14,10 +14,24 @@
 
 	<repositories>
 		<repository>
-			<id>eclipse-neon</id>
+			<id>eclipse-oxygen</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/neon</url>
+			<url>http://download.eclipse.org/releases/oxygen</url>
 		</repository>
+		<repository>
+			<id>cryptsl</id>
+			<url>https://it.crossing.tu-darmstadt.de/cognicrypt/</url>
+			<layout>p2</layout>
+		</repository>
+		<repository>
+		<id>xtend</id>
+		<url>http://build.eclipse.org/common/xtend/maven/</url>
+	</repository>
+<repository>
+		<id>xtext</id>
+		<layout>p2</layout>
+		<url>http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/</url>
+	</repository>
 	</repositories>
 
 	<build>

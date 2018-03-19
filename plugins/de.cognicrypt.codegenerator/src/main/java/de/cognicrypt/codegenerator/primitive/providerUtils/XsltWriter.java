@@ -3,6 +3,7 @@ package de.cognicrypt.codegenerator.primitive.providerUtils;
 import java.io.File;
 import java.io.IOException;
 
+import javax.rmi.CORBA.Util;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -19,6 +20,9 @@ import javax.xml.transform.stream.StreamSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+
+import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.utilities.Utils;
 
 public class XsltWriter {
 
@@ -74,7 +78,7 @@ public class XsltWriter {
 		StreamSource styleSource = new StreamSource(xslFile);
 		Transformer t = TransformerFactory.newInstance().newTransformer(styleSource);
 		Document xml = builder.parse(xmlFile);
-		File resultFile = new File("C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\TransformedFiles\\test.java");
+		File resultFile = new File(Utils.getResourceFromWithin("src/main/resources/Primitives") + "testtxt");
 		StreamResult result = new StreamResult(resultFile);
 		//transformation 
 		t.transform(new DOMSource(xml), result);

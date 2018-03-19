@@ -1,51 +1,88 @@
 package de.cognicrypt.codegenerator.primitive.clafer;
-import java.util.HashSet;
-import java.util.Set;
-import org.clafer.ast.AstAbstractClafer;
-import org.clafer.ast.AstConcreteClafer;
-import org.clafer.ast.AstModel;
 
-import static org.clafer.ast.Asts.$this;
-import static org.clafer.ast.Asts.IntType;
-import static org.clafer.ast.Asts.Mandatory;
-import static org.clafer.ast.Asts.Optional;
-import static org.clafer.ast.Asts.constant;
-import static org.clafer.ast.Asts.equal;
-import static org.clafer.ast.Asts.joinRef;
-import static org.clafer.ast.Asts.newModel;
-import org.clafer.ast.analysis.InsufficientScopeException;
-import org.clafer.collection.Pair;
-import org.clafer.compiler.ClaferCompiler;
-import org.clafer.compiler.ClaferSolver;
-import org.clafer.instance.InstanceClafer;
-import org.clafer.instance.InstanceModel;
-import org.clafer.scope.Scope;
-public class ClaferGenerator {
-	public static void main(String args[]){
-	
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.LinkedHashMap;
 
-	  /**
-     * <pre>
-     * abstract SymmetricBlockCipher
-     * SICS : SymmetricBlockCipher
-     * 		
-     *  
-     * </pre>
-     */
-	   AstModel model = newModel();
+import de.cognicrypt.codegenerator.utilities.Utils;
 
-       
-       AstAbstractClafer cipher = model.addAbstract("SymmetricBlockCipher");
-       AstAbstractClafer sics = model.addAbstract("SICS").extending(cipher);
-       String value="SICS";
-       final Integer valueAsInt = 12;
-       sics.addChild("name").addConstraint(equal(joinRef($this()), constant(valueAsInt)));
+/**
+ * @author Anusha and Taran
+ *
+ */
+public abstract class ClaferGenerator {
 
-       ClaferSolver solver = ClaferCompiler.compile(model, Scope.defaultScope(2));
-      System.out.println(solver.allInstances());
-	
-	
-	
-   	
-   	}
+	//	Copy the Static Part into New created file
+	/**
+	 * copy the static part of the file into the target location
+	 * 
+	 * @param source
+	 * @param target
+	 * @return {@link File} object of the target
+	 */
+	public static File copyClaferHeader(String source, String target) {
+		InputStream input = null;
+		OutputStream output = null;
+		File finalClafer = null;
+		finalClafer = (Utils.getFinalClaferFile(target)); // Constants.claferFooter
+		try {
+			input = new FileInputStream(Utils.getResourceFromWithin(source));
+
+			//Constants.claferHeader
+			output = new FileOutputStream(finalClafer);
+			byte[] buf = new byte[1024];
+			int bytesRead;
+			while ((bytesRead = input.read(buf)) > 0) {
+				output.write(buf, 0, bytesRead);
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		//		finally {
+		//			try {
+		//				input.close();
+		//				output.close();
+		//			} catch (IOException e) {
+		//				// TODO Auto-generated catch block
+		//				e.printStackTrace();
+		//			}
+		return finalClafer;
+
+	}
+
+	// Write UserInput into file 
+	/**
+	 * 
+	 * @param userInput
+	 * @param finalClafer
+	 */
+	public static void printClafer(LinkedHashMap<String, String> userInput, File finalClafer) {
+		BufferedWriter bw;
+		try {
+			bw = new BufferedWriter(new FileWriter(finalClafer, true)); // the true will append the new data
+			// TODO Auto-generated method stub
+			for (String key : userInput.keySet()) {
+				if (key != null && key.equals("name")) {
+					bw.write(userInput.get(key) + " : SymmetricCipher" + "\r\n");
+				}
+				bw.write("\t" + "[" + key + " = " + userInput.get(key) + "]" + "\r\n"); // appends the string to the file
+				System.out.println("\t" + "[" + key + " = " + userInput.get(key) + "]" + "\r\n");
+			}
+			bw.close();
+		} catch (IOException ioe) {
+			System.err.println("IOException: " + ioe.getMessage());
+		}
+	}
 }

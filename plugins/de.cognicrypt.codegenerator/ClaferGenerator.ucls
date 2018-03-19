@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.2.2" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
+  associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
+  <class id="1" language="java" name="de.cognicrypt.codegenerator.Constants" project="CogniCrypt-Code Generator" 
+    file="/CogniCrypt-Code Generator/src/main/java/de/cognicrypt/codegenerator/Constants.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="247" width="409" x="301" y="-2186"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <enumeration id="2" language="java" name="de.cognicrypt.codegenerator.Constants.GUIElements" 
+    project="CogniCrypt-Code Generator" 
+    file="/CogniCrypt-Code Generator/src/main/java/de/cognicrypt/codegenerator/Constants.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="60" width="188" x="410" y="-1833"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </enumeration>  
+  <class id="3" language="java" name="de.cognicrypt.codegenerator.primitive.clafer.ClaferGenerator" 
+    project="CogniCrypt-Code Generator" 
+    file="/CogniCrypt-Code Generator/src/main/java/de/cognicrypt/codegenerator/primitive/clafer/ClaferGenerator.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="59" width="299" x="750" y="-2186"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="4" language="java" name="de.cognicrypt.codegenerator.primitive.wizard.PrimitiveIntegrationWizard" 
+    project="CogniCrypt-Code Generator" 
+    file="/CogniCrypt-Code Generator/src/main/java/de/cognicrypt/codegenerator/primitive/wizard/PrimitiveIntegrationWizard.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="60" width="356" x="1089" y="-2186"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <nesting id="5">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="2"/>  
+  </nesting>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    sort-features="false" accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <operations public="true" package="true" protected="true" private="true" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

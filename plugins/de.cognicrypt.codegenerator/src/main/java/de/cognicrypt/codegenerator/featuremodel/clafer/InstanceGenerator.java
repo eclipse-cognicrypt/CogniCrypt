@@ -245,8 +245,6 @@ public class InstanceGenerator {
 		} catch (final Exception ex) {
 			Activator.getDefault().logError("Instances not sorted by security level. Be cautious");
 		}
-
-		int instanceCounter = 0;
 		for (final InstanceClafer sortedInst : this.generatedInstances) {
 
 			String key = getInstanceName(sortedInst);
@@ -255,17 +253,19 @@ public class InstanceGenerator {
 				this.displayNameToInstanceMap.remove(key, sortedInst);
 			}
 			if (sortedInst.getType().getName().equals(this.taskName) && key.length() > 0) {
-				String currentKey = key + "(" + String.format("%02d", ++instanceCounter) + ")";
-				if (instanceCounter == 1) {
-					currentKey = key;
+				// Check if any instance has same name , if yes add numerical values as suffix
+				int counter = 1;
+				String copyKey = key;
+				while (this.displayNameToInstanceMap.containsKey(copyKey)) {
+					copyKey = key + "(" + String.format("%02d", ++counter) + ")";
+					setAlgorithmCount(counter);
 				}
 
-				this.displayNameToInstanceMap.put(currentKey, sortedInst);
+				this.displayNameToInstanceMap.put(copyKey, sortedInst);
 				setAlgorithmName(key);
 
 			}
 		}
-		setAlgorithmCount(instanceCounter);
 		this.displayNameToInstanceMap = new TreeMap<>(this.displayNameToInstanceMap);
 	}
 

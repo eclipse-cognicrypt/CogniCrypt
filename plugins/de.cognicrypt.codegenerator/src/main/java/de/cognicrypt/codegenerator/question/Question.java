@@ -21,7 +21,8 @@ public class Question {
 	private String note = "";
 	//tooltip
 	private String tooltip;
-
+	//helpText
+	private transient String helpText = "";
 	public ArrayList<Answer> getAnswers() {
 		return this.answers;
 	}
@@ -64,6 +65,10 @@ public class Question {
 	//added get method for tooltip
 	public String getTooltip() {
 		return this.tooltip;
+	}
+
+	public String setTooltip(String tooltip) {
+		return this.tooltip = tooltip;
 	}
 
 	public String getQuestionText() {
@@ -147,6 +152,14 @@ public class Question {
 
 	public Answer getEnteredAnswer() {
 		return this.enteredAnswer;
+	}
+
+	public String getHelpText() {
+		return helpText;
+	}
+
+	public void setHelpText(String helpText) {
+		this.helpText = helpText;
 	}
 
 }

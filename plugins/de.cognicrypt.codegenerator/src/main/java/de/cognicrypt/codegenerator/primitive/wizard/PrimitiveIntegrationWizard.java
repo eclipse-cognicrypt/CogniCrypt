@@ -13,6 +13,7 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
@@ -225,9 +226,9 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 		//Generation of .class files from the transformed .java files
 		File folder = Utils.getResourceFromWithin(Constants.transformedFiles);
-		if (!folder.exists()) {
-			folder = new File(Utils.getResourceFromWithin("src/main/resources/Primitives") + Constants.innerFileSeparator + "TransformedFiles");
-		}
+		//		if (!folder.exists()) {
+		//			folder = new File(Utils.getResourceFromWithin("src/main/resources/Primitives") + Constants.innerFileSeparator + "TransformedFiles");
+		//		}
 		File[] listOfFiles = (folder).listFiles();
 		for (File file : listOfFiles) {
 			if (file.getName().endsWith(".java")) {

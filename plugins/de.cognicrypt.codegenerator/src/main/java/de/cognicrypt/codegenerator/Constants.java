@@ -34,7 +34,7 @@ public class Constants {
 
 	//XML & XSL for Primitive 
 	public static final String primitivesPath = Constants.rsrcPath + "Primitives";
-
+	public static final String testFile=Constants.primitivesPath + "test.txt";
 	public static final String xmlFilePath = primitivesPath + innerFileSeparator + "XML" + innerFileSeparator + "xmlFile.xml";
 	//	Clafer related file
 	public static final String claferHeader = rsrcPath + "Primitives" + innerFileSeparator + "ClaferHeader.cfr";

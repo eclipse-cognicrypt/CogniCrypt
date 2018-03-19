@@ -22,7 +22,6 @@ import java.util.zip.ZipFile;
 
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.stream.StreamSource;
 
 import org.clafer.ast.AstClafer;
@@ -86,8 +85,7 @@ public class FileUtilities {
 		try {
 			writeJSONFile(questions);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Activator.getDefault().logError(e);
 		}
 		writeXSLFile(xslFileContents);
 		if (customLibLocation != null) {
@@ -153,7 +151,7 @@ public class FileUtilities {
 		try {
 			reader.read(helpLocation);
 		} catch (DocumentException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e);
 			appendFileErrors(helpLocation.getName());
 			return false;
 		}
@@ -189,7 +187,7 @@ public class FileUtilities {
 						Enumeration<? extends ZipEntry> e = customLib.entries();
 						customLib.close();
 					} catch (IOException ex) {
-						ex.printStackTrace();
+						Activator.getDefault().logError(ex);
 						appendFileErrors(tmpLibLocation.getName());
 						return false;
 					}
@@ -207,8 +205,8 @@ public class FileUtilities {
 	private boolean validateXSLFile(File xslFileLocation) {
 		try {
 			TransformerFactory.newInstance().newTransformer(new StreamSource(xslFileLocation));			
-		} catch (TransformerConfigurationException | TransformerFactoryConfigurationError e) {
-			e.printStackTrace();
+		} catch (TransformerConfigurationException e) {
+			Activator.getDefault().logError(e);
 			appendFileErrors(xslFileLocation.getName());
 			return false;
 		}
@@ -228,7 +226,7 @@ public class FileUtilities {
             reader.close();            
             return true;
         } catch (com.google.gson.JsonSyntaxException | IOException ex) {
-        	ex.printStackTrace();
+			Activator.getDefault().logError(ex);
 			appendFileErrors(jsonFileLocation.getName());
             return false;
         }
@@ -284,7 +282,7 @@ public class FileUtilities {
 				}
 
 			} catch (Exception e) {				
-				e.printStackTrace();
+				Activator.getDefault().logError(e);
 				errors.append("There was a problem copying file ");
 				errors.append(existingFileLocation.getName());
 				errors.append("\n");
@@ -299,7 +297,7 @@ public class FileUtilities {
 				try {
 					Files.copy(customLibFile.toPath(), tmpFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
 				} catch (IOException e) {
-					e.printStackTrace();
+					Activator.getDefault().logError(e);
 					errors.append("There was a problem copying file ");
 					errors.append(existingFileLocation.getName());
 					errors.append("\n");
@@ -329,7 +327,7 @@ public class FileUtilities {
 			writer.close();
 			
 		} catch (IOException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e);
 			errors.append("There was a problem updating the task file.\n");
 		}
 	}
@@ -392,7 +390,7 @@ public class FileUtilities {
 			writer.flush();
 			writer.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e);
 			errors.append("There was a problem wrting the XSL data.\n");
 		}
 		
@@ -429,7 +427,7 @@ public class FileUtilities {
 				writer.write(pluginXMLDocument);
 				writer.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				Activator.getDefault().logError(e);
 			}
 		}
 	}

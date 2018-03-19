@@ -17,25 +17,25 @@ import javax.crypto.ShortBufferException;
 
 import java.util.Arrays;
 
-public class SICSCipher  extends CipherSpi {
+public class kjhbvCipher  extends CipherSpi {
 
  @Override
 	 protected void engineSetMode(String mode) throws NoSuchAlgorithmException {
-	 String[] allowedModes="CFB".split("\\|");
+	 String[] allowedModes="CFB|CTR".split("\\|");
 	 if (!Arrays.asList(allowedModes).contains(mode))
 	  throw new NoSuchAlgorithmException();
 	 }
 
 	@Override
 	 protected void engineSetPadding(String padding) throws NoSuchPaddingException {
-	  String[] allowedPaddings="PKCS7".split("\\|");
+	  String[] allowedPaddings="PKCS7|ZeroPadding".split("\\|");
 	 if (!Arrays.asList(allowedPaddings).contains(padding))
 	  throw new NoSuchPaddingException();
 	 }
 
 	@Override
 	 protected int engineGetBlockSize() {
-	  return 64;
+	  return 250;
 	 }
 	 
 	@Override

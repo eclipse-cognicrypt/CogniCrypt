@@ -48,7 +48,9 @@ public class Constants {
 	//Jar file location - Provider
 	public static final String PROVIDER_FOLDER = primitivesPath + innerFileSeparator + "provider";
 	public static final String PROVIDER_JAR_File = PROVIDER_FOLDER + innerFileSeparator + "provider.jar";
-
+	
+	//Java Folder location 
+	public static final String JAVA_BIN = "C:\\Program Files\\Java\\";
 	// Task descriptions
 
 	// Tooltip

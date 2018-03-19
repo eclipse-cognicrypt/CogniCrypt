@@ -1,6 +1,7 @@
 package de.cognicrypt.codegenerator.primitive.wizard;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -12,7 +13,7 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -224,15 +225,20 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 		//Generation of .class files from the transformed .java files
 		File folder = Utils.getResourceFromWithin(Constants.transformedFiles);
+		if (!folder.exists()) {
+			folder = new File(Utils.getResourceFromWithin("src/main/resources/Primitives") + Constants.innerFileSeparator + "TransformedFiles");
+		}
 		File[] listOfFiles = (folder).listFiles();
 		for (File file : listOfFiles) {
-			System.setProperty("java.home", "C:\\Program Files\\Java\\jdk1.8.0_131");
-			System.out.println(System.getProperty("java.home"));
-			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-			StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+			if (file.getName().endsWith(".java")) {
+				System.setProperty("java.home", Constants.JAVA_BIN + lastAddedJDK());
+				System.getProperty("java.home");
+				JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+				StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
 
-			Iterable<? extends JavaFileObject> compilationUnits1 = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(file));
-			compiler.getTask(null, fileManager, null, null, null, compilationUnits1).call();
+				Iterable<? extends JavaFileObject> compilationUnits1 = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(file));
+				compiler.getTask(null, fileManager, null, null, null, compilationUnits1).call();
+			}
 		}
 
 		//Create Provider jarFile 
@@ -247,6 +253,22 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		}
 
 		return true;
+	}
+
+	//Get the last JDK from Java folder in local c:
+	public static File lastAddedJDK() {
+		File fl = new File(Constants.JAVA_BIN);
+		FileFilter fileFilter = new WildcardFileFilter("jdk*");
+		File[] files = fl.listFiles(fileFilter);
+		long lastMod = Long.MIN_VALUE;
+		File choice = null;
+		for (File file : files) {
+			if (file.lastModified() > lastMod) {
+				choice = file;
+				lastMod = file.lastModified();
+			}
+		}
+		return choice;
 	}
 
 }

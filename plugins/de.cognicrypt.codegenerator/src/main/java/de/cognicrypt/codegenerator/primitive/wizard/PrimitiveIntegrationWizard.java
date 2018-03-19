@@ -1,22 +1,12 @@
 package de.cognicrypt.codegenerator.primitive.wizard;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.ToolProvider;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
-import org.xml.sax.SAXException;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.clafer.ClaferGenerator;
@@ -27,7 +17,6 @@ import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuest
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnairePage;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.utilities.Utils;
 
 public class PrimitiveIntegrationWizard extends Wizard {
 
@@ -190,103 +179,63 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 
-		//Generation of xml file for xsl
-		final File xmlFile = Utils.getResourceFromWithin(Constants.xmlFilePath);
-		xsltWriter = new XsltWriter();
-		try {
-			xsltWriter.createDocument();
-			xsltWriter.setRoot("SymmetricBlockCipher");
-			for (String name : inputsMap.keySet()) {
-
-				File finalClafer = ClaferGenerator.copyClaferHeader();
-				for (IWizardPage page : getPages()) {
-					if (page instanceof PrimitiveQuestionnairePage) {
-						PrimitiveQuestionnairePage questionnairePage = (PrimitiveQuestionnairePage) page;
-						ClaferGenerator.printClafer(questionnairePage.getSelection(), finalClafer);
-						String key = name.toString();
-						String value = inputsMap.get(name).toString();
-						xsltWriter.addElement(name.trim(), value);
-
-					}
-					xsltWriter.transformXml(xmlFile);
-
-				}
-			}
-		} catch (ParserConfigurationException | TransformerException e) {
-			e.printStackTrace();
-		}
-		/**
-		 * //Generation of xml file for xsl final File xmlFile = Utils.getResourceFromWithin(Constants.xmlFilePath); xmlFileForXSL = new WriteXML(); try {
-		 * xmlFileForXSL.createDocument(); xmlFileForXSL.setRoot("SymmetricBlockCipher"); for (String name : inputsMap.keySet()) {
-		 * 
-		 * String key = name.toString(); String value = inputsMap.get(name).toString(); xmlFileForXSL.addElement(name.trim(), value); System.out.println(name + value);
-		 * 
-		 * } xmlFileForXSL.transformXSL(xmlFile);
-		 * 
-		 * } catch (ParserConfigurationException | TransformerException e) { e.printStackTrace(); }
-		 * 
-		 * //Code generation final File xslFile = Utils.getResourceFromWithin(Constants.cipherSpiXSL); try { transform(xmlFile, xslFile,
-		 * "C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\TransformedFiles\\test.java"); } catch
-		 * (TransformerException e1) { // TODO Auto-generated catch block e1.printStackTrace(); }
-		 * 
-		 * //Create Provider jarFile File folder = Utils.getResourceFromWithin(Constants.TransformedFiles); File[] listOfFiles = (folder).listFiles();
-		 * 
-		 * String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" }; providerJar.createManifest("Ahmed", classPaths); providerJar.createJarArchive(new
-		 * File("C:\\Users\\Ahmed\\issues\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\resources\\Primitives\\XSL\\test.jar"), listOfFiles);
-		 */
-
-		//Code generation 
-		final File xslFile = Utils.getResourceFromWithin(selectedPrimitive.getXslFile());
-		try {
-			//			File temporaryOutputFile=new File();
-			//			transform(xmlFile, xslFile,temporaryOutputFile.getPath());
-			xsltWriter.transformXsl(xslFile, xmlFile);
-
-		} catch (TransformerException | SAXException | IOException | ParserConfigurationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		//Generation of .class files from the transformed .java files
-		File folder = Utils.getResourceFromWithin(Constants.transformedFiles);
-		File[] listOfFiles = (folder).listFiles();
-		for (File file : listOfFiles) {
-			System.setProperty("java.home", "C:\\Program Files\\Java\\jdk1.8.0_131");
-			System.out.println(System.getProperty("java.home"));
-			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-			StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
-
-			Iterable<? extends JavaFileObject> compilationUnits1 = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(file));
-			compiler.getTask(null, fileManager, null, null, null, compilationUnits1).call();
-		}
-
-		//Create Provider jarFile 
-		String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" };
-		providerJar.createManifest("some owner", classPaths);
-
-		providerJar.createJarArchive(Utils.getResourceFromWithin(Constants.PROVIDER_JAR_File), folder.listFiles());
-
-		//delete archived files 
-		for (File file : folder.listFiles()) {
-			file.delete();
-		}
+		//Clafer
+		File finalClafer = ClaferGenerator.copyClaferHeader(Constants.claferHeader, Constants.claferFooter);
+		ClaferGenerator.printClafer(inputsMap, finalClafer);
+		//
+		//		//Generation of xml file for xsl
+		//		final File xmlFile = Utils.getResourceFromWithin(Constants.xmlFilePath);
+		//		xsltWriter = new XsltWriter();
+		//		try {
+		//			xsltWriter.createDocument();
+		//			xsltWriter.setRoot("SymmetricBlockCipher");
+		//			for (String name : inputsMap.keySet()) {
+		//				String key = name.toString();
+		//				String value = inputsMap.get(name).toString();
+		//				xsltWriter.addElement(name.trim(), value);
+		//			}
+		//			xsltWriter.transformXml(xmlFile);
+		//		} catch (ParserConfigurationException | TransformerException e) {
+		//			e.printStackTrace();
+		//		}
+		//
+		//		//Code generation 
+		//		final File xslFile = Utils.getResourceFromWithin(selectedPrimitive.getXslFile());
+		//		try {
+		//			//			File temporaryOutputFile=new File();
+		//			//			transform(xmlFile, xslFile,temporaryOutputFile.getPath());
+		//			xsltWriter.transformXsl(xslFile, xmlFile);
+		//
+		//		} catch (TransformerException | SAXException | IOException | ParserConfigurationException e1) {
+		//			// TODO Auto-generated catch block
+		//			e1.printStackTrace();
+		//		}
+		//
+		//		//Generation of .class files from the transformed .java files
+		//		File folder = Utils.getResourceFromWithin(Constants.transformedFiles);
+		//		File[] listOfFiles = (folder).listFiles();
+		//		for (File file : listOfFiles) {
+		//			System.setProperty("java.home", "C:\\Program Files\\Java\\jdk1.8.0_131");
+		//			System.out.println(System.getProperty("java.home"));
+		//			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		//			StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+		//
+		//			Iterable<? extends JavaFileObject> compilationUnits1 = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(file));
+		//			compiler.getTask(null, fileManager, null, null, null, compilationUnits1).call();
+		//		}
+		//
+		//		//Create Provider jarFile 
+		//		String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" };
+		//		providerJar.createManifest("some owner", classPaths);
+		//
+		//		providerJar.createJarArchive(Utils.getResourceFromWithin(Constants.PROVIDER_JAR_File), folder.listFiles());
+		//
+		//		//delete archived files 
+		//		for (File file : folder.listFiles()) {
+		//			file.delete();
+		//		}
 
 		return true;
 	}
 
-	//		public boolean canFinish() {
-	//			final String pageName = getContainer().getCurrentPage().getName();
-	//			if (pageName.equals(Constants.METHODS_SELECTION_PAGE)) { //name of the last page
-	//				return true;
-	//			}
-	//			return (pageName.equals(Constants.METHODS_SELECTION_PAGE));
-	//		}
-
-	//	public boolean performCancel() {
-	//		boolean ans = MessageDialog.openConfirm(getShell(), "Confirmation", "Are you sure to close without integrating the new primitve?");
-	//		if (ans)
-	//			return true;
-	//		else
-	//			return false;
-	//	}
 }

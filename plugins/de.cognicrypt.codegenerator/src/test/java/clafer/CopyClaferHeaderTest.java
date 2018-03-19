@@ -1,5 +1,8 @@
 package clafer;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 
 import org.junit.Test;
@@ -11,18 +14,21 @@ public class CopyClaferHeaderTest {
 
 	@Test
 	public void test() {
-		try {
-			File finalClafer = ClaferGenerator.copyClaferHeader(Constants.claferHeader, Constants.claferFooter);
-			assert (finalClafer.exists());
 
-			File finalClafer1 = ClaferGenerator.copyClaferHeader(Constants.claferHeaderTest, Constants.claferFooter);
-			assert (!finalClafer1.exists());
+		// test with existing files
+		File finalClafer = ClaferGenerator.copyClaferHeader(Constants.claferHeader, Constants.claferFooter);
+		assert (finalClafer.exists());
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// test with non-existing files
+		File finalClafer1 = ClaferGenerator.copyClaferHeader(Constants.claferHeaderTest, Constants.claferFooterTest);
+		assertTrue(finalClafer1 instanceof File);
+		assertFalse(finalClafer1.exists());
 
 	}
+
+	//	@Test(expected = FileNotFoundException.class)
+	//public void testFileNotFound() {
+	//	File finalClafer1 = ClaferGenerator.copyClaferHeader(Constants.claferHeaderTest, Constants.claferFooter);
+	//}
 
 }

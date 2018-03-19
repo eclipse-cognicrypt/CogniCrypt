@@ -199,7 +199,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 			public void modifyText(ModifyEvent e) {
 				
 				String tempName = txtForTaskName.getText().trim();
-				boolean validString = Validator.checkIfTaskNameAlreadyExists(tempName, getDecNameOfTheTask());
+				boolean validString = Validator.checkIfTaskNameAlreadyExists(tempName);
 				if (validString) {
 					getObjectForDataInNonGuidedMode().setNameOfTheTask(tempName);
 				}	

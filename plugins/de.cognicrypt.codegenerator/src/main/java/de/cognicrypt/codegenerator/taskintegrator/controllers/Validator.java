@@ -24,4 +24,8 @@ public class Validator {
 		return validString;
 	}
 
+	public static String getValidXMLString(String stringData) {
+		return stringData.replace("<", "").replace(">", "").replace("&", "").replace("\'", "").replace("\"", "");
+	}
+
 }

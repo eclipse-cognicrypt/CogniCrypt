@@ -34,13 +34,13 @@ public class Constants {
 
 	//XML & XSL for Primitive 
 	public static final String primitivesPath = Constants.rsrcPath + "Primitives";
-	public static final String testFile=Constants.primitivesPath + "test.txt";
+	public static final String testFile = Constants.primitivesPath + "test.txt";
 	public static final String xmlFilePath = primitivesPath + innerFileSeparator + "XML" + innerFileSeparator + "xmlFile.xml";
 	//	Clafer related file
 	public static final String claferHeader = rsrcPath + "Primitives" + innerFileSeparator + "ClaferHeader.cfr";
-	public static final String claferHeaderTest = rsrcPath + "Help" + innerFileSeparator + "ClaferHeader.cfr";
+	public static final String claferHeaderTest = rsrcPath + "Primitives" + innerFileSeparator + "ClaferHeaderT.cfr";
 	public static final String claferFooter = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClafer.cfr";
-	public static final String claferFooterTest = primitivesPath + innerFileSeparator + "Help" + innerFileSeparator + "FinalClafer.cfr";
+	public static final String claferFooterTest = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClaferT.cfr";
 
 	public static final String cipherSpiXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template" + innerFileSeparator + "CipherSPI.xsl";
 	public static final String providerClassXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template" + innerFileSeparator + "providerClass.xsl";

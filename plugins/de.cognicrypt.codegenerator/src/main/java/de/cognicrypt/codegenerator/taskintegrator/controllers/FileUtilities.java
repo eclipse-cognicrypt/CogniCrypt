@@ -408,7 +408,7 @@ public class FileUtilities {
 		try {
 			pluginXMLDocument = reader.read(pluginXMLFile);
 		} catch (DocumentException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e);
 		}
 		if (pluginXMLDocument != null) {
 

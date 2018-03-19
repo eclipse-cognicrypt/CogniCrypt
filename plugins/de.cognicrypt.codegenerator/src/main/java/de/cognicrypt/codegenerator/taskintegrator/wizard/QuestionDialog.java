@@ -36,6 +36,8 @@ public class QuestionDialog extends Dialog {
 	private String questionText;
 	private String questionType;
 	private Combo combo;
+	private Text txtBoxHelptext;
+	private Combo comboBoxTooltip;
 	private CompositeToHoldSmallerUIElements compositeToHoldAnswers;
 	private Question question;
 	private Question questionDetails;
@@ -65,7 +67,7 @@ public class QuestionDialog extends Dialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new FillLayout(SWT.HORIZONTAL));
-		getShell().setMinimumSize(900, 400);
+		getShell().setMinimumSize(900, 430);
 		
 
 		TabFolder tabFolder = new TabFolder(container, SWT.NONE);
@@ -92,14 +94,34 @@ public class QuestionDialog extends Dialog {
 		combo.select(-1);
 		combo.setItems(Constants.dropDown, Constants.textBox, Constants.radioButton);
 
+		Label lblHelpText = new Label(composite, SWT.NONE);
+		lblHelpText.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		lblHelpText.setText("Describe the question");
+		lblHelpText.setToolTipText("In order to help the user to understand the question give extra details about the question in the text box");
+
+		txtBoxHelptext = new Text(composite, SWT.BORDER);
+		txtBoxHelptext.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+
+		Label lblToolTip = new Label(composite, SWT.None);
+		lblToolTip.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		lblToolTip.setText("Set tooltip");
+		//visible only if the question type is text
+		lblToolTip.setVisible(false);
+
+		comboBoxTooltip = new Combo(composite, SWT.READ_ONLY);
+		comboBoxTooltip.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		comboBoxTooltip.select(-1);
+		comboBoxTooltip.setItems("option1", "option2", "option3", "others");
+		comboBoxTooltip.setVisible(false);
+
 		Button btnAddAnswer = new Button(composite, SWT.None);
 		btnAddAnswer.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		btnAddAnswer.setText("Add Answer");
 		//Visibility depends on question type
 		btnAddAnswer.setVisible(false);
-		new Label(composite, SWT.NONE);
-		new Label(composite, SWT.NONE);
-		boolean showRemoveButton = true;
+		/*
+		 * new Label(composite, SWT.NONE); new Label(composite, SWT.NONE);
+		 */boolean showRemoveButton = true;
 		compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton, null);
 		GridData gd_compositeToHoldAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 		gd_compositeToHoldAnswers.heightHint = 135;
@@ -127,6 +149,8 @@ public class QuestionDialog extends Dialog {
 
 				switch (combo.getText()) {
 					case Constants.textBox:
+						lblToolTip.setVisible(true);
+						comboBoxTooltip.setVisible(true);
 						btnAddAnswer.setVisible(false);
 						compositeToHoldAnswers.setVisible(false);
 						compositeToHoldAnswers.getListOfAllAnswer().clear();
@@ -140,6 +164,9 @@ public class QuestionDialog extends Dialog {
 					case Constants.dropDown:
 						boolean comboSelected = combo.getText().equalsIgnoreCase(Constants.dropDown) ? true : false;
 						btnAddAnswer.setVisible(comboSelected);
+						lblToolTip.setVisible(false);
+						comboBoxTooltip.deselectAll();
+						comboBoxTooltip.setVisible(false);
 						if (!currentQuestionType.equalsIgnoreCase(Constants.dropDown)) {
 							compositeToHoldAnswers.getListOfAllAnswer().clear();
 							compositeToHoldAnswers.updateAnswerContainer();
@@ -150,6 +177,9 @@ public class QuestionDialog extends Dialog {
 					case Constants.radioButton:
 						boolean buttonSelected = combo.getText().equalsIgnoreCase(Constants.radioButton) ? true : false;
 						btnAddAnswer.setVisible(buttonSelected);
+						lblToolTip.setVisible(false);
+						comboBoxTooltip.deselectAll();
+						comboBoxTooltip.setVisible(false);
 						if (!currentQuestionType.equalsIgnoreCase(Constants.radioButton)) {
 							compositeToHoldAnswers.getListOfAllAnswer().clear();
 							compositeToHoldAnswers.updateAnswerContainer();
@@ -173,6 +203,10 @@ public class QuestionDialog extends Dialog {
 				combo.setText(Constants.textBox);
 
 			}
+			if (!question.getHelpText().isEmpty()) {
+				txtBoxHelptext.setText(question.getHelpText());
+			}
+
 			//combo.setText(question.getQuestionType());
 			for (Answer answer : question.getAnswers()) {
 				compositeToHoldAnswers.getListOfAllAnswer().add(answer);
@@ -180,6 +214,7 @@ public class QuestionDialog extends Dialog {
 				compositeToHoldAnswers.setVisible(true);
 			}
 			if (question.getElement().equals(Constants.GUIElements.text)) {
+				comboBoxTooltip.setText(question.getTooltip());
 				compositeToHoldAnswers.setVisible(false);
 			}
 
@@ -188,15 +223,9 @@ public class QuestionDialog extends Dialog {
 		return container;
 	}
 
-	//to save the question text and type
-	private void saveInput() {
-		setQuestionDetails();
-		//claferFeatures.clear();
-	}
-
 	@Override
 	protected void okPressed() {
-		saveInput();
+		setQuestionDetails();
 		super.okPressed();
 	}
 
@@ -222,6 +251,15 @@ public class QuestionDialog extends Dialog {
 		Question questionDetails = new Question();
 		questionDetails.setQuestionText(textQuestion.getText());
 		setQuestionElement(questionDetails, combo.getText());
+		if (!txtBoxHelptext.getText().isEmpty()) {
+			questionDetails.setHelpText(txtBoxHelptext.getText());
+		}
+		//sets the tooltip for question type text 
+		if (combo.getText().equalsIgnoreCase(Constants.textBox)) {
+			if (!comboBoxTooltip.getText().equalsIgnoreCase("others")) {
+			questionDetails.setTooltip(comboBoxTooltip.getText());
+			}
+		}
 
 		/**
 		 * Executes only if the question type is not text this loop executes to delete empty text boxes in the question dialog

@@ -6,11 +6,9 @@ package de.cognicrypt.codegenerator;
  */
 public class Constants {
 
-
 	public enum GUIElements {
 
-		combo, text, itemselection,button,radio, scale, checkbox, radiobutton, textarea, composed
-
+		combo, text, itemselection, button, radio, scale, checkbox, radiobutton, textarea, composed
 
 	}
 
@@ -32,20 +30,27 @@ public class Constants {
 
 	public static final String pathToPropertyfiles = Constants.rsrcPath + "Labels.properties";
 
-	
 	public static final String jsonPrimitiveTypesFile = rsrcPath + "Primitives" + innerFileSeparator + "PrimitiveType.json";
-	
+
 	//XML & XSL for Primitive 
 	public static final String primitivesPath = Constants.rsrcPath + "Primitives";
+	public static final String testFile = Constants.primitivesPath + "test.txt";
 	public static final String xmlFilePath = primitivesPath + innerFileSeparator + "XML" + innerFileSeparator + "xmlFile.xml";
-	
-	public static final String cipherSpiXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template"+ innerFileSeparator + "CipherSPI.xsl";
-	public static final String providerClassXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template"+ innerFileSeparator + "providerClass.xsl";
-	public static final String transformedFiles= primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "TransformedFiles";
+	//	Clafer related file
+	public static final String claferHeader = rsrcPath + "Primitives" + innerFileSeparator + "ClaferHeader.cfr";
+	public static final String claferHeaderTest = rsrcPath + "Primitives" + innerFileSeparator + "ClaferHeaderT.cfr";
+	public static final String claferFooter = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClafer.cfr";
+	public static final String claferFooterTest = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClaferT.cfr";
+
+	public static final String cipherSpiXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template" + innerFileSeparator + "CipherSPI.xsl";
+	public static final String providerClassXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template" + innerFileSeparator + "providerClass.xsl";
+	public static final String transformedFiles = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "TransformedFiles";
 	//Jar file location - Provider
-	public static final String PROVIDER_FOLDER= primitivesPath + innerFileSeparator + "provider"; 
-	public static final String PROVIDER_JAR_File=PROVIDER_FOLDER+ innerFileSeparator +"provider.jar";
+	public static final String PROVIDER_FOLDER = primitivesPath + innerFileSeparator + "provider";
+	public static final String PROVIDER_JAR_File = PROVIDER_FOLDER + innerFileSeparator + "provider.jar";
 	
+	//Java Folder location 
+	public static final String JAVA_BIN = "C:\\Program Files\\Java\\";
 	// Task descriptions
 
 	// Tooltip
@@ -101,12 +106,11 @@ public class Constants {
 	// File info for Code Generation
 	public static final String OpenFile = "Current file is open: ";
 	public static final String CloseFile = "No file is open";
-	public static final String ContainsAuthorTag = "Current open file contains \""+AuthorTag+"\": ";
-	public static final String ContainsNotAuthorTag = "Current open file DOESN'T contain \""+AuthorTag+"\": ";
-	public static final String CreateOutput = "Create: "+AdditionalOutputFile;
-	public static final String CreateOutputTemp = AdditionalOutputFile+" exists! Create: "+AdditionalOutputTempFile;
+	public static final String ContainsAuthorTag = "Current open file contains \"" + AuthorTag + "\": ";
+	public static final String ContainsNotAuthorTag = "Current open file DOESN'T contain \"" + AuthorTag + "\": ";
+	public static final String CreateOutput = "Create: " + AdditionalOutputFile;
+	public static final String CreateOutputTemp = AdditionalOutputFile + " exists! Create: " + AdditionalOutputTempFile;
 
-	
 	// Error Messages
 	public static final String NoFileOpenedErrorMessage = "There is no file opened to generate the source code in. Will generate output file instead.";
 	public static final String NoJavaFileOpenedErrorMessage = "The currently open file is not a java file. Will generate output file instead.";
@@ -125,9 +129,8 @@ public class Constants {
 	public static final String ERROR_MESSAGE_NO_PROJECT = "There is no Java project in your workspace. Please create one and restart CogniCrypt.";
 	public static final String ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY = "No directory for additional resources found.";
 	public static final String ERROR_MESSAGE_NO_FILE = "No file found";
-	public static final String NOT_JAVA_PROJECT="The nature of the project is not Java";
-	
-	
+	public static final String NOT_JAVA_PROJECT = "The nature of the project is not Java";
+
 	public static final String JAVA = "java";
 	public static final String DEFAULT_PROVIDER = "JCA";
 	public static final String JAR = ".jar";
@@ -143,7 +146,7 @@ public class Constants {
 	public static final String Code = "code";
 	public static final String Type = "type";
 	public static final String Security = "security";
-	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List", "java.util.Base64", "java.io.InputStream", "java.io.OutputStream", "java.util.Properties", "java.io.FileOutputStream"};
+	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List", "java.util.Base64", "java.io.InputStream", "java.io.OutputStream", "java.util.Properties", "java.io.FileOutputStream" };
 
 	// Types
 	public static final String INTEGER = "Integer";
@@ -173,13 +176,11 @@ public class Constants {
 	public static final String PROPERTIES = "Algorithm Preferences";
 	public static final String SELECT_PROPERTIES = "Select Properties";
 	public static final String FIXED_SIZE = "fixed size";
-	public static final String BLOCK_SIZE="Blocksize";
-	public static final String METHODS_SELECTION_PAGE= "Methods Selector";
-	public static final String DESCRIPTION_KEYSIZES="The keysize can fixed or variable sized"; 
-	
+	public static final String BLOCK_SIZE = "Blocksize";
+	public static final String METHODS_SELECTION_PAGE = "Methods Selector";
+	public static final String DESCRIPTION_KEYSIZES = "The keysize can fixed or variable sized";
+
 	//Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;
-	
-	
 
 }

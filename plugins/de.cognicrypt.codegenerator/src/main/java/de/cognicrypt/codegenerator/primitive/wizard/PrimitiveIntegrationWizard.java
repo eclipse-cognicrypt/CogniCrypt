@@ -1,7 +1,7 @@
 package de.cognicrypt.codegenerator.primitive.wizard;
 
 import java.io.File;
-
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -13,12 +13,14 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.xml.sax.SAXException;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.primitive.clafer.ClaferGenerator;
 import de.cognicrypt.codegenerator.primitive.providerUtils.ProviderFile;
 import de.cognicrypt.codegenerator.primitive.providerUtils.XsltWriter;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
@@ -99,9 +101,8 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 					String key = name.toString();
 					String value = selectionMap.get(name).toString();
-					
+
 					inputsMap.put(key, value);
-					
 
 				}
 			}
@@ -185,13 +186,15 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		}
 
 		return "Primitive Integration";
-
 	}
-
 
 	@Override
 	public boolean performFinish() {
-		
+
+		//Clafer
+		File finalClafer = ClaferGenerator.copyClaferHeader(Constants.claferHeader, Constants.claferFooter);
+		ClaferGenerator.printClafer(inputsMap, finalClafer);
+
 		//Generation of xml file for xsl
 		final File xmlFile = Utils.getResourceFromWithin(Constants.xmlFilePath);
 		xsltWriter = new XsltWriter();
@@ -199,14 +202,11 @@ public class PrimitiveIntegrationWizard extends Wizard {
 			xsltWriter.createDocument();
 			xsltWriter.setRoot("SymmetricBlockCipher");
 			for (String name : inputsMap.keySet()) {
-
 				String key = name.toString();
 				String value = inputsMap.get(name).toString();
 				xsltWriter.addElement(name.trim(), value);
-
 			}
 			xsltWriter.transformXml(xmlFile);
-
 		} catch (ParserConfigurationException | TransformerException e) {
 			e.printStackTrace();
 		}
@@ -225,44 +225,50 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 		//Generation of .class files from the transformed .java files
 		File folder = Utils.getResourceFromWithin(Constants.transformedFiles);
+		if (!folder.exists()) {
+			folder = new File(Utils.getResourceFromWithin("src/main/resources/Primitives") + Constants.innerFileSeparator + "TransformedFiles");
+		}
 		File[] listOfFiles = (folder).listFiles();
 		for (File file : listOfFiles) {
-			System.setProperty("java.home", "C:\\Program Files\\Java\\jdk1.8.0_131");
-			System.out.println(System.getProperty("java.home"));
-			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-			StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+			if (file.getName().endsWith(".java")) {
+				System.setProperty("java.home", Constants.JAVA_BIN + lastAddedJDK());
+				System.getProperty("java.home");
+				JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+				StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
 
-			Iterable<? extends JavaFileObject> compilationUnits1 = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(file));
-			compiler.getTask(null, fileManager, null, null, null, compilationUnits1).call();
+				Iterable<? extends JavaFileObject> compilationUnits1 = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(file));
+				compiler.getTask(null, fileManager, null, null, null, compilationUnits1).call();
+			}
 		}
 
 		//Create Provider jarFile 
 		String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" };
 		providerJar.createManifest("some owner", classPaths);
-		
-		providerJar.createJarArchive(Utils.getResourceFromWithin(Constants.PROVIDER_JAR_File),folder.listFiles());
-		
+
+		providerJar.createJarArchive(Utils.getResourceFromWithin(Constants.PROVIDER_JAR_File), folder.listFiles());
+
 		//delete archived files 
-		for(File file: folder.listFiles()){
+		for (File file : folder.listFiles()) {
 			file.delete();
 		}
-		
+
 		return true;
 	}
 
-	public boolean canFinish() {
-		final String pageName = getContainer().getCurrentPage().getName();
-		if (pageName.equals(Constants.METHODS_SELECTION_PAGE)) { //name of the last page
-			return true;
+	//Get the last JDK from Java folder in local c:
+	public static File lastAddedJDK() {
+		File fl = new File(Constants.JAVA_BIN);
+		FileFilter fileFilter = new WildcardFileFilter("jdk*");
+		File[] files = fl.listFiles(fileFilter);
+		long lastMod = Long.MIN_VALUE;
+		File choice = null;
+		for (File file : files) {
+			if (file.lastModified() > lastMod) {
+				choice = file;
+				lastMod = file.lastModified();
+			}
 		}
-		return (pageName.equals(Constants.METHODS_SELECTION_PAGE));
+		return choice;
 	}
 
-//	public boolean performCancel() {
-//		boolean ans = MessageDialog.openConfirm(getShell(), "Confirmation", "Are you sure to close without integrating the new primitve?");
-//		if (ans)
-//			return true;
-//		else
-//			return false;
-//	}
 }

@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.LinkedHashMap;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.utilities.Utils;
 
 /**
@@ -20,13 +19,13 @@ import de.cognicrypt.codegenerator.utilities.Utils;
 public abstract class ClaferGenerator {
 
 	//	Copy the Static Part into New created file
-	public static File copyClaferHeader() {
+	public static File copyClaferHeader(String source, String target) {
 		InputStream input = null;
 		OutputStream output = null;
 		File finalClafer = null;
 		try {
-			finalClafer = (Utils.getFinalClaferFile(Constants.claferFooter));
-			input = new FileInputStream(Utils.getResourceFromWithin(Constants.claferHeader));
+			finalClafer = (Utils.getFinalClaferFile(target)); // Constants.claferFooter
+			input = new FileInputStream(Utils.getResourceFromWithin(source)); //Constants.claferHeader
 			output = new FileOutputStream(finalClafer);
 			byte[] buf = new byte[1024];
 			int bytesRead;

@@ -26,14 +26,3 @@ abstract Cipher
 
 abstract SymmetricCipher : Cipher
   
-Testing : SymmetricCipher
-	[name = Testing]
-	[description = jdjs d]
-	[Blocksize = 25]
-sbjdbj : SymmetricCipher
-	[name = sbjdbj]
-	[description = jdbj]
-	[Blocksize = 54]
-	[Keysize1 = 14]
-	[mode = OFB|CFB]
-	[Padding = ZeroPadding|PKCS7]

@@ -1,0 +1,39 @@
+abstract Enum
+
+//enum Padding
+abstract Padding: Enum 
+OneAndZeroesPadding: Padding
+ZeroPadding: Padding
+PKCS7Padding : Padding
+NoPadding : Padding
+
+//enum Mode
+abstract Mode : Enum
+CBC : Mode
+OFB : Mode
+CFB : Mode
+CTR : Mode
+PCBC: Mode
+CTS : Mode
+
+
+abstract Cipher
+  name -> string
+  description -> string
+  author -> string
+  KeySize -> int
+  BlockSize -> int
+
+abstract SymmetricCipher : Cipher
+  
+SIXX7 : SymmetricCipher
+	[name = SIXX7]
+	[description = Testing for new Version]
+	[Blocksize = 64]
+	[Keysize1 = 64]
+	[Keysize2 = 244-235]
+	[Keysize3 = 123]
+	[Keysize4 = 544]
+	[Keysize5 = 277-344]
+	[mode = CFB|CTR|PCBC|CTS]
+	[Padding = OneAndZeroes Padding|ZeroPadding|PKCS7]

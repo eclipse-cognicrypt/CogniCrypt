@@ -1,0 +1,36 @@
+abstract Enum
+
+//enum Padding
+abstract Padding: Enum 
+OneAndZeroesPadding: Padding
+ZeroPadding: Padding
+PKCS7Padding : Padding
+NoPadding : Padding
+
+//enum Mode
+abstract Mode : Enum
+CBC : Mode
+OFB : Mode
+CFB : Mode
+CTR : Mode
+PCBC: Mode
+CTS : Mode
+
+
+abstract Cipher
+  name -> string
+  description -> string
+  author -> string
+  KeySize -> int
+  BlockSize -> int
+
+abstract SymmetricCipher : Cipher
+  
+SICS : SymmetricCipher
+	[name = SICS]
+	[description = This is Desc for]
+	[Blocksize = 64]
+	[Keysize1 = 5454]
+	[Keysize2 = 534-654]
+	[mode = OFB|CFB]
+	[Padding = ZeroPadding]

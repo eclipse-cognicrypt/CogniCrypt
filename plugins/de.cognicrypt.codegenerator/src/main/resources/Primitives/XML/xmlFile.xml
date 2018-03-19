@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SymmetricBlockCipher>
+<<<<<<< HEAD
    <name>SICS</name>
    <description>This is Desc for</description>
    <Blocksize>64</Blocksize>
@@ -7,4 +8,18 @@
    <Keysize2>534-654</Keysize2>
    <mode>OFB|CFB</mode>
    <Padding>ZeroPadding</Padding>
+||||||| merged common ancestors
+   <name>Ahmed</name>
+   <description>fzoifzo</description>
+   <Blocksize>200</Blocksize>
+   <Keysize1>300</Keysize1>
+   <mode>OFB|CFB</mode>
+   <Padding>ZeroPadding|PKCS7</Padding>
+=======
+   <name>kjhiuhih</name>
+   <Blocksize>20</Blocksize>
+   <Keysize1>300</Keysize1>
+   <mode>CTR</mode>
+   <Padding>PKCS7</Padding>
+>>>>>>> f1e02e012910ae3d4b85a3b335ec80269f275487
 </SymmetricBlockCipher>

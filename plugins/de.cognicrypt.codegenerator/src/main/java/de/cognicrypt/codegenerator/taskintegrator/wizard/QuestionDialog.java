@@ -119,9 +119,7 @@ public class QuestionDialog extends Dialog {
 		btnAddAnswer.setText("Add Answer");
 		//Visibility depends on question type
 		btnAddAnswer.setVisible(false);
-		/*
-		 * new Label(composite, SWT.NONE); new Label(composite, SWT.NONE);
-		 */boolean showRemoveButton = true;
+		boolean showRemoveButton = true;
 		compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton, null);
 		GridData gd_compositeToHoldAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 		gd_compositeToHoldAnswers.heightHint = 135;

@@ -91,7 +91,7 @@ public class FileUtilities {
 		if (customLibLocation != null) {
 			copyFileFromPath(customLibLocation);
 		}
-		return errors.toString();
+		return getErrors().toString();
 	}
 	
 	/**
@@ -136,7 +136,7 @@ public class FileUtilities {
 
 		}
 
-		return errors.toString();
+		return getErrors().toString();
 	}
 
 	/**
@@ -164,10 +164,10 @@ public class FileUtilities {
 	 * @param fileName
 	 */
 	private void appendFileErrors(String fileName) {
-		errors.append("The contents of the file ");
-		errors.append(fileName);
-		errors.append(" are invalid.");
-		errors.append("\n");
+		getErrors().append("The contents of the file ");
+		getErrors().append(fileName);
+		getErrors().append(" are invalid.");
+		getErrors().append("\n");
 	}
 
 	/**
@@ -246,9 +246,9 @@ public class FileUtilities {
 		boolean isValidationSuccessful = compilationResult && taskClafer != null;
 		if (!isValidationSuccessful) {
 			appendFileErrors(cfrFileLocation.getName());
-			errors
+			getErrors()
 				.append("Either the compilation failed, or the provided name for the Task does not match the one in the Clafer model. Please note : the name must be capitalized.");
-			errors.append("\n");
+			getErrors().append("\n");
 		}
 		return isValidationSuccessful;
 	}
@@ -283,9 +283,9 @@ public class FileUtilities {
 
 			} catch (Exception e) {				
 				Activator.getDefault().logError(e);
-				errors.append("There was a problem copying file ");
-				errors.append(existingFileLocation.getName());
-				errors.append("\n");
+				getErrors().append("There was a problem copying file ");
+				getErrors().append(existingFileLocation.getName());
+				getErrors().append("\n");
 			}
 			// If we are dealing with a custom library location.
 		} else if (existingFileLocation.exists() && existingFileLocation.isDirectory()) {
@@ -298,9 +298,9 @@ public class FileUtilities {
 					Files.copy(customLibFile.toPath(), tmpFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
 				} catch (IOException e) {
 					Activator.getDefault().logError(e);
-					errors.append("There was a problem copying file ");
-					errors.append(existingFileLocation.getName());
-					errors.append("\n");
+					getErrors().append("There was a problem copying file ");
+					getErrors().append(existingFileLocation.getName());
+					getErrors().append("\n");
 				}
 			}
 		}
@@ -328,7 +328,7 @@ public class FileUtilities {
 			
 		} catch (IOException e) {
 			Activator.getDefault().logError(e);
-			errors.append("There was a problem updating the task file.\n");
+			getErrors().append("There was a problem updating the task file.\n");
 		}
 	}
 		
@@ -344,7 +344,7 @@ public class FileUtilities {
 			writer.close();
 		} catch (IOException e) {
 			Activator.getDefault().logError(e);
-			errors.append("There was a problem writing the Clafer model.\n");
+			getErrors().append("There was a problem writing the Clafer model.\n");
 		}
 	}
 		
@@ -391,12 +391,12 @@ public class FileUtilities {
 			writer.close();
 		} catch (FileNotFoundException e) {
 			Activator.getDefault().logError(e);
-			errors.append("There was a problem wrting the XSL data.\n");
+			getErrors().append("There was a problem wrting the XSL data.\n");
 		}
 		
 		if (!validateXSLFile(xslFile)) {
 			xslFile.delete();
-			errors.append("The XSL data is invalid.\n");
+			getErrors().append("The XSL data is invalid.\n");
 		}
 	}
 	
@@ -461,7 +461,7 @@ public class FileUtilities {
 	/**
 	 * @return the list of errors.
 	 */
-	public StringBuilder getErrors() {
+	private StringBuilder getErrors() {
 		return errors;
 	}
 
@@ -469,7 +469,7 @@ public class FileUtilities {
 	 * @param set
 	 *        the string builder to maintain the list of errors.
 	 */
-	public void setErrors(StringBuilder errors) {
+	private void setErrors(StringBuilder errors) {
 		this.errors = errors;
 	}
 

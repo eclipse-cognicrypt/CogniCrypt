@@ -80,16 +80,22 @@ public class FileUtilities {
 	 * @param customLibLocation
 	 */
 	public String writeFiles(ClaferModel claferModel, ArrayList<Question> questions, String xslFileContents, File customLibLocation) {
+		writeXSLFile(xslFileContents);
+		// custom library location is optional.
+		if (customLibLocation != null) {
+			if (validateJARFile(customLibLocation)) {
+				copyFileFromPath(customLibLocation);
+			}
+		}
+		if (getErrors().length() > 0) {
+			return getErrors().toString();
+		}
 		writeCFRFile(claferModel);
 		compileCFRFile();
 		try {
 			writeJSONFile(questions);
 		} catch (IOException e) {
 			Activator.getDefault().logError(e);
-		}
-		writeXSLFile(xslFileContents);
-		if (customLibLocation != null) {
-			copyFileFromPath(customLibLocation);
 		}
 		return getErrors().toString();
 	}

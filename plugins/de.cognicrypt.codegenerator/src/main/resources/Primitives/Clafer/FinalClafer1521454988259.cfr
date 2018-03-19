@@ -26,11 +26,10 @@ abstract Cipher
 
 abstract SymmetricCipher : Cipher
   
-SICS : SymmetricCipher
-	[name = SICS]
-	[description = This is Desc for]
-	[Blocksize = 64]
-	[Keysize1 = 5454]
-	[Keysize2 = 534-654]
-	[mode = OFB|CFB]
-	[Padding = ZeroPadding]
+efzfze : SymmetricCipher
+	[name = efzfze]
+	[description = fefefze]
+	[Blocksize = 2525]
+	[Keysize1 = 2522]
+	[mode = CTR|CFB]
+	[Padding = PKCS7|ZeroPadding]

@@ -330,7 +330,6 @@ public class FileUtilities {
 			for (Question question : page.getContent()) {
 				if (!question.getHelpText().isEmpty()) {
 					taskHasPageHelpContent = true;
-					System.out.println("Inside writejsonfilr and question" + question.getQuestionText() + " has helpcontent");
 					break;
 				}
 			}

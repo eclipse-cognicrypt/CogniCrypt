@@ -3,6 +3,8 @@ package de.cognicrypt.codegenerator.taskintegrator.wizard;
 import java.io.File;
 import java.util.ArrayList;
 
+import javax.xml.transform.TransformerException;
+
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
@@ -88,17 +90,24 @@ public class TaskIntegrationWizard extends Wizard {
 			ModelAdvancedMode objectForDataInGuidedMode = getTIPageByName(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
 			objectForDataInGuidedMode.setTask();
 
-			String fileWriteAttemptResult = fileUtilities.writeFiles(claferModel, questions, xslFileContents, customLibLocation);
-			if (fileWriteAttemptResult.equals("")) {
-				fileUtilities.writeTaskToJSONFile(objectForDataInNonGuidedMode.getTask());
-				return true;
-			} else {
-				MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
-				errorBox.setText("Problems with the provided data.");
-				errorBox.setMessage(fileWriteAttemptResult);
-				errorBox.open();
-				return false;
+			String fileWriteAttemptResult;
+			try {
+				fileWriteAttemptResult = fileUtilities.writeFiles(claferModel, questions, xslFileContents, customLibLocation);
+				if (fileWriteAttemptResult.equals("")) {
+					fileUtilities.writeTaskToJSONFile(objectForDataInNonGuidedMode.getTask());
+					return true;
+				} else {
+					MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
+					errorBox.setText("Problems with the provided data.");
+					errorBox.setMessage(fileWriteAttemptResult);
+					errorBox.open();
+					return false;
+				}
+			} catch (TransformerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+
 		}
 		
 		/*

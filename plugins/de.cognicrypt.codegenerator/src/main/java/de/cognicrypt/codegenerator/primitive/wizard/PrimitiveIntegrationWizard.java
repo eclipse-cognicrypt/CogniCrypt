@@ -39,8 +39,8 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	JavaProjectBrowserPage projectBrowserPage;
 	MethodSelectorPage methodSelectionPage;
 	WizardPage preferenceSelectionPage;
-	private LinkedHashMap<String, String> inputsMap = new LinkedHashMap<String, String>();
-	StringBuilder data = new StringBuilder();
+	LinkedHashMap<String, String> inputsMap = new LinkedHashMap<String, String>();
+	String providerName;
 	XsltWriter xsltWriter;
 	ProviderFile providerJar = new ProviderFile("Test");
 	Primitive selectedPrimitive;
@@ -84,7 +84,6 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
 		selectedPrimitive = this.selectedPrimitivePage.getSelectedPrimitive();
 		if (currentPage == this.selectedPrimitivePage && this.selectedPrimitivePage.isPageComplete()) {
-
 			this.primitiveQuestions = new PrimitiveQuestionnaire(selectedPrimitive, selectedPrimitive.getXmlFile());
 			this.preferenceSelectionPage = new PrimitiveQuestionnairePage(this.primitiveQuestions.nextPage(), this.primitiveQuestions.getPrimitive(), null);
 			if (this.preferenceSelectionPage != null) {
@@ -215,25 +214,21 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		//Code generation 
 		final File xslFile = Utils.getResourceFromWithin(selectedPrimitive.getXslFile());
 		try {
-			//			File temporaryOutputFile=new File();
-			//			transform(xmlFile, xslFile,temporaryOutputFile.getPath());
+
 			xsltWriter.transformXsl(xslFile, xmlFile);
 
 		} catch (TransformerException | SAXException | IOException | ParserConfigurationException e1) {
-			// TODO Auto-generated catch block
+
 			e1.printStackTrace();
 		}
 
-		//Generation of .class files from the transformed .java files
-		File folder = Utils.getResourceFromWithin(Constants.transformedFiles);
-		//		if (!folder.exists()) {
-		//			folder = new File(Utils.getResourceFromWithin("src/main/resources/Primitives") + Constants.innerFileSeparator + "TransformedFiles");
-		//		}
+		//Compile generated .java files
+		File folder = Utils.getResourceFromWithin(Constants.primitivesPath);
 		File[] listOfFiles = (folder).listFiles();
 		for (File file : listOfFiles) {
 			if (file.getName().endsWith(".java")) {
-				System.setProperty("java.home", Constants.JAVA_BIN + lastAddedJDK());
-				System.getProperty("java.home");
+				System.setProperty("java.home", lastAddedJDK().getAbsolutePath());
+
 				JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 				StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
 
@@ -245,31 +240,32 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		//Create Provider jarFile 
 		String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" };
 		providerJar.createManifest("some owner", classPaths);
-
-		providerJar.createJarArchive(Utils.getResourceFromWithin(Constants.PROVIDER_JAR_File), folder.listFiles());
+		providerName = inputsMap.get("name");
+		providerJar.createJarArchive(new File(Utils.getResourceFromWithin(Constants.PROVIDER_FOLDER) + Constants.innerFileSeparator + providerName + ".jar"), folder.listFiles());
 
 		//delete archived files 
 		for (File file : folder.listFiles()) {
-			file.delete();
+			if (file.getName().endsWith(".java") || file.getName().endsWith(".class"))
+				file.delete();
 		}
 
 		return true;
 	}
 
 	//Get the last JDK from Java folder in local c:
-	public static File lastAddedJDK() {
+	private static File lastAddedJDK() {
 		File fl = new File(Constants.JAVA_BIN);
 		FileFilter fileFilter = new WildcardFileFilter("jdk*");
 		File[] files = fl.listFiles(fileFilter);
 		long lastMod = Long.MIN_VALUE;
-		File choice = null;
+		File lastUpdatedFile = null;
 		for (File file : files) {
 			if (file.lastModified() > lastMod) {
-				choice = file;
+				lastUpdatedFile = file;
 				lastMod = file.lastModified();
 			}
 		}
-		return choice;
+		return lastUpdatedFile;
 	}
 
 }

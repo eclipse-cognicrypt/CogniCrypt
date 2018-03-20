@@ -75,7 +75,7 @@ public abstract class ClaferGenerator {
 			// TODO Auto-generated method stub
 			for (String key : userInput.keySet()) {
 				if (key != null && key.equals("name")) {
-					bw.write(userInput.get(key) + " : SymmetricCipher" + "\r\n");
+					bw.write(userInput.get(key) + " : SymmetricBlockCipher" + "\r\n");
 				}
 				bw.write("\t" + "[" + key + " = " + userInput.get(key) + "]" + "\r\n"); // appends the string to the file
 				System.out.println("\t" + "[" + key + " = " + userInput.get(key) + "]" + "\r\n");

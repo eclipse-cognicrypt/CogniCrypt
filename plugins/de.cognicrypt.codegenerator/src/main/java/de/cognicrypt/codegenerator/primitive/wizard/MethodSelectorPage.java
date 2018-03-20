@@ -71,9 +71,11 @@ public class MethodSelectorPage extends WizardPage {
 		Combo decryptionCombo = new Combo(container, SWT.NONE);
 		decryptionCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 
-		// project 
+		
 		try {
+			// import project 
 			this.project.ImportProject(this.projectPath);
+			//Display methods from the imported project in the combo box 
 			for (IMethod method : project.listOfAllMethods()) {
 				encryptionCombo.add(method.getElementName());
 				decryptionCombo.add(method.getElementName());

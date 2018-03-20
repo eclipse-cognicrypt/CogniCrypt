@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SymmetricBlockCipher>
-   <name>gthetgte</name>
-   <Blocksize>25</Blocksize>
-   <Keysize1>25252</Keysize1>
-   <mode>CTR|CFB</mode>
+   <name>Afefe</name>
+   <description>fefe</description>
+   <Blocksize>252</Blocksize>
+   <Keysize1>2252</Keysize1>
+   <mode>OFB|CFB|CTR</mode>
    <Padding>PKCS7|ZeroPadding</Padding>
 </SymmetricBlockCipher>

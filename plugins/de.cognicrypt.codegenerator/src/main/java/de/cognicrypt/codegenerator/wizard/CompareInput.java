@@ -3,36 +3,46 @@ package de.cognicrypt.codegenerator.wizard;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
-import org.eclipse.compare.IModificationDate;
 import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
-import org.eclipse.compare.structuremergeviewer.DiffNode;
+import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
 
-class CompareInput extends CompareEditorInput {	
-	//private InstanceListPage instanceListPage;
+class CompareInput extends CompareEditorInput {
 
-	public CompareInput(InstanceListPage instanceListPage) {
+	private final String left;
+	private final String right;
+	private Object fRoot;
+
+	public CompareInput(String left, String right) {
 		super(new CompareConfiguration());
-		//this.instanceListPage = instanceListPage;
+		setTitle("Compare Code");
+		this.left = left;
+		this.right = right;
 	}
 
-	protected Object prepareInput(IProgressMonitor pm) throws InvocationTargetException, InterruptedException {
-		CompareItem left = new CompareItem("Left", "old content");
-		CompareItem right = new CompareItem("Right", "new content");
-		return new DiffNode(left, right);
+	@Override
+	protected Object prepareInput(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+		String leftLabel = "Old Source";
+		String rightLabel = "Modified Source";
+
+		getCompareConfiguration().setLeftLabel(leftLabel);
+		getCompareConfiguration().setRightLabel(rightLabel);
+
+		Differencer d = new Differencer();
+		fRoot = d.findDifferences(false, monitor, null, null, new CompareItem(leftLabel, left), new CompareItem(rightLabel, right));
+		return fRoot;
 	}
+
 }
 
-class CompareItem implements IStreamContentAccessor, ITypedElement, IModificationDate {
+class CompareItem implements IStreamContentAccessor, ITypedElement {
 
 	private String contents, name;
-	private long time;
 
 	CompareItem(String name, String contents) {
 		this.name = name;
@@ -47,19 +57,15 @@ class CompareItem implements IStreamContentAccessor, ITypedElement, IModificatio
 		return null;
 	}
 
-	public long getModificationDate() {
-		return time;
-	}
-
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getString() {
-		return contents;
+		return this.contents;
 	}
 
 	public String getType() {
-		return ITypedElement.TEXT_TYPE;
+		return "java";
 	}
 }

@@ -79,8 +79,12 @@ public class FileUtilities {
 	 * @param xslFileContents
 	 * @param customLibLocation
 	 */
-	public String writeFiles(ClaferModel claferModel, ArrayList<Question> questions, String xslFileContents, File customLibLocation) {
+	public String writeFiles(ClaferModel claferModel, ArrayList<Question> questions, String xslFileContents, File customLibLocation, String helpFileContents) {
 		writeXSLFile(xslFileContents);
+
+		if (helpFileContents != null) {
+			writeHelpFile(helpFileContents);
+		}
 		// custom library location is optional.
 		if (customLibLocation != null) {
 			if (validateJARFile(customLibLocation)) {
@@ -100,6 +104,26 @@ public class FileUtilities {
 		return getErrors().toString();
 	}
 	
+	private void writeHelpFile(String helpFileContents) {
+		File xmlFile = new File(Utils.getResourceFromWithin(Constants.HELP_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XML_EXTENSION);
+
+		try {
+			PrintWriter writer = new PrintWriter(xmlFile);
+			writer.println(helpFileContents);
+			writer.flush();
+			writer.close();
+		} catch (FileNotFoundException e) {
+			Activator.getDefault().logError(e);
+			getErrors().append("There was a problem wrting the Help data.\n");
+		}
+
+		if (!validateXMLFile(xmlFile)) {
+			xmlFile.delete();
+			getErrors().append("The XML data is invalid.\n");
+		}
+
+	}
+
 	/**
 	 * Copy the selected files to target location in the plugin.
 	 * 
@@ -408,6 +432,9 @@ public class FileUtilities {
 	
 	public void updateThePluginXMLFileWithHelpData(String machineReadableTaskName) {
 		File pluginXMLFile = Utils.getResourceFromWithin(Constants.PLUGIN_XML_FILE);
+		if (!pluginXMLFile.exists()) {
+			pluginXMLFile = Utils.getResourceFromWithin("src" + Constants.innerFileSeparator + ".." + Constants.innerFileSeparator + Constants.PLUGIN_XML_FILE);
+		}
 		SAXReader reader = new SAXReader();
 		Document pluginXMLDocument = null;
 		reader.setValidation(false);

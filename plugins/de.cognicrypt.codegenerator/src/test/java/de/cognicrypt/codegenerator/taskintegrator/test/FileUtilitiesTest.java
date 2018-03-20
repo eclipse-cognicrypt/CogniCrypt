@@ -156,7 +156,7 @@ public class FileUtilitiesTest {
 		FileUtilities fileUtilities = new FileUtilities(tempTaskName);
 		fileUtilities.updateThePluginXMLFileWithHelpData(tempTaskName);
 
-		File pluginXMLFile = Utils.getResourceFromWithin(Constants.PLUGIN_XML_FILE);
+		File pluginXMLFile = Utils.getResourceFromWithin("src" + Constants.innerFileSeparator + ".." + Constants.innerFileSeparator + Constants.PLUGIN_XML_FILE);
 		SAXReader reader = new SAXReader();
 		Document pluginXMLDocument = null;
 		reader.setValidation(false);
@@ -196,7 +196,7 @@ public class FileUtilitiesTest {
 	@Test
 	public void testWriteFilesWithData() throws IOException {
 		FileUtilities fileUtilities = new FileUtilities(tempTaskName);
-		String result = fileUtilities.writeFiles(getListClaferModel(), getListOfQuestions(), getXSLString(true), validAdditionalResource);
+		String result = fileUtilities.writeFiles(getListClaferModel(), getListOfQuestions(), getXSLString(true), validAdditionalResource, getHelpString());
 		assertFileCreation(result);
 	}
 
@@ -268,10 +268,6 @@ public class FileUtilitiesTest {
 	 */
 	private String getXSLString(boolean isValid) throws IOException {
 
-		/*
-		 * SAXReader reader = new SAXReader(); reader.setValidation(false); if (isValid) { reader.read(validHelpFileLocation); } else { reader.read(invalidHelpFileLocation); }
-		 * return reader.toString();
-		 */
 		StringBuilder builder = new StringBuilder();
 		BufferedReader reader = null;
 		if (isValid) {
@@ -282,6 +278,17 @@ public class FileUtilitiesTest {
 			reader.lines().forEach(builder::append);
 		}
 		
+		return builder.toString();
+	}
+
+	private String getHelpString() throws IOException {
+		StringBuilder builder = new StringBuilder();
+		BufferedReader reader = null;
+
+		reader = Files.newBufferedReader(validHelpFileLocation.toPath(), StandardCharsets.UTF_8);
+		reader.lines().forEach(builder::append);
+
+
 		return builder.toString();
 	}
 

@@ -111,10 +111,10 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		 * resizing the height of the grpQuestionDetails depending upon the page
 		 */
 		if(!linkAnswerPage){
-			grpQuestionDetails.setBounds(10, 50, 571, 150);
+			grpQuestionDetails.setBounds(10, 50, 571, 200);
 		}
 		else if(linkAnswerPage){
-			grpQuestionDetails.setBounds(10, 5, 571, 150);
+			grpQuestionDetails.setBounds(10, 5, 571, 210);
 
 		}
 		grpQuestionDetails.setLayout(null);
@@ -193,61 +193,18 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		lblAnswers.setBounds(5, 108, 55, 17);
 		lblAnswers.setText("Answers:");
 		
-		/**
-		 * Following if conditions checks the question type and then
-		 * creates the widgets to display the answer as the question type
-		 */
-		if (question.getElement().equals(Constants.GUIElements.combo)) {
-
-			Combo comboForAnswers = new Combo(grpQuestionDetails, SWT.READ_ONLY);
-			comboForAnswers.setBounds(94, 102, 403, 29);
-
-			for (Answer answer : question.getAnswers()) {
-				comboForAnswers.add(answer.getValue());
-			}
-		} else if (question.getElement().equals(Constants.GUIElements.radio)) {
-
-			int count = question.getAnswers().size();
-			Button[] btn = new Button[count];
-			int spaceToDisplayAns = 70;
-			
-			if(count==1){
-				btn[0] = new Button(grpQuestionDetails, SWT.RADIO);
-				btn[0].setBounds(spaceToDisplayAns, 102, 210, 29);
-				btn[0].setText(question.getAnswers().get(0).getValue());
-				
-			}
-			
-			if (count == 2) {
-				for (int i = 0; i < count; i++) {
-					btn[i] = new Button(grpQuestionDetails, SWT.RADIO);
-					btn[i].setBounds(spaceToDisplayAns, 102, 210, 29);
-					btn[i].setText(question.getAnswers().get(i).getValue());
-					if (spaceToDisplayAns < 500) {
-						spaceToDisplayAns = spaceToDisplayAns + 220;
-					}
-				}
-
-			} else if (count > 2) {
-				for (int i = 0; i < count; i++) {
-					btn[i] = new Button(grpQuestionDetails, SWT.RADIO);
-					btn[i].setBounds(spaceToDisplayAns, 102, 80, 29);
-					btn[i].setText(question.getAnswers().get(i).getValue());
-					if (spaceToDisplayAns < 500) {
-						spaceToDisplayAns = spaceToDisplayAns + 85;
-					}
-				}
-
-			}
-
-		}
-
-		else if (question.getElement().equals(Constants.GUIElements.text)) {
-
+		if (question.getElement().equals(Constants.GUIElements.text)) {
 			Text txtBox = new Text(grpQuestionDetails, SWT.BORDER);
 			txtBox.setBounds(94, 102, 403, 29);
-		}
+			txtBox.setEditable(false);
+		}else if (!question.getElement().equals(Constants.GUIElements.text)){
 
+			CompositeToHoldSmallerUIElements compositeForAnswers = new CompositeToHoldSmallerUIElements(grpQuestionDetails, SWT.None, null, false, null);
+			compositeForAnswers.setBounds(91, 102, 470, 96);
+			for (Answer answer : question.getAnswers()) {
+				compositeForAnswers.addAnswer(answer, false);
+			}	
+		}
 		this.setSize(SWT.DEFAULT, 250);
 
 	}

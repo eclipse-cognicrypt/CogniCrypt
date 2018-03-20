@@ -61,21 +61,26 @@ public class FileUtilitiesTest {
 
 	File invalidHelpFileLocation;
 	File invalidAdditionalResource;
+
+	File validJsFileFromValidCRFFile;
 	@Before
 	public void setLocations() throws IOException {
 		testResourceLocation = "src" + Constants.innerFileSeparator + "test" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator + "taskintegrator" + Constants.innerFileSeparator + "FileUtilitiesTest" + Constants.innerFileSeparator;
 		validXSLFileLocation = new File(testResourceLocation + "TestValidXSL.xsl");
 		validJSONFileLocation = new File(testResourceLocation + "TestValidJSON.json");
 		validCFRFileLocation = new File(testResourceLocation + "TestValidCFR.cfr");
+		validJsFileFromValidCRFFile = new File(testResourceLocation + "TestValidCFR.js");
 		validHelpFileLocation = new File(testResourceLocation + "TestValidHelp.xml");
 		validAdditionalResource = new File(testResourceLocation + "TestValidAdditionalResources");
 		tmpLocation = new File(testResourceLocation + "tmpLocation");
 		locationOfTasksFile = Utils.getResourceFromWithin(Constants.jsonTaskFile);
 		tmpLocationOfTasksFile = new File(tmpLocation.toPath().toString() + Constants.innerFileSeparator + "tasks.json");
-		locationOfPluginFile = Utils.getResourceFromWithin(Constants.PLUGIN_XML_FILE);
-		tmpLocationOfPluginFile = new File(tmpLocation.toPath().toString() + Constants.innerFileSeparator + "plugin.xml");
+		locationOfPluginFile = Utils.getResourceFromWithin("src" + Constants.innerFileSeparator + ".." + Constants.innerFileSeparator + Constants.PLUGIN_XML_FILE);
+
+		tmpLocationOfPluginFile = new File(tmpLocation.getAbsolutePath() + Constants.innerFileSeparator + "plugin.xml");
 		Files.copy(locationOfTasksFile.toPath(), tmpLocationOfTasksFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
-		Files.copy(locationOfPluginFile.toPath(), tmpLocationOfPluginFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+		Files.copy(locationOfPluginFile.toPath().toAbsolutePath(), tmpLocationOfPluginFile.toPath(), StandardCopyOption.REPLACE_EXISTING,
+			StandardCopyOption.COPY_ATTRIBUTES);
 
 		invalidHelpFileLocation = new File(testResourceLocation + "TestInvalidHelp.xml");
 		invalidAdditionalResource = new File(testResourceLocation + "TestInvalidAdditionalResources");
@@ -89,17 +94,8 @@ public class FileUtilitiesTest {
 	public void testWriteFilesMinusAdditionalResources() {
 		if (validXSLFileLocation.exists() && validJSONFileLocation.exists() && validCFRFileLocation.exists() && validHelpFileLocation.exists()) {
 			FileUtilities fileUtilities = new FileUtilities("Test");
-			fileUtilities.writeFiles(validCFRFileLocation, validJSONFileLocation, validXSLFileLocation, null, validHelpFileLocation);
-			copiedCFRFIle = new File(Constants.CFR_FILE_DIRECTORY_PATH + "Test.cfr");
-			generatedJSFIle = new File(Constants.CFR_FILE_DIRECTORY_PATH + "Test.js");
-			copiedJSONFIle = new File(Constants.JSON_FILE_DIRECTORY_PATH + "Test.json");
-			copiedXSLFIle = new File(Constants.XSL_FILE_DIRECTORY_PATH + "Test.xsl");
-			copiedHelpFIle = new File(Constants.HELP_FILE_DIRECTORY_PATH + "Test.xml");
-			assertTrue(copiedCFRFIle.exists());
-			assertTrue(generatedJSFIle.exists());
-			assertTrue(copiedJSONFIle.exists());
-			assertTrue(copiedXSLFIle.exists());
-			assertTrue(copiedHelpFIle.exists());
+			String result = fileUtilities.writeFiles(validCFRFileLocation, validJSONFileLocation, validXSLFileLocation, null, validHelpFileLocation);
+			assertFileCreation(result);
 		}
 	}
 
@@ -313,9 +309,15 @@ public class FileUtilitiesTest {
 		if (copiedCFRFIle.exists()) {
 			copiedCFRFIle.delete();
 		}
+
 		if (generatedJSFIle.exists()) {
 			generatedJSFIle.delete();
 		}
+
+		if (validJsFileFromValidCRFFile.exists()) {
+			validJsFileFromValidCRFFile.delete();
+		}
+
 		if (copiedJSONFIle.exists()) {
 			copiedJSONFIle.delete();
 		}
@@ -326,15 +328,22 @@ public class FileUtilitiesTest {
 			copiedHelpFIle.delete();
 		}
 
+		if (validAdditionalResource.exists() && validAdditionalResource.isDirectory()) {
+			for (File file : validAdditionalResource.listFiles()) {
+				file.delete();
+			}
+			validAdditionalResource.delete();
+		}
+
 		Files.copy(tmpLocationOfTasksFile.toPath(), locationOfTasksFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
 		Files.copy(tmpLocationOfPluginFile.toPath(), locationOfPluginFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
 
-		if (locationOfTasksFile.exists()) {
-			locationOfTasksFile.delete();
+		if (tmpLocationOfTasksFile.exists()) {
+			tmpLocationOfTasksFile.delete();
 		}
 
-		if (locationOfPluginFile.exists()) {
-			locationOfPluginFile.delete();
+		if (tmpLocationOfPluginFile.exists()) {
+			tmpLocationOfPluginFile.delete();
 		}
 
 	}

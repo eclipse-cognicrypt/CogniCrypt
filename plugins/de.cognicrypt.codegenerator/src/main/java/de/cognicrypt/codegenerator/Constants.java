@@ -396,17 +396,39 @@ public class Constants {
 	public static final String JAR_FILE_DIRECTORY_PATH = rsrcPath + "AdditionalResources" + innerFileSeparator;
 	public static final String CFR_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModel" + innerFileSeparator;
 	public static final String JSON_FILE_DIRECTORY_PATH = rsrcPath + "TaskDesc" + innerFileSeparator;
+	public static final String XML_FILE_DIRECTORY_PATH = rsrcPath + "Help" + innerFileSeparator;
+	public static final String pluginXmlFile = "plugin.xml";
 	public static final String XSL_FILE_DIRECTORY_PATH = rsrcPath + "XSLTemplates" + innerFileSeparator;
 	public static final String CFR_EXTENSION = ".cfr";
 	public static final String JS_EXTENSION = ".js";
 	public static final String JAR_EXTENSION = ".jar";
 	public static final String JSON_EXTENSION = ".json";
+	public static final String XML_EXTENSION = ".xml";
 	public static final String XSL_EXTENSION = ".xsl";
 	
 	//for the list of items to be included inside the combo of the questionTab
 	public static final String dropDown = "Drop down";
 	public static final String textBox = "Text box";
 	public static final String radioButton = "Radio button";
+
+	//for creating xml file
+	public static final String Xml_Declaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+	public static final String NLS_Tag = "<?NLS TYPE=\"org.eclipse.help.contexts\"?>";
+	public static final String contextsOpeningTag = "<contexts>";
+	public static final String contextsClosingTag = "</contexts>";
+	public static final String contextsElement = "contexts";
+	public static final String contextElement = "context";
+	public static final String idAttribute = "id";
+	public static final String titleAttribute = "title";
+	public static final String descriptionAttribute = "description";
+	public static final String titleAttributeValue = "CogniCrypt";
+	public static final String pluginElement = "plugin";
+	public static final String extensionElement = "extension";
+	public static final String pointAttribute = "point";
+	public static final String pointAttributeValue = "org.eclipse.help.contexts";
+	public static final String fileAttribute = "file";
+	public static final String startingFrom = "src";
+	public static final String helpContentNotAvailable = "Help content for this task is not ready. We are sorry!";
 
 	public static final String FEATURE_PROPERTY_TYPE_RELATION = "is of type";
 	public static final String FEATURE_PROPERTY_TYPE_REFERENCE_RELATION = "translates to";

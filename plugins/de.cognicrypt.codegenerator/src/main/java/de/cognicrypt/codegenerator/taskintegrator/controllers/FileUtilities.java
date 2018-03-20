@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -23,6 +24,15 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.stream.StreamSource;
+
+import org.clafer.ast.AstClafer;
+import org.dom4j.Attribute;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -40,9 +50,6 @@ public class FileUtilities {
 
 	private String taskName;	
 	private StringBuilder errors; // Maintain all the errors to display them on the wizard.
-	private int pageId=0;
-	private ArrayList<Question> listOfAllQuestions;
-	private List<Page> pages;
 	
 	/**
 	 * The class needs to be initialized with a task name, as it is used extensively in the methods.
@@ -91,12 +98,14 @@ public class FileUtilities {
 	
 	/**
 	 * Copy the selected files to target location in the plugin.
+	 * 
 	 * @param cfrFileLocation
 	 * @param jsonFileLocation
 	 * @param xslFileLocation
 	 * @param customLibLocation
+	 * @param file
 	 */
-	public String writeFiles(File cfrFileLocation, File jsonFileLocation, File xslFileLocation, File customLibLocation) {
+	public String writeFiles(File cfrFileLocation, File jsonFileLocation, File xslFileLocation, File customLibLocation, File helpLocation) {
 		
 		boolean isCFRFileValid = validateCFRFile(cfrFileLocation);
 		boolean isJSONFileValid = validateJSONFile(jsonFileLocation);
@@ -110,6 +119,13 @@ public class FileUtilities {
 					copyFileFromPath(customLibLocation);
 				}
 			}
+			if (helpLocation != null) {
+				if (validateXMLFile(helpLocation)) {
+					copyFileFromPath(helpLocation);
+				}
+			}
+
+			// help location of optional.
 
 			copyFileFromPath(cfrFileLocation);
 			copyFileFromPath(jsonFileLocation);
@@ -123,6 +139,25 @@ public class FileUtilities {
 		}
 
 		return errors.toString();
+	}
+
+	/**
+	 * Validate an XML file.
+	 * 
+	 * @param helpLocation
+	 * @return
+	 */
+	private boolean validateXMLFile(File helpLocation) {
+		SAXReader reader = new SAXReader();
+		reader.setValidation(false);
+		try {
+			reader.read(helpLocation);
+		} catch (DocumentException e) {
+			e.printStackTrace();
+			appendFileErrors(helpLocation.getName());
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -206,12 +241,18 @@ public class FileUtilities {
 	 */
 	private boolean validateCFRFile(File cfrFileLocation) {
 		boolean compilationResult = ClaferModel.compile(cfrFileLocation.getAbsolutePath());
-		if (!compilationResult) {
+		String cfrFilename = cfrFileLocation.getAbsolutePath();
+		String jsFilename = cfrFilename.substring(0, cfrFilename.lastIndexOf(".")) + Constants.JS_EXTENSION;
+		de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModel claferModel = new de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModel(jsFilename);
+		AstClafer taskClafer = org.clafer.cli.Utils.getModelChildByName(claferModel.getModel(), "c0_" + getTrimmedTaskName());
+		boolean isValidationSuccessful = compilationResult && taskClafer != null;
+		if (!isValidationSuccessful) {
 			appendFileErrors(cfrFileLocation.getName());
-			errors.append("Compilation failed.");
+			errors
+				.append("Either the compilation failed, or the provided name for the Task does not match the one in the Clafer model. Please note : the name must be capitalized.");
 			errors.append("\n");
 		}
-		return compilationResult;
+		return isValidationSuccessful;
 	}
 
 	/**
@@ -231,7 +272,10 @@ public class FileUtilities {
 					targetDirectory = new File(Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.JSON_EXTENSION);
 				} else if(existingFileLocation.getPath().endsWith(Constants.XSL_EXTENSION)) {
 					targetDirectory = new File(Utils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XSL_EXTENSION);
-				} else {
+				} else if (existingFileLocation.getPath().endsWith(Constants.XML_EXTENSION)) {
+					targetDirectory = new File(Utils.getResourceFromWithin(Constants.HELP_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XML_EXTENSION);
+				}
+				else {
 					throw new Exception("Unknown file type.");
 				}
 			
@@ -251,7 +295,7 @@ public class FileUtilities {
 			tempDirectory.mkdir();
 			// Loop through all the containing files.
 			for (File customLibFile : existingFileLocation.listFiles()) {
-				File tmpFile = new File(tempDirectory.toString() + Constants.SLASH + customLibFile.getName());
+				File tmpFile = new File(tempDirectory.toString() + Constants.innerFileSeparator + customLibFile.getName());
 				try {
 					Files.copy(customLibFile.toPath(), tmpFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
 				} catch (IOException e) {
@@ -358,6 +402,38 @@ public class FileUtilities {
 		}
 	}
 	
+	public void updateThePluginXMLFileWithHelpData(String machineReadableTaskName) {
+		File pluginXMLFile = Utils.getResourceFromWithin(Constants.PLUGIN_XML_FILE);
+		SAXReader reader = new SAXReader();
+		Document pluginXMLDocument = null;
+		reader.setValidation(false);
+		try {
+			pluginXMLDocument = reader.read(pluginXMLFile);
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		if (pluginXMLDocument != null) {
+
+			Element root = pluginXMLDocument.getRootElement();
+			for (Iterator<Element> extensionElement = root.elementIterator("extension"); extensionElement.hasNext();) {
+				Element currentExtensionElement = extensionElement.next();
+				Attribute point = currentExtensionElement.attribute("point");
+				if (point != null && point.getValue().equals("org.eclipse.help.contexts")) {
+					currentExtensionElement.addElement("contexts").addAttribute("file", Constants.HELP_FILE_DIRECTORY_PATH + machineReadableTaskName + Constants.XML_EXTENSION);
+				}
+			}
+
+			try (FileWriter fileWriter = new FileWriter(pluginXMLFile)) {
+				OutputFormat format = OutputFormat.createPrettyPrint();
+				XMLWriter writer = new XMLWriter(fileWriter, format);
+				writer.write(pluginXMLDocument);
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	/**
 	 * Return the name of that task that is set for the file writes..
 	 * @return

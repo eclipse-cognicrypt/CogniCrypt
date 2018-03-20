@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.MessageBox;
 
 import de.cognicrypt.codegenerator.Constants;
@@ -59,10 +57,12 @@ public class TaskIntegrationWizard extends Wizard {
 				){
 				
 				String fileWriteAttemptResult = fileUtilities.writeFiles(objectForDataInNonGuidedMode.getLocationOfClaferFile(), objectForDataInNonGuidedMode.getLocationOfJSONFile(),
-					objectForDataInNonGuidedMode.getLocationOfXSLFile(), objectForDataInNonGuidedMode.getLocationOfCustomLibrary());
+					objectForDataInNonGuidedMode.getLocationOfXSLFile(), objectForDataInNonGuidedMode.getLocationOfCustomLibrary(),
+					objectForDataInNonGuidedMode.getLocationOfHelpXMLFile());
 				// Check if the contents of the provided files are valid.
 				if (fileWriteAttemptResult.equals("")) {
 					fileUtilities.writeTaskToJSONFile(objectForDataInNonGuidedMode.getTask());
+					fileUtilities.updateThePluginXMLFileWithHelpData(objectForDataInNonGuidedMode.getNameOfTheTask());
 					return true;
 				} else {
 					MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);

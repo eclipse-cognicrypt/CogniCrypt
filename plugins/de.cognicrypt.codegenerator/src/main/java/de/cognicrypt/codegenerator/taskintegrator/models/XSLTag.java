@@ -8,41 +8,57 @@ import de.cognicrypt.codegenerator.Constants.XSLTags;
 public class XSLTag {
 	private Constants.XSLTags XSLTagDetails; // Variable to hold all the XSL tag data.
 	private ArrayList<XSLAttribute> XSLAttributes; // Variable to hold the selected tag attributes.
+	
 	/**
 	 * @param xSLTagDetails
+	 *        This detail come from the enumeration {@code XSLTags} in {@link Constants} class. These include the XSLTagFaceName, XSLBeginTag, XSLEndTag and an ArrayList of all
+	 *        possible attributes (XSLAttribute)
 	 * @param xSLAttributes
+	 *        This is an ArrayList of type {@link XSLAttribute} that are actually chosen.
 	 */
 	public XSLTag(XSLTags xSLTagDetails, ArrayList<XSLAttribute> xSLAttributes) {
 		super();
 		setXSLTagDetails(xSLTagDetails);
 		setXSLAttributes(xSLAttributes);
 	}
+	
 	/**
-	 * @return XSLTagDetails the Tag details
+	 * @return XSLTagDetails the constant from {@code XSLTags} in {@link Constants} passed to the constructor.
 	 */
 	public Constants.XSLTags getXSLTagDetails() {
 		return XSLTagDetails;
 	}
+	
 	/**
-	 * @param xSLTagDetails set the XSL tag details
+	 * @param xSLTagDetails
+	 *        set the constant from {@code XSLTags} in {@link Constants}.
 	 */
 	private void setXSLTagDetails(Constants.XSLTags xSLTagDetails) {
 		XSLTagDetails = xSLTagDetails;
 	}
+	
 	/**
-	 * @return the xSLAttributes
+	 * @return the ArrayList of type {@link XSLAttribute}.
 	 */
 	public ArrayList<XSLAttribute> getXSLAttributes() {
 		return XSLAttributes;
 	}
+	
 	/**
-	 * @param xSLAttributes the xSLAttributes to set
+	 * @param xSLAttributes
+	 *        set the ArrayList<{@link XSLAttribute}>.
 	 */
 	private void setXSLAttributes(ArrayList<XSLAttribute> xSLAttributes) {
 		XSLAttributes = xSLAttributes;
 	}
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
+
+	/**
+	 * Overridden toString().
+	 * <p>
+	 * First generate a String from ArrayList of type {@link XSLAttribute} such that it is in the form {@code ' XSLAttributeName1 = "XSLAttributeData1"' ...}
+	 * <p>
+	 * A String for the complete XSLTag is generated, by appending the XSLBeginTag, the attribute string, and the XSLEndTag. XSLTags may have an empty XSLEndTag.
+	 * 
 	 */
 	@Override
 	public String toString() {

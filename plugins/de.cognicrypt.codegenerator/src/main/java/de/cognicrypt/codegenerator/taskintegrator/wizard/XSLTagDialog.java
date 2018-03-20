@@ -47,6 +47,9 @@ public class XSLTagDialog extends Dialog {
 		setShellStyle(SWT.RESIZE);
 	}
 
+	/**
+	 * @wbp.parser.constructor
+	 */
 	public XSLTagDialog(Shell parentShell, HashMap<String, String> valuesForTagData) {
 		this(parentShell);
 		// accept all the possible values to be displayed along with their corresponding tag data.
@@ -61,11 +64,10 @@ public class XSLTagDialog extends Dialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
-		
+		getShell().setMinimumSize(550, 400);
 		comboXSLTags = new Combo(container, SWT.READ_ONLY);
 		
 		GridData gd_comboXSLTags = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gd_comboXSLTags.widthHint = 430;
 		comboXSLTags.setLayoutData(gd_comboXSLTags);
 		
 		// Add all the available tags to the combo box.
@@ -77,9 +79,7 @@ public class XSLTagDialog extends Dialog {
 		btnAddAttribute.setText("Add Attribute");
 		
 		compositeForXSLAttributes = new CompositeToHoldSmallerUIElements(container, SWT.NONE, null, true, null);
-		GridData gd_compositeForProperties = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_compositeForProperties.widthHint = 417;
-		gd_compositeForProperties.heightHint = 120;
+		GridData gd_compositeForProperties = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		compositeForXSLAttributes.setLayoutData(gd_compositeForProperties);
 		
 		

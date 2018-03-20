@@ -19,10 +19,14 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.stream.StreamSource;
+
+import org.xml.sax.SAXException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -68,17 +72,19 @@ public class FileUtilities {
 
 	/**
 	 * Write the data from the pages to target location in the plugin.
+	 * 
 	 * @param claferModel
 	 * @param questions
 	 * @param xslFileContents
 	 * @param customLibLocation
+	 * @throws TransformerException
 	 */
-	public String writeFiles(ClaferModel claferModel, ArrayList<Question> questions, String xslFileContents, File customLibLocation) {
+	public String writeFiles(ClaferModel claferModel, ArrayList<Question> questions, String xslFileContents, File customLibLocation) throws TransformerException {
 		writeCFRFile(claferModel);
 		compileCFRFile();
 		try {
 			writeJSONFile(questions);
-		} catch (IOException e) {
+		} catch (IOException | ParserConfigurationException | SAXException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -309,13 +315,34 @@ public class FileUtilities {
 	/**
 	 * 
 	 * @param questions
-	 * 			listOfAllQuestions
-	 * @throws IOException 
+	 *        listOfAllQuestions
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 * @throws TransformerException
 	 */
-	private void writeJSONFile(ArrayList<Question> questions) throws IOException {
+	private void writeJSONFile(ArrayList<Question> questions) throws IOException, ParserConfigurationException, SAXException, TransformerException {
 		
 		SegregatesQuestionsIntoPages pageContent = new SegregatesQuestionsIntoPages(questions);
 		ArrayList<Page> pages = pageContent.getPages();
+		boolean taskHasPageHelpContent = false;
+		for (Page page : pages) {
+			for (Question question : page.getContent()) {
+				if (!question.getHelpText().isEmpty()) {
+					taskHasPageHelpContent = true;
+					System.out.println("Inside writejsonfilr and question" + question.getQuestionText() + " has helpcontent");
+					break;
+				}
+			}
+		}
+
+		/**
+		 * creates the xml file containing the help content of the task, adds the location of the xml file in the plugin.xml file and sets the page help id
+		 */
+		CreateAndModifyXmlfile xmlFile = new CreateAndModifyXmlfile(pages, getTaskName(), taskHasPageHelpContent);
+
+		//xmlWriter.write(arg0);
+
 		Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
 		File jsonFileTargetDirectory = new File(Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTaskName() + Constants.JSON_EXTENSION);
 		

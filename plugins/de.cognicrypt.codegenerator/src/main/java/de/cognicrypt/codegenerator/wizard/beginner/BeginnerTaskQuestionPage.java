@@ -422,35 +422,35 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 									e.doit = false;
 								}
 							} catch (NumberFormatException ex) {
-								if (!port.equals(""))
+								if (!port.equals("")){
 									deco.show();
 									deco.showHoverText("Expected an integer < 65535");
 									e.doit = false;
+								}
 							}
 						}
 					});
 					text(question, inputField);
 				} else if (question.getTextType().equals(Constants.IP_ADDRESS)) {
 					inputField.setToolTipText(Constants.IP_ADDRESS_TOOLTIP);
-					
+
 					inputField.addVerifyListener(new VerifyListener() {
 
 						@Override
 						public void verifyText(VerifyEvent e) {
-							
 							String currentText = ((Text) e.widget).getText();
 							String ip = currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
+							String[] ipAddress = ip.split("\\.");
+							int i= 0;
 							try {
-								if (ip != null && !ip.isEmpty()) {
-									String[] ipAddress = ip.split("\\.");
+								if (!ip.isEmpty()) {
 									deco.hide();
 									if (ipAddress.length > 4) {
 										deco.show();
 										deco.showHoverText("Expected format 255.255.255.255");
 										e.doit = false;
 									}
-									deco.hide();
-									for (int i = 0; i <= ipAddress.length - 1; i++) {
+									for (i = 0; i <= ipAddress.length - 1; i++) {
 										int j = Integer.parseInt(ipAddress[i]);
 										if (j < 0 || j > 255) {
 											deco.show();
@@ -458,25 +458,19 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 											e.doit = false;
 										}
 									}
-									deco.hide();
-									if (ipAddress.length== 4) {
-										if (ip.endsWith(".")) {
-											deco.show();
-											deco.showHoverText("Expected format 255.255.255.255");
-											e.doit = false;
-										}
-									}
-									deco.hide();
-									if (ip.endsWith("..")) {
+									if (ip.endsWith("..") || ip.startsWith(".")) {
 										deco.show();
 										deco.showHoverText("Expected format 255.255.255.255");
-										e.doit = false;
+										e.doit=false;
 									}
-									deco.hide();
-									if (ip.startsWith(".")) {
+									if (ip.endsWith(".") || ip.endsWith("[0-9]") ) {
 										deco.show();
 										deco.showHoverText("Expected format 255.255.255.255");
-										e.doit = false;
+									}
+									if(i==4 && ip.endsWith(".")){
+										deco.show();
+										deco.showHoverText("Expected format 255.255.255.255");
+										e.doit=false;											
 									}
 								}
 							} catch (NumberFormatException ex) {
@@ -901,43 +895,4 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			BeginnerTaskQuestionPage.this.setPageComplete(this.isPageComplete());
 		});
 	}
-	
-//	public static void validate(final String ip){
-//		Pattern pat;
-//		Matcher match;
-//		String ip4 = "IPv4";
-//		String ip6 = "IPv6";
-//		String non = "Neither";
-//		final String ipv4 = 
-//				"^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
-//				"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
-//				"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
-//				"([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
-//		final String ipv6 = 
-//				"^[0-9a-f]{1,4}:" + "[0-9a-f]{1,4}:" +
-//				"[0-9a-f]{1,4}:" + "[0-9a-f]{1,4}:" +
-//				"[0-9a-f]{1,4}:" + "[0-9a-f]{1,4}:" +
-//				"[0-9a-f]{1,4}:" + "[0-9a-f]{1,4}$";
-//		
-//		if(ip.indexOf(".")>0){
-//			pat = Pattern.compile(ipv4);
-//			match = pat.matcher(ip);
-//			if(match.matches()){
-//				System.out.println(ip4);
-//			}else{
-//				e.doit = false;
-//			}
-//		}else if (ip.indexOf(":")>0){
-//			pat = Pattern.compile(ipv6);
-//			match = pat.matcher(ip);
-//			if(match.matches()){
-//				System.out.println(ip6);
-//			}else{
-//				System.out.println(non);
-//			}
-//		}else{
-//			System.out.println(non);
-//		}
-//	}
-
 }

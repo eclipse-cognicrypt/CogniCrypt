@@ -23,7 +23,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.question.QuestionsJSONReader;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.FileUtilities;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.tasks.Task;
@@ -56,6 +58,9 @@ public class FileUtilitiesTest {
 	File tmpLocationOfPluginFile;
 
 	String tempTaskName = "Test";
+
+	File invalidHelpFileLocation;
+	File invalidAdditionalResource;
 	@Before
 	public void setLocations() throws IOException {
 		testResourceLocation = "src" + Constants.innerFileSeparator + "test" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator + "taskintegrator" + Constants.innerFileSeparator + "FileUtilitiesTest" + Constants.innerFileSeparator;
@@ -71,6 +76,9 @@ public class FileUtilitiesTest {
 		tmpLocationOfPluginFile = new File(tmpLocation.toPath().toString() + Constants.innerFileSeparator + "plugin.xml");
 		Files.copy(locationOfTasksFile.toPath(), tmpLocationOfTasksFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
 		Files.copy(locationOfPluginFile.toPath(), tmpLocationOfPluginFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+
+		invalidHelpFileLocation = new File(testResourceLocation + "TestInvalidHelp.xml");
+		invalidAdditionalResource = new File(testResourceLocation + "TestInvalidAdditionalResources");
 	}
 
 
@@ -110,8 +118,6 @@ public class FileUtilitiesTest {
 		File invalidXSLFileLocation = new File(testResourceLocation + "TestInvalidXSL.xsl");
 		File invalidJSONFileLocation = new File(testResourceLocation + "TestInvalidJSON.json");
 		File invalidCFRFileLocation = new File(testResourceLocation + "TestInvalidCFR.cfr");
-		File invalidHelpFileLocation = new File(testResourceLocation + "TestInvalidHelp.xml");
-		File invalidAdditionalResource = new File(testResourceLocation + "TestInvalidAdditionalResources");
 		if (invalidXSLFileLocation.exists() && invalidJSONFileLocation.exists() && invalidCFRFileLocation.exists() && invalidHelpFileLocation.exists() && invalidAdditionalResource
 			.exists()) {
 			FileUtilities fileUtilities = new FileUtilities("Test");
@@ -199,14 +205,34 @@ public class FileUtilitiesTest {
 	/**
 	 * Test method for
 	 * {@link de.cognicrypt.codegenerator.taskintegrator.controllers.FileUtilities#writeFiles(de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel, java.util.ArrayList, java.lang.String, java.io.File)}.
+	 * 
+	 * @throws DocumentException
 	 */
 	@Test
-	public void testWriteFilesClaferModelArrayListOfQuestionStringFile() {
+	public void testWriteFilesWithData() throws DocumentException {
 		FileUtilities fileUtilities = new FileUtilities(tempTaskName);
-		String result = fileUtilities.writeFiles(getListClaferModel(), getListOfQuestions(), getXSLString(), validAdditionalResource);
+		String result = fileUtilities.writeFiles(getListClaferModel(), getListOfQuestions(), getXSLString(true), validAdditionalResource);
 		assertFileCreation(result);
 	}
 
+	/**
+	 * Test method for
+	 * {@link de.cognicrypt.codegenerator.taskintegrator.controllers.FileUtilities#writeFiles(de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel, java.util.ArrayList, java.lang.String, java.io.File)}.
+	 * 
+	 * @throws DocumentException
+	 */
+	@Test
+	public void testWriteFilesWithDataInvalidResourceInvalidXSL() throws DocumentException {
+		FileUtilities fileUtilities = new FileUtilities(tempTaskName);
+		String result = fileUtilities.writeFiles(getListClaferModel(), getListOfQuestions(), getXSLString(false), invalidAdditionalResource);
+		assertFileCreation(result);
+	}
+
+	/**
+	 * Check if all the expected files are created.
+	 * 
+	 * @param result
+	 */
 	private void assertFileCreation(String result) {
 		copiedCFRFIle = new File(Constants.CFR_FILE_DIRECTORY_PATH + "Test.cfr");
 		generatedJSFIle = new File(Constants.CFR_FILE_DIRECTORY_PATH + "Test.js");
@@ -224,20 +250,64 @@ public class FileUtilitiesTest {
 		assertTrue(result.equals(""));
 	}
 
+	/**
+	 * Get a list of questions from the validJSONFileLocation.
+	 * 
+	 * @return
+	 */
 	private ArrayList<Question> getListOfQuestions() {
-		return null;
+
+		QuestionsJSONReader questionsReader = new QuestionsJSONReader();
+
+		List<Page> pages = questionsReader.getPages(validJSONFileLocation.toPath().toString());
+		ArrayList<Question> questions = new ArrayList<Question>();
+
+		for (Page page : pages) {
+			for (Question question : page.getContent()) {
+				questions.add(question);
+			}
+		}
+
+		return questions;
 
 	}
 
+	/**
+	 * Return a ClaferModel from the given binary file.
+	 * 
+	 * @return
+	 */
 	private ClaferModel getListClaferModel() {
-		return null;
+		return ClaferModel.createFromBinaries(testResourceLocation + "PointModel.dat");
 	}
 
-	private String getXSLString() {
-		return tempTaskName;
+	/**
+	 * Return the string from the XSL document.
+	 * 
+	 * @param isValid
+	 *        Switch for valid invalid files.
+	 * @return
+	 * @throws DocumentException
+	 */
+	private String getXSLString(boolean isValid) throws DocumentException {
+
+		SAXReader reader = new SAXReader();
+		reader.setValidation(false);
+		if (isValid) {
+			reader.read(validHelpFileLocation);
+		} else {
+			reader.read(invalidHelpFileLocation);
+		}
+
+		return reader.toString();
 
 	}
 
+	/**
+	 * Delete all the custom files that are generated. Replace the files to the earlier state.
+	 * 
+	 * @throws IOException
+	 */
 	@After
 	public void restoreFiles() throws IOException {
 		if (copiedCFRFIle.exists()) {
@@ -258,6 +328,14 @@ public class FileUtilitiesTest {
 
 		Files.copy(tmpLocationOfTasksFile.toPath(), locationOfTasksFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
 		Files.copy(tmpLocationOfPluginFile.toPath(), locationOfPluginFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+
+		if (locationOfTasksFile.exists()) {
+			locationOfTasksFile.delete();
+		}
+
+		if (locationOfPluginFile.exists()) {
+			locationOfPluginFile.delete();
+		}
 
 	}
 

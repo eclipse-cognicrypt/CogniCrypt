@@ -1,7 +1,7 @@
 [
 		{
 			"name": "Symmetric Block Cipher",
-			"xmlFile" : "src/main/resources/Primitives/CipherQuestion.json",
+			"xmlFile" : "src/main/resources/Primitives/JSON/CipherQuestion.json",
 			"xslFile" : "src/main/resources/primitives/xsl/template/CipherSPI.xsl"
 			
 		},

@@ -78,7 +78,7 @@ public class XsltWriter {
 		StreamSource styleSource = new StreamSource(xslFile);
 		Transformer t = TransformerFactory.newInstance().newTransformer(styleSource);
 		Document xml = builder.parse(xmlFile);
-		File resultFile = new File(Utils.getResourceFromWithin("src/main/resources/Primitives") + "testtxt");
+		File resultFile = new File(Utils.getResourceFromWithin(Constants.primitivesPath) +Constants.innerFileSeparator+ "test.txt");
 		StreamResult result = new StreamResult(resultFile);
 		//transformation 
 		t.transform(new DOMSource(xml), result);

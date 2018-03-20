@@ -50,7 +50,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	private Text note;
 	ControlDecoration deco;
 
-
 	/**
 	 * 
 	 * @param page
@@ -157,7 +156,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				PrimitiveQuestionnairePage.this.setPageComplete(this.finish);
 				comboViewer.setSelection(new StructuredSelection(question.getDefaultAnswer()));
 				break;
-				
+
 			case checkbox:
 				new Label(container, SWT.NULL);
 				new Label(container, SWT.NULL);
@@ -181,7 +180,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 								if (answers.get(pageUtility.getIndex(answers, source.getText())).getClaferDependencies() != null) {
 									claferDepend = answers.get(pageUtility.getIndex(answers, source.getText())).getClaferDependencies().get(0).getAlgorithm();
-								
+
 								}
 								if (selectedValue.isEmpty()) {
 									selectedValue = source.getText();
@@ -233,7 +232,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 
 				}
 				break;
-				
+
 			case radiobutton:
 				Button[] button = new Button[answers.size()];
 

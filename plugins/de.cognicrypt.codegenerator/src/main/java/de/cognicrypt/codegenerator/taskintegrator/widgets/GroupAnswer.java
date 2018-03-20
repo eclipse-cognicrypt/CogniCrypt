@@ -35,8 +35,6 @@ public class GroupAnswer extends Group {
 		if (answer.getValue() != null) {
 			txtAnswer.setText(answer.getValue());
 		}
-		txtAnswer.setBounds(3, 3, 606, 29);
-
 		txtAnswer.addFocusListener(new FocusAdapter() {
 
 			@Override
@@ -44,18 +42,33 @@ public class GroupAnswer extends Group {
 				answer.setValue(txtAnswer.getText());
 			}
 		});
+		txtAnswer.setEditable(showRemoveButton);
 
-		Button defaultAnswer = new Button(this, SWT.RADIO);
-		defaultAnswer.setBounds(613, 3, 128, 31);
-		ArrayList<Button> btnList = ((CompositeToHoldSmallerUIElements) defaultAnswer.getParent().getParent().getParent()).getDefaulAnswerBtnList();
-		btnList.add(defaultAnswer);
-		defaultAnswer.setText("Default Answer");
-		if (answer.isDefaultAnswer()) {
-			defaultAnswer.setSelection(true);
+		Button btnDefaultAnswer = new Button(this, SWT.RADIO);
+		/**
+		 * executes when GroupAnswer is called by Question Dialog class
+		 */
+		if (showRemoveButton) {
+			txtAnswer.setBounds(3, 3, 606, 29);
+			btnDefaultAnswer.setBounds(613, 3, 128, 31);
+
 		}
-		defaultAnswer.setToolTipText("the answer that will be automatically selected when question appears for the first time");
+		/**
+		 * executes when GroupAnswer is called by CompositeGranularUIForHighLevelQuestions class
+		 */
+		else {
+			txtAnswer.setBounds(3, 3, 300, 29);
+			btnDefaultAnswer.setBounds(308, 3, 128, 31);
+		}
+		ArrayList<Button> btnList = ((CompositeToHoldSmallerUIElements) btnDefaultAnswer.getParent().getParent().getParent()).getDefaulAnswerBtnList();
+		btnList.add(btnDefaultAnswer);
+		btnDefaultAnswer.setText("Default Answer");
+		if (answer.isDefaultAnswer()) {
+			btnDefaultAnswer.setSelection(true);
+		}
+		btnDefaultAnswer.setToolTipText("the answer that will be automatically selected when question appears for the first time");
 
-		defaultAnswer.addSelectionListener(new SelectionAdapter() {
+		btnDefaultAnswer.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -63,15 +76,15 @@ public class GroupAnswer extends Group {
 				/**
 				 * When user changes the default answer the following loop removes the previous selection and then current selected default answer value is set to true
 				 */
-				for (Button btn : ((CompositeToHoldSmallerUIElements) defaultAnswer.getParent().getParent().getParent()).getDefaulAnswerBtnList()) {
+				for (Button btn : ((CompositeToHoldSmallerUIElements) btnDefaultAnswer.getParent().getParent().getParent()).getDefaulAnswerBtnList()) {
 					btn.setSelection(false);
 				}
-				defaultAnswer.setSelection(true);
+				btnDefaultAnswer.setSelection(true);
 
 				/**
 				 * sets the default answer to true for the current answer and for all other answer to false
 				 */
-				for (Answer ans : ((CompositeToHoldSmallerUIElements) defaultAnswer.getParent().getParent().getParent()).getListOfAllAnswer()) {
+				for (Answer ans : ((CompositeToHoldSmallerUIElements) btnDefaultAnswer.getParent().getParent().getParent()).getListOfAllAnswer()) {
 					if (ans.equals(answer)) {
 						answer.setDefaultAnswer(true);
 					} else {
@@ -82,6 +95,7 @@ public class GroupAnswer extends Group {
 			}
 		});
 
+		btnDefaultAnswer.setEnabled(showRemoveButton);
 		if (showRemoveButton) {
 			Button btnRemove = new Button(this, SWT.NONE);
 			btnRemove.setBounds(746, 3, 80, 31);
@@ -96,7 +110,7 @@ public class GroupAnswer extends Group {
 					int response = confirmationMessageBox.open();
 					if (response == SWT.YES) {
 						((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent()).deleteAnswer(answer);
-						btnList.remove(defaultAnswer);
+						btnList.remove(btnDefaultAnswer);
 					}
 
 				}

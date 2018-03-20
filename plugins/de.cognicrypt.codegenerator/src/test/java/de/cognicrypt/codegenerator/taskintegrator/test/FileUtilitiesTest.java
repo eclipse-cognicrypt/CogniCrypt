@@ -137,7 +137,7 @@ public class FileUtilitiesTest {
 		testTask.setName(tempTaskName);
 		testTask.setAdditionalResources(validAdditionalResource.getPath());
 		testTask.setDescription("This is a task");
-		testTask.setModelFile(generatedJSFIle.getPath());
+		testTask.setModelFile(validJsFileFromValidCRFFile.getPath());
 		testTask.setQuestionsJSONFile(validJSONFileLocation.getPath());
 		testTask.setSelected(false);
 		testTask.setTaskDescription("This is the description of the task");
@@ -306,44 +306,46 @@ public class FileUtilitiesTest {
 	 */
 	@After
 	public void restoreFiles() throws IOException {
-		if (copiedCFRFIle.exists()) {
+		if (copiedCFRFIle != null && copiedCFRFIle.exists()) {
 			copiedCFRFIle.delete();
 		}
 
-		if (generatedJSFIle.exists()) {
+		if (generatedJSFIle != null && generatedJSFIle.exists()) {
 			generatedJSFIle.delete();
 		}
 
-		if (validJsFileFromValidCRFFile.exists()) {
+		if (validJsFileFromValidCRFFile != null && validJsFileFromValidCRFFile.exists()) {
 			validJsFileFromValidCRFFile.delete();
 		}
 
-		if (copiedJSONFIle.exists()) {
+		if (copiedJSONFIle != null && copiedJSONFIle.exists()) {
 			copiedJSONFIle.delete();
 		}
-		if (copiedXSLFIle.exists()) {
+		if (copiedXSLFIle != null && copiedXSLFIle.exists()) {
 			copiedXSLFIle.delete();
 		}
-		if (copiedHelpFIle.exists()) {
+		if (copiedHelpFIle != null && copiedHelpFIle.exists()) {
 			copiedHelpFIle.delete();
 		}
 
-		if (validAdditionalResource.exists() && validAdditionalResource.isDirectory()) {
+		if (validAdditionalResource != null && validAdditionalResource.exists() && validAdditionalResource.isDirectory()) {
 			for (File file : validAdditionalResource.listFiles()) {
 				file.delete();
 			}
 			validAdditionalResource.delete();
 		}
 
-		Files.copy(tmpLocationOfTasksFile.toPath(), locationOfTasksFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
-		Files.copy(tmpLocationOfPluginFile.toPath(), locationOfPluginFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
-
-		if (tmpLocationOfTasksFile.exists()) {
-			tmpLocationOfTasksFile.delete();
+		if (tmpLocationOfTasksFile != null && locationOfTasksFile != null) {
+			Files.copy(tmpLocationOfTasksFile.toPath(), locationOfTasksFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+			if (tmpLocationOfTasksFile.exists()) {
+				tmpLocationOfTasksFile.delete();
+			}
 		}
-
-		if (tmpLocationOfPluginFile.exists()) {
-			tmpLocationOfPluginFile.delete();
+		if (tmpLocationOfPluginFile != null && locationOfPluginFile != null) {
+			Files.copy(tmpLocationOfPluginFile.toPath(), locationOfPluginFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+			if (tmpLocationOfPluginFile.exists()) {
+				tmpLocationOfPluginFile.delete();
+			}
 		}
 
 	}

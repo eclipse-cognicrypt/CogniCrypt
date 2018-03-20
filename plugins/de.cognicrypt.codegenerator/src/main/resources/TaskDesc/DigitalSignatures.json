@@ -7,39 +7,27 @@
 				"id": "0",
 				"note": "",
 				"tooltip": "",
-				"element": "text",
-				"questionText": "Dummy question",
+				"element": "radio",
+				"questionText": "Do you want to verify the signed message?",
 				"answers": [
 					{
-						"value": "",
-						"defaultAnswer": true
+						"value": "Yes",
+						"codeDependencies": [{
+							"option": "verify",
+							"value": "true"
+						}]
+					},
+					{
+						"value": "No",
+						"defaultAnswer": true,
+						"codeDependencies": [{
+							"option": "verify",
+							"value": "false"
+						}]
 					}
 				]
 			}
 		],
 		"nextID": "1"
-	},
-	{
-		"id": "1",
-		"helpID": "DigitalSignatures_Page1",
-		"content": [
-			{
-				"id": "1",
-				"note": "",
-				"tooltip": "",
-				"element": "radio",
-				"questionText": "Binary option",
-				"answers": [
-					{
-						"value": "True",
-						"defaultAnswer": true
-					},
-					{
-						"value": "False"
-					}
-				]
-			}
-		],
-		"nextID": "-1"
 	}
 ]

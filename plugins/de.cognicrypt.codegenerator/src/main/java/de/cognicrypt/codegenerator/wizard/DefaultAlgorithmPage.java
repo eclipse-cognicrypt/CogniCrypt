@@ -146,7 +146,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 				code.setText(compileCodePreview());
 			}
 		});
-		this.code.setText(compileCodePreview());
+		this.code.setText(compileCodePreview() + getCurrentEditorContent());
 		this.code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
 		this.code.setAlwaysShowScrollBars(false);
  

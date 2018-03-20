@@ -87,7 +87,7 @@ public class CreateAndModifyXmlfile {
 		/**
 		 * Calls the following method to add the path to the new xml file in the plugin.xml
 		 */
-		modifyPluginXMlFile(Utils.getResourceFromWithin(Constants.pluginXmlFile));
+		updatePluginXmlFile(Utils.getResourceFromWithin(Constants.pluginXmlFile));
 
 
 	}
@@ -182,7 +182,7 @@ public class CreateAndModifyXmlfile {
 	 * @throws IOException
 	 * @throws TransformerException
 	 */
-	private void modifyPluginXMlFile(File pluginXmlFile) throws ParserConfigurationException, SAXException, IOException, TransformerException {
+	private void updatePluginXmlFile(File pluginXmlFile) throws ParserConfigurationException, SAXException, IOException, TransformerException {
 
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();

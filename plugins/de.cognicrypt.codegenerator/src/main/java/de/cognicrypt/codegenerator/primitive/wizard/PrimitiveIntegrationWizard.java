@@ -225,14 +225,10 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 		//Generation of .class files from the transformed .java files
 		File folder = Utils.getResourceFromWithin(Constants.transformedFiles);
-		if (!folder.exists()) {
-			folder = new File(Utils.getResourceFromWithin("src/main/resources/Primitives") + Constants.innerFileSeparator + "TransformedFiles");
-		}
 		File[] listOfFiles = (folder).listFiles();
 		for (File file : listOfFiles) {
 			if (file.getName().endsWith(".java")) {
 				System.setProperty("java.home", Constants.JAVA_BIN + lastAddedJDK());
-				System.getProperty("java.home");
 				JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 				StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
 
@@ -256,7 +252,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	}
 
 	//Get the last JDK from Java folder in local c:
-	public static File lastAddedJDK() {
+	private static File lastAddedJDK() {
 		File fl = new File(Constants.JAVA_BIN);
 		FileFilter fileFilter = new WildcardFileFilter("jdk*");
 		File[] files = fl.listFiles(fileFilter);

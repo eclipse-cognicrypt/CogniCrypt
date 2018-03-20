@@ -37,7 +37,7 @@ public class Constants {
 	public static final String testFile = Constants.primitivesPath + "test.txt";
 	public static final String xmlFilePath = primitivesPath + innerFileSeparator + "XML" + innerFileSeparator + "xmlFile.xml";
 	//	Clafer related file
-	public static final String claferHeader = rsrcPath + "Primitives" + innerFileSeparator + "ClaferHeader.cfr";
+	public static final String claferHeader = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "ClaferHeader.cfr";
 	public static final String claferHeaderTest = rsrcPath + "Primitives" + innerFileSeparator + "ClaferHeaderT.cfr";
 	public static final String claferFooter = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClafer.cfr";
 	public static final String claferFooterTest = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClaferT.cfr";

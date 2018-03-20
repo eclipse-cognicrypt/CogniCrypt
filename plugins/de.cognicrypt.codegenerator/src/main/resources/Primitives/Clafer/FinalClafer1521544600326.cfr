@@ -24,11 +24,12 @@ abstract Cipher
   KeySize -> int
   BlockSize -> int
 
-abstract SymmetricCipher : Cipher
+abstract SymmetricBlockCipher : Cipher
   
-Ahmed : SymmetricCipher
+Ahmed : SymmetricBlockCipher
 	[name = Ahmed]
-	[Blocksize = 250]
-	[Keysize1 = 350]
+	[description = oziejfoz]
+	[Blocksize = 500]
+	[Keysize1 = 400]
 	[mode = CFB|CTR]
-	[Padding = PKCS7|ZeroPadding]
+	[Padding = ZeroPadding|PKCS7]

@@ -1,5 +1,6 @@
 package de.cognicrypt.codegenerator.taskintegrator.test;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
@@ -226,5 +227,9 @@ public class XSLStringGenerationAndManipulationTests {
 			}
 
 		}
+		// an invalid check.
+		HashMap<String, String> tagValueTagData = null;
+		XSLStringGenerationAndManipulation.getListOfValidSuggestionsForXSLTags(null, tasks.get(0).getName(), tasks.get(0).getDescription(), null, tagValueTagData);
+		assertNull(tagValueTagData);
 	}
 }

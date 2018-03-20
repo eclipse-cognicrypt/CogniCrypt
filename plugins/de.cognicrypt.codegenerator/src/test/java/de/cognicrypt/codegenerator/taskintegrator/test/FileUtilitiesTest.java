@@ -96,11 +96,9 @@ public class FileUtilitiesTest {
 	 */
 	@Test
 	public void testWriteFilesMinusAdditionalResources() {
-		if (validXSLFileLocation.exists() && validJSONFileLocation.exists() && validCFRFileLocation.exists() && validHelpFileLocation.exists()) {
 			FileUtilities fileUtilities = new FileUtilities(tempTaskName);
 			String result = fileUtilities.writeFiles(validCFRFileLocation, validJSONFileLocation, validXSLFileLocation, null, validHelpFileLocation);
 			assertFileCreation(result);
-		}
 	}
 
 	/**
@@ -108,12 +106,9 @@ public class FileUtilitiesTest {
 	 */
 	@Test
 	public void testWriteFilesWithAdditionalResources() {
-		if (validXSLFileLocation.exists() && validJSONFileLocation.exists() && validCFRFileLocation.exists() && validHelpFileLocation.exists() && validAdditionalResource
-			.exists()) {
 			FileUtilities fileUtilities = new FileUtilities(tempTaskName);
 			String result = fileUtilities.writeFiles(validCFRFileLocation, validJSONFileLocation, validXSLFileLocation, validAdditionalResource, validHelpFileLocation);
 			assertFileCreation(result);
-		}
 	}
 
 	/**

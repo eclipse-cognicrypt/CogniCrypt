@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 
+import de.cognicrypt.codegenerator.taskintegrator.controllers.Validator;
 import de.cognicrypt.codegenerator.taskintegrator.models.XSLAttribute;
 
 
@@ -72,7 +73,7 @@ public class GroupXSLTagAttribute extends Group {
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				getSelectedAttribute().setXSLAttributeData(cmbAttributeName.getText());
+				getSelectedAttribute().setXSLAttributeData(Validator.getValidXMLString(cmbAttributeName.getText()));
 			}
 		});
 		

@@ -88,7 +88,7 @@ public class TaskIntegrationWizard extends Wizard {
 			ModelAdvancedMode objectForDataInGuidedMode = getTIPageByName(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
 			objectForDataInGuidedMode.setTask();
 
-			String fileWriteAttemptResult = fileUtilities.writeFiles(claferModel, questions, xslFileContents, customLibLocation);
+			String fileWriteAttemptResult = fileUtilities.writeFiles(claferModel, questions, xslFileContents, customLibLocation, null);
 			if (fileWriteAttemptResult.equals("")) {
 				fileUtilities.writeTaskToJSONFile(objectForDataInNonGuidedMode.getTask());
 				return true;
@@ -111,7 +111,7 @@ public class TaskIntegrationWizard extends Wizard {
 		System.out.println(listOfAllQuestions.size());
 		FileUtilities writeJsonFile = new FileUtilities(objectForDataInNonGuidedMode.getNameOfTheTask());
 		try {
-			writeJsonFile.writeFiles(null, listOfAllQuestions, null, null);
+				writeJsonFile.writeFiles(null, listOfAllQuestions, null, null, null);
 			//writeJsonFile.writeJSONFile(listOfAllQuestions);
 		}/* catch (IOException e) {
 			// TODO Auto-generated catch block

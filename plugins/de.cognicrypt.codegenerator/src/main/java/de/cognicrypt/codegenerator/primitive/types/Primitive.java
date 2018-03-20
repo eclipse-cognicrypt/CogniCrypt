@@ -15,13 +15,13 @@ public class Primitive {
 		return this.name;
 	}
 
-	public String getXslFile(){
+	public String getXslFile() {
 		return this.xslFile;
 	}
+
 	public String getXmlFile() {
 		return this.xmlFile;
 	}
-	
 
 	public boolean isSelected() {
 		return this.isSelected;
@@ -30,9 +30,9 @@ public class Primitive {
 	public void setXmlFile(String xml) {
 		this.xmlFile = xml;
 	}
-	
-	public void setXslFile(String xsl){
-		this.xslFile=xsl;
+
+	public void setXslFile(String xsl) {
+		this.xslFile = xsl;
 	}
 
 	public void setName(final String name) {
@@ -42,6 +42,5 @@ public class Primitive {
 	public void setSelected(final boolean isSelected) {
 		this.isSelected = isSelected;
 	}
-	
 
 }

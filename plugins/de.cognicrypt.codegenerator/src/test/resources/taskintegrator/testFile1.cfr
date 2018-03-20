@@ -1,0 +1,2 @@
+abstract Algorithm
+	securityLevel -> Security

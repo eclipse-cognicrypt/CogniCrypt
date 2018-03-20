@@ -55,8 +55,11 @@ public class ProviderFile {
 				// Write file to archive
 				FileInputStream in = new FileInputStream(tobeJared[i]);
 				int nRead;
-				while ((nRead = in.read(buffer, 0, buffer.length)) <= 0) {
-					out.write(buffer, 0, nRead);
+				while (true) {
+					int nRead1 = in.read(buffer, 0, buffer.length);
+					if (nRead1 <= 0)
+						break;
+					out.write(buffer, 0, nRead1);
 				}
 				in.close();
 			}

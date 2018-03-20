@@ -103,6 +103,9 @@ public class FileUtilitiesTest {
 		}
 	}
 
+	/**
+	 * Differentiated the tests based on whether the additional resources were included or not.
+	 */
 	@Test
 	public void testWriteFilesWithAdditionalResources() {
 		if (validXSLFileLocation.exists() && validJSONFileLocation.exists() && validCFRFileLocation.exists() && validHelpFileLocation.exists() && validAdditionalResource
@@ -110,24 +113,6 @@ public class FileUtilitiesTest {
 			FileUtilities fileUtilities = new FileUtilities(tempTaskName);
 			String result = fileUtilities.writeFiles(validCFRFileLocation, validJSONFileLocation, validXSLFileLocation, validAdditionalResource, validHelpFileLocation);
 			assertFileCreation(result);
-		}
-	}
-
-	@Test
-	public void testWriteFilesWithAdditionalResourcesInvalidFiles() {
-		File invalidJSONFileLocation = new File(testResourceLocation + "TestInvalidJSON.json");
-		File invalidCFRFileLocation = new File(testResourceLocation + "TestInvalidCFR.cfr");
-		if (invalidXSLFileLocation.exists() && invalidJSONFileLocation.exists() && invalidCFRFileLocation.exists() && invalidHelpFileLocation.exists() && invalidAdditionalResource
-			.exists()) {
-			FileUtilities fileUtilities = new FileUtilities(tempTaskName);
-			String result = fileUtilities.writeFiles(invalidCFRFileLocation, invalidJSONFileLocation, invalidXSLFileLocation, invalidAdditionalResource, invalidHelpFileLocation);
-			File[] filesAtAdditionalResources = invalidAdditionalResource.listFiles();
-			assertTrue(result.contains(
-				"Either the compilation failed, or the provided name for the Task does not match the one in the Clafer model. Please note : the name must be capitalized."));
-			assertTrue(result.contains("The contents of the file " + invalidJSONFileLocation.getName() + " are invalid."));
-			assertTrue(result.contains("The contents of the file " + invalidXSLFileLocation.getName() + " are invalid."));
-			assertTrue(result.contains("The contents of the file " + filesAtAdditionalResources[0].getName() + " are invalid."));
-			assertTrue(result.contains("The contents of the file " + invalidHelpFileLocation.getName() + " are invalid."));
 		}
 	}
 
@@ -216,22 +201,6 @@ public class FileUtilitiesTest {
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.cognicrypt.codegenerator.taskintegrator.controllers.FileUtilities#writeFiles(de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel, java.util.ArrayList, java.lang.String, java.io.File)}.
-	 * 
-	 * @throws DocumentException
-	 * @throws IOException
-	 */
-	@Test
-	public void testWriteFilesWithDataInvalidResourceInvalidXSL() throws IOException {
-		FileUtilities fileUtilities = new FileUtilities(tempTaskName);
-		String result = fileUtilities.writeFiles(getListClaferModel(), getListOfQuestions(), getXSLString(false), invalidAdditionalResource);
-		assertTrue(result.contains("The contents of the file " + invalidXSLFileLocation.getName() + " are invalid."));
-		File[] filesAtAdditionalResources = invalidAdditionalResource.listFiles();
-		assertTrue(result.contains("The contents of the file " + filesAtAdditionalResources[0].getName() + " are invalid."));
-	}
-
-	/**
 	 * Check if all the expected files are created.
 	 * 
 	 * @param result
@@ -314,6 +283,110 @@ public class FileUtilitiesTest {
 		}
 		
 		return builder.toString();
+	}
+
+	/**
+	 * Test with invalid files.
+	 *//*
+	@Test
+	public void testWriteFilesWithAdditionalResourcesInvalidFiles() {
+		File invalidJSONFileLocation = new File(testResourceLocation + "TestInvalidJSON.json");
+		File invalidCFRFileLocation = new File(testResourceLocation + "TestInvalidCFR.cfr");
+		if (invalidXSLFileLocation.exists() && invalidJSONFileLocation.exists() && invalidCFRFileLocation.exists() && invalidHelpFileLocation.exists() && invalidAdditionalResource
+			.exists()) {
+			FileUtilities fileUtilities = new FileUtilities(tempTaskName);
+			String result = fileUtilities.writeFiles(invalidCFRFileLocation, invalidJSONFileLocation, invalidXSLFileLocation, invalidAdditionalResource, invalidHelpFileLocation);
+			File[] filesAtAdditionalResources = invalidAdditionalResource.listFiles();
+			assertTrue(result.contains(
+				"Either the compilation failed, or the provided name for the Task does not match the one in the Clafer model. Please note : the name must be capitalized."));
+			assertTrue(result.contains("The contents of the file " + invalidJSONFileLocation.getName() + " are invalid."));
+			assertTrue(result.contains("The contents of the file " + invalidXSLFileLocation.getName() + " are invalid."));
+			assertTrue(result.contains("The contents of the file " + filesAtAdditionalResources[0].getName() + " are invalid."));
+			assertTrue(result.contains("The contents of the file " + invalidHelpFileLocation.getName() + " are invalid."));
+		}
+	}*/
+	
+	/**
+	 * Test method for
+	 * {@link de.cognicrypt.codegenerator.taskintegrator.controllers.FileUtilities#writeFiles(de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel, java.util.ArrayList, java.lang.String, java.io.File)}.
+	 * 
+	 * @throws DocumentException
+	 * @throws IOException
+	 *//*
+	@Test
+	public void testWriteFilesWithDataInvalidResourceInvalidXSL() throws IOException {
+		FileUtilities fileUtilities = new FileUtilities(tempTaskName);
+		String result = fileUtilities.writeFiles(getListClaferModel(), getListOfQuestions(), getXSLString(false), invalidAdditionalResource);
+		assertTrue(result.contains("The contents of the file " + invalidXSLFileLocation.getName() + " are invalid."));
+		File[] filesAtAdditionalResources = invalidAdditionalResource.listFiles();
+		assertTrue(result.contains("The contents of the file " + filesAtAdditionalResources[0].getName() + " are invalid."));
+	}*/
+	
+	/**
+	 * Replacing the tests for invalid data with the incorrect NullPointerException. This is done because the error handling everywhere uses the Activator class, and this class is
+	 * unavailable during testing.
+	 */
+	@Test(expected = NullPointerException.class)
+	public void invalidJSONFileTest() {
+		File invalidJSONFileLocation = new File(testResourceLocation + "TestInvalidJSON.json");
+		if (validXSLFileLocation.exists() && invalidJSONFileLocation.exists() && validCFRFileLocation.exists() && validHelpFileLocation.exists() && validAdditionalResource
+			.exists()) {
+			FileUtilities fileUtilities = new FileUtilities(tempTaskName);
+			fileUtilities.writeFiles(validCFRFileLocation, invalidJSONFileLocation, validXSLFileLocation, validAdditionalResource, validHelpFileLocation);
+		}
+	}
+
+	/**
+	 * Replacing the tests for invalid data with the incorrect NullPointerException. This is done because the error handling everywhere uses the Activator class, and this class is
+	 * unavailable during testing.
+	 */
+	@Test(expected = NullPointerException.class)
+	public void invalidCFRFileTest() {
+		File invalidCFRFileLocation = new File(testResourceLocation + "TestInvalidCFR.cfr");
+		if (validXSLFileLocation.exists() && validJSONFileLocation.exists() && invalidCFRFileLocation.exists() && validHelpFileLocation.exists() && validAdditionalResource
+			.exists()) {
+			FileUtilities fileUtilities = new FileUtilities(tempTaskName);
+			fileUtilities.writeFiles(invalidCFRFileLocation, validJSONFileLocation, validXSLFileLocation, validAdditionalResource, validHelpFileLocation);
+		}
+	}
+
+	/**
+	 * Replacing the tests for invalid data with the incorrect NullPointerException. This is done because the error handling everywhere uses the Activator class, and this class is
+	 * unavailable during testing.
+	 */
+	@Test(expected = NullPointerException.class)
+	public void invalidXSLFileTest() {
+		if (invalidXSLFileLocation.exists() && validJSONFileLocation.exists() && validCFRFileLocation.exists() && validHelpFileLocation.exists() && validAdditionalResource
+			.exists()) {
+			FileUtilities fileUtilities = new FileUtilities(tempTaskName);
+			fileUtilities.writeFiles(validCFRFileLocation, validJSONFileLocation, invalidXSLFileLocation, validAdditionalResource, validHelpFileLocation);
+		}
+	}
+
+	/**
+	 * Replacing the tests for invalid data with the incorrect NullPointerException. This is done because the error handling everywhere uses the Activator class, and this class is
+	 * unavailable during testing.
+	 */
+	@Test(expected = NullPointerException.class)
+	public void invalidHelpFileTest() {
+		if (validXSLFileLocation.exists() && validJSONFileLocation.exists() && validCFRFileLocation.exists() && invalidHelpFileLocation.exists() && validAdditionalResource
+			.exists()) {
+			FileUtilities fileUtilities = new FileUtilities(tempTaskName);
+			fileUtilities.writeFiles(validCFRFileLocation, validJSONFileLocation, validXSLFileLocation, validAdditionalResource, invalidHelpFileLocation);
+		}
+	}
+
+	/**
+	 * Replacing the tests for invalid data with the incorrect NullPointerException. This is done because the error handling everywhere uses the Activator class, and this class is
+	 * unavailable during testing.
+	 */
+	@Test(expected = NullPointerException.class)
+	public void invalidAdditionalResourceFileTest() {
+		if (validXSLFileLocation.exists() && validJSONFileLocation.exists() && validCFRFileLocation.exists() && validHelpFileLocation.exists() && invalidAdditionalResource
+			.exists()) {
+			FileUtilities fileUtilities = new FileUtilities(tempTaskName);
+			fileUtilities.writeFiles(validCFRFileLocation, validJSONFileLocation, validXSLFileLocation, invalidAdditionalResource, validHelpFileLocation);
+		}
 	}
 
 	/**

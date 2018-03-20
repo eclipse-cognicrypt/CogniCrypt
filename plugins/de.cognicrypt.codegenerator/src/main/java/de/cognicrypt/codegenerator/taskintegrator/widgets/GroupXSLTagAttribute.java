@@ -8,8 +8,8 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -31,23 +31,28 @@ public class GroupXSLTagAttribute extends Group {
 	 */
 	public GroupXSLTagAttribute(Composite parent, int style, boolean showRemoveButton, XSLAttribute attributeParam, SortedSet<String> possibleCfrFeatures) {
 		super(parent, style);
-		setLayout(new RowLayout(SWT.HORIZONTAL));
 		
 		// Set the attribute object first.
 		setSelectedAttribute(attributeParam);
+		setLayout(new GridLayout(3, false));
 		
 		cmbAttributeType = new Combo(this, SWT.READ_ONLY);
+		GridData gd_cmbAttributeType = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
+		gd_cmbAttributeType.minimumWidth = 200;
+		cmbAttributeType.setLayoutData(gd_cmbAttributeType);
 		cmbAttributeType.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				getSelectedAttribute().setXSLAttributeName(cmbAttributeType.getText());
 			}
 		});
-		cmbAttributeType.setLayoutData(new RowData(148, SWT.DEFAULT));
 
 		// initialize the dropdown with possible features
 
 		cmbAttributeName = new Combo(this, SWT.BORDER);
+		GridData gd_cmbAttributeName = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
+		gd_cmbAttributeName.minimumWidth = 200;
+		cmbAttributeName.setLayoutData(gd_cmbAttributeName);
 		if (possibleCfrFeatures != null) {
 			for (String currentCfrFeature : possibleCfrFeatures) {
 				cmbAttributeName.add(currentCfrFeature);
@@ -70,7 +75,6 @@ public class GroupXSLTagAttribute extends Group {
 				getSelectedAttribute().setXSLAttributeData(cmbAttributeName.getText());
 			}
 		});
-		cmbAttributeName.setLayoutData(new RowData(167, SWT.DEFAULT));
 		
 		if(showRemoveButton){
 			Button btnRemove = new Button(this, SWT.NONE);

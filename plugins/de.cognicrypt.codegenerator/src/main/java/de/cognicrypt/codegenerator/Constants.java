@@ -13,6 +13,10 @@ public class Constants {
 		combo, text, itemselection, button, radio, scale
 	}
 
+	public enum OperatingSystem {
+		linux, windows, macos, unknown
+	}
+
 	//The plugin is bundled in a jar archive and the file separator within jar files is / (see: https://stackoverflow.com/questions/24749007/how-to-use-file-separator-for-a-jar-file-resource).
 	//Use this file separator for all paths within the plugin space.
 	public static final String innerFileSeparator = "/";

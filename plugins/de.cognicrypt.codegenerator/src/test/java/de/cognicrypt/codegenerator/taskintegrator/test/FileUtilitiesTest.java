@@ -5,8 +5,10 @@ package de.cognicrypt.codegenerator.taskintegrator.test;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -61,6 +63,7 @@ public class FileUtilitiesTest {
 
 	File invalidHelpFileLocation;
 	File invalidAdditionalResource;
+	File invalidXSLFileLocation;
 
 	File validJsFileFromValidCRFFile;
 	@Before
@@ -84,6 +87,7 @@ public class FileUtilitiesTest {
 
 		invalidHelpFileLocation = new File(testResourceLocation + "TestInvalidHelp.xml");
 		invalidAdditionalResource = new File(testResourceLocation + "TestInvalidAdditionalResources");
+		invalidXSLFileLocation = new File(testResourceLocation + "TestInvalidXSL.xsl");
 	}
 
 
@@ -93,7 +97,7 @@ public class FileUtilitiesTest {
 	@Test
 	public void testWriteFilesMinusAdditionalResources() {
 		if (validXSLFileLocation.exists() && validJSONFileLocation.exists() && validCFRFileLocation.exists() && validHelpFileLocation.exists()) {
-			FileUtilities fileUtilities = new FileUtilities("Test");
+			FileUtilities fileUtilities = new FileUtilities(tempTaskName);
 			String result = fileUtilities.writeFiles(validCFRFileLocation, validJSONFileLocation, validXSLFileLocation, null, validHelpFileLocation);
 			assertFileCreation(result);
 		}
@@ -103,7 +107,7 @@ public class FileUtilitiesTest {
 	public void testWriteFilesWithAdditionalResources() {
 		if (validXSLFileLocation.exists() && validJSONFileLocation.exists() && validCFRFileLocation.exists() && validHelpFileLocation.exists() && validAdditionalResource
 			.exists()) {
-			FileUtilities fileUtilities = new FileUtilities("Test");
+			FileUtilities fileUtilities = new FileUtilities(tempTaskName);
 			String result = fileUtilities.writeFiles(validCFRFileLocation, validJSONFileLocation, validXSLFileLocation, validAdditionalResource, validHelpFileLocation);
 			assertFileCreation(result);
 		}
@@ -111,12 +115,11 @@ public class FileUtilitiesTest {
 
 	@Test
 	public void testWriteFilesWithAdditionalResourcesInvalidFiles() {
-		File invalidXSLFileLocation = new File(testResourceLocation + "TestInvalidXSL.xsl");
 		File invalidJSONFileLocation = new File(testResourceLocation + "TestInvalidJSON.json");
 		File invalidCFRFileLocation = new File(testResourceLocation + "TestInvalidCFR.cfr");
 		if (invalidXSLFileLocation.exists() && invalidJSONFileLocation.exists() && invalidCFRFileLocation.exists() && invalidHelpFileLocation.exists() && invalidAdditionalResource
 			.exists()) {
-			FileUtilities fileUtilities = new FileUtilities("Test");
+			FileUtilities fileUtilities = new FileUtilities(tempTaskName);
 			String result = fileUtilities.writeFiles(invalidCFRFileLocation, invalidJSONFileLocation, invalidXSLFileLocation, invalidAdditionalResource, invalidHelpFileLocation);
 			File[] filesAtAdditionalResources = invalidAdditionalResource.listFiles();
 			assertTrue(result.contains(
@@ -203,9 +206,10 @@ public class FileUtilitiesTest {
 	 * {@link de.cognicrypt.codegenerator.taskintegrator.controllers.FileUtilities#writeFiles(de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel, java.util.ArrayList, java.lang.String, java.io.File)}.
 	 * 
 	 * @throws DocumentException
+	 * @throws IOException
 	 */
 	@Test
-	public void testWriteFilesWithData() throws DocumentException {
+	public void testWriteFilesWithData() throws IOException {
 		FileUtilities fileUtilities = new FileUtilities(tempTaskName);
 		String result = fileUtilities.writeFiles(getListClaferModel(), getListOfQuestions(), getXSLString(true), validAdditionalResource);
 		assertFileCreation(result);
@@ -216,12 +220,15 @@ public class FileUtilitiesTest {
 	 * {@link de.cognicrypt.codegenerator.taskintegrator.controllers.FileUtilities#writeFiles(de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel, java.util.ArrayList, java.lang.String, java.io.File)}.
 	 * 
 	 * @throws DocumentException
+	 * @throws IOException
 	 */
 	@Test
-	public void testWriteFilesWithDataInvalidResourceInvalidXSL() throws DocumentException {
+	public void testWriteFilesWithDataInvalidResourceInvalidXSL() throws IOException {
 		FileUtilities fileUtilities = new FileUtilities(tempTaskName);
 		String result = fileUtilities.writeFiles(getListClaferModel(), getListOfQuestions(), getXSLString(false), invalidAdditionalResource);
-		assertFileCreation(result);
+		assertTrue(result.contains("The contents of the file " + invalidXSLFileLocation.getName() + " are invalid."));
+		File[] filesAtAdditionalResources = invalidAdditionalResource.listFiles();
+		assertTrue(result.contains("The contents of the file " + filesAtAdditionalResources[0].getName() + " are invalid."));
 	}
 
 	/**
@@ -230,19 +237,23 @@ public class FileUtilitiesTest {
 	 * @param result
 	 */
 	private void assertFileCreation(String result) {
-		copiedCFRFIle = new File(Constants.CFR_FILE_DIRECTORY_PATH + "Test.cfr");
-		generatedJSFIle = new File(Constants.CFR_FILE_DIRECTORY_PATH + "Test.js");
-		copiedJSONFIle = new File(Constants.JSON_FILE_DIRECTORY_PATH + "Test.json");
-		copiedXSLFIle = new File(Constants.XSL_FILE_DIRECTORY_PATH + "Test.xsl");
-		copiedHelpFIle = new File(Constants.HELP_FILE_DIRECTORY_PATH + "Test.xml");
-		int copiedAdditionalResourcesNumber = Utils.getResourceFromWithin(Constants.JAR_FILE_DIRECTORY_PATH + "Test").listFiles().length;
+		copiedCFRFIle = new File(Constants.CFR_FILE_DIRECTORY_PATH + tempTaskName + ".cfr");
+		generatedJSFIle = new File(Constants.CFR_FILE_DIRECTORY_PATH + tempTaskName + ".js");
+		copiedJSONFIle = new File(Constants.JSON_FILE_DIRECTORY_PATH + tempTaskName + ".json");
+		copiedXSLFIle = new File(Constants.XSL_FILE_DIRECTORY_PATH + tempTaskName + ".xsl");
+		copiedHelpFIle = new File(Constants.HELP_FILE_DIRECTORY_PATH + tempTaskName + ".xml");
+		File copiedAdditionalResourcesDirectory = Utils.getResourceFromWithin(Constants.JAR_FILE_DIRECTORY_PATH + tempTaskName);
+		if (copiedAdditionalResourcesDirectory.exists()) {
+			int copiedAdditionalResourcesNumber = copiedAdditionalResourcesDirectory.listFiles().length;
+			assertTrue(copiedAdditionalResourcesNumber == validAdditionalResource.listFiles().length);
+		}
+
 		//Utils.getResourceFromWithin(validAdditionalResource.getPath()).listFiles();
 		assertTrue(copiedCFRFIle.exists());
 		assertTrue(generatedJSFIle.exists());
 		assertTrue(copiedJSONFIle.exists());
 		assertTrue(copiedXSLFIle.exists());
 		assertTrue(copiedHelpFIle.exists());
-		assertTrue(copiedAdditionalResourcesNumber == validAdditionalResource.listFiles().length);
 		assertTrue(result.equals(""));
 	}
 
@@ -284,19 +295,25 @@ public class FileUtilitiesTest {
 	 *        Switch for valid invalid files.
 	 * @return
 	 * @throws DocumentException
+	 * @throws IOException
 	 */
-	private String getXSLString(boolean isValid) throws DocumentException {
+	private String getXSLString(boolean isValid) throws IOException {
 
-		SAXReader reader = new SAXReader();
-		reader.setValidation(false);
+		/*
+		 * SAXReader reader = new SAXReader(); reader.setValidation(false); if (isValid) { reader.read(validHelpFileLocation); } else { reader.read(invalidHelpFileLocation); }
+		 * return reader.toString();
+		 */
+		StringBuilder builder = new StringBuilder();
+		BufferedReader reader = null;
 		if (isValid) {
-			reader.read(validHelpFileLocation);
+			reader = Files.newBufferedReader(validXSLFileLocation.toPath(), StandardCharsets.UTF_8);
+			reader.lines().forEach(builder::append);
 		} else {
-			reader.read(invalidHelpFileLocation);
+			reader = Files.newBufferedReader(invalidXSLFileLocation.toPath(), StandardCharsets.UTF_8);
+			reader.lines().forEach(builder::append);
 		}
-
-		return reader.toString();
-
+		
+		return builder.toString();
 	}
 
 	/**
@@ -327,12 +344,12 @@ public class FileUtilitiesTest {
 		if (copiedHelpFIle != null && copiedHelpFIle.exists()) {
 			copiedHelpFIle.delete();
 		}
-
-		if (validAdditionalResource != null && validAdditionalResource.exists() && validAdditionalResource.isDirectory()) {
-			for (File file : validAdditionalResource.listFiles()) {
+		File copiedAdditionalResourcesDirectory = Utils.getResourceFromWithin(Constants.JAR_FILE_DIRECTORY_PATH + tempTaskName);
+		if (copiedAdditionalResourcesDirectory != null && copiedAdditionalResourcesDirectory.exists() && copiedAdditionalResourcesDirectory.isDirectory()) {
+			for (File file : copiedAdditionalResourcesDirectory.listFiles()) {
 				file.delete();
 			}
-			validAdditionalResource.delete();
+			copiedAdditionalResourcesDirectory.delete();
 		}
 
 		if (tmpLocationOfTasksFile != null && locationOfTasksFile != null) {

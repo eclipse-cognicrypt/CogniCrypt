@@ -1,12 +1,9 @@
 package de.cognicrypt.codegenerator.taskintegrator.models;
 
-import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -16,6 +13,7 @@ import java.util.function.Predicate;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.taskintegrator.controllers.ClaferCompiler;
 
 public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 
@@ -308,33 +306,11 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	 * @return {@link Boolean} success of the compilation
 	 */
 	public static boolean compile(String filename) {
-		// try compilation
-		try {
-			ProcessBuilder processBuilder = new ProcessBuilder("clafer", "-k", "-m", "choco", filename);
-			processBuilder.redirectErrorStream(true);
-			Process compilerProcess = processBuilder.start();
-
-			compilerProcess.waitFor();
-
-			// print compilation output to command line
-			InputStream processStdOutput = compilerProcess.getInputStream();
-			BufferedReader br = new BufferedReader(new InputStreamReader(processStdOutput));
-			String line;
-			while ((line = br.readLine()) != null) {
-				System.out.println(line);
-			}
-
-			if (compilerProcess.exitValue() != 0) {
-				System.out.println("Clafer compilation error: make sure your model is correct. Aborting...");
-				return false;
-			}
-
-		} catch (Exception ex) {
-			Activator.getDefault().logError(ex);
-			return false;
+		if (ClaferCompiler.execute(filename)) {
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	/**

@@ -1,0 +1,70 @@
+--- RCPTT testcase ---
+Format-Version: 1.0
+Element-Name: MPC-Final
+Element-Type: testcase
+Element-Version: 3.0
+External-Reference: 
+Id: _oLUy4CCMEeiBZcxhvN8q6g
+Runtime-Version: 2.1.0.201606221726
+Save-Time: 3/5/18 4:53 PM
+Testcase-Type: ecl
+
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
+Content-Type: text/ecl
+Entry-Name: .content
+
+get-button "Generate Code For Cryptographic Task" | click
+with [get-window "Cryptography Task Configurator"] {
+    get-combo -after [get-label "Select a Task :"] | select "Secure Multi-Party Computation"
+    get-button "Next >" | click
+    get-combo -after [get-label "Where are you implementing?"] | select "Server-side"
+    get-button "Next >" | click
+    get-editbox -after [get-label "*"] | set-text 33
+    get-editbox -after [get-label "*" -after [get-label "Please enter the port number of the server:"]] | set-text 232
+    with [get-button "Next >"] {
+        click
+        click
+        click
+    }
+    get-button "< Back" | click
+    get-button "Next >" | click
+    with [get-button "< Back"] {
+        click
+        click
+    }
+    get-combo -after [get-label "Which Multi-Party Computation scenario do you want to implement?"] 
+        | select "Millionaire's Comparison"
+    get-button "Next >" | click
+}
+get-window Error | get-button OK | click
+with [get-window "Cryptography Task Configurator"] {
+    get-button "< Back" | click
+    get-button "Next >" | click
+    get-combo -after [get-label "Which Multi-Party Computation scenario do you want to implement?"] 
+        | select "Euclidean Distance"
+    with [get-button "Next >"] {
+        click
+        click
+    }
+}
+get-window Error | get-button OK | click
+get-window "Cryptography Task Configurator" | get-button "Next >" | click
+get-window Error | get-button OK | click
+with [get-window "Cryptography Task Configurator"] {
+    get-button "Next >" | click
+    get-button "< Back" | click
+    get-button "Next >" | click
+}
+get-window Error | get-button OK | click
+get-window "Cryptography Task Configurator" | get-button "Next >" | click
+get-window Error | get-button OK | click
+get-window "Cryptography Task Configurator" | get-button "Next >" | click
+get-window Error | get-button OK | click
+get-window "Cryptography Task Configurator" | get-button "Next >" | click
+get-window Error | get-button OK | click
+with [get-window "Cryptography Task Configurator"] {
+    get-button "Next >" | click
+    get-button Finish | click
+}
+get-window "Organize Imports" | get-button OK | click
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--

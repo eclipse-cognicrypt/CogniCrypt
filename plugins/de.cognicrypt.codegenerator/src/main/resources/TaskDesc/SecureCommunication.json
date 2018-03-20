@@ -8,6 +8,7 @@
 				"note": "",
 				"tooltip": "Example : /home/users/keystores/android.jks",
 				"element": "text",
+      			"textType":"Browse",
 				"questionText": "Please specify the path to your keystore:",
 				"answers": [
 					{
@@ -26,7 +27,8 @@
 				"id": "1",
 				"note": "",
 				"tooltip": "Secret password of keystore",
-				"element": "text",
+				"element": "text",				
+      			"textType":"Password",
 				"questionText": "Please give the password for your keystore:",
 				"answers": [
 					{
@@ -109,9 +111,9 @@
 		"content": [
 			{
 				"id": "4",
-				"tooltip": "Example : 192.168.123.132",
 				"element": "text",
-				"questionText": "Please enter host/ip",
+      			"textType":"Ip address",
+				"questionText": "Please enter the IP address:",
 				"answers": [
 					{
 						"value": "",
@@ -129,7 +131,8 @@
 				"id": "5",
 				"tooltip": "Example: 80",
 				"element": "text",
-				"questionText": "Please enter port",
+     			"textType":"Port number",
+				"questionText": "Please enter the Port number:",
 				"answers": [
 					{
 						"value": "",
@@ -246,6 +249,7 @@
 				"id": "9",
 				"tooltip": "Example: 80",
 				"element": "text",
+				"textType": "Port number",
 				"questionText": "Please enter port",
 				"answers": [
 					{

@@ -1,0 +1,45 @@
+[
+	{
+		"id": "0",
+		"helpID": "DigitalSignatures_Page0",
+		"content": [
+			{
+				"id": "0",
+				"note": "",
+				"tooltip": "",
+				"element": "text",
+				"questionText": "Dummy question",
+				"answers": [
+					{
+						"value": "",
+						"defaultAnswer": true
+					}
+				]
+			}
+		],
+		"nextID": "1"
+	},
+	{
+		"id": "1",
+		"helpID": "DigitalSignatures_Page1",
+		"content": [
+			{
+				"id": "1",
+				"note": "",
+				"tooltip": "",
+				"element": "radio",
+				"questionText": "Binary option",
+				"answers": [
+					{
+						"value": "True",
+						"defaultAnswer": true
+					},
+					{
+						"value": "False"
+					}
+				]
+			}
+		],
+		"nextID": "-1"
+	}
+]

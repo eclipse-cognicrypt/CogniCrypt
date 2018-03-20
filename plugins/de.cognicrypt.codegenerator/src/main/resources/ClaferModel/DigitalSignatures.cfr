@@ -1,0 +1,34 @@
+abstract Enum
+
+//enum Security
+abstract Security : Enum -> integer
+NoSecurity: Security = 0
+Broken: Security = 1
+Weak: Security = 2
+Medium: Security = 3
+Strong: Security = 4
+
+//enum Performance
+abstract Performance : Enum -> integer
+VerySlow: Performance = 1
+Slow: Performance = 2
+Fast: Performance = 3
+VeryFast: Performance = 4
+
+abstract Algorithm
+	name -> string
+	description -> string
+	algorithmSecurity -> Security
+	performance -> Performance
+	classPerformance -> Performance 
+
+abstract Cipher : Algorithm
+
+abstract Task
+    description -> string
+
+DigitalSignatures : Task  
+	[description = "Digitally sign a document"]
+	security -> integer
+	performance -> integer
+	[security >= Medium]

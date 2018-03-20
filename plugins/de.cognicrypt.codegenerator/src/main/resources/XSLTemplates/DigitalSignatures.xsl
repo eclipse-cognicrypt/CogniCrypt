@@ -31,6 +31,7 @@ public class EcdsaSignature {
 		return ecdsa.sign();
 	}
 
+	<xsl:if test="//task/code/verifying='true'">
 	public static boolean vfy(String msg, byte[] signature, PublicKey pubKey)
 			throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
 		Signature ecdsa = Signature.getInstance(signatureAlgorithm);
@@ -38,6 +39,7 @@ public class EcdsaSignature {
 		ecdsa.update(msg.getBytes());
 		return ecdsa.verify(signature);
 	}
+	</xsl:if>
 
 }
 
@@ -52,16 +54,20 @@ public class Output {
 		// key generation
 		KeyPair pair = EcdsaSignature.getKey();
 
-		// signing
+		// message
 		String msg = "Zehn zahme Ziegen zogen zehn Zentner Zucker zum Zoo.";
+
+		// signing
 		byte[] signature = EcdsaSignature.sign(msg, pair.getPrivate());
 
+		<xsl:if test="//task/code/verifying='true'">
 		// verification
 		if (EcdsaSignature.vfy(msg, signature, pair.getPublic())) {
 			System.out.println("Signature verification successful");
 		} else {
 			System.out.println("Signature verification failed");
 		}
+		</xsl:if>
 
 	}
 }

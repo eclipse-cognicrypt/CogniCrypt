@@ -5,33 +5,20 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.Constants.OperatingSystem;
 import de.cognicrypt.codegenerator.utilities.Utils;
 
 public class ClaferCompiler {
 
-	public static OperatingSystem getOS() {
+	public static String getClaferExecutable() {
+		// TODO test on different operating systems
 		String osString = System.getProperty("os.name");
 
 		if (osString.contains("Linux")) {
-			return OperatingSystem.linux;
-		} else if (osString.contains("windows")) {
-			return OperatingSystem.windows;
-		} else if (osString.contains("mac")) {
-			return OperatingSystem.macos;
-		}
-
-		return OperatingSystem.unknown;
-	}
-
-	public static String getClaferExecutable() {
-		// TODO test on different operating systems
-		if (getOS() == OperatingSystem.linux) {
 			return Utils.getResourceFromWithin("src/main/resources/bin/clafer-linux").getAbsolutePath();
-		} else if (getOS() == OperatingSystem.macos) {
+		} else if (osString.contains("mac")) {
 			return Utils.getResourceFromWithin("src/main/resources/bin/clafer-macos").getAbsolutePath();
-		} else if (getOS() == OperatingSystem.windows) {
-			return Utils.getResourceFromWithin("src/main/resources/bin/clafer-windows").getAbsolutePath();
+		} else if (osString.contains("Windows 7") || osString.contains("Windows 8") || osString.contains("Windows 10")) {
+			return Utils.getResourceFromWithin("src/main/resources/bin/clafer-windows.exe").getAbsolutePath();
 		}
 		
 		// rely on the PATH variable if full path cannot be found

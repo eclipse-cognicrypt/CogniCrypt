@@ -30,7 +30,7 @@ public class Constants {
 
 	public static final String pathToPropertyfiles = Constants.rsrcPath + "Labels.properties";
 
-	public static final String jsonPrimitiveTypesFile = rsrcPath + "Primitives" + innerFileSeparator + "PrimitiveType.json";
+	public static final String jsonPrimitiveTypesFile = rsrcPath + "Primitives" + innerFileSeparator + "JSON" +innerFileSeparator + "PrimitiveType.json";
 
 	//XML & XSL for Primitive 
 	public static final String primitivesPath = Constants.rsrcPath + "Primitives";
@@ -45,9 +45,8 @@ public class Constants {
 	public static final String cipherSpiXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template" + innerFileSeparator + "CipherSPI.xsl";
 	public static final String providerClassXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template" + innerFileSeparator + "providerClass.xsl";
 	public static final String transformedFiles = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "TransformedFiles";
-	//Jar file location - Provider
+	//Jar file location - Provider (Primitive)
 	public static final String PROVIDER_FOLDER = primitivesPath + innerFileSeparator + "provider";
-	public static final String PROVIDER_JAR_File = PROVIDER_FOLDER + innerFileSeparator + "provider.jar";
 	
 	//Java Folder location 
 	public static final String JAVA_BIN = "C:\\Program Files\\Java\\";

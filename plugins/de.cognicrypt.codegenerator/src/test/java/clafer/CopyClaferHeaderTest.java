@@ -26,9 +26,9 @@ public class CopyClaferHeaderTest {
 
 	}
 
-	//	@Test(expected = FileNotFoundException.class)
-	//public void testFileNotFound() {
-	//	File finalClafer1 = ClaferGenerator.copyClaferHeader(Constants.claferHeaderTest, Constants.claferFooter);
-	//}
+	@Test
+	public void test1() {
+		// 
 
+	}
 }

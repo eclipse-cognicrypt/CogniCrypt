@@ -4,7 +4,6 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -14,7 +13,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Group;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Question;
@@ -31,7 +29,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	int counter = 0;// TODO for testing only.
 	protected ArrayList<ClaferFeature> cfrFeatures;
 
-	private HashMap<String, String> tagValueTagData;
 
 	TreeViewer treeViewer;
 
@@ -44,8 +41,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		setTitle(title);
 		setDescription(description);
 		this.setPageComplete(false);
-		// The String to display, and the constructed string for the XSL document.
-		setTagValueTagData(new HashMap<>());
 	}
 
 	/**
@@ -186,7 +181,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		// The first child of the composite is a group. Get the children of this group to iterated over.
 		for (Control control : ((Composite) getCompositeChoiceForModeOfWizard().getChildren()[0]).getChildren()) {
 			// Check if the child is an instance of group and is visible.
-			if (control instanceof Group && control.isVisible()) {
+			if (control instanceof Composite && control.isVisible()) {
 				
 				// Get the children of this group and iterate over them. These are the widgets that get the file data. This loop generalizes for all these widgets.
 				for (Control subGroup : ((Composite) control).getChildren()) {
@@ -249,21 +244,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 	public int getCounter() {
 		return counter;
-	}
-
-	/**
-	 * @return the tagValueTagData
-	 */
-	public HashMap<String, String> getTagValueTagData() {
-		return tagValueTagData;
-	}
-
-	/**
-	 * @param tagValueTagData
-	 *        the tagValueTagData to set
-	 */
-	public void setTagValueTagData(HashMap<String, String> tagValueTagData) {
-		this.tagValueTagData = tagValueTagData;
 	}
 
 }

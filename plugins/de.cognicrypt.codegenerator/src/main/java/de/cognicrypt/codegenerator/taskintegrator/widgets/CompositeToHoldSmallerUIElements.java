@@ -190,12 +190,9 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 */
 	private void addXSLAttributeUI(XSLAttribute XSLAttrubuteParam, SortedSet<String> possibleCfrFeatures, boolean showRemoveButton) {
 		GroupXSLTagAttribute groupforXSLTagAttribute = new GroupXSLTagAttribute((Composite) getContent(), SWT.NONE, showRemoveButton, XSLAttrubuteParam, possibleCfrFeatures);
-		groupforXSLTagAttribute.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT,
-			Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
-
-		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + Constants.HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT);
-
-		setMinHeight(getLowestWidgetYAxisValue());
+		groupforXSLTagAttribute.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		composite.layout();
 	}
 
 	/**

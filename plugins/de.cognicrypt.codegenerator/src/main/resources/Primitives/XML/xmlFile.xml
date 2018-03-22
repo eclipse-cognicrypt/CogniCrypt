@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SymmetricBlockCipher>
-   <name>Bla</name>
-   <description>feoifjzo</description>
-   <Blocksize>250</Blocksize>
-   <Keysize1>2525</Keysize1>
-   <mode>OFB|CTR|CFB</mode>
-   <Padding>ZeroPadding|PKCS7</Padding>
+   <name>Sics</name>
+   <Blocksize>52</Blocksize>
+   <Keysize1>355</Keysize1>
+   <mode>OFB|CFB</mode>
+   <Padding>PKCS7|ZeroPadding</Padding>
 </SymmetricBlockCipher>

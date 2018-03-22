@@ -42,11 +42,11 @@ public class UserJavaProject {
 		if (javaProject != null) {
 			List<IMethod> methodsList = new ArrayList<IMethod>();
 			IPackageFragment[] packages = javaProject.getPackageFragments();
-			for (IPackageFragment aPackage : packages) {
+			for (IPackageFragment pack : packages) {
 				//look at the package from the source folder
-				if (aPackage.getKind() == IPackageFragmentRoot.K_SOURCE) {
+				if (pack.getKind() == IPackageFragmentRoot.K_SOURCE) {
 
-					for (ICompilationUnit unit : aPackage.getCompilationUnits()) {
+					for (ICompilationUnit unit : pack.getCompilationUnits()) {
 
 						IType[] allTypes = unit.getAllTypes();
 						for (IType type : allTypes) {
@@ -94,11 +94,59 @@ public class UserJavaProject {
 		}
 		return javaProject;
 	}
-	
-	
+
+	/**
+	 * This method creates a new package in the java project of the user
+	 * 
+	 * @param packageName
+	 * @throws CoreException
+	 */
 	public void addPackage(String packageName) throws CoreException {
-		IJavaProject javaProject= toJavaProject(this.project);
+		IJavaProject javaProject = toJavaProject(this.project);
 		IPackageFragment pack = javaProject.getPackageFragmentRoot(this.project.getFolder("src")).createPackageFragment(packageName, false, null);
+	}
+
+	/**
+	 * 
+	 * @param packageName
+	 * @return the package with the given name
+	 */
+	public IPackageFragment getPackageByName(String packageName) {
+		IPackageFragment aPackage = null;
+		try {
+			IJavaProject javaProject = toJavaProject(this.project);
+			IPackageFragment[] packages = javaProject.getPackageFragments();
+			for (IPackageFragment pack : packages) {
+				if (pack.getElementName().equals(packageName)) {
+					aPackage = pack;
+				}
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		return aPackage;
+
+	}
+
+	/**
+	 * This method creates a new class in a certain package
+	 * 
+	 * @param className
+	 * @param content
+	 *        contains the source code
+	 * @param pack
+	 *        is the package where the new class will be added
+	 * @throws JavaModelException
+	 */
+	public void createNewClass(String className, String content, IPackageFragment pack) throws JavaModelException {
+		//Add the package declaration into the source code
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("package " + pack.getElementName() + ";\n");
+		buffer.append("\n");
+		buffer.append(content);
+
+		//Generate the new class 
+		ICompilationUnit cu = pack.createCompilationUnit(className, buffer.toString(), false, null);
 	}
 
 	public IProject getProject() {

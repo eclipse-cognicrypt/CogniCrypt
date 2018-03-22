@@ -1,26 +1,18 @@
 package de.cognicrypt.codegenerator.primitive.wizard;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Stream;
 
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.ToolProvider;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -29,6 +21,7 @@ import org.xml.sax.SAXException;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.clafer.ClaferGenerator;
 import de.cognicrypt.codegenerator.primitive.providerUtils.ProviderFile;
+import de.cognicrypt.codegenerator.primitive.providerUtils.UserJavaProject;
 import de.cognicrypt.codegenerator.primitive.providerUtils.XsltWriter;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnaire;
@@ -234,12 +227,27 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		File[] listOfFiles = (folder).listFiles();
 		for (File file : listOfFiles) {
 			if (file.getName().endsWith(".java")) {
-				String fileName = file.getName();
-				classContent.put(fileName.substring(0, fileName.lastIndexOf('.')), readFileLineByLine(file.getAbsolutePath()));
+//				.substring(0, file.getName().lastIndexOf('.')
+				String className = file.getName();
+				String sourceCode = readFileLineByLine(file.getAbsolutePath());
+				classContent.put(className, sourceCode);
+
 			}
 		}
-		System.out.println(classContent.isEmpty() + "  " + classContent.size());
 
+		for (String name : classContent.keySet()) {
+
+			String className = name.toString();
+			String sourceCode = classContent.get(name).toString();
+
+			UserJavaProject project = this.methodSelectionPage.getUserProject();
+			try {
+				project.createNewClass(className, sourceCode, project.getPackageByName(Constants.PRIMITIVE_PACKAGE));
+			} catch (JavaModelException e) {
+				e.printStackTrace();
+			}
+			System.out.println(classContent.isEmpty() + "  " + classContent.size());
+		}
 		//Create provider jarFile 
 		String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" };
 		provider.createManifest("some owner", classPaths);

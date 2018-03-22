@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.wizard.WizardPage;
@@ -87,7 +88,14 @@ public class MethodSelectorPage extends WizardPage {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 	}
 
+	public UserJavaProject getUserProject() {
+		return this.project;
+	}
+
+	public void setUserProject(UserJavaProject project) {
+		this.project = project;
+	}
 }

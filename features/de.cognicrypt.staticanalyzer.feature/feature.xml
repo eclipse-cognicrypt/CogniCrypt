@@ -93,8 +93,22 @@ Except as expressly stated in Sections 2(a) and 2(b) above, Recipient receives n
    </license>
 
    <url>
-      <update url="http://download.cognicrypt.org/cognicrypt"/>
+      <update url="http://download.eclipse.org/cognicrypt"/>
    </url>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.xtext"/>
+      <import plugin="org.eclipse.xtext.common.types.ui"/>
+      <import plugin="de.darmstadt.tu.crossing.CryptSL" match="greaterOrEqual"/>
+      <import plugin="de.darmstadt.tu.crossing.CryptSL.ide" match="greaterOrEqual"/>
+      <import plugin="de.darmstadt.tu.crossing.CryptSL.ui"/>
+   </requires>
 
    <plugin
          id="de.cognicrypt.staticanalyzer"

@@ -9,6 +9,7 @@ package crossing.e1.primitiveintegration.test;
  import java.util.jar.JarFile;
  import org.junit.Test;
 
+import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.providerUtils.ProviderFile;
 import de.cognicrypt.codegenerator.utilities.Utils;
  
@@ -17,8 +18,20 @@ import de.cognicrypt.codegenerator.utilities.Utils;
  	ProviderFile providerFile = new ProviderFile("test provider");
  	String dirJar = "src/test/resources/test.jar";
  	boolean elementExists=false;
+ 	
+ 	public boolean check(File[] files, String element) {
+ 		boolean elementExists=false;
+ 		for (int i = 0; i < files.length; i++  ) {
+ 			if (files[i].isFile()) {
+ 				if (files[i].getName().equals(element))
+ 					elementExists=true;
+ 			}
+ 		}
+ 
+ 		return elementExists;
+ 	}
  	@Test
- 	public void test() {
+ 	public void createJarFileTest() {
  		try {
  			
  			File jarFile = new File(dirJar);
@@ -34,23 +47,22 @@ import de.cognicrypt.codegenerator.utilities.Utils;
  			elementExists=check(files, entryName);
  			}
  			assertEquals(elementExists, true);
+ 			jar.close();
+ 			jarFile.delete();
  
  		} catch (IOException e) {
  			e.printStackTrace();
  		}
  
  	}
+ 	@Test
+	public void compilteJavaFileTest() {
+		File testJavaFile = Utils.getResourceFromWithin(Constants.testPrimitverFolder + "testJava.java");
+		providerFile.compileFile(testJavaFile);
+		File testClassFile = Utils.getResourceFromWithin(Constants.testPrimitverFolder + "testJava.class");
+		assertEquals(testClassFile.exists(), true);
+	}
  
- 	public boolean check(File[] files, String element) {
- 		boolean elementExists=false;
- 		for (int i = 0; i < files.length; i++  ) {
- 			if (files[i].isFile()) {
- 				if (files[i].getName().equals(element))
- 					elementExists=true;
- 			}
- 		}
- 
- 		return elementExists;
- 	}
+ 	
  
  }

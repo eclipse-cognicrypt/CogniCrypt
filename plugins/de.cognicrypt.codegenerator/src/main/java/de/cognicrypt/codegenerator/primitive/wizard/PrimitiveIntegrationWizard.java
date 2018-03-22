@@ -2,10 +2,15 @@ package de.cognicrypt.codegenerator.primitive.wizard;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
@@ -13,6 +18,8 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
@@ -39,9 +46,10 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	MethodSelectorPage methodSelectionPage;
 	WizardPage preferenceSelectionPage;
 	LinkedHashMap<String, String> inputsMap = new LinkedHashMap<String, String>();
+	LinkedHashMap<String, String> classContent = new LinkedHashMap<String, String>();
 	String providerName;
 	XsltWriter xsltWriter;
-	ProviderFile providerJar = new ProviderFile("Test");
+	ProviderFile provider = new ProviderFile("Test");
 	Primitive selectedPrimitive;
 	int pageId;
 
@@ -226,21 +234,17 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		File[] listOfFiles = (folder).listFiles();
 		for (File file : listOfFiles) {
 			if (file.getName().endsWith(".java")) {
-				System.setProperty("java.home", lastAddedJDK().getAbsolutePath());
-
-				JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-				StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
-
-				Iterable<? extends JavaFileObject> compilationUnits1 = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(file));
-				compiler.getTask(null, fileManager, null, null, null, compilationUnits1).call();
+				String fileName = file.getName();
+				classContent.put(fileName.substring(0, fileName.lastIndexOf('.')), readFileLineByLine(file.getAbsolutePath()));
 			}
 		}
+		System.out.println(classContent.isEmpty() + "  " + classContent.size());
 
-		//Create Provider jarFile 
+		//Create provider jarFile 
 		String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" };
-		providerJar.createManifest("some owner", classPaths);
+		provider.createManifest("some owner", classPaths);
 		providerName = inputsMap.get("name");
-		providerJar.createJarArchive(new File(Utils.getResourceFromWithin(Constants.PROVIDER_FOLDER) + Constants.innerFileSeparator + providerName + ".jar"), folder.listFiles());
+		provider.createJarArchive(new File(Utils.getResourceFromWithin(Constants.PROVIDER_FOLDER) + Constants.innerFileSeparator + providerName + ".jar"), folder.listFiles());
 
 		//delete archived files 
 		for (File file : folder.listFiles()) {
@@ -251,20 +255,14 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		return true;
 	}
 
-	//Get the last JDK from Java folder in local c:
-	private static File lastAddedJDK() {
-		File fl = new File(Constants.JAVA_BIN);
-		FileFilter fileFilter = new WildcardFileFilter("jdk*");
-		File[] files = fl.listFiles(fileFilter);
-		long lastMod = Long.MIN_VALUE;
-		File lastUpdatedFile = null;
-		for (File file : files) {
-			if (file.lastModified() > lastMod) {
-				lastUpdatedFile = file;
-				lastMod = file.lastModified();
-			}
+	private static String readFileLineByLine(String filePath) {
+		StringBuilder contentBuilder = new StringBuilder();
+		try (Stream<String> stream = Files.lines(Paths.get(filePath), StandardCharsets.UTF_8)) {
+			stream.forEach(s -> contentBuilder.append(s).append("\n"));
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		return lastUpdatedFile;
+		return contentBuilder.toString();
 	}
 
 }

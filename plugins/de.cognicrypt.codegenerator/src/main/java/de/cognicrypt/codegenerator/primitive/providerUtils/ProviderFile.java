@@ -1,14 +1,25 @@
 package de.cognicrypt.codegenerator.primitive.providerUtils;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Arrays;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
+
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+
+import de.cognicrypt.codegenerator.Constants;
 
 /**
  * A class that generate the provider file
@@ -91,45 +102,39 @@ public class ProviderFile {
 		}
 	}
 
-	/**
-	 * Get a class Object from a file
-	 * 
-	 * @param ClassName
-	 *        Path to the java file
-	 * @return
-	 * @throws Exception
-	 */
-	public Class loadClass(String ClassName, String ClassFolder) throws Exception {
-		URLClassLoader loader = new URLClassLoader(new URL[] { new URL("file://" + ClassFolder) });
-		return loader.loadClass(ClassName);
-		//		JarFile jarFile = new JarFile(pathToJar);
-		//		Enumeration<JarEntry> e = jarFile.entries();
-		//
-		//		URL[] urls = { new URL("jar:file:" + pathToJar+"!/") };
-		//		URLClassLoader cl = URLClassLoader.newInstance(urls);
-		//
-		//		while (e.hasMoreElements()) {
-		//		    JarEntry je = e.nextElement();
-		//		    if(je.isDirectory() || !je.getName().endsWith(".class")){
-		//		        continue;
-		//		    }
-		//		    // -6 because of .class
-		//		    String className = je.getName().substring(0,je.getName().length()-6);
-		//		    className = className.replace('/', '.');
-		//		    Class c = cl.loadClass(className);
-
-		//		}
-	}
 
 	/**
 	 * Compile files
 	 * 
 	 * @param files
 	 */
-	public void compileFiles(File[] files) {
+	public void compileFile(File file) {
+		System.setProperty("java.home", lastAddedJDK().getAbsolutePath());
 
+		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+
+		Iterable<? extends JavaFileObject> compilationUnits1 = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(file));
+		compiler.getTask(null, fileManager, null, null, null, compilationUnits1).call();
 	}
 
+	
+	//Get the last JDK from Java folder in local c:
+		private static File lastAddedJDK() {
+			File fl = new File(Constants.JAVA_BIN);
+			FileFilter fileFilter = new WildcardFileFilter("jdk*");
+			File[] files = fl.listFiles(fileFilter);
+			long lastMod = Long.MIN_VALUE;
+			File lastUpdatedFile = null;
+			for (File file : files) {
+				if (file.lastModified() > lastMod) {
+					lastUpdatedFile = file;
+					lastMod = file.lastModified();
+				}
+			}
+			return lastUpdatedFile;
+		}
+	
 	public void setManifest(Manifest manifest) {
 		this.manifest = manifest;
 	}

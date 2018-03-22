@@ -104,7 +104,7 @@ public abstract class CodeGenerator {
 		final TreeSet<SimpleEntry<Integer, Integer>> methLims = new TreeSet<>();
 		final SimpleEntry<Integer, SimpleEntry<Integer, Integer>> classlims = new SimpleEntry<>(0, null);
 
-		final ASTParser astp = ASTParser.newParser(AST.JLS8);
+		final ASTParser astp = ASTParser.newParser(AST.JLS9);
 		astp.setSource(docContent.toCharArray());
 		astp.setKind(ASTParser.K_COMPILATION_UNIT);
 		final CompilationUnit cu = (CompilationUnit) astp.createAST(null);
@@ -170,7 +170,7 @@ public abstract class CodeGenerator {
 		// Retrieve complete content from file
 		final String fileContent = String.join(Constants.lineSeparator, Files.readAllLines(Paths.get(filePath)));
 		// Determine start and end position for relevant extract
-		final ASTParser astp = ASTParser.newParser(AST.JLS8);
+		final ASTParser astp = ASTParser.newParser(AST.JLS9);
 		astp.setSource(fileContent.toCharArray());
 		astp.setKind(ASTParser.K_COMPILATION_UNIT);
 		final CompilationUnit cu = (CompilationUnit) astp.createAST(null);

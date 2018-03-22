@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.providerUtils.UserJavaProject;
 
 /**
@@ -75,6 +76,7 @@ public class MethodSelectorPage extends WizardPage {
 		try {
 			// import project 
 			this.project.ImportProject(this.projectPath);
+			this.project.addPackage(Constants.PRIMITIVE_PACKAGE);
 			//Display methods from the imported project in the combo box 
 			for (IMethod method : project.listOfAllMethods()) {
 				encryptionCombo.add(method.getElementName());

@@ -94,6 +94,12 @@ public class UserJavaProject {
 		}
 		return javaProject;
 	}
+	
+	
+	public void addPackage(String packageName) throws CoreException {
+		IJavaProject javaProject= toJavaProject(this.project);
+		IPackageFragment pack = javaProject.getPackageFragmentRoot(this.project.getFolder("src")).createPackageFragment(packageName, false, null);
+	}
 
 	public IProject getProject() {
 		return this.project;

@@ -8,14 +8,14 @@ import org.junit.Test;
 
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionPageUtility;
 import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.*;
 
 public class PageUtilityTest {
 
 	PrimitiveQuestionPageUtility util = new PrimitiveQuestionPageUtility();
 	PrimitiveQuestionsJSONReader pqjr = new PrimitiveQuestionsJSONReader();
-	String testFileFolder = "src/test/resources/testQuestions/";
-	String testFile1 = this.testFileFolder + "TestPrimitiveQuestion.json";
+	String testFile1 = Constants.testPrimitverFolder + "PrimitiveQuestionTest.json";
 
 	@Test
 	public void testGetIndex() {

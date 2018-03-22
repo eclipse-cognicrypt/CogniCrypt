@@ -15,7 +15,7 @@ public class ClaferCompiler {
 
 		if (osString.contains("Linux")) {
 			return Utils.getResourceFromWithin("src/main/resources/bin/clafer-linux").getAbsolutePath();
-		} else if (osString.contains("mac")) {
+		} else if (osString.contains("Mac OS X")) {
 			return Utils.getResourceFromWithin("src/main/resources/bin/clafer-macos").getAbsolutePath();
 		} else if (osString.contains("Windows 7") || osString.contains("Windows 8") || osString.contains("Windows 10")) {
 			return Utils.getResourceFromWithin("src/main/resources/bin/clafer-windows.exe").getAbsolutePath();

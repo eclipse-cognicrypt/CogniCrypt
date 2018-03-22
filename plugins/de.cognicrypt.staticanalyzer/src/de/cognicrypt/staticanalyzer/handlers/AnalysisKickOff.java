@@ -23,10 +23,10 @@ import de.cognicrypt.staticanalyzer.sootbridge.SootRunner;
  */
 public class AnalysisKickOff {
 
-	private String mainClass;
-	private IJavaProject curProj;
 	private static ErrorMarkerGenerator errGen;
 	private static ResultsCCUIListener resultsReporter;
+	private String mainClass;
+	private IJavaProject curProj;
 
 	/**
 	 * This method sets up the analysis by <br>
@@ -51,7 +51,7 @@ public class AnalysisKickOff {
 		} else {
 			AnalysisKickOff.errGen.clearMarkers(ip);
 		}
-		if (AnalysisKickOff.resultsReporter == null) {
+		if (AnalysisKickOff.resultsReporter == null || !AnalysisKickOff.resultsReporter.getReporterProject().equals(ip)) {
 			AnalysisKickOff.resultsReporter = new ResultsCCUIListener(ip, AnalysisKickOff.errGen);
 		}
 

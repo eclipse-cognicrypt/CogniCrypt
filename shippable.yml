@@ -7,13 +7,13 @@ env:
   - NIGHTLYBUILD=$BRANCH
   - NIGHTLYBUILD=cp-group1718
   - NIGHTLYBUILD=ti-group1718
-  - NIGHTLYBUILD=ui-group1718
+  - NIGHTLYBUILD=ui-group1718-new
   
 matrix:
   allow_failures:
    - env: NIGHTLYBUILD=cp-group1718
    - env: NIGHTLYBUILD=ti-group1718
-   - env: NIGHTLYBUILD=ui-group1718
+   - env: NIGHTLYBUILD=ui-group1718-new
   
 build:
   ci:

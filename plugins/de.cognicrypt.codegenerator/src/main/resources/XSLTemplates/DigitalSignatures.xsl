@@ -5,6 +5,22 @@
 
 <xsl:if test="//task[@description='DigitalSignatures']">
 
+<xsl:variable name="keysize"> <xsl:value-of select="//task/element[@type='DigitalSignatures']/Keysize"/> </xsl:variable>
+
+<xsl:variable name="keyPairGenerator">
+	<xsl:choose>
+		<xsl:when test="//task/element[@type='DigitalSignatures']/Scheme='RSA'">RSA</xsl:when>
+		<xsl:otherwise>EC</xsl:otherwise>
+	</xsl:choose>
+</xsl:variable>
+
+<xsl:variable name="signatureAlgorithm">
+	<xsl:choose>
+		<xsl:when test="//task/element[@type='DigitalSignatures']/Scheme='RSA'">SHA256withRSA</xsl:when>
+		<xsl:otherwise>SHA256withECDSA</xsl:otherwise>
+	</xsl:choose>
+</xsl:variable>
+
 <xsl:result-document href="EcdsaSignature.java">
 package <xsl:value-of select="//task/Package"/>;
 <xsl:apply-templates select="//Import"/>
@@ -12,13 +28,13 @@ package <xsl:value-of select="//task/Package"/>;
 public class EcdsaSignature {
 
 	private static final String rndNumberGenerator = "NativePRNG";
-	private static final String keyPairGenerator = "EC";
-	private static final String signatureAlgorithm = "SHA256withECDSA";
+	private static final String keyPairGenerator = "<xsl:value-of select="$keyPairGenerator"/>";
+	private static final String signatureAlgorithm = "<xsl:value-of select="$signatureAlgorithm"/>";
 
 	public static KeyPair getKey() throws NoSuchAlgorithmException {
 		SecureRandom prng = SecureRandom.getInstance(rndNumberGenerator);
 		KeyPairGenerator kpg = KeyPairGenerator.getInstance(keyPairGenerator);
-		kpg.initialize(256, prng);
+		kpg.initialize(<xsl:value-of select="$keysize"/>, prng);
 		KeyPair pair = kpg.generateKeyPair();
 		return pair;
 	}

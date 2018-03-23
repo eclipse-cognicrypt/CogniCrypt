@@ -61,7 +61,7 @@ public class TaskSelectionPage extends WizardPage {
 		this.container.setBounds(10, 10, 200, 300);
 		
 		//To display the Help view after clicking the help icon
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.container, "de.cognicrypt.codegenerator.help_id_1");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.container, "de.cognicrypt.codegenerator.TaskSelectionHelp");
 		this.container.setLayout(new GridLayout(2, false));
 
 		final Label selectProjectLabel = new Label(this.container, SWT.NONE);

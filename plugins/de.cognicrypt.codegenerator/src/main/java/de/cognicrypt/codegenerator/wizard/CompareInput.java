@@ -66,6 +66,6 @@ class CompareItem implements IStreamContentAccessor, ITypedElement {
 	}
 
 	public String getType() {
-		return "java";
+		return "Java";
 	}
 }

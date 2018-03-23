@@ -107,7 +107,7 @@ public class InstanceListPage extends WizardPage {
 		this.control.setLayout(layout);
 
 		//To display the Help view after clicking the help icon
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.help_id_3");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.InstanceListHelp");
 
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
 		setPageComplete(false);
@@ -179,7 +179,7 @@ public class InstanceListPage extends WizardPage {
 
 				InstanceListPage.this.instanceDetails.setText(defaultAlgorithmPage.getInstanceProperties(tempAlgorithmGroup.get(tempKey)));
 				setCurrentIndex(tempIndex);
-				algorithmVariation.setText("       "+ "  Variations:  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
+				algorithmVariation.setText("       "+ "  Variation  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
 				if (combo.getSelectionIndex() == 0 && getCurrentIndex() == 1) {
 					//hide the help assist and the text if the selected algorithm is not the default algorithm
 					deco.show();
@@ -217,7 +217,7 @@ public class InstanceListPage extends WizardPage {
 				setValue(tempAlgorithmGroup.get(tempKey));
 				InstanceListPage.this.instanceDetails.setText(defaultAlgorithmPage.getInstanceProperties(tempAlgorithmGroup.get(tempKey)));
 				setCurrentIndex(tempIndex);
-				algorithmVariation.setText("       " +"  Variations:  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
+				algorithmVariation.setText("       " +"  Variation  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
 
 				if (combo.getSelectionIndex() == 0 && getCurrentIndex() == 1) {
 					//hide the help assist and the text if the selected algorithm is not the default algorithm
@@ -263,7 +263,7 @@ public class InstanceListPage extends WizardPage {
 			setValue(tempAlgorithmGroup.get(selectedAlgorithm));
 			InstanceListPage.this.instanceDetails.setText(defaultAlgorithmPage.getInstanceProperties(tempAlgorithmGroup.get(selectedAlgorithm)));
 			setCurrentIndex(1);
-			algorithmVariation.setText("       "+ "  Variations:  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
+			algorithmVariation.setText("       "+ "  Variation  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
 
 			if (combo.getSelectionIndex() == 0 && getCurrentIndex() == 1) {
 				//hide the help assist and the text if the selected algorithm is not the default algorithm
@@ -329,7 +329,28 @@ public class InstanceListPage extends WizardPage {
 				//open compare editor to show the difference between the current code(in the user's Java class that is open in his editor)
 				//and the new code that will be generated(in the same class) on clicking 'Finish'.	
 				//if the user does not have any class opened in his editor, then one side of the compare editor will be empty.
-				CompareUI.openCompareDialog(new CompareInput(getCurrentEditorContent(), compileCodePreview()));				 
+				CompareUI.openCompareDialog(new CompareInput(getCurrentEditorContent(), compileCodePreview()));
+				
+//				byte[] encoded = null;
+//				try {
+//					encoded = Files.readAllBytes(Paths.get("C://Users//Computer//Downloads//Activator2.java"));
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				  String s1 = new String(encoded, StandardCharsets.UTF_8);
+//				
+//				  byte[] encoded2 = null;
+//				try {
+//					encoded2 = Files.readAllBytes(Paths.get("C://Users//Computer//Downloads//Activator.java"));
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				  String s2 = new String(encoded2, StandardCharsets.UTF_8);
+//				
+//				CompareUI.openCompareDialog(new CompareInput(s1, s2));
+								 
 			}
 		});
 
@@ -410,13 +431,11 @@ public class InstanceListPage extends WizardPage {
 					sb.append(line);
 					sb.append(Constants.lineSeparator);
 				}
-			}
-			System.out.println(sb.toString());
+			}		
 			return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");			
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
 		}
-
 		return "";
 	}
 

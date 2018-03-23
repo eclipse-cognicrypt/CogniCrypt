@@ -113,7 +113,7 @@ public class Constants {
 	public static final String JAVA = "java";
 	public static final String DEFAULT_PROVIDER = "JCA";
 	public static final String JAR = ".jar";
-	public static final String ALGORITHM = "algorithm";
+	public static final String ALGORITHM = "Algorithm";
 	public static final String GUIDED_MODE = "Use the guided mode for configuring the task";
 	public static final String DEFAULT_ALGORITHM_PAGE_CHECKBOX ="Show other possible algorithm combinations";
 	public static final String SHOW_PASSWORD_CHECKBOX ="Show Password";

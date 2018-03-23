@@ -107,7 +107,7 @@ public class InstanceListPage extends WizardPage {
 		this.control.setLayout(layout);
 
 		//To display the Help view after clicking the help icon
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.InstanceListHelp");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(sc, "de.cognicrypt.codegenerator.InstanceListHelp");
 
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
 		setPageComplete(false);

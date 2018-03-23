@@ -185,7 +185,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 		// To display the Help view after clicking the help icon
 		if (!this.page.getHelpID().isEmpty()) {
-			PlatformUI.getWorkbench().getHelpSystem().setHelp(this.container, getHelpId(this.page));
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(sc, getHelpId(this.page));
 		}
 
 		this.container.setLayout(layout);

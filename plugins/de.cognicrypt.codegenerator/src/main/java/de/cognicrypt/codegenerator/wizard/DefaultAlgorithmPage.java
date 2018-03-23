@@ -86,7 +86,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 		this.control.setLayout(layout);
 
 		//To display the Help view after clicking the help icon
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.DefaultAlgorithmHelp");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(sc, "de.cognicrypt.codegenerator.DefaultAlgorithmHelp");
 
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
 		compositeControl.setLayout(new GridLayout(2, false));

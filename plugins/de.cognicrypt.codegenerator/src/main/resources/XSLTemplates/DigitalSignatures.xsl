@@ -4,9 +4,9 @@
 <xsl:template match="/">
 
 <xsl:if test="//task[@description='DigitalSignatures']">
-	
+
 <xsl:result-document href="EcdsaSignature.java">
-package <xsl:value-of select="//task/Package"/>; 
+package <xsl:value-of select="//task/Package"/>;
 <xsl:apply-templates select="//Import"/>
 
 public class EcdsaSignature {
@@ -45,12 +45,12 @@ public class EcdsaSignature {
 
 </xsl:result-document>
 
-package <xsl:value-of select="//Package"/>; 
-<xsl:apply-templates select="//Import"/>	
+package <xsl:value-of select="//Package"/>;
+<xsl:apply-templates select="//Import"/>
 public class Output {
 
 	public static void templateUsage() throws GeneralSecurityException {
-	
+
 		// key generation
 		KeyPair pair = EcdsaSignature.getKey();
 

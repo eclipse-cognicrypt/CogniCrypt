@@ -15,20 +15,32 @@ Slow: Performance = 2
 Fast: Performance = 3
 VeryFast: Performance = 4
 
-abstract Algorithm
-	name -> string
-	description -> string
-	algorithmSecurity -> Security
+abstract DSS
 	performance -> Performance
-	classPerformance -> Performance 
+	security -> Security
+	keysize -> integer
+RSA : DSS
+	[ performance = Fast ]
+	[ security = Medium ]
+	[ keysize = 512 ]
+ECDSA : DSS
+	[ performance = Slow ]
+	[ security = Strong ]
+	[ keysize = 256 ]
 
-abstract Cipher : Algorithm
+abstract DSSProperty
+fixed : DSSProperty
+performant : DSSProperty
+secure : DSSProperty
 
 abstract Task
     description -> string
 
-DigitalSignatures : Task  
+DigitalSignatures : Task
 	[description = "Digitally sign a document"]
-	security -> integer
-	performance -> integer
-	[security >= Medium]
+
+	scheme -> DSS
+
+	dssProperty -> DSSProperty
+	[ dssProperty = performant => scheme.performance >= Fast ]
+	[ dssProperty = secure => scheme.security >= Strong ]

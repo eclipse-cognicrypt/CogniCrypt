@@ -1,33 +1,95 @@
-[
-	{
+[{
+	"id": "0",
+	"helpID": "DigitalSignatures_Page0",
+	"content": [{
 		"id": "0",
-		"helpID": "DigitalSignatures_Page0",
-		"content": [
-			{
-				"id": "0",
-				"note": "",
-				"tooltip": "",
-				"element": "radio",
-				"questionText": "Do you want to verify the signed message?",
-				"answers": [
-					{
-						"value": "Yes",
-						"codeDependencies": [{
-							"option": "verify",
-							"value": "true"
-						}]
-					},
-					{
-						"value": "No",
-						"defaultAnswer": true,
-						"codeDependencies": [{
-							"option": "verify",
-							"value": "false"
-						}]
-					}
-				]
-			}
-		],
-		"nextID": "1"
-	}
-]
+		"note": "",
+		"tooltip": "",
+		"element": "radio",
+		"questionText": "Do you need both signing and verification?",
+		"answers": [{
+			"value": "Only signing",
+			"codeDependencies": [{
+				"option": "signing",
+				"value": "true"
+			}, {
+				"option": "verifying",
+				"value": "false"
+			}]
+		}, {
+			"value": "Both, signing and verification",
+			"defaultAnswer": true,
+			"codeDependencies": [{
+				"option": "signing",
+				"value": "true"
+			}, {
+				"option": "verifying",
+				"value": "true"
+			}]
+		}]
+	}],
+	"nextID": "1"
+}, {
+	"id": "1",
+	"helpID": "DigitalSignatures_Page1",
+	"content": [{
+		"id": "1",
+		"note": "",
+		"tooltip": "",
+		"element": "radio",
+		"questionText": "Do you prefer any particular digital signature scheme?",
+		"answers": [{
+			"value": "Yes, I want to choose from a list.",
+			"defaultAnswer": true,
+			"claferDependencies": [{
+				"algorithm": "dssProperty",
+				"value": "fixed",
+				"operator": "="
+			}],
+			"nextID": "2"
+		}, {
+			"value": "No, but I do need blazing fast verification.",
+			"claferDependencies": [{
+				"algorithm": "dssProperty",
+				"value": "performant",
+				"operator": "="
+			}],
+			"nextID": "-1"
+		}, {
+			"value": "No, I would like state-of-the-art security.",
+			"claferDependencies": [{
+				"algorithm": "dssProperty",
+				"value": "secure",
+				"operator": "="
+			}],
+			"nextID": "-1"
+		}]
+	}]
+}, {
+	"id": "2",
+	"helpID": "DigitalSignatures_Page2",
+	"content": [{
+		"id": "2",
+		"note": "",
+		"tooltip": "",
+		"element": "combo",
+		"questionText": "Which Digital Signature Scheme do you want to use?",
+		"answers": [{
+			"value": "Elliptic Curce Digital Signature Algorithm (ECDSA)",
+			"defaultAnswer": true,
+			"claferDependencies": [{
+				"algorithm": "scheme",
+				"value": "ECDSA",
+				"operator": "="
+			}]
+		}, {
+			"value": "RSA Signatures",
+			"claferDependencies": [{
+				"algorithm": "scheme",
+				"value": "RSA",
+				"operator": "="
+			}]
+		}]
+	}],
+	"nextID": "-1"
+}]

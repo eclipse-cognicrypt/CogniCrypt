@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<toc label="CogniCrypt User Guide" topic="html/book.html">
-<topic label="Tasks">
-		<link toc="toc_Tasks.xml" />
+<toc label="CogniCrypt User Guide">
+
+	<topic label="Overview" href="html/Overview.html" />
+	
+	<topic label="Tasks Supported">	
+	    <topic label="Encode Password for Secure Storage" href="html/tasks/SecurePassword.html" />	
+		<topic label="Encrypt Data Using a Secret Key" href="html/tasks/SymmetricEncryption.html" />
+		<topic label="Establish a Secure Network Connection" href="html/tasks/SecureCommunication.html" />
+		<topic label="Hybrid Encryption" href="html/tasks/HybridEncryption.html" />
+		<topic label="Judging Trustworthiness of third parties" href="html/tasks/CertainTrust.html" />
+		<topic label="Securely Archive Files" href="html/tasks/LongTermArchiving.html" />
+		<topic label="Secure Multi-Party Computation" href="html/tasks/SECMUPACOMP.html" />		
 	</topic>
-	<topic label="Task Configuration">
-		<link toc="toc_TaskConfiguration.xml" />
+
+	<topic label="Modes Supported">
+		<topic label="Guided Mode" href="html/modes/GuidedMode.html" />
+		<topic label="Non-Guided Mode" href="html/modes/NonGuidedMode.html" />
 	</topic>
+
 </toc>

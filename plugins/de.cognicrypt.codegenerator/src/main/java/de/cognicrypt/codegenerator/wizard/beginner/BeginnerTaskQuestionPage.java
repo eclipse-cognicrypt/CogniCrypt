@@ -180,13 +180,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		this.container = new Composite(sc, SWT.NONE);
-		this.container.setBounds(10, 10, 450, 200);
+//		this.container.setBounds(10, 10, 450, 200);
 		// Updated the number of columns to order the questions vertically.
 		final GridLayout layout = new GridLayout(1, false);
 
 		// To display the Help view after clicking the help icon
 		if (!this.page.getHelpID().isEmpty()) {
-			PlatformUI.getWorkbench().getHelpSystem().setHelp(this.container, getHelpId(this.page));
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(sc, getHelpId(this.page));
 		}
 
 		this.container.setLayout(layout);

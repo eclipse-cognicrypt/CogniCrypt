@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SymmetricBlockCipher>
-   <name>Sics</name>
-   <Blocksize>52</Blocksize>
-   <Keysize1>355</Keysize1>
-   <mode>OFB|CFB</mode>
-   <Padding>PKCS7|ZeroPadding</Padding>
+   <name>Dao</name>
+   <Keysize1>55</Keysize1>
+   <mode>CFB</mode>
 </SymmetricBlockCipher>

@@ -75,8 +75,10 @@ public class MethodSelectorPage extends WizardPage {
 
 		
 		try {
+			
 			// import project 
 			this.project.ImportProject(this.projectPath);
+			this.project.setProject(this.project.copyProject(this.project.getProject().getName()));
 			this.project.addPackage(Constants.PRIMITIVE_PACKAGE);
 			//Display methods from the imported project in the combo box 
 			for (IMethod method : project.listOfAllMethods()) {

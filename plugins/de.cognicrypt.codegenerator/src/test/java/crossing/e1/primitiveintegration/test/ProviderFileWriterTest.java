@@ -7,7 +7,9 @@ package crossing.e1.primitiveintegration.test;
  import java.util.Enumeration;
  import java.util.jar.JarEntry;
  import java.util.jar.JarFile;
- import org.junit.Test;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.providerUtils.ProviderFile;
@@ -18,6 +20,7 @@ import de.cognicrypt.codegenerator.utilities.Utils;
  	ProviderFile providerFile = new ProviderFile("test provider");
  	String dirJar = "src/test/resources/test.jar";
  	boolean elementExists=false;
+ 	
  	
  	public boolean check(File[] files, String element) {
  		boolean elementExists=false;

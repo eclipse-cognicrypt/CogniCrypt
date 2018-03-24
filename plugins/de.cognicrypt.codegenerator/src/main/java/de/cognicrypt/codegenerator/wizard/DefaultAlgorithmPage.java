@@ -14,7 +14,6 @@ import javax.xml.transform.TransformerException;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -32,11 +31,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.texteditor.ITextEditor;
-
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
@@ -90,7 +86,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 		this.control.setLayout(layout);
 
 		//To display the Help view after clicking the help icon
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.control, "de.cognicrypt.codegenerator.help_id_2");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(sc, "de.cognicrypt.codegenerator.DefaultAlgorithmHelp");
 
 		final Composite compositeControl = new Composite(this.control, SWT.NONE);
 		compositeControl.setLayout(new GridLayout(2, false));
@@ -148,8 +144,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 		});
 		this.code.setText(compileCodePreview());
 		this.code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
-		this.code.setAlwaysShowScrollBars(false);
- 
+		this.code.setAlwaysShowScrollBars(false); 
 
 		//this checkbox should be checked, to move to the next page.
 		defaultAlgorithmCheckBox = new Button(control, SWT.CHECK);
@@ -179,13 +174,6 @@ public class DefaultAlgorithmPage extends WizardPage {
 		}
 		deco.setImage(image);
 		deco.setShowOnlyOnFocus(false);
-		
-		
-//		IWorkbenchPart workbenchPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart(); 
-//		IFile file = (IFile) workbenchPart.getSite().getPage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
-//		if (file == null) throw new FileNotFoundException();
-//		String content = IOUtils.toString(file.getContents(), file.getCharset());
-		
 
 		sc.setContent(this.control);
 		sc.setExpandHorizontal(true);
@@ -193,16 +181,6 @@ public class DefaultAlgorithmPage extends WizardPage {
 		sc.setMinSize(this.control.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		setControl(sc);
 	}
-
-	public String getCurrentEditorContent() {
-	    final IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-	        .getActiveEditor();
-	    if (!(editor instanceof ITextEditor)) return null;
-	    ITextEditor ite = (ITextEditor)editor;
-	    IDocument doc = ite.getDocumentProvider().getDocument(ite.getEditorInput());
-	    return doc.get();
-	}
-	
 	
 	private String compileCodePreview() {
 		final CodeGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(), this.taskSelectionPage.getSelectedTask().getXslFile());
@@ -240,7 +218,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 		String value;
 
 		if (!inst.getType().getRef().getTargetType().isPrimitive()) {
-			String algo = Constants.ALGORITHM + " : " + ClaferModelUtils
+			String algo = Constants.ALGORITHM +" : " + ClaferModelUtils
 				.removeScopePrefix(inst.getType().getRef().getTargetType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + Constants.lineSeparator;
 			algorithms.put(algo, "");
 
@@ -256,6 +234,9 @@ public class DefaultAlgorithmPage extends WizardPage {
 				}
 				value = "\t" + ClaferModelUtils.removeScopePrefix(
 					in.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
+				
+//				value = ArrangeInColumn(ClaferModelUtils.removeScopePrefix(
+//					in.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")), ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : ""));
 				if (value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
 					value = value.substring(0, value.indexOf("->") - 1);
 					value = value.replaceAll("([a-z0-9])([A-Z])", "$1 $2");
@@ -337,6 +318,17 @@ public class DefaultAlgorithmPage extends WizardPage {
 		}
 		return true;
 	}
+	
+//	public String ArrangeInColumn(String key, String value) {
+//	    int keyColumn = 1;
+//	    int valueColumn = 35;//	 
+//	    StringBuilder output = new StringBuilder();
+//	    output.append("                                    ");  
+//	    output.insert(keyColumn, key);
+//	    output.insert(valueColumn, value);
+//	    System.out.println(output);
+//	    return output.toString();
+//	}
 
 	@Override
 	public void setVisible(final boolean visible) {

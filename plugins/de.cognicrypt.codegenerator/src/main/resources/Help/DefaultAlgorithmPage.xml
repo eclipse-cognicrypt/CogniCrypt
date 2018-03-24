@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.contexts"?>
 <contexts> 
-      <context  id="help_id_2" title="CogniCrypt"> 
+      <context  id="DefaultAlgorithmHelp"> 
         <description>CogniCrypt has configured an algorithm combination that is best suited for your requirements. Please move to next page if you want to see other algorithm combinations matching your needs.
 NOTE: You can go to next page, only if there is an algorithm other than the default algorithm provided here. </description> 
       </context> 

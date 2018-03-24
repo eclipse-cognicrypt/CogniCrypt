@@ -356,7 +356,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 						public void widgetSelected(SelectionEvent e) {
 							FileDialog fileDialog = new FileDialog(getShell(), SWT.NULL);
-							fileDialog.setFilterExtensions(new String[] { "*.jks" });
+							fileDialog.setFilterExtensions(new String[] { question.getExtension() });
 							String path = fileDialog.open();
 							if (path != null) {
 								inputField.setText(path);

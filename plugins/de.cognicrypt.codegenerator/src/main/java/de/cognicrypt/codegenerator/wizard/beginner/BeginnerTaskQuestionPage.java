@@ -179,7 +179,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		this.container = new Composite(sc, SWT.NONE);
-		this.container.setBounds(10, 10, 450, 200);
+//		this.container.setBounds(10, 10, 450, 200);
 		// Updated the number of columns to order the questions vertically.
 		final GridLayout layout = new GridLayout(1, false);
 

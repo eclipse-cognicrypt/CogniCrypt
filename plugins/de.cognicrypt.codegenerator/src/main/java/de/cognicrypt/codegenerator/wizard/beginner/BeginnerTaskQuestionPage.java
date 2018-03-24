@@ -41,6 +41,7 @@ import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.Constants.GUIElements;
 import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
@@ -486,6 +487,24 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					text(question, inputField);
 				} else {
 					text(question, inputField);
+				}
+
+				inputField.addModifyListener(e -> {
+					final Answer a = question.getDefaultAnswer();
+					final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?\\\\-])", "\\\\");
+					a.setValue(cleanedInput);
+					if (a.getCodeDependencies() != null) {
+						for (CodeDependency codeDep : a.getCodeDependencies()) {
+							codeDep.setValue(cleanedInput);
+						}
+					}
+					this.finish = !cleanedInput.isEmpty();
+					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
+					question.setEnteredAnswer(a);
+					BeginnerTaskQuestionPage.this.setPageComplete(isPageComplete());
+				});
+				if (question.getDefaultAnswer().getCodeDependencies() != null) {
+					inputField.setText(question.getDefaultAnswer().getCodeDependencies().get(0).getValue());
 				}
 				break;
 

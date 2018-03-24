@@ -9,6 +9,7 @@
 				"tooltip": "Example : /home/users/keystores/android.jks",
 				"element": "text",
       			"textType":"Browse",
+      			"extension": "*.jks",
 				"questionText": "Please specify the path to your keystore:",
 				"answers": [
 					{

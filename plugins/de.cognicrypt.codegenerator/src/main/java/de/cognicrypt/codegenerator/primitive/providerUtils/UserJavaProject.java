@@ -6,8 +6,10 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -147,6 +149,27 @@ public class UserJavaProject {
 
 		//Generate the new class 
 		ICompilationUnit cu = pack.createCompilationUnit(className, buffer.toString(), false, null);
+	}
+	
+	public static IProject copyProject(String projectName) throws CoreException {
+	    IProgressMonitor m = new NullProgressMonitor();
+	    IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+	    IProject project = workspaceRoot.getProject(projectName);
+	    IProjectDescription projectDescription = project.getDescription();
+	    String cloneName = projectName + "_copy";
+	    // create clone project in workspace
+	    IProjectDescription cloneDescription = workspaceRoot.getWorkspace().newProjectDescription(cloneName);
+	    // copy project files
+	    project.copy(cloneDescription, true, m);
+	    IProject clone = workspaceRoot.getProject(cloneName);
+	    // copy the project properties
+	    cloneDescription.setNatureIds(projectDescription.getNatureIds());
+	    cloneDescription.setReferencedProjects(projectDescription.getReferencedProjects());
+	    cloneDescription.setDynamicReferences(projectDescription.getDynamicReferences());
+	    cloneDescription.setBuildSpec(projectDescription.getBuildSpec());
+	    cloneDescription.setReferencedProjects(projectDescription.getReferencedProjects());
+	    clone.setDescription(cloneDescription, null);
+	    return clone;
 	}
 
 	public IProject getProject() {

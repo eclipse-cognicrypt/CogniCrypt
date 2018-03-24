@@ -151,8 +151,8 @@ public class Constants {
 	public static final String DESCRIPTION_DEFAULT_ALGORITHM_PAGE = "Best algorithm combination and the code matching your requirements is shown below";
 	public static final String instanceList = "Select an algorithm combination: ";
 	public static final String defaultAlgorithm = "Algorithm combination: ";
-	public static final String TASK_LIST = "Select Task";
-	public static final String DESCRIPTION_TASK_SELECTION_PAGE = "Which cryptography task would you like to perform?";
+	public static final String TASK_LIST = "Task Selection";
+	public static final String DESCRIPTION_TASK_SELECTION_PAGE = "Select the cryptography task that you like to perform. ";
 	public static final String DESCRIPTION_VALUE_SELECTION_PAGE = "The following questions help to find the algorithm configuration most suited for your needs";
 	public static final String PROPERTIES = "Algorithm Preferences: ";
 	public static final String SELECT_PROPERTIES = "Select Properties";

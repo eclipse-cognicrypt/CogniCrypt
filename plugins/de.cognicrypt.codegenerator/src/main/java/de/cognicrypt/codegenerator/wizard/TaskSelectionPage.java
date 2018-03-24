@@ -58,7 +58,7 @@ public class TaskSelectionPage extends WizardPage {
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		this.container = new Composite(sc, SWT.NONE);
-		this.container.setBounds(10, 10, 200, 300);
+		this.container.setBounds(10, 10, 450, 200);
 		
 		//To display the Help view after clicking the help icon
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(sc, "de.cognicrypt.codegenerator.TaskSelectionHelp");

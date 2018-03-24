@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SymmetricBlockCipher>
-   <name>Dao</name>
-   <Keysize1>55</Keysize1>
-   <mode>CFB</mode>
+   <name>Tester</name>
+   <Blocksize>25</Blocksize>
+   <Keysize1>255</Keysize1>
+   <mode>CFB|CTR</mode>
+   <Padding>ZeroPadding|PKCS7</Padding>
 </SymmetricBlockCipher>

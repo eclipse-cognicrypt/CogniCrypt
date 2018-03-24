@@ -269,33 +269,20 @@ public class InstanceGenerator {
 		ArrayList<TreeMap<String, InstanceClafer>> separatedCombinations = new ArrayList<>();
 		
 		int x = -1;
-		int flag=0;
 		String tempKey="";
 		for (final InstanceClafer sortedInst : this.generatedInstances) {
 			
 			String key = getInstanceName(sortedInst);
-			
-			
-			
-			
-			
 			if (key.isEmpty()) {
 				key = sortedInst.getChildren()[0].getRef().toString();
 				this.displayNameToInstanceMap.remove(key, sortedInst);
 			}
-			
 			
 			if(!tempKey.equals(key)){
 				tempKey = key;
 				separatedCombinations.add(new TreeMap<String, InstanceClafer>());
 				x++;
 			}
-			
-			
-//			if(flag==1){
-//				separatedCombinations.add(new TreeMap<String, InstanceClafer>());
-//				flag=0;
-//			}
 			if (sortedInst.getType().getName().equals(this.taskName) && key.length() > 0) {
 				// Check if any instance has same name , if yes add numerical values as suffix
 				int counter = 1;
@@ -309,17 +296,6 @@ public class InstanceGenerator {
 				separatedCombinations.get(x).put(copyKey, sortedInst);
 			}
 			this.setAlgorithmNames(key);
-			
-			/*
-			 * Test snippet
-			 */
-//			if (displayNameToInstanceMap.size() == 18) {
-//				key = "DES";
-//				this.displayNameToInstanceMap.put("DES", sortedInst);
-//				this.displayNameToInstanceMap.put("DES(01)", sortedInst);
-//				this.setAlgorithmNames(key);
-//			}
-			//end of test snippet
 		}
 		this.setSeparatedAlgorithms(separatedCombinations);
 		this.displayNameToInstanceMap = new TreeMap<>(this.displayNameToInstanceMap);
@@ -470,7 +446,15 @@ public class InstanceGenerator {
 	public Map<String, InstanceClafer> getFirstInstance() {
 		return this.displayFirstNameToInstanceMap;
 	}
-
+	/**
+	 * get list of generated instances, sorted by security, if possible
+	 * 
+	 * @return {@link List}<{@link InstanceClafer}> of generated instances
+	 */
+	public List<InstanceClafer> getGeneratedInstances() {
+		return generatedInstances;
+	}
+	
 	/**
 	 * Returns number of instances of the task
 	 *

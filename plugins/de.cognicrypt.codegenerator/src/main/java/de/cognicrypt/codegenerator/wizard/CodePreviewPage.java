@@ -13,7 +13,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.utilities.JavaLineStyler;
 
@@ -28,7 +27,7 @@ public class CodePreviewPage extends WizardPage {
 	private Composite control;
 	private Group codePreviewPanel;
 	private StyledText code;
-
+	
 	public CodePreviewPage(InstanceListPage instanceListPage) {
 		super(Constants.CODE_PREVIEW_PAGE);
 		setTitle(Constants.CODE_PREVIEW_PAGE_TITLE);
@@ -89,12 +88,11 @@ public class CodePreviewPage extends WizardPage {
 		this.code.setText(instanceListPage.compileCodePreview());
 		this.code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
 		this.code.setAlwaysShowScrollBars(false);
-
+				
 		sc.setContent(this.control);
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);
 		sc.setMinSize(this.control.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		setControl(sc);
-	}
-
+		setControl(sc);			
+	}	
 }

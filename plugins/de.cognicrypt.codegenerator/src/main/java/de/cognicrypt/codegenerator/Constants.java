@@ -75,7 +75,7 @@ public class Constants {
 	public static final String DEFAULT_ALGORITHM_CHECKBOX_DISABLE = "There are no other algorithm combinations matching your requirements.\nThe code for the above algorithm will be generated into your java project on clicking 'Finish'";
 	public static final String DEFAULT_ALGORITHM_NOTIFICATION = "This algorithm was presented to you previously, as the best algorithm combination.";
 	public static final String GUIDED_MODE_CHECKBOX_INFO = "If you do not use the guided mode, then you have to \nconfigure the algorithm by yourself";
-	public static final String COMPARE_SAME_ALGORITHM = "Algorithm combinations are same";
+	public static final String COMPARE_SAME_ALGORITHM = "The variations selected in both dropdowns are same. Please modify your selection.";
 
 	// if the next question page depends on user input, the Page object encodes this as a nextPageID as opposed to the one that the last page points to
 	public static final int QUESTION_PAGE_NO_STATIC_NEXT_PAGE_ID = -2;
@@ -148,7 +148,7 @@ public class Constants {
 	public static final String JAVA = "java";
 	public static final String DEFAULT_PROVIDER = "JCA";
 	public static final String JAR = ".jar";
-	public static final String ALGORITHM = "algorithm";
+	public static final String ALGORITHM = "Algorithm";
 	public static final String GUIDED_MODE = "Use the guided mode for configuring the task";
 	public static final String DEFAULT_ALGORITHM_PAGE_CHECKBOX ="Show other possible algorithm combinations";
 	public static final String SHOW_PASSWORD_CHECKBOX ="Show Password";
@@ -186,8 +186,8 @@ public class Constants {
 	public static final String DESCRIPTION_DEFAULT_ALGORITHM_PAGE = "Best algorithm combination and the code matching your requirements is shown below";
 	public static final String instanceList = "Select an algorithm combination: ";
 	public static final String defaultAlgorithm = "Algorithm combination: ";
-	public static final String TASK_LIST = "Select Task";
-	public static final String DESCRIPTION_TASK_SELECTION_PAGE = "Which cryptography task would you like to perform?";
+	public static final String TASK_LIST = "Task Selection";
+	public static final String DESCRIPTION_TASK_SELECTION_PAGE = "Select the cryptography task that you like to perform. ";
 	public static final String DESCRIPTION_VALUE_SELECTION_PAGE = "The following questions help to find the algorithm configuration most suited for your needs";
 	public static final String PROPERTIES = "Algorithm Preferences: ";
 	public static final String SELECT_PROPERTIES = "Select Properties";

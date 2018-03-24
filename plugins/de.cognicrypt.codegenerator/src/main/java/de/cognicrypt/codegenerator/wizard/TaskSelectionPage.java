@@ -61,10 +61,10 @@ public class TaskSelectionPage extends WizardPage {
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		this.container = new Composite(sc, SWT.NONE);
-		this.container.setBounds(10, 10, 200, 300);
+		this.container.setBounds(10, 10, 450, 200);
 		
 		//To display the Help view after clicking the help icon
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.container, "de.cognicrypt.codegenerator.help_id_1");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(sc, "de.cognicrypt.codegenerator.TaskSelectionHelp");
 		this.container.setLayout(new GridLayout(2, false));
 
 		final Label selectProjectLabel = new Label(this.container, SWT.NONE);
@@ -219,9 +219,7 @@ public class TaskSelectionPage extends WizardPage {
 			}
 		});
 		this.guidedModeCheckBox.setText(Constants.GUIDED_MODE);
-		this.guidedModeCheckBox.setSelection(true);
-		
-		
+		this.guidedModeCheckBox.setSelection(true);		
 
 		sc.setContent(container);
 		sc.setExpandHorizontal(true);

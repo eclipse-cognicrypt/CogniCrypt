@@ -243,23 +243,28 @@ public class PrimitiveIntegrationWizard extends Wizard {
 			UserJavaProject project = this.methodSelectionPage.getUserProject();
 			try {
 				project.createNewClass(className, sourceCode, project.getPackageByName(Constants.PRIMITIVE_PACKAGE));
-			} catch (JavaModelException e) {
-				e.printStackTrace();
-			}
+		
 			System.out.println(classContent.isEmpty() + "  " + classContent.size());
-		}
+		
 		//Create provider jarFile 
-		String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" };
-		provider.createManifest("some owner", classPaths);
-		providerName = inputsMap.get("name");
-		provider.createJarArchive(new File(Utils.getResourceFromWithin(Constants.PROVIDER_FOLDER) + Constants.innerFileSeparator + providerName + ".jar"), folder.listFiles());
 
+		providerName = inputsMap.get("name");
+//		String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" };
+//		provider.createManifest("some owner", classPaths);
+//		provider.createJarArchive(new File(Utils.getResourceFromWithin(Constants.PROVIDER_FOLDER) + Constants.innerFileSeparator + providerName + ".jar"), project.getProject().getFullPath().toString());
+		provider.zipFolder(project.getProject().getLocation().toString(), new File(Utils.getResourceFromWithin(Constants.PROVIDER_FOLDER) + Constants.innerFileSeparator + providerName + ".jar"));
 		//delete archived files 
 		for (File file : folder.listFiles()) {
 			if (file.getName().endsWith(".java") || file.getName().endsWith(".class"))
 				file.delete();
 		}
-
+		}
+	 catch (JavaModelException e) {
+		e.printStackTrace();
+	 } catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} }
 		return true;
 	}
 

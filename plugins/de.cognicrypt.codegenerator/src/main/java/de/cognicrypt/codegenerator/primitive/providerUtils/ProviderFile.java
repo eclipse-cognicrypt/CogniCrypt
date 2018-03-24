@@ -11,6 +11,8 @@ import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
@@ -20,6 +22,7 @@ import javax.tools.ToolProvider;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.utilities.Utils;
 
 /**
  * A class that generate the provider file
@@ -46,43 +49,86 @@ public class ProviderFile {
 	 *        Files to add into the jar file
 	 * 
 	 */
-	public void createJarArchive(File archiveFile, File[] tobeJared) {
-		try {
-			byte buffer[] = new byte[BUFFER_SIZE];
-			// Open archive file
-			FileOutputStream stream = new FileOutputStream(archiveFile);
-			JarOutputStream out = new JarOutputStream(stream, this.manifest);
+//	public void createJarArchive(File archiveFile, String tobeJaredPath) {
+//		try {
+//			File tobe=new File(tobeJaredPath);
+//			File[] tobeJared= tobe.listFiles();
+//			byte buffer[] = new byte[BUFFER_SIZE];
+//			// Open archive file
+//			FileOutputStream stream = new FileOutputStream(archiveFile);
+//			JarOutputStream out = new JarOutputStream(stream, this.manifest);
+//
+//			for (int i = 0; i < tobeJared.length; i++) {
+//				if (tobeJared[i] == null || !tobeJared[i].exists() || tobeJared[i].isDirectory())
+//					continue;
+//				System.out.println("Adding " + tobeJared[i].getName());
+//
+//				// Add archive entry
+//				JarEntry jarAdd = new JarEntry(tobeJared[i].getName());
+//				jarAdd.setTime(tobeJared[i].lastModified());
+//				out.putNextEntry(jarAdd);
+//
+//				// Write file to archive
+//				FileInputStream in = new FileInputStream(tobeJared[i]);
+//				int nRead;
+//				while (true) {
+//					int nRead1 = in.read(buffer, 0, buffer.length);
+//					if (nRead1 <= 0)
+//						break;
+//					out.write(buffer, 0, nRead1);
+//				}
+//				in.close();
+//			}
+//				out.close();
+//				stream.close();
+//				System.out.println("Adding completed OK");
+//			}
+//		 catch (Exception ex) {
+//			ex.printStackTrace();
+//			System.out.println("Error: " + ex.getMessage());
+//		}
+//	}
+	static public void zipFolder(String srcFolder, File destZipFile) throws Exception {
+	    ZipOutputStream zip = null;
+	    FileOutputStream fileWriter = null;
 
-			for (int i = 0; i < tobeJared.length; i++) {
-				if (tobeJared[i] == null || !tobeJared[i].exists() || tobeJared[i].isDirectory())
-					continue;
-				System.out.println("Adding " + tobeJared[i].getName());
+	    fileWriter = new FileOutputStream(destZipFile);
+	    zip = new ZipOutputStream(fileWriter);
 
-				// Add archive entry
-				JarEntry jarAdd = new JarEntry(tobeJared[i].getName());
-				jarAdd.setTime(tobeJared[i].lastModified());
-				out.putNextEntry(jarAdd);
+	    addFolderToZip("", srcFolder, zip);
+	    zip.flush();
+	    zip.close();
+	  }
 
-				// Write file to archive
-				FileInputStream in = new FileInputStream(tobeJared[i]);
-				int nRead;
-				while (true) {
-					int nRead1 = in.read(buffer, 0, buffer.length);
-					if (nRead1 <= 0)
-						break;
-					out.write(buffer, 0, nRead1);
-				}
-				in.close();
-			}
-				out.close();
-				stream.close();
-				System.out.println("Adding completed OK");
-			}
-		 catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("Error: " + ex.getMessage());
-		}
-	}
+	  static private void addFileToZip(String path, String srcFile, ZipOutputStream zip)
+	      throws Exception {
+
+	    File folder = new File(srcFile);
+	    if (folder.isDirectory()) {
+	      addFolderToZip(path, srcFile, zip);
+	    } else {
+	      byte[] buf = new byte[1024];
+	      int len;
+	      FileInputStream in = new FileInputStream(srcFile);
+	      zip.putNextEntry(new ZipEntry(path + "/" + folder.getName()));
+	      while ((len = in.read(buf)) > 0) {
+	        zip.write(buf, 0, len);
+	      }
+	    }
+	  }
+
+	  static private void addFolderToZip(String path, String srcFolder, ZipOutputStream zip)
+	      throws Exception {
+	    File folder = new File(srcFolder);
+
+	    for (String fileName : folder.list()) {
+	      if (path.equals("")) {
+	        addFileToZip(folder.getName(), srcFolder + "/" + fileName, zip);
+	      } else {
+	        addFileToZip(path + "/" + folder.getName(), srcFolder + "/" + fileName, zip);
+	      }
+	    }
+	  }
 
 	/**
 	 * 

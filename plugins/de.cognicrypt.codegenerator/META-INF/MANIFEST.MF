@@ -14,10 +14,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.compare,
  org.eclipse.ui.workbench,
  org.apache.commons.io;bundle-version="2.2.0"
- org.eclipse.ui.workbench,
- org.eclipse.help,
- org.eclipse.swt
- 
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/claferchocoig.jar,
@@ -27,9 +23,7 @@ Bundle-ClassPath: lib/claferchocoig.jar,
  lib/gson-2.3.1.jar,
  lib/dom4j-2.0.0.jar,
  lib/saxon9he.jar
-Import-Package: org.apache.commons.io,
- org.apache.commons.io.filefilter,
- org.eclipse.jdt.core,
+Import-Package: org.eclipse.jdt.core,
  org.eclipse.jdt.core.dom,
  org.eclipse.jdt.ui.actions,
  org.eclipse.jface.text,

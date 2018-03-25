@@ -266,8 +266,10 @@ public class InstanceGenerator {
 		} catch (final Exception ex) {
 			Activator.getDefault().logError("Instances not sorted by security level. Be cautious");
 		}
-
-		int instanceCounter = 0;
+		ArrayList<TreeMap<String, InstanceClafer>> separatedCombinations = new ArrayList<>();
+		
+		int x = -1;
+		String tempKey="";
 		for (final InstanceClafer sortedInst : this.generatedInstances) {
 			
 			String key = getInstanceName(sortedInst);
@@ -290,13 +292,12 @@ public class InstanceGenerator {
 					setAlgorithmCount(counter);
 				}
 
-				this.displayNameToInstanceMap.put(currentKey, sortedInst);
-				setAlgorithmName(key);
-
+				this.displayNameToInstanceMap.put(copyKey, sortedInst);
+				separatedCombinations.get(x).put(copyKey, sortedInst);
 			}
 			this.setAlgorithmNames(key);
 		}
-		setAlgorithmCount(instanceCounter);
+		this.setSeparatedAlgorithms(separatedCombinations);
 		this.displayNameToInstanceMap = new TreeMap<>(this.displayNameToInstanceMap);
 	}
 	/**

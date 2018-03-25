@@ -150,26 +150,40 @@ public class UserJavaProject {
 		//Generate the new class 
 		ICompilationUnit cu = pack.createCompilationUnit(className, buffer.toString(), false, null);
 	}
-	
-	public static IProject copyProject(String projectName) throws CoreException {
-	    IProgressMonitor m = new NullProgressMonitor();
-	    IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-	    IProject project = workspaceRoot.getProject(projectName);
-	    IProjectDescription projectDescription = project.getDescription();
-	    String cloneName = projectName + "_copy";
-	    // create clone project in workspace
-	    IProjectDescription cloneDescription = workspaceRoot.getWorkspace().newProjectDescription(cloneName);
-	    // copy project files
-	    project.copy(cloneDescription, true, m);
-	    IProject clone = workspaceRoot.getProject(cloneName);
-	    // copy the project properties
-	    cloneDescription.setNatureIds(projectDescription.getNatureIds());
-	    cloneDescription.setReferencedProjects(projectDescription.getReferencedProjects());
-	    cloneDescription.setDynamicReferences(projectDescription.getDynamicReferences());
-	    cloneDescription.setBuildSpec(projectDescription.getBuildSpec());
-	    cloneDescription.setReferencedProjects(projectDescription.getReferencedProjects());
-	    clone.setDescription(cloneDescription, null);
-	    return clone;
+
+	/**
+	 * 
+	 * @param sourceProject
+	 *        The name of the project to be cloned
+	 * @param cloneName
+	 *        The name of the cloned project
+	 * @return a cloned project
+	 * @throws CoreException
+	 */
+
+	public static IProject cloneProject(String sourceProject) throws CoreException {
+		IProgressMonitor m = new NullProgressMonitor();
+		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		IProject project = workspaceRoot.getProject(sourceProject);
+		IProjectDescription projectDescription = project.getDescription();
+		String cloneName = sourceProject + "_copy";
+		// create clone project in workspace
+		IProjectDescription cloneDescription = workspaceRoot.getWorkspace().newProjectDescription(cloneName);
+		// copy project files
+		project.copy(cloneDescription, true, m);
+		IProject clone = workspaceRoot.getProject(cloneName);
+		// copy the project properties
+		cloneDescription.setNatureIds(projectDescription.getNatureIds());
+		cloneDescription.setReferencedProjects(projectDescription.getReferencedProjects());
+		cloneDescription.setDynamicReferences(projectDescription.getDynamicReferences());
+		cloneDescription.setBuildSpec(projectDescription.getBuildSpec());
+		cloneDescription.setReferencedProjects(projectDescription.getReferencedProjects());
+		clone.setDescription(cloneDescription, null);
+		return clone;
+	}
+
+	public void deleteProject() throws CoreException {
+		this.project.delete(true, null);
 	}
 
 	public IProject getProject() {

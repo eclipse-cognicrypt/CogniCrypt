@@ -20,6 +20,7 @@ import org.xml.sax.SAXException;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.clafer.ClaferGenerator;
+import de.cognicrypt.codegenerator.primitive.providerUtils.Helper;
 import de.cognicrypt.codegenerator.primitive.providerUtils.ProviderFile;
 import de.cognicrypt.codegenerator.primitive.providerUtils.UserJavaProject;
 import de.cognicrypt.codegenerator.primitive.providerUtils.XsltWriter;
@@ -214,68 +215,44 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		//Code generation 
 		final File xslFile = Utils.getResourceFromWithin(selectedPrimitive.getXslFile());
 		try {
-
 			xsltWriter.transformXsl(xslFile, xmlFile);
-
 		} catch (TransformerException | SAXException | IOException | ParserConfigurationException e1) {
-
 			e1.printStackTrace();
 		}
 
-		//Compile generated .java files
-		File folder = Utils.getResourceFromWithin(Constants.primitivesPath);
-		File[] listOfFiles = (folder).listFiles();
-		for (File file : listOfFiles) {
-			if (file.getName().endsWith(".java")) {
-//				.substring(0, file.getName().lastIndexOf('.')
-				String className = file.getName();
-				String sourceCode = readFileLineByLine(file.getAbsolutePath());
-				classContent.put(className, sourceCode);
-
-			}
-		}
-
+		//Store source code of generated classes into a map
+		File folder=Utils.getResourceFromWithin(Constants.primitivesPath);
+		classContent = new Helper().getSourceCode(folder);
 		for (String name : classContent.keySet()) {
-
 			String className = name.toString();
 			String sourceCode = classContent.get(name).toString();
 
+		//Create new class that contains the source code 
 			UserJavaProject project = this.methodSelectionPage.getUserProject();
 			try {
+				providerName = inputsMap.get("name");
 				project.createNewClass(className, sourceCode, project.getPackageByName(Constants.PRIMITIVE_PACKAGE));
-		
-			System.out.println(classContent.isEmpty() + "  " + classContent.size());
-		
-		//Create provider jarFile 
 
-		providerName = inputsMap.get("name");
-//		String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" };
-//		provider.createManifest("some owner", classPaths);
-//		provider.createJarArchive(new File(Utils.getResourceFromWithin(Constants.PROVIDER_FOLDER) + Constants.innerFileSeparator + providerName + ".jar"), project.getProject().getFullPath().toString());
-		provider.zipFolder(project.getProject().getLocation().toString(), new File(Utils.getResourceFromWithin(Constants.PROVIDER_FOLDER) + Constants.innerFileSeparator + providerName + ".jar"));
-		//delete archived files 
-		for (File file : folder.listFiles()) {
-			if (file.getName().endsWith(".java") || file.getName().endsWith(".class"))
-				file.delete();
+				//Create provider jarFile 
+				provider.zipFile(project.getProject().getLocation().toString() + "/",
+					new File(Utils.getResourceFromWithin(Constants.PROVIDER_FOLDER) + Constants.innerFileSeparator + providerName + ".jar"), true);
+				//delete archived files 
+				for (File file : folder.listFiles()) {
+					if (file.getName().endsWith(".java") || file.getName().endsWith(".class"))
+						file.delete();
+				}
+				
+				//add delete Project
+
+				
+			} catch (JavaModelException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		}
-	 catch (JavaModelException e) {
-		e.printStackTrace();
-	 } catch (Exception e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} }
 		return true;
-	}
-
-	private static String readFileLineByLine(String filePath) {
-		StringBuilder contentBuilder = new StringBuilder();
-		try (Stream<String> stream = Files.lines(Paths.get(filePath), StandardCharsets.UTF_8)) {
-			stream.forEach(s -> contentBuilder.append(s).append("\n"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return contentBuilder.toString();
 	}
 
 }

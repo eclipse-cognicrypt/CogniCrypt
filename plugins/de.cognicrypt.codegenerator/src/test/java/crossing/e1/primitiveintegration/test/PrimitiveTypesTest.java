@@ -30,7 +30,7 @@ public class PrimitiveTypesTest {
 
 	@Test
 	public void test() {
-		List <Primitive> primitives = PrimitiveJSONReader.getPrimitiveTypes(primitiveTestFile);
+		List<Primitive> primitives = PrimitiveJSONReader.getPrimitiveTypes(primitiveTestFile);
 		setupPrimitveTest();
 		primitive.setName("Cipher Test");
 		primitive.setXmlFile(Constants.testPrimitverFolder + "TestPrimitiveQuestion.json");

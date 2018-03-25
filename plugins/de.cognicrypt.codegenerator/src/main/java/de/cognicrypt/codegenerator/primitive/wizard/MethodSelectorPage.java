@@ -20,6 +20,7 @@ import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.providerUtils.UserJavaProject;
+import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnairePage;
 
 /**
  * This class is responsible for displaying the methods related to the custom algorithm For instance, in case of primitive of type symmetric block cipher, the required methods are
@@ -73,12 +74,10 @@ public class MethodSelectorPage extends WizardPage {
 		Combo decryptionCombo = new Combo(container, SWT.NONE);
 		decryptionCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 
-		
 		try {
-			
 			// import project 
 			this.project.ImportProject(this.projectPath);
-			this.project.setProject(this.project.copyProject(this.project.getProject().getName()));
+			this.project.setProject(this.project.cloneProject(this.project.getProject().getName()));
 			this.project.addPackage(Constants.PRIMITIVE_PACKAGE);
 			//Display methods from the imported project in the combo box 
 			for (IMethod method : project.listOfAllMethods()) {
@@ -90,7 +89,7 @@ public class MethodSelectorPage extends WizardPage {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public UserJavaProject getUserProject() {

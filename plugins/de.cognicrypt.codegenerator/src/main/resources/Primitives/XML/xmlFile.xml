@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SymmetricBlockCipher>
-   <name>Tester</name>
-   <Blocksize>25</Blocksize>
-   <Keysize1>255</Keysize1>
-   <mode>CFB|CTR</mode>
+   <name>Cryptox</name>
+   <description>fzeifojzo</description>
+   <Blocksize>250</Blocksize>
+   <Keysize1>250</Keysize1>
+   <mode>CFB|OFB</mode>
    <Padding>ZeroPadding|PKCS7</Padding>
 </SymmetricBlockCipher>

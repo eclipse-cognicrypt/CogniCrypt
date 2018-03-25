@@ -8,8 +8,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
 import de.cognicrypt.codegenerator.primitive.types.PrimitiveJSONReader;
+import de.cognicrypt.codegenerator.utilities.Utils;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -42,7 +44,7 @@ public class PrimitiveSelectionPage extends WizardPage {
 		this.container.setBounds(10, 10, 200, 300);
 		final GridLayout layout = new GridLayout(3, false);
 		this.container.setLayout(layout);
-		final List<Primitive> primitives = PrimitiveJSONReader.getPrimitiveTypes();
+		final List<Primitive> primitives = PrimitiveJSONReader.getPrimitiveTypes(Utils.getResourceFromWithin(Constants.jsonPrimitiveTypesFile));
 
 		setControl(container);
 		new Label(container, SWT.NONE);

@@ -1,14 +1,24 @@
 package de.cognicrypt.codegenerator.primitive.providerUtils;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.jar.Attributes;
-import java.util.jar.JarEntry;
-import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
+
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+
+import de.cognicrypt.codegenerator.Constants;
 
 /**
  * A class that generate the provider file
@@ -18,7 +28,8 @@ import java.util.jar.Manifest;
 
 public class ProviderFile {
 
-	public static int BUFFER_SIZE = 10240;
+	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
+
 	private Manifest manifest;
 	private String name;
 
@@ -28,48 +39,46 @@ public class ProviderFile {
 	}
 
 	/**
+	 * Archive files with option to exclude the main containing folder
 	 * 
-	 * @param archiveFile
-	 *        The generated jar
-	 * @param tobeJared
-	 *        Files to add into the jar file
-	 * 
+	 * @param fileToZip
+	 * @param zipFile
+	 * @param excludeContainingFolder
+	 * @throws IOException
 	 */
-	public void createJarArchive(File archiveFile, File[] tobeJared) {
-		try {
-			byte buffer[] = new byte[BUFFER_SIZE];
-			// Open archive file
-			FileOutputStream stream = new FileOutputStream(archiveFile);
-			JarOutputStream out = new JarOutputStream(stream, this.manifest);
-
-			for (int i = 0; i < tobeJared.length; i++) {
-				if (tobeJared[i] == null || !tobeJared[i].exists() || tobeJared[i].isDirectory())
-					continue;
-				System.out.println("Adding " + tobeJared[i].getName());
-
-				// Add archive entry
-				JarEntry jarAdd = new JarEntry(tobeJared[i].getName());
-				jarAdd.setTime(tobeJared[i].lastModified());
-				out.putNextEntry(jarAdd);
-
-				// Write file to archive
-				FileInputStream in = new FileInputStream(tobeJared[i]);
-				int nRead;
-				while (true) {
-					int nRead1 = in.read(buffer, 0, buffer.length);
-					if (nRead1 <= 0)
-						break;
-					out.write(buffer, 0, nRead1);
-				}
-				in.close();
+	public void zipFile(String fileToZip, File zipFile, boolean excludeContainingFolder) throws IOException {
+		ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(zipFile));
+		File srcFile = new File(fileToZip);
+		if (excludeContainingFolder && srcFile.isDirectory()) {
+			for (String fileName : srcFile.list()) {
+				addToZip("", fileToZip + "/" + fileName, zipOut);
 			}
-				out.close();
-				stream.close();
-				System.out.println("Adding completed OK");
+		} else {
+			addToZip("", fileToZip, zipOut);
+		}
+
+		zipOut.flush();
+		zipOut.close();
+
+		System.out.println("Successfully created " + zipFile.getName());
+	}
+
+	static private void addToZip(String path, String srcFile, ZipOutputStream zipOut) throws IOException {
+		File file = new File(srcFile);
+		String filePath = "".equals(path) ? file.getName() : path + "/" + file.getName();
+		if (file.isDirectory()) {
+			for (String fileName : file.list()) {
+				addToZip(filePath, srcFile + "/" + fileName, zipOut);
 			}
-		 catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("Error: " + ex.getMessage());
+		} else {
+			zipOut.putNextEntry(new ZipEntry(filePath));
+			FileInputStream in = new FileInputStream(srcFile);
+
+			byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+			int len;
+			while ((len = in.read(buffer)) != -1) {
+				zipOut.write(buffer, 0, len);
+			}
 		}
 	}
 
@@ -92,42 +101,34 @@ public class ProviderFile {
 	}
 
 	/**
-	 * Get a class Object from a file
-	 * 
-	 * @param ClassName
-	 *        Path to the java file
-	 * @return
-	 * @throws Exception
-	 */
-	public Class loadClass(String ClassName, String ClassFolder) throws Exception {
-		URLClassLoader loader = new URLClassLoader(new URL[] { new URL("file://" + ClassFolder) });
-		return loader.loadClass(ClassName);
-		//		JarFile jarFile = new JarFile(pathToJar);
-		//		Enumeration<JarEntry> e = jarFile.entries();
-		//
-		//		URL[] urls = { new URL("jar:file:" + pathToJar+"!/") };
-		//		URLClassLoader cl = URLClassLoader.newInstance(urls);
-		//
-		//		while (e.hasMoreElements()) {
-		//		    JarEntry je = e.nextElement();
-		//		    if(je.isDirectory() || !je.getName().endsWith(".class")){
-		//		        continue;
-		//		    }
-		//		    // -6 because of .class
-		//		    String className = je.getName().substring(0,je.getName().length()-6);
-		//		    className = className.replace('/', '.');
-		//		    Class c = cl.loadClass(className);
-
-		//		}
-	}
-
-	/**
 	 * Compile files
 	 * 
 	 * @param files
 	 */
-	public void compileFiles(File[] files) {
+	public void compileFile(File file) {
+		System.setProperty("java.home", lastAddedJDK().getAbsolutePath());
 
+		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+
+		Iterable<? extends JavaFileObject> compilationUnits1 = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(file));
+		compiler.getTask(null, fileManager, null, null, null, compilationUnits1).call();
+	}
+
+	//Get the last JDK from Java folder in local c:
+	private static File lastAddedJDK() {
+		File fl = new File(Constants.JAVA_BIN);
+		FileFilter fileFilter = new WildcardFileFilter("jdk*");
+		File[] files = fl.listFiles(fileFilter);
+		long lastMod = Long.MIN_VALUE;
+		File lastUpdatedFile = null;
+		for (File file : files) {
+			if (file.lastModified() > lastMod) {
+				lastUpdatedFile = file;
+				lastMod = file.lastModified();
+			}
+		}
+		return lastUpdatedFile;
 	}
 
 	public void setManifest(Manifest manifest) {
@@ -137,4 +138,5 @@ public class ProviderFile {
 	public Manifest getManifest() {
 		return this.manifest;
 	}
+
 }

@@ -44,3 +44,6 @@ DigitalSignatures : Task
 	dssProperty -> DSSProperty
 	[ dssProperty = performant => scheme.performance >= Fast ]
 	[ dssProperty = secure => scheme.security >= Strong ]
+
+	keysize -> integer
+	[ keysize = scheme.keysize ]

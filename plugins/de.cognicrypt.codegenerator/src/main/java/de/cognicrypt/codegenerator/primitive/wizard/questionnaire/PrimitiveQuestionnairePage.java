@@ -101,15 +101,10 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		final GridLayout layout = new GridLayout(1, false);
 		container.setLayout(layout);
 		// If legacy JSON files are in effect.
-		if (page == null) {
-			createQuestionControl(container, this.quest);
-		} else {
-			// loop through the questions that are to be displayed on the page.
-			for (Question question : page.getContent()) {
-				createQuestionControl(container, question);
-			}
-		}
 
+		for (Question question : page.getContent()) {
+			createQuestionControl(container, question);
+		}
 		setControl(container);
 
 	}

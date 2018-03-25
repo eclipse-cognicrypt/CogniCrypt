@@ -1,19 +1,18 @@
 package de.cognicrypt.codegenerator.primitive.wizard;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Stream;
 
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.ToolProvider;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
+
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -21,7 +20,9 @@ import org.xml.sax.SAXException;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.clafer.ClaferGenerator;
+import de.cognicrypt.codegenerator.primitive.providerUtils.Helper;
 import de.cognicrypt.codegenerator.primitive.providerUtils.ProviderFile;
+import de.cognicrypt.codegenerator.primitive.providerUtils.UserJavaProject;
 import de.cognicrypt.codegenerator.primitive.providerUtils.XsltWriter;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnaire;
@@ -39,9 +40,10 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	MethodSelectorPage methodSelectionPage;
 	WizardPage preferenceSelectionPage;
 	LinkedHashMap<String, String> inputsMap = new LinkedHashMap<String, String>();
+	LinkedHashMap<String, String> classContent = new LinkedHashMap<String, String>();
 	String providerName;
 	XsltWriter xsltWriter;
-	ProviderFile providerJar = new ProviderFile("Test");
+	ProviderFile provider = new ProviderFile("Test");
 	Primitive selectedPrimitive;
 	int pageId;
 
@@ -213,58 +215,44 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		//Code generation 
 		final File xslFile = Utils.getResourceFromWithin(selectedPrimitive.getXslFile());
 		try {
-
 			xsltWriter.transformXsl(xslFile, xmlFile);
-
 		} catch (TransformerException | SAXException | IOException | ParserConfigurationException e1) {
-
 			e1.printStackTrace();
 		}
 
-		//Compile generated .java files
-		File folder = Utils.getResourceFromWithin(Constants.primitivesPath);
-		File[] listOfFiles = (folder).listFiles();
-		for (File file : listOfFiles) {
-			if (file.getName().endsWith(".java")) {
-				System.setProperty("java.home", lastAddedJDK().getAbsolutePath());
+		//Store source code of generated classes into a map
+		File folder=Utils.getResourceFromWithin(Constants.primitivesPath);
+		classContent = new Helper().getSourceCode(folder);
+		for (String name : classContent.keySet()) {
+			String className = name.toString();
+			String sourceCode = classContent.get(name).toString();
 
-				JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-				StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+		//Create new class that contains the source code 
+			UserJavaProject project = this.methodSelectionPage.getUserProject();
+			try {
+				providerName = inputsMap.get("name");
+				project.createNewClass(className, sourceCode, project.getPackageByName(Constants.PRIMITIVE_PACKAGE));
 
-				Iterable<? extends JavaFileObject> compilationUnits1 = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(file));
-				compiler.getTask(null, fileManager, null, null, null, compilationUnits1).call();
+				//Create provider jarFile 
+				provider.zipFile(project.getProject().getLocation().toString() + "/",
+					new File(Utils.getResourceFromWithin(Constants.PROVIDER_FOLDER) + Constants.innerFileSeparator + providerName + ".jar"), true);
+				//delete archived files 
+				for (File file : folder.listFiles()) {
+					if (file.getName().endsWith(".java") || file.getName().endsWith(".class"))
+						file.delete();
+				}
+				
+				//add delete Project
+
+				
+			} catch (JavaModelException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
-
-		//Create Provider jarFile 
-		String[] classPaths = { "com/java/Cipher.class", "com/java/Provider.class" };
-		providerJar.createManifest("some owner", classPaths);
-		providerName = inputsMap.get("name");
-		providerJar.createJarArchive(new File(Utils.getResourceFromWithin(Constants.PROVIDER_FOLDER) + Constants.innerFileSeparator + providerName + ".jar"), folder.listFiles());
-
-		//delete archived files 
-		for (File file : folder.listFiles()) {
-			if (file.getName().endsWith(".java") || file.getName().endsWith(".class"))
-				file.delete();
-		}
-
 		return true;
-	}
-
-	//Get the last JDK from Java folder in local c:
-	private static File lastAddedJDK() {
-		File fl = new File(Constants.JAVA_BIN);
-		FileFilter fileFilter = new WildcardFileFilter("jdk*");
-		File[] files = fl.listFiles(fileFilter);
-		long lastMod = Long.MIN_VALUE;
-		File lastUpdatedFile = null;
-		for (File file : files) {
-			if (file.lastModified() > lastMod) {
-				lastUpdatedFile = file;
-				lastMod = file.lastModified();
-			}
-		}
-		return lastUpdatedFile;
 	}
 
 }

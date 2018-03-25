@@ -33,24 +33,27 @@ public class Constants {
 
 	public static final String pathToPropertyfiles = Constants.rsrcPath + "Labels.properties";
 
-	public static final String jsonPrimitiveTypesFile = rsrcPath + "Primitives" + innerFileSeparator + "JSON" +innerFileSeparator + "PrimitiveType.json";
+	public static final String jsonPrimitiveTypesFile = rsrcPath + "Primitives" + innerFileSeparator + "JSON" + innerFileSeparator + "PrimitiveType.json";
 
 	//XML & XSL for Primitive 
 	public static final String primitivesPath = Constants.rsrcPath + "Primitives";
-	public static final String testFile = Constants.primitivesPath + "test.txt";
 	public static final String xmlFilePath = primitivesPath + innerFileSeparator + "XML" + innerFileSeparator + "xmlFile.xml";
-	//	Clafer related file
+	public static final String cipherSpiXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template" + innerFileSeparator + "CipherSPI.xsl";
+	public static final String providerClassXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template" + innerFileSeparator + "providerClass.xsl";
+	public static final String testPrimitverFolder = "src/test/resources/PrimitiveIntegration/";
+	
+	//Added Packages	
+	public static final String PRIMITIVE_PACKAGE="org.crypto.customPrimitive";
+	
+	//Clafer related file
 	public static final String claferHeader = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "ClaferHeader.cfr";
 	public static final String claferHeaderTest = rsrcPath + "Primitives" + innerFileSeparator + "ClaferHeaderT.cfr";
 	public static final String claferFooter = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClafer.cfr";
 	public static final String claferFooterTest = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClaferT.cfr";
 
-	public static final String cipherSpiXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template" + innerFileSeparator + "CipherSPI.xsl";
-	public static final String providerClassXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template" + innerFileSeparator + "providerClass.xsl";
-	public static final String transformedFiles = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "TransformedFiles";
 	//Jar file location - Provider (Primitive)
 	public static final String PROVIDER_FOLDER = primitivesPath + innerFileSeparator + "provider";
-	
+
 	//Java Folder location 
 	public static final String JAVA_BIN = "C:\\Program Files\\Java\\";
 	// Task descriptions

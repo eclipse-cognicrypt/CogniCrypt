@@ -143,7 +143,7 @@ public class PropertyWidget {
 
 		final Label propertyNameLabel = new Label(container, SWT.NONE);
 		propertyNameLabel.setText(propertyName.replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
-		propertyNameLabel.setLayoutData(new GridData(100, 20));
+		propertyNameLabel.setLayoutData(new GridData(120, 20));
 
 		this.operatorComboViewer = new ComboViewer(container, SWT.FILL);
 		Combo operatorCombo = this.operatorComboViewer.getCombo();

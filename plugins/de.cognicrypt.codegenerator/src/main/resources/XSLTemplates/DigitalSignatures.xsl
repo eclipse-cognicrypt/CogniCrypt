@@ -31,7 +31,7 @@ public class EcdsaSignature {
 		return ecdsa.sign();
 	}
 
-	<xsl:if test="//task/code/verifying='true'">
+	<xsl:if test="//task/code/signingAndVerification='both'">
 	public static boolean vfy(String msg, byte[] signature, PublicKey pubKey)
 			throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
 		Signature ecdsa = Signature.getInstance(signatureAlgorithm);
@@ -60,7 +60,7 @@ public class Output {
 		// signing
 		byte[] signature = EcdsaSignature.sign(msg, pair.getPrivate());
 
-		<xsl:if test="//task/code/verifying='true'">
+		<xsl:if test="//task/code/signingAndVerification='both'">
 		// verification
 		if (EcdsaSignature.vfy(msg, signature, pair.getPublic())) {
 			System.out.println("Signature verification successful");

@@ -10,21 +10,15 @@
 		"answers": [{
 			"value": "Only signing",
 			"codeDependencies": [{
-				"option": "signing",
-				"value": "true"
-			}, {
-				"option": "verifying",
-				"value": "false"
+				"option": "signingAndVerification",
+				"value": "signing"
 			}]
 		}, {
 			"value": "Both, signing and verification",
 			"defaultAnswer": true,
 			"codeDependencies": [{
-				"option": "signing",
-				"value": "true"
-			}, {
-				"option": "verifying",
-				"value": "true"
+				"option": "signingAndVerification",
+				"value": "both"
 			}]
 		}]
 	}],

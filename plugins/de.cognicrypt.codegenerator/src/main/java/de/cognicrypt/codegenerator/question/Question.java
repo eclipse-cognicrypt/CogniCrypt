@@ -20,7 +20,7 @@ public class Question {
 	//Note
 	private String note = "";
 	//tooltip
-	private String tooltip;
+	private String tooltip = "";
 	//helpText
 	private transient String helpText = "";
 	public ArrayList<Answer> getAnswers() {

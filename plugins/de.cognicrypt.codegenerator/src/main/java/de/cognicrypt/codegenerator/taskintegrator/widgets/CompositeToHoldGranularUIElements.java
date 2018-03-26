@@ -106,30 +106,16 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	
 	public void addQuestionUIElements(Question question, ClaferModel claferModel, boolean linkAnswerPage) {
 
-		// Update the array list.
-		//listOfAllClaferFeatures.add(claferFeature);
+		// Update the array list of clafer features.
 		setClaferModel(claferModel);
-		CompositeGranularUIForHighLevelQuestions granularQuestion = new CompositeGranularUIForHighLevelQuestions((Composite) this.getContent(), // the content composite of ScrolledComposite.
+		new CompositeGranularUIForHighLevelQuestions((Composite) this.getContent(), // the content composite of ScrolledComposite.
 			SWT.NONE, question, linkAnswerPage);
-
-		//heightOfTheGranularComposite variable is used to determine the height of the granular Composite
-		int heightOfTheGranularComposite = 0;
-		if (linkAnswerPage) {
-			heightOfTheGranularComposite = granularQuestion.getSize().y - 55;
-		} else if (!linkAnswerPage) {
-			heightOfTheGranularComposite = granularQuestion.getSize().y;
-		}
-		granularQuestion.setBounds(Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS, getLowestWidgetYAxisValue(), Constants.WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT,
-			//Constants.HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT
-			heightOfTheGranularComposite);
-
-		//granularQuestion.setSize(SWT.DEFAULT, granularQuestion.getSize().y);
-		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + heightOfTheGranularComposite);
-		setMinHeight(getLowestWidgetYAxisValue());
+		setMinSize(((Composite) getContent()).computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
 	}
 
 	/**
+	 * Moves the question up in the list
 	 * 
 	 * @param question
 	 *        the question that is to be move up in the list
@@ -150,6 +136,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	}
 	
 	/**
+	 * Moves the question down in the list
 	 * 
 	 * @param question
 	 *        the question that is to be move down in the list
@@ -170,6 +157,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	}
 
 	/**
+	 * Deletes the question
 	 * 
 	 * @param questionToBeDeleted
 	 *        the question to be deleted
@@ -195,16 +183,17 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		
 	}
 
-	/**	 
-	 * executes when next button of "highLevelQuestion" is pressed
-	 * deletes listOfAllQuestions of "pageForLinkAnswers"
-	 * to refresh the question list of "pagForLinkAnswers"
+	/**
+	 * executes when next button of "highLevelQuestion" is pressed, deletes listOfAllQuestions of "pageForLinkAnswers" to refresh the question list of "pagForLinkAnswers"
 	 */
 	public void deleteAllQuestion(){
 		listOfAllQuestions.clear();
 		updateQuestionContainer();
 	}
-	
+
+	/**
+	 * Updates the question container
+	 */
 	public void updateQuestionContainer() {
 		Composite compositeContentOfThisScrolledComposite = (Composite)this.getContent();
 		
@@ -221,17 +210,24 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		for(Question questionUnderConsideration : listOfAllQuestions){
 			addQuestionUIElements(questionUnderConsideration, claferModel, false);
 		}
+		updateLayout();
 	}
-	
-	public void modifyQuestion(Question originalQuestion, Question modifiedQuestion ){
-		for(Question questionUnderConsideration:listOfAllQuestions){
-			if(questionUnderConsideration.equals(originalQuestion)){
-				questionUnderConsideration = modifiedQuestion;
-				break;
-			}
-		}
-		updateClaferContainer();
+
+	/**
+	 * Updates the layout of the page when user resizes the wizard pages
+	 */
+	public void updateLayout() {
+		((Composite) this.getContent()).layout();
 	}
+
+	/**
+	 * Modifies the question details
+	 * 
+	 * @param originalQuestion
+	 *        the original question
+	 * @param modifiedQuestion
+	 *        the modified question
+	 */
 	
 	public void modifyHighLevelQuestion(Question originalQuestion, Question modifiedQuestion ){
 		for(Question questionUnderConsideration:listOfAllQuestions){
@@ -247,7 +243,6 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 				break;
 			}
 		}
-		//deleteQuestion(originalQuestion);
 		updateQuestionContainer();
 	}
 

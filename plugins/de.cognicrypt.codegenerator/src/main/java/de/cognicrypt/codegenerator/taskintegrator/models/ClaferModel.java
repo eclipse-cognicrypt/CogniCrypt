@@ -157,7 +157,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 			String needleFeature;
 
 			if (refFeature.getFeatureInheritance().contains("->")) {
-				needleFeature = refFeature.getFeatureInheritance().split(" -> ")[0];
+				needleFeature = refFeature.getFeatureInheritance().split("->")[0].trim();
 			} else {
 				needleFeature = refFeature.getFeatureInheritance();
 			}

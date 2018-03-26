@@ -9,6 +9,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.TreeSet;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -88,10 +89,14 @@ public abstract class CodeGenerator {
 	 */
 	protected boolean insertCallCodeIntoFile(final String temporaryOutputFile, boolean openFileFlag, boolean authorFlag, boolean tempFlag) throws BadLocationException, CoreException, IOException {
 
-		if (!((openFileFlag && authorFlag) || !openFileFlag)) {
-			IDE.openEditor(Utils.getCurrentlyOpenPage(), Utils.getCurrentlyOpenFile());
+		if ((openFileFlag && authorFlag) || !openFileFlag) {
+			StringBuilder sb = new StringBuilder(temporaryOutputFile);
+			sb.delete(temporaryOutputFile.length() - 9, temporaryOutputFile.length() - 5);
+			IFile output = tempFlag == true ? this.project.getIFile(sb.toString()) : this.project.getIFile(temporaryOutputFile);
+			IDE.openEditor(Utils.getCurrentlyOpenPage(), output);
 		}
 		IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
+
 		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {
 			Activator.getDefault().logError(null,
 				"Could not open access the editor of the file. Therefore, an outputfile containing calls to the generated classes in the Crypto package was generated.");

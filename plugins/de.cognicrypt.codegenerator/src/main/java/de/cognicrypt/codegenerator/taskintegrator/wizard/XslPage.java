@@ -21,12 +21,12 @@ import org.eclipse.swt.widgets.MessageBox;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.taskintegrator.controllers.ClaferModelContentProvider;
+import de.cognicrypt.codegenerator.taskintegrator.controllers.ClaferModelLabelProvider;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.XSLStringGenerationAndManipulation;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
-import de.cognicrypt.codegenerator.taskintegrator.widgets.ClaferModelContentProvider;
-import de.cognicrypt.codegenerator.taskintegrator.widgets.ClaferModelLabelProvider;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
 
 public class XslPage extends PageForTaskIntegratorWizard {

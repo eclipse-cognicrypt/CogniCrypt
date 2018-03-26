@@ -8,9 +8,6 @@ import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.stream.Stream;
 
-import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.utilities.Utils;
-
 public class Helper {
 
 	private String readFileLineByLine(String filePath) {

@@ -130,20 +130,16 @@ public class XMLParser {
 			if (inst.hasRef() && !inst.getType().isPrimitive() && (refClass = inst.getRef().getClass().toString()) != null && !refClass.contains(Constants.INTEGER) && !refClass
 				.contains(Constants.STRING) && !refClass.contains(Constants.BOOLEAN)) {
 				this.enumParent = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
-				this.enumParent = Character.toLowerCase(this.enumParent.charAt(0)) + this.enumParent.substring(1);
 				displayInstanceXML((InstanceClafer) inst.getRef(), parent);
 			} else if (PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())) {
 				String superClaferName = ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName());
-				superClaferName = Character.toLowerCase(superClaferName.charAt(0)) + superClaferName.substring(1);
 				parent.addElement(this.enumParent).addText(ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", ""));
 			} else {
 				String instName = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
-				instName = Character.toLowerCase(instName.charAt(0)) + instName.substring(1);
 				if (inst.hasRef()) {
 					parent.addElement(instName).addText(inst.getRef().toString().replace("\"", ""));
 				} else {
 					String instparentName = ClaferModelUtils.removeScopePrefix(inst.getType().getParent().getName());
-					instparentName = Character.toLowerCase(instparentName.charAt(0)) + instparentName.substring(1);
 					parent.addElement(instparentName).addText(instName);
 				}
 			}

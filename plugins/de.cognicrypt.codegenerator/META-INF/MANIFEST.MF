@@ -19,7 +19,6 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/claferchocoig.jar,
  src/main/resources/,
  src/main/java/,
- src/test/java/,
  lib/gson-2.3.1.jar,
  lib/dom4j-2.0.0.jar,
  lib/saxon9he.jar
@@ -31,3 +30,4 @@ Import-Package: org.eclipse.jdt.core,
  org.eclipse.ui.part,
  org.eclipse.ui.texteditor,
  org.eclipse.jdt.launching
+Export-Package: org.clafer.instance

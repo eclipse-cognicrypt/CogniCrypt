@@ -219,6 +219,12 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		getXSLAttributes().remove(xslAttribute);
 	}
 
+	/**
+	 * Creates the widgets in which user can give answer details
+	 * 
+	 * @param answer
+	 * @param showRemoveButton
+	 */
 	public void addAnswer(Answer answer, boolean showRemoveButton) {
 		GroupAnswer groupForAnswer = new GroupAnswer((Composite) getContent(), SWT.NONE, answer, showRemoveButton);
 		groupForAnswer.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), 890, 39);

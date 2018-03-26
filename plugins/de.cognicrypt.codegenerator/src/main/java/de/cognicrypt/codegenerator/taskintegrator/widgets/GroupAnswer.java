@@ -30,7 +30,7 @@ public class GroupAnswer extends Group {
 	public GroupAnswer(Composite parent, int style, Answer answerParam, boolean showRemoveButton) {
 		super(parent, style);
 		setAnswer(answerParam);
-
+		
 		txtAnswer = new Text(this, SWT.BORDER);
 		if (answer.getValue() != null) {
 			txtAnswer.setText(answer.getValue());
@@ -57,8 +57,8 @@ public class GroupAnswer extends Group {
 		 * executes when GroupAnswer is called by CompositeGranularUIForHighLevelQuestions class
 		 */
 		else {
-			txtAnswer.setBounds(3, 3, 300, 29);
-			btnDefaultAnswer.setBounds(308, 3, 128, 31);
+			txtAnswer.setBounds(3, 3, 225, 29);
+			btnDefaultAnswer.setBounds(232, 3, 128, 31);
 		}
 		ArrayList<Button> btnList = ((CompositeToHoldSmallerUIElements) btnDefaultAnswer.getParent().getParent().getParent()).getDefaulAnswerBtnList();
 		btnList.add(btnDefaultAnswer);
@@ -117,6 +117,7 @@ public class GroupAnswer extends Group {
 
 			});
 		}
+		
 	}
 
 	/**

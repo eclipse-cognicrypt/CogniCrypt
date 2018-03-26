@@ -6,10 +6,9 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.MessageBox;
 
 import de.cognicrypt.codegenerator.question.Question;
@@ -31,8 +30,10 @@ public class CompositeModifyDeleteButtons extends Composite {
 	public CompositeModifyDeleteButtons(Composite parent, Question questionParam) {
 		super(parent, SWT.RIGHT_TO_LEFT);
 		//setClaferFeatures(claferFeatures);
-		RowLayout rowLayout = new RowLayout(SWT.HORIZONTAL);
-		setLayout(rowLayout);
+		/*
+		 * RowLayout rowLayout = new RowLayout(SWT.HORIZONTAL); setLayout(rowLayout);
+		 */
+		setLayout(new GridLayout(2, false));
 		
 		Button btnDelete = new Button(this, SWT.NONE);
 		btnDelete.setToolTipText("Click to delete the question");

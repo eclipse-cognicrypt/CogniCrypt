@@ -142,7 +142,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						for (Question question : listOfAllQuestions) {
 							comp.getListOfAllQuestions().add(question);
 							comp.addQuestionUIElements(question, null, true);
-
+							//to rebuild the UI
+							comp.updateLayout();
 						}
 
 					}

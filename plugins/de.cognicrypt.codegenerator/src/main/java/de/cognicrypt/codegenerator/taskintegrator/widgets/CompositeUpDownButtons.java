@@ -5,24 +5,32 @@ import java.util.ArrayList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
-
 import de.cognicrypt.codegenerator.question.Question;
 
+/**
+ * 
+ * @author ravi This class enables the user to rearrange the question order using up and down buttons created by this class
+ *
+ */
 public class CompositeUpDownButtons extends Composite {
 
+	/**
+	 * Creates the composite
+	 * 
+	 * @param parent
+	 * @param currentQuestion
+	 */
 	public CompositeUpDownButtons(Composite parent, Question currentQuestion) {
 		super(parent, SWT.LEFT_TO_RIGHT);
-
-		RowLayout rowLayout = new RowLayout(SWT.HORIZONTAL);
-		setLayout(rowLayout);
+		setLayout(new GridLayout(2, false));
 
 		ArrayList<Question> listOfAllQuestions = ((CompositeToHoldGranularUIElements) this.getParent().getParent().getParent()).getListOfAllQuestions();
 		Button upBtn = new Button(this, SWT.None);
 		upBtn.setText("Up");
+		upBtn.setToolTipText("Click on this button to move this question up in the list");
 		upBtn.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -37,6 +45,7 @@ public class CompositeUpDownButtons extends Composite {
 
 		Button downBtn = new Button(this, SWT.None);
 		downBtn.setText("Down");
+		downBtn.setToolTipText("Click on this button to move this question down in the list ");
 		downBtn.addSelectionListener(new SelectionAdapter() {
 
 			@Override

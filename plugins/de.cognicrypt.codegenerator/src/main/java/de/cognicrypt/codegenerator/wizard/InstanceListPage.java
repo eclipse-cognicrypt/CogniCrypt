@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -14,9 +15,17 @@ import javax.xml.transform.TransformerException;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.compare.CompareUI;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.ImportDeclaration;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
@@ -78,6 +87,8 @@ public class InstanceListPage extends WizardPage {
 	private DefaultAlgorithmPage defaultAlgorithmPage;
 	private int currentIndex;
 	private String selectedItem;
+	private int endingPositionForRunMethod = -1;
+	private int startingPositionForRunMethod = -1;
 
 	public InstanceListPage(final InstanceGenerator inst, Map<Question, Answer> constraints, final TaskSelectionPage taskSelectionPage, final DefaultAlgorithmPage defaultAlgorithmPage) {
 		super(Constants.ALGORITHM_SELECTION_PAGE);
@@ -329,28 +340,39 @@ public class InstanceListPage extends WizardPage {
 				//open compare editor to show the difference between the current code(in the user's Java class that is open in his editor)
 				//and the new code that will be generated(in the same class) on clicking 'Finish'.	
 				//if the user does not have any class opened in his editor, then one side of the compare editor will be empty.
-				CompareUI.openCompareDialog(new CompareInput(getCurrentEditorContent(), compileCodePreview()));
-				
-//				byte[] encoded = null;
-//				try {
-//					encoded = Files.readAllBytes(Paths.get("C://Users//Computer//Downloads//Activator2.java"));
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				  String s1 = new String(encoded, StandardCharsets.UTF_8);
-//				
-//				  byte[] encoded2 = null;
-//				try {
-//					encoded2 = Files.readAllBytes(Paths.get("C://Users//Computer//Downloads//Activator.java"));
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				  String s2 = new String(encoded2, StandardCharsets.UTF_8);
-//				
-//				CompareUI.openCompareDialog(new CompareInput(s1, s2));
-								 
+				try {
+					if (getCurrentEditorContent() == null) {
+						CompareUI.openCompareDialog(new CompareInput(getCurrentEditorContent(), compileCodePreview()));
+					} else {
+						IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
+						int cursorPos = ((ITextSelection) currentlyOpenPart.getSite().getSelectionProvider().getSelection()).getOffset();
+						String x = getCurrentEditorContent();
+						x =  new StringBuilder(x).insert(cursorPos, compileCodePreview()).toString();
+						
+//						final String fileContent = String.join(Constants.lineSeparator, compileCodePreview());
+//						// Determine start and end position for relevant extract
+//						final ASTParser astp = ASTParser.newParser(AST.JLS8);
+//						astp.setSource(fileContent.toCharArray());
+//						astp.setKind(ASTParser.K_COMPILATION_UNIT);
+//						final CompilationUnit cu = (CompilationUnit) astp.createAST(null);
+//						final ASTVisitor astVisitor = new ASTVisitor(true) {
+//
+//							@Override
+//							public boolean visit(final MethodDeclaration node) {
+//								if (Constants.NameOfTemporaryMethod.equals(node.getName().toString())) {
+//									setPosForRunMethod(node.getStartPosition(), node.getStartPosition() + node.getLength());
+//								}
+//								return super.visit(node);
+//							}
+//						};						
+						
+						CompareUI.openCompareDialog(new CompareInput(getCurrentEditorContent(), x));
+						
+					}
+				} catch (BadLocationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}								 
 			}
 		});
 
@@ -390,15 +412,17 @@ public class InstanceListPage extends WizardPage {
 		setControl(sc);
 	}
 	
-	public String getCurrentEditorContent() {		
+	public String getCurrentEditorContent() throws BadLocationException {		
 		IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
 		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {
-			Activator.getDefault().logError(null,
-				"Could not open access the editor of the file or there are no files open. Therefore,  the 'Old Source' part remains empty and the newly generated code appears in the 'Modified Source' part.");
+			Activator.getDefault().logInfo("Could not open access the editor of the file or there are no files open. Therefore,  the 'Old Source' part remains empty and the newly generated code appears in the 'Modified Source' part.");
 			return "";
 		}
 		ITextEditor currentlyOpenEditor = (ITextEditor) currentlyOpenPart;
 		IDocument currentlyOpenDocument = currentlyOpenEditor.getDocumentProvider().getDocument(currentlyOpenEditor.getEditorInput());
+		
+//		int cursorPos = ((ITextSelection) currentlyOpenPart.getSite().getSelectionProvider().getSelection()).getOffset();
+//		currentlyOpenDocument.replace(cursorPos, 0, compileCodePreview());
 		final String docContent = currentlyOpenDocument.get();
 		return docContent;		
 	}
@@ -407,6 +431,7 @@ public class InstanceListPage extends WizardPage {
 	 * Assembles code-preview text.
 	 * 
 	 * @return code snippet
+	 * @throws BadLocationException 
 	 */
 	public String compileCodePreview() {
 		final CodeGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(), this.taskSelectionPage.getSelectedTask().getXslFile());
@@ -426,17 +451,32 @@ public class InstanceListPage extends WizardPage {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 			final StringBuilder sb = new StringBuilder();
 			String line = null;
-			while ((line = reader.readLine()) != null) {
-				if (!line.startsWith("import")) {
-					sb.append(line);
-					sb.append(Constants.lineSeparator);
+//			if (getCurrentEditorContent() == null) {
+				while ((line = reader.readLine()) != null) {
+					if (!line.startsWith("import")) {
+						sb.append(line);
+						sb.append(Constants.lineSeparator);
+					}
 				}
-			}		
-			return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");			
+				return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
+//			}
+//			else {
+//				while ((line = reader.readLine()) != null) {
+//					if (line.contains(Constants.NameOfTemporaryMethod)) {
+//						sb.append(line);
+//						sb.append(Constants.lineSeparator);						
+//					}
+//				}
+//				return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
+//			}
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
-		}
-		return "";
+		} 
+//		catch (BadLocationException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		return "";		
 	}
 
 	public TaskSelectionPage getTaskSelectionPage() {

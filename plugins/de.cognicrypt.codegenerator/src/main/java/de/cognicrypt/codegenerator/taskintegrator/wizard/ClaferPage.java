@@ -15,7 +15,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 
 import de.cognicrypt.codegenerator.Constants;
@@ -117,9 +116,8 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 					currentModel.add(claferImportDialog.getResult());
 					compositeToHoldGranularUIElements.updateClaferContainer();
 				}
-				Label lblFeaturesImported = new Label(feedbackComposite, SWT.NONE);
 
-				lblFeaturesImported.setText("Features imported");
+				feedbackComposite.setFeedback("Features imported");
 				feedbackComposite.layout();
 				
 				checkModel();
@@ -163,8 +161,6 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 
 	public boolean checkModel() {
 
-		Label lblFeedback = new Label(feedbackComposite, SWT.NONE);
-
 		Job compileJob = Job.create("Compile Clafer model", (ICoreRunnable) monitor -> {
 			// UI updates can only be run in the display thread, 
 			// so do them via Display.getDefault() 
@@ -172,17 +168,15 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 
 				public void run() {
 
-					lblFeedback.setText(" (compiling...)");
+					feedbackComposite.setFeedback(" (compiling...)");
 
 					// do the tedious work
 					File cfrFile = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), "temporaryModel" + Constants.CFR_EXTENSION);
 					compositeToHoldGranularUIElements.getClaferModel().toFile(cfrFile.getAbsolutePath());
 					if (ClaferModel.compile(cfrFile.getAbsolutePath())) {
-						lblFeedback.setText("Compilation successful");
-						System.out.println("Compilation successful");
+						feedbackComposite.setFeedback("Compilation successful");
 					} else {
-						lblFeedback.setText("Compilation error");
-						System.out.println("Compilation error");
+						feedbackComposite.setFeedback("Compilation error");
 					}
 				}
 			});

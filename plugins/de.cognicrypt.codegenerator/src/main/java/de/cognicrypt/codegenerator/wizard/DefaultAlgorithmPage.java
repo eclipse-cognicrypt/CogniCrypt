@@ -235,8 +235,6 @@ public class DefaultAlgorithmPage extends WizardPage {
 				value = "\t" + ClaferModelUtils.removeScopePrefix(
 					in.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
 				
-//				value = ArrangeInColumn(ClaferModelUtils.removeScopePrefix(
-//					in.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")), ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : ""));
 				if (value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
 					value = value.substring(0, value.indexOf("->") - 1);
 					value = value.replaceAll("([a-z0-9])([A-Z])", "$1 $2");
@@ -319,17 +317,6 @@ public class DefaultAlgorithmPage extends WizardPage {
 		return true;
 	}
 	
-//	public String ArrangeInColumn(String key, String value) {
-//	    int keyColumn = 1;
-//	    int valueColumn = 35;//	 
-//	    StringBuilder output = new StringBuilder();
-//	    output.append("                                    ");  
-//	    output.insert(keyColumn, key);
-//	    output.insert(valueColumn, value);
-//	    System.out.println(output);
-//	    return output.toString();
-//	}
-
 	@Override
 	public void setVisible(final boolean visible) {
 		super.setVisible(visible);

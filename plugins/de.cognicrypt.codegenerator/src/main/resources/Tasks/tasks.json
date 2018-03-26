@@ -45,8 +45,7 @@
 			"questionsJSONFile" : "src/main/resources/TaskDesc/SECMUPACOMP.json",
 			"additionalResources" : "src/main/resources/AdditionalResources/SECMUPACOMP",
 			"xslFile" : "src/main/resources/XSLTemplates/SECMUPACOMP.xsl"
-		}
-		,
+		},
 		{
 			"name": "CertainTrust",
 			"description": "Judging Trustworthiness of third parties",
@@ -55,8 +54,7 @@
 			"questionsJSONFile" : "src/main/resources/TaskDesc/CertainTrust.json",
 			"additionalResources" : "src/main/resources/AdditionalResources/CertainTrust",
 			"xslFile" : "src/main/resources/XSLTemplates/CertainTrust.xsl"
-		}
-		,
+		},
 		{
 			"name": "HybridEncryption",
 			"description": "Hybrid Encryption",
@@ -67,4 +65,3 @@
 			"xslFile" : "src/main/resources/XSLTemplates/HybridEncryption.xsl"
 		}
 ]
-

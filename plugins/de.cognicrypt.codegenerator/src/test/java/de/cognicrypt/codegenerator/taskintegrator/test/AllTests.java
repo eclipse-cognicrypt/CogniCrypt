@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ ClaferFeatureTest.class, ClaferModelContentProviderTest.class, ClaferModelTest.class, ClaferPatternEnumGeneratorTest.class })
+@SuiteClasses({ ClaferFeatureTest.class, ClaferModelContentProviderTest.class, ClaferModelTest.class, ClaferPatternEnumGeneratorTest.class, QuestionAndPageModelTest.class, QuestionJSONFileTests.class, XmlRegionAnalyzerTests.class, XSLStringGenerationAndManipulationTests.class, XSLTests.class })
 public class AllTests {
 
 }

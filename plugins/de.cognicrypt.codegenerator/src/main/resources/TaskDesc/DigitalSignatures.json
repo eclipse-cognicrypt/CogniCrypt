@@ -34,7 +34,6 @@
 		"questionText": "Do you prefer any particular digital signature scheme?",
 		"answers": [{
 			"value": "Yes, I want to choose from a list.",
-			"defaultAnswer": true,
 			"claferDependencies": [{
 				"algorithm": "dssProperty",
 				"value": "fixed",
@@ -42,7 +41,7 @@
 			}],
 			"nextID": "2"
 		}, {
-			"value": "No, but I do need blazing fast verification.",
+			"value": "No, but I do need fast verification.",
 			"claferDependencies": [{
 				"algorithm": "dssProperty",
 				"value": "performant",
@@ -51,6 +50,7 @@
 			"nextID": "-1"
 		}, {
 			"value": "No, I would like state-of-the-art security.",
+			"defaultAnswer": true,
 			"claferDependencies": [{
 				"algorithm": "dssProperty",
 				"value": "secure",

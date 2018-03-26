@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<task description="SecurityTestTask">
+  <Package>Crypto</Package>
+  <Imports>
+    <Import>java.security.InvalidAlgorithmParameterException</Import>
+    <Import>java.security.InvalidKeyException</Import>
+    <Import>java.security.NoSuchAlgorithmException</Import>
+    <Import>java.security.NoSuchAlgorithmException</Import>
+    <Import>javax.crypto.SecretKey</Import>
+    <Import>javax.crypto.BadPaddingException</Import>
+    <Import>javax.crypto.Cipher</Import>
+    <Import>javax.crypto.IllegalBlockSizeException</Import>
+    <Import>javax.crypto.NoSuchPaddingException</Import>
+    <Import>java.security.SecureRandom</Import>
+    <Import>javax.crypto.spec.IvParameterSpec</Import>
+    <Import>javax.crypto.spec.SecretKeySpec</Import>
+    <Import>java.security.spec.InvalidKeySpecException</Import>
+    <Import>java.util.List</Import>
+    <Import>java.util.Base64</Import>
+    <Import>java.io.InputStream</Import>
+    <Import>java.io.OutputStream</Import>
+    <Import>java.util.Properties</Import>
+    <Import>java.io.FileOutputStream</Import>
+  </Imports>
+  <element type="SecurityTestTask">
+    <security>Strong</security>
+    <name>"SecurityTestTask"</name>
+  </element>
+  <code/>
+</task>

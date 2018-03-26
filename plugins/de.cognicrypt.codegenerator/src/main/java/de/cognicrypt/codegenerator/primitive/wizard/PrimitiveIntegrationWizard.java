@@ -221,13 +221,13 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		}
 
 		//Store source code of generated classes into a map
-		File folder=Utils.getResourceFromWithin(Constants.primitivesPath);
+		File folder = Utils.getResourceFromWithin(Constants.primitivesPath);
 		classContent = new Helper().getSourceCode(folder);
 		for (String name : classContent.keySet()) {
 			String className = name.toString();
 			String sourceCode = classContent.get(name).toString();
 
-		//Create new class that contains the source code 
+			//Create new class that contains the source code 
 			UserJavaProject project = this.methodSelectionPage.getUserProject();
 			try {
 				providerName = inputsMap.get("name");
@@ -241,10 +241,9 @@ public class PrimitiveIntegrationWizard extends Wizard {
 					if (file.getName().endsWith(".java") || file.getName().endsWith(".class"))
 						file.delete();
 				}
-				
+
 				//add delete Project
 
-				
 			} catch (JavaModelException e) {
 				e.printStackTrace();
 			} catch (Exception e) {

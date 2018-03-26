@@ -23,53 +23,27 @@ import de.cognicrypt.codegenerator.utilities.Utils;
  	
  
  
-// 	@Test
-//	public void compilteJavaFileTest() {
-//		File testJavaFile = Utils.getResourceFromWithin(Constants.testPrimitverFolder + "testJava.java");
-//		providerFile.compileFile(testJavaFile);
-//		File testClassFile = Utils.getResourceFromWithin(Constants.testPrimitverFolder + "testJava.class");
-//		assertTrue(testClassFile.exists());
-//	}
+ 	@Test
+	public void compilteJavaFileTest() {
+		File testJavaFile = Utils.getResourceFromWithin(Constants.testPrimitverFolder + "testJava.java");
+		providerFile.compileFile(testJavaFile);
+		File testClassFile = Utils.getResourceFromWithin(Constants.testPrimitverFolder + "testJava.class");
+		assertTrue(testClassFile.exists());
+	}
  	
- 	public boolean check(File[] files, String element) {
- 		boolean elementExists=false;
- 		for (int i = 0; i < files.length; i++  ) {
- 			if (files[i].isFile()) {
- 				if (files[i].getName().equals(element))
- 					elementExists=true;
- 			}
- 		}
- 
- 		return elementExists;
- 	}
- 	
- 	
- 
- 	
-// 	public void createJarFileTest() {
-// 		try {
-// 			
-// 			File jarFile = new File(dirJar);
-// 			File folder = Utils.getResourceFromWithin("src/test/resources");
-// 			File[] files = folder.listFiles();
-//// 			providerFile.createJarArchive(jarFile, files);
-// 
-// 			JarFile jar = new JarFile(jarFile);
-// 			final Enumeration<JarEntry> entries = jar.entries();
-// 			while (entries.hasMoreElements()) {
-// 			final JarEntry entry = entries.nextElement();
-// 			final String entryName = entry.getName();
-// 			elementExists=check(files, entryName);
+// 	private boolean fileExists(File[] files, String element) {
+// 		boolean elementExists=false;
+// 		for (int i = 0; i < files.length; i++  ) {
+// 			if (files[i].isFile()) {
+// 				if (files[i].getName().equals(element))
+// 					elementExists=true;
 // 			}
-// 			assertEquals(elementExists, true);
-// 			jar.close();
-// 			jarFile.delete();
-// 
-// 		} catch (IOException e) {
-// 			e.printStackTrace();
 // 		}
-//
+// 
+// 		return elementExists;
 // 	}
+ 	
+ 
  	
 
  

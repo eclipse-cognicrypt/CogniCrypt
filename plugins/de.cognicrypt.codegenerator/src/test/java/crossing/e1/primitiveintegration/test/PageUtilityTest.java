@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.junit.Test;
 
-import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionPageUtility;
-import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.*;
+import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionPageUtility;
+import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionsJSONReader;
+import de.cognicrypt.codegenerator.question.Question;
 
 public class PageUtilityTest {
 
@@ -25,5 +25,6 @@ public class PageUtilityTest {
 		assertEquals(index, 1);
 
 	}
-
 }
+	
+

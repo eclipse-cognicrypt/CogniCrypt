@@ -37,7 +37,7 @@ public class QuestionDialog extends Dialog {
 	private String questionType;
 	private Combo combo;
 	private Text txtBoxHelptext;
-	private Combo comboBoxTooltip;
+	private Text textBoxTooltip;
 	private CompositeToHoldSmallerUIElements compositeToHoldAnswers;
 	private Question question;
 	private Question questionDetails;
@@ -104,15 +104,14 @@ public class QuestionDialog extends Dialog {
 
 		Label lblToolTip = new Label(composite, SWT.None);
 		lblToolTip.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		lblToolTip.setText("Set tooltip");
+		lblToolTip.setText("Give tooltip");
+		lblToolTip.setToolTipText("Give help text to be displayed when user hover over the text box");
 		//visible only if the question type is text
 		lblToolTip.setVisible(false);
 
-		comboBoxTooltip = new Combo(composite, SWT.READ_ONLY);
-		comboBoxTooltip.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		comboBoxTooltip.select(-1);
-		comboBoxTooltip.setItems("option1", "option2", "option3", "others");
-		comboBoxTooltip.setVisible(false);
+		textBoxTooltip = new Text(composite, SWT.BORDER);
+		textBoxTooltip.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		textBoxTooltip.setVisible(false);
 
 		Button btnAddAnswer = new Button(composite, SWT.None);
 		btnAddAnswer.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
@@ -148,7 +147,8 @@ public class QuestionDialog extends Dialog {
 				switch (combo.getText()) {
 					case Constants.textBox:
 						lblToolTip.setVisible(true);
-						comboBoxTooltip.setVisible(true);
+						textBoxTooltip.setVisible(true);
+						textBoxTooltip.setText("");
 						btnAddAnswer.setVisible(false);
 						compositeToHoldAnswers.setVisible(false);
 						compositeToHoldAnswers.getListOfAllAnswer().clear();
@@ -163,8 +163,8 @@ public class QuestionDialog extends Dialog {
 						boolean comboSelected = combo.getText().equalsIgnoreCase(Constants.dropDown) ? true : false;
 						btnAddAnswer.setVisible(comboSelected);
 						lblToolTip.setVisible(false);
-						comboBoxTooltip.deselectAll();
-						comboBoxTooltip.setVisible(false);
+						textBoxTooltip.setText("");
+						textBoxTooltip.setVisible(false);
 						if (!currentQuestionType.equalsIgnoreCase(Constants.dropDown)) {
 							compositeToHoldAnswers.getListOfAllAnswer().clear();
 							compositeToHoldAnswers.updateAnswerContainer();
@@ -176,8 +176,8 @@ public class QuestionDialog extends Dialog {
 						boolean buttonSelected = combo.getText().equalsIgnoreCase(Constants.radioButton) ? true : false;
 						btnAddAnswer.setVisible(buttonSelected);
 						lblToolTip.setVisible(false);
-						comboBoxTooltip.deselectAll();
-						comboBoxTooltip.setVisible(false);
+						textBoxTooltip.setText("");
+						textBoxTooltip.setVisible(false);
 						if (!currentQuestionType.equalsIgnoreCase(Constants.radioButton)) {
 							compositeToHoldAnswers.getListOfAllAnswer().clear();
 							compositeToHoldAnswers.updateAnswerContainer();
@@ -204,15 +204,17 @@ public class QuestionDialog extends Dialog {
 			if (!question.getHelpText().isEmpty()) {
 				txtBoxHelptext.setText(question.getHelpText());
 			}
+			if (!question.getTooltip().isEmpty()) {
+				textBoxTooltip.setText(question.getTooltip());
+			}
 
-			//combo.setText(question.getQuestionType());
 			for (Answer answer : question.getAnswers()) {
 				compositeToHoldAnswers.getListOfAllAnswer().add(answer);
 				compositeToHoldAnswers.addAnswer(answer, showRemoveButton);
 				compositeToHoldAnswers.setVisible(true);
 			}
 			if (question.getElement().equals(Constants.GUIElements.text)) {
-				comboBoxTooltip.setText(question.getTooltip());
+				textBoxTooltip.setText(question.getTooltip());
 				compositeToHoldAnswers.setVisible(false);
 			}
 
@@ -254,8 +256,8 @@ public class QuestionDialog extends Dialog {
 		}
 		//sets the tooltip for question type text 
 		if (combo.getText().equalsIgnoreCase(Constants.textBox)) {
-			if (!comboBoxTooltip.getText().equalsIgnoreCase("others")) {
-			questionDetails.setTooltip(comboBoxTooltip.getText());
+			if (!textBoxTooltip.getText().equalsIgnoreCase("")) {
+				questionDetails.setTooltip(textBoxTooltip.getText());
 			}
 		}
 

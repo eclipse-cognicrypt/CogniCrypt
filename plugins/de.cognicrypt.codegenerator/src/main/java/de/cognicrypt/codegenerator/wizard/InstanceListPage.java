@@ -16,6 +16,7 @@ import org.clafer.instance.InstanceClafer;
 import org.eclipse.compare.CompareUI;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -119,7 +120,6 @@ public class InstanceListPage extends WizardPage {
 		Combo combo = algorithmClass.getCombo();
 
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-		//		algorithmClass.setInput(inst.keySet());
 		algorithmClass.setInput(this.instanceGenerator.getAlgorithmNames());
 		String key = instanceGenerator.getAlgorithmNames().get(0);
 
@@ -326,31 +326,17 @@ public class InstanceListPage extends WizardPage {
 
 			@Override
 			public void handleEvent(Event event) {
-				//open compare editor to show the difference between the current code(in the user's Java class that is open in his editor)
+				//open compare dialog to show the difference between the current code(in the user's Java class that is open in his editor)
 				//and the new code that will be generated(in the same class) on clicking 'Finish'.	
 				//if the user does not have any class opened in his editor, then one side of the compare editor will be empty.
-				CompareUI.openCompareDialog(new CompareInput(getCurrentEditorContent(), compileCodePreview()));
-				
-//				byte[] encoded = null;
-//				try {
-//					encoded = Files.readAllBytes(Paths.get("C://Users//Computer//Downloads//Activator2.java"));
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				  String s1 = new String(encoded, StandardCharsets.UTF_8);
-//				
-//				  byte[] encoded2 = null;
-//				try {
-//					encoded2 = Files.readAllBytes(Paths.get("C://Users//Computer//Downloads//Activator.java"));
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				  String s2 = new String(encoded2, StandardCharsets.UTF_8);
-//				
-//				CompareUI.openCompareDialog(new CompareInput(s1, s2));
-								 
+				if (getCurrentEditorContent() == "") {
+					CompareUI.openCompareDialog(new CompareInput(getCurrentEditorContent(), compileCodePreview()));
+				} else {					
+					String currentlyOpenPart = getCurrentEditorContent();
+					int position = currentlyOpenPart.indexOf("{");
+					currentlyOpenPart = new StringBuilder(currentlyOpenPart).insert(position + 1 , "\n" + compileCodePreview()).toString();
+					CompareUI.openCompareDialog(new CompareInput(getCurrentEditorContent(), currentlyOpenPart));
+				}												 
 			}
 		});
 
@@ -393,8 +379,7 @@ public class InstanceListPage extends WizardPage {
 	public String getCurrentEditorContent() {		
 		IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
 		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {
-			Activator.getDefault().logError(null,
-				"Could not open access the editor of the file or there are no files open. Therefore,  the 'Old Source' part remains empty and the newly generated code appears in the 'Modified Source' part.");
+			Activator.getDefault().logInfo("Could not open access the editor of the file or there are no files open. Therefore,  the 'Old Source' part remains empty and the newly generated code appears in the 'Modified Source' part.");
 			return "";
 		}
 		ITextEditor currentlyOpenEditor = (ITextEditor) currentlyOpenPart;
@@ -407,6 +392,7 @@ public class InstanceListPage extends WizardPage {
 	 * Assembles code-preview text.
 	 * 
 	 * @return code snippet
+	 * @throws BadLocationException 
 	 */
 	public String compileCodePreview() {
 		final CodeGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(), this.taskSelectionPage.getSelectedTask().getXslFile());
@@ -424,19 +410,36 @@ public class InstanceListPage extends WizardPage {
 		final Path file = new File(temporaryOutputFile).toPath();
 		try (InputStream in = Files.newInputStream(file);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-			final StringBuilder sb = new StringBuilder();
+			final StringBuilder preview = new StringBuilder();
 			String line = null;
-			while ((line = reader.readLine()) != null) {
-				if (!line.startsWith("import")) {
-					sb.append(line);
-					sb.append(Constants.lineSeparator);
+			// If no file is open in user's editor, show the preview of newly generated class
+			if (getCurrentEditorContent() == "") {
+				while ((line = reader.readLine()) != null) {
+					if (!line.startsWith("import")) {
+						preview.append(line);
+						preview.append(Constants.lineSeparator);
+					}
+				}			
+				return preview.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
+			}
+			// If a file is open in user's editor, show the preview of newly generated lines located inside the user's open file.
+			else {
+				while ((line = reader.readLine()) != null) {
+					if (!line.startsWith("package") && !line.contains("class") && !line.startsWith("import")) {
+						preview.append(line);
+						preview.append(Constants.lineSeparator);						
+					}
 				}
-			}		
-			return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");			
+				String truncatedPreview = preview.toString();
+				int truncateIndex = truncatedPreview.length();
+				truncateIndex = truncatedPreview.lastIndexOf("}", truncateIndex - 1);
+				truncatedPreview = truncatedPreview.substring(0, truncateIndex);
+				return truncatedPreview.replaceAll("(?m)^[ \t]*\r?\n", "");
+			}
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
-		}
-		return "";
+		} 
+		return "";		
 	}
 
 	public TaskSelectionPage getTaskSelectionPage() {

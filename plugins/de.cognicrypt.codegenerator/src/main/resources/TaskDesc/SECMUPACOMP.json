@@ -33,7 +33,7 @@
       "id": "1",
        "note": "",
       "element": "radio",
-      "questionText": "Do you know ip and port of the server?",
+      "questionText": "Do you know the IP address and Port number of the server?",
       "answers": [{
           "value": "Yes",
           "codeDependencies": [],
@@ -71,7 +71,7 @@
       "note": "",
       "element": "text",
       "textType":"Port number",
-      "questionText": "Please enter the port number of the server:",
+      "questionText": "Please enter the Port number of the server:",
       "answers": [{
         "value": "",
         "codeDependencies": [{

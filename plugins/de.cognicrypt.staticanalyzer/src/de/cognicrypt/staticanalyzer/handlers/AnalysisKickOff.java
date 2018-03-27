@@ -25,7 +25,6 @@ public class AnalysisKickOff {
 
 	private static ErrorMarkerGenerator errGen;
 	private static ResultsCCUIListener resultsReporter;
-	private String mainClass;
 	private IJavaProject curProj;
 
 	/**
@@ -55,26 +54,6 @@ public class AnalysisKickOff {
 			AnalysisKickOff.resultsReporter = new ResultsCCUIListener(ip, AnalysisKickOff.errGen);
 		}
 
-		final SearchRequestor requestor = new SearchRequestor() {
-
-			@Override
-			public void acceptSearchMatch(final SearchMatch match) throws CoreException {
-				final IResource resource = match.getResource();
-				final IJavaElement classEl = JavaCore.create(resource);
-				final int isClassFile = classEl.getElementType();
-				if (isClassFile == IJavaElement.CLASS_FILE || isClassFile == IJavaElement.COMPILATION_UNIT) {
-					String name = classEl.getParent().getElementName() + "." + classEl.getElementName();
-
-					name = name.replace("." + resource.getFileExtension(), "");
-					if (name.startsWith(".")) {
-						name = name.substring(1);
-					}
-					if (!name.isEmpty()) {
-						AnalysisKickOff.this.mainClass = name;
-					}
-				}
-			}
-		};
 		try {
 			if (ip == null || !ip.hasNature(JavaCore.NATURE_ID)) {
 				return false;
@@ -84,7 +63,6 @@ public class AnalysisKickOff {
 			return false;
 		}
 		this.curProj = JavaCore.create(ip);
-		Utils.findMainMethodInCurrentProject(this.curProj, requestor);
 
 		return true;
 	}
@@ -95,6 +73,6 @@ public class AnalysisKickOff {
 	 * @return <code>true</code>/<code>false</code> Soot runs successfully
 	 */
 	public boolean run() {
-		return this.curProj != null && SootRunner.runSoot(this.curProj, this.mainClass, AnalysisKickOff.resultsReporter);
+		return this.curProj != null && SootRunner.runSoot(this.curProj, AnalysisKickOff.resultsReporter);
 	}
 }

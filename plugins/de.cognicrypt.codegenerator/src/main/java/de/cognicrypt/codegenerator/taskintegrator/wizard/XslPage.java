@@ -155,12 +155,7 @@ public class XslPage extends PageForTaskIntegratorWizard {
 					if (ts.getFirstElement() instanceof ClaferFeature) {
 						ClaferFeature featureClicked = (ClaferFeature) ts.getFirstElement();
 
-						Point selected = getCompositeForXsl().getXslTxtBox().getSelection();
-						String xslTxtBoxContent = getCompositeForXsl().getXslTxtBox().getText();
-						xslTxtBoxContent = xslTxtBoxContent.substring(0, selected.x) + featureClicked.getFeatureName() + xslTxtBoxContent.substring(selected.y,
-							xslTxtBoxContent.length());
-						getCompositeForXsl().getXslTxtBox().setText(xslTxtBoxContent);
-						getCompositeForXsl().colorizeTextBox();
+						insertAtCursor(featureClicked.getFeatureName());
 					}
 				}
 				super.mouseDoubleClick(e);
@@ -201,6 +196,24 @@ public class XslPage extends PageForTaskIntegratorWizard {
 	 */
 	public void setTagValueTagData(HashMap<String, String> tagValueTagData) {
 		this.tagValueTagData = tagValueTagData;
+	}
+
+	/**
+	 * insert the given {@link String} text into the text box
+	 * 
+	 * @param text
+	 *        {@link String} to be placed at the cursor position
+	 */
+	private void insertAtCursor(String text) {
+		Point selection = getCompositeForXsl().getXslTxtBox().getSelection();
+		String xslTxtBoxContent = getCompositeForXsl().getXslTxtBox().getText();
+		xslTxtBoxContent = xslTxtBoxContent.substring(0, selection.x) + text + xslTxtBoxContent.substring(selection.y, xslTxtBoxContent.length());
+		getCompositeForXsl().getXslTxtBox().setText(xslTxtBoxContent);
+
+		getCompositeForXsl().colorizeTextBox();
+		// place cursor behind the inserted text
+		getCompositeForXsl().getXslTxtBox().setSelection(selection.x + text.length());
+		getCompositeForXsl().getXslTxtBox().setFocus();
 	}
 
 }

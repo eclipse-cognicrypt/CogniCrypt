@@ -1,6 +1,5 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,7 +20,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.MessageBox;
 
 import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.XSLPageContentProvider;
@@ -151,7 +149,7 @@ public class XslPage extends PageForTaskIntegratorWizard {
 
 		// only list features, not their properties 
 		// TODO change the XSLPageContentProvider constructor to support filters
-		treeViewer.setContentProvider(new XSLPageContentProvider());
+		treeViewer.setContentProvider(new XSLPageContentProvider(feat -> feat.getFeatureInheritance().equals("Task"), prop -> true));
 		treeViewer.setLabelProvider(new XSLPageLabelProvider());
 
 		setTreeViewerInput();
@@ -191,22 +189,10 @@ public class XslPage extends PageForTaskIntegratorWizard {
 		ClaferModel inputClafer = (((TaskIntegrationWizard) this.getWizard()).getTIPageByName(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompositeToHoldGranularUIElements()
 			.getClaferModel();
 
-		ArrayList<CodeDependency> codeDeps = new ArrayList<>();
-
 		List<Question> questions = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_LINK_ANSWERS)).getCompositeToHoldGranularUIElements()
 			.getListOfAllQuestions();
 
-		for (Question question : questions) {
-			for (Answer answer : question.getAnswers()) {
-				if (answer.getCodeDependencies() != null) {
-					for (CodeDependency codeDependency : answer.getCodeDependencies()) {
-						codeDeps.add(codeDependency);
-					}
-				}
-			}
-		}
-
-		Object[] treeViewerInput = mergeLists(inputClafer.getClaferModel().toArray(), codeDeps.toArray());
+		Object[] treeViewerInput = new Object[] { inputClafer, questions };
 
 		treeViewer.setInput(treeViewerInput);
 		treeViewer.refresh();

@@ -147,8 +147,6 @@ public class XslPage extends PageForTaskIntegratorWizard {
 
 		treeViewer = new TreeViewer(container);
 
-		// only list features, not their properties 
-		// TODO change the XSLPageContentProvider constructor to support filters
 		treeViewer.setContentProvider(new XSLPageContentProvider(feat -> feat.getFeatureInheritance().equals("Task"), prop -> true));
 		treeViewer.setLabelProvider(new XSLPageLabelProvider());
 

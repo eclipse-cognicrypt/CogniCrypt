@@ -5,16 +5,20 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.ArrayList;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.CodeDependency;
+import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.XSLPageContentProvider;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.XslPage;
-
 
 public class XslPageContentProviderTest {
 
@@ -37,17 +41,46 @@ public class XslPageContentProviderTest {
 
 	@Test
 	public void testGetElements() {
+		// create a Clafer model containing only a task DigitalSignatures with a description
+		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, "DigitalSignatures", "Task");
+		ArrayList<ClaferProperty> propertyList = new ArrayList<>();
+		propertyList.add(new ClaferProperty("description", "string"));
+		cfrFeature.setFeatureProperties(propertyList);
+
+		ClaferModel claferModel = new ClaferModel();
+		claferModel.add(cfrFeature);
+		
+		// create a question with two possible answers and a code dependency each
+		CodeDependency codeDep1 = new CodeDependency();
+		codeDep1.setOption("signing");
+		codeDep1.setValue("true");
+		CodeDependency codeDep2 = new CodeDependency();
+		codeDep2.setOption("signing");
+		codeDep2.setValue("false");
+
+		Question question = new Question();
+		Answer answer1 = new Answer();
+		Answer answer2 = new Answer();
+		ArrayList<CodeDependency> deps1 = new ArrayList<>();
+		deps1.add(codeDep1);
+		ArrayList<CodeDependency> deps2 = new ArrayList<>();
+		deps2.add(codeDep2);
+		answer1.setCodeDependencies(deps1);
+		answer2.setCodeDependencies(deps2);
+
+		ArrayList<Answer> answers = new ArrayList<>();
+		answers.add(answer1);
+		question.setAnswers(answers);
+		answers.add(answer2);
+		
+		ArrayList<Question> questionList = new ArrayList<Question>();
+		questionList.add(question);
+
 		XSLPageContentProvider xslPageContentProvider = new XSLPageContentProvider();
-		CodeDependency codeDep = new CodeDependency();
-		codeDep.setOption("signing");
-		codeDep.setValue("true");
-		codeDep.setOption("signing");
-		codeDep.setValue("false");
-		CodeDependency[] depList = new CodeDependency[] { codeDep };
+		Object[] contentProviderElements = xslPageContentProvider.getElements(new Object[] { claferModel, questionList });
 
-		Object[] contentProviderElements = xslPageContentProvider.getElements(depList);
-
-		assertEquals(1, contentProviderElements.length);
+		// there should be three elements, the task clafer and the two code dependencies
+		assertEquals(3, contentProviderElements.length);
 	}
 
 	@Test

@@ -1,8 +1,26 @@
 package de.cognicrypt.codegenerator.taskintegrator.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
+
+import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.CodeDependency;
+import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
+import de.cognicrypt.codegenerator.taskintegrator.wizard.XslPage;
 
 public class XSLPageContentProvider extends ClaferModelContentProvider {
+
+	public XSLPageContentProvider() {
+		this(null, null);
+	}
+
+	public XSLPageContentProvider(Predicate<? super ClaferFeature> featureFilter, Predicate<? super ClaferProperty> propertyFilter) {
+		super(featureFilter, propertyFilter);
+	}
 
 	@Override
 	public Object[] getChildren(Object inputElement) {
@@ -14,15 +32,40 @@ public class XSLPageContentProvider extends ClaferModelContentProvider {
 		return super.getChildren(inputElement);
 	}
 
+	/**
+	 * take an {@link Object}[] array containing {@link ClaferModel} and {@link List}<{@link Question}> elements and get all {@link ClaferFeature} and {@link CodeDependency}
+	 * elements
+	 */
 	@Override
 	public Object[] getElements(Object inputElement) {
-		// check if the input is a list
+		Object[] resultList = new Object[] {};
 		if (inputElement instanceof Object[]) {
-			return (Object[]) inputElement;
+			for (Object elem : (Object[]) inputElement) {
+				if (elem instanceof ClaferModel) {
+					resultList = XslPage.mergeLists(resultList, super.getElements(elem));
+				} else if (elem instanceof List) {
+					ArrayList<CodeDependency> codeDeps = new ArrayList<CodeDependency>();
+					
+					// get all code dependencies from the list of questions
+					for (Object listElement : (List<?>) elem) {
+						if (listElement instanceof Question) {
+							Question question = (Question) listElement;
+							for (Answer answer : question.getAnswers()) {
+								if (answer.getCodeDependencies() != null) {
+									for (CodeDependency codeDependency : answer.getCodeDependencies()) {
+										codeDeps.add(codeDependency);
+									}
+								}
+							}
+						}
+					}
+
+					resultList = XslPage.mergeLists(resultList, codeDeps.toArray());
+				}
+			}
 		}
 
-		// now, this is unlikely
-		return super.getElements(inputElement);
+		return resultList;
 	}
 
 	@Override

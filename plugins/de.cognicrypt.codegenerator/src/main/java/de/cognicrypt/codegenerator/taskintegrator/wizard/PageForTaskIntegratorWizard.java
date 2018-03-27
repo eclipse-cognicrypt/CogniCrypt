@@ -109,6 +109,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			if (nextPage.getName().equals(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)) {
 				if (((PageForTaskIntegratorWizard) nextPage).treeViewer != null) {
 					((PageForTaskIntegratorWizard) nextPage).treeViewer.refresh();
+					((XslPage) nextPage).setTreeViewerInput();
 				}
 			}
 		}

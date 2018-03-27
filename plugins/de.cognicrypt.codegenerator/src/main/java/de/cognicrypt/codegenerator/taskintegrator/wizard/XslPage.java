@@ -1,5 +1,6 @@
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,9 +21,11 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.MessageBox;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.taskintegrator.controllers.ClaferModelContentProvider;
-import de.cognicrypt.codegenerator.taskintegrator.controllers.ClaferModelLabelProvider;
+import de.cognicrypt.codegenerator.taskintegrator.controllers.XSLPageContentProvider;
+import de.cognicrypt.codegenerator.taskintegrator.controllers.XSLPageLabelProvider;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.XSLStringGenerationAndManipulation;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
@@ -40,6 +43,18 @@ public class XslPage extends PageForTaskIntegratorWizard {
 
 		// The String to display, and the constructed string for the XSL document.
 		setTagValueTagData(new HashMap<>());
+	}
+
+	public static Object[] mergeLists(Object[] firstList, Object[] secondList) {
+		Object[] mergedList = new Object[firstList.length + secondList.length];
+		for (int i = 0; i < firstList.length; i++) {
+			mergedList[i] = firstList[i];
+		}
+		for (int i = 0; i < secondList.length; i++) {
+			mergedList[i + firstList.length] = secondList[i];
+		}
+
+		return mergedList;
 	}
 
 	@Override
@@ -135,13 +150,11 @@ public class XslPage extends PageForTaskIntegratorWizard {
 		treeViewer = new TreeViewer(container);
 
 		// only list features, not their properties 
-		treeViewer.setContentProvider(new ClaferModelContentProvider(feat -> true, prop -> false));
-		treeViewer.setLabelProvider(new ClaferModelLabelProvider());
+		// TODO change the XSLPageContentProvider constructor to support filters
+		treeViewer.setContentProvider(new XSLPageContentProvider());
+		treeViewer.setLabelProvider(new XSLPageLabelProvider());
 
-		ClaferModel inputModel = (((TaskIntegrationWizard) this.getWizard()).getTIPageByName(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompositeToHoldGranularUIElements()
-			.getClaferModel();
-
-		treeViewer.setInput(inputModel);
+		setTreeViewerInput();
 		treeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		treeViewer.getControl().addMouseListener(new MouseAdapter() {
@@ -156,11 +169,47 @@ public class XslPage extends PageForTaskIntegratorWizard {
 						ClaferFeature featureClicked = (ClaferFeature) ts.getFirstElement();
 
 						insertAtCursor(featureClicked.getFeatureName());
+					} else if (ts.getFirstElement() instanceof CodeDependency) {
+						CodeDependency codeDependency = (CodeDependency) ts.getFirstElement();
+
+						StringBuilder sb = new StringBuilder();
+						sb.append("<xsl:when test=\"//task/code/");
+						sb.append(codeDependency.getOption());
+						sb.append("='");
+						sb.append(codeDependency.getValue());
+						sb.append("'\"></xsl:when>");
+
+						insertAtCursor(sb.toString());
 					}
 				}
 				super.mouseDoubleClick(e);
 			}
 		});
+	}
+
+	public void setTreeViewerInput() {
+		ClaferModel inputClafer = (((TaskIntegrationWizard) this.getWizard()).getTIPageByName(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompositeToHoldGranularUIElements()
+			.getClaferModel();
+
+		ArrayList<CodeDependency> codeDeps = new ArrayList<>();
+
+		List<Question> questions = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_LINK_ANSWERS)).getCompositeToHoldGranularUIElements()
+			.getListOfAllQuestions();
+
+		for (Question question : questions) {
+			for (Answer answer : question.getAnswers()) {
+				if (answer.getCodeDependencies() != null) {
+					for (CodeDependency codeDependency : answer.getCodeDependencies()) {
+						codeDeps.add(codeDependency);
+					}
+				}
+			}
+		}
+
+		Object[] treeViewerInput = mergeLists(inputClafer.getClaferModel().toArray(), codeDeps.toArray());
+
+		treeViewer.setInput(treeViewerInput);
+		treeViewer.refresh();
 	}
 
 	/**

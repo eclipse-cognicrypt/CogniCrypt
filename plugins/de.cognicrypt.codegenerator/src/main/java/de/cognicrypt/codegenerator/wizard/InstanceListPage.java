@@ -130,7 +130,6 @@ public class InstanceListPage extends WizardPage {
 		Combo combo = algorithmClass.getCombo();
 
 		algorithmClass.setContentProvider(ArrayContentProvider.getInstance());
-		//		algorithmClass.setInput(inst.keySet());
 		algorithmClass.setInput(this.instanceGenerator.getAlgorithmNames());
 		String key = instanceGenerator.getAlgorithmNames().get(0);
 
@@ -337,42 +336,17 @@ public class InstanceListPage extends WizardPage {
 
 			@Override
 			public void handleEvent(Event event) {
-				//open compare editor to show the difference between the current code(in the user's Java class that is open in his editor)
+				//open compare dialog to show the difference between the current code(in the user's Java class that is open in his editor)
 				//and the new code that will be generated(in the same class) on clicking 'Finish'.	
 				//if the user does not have any class opened in his editor, then one side of the compare editor will be empty.
-				try {
-					if (getCurrentEditorContent() == null) {
-						CompareUI.openCompareDialog(new CompareInput(getCurrentEditorContent(), compileCodePreview()));
-					} else {
-						IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
-						int cursorPos = ((ITextSelection) currentlyOpenPart.getSite().getSelectionProvider().getSelection()).getOffset();
-						String x = getCurrentEditorContent();
-						x =  new StringBuilder(x).insert(cursorPos, compileCodePreview()).toString();
-						
-//						final String fileContent = String.join(Constants.lineSeparator, compileCodePreview());
-//						// Determine start and end position for relevant extract
-//						final ASTParser astp = ASTParser.newParser(AST.JLS8);
-//						astp.setSource(fileContent.toCharArray());
-//						astp.setKind(ASTParser.K_COMPILATION_UNIT);
-//						final CompilationUnit cu = (CompilationUnit) astp.createAST(null);
-//						final ASTVisitor astVisitor = new ASTVisitor(true) {
-//
-//							@Override
-//							public boolean visit(final MethodDeclaration node) {
-//								if (Constants.NameOfTemporaryMethod.equals(node.getName().toString())) {
-//									setPosForRunMethod(node.getStartPosition(), node.getStartPosition() + node.getLength());
-//								}
-//								return super.visit(node);
-//							}
-//						};						
-						
-						CompareUI.openCompareDialog(new CompareInput(getCurrentEditorContent(), x));
-						
-					}
-				} catch (BadLocationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}								 
+				if (getCurrentEditorContent() == "") {
+					CompareUI.openCompareDialog(new CompareInput(getCurrentEditorContent(), compileCodePreview()));
+				} else {					
+					String currentlyOpenPart = getCurrentEditorContent();
+					int position = currentlyOpenPart.indexOf("{");
+					currentlyOpenPart = new StringBuilder(currentlyOpenPart).insert(position + 1 , "\n" + compileCodePreview()).toString();
+					CompareUI.openCompareDialog(new CompareInput(getCurrentEditorContent(), currentlyOpenPart));
+				}												 
 			}
 		});
 
@@ -412,7 +386,7 @@ public class InstanceListPage extends WizardPage {
 		setControl(sc);
 	}
 	
-	public String getCurrentEditorContent() throws BadLocationException {		
+	public String getCurrentEditorContent() {		
 		IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
 		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {
 			Activator.getDefault().logInfo("Could not open access the editor of the file or there are no files open. Therefore,  the 'Old Source' part remains empty and the newly generated code appears in the 'Modified Source' part.");
@@ -420,9 +394,6 @@ public class InstanceListPage extends WizardPage {
 		}
 		ITextEditor currentlyOpenEditor = (ITextEditor) currentlyOpenPart;
 		IDocument currentlyOpenDocument = currentlyOpenEditor.getDocumentProvider().getDocument(currentlyOpenEditor.getEditorInput());
-		
-//		int cursorPos = ((ITextSelection) currentlyOpenPart.getSite().getSelectionProvider().getSelection()).getOffset();
-//		currentlyOpenDocument.replace(cursorPos, 0, compileCodePreview());
 		final String docContent = currentlyOpenDocument.get();
 		return docContent;		
 	}
@@ -449,33 +420,35 @@ public class InstanceListPage extends WizardPage {
 		final Path file = new File(temporaryOutputFile).toPath();
 		try (InputStream in = Files.newInputStream(file);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-			final StringBuilder sb = new StringBuilder();
+			final StringBuilder preview = new StringBuilder();
 			String line = null;
-//			if (getCurrentEditorContent() == null) {
+			// If no file is open in user's editor, show the preview of newly generated class
+			if (getCurrentEditorContent() == "") {
 				while ((line = reader.readLine()) != null) {
 					if (!line.startsWith("import")) {
-						sb.append(line);
-						sb.append(Constants.lineSeparator);
+						preview.append(line);
+						preview.append(Constants.lineSeparator);
+					}
+				}			
+				return preview.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
+			}
+			// If a file is open in user's editor, show the preview of newly generated lines located inside the user's open file.
+			else {
+				while ((line = reader.readLine()) != null) {
+					if (!line.startsWith("package") && !line.contains("class") && !line.startsWith("import")) {
+						preview.append(line);
+						preview.append(Constants.lineSeparator);						
 					}
 				}
-				return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
-//			}
-//			else {
-//				while ((line = reader.readLine()) != null) {
-//					if (line.contains(Constants.NameOfTemporaryMethod)) {
-//						sb.append(line);
-//						sb.append(Constants.lineSeparator);						
-//					}
-//				}
-//				return sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
-//			}
+				String truncatedPreview = preview.toString();
+				int truncateIndex = truncatedPreview.length();
+				truncateIndex = truncatedPreview.lastIndexOf("}", truncateIndex - 1);
+				truncatedPreview = truncatedPreview.substring(0, truncateIndex);
+				return truncatedPreview.replaceAll("(?m)^[ \t]*\r?\n", "");
+			}
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
 		} 
-//		catch (BadLocationException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		return "";		
 	}
 

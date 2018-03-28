@@ -15,35 +15,24 @@ Slow: Performance = 2
 Fast: Performance = 3
 VeryFast: Performance = 4
 
-abstract DSS
+abstract Algorithm
+
+abstract SignatureScheme : Algorithm
 	performance -> Performance
 	security -> Security
 	keysize -> integer
-RSA : DSS
+RSA : SignatureScheme
 	[ performance = Fast ]
 	[ security = Medium ]
 	[ keysize = 512 ]
-ECDSA : DSS
+ECDSA : SignatureScheme
 	[ performance = Slow ]
 	[ security = Strong ]
 	[ keysize = 256 ]
-
-abstract DSSProperty
-fixed : DSSProperty
-performant : DSSProperty
-secure : DSSProperty
 
 abstract Task
     description -> string
 
 DigitalSignatures : Task
 	[description = "Digitally sign a document"]
-
-	scheme -> DSS
-
-	dssProperty -> DSSProperty
-	[ dssProperty = performant => scheme.performance >= Fast ]
-	[ dssProperty = secure => scheme.security >= Strong ]
-
-	keysize -> integer
-	[ keysize = scheme.keysize ]
+	scheme -> SignatureScheme

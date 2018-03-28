@@ -34,27 +34,24 @@
 		"questionText": "Do you prefer any particular digital signature scheme?",
 		"answers": [{
 			"value": "Yes, I want to choose from a list.",
-			"claferDependencies": [{
-				"algorithm": "dssProperty",
-				"value": "fixed",
-				"operator": "="
-			}],
 			"nextID": "2"
 		}, {
 			"value": "No, but I do need fast verification.",
 			"claferDependencies": [{
-				"algorithm": "dssProperty",
-				"value": "performant",
-				"operator": "="
+				"algorithm": "scheme",
+				"operand": "performance",
+				"operator": ">=",
+				"value": "Fast"
 			}],
 			"nextID": "-1"
 		}, {
 			"value": "No, I would like state-of-the-art security.",
 			"defaultAnswer": true,
 			"claferDependencies": [{
-				"algorithm": "dssProperty",
-				"value": "secure",
-				"operator": "="
+				"algorithm": "scheme",
+				"operand": "security",
+				"operator": ">=",
+				"value": "Strong"
 			}],
 			"nextID": "-1"
 		}]

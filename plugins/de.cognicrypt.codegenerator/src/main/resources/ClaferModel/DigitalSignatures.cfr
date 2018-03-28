@@ -1,0 +1,49 @@
+abstract Enum
+
+//enum Security
+abstract Security : Enum -> integer
+NoSecurity: Security = 0
+Broken: Security = 1
+Weak: Security = 2
+Medium: Security = 3
+Strong: Security = 4
+
+//enum Performance
+abstract Performance : Enum -> integer
+VerySlow: Performance = 1
+Slow: Performance = 2
+Fast: Performance = 3
+VeryFast: Performance = 4
+
+abstract DSS
+	performance -> Performance
+	security -> Security
+	keysize -> integer
+RSA : DSS
+	[ performance = Fast ]
+	[ security = Medium ]
+	[ keysize = 512 ]
+ECDSA : DSS
+	[ performance = Slow ]
+	[ security = Strong ]
+	[ keysize = 256 ]
+
+abstract DSSProperty
+fixed : DSSProperty
+performant : DSSProperty
+secure : DSSProperty
+
+abstract Task
+    description -> string
+
+DigitalSignatures : Task
+	[description = "Digitally sign a document"]
+
+	scheme -> DSS
+
+	dssProperty -> DSSProperty
+	[ dssProperty = performant => scheme.performance >= Fast ]
+	[ dssProperty = secure => scheme.security >= Strong ]
+
+	keysize -> integer
+	[ keysize = scheme.keysize ]

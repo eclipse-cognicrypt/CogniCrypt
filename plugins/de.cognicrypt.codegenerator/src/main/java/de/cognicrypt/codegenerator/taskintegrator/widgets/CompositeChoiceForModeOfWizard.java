@@ -3,8 +3,6 @@
  */
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.fieldassist.ControlDecoration;
@@ -27,16 +25,15 @@ import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.UIConstants;
+import de.cognicrypt.codegenerator.taskintegrator.controllers.Validator;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.PageForTaskIntegratorWizard;
-import de.cognicrypt.codegenerator.tasks.Task;
-import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 
 public class CompositeChoiceForModeOfWizard extends Composite {
 	private ModelAdvancedMode objectForDataInNonGuidedMode;
-	private Text txtDescriptionOfTask;
-	private List<Task> existingTasks; // retuired to validate the task name that is chosen by the user.
+	private Text txtTaskName;
+	private Text txtTaskDescription;
 	private ControlDecoration decNameOfTheTask; // Decoration variable to be able to access it in the events.
 	private PageForTaskIntegratorWizard theLocalContainerPage; // this is needed to set whether the page has been completed yet or not.
 
@@ -50,8 +47,6 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	public CompositeChoiceForModeOfWizard(Composite parent, int style, PageForTaskIntegratorWizard theContainerPageForValidation) {		
 		super(parent, style);
 		
-		// these tasks are required for validation of the new task that is being added.
-		setExistingTasks(TaskJSONReader.getTasks());
 		setTheLocalContainerPage(theContainerPageForValidation);
 		
 		setObjectForDataInNonGuidedMode(new ModelAdvancedMode());
@@ -74,9 +69,9 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_TASK_NAME);
 		getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
 		
-		Text txtForTaskName = new Text(compositeChooseTheMode, SWT.BORDER);
-		txtForTaskName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-		txtForTaskName.setTextLimit(Constants.SINGLE_LINE_TEXT_BOX_LIMIT);
+		txtTaskName = new Text(compositeChooseTheMode, SWT.BORDER);
+		txtTaskName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		txtTaskName.setTextLimit(Constants.SINGLE_LINE_TEXT_BOX_LIMIT);
 		
 		Label lblDescriptionOfThe = new Label(compositeChooseTheMode, SWT.NONE);
 		lblDescriptionOfThe.setText("Description of the Task :");
@@ -84,8 +79,8 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		setTxtDescriptionOfTask(new Text(compositeChooseTheMode, SWT.BORDER | SWT.WRAP | SWT.MULTI));		
 		GridData gd_txtDescriptionOfTask = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_txtDescriptionOfTask.heightHint = 67;
-		getTxtDescriptionOfTask().setLayoutData(gd_txtDescriptionOfTask);
-		getTxtDescriptionOfTask().setTextLimit(Constants.MULTI_LINE_TEXT_BOX_LIMIT);
+		getTxtTaskDescription().setLayoutData(gd_txtDescriptionOfTask);
+		getTxtTaskDescription().setTextLimit(Constants.MULTI_LINE_TEXT_BOX_LIMIT);
 
 		Button btnCustomLibrary = new Button(compositeChooseTheMode, SWT.CHECK);
 		btnCustomLibrary.setText("Include a custom library");
@@ -201,20 +196,43 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 			}
 		});*/
 		
-		txtForTaskName.addModifyListener(new ModifyListener() {
+		txtTaskName.addModifyListener(new ModifyListener() {
+
 			public void modifyText(ModifyEvent e) {
-				
-				String tempName = txtForTaskName.getText().trim();
-				if (validateTaskName(tempName)) {
+
+				String tempName = txtTaskName.getText().trim();
+				boolean validString = Validator.checkIfTaskNameAlreadyExists(tempName);
+				if (validString) {
 					getObjectForDataInNonGuidedMode().setNameOfTheTask(tempName);
-				}	
-				
+				}
+
+				if (tempName.equals("")) {
+					getDecNameOfTheTask().setImage(UIConstants.DEC_ERROR);
+					getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_TASK_NAME);
+
+					// Check if the page can be set to completed.
+					getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
+				} else if (validString) {
+					getDecNameOfTheTask().setImage(UIConstants.DEC_REQUIRED);
+					getDecNameOfTheTask().setDescriptionText(Constants.MESSAGE_REQUIRED_FIELD);
+
+					// Check if the page can be set to completed.
+					getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
+				} else {
+					getDecNameOfTheTask().setImage(UIConstants.DEC_ERROR);
+					getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_DUPLICATE_TASK_NAME);
+					getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
+
+					// Check if the page can be set to completed.
+					getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
+				}
+
 			}
 		});
 		
-		getTxtDescriptionOfTask().addModifyListener(new ModifyListener() {
+		getTxtTaskDescription().addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				getObjectForDataInNonGuidedMode().setTaskDescription(getTxtDescriptionOfTask().getText().trim());
+				getObjectForDataInNonGuidedMode().setTaskDescription(getTxtTaskDescription().getText().trim());
 				//TODO Check if validation is required.
 			}
 		});
@@ -226,40 +244,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		// Disable the check that prevents subclassing of SWT components
 	}
 	
-	public boolean validateTaskName(String tempName){
-		boolean validString = true;
-		
-		// Validation : check whether the name already exists.
-		for (Task task : getExistingTasks()) {
-			if (task.getName().toLowerCase().equals(tempName.toLowerCase()) || task.getDescription().toLowerCase().equals(tempName.toLowerCase())) {
-				validString = false;						
-				break;
-			}
-		}
-		
-		if (tempName.equals("")) {
-			getDecNameOfTheTask().setImage(UIConstants.DEC_ERROR);
-			getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_TASK_NAME);
-			
-			// Check if the page can be set to completed.
-			getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
-		}else if (validString) {
-			getDecNameOfTheTask().setImage(UIConstants.DEC_REQUIRED);
-			getDecNameOfTheTask().setDescriptionText(Constants.MESSAGE_REQUIRED_FIELD);
-			
-			// Check if the page can be set to completed.
-			getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
-		} else {
-			getDecNameOfTheTask().setImage(UIConstants.DEC_ERROR);
-			getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_DUPLICATE_TASK_NAME);
-			getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
-			
-			// Check if the page can be set to completed.
-			getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
-		}
-		
-		return validString;
-	}
+
 
 	/**
 	 * Return the basic data of the task.
@@ -308,13 +293,16 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	public void setDecNameOfTheTask(ControlDecoration decNameOfTheTask) {
 		this.decNameOfTheTask = decNameOfTheTask;
 	}
-
 	
+	public Text getTxtForTaskName() {
+		return txtTaskName;
+	}
+
 	/**
 	 * @return the txtDescriptionOfTask
 	 */
-	public Text getTxtDescriptionOfTask() {
-		return txtDescriptionOfTask;
+	public Text getTxtTaskDescription() {
+		return txtTaskDescription;
 	}
 
 	
@@ -322,22 +310,6 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	 * @param txtDescriptionOfTask the txtDescriptionOfTask to set
 	 */
 	public void setTxtDescriptionOfTask(Text txtDescriptionOfTask) {
-		this.txtDescriptionOfTask = txtDescriptionOfTask;
-	}
-
-	
-	/**
-	 * @return the existingTasks
-	 */
-	public List<Task> getExistingTasks() {
-		return existingTasks;
-	}
-
-	
-	/**
-	 * @param existingTasks the existingTasks to set
-	 */
-	public void setExistingTasks(List<Task> existingTasks) {
-		this.existingTasks = existingTasks;
+		this.txtTaskDescription = txtDescriptionOfTask;
 	}
 }

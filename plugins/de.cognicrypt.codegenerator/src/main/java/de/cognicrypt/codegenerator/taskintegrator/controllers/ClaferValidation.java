@@ -13,7 +13,7 @@ public class ClaferValidation {
 	 *        {@link String} name to be tested
 	 * @return {@link String} message containing errors in the name, empty string if valid
 	 */
-	public static String getValidationMessage(String claferName, boolean required) {
+	public static String getNameValidationMessage(String claferName, boolean required) {
 		if (required && claferName.isEmpty()) {
 			return "Please enter a name";
 		} else if (claferName.contains(" ")) {
@@ -22,6 +22,14 @@ public class ClaferValidation {
 			return "The name must not begin with a number";
 		} else if (!claferName.matches("^[a-zA-Z0-9_-]*$")) {
 			return "The name must not contain any special characters";
+		}
+
+		return "";
+	}
+
+	public static String getInheritanceValidationMessage(String inheritanceName, boolean required) {
+		if (inheritanceName.matches("^[0-9].*")) {
+			return "The name must not begin with a number";
 		}
 
 		return "";
@@ -39,7 +47,23 @@ public class ClaferValidation {
 	public static boolean validateClaferName(String claferName, boolean required, ControlDecoration decoration) {
 		boolean valid = true;
 
-		String result = getValidationMessage(claferName, required);
+		String result = getNameValidationMessage(claferName, required);
+		if (!result.isEmpty()) {
+			decoration.setImage(UIConstants.DEC_ERROR);
+			decoration.setDescriptionText(result);
+			decoration.show();
+			valid = false;
+		} else {
+			decoration.hide();
+		}
+
+		return valid;
+	}
+
+	public static boolean validateClaferInheritance(String inheritanceName, boolean required, ControlDecoration decoration) {
+		boolean valid = true;
+
+		String result = getInheritanceValidationMessage(inheritanceName, required);
 		if (!result.isEmpty()) {
 			decoration.setImage(UIConstants.DEC_ERROR);
 			decoration.setDescriptionText(result);

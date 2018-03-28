@@ -1,5 +1,6 @@
 package de.cognicrypt.codegenerator.taskintegrator.test;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
@@ -178,9 +179,8 @@ public class XSLStringGenerationAndManipulationTests {
 		File testFile = Utils.getResourceFromWithin(testResourceLocation + "StackOverflowExample.xml");
 		
 		StringBuilder builder = new StringBuilder();
-		try (BufferedReader r = Files.newBufferedReader(testFile.toPath(), StandardCharsets.UTF_8)) {
-			r.lines().forEach(builder::append);
-		}
+		BufferedReader r = Files.newBufferedReader(testFile.toPath(), StandardCharsets.UTF_8);
+		r.lines().forEach(builder::append);
 		
 		List<XmlRegion> regions = new XmlRegionAnalyzer().analyzeXml(builder.toString());
 		List<StyleRange> ranges = XSLStringGenerationAndManipulation.computeStyleForXMLRegions(regions);
@@ -226,5 +226,9 @@ public class XSLStringGenerationAndManipulationTests {
 			}
 
 		}
+		// an invalid check.
+		HashMap<String, String> tagValueTagData = null;
+		XSLStringGenerationAndManipulation.getListOfValidSuggestionsForXSLTags(null, tasks.get(0).getName(), tasks.get(0).getDescription(), null, tagValueTagData);
+		assertNull(tagValueTagData);
 	}
 }

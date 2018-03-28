@@ -344,7 +344,7 @@ public class Constants {
 																						"mode"
 																							}),
 		XSL_CHOOSE_TAG("Choose","<xsl:choose>","</xsl:choose>", new String[]{}),
-		XSL_WHEN_TAG("When","<xsl:when test =\"\">","</xsl:when>", new String[]{"select"
+		XSL_WHEN_TAG("When", "<xsl:when>", "</xsl:when>", new String[] { "test"
 																				}),
 		XSL_OTHERWISE_TAG("Otherwise","<xsl:otherwise>","</xsl:otheriwse>", new String[]{});
 		

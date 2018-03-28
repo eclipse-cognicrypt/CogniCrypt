@@ -1,6 +1,7 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.SortedSet;
 
 import org.eclipse.swt.SWT;
@@ -39,6 +40,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 
 	private ArrayList<Button> btnList;
 	
+	private HashMap<ClaferProperty, GroupFeatureProperty> propertiesMap;
+
 	private ClaferModel claferModel;
 
 	private ClaferFeature currentClaferFeature;
@@ -71,6 +74,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		featureProperties = new ArrayList<ClaferProperty>();
 		featureConstraints = new ArrayList<ClaferConstraint>();
 
+		propertiesMap = new HashMap<>();
 		XSLAttributes = new ArrayList<XSLAttribute>();
 		
 		this.claferModel = claferModel;
@@ -157,6 +161,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		groupForFeatureProperty.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		composite.layout();
+
+		propertiesMap.put(featureProperty, groupForFeatureProperty);
 	}
 
 	/**
@@ -197,10 +203,11 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 
 	/**
 	 * 
-	 * @param featureProperty
+	 * @param property
 	 */
-	public void removeFeatureProperty(ClaferProperty featureProperty) {
-		featureProperties.remove(featureProperty);
+	public void removeFeatureProperty(ClaferProperty property) {
+		featureProperties.remove(property);
+		propertiesMap.remove(property);
 	}
 
 	/**
@@ -500,6 +507,16 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 			featureConstraints.set(id, cfrConstraintDialog.getResult());
 		}
 
+	}
+
+	public boolean validate() {
+		boolean valid = true;
+
+		for (GroupFeatureProperty groupFeatureProperty : propertiesMap.values()) {
+			valid &= groupFeatureProperty.validate();
+		}
+
+		return valid;
 	}
 
 }

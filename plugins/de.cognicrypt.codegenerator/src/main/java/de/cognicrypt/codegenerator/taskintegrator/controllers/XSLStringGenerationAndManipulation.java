@@ -23,6 +23,7 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 
+import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.question.Answer;
@@ -101,9 +102,9 @@ public class XSLStringGenerationAndManipulation {
 				line = br.readLine();
 			}
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e);
 		}
 
 	}

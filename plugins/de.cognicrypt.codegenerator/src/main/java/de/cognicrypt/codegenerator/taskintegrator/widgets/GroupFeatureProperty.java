@@ -176,9 +176,9 @@ public class GroupFeatureProperty extends Composite {
 	public boolean validate() {
 		boolean valid = true;
 
-		valid &= ClaferValidation.validateClaferName(txtPropertyName.getText(), decorationName);
+		valid &= ClaferValidation.validateClaferName(txtPropertyName.getText(), true, decorationName);
 		if (comboPropertyType != null) {
-			valid &= ClaferValidation.validateClaferName(comboPropertyType.getText(), decorationType);
+			valid &= ClaferValidation.validateClaferName(comboPropertyType.getText(), true, decorationType);
 		}
 
 		return valid;

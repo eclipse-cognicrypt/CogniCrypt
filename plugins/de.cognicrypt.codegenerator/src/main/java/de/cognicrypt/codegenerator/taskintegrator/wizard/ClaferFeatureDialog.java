@@ -241,7 +241,7 @@ public class ClaferFeatureDialog extends Dialog {
 
 		if (txtFeatureName != null && comboInheritance != null) {
 			valid &= ClaferValidation.validateClaferName(txtFeatureName.getText(), true, decorationName);
-			valid &= ClaferValidation.validateClaferName(comboInheritance.getText(), false, decorationInheritance);
+			valid &= ClaferValidation.validateClaferInheritance(comboInheritance.getText(), false, decorationInheritance);
 		}
 
 		if (featuresComposite != null) {
@@ -270,7 +270,7 @@ public class ClaferFeatureDialog extends Dialog {
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
-		getButton(IDialogConstants.OK_ID).setEnabled(false);
+		validate();
 	}
 
 	/**

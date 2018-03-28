@@ -20,7 +20,7 @@ public class ClaferValidationTest {
 		expectedMap.put("key size", false);
 
 		for (String key : expectedMap.keySet()) {
-			Boolean actual = ClaferValidation.getValidationMessage(key, true).isEmpty();
+			Boolean actual = ClaferValidation.getNameValidationMessage(key, true).isEmpty();
 			assertEquals(expectedMap.get(key), actual);
 		}
 	}

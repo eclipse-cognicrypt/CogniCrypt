@@ -5,15 +5,11 @@ jdk:
 
 env:
   - NIGHTLYBUILD=$BRANCH
-  - NIGHTLYBUILD=cp-group1718
-  - NIGHTLYBUILD=ti-group1718
-  - NIGHTLYBUILD=ui-group1718-new
+  - NIGHTLYBUILD=SICS1718
   
 matrix:
   allow_failures:
-   - env: NIGHTLYBUILD=cp-group1718
-   - env: NIGHTLYBUILD=ti-group1718
-   - env: NIGHTLYBUILD=ui-group1718-new
+   - env: NIGHTLYBUILD=SICS1718
   
 build:
   ci:

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.logging.Logger;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.core.resources.IFile;
@@ -18,6 +17,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
@@ -45,21 +45,24 @@ import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 import de.cognicrypt.codegenerator.utilities.Utils;
 import de.cognicrypt.codegenerator.wizard.Configuration;
 
+/**
+ * @author André Sonntag
+ */
 public class TestUtils {
 
-	static Logger log = Logger.getLogger(TestUtils.class.getName());
-
 	/**
-	 * This method creates a empthy JavaProject in the current workspace
+	 * This method creates a empty JavaProject in the current workspace
 	 * 
 	 * @param projectName
-	 *        for the JavaProject
+	 *            for the JavaProject
 	 * @return new created JavaProject
 	 * @throws CoreException
 	 */
 	public static IJavaProject createJavaProject(String projectName) throws CoreException {
 
 		IWorkspaceRoot workSpaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		deleteProject(workSpaceRoot.getProject(projectName));
+
 		IProject project = workSpaceRoot.getProject(projectName);
 		project.create(null);
 		project.open(null);
@@ -80,7 +83,7 @@ public class TestUtils {
 		for (LibraryLocation element : locations) {
 			entries.add(JavaCore.newLibraryEntry(element.getSystemLibraryPath(), null, null));
 		}
-		//add libs to project class path
+		// add libs to project class path
 		javaProject.setRawClasspath(entries.toArray(new IClasspathEntry[entries.size()]), null);
 
 		IFolder sourceFolder = project.getFolder("src");
@@ -99,14 +102,19 @@ public class TestUtils {
 	/**
 	 * This method creates a package with a java class into a JavaProject
 	 * 
-	 * @param project JavaProject in which the new Java class will be generated 
-	 * @param packageName package in which the new Java class will be generated 
-	 * @param className name of the new Java class
+	 * @param project
+	 *            JavaProject in which the new Java class will be generated
+	 * @param packageName
+	 *            package in which the new Java class will be generated
+	 * @param className
+	 *            name of the new Java class
 	 * @throws JavaModelException
 	 */
-	public static void generateJavaClassInJavaProject(IJavaProject project, String packageName, String className) throws JavaModelException {
+	public static void generateJavaClassInJavaProject(IJavaProject project, String packageName, String className)
+			throws JavaModelException {
 
-		IPackageFragment pack = project.getPackageFragmentRoot(project.getProject().getFolder("src")).createPackageFragment(packageName, false, null);
+		IPackageFragment pack = project.getPackageFragmentRoot(project.getProject().getFolder("src"))
+				.createPackageFragment(packageName, false, null);
 		String source = "public class " + className + " {\n\n}\n";
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("package " + pack.getElementName() + ";\r\n\r\n");
@@ -117,20 +125,23 @@ public class TestUtils {
 	/**
 	 * This method deletes a JavaProject from the Workspace/hard drive
 	 * 
-	 * @param project JavaProject which will be deleted
+	 * @param project
+	 *            JavaProject which will be deleted
 	 * @throws CoreException
+	 * @throws InterruptedException
 	 */
-	public static void deleteJavaProject(IJavaProject project) throws CoreException {
-		project.getProject().delete(true, true, null);
+	public static void deleteProject(IProject project) throws CoreException {
+		project.delete(true, true, null);
 	}
 
 	/**
 	 * This method looks for the right task by name
 	 * 
-	 * @param name name of the task what we looking for.
+	 * @param name
+	 *            name of the task what we looking for.
 	 * @return Task object
 	 */
-	public static Task getTask(String name) throws NoSuchElementException{
+	public static Task getTask(String name) throws NoSuchElementException {
 		for (Task t : TaskJSONReader.getTasks()) {
 			if (t.getName().equals(name)) {
 				return t;
@@ -140,9 +151,11 @@ public class TestUtils {
 	}
 
 	/**
-	 * This method creates a HashMap. This HashMap contains the Questions and the associated default Answers for certain Task.
+	 * This method creates a HashMap. This HashMap contains the Questions and the
+	 * associated default Answers for certain Task.
 	 * 
-	 * @param t Task
+	 * @param t
+	 *            Task
 	 * @return A HashMap with Questions and default Answers
 	 */
 	public static HashMap<Question, Answer> setDefaultConstraintsForTask(Task t) {
@@ -162,15 +175,19 @@ public class TestUtils {
 	 * This method creates the necessary Configuration for a CodeGenerator.
 	 * 
 	 * @param developerProject
-	 * @param t task for what we create the Configuration
+	 * @param t
+	 *            task for what we create the Configuration
 	 * @return Configuration for a certain Task
 	 */
 	public static Configuration createConfigurationForCodeGeneration(DeveloperProject developerProject, Task t) {
-		InstanceGenerator instGen = new InstanceGenerator(Utils.getResourceFromWithin(t.getModelFile()).getAbsolutePath(), "c0_" + t.getName(), t.getTaskDescription());
+		InstanceGenerator instGen = new InstanceGenerator(
+				Utils.getResourceFromWithin(t.getModelFile()).getAbsolutePath(), "c0_" + t.getName(),
+				t.getTaskDescription());
 		HashMap<Question, Answer> constraints = TestUtils.setDefaultConstraintsForTask(t);
 		List<InstanceClafer> instList = instGen.generateInstances(constraints);
 		InstanceClafer inst = instList.get(0);
-		Configuration ret = new Configuration(inst, constraints, developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
+		Configuration ret = new Configuration(inst, constraints,
+				developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
 		return ret;
 	}
 
@@ -182,8 +199,9 @@ public class TestUtils {
 	 * @param unit
 	 * @throws CoreException
 	 */
-	public static void openJavaFileInWorkspace(DeveloperProject project, String packageName, ICompilationUnit cu) throws CoreException {
-		
+	public static void openJavaFileInWorkspace(DeveloperProject project, String packageName, ICompilationUnit cu)
+			throws CoreException {
+
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		IFile openFile = project.getIFile(getFilePathInProject(project, packageName, cu));
 		IEditorPart editor = IDE.openEditor(page, openFile);
@@ -198,7 +216,8 @@ public class TestUtils {
 	 * @return IComplitationUnit
 	 * @throws CoreException
 	 */
-	public static ICompilationUnit getICompilationUnit(DeveloperProject project, String packageName, String cuName) throws CoreException, NoSuchElementException {
+	public static ICompilationUnit getICompilationUnit(DeveloperProject project, String packageName, String cuName)
+			throws CoreException, NoSuchElementException {
 		IPackageFragment packageFragment = project.getPackagesOfProject(packageName);
 		for (int i = 0; i < packageFragment.getCompilationUnits().length; i++) {
 			if (packageFragment.getCompilationUnits()[i].getElementName().equals(cuName)) {
@@ -218,7 +237,8 @@ public class TestUtils {
 	 * @throws IOException
 	 * @throws CoreException
 	 */
-	public static byte[] fileToByteArray(DeveloperProject project, String packageName, ICompilationUnit cu) throws IOException, CoreException {
+	public static byte[] fileToByteArray(DeveloperProject project, String packageName, ICompilationUnit cu)
+			throws IOException, CoreException {
 
 		File f = new File(getFilePathInProject(project, packageName, cu));
 		if (!(f.exists() && Files.isReadable(f.toPath()))) {
@@ -237,9 +257,11 @@ public class TestUtils {
 	 * @return
 	 * @throws CoreException
 	 */
-	private static String getFilePathInProject(DeveloperProject project, String packageName, ICompilationUnit cu) throws CoreException {
+	private static String getFilePathInProject(DeveloperProject project, String packageName, ICompilationUnit cu)
+			throws CoreException {
 		final String srcPath = project.getProjectPath() + Constants.innerFileSeparator + project.getSourcePath();
-		String cuPath = srcPath + Constants.innerFileSeparator + packageName + Constants.innerFileSeparator + cu.getElementName();
+		String cuPath = srcPath + Constants.innerFileSeparator + packageName + Constants.innerFileSeparator
+				+ cu.getElementName();
 		return cuPath;
 	}
 }

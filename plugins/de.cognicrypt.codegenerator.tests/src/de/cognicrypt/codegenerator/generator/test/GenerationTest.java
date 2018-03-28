@@ -26,7 +26,9 @@ import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.testutilities.TestUtils;
 import de.cognicrypt.codegenerator.wizard.Configuration;
 
-
+/**
+ * @author André Sonntag
+ */
 public class GenerationTest {
 
 	/**
@@ -45,16 +47,17 @@ public class GenerationTest {
 	Configuration configEnc;
 	Configuration configSecPassword;
 	DeveloperProject developerProject;
+	static int counter = 0;
 
 	@After
 	public void tearDown() throws CoreException {
-		TestUtils.deleteJavaProject(testJavaProject);
+		TestUtils.deleteProject(testJavaProject.getProject());
 	}
 
 	@Before
 	public void setUp() throws Exception {
-
-		this.testJavaProject = TestUtils.createJavaProject("TestProject");
+		GenerationTest.counter++;
+		this.testJavaProject = TestUtils.createJavaProject("TestProject_"+counter);
 		TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
 		this.encTask = TestUtils.getTask("SymmetricEncryption");
 		this.generatorEnc = new XSLBasedGenerator(testJavaProject.getProject(), encTask.getXslFile());

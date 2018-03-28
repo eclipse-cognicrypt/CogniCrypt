@@ -13,11 +13,11 @@ public class ClaferValidation {
 	 *        {@link String} name to be tested
 	 * @return {@link String} message containing errors in the name, empty string if valid
 	 */
-	public static String getValidationMessage(String claferName) {
-		if (claferName.contains(" ")) {
-			return "The name must not contain any spaces";
-		} else if (claferName.isEmpty()) {
+	public static String getValidationMessage(String claferName, boolean required) {
+		if (required && claferName.isEmpty()) {
 			return "Please enter a name";
+		} else if (claferName.contains(" ")) {
+			return "The name must not contain any spaces";
 		} else if (claferName.matches("^[0-9].*")) {
 			return "The name must not begin with a number";
 		} else if (!claferName.matches("^[a-zA-Z0-9_-]*$")) {
@@ -36,10 +36,10 @@ public class ClaferValidation {
 	 *        {@link ControlDecoration} to display the error message in, hide if the string is valid
 	 * @return
 	 */
-	public static boolean validateClaferName(String claferName, ControlDecoration decoration) {
+	public static boolean validateClaferName(String claferName, boolean required, ControlDecoration decoration) {
 		boolean valid = true;
 
-		String result = getValidationMessage(claferName);
+		String result = getValidationMessage(claferName, required);
 		if (!result.isEmpty()) {
 			decoration.setImage(UIConstants.DEC_ERROR);
 			decoration.setDescriptionText(result);

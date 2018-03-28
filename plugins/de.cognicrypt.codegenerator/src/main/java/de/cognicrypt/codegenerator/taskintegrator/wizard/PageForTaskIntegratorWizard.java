@@ -111,6 +111,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 					((PageForTaskIntegratorWizard) nextPage).treeViewer.refresh();
 					((XslPage) nextPage).setTreeViewerInput();
 				}
+			} else if (nextPage.getName().equals(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)) {
+				((ClaferPage) nextPage).initializeClaferModel();
 			}
 		}
 

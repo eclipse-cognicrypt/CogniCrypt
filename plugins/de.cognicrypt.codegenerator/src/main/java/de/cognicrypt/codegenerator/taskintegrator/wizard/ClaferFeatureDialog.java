@@ -240,8 +240,8 @@ public class ClaferFeatureDialog extends Dialog {
 		boolean valid = true;
 
 		if (txtFeatureName != null && comboInheritance != null) {
-			valid &= ClaferValidation.validateClaferName(txtFeatureName.getText(), decorationName);
-			valid &= ClaferValidation.validateClaferName(comboInheritance.getText(), decorationInheritance);
+			valid &= ClaferValidation.validateClaferName(txtFeatureName.getText(), true, decorationName);
+			valid &= ClaferValidation.validateClaferName(comboInheritance.getText(), false, decorationInheritance);
 		}
 
 		if (featuresComposite != null) {

@@ -44,7 +44,9 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		
 		// All the granular UI elements will be added to this composite for the ScrolledComposite to work.
 		Composite contentComposite = new Composite(this, SWT.NONE);
-		contentComposite.setLayout(new GridLayout(1, false));
+		GridLayout gridLayout = new GridLayout(1, false);
+		gridLayout.verticalSpacing = 30;
+		contentComposite.setLayout(gridLayout);
 		setContent(contentComposite);
 		setMinSize(contentComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}

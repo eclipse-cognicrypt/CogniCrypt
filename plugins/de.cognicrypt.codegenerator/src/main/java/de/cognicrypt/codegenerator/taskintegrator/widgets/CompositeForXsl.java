@@ -5,6 +5,7 @@ import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -46,6 +47,8 @@ public class CompositeForXsl extends Composite {
 	 * Analyzes the {@link StyledText}, calculates the {@link XmlRegion} and {@link StyleRange} and applies the syntax highlight.
 	 */
 	public void colorizeTextBox() {
+		Point selection = getXslTxtBox().getSelection();
+
 		List<XmlRegion> regions = new XmlRegionAnalyzer().analyzeXml(xslTxtBox.getText());
 		List<StyleRange> ranges = XSLStringGenerationAndManipulation.computeStyleForXMLRegions(regions);
 
@@ -53,6 +56,7 @@ public class CompositeForXsl extends Composite {
 			getXslTxtBox().setStyleRange(styleRange);
 		}
 
+		getXslTxtBox().setSelection(selection);
 	}
 
 	/**

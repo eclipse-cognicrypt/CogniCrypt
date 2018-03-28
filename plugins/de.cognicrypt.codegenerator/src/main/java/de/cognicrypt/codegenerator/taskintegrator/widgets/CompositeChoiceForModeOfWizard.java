@@ -32,7 +32,8 @@ import de.cognicrypt.codegenerator.taskintegrator.wizard.PageForTaskIntegratorWi
 
 public class CompositeChoiceForModeOfWizard extends Composite {
 	private ModelAdvancedMode objectForDataInNonGuidedMode;
-	private Text txtDescriptionOfTask;
+	private Text txtTaskName;
+	private Text txtTaskDescription;
 	private ControlDecoration decNameOfTheTask; // Decoration variable to be able to access it in the events.
 	private PageForTaskIntegratorWizard theLocalContainerPage; // this is needed to set whether the page has been completed yet or not.
 
@@ -68,9 +69,9 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_TASK_NAME);
 		getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
 		
-		Text txtForTaskName = new Text(compositeChooseTheMode, SWT.BORDER);
-		txtForTaskName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-		txtForTaskName.setTextLimit(Constants.SINGLE_LINE_TEXT_BOX_LIMIT);
+		txtTaskName = new Text(compositeChooseTheMode, SWT.BORDER);
+		txtTaskName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		txtTaskName.setTextLimit(Constants.SINGLE_LINE_TEXT_BOX_LIMIT);
 		
 		Label lblDescriptionOfThe = new Label(compositeChooseTheMode, SWT.NONE);
 		lblDescriptionOfThe.setText("Description of the Task :");
@@ -78,8 +79,8 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		setTxtDescriptionOfTask(new Text(compositeChooseTheMode, SWT.BORDER | SWT.WRAP | SWT.MULTI));		
 		GridData gd_txtDescriptionOfTask = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_txtDescriptionOfTask.heightHint = 67;
-		getTxtDescriptionOfTask().setLayoutData(gd_txtDescriptionOfTask);
-		getTxtDescriptionOfTask().setTextLimit(Constants.MULTI_LINE_TEXT_BOX_LIMIT);
+		getTxtTaskDescription().setLayoutData(gd_txtDescriptionOfTask);
+		getTxtTaskDescription().setTextLimit(Constants.MULTI_LINE_TEXT_BOX_LIMIT);
 
 		Button btnCustomLibrary = new Button(compositeChooseTheMode, SWT.CHECK);
 		btnCustomLibrary.setText("Include a custom library");
@@ -195,15 +196,16 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 			}
 		});*/
 		
-		txtForTaskName.addModifyListener(new ModifyListener() {
+		txtTaskName.addModifyListener(new ModifyListener() {
+
 			public void modifyText(ModifyEvent e) {
-				
-				String tempName = txtForTaskName.getText().trim();
+
+				String tempName = txtTaskName.getText().trim();
 				boolean validString = Validator.checkIfTaskNameAlreadyExists(tempName);
 				if (validString) {
 					getObjectForDataInNonGuidedMode().setNameOfTheTask(tempName);
-				}	
-				
+				}
+
 				if (tempName.equals("")) {
 					getDecNameOfTheTask().setImage(UIConstants.DEC_ERROR);
 					getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_TASK_NAME);
@@ -228,9 +230,9 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 			}
 		});
 		
-		getTxtDescriptionOfTask().addModifyListener(new ModifyListener() {
+		getTxtTaskDescription().addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				getObjectForDataInNonGuidedMode().setTaskDescription(getTxtDescriptionOfTask().getText().trim());
+				getObjectForDataInNonGuidedMode().setTaskDescription(getTxtTaskDescription().getText().trim());
 				//TODO Check if validation is required.
 			}
 		});
@@ -291,13 +293,16 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	public void setDecNameOfTheTask(ControlDecoration decNameOfTheTask) {
 		this.decNameOfTheTask = decNameOfTheTask;
 	}
-
 	
+	public Text getTxtForTaskName() {
+		return txtTaskName;
+	}
+
 	/**
 	 * @return the txtDescriptionOfTask
 	 */
-	public Text getTxtDescriptionOfTask() {
-		return txtDescriptionOfTask;
+	public Text getTxtTaskDescription() {
+		return txtTaskDescription;
 	}
 
 	
@@ -305,6 +310,6 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	 * @param txtDescriptionOfTask the txtDescriptionOfTask to set
 	 */
 	public void setTxtDescriptionOfTask(Text txtDescriptionOfTask) {
-		this.txtDescriptionOfTask = txtDescriptionOfTask;
+		this.txtTaskDescription = txtDescriptionOfTask;
 	}
 }

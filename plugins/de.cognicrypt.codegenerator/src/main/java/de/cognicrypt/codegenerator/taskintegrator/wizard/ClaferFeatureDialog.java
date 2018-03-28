@@ -2,9 +2,9 @@ package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
 import java.util.function.Predicate;
 
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -19,18 +19,21 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.Constants.FeatureType;
+import de.cognicrypt.codegenerator.taskintegrator.controllers.ClaferValidation;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 
-public class ClaferFeatureDialog extends TitleAreaDialog {
+public class ClaferFeatureDialog extends Dialog {
 
 	private Text txtFeatureName;
 	private CompositeToHoldSmallerUIElements featuresComposite;
@@ -43,6 +46,9 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 
 	private ClaferFeature resultClafer;
 	private ClaferModel claferModel;
+
+	private ControlDecoration decorationName;
+	private ControlDecoration decorationInheritance;
 
 
 	public ClaferFeatureDialog(Shell parentShell, ClaferFeature modifiableClaferFeature, ClaferModel claferModel) {
@@ -66,7 +72,7 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 	}
 
 	public ClaferFeatureDialog(Shell shell, ClaferModel claferModel) {
-		this(shell, new ClaferFeature(FeatureType.ABSTRACT, "", ""), claferModel);
+		this(shell, new ClaferFeature(FeatureType.CONCRETE, "", ""), claferModel);
 	}
 
 	/**
@@ -80,12 +86,6 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		
 		// restrict resizing the dialog below a minimum
 		getShell().setMinimumSize(520, 600);
-
-		setTitle("Variability modeling");
-		setMessage("Message");
-
-		new Label(container, 0);
-		new Label(container, 0);
 
 		Label lblType = new Label(container, SWT.NONE);
 		lblType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
@@ -127,6 +127,7 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 
 		Label lblFeatureName = new Label(container, SWT.NONE);
 		lblFeatureName.setText("Type in the name");
+		decorationName = new ControlDecoration(lblFeatureName, SWT.TOP | SWT.RIGHT);
 
 		txtFeatureName = new Text(container, SWT.BORDER);
 		txtFeatureName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
@@ -151,6 +152,7 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 
 		lblInheritance = new Label(container, SWT.NONE);
 		lblInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		decorationInheritance = new ControlDecoration(lblInheritance, SWT.TOP | SWT.RIGHT);
 
 		comboInheritance = new Combo(container, SWT.NONE);
 		comboInheritance.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
@@ -172,6 +174,14 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 			}
 		});
 
+		comboInheritance.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent arg0) {
+				validate();
+			}
+		});
+
 		comboInheritance.setText(resultClafer.getFeatureInheritance());
 
 		Button btnAddProperty = new Button(container, SWT.NONE);
@@ -180,6 +190,7 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				addClaferProperty();
+				validate();
 			}
 		});
 		btnAddProperty.setText("Add property");
@@ -208,28 +219,33 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 		gdConstraintsComposite.minimumHeight = 100;
 		constraintsComposite.setLayoutData(gdConstraintsComposite);
 
+		Listener validationListener = new Listener() {
+
+			@Override
+			public void handleEvent(Event arg0) {
+				validate();
+			}
+		};
+
+		featuresComposite.addListener(SWT.Selection, validationListener);
+
 		validate();
+		container.layout();
 
 		return container;
 	}
 
 	private void validate() {
-		if (txtFeatureName.getText().contains(" ")) {
-			setMessage("The name must not contain any spaces", IMessageProvider.WARNING);
-			if (getButton(IDialogConstants.OK_ID) != null) {
-				getButton(IDialogConstants.OK_ID).setEnabled(false);
-			}
 
-		} else if (txtFeatureName.getText().isEmpty()) {
-			setMessage("Please enter a name", IMessageProvider.WARNING);
-			if (getButton(IDialogConstants.OK_ID) != null) {
-				getButton(IDialogConstants.OK_ID).setEnabled(false);
-			}
-		} else {
-			setMessage(null);
-			if (getButton(IDialogConstants.OK_ID) != null) {
-				getButton(IDialogConstants.OK_ID).setEnabled(true);
-			}
+		boolean valid = true;
+
+		if (txtFeatureName != null && comboInheritance != null) {
+			valid &= ClaferValidation.validateClaferName(txtFeatureName.getText(), true, decorationName);
+			valid &= ClaferValidation.validateClaferInheritance(comboInheritance.getText(), false, decorationInheritance);
+		}
+
+		if (featuresComposite != null) {
+			valid &= featuresComposite.validate();
 		}
 
 		if (lblInheritance != null) {
@@ -239,6 +255,10 @@ public class ClaferFeatureDialog extends TitleAreaDialog {
 			} else if (btnRadioConcrete.getSelection()) {
 				lblInheritance.setText("Implements");
 			}
+		}
+
+		if (getButton(IDialogConstants.OK_ID) != null) {
+			getButton(IDialogConstants.OK_ID).setEnabled(valid);
 		}
 	}
 

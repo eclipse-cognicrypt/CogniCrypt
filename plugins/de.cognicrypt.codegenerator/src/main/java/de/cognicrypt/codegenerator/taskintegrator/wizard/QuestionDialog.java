@@ -38,6 +38,7 @@ public class QuestionDialog extends Dialog {
 	private Combo combo;
 	private Text txtBoxHelptext;
 	private Text textBoxTooltip;
+	private Combo comboBoxAnswerType;
 	private CompositeToHoldSmallerUIElements compositeToHoldAnswers;
 	private Question question;
 	private Question questionDetails;
@@ -113,6 +114,17 @@ public class QuestionDialog extends Dialog {
 		textBoxTooltip.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		textBoxTooltip.setVisible(false);
 
+		Label lblAnswerType = new Label(composite, SWT.None);
+		lblAnswerType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		lblAnswerType.setText("Expected answer is of type");
+		//visible only if the question type is text
+		lblAnswerType.setVisible(false);
+
+		comboBoxAnswerType = new Combo(composite, SWT.NONE);
+		comboBoxAnswerType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		comboBoxAnswerType.setItems(Constants.PORT_NUMBER, Constants.PASSWORD, Constants.IP_ADDRESS, "Other");
+		comboBoxAnswerType.setVisible(false);
+
 		Button btnAddAnswer = new Button(composite, SWT.None);
 		btnAddAnswer.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		btnAddAnswer.setText("Add Answer");
@@ -138,7 +150,6 @@ public class QuestionDialog extends Dialog {
 
 		});
 		currentQuestionType = combo.getText();
-		
 		combo.addModifyListener(new ModifyListener() {
 
 			@Override
@@ -149,6 +160,8 @@ public class QuestionDialog extends Dialog {
 						lblToolTip.setVisible(true);
 						textBoxTooltip.setVisible(true);
 						textBoxTooltip.setText("");
+						comboBoxAnswerType.setVisible(true);
+						lblAnswerType.setVisible(true);
 						btnAddAnswer.setVisible(false);
 						compositeToHoldAnswers.setVisible(false);
 						compositeToHoldAnswers.getListOfAllAnswer().clear();
@@ -156,12 +169,16 @@ public class QuestionDialog extends Dialog {
 						Answer emptyAnswer=new Answer();
 						emptyAnswer.setDefaultAnswer(true);
 						emptyAnswer.setValue("");
+						compositeToHoldAnswers.getListOfAllAnswer().clear();
 						compositeToHoldAnswers.getListOfAllAnswer().add(emptyAnswer);
 						currentQuestionType = Constants.textBox;
 						break;
 					case Constants.dropDown:
 						boolean comboSelected = combo.getText().equalsIgnoreCase(Constants.dropDown) ? true : false;
 						btnAddAnswer.setVisible(comboSelected);
+						comboBoxAnswerType.setVisible(false);
+						comboBoxAnswerType.select(-1);
+						lblAnswerType.setVisible(false);
 						lblToolTip.setVisible(false);
 						textBoxTooltip.setText("");
 						textBoxTooltip.setVisible(false);
@@ -176,6 +193,8 @@ public class QuestionDialog extends Dialog {
 						boolean buttonSelected = combo.getText().equalsIgnoreCase(Constants.radioButton) ? true : false;
 						btnAddAnswer.setVisible(buttonSelected);
 						lblToolTip.setVisible(false);
+						comboBoxAnswerType.setVisible(false);
+						lblAnswerType.setVisible(false);
 						textBoxTooltip.setText("");
 						textBoxTooltip.setVisible(false);
 						if (!currentQuestionType.equalsIgnoreCase(Constants.radioButton)) {
@@ -191,6 +210,7 @@ public class QuestionDialog extends Dialog {
 			}
 		});
 
+		// executes when user wants to modify the question details
 		if (question != null) {
 			textQuestion.setText(question.getQuestionText());
 			if (question.getElement().equals(Constants.GUIElements.combo)) {
@@ -199,7 +219,9 @@ public class QuestionDialog extends Dialog {
 				combo.setText(Constants.radioButton);
 			} else if (question.getElement().equals(Constants.GUIElements.text)) {
 				combo.setText(Constants.textBox);
-
+				textBoxTooltip.setText(question.getTooltip());
+				comboBoxAnswerType.setText(question.getTextType());
+				compositeToHoldAnswers.setVisible(false);
 			}
 			if (!question.getHelpText().isEmpty()) {
 				txtBoxHelptext.setText(question.getHelpText());
@@ -208,16 +230,13 @@ public class QuestionDialog extends Dialog {
 				textBoxTooltip.setText(question.getTooltip());
 			}
 
-			for (Answer answer : question.getAnswers()) {
-				compositeToHoldAnswers.getListOfAllAnswer().add(answer);
-				compositeToHoldAnswers.addAnswer(answer, showRemoveButton);
-				compositeToHoldAnswers.setVisible(true);
+			if (!question.getElement().equals(Constants.GUIElements.text)) {
+				for (Answer answer : question.getAnswers()) {
+					compositeToHoldAnswers.getListOfAllAnswer().add(answer);
+					compositeToHoldAnswers.addAnswer(answer, showRemoveButton);
+					compositeToHoldAnswers.setVisible(true);
+				}
 			}
-			if (question.getElement().equals(Constants.GUIElements.text)) {
-				textBoxTooltip.setText(question.getTooltip());
-				compositeToHoldAnswers.setVisible(false);
-			}
-
 		}
 
 		return container;
@@ -254,11 +273,18 @@ public class QuestionDialog extends Dialog {
 		if (!txtBoxHelptext.getText().isEmpty()) {
 			questionDetails.setHelpText(txtBoxHelptext.getText());
 		}
-		//sets the tooltip for question type text 
+		//sets the tooltip and text type for question type text 
 		if (combo.getText().equalsIgnoreCase(Constants.textBox)) {
 			if (!textBoxTooltip.getText().equalsIgnoreCase("")) {
 				questionDetails.setTooltip(textBoxTooltip.getText());
 			}
+			//sets the text answer Type
+			if (comboBoxAnswerType.getText().isEmpty()) {
+				questionDetails.setTextType("");
+			} else {
+				questionDetails.setTextType(comboBoxAnswerType.getText());
+			}
+
 		}
 
 		/**
@@ -277,7 +303,6 @@ public class QuestionDialog extends Dialog {
 		questionDetails.setAnswers(compositeToHoldAnswers.getListOfAllAnswer());
 		checkQuestionHasDefaultAnswer(questionDetails);
 		this.questionDetails = questionDetails;
-
 	}
 
 	/**

@@ -74,11 +74,6 @@ public class Question {
 		return this.textType;
 	}
 		
-
-	public String setTooltip(String tooltip) {
-		return this.tooltip = tooltip;
-	}
-
 	public String getQuestionText() {
 		return this.questionText;
 	}

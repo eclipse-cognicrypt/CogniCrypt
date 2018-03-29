@@ -156,18 +156,10 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 			txtAnswerType.setText(Constants.radioButton);
 		}
 
-		Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
-		lblAnswers.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
-		lblAnswers.setText("Answers:");
-		
-		if (question.getElement().equals(Constants.GUIElements.text)) {
-			Text txtBox = new Text(grpQuestionDetails, SWT.BORDER);
-			GridData gdTxtBox = new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1);
-			gdTxtBox.widthHint = 0;
-			txtBox.setLayoutData(gdTxtBox);
-
-			txtBox.setEditable(false);
-		}else if (!question.getElement().equals(Constants.GUIElements.text)){
+		if (!question.getElement().equals(Constants.GUIElements.text)) {
+			Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
+			lblAnswers.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+			lblAnswers.setText("Answers:");
 
 			CompositeToHoldSmallerUIElements compositeForAnswers = new CompositeToHoldSmallerUIElements(grpQuestionDetails, SWT.None, null, false, null);
 			GridData gdCompositeForAnswers = new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1);

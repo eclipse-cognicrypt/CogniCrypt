@@ -1,0 +1,53 @@
+--- RCPTT testcase ---
+Format-Version: 1.0
+Element-Name: PIClaferPart
+Element-Type: testcase
+Element-Version: 3.0
+External-Reference: 
+Id: _t30HcB7SEei3natypeXWoQ
+Runtime-Version: 2.1.0.201606221726
+Save-Time: 3/3/18 12:05 PM
+Testcase-Type: ecl
+
+------=_.description-216f885c-d591-38ce-8ea2-e4f8cb4d6ffa
+Content-Type: text/plain
+Entry-Name: .description
+
+Primitive Integration UI testing with Clafer Part
+------=_.description-216f885c-d591-38ce-8ea2-e4f8cb4d6ffa--
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
+Content-Type: text/ecl
+Entry-Name: .content
+
+get-button "Generate Code For Cryptographic Task" | click
+with [get-window "Cryptography Task Configurator"] {
+    get-button "Primitive Integration" | click
+    with [get-window -class WizardDialog] {
+        get-button "Next >" | click
+        with [get-editbox -after [get-label "Please enter the name of your algorithm"]] {
+            set-text Sample
+            key-type "TRAVERSE_TAB_NEXT"
+        }
+        with [get-editbox -after [get-label "What is the name of the author/company?"]] {
+            set-text Testing
+            key-type "TRAVERSE_TAB_NEXT"
+        }
+        get-editbox -after [get-label "Please give a short description of your algorithm"] 
+            | set-text "This is for Sample UI Testing"
+        get-button "Next >" | click
+        get-editbox -after [get-label "What is the block size of the cipher ?(bits)"] | set-text 64
+        get-button "Next >" | click
+        with [get-group ""] {
+            get-button "fixed size" | click
+            get-editbox | set-text 254
+        }
+        get-button "Next >" | click
+        get-button OFB | check
+        get-button CFB | check
+        get-button "Next >" | click
+        get-button ZeroPadding | check
+        get-button "Next >" | click
+        get-button Finish | click
+    }
+}
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--

@@ -19,7 +19,7 @@ public class Question {
 	private Answer enteredAnswer;
 	private String extension;
 	//Note
-	private String note;
+	private String note = "";
 	//tooltip
 	private String tooltip;
 	//TextType

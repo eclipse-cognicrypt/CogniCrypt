@@ -44,9 +44,11 @@ public class XSLBasedGenerator extends CodeGenerator {
 	 * @param pathToXSLFile
 	 *        Path to the XSL file is read from the Tasks.json file instead of a constant.
 	 */
+
 	public XSLBasedGenerator(final IProject targetProject, final String pathToXSLFile) {
 		super(targetProject);
 		xslFile = Utils.getResourceFromWithin(pathToXSLFile);
+
 	}
 
 	public boolean generateCodeTemplates(Configuration chosenConfig, final String pathToAdditionalResources) {
@@ -83,11 +85,11 @@ public class XSLBasedGenerator extends CodeGenerator {
 			FileHelper.trimFile(temporaryOutputFile);
 
 			// Add additional resources like jar files
-			if (!addAdditionalJarFiles(pathToAdditionalResources)) {
+			if (!addAdditionalFiles(pathToAdditionalResources)) {
 				return false;
 			}
 			for (String customProvider : chosenConfig.getProviders()) {
-				if (!addAdditionalJarFiles(customProvider)) {
+				if (!addAddtionalFile(Utils.getResourceFromWithin(Constants.providerPath + "/" + customProvider + Constants.JAR))) {
 					return false;
 				}
 			}

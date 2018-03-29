@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.contexts"?>
+<contexts>
+      <context  id="SymmetricEncryption_Page0" title="CogniCrypt">
+        <description>1. Secure or Very secure ?
+2. Do you want your application to use the password of its users for encrypting their data? 
+3. Will your application frequently encrypt large data?
+4. Type of data to be encrypted.       
+        </description>        
+      </context>
+    </contexts>

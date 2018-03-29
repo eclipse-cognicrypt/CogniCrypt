@@ -3,12 +3,12 @@ package de.cognicrypt.codegenerator.taskintegrator.wizard;
 import java.io.File;
 import java.util.ArrayList;
 
-import javax.xml.transform.TransformerException;
 
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
+
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Question;
@@ -80,7 +80,7 @@ public class TaskIntegrationWizard extends Wizard {
 			// collect input to task-related files from individual pages
 			ClaferModel claferModel = ((CompositeToHoldGranularUIElements) ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION))
 				.getCompositeToHoldGranularUIElements()).getClaferModel();
-			ArrayList<Question> questions = ((CompositeToHoldGranularUIElements) ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS))
+			ArrayList<Question> questions = ((CompositeToHoldGranularUIElements) ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_LINK_ANSWERS))
 				.getCompositeToHoldGranularUIElements()).getListOfAllQuestions();
 			String xslFileContents = ((CompositeForXsl) ((XslPage) getPage(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)).getCompositeForXsl()).getXslTxtBox()
 				.getText();
@@ -91,7 +91,6 @@ public class TaskIntegrationWizard extends Wizard {
 			objectForDataInGuidedMode.setTask();
 
 			String fileWriteAttemptResult;
-			try {
 				fileWriteAttemptResult = fileUtilities.writeFiles(claferModel, questions, xslFileContents, customLibLocation);
 				if (fileWriteAttemptResult.equals("")) {
 					fileUtilities.writeTaskToJSONFile(objectForDataInNonGuidedMode.getTask());
@@ -103,31 +102,7 @@ public class TaskIntegrationWizard extends Wizard {
 					errorBox.open();
 					return false;
 				}
-			} catch (TransformerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 
-		}
-		
-		/*
-		 * for retrieving the details of questions
-		 */
-		if(this.getContainer().getCurrentPage().getName().equals(Constants.PAGE_NAME_FOR_LINK_ANSWERS)){
-		PageForTaskIntegratorWizard linkAnsPage=(PageForTaskIntegratorWizard)getTIPageByName(Constants.PAGE_NAME_FOR_LINK_ANSWERS);
-		CompositeToHoldGranularUIElements linkAnsPageComposite=(CompositeToHoldGranularUIElements)linkAnsPage.getCompositeToHoldGranularUIElements();
-		ArrayList<Question> listOfAllQuestions = linkAnsPageComposite.getListOfAllQuestions();
-		System.out.println(listOfAllQuestions.size());
-		FileUtilities writeJsonFile = new FileUtilities(objectForDataInNonGuidedMode.getNameOfTheTask());
-		try {
-			writeJsonFile.writeFiles(null, listOfAllQuestions, null, null);
-			//writeJsonFile.writeJSONFile(listOfAllQuestions);
-		}/* catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/finally{
-			return true;
-		}
 		}
 		return false;
 	}

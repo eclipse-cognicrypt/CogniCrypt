@@ -164,6 +164,20 @@ public class SegregatesQuestionsIntoPages {
 	/**
 	 * 
 	 * @param qstn
+	 * @return the previous question
+	 */
+	private Question findPreviousQuestion(Question qstn) {
+		for (Question question : listOfAllQuestions) {
+			if (question.getId() == qstn.getId() - 1) {
+				return question;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param qstn
 	 * @return true if question has branch otherwise false
 	 */
 	private boolean questionHasBranch(Question qstn) {
@@ -178,20 +192,6 @@ public class SegregatesQuestionsIntoPages {
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * 
-	 * @param qstn
-	 * @return the previous question
-	 */
-	private Question findPreviousQuestion(Question qstn) {
-		for (Question question : listOfAllQuestions) {
-			if (question.getId() == qstn.getId() - 1) {
-				return question;
-			}
-		}
-		return null;
 	}
 
 	/**

@@ -241,6 +241,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 				questionUnderConsideration.setHelpText(modifiedQuestion.getHelpText());
 				if (modifiedQuestion.getElement().equals(Constants.GUIElements.text)) {
 					questionUnderConsideration.setTooltip(modifiedQuestion.getTooltip());
+					questionUnderConsideration.setTextType(modifiedQuestion.getTextType());
 				}
 				break;
 			}

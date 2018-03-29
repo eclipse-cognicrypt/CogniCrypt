@@ -209,23 +209,16 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 				if (tempName.equals("")) {
 					getDecNameOfTheTask().setImage(UIConstants.DEC_ERROR);
 					getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_TASK_NAME);
-
-					// Check if the page can be set to completed.
-					getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 				} else if (validString) {
 					getDecNameOfTheTask().setImage(UIConstants.DEC_REQUIRED);
 					getDecNameOfTheTask().setDescriptionText(Constants.MESSAGE_REQUIRED_FIELD);
-
-					// Check if the page can be set to completed.
-					getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 				} else {
 					getDecNameOfTheTask().setImage(UIConstants.DEC_ERROR);
 					getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_DUPLICATE_TASK_NAME);
 					getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
-
-					// Check if the page can be set to completed.
-					getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 				}
+				// Check if the page can be set to completed.
+				getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 
 			}
 		});

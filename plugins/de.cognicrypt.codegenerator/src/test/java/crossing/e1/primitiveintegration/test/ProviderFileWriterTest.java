@@ -1,14 +1,9 @@
 package crossing.e1.primitiveintegration.test;
  
- import static org.junit.Assert.*;
- 
- import java.io.File;
- import java.io.IOException;
- import java.util.Enumeration;
- import java.util.jar.JarEntry;
- import java.util.jar.JarFile;
+ import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
+import java.io.File;
+
 import org.junit.Test;
 
 import de.cognicrypt.codegenerator.Constants;

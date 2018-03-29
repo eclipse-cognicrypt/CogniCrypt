@@ -1,9 +1,5 @@
 package de.cognicrypt.codegenerator.primitive.types;
 
-import java.util.ArrayList;
-
-import de.cognicrypt.codegenerator.question.Answer;
-
 public class Primitive {
 
 	private String name;

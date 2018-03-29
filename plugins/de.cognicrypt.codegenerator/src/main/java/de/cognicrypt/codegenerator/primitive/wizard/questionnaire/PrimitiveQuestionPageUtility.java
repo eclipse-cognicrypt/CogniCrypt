@@ -2,8 +2,6 @@ package de.cognicrypt.codegenerator.primitive.wizard.questionnaire;
 
 import java.util.List;
 
-import org.eclipse.swt.widgets.Button;
-
 import de.cognicrypt.codegenerator.question.Answer;
 
 public class PrimitiveQuestionPageUtility {

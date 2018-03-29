@@ -86,15 +86,12 @@ public class FileUtilities {
 	 * @param customLibLocation
 	 * @throws TransformerException
 	 */
-	public String writeFiles(ClaferModel claferModel, ArrayList<Question> questions, String xslFileContents, File customLibLocation) throws TransformerException {
+	public String writeFiles(ClaferModel claferModel, ArrayList<Question> questions, String xslFileContents, File customLibLocation) {
 		writeCFRFile(claferModel);
 		compileCFRFile();
-		try {
-			writeJSONFile(questions);
-		} catch (IOException | ParserConfigurationException | SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+		writeJSONFile(questions);
+
 		writeXSLFile(xslFileContents);
 		if (customLibLocation != null) {
 			copyFileFromPath(customLibLocation);
@@ -365,7 +362,7 @@ public class FileUtilities {
 	 * @throws ParserConfigurationException
 	 * @throws TransformerException
 	 */
-	private void writeJSONFile(ArrayList<Question> questions) throws IOException, ParserConfigurationException, SAXException, TransformerException {
+	private void writeJSONFile(ArrayList<Question> questions) {
 		
 		SegregatesQuestionsIntoPages pageContent = new SegregatesQuestionsIntoPages(questions);
 		ArrayList<Page> pages = pageContent.getPages();
@@ -382,26 +379,29 @@ public class FileUtilities {
 		/**
 		 * creates the xml file containing the help content of the task, adds the location of the xml file in the plugin.xml file and sets the page help id
 		 */
-		CreateAndModifyXmlfile xmlFile = new CreateAndModifyXmlfile(pages, getTaskName(), taskHasPageHelpContent);
+		try {
+			CreateAndModifyXmlfile xmlFile = new CreateAndModifyXmlfile(pages, getTaskName(), taskHasPageHelpContent);
+		} catch (IOException | ParserConfigurationException | SAXException | TransformerException e) {
+			e.printStackTrace();
+		}
 
-		//xmlWriter.write(arg0);
+		File jsonFile = new File(Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTaskName() + Constants.JSON_EXTENSION);
 
+		try {
 		Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
-		File jsonFileTargetDirectory = new File(Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTaskName() + Constants.JSON_EXTENSION);
-		
 		//creates the file
-		jsonFileTargetDirectory.createNewFile();
+			jsonFile.createNewFile();
 
 		//creates the writer object for json file  
-		FileWriter writerForJsonFile = new FileWriter(jsonFileTargetDirectory);
+			FileWriter writerForJsonFile = new FileWriter(jsonFile);
 
-		try{
 		//write the data into the .json file  
 				writerForJsonFile.write(gson.toJson(pages));
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		finally{
-		writerForJsonFile.flush();
-		writerForJsonFile.close();
+		if (!validateJSONFile(jsonFile)) {
+			jsonFile.delete();
 		}
 	}
 	

@@ -83,11 +83,11 @@ public class XSLBasedGenerator extends CodeGenerator {
 			FileHelper.trimFile(temporaryOutputFile);
 
 			// Add additional resources like jar files
-			if (!addAdditionalJarFiles(pathToAdditionalResources)) {
+			if (!addAdditionalFiles(pathToAdditionalResources)) {
 				return false;
 			}
 			for (String customProvider : chosenConfig.getProviders()) {
-				if (!addAdditionalJarFiles(customProvider)) {
+				if (!addAddtionalFile(Utils.getResourceFromWithin(Constants.providerPath + "/" + customProvider + Constants.JAR))) {
 					return false;
 				}
 			}

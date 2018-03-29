@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: crossing.e1.featuremodel.clafer.test.ClaferModelUtilsTest
--------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.302 sec - in crossing.e1.featuremodel.clafer.test.ClaferModelUtilsTest

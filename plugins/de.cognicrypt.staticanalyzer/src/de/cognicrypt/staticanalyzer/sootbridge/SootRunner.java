@@ -14,18 +14,12 @@ import org.eclipse.jdt.core.IJavaProject;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
-import boomerang.cfg.ExtendedICFG;
-import boomerang.cfg.IExtendedICFG;
-import boomerang.preanalysis.PreparationTransformer;
 import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
-import crypto.rules.StateNode;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.Utils;
-import ideal.debug.IDebugger;
-import ideal.debug.NullDebugger;
 import soot.G;
 import soot.PackManager;
 import soot.Scene;
@@ -33,7 +27,6 @@ import soot.SceneTransformer;
 import soot.Transform;
 import soot.jimple.toolkits.ide.icfg.JimpleBasedInterproceduralCFG;
 import soot.options.Options;
-import typestate.TypestateDomainValue;
 
 /**
  * This runner triggers Soot.
@@ -44,43 +37,9 @@ import typestate.TypestateDomainValue;
 public class SootRunner {
 
 	private static final File RULES_DIR = Utils.getResourceFromWithin("/resources/CrySLRules/");
-
-	public static boolean runSoot(final IJavaProject project, final String mainClass, final CrySLAnalysisListener reporter) {
-		G.reset();
-		setSootOptions(project, mainClass);
-		registerTransformers(reporter);
-		try {
-			runSoot(mainClass);
-		} catch (final Exception t) {
-			Activator.getDefault().logError(t);
-			return false;
-		}
-		return true;
-	}
-
-	private static void registerTransformers(final CrySLAnalysisListener reporter) {
-		PackManager.v().getPack("wjtp").add(new Transform("wjtp.prepare", new PreparationTransformer()));
-		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(reporter)));
-	}
-
-	private static void runSoot(final String mainClass) {
-		Scene.v().loadClassAndSupport(mainClass);
-		Scene.v().loadNecessaryClasses();
-		PackManager.v().runPacks();
-	}
-
-	private static void setSootOptions(final IJavaProject project, final String mainClass) {
-		Options.v().set_soot_classpath(getSootClasspath(project));
-		Options.v().set_main_class(mainClass);
-
-		Options.v().set_keep_line_number(true);
-		Options.v().set_prepend_classpath(true);
-		Options.v().set_allow_phantom_refs(true);
-		Options.v().set_whole_program(true);
-		Options.v().set_no_bodies_for_excluded(true);
-
-		Options.v().setPhaseOption("cg.spark", "on");
-		Options.v().set_output_format(Options.output_format_none);
+	private static CG DEFAULT_CALL_GRAPH = CG.CHA;
+	public static enum CG {
+		CHA, SPARK_LIBRARY, SPARK
 	}
 
 	private static SceneTransformer createAnalysisTransformer(final CrySLAnalysisListener reporter) {
@@ -88,19 +47,13 @@ public class SootRunner {
 
 			@Override
 			protected void internalTransform(final String phaseName, final Map<String, String> options) {
-				final ExtendedICFG icfg = new ExtendedICFG(new JimpleBasedInterproceduralCFG(false));
-				//				System.out.println("Soot Classes: "+ Scene.v().getClasses().size());
-				//				System.out.println("Reachable Methods: "+ Scene.v().getReachableMethods().size());
+				final JimpleBasedInterproceduralCFG icfg = new JimpleBasedInterproceduralCFG(false);
+
 				final CryptoScanner scanner = new CryptoScanner(getRules()) {
 
 					@Override
-					public IExtendedICFG icfg() {
+					public JimpleBasedInterproceduralCFG icfg() {
 						return icfg;
-					}
-
-					@Override
-					public IDebugger<TypestateDomainValue<StateNode>> debugger() {
-						return new NullDebugger<>();
 					}
 
 					@Override
@@ -129,19 +82,10 @@ public class SootRunner {
 
 	private static List<String> projectClassPath(final IJavaProject javaProject) {
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IClasspathEntry[] cp;
 		try {
-			cp = javaProject.getResolvedClasspath(true);
 			final List<String> urls = new ArrayList<>();
 			final URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
 			urls.add(new File(uriString).getAbsolutePath());
-			for (final IClasspathEntry entry : cp) {
-				if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE || entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
-					continue;
-				}
-				final File file = entry.getPath().toFile();
-				urls.add(file.getAbsolutePath());
-			}
 			return urls;
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e, "Error building project classpath");
@@ -149,6 +93,54 @@ public class SootRunner {
 		}
 	}
 
+
+	public static boolean runSoot(final IJavaProject project, final CrySLAnalysisListener reporter) {
+		G.reset();
+		setSootOptions(project);
+		registerTransformers(reporter);
+		try {
+			runSoot();
+		} catch (final Exception t) {
+			Activator.getDefault().logError(t);
+			return false;
+		}
+		return true;
+	}
+
+	private static void runSoot() {
+		Scene.v().loadNecessaryClasses();
+		PackManager.v().getPack("cg").apply();
+		PackManager.v().getPack("wjtp").apply();
+	}
+
+	private static void setSootOptions(final IJavaProject project) {
+		Options.v().set_soot_classpath(getSootClasspath(project));
+		Options.v().set_process_dir(Lists.newArrayList(projectClassPath(project)));
+
+		Options.v().set_keep_line_number(true);
+		Options.v().set_prepend_classpath(true);
+		Options.v().set_allow_phantom_refs(true);
+		Options.v().set_whole_program(true);
+		Options.v().set_no_bodies_for_excluded(true);
+		switch(DEFAULT_CALL_GRAPH){
+			case SPARK:
+				Options.v().setPhaseOption("cg.spark", "on");
+				Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");
+				break;
+			case CHA:
+			default:
+				Options.v().setPhaseOption("cg.cha", "on");
+				Options.v().setPhaseOption("cg", "all-reachable:true");
+		}
+		Options.v().setPhaseOption("jb", "use-original-names:true");
+		Options.v().set_output_format(Options.output_format_none);
+	}
+	
+
+	private static void registerTransformers(CrySLAnalysisListener reporter) {
+		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(reporter)));
+	}
+	
 	private static String getSootClasspath(final IJavaProject javaProject) {
 		return Joiner.on(File.pathSeparator).join(projectClassPath(javaProject));
 	}

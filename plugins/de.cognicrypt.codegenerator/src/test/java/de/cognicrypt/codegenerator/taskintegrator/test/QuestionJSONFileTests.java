@@ -1,15 +1,11 @@
 package de.cognicrypt.codegenerator.taskintegrator.test;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.question.QuestionsJSONReader;

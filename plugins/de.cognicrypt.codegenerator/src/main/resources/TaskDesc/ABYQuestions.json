@@ -1,0 +1,175 @@
+[{
+    "id": "0",
+    "helpID": "MultiPartyComputation_Page0",
+    "content": [{
+      "id": "0",
+      "note": "",
+      "element": "combo",
+      "questionText": "Where are you implementing?",
+      "answers": [{
+          "value": "Server-side",
+          "codeDependencies": [{
+            "option": "server",
+            "value": "true"
+          }],
+          "nextID": "2"
+        },
+        {
+          "value": "Client-side",
+          "codeDependencies": [{
+            "option": "server",
+            "value": "false"
+          }],
+          "defaultAnswer": true,
+          "nextID": "1"
+        }
+      ]
+    }]
+  },
+  {
+    "id": "1",
+    "helpID": "MultiPartyComputation_Page1",
+    "content": [{
+      "id": "1",
+       "note": "",
+      "element": "radio",
+      "questionText": "Do you know ip and port of the server?",
+      "answers": [{
+          "value": "Yes",
+          "codeDependencies": [],
+          "nextID": "2"
+        },
+        {
+          "value": "No",
+          "codeDependencies": [],
+          "defaultAnswer": true,
+          "nextID": "3"
+        }
+      ]
+    }]
+  },
+  {
+    "id": "2",
+    "helpID": "MultiPartyComputation_Page2",
+    "content": [{
+      "id": "2",
+      "note": "",
+      "tooltip": "Example : 216.3.128.12",
+      "element": "text",
+      "textType":"Ip address",
+      "questionText": "Please enter the server's ip",
+      "answers": [{
+        "value": "",
+        "codeDependencies": [{
+          "option": "host",
+          "value": ""
+        }],
+        "defaultAnswer": true
+      }]
+  },
+  {
+       "id": "3",
+      "note": "",
+      "tooltip": "Example : 65534",
+      "element": "text",
+      "textType":"Port number",
+      "questionText": "Please enter the port of the server",
+      "answers": [{
+        "value": "",
+        "codeDependencies": [{
+          "option": "port",
+          "value": ""
+        }],
+        "defaultAnswer": true   
+      }]
+    }],
+    "nextID": "3"
+  },
+  {
+    "id": "3",
+    "helpID": "MultiPartyComputation_Page3",
+    "content": [{
+      "id": "4",
+      "note": "\u2022 Euclidean Distance: The distance between the two parties is identified without disclosing each other's data.\n\u2022 Millionaire's Comparison: The two parties enter a number and receive the name of the party who entered the bigger one, without revealing each other's inputs. ",
+      "element": "combo",
+      "questionText": "Which Multi-Party Computation scenario do you want to implement?",
+      "answers": [{
+          "value": "Millionaire's Comparison",
+          "claferDependencies": [{
+            "algorithm": "aby",
+            "value": "Millionaire",
+            "operator": "="
+          }],
+          "nextID": "-1"
+        },
+        {
+          "value": "Euclidean Distance",
+          "claferDependencies": [{
+            "algorithm": "aby",
+            "value": "Euclid",
+            "operator": "="
+          }],
+          "defaultAnswer": true,
+          "nextID": "4"
+        }
+      ]
+    }]
+  },
+  {
+    "id": "4",
+    "helpID": "MultiPartyComputation_Page4",
+    "content": [{
+      "id": "5",
+      "note": "",
+      "element": "scale",
+      "questionText": "What is the preferred security level",
+      "answers": [{
+          "value": "Less Secure",
+          "claferDependencies": [{
+            "algorithm": "security",
+            "value": "80",
+            "operator": "="
+          }],
+          "nextID": "-1"
+        },
+        {
+          "value": "Medium",
+          "claferDependencies": [{
+            "algorithm": "security",
+            "value": "112",
+            "operator": "="
+          }],
+          "nextID": "-1"
+        },
+        {
+          "value": "Secure",
+          "claferDependencies": [{
+            "algorithm": "security",
+            "value": "128",
+            "operator": "="
+          }],
+          "defaultAnswer": true,
+          "nextID": "-1"
+        },
+        {
+          "value": "Very Secure",
+          "claferDependencies": [{
+            "algorithm": "security",
+            "value": "192",
+            "operator": "="
+          }],
+          "nextID": "-1"
+        },
+      	{
+          "value": "Very Very Secure",
+          "claferDependencies": [{
+            "algorithm": "security",
+            "value": "256",
+            "operator": "="
+          }],
+          "nextID": "-1"
+        }
+      ]
+    }]
+  }
+]

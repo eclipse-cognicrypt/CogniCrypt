@@ -7,4 +7,7 @@
       <category name="de.cognicrypt.catergory"/>
    </feature>
    <category-def name="de.cognicrypt.catergory" label="de.cognicrypt.catergory"/>
+   <repository-reference location="http://it.crossing.tu-darmstadt.de/cognicrypt/" enabled="true" />
+   <repository-reference location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/" enabled="true" />
+   <repository-reference location="http://download.eclipse.org/cognicrypt" enabled="true" />
 </site>

@@ -93,8 +93,21 @@ Except as expressly stated in Sections 2(a) and 2(b) above, Recipient receives n
    </license>
 
    <url>
-      <update url="http://download.cognicrypt.org/cognicrypt"/>
+      <update url="http://download.eclipse.org/cognicrypt"/>
    </url>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.eclipse.jdt.ui" version="3.12.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface.text" version="3.11.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core" version="3.12.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.editors"/>
+   </requires>
 
    <plugin
          id="de.cognicrypt.codegenerator"

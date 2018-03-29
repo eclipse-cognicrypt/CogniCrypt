@@ -18,7 +18,6 @@ import static org.clafer.ast.Asts.min;
 import static org.clafer.ast.Asts.union;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +61,8 @@ public class InstanceGenerator {
 	private String taskName;
 	private String taskDescription;
 	private final AstClafer taskClafer;
-	private String algorithmName;
+	private ArrayList<String> algorithmName = new ArrayList<>();
+	private ArrayList<TreeMap<String, InstanceClafer>> separatedAlgorithms = new ArrayList<TreeMap<String, InstanceClafer>>();
 	private int algorithmCount;
 
 	/**
@@ -242,35 +242,26 @@ public class InstanceGenerator {
 		this.displayNameToInstanceMap.clear();
 		// sort all the instances, to have an user friendly display
 		try {
-			this.generatedInstances.sort(new Comparator<InstanceClafer>() {
-
-				@Override
-				public int compare(final InstanceClafer left, final InstanceClafer right) {
-					return -Integer.compare(getSecurityLevel(left), getSecurityLevel(right));
-				}
-
-				private Integer getSecurityLevel(final InstanceClafer instance) {
-					for (final InstanceClafer innerInst : instance.getChildren()) {
-						if (innerInst.getType().getName().contains("security")) {
-							final Object level = innerInst.getRef();
-							if (level instanceof Integer) {
-								return (Integer) level;
-							}
-						}
-					}
-					return -1;
-				}
-
-			});
+			this.generatedInstances.sort(new ClaferComparator());
 		} catch (final Exception ex) {
 			Activator.getDefault().logError("Instances not sorted by security level. Be cautious");
 		}
+		ArrayList<TreeMap<String, InstanceClafer>> separatedCombinations = new ArrayList<>();
+		
+		int x = -1;
+		String tempKey="";
 		for (final InstanceClafer sortedInst : this.generatedInstances) {
-
+			
 			String key = getInstanceName(sortedInst);
 			if (key.isEmpty()) {
 				key = sortedInst.getChildren()[0].getRef().toString();
 				this.displayNameToInstanceMap.remove(key, sortedInst);
+			}
+			
+			if(!tempKey.equals(key)){
+				tempKey = key;
+				separatedCombinations.add(new TreeMap<String, InstanceClafer>());
+				x++;
 			}
 			if (sortedInst.getType().getName().equals(this.taskName) && key.length() > 0) {
 				// Check if any instance has same name , if yes add numerical values as suffix
@@ -282,13 +273,13 @@ public class InstanceGenerator {
 				}
 
 				this.displayNameToInstanceMap.put(copyKey, sortedInst);
-				setAlgorithmName(key);
-
+				separatedCombinations.get(x).put(copyKey, sortedInst);
 			}
+			this.setAlgorithmNames(key);
 		}
+		this.setSeparatedAlgorithms(separatedCombinations);
 		this.displayNameToInstanceMap = new TreeMap<>(this.displayNameToInstanceMap);
 	}
-
 	/**
 	 * Method to generate instances for basic user.
 	 *
@@ -301,27 +292,39 @@ public class InstanceGenerator {
 		try {
 			basicModeHandler(astModel, this.taskClafer, questAnswerMap);
 
-			this.solver = ClaferCompiler.compile(astModel,
-				this.claferModel.getScope().toBuilder()
-					//.defaultScope(Integer.parseInt(new ReadConfig().getValue(DEFAULT_SCOPE)))
-					.intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
+			this.solver = ClaferCompiler.compile(astModel, this.claferModel.getScope().toBuilder()
+				//.defaultScope(Integer.parseInt(new ReadConfig().getValue(DEFAULT_SCOPE)))
+				.intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
 
 			int redundantCounter = 0;
 			while (this.solver.find()) {
 				if (this.solver.instance().getTopClafers().length > 0) {
-					final InstanceClafer instance = this.solver.instance().getTopClafers()[this.solver.instance().getTopClafers().length - 1];
-					final long hashValueOfInstance = getHashValueOfInstance(instance);
+					InstanceClafer[] topClafers = this.solver.instance().getTopClafers();
+					InstanceClafer taskInstance = null;
 
-					if (this.uniqueInstances.containsKey(hashValueOfInstance)) {
-						if (++redundantCounter > 1000) {
+					for (InstanceClafer instanceClafer : topClafers) {
+						if (instanceClafer.getType().equals(this.taskClafer)) {
+							taskInstance = instanceClafer;
 							break;
 						}
-					} else {
-						this.uniqueInstances.put(hashValueOfInstance, instance);
-						redundantCounter = 0;
 					}
-					if (this.uniqueInstances.size() > 100) {
-						break;
+
+					if (taskClafer != null) {
+
+						final long hashValueOfInstance = getHashValueOfInstance(taskInstance);
+
+						if (this.uniqueInstances.containsKey(hashValueOfInstance)) {
+							if (++redundantCounter > 1000) {
+								break;
+							}
+						} else {
+							this.uniqueInstances.put(hashValueOfInstance, taskInstance);
+							redundantCounter = 0;
+						}
+						if (this.uniqueInstances.size() > 100) {
+							break;
+						}
+
 					}
 				}
 			}
@@ -437,7 +440,15 @@ public class InstanceGenerator {
 	public Map<String, InstanceClafer> getFirstInstance() {
 		return this.displayFirstNameToInstanceMap;
 	}
-
+	/**
+	 * get list of generated instances, sorted by security, if possible
+	 * 
+	 * @return {@link List}<{@link InstanceClafer}> of generated instances
+	 */
+	public List<InstanceClafer> getGeneratedInstances() {
+		return generatedInstances;
+	}
+	
 	/**
 	 * Returns number of instances of the task
 	 *
@@ -490,12 +501,13 @@ public class InstanceGenerator {
 		this.taskName = taskName;
 	}
 
-	public void setAlgorithmName(final String algorithmName) {
-		this.algorithmName = algorithmName;
-
+	public void setAlgorithmNames(final String algorithmName) {
+		if(!this.algorithmName.contains(algorithmName)){
+			this.algorithmName.add(algorithmName);
+		}
 	}
 
-	public String getAlgorithmName() {
+	public ArrayList<String> getAlgorithmNames() {
 		return this.algorithmName;
 
 	}
@@ -508,5 +520,13 @@ public class InstanceGenerator {
 	public int getAlgorithmCount() {
 		return this.algorithmCount;
 
+	}
+
+	public ArrayList<TreeMap<String, InstanceClafer>> getSeparatedAlgorithms() {
+		return separatedAlgorithms;
+	}
+
+	public void setSeparatedAlgorithms(ArrayList<TreeMap<String, InstanceClafer>> separatedAlgorithms) {
+		this.separatedAlgorithms = separatedAlgorithms;
 	}
 }

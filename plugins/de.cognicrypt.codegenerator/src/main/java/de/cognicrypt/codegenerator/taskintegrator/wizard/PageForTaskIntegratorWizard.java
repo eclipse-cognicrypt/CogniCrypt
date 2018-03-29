@@ -14,6 +14,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
@@ -109,7 +110,10 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			if (nextPage.getName().equals(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)) {
 				if (((PageForTaskIntegratorWizard) nextPage).treeViewer != null) {
 					((PageForTaskIntegratorWizard) nextPage).treeViewer.refresh();
+					((XslPage) nextPage).setTreeViewerInput();
 				}
+			} else if (nextPage.getName().equals(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)) {
+				((ClaferPage) nextPage).initializeClaferModel();
 			}
 		}
 
@@ -151,7 +155,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			}
 
 		} catch (Exception ex) {
-			System.out.println("Error validation when pressing Next: " + ex);
+			Activator.getDefault().logError(ex);
 
 		}
 		return ValidateNextPress;

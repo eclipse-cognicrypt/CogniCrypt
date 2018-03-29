@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<task description="Main">
+<task description="PasswordStoring">
   <Package>Crypto</Package>
   <Imports>
     <Import>java.security.InvalidAlgorithmParameterException</Import>
@@ -20,12 +20,25 @@
     <Import>java.util.Base64</Import>
     <Import>java.io.InputStream</Import>
     <Import>java.io.OutputStream</Import>
+    <Import>java.util.Properties</Import>
+    <Import>java.io.FileOutputStream</Import>
   </Imports>
-  <algorithm type="Digest">
-    <outputSize>256</outputSize>
-    <name>SHA3-256</name>
+  <Algorithm type="Digest">
+    <outputSize>384</outputSize>
+    <name>SHA-384</name>
     <performance>3</performance>
     <status>secure</status>
-  </algorithm>
+  </Algorithm>
+  <Algorithm type="KeyDerivationAlgorithm">
+    <name>PBKDF</name>
+    <performance>2</performance>
+    <status>secure</status>
+  </Algorithm>
+  <name>Password Storing</name>
+  <element type="PasswordStoring">
+    <DigestToUse>Sha_384</DigestToUse>
+    <KdaToUse>Pbkdf</KdaToUse>
+    <Name>"Password Storing"</Name>
+  </element>
   <code/>
 </task>

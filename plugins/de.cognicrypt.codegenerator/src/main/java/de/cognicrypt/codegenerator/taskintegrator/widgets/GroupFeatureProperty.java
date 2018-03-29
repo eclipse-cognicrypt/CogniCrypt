@@ -1,10 +1,14 @@
 package de.cognicrypt.codegenerator.taskintegrator.widgets;
 
+import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -14,6 +18,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.taskintegrator.controllers.ClaferValidation;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
@@ -23,7 +28,9 @@ public class GroupFeatureProperty extends Composite {
 	private Text txtPropertyName;
 	private Text txtPropertyType;
 	private Combo comboPropertyType;
-	private ClaferModel claferModel;
+
+	private ControlDecoration decorationName;
+	private ControlDecoration decorationType;
 
 	/**
 	 * Create the composite.
@@ -43,13 +50,13 @@ public class GroupFeatureProperty extends Composite {
 		// Set the model for use first.
 		this.setFeatureProperty(featurePropertyParam);
 		
-		
-		this.claferModel = claferModel;
 		setLayout(new GridLayout(5, false));
 		
 		Label lblName = new Label(this, SWT.NONE);
 		lblName.setText(Constants.FEATURE_PROPERTY_NAME);
 		
+		decorationName = new ControlDecoration(lblName, SWT.TOP | SWT.RIGHT);
+
 		txtPropertyName = new Text(this, SWT.BORDER);
 		txtPropertyName.setEditable(showRemoveButton);
 		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
@@ -63,6 +70,14 @@ public class GroupFeatureProperty extends Composite {
 			public void focusLost(FocusEvent e) {
 				featureProperty.setPropertyName(txtPropertyName.getText());
 				super.focusLost(e);
+			}
+		});
+
+		txtPropertyName.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent arg0) {
+				((CompositeToHoldSmallerUIElements) getParent().getParent()).notifyListeners(SWT.Selection, null);
 			}
 		});
 		
@@ -101,6 +116,43 @@ public class GroupFeatureProperty extends Composite {
 
 				}
 			});
+			comboPropertyType.addSelectionListener(new SelectionListener() {
+
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					// suggest a name if possible (the type in lower case if no primitve type)
+					if (txtPropertyName.getText().isEmpty()) {
+
+						boolean isPrimitive = false;
+
+						for (String primitive : Constants.CLAFER_PRIMITIVE_TYPES) {
+							if (primitive.equals(comboPropertyType.getText())) {
+								isPrimitive = true;
+								break;
+							}
+						}
+
+						if (!isPrimitive) {
+							txtPropertyName.setText(comboPropertyType.getText().toLowerCase());
+							featureProperty.setPropertyName(txtPropertyName.getText());
+							((CompositeToHoldSmallerUIElements) getParent().getParent()).notifyListeners(SWT.Selection, null);
+						}
+					}
+				}
+
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {}
+			});
+
+			decorationType = new ControlDecoration(lblNewLabel, SWT.TOP | SWT.RIGHT);
+
+			comboPropertyType.addModifyListener(new ModifyListener() {
+
+				@Override
+				public void modifyText(ModifyEvent arg0) {
+					((CompositeToHoldSmallerUIElements) getParent().getParent()).notifyListeners(SWT.Selection, null);
+				}
+			});
 
 			// suggest Clafer primitives as as type
 			for (String primitive : Constants.CLAFER_PRIMITIVE_TYPES) {
@@ -123,6 +175,7 @@ public class GroupFeatureProperty extends Composite {
 				public void widgetSelected(SelectionEvent e) {
 					((CompositeToHoldSmallerUIElements) getParent().getParent())
 						.removeFeatureProperty(getFeatureProperty());
+					((CompositeToHoldSmallerUIElements) getParent().getParent()).notifyListeners(SWT.Selection, null);
 					((CompositeToHoldSmallerUIElements) getParent().getParent()).updateClaferContainer();
 				}
 			});
@@ -146,6 +199,17 @@ public class GroupFeatureProperty extends Composite {
 	 */
 	private void setFeatureProperty(ClaferProperty featureProperty) {
 		this.featureProperty = featureProperty;
+	}
+
+	public boolean validate() {
+		boolean valid = true;
+
+		valid &= ClaferValidation.validateClaferName(txtPropertyName.getText(), true, decorationName);
+		if (comboPropertyType != null) {
+			valid &= ClaferValidation.validateClaferName(comboPropertyType.getText(), true, decorationType);
+		}
+
+		return valid;
 	}
 
 }

@@ -19,9 +19,10 @@ public class Question {
 	private Answer enteredAnswer;
 	//Note
 	private String note = "";
-	//tooltip
+
 	//TextType
 	private String textType;
+	//tooltip
 	private String tooltip = "";
 	//helpText
 	private transient String helpText = "";

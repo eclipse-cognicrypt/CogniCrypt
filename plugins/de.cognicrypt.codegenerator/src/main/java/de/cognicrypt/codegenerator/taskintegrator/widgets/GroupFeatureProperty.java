@@ -8,6 +8,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -114,6 +115,20 @@ public class GroupFeatureProperty extends Composite {
 					super.focusLost(e);
 
 				}
+			});
+			comboPropertyType.addSelectionListener(new SelectionListener() {
+
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					if (txtPropertyName.getText().isEmpty()) {
+						txtPropertyName.setText(comboPropertyType.getText().toLowerCase());
+						featureProperty.setPropertyName(txtPropertyName.getText());
+						((CompositeToHoldSmallerUIElements) getParent().getParent()).notifyListeners(SWT.Selection, null);
+					}
+				}
+
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {}
 			});
 
 			decorationType = new ControlDecoration(lblNewLabel, SWT.TOP | SWT.RIGHT);

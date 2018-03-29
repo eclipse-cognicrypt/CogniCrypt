@@ -79,9 +79,6 @@ public class Configuration {
 				}
 			}
 		}
-		if (provider.isEmpty()) {
-			provider.add(Constants.DEFAULT_PROVIDER);
-		}
 		return provider;
 	}
 

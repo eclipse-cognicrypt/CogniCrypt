@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -307,7 +308,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(selectionNum));
 							question.setEnteredAnswer(answers.get(selectionNum));
 						}
-					});
+					
+						});
 				}
 
 				if (question.getEnteredAnswer() != null) {
@@ -486,6 +488,24 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					text(question, inputField);
 				} else {
 					text(question, inputField);
+				}
+
+				inputField.addModifyListener(e -> {
+					final Answer a = question.getDefaultAnswer();
+					final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?\\\\-])", "\\\\");
+					a.setValue(cleanedInput);
+					if (a.getCodeDependencies() != null) {
+						for (CodeDependency codeDep : a.getCodeDependencies()) {
+							codeDep.setValue(cleanedInput);
+						}
+					}
+					this.finish = !cleanedInput.isEmpty();
+					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
+					question.setEnteredAnswer(a);
+					BeginnerTaskQuestionPage.this.setPageComplete(isPageComplete());
+				});
+				if (question.getDefaultAnswer().getCodeDependencies() != null) {
+					inputField.setText(question.getDefaultAnswer().getCodeDependencies().get(0).getValue());
 				}
 				break;
 

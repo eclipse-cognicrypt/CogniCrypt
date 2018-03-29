@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SymmetricBlockCipher>
+   <name>Cisco</name>
+   <description>tafozefijez</description>
+   <Blocksize>200</Blocksize>
+   <Keysize1>256</Keysize1>
+   <mode>OFB|CFB</mode>
+   <Padding>ZeroPadding|PKCS7</Padding>
+</SymmetricBlockCipher>

@@ -18,7 +18,6 @@ VeryFast: Performance = 4
 abstract Padding: Enum 
 NoPadding : Padding
 PKCS5Padding : Padding
-
 //enum Mode
 abstract Mode : Enum
 ECB : Mode

@@ -1,4 +1,5 @@
 abstract Enum
+abstract Algorithm
 abstract Security: Enum -> integer
 Broken: Security = 1
 Weak: Security = 2

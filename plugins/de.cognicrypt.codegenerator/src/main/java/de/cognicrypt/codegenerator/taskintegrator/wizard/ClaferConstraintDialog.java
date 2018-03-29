@@ -121,11 +121,6 @@ public class ClaferConstraintDialog extends Dialog {
 						ClaferFeature parentFeature = ((ClaferModel) treeViewer.getInput()).getParentFeatureOfProperty(propertyClicked);
 
 						StringBuilder addition = new StringBuilder();
-
-						if (parentFeature != currentFeature) {
-							addition.append(parentFeature.getFeatureName());
-							addition.append(".");
-						}
 						addition.append(propertyClicked.getPropertyName());
 
 						appendConstraint(addition.toString());

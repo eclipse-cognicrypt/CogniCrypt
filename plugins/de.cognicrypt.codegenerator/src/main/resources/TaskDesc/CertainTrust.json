@@ -30,8 +30,9 @@
 			"content":[{
 			"id":"1",
 			"element" : "text",
+       		 "textType":"Integer",
 			"note": "",
-			"questionText":"How many opinions do you want combine?",
+			"questionText":"How many opinions do you want to combine?",
 			"answers":[{
 				"value":"",
 				"codeDependencies":[{
@@ -49,7 +50,7 @@
 			"id":"2",
 			"element" : "combo",
 			"note": "",
-			"questionText":"Please select an operator for combining the opinions",
+			"questionText":"Please select an operator for combining the opinions:",
 			"answers":[{
 				"value":"AND", 
 				"codeDependencies":[{
@@ -111,8 +112,9 @@
 			"content":[{
 			"id":"3",
 			"element":"text",
+       		 "textType":"Integer",
 			"note": "",
-			"questionText":"Please set the maximal expected number of evidence (>0)",
+			"questionText":"Please set the maximal expected number of evidence (>0):",
 			"answers":[{
 				"value":"",
 				"codeDependencies":[{
@@ -130,7 +132,7 @@
 			"id":"4",
 			"element" : "radio",
 			"note": "",
-			"questionText":"Do you want to show user interface to visualize the expectation?",
+			"questionText":"Do you want to show the user interface to visualize the expectation?",
 			"answers":[{
 				"value":"Yes",
 				"codeDependencies":[{

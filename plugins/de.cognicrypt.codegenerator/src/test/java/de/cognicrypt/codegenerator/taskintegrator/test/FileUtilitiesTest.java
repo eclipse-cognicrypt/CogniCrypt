@@ -83,7 +83,7 @@ public class FileUtilitiesTest {
 		tmpLocationOfPluginFile = Utils.getResourceFromWithin(tmpLocation.getAbsolutePath() + Constants.innerFileSeparator + "plugin.xml");
 
 		if (!tmpLocation.isDirectory()) {
-			tmpLocation.getAbsolutePath();
+			Files.createDirectory(tmpLocation.toPath());
 		}
 
 		Files.copy(locationOfTasksFile.toPath(), tmpLocationOfTasksFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);

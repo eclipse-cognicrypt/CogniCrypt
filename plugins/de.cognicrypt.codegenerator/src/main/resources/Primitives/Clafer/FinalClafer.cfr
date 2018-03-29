@@ -24,5 +24,8 @@ abstract Cipher
   KeySize -> int
   BlockSize -> int
 
-abstract SymmetricBlockCipher : Cipher
+abstract SymmetricCipher : Cipher  
+
+abstract SymmetricBlockCipher : SymmetricCipher
+
   

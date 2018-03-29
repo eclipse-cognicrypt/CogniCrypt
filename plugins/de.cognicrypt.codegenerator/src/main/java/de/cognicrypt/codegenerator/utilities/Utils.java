@@ -3,6 +3,7 @@ package de.cognicrypt.codegenerator.utilities;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,7 +34,6 @@ import de.cognicrypt.codegenerator.Constants;
 
 @SuppressWarnings("restriction")
 public class Utils {
-
 
 	public static List<IProject> javaProjects;
 
@@ -166,7 +166,7 @@ public class Utils {
 				return curProject;
 			}
 		}
-		
+
 		if (selectedProject != null && checkIfJavaProjectSelected(selectedProject)) {
 			return selectedProject;
 		}
@@ -232,7 +232,8 @@ public class Utils {
 				final URL fileURL = bundle.getEntry(inputPath);
 				final URL resolvedURL = FileLocator.toFileURL(fileURL);
 				final URI uri = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
-				String filename = uri.getPath().replace("FinalClafer", "FinalClafer" + new Date().getTime());
+				SimpleDateFormat f = new SimpleDateFormat("ddMMyyyyHHmmss");
+				String filename = uri.getPath().replace("FinalClafer", "FinalClafer" + f.format(new Date()));
 				return new File(filename);
 			}
 		} catch (final Exception ex) {

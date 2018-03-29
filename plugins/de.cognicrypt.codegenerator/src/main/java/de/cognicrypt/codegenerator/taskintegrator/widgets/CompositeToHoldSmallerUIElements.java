@@ -299,11 +299,9 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 			 * size of clafer dependency list of answer object
 			 */
 			if(answer.getClaferDependencies().size()==0){
-				System.out.println("Inside 0");	
 				group.setBounds(5, getLowestWidgetYAxisValue(), 890,39);
 					setLowestWidgetYAxisValue(getLowestWidgetYAxisValue()+39);
 				} else{
-					System.out.println("has Clafer Dependency");	
 					group.setBounds(5, getLowestWidgetYAxisValue(), 890, group.getLowestWidgetYAxisValue());
 					setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + group.getLowestWidgetYAxisValue());
 				}			 
@@ -355,7 +353,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setMinHeight(getLowestWidgetYAxisValue());
 
 		for(Answer answer:arrayAnswer){
-			System.out.println(answer.getClaferDependencies());
 			if(answer.getValue().equals(showClaferWidgetsForAnswer.getValue())){
 				addElementsInClaferTabQuestionDialog(answer, claferModel, true);
 			}else{

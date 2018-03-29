@@ -114,7 +114,6 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 				ClaferImportDialog claferImportDialog = new ClaferImportDialog(getShell());
 				if (claferImportDialog.open() == 0) {
 					ClaferModel currentModel = compositeToHoldGranularUIElements.getClaferModel();
-					System.out.println(currentModel);
 					currentModel.add(claferImportDialog.getResult());
 					compositeToHoldGranularUIElements.updateClaferContainer();
 				}

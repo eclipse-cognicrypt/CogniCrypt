@@ -111,8 +111,6 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 
 			@Override
 			public void handleEvent(Event arg0) {
-				System.out.println("Custom event handler triggered");
-
 				Job compileJob = Job.create("Compile Clafer model", (ICoreRunnable) monitor -> {
 					// UI updates can only be run in the display thread,
 					// so do them via Display.getDefault()

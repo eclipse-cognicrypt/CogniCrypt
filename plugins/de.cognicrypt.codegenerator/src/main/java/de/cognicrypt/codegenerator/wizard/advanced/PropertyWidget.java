@@ -2,6 +2,8 @@ package de.cognicrypt.codegenerator.wizard.advanced;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.clafer.ast.AstAbstractClafer;
 import org.clafer.ast.AstClafer;
@@ -141,7 +143,7 @@ public class PropertyWidget {
 
 		final Label propertyNameLabel = new Label(container, SWT.NONE);
 		propertyNameLabel.setText(propertyName.replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
-		propertyNameLabel.setLayoutData(new GridData(100, 20));
+		propertyNameLabel.setLayoutData(new GridData(120, 20));
 
 		this.operatorComboViewer = new ComboViewer(container, SWT.FILL);
 		Combo operatorCombo = this.operatorComboViewer.getCombo();
@@ -166,8 +168,20 @@ public class PropertyWidget {
 				}
 			}
 		});
-
-		if (propertyName.equals(Constants.Security) | propertyName.equals(Constants.Performance) | propertyName.equals(Constants.CipherSecurity)) {
+		
+		// Identify if the label of the check box contains a word 'Security'
+		String labelPatternSecurity = "\\b" + Constants.Security + "\\b";
+		Pattern patternSecurity = Pattern.compile(labelPatternSecurity);
+		Matcher matchSecurity = patternSecurity.matcher(propertyName.replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
+		
+		// Identify if the label of the check box contains a word 'Performance'
+		String labelPatternPerformance = "\\b" + Constants.Performance + "\\b";		
+		Pattern patternPerformance = Pattern.compile(labelPatternPerformance);		
+		Matcher matchPerformance = patternPerformance.matcher(propertyName.replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
+		System.out.println(propertyName.replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
+		
+		//If the label has Security or Performance, then spinner is not added and adds only a combo box with items high, medium and low
+		if (matchSecurity.find() == true | matchPerformance.find() == true) {
 			this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());
 			this.operatorComboViewer.setInput(values1);
 			this.operatorComboViewer.addSelectionChangedListener(arg0 -> PropertyWidget.this.operatorComboViewer.refresh());

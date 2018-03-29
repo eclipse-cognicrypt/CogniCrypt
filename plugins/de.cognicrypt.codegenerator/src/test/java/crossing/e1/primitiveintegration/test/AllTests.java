@@ -13,7 +13,7 @@ import crossing.e1.featuremodel.clafer.test.XMLParserTest;
 
 
 @RunWith(Suite.class)
-@SuiteClasses({ PageUtilityTest.class, PrimitiveTypesTest.class, ProviderFileWriterTest.class})
+@SuiteClasses({ PageUtilityTest.class, PrimitiveTypesTest.class, ProviderFileWriterTest.class, HelperTest.class})
 public class AllTests {
 
 }

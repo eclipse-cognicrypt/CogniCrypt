@@ -133,7 +133,7 @@ public class QuestionDialog extends Dialog {
 		boolean showRemoveButton = true;
 		compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton, null);
 		GridData gd_compositeToHoldAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
-		gd_compositeToHoldAnswers.heightHint = 135;
+		gd_compositeToHoldAnswers.heightHint = 100;
 		gd_compositeToHoldAnswers.widthHint = 890;
 		compositeToHoldAnswers.setLayoutData(gd_compositeToHoldAnswers);
 		compositeToHoldAnswers.setLayout(new FillLayout(SWT.HORIZONTAL));

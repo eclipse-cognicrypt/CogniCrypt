@@ -4,17 +4,18 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
@@ -32,6 +33,7 @@ import de.cognicrypt.codegenerator.Constants;
 
 @SuppressWarnings("restriction")
 public class Utils {
+
 
 	public static List<IProject> javaProjects;
 
@@ -53,11 +55,11 @@ public class Utils {
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if project is Java project
 	 */
 	public static boolean checkIfJavaProjectSelected(final IProject project) {
-		final IJavaProject javaProject = JavaCore.create(project);
-		if (javaProject == null || !javaProject.exists()) {
+		try {
+			return project.hasNature(Constants.JavaNatureID);
+		} catch (CoreException e) {
 			return false;
 		}
-		return true;
 	}
 
 	/**
@@ -91,7 +93,8 @@ public class Utils {
 		return null;
 	}
 
-	/** This method closes the currently open editor.
+	/**
+	 * This method closes the currently open editor.
 	 * 
 	 * @param editor
 	 */
@@ -152,18 +155,22 @@ public class Utils {
 	 */
 	public static IProject getCurrentProject() {
 		final IProject selectedProject = Utils.getIProjectFromSelection();
-		if (Constants.WizardActionFromContextMenuFlag) {
+		if (selectedProject != null && Constants.WizardActionFromContextMenuFlag) {
 			return selectedProject;
-		} else {
-			final IFile currentlyOpenFile = Utils.getCurrentlyOpenFile();
-			if (currentlyOpenFile != null && currentlyOpenFile.getFileExtension().equalsIgnoreCase("java")) {
-				return currentlyOpenFile.getProject();
-			} else if (Utils.checkIfJavaProjectSelected(selectedProject)) {
-				return selectedProject;
-			} else {
-				return null;
+		}
+
+		final IFile currentlyOpenFile = Utils.getCurrentlyOpenFile();
+		if (currentlyOpenFile != null) {
+			final IProject curProject = currentlyOpenFile.getProject();
+			if (checkIfJavaProjectSelected(curProject)) {
+				return curProject;
 			}
 		}
+		
+		if (selectedProject != null && checkIfJavaProjectSelected(selectedProject)) {
+			return selectedProject;
+		}
+		return null;
 	}
 
 	/**
@@ -206,6 +213,27 @@ public class Utils {
 				final URL resolvedURL = FileLocator.toFileURL(fileURL);
 				final URI uri = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
 				return new File(uri);
+			}
+		} catch (final Exception ex) {
+			Activator.getDefault().logError(ex);
+		}
+
+		return null;
+	}
+
+	public static File getFinalClaferFile(final String inputPath) {
+		try {
+			final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+
+			if (bundle == null) {
+				// running as application
+				return new File(inputPath);
+			} else {
+				final URL fileURL = bundle.getEntry(inputPath);
+				final URL resolvedURL = FileLocator.toFileURL(fileURL);
+				final URI uri = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
+				String filename = uri.getPath().replace("FinalClafer", "FinalClafer" + new Date().getTime());
+				return new File(filename);
 			}
 		} catch (final Exception ex) {
 			Activator.getDefault().logError(ex);

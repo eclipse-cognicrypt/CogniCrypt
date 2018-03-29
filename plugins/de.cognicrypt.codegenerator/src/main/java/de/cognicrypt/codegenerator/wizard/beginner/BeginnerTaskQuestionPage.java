@@ -8,25 +8,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-//import org.eclipse.swt.custom.StyleRange;
-//import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
@@ -35,6 +42,7 @@ import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.Constants.GUIElements;
 import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
@@ -168,14 +176,18 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	@Override
 	public void createControl(final Composite parent) {
-		this.container = new Composite(parent, SWT.NONE);
-		this.container.setBounds(10, 10, 450, 200);
+
+		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		this.container = new Composite(sc, SWT.NONE);
+//		this.container.setBounds(10, 10, 450, 200);
 		// Updated the number of columns to order the questions vertically.
 		final GridLayout layout = new GridLayout(1, false);
 
 		// To display the Help view after clicking the help icon
 		if (!this.page.getHelpID().isEmpty()) {
-			PlatformUI.getWorkbench().getHelpSystem().setHelp(this.container, getHelpId(this.page));
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(sc, getHelpId(this.page));
 		}
 
 		this.container.setLayout(layout);
@@ -191,18 +203,25 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			//setting focus to the first field on the page
 			this.container.getChildren()[0].setFocus();
 		}
-		setControl(this.container);
+		sc.setContent(container);
+		sc.setExpandHorizontal(true);
+		sc.setExpandVertical(true);
+		sc.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		setControl(sc);
 	}
 
 	private void createQuestionControl(final Composite parent, final Question question) {
 
 		final List<Answer> answers = question.getAnswers();
 		final Composite container = getPanel(parent);
-		final Label label = new Label(container, SWT.TOP);
+		final Label label = new Label(container, SWT.TOP | SWT.FILL | SWT.WRAP);
+		GridData gd_question= new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
+		gd_question.widthHint = 550;
+		label.setLayoutData(gd_question);
 		label.setText(question.getQuestionText());
 		switch (question.getElement()) {
 			case combo:
-				final ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY);
+				final ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.FILL);
 				comboViewer.setContentProvider(ArrayContentProvider.getInstance());
 				comboViewer.setInput(answers);
 
@@ -260,11 +279,24 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 
 			case scale:
+				for (int i = 0; i < answers.size(); i++) {
+					if (i == 0) {
+						Label label1 = new Label(container, SWT.NONE);
+						label1.setText(answers.get(i).getValue());
+					} 
+				}
 
 				final Scale scale = new Scale(container, SWT.HORIZONTAL);
 				scale.setMaximum((answers.size()) - 1);
 				scale.setMinimum(0);
 				scale.setPageIncrement(1);
+
+				for (int i = 0; i < answers.size(); i++) {
+					if (i == (answers.size() - 1)) {
+						Label label2 = new Label(container, SWT.NONE);
+						label2.setText(answers.get(i).getValue());
+					}
+				}
 
 				for (int i = 0; i < answers.size(); i++) {
 					scale.addSelectionListener(new SelectionAdapter() {
@@ -276,7 +308,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(selectionNum));
 							question.setEnteredAnswer(answers.get(selectionNum));
 						}
-					});
+					
+						});
 				}
 
 				if (question.getEnteredAnswer() != null) {
@@ -303,62 +336,211 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 
 			case text:
+				
 				final Text inputField = new Text(container, SWT.BORDER);
-				inputField.setSize(240, inputField.getSize().y);
-
+				inputField.setLayoutData(new GridData(100, SWT.DEFAULT));
 				inputField.setToolTipText(question.getTooltip());
+				
+				
+				ControlDecoration deco = new ControlDecoration(inputField, SWT.LEFT | SWT.TOP);
+				FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
+				deco.setImage(fieldDecoration.getImage());
+				deco.hide();
+			
+				
+				//Adding Browse Button for text field that expects a path as input
+				if (question.getTextType().equals(Constants.BROWSE)) {
+					inputField.setLayoutData(new GridData(300, SWT.DEFAULT));
 
-				if (question.getEnteredAnswer() != null) {
-					final Answer a = question.getEnteredAnswer();
-					inputField.setText(a.getValue());
-					a.getCodeDependencies().get(0).setValue(a.getValue());
-					this.finish = !inputField.getText().isEmpty();
-					BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
+					Button browseButton = new Button(container, SWT.PUSH);
+					browseButton.setText(Constants.BROWSE);
+					browseButton.addSelectionListener(new SelectionAdapter() {
+
+						public void widgetSelected(SelectionEvent e) {
+							FileDialog fileDialog = new FileDialog(getShell(), SWT.NULL);
+							fileDialog.setFilterExtensions(new String[] { "*.jks" });
+							String path = fileDialog.open();
+							if (path != null) {
+								inputField.setText(path);
+								}
+							}							
+					});	
+
+					text(question, inputField);
+				} else if (question.getTextType().equals(Constants.PASSWORD)) {
+					inputField.setLayoutData(new GridData(120, SWT.DEFAULT));
+					inputField.setEchoChar((char) 0x25cf);
+
+					//Check box to show/hide password
+					Button checkBox = new Button(container, SWT.CHECK);
+					checkBox.setText(Constants.SHOW_PASSWORD_CHECKBOX);
+					checkBox.setSelection(false);
+					checkBox.addSelectionListener(new SelectionAdapter() {
+
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+							if (checkBox.getSelection() == true) {
+								inputField.setEchoChar('\0');
+							} else {
+								inputField.setEchoChar((char) 0x25cf);
+							}
+						}
+					});
+					text(question, inputField);
+				} else if (question.getTextType().equals(Constants.INTEGER)) {
+					inputField.addListener(SWT.Verify, new Listener() {
+
+						@Override
+						public void handleEvent(Event e) {
+							String string = e.text;
+							char[] chars = new char[string.length()];
+							string.getChars(0, chars.length, chars, 0);
+							for (int i = 0; i < chars.length; i++) {
+								if (!('0' <= chars[i] && chars[i] <= '9')) {
+									deco.show();
+									deco.showHoverText("Expected an integer >0");
+									e.doit = false;
+									return;
+								}
+							}
+							deco.hide();
+						}
+					});
+
+					text(question, inputField);
+				} else if (question.getTextType().equals(Constants.PORT_NUMBER)) {
+					inputField.setToolTipText(Constants.PORT_NUMBER_TOOLTIP);
+					inputField.addVerifyListener(new VerifyListener() {
+
+						@Override
+						public void verifyText(VerifyEvent e) {
+							deco.hide();
+							String currentText = ((Text) e.widget).getText();
+							String port = currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
+							try {
+								int portNum = Integer.valueOf(port);
+								if (portNum < 0 || portNum > 65535) {
+									deco.show();
+									deco.showHoverText("Must be an integer < 65535");
+									e.doit = false;
+								}
+							} catch (NumberFormatException ex) {
+								if (!port.equals("")){
+									deco.show();
+									deco.showHoverText("Expected an integer < 65535");
+									e.doit = false;
+								}
+							}
+						}
+					});
+					text(question, inputField);
+				} else if (question.getTextType().equals(Constants.IP_ADDRESS)) {
+					inputField.setToolTipText(Constants.IP_ADDRESS_TOOLTIP);
+
+					inputField.addVerifyListener(new VerifyListener() {
+
+						@Override
+						public void verifyText(VerifyEvent e) {
+							String currentText = ((Text) e.widget).getText();
+							String ip = currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
+							String[] ipAddress = ip.split("\\.");
+							int i= 0;
+							try {
+								if (!ip.isEmpty()) {
+									deco.hide();
+									if (ipAddress.length > 4) {
+										deco.show();
+										deco.showHoverText("Expected format 255.255.255.255");
+										e.doit = false;
+									}
+									for (i = 0; i <= ipAddress.length - 1; i++) {
+										int j = Integer.parseInt(ipAddress[i]);
+										if (j < 0 || j > 255) {
+											deco.show();
+											deco.showHoverText("Expected format 255.255.255.255");
+											e.doit = false;
+										}
+									}
+									if (ip.endsWith("..") || ip.startsWith(".")) {
+										deco.show();
+										deco.showHoverText("Expected format 255.255.255.255");
+										e.doit=false;
+									}
+									if (ip.endsWith(".") || ip.endsWith("[0-9]") ) {
+										deco.show();
+										deco.showHoverText("Expected format 255.255.255.255");
+									}
+									if(i==4 && ip.endsWith(".")){
+										deco.show();
+										deco.showHoverText("Expected format 255.255.255.255");
+										e.doit=false;											
+									}
+								}
+							} catch (NumberFormatException ex) {
+								if (!ip.equals("")){
+									deco.show();
+									deco.showHoverText("Expected format 255.255.255.255");
+									e.doit = false;
+								}
+							}
+						}
+					});
+					text(question, inputField);
+				} else {
+					text(question, inputField);
 				}
 
 				inputField.addModifyListener(e -> {
 					final Answer a = question.getDefaultAnswer();
 					final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?\\\\-])", "\\\\");
 					a.setValue(cleanedInput);
-					a.getCodeDependencies().get(0).setValue(cleanedInput);
+					if (a.getCodeDependencies() != null) {
+						for (CodeDependency codeDep : a.getCodeDependencies()) {
+							codeDep.setValue(cleanedInput);
+						}
+					}
 					this.finish = !cleanedInput.isEmpty();
 					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
 					question.setEnteredAnswer(a);
 					BeginnerTaskQuestionPage.this.setPageComplete(isPageComplete());
 				});
+				if (question.getDefaultAnswer().getCodeDependencies() != null) {
+					inputField.setText(question.getDefaultAnswer().getCodeDependencies().get(0).getValue());
+				}
 				break;
 
 			case itemselection:
-				new Label(container, SWT.NONE);
-				new Label(container, SWT.NONE);
-				new Label(container, SWT.NONE);
+				final Composite compositeControl = new Composite(parent, SWT.NONE);
+				GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
+				compositeControl.setLayoutData(gridData);
+				compositeControl.setLayout(new GridLayout(4, false));
 
-				final org.eclipse.swt.widgets.List itemList = new org.eclipse.swt.widgets.List(container, SWT.LEFT | SWT.MULTI | SWT.V_SCROLL);
+				final org.eclipse.swt.widgets.List itemList = new org.eclipse.swt.widgets.List(compositeControl, SWT.LEFT | SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+				GridData myGrid = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+				myGrid.widthHint = 270;
+				myGrid.heightHint = 180;
+				itemList.setLayoutData(myGrid);
 
-				final Composite composite = new Composite(container, SWT.CENTER);
-				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
-				gridData.horizontalSpan = 2;
-				composite.setLayoutData(gridData);
+				final Composite composite = new Composite(compositeControl, SWT.NONE);
 				composite.setLayout(new GridLayout(1, false));
 
-				gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
-
 				final Button moveRightButton = new Button(composite, SWT.TOP);
-				moveRightButton.setLayoutData(gridData);
-
 				final Button moveLeftButton = new Button(composite, SWT.BOTTOM);
 
-				moveRightButton.setText("-Select->");
+				moveRightButton.setText("  -Select->  ");
 				moveLeftButton.setText("<-Deselect-");
 				moveRightButton.setEnabled(false);
 				moveLeftButton.setEnabled(false);
 
-				final org.eclipse.swt.widgets.List selectedItemList = new org.eclipse.swt.widgets.List(container, SWT.RIGHT | SWT.MULTI | SWT.V_SCROLL);
-				selectedItemList.setEnabled(false);
+				final org.eclipse.swt.widgets.List selectedItemList = new org.eclipse.swt.widgets.List(compositeControl, SWT.RIGHT | SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+				myGrid = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+				myGrid.widthHint = 270;
+				myGrid.heightHint = 180;
+				selectedItemList.setLayoutData(myGrid);
 
 				for (final String value : this.selectionValues) {
 					itemList.add(value);
-					selectedItemList.add("                                                                           ");
+					//selectedItemList.add("                                                                                       ");
 				}
 
 				itemList.addSelectionListener(new SelectionListener() {
@@ -459,7 +641,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							}
 							if (ans == null) {
 								ans = new Answer();
-								// TODO Why is this -1? Does it still make sense after having introduced multiple questions per page?
 								ans.setNextID(-1);
 							}
 							String checkedElement = ans.getValue();
@@ -556,14 +737,17 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							final String feedbackString = resStringArray[1];
 
 							if (methodResult) {
-								question.getDefaultAnswer().setNextID(question.getAnswers().get(0).getNextID());
+								question.setEnteredAnswer(question.getAnswers().get(0));
 							} else {
-								question.getDefaultAnswer().setNextID(question.getAnswers().get(1).getNextID());
+								question.setEnteredAnswer(question.getAnswers().get(1));
 							}
 
 							feedbackLabel.setText(feedbackString);
 							feedbackLabel.getParent().pack();
 							methodButton.setEnabled(false);
+
+							BeginnerTaskQuestionPage.this.finish = methodResult;
+							BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish);
 						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
 							Activator.getDefault().logError(e1);
 						}
@@ -572,9 +756,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				});
 
 				this.finish = true;
-				final Answer ans = question.getDefaultAnswer();
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
-				BeginnerTaskQuestionPage.this.selectionMap.put(question, ans);
+
 				break;
 
 			default:
@@ -585,12 +768,20 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private void createNote(final Composite parent, final Question question) {
 		final Group notePanel = new Group(parent, SWT.NONE);
 		notePanel.setText("Note:");
+		GridLayout gridLayout = new GridLayout();
+		notePanel.setLayout(gridLayout);
+		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
+		gridData.horizontalSpan = 1;
+		notePanel.setLayoutData(gridData);
 		final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
 		notePanel.setFont(boldFont);
+		notePanel.pack();
+		setControl(parent);
 
-		this.note = new Text(notePanel, SWT.MULTI | SWT.WRAP);
+		this.note = new Text(notePanel, SWT.MULTI | SWT.WRAP );
 		this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.note.setText(question.getNote());
+		this.note.pack();
 		this.note.setBounds(10, 20, 585, 60);
 		this.note.setSize(this.note.computeSize(585, SWT.DEFAULT));
 		setControl(notePanel);
@@ -703,5 +894,35 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		if (visible) {
 			this.container.setFocus();
 		}
+	}
+
+	public void text(Question question, Text inputField){
+		if (question.getEnteredAnswer() != null) {
+			final Answer a = question.getEnteredAnswer();
+			inputField.setText(a.getValue());
+			a.getCodeDependencies().get(0).setValue(a.getValue());
+			this.finish = !inputField.getText().isEmpty();
+			BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
+		}
+
+			
+				inputField.addModifyListener(e -> {
+					final Answer a = question.getDefaultAnswer();
+					final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?\\\\-])", "\\\\");
+					a.setValue(cleanedInput);
+					if (a.getCodeDependencies() != null) {
+						for (CodeDependency codeDep : a.getCodeDependencies()) {
+							codeDep.setValue(cleanedInput);
+						}
+					}
+					this.finish = !cleanedInput.isEmpty();
+					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
+					question.setEnteredAnswer(a);
+					BeginnerTaskQuestionPage.this.setPageComplete(isPageComplete());
+				});
+				if (question.getDefaultAnswer().getCodeDependencies() != null) {
+					inputField.setText(question.getDefaultAnswer().getCodeDependencies().get(0).getValue());
+				}
+	
 	}
 }

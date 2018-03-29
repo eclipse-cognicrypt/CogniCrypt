@@ -3,6 +3,7 @@ package de.cognicrypt.codegenerator.taskintegrator.wizard;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.jobs.Job;
@@ -15,10 +16,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeClaferFeedback;
@@ -113,13 +114,11 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 				ClaferImportDialog claferImportDialog = new ClaferImportDialog(getShell());
 				if (claferImportDialog.open() == 0) {
 					ClaferModel currentModel = compositeToHoldGranularUIElements.getClaferModel();
-					System.out.println(currentModel);
 					currentModel.add(claferImportDialog.getResult());
 					compositeToHoldGranularUIElements.updateClaferContainer();
 				}
-				Label lblFeaturesImported = new Label(feedbackComposite, SWT.NONE);
 
-				lblFeaturesImported.setText("Features imported");
+				feedbackComposite.setFeedback("Features imported");
 				feedbackComposite.layout();
 				
 				checkModel();
@@ -163,8 +162,6 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 
 	public boolean checkModel() {
 
-		Label lblFeedback = new Label(feedbackComposite, SWT.NONE);
-
 		Job compileJob = Job.create("Compile Clafer model", (ICoreRunnable) monitor -> {
 			// UI updates can only be run in the display thread, 
 			// so do them via Display.getDefault() 
@@ -172,17 +169,15 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 
 				public void run() {
 
-					lblFeedback.setText(" (compiling...)");
+					feedbackComposite.setFeedback(" (compiling...)");
 
 					// do the tedious work
 					File cfrFile = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), "temporaryModel" + Constants.CFR_EXTENSION);
 					compositeToHoldGranularUIElements.getClaferModel().toFile(cfrFile.getAbsolutePath());
 					if (ClaferModel.compile(cfrFile.getAbsolutePath())) {
-						lblFeedback.setText("Compilation successful");
-						System.out.println("Compilation successful");
+						feedbackComposite.setFeedback("Compilation successful");
 					} else {
-						lblFeedback.setText("Compilation error");
-						System.out.println("Compilation error");
+						feedbackComposite.setFeedback("Compilation error");
 					}
 				}
 			});
@@ -209,6 +204,46 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 		}
 
 		return null;
+	}
+
+	public void initializeClaferModel() {
+		PageForTaskIntegratorWizard page = (PageForTaskIntegratorWizard) ((TaskIntegrationWizard) getWizard()).getTIPageByName(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD);
+		if (page.getCompositeChoiceForModeOfWizard() != null) {
+			String taskName = page.getCompositeChoiceForModeOfWizard().getTxtForTaskName().getText();
+			String taskDescription = page.getCompositeChoiceForModeOfWizard().getTxtTaskDescription().getText();
+			String descriptionConstraint = "description = \"" + taskDescription + "\"";
+
+			if (this.compositeToHoldGranularUIElements.getClaferModel().getClaferModel().isEmpty()) {
+				String defaultFeatureSetPath = Utils.getResourceFromWithin("src/main/resources/ClaferModelBin/DefaultFeatureSet.dat").getAbsolutePath();
+				ClaferModel defaultFeaturesModel = ClaferModel.createFromBinaries(defaultFeatureSetPath);
+
+				ClaferFeature taskFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, taskName, "Task");
+
+				ArrayList<ClaferConstraint> constraints = new ArrayList<>();
+				constraints.add(new ClaferConstraint(descriptionConstraint));
+
+				taskFeature.setFeatureConstraints(constraints);
+
+				compositeToHoldGranularUIElements.getClaferModel().add(defaultFeaturesModel);
+				compositeToHoldGranularUIElements.getClaferModel().add(taskFeature);
+
+				compositeToHoldGranularUIElements.getClaferModel().implementMissingFeatures(taskFeature);
+				compositeToHoldGranularUIElements.updateClaferContainer();
+			} else {
+				for (ClaferFeature claferFeature : compositeToHoldGranularUIElements.getClaferModel()) {
+					if (claferFeature.getFeatureInheritance().equals("Task")) {
+						claferFeature.setFeatureName(taskName);
+
+						for (ClaferConstraint constraint : claferFeature.getFeatureConstraints()) {
+							if (constraint.getConstraint().startsWith("description")) {
+								constraint.setConstraint(descriptionConstraint);
+							}
+						}
+					}
+				}
+				this.compositeToHoldGranularUIElements.updateClaferContainer();
+			}
+		}
 	}
 
 }

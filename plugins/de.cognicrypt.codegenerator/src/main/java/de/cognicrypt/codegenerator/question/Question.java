@@ -20,6 +20,8 @@ public class Question {
 	//Note
 	private String note = "";
 	//tooltip
+	//TextType
+	private String textType;
 	private String tooltip = "";
 	//helpText
 	private transient String helpText = "";
@@ -66,6 +68,12 @@ public class Question {
 	public String getTooltip() {
 		return this.tooltip;
 	}
+	
+	//added the type of the text
+	public String getTextType() {
+		return this.textType;
+	}
+		
 
 	public String setTooltip(String tooltip) {
 		return this.tooltip = tooltip;
@@ -104,10 +112,16 @@ public class Question {
 		this.note = note;
 	}
 
-	public void getTooltip(final String tooltip) {
+	//added set method for tooltip
+	public void setTooltip(final String tooltip) {
 		this.tooltip = tooltip;
 	}
-
+	
+	//added set method for the type of text
+	public void setTextType(final String textType) {
+		this.textType = textType;
+	}
+	
 	public void setQuestionText(final String questionText) {
 		this.questionText = questionText;
 	}
@@ -146,7 +160,7 @@ public class Question {
 		this.questionType = questionType;
 	}
 
-	public Answer setEnteredAnswer(final Answer enteredAnswer) {
+	public Answer setEnteredAnswer(Answer enteredAnswer) {
 		return this.enteredAnswer = enteredAnswer;
 	}
 

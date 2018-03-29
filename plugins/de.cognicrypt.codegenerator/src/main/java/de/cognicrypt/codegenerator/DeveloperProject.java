@@ -1,5 +1,6 @@
 package de.cognicrypt.codegenerator;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 
@@ -123,6 +124,13 @@ public class DeveloperProject {
 	@Override
 	public int hashCode() {
 		return 31 + ((this.project == null) ? 0 : this.project.hashCode());
+	}
+	/**
+	 * @return Get all methods of the project
+	 */
+	public Method[] getMethodsfromProject(Class<?> testClass){
+		Class<?> classes=this.project.getClass();
+		return classes.getDeclaredMethods();
 	}
 
 	@Override

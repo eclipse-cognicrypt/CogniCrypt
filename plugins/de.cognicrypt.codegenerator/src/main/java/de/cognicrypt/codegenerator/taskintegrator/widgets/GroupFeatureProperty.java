@@ -120,10 +120,23 @@ public class GroupFeatureProperty extends Composite {
 
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
+					// suggest a name if possible (the type in lower case if no primitve type)
 					if (txtPropertyName.getText().isEmpty()) {
-						txtPropertyName.setText(comboPropertyType.getText().toLowerCase());
-						featureProperty.setPropertyName(txtPropertyName.getText());
-						((CompositeToHoldSmallerUIElements) getParent().getParent()).notifyListeners(SWT.Selection, null);
+
+						boolean isPrimitive = false;
+
+						for (String primitive : Constants.CLAFER_PRIMITIVE_TYPES) {
+							if (primitive.equals(comboPropertyType.getText())) {
+								isPrimitive = true;
+								break;
+							}
+						}
+
+						if (!isPrimitive) {
+							txtPropertyName.setText(comboPropertyType.getText().toLowerCase());
+							featureProperty.setPropertyName(txtPropertyName.getText());
+							((CompositeToHoldSmallerUIElements) getParent().getParent()).notifyListeners(SWT.Selection, null);
+						}
 					}
 				}
 

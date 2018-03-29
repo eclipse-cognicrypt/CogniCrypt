@@ -1,4 +1,4 @@
-package crossing.e1.primitiveintegration.test;
+package de.cognicrypt.codegenerator.primitive.test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

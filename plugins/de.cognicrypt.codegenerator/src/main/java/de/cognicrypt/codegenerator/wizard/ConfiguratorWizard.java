@@ -358,7 +358,11 @@ public class ConfiguratorWizard extends Wizard {
 		return ret;
 	}
 
+
+
+
 	public HashMap<Question, Answer> getConstraints() {
 		return this.constraints;
 	}
 }
+

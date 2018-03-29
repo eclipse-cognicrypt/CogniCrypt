@@ -1,0 +1,57 @@
+[{
+   
+    "id": "0",
+    "content":
+    [{
+      "id": "0",
+      "element": "checkbox",
+      "questionText": "Please select modes of operation of your algorithm",
+      "answers": [{
+          "value": "CBC",
+           "claferDependencies": [{
+              "algorithm": "mode"
+           }
+          ]
+          },
+         {
+         "value": "OFB",
+          "claferDependencies": [{
+              "algorithm": "mode"
+           }
+          ]
+        },
+         {
+         "value": "CFB",
+          "claferDependencies": [{
+              "algorithm": "mode"
+           }
+          ]
+        },
+         {
+         "value": "CTR",
+          "claferDependencies": [{
+              "algorithm": "mode"
+           }
+          ]
+        },
+        {
+      "value":"PCBC",
+      "claferDependencies": [{
+      "algorithm": "mode"
+      }
+      ]
+      },
+		{
+		"value":"CTS",
+		"claferDepenedencies": [{
+		"algorithm": "mode",
+		"defaultAnswer": "true"
+		}
+		] 
+    
+      }
+      ]
+    }
+    ],
+  "nextID": "1"
+}]

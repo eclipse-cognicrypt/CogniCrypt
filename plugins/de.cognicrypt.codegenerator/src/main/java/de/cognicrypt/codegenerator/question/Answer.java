@@ -12,6 +12,8 @@ public class Answer {
 	private ArrayList<ClaferDependency> claferDependencies;
 	private ArrayList<CodeDependency> codeDependencies;
 	private int nextID = Constants.ANSWER_NO_NEXT_ID;
+	private boolean widgetIsSelected; 
+	private boolean widgetIsEnabled;
 
 	public ArrayList<ClaferDependency> getClaferDependencies() {
 		return this.claferDependencies;
@@ -29,6 +31,12 @@ public class Answer {
 		return this.value;
 	}
 
+	public boolean isSelectedWidget(){
+		return this.widgetIsSelected;
+	}
+	public boolean isEnabledWidget(){
+		return this.widgetIsEnabled;
+	}
 	public Boolean isDefaultAnswer() {
 		return this.defaultAnswer == null ? false : this.defaultAnswer;
 	}
@@ -52,6 +60,11 @@ public class Answer {
 	public void setValue(final String value) {
 		this.value = value;
 	}
+
+	public void setEnableWidget(boolean enable){
+		this.widgetIsEnabled=enable;
+	}
+
 
 	@Override
 	public String toString() {

@@ -12,30 +12,33 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.codegenerator.primitive.wizard.PrimitiveIntegrationWizard;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 import de.cognicrypt.codegenerator.utilities.Utils;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
 
 public class TaskSelectionPage extends WizardPage {
 
@@ -224,7 +227,30 @@ public class TaskSelectionPage extends WizardPage {
 		sc.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		setControl(sc);
 		
+		deco.setDescriptionText(Constants.GUIDED_MODE_CHECKBOX_INFO);
+		deco.setImage(image);
+		deco.setShowOnlyOnFocus(false);
+
+		Button btnPrimitiveIntegration = new Button(container, SWT.NONE);
+		btnPrimitiveIntegration.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				 WizardDialog wizardDialog = new WizardDialog(parent.getShell(),new  PrimitiveIntegrationWizard());
+		           if (wizardDialog.open() == Window.CANCEL) {
+		               System.out.println("Ok pressed");
+		           } else {
+		               System.out.println("Cancel pressed");
+		           }
+			}
+		});
+		btnPrimitiveIntegration.setText("Primitive Integration");
+		new Label(container, SWT.NONE);
+
+	
 	}
+	 
+	
+
 
 	public IProject getSelectedProject() {
 		return this.selectedProject;

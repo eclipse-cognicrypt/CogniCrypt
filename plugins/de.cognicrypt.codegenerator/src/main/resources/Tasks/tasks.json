@@ -63,5 +63,14 @@
 			"questionsJSONFile" : "src/main/resources/TaskDesc/HybridEncryption.json",
 			"additionalResources" : "",
 			"xslFile" : "src/main/resources/XSLTemplates/HybridEncryption.xsl"
+		},
+		{
+			"name": "DigitalSignatures",
+			"description": "Digitally sign documents",
+			"taskDescription": "",			
+			"modelFile" : "src/main/resources/ClaferModel/DigitalSignatures.js",
+			"questionsJSONFile" : "src/main/resources/TaskDesc/DigitalSignatures.json",
+			"additionalResources" : "",
+			"xslFile" : "src/main/resources/XSLTemplates/DigitalSignatures.xsl"
 		}
 ]

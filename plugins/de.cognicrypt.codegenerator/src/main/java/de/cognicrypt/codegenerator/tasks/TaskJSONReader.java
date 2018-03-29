@@ -3,6 +3,7 @@ package de.cognicrypt.codegenerator.tasks;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -27,8 +28,11 @@ public class TaskJSONReader {
 				final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(Constants.jsonTaskFile)));
 				final Gson gson = new Gson();
 				TaskJSONReader.tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {}.getType());
+				reader.close();
 
 			} catch (final FileNotFoundException e) {
+				Activator.getDefault().logError(e);
+			} catch (IOException e) {
 				Activator.getDefault().logError(e);
 			}
 		}

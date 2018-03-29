@@ -53,7 +53,6 @@ public class CompositeForClaferTab extends Composite {
 					answer.setClaferDependencies(claferDependencies);
 				}
 				answer.getClaferDependencies().add(cd);
-				System.out.println(answer.getClaferDependencies().size());
 
 				((CompositeToHoldSmallerUIElements) addMore.getParent().getParent().getParent()).updateClaferTab(claferModel, answer);
 			}

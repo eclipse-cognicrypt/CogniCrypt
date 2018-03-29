@@ -254,7 +254,6 @@ public class AddDependenciesDialog extends Dialog {
 		}
 		if (!valueSet) {
 			variableTxtBoxForCodeTab.setText(getCapitaliseQuestionText(question.getQuestionText()));
-			System.out.println(variableTxtBoxForCodeTab.getText());
 		}
 	}
 
@@ -269,7 +268,6 @@ public class AddDependenciesDialog extends Dialog {
 		// TODO Auto-generated method stub
 		String trimmedQuestionText = questionText.trim().replaceAll(" +", " ");
 		String[] arr = trimmedQuestionText.split(" ");
-		System.out.println(arr);
 		StringBuilder sb = new StringBuilder();
 
 		for (int i = 0; i < arr.length; i++) {

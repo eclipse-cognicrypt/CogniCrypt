@@ -108,7 +108,6 @@ public class TaskIntegrationWizard extends Wizard {
 		PageForTaskIntegratorWizard linkAnsPage=(PageForTaskIntegratorWizard)getTIPageByName(Constants.PAGE_NAME_FOR_LINK_ANSWERS);
 		CompositeToHoldGranularUIElements linkAnsPageComposite=(CompositeToHoldGranularUIElements)linkAnsPage.getCompositeToHoldGranularUIElements();
 		ArrayList<Question> listOfAllQuestions = linkAnsPageComposite.getListOfAllQuestions();
-		System.out.println(listOfAllQuestions.size());
 		FileUtilities writeJsonFile = new FileUtilities(objectForDataInNonGuidedMode.getNameOfTheTask());
 		try {
 				writeJsonFile.writeFiles(null, listOfAllQuestions, null, null, null);

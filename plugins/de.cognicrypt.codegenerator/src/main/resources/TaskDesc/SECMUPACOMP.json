@@ -33,7 +33,7 @@
       "id": "1",
        "note": "",
       "element": "radio",
-      "questionText": "Do you know ip and port of the server?",
+      "questionText": "Do you know the IP address and Port number of the server?",
       "answers": [{
           "value": "Yes",
           "codeDependencies": [],
@@ -54,9 +54,9 @@
     "content": [{
       "id": "2",
       "note": "",
-      "tooltip": "Example : 216.3.128.12",
       "element": "text",
-      "questionText": "Please enter the server's ip",
+      "textType":"Ip address",
+      "questionText": "Please enter the IP address of the server:",
       "answers": [{
         "value": "",
         "codeDependencies": [{
@@ -69,9 +69,9 @@
   {
        "id": "3",
       "note": "",
-      "tooltip": "Example : 1.2.3.4:80",
       "element": "text",
-      "questionText": "Please enter the port of the server",
+      "textType":"Port number",
+      "questionText": "Please enter the Port number of the server:",
       "answers": [{
         "value": "",
         "codeDependencies": [{
@@ -120,7 +120,7 @@
       "id": "5",
       "note": "",
       "element": "scale",
-      "questionText": "What is the preferred security level",
+      "questionText": "What is the preferred security level?",
       "answers": [{
           "value": "Less Secure",
           "claferDependencies": [{

@@ -29,3 +29,14 @@ abstract SymmetricCipher : Cipher
 abstract SymmetricBlockCipher : SymmetricCipher
 
   
+MFRMM : SymmetricBlockCipher
+	[name = MFRMM]
+	[description = This is Test Case for Multiple Fixed/Ranged key sizes with all modes of operation and Padding modes.]
+	[Blocksize = 64]
+	[Keysize1 = 234]
+	[Keysize2 = 222-333]
+	[Keysize3 = 213]
+	[Keysize4 = 247-347]
+	[Keysize5 = 355]
+	[mode = CBC|OFB|CFB|CTR|PCBC|CTS]
+	[Padding = OneAndZeroes Padding|ZeroPadding|PKCS7|NoPadding]

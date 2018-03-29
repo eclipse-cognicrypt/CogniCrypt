@@ -24,8 +24,12 @@ abstract Cipher
   KeySize -> int
   BlockSize -> int
 
-abstract SymmetricCipher : Cipher  
-
-abstract SymmetricBlockCipher : SymmetricCipher
-
+abstract SymmetricBlockCipher : Cipher
   
+ert : SymmetricBlockCipher
+	[name = ert]
+	[description = ertdf]
+	[Blocksize = 45]
+	[Keysize1 = 34546]
+	[mode = CBC|OFB]
+	[Padding = OneAndZeroes Padding]

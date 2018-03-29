@@ -30,7 +30,7 @@ public abstract class ClaferGenerator {
 	public static File copyClaferHeader(String source, String target) {
 		InputStream input = null;
 		OutputStream output = null;
-		File finalClafer = null;
+		File finalClafer;
 		finalClafer = (Utils.getFinalClaferFile(target)); // Constants.claferFooter
 		try {
 			input = new FileInputStream(Utils.getResourceFromWithin(source));

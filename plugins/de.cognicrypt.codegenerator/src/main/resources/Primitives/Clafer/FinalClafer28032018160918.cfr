@@ -29,3 +29,11 @@ abstract SymmetricCipher : Cipher
 abstract SymmetricBlockCipher : SymmetricCipher
 
   
+Cryptox : SymmetricBlockCipher
+	[name = Cryptox]
+	[description = This is an algorithm provided by System Secure Integration.]
+	[Blocksize = 64]
+	[Keysize1 = 234]
+	[Keysize2 = 222-333]
+	[mode = OFB|CFB]
+	[Padding = ZeroPadding]

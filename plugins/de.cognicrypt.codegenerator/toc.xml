@@ -5,7 +5,7 @@
 	
 	<topic label="Tasks Supported">	
 	    <topic label="Encode Password for Secure Storage" href="html/tasks/SecurePassword.html" />	
-		<topic label="Encrypt Data Using a Secret Key" href="" />
+		<topic label="Encrypt Data Using a Secret Key" href="html/tasks/SymmetricEncryption.html" />
 		<topic label="Establish a Secure Network Connection" href="html/tasks/SecureCommunication.html" />
 		<topic label="Hybrid Encryption" href="html/tasks/HybridEncryption.html" />
 		<topic label="Judging Trustworthiness of third parties" href="html/tasks/CertainTrust.html" />

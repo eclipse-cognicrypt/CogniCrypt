@@ -5,8 +5,8 @@ Element-Type: testcase
 Element-Version: 3.0
 External-Reference: 
 Id: _PVGMgDEcEei8vfE9G7Yzvw
-Runtime-Version: 2.1.0.201606221726
-Save-Time: 3/26/18 7:36 PM
+Runtime-Version: 2.2.0.201705230341
+Save-Time: 3/30/18 1:37 PM
 Testcase-Type: ecl
 
 ------=_.description-216f885c-d591-38ce-8ea2-e4f8cb4d6ffa
@@ -49,7 +49,7 @@ with [get-window -class WizardDialog] {
     get-button "Add Feature" | click
     with [get-window -class ClaferFeatureDialog] {
         get-editbox -after [get-label "Type in the name"] | set-text Fetaure2
-	get-button Class | click
+		get-button Class | click
         get-combo -after [get-label "Inherits from"] | select TempFeature
         get-button "Add property" | click
         get-editbox -after [get-label Name] | set-text Prop2
@@ -61,9 +61,8 @@ with [get-window -class WizardDialog] {
     get-button Modify -index 2 | click
     with [get-window -class ClaferFeatureDialog] {
         get-button "Add property" | click
-        get-editbox -after [get-label Name -after [get-label "is of type"]] | set-text Prop3
-        get-combo -after [get-label "is of type" -after [get-label Name -after [get-label "is of type"]]] 
-            | select Feature1
+        get-editbox -after [get-label Name] | set-text Prop3
+        get-combo -after [get-label "is of type"] | select Feature1
         get-button OK | click
     }
     get-button "< Back" | click
@@ -126,7 +125,7 @@ with [get-window -class WizardDialog] {
         click
         click
     }
-    get-button "Link Answer" | click
+    get-button "Click toLink Answer toother questions" | click
     with [get-window -class LinkAnswerDialog] {
         get-group "" -after [get-label Q0] -index 1 | get-combo | select "End Questionnaire"
         get-group "" -after [get-label Q0] -index 2 | get-combo | select Q1
@@ -138,7 +137,7 @@ set-dialog-result MessageBox 64
 with [get-window -class WizardDialog] {
     get-button Delete -index 1 | click
     get-button "Next >" | click
-    get-button "Link Answer" | click
+    get-button "Click toLink Answer toother questions" | click
     get-window -class LinkAnswerDialog | get-button OK | click
     get-button "Next >" | click
     get-button "Add Xsl Tag" | click
@@ -172,11 +171,6 @@ with [get-window -class WizardDialog] {
 set-dialog-result File
 with [get-window -class WizardDialog] {
     get-button "Get the code" | click
-    with [get-tree] {
-        get-item Feature1 | click
-        select Feature1 | double-click
-        get-item Feature1 | click
-    }
     with [get-button "Add Xsl Tag"] {
         click
         click
@@ -217,9 +211,9 @@ with [get-window -class WizardDialog] {
         click
         click
     }
-    get-button "Link Answer" | click
+    get-button "Click toLink Answer toother questions" | click
     get-window -class LinkAnswerDialog | get-button OK | click
-    get-button "Link Answer" -index 1 | click
+    get-button "Click toLink Answer toother questions" -index 1 | click
     get-window -class LinkAnswerDialog | get-button OK | click
     get-button "Next >" | click
     with [get-editbox] {
@@ -230,11 +224,6 @@ with [get-window -class WizardDialog] {
         key-type "M2+ARROW_LEFT" -times 3
     }
     get-button "Add Xsl Tag" | click
-    with [get-tree] {
-        get-item "abstract TempFeature" | click
-        select "abstract TempFeature" | double-click
-        get-item "abstract TempFeature" | click
-    }
     with [get-button "< Back"] {
         click
         click
@@ -251,9 +240,9 @@ with [get-window -class WizardDialog] {
     }
     get-button Up -index 1 | click
     get-button "Next >" | click
-    get-button "Link Answer" | click
+    get-button "Click toLink Answer toother questions" | click
     get-window -class LinkAnswerDialog | get-button Cancel | click
-    get-button "Link Answer" -index 1 | click
+    get-button "Click toLink Answer toother questions" -index 1 | click
     get-window -class LinkAnswerDialog | get-button Cancel | click
     with [get-button "< Back"] {
         click

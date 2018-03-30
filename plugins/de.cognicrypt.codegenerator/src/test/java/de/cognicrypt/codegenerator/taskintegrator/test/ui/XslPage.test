@@ -5,8 +5,8 @@ Element-Type: testcase
 Element-Version: 3.0
 External-Reference: 
 Id: _Tp0xEDEcEei8vfE9G7Yzvw
-Runtime-Version: 2.1.0.201606221726
-Save-Time: 3/26/18 7:37 PM
+Runtime-Version: 2.2.0.201705230341
+Save-Time: 3/30/18 1:44 PM
 Testcase-Type: ecl
 
 ------=_.description-216f885c-d591-38ce-8ea2-e4f8cb4d6ffa
@@ -35,6 +35,7 @@ with [get-window -class WizardDialog] {
             set-text Feature2
             key-type "TRAVERSE_TAB_NEXT"
         }
+        get-button Class | click
         get-combo -after [get-label "Inherits from"] | key-type "TRAVERSE_TAB_NEXT"
         with [get-button "Add property"] {
             click
@@ -67,6 +68,7 @@ with [get-window -class WizardDialog] {
             set-text Feature3
             key-type "TRAVERSE_TAB_NEXT"
         }
+        get-button Class | click
         get-combo -after [get-label "Inherits from"] | select Feature2
         get-button "Add property" | click
         get-editbox -after [get-label Name] | set-text Prop1ofFeature3
@@ -95,6 +97,7 @@ with [get-window -class WizardDialog] {
     get-button "Add Feature" | click
     with [get-window -class ClaferFeatureDialog] {
         get-editbox -after [get-label "Type in the name"] | set-text ConcreteFeature
+        get-button Class | click
         get-combo -after [get-label "Inherits from"] | select Feature3
         get-button "Add constraint" | click
         with [get-window -class ClaferConstraintDialog] {
@@ -117,6 +120,7 @@ with [get-window -class WizardDialog] {
             }
             get-button OK | click
         }
+        get-button Class | click
         get-button Modify -after [get-label "Inherits from"] -index 1 | click
         with [get-window -class ClaferConstraintDialog] {
             get-group "" | get-button NOT | click
@@ -347,23 +351,8 @@ with [get-window -class WizardDialog] {
         key-type Enter
         set-text-offset 29 3
     }
-    with [get-tree] {
-        get-item "abstract Feature3: Feature2" | click
-        select "abstract Feature3: Feature2" | double-click
-        get-item "abstract Feature3: Feature2" | click
-    }
     get-editbox | set-text-offset 31 2
-    with [get-tree] {
-        get-item "abstract Feature2" | click
-        select "abstract Feature2" | double-click
-        get-item "abstract Feature2" | click
-    }
     get-editbox | set-text-offset 87 1
-    with [get-tree] {
-        get-item Feature1 | click
-        select Feature1 | double-click
-        get-item Feature1 | click
-    }
     get-editbox | set-text-offset 50 4
 }
 set-dialog-result MessageBox 32

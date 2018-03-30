@@ -5,8 +5,8 @@ Element-Type: testcase
 Element-Version: 3.0
 External-Reference: 
 Id: _EV-zkDEcEei8vfE9G7Yzvw
-Runtime-Version: 2.1.0.201606221726
-Save-Time: 3/26/18 7:35 PM
+Runtime-Version: 2.2.0.201705230341
+Save-Time: 3/30/18 1:22 PM
 Testcase-Type: ecl
 
 ------=_.description-216f885c-d591-38ce-8ea2-e4f8cb4d6ffa
@@ -56,8 +56,9 @@ with [get-window -class WizardDialog] {
         get-combo -after [get-label "is of type"] | select Feature1
         get-button OK | click
     }
-    get-button Modify -index 1 | click
-    with [get-window -class ClaferFeatureDialog] {
+    
+    get-button Modify -index 15 | click
+	with [get-window -class ClaferFeatureDialog] {
         get-button Remove | click
         get-button OK | click
     }
@@ -491,34 +492,6 @@ with [get-window -class WizardDialog] {
         get-button "Add Attribute" | click
         get-group "" | get-combo -index 1 | set-text true
         get-button OK | click
-    }
-    get-editbox | set-text-offset 34 0
-    with [get-tree] {
-        get-item "abstract Feature2: Feature1" | click
-        select "abstract Feature2: Feature1" | double-click
-        get-item "abstract Feature2: Feature1" | click
-    }
-    get-editbox | set-text-offset 31 0
-    with [get-tree] {
-        get-item "abstract Feature1" | click
-        select "abstract Feature1" | double-click
-        get-item "abstract Feature1" | click
-        get-item "abstract Feature1" | click
-    }
-    with [get-editbox] {
-        set-text-offset 1 0
-        key-type Down
-        key-type Left
-        key-type Right -times 2
-        key-type Enter
-    }
-    with [get-tree] {
-        get-item "abstract Feature2: Feature1" | click
-        select "abstract Feature2: Feature1" | double-click
-        get-item "abstract Feature2: Feature1" | click
-        get-item "ConcreteFeature4: Feature3" | click
-        select "ConcreteFeature4: Feature3" | double-click
-        get-item "ConcreteFeature4: Feature3" | click
     }
     close
 }

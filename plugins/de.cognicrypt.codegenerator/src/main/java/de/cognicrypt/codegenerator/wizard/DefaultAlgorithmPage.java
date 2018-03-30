@@ -14,6 +14,8 @@ import javax.xml.transform.TransformerException;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -31,8 +33,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.Constants;
@@ -43,6 +48,7 @@ import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.utilities.JavaLineStyler;
+import de.cognicrypt.codegenerator.utilities.Utils;
 
 public class DefaultAlgorithmPage extends WizardPage {
 
@@ -140,10 +146,17 @@ public class DefaultAlgorithmPage extends WizardPage {
 		displayedCode.asyncExec(new Runnable() {
 
 			public void run() {
-				code.setText(compileCodePreview());
+				if (getCurrentEditorContent() == "") {
+					code.setText(compileCodePreview());
+				} else {
+					//if there is open file, insert te new code in the same for the preview.
+					String currentlyOpenPart = getCurrentEditorContent();
+					int position = currentlyOpenPart.indexOf("{");
+					currentlyOpenPart = new StringBuilder(currentlyOpenPart).insert(position + 1 , "\n" + compileCodePreview()).toString();					
+					code.setText(currentlyOpenPart);
+				}	
 			}
-		});
-		this.code.setText(compileCodePreview());
+		});		
 		this.code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
 		this.code.setAlwaysShowScrollBars(false); 
 
@@ -183,6 +196,30 @@ public class DefaultAlgorithmPage extends WizardPage {
 		setControl(sc);
 	}
 	
+	/**
+	 * Get the code from the user's open file. 
+	 * 
+	 * @return code in the file 
+	 */
+	public String getCurrentEditorContent() {		
+		IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
+		//if there are no open files, then return an empty string for comparison.
+		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {
+			Activator.getDefault().logInfo("Could not open access the editor of the file or there are no files open. Therefore,  the 'Old Source' part remains empty and the newly generated code appears in the 'Modified Source' part.");
+			return "";
+		}
+		ITextEditor currentlyOpenEditor = (ITextEditor) currentlyOpenPart;
+		IDocument currentlyOpenDocument = currentlyOpenEditor.getDocumentProvider().getDocument(currentlyOpenEditor.getEditorInput());
+		final String docContent = currentlyOpenDocument.get();
+		return docContent;		
+	}
+	
+	/**
+	 * Assembles code-preview text.
+	 * 
+	 * @return code snippet
+	 * @throws BadLocationException 
+	 */
 	private String compileCodePreview() {
 		final CodeGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(), this.taskSelectionPage.getSelectedTask().getXslFile());
 		final String claferPreviewPath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
@@ -198,17 +235,32 @@ public class DefaultAlgorithmPage extends WizardPage {
 
 		final Path file = new File(temporaryOutputFile).toPath();
 		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-			final StringBuilder sb = new StringBuilder();
+			final StringBuilder preview = new StringBuilder();
 			String line = null;
-			while ((line = reader.readLine()) != null) {
-				if (!line.startsWith("import")) {
-					sb.append(line);
-					sb.append(Constants.lineSeparator);
+			// If no file is open in user's editor, show the preview of newly generated class
+			if (getCurrentEditorContent() == "") {
+				while ((line = reader.readLine()) != null) {
+					if (!line.startsWith("import")) {
+						preview.append(line);
+						preview.append(Constants.lineSeparator);
+					}
 				}
+				return preview.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
 			}
-			//removing the blank lines in the code preview
-			String codePreview = sb.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
-			return codePreview;
+			// If a file is open in user's editor, show the preview of newly generated lines located inside the user's open file.
+			else {
+				while ((line = reader.readLine()) != null) {
+					if (!line.startsWith("package") && !line.contains("class") && !line.startsWith("import")) {
+						preview.append(line);
+						preview.append(Constants.lineSeparator);
+					}
+				}
+				String truncatedPreview = preview.toString();
+				int truncateIndex = truncatedPreview.length();
+				truncateIndex = truncatedPreview.lastIndexOf("}", truncateIndex - 1);
+				truncatedPreview = truncatedPreview.substring(0, truncateIndex);
+				return truncatedPreview.replaceAll("(?m)^[ \t]*\r?\n", "");
+			}
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
 		}
@@ -236,8 +288,6 @@ public class DefaultAlgorithmPage extends WizardPage {
 				value = "\t" + ClaferModelUtils.removeScopePrefix(
 					in.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
 				
-//				value = ArrangeInColumn(ClaferModelUtils.removeScopePrefix(
-//					in.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")), ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : ""));
 				if (value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
 					value = value.substring(0, value.indexOf("->") - 1);
 					value = value.replaceAll("([a-z0-9])([A-Z])", "$1 $2");
@@ -320,17 +370,6 @@ public class DefaultAlgorithmPage extends WizardPage {
 		return true;
 	}
 	
-//	public String ArrangeInColumn(String key, String value) {
-//	    int keyColumn = 1;
-//	    int valueColumn = 35;//	 
-//	    StringBuilder output = new StringBuilder();
-//	    output.append("                                    ");  
-//	    output.insert(keyColumn, key);
-//	    output.insert(valueColumn, value);
-//	    System.out.println(output);
-//	    return output.toString();
-//	}
-
 	@Override
 	public void setVisible(final boolean visible) {
 		super.setVisible(visible);

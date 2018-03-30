@@ -27,6 +27,7 @@ with [get-window -class WizardDialog] {
     get-button "Add Feature" | click
     with [get-window -class ClaferFeatureDialog] {
         get-editbox -after [get-label "Type in the name"] | set-text Feature1
+	get-button Class | click
         get-button "Add property" | click
         get-editbox -after [get-label Name] | set-text Prop1ofFeature1
         get-combo -after [get-label "is of type"] | set-text Feature2
@@ -50,6 +51,7 @@ with [get-window -class WizardDialog] {
     get-button "Add Feature" | click
     with [get-window -class ClaferFeatureDialog] {
         get-editbox -after [get-label "Type in the name"] | set-text Feature3
+	get-button Class | click
         get-combo -after [get-label "Inherits from"] | select Feature1
         with [get-button "Add property"] {
             click
@@ -70,7 +72,6 @@ with [get-window -class WizardDialog] {
     get-button "Add Feature" | click
     with [get-window -class ClaferFeatureDialog] {
         get-editbox -after [get-label "Type in the name"] | set-text Feature4
-        get-button Instance | click
         get-combo -after [get-label Implements] | select Feature3
         get-button "Add constraint" | click
         get-window -class ClaferConstraintDialog | get-button Cancel | click

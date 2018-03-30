@@ -20,8 +20,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
@@ -70,13 +68,7 @@ public class QuestionDialog extends Dialog {
 		container.setLayout(new FillLayout(SWT.HORIZONTAL));
 		getShell().setMinimumSize(900, 430);
 		
-
-		TabFolder tabFolder = new TabFolder(container, SWT.NONE);
-		TabItem tbtmQuestion = new TabItem(tabFolder, SWT.NONE);
-		tbtmQuestion.setText("Question");
-
-		Composite composite = new Composite(tabFolder, SWT.NONE);
-		tbtmQuestion.setControl(composite);
+		Composite composite = new Composite(container, SWT.NONE);
 		composite.setLayout(new GridLayout(2, false));
 
 		Label lblQuestion = new Label(composite, SWT.NONE);
@@ -98,21 +90,21 @@ public class QuestionDialog extends Dialog {
 		Label lblHelpText = new Label(composite, SWT.NONE);
 		lblHelpText.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		lblHelpText.setText("Describe the question");
-		lblHelpText.setToolTipText("In order to help the user to understand the question give extra details about the question in the text box");
 
 		txtBoxHelptext = new Text(composite, SWT.BORDER);
 		txtBoxHelptext.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		txtBoxHelptext.setToolTipText("In order to help the user to understand the question give extra details about the question in the text box");
 
 		Label lblToolTip = new Label(composite, SWT.None);
 		lblToolTip.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		lblToolTip.setText("Give tooltip");
-		lblToolTip.setToolTipText("Give help text to be displayed when user hover over the text box");
 		//visible only if the question type is text
 		lblToolTip.setVisible(false);
 
 		textBoxTooltip = new Text(composite, SWT.BORDER);
 		textBoxTooltip.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		textBoxTooltip.setVisible(false);
+		textBoxTooltip.setToolTipText("Give help text to be displayed when user hover over the text box");
 
 		Label lblAnswerType = new Label(composite, SWT.None);
 		lblAnswerType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));

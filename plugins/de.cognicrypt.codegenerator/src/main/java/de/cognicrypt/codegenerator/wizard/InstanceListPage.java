@@ -376,6 +376,11 @@ public class InstanceListPage extends WizardPage {
 		setControl(sc);
 	}
 	
+	/**
+	 * Get the code from the user's open file. 
+	 * 
+	 * @return code in the file 
+	 */
 	public String getCurrentEditorContent() {		
 		IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
 		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {

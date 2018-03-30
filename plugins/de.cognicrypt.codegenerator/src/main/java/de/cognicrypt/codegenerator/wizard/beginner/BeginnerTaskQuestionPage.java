@@ -18,6 +18,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -59,6 +61,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private List<String> selectionValues;
 	private Text note;
 	private Composite container;
+	private int count=0;
 
 	public int getCurrentPageID() {
 		return this.page.getId();
@@ -358,13 +361,23 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 						public void widgetSelected(SelectionEvent e) {
 							FileDialog fileDialog = new FileDialog(getShell(), SWT.NULL);
-							fileDialog.setFilterExtensions(new String[] { "*.jks" });
+							fileDialog.setFilterExtensions(new String[] { question.getExtension() });
 							String path = fileDialog.open();
 							if (path != null) {
 								inputField.setText(path);
 								}
 							}							
 					});	
+					
+					inputField.addModifyListener(new ModifyListener(){
+					      public void modifyText(ModifyEvent event) {
+								count=0;
+					        // Get the widget whose text was modified
+					    	  if(!inputField.getText().endsWith(".jks")){
+					    		  setCount(count + 1);
+					    	  }
+					      }
+					    });
 
 					text(question, inputField);
 				} else if (question.getTextType().equals(Constants.PASSWORD)) {
@@ -894,6 +907,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		if (visible) {
 			this.container.setFocus();
 		}
+	}
+
+	public int getCount() {
+		return count;
+	}
+	public void setCount(int count) {
+		this.count = count;
 	}
 
 	public void text(Question question, Text inputField){

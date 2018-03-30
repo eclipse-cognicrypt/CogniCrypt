@@ -12,6 +12,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * This class is responsible for displaying the comparison between the code of the user's file before and after code generation.
+ *
+ */
 class CompareInput extends CompareEditorInput {
 
 	private final String left;

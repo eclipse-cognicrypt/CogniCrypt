@@ -209,7 +209,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 
 			// remember missing property types			
 			if (!fp.getPropertyType().isEmpty() && !propertyTypeFound) {
-				ClaferFeature propertyTypeFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, fp.getPropertyType(), "");
+				ClaferFeature propertyTypeFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, fp.getPropertyType(), "");
 				addedFeatures.add(propertyTypeFeature);
 			}
 		}

@@ -8,7 +8,7 @@ import crossing.e1.primitiveintegration.test.PageUtilityTest;
 import crossing.e1.primitiveintegration.test.ProviderFileWriterTest;
 
 @RunWith(Suite.class)
-@SuiteClasses({ ClaferModelUtilsTest.class, QuestionReaderTest.class, XMLParserTest.class, PageUtilityTest.class, ProviderFileWriterTest.class })
+@SuiteClasses({ ClaferModelUtilsTest.class, ClaferComparatorTest.class, QuestionReaderTest.class, XMLParserTest.class })
 public class AllTests {
 
 }

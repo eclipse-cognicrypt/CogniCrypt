@@ -34,10 +34,15 @@ public class Constants {
 
 	//XML & XSL for Primitive 
 	public static final String primitivesPath = Constants.rsrcPath + "Primitives";
-	public static final String testFile = Constants.primitivesPath + "test.txt";
 	public static final String xmlFilePath = primitivesPath + innerFileSeparator + "XML" + innerFileSeparator + "xmlFile.xml";
-
-	//	Clafer related file
+	public static final String cipherSpiXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template" + innerFileSeparator + "CipherSPI.xsl";
+	public static final String providerClassXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template" + innerFileSeparator + "providerClass.xsl";
+	public static final String testPrimitverFolder = "src/test/resources/PrimitiveIntegration/";
+	
+	//Added Packages	
+	public static final String PRIMITIVE_PACKAGE="org.crypto.customPrimitive";
+	
+	//Clafer related file
 	public static final String claferHeader = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "ClaferHeader.cfr";
 	public static final String claferHeaderTest = rsrcPath + "Primitives" + innerFileSeparator + "ClaferHeaderT.cfr";
 	public static final String claferFooter = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "";
@@ -45,9 +50,6 @@ public class Constants {
 	public static final String claferFooterTest2 = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClaferTe.cfr";
 	public static final String claferFooterTest3 = primitivesPath + innerFileSeparator + "clafer" + innerFileSeparator + "FinalClaferTes.cfr";
 
-	public static final String cipherSpiXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template" + innerFileSeparator + "CipherSPI.xsl";
-	public static final String providerClassXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template" + innerFileSeparator + "providerClass.xsl";
-	public static final String transformedFiles = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "TransformedFiles";
 	//Jar file location - Provider (Primitive)
 	public static final String PROVIDER_FOLDER = primitivesPath + innerFileSeparator + "provider";
 

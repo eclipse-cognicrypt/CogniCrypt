@@ -69,7 +69,7 @@ public class ClaferModelUtilsTest {
 	@Test
 	public final void testTrimScope() {
 		final String beforeTrimValue = "c0_testString";
-		final String comparableValue = "TestString";
+		final String comparableValue = "testString";
 		assertEquals("Failed to trim string value", ClaferModelUtils.removeScopePrefix(beforeTrimValue), comparableValue);
 		assertNotEquals("Failed to trim string value", beforeTrimValue, comparableValue);
 

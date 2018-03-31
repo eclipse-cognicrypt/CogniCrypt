@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <task description="PasswordStoring">
   <Package>Crypto</Package>
   <Imports>
@@ -23,22 +22,22 @@
     <Import>java.util.Properties</Import>
     <Import>java.io.FileOutputStream</Import>
   </Imports>
-  <Algorithm type="Digest">
+  <algorithm type="Digest">
     <outputSize>384</outputSize>
     <name>SHA-384</name>
     <performance>3</performance>
     <status>secure</status>
-  </Algorithm>
-  <Algorithm type="KeyDerivationAlgorithm">
+  </algorithm>
+  <algorithm type="KeyDerivationAlgorithm">
     <name>PBKDF</name>
     <performance>2</performance>
     <status>secure</status>
-  </Algorithm>
+  </algorithm>
   <name>Password Storing</name>
   <element type="PasswordStoring">
-    <DigestToUse>Sha_384</DigestToUse>
-    <KdaToUse>Pbkdf</KdaToUse>
-    <Name>"Password Storing"</Name>
+    <digestToUse>sha_384</digestToUse>
+    <kdaToUse>pbkdf</kdaToUse>
+    <name>"Password Storing"</name>
   </element>
   <code/>
 </task>

@@ -1,6 +1,5 @@
 package crossing.e1.featuremodel.clafer.test;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.io.FileInputStream;
@@ -13,7 +12,6 @@ import java.util.HashMap;
 
 import org.clafer.instance.InstanceClafer;
 import org.dom4j.DocumentException;
-import org.eclipse.ui.texteditor.TaskRulerAction;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +19,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModel;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.question.Answer;
@@ -88,7 +85,7 @@ public class XMLParserTest {
 		testFile.read(generatedBytes);
 		testFile.close();
 
-		assertArrayEquals(validBytes, generatedBytes);
+		assertEquals(new String(validBytes), new String(generatedBytes));
 	}
 
 	@Test

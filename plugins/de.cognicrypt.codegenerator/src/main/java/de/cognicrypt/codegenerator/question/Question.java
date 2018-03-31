@@ -17,6 +17,7 @@ public class Question {
 	private ArrayList<Integer> methodParamIds;
 	private String questionType;
 	private Answer enteredAnswer;
+	private String extension;
 	//Note
 	private String note = "";
 
@@ -162,6 +163,14 @@ public class Question {
 
 	public Answer getEnteredAnswer() {
 		return this.enteredAnswer;
+	}
+
+	public String getExtension() {
+		return extension;
+	}
+
+	public void setExtension(String extension) {
+		this.extension = extension;
 	}
 
 	public String getHelpText() {

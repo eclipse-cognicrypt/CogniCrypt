@@ -24,7 +24,7 @@ abstract SignatureScheme : Algorithm
 RSA : SignatureScheme
 	[ performance = Fast ]
 	[ security = Medium ]
-	[ keysize = 512 ]
+	[ keysize = 4096 ]
 ECDSA : SignatureScheme
 	[ performance = Slow ]
 	[ security = Strong ]

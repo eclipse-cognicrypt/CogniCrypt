@@ -175,7 +175,7 @@ public class XSLStringGenerationAndManipulation {
 			HashMap<Question, Answer> constraints = new HashMap<>();
 			List<InstanceClafer> instances = instanceGenerator.generateInstances(constraints);
 			if (instances.size() > 0) {
-				InstanceClafer initialInstance = instanceGenerator.generateInstances(constraints).get(0);
+				InstanceClafer initialInstance = instances.get(0);
 				xmlStrings.add(xmlParser.displayInstanceValues(initialInstance, constraints));
 
 				// Questions needed to get the answer that has a constraint with the -> operator.

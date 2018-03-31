@@ -13,6 +13,7 @@ import java.util.HashMap;
 
 import org.clafer.instance.InstanceClafer;
 import org.dom4j.DocumentException;
+import org.eclipse.ui.texteditor.TaskRulerAction;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,14 +38,16 @@ public class XMLParserTest {
 	InstanceClafer inst;
 
 	// parameterized by junit.runners.Parameterized (see the constructor)
-	String jsFilePath;
-	String validFilePath;
+	private String taskName;
+	private String jsFilePath;
+	private String validFilePath;
 
 	// temporary output file
 	// common for all tests (among different parameterizations)
 	String xmlTestFilePath = "src/test/testXMLwriteInstance.xml";
 
-	public XMLParserTest(String jsFile, String xmlFile) {
+	public XMLParserTest(String taskName, String jsFile, String xmlFile) {
+		this.taskName = "c0_" + taskName;
 		this.jsFilePath = jsFile;
 		this.validFilePath = xmlFile;
 	}
@@ -52,7 +55,7 @@ public class XMLParserTest {
 	@Before
 	public void setUp() throws Exception {
 		this.claferModel = new ClaferModel(jsFilePath);
-		this.instGen = new InstanceGenerator(jsFilePath, "PasswordBasedEncryption", "description");
+		this.instGen = new InstanceGenerator(jsFilePath, taskName, "description");
 		this.constraints = new HashMap<>();
 		this.inst = this.instGen.generateInstances(this.constraints).get(0);
 	}
@@ -65,7 +68,7 @@ public class XMLParserTest {
 	@Parameters(name = "testXmlParser{index}({0},{1})")
 	public static Collection<Object[]> data() {
 		return Arrays.asList(
-			new Object[][] { { "src/test/resources/hashing.js", "src/test/resources/validHashing.xml" }, { "src/test/resources/security.js", "src/test/resources/validSecurity.xml" } });
+			new Object[][] { { "PasswordStoring", "src/test/resources/hashing.js", "src/test/resources/validHashing.xml" }, { "SecurityTestTask", "src/test/resources/security.js", "src/test/resources/validSecurity.xml" } });
 	}
 
 	@Test
@@ -100,7 +103,6 @@ public class XMLParserTest {
 		final String encoding = "UTF-8";
 		byte[] encoded = Files.readAllBytes(Paths.get(this.validFilePath));
 		String validXML = new String(encoded, encoding);
-
 		final XMLParser xmlparser = new XMLParser();
 
 		final String xml = xmlparser.displayInstanceValues(this.inst, this.constraints).asXML();

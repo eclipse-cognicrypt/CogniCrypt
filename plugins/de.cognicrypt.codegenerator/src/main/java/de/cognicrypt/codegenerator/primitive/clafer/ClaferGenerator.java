@@ -31,11 +31,9 @@ public abstract class ClaferGenerator {
 		InputStream input = null;
 		OutputStream output = null;
 		File finalClafer;
-		finalClafer = (Utils.getFinalClaferFile(target)); // Constants.claferFooter
+		finalClafer = (Utils.getFinalClaferFile(target));
 		try {
 			input = new FileInputStream(Utils.getResourceFromWithin(source));
-
-			//Constants.claferHeader
 			output = new FileOutputStream(finalClafer);
 			byte[] buf = new byte[1024];
 			int bytesRead;
@@ -48,16 +46,15 @@ public abstract class ClaferGenerator {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				input.close();
+				output.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-
-		//		finally {
-		//			try {
-		//				input.close();
-		//				output.close();
-		//			} catch (IOException e) {
-		//				// TODO Auto-generated catch block
-		//				e.printStackTrace();
-		//			}
 		return finalClafer;
 
 	}

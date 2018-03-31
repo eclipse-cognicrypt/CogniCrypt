@@ -233,8 +233,10 @@ public class Utils {
 				final URL resolvedURL = FileLocator.toFileURL(fileURL);
 				final URI uri = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
 				SimpleDateFormat f = new SimpleDateFormat("ddMMyyyyHHmmss");
-				String filename = uri.getPath().replace("FinalClafer", "FinalClafer" + f.format(new Date()));
-				return new File(filename);
+				String filename = uri.getPath().replace("Clafer/", "Clafer/FinalClafer" + f.format(new Date()));
+				File file = new File(filename + ".cfr");
+				file.createNewFile();
+				return file;
 			}
 		} catch (final Exception ex) {
 			Activator.getDefault().logError(ex);

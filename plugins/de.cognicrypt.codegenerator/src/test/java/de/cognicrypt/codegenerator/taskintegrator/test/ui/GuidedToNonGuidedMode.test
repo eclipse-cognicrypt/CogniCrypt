@@ -32,11 +32,13 @@ with [get-window -class WizardDialog] {
     get-button "Add Feature" | click
     with [get-window -class ClaferFeatureDialog] {
         get-editbox -after [get-label "Type in the name"] | set-text Feature1
+	get-button Class | click
         get-button OK | click
     }
     get-button "Add Feature" | click
     with [get-window -class ClaferFeatureDialog] {
         get-editbox -after [get-label "Type in the name"] | set-text Fetaure2
+	get-button Class | click
         get-button "Add property" | click
         get-editbox -after [get-label Name] | set-text Prop
         get-combo -after [get-label "is of type"] | select Feature1

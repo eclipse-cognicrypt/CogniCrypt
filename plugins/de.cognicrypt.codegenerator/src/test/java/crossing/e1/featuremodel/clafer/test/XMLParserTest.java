@@ -93,13 +93,6 @@ public class XMLParserTest {
 
 	@Test
 	public void testXMLValidity() throws DocumentException, IOException {
-		StringBuilder importBuilder = new StringBuilder();
-		for (String importSt : Constants.xmlimportsarr) {
-			importBuilder.append("<Import>");
-			importBuilder.append(importSt);
-			importBuilder.append("</Import>");
-		}
-
 		final String encoding = "UTF-8";
 		byte[] encoded = Files.readAllBytes(Paths.get(this.validFilePath));
 		String validXML = new String(encoded, encoding);

@@ -35,7 +35,7 @@ public class XMLParserTest {
 		String path = "src/main/resources/ClaferModel/CryptoTasks.js";
 		path = "src/test/resources/hashing.js";
 		this.claferModel = new ClaferModel(path);
-		this.instGen = new InstanceGenerator(path, "PasswordBasedEncryption", "description");
+		this.instGen = new InstanceGenerator(path, "c0_PasswordStoring", "description");
 		this.constraints = new HashMap<>();
 		this.inst = this.instGen.generateInstances(this.constraints).get(0);
 	}
@@ -74,7 +74,7 @@ public class XMLParserTest {
 			importBuilder.append("</Import>");
 		}
 		
-		final String validXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<task description=\"Main\"><Package>Crypto</Package><Imports>"+ importBuilder.toString() + "</Imports><algorithm type=\"Digest\"><outputSize>256</outputSize><name>SHA3-256</name><performance>3</performance><status>secure</status></algorithm><code/></task>";
+		final String validXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<task description=\"PasswordStoring\"><Package>Crypto</Package><Imports>"+ importBuilder.toString() + "</Imports><algorithm type=\"Digest\"><outputSize>384</outputSize><name>SHA-384</name><performance>3</performance><status>secure</status></algorithm><algorithm type=\"KeyDerivationAlgorithm\"><name>PBKDF</name><performance>2</performance><status>secure</status></algorithm><name>Password Storing</name><code/></task>";
 		final XMLParser xmlparser = new XMLParser();
 
 		final String xml = xmlparser.displayInstanceValues(this.inst, this.constraints).asXML();

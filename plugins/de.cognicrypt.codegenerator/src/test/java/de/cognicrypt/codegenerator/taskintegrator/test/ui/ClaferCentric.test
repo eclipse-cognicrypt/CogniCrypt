@@ -5,8 +5,8 @@ Element-Type: testcase
 Element-Version: 3.0
 External-Reference: 
 Id: _IumZoDEcEei8vfE9G7Yzvw
-Runtime-Version: 2.1.0.201606221726
-Save-Time: 3/26/18 7:35 PM
+Runtime-Version: 2.2.0.201705230341
+Save-Time: 3/30/18 12:05 PM
 Testcase-Type: ecl
 
 ------=_.description-216f885c-d591-38ce-8ea2-e4f8cb4d6ffa
@@ -27,6 +27,7 @@ with [get-window -class WizardDialog] {
     get-button "Add Feature" | click
     with [get-window -class ClaferFeatureDialog] {
         get-editbox -after [get-label "Type in the name"] | set-text Feature1
+		get-button Class | click
         get-button "Add property" | click
         get-editbox -after [get-label Name] | set-text Prop1ofFeature1
         get-combo -after [get-label "is of type"] | set-text Feature2
@@ -50,6 +51,7 @@ with [get-window -class WizardDialog] {
     get-button "Add Feature" | click
     with [get-window -class ClaferFeatureDialog] {
         get-editbox -after [get-label "Type in the name"] | set-text Feature3
+        get-button Class | click
         get-combo -after [get-label "Inherits from"] | select Feature1
         with [get-button "Add property"] {
             click
@@ -70,7 +72,6 @@ with [get-window -class WizardDialog] {
     get-button "Add Feature" | click
     with [get-window -class ClaferFeatureDialog] {
         get-editbox -after [get-label "Type in the name"] | set-text Feature4
-        get-button Instance | click
         get-combo -after [get-label Implements] | select Feature3
         get-button "Add constraint" | click
         get-window -class ClaferConstraintDialog | get-button Cancel | click
@@ -250,12 +251,6 @@ with [get-window -class WizardDialog] {
         type-text Test
         set-text-offset 4 0
     }
-    with [get-tree] {
-        get-item Feature2 | click
-        get-item Feature2 | click
-        select Feature2 | double-click
-        get-item Feature2 | click
-    }
     get-button "Add Xsl Tag" | click
     get-window -class XSLTagDialog | get-button OK | click
     get-editbox | set-text-offset 14 0
@@ -329,23 +324,6 @@ with [get-window -class WizardDialog] {
             get-combo -index 1 | set-text sdvsd
         }
         get-button OK | click
-    }
-    get-editbox | set-text-offset 15 0
-    with [get-tree] {
-        get-item "Feature4: Feature3" | click
-        get-item "Feature4: Feature3" | click
-        get-item "abstract Feature1" | click
-        select "abstract Feature1" | double-click
-        get-item "abstract Feature1" | click
-    }
-    get-editbox | set-text-offset 23 0
-    with [get-tree] {
-        get-item "abstract Feature3: Feature1" | click
-        select "abstract Feature3: Feature1" | double-click
-        get-item "abstract Feature3: Feature1" | click
-        get-item "1: Ordered = 1" | click
-        select "1: Ordered = 1" | double-click
-        get-item "1: Ordered = 1" | click
     }
     close
 }

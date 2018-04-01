@@ -27,7 +27,6 @@ public class CompositeForClaferTab extends Composite {
 	private int lowestWidgetYAxisValue = 5;
 	private ArrayList<ClaferDependency> claferDependencies;
 
-	// FIXME the parameter claferModel seems to be unused
 	public CompositeForClaferTab(Composite parent, int style, Answer answer, ClaferModel claferModel, boolean showClaferWidgets) {
 		super(parent, style);
 		setClaferModel(claferModel);

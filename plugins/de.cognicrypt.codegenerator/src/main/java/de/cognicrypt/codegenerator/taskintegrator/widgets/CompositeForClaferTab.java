@@ -76,6 +76,12 @@ public class CompositeForClaferTab extends Composite {
 						if (claferFeature.hasProperties()) {
 							comboForAlgorithm.add(claferFeature.getFeatureName());
 						}
+
+						if (claferFeature.getFeatureInheritance().equals("Task")) {
+							for (ClaferProperty subClafer : claferFeature.getFeatureProperties()) {
+								comboForAlgorithm.add(subClafer.getPropertyName());
+							}
+						}
 					}
 				}
 
@@ -209,17 +215,36 @@ public class CompositeForClaferTab extends Composite {
 		if (claferModel == null) {
 			return new ArrayList<>();
 		}
-		for (ClaferFeature claferFeature : claferModel) {
-			if (claferFeature.getFeatureName().equalsIgnoreCase(featureSelected)) {
-				for (ClaferProperty featureProperty : claferFeature.getFeatureProperties()) {
-					operandItems.add(featureProperty.getPropertyName());
-				}
-				if (claferFeature.getFeatureInheritance() != null) {
-					featureSelected = claferFeature.getFeatureInheritance();
-					itemsToAdd(featureSelected);
+
+		ClaferFeature selectedCfr = claferModel.getFeature(featureSelected);
+
+		if (selectedCfr != null) {
+			for (ClaferProperty featureProperty : selectedCfr.getFeatureProperties()) {
+				operandItems.add(featureProperty.getPropertyName());
+			}
+
+			if (selectedCfr.getFeatureInheritance() != null) {
+				featureSelected = selectedCfr.getFeatureInheritance();
+				itemsToAdd(featureSelected);
+			}
+
+		} else {
+			for (ClaferFeature cfrFeature : claferModel) {
+				if (cfrFeature.getFeatureInheritance().equals("Task")) {
+					for (ClaferProperty claferProperty : cfrFeature.getFeatureProperties()) {
+						if (claferProperty.getPropertyName().equals(featureSelected)) {
+							ClaferFeature parentClafer = claferModel.getFeature(claferProperty.getPropertyType());
+							if (parentClafer != null && parentClafer.getFeatureType().equals(Constants.FeatureType.ABSTRACT)) {
+								for (ClaferProperty inheritedFeature : parentClafer.getFeatureProperties()) {
+									operandItems.add(inheritedFeature.getPropertyName());
+								}
+							}
+						}
+					}
 				}
 			}
 		}
+
 		return operandItems;
 	}
 

@@ -32,6 +32,7 @@ public class AddDependenciesDialog extends Dialog {
 
 	public AddDependenciesDialog(Shell parentShell, Question question, ClaferModel claferModel) {
 		super(parentShell);
+		setShellStyle(SWT.CLOSE | SWT.RESIZE | SWT.TITLE);
 		setQuestion(question);
 		setClaferModel(claferModel);
 	}

@@ -283,7 +283,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 					group[j].setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 					group[j].setLayout(new GridLayout(4, false));
 					Button[] radioButton = new Button[answers.size()];
-					String key = "Keysize" + (j + 1);
+					String key = "keySize" + (j + 1);
 					for (int i = 0; i < answers.size(); i++) {
 						String ans = answers.get(i).getValue();
 						radioButton[i] = new Button(group[j], SWT.RADIO);

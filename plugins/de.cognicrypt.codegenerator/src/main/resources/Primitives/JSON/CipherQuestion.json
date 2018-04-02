@@ -78,7 +78,7 @@
       "id": "1",
       "element": "text",
       "note": "",
-      "questionText": "Block size of the cipher (in bits):",
+      "questionText": "Blocksize of the cipher (in bits):",
       "answers": [{
           "value": "",
            "claferDependencies": [{

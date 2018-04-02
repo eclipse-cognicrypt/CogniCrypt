@@ -5,7 +5,7 @@
       "id": "0",
       "element": "text",
       "note": "",
-      "questionText": "Name of your algorithm ? ",
+      "questionText": "Name of the algorithm ",
       "answers": [{
           "value": "name",
            "claferDependencies": [{
@@ -19,7 +19,7 @@
      "id": "1",
       "element": "text",
       "note": "",
-      "questionText": "Name of the Author/Company: ",
+      "questionText": "Name of the author/company: ",
       "answers": [{
           "value": "",
           "codeDependencies": [{
@@ -135,7 +135,7 @@
       "id": "0",
       "element": "checkbox",
       "note": "",
-      "questionText": "Choose the Modes of Operation of your algorithm:",
+      "questionText": "Choose the modes of operation of your algorithm:",
       "answers": [{
           "value": "CBC",
            "claferDependencies": [{
@@ -192,7 +192,7 @@
 		"id": "0",
 		"element": "checkbox",
 		"note": "",
-		"questionText": "Select the list of allowed Paddings in your algorithm:",
+		"questionText": "Select the list of allowed paddings in your algorithm:",
 		"answers": [{
 		"value": "OneAndZeroes Padding",
 		 "claferDependencies": [{

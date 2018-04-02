@@ -1,0 +1,41 @@
+--- RCPTT testcase ---
+Format-Version: 1.0
+Element-Name: EncryptData-Final
+Element-Type: testcase
+Element-Version: 3.0
+External-Reference: 
+Id: _lKvlgCCGEeiBZcxhvN8q6g
+Runtime-Version: 2.1.0.201606221726
+Save-Time: 3/5/18 4:07 PM
+Testcase-Type: ecl
+
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
+Content-Type: text/ecl
+Entry-Name: .content
+
+get-button "Generate Code For Cryptographic Task" | click
+with [get-window "Cryptography Task Configurator"] {
+    get-button "Next >" | click
+    get-button No | click
+    get-button "Next >" | click
+    get-combo -after [get-label "What type of data do you wish to encrypt?"] | select String
+    get-button Yes | click
+    get-button "Next >" | click
+    get-button "Show other possible algorithm combinations" | check
+    get-button "Next >" | click
+    get-button "Compare Algorithms" | click
+}
+with [get-window "Cryptography Task Configurator"] {
+    get-combo -after [get-label "Instance details of" -after [get-label "Instance details of"]] | select "AES(09)"
+    get-button Cancel | click
+}
+get-window "Cryptography Task Configurator" | get-button "Code Preview" | click
+get-window "Cryptography Task Configurator" | get-button Cancel | click
+get-window "Cryptography Task Configurator" | get-button Finish | click
+get-window "Organize Imports" | get-button Cancel | click
+with [get-window "Organize Imports"] {
+    get-table | select "javax.crypto.KeyGenerator"
+    get-button Finish | click
+}
+get-editor "Output.java" | get-text-viewer | hover-text 19 36
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--

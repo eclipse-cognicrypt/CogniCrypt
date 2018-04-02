@@ -37,6 +37,10 @@ import soot.options.Options;
 public class SootRunner {
 
 	private static final File RULES_DIR = Utils.getResourceFromWithin("/resources/CrySLRules/");
+	private static CG DEFAULT_CALL_GRAPH = CG.CHA;
+	public static enum CG {
+		CHA, SPARK_LIBRARY, SPARK
+	}
 
 	private static SceneTransformer createAnalysisTransformer(final CrySLAnalysisListener reporter) {
 		return new SceneTransformer() {
@@ -78,19 +82,10 @@ public class SootRunner {
 
 	private static List<String> projectClassPath(final IJavaProject javaProject) {
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IClasspathEntry[] cp;
 		try {
-			cp = javaProject.getResolvedClasspath(true);
 			final List<String> urls = new ArrayList<>();
 			final URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
 			urls.add(new File(uriString).getAbsolutePath());
-			for (final IClasspathEntry entry : cp) {
-				if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE || entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
-					continue;
-				}
-				final File file = entry.getPath().toFile();
-				urls.add(file.getAbsolutePath());
-			}
 			return urls;
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e, "Error building project classpath");
@@ -99,12 +94,12 @@ public class SootRunner {
 	}
 
 
-	public static boolean runSoot(final IJavaProject project, final String mainClass, final CrySLAnalysisListener reporter) {
+	public static boolean runSoot(final IJavaProject project, final CrySLAnalysisListener reporter) {
 		G.reset();
-		setSootOptions(project, mainClass);
+		setSootOptions(project);
 		registerTransformers(reporter);
 		try {
-			runSoot(mainClass);
+			runSoot();
 		} catch (final Exception t) {
 			Activator.getDefault().logError(t);
 			return false;
@@ -112,23 +107,31 @@ public class SootRunner {
 		return true;
 	}
 
-	private static void runSoot(final String mainClass) {
-		Scene.v().loadClassAndSupport(mainClass);
+	private static void runSoot() {
 		Scene.v().loadNecessaryClasses();
-		PackManager.v().runPacks();
+		PackManager.v().getPack("cg").apply();
+		PackManager.v().getPack("wjtp").apply();
 	}
 
-	private static void setSootOptions(final IJavaProject project, final String mainClass) {
+	private static void setSootOptions(final IJavaProject project) {
 		Options.v().set_soot_classpath(getSootClasspath(project));
-		Options.v().set_main_class(mainClass);
+		Options.v().set_process_dir(Lists.newArrayList(projectClassPath(project)));
 
 		Options.v().set_keep_line_number(true);
 		Options.v().set_prepend_classpath(true);
 		Options.v().set_allow_phantom_refs(true);
 		Options.v().set_whole_program(true);
 		Options.v().set_no_bodies_for_excluded(true);
-		
-		Options.v().setPhaseOption("cg.spark", "on");
+		switch(DEFAULT_CALL_GRAPH){
+			case SPARK:
+				Options.v().setPhaseOption("cg.spark", "on");
+				Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");
+				break;
+			case CHA:
+			default:
+				Options.v().setPhaseOption("cg.cha", "on");
+				Options.v().setPhaseOption("cg", "all-reachable:true");
+		}
 		Options.v().setPhaseOption("jb", "use-original-names:true");
 		Options.v().set_output_format(Options.output_format_none);
 	}

@@ -1,0 +1,15 @@
+abstract Enum
+abstract Algorithm
+abstract Security: Enum -> integer
+Broken: Security = 1
+Weak: Security = 2
+Medium: Security = 3
+Strong: Security = 4
+abstract Performance: Enum -> integer
+VerySlow: Performance = 1
+Slow: Performance = 2
+Fast: Performance = 3
+VeryFast: Performance = 4
+abstract Task
+	description -> string
+

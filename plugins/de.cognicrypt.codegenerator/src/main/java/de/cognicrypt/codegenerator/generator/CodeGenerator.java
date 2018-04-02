@@ -226,48 +226,55 @@ public abstract class CodeGenerator {
 	 * This method allows to add the corresponding jar file.
 	 *
 	 * @param source
-	 *        Location where
-	 * @return <CODE>true</CODE>/<CODE>false</CODE> if transformation successful/failed.
+	 *        Folder with files
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if files were added successfully (or not).
 	 */
-	protected boolean addAdditionalJarFiles(String source) {
+	protected boolean addAdditionalFiles(String source) {
+		if (source.isEmpty()) {
+			return true;
+		}
 		try {
-
-			if (!source.isEmpty() && !source.equals(Constants.DEFAULT_PROVIDER)) {
-				final String sourceFolder = "src/";
-				if (!source.startsWith(sourceFolder)) {
-					source = Constants.providerPath;
-				}
-				final File[] members = Utils.getResourceFromWithin(source).listFiles();
-				if (members == null) {
-					Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);
-				}
-				final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesInDevProject);
-				if (!libFolder.exists()) {
-					libFolder.create(true, true, null);
-				}
-				boolean jarIsAdded = false;
-				for (int i = 0; i < members.length && !jarIsAdded; i++) {
-
-					if (members[i].getName().equalsIgnoreCase(source + Constants.JAR) || source.startsWith(sourceFolder)) {
-						final Path memberPath = members[i].toPath();
-						Files.copy(memberPath, new File(this.project
-							.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesInDevProject + Constants.outerFileSeparator + memberPath.getFileName())
-								.toPath(),
-							StandardCopyOption.REPLACE_EXISTING);
-						final String filePath = members[i].toString();
-						final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.outerFileSeparator));
-						if (Constants.JAR.equals(cutPath.substring(cutPath.indexOf(".")))) {
-							if (!this.project.addJar(Constants.pathsForLibrariesInDevProject + Constants.outerFileSeparator + members[i].getName())) {
-								return false;
-							}
-						}
-						jarIsAdded = true;
-					}
+			final File[] members = Utils.getResourceFromWithin(source).listFiles();
+			if (members == null) {
+				Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);
+			}
+			for (int i = 0; i < members.length; i++) {
+				File addFile = members[i];
+				if (!addAddtionalFile(addFile)) {
+					return false;
 				}
 			}
 		} catch (IOException | CoreException e) {
 			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
 			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 
+	 * @param fileToBeAdded
+	 *        file that ought to be added to the dev project
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if file was added successfully (or not).
+	 * @throws IOException
+	 * @throws CoreException
+	 */
+	protected boolean addAddtionalFile(File fileToBeAdded) throws IOException, CoreException {
+		final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesInDevProject);
+		if (!libFolder.exists()) {
+			libFolder.create(true, true, null);
+		}
+
+		final Path memberPath = fileToBeAdded.toPath();
+		Files.copy(memberPath, new File(this.project
+			.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesInDevProject + Constants.outerFileSeparator + memberPath.getFileName()).toPath(),
+			StandardCopyOption.REPLACE_EXISTING);
+		final String filePath = fileToBeAdded.toString();
+		final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.outerFileSeparator));
+		if (Constants.JAR.equals(cutPath.substring(cutPath.indexOf(".")))) {
+			if (!this.project.addJar(Constants.pathsForLibrariesInDevProject + Constants.outerFileSeparator + fileToBeAdded.getName())) {
+				return false;
+			}
 		}
 		return true;
 	}

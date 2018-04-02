@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<toc label="Task Configuration">
-      <topic id="crytoTasksConfig" label="Tasks Configuration CogniCrypt">
-         <topic label="Encrypt data using secret key" href="html/taskconfigs/task_conf_1.html"/>
-         <topic label="Represent password in a secure way for storage" href="html/taskconfigs/task_conf_2.html"/>
-      </topic>
-   </toc>

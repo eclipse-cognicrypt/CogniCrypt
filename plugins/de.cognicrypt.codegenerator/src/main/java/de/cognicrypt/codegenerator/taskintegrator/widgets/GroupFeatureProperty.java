@@ -159,7 +159,7 @@ public class GroupFeatureProperty extends Composite {
 				comboPropertyType.add(primitive);
 			}
 
-			for (ClaferFeature cfr : claferModel) {
+			for (ClaferFeature cfr : claferModel.getIf(ftr -> ftr.getFeatureType().equals(Constants.FeatureType.ABSTRACT))) {
 				comboPropertyType.add(cfr.getFeatureName().toString());
 			}
 

@@ -346,7 +346,7 @@ public class Constants {
 		XSL_CHOOSE_TAG("Choose","<xsl:choose>","</xsl:choose>", new String[]{}),
 		XSL_WHEN_TAG("When", "<xsl:when>", "</xsl:when>", new String[] { "test"
 																				}),
-		XSL_OTHERWISE_TAG("Otherwise","<xsl:otherwise>","</xsl:otheriwse>", new String[]{});
+		XSL_OTHERWISE_TAG("Otherwise", "<xsl:otherwise>", "</xsl:otherwise>", new String[] {});
 		
 		private final String XSLTagFaceName;
 		private final String XSLBeginTag;

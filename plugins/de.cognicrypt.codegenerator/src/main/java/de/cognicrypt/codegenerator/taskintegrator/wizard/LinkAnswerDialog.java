@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -12,8 +11,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Answer;
@@ -34,6 +31,7 @@ public class LinkAnswerDialog extends Dialog {
 	 */
 	public LinkAnswerDialog(Shell parent, Question question, ArrayList<Question> listOfAllQuestions) {
 		super(parent);
+		setShellStyle(SWT.CLOSE | SWT.Resize | SWT.TITLE);
 		setQuestion(question);
 		setListOfAllQuestions(listOfAllQuestions);
 	}

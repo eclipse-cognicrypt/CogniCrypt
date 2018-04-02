@@ -29,10 +29,10 @@ abstract SymmetricCipher : Cipher
 abstract SymmetricBlockCipher : SymmetricCipher
 
   
-friday : SymmetricBlockCipher
-	[name = friday]
-	[description = jdsbd]
-	[blocksize = 45]
-	[Keysize1 = 545]
-	[mode = OFB|CFB]
-	[padding = ZeroPadding]
+sdf : SymmetricBlockCipher
+	[name = sdf]
+	[description = ret]
+	[blocksize = 34]
+	[keySize1 = 543]
+	[mode = CFB]
+	[padding = PKCS7]

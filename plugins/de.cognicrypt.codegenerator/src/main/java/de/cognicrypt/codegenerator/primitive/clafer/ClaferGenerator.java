@@ -14,6 +14,8 @@ import java.util.LinkedHashMap;
 import de.cognicrypt.codegenerator.utilities.Utils;
 
 /**
+ * This class is responsible for generating Clafer.
+ * 
  * @author Anusha and Taran
  *
  */

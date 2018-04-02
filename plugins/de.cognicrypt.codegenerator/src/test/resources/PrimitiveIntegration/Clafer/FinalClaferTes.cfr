@@ -31,8 +31,8 @@ abstract SymmetricBlockCipher : SymmetricCipher
   
 Cryptox : SymmetricBlockCipher
 	[name = Cryptox]
-	[description = This is description for cryptox]
-	[blocksize = 23]
-	[keySize1 = 342]
-	[mode = CBC|OFB]
-	[padding = ZeroPadding]
+	[description = This is description]
+	[Blocksize = 64]
+	[Keysize1 = 654]
+	[mode = OFB | CFB]
+	[Padding = ZeroPadding|OneAndZeroes Padding]

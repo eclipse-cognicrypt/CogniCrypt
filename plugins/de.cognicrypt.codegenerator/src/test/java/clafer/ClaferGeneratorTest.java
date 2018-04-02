@@ -17,27 +17,19 @@ public class ClaferGeneratorTest {
 	public void existingFiles() {
 
 		// test with existing files
-		File finalClafer = ClaferGenerator.copyClaferHeader(Constants.claferHeader, Constants.claferFooter);
+		File finalClafer = ClaferGenerator.copyClaferHeader(Constants.claferHeaderTestR, Constants.claferFooterTestR);
 		assert (finalClafer.exists());
 	}
 
 	@Test
-	public void claferHeaderExists() {
+	public void onlyClaferHeaderExists() {
 
 		// test with claferHeader Exists
-		File finalClafer2 = ClaferGenerator.copyClaferHeader(Constants.claferHeader, Constants.claferFooterTest);
-		assertTrue(finalClafer2 instanceof File);
-		assertTrue(finalClafer2.exists());
+		File finalClafer = ClaferGenerator.copyClaferHeader(Constants.claferHeaderTestR, Constants.claferFooterTest);
+		assertTrue(finalClafer instanceof File);
+		assertTrue(finalClafer.exists());
 	}
 
-	@Test
-	public void nonExistingFiles() {
-
-		// test with non-existing files
-		File finalClafer1 = ClaferGenerator.copyClaferHeader(Constants.claferHeaderTest, Constants.claferFooterTest2);
-		assertTrue(finalClafer1 instanceof File);
-		assertFalse(finalClafer1.exists());
-	}
 	@Test
 	public void nonExistingFinalClafer() {
 		LinkedHashMap<String, String> userInput = new LinkedHashMap<String, String>();
@@ -48,21 +40,21 @@ public class ClaferGeneratorTest {
 		userInput.put("mode", "OFB | CFB");
 		userInput.put("Padding", "ZeroPadding|OneAndZeroes Padding");
 
-		// test with non-existing files
-		File finalClafer1 = ClaferGenerator.copyClaferHeader(Constants.claferHeaderTest, Constants.claferFooterTest3);
-		ClaferGenerator.printClafer(userInput, finalClafer1);
-		assertTrue(finalClafer1 instanceof File);
-		assertTrue(finalClafer1.exists());
+		// test with non-existing FinalClafer file
+		File finalClafer = ClaferGenerator.copyClaferHeader(Constants.claferHeaderTestR, Constants.claferFooterTest3);
+		ClaferGenerator.printClafer(userInput, finalClafer);
+		assertTrue(finalClafer instanceof File);
+		assertTrue(finalClafer.exists());
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void ifMapEmpty() {
 
-		// test with non-existing files
-		File finalClafer1 = ClaferGenerator.copyClaferHeader(Constants.claferHeaderTest, Constants.claferFooterTest3);
-		ClaferGenerator.printClafer(null, finalClafer1);
-		assertTrue(finalClafer1 instanceof File);
-		assertFalse(finalClafer1.exists());
+		// test with emptyMap
+		File finalClafer = ClaferGenerator.copyClaferHeader(Constants.claferHeaderTest, Constants.claferFooterTest3);
+		ClaferGenerator.printClafer(null, finalClafer);
+		assertTrue(finalClafer instanceof File);
+		assertFalse(finalClafer.exists());
 	}
 
 }

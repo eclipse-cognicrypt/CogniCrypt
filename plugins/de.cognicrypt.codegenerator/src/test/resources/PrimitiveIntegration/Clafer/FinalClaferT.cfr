@@ -24,12 +24,8 @@ abstract Cipher
   KeySize -> int
   BlockSize -> int
 
-abstract SymmetricBlockCipher : Cipher
+abstract SymmetricCipher : Cipher  
+
+abstract SymmetricBlockCipher : SymmetricCipher
+
   
-45 : SymmetricBlockCipher
-	[name = 45]
-	[description = ergt]
-	[Blocksize = 45]
-	[Keysize1 = 654]
-	[mode = OFB|CFB]
-	[Padding = ZeroPadding|OneAndZeroes Padding]

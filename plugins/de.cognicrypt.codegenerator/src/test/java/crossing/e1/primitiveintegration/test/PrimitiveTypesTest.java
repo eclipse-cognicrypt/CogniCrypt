@@ -3,6 +3,7 @@ package crossing.e1.primitiveintegration.test;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -15,7 +16,7 @@ import de.cognicrypt.codegenerator.utilities.Utils;
 
 public class PrimitiveTypesTest {
 
-	private static PrimitiveJSONReader reader = new PrimitiveJSONReader();
+	private static PrimitiveJSONReader jsonReader = new PrimitiveJSONReader();
 	private File primitiveTestFile = Utils.getResourceFromWithin(Constants.testPrimitverFolder + "PrimitiveTest.json");
 	private static Primitive primitive = new Primitive();
 

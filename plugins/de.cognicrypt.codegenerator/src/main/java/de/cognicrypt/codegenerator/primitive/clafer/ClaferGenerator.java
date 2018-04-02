@@ -14,10 +14,12 @@ import java.util.LinkedHashMap;
 import de.cognicrypt.codegenerator.utilities.Utils;
 
 /**
+ * This class is responsible for generating Clafer.
+ * 
  * @author Anusha and Taran
  *
  */
-public abstract class ClaferGenerator {
+public class ClaferGenerator {
 
 	//	Copy the Static Part into New created file
 	/**
@@ -30,12 +32,10 @@ public abstract class ClaferGenerator {
 	public static File copyClaferHeader(String source, String target) {
 		InputStream input = null;
 		OutputStream output = null;
-		File finalClafer = null;
-		finalClafer = (Utils.getFinalClaferFile(target)); // Constants.claferFooter
+		File finalClafer;
+		finalClafer = (Utils.getFinalClaferFile(target));
 		try {
 			input = new FileInputStream(Utils.getResourceFromWithin(source));
-
-			//Constants.claferHeader
 			output = new FileOutputStream(finalClafer);
 			byte[] buf = new byte[1024];
 			int bytesRead;
@@ -48,16 +48,15 @@ public abstract class ClaferGenerator {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				input.close();
+				output.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-
-		//		finally {
-		//			try {
-		//				input.close();
-		//				output.close();
-		//			} catch (IOException e) {
-		//				// TODO Auto-generated catch block
-		//				e.printStackTrace();
-		//			}
 		return finalClafer;
 
 	}

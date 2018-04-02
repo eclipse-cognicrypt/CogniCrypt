@@ -147,7 +147,7 @@ public class XslPage extends PageForTaskIntegratorWizard {
 
 		treeViewer = new TreeViewer(container);
 
-		treeViewer.setContentProvider(new XSLPageContentProvider(feat -> feat.getFeatureInheritance().equals("Task"), prop -> true));
+		treeViewer.setContentProvider(new XSLPageContentProvider());
 		treeViewer.setLabelProvider(new XSLPageLabelProvider());
 
 		setTreeViewerInput();
@@ -169,11 +169,11 @@ public class XslPage extends PageForTaskIntegratorWizard {
 						CodeDependency codeDependency = (CodeDependency) ts.getFirstElement();
 
 						StringBuilder sb = new StringBuilder();
-						sb.append("<xsl:when test=\"//task/code/");
+						sb.append("//task/code/");
 						sb.append(codeDependency.getOption());
 						sb.append("='");
 						sb.append(codeDependency.getValue());
-						sb.append("'\"></xsl:when>");
+						sb.append("'");
 
 						insertAtCursor(sb.toString());
 					}

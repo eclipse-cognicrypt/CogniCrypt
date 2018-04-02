@@ -24,5 +24,15 @@ abstract Cipher
   KeySize -> int
   BlockSize -> int
 
-abstract SymmetricBlockCipher : Cipher
+abstract SymmetricCipher : Cipher  
+
+abstract SymmetricBlockCipher : SymmetricCipher
+
   
+Cryptox : SymmetricBlockCipher
+	[name = Cryptox]
+	[description = This is description]
+	[Blocksize = 64]
+	[Keysize1 = 654]
+	[mode = OFB | CFB]
+	[Padding = ZeroPadding|OneAndZeroes Padding]

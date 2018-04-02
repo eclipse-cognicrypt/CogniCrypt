@@ -21,9 +21,8 @@ abstract Cipher
   name -> string
   description -> string
   author -> string
-  blockSize -> int
-  keySize -> int
-  
+  KeySize -> int
+  BlockSize -> int
 
 abstract SymmetricCipher : Cipher  
 

@@ -19,7 +19,7 @@ import de.cognicrypt.codegenerator.utilities.Utils;
  * @author Anusha and Taran
  *
  */
-public abstract class ClaferGenerator {
+public class ClaferGenerator {
 
 	//	Copy the Static Part into New created file
 	/**

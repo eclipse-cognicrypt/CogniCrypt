@@ -66,7 +66,9 @@ public class XslPage extends PageForTaskIntegratorWizard {
 
 		setCompositeForXsl(new CompositeForXsl(container, SWT.NONE));
 		// fill the available space on the with the big composite
-		getCompositeForXsl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
+		GridData gdXSLComposite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2);
+		gdXSLComposite.heightHint = 0;
+		getCompositeForXsl().setLayoutData(gdXSLComposite);
 
 		Button btnAddXSLTag = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
 		btnAddXSLTag.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
@@ -151,7 +153,9 @@ public class XslPage extends PageForTaskIntegratorWizard {
 		treeViewer.setLabelProvider(new XSLPageLabelProvider());
 
 		setTreeViewerInput();
-		treeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		GridData gdTreeViewer = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gdTreeViewer.heightHint = 0;
+		treeViewer.getControl().setLayoutData(gdTreeViewer);
 
 		treeViewer.getControl().addMouseListener(new MouseAdapter() {
 

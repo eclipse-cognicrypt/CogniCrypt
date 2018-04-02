@@ -64,10 +64,8 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		grpQuestionDetails.setLayout(new GridLayout(4, false));
 
 		if (!linkAnswerPage) {
-			Button addDependencies = new Button(this, SWT.WRAP);
+			Button addDependencies = new Button(this, SWT.NONE);
 			GridData gdAddDependencies = new GridData(SWT.LEFT, SWT.FILL, false, false, 1, 3);
-			gdAddDependencies.heightHint = 100;
-			gdAddDependencies.widthHint = 130;
 			addDependencies.setLayoutData(gdAddDependencies);
 			addDependencies.setText("Click to\nLink Variability\nconstruct and \n Link code");
 			addDependencies.setToolTipText("Click to Link variability construct and variables to use in code");
@@ -86,10 +84,8 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		}
 
 		if (linkAnswerPage) {
-			Button linkQstn = new Button(this, SWT.WRAP);
+			Button linkQstn = new Button(this, SWT.NONE);
 			GridData gdLinkQstn = new GridData(SWT.LEFT, SWT.FILL, false, false, 1, 3);
-			gdLinkQstn.heightHint = 100;
-			gdLinkQstn.widthHint = 130;
 			linkQstn.setLayoutData(gdLinkQstn);
 
 			linkQstn.setText("Click to\nLink Answer to\nother questions");

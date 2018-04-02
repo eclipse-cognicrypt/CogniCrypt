@@ -48,9 +48,12 @@ public class Constants {
 	//Clafer related file
 	public static final String claferHeader = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "ClaferHeader.cfr";
 	public static final String claferHeaderTest = rsrcPath + "Primitives" + innerFileSeparator + "ClaferHeaderT.cfr";
-	public static final String claferFooter = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClafer.cfr";
-	public static final String claferFooterTest = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClaferT.cfr";
-
+	public static final String claferFooter = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "";
+	public static final String claferFooterTest = testPrimitverFolder + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClaferT.cfr";
+	public static final String claferFooterTest2 = testPrimitverFolder + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClaferTe.cfr";
+	public static final String claferFooterTest3 = testPrimitverFolder + innerFileSeparator + "clafer" + innerFileSeparator + "FinalClaferTes.cfr";
+	public static final String claferHeaderTestR = testPrimitverFolder + innerFileSeparator + "Clafer" + innerFileSeparator + "ClaferHeader.cfr";
+	public static final String claferFooterTestR = testPrimitverFolder + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClafer.cfr";
 	//Jar file location - Provider (Primitive)
 	public static final String PROVIDER_FOLDER = primitivesPath + innerFileSeparator + "provider";
 

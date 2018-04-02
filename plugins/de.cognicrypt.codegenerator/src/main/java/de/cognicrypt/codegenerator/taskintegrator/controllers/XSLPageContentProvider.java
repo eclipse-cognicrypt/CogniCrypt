@@ -53,7 +53,7 @@ public class XSLPageContentProvider extends ClaferModelContentProvider {
 							for (Answer answer : question.getAnswers()) {
 								if (answer.getCodeDependencies() != null) {
 									for (CodeDependency codeDependency : answer.getCodeDependencies()) {
-										if (codeDependency != null) {
+										if (codeDependency != null && codeDependency.getOption() != null) {
 											codeDeps.add(codeDependency);
 										}
 									}

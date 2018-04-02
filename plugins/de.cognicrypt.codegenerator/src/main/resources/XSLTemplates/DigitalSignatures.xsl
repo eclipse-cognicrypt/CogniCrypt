@@ -5,27 +5,27 @@
 
 <xsl:if test="//task[@description='DigitalSignatures']">
 
-<xsl:variable name="keysize"> <xsl:value-of select="//task/element[@type='DigitalSignatures']/Keysize"/> </xsl:variable>
+<xsl:variable name="keysize"> <xsl:value-of select="//task/algorithm[@type='SignatureScheme']/keysize"/> </xsl:variable>
 
 <xsl:variable name="keyPairGenerator">
 	<xsl:choose>
-		<xsl:when test="//task/element[@type='DigitalSignatures']/Scheme='RSA'">RSA</xsl:when>
+		<xsl:when test="//task/element[@type='DigitalSignatures']/scheme='RSA'">RSA</xsl:when>
 		<xsl:otherwise>EC</xsl:otherwise>
 	</xsl:choose>
 </xsl:variable>
 
 <xsl:variable name="signatureAlgorithm">
 	<xsl:choose>
-		<xsl:when test="//task/element[@type='DigitalSignatures']/Scheme='RSA'">SHA256withRSA</xsl:when>
+		<xsl:when test="//task/element[@type='DigitalSignatures']/scheme='RSA'">SHA256withRSA</xsl:when>
 		<xsl:otherwise>SHA256withECDSA</xsl:otherwise>
 	</xsl:choose>
 </xsl:variable>
 
-<xsl:result-document href="EcdsaSignature.java">
+<xsl:result-document href="Signatures.java">
 package <xsl:value-of select="//task/Package"/>;
 <xsl:apply-templates select="//Import"/>
 
-public class EcdsaSignature {
+public class Signatures {
 
 	private static final String rndNumberGenerator = "NativePRNG";
 	private static final String keyPairGenerator = "<xsl:value-of select="$keyPairGenerator"/>";
@@ -41,19 +41,19 @@ public class EcdsaSignature {
 
 	public static byte[] sign(String msg, PrivateKey privKey)
 			throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-		Signature ecdsa = Signature.getInstance(signatureAlgorithm);
-		ecdsa.initSign(privKey);
-		ecdsa.update(msg.getBytes());
-		return ecdsa.sign();
+		Signature sig = Signature.getInstance(signatureAlgorithm);
+		sig.initSign(privKey);
+		sig.update(msg.getBytes());
+		return sig.sign();
 	}
 
 	<xsl:if test="//task/code/signingAndVerification='both'">
 	public static boolean vfy(String msg, byte[] signature, PublicKey pubKey)
 			throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-		Signature ecdsa = Signature.getInstance(signatureAlgorithm);
-		ecdsa.initVerify(pubKey);
-		ecdsa.update(msg.getBytes());
-		return ecdsa.verify(signature);
+		Signature sig = Signature.getInstance(signatureAlgorithm);
+		sig.initVerify(pubKey);
+		sig.update(msg.getBytes());
+		return sig.verify(signature);
 	}
 	</xsl:if>
 
@@ -68,17 +68,17 @@ public class Output {
 	public static void templateUsage() throws GeneralSecurityException {
 
 		// key generation
-		KeyPair pair = EcdsaSignature.getKey();
+		KeyPair pair = Signatures.getKey();
 
 		// message
 		String msg = "Zehn zahme Ziegen zogen zehn Zentner Zucker zum Zoo.";
 
 		// signing
-		byte[] signature = EcdsaSignature.sign(msg, pair.getPrivate());
+		byte[] signature = Signatures.sign(msg, pair.getPrivate());
 
 		<xsl:if test="//task/code/signingAndVerification='both'">
 		// verification
-		if (EcdsaSignature.vfy(msg, signature, pair.getPublic())) {
+		if (Signatures.vfy(msg, signature, pair.getPublic())) {
 			System.out.println("Signature verification successful");
 		} else {
 			System.out.println("Signature verification failed");

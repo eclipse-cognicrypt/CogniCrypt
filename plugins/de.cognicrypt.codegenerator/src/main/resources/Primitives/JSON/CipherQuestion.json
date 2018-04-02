@@ -78,11 +78,11 @@
       "id": "1",
       "element": "text",
       "note": "",
-      "questionText": "Block size of the cipher(in bits):",
+      "questionText": "Blocksize of the cipher (in bits):",
       "answers": [{
           "value": "",
            "claferDependencies": [{
-              "algorithm": "Blocksize"
+              "algorithm": "blocksize"
            }
           ],
           "codeDependencies": [{
@@ -196,28 +196,28 @@
 		"answers": [{
 		"value": "OneAndZeroes Padding",
 		 "claferDependencies": [{
-              "algorithm": "Padding"
+              "algorithm": "padding"
            }
           ]
 		},
 		{
 		"value" : "ZeroPadding",
 		 "claferDependencies": [{
-              "algorithm": "Padding"
+              "algorithm": "padding"
            }
           ]
 		},
 		{
 		"value":"PKCS7",
 		 "claferDependencies": [{
-              "algorithm": "Padding"
+              "algorithm": "padding"
            }
           ]
 		},
 		{
 		"value": "NoPadding",
 		 "claferDependencies": [{
-              "algorithm": "Padding"
+              "algorithm": "padding"
            }
           ]
 		

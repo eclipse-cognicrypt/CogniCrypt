@@ -1,2 +1,4 @@
 **/shippable/
 **/target/
+
+plugins/de\.cognicrypt\.codegenerator/jacocoagent\.jar

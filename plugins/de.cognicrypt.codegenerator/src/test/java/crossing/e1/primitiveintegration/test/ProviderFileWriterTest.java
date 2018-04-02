@@ -36,6 +36,10 @@ public class ProviderFileWriterTest {
 		try {
 
 			File[] files = folder.listFiles();
+			for(File file: files) {
+					providerFile.zipFile(file.getAbsolutePath(),jarFile, true);
+				
+			}
 			JarFile jar = new JarFile(jarFile);
 			final Enumeration<JarEntry> entries = jar.entries();
 			while (entries.hasMoreElements()) {

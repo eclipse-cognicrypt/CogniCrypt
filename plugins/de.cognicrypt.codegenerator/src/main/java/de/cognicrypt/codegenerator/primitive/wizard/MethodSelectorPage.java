@@ -1,10 +1,6 @@
 package de.cognicrypt.codegenerator.primitive.wizard;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.wizard.WizardPage;
@@ -20,7 +16,6 @@ import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.providerUtils.UserJavaProject;
-import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnairePage;
 
 /**
  * This class is responsible for displaying the methods related to the custom algorithm For instance, in case of primitive of type symmetric block cipher, the required methods are

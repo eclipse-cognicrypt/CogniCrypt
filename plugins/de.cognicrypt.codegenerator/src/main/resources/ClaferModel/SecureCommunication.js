@@ -135,7 +135,7 @@ c0_SSL_RSA_WITH_NULL_MD5 = Clafer("c0_SSL_RSA_WITH_NULL_MD5").withCard(1, 1);
 c0_SecureCommunication = Clafer("c0_SecureCommunication").withCard(1, 1);
 c0_ciphersuites = c0_SecureCommunication.addChild("c0_ciphersuites").withCard(7);
 c0_tlsVersion = c0_SecureCommunication.addChild("c0_tlsVersion").withCard(1, 1);
-c0_secComsecurity = c0_SecureCommunication.addChild("c0_secComsecurity").withCard(1, 1);
+c0_SecComSecurity = c0_SecureCommunication.addChild("c0_SecComSecurity").withCard(1, 1);
 c0_Security.extending(c0_Enum).refToUnique(Int);
 c0_NoSecurity.extending(c0_Security);
 Constraint(implies(some(global(c0_NoSecurity)), equal(joinRef(global(c0_NoSecurity)), constant(0))));
@@ -680,5 +680,5 @@ c0_SecureCommunication.addConstraint(equal(joinRef(join($this(), c1_description)
 c0_ciphersuites.refToUnique(c0_CipherSuite);
 c0_tlsVersion.refToUnique(c0_TLS_Version);
 c0_SecureCommunication.addConstraint(equal(joinRef(join($this(), c0_tlsVersion)), global(c0_TLS1_2)));
-c0_secComsecurity.refToUnique(Int);
-c0_SecureCommunication.addConstraint(equal(joinRef(join($this(), c0_secComsecurity)), minimum(joinRef(join(joinRef(join($this(), c0_ciphersuites)), c0_suiteSecurity)))));
+c0_SecComSecurity.refToUnique(Int);
+c0_SecureCommunication.addConstraint(equal(joinRef(join($this(), c0_SecComSecurity)), minimum(joinRef(join(joinRef(join($this(), c0_ciphersuites)), c0_suiteSecurity)))));

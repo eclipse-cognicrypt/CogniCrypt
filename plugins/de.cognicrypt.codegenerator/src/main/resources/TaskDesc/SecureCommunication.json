@@ -8,6 +8,8 @@
 				"note": "",
 				"tooltip": "Example : /home/users/keystores/android.jks",
 				"element": "text",
+      			"textType":"Browse",
+      			"extension": "*.jks",
 				"questionText": "Please specify the path to your keystore:",
 				"answers": [
 					{
@@ -26,7 +28,8 @@
 				"id": "1",
 				"note": "",
 				"tooltip": "Secret password of keystore",
-				"element": "text",
+				"element": "text",				
+      			"textType":"Password",
 				"questionText": "Please give the password for your keystore:",
 				"answers": [
 					{
@@ -46,6 +49,7 @@
 	},
 	{
 		"id": "1",
+		"helpID": "SecureCommunication_Page1",
 		"content": [
 			{
 				"id": "2",
@@ -80,12 +84,13 @@
 	},
 	{
 		"id": "2",
+		"helpID": "SecureCommunication_Page2",
 		"content": [
 			{
 				"id": "3",
 				"element": "radio",
 				"note": "",
-				"questionText": "Do you know the host/ip?",
+				"questionText": "Do you know the IP address and Port number of the server?",
 				"answers": [
 					{
 						"value": "Yes",
@@ -106,12 +111,13 @@
 	},
 	{
 		"id": "3",
+		"helpID": "SecureCommunication_Page3",
 		"content": [
 			{
 				"id": "4",
-				"tooltip": "Example : 192.168.123.132",
 				"element": "text",
-				"questionText": "Please enter host/ip",
+      			"textType":"Ip address",
+				"questionText": "Please enter the IP address of the server:",
 				"answers": [
 					{
 						"value": "",
@@ -129,7 +135,8 @@
 				"id": "5",
 				"tooltip": "Example: 80",
 				"element": "text",
-				"questionText": "Please enter port",
+     			"textType":"Port number",
+				"questionText": "Please enter the Port number of the server:",
 				"answers": [
 					{
 						"value": "",
@@ -148,6 +155,7 @@
 	},
 	{
 		"id": "4",
+		"helpID": "SecureCommunication_Page4",
 		"content": [
 			{
 				"id": "6",
@@ -184,6 +192,7 @@
 	},
 	{
 		"id": "5",
+		"helpID": "SecureCommunication_Page5",
 		"content": [
 			{
 				"id": "7",
@@ -216,6 +225,7 @@
 	},
 	{
 		"id": "6",
+		"helpID": "SecureCommunication_Page6",
 		"content": [
 			{
 				"id": "8",
@@ -241,12 +251,14 @@
 	},
 	{
 		"id": "7",
+		"helpID": "SecureCommunication_Page7",		
 		"content": [
 			{			
 				"id": "9",
 				"tooltip": "Example: 80",
 				"element": "text",
-				"questionText": "Please enter port",
+				"textType": "Port number",
+				"questionText": "Please enter the Port number of the server:",
 				"answers": [
 					{
 						"value": "",

@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SymmetricBlockCipher>
-   <name>Cryptox</name>
-   <description>fzeifojzo</description>
-   <Blocksize>250</Blocksize>
-   <Keysize1>250</Keysize1>
-   <mode>CFB|OFB</mode>
+<<<<<<< HEAD
+   <name>Ahmed</name>
+   <description>zefzefezf</description>
+   <Blocksize>58</Blocksize>
+   <Keysize1>5858</Keysize1>
+=======
+   <name>Cisco</name>
+   <description>tafozefijez</description>
+   <Blocksize>200</Blocksize>
+   <Keysize1>256</Keysize1>
+>>>>>>> SICS1718
+   <mode>OFB|CFB</mode>
    <Padding>ZeroPadding|PKCS7</Padding>
 </SymmetricBlockCipher>

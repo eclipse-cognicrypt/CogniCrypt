@@ -21,12 +21,18 @@ abstract Cipher
   name -> string
   description -> string
   author -> string
-  blockSize -> int
-  keySize -> int
-  
+  KeySize -> int
+  BlockSize -> int
 
 abstract SymmetricCipher : Cipher  
 
 abstract SymmetricBlockCipher : SymmetricCipher
 
   
+sdf : SymmetricBlockCipher
+	[name = sdf]
+	[description = ret]
+	[blocksize = 34]
+	[keySize1 = 543]
+	[mode = CFB]
+	[padding = PKCS7]

@@ -197,7 +197,7 @@ public class Constants {
 	public static final String PROPERTIES = "Algorithm Preferences: ";
 	public static final String SELECT_PROPERTIES = "Select Properties";
 	public static final String FIXED_SIZE = "fixed size";
-	public static final String BLOCK_SIZE = "Blocksize";
+	public static final String BLOCK_SIZE = "blocksize";
 	public static final String METHODS_SELECTION_PAGE = "Methods Selector";
 	public static final String DESCRIPTION_KEYSIZES = "The keysize can fixed or variable sized";
 	

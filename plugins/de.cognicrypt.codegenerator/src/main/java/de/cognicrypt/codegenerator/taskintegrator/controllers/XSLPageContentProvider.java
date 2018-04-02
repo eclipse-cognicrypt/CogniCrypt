@@ -53,6 +53,7 @@ public class XSLPageContentProvider extends ClaferModelContentProvider {
 							for (Answer answer : question.getAnswers()) {
 								if (answer.getCodeDependencies() != null) {
 									for (CodeDependency codeDependency : answer.getCodeDependencies()) {
+										// TODO fix question page to not create null code dependencies
 										if (codeDependency != null && codeDependency.getOption() != null) {
 											codeDeps.add(codeDependency);
 										}

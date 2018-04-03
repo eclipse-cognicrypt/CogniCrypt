@@ -28,7 +28,7 @@ public class ProviderFileWriterTest {
 	public void setUp() throws IOException {
 		providerFile = new ProviderFile("test provider");
 		folder = Utils.getResourceFromWithin(Constants.testPrimitverFolder);
-		providerFile.zipFile(folder.getAbsolutePath(), jarFile, true);
+		providerFile.zipProject(folder.getAbsolutePath(), jarFile, true);
 	}
 
 	@Test
@@ -37,7 +37,7 @@ public class ProviderFileWriterTest {
 
 			File[] files = folder.listFiles();
 			for(File file: files) {
-					providerFile.zipFile(file.getAbsolutePath(),jarFile, true);
+					providerFile.zipProject(file.getAbsolutePath(),jarFile, true);
 				
 			}
 			JarFile jar = new JarFile(jarFile);

@@ -69,7 +69,7 @@ public class XSLTag {
 		for(XSLAttribute attribute : getXSLAttributes()){
 			attributeString.append(" ");
 			attributeString.append(attribute.getXSLAttributeName());
-			attributeString.append("= \"");
+			attributeString.append("=\"");
 			attributeString.append(attribute.getXSLAttributeData());
 			attributeString.append("\"");
 		}

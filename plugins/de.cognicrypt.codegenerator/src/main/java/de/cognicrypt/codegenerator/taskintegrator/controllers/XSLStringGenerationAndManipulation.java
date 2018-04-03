@@ -203,7 +203,10 @@ public class XSLStringGenerationAndManipulation {
 
 								for (Iterator<Element> element = root.elementIterator(Constants.Code); element.hasNext();) {
 									Element codeElement = element.next();
-									codeElement.addElement(codeDependency.getOption()).addText(codeDependency.getValue() + "");
+									// TODO fix question page to not create null code dependencies
+									if (codeDependency != null && codeDependency.getOption() != null && codeDependency.getValue() != null) {
+										codeElement.addElement(codeDependency.getOption()).addText(codeDependency.getValue() + "");
+									}
 								}
 							} // code dependency loop
 						} // code dependency check

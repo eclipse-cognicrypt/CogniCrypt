@@ -210,9 +210,11 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		}
 
 		//Code generation 
-		final File xslFile = Utils.getResourceFromWithin(selectedPrimitive.getXslFile());
+		final File templateSpi = Utils.getResourceFromWithin(selectedPrimitive.getXslFile());
+		final File templateMaster= Utils.getResourceFromWithin(Constants.primitivesPath+ Constants.innerFileSeparator+"XSL"+Constants.innerFileSeparator+"Template"+Constants.innerFileSeparator+"providerClass.xsl");
 		try {
-			xsltWriter.transformXsl(xslFile, xmlFile);
+			xsltWriter.transformXsl(templateSpi, xmlFile);
+			xsltWriter.transformXsl(templateMaster, xmlFile);
 		} catch (TransformerException | SAXException | IOException | ParserConfigurationException e1) {
 			e1.printStackTrace();
 		}
@@ -231,7 +233,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 				project.createNewClass(className, sourceCode, project.getPackageByName(Constants.PRIMITIVE_PACKAGE));
 
 				//Create provider jarFile 
-				provider.zipFile(project.getProject().getLocation().toString() + "/",
+				provider.zipProject(project.getProject().getLocation().toString() + "/",
 					new File(Utils.getResourceFromWithin(Constants.PROVIDER_FOLDER) + Constants.innerFileSeparator + providerName + ".jar"), true);
 				//delete archived files 
 				for (File file : folder.listFiles()) {

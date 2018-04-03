@@ -41,7 +41,7 @@ public class <xsl:value-of select="$class"></xsl:value-of>  extends CipherSpi {
 
 	@Override
 	 protected int engineGetBlockSize() {
-	  return <xsl:value-of select="SymmetricBlockCipher/Blocksize" />;
+	  return <xsl:value-of select="SymmetricBlockCipher/blocksize" />;
 	 }
 	 
 	@Override

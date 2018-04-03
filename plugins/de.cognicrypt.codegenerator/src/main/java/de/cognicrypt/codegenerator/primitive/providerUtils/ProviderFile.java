@@ -46,7 +46,7 @@ public class ProviderFile {
 	 * @param excludeContainingFolder
 	 * @throws IOException
 	 */
-	public void zipFile(String fileToZip, File zipFile, boolean excludeContainingFolder) throws IOException {
+	public void zipProject(String fileToZip, File zipFile, boolean excludeContainingFolder) throws IOException {
 		ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(zipFile));
 		File srcFile = new File(fileToZip);
 		if (excludeContainingFolder && srcFile.isDirectory()) {

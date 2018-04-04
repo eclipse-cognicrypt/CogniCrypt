@@ -147,22 +147,22 @@ public class InstanceListPage extends WizardPage {
 		this.instancePropertiesPanel = new Group(this.control, SWT.NONE);
 		this.instanceDetails = new StyledText(this.instancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 
-		Composite composite_Control = new Composite(this.instancePropertiesPanel, SWT.BOTTOM | SWT.CENTER);
+		Composite composite_Control = new Composite(this.instancePropertiesPanel, SWT.NONE);
 		composite_Control.setLayoutData(new GridData(SWT.CENTER, GridData.FILL, true, false));
 		composite_Control.setLayout(new GridLayout(3, true));
 
 		//Back button to go to the previous algorithm in the combo box
-		Button backIcon = new Button(composite_Control, SWT.CENTER | SWT.BOTTOM);
+		Button backIcon = new Button(composite_Control, SWT.NONE);
 		backIcon.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		backIcon.setText("<");
 		backIcon.setToolTipText(Constants.PREVIOUS_ALGORITHM_BUTTON);
 
 		//Label that displays the current algorithm variation and the total number of variations
-		Label algorithmVariation = new Label(composite_Control, SWT.CENTER | SWT.BOTTOM);
+		Label algorithmVariation = new Label(composite_Control, SWT.NONE);
 		algorithmVariation.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 
 		//Button to go to the next algorithm in the combo box
-		Button nextIcon = new Button(composite_Control, SWT.CENTER | SWT.BOTTOM);
+		Button nextIcon = new Button(composite_Control, SWT.NONE);
 		nextIcon.setText(">");
 		nextIcon.setToolTipText(Constants.NEXT_ALGORITHM_BUTTON);
 

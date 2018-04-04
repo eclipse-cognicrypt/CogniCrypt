@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -53,6 +54,8 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				
+				Point orig = compositeToHoldGranularUIElements.getOrigin();
 
 				ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), compositeToHoldGranularUIElements.getClaferModel());
 				if (cfrFeatureDialog.open() == 0) {
@@ -74,6 +77,8 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 					compositeToHoldGranularUIElements.getClaferModel().add(tempFeature);
 					compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
 					compositeToHoldGranularUIElements.updateClaferContainer();
+					
+					compositeToHoldGranularUIElements.setOrigin(orig);
 
 					checkModel();
 				}
@@ -111,12 +116,16 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				Point orig = compositeToHoldGranularUIElements.getOrigin();
+
 				ClaferImportDialog claferImportDialog = new ClaferImportDialog(getShell());
 				if (claferImportDialog.open() == 0) {
 					ClaferModel currentModel = compositeToHoldGranularUIElements.getClaferModel();
 					currentModel.add(claferImportDialog.getResult());
 					compositeToHoldGranularUIElements.updateClaferContainer();
 				}
+				
+				compositeToHoldGranularUIElements.setOrigin(orig);
 
 				feedbackComposite.setFeedback("Features imported");
 				feedbackComposite.layout();

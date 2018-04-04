@@ -64,7 +64,7 @@ public class XSLTagDialog extends Dialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
-		getShell().setMinimumSize(550, 400);
+		getShell().setMinimumSize(900, 400);
 		comboXSLTags = new Combo(container, SWT.READ_ONLY);
 		
 		GridData gd_comboXSLTags = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);

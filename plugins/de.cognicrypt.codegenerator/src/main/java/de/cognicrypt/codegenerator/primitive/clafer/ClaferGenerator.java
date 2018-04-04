@@ -14,16 +14,15 @@ import java.util.LinkedHashMap;
 import de.cognicrypt.codegenerator.utilities.Utils;
 
 /**
- * This class is responsible for generating Clafer.
+ * This class is responsible for generating Clafer for custom primitive.
  * 
  * @author Anusha and Taran
  *
  */
 public class ClaferGenerator {
 
-	//	Copy the Static Part into New created file
 	/**
-	 * copy the static part of the file into the target location
+	 * copy the static part of the clafer model into the target location
 	 * 
 	 * @param source
 	 * @param target
@@ -43,17 +42,14 @@ public class ClaferGenerator {
 				output.write(buf, 0, bytesRead);
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			try {
 				input.close();
 				output.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -61,8 +57,8 @@ public class ClaferGenerator {
 
 	}
 
-	// Write UserInput into file 
 	/**
+	 * Appends userInput into finalClafer
 	 * 
 	 * @param userInput
 	 * @param finalClafer
@@ -71,7 +67,6 @@ public class ClaferGenerator {
 		BufferedWriter bw;
 		try {
 			bw = new BufferedWriter(new FileWriter(finalClafer, true)); // the true will append the new data
-			// TODO Auto-generated method stub
 			for (String key : userInput.keySet()) {
 				if (key != null && key.equals("name")) {
 					bw.write(userInput.get(key) + " : SymmetricBlockCipher" + "\r\n");

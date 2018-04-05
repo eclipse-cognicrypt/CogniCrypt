@@ -31,7 +31,6 @@ public class LinkAnswerDialog extends Dialog {
 	 */
 	public LinkAnswerDialog(Shell parent, Question question, ArrayList<Question> listOfAllQuestions) {
 		super(parent);
-		setShellStyle(SWT.CLOSE | SWT.Resize | SWT.TITLE);
 		setQuestion(question);
 		setListOfAllQuestions(listOfAllQuestions);
 	}

@@ -41,18 +41,21 @@ public class Constants {
 	public static final String cipherSpiXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template" + innerFileSeparator + "CipherSPI.xsl";
 	public static final String providerClassXSL = primitivesPath + innerFileSeparator + "XSL" + innerFileSeparator + "Template" + innerFileSeparator + "providerClass.xsl";
 	public static final String testPrimitverFolder = "src/test/resources/PrimitiveIntegration/";
-	
+
 	//Added Packages	
-	public static final String PRIMITIVE_PACKAGE="org.crypto.customPrimitive";
-	
+	public static final String PRIMITIVE_PACKAGE = "org.crypto.customPrimitive";
+
 	//Clafer related file
 	public static final String claferHeader = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "ClaferHeader.cfr";
 	public static final String claferHeaderTest = rsrcPath + "Primitives" + innerFileSeparator + "ClaferHeaderT.cfr";
-	public static final String claferFooter = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClafer.cfr";
-	public static final String claferFooterTest = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClaferT.cfr";
-
+	public static final String claferFooter = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "";
+	public static final String claferFooterTest = testPrimitverFolder + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClaferT.cfr";
+	public static final String claferFooterTest2 = testPrimitverFolder + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClaferTe.cfr";
+	public static final String claferFooterTest3 = testPrimitverFolder + innerFileSeparator + "clafer" + innerFileSeparator + "FinalClaferTes.cfr";
+	public static final String claferHeaderTestR = testPrimitverFolder + innerFileSeparator + "Clafer" + innerFileSeparator + "ClaferHeader.cfr";
+	public static final String claferFooterTestR = testPrimitverFolder + innerFileSeparator + "Clafer" + innerFileSeparator + "FinalClafer.cfr";
 	//Jar file location - Provider (Primitive)
-	public static final String PROVIDER_FOLDER = primitivesPath + innerFileSeparator + "provider";
+	public static final String PROVIDER_FOLDER = rsrcPath + "AdditionalResources" + innerFileSeparator + "Provider" + innerFileSeparator;
 
 	//Java Folder location 
 	public static final String JAVA_BIN = "C:\\Program Files\\Java\\";
@@ -145,7 +148,7 @@ public class Constants {
 	public static final String ERROR_MESSAGE_DUPLICATE_TASK_NAME = "A task with this name already exists.";
 	public static final String MESSAGE_REQUIRED_FIELD = "This is a required field.";
 	public static final String ERROR_MESSAGE_BLANK_TASK_NAME = "The Task name cannot be empty. Please enter a valid name for the Task.";
-	
+
 	public static final String NOT_JAVA_PROJECT = "The nature of the project is not Java";
 
 	public static final String JAVA = "java";
@@ -153,8 +156,8 @@ public class Constants {
 	public static final String JAR = ".jar";
 	public static final String ALGORITHM = "algorithm";
 	public static final String GUIDED_MODE = "Use the guided mode for configuring the task";
-	public static final String DEFAULT_ALGORITHM_PAGE_CHECKBOX ="Show other possible algorithm combinations";
-	public static final String SHOW_PASSWORD_CHECKBOX ="Show Password";
+	public static final String DEFAULT_ALGORITHM_PAGE_CHECKBOX = "Show other possible algorithm combinations";
+	public static final String SHOW_PASSWORD_CHECKBOX = "Show Password";
 
 	public static final String Package = "Package";
 	public static final String Description = "description";
@@ -165,7 +168,7 @@ public class Constants {
 	public static final String Type = "type";
 	public static final String Security = "Security";
 	public static final String Performance = "Performance";
-	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List", "java.util.Base64", "java.io.InputStream", "java.io.OutputStream", "java.util.Properties", "java.io.FileOutputStream"};
+	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List", "java.util.Base64", "java.io.InputStream", "java.io.OutputStream", "java.util.Properties", "java.io.FileOutputStream" };
 	// Types
 	public static final String INTEGER = "Integer";
 	public static final String STRING = "String";
@@ -194,17 +197,17 @@ public class Constants {
 	public static final String PROPERTIES = "Algorithm Preferences: ";
 	public static final String SELECT_PROPERTIES = "Select Properties";
 	public static final String FIXED_SIZE = "fixed size";
-	public static final String BLOCK_SIZE = "Blocksize";
+	public static final String BLOCK_SIZE = "blocksize";
 	public static final String METHODS_SELECTION_PAGE = "Methods Selector";
 	public static final String DESCRIPTION_KEYSIZES = "The keysize can fixed or variable sized";
-	
+
 	//Compare algorithm page
 	public static final String COMPARE_ALGORITHM_PAGE = "Compare Algorithms Page";
 	public static final String COMPARE_TITLE = "Compare Two Algorithms";
 	public static final String COMPARE_DESCRIPTION = "Select the algorithms that you wish to compare. Their properties will be shown in the corresponding boxes below.";
 	public static final String COMPARE_LABEL = "Instance details of";
 	public static final String LABEL_COMPARE_ALGORITHMS_BUTTON = "Compare Algorithms";
-	
+
 	// Code Preview Page
 	public static final String CODE_PREVIEW_PAGE = "Code Preview Page";
 	public static final String CODE_PREVIEW_PAGE_TITLE = "Code preview for the selected solution ";
@@ -218,32 +221,30 @@ public class Constants {
 	public static final String IP_ADDRESS = "Ip address";
 	//Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;
-	
+
 	// Constants for the Task Integrator Wizard.
 	// Page constants
-	
+
 	public static final String PAGE_NAME_FOR_MODE_OF_WIZARD = "pageForChoiceOfModeOfWizard";
 	public static final String PAGE_TITLE_FOR_MODE_OF_WIZARD = "Please select the mode for the wizard";
 	public static final String PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD = "Here you can update the basic details of the task, and the mode in which the wizard will run.";
-	
+
 	public static final String PAGE_NAME_FOR_CLAFER_FILE_CREATION = "pageForClaferFileCreation";
 	public static final String PAGE_TITLE_FOR_CLAFER_FILE_CREATION = "Add the variablity modelling here";
 	public static final String PAGE_DESCRIPTION_FOR_CLAFER_FILE_CREATION = "Here you can add features to the variability model here.";
-	
+
 	public static final String PAGE_NAME_FOR_XSL_FILE_CREATION = "pageForXSLFileCreation";
 	public static final String PAGE_TITLE_FOR_XSL_FILE_CREATION = "Add data for the code generation";
 	public static final String PAGE_DESCRIPTION_FOR_XSL_FILE_CREATION = "Here you can details for the code generation.";
-	
+
 	public static final String PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS = "pageForHighLevelQuestions";
 	public static final String PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS = "Add the high level questions and their dependencies here";
-	public static final String PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS = "Here you can add the questions that will be asked to the end user, and the dependencies to the "+
-																			"variability modelling and the code generation.";
-	
+	public static final String PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS = "Here you can add the questions that will be asked to the end user, and the dependencies to the " + "variability modelling and the code generation.";
+
 	public static final String PAGE_NAME_FOR_LINK_ANSWERS = "pageForLinkAnswers";
 	public static final String PAGE_TITLE_FOR_LINK_ANSWERS = "Select the question that needs to be linked to another question";
-	public static final String PAGE_DESCIPTION_FOR_LINK_ANSWERS = "Here you can configure which question should be displayed next upon selection of a particular answer of the current question"+
-																	"by clicking the Link Answer button.";
-	
+	public static final String PAGE_DESCIPTION_FOR_LINK_ANSWERS = "Here you can configure which question should be displayed next upon selection of a particular answer of the current question" + "by clicking the Link Answer button.";
+
 	// Widget constants
 	// Labels
 	public static final String LABEL_BROWSE_BUTTON = "Browse";
@@ -260,46 +261,46 @@ public class Constants {
 	public static final String WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED = "isCustomLibraryRequired";
 	public static final String WIDGET_DATA_IS_GUIDED_MODE_CHOSEN = "isGuidedModeChosen";
 	public static final String WIDGET_DATA_IS_GUIDED_MODE_FORCED = "isGuidedModeForced";
-	
+
 	// Constants for the drop down for the library type on the mode selection page
 	public static final String WIDGET_CONTENT_EXISTING_LIBRARY = "No custom Library";
 	public static final String WIDGET_CONTENT_CUSTOM_LIBRARY = "Custom Library";
-	
+
 	//Constants for the drop down for the xsl tag on the xsl code page
-	public static final String XSL_VARIABLE_TAG="xslVariable";
-	public static final String XSL_SELECT_TAG="select";
-	public static final String XSL_IF_TAG ="if";
-	public static final String XSL_RESULT_DOCUMENT="result-document";
-	public static final String XSL_APPLY_TEMPLATES ="apply-templates";
-	public static final String XSL_CHOOSE_TAG="choose";
-	public static final String XSL_WHEN_TAG="when";
-	public static final String XSL_OTHERWISE_TAG="otherwise";
-	
+	public static final String XSL_VARIABLE_TAG = "xslVariable";
+	public static final String XSL_SELECT_TAG = "select";
+	public static final String XSL_IF_TAG = "if";
+	public static final String XSL_RESULT_DOCUMENT = "result-document";
+	public static final String XSL_APPLY_TEMPLATES = "apply-templates";
+	public static final String XSL_CHOOSE_TAG = "choose";
+	public static final String XSL_WHEN_TAG = "when";
+	public static final String XSL_OTHERWISE_TAG = "otherwise";
+
 	// Default bounds for the composites
 	public static final Point DEFAULT_SIZE_FOR_TI_WIZARD = new Point(1050, 600);
-	public static final Rectangle RECTANGLE_FOR_COMPOSITES = new Rectangle(0, 0, 887, 500 - 10 -10 ); //897 - 10
+	public static final Rectangle RECTANGLE_FOR_COMPOSITES = new Rectangle(0, 0, 887, 500 - 10 - 10); //897 - 10
 	public static final Rectangle RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES = new Rectangle(897, 10, 100, 29); //1000 - 83 - 10 -10
 	public static final Rectangle RECTANGLE_FOR_SECOND_BUTTON_FOR_NON_MODE_SELECTION_PAGES = new Rectangle(897, 49, 100, 29); //1000 - 83 - 10 -10
 	//public static final Rectangle RECTANGLE_FOR_GRANULAR_CLAFER_UI_ELEMENT = new Rectangle(10, 10, 744, 280);
 	public static final int WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT = 744;
 	public static final int HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT = 280;
-	
+
 	public static final int SINGLE_LINE_TEXT_BOX_LIMIT = 256;
 	public static final int MULTI_LINE_TEXT_BOX_LIMIT = 2560;
-	
+
 	// Form  data for CompositeGranularUIForClaferFeature
 	public static final int RIGHT_VALUE_FOR_GRANULAR_CLAFER_UI_SUB_ELEMENT = 736;
-	
+
 	public static final int PADDING_BETWEEN_GRANULAR_UI_ELEMENTS = 10;
 	public static final int PADDING_BETWEEN_SMALLER_UI_ELEMENTS = 3;
-	
+
 	public static final int WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT = 409;
 	public static final int HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT = 37;
-	
+
 	// TypeOfTargetDataForSmallUIElements int values. Add the type of data that needs to be shown on the composite here.
 	public static final int FEATURE_PROPERTY = 0;
 	public static final int FEATURE_CONSTRAINT = 1;
-	
+
 	// source for the contents of this enum : https://www.w3.org/TR/xslt20/
 	public static enum XSLTags{
 		XSL_VARIABLE_TAG("Variable","<xsl:variable>","</xsl:variable>", new String[]{"name",
@@ -352,6 +353,7 @@ public class Constants {
 		private final String XSLBeginTag;
 		private final String XSLEndTag;
 		private final String[] XSLAttributes;
+
 		/**
 		 * @param XSLTagFaceNameParam
 		 * @param XSLBeginTagParam
@@ -363,47 +365,43 @@ public class Constants {
 			XSLEndTag = XSLEndTagParam;
 			XSLAttributes = XSLAttributesParam;
 		}
+
 		/**
 		 * @return the xSLTagFaceName
 		 */
 		public String getXSLTagFaceName() {
 			return XSLTagFaceName;
 		}
+
 		/**
 		 * @return the xSLBeginTag
 		 */
 		public String getXSLBeginTag() {
 			return XSLBeginTag;
 		}
+
 		/**
 		 * @return the xSLEndTag
 		 */
 		public String getXSLEndTag() {
 			return XSLEndTag;
 		}
+
 		/**
 		 * @return the xSLAttributes
 		 */
 		public String[] getXSLAttributes() {
 			return XSLAttributes;
 		}
-		
-		
+
 	}
-	
-	public static enum FeatureConstraintRelationship{
-		EQUAL("="),
-		NOTEQUAL("!="),
-		LESSTHAN("<"),
-		GREATERTHAN(">"),
-		LESSTHANEQUALTO("<="),
-		GREATERTHANEQUALTO(">="),
-		AND("and"),
-		OR("or");
-		
+
+	public static enum FeatureConstraintRelationship {
+		EQUAL("="), NOTEQUAL("!="), LESSTHAN("<"), GREATERTHAN(">"), LESSTHANEQUALTO("<="), GREATERTHANEQUALTO(">="), AND("and"), OR("or");
+
 		private final String operatorValue;
-		
-		FeatureConstraintRelationship(String operatorValue){
+
+		FeatureConstraintRelationship(String operatorValue) {
 			this.operatorValue = operatorValue;
 		}
 
@@ -414,32 +412,30 @@ public class Constants {
 			return operatorValue;
 		}
 
-		/* (non-Javadoc)
-		 * @see java.lang.Enum#toString()
-		 * Just return the operator value instead of the name.
+		/*
+		 * (non-Javadoc)
+		 * @see java.lang.Enum#toString() Just return the operator value instead of the name.
 		 */
 		@Override
-		public String toString() {			
-			return  operatorValue;
+		public String toString() {
+			return operatorValue;
 		}
-		
-		
-	}
-	
-	public static enum FeatureType{
-		CONCRETE,
-		ABSTRACT;
 
-		/* 
+	}
+
+	public static enum FeatureType {
+		CONCRETE, ABSTRACT;
+
+		/*
 		 * Although "concrete" is never used in the actual cfr file, "abstract" is used. Hence the toString() returns lower case.
 		 */
 		@Override
 		public String toString() {
 			return this.name().toLowerCase();
 		}
-		
+
 	}
-	
+
 	public static final String SLASH = "/";
 	public static final String ATTRIBUTE_BEGIN = "[@";
 	public static final String ATTRIBUTE_END = "=\'\']";
@@ -460,7 +456,7 @@ public class Constants {
 	public static final String XML_EXTENSION = ".xml";
 	public static final String XSL_EXTENSION = ".xsl";
 	public static final String PLUGIN_XML_FILE = innerFileSeparator + "plugin.xml";
-	
+
 	//for the list of items to be included inside the combo of the questionTab
 	public static final String dropDown = "Drop down";
 	public static final String textBox = "Text box";
@@ -489,12 +485,8 @@ public class Constants {
 	public static final String FEATURE_PROPERTY_TYPE_REFERENCE_RELATION = "translates to";
 	public static final String FEATURE_PROPERTY_NAME = "Name";
 	public static final String FEATURE_PROPERTY_REMOVE = "Remove";
-	
-	
-	
+
 	public static final String[] CLAFER_RESERVED_WORDS = { "abstract", "all", "assert", "disj", "else", "enum", "if", "in", "lone", "max", "maximize", "min", "minimize", "mux", "no", "not", "one", "opt", "or", "product", "some", "sum", "then", "xor" };
 	public static final String[] CLAFER_PRIMITIVE_TYPES = { "integer", "int", "double", "real", "string" };
-	
-	
-	
+
 }

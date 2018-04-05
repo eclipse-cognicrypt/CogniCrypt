@@ -6,7 +6,7 @@ Element-Version: 3.0
 External-Reference: 
 Id: _Tp0xEDEcEei8vfE9G7Yzvw
 Runtime-Version: 2.2.0.201705230341
-Save-Time: 3/30/18 1:44 PM
+Save-Time: 4/5/18 3:11 AM
 Testcase-Type: ecl
 
 ------=_.description-216f885c-d591-38ce-8ea2-e4f8cb4d6ffa
@@ -19,7 +19,9 @@ This test mainly tries to test the functionality of all the widgets in the Xsl p
 Content-Type: text/ecl
 Entry-Name: .content
 
-get-button "Integrate a Cryptographic Task into CogniCrypt" | click
+get-menu -path "Start Code Generation" | click
+with [get-window "Cryptography Task Configurator"] {
+    get-button "Task Integration" | click
 with [get-window -class WizardDialog] {
     get-editbox -after [get-label "Name of the Task"] | set-text "Xsl page test"
     with [get-editbox -after [get-label "Description of the Task :"]] {
@@ -359,4 +361,5 @@ set-dialog-result MessageBox 32
 set-dialog-result File
 get-window -class WizardDialog | get-button "Get the code" | click
 get-window -class WizardDialog | close
+}
 ------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--

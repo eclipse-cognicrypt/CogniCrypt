@@ -6,7 +6,7 @@ Element-Version: 3.0
 External-Reference: 
 Id: _PVGMgDEcEei8vfE9G7Yzvw
 Runtime-Version: 2.2.0.201705230341
-Save-Time: 4/5/18 3:11 AM
+Save-Time: 4/5/18 3:49 AM
 Testcase-Type: ecl
 
 ------=_.description-216f885c-d591-38ce-8ea2-e4f8cb4d6ffa
@@ -105,7 +105,7 @@ with [get-window -class WizardDialog] {
         get-button OK | click
     }
     get-button "Next >" | click
-    get-button "Click toLink Variabilityconstruct and  Link code" | click
+    get-button "Link Variability construct and Link code" | click
     with [get-window -class AddDependenciesDialog] {
         get-button Add | click
         get-button Add | click
@@ -127,7 +127,7 @@ with [get-window -class WizardDialog] {
         click
         click
     }
-    get-button "Click toLink Answer toother questions" | click
+    get-button "Link Answer to other questions" | click
     with [get-window -class LinkAnswerDialog] {
         get-group "" -after [get-label Q0] -index 1 | get-combo | select "End Questionnaire"
         get-group "" -after [get-label Q0] -index 2 | get-combo | select Q1
@@ -139,7 +139,7 @@ set-dialog-result MessageBox 64
 with [get-window -class WizardDialog] {
     get-button Delete -index 1 | click
     get-button "Next >" | click
-    get-button "Click toLink Answer toother questions" | click
+    get-button "Link Answer to other questions" | click
     get-window -class LinkAnswerDialog | get-button OK | click
     get-button "Next >" | click
     get-button "Add Xsl Tag" | click
@@ -152,7 +152,7 @@ with [get-window -class WizardDialog] {
         click
         click
     }
-    get-button "Click toLink Variabilityconstruct and  Link code" | click
+    get-button "Link Variability construct and Link code" | click
     with [get-window -class AddDependenciesDialog] {
         get-tab-folder | get-tab-item "Link to variables to use in code" | click
         get-editbox -after [get-label "Set Value"] -index 1 | set-text someValue
@@ -192,7 +192,7 @@ with [get-window -class WizardDialog] {
         get-combo -after [get-label "Answer type"] | select "Text box"
         get-button OK | click
     }
-    get-button "Click toLink Variabilityconstruct and  Link code" -index 1 | click
+    get-button "Link Variability construct and Link code" -index 1 | click
     with [get-window -class AddDependenciesDialog] {
         get-tab-folder | get-tab-item "Link to variables to use in code" | click
         get-button OK | click
@@ -213,9 +213,9 @@ with [get-window -class WizardDialog] {
         click
         click
     }
-    get-button "Click toLink Answer toother questions" | click
+    get-button "Link Answer to other questions" | click
     get-window -class LinkAnswerDialog | get-button OK | click
-    get-button "Click toLink Answer toother questions" -index 1 | click
+    get-button "Link Answer to other questions" -index 1 | click
     get-window -class LinkAnswerDialog | get-button OK | click
     get-button "Next >" | click
     with [get-editbox] {
@@ -242,9 +242,9 @@ with [get-window -class WizardDialog] {
     }
     get-button Up -index 1 | click
     get-button "Next >" | click
-    get-button "Click toLink Answer toother questions" | click
+    get-button "Link Answer to other questions" | click
     get-window -class LinkAnswerDialog | get-button Cancel | click
-    get-button "Click toLink Answer toother questions" -index 1 | click
+    get-button "Link Answer to other questions" -index 1 | click
     get-window -class LinkAnswerDialog | get-button Cancel | click
     with [get-button "< Back"] {
         click

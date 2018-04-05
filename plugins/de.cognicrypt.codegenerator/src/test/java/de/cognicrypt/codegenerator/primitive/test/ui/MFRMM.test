@@ -1,0 +1,93 @@
+--- RCPTT testcase ---
+Format-Version: 1.0
+Element-Name: MFRMM
+Element-Type: testcase
+Element-Version: 3.0
+External-Reference: 
+Id: _HBEoMC6oEeiMpYttnX8SBA
+Runtime-Version: 2.1.0.201606221726
+Save-Time: 4/3/18 2:16 PM
+Testcase-Type: ecl
+
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
+Content-Type: text/ecl
+Entry-Name: .content
+
+get-button "Generate Code For Cryptographic Task" | click
+with [get-window "Cryptography Task Configurator"] {
+    get-button "Primitive Integration" | click
+    get-window "-1-" | get-button "Next >" | click
+    with [get-window "-2-"] {
+        with [get-editbox -after [get-label "Name of the algorithm ?"]] {
+            set-text MFRMM
+            key-type "TRAVERSE_TAB_NEXT"
+        }
+        with [get-editbox -after [get-label "Name of the author/company:"]] {
+            set-text UPB
+            key-type "TRAVERSE_TAB_NEXT"
+        }
+        get-editbox -after [get-label "Algorithm description:"] 
+            | set-text "This is Test Case for Multiple Fixed/Ranged key sizes with all modes of operation and Padding modes."
+        get-button "Next >" | click
+    }
+    with [get-window "-3-"] {
+        get-combo -after [get-label "How many keys does your algorithm have ?"] | select 5
+        get-editbox -after [get-label "Blocksize of the cipher (in bits):"] | set-text 64
+        get-button "Next >" | click
+    }
+    with [get-window "-4-"] {
+        get-group "" | get-button "fixed size" | click
+        get-group "" -after [get-label "What are the keysizes of your algorithm:"] -index 1 | get-button "Ranged size" 
+            | click
+        get-group "" -after [get-label "What are the keysizes of your algorithm:"] -index 2 | get-button "fixed size" 
+            | click
+        get-group "" -after [get-label "What are the keysizes of your algorithm:"] -index 3 | get-button "Ranged size" 
+            | click
+        get-group "" -after [get-label "What are the keysizes of your algorithm:"] -index 4 | get-button "fixed size" 
+            | click
+        get-group "" | get-editbox | set-text 234
+        with [get-group "" -after [get-label "What are the keysizes of your algorithm:"] -index 1] {
+            with [get-editbox] {
+                set-text 222
+                key-type "TRAVERSE_TAB_NEXT"
+            }
+            get-editbox -index 1 | set-text 333
+        }
+        get-group "" -after [get-label "What are the keysizes of your algorithm:"] -index 2 | get-editbox | set-text 213
+        with [get-group "" -after [get-label "What are the keysizes of your algorithm:"] -index 3] {
+            get-editbox | set-text 247
+            get-editbox -index 1 | set-text 347
+        }
+        get-group "" -after [get-label "What are the keysizes of your algorithm:"] -index 4 | get-editbox | set-text 355
+        get-button "Next >" | click
+    }
+    with [get-window "-5-"] {
+        get-button CBC | check
+        get-button OFB | check
+        get-button CFB | check
+        get-button CTR | check
+        get-button PCBC | check
+        get-button CTS | check
+        get-button "Next >" | click
+    }
+    with [get-window "-6-"] {
+        get-button "OneAndZeroes Padding" | check
+        get-button ZeroPadding | check
+        get-button PKCS7 | check
+        get-button NoPadding | check
+        get-button "Next >" | click
+    }
+}
+set-dialog-result File "D:\\Nen\\workspace\\clafer.sample\\.project"
+with [get-window "Cryptography Task Configurator"] {
+    with [get-window "-7-"] {
+        get-button Browse | click
+        get-button "Next >" | click
+    }
+    with [get-window "-8-"] {
+        get-button "Next >" | click
+        get-button Finish | click
+    }
+    get-button Cancel | click
+}
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--

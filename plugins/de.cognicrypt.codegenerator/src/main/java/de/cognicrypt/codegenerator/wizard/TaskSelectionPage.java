@@ -36,6 +36,7 @@ import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.wizard.PrimitiveIntegrationWizard;
+import de.cognicrypt.codegenerator.taskintegrator.wizard.TaskIntegrationWizard;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 import de.cognicrypt.codegenerator.utilities.Utils;
@@ -230,7 +231,7 @@ public class TaskSelectionPage extends WizardPage {
 		deco.setDescriptionText(Constants.GUIDED_MODE_CHECKBOX_INFO);
 		deco.setImage(image);
 		deco.setShowOnlyOnFocus(false);
-
+		//Primitive Integration
 		Button btnPrimitiveIntegration = new Button(container, SWT.NONE);
 		btnPrimitiveIntegration.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -244,8 +245,21 @@ public class TaskSelectionPage extends WizardPage {
 			}
 		});
 		btnPrimitiveIntegration.setText("Primitive Integration");
+		//Task Integration
+		Button btnTaskIntegration = new Button(container, SWT.NONE);
+		btnTaskIntegration.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				 WizardDialog wizardDialog = new WizardDialog(parent.getShell(),new  TaskIntegrationWizard());
+		           if (wizardDialog.open() == Window.CANCEL) {
+		               System.out.println("Ok pressed");
+		           } else {
+		               System.out.println("Cancel pressed");
+		           }
+			}
+		});
+		btnTaskIntegration.setText("Task Integration");
 		new Label(container, SWT.NONE);
-
 	
 	}
 	 

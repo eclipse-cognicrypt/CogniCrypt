@@ -14,14 +14,15 @@ import java.util.LinkedHashMap;
 import de.cognicrypt.codegenerator.utilities.Utils;
 
 /**
+ * This class is responsible for generating Clafer for custom primitive.
+ * 
  * @author Anusha and Taran
  *
  */
-public abstract class ClaferGenerator {
+public class ClaferGenerator {
 
-	//	Copy the Static Part into New created file
 	/**
-	 * copy the static part of the file into the target location
+	 * copy the static part of the clafer model into the target location
 	 * 
 	 * @param source
 	 * @param target
@@ -30,12 +31,10 @@ public abstract class ClaferGenerator {
 	public static File copyClaferHeader(String source, String target) {
 		InputStream input = null;
 		OutputStream output = null;
-		File finalClafer = null;
-		finalClafer = (Utils.getFinalClaferFile(target)); // Constants.claferFooter
+		File finalClafer;
+		finalClafer = (Utils.getFinalClaferFile(target));
 		try {
 			input = new FileInputStream(Utils.getResourceFromWithin(source));
-
-			//Constants.claferHeader
 			output = new FileOutputStream(finalClafer);
 			byte[] buf = new byte[1024];
 			int bytesRead;
@@ -43,27 +42,23 @@ public abstract class ClaferGenerator {
 				output.write(buf, 0, bytesRead);
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				input.close();
+				output.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-
-		//		finally {
-		//			try {
-		//				input.close();
-		//				output.close();
-		//			} catch (IOException e) {
-		//				// TODO Auto-generated catch block
-		//				e.printStackTrace();
-		//			}
 		return finalClafer;
 
 	}
 
-	// Write UserInput into file 
 	/**
+	 * Appends userInput into finalClafer
 	 * 
 	 * @param userInput
 	 * @param finalClafer
@@ -72,7 +67,6 @@ public abstract class ClaferGenerator {
 		BufferedWriter bw;
 		try {
 			bw = new BufferedWriter(new FileWriter(finalClafer, true)); // the true will append the new data
-			// TODO Auto-generated method stub
 			for (String key : userInput.keySet()) {
 				if (key != null && key.equals("name")) {
 					bw.write(userInput.get(key) + " : SymmetricBlockCipher" + "\r\n");

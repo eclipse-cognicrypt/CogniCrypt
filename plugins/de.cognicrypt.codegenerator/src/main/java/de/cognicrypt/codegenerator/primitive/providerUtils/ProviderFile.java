@@ -46,7 +46,7 @@ public class ProviderFile {
 	 * @param excludeContainingFolder
 	 * @throws IOException
 	 */
-	public void zipFile(String fileToZip, File zipFile, boolean excludeContainingFolder) throws IOException {
+	public void zipProject(String fileToZip, File zipFile, boolean excludeContainingFolder) throws IOException {
 		ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(zipFile));
 		File srcFile = new File(fileToZip);
 		if (excludeContainingFolder && srcFile.isDirectory()) {
@@ -82,23 +82,7 @@ public class ProviderFile {
 		}
 	}
 
-	/**
-	 * 
-	 * @param owner
-	 *        Name of the creator of the primitive
-	 * @param classPaths
-	 *        Paths of classes to add in the manifest
-	 */
-	public void createManifest(String owner, String[] classPaths) {
-		Attributes global = this.manifest.getMainAttributes();
-		global.put(Attributes.Name.MANIFEST_VERSION, "1.0.0");
-		global.put(Attributes.Name.SPECIFICATION_TITLE, "Custom Provider");
-		global.put(Attributes.Name.CONTENT_TYPE, "JCE Provider");
-		global.put(new Attributes.Name("Created-By"), owner);
-		for (String classPath : classPaths) {
-			global.put(new Attributes.Name("Name"), classPath);
-		}
-	}
+
 
 	/**
 	 * Compile files
@@ -131,12 +115,5 @@ public class ProviderFile {
 		return lastUpdatedFile;
 	}
 
-	public void setManifest(Manifest manifest) {
-		this.manifest = manifest;
-	}
-
-	public Manifest getManifest() {
-		return this.manifest;
-	}
 
 }

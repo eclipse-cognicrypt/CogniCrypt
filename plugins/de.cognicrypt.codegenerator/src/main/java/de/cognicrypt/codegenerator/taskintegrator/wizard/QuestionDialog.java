@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
@@ -161,7 +162,6 @@ public class QuestionDialog extends Dialog {
 						Answer emptyAnswer=new Answer();
 						emptyAnswer.setDefaultAnswer(true);
 						emptyAnswer.setValue("");
-						compositeToHoldAnswers.getListOfAllAnswer().clear();
 						compositeToHoldAnswers.getListOfAllAnswer().add(emptyAnswer);
 						currentQuestionType = Constants.textBox;
 						break;
@@ -265,20 +265,6 @@ public class QuestionDialog extends Dialog {
 		if (!txtBoxHelptext.getText().isEmpty()) {
 			questionDetails.setHelpText(txtBoxHelptext.getText());
 		}
-		//sets the tooltip and text type for question type text 
-		if (combo.getText().equalsIgnoreCase(Constants.textBox)) {
-			if (!textBoxTooltip.getText().equalsIgnoreCase("")) {
-				questionDetails.setTooltip(textBoxTooltip.getText());
-			}
-			//sets the text answer Type
-			if (comboBoxAnswerType.getText().isEmpty()) {
-				questionDetails.setTextType("");
-			} else {
-				questionDetails.setTextType(comboBoxAnswerType.getText());
-			}
-
-		}
-
 		/**
 		 * Executes only if the question type is not text this loop executes to delete empty text boxes in the question dialog
 		 */
@@ -293,6 +279,26 @@ public class QuestionDialog extends Dialog {
 			}
 		}
 		questionDetails.setAnswers(compositeToHoldAnswers.getListOfAllAnswer());
+
+		if (combo.getText().equalsIgnoreCase(Constants.textBox)) {
+			// sets the tooltip
+			if (!textBoxTooltip.getText().equalsIgnoreCase("")) {
+				questionDetails.setTooltip(textBoxTooltip.getText());
+			}
+			//sets the text answer Type
+			if (comboBoxAnswerType.getText().isEmpty()) {
+				questionDetails.setTextType("");
+			} else {
+				questionDetails.setTextType(comboBoxAnswerType.getText());
+			}
+			// adds code dependency to the answer if the question type is text
+			CodeDependency cd = new CodeDependency();
+			ArrayList<CodeDependency> codeDependenciesForTextType = new ArrayList<>();
+			cd.setOption(getCapitaliseQuestionText(questionDetails.getQuestionText()));
+			cd.setValue("");
+			codeDependenciesForTextType.add(cd);
+			questionDetails.getAnswers().get(0).setCodeDependencies(codeDependenciesForTextType);
+		}
 		checkQuestionHasDefaultAnswer(questionDetails);
 		this.questionDetails = questionDetails;
 	}
@@ -339,6 +345,27 @@ public class QuestionDialog extends Dialog {
 				question.getAnswers().get(0).setDefaultAnswer(true);
 			}
 		}
+	}
+
+	/**
+	 * Capitalize the first letter of each word of question text
+	 *
+	 * @param questionText
+	 *        the question text
+	 * @return the capitalize text
+	 */
+	private String getCapitaliseQuestionText(String questionText) {
+		// TODO Auto-generated method stub
+		String trimmedQuestionText = questionText.trim().replaceAll(" +", " ");
+		String[] arr = trimmedQuestionText.split(" ");
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < arr.length; i++) {
+			sb.append(Character.toUpperCase(arr[i].charAt(0))).append(arr[i].substring(1));
+		}
+
+		return sb.toString();
+
 	}
 
 	/**

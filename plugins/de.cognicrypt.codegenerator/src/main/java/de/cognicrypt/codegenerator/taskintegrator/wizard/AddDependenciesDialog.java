@@ -319,38 +319,45 @@ public class AddDependenciesDialog extends Dialog {
 		super.okPressed();
 	}
 
-
+	/**
+	 * Saves the dialog box details
+	 */
 	private void saveInput() {
 		for (Answer answer : question.getAnswers()) {
 			if (answer.getClaferDependencies() != null) {
-				// removes the empty clafer dependency objects
-				for (int i = 0; i < answer.getClaferDependencies().size();) {
-					if (answer.getClaferDependencies().get(i).getAlgorithm() == null || answer.getClaferDependencies().get(i).getAlgorithm() == "") {
-						answer.getClaferDependencies().remove(i);
-					} else {
-						i++;
+				if (!question.getElement().equals(Constants.GUIElements.text)) {
+					// removes the empty clafer dependency objects
+					for (int i = 0; i < answer.getClaferDependencies().size();) {
+						if (answer.getClaferDependencies().get(i).getAlgorithm() == null || answer.getClaferDependencies().get(i).getAlgorithm() == "") {
+							answer.getClaferDependencies().remove(i);
+						} else {
+							i++;
+						}
 					}
-				}
-				// sets the clafer Dependencies to null if the size is 0
-				if (answer.getClaferDependencies().size() == 0) {
-					answer.setClaferDependencies(null);
+					// sets the clafer Dependencies to null if the size is 0
+					if (answer.getClaferDependencies().size() == 0) {
+						answer.setClaferDependencies(null);
+					}
 				}
 			}
 
 			if (answer.getCodeDependencies() != null) {
-				// removes the empty code dependency objects
-				for (int i = 0; i < answer.getCodeDependencies().size();) {
-					if (answer.getCodeDependencies().get(i).getValue() == null || answer.getCodeDependencies().get(i).getValue() == "") {
-						answer.getCodeDependencies().remove(i);
-					} else {
-						i++;
+				if (!question.getElement().equals(Constants.GUIElements.text)) {
+					// removes the empty code dependency objects if question type is not text
+					for (int i = 0; i < answer.getCodeDependencies().size();) {
+						if (answer.getCodeDependencies().get(i).getValue() == null || answer.getCodeDependencies().get(i).getValue() == "") {
+							answer.getCodeDependencies().remove(i);
+						} else {
+							i++;
+						}
+					}
+					// sets the code Dependencies to null if the size is 0
+					if (answer.getCodeDependencies().size() == 0) {
+						answer.setCodeDependencies(null);
 					}
 				}
 			}
-			// sets the code Dependencies to null if the size is 0
-			if (answer.getCodeDependencies().size() == 0) {
-				answer.setCodeDependencies(null);
-			}
+
 
 			if (answer.getCodeDependencies() != null) {
 				for (CodeDependency cd : answer.getCodeDependencies()) {

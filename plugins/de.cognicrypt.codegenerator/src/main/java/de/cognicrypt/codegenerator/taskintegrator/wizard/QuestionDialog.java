@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -237,7 +238,10 @@ public class QuestionDialog extends Dialog {
 	@Override
 	protected void okPressed() {
 		setQuestionDetails();
-		super.okPressed();
+		//closes the dialog only if user has added answers to the question
+		if (compositeToHoldAnswers.getListOfAllAnswer().size() > 0) {
+			super.okPressed();
+		}
 	}
 
 	public String getQuestionText() {
@@ -277,6 +281,14 @@ public class QuestionDialog extends Dialog {
 					i--;
 				}
 			}
+		}
+
+		//opens a message box, alerting user to add answers to the question
+		if(compositeToHoldAnswers.getListOfAllAnswer().size()==0) {
+			MessageBox msgNoAnsAdded = new MessageBox(compositeToHoldAnswers.getShell());
+			msgNoAnsAdded.setMessage("Please add answers to the question by clicking \"Add answer\" button");
+			msgNoAnsAdded.open();
+
 		}
 		questionDetails.setAnswers(compositeToHoldAnswers.getListOfAllAnswer());
 

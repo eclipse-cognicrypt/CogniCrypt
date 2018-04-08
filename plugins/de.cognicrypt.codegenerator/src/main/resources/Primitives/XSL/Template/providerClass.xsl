@@ -13,7 +13,7 @@ public class CustomProvider extends Provider {
 	public CustomProvider() {
 		super("<xsl:value-of select="SymmetricBlockCipher/name" />", 1.0, "<xsl:value-of select="SymmetricBlockCipher/name" />" + "v1.0");
 
-		put("Cipher." + "<xsl:value-of select="SymmetricBlockCipher/name" />", "<xsl:value-of select="SymmetricBlockCipher/name" />"Cipher.class.getName());
+		put("Cipher." + "<xsl:value-of select="SymmetricBlockCipher/name" />", <xsl:value-of select="SymmetricBlockCipher/name" />Cipher.class.getName());
 	}
 }
 		</xsl:result-document>

@@ -68,6 +68,13 @@ public class MethodSelectorPage extends WizardPage {
 
 		Combo decryptionCombo = new Combo(container, SWT.NONE);
 		decryptionCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+
+		Label keyGenerationLabel = new Label(container, SWT.NONE);
+		keyGenerationLabel.setText("Select the keyGeneration method: ");
+		Combo keyGenerationCombo = new Combo(container, SWT.NONE);
+		keyGenerationCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 
 		try {
 			// import project 

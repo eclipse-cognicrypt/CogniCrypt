@@ -211,7 +211,8 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 		//Code generation 
 		final File templateSpi = Utils.getResourceFromWithin(selectedPrimitive.getXslFile());
-		final File templateMaster= Utils.getResourceFromWithin(Constants.primitivesPath+ Constants.innerFileSeparator+"XSL"+Constants.innerFileSeparator+"Template"+Constants.innerFileSeparator+"providerClass.xsl");
+		final File templateMaster = Utils.getResourceFromWithin(
+			Constants.primitivesPath + Constants.innerFileSeparator + "XSL" + Constants.innerFileSeparator + "Template" + Constants.innerFileSeparator + "providerClass.xsl");
 		try {
 			xsltWriter.transformXsl(templateSpi, xmlFile);
 			xsltWriter.transformXsl(templateMaster, xmlFile);
@@ -242,7 +243,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 				}
 
 				//add delete Project
-
+				//project.deleteProject();
 			} catch (JavaModelException e) {
 				e.printStackTrace();
 			} catch (Exception e) {

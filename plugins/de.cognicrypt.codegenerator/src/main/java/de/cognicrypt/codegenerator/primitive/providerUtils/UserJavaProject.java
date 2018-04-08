@@ -183,7 +183,8 @@ public class UserJavaProject {
 	}
 
 	public void deleteProject() throws CoreException {
-		this.project.delete(true, null);
+		this.project.delete(true, true, null);
+		ResourcesPlugin.getWorkspace().save(true, null);
 	}
 
 	public IProject getProject() {

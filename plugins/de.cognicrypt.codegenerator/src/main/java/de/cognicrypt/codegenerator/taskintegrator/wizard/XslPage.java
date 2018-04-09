@@ -120,8 +120,7 @@ public class XslPage extends PageForTaskIntegratorWizard {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				
-				int y = getCompositeForXsl().getXslTxtBox().getTopPixel();
-				//Caret formerPos = getCompositeForXsl().getXslTxtBox().getCaret();
+				int scrollbarPosY = getCompositeForXsl().getXslTxtBox().getTopPixel();
 
 				// this is needed to get the name and the description of the task from the wizard.
 				ModelAdvancedMode objectForDataInGuidedMode = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD))
@@ -151,7 +150,7 @@ public class XslPage extends PageForTaskIntegratorWizard {
 					xslTxtBoxContent = xslTxtBoxContent.substring(0, selected.x) + dialog.getTag().toString() + xslTxtBoxContent.substring(selected.y, xslTxtBoxContent.length());
 					getCompositeForXsl().getXslTxtBox().setText(xslTxtBoxContent);
 					getCompositeForXsl().colorizeTextBox();
-					getCompositeForXsl().getXslTxtBox().setTopPixel(y);
+					getCompositeForXsl().getXslTxtBox().setTopPixel(scrollbarPosY);
 				}
 
 			}

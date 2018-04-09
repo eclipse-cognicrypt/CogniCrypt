@@ -3,6 +3,7 @@ package de.cognicrypt.staticanalyzer.results;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -49,6 +50,7 @@ import soot.ValueBox;
 import soot.jimple.AssignStmt;
 import soot.jimple.Constant;
 import soot.jimple.Stmt;
+import soot.jimple.internal.AbstractInvokeExpr;
 import soot.jimple.internal.JAssignStmt;
 import sync.pds.solver.nodes.Node;
 import typestate.TransitionFunction;
@@ -197,9 +199,20 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		CryptSLSplitter splitter = brokenConstraint.getVar().getSplitter();
 		if (splitter != null) {
 			Stmt stmt = location.getUnit().get();
-			String[] splitValues;
+			String[] splitValues = new String[] { "" };
 			if (stmt instanceof AssignStmt) {
-				splitValues = Utils.filterQuotes(((AssignStmt) stmt).getRightOp().toString()).split(splitter.getSplitter());
+				Value rightSide = ((AssignStmt) stmt).getRightOp();
+				if (rightSide instanceof Constant) {
+					splitValues = Utils.filterQuotes(rightSide.toString()).split(splitter.getSplitter());
+				} else if (rightSide instanceof AbstractInvokeExpr) {
+					List<Value> args = ((AbstractInvokeExpr) rightSide).getArgs();
+					for (Value arg : args) {
+						if (arg.getType().toQuotedString().equals(brokenConstraint.getVar().getJavaType())) {
+							splitValues = Utils.filterQuotes(arg.toString()).split(splitter.getSplitter());
+							break;
+						}
+					}
+				}
 			} else {
 				splitValues = Utils.filterQuotes(stmt.getInvokeExpr().getUseBoxes().get(0).getValue().toString()).split(splitter.getSplitter());
 			}

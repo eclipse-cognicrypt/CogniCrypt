@@ -1,19 +1,16 @@
 package de.cognicrypt.staticanalyzer.handlers;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.search.SearchMatch;
-import org.eclipse.jdt.core.search.SearchRequestor;
 
 import de.cognicrypt.staticanalyzer.Activator;
-import de.cognicrypt.staticanalyzer.Utils;
 import de.cognicrypt.staticanalyzer.results.ErrorMarkerGenerator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.staticanalyzer.sootbridge.SootRunner;
+import de.cognicrypt.utils.Utils;
 
 /**
  * This class prepares and triggers the analysis. After it has finished, it refreshes the project.

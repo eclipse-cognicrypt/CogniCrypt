@@ -19,8 +19,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.Constants.GUIElements;
 import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModel;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
@@ -32,10 +30,12 @@ import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 import de.cognicrypt.codegenerator.wizard.advanced.AdvancedUserValueSelectionPage;
 import de.cognicrypt.codegenerator.wizard.beginner.BeginnerModeQuestionnaire;
 import de.cognicrypt.codegenerator.wizard.beginner.BeginnerTaskQuestionPage;
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.core.Constants.GUIElements;
 
 /**
  * This class implements the logic of the dialogue windows the user has to go through. Currently, methods getNextPage() and performFinish() have special handling of TLS task that
@@ -159,7 +159,7 @@ public class ConfiguratorWizard extends Wizard {
 		// if page is shown for the first time, create the new object
 		final Task selectedTask = this.taskListPage.getSelectedTask();
 		if (currentPage == this.taskListPage && this.taskListPage.isPageComplete()) {
-			this.claferModel = new ClaferModel(Utils.getResourceFromWithin(selectedTask.getModelFile()));
+			this.claferModel = new ClaferModel(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile()));
 
 			if (this.taskListPage.isGuidedMode()) {
 				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile());
@@ -224,7 +224,7 @@ public class ConfiguratorWizard extends Wizard {
 				}
 			}
 
-			final InstanceGenerator instanceGenerator = new InstanceGenerator(Utils.getResourceFromWithin(selectedTask.getModelFile())
+			final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
 				.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
 
 			if (this.taskListPage.isGuidedMode()) {
@@ -263,7 +263,7 @@ public class ConfiguratorWizard extends Wizard {
 		}
 		//adding instance details page after default algorithm page in beginner mode
 		else if (currentPage instanceof DefaultAlgorithmPage) {
-			final InstanceGenerator instanceGenerator = new InstanceGenerator(Utils.getResourceFromWithin(selectedTask.getModelFile())
+			final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
 				.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
 
 			if (this.taskListPage.isGuidedMode()) {

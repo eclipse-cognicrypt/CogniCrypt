@@ -38,9 +38,9 @@ import crypto.rules.CryptSLPredicate;
 import crypto.rules.CryptSLSplitter;
 import crypto.rules.CryptSLValueConstraint;
 import crypto.typestate.CallSiteWithParamIndex;
+import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
-import de.cognicrypt.staticanalyzer.Constants;
-import de.cognicrypt.staticanalyzer.Utils;
+import de.cognicrypt.utils.Utils;
 import soot.ArrayType;
 import soot.SootClass;
 import soot.SootMethod;
@@ -358,7 +358,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	private IResource unitToResource(final Statement stmt) {
 		final SootClass className = stmt.getMethod().getDeclaringClass();
 		try {
-			return Utils.findClassByName(className, this.currentProject);
+			return Utils.findClassByName(className.getName(), this.currentProject);
 		} catch (final ClassNotFoundException e) {
 			Activator.getDefault().logError(e);
 		}

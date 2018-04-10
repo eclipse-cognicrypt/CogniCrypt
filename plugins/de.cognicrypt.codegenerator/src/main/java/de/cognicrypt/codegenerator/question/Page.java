@@ -2,7 +2,7 @@ package de.cognicrypt.codegenerator.question;
 
 import java.util.ArrayList;
 
-import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.core.Constants;
 
 public class Page {
 

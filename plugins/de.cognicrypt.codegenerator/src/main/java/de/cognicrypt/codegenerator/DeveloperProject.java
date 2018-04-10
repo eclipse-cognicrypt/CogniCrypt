@@ -14,6 +14,8 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 
+import de.cognicrypt.core.Constants;
+
 /**
  * This class represents the app developer's project, on which the plugin is working.
  *

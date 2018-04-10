@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CogniCrypt CrySL Handler
+Bundle-SymbolicName: de.cognicrypt.crysl.handler
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: de.cognicrypt.crysl.handler.Activator
+Bundle-Vendor: TU Darmstadt, Paderborn University
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.workbench,
+ org.eclipse.core.resources,
+ org.eclipse.ui.ide,
+ org.eclipse.jdt.core,
+ org.eclipse.xtext,
+ org.eclipse.xtext.common.types.ui,
+ de.darmstadt.tu.crossing.CryptSL.ui;bundle-version="1.0.0",
+ de.darmstadt.tu.crossing.CryptSL;bundle-version="1.0.0",
+ de.darmstadt.tu.crossing.CryptSL.ide;bundle-version="1.0.0",
+ de.cognicrypt.core;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: de.cognicrypt.crysl.reader;uses:="crypto.rules,org.eclipse.core.resources"
+Bundle-ClassPath: src/cognicrypt-maven-plugin-1.0-SNAPSHOT.jar,
+ .
+Automatic-Module-Name: de.cognicrypt.crysl.handler

@@ -1,6 +1,5 @@
 package de.cognicrypt.staticanalyzer.handlers;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +15,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.IStartup;
 
-import de.cognicrypt.crysl.reader.CrySLModelReader;
 import de.cognicrypt.staticanalyzer.Activator;
 
 /**
@@ -31,7 +29,6 @@ public class StartupHandler implements IStartup {
 
 		@Override
 		public void resourceChanged(final IResourceChangeEvent event) {
-			final List<IResource> changedCrySLElements = new ArrayList<>();
 			final List<IJavaElement> changedJavaElements = new ArrayList<>();
 			Activator.getDefault().logInfo("ResourcechangeListener has been triggered.");
 			try {
@@ -55,10 +52,6 @@ public class StartupHandler implements IStartup {
 								} catch (final Exception ex) {
 									return false;
 								}
-								if (res.getFileExtension().endsWith("cryptsl")) {
-									changedCrySLElements.add(res);
-								}
-
 							}
 					}
 					return true;
@@ -86,7 +79,7 @@ public class StartupHandler implements IStartup {
 				}
 			} catch (final CoreException e) {}
 
-			if (changedJavaElements.isEmpty() && changedCrySLElements.isEmpty()) {
+			if (changedJavaElements.isEmpty()) {
 				Activator.getDefault().logInfo("No changed resource found. Abort.");
 				return;
 			}
@@ -102,15 +95,6 @@ public class StartupHandler implements IStartup {
 				} else {
 					Activator.getDefault().logInfo("Analysis has been canceled due to erroneous setup.");
 				}
-			}
-
-			if (!changedCrySLElements.isEmpty()) {
-				try {
-					new CrySLModelReader(changedCrySLElements.get(0));
-				} catch (ClassNotFoundException | CoreException | IOException e) {
-					Activator.getDefault().logError(e, "Updating CrySL rules failed.");
-				}
-
 			}
 		}
 	}

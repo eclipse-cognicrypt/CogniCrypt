@@ -1,7 +1,10 @@
 package de.cognicrypt.codegenerator.utilities;
 
+import java.io.File;
+
 import org.eclipse.core.resources.IProject;
 
+import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.Utils;
 
@@ -22,5 +25,9 @@ public class CodeGenUtils extends Utils {
 			}
 		}
 		return Utils.getCurrentProject();
+	}
+
+	public static File getResourceFromWithin(final String inputPath) {
+		return Utils.getResourceFromWithin(inputPath, Activator.PLUGIN_ID);
 	}
 }

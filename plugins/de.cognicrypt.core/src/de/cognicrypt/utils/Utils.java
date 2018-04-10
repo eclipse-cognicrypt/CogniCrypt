@@ -234,6 +234,10 @@ public class Utils {
 		return iproject;
 	}
 
+	public static File getResourceFromWithin(String inputPath) {
+		return getResourceFromWithin(inputPath, Activator.PLUGIN_ID);
+	}
+
 	/***
 	 * This method returns absolute path of a project-relative path.
 	 *
@@ -241,9 +245,9 @@ public class Utils {
 	 *        project-relative path
 	 * @return absolute path
 	 */
-	public static File getResourceFromWithin(final String inputPath) {
+	public static File getResourceFromWithin(final String inputPath, String pluginID) {
 		try {
-			final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+			final Bundle bundle = Platform.getBundle(pluginID);
 
 			if (bundle == null) {
 				// running as application

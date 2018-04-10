@@ -1,4 +1,4 @@
-package de.cognicrypt.codegenerator.utilities;
+package de.cognicrypt.utils;
 
 import java.util.AbstractMap.SimpleEntry;
 

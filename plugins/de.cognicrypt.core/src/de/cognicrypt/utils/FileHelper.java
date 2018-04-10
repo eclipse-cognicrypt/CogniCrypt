@@ -1,4 +1,4 @@
-package de.cognicrypt.codegenerator.utilities;
+package de.cognicrypt.utils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.core.Activator;
+import de.cognicrypt.core.Constants;
 
 /**
  * A helper class for files.

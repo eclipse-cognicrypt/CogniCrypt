@@ -1,4 +1,4 @@
-package de.cognicrypt.codegenerator;
+package de.cognicrypt.core;
 
 /**
  * This class comprises all constants that are used by the plugin.
@@ -157,5 +157,9 @@ public class Constants {
 
 	//Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;
+
+	public static final String NO_RES_FOUND = "No resource to generate error marker for found.";
+	public static final String OBJECT_OF_TYPE = "Object of type ";
+	public static final String VAR = "Variable ";
 
 }

@@ -22,10 +22,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.utilities.FileHelper;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 import de.cognicrypt.codegenerator.wizard.Configuration;
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.utils.FileHelper;
 
 /**
  * This class is responsible for generating code templates by performing an XSL transformation. Currently, Saxon is used as an XSLT- processor.
@@ -46,7 +46,7 @@ public class XSLBasedGenerator extends CodeGenerator {
 	 */
 	public XSLBasedGenerator(final IProject targetProject, final String pathToXSLFile) {
 		super(targetProject);
-		xslFile = Utils.getResourceFromWithin(pathToXSLFile);
+		xslFile = CodeGenUtils.getResourceFromWithin(pathToXSLFile);
 	}
 
 	public boolean generateCodeTemplates(Configuration chosenConfig, final String pathToAdditionalResources) {
@@ -87,12 +87,12 @@ public class XSLBasedGenerator extends CodeGenerator {
 				return false;
 			}
 			for (String customProvider : chosenConfig.getProviders()) {
-				if (!addAddtionalFile(Utils.getResourceFromWithin(Constants.providerPath + "/" + customProvider + Constants.JAR))) {
+				if (!addAddtionalFile(CodeGenUtils.getResourceFromWithin(Constants.providerPath + "/" + customProvider + Constants.JAR))) {
 					return false;
 				}
 			}
 
-			final IFile currentlyOpenFile = Utils.getCurrentlyOpenFile();
+			final IFile currentlyOpenFile = CodeGenUtils.getCurrentlyOpenFile();
 			if (currentlyOpenFile != null && project.equals(currentlyOpenFile.getProject())) {
 				Activator.getDefault().logInfo(Constants.OpenFile + currentlyOpenFile.getName());
 

@@ -27,10 +27,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
+import de.cognicrypt.core.Constants;
 
 public class TaskSelectionPage extends WizardPage {
 
@@ -73,7 +73,7 @@ public class TaskSelectionPage extends WizardPage {
 		projectComboSelection.setContentProvider(ArrayContentProvider.getInstance());
 
 		final Map<String, IProject> javaProjects = new HashMap<>();
-		for (final IProject project : Utils.retrieveAllJavaProjectsInWorkspace()) {
+		for (final IProject project : CodeGenUtils.complileListOfJavaProjectsInWorkspace()) {
 			javaProjects.put(project.getName(), project);
 		}
 
@@ -90,7 +90,7 @@ public class TaskSelectionPage extends WizardPage {
 
 			});
 
-			final IProject currentProject = Utils.getCurrentProject();
+			final IProject currentProject = CodeGenUtils.getCurrentProject();
 			if (currentProject == null) {
 				projectComboSelection.setSelection(new StructuredSelection(projectComboSelection.getElementAt(0)));
 			} else {

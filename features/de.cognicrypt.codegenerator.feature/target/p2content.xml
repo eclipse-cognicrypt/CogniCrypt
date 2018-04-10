@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <units size='2'>
-  <unit id='de.cognicrypt.codegenerator.feature.feature.group' version='1.0.0.201802161202' singleton='false'>
-    <update id='de.cognicrypt.codegenerator.feature.feature.group' range='[0.0.0,1.0.0.201802161202)' severity='0'/>
+  <unit id='de.cognicrypt.codegenerator.feature.feature.group' version='1.0.0.201804101246' singleton='false'>
+    <update id='de.cognicrypt.codegenerator.feature.feature.group' range='[0.0.0,1.0.0.201804101246)' severity='0'/>
     <properties size='8'>
       <property name='org.eclipse.equinox.p2.name' value='CogniCrypt Crypto-API Example Generator'/>
       <property name='org.eclipse.equinox.p2.description' value='CogniCrypt is an Eclipse plugin that supports Java developers in using cryptographic APIs. It supports developers in two ways. First, it may generate code snippets for a number of programming tasks that involve cryptography, e.g., communication over a secure channel, data encryption, and long-term archiving. Second, it continuously runs a suite of static analyses in the background that check the developer&apos;s code for misuses of cryptographic APIs.'/>
@@ -13,11 +13,22 @@
       <property name='maven-version' value='1.0.0-SNAPSHOT'/>
     </properties>
     <provides size='1'>
-      <provided namespace='org.eclipse.equinox.p2.iu' name='de.cognicrypt.codegenerator.feature.feature.group' version='1.0.0.201802161202'/>
+      <provided namespace='org.eclipse.equinox.p2.iu' name='de.cognicrypt.codegenerator.feature.feature.group' version='1.0.0.201804101246'/>
     </provides>
-    <requires size='2'>
-      <required namespace='org.eclipse.equinox.p2.iu' name='de.cognicrypt.codegenerator' range='[1.0.0.201802161202,1.0.0.201802161202]'/>
-      <required namespace='org.eclipse.equinox.p2.iu' name='de.cognicrypt.codegenerator.feature.feature.jar' range='[1.0.0.201802161202,1.0.0.201802161202]'>
+    <requires size='13'>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ui' range='0.0.0'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.core.runtime' range='0.0.0'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.core.resources' range='0.0.0'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.junit' range='0.0.0'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.jdt.ui' range='3.12.0'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.jface.text' range='3.11.0'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.jdt.core' range='3.12.0'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ui.workbench' range='0.0.0'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ui.ide' range='0.0.0'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ui.editors' range='0.0.0'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='de.cognicrypt.codegenerator' range='[1.0.0.201804101246,1.0.0.201804101246]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='de.cognicrypt.core' range='[1.0.0.201804101246,1.0.0.201804101246]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='de.cognicrypt.codegenerator.feature.feature.jar' range='[1.0.0.201804101246,1.0.0.201804101246]'>
         <filter>
           (org.eclipse.update.install.features=true)
         </filter>
@@ -33,7 +44,7 @@
       Copyrights reserved.
     </copyright>
   </unit>
-  <unit id='de.cognicrypt.codegenerator.feature.feature.jar' version='1.0.0.201802161202'>
+  <unit id='de.cognicrypt.codegenerator.feature.feature.jar' version='1.0.0.201804101246'>
     <properties size='7'>
       <property name='org.eclipse.equinox.p2.name' value='CogniCrypt Crypto-API Example Generator'/>
       <property name='org.eclipse.equinox.p2.description' value='CogniCrypt is an Eclipse plugin that supports Java developers in using cryptographic APIs. It supports developers in two ways. First, it may generate code snippets for a number of programming tasks that involve cryptography, e.g., communication over a secure channel, data encryption, and long-term archiving. Second, it continuously runs a suite of static analyses in the background that check the developer&apos;s code for misuses of cryptographic APIs.'/>
@@ -44,15 +55,15 @@
       <property name='maven-version' value='1.0.0-SNAPSHOT'/>
     </properties>
     <provides size='3'>
-      <provided namespace='org.eclipse.equinox.p2.iu' name='de.cognicrypt.codegenerator.feature.feature.jar' version='1.0.0.201802161202'/>
+      <provided namespace='org.eclipse.equinox.p2.iu' name='de.cognicrypt.codegenerator.feature.feature.jar' version='1.0.0.201804101246'/>
       <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='feature' version='1.0.0'/>
-      <provided namespace='org.eclipse.update.feature' name='de.cognicrypt.codegenerator.feature' version='1.0.0.201802161202'/>
+      <provided namespace='org.eclipse.update.feature' name='de.cognicrypt.codegenerator.feature' version='1.0.0.201804101246'/>
     </provides>
     <filter>
       (org.eclipse.update.install.features=true)
     </filter>
     <artifacts size='1'>
-      <artifact classifier='org.eclipse.update.feature' id='de.cognicrypt.codegenerator.feature' version='1.0.0.201802161202'/>
+      <artifact classifier='org.eclipse.update.feature' id='de.cognicrypt.codegenerator.feature' version='1.0.0.201804101246'/>
     </artifacts>
     <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
     <touchpointData size='1'>

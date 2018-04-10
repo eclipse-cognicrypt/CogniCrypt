@@ -1,4 +1,4 @@
-package de.cognicrypt.staticanalyzer;
+package de.cognicrypt.utils;
 
 import java.io.File;
 import java.net.URI;
@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISelectionService;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.Workbench;
@@ -40,7 +41,7 @@ import org.osgi.framework.Bundle;
 
 import com.google.common.base.CharMatcher;
 
-import soot.SootClass;
+import de.cognicrypt.core.Activator;
 
 public class Utils {
 
@@ -60,7 +61,7 @@ public class Utils {
 		}
 	}
 
-	public static List<IProject> createListOfJavaProjectsInCurrentWorkspace() {
+	public static List<IProject> complileListOfJavaProjectsInWorkspace() {
 		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		final List<IProject> javaProjects = new ArrayList<>();
 		if (projects.length > 0) {
@@ -74,7 +75,7 @@ public class Utils {
 		return javaProjects;
 	}
 
-	public static IResource findClassByName(final SootClass className, final IProject currentProject) throws ClassNotFoundException {
+	public static IResource findClassByName(final String className, final IProject currentProject) throws ClassNotFoundException {
 		try {
 			for (final IPackageFragment l : JavaCore.create(currentProject).getPackageFragments()) {
 				for (final ICompilationUnit cu : l.getCompilationUnits()) {
@@ -84,7 +85,7 @@ public class Utils {
 					if (name.startsWith(".")) {
 						name = name.substring(1);
 					}
-					if (name.startsWith(className.getName())) {
+					if (name.startsWith(className)) {
 						return cu.getCorrespondingResource();
 					}
 				}
@@ -101,7 +102,7 @@ public class Utils {
 	 *
 	 * @return Current editor.
 	 */
-	private static IEditorPart getCurrentlyOpenEditor() {
+	public static IEditorPart getCurrentlyOpenEditor() {
 		final Display defaultDisplay = Display.getDefault();
 		final Runnable getWindow = () -> setWindow(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
 		defaultDisplay.asyncExec(getWindow);
@@ -126,7 +127,7 @@ public class Utils {
 	 * @return Currently open file.
 	 *
 	 */
-	private static IFile getCurrentlyOpenFile() {
+	public static IFile getCurrentlyOpenFile() {
 		return getCurrentlyOpenFile(getCurrentlyOpenEditor());
 	}
 
@@ -137,7 +138,7 @@ public class Utils {
 	 *        Editor part that contains the file.
 	 * @return Currently open file.
 	 */
-	private static IFile getCurrentlyOpenFile(final IEditorPart part) {
+	public static IFile getCurrentlyOpenFile(final IEditorPart part) {
 		if (part != null) {
 			final IEditorInput editorInput = part.getEditorInput();
 			if (editorInput instanceof FileEditorInput) {
@@ -163,6 +164,31 @@ public class Utils {
 		return null;
 	}
 	
+	/**
+	 * This method returns the currently open page as an {@link IWorkbenchPage}.
+	 *
+	 * @return Current editor.
+	 */
+	public static IWorkbenchPage getCurrentlyOpenPage() {
+		final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		if (window != null) {
+			return window.getActivePage();
+		}
+		return null;
+	}
+
+	/**
+	 * This method closes the currently open editor.
+	 * 
+	 * @param editor
+	 */
+	public static void closeEditor(IEditorPart editor) {
+		IWorkbenchPage workbenchPage = Utils.getCurrentlyOpenPage();
+		if (workbenchPage != null) {
+			workbenchPage.closeEditor(editor, true);
+		}
+	}
+
 	/**
 	 * This method searches the passed project for the class that contains the main method.
 	 *

@@ -2,8 +2,8 @@ package de.cognicrypt.codegenerator.question;
 
 import java.util.ArrayList;
 
-import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.Constants.GUIElements;
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.core.Constants.GUIElements;
 
 public class Question {
 

@@ -9,7 +9,7 @@ import org.clafer.instance.InstanceClafer;
 import org.junit.Test;
 
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 
 
 public class ClaferComparatorTest {
@@ -17,7 +17,7 @@ public class ClaferComparatorTest {
 	@Test
 	public void testComparator() {
 		String modelFilename = "src/test/resources/security.js";
-		File modelFile = Utils.getResourceFromWithin(modelFilename);
+		File modelFile = CodeGenUtils.getResourceFromWithin(modelFilename);
 		String taskName = "SecurityTestTask";
 
 		InstanceGenerator instanceGenerator = new InstanceGenerator(modelFile.getAbsolutePath(), "c0_" + taskName, "");

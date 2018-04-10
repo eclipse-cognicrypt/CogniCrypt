@@ -159,7 +159,7 @@ public class CrySLModelReader {
 			System.out.println("===========================================");
 			System.out.println("");
 
-			storeRuletoFile(rule, Utils.getResourceFromWithin("resources/CrySLRules").getAbsolutePath(), className);
+			storeRuletoFile(rule, Utils.getResourceFromWithin("resources/CrySLRules", de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath(), className);
 
 			final String filePath = "C:\\Users\\stefank3\\git\\CryptoAnalysis\\CryptoAnalysis\\src\\test\\resources\\";
 			if ((new File(filePath)).exists()) {

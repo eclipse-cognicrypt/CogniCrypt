@@ -56,6 +56,7 @@ public class QuestionDialog extends Dialog {
 
 	public QuestionDialog(Shell parentShell, Question question, ClaferModel claferModel, ArrayList<Question> listOfAllQuestions) {
 		super(parentShell);
+		setShellStyle(SWT.CLOSE | SWT.RESIZE | SWT.TITLE);
 		this.question = question;
 	}
 

@@ -28,6 +28,7 @@ import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.question.QuestionsJSONReader;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.FileUtilities;
+import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
@@ -255,7 +256,10 @@ public class FileUtilitiesTest {
 	 * @return
 	 */
 	private ClaferModel getListClaferModel() {
-		return ClaferModel.createFromBinaries(testResourceLocation + "PointModel.dat");
+		ClaferModel cfrModel = new ClaferModel();
+		cfrModel.add(new ClaferFeature(Constants.FeatureType.CONCRETE, "Point", ""));
+
+		return new ClaferModel();
 	}
 
 	/**

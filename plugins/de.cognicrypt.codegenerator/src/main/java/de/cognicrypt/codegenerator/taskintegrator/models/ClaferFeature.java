@@ -88,6 +88,14 @@ public class ClaferFeature implements Serializable {
 		this.featureProperties = featureProperties;
 	}
 	
+	public ArrayList<ClaferProperty> addFeatureProperty(ClaferProperty claferProperty) {
+		if (getFeatureProperties() == null) {
+			setFeatureProperties(new ArrayList<>());
+		}
+		getFeatureProperties().add(claferProperty);
+		return getFeatureProperties();
+	}
+
 	/**
 	 * @return <code>true</code> if the feature has non-empty properties, <code>false</code> otherwise
 	 */
@@ -183,6 +191,14 @@ public class ClaferFeature implements Serializable {
 		this.featureConstraints = featureConstraints;
 	}
 	
+	public ArrayList<ClaferConstraint> addFeatureConstraint(ClaferConstraint claferConstraint) {
+		if (getFeatureConstraints() == null) {
+			setFeatureConstraints(new ArrayList<>());
+		}
+		getFeatureConstraints().add(claferConstraint);
+		return getFeatureConstraints();
+	}
+
 	public boolean hasConstraints() {
 		return !featureConstraints.isEmpty();
 	}

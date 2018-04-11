@@ -2,8 +2,8 @@ package de.cognicrypt.codegenerator.taskintegrator.models;
 
 import java.util.ArrayList;
 
-import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.Constants.XSLTags;
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.core.Constants.XSLTags;
 
 public class XSLTag {
 	private Constants.XSLTags XSLTagDetails; // Variable to hold all the XSL tag data.

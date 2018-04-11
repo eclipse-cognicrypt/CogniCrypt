@@ -105,13 +105,22 @@ Except as expressly stated in Sections 2(a) and 2(b) above, Recipient receives n
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.xtext"/>
       <import plugin="org.eclipse.xtext.common.types.ui"/>
-      <import plugin="de.darmstadt.tu.crossing.CryptSL" match="greaterOrEqual"/>
-      <import plugin="de.darmstadt.tu.crossing.CryptSL.ide" match="greaterOrEqual"/>
-      <import plugin="de.darmstadt.tu.crossing.CryptSL.ui"/>
+      <import plugin="de.darmstadt.tu.crossing.CryptSL" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="de.darmstadt.tu.crossing.CryptSL.ide" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="de.darmstadt.tu.crossing.CryptSL.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="de.cognicrypt.core" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="com.google.guava"/>
    </requires>
 
    <plugin
          id="de.cognicrypt.staticanalyzer"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="de.cognicrypt.core"
          download-size="0"
          install-size="0"
          version="0.0.0"

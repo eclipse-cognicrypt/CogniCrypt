@@ -18,13 +18,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.MessageBox;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferConstraint;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeClaferFeedback;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
+import de.cognicrypt.core.Constants;
 
 public class ClaferPage extends PageForTaskIntegratorWizard {
 
@@ -172,7 +172,7 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 					feedbackComposite.setFeedback(" (compiling...)");
 
 					// do the tedious work
-					File cfrFile = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), "temporaryModel" + Constants.CFR_EXTENSION);
+					File cfrFile = new File(CodeGenUtils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), "temporaryModel" + Constants.CFR_EXTENSION);
 					compositeToHoldGranularUIElements.getClaferModel().toFile(cfrFile.getAbsolutePath());
 					if (ClaferModel.compile(cfrFile.getAbsolutePath())) {
 						feedbackComposite.setFeedback("Compilation successful");
@@ -196,11 +196,11 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 	 *
 	 */
 	public String getCompiledClaferModelPath() {
-		File cfrFile = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), "currentClaferModel" + Constants.CFR_EXTENSION);
+		File cfrFile = new File(CodeGenUtils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), "currentClaferModel" + Constants.CFR_EXTENSION);
 		compositeToHoldGranularUIElements.getClaferModel().toFile(cfrFile.getAbsolutePath());
 
 		if (ClaferModel.compile(cfrFile.getAbsolutePath())) {
-			return new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), "currentClaferModel" + Constants.JS_EXTENSION).getAbsolutePath();
+			return new File(CodeGenUtils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), "currentClaferModel" + Constants.JS_EXTENSION).getAbsolutePath();
 		}
 
 		return null;
@@ -214,7 +214,7 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 			String descriptionConstraint = "description = \"" + taskDescription + "\"";
 
 			if (this.compositeToHoldGranularUIElements.getClaferModel().getClaferModel().isEmpty()) {
-				String defaultFeatureSetPath = Utils.getResourceFromWithin("src/main/resources/ClaferModelBin/DefaultFeatureSet.dat").getAbsolutePath();
+				String defaultFeatureSetPath = CodeGenUtils.getResourceFromWithin("src/main/resources/ClaferModelBin/DefaultFeatureSet.dat").getAbsolutePath();
 				ClaferModel defaultFeaturesModel = ClaferModel.createFromBinaries(defaultFeatureSetPath);
 
 				ClaferFeature taskFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, taskName, "Task");

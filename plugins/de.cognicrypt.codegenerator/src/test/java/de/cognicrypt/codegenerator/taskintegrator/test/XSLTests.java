@@ -12,11 +12,11 @@ import org.eclipse.swt.graphics.Point;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.Constants.XSLTags;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.XSLStringGenerationAndManipulation;
 import de.cognicrypt.codegenerator.taskintegrator.models.XSLAttribute;
 import de.cognicrypt.codegenerator.taskintegrator.models.XSLTag;
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.core.Constants.XSLTags;
 
 public class XSLTests {
 

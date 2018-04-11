@@ -13,21 +13,21 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.providerUtils.ProviderFile;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
+import de.cognicrypt.core.Constants;
 
 public class ProviderFileWriterTest {
 
 	boolean elementExists = false;
-	File jarFile = new File(Utils.getResourceFromWithin(Constants.testPrimitverFolder) + "jarTest.jar");
+	File jarFile = new File(CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder) + "jarTest.jar");
 	ProviderFile providerFile;
 	File folder;
 
 	@Before
 	public void setUp() throws IOException {
 		providerFile = new ProviderFile("test provider");
-		folder = Utils.getResourceFromWithin(Constants.testPrimitverFolder);
+		folder = CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder);
 		providerFile.zipProject(folder.getAbsolutePath(), jarFile, true);
 	}
 
@@ -57,9 +57,9 @@ public class ProviderFileWriterTest {
 
 	@Test
 	public void compilteJavaFileTest() {
-		File testJavaFile = Utils.getResourceFromWithin(Constants.testPrimitverFolder + "testJava.java");
+		File testJavaFile = CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder + "testJava.java");
 		providerFile.compileFile(testJavaFile);
-		File testClassFile = Utils.getResourceFromWithin(Constants.testPrimitverFolder + "testJava.class");
+		File testClassFile = CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder + "testJava.class");
 		assertTrue(testClassFile.exists());
 	}
 

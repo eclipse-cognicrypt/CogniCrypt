@@ -40,11 +40,11 @@ import org.clafer.instance.InstanceClafer;
 import org.clafer.scope.Scope;
 
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.wizard.advanced.PropertyWidget;
+import de.cognicrypt.core.Constants;
 
 /**
  * Class responsible for generating generatedInstances for a given clafer.

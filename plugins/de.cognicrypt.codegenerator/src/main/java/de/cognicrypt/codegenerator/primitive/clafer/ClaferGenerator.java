@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.LinkedHashMap;
 
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 
 /**
  * This class is responsible for generating Clafer for custom primitive.
@@ -32,9 +32,9 @@ public class ClaferGenerator {
 		InputStream input = null;
 		OutputStream output = null;
 		File finalClafer;
-		finalClafer = (Utils.getFinalClaferFile(target));
+		finalClafer = (CodeGenUtils.getFinalClaferFile(target));
 		try {
-			input = new FileInputStream(Utils.getResourceFromWithin(source));
+			input = new FileInputStream(CodeGenUtils.getResourceFromWithin(source));
 			output = new FileOutputStream(finalClafer);
 			byte[] buf = new byte[1024];
 			int bytesRead;

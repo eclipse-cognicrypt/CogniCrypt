@@ -33,11 +33,12 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.DeveloperProject;
-import de.cognicrypt.codegenerator.utilities.ComparableEntry;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 import de.cognicrypt.codegenerator.wizard.Configuration;
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.utils.ComparableEntry;
+import de.cognicrypt.utils.Utils;
 
 public abstract class CodeGenerator {
 
@@ -89,7 +90,7 @@ public abstract class CodeGenerator {
 	protected boolean insertCallCodeIntoFile(final String temporaryOutputFile, boolean openFileFlag, boolean authorFlag, boolean tempFlag) throws BadLocationException, CoreException, IOException {
 
 		if (!((openFileFlag && authorFlag) || !openFileFlag)) {
-			IDE.openEditor(Utils.getCurrentlyOpenPage(), Utils.getCurrentlyOpenFile());
+			IDE.openEditor(CodeGenUtils.getCurrentlyOpenPage(), Utils.getCurrentlyOpenFile());
 		}
 		IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
 		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {
@@ -234,7 +235,7 @@ public abstract class CodeGenerator {
 			return true;
 		}
 		try {
-			final File[] members = Utils.getResourceFromWithin(source).listFiles();
+			final File[] members = CodeGenUtils.getResourceFromWithin(source).listFiles();
 			if (members == null) {
 				Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);
 			}
@@ -296,7 +297,7 @@ public abstract class CodeGenerator {
 		faa.runOnMultiple(generatedCUnits);
 		organizeImportsActionForAllFilesTouchedDuringGeneration.runOnMultiple(generatedCUnits);
 
-		final ICompilationUnit openClass = JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor));
+		final ICompilationUnit openClass = JavaCore.createCompilationUnitFrom(CodeGenUtils.getCurrentlyOpenFile(editor));
 		organizeImportsActionForAllFilesTouchedDuringGeneration.run(openClass);
 		faa.runOnMultiple(new ICompilationUnit[] { openClass });
 		editor.doSave(null);

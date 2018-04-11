@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import org.clafer.instance.InstanceClafer;
 
-import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.core.Constants;
 
 /**
  * InstanceClaferHash extends InstanceClafer to only override {@link InstanceClaferHash#hashCode() hashcode()}

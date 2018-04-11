@@ -5,8 +5,8 @@ package de.cognicrypt.codegenerator.taskintegrator.models;
 
 import java.io.File;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.tasks.Task;
+import de.cognicrypt.core.Constants;
 
 public class ModelAdvancedMode {
 

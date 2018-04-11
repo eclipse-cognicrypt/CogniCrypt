@@ -2,9 +2,9 @@ package de.cognicrypt.codegenerator.taskintegrator.controllers;
 
 import java.util.ArrayList;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
+import de.cognicrypt.core.Constants;
 
 public class ClaferPatternEnumGenerator {
 

@@ -15,7 +15,7 @@ import de.cognicrypt.codegenerator.primitive.types.Primitive;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 
 public class PrimitiveQuestionsJSONReader {
 
@@ -29,7 +29,7 @@ public class PrimitiveQuestionsJSONReader {
 	public List<Question> getQuestions(final String filePath) {
 		List<Question> questions = new ArrayList<Question>();
 		try {
-			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(filePath)));
+			final BufferedReader reader = new BufferedReader(new FileReader(CodeGenUtils.getResourceFromWithin(filePath)));
 			final Gson gson = new Gson();
 
 			questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
@@ -54,7 +54,7 @@ public class PrimitiveQuestionsJSONReader {
 	public List<Page> getPages(final String filePath) {
 		List<Page> pages = new ArrayList<Page>();
 		try {
-			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(filePath)));
+			final BufferedReader reader = new BufferedReader(new FileReader(CodeGenUtils.getResourceFromWithin(filePath)));
 			final Gson gson = new Gson();
 
 			pages = gson.fromJson(reader, new TypeToken<List<Page>>() {}.getType());

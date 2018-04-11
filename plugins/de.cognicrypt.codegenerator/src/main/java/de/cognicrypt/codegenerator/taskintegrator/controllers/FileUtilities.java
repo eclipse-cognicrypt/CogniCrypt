@@ -34,7 +34,6 @@ import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
-
 import org.xml.sax.SAXException;
 
 import com.google.gson.Gson;
@@ -42,12 +41,12 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.tasks.Task;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
+import de.cognicrypt.core.Constants;
 
 public class FileUtilities {
 
@@ -107,7 +106,7 @@ public class FileUtilities {
 	}
 	
 	private void writeHelpFile(String helpFileContents) {
-		File xmlFile = new File(Utils.getResourceFromWithin(Constants.HELP_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XML_EXTENSION);
+		File xmlFile = new File(CodeGenUtils.getResourceFromWithin(Constants.HELP_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XML_EXTENSION);
 
 		try {
 			PrintWriter writer = new PrintWriter(xmlFile);
@@ -295,15 +294,15 @@ public class FileUtilities {
 			try {
 				
 				if(existingFileLocation.getPath().endsWith(Constants.CFR_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.CFR_EXTENSION);
+					targetDirectory = new File(CodeGenUtils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.CFR_EXTENSION);
 				} else if (existingFileLocation.getPath().endsWith(Constants.JS_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.JS_EXTENSION);
+					targetDirectory = new File(CodeGenUtils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.JS_EXTENSION);
 				} else if(existingFileLocation.getPath().endsWith(Constants.JSON_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.JSON_EXTENSION);
+					targetDirectory = new File(CodeGenUtils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.JSON_EXTENSION);
 				} else if(existingFileLocation.getPath().endsWith(Constants.XSL_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XSL_EXTENSION);
+					targetDirectory = new File(CodeGenUtils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XSL_EXTENSION);
 				} else if (existingFileLocation.getPath().endsWith(Constants.XML_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.HELP_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XML_EXTENSION);
+					targetDirectory = new File(CodeGenUtils.getResourceFromWithin(Constants.HELP_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XML_EXTENSION);
 				}
 				else {
 					throw new Exception("Unknown file type.");
@@ -321,7 +320,7 @@ public class FileUtilities {
 			}
 			// If we are dealing with a custom library location.
 		} else if (existingFileLocation.exists() && existingFileLocation.isDirectory()) {
-			File tempDirectory = new File(Utils.getResourceFromWithin(Constants.JAR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.innerFileSeparator);
+			File tempDirectory = new File(CodeGenUtils.getResourceFromWithin(Constants.JAR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.innerFileSeparator);
 			tempDirectory.mkdir();
 			// Loop through all the containing files.
 			for (File customLibFile : existingFileLocation.listFiles()) {
@@ -348,13 +347,13 @@ public class FileUtilities {
 		BufferedWriter writer = null;
 		final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		try {
-			reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(Constants.jsonTaskFile)));
+			reader = new BufferedReader(new FileReader(CodeGenUtils.getResourceFromWithin(Constants.jsonTaskFile)));
 			List<Task> tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {}.getType());	
 			// Add the new task to the list.
 			tasks.add(task);
 			reader.close();
 			
-			writer = new BufferedWriter(new FileWriter(Utils.getResourceFromWithin(Constants.jsonTaskFile)));			
+			writer = new BufferedWriter(new FileWriter(CodeGenUtils.getResourceFromWithin(Constants.jsonTaskFile)));
 			gson.toJson(tasks, new TypeToken<List<Task>>() {}.getType(), writer);
 			writer.close();
 			
@@ -369,7 +368,7 @@ public class FileUtilities {
 	 * @param claferModel
 	 */
 	private void writeCFRFile(ClaferModel claferModel) {
-		File cfrFile = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.CFR_EXTENSION);
+		File cfrFile = new File(CodeGenUtils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.CFR_EXTENSION);
 		try {
 			FileWriter writer = new FileWriter(cfrFile);
 			writer.write(claferModel.toString());
@@ -412,7 +411,7 @@ public class FileUtilities {
 			e.printStackTrace();
 		}
 
-		File jsonFile = new File(Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTaskName() + Constants.JSON_EXTENSION);
+		File jsonFile = new File(CodeGenUtils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTaskName() + Constants.JSON_EXTENSION);
 
 		try {
 		Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
@@ -437,7 +436,7 @@ public class FileUtilities {
 	 * @param xslFileContents
 	 */
 	private void writeXSLFile(String xslFileContents) {
-		File xslFile = new File(Utils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XSL_EXTENSION);
+		File xslFile = new File(CodeGenUtils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XSL_EXTENSION);
 		
 		try {
 			PrintWriter writer = new PrintWriter(xslFile);
@@ -456,9 +455,9 @@ public class FileUtilities {
 	}
 	
 	public void updateThePluginXMLFileWithHelpData(String machineReadableTaskName) {
-		File pluginXMLFile = Utils.getResourceFromWithin(Constants.PLUGIN_XML_FILE);
+		File pluginXMLFile = CodeGenUtils.getResourceFromWithin(Constants.PLUGIN_XML_FILE);
 		if (!pluginXMLFile.exists()) {
-			pluginXMLFile = Utils.getResourceFromWithin("src" + Constants.innerFileSeparator + ".." + Constants.innerFileSeparator + Constants.PLUGIN_XML_FILE);
+			pluginXMLFile = CodeGenUtils.getResourceFromWithin("src" + Constants.innerFileSeparator + ".." + Constants.innerFileSeparator + Constants.PLUGIN_XML_FILE);
 		}
 		SAXReader reader = new SAXReader();
 		Document pluginXMLDocument = null;

@@ -5,8 +5,6 @@ import static org.junit.Assert.assertNotEquals;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -23,9 +21,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.providerUtils.XsltWriter;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
+import de.cognicrypt.core.Constants;
 
 public class XsltWriterTest {
 	
@@ -35,12 +33,12 @@ public class XsltWriterTest {
 	Document doc;
 	Element rootElement;
 	File xmlFile;
-	File xslFile=Utils.getResourceFromWithin(Constants.testPrimitverFolder+"xslTest.xsl");
+	File xslFile = CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder + "xslTest.xsl");
 	File resultTest;
 	@Before
 	public void setUp() {
 		try {
-			xmlFile=new File(Utils.getResourceFromWithin(Constants.testPrimitverFolder)+"xmlTestFile.xml");
+			xmlFile = new File(CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder) + "xmlTestFile.xml");
 			xslt = new XsltWriter();
 			xslt.createDocument();
 			xslt.setRoot("testRoot");
@@ -55,7 +53,7 @@ public class XsltWriterTest {
 	public void xmlTransformTest() throws TransformerException, ParserConfigurationException, TransformerFactoryConfigurationError, SAXException, IOException {
 		xslt.transformXml(xmlFile);
 		xslt.transformXsl(xslFile, xmlFile);
-		resultTest=Utils.getResourceFromWithin(Constants.primitivesPath +Constants.innerFileSeparator+ "transformedFile.txt");
+		resultTest = CodeGenUtils.getResourceFromWithin(Constants.primitivesPath + Constants.innerFileSeparator + "transformedFile.txt");
 		String content = readFile(resultTest.getAbsolutePath());
 		assertEquals(content,"this test is a success.");
 		assertNotEquals(xmlFile.length(),0);

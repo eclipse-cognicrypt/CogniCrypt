@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SymmetricBlockCipher>
-   <name>AES</name>
-   <description>foziefjz</description>
+   <name>FZUHFO</name>
+   <description>OOIZRDOZJGPZFJOEZ</description>
    <blocksize>25</blocksize>
-   <keySize1>25</keySize1>
-   <mode>CFB</mode>
-   <padding>ZeroPadding|PKCS7</padding>
+   <keySize1>485</keySize1>
+   <mode>CFB|CTR</mode>
+   <padding>ZeroPadding</padding>
 </SymmetricBlockCipher>

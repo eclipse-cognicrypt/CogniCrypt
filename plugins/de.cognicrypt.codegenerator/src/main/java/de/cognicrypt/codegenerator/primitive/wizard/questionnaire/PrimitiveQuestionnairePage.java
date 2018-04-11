@@ -37,7 +37,6 @@ import de.cognicrypt.core.Constants;
 
 public class PrimitiveQuestionnairePage extends WizardPage {
 
-	private final Question quest;
 	private final Primitive primitive;
 	private LinkedHashMap<String, String> selectionMap = new LinkedHashMap<String, String>();
 	private PrimitiveQuestionPageUtility pageUtility;
@@ -57,8 +56,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	 * @param primitive
 	 *        primitive for which the page is created
 	 * @param selectionValues
-	 *        The call to this constructor needs to have this extra parameter for itemselection. list of selectable strings if element type of quest is itemselection, null
-	 *        otherwise
+	 *        
 	 */
 	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, final List<String> selectionValues) {
 		super("Display Questions");
@@ -66,8 +64,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		setDescription("Please enter the following data related to the primitive.");
 		this.page = page;
 		this.primitive = primitive;
-		//This variable needs to be initialized.
-		this.quest = null;
 	}
 
 	/**
@@ -75,14 +71,14 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	 * @param page
 	 * @param primitive
 	 * @param PrimitiveQuestionnaire
-	 *        Updated this parameter in the constructor to accept the questionnaire instead of all the questions.
 	 * @param selectionValues
+	 * @param iteration
+	 * 			This parameter is used for number of keysizes.
 	 */
 	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, final PrimitiveQuestionnaire PrimitiveQuestionnaire, final List<String> selectionValues, int iteration) {
 		super("Display Questions");
 		setTitle("Integrating a new primitive: " + primitive.getName());
 		setDescription("Please enter the following data related to the primitive.");
-		this.quest = null;
 		this.page = page;
 		this.primitive = primitive;
 		this.iteration = iteration;

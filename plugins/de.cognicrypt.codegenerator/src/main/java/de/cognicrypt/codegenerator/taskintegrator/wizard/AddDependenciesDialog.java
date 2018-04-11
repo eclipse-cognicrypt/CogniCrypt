@@ -315,31 +315,65 @@ public class AddDependenciesDialog extends Dialog {
 
 	@Override
 	protected void okPressed() {
-		saveCodeTabInput();
+		saveInput();
 		super.okPressed();
 	}
 
 	/**
-	 * sets the code dependency option field of each answer of the question
+	 * Saves the dialog box details
 	 */
-	private void saveCodeTabInput() {
+	private void saveInput() {
 		for (Answer answer : question.getAnswers()) {
-			for (CodeDependency cd : answer.getCodeDependencies()) {
-				if (variableTxtBoxForCodeTab.getText().equals("")) {
-					cd.setOption(getCapitaliseQuestionText(question.getQuestionText()));
-				} else {
-					if (cd.getValue() != null) {
-					cd.setOption(variableTxtBoxForCodeTab.getText());
+			if (answer.getClaferDependencies() != null) {
+				if (!question.getElement().equals(Constants.GUIElements.text)) {
+					// removes the empty clafer dependency objects
+					for (int i = 0; i < answer.getClaferDependencies().size();) {
+						if (answer.getClaferDependencies().get(i).getAlgorithm() == null || answer.getClaferDependencies().get(i).getAlgorithm() == "") {
+							answer.getClaferDependencies().remove(i);
+						} else {
+							i++;
+						}
 					}
-				}
-
-				if (question.getElement().equals(Constants.GUIElements.text)) {
-					cd.setValue("");
+					// sets the clafer Dependencies to null if the size is 0
+					if (answer.getClaferDependencies().size() == 0) {
+						answer.setClaferDependencies(null);
+					}
 				}
 			}
 
-		}
+			if (answer.getCodeDependencies() != null) {
+				if (!question.getElement().equals(Constants.GUIElements.text)) {
+					// removes the empty code dependency objects if question type is not text
+					for (int i = 0; i < answer.getCodeDependencies().size();) {
+						if (answer.getCodeDependencies().get(i).getValue() == null || answer.getCodeDependencies().get(i).getValue() == "") {
+							answer.getCodeDependencies().remove(i);
+						} else {
+							i++;
+						}
+					}
+					// sets the code Dependencies to null if the size is 0
+					if (answer.getCodeDependencies().size() == 0) {
+						answer.setCodeDependencies(null);
+					}
+				}
+			}
 
+
+			if (answer.getCodeDependencies() != null) {
+				for (CodeDependency cd : answer.getCodeDependencies()) {
+					if (variableTxtBoxForCodeTab.getText().equals("")) {
+						cd.setOption(getCapitaliseQuestionText(question.getQuestionText()));
+					} else {
+						if (cd.getValue() != null) {
+							cd.setOption(variableTxtBoxForCodeTab.getText());
+						}
+					}
+					if (question.getElement().equals(Constants.GUIElements.text)) {
+						cd.setValue("");
+					}
+				}
+			}
+		}
 	}
 
 }

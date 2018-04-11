@@ -73,6 +73,7 @@ public class XslPage extends PageForTaskIntegratorWizard {
 		Button btnAddXSLTag = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
 		btnAddXSLTag.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 		btnAddXSLTag.setText("Add Xsl Tag");
+		
 		Button btnReadCode = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
 		btnReadCode.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 		btnReadCode.setText("Get the code");
@@ -113,6 +114,8 @@ public class XslPage extends PageForTaskIntegratorWizard {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				
+				int scrollbarPosY = getCompositeForXsl().getXslTxtBox().getTopPixel();
 
 				// this is needed to get the name and the description of the task from the wizard.
 				ModelAdvancedMode objectForDataInGuidedMode = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD))
@@ -142,6 +145,7 @@ public class XslPage extends PageForTaskIntegratorWizard {
 					xslTxtBoxContent = xslTxtBoxContent.substring(0, selected.x) + dialog.getTag().toString() + xslTxtBoxContent.substring(selected.y, xslTxtBoxContent.length());
 					getCompositeForXsl().getXslTxtBox().setText(xslTxtBoxContent);
 					getCompositeForXsl().colorizeTextBox();
+					getCompositeForXsl().getXslTxtBox().setTopPixel(scrollbarPosY);
 				}
 
 			}

@@ -421,8 +421,9 @@ public class FileUtilities {
 		//creates the writer object for json file  
 			FileWriter writerForJsonFile = new FileWriter(jsonFile);
 
-		//write the data into the .json file  
-				writerForJsonFile.write(gson.toJson(pages));
+			//write the data into the .json file  
+			writerForJsonFile.write(gson.toJson(pages));
+			writerForJsonFile.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

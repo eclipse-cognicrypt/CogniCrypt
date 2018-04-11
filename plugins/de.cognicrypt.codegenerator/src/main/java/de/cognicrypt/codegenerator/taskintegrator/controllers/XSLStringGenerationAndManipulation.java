@@ -44,7 +44,7 @@ public class XSLStringGenerationAndManipulation {
 	public static String generateXSLStringFromPath(String filePath, String existingText, Point selected, String stringToAdd) {
 		StringBuilder dataFromFile = new StringBuilder();
 
-		String xslStringBeforeAddingText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"2.0\">\n<xsl:output method=\"text\"/>\n<xsl:template match=\"/\">\npackage <xsl:value-of select=\"//task/Package\"/>; \n<xsl:apply-templates select=\"//Import\"/>\n";
+		String xslStringBeforeAddingText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"2.0\">\n<xsl:output method=\"text\"/>\n<xsl:template match=\"/\">\n\n\n\npackage <xsl:value-of select=\"//task/Package\"/>; \n<xsl:apply-templates select=\"//Import\"/>\n";
 		String xslStringAfterAddingText = "\n</xsl:template>\n<xsl:template match=\"Import\">\nimport <xsl:value-of select=\".\"/>;\n</xsl:template>\n</xsl:stylesheet>";
 
 		if (filePath != null) {
@@ -56,7 +56,8 @@ public class XSLStringGenerationAndManipulation {
 				if (existingText.contains("<?xml version=") || existingText.contains("<xsl:stylesheet xmlns:xsl=")) {
 					dataFromFile.append(existingText.substring(0, selected.x));
 					dataFromFile.append("\n");
-					dataFromFile.append("<xsl:result-document href=\"\">");
+					dataFromFile.append("<xsl:result-document href=\"\">\n");
+					dataFromFile.append("package <xsl:value-of select=\"//task/Package\"/>;\n<xsl:apply-templates select=\"//Import\"/>\n");
 					dataFromFile.append("\n");
 					appendTextFromFileToStringBuilder(dataFromFile, filePath);
 					dataFromFile.append("\n");

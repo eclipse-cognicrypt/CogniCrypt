@@ -1,6 +1,5 @@
 package de.cognicrypt.codegenerator.taskintegrator.test;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -57,12 +56,7 @@ public class XSLTests {
 				validTag = false;
 			}
 
-
-			if (tag.getXSLTagDetails().getXSLTagFaceName().equals("Otherwise")) {
-				assertFalse(validTag);
-			} else {
-				assertTrue(validTag);
-			}
+			assertTrue(validTag);
 			
 		}
 	}

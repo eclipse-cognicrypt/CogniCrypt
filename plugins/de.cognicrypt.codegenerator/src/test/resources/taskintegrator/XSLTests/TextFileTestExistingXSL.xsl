@@ -2,13 +2,16 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
 <xsl:output method="text"/>
 <xsl:template match="/">
+
+
+
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
 
-
-
-
 <xsl:result-document href="">
+package <xsl:value-of select="//task/Package"/>;
+<xsl:apply-templates select="//Import"/>
+
 Random text file
 
 
@@ -19,6 +22,9 @@ SICS
 This is only a test.
 
 </xsl:result-document>
+
+
+
 </xsl:template>
 <xsl:template match="Import">
 import <xsl:value-of select="."/>;

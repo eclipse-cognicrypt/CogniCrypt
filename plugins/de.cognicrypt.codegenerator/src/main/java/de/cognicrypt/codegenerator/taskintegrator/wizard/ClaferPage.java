@@ -223,7 +223,9 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 			String descriptionConstraint = "description = \"" + taskDescription + "\"";
 
 			if (this.compositeToHoldGranularUIElements.getClaferModel().getClaferModel().isEmpty()) {
-				String defaultFeatureSetPath = CodeGenUtils.getResourceFromWithin("src/main/resources/ClaferModelBin/DefaultFeatureSet.dat").getAbsolutePath();
+				String defaultFeatureSetPath = CodeGenUtils
+					.getResourceFromWithin(Constants.CFR_BIN_FILE_DIRECTORY_PATH + Constants.DEFAULT_FEATURE_SET_FILE + Constants.CFR_BIN_EXTENSION)
+					.getAbsolutePath();
 				ClaferModel defaultFeaturesModel = ClaferModel.createFromBinaries(defaultFeatureSetPath);
 
 				ClaferFeature taskFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, taskName, "Task");

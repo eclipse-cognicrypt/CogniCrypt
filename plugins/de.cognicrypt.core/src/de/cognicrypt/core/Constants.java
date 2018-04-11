@@ -415,18 +415,22 @@ public class Constants {
 	// for the file utils for the task integrator.
 	public static final String JAR_FILE_DIRECTORY_PATH = rsrcPath + "AdditionalResources" + innerFileSeparator;
 	public static final String CFR_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModel" + innerFileSeparator;
+	public static final String CFR_BIN_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModelBin" + innerFileSeparator;
 	public static final String JSON_FILE_DIRECTORY_PATH = rsrcPath + "TaskDesc" + innerFileSeparator;
 	public static final String XML_FILE_DIRECTORY_PATH = rsrcPath + "Help" + innerFileSeparator;
 	public static final String pluginXmlFile = "plugin.xml";
 	public static final String XSL_FILE_DIRECTORY_PATH = rsrcPath + "XSLTemplates" + innerFileSeparator;
 	public static final String HELP_FILE_DIRECTORY_PATH = rsrcPath + "Help" + innerFileSeparator;
 	public static final String CFR_EXTENSION = ".cfr";
+	public static final String CFR_BIN_EXTENSION = ".dat";
 	public static final String JS_EXTENSION = ".js";
 	public static final String JAR_EXTENSION = ".jar";
 	public static final String JSON_EXTENSION = ".json";
 	public static final String XML_EXTENSION = ".xml";
 	public static final String XSL_EXTENSION = ".xsl";
 	public static final String PLUGIN_XML_FILE = innerFileSeparator + "plugin.xml";
+
+	public static final String DEFAULT_FEATURE_SET_FILE = "DefaultFeatureSet";
 
 	//for the list of items to be included inside the combo of the questionTab
 	public static final String dropDown = "Drop down";

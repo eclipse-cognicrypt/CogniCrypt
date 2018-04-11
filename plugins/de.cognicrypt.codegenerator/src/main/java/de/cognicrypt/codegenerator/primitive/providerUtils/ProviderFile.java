@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -18,7 +17,7 @@ import javax.tools.ToolProvider;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
-import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.core.Constants;
 
 /**
  * A class that generate the provider file

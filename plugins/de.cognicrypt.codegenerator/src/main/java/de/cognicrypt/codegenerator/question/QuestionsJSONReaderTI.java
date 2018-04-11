@@ -10,7 +10,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 
 public class QuestionsJSONReaderTI {
 
@@ -24,7 +24,7 @@ public class QuestionsJSONReaderTI {
 	public ArrayList<Question> readQuestionsFromFile(String filePath) {
 		ArrayList<Question> originalQuestionList = new ArrayList<>();
 		try {
-			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(filePath)));
+			final BufferedReader reader = new BufferedReader(new FileReader(CodeGenUtils.getResourceFromWithin(filePath)));
 			Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 			originalQuestionList = gson.fromJson(reader, new TypeToken<ArrayList<Question>>() {}.getType());
 		} catch (FileNotFoundException e) {
@@ -43,7 +43,7 @@ public class QuestionsJSONReaderTI {
 	public ArrayList<Page> readPageFromFile(String filePath) {
 		ArrayList<Page> originalPageList = new ArrayList<>();
 		try {
-			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(filePath)));
+			final BufferedReader reader = new BufferedReader(new FileReader(CodeGenUtils.getResourceFromWithin(filePath)));
 			Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 			originalPageList = gson.fromJson(reader, new TypeToken<ArrayList<Page>>() {}.getType());
 		} catch (FileNotFoundException e) {

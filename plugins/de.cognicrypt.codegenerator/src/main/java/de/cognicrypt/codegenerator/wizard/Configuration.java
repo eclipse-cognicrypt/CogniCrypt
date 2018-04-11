@@ -13,12 +13,12 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.utilities.FileHelper;
 import de.cognicrypt.codegenerator.utilities.XMLParser;
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.utils.FileHelper;
 
 /**
  * This class is a storage for the configuration chosen by the user.
@@ -65,13 +65,16 @@ public class Configuration {
 	 * @return List of custom providers
 	 */
 	public List<String> getProviders() {
-		List<String> provider = new ArrayList<String>();
+		List<String> providers = new ArrayList<String>();
 		for (InstanceClafer instanceChild : instance.getChildren()) {
 			if (instanceChild.hasRef() && instanceChild.getRef() instanceof InstanceClafer) {
 				for (InstanceClafer innerChild : ((InstanceClafer) instanceChild.getRef()).getChildren()) {
 					if (ClaferModelUtils.removeScopePrefix(innerChild.getType().getName()).equals("Provider")) {
 						try {
-							provider.add(ClaferModelUtils.removeScopePrefix(((InstanceClafer) innerChild.getRef()).getType().getName()));
+							String provider = ClaferModelUtils.removeScopePrefix(((InstanceClafer) innerChild.getRef()).getType().getName());
+							if (!provider.equals(Constants.DEFAULT_PROVIDER)) {
+								providers.add(provider);
+							}
 						} catch (ClassCastException ex) {
 							Activator.getDefault().logError(ex, "Not all custom providers set successfully.");
 						}
@@ -79,7 +82,7 @@ public class Configuration {
 				}
 			}
 		}
-		return provider;
+		return providers;
 	}
 
 	/**

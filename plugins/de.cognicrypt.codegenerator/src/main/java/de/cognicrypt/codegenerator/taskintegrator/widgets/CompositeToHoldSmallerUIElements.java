@@ -14,8 +14,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.MessageBox;
 
-import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.Constants.XSLTags;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.question.Question;
@@ -25,6 +23,8 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 import de.cognicrypt.codegenerator.taskintegrator.models.XSLAttribute;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.ClaferConstraintDialog;
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.core.Constants.XSLTags;
 
 public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 

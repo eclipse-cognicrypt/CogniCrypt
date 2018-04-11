@@ -53,13 +53,13 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.utils.Utils;
 
 /**
  * This class is responsible for displaying the instances the Clafer instance generator generated.

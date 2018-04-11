@@ -20,12 +20,12 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
-import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.Constants.XSLTags;
 import de.cognicrypt.codegenerator.taskintegrator.models.XSLAttribute;
 import de.cognicrypt.codegenerator.taskintegrator.models.XSLTag;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldSmallerUIElements;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.GroupXSLTagAttribute;
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.core.Constants.XSLTags;
 
 
 public class XSLTagDialog extends Dialog {

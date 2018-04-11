@@ -3,21 +3,20 @@ package de.cognicrypt.codegenerator.primitive.test;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.types.Primitive;
 import de.cognicrypt.codegenerator.primitive.types.PrimitiveJSONReader;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
+import de.cognicrypt.core.Constants;
 
 public class PrimitiveTypesTest {
 
 	private static PrimitiveJSONReader jsonReader = new PrimitiveJSONReader();
-	private File primitiveTestFile = Utils.getResourceFromWithin(Constants.testPrimitverFolder + "PrimitiveTest.json");
+	private File primitiveTestFile = CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder + "PrimitiveTest.json");
 	private static Primitive primitive = new Primitive();
 
 	@BeforeClass

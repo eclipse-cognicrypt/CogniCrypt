@@ -57,9 +57,9 @@ import crypto.rules.ParEqualsPredicate;
 import crypto.rules.StateMachineGraph;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
-import de.cognicrypt.staticanalyzer.Activator;
-import de.cognicrypt.staticanalyzer.Constants;
-import de.cognicrypt.staticanalyzer.Utils;
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.crysl.handler.Activator;
+import de.cognicrypt.utils.Utils;
 import de.darmstadt.tu.crossing.CryptSL.ui.internal.CryptSLActivator;
 import de.darmstadt.tu.crossing.cryptSL.ArithmeticExpression;
 import de.darmstadt.tu.crossing.cryptSL.ArithmeticOperator;
@@ -99,7 +99,7 @@ public class CrySLModelReader {
 		IProject iproject = crySLFile.getProject();
 		if (iproject == null) {
 			// if no project selected abort with error message
-			iproject = Utils.createListOfJavaProjectsInCurrentWorkspace().get(0);
+			iproject = Utils.complileListOfJavaProjectsInWorkspace().get(0);
 		}
 		if (iproject.isOpen()) {
 			resourceSet.setClasspathURIContext(JavaCore.create(iproject));
@@ -119,7 +119,7 @@ public class CrySLModelReader {
 			}
 			final Resource resource = resourceSet.getResource(
 					URI.createPlatformResourceURI(
-							rulesFolder.toPortableString() + Constants.OUTER_FILE_SEPARATOR + fileName, true),
+					rulesFolder.toPortableString() + Constants.outerFileSeparator + fileName, true),
 					true);
 			EcoreUtil.resolveAll(resourceSet);
 			final EObject eObject = resource.getContents().get(0);
@@ -159,7 +159,7 @@ public class CrySLModelReader {
 			System.out.println("===========================================");
 			System.out.println("");
 
-			storeRuletoFile(rule, Utils.getResourceFromWithin("resources/CrySLRules").getAbsolutePath(), className);
+			storeRuletoFile(rule, Utils.getResourceFromWithin("resources/CrySLRules", de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath(), className);
 
 			final String filePath = "C:\\Users\\stefank3\\git\\CryptoAnalysis\\CryptoAnalysis\\src\\test\\resources\\";
 			if ((new File(filePath)).exists()) {

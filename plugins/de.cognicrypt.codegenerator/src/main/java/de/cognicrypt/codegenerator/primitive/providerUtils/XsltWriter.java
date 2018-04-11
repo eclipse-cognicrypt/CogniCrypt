@@ -19,8 +19,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import de.cognicrypt.codegenerator.Constants;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
+import de.cognicrypt.core.Constants;
 
 public class XsltWriter {
 
@@ -76,7 +76,7 @@ public class XsltWriter {
 		StreamSource styleSource = new StreamSource(xslFile);
 		Transformer t = TransformerFactory.newInstance().newTransformer(styleSource);
 		Document xml = builder.parse(xmlFile);
-		File resultFile = new File(Utils.getResourceFromWithin(Constants.primitivesPath) +Constants.innerFileSeparator+ "test.txt");
+		File resultFile = new File(CodeGenUtils.getResourceFromWithin(Constants.primitivesPath) + Constants.innerFileSeparator + "test.txt");
 		StreamResult result = new StreamResult(resultFile);
 		//transformation 
 		t.transform(new DOMSource(xml), result);

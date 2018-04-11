@@ -3,20 +3,18 @@ package de.cognicrypt.codegenerator.taskintegrator.wizard;
 import java.io.File;
 import java.util.ArrayList;
 
-
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
-
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.FileUtilities;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeForXsl;
 import de.cognicrypt.codegenerator.taskintegrator.widgets.CompositeToHoldGranularUIElements;
+import de.cognicrypt.core.Constants;
 
 public class TaskIntegrationWizard extends Wizard {
 

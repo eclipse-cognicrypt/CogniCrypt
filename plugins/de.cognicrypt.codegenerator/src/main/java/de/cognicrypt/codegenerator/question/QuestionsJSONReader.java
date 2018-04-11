@@ -13,7 +13,7 @@ import com.google.gson.reflect.TypeToken;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.tasks.Task;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 
 /**
  * This class reads all questions and answers of one task.
@@ -34,7 +34,7 @@ public class QuestionsJSONReader {
 	public List<Question> getQuestions(final String filePath) {
 		List<Question> questions = new ArrayList<>();
 		try {
-			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(filePath)));
+			final BufferedReader reader = new BufferedReader(new FileReader(CodeGenUtils.getResourceFromWithin(filePath)));
 			final Gson gson = new Gson();
 
 			questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
@@ -57,7 +57,7 @@ public class QuestionsJSONReader {
 	public List<Page> getPages(final String filePath) {
 		List<Page> pages = new ArrayList<>();
 		try {
-			final BufferedReader reader = new BufferedReader(new FileReader(Utils.getResourceFromWithin(filePath)));
+			final BufferedReader reader = new BufferedReader(new FileReader(CodeGenUtils.getResourceFromWithin(filePath)));
 			final Gson gson = new Gson();
 
 			pages = gson.fromJson(reader, new TypeToken<List<Page>>() {}.getType());

@@ -12,8 +12,8 @@ import java.util.Iterator;
 import java.util.function.Predicate;
 
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.ClaferCompiler;
+import de.cognicrypt.core.Constants;
 
 public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 

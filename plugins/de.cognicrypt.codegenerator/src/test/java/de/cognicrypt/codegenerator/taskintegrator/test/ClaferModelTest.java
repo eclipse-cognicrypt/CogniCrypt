@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import org.junit.AfterClass;
 import org.junit.Test;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
+import de.cognicrypt.core.Constants;
 
 
 public class ClaferModelTest {

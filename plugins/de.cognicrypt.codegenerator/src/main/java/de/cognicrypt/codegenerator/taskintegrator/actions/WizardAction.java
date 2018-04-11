@@ -7,8 +7,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.TaskIntegrationWizard;
+import de.cognicrypt.core.Constants;
 
 public class WizardAction implements IWorkbenchWindowActionDelegate {
 

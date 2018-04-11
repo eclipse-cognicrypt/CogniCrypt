@@ -22,7 +22,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.core.Constants;
 
 public class UserJavaProject {
 

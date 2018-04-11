@@ -1,6 +1,6 @@
 package de.cognicrypt.codegenerator.taskintegrator.models;
 
-import de.cognicrypt.codegenerator.Constants;
+import de.cognicrypt.core.Constants;
 
 public class XSLAttribute {
 	

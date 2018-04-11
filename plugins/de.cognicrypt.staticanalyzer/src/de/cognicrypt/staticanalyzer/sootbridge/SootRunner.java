@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 
 import com.google.common.base.Joiner;
@@ -19,7 +18,7 @@ import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
 import de.cognicrypt.staticanalyzer.Activator;
-import de.cognicrypt.staticanalyzer.Utils;
+import de.cognicrypt.utils.Utils;
 import soot.G;
 import soot.PackManager;
 import soot.Scene;

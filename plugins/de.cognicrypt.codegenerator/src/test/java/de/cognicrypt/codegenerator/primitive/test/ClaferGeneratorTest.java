@@ -8,8 +8,8 @@ import java.util.LinkedHashMap;
 
 import org.junit.Test;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.clafer.ClaferGenerator;
+import de.cognicrypt.core.Constants;
 
 public class ClaferGeneratorTest {
 

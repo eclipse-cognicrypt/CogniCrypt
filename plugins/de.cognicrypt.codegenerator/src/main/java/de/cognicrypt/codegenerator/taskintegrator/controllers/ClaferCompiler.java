@@ -1,7 +1,7 @@
 package de.cognicrypt.codegenerator.taskintegrator.controllers;
 
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 
 public class ClaferCompiler {
 
@@ -10,11 +10,11 @@ public class ClaferCompiler {
 		String osString = System.getProperty("os.name");
 
 		if (osString.contains("Linux")) {
-			return Utils.getResourceFromWithin("src/main/resources/bin/clafer-linux").getAbsolutePath();
+			return CodeGenUtils.getResourceFromWithin("src/main/resources/bin/clafer-linux").getAbsolutePath();
 		} else if (osString.contains("Mac OS X")) {
-			return Utils.getResourceFromWithin("src/main/resources/bin/clafer-macos").getAbsolutePath();
+			return CodeGenUtils.getResourceFromWithin("src/main/resources/bin/clafer-macos").getAbsolutePath();
 		} else if (osString.contains("Windows 7") || osString.contains("Windows 8") || osString.contains("Windows 10")) {
-			return Utils.getResourceFromWithin("src/main/resources/bin/clafer-windows.exe").getAbsolutePath();
+			return CodeGenUtils.getResourceFromWithin("src/main/resources/bin/clafer-windows.exe").getAbsolutePath();
 		}
 		
 		// rely on the PATH variable if full path cannot be found

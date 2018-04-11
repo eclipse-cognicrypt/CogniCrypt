@@ -12,13 +12,13 @@ import java.util.LinkedHashMap;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.providerUtils.Helper;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
+import de.cognicrypt.core.Constants;
 
 public class HelperTest {
 
-	static File file = Utils.getResourceFromWithin(Constants.testPrimitverFolder + "testJava.java");
+	static File file = CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder + "testJava.java");
 	Helper helper = new Helper();
 	int nbLinesInFile = 0;
 	int nbLinesInCode = 0;
@@ -46,7 +46,7 @@ public class HelperTest {
 
 	@Test
 	public void CompareCodeSource() {
-		LinkedHashMap<String, String> map = helper.getSourceCode(Utils.getResourceFromWithin(Constants.testPrimitverFolder));
+		LinkedHashMap<String, String> map = helper.getSourceCode(CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder));
 		for (String key : map.keySet()) {
 			nbLinesInCode = countLinesInString(map.get(key));
 		}

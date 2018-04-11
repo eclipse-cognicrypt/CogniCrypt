@@ -3,10 +3,10 @@ package de.cognicrypt.codegenerator.taskintegrator.controllers;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.core.Constants;
 
 public class SegregatesQuestionsIntoPages {
 

@@ -116,4 +116,11 @@ Except as expressly stated in Sections 2(a) and 2(b) above, Recipient receives n
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="de.cognicrypt.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>

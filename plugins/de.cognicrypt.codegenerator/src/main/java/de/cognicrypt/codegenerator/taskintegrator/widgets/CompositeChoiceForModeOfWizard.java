@@ -23,12 +23,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.UIConstants;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.Validator;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.ModelAdvancedMode;
 import de.cognicrypt.codegenerator.taskintegrator.wizard.PageForTaskIntegratorWizard;
+import de.cognicrypt.core.Constants;
 
 public class CompositeChoiceForModeOfWizard extends Composite {
 	private ModelAdvancedMode objectForDataInNonGuidedMode;

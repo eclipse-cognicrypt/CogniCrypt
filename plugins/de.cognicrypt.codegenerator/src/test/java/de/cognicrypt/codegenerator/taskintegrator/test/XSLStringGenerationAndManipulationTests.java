@@ -21,7 +21,6 @@ import org.eclipse.swt.graphics.Point;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.question.QuestionsJSONReader;
@@ -30,7 +29,8 @@ import de.cognicrypt.codegenerator.taskintegrator.controllers.XmlRegion;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.XmlRegionAnalyzer;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
+import de.cognicrypt.core.Constants;
 
 public class XSLStringGenerationAndManipulationTests {
 
@@ -49,14 +49,14 @@ public class XSLStringGenerationAndManipulationTests {
 	@Before
 	public void getxslFileFromMainResources() {
 		// get the first file from the list of active xsl files for the test.
-		xslFilePath = Utils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH).listFiles()[0];
+		xslFilePath = CodeGenUtils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH).listFiles()[0];
 		testResourceLocation = "src" + Constants.innerFileSeparator + "test" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator + "taskintegrator" + Constants.innerFileSeparator + "XSLTests" + Constants.innerFileSeparator;
-		javaFilePath = Utils.getResourceFromWithin(testResourceLocation + "JavaFileTest.java");
-		txtFilePath = Utils.getResourceFromWithin(testResourceLocation + "TextFileTest.txt");
-		javaXSLFilePath = Utils.getResourceFromWithin(testResourceLocation + "JavaFileTest.xsl");
-		txtXSLFilePath = Utils.getResourceFromWithin(testResourceLocation + "TextFileTest.xsl");
-		javaXSLFileWithExistingXSLPath = Utils.getResourceFromWithin(testResourceLocation + "JavaFileTestExistingXSL.xsl");
-		txtXSLFileWithExistingXSLPath = Utils.getResourceFromWithin(testResourceLocation + "TextFileTestExistingXSL.xsl");
+		javaFilePath = CodeGenUtils.getResourceFromWithin(testResourceLocation + "JavaFileTest.java");
+		txtFilePath = CodeGenUtils.getResourceFromWithin(testResourceLocation + "TextFileTest.txt");
+		javaXSLFilePath = CodeGenUtils.getResourceFromWithin(testResourceLocation + "JavaFileTest.xsl");
+		txtXSLFilePath = CodeGenUtils.getResourceFromWithin(testResourceLocation + "TextFileTest.xsl");
+		javaXSLFileWithExistingXSLPath = CodeGenUtils.getResourceFromWithin(testResourceLocation + "JavaFileTestExistingXSL.xsl");
+		txtXSLFileWithExistingXSLPath = CodeGenUtils.getResourceFromWithin(testResourceLocation + "TextFileTestExistingXSL.xsl");
 
 	}
 
@@ -176,7 +176,7 @@ public class XSLStringGenerationAndManipulationTests {
 	 */
 	@Test
 	public void testComputeStyleForXMLRegions() throws IOException {
-		File testFile = Utils.getResourceFromWithin(testResourceLocation + "StackOverflowExample.xml");
+		File testFile = CodeGenUtils.getResourceFromWithin(testResourceLocation + "StackOverflowExample.xml");
 		
 		StringBuilder builder = new StringBuilder();
 		BufferedReader r = Files.newBufferedReader(testFile.toPath(), StandardCharsets.UTF_8);

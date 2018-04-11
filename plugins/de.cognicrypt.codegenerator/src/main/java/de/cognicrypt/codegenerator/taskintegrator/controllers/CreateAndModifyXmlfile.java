@@ -10,7 +10,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -24,10 +23,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
+import de.cognicrypt.core.Constants;
 
 public class CreateAndModifyXmlfile {
 
@@ -87,7 +86,7 @@ public class CreateAndModifyXmlfile {
 		/**
 		 * Calls the following method to add the path to the new xml file in the plugin.xml
 		 */
-		updatePluginXmlFile(Utils.getResourceFromWithin(Constants.pluginXmlFile));
+		updatePluginXmlFile(CodeGenUtils.getResourceFromWithin(Constants.pluginXmlFile));
 
 
 	}
@@ -100,7 +99,7 @@ public class CreateAndModifyXmlfile {
 	 */
 	private void createXmlFile() throws IOException {
 
-		File xmlFileTargetDirectory = new File(Utils.getResourceFromWithin(Constants.XML_FILE_DIRECTORY_PATH), getTaskName() + Constants.XML_EXTENSION);
+		File xmlFileTargetDirectory = new File(CodeGenUtils.getResourceFromWithin(Constants.XML_FILE_DIRECTORY_PATH), getTaskName() + Constants.XML_EXTENSION);
 		//creates the xml file
 		xmlFileTargetDirectory.createNewFile();
 
@@ -133,7 +132,7 @@ public class CreateAndModifyXmlfile {
 	 */
 	public void addHelpContentToXmlFile(String pageHelpContent, int pageId) throws ParserConfigurationException, SAXException, IOException, TransformerException {
 
-		File xmlFile = Utils.getResourceFromWithin(getFilePath());
+		File xmlFile = CodeGenUtils.getResourceFromWithin(getFilePath());
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 		Document doc = docBuilder.parse(xmlFile);
@@ -207,7 +206,7 @@ public class CreateAndModifyXmlfile {
 						extension.appendChild(contexts);
 
 						Attr file = doc.createAttribute(Constants.fileAttribute);
-						String filePath = Utils.getResourceFromWithin(getFilePath()).toString();
+						String filePath = CodeGenUtils.getResourceFromWithin(getFilePath()).toString();
 						filePath = filePath.replace("\\", "/");
 						file.setValue(filePath.substring(filePath.indexOf(Constants.startingFrom)));
 						contexts.setAttributeNode(file);

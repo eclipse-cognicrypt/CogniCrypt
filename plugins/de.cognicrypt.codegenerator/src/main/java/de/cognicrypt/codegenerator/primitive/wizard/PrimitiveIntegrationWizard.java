@@ -9,13 +9,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.eclipse.jdt.core.JavaModelException;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.xml.sax.SAXException;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.primitive.clafer.ClaferGenerator;
 import de.cognicrypt.codegenerator.primitive.providerUtils.Helper;
 import de.cognicrypt.codegenerator.primitive.providerUtils.ProviderFile;
@@ -26,7 +24,9 @@ import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuest
 import de.cognicrypt.codegenerator.primitive.wizard.questionnaire.PrimitiveQuestionnairePage;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.utilities.Utils;
+import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.utils.Utils;
 
 public class PrimitiveIntegrationWizard extends Wizard {
 
@@ -194,7 +194,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		ClaferGenerator.printClafer(inputsMap, finalClafer);
 
 		//Generation of xml file for xsl
-		final File xmlFile = Utils.getResourceFromWithin(Constants.xmlFilePath);
+		final File xmlFile = CodeGenUtils.getResourceFromWithin(Constants.xmlFilePath);
 		xsltWriter = new XsltWriter();
 		try {
 			xsltWriter.createDocument();

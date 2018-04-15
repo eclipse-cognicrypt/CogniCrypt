@@ -55,14 +55,6 @@ public class ProviderFileWriterTest {
 
 	}
 
-	@Test
-	public void compilteJavaFileTest() {
-		File testJavaFile = CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder + "testJava.java");
-		providerFile.compileFile(testJavaFile);
-		File testClassFile = CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder + "testJava.class");
-		assertTrue(testClassFile.exists());
-	}
-
 	@After
 	public void deleteFile() {
 		jarFile.delete();

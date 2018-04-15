@@ -29,9 +29,8 @@ public class HelperTest {
 		try {
 			byte[] c = new byte[1024];
 			int readChars = 0;
-			boolean empty = true;
+
 			while ((readChars = is.read(c)) != -1) {
-				empty = false;
 				for (int i = 0; i < readChars; ++i) {
 					if (c[i] == '\n') {
 						++nbLinesInFile;
@@ -45,7 +44,7 @@ public class HelperTest {
 	}
 
 	@Test
-	public void CompareCodeSource() {
+	public void compareSourceCode() {
 		LinkedHashMap<String, String> map = helper.getSourceCode(CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder));
 		for (String key : map.keySet()) {
 			nbLinesInCode = countLinesInString(map.get(key));

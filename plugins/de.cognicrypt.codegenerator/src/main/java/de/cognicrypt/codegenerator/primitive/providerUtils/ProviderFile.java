@@ -81,38 +81,4 @@ public class ProviderFile {
 		}
 	}
 
-
-
-	/**
-	 * Compile files
-	 * 
-	 * @param files
-	 */
-	public void compileFile(File file) {
-		System.setProperty("java.home", lastAddedJDK().getAbsolutePath());
-
-		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
-
-		Iterable<? extends JavaFileObject> compilationUnits1 = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(file));
-		compiler.getTask(null, fileManager, null, null, null, compilationUnits1).call();
-	}
-
-	//Get the last JDK from Java folder in local c:
-	private static File lastAddedJDK() {
-		File fl = new File(Constants.JAVA_BIN);
-		FileFilter fileFilter = new WildcardFileFilter("jdk*");
-		File[] files = fl.listFiles(fileFilter);
-		long lastMod = Long.MIN_VALUE;
-		File lastUpdatedFile = null;
-		for (File file : files) {
-			if (file.lastModified() > lastMod) {
-				lastUpdatedFile = file;
-				lastMod = file.lastModified();
-			}
-		}
-		return lastUpdatedFile;
-	}
-
-
 }

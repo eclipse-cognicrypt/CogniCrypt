@@ -70,8 +70,8 @@ public class FileUtilities {
 	 */
 	private boolean compileCFRFile() {
 		// try to compile the Clafer file
-		// TODO error handling missing
-		String claferFilename = Constants.CFR_FILE_DIRECTORY_PATH + getTrimmedTaskName() + Constants.CFR_EXTENSION;
+		String claferFilename = CodeGenUtils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH)
+			.getAbsolutePath() + Constants.innerFileSeparator + getTrimmedTaskName() + Constants.CFR_EXTENSION;
 		return ClaferModel.compile(claferFilename);
 	}
 

@@ -1,8 +1,6 @@
 package de.cognicrypt.codegenerator.primitive.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
@@ -26,7 +24,7 @@ public class ProviderFileWriterTest {
 
 	@Before
 	public void setUp() throws IOException {
-		providerFile = new ProviderFile("test provider");
+		providerFile = new ProviderFile();
 		folder = CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder);
 		providerFile.zipProject(folder.getAbsolutePath(), jarFile, true);
 	}
@@ -36,9 +34,9 @@ public class ProviderFileWriterTest {
 		try {
 
 			File[] files = folder.listFiles();
-			for(File file: files) {
-					providerFile.zipProject(file.getAbsolutePath(),jarFile, true);
-				
+			for (File file : files) {
+				providerFile.zipProject(file.getAbsolutePath(), jarFile, true);
+
 			}
 			JarFile jar = new JarFile(jarFile);
 			final Enumeration<JarEntry> entries = jar.entries();

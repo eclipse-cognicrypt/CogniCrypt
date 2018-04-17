@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.stream.Stream;
+
 /**
  * This class support the provider generation by copying the source from a java file.
  * 
@@ -15,7 +16,6 @@ import java.util.stream.Stream;
  */
 public class Helper {
 
-	
 	private String readFileLineByLine(String filePath) {
 		StringBuilder contentBuilder = new StringBuilder();
 		try (Stream<String> stream = Files.lines(Paths.get(filePath), StandardCharsets.UTF_8)) {

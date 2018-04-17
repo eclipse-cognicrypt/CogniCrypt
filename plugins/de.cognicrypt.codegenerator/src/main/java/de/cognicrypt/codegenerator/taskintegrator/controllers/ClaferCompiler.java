@@ -1,5 +1,9 @@
 package de.cognicrypt.codegenerator.taskintegrator.controllers;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 
@@ -32,7 +36,17 @@ public class ClaferCompiler {
 
 			compilerProcess.waitFor();
 
+			// store compilation output in string
+			StringBuilder sb = new StringBuilder();
+			InputStream processStdOutput = compilerProcess.getInputStream();
+			BufferedReader br = new BufferedReader(new InputStreamReader(processStdOutput));
+			String line;
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+
 			if (compilerProcess.exitValue() != 0) {
+				System.out.println(sb.toString());
 				return false;
 			}
 

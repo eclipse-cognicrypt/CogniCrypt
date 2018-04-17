@@ -40,7 +40,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	LinkedHashMap<String, String> classContent = new LinkedHashMap<String, String>();
 	String providerName;
 	XsltWriter xsltWriter;
-	ProviderFile provider = new ProviderFile("Test");
+	ProviderFile provider = new ProviderFile();
 	Primitive selectedPrimitive;
 	int pageId;
 
@@ -210,10 +210,11 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		}
 
 		//Code generation 
-		final File templateSpi = Utils.getResourceFromWithin(selectedPrimitive.getXslFile());
-		final File templateMaster = Utils.getResourceFromWithin(
-			Constants.primitivesPath + Constants.innerFileSeparator + "XSL" + Constants.innerFileSeparator + "Template" + Constants.innerFileSeparator + "providerClass.xsl");
 		try {
+			final File templateSpi = CodeGenUtils.getResourceFromWithin(selectedPrimitive.getXslFile());
+			final File templateMaster = CodeGenUtils.getResourceFromWithin(
+				Constants.primitivesPath + Constants.innerFileSeparator + "XSL" + Constants.innerFileSeparator + "Template" + Constants.innerFileSeparator + "providerClass.xsl");
+
 			xsltWriter.transformXsl(templateSpi, xmlFile);
 			xsltWriter.transformXsl(templateMaster, xmlFile);
 		} catch (TransformerException | SAXException | IOException | ParserConfigurationException e1) {
@@ -221,7 +222,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		}
 
 		//Store source code of generated classes into a map
-		File folder = Utils.getResourceFromWithin(Constants.primitivesPath);
+		File folder = CodeGenUtils.getResourceFromWithin(Constants.primitivesPath);
 		classContent = new Helper().getSourceCode(folder);
 		for (String name : classContent.keySet()) {
 			String className = name.toString();
@@ -235,7 +236,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 				//Create provider jarFile 
 				provider.zipProject(project.getProject().getLocation().toString() + "/",
-					new File(Utils.getResourceFromWithin(Constants.PROVIDER_FOLDER) + Constants.innerFileSeparator + providerName + ".jar"), true);
+					new File(CodeGenUtils.getResourceFromWithin(Constants.PROVIDER_FOLDER) + Constants.innerFileSeparator + providerName + ".jar"), true);
 				//delete archived files 
 				for (File file : folder.listFiles()) {
 					if (file.getName().endsWith(".java") || file.getName().endsWith(".class"))

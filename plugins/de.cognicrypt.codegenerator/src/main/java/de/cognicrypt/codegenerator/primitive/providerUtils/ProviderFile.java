@@ -29,12 +29,8 @@ public class ProviderFile {
 
 	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
-	private Manifest manifest;
-	private String name;
+	public ProviderFile() {
 
-	public ProviderFile(String name) {
-		this.name = name;
-		this.manifest = new Manifest();
 	}
 
 	/**

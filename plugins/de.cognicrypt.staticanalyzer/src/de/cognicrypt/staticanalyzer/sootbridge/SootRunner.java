@@ -3,6 +3,7 @@ package de.cognicrypt.staticanalyzer.sootbridge;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -121,6 +122,10 @@ public class SootRunner {
 		Options.v().set_allow_phantom_refs(true);
 		Options.v().set_whole_program(true);
 		Options.v().set_no_bodies_for_excluded(true);
+		List<String> includeList = new LinkedList<String>();
+		includeList.add("java.lang.*");
+		Options.v().set_include(includeList);
+		Scene.v().loadNecessaryClasses();
 		switch(DEFAULT_CALL_GRAPH){
 			case SPARK:
 				Options.v().setPhaseOption("cg.spark", "on");

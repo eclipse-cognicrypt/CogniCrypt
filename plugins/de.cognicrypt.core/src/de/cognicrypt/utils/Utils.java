@@ -248,13 +248,18 @@ public class Utils {
 	public static File getResourceFromWithin(final String inputPath, String pluginID) {
 		try {
 			final Bundle bundle = Platform.getBundle(pluginID);
-
 			if (bundle == null) {
-				// running as application
 				return new File(inputPath);
 			} else {
-				final URL resolvedURL = FileLocator.toFileURL(bundle.getEntry(inputPath));
-				return new File(new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null));
+				URL entry = bundle.getEntry(inputPath);
+				URL resolvedURL = FileLocator.toFileURL(entry);
+				URI resolvedURI = null;
+				if (!(resolvedURL == null)) {
+					resolvedURI = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
+				} else {
+					resolvedURI = FileLocator.resolve(entry).toURI();
+				}
+				return new File(resolvedURI);
 			}
 		} catch (final Exception ex) {
 			Activator.getDefault().logError(ex);

@@ -36,7 +36,6 @@ import soot.options.Options;
  */
 public class SootRunner {
 
-	private static final File RULES_DIR = Utils.getResourceFromWithin("/resources/CrySLRules/");
 	private static CG DEFAULT_CALL_GRAPH = CG.CHA;
 	public static enum CG {
 		CHA, SPARK_LIBRARY, SPARK
@@ -70,7 +69,7 @@ public class SootRunner {
 
 	private static List<CryptSLRule> getRules() {
 		final List<CryptSLRule> rules = Lists.newArrayList();
-		final File[] listFiles = SootRunner.RULES_DIR.listFiles();
+		final File[] listFiles = Utils.getResourceFromWithin("/resources/CrySLRules/").listFiles();
 		assert listFiles != null;
 		for (final File file : listFiles) {
 			if (file.getName().endsWith(".cryptslbin")) {

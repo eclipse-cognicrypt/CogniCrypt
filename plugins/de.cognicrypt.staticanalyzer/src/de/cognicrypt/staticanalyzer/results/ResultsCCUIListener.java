@@ -1,5 +1,6 @@
 package de.cognicrypt.staticanalyzer.results;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,6 +43,7 @@ import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.utils.Utils;
 import soot.ArrayType;
+import soot.RefType;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
@@ -269,7 +271,16 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 					if (neverFound) {
 						Type valueType = value.getType();
 						String type = (valueType instanceof ArrayType) ? ((ArrayType) valueType).getArrayElementType().toQuotedString() : valueType.toQuotedString();
-						if (crySLVar.getJavaType().equals(type)) {
+						boolean sameType = crySLVar.getJavaType().equals(type);
+						if (!sameType && valueType instanceof RefType) {
+							SootClass sootClass = ((RefType) valueType).getSootClass();
+							List<String> superTypes = fillTypeList(sootClass);
+							for (SootClass sc : sootClass.getInterfaces()) {
+								superTypes.add(sc.getType().toQuotedString());
+							}
+							sameType = superTypes.contains(crySLVar.getJavaType());
+						}
+						if (sameType) {
 							String varName = par.getValue().toString();
 							if (varName.matches("\\$[a-z][0-9]+")) {
 								msg.append(Constants.OBJECT_OF_TYPE);
@@ -278,6 +289,10 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 							} else {
 								msg.append(Constants.VAR);
 								msg.append(varName);
+								if (varName.matches("r[0-9]+")) {
+									msg.append(" of type ");
+									msg.append(par.getValue().getType().toQuotedString());
+								}
 								neverFound = false;
 							}
 							break;
@@ -290,7 +305,20 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 				}
 			}
 		}
+		if (msg.toString().isEmpty()) {
+			msg.append(Constants.OBJECT_OF_TYPE);
+			msg.append(crySLVar.getJavaType());
+		}
 		return msg.toString();
+	}
+
+	private List<String> fillTypeList(SootClass sootClass) {
+		List<String> types = new ArrayList<String>();
+		types.add(sootClass.getType().toQuotedString());
+		if (!sootClass.getSuperclass().getType().toQuotedString().equals("java.lang.Object")) {
+			types.addAll(fillTypeList(sootClass.getSuperclass()));
+		}
+		return types;
 	}
 
 	public String missingPredicates(final CryptSLPredicate missingPred, Multimap<CallSiteWithParamIndex, Statement> extractedValues) {

@@ -44,7 +44,8 @@ import de.cognicrypt.core.Constants.GUIElements;
  * @author Stefan Krueger
  * @author Sarah Nadi
  * @author Ram Kamath
- * @author Karim Ali
+ * @author Karim Al
+ * @author André Sonntag
  *
  */
 public class ConfiguratorWizard extends Wizard {
@@ -57,6 +58,7 @@ public class ConfiguratorWizard extends Wizard {
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
 	private final HashMap<Integer, IWizardPage> createdPages;
+	private int prevPageId = 0;
 
 	public ConfiguratorWizard() {
 		super();
@@ -137,11 +139,12 @@ public class ConfiguratorWizard extends Wizard {
 	 */
 	@Override
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
+
 		int nextPageid = -1;
 		// if page was already created, return the existing object
 		if (currentPage instanceof BeginnerTaskQuestionPage) {
 			this.createdPages.put(((BeginnerTaskQuestionPage) currentPage).getCurrentPageID(), currentPage);
-			this.beginnerQuestions.getCurrentPageID();
+			//this.beginnerQuestions.getCurrentPageID();		
 			final BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
 
 			if (this.beginnerQuestions.hasMorePages()) {
@@ -150,7 +153,19 @@ public class ConfiguratorWizard extends Wizard {
 			if (this.createdPages.containsKey(nextPageid)) {
 				return this.createdPages.get(nextPageid);
 			}
-
+			
+			if (prevPageId != beginnerTaskQuestionPage.getCurrentPageID()) {
+				if (prevPageId > beginnerTaskQuestionPage.getCurrentPageID()) {
+					if (this.constraints != null) {
+						BeginnerTaskQuestionPage previousPage = (BeginnerTaskQuestionPage) createdPages.get(prevPageId);
+						for(Question q : previousPage.getMap().keySet()) {
+							this.constraints.remove(q);
+						}
+					}
+				}
+				prevPageId = beginnerTaskQuestionPage.getCurrentPageID();
+			}
+			
 		}
 		if (currentPage instanceof TaskSelectionPage) {
 			this.createdPages.clear();
@@ -196,6 +211,7 @@ public class ConfiguratorWizard extends Wizard {
 				}
 
 				if (this.beginnerQuestions.hasMorePages()) {
+
 					final int nextID = beginnerTaskQuestionPage.getPageNextID();
 
 					if (nextID > -1) {
@@ -267,6 +283,7 @@ public class ConfiguratorWizard extends Wizard {
 				.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
 
 			if (this.taskListPage.isGuidedMode()) {
+
 				// running in beginner mode
 				instanceGenerator.generateInstances(this.constraints);
 			}
@@ -277,6 +294,7 @@ public class ConfiguratorWizard extends Wizard {
 				return this.instanceListPage;
 			}
 		}
+
 		return currentPage;
 	}
 
@@ -297,6 +315,7 @@ public class ConfiguratorWizard extends Wizard {
 			}
 
 		}
+
 		return super.getPreviousPage(currentPage);
 	}
 

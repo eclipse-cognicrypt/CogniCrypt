@@ -3,6 +3,7 @@ package de.cognicrypt.staticanalyzer.sootbridge;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +36,6 @@ import soot.options.Options;
  */
 public class SootRunner {
 
-	private static final File RULES_DIR = Utils.getResourceFromWithin("/resources/CrySLRules/");
 	private static CG DEFAULT_CALL_GRAPH = CG.CHA;
 	public static enum CG {
 		CHA, SPARK_LIBRARY, SPARK
@@ -69,7 +69,7 @@ public class SootRunner {
 
 	private static List<CryptSLRule> getRules() {
 		final List<CryptSLRule> rules = Lists.newArrayList();
-		final File[] listFiles = SootRunner.RULES_DIR.listFiles();
+		final File[] listFiles = Utils.getResourceFromWithin("/resources/CrySLRules/").listFiles();
 		assert listFiles != null;
 		for (final File file : listFiles) {
 			if (file.getName().endsWith(".cryptslbin")) {
@@ -121,6 +121,8 @@ public class SootRunner {
 		Options.v().set_allow_phantom_refs(true);
 		Options.v().set_whole_program(true);
 		Options.v().set_no_bodies_for_excluded(true);
+		Options.v().set_include(getIncludeList());
+		Scene.v().loadNecessaryClasses();
 		switch(DEFAULT_CALL_GRAPH){
 			case SPARK:
 				Options.v().setPhaseOption("cg.spark", "on");
@@ -135,7 +137,20 @@ public class SootRunner {
 		Options.v().set_output_format(Options.output_format_none);
 	}
 	
-
+	private static List<String> getIncludeList() {
+		List<String> includeList = new LinkedList<String>();
+		includeList.add("java.lang.AbstractStringBuilder");
+		includeList.add("java.lang.Boolean");
+		includeList.add("java.lang.Byte");
+		includeList.add("java.lang.Class");
+		includeList.add("java.lang.Integer");
+		includeList.add("java.lang.Long");
+		includeList.add("java.lang.Object");
+		includeList.add("java.lang.String");
+		includeList.add("java.lang.StringCoding");
+		includeList.add("java.lang.StringIndexOutOfBoundsException");
+		return includeList;
+	}
 	private static void registerTransformers(CrySLAnalysisListener reporter) {
 		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(reporter)));
 	}

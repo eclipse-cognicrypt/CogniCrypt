@@ -553,12 +553,12 @@ public class CrySLModelReader {
 	private void storeRuletoFile(final CryptSLRule rule, final String folderPath, final String className) {
 		FileOutputStream fileOut;
 		try {
-			fileOut = new FileOutputStream(folderPath + "\\" + className + ".cryptslbin");
+			fileOut = new FileOutputStream(folderPath + Constants.innerFileSeparator + className + ".cryptslbin");
 			final ObjectOutputStream out = new ObjectOutputStream(fileOut);
 			out.writeObject(rule);
 			out.close();
 			fileOut.close();
-			final FileInputStream fileIn = new FileInputStream(folderPath + "\\" + className + ".cryptslbin");
+			final FileInputStream fileIn = new FileInputStream(folderPath +  Constants.innerFileSeparator + className + ".cryptslbin");
 			final ObjectInputStream in = new ObjectInputStream(fileIn);
 			in.readObject();
 			in.close();

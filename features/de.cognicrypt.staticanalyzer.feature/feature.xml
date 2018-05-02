@@ -103,8 +103,8 @@ Except as expressly stated in Sections 2(a) and 2(b) above, Recipient receives n
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.xtext"/>
-      <import plugin="org.eclipse.xtext.common.types.ui"/>
+      <import plugin="org.eclipse.xtext" version="2.13.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.common.types.ui" version="2.13.0" match="greaterOrEqual"/>
       <import plugin="de.darmstadt.tu.crossing.CryptSL" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="de.darmstadt.tu.crossing.CryptSL.ide" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="de.darmstadt.tu.crossing.CryptSL.ui" version="1.0.0" match="greaterOrEqual"/>

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -58,7 +59,8 @@ public class ConfiguratorWizard extends Wizard {
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
 	private final HashMap<Integer, IWizardPage> createdPages;
-	private int prevPageId = 0;
+	private int prevPageId;
+	private List<Integer> protocolList;
 
 	public ConfiguratorWizard() {
 		super();
@@ -74,6 +76,7 @@ public class ConfiguratorWizard extends Wizard {
 		setDefaultPageImageDescriptor(image);
 
 		this.createdPages = new HashMap<>();
+
 	}
 
 	@Override
@@ -144,30 +147,40 @@ public class ConfiguratorWizard extends Wizard {
 		// if page was already created, return the existing object
 		if (currentPage instanceof BeginnerTaskQuestionPage) {
 			this.createdPages.put(((BeginnerTaskQuestionPage) currentPage).getCurrentPageID(), currentPage);
-			//this.beginnerQuestions.getCurrentPageID();		
 			final BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
 
-			if (this.beginnerQuestions.hasMorePages()) {
-				nextPageid = beginnerTaskQuestionPage.getPageNextID();
-			}
-			if (this.createdPages.containsKey(nextPageid)) {
-				return this.createdPages.get(nextPageid);
-			}
-			
+		
+			// remove set constraints if the user press the previous button
 			if (prevPageId != beginnerTaskQuestionPage.getCurrentPageID()) {
-				if (prevPageId > beginnerTaskQuestionPage.getCurrentPageID()) {
-					if (this.constraints != null) {
-						BeginnerTaskQuestionPage previousPage = (BeginnerTaskQuestionPage) createdPages.get(prevPageId);
-						for(Question q : previousPage.getMap().keySet()) {
-							this.constraints.remove(q);
+				protocolList.add(beginnerTaskQuestionPage.getCurrentPageID());
+				if (protocolList.size() > 2) {
+					if (protocolList.get(protocolList.size() - 3) == beginnerTaskQuestionPage.getCurrentPageID()) {
+						if (this.constraints != null) {
+							BeginnerTaskQuestionPage previousPage = (BeginnerTaskQuestionPage) createdPages.get(prevPageId);
+							Set<Question> previousPageQuestions = previousPage.getMap().keySet();
+							for (Question q : previousPageQuestions) {
+								this.constraints.remove(q);
+							}
+							protocolList.remove(protocolList.size()-1);	//remove last page index
+							protocolList.remove(protocolList.size()-1);	//remove duplicate
 						}
 					}
 				}
 				prevPageId = beginnerTaskQuestionPage.getCurrentPageID();
 			}
-			
+
+			if (this.beginnerQuestions.hasMorePages()) {
+
+				nextPageid = beginnerTaskQuestionPage.getPageNextID();
+			}
+			if (this.createdPages.containsKey(nextPageid)) {
+				return this.createdPages.get(nextPageid);
+			}
 		}
 		if (currentPage instanceof TaskSelectionPage) {
+			prevPageId = 0;
+			this.protocolList = new ArrayList<>();
+			protocolList.add(0);
 			this.createdPages.clear();
 		}
 

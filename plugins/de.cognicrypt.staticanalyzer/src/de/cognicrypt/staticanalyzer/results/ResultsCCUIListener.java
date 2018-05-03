@@ -133,7 +133,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 					msg.append(variable);
 					msg.append(" must not be ");
 					msg.append(extractedValues.getVal().getValue());
-					msg.append(" (see definition in method" + extractedValues.getVal().stmt().getMethod().getName() +")");
+					msg.append(" (see definition in method " + extractedValues.getVal().stmt().getMethod().getName() +")");
 					msg.append(".");
 					break;
 			}

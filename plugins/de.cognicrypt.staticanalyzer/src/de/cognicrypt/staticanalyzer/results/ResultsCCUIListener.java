@@ -19,6 +19,7 @@ import boomerang.Query;
 import boomerang.WeightedBoomerang;
 import boomerang.jimple.Statement;
 import boomerang.jimple.Val;
+import boomerang.results.ForwardBoomerangResults;
 import crypto.analysis.AnalysisSeedWithSpecification;
 import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.EnsuredCryptSLPredicate;
@@ -29,6 +30,9 @@ import crypto.analysis.errors.ForbiddenMethodError;
 import crypto.analysis.errors.IncompleteOperationError;
 import crypto.analysis.errors.RequiredPredicateError;
 import crypto.analysis.errors.TypestateError;
+import crypto.extractparameter.CallSiteWithExtractedValue;
+import crypto.extractparameter.CallSiteWithParamIndex;
+import crypto.extractparameter.ExtractedValue;
 import crypto.interfaces.ISLConstraint;
 import crypto.rules.CryptSLArithmeticConstraint;
 import crypto.rules.CryptSLComparisonConstraint;
@@ -38,7 +42,6 @@ import crypto.rules.CryptSLObject;
 import crypto.rules.CryptSLPredicate;
 import crypto.rules.CryptSLSplitter;
 import crypto.rules.CryptSLValueConstraint;
-import crypto.typestate.CallSiteWithParamIndex;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.utils.Utils;
@@ -85,7 +88,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		String message = "";
 		if (error instanceof ConstraintError) {
 			ConstraintError consError = (ConstraintError) error;
-			message = evaluateBrokenConstraint(consError.getExtractedValues(), consError.getBrokenConstraint(), consError.getErrorLocation());
+			message = evaluateBrokenConstraint(consError.getCallSiteWithExtractedValue(), consError.getBrokenConstraint(), consError.getErrorLocation());
 		} else if (error instanceof ForbiddenMethodError) {
 			ForbiddenMethodError err = (ForbiddenMethodError) error;
 			message = callToForbiddenMethod(err.getErrorLocation().getUnit().get().getInvokeExpr().getMethod(), err.getAlternatives());
@@ -118,21 +121,19 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		return msg.toString();
 	}
 
-	private String evaluateBrokenConstraint(Multimap<CallSiteWithParamIndex, Statement> extractedValues, final ISLConstraint brokenConstraint, Statement location) {
+	private String evaluateBrokenConstraint(CallSiteWithExtractedValue extractedValues, final ISLConstraint brokenConstraint, Statement location) {
 		StringBuilder msg = new StringBuilder();
 		if (brokenConstraint instanceof CryptSLPredicate) {
 			CryptSLPredicate brokenPred = (CryptSLPredicate) brokenConstraint;
 
 			switch (brokenPred.getPredName()) {
 				case "neverTypeOf":
-					if (location.getUnit().get() instanceof JAssignStmt) {
-						msg.append("Variable ");
-						msg.append(((JAssignStmt) location.getUnit().get()).getLeftOp());
-					} else {
-						msg.append("This variable");
-					}
-					msg.append(" must not be of type ");
-					msg.append(brokenPred.getParameters().get(1).getName());
+					Value variable = extractedValues.getCallSite().fact().value();
+					msg.append("Variable ");
+					msg.append(variable);
+					msg.append(" must not be ");
+					msg.append(extractedValues.getVal().getValue());
+					msg.append(" (see definition in method" + extractedValues.getVal().stmt().getMethod().getName() +")");
 					msg.append(".");
 					break;
 			}
@@ -193,14 +194,21 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 	}
 
-	private String evaluateValueConstraint(Multimap<CallSiteWithParamIndex, Statement> extractedValues, final CryptSLValueConstraint brokenConstraint, Statement location) {
+	private String evaluateValueConstraint(CallSiteWithExtractedValue extractedValues, final CryptSLValueConstraint brokenConstraint, Statement location) {
 		CryptSLObject crySLVar = brokenConstraint.getVar();
 		StringBuilder msg = new StringBuilder(extractVarName(extractedValues, location, crySLVar));
-
+		if(extractedValues.getVal().getValue() != null){
+			Value stmt = extractedValues.getVal().getValue();
+			if(stmt instanceof Constant){
+				msg.append(" has value ");
+				msg.append(stmt);
+				msg.append(" but");
+			}
+		}
 		msg.append(" should be any of ");
 		CryptSLSplitter splitter = brokenConstraint.getVar().getSplitter();
 		if (splitter != null) {
-			Stmt stmt = location.getUnit().get();
+			Stmt stmt = extractedValues.getCallSite().stmt().getUnit().get();
 			String[] splitValues = new String[] { "" };
 			if (stmt instanceof AssignStmt) {
 				Value rightSide = ((AssignStmt) stmt).getRightOp();
@@ -238,7 +246,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		return msg.append('}').toString();
 	}
 
-	private String extractVarName(Multimap<CallSiteWithParamIndex, Statement> extractedValues, Statement location, CryptSLObject crySLVar) {
+	private String extractVarName(CallSiteWithExtractedValue extractedValues, Statement location, CryptSLObject crySLVar) {
 		StringBuilder msg = new StringBuilder();
 		Stmt allocSite = location.getUnit().get();
 		if (allocSite instanceof AssignStmt && ((AssignStmt) allocSite).getLeftOp().getType().toQuotedString().equals(crySLVar.getJavaType())) {
@@ -252,7 +260,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			Value value = par.getValue();
 			if (!(value instanceof Constant)) {
 				boolean neverFound = true;
-				for (CallSiteWithParamIndex a : extractedValues.keySet()) {
+				CallSiteWithParamIndex a = extractedValues.getCallSite();
 					if (a.getVarName().equals(crySLVar.getVarName())) {
 						if (a.fact().value().getType().equals(par.getValue().getType())) {
 							String varName = par.getValue().toString();
@@ -297,7 +305,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 							}
 							break;
 						}
-					}
 				}
 			} else {
 				if (((Constant) value).getType().toQuotedString().equals(crySLVar.getJavaType())) {
@@ -321,7 +328,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		return types;
 	}
 
-	public String missingPredicates(final CryptSLPredicate missingPred, Multimap<CallSiteWithParamIndex, Statement> extractedValues) {
+	public String missingPredicates(final CryptSLPredicate missingPred, CallSiteWithExtractedValue extractedValues) {
 		final StringBuilder msg = new StringBuilder();
 		Statement stmt = missingPred.getLocation();
 		msg.append(extractVarName(extractedValues, stmt, (CryptSLObject) missingPred.getParameters().get(0)));
@@ -449,10 +456,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		// Nothing
 	}
 
-	@Override
-	public void collectedValues(final AnalysisSeedWithSpecification arg0, final Multimap<CallSiteWithParamIndex, Statement> arg1) {
-		// Nothing
-	}
 
 	@Override
 	public void discoveredSeed(final IAnalysisSeed arg0) {
@@ -464,10 +467,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		// Nothing
 	}
 
-	@Override
-	public void onSeedFinished(final IAnalysisSeed arg0, final WeightedBoomerang<TransitionFunction> arg1) {
-		// Nothing
-	}
 
 	@Override
 	public void onSeedTimeout(final Node<Statement, Val> arg0) {
@@ -476,6 +475,17 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void seedStarted(final IAnalysisSeed arg0) {
+		// Nothing
+	}
+
+	@Override
+	public void collectedValues(AnalysisSeedWithSpecification arg0,
+			Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
+		// Nothing
+	}
+
+	@Override
+	public void onSeedFinished(IAnalysisSeed arg0, ForwardBoomerangResults<TransitionFunction> arg1) {
 		// Nothing
 	}
 

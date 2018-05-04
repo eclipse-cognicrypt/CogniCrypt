@@ -9,6 +9,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.TreeSet;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -89,9 +90,13 @@ public abstract class CodeGenerator {
 	 */
 	protected boolean insertCallCodeIntoFile(final String temporaryOutputFile, boolean openFileFlag, boolean authorFlag, boolean tempFlag) throws BadLocationException, CoreException, IOException {
 
-		if (!((openFileFlag && authorFlag) || !openFileFlag)) {
-			IDE.openEditor(CodeGenUtils.getCurrentlyOpenPage(), Utils.getCurrentlyOpenFile());
+		if ((openFileFlag && authorFlag) || !openFileFlag) {
+			StringBuilder sb = new StringBuilder(temporaryOutputFile);
+			sb.delete(temporaryOutputFile.length() - 9, temporaryOutputFile.length() - 5);
+			IFile output = tempFlag == true ? this.project.getIFile(sb.toString()) : this.project.getIFile(temporaryOutputFile);
+			IDE.openEditor(Utils.getCurrentlyOpenPage(), output);
 		}
+		
 		IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
 		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {
 			Activator.getDefault().logError(null,
@@ -267,9 +272,11 @@ public abstract class CodeGenerator {
 		}
 
 		final Path memberPath = fileToBeAdded.toPath();
-		Files.copy(memberPath, new File(this.project
-			.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesInDevProject + Constants.outerFileSeparator + memberPath.getFileName()).toPath(),
-			StandardCopyOption.REPLACE_EXISTING);
+		Files
+			.copy(
+				memberPath, new File(this.project
+					.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesInDevProject + Constants.outerFileSeparator + memberPath.getFileName()).toPath(),
+				StandardCopyOption.REPLACE_EXISTING);
 		final String filePath = fileToBeAdded.toString();
 		final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.outerFileSeparator));
 		if (Constants.JAR.equals(cutPath.substring(cutPath.indexOf(".")))) {

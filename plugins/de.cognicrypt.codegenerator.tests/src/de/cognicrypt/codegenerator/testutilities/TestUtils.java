@@ -17,7 +17,6 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
@@ -33,7 +32,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
-import de.cognicrypt.codegenerator.Constants;
 import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.question.Answer;
@@ -42,8 +40,10 @@ import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.question.QuestionsJSONReader;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
-import de.cognicrypt.codegenerator.utilities.Utils;
 import de.cognicrypt.codegenerator.wizard.Configuration;
+import de.cognicrypt.core.Activator;
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.utils.Utils;
 
 /**
  * @author André Sonntag
@@ -180,9 +180,11 @@ public class TestUtils {
 	 * @return Configuration for a certain Task
 	 */
 	public static Configuration createConfigurationForCodeGeneration(DeveloperProject developerProject, Task t) {
-		InstanceGenerator instGen = new InstanceGenerator(
-				Utils.getResourceFromWithin(t.getModelFile()).getAbsolutePath(), "c0_" + t.getName(),
-				t.getTaskDescription());
+		
+		//InstanceGenerator instGen = new InstanceGenerator(Utils.getResourceFromWithin(t.getModelFile()).getAbsolutePath(), "c0_" + t.getName(),t.getTaskDescription());
+		InstanceGenerator instGen = new InstanceGenerator(Utils.getResourceFromWithin(t.getModelFile(),de.cognicrypt.codegenerator.Activator.PLUGIN_ID).getAbsolutePath(), "c0_" + t.getName(),t.getTaskDescription());
+		
+		//InstanceGenerator instGen = new InstanceGenerator(Utils.getResourceFromWithin(t.getModelFile()).getAbsolutePath(), "c0_" + t.getName(),t.getTaskDescription());
 		HashMap<Question, Answer> constraints = TestUtils.setDefaultConstraintsForTask(t);
 		List<InstanceClafer> instList = instGen.generateInstances(constraints);
 		InstanceClafer inst = instList.get(0);

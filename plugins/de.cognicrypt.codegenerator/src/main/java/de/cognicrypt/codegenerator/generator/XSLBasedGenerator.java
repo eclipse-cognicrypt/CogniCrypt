@@ -138,8 +138,9 @@ public class XSLBasedGenerator extends CodeGenerator {
 	 *         see {@link javax.xml.transform.Transformer#transform(javax.xml.transform.Source, javax.xml.transform.Result) transform()}
 	 */
 	public void transform(final File sourceFile, final String resultDir) throws TransformerException {
-		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
-		final Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(xslFile));
+		//System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
+		TransformerFactory fact = new net.sf.saxon.TransformerFactoryImpl();
+		final Transformer transformer = fact.newTransformer(new StreamSource(xslFile));
 		transformer.transform(new StreamSource(sourceFile), new StreamResult(new File(resultDir)));
 	}
 

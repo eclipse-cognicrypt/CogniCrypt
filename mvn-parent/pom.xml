@@ -84,6 +84,7 @@
 		<module>../plugins/de.cognicrypt.codegenerator/</module>
 		<module>../plugins/de.cognicrypt.crysl.handler/</module>
 		<module>../plugins/de.cognicrypt.staticanalyzer/</module>
+		<module>../plugins/de.cognicrypt.codegenerator.tests/</module>
 		<module>../features/de.cognicrypt.codegenerator.feature/</module>
 		<module>../features/de.cognicrypt.cryslhandler.feature/</module>
 		<module>../features/de.cognicrypt.staticanalyzer.feature/</module>

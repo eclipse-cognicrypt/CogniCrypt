@@ -2,14 +2,6 @@ language: java
 
 jdk:
   - oraclejdk8
-
-env:
-  - NIGHTLYBUILD=$BRANCH
-  - NIGHTLYBUILD=SICS1718
-  
-matrix:
-  allow_failures:
-   - env: NIGHTLYBUILD=SICS1718
   
 build:
   ci:
@@ -18,5 +10,5 @@ build:
    - mvn clean verify surefire:test --fail-at-end
    
   on_success:
-   - if [ "$NIGHTLYBUILD" == "master" ]; then cd ../repository; ./uploadh.sh; fi
+   - if [ "$BRANCH" == "master" ]; then cd ../repository; ./upload.sh; fi
 

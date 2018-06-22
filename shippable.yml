@@ -16,3 +16,7 @@ build:
    - git checkout $NIGHTLYBUILD
    - cd mvn-parent
    - mvn clean verify surefire:test --fail-at-end
+   
+  on_success:
+   - if [ "$NIGHTLYBUILD" == "master" ]; then cd ../repository; ./uploadh.sh; fi
+

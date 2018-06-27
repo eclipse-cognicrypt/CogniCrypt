@@ -12,13 +12,26 @@
 	<groupId>de.cognicrypt</groupId>
 	<build>
 		<plugins>
+			<!-- workaround https://bugs.eclipse.org/bugs/show_bug.cgi?id=453708 -->
 			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-p2-repository-plugin</artifactId>
-				<version>0.26.0</version>
-				<configuration>
-					<includeAllDependencies>true</includeAllDependencies>
-				</configuration>
+				<groupId>org.jboss.tools.tycho-plugins</groupId>
+				<artifactId>repository-utils</artifactId>
+				<version>1.1.1-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>generate-repository-facade</goal>
+						</goals>
+						<configuration>
+							<associateSites>
+								<associateSite>http://download.eclipse.org/cognicrypt</associateSite>
+								<associateSite>http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/</associateSite>
+								<associateSite>http://it.crossing.tu-darmstadt.de/cognicrypt/</associateSite>
+							</associateSites>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

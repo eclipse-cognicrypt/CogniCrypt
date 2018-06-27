@@ -122,6 +122,7 @@ public class SootRunner {
 		Options.v().set_whole_program(true);
 		Options.v().set_no_bodies_for_excluded(true);
 		Options.v().set_include(getIncludeList());
+		Options.v().set_exclude(getExcludeList());
 		Scene.v().loadNecessaryClasses();
 		switch(DEFAULT_CALL_GRAPH){
 			case SPARK:
@@ -151,6 +152,17 @@ public class SootRunner {
 		includeList.add("java.lang.StringIndexOutOfBoundsException");
 		return includeList;
 	}
+
+	private static List<String> getExcludeList() {
+		List<String> excludeList = new LinkedList<String>();
+		for(CryptSLRule r : getRules()) {
+			excludeList.add(crypto.Utils.getFullyQualifiedName(r));
+		}
+		return excludeList;
+	}
+	
+	
+	
 	private static void registerTransformers(CrySLAnalysisListener reporter) {
 		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(reporter)));
 	}

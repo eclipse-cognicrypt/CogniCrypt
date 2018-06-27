@@ -5,9 +5,8 @@ jdk:
   
 build:
   ci:
-   - git checkout $NIGHTLYBUILD
    - cd mvn-parent
-   - mvn clean verify surefire:test --fail-at-end
+   - mvn clean verify surefire:test -e --fail-at-end
    
   on_success:
    - if [ "$BRANCH" == "master" ]; then cd ../repository; chmod +x upload.sh; ./upload.sh; fi

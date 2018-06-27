@@ -26,7 +26,7 @@ public class GenerationTest {
 	/**
 	 * In the following tests we check for the right number of methods 
 	 * in the appropriate classes. We choose this approach, because a
-	 * comparing of the source code/bytes lead to problems when some 
+	 * comparing of the source code/bytes leads to problems when some 
 	 * changes happen in the XSLTemplate.
 	 */
 	

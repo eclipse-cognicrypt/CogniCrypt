@@ -48,6 +48,7 @@ public abstract class CodeGenerator {
 	private int endPosForImports = -1;
 	private int startingPositionForRunMethod = -1;
 	private int startPosForImports = -1;
+	private String temporaryOutputFile;
 
 	protected CodeGenerator(IProject targetProject) {
 		this.project = new DeveloperProject(targetProject);
@@ -297,17 +298,30 @@ public abstract class CodeGenerator {
 	 */
 	protected void cleanUpProject(final IEditorPart editor) throws CoreException {
 		this.project.refresh();
+		boolean fileOpen = false;
 
+		//prevent Organize Imports Problems
+		if (editor.getTitle().equals(temporaryOutputFile)) {
+			fileOpen = true;
+			Utils.closeEditor(editor);
+		}
+		
 		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
 		final FormatAllAction faa = new FormatAllAction(editor.getSite());
 		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageName).getCompilationUnits();
 		faa.runOnMultiple(generatedCUnits);
 		organizeImportsActionForAllFilesTouchedDuringGeneration.runOnMultiple(generatedCUnits);
 
+		if(fileOpen) {
+			IFile outputFile = this.project.getIFile(temporaryOutputFile);
+			IDE.openEditor(Utils.getCurrentlyOpenPage(), outputFile);
+		}
+		/*
 		final ICompilationUnit openClass = JavaCore.createCompilationUnitFrom(CodeGenUtils.getCurrentlyOpenFile(editor));
 		organizeImportsActionForAllFilesTouchedDuringGeneration.run(openClass);
 		faa.runOnMultiple(new ICompilationUnit[] { openClass });
 		editor.doSave(null);
+		*/
 	}
 
 }

@@ -10,5 +10,5 @@ build:
    - mvn clean verify surefire:test --fail-at-end
    
   on_success:
-   - if [ "$BRANCH" == "master" ]; then cd ../repository; ./upload.sh; fi
+   - if [ "$BRANCH" == "master" ]; then cd ../repository; chmod +x upload.sh; ./upload.sh; fi
 

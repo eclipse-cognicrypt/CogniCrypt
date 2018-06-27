@@ -12,7 +12,8 @@ build:
   #### THIS CURRENTLY USES SSHPASS FOR AUTHENTICATION! THIS IS INSECURE! FULLY SWITCH TO USING ONLY SSH KEYS ASAP! ####
    - if [ "$BRANCH" == "master" ]; then sudo apt-get install sshpass; cd ../repository; chmod +x upload.sh; ./upload.sh; fi
    
-integrations:  # this section can contain several different types of integrations
-  generic:     # k/v pair should be under the 'generic' header
-    - integrationName: UpdateSitePassword
+resources:
+  - name: eclipseFTPkv
+    type: integration
+    integrationName: UpdateSitePassword
 

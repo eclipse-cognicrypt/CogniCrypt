@@ -40,8 +40,10 @@ public class Configuration {
 
 	/**
 	 * Writes chosen configuration to hard disk.
+	 * 
 	 * @return Written file.
-	 * @throws IOException see {@link FileWriter#FileWriter(String)) FileWriter} and {@link XMLWriter#write(String) XMLWriter.write()}
+	 * @throws IOException
+	 *         see {@link FileWriter#FileWriter(String)) FileWriter} and {@link XMLWriter#write(String) XMLWriter.write()}
 	 */
 	public File persistConf() throws IOException {
 		final XMLParser parser = new XMLParser();
@@ -60,8 +62,9 @@ public class Configuration {
 		return null;
 	}
 
-	/** 
+	/**
 	 * Retrieves list of custom providers from configuration.
+	 * 
 	 * @return List of custom providers
 	 */
 	public List<String> getProviders() {

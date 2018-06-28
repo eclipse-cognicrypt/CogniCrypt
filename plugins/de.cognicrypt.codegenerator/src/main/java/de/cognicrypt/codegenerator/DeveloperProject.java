@@ -32,8 +32,8 @@ public class DeveloperProject {
 	}
 
 	/**
-	 * The method adds one library to the developer's project physical and build path. In the context of the overall tool, 
-	 * this is necessary when the user chooses a task that comes with additional libraries.
+	 * The method adds one library to the developer's project physical and build path. In the context of the overall tool, this is necessary when the user chooses a task that comes
+	 * with additional libraries.
 	 *
 	 * @param pathToJar
 	 *        path to library to be added
@@ -59,7 +59,9 @@ public class DeveloperProject {
 
 	/**
 	 * Retrieves folder from developer package
-	 * @param name Project-relative path to folder 
+	 * 
+	 * @param name
+	 *        Project-relative path to folder
 	 * @see org.eclipse.core.resources.IProject#getFolder(String) IProject.getFolder()
 	 */
 	public IFolder getFolder(final String name) {
@@ -68,7 +70,9 @@ public class DeveloperProject {
 
 	/**
 	 * Retrieves file from developer package
-	 * @param path Project-relative path to file
+	 * 
+	 * @param path
+	 *        Project-relative path to file
 	 * @see org.eclipse.core.resources.IProject#getFile(String) IProject.getFile()
 	 */
 	public IFile getIFile(final String path) {
@@ -113,6 +117,7 @@ public class DeveloperProject {
 
 	/**
 	 * Refreshes the project.
+	 * 
 	 * @throws CoreException
 	 *         See {@link org.eclipse.core.resources.IResource#refreshLocal(int, org.eclipse.core.runtime.IProgressMonitor) refreshLocal()}
 	 */
@@ -152,7 +157,9 @@ public class DeveloperProject {
 
 	/**
 	 * Removes package from developer project.
-	 * @param packageName name of package that is removed
+	 * 
+	 * @param packageName
+	 *        name of package that is removed
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if package removal was successful/failed.
 	 */
 	public Boolean removePackage(final String packageName) {

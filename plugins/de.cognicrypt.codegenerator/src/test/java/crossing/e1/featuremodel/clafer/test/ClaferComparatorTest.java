@@ -11,7 +11,6 @@ import org.junit.Test;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 
-
 public class ClaferComparatorTest {
 
 	@Test

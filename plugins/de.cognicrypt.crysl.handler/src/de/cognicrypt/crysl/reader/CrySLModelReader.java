@@ -117,10 +117,7 @@ public class CrySLModelReader {
 			if (!"cryptsl".equals(extension) || exceptions.contains(fileName)) { //|| !fileName.contains("Signature.")) {  
 				continue;
 			}
-			final Resource resource = resourceSet.getResource(
-					URI.createPlatformResourceURI(
-					rulesFolder.toPortableString() + Constants.outerFileSeparator + fileName, true),
-					true);
+			final Resource resource = resourceSet.getResource(URI.createPlatformResourceURI(rulesFolder.toPortableString() + Constants.outerFileSeparator + fileName, true), true);
 			EcoreUtil.resolveAll(resourceSet);
 			final EObject eObject = resource.getContents().get(0);
 			final Domainmodel dm = (Domainmodel) eObject;
@@ -261,8 +258,8 @@ public class CrySLModelReader {
 
 					SuperType object = name.getValue();
 					final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType()
-						.getQualifiedName(), new CryptSLSplitter(Integer
-							.parseInt(((ArrayElements) lit.getCons()).getCons().getInd()), Utils.filterQuotes(((ArrayElements) lit.getCons()).getCons().getSplit())));
+						.getQualifiedName(), new CryptSLSplitter(Integer.parseInt(((ArrayElements) lit.getCons()).getCons().getInd()), Utils
+							.filterQuotes(((ArrayElements) lit.getCons()).getCons().getSplit())));
 					slci = new CryptSLValueConstraint(variable, parList);
 				} else {
 					LiteralExpression name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getName();
@@ -558,7 +555,7 @@ public class CrySLModelReader {
 			out.writeObject(rule);
 			out.close();
 			fileOut.close();
-			final FileInputStream fileIn = new FileInputStream(folderPath +  Constants.innerFileSeparator + className + ".cryptslbin");
+			final FileInputStream fileIn = new FileInputStream(folderPath + Constants.innerFileSeparator + className + ".cryptslbin");
 			final ObjectInputStream in = new ObjectInputStream(fileIn);
 			in.readObject();
 			in.close();

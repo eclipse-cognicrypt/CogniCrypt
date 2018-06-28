@@ -53,9 +53,11 @@ public class DefaultAlgorithmPage extends WizardPage {
 	/**
 	 * Constructor for DefaultAlgorithmPage.
 	 * 
-	 * @param instGen Instance Generator
-	 * @param constraints 
-	 * @param taskSelectionPage Page to select task
+	 * @param instGen
+	 *        Instance Generator
+	 * @param constraints
+	 * @param taskSelectionPage
+	 *        Page to select task
 	 */
 	public DefaultAlgorithmPage(final InstanceGenerator instGen, HashMap<Question, Answer> constraints, final TaskSelectionPage taskSelectionPage) {
 		super(Constants.DEFAULT_ALGORITHM_PAGE);
@@ -144,7 +146,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 			Activator.getDefault().logError(e, Constants.TransformerErrorMessage);
 			return "";
 		}
-		
+
 		final Path file = new File(temporaryOutputFile).toPath();
 		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 			final StringBuilder sb = new StringBuilder();

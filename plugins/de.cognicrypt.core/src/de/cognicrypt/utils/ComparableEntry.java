@@ -17,11 +17,11 @@ public class ComparableEntry<K, V> extends SimpleEntry<K, V> implements Comparab
 		}
 		if (!(getKey() instanceof Comparable && comp.getKey() instanceof Comparable && getValue() instanceof Comparable && comp.getValue() instanceof Comparable)) {
 			return -1;
-		} else {
-			@SuppressWarnings("unchecked")
-			final Comparable<K> thisX = (Comparable<K>) getKey();
-			return thisX.compareTo(comp.getKey());
 		}
+
+		@SuppressWarnings("unchecked")
+		final Comparable<K> thisX = (Comparable<K>) getKey();
+		return thisX.compareTo(comp.getKey());
 	}
 
 }

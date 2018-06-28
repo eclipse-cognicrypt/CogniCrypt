@@ -26,7 +26,8 @@ public class ClaferModel {
 	/**
 	 * Constructor for claferModel
 	 *
-	 * @param path absolute path to Javascript representation of the model
+	 * @param path
+	 *        absolute path to Javascript representation of the model
 	 */
 	public ClaferModel(final File path) {
 		loadModel(path);

@@ -27,6 +27,7 @@ public class Question {
 
 	/**
 	 * Retrieves the default answer of the question.
+	 * 
 	 * @return Default answer
 	 */
 	public Answer getDefaultAnswer() {
@@ -42,6 +43,7 @@ public class Question {
 
 	/**
 	 * Retrieves the widget the question should be displayed as.
+	 * 
 	 * @return GUI widget associated with the question
 	 */
 	public GUIElements getElement() {

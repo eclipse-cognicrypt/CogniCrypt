@@ -169,6 +169,7 @@ public class PropertyWidget {
 
 	/**
 	 * Getter for child clafer.
+	 * 
 	 * @return Child clafer
 	 */
 	public AstConcreteClafer getChildClafer() {
@@ -181,6 +182,7 @@ public class PropertyWidget {
 
 	/**
 	 * Getter method for parent clafer.
+	 * 
 	 * @return Parent clafer
 	 */
 	public AstClafer getParentClafer() {
@@ -197,6 +199,7 @@ public class PropertyWidget {
 
 	/**
 	 * Getter method for isGroupConstraint
+	 * 
 	 * @return <Code>true</code>/<code>false</code> if property is group constraint
 	 */
 	public boolean isGroupConstraint() {
@@ -209,6 +212,7 @@ public class PropertyWidget {
 
 	/**
 	 * Setter method for child clafer.
+	 * 
 	 * @param childClafer
 	 *        the childClafer to set
 	 */
@@ -218,6 +222,7 @@ public class PropertyWidget {
 
 	/**
 	 * Setter method for whether property is a group constraint.
+	 * 
 	 * @param isGroupConstraint
 	 *        the isGroupConstraint to set
 	 */
@@ -227,6 +232,7 @@ public class PropertyWidget {
 
 	/**
 	 * Setter method for parent clafer.
+	 * 
 	 * @param parentClafer
 	 *        the parentClafer to set
 	 */

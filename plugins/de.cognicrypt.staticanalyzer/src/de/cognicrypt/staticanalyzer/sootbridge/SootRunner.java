@@ -14,11 +14,11 @@ import org.eclipse.jdt.core.IJavaProject;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
-import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.utils.Utils;
 import soot.G;
 import soot.PackManager;
@@ -41,7 +41,7 @@ public class SootRunner {
 		CHA, SPARK_LIBRARY, SPARK
 	}
 
-	private static SceneTransformer createAnalysisTransformer(final CrySLAnalysisListener reporter) {
+	private static SceneTransformer createAnalysisTransformer(final ResultsCCUIListener resultsReporter) {
 		return new SceneTransformer() {
 
 			@Override
@@ -61,7 +61,7 @@ public class SootRunner {
 					}
 
 				};
-				scanner.getAnalysisListener().addReportListener(reporter);
+				scanner.getAnalysisListener().addReportListener(resultsReporter);
 				scanner.scan();
 			}
 		};
@@ -92,11 +92,10 @@ public class SootRunner {
 		}
 	}
 
-
-	public static boolean runSoot(final IJavaProject project, final CrySLAnalysisListener reporter) {
+	public static boolean runSoot(final IJavaProject project, final ResultsCCUIListener resultsReporter) {
 		G.reset();
 		setSootOptions(project);
-		registerTransformers(reporter);
+		registerTransformers(resultsReporter);
 		try {
 			runSoot();
 		} catch (final Exception t) {
@@ -161,10 +160,8 @@ public class SootRunner {
 		return excludeList;
 	}
 	
-	
-	
-	private static void registerTransformers(CrySLAnalysisListener reporter) {
-		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(reporter)));
+	private static void registerTransformers(ResultsCCUIListener resultsReporter) {
+		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(resultsReporter)));
 	}
 	
 	private static String getSootClasspath(final IJavaProject javaProject) {

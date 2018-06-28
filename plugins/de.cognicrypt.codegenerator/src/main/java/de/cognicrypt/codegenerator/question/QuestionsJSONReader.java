@@ -95,7 +95,8 @@ public class QuestionsJSONReader {
 	/**
 	 * Check the validity of the pages and the questions contained in them.
 	 * 
-	 * @param pages List of all read pages
+	 * @param pages
+	 *        List of all read pages
 	 */
 	private void checkReadPages(final List<Page> pages) {
 		final Set<Integer> ids = new HashSet<>();

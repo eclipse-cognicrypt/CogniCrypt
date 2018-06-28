@@ -267,9 +267,11 @@ public abstract class CodeGenerator {
 		}
 
 		final Path memberPath = fileToBeAdded.toPath();
-		Files.copy(memberPath, new File(this.project
-			.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesInDevProject + Constants.outerFileSeparator + memberPath.getFileName()).toPath(),
-			StandardCopyOption.REPLACE_EXISTING);
+		Files
+			.copy(
+				memberPath, new File(this.project
+					.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesInDevProject + Constants.outerFileSeparator + memberPath.getFileName()).toPath(),
+				StandardCopyOption.REPLACE_EXISTING);
 		final String filePath = fileToBeAdded.toString();
 		final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.outerFileSeparator));
 		if (Constants.JAR.equals(cutPath.substring(cutPath.indexOf(".")))) {

@@ -63,12 +63,10 @@ public class ResultsCCUIListener implements ICrySLResultsListener {
 		return this.currentProject.getFile("src/" + className.getName().replace(".", "/") + ".java");
 	}
 
-
 	@Override
 	public void checkedConstraints(final AnalysisSeedWithSpecification arg0, final Collection<ISLConstraint> arg1) {
 		// Nothing
 	}
-
 
 	@Override
 	public void discoveredSeed(final IAnalysisSeed arg0) {
@@ -80,10 +78,8 @@ public class ResultsCCUIListener implements ICrySLResultsListener {
 		//Nothing
 	}
 
-
 	@Override
-	public void collectedValues(AnalysisSeedWithSpecification arg0,
-			Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
+	public void collectedValues(AnalysisSeedWithSpecification arg0, Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
 		// Nothing
 	}
 

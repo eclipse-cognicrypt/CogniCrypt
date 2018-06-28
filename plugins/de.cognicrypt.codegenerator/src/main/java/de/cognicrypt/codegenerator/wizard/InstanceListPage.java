@@ -230,7 +230,8 @@ public class InstanceListPage extends WizardPage {
 	}
 
 	/**
-	 * Assembles code-preview text. 
+	 * Assembles code-preview text.
+	 * 
 	 * @return code snippet
 	 */
 	public String compileCodePreview() {
@@ -245,7 +246,7 @@ public class InstanceListPage extends WizardPage {
 			Activator.getDefault().logError(e, Constants.TransformerErrorMessage);
 			return "";
 		}
-		
+
 		final Path file = new File(temporaryOutputFile).toPath();
 		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 			final StringBuilder sb = new StringBuilder();

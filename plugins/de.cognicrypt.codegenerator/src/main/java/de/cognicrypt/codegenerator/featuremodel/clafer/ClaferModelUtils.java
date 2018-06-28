@@ -14,8 +14,11 @@ public class ClaferModelUtils {
 
 	/**
 	 * Method to find a clafer with a given name in whole model
-	 * @param startingClafer Starting point for search in the clafer model
-	 * @param name name of Clafer that is searched for
+	 * 
+	 * @param startingClafer
+	 *        Starting point for search in the clafer model
+	 * @param name
+	 *        name of Clafer that is searched for
 	 * @return Requested clafer or <CODE>null</CODE> if clafer was not found
 	 */
 	public static AstClafer findClaferByName(final AstClafer startingClafer, final String name) {
@@ -64,9 +67,12 @@ public class ClaferModelUtils {
 	/**
 	 * Creates a new clafer in the model.
 	 * 
-	 * @param parentClafer clafer the new clafer is a subclafer to
-	 * @param name Name of new clafer
-	 * @param type Type of new clafer 
+	 * @param parentClafer
+	 *        clafer the new clafer is a subclafer to
+	 * @param name
+	 *        Name of new clafer
+	 * @param type
+	 *        Type of new clafer
 	 * @return newly created clafer
 	 */
 	public static AstConcreteClafer createClafer(final AstClafer parentClafer, final String name, final String type) {
@@ -87,7 +93,8 @@ public class ClaferModelUtils {
 	/**
 	 * Method to check if the given clafer is abstract
 	 *
-	 * @param astClafer clafer that is checked
+	 * @param astClafer
+	 *        clafer that is checked
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if passed clafer is concrete/abstract.
 	 */
 	public static boolean isConcrete(final AstClafer astClafer) {

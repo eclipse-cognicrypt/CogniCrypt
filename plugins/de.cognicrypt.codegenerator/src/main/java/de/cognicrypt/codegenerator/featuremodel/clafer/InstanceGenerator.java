@@ -281,10 +281,9 @@ public class InstanceGenerator {
 		try {
 			basicModeHandler(astModel, this.taskClafer, questAnswerMap);
 
-			this.solver = ClaferCompiler.compile(astModel,
-				this.claferModel.getScope().toBuilder()
-					//.defaultScope(Integer.parseInt(new ReadConfig().getValue(DEFAULT_SCOPE)))
-					.intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
+			this.solver = ClaferCompiler.compile(astModel, this.claferModel.getScope().toBuilder()
+				//.defaultScope(Integer.parseInt(new ReadConfig().getValue(DEFAULT_SCOPE)))
+				.intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
 
 			int redundantCounter = 0;
 			while (this.solver.find()) {
@@ -376,7 +375,7 @@ public class InstanceGenerator {
 	/**
 	 * Returns the hash value of the instance passed as an argument
 	 *
-	 * @see InstanceClaferHash#hashCode() 
+	 * @see InstanceClaferHash#hashCode()
 	 */
 	private long getHashValueOfInstance(final InstanceClafer inst) {
 		int hash = 37;

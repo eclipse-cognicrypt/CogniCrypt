@@ -37,6 +37,7 @@ import soot.options.Options;
 public class SootRunner {
 
 	private static CG DEFAULT_CALL_GRAPH = CG.CHA;
+
 	public static enum CG {
 		CHA, SPARK_LIBRARY, SPARK
 	}
@@ -123,7 +124,7 @@ public class SootRunner {
 		Options.v().set_include(getIncludeList());
 		Options.v().set_exclude(getExcludeList());
 		Scene.v().loadNecessaryClasses();
-		switch(DEFAULT_CALL_GRAPH){
+		switch (DEFAULT_CALL_GRAPH) {
 			case SPARK:
 				Options.v().setPhaseOption("cg.spark", "on");
 				Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");
@@ -136,7 +137,7 @@ public class SootRunner {
 		Options.v().setPhaseOption("jb", "use-original-names:true");
 		Options.v().set_output_format(Options.output_format_none);
 	}
-	
+
 	private static List<String> getIncludeList() {
 		List<String> includeList = new LinkedList<String>();
 		includeList.add("java.lang.AbstractStringBuilder");
@@ -154,16 +155,16 @@ public class SootRunner {
 
 	private static List<String> getExcludeList() {
 		List<String> excludeList = new LinkedList<String>();
-		for(CryptSLRule r : getRules()) {
+		for (CryptSLRule r : getRules()) {
 			excludeList.add(crypto.Utils.getFullyQualifiedName(r));
 		}
 		return excludeList;
 	}
-	
+
 	private static void registerTransformers(ResultsCCUIListener resultsReporter) {
 		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(resultsReporter)));
 	}
-	
+
 	private static String getSootClasspath(final IJavaProject javaProject) {
 		return Joiner.on(File.pathSeparator).join(projectClassPath(javaProject));
 	}

@@ -2,17 +2,18 @@ language: java
 
 jdk:
   - oraclejdk8
-
-env:
-  - NIGHTLYBUILD=$BRANCH
-  - NIGHTLYBUILD=SICS1718
-  
-matrix:
-  allow_failures:
-   - env: NIGHTLYBUILD=SICS1718
   
 build:
   ci:
-   - git checkout $NIGHTLYBUILD
    - cd mvn-parent
    - mvn clean verify surefire:test --fail-at-end
+   
+  on_success:
+  #### THIS CURRENTLY USES SSHPASS FOR AUTHENTICATION! THIS IS INSECURE! FULLY SWITCH TO USING ONLY SSH KEYS ASAP! ####
+   - if [ "$BRANCH" == "CurrentlyOutOfOrder" ]; then sudo apt-get install sshpass; cd ../repository; chmod +x upload.sh; ./upload.sh; fi
+   
+resources:
+  - name: eclipseFTPkv
+    type: integration
+    integrationName: UpdateSitePassword
+

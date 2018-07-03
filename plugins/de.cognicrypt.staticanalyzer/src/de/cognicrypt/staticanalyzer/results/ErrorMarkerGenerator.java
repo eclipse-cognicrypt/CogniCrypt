@@ -37,6 +37,23 @@ public class ErrorMarkerGenerator {
 	 * @return <code>true</code>/<code>false</code> if error marker was (not) added successfully
 	 */
 	public boolean addMarker(final IResource sourceFile, final int line, final String message) {
+		return addMarker(sourceFile, line, message, false);
+	}
+
+	/**
+	 * Adds crypto-misuse error marker with message {@link message} into file {@link sourceFile} at Line {@link line}.
+	 *
+	 * @param sourceFile
+	 *        File the marker is generated into
+	 * @param line
+	 *        Line the marker is generated at
+	 * @param message
+	 *        Error Message
+	 * @param isWarning
+	 *        Determines whether marker type is warning or error
+	 * @return <code>true</code>/<code>false</code> if error marker was (not) added successfully
+	 */
+	public boolean addMarker(final IResource sourceFile, final int line, final String message, boolean isWarning) {
 		if (!sourceFile.exists() || !sourceFile.isAccessible()) {
 			Activator.getDefault().logError(Constants.NO_RES_FOUND);
 			return false;
@@ -48,7 +65,7 @@ public class ErrorMarkerGenerator {
 			marker.setAttribute(IMarker.LINE_NUMBER, line);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+			marker.setAttribute(IMarker.SEVERITY, (!isWarning) ? IMarker.SEVERITY_ERROR : IMarker.SEVERITY_WARNING);
 		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 			return false;

@@ -2,6 +2,10 @@ package de.cognicrypt.staticanalyzer.handlers;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -50,9 +54,8 @@ public class AnalysisKickOff {
 		if (AnalysisKickOff.resultsReporter == null || !AnalysisKickOff.resultsReporter.getReporterProject().equals(ip)) {
 			AnalysisKickOff.resultsReporter = new ResultsCCUIListener(ip, AnalysisKickOff.errGen);
 		}
-
 		try {
-			if (ip == null || !ip.hasNature(JavaCore.NATURE_ID)) {
+			if (ip == null || (!ip.hasNature(JavaCore.NATURE_ID))) {
 				return false;
 			}
 		} catch (final CoreException e) {
@@ -70,6 +73,25 @@ public class AnalysisKickOff {
 	 * @return <code>true</code>/<code>false</code> Soot runs successfully
 	 */
 	public boolean run() {
-		return this.curProj != null && SootRunner.runSoot(this.curProj, AnalysisKickOff.resultsReporter);
+		Job analysis = new Job("CogniCrypt-analysis") {
+			
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				boolean runSoot = SootRunner.runSoot(curProj, AnalysisKickOff.resultsReporter);
+				if (runSoot && !monitor.isCanceled()) {
+					return Status.OK_STATUS;
+				} else {
+					return Status.CANCEL_STATUS;
+				}
+			}
+
+			@Override
+			protected void canceling() {
+				this.cancel();
+			}
+		};
+		analysis.setPriority(Job.LONG);
+		analysis.schedule();
+		return this.curProj != null && analysis.shouldRun();
 	}
 }

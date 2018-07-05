@@ -4,8 +4,10 @@ jdk:
   - oraclejdk8
   
 build:
-  pre-ci:
-   options: "- v /tmp/.X11-unix:/tmp/.X11-unix - e DISPLAY=unix$DISPLAY"
+
+  pre_ci_boot:
+  
+    options: "- v /tmp/.X11-unix:/tmp/.X11-unix - e DISPLAY=unix$DISPLAY"
    
   ci:
    - export DISPLAY=:0

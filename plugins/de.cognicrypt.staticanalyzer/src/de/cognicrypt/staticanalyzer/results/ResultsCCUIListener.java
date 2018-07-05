@@ -35,9 +35,15 @@ public class ResultsCCUIListener implements ICrySLResultsListener {
 	private final ErrorMarkerGenerator markerGenerator;
 	private final IProject currentProject;
 
-	public ResultsCCUIListener(final IProject curProj, final ErrorMarkerGenerator gen) {
+	private ResultsCCUIListener(final IProject curProj, final ErrorMarkerGenerator gen) {
 		this.currentProject = curProj;
 		this.markerGenerator = gen;
+	}
+
+	public static ResultsCCUIListener createListener(IProject project) {
+		ResultsCCUIListener listener = new ResultsCCUIListener(project, new ErrorMarkerGenerator());
+		Activator.registerResultsListener(listener);
+		return listener;
 	}
 
 	/**
@@ -94,6 +100,10 @@ public class ResultsCCUIListener implements ICrySLResultsListener {
 	@Override
 	public void onSeedFinished(IAnalysisSeed arg0, ForwardBoomerangResults<TransitionFunction> arg1) {
 		// Nothing
+	}
+
+	public ErrorMarkerGenerator getMarkerGenerator() {
+		return markerGenerator;
 	}
 
 }

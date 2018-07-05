@@ -159,4 +159,6 @@ public class Constants {
 	public static final String OBJECT_OF_TYPE = "Object of type ";
 	public static final String VAR = "Variable ";
 
+	public static final String ANALYSIS_LABEL = "CogniCrypt Analysis";
+
 }

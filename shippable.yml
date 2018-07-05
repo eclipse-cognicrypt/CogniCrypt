@@ -4,13 +4,13 @@ jdk:
   - oraclejdk8
   
 build:
-
-  pre_ci_boot:
-  
-    options: "-v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY"
    
   ci:
-   - export DISPLAY=:0
+   #- apt-get install xvfb
+   - Xvfb :1 -screen 0 1024x768x16 &> xvfb.log  &
+   - ps aux | grep X
+   - DISPLAY=:1.0
+   - export DISPLAY
    - cd mvn-parent
    - mvn clean verify surefire:test -e --fail-at-end
    

@@ -85,23 +85,21 @@ public class ErrorMarkerGenerator {
 
 	public boolean clearMarkers(final IProject curProj) {
 		boolean allMarkersDeleted = true;
-		for (final IMarker marker : this.markers) {
-			allMarkersDeleted &= deleteMarker(marker, curProj);
+		try {
+			for (final IMarker marker : this.markers) {
+				if (curProj == null || (curProj != null && curProj.equals(marker.getResource().getProject()))) {
+					marker.delete();
+				}
+			}
+			if (curProj != null) {
+				curProj.refreshLocal(IResource.DEPTH_INFINITE, null);
+			}
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e);
 		}
 		this.markers.clear();
 		return allMarkersDeleted;
 	}
 
-	private boolean deleteMarker(final IMarker marker, final IProject curProj) {
-		try {
-			if (curProj.equals(marker.getResource().getProject())) {
-				marker.delete();
-			}
-		} catch (final CoreException e) {
-			Activator.getDefault().logError(e);
-			return false;
-		}
-		return true;
-	}
 
 }

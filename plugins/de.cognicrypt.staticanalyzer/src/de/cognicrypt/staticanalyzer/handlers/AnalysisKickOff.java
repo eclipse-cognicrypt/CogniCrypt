@@ -10,6 +10,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 
+import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ErrorMarkerGenerator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
@@ -24,7 +25,6 @@ import de.cognicrypt.utils.Utils;
  */
 public class AnalysisKickOff {
 
-	private static ErrorMarkerGenerator errGen;
 	private static ResultsCCUIListener resultsReporter;
 	private IJavaProject curProj;
 
@@ -37,6 +37,7 @@ public class AnalysisKickOff {
 	 * @param iJavaElement
 	 *
 	 * @return <code>true</code>/<code>false</code> if setup (not) successful
+	 * @throws CoreException
 	 */
 	public boolean setUp(final IJavaElement iJavaElement) {
 		IProject ip = null;
@@ -46,14 +47,20 @@ public class AnalysisKickOff {
 			ip = iJavaElement.getJavaProject().getProject();
 		}
 
-		if (AnalysisKickOff.errGen == null) {
-			AnalysisKickOff.errGen = new ErrorMarkerGenerator();
-		} else {
-			AnalysisKickOff.errGen.clearMarkers(ip);
+		if (AnalysisKickOff.resultsReporter != null && !AnalysisKickOff.resultsReporter.getReporterProject().equals(ip)) {
+			AnalysisKickOff.resultsReporter = null;
+			for (ResultsCCUIListener resRep : Activator.getResultsReporters()) {
+				if (resRep.getReporterProject().equals(ip)) {
+					AnalysisKickOff.resultsReporter = resRep;
+					break;
+				}
+			}
 		}
-		if (AnalysisKickOff.resultsReporter == null || !AnalysisKickOff.resultsReporter.getReporterProject().equals(ip)) {
-			AnalysisKickOff.resultsReporter = new ResultsCCUIListener(ip, AnalysisKickOff.errGen);
+
+		if (AnalysisKickOff.resultsReporter == null) {
+			AnalysisKickOff.resultsReporter = ResultsCCUIListener.createListener(ip);
 		}
+		resultsReporter.getMarkerGenerator().clearMarkers(ip);
 		try {
 			if (ip == null || (!ip.hasNature(JavaCore.NATURE_ID))) {
 				return false;
@@ -73,7 +80,7 @@ public class AnalysisKickOff {
 	 * @return <code>true</code>/<code>false</code> Soot runs successfully
 	 */
 	public boolean run() {
-		Job analysis = new Job("CogniCrypt-analysis") {
+		Job analysis = new Job(Constants.ANALYSIS_LABEL) {
 			
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {

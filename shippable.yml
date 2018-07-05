@@ -4,8 +4,11 @@ jdk:
   - oraclejdk8
   
 build:
+  pre-ci:
+   options: "- v /tmp/.X11-unix:/tmp/.X11-unix - e DISPLAY=unix$DISPLAY"
+   
   ci:
-   - export DISPLAY=:1
+   - export DISPLAY=:0
    - cd mvn-parent
    - mvn clean verify surefire:test -e --fail-at-end
    

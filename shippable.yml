@@ -5,6 +5,7 @@ jdk:
   
 build:
   ci:
+   - export DISPLAY=:0
    - cd mvn-parent
    - mvn clean verify surefire:test -e --fail-at-end
    

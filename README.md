@@ -6,7 +6,7 @@ CogniCrypt is an Eclipse plugin that supports Java developers in using cryptogra
 
 ## Installation
 
-To set up CogniCrypt in your own Eclipse, please install it from the [**Update Site**](http://download.eclipse.org/cognicrypt/).If it is your first time using CogniCrypt, we recommend you to check out the [**tutorial**](https://github.com/CROSSINGTUD/CogniCrypt/wiki/Tutorial) in this project's wiki.
+To set up CogniCrypt in your own Eclipse, please install it from the [**Update Site**](http://download.eclipse.org/cognicrypt/). If it is your first time using CogniCrypt, we recommend you to check out the [**tutorial**](https://github.com/CROSSINGTUD/CogniCrypt/wiki/Tutorial) in this project's wiki.
 
 ## Contribution
 

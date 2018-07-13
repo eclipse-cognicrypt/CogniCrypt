@@ -9,7 +9,7 @@
             id="de.cognicrypt.codegenerator.actionSet">
          <menu
                label="CogniCryptMenu"
-               id="sampleMenu">
+               id="cognicryptmenu">
             <separator
                   name="CognicryptGroup">
             </separator>
@@ -19,7 +19,7 @@
                icon="icons/cognicrypt.png"
                id="de.cognicrypt.codegenerator.actions.WizardAction"
                label="&amp;Start Code Generation"
-               menubarPath="CogniCryptMenu/CogniCryptGroup"
+               menubarPath="CogniCryptMenu"
                toolbarPath="CogniCryptGroup"
                tooltip="Generate Code For Cryptographic Task">
          </action>

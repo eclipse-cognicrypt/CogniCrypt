@@ -161,4 +161,11 @@ public class Constants {
 
 	public static final String ANALYSIS_LABEL = "CogniCrypt Analysis";
 
+	public static final String BUILDER_ID = "QuickFixTest.ProblemMarkerBuilder";
+
+	public static final String MARKER_TYPE = "QuickFixTest.OCCEProblem";
+
+	// define a correct ID (get range of possible ones)
+	public static final int JDT_PROBLEM_ID = 10000000;
+
 }

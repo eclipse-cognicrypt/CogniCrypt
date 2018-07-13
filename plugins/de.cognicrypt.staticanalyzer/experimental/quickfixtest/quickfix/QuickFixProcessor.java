@@ -13,7 +13,8 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 
-import de.cognicrypt.codegenerator.Activator;
+import de.cognicrypt.staticanalyzer.Activator;
+
 
 /**
  * Quickfix Processor that checks for the specific ProblemID of the Marker and then gets the IJavaCompletionProposal for it.
@@ -56,12 +57,8 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 				try {
 					d.replace(context.getSelectionOffset(), context.getSelectionLength(), "Cipher.getInstance(\"AES/CBC/PKCS5PADDING\")");
 					context.getCompilationUnit().getResource().deleteMarkers(QuickFixProcessor.MARKER_TYPE, false, IResource.DEPTH_ZERO);
-				} catch (final CoreException e) {
+				} catch (final CoreException | BadLocationException e) {
 					Activator.getDefault().logError(e);
-					e.printStackTrace();
-				} catch (final BadLocationException e) {
-					Activator.getDefault().logError(e);
-					e.printStackTrace();
 				}
 			}
 

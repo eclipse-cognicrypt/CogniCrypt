@@ -13,7 +13,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import de.cognicrypt.codegenerator.Activator;
+import de.cognicrypt.staticanalyzer.Activator;
 
 /**
  * Used to add the ProblemMarkerNature to a Project. Can be used by right clicking the Project and then selecting Configure->Enable QFBuilder

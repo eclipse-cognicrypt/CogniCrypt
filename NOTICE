@@ -1,0 +1,86 @@
+# Notices for Eclipse CogniCrypt
+
+This content is produced and maintained by the Eclipse CogniCrypt project.
+
+* Project home: https://projects.eclipse.org/projects/technology.cognicrypt
+
+## Trademarks
+
+Eclipse CogniCrypt is a trademark of the Eclipse Foundation.
+
+## Copyright
+
+All content is the property of the respective authors or their employers. For
+more information regarding authorship of content, please consult the listed
+source code repository logs.
+
+## Declared Project Licenses
+
+This program and the accompanying materials are made available under the terms
+of the Eclipse Public License v. 2.0 which is available at
+http://www.eclipse.org/legal/epl-2.0.
+
+SPDX-License-Identifier: EPL-2.0
+
+## Source Code
+
+The project maintains the following source code repositories:
+
+* https://github.com/eclipse-cognicrypt/CogniCrypt
+
+## Third-party Content
+
+This project leverages the following third party content.
+
+ANTLR Runtime only: (3.2)
+
+* License: New BSD license
+
+Clafer Choco Solver (0.4.4)
+
+* License: MIT
+* Project: https://github.com/gsdlab/chocosolver
+* Source: https://github.com/gsdlab/chocosolver
+
+Dom4J (2.1.0)
+
+* License: LicenseRef-Dom4j (Apache-1.1 style)
+
+Google Gson (2.3.1)
+
+* License: Apache-2.0
+
+JUnit (4.7)
+
+* License: Common Public License 1.0, BSD Style
+
+JUnit (4.12)
+
+* License: Eclipse Public License
+
+log4j (1.2.15)
+
+* License: Apache License, 2.0
+
+Saxon (9.8)
+
+* License: MPL-2.0 AND MPL-2.0-no-copyleft-exception AND HPND AND X11 AND
+   Unicode-TOU
+* Project: http://saxon.sourceforge.net/
+* Source: http://saxon.sourceforge.net/
+
+soot (3.0.0)
+
+* License: LGPL-2.1-or-later
+* Source: https://sable.github.io/soot/
+
+WPDS (1.0.0)
+
+* License: EPL-2.0
+* Source: https://github.com/CROSSINGTUD/WPDS
+
+CryptoAnalysis (0.0.1-SNAPSHOT)
+
+* License: EPL-2.0
+* Source: https://github.com/CROSSINGTUD/CryptoAnalysis
+

@@ -66,7 +66,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	 * @param primitive
 	 *        primitive for which the page is created
 	 * @param selectionValues
-	 *        
+	 * 
 	 */
 	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, final List<String> selectionValues) {
 		super("Display Questions");
@@ -83,7 +83,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	 * @param PrimitiveQuestionnaire
 	 * @param selectionValues
 	 * @param iteration
-	 * 			This parameter is used for number of keysizes.
+	 *        This parameter is used for number of keysizes.
 	 */
 	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, final PrimitiveQuestionnaire PrimitiveQuestionnaire, final List<String> selectionValues, int iteration) {
 		super("Display Questions");

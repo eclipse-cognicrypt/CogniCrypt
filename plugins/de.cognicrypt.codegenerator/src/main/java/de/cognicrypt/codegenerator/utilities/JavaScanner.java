@@ -51,11 +51,7 @@ public class JavaScanner {
 
 	protected boolean fEofSeen = false;
 
-	private String[] fgKeywords = { "abstract", "boolean", "break", "byte", "case", "catch", "char", "class", 
-			"continue", "default", "do", "double", "else", "extends", "false", "final", "finally", "float", "for", 
-			"if", "implements", "import", "instanceof", "int", "interface", "long", "native", "new", "null", "package",
-			"private", "protected", "public", "return", "short", "static", "super", "switch", "synchronized", "this", "throw", 
-			"throws", "transient", "true", "try", "void", "volatile", "while" };
+	private String[] fgKeywords = { "abstract", "boolean", "break", "byte", "case", "catch", "char", "class", "continue", "default", "do", "double", "else", "extends", "false", "final", "finally", "float", "for", "if", "implements", "import", "instanceof", "int", "interface", "long", "native", "new", "null", "package", "private", "protected", "public", "return", "short", "static", "super", "switch", "synchronized", "this", "throw", "throws", "transient", "true", "try", "void", "volatile", "while" };
 
 	public JavaScanner() {
 		initialize();
@@ -88,7 +84,7 @@ public class JavaScanner {
 	/**
 	 * Returns the next lexical token in the document.
 	 */
-	
+
 	public int nextToken() {
 		int c;
 		fStartToken = fPos;

@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-
 public class Validation_portNumber {
 
 	@Test

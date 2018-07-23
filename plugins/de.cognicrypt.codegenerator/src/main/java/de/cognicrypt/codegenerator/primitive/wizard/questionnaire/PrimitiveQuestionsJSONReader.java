@@ -9,6 +9,7 @@
  ********************************************************************************/
 
 package de.cognicrypt.codegenerator.primitive.wizard.questionnaire;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -51,15 +52,13 @@ public class PrimitiveQuestionsJSONReader {
 		}
 		return questions;
 	}
-	
-	
+
 	/***
 	 * This method reads all pages of one primitive using the file path to the JSON file.
 	 * 
-	 * @param filePath 
-	 * 			Path to the file that contains all questions for one primitive.
-	 * @return pages 
-	 * 			Return a list of all the pages in the JSON file.
+	 * @param filePath
+	 *        Path to the file that contains all questions for one primitive.
+	 * @return pages Return a list of all the pages in the JSON file.
 	 */
 	public List<Page> getPages(final String filePath) {
 		List<Page> pages = new ArrayList<Page>();
@@ -87,7 +86,7 @@ public class PrimitiveQuestionsJSONReader {
 	public List<Question> getQuestions(final Primitive primitive) {
 		return getQuestions(primitive.getXmlFile());
 	}
-	
+
 	/***
 	 * This method reads all pages of one primitive.
 	 * 
@@ -98,9 +97,10 @@ public class PrimitiveQuestionsJSONReader {
 	public List<Page> getPages(final Primitive primitive) {
 		return getPages(primitive.getXmlFile());
 	}
-	
+
 	/**
 	 * Check the validity of the pages and the questions contained in them.
+	 * 
 	 * @param pages
 	 */
 	private void checkReadPages(List<Page> pages) {
@@ -112,7 +112,7 @@ public class PrimitiveQuestionsJSONReader {
 			if (!ids.add(page.getId())) {
 				throw new IllegalArgumentException("Each page must have a unique ID.");
 			}
-			
+
 			// Check the validity of questions for each page.
 			checkReadQuestions(page.getContent());
 		}
@@ -128,9 +128,9 @@ public class PrimitiveQuestionsJSONReader {
 				throw new IllegalArgumentException("Each question must have a unique ID.");
 			}
 
-//			if (question.getDefaultAnswer() == null) {
-//				throw new IllegalArgumentException("Each question must have a default answer.");
-//			}
+			//			if (question.getDefaultAnswer() == null) {
+			//				throw new IllegalArgumentException("Each question must have a default answer.");
+			//			}
 		}
 	}
 

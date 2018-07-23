@@ -31,6 +31,7 @@ public class ClaferFeature implements Serializable {
 	private String featureInheritance;
 	private ArrayList<ClaferProperty> featureProperties; // <String name, String value>. The names in this collection cannot be repeated.
 	private ArrayList<ClaferConstraint> featureConstraints; // each constraint will be generated as a "valid" string in the constraint generator pop up.
+
 	/**
 	 * @param featureType
 	 * @param featureName
@@ -46,26 +47,32 @@ public class ClaferFeature implements Serializable {
 		this.featureProperties = new ArrayList<ClaferProperty>();
 		this.featureConstraints = new ArrayList<ClaferConstraint>();
 	}
+
 	/**
 	 * @return the featureType
 	 */
 	public FeatureType getFeatureType() {
 		return featureType;
 	}
+
 	/**
-	 * @param featureType the featureType to set
+	 * @param featureType
+	 *        the featureType to set
 	 */
 	public void setFeatureType(FeatureType featureType) {
 		this.featureType = featureType;
 	}
+
 	/**
 	 * @return the featureName
 	 */
 	public String getFeatureName() {
 		return featureName;
 	}
+
 	/**
-	 * @param featureName the featureName to set
+	 * @param featureName
+	 *        the featureName to set
 	 */
 	public void setFeatureName(String featureName) {
 		this.featureName = featureName;
@@ -97,7 +104,7 @@ public class ClaferFeature implements Serializable {
 	public void setFeatureProperties(ArrayList<ClaferProperty> featureProperties) {
 		this.featureProperties = featureProperties;
 	}
-	
+
 	public ArrayList<ClaferProperty> addFeatureProperty(ClaferProperty claferProperty) {
 		if (getFeatureProperties() == null) {
 			setFeatureProperties(new ArrayList<>());
@@ -120,7 +127,7 @@ public class ClaferFeature implements Serializable {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * check whether the {@link ClaferFeature} has properties meeting a given constraint
 	 * 
@@ -151,7 +158,7 @@ public class ClaferFeature implements Serializable {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -200,7 +207,7 @@ public class ClaferFeature implements Serializable {
 	public void setFeatureConstraints(ArrayList<ClaferConstraint> featureConstraints) {
 		this.featureConstraints = featureConstraints;
 	}
-	
+
 	public ArrayList<ClaferConstraint> addFeatureConstraint(ClaferConstraint claferConstraint) {
 		if (getFeatureConstraints() == null) {
 			setFeatureConstraints(new ArrayList<>());
@@ -217,27 +224,28 @@ public class ClaferFeature implements Serializable {
 	public String toString() {
 		return toString(true);
 	}
-	
+
 	/**
 	 * return a {@link String} representing of the feature
 	 * 
-	 * @param includeChildren {@link Boolean} whether to include properties and constraints in the output
+	 * @param includeChildren
+	 *        {@link Boolean} whether to include properties and constraints in the output
 	 * @return {@link String} representation of the Clafer
 	 */
 	public String toString(boolean includeChildren) {
 		StringBuilder strRepresentation = new StringBuilder();
-		
+
 		if (featureType == Constants.FeatureType.ABSTRACT) {
 			strRepresentation.append("abstract ");
 		}
-		
+
 		strRepresentation.append(getFeatureName());
-		
+
 		if (!getFeatureInheritance().isEmpty()) {
 			strRepresentation.append(": ");
 			strRepresentation.append(getFeatureInheritance());
 		}
-		
+
 		if (includeChildren) {
 
 			for (ClaferProperty featureProperty : getFeatureProperties()) {
@@ -255,8 +263,8 @@ public class ClaferFeature implements Serializable {
 			}
 
 		}
-		
-		return strRepresentation.toString();		
+
+		return strRepresentation.toString();
 	}
-	
+
 }

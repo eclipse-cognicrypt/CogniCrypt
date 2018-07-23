@@ -59,7 +59,7 @@ public class XslPageContentProviderTest {
 
 		ClaferModel claferModel = new ClaferModel();
 		claferModel.add(cfrFeature);
-		
+
 		// create a question with two possible answers and a code dependency each
 		CodeDependency codeDep1 = new CodeDependency();
 		codeDep1.setOption("signing");
@@ -82,7 +82,7 @@ public class XslPageContentProviderTest {
 		answers.add(answer1);
 		question.setAnswers(answers);
 		answers.add(answer2);
-		
+
 		ArrayList<Question> questionList = new ArrayList<Question>();
 		questionList.add(question);
 

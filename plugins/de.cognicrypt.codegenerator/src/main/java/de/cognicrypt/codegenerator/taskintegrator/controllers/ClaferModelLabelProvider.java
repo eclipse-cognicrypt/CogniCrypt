@@ -20,12 +20,10 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 public class ClaferModelLabelProvider implements ILabelProvider {
 
 	@Override
-	public void addListener(ILabelProviderListener arg0) {
-	}
+	public void addListener(ILabelProviderListener arg0) {}
 
 	@Override
-	public void dispose() {
-	}
+	public void dispose() {}
 
 	@Override
 	public boolean isLabelProperty(Object arg0, String arg1) {
@@ -33,8 +31,7 @@ public class ClaferModelLabelProvider implements ILabelProvider {
 	}
 
 	@Override
-	public void removeListener(ILabelProviderListener arg0) {
-	}
+	public void removeListener(ILabelProviderListener arg0) {}
 
 	@Override
 	public Image getImage(Object arg0) {

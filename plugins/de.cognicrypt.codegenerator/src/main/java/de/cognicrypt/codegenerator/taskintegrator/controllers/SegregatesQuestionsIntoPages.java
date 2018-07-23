@@ -136,7 +136,6 @@ public class SegregatesQuestionsIntoPages {
 
 	}
 
-
 	/**
 	 * Adds the question to a new page
 	 * 
@@ -272,7 +271,6 @@ public class SegregatesQuestionsIntoPages {
 						}
 					}
 
-
 				}
 
 			}
@@ -352,6 +350,7 @@ public class SegregatesQuestionsIntoPages {
 		return null;
 
 	}
+
 	/**
 	 * 
 	 * @return the page array

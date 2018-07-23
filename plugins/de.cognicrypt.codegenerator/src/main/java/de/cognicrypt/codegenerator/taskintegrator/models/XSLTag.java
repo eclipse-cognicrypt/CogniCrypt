@@ -16,9 +16,10 @@ import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.XSLTags;
 
 public class XSLTag {
+
 	private Constants.XSLTags XSLTagDetails; // Variable to hold all the XSL tag data.
 	private ArrayList<XSLAttribute> XSLAttributes; // Variable to hold the selected tag attributes.
-	
+
 	/**
 	 * @param xSLTagDetails
 	 *        This detail come from the enumeration {@code XSLTags} in {@link Constants} class. These include the XSLTagFaceName, XSLBeginTag, XSLEndTag and an ArrayList of all
@@ -31,14 +32,14 @@ public class XSLTag {
 		setXSLTagDetails(xSLTagDetails);
 		setXSLAttributes(xSLAttributes);
 	}
-	
+
 	/**
 	 * @return XSLTagDetails the constant from {@code XSLTags} in {@link Constants} passed to the constructor.
 	 */
 	public Constants.XSLTags getXSLTagDetails() {
 		return XSLTagDetails;
 	}
-	
+
 	/**
 	 * @param xSLTagDetails
 	 *        set the constant from {@code XSLTags} in {@link Constants}.
@@ -46,14 +47,14 @@ public class XSLTag {
 	private void setXSLTagDetails(Constants.XSLTags xSLTagDetails) {
 		XSLTagDetails = xSLTagDetails;
 	}
-	
+
 	/**
 	 * @return the ArrayList of type {@link XSLAttribute}.
 	 */
 	public ArrayList<XSLAttribute> getXSLAttributes() {
 		return XSLAttributes;
 	}
-	
+
 	/**
 	 * @param xSLAttributes
 	 *        set the ArrayList<{@link XSLAttribute}>.
@@ -74,28 +75,26 @@ public class XSLTag {
 	public String toString() {
 		StringBuilder tagString = new StringBuilder();
 		StringBuilder attributeString = new StringBuilder();
-		
+
 		// Generate the string for the attributes.
-		for(XSLAttribute attribute : getXSLAttributes()){
+		for (XSLAttribute attribute : getXSLAttributes()) {
 			attributeString.append(" ");
 			attributeString.append(attribute.getXSLAttributeName());
 			attributeString.append("=\"");
 			attributeString.append(attribute.getXSLAttributeData());
 			attributeString.append("\"");
 		}
-		
+
 		tagString.append(getXSLTagDetails().getXSLBeginTag());
 		// The location of the attribute string insertion changes if there is no end tag. e.g. <xsl:value-of/>
 		int VALUE_TO_GET_LOCATION_TO_INSERT_ATTRIBUTES = 1;
-		if(getXSLTagDetails().getXSLEndTag().equals("")){
+		if (getXSLTagDetails().getXSLEndTag().equals("")) {
 			VALUE_TO_GET_LOCATION_TO_INSERT_ATTRIBUTES = 2;
 		}
-		tagString.insert(getXSLTagDetails().getXSLBeginTag().length()-VALUE_TO_GET_LOCATION_TO_INSERT_ATTRIBUTES, attributeString.toString());
+		tagString.insert(getXSLTagDetails().getXSLBeginTag().length() - VALUE_TO_GET_LOCATION_TO_INSERT_ATTRIBUTES, attributeString.toString());
 		tagString.append(getXSLTagDetails().getXSLEndTag());
-		
+
 		return tagString.toString();
 	}
-	
-	
 
 }

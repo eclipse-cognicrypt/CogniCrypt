@@ -30,7 +30,7 @@ public class ClaferCompiler {
 		} else if (osString.contains("Windows 7") || osString.contains("Windows 8") || osString.contains("Windows 10")) {
 			return CodeGenUtils.getResourceFromWithin("src/main/resources/bin/clafer-windows.exe").getAbsolutePath();
 		}
-		
+
 		// rely on the PATH variable if full path cannot be found
 		return "clafer";
 	}

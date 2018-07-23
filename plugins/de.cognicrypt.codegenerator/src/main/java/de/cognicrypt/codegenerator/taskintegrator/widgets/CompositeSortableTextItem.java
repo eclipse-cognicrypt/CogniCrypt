@@ -50,7 +50,7 @@ public class CompositeSortableTextItem extends Composite {
 
 		lblPosition = new Label(this, SWT.NONE);
 		lblPosition.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
-		
+
 		decorationOption = new ControlDecoration(lblPosition, SWT.RIGHT | SWT.TOP);
 
 		txtOption = new Text(this, SWT.BORDER);

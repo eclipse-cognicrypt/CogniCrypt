@@ -35,40 +35,35 @@ public class TaskIntegrationWizard extends Wizard {
 	@Override
 	public void addPages() {
 		this.addPage(
-			new PageForTaskIntegratorWizard(
-			Constants.PAGE_NAME_FOR_MODE_OF_WIZARD,
-			Constants.PAGE_TITLE_FOR_MODE_OF_WIZARD,
-			Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD
-			));
+			new PageForTaskIntegratorWizard(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD, Constants.PAGE_TITLE_FOR_MODE_OF_WIZARD, Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD));
 
 		this.addPage(new ClaferPage());
 
 		this.addPage(new QuestionsPage());
 
-		this.addPage(new PageForTaskIntegratorWizard(
-			Constants.PAGE_NAME_FOR_LINK_ANSWERS,
-			Constants.PAGE_TITLE_FOR_LINK_ANSWERS,
-			Constants.PAGE_DESCIPTION_FOR_LINK_ANSWERS));
-		
+		this.addPage(new PageForTaskIntegratorWizard(Constants.PAGE_NAME_FOR_LINK_ANSWERS, Constants.PAGE_TITLE_FOR_LINK_ANSWERS, Constants.PAGE_DESCIPTION_FOR_LINK_ANSWERS));
+
 		this.addPage(new XslPage());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
 	@Override
 	public boolean performFinish() {
 
-		ModelAdvancedMode objectForDataInNonGuidedMode = getTIPageByName(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
+		ModelAdvancedMode objectForDataInNonGuidedMode = getTIPageByName(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD).getCompositeChoiceForModeOfWizard()
+			.getObjectForDataInNonGuidedMode();
 		objectForDataInNonGuidedMode.setTask();
 		FileUtilities fileUtilities = new FileUtilities(objectForDataInNonGuidedMode.getNameOfTheTask());
-		if(this.getContainer().getCurrentPage().getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)){
-			if(objectForDataInNonGuidedMode.isGuidedModeChosen() == false //&& this.objectForDataInNonGuidedMode.isGuidedModeForced() == false
-				){
-				
-				String fileWriteAttemptResult = fileUtilities.writeFiles(objectForDataInNonGuidedMode.getLocationOfClaferFile(), objectForDataInNonGuidedMode.getLocationOfJSONFile(),
-					objectForDataInNonGuidedMode.getLocationOfXSLFile(), objectForDataInNonGuidedMode.getLocationOfCustomLibrary(),
-					objectForDataInNonGuidedMode.getLocationOfHelpXMLFile());
+		if (this.getContainer().getCurrentPage().getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)) {
+			if (objectForDataInNonGuidedMode.isGuidedModeChosen() == false //&& this.objectForDataInNonGuidedMode.isGuidedModeForced() == false
+			) {
+
+				String fileWriteAttemptResult = fileUtilities.writeFiles(objectForDataInNonGuidedMode.getLocationOfClaferFile(),
+					objectForDataInNonGuidedMode.getLocationOfJSONFile(), objectForDataInNonGuidedMode.getLocationOfXSLFile(),
+					objectForDataInNonGuidedMode.getLocationOfCustomLibrary(), objectForDataInNonGuidedMode.getLocationOfHelpXMLFile());
 				// Check if the contents of the provided files are valid.
 				if (fileWriteAttemptResult.equals("")) {
 					fileUtilities.writeTaskToJSONFile(objectForDataInNonGuidedMode.getTask());
@@ -81,7 +76,7 @@ public class TaskIntegrationWizard extends Wizard {
 					errorBox.open();
 					return false;
 				}
-				
+
 			}
 		} else {
 
@@ -90,12 +85,12 @@ public class TaskIntegrationWizard extends Wizard {
 				.getCompositeToHoldGranularUIElements()).getClaferModel();
 			ArrayList<Question> questions = ((CompositeToHoldGranularUIElements) ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_LINK_ANSWERS))
 				.getCompositeToHoldGranularUIElements()).getListOfAllQuestions();
-			String xslFileContents = ((CompositeForXsl) ((XslPage) getPage(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)).getCompositeForXsl()).getXslTxtBox()
-				.getText();
+			String xslFileContents = ((CompositeForXsl) ((XslPage) getPage(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)).getCompositeForXsl()).getXslTxtBox().getText();
 
 			File customLibLocation = null;
-			
-			ModelAdvancedMode objectForDataInGuidedMode = getTIPageByName(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
+
+			ModelAdvancedMode objectForDataInGuidedMode = getTIPageByName(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD).getCompositeChoiceForModeOfWizard()
+				.getObjectForDataInNonGuidedMode();
 			objectForDataInGuidedMode.setTask();
 
 			String fileWriteAttemptResult = fileUtilities.writeFiles(claferModel, questions, xslFileContents, customLibLocation, null);
@@ -125,7 +120,7 @@ public class TaskIntegrationWizard extends Wizard {
 		if (PageForTaskIntegratorWizard.class.isInstance(page)) {
 			return (PageForTaskIntegratorWizard) page;
 		}
-		
+
 		return null;
 	}
 

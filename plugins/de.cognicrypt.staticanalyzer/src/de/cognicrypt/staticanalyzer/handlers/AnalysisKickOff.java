@@ -28,7 +28,8 @@ import de.cognicrypt.staticanalyzer.sootbridge.SootRunner;
 import de.cognicrypt.utils.Utils;
 
 /**
- * This class prepares and triggers the analysis. After it has finished, it refreshes the project.
+ * This class prepares and triggers the analysis. After it has finished, it
+ * refreshes the project.
  *
  * @author Stefan Krueger
  *
@@ -57,7 +58,8 @@ public class AnalysisKickOff {
 			ip = iJavaElement.getJavaProject().getProject();
 		}
 
-		if (AnalysisKickOff.resultsReporter != null && !AnalysisKickOff.resultsReporter.getReporterProject().equals(ip)) {
+		if (AnalysisKickOff.resultsReporter != null
+				&& !AnalysisKickOff.resultsReporter.getReporterProject().equals(ip)) {
 			AnalysisKickOff.resultsReporter = null;
 			for (ResultsCCUIListener resRep : Activator.getResultsReporters()) {
 				if (resRep.getReporterProject().equals(ip)) {
@@ -91,7 +93,7 @@ public class AnalysisKickOff {
 	 */
 	public boolean run() {
 		Job analysis = new Job(Constants.ANALYSIS_LABEL) {
-			
+
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				boolean runSoot = SootRunner.runSoot(curProj, AnalysisKickOff.resultsReporter);

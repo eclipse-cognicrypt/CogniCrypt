@@ -257,18 +257,18 @@ public class InstanceGenerator {
 			Activator.getDefault().logError("Instances not sorted by security level. Be cautious");
 		}
 		ArrayList<TreeMap<String, InstanceClafer>> separatedCombinations = new ArrayList<>();
-		
+
 		int x = -1;
-		String tempKey="";
+		String tempKey = "";
 		for (final InstanceClafer sortedInst : this.generatedInstances) {
-			
+
 			String key = getInstanceName(sortedInst);
 			if (key.isEmpty()) {
 				key = sortedInst.getChildren()[0].getRef().toString();
 				this.displayNameToInstanceMap.remove(key, sortedInst);
 			}
-			
-			if(!tempKey.equals(key)){
+
+			if (!tempKey.equals(key)) {
 				tempKey = key;
 				separatedCombinations.add(new TreeMap<String, InstanceClafer>());
 				x++;
@@ -290,6 +290,7 @@ public class InstanceGenerator {
 		this.setSeparatedAlgorithms(separatedCombinations);
 		this.displayNameToInstanceMap = new TreeMap<>(this.displayNameToInstanceMap);
 	}
+
 	/**
 	 * Method to generate instances for basic user.
 	 *
@@ -450,6 +451,7 @@ public class InstanceGenerator {
 	public Map<String, InstanceClafer> getFirstInstance() {
 		return this.displayFirstNameToInstanceMap;
 	}
+
 	/**
 	 * get list of generated instances, sorted by security, if possible
 	 * 
@@ -458,7 +460,7 @@ public class InstanceGenerator {
 	public List<InstanceClafer> getGeneratedInstances() {
 		return generatedInstances;
 	}
-	
+
 	/**
 	 * Returns number of instances of the task
 	 *
@@ -512,7 +514,7 @@ public class InstanceGenerator {
 	}
 
 	public void setAlgorithmNames(final String algorithmName) {
-		if(!this.algorithmName.contains(algorithmName)){
+		if (!this.algorithmName.contains(algorithmName)) {
 			this.algorithmName.add(algorithmName);
 		}
 	}

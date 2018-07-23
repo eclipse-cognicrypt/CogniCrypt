@@ -16,7 +16,7 @@ import de.cognicrypt.codegenerator.primitive.types.Primitive;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 
-public class PrimitiveQuestionnaire{
+public class PrimitiveQuestionnaire {
 
 	private final List<Question> questionList;
 	private final List<Page> pageList;
@@ -28,24 +28,25 @@ public class PrimitiveQuestionnaire{
 	 * @param task
 	 * @param filePath
 	 */
-	public PrimitiveQuestionnaire(final Primitive primitive, final String filePath){
+	public PrimitiveQuestionnaire(final Primitive primitive, final String filePath) {
 		this.primitive = primitive;
 		this.pageList = (new PrimitiveQuestionsJSONReader()).getPages(filePath);
 		this.pageID = 0;
-		
+
 		this.questionList = null;
 	}
+
 	/**
-	 * Added this method to get specific questions. This functionality was created to replace the code when handling buttons
-	 * as 'Questions'.
+	 * Added this method to get specific questions. This functionality was created to replace the code when handling buttons as 'Questions'.
+	 * 
 	 * @param questionID
 	 * @return The requested question.
 	 */
 	public Question getQuestionByID(final int questionID) {
-		
-		for(Page page : pageList){
-			for(Question question : page.getContent()){
-				if(question.getId() == questionID){
+
+		for (Page page : pageList) {
+			for (Question question : page.getContent()) {
+				if (question.getId() == questionID) {
 					return question;
 				}
 			}
@@ -60,15 +61,15 @@ public class PrimitiveQuestionnaire{
 	public List<Question> getQuestionList() {
 		return this.questionList;
 	}
-	
+
 	public Primitive getPrimitive() {
 		return this.primitive;
 	}
 
-
 	public void setPrimitive(final Primitive primitive) {
 		this.primitive = primitive;
 	}
+
 	/**
 	 * 
 	 * @param pageID
@@ -77,7 +78,7 @@ public class PrimitiveQuestionnaire{
 	public Page getPageByID(final int pageID) {
 		return this.pageList.get(pageID);
 	}
-	
+
 	/**
 	 * 
 	 * @return Return the list of pages.
@@ -86,7 +87,7 @@ public class PrimitiveQuestionnaire{
 	public List<Page> getPages() throws NullPointerException {
 		return this.pageList;
 	}
-	
+
 	/**
 	 * 
 	 * @return Return the next page.
@@ -120,7 +121,7 @@ public class PrimitiveQuestionnaire{
 	public boolean isFirstPage() {
 		return this.pageID == 0;
 	}
-	
+
 	/**
 	 * 
 	 * @return Return whether there are more pages.
@@ -128,7 +129,7 @@ public class PrimitiveQuestionnaire{
 	public boolean hasMorePages() {
 		return this.pageID < getPages().size();
 	}
-	
+
 	/**
 	 * 
 	 * @return Return the current pageID.

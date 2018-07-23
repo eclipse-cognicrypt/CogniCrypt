@@ -37,19 +37,20 @@ import de.cognicrypt.codegenerator.taskintegrator.widgets.GroupXSLTagAttribute;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.XSLTags;
 
-
 public class XSLTagDialog extends Dialog {
+
 	private CompositeToHoldSmallerUIElements compositeForXSLAttributes;
 	private Button btnAddAttribute;
 	private Combo comboXSLTags;
 	private String currentSelectionStringOncomboXSLTags;
-	
+
 	private XSLTag tag;
 	private SortedSet<String> cfrFeatures;
 	private HashMap<String, String> valuesForTagData;
-	
+
 	/**
 	 * Create the dialog.
+	 * 
 	 * @param parentShell
 	 */
 	public XSLTagDialog(Shell parentShell) {
@@ -69,6 +70,7 @@ public class XSLTagDialog extends Dialog {
 
 	/**
 	 * Create contents of the dialog.
+	 * 
 	 * @param parent
 	 */
 	@Override
@@ -76,28 +78,27 @@ public class XSLTagDialog extends Dialog {
 		Composite container = (Composite) super.createDialogArea(parent);
 		getShell().setMinimumSize(900, 400);
 		comboXSLTags = new Combo(container, SWT.READ_ONLY);
-		
+
 		GridData gd_comboXSLTags = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		comboXSLTags.setLayoutData(gd_comboXSLTags);
-		
+
 		// Add all the available tags to the combo box.
-		for(XSLTags tag : Constants.XSLTags.values()){
-			comboXSLTags.add(tag.getXSLTagFaceName());			
+		for (XSLTags tag : Constants.XSLTags.values()) {
+			comboXSLTags.add(tag.getXSLTagFaceName());
 		}
-		
-		btnAddAttribute = new Button(container, SWT.NONE);		
+
+		btnAddAttribute = new Button(container, SWT.NONE);
 		btnAddAttribute.setText("Add Attribute");
-		
+
 		compositeForXSLAttributes = new CompositeToHoldSmallerUIElements(container, SWT.NONE, null, true, null);
 		GridData gd_compositeForProperties = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		compositeForXSLAttributes.setLayoutData(gd_compositeForProperties);
-		
-		
+
 		// Select the first one by default
 		comboXSLTags.select(0);
-		
-				
+
 		btnAddAttribute.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// Add the UI element for the attribute with the remove button, and pass the selected XSL tag.
@@ -107,109 +108,110 @@ public class XSLTagDialog extends Dialog {
 				ArrayList<String> possAttributes = compositeForXSLAttributes.getListOfPossibleAttributes(comboXSLTags.getText());
 				compositeForXSLAttributes.updateDropDownsForXSLAttributes(possAttributes);
 			}
-			
+
 		});
-		
-		
+
 		comboXSLTags.addSelectionListener(new SelectionAdapter() {
+
 			@Override
-			public void widgetSelected(SelectionEvent e) {		
+			public void widgetSelected(SelectionEvent e) {
 				// If attributes have been added to the tag, ask for confirmation from the user.
-				if(compositeForXSLAttributes.getXSLAttributes().size() > 0){
-					MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING
-			            | SWT.YES | SWT.NO);
+				if (compositeForXSLAttributes.getXSLAttributes().size() > 0) {
+					MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
 					confirmationMessageBox.setMessage("Are you sure you wish to change the tag? All attributes will be lost.");
-					confirmationMessageBox.setText("Changing the XSL tag");				
-			        int response = confirmationMessageBox.open();
-			        if (response == SWT.YES){
-			        	// If the response is positive, dispose all the attributes, change the current selection object,
-			        	// and update all the drop downs to keep them consistent with the last added attribute.
-						disposeAllAttributes();		
+					confirmationMessageBox.setText("Changing the XSL tag");
+					int response = confirmationMessageBox.open();
+					if (response == SWT.YES) {
+						// If the response is positive, dispose all the attributes, change the current selection object,
+						// and update all the drop downs to keep them consistent with the last added attribute.
+						disposeAllAttributes();
 						setCurrentSelectionStringOncomboXSLTags(comboXSLTags.getText());
 						compositeForXSLAttributes.updateDropDownsForXSLAttributes(compositeForXSLAttributes.getListOfPossibleAttributes(comboXSLTags.getText()));
-			        } else{
-			        	// If the user opts out of the change, replace the already changed value with the old one.
-			        	for(int i=0; i< comboXSLTags.getItemCount();i++){
-			        		if(comboXSLTags.getItems()[i].equals(getCurrentSelectionStringOncomboXSLTags())){
-			        			comboXSLTags.select(i);
-			        		}
-			        	}		        	
-			        }
+					} else {
+						// If the user opts out of the change, replace the already changed value with the old one.
+						for (int i = 0; i < comboXSLTags.getItemCount(); i++) {
+							if (comboXSLTags.getItems()[i].equals(getCurrentSelectionStringOncomboXSLTags())) {
+								comboXSLTags.select(i);
+							}
+						}
+					}
 				} else {
 					// If there are no attributes added, update the selection of the tag in the object. 
 					setCurrentSelectionStringOncomboXSLTags(comboXSLTags.getText());
 				}
-				
+
 				// Disable the add button if there are no attributes possible. E.g. the choose tag.
-				setEnabledForAddAttributeButton();	
-				
+				setEnabledForAddAttributeButton();
+
 			}
-			
+
 		});
-		
+
 		// Adding the notification of the selection listener for the default selection after the listener has been added.
 		comboXSLTags.notifyListeners(SWT.Selection, new Event());
 		return container;
-	}	
+	}
+
 	/**
 	 * Remove all the UI representations of the attributes, clear the list of attributes and update the lowest Y axis value.
 	 */
-	private void disposeAllAttributes() {		
-		for(Control uiRepresentationOfXSLAttributes : ((Composite)compositeForXSLAttributes.getContent()).getChildren()){
+	private void disposeAllAttributes() {
+		for (Control uiRepresentationOfXSLAttributes : ((Composite) compositeForXSLAttributes.getContent()).getChildren()) {
 			uiRepresentationOfXSLAttributes.dispose();
 		}
-		
+
 		compositeForXSLAttributes.getXSLAttributes().clear();
 		compositeForXSLAttributes.setLowestWidgetYAxisValue(0);
 	}
-	
+
 	/**
 	 * Update the access to the add button based on the availability of attributes.
 	 */
-	private void setEnabledForAddAttributeButton(){
-		
-		for(XSLTags xslTag: Constants.XSLTags.values()){
-			if(comboXSLTags.getText().equals(xslTag.getXSLTagFaceName())){
-				if(xslTag.getXSLAttributes().length == 0){
+	private void setEnabledForAddAttributeButton() {
+
+		for (XSLTags xslTag : Constants.XSLTags.values()) {
+			if (comboXSLTags.getText().equals(xslTag.getXSLTagFaceName())) {
+				if (xslTag.getXSLAttributes().length == 0) {
 					btnAddAttribute.setEnabled(false);
-				} else{
+				} else {
 					btnAddAttribute.setEnabled(true);
-				}						
+				}
 				break;
 			}
-		}		
-		
+		}
+
 	}
 
 	/**
 	 * Create contents of the button bar.
+	 * 
 	 * @param parent
 	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
-		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);		
+		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
 	 */
 	@Override
 	protected void okPressed() {
-		
+
 		Constants.XSLTags selectedTag = null;
-		ArrayList<XSLAttribute> attributesOnThisTag = new ArrayList<XSLAttribute>(); 
-		
-		for(Constants.XSLTags tagUnderConsideration : Constants.XSLTags.values()){
-			if(tagUnderConsideration.getXSLTagFaceName().equals(getCurrentSelectionStringOncomboXSLTags())){
+		ArrayList<XSLAttribute> attributesOnThisTag = new ArrayList<XSLAttribute>();
+
+		for (Constants.XSLTags tagUnderConsideration : Constants.XSLTags.values()) {
+			if (tagUnderConsideration.getXSLTagFaceName().equals(getCurrentSelectionStringOncomboXSLTags())) {
 				selectedTag = tagUnderConsideration;
 			}
 		}
-		
-		
-		 for(Control attribute : ((Composite)compositeForXSLAttributes.getContent()).getChildren()){
-			 attributesOnThisTag.add(((GroupXSLTagAttribute) attribute).getSelectedAttribute());			 
-		 }
+
+		for (Control attribute : ((Composite) compositeForXSLAttributes.getContent()).getChildren()) {
+			attributesOnThisTag.add(((GroupXSLTagAttribute) attribute).getSelectedAttribute());
+		}
 
 		// Replace all the place holder values with the appropriate tag data.
 
@@ -219,7 +221,7 @@ public class XSLTagDialog extends Dialog {
 					: valuesForTagData.get(xslAttribute.getXSLAttributeData()));
 			}
 		}
-		
+
 		setTag(new XSLTag(selectedTag, attributesOnThisTag));
 		super.okPressed();
 	}
@@ -240,7 +242,8 @@ public class XSLTagDialog extends Dialog {
 	}
 
 	/**
-	 * @param currentSelectionStringOncomboXSLTags the currentSelectionStringOncomboXSLTags to set
+	 * @param currentSelectionStringOncomboXSLTags
+	 *        the currentSelectionStringOncomboXSLTags to set
 	 */
 	private void setCurrentSelectionStringOncomboXSLTags(String currentSelectionStringOncomboXSLTags) {
 		this.currentSelectionStringOncomboXSLTags = currentSelectionStringOncomboXSLTags;
@@ -254,7 +257,8 @@ public class XSLTagDialog extends Dialog {
 	}
 
 	/**
-	 * @param tag the tag to set
+	 * @param tag
+	 *        the tag to set
 	 */
 	private void setTag(XSLTag tag) {
 		this.tag = tag;
@@ -268,7 +272,8 @@ public class XSLTagDialog extends Dialog {
 	}
 
 	/**
-	 * @param valuesForTagData the valuesForTagData to set
+	 * @param valuesForTagData
+	 *        the valuesForTagData to set
 	 */
 	public void setValuesForTagData(HashMap<String, String> valuesForTagData) {
 		this.valuesForTagData = valuesForTagData;

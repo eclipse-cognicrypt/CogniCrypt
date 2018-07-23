@@ -153,15 +153,12 @@ public class XSLStringGenerationAndManipulationTests {
 	@Test
 	public void testGenerateXSLStringFromPathWithXSLText() throws DocumentException {
 		boolean generatedFileValidity = false;
-		Document xslGenerated = DocumentHelper
-			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(xslFilePath.getAbsolutePath(),
-				XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), "\n\n"), new Point(266, 266), null));
-		Document javaGenerated = DocumentHelper
-			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(javaFilePath.getAbsolutePath(),
-				XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), "\n\n"), new Point(266, 266), null));
-		Document txtGenerated = DocumentHelper
-			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(txtFilePath.getAbsolutePath(),
-				XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), "\n\n"), new Point(266, 266), null));
+		Document xslGenerated = DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(xslFilePath.getAbsolutePath(),
+			XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), "\n\n"), new Point(266, 266), null));
+		Document javaGenerated = DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(javaFilePath.getAbsolutePath(),
+			XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), "\n\n"), new Point(266, 266), null));
+		Document txtGenerated = DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(txtFilePath.getAbsolutePath(),
+			XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), "\n\n"), new Point(266, 266), null));
 		generatedFileValidity = true;
 		assertTrue(generatedFileValidity);
 
@@ -187,11 +184,11 @@ public class XSLStringGenerationAndManipulationTests {
 	@Test
 	public void testComputeStyleForXMLRegions() throws IOException {
 		File testFile = CodeGenUtils.getResourceFromWithin(testResourceLocation + "StackOverflowExample.xml");
-		
+
 		StringBuilder builder = new StringBuilder();
 		BufferedReader r = Files.newBufferedReader(testFile.toPath(), StandardCharsets.UTF_8);
 		r.lines().forEach(builder::append);
-		
+
 		List<XmlRegion> regions = new XmlRegionAnalyzer().analyzeXml(builder.toString());
 		List<StyleRange> ranges = XSLStringGenerationAndManipulation.computeStyleForXMLRegions(regions);
 		assertTrue(ranges.size() == 26839);
@@ -212,11 +209,9 @@ public class XSLStringGenerationAndManipulationTests {
 
 			XSLStringGenerationAndManipulation.getListOfValidSuggestionsForXSLTags(task.getModelFile(), task.getName(), task.getDescription(), questions, tagValueTagData);
 
-			/*System.out.println(task.getName());
-
-			for (String key : tagValueTagData.keySet()) {
-				System.out.println(key + " --> " + tagValueTagData.get(key));
-			}*/
+			/*
+			 * System.out.println(task.getName()); for (String key : tagValueTagData.keySet()) { System.out.println(key + " --> " + tagValueTagData.get(key)); }
+			 */
 
 			// Check if the generated XMLs contain the package node.
 			assertTrue(tagValueTagData.values().contains("//task/Package"));

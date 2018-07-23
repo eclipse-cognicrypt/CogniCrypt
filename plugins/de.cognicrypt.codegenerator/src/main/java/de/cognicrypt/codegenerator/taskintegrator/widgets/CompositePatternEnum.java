@@ -142,7 +142,7 @@ public class CompositePatternEnum extends CompositePattern {
 			item.setMoveButtonsEnabled();
 			item.setPosition(i + 1);
 		}
-		
+
 		if (sortableTextItems.size() == 1) {
 			sortableTextItems.get(0).setMoveButtonsEnabled(false, false);
 		} else if (sortableTextItems.size() > 1) {

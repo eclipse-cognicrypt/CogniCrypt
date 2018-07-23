@@ -36,32 +36,29 @@ public class ErrorMarkerGenerator {
 	}
 
 	/**
-	 * Adds crypto-misuse error marker with message {@link message} into file {@link sourceFile} at Line {@link line}.
+	 * Adds crypto-misuse error marker with message {@link message} into file
+	 * {@link sourceFile} at Line {@link line}.
 	 *
-	 * @param sourceFile
-	 *        File the marker is generated into
-	 * @param line
-	 *        Line the marker is generated at
-	 * @param message
-	 *        Error Message
-	 * @return <code>true</code>/<code>false</code> if error marker was (not) added successfully
+	 * @param sourceFile File the marker is generated into
+	 * @param line       Line the marker is generated at
+	 * @param message    Error Message
+	 * @return <code>true</code>/<code>false</code> if error marker was (not) added
+	 *         successfully
 	 */
 	public boolean addMarker(final IResource sourceFile, final int line, final String message) {
 		return addMarker(sourceFile, line, message, false);
 	}
 
 	/**
-	 * Adds crypto-misuse error marker with message {@link message} into file {@link sourceFile} at Line {@link line}.
+	 * Adds crypto-misuse error marker with message {@link message} into file
+	 * {@link sourceFile} at Line {@link line}.
 	 *
-	 * @param sourceFile
-	 *        File the marker is generated into
-	 * @param line
-	 *        Line the marker is generated at
-	 * @param message
-	 *        Error Message
-	 * @param isWarning
-	 *        Determines whether marker type is warning or error
-	 * @return <code>true</code>/<code>false</code> if error marker was (not) added successfully
+	 * @param sourceFile File the marker is generated into
+	 * @param line       Line the marker is generated at
+	 * @param message    Error Message
+	 * @param isWarning  Determines whether marker type is warning or error
+	 * @return <code>true</code>/<code>false</code> if error marker was (not) added
+	 *         successfully
 	 */
 	public boolean addMarker(final IResource sourceFile, final int line, final String message, boolean isWarning) {
 		if (!sourceFile.exists() || !sourceFile.isAccessible()) {
@@ -87,7 +84,8 @@ public class ErrorMarkerGenerator {
 	/**
 	 * Deletes markers from file and clears markers list.
 	 * 
-	 * @return <code>true</code>/<code>false</code> if all error markers were (not) deleted successfully
+	 * @return <code>true</code>/<code>false</code> if all error markers were (not)
+	 *         deleted successfully
 	 */
 	public boolean clearMarkers() {
 		return clearMarkers(null);
@@ -110,6 +108,5 @@ public class ErrorMarkerGenerator {
 		this.markers.clear();
 		return allMarkersDeleted;
 	}
-
 
 }

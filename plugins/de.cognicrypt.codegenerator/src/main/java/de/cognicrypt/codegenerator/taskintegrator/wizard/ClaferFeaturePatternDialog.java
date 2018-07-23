@@ -36,7 +36,7 @@ public class ClaferFeaturePatternDialog extends Dialog {
 	private Composite compositePatternDetailsContainer;
 	private CompositePattern compositePatternDetails;
 	private Combo comboPattern;
-	
+
 	private ClaferModel resultModel;
 
 	public ClaferFeaturePatternDialog(Shell parentShell) {
@@ -46,13 +46,14 @@ public class ClaferFeaturePatternDialog extends Dialog {
 
 	/**
 	 * Create contents of the dialog.
+	 * 
 	 * @param parent
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new GridLayout(2, false));
-		
+
 		// restrict resizing the dialog below a minimum
 		getShell().setMinimumSize(520, 600);
 
@@ -67,17 +68,17 @@ public class ClaferFeaturePatternDialog extends Dialog {
 		comboPattern.select(0);
 
 		comboPattern.addSelectionListener(new SelectionListener() {
-			
+
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				updatePatternDetailsComposite();
 				validate();
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 
@@ -137,6 +138,7 @@ public class ClaferFeaturePatternDialog extends Dialog {
 
 	/**
 	 * Create contents of the button bar.
+	 * 
 	 * @param parent
 	 */
 	@Override

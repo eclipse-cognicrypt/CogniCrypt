@@ -34,15 +34,15 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	public ClaferModel() {
 		claferModel = new ArrayList<>();
 	}
-	
+
 	public ClaferModel(ArrayList<ClaferFeature> claferModel) {
 		this.claferModel = claferModel;
 	}
-	
+
 	public ArrayList<ClaferFeature> getClaferModel() {
 		return claferModel;
 	}
-	
+
 	/**
 	 * @return number of clafers in this model as an int
 	 */
@@ -53,7 +53,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	public void add(ClaferFeature claferFeature) {
 		claferModel.add(claferFeature);
 	}
-	
+
 	/**
 	 * add all of the clafers from the given {@link ClaferModel} to this instance
 	 *
@@ -65,7 +65,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 			add(cfrFeature);
 		}
 	}
-	
+
 	public void remove(ClaferFeature claferFeature) {
 		claferModel.remove(claferFeature);
 	}
@@ -79,7 +79,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	 */
 	public boolean hasFeature(String featureName) {
 		boolean featureFound = false;
-		
+
 		for (ClaferFeature cfrFeature : claferModel) {
 			featureFound |= cfrFeature.getFeatureName().equals(featureName);
 		}
@@ -100,7 +100,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 				return cfrFeature;
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -132,20 +132,20 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	public Iterator iterator() {
 		return claferModel.iterator();
 	}
-	
+
 	/**
 	 * return a {@link String} representation of the complete model in Clafer syntax
 	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
+
 		// use the iterator to serialize all children
 		for (ClaferFeature cfrFeature : this) {
 			sb.append(cfrFeature);
 			sb.append("\n");
 		}
-		
+
 		return sb.toString();
 	}
 
@@ -158,7 +158,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	 */
 	public ClaferModel getMissingFeatures(ClaferFeature refFeature) {
 		ClaferModel addedFeatures = new ClaferModel();
-		
+
 		// find missing inherited feature
 		if (!refFeature.getFeatureInheritance().isEmpty()) {
 			boolean parentFound = false;
@@ -223,7 +223,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 				addedFeatures.add(propertyTypeFeature);
 			}
 		}
-		
+
 		return addedFeatures;
 	}
 
@@ -240,7 +240,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 		for (ClaferFeature missingFeature : missingFeatures) {
 			add(missingFeature);
 		}
-		
+
 		return missingFeatures;
 	}
 
@@ -341,11 +341,12 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * serialize the model into a binary
 	 * 
-	 * @param filename target filename as a {@link String}
+	 * @param filename
+	 *        target filename as a {@link String}
 	 * @return success of the serialization
 	 */
 	public boolean toBinary(String filename) {
@@ -375,7 +376,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	 */
 	public static ClaferModel createFromBinaries(String filename) {
 		ClaferModel result = null;
-		
+
 		try {
 			FileInputStream fis = new FileInputStream(filename);
 			ObjectInputStream ois = new ObjectInputStream(fis);
@@ -387,7 +388,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 		} catch (Exception ex) {
 			Activator.getDefault().logError(ex);
 		}
-		
+
 		return result;
 	}
 }

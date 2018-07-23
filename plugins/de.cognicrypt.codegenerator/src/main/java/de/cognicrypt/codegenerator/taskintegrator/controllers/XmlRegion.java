@@ -52,44 +52,35 @@ package de.cognicrypt.codegenerator.taskintegrator.controllers;
 public class XmlRegion {
 
 	public enum XmlRegionType {
-		INSTRUCTION,
-		COMMENT,
-		CDATA,
-		MARKUP,
-		ATTRIBUTE,
-		MARKUP_VALUE,
-		ATTRIBUTE_VALUE,
-		WHITESPACE,
-		UNEXPECTED;
+		INSTRUCTION, COMMENT, CDATA, MARKUP, ATTRIBUTE, MARKUP_VALUE, ATTRIBUTE_VALUE, WHITESPACE, UNEXPECTED;
 	}
 
 	private final XmlRegionType xmlRegionType;
 	private final int start;
 	private int end;
 
-
 	/**
 	 * Constructor.
+	 * 
 	 * @param xmlRegionType
 	 * @param start
 	 */
-	public XmlRegion( XmlRegionType xmlRegionType, int start ) {
+	public XmlRegion(XmlRegionType xmlRegionType, int start) {
 		this.xmlRegionType = xmlRegionType;
 		this.start = start;
 	}
 
-
 	/**
 	 * Constructor.
+	 * 
 	 * @param xmlRegionType
 	 * @param start
 	 * @param end
 	 */
-	public XmlRegion( XmlRegionType xmlRegionType, int start, int end ) {
-		this( xmlRegionType, start );
+	public XmlRegion(XmlRegionType xmlRegionType, int start, int end) {
+		this(xmlRegionType, start);
 		this.end = end;
 	}
-
 
 	/**
 	 * @return the end
@@ -98,14 +89,13 @@ public class XmlRegion {
 		return this.end;
 	}
 
-
 	/**
-	 * @param end the end to set
+	 * @param end
+	 *        the end to set
 	 */
 	public void setEnd(int end) {
 		this.end = end;
 	}
-
 
 	/**
 	 * @return the xmlRegionType
@@ -114,7 +104,6 @@ public class XmlRegion {
 		return this.xmlRegionType;
 	}
 
-
 	/**
 	 * @return the start
 	 */
@@ -122,11 +111,9 @@ public class XmlRegion {
 		return this.start;
 	}
 
-
 	/*
 	 * (non-Javadoc)
-	 * @see java.lang.Object
-	 * #toString()
+	 * @see java.lang.Object #toString()
 	 */
 	@Override
 	public String toString() {

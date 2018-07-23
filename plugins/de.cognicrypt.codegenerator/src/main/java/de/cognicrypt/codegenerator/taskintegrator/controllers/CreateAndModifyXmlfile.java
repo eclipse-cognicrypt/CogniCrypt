@@ -92,15 +92,12 @@ public class CreateAndModifyXmlfile {
 			pages.get(0).setHelpID(getTaskName() + "_Page" + pages.get(0).getId());
 		}
 
-
 		/**
 		 * Calls the following method to add the path to the new xml file in the plugin.xml
 		 */
 		updatePluginXmlFile(CodeGenUtils.getResourceFromWithin(Constants.pluginXmlFile));
 
-
 	}
-
 
 	/**
 	 * This method creates the template xml file for the task and places the xml file in target Help folder

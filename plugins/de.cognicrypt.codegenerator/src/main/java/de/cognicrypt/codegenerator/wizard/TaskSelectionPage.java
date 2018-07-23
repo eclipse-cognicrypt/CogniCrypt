@@ -73,7 +73,7 @@ public class TaskSelectionPage extends WizardPage {
 
 		this.container = new Composite(sc, SWT.NONE);
 		this.container.setBounds(10, 10, 450, 200);
-		
+
 		//To display the Help view after clicking the help icon
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(sc, "de.cognicrypt.codegenerator.TaskSelectionHelp");
 		this.container.setLayout(new GridLayout(2, false));
@@ -146,9 +146,9 @@ public class TaskSelectionPage extends WizardPage {
 				if (task instanceof Task) {
 					final Task current = (Task) task;
 					return current.getDescription();
-					
+
 				}
-				return super.getText(task);			
+				return super.getText(task);
 			}
 		});
 
@@ -172,20 +172,22 @@ public class TaskSelectionPage extends WizardPage {
 		descriptionText.setCursor(null);
 
 		//Hide scroll bar 
-		Listener scrollBarListener = new Listener (){
-		    @Override
-		    public void handleEvent(Event event) {
-		        Text t = (Text)event.widget;
-		        Rectangle r1 = t.getClientArea();
-		        // use r1.x as wHint instead of SWT.DEFAULT
-		        Rectangle r2 = t.computeTrim(r1.x, r1.y, r1.width, r1.height); 
-		        Point p = t.computeSize(r1.x,  SWT.DEFAULT,  true); 
-		        t.getVerticalBar().setVisible(r2.height <= p.y);
-		        if (event.type == SWT.Modify){
-		           t.getParent().layout(true);
-		        t.showSelection();
-		    }
-		}};
+		Listener scrollBarListener = new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+				Text t = (Text) event.widget;
+				Rectangle r1 = t.getClientArea();
+				// use r1.x as wHint instead of SWT.DEFAULT
+				Rectangle r2 = t.computeTrim(r1.x, r1.y, r1.width, r1.height);
+				Point p = t.computeSize(r1.x, SWT.DEFAULT, true);
+				t.getVerticalBar().setVisible(r2.height <= p.y);
+				if (event.type == SWT.Modify) {
+					t.getParent().layout(true);
+					t.showSelection();
+				}
+			}
+		};
 		descriptionText.addListener(SWT.Resize, scrollBarListener);
 		descriptionText.addListener(SWT.Modify, scrollBarListener);
 
@@ -221,60 +223,58 @@ public class TaskSelectionPage extends WizardPage {
 
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				if(guidedModeCheckBox.getSelection() != true){
+				if (guidedModeCheckBox.getSelection() != true) {
 					deco.show();
-				} 
-				else {
+				} else {
 					deco.hide();
 				}
 			}
 		});
 		this.guidedModeCheckBox.setText(Constants.GUIDED_MODE);
-		this.guidedModeCheckBox.setSelection(true);		
+		this.guidedModeCheckBox.setSelection(true);
 
 		sc.setContent(container);
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);
 		sc.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		setControl(sc);
-		
+
 		deco.setDescriptionText(Constants.GUIDED_MODE_CHECKBOX_INFO);
 		deco.setImage(image);
 		deco.setShowOnlyOnFocus(false);
 		//Primitive Integration
 		Button btnPrimitiveIntegration = new Button(container, SWT.NONE);
 		btnPrimitiveIntegration.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				 WizardDialog wizardDialog = new WizardDialog(parent.getShell(),new  PrimitiveIntegrationWizard());
-		           if (wizardDialog.open() == Window.CANCEL) {
-		               System.out.println("Ok pressed");
-		           } else {
-		               System.out.println("Cancel pressed");
-		           }
+				WizardDialog wizardDialog = new WizardDialog(parent.getShell(), new PrimitiveIntegrationWizard());
+				if (wizardDialog.open() == Window.CANCEL) {
+					System.out.println("Ok pressed");
+				} else {
+					System.out.println("Cancel pressed");
+				}
 			}
 		});
 		btnPrimitiveIntegration.setText("Primitive Integration");
 		//Task Integration
 		Button btnTaskIntegration = new Button(container, SWT.NONE);
 		btnTaskIntegration.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				 WizardDialog wizardDialog = new WizardDialog(parent.getShell(),new  TaskIntegrationWizard());
-		           if (wizardDialog.open() == Window.CANCEL) {
-		               System.out.println("Ok pressed");
-		           } else {
-		               System.out.println("Cancel pressed");
-		           }
+				WizardDialog wizardDialog = new WizardDialog(parent.getShell(), new TaskIntegrationWizard());
+				if (wizardDialog.open() == Window.CANCEL) {
+					System.out.println("Ok pressed");
+				} else {
+					System.out.println("Cancel pressed");
+				}
 			}
 		});
 		btnTaskIntegration.setText("Task Integration");
 		new Label(container, SWT.NONE);
-	
-	}
-	 
-	
 
+	}
 
 	public IProject getSelectedProject() {
 		return this.selectedProject;

@@ -36,9 +36,8 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferFeature;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.core.Constants;
 
-
 public class ClaferImportDialog extends Dialog {
-	
+
 	private TreeViewer treeViewer;
 	ClaferModel resultModel;
 
@@ -64,23 +63,24 @@ public class ClaferImportDialog extends Dialog {
 		lblLocation.setText("Location: ");
 		lblLocation.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 
-		Text textBox = new Text(container, SWT.BORDER);			 
+		Text textBox = new Text(container, SWT.BORDER);
 		textBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
+
 		Button browseButton = new Button(container, SWT.NONE);
 		browseButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		browseButton.setText(Constants.LABEL_BROWSE_BUTTON);
-		
+
 		browseButton.addSelectionListener(new SelectionAdapter() {
+
 			@Override
-			public void widgetSelected(SelectionEvent e) {						        
-				FileDialog fileDialog = new FileDialog(getShell(),SWT.OPEN);		
-		        
+			public void widgetSelected(SelectionEvent e) {
+				FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
+
 				String selectedFile = fileDialog.open();
-				
+
 				if (selectedFile != null) {
 					textBox.setText(selectedFile);
-					
+
 					ClaferModel importedModel = ClaferModel.createFromBinaries(selectedFile);
 					if (importedModel != null) {
 						resultModel = importedModel;
@@ -90,7 +90,7 @@ public class ClaferImportDialog extends Dialog {
 				}
 			}
 		});
-		
+
 		treeViewer = new TreeViewer(container);
 		treeViewer.setContentProvider(new ClaferModelContentProvider());
 		treeViewer.setLabelProvider(new ClaferModelLabelProvider());
@@ -145,7 +145,7 @@ public class ClaferImportDialog extends Dialog {
 	protected void okPressed() {
 		super.okPressed();
 	}
-	
+
 	public ClaferModel getResult() {
 		return resultModel;
 	}

@@ -37,6 +37,7 @@ public class Question {
 	private String tooltip = "";
 	//helpText
 	private transient String helpText = "";
+
 	public ArrayList<Answer> getAnswers() {
 		return this.answers;
 	}
@@ -82,12 +83,12 @@ public class Question {
 	public String getTooltip() {
 		return this.tooltip;
 	}
-	
+
 	//added the type of the text
 	public String getTextType() {
 		return this.textType;
 	}
-		
+
 	public String getQuestionText() {
 		return this.questionText;
 	}
@@ -125,12 +126,12 @@ public class Question {
 	public void setTooltip(final String tooltip) {
 		this.tooltip = tooltip;
 	}
-	
+
 	//added set method for the type of text
 	public void setTextType(final String textType) {
 		this.textType = textType;
 	}
-	
+
 	public void setQuestionText(final String questionText) {
 		this.questionText = questionText;
 	}

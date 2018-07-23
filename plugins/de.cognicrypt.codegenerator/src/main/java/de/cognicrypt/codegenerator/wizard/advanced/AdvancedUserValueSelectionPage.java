@@ -68,7 +68,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 		if (inputClafer.hasChildren()) {
 			if (inputClafer.getGroupCard() != null && inputClafer.getGroupCard().getLow() >= 1) {
 				this.userConstraints
-				.add(new PropertyWidget(titledPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
+					.add(new PropertyWidget(titledPanel, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
 			} else {
 				for (final AstConcreteClafer childClafer : inputClafer.getChildren()) {
 					createConstraints(parent, childClafer, titledPanel);
@@ -78,17 +78,17 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 		if (inputClafer.hasRef()) {
 			if (inputClafer.getRef().getTargetType().isPrimitive() && !(inputClafer.getRef().getTargetType().getName().contains("string"))) {
 				if (ClaferModelUtils.isConcrete(inputClafer)) {
-					Composite childComposite = new Composite (titledPanel, SWT.NONE);
+					Composite childComposite = new Composite(titledPanel, SWT.NONE);
 					childComposite.setLayout(new GridLayout(4, false));
 					GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
-					childComposite.setLayoutData(gridData);										
-					this.userConstraints.add(
-						new PropertyWidget(childComposite, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
+					childComposite.setLayoutData(gridData);
+					this.userConstraints.add(new PropertyWidget(childComposite, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils
+						.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
 				}
 			} else if (PropertiesMapperUtil.getenumMap().containsKey(inputClafer.getRef().getTargetType())) {
 				createConstraints(inputClafer, inputClafer.getRef().getTargetType(), titledPanel);
 			} else if (!inputClafer.getRef().getTargetType().isPrimitive()) {
-				if (!ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()).equals(titledPanel.getText().replaceAll("\\s",""))) {
+				if (!ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()).equals(titledPanel.getText().replaceAll("\\s", ""))) {
 					if (inputClafer.getRef().getTargetType().hasChildren()) {
 						final Group childPanel = createPanel(ClaferModelUtils.removeScopePrefix(inputClafer.getRef().getTargetType().getName()), titledPanel);
 						createConstraints(inputClafer, inputClafer.getRef().getTargetType(), childPanel);
@@ -135,10 +135,10 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 
 	private Group createPanel(final String name, final Composite parent) {
 		final Group titledPanel = new Group(parent, SWT.NONE);
-		if (name.equals("Int")){
+		if (name.equals("Int")) {
 			titledPanel.setText("Security Level");
 		} else {
-			titledPanel.setText(name.replaceAll("([a-z0-9])([A-Z])","$1 $2"));		 
+			titledPanel.setText(name.replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
 		}
 		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 10, SWT.BOLD));
 		titledPanel.setFont(boldFont);

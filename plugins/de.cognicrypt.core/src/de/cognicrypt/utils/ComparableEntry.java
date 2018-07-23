@@ -25,7 +25,8 @@ public class ComparableEntry<K, V> extends SimpleEntry<K, V> implements Comparab
 		if (equals(comp)) {
 			return 0;
 		}
-		if (!(getKey() instanceof Comparable && comp.getKey() instanceof Comparable && getValue() instanceof Comparable && comp.getValue() instanceof Comparable)) {
+		if (!(getKey() instanceof Comparable && comp.getKey() instanceof Comparable && getValue() instanceof Comparable
+				&& comp.getValue() instanceof Comparable)) {
 			return -1;
 		}
 

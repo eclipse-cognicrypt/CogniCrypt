@@ -178,18 +178,18 @@ public class PropertyWidget {
 				}
 			}
 		});
-		
+
 		// Identify if the label of the check box contains a word 'Security'
 		String labelPatternSecurity = "\\b" + Constants.Security + "\\b";
 		Pattern patternSecurity = Pattern.compile(labelPatternSecurity);
 		Matcher matchSecurity = patternSecurity.matcher(propertyName.replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
-		
+
 		// Identify if the label of the check box contains a word 'Performance'
-		String labelPatternPerformance = "\\b" + Constants.Performance + "\\b";		
-		Pattern patternPerformance = Pattern.compile(labelPatternPerformance);		
+		String labelPatternPerformance = "\\b" + Constants.Performance + "\\b";
+		Pattern patternPerformance = Pattern.compile(labelPatternPerformance);
 		Matcher matchPerformance = patternPerformance.matcher(propertyName.replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
 		System.out.println(propertyName.replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
-		
+
 		//If the label has Security or Performance, then spinner is not added and adds only a combo box with items high, medium and low
 		if (matchSecurity.find() == true | matchPerformance.find() == true) {
 			this.operatorComboViewer.setContentProvider(ArrayContentProvider.getInstance());

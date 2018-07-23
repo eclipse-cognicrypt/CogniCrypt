@@ -36,31 +36,33 @@ import de.cognicrypt.core.Constants;
  */
 
 public class CompositeGranularUIForHighLevelQuestions extends Composite {
+
 	private Text txtQuestionID;
 	public Text txtQuestion;
 	private Text txtAnswerType;
-	
+
 	private Question question;
 
 	/**
 	 * Create the composite.
+	 * 
 	 * @param parent
 	 * @param style
 	 */
 	public CompositeGranularUIForHighLevelQuestions(Composite parent, int style, Question questionParam, boolean linkAnswerPage) {
 		super(parent, SWT.BORDER);
-		
+
 		setQuestion(questionParam);
-		
+
 		GridData gridData = new GridData(SWT.FILL, SWT.TOP, true, false);
 		gridData.minimumWidth = 300;
 		setLayoutData(gridData);
 
 		setLayout(new GridLayout(2, false));
-		
+
 		CompositeModifyDeleteButtons grpModifyDeleteButtons = new CompositeModifyDeleteButtons(this, question);
 		grpModifyDeleteButtons.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		
+
 		//Only visible for "pageForHighLevelQuestions" page
 		grpModifyDeleteButtons.setVisible(!linkAnswerPage);
 
@@ -113,24 +115,24 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 					ArrayList<Question> listOfAllQuestions = ((CompositeToHoldGranularUIElements) linkQstn.getParent().getParent().getParent()).getListOfAllQuestions();
 					LinkAnswerDialog linkAnsDialog = new LinkAnswerDialog(parent.getShell(), question, listOfAllQuestions);
 					linkAnsDialog.open();
-				
+
 				}
 			});
 		}
-		
+
 		grpQuestionDetails.setText("Question details");
-		
+
 		Label lblQuestionId = new Label(grpQuestionDetails, SWT.NONE);
 		lblQuestionId.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		lblQuestionId.setText("Question id:");
-		
+
 		txtQuestionID = new Text(grpQuestionDetails, SWT.BORDER);
 		txtQuestionID.setEditable(false);
 		GridData gdTxtQuestionID = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		gdTxtQuestionID.widthHint = 0;
 		txtQuestionID.setLayoutData(gdTxtQuestionID);
 		txtQuestionID.setText(Integer.toString(question.getId()));
-		
+
 		Label lblType = new Label(grpQuestionDetails, SWT.NONE);
 		lblType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		lblType.setText("Type:");
@@ -140,20 +142,19 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		GridData gdTxtAnswerType = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		gdTxtAnswerType.widthHint = 0;
 		txtAnswerType.setLayoutData(gdTxtAnswerType);
-		
+
 		Label lblQuestion = new Label(grpQuestionDetails, SWT.NONE);
 		lblQuestion.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		lblQuestion.setText("Question:");
-		
+
 		txtQuestion = new Text(grpQuestionDetails, SWT.BORDER);
 		txtQuestion.setEditable(false);
 		GridData gdTxtQuestion = new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1);
 		gdTxtQuestion.widthHint = 0;
 		txtQuestion.setLayoutData(gdTxtQuestion);
-		
+
 		setTextQuestion(question.getQuestionText());
 
-		
 		if (question.getElement().equals(Constants.GUIElements.combo)) {
 			txtAnswerType.setText(Constants.dropDown);
 		} else if (question.getElement().equals(Constants.GUIElements.text)) {
@@ -173,7 +174,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 			compositeForAnswers.setLayoutData(gdCompositeForAnswers);
 			for (Answer answer : question.getAnswers()) {
 				compositeForAnswers.addAnswer(answer, false);
-			}	
+			}
 		}
 	}
 
@@ -190,22 +191,22 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 	}
 
 	/**
-	 * @param question the question to set
+	 * @param question
+	 *        the question to set
 	 */
 	private void setQuestion(Question question) {
 		this.question = question;
 	}
-	
-	
 
-	public void setTextQuestion(String txtQuestion){
+	public void setTextQuestion(String txtQuestion) {
 		this.txtQuestion.setText(txtQuestion);
 	}
-	public String getTextQuestion(){
+
+	public String getTextQuestion() {
 		return txtQuestion.getText();
 	}
-	
-	public String getAnswerType(){
+
+	public String getAnswerType() {
 		return txtAnswerType.getText();
 	}
 }

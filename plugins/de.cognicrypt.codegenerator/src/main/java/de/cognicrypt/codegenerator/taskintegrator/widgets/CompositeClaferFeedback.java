@@ -23,7 +23,7 @@ public class CompositeClaferFeedback extends Composite {
 	public CompositeClaferFeedback(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new GridLayout(1, false));
-		
+
 		lblFeedback = new Label(this, SWT.NONE);
 		lblFeedback.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	}

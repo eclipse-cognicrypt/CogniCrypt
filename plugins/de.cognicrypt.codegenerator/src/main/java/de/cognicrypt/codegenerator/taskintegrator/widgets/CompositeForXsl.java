@@ -24,16 +24,14 @@ import de.cognicrypt.codegenerator.taskintegrator.controllers.XSLStringGeneratio
 import de.cognicrypt.codegenerator.taskintegrator.controllers.XmlRegion;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.XmlRegionAnalyzer;
 
-
-
 public class CompositeForXsl extends Composite {
 
 	private StyledText xslTxtBox; // this text box needs to be accessible on the page as well.
-	
+
 	public CompositeForXsl(Composite parent, int style) {
 		super(parent, SWT.BORDER);
 		setLayout(new GridLayout(2, false));
-			
+
 		//UI Widgets for xslPage
 		setXslTxtBox(new StyledText(this, SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL));
 		xslTxtBox.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
@@ -84,7 +82,4 @@ public class CompositeForXsl extends Composite {
 		this.xslTxtBox = xslTxtBox;
 	}
 
-		
 }
-
-

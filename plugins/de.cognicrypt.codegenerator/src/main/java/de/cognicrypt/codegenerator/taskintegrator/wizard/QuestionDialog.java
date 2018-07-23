@@ -80,7 +80,7 @@ public class QuestionDialog extends Dialog {
 		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new FillLayout(SWT.HORIZONTAL));
 		getShell().setMinimumSize(900, 430);
-		
+
 		Composite composite = new Composite(container, SWT.NONE);
 		composite.setLayout(new GridLayout(2, false));
 
@@ -90,7 +90,7 @@ public class QuestionDialog extends Dialog {
 
 		textQuestion = new Text(composite, SWT.BORDER);
 		textQuestion.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-	
+
 		Label lblType = new Label(composite, SWT.NONE);
 		lblType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		lblType.setText("Answer type");
@@ -171,7 +171,7 @@ public class QuestionDialog extends Dialog {
 						compositeToHoldAnswers.setVisible(false);
 						compositeToHoldAnswers.getListOfAllAnswer().clear();
 						compositeToHoldAnswers.updateAnswerContainer();
-						Answer emptyAnswer=new Answer();
+						Answer emptyAnswer = new Answer();
 						emptyAnswer.setDefaultAnswer(true);
 						emptyAnswer.setValue("");
 						compositeToHoldAnswers.getListOfAllAnswer().add(emptyAnswer);
@@ -295,7 +295,7 @@ public class QuestionDialog extends Dialog {
 		}
 
 		//opens a message box, alerting user to add answers to the question
-		if(compositeToHoldAnswers.getListOfAllAnswer().size()==0) {
+		if (compositeToHoldAnswers.getListOfAllAnswer().size() == 0) {
 			MessageBox msgNoAnsAdded = new MessageBox(compositeToHoldAnswers.getShell());
 			msgNoAnsAdded.setMessage("Please add answers to the question by clicking \"Add answer\" button");
 			msgNoAnsAdded.open();
@@ -328,8 +328,10 @@ public class QuestionDialog extends Dialog {
 
 	/**
 	 * sets the question element depending on the question type selected
+	 * 
 	 * @param question
-	 * @param element the value selected for the question type 
+	 * @param element
+	 *        the value selected for the question type
 	 */
 	private void setQuestionElement(Question question, String element) {
 		/**

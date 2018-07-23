@@ -64,7 +64,7 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				
+
 				Point orig = compositeToHoldGranularUIElements.getOrigin();
 
 				ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), compositeToHoldGranularUIElements.getClaferModel());
@@ -87,7 +87,7 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 					compositeToHoldGranularUIElements.getClaferModel().add(tempFeature);
 					compositeToHoldGranularUIElements.addGranularClaferUIElements(tempFeature);
 					compositeToHoldGranularUIElements.updateClaferContainer();
-					
+
 					compositeToHoldGranularUIElements.setOrigin(orig);
 
 					checkModel();
@@ -134,14 +134,14 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 					currentModel.add(claferImportDialog.getResult());
 					compositeToHoldGranularUIElements.updateClaferContainer();
 				}
-				
+
 				compositeToHoldGranularUIElements.setOrigin(orig);
 
 				feedbackComposite.setFeedback("Features imported");
 				feedbackComposite.layout();
-				
+
 				checkModel();
-				
+
 				super.widgetSelected(e);
 			}
 		});
@@ -234,8 +234,7 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 
 			if (this.compositeToHoldGranularUIElements.getClaferModel().getClaferModel().isEmpty()) {
 				String defaultFeatureSetPath = CodeGenUtils
-					.getResourceFromWithin(Constants.CFR_BIN_FILE_DIRECTORY_PATH + Constants.DEFAULT_FEATURE_SET_FILE + Constants.CFR_BIN_EXTENSION)
-					.getAbsolutePath();
+					.getResourceFromWithin(Constants.CFR_BIN_FILE_DIRECTORY_PATH + Constants.DEFAULT_FEATURE_SET_FILE + Constants.CFR_BIN_EXTENSION).getAbsolutePath();
 				ClaferModel defaultFeaturesModel = ClaferModel.createFromBinaries(defaultFeatureSetPath);
 
 				ClaferFeature taskFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, taskName, "Task");

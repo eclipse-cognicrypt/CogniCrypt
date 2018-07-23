@@ -110,10 +110,13 @@ public class ClaferModelUtils {
 	}
 
 	/**
-	 * removes scope from name (e.g., c0_) and changes first letter of the string to Upper case example c0_scope will become Scope
+	 * removes scope from clafer name (e.g., c0_), example c0_scope will become scope
+	 *
+	 * @param claferName
+	 *        {@link String} containing the clafer name prefixed with c0_
+	 * @return {@link String} containing the clafer name without scope prefix
 	 */
-	public static String removeScopePrefix(final String scope) {
-		final String shortenedScope = scope.substring(scope.indexOf('_') + 1, scope.length());
-		return shortenedScope.substring(0, 1).toUpperCase() + shortenedScope.substring(1, shortenedScope.length());
+	public static String removeScopePrefix(final String claferName) {
+		return claferName.substring(claferName.indexOf('_') + 1, claferName.length());
 	}
 }

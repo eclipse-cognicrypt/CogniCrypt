@@ -1,0 +1,501 @@
+--- RCPTT testcase ---
+Format-Version: 1.0
+Element-Name: HighLevelQuestionsPage
+Element-Type: testcase
+Element-Version: 3.0
+External-Reference: 
+Id: _EV-zkDEcEei8vfE9G7Yzvw
+Runtime-Version: 2.2.0.201705230341
+Save-Time: 4/5/18 3:51 AM
+Testcase-Type: ecl
+
+------=_.description-216f885c-d591-38ce-8ea2-e4f8cb4d6ffa
+Content-Type: text/plain
+Entry-Name: .description
+
+This test tries to test the functionality of all the widgets in the High Level Questions page . It should always execute successfully.
+------=_.description-216f885c-d591-38ce-8ea2-e4f8cb4d6ffa--
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
+Content-Type: text/ecl
+Entry-Name: .content
+
+get-menu -path "Start Code Generation" | click
+with [get-window "Cryptography Task Configurator"] {
+    get-button "Task Integration" | click
+with [get-window -class WizardDialog] {
+    get-editbox -after [get-label "Name of the Task"] | set-text "High Level Qestion Page testing"
+    get-editbox -after [get-label "Description of the Task :"] 
+        | set-text "This test case mainly focuses on high level questions page"
+    get-button "Next >" | click
+    get-button "Add Feature" | click
+    with [get-window -class ClaferFeatureDialog] {
+        get-editbox -after [get-label "Type in the name"] | set-text Feature1
+	get-button Class | click
+        get-button OK | click
+    }
+    get-button "Add Feature" | click
+    with [get-window -class ClaferFeatureDialog] {
+        get-editbox -after [get-label "Type in the name"] | set-text Feature2
+	get-button Class | click
+        get-combo -after [get-label "Inherits from"] | select Feature1
+        get-button "Add property" | click
+        with [get-editbox -after [get-label Name]] {
+            set-text Prop1ofFeature2
+            key-type "TRAVERSE_TAB_NEXT"
+        }
+        get-combo -after [get-label "is of type"] | select integer
+        get-button "Add property" | click
+        get-editbox -after [get-label Name -after [get-label "is of type"]] | set-text Prop2ofFeature2
+        get-combo -after [get-label "is of type" -after [get-label Name -after [get-label "is of type"]]] 
+            | select string
+        get-button "Add property" | click
+        get-editbox -after [get-label Name -after [get-label "is of type" -after [get-label Name 
+            -after [get-label "is of type"]]]] | set-text Prop3ofFeature2
+        get-combo -after [get-label "is of type" -after [get-label Name -after [get-label "is of type" 
+            -after [get-label Name -after [get-label "is of type"]]]]] | select Feature1
+        get-combo -after [get-label "is of type" -after [get-label Name -after [get-label "is of type"]]] 
+            | select double
+        get-combo -after [get-label "is of type"] | select Feature1
+        get-button OK | click
+    }
+    
+    get-button Modify -index 15 | click
+	with [get-window -class ClaferFeatureDialog] {
+        get-button Remove | click
+        get-button OK | click
+    }
+    get-button "Add Feature" | click
+    with [get-window -class ClaferFeatureDialog] {
+        get-editbox -after [get-label "Type in the name"] | set-text Feature3
+	get-button Class | click
+        get-combo -after [get-label "Inherits from"] | select Feature2
+        get-button "Add property" | click
+        get-editbox -after [get-label Name] | set-text Prop1ofFeature1
+        get-combo -after [get-label "is of type"] | select Feature1
+        get-editbox -after [get-label Name] | set-text Prop1ofFeature3
+        get-button "Add property" | click
+        get-editbox -after [get-label Name -after [get-label "is of type"]] | set-text Prop2ofFeature3
+        get-combo -after [get-label "is of type" -after [get-label Name -after [get-label "is of type"]]] 
+            | select Feature2
+        get-button "Add constraint" | click
+        with [get-window -class ClaferConstraintDialog] {
+            with [get-tree] {
+                get-item "abstract Feature2: Feature1/Prop3ofFeature2 -> Feature1" | click
+                select "abstract Feature2: Feature1/Prop3ofFeature2 -> Feature1" | double-click
+                get-item "abstract Feature2: Feature1/Prop3ofFeature2 -> Feature1" | click
+            }
+            get-group "" | get-button NOT | click
+            get-editbox | set-text "Feature2.Prop3ofFeature2 "
+            get-group "" | get-button NOT | click
+            get-editbox | set-text "Feature2.Prop3ofFeature2 !=someValue"
+            get-button OK | click
+        }
+        get-button "Add constraint" | click
+        with [get-window -class ClaferConstraintDialog] {
+            with [get-tree] {
+                get-item "abstract Feature2: Feature1/Prop2ofFeature2 -> double" | click
+                select "abstract Feature2: Feature1/Prop2ofFeature2 -> double" | double-click
+                get-item "abstract Feature2: Feature1/Prop2ofFeature2 -> double" | click
+            }
+            get-group "" | get-button IMPLIES | click
+            get-editbox | set-text "Feature2.Prop2ofFeature2 =>2"
+            get-group "" | get-button "<" | click
+            get-editbox | set-text "Feature2.Prop2ofFeature2 =>2 <3"
+            get-button OK | click
+        }
+        get-button "Add constraint" | click
+        with [get-window -class ClaferConstraintDialog] {
+            with [get-tree] {
+                get-item "abstract Feature2: Feature1/Prop3ofFeature2 -> Feature1" | click
+                select "abstract Feature2: Feature1/Prop3ofFeature2 -> Feature1" | double-click
+                get-item "abstract Feature2: Feature1/Prop3ofFeature2 -> Feature1" | click
+            }
+            get-group "" | get-button EQUALS | click
+            get-editbox | set-text "Feature2.Prop3ofFeature2 =Nonsense"
+            get-button OK | click
+        }
+        get-button Remove -after [get-label "is of type" -after [get-label Name -after [get-label "is of type"]]] 
+            -index 3 | click
+        get-button Modify -after [get-label "is of type" -after [get-label Name -after [get-label "is of type"]]] 
+            -index 1 | click
+        with [get-window -class ClaferConstraintDialog] {
+            get-editbox | set-text "Feature2.Prop2ofFeature2 =>"
+            with [get-tree] {
+                get-item "abstract Feature2: Feature1/Prop2ofFeature2 -> double" | click
+                select "abstract Feature2: Feature1/Prop2ofFeature2 -> double" | double-click
+                get-item "abstract Feature2: Feature1/Prop2ofFeature2 -> double" | click
+            }
+            get-group "" | get-button EQUALS | click
+            get-editbox | set-text "Feature2.Prop2ofFeature2 => Feature2.Prop2ofFeature2 =true"
+            get-button OK | click
+        }
+        get-button OK | click
+    }
+    get-button "Add Feature" | click
+    with [get-window -class ClaferFeatureDialog] {
+        with [get-editbox -after [get-label "Type in the name"]] {
+            set-text Feature4
+            key-type Left -times 8
+            set-text ConcreteFeature4
+        }
+        get-combo -after [get-label Implements] | select Feature3
+        get-button "Add constraint" | click
+        with [get-window -class ClaferConstraintDialog] {
+            with [get-tree] {
+                get-item "abstract Feature3: Feature2/Prop2ofFeature3 -> Feature2" | click
+                select "abstract Feature3: Feature2/Prop2ofFeature3 -> Feature2" | double-click
+                get-item "abstract Feature3: Feature2/Prop2ofFeature3 -> Feature2" | click
+            }
+            get-group "" | get-button EQUALS | click
+            with [get-editbox] {
+                set-text "Feature3.Prop2ofFeature3 =someName"
+                key-type Left -times 4
+                set-text "Feature3.Prop2ofFeature3 =some Name"
+                key-type Right
+            }
+            get-button OK | click
+        }
+        get-button Modify | click
+        with [get-window -class ClaferConstraintDialog] {
+            get-editbox | set-text "Feature3.Prop2ofFeature3 =someName"
+            get-button OK | click
+        }
+        get-button "Add constraint" | click
+        with [get-window -class ClaferConstraintDialog] {
+            with [get-tree] {
+                get-item "abstract Feature3: Feature2/Prop1ofFeature3 -> Feature1" | click
+                get-item "abstract Feature3: Feature2/Prop1ofFeature3 -> Feature1" | click
+                select "abstract Feature3: Feature2/Prop1ofFeature3 -> Feature1" | double-click
+                get-item "abstract Feature3: Feature2/Prop1ofFeature3 -> Feature1" | click
+            }
+            get-group "" | get-button IMPLIES | click
+            with [get-tree] {
+                get-item "abstract Feature2: Feature1/Prop3ofFeature2 -> Feature1" | click
+                select "abstract Feature2: Feature1/Prop3ofFeature2 -> Feature1" | double-click
+                get-item "abstract Feature2: Feature1/Prop3ofFeature2 -> Feature1" | click
+            }
+            get-group "" | get-button AND | click
+            with [get-tree] {
+                get-item "abstract Feature2: Feature1/Prop2ofFeature2 -> double" | click
+                select "abstract Feature2: Feature1/Prop2ofFeature2 -> double" | double-click
+                get-item "abstract Feature2: Feature1/Prop2ofFeature2 -> double" | click
+            }
+            get-group "" | get-button EQUALS | click
+            get-editbox 
+                | set-text "Feature3.Prop1ofFeature3 => Feature2.Prop3ofFeature2 AND Feature2.Prop2ofFeature2 =true"
+            get-button OK | click
+        }
+        get-button Remove | click
+        get-button OK | click
+    }
+    get-button "Next >" | click
+    get-button "Add Question" | click
+    with [get-window -class QuestionDialog] {
+        get-editbox -after [get-label Question] | set-text Q0
+        get-combo -after [get-label "Answer type"] | select "Drop down"
+        get-editbox -after [get-label "Describe the question"] | set-text "Qo help content"
+        get-button "Add Answer" | click
+        get-group "" | get-editbox | set-text ans1
+        get-button "Add Answer" | click
+        get-group "" -after [get-label "Describe the question"] -index 1 | get-editbox | set-text ans2
+        get-group "" | get-button "Default Answer" | click
+        get-button OK | click
+    }
+    get-button Modify | click
+    with [get-window -class QuestionDialog] {
+        get-button "Add Answer" | click
+        get-group "" -after [get-label "Describe the question"] -index 2 | get-editbox | set-text ans3
+        get-button "Add Answer" | click
+        get-group "" -after [get-label "Describe the question"] -index 3 | get-editbox | set-text ans4
+        get-group "" -after [get-label "Describe the question"] -index 1 | get-button "Default Answer" | click
+        get-button OK | click
+    }
+    get-button Modify | click
+}
+set-dialog-result MessageBox 64
+with [get-window -class WizardDialog] {
+    with [get-window -class QuestionDialog] {
+        get-group "" -after [get-label "Describe the question"] -index 1 | get-button Remove | click
+        get-button OK | click
+    }
+    get-button Modify | click
+    with [get-window -class QuestionDialog] {
+        get-group "" -after [get-label "Describe the question"] -index 1 | get-editbox | set-text ans2
+        get-group "" -after [get-label "Describe the question"] -index 2 | get-editbox | set-text ans
+        get-button Cancel | click
+    }
+    get-button Modify | click
+    with [get-window -class QuestionDialog] {
+        get-group "" -after [get-label "Describe the question"] -index 2 | get-editbox | set-text ans3
+        get-button OK | click
+    }
+    get-button "Link Variability construct and Link code" | click
+    with [get-window -class AddDependenciesDialog] {
+        get-button Add | click
+        get-combo -after [get-label "Set Value"] | select Feature3
+        get-combo -after [get-label "Set Value"] -index 1 | select Prop3ofFeature2
+        get-combo -after [get-label "Set Value"] -index 2 | select "!="
+        get-editbox -after [get-label "Set Value"] -index 1 | set-text sdcds
+        get-button Add | click
+        get-combo -after [get-label "Set Value"] -index 3 | select Feature2
+        get-combo -after [get-label "Set Value"] -index 4 | select Prop2ofFeature2
+        get-combo -after [get-label "Set Value"] -index 5 | select ">="
+        get-editbox -after [get-label "Set Value"] -index 2 | set-text sdvsdfv
+        with [get-editbox -after [get-label "Set Value"] -index 1] {
+            click-text 6
+            key-type "M1+a"
+            set-text someValue
+        }
+        with [get-editbox -after [get-label "Set Value"] -index 2] {
+            click-text 8
+            key-type "M1+a"
+        }
+        with [get-editbox -after [get-label "Set Value"] -index 1] {
+            click-text 1 10
+            key-type "M1+c"
+        }
+        with [get-editbox -after [get-label "Set Value"] -index 2] {
+            click-text 1 8
+            key-type "M1+v"
+        }
+        get-button Add -after [get-label "Set Value"] -index 2 | click
+        get-combo -after [get-label "Set Value"] -index 6 | select Feature3
+        get-combo -after [get-label "Set Value"] -index 7 | select Prop2ofFeature2
+        get-combo -after [get-label "Set Value"] -index 8 | select "<="
+        with [get-editbox -after [get-label "Set Value"] -index 5] {
+            click-text
+            key-type "M1+v"
+        }
+        get-button Add -after [get-label "Set Value"] -index 2 | click
+        get-combo -after [get-label "Set Value"] -index 9 | select Feature2
+        get-combo -after [get-label "Set Value"] -index 10 | select Prop3ofFeature2
+        get-combo -after [get-label "Set Value"] -index 11 | select ">="
+        with [get-editbox -after [get-label "Set Value"] -index 6] {
+            click-text
+            key-type "M1+v"
+        }
+        get-button Add -after [get-label "Set Value"] -index 1 | click
+        get-combo -after [get-label "Set Value"] -index 6 | select Feature3
+        get-combo -after [get-label "Set Value"] -index 7 | select Prop1ofFeature3
+        get-combo -after [get-label "Set Value"] -index 8 | select "<"
+        with [get-editbox -after [get-label "Set Value"] -index 4] {
+            click-text
+            key-type "M1+v"
+        }
+        get-button Add -after [get-label "Set Value"] -index 1 | click
+        get-button Remove -after [get-label "Set Value"] -index 3 | click
+        get-button Remove -after [get-label "Set Value"] -index 3 | click
+        get-button OK | click
+    }
+    get-button "Link Variability construct and Link code" | click
+    with [get-window -class AddDependenciesDialog] {
+        get-button Remove -after [get-label "Set Value"] -index 1 | click
+        get-tab-folder | get-tab-item "Link to variables to use in code" | click
+        get-editbox -after [get-label "Set Value"] -index 1 | set-text ans1
+        get-editbox -after [get-label "Set Value"] -index 3 | set-text ans2
+        get-editbox -after [get-label "Set Value"] -index 5 | set-text ans3
+        get-button OK | click
+    }
+    get-button "Add Question" | click
+    with [get-window -class QuestionDialog] {
+        get-editbox -after [get-label Question] | set-text Q1
+        get-combo -after [get-label "Answer type"] | select "Radio button"
+        get-editbox -after [get-label "Describe the question"] | set-text "Q1 help content"
+        get-button "Add Answer" | click
+        get-group "" | get-editbox | set-text ans1
+        get-button "Add Answer" | click
+        get-group "" -after [get-label "Describe the question"] -index 1 | get-editbox | set-text ans2
+        get-button "Add Answer" | click
+        get-group "" -after [get-label "Describe the question"] -index 2 | get-editbox | set-text ans3
+        get-button OK | click
+    }
+    get-button Modify -index 1 | click
+    with [get-window -class QuestionDialog] {
+        get-group "" -after [get-label "Describe the question"] -index 1 | get-button "Default Answer" | click
+        get-button OK | click
+    }
+    get-button "Link Variability construct and Link code" -index 1 | click
+    with [get-window -class AddDependenciesDialog] {
+        get-button Add -after [get-label "Set Value"] -index 1 | click
+        get-button Add -after [get-label "Set Value"] -index 1 | click
+        get-combo -after [get-label "Set Value"] -index 3 | select Feature3
+        get-combo -after [get-label "Set Value"] -index 4 | select Prop1ofFeature3
+        get-combo -after [get-label "Set Value"] -index 5 | select "="
+        get-editbox -after [get-label "Set Value"] -index 3 | set-text sdcdss
+        get-button OK | click
+    }
+    get-button "Link Variability construct and Link code" -index 1 | click
+    with [get-window -class AddDependenciesDialog] {
+        get-tab-folder | get-tab-item "Link to variables to use in code" | click
+        get-editbox -after [get-label "Set Value"] -index 1 | set-text ans1
+        get-editbox -after [get-label "Set Value"] -index 5 | set-text ans3
+        get-editbox -after [get-label "Variable Name:"] | set-text Q1Text
+        get-button OK | click
+    }
+    get-button "Link Variability construct and Link code" -index 1 | click
+    with [get-window -class AddDependenciesDialog] {
+        get-tab-folder | get-tab-item "Link to variables to use in code" | click
+        get-button OK | click
+    }
+    get-button "Link Variability construct and Link code" -index 1 | click
+    with [get-window -class AddDependenciesDialog] {
+        get-tab-folder | get-tab-item "Link to variables to use in code" | click
+        get-editbox -after [get-label "Set Value"] -index 3 | set-text ans2
+        get-button OK | click
+    }
+    get-button "Link Variability construct and Link code" -index 1 | click
+    with [get-window -class AddDependenciesDialog] {
+        get-button Remove | click
+        get-button Add | click
+        get-combo -after [get-label "Set Value"] | select Feature2
+        get-combo -after [get-label "Set Value"] -index 1 | select Prop2ofFeature2
+        get-combo -after [get-label "Set Value"] -index 2 | select ">"
+        get-editbox -after [get-label "Set Value"] -index 1 | set-text fdhfc
+        get-button OK | click
+    }
+    get-button "Add Question" | click
+    with [get-window -class QuestionDialog] {
+        get-editbox -after [get-label Question] | set-text Q2
+        get-combo -after [get-label "Answer type"] | select "Text box"
+        get-editbox -after [get-label "Describe the question"] | set-text "Q2 help content"
+        get-button OK | click
+    }
+    get-button Up -index 2 | click
+    get-button Up -index 1 | click
+    get-button Down | click
+    get-button Down -index 1 | click
+    get-button "Add Question" | click
+    with [get-window -class QuestionDialog] {
+        get-editbox -after [get-label Question] | set-text Q3
+        get-combo -after [get-label "Answer type"] | select "Drop down"
+        with [get-button "Add Answer"] {
+            click
+            click
+            click
+            click
+            click
+        }
+        with [get-group "" | get-editbox] {
+            set-text ns1
+            set-text ans1
+        }
+        get-group "" -after [get-label "Describe the question"] -index 1 | get-editbox | set-text ans2
+        get-group "" -after [get-label "Describe the question"] -index 2 | get-editbox | set-text ans3
+        get-group "" -after [get-label "Describe the question"] -index 3 | get-editbox | set-text ans4
+        get-group "" -after [get-label "Describe the question"] -index 4 | get-editbox | set-text ans5
+        get-group "" -after [get-label "Describe the question"] -index 2 | get-button "Default Answer" | click
+        get-button OK | click
+    }
+    get-button "Link Variability construct and Link code" -index 3 | click
+    with [get-window -class AddDependenciesDialog] {
+        get-button Add -after [get-label "Set Value"] -index 2 | click
+        get-button Add -after [get-label "Set Value"] -index 2 | click
+        get-combo -after [get-label "Set Value"] | select Feature3
+        get-combo -after [get-label "Set Value"] -index 1 | select Prop1ofFeature3
+        get-combo -after [get-label "Set Value"] -index 2 | select ">"
+        with [get-editbox -after [get-label "Set Value"] -index 3] {
+            click-text
+            key-type "M1+v"
+        }
+        get-combo -after [get-label "Set Value"] -index 3 | select Feature3
+        get-combo -after [get-label "Set Value"] -index 4 | select Prop1ofFeature3
+        get-combo -after [get-label "Set Value"] -index 3 | select Feature2
+        get-combo -after [get-label "Set Value"] -index 4 | select Prop2ofFeature2
+        get-combo -after [get-label "Set Value"] -index 5 | select ">="
+        with [get-editbox -after [get-label "Set Value"] -index 4] {
+            click-text
+            key-type "M1+v"
+        }
+        get-button Add -after [get-label "Set Value"] -index 3 | click
+        get-button Add -after [get-label "Set Value"] -index 3 | click
+        get-button Remove -after [get-label "Set Value"] -index 2 | click
+        get-button Remove -after [get-label "Set Value"] -index 2 | click
+        get-button Add | click
+        get-button Add | click
+        get-button Remove -after [get-label "Set Value"] -index 1 | click
+        get-button Remove | click
+        get-tab-folder | get-tab-item "Link to variables to use in code" | click
+        with [get-editbox -after [get-label "Set Value"] -index 1] {
+            set-text ""
+            key-type "M1+v"
+        }
+        with [get-editbox -after [get-label "Set Value"] -index 3] {
+            click-text
+            key-type "M1+v"
+        }
+        with [get-editbox -after [get-label "Set Value"] -index 9] {
+            click-text
+            key-type "M1+v"
+        }
+        get-editbox -after [get-label "Variable Name:"] | set-text Q3Ext
+        get-button OK | click
+    }
+    get-button "Link Variability construct and Link code" -index 3 | click
+    with [get-window -class AddDependenciesDialog] {
+        get-tab-folder | get-tab-item "Link to variables to use in code" | click
+        get-button OK | click
+    }
+    get-button Up -index 3 | click
+    get-button "Link Variability construct and Link code" -index 2 | click
+    with [get-window -class AddDependenciesDialog] {
+        get-tab-folder | get-tab-item "Link to variables to use in code" | click
+        get-button OK | click
+    }
+    get-button Up -index 3 | click
+    get-button "Next >" | click
+    get-button "< Back" | click
+}
+set-dialog-result MessageBox 64
+with [get-window -class WizardDialog] {
+    get-button Delete -index 3 | click
+    get-button "Next >" | click
+    get-button "Link Answer to other questions" | click
+    with [get-window -class LinkAnswerDialog] {
+        get-group "" -after [get-label Q0] -index 1 | get-combo | select Q1
+        get-group "" -after [get-label Q0] -index 2 | get-combo | select Default
+        get-group "" -after [get-label Q0] -index 3 | get-combo | select "End Questionnaire"
+        get-button OK | click
+    }
+    get-button "Link Answer to other questions" -index 1 | click
+    with [get-window -class LinkAnswerDialog] {
+        get-group "" -after [get-label Q1] -index 1 | get-combo | select "End Questionnaire"
+        get-group "" -after [get-label Q1] -index 2 | get-combo | select Default
+        get-group "" -after [get-label Q1] -index 3 | get-combo | select Q2
+        get-button OK | click
+    }
+    get-button "Link Answer to other questions" -index 2 | click
+    get-window -class LinkAnswerDialog | get-button OK | click
+    get-button "Next >" | click
+}
+with [get-window -class WizardDialog] {
+    with [get-editbox] {
+        set-text-offset 0 0
+        type-text S
+        key-type BackSpace
+        type-text "Test the "
+        key-type BackSpace -times 4
+    }
+    get-button "Add Xsl Tag" | click
+    get-window -class XSLTagDialog | get-button OK | click
+    with [get-editbox] {
+        set-text-offset 18 0
+        type-text " "
+    }
+    get-button "Add Xsl Tag" | click
+    with [get-window -class XSLTagDialog] {
+        get-combo | select "Value of"
+        get-button "Add Attribute" | click
+        get-group "" | get-combo -index 1 | set-text something
+        get-button OK | click
+    }
+    get-button "Add Xsl Tag" | click
+    with [get-window -class XSLTagDialog] {
+        get-combo | select If
+        get-button "Add Attribute" | click
+        get-group "" | get-combo -index 1 | set-text true
+        get-button OK | click
+    }
+    close
+}
+}
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--

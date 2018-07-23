@@ -98,7 +98,7 @@ public class QuestionsJSONReader {
 	 * @param pages
 	 *        List of all read pages
 	 */
-	private void checkReadPages(final List<Page> pages) {
+	public void checkReadPages(final List<Page> pages) {
 		final Set<Integer> ids = new HashSet<>();
 		if (pages.size() < 1) {
 			throw new IllegalArgumentException("There are no pages for this task.");

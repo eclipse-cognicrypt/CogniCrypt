@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.contexts"?>
-<contexts> 
-      <context  id="help_id_3" title="CogniCrypt"> 
-        <description>All these algorithms suit your requirements. Select any algorithm and click Finish to generate the code.</description> 
-       </context> 
-    </contexts> 
+<contexts>
+	<context id="InstanceListHelp" >
+		<description>All the algorithm combination(s)and their variations suit your requirements.
+Select an algorithm combination from the drop-down to view its details. You can switch between the different variations of the selection using Previous and Next buttons. </description>
+	</context>
+</contexts> 

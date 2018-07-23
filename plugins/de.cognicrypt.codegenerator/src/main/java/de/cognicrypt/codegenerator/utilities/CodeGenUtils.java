@@ -1,8 +1,15 @@
 package de.cognicrypt.codegenerator.utilities;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.core.Constants;
@@ -29,5 +36,29 @@ public class CodeGenUtils extends Utils {
 
 	public static File getResourceFromWithin(final String inputPath) {
 		return Utils.getResourceFromWithin(inputPath, Activator.PLUGIN_ID);
+	}
+
+	public static File getFinalClaferFile(final String inputPath) {
+		try {
+			final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+
+			if (bundle == null) {
+				// running as application
+				return new File(inputPath);
+			} else {
+				final URL fileURL = bundle.getEntry(inputPath);
+				final URL resolvedURL = FileLocator.toFileURL(fileURL);
+				final URI uri = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
+				SimpleDateFormat f = new SimpleDateFormat("ddMMyyyyHHmmss");
+				String filename = uri.getPath().replace("Clafer/", "Clafer/FinalClafer" + f.format(new Date()));
+				File file = new File(filename + ".cfr");
+				file.createNewFile();
+				return file;
+			}
+		} catch (final Exception ex) {
+			Activator.getDefault().logError(ex);
+		}
+
+		return null;
 	}
 }

@@ -50,12 +50,10 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 		final WizardDialog dialog = new WizardDialog(new Shell(), new ConfiguratorWizard()) {
 
 			@Override
-			protected void configureShell(final Shell newShell) {
-				super.configureShell(newShell);
-				//newShell.setSize(650,400);		
-			}
-		};
-		dialog.open();
+        protected void configureShell(Shell newShell) {				
+		       super.configureShell(newShell);		       	
+		}	};
+		dialog.open();		
 	}
 
 	/**

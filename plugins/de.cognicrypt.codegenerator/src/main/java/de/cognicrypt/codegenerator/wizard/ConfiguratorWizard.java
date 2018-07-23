@@ -90,9 +90,10 @@ public class ConfiguratorWizard extends Wizard {
 	public boolean canFinish() {
 		final String pageName = getContainer().getCurrentPage().getName();
 		if (pageName.equals(Constants.DEFAULT_ALGORITHM_PAGE)) {
-			return (this.defaultAlgorithmPage.isDefaultAlgorithm());
+			return (!this.defaultAlgorithmPage.isDefaultAlgorithm());
 		}
 		return (pageName.equals(Constants.ALGORITHM_SELECTION_PAGE));
+		
 	}
 
 	private boolean checkifInUpdateRound() {
@@ -192,7 +193,7 @@ public class ConfiguratorWizard extends Wizard {
 				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile());
 				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(), null);
 			} else {
-				this.preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, (AstConcreteClafer) org.clafer.cli.Utils
+				this.preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, selectedTask, (AstConcreteClafer) org.clafer.cli.Utils
 					.getModelChildByName(this.claferModel.getModel(), "c0_" + selectedTask.getName()));
 			}
 			if (this.constraints != null) {
@@ -276,7 +277,7 @@ public class ConfiguratorWizard extends Wizard {
 				//instance list page will be added after advanced user value selection page in advanced mode.
 				//(default algorithm page is not added in advanced mode)
 				if (instanceGenerator.getNoOfInstances() > 0) {
-					this.instanceListPage = new InstanceListPage(instanceGenerator, this.constraints, this.taskListPage);
+					this.instanceListPage = new InstanceListPage(instanceGenerator, this.constraints, this.taskListPage, this.defaultAlgorithmPage);
 					addPage(this.instanceListPage);
 					return this.instanceListPage;
 
@@ -300,8 +301,8 @@ public class ConfiguratorWizard extends Wizard {
 				instanceGenerator.generateInstances(this.constraints);
 			}
 			//instance details page will be added after default algorithm page only if the number of instances is greater than 1
-			if (!this.defaultAlgorithmPage.isDefaultAlgorithm() && instanceGenerator.getNoOfInstances() > 1) {
-				this.instanceListPage = new InstanceListPage(instanceGenerator, this.constraints, this.taskListPage);
+			if (this.defaultAlgorithmPage.isDefaultAlgorithm() && instanceGenerator.getNoOfInstances() > 1) {
+				this.instanceListPage = new InstanceListPage(instanceGenerator, this.constraints, this.taskListPage, this.defaultAlgorithmPage);
 				addPage(this.instanceListPage);
 				return this.instanceListPage;
 			}
@@ -388,7 +389,11 @@ public class ConfiguratorWizard extends Wizard {
 		return ret;
 	}
 
+
+
+
 	public HashMap<Question, Answer> getConstraints() {
 		return this.constraints;
 	}
 }
+

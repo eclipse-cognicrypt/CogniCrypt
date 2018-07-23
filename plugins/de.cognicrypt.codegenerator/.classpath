@@ -36,6 +36,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/dom4j-2.0.0.jar"/>
-	<classpathentry kind="lib" path="lib/claferchocoig.jar" sourcepath="C:/Users/stefank3/Downloads/choco-solver-master"/>
+	<classpathentry kind="lib" path="lib/claferchocoig.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -45,8 +45,7 @@
 			"questionsJSONFile" : "src/main/resources/TaskDesc/SECMUPACOMP.json",
 			"additionalResources" : "src/main/resources/AdditionalResources/SECMUPACOMP",
 			"xslFile" : "src/main/resources/XSLTemplates/SECMUPACOMP.xsl"
-		}
-		,
+		},
 		{
 			"name": "CertainTrust",
 			"description": "Judging Trustworthiness of third parties",
@@ -55,16 +54,23 @@
 			"questionsJSONFile" : "src/main/resources/TaskDesc/CertainTrust.json",
 			"additionalResources" : "src/main/resources/AdditionalResources/CertainTrust",
 			"xslFile" : "src/main/resources/XSLTemplates/CertainTrust.xsl"
-		}
-		,
+		},
 		{
 			"name": "HybridEncryption",
-			"description": "HybridEncryption",
+			"description": "Hybrid Encryption",
 			"taskDescription": "This cryptographic task generates code that combine the advantages of symmetric and asymmetric encryption. At first the symmetric encryption encrypt the data. Afterwards, the symmetric key(session key) becomes encrypted with the public key of the communication partner. The partner decrypt the symmetric key with his own private key. After that, he owns the symmetric key and has the possibility to encrypt the data of the sender.",			
 			"modelFile" : "src/main/resources/ClaferModel/HybridEncryption.js",
 			"questionsJSONFile" : "src/main/resources/TaskDesc/HybridEncryption.json",
 			"additionalResources" : "",
 			"xslFile" : "src/main/resources/XSLTemplates/HybridEncryption.xsl"
+		},
+		{
+			"name": "DigitalSignatures",
+			"description": "Digitally sign documents",
+			"taskDescription": "",			
+			"modelFile" : "src/main/resources/ClaferModel/DigitalSignatures.js",
+			"questionsJSONFile" : "src/main/resources/TaskDesc/DigitalSignatures.json",
+			"additionalResources" : "",
+			"xslFile" : "src/main/resources/XSLTemplates/DigitalSignatures.xsl"
 		}
 ]
-

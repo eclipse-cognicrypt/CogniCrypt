@@ -203,12 +203,6 @@ public class TaskSelectionPage extends WizardPage {
 		new Label(this.container, SWT.NONE);
 		new Label(this.container, SWT.NONE);
 
-		//Check box for going to guided mode
-
-		//Show info icon when the user unchecks the Guided-mode checkbox
-		Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
-
-
 		sc.setContent(container);
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);

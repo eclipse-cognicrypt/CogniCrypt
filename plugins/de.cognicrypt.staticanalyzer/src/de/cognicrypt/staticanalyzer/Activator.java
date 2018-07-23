@@ -1,10 +1,17 @@
 package de.cognicrypt.staticanalyzer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import de.cognicrypt.staticanalyzer.handlers.ShutDownHandler;
+import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -17,6 +24,8 @@ public class Activator extends AbstractUIPlugin {
 	// The shared instance
 	private static Activator plugin;
 
+	private static List<ResultsCCUIListener> resReporters;
+
 	/**
 	 * The constructor
 	 */
@@ -26,6 +35,8 @@ public class Activator extends AbstractUIPlugin {
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		Activator.plugin = this;
+		resReporters = new ArrayList<ResultsCCUIListener>();
+		PlatformUI.getWorkbench().addWorkbenchListener(new ShutDownHandler());
 	}
 
 	@Override
@@ -72,6 +83,14 @@ public class Activator extends AbstractUIPlugin {
 
 	public void logInfo(final String message) {
 		log(IStatus.INFO, message, null);
+	}
+
+	public static void registerResultsListener(ResultsCCUIListener gen) {
+		resReporters.add(gen);
+	}
+
+	public static List<ResultsCCUIListener> getResultsReporters() {
+		return resReporters;
 	}
 
 }

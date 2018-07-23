@@ -25,7 +25,9 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 
-import de.cognicrypt.codegenerator.Activator;
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.staticanalyzer.Activator;
+
 
 /**
  * Builder Class used to set a Marker to a part of a specific resource, that matches the predefined pattern. This would probably be done by the analysis later, as it would find
@@ -40,13 +42,6 @@ import de.cognicrypt.codegenerator.Activator;
  */
 
 public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
-
-	public static final String BUILDER_ID = "QuickFixTest.ProblemMarkerBuilder";
-
-	private static final String MARKER_TYPE = "QuickFixTest.OCCEProblem";
-
-	// define a correct ID (get range of possible ones)
-	private static final int JDT_PROBLEM_ID = 10000000;
 
 	private ASTParser parser;
 
@@ -66,7 +61,7 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 	 */
 	private void addMarker(final IResource file, final String message, int lineNumber, final int start, final int end) {
 		try {
-			final IMarker marker = file.createMarker(ProblemMarkerBuilder.MARKER_TYPE);
+			final IMarker marker = file.createMarker(Constants.MARKER_TYPE);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 			if (lineNumber == -1) {
@@ -77,7 +72,7 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 			marker.setAttribute(IMarker.CHAR_END, end);
 			// IJavaModelMarker is important for the Quickfix Processor to work
 			// correctly
-			marker.setAttribute(IJavaModelMarker.ID, ProblemMarkerBuilder.JDT_PROBLEM_ID);
+			marker.setAttribute(IJavaModelMarker.ID, Constants.JDT_PROBLEM_ID);
 		} catch (final CoreException e) {}
 	}
 
@@ -144,7 +139,7 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 	 *        Unit from getUnitForParser
 	 */
 	private void setupParser(final ICompilationUnit unit) {
-		final ASTParser parser = ASTParser.newParser(AST.JLS8);
+		final ASTParser parser = ASTParser.newParser(AST.JLS10);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setSource(unit);
 		parser.setResolveBindings(true);
@@ -187,7 +182,7 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 	@Override
 	protected IProject[] build(final int kind, final Map args, final IProgressMonitor monitor) throws CoreException {
 		clean(null);
-		this.parser = ASTParser.newParser(AST.JLS8);
+		this.parser = ASTParser.newParser(AST.JLS10);
 		this.parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		final IProject project = getProject();
 		try {
@@ -203,6 +198,6 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 	 */
 	@Override
 	protected void clean(final IProgressMonitor monitor) throws CoreException {
-		getProject().deleteMarkers(ProblemMarkerBuilder.MARKER_TYPE, true, IResource.DEPTH_INFINITE);
+		getProject().deleteMarkers(Constants.MARKER_TYPE, true, IResource.DEPTH_INFINITE);
 	}
 }

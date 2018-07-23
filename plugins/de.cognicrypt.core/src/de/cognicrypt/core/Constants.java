@@ -169,6 +169,7 @@ public class Constants {
 	public static final String Security = "Security";
 	public static final String Performance = "Performance";
 	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List", "java.util.Base64", "java.io.InputStream", "java.io.OutputStream", "java.util.Properties", "java.io.FileOutputStream" };
+
 	// Types
 	public static final String INTEGER = "Integer";
 	public static final String STRING = "String";
@@ -461,5 +462,14 @@ public class Constants {
 
 	public static final String[] CLAFER_RESERVED_WORDS = { "abstract", "all", "assert", "disj", "else", "enum", "if", "in", "lone", "max", "maximize", "min", "minimize", "mux", "no", "not", "one", "opt", "or", "product", "some", "sum", "then", "xor" };
 	public static final String[] CLAFER_PRIMITIVE_TYPES = { "integer", "int", "double", "real", "string" };
+
+	public static final String ANALYSIS_LABEL = "CogniCrypt Analysis";
+
+	public static final String BUILDER_ID = "QuickFixTest.ProblemMarkerBuilder";
+
+	public static final String MARKER_TYPE = "QuickFixTest.OCCEProblem";
+
+	// define a correct ID (get range of possible ones)
+	public static final int JDT_PROBLEM_ID = 10000000;
 
 }

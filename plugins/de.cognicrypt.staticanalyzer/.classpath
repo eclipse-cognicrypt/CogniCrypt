@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/cognicrypt-maven-plugin-1.0-SNAPSHOT.jar"/>
+	<classpathentry kind="src" path="experimental"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -36,7 +36,6 @@ import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.utils.Utils;
 
 public class PrimitiveIntegrationWizard extends Wizard {
 

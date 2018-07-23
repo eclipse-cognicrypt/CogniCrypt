@@ -19,7 +19,6 @@
                icon="icons/cognicrypt.png"
                id="de.cognicrypt.codegenerator.actions.WizardAction"
                label="&amp;Start Code Generation"
-               menubarPath="CogniCryptGroup"
                toolbarPath="CogniCryptGroup"
                tooltip="Generate Code For Cryptographic Task">
          </action>

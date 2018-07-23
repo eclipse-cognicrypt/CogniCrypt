@@ -74,8 +74,7 @@ public class AddDependenciesDialog extends Dialog {
 
 			} else if (question.getAnswers().size() == 0) {
 				Label lblMessageToAddAnswerForClaferTab = new Label(compositeForClaferTab, SWT.NONE);
-				lblMessageToAddAnswerForClaferTab
-					.setText("Please add answer to link variablilty constructs \nYou can do so by clicking the modify button of the current question");
+				lblMessageToAddAnswerForClaferTab.setText("Please add answer to link variablilty constructs \nYou can do so by clicking the modify button of the current question");
 			} else {
 				Label lblQuestion_2 = new Label(compositeForClaferTab, SWT.NONE);
 				lblQuestion_2.setText("Question:");
@@ -367,7 +366,6 @@ public class AddDependenciesDialog extends Dialog {
 					}
 				}
 			}
-
 
 			if (answer.getCodeDependencies() != null) {
 				for (CodeDependency cd : answer.getCodeDependencies()) {

@@ -90,7 +90,6 @@ public class XSLStringGenerationAndManipulation {
 			dataFromFile.append(xslStringAfterAddingText);
 		}
 
-
 		return dataFromFile.toString();
 	}
 
@@ -193,7 +192,6 @@ public class XSLStringGenerationAndManipulation {
 				//QuestionsJSONReader reader = new QuestionsJSONReader();
 				// TODO update this to read the data generated in the questions page.
 
-
 				//List<Page> pages = reader.getPages("/src/main/resources/TaskDesc/SymmetricEncryption.json");
 
 				//for (Page page : pages) {
@@ -233,7 +231,7 @@ public class XSLStringGenerationAndManipulation {
 
 		}
 	}
-	
+
 	/**
 	 * This method is created to be able to exit the nested loops as soon as the correct instance is found.
 	 * 

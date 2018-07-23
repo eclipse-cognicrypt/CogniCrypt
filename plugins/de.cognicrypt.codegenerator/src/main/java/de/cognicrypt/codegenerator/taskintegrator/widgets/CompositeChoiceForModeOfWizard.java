@@ -41,6 +41,7 @@ import de.cognicrypt.codegenerator.taskintegrator.wizard.PageForTaskIntegratorWi
 import de.cognicrypt.core.Constants;
 
 public class CompositeChoiceForModeOfWizard extends Composite {
+
 	private ModelAdvancedMode objectForDataInNonGuidedMode;
 	private Text txtTaskName;
 	private Text txtTaskDescription;
@@ -51,26 +52,27 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 
 	/**
 	 * Create the composite.
+	 * 
 	 * @param parent
 	 * @param style
 	 */
-	public CompositeChoiceForModeOfWizard(Composite parent, int style, PageForTaskIntegratorWizard theContainerPageForValidation) {		
+	public CompositeChoiceForModeOfWizard(Composite parent, int style, PageForTaskIntegratorWizard theContainerPageForValidation) {
 		super(parent, style);
-		
+
 		setTheLocalContainerPage(theContainerPageForValidation);
-		
+
 		setObjectForDataInNonGuidedMode(new ModelAdvancedMode());
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		setLayout(new GridLayout(1, false));
-		
+
 		// All the UI widgets
 		Composite compositeChooseTheMode = new Composite(this, SWT.NONE);
 		compositeChooseTheMode.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		compositeChooseTheMode.setLayout(new GridLayout(1, false));
-		
+
 		Label lblNameOfTheTask = new Label(compositeChooseTheMode, SWT.NONE);
 		lblNameOfTheTask.setText("Name of the Task ");
-		
+
 		// Initialize the decorator for the label for the text box. 
 		setDecNameOfTheTask(new ControlDecoration(lblNameOfTheTask, SWT.TOP | SWT.RIGHT));
 		getDecNameOfTheTask().setShowOnlyOnFocus(false);
@@ -78,15 +80,15 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		getDecNameOfTheTask().setImage(UIConstants.DEC_ERROR);
 		getDecNameOfTheTask().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_TASK_NAME);
 		getDecNameOfTheTask().showHoverText(getDecNameOfTheTask().getDescriptionText());
-		
+
 		txtTaskName = new Text(compositeChooseTheMode, SWT.BORDER);
 		txtTaskName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		txtTaskName.setTextLimit(Constants.SINGLE_LINE_TEXT_BOX_LIMIT);
-		
+
 		Label lblDescriptionOfThe = new Label(compositeChooseTheMode, SWT.NONE);
 		lblDescriptionOfThe.setText("Description of the Task :");
-		
-		setTxtDescriptionOfTask(new Text(compositeChooseTheMode, SWT.BORDER | SWT.WRAP | SWT.MULTI));		
+
+		setTxtDescriptionOfTask(new Text(compositeChooseTheMode, SWT.BORDER | SWT.WRAP | SWT.MULTI));
 		GridData gd_txtDescriptionOfTask = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_txtDescriptionOfTask.heightHint = 67;
 		getTxtTaskDescription().setLayoutData(gd_txtDescriptionOfTask);
@@ -94,29 +96,27 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 
 		Button btnCustomLibrary = new Button(compositeChooseTheMode, SWT.CHECK);
 		btnCustomLibrary.setText("Include a custom library");
-				
-		
+
 		Composite compositeContainerGroupForLibrary = new Composite(compositeChooseTheMode, SWT.NONE);
 		compositeContainerGroupForLibrary.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		compositeContainerGroupForLibrary.setVisible(false);
 		compositeContainerGroupForLibrary.setLayout(new GridLayout(1, false));
-		
+
 		// Updated the composite to deal with directory instead of a jar file for the custom library.
 		CompositeBrowseForFile compLib = new CompositeBrowseForFile(compositeContainerGroupForLibrary, SWT.NONE, Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK, null, "Select file that contains the library", getTheLocalContainerPage());
 		compLib.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		
-		
+
 		Button btnDoYouWishToUseTheGuidedMode = new Button(compositeChooseTheMode, SWT.CHECK);
 		btnDoYouWishToUseTheGuidedMode.setText("Use the guided mode");
 		// Guided mode set by default.
 		btnDoYouWishToUseTheGuidedMode.setSelection(true);
 		getObjectForDataInNonGuidedMode().setGuidedModeChosen(btnDoYouWishToUseTheGuidedMode.getSelection());
-		
+
 		Composite compositeNonguidedMode = new Composite(compositeChooseTheMode, SWT.NONE);
 		compositeNonguidedMode.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		compositeNonguidedMode.setVisible(false);
 		compositeNonguidedMode.setLayout(new GridLayout(1, false));
-		
+
 		compCfr = new CompositeBrowseForFile(compositeNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE, new String[] { "*.cfr" }, "Select cfr file that contains the Clafer features", getTheLocalContainerPage(), new Listener() {
 
 			@Override
@@ -157,53 +157,53 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		compJson.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		CompositeBrowseForFile compositeHelp = new CompositeBrowseForFile(compositeNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_HELP_FILE, new String[] { "*.xml" }, "Select file that contains the help data", getTheLocalContainerPage());
 		compositeHelp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		
+
 		layout();
-		
+
 		// moved all the event listeners at the bottom.
 		btnDoYouWishToUseTheGuidedMode.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				boolean tempSelectionStatus = btnDoYouWishToUseTheGuidedMode.getSelection();
 				// If the guided mode is selected, hide the widgets to get the location of the files required for the task.
 				compositeNonguidedMode.setVisible(!tempSelectionStatus);
 				// Set the data value.
-				getObjectForDataInNonGuidedMode().setGuidedModeChosen(tempSelectionStatus);				
-				
+				getObjectForDataInNonGuidedMode().setGuidedModeChosen(tempSelectionStatus);
+
 				// If the guided mode is not selected, the rest of the pages are set to completed. This is to allow the finish button to be enabled on the first page.
 				for (IWizardPage page : getTheLocalContainerPage().getWizard().getPages()) {
 					if (!page.getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)) {
-						((WizardPage)page).setPageComplete(!tempSelectionStatus);
-						}
+						((WizardPage) page).setPageComplete(!tempSelectionStatus);
 					}
-				
+				}
+
 				// Check if the page can be set to completed.
 				getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
-				}
-			});
-		
+			}
+		});
+
 		btnCustomLibrary.addSelectionListener(new SelectionAdapter() {
+
 			@Override
-			public void widgetSelected(SelectionEvent e) {		
+			public void widgetSelected(SelectionEvent e) {
 				boolean tempSelectionStatus = btnCustomLibrary.getSelection();
 				// Show the widget to get the file data if the check box is selected.
 				getObjectForDataInNonGuidedMode().setCustomLibraryRequired(tempSelectionStatus);
 				// Set the data value.
 				compositeContainerGroupForLibrary.setVisible(tempSelectionStatus);
-				
+
 				// Check if the page can be completed.
 				getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 			}
 		});
-		
-		/* TODO removed for the user study.
-		btnForceGuidedMode.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				btnForceGuidedMode.getParent().getParent().getParent().setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_FORCED, btnForceGuidedMode.getSelection());
-			}
-		});*/
-		
+
+		/*
+		 * TODO removed for the user study. btnForceGuidedMode.addSelectionListener(new SelectionAdapter() {
+		 * @Override public void widgetSelected(SelectionEvent e) { btnForceGuidedMode.getParent().getParent().getParent().setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_FORCED,
+		 * btnForceGuidedMode.getSelection()); } });
+		 */
+
 		txtTaskName.addModifyListener(new ModifyListener() {
 
 			public void modifyText(ModifyEvent e) {
@@ -230,25 +230,25 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 
 			}
 		});
-		
+
 		getTxtTaskDescription().addModifyListener(new ModifyListener() {
+
 			public void modifyText(ModifyEvent e) {
 				getObjectForDataInNonGuidedMode().setTaskDescription(getTxtTaskDescription().getText().trim());
 				//TODO Check if validation is required.
 			}
 		});
-				
+
 	}
 
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
 	}
-	
-
 
 	/**
 	 * Return the basic data of the task.
+	 * 
 	 * @return the objectForDataInNonGuidedMode
 	 */
 	public ModelAdvancedMode getObjectForDataInNonGuidedMode() {
@@ -257,7 +257,9 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 
 	/**
 	 * This object contains the basic data of the task.
-	 * @param objectForDataInNonGuidedMode the objectForDataInNonGuidedMode to set
+	 * 
+	 * @param objectForDataInNonGuidedMode
+	 *        the objectForDataInNonGuidedMode to set
 	 */
 	public void setObjectForDataInNonGuidedMode(ModelAdvancedMode objectForDataInNonGuidedMode) {
 		this.objectForDataInNonGuidedMode = objectForDataInNonGuidedMode;
@@ -265,6 +267,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 
 	/**
 	 * Get the local copy of the wizard page that is the parent container for this composite.
+	 * 
 	 * @return
 	 */
 	public PageForTaskIntegratorWizard getTheLocalContainerPage() {
@@ -273,6 +276,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 
 	/**
 	 * Set the local copy of the wizard page that is the parent container for this composite.
+	 * 
 	 * @param theLocalContainerPage
 	 */
 	public void setTheLocalContainerPage(PageForTaskIntegratorWizard theLocalContainerPage) {
@@ -286,15 +290,16 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		return decNameOfTheTask;
 	}
 
-	
 	/**
 	 * The decorator is is global variable to be accessible in event listners.
-	 * @param decNameOfTheTask the decNameOfTheTask to set
+	 * 
+	 * @param decNameOfTheTask
+	 *        the decNameOfTheTask to set
 	 */
 	public void setDecNameOfTheTask(ControlDecoration decNameOfTheTask) {
 		this.decNameOfTheTask = decNameOfTheTask;
 	}
-	
+
 	public Text getTxtForTaskName() {
 		return txtTaskName;
 	}
@@ -306,9 +311,9 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		return txtTaskDescription;
 	}
 
-	
 	/**
-	 * @param txtDescriptionOfTask the txtDescriptionOfTask to set
+	 * @param txtDescriptionOfTask
+	 *        the txtDescriptionOfTask to set
 	 */
 	public void setTxtDescriptionOfTask(Text txtDescriptionOfTask) {
 		this.txtTaskDescription = txtDescriptionOfTask;

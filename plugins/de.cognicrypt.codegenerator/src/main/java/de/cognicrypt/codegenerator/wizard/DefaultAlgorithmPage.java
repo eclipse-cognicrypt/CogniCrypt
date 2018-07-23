@@ -162,13 +162,13 @@ public class DefaultAlgorithmPage extends WizardPage {
 					//if there is open file, insert te new code in the same for the preview.
 					String currentlyOpenPart = getCurrentEditorContent();
 					int position = currentlyOpenPart.indexOf("{");
-					currentlyOpenPart = new StringBuilder(currentlyOpenPart).insert(position + 1 , "\n" + compileCodePreview()).toString();					
+					currentlyOpenPart = new StringBuilder(currentlyOpenPart).insert(position + 1, "\n" + compileCodePreview()).toString();
 					code.setText(currentlyOpenPart);
-				}	
+				}
 			}
-		});		
+		});
 		this.code.setToolTipText(Constants.DEFAULT_CODE_TOOLTIP);
-		this.code.setAlwaysShowScrollBars(false); 
+		this.code.setAlwaysShowScrollBars(false);
 
 		//this checkbox should be checked, to move to the next page.
 		defaultAlgorithmCheckBox = new Button(control, SWT.CHECK);
@@ -205,30 +205,31 @@ public class DefaultAlgorithmPage extends WizardPage {
 		sc.setMinSize(this.control.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		setControl(sc);
 	}
-	
+
 	/**
-	 * Get the code from the user's open file. 
+	 * Get the code from the user's open file.
 	 * 
-	 * @return code in the file 
+	 * @return code in the file
 	 */
-	public String getCurrentEditorContent() {		
+	public String getCurrentEditorContent() {
 		IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
 		//if there are no open files, then return an empty string for comparison.
 		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {
-			Activator.getDefault().logInfo("Could not open access the editor of the file or there are no files open. Therefore,  the 'Old Source' part remains empty and the newly generated code appears in the 'Modified Source' part.");
+			Activator.getDefault().logInfo(
+				"Could not open access the editor of the file or there are no files open. Therefore,  the 'Old Source' part remains empty and the newly generated code appears in the 'Modified Source' part.");
 			return "";
 		}
 		ITextEditor currentlyOpenEditor = (ITextEditor) currentlyOpenPart;
 		IDocument currentlyOpenDocument = currentlyOpenEditor.getDocumentProvider().getDocument(currentlyOpenEditor.getEditorInput());
 		final String docContent = currentlyOpenDocument.get();
-		return docContent;		
+		return docContent;
 	}
-	
+
 	/**
 	 * Assembles code-preview text.
 	 * 
 	 * @return code snippet
-	 * @throws BadLocationException 
+	 * @throws BadLocationException
 	 */
 	private String compileCodePreview() {
 		final CodeGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(), this.taskSelectionPage.getSelectedTask().getXslFile());
@@ -281,7 +282,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 		String value;
 
 		if (!inst.getType().getRef().getTargetType().isPrimitive()) {
-			String algo = Constants.ALGORITHM +" : " + ClaferModelUtils
+			String algo = Constants.ALGORITHM + " : " + ClaferModelUtils
 				.removeScopePrefix(inst.getType().getRef().getTargetType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + Constants.lineSeparator;
 			algorithms.put(algo, "");
 
@@ -297,7 +298,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 				}
 				value = "\t" + ClaferModelUtils.removeScopePrefix(
 					in.getType().getName().replaceAll("([a-z0-9])([A-Z])", "$1 $2")) + " : " + ((in.getRef() != null) ? in.getRef().toString().replace("\"", "") : "");
-				
+
 				if (value.indexOf("->") > 0) {	// VeryFast -> 4 or Fast -> 3	removing numerical value and "->"
 					value = value.substring(0, value.indexOf("->") - 1);
 					value = value.replaceAll("([a-z0-9])([A-Z])", "$1 $2");
@@ -379,7 +380,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public void setVisible(final boolean visible) {
 		super.setVisible(visible);

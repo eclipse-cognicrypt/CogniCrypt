@@ -13,10 +13,10 @@ package de.cognicrypt.codegenerator.ui1718.test;
 public class Validation {
 
 	public int validationInteger(String testInput) {
-		 
+
 		//count=0 is the input accepting case
 		//count=number of error
-		 
+
 		int count = 0;
 		char[] chars = new char[testInput.length()];
 		testInput.getChars(0, chars.length, chars, 0);
@@ -33,7 +33,7 @@ public class Validation {
 
 		//count=0 is the input accepting case 
 		//count=1 is the error case
-		
+
 		int count = 0;
 		String port = testInput;
 		try {
@@ -42,14 +42,13 @@ public class Validation {
 				count++;
 			}
 		} catch (NumberFormatException ex) {
-			if (!port.equals("")){
+			if (!port.equals("")) {
 				count++;
 			}
 		}
-		
+
 		return count;
 	}
-	
 
 	public int validationIpAddress(String testInput) {
 
@@ -57,39 +56,38 @@ public class Validation {
 		//count=1 is the error case
 		int count = 0;
 		String ip = testInput;
-		int i= 0;
+		int i = 0;
 
-			try {
-				if (!ip.isEmpty()) {
-					String[] ipAddress = ip.split("\\.");
-					count = 0;
-					if (ipAddress.length > 4) {
-						count++;
-					}
-					for (i = 0; i <= ipAddress.length - 1; i++) {
-						int j = Integer.parseInt(ipAddress[i]);
-						if (j < 0 || j > 255) {
-							count++;
-						}
-					}
-					if (ip.endsWith("..")|| ip.startsWith(".")) {
-						count++;
-					}
-					if (ip.endsWith(".") || ip.endsWith("[0-9]") ) {
-						count++;
-					}
-					if(i==4 && ip.endsWith(".")){
-						count++;					
-					}
-					
-				}
-			} catch (NumberFormatException ex) {
-				if (!ip.equals("")){
+		try {
+			if (!ip.isEmpty()) {
+				String[] ipAddress = ip.split("\\.");
+				count = 0;
+				if (ipAddress.length > 4) {
 					count++;
 				}
-	
+				for (i = 0; i <= ipAddress.length - 1; i++) {
+					int j = Integer.parseInt(ipAddress[i]);
+					if (j < 0 || j > 255) {
+						count++;
+					}
+				}
+				if (ip.endsWith("..") || ip.startsWith(".")) {
+					count++;
+				}
+				if (ip.endsWith(".") || ip.endsWith("[0-9]")) {
+					count++;
+				}
+				if (i == 4 && ip.endsWith(".")) {
+					count++;
+				}
+
+			}
+		} catch (NumberFormatException ex) {
+			if (!ip.equals("")) {
+				count++;
+			}
+
 		}
 		return count;
 	}
-	}
-
+}

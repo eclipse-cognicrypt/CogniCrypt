@@ -55,7 +55,7 @@ public class XSLPageContentProvider extends ClaferModelContentProvider {
 					resultList = XslPage.mergeLists(resultList, super.getElements(elem));
 				} else if (elem instanceof List) {
 					ArrayList<CodeDependency> codeDeps = new ArrayList<CodeDependency>();
-					
+
 					// get all code dependencies from the list of questions
 					for (Object listElement : (List<?>) elem) {
 						if (listElement instanceof Question) {

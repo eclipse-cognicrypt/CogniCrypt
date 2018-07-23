@@ -28,17 +28,17 @@ public class Primitive {
 	public String getXmlFile() {
 		return this.xmlFile;
 	}
-	
-		public void setXmlFile(String xml) {
-			this.xmlFile = xml;
-		}
-	
-		public void setXslFile(String xsl) {
-			this.xslFile = xsl;
-		}
-	
-		public void setName(final String name) {
-			this.name = name;
-		}
+
+	public void setXmlFile(String xml) {
+		this.xmlFile = xml;
+	}
+
+	public void setXslFile(String xsl) {
+		this.xslFile = xsl;
+	}
+
+	public void setName(final String name) {
+		this.name = name;
+	}
 
 }

@@ -53,7 +53,6 @@ public class CompositeUpDownButtons extends Composite {
 			}
 		});
 
-
 		Button downBtn = new Button(this, SWT.None);
 		downBtn.setText("Down");
 		downBtn.setToolTipText("Click on this button to move this question down in the list ");

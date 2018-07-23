@@ -39,22 +39,22 @@ public class ClaferGeneratorTest {
 		assertTrue(finalClafer.exists());
 	}
 
-//	@Test
-//	public void nonExistingFinalClafer() {
-//		LinkedHashMap<String, String> userInput = new LinkedHashMap<String, String>();
-//		userInput.put("name", "Cryptox");
-//		userInput.put("description", "This is description");
-//		userInput.put("Blocksize", "64");
-//		userInput.put("Keysize1", "654");
-//		userInput.put("mode", "OFB | CFB");
-//		userInput.put("Padding", "ZeroPadding|OneAndZeroes Padding");
-//
-//		// test with non-existing FinalClafer file
-//		File finalClafer = ClaferGenerator.copyClaferHeader(Constants.claferHeaderTestR, Constants.claferFooterTest3);
-//		ClaferGenerator.printClafer(userInput, finalClafer);
-//		assertTrue(finalClafer instanceof File);
-//		assertTrue(finalClafer.exists());
-//	}
+	//	@Test
+	//	public void nonExistingFinalClafer() {
+	//		LinkedHashMap<String, String> userInput = new LinkedHashMap<String, String>();
+	//		userInput.put("name", "Cryptox");
+	//		userInput.put("description", "This is description");
+	//		userInput.put("Blocksize", "64");
+	//		userInput.put("Keysize1", "654");
+	//		userInput.put("mode", "OFB | CFB");
+	//		userInput.put("Padding", "ZeroPadding|OneAndZeroes Padding");
+	//
+	//		// test with non-existing FinalClafer file
+	//		File finalClafer = ClaferGenerator.copyClaferHeader(Constants.claferHeaderTestR, Constants.claferFooterTest3);
+	//		ClaferGenerator.printClafer(userInput, finalClafer);
+	//		assertTrue(finalClafer instanceof File);
+	//		assertTrue(finalClafer.exists());
+	//	}
 
 	@Test(expected = NullPointerException.class)
 	public void ifMapEmpty() {

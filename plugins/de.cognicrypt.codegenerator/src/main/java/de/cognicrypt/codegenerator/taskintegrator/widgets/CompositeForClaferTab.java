@@ -57,7 +57,7 @@ public class CompositeForClaferTab extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				ClaferDependency cd = new ClaferDependency();
-				if (!showClaferWidgets && answer.getClaferDependencies()==null) {
+				if (!showClaferWidgets && answer.getClaferDependencies() == null) {
 					ArrayList<ClaferDependency> claferDependencies = new ArrayList<>();
 					answer.setClaferDependencies(claferDependencies);
 				}
@@ -75,7 +75,7 @@ public class CompositeForClaferTab extends Composite {
 			for (ClaferDependency claferDependency : answer.getClaferDependencies()) {
 				Composite claferWidgets = new Composite(this, SWT.NONE);
 				claferWidgets.setBounds(235, getLowestWidgetYAxisValue(), 655, 34);
-				
+
 				//Combo for displaying all the features created in Clafer page
 				Combo comboForAlgorithm = new Combo(claferWidgets, SWT.READ_ONLY);
 				comboForAlgorithm.setBounds(0, 0, 135, 25);
@@ -110,7 +110,7 @@ public class CompositeForClaferTab extends Composite {
 				//To retrieve value from the user
 				Text txtBoxValue = new Text(claferWidgets, SWT.BORDER);
 				txtBoxValue.setBounds(390, 0, 120, 25);
-				
+
 				//Upon click the button removes the current ClaferDependency
 				Button btnRemove = new Button(claferWidgets, SWT.None);
 				btnRemove.setBounds(515, 0, 100, 25);
@@ -211,7 +211,6 @@ public class CompositeForClaferTab extends Composite {
 		}
 
 	}
-
 
 	/**
 	 * @param featureSelected

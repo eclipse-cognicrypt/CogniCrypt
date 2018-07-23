@@ -26,7 +26,8 @@ public class Activator extends Plugin {
 	/**
 	 * The constructor
 	 */
-	public Activator() {}
+	public Activator() {
+	}
 
 	@Override
 	public void start(final BundleContext context) throws Exception {

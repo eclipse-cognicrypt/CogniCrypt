@@ -49,7 +49,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	private SortedSet<String> possibleCfrFeatures;
 
 	private ArrayList<Button> btnList;
-	
+
 	private HashMap<ClaferProperty, GroupFeatureProperty> propertiesMap;
 
 	private ClaferModel claferModel;
@@ -60,7 +60,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * Create the composite. Warnings suppressed for casting array lists.
 	 * 
 	 * @param parent
-	 * @param style TODO
+	 * @param style
+	 *        TODO
 	 * @param targetArrayListOfDataToBeDisplayed
 	 * @param showRemoveButton
 	 */
@@ -72,7 +73,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 
 		arrayAnswer = new ArrayList<Answer>();
 		groupAnswers = new ArrayList<GroupAnswer>();
-	    btnList = new ArrayList<Button>();
+		btnList = new ArrayList<Button>();
 
 		composite = new Composite(this, SWT.NONE);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
@@ -86,7 +87,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 
 		propertiesMap = new HashMap<>();
 		XSLAttributes = new ArrayList<XSLAttribute>();
-		
+
 		this.claferModel = claferModel;
 
 		addData(targetArrayListOfDataToBeDisplayed, showRemoveButton, claferModel);
@@ -275,7 +276,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 			addAnswer(answer, true);
 		}
 	}
-	
+
 	/**
 	 * @return the btnList List of radio buttons for default Answer field
 	 */
@@ -295,70 +296,78 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
-	
 
 	/**
 	 * Add the widgets and data inside the scrollable composite for clafer dependency tab
+	 * 
 	 * @param answer
-	 * @param claferFeatures list of all clafer features created in the clafer page
+	 * @param claferFeatures
+	 *        list of all clafer features created in the clafer page
 	 * 
 	 */
 	public void addElementsInClaferTabQuestionDialog(Answer answer, ClaferModel claferModel, boolean showClaferWidgets) {
 		CompositeForClaferTab group = new CompositeForClaferTab((Composite) getContent(), SWT.NONE, answer, claferModel, showClaferWidgets);
 		/**
-		 * case 1: if the showClaferWidgets value is true or the list of clafer Dependecies is not null
-		 * then the following loop executes
+		 * case 1: if the showClaferWidgets value is true or the list of clafer Dependecies is not null then the following loop executes
 		 */
 		if (showClaferWidgets || answer.getClaferDependencies() != null) {
 			/**
-			 * following if else block decides the height of the group object depending on the
-			 * size of clafer dependency list of answer object
+			 * following if else block decides the height of the group object depending on the size of clafer dependency list of answer object
 			 */
-			if(answer.getClaferDependencies().size()==0){
-				group.setBounds(5, getLowestWidgetYAxisValue(), 890,39);
-					setLowestWidgetYAxisValue(getLowestWidgetYAxisValue()+39);
-				} else{
-					group.setBounds(5, getLowestWidgetYAxisValue(), 890, group.getLowestWidgetYAxisValue());
-					setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + group.getLowestWidgetYAxisValue());
-				}			 
+			if (answer.getClaferDependencies().size() == 0) {
+				group.setBounds(5, getLowestWidgetYAxisValue(), 890, 39);
+				setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
+			} else {
+				group.setBounds(5, getLowestWidgetYAxisValue(), 890, group.getLowestWidgetYAxisValue());
+				setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + group.getLowestWidgetYAxisValue());
+			}
 		}
 		/**
 		 * executes when case 1 is false
 		 */
-		else{
-			group.setBounds(5, getLowestWidgetYAxisValue(), 890,39);
-			setLowestWidgetYAxisValue(getLowestWidgetYAxisValue()+39);
+		else {
+			group.setBounds(5, getLowestWidgetYAxisValue(), 890, 39);
+			setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
 		}
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
-	
+
 	/**
 	 * calls the addElementsInclaferTabQuestionDialog method for each answer
-	 * @param claferModel contains the list of all ClaferFeatures
+	 * 
+	 * @param claferModel
+	 *        contains the list of all ClaferFeatures
 	 */
-	public void callAddElementsInClaferTabQuestionDialog(ClaferModel claferModel){
-		for(Answer answer:arrayAnswer){
+	public void callAddElementsInClaferTabQuestionDialog(ClaferModel claferModel) {
+		for (Answer answer : arrayAnswer) {
 			addElementsInClaferTabQuestionDialog(answer, claferModel, false);
 		}
 	}
 
-	
 	/**
-	 * Deletes the specific clafer dependency from the list of answer's clafer dependencies  
-	 * @param answer the Answer
-	 * @param claferDependency to be deleted 
-	 * @param claferModel containing the list of clafer features
+	 * Deletes the specific clafer dependency from the list of answer's clafer dependencies
+	 * 
+	 * @param answer
+	 *        the Answer
+	 * @param claferDependency
+	 *        to be deleted
+	 * @param claferModel
+	 *        containing the list of clafer features
 	 */
-	public void deleteClaferDependency(Answer answer, ClaferDependency claferDependency, ClaferModel claferModel){
+	public void deleteClaferDependency(Answer answer, ClaferDependency claferDependency, ClaferModel claferModel) {
 		answer.getClaferDependencies().remove(claferDependency);
-		updateClaferTab(claferModel,answer);
+		updateClaferTab(claferModel, answer);
 	}
+
 	/**
 	 * Updates the clafer tab whenever a deletion or addition of clafer dependency takes place in clafer tab
-	 * @param claferModel containing the list of clafer features
-	 * @param showClaferWidgetsForAnswer the answer 
+	 * 
+	 * @param claferModel
+	 *        containing the list of clafer features
+	 * @param showClaferWidgetsForAnswer
+	 *        the answer
 	 */
-	public void updateClaferTab(ClaferModel claferModel,Answer showClaferWidgetsForAnswer){
+	public void updateClaferTab(ClaferModel claferModel, Answer showClaferWidgetsForAnswer) {
 		Composite contentOfThisScrolledComposite = (Composite) this.getContent();
 
 		for (Control answerToDelete : contentOfThisScrolledComposite.getChildren()) {
@@ -368,27 +377,29 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setLowestWidgetYAxisValue(0);
 		setMinHeight(getLowestWidgetYAxisValue());
 
-		for(Answer answer:arrayAnswer){
-			if(answer.getValue().equals(showClaferWidgetsForAnswer.getValue())){
+		for (Answer answer : arrayAnswer) {
+			if (answer.getValue().equals(showClaferWidgetsForAnswer.getValue())) {
 				addElementsInClaferTabQuestionDialog(answer, claferModel, true);
-			}else{
+			} else {
 				addElementsInClaferTabQuestionDialog(answer, claferModel, false);
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * Add the widgets and data inside the scrollable composite for Link Answer
+	 * 
 	 * @param currentQuestion
 	 * @param listOfAllQuestions
 	 */
-	public void addElementsOfLinkAnswer(Answer answer, Question currentQuestion, ArrayList<Question> listOfAllQuestions){
+	public void addElementsOfLinkAnswer(Answer answer, Question currentQuestion, ArrayList<Question> listOfAllQuestions) {
 		GroupForLinkAnswer group = new GroupForLinkAnswer((Composite) getContent(), SWT.NONE, answer, currentQuestion, listOfAllQuestions);
 		group.setBounds(5, getLowestWidgetYAxisValue(), 690, 39);
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
+
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components

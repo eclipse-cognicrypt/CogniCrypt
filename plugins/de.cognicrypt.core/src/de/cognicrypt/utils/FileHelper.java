@@ -27,9 +27,9 @@ public class FileHelper {
 	/**
 	 * Deletes file with given name.
 	 * 
-	 * @param fileName
-	 *        Path to file to be deleted.
-	 * @return <Code>True</Code>/<Code>False</Code> if deletion of file succeeded/failed.
+	 * @param fileName Path to file to be deleted.
+	 * @return <Code>True</Code>/<Code>False</Code> if deletion of file
+	 *         succeeded/failed.
 	 */
 	public static boolean deleteFile(final String fileName) {
 		try {
@@ -49,7 +49,8 @@ public class FileHelper {
 	 * 
 	 * @param filePath
 	 * @param s
-	 * @return If the file contains the String <CODE>true</CODE> otherwise <CODE>false</CODE>
+	 * @return If the file contains the String <CODE>true</CODE> otherwise
+	 *         <CODE>false</CODE>
 	 * @throws IOException
 	 */
 	public static boolean checkFileForString(final String filePath, String searchString) throws IOException {
@@ -73,7 +74,8 @@ public class FileHelper {
 			System.out.println("wrong filepath");
 		}
 
-		final String contentStringAlt = String.join(Constants.lineSeparator, Files.readAllLines(Paths.get(filePath))).trim();
+		final String contentStringAlt = String.join(Constants.lineSeparator, Files.readAllLines(Paths.get(filePath)))
+				.trim();
 		FileWriter writer = new FileWriter(f);
 		writer.write(contentStringAlt);
 		writer.close();

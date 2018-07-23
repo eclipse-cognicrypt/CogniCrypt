@@ -38,13 +38,13 @@ public class GroupConstraint extends Composite {
 	 *        whether or not to show a remove button next to the constraint
 	 */
 	public GroupConstraint(Composite parent, int style, ClaferConstraint constraint, boolean showRemoveButton) {
-		
+
 		super(parent, style);
 		// Set the model for use first.
 		this.setConstraint(constraint);
-		
+
 		setLayout(new GridLayout(3, false));
-		
+
 		txtForFeatureConstraints = new Text(this, SWT.BORDER);
 		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		// do not claim space for all of the text if not available

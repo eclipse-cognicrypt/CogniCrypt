@@ -34,6 +34,7 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 import de.cognicrypt.core.Constants;
 
 public class GroupFeatureProperty extends Composite {
+
 	private ClaferProperty featureProperty;
 	private Text txtPropertyName;
 	private Text txtPropertyType;
@@ -59,12 +60,12 @@ public class GroupFeatureProperty extends Composite {
 		super(parent, style);
 		// Set the model for use first.
 		this.setFeatureProperty(featurePropertyParam);
-		
+
 		setLayout(new GridLayout(5, false));
-		
+
 		Label lblName = new Label(this, SWT.NONE);
 		lblName.setText(Constants.FEATURE_PROPERTY_NAME);
-		
+
 		decorationName = new ControlDecoration(lblName, SWT.TOP | SWT.RIGHT);
 
 		txtPropertyName = new Text(this, SWT.BORDER);
@@ -90,14 +91,14 @@ public class GroupFeatureProperty extends Composite {
 				((CompositeToHoldSmallerUIElements) getParent().getParent()).notifyListeners(SWT.Selection, null);
 			}
 		});
-		
+
 		Label lblNewLabel = new Label(this, SWT.NONE);
 		if (featureProperty.getPropertyType().contains("=")) {
 			lblNewLabel.setText(Constants.FEATURE_PROPERTY_TYPE_REFERENCE_RELATION);
 		} else {
 			lblNewLabel.setText(Constants.FEATURE_PROPERTY_TYPE_RELATION);
 		}
-		
+
 		if (!showRemoveButton) {
 
 			txtPropertyType = new Text(this, SWT.BORDER);
@@ -174,7 +175,7 @@ public class GroupFeatureProperty extends Composite {
 			}
 
 		}
-		
+
 		if (showRemoveButton) {
 
 			Button btnRemove = new Button(this, SWT.NONE);
@@ -183,8 +184,7 @@ public class GroupFeatureProperty extends Composite {
 
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					((CompositeToHoldSmallerUIElements) getParent().getParent())
-						.removeFeatureProperty(getFeatureProperty());
+					((CompositeToHoldSmallerUIElements) getParent().getParent()).removeFeatureProperty(getFeatureProperty());
 					((CompositeToHoldSmallerUIElements) getParent().getParent()).notifyListeners(SWT.Selection, null);
 					((CompositeToHoldSmallerUIElements) getParent().getParent()).updateClaferContainer();
 				}
@@ -205,7 +205,8 @@ public class GroupFeatureProperty extends Composite {
 	}
 
 	/**
-	 * @param featureProperty the featureProperty to set
+	 * @param featureProperty
+	 *        the featureProperty to set
 	 */
 	private void setFeatureProperty(ClaferProperty featureProperty) {
 		this.featureProperty = featureProperty;

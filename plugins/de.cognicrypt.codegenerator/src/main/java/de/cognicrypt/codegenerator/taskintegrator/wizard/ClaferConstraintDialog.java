@@ -90,6 +90,7 @@ public class ClaferConstraintDialog extends Dialog {
 
 	/**
 	 * Create contents of the dialog.
+	 * 
 	 * @param parent
 	 */
 	@Override
@@ -185,6 +186,7 @@ public class ClaferConstraintDialog extends Dialog {
 
 	/**
 	 * Create contents of the button bar.
+	 * 
 	 * @param parent
 	 */
 	@Override

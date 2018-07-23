@@ -83,7 +83,8 @@ public class ResultsCCUIListener implements ICrySLResultsListener {
 		} catch (final ClassNotFoundException e) {
 			Activator.getDefault().logError(e);
 		}
-		//Fall-back path when retrieval of actual path fails. If the statement below fails, it should be left untouched as the actual bug is above.
+		// Fall-back path when retrieval of actual path fails. If the statement below
+		// fails, it should be left untouched as the actual bug is above.
 		return this.currentProject.getFile("src/" + className.getName().replace(".", "/") + ".java");
 	}
 
@@ -99,11 +100,12 @@ public class ResultsCCUIListener implements ICrySLResultsListener {
 
 	@Override
 	public void onSeedTimeout(final Node<Statement, Val> arg0) {
-		//Nothing
+		// Nothing
 	}
 
 	@Override
-	public void collectedValues(AnalysisSeedWithSpecification arg0, Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
+	public void collectedValues(AnalysisSeedWithSpecification arg0,
+			Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
 		// Nothing
 	}
 

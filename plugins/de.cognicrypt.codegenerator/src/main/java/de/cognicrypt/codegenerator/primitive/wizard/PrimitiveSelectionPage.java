@@ -34,6 +34,7 @@ public class PrimitiveSelectionPage extends WizardPage {
 
 	private ComboViewer primitiveComboSelection;
 	private Composite container;
+
 	/**
 	 * Create the wizard.
 	 */
@@ -59,39 +60,39 @@ public class PrimitiveSelectionPage extends WizardPage {
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
-		
-				Label AlgorithmType = new Label(container, SWT.NONE);
-				AlgorithmType.setText("What kind of algorithm do you want to integrate?       ");
-		new Label(container, SWT.NONE);
-		
-				this.primitiveComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
-				Combo combo = primitiveComboSelection.getCombo();
-				GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-				gd_combo.widthHint = 140;
-				combo.setLayoutData(gd_combo);
-				this.primitiveComboSelection.setContentProvider(ArrayContentProvider.getInstance());
-				this.primitiveComboSelection.setLabelProvider(new LabelProvider() {
 
-					@Override
-					public String getText(final Object primitive) {
-						if (primitive instanceof Primitive) {
-							final Primitive current = (Primitive) primitive;
-							return current.getName();
-						}
-						return super.getText(primitive);
-					}
-				});
-				// add primitives in combo
-				this.primitiveComboSelection.setInput(primitives);
-				
-						this.primitiveComboSelection.addSelectionChangedListener(event -> {
-							final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-							final Primitive selectedPrimitive = (Primitive) selection.getFirstElement();
-				
-							PrimitiveSelectionPage.this.primitiveComboSelection.refresh();
-							setPageComplete(selectedPrimitive != null);
-						});
-						this.primitiveComboSelection.setSelection(new StructuredSelection(primitives.get(0)));
+		Label AlgorithmType = new Label(container, SWT.NONE);
+		AlgorithmType.setText("What kind of algorithm do you want to integrate?       ");
+		new Label(container, SWT.NONE);
+
+		this.primitiveComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
+		Combo combo = primitiveComboSelection.getCombo();
+		GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_combo.widthHint = 140;
+		combo.setLayoutData(gd_combo);
+		this.primitiveComboSelection.setContentProvider(ArrayContentProvider.getInstance());
+		this.primitiveComboSelection.setLabelProvider(new LabelProvider() {
+
+			@Override
+			public String getText(final Object primitive) {
+				if (primitive instanceof Primitive) {
+					final Primitive current = (Primitive) primitive;
+					return current.getName();
+				}
+				return super.getText(primitive);
+			}
+		});
+		// add primitives in combo
+		this.primitiveComboSelection.setInput(primitives);
+
+		this.primitiveComboSelection.addSelectionChangedListener(event -> {
+			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+			final Primitive selectedPrimitive = (Primitive) selection.getFirstElement();
+
+			PrimitiveSelectionPage.this.primitiveComboSelection.refresh();
+			setPageComplete(selectedPrimitive != null);
+		});
+		this.primitiveComboSelection.setSelection(new StructuredSelection(primitives.get(0)));
 	}
 
 	public Primitive getSelectedPrimitive() {

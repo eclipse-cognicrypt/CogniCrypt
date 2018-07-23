@@ -398,21 +398,21 @@ public class XmlRegionAnalyzerTests {
 		testRegionsContiguity(regions, sb.toString());
 
 		assertTrue(regions.size() == 7);
-		assertTrue(regions.get(0).getXmlRegionType() ==  XmlRegionType.MARKUP);
-		assertTrue(regions.get(0).getStart() ==  0);
-		assertTrue(regions.get(0).getEnd() ==  5);
+		assertTrue(regions.get(0).getXmlRegionType() == XmlRegionType.MARKUP);
+		assertTrue(regions.get(0).getStart() == 0);
+		assertTrue(regions.get(0).getEnd() == 5);
 
-		assertTrue(regions.get(2).getXmlRegionType() ==  XmlRegionType.ATTRIBUTE);
-		assertTrue(regions.get(2).getStart() ==  6);
-		assertTrue(regions.get(2).getEnd() ==  10);
+		assertTrue(regions.get(2).getXmlRegionType() == XmlRegionType.ATTRIBUTE);
+		assertTrue(regions.get(2).getStart() == 6);
+		assertTrue(regions.get(2).getEnd() == 10);
 
-		assertTrue(regions.get(3).getXmlRegionType() ==  XmlRegionType.ATTRIBUTE_VALUE);
-		assertTrue(regions.get(3).getStart() ==  10);
-		assertTrue(regions.get(3).getEnd() ==  19);
+		assertTrue(regions.get(3).getXmlRegionType() == XmlRegionType.ATTRIBUTE_VALUE);
+		assertTrue(regions.get(3).getStart() == 10);
+		assertTrue(regions.get(3).getEnd() == 19);
 
-		assertTrue(regions.get(4).getXmlRegionType() ==  XmlRegionType.WHITESPACE);
-		assertTrue(regions.get(5).getXmlRegionType() ==  XmlRegionType.ATTRIBUTE);
-		assertTrue(regions.get(5).getStart() ==  20);
+		assertTrue(regions.get(4).getXmlRegionType() == XmlRegionType.WHITESPACE);
+		assertTrue(regions.get(5).getXmlRegionType() == XmlRegionType.ATTRIBUTE);
+		assertTrue(regions.get(5).getStart() == 20);
 		assertTrue(regions.get(5).getEnd() == 24);
 
 		assertTrue(regions.get(6).getXmlRegionType() == XmlRegionType.ATTRIBUTE_VALUE);

@@ -60,9 +60,9 @@ import de.cognicrypt.core.Constants;
 
 public class FileUtilities {
 
-	private String taskName;	
+	private String taskName;
 	private StringBuilder errors; // Maintain all the errors to display them on the wizard.
-	
+
 	/**
 	 * The class needs to be initialized with a task name, as it is used extensively in the methods.
 	 * 
@@ -114,7 +114,7 @@ public class FileUtilities {
 		writeJSONFile(questions);
 		return getErrors().toString();
 	}
-	
+
 	private void writeHelpFile(String helpFileContents) {
 		File xmlFile = new File(CodeGenUtils.getResourceFromWithin(Constants.HELP_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XML_EXTENSION);
 
@@ -145,7 +145,7 @@ public class FileUtilities {
 	 * @param file
 	 */
 	public String writeFiles(File cfrFileLocation, File jsonFileLocation, File xslFileLocation, File customLibLocation, File helpLocation) {
-		
+
 		boolean isCFRFileValid = validateCFRFile(cfrFileLocation);
 		boolean isJSONFileValid = validateJSONFile(jsonFileLocation);
 		boolean isXSLFileValid = validateXSLFile(xslFileLocation);
@@ -213,6 +213,7 @@ public class FileUtilities {
 
 	/**
 	 * Validate the provided JAR file before copying it to the target location.
+	 * 
 	 * @param customLibLocation
 	 * @return a boolean value for the validity of the file.
 	 */
@@ -240,12 +241,13 @@ public class FileUtilities {
 
 	/**
 	 * Validate the provided XSL file before copying it to the target location.
+	 * 
 	 * @param xslFileLocation
 	 * @return a boolean value for the validity of the file.
 	 */
 	private boolean validateXSLFile(File xslFileLocation) {
 		try {
-			TransformerFactory.newInstance().newTransformer(new StreamSource(xslFileLocation));			
+			TransformerFactory.newInstance().newTransformer(new StreamSource(xslFileLocation));
 		} catch (TransformerConfigurationException e) {
 			Activator.getDefault().logError(e);
 			appendFileErrors(xslFileLocation.getName());
@@ -256,25 +258,27 @@ public class FileUtilities {
 
 	/**
 	 * Validate the provided JSON file before copying it to the target location.
+	 * 
 	 * @param jsonFileLocation
 	 * @return a boolean value for the validity of the file.
 	 */
-	private boolean validateJSONFile(File jsonFileLocation) {			
+	private boolean validateJSONFile(File jsonFileLocation) {
 		Gson gson = new Gson();
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(jsonFileLocation));
-            gson.fromJson(reader, Object.class);
-            reader.close();            
-            return true;
-        } catch (com.google.gson.JsonSyntaxException | IOException ex) {
+			gson.fromJson(reader, Object.class);
+			reader.close();
+			return true;
+		} catch (com.google.gson.JsonSyntaxException | IOException ex) {
 			Activator.getDefault().logError(ex);
 			appendFileErrors(jsonFileLocation.getName());
-            return false;
-        }
+			return false;
+		}
 	}
 
 	/**
 	 * Validate the provided CFR file before copying it to the target location.
+	 * 
 	 * @param cfrFileLocation
 	 * @return a boolean value for the validity of the file.
 	 */
@@ -295,34 +299,34 @@ public class FileUtilities {
 	}
 
 	/**
-	 * Copy the given file to the appropriate location. 
+	 * Copy the given file to the appropriate location.
+	 * 
 	 * @param existingFileLocation
-	 */	
+	 */
 	private void copyFileFromPath(File existingFileLocation) {
 		if (existingFileLocation.exists() && !existingFileLocation.isDirectory()) {
 			File targetDirectory = null;
 			try {
-				
-				if(existingFileLocation.getPath().endsWith(Constants.CFR_EXTENSION)) {
+
+				if (existingFileLocation.getPath().endsWith(Constants.CFR_EXTENSION)) {
 					targetDirectory = new File(CodeGenUtils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.CFR_EXTENSION);
 				} else if (existingFileLocation.getPath().endsWith(Constants.JS_EXTENSION)) {
 					targetDirectory = new File(CodeGenUtils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.JS_EXTENSION);
-				} else if(existingFileLocation.getPath().endsWith(Constants.JSON_EXTENSION)) {
+				} else if (existingFileLocation.getPath().endsWith(Constants.JSON_EXTENSION)) {
 					targetDirectory = new File(CodeGenUtils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.JSON_EXTENSION);
-				} else if(existingFileLocation.getPath().endsWith(Constants.XSL_EXTENSION)) {
+				} else if (existingFileLocation.getPath().endsWith(Constants.XSL_EXTENSION)) {
 					targetDirectory = new File(CodeGenUtils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XSL_EXTENSION);
 				} else if (existingFileLocation.getPath().endsWith(Constants.XML_EXTENSION)) {
 					targetDirectory = new File(CodeGenUtils.getResourceFromWithin(Constants.HELP_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XML_EXTENSION);
-				}
-				else {
+				} else {
 					throw new Exception("Unknown file type.");
 				}
-			
+
 				if (targetDirectory != null) {
 					Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
 				}
 
-			} catch (Exception e) {				
+			} catch (Exception e) {
 				Activator.getDefault().logError(e);
 				getErrors().append("There was a problem copying file ");
 				getErrors().append(existingFileLocation.getName());
@@ -346,33 +350,35 @@ public class FileUtilities {
 			}
 		}
 	}
-	
+
 	/**
 	 * Update the task.json file with the new Task.
-	 * @param task the Task to be added.
+	 * 
+	 * @param task
+	 *        the Task to be added.
 	 */
-	public void writeTaskToJSONFile(Task task){
-		
+	public void writeTaskToJSONFile(Task task) {
+
 		BufferedReader reader = null;
 		BufferedWriter writer = null;
 		final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		try {
 			reader = new BufferedReader(new FileReader(CodeGenUtils.getResourceFromWithin(Constants.jsonTaskFile)));
-			List<Task> tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {}.getType());	
+			List<Task> tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {}.getType());
 			// Add the new task to the list.
 			tasks.add(task);
 			reader.close();
-			
+
 			writer = new BufferedWriter(new FileWriter(CodeGenUtils.getResourceFromWithin(Constants.jsonTaskFile)));
 			gson.toJson(tasks, new TypeToken<List<Task>>() {}.getType(), writer);
 			writer.close();
-			
+
 		} catch (IOException e) {
 			Activator.getDefault().logError(e);
 			getErrors().append("There was a problem updating the task file.\n");
 		}
 	}
-		
+
 	/**
 	 * 
 	 * @param claferModel
@@ -388,7 +394,7 @@ public class FileUtilities {
 			getErrors().append("There was a problem writing the Clafer model.\n");
 		}
 	}
-		
+
 	/**
 	 * 
 	 * @param questions
@@ -399,7 +405,7 @@ public class FileUtilities {
 	 * @throws TransformerException
 	 */
 	private void writeJSONFile(ArrayList<Question> questions) {
-		
+
 		SegregatesQuestionsIntoPages pageContent = new SegregatesQuestionsIntoPages(questions);
 		ArrayList<Page> pages = pageContent.getPages();
 		boolean taskHasPageHelpContent = false;
@@ -424,11 +430,11 @@ public class FileUtilities {
 		File jsonFile = new File(CodeGenUtils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH), getTaskName() + Constants.JSON_EXTENSION);
 
 		try {
-		Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
-		//creates the file
+			Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
+			//creates the file
 			jsonFile.createNewFile();
 
-		//creates the writer object for json file  
+			//creates the writer object for json file  
 			FileWriter writerForJsonFile = new FileWriter(jsonFile);
 
 			//write the data into the .json file  
@@ -441,14 +447,14 @@ public class FileUtilities {
 			jsonFile.delete();
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param xslFileContents
 	 */
 	private void writeXSLFile(String xslFileContents) {
 		File xslFile = new File(CodeGenUtils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH), getTrimmedTaskName() + Constants.XSL_EXTENSION);
-		
+
 		try {
 			PrintWriter writer = new PrintWriter(xslFile);
 			writer.println(xslFileContents);
@@ -458,13 +464,13 @@ public class FileUtilities {
 			Activator.getDefault().logError(e);
 			getErrors().append("There was a problem wrting the XSL data.\n");
 		}
-		
+
 		if (!validateXSLFile(xslFile)) {
 			xslFile.delete();
 			getErrors().append("The XSL data is invalid.\n");
 		}
 	}
-	
+
 	public void updateThePluginXMLFileWithHelpData(String machineReadableTaskName) {
 		File pluginXMLFile = CodeGenUtils.getResourceFromWithin(Constants.PLUGIN_XML_FILE);
 		if (!pluginXMLFile.exists()) {
@@ -502,12 +508,13 @@ public class FileUtilities {
 
 	/**
 	 * Return the name of that task that is set for the file writes..
+	 * 
 	 * @return
 	 */
 	private String getTaskName() {
 		return taskName;
 	}
-	
+
 	/**
 	 * get machine-readable task name
 	 * 
@@ -520,6 +527,7 @@ public class FileUtilities {
 	/**
 	 * 
 	 * Set the name of the task that is being written to File. The names of the result files are set based on the provided task name.
+	 * 
 	 * @param taskName
 	 */
 	private void setTaskName(String taskName) {
@@ -542,5 +550,3 @@ public class FileUtilities {
 	}
 
 }
-
-

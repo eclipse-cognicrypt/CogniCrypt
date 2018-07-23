@@ -25,8 +25,8 @@ public class CompositeForCodeTab extends Composite {
 
 	public CompositeForCodeTab(Composite parent, int style, Answer answer) {
 		super(parent, style);
-		
-	    // Non-editable text box containing answer value
+
+		// Non-editable text box containing answer value
 		Text txtBoxAnswers = new Text(this, SWT.BORDER);
 		txtBoxAnswers.setBounds(5, 5, 210, 25);
 		txtBoxAnswers.setEditable(false);
@@ -36,7 +36,7 @@ public class CompositeForCodeTab extends Composite {
 		Text txtValue = new Text(this, SWT.BORDER);
 		txtValue.setBounds(220, 5, 200, 25);
 		txtValue.setVisible(true);
-		
+
 		CodeDependency codeDependency = new CodeDependency();
 
 		if (answer.getCodeDependencies() != null) {
@@ -60,10 +60,8 @@ public class CompositeForCodeTab extends Composite {
 		codeDependencies.add(codeDependency);
 		answer.setCodeDependencies(codeDependencies);
 
-
-		
 	}
-	
+
 	@Override
 	protected void checkSubclass() {
 		// To disable the check that prevents subclassing of SWT components

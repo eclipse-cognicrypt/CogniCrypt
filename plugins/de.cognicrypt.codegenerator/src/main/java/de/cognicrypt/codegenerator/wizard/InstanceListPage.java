@@ -189,7 +189,7 @@ public class InstanceListPage extends WizardPage {
 
 				InstanceListPage.this.instanceDetails.setText(defaultAlgorithmPage.getInstanceProperties(tempAlgorithmGroup.get(tempKey)));
 				setCurrentIndex(tempIndex);
-				algorithmVariation.setText("       "+ "  Variation  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
+				algorithmVariation.setText("       " + "  Variation  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
 				if (combo.getSelectionIndex() == 0 && getCurrentIndex() == 1) {
 					//hide the help assist and the text if the selected algorithm is not the default algorithm
 					deco.show();
@@ -227,7 +227,7 @@ public class InstanceListPage extends WizardPage {
 				setValue(tempAlgorithmGroup.get(tempKey));
 				InstanceListPage.this.instanceDetails.setText(defaultAlgorithmPage.getInstanceProperties(tempAlgorithmGroup.get(tempKey)));
 				setCurrentIndex(tempIndex);
-				algorithmVariation.setText("       " +"  Variation  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
+				algorithmVariation.setText("       " + "  Variation  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
 
 				if (combo.getSelectionIndex() == 0 && getCurrentIndex() == 1) {
 					//hide the help assist and the text if the selected algorithm is not the default algorithm
@@ -273,7 +273,7 @@ public class InstanceListPage extends WizardPage {
 			setValue(tempAlgorithmGroup.get(selectedAlgorithm));
 			InstanceListPage.this.instanceDetails.setText(defaultAlgorithmPage.getInstanceProperties(tempAlgorithmGroup.get(selectedAlgorithm)));
 			setCurrentIndex(1);
-			algorithmVariation.setText("       "+ "  Variation  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
+			algorithmVariation.setText("       " + "  Variation  " + (getCurrentIndex() + " / " + String.format("%d       ", tempAlgorithmGroup.size())));
 
 			if (combo.getSelectionIndex() == 0 && getCurrentIndex() == 1) {
 				//hide the help assist and the text if the selected algorithm is not the default algorithm
@@ -341,12 +341,12 @@ public class InstanceListPage extends WizardPage {
 				//if the user does not have any class opened in his editor, then one side of the compare editor will be empty.
 				if (getCurrentEditorContent() == "") {
 					CompareUI.openCompareDialog(new CompareInput(getCurrentEditorContent(), compileCodePreview()));
-				} else {					
+				} else {
 					String currentlyOpenPart = getCurrentEditorContent();
 					int position = currentlyOpenPart.indexOf("{");
-					currentlyOpenPart = new StringBuilder(currentlyOpenPart).insert(position + 1 , "\n" + compileCodePreview()).toString();
+					currentlyOpenPart = new StringBuilder(currentlyOpenPart).insert(position + 1, "\n" + compileCodePreview()).toString();
 					CompareUI.openCompareDialog(new CompareInput(getCurrentEditorContent(), currentlyOpenPart));
-				}												 
+				}
 			}
 		});
 
@@ -385,29 +385,30 @@ public class InstanceListPage extends WizardPage {
 		sc.setMinSize(this.control.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		setControl(sc);
 	}
-	
+
 	/**
-	 * Get the code from the user's open file. 
+	 * Get the code from the user's open file.
 	 * 
-	 * @return code in the file 
+	 * @return code in the file
 	 */
-	public String getCurrentEditorContent() {		
+	public String getCurrentEditorContent() {
 		IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
 		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {
-			Activator.getDefault().logInfo("Could not open access the editor of the file or there are no files open. Therefore,  the 'Old Source' part remains empty and the newly generated code appears in the 'Modified Source' part.");
+			Activator.getDefault().logInfo(
+				"Could not open access the editor of the file or there are no files open. Therefore,  the 'Old Source' part remains empty and the newly generated code appears in the 'Modified Source' part.");
 			return "";
 		}
 		ITextEditor currentlyOpenEditor = (ITextEditor) currentlyOpenPart;
 		IDocument currentlyOpenDocument = currentlyOpenEditor.getDocumentProvider().getDocument(currentlyOpenEditor.getEditorInput());
 		final String docContent = currentlyOpenDocument.get();
-		return docContent;		
+		return docContent;
 	}
 
 	/**
 	 * Assembles code-preview text.
 	 * 
 	 * @return code snippet
-	 * @throws BadLocationException 
+	 * @throws BadLocationException
 	 */
 	public String compileCodePreview() {
 		final CodeGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(), this.taskSelectionPage.getSelectedTask().getXslFile());
@@ -423,8 +424,7 @@ public class InstanceListPage extends WizardPage {
 		}
 
 		final Path file = new File(temporaryOutputFile).toPath();
-		try (InputStream in = Files.newInputStream(file);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 			final StringBuilder preview = new StringBuilder();
 			String line = null;
 			// If no file is open in user's editor, show the preview of newly generated class
@@ -434,7 +434,7 @@ public class InstanceListPage extends WizardPage {
 						preview.append(line);
 						preview.append(Constants.lineSeparator);
 					}
-				}			
+				}
 				return preview.toString().replaceAll("(?m)^[ \t]*\r?\n", "");
 			}
 			// If a file is open in user's editor, show the preview of newly generated lines located inside the user's open file.
@@ -442,7 +442,7 @@ public class InstanceListPage extends WizardPage {
 				while ((line = reader.readLine()) != null) {
 					if (!line.startsWith("package") && !line.contains("class") && !line.startsWith("import")) {
 						preview.append(line);
-						preview.append(Constants.lineSeparator);						
+						preview.append(Constants.lineSeparator);
 					}
 				}
 				String truncatedPreview = preview.toString();
@@ -453,8 +453,8 @@ public class InstanceListPage extends WizardPage {
 			}
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
-		} 
-		return "";		
+		}
+		return "";
 	}
 
 	public TaskSelectionPage getTaskSelectionPage() {

@@ -36,7 +36,7 @@ import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 import de.cognicrypt.core.Constants;
 
 public class XsltWriterTest {
-	
+
 	XsltWriter xslt;
 	DocumentBuilderFactory docFactory;
 	DocumentBuilder docBuilder;
@@ -45,6 +45,7 @@ public class XsltWriterTest {
 	File xmlFile;
 	File xslFile = CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder + "xslTest.xsl");
 	File resultTest;
+
 	@Before
 	public void setUp() {
 		try {
@@ -58,27 +59,26 @@ public class XsltWriterTest {
 			e.printStackTrace();
 		}
 	}
-	
-	@Test 
+
+	@Test
 	public void xmlTransformTest() throws TransformerException, ParserConfigurationException, TransformerFactoryConfigurationError, SAXException, IOException {
 		xslt.transformXml(xmlFile);
 		xslt.transformXsl(xslFile, xmlFile);
 		resultTest = CodeGenUtils.getResourceFromWithin(Constants.primitivesPath + Constants.innerFileSeparator + "transformedFile.txt");
 		String content = readFile(resultTest.getAbsolutePath());
-		assertEquals(content,"this test is a success.");
-		assertNotEquals(xmlFile.length(),0);
-		
-		
+		assertEquals(content, "this test is a success.");
+		assertNotEquals(xmlFile.length(), 0);
+
 	}
+
 	@After
 	public void deleteFiles() {
 		xmlFile.delete();
 		resultTest.delete();
 	}
-	static String readFile(String path) 
-		  throws IOException 
-		{
-		  byte[] encoded = Files.readAllBytes(Paths.get(path));
-		  return new String(encoded);
-		}
+
+	static String readFile(String path) throws IOException {
+		byte[] encoded = Files.readAllBytes(Paths.get(path));
+		return new String(encoded);
+	}
 }

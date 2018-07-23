@@ -28,7 +28,6 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 import de.cognicrypt.core.Constants;
 
-
 public class DefaultFeatureSetTest {
 
 	public static final String binClaferFolder = Constants.CFR_BIN_FILE_DIRECTORY_PATH;

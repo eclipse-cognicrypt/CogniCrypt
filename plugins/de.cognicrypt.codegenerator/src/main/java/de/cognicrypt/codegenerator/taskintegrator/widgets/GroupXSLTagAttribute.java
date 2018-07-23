@@ -29,29 +29,31 @@ import org.eclipse.swt.widgets.Group;
 import de.cognicrypt.codegenerator.taskintegrator.controllers.Validator;
 import de.cognicrypt.codegenerator.taskintegrator.models.XSLAttribute;
 
-
 public class GroupXSLTagAttribute extends Group {
-	private XSLAttribute selectedAttribute;	
+
+	private XSLAttribute selectedAttribute;
 	private Combo cmbAttributeType;
 	private Combo cmbAttributeName;
 
 	/**
 	 * Create the composite.
+	 * 
 	 * @param parent
 	 * @param style
 	 */
 	public GroupXSLTagAttribute(Composite parent, int style, boolean showRemoveButton, XSLAttribute attributeParam, SortedSet<String> possibleCfrFeatures) {
 		super(parent, style);
-		
+
 		// Set the attribute object first.
 		setSelectedAttribute(attributeParam);
 		setLayout(new GridLayout(3, false));
-		
+
 		cmbAttributeType = new Combo(this, SWT.READ_ONLY);
 		GridData gd_cmbAttributeType = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
 		gd_cmbAttributeType.minimumWidth = 200;
 		cmbAttributeType.setLayoutData(gd_cmbAttributeType);
 		cmbAttributeType.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				getSelectedAttribute().setXSLAttributeName(cmbAttributeType.getText());
@@ -86,53 +88,55 @@ public class GroupXSLTagAttribute extends Group {
 				getSelectedAttribute().setXSLAttributeData(Validator.getValidXMLString(cmbAttributeName.getText()));
 			}
 		});
-		
-		if(showRemoveButton){
+
+		if (showRemoveButton) {
 			Button btnRemove = new Button(this, SWT.NONE);
 			btnRemove.addSelectionListener(new SelectionAdapter() {
+
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					((CompositeToHoldSmallerUIElements) getParent().getParent()).removeXSLAttribute((getSelectedAttribute()));
-					((CompositeToHoldSmallerUIElements) getParent().getParent()).updateClaferContainer(); 
+					((CompositeToHoldSmallerUIElements) getParent().getParent()).updateClaferContainer();
 				}
 			});
 			btnRemove.setText("Remove");
 		}
-		
 
 	}
-	
+
 	/**
 	 * The attribute drop down needs to be updated after changes have been made to keep them consistent.
-	 * @param listOfPossibleAttributes represents the possible attributes based on the attributes already selected.
+	 * 
+	 * @param listOfPossibleAttributes
+	 *        represents the possible attributes based on the attributes already selected.
 	 */
-	public void updateAttributeDropDown(ArrayList<String> listOfPossibleAttributes){
-		if(listOfPossibleAttributes != null){
+	public void updateAttributeDropDown(ArrayList<String> listOfPossibleAttributes) {
+		if (listOfPossibleAttributes != null) {
 			cmbAttributeType.removeAll();
-			
+
 			// If the current selected attribute does not have an empty name, add the attribute to the dropdown.
-			if(!getSelectedAttribute().getXSLAttributeName().equals("")){
+			if (!getSelectedAttribute().getXSLAttributeName().equals("")) {
 				cmbAttributeType.add(getSelectedAttribute().getXSLAttributeName());
 			}
-			
+
 			// Add the list of possible attributes to the drop down.
-			for(String attribute : listOfPossibleAttributes){
+			for (String attribute : listOfPossibleAttributes) {
 				cmbAttributeType.add(attribute);
 			}
-			
+
 			// If the current selection is empty select the first one by default. 
-			if(getSelectedAttribute().getXSLAttributeName().equals("")){
+			if (getSelectedAttribute().getXSLAttributeName().equals("")) {
 				cmbAttributeType.select(0);
 			} else {
 				// Otherwise get the index of the stored attribute name from the list of elements and select it.
-				for(int i=0; i<cmbAttributeType.getItems().length;i++){
+				for (int i = 0; i < cmbAttributeType.getItems().length; i++) {
 					String eq = getSelectedAttribute().getXSLAttributeName();
 					if (cmbAttributeType.getItems()[i].equals(eq)) {
 						cmbAttributeType.select(i);
 					}
 				}
 			}
-			
+
 			cmbAttributeType.notifyListeners(SWT.Selection, new Event());
 		}
 
@@ -151,7 +155,8 @@ public class GroupXSLTagAttribute extends Group {
 	}
 
 	/**
-	 * @param selectedAttribute the selectedAttribute to set
+	 * @param selectedAttribute
+	 *        the selectedAttribute to set
 	 */
 	private void setSelectedAttribute(XSLAttribute selectedAttribute) {
 		this.selectedAttribute = selectedAttribute;

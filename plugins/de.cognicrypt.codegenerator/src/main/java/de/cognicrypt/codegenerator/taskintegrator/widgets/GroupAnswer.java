@@ -40,7 +40,7 @@ public class GroupAnswer extends Group {
 	public GroupAnswer(Composite parent, int style, Answer answerParam, boolean showRemoveButton) {
 		super(parent, style);
 		setAnswer(answerParam);
-		
+
 		txtAnswer = new Text(this, SWT.BORDER);
 		if (answer.getValue() != null) {
 			txtAnswer.setText(answer.getValue());
@@ -127,7 +127,7 @@ public class GroupAnswer extends Group {
 
 			});
 		}
-		
+
 	}
 
 	/**
@@ -138,8 +138,8 @@ public class GroupAnswer extends Group {
 	 *//**
 		 * set the answer text
 		 *//*
-		 * public void setAnswerValue(){ answer.setValue(this.retrieveAnswer()); }
-		 */
+			 * public void setAnswerValue(){ answer.setValue(this.retrieveAnswer()); }
+			 */
 
 	@Override
 	protected void checkSubclass() {

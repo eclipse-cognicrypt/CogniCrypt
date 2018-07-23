@@ -25,7 +25,6 @@ import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.question.QuestionsJSONReaderTI;
 import de.cognicrypt.core.Constants;
 
-
 public class QuestionAndPageModelTest {
 
 	public static final String testQuestionFileFolder = "src/test/resources/taskintegrator/testQuestionsTI/testQuestion1.json";
@@ -133,7 +132,7 @@ public class QuestionAndPageModelTest {
 	/**
 	 * This method tests the Page model. This method should always assert success.
 	 */
-	
+
 	@Test
 	public void testPageModel() {
 		page.setId(0);
@@ -153,7 +152,7 @@ public class QuestionAndPageModelTest {
 		ArrayList<Question> questions = new ArrayList<>();
 		questions.add(qstn);
 		page.setContent(questions);
-		
+
 		assertEquals(page.getId(), filePages.get(0).getId());
 		assertEquals(page.getContent().get(0).getQuestionText(), filePages.get(0).getContent().get(0).getQuestionText());
 		assertEquals(page.getContent().get(0).getId(), filePages.get(0).getContent().get(0).getId());

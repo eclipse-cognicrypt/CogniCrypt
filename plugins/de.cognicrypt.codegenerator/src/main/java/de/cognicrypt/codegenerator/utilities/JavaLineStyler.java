@@ -128,7 +128,7 @@ public class JavaLineStyler implements LineStyleListener {
 		Vector<StyleRange> styles = new Vector<StyleRange>();
 		int token;
 		StyleRange lastStyle;
-		
+
 		// If the line is part of a block comment, create one style for the entire line.
 		if (inBlockComment(event.lineOffset, event.lineOffset + event.lineText.length())) {
 			styles.addElement(new StyleRange(event.lineOffset, event.lineText.length(), getColor(COMMENT), null));
@@ -239,5 +239,3 @@ public class JavaLineStyler implements LineStyleListener {
 		}
 	}
 }
-
-	

@@ -60,7 +60,6 @@ public class ClaferFeatureDialog extends Dialog {
 	private ControlDecoration decorationName;
 	private ControlDecoration decorationInheritance;
 
-
 	public ClaferFeatureDialog(Shell parentShell, ClaferFeature modifiableClaferFeature, ClaferModel claferModel) {
 		super(parentShell);
 		setShellStyle(SWT.RESIZE | SWT.CLOSE);
@@ -87,13 +86,14 @@ public class ClaferFeatureDialog extends Dialog {
 
 	/**
 	 * Create contents of the dialog.
+	 * 
 	 * @param parent
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new GridLayout(3, true));
-		
+
 		// restrict resizing the dialog below a minimum
 		getShell().setMinimumSize(520, 600);
 
@@ -274,6 +274,7 @@ public class ClaferFeatureDialog extends Dialog {
 
 	/**
 	 * Create contents of the button bar.
+	 * 
 	 * @param parent
 	 */
 	@Override

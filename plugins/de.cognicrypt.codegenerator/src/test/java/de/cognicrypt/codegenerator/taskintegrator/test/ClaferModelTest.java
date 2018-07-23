@@ -28,7 +28,6 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 import de.cognicrypt.core.Constants;
 
-
 public class ClaferModelTest {
 
 	public static final String testFileFolder = "src/test/resources/taskintegrator/";
@@ -231,7 +230,7 @@ public class ClaferModelTest {
 		featureProperties.add(new ClaferProperty("size", "int"));
 		cfrFeatureA.setFeatureProperties(featureProperties);
 		claferModel.add(cfrFeatureA);
-		
+
 		if (!claferModel.toBinary(testFileFolder + "serializationTest.tmp")) {
 			fail("Serialization failed");
 		}

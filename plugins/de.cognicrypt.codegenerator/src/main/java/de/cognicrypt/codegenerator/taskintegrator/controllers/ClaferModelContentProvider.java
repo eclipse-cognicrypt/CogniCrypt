@@ -20,17 +20,17 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 
 public class ClaferModelContentProvider implements ITreeContentProvider {
-	
+
 	private Predicate<? super ClaferFeature> featureFilter;
 	private Predicate<? super ClaferProperty> propertyFilter;
-	
+
 	/**
 	 * create a {@link ClaferModelContentProvider} that yields all of the content's elements
 	 */
 	public ClaferModelContentProvider() {
 		this(null, null);
 	}
-	
+
 	/**
 	 * create a {@link ClaferModelContentProvider} with filters attached
 	 * 
@@ -49,7 +49,7 @@ public class ClaferModelContentProvider implements ITreeContentProvider {
 		if (inputElement instanceof ClaferFeature) {
 			ClaferFeature inputFeature = (ClaferFeature) inputElement;
 			ArrayList<ClaferProperty> filteredProperties = (ArrayList<ClaferProperty>) inputFeature.getFeatureProperties().clone();
-			
+
 			if (propertyFilter != null) {
 				filteredProperties.removeIf(propertyFilter.negate());
 			}

@@ -71,7 +71,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private List<String> selectionValues;
 	private Text note;
 	private Composite container;
-	private int count=0;
+	private int count = 0;
 
 	public int getCurrentPageID() {
 		return this.page.getId();
@@ -194,7 +194,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		this.container = new Composite(sc, SWT.NONE);
-//		this.container.setBounds(10, 10, 450, 200);
+		//		this.container.setBounds(10, 10, 450, 200);
 		// Updated the number of columns to order the questions vertically.
 		final GridLayout layout = new GridLayout(1, false);
 
@@ -228,7 +228,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		final List<Answer> answers = question.getAnswers();
 		final Composite container = getPanel(parent);
 		final Label label = new Label(container, SWT.TOP | SWT.FILL | SWT.WRAP);
-		GridData gd_question= new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
+		GridData gd_question = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
 		gd_question.widthHint = 550;
 		label.setLayoutData(gd_question);
 		label.setText(question.getQuestionText());
@@ -296,7 +296,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					if (i == 0) {
 						Label label1 = new Label(container, SWT.NONE);
 						label1.setText(answers.get(i).getValue());
-					} 
+					}
 				}
 
 				final Scale scale = new Scale(container, SWT.HORIZONTAL);
@@ -321,8 +321,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(selectionNum));
 							question.setEnteredAnswer(answers.get(selectionNum));
 						}
-					
-						});
+
+					});
 				}
 
 				if (question.getEnteredAnswer() != null) {
@@ -349,18 +349,16 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 
 			case text:
-				
+
 				final Text inputField = new Text(container, SWT.BORDER);
 				inputField.setLayoutData(new GridData(100, SWT.DEFAULT));
 				inputField.setToolTipText(question.getTooltip());
-				
-				
+
 				ControlDecoration deco = new ControlDecoration(inputField, SWT.LEFT | SWT.TOP);
 				FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
 				deco.setImage(fieldDecoration.getImage());
 				deco.hide();
-			
-				
+
 				//Adding Browse Button for text field that expects a path as input
 				if (question.getTextType().equals(Constants.BROWSE)) {
 					inputField.setLayoutData(new GridData(300, SWT.DEFAULT));
@@ -375,19 +373,20 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							String path = fileDialog.open();
 							if (path != null) {
 								inputField.setText(path);
-								}
-							}							
-					});	
-					
-					inputField.addModifyListener(new ModifyListener(){
-					      public void modifyText(ModifyEvent event) {
-								count=0;
-					        // Get the widget whose text was modified
-					    	  if(!inputField.getText().endsWith(".jks")){
-					    		  setCount(count + 1);
-					    	  }
-					      }
-					    });
+							}
+						}
+					});
+
+					inputField.addModifyListener(new ModifyListener() {
+
+						public void modifyText(ModifyEvent event) {
+							count = 0;
+							// Get the widget whose text was modified
+							if (!inputField.getText().endsWith(".jks")) {
+								setCount(count + 1);
+							}
+						}
+					});
 
 					text(question, inputField);
 				} else if (question.getTextType().equals(Constants.PASSWORD)) {
@@ -448,7 +447,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 									e.doit = false;
 								}
 							} catch (NumberFormatException ex) {
-								if (!port.equals("")){
+								if (!port.equals("")) {
 									deco.show();
 									deco.showHoverText("Expected an integer < 65535");
 									e.doit = false;
@@ -467,7 +466,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							String currentText = ((Text) e.widget).getText();
 							String ip = currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
 							String[] ipAddress = ip.split("\\.");
-							int i= 0;
+							int i = 0;
 							try {
 								if (!ip.isEmpty()) {
 									deco.hide();
@@ -487,20 +486,20 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 									if (ip.endsWith("..") || ip.startsWith(".")) {
 										deco.show();
 										deco.showHoverText("Expected format 255.255.255.255");
-										e.doit=false;
+										e.doit = false;
 									}
-									if (ip.endsWith(".") || ip.endsWith("[0-9]") ) {
+									if (ip.endsWith(".") || ip.endsWith("[0-9]")) {
 										deco.show();
 										deco.showHoverText("Expected format 255.255.255.255");
 									}
-									if(i==4 && ip.endsWith(".")){
+									if (i == 4 && ip.endsWith(".")) {
 										deco.show();
 										deco.showHoverText("Expected format 255.255.255.255");
-										e.doit=false;											
+										e.doit = false;
 									}
 								}
 							} catch (NumberFormatException ex) {
-								if (!ip.equals("")){
+								if (!ip.equals("")) {
 									deco.show();
 									deco.showHoverText("Expected format 255.255.255.255");
 									e.doit = false;
@@ -801,7 +800,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		notePanel.pack();
 		setControl(parent);
 
-		this.note = new Text(notePanel, SWT.MULTI | SWT.WRAP );
+		this.note = new Text(notePanel, SWT.MULTI | SWT.WRAP);
 		this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.note.setText(question.getNote());
 		this.note.pack();
@@ -922,11 +921,12 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	public int getCount() {
 		return count;
 	}
+
 	public void setCount(int count) {
 		this.count = count;
 	}
 
-	public void text(Question question, Text inputField){
+	public void text(Question question, Text inputField) {
 		if (question.getEnteredAnswer() != null) {
 			final Answer a = question.getEnteredAnswer();
 			inputField.setText(a.getValue());
@@ -935,24 +935,23 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
 		}
 
-			
-				inputField.addModifyListener(e -> {
-					final Answer a = question.getDefaultAnswer();
-					final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?\\\\-])", "\\\\");
-					a.setValue(cleanedInput);
-					if (a.getCodeDependencies() != null) {
-						for (CodeDependency codeDep : a.getCodeDependencies()) {
-							codeDep.setValue(cleanedInput);
-						}
-					}
-					this.finish = !cleanedInput.isEmpty();
-					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
-					question.setEnteredAnswer(a);
-					BeginnerTaskQuestionPage.this.setPageComplete(isPageComplete());
-				});
-				if (question.getDefaultAnswer().getCodeDependencies() != null) {
-					inputField.setText(question.getDefaultAnswer().getCodeDependencies().get(0).getValue());
+		inputField.addModifyListener(e -> {
+			final Answer a = question.getDefaultAnswer();
+			final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?\\\\-])", "\\\\");
+			a.setValue(cleanedInput);
+			if (a.getCodeDependencies() != null) {
+				for (CodeDependency codeDep : a.getCodeDependencies()) {
+					codeDep.setValue(cleanedInput);
 				}
-	
+			}
+			this.finish = !cleanedInput.isEmpty();
+			BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
+			question.setEnteredAnswer(a);
+			BeginnerTaskQuestionPage.this.setPageComplete(isPageComplete());
+		});
+		if (question.getDefaultAnswer().getCodeDependencies() != null) {
+			inputField.setText(question.getDefaultAnswer().getCodeDependencies().get(0).getValue());
+		}
+
 	}
 }

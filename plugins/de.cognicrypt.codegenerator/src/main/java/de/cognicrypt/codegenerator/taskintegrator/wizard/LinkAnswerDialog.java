@@ -31,38 +31,40 @@ public class LinkAnswerDialog extends Dialog {
 
 	private Question question;
 	private ArrayList<Question> listOfAllQuestions;
-	
-	
+
 	/**
 	 * Create the dialog.
+	 * 
 	 * @param parentShell
-	 * @param question represents the current question
-	 * @param listOfAllQuestions 
+	 * @param question
+	 *        represents the current question
+	 * @param listOfAllQuestions
 	 */
 	public LinkAnswerDialog(Shell parent, Question question, ArrayList<Question> listOfAllQuestions) {
 		super(parent);
 		setQuestion(question);
 		setListOfAllQuestions(listOfAllQuestions);
 	}
-	
+
 	/**
 	 * Create contents of the dialog.
+	 * 
 	 * @param parent
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
-	
+
 		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new GridLayout(2, false));
 		getShell().setMinimumSize(700, 400);
-		
+
 		//executes when the question type is text
 		if (question.getElement().equals(Constants.GUIElements.text)) {
 			Label lblLinkAnswersTabMessage = new Label(container, SWT.NONE);
 			lblLinkAnswersTabMessage.setText("This type of question does not need to link answers");
 
 		} else {
-							
+
 			Label lblQuestion_1 = new Label(container, SWT.NONE);
 			lblQuestion_1.setText("Question:");
 
@@ -81,52 +83,55 @@ public class LinkAnswerDialog extends Dialog {
 			Label lblSelectQuestion = new Label(groupHeaderLinkAnswer, SWT.NONE);
 			lblSelectQuestion.setBounds(180, 5, 530, 25);
 			lblSelectQuestion.setText("Jump to question");
-			
-		
-		    // Scroll composite containing the needed widgets for linking the answers to other questions
-		
+
+			// Scroll composite containing the needed widgets for linking the answers to other questions
+
 			CompositeToHoldSmallerUIElements scrollCompositeForAnswers = new CompositeToHoldSmallerUIElements(container, SWT.NONE, null, false, null);
-			GridData gd_LinkAns= new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
+			GridData gd_LinkAns = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 			gd_LinkAns.heightHint = 200;
 			gd_LinkAns.widthHint = 700;
 			scrollCompositeForAnswers.setLayoutData(gd_LinkAns);
 			scrollCompositeForAnswers.setLayout(new GridLayout(2, false));
 
-			for(Answer answer: question.getAnswers()){
+			for (Answer answer : question.getAnswers()) {
 				scrollCompositeForAnswers.addElementsOfLinkAnswer(answer, question, listOfAllQuestions);
 			}
 		}
 
-		
 		return container;
 	}
-/**
- * 
- * @return the current question
- */
+
+	/**
+	 * 
+	 * @return the current question
+	 */
 	public Question getQuestion() {
 		return question;
 	}
-/**
- * sets the current question
- * @param question
- */
+
+	/**
+	 * sets the current question
+	 * 
+	 * @param question
+	 */
 	public void setQuestion(Question question) {
 		this.question = question;
 	}
-/**
- * 
- * @return listOfAllQuestions
- */
+
+	/**
+	 * 
+	 * @return listOfAllQuestions
+	 */
 	public ArrayList<Question> getListOfAllQuestions() {
 		return listOfAllQuestions;
 	}
-/**
- * sets the listOfAllQuestions
- * @param listOfAllQuestions
- */
+
+	/**
+	 * sets the listOfAllQuestions
+	 * 
+	 * @param listOfAllQuestions
+	 */
 	public void setListOfAllQuestions(ArrayList<Question> listOfAllQuestions) {
 		this.listOfAllQuestions = listOfAllQuestions;
 	}
 }
-	

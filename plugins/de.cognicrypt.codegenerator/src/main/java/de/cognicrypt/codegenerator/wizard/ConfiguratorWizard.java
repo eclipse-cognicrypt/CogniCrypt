@@ -103,7 +103,7 @@ public class ConfiguratorWizard extends Wizard {
 			return (!this.defaultAlgorithmPage.isDefaultAlgorithm());
 		}
 		return (pageName.equals(Constants.ALGORITHM_SELECTION_PAGE));
-		
+
 	}
 
 	private boolean checkifInUpdateRound() {
@@ -399,11 +399,7 @@ public class ConfiguratorWizard extends Wizard {
 		return ret;
 	}
 
-
-
-
 	public HashMap<Question, Answer> getConstraints() {
 		return this.constraints;
 	}
 }
-

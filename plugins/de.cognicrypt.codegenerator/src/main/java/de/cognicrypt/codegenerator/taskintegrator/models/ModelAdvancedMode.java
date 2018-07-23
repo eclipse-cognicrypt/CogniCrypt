@@ -20,7 +20,7 @@ import de.cognicrypt.core.Constants;
 
 public class ModelAdvancedMode {
 
-	private String nameOfTheTask;	
+	private String nameOfTheTask;
 	private File locationOfCustomLibrary;
 	private File locationOfClaferFile;
 	private File locationOfXSLFile;
@@ -32,15 +32,15 @@ public class ModelAdvancedMode {
 	private Task task;
 	private String description;
 	private String taskDescription;
-	
 
 	public ModelAdvancedMode() {
 		super();
 		this.task = new Task();
 	}
-	
+
 	/**
 	 * Generate a name for the task based on the input given by the user and return it.
+	 * 
 	 * @param stringTaskName
 	 * @return
 	 */
@@ -49,99 +49,115 @@ public class ModelAdvancedMode {
 		StringBuilder machineReadable = new StringBuilder();
 		if (stringTaskName.length() > 0) {
 			for (String string : split) {
-				machineReadable.append(string.substring(0,1).toUpperCase());
+				machineReadable.append(string.substring(0, 1).toUpperCase());
 				machineReadable.append(string.substring(1));
 			}
 		}
-		
+
 		return machineReadable.toString();
 	}
-	
+
 	/**
 	 * @return the nameOfTheTask
 	 */
 	public String getNameOfTheTask() {
 		return nameOfTheTask;
 	}
+
 	/**
-	 * @param nameOfTheTask the nameOfTheTask to set
+	 * @param nameOfTheTask
+	 *        the nameOfTheTask to set
 	 */
 	public void setNameOfTheTask(String nameOfTheTask) {
 		this.nameOfTheTask = getMachineReadableName(nameOfTheTask); // generate the task name that will be used as the machine readable identifier for the task.
 		this.setDescription(nameOfTheTask); // This is the human readable name entered by the user.
-	}	
+	}
+
 	/**
 	 * @return the locationOfCustomLibrary
 	 */
 	public File getLocationOfCustomLibrary() {
 		return locationOfCustomLibrary;
 	}
+
 	/**
-	 * @param locationOfCustomLibrary the locationOfCustomLibrary to set
+	 * @param locationOfCustomLibrary
+	 *        the locationOfCustomLibrary to set
 	 */
 	public void setLocationOfCustomLibrary(File locationOfCustomLibrary) {
 		this.locationOfCustomLibrary = locationOfCustomLibrary;
 	}
+
 	/**
 	 * @return the locationOfClaferFile
 	 */
 	public File getLocationOfClaferFile() {
 		return locationOfClaferFile;
 	}
+
 	/**
-	 * @param locationOfClaferFile the locationOfClaferFile to set
+	 * @param locationOfClaferFile
+	 *        the locationOfClaferFile to set
 	 */
 	public void setLocationOfClaferFile(File locationOfClaferFile) {
 		this.locationOfClaferFile = locationOfClaferFile;
 	}
+
 	/**
 	 * @return the locationOfXSLFile
 	 */
 	public File getLocationOfXSLFile() {
 		return locationOfXSLFile;
 	}
+
 	/**
-	 * @param locationOfXSLFile the locationOfXSLFile to set
+	 * @param locationOfXSLFile
+	 *        the locationOfXSLFile to set
 	 */
 	public void setLocationOfXSLFile(File locationOfXSLFile) {
 		this.locationOfXSLFile = locationOfXSLFile;
 	}
+
 	/**
 	 * @return the locationOfJSONFile
 	 */
 	public File getLocationOfJSONFile() {
 		return locationOfJSONFile;
 	}
+
 	/**
-	 * @param locationOfJSONFile the locationOfJSONFile to set
+	 * @param locationOfJSONFile
+	 *        the locationOfJSONFile to set
 	 */
 	public void setLocationOfJSONFile(File locationOfJSONFile) {
 		this.locationOfJSONFile = locationOfJSONFile;
 	}
+
 	/**
 	 * @return the isGuidedModeChosen
 	 */
 	public boolean isGuidedModeChosen() {
 		return isGuidedModeChosen;
 	}
+
 	/**
-	 * @param isGuidedModeChosen the isGuidedModeChosen to set
+	 * @param isGuidedModeChosen
+	 *        the isGuidedModeChosen to set
 	 */
 	public void setGuidedModeChosen(boolean isGuidedModeChosen) {
 		this.isGuidedModeChosen = isGuidedModeChosen;
 	}
-/*	*//**
-	 * @return the isGuidedModeForced
-	 *//*
-	public boolean isGuidedModeForced() {
-		return isGuidedModeForced;
-	}
-	*//**
-	 * @param isGuidedModeForced the isGuidedModeForced to set
-	 *//*
-	private void setGuidedModeForced(boolean isGuidedModeForced) {
-		this.isGuidedModeForced = isGuidedModeForced;
-	}*/
+	/*	*//**
+			 * @return the isGuidedModeForced
+			 */
+	/*
+	 * public boolean isGuidedModeForced() { return isGuidedModeForced; }
+	 *//**
+		 * @param isGuidedModeForced
+		 *        the isGuidedModeForced to set
+		 *//*
+			 * private void setGuidedModeForced(boolean isGuidedModeForced) { this.isGuidedModeForced = isGuidedModeForced; }
+			 */
 
 	/**
 	 * @return the isCustomLibraryRequired
@@ -151,17 +167,20 @@ public class ModelAdvancedMode {
 	}
 
 	/**
-	 * @param isCustomLibraryRequired the isCustomLibraryRequired to set
+	 * @param isCustomLibraryRequired
+	 *        the isCustomLibraryRequired to set
 	 */
 	public void setCustomLibraryRequired(boolean isCustomLibraryRequired) {
 		this.isCustomLibraryRequired = isCustomLibraryRequired;
 	}
+
 	/**
 	 * @return the task
 	 */
 	public Task getTask() {
 		return task;
 	}
+
 	/**
 	 * Generate the Task instance from the advanced mode model.
 	 */
@@ -170,30 +189,36 @@ public class ModelAdvancedMode {
 		task.setDescription(getDescription());
 		task.setModelFile(Constants.CFR_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.JS_EXTENSION);
 		task.setQuestionsJSONFile(Constants.JSON_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.JSON_EXTENSION);
-		task.setTaskDescription(getTaskDescription()== null ? "" : getTaskDescription());
+		task.setTaskDescription(getTaskDescription() == null ? "" : getTaskDescription());
 		task.setXslFile(Constants.XSL_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.XSL_EXTENSION);
 		task.setAdditionalResources(Constants.JAR_FILE_DIRECTORY_PATH + getNameOfTheTask());
 	}
+
 	/**
 	 * @return the description
 	 */
 	public String getDescription() {
 		return description;
 	}
+
 	/**
-	 * @param description the description to set
+	 * @param description
+	 *        the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	/**
 	 * @return the taskDescryption
 	 */
 	public String getTaskDescription() {
 		return taskDescription;
 	}
+
 	/**
-	 * @param taskDescription the taskDescryption to set
+	 * @param taskDescription
+	 *        the taskDescryption to set
 	 */
 	public void setTaskDescription(String taskDescription) {
 		this.taskDescription = taskDescription;
@@ -207,7 +232,8 @@ public class ModelAdvancedMode {
 	}
 
 	/**
-	 * @param locationOfHelpXMLFile the locationOfHelpXMLFile to set
+	 * @param locationOfHelpXMLFile
+	 *        the locationOfHelpXMLFile to set
 	 */
 	public void setLocationOfHelpXMLFile(File locationOfHelpXMLFile) {
 		this.locationOfHelpXMLFile = locationOfHelpXMLFile;

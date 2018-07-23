@@ -14,12 +14,11 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-
 public class Validation_ipAddress {
 
 	@Test
 	public void test() {
-		
+
 		Validation ipAddress = new Validation();
 		int Output1 = ipAddress.validationIpAddress("255.255.255.255");
 		assertEquals(0, Output1);
@@ -41,7 +40,7 @@ public class Validation_ipAddress {
 		assertEquals(1, Output9);
 		int Output10 = ipAddress.validationIpAddress("2.255.255.255");
 		assertEquals(0, Output10);
-	
+
 	}
 
 }

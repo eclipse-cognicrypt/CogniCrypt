@@ -85,7 +85,8 @@ public class Utils {
 		return javaProjects;
 	}
 
-	public static IResource findClassByName(final String className, final IProject currentProject) throws ClassNotFoundException {
+	public static IResource findClassByName(final String className, final IProject currentProject)
+			throws ClassNotFoundException {
 		try {
 			for (final IPackageFragment l : JavaCore.create(currentProject).getPackageFragments()) {
 				for (final ICompilationUnit cu : l.getCompilationUnits()) {
@@ -131,7 +132,8 @@ public class Utils {
 	}
 
 	/**
-	 * Overload for {@link Utils#getCurrentlyOpenFile(IEditorPart) getCurrentlyOpenFile(IEditor part)}
+	 * Overload for {@link Utils#getCurrentlyOpenFile(IEditorPart)
+	 * getCurrentlyOpenFile(IEditor part)}
 	 *
 	 * @return Currently open file.
 	 *
@@ -141,10 +143,10 @@ public class Utils {
 	}
 
 	/**
-	 * This method gets the file that is currently opened in the editor as an {@link IFile}.
+	 * This method gets the file that is currently opened in the editor as an
+	 * {@link IFile}.
 	 *
-	 * @param part
-	 *        Editor part that contains the file.
+	 * @param part Editor part that contains the file.
 	 * @return Currently open file.
 	 */
 	public static IFile getCurrentlyOpenFile(final IEditorPart part) {
@@ -199,18 +201,19 @@ public class Utils {
 	}
 
 	/**
-	 * This method searches the passed project for the class that contains the main method.
+	 * This method searches the passed project for the class that contains the main
+	 * method.
 	 *
-	 * @param project
-	 *        Project that is searched
-	 * @param requestor
-	 *        Object that handles the search results
+	 * @param project   Project that is searched
+	 * @param requestor Object that handles the search results
 	 */
 	public static void findMainMethodInCurrentProject(final IJavaProject project, final SearchRequestor requestor) {
-		final SearchPattern sp = SearchPattern.createPattern("main", IJavaSearchConstants.METHOD, IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
+		final SearchPattern sp = SearchPattern.createPattern("main", IJavaSearchConstants.METHOD,
+				IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
 
 		final SearchEngine se = new SearchEngine();
-		final SearchParticipant[] searchParticipants = new SearchParticipant[] { SearchEngine.getDefaultSearchParticipant() };
+		final SearchParticipant[] searchParticipants = new SearchParticipant[] {
+				SearchEngine.getDefaultSearchParticipant() };
 		final IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] { project });
 
 		try {
@@ -226,7 +229,8 @@ public class Utils {
 	 * @return Currently selected project.
 	 */
 	public static IProject getIProjectFromSelection() {
-		final ISelectionService selectionService = Workbench.getInstance().getActiveWorkbenchWindow().getSelectionService();
+		final ISelectionService selectionService = Workbench.getInstance().getActiveWorkbenchWindow()
+				.getSelectionService();
 		final ISelection selection = selectionService.getSelection();
 
 		IProject iproject = null;
@@ -250,8 +254,7 @@ public class Utils {
 	/***
 	 * This method returns absolute path of a project-relative path.
 	 *
-	 * @param inputPath
-	 *        project-relative path
+	 * @param inputPath project-relative path
 	 * @return absolute path
 	 */
 	public static File getResourceFromWithin(final String inputPath, String pluginID) {

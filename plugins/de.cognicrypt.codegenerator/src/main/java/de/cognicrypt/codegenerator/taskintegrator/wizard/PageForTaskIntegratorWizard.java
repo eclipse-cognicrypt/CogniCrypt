@@ -40,9 +40,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	int counter = 0;// TODO for testing only.
 	protected ArrayList<ClaferFeature> cfrFeatures;
 
-
 	TreeViewer treeViewer;
-
 
 	/**
 	 * Create the wizard.
@@ -89,8 +87,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	}
 
 	/**
-	 * Overwriting the getNextPage method to extract the list of all questions
-	 * from highLevelQuestion page and forward the data to pageForLinkAnswers at runtime
+	 * Overwriting the getNextPage method to extract the list of all questions from highLevelQuestion page and forward the data to pageForLinkAnswers at runtime
 	 */
 	public IWizardPage getNextPage() {
 		boolean isNextPressed = "nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[2].getMethodName());
@@ -100,11 +97,11 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				return this;
 			}
 		}
-		
+
 		if (this.getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD) && !getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode().isGuidedModeChosen()) {
 			return null;
 		}
-		
+
 		if (this.getName().equals(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)) {
 
 		}
@@ -188,16 +185,17 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		return super.canFlipToNextPage();
 
 	}
+
 	/**
 	 * This method will check whether all the validations on the page were successful. The page is set to incomplete if any of the validations have an ERROR.
 	 */
-	public void checkIfModeSelectionPageIsComplete() {		
+	public void checkIfModeSelectionPageIsComplete() {
 		boolean errorOnFileWidgets = false;
 		// The first child of the composite is a group. Get the children of this group to iterated over.
 		for (Control control : ((Composite) getCompositeChoiceForModeOfWizard().getChildren()[0]).getChildren()) {
 			// Check if the child is an instance of group and is visible.
 			if (control instanceof Composite && control.isVisible()) {
-				
+
 				// Get the children of this group and iterate over them. These are the widgets that get the file data. This loop generalizes for all these widgets.
 				for (Control subGroup : ((Composite) control).getChildren()) {
 					if (subGroup instanceof CompositeBrowseForFile) {
@@ -206,19 +204,19 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 							errorOnFileWidgets = true;
 						}
 					}
-					
-				}	
-				
+
+				}
+
 			}
-		}		
-		
+		}
+
 		// Check if validation failed on the task name.
 		boolean errorOnTaskName = getCompositeChoiceForModeOfWizard().getDecNameOfTheTask().getDescriptionText().contains(Constants.ERROR);
-		
+
 		// Set the page to incomplete if the validation failed on any of the text boxes.
 		if (errorOnTaskName || errorOnFileWidgets) {
 			setPageComplete(false);
-			
+
 		} else {
 			setPageComplete(true);
 		}
@@ -226,6 +224,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 	/**
 	 * Return the composite for the first page, i.e. to choose the mode of the wizard.
+	 * 
 	 * @return the compositeChoiceForModeOfWizard
 	 */
 	public CompositeChoiceForModeOfWizard getCompositeChoiceForModeOfWizard() {
@@ -234,6 +233,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 	/**
 	 * The composite is maintained as a global variable to have access to it as part of the page object.
+	 * 
 	 * @param compositeChoiceForModeOfWizard
 	 *        the compositeChoiceForModeOfWizard to set
 	 */
@@ -250,6 +250,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 	/**
 	 * The composite is maintained as a global variable to have access to it as part of the page object.
+	 * 
 	 * @param compositeToHoldGranularUIElements
 	 *        the compositeToHoldGranularUIElements to set
 	 */

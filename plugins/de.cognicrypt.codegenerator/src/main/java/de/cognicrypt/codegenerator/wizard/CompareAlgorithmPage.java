@@ -112,7 +112,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		Object algorithmCombinationSecond = instanceListPage.getAlgorithmCombinations();
 		secondAlgorithmClass.setContentProvider(ArrayContentProvider.getInstance());
 		secondAlgorithmClass.setInput(algorithmCombinationSecond);
-		notifyText = new Text(control, SWT.WRAP| SWT.BORDER);
+		notifyText = new Text(control, SWT.WRAP | SWT.BORDER);
 		notifyText.setText(Constants.COMPARE_SAME_ALGORITHM);
 		notifyText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
 		notifyText.setEditable(false);
@@ -137,12 +137,12 @@ public class CompareAlgorithmPage extends WizardPage {
 			setHighlightFirst(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmFirst)));
 			if (!selectedAlgorithmFirst.equals(selectedAlgorithmSecond)) {
 				deco.hide();
-				notifyText.setVisible(false);				
+				notifyText.setVisible(false);
 			} else {
 				notifyText.setVisible(true);
 				deco.show();
 			}
-			
+
 			compareHighlight();
 		});
 
@@ -166,7 +166,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		secondInstancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		this.secondInstanceDetails = new StyledText(this.secondInstancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		this.secondInstanceDetails.setAlwaysShowScrollBars(false);
-		
+
 		//Tandem horizontal scrolling
 		handleVerticalScrolling(firstInstanceDetails, secondInstanceDetails);
 
@@ -205,7 +205,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		final ISelection defaultAlgorithm = new StructuredSelection(inst.keySet().toArray()[0]);
 		firstAlgorithmClass.setSelection(defaultAlgorithm);
 		secondAlgorithmClass.setSelection(defaultAlgorithm);
-		
+
 		sc.setContent(this.control);
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);
@@ -213,24 +213,21 @@ public class CompareAlgorithmPage extends WizardPage {
 		setControl(sc);
 	}
 
-    // To automatically scroll the contents of one text if the scroll bar of the other text is scrolled.
-	private static void handleVerticalScrolling(StyledText leftInstanceDetails, StyledText rightInstanceDetails)
-	{
-	    ScrollBar left = leftInstanceDetails.getVerticalBar();
-	    ScrollBar right = rightInstanceDetails.getVerticalBar();
+	// To automatically scroll the contents of one text if the scroll bar of the other text is scrolled.
+	private static void handleVerticalScrolling(StyledText leftInstanceDetails, StyledText rightInstanceDetails) {
+		ScrollBar left = leftInstanceDetails.getVerticalBar();
+		ScrollBar right = rightInstanceDetails.getVerticalBar();
 
-	    left.addListener(SWT.Selection, e ->
-	    {
-	        int y = leftInstanceDetails.getTopPixel();
-	        rightInstanceDetails.setTopPixel(y);
-	    });
-	    right.addListener(SWT.Selection, e ->
-	    {
-	        int y = rightInstanceDetails.getTopPixel();
-	        leftInstanceDetails.setTopPixel(y);
-	    });
+		left.addListener(SWT.Selection, e -> {
+			int y = leftInstanceDetails.getTopPixel();
+			rightInstanceDetails.setTopPixel(y);
+		});
+		right.addListener(SWT.Selection, e -> {
+			int y = rightInstanceDetails.getTopPixel();
+			leftInstanceDetails.setTopPixel(y);
+		});
 	}
-	
+
 	private String getInstanceProperties(final InstanceClafer inst) {
 		final Map<String, String> algorithms = new HashMap<>();
 		for (InstanceClafer child : inst.getChildren()) {

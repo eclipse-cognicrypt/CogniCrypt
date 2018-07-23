@@ -24,15 +24,28 @@
 			<layout>p2</layout>
 		</repository>
 		<repository>
-		<id>xtend</id>
-		<url>http://build.eclipse.org/common/xtend/maven/</url>
-	</repository>
-<repository>
-		<id>xtext</id>
-		<layout>p2</layout>
-		<url>http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/</url>
-	</repository>
+			<id>xtend</id>
+			<url>http://build.eclipse.org/common/xtend/maven/</url>
+		</repository>
+		<repository>
+			<id>xtext</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/</url>
+		</repository>
 	</repositories>
+	
+	<pluginRepositories>
+		<pluginRepository>
+			<id>jboss-public-repository-group</id>
+			<name>JBoss Public Repository Group</name>
+			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>jboss-snapshots-repository</id>
+			<name>JBoss Snapshots Repository</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<build>
 		<plugins>

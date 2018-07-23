@@ -386,7 +386,7 @@ public class InstanceGenerator {
 	/**
 	 * Returns the hash value of the instance passed as an argument
 	 *
-	 * @see InstanceClaferHash#hashCode() 
+	 * @see InstanceClaferHash#hashCode()
 	 */
 	private long getHashValueOfInstance(final InstanceClafer inst) {
 		int hash = 37;

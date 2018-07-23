@@ -16,9 +16,10 @@ import de.cognicrypt.core.Constants;
 public class TaskJSONReader {
 
 	private static volatile List<Task> tasks;
-	
+
 	/**
-	 * Getter method for tasks. 
+	 * Getter method for tasks.
+	 * 
 	 * @return List of Tasks in JSON file
 	 */
 	public static List<Task> getTasks() {

@@ -96,7 +96,6 @@ public class Utils {
 		throw new ClassNotFoundException("Class " + className + " not found.");
 	}
 
-
 	/**
 	 * This method returns the currently open editor as an {@link IEditorPart}.
 	 *
@@ -163,7 +162,7 @@ public class Utils {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * This method returns the currently open page as an {@link IWorkbenchPage}.
 	 *
@@ -230,7 +229,7 @@ public class Utils {
 				iproject = jProject.getProject();
 			}
 		}
-		
+
 		return iproject;
 	}
 

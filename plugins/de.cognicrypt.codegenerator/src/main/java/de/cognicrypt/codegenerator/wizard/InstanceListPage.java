@@ -15,8 +15,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -339,12 +342,13 @@ public class InstanceListPage extends WizardPage {
 				//open compare dialog to show the difference between the current code(in the user's Java class that is open in his editor)
 				//and the new code that will be generated(in the same class) on clicking 'Finish'.	
 				//if the user does not have any class opened in his editor, then one side of the compare editor will be empty.
+				String codePreviewContent = compileCodePreview();
 				if (getCurrentEditorContent() == "") {
-					CompareUI.openCompareDialog(new CompareInput(getCurrentEditorContent(), compileCodePreview()));
+					CompareUI.openCompareDialog(new CompareInput(getCurrentEditorContent(), codePreviewContent));
 				} else {
 					String currentlyOpenPart = getCurrentEditorContent();
 					int position = currentlyOpenPart.indexOf("{");
-					currentlyOpenPart = new StringBuilder(currentlyOpenPart).insert(position + 1, "\n" + compileCodePreview()).toString();
+					currentlyOpenPart = new StringBuilder(currentlyOpenPart).insert(position + 1, "\n" + codePreviewContent).toString();
 					CompareUI.openCompareDialog(new CompareInput(getCurrentEditorContent(), currentlyOpenPart));
 				}
 			}
@@ -423,8 +427,8 @@ public class InstanceListPage extends WizardPage {
 			return "";
 		}
 
-		final Path file = new File(temporaryOutputFile).toPath();
-		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+		final File file = new File(temporaryOutputFile);
+		try (InputStream in = Files.newInputStream(file.toPath()); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 			final StringBuilder preview = new StringBuilder();
 			String line = null;
 			// If no file is open in user's editor, show the preview of newly generated class
@@ -453,6 +457,27 @@ public class InstanceListPage extends WizardPage {
 			}
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
+		}  finally {
+			try {
+				Files.walkFileTree(file.getParentFile().toPath(), new SimpleFileVisitor<Path>() {
+
+					@Override
+					public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+						Files.delete(dir);
+						return FileVisitResult.CONTINUE;
+					}
+
+					@Override
+					public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+						Files.delete(file);
+						return FileVisitResult.CONTINUE;
+					}
+					
+				});
+				Files.delete(new File(claferPreviewPath).toPath());
+			} catch (IOException e) {
+				Activator.getDefault().logError(e, "Could not delete temporary files.");
+			}
 		}
 		return "";
 	}

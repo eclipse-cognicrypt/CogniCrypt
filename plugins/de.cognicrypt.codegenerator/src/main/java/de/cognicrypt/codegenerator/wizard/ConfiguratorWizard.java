@@ -199,13 +199,8 @@ public class ConfiguratorWizard extends Wizard {
 		if (currentPage == this.taskListPage && this.taskListPage.isPageComplete()) {
 			this.claferModel = new ClaferModel(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile()));
 
-			if (this.taskListPage.isGuidedMode()) {
-				this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile());
-				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(), null);
-			} else {
-				this.preferenceSelectionPage = new AdvancedUserValueSelectionPage(this.claferModel, selectedTask, (AstConcreteClafer) org.clafer.cli.Utils
-					.getModelChildByName(this.claferModel.getModel(), "c0_" + selectedTask.getName()));
-			}
+			this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile());
+			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(), null);
 			if (this.constraints != null) {
 				this.constraints = null;
 			}
@@ -217,59 +212,54 @@ public class ConfiguratorWizard extends Wizard {
 			/**
 			 * If current page is either question or properties page (in Advanced mode)
 			 */
-			if (this.taskListPage.isGuidedMode()) {
-				if (this.constraints == null) {
-					this.constraints = new HashMap<>();
+			if (this.constraints == null) {
+				this.constraints = new HashMap<>();
+			}
+
+			final BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
+			final HashMap<Question, Answer> selectionMap = beginnerTaskQuestionPage.getMap();
+
+			// Looping through all the entries that were added to the BeginnerTaskQuestionPage
+			for (final Entry<Question, Answer> entry : selectionMap.entrySet()) {
+				if (entry.getKey().getElement().equals(GUIElements.itemselection)) {
+					handleItemSelection(entry);
 				}
+				this.constraints.put(entry.getKey(), entry.getValue());
+			}
 
-				final BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
-				final HashMap<Question, Answer> selectionMap = beginnerTaskQuestionPage.getMap();
+			if (this.beginnerQuestions.hasMorePages()) {
 
-				// Looping through all the entries that were added to the BeginnerTaskQuestionPage
-				for (final Entry<Question, Answer> entry : selectionMap.entrySet()) {
-					if (entry.getKey().getElement().equals(GUIElements.itemselection)) {
-						handleItemSelection(entry);
+				final int nextID = beginnerTaskQuestionPage.getPageNextID();
+
+				if (nextID > -1) {
+					final Page curPage = this.beginnerQuestions.setPageByID(nextID);
+					// Pass the variable for the questionnaire here instead of all the questions.
+					createBeginnerPage(curPage, this.beginnerQuestions);
+					if (checkifInUpdateRound()) {
+						this.beginnerQuestions.previousPage();
 					}
-					this.constraints.put(entry.getKey(), entry.getValue());
-				}
 
-				if (this.beginnerQuestions.hasMorePages()) {
-
-					final int nextID = beginnerTaskQuestionPage.getPageNextID();
-
-					if (nextID > -1) {
-						final Page curPage = this.beginnerQuestions.setPageByID(nextID);
-						// Pass the variable for the questionnaire here instead of all the questions.
-						createBeginnerPage(curPage, this.beginnerQuestions);
-						if (checkifInUpdateRound()) {
-							this.beginnerQuestions.previousPage();
+					final IWizardPage[] pages = getPages();
+					for (int i = 1; i < pages.length; i++) {
+						if (!(pages[i] instanceof BeginnerTaskQuestionPage)) {
+							continue;
 						}
-
-						final IWizardPage[] pages = getPages();
-						for (int i = 1; i < pages.length; i++) {
-							if (!(pages[i] instanceof BeginnerTaskQuestionPage)) {
-								continue;
-							}
-							final BeginnerTaskQuestionPage oldPage = (BeginnerTaskQuestionPage) pages[i];
-							if (oldPage.equals(this.preferenceSelectionPage)) {
-								return oldPage;
-							}
+						final BeginnerTaskQuestionPage oldPage = (BeginnerTaskQuestionPage) pages[i];
+						if (oldPage.equals(this.preferenceSelectionPage)) {
+							return oldPage;
 						}
-						if (this.preferenceSelectionPage != null) {
-							addPage(this.preferenceSelectionPage);
-						}
-						return this.preferenceSelectionPage;
 					}
+					if (this.preferenceSelectionPage != null) {
+						addPage(this.preferenceSelectionPage);
+					}
+					return this.preferenceSelectionPage;
 				}
 			}
 
 			final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
 				.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
 
-			if (this.taskListPage.isGuidedMode()) {
-				// running in beginner mode
-				instanceGenerator.generateInstances(this.constraints);
-			}
+			instanceGenerator.generateInstances(this.constraints);
 			if (currentPage instanceof BeginnerTaskQuestionPage) {
 				//default algorithm page will be added only for beginner mode
 				if (instanceGenerator.getNoOfInstances() != 0) {
@@ -305,11 +295,7 @@ public class ConfiguratorWizard extends Wizard {
 			final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
 				.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
 
-			if (this.taskListPage.isGuidedMode()) {
-
-				// running in beginner mode
 				instanceGenerator.generateInstances(this.constraints);
-			}
 			//instance details page will be added after default algorithm page only if the number of instances is greater than 1
 			if (this.defaultAlgorithmPage.isDefaultAlgorithm() && instanceGenerator.getNoOfInstances() > 1) {
 				this.instanceListPage = new InstanceListPage(instanceGenerator, this.constraints, this.taskListPage, this.defaultAlgorithmPage);

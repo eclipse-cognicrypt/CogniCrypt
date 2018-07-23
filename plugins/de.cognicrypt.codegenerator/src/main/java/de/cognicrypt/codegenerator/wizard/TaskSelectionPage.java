@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -231,6 +230,8 @@ public class TaskSelectionPage extends WizardPage {
 			}
 		});
 		btnPrimitiveIntegration.setText("Primitive Integration");
+		//Visibility SET TO FALSE. REMOVE FOLLOWING LINE WHEN WORKING ON TASK INTEGRATION.
+		btnPrimitiveIntegration.setVisible(false);
 		//Task Integration
 		Button btnTaskIntegration = new Button(container, SWT.NONE);
 		btnTaskIntegration.addSelectionListener(new SelectionAdapter() {
@@ -246,6 +247,9 @@ public class TaskSelectionPage extends WizardPage {
 			}
 		});
 		btnTaskIntegration.setText("Task Integration");
+		//Visibility SET TO FALSE. REMOVE FOLLOWING LINE WHEN WORKING ON PRIMITIVE INTEGRATION.
+		btnTaskIntegration.setVisible(false);
+
 		new Label(container, SWT.NONE);
 
 	}

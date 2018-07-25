@@ -94,14 +94,29 @@ public class AnalysisKickOff {
 	public boolean run() {
 		Job analysis = new Job(Constants.ANALYSIS_LABEL) {
 
+			@SuppressWarnings("deprecation")
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				boolean runSoot = SootRunner.runSoot(curProj, AnalysisKickOff.resultsReporter);
-				if (runSoot && !monitor.isCanceled()) {
+				SootThread sootThread = new SootThread(curProj, AnalysisKickOff.resultsReporter);
+				sootThread.start();
+				while (sootThread.isAlive()) {
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+					}
+					
+					if(monitor.isCanceled()) {
+						sootThread.stop();
+						return Status.CANCEL_STATUS;
+					}
+					
+				}
+				if (sootThread.isSucc()) {
 					return Status.OK_STATUS;
 				} else {
 					return Status.CANCEL_STATUS;
 				}
+				
 			}
 
 			@Override

@@ -5,7 +5,6 @@ jdk:
 
 build:
   ci:
-   - cd mvn-parent
    - mvn clean verify surefire:test cobertura:cobertura --fail-at-end
 
   on_success:

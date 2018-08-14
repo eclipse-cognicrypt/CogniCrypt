@@ -1,0 +1,8 @@
+[
+		{
+			"name": "Cipher Test",
+			"xmlFile" : "src/test/resources/PrimitiveIntegration/TestPrimitiveQuestion.json",
+			"xslFile" : "src/test/resources/PrimitiveIntegration/xslTest.xsl"
+			
+		}
+]

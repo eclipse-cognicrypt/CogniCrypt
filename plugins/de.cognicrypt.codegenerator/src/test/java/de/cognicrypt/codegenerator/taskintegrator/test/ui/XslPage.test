@@ -1,0 +1,365 @@
+--- RCPTT testcase ---
+Format-Version: 1.0
+Element-Name: XslPage
+Element-Type: testcase
+Element-Version: 3.0
+External-Reference: 
+Id: _Tp0xEDEcEei8vfE9G7Yzvw
+Runtime-Version: 2.2.0.201705230341
+Save-Time: 4/5/18 3:50 AM
+Testcase-Type: ecl
+
+------=_.description-216f885c-d591-38ce-8ea2-e4f8cb4d6ffa
+Content-Type: text/plain
+Entry-Name: .description
+
+This test mainly tries to test the functionality of all the widgets in the Xsl page . It should always execute successfully.
+------=_.description-216f885c-d591-38ce-8ea2-e4f8cb4d6ffa--
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
+Content-Type: text/ecl
+Entry-Name: .content
+
+get-menu -path "Start Code Generation" | click
+with [get-window "Cryptography Task Configurator"] {
+    get-button "Task Integration" | click
+with [get-window -class WizardDialog] {
+    get-editbox -after [get-label "Name of the Task"] | set-text "Xsl page test"
+    with [get-editbox -after [get-label "Description of the Task :"]] {
+        set-text "This test mainly checks the widgets on Xsl page"
+        key-type Enter
+        set-text "This test mainly checks the widgets on Xsl page\n"
+        key-type Enter
+    }
+    get-button "Next >" | click
+    get-button "Add Feature" | click
+    with [get-window -class ClaferFeatureDialog] {
+        with [get-editbox -after [get-label "Type in the name"]] {
+            set-text Feature2
+            key-type "TRAVERSE_TAB_NEXT"
+        }
+        get-button Class | click
+        get-combo -after [get-label "Inherits from"] | key-type "TRAVERSE_TAB_NEXT"
+        with [get-button "Add property"] {
+            click
+            click
+        }
+        with [get-editbox -after [get-label Name]] {
+            set-text Feature
+            key-type Left -times 7
+            set-text Prop1ofFeature
+            key-type Right -times 7
+            set-text Prop1ofFeature2
+        }
+        get-combo -after [get-label "is of type"] | set-text Feature1
+        with [get-editbox -after [get-label Name -after [get-label "is of type"]]] {
+            set-text Prop1ofFeature2
+            key-type Left -times 10
+            set-text Prop2ofFeature2
+            key-type Right -times 10
+        }
+        get-combo -after [get-label "is of type" -after [get-label Name -after [get-label "is of type"]]] 
+            | select integer
+    }
+}
+set-dialog-result MessageBox 64
+with [get-window -class WizardDialog] {
+    get-window -class ClaferFeatureDialog | get-button OK | click
+    get-button "Add Feature" | click
+    with [get-window -class ClaferFeatureDialog] {
+        with [get-editbox -after [get-label "Type in the name"]] {
+            set-text Feature3
+            key-type "TRAVERSE_TAB_NEXT"
+        }
+        get-button Class | click
+        get-combo -after [get-label "Inherits from"] | select Feature2
+        get-button "Add property" | click
+        get-editbox -after [get-label Name] | set-text Prop1ofFeature3
+        get-combo -after [get-label "is of type"] | select Feature2
+        get-button "Add property" | click
+        get-editbox -after [get-label Name -after [get-label "is of type"]] | set-text Prop2ofFeature3
+        get-combo -after [get-label "is of type" -after [get-label Name -after [get-label "is of type"]]] 
+            | select Feature1
+        get-button "Add property" | click
+        get-button Remove -after [get-label "is of type" -after [get-label Name -after [get-label "is of type" 
+            -after [get-label Name -after [get-label "is of type"]]]]] | click
+        get-button OK | click
+    }
+    get-button "Add Pattern" | click
+    get-window -class ClaferFeaturePatternDialog | close
+    get-button "Import Features" | click
+}
+set-dialog-result File
+with [get-window -class WizardDialog | get-window -class ClaferImportDialog] {
+    get-button Browse | click
+    close
+}
+set-dialog-result File
+with [get-window -class WizardDialog] {
+    get-button "Export Features" | click
+    get-button "Add Feature" | click
+    with [get-window -class ClaferFeatureDialog] {
+        get-editbox -after [get-label "Type in the name"] | set-text ConcreteFeature
+        get-button Class | click
+        get-combo -after [get-label "Inherits from"] | select Feature3
+        get-button "Add constraint" | click
+        with [get-window -class ClaferConstraintDialog] {
+            with [get-tree] {
+                get-item "abstract Feature3: Feature2/Prop2ofFeature3 -> Feature1" | click
+                select "abstract Feature3: Feature2/Prop2ofFeature3 -> Feature1" | double-click
+                get-item "abstract Feature3: Feature2/Prop2ofFeature3 -> Feature1" | click
+            }
+            get-group "" | get-button EQUALS | click
+            get-editbox | set-text "Feature3.Prop2ofFeature3 =somvalue"
+            get-button OK | click
+        }
+        get-button "Add constraint" | click
+        with [get-window -class ClaferConstraintDialog] {
+            with [get-tree] {
+                get-item "abstract Feature3: Feature2" | click
+                get-item "abstract Feature3: Feature2/Prop1ofFeature3 -> Feature2" | click
+                select "abstract Feature3: Feature2/Prop1ofFeature3 -> Feature2" | double-click
+                get-item "abstract Feature3: Feature2/Prop1ofFeature3 -> Feature2" | click
+            }
+            get-button OK | click
+        }
+        get-button Class | click
+        get-button Modify -after [get-label "Inherits from"] -index 1 | click
+        with [get-window -class ClaferConstraintDialog] {
+            get-group "" | get-button NOT | click
+            get-button OK | click
+        }
+        get-button Remove -after [get-label "Inherits from"] -index 1 | click
+        get-button OK | click
+    }
+    get-button "Next >" | click
+    get-button "Add Question" | click
+    with [get-window -class QuestionDialog] {
+        with [get-editbox -after [get-label Question]] {
+            set-text Q0
+            key-type "TRAVERSE_TAB_NEXT"
+        }
+        get-combo -after [get-label "Answer type"] | select "Drop down"
+        get-button "Add Answer" | click
+        get-group "" | get-editbox | set-text ans1
+        get-button "Add Answer" | click
+        get-group "" -after [get-label "Describe the question"] -index 1 | get-editbox | set-text ans2
+        get-button OK | click
+    }
+    get-button "Link Variability construct and Link code" | click
+    with [get-window -class AddDependenciesDialog] {
+        get-button Add | click
+        get-combo -after [get-label "Set Value"] | select Feature3
+        get-combo -after [get-label "Set Value"] -index 1 | select Prop1ofFeature3
+        get-combo -after [get-label "Set Value"] -index 2 | select "="
+        get-editbox -after [get-label "Set Value"] -index 1 | set-text someValue
+        get-button Add -after [get-label "Set Value"] -index 1 | click
+        get-button Add -after [get-label "Set Value"] -index 1 | click
+        get-button Remove -after [get-label "Set Value"] -index 2 | click
+        get-button Remove -after [get-label "Set Value"] -index 1 | click
+        get-tab-folder | get-tab-item "Link to variables to use in code" | click
+        get-editbox -after [get-label "Set Value"] -index 1 | set-text someValue
+        get-editbox -after [get-label "Set Value"] -index 3 | set-text someValue
+        get-button OK | click
+    }
+    get-button "Add Question" | click
+    with [get-window -class QuestionDialog] {
+        get-editbox -after [get-label Question] | set-text Q1
+        get-combo -after [get-label "Answer type"] | select "Text box"
+        get-button OK | click
+    }
+    get-button "Add Question" | click
+    with [get-window -class QuestionDialog] {
+        get-editbox -after [get-label Question] | set-text Q2
+        get-combo -after [get-label "Answer type"] | select "Radio button"
+        with [get-button "Add Answer"] {
+            click
+            click
+        }
+        get-group "" | get-editbox | set-text ans1
+        get-group "" -after [get-label "Describe the question"] -index 1 | get-editbox | set-text ans2
+        get-button OK | click
+    }
+    get-button "Link Variability construct and Link code" -index 1 | click
+    with [get-window -class AddDependenciesDialog] {
+        get-tab-folder | get-tab-item "Link to variables to use in code" | click
+        get-button OK | click
+    }
+    get-button "Link Variability construct and Link code" -index 2 | click
+    with [get-window -class AddDependenciesDialog] {
+        with [get-tab-folder] {
+            get-tab-item "Link to variables to use in code" | click
+            get-tab-item "Link to variability constructs" | click
+            get-tab-item "Link to variables to use in code" | click
+        }
+        get-editbox -after [get-label "Set Value"] -index 1 | set-text someValue
+        get-editbox -after [get-label "Set Value"] -index 3 | set-text someValue
+        get-button OK | click
+    }
+    get-button "Next >" | click
+    get-button "Link Answer to other questions" | click
+    with [get-window -class LinkAnswerDialog] {
+        get-group "" -after [get-label Q0] -index 1 | get-combo | select Q1
+        get-group "" -after [get-label Q0] -index 2 | get-combo | select "End Questionnaire"
+        get-button OK | click
+    }
+    get-button "Link Answer to other questions" -index 1 | click
+    get-window -class LinkAnswerDialog | get-button OK | click
+    get-button "Next >" | click
+    get-button "Add Xsl Tag" | click
+    with [get-window -class XSLTagDialog] {
+        get-button "Add Attribute" | click
+        get-button OK | click
+    }
+    get-editbox | set-text-offset 21 0
+    get-button "Add Xsl Tag" | click
+    with [get-window -class XSLTagDialog] {
+        get-combo | select "Value of"
+        get-button "Add Attribute" | click
+        get-group "" | get-combo -index 1 | set-text someThing
+        get-button OK | click
+    }
+    get-button "Add Xsl Tag" | click
+    with [get-window -class XSLTagDialog] {
+        get-combo | select If
+        get-button Cancel | click
+    }
+    get-editbox | set-text-offset 73 0
+    get-button "Add Xsl Tag" | click
+    with [get-window -class XSLTagDialog] {
+        get-combo | select If
+        get-button "Add Attribute" | click
+        get-group "" | get-combo -index 1 | set-text someValue
+        get-button OK | click
+    }
+    get-button "Add Xsl Tag" | click
+    with [get-window -class XSLTagDialog] {
+        get-combo | select When
+        get-button "Add Attribute" | click
+        get-group "" | get-combo -index 1 | set-text someValue
+        get-button OK | click
+    }
+    get-button "Add Xsl Tag" | click
+    with [get-window -class XSLTagDialog] {
+        with [get-button "Add Attribute"] {
+            click
+            click
+        }
+        get-group "" -index 1 | get-button Remove | click
+        get-group "" | get-button Remove | click
+        get-combo | select "Value of"
+        get-button "Add Attribute" | click
+        get-group "" | get-button Remove | click
+        get-combo | select "Result Document"
+        get-button "Add Attribute" | click
+        with [get-group ""] {
+            get-combo | select href
+            get-combo -index 1 | set-text addDOCLink
+        }
+        get-button OK | click
+    }
+    with [get-editbox] {
+        set-text-offset 220 0
+        key-type Enter
+    }
+    get-button "Add Xsl Tag" | click
+    with [get-window -class XSLTagDialog] {
+        get-combo | select "Result Document"
+        with [get-button "Add Attribute"] {
+            click
+            click
+            click
+            click
+            click
+            click
+        }
+        get-group "" -index 1 | get-combo | select "doctype-public"
+        get-group "" -index 2 | get-combo | select "cdata-section-elements"
+        get-group "" -index 3 | get-combo | select encoding
+        get-group "" -index 4 | get-combo | select "escape-uri-attributes"
+        with [get-button "Add Attribute"] {
+            click
+            click
+            click
+            click
+        }
+        get-button OK | click
+    }
+    with [get-editbox] {
+        set-text-selection -offset 178 -startLine 1 -endLine 1 -endOffset 186
+        type-text some
+        key-type BackSpace -times 4
+        type-text tets
+        key-type BackSpace -times 2
+        type-text stText
+    }
+    get-button "Add Xsl Tag" | click
+    get-window -class XSLTagDialog | get-button Cancel | click
+    with [get-editbox] {
+        set-text-offset 211 1
+        key-type Enter
+    }
+    get-button "Add Xsl Tag" | click
+    with [get-window -class XSLTagDialog] {
+        get-combo | select "Apply Templates"
+        get-button "Add Attribute" | click
+        get-button OK | click
+    }
+    with [get-editbox] {
+        set-text-offset 34 2
+        key-type Enter
+    }
+    get-button "Add Xsl Tag" | click
+    with [get-window -class XSLTagDialog] {
+        get-combo | select "Apply Templates"
+        get-button "Add Attribute" | click
+        get-group "" | get-combo | select mode
+        get-button OK | click
+    }
+    get-button "Add Xsl Tag" | click
+    with [get-window -class XSLTagDialog] {
+        get-combo | select Choose
+        get-button OK | click
+    }
+    with [get-editbox] {
+        set-text-offset 32 3
+        key-type Enter
+    }
+    get-button "Add Xsl Tag" | click
+    with [get-window -class XSLTagDialog] {
+        get-combo | select When
+        get-button "Add Attribute" | click
+        get-group "" | get-combo -index 1 | set-text someValue
+    }
+}
+set-dialog-result MessageBox 32
+with [get-window -class WizardDialog] {
+    with [get-window -class XSLTagDialog] {
+        get-button "Add Attribute" | click
+        get-button OK | click
+    }
+    get-button "Add Xsl Tag" | click
+    get-window -class XSLTagDialog | get-button Cancel | click
+    with [get-editbox] {
+        set-text-offset 50 4
+        key-type Enter
+    }
+    get-button "Add Xsl Tag" | click
+    with [get-window -class XSLTagDialog] {
+        get-combo | select Otherwise
+        get-button OK | click
+    }
+    with [get-editbox] {
+        set-text-offset 31 5
+        key-type Enter
+        set-text-offset 29 3
+    }
+    get-editbox | set-text-offset 31 2
+    get-editbox | set-text-offset 87 1
+    get-editbox | set-text-offset 50 4
+}
+set-dialog-result MessageBox 32
+set-dialog-result File
+get-window -class WizardDialog | get-button "Get the code" | click
+get-window -class WizardDialog | close
+}
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--

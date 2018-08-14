@@ -2,7 +2,7 @@ language: java
 
 jdk:
   - oraclejdk8
-  
+
 build:
    
   ci:
@@ -11,9 +11,15 @@ build:
    - ps aux | grep X
    - DISPLAY=:1.0
    - export DISPLAY
-   - cd mvn-parent
    - mvn clean verify surefire:test -e --fail-at-end
    
-  on_success:
-   - if [ "$BRANCH" == "master" ]; then cd ../repository; chmod +x upload.sh; ./upload.sh; fi
+   - mvn clean verify surefire:test cobertura:cobertura --fail-at-end
 
+  on_success:
+  #### THIS CURRENTLY USES SSHPASS FOR AUTHENTICATION! THIS IS INSECURE! FULLY SWITCH TO USING ONLY SSH KEYS ASAP! ####
+   - if [ "$BRANCH" == "CurrentlyOutOfOrder" ]; then sudo apt-get install sshpass; cd repository; chmod +x upload.sh; ./upload.sh; fi
+
+resources:
+  - name: eclipseFTPkv
+    type: integration
+    integrationName: UpdateSitePassword

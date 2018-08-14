@@ -1,0 +1,33 @@
+--- RCPTT testcase ---
+Format-Version: 1.0
+Element-Name: JudgingTrustworthiness-DefaultAlgorithm
+Element-Type: testcase
+Element-Version: 3.0
+External-Reference: 
+Id: _JO1jACCAEeiBZcxhvN8q6g
+Runtime-Version: 2.1.0.201606221726
+Save-Time: 3/5/18 3:20 PM
+Testcase-Type: ecl
+
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
+Content-Type: text/ecl
+Entry-Name: .content
+
+get-button "Generate Code For Cryptographic Task" | click
+with [get-window "Cryptography Task Configurator"] {
+    get-combo -after [get-label "Select a Task :"] | select "Judging Trustworthiness of third parties"
+    with [get-button "Next >"] {
+        click
+        click
+    }
+    get-editbox -after [get-label "*"] | set-text 2
+    with [get-button "Next >"] {
+        click
+        click
+    }
+}
+exec-with-options {
+    get-window "Cryptography Task Configurator" | get-button Finish | click
+    get-window "Problem Occurred" | get-button OK | click
+} -allowStatusDialog
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--

@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2018 TU Darmstadt
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.codegenerator.generator;
 
 import java.io.File;
@@ -44,6 +54,7 @@ public class XSLBasedGenerator extends CodeGenerator {
 	 * @param pathToXSLFile
 	 *        Path to the XSL file is read from the Tasks.json file instead of a constant.
 	 */
+
 	public XSLBasedGenerator(final IProject targetProject, final String pathToXSLFile) {
 		super(targetProject);
 		xslFile = CodeGenUtils.getResourceFromWithin(pathToXSLFile);
@@ -138,9 +149,8 @@ public class XSLBasedGenerator extends CodeGenerator {
 	 *         see {@link javax.xml.transform.Transformer#transform(javax.xml.transform.Source, javax.xml.transform.Result) transform()}
 	 */
 	public void transform(final File sourceFile, final String resultDir) throws TransformerException {
-		//System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
-		TransformerFactory fact = new net.sf.saxon.TransformerFactoryImpl();
-		final Transformer transformer = fact.newTransformer(new StreamSource(xslFile));
+		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
+		final Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(xslFile));
 		transformer.transform(new StreamSource(sourceFile), new StreamResult(new File(resultDir)));
 	}
 

@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2018 TU Darmstadt
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.codegenerator.generator;
 
 import java.io.File;
@@ -111,7 +121,7 @@ public abstract class CodeGenerator {
 		final TreeSet<SimpleEntry<Integer, Integer>> methLims = new TreeSet<>();
 		final SimpleEntry<Integer, SimpleEntry<Integer, Integer>> classlims = new SimpleEntry<>(0, null);
 
-		final ASTParser astp = ASTParser.newParser(AST.JLS9);
+		final ASTParser astp = ASTParser.newParser(AST.JLS8);
 		astp.setSource(docContent.toCharArray());
 		astp.setKind(ASTParser.K_COMPILATION_UNIT);
 		final CompilationUnit cu = (CompilationUnit) astp.createAST(null);
@@ -177,7 +187,7 @@ public abstract class CodeGenerator {
 		// Retrieve complete content from file
 		final String fileContent = String.join(Constants.lineSeparator, Files.readAllLines(Paths.get(filePath)));
 		// Determine start and end position for relevant extract
-		final ASTParser astp = ASTParser.newParser(AST.JLS9);
+		final ASTParser astp = ASTParser.newParser(AST.JLS8);
 		astp.setSource(fileContent.toCharArray());
 		astp.setKind(ASTParser.K_COMPILATION_UNIT);
 		final CompilationUnit cu = (CompilationUnit) astp.createAST(null);

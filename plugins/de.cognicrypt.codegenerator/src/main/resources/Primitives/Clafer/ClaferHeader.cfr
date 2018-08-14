@@ -1,0 +1,32 @@
+abstract Enum
+
+//enum Padding
+abstract Padding: Enum 
+OneAndZeroesPadding: Padding
+ZeroPadding: Padding
+PKCS7Padding : Padding
+NoPadding : Padding
+
+//enum Mode
+abstract Mode : Enum
+CBC : Mode
+OFB : Mode
+CFB : Mode
+CTR : Mode
+PCBC: Mode
+CTS : Mode
+
+
+abstract Cipher
+  name -> string
+  description -> string
+  author -> string
+  blockSize -> int
+  keySize -> int
+  
+
+abstract SymmetricCipher : Cipher  
+
+abstract SymmetricBlockCipher : SymmetricCipher
+
+  

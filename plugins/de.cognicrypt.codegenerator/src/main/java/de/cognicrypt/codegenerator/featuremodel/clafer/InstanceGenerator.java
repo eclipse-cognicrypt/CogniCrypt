@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2018 TU Darmstadt
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.codegenerator.featuremodel.clafer;
 
 import static org.clafer.ast.Asts.$this;
@@ -61,7 +71,8 @@ public class InstanceGenerator {
 	private String taskName;
 	private String taskDescription;
 	private final AstClafer taskClafer;
-	private String algorithmName;
+	private ArrayList<String> algorithmName = new ArrayList<>();
+	private ArrayList<TreeMap<String, InstanceClafer>> separatedAlgorithms = new ArrayList<TreeMap<String, InstanceClafer>>();
 	private int algorithmCount;
 
 	/**
@@ -245,12 +256,22 @@ public class InstanceGenerator {
 		} catch (final Exception ex) {
 			Activator.getDefault().logError("Instances not sorted by security level. Be cautious");
 		}
+		ArrayList<TreeMap<String, InstanceClafer>> separatedCombinations = new ArrayList<>();
+
+		int x = -1;
+		String tempKey = "";
 		for (final InstanceClafer sortedInst : this.generatedInstances) {
 
 			String key = getInstanceName(sortedInst);
 			if (key.isEmpty()) {
 				key = sortedInst.getChildren()[0].getRef().toString();
 				this.displayNameToInstanceMap.remove(key, sortedInst);
+			}
+
+			if (!tempKey.equals(key)) {
+				tempKey = key;
+				separatedCombinations.add(new TreeMap<String, InstanceClafer>());
+				x++;
 			}
 			if (sortedInst.getType().getName().equals(this.taskName) && key.length() > 0) {
 				// Check if any instance has same name , if yes add numerical values as suffix
@@ -262,10 +283,11 @@ public class InstanceGenerator {
 				}
 
 				this.displayNameToInstanceMap.put(copyKey, sortedInst);
-				setAlgorithmName(key);
-
+				separatedCombinations.get(x).put(copyKey, sortedInst);
 			}
+			this.setAlgorithmNames(key);
 		}
+		this.setSeparatedAlgorithms(separatedCombinations);
 		this.displayNameToInstanceMap = new TreeMap<>(this.displayNameToInstanceMap);
 	}
 
@@ -281,10 +303,9 @@ public class InstanceGenerator {
 		try {
 			basicModeHandler(astModel, this.taskClafer, questAnswerMap);
 
-			this.solver = ClaferCompiler.compile(astModel,
-				this.claferModel.getScope().toBuilder()
-					//.defaultScope(Integer.parseInt(new ReadConfig().getValue(DEFAULT_SCOPE)))
-					.intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
+			this.solver = ClaferCompiler.compile(astModel, this.claferModel.getScope().toBuilder()
+				//.defaultScope(Integer.parseInt(new ReadConfig().getValue(DEFAULT_SCOPE)))
+				.intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
 
 			int redundantCounter = 0;
 			while (this.solver.find()) {
@@ -376,7 +397,7 @@ public class InstanceGenerator {
 	/**
 	 * Returns the hash value of the instance passed as an argument
 	 *
-	 * @see InstanceClaferHash#hashCode() 
+	 * @see InstanceClaferHash#hashCode()
 	 */
 	private long getHashValueOfInstance(final InstanceClafer inst) {
 		int hash = 37;
@@ -414,15 +435,6 @@ public class InstanceGenerator {
 	}
 
 	/**
-	 * get list of generated instances, sorted by security, if possible
-	 * 
-	 * @return {@link List}<{@link InstanceClafer}> of generated instances
-	 */
-	public List<InstanceClafer> getGeneratedInstances() {
-		return generatedInstances;
-	}
-
-	/**
 	 * gives the instances, key field being the name in String format .
 	 *
 	 * @return
@@ -438,6 +450,15 @@ public class InstanceGenerator {
 	 */
 	public Map<String, InstanceClafer> getFirstInstance() {
 		return this.displayFirstNameToInstanceMap;
+	}
+
+	/**
+	 * get list of generated instances, sorted by security, if possible
+	 * 
+	 * @return {@link List}<{@link InstanceClafer}> of generated instances
+	 */
+	public List<InstanceClafer> getGeneratedInstances() {
+		return generatedInstances;
 	}
 
 	/**
@@ -492,12 +513,13 @@ public class InstanceGenerator {
 		this.taskName = taskName;
 	}
 
-	public void setAlgorithmName(final String algorithmName) {
-		this.algorithmName = algorithmName;
-
+	public void setAlgorithmNames(final String algorithmName) {
+		if (!this.algorithmName.contains(algorithmName)) {
+			this.algorithmName.add(algorithmName);
+		}
 	}
 
-	public String getAlgorithmName() {
+	public ArrayList<String> getAlgorithmNames() {
 		return this.algorithmName;
 
 	}
@@ -510,5 +532,13 @@ public class InstanceGenerator {
 	public int getAlgorithmCount() {
 		return this.algorithmCount;
 
+	}
+
+	public ArrayList<TreeMap<String, InstanceClafer>> getSeparatedAlgorithms() {
+		return separatedAlgorithms;
+	}
+
+	public void setSeparatedAlgorithms(ArrayList<TreeMap<String, InstanceClafer>> separatedAlgorithms) {
+		this.separatedAlgorithms = separatedAlgorithms;
 	}
 }

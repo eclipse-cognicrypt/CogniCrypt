@@ -2,7 +2,7 @@
 <feature
       id="de.cognicrypt.codegenerator.feature"
       label="CogniCrypt Crypto-API Example Generator"
-      version="1.0.0.201804101246"
+      version="1.0.0.201808141245"
       provider-name="Technical University Darmstadt; Paderborn University">
 
    <description url="https://cognicrypt.de">
@@ -111,16 +111,16 @@ Except as expressly stated in Sections 2(a) and 2(b) above, Recipient receives n
 
    <plugin
          id="de.cognicrypt.codegenerator"
-         download-size="50554"
-         install-size="57416"
-         version="1.0.0.201804101246"
+         download-size="75413"
+         install-size="176205"
+         version="1.0.0.201808141245"
          unpack="false"/>
 
    <plugin
          id="de.cognicrypt.core"
-         download-size="16"
-         install-size="34"
-         version="1.0.0.201804101246"
+         download-size="67"
+         install-size="164"
+         version="1.0.0.201808141245"
          unpack="false"/>
 
 </feature>

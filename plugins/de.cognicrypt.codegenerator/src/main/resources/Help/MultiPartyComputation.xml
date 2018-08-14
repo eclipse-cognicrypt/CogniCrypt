@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.contexts"?>
 <contexts>
-      <context  id="MultiPartyComputation_Page0" title="CogniCrypt">
+      <context  id="MultiPartyComputation_Page0" >
         <description>Are you doing Client-side implementation or Server-side implementation?
-NOTE: If you are implementing on the Server-side, then you must know the IP and port of the server.       </description>
+NOTE: If you are implementing on the Server-side, then you must know the IP address and Port number of the server.</description>
       </context>
-      <context  id="MultiPartyComputation_Page1" title="CogniCrypt">
-        <description>If you know both the IP and port of the server, select Yes.</description>
+      <context  id="MultiPartyComputation_Page1" >
+        <description>If you know both IP address and Port number of the server, select Yes.</description>
       </context>
-      <context  id="MultiPartyComputation_Page2" title="CogniCrypt">
-        <description>Enter both IP and port of the Server. Please ensure that you have entered them correctly.</description>
+      <context  id="MultiPartyComputation_Page2" >
+        <description>Enter both IP address and Port number of the server. Please ensure that you have entered them correctly.</description>
       </context>
-      <context  id="MultiPartyComputation_Page3" title="CogniCrypt">
-        <description>Multi-Party Computation scenario to be implemented?
-Read the description of Euclidean distance and Millionaire's Comparison in the 'Note' section.        </description>
+      <context  id="MultiPartyComputation_Page3" >
+        <description>Choose a Multi-Party Computation scenario to be implemented.
+Read the description of Euclidean distance and Millionaire's Comparison in the 'Note' section.</description>
       </context>
-      <context  id="MultiPartyComputation_Page4" title="CogniCrypt">
+      <context  id="MultiPartyComputation_Page4" >
         <description>There are five levels of security, from low to high. Choose one!</description>
       </context>
     </contexts>

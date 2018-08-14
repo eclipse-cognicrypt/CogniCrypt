@@ -1,0 +1,12 @@
+[
+		{
+			"name": "Symmetric Block Cipher",
+			"xmlFile" : "src/main/resources/Primitives/JSON/CipherQuestion.json",
+			"xslFile" : "src/main/resources/primitives/xsl/template/CipherSPI.xsl"
+			
+		},
+		{
+		  "name": "Message Digest",
+		  "xmlFile": ""
+		}
+]

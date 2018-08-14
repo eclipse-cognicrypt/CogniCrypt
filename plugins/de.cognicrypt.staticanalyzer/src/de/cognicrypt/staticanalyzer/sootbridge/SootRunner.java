@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2018 TU Darmstadt
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.staticanalyzer.sootbridge;
 
 import java.io.File;
@@ -14,11 +24,11 @@ import org.eclipse.jdt.core.IJavaProject;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
-import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.utils.Utils;
 import soot.G;
 import soot.PackManager;
@@ -37,11 +47,12 @@ import soot.options.Options;
 public class SootRunner {
 
 	private static CG DEFAULT_CALL_GRAPH = CG.CHA;
+
 	public static enum CG {
 		CHA, SPARK_LIBRARY, SPARK
 	}
 
-	private static SceneTransformer createAnalysisTransformer(final CrySLAnalysisListener reporter) {
+	private static SceneTransformer createAnalysisTransformer(final ResultsCCUIListener resultsReporter) {
 		return new SceneTransformer() {
 
 			@Override
@@ -61,7 +72,7 @@ public class SootRunner {
 					}
 
 				};
-				scanner.getAnalysisListener().addReportListener(reporter);
+				scanner.getAnalysisListener().addReportListener(resultsReporter);
 				scanner.scan();
 			}
 		};
@@ -92,11 +103,10 @@ public class SootRunner {
 		}
 	}
 
-
-	public static boolean runSoot(final IJavaProject project, final CrySLAnalysisListener reporter) {
+	public static boolean runSoot(final IJavaProject project, final ResultsCCUIListener resultsReporter) {
 		G.reset();
 		setSootOptions(project);
-		registerTransformers(reporter);
+		registerTransformers(resultsReporter);
 		try {
 			runSoot();
 		} catch (final Exception t) {
@@ -124,20 +134,20 @@ public class SootRunner {
 		Options.v().set_include(getIncludeList());
 		Options.v().set_exclude(getExcludeList());
 		Scene.v().loadNecessaryClasses();
-		switch(DEFAULT_CALL_GRAPH){
-			case SPARK:
-				Options.v().setPhaseOption("cg.spark", "on");
-				Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");
-				break;
-			case CHA:
-			default:
-				Options.v().setPhaseOption("cg.cha", "on");
-				Options.v().setPhaseOption("cg", "all-reachable:true");
+		switch (DEFAULT_CALL_GRAPH) {
+		case SPARK:
+			Options.v().setPhaseOption("cg.spark", "on");
+			Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");
+			break;
+		case CHA:
+		default:
+			Options.v().setPhaseOption("cg.cha", "on");
+			Options.v().setPhaseOption("cg", "all-reachable:true");
 		}
 		Options.v().setPhaseOption("jb", "use-original-names:true");
 		Options.v().set_output_format(Options.output_format_none);
 	}
-	
+
 	private static List<String> getIncludeList() {
 		List<String> includeList = new LinkedList<String>();
 		includeList.add("java.lang.AbstractStringBuilder");
@@ -155,18 +165,16 @@ public class SootRunner {
 
 	private static List<String> getExcludeList() {
 		List<String> excludeList = new LinkedList<String>();
-		for(CryptSLRule r : getRules()) {
+		for (CryptSLRule r : getRules()) {
 			excludeList.add(crypto.Utils.getFullyQualifiedName(r));
 		}
 		return excludeList;
 	}
-	
-	
-	
-	private static void registerTransformers(CrySLAnalysisListener reporter) {
-		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(reporter)));
+
+	private static void registerTransformers(ResultsCCUIListener resultsReporter) {
+		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(resultsReporter)));
 	}
-	
+
 	private static String getSootClasspath(final IJavaProject javaProject) {
 		return Joiner.on(File.pathSeparator).join(projectClassPath(javaProject));
 	}

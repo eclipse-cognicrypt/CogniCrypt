@@ -1,7 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.contexts"?>
 <contexts>
-      <context  id="SecureCommunication_Page0" title="CogniCrypt">
-        <description>Help content for this part is not ready. We are sorry!       </description>
+      <context  id="SecureCommunication_Page0">
+        <description>Enter the path to a file with ".jks" extension.
+Enter the password and check the correctness before proceeding.         </description>
       </context>
+      <context  id="SecureCommunication_Page1">
+        <description>Are you doing Client-side implementation or Server-side implementation?
+NOTE: If you are implementing on the Server-side, then you must know the Port number of the server. </description>
+      </context>
+      <context  id="SecureCommunication_Page2">
+        <description>If you know both IP address and Port number of the server, select Yes.</description>
+      </context>
+      <context  id="SecureCommunication_Page3">
+        <description>Enter the IP address and Port number of the server. Please ensure that you have entered them correctly. </description>
+      </context>
+      <context  id="SecureCommunication_Page4">
+        <description>This is an optional step for testing the connection to the host IP. </description>
+      </context>
+      <context  id="SecureCommunication_Page5">
+        <description>If you do not accept the default configuration, you have to choose the cipher suites and TLS protocol versions that you wish to use. </description>
+      </context>
+      <context  id="SecureCommunication_Page6">
+        <description>Choose the option that you wish and click 'Select' button. You can make multiple selections and the same time. The same applies for de-selection. </description>
+      </context>
+      <context  id="SecureCommunication_Page7">
+        <description>Enter the Port number of the server. Please ensure that you have entered them correctly. </description>
+      </context>
+      
     </contexts>

@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2018 TU Darmstadt
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.crysl.handler;
 
 import org.eclipse.core.runtime.IStatus;
@@ -17,7 +27,8 @@ public class Activator extends AbstractUIPlugin {
 	/**
 	 * The constructor
 	 */
-	public Activator() {}
+	public Activator() {
+	}
 
 	@Override
 	public void start(final BundleContext context) throws Exception {
@@ -41,10 +52,10 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given plug-in relative path
+	 * Returns an image descriptor for the image file at the given plug-in relative
+	 * path
 	 *
-	 * @param path
-	 *        the path
+	 * @param path the path
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(final String path) {

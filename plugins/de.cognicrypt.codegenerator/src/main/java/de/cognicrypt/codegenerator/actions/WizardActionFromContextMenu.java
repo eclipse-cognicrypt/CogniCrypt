@@ -1,12 +1,22 @@
+/********************************************************************************
+ * Copyright (c) 2015-2018 TU Darmstadt
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.codegenerator.actions;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import de.cognicrypt.codegenerator.wizard.CogniCryptWizardDialog;
 import de.cognicrypt.codegenerator.wizard.ConfiguratorWizard;
 import de.cognicrypt.core.Constants;
 
@@ -47,7 +57,8 @@ public class WizardActionFromContextMenu implements IWorkbenchWindowActionDelega
 	@Override
 	public void run(final IAction action) {
 		Constants.WizardActionFromContextMenuFlag = true;
-		final WizardDialog dialog = new WizardDialog(new Shell(), new ConfiguratorWizard());
+		final CogniCryptWizardDialog dialog = new CogniCryptWizardDialog(new Shell(), new ConfiguratorWizard());
+		
 		dialog.open();
 	}
 

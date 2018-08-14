@@ -2,7 +2,7 @@
 <feature
       id="de.cognicrypt.staticanalyzer.feature"
       label="CogniCrypt Crypto-API Misuse Detector"
-      version="1.0.0.201804101246"
+      version="1.0.0.201808141245"
       provider-name="Technical University Darmstadt; Paderborn University">
 
    <description url="https://cognicrypt.de">
@@ -103,8 +103,8 @@ Except as expressly stated in Sections 2(a) and 2(b) above, Recipient receives n
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.xtext"/>
-      <import plugin="org.eclipse.xtext.common.types.ui"/>
+      <import plugin="org.eclipse.xtext" version="2.13.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.common.types.ui" version="2.13.0" match="greaterOrEqual"/>
       <import plugin="de.darmstadt.tu.crossing.CryptSL" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="de.darmstadt.tu.crossing.CryptSL.ide" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="de.darmstadt.tu.crossing.CryptSL.ui" version="1.0.0" match="greaterOrEqual"/>
@@ -114,16 +114,16 @@ Except as expressly stated in Sections 2(a) and 2(b) above, Recipient receives n
 
    <plugin
          id="de.cognicrypt.staticanalyzer"
-         download-size="14488"
-         install-size="16186"
-         version="1.0.0.201804101246"
+         download-size="16154"
+         install-size="17991"
+         version="1.0.0.201808141245"
          unpack="false"/>
 
    <plugin
          id="de.cognicrypt.core"
-         download-size="16"
-         install-size="34"
-         version="1.0.0.201804101246"
+         download-size="67"
+         install-size="164"
+         version="1.0.0.201808141245"
          unpack="false"/>
 
 </feature>

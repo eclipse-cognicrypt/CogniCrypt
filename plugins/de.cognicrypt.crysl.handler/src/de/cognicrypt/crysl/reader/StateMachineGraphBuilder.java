@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2018 TU Darmstadt
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.crysl.reader;
 
 import java.util.ArrayList;
@@ -32,12 +42,14 @@ public class StateMachineGraphBuilder {
 		return addRegularEdge(leaf, prevNode, nextNode, false);
 	}
 
-	private StateNode addRegularEdge(final Expression leaf, final StateNode prevNode, final StateNode nextNode, final Boolean isStillAccepting) {
+	private StateNode addRegularEdge(final Expression leaf, final StateNode prevNode, final StateNode nextNode,
+			final Boolean isStillAccepting) {
 		final List<CryptSLMethod> label = CrySLReaderUtils.resolveAggregateToMethodeNames(leaf.getOrderEv().get(0));
 		return addRegularEdge(label, prevNode, nextNode, isStillAccepting);
 	}
 
-	private StateNode addRegularEdge(final List<CryptSLMethod> label, final StateNode prevNode, StateNode nextNode, final Boolean isStillAccepting) {
+	private StateNode addRegularEdge(final List<CryptSLMethod> label, final StateNode prevNode, StateNode nextNode,
+			final Boolean isStillAccepting) {
 		if (nextNode == null) {
 			nextNode = getNewNode();
 			this.result.addNode(nextNode);
@@ -76,7 +88,8 @@ public class StateMachineGraphBuilder {
 		return outgoingEdges;
 	}
 
-	private StateNode isGeneric(final String el, final int level, final Multimap<Integer, Entry<String, StateNode>> leftOvers) {
+	private StateNode isGeneric(final String el, final int level,
+			final Multimap<Integer, Entry<String, StateNode>> leftOvers) {
 		for (final Entry<String, StateNode> entry : leftOvers.get(level)) {
 			if (el.equals(entry.getKey())) {
 				return entry.getValue();
@@ -93,20 +106,22 @@ public class StateMachineGraphBuilder {
 		return isGeneric("?", level, leftOvers);
 	}
 
-	private StateNode process(final Expression curLevel, final int level, final Multimap<Integer, Map.Entry<String, StateNode>> leftOvers, StateNode prevNode) {
+	private StateNode process(final Expression curLevel, final int level,
+			final Multimap<Integer, Map.Entry<String, StateNode>> leftOvers, StateNode prevNode) {
 		final Expression left = curLevel.getLeft();
 		final Expression right = curLevel.getRight();
 		final String leftElOp = (left != null) ? left.getElementop() : "";
 		final String rightElOp = (right != null) ? right.getElementop() : "";
 		final String orderOp = curLevel.getOrderop();
-		//case 1 = left & right = non-leaf
-		//case 2 = left = non-leaf & right = leaf
-		//case 3 = left = leaf & right = non-leaf
-		//case 4 = left = leaf & right = leaf
+		// case 1 = left & right = non-leaf
+		// case 2 = left = non-leaf & right = leaf
+		// case 3 = left = leaf & right = non-leaf
+		// case 4 = left = leaf & right = leaf
 
 		if (left == null && right == null) {
 			addRegularEdge(curLevel, prevNode, null);
-		} else if ((left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
+		} else if ((left instanceof Order || left instanceof SimpleOrder)
+				&& (right instanceof Order || right instanceof SimpleOrder)) {
 			final StateNode leftPrev = prevNode;
 			prevNode = process(left, level + 1, leftOvers, prevNode);
 
@@ -146,11 +161,13 @@ public class StateMachineGraphBuilder {
 				addRegularEdge(right, leftPrev, prevNode, true);
 			}
 
-		} else if ((left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
+		} else if ((left instanceof Order || left instanceof SimpleOrder)
+				&& !(right instanceof Order || right instanceof SimpleOrder)) {
 			prevNode = process(left, level + 1, leftOvers, prevNode);
 
 			prevNode = addRegularEdge(right, prevNode, null);
-		} else if (!(left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
+		} else if (!(left instanceof Order || left instanceof SimpleOrder)
+				&& (right instanceof Order || right instanceof SimpleOrder)) {
 			StateNode leftPrev = null;
 			leftPrev = prevNode;
 			prevNode = addRegularEdge(left, prevNode, null);
@@ -182,7 +199,8 @@ public class StateMachineGraphBuilder {
 				addRegularEdge(right, leftPrev, prevNode, true);
 			}
 
-		} else if (!(left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
+		} else if (!(left instanceof Order || left instanceof SimpleOrder)
+				&& !(right instanceof Order || right instanceof SimpleOrder)) {
 			StateNode leftPrev = null;
 			leftPrev = prevNode;
 			StateNode returnToNode = isOr(level, leftOvers);
@@ -231,7 +249,8 @@ public class StateMachineGraphBuilder {
 		return false;
 	}
 
-	private void processHead(final Expression curLevel, final int level, final Multimap<Integer, Map.Entry<String, StateNode>> leftOvers, StateNode prevNode) {
+	private void processHead(final Expression curLevel, final int level,
+			final Multimap<Integer, Map.Entry<String, StateNode>> leftOvers, StateNode prevNode) {
 		final Expression left = curLevel.getLeft();
 		final Expression right = curLevel.getRight();
 		final String leftElOp = (left != null) ? left.getElementop() : "";
@@ -240,7 +259,8 @@ public class StateMachineGraphBuilder {
 
 		if (left == null && right == null) {
 			addRegularEdge(curLevel, prevNode, null);
-		} else if ((left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
+		} else if ((left instanceof Order || left instanceof SimpleOrder)
+				&& (right instanceof Order || right instanceof SimpleOrder)) {
 			final StateNode leftPrev = prevNode;
 			prevNode = process(left, level + 1, leftOvers, prevNode);
 			final StateNode rightPrev = prevNode;
@@ -265,7 +285,8 @@ public class StateMachineGraphBuilder {
 			if (leftElOp != null && ("?".equals(leftElOp) || "*".equals(leftElOp))) {
 				addRegularEdge(right, leftPrev, prevNode, true);
 			}
-		} else if ((left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
+		} else if ((left instanceof Order || left instanceof SimpleOrder)
+				&& !(right instanceof Order || right instanceof SimpleOrder)) {
 			final StateNode leftPrev = prevNode;
 			prevNode = process(left, level + 1, leftOvers, prevNode);
 			final StateNode rightPrev = prevNode;
@@ -283,7 +304,8 @@ public class StateMachineGraphBuilder {
 			if ((returnToNode = isQM(level, leftOvers)) != null) {
 				addRegularEdge(right, returnToNode, prevNode, true);
 			}
-		} else if (!(left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
+		} else if (!(left instanceof Order || left instanceof SimpleOrder)
+				&& (right instanceof Order || right instanceof SimpleOrder)) {
 			StateNode leftPrev = null;
 			leftPrev = prevNode;
 			prevNode = addRegularEdge(left, prevNode, null);
@@ -325,7 +347,8 @@ public class StateMachineGraphBuilder {
 				setAcceptingState(rightPrev);
 			}
 
-		} else if (!(left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
+		} else if (!(left instanceof Order || left instanceof SimpleOrder)
+				&& !(right instanceof Order || right instanceof SimpleOrder)) {
 			StateNode leftPrev = null;
 			leftPrev = prevNode;
 			StateNode returnToNode = isOr(level, leftOvers);

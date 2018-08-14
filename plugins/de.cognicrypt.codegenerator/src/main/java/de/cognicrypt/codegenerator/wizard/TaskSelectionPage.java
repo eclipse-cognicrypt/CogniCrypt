@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2018 TU Darmstadt
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.codegenerator.wizard;
 
 import java.util.HashMap;
@@ -5,28 +15,36 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-//import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import de.cognicrypt.codegenerator.primitive.wizard.PrimitiveIntegrationWizard;
+import de.cognicrypt.codegenerator.taskintegrator.wizard.TaskIntegrationWizard;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
@@ -36,7 +54,6 @@ public class TaskSelectionPage extends WizardPage {
 
 	private Composite container;
 	private ComboViewer taskComboSelection;
-	private Button guidedModeCheckBox;
 	private IProject selectedProject = null;
 
 	public TaskSelectionPage() {
@@ -49,11 +66,14 @@ public class TaskSelectionPage extends WizardPage {
 	@Override
 	public void createControl(final Composite parent) {
 
-		this.container = new Composite(parent, SWT.NONE);
-		this.container.setBounds(10, 10, 200, 300);
+		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		this.container = new Composite(sc, SWT.NONE);
+		this.container.setBounds(10, 10, 450, 200);
 
 		//To display the Help view after clicking the help icon
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.container, "de.cognicrypt.codegenerator.help_id_1");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(sc, "de.cognicrypt.codegenerator.TaskSelectionHelp");
 		this.container.setLayout(new GridLayout(2, false));
 
 		final Label selectProjectLabel = new Label(this.container, SWT.NONE);
@@ -83,6 +103,7 @@ public class TaskSelectionPage extends WizardPage {
 			projectComboSelection.setSelection(new StructuredSelection(projectComboSelection.getElementAt(0)));
 		} else {
 			projectComboSelection.setInput(javaProjects.keySet().toArray());
+			projectComboSelection.setComparator(new ViewerComparator());
 			projectComboSelection.addSelectionChangedListener(event -> {
 				final IStructuredSelection selected = (IStructuredSelection) event.getSelection();
 				this.selectedProject = javaProjects.get(selected.getFirstElement());
@@ -106,8 +127,8 @@ public class TaskSelectionPage extends WizardPage {
 		selectTaskLabel.setText(Constants.SELECT_TASK);
 
 		this.taskComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
-		final Combo taskCombo = this.taskComboSelection.getCombo();
-		final GridData gd_taskCombo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		Combo taskCombo = taskComboSelection.getCombo();
+		GridData gd_taskCombo = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_taskCombo.widthHint = 223;
 		taskCombo.setLayoutData(gd_taskCombo);
 		taskCombo.setToolTipText(Constants.TASKLIST_TOOLTIP);
@@ -130,6 +151,7 @@ public class TaskSelectionPage extends WizardPage {
 		});
 
 		this.taskComboSelection.setInput(tasks);
+		this.taskComboSelection.setComparator(new ViewerComparator());
 		//Label for task description
 		final Label taskDescription = new Label(this.container, SWT.NONE);
 		final GridData gd_taskDescription = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
@@ -143,8 +165,29 @@ public class TaskSelectionPage extends WizardPage {
 		gd_descriptionText.widthHint = 297;
 		gd_descriptionText.heightHint = 96;
 		descriptionText.setLayoutData(gd_descriptionText);
-		descriptionText.setToolTipText(Constants.DESCRIPTION_BOX_TOOLTIP);
+		descriptionText.setToolTipText("Description for the selected cryptographic task ");
 		descriptionText.setEditable(false);
+		descriptionText.setCursor(null);
+
+		//Hide scroll bar 
+		Listener scrollBarListener = new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+				Text t = (Text) event.widget;
+				Rectangle r1 = t.getClientArea();
+				// use r1.x as wHint instead of SWT.DEFAULT
+				Rectangle r2 = t.computeTrim(r1.x, r1.y, r1.width, r1.height);
+				Point p = t.computeSize(r1.x, SWT.DEFAULT, true);
+				t.getVerticalBar().setVisible(r2.height <= p.y);
+				if (event.type == SWT.Modify) {
+					t.getParent().layout(true);
+					t.showSelection();
+				}
+			}
+		};
+		descriptionText.addListener(SWT.Resize, scrollBarListener);
+		descriptionText.addListener(SWT.Modify, scrollBarListener);
 
 		this.taskComboSelection.addSelectionChangedListener(event -> {
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
@@ -160,26 +203,48 @@ public class TaskSelectionPage extends WizardPage {
 		new Label(this.container, SWT.NONE);
 		new Label(this.container, SWT.NONE);
 
-		//Check box for going to guided mode
-		this.guidedModeCheckBox = new Button(this.container, SWT.CHECK);
-		this.guidedModeCheckBox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		this.guidedModeCheckBox.setToolTipText(Constants.GUIDEDMODE_TOOLTIP);
-		this.guidedModeCheckBox.setEnabled(true);
-		this.guidedModeCheckBox.addSelectionListener(new SelectionAdapter() {
+		sc.setContent(container);
+		sc.setExpandHorizontal(true);
+		sc.setExpandVertical(true);
+		sc.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		setControl(sc);
+
+		//Primitive Integration
+		Button btnPrimitiveIntegration = new Button(container, SWT.NONE);
+		btnPrimitiveIntegration.addSelectionListener(new SelectionAdapter() {
 
 			@Override
-			public void widgetSelected(final SelectionEvent e) {
-
+			public void widgetSelected(SelectionEvent e) {
+				WizardDialog wizardDialog = new WizardDialog(parent.getShell(), new PrimitiveIntegrationWizard());
+				if (wizardDialog.open() == Window.CANCEL) {
+					System.out.println("Ok pressed");
+				} else {
+					System.out.println("Cancel pressed");
+				}
 			}
 		});
-		this.guidedModeCheckBox.setText(Constants.GUIDED_MODE);
-		this.guidedModeCheckBox.setSelection(true);
-		final ControlDecoration deco = new ControlDecoration(this.guidedModeCheckBox, SWT.TOP | SWT.LEFT);
-		final Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage();
+		btnPrimitiveIntegration.setText("Primitive Integration");
+		//Visibility SET TO FALSE. REMOVE FOLLOWING LINE WHEN WORKING ON TASK INTEGRATION.
+		btnPrimitiveIntegration.setVisible(false);
+		//Task Integration
+		Button btnTaskIntegration = new Button(container, SWT.NONE);
+		btnTaskIntegration.addSelectionListener(new SelectionAdapter() {
 
-		deco.setDescriptionText(Constants.GUIDED_MODE_CHECKBOX_INFO);
-		deco.setImage(image);
-		deco.setShowOnlyOnFocus(false);
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				WizardDialog wizardDialog = new WizardDialog(parent.getShell(), new TaskIntegrationWizard());
+				if (wizardDialog.open() == Window.CANCEL) {
+					System.out.println("Ok pressed");
+				} else {
+					System.out.println("Cancel pressed");
+				}
+			}
+		});
+		btnTaskIntegration.setText("Task Integration");
+		//Visibility SET TO FALSE. REMOVE FOLLOWING LINE WHEN WORKING ON PRIMITIVE INTEGRATION.
+		btnTaskIntegration.setVisible(false);
+
+		new Label(container, SWT.NONE);
 
 	}
 
@@ -191,14 +256,6 @@ public class TaskSelectionPage extends WizardPage {
 		return (Task) ((IStructuredSelection) this.taskComboSelection.getSelection()).getFirstElement();
 	}
 
-	/**
-	 * Helper method to UI , this flag decides the second page of the wizard.
-	 *
-	 * @return
-	 */
-	public boolean isGuidedMode() {
-		return this.guidedModeCheckBox.getSelection();
-	}
 
 	@Override
 	public void setVisible(final boolean visible) {

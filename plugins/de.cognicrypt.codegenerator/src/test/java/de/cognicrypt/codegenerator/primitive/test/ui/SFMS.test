@@ -1,0 +1,67 @@
+--- RCPTT testcase ---
+Format-Version: 1.0
+Element-Name: SFMS
+Element-Type: testcase
+Element-Version: 3.0
+External-Reference: 
+Id: _HA0JgC6oEeiMpYttnX8SBA
+Runtime-Version: 2.1.0.201606221726
+Save-Time: 4/3/18 2:18 PM
+Testcase-Type: ecl
+
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
+Content-Type: text/ecl
+Entry-Name: .content
+
+get-button "Generate Code For Cryptographic Task" | click
+with [get-window "Cryptography Task Configurator"] {
+    get-button "Primitive Integration" | click
+    get-window "-1-" | get-button "Next >" | click
+    with [get-window "-2-"] {
+        with [get-editbox -after [get-label "Name of the algorithm ?"]] {
+            set-text SFMS
+            key-type "TRAVERSE_TAB_NEXT"
+        }
+        with [get-editbox -after [get-label "Name of the author/company:"]] {
+            set-text UPB
+            key-type "TRAVERSE_TAB_NEXT"
+        }
+        get-editbox -after [get-label "Algorithm description:"] 
+            | set-text "This is Test case for Single Fixed Key Size with Multiplt Modes of operation but Single Padding Modes"
+        get-button "Next >" | click
+    }
+    with [get-window "-3-"] {
+        get-editbox -after [get-label "Blocksize of the cipher (in bits):"] | set-text 64
+        get-button "Next >" | click
+    }
+    with [get-window "-4-"] {
+        with [get-group ""] {
+            get-button "fixed size" | click
+            get-editbox | set-text 4565
+        }
+        get-button "Next >" | click
+    }
+    with [get-window "-5-"] {
+        get-button CBC | check
+        get-button OFB | check
+        get-button CFB | check
+        get-button "Next >" | click
+    }
+    with [get-window "-6-"] {
+        get-button "OneAndZeroes Padding" | check
+        get-button "Next >" | click
+    }
+}
+set-dialog-result File "D:\\Nen\\workspace\\clafer.sample\\.project"
+with [get-window "Cryptography Task Configurator"] {
+    with [get-window "-7-"] {
+        get-button Browse | click
+        get-button "Next >" | click
+    }
+    with [get-window "-8-"] {
+        get-button "Next >" | click
+        get-button Finish | click
+    }
+    get-button Cancel | click
+}
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--

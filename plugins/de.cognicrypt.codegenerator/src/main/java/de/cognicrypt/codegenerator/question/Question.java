@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2018 TU Darmstadt
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.codegenerator.question;
 
 import java.util.ArrayList;
@@ -15,11 +25,18 @@ public class Question {
 	private Answer defaultAnswer;
 	private ArrayList<String> method;
 	private ArrayList<Integer> methodParamIds;
+	private String questionType;
 	private Answer enteredAnswer;
+	private String extension;
 	//Note
-	private String note;
+	private String note = "";
+
+	//TextType
+	private String textType;
 	//tooltip
-	private String tooltip;
+	private String tooltip = "";
+	//helpText
+	private transient String helpText = "";
 
 	public ArrayList<Answer> getAnswers() {
 		return this.answers;
@@ -27,6 +44,7 @@ public class Question {
 
 	/**
 	 * Retrieves the default answer of the question.
+	 * 
 	 * @return Default answer
 	 */
 	public Answer getDefaultAnswer() {
@@ -42,6 +60,7 @@ public class Question {
 
 	/**
 	 * Retrieves the widget the question should be displayed as.
+	 * 
 	 * @return GUI widget associated with the question
 	 */
 	public GUIElements getElement() {
@@ -63,6 +82,11 @@ public class Question {
 	//added get method for tooltip
 	public String getTooltip() {
 		return this.tooltip;
+	}
+
+	//added the type of the text
+	public String getTextType() {
+		return this.textType;
 	}
 
 	public String getQuestionText() {
@@ -98,8 +122,14 @@ public class Question {
 		this.note = note;
 	}
 
-	public void getTooltip(final String tooltip) {
+	//added set method for tooltip
+	public void setTooltip(final String tooltip) {
 		this.tooltip = tooltip;
+	}
+
+	//added set method for the type of text
+	public void setTextType(final String textType) {
+		this.textType = textType;
 	}
 
 	public void setQuestionText(final String questionText) {
@@ -132,12 +162,36 @@ public class Question {
 		return builder.toString();
 	}
 
-	public Answer setEnteredAnswer(final Answer enteredAnswer) {
+	public String getQuestionType() {
+		return questionType;
+	}
+
+	public void setQuestionType(String questionType) {
+		this.questionType = questionType;
+	}
+
+	public Answer setEnteredAnswer(Answer enteredAnswer) {
 		return this.enteredAnswer = enteredAnswer;
 	}
 
 	public Answer getEnteredAnswer() {
 		return this.enteredAnswer;
+	}
+
+	public String getExtension() {
+		return extension;
+	}
+
+	public void setExtension(String extension) {
+		this.extension = extension;
+	}
+
+	public String getHelpText() {
+		return helpText;
+	}
+
+	public void setHelpText(String helpText) {
+		this.helpText = helpText;
 	}
 
 }

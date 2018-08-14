@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.contexts"?>
-<contexts> 
-      <context  id="help_id_1" title="CogniCrypt"> 
-        <description>Select a cryptographic task for which you want to generate the code. The code will be generated inside the chosen Java project. Guided mode simplifies your job!</description> 
-                
-      </context> 
-    </contexts> 
+<contexts>
+	<context id="TaskSelectionHelp">
+		<description>Select a cryptographic task for which you want to automate the code generation. The code will be generated inside the chosen Java project.
+A Guided mode will configure the algorithm to suit your needs. You can opt the Non-Guided mode, if you wish to configure the algorithm by yourself.
+		</description>
+	</context>
+</contexts> 

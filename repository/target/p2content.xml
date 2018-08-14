@@ -1,30 +1,31 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <units size='2'>
-  <unit id='201804101246.de.cognicrypt.catergory' version='1.0.0.6--cF9nnh7MAGwAYGAGMYk'>
-    <properties size='2'>
-      <property name='org.eclipse.equinox.p2.name' value='CogniCrypt'/>
-      <property name='org.eclipse.equinox.p2.type.category' value='true'/>
-    </properties>
-    <provides size='1'>
-      <provided namespace='org.eclipse.equinox.p2.iu' name='201804101246.de.cognicrypt.catergory' version='1.0.0.6--cF9nnh7MAGwAYGAGMYk'/>
-    </provides>
-    <requires size='3'>
-      <required namespace='org.eclipse.equinox.p2.iu' name='de.cognicrypt.cryslhandler.feature.feature.group' range='[1.0.0.201804101246,1.0.0.201804101246]'/>
-      <required namespace='org.eclipse.equinox.p2.iu' name='de.cognicrypt.staticanalyzer.feature.feature.group' range='[1.0.0.201804101246,1.0.0.201804101246]'/>
-      <required namespace='org.eclipse.equinox.p2.iu' name='de.cognicrypt.codegenerator.feature.feature.group' range='[1.0.0.201804101246,1.0.0.201804101246]'/>
-    </requires>
-    <touchpoint id='null' version='0.0.0'/>
-  </unit>
-  <unit id='201804101246.de.darmstadt.tu.crysl' version='1.0.0.2--cENWhl7735I395C57C7'>
+  <unit id='201808141245.de.darmstadt.tu.crysl' version='1.0.0.4--cENWhl7E7Ac7I9KAIKI'>
     <properties size='2'>
       <property name='org.eclipse.equinox.p2.name' value='CrySL'/>
       <property name='org.eclipse.equinox.p2.type.category' value='true'/>
     </properties>
     <provides size='1'>
-      <provided namespace='org.eclipse.equinox.p2.iu' name='201804101246.de.darmstadt.tu.crysl' version='1.0.0.2--cENWhl7735I395C57C7'/>
+      <provided namespace='org.eclipse.equinox.p2.iu' name='201808141245.de.darmstadt.tu.crysl' version='1.0.0.4--cENWhl7E7Ac7I9KAIKI'/>
     </provides>
-    <requires size='1'>
+    <requires size='2'>
+      <required namespace='org.eclipse.equinox.p2.iu' name='de.darmstadt.tu.crossing.CryptSL.feature.feature.group' range='[1.0.0.201803021424,1.0.0.201803021424]'/>
       <required namespace='org.eclipse.equinox.p2.iu' name='de.darmstadt.tu.crossing.CryptSL.feature.feature.group' range='[1.0.0.201803151252,1.0.0.201803151252]'/>
+    </requires>
+    <touchpoint id='null' version='0.0.0'/>
+  </unit>
+  <unit id='201808141245.de.cognicrypt.catergory' version='1.0.0.6--cF8Qnh7MAGwAwGYGMYe'>
+    <properties size='2'>
+      <property name='org.eclipse.equinox.p2.name' value='CogniCrypt'/>
+      <property name='org.eclipse.equinox.p2.type.category' value='true'/>
+    </properties>
+    <provides size='1'>
+      <provided namespace='org.eclipse.equinox.p2.iu' name='201808141245.de.cognicrypt.catergory' version='1.0.0.6--cF8Qnh7MAGwAwGYGMYe'/>
+    </provides>
+    <requires size='3'>
+      <required namespace='org.eclipse.equinox.p2.iu' name='de.cognicrypt.codegenerator.feature.feature.group' range='[1.0.0.201808141245,1.0.0.201808141245]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='de.cognicrypt.staticanalyzer.feature.feature.group' range='[1.0.0.201808141245,1.0.0.201808141245]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='de.cognicrypt.cryslhandler.feature.feature.group' range='[1.0.0.201808141245,1.0.0.201808141245]'/>
     </requires>
     <touchpoint id='null' version='0.0.0'/>
   </unit>

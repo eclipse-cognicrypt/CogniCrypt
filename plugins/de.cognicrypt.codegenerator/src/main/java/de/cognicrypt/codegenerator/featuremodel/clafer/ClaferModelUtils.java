@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2018 TU Darmstadt
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.codegenerator.featuremodel.clafer;
 
 import org.clafer.ast.AstAbstractClafer;
@@ -14,8 +24,11 @@ public class ClaferModelUtils {
 
 	/**
 	 * Method to find a clafer with a given name in whole model
-	 * @param startingClafer Starting point for search in the clafer model
-	 * @param name name of Clafer that is searched for
+	 * 
+	 * @param startingClafer
+	 *        Starting point for search in the clafer model
+	 * @param name
+	 *        name of Clafer that is searched for
 	 * @return Requested clafer or <CODE>null</CODE> if clafer was not found
 	 */
 	public static AstClafer findClaferByName(final AstClafer startingClafer, final String name) {
@@ -64,9 +77,12 @@ public class ClaferModelUtils {
 	/**
 	 * Creates a new clafer in the model.
 	 * 
-	 * @param parentClafer clafer the new clafer is a subclafer to
-	 * @param name Name of new clafer
-	 * @param type Type of new clafer 
+	 * @param parentClafer
+	 *        clafer the new clafer is a subclafer to
+	 * @param name
+	 *        Name of new clafer
+	 * @param type
+	 *        Type of new clafer
 	 * @return newly created clafer
 	 */
 	public static AstConcreteClafer createClafer(final AstClafer parentClafer, final String name, final String type) {
@@ -87,7 +103,8 @@ public class ClaferModelUtils {
 	/**
 	 * Method to check if the given clafer is abstract
 	 *
-	 * @param astClafer clafer that is checked
+	 * @param astClafer
+	 *        clafer that is checked
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if passed clafer is concrete/abstract.
 	 */
 	public static boolean isConcrete(final AstClafer astClafer) {
@@ -103,10 +120,13 @@ public class ClaferModelUtils {
 	}
 
 	/**
-	 * removes scope from name (e.g., c0_) and changes first letter of the string to Upper case example c0_scope will become Scope
+	 * removes scope from clafer name (e.g., c0_), example c0_scope will become scope
+	 *
+	 * @param claferName
+	 *        {@link String} containing the clafer name prefixed with c0_
+	 * @return {@link String} containing the clafer name without scope prefix
 	 */
-	public static String removeScopePrefix(final String scope) {
-		final String shortenedScope = scope.substring(scope.indexOf('_') + 1, scope.length());
-		return shortenedScope.substring(0, 1).toUpperCase() + shortenedScope.substring(1, shortenedScope.length());
+	public static String removeScopePrefix(final String claferName) {
+		return claferName.substring(claferName.indexOf('_') + 1, claferName.length());
 	}
 }

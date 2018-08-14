@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2018 TU Darmstadt
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.codegenerator.utilities;
 
 import java.io.FileWriter;
@@ -47,27 +57,33 @@ public class XMLParser {
 	 */
 	public Document displayInstanceValues(final InstanceClafer inst, final Map<Question, Answer> constraints) {
 		this.document = DocumentHelper.createDocument();
+
+		// create task tag on the root level of the document
 		final Element taskElem = this.document.addElement(Constants.Task);
+
 		if (inst != null && inst.hasChildren()) {
 			final String taskName = inst.getType().getName();
 			taskElem.addAttribute(Constants.Description, ClaferModelUtils.removeScopePrefix(taskName));
+
+			// add imports
 			taskElem.addElement(Constants.Package).addText(Constants.PackageName);	// Constants.xmlPackage
 			final Element xmlimports = taskElem.addElement(Constants.Imports);
 			for (final String file : Constants.xmlimportsarr) {
 				xmlimports.addElement(Constants.Import).addText(file);
 			}
 
-			boolean oneLevelToAlgorithm = false;
+			boolean isSubclaferOfAlgorithm = false;
 			for (final InstanceClafer in : inst.getChildren()) {
 				final AstClafer targetType = in.getType().getRef().getTargetType();
+				// climb up the inheritances to find if the current clafer is a subclafer of _Algorithm_
 				for (AstClafer superClafer = targetType.getSuperClafer(); superClafer != null && superClafer.hasSuperClafer(); superClafer = superClafer.getSuperClafer()) {
 					if (superClafer.toString().contains(Constants.CLAFER_ALGORITHM)) {
-						oneLevelToAlgorithm = true;
+						isSubclaferOfAlgorithm = true;
 						break;
 					}
 				}
 
-				if (oneLevelToAlgorithm) {
+				if (isSubclaferOfAlgorithm) {
 					if (!targetType.isPrimitive()) {
 						final Element algoElem = taskElem.addElement(Constants.ALGORITHM).addAttribute(Constants.Type, ClaferModelUtils.removeScopePrefix(targetType.getName()));
 						displayInstanceXML(in, algoElem);
@@ -77,28 +93,29 @@ public class XMLParser {
 				}
 			}
 
-			if (!oneLevelToAlgorithm) {
-				final Element algoElem = taskElem.addElement("element").addAttribute(Constants.Type, taskElem.attributes().get(0).getValue());
+			// add the element tag containing the direct subclafers of the Task instance
+			final Element algoElem = taskElem.addElement("element").addAttribute(Constants.Type, taskElem.attributes().get(0).getValue());
 
-				for (final InstanceClafer in : inst.getChildren()) {
-					if (!in.getType().getName().contains("description")) {
-						final Object ref = in.getRef();
-						String text = "";
-						if (ref instanceof InstanceClafer) {
-							text = ClaferModelUtils.removeScopePrefix(((InstanceClafer) in.getRef()).getType().getName());
-						} else if (ref instanceof Integer) {
-							text = ref.toString();
-						} else if (ref instanceof String) {
-							text = (String) ref;
-						} else {
-							text = "This should not happen.";
-						}
-						algoElem.addElement(ClaferModelUtils.removeScopePrefix(in.getType().getName())).setText(text);
+			for (final InstanceClafer in : inst.getChildren()) {
+				if (!in.getType().getName().contains("description")) {
+					final Object ref = in.getRef();
+					String text = "";
+					if (ref instanceof InstanceClafer) {
+						text = ClaferModelUtils.removeScopePrefix(((InstanceClafer) in.getRef()).getType().getName());
+					} else if (ref instanceof Integer) {
+						text = ref.toString();
+					} else if (ref instanceof String) {
+						text = (String) ref;
+					} else {
+						text = "This should not happen.";
 					}
-
+					algoElem.addElement(ClaferModelUtils.removeScopePrefix(in.getType().getName())).setText(text);
 				}
+
 			}
 		}
+
+		// add code dependencies
 		final Element codeElem = taskElem.addElement(Constants.Code);
 		for (final Entry<Question, Answer> ent : constraints.entrySet()) {
 			final ArrayList<CodeDependency> cdp = ent.getValue().getCodeDependencies();
@@ -130,20 +147,16 @@ public class XMLParser {
 			if (inst.hasRef() && !inst.getType().isPrimitive() && (refClass = inst.getRef().getClass().toString()) != null && !refClass.contains(Constants.INTEGER) && !refClass
 				.contains(Constants.STRING) && !refClass.contains(Constants.BOOLEAN)) {
 				this.enumParent = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
-				this.enumParent = Character.toLowerCase(this.enumParent.charAt(0)) + this.enumParent.substring(1);
 				displayInstanceXML((InstanceClafer) inst.getRef(), parent);
 			} else if (PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())) {
 				String superClaferName = ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName());
-				superClaferName = Character.toLowerCase(superClaferName.charAt(0)) + superClaferName.substring(1);
 				parent.addElement(this.enumParent).addText(ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", ""));
 			} else {
 				String instName = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
-				instName = Character.toLowerCase(instName.charAt(0)) + instName.substring(1);
 				if (inst.hasRef()) {
 					parent.addElement(instName).addText(inst.getRef().toString().replace("\"", ""));
 				} else {
 					String instparentName = ClaferModelUtils.removeScopePrefix(inst.getType().getParent().getName());
-					instparentName = Character.toLowerCase(instparentName.charAt(0)) + instparentName.substring(1);
 					parent.addElement(instparentName).addText(instName);
 				}
 			}

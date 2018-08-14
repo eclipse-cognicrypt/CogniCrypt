@@ -1,0 +1,125 @@
+[
+  {
+    "id": 0,
+    "content": [
+      {
+        "id": 0,
+        "element": "radio",
+        "questionText": "Do you need both signing and verification?",
+        "answers": [
+          {
+            "value": "Only signing",
+            "defaultAnswer": false,
+            "codeDependencies": [
+              {
+                "option": "signingAndVerification",
+                "value": "signing"
+              }
+            ]
+          },
+          {
+            "value": "Both, signing and verification",
+            "defaultAnswer": true,
+            "codeDependencies": [
+              {
+                "option": "signingAndVerification",
+                "value": "both"
+              }
+            ]
+          }
+        ],
+        "note": "",
+        "tooltip": ""
+      }
+    ],
+    "nextID": 1,
+    "helpID": ""
+  },
+  {
+    "id": 1,
+    "content": [
+      {
+        "id": 1,
+        "element": "radio",
+        "questionText": "Do you prefer a particular Digital Signature Scheme?",
+        "answers": [
+          {
+            "value": "Yes, I would like to choose from a list.",
+            "defaultAnswer": false,
+            "nextID": "2"
+          },
+          {
+            "value": "No, but I do need fast verification.",
+            "defaultAnswer": false,
+            "claferDependencies": [
+              {
+                "algorithm": "scheme",
+                "operand": "performance",
+                "value": "Fast",
+                "operator": ">="
+              }
+            ],
+            "nextID": "-1"
+          },
+          {
+            "value": "No, I would like state-of-the-art security.",
+            "defaultAnswer": true,
+            "claferDependencies": [
+              {
+                "algorithm": "scheme",
+                "operand": "security",
+                "value": "Strong",
+                "operator": ">="
+              }
+            ],
+            "nextID": "-1"
+          }
+        ],
+        "note": "",
+        "tooltip": ""
+      }
+    ],
+    "nextID": -2,
+    "helpID": ""
+  },
+  {
+    "id": 2,
+    "content": [
+      {
+        "id": 2,
+        "element": "combo",
+        "questionText": "What Digital Signature Scheme would you like to use?",
+        "answers": [
+          {
+            "value": "ECDSA",
+            "defaultAnswer": true,
+            "claferDependencies": [
+              {
+                "algorithm": "scheme",
+                "operand": "",
+                "value": "ECDSA",
+                "operator": "="
+              }
+            ]
+          },
+          {
+            "value": "RSA",
+            "defaultAnswer": false,
+            "claferDependencies": [
+              {
+                "algorithm": "scheme",
+                "operand": "",
+                "value": "RSA",
+                "operator": "="
+              }
+            ]
+          }
+        ],
+        "note": "",
+        "tooltip": ""
+      }
+    ],
+    "nextID": "-1",
+    "helpID": ""
+  }
+]

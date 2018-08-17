@@ -37,5 +37,5 @@ Export-Package: boomerang.jimple,
  sync.pds.solver.nodes,
  typestate
 Automatic-Module-Name: de.cognicrypt.core
-Bundle-ClassPath: lib/cognicrypt-maven-plugin-1.0-SNAPSHOT.jar,
- .
+Bundle-ClassPath: .,
+ lib/CryptoAnalysis-1.0.0-jar-with-dependencies.jar

@@ -31,6 +31,7 @@ import crypto.interfaces.ISLConstraint;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.utils.Utils;
 import soot.SootClass;
+import soot.tagkit.AbstractHost;
 import sync.pds.solver.nodes.Node;
 import typestate.TransitionFunction;
 
@@ -68,7 +69,7 @@ public class ResultsCCUIListener implements ICrySLResultsListener {
 		String errorMessage = error.toErrorMarkerString();
 		Statement errorLocation = error.getErrorLocation();
 		IResource sourceFile = unitToResource(errorLocation);
-		int lineNumber = errorLocation.getUnit().get().getJavaSourceStartLineNumber();
+		int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
 		if (error instanceof ImpreciseValueExtractionError) {
 			this.markerGenerator.addMarker(sourceFile, lineNumber, errorMessage, true);
 		} else {

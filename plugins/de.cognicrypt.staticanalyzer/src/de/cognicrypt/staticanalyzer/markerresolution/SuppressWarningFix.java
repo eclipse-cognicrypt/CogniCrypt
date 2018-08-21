@@ -7,6 +7,9 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IMarkerResolution;
 
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.staticanalyzer.Activator;
+
 /**
  * @author André Sonntag
  */
@@ -32,7 +35,7 @@ public class SuppressWarningFix implements IMarkerResolution {
 			try {
 				warningsFile.createNewFile();
 			} catch (IOException e) {
-				e.printStackTrace();
+				Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
 			}
 		}
 
@@ -40,9 +43,9 @@ public class SuppressWarningFix implements IMarkerResolution {
 			appendLine(warningsFile, marker);
 			marker.delete();
 		} catch (CoreException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
 		}
 	}
 

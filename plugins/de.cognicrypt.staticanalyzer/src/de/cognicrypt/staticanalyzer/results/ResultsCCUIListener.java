@@ -30,6 +30,7 @@ import crypto.analysis.errors.ImpreciseValueExtractionError;
 import crypto.extractparameter.CallSiteWithParamIndex;
 import crypto.extractparameter.ExtractedValue;
 import crypto.interfaces.ISLConstraint;
+import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.statment.CCStatement;
 import de.cognicrypt.utils.FileHelper;
@@ -86,7 +87,7 @@ public class ResultsCCUIListener implements ICrySLResultsListener {
 				}
 			}
 		} catch (IOException e) {
-			Activator.getDefault().logError(e);
+			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
 		}
 	}
 

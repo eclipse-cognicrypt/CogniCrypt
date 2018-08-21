@@ -10,6 +10,8 @@
 
 package de.cognicrypt.staticanalyzer.results;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
@@ -29,6 +31,8 @@ import crypto.extractparameter.CallSiteWithParamIndex;
 import crypto.extractparameter.ExtractedValue;
 import crypto.interfaces.ISLConstraint;
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.statment.CCStatement;
+import de.cognicrypt.utils.FileHelper;
 import de.cognicrypt.utils.Utils;
 import soot.SootClass;
 import sync.pds.solver.nodes.Node;
@@ -69,10 +73,20 @@ public class ResultsCCUIListener implements ICrySLResultsListener {
 		Statement errorLocation = error.getErrorLocation();
 		IResource sourceFile = unitToResource(errorLocation);
 		int lineNumber = errorLocation.getUnit().get().getJavaSourceStartLineNumber();
-		if (error instanceof ImpreciseValueExtractionError) {
-			this.markerGenerator.addMarker(sourceFile, lineNumber, errorMessage, true);
-		} else {
-			this.markerGenerator.addMarker(sourceFile, lineNumber, errorMessage);
+		CCStatement stmt = new CCStatement(errorLocation);
+		int stmtId = stmt.hashCode();
+		String warningFilePath = sourceFile.getProject().getLocation().toOSString() + "\\Warnings.txt";
+
+		try {
+			if (!FileHelper.checkFileForString(warningFilePath, stmtId + "")) {
+				if (error instanceof ImpreciseValueExtractionError) {
+					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage, true);
+				} else {
+					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage);
+				}
+			}
+		} catch (IOException e) {
+			Activator.getDefault().logError(e);
 		}
 	}
 

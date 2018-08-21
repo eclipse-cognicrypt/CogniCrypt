@@ -10,11 +10,11 @@ import org.eclipse.ui.IMarkerResolution;
 /**
  * @author André Sonntag
  */
-public class SuppressWarning implements IMarkerResolution {
+public class SuppressWarningFix implements IMarkerResolution {
 
 	private String label;
 
-	public SuppressWarning(String label) {
+	public SuppressWarningFix(String label) {
 		super();
 		this.label = label;
 	}
@@ -48,20 +48,22 @@ public class SuppressWarning implements IMarkerResolution {
 
 	/**
 	 * This method adds a new line in the warnings suppress file
-	 * @param f warning File
-	 * @param m marker
+	 * 
+	 * @param f
+	 *            warning File
+	 * @param m
+	 *            marker
 	 * @throws CoreException
 	 * @throws IOException
 	 */
 	public void appendLine(File f, IMarker m) throws CoreException, IOException {
 
-		long id = m.getId();
+		int id = (int) m.getAttribute(IMarker.SOURCE_ID);
 		String message = (String) m.getAttribute(IMarker.MESSAGE);
 		int lineNumber = (int) m.getAttribute(IMarker.LINE_NUMBER);
 		String ressource = m.getResource().getName();
-
 		FileOutputStream fos = new FileOutputStream(f, true);
-		String line = id + " " + ressource + " " + lineNumber + " " + message + "\n";
+		String line = id + " File: " + ressource + " Linenumber: " + lineNumber + " Error: " + message + "\n";
 		fos.write(line.getBytes());
 		fos.close();
 	}

@@ -5,6 +5,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolutionGenerator;
 
+import de.cognicrypt.staticanalyzer.Activator;
+
 /**
  * @author André Sonntag
  */
@@ -16,10 +18,9 @@ public class QuickFixer implements IMarkerResolutionGenerator {
 		try {
 			message = (String) mk.getAttribute(IMarker.MESSAGE);
 		} catch (CoreException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e);
 		}
-		
-		return new IMarkerResolution[] { new SuppressWarning("Suppress Warning: "+message) };
+		return new IMarkerResolution[] { new SuppressWarningFix("Suppress Warning: "+message) };
 	}
 
 }

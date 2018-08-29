@@ -26,7 +26,7 @@ import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.utilities.XMLParser;
+import de.cognicrypt.codegenerator.utilities.XMLClaferParser;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.FileHelper;
 
@@ -56,7 +56,7 @@ public class Configuration {
 	 *         see {@link FileWriter#FileWriter(String)) FileWriter} and {@link XMLWriter#write(String) XMLWriter.write()}
 	 */
 	public File persistConf() throws IOException {
-		final XMLParser parser = new XMLParser();
+		final XMLClaferParser parser = new XMLClaferParser();
 		Document configInXMLFormat = parser.displayInstanceValues(instance, this.options);
 		if (configInXMLFormat != null) {
 			final OutputFormat format = OutputFormat.createPrettyPrint();

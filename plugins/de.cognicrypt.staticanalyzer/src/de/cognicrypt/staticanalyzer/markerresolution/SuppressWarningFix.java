@@ -3,12 +3,20 @@ package de.cognicrypt.staticanalyzer.markerresolution;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IMarkerResolution;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.utils.XMLParser;
 
 /**
  * @author André Sonntag
@@ -30,27 +38,36 @@ public class SuppressWarningFix implements IMarkerResolution {
 	@Override
 	public void run(IMarker marker) {
 
-		File warningsFile = new File(marker.getResource().getProject().getLocation().toOSString() + "\\Warnings.txt");
-		if (!warningsFile.exists()) {
-			try {
-				warningsFile.createNewFile();
-			} catch (IOException e) {
-				Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
-			}
-		}
-
+		File warningsFile = new File(
+				marker.getResource().getProject().getLocation().toOSString() + "\\SuppressWarnings.xml");
+		Document doc;
 		try {
-			appendLine(warningsFile, marker);
+			if (warningsFile.exists()) {
+				doc = XMLParser.getDocFromFile(warningsFile);
+			} else {
+				doc = XMLParser.createDoc("SuppressWarnings");
+			}
+
+			createSuppressWarningNode(doc, marker);
+			XMLParser.writeXML(doc, warningsFile);
 			marker.delete();
-		} catch (CoreException e) {
-			Activator.getDefault().logError(e);
+
 		} catch (IOException e) {
 			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (CoreException e) {
+			e.printStackTrace();
+		} catch (TransformerException e) {
+			e.printStackTrace();
 		}
+
 	}
 
 	/**
-	 * This method adds a new line in the warnings suppress file
+	 * This method adds a new node to the warnings suppress xml file
 	 * 
 	 * @param f
 	 *            warning File
@@ -59,16 +76,18 @@ public class SuppressWarningFix implements IMarkerResolution {
 	 * @throws CoreException
 	 * @throws IOException
 	 */
-	public void appendLine(File f, IMarker m) throws CoreException, IOException {
+	public void createSuppressWarningNode(Document doc, IMarker m) throws CoreException, IOException {
 
 		int id = (int) m.getAttribute(IMarker.SOURCE_ID);
-		String message = (String) m.getAttribute(IMarker.MESSAGE);
-		int lineNumber = (int) m.getAttribute(IMarker.LINE_NUMBER);
 		String ressource = m.getResource().getName();
-		FileOutputStream fos = new FileOutputStream(f, true);
-		String line = id + " File: " + ressource + " Linenumber: " + lineNumber + " Error: " + message + "\n";
-		fos.write(line.getBytes());
-		fos.close();
+//		int lineNumber = (int) m.getAttribute(IMarker.LINE_NUMBER);
+		String message = (String) m.getAttribute(IMarker.MESSAGE);
+
+		Element rootNode = doc.getDocumentElement();
+		Element warningNode = XMLParser.createChildElement(rootNode, "SuppressWarning");
+		XMLParser.createAttrForElement(warningNode, "ID", id + "");
+		XMLParser.createChildElement(warningNode, "File", ressource);
+		XMLParser.createChildElement(warningNode, "Message", message);
 	}
 
 }

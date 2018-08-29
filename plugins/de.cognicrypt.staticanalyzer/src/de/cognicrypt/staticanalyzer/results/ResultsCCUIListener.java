@@ -12,10 +12,18 @@ package de.cognicrypt.staticanalyzer.results;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.google.common.collect.Multimap;
 
@@ -33,8 +41,8 @@ import crypto.interfaces.ISLConstraint;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.statment.CCStatement;
-import de.cognicrypt.utils.FileHelper;
 import de.cognicrypt.utils.Utils;
+import de.cognicrypt.utils.XMLParser;
 import soot.SootClass;
 import sync.pds.solver.nodes.Node;
 import typestate.TransitionFunction;
@@ -49,10 +57,13 @@ public class ResultsCCUIListener implements ICrySLResultsListener {
 
 	private final ErrorMarkerGenerator markerGenerator;
 	private final IProject currentProject;
+	private ArrayList<String> suppressWarningsIds;
+	private String warningFilePath;
 
 	private ResultsCCUIListener(final IProject curProj, final ErrorMarkerGenerator gen) {
 		this.currentProject = curProj;
 		this.markerGenerator = gen;
+		this.suppressWarningsIds = new ArrayList<>();
 	}
 
 	public static ResultsCCUIListener createListener(IProject project) {
@@ -76,19 +87,59 @@ public class ResultsCCUIListener implements ICrySLResultsListener {
 		int lineNumber = errorLocation.getUnit().get().getJavaSourceStartLineNumber();
 		CCStatement stmt = new CCStatement(errorLocation);
 		int stmtId = stmt.hashCode();
-		String warningFilePath = sourceFile.getProject().getLocation().toOSString() + "\\Warnings.txt";
+		String stmtVar = stmt.getVar();
 
-		try {
-			if (!FileHelper.checkFileForString(warningFilePath, stmtId + "")) {
-				if (error instanceof ImpreciseValueExtractionError) {
-					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage, true);
-				} else {
-					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage);
-				}
+		warningFilePath = sourceFile.getProject().getLocation().toOSString() + "\\SuppressWarnings.xml";
+		File warningsFile = new File(warningFilePath);
+		Document doc;
+
+		if (!warningsFile.exists()) {
+			if (error instanceof ImpreciseValueExtractionError) {
+				this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, stmtVar, errorMessage, true);
+			} else {
+				this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, stmtVar, errorMessage);
 			}
-		} catch (IOException e) {
-			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
+		} else {
+			try {
+				doc = XMLParser.getDocFromFile(warningsFile);
+				suppressWarningsIds = XMLParser.getAttrValuesByAttrName(doc, "SuppressWarning", "ID");
+				if (!XMLParser.getAttrValuesByAttrName(doc, "SuppressWarning", "ID").contains(stmtId + "")) {
+					if (error instanceof ImpreciseValueExtractionError) {
+						this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, stmtVar, errorMessage, true);
+					} else {
+						this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, stmtVar, errorMessage);
+					}
+				}
+				else {
+					suppressWarningsIds.remove(stmtId+"");
+				}
+			} catch (ParserConfigurationException | SAXException | IOException e) {
+				e.printStackTrace();
+			}
+
 		}
+
+	}
+
+	public void removeUndetectableWarnings() {
+
+		Activator.getDefault().logInfo("---------->>> removeUndetectableWarnings invoke");
+		
+		if (suppressWarningsIds.size() > 0) {
+
+			try {
+				File warningsFile = new File(warningFilePath);
+				Document doc = XMLParser.getDocFromFile(warningsFile);
+				for(int i = 0; i < suppressWarningsIds.size(); i++) {
+					XMLParser.removeNodeByAttrValue(doc, "SuppressWarning", "ID", suppressWarningsIds.get(i));
+				}
+				XMLParser.writeXML(doc, warningsFile);
+			} catch (ParserConfigurationException | SAXException | IOException | TransformerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		suppressWarningsIds = new ArrayList<>();
 	}
 
 	private IResource unitToResource(final Statement stmt) {

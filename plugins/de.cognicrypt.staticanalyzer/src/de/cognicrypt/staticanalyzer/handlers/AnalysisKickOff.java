@@ -22,6 +22,7 @@ import org.eclipse.jdt.core.JavaCore;
 
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.performance.PerformanceListener;
 import de.cognicrypt.staticanalyzer.results.ErrorMarkerGenerator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.staticanalyzer.sootbridge.SootRunner;
@@ -37,6 +38,7 @@ import de.cognicrypt.utils.Utils;
 public class AnalysisKickOff {
 
 	private static ResultsCCUIListener resultsReporter;
+	private static PerformanceListener performaceListener;
 	private IJavaProject curProj;
 
 	/**
@@ -72,6 +74,11 @@ public class AnalysisKickOff {
 		if (AnalysisKickOff.resultsReporter == null) {
 			AnalysisKickOff.resultsReporter = ResultsCCUIListener.createListener(ip);
 		}
+
+		if (AnalysisKickOff.performaceListener == null) {
+			AnalysisKickOff.performaceListener = PerformanceListener.createListener(this);
+		}
+
 		resultsReporter.getMarkerGenerator().clearMarkers(ip);
 		try {
 			if (ip == null || (!ip.hasNature(JavaCore.NATURE_ID))) {
@@ -82,7 +89,6 @@ public class AnalysisKickOff {
 			return false;
 		}
 		this.curProj = JavaCore.create(ip);
-
 		return true;
 	}
 
@@ -104,19 +110,20 @@ public class AnalysisKickOff {
 						Thread.sleep(500);
 					} catch (InterruptedException e) {
 					}
-					
-					if(monitor.isCanceled()) {
+					// new StaticsListener(this) implementiert das Interface, und greift dann so auf
+					// die TearDown methode zu
+					if (monitor.isCanceled()) {
 						sootThread.stop();
 						return Status.CANCEL_STATUS;
 					}
-					
+
 				}
 				if (sootThread.isSucc()) {
 					return Status.OK_STATUS;
 				} else {
 					return Status.CANCEL_STATUS;
 				}
-				
+
 			}
 
 			@Override
@@ -127,5 +134,9 @@ public class AnalysisKickOff {
 		analysis.setPriority(Job.LONG);
 		analysis.schedule();
 		return this.curProj != null && analysis.shouldRun();
+	}
+
+	public void tearDown() {
+		resultsReporter.removeUndetectableWarnings();
 	}
 }

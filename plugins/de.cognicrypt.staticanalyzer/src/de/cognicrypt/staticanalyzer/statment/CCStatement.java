@@ -14,13 +14,37 @@ public class CCStatement {
 	private Statement stmt;
 	private String method;
 	private String type;
-	private String value;
+	private String var;
 
 	public CCStatement(Statement stmt) {
 		this.stmt = stmt;
 		this.method = stmt.getUnit().get().getInvokeExpr().getMethod().toString();
 		this.type = stmt.getUnit().get().getInvokeExpr().getType().toString();
-		this.value = stmt.getUnit().get().getUseAndDefBoxes().get(0).getValue().toString();
+		this.var = stmt.getUnit().get().getUseAndDefBoxes().get(0).getValue().toString();
+	}
+	
+	
+
+	public Statement getStmt() {
+		return stmt;
+	}
+
+
+
+	public String getMethod() {
+		return method;
+	}
+
+
+
+	public String getType() {
+		return type;
+	}
+
+
+
+	public String getVar() {
+		return var;
 	}
 
 	@Override
@@ -29,7 +53,7 @@ public class CCStatement {
 		int result = 1;
 		result = prime * result + ((this.method == null) ? 0 : this.method.hashCode());
 		result = prime * result + ((this.type == null) ? 0 : this.type.hashCode());
-		result = prime * result + ((this.value == null) ? 0 : this.value.hashCode());
+		result = prime * result + ((this.var == null) ? 0 : this.var.hashCode());
 		return result;
 	}
 

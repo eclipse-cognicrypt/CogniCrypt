@@ -48,8 +48,8 @@ public class ErrorMarkerGenerator {
 	 * @return <code>true</code>/<code>false</code> if error marker was (not) added
 	 *         successfully
 	 */
-	public boolean addMarker(final int id, final IResource sourceFile, final int line, final String message) {
-		return addMarker(id, sourceFile, line, message, false);
+	public boolean addMarker(final int id, final IResource sourceFile, final int line, final String var, final String message) {
+		return addMarker(id, sourceFile, line, var, message, false);
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class ErrorMarkerGenerator {
 	 * @return <code>true</code>/<code>false</code> if error marker was (not) added
 	 *         successfully
 	 */
-	public boolean addMarker(final int id, final IResource sourceFile, final int line, final String message,
+	public boolean addMarker(final int id, final IResource sourceFile, final int line, final String var, final String message,
 			boolean isWarning) {
 		if (!sourceFile.exists() || !sourceFile.isAccessible()) {
 			Activator.getDefault().logError(Constants.NO_RES_FOUND);

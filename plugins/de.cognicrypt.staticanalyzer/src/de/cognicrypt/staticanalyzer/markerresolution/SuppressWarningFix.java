@@ -17,7 +17,6 @@ import org.xml.sax.SAXException;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.utils.XMLParser;
-import de.cognicrypt.utils.XMLParserStatic;
 
 /**
  * @author André Sonntag

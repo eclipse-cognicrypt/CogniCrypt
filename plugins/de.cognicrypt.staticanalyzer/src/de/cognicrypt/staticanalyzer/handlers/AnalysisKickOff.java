@@ -22,10 +22,8 @@ import org.eclipse.jdt.core.JavaCore;
 
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
-import de.cognicrypt.staticanalyzer.performance.PerformanceListener;
 import de.cognicrypt.staticanalyzer.results.ErrorMarkerGenerator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
-import de.cognicrypt.staticanalyzer.sootbridge.SootRunner;
 import de.cognicrypt.utils.Utils;
 
 /**
@@ -38,7 +36,6 @@ import de.cognicrypt.utils.Utils;
 public class AnalysisKickOff {
 
 	private static ResultsCCUIListener resultsReporter;
-	private static PerformanceListener performaceListener;
 	private IJavaProject curProj;
 
 	/**
@@ -73,10 +70,6 @@ public class AnalysisKickOff {
 
 		if (AnalysisKickOff.resultsReporter == null) {
 			AnalysisKickOff.resultsReporter = ResultsCCUIListener.createListener(ip);
-		}
-
-		if (AnalysisKickOff.performaceListener == null) {
-			AnalysisKickOff.performaceListener = PerformanceListener.createListener(this);
 		}
 
 		resultsReporter.getMarkerGenerator().clearMarkers(ip);
@@ -134,9 +127,5 @@ public class AnalysisKickOff {
 		analysis.setPriority(Job.LONG);
 		analysis.schedule();
 		return this.curProj != null && analysis.shouldRun();
-	}
-
-	public void tearDown() {
-		resultsReporter.removeUndetectableWarnings();
 	}
 }

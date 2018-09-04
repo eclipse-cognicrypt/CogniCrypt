@@ -17,6 +17,7 @@ import org.xml.sax.SAXException;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.utils.XMLParser;
+import de.cognicrypt.utils.XMLParserStatic;
 
 /**
  * @author André Sonntag
@@ -24,6 +25,7 @@ import de.cognicrypt.utils.XMLParser;
 public class SuppressWarningFix implements IMarkerResolution {
 
 	private String label;
+	private XMLParser xmlParser;
 
 	public SuppressWarningFix(String label) {
 		super();
@@ -40,54 +42,47 @@ public class SuppressWarningFix implements IMarkerResolution {
 
 		File warningsFile = new File(
 				marker.getResource().getProject().getLocation().toOSString() + "\\SuppressWarnings.xml");
-		Document doc;
+		xmlParser = new XMLParser(warningsFile);
 		try {
 			if (warningsFile.exists()) {
-				doc = XMLParser.getDocFromFile(warningsFile);
+				xmlParser.useDocFromFile();
 			} else {
-				doc = XMLParser.createDoc("SuppressWarnings");
+				xmlParser.createNewDoc();
+				xmlParser.createRootElement("SuppressWarnings");
 			}
 
-			createSuppressWarningNode(doc, marker);
-			XMLParser.writeXML(doc, warningsFile);
+			createSuppressWarningEntry(marker);
+			xmlParser.writeXML();
 			marker.delete();
 
 		} catch (IOException e) {
 			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
 		} catch (CoreException e) {
-			e.printStackTrace();
-		} catch (TransformerException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e);
 		}
 
 	}
 
 	/**
-	 * This method adds a new node to the warnings suppress xml file
+	 * This method adds a new entry to the warnings suppress xml file
 	 * 
-	 * @param f
-	 *            warning File
-	 * @param m
-	 *            marker
+	 * @param m ErrorMarker
 	 * @throws CoreException
 	 * @throws IOException
 	 */
-	public void createSuppressWarningNode(Document doc, IMarker m) throws CoreException, IOException {
+	public void createSuppressWarningEntry(IMarker m) throws CoreException, IOException {
 
 		int id = (int) m.getAttribute(IMarker.SOURCE_ID);
 		String ressource = m.getResource().getName();
-//		int lineNumber = (int) m.getAttribute(IMarker.LINE_NUMBER);
+		int lineNumber = (int) m.getAttribute(IMarker.LINE_NUMBER);
 		String message = (String) m.getAttribute(IMarker.MESSAGE);
 
-		Element rootNode = doc.getDocumentElement();
-		Element warningNode = XMLParser.createChildElement(rootNode, "SuppressWarning");
-		XMLParser.createAttrForElement(warningNode, "ID", id + "");
-		XMLParser.createChildElement(warningNode, "File", ressource);
-		XMLParser.createChildElement(warningNode, "Message", message);
+		Element root = xmlParser.getRoot();
+		Element warningEntry = xmlParser.createChildElement(root, "SuppressWarning");
+		xmlParser.createAttrForElement(warningEntry, "ID", id + "");
+		xmlParser.createChildElement(warningEntry, "File", ressource);
+		xmlParser.createChildElement(warningEntry, "LineNumber", lineNumber + "");
+		xmlParser.createChildElement(warningEntry, "Message", message);
 	}
 
 }

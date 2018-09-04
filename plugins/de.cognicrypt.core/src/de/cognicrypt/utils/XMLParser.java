@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -23,120 +25,280 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import de.cognicrypt.core.Activator;
+import de.cognicrypt.core.Constants;
+
+/**
+ * This class provides methods for XML file processing.
+ * @author André Sonntag
+ *
+ */
 public class XMLParser {
 
-	public static Document getDocFromFile(File f) throws ParserConfigurationException, SAXException, IOException {
-		
-		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-		Document doc = docBuilder.parse(f);
-		doc.getDocumentElement().normalize();
-		return doc;
-	}
+	/**
+	 * Usage:
+	 * 1) Constructor
+	 * 2) useDocFromFile || createNewDoc
+	 * 3) createRootElement
+	 * 4) createChildElement*
+	 * 5) createAttrForElement*
+	 * 6) writeXML
+	 */
 	
-	public static Document createDoc(String rootElement) throws ParserConfigurationException {
+	private File xmlFile;
+	private Document doc;
+	private Element root;
+	private DocumentBuilder docBuilder;
+	private DocumentBuilderFactory docFactory;
 
-		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-		Document doc = docBuilder.newDocument();
-		Element root = doc.createElement(rootElement);
-		doc.appendChild(root);
-		return doc;
-	}
-
-	public static Element createChildElement(Element c0, String childElement, String value) {
-		Document doc = c0.getOwnerDocument();
-		Element child = doc.createElement(childElement);
-		child.appendChild(doc.createTextNode(value));
-		return createChildElement(c0, child);
-	}
-
-	public static Element createChildElement(Element c0, String childElement) {
-		Document doc = c0.getOwnerDocument();
-		Element child = doc.createElement(childElement);
-		return createChildElement(c0, child);
-	}
-
-	public static Element createChildElement(Element c0, Element c1) {
-		c0.appendChild(c1);
-		return c1;
-	}
-	
-	public static void createAttrForElement(Element c0, String attrElement, String value) {
-		Document doc = c0.getOwnerDocument();
-		Attr attr = doc.createAttribute("id");
-		attr.setValue(value);
-		c0.setAttributeNode(attr);
-	}
-	
-	public static void writeXML(Document doc, String path) throws TransformerException {
-		
-		File f = new File(path);
-		if (!f.exists()) {
-			try {
-				f.createNewFile();
-			} catch (IOException e) {
-				System.err.println("Problems with File");
-				//Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
-			}
+	/**
+	 * Constructor
+	 * @param xmlFile
+	 */
+	public XMLParser(File xmlFile) {
+		this.xmlFile = xmlFile;
+		docFactory = DocumentBuilderFactory.newInstance();
+		try {
+			docBuilder = docFactory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			Activator.getDefault().logError(e);
 		}
-		writeXML(doc, f);
 	}
 
-	public static void writeXML(Document doc, File f) throws TransformerException {
+	/**
+	 * This methods extracts the Document object from the XML file, for further processing.
+	 */
+	public void useDocFromFile() {
+		try {
+			this.doc = docBuilder.parse(this.xmlFile);
+			doc.getDocumentElement().normalize();
+		} catch (SAXException e) {
+			Activator.getDefault().logError(e);
+		} catch (IOException e) {
+			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
+		}
+	}
+
+	/**
+	 * This method creates a new Document object for the XML file.
+	 */
+	public void createNewDoc() {
+
+		try {
+			this.docBuilder = docFactory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		this.doc = docBuilder.newDocument();
+	}
+
+	/**
+	 * This method creates and appends a new Root Element to the Document structure.
+	 * @param rootElementName
+	 * @return the new created Root Element
+	 */
+	public Element createRootElement(String rootElementName) {
+		this.root = doc.createElement(rootElementName);
+		return createRootElement(root);
+	}
+
+	/**
+	 * This method appends a Root Element in the Document structure.
+	 * @param root
+	 * @return the inserted Root Element
+	 */
+	public Element createRootElement(Element root) {
+		this.root = root; 
+		this.doc.appendChild(root);
+		return root;
+	}
+	
+	/**
+	 * This method creates and appends a new Child Element with a value to a Parent Element.
+	 * @param parent
+	 * @param childName
+	 * @param childValue
+	 * @return 
+	 */
+	public Element createChildElement(Element parent, String childName, String childValue) {
+		Element child = doc.createElement(childName);
+		child.appendChild(doc.createTextNode(childValue));
+		return createChildElement(parent, child);
+	}
+
+	/**
+	 * This method creates and appends a new Child Element without a value to a Parent Element.
+	 * @param parent
+	 * @param childName
+	 * @return
+	 */
+	public Element createChildElement(Element parent, String childName) {
+		Element child = doc.createElement(childName);
+		return createChildElement(parent, child);
+	}
+
+	/**
+	 * This method appends a Child Element to a Parent Element.
+	 * @param parent
+	 * @param child
+	 * @return
+	 */
+	public Element createChildElement(Element parent, Element child) {
+		parent.appendChild(child);
+		return child;
+	}
+
+	/**
+	 * This method creates a Attribute with a value for an Element object.
+	 * @param element
+	 * @param attrName
+	 * @param attrValue
+	 */
+	public void createAttrForElement(Element element, String attrName, String attrValue) {
+		Attr attr = this.doc.createAttribute(attrName);
+		attr.setValue(attrValue);
+		element.setAttributeNode(attr);
+	}
+
+	/**
+	 * This method writes the Document object structure to a XML File.
+	 */
+	public void writeXML() {
 
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
-		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-		DOMSource source = new DOMSource(doc);
-		StreamResult result = new StreamResult(f);
-		transformer.transform(source, result);
-		System.out.println("File saved!");
+		Transformer transformer;
+		try {
+			transformer = transformerFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+			DOMSource source = new DOMSource(this.doc);
+			StreamResult result = new StreamResult(this.xmlFile);
+			transformer.transform(source, result);
+		} catch (TransformerConfigurationException e) {
+			Activator.getDefault().logError(e);
+		} catch (TransformerException e) {
+			Activator.getDefault().logError(e);
+		}
+
 	}
-	
-	
-	public static void removeNodeByAttrValue(Document doc,String nodename, String attrElement, String value) {		
-		NodeList nl = doc.getElementsByTagName(nodename);
-		for(int i = 0; i < nl.getLength(); i++) {
+
+	/**
+	 * This Method removes Nodes with contain a specific Attribute with a certain value.
+	 * @param nodeName
+	 * @param attrName
+	 * @param attrValue
+	 */
+	public void removeNodeByAttrValue(String nodeName, String attrName, String attrValue) {
+		NodeList nl = this.doc.getElementsByTagName(nodeName);
+		for (int i = 0; i < nl.getLength(); i++) {
 			NamedNodeMap map = nl.item(i).getAttributes();
-			for(int j = 0; j < map.getLength(); j++) {
-				if(map.item(j).getTextContent().equals(value)) {
-					nl.item(i).getParentNode().removeChild(nl.item(i));					
+			for (int j = 0; j < map.getLength(); j++) {
+				if (map.item(j).getTextContent().equals(attrValue)) {
+					nl.item(i).getParentNode().removeChild(nl.item(i));
 				}
 			}
-		}		
+		}
 	}
-		
-	public static List<String> getElementValuesByTagName(Document doc, String tagname){
-		NodeList nodes = doc.getElementsByTagName(tagname);
+
+	/**
+	 * This Method returns a List with all values of an Element.
+	 * @param tagName
+	 * @return
+	 */
+	public List<String> getElementValuesByTagName(String tagName) {
+		NodeList nodes = this.doc.getElementsByTagName(tagName);
 		List<String> valueList = new ArrayList<>();
-		for(int i = 0; i < nodes.getLength(); i++) {
+		for (int i = 0; i < nodes.getLength(); i++) {
 			valueList.add(nodes.item(i).getTextContent());
 		}
 		return valueList;
 	}
-	
-	
-	public static ArrayList<String> getAttrValuesByAttrName(Document doc, String nodename, String attrname){
+
+	/**
+	 * This Method returns a List with all Attribute values for every Element with a specific name.
+	 * @param nodeName
+	 * @param attrName
+	 * @return
+	 */
+	public ArrayList<String> getAttrValuesByAttrName(String nodeName, String attrName) {
 		ArrayList<String> valueList = new ArrayList<>();
-		NodeList nl = doc.getElementsByTagName(nodename);
-		for(int i = 0; i < nl.getLength(); i++) {
+		NodeList nl = this.doc.getElementsByTagName(nodeName);
+		for (int i = 0; i < nl.getLength(); i++) {
 			NamedNodeMap map = nl.item(i).getAttributes();
-			for(int j = 0; j < map.getLength(); j++) {
+			for (int j = 0; j < map.getLength(); j++) {
 				valueList.add(map.item(j).getTextContent());
 			}
 		}
-		return valueList;	
+		return valueList;
+	}
+
+	/**
+	 * 
+	 * @param nodeName
+	 * @param attrName
+	 * @param attrValue
+	 * @return
+	 * @throws NoSuchElementException
+	 */
+	public Node getNodeByAttrValue(String nodeName, String attrName, String attrValue) throws NoSuchElementException{
+		NodeList nl = this.doc.getElementsByTagName(nodeName);
+		for (int i = 0; i < nl.getLength(); i++) {
+			NamedNodeMap map = nl.item(i).getAttributes();
+			for (int j = 0; j < map.getLength(); j++) {
+				if (map.item(j).getTextContent().equals(attrValue)) {
+					return nl.item(i);
+				}
+			}
+		}
+		throw new NoSuchElementException();
 	}
 	
-	
-	
-	public static String getElementValueById(Document doc, String elementId){
-		Element element = doc.getElementById(elementId);
-		return element.getTextContent();
+	/**
+	 * 
+	 * @param parent
+	 * @param tagName
+	 * @return
+	 * @throws NoSuchElementException
+	 */
+	public Node getChildNodeByTagName(Node parent, String tagName) throws NoSuchElementException {
+		NodeList childList = parent.getChildNodes();
+		for(int i = 0; i < childList.getLength(); i++) {
+			if(childList.item(i).getNodeName().equals(tagName)) {
+				return childList.item(i);
+			}
+		}
+		throw new NoSuchElementException();
 	}
 	
+	/**
+	 * 
+	 * @param node
+	 * @param newValue
+	 */
+	public void updateNodeValue(Node node, String newValue) {
+		node.setTextContent(newValue);
+		doc = node.getOwnerDocument();
+	}
 	
+	public File getXmlFile() {
+		return xmlFile;
+	}
+
+	public void setXmlFile(File xmlFile) {
+		this.xmlFile = xmlFile;
+	}
+
+	public Document getDoc() {
+		return doc;
+	}
+
+	public void setDoc(Document doc) {
+		this.doc = doc;
+	}
+
+	public Element getRoot() {
+		return doc.getDocumentElement();
+	}
+
 	
 }

@@ -21,7 +21,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import de.cognicrypt.staticanalyzer.handlers.ShutDownHandler;
-import de.cognicrypt.staticanalyzer.performance.PerformanceListener;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 
 /**
@@ -36,7 +35,6 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 
 	private static List<ResultsCCUIListener> resReporters;
-	private static List<PerformanceListener> perList;
 
 	
 	
@@ -51,7 +49,6 @@ public class Activator extends AbstractUIPlugin {
 		super.start(context);
 		Activator.plugin = this;
 		resReporters = new ArrayList<ResultsCCUIListener>();
-		perList = new ArrayList<PerformanceListener>();
 		PlatformUI.getWorkbench().addWorkbenchListener(new ShutDownHandler());
 	}
 
@@ -105,16 +102,8 @@ public class Activator extends AbstractUIPlugin {
 		resReporters.add(gen);
 	}
 
-	public static void registerPerformanceListener(PerformanceListener per) {
-		perList.add(per);
-	}
-	
 	public static List<ResultsCCUIListener> getResultsReporters() {
 		return resReporters;
 	}
 	
-	public static List<PerformanceListener> getPerfomanceListener() {
-		return perList;
-	}
-
 }

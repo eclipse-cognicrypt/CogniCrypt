@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -22,48 +22,54 @@ import javax.xml.transform.TransformerException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Table;
 
+import boomerang.BackwardQuery;
+import boomerang.Query;
 import boomerang.jimple.Statement;
 import boomerang.jimple.Val;
 import boomerang.results.ForwardBoomerangResults;
 import crypto.analysis.AnalysisSeedWithSpecification;
+import crypto.analysis.CrySLAnalysisListener;
+import crypto.analysis.EnsuredCryptSLPredicate;
 import crypto.analysis.IAnalysisSeed;
-import crypto.analysis.ICrySLResultsListener;
 import crypto.analysis.errors.AbstractError;
 import crypto.analysis.errors.ImpreciseValueExtractionError;
 import crypto.extractparameter.CallSiteWithParamIndex;
 import crypto.extractparameter.ExtractedValue;
 import crypto.interfaces.ISLConstraint;
-import de.cognicrypt.core.Constants;
+import crypto.rules.CryptSLPredicate;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.statment.CCStatement;
 import de.cognicrypt.utils.Utils;
 import de.cognicrypt.utils.XMLParser;
 import soot.SootClass;
-import sync.pds.solver.nodes.Node;
 import typestate.TransitionFunction;
 
 /**
  * This listener is notified of any misuses the analysis finds.
  *
  * @author Stefan Krueger
+ * @author André Sonntag
  *
  */
-public class ResultsCCUIListener implements ICrySLResultsListener {
+public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	private final ErrorMarkerGenerator markerGenerator;
 	private final IProject currentProject;
-	private ArrayList<String> suppressWarningsIds;
+	private ArrayList<String> suppressedWarningIds;
 	private String warningFilePath;
+	private XMLParser xmlParser;
 
 	private ResultsCCUIListener(final IProject curProj, final ErrorMarkerGenerator gen) {
 		this.currentProject = curProj;
 		this.markerGenerator = gen;
-		this.suppressWarningsIds = new ArrayList<>();
+		this.suppressedWarningIds = new ArrayList<>();
 	}
 
 	public static ResultsCCUIListener createListener(IProject project) {
@@ -91,7 +97,6 @@ public class ResultsCCUIListener implements ICrySLResultsListener {
 
 		warningFilePath = sourceFile.getProject().getLocation().toOSString() + "\\SuppressWarnings.xml";
 		File warningsFile = new File(warningFilePath);
-		Document doc;
 
 		if (!warningsFile.exists()) {
 			if (error instanceof ImpreciseValueExtractionError) {
@@ -100,46 +105,47 @@ public class ResultsCCUIListener implements ICrySLResultsListener {
 				this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, stmtVar, errorMessage);
 			}
 		} else {
-			try {
-				doc = XMLParser.getDocFromFile(warningsFile);
-				suppressWarningsIds = XMLParser.getAttrValuesByAttrName(doc, "SuppressWarning", "ID");
-				if (!XMLParser.getAttrValuesByAttrName(doc, "SuppressWarning", "ID").contains(stmtId + "")) {
-					if (error instanceof ImpreciseValueExtractionError) {
-						this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, stmtVar, errorMessage, true);
-					} else {
-						this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, stmtVar, errorMessage);
-					}
+			xmlParser = new XMLParser(warningsFile);
+			xmlParser.useDocFromFile();
+			if (!xmlParser.getAttrValuesByAttrName("SuppressWarning", "ID").contains(stmtId + "")) {
+				
+				if (error instanceof ImpreciseValueExtractionError) {
+					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, stmtVar, errorMessage, true);
+				} else {
+					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, stmtVar, errorMessage);
 				}
-				else {
-					suppressWarningsIds.remove(stmtId+"");
-				}
-			} catch (ParserConfigurationException | SAXException | IOException e) {
-				e.printStackTrace();
+			} else {	
+				
+				//update existing LineNumber
+				Node suppressWarningNode = xmlParser.getNodeByAttrValue("SuppressWarning", "ID",stmtId+"");
+				Node lineNumberNode = xmlParser.getChildNodeByTagName(suppressWarningNode, "LineNumber");
+				xmlParser.updateNodeValue(lineNumberNode, lineNumber+"");
+				xmlParser.writeXML();
+				suppressedWarningIds.add(stmtId + "");
 			}
-
 		}
-
 	}
 
+	/**
+	 * This method removes superfluous suppressed warning entries from the
+	 * SuppressWarnings.xml file.
+	 */
 	public void removeUndetectableWarnings() {
+		if (suppressedWarningIds.size() > 0) {
 
-		Activator.getDefault().logInfo("---------->>> removeUndetectableWarnings invoke");
-		
-		if (suppressWarningsIds.size() > 0) {
+			ArrayList<String> allSuppressedWarningIds = xmlParser.getAttrValuesByAttrName("SuppressWarning", "ID");
 
-			try {
-				File warningsFile = new File(warningFilePath);
-				Document doc = XMLParser.getDocFromFile(warningsFile);
-				for(int i = 0; i < suppressWarningsIds.size(); i++) {
-					XMLParser.removeNodeByAttrValue(doc, "SuppressWarning", "ID", suppressWarningsIds.get(i));
-				}
-				XMLParser.writeXML(doc, warningsFile);
-			} catch (ParserConfigurationException | SAXException | IOException | TransformerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			ArrayList<String> difference = new ArrayList<>(allSuppressedWarningIds.size());
+			difference.addAll(allSuppressedWarningIds);
+			difference.removeAll(suppressedWarningIds);
+
+			for (int i = 0; i < difference.size(); i++) {
+				xmlParser.removeNodeByAttrValue("SuppressWarning", "ID", difference.get(i));
 			}
+			xmlParser.writeXML();
+
 		}
-		suppressWarningsIds = new ArrayList<>();
+		suppressedWarningIds = new ArrayList<>();
 	}
 
 	private IResource unitToResource(final Statement stmt) {
@@ -165,7 +171,7 @@ public class ResultsCCUIListener implements ICrySLResultsListener {
 	}
 
 	@Override
-	public void onSeedTimeout(final Node<Statement, Val> arg0) {
+	public void onSeedTimeout(final sync.pds.solver.nodes.Node<Statement, Val> arg0) {
 		// Nothing
 	}
 
@@ -182,6 +188,67 @@ public class ResultsCCUIListener implements ICrySLResultsListener {
 
 	public ErrorMarkerGenerator getMarkerGenerator() {
 		return markerGenerator;
+	}
+
+	@Override
+	public void beforeAnalysis() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void afterAnalysis() {
+		removeUndetectableWarnings();
+	}
+
+	@Override
+	public void beforeConstraintCheck(AnalysisSeedWithSpecification analysisSeedWithSpecification) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void afterConstraintCheck(AnalysisSeedWithSpecification analysisSeedWithSpecification) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void beforePredicateCheck(AnalysisSeedWithSpecification analysisSeedWithSpecification) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void afterPredicateCheck(AnalysisSeedWithSpecification analysisSeedWithSpecification) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void seedStarted(IAnalysisSeed analysisSeedWithSpecification) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void boomerangQueryStarted(Query seed, BackwardQuery q) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void boomerangQueryFinished(Query seed, BackwardQuery q) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void ensuredPredicates(Table<Statement, Val, Set<EnsuredCryptSLPredicate>> existingPredicates,
+			Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates,
+			Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

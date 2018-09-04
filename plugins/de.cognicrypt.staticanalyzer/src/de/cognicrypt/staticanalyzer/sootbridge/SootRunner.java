@@ -134,12 +134,12 @@ public class SootRunner {
 		Options.v().set_include(getIncludeList());
 		Options.v().set_exclude(getExcludeList());
 		Scene.v().loadNecessaryClasses();
-		switch (DEFAULT_CALL_GRAPH) {
-		case SPARK:
+		switch (DEFAULT_CALL_GRAPH.ordinal()) {
+		case 2:
 			Options.v().setPhaseOption("cg.spark", "on");
 			Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");
 			break;
-		case CHA:
+		case 0:
 		default:
 			Options.v().setPhaseOption("cg.cha", "on");
 			Options.v().setPhaseOption("cg", "all-reachable:true");

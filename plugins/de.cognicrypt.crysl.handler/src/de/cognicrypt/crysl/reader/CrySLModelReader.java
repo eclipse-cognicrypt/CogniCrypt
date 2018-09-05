@@ -79,6 +79,7 @@ import de.darmstadt.tu.crossing.cryptSL.Constraint;
 import de.darmstadt.tu.crossing.cryptSL.DestroysBlock;
 import de.darmstadt.tu.crossing.cryptSL.Domainmodel;
 import de.darmstadt.tu.crossing.cryptSL.EnsuresBlock;
+import de.darmstadt.tu.crossing.cryptSL.Event;
 import de.darmstadt.tu.crossing.cryptSL.Expression;
 import de.darmstadt.tu.crossing.cryptSL.ForbMethod;
 import de.darmstadt.tu.crossing.cryptSL.ForbiddenBlock;
@@ -172,6 +173,7 @@ public class CrySLModelReader {
 			final String className = fileName.substring(0, fileName.indexOf(extension) - 1);
 			final CryptSLRule rule = new CryptSLRule(className, objects, this.forbiddenMethods, this.smg, constraints,
 					actPreds);
+			System.out.println(rule);
 			System.out.println("===========================================");
 			System.out.println("");
 
@@ -420,8 +422,10 @@ public class CrySLModelReader {
 			}
 			final List<CryptSLMethod> crysl = new ArrayList<>();
 
-			crysl.addAll(CrySLReaderUtils.resolveAggregateToMethodeNames(fm.getRep()));
-
+			Event alternative = fm.getRep();
+			if (alternative != null) {
+				crysl.addAll(CrySLReaderUtils.resolveAggregateToMethodeNames(alternative));
+			}
 			methodSignatures.add(new CryptSLForbiddenMethod(
 					new CryptSLMethod(meth.getDeclaringType().getIdentifier() + "." + meth.getSimpleName(), pars, null,
 							new SimpleEntry<>("_", "AnyType")),

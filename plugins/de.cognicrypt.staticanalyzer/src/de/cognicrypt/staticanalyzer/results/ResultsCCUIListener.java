@@ -11,20 +11,12 @@
 package de.cognicrypt.staticanalyzer.results;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
@@ -49,6 +41,7 @@ import de.cognicrypt.staticanalyzer.statment.CCStatement;
 import de.cognicrypt.utils.Utils;
 import de.cognicrypt.utils.XMLParser;
 import soot.SootClass;
+import soot.tagkit.AbstractHost;
 import typestate.TransitionFunction;
 
 /**
@@ -90,7 +83,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		String errorMessage = error.toErrorMarkerString();
 		Statement errorLocation = error.getErrorLocation();
 		IResource sourceFile = unitToResource(errorLocation);
-		int lineNumber = errorLocation.getUnit().get().getJavaSourceStartLineNumber();
+		int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
 		CCStatement stmt = new CCStatement(errorLocation);
 		int stmtId = stmt.hashCode();
 		String stmtVar = stmt.getVar();

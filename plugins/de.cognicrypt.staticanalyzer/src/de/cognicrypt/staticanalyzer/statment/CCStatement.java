@@ -1,8 +1,6 @@
 package de.cognicrypt.staticanalyzer.statment;
 
 import boomerang.jimple.Statement;
-import soot.SootMethod;
-import soot.jimple.Stmt;
 
 /**
  * This class calculates the hashCode/id for the Markers.

@@ -66,7 +66,7 @@ public class XMLParser {
 	}
 
 	/**
-	 * This methods extracts the Document object from the XML file, for further processing.
+	 * This methods extracts the {@link Document} object from the XML file, for further processing.
 	 */
 	public void useDocFromFile() {
 		try {
@@ -80,7 +80,7 @@ public class XMLParser {
 	}
 
 	/**
-	 * This method creates a new Document object for the XML file.
+	 * This method creates a new {@link Document} object for the XML file.
 	 */
 	public void createNewDoc() {
 
@@ -93,9 +93,17 @@ public class XMLParser {
 	}
 
 	/**
-	 * This method creates and appends a new Root Element to the Document structure.
+	 * This method returns the root {@link Element} of the {@link Document}.
+	 * @return
+	 */
+	public Element getRoot() {
+		return doc.getDocumentElement();
+	}
+	
+	/**
+	 * This method creates and appends a new root {@link Element} to the {@link Document} structure.
 	 * @param rootElementName
-	 * @return the new created Root Element
+	 * @return the new created root element
 	 */
 	public Element createRootElement(String rootElementName) {
 		this.root = doc.createElement(rootElementName);
@@ -103,9 +111,9 @@ public class XMLParser {
 	}
 
 	/**
-	 * This method appends a Root Element in the Document structure.
+	 * This method appends a root {@link Element} to the {@link Document} structure.
 	 * @param root
-	 * @return the inserted Root Element
+	 * @return the inserted root element
 	 */
 	public Element createRootElement(Element root) {
 		this.root = root; 
@@ -114,11 +122,11 @@ public class XMLParser {
 	}
 	
 	/**
-	 * This method creates and appends a new Child Element with a value to a Parent Element.
+	 * This method creates and appends a new child {@link Element} with a value to a parent {@link Element}.
 	 * @param parent
 	 * @param childName
 	 * @param childValue
-	 * @return 
+	 * @return the new created child element
 	 */
 	public Element createChildElement(Element parent, String childName, String childValue) {
 		Element child = doc.createElement(childName);
@@ -127,10 +135,10 @@ public class XMLParser {
 	}
 
 	/**
-	 * This method creates and appends a new Child Element without a value to a Parent Element.
+	 * This method creates and appends a new Child {@link Element} without a value to a parent {@link Element}.
 	 * @param parent
 	 * @param childName
-	 * @return
+	 * @return the new created child element
 	 */
 	public Element createChildElement(Element parent, String childName) {
 		Element child = doc.createElement(childName);
@@ -138,10 +146,10 @@ public class XMLParser {
 	}
 
 	/**
-	 * This method appends a Child Element to a Parent Element.
+	 * This method appends a child {@link Element} to a parent {@link Element}.
 	 * @param parent
 	 * @param child
-	 * @return
+	 * @return the inserted child element
 	 */
 	public Element createChildElement(Element parent, Element child) {
 		parent.appendChild(child);
@@ -149,7 +157,7 @@ public class XMLParser {
 	}
 
 	/**
-	 * This method creates a Attribute with a value for an Element object.
+	 * This method creates a {@link Attr} with a value for an {@link Element} object.
 	 * @param element
 	 * @param attrName
 	 * @param attrValue
@@ -161,7 +169,7 @@ public class XMLParser {
 	}
 
 	/**
-	 * This method writes the Document object structure to a XML File.
+	 * This method writes the {@link Document} object structure to a XML File.
 	 */
 	public void writeXML() {
 
@@ -183,7 +191,7 @@ public class XMLParser {
 	}
 
 	/**
-	 * This Method removes Nodes with contain a specific Attribute with a certain value.
+	 * This method removes {@link Node} with a specific {@link Attr} with a certain value.
 	 * @param nodeName
 	 * @param attrName
 	 * @param attrValue
@@ -201,24 +209,10 @@ public class XMLParser {
 	}
 
 	/**
-	 * This Method returns a List with all values of an Element.
-	 * @param tagName
-	 * @return
-	 */
-	public List<String> getElementValuesByTagName(String tagName) {
-		NodeList nodes = this.doc.getElementsByTagName(tagName);
-		List<String> valueList = new ArrayList<>();
-		for (int i = 0; i < nodes.getLength(); i++) {
-			valueList.add(nodes.item(i).getTextContent());
-		}
-		return valueList;
-	}
-
-	/**
-	 * This Method returns a List with all Attribute values for every Element with a specific name.
+	 * This method creates a {@link List} with all {@link Attr} values of a certain node name.
 	 * @param nodeName
 	 * @param attrName
-	 * @return
+	 * @return a list with all attribute values
 	 */
 	public ArrayList<String> getAttrValuesByAttrName(String nodeName, String attrName) {
 		ArrayList<String> valueList = new ArrayList<>();
@@ -233,11 +227,11 @@ public class XMLParser {
 	}
 
 	/**
-	 * 
+	 * This method filters a certain {@link Node}, on the basis of the {@link Node} name, {@link Attr} name and {@link Attr} value.
 	 * @param nodeName
 	 * @param attrName
 	 * @param attrValue
-	 * @return
+	 * @return the filtered node
 	 * @throws NoSuchElementException
 	 */
 	public Node getNodeByAttrValue(String nodeName, String attrName, String attrValue) throws NoSuchElementException{
@@ -254,16 +248,16 @@ public class XMLParser {
 	}
 	
 	/**
-	 * 
+	 * This method filters a certain child {@link Node} in a parent node, on the basis of the {@link Node} name.
 	 * @param parent
-	 * @param tagName
-	 * @return
+	 * @param nodeName
+	 * @return the filtered node
 	 * @throws NoSuchElementException
 	 */
-	public Node getChildNodeByTagName(Node parent, String tagName) throws NoSuchElementException {
+	public Node getChildNodeByTagName(Node parent, String nodeName) throws NoSuchElementException {
 		NodeList childList = parent.getChildNodes();
 		for(int i = 0; i < childList.getLength(); i++) {
-			if(childList.item(i).getNodeName().equals(tagName)) {
+			if(childList.item(i).getNodeName().equals(nodeName)) {
 				return childList.item(i);
 			}
 		}
@@ -271,7 +265,7 @@ public class XMLParser {
 	}
 	
 	/**
-	 * 
+	 * This method updates the value of a certain {@link Node}.
 	 * @param node
 	 * @param newValue
 	 */
@@ -294,10 +288,6 @@ public class XMLParser {
 
 	public void setDoc(Document doc) {
 		this.doc = doc;
-	}
-
-	public Element getRoot() {
-		return doc.getDocumentElement();
 	}
 
 	

@@ -19,6 +19,7 @@ import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.utils.XMLParser;
 
 /**
+ * This class writes the suppress warning information in a XML file and deletes the marker on the UI
  * @author André Sonntag
  */
 public class SuppressWarningFix implements IMarkerResolution {

@@ -8,6 +8,7 @@ import org.eclipse.ui.IMarkerResolutionGenerator;
 import de.cognicrypt.staticanalyzer.Activator;
 
 /**
+ * This method provides solutions for the marker resolution
  * @author André Sonntag
  */
 public class QuickFixer implements IMarkerResolutionGenerator {

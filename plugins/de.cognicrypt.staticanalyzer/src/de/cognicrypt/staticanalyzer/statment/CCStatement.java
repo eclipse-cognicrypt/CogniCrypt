@@ -23,25 +23,17 @@ public class CCStatement {
 		this.var = stmt.getUnit().get().getUseAndDefBoxes().get(0).getValue().toString();
 	}
 	
-	
-
 	public Statement getStmt() {
 		return stmt;
 	}
-
-
 
 	public String getMethod() {
 		return method;
 	}
 
-
-
 	public String getType() {
 		return type;
 	}
-
-
 
 	public String getVar() {
 		return var;

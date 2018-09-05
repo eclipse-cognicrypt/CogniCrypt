@@ -28,6 +28,8 @@ import de.cognicrypt.core.Constants;
  */
 public class WizardAction implements IWorkbenchWindowActionDelegate {
 
+	private Shell shell;
+
 	/**
 	 * The constructor.
 	 */
@@ -47,7 +49,9 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#init
 	 */
 	@Override
-	public void init(final IWorkbenchWindow window) {}
+	public void init(final IWorkbenchWindow window) {
+		this.shell=window.getShell();
+	}
 
 	/**
 	 * The action has been activated. The argument of the method represents the 'real' action sitting in the workbench UI.
@@ -57,7 +61,7 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	@Override
 	public void run(final IAction action) {
 		Constants.WizardActionFromContextMenuFlag = false;
-		final CogniCryptWizardDialog dialog = new CogniCryptWizardDialog(new Shell(), new ConfiguratorWizard()) {
+		final CogniCryptWizardDialog dialog = new CogniCryptWizardDialog(shell, new ConfiguratorWizard()) {
 
 			@Override
 			protected void configureShell(Shell newShell) {

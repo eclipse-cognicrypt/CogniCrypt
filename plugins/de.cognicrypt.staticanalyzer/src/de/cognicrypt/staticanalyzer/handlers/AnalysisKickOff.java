@@ -103,8 +103,7 @@ public class AnalysisKickOff {
 						Thread.sleep(500);
 					} catch (InterruptedException e) {
 					}
-					// new StaticsListener(this) implementiert das Interface, und greift dann so auf
-					// die TearDown methode zu
+					
 					if (monitor.isCanceled()) {
 						sootThread.stop();
 						return Status.CANCEL_STATUS;

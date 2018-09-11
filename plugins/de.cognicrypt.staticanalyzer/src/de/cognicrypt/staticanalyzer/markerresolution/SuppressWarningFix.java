@@ -13,7 +13,9 @@ import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.utils.XMLParser;
 
 /**
- * This class writes the suppress warning information in a XML file and deletes the marker on the UI
+ * This class writes the suppress warning information in a XML file and deletes
+ * the marker on the UI
+ * 
  * @author André Sonntag
  */
 public class SuppressWarningFix implements IMarkerResolution {
@@ -34,15 +36,15 @@ public class SuppressWarningFix implements IMarkerResolution {
 	@Override
 	public void run(IMarker marker) {
 
-		File warningsFile = new File(
-				marker.getResource().getProject().getLocation().toOSString() + "\\SuppressWarnings.xml");
+		File warningsFile = new File(marker.getResource().getProject().getLocation().toOSString()
+				+ Constants.outerFileSeparator + Constants.SUPPRESSWARNING_FILE + Constants.XML_EXTENSION);
 		xmlParser = new XMLParser(warningsFile);
 		try {
 			if (warningsFile.exists()) {
 				xmlParser.useDocFromFile();
 			} else {
 				xmlParser.createNewDoc();
-				xmlParser.createRootElement("SuppressWarnings");
+				xmlParser.createRootElement(Constants.SUPPRESSWARNINGS_ELEMENT);
 			}
 
 			createSuppressWarningEntry(marker);
@@ -60,7 +62,8 @@ public class SuppressWarningFix implements IMarkerResolution {
 	/**
 	 * This method adds a new entry to the warnings suppress xml file
 	 * 
-	 * @param m ErrorMarker
+	 * @param m
+	 *            ErrorMarker
 	 * @throws CoreException
 	 * @throws IOException
 	 */
@@ -71,11 +74,11 @@ public class SuppressWarningFix implements IMarkerResolution {
 		int lineNumber = (int) m.getAttribute(IMarker.LINE_NUMBER);
 		String message = (String) m.getAttribute(IMarker.MESSAGE);
 
-		Element warningEntry = xmlParser.createChildElement(xmlParser.getRoot(), "SuppressWarning");
-		xmlParser.createAttrForElement(warningEntry, "ID", id + "");
-		xmlParser.createChildElement(warningEntry, "File", ressource);
-		xmlParser.createChildElement(warningEntry, "LineNumber", lineNumber + "");
-		xmlParser.createChildElement(warningEntry, "Message", message);
+		Element warningEntry = xmlParser.createChildElement(xmlParser.getRoot(), Constants.SUPPRESSWARNING_ELEMENT);
+		xmlParser.createAttrForElement(warningEntry, Constants.ID_ATTR, id + "");
+		xmlParser.createChildElement(warningEntry, Constants.FILE_ELEMENT, ressource);
+		xmlParser.createChildElement(warningEntry, Constants.LINENUMBER_ELEMENT, lineNumber + "");
+		xmlParser.createChildElement(warningEntry, Constants.MESSAGE_ELEMENT, message);
 	}
 
 }

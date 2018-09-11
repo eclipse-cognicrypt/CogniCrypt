@@ -496,6 +496,18 @@ public class Constants {
 	public static final String textBox = "Text box";
 	public static final String radioButton = "Radio button";
 
+	// for creating SuppressWarnings.xml
+	public static final String SUPPRESSWARNING_FILE = "SuppressWarnings";
+	public static final String SUPPRESSWARNINGS_ELEMENT = "SuppressWarnings";
+	public static final String SUPPRESSWARNING_ELEMENT = "SuppressWarning";
+	public static final String ID_ATTR = "ID";
+	public static final String FILE_ELEMENT = "File";
+	public static final String LINENUMBER_ELEMENT = "LineNumber";
+	public static final String MESSAGE_ELEMENT = "Message";
+	
+	// QuickFixs
+	public static final String SUPPRESSWARNING_FIX = "Suppress Warning: ";
+	
 	// for creating xml file
 	public static final String Xml_Declaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 	public static final String NLS_Tag = "<?NLS TYPE=\"org.eclipse.help.contexts\"?>";

@@ -37,6 +37,7 @@ import crypto.extractparameter.CallSiteWithParamIndex;
 import crypto.extractparameter.ExtractedValue;
 import crypto.interfaces.ISLConstraint;
 import crypto.rules.CryptSLPredicate;
+import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.statment.CCStatement;
 import de.cognicrypt.utils.Utils;
@@ -89,7 +90,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		int stmtId = stmt.hashCode();
 		String stmtVar = stmt.getVar();
 
-		warningFilePath = sourceFile.getProject().getLocation().toOSString() + "\\SuppressWarnings.xml";
+		warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator
+				+ Constants.SUPPRESSWARNING_FILE + Constants.XML_EXTENSION;
 		File warningsFile = new File(warningFilePath);
 
 		if (!warningsFile.exists()) {
@@ -101,19 +103,22 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		} else {
 			xmlParser = new XMLParser(warningsFile);
 			xmlParser.useDocFromFile();
-			if (!xmlParser.getAttrValuesByAttrName("SuppressWarning", "ID").contains(stmtId + "")) {
-				
+			if (!xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT,
+					Constants.ID_ATTR).contains(stmtId + "")) {
+
 				if (error instanceof ImpreciseValueExtractionError) {
 					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, stmtVar, errorMessage, true);
 				} else {
 					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, stmtVar, errorMessage);
 				}
-			} else {	
-				
-				//update existing LineNumber
-				Node suppressWarningNode = xmlParser.getNodeByAttrValue("SuppressWarning", "ID",stmtId+"");
-				Node lineNumberNode = xmlParser.getChildNodeByTagName(suppressWarningNode, "LineNumber");
-				xmlParser.updateNodeValue(lineNumberNode, lineNumber+"");
+			} else {
+
+				// update existing LineNumber
+				Node suppressWarningNode = xmlParser.getNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT,
+						Constants.ID_ATTR, stmtId + "");
+				Node lineNumberNode = xmlParser.getChildNodeByTagName(suppressWarningNode,
+						Constants.LINENUMBER_ELEMENT);
+				xmlParser.updateNodeValue(lineNumberNode, lineNumber + "");
 				xmlParser.writeXML();
 				suppressedWarningIds.add(stmtId + "");
 			}
@@ -127,14 +132,16 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	public void removeUndetectableWarnings() {
 		if (suppressedWarningIds.size() > 0) {
 
-			ArrayList<String> allSuppressedWarningIds = xmlParser.getAttrValuesByAttrName("SuppressWarning", "ID");
+			ArrayList<String> allSuppressedWarningIds = xmlParser
+					.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR);
 
 			ArrayList<String> difference = new ArrayList<>(allSuppressedWarningIds.size());
 			difference.addAll(allSuppressedWarningIds);
 			difference.removeAll(suppressedWarningIds);
 
 			for (int i = 0; i < difference.size(); i++) {
-				xmlParser.removeNodeByAttrValue("SuppressWarning", "ID", difference.get(i));
+				xmlParser.removeNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR,
+						difference.get(i));
 			}
 			xmlParser.writeXML();
 

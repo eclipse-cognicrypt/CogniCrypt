@@ -10,45 +10,62 @@
 
 package de.cognicrypt.staticanalyzer.results;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.w3c.dom.Node;
 
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Table;
 
+import boomerang.BackwardQuery;
+import boomerang.Query;
 import boomerang.jimple.Statement;
 import boomerang.jimple.Val;
 import boomerang.results.ForwardBoomerangResults;
 import crypto.analysis.AnalysisSeedWithSpecification;
+import crypto.analysis.CrySLAnalysisListener;
+import crypto.analysis.EnsuredCryptSLPredicate;
 import crypto.analysis.IAnalysisSeed;
-import crypto.analysis.ICrySLResultsListener;
 import crypto.analysis.errors.AbstractError;
 import crypto.analysis.errors.ImpreciseValueExtractionError;
 import crypto.extractparameter.CallSiteWithParamIndex;
 import crypto.extractparameter.ExtractedValue;
 import crypto.interfaces.ISLConstraint;
+import crypto.rules.CryptSLPredicate;
+import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.statment.CCStatement;
 import de.cognicrypt.utils.Utils;
+import de.cognicrypt.utils.XMLParser;
 import soot.SootClass;
 import soot.tagkit.AbstractHost;
-import sync.pds.solver.nodes.Node;
 import typestate.TransitionFunction;
 
 /**
  * This listener is notified of any misuses the analysis finds.
  *
  * @author Stefan Krueger
+ * @author André Sonntag
  *
  */
-public class ResultsCCUIListener implements ICrySLResultsListener {
+public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	private final ErrorMarkerGenerator markerGenerator;
 	private final IProject currentProject;
+	private ArrayList<String> suppressedWarningIds;
+	private String warningFilePath;
+	private XMLParser xmlParser;
 
 	private ResultsCCUIListener(final IProject curProj, final ErrorMarkerGenerator gen) {
 		this.currentProject = curProj;
 		this.markerGenerator = gen;
+		this.suppressedWarningIds = new ArrayList<>();
 	}
 
 	public static ResultsCCUIListener createListener(IProject project) {
@@ -70,11 +87,75 @@ public class ResultsCCUIListener implements ICrySLResultsListener {
 		Statement errorLocation = error.getErrorLocation();
 		IResource sourceFile = unitToResource(errorLocation);
 		int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
-		if (error instanceof ImpreciseValueExtractionError) {
-			this.markerGenerator.addMarker(sourceFile, lineNumber, errorMessage, true);
+		CCStatement stmt = new CCStatement(errorLocation);
+		int stmtId = stmt.hashCode();
+
+		warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator
+				+ Constants.SUPPRESSWARNING_FILE;
+		File warningsFile = new File(warningFilePath);
+
+		if (!warningsFile.exists()) {
+			if (error instanceof ImpreciseValueExtractionError) {
+				this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage, true);
+			} else {
+				this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage);
+			}
 		} else {
-			this.markerGenerator.addMarker(sourceFile, lineNumber, errorMessage);
+			xmlParser = new XMLParser(warningsFile);
+			xmlParser.useDocFromFile();
+			if (!xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR)
+					.contains(stmtId + "")) {
+				if (error instanceof ImpreciseValueExtractionError) {
+					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage, true);
+				} else {
+					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage);
+				}
+			} else {
+
+				// update existing LineNumber
+				Node suppressWarningNode = xmlParser.getNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT,
+						Constants.ID_ATTR, stmtId + "");
+				Node lineNumberNode = xmlParser.getChildNodeByTagName(suppressWarningNode,
+						Constants.LINENUMBER_ELEMENT);
+				xmlParser.updateNodeValue(lineNumberNode, lineNumber + "");
+				xmlParser.writeXML();
+				
+				try {
+					currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+				} catch (CoreException e) {
+					Activator.getDefault().logError(e);
+				}				
+				suppressedWarningIds.add(stmtId + "");
+			}
 		}
+	}
+
+	/**
+	 * This method removes superfluous suppressed warning entries from the
+	 * SuppressWarnings.xml file.
+	 */
+	public void removeUndetectableWarnings() {
+		if (suppressedWarningIds.size() > 0) {
+
+			ArrayList<String> allSuppressedWarningIds = xmlParser
+					.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR);
+
+			ArrayList<String> difference = new ArrayList<>(allSuppressedWarningIds.size());
+			difference.addAll(allSuppressedWarningIds);
+			difference.removeAll(suppressedWarningIds);
+
+			for (int i = 0; i < difference.size(); i++) {
+				xmlParser.removeNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR,
+						difference.get(i));
+			}
+			xmlParser.writeXML();
+			try {
+				currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+			} catch (CoreException e) {
+				Activator.getDefault().logError(e);
+			}	
+		}
+		suppressedWarningIds = new ArrayList<>();
 	}
 
 	private IResource unitToResource(final Statement stmt) {
@@ -100,7 +181,7 @@ public class ResultsCCUIListener implements ICrySLResultsListener {
 	}
 
 	@Override
-	public void onSeedTimeout(final Node<Statement, Val> arg0) {
+	public void onSeedTimeout(final sync.pds.solver.nodes.Node<Statement, Val> arg0) {
 		// Nothing
 	}
 
@@ -117,6 +198,66 @@ public class ResultsCCUIListener implements ICrySLResultsListener {
 
 	public ErrorMarkerGenerator getMarkerGenerator() {
 		return markerGenerator;
+	}
+
+	@Override
+	public void beforeAnalysis() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void afterAnalysis() {
+		removeUndetectableWarnings();
+	}
+
+	@Override
+	public void beforeConstraintCheck(AnalysisSeedWithSpecification analysisSeedWithSpecification) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void afterConstraintCheck(AnalysisSeedWithSpecification analysisSeedWithSpecification) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void beforePredicateCheck(AnalysisSeedWithSpecification analysisSeedWithSpecification) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void afterPredicateCheck(AnalysisSeedWithSpecification analysisSeedWithSpecification) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void seedStarted(IAnalysisSeed analysisSeedWithSpecification) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void boomerangQueryStarted(Query seed, BackwardQuery q) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void boomerangQueryFinished(Query seed, BackwardQuery q) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void ensuredPredicates(Table<Statement, Val, Set<EnsuredCryptSLPredicate>> existingPredicates,
+			Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates,
+			Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

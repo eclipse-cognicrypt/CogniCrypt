@@ -41,7 +41,7 @@ import de.cognicrypt.core.Constants;
  * @author Stefan Krueger
  *
  */
-public class XMLParser {
+public class XMLClaferParser {
 
 	private Document document = null;
 	private String enumParent = null;
@@ -175,7 +175,7 @@ public class XMLParser {
 	}
 
 	/**
-	 * Writes XML document to file. Before calling this method {@link de.cognicrypt.codegenerator.utilities.XMLParser#displayInstanceValues(InstanceClafer, HashMap)
+	 * Writes XML document to file. Before calling this method {@link de.cognicrypt.codegenerator.utilities.XMLClaferParser#displayInstanceValues(InstanceClafer, HashMap)
 	 * displayInstanceValues()} should have been called to create document.
 	 *
 	 * @param path
@@ -194,4 +194,10 @@ public class XMLParser {
 			Activator.getDefault().logError(Constants.NO_XML_INSTANCE_FILE_TO_WRITE);
 		}
 	}
+	
+	
+	
+	
+	
+	
 }

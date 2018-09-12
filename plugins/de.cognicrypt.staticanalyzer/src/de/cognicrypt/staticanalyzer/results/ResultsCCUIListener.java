@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.w3c.dom.Node;
 
 import com.google.common.collect.Multimap;
@@ -94,7 +95,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		File warningsFile = new File(warningFilePath);
 
 		if (!warningsFile.exists()) {
-			System.out.println(stmt.toString());
 			if (error instanceof ImpreciseValueExtractionError) {
 				this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage, true);
 			} else {
@@ -105,7 +105,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			xmlParser.useDocFromFile();
 			if (!xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR)
 					.contains(stmtId + "")) {
-				System.out.println(stmt.toString());
 				if (error instanceof ImpreciseValueExtractionError) {
 					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage, true);
 				} else {
@@ -120,6 +119,12 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 						Constants.LINENUMBER_ELEMENT);
 				xmlParser.updateNodeValue(lineNumberNode, lineNumber + "");
 				xmlParser.writeXML();
+				
+				try {
+					currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+				} catch (CoreException e) {
+					Activator.getDefault().logError(e);
+				}				
 				suppressedWarningIds.add(stmtId + "");
 			}
 		}
@@ -144,7 +149,11 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 						difference.get(i));
 			}
 			xmlParser.writeXML();
-
+			try {
+				currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+			} catch (CoreException e) {
+				Activator.getDefault().logError(e);
+			}	
 		}
 		suppressedWarningIds = new ArrayList<>();
 	}

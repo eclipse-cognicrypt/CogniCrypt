@@ -110,8 +110,8 @@ public class CCStatement {
 
 	@Override
 	public String toString() {
-		return "{hashCode()= "+hashCode()+" } CCStatement [stmt=" + this.stmt + ", method=" + this.method + ", params=" + this.params + ", type="
-				+ this.type + ", var=" + this.var + "]";
+		return "{hashCode()= " + hashCode() + " } CCStatement [stmt=" + this.stmt + ", method=" + this.method
+				+ ", params=" + this.params + ", type=" + this.type + ", var=" + this.var + "]";
 	}
 
 }

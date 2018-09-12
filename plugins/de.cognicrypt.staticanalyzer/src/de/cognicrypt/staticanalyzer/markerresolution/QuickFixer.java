@@ -15,7 +15,7 @@ import de.cognicrypt.staticanalyzer.Activator;
  */
 public class QuickFixer implements IMarkerResolutionGenerator {
 	@Override
-	public IMarkerResolution[] getResolutions(final IMarker mk) {
+	public IMarkerResolution[] getResolutions(IMarker mk) {
 
 		String message = "";
 		try {

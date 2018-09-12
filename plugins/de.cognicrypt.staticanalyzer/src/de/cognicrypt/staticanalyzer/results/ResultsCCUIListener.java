@@ -160,11 +160,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		// fails, it should be left untouched as the actual bug is above.
 		return this.currentProject.getFile("src/" + className.getName().replace(".", "/") + ".java");
 	}
-	
-	@Override
-	public void afterAnalysis() {
-		removeUndetectableWarnings();
-	}
 
 	@Override
 	public void checkedConstraints(final AnalysisSeedWithSpecification arg0, final Collection<ISLConstraint> arg1) {
@@ -199,7 +194,11 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	@Override
 	public void beforeAnalysis() {
 		// TODO Auto-generated method stub
+	}
 
+	@Override
+	public void afterAnalysis() {
+		removeUndetectableWarnings();
 	}
 
 	@Override

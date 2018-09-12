@@ -88,28 +88,28 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
 		CCStatement stmt = new CCStatement(errorLocation);
 		int stmtId = stmt.hashCode();
-		String stmtVar = stmt.getVar();
 
 		warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator
-				+ Constants.SUPPRESSWARNING_FILE + Constants.XML_EXTENSION;
+				+ Constants.SUPPRESSWARNING_FILE;
 		File warningsFile = new File(warningFilePath);
 
 		if (!warningsFile.exists()) {
+			System.out.println(stmt.toString());
 			if (error instanceof ImpreciseValueExtractionError) {
-				this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, stmtVar, errorMessage, true);
+				this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage, true);
 			} else {
-				this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, stmtVar, errorMessage);
+				this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage);
 			}
 		} else {
 			xmlParser = new XMLParser(warningsFile);
 			xmlParser.useDocFromFile();
-			if (!xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT,
-					Constants.ID_ATTR).contains(stmtId + "")) {
-
+			if (!xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR)
+					.contains(stmtId + "")) {
+				System.out.println(stmt.toString());
 				if (error instanceof ImpreciseValueExtractionError) {
-					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, stmtVar, errorMessage, true);
+					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage, true);
 				} else {
-					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, stmtVar, errorMessage);
+					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage);
 				}
 			} else {
 
@@ -160,6 +160,11 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		// fails, it should be left untouched as the actual bug is above.
 		return this.currentProject.getFile("src/" + className.getName().replace(".", "/") + ".java");
 	}
+	
+	@Override
+	public void afterAnalysis() {
+		removeUndetectableWarnings();
+	}
 
 	@Override
 	public void checkedConstraints(final AnalysisSeedWithSpecification arg0, final Collection<ISLConstraint> arg1) {
@@ -195,11 +200,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	public void beforeAnalysis() {
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public void afterAnalysis() {
-		removeUndetectableWarnings();
 	}
 
 	@Override

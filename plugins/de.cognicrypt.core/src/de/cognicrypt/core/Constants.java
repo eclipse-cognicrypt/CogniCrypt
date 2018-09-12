@@ -497,7 +497,7 @@ public class Constants {
 	public static final String radioButton = "Radio button";
 
 	// for creating SuppressWarnings.xml
-	public static final String SUPPRESSWARNING_FILE = "SuppressWarnings";
+	public static final String SUPPRESSWARNING_FILE = "SuppressWarnings"+XML_EXTENSION;
 	public static final String SUPPRESSWARNINGS_ELEMENT = "SuppressWarnings";
 	public static final String SUPPRESSWARNING_ELEMENT = "SuppressWarning";
 	public static final String ID_ATTR = "ID";

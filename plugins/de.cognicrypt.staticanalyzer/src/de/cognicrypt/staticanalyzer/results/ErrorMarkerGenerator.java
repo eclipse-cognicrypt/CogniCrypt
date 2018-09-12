@@ -74,10 +74,11 @@ public class ErrorMarkerGenerator {
 			return false;
 		}
 
+		final String ccMarkerType = "de.cognicrypt.staticanalyzer.ccmarker";
 		IMarker marker;
 
 		try {
-			marker = sourceFile.createMarker(IMarker.PROBLEM);
+			marker = sourceFile.createMarker(ccMarkerType);
 			marker.setAttribute(IMarker.LINE_NUMBER, line);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);

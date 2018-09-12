@@ -508,6 +508,10 @@ public class Constants {
 	// QuickFixs
 	public static final String SUPPRESSWARNING_FIX = "Suppress Warning: ";
 	
+	// Marker types
+	public static final String CCMARKER_TYPE = "de.cognicrypt.staticanalyzer.ccmarker";
+
+	
 	// for creating xml file
 	public static final String Xml_Declaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 	public static final String NLS_Tag = "<?NLS TYPE=\"org.eclipse.help.contexts\"?>";

@@ -83,6 +83,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void reportError(AbstractError error) {
+		
 		String errorMessage = error.toErrorMarkerString();
 		Statement errorLocation = error.getErrorLocation();
 		IResource sourceFile = unitToResource(errorLocation);
@@ -90,26 +91,16 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		CCStatement stmt = new CCStatement(errorLocation);
 		int stmtId = stmt.hashCode();
 
-		warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator
-				+ Constants.SUPPRESSWARNING_FILE;
+		warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator + Constants.SUPPRESSWARNING_FILE;
 		File warningsFile = new File(warningFilePath);
 
 		if (!warningsFile.exists()) {
-			if (error instanceof ImpreciseValueExtractionError) {
-				this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage, true);
-			} else {
-				this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage);
-			}
+			this.markerGenerator.addMarker(error, stmtId, sourceFile, lineNumber, errorMessage);
 		} else {
 			xmlParser = new XMLParser(warningsFile);
 			xmlParser.useDocFromFile();
-			if (!xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR)
-					.contains(stmtId + "")) {
-				if (error instanceof ImpreciseValueExtractionError) {
-					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage, true);
-				} else {
-					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage);
-				}
+			if (!xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR).contains(stmtId + "")) {
+				this.markerGenerator.addMarker(error, stmtId, sourceFile, lineNumber, errorMessage);
 			} else {
 
 				// update existing LineNumber
@@ -119,12 +110,12 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 						Constants.LINENUMBER_ELEMENT);
 				xmlParser.updateNodeValue(lineNumberNode, lineNumber + "");
 				xmlParser.writeXML();
-				
+
 				try {
 					currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
 				} catch (CoreException e) {
 					Activator.getDefault().logError(e);
-				}				
+				}
 				suppressedWarningIds.add(stmtId + "");
 			}
 		}
@@ -153,7 +144,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 				currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
 			} catch (CoreException e) {
 				Activator.getDefault().logError(e);
-			}	
+			}
 		}
 		suppressedWarningIds = new ArrayList<>();
 	}

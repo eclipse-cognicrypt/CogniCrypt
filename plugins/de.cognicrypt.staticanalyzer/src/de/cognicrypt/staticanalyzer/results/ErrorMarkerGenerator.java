@@ -73,10 +73,11 @@ public class ErrorMarkerGenerator {
 		boolean isWarning = false;
 
 		/*
-		 * Adding of new marker types for new errors: 1) add new ErrorMarker extension
-		 * point in plugin.xml 2) add new markerResolutionGenerator tag in plugin.xml 3)
-		 * add new Marker constant in Constants.java (CogniCrypt Core) 4) add new else
-		 * if in the following query
+		 * Adding of new marker types for new errors: 
+		 * 1) add new ErrorMarker extension point in plugin.xml 
+		 * 2) add new markerResolutionGenerator tag in plugin.xml 
+		 * 3) add new Marker constant in Constants.java (CogniCrypt Core) 
+		 * 4) add new else if in the following query
 		 */
 
 		if (error instanceof ForbiddenMethodError) {

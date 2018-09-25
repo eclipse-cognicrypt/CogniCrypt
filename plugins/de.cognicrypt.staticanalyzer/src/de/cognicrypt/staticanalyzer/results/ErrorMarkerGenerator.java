@@ -70,8 +70,6 @@ public class ErrorMarkerGenerator {
 		}
 
 		String markerType;
-		boolean isWarning = false;
-
 		/*
 		 * Adding of new marker types for new errors: 
 		 * 1) add new ErrorMarker extension point in plugin.xml 
@@ -96,19 +94,17 @@ public class ErrorMarkerGenerator {
 			markerType = Constants.TYPESTATE_ERROR_MARKER_TYPE;
 		} else if (error instanceof ImpreciseValueExtractionError) {
 			markerType = Constants.IMPRECISE_VALUE_EXTRACTION_MARKER_TYPE;
-			isWarning = true;
 		} else {
 			markerType = Constants.CC_MARKER_TYPE;
 		}
 
 		IMarker marker;
-
 		try {
 			marker = sourceFile.createMarker(markerType);
 			marker.setAttribute(IMarker.LINE_NUMBER, line);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-			marker.setAttribute(IMarker.SEVERITY, (!isWarning) ? IMarker.SEVERITY_ERROR : IMarker.SEVERITY_WARNING);
+			marker.setAttribute(IMarker.SEVERITY, (markerType != Constants.IMPRECISE_VALUE_EXTRACTION_MARKER_TYPE)  ? IMarker.SEVERITY_ERROR : IMarker.SEVERITY_WARNING);
 			marker.setAttribute(IMarker.SOURCE_ID, id);
 
 		} catch (final CoreException e) {
@@ -131,6 +127,7 @@ public class ErrorMarkerGenerator {
 	}
 
 	public boolean clearMarkers(final IProject curProj) {
+		
 		final boolean allMarkersDeleted = true;
 		try {
 			for (final IMarker marker : this.markers) {

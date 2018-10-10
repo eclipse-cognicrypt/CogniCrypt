@@ -122,12 +122,15 @@ public class DefaultTasksGeneratorTest {
 //		assertTrue(secCommCheck);
 //	}
 	
-	@Test
-	public void LTADefault() {
-		this.configLTA = TestUtils.createConfigurationForCodeGeneration(developerProject, LTATask);
-		boolean ltaCheck = generatorLTA.generateCodeTemplates(configLTA, LTATask.getAdditionalResources());
-		assertTrue(ltaCheck);
-	}
+	/**
+	 * This test case is commented because it requires UI interaction
+	 */
+//	@Test
+//	public void LTADefault() {
+//		this.configLTA = TestUtils.createConfigurationForCodeGeneration(developerProject, LTATask);
+//		boolean ltaCheck = generatorLTA.generateCodeTemplates(configLTA, LTATask.getAdditionalResources());
+//		assertTrue(ltaCheck);
+//	}
 	
 	@Test
 	public void SECMUPACOMPDefault() {
@@ -150,11 +153,14 @@ public class DefaultTasksGeneratorTest {
 		assertTrue(hybridEncryptionCheck);
 	}
 	
-	@Test
-	public void DigitalSignDefault() {
-		this.configDigitalSign = TestUtils.createConfigurationForCodeGeneration(developerProject, digitalSignTask);
-		boolean digitalSignCheck = generatorDigitalSIgn.generateCodeTemplates(configDigitalSign, digitalSignTask.getAdditionalResources());
-		assertTrue(digitalSignCheck);
-	}
+	/**
+	 * This test case is commented because it requires UI interaction
+	 */
+//	@Test
+//	public void DigitalSignDefault() {
+//		this.configDigitalSign = TestUtils.createConfigurationForCodeGeneration(developerProject, digitalSignTask);
+//		boolean digitalSignCheck = generatorDigitalSIgn.generateCodeTemplates(configDigitalSign, digitalSignTask.getAdditionalResources());
+//		assertTrue(digitalSignCheck);
+//	}
 
 }

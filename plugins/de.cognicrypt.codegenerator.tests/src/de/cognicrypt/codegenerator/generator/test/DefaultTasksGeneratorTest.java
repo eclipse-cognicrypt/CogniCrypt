@@ -19,7 +19,7 @@ import de.cognicrypt.codegenerator.wizard.Configuration;
 import de.cognicrypt.core.Constants;
 
 /**
- * @author André Sonntag
+ * @author Enri Ozuni
  */
 public class DefaultTasksGeneratorTest {
 
@@ -34,10 +34,28 @@ public class DefaultTasksGeneratorTest {
 	IJavaProject testJavaProject;
 	CodeGenerator generatorEnc;
 	CodeGenerator generatorSecPassword;
+	CodeGenerator generatorSecCommunication;
+	CodeGenerator generatorLTA;
+	CodeGenerator generatorSecMPComp;
+	CodeGenerator generatorCertainTrust;
+	CodeGenerator generatorHybridEnc;
+	CodeGenerator generatorDigitalSIgn;
 	Task encTask;
 	Task secPasswordTask;
+	Task secCommunicationTask;
+	Task LTATask;
+	Task secMPCompTask;
+	Task certainTrustTask;
+	Task hybridEncTask;
+	Task digitalSignTask;
 	Configuration configEnc;
 	Configuration configSecPassword;
+	Configuration configSecCommunication;
+	Configuration configLTA;
+	Configuration configSecMPComp;
+	Configuration configCertainTrust;
+	Configuration configHybridEnc;
+	Configuration configDigitalSign;
 	DeveloperProject developerProject;
 	static int counter = 0;
 
@@ -51,84 +69,92 @@ public class DefaultTasksGeneratorTest {
 		DefaultTasksGeneratorTest.counter++;
 		this.testJavaProject = TestUtils.createJavaProject("TestProject_"+counter);
 		TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
+		
 		this.encTask = TestUtils.getTask("SymmetricEncryption");
 		this.generatorEnc = new XSLBasedGenerator(testJavaProject.getProject(), encTask.getXslFile());
+		
 		this.secPasswordTask = TestUtils.getTask("SecurePassword");
 		this.generatorSecPassword = new XSLBasedGenerator(testJavaProject.getProject(), secPasswordTask.getXslFile());
+		
+		this.secCommunicationTask = TestUtils.getTask("SecureCommunication");
+		this.generatorSecCommunication = new XSLBasedGenerator(testJavaProject.getProject(), secCommunicationTask.getXslFile());
+		
+		this.LTATask = TestUtils.getTask("LongTermArchiving");
+		this.generatorLTA = new XSLBasedGenerator(testJavaProject.getProject(), LTATask.getXslFile());
+		
+		this.secMPCompTask = TestUtils.getTask("SECMUPACOMP");
+		this.generatorSecMPComp = new XSLBasedGenerator(testJavaProject.getProject(), secMPCompTask.getXslFile());
+		
+		this.certainTrustTask = TestUtils.getTask("CertainTrust");
+		this.generatorCertainTrust = new XSLBasedGenerator(testJavaProject.getProject(), certainTrustTask.getXslFile());
+		
+		this.hybridEncTask = TestUtils.getTask("HybridEncryption");
+		this.generatorHybridEnc = new XSLBasedGenerator(testJavaProject.getProject(), hybridEncTask.getXslFile());
+		
+		this.digitalSignTask = TestUtils.getTask("DigitalSignatures");
+		this.generatorDigitalSIgn = new XSLBasedGenerator(testJavaProject.getProject(), digitalSignTask.getXslFile());
+		
 		this.developerProject = generatorEnc.getDeveloperProject();
 	}
 
 	/**
-	 * Test if the codegeneration for SymmetricEncrytion works, without any open
+	 * Test if the code generation for all CogniCrypt tasks works, without any open
 	 * class.
 	 */
 	@Test
-	public void testCodeGeneration() {
+	public void EncDefault() {
 		this.configEnc = TestUtils.createConfigurationForCodeGeneration(developerProject, encTask);
 		boolean encCheck = generatorEnc.generateCodeTemplates(configEnc, encTask.getAdditionalResources());
 		assertTrue(encCheck);
 	}
-
-	/**
-	 * Test if the codegeneration for SymmetricEncrytion works with an open Test
-	 * class.
-	 */
+	
 	@Test
-	public void testCodeGenerationInTestClass() throws CoreException, IOException {
-
-		ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(developerProject, "testPackage", "Test.java");
-		TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
-		
-		this.configEnc = TestUtils.createConfigurationForCodeGeneration(developerProject, encTask);
-		generatorEnc.generateCodeTemplates(configEnc, encTask.getAdditionalResources());
-	    assertEquals(1, countMethods(testClassUnit));
-	}
-
-	/**
-	 * Test if the Output class has the right methods, after the codegeneration runs
-	 * two times (different tasks), without any open class.
-	 */
-	@Test
-	public void testCodeGenerationTwoTimesNoClassOpen() throws CoreException, IOException {
-
-		this.configEnc = TestUtils.createConfigurationForCodeGeneration(developerProject, encTask);
-		generatorEnc.generateCodeTemplates(configEnc, encTask.getAdditionalResources());
-		
+	public void SecPasswordDefault() {
 		this.configSecPassword = TestUtils.createConfigurationForCodeGeneration(developerProject, secPasswordTask);
-		generatorSecPassword.generateCodeTemplates(configSecPassword, secPasswordTask.getAdditionalResources());
-		
-		ICompilationUnit outputUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName,"Output.java");
-	    assertEquals(2, countMethods(outputUnit));
-	}
-
-	/**
-	 * Test if the codegeneration puts the templageUsage-method in the open Enc
-	 * class.
-	 */
-	@Test
-	public void testCodeGenerationInEncClass() throws CoreException, IOException {
-
-		this.configEnc = TestUtils.createConfigurationForCodeGeneration(developerProject, encTask);
-		generatorEnc.generateCodeTemplates(configEnc, encTask.getAdditionalResources());
-		ICompilationUnit encUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName, "Enc.java");
-		TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encUnit);
-		
-		this.configSecPassword = TestUtils.createConfigurationForCodeGeneration(developerProject, secPasswordTask);
-		generatorSecPassword.generateCodeTemplates(configSecPassword, secPasswordTask.getAdditionalResources());
-		
-		ICompilationUnit outputUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName,"Output.java");
-	    assertEquals(2, countMethods(outputUnit));
+		boolean secPasswordCheck = generatorSecPassword.generateCodeTemplates(configSecPassword, secPasswordTask.getAdditionalResources());
+		assertTrue(secPasswordCheck);
 	}
 	
-	/**
-	 * This method counts methods in ICompilationUnits
-	 * 
-	 * @param unit
-	 * @return
-	 * @throws JavaModelException
-	 */
-	private int countMethods(ICompilationUnit unit) throws JavaModelException {
-		return unit.getAllTypes()[0].getMethods().length;
+	@Test
+	public void SecCommDefault() {
+		this.configSecCommunication = TestUtils.createConfigurationForCodeGeneration(developerProject, secCommunicationTask);
+		boolean secCommCheck = generatorSecCommunication.generateCodeTemplates(configSecCommunication, secCommunicationTask.getAdditionalResources());
+		assertTrue(secCommCheck);
+	}
+	
+	@Test
+	public void LTADefault() {
+		this.configLTA = TestUtils.createConfigurationForCodeGeneration(developerProject, LTATask);
+		boolean ltaCheck = generatorLTA.generateCodeTemplates(configLTA, LTATask.getAdditionalResources());
+		assertTrue(ltaCheck);
+	}
+	
+	@Test
+	public void SECMUPACOMPDefault() {
+		this.configSecMPComp = TestUtils.createConfigurationForCodeGeneration(developerProject, secMPCompTask);
+		boolean secMPCompCheck = generatorSecMPComp.generateCodeTemplates(configSecMPComp, secMPCompTask.getAdditionalResources());
+		assertTrue(secMPCompCheck);
+	}
+	
+	@Test
+	public void CertainTrustDefault() {
+		this.configCertainTrust = TestUtils.createConfigurationForCodeGeneration(developerProject, certainTrustTask);
+		boolean certainTrustCheck = generatorCertainTrust.generateCodeTemplates(configCertainTrust, certainTrustTask.getAdditionalResources());
+		assertTrue(certainTrustCheck);
+	}
+	
+	@Test
+	public void HybridEncryptionDefault() {
+		this.configHybridEnc = TestUtils.createConfigurationForCodeGeneration(developerProject, hybridEncTask);
+		boolean hybridEncryptionCheck = generatorHybridEnc.generateCodeTemplates(configHybridEnc, hybridEncTask.getAdditionalResources());
+		assertTrue(hybridEncryptionCheck);
+	}
+	
+	@Test
+	public void DigitalSignDefault() {
+		this.configDigitalSign = TestUtils.createConfigurationForCodeGeneration(developerProject, digitalSignTask);
+		boolean digitalSignCheck = generatorDigitalSIgn.generateCodeTemplates(configDigitalSign, digitalSignTask.getAdditionalResources());
+		assertTrue(digitalSignCheck);
 	}
 
 }

@@ -34,26 +34,20 @@ public class DefaultTasksGeneratorTest {
 	IJavaProject testJavaProject;
 	CodeGenerator generatorEnc;
 	CodeGenerator generatorSecPassword;
-//	CodeGenerator generatorSecCommunication;
 	CodeGenerator generatorLTA;
 	CodeGenerator generatorSecMPComp;
-//	CodeGenerator generatorCertainTrust;
 	CodeGenerator generatorHybridEnc;
 	CodeGenerator generatorDigitalSIgn;
 	Task encTask;
 	Task secPasswordTask;
-//	Task secCommunicationTask;
 	Task LTATask;
 	Task secMPCompTask;
-//	Task certainTrustTask;
 	Task hybridEncTask;
 	Task digitalSignTask;
 	Configuration configEnc;
 	Configuration configSecPassword;
-//	Configuration configSecCommunication;
 	Configuration configLTA;
 	Configuration configSecMPComp;
-//	Configuration configCertainTrust;
 	Configuration configHybridEnc;
 	Configuration configDigitalSign;
 	DeveloperProject developerProject;
@@ -76,17 +70,11 @@ public class DefaultTasksGeneratorTest {
 		this.secPasswordTask = TestUtils.getTask("SecurePassword");
 		this.generatorSecPassword = new XSLBasedGenerator(testJavaProject.getProject(), secPasswordTask.getXslFile());
 		
-//		this.secCommunicationTask = TestUtils.getTask("SecureCommunication");
-//		this.generatorSecCommunication = new XSLBasedGenerator(testJavaProject.getProject(), secCommunicationTask.getXslFile());
-		
 		this.LTATask = TestUtils.getTask("LongTermArchiving");
 		this.generatorLTA = new XSLBasedGenerator(testJavaProject.getProject(), LTATask.getXslFile());
 		
 		this.secMPCompTask = TestUtils.getTask("SECMUPACOMP");
 		this.generatorSecMPComp = new XSLBasedGenerator(testJavaProject.getProject(), secMPCompTask.getXslFile());
-		
-//		this.certainTrustTask = TestUtils.getTask("CertainTrust");
-//		this.generatorCertainTrust = new XSLBasedGenerator(testJavaProject.getProject(), certainTrustTask.getXslFile());
 		
 		this.hybridEncTask = TestUtils.getTask("HybridEncryption");
 		this.generatorHybridEnc = new XSLBasedGenerator(testJavaProject.getProject(), hybridEncTask.getXslFile());
@@ -115,13 +103,6 @@ public class DefaultTasksGeneratorTest {
 		assertTrue(secPasswordCheck);
 	}
 	
-//	@Test
-//	public void SecCommDefault() {
-//		this.configSecCommunication = TestUtils.createConfigurationForCodeGeneration(developerProject, secCommunicationTask);
-//		boolean secCommCheck = generatorSecCommunication.generateCodeTemplates(configSecCommunication, secCommunicationTask.getAdditionalResources());
-//		assertTrue(secCommCheck);
-//	}
-	
 	/**
 	 * This test case is commented because it requires UI interaction
 	 */
@@ -138,13 +119,6 @@ public class DefaultTasksGeneratorTest {
 		boolean secMPCompCheck = generatorSecMPComp.generateCodeTemplates(configSecMPComp, secMPCompTask.getAdditionalResources());
 		assertTrue(secMPCompCheck);
 	}
-	
-//	@Test
-//	public void CertainTrustDefault() {
-//		this.configCertainTrust = TestUtils.createConfigurationForCodeGeneration(developerProject, certainTrustTask);
-//		boolean certainTrustCheck = generatorCertainTrust.generateCodeTemplates(configCertainTrust, certainTrustTask.getAdditionalResources());
-//		assertTrue(certainTrustCheck);
-//	}
 	
 	@Test
 	public void HybridEncryptionDefault() {

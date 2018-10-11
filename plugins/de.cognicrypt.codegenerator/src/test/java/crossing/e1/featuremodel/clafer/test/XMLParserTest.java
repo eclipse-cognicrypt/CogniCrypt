@@ -33,7 +33,7 @@ import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModel;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.utilities.XMLParser;
+import de.cognicrypt.codegenerator.utilities.XMLClaferParser;
 import de.cognicrypt.utils.FileHelper;
 
 @RunWith(value = Parameterized.class)
@@ -87,7 +87,7 @@ public class XMLParserTest {
 		validFile.read(validBytes);
 		validFile.close();
 
-		final XMLParser xmlparser = new XMLParser();
+		final XMLClaferParser xmlparser = new XMLClaferParser();
 		xmlparser.displayInstanceValues(this.inst, this.constraints);
 		xmlparser.writeXMLToFile(this.xmlTestFilePath);
 
@@ -112,7 +112,7 @@ public class XMLParserTest {
 
 		//		final String validXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<task description=\"PasswordStoring\"><Package>Crypto</Package><Imports>" + importBuilder
 		//			.toString() + "</Imports><algorithm type=\"Digest\"><outputSize>384</outputSize><name>SHA-384</name><performance>3</performance><status>secure</status></algorithm><algorithm type=\"KeyDerivationAlgorithm\"><name>PBKDF</name><performance>2</performance><status>secure</status></algorithm><name>Password Storing</name><code/></task>";
-		final XMLParser xmlparser = new XMLParser();
+		final XMLClaferParser xmlparser = new XMLClaferParser();
 
 		final String xml = xmlparser.displayInstanceValues(this.inst, this.constraints).asXML();
 		assertEquals(uglifyXML(validXML), uglifyXML(xml));

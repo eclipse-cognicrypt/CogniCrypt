@@ -24,7 +24,6 @@ import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ErrorMarkerGenerator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
-import de.cognicrypt.staticanalyzer.sootbridge.SootRunner;
 import de.cognicrypt.utils.Utils;
 
 /**
@@ -72,6 +71,7 @@ public class AnalysisKickOff {
 		if (AnalysisKickOff.resultsReporter == null) {
 			AnalysisKickOff.resultsReporter = ResultsCCUIListener.createListener(ip);
 		}
+
 		resultsReporter.getMarkerGenerator().clearMarkers(ip);
 		try {
 			if (ip == null || (!ip.hasNature(JavaCore.NATURE_ID))) {
@@ -82,7 +82,6 @@ public class AnalysisKickOff {
 			return false;
 		}
 		this.curProj = JavaCore.create(ip);
-
 		return true;
 	}
 
@@ -105,18 +104,18 @@ public class AnalysisKickOff {
 					} catch (InterruptedException e) {
 					}
 					
-					if(monitor.isCanceled()) {
+					if (monitor.isCanceled()) {
 						sootThread.stop();
 						return Status.CANCEL_STATUS;
 					}
-					
+
 				}
 				if (sootThread.isSucc()) {
 					return Status.OK_STATUS;
 				} else {
 					return Status.CANCEL_STATUS;
 				}
-				
+
 			}
 
 			@Override

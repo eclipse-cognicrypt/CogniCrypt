@@ -10,7 +10,7 @@
 <xsl:variable name="keyPairGenerator">
 	<xsl:choose>
 		<xsl:when test="//task/element[@type='DigitalSignatures']/scheme='RSA'">RSA</xsl:when>
-		<xsl:otherwise>EC</xsl:otherwise>
+		<xsl:otherwise>DSA</xsl:otherwise>
 	</xsl:choose>
 </xsl:variable>
 
@@ -27,14 +27,12 @@ package <xsl:value-of select="//task/Package"/>;
 
 public class Signatures {
 
-	private static final String rndNumberGenerator = "NativePRNG";
-	private static final String keyPairGenerator = "<xsl:value-of select="$keyPairGenerator"/>";
-	private static final String signatureAlgorithm = "<xsl:value-of select="$signatureAlgorithm"/>";
+	private static final String keyPairGenerator = "EC";
+	private static final String signatureAlgorithm = "SHA256withECDSA";
 
 	public static KeyPair getKey() throws NoSuchAlgorithmException {
-		SecureRandom prng = SecureRandom.getInstance(rndNumberGenerator);
 		KeyPairGenerator kpg = KeyPairGenerator.getInstance(keyPairGenerator);
-		kpg.initialize(<xsl:value-of select="$keysize"/>, prng);
+		kpg.initialize(<xsl:value-of select="$keysize"/>);
 		KeyPair pair = kpg.generateKeyPair();
 		return pair;
 	}
@@ -71,7 +69,7 @@ public class Output {
 		KeyPair pair = Signatures.getKey();
 
 		// message
-		String msg = "Zehn zahme Ziegen zogen zehn Zentner Zucker zum Zoo.";
+		String msg = "Template Message.";
 
 		// signing
 		byte[] signature = Signatures.sign(msg, pair.getPrivate());

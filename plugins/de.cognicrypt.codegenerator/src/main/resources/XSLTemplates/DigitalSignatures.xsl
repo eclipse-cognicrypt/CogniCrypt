@@ -6,7 +6,6 @@
 <xsl:if test="//task[@description='DigitalSignatures']">
 
 <xsl:variable name="keysize"> <xsl:value-of select="//task/algorithm[@type='SignatureScheme']/keysize"/> </xsl:variable>
-
 <xsl:variable name="keyPairGenerator">
 	<xsl:choose>
 		<xsl:when test="//task/element[@type='DigitalSignatures']/scheme='RSA'">RSA</xsl:when>
@@ -27,8 +26,8 @@ package <xsl:value-of select="//task/Package"/>;
 
 public class Signatures {
 
-	private static final String keyPairGenerator = "EC";
-	private static final String signatureAlgorithm = "SHA256withECDSA";
+	private static final String keyPairGenerator = "<xsl:value-of select="$keyPairGenerator"/>";
+	private static final String signatureAlgorithm = "<xsl:value-of select="$signatureAlgorithm"/>";
 
 	public static KeyPair getKey() throws NoSuchAlgorithmException {
 		KeyPairGenerator kpg = KeyPairGenerator.getInstance(keyPairGenerator);
@@ -63,14 +62,10 @@ package <xsl:value-of select="//Package"/>;
 <xsl:apply-templates select="//Import"/>
 public class Output {
 
-	public static void templateUsage() throws GeneralSecurityException {
+	public static void templateUsage(String msg) throws GeneralSecurityException {
 
 		// key generation
 		KeyPair pair = Signatures.getKey();
-
-		// message
-		String msg = "Template Message.";
-
 		// signing
 		byte[] signature = Signatures.sign(msg, pair.getPrivate());
 

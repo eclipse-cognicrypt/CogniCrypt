@@ -326,12 +326,10 @@ public abstract class CodeGenerator {
 			IFile outputFile = this.project.getIFile(temporaryOutputFile);
 			IDE.openEditor(Utils.getCurrentlyOpenPage(), outputFile);
 		}
-		/*
 		final ICompilationUnit openClass = JavaCore.createCompilationUnitFrom(CodeGenUtils.getCurrentlyOpenFile(editor));
 		organizeImportsActionForAllFilesTouchedDuringGeneration.run(openClass);
 		faa.runOnMultiple(new ICompilationUnit[] { openClass });
 		editor.doSave(null);
-		*/
 	}
 
 }

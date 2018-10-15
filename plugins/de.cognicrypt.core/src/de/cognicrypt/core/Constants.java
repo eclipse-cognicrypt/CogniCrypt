@@ -208,7 +208,7 @@ public class Constants {
 			"javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException",
 			"java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec",
 			"java.security.spec.InvalidKeySpecException", "java.util.List", "java.util.Base64", "java.io.InputStream",
-			"java.io.OutputStream", "java.util.Properties", "java.io.FileOutputStream" };
+			"java.io.OutputStream", "java.util.Properties", "java.io.FileOutputStream", "java.security.Key" };
 
 	// Types
 	public static final String INTEGER = "Integer";

@@ -31,7 +31,7 @@
 		{
 			"name": "DigitalSignatures",
 			"description": "Digitally sign documents",
-			"taskDescription": "",			
+			"taskDescription": "This cryptographic task generates code that allows for the signing of data. A new key pair is generated for the signature and you may also get code for verification generated.",			
 			"modelFile" : "src/main/resources/ClaferModel/DigitalSignatures.js",
 			"questionsJSONFile" : "src/main/resources/TaskDesc/DigitalSignatures.json",
 			"additionalResources" : "",

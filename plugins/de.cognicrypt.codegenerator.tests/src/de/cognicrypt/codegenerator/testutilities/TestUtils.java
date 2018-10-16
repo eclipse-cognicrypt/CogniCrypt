@@ -41,7 +41,6 @@ import de.cognicrypt.codegenerator.question.QuestionsJSONReader;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 import de.cognicrypt.codegenerator.wizard.Configuration;
-import de.cognicrypt.core.Activator;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.Utils;
 

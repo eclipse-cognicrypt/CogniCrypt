@@ -1,8 +1,11 @@
 package de.cognicrypt.codegenerator.generator.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
@@ -10,6 +13,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;

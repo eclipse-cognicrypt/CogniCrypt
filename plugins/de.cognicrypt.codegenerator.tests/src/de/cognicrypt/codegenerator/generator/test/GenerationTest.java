@@ -12,6 +12,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.cognicrypt.codegenerator.DeveloperProject;
@@ -109,7 +110,7 @@ public class GenerationTest {
 	 * Test if the codegeneration puts the templageUsage-method in the open Enc
 	 * class.
 	 */
-	@Test
+//	@Test
 	public void testCodeGenerationInEncClass() throws CoreException, IOException {
 
 		this.configEnc = TestUtils.createConfigurationForCodeGeneration(developerProject, encTask);

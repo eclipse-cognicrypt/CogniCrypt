@@ -11,7 +11,9 @@
 package de.cognicrypt.staticanalyzer.handlers;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -26,6 +28,8 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.IStartup;
 
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.results.ErrorMarkerGenerator;
+import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 
 /**
  * At startup, this handler registers a listener that will be informed after a
@@ -35,9 +39,26 @@ import de.cognicrypt.staticanalyzer.Activator;
  * @author Stefan Krueger
  */
 public class StartupHandler implements IStartup {
+	static Queue<AnalysisKickOff> Analysis_Queue = new LinkedList<AnalysisKickOff>();
+	static boolean analysis_running_flag = false;
 
 	private static class AfterBuildListener implements IResourceChangeListener {
-
+		
+		
+		/**
+		 * This method sets up the analysis by <br>
+		 * 1) Listening to any resource change in the workspace <br>
+		 * 2) Setting Up the analysis by calling the "setup" method of  {@link AnalysisKickOff} <br>
+		 * 3) Running the analysis on the setup {@link AnalysisKickOff} object <br>
+		 * 
+		 * It maintains a Queue and a monitor flag that allows running only one analysis at a time.
+		 * 
+		 * @param event
+		 *
+		 * @return <code>true</code>/<code>false</code> if change (not) in java element 
+		 * @throws Exception
+		 * @throws CoreException
+		 */
 		@Override
 		public void resourceChanged(final IResourceChangeEvent event) {
 			final List<IJavaElement> changedJavaElements = new ArrayList<>();
@@ -97,16 +118,27 @@ public class StartupHandler implements IStartup {
 			}
 			if (!changedJavaElements.isEmpty()) {
 				final AnalysisKickOff ako = new AnalysisKickOff();
-
-				if (ako.setUp(changedJavaElements.get(0))) {
-					if (ako.run()) {
-						Activator.getDefault().logInfo("Analysis has finished.");
-					} else {
-						Activator.getDefault().logInfo("Analysis has aborted.");
-					}
-				} else {
+				boolean stat = ako.setUp(changedJavaElements.get(0));
+				if(stat) {
+					Analysis_Queue.add(ako);
+				}
+				else {
 					Activator.getDefault().logInfo("Analysis has been canceled due to erroneous setup.");
 				}
+				while(Analysis_Queue.size()>0) {
+					if(!analysis_running_flag) {
+						final AnalysisKickOff ak= Analysis_Queue.remove();
+						analysis_running_flag=true;
+						if (ak.run()) {
+							Activator.getDefault().logInfo("Analysis has finished.");
+						} else {
+							Activator.getDefault().logInfo("Analysis has aborted.");
+						}
+						analysis_running_flag=false;
+					}
+					
+				}
+				
 			}
 		}
 	}

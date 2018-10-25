@@ -150,7 +150,7 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 	 * @param unit Unit from getUnitForParser
 	 */
 	private void setupParser(final ICompilationUnit unit) {
-		final ASTParser parser = ASTParser.newParser(AST.JLS10);
+		final ASTParser parser = ASTParser.newParser(AST.JLS9);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setSource(unit);
 		parser.setResolveBindings(true);
@@ -196,7 +196,7 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 	@Override
 	protected IProject[] build(final int kind, final Map args, final IProgressMonitor monitor) throws CoreException {
 		clean(null);
-		this.parser = ASTParser.newParser(AST.JLS10);
+		this.parser = ASTParser.newParser(AST.JLS9);
 		this.parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		final IProject project = getProject();
 		try {

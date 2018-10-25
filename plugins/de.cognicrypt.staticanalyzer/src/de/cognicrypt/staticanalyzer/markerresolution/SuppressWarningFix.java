@@ -28,7 +28,7 @@ public class SuppressWarningFix implements IMarkerResolution {
 		super();
 		this.label = label;
 	}
-
+ 
 	/**
 	 * This method adds a new entry to the warnings suppress xml file
 	 *
@@ -41,6 +41,7 @@ public class SuppressWarningFix implements IMarkerResolution {
 
 		final int id = (int) m.getAttribute(IMarker.SOURCE_ID);
 		final String ressource = m.getResource().getName();
+		final String var = (String) m.getAttribute("var");
 		final int lineNumber = (int) m.getAttribute(IMarker.LINE_NUMBER);
 		final String message = (String) m.getAttribute(IMarker.MESSAGE);
 
@@ -48,6 +49,7 @@ public class SuppressWarningFix implements IMarkerResolution {
 				Constants.SUPPRESSWARNING_ELEMENT);
 		this.xmlParser.createAttrForElement(warningEntry, Constants.ID_ATTR, id + "");
 		this.xmlParser.createChildElement(warningEntry, Constants.FILE_ELEMENT, ressource);
+		this.xmlParser.createChildElement(warningEntry, Constants.VAR_ELEMENT, var);
 		this.xmlParser.createChildElement(warningEntry, Constants.LINENUMBER_ELEMENT, lineNumber + "");
 		this.xmlParser.createChildElement(warningEntry, Constants.MESSAGE_ELEMENT, message);
 	}

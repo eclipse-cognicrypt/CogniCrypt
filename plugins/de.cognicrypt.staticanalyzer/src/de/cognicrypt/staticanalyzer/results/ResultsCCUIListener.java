@@ -61,6 +61,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	private String warningFilePath;
 	private XMLParser xmlParser;
 
+
 	private ResultsCCUIListener(final IProject curProj, final ErrorMarkerGenerator gen) {
 		this.currentProject = curProj;
 		this.markerGenerator = gen;
@@ -86,20 +87,22 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		String errorMessage = error.toErrorMarkerString();
 		Statement errorLocation = error.getErrorLocation();
 		IResource sourceFile = unitToResource(errorLocation);
-		int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
+		int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();	
 		CCStatement stmt = new CCStatement(errorLocation);
 		int stmtId = stmt.hashCode();
+		String var = stmt.getVar();
+		
 
 		warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator + Constants.SUPPRESSWARNING_FILE;
 		File warningsFile = new File(warningFilePath);
 
 		if (!warningsFile.exists()) {
-			this.markerGenerator.addMarker(error, stmtId, sourceFile, lineNumber, errorMessage);
+			this.markerGenerator.addMarker(error, stmtId, sourceFile, var, lineNumber, errorMessage);
 		} else {
 			xmlParser = new XMLParser(warningsFile);
 			xmlParser.useDocFromFile();
 			if (!xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR).contains(stmtId + "")) {
-				this.markerGenerator.addMarker(error, stmtId, sourceFile, lineNumber, errorMessage);
+				this.markerGenerator.addMarker(error, stmtId, sourceFile, var, lineNumber, errorMessage);
 			} else {
 
 				// update existing LineNumber
@@ -124,7 +127,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	 * This method removes superfluous suppressed warning entries from the
 	 * SuppressWarnings.xml file.
 	 */
-	public void removeUndetectableWarnings() {
+	private void removeUndetectableWarnings() {
 		if (suppressedWarningIds.size() > 0) {
 
 			ArrayList<String> allSuppressedWarningIds = xmlParser
@@ -159,6 +162,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		// fails, it should be left untouched as the actual bug is above.
 		return this.currentProject.getFile("src/" + className.getName().replace(".", "/") + ".java");
 	}
+	
 
 	@Override
 	public void checkedConstraints(final AnalysisSeedWithSpecification arg0, final Collection<ISLConstraint> arg1) {
@@ -192,7 +196,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void beforeAnalysis() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override

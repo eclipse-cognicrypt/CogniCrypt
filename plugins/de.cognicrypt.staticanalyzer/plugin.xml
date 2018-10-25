@@ -129,10 +129,13 @@
    		</quickFixProcessor>
 	</extension>
 	<!--ErrorMarker-->
-	<extension	id="de.cognicrypt.staticanalyzer.ccMarker"
-          		name="CogniCrypt Problem"
-         		point="org.eclipse.core.resources.markers">
+	<extension	
+		  id="de.cognicrypt.staticanalyzer.ccMarker"
+          name="CogniCrypt Problem"
+          point="org.eclipse.core.resources.markers">
      	<super type="org.eclipse.core.resources.problemmarker"></super>
+     	<attribute name = "error"></attribute>
+     	<attribute name = "var"></attribute>
        <persistent value="false"></persistent>
     </extension>
     <extension
@@ -163,6 +166,37 @@
        <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
        <persistent value="false"></persistent>
     </extension>
+    <!--<extension
+   		 id="de.cognicrypt.staticanalyzer.requiredPredicateErrorAnnotation"
+   		 name="Required Predicate Annotation"
+         point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerType="de.cognicrypt.staticanalyzer.requiredPredicateErrorMarker"
+            name="de.cognicrypt.staticanalyzer.requiredPredicateErrorAnnotation">
+      </type>
+    </extension>
+	<extension
+         point="org.eclipse.ui.editors.markerAnnotationSpecification"
+         id="de.cognicrypt.staticanalyzer.requiredPredicateErrorAnnotationSpec">
+      <specification
+            annotationType="de.cognicrypt.staticanalyzer.requiredPredicateErrorAnnotation"
+            includeOnPreferencePage="true"
+            overviewRulerPreferenceKey="clruler"
+            label="requiredPredicateErrorAnnotation"
+			overviewRulerPreferenceValue="true"
+			highlightPreferenceKey="highlight.background"
+			highlightPreferenceValue="true"
+			colorPreferenceKey="clcolor"
+			colorPreferenceValue="205,255,205"
+			textPreferenceKey="cltext"
+			textPreferenceValue="true"
+			presentationLayer="5"
+			verticalRulerPreferenceKey="clvertical"
+			verticalRulerPreferenceValue="true"
+			textStylePreferenceKey="clstyle"
+			textStylePreferenceValue="BOX">
+      </specification>
+   </extension>-->  
     <extension
           id="de.cognicrypt.staticanalyzer.constraintErrorMarker"
           name="Constraint Problem"

@@ -61,7 +61,7 @@ public class ErrorMarkerGenerator {
 	 * @return <code>true</code>/<code>false</code> if error marker was (not) added
 	 *         successfully
 	 */
-	public boolean addMarker(final AbstractError error, final int id, final IResource sourceFile, final int line,
+	public boolean addMarker(final AbstractError error, final int id, final IResource sourceFile, final String var, final int line,
 			final String message) {
 
 		if (!sourceFile.exists() || !sourceFile.isAccessible()) {
@@ -101,6 +101,8 @@ public class ErrorMarkerGenerator {
 		IMarker marker;
 		try {
 			marker = sourceFile.createMarker(markerType);
+			marker.setAttribute("error", error);
+			marker.setAttribute("var", var);
 			marker.setAttribute(IMarker.LINE_NUMBER, line);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);

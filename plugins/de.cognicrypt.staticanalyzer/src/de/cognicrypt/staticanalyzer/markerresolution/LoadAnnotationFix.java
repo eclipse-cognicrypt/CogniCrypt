@@ -11,9 +11,10 @@ import crypto.analysis.errors.RequiredPredicateError;
 import de.cognicrypt.client.DeveloperProject;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.annotations.LoadAnnotationManager;
+import de.cognicrypt.staticanalyzer.statment.CCStatement;
 
 /**
- * This class adds the load Annotation to the right object deletes the marker on
+ * This class adds the Load annotation to the right object deletes the marker on
  * the UI
  *
  * @author André Sonntag
@@ -36,13 +37,14 @@ public class LoadAnnotationFix implements IMarkerResolution {
 	}
 
 	@Override
-	public void run(final IMarker marker) {
-		
+	public void run(final IMarker marker) {		
 		try {
+			
 			manager = new LoadAnnotationManager(new DeveloperProject(marker.getResource().getProject()));
 			manager.addAdditionalFiles("resources/Annotations");
 			marker.getResource().getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
-			manager.annotateProblemSource(marker, error.getExtractedValues().getCallSite().getVarName());	
+			CCStatement cc = new CCStatement(error.getErrorLocation());
+			manager.annotateProblemSource(marker, cc.getVarNameByIndex(error.getExtractedValues().getCallSite().getIndex()));	
 			marker.delete();
 			marker.getResource().getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 

@@ -19,10 +19,11 @@ import de.cognicrypt.staticanalyzer.annotations.impl.LoadAnnotation;
 public class QuickFixer implements IMarkerResolutionGenerator {
 
 	ArrayList<IMarkerResolution> quickFixes;
+	boolean toggle = true;
 
 	@Override
 	public IMarkerResolution[] getResolutions(final IMarker mk) {
-				
+
 		quickFixes = new ArrayList<>();
 		String message = "";
 
@@ -30,10 +31,15 @@ public class QuickFixer implements IMarkerResolutionGenerator {
 			message = (String) mk.getAttribute(IMarker.MESSAGE);
 			quickFixes.add(new SuppressWarningFix(Constants.SUPPRESSWARNING_FIX + message));
 
-			if (mk.getAttribute("error") instanceof RequiredPredicateError) {
-				RequiredPredicateError rpError = (RequiredPredicateError)mk.getAttribute("error");
-				if(rpError.getContradictedPredicate().getPredName().equals("generatedKey") || rpError.getContradictedPredicate().getPredName().equals("randomized")) {
-					quickFixes.add(new LoadAnnotationFix("This object comes from a stream/database/other external source and is actually secure.",rpError));
+			if (toggle) {
+				if (mk.getAttribute("error") instanceof RequiredPredicateError) {
+					RequiredPredicateError rpError = (RequiredPredicateError) mk.getAttribute("error");
+					if (rpError.getContradictedPredicate().getPredName().equals("generatedKey")
+							|| rpError.getContradictedPredicate().getPredName().equals("randomized")) {
+						quickFixes.add(new LoadAnnotationFix(
+								"This object comes from a stream/database/other external source and is actually secure.",
+								rpError));
+					}
 				}
 			}
 

@@ -27,6 +27,7 @@ import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.jface.text.Document;
@@ -37,6 +38,7 @@ import org.eclipse.ui.PlatformUI;
 import de.cognicrypt.client.DeveloperProject;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.annotations.impl.LoadAnnotation;
 import de.cognicrypt.utils.Utils;
 
 /**
@@ -50,15 +52,14 @@ public class LoadAnnotationManager {
 	private static final String LOAD_ANNOTATION_PACKAGE = "de.cognicrypt.staticanalyzer.annotations";
 	private final DeveloperProject project;
 
-	
 	public LoadAnnotationManager(DeveloperProject project) {
 		this.project = project;
 	}
-	
+
 	public void annotateProblemSource(IMarker marker, String varName) throws CoreException {
 		ICompilationUnit unit = getCompilationUnitFromMarker(marker);
 		annotateProblemSource(varName, unit);
-		if(!hasLoadAnnotationImport(unit)) {
+		if (!hasLoadAnnotationImport(unit)) {
 			insertLoadAnnotationImport(unit);
 		}
 	}
@@ -97,6 +98,7 @@ public class LoadAnnotationManager {
 			this.sourceUnit = sourceUnit;
 		}
 
+		@SuppressWarnings("rawtypes")
 		public boolean visit(MethodDeclaration node) {
 			if (!sourceFound) {
 				if (!node.isConstructor()) {
@@ -121,6 +123,47 @@ public class LoadAnnotationManager {
 			}
 		}
 
+		@SuppressWarnings("rawtypes")
+		public boolean visit(FieldDeclaration node) {
+
+			if (!sourceFound) {
+				List variables = node.fragments();
+				Iterator variablesIterator = variables.iterator();
+				while (variablesIterator.hasNext()) {
+					if (variablesIterator.next() instanceof VariableDeclarationFragment) {
+						VariableDeclarationFragment variable = (VariableDeclarationFragment) variablesIterator.next();
+						if (variable.getName().toString().equals(varName)) {
+							annotateProblemSource(variable, varName, unit, sourceUnit);
+							sourceFound = true;
+							return false;
+						}
+					}
+				}
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		@SuppressWarnings({ "rawtypes" })
+		public boolean visit(VariableDeclarationStatement node) {
+			if (!sourceFound) {
+				List variables = node.fragments();
+				Iterator variablesIterator = variables.iterator();
+				while (variablesIterator.hasNext()) {
+					VariableDeclarationFragment variable = (VariableDeclarationFragment) variablesIterator.next();
+
+					if (variable.getName().toString().equals(varName)) {
+						annotateProblemSource(variable, varName, unit, sourceUnit);
+						sourceFound = true;
+						return false;
+					}
+				}
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}
 
 	private void annotateProblemSource(ASTNode node, String varName, CompilationUnit unit,
@@ -143,7 +186,8 @@ public class LoadAnnotationManager {
 
 		try {
 			Map<String, String> editorOptions = sourceUnit.getJavaProject().getOptions(true);
-			editorOptions.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_AFTER_TYPE_ANNOTATION,JavaCore.DO_NOT_INSERT);
+			editorOptions.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_AFTER_TYPE_ANNOTATION,
+					JavaCore.DO_NOT_INSERT);
 
 			TextEdit edits = unit.rewrite(sourceDocument, editorOptions);
 			edits.apply(sourceDocument);
@@ -199,7 +243,7 @@ public class LoadAnnotationManager {
 			return true;
 		}
 		try {
-			final File[] members = Utils.getResourceFromWithin(source,"de.cognicrypt.staticanalyzer").listFiles();
+			final File[] members = Utils.getResourceFromWithin(source, "de.cognicrypt.staticanalyzer").listFiles();
 			if (members == null) {
 				Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);
 			}
@@ -215,7 +259,7 @@ public class LoadAnnotationManager {
 		}
 		return true;
 	}
-	
+
 	private boolean addAddtionalFile(File fileToBeAdded) throws IOException, CoreException {
 		final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesInDevProject);
 		if (!libFolder.exists()) {
@@ -223,15 +267,16 @@ public class LoadAnnotationManager {
 		}
 
 		final Path memberPath = fileToBeAdded.toPath();
-		Files
-			.copy(
-				memberPath, new File(this.project
-					.getProjectPath() + Constants.outerFileSeparator + Constants.pathsForLibrariesInDevProject + Constants.outerFileSeparator + memberPath.getFileName()).toPath(),
+		Files.copy(memberPath,
+				new File(this.project.getProjectPath() + Constants.outerFileSeparator
+						+ Constants.pathsForLibrariesInDevProject + Constants.outerFileSeparator
+						+ memberPath.getFileName()).toPath(),
 				StandardCopyOption.REPLACE_EXISTING);
 		final String filePath = fileToBeAdded.toString();
 		final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.outerFileSeparator));
 		if (Constants.JAR.equals(cutPath.substring(cutPath.indexOf(".")))) {
-			if (!this.project.addJar(Constants.pathsForLibrariesInDevProject + Constants.outerFileSeparator + fileToBeAdded.getName())) {
+			if (!this.project.addJar(
+					Constants.pathsForLibrariesInDevProject + Constants.outerFileSeparator + fileToBeAdded.getName())) {
 				return false;
 			}
 		}

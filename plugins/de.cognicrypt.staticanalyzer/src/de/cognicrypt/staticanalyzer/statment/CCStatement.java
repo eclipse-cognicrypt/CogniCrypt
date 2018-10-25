@@ -38,6 +38,10 @@ public class CCStatement {
 		}
 	}
 
+	public String getVarNameByIndex(int i) {
+		return stmt.getUnit().get().getInvokeExpr().getArg(i).toString();
+	}
+	
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) {
@@ -96,6 +100,8 @@ public class CCStatement {
 	public String getVar() {
 		return this.var;
 	}
+	
+	
 
 	@Override
 	public int hashCode() {

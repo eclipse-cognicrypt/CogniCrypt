@@ -10,7 +10,8 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import de.cognicrypt.codegenerator.DeveloperProject;
+
+import de.cognicrypt.client.DeveloperProject;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.tasks.Task;
@@ -51,10 +52,13 @@ public class GenerationTest {
 		GenerationTest.counter++;
 		this.testJavaProject = TestUtils.createJavaProject("TestProject_"+counter);
 		TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
+		
 		this.encTask = TestUtils.getTask("SymmetricEncryption");
 		this.generatorEnc = new XSLBasedGenerator(testJavaProject.getProject(), encTask.getXslFile());
+		
 		this.secPasswordTask = TestUtils.getTask("SecurePassword");
 		this.generatorSecPassword = new XSLBasedGenerator(testJavaProject.getProject(), secPasswordTask.getXslFile());
+		
 		this.developerProject = generatorEnc.getDeveloperProject();
 	}
 

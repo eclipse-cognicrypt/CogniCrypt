@@ -26,6 +26,7 @@ public class Constants {
 	public static final String NO_RES_FOUND = "No resource to generate error marker for found.";
 	public static final String OBJECT_OF_TYPE = "Object of type ";
 	public static final String VAR = "Variable ";
+	public static final String STATIC_ANALYZER_PLUGIN_OUTPUT = "target/classes";
 
 	// The plugin is bundled in a jar archive and the file separator within jar
 	// files is / (see:
@@ -504,7 +505,8 @@ public class Constants {
 	public static final String FILE_ELEMENT = "File";
 	public static final String LINENUMBER_ELEMENT = "LineNumber";
 	public static final String MESSAGE_ELEMENT = "Message";
-	
+	public static final String VAR_ELEMENT = "Variable";
+
 	// QuickFixs
 	public static final String SUPPRESSWARNING_FIX = "Suppress Warning: ";
 	

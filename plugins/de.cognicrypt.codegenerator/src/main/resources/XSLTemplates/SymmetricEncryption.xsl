@@ -10,17 +10,19 @@
 <xsl:result-document href="Enc.java">
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
+import java.security.Key;
+
 /** @author CogniCrypt */
 public class Enc {	
 		<xsl:choose>
 		<xsl:when test="//task/code/dataType='File'">
-		public File encrypt(File file, SecretKey key) throws GeneralSecurityException, IOException { 
+		public File encrypt(File file, Key key) throws GeneralSecurityException, IOException { 
 		</xsl:when>  
 		<xsl:when test="//task/code/dataType='String'">
-		public String encrypt(String message, SecretKey key) throws GeneralSecurityException, UnsupportedEncodingException { 
+		public String encrypt(String message, Key key) throws GeneralSecurityException, UnsupportedEncodingException { 
 		</xsl:when>      
         <xsl:otherwise>
-		public byte[] encrypt(byte[] data, SecretKey key) throws GeneralSecurityException { 
+		public byte[] encrypt(byte[] data, Key key) throws GeneralSecurityException { 
 		</xsl:otherwise>
 		</xsl:choose>	
 		byte [] ivb = new byte [16];
@@ -71,13 +73,13 @@ public class Enc {
 	
 	<xsl:choose>
 		<xsl:when test="//task/code/dataType='File'">
-		public File decrypt(File file, SecretKey key) throws GeneralSecurityException, IOException { 
+		public File decrypt(File file, Key key) throws GeneralSecurityException, IOException { 
 		</xsl:when>  
 		<xsl:when test="//task/code/dataType='String'">
-		public String decrypt(String message, SecretKey key) throws GeneralSecurityException { 
+		public String decrypt(String message, Key key) throws GeneralSecurityException { 
 		</xsl:when>      
         <xsl:otherwise>
-		public byte[] decrypt(byte [] ciphertext, SecretKey key) throws GeneralSecurityException { 
+		public byte[] decrypt(byte [] ciphertext, Key key) throws GeneralSecurityException { 
 		</xsl:otherwise>
 	</xsl:choose>
 	<xsl:choose>
@@ -134,10 +136,12 @@ public class Enc {
 <xsl:result-document href="KeyDeriv.java">
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>
+import java.security.Key;
+
 /** @author CogniCrypt */	
 public class KeyDeriv {
 	
-	public SecretKey getKey(char[] pwd) throws GeneralSecurityException {
+	public Key getKey(char[] pwd) throws GeneralSecurityException {
 		byte[] salt = new byte[16];
 		SecureRandom.getInstanceStrong().nextBytes(salt);
 		
@@ -146,7 +150,8 @@ public class KeyDeriv {
          <xsl:otherwise> 1000 </xsl:otherwise>
 		 </xsl:choose>, <xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/keySize"/>);
 		SecretKeyFactory skf = SecretKeyFactory.getInstance("<xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/name"/>WithHmacSHA256");
-		SecretKeySpec ret = new SecretKeySpec(skf.generateSecret(spec).getEncoded(), "<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>" );
+		Key tmpKey = skf.generateSecret(spec);
+		SecretKeySpec ret = new SecretKeySpec(tmpKey.getEncoded(), "<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>" );
 		spec.clearPassword();
 		return ret;
 	}
@@ -161,13 +166,13 @@ public class Output {
 	public <xsl:value-of select="//task/code/dataType"/> templateUsage(<xsl:value-of select="//task/code/dataType"/> data<xsl:if test="//task/algorithm[@type='KeyDerivationAlgorithm']">, char[] pwd</xsl:if>) throws GeneralSecurityException<xsl:if test="//task/code/dataType='File'">, IOException</xsl:if><xsl:if test="//task/code/dataType='String'">, UnsupportedEncodingException</xsl:if>{
 		<xsl:choose>
         <xsl:when test="//task/algorithm[@type='KeyDerivationAlgorithm']">KeyDeriv kd = new KeyDeriv();
-		SecretKey key = kd.getKey(pwd); </xsl:when>
+		Key key = kd.getKey(pwd); </xsl:when>
         <xsl:otherwise>KeyGenerator kg = KeyGenerator.getInstance("<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name"/>");
 		<xsl:choose>
 		<xsl:when test="//task/algorithm[@type='SymmetricBlockCipher']/keySize &gt; 128">
 	 // KeySize > 128 needs unlimited strength policy files http://www.oracle.com/technetwork/java/javase/downloads</xsl:when></xsl:choose>
 		kg.init(<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/keySize"/>);
-		SecretKey key = kg.generateKey(); </xsl:otherwise>
+		Key key = kg.generateKey(); </xsl:otherwise>
 		</xsl:choose>	
 		Enc enc = new Enc();
 		<xsl:choose>
@@ -183,6 +188,7 @@ public class Output {
 		</xsl:when>     
          <xsl:otherwise>
         byte[] ciphertext = enc.encrypt(data, key);
+        byte[] plainText = enc.decrypt(ciphertext, key);
         return ciphertext;
         </xsl:otherwise>
         </xsl:choose>

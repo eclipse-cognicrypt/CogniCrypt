@@ -38,7 +38,6 @@ import org.eclipse.ui.PlatformUI;
 import de.cognicrypt.client.DeveloperProject;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
-import de.cognicrypt.staticanalyzer.annotations.impl.LoadAnnotation;
 import de.cognicrypt.utils.Utils;
 
 /**

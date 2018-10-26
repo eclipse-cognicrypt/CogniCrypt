@@ -162,7 +162,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 						+ (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString()
 								: varName)
 						+ " is secure.",
-				Severities.Warning);
+				Severities.Secure);
 	}
 
 	/**

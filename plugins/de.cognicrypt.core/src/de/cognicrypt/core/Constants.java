@@ -22,6 +22,10 @@ public class Constants {
 	public enum GUIElements {
 		combo, text, itemselection, button, radio, scale, checkbox, radiobutton, textarea, composed
 	}
+	
+	public enum Severities {
+		Problem, Warning, Secure
+	}
 
 	public static final String NO_RES_FOUND = "No resource to generate error marker for found.";
 	public static final String OBJECT_OF_TYPE = "Object of type ";

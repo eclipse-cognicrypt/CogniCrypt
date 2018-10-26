@@ -19,6 +19,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.core.Constants.Severities;
 import de.cognicrypt.staticanalyzer.Activator;
 
 /**
@@ -49,7 +50,7 @@ public class ErrorMarkerGenerator {
 	 *         successfully
 	 */
 	public boolean addMarker(final int id, final IResource sourceFile, final int line, final String message) {
-		return addMarker(id, sourceFile, line, message, false);
+		return addMarker(id, sourceFile, line, message, Severities.Problem);
 	}
 
 	/**
@@ -68,20 +69,19 @@ public class ErrorMarkerGenerator {
 	 *         successfully
 	 */
 	public boolean addMarker(final int id, final IResource sourceFile, final int line, final String message,
-			boolean isWarning) {
+			Severities sev) {
 		if (!sourceFile.exists() || !sourceFile.isAccessible()) {
 			Activator.getDefault().logError(Constants.NO_RES_FOUND);
 			return false;
 		}
-
+		
 		IMarker marker;
-
 		try {
 			marker = sourceFile.createMarker(IMarker.PROBLEM);
 			marker.setAttribute(IMarker.LINE_NUMBER, line);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-			marker.setAttribute(IMarker.SEVERITY, (!isWarning) ? IMarker.SEVERITY_ERROR : IMarker.SEVERITY_WARNING);
+			marker.setAttribute(IMarker.SEVERITY, (sev == Severities.Problem) ? IMarker.SEVERITY_ERROR : ((sev == Severities.Warning) ? IMarker.SEVERITY_WARNING : IMarker.SEVERITY_INFO));
 			marker.setAttribute(IMarker.SOURCE_ID, id);
 
 		} catch (final CoreException e) {

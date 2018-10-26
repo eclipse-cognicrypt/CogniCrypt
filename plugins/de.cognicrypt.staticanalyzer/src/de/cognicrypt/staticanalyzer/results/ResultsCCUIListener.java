@@ -13,6 +13,8 @@ package de.cognicrypt.staticanalyzer.results;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -39,11 +41,18 @@ import crypto.extractparameter.ExtractedValue;
 import crypto.interfaces.ISLConstraint;
 import crypto.rules.CryptSLPredicate;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.core.Constants.Severities;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.statment.CCStatement;
 import de.cognicrypt.utils.Utils;
 import de.cognicrypt.utils.XMLParser;
 import soot.SootClass;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.Stmt;
+import soot.jimple.internal.JAssignStmt;
+import soot.jimple.internal.JimpleLocal;
+import soot.jimple.internal.JimpleLocalBox;
 import soot.tagkit.AbstractHost;
 import typestate.TransitionFunction;
 
@@ -96,7 +105,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 		if (!warningsFile.exists()) {
 			if (error instanceof ImpreciseValueExtractionError) {
-				this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage, true);
+				this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage, Severities.Warning);
 			} else {
 				this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage);
 			}
@@ -106,7 +115,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			if (!xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR)
 					.contains(stmtId + "")) {
 				if (error instanceof ImpreciseValueExtractionError) {
-					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage, true);
+					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage, Severities.Warning);
 				} else {
 					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage);
 				}
@@ -119,15 +128,41 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 						Constants.LINENUMBER_ELEMENT);
 				xmlParser.updateNodeValue(lineNumberNode, lineNumber + "");
 				xmlParser.writeXML();
-				
+
 				try {
 					currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
 				} catch (CoreException e) {
 					Activator.getDefault().logError(e);
-				}				
+				}
 				suppressedWarningIds.add(stmtId + "");
 			}
 		}
+	}
+
+	public void onSecureObjectFound(IAnalysisSeed secureObject) {
+		Statement stmt = secureObject.stmt();
+		Stmt unit = stmt.getUnit().get();
+		List<ValueBox> useAndDefBoxes = unit.getUseAndDefBoxes();
+		Optional<ValueBox> varOpt = useAndDefBoxes.stream().filter(e -> e instanceof JimpleLocalBox).findFirst();
+		ValueBox var = null;
+		if (varOpt.isPresent()) {
+			var = varOpt.get();
+		} else {
+			for (ValueBox box : useAndDefBoxes) {
+				if (box.getValue() instanceof JimpleLocal) {
+					var = box;
+					break;
+				}
+			}
+
+		}
+		Value varName = var.getValue();
+		this.markerGenerator.addMarker(-1, unitToResource(stmt), unit.getJavaSourceStartLineNumber(),
+				"Object "
+						+ (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString()
+								: varName)
+						+ " is secure.",
+				Severities.Warning);
 	}
 
 	/**
@@ -153,7 +188,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 				currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
 			} catch (CoreException e) {
 				Activator.getDefault().logError(e);
-			}	
+			}
 		}
 		suppressedWarningIds = new ArrayList<>();
 	}
@@ -257,7 +292,5 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates,
 			Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {
 		// TODO Auto-generated method stub
-
 	}
-
 }

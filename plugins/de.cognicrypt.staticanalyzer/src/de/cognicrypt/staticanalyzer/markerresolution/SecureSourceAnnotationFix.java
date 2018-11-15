@@ -48,7 +48,7 @@ public class SecureSourceAnnotationFix implements IMarkerResolution {
 		try {
 			//Temp solution
 			SuppressWarningFix tempFix = new SuppressWarningFix("");
-			//tempFix.run(marker);
+			tempFix.run(marker);
 			
 			manager = new SecureSourceAnnotationManager(new DeveloperProject(marker.getResource().getProject()));
 			manager.addAdditionalFiles("resources/Annotations");

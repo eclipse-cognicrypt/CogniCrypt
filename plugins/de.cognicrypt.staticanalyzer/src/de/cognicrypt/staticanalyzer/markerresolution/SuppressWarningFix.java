@@ -37,7 +37,7 @@ public class SuppressWarningFix implements IMarkerResolution {
 	 * @throws CoreException
 	 * @throws IOException
 	 */
-	public void createSuppressWarningEntry(final IMarker m) throws CoreException, IOException {
+	private void createSuppressWarningEntry(final IMarker m) throws CoreException, IOException {
 
 		final int id = (int) m.getAttribute(IMarker.SOURCE_ID);
 		final String ressource = m.getResource().getName();
@@ -62,8 +62,7 @@ public class SuppressWarningFix implements IMarkerResolution {
 	@Override
 	public void run(final IMarker marker) {
 
-		final File warningsFile = new File(marker.getResource().getProject().getLocation().toOSString()
-				+ Constants.outerFileSeparator + Constants.SUPPRESSWARNING_FILE);
+		final File warningsFile = new File(marker.getResource().getProject().getLocation().toOSString()+ Constants.outerFileSeparator + Constants.SUPPRESSWARNING_FILE);
 		this.xmlParser = new XMLParser(warningsFile);
 		try {
 			if (warningsFile.exists()) {

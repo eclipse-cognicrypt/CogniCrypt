@@ -9,7 +9,6 @@ import org.eclipse.ui.IMarkerResolutionGenerator;
 import crypto.analysis.errors.RequiredPredicateError;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
-import de.cognicrypt.staticanalyzer.annotations.impl.LoadAnnotation;
 
 /**
  * This method provides solutions for the marker resolution
@@ -34,11 +33,8 @@ public class QuickFixer implements IMarkerResolutionGenerator {
 			if (toggle) {
 				if (mk.getAttribute("error") instanceof RequiredPredicateError) {
 					RequiredPredicateError rpError = (RequiredPredicateError) mk.getAttribute("error");
-					if (rpError.getContradictedPredicate().getPredName().equals("generatedKey")
-							|| rpError.getContradictedPredicate().getPredName().equals("randomized")) {
-						quickFixes.add(new LoadAnnotationFix(
-								"This object comes from a stream/database/other external source and is actually secure.",
-								rpError));
+					if (rpError.getContradictedPredicate().getPredName().equals("generatedKey") || rpError.getContradictedPredicate().getPredName().equals("randomized")) {
+						quickFixes.add(new SecureSourceAnnotationFix("This object comes from a stream/database/other external source and is actually secure.",rpError));
 					}
 				}
 			}

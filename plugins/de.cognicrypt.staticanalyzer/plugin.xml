@@ -154,14 +154,14 @@
     </extension>
     <extension
           id="de.cognicrypt.staticanalyzer.predicateContradictionErrorMarker"
-          name="Predicate Contradiction Problem"
+          name="Insecure Class Composition Problem"
           point="org.eclipse.core.resources.markers">
        <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
        <persistent value="false"></persistent>
     </extension>
     <extension
           id="de.cognicrypt.staticanalyzer.requiredPredicateErrorMarker"
-          name="Required Predicate Problem"
+          name="Insecure Class Composition Problem"
           point="org.eclipse.core.resources.markers">
        <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
        <persistent value="false"></persistent>
@@ -199,28 +199,28 @@
    </extension>-->  
     <extension
           id="de.cognicrypt.staticanalyzer.constraintErrorMarker"
-          name="Constraint Problem"
+          name="Incorrect Parameter Problem"
           point="org.eclipse.core.resources.markers">
        <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
        <persistent value="false"></persistent>
     </extension>
     <extension
           id="de.cognicrypt.staticanalyzer.neverTypeOfErrorMarker"
-          name="Never TypeOf Problem"
+          name="Wrong Type Problem"
           point="org.eclipse.core.resources.markers">
        <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
        <persistent value="false"></persistent>
     </extension>
      <extension
           id="de.cognicrypt.staticanalyzer.incompleteOperationErrorMarker"
-          name="Incomplete Operation Problem"
+          name="Missing Method Call Problem"
           point="org.eclipse.core.resources.markers">
        <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
        <persistent value="false"></persistent>
     </extension>
      <extension
           id="de.cognicrypt.staticanalyzer.typestateErrorMarker"
-          name="Typestate Problem"
+          name="Incorrect Method Call Problem"
           point="org.eclipse.core.resources.markers">
        <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
        <persistent value="false"></persistent>

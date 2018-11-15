@@ -106,10 +106,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			} else {
 
 				// update existing LineNumber
-				Node suppressWarningNode = xmlParser.getNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT,
-						Constants.ID_ATTR, stmtId + "");
-				Node lineNumberNode = xmlParser.getChildNodeByTagName(suppressWarningNode,
-						Constants.LINENUMBER_ELEMENT);
+				Node suppressWarningNode = xmlParser.getNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR, stmtId + "");
+				Node lineNumberNode = xmlParser.getChildNodeByTagName(suppressWarningNode, Constants.LINENUMBER_ELEMENT);
 				xmlParser.updateNodeValue(lineNumberNode, lineNumber + "");
 				xmlParser.writeXML();
 

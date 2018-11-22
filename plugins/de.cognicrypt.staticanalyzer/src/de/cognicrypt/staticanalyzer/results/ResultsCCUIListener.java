@@ -13,6 +13,8 @@ package de.cognicrypt.staticanalyzer.results;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.core.resources.IMarker;
@@ -53,6 +55,12 @@ import de.cognicrypt.staticanalyzer.statment.CCStatement;
 import de.cognicrypt.utils.Utils;
 import de.cognicrypt.utils.XMLParser;
 import soot.SootClass;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.Stmt;
+import soot.jimple.internal.JAssignStmt;
+import soot.jimple.internal.JimpleLocal;
+import soot.jimple.internal.JimpleLocalBox;
 import soot.tagkit.AbstractHost;
 import typestate.TransitionFunction;
 
@@ -70,7 +78,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	private ArrayList<String> suppressedWarningIds;
 	private String warningFilePath;
 	private XMLParser xmlParser;
-
 
 	private ResultsCCUIListener(final IProject curProj, final ErrorMarkerGenerator gen) {
 		this.currentProject = curProj;
@@ -162,6 +169,34 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 	}
 
+	public void onSecureObjectFound(IAnalysisSeed secureObject) {
+		Statement stmt = secureObject.stmt();
+		Stmt unit = stmt.getUnit().get();
+		CCStatement cc = new CCStatement(stmt);
+		List<ValueBox> useAndDefBoxes = unit.getUseAndDefBoxes();
+		Optional<ValueBox> varOpt = useAndDefBoxes.stream().filter(e -> e instanceof JimpleLocalBox).findFirst();
+		ValueBox var = null;
+		if (varOpt.isPresent()) {
+			var = varOpt.get();
+		} else {
+			for (ValueBox box : useAndDefBoxes) {
+				if (box.getValue() instanceof JimpleLocal) {
+					var = box;
+					break;
+				}
+			}
+
+		}
+
+		Value varName = var.getValue();
+		this.markerGenerator.addMarker(null,Constants.CC_MARKER_TYPE,-1, unitToResource(stmt), cc.getVar() ,unit.getJavaSourceStartLineNumber(),
+				"Object "
+						+ (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString()
+								: varName)
+						+ " is secure.",
+				Severities.Secure);
+	}
+
 	/**
 	 * This method removes superfluous suppressed warning entries from the
 	 * SuppressWarnings.xml file.
@@ -201,7 +236,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		// fails, it should be left untouched as the actual bug is above.
 		return this.currentProject.getFile("src/" + className.getName().replace(".", "/") + ".java");
 	}
-	
 
 	@Override
 	public void checkedConstraints(final AnalysisSeedWithSpecification arg0, final Collection<ISLConstraint> arg1) {
@@ -235,6 +269,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void beforeAnalysis() {
+		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -289,7 +324,5 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates,
 			Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {
 		// TODO Auto-generated method stub
-
 	}
-
 }

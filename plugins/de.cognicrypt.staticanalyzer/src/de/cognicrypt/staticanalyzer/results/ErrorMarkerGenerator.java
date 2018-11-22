@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- *
+ * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -65,7 +65,7 @@ public class ErrorMarkerGenerator {
 			Activator.getDefault().logError(Constants.NO_RES_FOUND);
 			return false;
 		}
-
+		
 		IMarker marker;
 		try {
 			marker = sourceFile.createMarker(markerType);
@@ -83,12 +83,11 @@ public class ErrorMarkerGenerator {
 		}
 		this.markers.add(marker);
 		return true;
-
 	}
 
 	/**
 	 * Deletes markers from file and clears markers list.
-	 *
+	 * 
 	 * @return <code>true</code>/<code>false</code> if all error markers were (not)
 	 *         deleted successfully
 	 */
@@ -97,8 +96,7 @@ public class ErrorMarkerGenerator {
 	}
 
 	public boolean clearMarkers(final IProject curProj) {
-		
-		final boolean allMarkersDeleted = true;
+		boolean allMarkersDeleted = true;
 		try {
 			for (final IMarker marker : this.markers) {
 				if (curProj == null || (curProj != null && curProj.equals(marker.getResource().getProject()))) {
@@ -108,7 +106,7 @@ public class ErrorMarkerGenerator {
 			if (curProj != null) {
 				curProj.refreshLocal(IResource.DEPTH_INFINITE, null);
 			}
-		} catch (final CoreException e) {
+		} catch (CoreException e) {
 			Activator.getDefault().logError(e);
 		}
 		this.markers.clear();

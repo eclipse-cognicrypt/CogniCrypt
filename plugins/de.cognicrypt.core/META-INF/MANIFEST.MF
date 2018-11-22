@@ -16,6 +16,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: boomerang,
  boomerang.jimple,
+ boomerang.preanalysis,
  boomerang.results,
  crypto,
  crypto.analysis,

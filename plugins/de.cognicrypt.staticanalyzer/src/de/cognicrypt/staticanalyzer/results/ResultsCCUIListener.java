@@ -172,7 +172,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	public void onSecureObjectFound(IAnalysisSeed secureObject) {
 		Statement stmt = secureObject.stmt();
 		Stmt unit = stmt.getUnit().get();
-		CCStatement cc = new CCStatement(stmt);
 		List<ValueBox> useAndDefBoxes = unit.getUseAndDefBoxes();
 		Optional<ValueBox> varOpt = useAndDefBoxes.stream().filter(e -> e instanceof JimpleLocalBox).findFirst();
 		ValueBox var = null;
@@ -189,7 +188,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 
 		Value varName = var.getValue();
-		this.markerGenerator.addMarker(null,Constants.CC_MARKER_TYPE,-1, unitToResource(stmt), cc.getVar() ,unit.getJavaSourceStartLineNumber(),
+		this.markerGenerator.addMarker(null,Constants.CC_MARKER_TYPE,-1, unitToResource(stmt), "" ,unit.getJavaSourceStartLineNumber(),
 				"Object "
 						+ (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString()
 								: varName)

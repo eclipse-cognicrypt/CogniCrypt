@@ -61,7 +61,7 @@ public class SootRunner {
 				BoomerangPretransformer.v().apply();
 				final JimpleBasedInterproceduralCFG icfg = new JimpleBasedInterproceduralCFG(false);
 
-				final CryptoScanner scanner = new CryptoScanner(getRules()) {
+				final CryptoScanner scanner = new CryptoScanner() {
 
 					@Override
 					public JimpleBasedInterproceduralCFG icfg() {
@@ -73,9 +73,14 @@ public class SootRunner {
 						return true;
 					}
 
+					@Override
+					public boolean rulesInSrcFormat() {
+						return false;
+					}
+
 				};
 				scanner.getAnalysisListener().addReportListener(resultsReporter);
-				scanner.scan();
+				scanner.scan(getRules());
 			}
 		};
 	}

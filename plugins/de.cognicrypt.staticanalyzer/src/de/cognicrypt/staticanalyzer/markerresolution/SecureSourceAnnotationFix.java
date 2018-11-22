@@ -42,14 +42,13 @@ public class SecureSourceAnnotationFix implements IMarkerResolution {
 			final SuppressWarningFix tempFix = new SuppressWarningFix("");
 			tempFix.run(marker);
 			
-			this.manager = new SecureSourceAnnotationManager(new DeveloperProject(marker.getResource().getProject()));
-			this.manager.addAdditionalFiles("resources/Annotations");
+			manager = new SecureSourceAnnotationManager(new DeveloperProject(marker.getResource().getProject()));
+			manager.addAdditionalFiles("resources/Annotations");
 			marker.getResource().getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
-			final CCStatement cc = new CCStatement(this.error.getErrorLocation());
-			this.manager.annotateProblemSource(marker, cc.getOuterMethod(),
-					cc.getParameterVarNameByIndex(this.error.getExtractedValues().getCallSite().getIndex()),
+			final CCStatement cc = new CCStatement(error.getErrorLocation());
+			manager.annotateProblemSource(marker, cc.getOuterMethod(),
+					cc.getParameterVarNameByIndex(error.getExtractedValues().getCallSite().getIndex()),
 					this.error.getExtractedValues().getCallSite().getIndex());
-
 			marker.delete();
 			marker.getResource().getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 		} catch (final CoreException e) {

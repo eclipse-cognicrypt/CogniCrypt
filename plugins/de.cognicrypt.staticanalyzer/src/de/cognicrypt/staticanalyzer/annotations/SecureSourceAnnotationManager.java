@@ -40,7 +40,7 @@ import de.cognicrypt.staticanalyzer.annotations.impl.AnnotationManager;
  *
  */
 public class SecureSourceAnnotationManager extends AnnotationManager {
-	
+	 
 	private static final String SECURESOURCE_ANNOTATION = "SecureSource";
 	private static final String SECURESOURCE_ATTRIBUTE_INFO = "info";
 	private static final String SECURESOURCE_ATTRIBUTE_VAR = "var";

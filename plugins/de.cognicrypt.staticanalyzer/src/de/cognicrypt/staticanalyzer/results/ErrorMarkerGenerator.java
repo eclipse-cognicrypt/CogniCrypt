@@ -19,14 +19,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
 import crypto.analysis.errors.AbstractError;
-import crypto.analysis.errors.ConstraintError;
-import crypto.analysis.errors.ForbiddenMethodError;
-import crypto.analysis.errors.ImpreciseValueExtractionError;
-import crypto.analysis.errors.IncompleteOperationError;
-import crypto.analysis.errors.NeverTypeOfError;
-import crypto.analysis.errors.PredicateContradictionError;
-import crypto.analysis.errors.RequiredPredicateError;
-import crypto.analysis.errors.TypestateError;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.Severities;
 import de.cognicrypt.staticanalyzer.Activator;
@@ -51,6 +43,8 @@ public class ErrorMarkerGenerator {
 	 *
 	 * @param error
 	 *            error object from the crypto analysis plugin
+	 * @param markerType
+	 *            name of the error
 	 * @param id
 	 *            unique id of the error
 	 * @param sourceFile
@@ -59,6 +53,8 @@ public class ErrorMarkerGenerator {
 	 *            Line the marker is generated at
 	 * @param message
 	 *            Error Message
+	 * @param sev
+	 *            Severities type            
 	 * @return <code>true</code>/<code>false</code> if error marker was (not) added
 	 *         successfully
 	 */

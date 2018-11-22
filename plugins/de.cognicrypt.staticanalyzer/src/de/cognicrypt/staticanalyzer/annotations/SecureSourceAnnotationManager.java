@@ -1,45 +1,28 @@
 package de.cognicrypt.staticanalyzer.annotations;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IImportDeclaration;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
-import org.eclipse.jdt.core.dom.ArrayInitializer;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
-import org.eclipse.jdt.core.dom.MarkerAnnotation;
-import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
-import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.jdt.core.dom.StringLiteral;
-import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
-import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
-import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.jdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -48,393 +31,42 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.client.DeveloperProject;
-import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
-import de.cognicrypt.utils.Utils;
+import de.cognicrypt.staticanalyzer.annotations.impl.AnnotationManager;
 
 /**
+ * This class figures out the error variable allocation side and adds the SecureSource(info="" var="") annotation
  * @author André Sonntag
  *
  */
-public class SecureSourceAnnotationManager {
-	private String methodInvokeName = "";
+public class SecureSourceAnnotationManager extends AnnotationManager {
+	
 	private static final String SECURESOURCE_ANNOTATION = "SecureSource";
 	private static final String SECURESOURCE_ATTRIBUTE_INFO = "info";
 	private static final String SECURESOURCE_ATTRIBUTE_VAR = "var";
 	private static final String ANNOTATION_PACKAGE = "de.cognicrypt.staticanalyzer.annotations";
-	private String SECURESOURCE_ATTRIBUTE_VAR_ANONYM_TEXT = "Anonymously return object from $method has been loaded securily";
-	private String SECURESOURCE_ATTRIBUTE_VAR_KNOWN_TEXT = "Object has been loaded securily";
-	private final DeveloperProject project;
+	private final String SECURESOURCE_ATTRIBUTE_VAR_ANONYM_TEXT = "Anonymously return object from $method has been loaded securily";
+	private final String SECURESOURCE_ATTRIBUTE_VAR_KNOWN_TEXT = "Object has been loaded securily";
+	private String methodInvokeName = "";
 	private String outerMethodName;
 	private String varName;
 	private int varIndex;
 	private boolean sourceFound = false;
 
-	public SecureSourceAnnotationManager(DeveloperProject project) {
-		this.project = project;
+	public SecureSourceAnnotationManager(final DeveloperProject project) {
+		super(project);
 	}
 
 	/**
-	 * This method adds the SecureSource annotation to the allocation side of the
-	 * insecure variable
+	 * This methods adds the annotation to the node
 	 * 
-	 * @param marker
-	 * @param outerMethodName
-	 * @param varName
-	 * @param varIndex
-	 * @throws CoreException
-	 * @throws BadLocationException
+	 * @param node node of the error variable
+	 * @param annotation desired annotation
+	 * @param sourceUnit ICompliationUnit of the source file
 	 */
-	public void annotateProblemSource(IMarker marker, String outerMethodName, String varName, int varIndex)
-			throws CoreException, BadLocationException {
-		ICompilationUnit unit = getCompilationUnitFromMarker(marker);
-		this.outerMethodName = outerMethodName;
-		this.varName = varName;
-
-		annotateProblemSource(marker, unit);
-		if (!hasSecureSourceAnnotationImport(unit)) {
-			insertSecureSourceAnnotationImport(unit);
-		}
-	}
-
-	/**
-	 * This method gets the ICompliationUnit back of the marker
-	 * 
-	 * @param marker
-	 * @return ICompilationUnit of the marker
-	 * @throws CoreException
-	 */
-	private ICompilationUnit getCompilationUnitFromMarker(IMarker marker) throws CoreException {
-		IJavaElement javaElement = JavaCore.create(marker.getResource());
-		ICompilationUnit unit = null;
-		if (javaElement instanceof ICompilationUnit) {
-			unit = (ICompilationUnit) javaElement;
-		}
-		if (unit == null) {
-			throw new CoreException(null);
-		}
-		return unit;
-	}
-
-	/**
-	 * This method starts the search for the allocation side of the problem variable
-	 * 
-	 * @param marker
-	 * @param sourceUnit
-	 * @throws CoreException
-	 * @throws BadLocationException
-	 */
-	private void annotateProblemSource(IMarker marker, ICompilationUnit sourceUnit)
-			throws CoreException, BadLocationException {
-
-		ASTParser parser = ASTParser.newParser(AST.JLS9);
-		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-		parser.setSource(sourceUnit);
-		CompilationUnit unit = (CompilationUnit) parser.createAST(null);
-
-		unit.accept(new VariableNameVisitor(unit, sourceUnit));
-		unit.accept(new MethodVisitor(unit, sourceUnit));
-		unit.accept(new VariableDeclarationVisitor(unit, sourceUnit));
-		unit.accept(new FieldDeclarationVisitor(unit, sourceUnit));
-	}
-
-	private class VariableNameVisitor extends ASTVisitor {
-		private boolean sourceFound = false;
-		private CompilationUnit unit = null;
-		private ICompilationUnit sourceUnit = null;
-
-		public VariableNameVisitor(CompilationUnit unit, ICompilationUnit sourceUnit) {
-			super();
-			this.unit = unit;
-			this.sourceUnit = sourceUnit;
-		}
-
-		public boolean visit(ClassInstanceCreation node) {
-			if (!sourceFound) {
-				if (varName.startsWith("$")) {
-
-					if (!isNodeChildOfNodeWithName(outerMethodName, node)) {
-						return true;
-					}
-
-					ClassInstanceCreation instanceNode = (ClassInstanceCreation) node;
-					if (!isMethodInvoke(instanceNode.arguments().get(varIndex).toString())) {
-						varName = instanceNode.arguments().get(varIndex).toString();
-					} else {
-						methodInvokeName = instanceNode.arguments().get(varIndex).toString();
-					}
-					sourceFound = true;
-					Activator.getDefault().logInfo("node instanceof ClassInstanceCreation -> " + varName);
-					return false;
-				} else {
-					return false;
-				}
-			} else {
-				return false;
-			}
-		}
-
-		public boolean visit(MethodInvocation node) {
-			if (!sourceFound) {
-				if (varName.startsWith("$")) {
-
-					if (!isNodeChildOfNodeWithName(outerMethodName, node)) {
-						return true;
-					}
-
-					MethodInvocation invoceNode = (MethodInvocation) node;
-					if (!isMethodInvoke(invoceNode.arguments().get(varIndex).toString())) {
-						varName = invoceNode.arguments().get(varIndex).toString();
-					} else {
-						methodInvokeName = invoceNode.arguments().get(varIndex).toString();
-					}
-					sourceFound = true;
-					Activator.getDefault().logInfo("node instanceof MethodInvocation -> " + varName);
-					return false;
-				} else {
-					return false;
-				}
-			} else {
-				return false;
-			}
-		}
-
-		public boolean isMethodInvoke(String var) {
-			if (var.endsWith(")")) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-	}
-
-	private class MethodVisitor extends ASTVisitor {
-		private CompilationUnit unit = null;
-		private ICompilationUnit sourceUnit = null;
-
-		public MethodVisitor(CompilationUnit unit, ICompilationUnit sourceUnit) {
-			super();
-			this.unit = unit;
-			this.sourceUnit = sourceUnit;
-		}
-
-		public boolean visit(MethodDeclaration node) {
-			if (!sourceFound) {
-				if (!node.isConstructor() && node.getName().toString().equals(outerMethodName)) {
-
-					if (varName.startsWith("$")) {
-						annotateProblemSource(node, unit, sourceUnit);
-					}
-
-					// iterate over all parameters
-					List methodParameters = node.parameters();
-					Iterator methodParameterIterator = methodParameters.iterator();
-					while (methodParameterIterator.hasNext()) {
-						SingleVariableDeclaration methodParameter = (SingleVariableDeclaration) methodParameterIterator
-								.next();
-						String currentParameterName = methodParameter.getName().toString();
-						if (currentParameterName.equals(varName)) {
-
-							Activator.getDefault().logInfo("visit(MethodDeclaration node)");
-							annotateProblemSource(node, unit, sourceUnit);
-							sourceFound = true;
-							return false;
-						}
-					}
-					return true;
-				} else {
-					return true;
-				}
-			} else {
-				return false;
-			}
-		}
-	}
-
-	private class VariableDeclarationVisitor extends ASTVisitor {
-		private CompilationUnit unit = null;
-		private ICompilationUnit sourceUnit = null;
-
-		public VariableDeclarationVisitor(CompilationUnit unit, ICompilationUnit sourceUnit) {
-			super();
-			this.unit = unit;
-			this.sourceUnit = sourceUnit;
-		}
-
-		public boolean visit(VariableDeclarationStatement node) {
-			if (!sourceFound) {
-
-				// Check if variable declation is in certain method
-				if (!isNodeChildOfNodeWithName(outerMethodName, node)) {
-					return true;
-				}
-
-				// iterate over all variables
-				List variables = node.fragments();
-				Iterator variablesIterator = variables.iterator();
-				while (variablesIterator.hasNext()) {
-					Object o = variablesIterator.next();
-
-					if (o instanceof VariableDeclarationFragment) {
-						VariableDeclarationFragment variable = (VariableDeclarationFragment) o;
-						String currentVarName = variable.getName().toString();
-
-						if (currentVarName.equals(varName)) {
-							Activator.getDefault().logInfo(
-									"visit(VariableDeclarationStatement node) -> looked for varName: " + varName);
-							annotateProblemSource(node, unit, sourceUnit);
-							sourceFound = true;
-							return false;
-						}
-					}
-				}
-				return true;
-			} else {
-				return false;
-			}
-		}
-	}
-
-	private class FieldDeclarationVisitor extends ASTVisitor {
-		private CompilationUnit unit = null;
-		private ICompilationUnit sourceUnit = null;
-
-		public FieldDeclarationVisitor(CompilationUnit unit, ICompilationUnit sourceUnit) {
-			super();
-			this.unit = unit;
-			this.sourceUnit = sourceUnit;
-		}
-
-		public boolean visit(FieldDeclaration node) {
-			if (!sourceFound) {
-
-				List variables = node.fragments();
-				Iterator variablesIterator = variables.iterator();
-				while (variablesIterator.hasNext()) {
-					Object o = variablesIterator.next();
-
-					if (o instanceof VariableDeclarationFragment) {
-						VariableDeclarationFragment variable = (VariableDeclarationFragment) o;
-						if (variable.getName().toString().equals(varName)) {
-							sourceFound = true;
-							annotateProblemSource(node, unit, sourceUnit);
-							return false;
-						}
-
-					}
-				}
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-	}
-
-	/**
-	 * This method looks for a parent node with a certain name for the hand over
-	 * node
-	 * 
-	 * @param parentNodeName
-	 * @param node
-	 * @return
-	 */
-	public boolean isNodeChildOfNodeWithName(String parentNodeName, ASTNode node) {
-		ASTNode parent = node.getParent();
-
-		while (true) {
-			if (parent != null) {
-				if (parent instanceof MethodDeclaration) {
-					MethodDeclaration method = (MethodDeclaration) parent;
-					if (method.getName().toString().equals(parentNodeName)) {
-						return true;
-					} else {
-						return false;
-					}
-				} else {
-					parent = parent.getParent();
-				}
-			} else {
-				return false;
-			}
-		}
-	}
-
-	/**
-	 * This method creates a MamberValuePair for an annotation
-	 * @param ast
-	 * @param name
-	 * @param value
-	 * @return
-	 */
-	protected MemberValuePair createAnnotationMember(final AST ast, final String name, final String value) {
-		final MemberValuePair mV = ast.newMemberValuePair();
-		mV.setName(ast.newSimpleName(name));
-		final StringLiteral stringLiteral = ast.newStringLiteral();
-		stringLiteral.setLiteralValue(value);
-		mV.setValue(stringLiteral);
-		return mV;
-	}
-
-	/**
-	 * This method creates and inserts the SecureSource annotation to the AST
-	 * @param node
-	 * @param unit
-	 * @param sourceUnit
-	 */
-	private void annotateProblemSource(ASTNode node, CompilationUnit unit, ICompilationUnit sourceUnit) {
-
-		Document sourceDocument = null;
-		try {
-			sourceDocument = new Document(sourceUnit.getSource());
-		} catch (JavaModelException e) {
-			Activator.getDefault().logError(e);
-		}
-
-		unit.recordModifications();
-		AST ast = unit.getAST();
-
-		final NormalAnnotation secureSourceAnnotation = ast.newNormalAnnotation();
-		secureSourceAnnotation.setTypeName(ast.newSimpleName(SECURESOURCE_ANNOTATION));
-
-		if (varName.startsWith("$")) {
-			String infoText = SECURESOURCE_ATTRIBUTE_VAR_ANONYM_TEXT.replace("$method", methodInvokeName);
-			secureSourceAnnotation.values().add(createAnnotationMember(ast, SECURESOURCE_ATTRIBUTE_INFO, infoText));
-		} else {
-			secureSourceAnnotation.values().add(
-					createAnnotationMember(ast, SECURESOURCE_ATTRIBUTE_INFO, SECURESOURCE_ATTRIBUTE_VAR_KNOWN_TEXT));
-
-		}
-		secureSourceAnnotation.values().add(createAnnotationMember(ast, SECURESOURCE_ATTRIBUTE_VAR, varName));
-		addAnnotation(node, secureSourceAnnotation, unit);
-
-		try {
-			Map<String, String> editorOptions = sourceUnit.getJavaProject().getOptions(true);
-			editorOptions.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_AFTER_TYPE_ANNOTATION,
-					JavaCore.DO_NOT_INSERT);
-
-			TextEdit edits = unit.rewrite(sourceDocument, editorOptions);
-			edits.apply(sourceDocument);
-
-			String newSource = sourceDocument.get();
-			sourceUnit.getBuffer().setContents(newSource);
-			sourceUnit.save(null, false);
-
-			IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-			editor.doSave(null);
-		} catch (Throwable t) {
-			Activator.getDefault().logError(t.getMessage());
-
-		}
-	}
-
-	/**
-	 * This methods adds the annotation to the right position
-	 * @param node
-	 * @param annotation
-	 * @param sourceUnit
-	 */
-	private void addAnnotation(ASTNode node, IExtendedModifier annotation, CompilationUnit sourceUnit) {
+	@SuppressWarnings("unchecked")
+	private void addAnnotation(final ASTNode node, final IExtendedModifier annotation,
+			final CompilationUnit sourceUnit) {
 
 		MethodDeclaration method = null;
 		if (node instanceof MethodDeclaration) {
@@ -468,101 +100,328 @@ public class SecureSourceAnnotationManager {
 	}
 
 	/**
-	 * This method checks the availability for the SecureSource annotation on a certain object 
-	 * @param modifiers
-	 * @return
+	 * This method creates the SecureSource annotation to the AST
+	 * 
+	 * @param node node of the error variable
+	 * @param unit CompliationUnit of the source file
+	 * @param sourceUnit ICompliationUnit of the source file
 	 */
-	private boolean hasSecureSourceAnnotation(List<Object> modifiers) {
-		for (Object o : modifiers) {
-			if (o.toString().equals("@" + SECURESOURCE_ANNOTATION)) {
-				return true;
-			}
-		}
-		return false;
-	}
+	@SuppressWarnings("unchecked")
+	private void annotateProblemSource(final ASTNode node, final CompilationUnit unit,
+			final ICompilationUnit sourceUnit) {
 
-	/**
-	 * This method checks whether the import for the SecureSource annotation is available in the class
-	 * @param unit
-	 * @return
-	 * @throws CoreException
-	 */
-	private boolean hasSecureSourceAnnotationImport(ICompilationUnit unit) throws CoreException {
-		IImportDeclaration importDecalaration = unit.getImport(ANNOTATION_PACKAGE + "." + SECURESOURCE_ANNOTATION);
-		if (importDecalaration.exists()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * This method insert the import for the SecureSource annotation to the class
-	 * @param unit
-	 * @throws CoreException
-	 */
-	private void insertSecureSourceAnnotationImport(ICompilationUnit unit) throws CoreException {
-		unit.createImport(ANNOTATION_PACKAGE + "." + SECURESOURCE_ANNOTATION, null, null);
-		unit.save(null, true);
-		IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-		editor.doSave(null);
-	}
-
-	/**
-	 * This method add all JARs of a certain source to the client project
-	 * @param source
-	 * @return
-	 */
-	public boolean addAdditionalFiles(String source) {
-		if (source.isEmpty()) {
-			return true;
-		}
+		Document sourceDocument = null;
 		try {
-			final File[] members = Utils.getResourceFromWithin(source, "de.cognicrypt.staticanalyzer").listFiles();
-			if (members == null) {
-				Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);
-			}
-			for (int i = 0; i < members.length; i++) {
-				File addFile = members[i];
-				if (!addAddtionalFile(addFile)) {
-					return false;
-				}
-			}
-		} catch (IOException | CoreException e) {
-			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
-			return false;
+			sourceDocument = new Document(sourceUnit.getSource());
+		} catch (final JavaModelException e) {
+			Activator.getDefault().logError(e);
 		}
-		return true;
+
+		unit.recordModifications();
+		final AST ast = unit.getAST();
+
+		final NormalAnnotation secureSourceAnnotation = ast.newNormalAnnotation();
+		secureSourceAnnotation.setTypeName(ast.newSimpleName(SecureSourceAnnotationManager.SECURESOURCE_ANNOTATION));
+
+		if (this.varName.startsWith("$")) {
+			final String infoText = this.SECURESOURCE_ATTRIBUTE_VAR_ANONYM_TEXT.replace("$method",
+					this.methodInvokeName);
+			secureSourceAnnotation.values().add(
+					super.createMemberValuePair(ast, SecureSourceAnnotationManager.SECURESOURCE_ATTRIBUTE_INFO, infoText));
+		} else {
+			secureSourceAnnotation.values()
+					.add(createMemberValuePair(ast, SecureSourceAnnotationManager.SECURESOURCE_ATTRIBUTE_INFO,
+							this.SECURESOURCE_ATTRIBUTE_VAR_KNOWN_TEXT));
+
+		}
+		secureSourceAnnotation.values().add(
+				createMemberValuePair(ast, SecureSourceAnnotationManager.SECURESOURCE_ATTRIBUTE_VAR, this.varName));
+		addAnnotation(node, secureSourceAnnotation, unit);
+
+		try {
+			final Map<String, String> editorOptions = sourceUnit.getJavaProject().getOptions(true);
+			editorOptions.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_AFTER_TYPE_ANNOTATION,
+					JavaCore.DO_NOT_INSERT);
+
+			final TextEdit edits = unit.rewrite(sourceDocument, editorOptions);
+			edits.apply(sourceDocument);
+
+			final String newSource = sourceDocument.get();
+			sourceUnit.getBuffer().setContents(newSource);
+			sourceUnit.save(null, false);
+
+			final IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+					.getActiveEditor();
+			editor.doSave(null);
+		} catch (final Throwable t) {
+			Activator.getDefault().logError(t.getMessage());
+
+		}
 	}
 
 	/**
-	 * This method add a File to the client project
-	 * @param fileToBeAdded
-	 * @return
-	 * @throws IOException
+	 * This method looks with ASTViewer for the real variable name and the allocation side
+	 *
+	 * @param marker problem Marker
+	 * @param sourceUnit ICompliationUnit of the source file
 	 * @throws CoreException
+	 * @throws BadLocationException
 	 */
-	private boolean addAddtionalFile(File fileToBeAdded) throws IOException, CoreException {
-		final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesInDevProject);
-		if (!libFolder.exists()) {
-			libFolder.create(true, true, null);
+	private void annotateProblemSource(final IMarker marker, final ICompilationUnit sourceUnit)
+			throws CoreException, BadLocationException {
+
+		final ASTParser parser = ASTParser.newParser(AST.JLS9);
+		parser.setKind(ASTParser.K_COMPILATION_UNIT);
+		parser.setSource(sourceUnit);
+		final CompilationUnit unit = (CompilationUnit) parser.createAST(null);
+
+		unit.accept(new VariableNameVisitor(unit, sourceUnit));
+		unit.accept(new MethodVisitor(unit, sourceUnit));
+		unit.accept(new VariableDeclarationVisitor(unit, sourceUnit));
+		unit.accept(new FieldDeclarationVisitor(unit, sourceUnit));
+	}
+
+	/**
+	 * This method adds the SecureSource annotation to the allocation side of the
+	 * insecure variable
+	 *
+	 * @param marker problem Marker
+	 * @param outerMethodName method name of the method where the error occurred in the method body
+	 * @param varName name of the variable which triggerd an error
+	 * @param varIndex index of the variable which triggered an error 
+	 * @throws CoreException
+	 * @throws BadLocationException
+	 */
+	public void annotateProblemSource(final IMarker marker, final String outerMethodName, final String varName, final int varIndex) throws CoreException, BadLocationException {
+		final ICompilationUnit unit = super.getCompilationUnitFromMarker(marker);
+		this.outerMethodName = outerMethodName;
+		this.varName = varName;
+
+		annotateProblemSource(marker, unit);
+		if (!hasSecureSourceAnnotationImport(unit)) {
+			insertSecureSourceAnnotationImport(unit);
+		}
+	}
+
+	public boolean addAdditionalFiles(final String source) {
+		return super.addAdditionalFiles(source);
+	}
+	
+	protected boolean isNodeChildOfNodeWithName(final String parentNodeName, final ASTNode node) {
+		return super.isNodeChildOfNodeWithName(parentNodeName, node);
+	}
+	
+	private boolean hasSecureSourceAnnotation(final List<Object> modifiers) {
+		return super.hasAnnotation(modifiers, SecureSourceAnnotationManager.SECURESOURCE_ANNOTATION);
+	}
+
+	private boolean hasSecureSourceAnnotationImport(final ICompilationUnit unit) throws CoreException {
+		return super.hasAnnotationImport(unit, SecureSourceAnnotationManager.ANNOTATION_PACKAGE + "."
+				+ SecureSourceAnnotationManager.SECURESOURCE_ANNOTATION);
+	}
+
+	private void insertSecureSourceAnnotationImport(final ICompilationUnit unit) throws CoreException {
+		super.insertAnnotationImport(unit, SecureSourceAnnotationManager.ANNOTATION_PACKAGE + "."
+				+ SecureSourceAnnotationManager.SECURESOURCE_ANNOTATION);
+	}
+	
+
+	private class FieldDeclarationVisitor extends ASTVisitor {
+		private CompilationUnit unit = null;
+		private ICompilationUnit sourceUnit = null;
+
+		public FieldDeclarationVisitor(final CompilationUnit unit, final ICompilationUnit sourceUnit) {
+			super();
+			this.unit = unit;
+			this.sourceUnit = sourceUnit;
 		}
 
-		final Path memberPath = fileToBeAdded.toPath();
-		Files.copy(memberPath,
-				new File(this.project.getProjectPath() + Constants.outerFileSeparator
-						+ Constants.pathsForLibrariesInDevProject + Constants.outerFileSeparator
-						+ memberPath.getFileName()).toPath(),
-				StandardCopyOption.REPLACE_EXISTING);
-		final String filePath = fileToBeAdded.toString();
-		final String cutPath = filePath.substring(filePath.lastIndexOf(Constants.outerFileSeparator));
-		if (Constants.JAR.equals(cutPath.substring(cutPath.indexOf(".")))) {
-			if (!this.project.addJar(
-					Constants.pathsForLibrariesInDevProject + Constants.outerFileSeparator + fileToBeAdded.getName())) {
+		@Override
+		public boolean visit(final FieldDeclaration node) {
+			if (!SecureSourceAnnotationManager.this.sourceFound) {
+
+				final List variables = node.fragments();
+				final Iterator variablesIterator = variables.iterator();
+				while (variablesIterator.hasNext()) {
+					final Object o = variablesIterator.next();
+
+					if (o instanceof VariableDeclarationFragment) {
+						final VariableDeclarationFragment variable = (VariableDeclarationFragment) o;
+						if (variable.getName().toString().equals(SecureSourceAnnotationManager.this.varName)) {
+							SecureSourceAnnotationManager.this.sourceFound = true;
+							annotateProblemSource(node, this.unit, this.sourceUnit);
+							return false;
+						}
+
+					}
+				}
+				return true;
+			} else {
 				return false;
 			}
 		}
-		return true;
+
 	}
+
+	private class MethodVisitor extends ASTVisitor {
+		private CompilationUnit unit = null;
+		private ICompilationUnit sourceUnit = null;
+
+		public MethodVisitor(final CompilationUnit unit, final ICompilationUnit sourceUnit) {
+			super();
+			this.unit = unit;
+			this.sourceUnit = sourceUnit;
+		}
+
+		@Override
+		public boolean visit(final MethodDeclaration node) {
+			if (!SecureSourceAnnotationManager.this.sourceFound) {
+				if (!node.isConstructor()
+						&& node.getName().toString().equals(SecureSourceAnnotationManager.this.outerMethodName)) {
+
+					if (SecureSourceAnnotationManager.this.varName.startsWith("$")) {
+						annotateProblemSource(node, this.unit, this.sourceUnit);
+					}
+
+					// iterate over all parameters
+					final List methodParameters = node.parameters();
+					final Iterator methodParameterIterator = methodParameters.iterator();
+					while (methodParameterIterator.hasNext()) {
+						final SingleVariableDeclaration methodParameter = (SingleVariableDeclaration) methodParameterIterator
+								.next();
+						final String currentParameterName = methodParameter.getName().toString();
+						if (currentParameterName.equals(SecureSourceAnnotationManager.this.varName)) {
+							annotateProblemSource(node, this.unit, this.sourceUnit);
+							SecureSourceAnnotationManager.this.sourceFound = true;
+							return false;
+						}
+					}
+					return true;
+				} else {
+					return true;
+				}
+			} else {
+				return false;
+			}
+		}
+	}
+
+	private class VariableDeclarationVisitor extends ASTVisitor {
+		private CompilationUnit unit = null;
+		private ICompilationUnit sourceUnit = null;
+
+		public VariableDeclarationVisitor(final CompilationUnit unit, final ICompilationUnit sourceUnit) {
+			super();
+			this.unit = unit;
+			this.sourceUnit = sourceUnit;
+		}
+
+		@Override
+		public boolean visit(final VariableDeclarationStatement node) {
+			if (!SecureSourceAnnotationManager.this.sourceFound) {
+
+				// Check if variable declation is in certain method
+				if (!isNodeChildOfNodeWithName(SecureSourceAnnotationManager.this.outerMethodName, node)) {
+					return true;
+				}
+
+				// iterate over all variables
+				final List variables = node.fragments();
+				final Iterator variablesIterator = variables.iterator();
+				while (variablesIterator.hasNext()) {
+					final Object o = variablesIterator.next();
+
+					if (o instanceof VariableDeclarationFragment) {
+						final VariableDeclarationFragment variable = (VariableDeclarationFragment) o;
+						final String currentVarName = variable.getName().toString();
+
+						if (currentVarName.equals(SecureSourceAnnotationManager.this.varName)) {
+					
+							annotateProblemSource(node, this.unit, this.sourceUnit);
+							SecureSourceAnnotationManager.this.sourceFound = true;
+							return false;
+						}
+					}
+				}
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+
+	private class VariableNameVisitor extends ASTVisitor {
+		private boolean sourceFound = false;
+
+		public VariableNameVisitor(final CompilationUnit unit, final ICompilationUnit sourceUnit) {
+			super();
+		}
+
+		public boolean isMethodInvoke(final String var) {
+			if (var.endsWith(")")) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		@Override
+		public boolean visit(final ClassInstanceCreation node) {
+			if (!this.sourceFound) {
+				if (SecureSourceAnnotationManager.this.varName.startsWith("$")) {
+					
+					if (!isNodeChildOfNodeWithName(SecureSourceAnnotationManager.this.outerMethodName, node)) {
+						return true;
+					}
+
+					final ClassInstanceCreation instanceNode = node;
+					if (!isMethodInvoke(
+							instanceNode.arguments().get(SecureSourceAnnotationManager.this.varIndex).toString())) {
+						SecureSourceAnnotationManager.this.varName = instanceNode.arguments()
+								.get(SecureSourceAnnotationManager.this.varIndex).toString();
+					} else {
+						SecureSourceAnnotationManager.this.methodInvokeName = instanceNode.arguments()
+								.get(SecureSourceAnnotationManager.this.varIndex).toString();
+					}
+					this.sourceFound = true;
+		
+					return false;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+
+		@Override
+		public boolean visit(final MethodInvocation node) {
+			if (!this.sourceFound) {
+				if (SecureSourceAnnotationManager.this.varName.startsWith("$")) {
+
+					if (!isNodeChildOfNodeWithName(SecureSourceAnnotationManager.this.outerMethodName, node)) {
+						return true;
+					}
+
+					final MethodInvocation invoceNode = node;
+					if (!isMethodInvoke(
+							invoceNode.arguments().get(SecureSourceAnnotationManager.this.varIndex).toString())) {
+						SecureSourceAnnotationManager.this.varName = invoceNode.arguments()
+								.get(SecureSourceAnnotationManager.this.varIndex).toString();
+					} else {
+						SecureSourceAnnotationManager.this.methodInvokeName = invoceNode.arguments()
+								.get(SecureSourceAnnotationManager.this.varIndex).toString();
+					}
+					this.sourceFound = true;
+					return false;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+	}
+
 
 }

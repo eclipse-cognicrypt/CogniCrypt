@@ -28,6 +28,7 @@ import crypto.analysis.errors.PredicateContradictionError;
 import crypto.analysis.errors.RequiredPredicateError;
 import crypto.analysis.errors.TypestateError;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.core.Constants.Severities;
 import de.cognicrypt.staticanalyzer.Activator;
 
 /**
@@ -61,41 +62,12 @@ public class ErrorMarkerGenerator {
 	 * @return <code>true</code>/<code>false</code> if error marker was (not) added
 	 *         successfully
 	 */
-	public boolean addMarker(final AbstractError error, final int id, final IResource sourceFile, final String var, final int line,
-			final String message) {
+	public boolean addMarker(final AbstractError error, final String markerType, final int id, final IResource sourceFile, final String var, final int line,
+			final String message, final Severities sev) {
 
 		if (!sourceFile.exists() || !sourceFile.isAccessible()) {
 			Activator.getDefault().logError(Constants.NO_RES_FOUND);
 			return false;
-		}
-
-		String markerType;
-		/*
-		 * Adding of new marker types for new errors: 
-		 * 1) add new ErrorMarker extension point in plugin.xml 
-		 * 2) add new markerResolutionGenerator tag in plugin.xml 
-		 * 3) add new Marker constant in Constants.java (CogniCrypt Core) 
-		 * 4) add new else if in the following query
-		 */
-
-		if (error instanceof ForbiddenMethodError) {
-			markerType = Constants.FORBIDDEN_METHOD_MARKER_TYPE;
-		} else if (error instanceof PredicateContradictionError) {
-			markerType = Constants.PREDICATE_CONTRADICTION_MARKER_TYPE;
-		} else if (error instanceof RequiredPredicateError) {
-			markerType = Constants.REQUIRED_PREDICATE_MARKER_TYPE;
-		} else if (error instanceof ConstraintError) {
-			markerType = Constants.CONSTRAINT_ERROR_MARKER_TYPE;
-		} else if (error instanceof NeverTypeOfError) {
-			markerType = Constants.NEVER_TYPEOF_MARKER_TYPE;
-		} else if (error instanceof IncompleteOperationError) {
-			markerType = Constants.INCOMPLETE_OPERATION_MARKER_TYPE;
-		} else if (error instanceof TypestateError) {
-			markerType = Constants.TYPESTATE_ERROR_MARKER_TYPE;
-		} else if (error instanceof ImpreciseValueExtractionError) {
-			markerType = Constants.IMPRECISE_VALUE_EXTRACTION_MARKER_TYPE;
-		} else {
-			markerType = Constants.CC_MARKER_TYPE;
 		}
 
 		IMarker marker;
@@ -106,7 +78,7 @@ public class ErrorMarkerGenerator {
 			marker.setAttribute(IMarker.LINE_NUMBER, line);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-			marker.setAttribute(IMarker.SEVERITY, (markerType != Constants.IMPRECISE_VALUE_EXTRACTION_MARKER_TYPE)  ? IMarker.SEVERITY_ERROR : IMarker.SEVERITY_WARNING);
+			marker.setAttribute(IMarker.SEVERITY, (sev == Severities.Problem) ? IMarker.SEVERITY_ERROR : ((sev == Severities.Warning) ? IMarker.SEVERITY_WARNING : IMarker.SEVERITY_INFO));
 			marker.setAttribute(IMarker.SOURCE_ID, id);
 
 		} catch (final CoreException e) {

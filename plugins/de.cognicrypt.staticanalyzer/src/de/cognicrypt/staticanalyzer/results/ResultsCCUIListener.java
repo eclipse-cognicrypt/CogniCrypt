@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -33,11 +34,20 @@ import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.EnsuredCryptSLPredicate;
 import crypto.analysis.IAnalysisSeed;
 import crypto.analysis.errors.AbstractError;
+import crypto.analysis.errors.ConstraintError;
+import crypto.analysis.errors.ForbiddenMethodError;
+import crypto.analysis.errors.ImpreciseValueExtractionError;
+import crypto.analysis.errors.IncompleteOperationError;
+import crypto.analysis.errors.NeverTypeOfError;
+import crypto.analysis.errors.PredicateContradictionError;
+import crypto.analysis.errors.RequiredPredicateError;
+import crypto.analysis.errors.TypestateError;
 import crypto.extractparameter.CallSiteWithParamIndex;
 import crypto.extractparameter.ExtractedValue;
 import crypto.interfaces.ISLConstraint;
 import crypto.rules.CryptSLPredicate;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.core.Constants.Severities;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.statment.CCStatement;
 import de.cognicrypt.utils.Utils;
@@ -91,18 +101,49 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		CCStatement stmt = new CCStatement(errorLocation);
 		int stmtId = stmt.hashCode();
 		String var = stmt.getVar();
-		
 
+		/*
+		 * Adding of new marker types for new errors: 
+		 * 1) add new ErrorMarker extension point in plugin.xml 
+		 * 2) add new markerResolutionGenerator tag in plugin.xml 
+		 * 3) add new Marker constant in Constants.java (CogniCrypt Core) 
+		 * 4) add new else if in the following query
+		 */
+		String markerType;
+		if (error instanceof ForbiddenMethodError) {
+			markerType = Constants.FORBIDDEN_METHOD_MARKER_TYPE;
+		} else if (error instanceof PredicateContradictionError) {
+			markerType = Constants.PREDICATE_CONTRADICTION_MARKER_TYPE;
+		} else if (error instanceof RequiredPredicateError) {
+			markerType = Constants.REQUIRED_PREDICATE_MARKER_TYPE;
+		} else if (error instanceof ConstraintError) {
+			markerType = Constants.CONSTRAINT_ERROR_MARKER_TYPE;
+		} else if (error instanceof NeverTypeOfError) {
+			markerType = Constants.NEVER_TYPEOF_MARKER_TYPE;
+		} else if (error instanceof IncompleteOperationError) {
+			markerType = Constants.INCOMPLETE_OPERATION_MARKER_TYPE;
+		} else if (error instanceof TypestateError) {
+			markerType = Constants.TYPESTATE_ERROR_MARKER_TYPE;
+		} else if (error instanceof ImpreciseValueExtractionError) {
+			markerType = Constants.IMPRECISE_VALUE_EXTRACTION_MARKER_TYPE;
+		} else {
+			markerType = Constants.CC_MARKER_TYPE;
+		}
+		
+		Severities sev = (markerType != Constants.IMPRECISE_VALUE_EXTRACTION_MARKER_TYPE)  ? Severities.Problem : Severities.Warning;
+		
+		
+		
 		warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator + Constants.SUPPRESSWARNING_FILE;
 		File warningsFile = new File(warningFilePath);
 
 		if (!warningsFile.exists()) {
-			this.markerGenerator.addMarker(error, stmtId, sourceFile, var, lineNumber, errorMessage);
+			this.markerGenerator.addMarker(error, markerType, stmtId, sourceFile, var, lineNumber, errorMessage, sev);
 		} else {
 			xmlParser = new XMLParser(warningsFile);
 			xmlParser.useDocFromFile();
 			if (!xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR).contains(stmtId + "")) {
-				this.markerGenerator.addMarker(error, stmtId, sourceFile, var, lineNumber, errorMessage);
+				this.markerGenerator.addMarker(error,  markerType, stmtId, sourceFile, var, lineNumber, errorMessage, sev);
 			} else {
 
 				// update existing LineNumber

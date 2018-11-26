@@ -1,0 +1,230 @@
+[{
+    "id": "0",
+    "content":
+    [{
+      "id": "0",
+      "element": "text",
+      "note": "",
+      "questionText": "Name of the algorithm ",
+      "answers": [{
+          "value": "name",
+           "claferDependencies": [{
+              "algorithm": "name"
+           }
+          ]    
+        }
+      ]
+    },
+    {
+     "id": "1",
+      "element": "text",
+      "note": "",
+      "questionText": "Name of the author/company: ",
+      "answers": [{
+          "value": "",
+          "codeDependencies": [{
+            "option": "textsize",
+            "value": "true"
+          }]
+        }
+      ]
+    },
+     {
+     "id": "2",
+      "element": "textarea",
+      "note": "",
+      "questionText": "Algorithm description: ",
+      "answers": [{
+          "value": "",
+            "claferDependencies": [{
+              "algorithm": "description"
+           }
+          ],
+          "codeDependencies": [{
+            "option": "textsize",
+            "value": "true"
+          }],
+          "defaultAnswer": true
+        }
+      ]
+    }
+  ],
+  "nextID": "1"
+  },
+   {
+    "id": "1",
+    "content":
+    [{
+      "id": "0",
+      "element": "combo",
+      "note": "Please specify the number of keysizes your algorithm has...",
+      "questionText": "How many keys does your algorithm have ?",
+      "answers": [{
+          "value": "1",
+          "defaultAnswer": true },
+          {
+          "value": "2"},
+          {
+          "value": "3" },
+          {
+          "value": "4" },
+          {
+          "value": "5"
+        }
+      ],
+      "updateNextPage": true
+    },
+    {
+      "id": "1",
+      "element": "text",
+      "note": "",
+      "questionText": "Blocksize of the cipher (in bits):",
+      "answers": [{
+          "value": "",
+           "claferDependencies": [{
+              "algorithm": "blocksize"
+           }
+          ],
+          "codeDependencies": [{
+            "option": "textsize",
+            "value": "true"
+          }],
+          "defaultAnswer": true
+        }
+      ]
+    }
+    ],
+  "nextID": "2"
+  },
+   {
+    "id": "2",
+    "content":
+    [{
+      "id": "0",
+      "element": "composed",
+      "note": "",
+      "questionText": "What are the keysizes of your algorithm: \n ",
+      "answers": [{
+          "value": "fixed size",
+          "codeDependencies": [{
+            "option": "textsize",
+            "value": "true"
+          }],
+           "claferDependencies": [{
+              "algorithm": "keySize"
+           }
+          ]
+        },
+    {
+          "value": "Ranged size",
+          "codeDependencies": [{
+            "option": "textsize",
+            "value": "true"
+          }],
+          "defaultAnswer": true
+        }
+      ]
+    }
+    ],
+  "nextID": "3"
+},
+  {
+    "id": "3",
+    "content":
+    [{
+      "id": "0",
+      "element": "checkbox",
+      "note": "",
+      "questionText": "Choose the modes of operation of your algorithm:",
+      "answers": [{
+          "value": "CBC",
+           "claferDependencies": [{
+              "algorithm": "mode"
+           }
+          ]
+          },
+         {
+         "value": "OFB",
+          "claferDependencies": [{
+              "algorithm": "mode"
+           }
+          ]
+        },
+         {
+         "value": "CFB",
+          "claferDependencies": [{
+              "algorithm": "mode"
+           }
+          ]
+        },
+         {
+         "value": "CTR",
+          "claferDependencies": [{
+              "algorithm": "mode"
+           }
+          ]
+        },
+        {
+      "value":"PCBC",
+      "claferDependencies": [{
+      "algorithm": "mode"
+      }
+      ]
+      },
+		{
+		"value":"CTS",
+		"claferDepenedencies": [{
+		"algorithm": "mode",
+		"defaultAnswer": "true"
+		}
+		] 
+    
+      }
+      ]
+    }
+    ],
+  "nextID": "4"
+},
+{
+	"id": "4",
+	"content":
+	[{
+		"id": "0",
+		"element": "checkbox",
+		"note": "",
+		"questionText": "Select the list of allowed paddings in your algorithm:",
+		"answers": [{
+		"value": "OneAndZeroes Padding",
+		 "claferDependencies": [{
+              "algorithm": "padding"
+           }
+          ]
+		},
+		{
+		"value" : "ZeroPadding",
+		 "claferDependencies": [{
+              "algorithm": "padding"
+           }
+          ]
+		},
+		{
+		"value":"PKCS7",
+		 "claferDependencies": [{
+              "algorithm": "padding"
+           }
+          ]
+		},
+		{
+		"value": "NoPadding",
+		 "claferDependencies": [{
+              "algorithm": "padding"
+           }
+          ]
+		
+		}
+		]
+		}
+		],
+		"nextID": "-1"
+
+}]

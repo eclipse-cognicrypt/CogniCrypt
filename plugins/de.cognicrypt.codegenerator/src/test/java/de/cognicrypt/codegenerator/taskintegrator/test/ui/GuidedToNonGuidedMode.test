@@ -1,0 +1,95 @@
+--- RCPTT testcase ---
+Format-Version: 1.0
+Element-Name: GuidedToNonGuidedMode
+Element-Type: testcase
+Element-Version: 3.0
+External-Reference: 
+Id: _KZhqYDEcEei8vfE9G7Yzvw
+Runtime-Version: 2.2.0.201705230341
+Save-Time: 4/5/18 3:10 AM
+Testcase-Type: ecl
+
+------=_.description-216f885c-d591-38ce-8ea2-e4f8cb4d6ffa
+Content-Type: text/plain
+Entry-Name: .description
+
+This test checks the functionality of the wizard when user choose to go form guided to non guided mode
+------=_.description-216f885c-d591-38ce-8ea2-e4f8cb4d6ffa--
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
+Content-Type: text/ecl
+Entry-Name: .content
+
+get-menu -path "Start Code Generation" | click
+with [get-window "Cryptography Task Configurator"] {
+    get-button "Task Integration" | click
+with [get-window -class WizardDialog] {
+    get-editbox -after [get-label "Name of the Task"] | set-text "Guided to non Guided mode "
+    get-editbox -after [get-label "Description of the Task :"] 
+        | set-text "This test checks the functionality of the wizard when user choose to go form guided to non guided mode"
+    with [get-button "Use the guided mode"] {
+        uncheck
+        check
+    }
+    get-button "Next >" | click
+    get-button "Add Feature" | click
+    with [get-window -class ClaferFeatureDialog] {
+        get-editbox -after [get-label "Type in the name"] | set-text Feature1
+	get-button Class | click
+        get-button OK | click
+    }
+    get-button "Add Feature" | click
+    with [get-window -class ClaferFeatureDialog] {
+        get-editbox -after [get-label "Type in the name"] | set-text Fetaure2
+	get-button Class | click
+        get-button "Add property" | click
+        get-editbox -after [get-label Name] | set-text Prop
+        get-combo -after [get-label "is of type"] | select Feature1
+        get-button OK | click
+    }
+    get-button "Next >" | click
+    get-button "Add Question" | click
+    with [get-window -class QuestionDialog] {
+        with [get-editbox -after [get-label Question]] {
+            set-text Q0
+            key-type "TRAVERSE_TAB_NEXT"
+        }
+        with [get-combo -after [get-label "Answer type"]] {
+            select "Drop down"
+            key-type "TRAVERSE_TAB_NEXT"
+        }
+        get-editbox -after [get-label "Describe the question"] | key-type "TRAVERSE_TAB_NEXT"
+        with [get-button "Add Answer"] {
+            click
+            click
+        }
+        get-group "" | get-editbox | set-text ans1
+        get-group "" -after [get-label "Describe the question"] -index 1 | get-editbox | set-text ans2
+        get-button OK | click
+    }
+    with [get-button "Next >"] {
+        click
+        click
+    }
+    get-button "Add Xsl Tag" | click
+    get-window -class XSLTagDialog | get-button OK | click
+    with [get-button "< Back"] {
+        click
+        click
+        click
+        click
+    }
+    get-button "Use the guided mode" | uncheck
+}
+set-dialog-result File
+get-window -class WizardDialog | get-button Browse | click
+set-dialog-result File
+get-window -class WizardDialog | get-button Browse -after [get-label "Location of the XSL file"] | click
+set-dialog-result File
+get-window -class WizardDialog | get-button Browse -after [get-label "Location of the JSON file"] | click
+set-dialog-result File
+with [get-window -class WizardDialog] {
+    get-button Browse -after [get-label "Location of the Help file"] | click
+    close
+}
+}
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--

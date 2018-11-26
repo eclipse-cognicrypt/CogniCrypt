@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SymmetricBlockCipher>
+   <name>efe</name>
+   <description>fefef</description>
+   <blocksize>22</blocksize>
+   <keySize1>300</keySize1>
+   <mode>CFB</mode>
+   <padding>ZeroPadding</padding>
+</SymmetricBlockCipher>

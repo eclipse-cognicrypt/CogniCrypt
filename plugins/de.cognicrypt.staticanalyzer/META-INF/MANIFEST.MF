@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CogniCrypt Static Analyzer
+Bundle-SymbolicName: de.cognicrypt.staticanalyzer;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: de.cognicrypt.staticanalyzer.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.workbench,
+ org.eclipse.core.resources,
+ org.eclipse.ui.ide,
+ org.eclipse.jdt.core,
+ org.eclipse.xtext,
+ org.eclipse.jdt.ui;bundle-version="3.12.0",
+ org.eclipse.jface.text;bundle-version="3.11.0",
+ org.eclipse.xtext.common.types.ui,
+ org.eclipse.emf.common,
+ org.eclipse.m2e.maven.runtime,
+ de.cognicrypt.core;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
+ lib/cognicrypt-maven-plugin-1.0-SNAPSHOT.jar,
+ resources/
+Automatic-Module-Name: de.cognicrypt.staticanalyzer

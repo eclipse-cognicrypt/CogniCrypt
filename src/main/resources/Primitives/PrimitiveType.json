@@ -1,0 +1,10 @@
+[
+		{
+			"name": "Cipher",
+			"xmlFile" : "src/main/resources/Primitives/CipherQuestion.json"
+		},
+		{
+		  "name": "Message Digest",
+		  "xmlFile": ""
+		}
+]

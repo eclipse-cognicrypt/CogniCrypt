@@ -1,0 +1,86 @@
+[{
+	"id": "0",
+	"helpID": "DigitalSignatures_Page0",
+	"content": [{
+		"id": "0",
+		"note": "",
+		"tooltip": "",
+		"element": "radio",
+		"questionText": "Do you need both signing and verification?",
+		"answers": [{
+			"value": "Only signing",
+			"codeDependencies": [{
+				"option": "signingAndVerification",
+				"value": "signing"
+			}]
+		}, {
+			"value": "Both, signing and verification",
+			"defaultAnswer": true,
+			"codeDependencies": [{
+				"option": "signingAndVerification",
+				"value": "both"
+			}]
+		}]
+	}],
+	"nextID": "1"
+}, {
+	"id": "1",
+	"helpID": "DigitalSignatures_Page1",
+	"content": [{
+		"id": "1",
+		"note": "",
+		"tooltip": "",
+		"element": "radio",
+		"questionText": "Do you prefer any particular digital signature scheme?",
+		"answers": [{
+			"value": "Yes, I want to choose from a list.",
+			"nextID": "2"
+		}, {
+			"value": "No, but I do need fast verification.",
+			"claferDependencies": [{
+				"algorithm": "scheme",
+				"operand": "performance",
+				"operator": ">=",
+				"value": "Fast"
+			}],
+			"nextID": "-1"
+		}, {
+			"value": "No, I would like state-of-the-art security.",
+			"defaultAnswer": true,
+			"claferDependencies": [{
+				"algorithm": "scheme",
+				"operand": "security",
+				"operator": ">=",
+				"value": "Strong"
+			}],
+			"nextID": "-1"
+		}]
+	}]
+}, {
+	"id": "2",
+	"helpID": "DigitalSignatures_Page2",
+	"content": [{
+		"id": "2",
+		"note": "",
+		"tooltip": "",
+		"element": "combo",
+		"questionText": "Which Digital Signature Scheme do you want to use?",
+		"answers": [{
+			"value": "Elliptic Curce Digital Signature Algorithm (ECDSA)",
+			"defaultAnswer": true,
+			"claferDependencies": [{
+				"algorithm": "scheme",
+				"value": "ECDSA",
+				"operator": "="
+			}]
+		}, {
+			"value": "RSA Signatures",
+			"claferDependencies": [{
+				"algorithm": "scheme",
+				"value": "RSA",
+				"operator": "="
+			}]
+		}]
+	}],
+	"nextID": "-1"
+}]

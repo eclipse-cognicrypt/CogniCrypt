@@ -24,6 +24,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
+import boomerang.preanalysis.BoomerangPretransformer;
 import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
@@ -57,9 +58,10 @@ public class SootRunner {
 
 			@Override
 			protected void internalTransform(final String phaseName, final Map<String, String> options) {
+				BoomerangPretransformer.v().apply();
 				final JimpleBasedInterproceduralCFG icfg = new JimpleBasedInterproceduralCFG(false);
 
-				final CryptoScanner scanner = new CryptoScanner(getRules()) {
+				final CryptoScanner scanner = new CryptoScanner() {
 
 					@Override
 					public JimpleBasedInterproceduralCFG icfg() {
@@ -71,9 +73,14 @@ public class SootRunner {
 						return true;
 					}
 
+					@Override
+					public boolean rulesInSrcFormat() {
+						return false;
+					}
+
 				};
 				scanner.getAnalysisListener().addReportListener(resultsReporter);
-				scanner.scan();
+				scanner.scan(getRules());
 			}
 		};
 	}
@@ -134,12 +141,12 @@ public class SootRunner {
 		Options.v().set_include(getIncludeList());
 		Options.v().set_exclude(getExcludeList());
 		Scene.v().loadNecessaryClasses();
-		switch (DEFAULT_CALL_GRAPH) {
-		case SPARK:
+		switch (DEFAULT_CALL_GRAPH.ordinal()) {
+		case 2:
 			Options.v().setPhaseOption("cg.spark", "on");
 			Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");
 			break;
-		case CHA:
+		case 0:
 		default:
 			Options.v().setPhaseOption("cg.cha", "on");
 			Options.v().setPhaseOption("cg", "all-reachable:true");

@@ -15,8 +15,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -244,8 +247,8 @@ public class DefaultAlgorithmPage extends WizardPage {
 			return "";
 		}
 
-		final Path file = new File(temporaryOutputFile).toPath();
-		try (InputStream in = Files.newInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+		final File file = new File(temporaryOutputFile);
+		try (InputStream in = Files.newInputStream(file.toPath()); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 			final StringBuilder preview = new StringBuilder();
 			String line = null;
 			// If no file is open in user's editor, show the preview of newly generated class
@@ -274,6 +277,27 @@ public class DefaultAlgorithmPage extends WizardPage {
 			}
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e, Constants.CodePreviewErrorMessage);
+		} finally {
+			try {
+				Files.walkFileTree(file.getParentFile().toPath(), new SimpleFileVisitor<Path>() {
+
+					@Override
+					public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+						Files.delete(dir);
+						return FileVisitResult.CONTINUE;
+					}
+
+					@Override
+					public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+						Files.delete(file);
+						return FileVisitResult.CONTINUE;
+					}
+					
+				});
+				Files.delete(new File(claferPreviewPath).toPath());
+			} catch (IOException e) {
+				Activator.getDefault().logError(e, "Could not delete temporary files.");
+			}
 		}
 		return "";
 	}

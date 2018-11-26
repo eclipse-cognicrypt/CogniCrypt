@@ -39,7 +39,7 @@ import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.utilities.XMLParser;
+import de.cognicrypt.codegenerator.utilities.XMLClaferParser;
 import de.cognicrypt.core.Constants;
 
 public class XSLStringGenerationAndManipulation {
@@ -180,7 +180,7 @@ public class XSLStringGenerationAndManipulation {
 			// This will contain the xml strings that are generated for every -> operator encountered.
 			List<Document> xmlStrings = new ArrayList<Document>();
 
-			XMLParser xmlParser = new XMLParser();
+			XMLClaferParser xmlParser = new XMLClaferParser();
 			// this will remain empty for the first instance, that contains no -> operators.
 			HashMap<Question, Answer> constraints = new HashMap<>();
 			List<InstanceClafer> instances = instanceGenerator.generateInstances(constraints);
@@ -247,7 +247,7 @@ public class XSLStringGenerationAndManipulation {
 	 *        The claferDependency from the outer loop
 	 * @return
 	 */
-	private static Document getXMLForNewAlgorithmInsertion(Question question, Answer answer, XMLParser xmlParser, InstanceGenerator instanceGenerator, ClaferDependency claferDependency) {
+	private static Document getXMLForNewAlgorithmInsertion(Question question, Answer answer, XMLClaferParser xmlParser, InstanceGenerator instanceGenerator, ClaferDependency claferDependency) {
 		HashMap<Question, Answer> constraints = new HashMap<>();
 		constraints.put(question, answer);
 		String constraintOnType = claferDependency.getAlgorithm();

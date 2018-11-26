@@ -76,7 +76,7 @@ public class CrySLReaderUtils {
 			returnObject = new SimpleEntry<>(returnValue.getName(),
 					v.getObjectType().getQualifiedName() + ((v.getArray() != null) ? v.getArray() : ""));
 		} else {
-			returnObject = new SimpleEntry<>("_", "AnyType");
+			returnObject = new SimpleEntry<>("_", "void");
 		}
 		final ParList parList = method.getParList();
 		if (parList != null) {

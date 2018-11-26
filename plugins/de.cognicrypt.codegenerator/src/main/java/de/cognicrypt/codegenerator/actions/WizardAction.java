@@ -12,11 +12,11 @@ package de.cognicrypt.codegenerator.actions;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import de.cognicrypt.codegenerator.wizard.CogniCryptWizardDialog;
 import de.cognicrypt.codegenerator.wizard.ConfiguratorWizard;
 import de.cognicrypt.core.Constants;
 
@@ -27,6 +27,8 @@ import de.cognicrypt.core.Constants;
  * @see IWorkbenchWindowActionDelegate
  */
 public class WizardAction implements IWorkbenchWindowActionDelegate {
+
+	private Shell shell;
 
 	/**
 	 * The constructor.
@@ -47,7 +49,9 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#init
 	 */
 	@Override
-	public void init(final IWorkbenchWindow window) {}
+	public void init(final IWorkbenchWindow window) {
+		this.shell=window.getShell();
+	}
 
 	/**
 	 * The action has been activated. The argument of the method represents the 'real' action sitting in the workbench UI.
@@ -57,7 +61,7 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	@Override
 	public void run(final IAction action) {
 		Constants.WizardActionFromContextMenuFlag = false;
-		final WizardDialog dialog = new WizardDialog(new Shell(), new ConfiguratorWizard()) {
+		final CogniCryptWizardDialog dialog = new CogniCryptWizardDialog(shell, new ConfiguratorWizard()) {
 
 			@Override
 			protected void configureShell(Shell newShell) {

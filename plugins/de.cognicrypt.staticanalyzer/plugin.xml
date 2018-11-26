@@ -129,4 +129,10 @@
       	</handledMarkerTypes>
    		</quickFixProcessor>
 	</extension>
+	 <extension 
+	 point="org.eclipse.ui.ide.markerResolution">
+      <markerResolutionGenerator
+         markerType="org.eclipse.core.resources.problemmarker"
+         class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
+   </extension>
 </plugin>

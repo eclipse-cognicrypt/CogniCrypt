@@ -22,6 +22,7 @@
     <Import>java.io.OutputStream</Import>
     <Import>java.util.Properties</Import>
     <Import>java.io.FileOutputStream</Import>
+    <Import>java.security.Key</Import>
   </Imports>
   <element type="SecurityTestTask">
     <security>Strong</security>

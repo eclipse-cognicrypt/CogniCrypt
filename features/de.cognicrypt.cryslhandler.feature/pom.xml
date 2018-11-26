@@ -7,7 +7,7 @@
 		<groupId>de.cognicrypt</groupId>
 		<artifactId>de.cognicrypt.parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../../mvn-parent/</relativePath>
+		<relativePath>../../pom.xml</relativePath>
 	</parent>
 	<groupId>de.cognicrypt</groupId>
 </project>

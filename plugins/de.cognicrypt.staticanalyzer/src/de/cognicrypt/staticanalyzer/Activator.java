@@ -36,6 +36,8 @@ public class Activator extends AbstractUIPlugin {
 
 	private static List<ResultsCCUIListener> resReporters;
 
+	
+	
 	/**
 	 * The constructor
 	 */
@@ -103,5 +105,5 @@ public class Activator extends AbstractUIPlugin {
 	public static List<ResultsCCUIListener> getResultsReporters() {
 		return resReporters;
 	}
-
+	
 }

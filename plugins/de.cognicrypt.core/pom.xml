@@ -1,161 +1,155 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.cognicrypt</groupId>
   <artifactId>de.cognicrypt.core</artifactId>
   <packaging>eclipse-plugin</packaging>
-	<parent>
-  	<groupId>de.cognicrypt</groupId>
-  	<artifactId>de.cognicrypt.parent</artifactId>
-  	<version>1.0.0-SNAPSHOT</version>
-  	<relativePath>../../mvn-parent</relativePath>
+  <parent>
+    <groupId>de.cognicrypt</groupId>
+    <artifactId>de.cognicrypt.parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
   </parent>
-	<repositories>
-	<repository>
-   <id>eclipse-oxygen</id>
-   <url>http://download.eclipse.org/releases/oxygen</url>
-   <layout>p2</layout>
-	</repository>
-	</repositories>
+
   <build>
-		
-<plugins>
+    <plugins>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
         <version>0.26.0</version>
         <extensions>true</extensions>
       </plugin>
-			<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-surefire-plugin</artifactId>
-    <version>2.17</version>
-		<configuration>
-      <reportsDirectory>../../shippable/testresults</reportsDirectory>
-    </configuration>
-		<dependencies>
-      <dependency>
-        <groupId>org.apache.maven.surefire</groupId>
-        <artifactId>surefire-junit4</artifactId>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
         <version>2.17</version>
-      </dependency>
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>4.12</version>
-			</dependency>
-    </dependencies>
-  </plugin>
-	
-  <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-compiler-plugin</artifactId>
-    <version>2.5.1</version>
-		<dependencies>
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>4.12</version>
-			</dependency>
-		</dependencies>
-    <executions>
-      <execution>
-        <id>compiletests</id>
-        <phase>test-compile</phase>
-        <goals>
-          <goal>testCompile</goal>
-        </goals>
-				<configuration>
-				<testSourceDirectory>${project.basedir}\src\test\java\crossing\e1\featuremodel\clafer\test\*</testSourceDirectory>
-				<source>1.8</source>
-        <target>1.8</target>
-				</configuration>
-      </execution>
-    </executions>
-  </plugin>
+        <configuration>
+          <reportsDirectory>../../shippable/testresults</reportsDirectory>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-junit4</artifactId>
+            <version>2.17</version>
+          </dependency>
+          <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.5.1</version>
+        <dependencies>
+          <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>compiletests</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <configuration>
+              <source>1.8</source>
+              <target>1.8</target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
+
     <pluginManagement>
-    	<plugins>
-    		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-    		<plugin>
-    			<groupId>org.eclipse.m2e</groupId>
-    			<artifactId>lifecycle-mapping</artifactId>
-    			<version>1.0.0</version>
-    			<configuration>
-    				<lifecycleMappingMetadata>
-    					<pluginExecutions>
-    						<pluginExecution>
-    							<pluginExecutionFilter>
-    								<groupId>org.eclipse.tycho</groupId>
-    								<artifactId>
-    									tycho-packaging-plugin
-    								</artifactId>
-    								<versionRange>
-    									[0.26.0,)
-    								</versionRange>
-    								<goals>
-    									<goal>build-qualifier</goal>
-    									<goal>validate-id</goal>
-    									<goal>validate-version</goal>
-    								</goals>
-    							</pluginExecutionFilter>
-    							<action>
-    								<ignore></ignore>
-    							</action>
-    						</pluginExecution>
-    						<pluginExecution>
-    							<pluginExecutionFilter>
-    								<groupId>org.eclipse.tycho</groupId>
-    								<artifactId>
-    									tycho-compiler-plugin
-    								</artifactId>
-    								<versionRange>
-    									[0.26.0,)
-    								</versionRange>
-    								<goals>
-    									<goal>compile</goal>
-    								</goals>
-    							</pluginExecutionFilter>
-    							<action>
-    								<ignore></ignore>
-    							</action>
-    						</pluginExecution>
-								<pluginExecution>
-    							<pluginExecutionFilter>
-    								<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-compiler-plugin</artifactId>
-    								<versionRange>
-    									[0.26.0,)
-    								</versionRange>
-    								<goals>
-    									<goal>test-compile</goal>
-    								</goals>
-    							</pluginExecutionFilter>
-    							<action>
-    								<ignore></ignore>
-    							</action>
-    						</pluginExecution>
-								<pluginExecution>
-    							<pluginExecutionFilter>
-    								<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-surefire-plugin</artifactId>
-    								<versionRange>
-    									[0.26.0,)
-    								</versionRange>
-    								<goals>
-    									<goal>test</goal>
-    								</goals>
-    							</pluginExecutionFilter>
-    							<action>
-    								<ignore></ignore>
-    							</action>
-    						</pluginExecution>
-    					</pluginExecutions>
-    				</lifecycleMappingMetadata>
-    			</configuration>
-    		</plugin>
-    	</plugins>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>
+                      tycho-packaging-plugin
+                    </artifactId>
+                    <versionRange>
+                      [0.26.0,)
+                    </versionRange>
+                    <goals>
+                      <goal>build-qualifier</goal>
+                      <goal>validate-id</goal>
+                      <goal>validate-version</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>
+                      tycho-compiler-plugin
+                    </artifactId>
+                    <versionRange>
+                      [0.26.0,)
+                    </versionRange>
+                    <goals>
+                      <goal>compile</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <versionRange>
+                      [0.26.0,)
+                    </versionRange>
+                    <goals>
+                      <goal>test-compile</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <versionRange>
+                      [0.26.0,)
+                    </versionRange>
+                    <goals>
+                      <goal>test</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
     </pluginManagement>
   </build>
 </project>

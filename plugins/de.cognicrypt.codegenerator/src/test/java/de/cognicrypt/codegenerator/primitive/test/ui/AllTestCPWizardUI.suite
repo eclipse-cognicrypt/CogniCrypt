@@ -1,0 +1,22 @@
+--- RCPTT testcase ---
+Format-Version: 1.0
+Element-Name: AllTest
+Element-Type: testsuite
+Element-Version: 2.0
+Id: _2mBqsC6qEeiMpYttnX8SBA
+Runtime-Version: 2.1.0.201606221726
+Save-Time: 4/3/18 2:48 PM
+
+------=_testcase-items-62c497da-4241-31f4-811a-6b453a3ecff8
+Content-Type: text/testcase
+Entry-Name: testcase-items
+
+_HAsNsC6oEeiMpYttnX8SBA	// kind: 'test' name: 'MFMM' path: 'MFMM.test'
+_HBEoMC6oEeiMpYttnX8SBA	// kind: 'test' name: 'MFRMM' path: 'MFRMM.test'
+_VUZR8C6qEeiMpYttnX8SBA	// kind: 'test' name: 'MRMM' path: 'MRMM.test'
+_HA0JgC6oEeiMpYttnX8SBA	// kind: 'test' name: 'SFMS' path: 'SFMS.test'
+_HAYEoC6oEeiMpYttnX8SBA	// kind: 'test' name: 'SFSS' path: 'SFSS.test'
+_HAO6sC6oEeiMpYttnX8SBA	// kind: 'test' name: 'SRMS' path: 'SRMS.test'
+_t30HcB7SEei3natypeXWoQ	// kind: 'test' name: 'SRSM' path: 'SRSM.test'
+
+------=_testcase-items-62c497da-4241-31f4-811a-6b453a3ecff8--

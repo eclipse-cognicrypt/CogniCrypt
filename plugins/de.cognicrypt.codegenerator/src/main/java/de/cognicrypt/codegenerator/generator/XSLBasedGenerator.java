@@ -68,7 +68,8 @@ public class XSLBasedGenerator extends CodeGenerator {
 				Activator.getDefault().logError(Constants.FilesDoNotExistErrorMessage);
 				return false;
 			}
-
+			
+			
 			final String srcPath = this.project.getProjectPath() + Constants.innerFileSeparator + this.project.getSourcePath();
 			String temporaryOutputFile = srcPath + Constants.CodeGenerationCallFile;
 
@@ -135,7 +136,7 @@ public class XSLBasedGenerator extends CodeGenerator {
 		}
 		return true;
 	}
-
+	
 	/**
 	 * Performs the XSL-Transformation.
 	 *

@@ -237,7 +237,7 @@ public class DefaultAlgorithmPage extends WizardPage {
 	private String compileCodePreview() {
 		final CodeGenerator codeGenerator = new XSLBasedGenerator(this.taskSelectionPage.getSelectedProject(), this.taskSelectionPage.getSelectedTask().getXslFile());
 		final String claferPreviewPath = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile;
-		Configuration codePreviewConfig = new Configuration(value, this.constraints, claferPreviewPath);
+		Configuration codePreviewConfig = new XSLConfiguration(value, this.constraints, claferPreviewPath);
 		final String temporaryOutputFile = codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.CodeGenerationCallFile;
 
 		try {

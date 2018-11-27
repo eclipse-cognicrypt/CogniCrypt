@@ -23,6 +23,9 @@ public class Constants {
 		combo, text, itemselection, button, radio, scale, checkbox, radiobutton, textarea, composed
 	}
 	
+	public enum CodeGenerators {
+		XSL, CrySL
+	}
 	public enum Severities {
 		Problem, Warning, Secure
 	}
@@ -150,8 +153,8 @@ public class Constants {
 	public static final String AdditionalOutputTempFile = "OutputTemp.java";
 	public static final String TempSuffix = "Temp";
 	public static final String PackageName = "Crypto";
-	public static final String CodeGenerationCallFile = Constants.innerFileSeparator + Constants.PackageName
-			+ Constants.innerFileSeparator + Constants.AdditionalOutputFile;
+	public static final String CodeGenerationCallFolder = Constants.innerFileSeparator + Constants.PackageName;
+	public static final String CodeGenerationCallFile = CodeGenerationCallFolder + Constants.innerFileSeparator + Constants.AdditionalOutputFile;
 
 	// File info for Code Generation
 	public static final String OpenFile = "Current file is open: ";
@@ -174,8 +177,8 @@ public class Constants {
 			+ Constants.NameOfTemporaryMethod + ".";
 	public static final String NoTemporaryOutputFile = "Temporary output file does not exist.";
 	public static final String NoFileandNoProjectOpened = "No file opened and no project selected.";
-	public static final String NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE = "No possible combinations are available for chosen values. Please modify your preferences and try n.\n \n You can use  \n>= insted of >\n<= instead of <\nto make your selection generic.";
-	public static final String NO_POSSIBLE_COMBINATIONS_BEGINNER = "No possible combinations are available for chosen values. Please modify your preferences and try again.";
+	public static final String NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE = "No possible combinations are available for chosen values. Please modify your preferences and try agin.\n \n You can use  \n>= insted of >\n<= instead of <\nto make your selection generic.";
+	public static final String NO_POSSIBLE_COMBINATIONS_BEGINNER = "No possible combinations are available for chosen values. Please modify your preferences and try agin.";
 	public static final String PLEASE_SELECT = "Please select project directory to launch the configurator";
 	public static final String ERROR_MESSAGE_NO_PROJECT = "There is no Java project in your workspace. Please create one and restart CogniCrypt.";
 	public static final String ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY = "No directory for additional resources found.";
@@ -206,9 +209,8 @@ public class Constants {
 	public static final String Type = "type";
 	public static final String Security = "Security";
 	public static final String Performance = "Performance";
-	public static final String[] xmlimportsarr = { "java.security.InvalidAlgorithmParameterException",
-			"java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException",
-			"java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException",
+	public static final String[] xmlimportsarr = { "java.security.GeneralSecurityException",
+			"java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "java.security.Key",
 			"javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException",
 			"java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec",
 			"java.security.spec.InvalidKeySpecException", "java.util.List", "java.util.Base64", "java.io.InputStream",

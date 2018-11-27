@@ -31,9 +31,12 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-
 import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
+import crypto.rules.CryptSLRule;
+import de.cognicrypt.codegenerator.DeveloperProject;
+import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
+import de.cognicrypt.codegenerator.generator.CodeGenCrySLRule;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
@@ -41,6 +44,9 @@ import de.cognicrypt.codegenerator.question.QuestionsJSONReader;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 import de.cognicrypt.codegenerator.wizard.Configuration;
+import de.cognicrypt.codegenerator.wizard.CrySLConfiguration;
+import de.cognicrypt.codegenerator.wizard.XSLConfiguration;
+import de.cognicrypt.core.Activator;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.Utils;
 
@@ -52,8 +58,7 @@ public class TestUtils {
 	/**
 	 * This method creates a empty JavaProject in the current workspace
 	 * 
-	 * @param projectName
-	 *            for the JavaProject
+	 * @param projectName for the JavaProject
 	 * @return new created JavaProject
 	 * @throws CoreException
 	 */
@@ -101,12 +106,18 @@ public class TestUtils {
 	/**
 	 * This method creates a package with a java class into a JavaProject
 	 * 
+<<<<<<< HEAD
 	 * @param project
 	 *            JavaProject in which the new Java class will be generated
 	 * @param packageName
 	 *            package in which the new Java class will be generated
 	 * @param className
 	 *            name of the new Java class
+=======
+	 * @param project     JavaProject in which the new Java class will be generated
+	 * @param packageName package in which the new Java class will be generated
+	 * @param className   name of the new Java class
+>>>>>>> CodeSynthesis
 	 * @throws JavaModelException
 	 */
 	public static void generateJavaClassInJavaProject(IJavaProject project, String packageName, String className)
@@ -124,8 +135,12 @@ public class TestUtils {
 	/**
 	 * This method deletes a JavaProject from the Workspace/hard drive
 	 * 
+<<<<<<< HEAD
 	 * @param project
 	 *            JavaProject which will be deleted
+=======
+	 * @param project JavaProject which will be deleted
+>>>>>>> CodeSynthesis
 	 * @throws CoreException
 	 * @throws InterruptedException
 	 */
@@ -136,8 +151,12 @@ public class TestUtils {
 	/**
 	 * This method looks for the right task by name
 	 * 
+<<<<<<< HEAD
 	 * @param name
 	 *            name of the task what we looking for.
+=======
+	 * @param name name of the task what we looking for.
+>>>>>>> CodeSynthesis
 	 * @return Task object
 	 */
 	public static Task getTask(String name) throws NoSuchElementException {
@@ -153,8 +172,12 @@ public class TestUtils {
 	 * This method creates a HashMap. This HashMap contains the Questions and the
 	 * associated default Answers for certain Task.
 	 * 
+<<<<<<< HEAD
 	 * @param t
 	 *            Task
+=======
+	 * @param t Task
+>>>>>>> CodeSynthesis
 	 * @return A HashMap with Questions and default Answers
 	 */
 	public static HashMap<Question, Answer> setDefaultConstraintsForTask(Task t) {
@@ -174,21 +197,41 @@ public class TestUtils {
 	 * This method creates the necessary Configuration for a CodeGenerator.
 	 * 
 	 * @param developerProject
-	 * @param t
-	 *            task for what we create the Configuration
+	 * @param t                task for what we create the Configuration
 	 * @return Configuration for a certain Task
 	 */
-	public static Configuration createConfigurationForCodeGeneration(DeveloperProject developerProject, Task t) {
-		
-		//InstanceGenerator instGen = new InstanceGenerator(Utils.getResourceFromWithin(t.getModelFile()).getAbsolutePath(), "c0_" + t.getName(),t.getTaskDescription());
-		InstanceGenerator instGen = new InstanceGenerator(Utils.getResourceFromWithin(t.getModelFile(),de.cognicrypt.codegenerator.Activator.PLUGIN_ID).getAbsolutePath(), "c0_" + t.getName(),t.getTaskDescription());
-		
-		//InstanceGenerator instGen = new InstanceGenerator(Utils.getResourceFromWithin(t.getModelFile()).getAbsolutePath(), "c0_" + t.getName(),t.getTaskDescription());
+	public static Configuration createXSLConfigurationForCodeGeneration(DeveloperProject developerProject, Task t) {
+
+		// InstanceGenerator instGen = new
+		// InstanceGenerator(Utils.getResourceFromWithin(t.getModelFile()).getAbsolutePath(),
+		// "c0_" + t.getName(),t.getTaskDescription());
+		InstanceGenerator instGen = new InstanceGenerator(
+				Utils.getResourceFromWithin(t.getModelFile(), de.cognicrypt.codegenerator.Activator.PLUGIN_ID)
+						.getAbsolutePath(),
+				"c0_" + t.getName(), t.getTaskDescription());
+
+		// InstanceGenerator instGen = new
+		// InstanceGenerator(Utils.getResourceFromWithin(t.getModelFile()).getAbsolutePath(),
+		// "c0_" + t.getName(),t.getTaskDescription());
 		HashMap<Question, Answer> constraints = TestUtils.setDefaultConstraintsForTask(t);
 		List<InstanceClafer> instList = instGen.generateInstances(constraints);
 		InstanceClafer inst = instList.get(0);
-		Configuration ret = new Configuration(inst, constraints,
+		Configuration ret = new XSLConfiguration(inst, constraints,
 				developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
+		return ret;
+	}
+
+	/**
+	 * This method creates the necessary Configuration for a CodeGenerator.
+	 * 
+	 * @param developerProject
+	 * @param t                task for what we create the Configuration
+	 * @return Configuration for a certain Task
+	 */
+	public static CrySLConfiguration createCrySLConfigurationForCodeGeneration(DeveloperProject developerProject,
+			List<List<CodeGenCrySLRule>> rules) {
+		CrySLConfiguration ret = new CrySLConfiguration(rules,
+				null, developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
 		return ret;
 	}
 
@@ -264,5 +307,16 @@ public class TestUtils {
 		String cuPath = srcPath + Constants.innerFileSeparator + packageName + Constants.innerFileSeparator
 				+ cu.getElementName();
 		return cuPath;
+	}
+	
+	/**
+	 * This method counts methods in ICompilationUnits
+	 * 
+	 * @param unit
+	 * @return
+	 * @throws JavaModelException
+	 */
+	public static int countMethods(ICompilationUnit unit) throws JavaModelException {
+		return unit.getAllTypes()[0].getMethods().length;
 	}
 }

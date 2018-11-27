@@ -11,6 +11,10 @@
 package de.cognicrypt.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -51,6 +55,7 @@ import org.osgi.framework.Bundle;
 
 import com.google.common.base.CharMatcher;
 
+import crypto.rules.CryptSLRule;
 import de.cognicrypt.core.Activator;
 
 public class Utils {
@@ -297,4 +302,58 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * Returns the cryptsl rule with the name that is defined by the method parameter cryptslRule.
+	 * 
+	 * @param cryptslRule
+	 *        Name of cryptsl rule that should by returend.
+	 * 
+	 * @return Returns the cryptsl rule with the name that is defined by the parameter cryptslRule.
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
+	 * @throws Exception
+	 *         Thows an exception if given rule name does not exist.
+	 */
+	public static CryptSLRule getCryptSLRule(String cryptslRule) throws IOException, ClassNotFoundException {
+		final FileInputStream fileIn = new FileInputStream(Utils.getResourceFromWithin("resources/CrySLRules", de.cognicrypt.core.Activator.PLUGIN_ID)
+			.getAbsolutePath() + "\\" + cryptslRule + ".cryptslbin");
+		final ObjectInputStream in = new ObjectInputStream(fileIn);
+		CryptSLRule rule = (CryptSLRule) in.readObject();
+		in.close();
+		fileIn.close();
+		return rule;
+	}
+	
+	
+	public static List<CryptSLRule> readCrySLRules() {
+		return readCrySLRules(Utils.getResourceFromWithin("resources/CrySLRules").getAbsolutePath());
+	}
+	
+	protected static List<CryptSLRule> readCrySLRules(String rulesFolder) {
+		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
+
+		for (File rule : (new File(rulesFolder)).listFiles()) {
+			FileInputStream fileIn;
+			try {
+				fileIn = new FileInputStream(rule);
+				final ObjectInputStream in = new ObjectInputStream(fileIn);
+				rules.add((CryptSLRule) in.readObject());
+				in.close();
+				fileIn.close();
+			} catch (IOException | ClassNotFoundException e) {
+				Activator.getDefault().logError(e);
+			}
+		}
+		return rules;
+	}
+	
+	public static boolean isSubType(String typeOne, String typeTwo) {
+		boolean subTypes = typeOne.equals(typeTwo);
+		if (!subTypes) {
+			try {
+				subTypes = Class.forName(typeOne).isAssignableFrom(Class.forName(typeTwo));
+			} catch (ClassNotFoundException e) {}
+		}
+		return subTypes;
+	}
 }

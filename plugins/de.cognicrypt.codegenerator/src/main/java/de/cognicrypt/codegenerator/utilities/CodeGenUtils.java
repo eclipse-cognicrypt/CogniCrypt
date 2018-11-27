@@ -36,7 +36,7 @@ public class CodeGenUtils extends Utils {
 	 */
 	public static IProject getCurrentProject() {
 		if (Constants.WizardActionFromContextMenuFlag) {
-			final IProject selectedProject = CodeGenUtils.getIProjectFromSelection();
+			final IProject selectedProject = CodeGenUtils.getCurrentlySelectedIProject();
 			if (selectedProject != null) {
 				return selectedProject;
 			}

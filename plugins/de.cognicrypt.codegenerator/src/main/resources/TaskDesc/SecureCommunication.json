@@ -1,54 +1,6 @@
 [
 	{
 		"id": "0",
-		"helpID": "SecureCommunication_Page0",
-		"content": [
-			{
-				"id": "0",
-				"note": "",
-				"tooltip": "Example : /home/users/keystores/android.jks",
-				"element": "text",
-      			"textType":"Browse",
-      			"extension": "*.jks",
-				"questionText": "Please specify the path to your keystore:",
-				"answers": [
-					{
-						"value": "",
-						"codeDependencies": [
-							{
-								"option": "keystore",
-								"value": ""
-							}
-						],
-						"defaultAnswer": true
-					}
-				]
-			},
-			{
-				"id": "1",
-				"note": "",
-				"tooltip": "Secret password of keystore",
-				"element": "text",				
-      			"textType":"Password",
-				"questionText": "Please give the password for your keystore:",
-				"answers": [
-					{
-						"value": "C:\\      ",
-						"codeDependencies": [
-							{
-								"option": "keystorepassword",
-								"value": ""
-							}
-						],
-						"defaultAnswer": true
-					}
-				]
-			}
-		],
-		"nextID": "1"
-	},
-	{
-		"id": "1",
 		"helpID": "SecureCommunication_Page1",
 		"content": [
 			{
@@ -65,7 +17,7 @@
 								"value": "true"
 							}
 						],
-						"nextID": "7"
+						"nextID": "6"
 					},
 					{
 						"value": "Client-side",
@@ -76,14 +28,14 @@
 							}
 						],
 						"defaultAnswer": true,
-						"nextID": "2"
+						"nextID": "1"
 					}
 				]
 			}
 		]
 	},
 	{
-		"id": "2",
+		"id": "1",
 		"helpID": "SecureCommunication_Page2",
 		"content": [
 			{
@@ -96,7 +48,7 @@
 						"value": "Yes",
 						"codeDependencies": [
 						],
-						"nextID": "3"
+						"nextID": "2"
 					},
 					{
 						"value": "No",
@@ -116,8 +68,9 @@
 			{
 				"id": "4",
 				"element": "text",
+				"message": "e.g. 127.0.0.1",
       			"textType":"Ip address",
-				"questionText": "Please enter the IP address of the server:",
+				"questionText": "Please enter the server address (hostname or IP)",
 				"answers": [
 					{
 						"value": "",
@@ -133,10 +86,10 @@
 			},
 			{
 				"id": "5",
-				"tooltip": "Example: 80",
+				"tooltip": "443 HTTPS\n 22 SSH",
 				"element": "text",
      			"textType":"Port number",
-				"questionText": "Please enter the Port number of the server:",
+				"questionText": "Please enter the server's port",
 				"answers": [
 					{
 						"value": "",
@@ -258,7 +211,7 @@
 				"tooltip": "Example: 80",
 				"element": "text",
 				"textType": "Port number",
-				"questionText": "Please enter the Port number of the server:",
+				"questionText": "Which port should the server run on?",
 				"answers": [
 					{
 						"value": "",

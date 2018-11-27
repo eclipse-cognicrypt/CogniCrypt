@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.Rectangle;
 public class Constants {
 
 	public enum GUIElements {
-		combo, text, itemselection, button, radio, scale, checkbox, radiobutton, textarea, composed
+		combo, text, itemselection, button, radio, scale, checkbox, radiobutton, textarea, composed, rbtextgroup
 	}
 	
 	public enum Severities {
@@ -104,7 +104,7 @@ public class Constants {
 	public static final String INSTANCE_DETAILS_TOOLTIP = "Details of the selected algorithm combination";
 	public static final String PREVIOUS_ALGORITHM_BUTTON = "Previous";
 	public static final String NEXT_ALGORITHM_BUTTON = "Next";
-	public static final String PORT_NUMBER_TOOLTIP = "Example: 65535";
+	public static final String PORT_NUMBER_TOOLTIP = "443 HTTPS\n 22 SSH";
 	public static final String IP_ADDRESS_TOOLTIP = "Example: 255.255.255.255";
 
 	// Decoration

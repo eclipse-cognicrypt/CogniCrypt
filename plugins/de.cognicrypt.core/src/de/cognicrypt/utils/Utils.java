@@ -168,7 +168,7 @@ public class Utils {
 				return curProject;
 			}
 		}
-		final IProject selectedProject = Utils.getIProjectFromSelection();
+		final IProject selectedProject = Utils.getCurrentlySelectedIProject();
 		if (selectedProject != null && checkIfJavaProjectSelected(selectedProject)) {
 			return selectedProject;
 		}
@@ -228,11 +228,15 @@ public class Utils {
 	 *
 	 * @return Currently selected project.
 	 */
-	public static IProject getIProjectFromSelection() {
+	public static IProject getCurrentlySelectedIProject() {
 		final ISelectionService selectionService = Workbench.getInstance().getActiveWorkbenchWindow()
 				.getSelectionService();
 		final ISelection selection = selectionService.getSelection();
 
+		return getIProjectFromISelection(selection);
+	}
+
+	public static IProject getIProjectFromISelection(final ISelection selection) {
 		IProject iproject = null;
 		if (selection instanceof IStructuredSelection) {
 			final Object element = ((IStructuredSelection) selection).getFirstElement();

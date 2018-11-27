@@ -53,7 +53,6 @@ import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.wizard.advanced.PropertyWidget;
 import de.cognicrypt.core.Constants;
 
 /**
@@ -208,21 +207,6 @@ public class InstanceGenerator {
 		}
 	}
 
-	private void advancedModeHandler(final AstModel astModel, final AstClafer taskClafer, final List<PropertyWidget> constraints) {
-		for (final PropertyWidget constraint : constraints) {
-			if (constraint.isEnabled() && !constraint.isGroupConstraint()) { //not sure why we need this check but keeping it from Ram's code till we figure it out
-				final String operator = constraint.getOperator();
-				final String value = constraint.getValue();
-				final AstConcreteClafer parent = (AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getParentClafer().getName());
-				final List<AstConcreteClafer> operand = new ArrayList<>();
-				operand.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getChildClafer().getName()));
-				if (operand != null && ClaferModelUtils.isConcrete(operand.get(0))) {
-					addConstraints(parent, operand, operator, value);
-				}
-			}
-		}
-	}
-
 	private void basicModeHandler(final AstModel astModel, final AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {
 		for (final Entry<Question, Answer> entry : qAMap.entrySet()) {
 			final Answer answer = entry.getValue();
@@ -347,36 +331,8 @@ public class InstanceGenerator {
 		generateInstanceMapping();
 		return this.generatedInstances;
 	}
-
-	/**
-	 * Method to generate instances in an advanced user mode.
-	 * 
-	 * @param constraints
-	 *        List of constraints set by the user
-	 * @return List of generated Instance
-	 */
-	public List<InstanceClafer> generateInstancesAdvancedUserMode(final List<PropertyWidget> constraints) {
-		final AstModel model = this.claferModel.getModel();
-		try {
-			//PropertiesMapperUtil.getTaskLabelsMap().get(getTaskDescription());
-			advancedModeHandler(model, this.taskClafer, constraints);
-
-			// TODO Need to be uncommented after fix
-			// addGroupProperties(tempTask, constraints);
-			this.solver = ClaferCompiler.compile(model, this.claferModel.getScope().toBuilder().intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
-			while (this.solver.find()) {
-				final InstanceClafer instance = this.solver.instance().getTopClafers()[this.solver.instance().getTopClafers().length - 1];
-				this.uniqueInstances.put(getHashValueOfInstance(instance), instance);
-			}
-
-		} catch (final Exception e) {
-			Activator.getDefault().logError(e);
-		}
-		this.generatedInstances = new ArrayList<>(this.uniqueInstances.values());
-		generateInstanceMapping();
-		return this.generatedInstances;
-	}
-
+	
+	
 	private AstBoolExpr getFunctionFromOperator(final AstSetExpr operandLeftClafer, final AstSetExpr operandRightClafer, final String operator) {
 		switch (operator) {
 			case "=":

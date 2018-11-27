@@ -34,7 +34,6 @@ import de.cognicrypt.utils.FileHelper;
  * This class is a storage for the configuration chosen by the user.
  * 
  * @author Stefan Krueger
- *
  */
 public class Configuration {
 

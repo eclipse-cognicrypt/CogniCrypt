@@ -1,28 +1,26 @@
 [
 		{
-			"name": "SymmetricEncryption",
-			"description": "Encrypt Data Using a Secret Key",
-			"taskDescription": "This cryptographic task generates code that uses symmetric encryption to encrypt the data. The data is encrypted relatively quickly and securely. You can also protect enormous data with the help of this task.",
-			"modelFile" : "src/main/resources/ClaferModel/SymmetricEncryption.js",
-			"questionsJSONFile" : "src/main/resources/TaskDesc/SymmetricEncryption.json",
+			"name": "Encryption",
+			"description": "Encrypting data",
+			"taskDescription": "This cryptographic task generates code encrypts data. Depending on the exact use-case, it either combines secret and public-key encryption or makes use of password-based encryption.",			
+			"modelFile" : "src/main/resources/ClaferModel/Encryption.js",
+			"questionsJSONFile" : "src/main/resources/TaskDesc/Encryption.json",
 			"additionalResources" : "",
-			"xslFile" : "src/main/resources/XSLTemplates/SymmetricEncryption.xsl"
-			
+			"xslFile" : "src/main/resources/XSLTemplates/Encryption.xsl"
 		},
 		{
 			"name": "SecurePassword",
 			"description": "Encode Password for Secure Storage",
-			"taskDescription": "This cryptographic task makes password cracking much more difficult and helps in protecting the passwords. Security level for protection is selected according to your performance requirements.",
+			"taskDescription": "Prepare a password for authentication or database storage.",
 			"modelFile" : "src/main/resources/ClaferModel/SecurePassword.js",
 			"questionsJSONFile" : "src/main/resources/TaskDesc/SecurePassword.json",
 			"additionalResources" : "",
-			"xslFile" : "src/main/resources/XSLTemplates/SecurePassword.xsl"
-			
+			"xslFile" : "src/main/resources/XSLTemplates/SecurePassword.xsl"	
 		},
 		{
-			"name": "SecureCommunication",
+			"name": "Secure Network Connection",
 			"description": "Establish a Secure Network Connection",
-			"taskDescription": "This cryptographic task helps to communicate over a secure channel with the help of Transport Layer Security (TLS) protocol that may be used to secure web connections(HTTPS).",
+			"taskDescription": "Establish a secure communication channel (e.g., TLS/SSL connection).",
 			"modelFile" : "src/main/resources/ClaferModel/SecureCommunication.js",
 			"questionsJSONFile" : "src/main/resources/TaskDesc/SecureCommunication.json",
 			"additionalResources" : "",
@@ -65,12 +63,24 @@
 			"xslFile" : "src/main/resources/XSLTemplates/HybridEncryption.xsl"
 		},
 		{
+
+			"name": "Experimental",
+			"description": "",
+			"taskDescription": "This category comprises experimental algorithms and use cases that where developed with the CROSSING research project.",
+			"modelFile" : "src/main/resources/ClaferModel/SecureCommunication.js",
+			"questionsJSONFile" : "src/main/resources/TaskDesc/SecureCommunication.json",
+			"additionalResources" : "",
+			"xslFile" : "src/main/resources/XSLTemplates/SecureCommunication.xsl"
+		},
+		{
+
 			"name": "DigitalSignatures",
 			"description": "Digitally sign documents",
-			"taskDescription": "",			
+			"taskDescription": "This cryptographic task generates code that allows for the signing of data. A new key pair is generated for the signature and you may also get code for verification generated.",			
 			"modelFile" : "src/main/resources/ClaferModel/DigitalSignatures.js",
 			"questionsJSONFile" : "src/main/resources/TaskDesc/DigitalSignatures.json",
 			"additionalResources" : "",
 			"xslFile" : "src/main/resources/XSLTemplates/DigitalSignatures.xsl"
 		}
+
 ]

@@ -15,8 +15,15 @@ import java.util.ArrayList;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.GUIElements;
 
-public class Question {
 
+/**
+ *  This class holds all the information to fill the wizard pages w.r.t. a specific end-user question.
+ *  
+ *  E.g., when user input is required and a text field is required in order to get user input, the "textType" is used to distinguish
+ *  ip addresses, ports and more.
+ */
+public class Question {
+	
 	private int id;
 	private GUIElements element;
 	private String selectionClafer;
@@ -37,7 +44,9 @@ public class Question {
 	private String tooltip = "";
 	//helpText
 	private transient String helpText = "";
-
+	//Message for showing a grayed text in a text field
+	private String message = "";
+	
 	public ArrayList<Answer> getAnswers() {
 		return this.answers;
 	}
@@ -82,6 +91,11 @@ public class Question {
 	//added get method for tooltip
 	public String getTooltip() {
 		return this.tooltip;
+	}
+
+	//getMessage returns a message string 
+	public String getMessage() {
+		return this.message;
 	}
 
 	//added the type of the text
@@ -131,7 +145,7 @@ public class Question {
 	public void setTextType(final String textType) {
 		this.textType = textType;
 	}
-
+	
 	public void setQuestionText(final String questionText) {
 		this.questionText = questionText;
 	}
@@ -193,5 +207,4 @@ public class Question {
 	public void setHelpText(String helpText) {
 		this.helpText = helpText;
 	}
-
 }

@@ -72,11 +72,20 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private Text note;
 	private Composite container;
 	private int count = 0;
+	private boolean isActive = true;
 
 	public int getCurrentPageID() {
 		return this.page.getId();
 	}
 
+	public void setPageInactive() {
+		isActive = false;
+	}
+	
+	public boolean isActive() {
+		return isActive;
+	}
+	
 	/**
 	 * construct a page containing an element other than itemselection
 	 *
@@ -176,7 +185,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			if (answer == null || answer.getValue().isEmpty()) {
 				return false;
 			}
-			if (Arrays.asList((new GUIElements[] { GUIElements.button, GUIElements.itemselection, GUIElements.radio, GUIElements.scale })).contains(question.getElement())) {
+			if (Arrays.asList((new GUIElements[] { GUIElements.button, GUIElements.itemselection, GUIElements.radio, GUIElements.scale, GUIElements.checkbox })).contains(question.getElement())) {
 				return this.finish;
 			}
 		}
@@ -257,14 +266,14 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				}
 				break;
 			case radio:
-				final Button[] radioButton = new Button[answers.size()];
+				final Button[] radioButtons = new Button[answers.size()];
 				for (int i = 0; i < answers.size(); i++) {
 					final int count = i;
 					final String ans = answers.get(i).getValue();
-					radioButton[i] = new Button(container, SWT.RADIO);
-					radioButton[i].setText(ans);
+					radioButtons[i] = new Button(container, SWT.RADIO);
+					radioButtons[i].setText(ans);
 					new Label(container, SWT.NONE);
-					radioButton[i].addSelectionListener(new SelectionAdapter() {
+					radioButtons[i].addSelectionListener(new SelectionAdapter() {
 
 						@Override
 						public void widgetSelected(final SelectionEvent e) {
@@ -281,14 +290,104 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					evalAnswer = question.getDefaultAnswer();
 				}
 				for (int i = 0; i < answers.size(); i++) {
-					if (radioButton[i].getText().equals(evalAnswer.getValue())) {
-						radioButton[i].setSelection(true);
+					if (radioButtons[i].getText().equals(evalAnswer.getValue())) {
+						radioButtons[i].setSelection(true);
 						BeginnerTaskQuestionPage.this.selectionMap.put(question, evalAnswer);
 						question.setEnteredAnswer(evalAnswer);
 					}
 				}
 
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish = true);
+				break;
+
+			case rbtextgroup:
+				for(Answer answer: answers) {
+					String rows = answer.getUIDependency("rows");
+					int numRows = (rows == null)? 0 : Integer.parseInt(rows);
+					Button radioButton = new Button(container, SWT.RADIO);
+					radioButton.setText(answer.getValue());
+					for(int row = 1; row <= numRows; row++) {
+						String labelOption = "Label" + row;
+						String labelText = answer.getUIDependency(labelOption);
+						Label groupLabel = new Label(container, SWT.NONE);
+						groupLabel.setText(labelText);
+						Text pathText = new Text(container, SWT.FILL);
+						pathText.setEnabled(false);
+					}
+				}
+				BeginnerTaskQuestionPage.this.setPageComplete(this.finish = true);
+				break;
+				
+			case checkbox:
+				final List<Button> cbs = new ArrayList<Button>();
+				final List<Button> exclusiveCbs = new ArrayList<Button>(answers.size());
+				
+				for(int i = 0; i < answers.size(); i++) {
+					final Answer a = answers.get(i);
+					final Button curCheckbox = new Button(container, SWT.CHECK);
+					curCheckbox.setText(a.getValue());
+					
+					curCheckbox.addSelectionListener(new SelectionAdapter() {
+						
+						@Override
+						public void widgetSelected(final SelectionEvent selectionEvent) {
+							final Button btn = (Button) selectionEvent.getSource();
+							
+							if(btn == curCheckbox) {
+								final boolean isExclusive = Boolean.parseBoolean(a.getUIDependency("isExclusive"));
+								final boolean isSelected = btn.getSelection();
+
+								if(isExclusive) {
+									question.setEnteredAnswer(null);
+									BeginnerTaskQuestionPage.this.selectionMap.clear();
+									for(Button b : cbs) {
+										if(b != curCheckbox) {
+											b.setSelection(false);
+										}
+									}
+								} else {
+									exclusiveCbs.forEach(b -> b.setSelection(b == curCheckbox));								
+								}
+								
+								if(isSelected) {
+									Answer prevAns = question.getEnteredAnswer();
+									if (prevAns != null && !Boolean.parseBoolean(prevAns.getUIDependency("isExclusive"))) {
+										Answer combinedAnswer = prevAns.combineWith(a);
+										question.setEnteredAnswer(combinedAnswer);
+										BeginnerTaskQuestionPage.this.selectionMap.put(question, combinedAnswer);
+										
+									} else {
+										question.setEnteredAnswer(a);
+										BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
+									}
+								}
+								
+								finish = cbs.stream().anyMatch(e -> e.getSelection());
+								BeginnerTaskQuestionPage.this.setPageComplete(isPageComplete());
+								
+								
+							}
+							
+						}
+					});
+					cbs.add(curCheckbox);
+					curCheckbox.setSelection(a.isDefaultAnswer());
+					question.setEnteredAnswer(a);
+					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
+					
+					final String isExlusiveValue = a.getUIDependency("isExclusive");
+					if(Boolean.parseBoolean(isExlusiveValue)) {
+						exclusiveCbs.add(curCheckbox);
+					}
+				}
+				
+				//added description for questions
+				if (!question.getNote().isEmpty()) {
+					createNote(parent, question);
+				}
+
+				this.finish = true;
+				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
 				break;
 
 			case scale:
@@ -349,10 +448,11 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 
 			case text:
-
+				
 				final Text inputField = new Text(container, SWT.BORDER);
 				inputField.setLayoutData(new GridData(100, SWT.DEFAULT));
 				inputField.setToolTipText(question.getTooltip());
+				inputField.setMessage(question.getMessage());
 
 				ControlDecoration deco = new ControlDecoration(inputField, SWT.LEFT | SWT.TOP);
 				FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
@@ -389,6 +489,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					});
 
 					text(question, inputField);
+					// TODO "Bug fix": Get text out of json file
 				} else if (question.getTextType().equals(Constants.PASSWORD)) {
 					inputField.setLayoutData(new GridData(120, SWT.DEFAULT));
 					inputField.setEchoChar((char) 0x25cf);
@@ -431,7 +532,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 					text(question, inputField);
 				} else if (question.getTextType().equals(Constants.PORT_NUMBER)) {
-					inputField.setToolTipText(Constants.PORT_NUMBER_TOOLTIP);
 					inputField.addVerifyListener(new VerifyListener() {
 
 						@Override
@@ -457,8 +557,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					});
 					text(question, inputField);
 				} else if (question.getTextType().equals(Constants.IP_ADDRESS)) {
-					inputField.setToolTipText(Constants.IP_ADDRESS_TOOLTIP);
-
 					inputField.addVerifyListener(new VerifyListener() {
 
 						@Override
@@ -952,6 +1050,27 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		if (question.getDefaultAnswer().getCodeDependencies() != null) {
 			inputField.setText(question.getDefaultAnswer().getCodeDependencies().get(0).getValue());
 		}
-
 	}
 }
+
+class RadioButtonGroup {
+	
+	private Button radioButton;
+	private Text[] textfields;
+	private Button[] browseButtons;
+	
+	public RadioButtonGroup() {
+		
+	}
+	
+	public void toggle() {
+		boolean isActive = radioButton.getSelection(); 
+		for(Text t : textfields) {
+			t.setEnabled(isActive);
+		}
+		
+		for(Button b: browseButtons) {
+			b.setEnabled(isActive);
+		}
+	}
+};

@@ -16,8 +16,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import de.cognicrypt.codegenerator.wizard.AltConfigWizard;
 import de.cognicrypt.codegenerator.wizard.CogniCryptWizardDialog;
-import de.cognicrypt.codegenerator.wizard.ConfiguratorWizard;
 import de.cognicrypt.core.Constants;
 
 /**
@@ -61,7 +61,7 @@ public class WizardActionFromContextMenu implements IWorkbenchWindowActionDelega
 	@Override
 	public void run(final IAction action) {
 		Constants.WizardActionFromContextMenuFlag = true;
-		final CogniCryptWizardDialog dialog = new CogniCryptWizardDialog(shell, new ConfiguratorWizard());
+		final CogniCryptWizardDialog dialog = new CogniCryptWizardDialog(shell, new AltConfigWizard());
 		
 		dialog.open();
 	}

@@ -41,4 +41,5 @@ Export-Package: boomerang,
  typestate
 Automatic-Module-Name: de.cognicrypt.core
 Bundle-ClassPath: .,
+ resources/CrySLRules/,
  lib/CryptoAnalysis-1.0.0-jar-with-dependencies.jar

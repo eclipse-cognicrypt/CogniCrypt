@@ -91,14 +91,14 @@ public class DefaultTasksGeneratorTest {
 	 */
 	@Test
 	public void EncDefault() {
-		this.configEnc = TestUtils.createConfigurationForCodeGeneration(developerProject, encTask);
+		this.configEnc = TestUtils.createXSLConfigurationForCodeGeneration(developerProject, encTask);
 		boolean encCheck = generatorEnc.generateCodeTemplates(configEnc, encTask.getAdditionalResources());
 		assertTrue(encCheck);
 	}
 	
 	@Test
 	public void SecPasswordDefault() {
-		this.configSecPassword = TestUtils.createConfigurationForCodeGeneration(developerProject, secPasswordTask);
+		this.configSecPassword = TestUtils.createXSLConfigurationForCodeGeneration(developerProject, secPasswordTask);
 		boolean secPasswordCheck = generatorSecPassword.generateCodeTemplates(configSecPassword, secPasswordTask.getAdditionalResources());
 		assertTrue(secPasswordCheck);
 	}
@@ -115,14 +115,14 @@ public class DefaultTasksGeneratorTest {
 	
 	@Test
 	public void SECMUPACOMPDefault() {
-		this.configSecMPComp = TestUtils.createConfigurationForCodeGeneration(developerProject, secMPCompTask);
+		this.configSecMPComp = TestUtils.createXSLConfigurationForCodeGeneration(developerProject, secMPCompTask);
 		boolean secMPCompCheck = generatorSecMPComp.generateCodeTemplates(configSecMPComp, secMPCompTask.getAdditionalResources());
 		assertTrue(secMPCompCheck);
 	}
 	
 	@Test
 	public void HybridEncryptionDefault() {
-		this.configHybridEnc = TestUtils.createConfigurationForCodeGeneration(developerProject, hybridEncTask);
+		this.configHybridEnc = TestUtils.createXSLConfigurationForCodeGeneration(developerProject, hybridEncTask);
 		boolean hybridEncryptionCheck = generatorHybridEnc.generateCodeTemplates(configHybridEnc, hybridEncTask.getAdditionalResources());
 		assertTrue(hybridEncryptionCheck);
 	}

@@ -50,7 +50,6 @@ import soot.SootClass;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.Stmt;
-import soot.jimple.internal.JAssignStmt;
 import soot.jimple.internal.JimpleLocal;
 import soot.jimple.internal.JimpleLocalBox;
 import soot.tagkit.AbstractHost;

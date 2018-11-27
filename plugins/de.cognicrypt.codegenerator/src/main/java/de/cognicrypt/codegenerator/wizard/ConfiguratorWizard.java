@@ -12,7 +12,12 @@ package de.cognicrypt.codegenerator.wizard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -35,6 +40,12 @@ import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModel;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
+import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModel;
+import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
+import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
+import de.cognicrypt.codegenerator.generator.CodeGenCrySLRule;
+import de.cognicrypt.codegenerator.generator.CodeGenerator;
+import de.cognicrypt.codegenerator.generator.CrySLBasedCodeGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.ClaferDependency;
@@ -47,6 +58,9 @@ import de.cognicrypt.codegenerator.wizard.beginner.BeginnerModeQuestionnaire;
 import de.cognicrypt.codegenerator.wizard.beginner.BeginnerTaskQuestionPage;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.GUIElements;
+import de.cognicrypt.core.Constants.CodeGenerators;
+import de.cognicrypt.core.Constants.GUIElements;
+import de.cognicrypt.utils.Utils;
 
 /**
  * This class implements the logic of the dialogue windows the user has to go through. Currently, methods getNextPage() and performFinish() have special handling of TLS task that
@@ -71,8 +85,9 @@ public class ConfiguratorWizard extends Wizard {
 	private final HashMap<Integer, IWizardPage> createdPages;
 	private int prevPageId;
 	private List<Integer> protocolList;
+	private final CodeGenerators generator;
 
-	public ConfiguratorWizard() {
+	public ConfiguratorWizard(CodeGenerators codeGen) {
 		super();
 		// Set the Look and Feel of the application to the operating
 		// system's look and feel.
@@ -86,7 +101,7 @@ public class ConfiguratorWizard extends Wizard {
 		setDefaultPageImageDescriptor(image);
 
 		this.createdPages = new HashMap<>();
-
+		generator = codeGen;
 	}
 
 	@Override
@@ -295,7 +310,7 @@ public class ConfiguratorWizard extends Wizard {
 			final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
 				.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
 
-				instanceGenerator.generateInstances(this.constraints);
+			instanceGenerator.generateInstances(this.constraints);
 			//instance details page will be added after default algorithm page only if the number of instances is greater than 1
 			if (this.defaultAlgorithmPage.isDefaultAlgorithm() && instanceGenerator.getNoOfInstances() > 1) {
 				this.instanceListPage = new InstanceListPage(instanceGenerator, this.constraints, this.taskListPage, this.defaultAlgorithmPage);
@@ -363,25 +378,64 @@ public class ConfiguratorWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		boolean ret = false;
-		InstanceClafer instance = null;
 		final String currentPageName = getContainer().getCurrentPage().getName();
-		if (Constants.ALGORITHM_SELECTION_PAGE.equals(currentPageName)) {
-			ret = this.instanceListPage.isPageComplete();
-			instance = this.instanceListPage.getValue();
-		} else if (Constants.DEFAULT_ALGORITHM_PAGE.equals(currentPageName)) {
-			ret = this.defaultAlgorithmPage.isPageComplete();
-			instance = this.defaultAlgorithmPage.getValue();
+		final Task selectedTask = this.taskListPage.getSelectedTask();
+		CodeGenerator codeGenerator;
+		String additionalResources = selectedTask.getAdditionalResources();
+
+		switch (generator) {
+			case CrySL:
+				List<List<CodeGenCrySLRule>> rules = new ArrayList<List<CodeGenCrySLRule>>();
+				try {
+					List<List<String>> stringRules = new ArrayList<List<String>>();
+					stringRules.add(Arrays.asList(new String[] { "SecureRandom", "PBEKeySpec", "SecretKeyFactory", "SecretKey", "SecretKeySpec" }));
+					stringRules.add(Arrays.asList(new String[] { "Cipher" }));
+
+					for (List<String> rule : stringRules) {
+						ArrayList<CodeGenCrySLRule> newRules = new ArrayList<CodeGenCrySLRule>();
+						rules.add(newRules);
+						for (String r : rule) {
+							try {
+								newRules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(r)));
+							} catch (FileNotFoundException ex) {
+								Activator.getDefault().logError(ex, "CrySL rule " + r + " not found.");
+							}
+						}
+					}
+
+					codeGenerator = new CrySLBasedCodeGenerator(this.taskListPage.getSelectedProject());
+					
+					Map<CodeGenCrySLRule, ?> constraints = new HashMap<CodeGenCrySLRule, Object>();
+					Configuration chosenConfig = new CrySLConfiguration(rules, constraints, codeGenerator.getDeveloperProject()
+						.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
+
+					ret = codeGenerator.generateCodeTemplates(chosenConfig, additionalResources);
+				} catch (Exception e) {
+					Activator.getDefault().logError(e);
+					return false;
+				}
+				break;
+			case XSL:
+				InstanceClafer instance = null;
+				if (Constants.ALGORITHM_SELECTION_PAGE.equals(currentPageName)) {
+					instance = this.instanceListPage.getValue();
+					ret = this.instanceListPage.isPageComplete();
+				} else if (Constants.DEFAULT_ALGORITHM_PAGE.equals(currentPageName)) {
+					instance = this.defaultAlgorithmPage.getValue();
+					ret = this.defaultAlgorithmPage.isPageComplete();
+
+				}
+
+				codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject(), selectedTask.getXslFile());
+				Configuration chosenConfig = new XSLConfiguration(instance, this.constraints, codeGenerator.getDeveloperProject()
+					.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
+				ret &= codeGenerator.generateCodeTemplates(chosenConfig, selectedTask.getAdditionalResources());
+				break;
+			default:
+				break;
+
 		}
 
-		// Initialize Code Generation
-		final Task selectedTask = this.taskListPage.getSelectedTask();
-		final CodeGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject(), selectedTask.getXslFile());
-		final DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-
-		// Generate code template
-		ret &= codeGenerator.generateCodeTemplates(
-			new Configuration(instance, this.constraints, developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile),
-			selectedTask.getAdditionalResources());
 		return ret;
 	}
 

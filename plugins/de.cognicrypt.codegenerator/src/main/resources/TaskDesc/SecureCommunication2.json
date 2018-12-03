@@ -1,0 +1,212 @@
+[
+	{
+		"id": "0",
+		"helpID": "TLS_Q1",
+		"content": [
+			{
+				"id": "2",
+				"element": "combo",
+				"note": "",
+				"questionText": "What are you implementing?",
+				"answers": [
+					{
+						"value": "Server-side",
+						"codeDependencies": [
+							{
+								"option": "server",
+								"value": "true"
+							}
+						],
+						"nextID": "3"
+					},
+					{
+						"value": "Client-side",
+						"codeDependencies": [
+							{
+								"option": "server",
+								"value": "false"
+							}
+						],
+						"defaultAnswer": true,
+						"nextID": "1"
+					}
+				]
+			}
+		]
+	},
+	{
+		"id": "1",
+		"helpID": "TLS_Q2_Client",
+		"content": [
+			{
+				"id": "3",
+				"element": "radio",
+				"note": "",
+				"questionText": "Do you know the IP address and Port number of the server?",
+				"answers": [
+					{
+						"value": "Yes",
+						"codeDependencies": [
+						],
+						"nextID": "2"
+					},
+					{
+						"value": "No",
+						"codeDependencies": [
+						],
+						"defaultAnswer": true,
+						"nextID": "-1"
+					}
+				]
+			}
+		]
+	},
+	{
+		"id": "3",
+		"helpID": "TLS_Q3_Backend",
+		"content": [
+			{
+				"id": "4",
+				"element": "text",
+				"message": "e.g. 127.0.0.1",
+      			"textType":"Ip address",
+				"questionText": "Please enter the server address (hostname or IP)",
+				"answers": [
+					{
+						"value": "",
+						"codeDependencies": [
+							{
+								"option": "host",
+								"value": ""
+							}
+						],
+						"defaultAnswer": true
+					}
+				]
+			},
+			{
+				"id": "5",
+				"tooltip": "443 HTTPS\n 22 SSH",
+				"element": "text",
+     			"textType":"Port number",
+				"questionText": "Please enter the server's port",
+				"answers": [
+					{
+						"value": "",
+						"codeDependencies": [
+							{
+								"option": "port",
+								"value": "443"
+							}
+						],
+						"defaultAnswer": true
+					}
+				]
+			}
+		],
+		"nextID": "-1"
+	},
+	{
+		"id": "7",
+		"helpID": "TLS_Q2_Server",		
+		"content": [
+			{			
+				"id": "9",
+				"tooltip": "Example: 80",
+				"element": "text",
+				"textType": "Port number",
+				"questionText": "Which port should the server run on?",
+				"answers": [
+					{
+						"value": "",
+						"codeDependencies": [
+							{
+								"option": "port",
+								"value": "443"
+							}
+						],
+						"defaultAnswer": true
+					}
+				]
+			}
+		],
+		"nextID": "4"
+	},
+	{
+	    "id": "12",
+	    "helpID": "TLS_Q3_Server",
+	    "content": [
+	    	{
+	    		"id": "50",
+				"tooltip": "Example: 80",
+				"element": "text",
+				"textType": "Port number",
+				"questionText": "To setup a secure connection, you ...",
+				"answers": [
+					{
+						"value": "",
+						"codeDependencies": [
+							{
+								"option": "port",
+								"value": "443"
+							}
+						],
+						"defaultAnswer": true
+					}
+				]
+	    	}
+	    ],
+	    "nextID": "5"
+	},
+	{
+	    "id": "13",
+	    "helpID": "TLS_Q4_Server",
+	    "content": [
+	        {
+	            "id": "42",
+	            "element": "combo",
+	            "questionText": "Which clients should the server should at least support",
+				"answers": [
+					{
+						"value": "Modern Clients",
+						"codeDependencies": [
+						],
+						"defaultAnswer": true,
+						"nextID": "-1"
+					},
+					{
+						"value": "Legacy Clients",
+						"codeDependencies": [
+						],
+						"nextID": "6"
+					}
+				]
+	        }
+	    ]
+	},
+	{
+	    "id": "14",
+	    "helpID": "TLS_Q5_Server",
+	    "content": [
+	        {
+	            "id": "52",
+	            "element": "combo",
+	            "questionText": "Which clients should the server should at least support?",
+				"answers": [
+					{
+						"value": "Firefeox 27",
+						"codeDependencies": [
+						],
+						"defaultAnswer": true
+					},
+					{
+						"value": "Legacy Clients",
+						"codeDependencies": [
+						]
+					}
+				]
+	        }
+	    ],
+	    "nextID": "-1"
+	},
+]

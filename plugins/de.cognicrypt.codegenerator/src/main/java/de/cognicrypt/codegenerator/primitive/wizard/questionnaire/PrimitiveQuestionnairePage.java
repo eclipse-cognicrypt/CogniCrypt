@@ -234,7 +234,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 				}
 				break;
 
-			case radiobutton:
+			case radio:
 				Button[] button = new Button[answers.size()];
 
 				for (int i = 0; i < answers.size(); i++) {

@@ -1,4 +1,4 @@
-scope({c0_Enum:8, c0_Security:5, c0_TLS_Version:3});
+scope({c0_Enum:8, c0_Security:5, c0_TLS_Version:3, c0_tlsProtocol:3});
 defaultScope(1);
 intRange(-8, 7);
 stringLength(39);
@@ -17,7 +17,7 @@ c0_TLSv12 = Clafer("c0_TLSv12").withCard(1, 1);
 c0_Task = Abstract("c0_Task");
 c0_description = c0_Task.addChild("c0_description").withCard(1, 1);
 c0_SecureCommunication = Clafer("c0_SecureCommunication").withCard(1, 1);
-c0_tlsProtocol = c0_SecureCommunication.addChild("c0_tlsProtocol").withCard(1, 1);
+c0_tlsProtocol = c0_SecureCommunication.addChild("c0_tlsProtocol").withCard(1, 3);
 c0_secComsecurity = c0_SecureCommunication.addChild("c0_secComsecurity").withCard(1, 1);
 c0_Security.extending(c0_Enum).refToUnique(Int);
 c0_NoSecurity.extending(c0_Security);

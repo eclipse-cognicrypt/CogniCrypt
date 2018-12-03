@@ -46,7 +46,6 @@ public class QuestionsJSONReader {
 		try {
 			final BufferedReader reader = new BufferedReader(new FileReader(CodeGenUtils.getResourceFromWithin(filePath)));
 			final Gson gson = new Gson();
-
 			questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
 			checkReadQuestions(questions);
 		} catch (final FileNotFoundException e) {
@@ -117,7 +116,7 @@ public class QuestionsJSONReader {
 		// A BeginnerQuestionaire is now allowed to have no questions, e.g., password task. 
 		// As no questions exists, we can simply return at this point as nothing need to be checked. 
 		if (pages.size() == 0) {
-			return ;
+			return;
 		}
 		for (final Page page : pages) {
 			if (!ids.add(page.getId())) {

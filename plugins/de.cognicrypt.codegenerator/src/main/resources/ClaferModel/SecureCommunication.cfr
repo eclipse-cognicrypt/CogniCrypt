@@ -19,5 +19,5 @@ abstract Task
 
 SecureCommunication : Task  
 	[description = "Establish a Secure Network Connection"]
-	tlsProtocol -> TLS_Version
+	tlsProtocol -> TLS_Version 1..3
 	secComsecurity -> integer

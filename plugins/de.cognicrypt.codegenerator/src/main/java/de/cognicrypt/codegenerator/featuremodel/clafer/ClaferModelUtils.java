@@ -129,4 +129,12 @@ public class ClaferModelUtils {
 	public static String removeScopePrefix(final String claferName) {
 		return claferName.substring(claferName.indexOf('_') + 1, claferName.length());
 	}
+	
+	public static AstClafer getRootClafer(final AstClafer curClafer) {
+		AstClafer root = curClafer.getParent();
+		while (!("#root#".equals(root.getName()))) {
+			root = root.getParent();
+		}
+		return root;
+	}
 }

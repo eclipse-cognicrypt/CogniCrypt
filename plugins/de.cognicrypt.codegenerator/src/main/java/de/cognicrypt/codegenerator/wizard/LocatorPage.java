@@ -118,4 +118,9 @@ public class LocatorPage extends WizardPage {
 		return selectedResource;
 	}
 
+	@Override
+	public boolean canFlipToNextPage() {
+		return false;
+	}
+
 }

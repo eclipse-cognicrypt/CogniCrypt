@@ -107,8 +107,8 @@ public class InstanceGenerator {
 	 *        Numeric or String value added as a constraint, EX outPutLength=128 here 128 is the value
 	 */
 	private void addConstraints(final AstClafer taskAlgorithm, final List<AstConcreteClafer> algorithmProperty, final String operator, final String value) {
-		final AstConcreteClafer rightOperand = algorithmProperty.get(0);
 		if (algorithmProperty.size() == 1) {
+			final AstConcreteClafer rightOperand = algorithmProperty.get(0);
 			try {
 				final Integer valueAsInt = Integer.parseInt(value);
 				if (rightOperand == null && "=".equals(operator)) {
@@ -169,15 +169,16 @@ public class InstanceGenerator {
 			} else {
 				for (int j = 0; j < length; j++) {
 					if (j == 0) {
-						constraint = global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), claferNames[j++]));
+						constraint = global(ClaferModelUtils.findClaferByName(ClaferModelUtils.getRootClafer(taskAlgorithm), claferNames[j++]));
 					}
-					final AstClafer astC = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), claferNames[j]);
+					final AstClafer astC = ClaferModelUtils.findClaferByName(ClaferModelUtils.getRootClafer(taskAlgorithm), claferNames[j]);
 					constraint = union(constraint, global(astC));
 				}
 			}
-			taskAlgorithm.addConstraint(equal(joinRef(join($this(), rightOperand)), constraint));
+			taskAlgorithm.getParent().addConstraint(equal(joinRef(join($this(), taskAlgorithm)), constraint));
+			
 		} else if (operator.equals("|")) {
-
+			final AstConcreteClafer rightOperand = algorithmProperty.get(0);
 			final String[] claferNames = value.split(";");
 			//The constraint that is created looks like [all $consName : taskAlgorithm | $consName.algorithmProperty claferNames[0] && ...]
 			final AstLocal tmpClafer = local("suite");
@@ -207,6 +208,7 @@ public class InstanceGenerator {
 		}
 	}
 
+	
 	private void basicModeHandler(final AstModel astModel, final AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {
 		for (final Entry<Question, Answer> entry : qAMap.entrySet()) {
 			final Answer answer = entry.getValue();
@@ -218,12 +220,14 @@ public class InstanceGenerator {
 						final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, claferDependency.getAlgorithm());
 						final List<AstConcreteClafer> propertyClafer = new ArrayList<>();
 						final String operand = claferDependency.getOperand();
-						if (operand != null && operand.contains(";")) {
-							for (final String name : operand.split(";")) {
-								propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer.getParent(), name));
+						if (operand != null) {
+							if (operand.contains(";")) {
+								for (final String name : operand.split(";")) {
+									propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(ClaferModelUtils.getRootClafer(algorithmClafer), name));
+								}
+							} else {
+								propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(ClaferModelUtils.getRootClafer(algorithmClafer).getParent(), operand));
 							}
-						} else {
-							propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer.getParent(), operand));
 						}
 						addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), claferDependency.getValue());
 					}
@@ -331,7 +335,7 @@ public class InstanceGenerator {
 		generateInstanceMapping();
 		return this.generatedInstances;
 	}
-	
+
 	
 	private AstBoolExpr getFunctionFromOperator(final AstSetExpr operandLeftClafer, final AstSetExpr operandRightClafer, final String operator) {
 		switch (operator) {

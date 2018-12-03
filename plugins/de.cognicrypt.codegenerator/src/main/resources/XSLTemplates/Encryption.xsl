@@ -140,27 +140,7 @@
 			;
 			<xsl:apply-templates select="//Import" />
 			public class Output {
-			public void templateUsage(
-			<xsl:choose>
-			<xsl:when test="//task/code/dataType='File'">
-				File
-			</xsl:when>
-			<xsl:when test="//task/code/dataType='String'">
-				String
-			</xsl:when>
-			</xsl:choose>
-			data 
-			<xsl:if test="//task/code/hybrid='false'">
-			,char[] pwd
-			</xsl:if>
-			) throws GeneralSecurityException
-			<xsl:if test="//task/code/dataType='File'">
-				, IOException
-			</xsl:if>
-			<xsl:if test="//task/code/dataType='String'">
-				, UnsupportedEncodingException
-			</xsl:if>
-			{
+			public void templateUsage(<xsl:choose><xsl:when test="//task/code/dataType='File'">File </xsl:when><xsl:when test="//task/code/dataType='String'">String </xsl:when><xsl:otherwise>byte[] </xsl:otherwise></xsl:choose>data <xsl:if test="//task/code/hybrid='false'">, char[] pwd</xsl:if>) throws GeneralSecurityException<xsl:if test="//task/code/dataType='File'">, IOException</xsl:if><xsl:if test="//task/code/dataType='String'">, UnsupportedEncodingException</xsl:if>{
 			KeyManagment km = new KeyManagment();
 			<xsl:choose>
 				<xsl:when test="//task/code/hybrid='true'">

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.GUIElements;
 
-
 /**
  *  This class holds all the information to fill the wizard pages w.r.t. a specific end-user question.
  *  

@@ -71,9 +71,13 @@ import de.cognicrypt.core.Constants;
 import de.cognicrypt.crysl.handler.Activator;
 import de.cognicrypt.utils.Utils;
 import de.darmstadt.tu.crossing.CryptSL.ui.internal.CryptSLActivator;
+import de.darmstadt.tu.crossing.constraints.CrySLArithmeticOperator;
+import de.darmstadt.tu.crossing.constraints.CrySLComparisonOperator;
+import de.darmstadt.tu.crossing.constraints.CrySLLogicalOperator;
 import de.darmstadt.tu.crossing.cryptSL.ArithmeticExpression;
 import de.darmstadt.tu.crossing.cryptSL.ArithmeticOperator;
 import de.darmstadt.tu.crossing.cryptSL.ArrayElements;
+import de.darmstadt.tu.crossing.cryptSL.ComparingOperator;
 import de.darmstadt.tu.crossing.cryptSL.ComparisonExpression;
 import de.darmstadt.tu.crossing.cryptSL.Constraint;
 import de.darmstadt.tu.crossing.cryptSL.DestroysBlock;
@@ -85,6 +89,8 @@ import de.darmstadt.tu.crossing.cryptSL.ForbMethod;
 import de.darmstadt.tu.crossing.cryptSL.ForbiddenBlock;
 import de.darmstadt.tu.crossing.cryptSL.Literal;
 import de.darmstadt.tu.crossing.cryptSL.LiteralExpression;
+import de.darmstadt.tu.crossing.cryptSL.LogicalImply;
+import de.darmstadt.tu.crossing.cryptSL.LogicalOperator;
 import de.darmstadt.tu.crossing.cryptSL.Object;
 import de.darmstadt.tu.crossing.cryptSL.ObjectDecl;
 import de.darmstadt.tu.crossing.cryptSL.PreDefinedPredicates;
@@ -314,7 +320,7 @@ public class CrySLModelReader {
 		} else if (cons instanceof ComparisonExpression) {
 			final ComparisonExpression comp = (ComparisonExpression) cons;
 			CompOp op = null;
-			switch (comp.getOperator().toString()) {
+			switch ((new CrySLComparisonOperator((ComparingOperator) comp.getOperator())).toString()) {
 			case ">":
 				op = CompOp.g;
 				break;
@@ -351,7 +357,7 @@ public class CrySLModelReader {
 				final String leftValue = getValueOfLiteral(ar.getLeftExpression());
 				final String rightValue = getValueOfLiteral(ar.getRightExpression());
 
-				final ArithmeticOperator aop = ((ArithmeticOperator) ar.getOperator());
+				final CrySLArithmeticOperator aop = new CrySLArithmeticOperator((ArithmeticOperator) ar.getOperator());
 				ArithOp operator = null;
 				if (aop.getPLUS() != null && !aop.getPLUS().isEmpty()) {
 					operator = ArithOp.p;
@@ -397,21 +403,21 @@ public class CrySLModelReader {
 			}
 		} else if (cons instanceof Constraint) {
 			LogOps op = null;
-			switch (cons.getOperator().toString()) {
-			case "&&":
-				op = LogOps.and;
-				break;
-			case "||":
-				op = LogOps.or;
-				break;
-			case "=>":
+			EObject operator = cons.getOperator();
+			if (operator instanceof LogicalImply) {
 				op = LogOps.implies;
-				break;
-			case "<=>":
-				op = LogOps.eq;
-				break;
-			default:
-				op = LogOps.and;
+			} else {
+				switch ((new CrySLLogicalOperator((LogicalOperator) operator)).toString()) {
+				case "&&":
+					op = LogOps.and;
+					break;
+				case "||":
+					op = LogOps.or;
+					break;
+				default:
+					System.err.println("Sign " + operator.toString() + " was not properly translated.");
+					op = LogOps.and;
+				}
 			}
 			slci = new CryptSLConstraint(getConstraint(cons.getLeftExpression()),
 					getConstraint(cons.getRightExpression()), op);

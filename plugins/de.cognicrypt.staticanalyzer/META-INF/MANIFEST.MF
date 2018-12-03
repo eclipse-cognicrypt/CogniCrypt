@@ -19,6 +19,5 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- lib/cognicrypt-maven-plugin-1.0-SNAPSHOT.jar,
  resources/
 Automatic-Module-Name: de.cognicrypt.staticanalyzer

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
-
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -30,7 +29,6 @@ import org.eclipse.jdt.launching.LibraryLocation;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-
 import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.CodeGenCrySLRule;
@@ -68,7 +66,7 @@ public class TestUtils {
 		project.open(null);
 
 		final IProjectDescription description = project.getDescription();
-		description.setNatureIds(new String[] { JavaCore.NATURE_ID });
+		description.setNatureIds(new String[] {JavaCore.NATURE_ID});
 		project.setDescription(description, null);
 
 		final IJavaProject javaProject = JavaCore.create(project);
@@ -102,16 +100,14 @@ public class TestUtils {
 	/**
 	 * This method creates a package with a java class into a JavaProject
 	 * 
-	 * @param project     JavaProject in which the new Java class will be generated
+	 * @param project JavaProject in which the new Java class will be generated
 	 * @param packageName package in which the new Java class will be generated
-	 * @param className   name of the new Java class
+	 * @param className name of the new Java class
 	 * @throws JavaModelException
 	 */
-	public static void generateJavaClassInJavaProject(final IJavaProject project, final String packageName,
-			final String className) throws JavaModelException {
+	public static void generateJavaClassInJavaProject(final IJavaProject project, final String packageName, final String className) throws JavaModelException {
 
-		final IPackageFragment pack = project.getPackageFragmentRoot(project.getProject().getFolder("src"))
-				.createPackageFragment(packageName, false, null);
+		final IPackageFragment pack = project.getPackageFragmentRoot(project.getProject().getFolder("src")).createPackageFragment(packageName, false, null);
 		final String source = "public class " + className + " {\n\n}\n";
 		final StringBuffer buffer = new StringBuffer();
 		buffer.append("package " + pack.getElementName() + ";\r\n\r\n");
@@ -146,9 +142,8 @@ public class TestUtils {
 	}
 
 	/**
-	 * This method creates a HashMap. This HashMap contains the Questions and the
-	 * associated default Answers for certain Task.
-	 * 
+	 * This method creates a HashMap. This HashMap contains the Questions and the associated default Answers for certain Task.
+	 *
 	 * @param t Task
 	 * @return A HashMap with Questions and default Answers
 	 */
@@ -169,17 +164,15 @@ public class TestUtils {
 	 * This method creates the necessary Configuration for a CodeGenerator.
 	 *
 	 * @param developerProject
-	 * @param t                task for what we create the Configuration
+	 * @param t task for what we create the Configuration
 	 * @return Configuration for a certain Task
 	 */
-	public static Configuration createXSLConfigurationForCodeGeneration(DeveloperProject developerProject, Task t) {
+	public static Configuration createXSLConfigurationForCodeGeneration(final DeveloperProject developerProject, final Task t) {
 
 		// InstanceGenerator instGen = new
 		// InstanceGenerator(Utils.getResourceFromWithin(t.getModelFile()).getAbsolutePath(),
 		// "c0_" + t.getName(),t.getTaskDescription());
-		final InstanceGenerator instGen = new InstanceGenerator(
-				Utils.getResourceFromWithin(t.getModelFile(), de.cognicrypt.codegenerator.Activator.PLUGIN_ID)
-						.getAbsolutePath(),
+		final InstanceGenerator instGen = new InstanceGenerator(Utils.getResourceFromWithin(t.getModelFile(), de.cognicrypt.codegenerator.Activator.PLUGIN_ID).getAbsolutePath(),
 				"c0_" + t.getName(), t.getTaskDescription());
 
 		// InstanceGenerator instGen = new
@@ -215,8 +208,7 @@ public class TestUtils {
 	 * @param unit
 	 * @throws CoreException
 	 */
-	public static void openJavaFileInWorkspace(final DeveloperProject project, final String packageName,
-			final ICompilationUnit cu) throws CoreException {
+	public static void openJavaFileInWorkspace(final DeveloperProject project, final String packageName, final ICompilationUnit cu) throws CoreException {
 
 		final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		final IFile openFile = project.getIFile(getFilePathInProject(project, packageName, cu));
@@ -232,8 +224,7 @@ public class TestUtils {
 	 * @return IComplitationUnit
 	 * @throws CoreException
 	 */
-	public static ICompilationUnit getICompilationUnit(final DeveloperProject project, final String packageName,
-			final String cuName) throws CoreException, NoSuchElementException {
+	public static ICompilationUnit getICompilationUnit(final DeveloperProject project, final String packageName, final String cuName) throws CoreException, NoSuchElementException {
 		final IPackageFragment packageFragment = project.getPackagesOfProject(packageName);
 		for (int i = 0; i < packageFragment.getCompilationUnits().length; i++) {
 			if (packageFragment.getCompilationUnits()[i].getElementName().equals(cuName)) {
@@ -253,8 +244,7 @@ public class TestUtils {
 	 * @throws IOException
 	 * @throws CoreException
 	 */
-	public static byte[] fileToByteArray(final DeveloperProject project, final String packageName,
-			final ICompilationUnit cu) throws IOException, CoreException {
+	public static byte[] fileToByteArray(final DeveloperProject project, final String packageName, final ICompilationUnit cu) throws IOException, CoreException {
 
 		final File f = new File(getFilePathInProject(project, packageName, cu));
 		if (!(f.exists() && Files.isReadable(f.toPath()))) {
@@ -273,11 +263,9 @@ public class TestUtils {
 	 * @return
 	 * @throws CoreException
 	 */
-	private static String getFilePathInProject(final DeveloperProject project, final String packageName,
-			final ICompilationUnit cu) throws CoreException {
+	private static String getFilePathInProject(final DeveloperProject project, final String packageName, final ICompilationUnit cu) throws CoreException {
 		final String srcPath = project.getProjectPath() + Constants.innerFileSeparator + project.getSourcePath();
-		final String cuPath = srcPath + Constants.innerFileSeparator + packageName + Constants.innerFileSeparator
-				+ cu.getElementName();
+		final String cuPath = srcPath + Constants.innerFileSeparator + packageName + Constants.innerFileSeparator + cu.getElementName();
 		return cuPath;
 	}
 

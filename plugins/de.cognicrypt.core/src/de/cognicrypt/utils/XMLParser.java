@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -16,7 +15,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -24,7 +22,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import de.cognicrypt.core.Activator;
 import de.cognicrypt.core.Constants;
 
@@ -32,13 +29,11 @@ import de.cognicrypt.core.Constants;
  * This class provides methods for XML file processing.
  * 
  * @author André Sonntag
- *
  */
 public class XMLParser {
 
 	/**
-	 * Usage: 1) Constructor 2) useDocFromFile || createNewDoc 3) createRootElement
-	 * 4) createChildElement* 5) createAttrForElement* 6) writeXML
+	 * Usage: 1) Constructor 2) useDocFromFile || createNewDoc 3) createRootElement 4) createChildElement* 5) createAttrForElement* 6) writeXML
 	 */
 
 	private File xmlFile;
@@ -57,22 +52,24 @@ public class XMLParser {
 		this.docFactory = DocumentBuilderFactory.newInstance();
 		try {
 			this.docBuilder = this.docFactory.newDocumentBuilder();
-		} catch (final ParserConfigurationException e) {
+		}
+		catch (final ParserConfigurationException e) {
 			Activator.getDefault().logError(e);
 		}
 	}
 
 	/**
-	 * This methods extracts the {@link Document} object from the XML file, for
-	 * further processing.
+	 * This methods extracts the {@link Document} object from the XML file, for further processing.
 	 */
 	public void useDocFromFile() {
 		try {
 			this.doc = this.docBuilder.parse(this.xmlFile);
 			this.doc.getDocumentElement().normalize();
-		} catch (final SAXException e) {
+		}
+		catch (final SAXException e) {
 			Activator.getDefault().logError(e);
-		} catch (final IOException e) {
+		}
+		catch (final IOException e) {
 			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
 		}
 	}
@@ -84,7 +81,8 @@ public class XMLParser {
 
 		try {
 			this.docBuilder = this.docFactory.newDocumentBuilder();
-		} catch (final ParserConfigurationException e) {
+		}
+		catch (final ParserConfigurationException e) {
 			e.printStackTrace();
 		}
 		this.doc = this.docBuilder.newDocument();
@@ -100,8 +98,7 @@ public class XMLParser {
 	}
 
 	/**
-	 * This method creates and appends a new root {@link Element} to the
-	 * {@link Document} structure.
+	 * This method creates and appends a new root {@link Element} to the {@link Document} structure.
 	 * 
 	 * @param rootElementName
 	 * @return the new created root element
@@ -124,8 +121,7 @@ public class XMLParser {
 	}
 
 	/**
-	 * This method creates and appends a new child {@link Element} with a value to a
-	 * parent {@link Element}.
+	 * This method creates and appends a new child {@link Element} with a value to a parent {@link Element}.
 	 * 
 	 * @param parent
 	 * @param childName
@@ -139,8 +135,7 @@ public class XMLParser {
 	}
 
 	/**
-	 * This method creates and appends a new Child {@link Element} without a value
-	 * to a parent {@link Element}.
+	 * This method creates and appends a new Child {@link Element} without a value to a parent {@link Element}.
 	 * 
 	 * @param parent
 	 * @param childName
@@ -164,8 +159,7 @@ public class XMLParser {
 	}
 
 	/**
-	 * This method creates a {@link Attr} with a value for an {@link Element}
-	 * object.
+	 * This method creates a {@link Attr} with a value for an {@link Element} object.
 	 * 
 	 * @param element
 	 * @param attrName
@@ -191,17 +185,18 @@ public class XMLParser {
 			final DOMSource source = new DOMSource(this.doc);
 			final StreamResult result = new StreamResult(this.xmlFile);
 			transformer.transform(source, result);
-		} catch (final TransformerConfigurationException e) {
+		}
+		catch (final TransformerConfigurationException e) {
 			Activator.getDefault().logError(e);
-		} catch (final TransformerException e) {
+		}
+		catch (final TransformerException e) {
 			Activator.getDefault().logError(e);
 		}
 
 	}
 
 	/**
-	 * This method removes {@link Node} with a specific {@link Attr} with a certain
-	 * value.
+	 * This method removes {@link Node} with a specific {@link Attr} with a certain value.
 	 * 
 	 * @param nodeName
 	 * @param attrName
@@ -220,8 +215,7 @@ public class XMLParser {
 	}
 
 	/**
-	 * This method creates a {@link List} with all {@link Attr} values of a certain
-	 * node name.
+	 * This method creates a {@link List} with all {@link Attr} values of a certain node name.
 	 * 
 	 * @param nodeName
 	 * @param attrName
@@ -240,8 +234,7 @@ public class XMLParser {
 	}
 
 	/**
-	 * This method filters a certain {@link Node}, on the basis of the {@link Node}
-	 * name, {@link Attr} name and {@link Attr} value.
+	 * This method filters a certain {@link Node}, on the basis of the {@link Node} name, {@link Attr} name and {@link Attr} value.
 	 * 
 	 * @param nodeName
 	 * @param attrName
@@ -249,8 +242,7 @@ public class XMLParser {
 	 * @return the filtered node
 	 * @throws NoSuchElementException
 	 */
-	public Node getNodeByAttrValue(final String nodeName, final String attrName, final String attrValue)
-			throws NoSuchElementException {
+	public Node getNodeByAttrValue(final String nodeName, final String attrName, final String attrValue) throws NoSuchElementException {
 		final NodeList nl = this.doc.getElementsByTagName(nodeName);
 		for (int i = 0; i < nl.getLength(); i++) {
 			final NamedNodeMap map = nl.item(i).getAttributes();
@@ -264,8 +256,7 @@ public class XMLParser {
 	}
 
 	/**
-	 * This method filters a certain child {@link Node} in a parent node, on the
-	 * basis of the {@link Node} name.
+	 * This method filters a certain child {@link Node} in a parent node, on the basis of the {@link Node} name.
 	 * 
 	 * @param parent
 	 * @param nodeName

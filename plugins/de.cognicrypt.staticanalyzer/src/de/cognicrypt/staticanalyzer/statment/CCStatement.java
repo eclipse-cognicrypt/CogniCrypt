@@ -1,7 +1,6 @@
 package de.cognicrypt.staticanalyzer.statment;
 
 import java.util.List;
-
 import boomerang.jimple.Statement;
 import soot.ValueBox;
 import soot.jimple.internal.JimpleLocalBox;
@@ -110,8 +109,8 @@ public class CCStatement {
 
 	@Override
 	public String toString() {
-		return "{hashCode()= " + hashCode() + " } CCStatement [stmt=" + this.stmt + ", method=" + this.method
-				+ ", params=" + this.params + ", type=" + this.type + ", var=" + this.var + "]";
+		return "{hashCode()= " + hashCode() + " } CCStatement [stmt=" + this.stmt + ", method=" + this.method + ", params=" + this.params + ", type=" + this.type + ", var=" + this.var
+				+ "]";
 	}
 
 }

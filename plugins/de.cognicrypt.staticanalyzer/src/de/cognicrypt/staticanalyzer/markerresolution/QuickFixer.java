@@ -4,7 +4,6 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolutionGenerator;
-
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 
@@ -20,10 +19,11 @@ public class QuickFixer implements IMarkerResolutionGenerator {
 		String message = "";
 		try {
 			message = (String) mk.getAttribute(IMarker.MESSAGE);
-		} catch (final CoreException e) {
+		}
+		catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
-		return new IMarkerResolution[] { new SuppressWarningFix(Constants.SUPPRESSWARNING_FIX + message) };
+		return new IMarkerResolution[] {new SuppressWarningFix(Constants.SUPPRESSWARNING_FIX + message)};
 	}
 
 }

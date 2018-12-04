@@ -1,15 +1,12 @@
 package de.cognicrypt.codegenerator.generator.test;
 
 import static org.junit.Assert.assertTrue;
-
 import java.util.logging.Logger;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
@@ -23,10 +20,8 @@ import de.cognicrypt.codegenerator.wizard.Configuration;
 public class DefaultTasksGeneratorTest {
 
 	/**
-	 * In the following tests we check for the right number of methods in the
-	 * appropriate classes. We choose this approach, because a comparing of the
-	 * source code/bytes leads to problems when some changes happen in the
-	 * XSLTemplate.
+	 * In the following tests we check for the right number of methods in the appropriate classes. We choose this approach, because a comparing of the source code/bytes leads to
+	 * problems when some changes happen in the XSLTemplate.
 	 */
 
 	Logger log = Logger.getLogger(DefaultTasksGeneratorTest.class.getName());
@@ -67,64 +62,54 @@ public class DefaultTasksGeneratorTest {
 		this.generatorEnc = new XSLBasedGenerator(this.testJavaProject.getProject(), this.encTask.getXslFile());
 
 		this.secPasswordTask = TestUtils.getTask("SecurePassword");
-		this.generatorSecPassword = new XSLBasedGenerator(this.testJavaProject.getProject(),
-				this.secPasswordTask.getXslFile());
+		this.generatorSecPassword = new XSLBasedGenerator(this.testJavaProject.getProject(), this.secPasswordTask.getXslFile());
 
 		this.LTATask = TestUtils.getTask("LongTermArchiving");
 		this.generatorLTA = new XSLBasedGenerator(this.testJavaProject.getProject(), this.LTATask.getXslFile());
 
 		this.secMPCompTask = TestUtils.getTask("SECMUPACOMP");
-		this.generatorSecMPComp = new XSLBasedGenerator(this.testJavaProject.getProject(),
-				this.secMPCompTask.getXslFile());
+		this.generatorSecMPComp = new XSLBasedGenerator(this.testJavaProject.getProject(), this.secMPCompTask.getXslFile());
 
 		this.hybridEncTask = TestUtils.getTask("HybridEncryption");
-		this.generatorHybridEnc = new XSLBasedGenerator(this.testJavaProject.getProject(),
-				this.hybridEncTask.getXslFile());
+		this.generatorHybridEnc = new XSLBasedGenerator(this.testJavaProject.getProject(), this.hybridEncTask.getXslFile());
 
 		this.digitalSignTask = TestUtils.getTask("DigitalSignatures");
-		this.generatorDigitalSIgn = new XSLBasedGenerator(this.testJavaProject.getProject(),
-				this.digitalSignTask.getXslFile());
+		this.generatorDigitalSIgn = new XSLBasedGenerator(this.testJavaProject.getProject(), this.digitalSignTask.getXslFile());
 
 		this.developerProject = this.generatorEnc.getDeveloperProject();
 	}
 
 	/**
-	 * Test if the code generation for all CogniCrypt tasks works, without any open
-	 * class.
+	 * Test if the code generation for all CogniCrypt tasks works, without any open class.
 	 */
 	@Test
 	public void EncDefault() {
 		this.configEnc = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.encTask);
-		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc,
-				this.encTask.getAdditionalResources());
+		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
 		assertTrue(encCheck);
 	}
 
 	@Test
 	public void SecPasswordDefault() {
-		this.configSecPassword = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject,
-				this.secPasswordTask);
-		final boolean secPasswordCheck = this.generatorSecPassword.generateCodeTemplates(this.configSecPassword,
-				this.secPasswordTask.getAdditionalResources());
+		this.configSecPassword = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.secPasswordTask);
+		final boolean secPasswordCheck = this.generatorSecPassword.generateCodeTemplates(this.configSecPassword, this.secPasswordTask.getAdditionalResources());
 		assertTrue(secPasswordCheck);
 	}
 
 	/**
 	 * This test case is commented because it requires UI interaction
 	 */
-//	@Test
-//	public void LTADefault() {
-//		this.configLTA = TestUtils.createConfigurationForCodeGeneration(developerProject, LTATask);
-//		boolean ltaCheck = generatorLTA.generateCodeTemplates(configLTA, LTATask.getAdditionalResources());
-//		assertTrue(ltaCheck);
-//	}
+	// @Test
+	// public void LTADefault() {
+	// this.configLTA = TestUtils.createConfigurationForCodeGeneration(developerProject, LTATask);
+	// boolean ltaCheck = generatorLTA.generateCodeTemplates(configLTA, LTATask.getAdditionalResources());
+	// assertTrue(ltaCheck);
+	// }
 
 	@Test
 	public void SECMUPACOMPDefault() {
-		this.configSecMPComp = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject,
-				this.secMPCompTask);
-		final boolean secMPCompCheck = this.generatorSecMPComp.generateCodeTemplates(this.configSecMPComp,
-				this.secMPCompTask.getAdditionalResources());
+		this.configSecMPComp = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.secMPCompTask);
+		final boolean secMPCompCheck = this.generatorSecMPComp.generateCodeTemplates(this.configSecMPComp, this.secMPCompTask.getAdditionalResources());
 		assertTrue(secMPCompCheck);
 	}
 
@@ -138,11 +123,11 @@ public class DefaultTasksGeneratorTest {
 	/**
 	 * This test case is commented because it requires UI interaction
 	 */
-//	@Test
-//	public void DigitalSignDefault() {
-//		this.configDigitalSign = TestUtils.createConfigurationForCodeGeneration(developerProject, digitalSignTask);
-//		boolean digitalSignCheck = generatorDigitalSIgn.generateCodeTemplates(configDigitalSign, digitalSignTask.getAdditionalResources());
-//		assertTrue(digitalSignCheck);
-//	}
+	// @Test
+	// public void DigitalSignDefault() {
+	// this.configDigitalSign = TestUtils.createConfigurationForCodeGeneration(developerProject, digitalSignTask);
+	// boolean digitalSignCheck = generatorDigitalSIgn.generateCodeTemplates(configDigitalSign, digitalSignTask.getAdditionalResources());
+	// assertTrue(digitalSignCheck);
+	// }
 
 }

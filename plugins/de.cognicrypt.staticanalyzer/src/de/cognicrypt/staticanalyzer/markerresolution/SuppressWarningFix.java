@@ -2,20 +2,17 @@ package de.cognicrypt.staticanalyzer.markerresolution;
 
 import java.io.File;
 import java.io.IOException;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IMarkerResolution;
 import org.w3c.dom.Element;
-
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.utils.XMLParser;
 
 /**
- * This class writes the suppress warning information in a XML file and deletes
- * the marker on the UI
+ * This class writes the suppress warning information in a XML file and deletes the marker on the UI
  *
  * @author André Sonntag
  */
@@ -43,8 +40,7 @@ public class SuppressWarningFix implements IMarkerResolution {
 		final int lineNumber = (int) m.getAttribute(IMarker.LINE_NUMBER);
 		final String message = (String) m.getAttribute(IMarker.MESSAGE);
 
-		final Element warningEntry = this.xmlParser.createChildElement(this.xmlParser.getRoot(),
-				Constants.SUPPRESSWARNING_ELEMENT);
+		final Element warningEntry = this.xmlParser.createChildElement(this.xmlParser.getRoot(), Constants.SUPPRESSWARNING_ELEMENT);
 		this.xmlParser.createAttrForElement(warningEntry, Constants.ID_ATTR, id + "");
 		this.xmlParser.createChildElement(warningEntry, Constants.FILE_ELEMENT, ressource);
 		this.xmlParser.createChildElement(warningEntry, Constants.LINENUMBER_ELEMENT, lineNumber + "");
@@ -59,8 +55,7 @@ public class SuppressWarningFix implements IMarkerResolution {
 	@Override
 	public void run(final IMarker marker) {
 
-		final File warningsFile = new File(marker.getResource().getProject().getLocation().toOSString()
-				+ Constants.outerFileSeparator + Constants.SUPPRESSWARNING_FILE);
+		final File warningsFile = new File(marker.getResource().getProject().getLocation().toOSString() + Constants.outerFileSeparator + Constants.SUPPRESSWARNING_FILE);
 		this.xmlParser = new XMLParser(warningsFile);
 		try {
 			if (warningsFile.exists()) {
@@ -74,9 +69,11 @@ public class SuppressWarningFix implements IMarkerResolution {
 			this.xmlParser.writeXML();
 			marker.delete();
 			marker.getResource().getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
-		} catch (final IOException e) {
+		}
+		catch (final IOException e) {
 			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
-		} catch (final CoreException e) {
+		}
+		catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
 

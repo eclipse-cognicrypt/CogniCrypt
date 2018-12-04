@@ -1,23 +1,16 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.staticanalyzer.results;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.Severities;
 import de.cognicrypt.staticanalyzer.Activator;
@@ -26,7 +19,6 @@ import de.cognicrypt.staticanalyzer.Activator;
  * This class handles error markers for crypto misuses.
  *
  * @author Stefan Krueger
- *
  */
 public class ErrorMarkerGenerator {
 
@@ -37,32 +29,27 @@ public class ErrorMarkerGenerator {
 	}
 
 	/**
-	 * Adds crypto-misuse error marker with message {@link message} into file
-	 * {@link sourceFile} at Line {@link line}.
+	 * Adds crypto-misuse error marker with message {@link message} into file {@link sourceFile} at Line {@link line}.
 	 *
 	 * @param sourceFile File the marker is generated into
-	 * @param line       Line the marker is generated at
-	 * @param message    Error Message
-	 * @return <code>true</code>/<code>false</code> if error marker was (not) added
-	 *         successfully
+	 * @param line Line the marker is generated at
+	 * @param message Error Message
+	 * @return <code>true</code>/<code>false</code> if error marker was (not) added successfully
 	 */
 	public boolean addMarker(final int id, final IResource sourceFile, final int line, final String message) {
 		return addMarker(id, sourceFile, line, message, Severities.Problem);
 	}
 
 	/**
-	 * Adds crypto-misuse error marker with message {@link message} into file
-	 * {@link sourceFile} at Line {@link line}.
+	 * Adds crypto-misuse error marker with message {@link message} into file {@link sourceFile} at Line {@link line}.
 	 *
 	 * @param sourceFile File the marker is generated into
-	 * @param line       Line the marker is generated at
-	 * @param message    Error Message
-	 * @param isWarning  Determines whether marker type is warning or error
-	 * @return <code>true</code>/<code>false</code> if error marker was (not) added
-	 *         successfully
+	 * @param line Line the marker is generated at
+	 * @param message Error Message
+	 * @param isWarning Determines whether marker type is warning or error
+	 * @return <code>true</code>/<code>false</code> if error marker was (not) added successfully
 	 */
-	public boolean addMarker(final int id, final IResource sourceFile, final int line, final String message,
-			final Severities sev) {
+	public boolean addMarker(final int id, final IResource sourceFile, final int line, final String message, final Severities sev) {
 		if (!sourceFile.exists() || !sourceFile.isAccessible()) {
 			Activator.getDefault().logError(Constants.NO_RES_FOUND);
 			return false;
@@ -74,11 +61,12 @@ public class ErrorMarkerGenerator {
 			marker.setAttribute(IMarker.LINE_NUMBER, line);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-			marker.setAttribute(IMarker.SEVERITY, (sev == Severities.Problem) ? IMarker.SEVERITY_ERROR
-					: ((sev == Severities.Warning) ? IMarker.SEVERITY_WARNING : IMarker.SEVERITY_INFO));
+			marker.setAttribute(IMarker.SEVERITY,
+					(sev == Severities.Problem) ? IMarker.SEVERITY_ERROR : ((sev == Severities.Warning) ? IMarker.SEVERITY_WARNING : IMarker.SEVERITY_INFO));
 			marker.setAttribute(IMarker.SOURCE_ID, id);
 
-		} catch (final CoreException e) {
+		}
+		catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 			return false;
 		}
@@ -89,8 +77,7 @@ public class ErrorMarkerGenerator {
 	/**
 	 * Deletes markers from file and clears markers list.
 	 *
-	 * @return <code>true</code>/<code>false</code> if all error markers were (not)
-	 *         deleted successfully
+	 * @return <code>true</code>/<code>false</code> if all error markers were (not) deleted successfully
 	 */
 	public boolean clearMarkers() {
 		return clearMarkers(null);
@@ -107,7 +94,8 @@ public class ErrorMarkerGenerator {
 			if (curProj != null) {
 				curProj.refreshLocal(IResource.DEPTH_INFINITE, null);
 			}
-		} catch (final CoreException e) {
+		}
+		catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
 		this.markers.clear();

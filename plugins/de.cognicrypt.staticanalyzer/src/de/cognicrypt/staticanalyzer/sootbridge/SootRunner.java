@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.staticanalyzer.sootbridge;
@@ -16,14 +11,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.IJavaProject;
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-
 import boomerang.preanalysis.BoomerangPretransformer;
 import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
@@ -103,7 +95,8 @@ public class SootRunner {
 			final URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
 			urls.add(new File(uriString).getAbsolutePath());
 			return urls;
-		} catch (final Exception e) {
+		}
+		catch (final Exception e) {
 			Activator.getDefault().logError(e, "Error building project classpath");
 			return Lists.newArrayList();
 		}
@@ -115,7 +108,8 @@ public class SootRunner {
 		registerTransformers(resultsReporter);
 		try {
 			runSoot();
-		} catch (final Exception t) {
+		}
+		catch (final Exception t) {
 			Activator.getDefault().logError(t);
 			return false;
 		}
@@ -141,14 +135,14 @@ public class SootRunner {
 		Options.v().set_exclude(getExcludeList());
 		Scene.v().loadNecessaryClasses();
 		switch (DEFAULT_CALL_GRAPH.ordinal()) {
-		case 2:
-			Options.v().setPhaseOption("cg.spark", "on");
-			Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");
-			break;
-		case 0:
-		default:
-			Options.v().setPhaseOption("cg.cha", "on");
-			Options.v().setPhaseOption("cg", "all-reachable:true");
+			case 2:
+				Options.v().setPhaseOption("cg.spark", "on");
+				Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");
+				break;
+			case 0:
+			default:
+				Options.v().setPhaseOption("cg.cha", "on");
+				Options.v().setPhaseOption("cg", "all-reachable:true");
 		}
 		Options.v().setPhaseOption("jb", "use-original-names:true");
 		Options.v().set_output_format(Options.output_format_none);

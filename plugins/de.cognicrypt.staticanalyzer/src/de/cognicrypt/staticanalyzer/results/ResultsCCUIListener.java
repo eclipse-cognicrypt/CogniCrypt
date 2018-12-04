@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.staticanalyzer.results;
@@ -16,15 +11,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.w3c.dom.Node;
-
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
-
 import boomerang.BackwardQuery;
 import boomerang.Query;
 import boomerang.jimple.Statement;
@@ -60,7 +52,6 @@ import typestate.TransitionFunction;
  *
  * @author Stefan Krueger
  * @author André Sonntag
- *
  */
 public class ResultsCCUIListener extends CrySLAnalysisListener {
 
@@ -98,8 +89,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final CCStatement stmt = new CCStatement(errorLocation);
 		final int stmtId = stmt.hashCode();
 
-		this.warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator
-				+ Constants.SUPPRESSWARNING_FILE;
+		this.warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator + Constants.SUPPRESSWARNING_FILE;
 		final File warningsFile = new File(this.warningFilePath);
 
 		if (!warningsFile.exists()) {
@@ -111,8 +101,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		} else {
 			this.xmlParser = new XMLParser(warningsFile);
 			this.xmlParser.useDocFromFile();
-			if (!this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR)
-					.contains(stmtId + "")) {
+			if (!this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR).contains(stmtId + "")) {
 				if (error instanceof ImpreciseValueExtractionError) {
 					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage, Severities.Warning);
 				} else {
@@ -121,16 +110,15 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			} else {
 
 				// update existing LineNumber
-				final Node suppressWarningNode = this.xmlParser.getNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT,
-						Constants.ID_ATTR, stmtId + "");
-				final Node lineNumberNode = this.xmlParser.getChildNodeByTagName(suppressWarningNode,
-						Constants.LINENUMBER_ELEMENT);
+				final Node suppressWarningNode = this.xmlParser.getNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR, stmtId + "");
+				final Node lineNumberNode = this.xmlParser.getChildNodeByTagName(suppressWarningNode, Constants.LINENUMBER_ELEMENT);
 				this.xmlParser.updateNodeValue(lineNumberNode, lineNumber + "");
 				this.xmlParser.writeXML();
 
 				try {
 					this.currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-				} catch (final CoreException e) {
+				}
+				catch (final CoreException e) {
 					Activator.getDefault().logError(e);
 				}
 				this.suppressedWarningIds.add(stmtId + "");
@@ -158,35 +146,29 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 		final Value varName = var.getValue();
 		this.markerGenerator.addMarker(-1, unitToResource(stmt), unit.getJavaSourceStartLineNumber(),
-				"Object "
-						+ (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString()
-								: varName)
-						+ " is secure.",
-				Severities.Secure);
+				"Object " + (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", Severities.Secure);
 	}
 
 	/**
-	 * This method removes superfluous suppressed warning entries from the
-	 * SuppressWarnings.xml file.
+	 * This method removes superfluous suppressed warning entries from the SuppressWarnings.xml file.
 	 */
 	public void removeUndetectableWarnings() {
 		if (this.suppressedWarningIds.size() > 0) {
 
-			final ArrayList<String> allSuppressedWarningIds = this.xmlParser
-					.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR);
+			final ArrayList<String> allSuppressedWarningIds = this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR);
 
 			final ArrayList<String> difference = new ArrayList<>(allSuppressedWarningIds.size());
 			difference.addAll(allSuppressedWarningIds);
 			difference.removeAll(this.suppressedWarningIds);
 
 			for (int i = 0; i < difference.size(); i++) {
-				this.xmlParser.removeNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR,
-						difference.get(i));
+				this.xmlParser.removeNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR, difference.get(i));
 			}
 			this.xmlParser.writeXML();
 			try {
 				this.currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-			} catch (final CoreException e) {
+			}
+			catch (final CoreException e) {
 				Activator.getDefault().logError(e);
 			}
 		}
@@ -197,7 +179,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final SootClass className = stmt.getMethod().getDeclaringClass();
 		try {
 			return Utils.findClassByName(className.getName(), this.currentProject);
-		} catch (final ClassNotFoundException e) {
+		}
+		catch (final ClassNotFoundException e) {
 			Activator.getDefault().logError(e);
 		}
 		// Fall-back path when retrieval of actual path fails. If the statement below
@@ -221,8 +204,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	@Override
-	public void collectedValues(final AnalysisSeedWithSpecification arg0,
-			final Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
+	public void collectedValues(final AnalysisSeedWithSpecification arg0, final Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
 		// Nothing
 	}
 
@@ -289,8 +271,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void ensuredPredicates(final Table<Statement, Val, Set<EnsuredCryptSLPredicate>> existingPredicates,
-			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates,
-			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {
+			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates, final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {
 		// TODO Auto-generated method stub
 	}
 }

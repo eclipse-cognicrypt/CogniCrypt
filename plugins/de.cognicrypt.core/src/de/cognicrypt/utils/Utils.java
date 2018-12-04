@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.utils;
@@ -16,7 +11,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -48,9 +42,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.part.FileEditorInput;
 import org.osgi.framework.Bundle;
-
 import com.google.common.base.CharMatcher;
-
 import de.cognicrypt.core.Activator;
 
 public class Utils {
@@ -66,7 +58,8 @@ public class Utils {
 	public static boolean checkIfJavaProjectSelected(final IProject project) {
 		try {
 			return project.hasNature("org.eclipse.jdt.core.javanature");
-		} catch (final CoreException e) {
+		}
+		catch (final CoreException e) {
 			return false;
 		}
 	}
@@ -85,8 +78,7 @@ public class Utils {
 		return javaProjects;
 	}
 
-	public static IResource findClassByName(final String className, final IProject currentProject)
-			throws ClassNotFoundException {
+	public static IResource findClassByName(final String className, final IProject currentProject) throws ClassNotFoundException {
 		try {
 			for (final IPackageFragment l : JavaCore.create(currentProject).getPackageFragments()) {
 				for (final ICompilationUnit cu : l.getCompilationUnits()) {
@@ -101,7 +93,8 @@ public class Utils {
 					}
 				}
 			}
-		} catch (final JavaModelException e) {
+		}
+		catch (final JavaModelException e) {
 			throw new ClassNotFoundException("Class " + className + " not found.", e);
 		}
 		throw new ClassNotFoundException("Class " + className + " not found.");
@@ -119,7 +112,8 @@ public class Utils {
 		if (Utils.window == null) {
 			try {
 				Thread.sleep(500);
-			} catch (final InterruptedException e) {
+			}
+			catch (final InterruptedException e) {
 				Activator.getDefault().logError(e);
 			}
 			defaultDisplay.asyncExec(getWindow);
@@ -132,19 +126,16 @@ public class Utils {
 	}
 
 	/**
-	 * Overload for {@link Utils#getCurrentlyOpenFile(IEditorPart)
-	 * getCurrentlyOpenFile(IEditor part)}
+	 * Overload for {@link Utils#getCurrentlyOpenFile(IEditorPart) getCurrentlyOpenFile(IEditor part)}
 	 *
 	 * @return Currently open file.
-	 *
 	 */
 	public static IFile getCurrentlyOpenFile() {
 		return getCurrentlyOpenFile(getCurrentlyOpenEditor());
 	}
 
 	/**
-	 * This method gets the file that is currently opened in the editor as an
-	 * {@link IFile}.
+	 * This method gets the file that is currently opened in the editor as an {@link IFile}.
 	 *
 	 * @param part Editor part that contains the file.
 	 * @return Currently open file.
@@ -201,24 +192,22 @@ public class Utils {
 	}
 
 	/**
-	 * This method searches the passed project for the class that contains the main
-	 * method.
+	 * This method searches the passed project for the class that contains the main method.
 	 *
-	 * @param project   Project that is searched
+	 * @param project Project that is searched
 	 * @param requestor Object that handles the search results
 	 */
 	public static void findMainMethodInCurrentProject(final IJavaProject project, final SearchRequestor requestor) {
-		final SearchPattern sp = SearchPattern.createPattern("main", IJavaSearchConstants.METHOD,
-				IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
+		final SearchPattern sp = SearchPattern.createPattern("main", IJavaSearchConstants.METHOD, IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
 
 		final SearchEngine se = new SearchEngine();
-		final SearchParticipant[] searchParticipants = new SearchParticipant[] {
-				SearchEngine.getDefaultSearchParticipant() };
-		final IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] { project });
+		final SearchParticipant[] searchParticipants = new SearchParticipant[] {SearchEngine.getDefaultSearchParticipant()};
+		final IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
 
 		try {
 			se.search(sp, searchParticipants, scope, requestor, null);
-		} catch (final CoreException e) {
+		}
+		catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
 	}
@@ -229,8 +218,7 @@ public class Utils {
 	 * @return Currently selected project.
 	 */
 	public static IProject getCurrentlySelectedIProject() {
-		final ISelectionService selectionService = Workbench.getInstance().getActiveWorkbenchWindow()
-				.getSelectionService();
+		final ISelectionService selectionService = Workbench.getInstance().getActiveWorkbenchWindow().getSelectionService();
 		final ISelection selection = selectionService.getSelection();
 
 		return getIProjectFromISelection(selection);
@@ -277,7 +265,8 @@ public class Utils {
 				}
 				return new File(resolvedURI);
 			}
-		} catch (final Exception ex) {
+		}
+		catch (final Exception ex) {
 			Activator.getDefault().logError(ex);
 		}
 

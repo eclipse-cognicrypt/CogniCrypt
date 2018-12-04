@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.utils;
@@ -15,7 +10,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
 import de.cognicrypt.core.Activator;
 import de.cognicrypt.core.Constants;
 
@@ -28,8 +22,7 @@ public class FileHelper {
 	 * Deletes file with given name.
 	 *
 	 * @param fileName Path to file to be deleted.
-	 * @return <Code>True</Code>/<Code>False</Code> if deletion of file
-	 *         succeeded/failed.
+	 * @return <Code>True</Code>/<Code>False</Code> if deletion of file succeeded/failed.
 	 */
 	public static boolean deleteFile(final String fileName) {
 		try {
@@ -37,7 +30,8 @@ public class FileHelper {
 			if (f.exists()) {
 				Files.delete(Paths.get(fileName));
 			}
-		} catch (final IOException e) {
+		}
+		catch (final IOException e) {
 			Activator.getDefault().logError(e);
 			return false;
 		}
@@ -49,8 +43,7 @@ public class FileHelper {
 	 *
 	 * @param filePath
 	 * @param s
-	 * @return If the file contains the String <CODE>true</CODE> otherwise
-	 *         <CODE>false</CODE>
+	 * @return If the file contains the String <CODE>true</CODE> otherwise <CODE>false</CODE>
 	 * @throws IOException
 	 */
 	public static boolean checkFileForString(final String filePath, final String searchString) throws IOException {
@@ -74,8 +67,7 @@ public class FileHelper {
 			System.out.println("wrong filepath");
 		}
 
-		final String contentStringAlt = String.join(Constants.lineSeparator, Files.readAllLines(Paths.get(filePath)))
-				.trim();
+		final String contentStringAlt = String.join(Constants.lineSeparator, Files.readAllLines(Paths.get(filePath))).trim();
 		final FileWriter writer = new FileWriter(f);
 		writer.write(contentStringAlt);
 		writer.close();

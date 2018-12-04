@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.staticanalyzer.handlers;
@@ -19,7 +14,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ErrorMarkerGenerator;
@@ -27,11 +21,9 @@ import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.utils.Utils;
 
 /**
- * This class prepares and triggers the analysis. After it has finished, it
- * refreshes the project.
+ * This class prepares and triggers the analysis. After it has finished, it refreshes the project.
  *
  * @author Stefan Krueger
- *
  */
 public class AnalysisKickOff {
 
@@ -45,7 +37,6 @@ public class AnalysisKickOff {
 	 * 3) Finding the current project's class with a main method <br>
 	 *
 	 * @param iJavaElement
-	 *
 	 * @return <code>true</code>/<code>false</code> if setup (not) successful
 	 * @throws CoreException
 	 */
@@ -57,8 +48,7 @@ public class AnalysisKickOff {
 			ip = iJavaElement.getJavaProject().getProject();
 		}
 
-		if (AnalysisKickOff.resultsReporter != null
-				&& !AnalysisKickOff.resultsReporter.getReporterProject().equals(ip)) {
+		if (AnalysisKickOff.resultsReporter != null && !AnalysisKickOff.resultsReporter.getReporterProject().equals(ip)) {
 			AnalysisKickOff.resultsReporter = null;
 			for (final ResultsCCUIListener resRep : Activator.getResultsReporters()) {
 				if (resRep.getReporterProject().equals(ip)) {
@@ -77,7 +67,8 @@ public class AnalysisKickOff {
 			if (ip == null || (!ip.hasNature(JavaCore.NATURE_ID))) {
 				return false;
 			}
-		} catch (final CoreException e) {
+		}
+		catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 			return false;
 		}
@@ -96,14 +87,13 @@ public class AnalysisKickOff {
 			@SuppressWarnings("deprecation")
 			@Override
 			protected IStatus run(final IProgressMonitor monitor) {
-				final SootThread sootThread = new SootThread(AnalysisKickOff.this.curProj,
-						AnalysisKickOff.resultsReporter);
+				final SootThread sootThread = new SootThread(AnalysisKickOff.this.curProj, AnalysisKickOff.resultsReporter);
 				sootThread.start();
 				while (sootThread.isAlive()) {
 					try {
 						Thread.sleep(500);
-					} catch (final InterruptedException e) {
 					}
+					catch (final InterruptedException e) {}
 
 					if (monitor.isCanceled()) {
 						sootThread.stop();

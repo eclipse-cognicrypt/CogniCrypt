@@ -44,7 +44,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	private ControlDecoration decNameOfTheTask; // Decoration variable to be able to access it in the events.
 	private PageForTaskIntegratorWizard theLocalContainerPage; // this is needed to set whether the page has been completed yet or not.
 
-	private final CompositeBrowseForFile compCfr;
+	private CompositeBrowseForFile compCfr;
 
 	/**
 	 * Create the composite.

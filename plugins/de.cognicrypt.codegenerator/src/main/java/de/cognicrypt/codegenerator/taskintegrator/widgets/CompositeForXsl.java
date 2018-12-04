@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -28,23 +28,23 @@ public class CompositeForXsl extends Composite {
 
 	private StyledText xslTxtBox; // this text box needs to be accessible on the page as well.
 
-	public CompositeForXsl(Composite parent, int style) {
+	public CompositeForXsl(final Composite parent, final int style) {
 		super(parent, SWT.BORDER);
 		setLayout(new GridLayout(2, false));
 
 		//UI Widgets for xslPage
 		setXslTxtBox(new StyledText(this, SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL));
-		xslTxtBox.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
-		xslTxtBox.setCursor(null);
+		this.xslTxtBox.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
+		this.xslTxtBox.setCursor(null);
 	}
 
 	/**
 	 * Read the text from the file provided and update the {@link StyledText} with the processed data.
-	 * 
+	 *
 	 * @param filePath
 	 *        the path that is chosen from the FileDialog.
 	 */
-	public void updateTheTextFieldWithFileData(String filePath) {
+	public void updateTheTextFieldWithFileData(final String filePath) {
 
 		getXslTxtBox().setText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(filePath, getXslTxtBox().getText(), getXslTxtBox().getSelection(), null));
 
@@ -55,12 +55,12 @@ public class CompositeForXsl extends Composite {
 	 * Analyzes the {@link StyledText}, calculates the {@link XmlRegion} and {@link StyleRange} and applies the syntax highlight.
 	 */
 	public void colorizeTextBox() {
-		Point selection = getXslTxtBox().getSelection();
+		final Point selection = getXslTxtBox().getSelection();
 
-		List<XmlRegion> regions = new XmlRegionAnalyzer().analyzeXml(xslTxtBox.getText());
-		List<StyleRange> ranges = XSLStringGenerationAndManipulation.computeStyleForXMLRegions(regions);
+		final List<XmlRegion> regions = new XmlRegionAnalyzer().analyzeXml(this.xslTxtBox.getText());
+		final List<StyleRange> ranges = XSLStringGenerationAndManipulation.computeStyleForXMLRegions(regions);
 
-		for (StyleRange styleRange : ranges) {
+		for (final StyleRange styleRange : ranges) {
 			getXslTxtBox().setStyleRange(styleRange);
 		}
 
@@ -71,14 +71,14 @@ public class CompositeForXsl extends Composite {
 	 * @return the xslTxtBox
 	 */
 	public StyledText getXslTxtBox() {
-		return xslTxtBox;
+		return this.xslTxtBox;
 	}
 
 	/**
 	 * @param xslTxtBox
 	 *        the xslTxtBox to set
 	 */
-	private void setXslTxtBox(StyledText xslTxtBox) {
+	private void setXslTxtBox(final StyledText xslTxtBox) {
 		this.xslTxtBox = xslTxtBox;
 	}
 

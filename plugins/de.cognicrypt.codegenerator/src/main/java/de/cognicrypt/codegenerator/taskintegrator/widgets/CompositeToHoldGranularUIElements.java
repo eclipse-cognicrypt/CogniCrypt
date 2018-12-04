@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -36,15 +36,15 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 
 	/**
 	 * Create the composite.
-	 * 
+	 *
 	 * @param parent
 	 */
-	public CompositeToHoldGranularUIElements(Composite parent, String pageName) {
+	public CompositeToHoldGranularUIElements(final Composite parent, final String pageName) {
 		super(parent, SWT.BORDER | SWT.V_SCROLL);
 
-		claferModel = new ClaferModel();
+		this.claferModel = new ClaferModel();
 
-		listOfAllQuestions = new ArrayList<Question>();
+		this.listOfAllQuestions = new ArrayList<Question>();
 
 		setTargetPageName(pageName);
 
@@ -53,29 +53,29 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		setLayout(new GridLayout(2, false));
 
 		// All the granular UI elements will be added to this composite for the ScrolledComposite to work.
-		Composite contentComposite = new Composite(this, SWT.NONE);
-		GridLayout gridLayout = new GridLayout(1, false);
+		final Composite contentComposite = new Composite(this, SWT.NONE);
+		final GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.verticalSpacing = 30;
 		contentComposite.setLayout(gridLayout);
 		setContent(contentComposite);
 		setMinSize(contentComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
-	public void addGranularClaferUIElements(ClaferFeature claferFeature) {
-		new CompositeClaferFeature((Composite) this.getContent(), claferFeature);
+	public void addGranularClaferUIElements(final ClaferFeature claferFeature) {
+		new CompositeClaferFeature((Composite) getContent(), claferFeature);
 		setMinSize(((Composite) getContent()).computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
-	public void deleteClaferFeature(ClaferFeature featureToBeDeleted) {
-		claferModel.remove(featureToBeDeleted);
+	public void deleteClaferFeature(final ClaferFeature featureToBeDeleted) {
+		this.claferModel.remove(featureToBeDeleted);
 		updateClaferContainer();
 	}
 
 	public void updateClaferContainer() {
-		Composite compositeContentOfThisScrolledComposite = (Composite) this.getContent();
+		final Composite compositeContentOfThisScrolledComposite = (Composite) getContent();
 
 		// first dispose all the granular UI elements (which includes the deleted one).
-		for (Control uiRepresentationOfClaferFeatures : compositeContentOfThisScrolledComposite.getChildren()) {
+		for (final Control uiRepresentationOfClaferFeatures : compositeContentOfThisScrolledComposite.getChildren()) {
 			uiRepresentationOfClaferFeatures.dispose();
 		}
 
@@ -84,14 +84,14 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		setMinHeight(getLowestWidgetYAxisValue());
 
 		// add all the clafer features excluding the deleted one.
-		for (ClaferFeature featureUnderConsideration : claferModel) {
+		for (final ClaferFeature featureUnderConsideration : this.claferModel) {
 			addGranularClaferUIElements(featureUnderConsideration);
 		}
 
-		((Composite) this.getContent()).layout();
+		((Composite) getContent()).layout();
 	}
 
-	public void setCompositeClaferFeedback(CompositeClaferFeedback compositeClaferFeedback) {
+	public void setCompositeClaferFeedback(final CompositeClaferFeedback compositeClaferFeedback) {
 		this.compositeClaferFeedback = compositeClaferFeedback;
 	}
 
@@ -103,8 +103,8 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	 * @param modifiedClaferFeature
 	 *        the updated version of the feature
 	 */
-	public void modifyClaferFeature(ClaferFeature originalClaferFeature, ClaferFeature modifiedClaferFeature) {
-		for (ClaferFeature featureUnderConsideration : claferModel) {
+	public void modifyClaferFeature(final ClaferFeature originalClaferFeature, final ClaferFeature modifiedClaferFeature) {
+		for (ClaferFeature featureUnderConsideration : this.claferModel) {
 			if (featureUnderConsideration.equals(originalClaferFeature)) {
 				featureUnderConsideration = modifiedClaferFeature;
 				break;
@@ -113,14 +113,14 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 
 		updateClaferContainer();
 
-		compositeClaferFeedback.setFeedback("modified Clafer feature");
+		this.compositeClaferFeedback.setFeedback("modified Clafer feature");
 	}
 
-	public void addQuestionUIElements(Question question, ClaferModel claferModel, boolean linkAnswerPage) {
+	public void addQuestionUIElements(final Question question, final ClaferModel claferModel, final boolean linkAnswerPage) {
 
 		// Update the array list of clafer features.
 		setClaferModel(claferModel);
-		new CompositeGranularUIForHighLevelQuestions((Composite) this.getContent(), // the content composite of ScrolledComposite.
+		new CompositeGranularUIForHighLevelQuestions((Composite) getContent(), // the content composite of ScrolledComposite.
 			SWT.NONE, question, linkAnswerPage);
 		setMinSize(((Composite) getContent()).computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
@@ -128,55 +128,55 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 
 	/**
 	 * Moves the question up in the list
-	 * 
+	 *
 	 * @param question
 	 *        the question that is to be move up in the list
 	 */
-	public void moveUpTheQuestion(Question question) {
+	public void moveUpTheQuestion(final Question question) {
 		int questionToBeMoveUp = 0;
 		int questionToBeMoveDown = 0;
-		for (Question qstn : listOfAllQuestions) {
+		for (final Question qstn : this.listOfAllQuestions) {
 			if (qstn.getId() == question.getId()) {
 				questionToBeMoveUp = qstn.getId();
 			} else if (qstn.getId() == question.getId() - 1) {
 				questionToBeMoveDown = qstn.getId();
 			}
 		}
-		Collections.swap(listOfAllQuestions, questionToBeMoveUp, questionToBeMoveDown);
+		Collections.swap(this.listOfAllQuestions, questionToBeMoveUp, questionToBeMoveDown);
 		updateQuestionsID();
 		updateQuestionContainer();
 	}
 
 	/**
 	 * Moves the question down in the list
-	 * 
+	 *
 	 * @param question
 	 *        the question that is to be move down in the list
 	 */
-	public void moveDownTheQuestion(Question question) {
+	public void moveDownTheQuestion(final Question question) {
 		int questionToBeMoveUp = 0;
 		int questionToBeMoveDown = 0;
-		for (Question qstn : listOfAllQuestions) {
+		for (final Question qstn : this.listOfAllQuestions) {
 			if (qstn.getId() == question.getId()) {
 				questionToBeMoveUp = qstn.getId();
 			} else if (qstn.getId() == question.getId() + 1) {
 				questionToBeMoveDown = qstn.getId();
 			}
 		}
-		Collections.swap(listOfAllQuestions, questionToBeMoveUp, questionToBeMoveDown);
+		Collections.swap(this.listOfAllQuestions, questionToBeMoveUp, questionToBeMoveDown);
 		updateQuestionsID();
 		updateQuestionContainer();
 	}
 
 	/**
 	 * Deletes the question
-	 * 
+	 *
 	 * @param questionToBeDeleted
 	 *        the question to be deleted
 	 */
-	public void deleteQuestion(Question questionToBeDeleted) {
+	public void deleteQuestion(final Question questionToBeDeleted) {
 
-		listOfAllQuestions.remove(questionToBeDeleted);
+		this.listOfAllQuestions.remove(questionToBeDeleted);
 		updateQuestionsID();
 		updateQuestionContainer();
 
@@ -188,7 +188,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 
 	private void updateQuestionsID() {
 		int qID = 0;
-		for (Question qstn : listOfAllQuestions) {
+		for (final Question qstn : this.listOfAllQuestions) {
 			qstn.setId(qID++);
 		}
 
@@ -198,7 +198,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	 * executes when next button of "highLevelQuestion" is pressed, deletes listOfAllQuestions of "pageForLinkAnswers" to refresh the question list of "pagForLinkAnswers"
 	 */
 	public void deleteAllQuestion() {
-		listOfAllQuestions.clear();
+		this.listOfAllQuestions.clear();
 		updateQuestionContainer();
 	}
 
@@ -206,10 +206,10 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	 * Updates the question container
 	 */
 	public void updateQuestionContainer() {
-		Composite compositeContentOfThisScrolledComposite = (Composite) this.getContent();
+		final Composite compositeContentOfThisScrolledComposite = (Composite) getContent();
 
 		// first dispose all the granular UI elements (which includes the deleted one).
-		for (Control uiRepresentationOfQuestions : compositeContentOfThisScrolledComposite.getChildren()) {
+		for (final Control uiRepresentationOfQuestions : compositeContentOfThisScrolledComposite.getChildren()) {
 			uiRepresentationOfQuestions.dispose();
 		}
 
@@ -218,8 +218,8 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		setMinHeight(getLowestWidgetYAxisValue());
 
 		// add all the clafer features excluding the deleted one.
-		for (Question questionUnderConsideration : listOfAllQuestions) {
-			addQuestionUIElements(questionUnderConsideration, claferModel, false);
+		for (final Question questionUnderConsideration : this.listOfAllQuestions) {
+			addQuestionUIElements(questionUnderConsideration, this.claferModel, false);
 		}
 		updateLayout();
 	}
@@ -228,20 +228,20 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	 * Updates the layout of the page when user resizes the wizard pages
 	 */
 	public void updateLayout() {
-		((Composite) this.getContent()).layout();
+		((Composite) getContent()).layout();
 	}
 
 	/**
 	 * Modifies the question details
-	 * 
+	 *
 	 * @param originalQuestion
 	 *        the original question
 	 * @param modifiedQuestion
 	 *        the modified question
 	 */
 
-	public void modifyHighLevelQuestion(Question originalQuestion, Question modifiedQuestion) {
-		for (Question questionUnderConsideration : listOfAllQuestions) {
+	public void modifyHighLevelQuestion(final Question originalQuestion, final Question modifiedQuestion) {
+		for (final Question questionUnderConsideration : this.listOfAllQuestions) {
 			if (questionUnderConsideration.equals(originalQuestion)) {
 				questionUnderConsideration.setQuestionText(modifiedQuestion.getQuestionText());
 				questionUnderConsideration.setElement(modifiedQuestion.getElement());
@@ -267,14 +267,14 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	 * @return the targetPageName
 	 */
 	public String getTargetPageName() {
-		return targetPageName;
+		return this.targetPageName;
 	}
 
 	/**
 	 * @param targetPageName
 	 *        the targetPageName to set
 	 */
-	private void setTargetPageName(String targetPageName) {
+	private void setTargetPageName(final String targetPageName) {
 		this.targetPageName = targetPageName;
 	}
 
@@ -282,22 +282,22 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	 * @return the lowestWidgetYAxisValue
 	 */
 	public int getLowestWidgetYAxisValue() {
-		return lowestWidgetYAxisValue;
+		return this.lowestWidgetYAxisValue;
 	}
 
 	/**
 	 * @param lowestWidgetYAxisValue
 	 *        the lowestWidgetYAxisValue to set
 	 */
-	public void setLowestWidgetYAxisValue(int lowestWidgetYAxisValue) {
+	public void setLowestWidgetYAxisValue(final int lowestWidgetYAxisValue) {
 		this.lowestWidgetYAxisValue = lowestWidgetYAxisValue + Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS;
 	}
 
 	public ClaferModel getClaferModel() {
-		return claferModel;
+		return this.claferModel;
 	}
 
-	public void setClaferModel(ClaferModel claferModel) {
+	public void setClaferModel(final ClaferModel claferModel) {
 		this.claferModel = claferModel;
 	}
 
@@ -305,14 +305,14 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	 * @return the listOfAllQuestions
 	 */
 	public ArrayList<Question> getListOfAllQuestions() {
-		return listOfAllQuestions;
+		return this.listOfAllQuestions;
 	}
 
 	/**
 	 * @param listOfAllQuestions
 	 *        the listOfAllQuestions to set
 	 */
-	public void setListOfAllQuestions(ArrayList<Question> listOfAllQuestions) {
+	public void setListOfAllQuestions(final ArrayList<Question> listOfAllQuestions) {
 		this.listOfAllQuestions = listOfAllQuestions;
 	}
 

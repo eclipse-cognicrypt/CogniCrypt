@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -155,7 +155,7 @@ public class SootRunner {
 	}
 
 	private static List<String> getIncludeList() {
-		List<String> includeList = new LinkedList<String>();
+		final List<String> includeList = new LinkedList<String>();
 		includeList.add("java.lang.AbstractStringBuilder");
 		includeList.add("java.lang.Boolean");
 		includeList.add("java.lang.Byte");
@@ -170,14 +170,14 @@ public class SootRunner {
 	}
 
 	private static List<String> getExcludeList() {
-		List<String> excludeList = new LinkedList<String>();
-		for (CryptSLRule r : getRules()) {
+		final List<String> excludeList = new LinkedList<String>();
+		for (final CryptSLRule r : getRules()) {
 			excludeList.add(crypto.Utils.getFullyQualifiedName(r));
 		}
 		return excludeList;
 	}
 
-	private static void registerTransformers(ResultsCCUIListener resultsReporter) {
+	private static void registerTransformers(final ResultsCCUIListener resultsReporter) {
 		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(resultsReporter)));
 	}
 

@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -19,7 +19,7 @@ import java.util.zip.ZipOutputStream;
 
 /**
  * A class that generate the provider file
- * 
+ *
  * @author Ahmed
  */
 
@@ -33,17 +33,17 @@ public class ProviderFile {
 
 	/**
 	 * Archive files with option to exclude the main containing folder
-	 * 
+	 *
 	 * @param fileToZip
 	 * @param zipFile
 	 * @param excludeContainingFolder
 	 * @throws IOException
 	 */
-	public void zipProject(String fileToZip, File zipFile, boolean excludeContainingFolder) throws IOException {
-		ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(zipFile));
-		File srcFile = new File(fileToZip);
+	public void zipProject(final String fileToZip, final File zipFile, final boolean excludeContainingFolder) throws IOException {
+		final ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(zipFile));
+		final File srcFile = new File(fileToZip);
 		if (excludeContainingFolder && srcFile.isDirectory()) {
-			for (String fileName : srcFile.list()) {
+			for (final String fileName : srcFile.list()) {
 				addToZip("", fileToZip + "/" + fileName, zipOut);
 			}
 		} else {
@@ -56,18 +56,18 @@ public class ProviderFile {
 		System.out.println("Successfully created " + zipFile.getName());
 	}
 
-	static private void addToZip(String path, String srcFile, ZipOutputStream zipOut) throws IOException {
-		File file = new File(srcFile);
-		String filePath = "".equals(path) ? file.getName() : path + "/" + file.getName();
+	static private void addToZip(final String path, final String srcFile, final ZipOutputStream zipOut) throws IOException {
+		final File file = new File(srcFile);
+		final String filePath = "".equals(path) ? file.getName() : path + "/" + file.getName();
 		if (file.isDirectory()) {
-			for (String fileName : file.list()) {
+			for (final String fileName : file.list()) {
 				addToZip(filePath, srcFile + "/" + fileName, zipOut);
 			}
 		} else {
 			zipOut.putNextEntry(new ZipEntry(filePath));
-			FileInputStream in = new FileInputStream(srcFile);
+			final FileInputStream in = new FileInputStream(srcFile);
 
-			byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+			final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 			int len;
 			while ((len = in.read(buffer)) != -1) {
 				zipOut.write(buffer, 0, len);

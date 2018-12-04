@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -39,39 +39,39 @@ public class DefaultFeatureSetTest {
 	 */
 	@Test
 	public void testFeatureSetCreation() {
-		ClaferModel defaultFeatureSet = new ClaferModel();
+		final ClaferModel defaultFeatureSet = new ClaferModel();
 
-		ClaferFeature enumFtr = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Enum", "");
+		final ClaferFeature enumFtr = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Enum", "");
 		defaultFeatureSet.add(enumFtr);
-		ClaferFeature algorithmFtr = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Algorithm", "");
+		final ClaferFeature algorithmFtr = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Algorithm", "");
 		defaultFeatureSet.add(algorithmFtr);
 
-		ArrayList<String> securityLevels = new ArrayList<>();
+		final ArrayList<String> securityLevels = new ArrayList<>();
 		securityLevels.add("Broken");
 		securityLevels.add("Weak");
 		securityLevels.add("Medium");
 		securityLevels.add("Strong");
 
-		ClaferPatternEnumGenerator securityLevelGenerator = new ClaferPatternEnumGenerator("Security", true);
+		final ClaferPatternEnumGenerator securityLevelGenerator = new ClaferPatternEnumGenerator("Security", true);
 		defaultFeatureSet.add(securityLevelGenerator.getClaferModel(securityLevels));
 
-		ArrayList<String> performanceLevels = new ArrayList<>();
+		final ArrayList<String> performanceLevels = new ArrayList<>();
 		performanceLevels.add("VerySlow");
 		performanceLevels.add("Slow");
 		performanceLevels.add("Fast");
 		performanceLevels.add("VeryFast");
 
-		ClaferPatternEnumGenerator performanceLevelGenerator = new ClaferPatternEnumGenerator("Performance", true);
+		final ClaferPatternEnumGenerator performanceLevelGenerator = new ClaferPatternEnumGenerator("Performance", true);
 		defaultFeatureSet.add(performanceLevelGenerator.getClaferModel(performanceLevels));
 
-		ClaferFeature taskFtr = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Task", "");
+		final ClaferFeature taskFtr = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Task", "");
 		taskFtr.addFeatureProperty(new ClaferProperty("description", "string"));
 
 		defaultFeatureSet.add(taskFtr);
 
-		String datFilename = binClaferFolder + Constants.DEFAULT_FEATURE_SET_FILE + Constants.CFR_BIN_EXTENSION;
+		final String datFilename = binClaferFolder + Constants.DEFAULT_FEATURE_SET_FILE + Constants.CFR_BIN_EXTENSION;
 		defaultFeatureSet.toBinary(datFilename);
-		String cfrFilename = binClaferFolder + Constants.DEFAULT_FEATURE_SET_FILE + Constants.CFR_EXTENSION;
+		final String cfrFilename = binClaferFolder + Constants.DEFAULT_FEATURE_SET_FILE + Constants.CFR_EXTENSION;
 		defaultFeatureSet.toFile(cfrFilename);
 
 		tmpFiles.add(binClaferFolder + Constants.DEFAULT_FEATURE_SET_FILE + Constants.JS_EXTENSION);
@@ -83,8 +83,8 @@ public class DefaultFeatureSetTest {
 	@AfterClass
 	public final static void deleteFiles() throws IOException {
 		// generate the paths and delete the files
-		for (String filename : tmpFiles) {
-			Path path = Paths.get(filename);
+		for (final String filename : tmpFiles) {
+			final Path path = Paths.get(filename);
 			if (Files.exists(path)) {
 				Files.delete(path);
 			}

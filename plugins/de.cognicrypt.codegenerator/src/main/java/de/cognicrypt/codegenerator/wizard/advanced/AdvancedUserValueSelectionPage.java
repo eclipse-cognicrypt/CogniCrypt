@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -40,7 +40,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 	private final AstConcreteClafer taskClafer;
 	int i;
 
-	public AdvancedUserValueSelectionPage(final ClaferModel claferModel, Task task, final AstConcreteClafer taskClafer) {
+	public AdvancedUserValueSelectionPage(final ClaferModel claferModel, final Task task, final AstConcreteClafer taskClafer) {
 		super(Constants.SELECT_PROPERTIES);
 		setTitle(Constants.PROPERTIES + task.getDescription());
 		setMessage("Please check the box to set the properties that configure the algorithm", INFORMATION);
@@ -78,9 +78,9 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 		if (inputClafer.hasRef()) {
 			if (inputClafer.getRef().getTargetType().isPrimitive() && !(inputClafer.getRef().getTargetType().getName().contains("string"))) {
 				if (ClaferModelUtils.isConcrete(inputClafer)) {
-					Composite childComposite = new Composite(titledPanel, SWT.NONE);
+					final Composite childComposite = new Composite(titledPanel, SWT.NONE);
 					childComposite.setLayout(new GridLayout(4, false));
-					GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
+					final GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
 					childComposite.setLayoutData(gridData);
 					this.userConstraints.add(new PropertyWidget(childComposite, parent, (AstConcreteClafer) inputClafer, ClaferModelUtils
 						.removeScopePrefix(inputClafer.getName()), 1, 0, 1024, 0, 1, 1));
@@ -125,10 +125,10 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 				final Group titledPanel = createPanel(ClaferModelUtils.removeScopePrefix(taskAlgorithm.getRef().getTargetType().getName()), this.container);
 				createConstraints(this.taskClafer, taskAlgorithm, titledPanel);
 			}
-			sc.setContent(container);
+			sc.setContent(this.container);
 			sc.setExpandHorizontal(true);
 			sc.setExpandVertical(true);
-			sc.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+			sc.setMinSize(this.container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 			setControl(sc);
 		}
 	}
@@ -143,7 +143,7 @@ public class AdvancedUserValueSelectionPage extends WizardPage {
 		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 10, SWT.BOLD));
 		titledPanel.setFont(boldFont);
 		titledPanel.setLayout(new GridLayout(1, false));
-		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
+		final GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
 		titledPanel.setLayoutData(gridData);
 		return titledPanel;
 	}

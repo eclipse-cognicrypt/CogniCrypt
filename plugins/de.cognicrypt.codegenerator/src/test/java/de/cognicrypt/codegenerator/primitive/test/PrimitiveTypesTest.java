@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -26,7 +26,7 @@ import de.cognicrypt.core.Constants;
 public class PrimitiveTypesTest {
 
 	private static PrimitiveJSONReader jsonReader = new PrimitiveJSONReader();
-	private File primitiveTestFile = CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder + "PrimitiveTest.json");
+	private final File primitiveTestFile = CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder + "PrimitiveTest.json");
 	private static Primitive primitive = new Primitive();
 
 	@BeforeClass
@@ -40,7 +40,7 @@ public class PrimitiveTypesTest {
 
 	@Test
 	public void test() {
-		List<Primitive> primitives = PrimitiveJSONReader.getPrimitiveTypes(primitiveTestFile);
+		final List<Primitive> primitives = PrimitiveJSONReader.getPrimitiveTypes(this.primitiveTestFile);
 		setupPrimitveTest();
 		primitive.setName("Cipher Test");
 		primitive.setXmlFile(Constants.testPrimitverFolder + "TestPrimitiveQuestion.json");

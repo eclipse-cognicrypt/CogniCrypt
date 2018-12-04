@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -32,7 +32,7 @@ public class PrimitiveQuestionsJSONReader {
 
 	/***
 	 * This method reads all questions of one primitive using the file path to the question file.
-	 * 
+	 *
 	 * @param filePath
 	 *        path to the file that contains all questions for one primitive.
 	 * @return questions
@@ -55,7 +55,7 @@ public class PrimitiveQuestionsJSONReader {
 
 	/***
 	 * This method reads all pages of one primitive using the file path to the JSON file.
-	 * 
+	 *
 	 * @param filePath
 	 *        Path to the file that contains all questions for one primitive.
 	 * @return pages Return a list of all the pages in the JSON file.
@@ -78,7 +78,7 @@ public class PrimitiveQuestionsJSONReader {
 
 	/***
 	 * This method reads all questions of one primitive.
-	 * 
+	 *
 	 * @param primitive
 	 *        primitive whose questions should be read
 	 * @return Questions
@@ -89,7 +89,7 @@ public class PrimitiveQuestionsJSONReader {
 
 	/***
 	 * This method reads all pages of one primitive.
-	 * 
+	 *
 	 * @param primitive
 	 *        primitive whose questions should be read
 	 * @return Pages
@@ -100,10 +100,10 @@ public class PrimitiveQuestionsJSONReader {
 
 	/**
 	 * Check the validity of the pages and the questions contained in them.
-	 * 
+	 *
 	 * @param pages
 	 */
-	private void checkReadPages(List<Page> pages) {
+	private void checkReadPages(final List<Page> pages) {
 		final Set<Integer> ids = new HashSet<>();
 		if (pages.size() < 1) {
 			throw new IllegalArgumentException("There are no pages for this primitive.");
@@ -118,7 +118,7 @@ public class PrimitiveQuestionsJSONReader {
 		}
 	}
 
-	private void checkReadQuestions(List<Question> questions) {
+	private void checkReadQuestions(final List<Question> questions) {
 		final Set<Integer> ids = new HashSet<>();
 		if (questions.size() < 1) {
 			throw new IllegalArgumentException("There are no questions for this primitive.");
@@ -134,7 +134,7 @@ public class PrimitiveQuestionsJSONReader {
 		}
 	}
 
-	private void checkNextIDs(List<Page> pages) {
+	private void checkNextIDs(final List<Page> pages) {
 		for (final Page page : pages) {
 			if (page.getNextID() == -2) {
 				for (final Question question : page.getContent()) {

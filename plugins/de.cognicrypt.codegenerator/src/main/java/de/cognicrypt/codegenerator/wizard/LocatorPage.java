@@ -23,67 +23,66 @@ import org.eclipse.ui.part.DrillDownComposite;
 public class LocatorPage extends WizardPage {
 
 	private IStructuredSelection selectedResource = null;
-	
-	protected LocatorPage(String pageName) {
+
+	protected LocatorPage(final String pageName) {
 		super(pageName);
 		setPageComplete(false);
 	}
 
 	@Override
-	public void createControl(Composite parent) {
-		 Composite composite = new Composite(parent, SWT.NONE);
-	     composite.setLayout(new GridLayout());
+	public void createControl(final Composite parent) {
+		final Composite composite = new Composite(parent, SWT.NONE);
+		composite.setLayout(new GridLayout());
 
 		new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
-		
-		Label label = new Label(composite, SWT.WRAP);
+
+		final Label label = new Label(composite, SWT.WRAP);
 		label.setText(
 			"Please select the file CogniCrypt should generate code into. You may also select a package or \nproject. In this case, CogniCrypt will generate a new Java source file within the selected resource.");
-		label.setFont(this.getFont());
+		label.setFont(getFont());
 
-		DrillDownComposite drillDown = new DrillDownComposite(composite, SWT.BORDER);
-		GridData spec = new GridData(SWT.FILL, SWT.FILL, true, true);
+		final DrillDownComposite drillDown = new DrillDownComposite(composite, SWT.BORDER);
+		final GridData spec = new GridData(SWT.FILL, SWT.FILL, true, true);
 		spec.widthHint = 320;
 		spec.heightHint = 300;
 		drillDown.setLayoutData(spec);
-		
+
 		// Create tree viewer inside drill down.
-		TreeViewer treeViewer = new TreeViewer(drillDown, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		final TreeViewer treeViewer = new TreeViewer(drillDown, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		drillDown.setChildTree(treeViewer);
-		ContainerContentProvider cp = new ContainerContentProvider();
+		final ContainerContentProvider cp = new ContainerContentProvider();
 		cp.showClosedProjects(true);
-		
-		
+
 		new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
-		
-		Label selResLabel = new Label(composite, SWT.WRAP);
+
+		final Label selResLabel = new Label(composite, SWT.WRAP);
 		selResLabel.setText("Selected Resource: ");
-		selResLabel.setFont(this.getFont());
-		
-		Text containerNameField = new Text(composite, SWT.SINGLE | SWT.BORDER);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		selResLabel.setFont(getFont());
+
+		final Text containerNameField = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		final GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.widthHint = 240;
 		containerNameField.setLayoutData(gd);
-		containerNameField.setFont(this.getFont());
+		containerNameField.setFont(getFont());
 
 		treeViewer.setContentProvider(new WorkbenchContentProvider());
 		treeViewer.setLabelProvider(WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider());
 		treeViewer.setComparator(new ViewerComparator());
 		treeViewer.setUseHashlookup(true);
 		treeViewer.addSelectionChangedListener(event -> {
-			IStructuredSelection selection = event.getStructuredSelection();
-			Object firstElement = selection.getFirstElement();
+			final IStructuredSelection selection = event.getStructuredSelection();
+			final Object firstElement = selection.getFirstElement();
 			containerSelectionChanged(firstElement, containerNameField); // allow null
 			if (firstElement != null) {
-				this.setPageComplete(true);
-				selectedResource = selection;
+				setPageComplete(true);
+				this.selectedResource = selection;
 			}
-			
+
 		});
 		treeViewer.addDoubleClickListener(event -> {
-			ISelection selection = event.getSelection();
+			final ISelection selection = event.getSelection();
 			if (selection instanceof IStructuredSelection) {
-				Object item = ((IStructuredSelection) selection).getFirstElement();
+				final Object item = ((IStructuredSelection) selection).getFirstElement();
 				if (item == null) {
 					return;
 				}
@@ -101,11 +100,11 @@ public class LocatorPage extends WizardPage {
 		setControl(composite);
 	}
 
-	public void containerSelectionChanged(Object object, Text containerNameField) {
+	public void containerSelectionChanged(final Object object, final Text containerNameField) {
 		//		selectedContainer = container;
 		String text = "";
 		if (object instanceof IContainer) {
-			text = TextProcessor.process(((IContainer)object).getFullPath().makeRelative().toString());
+			text = TextProcessor.process(((IContainer) object).getFullPath().makeRelative().toString());
 		} else if (object instanceof IFile) {
 			text = ((IFile) object).getFullPath().makeRelative().toString();
 		}
@@ -113,9 +112,8 @@ public class LocatorPage extends WizardPage {
 		containerNameField.setToolTipText(text);
 	}
 
-	
 	public IStructuredSelection getSelectedResource() {
-		return selectedResource;
+		return this.selectedResource;
 	}
 
 	@Override

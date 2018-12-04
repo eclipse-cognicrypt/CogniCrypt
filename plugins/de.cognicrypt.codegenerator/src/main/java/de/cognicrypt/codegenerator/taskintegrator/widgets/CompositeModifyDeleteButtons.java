@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -29,14 +29,14 @@ public class CompositeModifyDeleteButtons extends Composite {
 
 	/**
 	 * Create the composite.
-	 * 
+	 *
 	 * @param parent
 	 * @param style
 	 */
 	int counter = 0;
 	//private ArrayList<ClaferFeature> claferFeatures;
 
-	public CompositeModifyDeleteButtons(Composite parent, Question questionParam) {
+	public CompositeModifyDeleteButtons(final Composite parent, final Question questionParam) {
 		super(parent, SWT.RIGHT_TO_LEFT);
 		//setClaferFeatures(claferFeatures);
 		/*
@@ -44,16 +44,16 @@ public class CompositeModifyDeleteButtons extends Composite {
 		 */
 		setLayout(new GridLayout(2, false));
 
-		Button btnDelete = new Button(this, SWT.NONE);
+		final Button btnDelete = new Button(this, SWT.NONE);
 		btnDelete.setToolTipText("Click to delete the question");
 		btnDelete.addSelectionListener(new SelectionAdapter() {
 
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
+			public void widgetSelected(final SelectionEvent e) {
+				final MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
 				confirmationMessageBox.setMessage("This information will be lost. Do you really want to delete?");
 				confirmationMessageBox.setText("Deleting Question");
-				int response = confirmationMessageBox.open();
+				final int response = confirmationMessageBox.open();
 				if (response == SWT.YES) {
 					((CompositeToHoldGranularUIElements) btnDelete.getParent().getParent().getParent().getParent())
 						.deleteQuestion(((CompositeGranularUIForHighLevelQuestions) btnDelete.getParent().getParent()).getQuestion());// (1) CompositeGranularUIForClaferFeature, (2) composite inside (3) CompositeToHoldGranularUIElements
@@ -62,20 +62,21 @@ public class CompositeModifyDeleteButtons extends Composite {
 		});
 		btnDelete.setText("Delete");
 
-		Button btnModify = new Button(this, SWT.NONE);
+		final Button btnModify = new Button(this, SWT.NONE);
 		btnModify.setText("Modify");
 		btnModify.setToolTipText("Click to modify the question details");
 
 		btnModify.addSelectionListener(new SelectionAdapter() {
 
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				ArrayList<Question> listOfAllQuestions = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getListOfAllQuestions();
-				ClaferModel claferModel = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getClaferModel();
-				QuestionDialog qstnDialog = new QuestionDialog(parent.getShell(), questionParam, claferModel, listOfAllQuestions);
-				int response = qstnDialog.open();
+			public void widgetSelected(final SelectionEvent e) {
+				final ArrayList<Question> listOfAllQuestions = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent())
+					.getListOfAllQuestions();
+				final ClaferModel claferModel = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getClaferModel();
+				final QuestionDialog qstnDialog = new QuestionDialog(parent.getShell(), questionParam, claferModel, listOfAllQuestions);
+				final int response = qstnDialog.open();
 				if (response == Window.OK) {
-					Question modifiedQuestion = qstnDialog.getQuestionDetails();
+					final Question modifiedQuestion = qstnDialog.getQuestionDetails();
 					((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).modifyHighLevelQuestion(questionParam, modifiedQuestion);
 				}
 			}

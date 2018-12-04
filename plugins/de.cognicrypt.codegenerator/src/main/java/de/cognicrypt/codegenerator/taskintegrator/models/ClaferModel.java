@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -29,29 +29,29 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 
 	private static final long serialVersionUID = -6369043905278063238L;
 
-	private ArrayList<ClaferFeature> claferModel;
+	private final ArrayList<ClaferFeature> claferModel;
 
 	public ClaferModel() {
-		claferModel = new ArrayList<>();
+		this.claferModel = new ArrayList<>();
 	}
 
-	public ClaferModel(ArrayList<ClaferFeature> claferModel) {
+	public ClaferModel(final ArrayList<ClaferFeature> claferModel) {
 		this.claferModel = claferModel;
 	}
 
 	public ArrayList<ClaferFeature> getClaferModel() {
-		return claferModel;
+		return this.claferModel;
 	}
 
 	/**
 	 * @return number of clafers in this model as an int
 	 */
 	public int getFeatureCount() {
-		return claferModel.size();
+		return this.claferModel.size();
 	}
 
-	public void add(ClaferFeature claferFeature) {
-		claferModel.add(claferFeature);
+	public void add(final ClaferFeature claferFeature) {
+		this.claferModel.add(claferFeature);
 	}
 
 	/**
@@ -60,14 +60,14 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	 * @param claferModel
 	 *        model the children of which are to be added
 	 */
-	public void add(ClaferModel claferModel) {
-		for (ClaferFeature cfrFeature : claferModel) {
+	public void add(final ClaferModel claferModel) {
+		for (final ClaferFeature cfrFeature : claferModel) {
 			add(cfrFeature);
 		}
 	}
 
-	public void remove(ClaferFeature claferFeature) {
-		claferModel.remove(claferFeature);
+	public void remove(final ClaferFeature claferFeature) {
+		this.claferModel.remove(claferFeature);
 	}
 
 	/**
@@ -77,10 +77,10 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	 *        needle as a {@link String}
 	 * @return boolean success of the search
 	 */
-	public boolean hasFeature(String featureName) {
+	public boolean hasFeature(final String featureName) {
 		boolean featureFound = false;
 
-		for (ClaferFeature cfrFeature : claferModel) {
+		for (final ClaferFeature cfrFeature : this.claferModel) {
 			featureFound |= cfrFeature.getFeatureName().equals(featureName);
 		}
 
@@ -94,8 +94,8 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	 *        needle as a {@link String}
 	 * @return {@link ClaferFeature} with the given name, <code>null</code> if not found
 	 */
-	public ClaferFeature getFeature(String featureName) {
-		for (ClaferFeature cfrFeature : this) {
+	public ClaferFeature getFeature(final String featureName) {
+		for (final ClaferFeature cfrFeature : this) {
 			if (cfrFeature.getFeatureName().equals(featureName)) {
 				return cfrFeature;
 			}
@@ -109,18 +109,18 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	 */
 	@Override
 	public ClaferModel clone() {
-		return new ClaferModel((ArrayList<ClaferFeature>) claferModel.clone());
+		return new ClaferModel((ArrayList<ClaferFeature>) this.claferModel.clone());
 	}
 
 	/**
 	 * return a shallow copy containing only features that the predicate is true for
-	 * 
+	 *
 	 * @param predicate
 	 *        {@link Predicate}&lt;? super {@link ClaferFeature}&gt; to test on the features
 	 * @return {@link ClaferModel} containing references to the successfully filtered features
 	 */
-	public ClaferModel getIf(Predicate<? super ClaferFeature> predicate) {
-		ClaferModel shallowCopy = this.clone();
+	public ClaferModel getIf(final Predicate<? super ClaferFeature> predicate) {
+		final ClaferModel shallowCopy = clone();
 		shallowCopy.getClaferModel().removeIf(predicate.negate());
 		return shallowCopy;
 	}
@@ -130,7 +130,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	 */
 	@Override
 	public Iterator iterator() {
-		return claferModel.iterator();
+		return this.claferModel.iterator();
 	}
 
 	/**
@@ -138,10 +138,10 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 
 		// use the iterator to serialize all children
-		for (ClaferFeature cfrFeature : this) {
+		for (final ClaferFeature cfrFeature : this) {
 			sb.append(cfrFeature);
 			sb.append("\n");
 		}
@@ -151,13 +151,13 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 
 	/**
 	 * get missing inheritance or property types in this model with respect to a given feature
-	 * 
+	 *
 	 * @param refFeature
 	 *        reference feature to sift for unimplemented features
 	 * @return a model containing only those features that have been added
 	 */
-	public ClaferModel getMissingFeatures(ClaferFeature refFeature) {
-		ClaferModel addedFeatures = new ClaferModel();
+	public ClaferModel getMissingFeatures(final ClaferFeature refFeature) {
+		final ClaferModel addedFeatures = new ClaferModel();
 
 		// find missing inherited feature
 		if (!refFeature.getFeatureInheritance().isEmpty()) {
@@ -172,14 +172,14 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 				needleFeature = refFeature.getFeatureInheritance();
 			}
 
-			for (String primitive : Constants.CLAFER_PRIMITIVE_TYPES) {
+			for (final String primitive : Constants.CLAFER_PRIMITIVE_TYPES) {
 				if (primitive.equals(needleFeature)) {
 					parentFound = true;
 					break;
 				}
 			}
 
-			for (ClaferFeature cfrFeature : claferModel) {
+			for (final ClaferFeature cfrFeature : this.claferModel) {
 				if (cfrFeature.getFeatureName().equals(needleFeature)) {
 					parentFound = true;
 					break;
@@ -188,24 +188,24 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 
 			// remember missing inherited feature
 			if (!parentFound) {
-				ClaferFeature parentFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, needleFeature, "");
+				final ClaferFeature parentFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, needleFeature, "");
 				addedFeatures.add(parentFeature);
 			}
 		}
 
 		// find missing property types
-		for (ClaferProperty fp : refFeature.getFeatureProperties()) {
+		for (final ClaferProperty fp : refFeature.getFeatureProperties()) {
 			boolean propertyTypeFound = false;
 
 			// do not implement Clafer primitives
-			for (String primitive : Constants.CLAFER_PRIMITIVE_TYPES) {
+			for (final String primitive : Constants.CLAFER_PRIMITIVE_TYPES) {
 				if (primitive.equals(fp.getPropertyType())) {
 					propertyTypeFound = true;
 					break;
 				}
 			}
 
-			for (ClaferFeature cfrFeature : claferModel) {
+			for (final ClaferFeature cfrFeature : this.claferModel) {
 				if (cfrFeature.getFeatureName().equals(fp.getPropertyType())) {
 					propertyTypeFound = true;
 					break;
@@ -217,9 +217,9 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 				propertyTypeFound = true;
 			}
 
-			// remember missing property types			
+			// remember missing property types
 			if (!fp.getPropertyType().isEmpty() && !propertyTypeFound) {
-				ClaferFeature propertyTypeFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, fp.getPropertyType(), "");
+				final ClaferFeature propertyTypeFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, fp.getPropertyType(), "");
 				addedFeatures.add(propertyTypeFeature);
 			}
 		}
@@ -234,10 +234,10 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	 *        reference feature to consider for search of unused features
 	 * @return a model containing only those features that have been added
 	 */
-	public ClaferModel implementMissingFeatures(ClaferFeature refFeature) {
-		ClaferModel missingFeatures = getMissingFeatures(refFeature);
+	public ClaferModel implementMissingFeatures(final ClaferFeature refFeature) {
+		final ClaferModel missingFeatures = getMissingFeatures(refFeature);
 
-		for (ClaferFeature missingFeature : missingFeatures) {
+		for (final ClaferFeature missingFeature : missingFeatures) {
 			add(missingFeature);
 		}
 
@@ -246,15 +246,15 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 
 	/**
 	 * get a model containing the unused features of this model
-	 * 
+	 *
 	 * @return
 	 */
 	public ClaferModel getUnusedFeatures() {
 		// TODO switch logic, copy list and delete everything that is used
-		ClaferModel unusedFeatures = new ClaferModel();
+		final ClaferModel unusedFeatures = new ClaferModel();
 
-		for (ClaferFeature cfrFeature : claferModel) {
-			// check usage of cfrFeature			
+		for (final ClaferFeature cfrFeature : this.claferModel) {
+			// check usage of cfrFeature
 			boolean used = false;
 			if (cfrFeature.hasProperties()) {
 				used = true;
@@ -264,15 +264,15 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 			}
 
 			// if abstract and somebody inherits -> used
-			for (ClaferFeature refFeature : claferModel) {
+			for (final ClaferFeature refFeature : this.claferModel) {
 				if (refFeature.getFeatureInheritance().equals(cfrFeature.getFeatureName())) {
 					// usage found: refFeature inherits from cfrFeature
 					used = true;
 				}
 			}
 
-			for (ClaferFeature refFeature : claferModel) {
-				for (ClaferProperty featureProp : refFeature.getFeatureProperties()) {
+			for (final ClaferFeature refFeature : this.claferModel) {
+				for (final ClaferProperty featureProp : refFeature.getFeatureProperties()) {
 					if (featureProp.getPropertyType().equals(cfrFeature.getFeatureName())) {
 						// usage found: featureProp is of type cfrFeature
 						used = true;
@@ -290,17 +290,17 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 
 	/**
 	 * write the model into a file
-	 * 
+	 *
 	 * @param filename
 	 *        {@link String} filename of the file to write
 	 * @return success of the writing as a {@link Boolean}
 	 */
-	public boolean toFile(String filename) {
+	public boolean toFile(final String filename) {
 		try {
-			FileWriter fileWriter = new FileWriter(filename);
-			fileWriter.write(this.toString());
+			final FileWriter fileWriter = new FileWriter(filename);
+			fileWriter.write(toString());
 			fileWriter.close();
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			Activator.getDefault().logError(ex);
 			return false;
 		}
@@ -310,12 +310,12 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 
 	/**
 	 * try to compile the model in a given file
-	 * 
+	 *
 	 * @param filename
 	 *        {@link String} filename of the .cfr file to compile
 	 * @return {@link Boolean} success of the compilation
 	 */
-	public static boolean compile(String filename) {
+	public static boolean compile(final String filename) {
 		if (ClaferCompiler.execute(filename)) {
 			return true;
 		}
@@ -325,14 +325,14 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 
 	/**
 	 * Get the parent feature of a property. Note, that this method finds a feature containing the given reference and does not check equality in terms of values.
-	 * 
+	 *
 	 * @param referenceProperty
 	 *        reference of the property to be found
 	 * @return first {@link ClaferFeature} that contains a matching reference to the given property
 	 */
-	public ClaferFeature getParentFeatureOfProperty(ClaferProperty referenceProperty) {
-		for (ClaferFeature cfrFeature : claferModel) {
-			for (ClaferProperty featureProperty : cfrFeature.getFeatureProperties()) {
+	public ClaferFeature getParentFeatureOfProperty(final ClaferProperty referenceProperty) {
+		for (final ClaferFeature cfrFeature : this.claferModel) {
+			for (final ClaferProperty featureProperty : cfrFeature.getFeatureProperties()) {
 				// check, if this property is pointed to by referenceProperty
 				if (featureProperty == referenceProperty) {
 					return cfrFeature;
@@ -344,15 +344,15 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 
 	/**
 	 * serialize the model into a binary
-	 * 
+	 *
 	 * @param filename
 	 *        target filename as a {@link String}
 	 * @return success of the serialization
 	 */
-	public boolean toBinary(String filename) {
+	public boolean toBinary(final String filename) {
 		try {
-			FileOutputStream fos = new FileOutputStream(filename);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			final FileOutputStream fos = new FileOutputStream(filename);
+			final ObjectOutputStream oos = new ObjectOutputStream(fos);
 
 			oos.writeObject(this);
 
@@ -360,7 +360,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 			fos.close();
 
 			return true;
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			Activator.getDefault().logError(ex);
 		}
 
@@ -369,23 +369,23 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 
 	/**
 	 * factory method to create an instance from a binary
-	 * 
+	 *
 	 * @param filename
 	 *        source filename as a {@link String}
 	 * @return {@link ClaferModel} instance if successful, <code>null</code> else
 	 */
-	public static ClaferModel createFromBinaries(String filename) {
+	public static ClaferModel createFromBinaries(final String filename) {
 		ClaferModel result = null;
 
 		try {
-			FileInputStream fis = new FileInputStream(filename);
-			ObjectInputStream ois = new ObjectInputStream(fis);
+			final FileInputStream fis = new FileInputStream(filename);
+			final ObjectInputStream ois = new ObjectInputStream(fis);
 
 			result = (ClaferModel) ois.readObject();
 
 			ois.close();
 			fis.close();
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			Activator.getDefault().logError(ex);
 		}
 

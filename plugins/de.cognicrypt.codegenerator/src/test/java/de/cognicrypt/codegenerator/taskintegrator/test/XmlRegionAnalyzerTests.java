@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -57,7 +57,7 @@ import de.cognicrypt.codegenerator.taskintegrator.controllers.XmlRegionAnalyzer;
 
 /**
  * Unit tests for {@link XmlRegionAnalyzer}.
- * 
+ *
  * @author Vincent Zurczak
  */
 public class XmlRegionAnalyzerTests {
@@ -71,7 +71,7 @@ public class XmlRegionAnalyzerTests {
 	public void testInstructions() throws Exception {
 
 		// Let's try the basics first
-		XmlRegionAnalyzer analyzer = new XmlRegionAnalyzer();
+		final XmlRegionAnalyzer analyzer = new XmlRegionAnalyzer();
 
 		String input = "";
 		List<XmlRegion> regions = analyzer.analyzeXml(input);
@@ -126,7 +126,7 @@ public class XmlRegionAnalyzerTests {
 		StringBuilder sb = new StringBuilder(ISTR_STD);
 		sb.append("\n<test/>");
 
-		XmlRegionAnalyzer analyzer = new XmlRegionAnalyzer();
+		final XmlRegionAnalyzer analyzer = new XmlRegionAnalyzer();
 		List<XmlRegion> regions = analyzer.analyzeXml(sb.toString());
 		testRegionsContiguity(regions, sb.toString());
 
@@ -190,9 +190,10 @@ public class XmlRegionAnalyzerTests {
 		assertTrue(regions.size() == 11);
 
 		int exceptionCpt = 0;
-		for (XmlRegion xr : regions) {
-			if (xr.getXmlRegionType() != XmlRegionType.MARKUP)
+		for (final XmlRegion xr : regions) {
+			if (xr.getXmlRegionType() != XmlRegionType.MARKUP) {
 				exceptionCpt++;
+			}
 		}
 
 		assertTrue(exceptionCpt == 2);
@@ -208,7 +209,7 @@ public class XmlRegionAnalyzerTests {
 		StringBuilder sb = new StringBuilder(ISTR_STD);
 		sb.append("<!-- Simple Comment -->");
 
-		XmlRegionAnalyzer analyzer = new XmlRegionAnalyzer();
+		final XmlRegionAnalyzer analyzer = new XmlRegionAnalyzer();
 		List<XmlRegion> regions = analyzer.analyzeXml(sb.toString());
 		testRegionsContiguity(regions, sb.toString());
 
@@ -285,7 +286,7 @@ public class XmlRegionAnalyzerTests {
 
 		int commentCpt = 0, markupCpt = 0, instrCpt = 0, whitespacesCpt = 0, otherCpt = 0;
 		int end = 0;
-		for (XmlRegion xr : regions) {
+		for (final XmlRegion xr : regions) {
 			switch (xr.getXmlRegionType()) {
 				case COMMENT:
 					commentCpt++;
@@ -321,7 +322,7 @@ public class XmlRegionAnalyzerTests {
 	public void testAttributes() throws Exception {
 
 		// A single attribute
-		XmlRegionAnalyzer analyzer = new XmlRegionAnalyzer();
+		final XmlRegionAnalyzer analyzer = new XmlRegionAnalyzer();
 		StringBuilder sb = new StringBuilder("<test arg0");
 		List<XmlRegion> regions = analyzer.analyzeXml(sb.toString());
 		testRegionsContiguity(regions, sb.toString());
@@ -521,7 +522,7 @@ public class XmlRegionAnalyzerTests {
 		// Let's try the basics
 		StringBuilder sb = new StringBuilder("<test>Essai</test>");
 
-		XmlRegionAnalyzer analyzer = new XmlRegionAnalyzer();
+		final XmlRegionAnalyzer analyzer = new XmlRegionAnalyzer();
 		List<XmlRegion> regions = analyzer.analyzeXml(sb.toString());
 		testRegionsContiguity(regions, sb.toString());
 
@@ -634,15 +635,15 @@ public class XmlRegionAnalyzerTests {
 	public void testCDataSections() throws Exception {
 
 		// A simple CData section
-		StringBuilder sb = new StringBuilder("<test>");
+		final StringBuilder sb = new StringBuilder("<test>");
 		sb.append("<![CDATA[");
 		sb.append("<sender>John Smith</sender>");
 		sb.append("<!-- This is a comment inside a CData section! -->");
 		sb.append("]]>");
 		sb.append("</test>");
 
-		XmlRegionAnalyzer analyzer = new XmlRegionAnalyzer();
-		List<XmlRegion> regions = analyzer.analyzeXml(sb.toString());
+		final XmlRegionAnalyzer analyzer = new XmlRegionAnalyzer();
+		final List<XmlRegion> regions = analyzer.analyzeXml(sb.toString());
 		testRegionsContiguity(regions, sb.toString());
 
 		assertTrue(regions.size() == 3);
@@ -659,29 +660,29 @@ public class XmlRegionAnalyzerTests {
 	 * <p>
 	 * This is more like a performance test. The implementation was reviewed in consequence because of this test.
 	 * </p>
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test
 	public void testExampleThatFailed_1() throws Exception {
-		String test = loadResource("/src/test/java/de/cognicrypt/codegenerator/taskintegrator/test/resources/taskintegrator/XSLTests/StackOverflowExample.xml");
+		final String test = loadResource("/src/test/java/de/cognicrypt/codegenerator/taskintegrator/test/resources/taskintegrator/XSLTests/StackOverflowExample.xml");
 		assertTrue(test != null);
 
-		XmlRegionAnalyzer analyzer = new XmlRegionAnalyzer();
-		List<XmlRegion> regions = analyzer.analyzeXml(test);
+		final XmlRegionAnalyzer analyzer = new XmlRegionAnalyzer();
+		final List<XmlRegion> regions = analyzer.analyzeXml(test);
 		testRegionsContiguity(regions, test);
 	}
 
 	/**
 	 * Verifies that all the XML regions in the list are contiguous.
-	 * 
+	 *
 	 * @param regions
 	 *        the analyzed regions
 	 */
-	private static void testRegionsContiguity(List<XmlRegion> regions, String xml) {
+	private static void testRegionsContiguity(final List<XmlRegion> regions, final String xml) {
 
 		int end = 0;
-		for (XmlRegion xr : regions) {
+		for (final XmlRegion xr : regions) {
 			assertTrue(xr.getStart() == end);
 			end = xr.getEnd();
 		}
@@ -691,21 +692,21 @@ public class XmlRegionAnalyzerTests {
 
 	/**
 	 * Loads a resource from the class loader and returns its content as a string.
-	 * 
+	 *
 	 * @param resourceLocation
 	 *        the resource location
 	 * @return a string, never null
 	 * @throws IOException
 	 */
-	private static String loadResource(String resourceLocation) {
+	private static String loadResource(final String resourceLocation) {
 
 		String result = null;
 		InputStream in = null;
 		try {
 			in = XmlRegionAnalyzer.class.getResourceAsStream(resourceLocation);
 			if (in != null) {
-				ByteArrayOutputStream os = new ByteArrayOutputStream();
-				byte[] buf = new byte[1024];
+				final ByteArrayOutputStream os = new ByteArrayOutputStream();
+				final byte[] buf = new byte[1024];
 				int len;
 				while ((len = in.read(buf)) > 0) {
 					os.write(buf, 0, len);
@@ -714,7 +715,7 @@ public class XmlRegionAnalyzerTests {
 				result = os.toString("UTF-8");
 			}
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// TODO
 
 		} finally {
@@ -723,7 +724,7 @@ public class XmlRegionAnalyzerTests {
 				try {
 					in.close();
 
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					e.printStackTrace();
 				}
 			}

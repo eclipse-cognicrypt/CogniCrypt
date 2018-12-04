@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -27,7 +27,7 @@ public class XSLTag {
 	 * @param xSLAttributes
 	 *        This is an ArrayList of type {@link XSLAttribute} that are actually chosen.
 	 */
-	public XSLTag(XSLTags xSLTagDetails, ArrayList<XSLAttribute> xSLAttributes) {
+	public XSLTag(final XSLTags xSLTagDetails, final ArrayList<XSLAttribute> xSLAttributes) {
 		super();
 		setXSLTagDetails(xSLTagDetails);
 		setXSLAttributes(xSLAttributes);
@@ -37,30 +37,30 @@ public class XSLTag {
 	 * @return XSLTagDetails the constant from {@code XSLTags} in {@link Constants} passed to the constructor.
 	 */
 	public Constants.XSLTags getXSLTagDetails() {
-		return XSLTagDetails;
+		return this.XSLTagDetails;
 	}
 
 	/**
 	 * @param xSLTagDetails
 	 *        set the constant from {@code XSLTags} in {@link Constants}.
 	 */
-	private void setXSLTagDetails(Constants.XSLTags xSLTagDetails) {
-		XSLTagDetails = xSLTagDetails;
+	private void setXSLTagDetails(final Constants.XSLTags xSLTagDetails) {
+		this.XSLTagDetails = xSLTagDetails;
 	}
 
 	/**
 	 * @return the ArrayList of type {@link XSLAttribute}.
 	 */
 	public ArrayList<XSLAttribute> getXSLAttributes() {
-		return XSLAttributes;
+		return this.XSLAttributes;
 	}
 
 	/**
 	 * @param xSLAttributes
 	 *        set the ArrayList<{@link XSLAttribute}>.
 	 */
-	private void setXSLAttributes(ArrayList<XSLAttribute> xSLAttributes) {
-		XSLAttributes = xSLAttributes;
+	private void setXSLAttributes(final ArrayList<XSLAttribute> xSLAttributes) {
+		this.XSLAttributes = xSLAttributes;
 	}
 
 	/**
@@ -69,15 +69,15 @@ public class XSLTag {
 	 * First generate a String from ArrayList of type {@link XSLAttribute} such that it is in the form {@code ' XSLAttributeName1 = "XSLAttributeData1"' ...}
 	 * <p>
 	 * A String for the complete XSLTag is generated, by appending the XSLBeginTag, the attribute string, and the XSLEndTag. XSLTags may have an empty XSLEndTag.
-	 * 
+	 *
 	 */
 	@Override
 	public String toString() {
-		StringBuilder tagString = new StringBuilder();
-		StringBuilder attributeString = new StringBuilder();
+		final StringBuilder tagString = new StringBuilder();
+		final StringBuilder attributeString = new StringBuilder();
 
 		// Generate the string for the attributes.
-		for (XSLAttribute attribute : getXSLAttributes()) {
+		for (final XSLAttribute attribute : getXSLAttributes()) {
 			attributeString.append(" ");
 			attributeString.append(attribute.getXSLAttributeName());
 			attributeString.append("=\"");

@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -18,7 +18,7 @@ public class ClaferConstraint implements Serializable {
 
 	private String constraint;
 
-	public ClaferConstraint(String constraint) {
+	public ClaferConstraint(final String constraint) {
 		this.constraint = constraint;
 	}
 
@@ -27,10 +27,10 @@ public class ClaferConstraint implements Serializable {
 	}
 
 	public String getConstraint() {
-		return constraint;
+		return this.constraint;
 	}
 
-	public void setConstraint(String constraint) {
+	public void setConstraint(final String constraint) {
 		this.constraint = constraint;
 	}
 

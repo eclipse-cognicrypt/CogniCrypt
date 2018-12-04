@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -14,8 +14,6 @@ import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -36,16 +34,16 @@ import de.cognicrypt.core.Constants;
 public class GroupFeatureProperty extends Composite {
 
 	private ClaferProperty featureProperty;
-	private Text txtPropertyName;
+	private final Text txtPropertyName;
 	private Text txtPropertyType;
 	private Combo comboPropertyType;
 
-	private ControlDecoration decorationName;
+	private final ControlDecoration decorationName;
 	private ControlDecoration decorationType;
 
 	/**
 	 * Create the composite.
-	 * 
+	 *
 	 * @param parent
 	 *        Composite that contains the feature property
 	 * @param style
@@ -56,44 +54,38 @@ public class GroupFeatureProperty extends Composite {
 	 * @param editable
 	 * @param claferModel
 	 */
-	public GroupFeatureProperty(Composite parent, int style, ClaferProperty featurePropertyParam, boolean showRemoveButton, ClaferModel claferModel) {
+	public GroupFeatureProperty(final Composite parent, final int style, final ClaferProperty featurePropertyParam, final boolean showRemoveButton, final ClaferModel claferModel) {
 		super(parent, style);
 		// Set the model for use first.
-		this.setFeatureProperty(featurePropertyParam);
+		setFeatureProperty(featurePropertyParam);
 
 		setLayout(new GridLayout(5, false));
 
-		Label lblName = new Label(this, SWT.NONE);
+		final Label lblName = new Label(this, SWT.NONE);
 		lblName.setText(Constants.FEATURE_PROPERTY_NAME);
 
-		decorationName = new ControlDecoration(lblName, SWT.TOP | SWT.RIGHT);
+		this.decorationName = new ControlDecoration(lblName, SWT.TOP | SWT.RIGHT);
 
-		txtPropertyName = new Text(this, SWT.BORDER);
-		txtPropertyName.setEditable(showRemoveButton);
-		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		this.txtPropertyName = new Text(this, SWT.BORDER);
+		this.txtPropertyName.setEditable(showRemoveButton);
+		final GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		// do not claim space for all of the text if not available
 		gridData.widthHint = 0;
-		txtPropertyName.setLayoutData(gridData);
-		txtPropertyName.setText(featureProperty.getPropertyName());
-		txtPropertyName.addFocusListener(new FocusAdapter() {
+		this.txtPropertyName.setLayoutData(gridData);
+		this.txtPropertyName.setText(this.featureProperty.getPropertyName());
+		this.txtPropertyName.addFocusListener(new FocusAdapter() {
 
 			@Override
-			public void focusLost(FocusEvent e) {
-				featureProperty.setPropertyName(txtPropertyName.getText());
+			public void focusLost(final FocusEvent e) {
+				GroupFeatureProperty.this.featureProperty.setPropertyName(GroupFeatureProperty.this.txtPropertyName.getText());
 				super.focusLost(e);
 			}
 		});
 
-		txtPropertyName.addModifyListener(new ModifyListener() {
+		this.txtPropertyName.addModifyListener(arg0 -> ((CompositeToHoldSmallerUIElements) getParent().getParent()).notifyListeners(SWT.Selection, null));
 
-			@Override
-			public void modifyText(ModifyEvent arg0) {
-				((CompositeToHoldSmallerUIElements) getParent().getParent()).notifyListeners(SWT.Selection, null);
-			}
-		});
-
-		Label lblNewLabel = new Label(this, SWT.NONE);
-		if (featureProperty.getPropertyType().contains("=")) {
+		final Label lblNewLabel = new Label(this, SWT.NONE);
+		if (this.featureProperty.getPropertyType().contains("=")) {
 			lblNewLabel.setText(Constants.FEATURE_PROPERTY_TYPE_REFERENCE_RELATION);
 		} else {
 			lblNewLabel.setText(Constants.FEATURE_PROPERTY_TYPE_RELATION);
@@ -101,89 +93,83 @@ public class GroupFeatureProperty extends Composite {
 
 		if (!showRemoveButton) {
 
-			txtPropertyType = new Text(this, SWT.BORDER);
-			txtPropertyType.setEditable(showRemoveButton);
-			txtPropertyType.setLayoutData(gridData);
-			txtPropertyType.setText(featureProperty.getPropertyType());
-			txtPropertyType.addFocusListener(new FocusAdapter() {
+			this.txtPropertyType = new Text(this, SWT.BORDER);
+			this.txtPropertyType.setEditable(showRemoveButton);
+			this.txtPropertyType.setLayoutData(gridData);
+			this.txtPropertyType.setText(this.featureProperty.getPropertyType());
+			this.txtPropertyType.addFocusListener(new FocusAdapter() {
 
 				@Override
-				public void focusLost(FocusEvent e) {
-					featureProperty.setPropertyType(txtPropertyType.getText());
+				public void focusLost(final FocusEvent e) {
+					GroupFeatureProperty.this.featureProperty.setPropertyType(GroupFeatureProperty.this.txtPropertyType.getText());
 					super.focusLost(e);
 				}
 			});
 		} else {
 
-			comboPropertyType = new Combo(this, SWT.NONE);
-			comboPropertyType.setLayoutData(gridData);
-			comboPropertyType.setText(featureProperty.getPropertyType());
-			comboPropertyType.addFocusListener(new FocusAdapter() {
+			this.comboPropertyType = new Combo(this, SWT.NONE);
+			this.comboPropertyType.setLayoutData(gridData);
+			this.comboPropertyType.setText(this.featureProperty.getPropertyType());
+			this.comboPropertyType.addFocusListener(new FocusAdapter() {
 
 				@Override
-				public void focusLost(FocusEvent e) {
-					featureProperty.setPropertyType(comboPropertyType.getText());
+				public void focusLost(final FocusEvent e) {
+					GroupFeatureProperty.this.featureProperty.setPropertyType(GroupFeatureProperty.this.comboPropertyType.getText());
 					super.focusLost(e);
 
 				}
 			});
-			comboPropertyType.addSelectionListener(new SelectionListener() {
+			this.comboPropertyType.addSelectionListener(new SelectionListener() {
 
 				@Override
-				public void widgetSelected(SelectionEvent arg0) {
+				public void widgetSelected(final SelectionEvent arg0) {
 					// suggest a name if possible (the type in lower case if no primitve type)
-					if (txtPropertyName.getText().isEmpty()) {
+					if (GroupFeatureProperty.this.txtPropertyName.getText().isEmpty()) {
 
 						boolean isPrimitive = false;
 
-						for (String primitive : Constants.CLAFER_PRIMITIVE_TYPES) {
-							if (primitive.equals(comboPropertyType.getText())) {
+						for (final String primitive : Constants.CLAFER_PRIMITIVE_TYPES) {
+							if (primitive.equals(GroupFeatureProperty.this.comboPropertyType.getText())) {
 								isPrimitive = true;
 								break;
 							}
 						}
 
 						if (!isPrimitive) {
-							txtPropertyName.setText(comboPropertyType.getText().toLowerCase());
-							featureProperty.setPropertyName(txtPropertyName.getText());
+							GroupFeatureProperty.this.txtPropertyName.setText(GroupFeatureProperty.this.comboPropertyType.getText().toLowerCase());
+							GroupFeatureProperty.this.featureProperty.setPropertyName(GroupFeatureProperty.this.txtPropertyName.getText());
 							((CompositeToHoldSmallerUIElements) getParent().getParent()).notifyListeners(SWT.Selection, null);
 						}
 					}
 				}
 
 				@Override
-				public void widgetDefaultSelected(SelectionEvent arg0) {}
+				public void widgetDefaultSelected(final SelectionEvent arg0) {}
 			});
 
-			decorationType = new ControlDecoration(lblNewLabel, SWT.TOP | SWT.RIGHT);
+			this.decorationType = new ControlDecoration(lblNewLabel, SWT.TOP | SWT.RIGHT);
 
-			comboPropertyType.addModifyListener(new ModifyListener() {
-
-				@Override
-				public void modifyText(ModifyEvent arg0) {
-					((CompositeToHoldSmallerUIElements) getParent().getParent()).notifyListeners(SWT.Selection, null);
-				}
-			});
+			this.comboPropertyType.addModifyListener(arg0 -> ((CompositeToHoldSmallerUIElements) getParent().getParent()).notifyListeners(SWT.Selection, null));
 
 			// suggest Clafer primitives as as type
-			for (String primitive : Constants.CLAFER_PRIMITIVE_TYPES) {
-				comboPropertyType.add(primitive);
+			for (final String primitive : Constants.CLAFER_PRIMITIVE_TYPES) {
+				this.comboPropertyType.add(primitive);
 			}
 
-			for (ClaferFeature cfr : claferModel.getIf(ftr -> ftr.getFeatureType().equals(Constants.FeatureType.ABSTRACT))) {
-				comboPropertyType.add(cfr.getFeatureName().toString());
+			for (final ClaferFeature cfr : claferModel.getIf(ftr -> ftr.getFeatureType().equals(Constants.FeatureType.ABSTRACT))) {
+				this.comboPropertyType.add(cfr.getFeatureName().toString());
 			}
 
 		}
 
 		if (showRemoveButton) {
 
-			Button btnRemove = new Button(this, SWT.NONE);
+			final Button btnRemove = new Button(this, SWT.NONE);
 			btnRemove.setText(Constants.FEATURE_PROPERTY_REMOVE);
 			btnRemove.addSelectionListener(new SelectionAdapter() {
 
 				@Override
-				public void widgetSelected(SelectionEvent e) {
+				public void widgetSelected(final SelectionEvent e) {
 					((CompositeToHoldSmallerUIElements) getParent().getParent()).removeFeatureProperty(getFeatureProperty());
 					((CompositeToHoldSmallerUIElements) getParent().getParent()).notifyListeners(SWT.Selection, null);
 					((CompositeToHoldSmallerUIElements) getParent().getParent()).updateClaferContainer();
@@ -201,23 +187,23 @@ public class GroupFeatureProperty extends Composite {
 	 * @return the featureProperty
 	 */
 	public ClaferProperty getFeatureProperty() {
-		return featureProperty;
+		return this.featureProperty;
 	}
 
 	/**
 	 * @param featureProperty
 	 *        the featureProperty to set
 	 */
-	private void setFeatureProperty(ClaferProperty featureProperty) {
+	private void setFeatureProperty(final ClaferProperty featureProperty) {
 		this.featureProperty = featureProperty;
 	}
 
 	public boolean validate() {
 		boolean valid = true;
 
-		valid &= ClaferValidation.validateClaferName(txtPropertyName.getText(), true, decorationName);
-		if (comboPropertyType != null) {
-			valid &= ClaferValidation.validateClaferName(comboPropertyType.getText(), true, decorationType);
+		valid &= ClaferValidation.validateClaferName(this.txtPropertyName.getText(), true, this.decorationName);
+		if (this.comboPropertyType != null) {
+			valid &= ClaferValidation.validateClaferName(this.comboPropertyType.getText(), true, this.decorationType);
 		}
 
 		return valid;

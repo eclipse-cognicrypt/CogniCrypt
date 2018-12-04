@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -35,15 +35,15 @@ public class HelperTest {
 
 	@Before
 	public void countLines() throws IOException {
-		InputStream is = new BufferedInputStream(new FileInputStream(file.getAbsolutePath()));
+		final InputStream is = new BufferedInputStream(new FileInputStream(file.getAbsolutePath()));
 		try {
-			byte[] c = new byte[1024];
+			final byte[] c = new byte[1024];
 			int readChars = 0;
 
 			while ((readChars = is.read(c)) != -1) {
 				for (int i = 0; i < readChars; ++i) {
 					if (c[i] == '\n') {
-						++nbLinesInFile;
+						++this.nbLinesInFile;
 					}
 				}
 			}
@@ -55,16 +55,16 @@ public class HelperTest {
 
 	@Test
 	public void compareSourceCode() {
-		LinkedHashMap<String, String> map = helper.getSourceCode(CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder));
-		for (String key : map.keySet()) {
-			nbLinesInCode = countLinesInString(map.get(key));
+		final LinkedHashMap<String, String> map = this.helper.getSourceCode(CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder));
+		for (final String key : map.keySet()) {
+			this.nbLinesInCode = countLinesInString(map.get(key));
 		}
-		assertEquals(nbLinesInCode, nbLinesInFile);
+		assertEquals(this.nbLinesInCode, this.nbLinesInFile);
 
 	}
 
-	private static int countLinesInString(String str) {
-		String[] lines = str.split("\r\n|\r|\n");
+	private static int countLinesInString(final String str) {
+		final String[] lines = str.split("\r\n|\r|\n");
 		return lines.length;
 	}
 }

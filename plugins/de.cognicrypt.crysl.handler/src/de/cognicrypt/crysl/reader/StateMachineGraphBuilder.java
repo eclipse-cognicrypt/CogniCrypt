@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -137,9 +137,9 @@ public class StateMachineGraphBuilder {
 			}
 
 			if (rightElOp != null && ("+".equals(rightElOp) || "*".equals(rightElOp))) {
-				List<TransitionEdge> outgoingEdges = new ArrayList<TransitionEdge>();
+				final List<TransitionEdge> outgoingEdges = new ArrayList<TransitionEdge>();
 				if ("|".equals(orderOp)) {
-					List<TransitionEdge> tmpOutgoingEdges = getOutgoingEdge(leftPrev, null);
+					final List<TransitionEdge> tmpOutgoingEdges = getOutgoingEdge(leftPrev, null);
 					for (final TransitionEdge outgoingEdge : tmpOutgoingEdges) {
 						if (isReachable(outgoingEdge.to(), prevNode, new ArrayList<StateNode>())) {
 							outgoingEdges.addAll(getOutgoingEdge(outgoingEdge.to(), prevNode));
@@ -180,7 +180,6 @@ public class StateMachineGraphBuilder {
 				leftOvers.put(level - 1, new HashMap.SimpleEntry<>(rightElOp, prevNode));
 			}
 			final StateNode rightPrev = prevNode;
-			StateNode returnToNode = null;
 			if ("|".equals(orderOp)) {
 				leftOvers.put(level + 1, new HashMap.SimpleEntry<>(orderOp, prevNode));
 				prevNode = process(right, level + 1, leftOvers, leftPrev);
@@ -237,8 +236,8 @@ public class StateMachineGraphBuilder {
 		return prevNode;
 	}
 
-	private boolean isReachable(StateNode stateNode, StateNode prevNode, List<StateNode> skippable) {
-		for (TransitionEdge edge : getOutgoingEdge(stateNode, stateNode)) {
+	private boolean isReachable(final StateNode stateNode, final StateNode prevNode, final List<StateNode> skippable) {
+		for (final TransitionEdge edge : getOutgoingEdge(stateNode, stateNode)) {
 			if (edge.to().equals(prevNode)) {
 				return true;
 			} else if (!skippable.contains(edge.to())) {
@@ -256,10 +255,9 @@ public class StateMachineGraphBuilder {
 		final String leftElOp = (left != null) ? left.getElementop() : "";
 		final String rightElOp = (right != null) ? right.getElementop() : "";
 		final String orderOp = curLevel.getOrderop();
-		
-		
+
 		if (left == null && right == null) {
-			String elOp = curLevel.getElementop();
+			final String elOp = curLevel.getElementop();
 			if ("*".equals(elOp) || "?".equals(elOp)) {
 				addRegularEdge(curLevel, prevNode, null, true);
 			} else {

@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -21,8 +21,8 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 
 public class ClaferModelContentProvider implements ITreeContentProvider {
 
-	private Predicate<? super ClaferFeature> featureFilter;
-	private Predicate<? super ClaferProperty> propertyFilter;
+	private final Predicate<? super ClaferFeature> featureFilter;
+	private final Predicate<? super ClaferProperty> propertyFilter;
 
 	/**
 	 * create a {@link ClaferModelContentProvider} that yields all of the content's elements
@@ -33,25 +33,25 @@ public class ClaferModelContentProvider implements ITreeContentProvider {
 
 	/**
 	 * create a {@link ClaferModelContentProvider} with filters attached
-	 * 
+	 *
 	 * @param featureFilter
 	 *        display {@link ClaferFeature}s that this predicate applies to (returns true for)
 	 * @param propertyFilter
 	 *        display {@link ClaferProperty}s that this predicate applies to (returns true for)
 	 */
-	public ClaferModelContentProvider(Predicate<? super ClaferFeature> featureFilter, Predicate<? super ClaferProperty> propertyFilter) {
+	public ClaferModelContentProvider(final Predicate<? super ClaferFeature> featureFilter, final Predicate<? super ClaferProperty> propertyFilter) {
 		this.featureFilter = featureFilter;
 		this.propertyFilter = propertyFilter;
 	}
 
 	@Override
-	public Object[] getChildren(Object inputElement) {
+	public Object[] getChildren(final Object inputElement) {
 		if (inputElement instanceof ClaferFeature) {
-			ClaferFeature inputFeature = (ClaferFeature) inputElement;
-			ArrayList<ClaferProperty> filteredProperties = (ArrayList<ClaferProperty>) inputFeature.getFeatureProperties().clone();
+			final ClaferFeature inputFeature = (ClaferFeature) inputElement;
+			final ArrayList<ClaferProperty> filteredProperties = (ArrayList<ClaferProperty>) inputFeature.getFeatureProperties().clone();
 
-			if (propertyFilter != null) {
-				filteredProperties.removeIf(propertyFilter.negate());
+			if (this.propertyFilter != null) {
+				filteredProperties.removeIf(this.propertyFilter.negate());
 			}
 
 			return filteredProperties.toArray();
@@ -61,19 +61,19 @@ public class ClaferModelContentProvider implements ITreeContentProvider {
 
 	/**
 	 * get the elements when setInput is called, can only be called on {@link ClaferModel} in this ContentProvider
-	 * 
+	 *
 	 * @param inputElement
 	 *        an input element of type {@link ClaferModel}
 	 * @return returns the Clafer features of the model as {@link Object}[], empty {@link Object}[] if input type wrong
 	 */
 	@Override
-	public Object[] getElements(Object inputElement) {
+	public Object[] getElements(final Object inputElement) {
 		if (inputElement instanceof ClaferModel) {
-			ClaferModel inputModel = (ClaferModel) inputElement;
-			ClaferModel filteredModel = inputModel.clone();
+			final ClaferModel inputModel = (ClaferModel) inputElement;
+			final ClaferModel filteredModel = inputModel.clone();
 
-			if (featureFilter != null) {
-				filteredModel.getClaferModel().removeIf(featureFilter.negate());
+			if (this.featureFilter != null) {
+				filteredModel.getClaferModel().removeIf(this.featureFilter.negate());
 			}
 			return filteredModel.getClaferModel().toArray();
 		}
@@ -84,7 +84,7 @@ public class ClaferModelContentProvider implements ITreeContentProvider {
 	 * @return always returns null as the ClaferModel only links downwards
 	 */
 	@Override
-	public Object getParent(Object arg0) {
+	public Object getParent(final Object arg0) {
 		// return null if the parent cannot be computed
 		return null;
 	}
@@ -93,11 +93,11 @@ public class ClaferModelContentProvider implements ITreeContentProvider {
 	 * @return <code>true</code> for {@link ClaferFeature}s that have properties matching the propertyFilter
 	 */
 	@Override
-	public boolean hasChildren(Object inputElement) {
+	public boolean hasChildren(final Object inputElement) {
 		if (inputElement instanceof ClaferFeature) {
-			ClaferFeature inputFeature = (ClaferFeature) inputElement;
-			if (propertyFilter != null) {
-				return inputFeature.hasPropertiesSatisfying(propertyFilter);
+			final ClaferFeature inputFeature = (ClaferFeature) inputElement;
+			if (this.propertyFilter != null) {
+				return inputFeature.hasPropertiesSatisfying(this.propertyFilter);
 			} else {
 				return inputFeature.hasProperties();
 			}

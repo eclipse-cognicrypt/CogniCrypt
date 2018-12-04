@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -24,10 +24,10 @@ import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 public class CompareWizard extends Wizard {
 
 	private CompareAlgorithmPage compareAlgorithmPage;
-	private InstanceListPage instanceListPage;
-	private InstanceGenerator instanceGenerator;
+	private final InstanceListPage instanceListPage;
+	private final InstanceGenerator instanceGenerator;
 
-	public CompareWizard(InstanceListPage instanceListPage, InstanceGenerator instanceGenerator) {
+	public CompareWizard(final InstanceListPage instanceListPage, final InstanceGenerator instanceGenerator) {
 		super();
 		// Set the Look and Feel of the application to the operating
 		// system's look and feel.
@@ -37,7 +37,7 @@ public class CompareWizard extends Wizard {
 			Activator.getDefault().logError(e);
 		}
 		setWindowTitle("Cryptography Task Configurator");
-		ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "icons/cognicrypt-medium.png");
+		final ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "icons/cognicrypt-medium.png");
 		setDefaultPageImageDescriptor(image);
 
 		this.instanceListPage = instanceListPage;
@@ -48,7 +48,7 @@ public class CompareWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		this.compareAlgorithmPage = new CompareAlgorithmPage(instanceListPage, instanceGenerator);
+		this.compareAlgorithmPage = new CompareAlgorithmPage(this.instanceListPage, this.instanceGenerator);
 		addPage(this.compareAlgorithmPage);
 	}
 

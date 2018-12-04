@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -20,31 +20,31 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferProperty;
 public class ClaferModelLabelProvider implements ILabelProvider {
 
 	@Override
-	public void addListener(ILabelProviderListener arg0) {}
+	public void addListener(final ILabelProviderListener arg0) {}
 
 	@Override
 	public void dispose() {}
 
 	@Override
-	public boolean isLabelProperty(Object arg0, String arg1) {
+	public boolean isLabelProperty(final Object arg0, final String arg1) {
 		return false;
 	}
 
 	@Override
-	public void removeListener(ILabelProviderListener arg0) {}
+	public void removeListener(final ILabelProviderListener arg0) {}
 
 	@Override
-	public Image getImage(Object arg0) {
+	public Image getImage(final Object arg0) {
 		return null;
 	}
 
 	@Override
-	public String getText(Object inputElement) {
+	public String getText(final Object inputElement) {
 		if (inputElement instanceof ClaferFeature) {
-			ClaferFeature inputFeature = (ClaferFeature) inputElement;
+			final ClaferFeature inputFeature = (ClaferFeature) inputElement;
 			return inputFeature.toString(false);
 		} else if (inputElement instanceof ClaferProperty) {
-			ClaferProperty inputProperty = (ClaferProperty) inputElement;
+			final ClaferProperty inputProperty = (ClaferProperty) inputElement;
 			return inputProperty.toString();
 		}
 		return null;

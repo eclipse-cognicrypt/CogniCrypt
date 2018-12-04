@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -43,7 +43,7 @@ public class AnalysisKickOff {
 	 * 1) Creating a {@link ErrorMarkerGenerator} <br>
 	 * 2) Creating a {@link ResultsCCUIListener} <br>
 	 * 3) Finding the current project's class with a main method <br>
-	 * 
+	 *
 	 * @param iJavaElement
 	 *
 	 * @return <code>true</code>/<code>false</code> if setup (not) successful
@@ -60,7 +60,7 @@ public class AnalysisKickOff {
 		if (AnalysisKickOff.resultsReporter != null
 				&& !AnalysisKickOff.resultsReporter.getReporterProject().equals(ip)) {
 			AnalysisKickOff.resultsReporter = null;
-			for (ResultsCCUIListener resRep : Activator.getResultsReporters()) {
+			for (final ResultsCCUIListener resRep : Activator.getResultsReporters()) {
 				if (resRep.getReporterProject().equals(ip)) {
 					AnalysisKickOff.resultsReporter = resRep;
 					break;
@@ -87,23 +87,24 @@ public class AnalysisKickOff {
 
 	/**
 	 * This method executes the actual analysis.
-	 * 
+	 *
 	 * @return <code>true</code>/<code>false</code> Soot runs successfully
 	 */
 	public boolean run() {
-		Job analysis = new Job(Constants.ANALYSIS_LABEL) {
+		final Job analysis = new Job(Constants.ANALYSIS_LABEL) {
 
 			@SuppressWarnings("deprecation")
 			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				SootThread sootThread = new SootThread(curProj, AnalysisKickOff.resultsReporter);
+			protected IStatus run(final IProgressMonitor monitor) {
+				final SootThread sootThread = new SootThread(AnalysisKickOff.this.curProj,
+						AnalysisKickOff.resultsReporter);
 				sootThread.start();
 				while (sootThread.isAlive()) {
 					try {
 						Thread.sleep(500);
-					} catch (InterruptedException e) {
+					} catch (final InterruptedException e) {
 					}
-					
+
 					if (monitor.isCanceled()) {
 						sootThread.stop();
 						return Status.CANCEL_STATUS;
@@ -120,7 +121,7 @@ public class AnalysisKickOff {
 
 			@Override
 			protected void canceling() {
-				this.cancel();
+				cancel();
 			}
 		};
 		analysis.setPriority(Job.LONG);

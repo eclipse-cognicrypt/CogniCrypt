@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -59,14 +59,14 @@ public class XSLStringGenerationAndManipulationTests {
 	@Before
 	public void getxslFileFromMainResources() {
 		// get the first file from the list of active xsl files for the test.
-		xslFilePath = CodeGenUtils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH).listFiles()[0];
-		testResourceLocation = "src" + Constants.innerFileSeparator + "test" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator + "taskintegrator" + Constants.innerFileSeparator + "XSLTests" + Constants.innerFileSeparator;
-		javaFilePath = CodeGenUtils.getResourceFromWithin(testResourceLocation + "JavaFileTest.java");
-		txtFilePath = CodeGenUtils.getResourceFromWithin(testResourceLocation + "TextFileTest.txt");
-		javaXSLFilePath = CodeGenUtils.getResourceFromWithin(testResourceLocation + "JavaFileTest.xsl");
-		txtXSLFilePath = CodeGenUtils.getResourceFromWithin(testResourceLocation + "TextFileTest.xsl");
-		javaXSLFileWithExistingXSLPath = CodeGenUtils.getResourceFromWithin(testResourceLocation + "JavaFileTestExistingXSL.xsl");
-		txtXSLFileWithExistingXSLPath = CodeGenUtils.getResourceFromWithin(testResourceLocation + "TextFileTestExistingXSL.xsl");
+		this.xslFilePath = CodeGenUtils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH).listFiles()[0];
+		this.testResourceLocation = "src" + Constants.innerFileSeparator + "test" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator + "taskintegrator" + Constants.innerFileSeparator + "XSLTests" + Constants.innerFileSeparator;
+		this.javaFilePath = CodeGenUtils.getResourceFromWithin(this.testResourceLocation + "JavaFileTest.java");
+		this.txtFilePath = CodeGenUtils.getResourceFromWithin(this.testResourceLocation + "TextFileTest.txt");
+		this.javaXSLFilePath = CodeGenUtils.getResourceFromWithin(this.testResourceLocation + "JavaFileTest.xsl");
+		this.txtXSLFilePath = CodeGenUtils.getResourceFromWithin(this.testResourceLocation + "TextFileTest.xsl");
+		this.javaXSLFileWithExistingXSLPath = CodeGenUtils.getResourceFromWithin(this.testResourceLocation + "JavaFileTestExistingXSL.xsl");
+		this.txtXSLFileWithExistingXSLPath = CodeGenUtils.getResourceFromWithin(this.testResourceLocation + "TextFileTestExistingXSL.xsl");
 
 	}
 
@@ -74,27 +74,30 @@ public class XSLStringGenerationAndManipulationTests {
 	 * The test will fail if the string generated is invalid.
 	 * <p>
 	 * This test will read three types of files and attempt to add the same to an empty string. A valid XSL file should be generated.
-	 * 
+	 *
 	 * @throws DocumentException
 	 */
 	@Test
 	public void testGenerateXSLStringFromPathWithNoText() throws DocumentException {
 		boolean generatedFileValidity = false;
-		Document xslGenerated = DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(xslFilePath.getAbsolutePath(), "", new Point(0, 0), null));
-		Document javaGenerated = DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(javaFilePath.getAbsolutePath(), "", new Point(0, 0), null));
-		Document txtGenerated = DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(txtFilePath.getAbsolutePath(), "", new Point(0, 0), null));
+		final Document xslGenerated = DocumentHelper
+			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.xslFilePath.getAbsolutePath(), "", new Point(0, 0), null));
+		final Document javaGenerated = DocumentHelper
+			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.javaFilePath.getAbsolutePath(), "", new Point(0, 0), null));
+		final Document txtGenerated = DocumentHelper
+			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.txtFilePath.getAbsolutePath(), "", new Point(0, 0), null));
 		generatedFileValidity = true;
 		assertTrue(generatedFileValidity);
 
-		Document xslExisting = readDocFomFile(xslFilePath);
+		final Document xslExisting = readDocFomFile(this.xslFilePath);
 		assertTrue(xslGenerated.getRootElement().getName().equals(xslExisting.getRootElement().getName()));
 		assertTrue(xslGenerated.getXMLEncoding().equals(xslExisting.getXMLEncoding()));
 		assertTrue(xslGenerated.asXML().equals(xslExisting.asXML()));
-		Document javaExisting = readDocFomFile(javaXSLFilePath);
+		final Document javaExisting = readDocFomFile(this.javaXSLFilePath);
 		assertTrue(javaGenerated.getRootElement().getName().equals(javaExisting.getRootElement().getName()));
 		assertTrue(javaGenerated.getXMLEncoding().equals(javaExisting.getXMLEncoding()));
 		assertTrue(javaGenerated.asXML().equals(javaExisting.asXML()));
-		Document txtExisting = readDocFomFile(txtXSLFilePath);
+		final Document txtExisting = readDocFomFile(this.txtXSLFilePath);
 		assertTrue(txtGenerated.getRootElement().getName().equals(txtExisting.getRootElement().getName()));
 		assertTrue(txtGenerated.getXMLEncoding().equals(txtExisting.getXMLEncoding()));
 		assertTrue(txtGenerated.asXML().equals(txtExisting.asXML()));
@@ -103,43 +106,43 @@ public class XSLStringGenerationAndManipulationTests {
 
 	/**
 	 * Generate a Document object from the given file location.
-	 * 
+	 *
 	 * @param file
 	 * @return
 	 * @throws DocumentException
 	 */
-	public Document readDocFomFile(File file) throws DocumentException {
-		SAXReader reader = new SAXReader();
+	public Document readDocFomFile(final File file) throws DocumentException {
+		final SAXReader reader = new SAXReader();
 		reader.setValidation(false);
 		return reader.read(file.getAbsolutePath());
 	}
 
 	/**
 	 * In this test, there is some random text that already exists.
-	 * 
+	 *
 	 * @throws DocumentException
 	 */
 	@Test
 	public void testGenerateXSLStringFromPathWithNormalText() throws DocumentException {
 		boolean generatedFileValidity = false;
-		Document xslGenerated = DocumentHelper
-			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(xslFilePath.getAbsolutePath(), "This is just a test", new Point(0, 0), null));
-		Document javaGenerated = DocumentHelper
-			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(javaFilePath.getAbsolutePath(), "This is just a test", new Point(0, 0), null));
-		Document txtGenerated = DocumentHelper
-			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(txtFilePath.getAbsolutePath(), "This is just a test", new Point(0, 0), null));
+		final Document xslGenerated = DocumentHelper
+			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.xslFilePath.getAbsolutePath(), "This is just a test", new Point(0, 0), null));
+		final Document javaGenerated = DocumentHelper
+			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.javaFilePath.getAbsolutePath(), "This is just a test", new Point(0, 0), null));
+		final Document txtGenerated = DocumentHelper
+			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.txtFilePath.getAbsolutePath(), "This is just a test", new Point(0, 0), null));
 		generatedFileValidity = true;
 		assertTrue(generatedFileValidity);
 
-		Document xslExisting = readDocFomFile(xslFilePath);
+		final Document xslExisting = readDocFomFile(this.xslFilePath);
 		assertTrue(xslGenerated.getRootElement().getName().equals(xslExisting.getRootElement().getName()));
 		assertTrue(xslGenerated.getXMLEncoding().equals(xslExisting.getXMLEncoding()));
 		assertTrue(xslGenerated.asXML().equals(xslExisting.asXML()));
-		Document javaExisting = readDocFomFile(javaXSLFilePath);
+		final Document javaExisting = readDocFomFile(this.javaXSLFilePath);
 		assertTrue(javaGenerated.getRootElement().getName().equals(javaExisting.getRootElement().getName()));
 		assertTrue(javaGenerated.getXMLEncoding().equals(javaExisting.getXMLEncoding()));
 		assertTrue(javaGenerated.asXML().equals(javaExisting.asXML()));
-		Document txtExisting = readDocFomFile(txtXSLFilePath);
+		final Document txtExisting = readDocFomFile(this.txtXSLFilePath);
 		assertTrue(txtGenerated.getRootElement().getName().equals(txtExisting.getRootElement().getName()));
 		assertTrue(txtGenerated.getXMLEncoding().equals(txtExisting.getXMLEncoding()));
 		assertTrue(txtGenerated.asXML().equals(txtExisting.asXML()));
@@ -147,30 +150,30 @@ public class XSLStringGenerationAndManipulationTests {
 
 	/**
 	 * In this test, the existing text is a complete xsl document. This document is generated the same way the text addition works, with the additional text as two new lines.
-	 * 
+	 *
 	 * @throws DocumentException
 	 */
 	@Test
 	public void testGenerateXSLStringFromPathWithXSLText() throws DocumentException {
 		boolean generatedFileValidity = false;
-		Document xslGenerated = DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(xslFilePath.getAbsolutePath(),
+		final Document xslGenerated = DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.xslFilePath.getAbsolutePath(),
 			XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), "\n\n"), new Point(266, 266), null));
-		Document javaGenerated = DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(javaFilePath.getAbsolutePath(),
+		final Document javaGenerated = DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.javaFilePath.getAbsolutePath(),
 			XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), "\n\n"), new Point(266, 266), null));
-		Document txtGenerated = DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(txtFilePath.getAbsolutePath(),
+		final Document txtGenerated = DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.txtFilePath.getAbsolutePath(),
 			XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), "\n\n"), new Point(266, 266), null));
 		generatedFileValidity = true;
 		assertTrue(generatedFileValidity);
 
-		Document xslExisting = readDocFomFile(xslFilePath);
+		final Document xslExisting = readDocFomFile(this.xslFilePath);
 		assertTrue(xslGenerated.getRootElement().getName().equals(xslExisting.getRootElement().getName()));
 		assertTrue(xslGenerated.getXMLEncoding().equals(xslExisting.getXMLEncoding()));
 		assertTrue(xslGenerated.asXML().equals(xslExisting.asXML()));
-		Document javaExisting = readDocFomFile(javaXSLFileWithExistingXSLPath);
+		final Document javaExisting = readDocFomFile(this.javaXSLFileWithExistingXSLPath);
 		assertTrue(javaGenerated.getRootElement().getName().equals(javaExisting.getRootElement().getName()));
 		assertTrue(javaGenerated.getXMLEncoding().equals(javaExisting.getXMLEncoding()));
 		assertTrue(javaGenerated.asXML().equals(javaExisting.asXML()));
-		Document txtExisting = readDocFomFile(txtXSLFileWithExistingXSLPath);
+		final Document txtExisting = readDocFomFile(this.txtXSLFileWithExistingXSLPath);
 		assertTrue(txtGenerated.getRootElement().getName().equals(txtExisting.getRootElement().getName()));
 		assertTrue(txtGenerated.getXMLEncoding().equals(txtExisting.getXMLEncoding()));
 		assertTrue(txtGenerated.asXML().equals(txtExisting.asXML()));
@@ -178,31 +181,31 @@ public class XSLStringGenerationAndManipulationTests {
 
 	/**
 	 * Basic test for the region analyzer. The Functionality is tested in another test suite.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	@Test
 	public void testComputeStyleForXMLRegions() throws IOException {
-		File testFile = CodeGenUtils.getResourceFromWithin(testResourceLocation + "StackOverflowExample.xml");
+		final File testFile = CodeGenUtils.getResourceFromWithin(this.testResourceLocation + "StackOverflowExample.xml");
 
-		StringBuilder builder = new StringBuilder();
-		BufferedReader r = Files.newBufferedReader(testFile.toPath(), StandardCharsets.UTF_8);
+		final StringBuilder builder = new StringBuilder();
+		final BufferedReader r = Files.newBufferedReader(testFile.toPath(), StandardCharsets.UTF_8);
 		r.lines().forEach(builder::append);
 
-		List<XmlRegion> regions = new XmlRegionAnalyzer().analyzeXml(builder.toString());
-		List<StyleRange> ranges = XSLStringGenerationAndManipulation.computeStyleForXMLRegions(regions);
+		final List<XmlRegion> regions = new XmlRegionAnalyzer().analyzeXml(builder.toString());
+		final List<StyleRange> ranges = XSLStringGenerationAndManipulation.computeStyleForXMLRegions(regions);
 		assertTrue(ranges.size() == 26839);
 	}
 
 	@Test
 	public void testXMLGenerationFromTasks() {
-		List<Task> tasks = TaskJSONReader.getTasks();
-		for (Task task : tasks) {
-			HashMap<String, String> tagValueTagData = new HashMap<>();
-			List<Question> questions = new ArrayList<>();
-			QuestionsJSONReader quesJSONReader = new QuestionsJSONReader();
-			for (Page page : quesJSONReader.getPages(task.getQuestionsJSONFile())) {
-				for (Question question : page.getContent()) {
+		final List<Task> tasks = TaskJSONReader.getTasks();
+		for (final Task task : tasks) {
+			final HashMap<String, String> tagValueTagData = new HashMap<>();
+			final List<Question> questions = new ArrayList<>();
+			final QuestionsJSONReader quesJSONReader = new QuestionsJSONReader();
+			for (final Page page : quesJSONReader.getPages(task.getQuestionsJSONFile())) {
+				for (final Question question : page.getContent()) {
 					questions.add(question);
 				}
 			}
@@ -232,7 +235,7 @@ public class XSLStringGenerationAndManipulationTests {
 
 		}
 		// an invalid check.
-		HashMap<String, String> tagValueTagData = null;
+		final HashMap<String, String> tagValueTagData = null;
 		XSLStringGenerationAndManipulation.getListOfValidSuggestionsForXSLTags(null, tasks.get(0).getName(), tasks.get(0).getDescription(), null, tagValueTagData);
 		assertNull(tagValueTagData);
 	}

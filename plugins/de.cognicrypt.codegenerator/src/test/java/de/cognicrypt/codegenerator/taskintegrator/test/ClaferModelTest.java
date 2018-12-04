@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -35,33 +35,33 @@ public class ClaferModelTest {
 
 	@Test
 	public final void testGetMissingFeatures() {
-		ClaferModel claferModel = new ClaferModel();
-		ClaferFeature aesFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "Algorithm");
-		ClaferFeature securityFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Security", "Enum -> integer");
-		ClaferFeature performanceFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Performance", "Enum->integer");
+		final ClaferModel claferModel = new ClaferModel();
+		final ClaferFeature aesFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "Algorithm");
+		final ClaferFeature securityFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Security", "Enum -> integer");
+		final ClaferFeature performanceFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Performance", "Enum->integer");
 
 		claferModel.add(aesFeature);
 		claferModel.add(securityFeature);
 		claferModel.add(performanceFeature);
 
-		ClaferModel missingFeaturesAES = claferModel.getMissingFeatures(aesFeature);
+		final ClaferModel missingFeaturesAES = claferModel.getMissingFeatures(aesFeature);
 		assertEquals(1, missingFeaturesAES.getClaferModel().size());
 		assertTrue(missingFeaturesAES.getClaferModel().get(0).getFeatureName().equals("Algorithm"));
 
-		ClaferModel missingFeaturesSecurity = claferModel.getMissingFeatures(securityFeature);
+		final ClaferModel missingFeaturesSecurity = claferModel.getMissingFeatures(securityFeature);
 		assertEquals(1, missingFeaturesSecurity.getClaferModel().size());
 		assertEquals(ClaferFeature.class, missingFeaturesSecurity.getFeature("Enum").getClass());
 
-		ClaferModel missingFeaturesPerformance = claferModel.getMissingFeatures(performanceFeature);
+		final ClaferModel missingFeaturesPerformance = claferModel.getMissingFeatures(performanceFeature);
 		assertEquals(1, missingFeaturesPerformance.getClaferModel().size());
 		assertEquals(ClaferFeature.class, missingFeaturesPerformance.getFeature("Enum").getClass());
 	}
 
 	@Test
 	public final void testDoNotImplementPrimitiveTypes() {
-		ClaferModel claferModel = new ClaferModel();
-		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
-		ArrayList<ClaferProperty> featureProperties = new ArrayList<>();
+		final ClaferModel claferModel = new ClaferModel();
+		final ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, "AES", "");
+		final ArrayList<ClaferProperty> featureProperties = new ArrayList<>();
 		featureProperties.add(new ClaferProperty("number", "integer"));
 		featureProperties.add(new ClaferProperty("characters", "string"));
 		cfrFeature.setFeatureProperties(featureProperties);
@@ -70,16 +70,16 @@ public class ClaferModelTest {
 		claferModel.add(new ClaferFeature(Constants.FeatureType.CONCRETE, "myInt", "integer"));
 		claferModel.add(new ClaferFeature(Constants.FeatureType.ABSTRACT, "myDouble", "double"));
 
-		for (ClaferFeature refFeature : claferModel) {
-			ClaferModel missingFeatures = claferModel.getMissingFeatures(refFeature);
+		for (final ClaferFeature refFeature : claferModel) {
+			final ClaferModel missingFeatures = claferModel.getMissingFeatures(refFeature);
 			assertTrue(missingFeatures.getClaferModel().size() == 0);
 		}
 	}
 
 	@Test
 	public final void testNoDuplicateFeaturesImplemented() {
-		ClaferModel claferModel = new ClaferModel();
-		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "Algorithm");
+		final ClaferModel claferModel = new ClaferModel();
+		final ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "Algorithm");
 		claferModel.add(cfrFeature);
 
 		cfrFeature.getFeatureProperties().add(new ClaferProperty("p1", "int"));
@@ -88,8 +88,8 @@ public class ClaferModelTest {
 
 		claferModel.implementMissingFeatures(cfrFeature);
 
-		for (ClaferFeature refFeature : claferModel) {
-			for (ClaferFeature curFeature : claferModel) {
+		for (final ClaferFeature refFeature : claferModel) {
+			for (final ClaferFeature curFeature : claferModel) {
 				if (refFeature != curFeature && refFeature.getFeatureName().equals(curFeature.getFeatureName())) {
 					fail("Conflicting features named \"" + refFeature.getFeatureName() + "\" found");
 				}
@@ -99,18 +99,18 @@ public class ClaferModelTest {
 
 	@Test
 	public final void testNoEmptyFeatureInheritance() {
-		ClaferModel claferModel = new ClaferModel();
-		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "");
+		final ClaferModel claferModel = new ClaferModel();
+		final ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", "");
 		claferModel.implementMissingFeatures(cfrFeature);
 
-		for (ClaferFeature currentFeature : claferModel) {
+		for (final ClaferFeature currentFeature : claferModel) {
 			assertTrue(!currentFeature.getFeatureName().isEmpty());
 		}
 	}
 
 	@Test
 	public final void testHasFeature() {
-		ClaferModel claferModel = new ClaferModel();
+		final ClaferModel claferModel = new ClaferModel();
 		claferModel.add(new ClaferFeature(Constants.FeatureType.ABSTRACT, "AES", ""));
 
 		assertTrue(claferModel.hasFeature("AES"));
@@ -118,34 +118,34 @@ public class ClaferModelTest {
 
 	@Test
 	public final void testNoEmptyPropertyType() {
-		ClaferModel claferModel = new ClaferModel();
-		ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "A", "B");
-		ArrayList<ClaferProperty> featureProperties = new ArrayList<>();
+		final ClaferModel claferModel = new ClaferModel();
+		final ClaferFeature cfrFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "A", "B");
+		final ArrayList<ClaferProperty> featureProperties = new ArrayList<>();
 		featureProperties.add(new ClaferProperty("1", ""));
 		featureProperties.add(new ClaferProperty("2", ""));
 		claferModel.add(cfrFeature);
 		cfrFeature.setFeatureProperties(featureProperties);
 		claferModel.implementMissingFeatures(cfrFeature);
 
-		for (ClaferFeature currentFeature : claferModel) {
+		for (final ClaferFeature currentFeature : claferModel) {
 			assertTrue(!currentFeature.getFeatureName().isEmpty());
 		}
 	}
 
 	@Test
 	public final void testCompileClaferFeature() throws IOException {
-		String temporaryCfrFile = testFileFolder + "testFile2_tmp.cfr";
+		final String temporaryCfrFile = testFileFolder + "testFile2_tmp.cfr";
 
 		/**
 		 * Create Clafer feature abstract Algorithm securityLevel -> Security
 		 */
-		ClaferFeature algoFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Algorithm", "");
-		ArrayList<ClaferProperty> propertyList = new ArrayList<>();
+		final ClaferFeature algoFeature = new ClaferFeature(Constants.FeatureType.ABSTRACT, "Algorithm", "");
+		final ArrayList<ClaferProperty> propertyList = new ArrayList<>();
 		propertyList.add(new ClaferProperty("securityLevel", "Security"));
 		algoFeature.setFeatureProperties(propertyList);
 
 		// add feature to an empty list
-		ClaferModel claferModel = new ClaferModel();
+		final ClaferModel claferModel = new ClaferModel();
 		claferModel.add(algoFeature);
 
 		// automatically create missing features (a concrete Clafer Security is supposed to be created)
@@ -160,13 +160,13 @@ public class ClaferModelTest {
 
 	@Test
 	public final void testRemoveUnusedFeatures() {
-		ClaferFeature featureA = new ClaferFeature(Constants.FeatureType.CONCRETE, "A", "B");
-		ArrayList<ClaferProperty> propertiesA = new ArrayList<>();
+		final ClaferFeature featureA = new ClaferFeature(Constants.FeatureType.CONCRETE, "A", "B");
+		final ArrayList<ClaferProperty> propertiesA = new ArrayList<>();
 		propertiesA.add(new ClaferProperty("1", "x"));
 		propertiesA.add(new ClaferProperty("2", "y"));
 		featureA.setFeatureProperties(propertiesA);
 
-		ClaferModel claferModel = new ClaferModel();
+		final ClaferModel claferModel = new ClaferModel();
 		claferModel.add(featureA);
 
 		claferModel.implementMissingFeatures(featureA);
@@ -176,9 +176,9 @@ public class ClaferModelTest {
 		propertiesA.get(1).setPropertyType("x");
 
 		// look for y in the model of unused features
-		ClaferModel unusedFeatures = claferModel.getUnusedFeatures();
+		final ClaferModel unusedFeatures = claferModel.getUnusedFeatures();
 		ClaferFeature featureY = null;
-		for (ClaferFeature cfrFeature : unusedFeatures) {
+		for (final ClaferFeature cfrFeature : unusedFeatures) {
 			if (cfrFeature.getFeatureName().equals("y")) {
 				featureY = cfrFeature;
 			}
@@ -191,23 +191,23 @@ public class ClaferModelTest {
 
 	@Test
 	public final void testGetParentFeatureOfProperty() {
-		ClaferModel claferModel = new ClaferModel();
-		ClaferFeature featureA = new ClaferFeature(Constants.FeatureType.CONCRETE, "A", "B");
+		final ClaferModel claferModel = new ClaferModel();
+		final ClaferFeature featureA = new ClaferFeature(Constants.FeatureType.CONCRETE, "A", "B");
 
-		ArrayList<ClaferProperty> propertiesA = new ArrayList<>();
+		final ArrayList<ClaferProperty> propertiesA = new ArrayList<>();
 
-		ClaferProperty propertyA1 = new ClaferProperty("1", "x");
-		ClaferProperty propertyA2 = new ClaferProperty("2", "y");
+		final ClaferProperty propertyA1 = new ClaferProperty("1", "x");
+		final ClaferProperty propertyA2 = new ClaferProperty("2", "y");
 		propertiesA.add(propertyA1);
 		propertiesA.add(propertyA2);
 		featureA.setFeatureProperties(propertiesA);
-		ClaferFeature featureB = new ClaferFeature(Constants.FeatureType.ABSTRACT, "B", "");
+		final ClaferFeature featureB = new ClaferFeature(Constants.FeatureType.ABSTRACT, "B", "");
 
-		ClaferFeature featureC = new ClaferFeature(Constants.FeatureType.CONCRETE, "C", "");
+		final ClaferFeature featureC = new ClaferFeature(Constants.FeatureType.CONCRETE, "C", "");
 
 		// create the same properties as or A on purpose
 		// they are stored in different objects and should not be found
-		ArrayList<ClaferProperty> propertiesC = new ArrayList<>();
+		final ArrayList<ClaferProperty> propertiesC = new ArrayList<>();
 		propertiesC.add(new ClaferProperty("1", "x"));
 		propertiesC.add(new ClaferProperty("2", "y"));
 		featureC.setFeatureProperties(propertiesA);
@@ -224,9 +224,9 @@ public class ClaferModelTest {
 
 	@Test
 	public final void testModelSerialization() {
-		ClaferModel claferModel = new ClaferModel();
-		ClaferFeature cfrFeatureA = new ClaferFeature(Constants.FeatureType.ABSTRACT, "A", "");
-		ArrayList<ClaferProperty> featureProperties = new ArrayList<>();
+		final ClaferModel claferModel = new ClaferModel();
+		final ClaferFeature cfrFeatureA = new ClaferFeature(Constants.FeatureType.ABSTRACT, "A", "");
+		final ArrayList<ClaferProperty> featureProperties = new ArrayList<>();
 		featureProperties.add(new ClaferProperty("size", "int"));
 		cfrFeatureA.setFeatureProperties(featureProperties);
 		claferModel.add(cfrFeatureA);
@@ -235,7 +235,7 @@ public class ClaferModelTest {
 			fail("Serialization failed");
 		}
 
-		ClaferModel modelFromBinaries = ClaferModel.createFromBinaries(testFileFolder + "serializationTest.tmp");
+		final ClaferModel modelFromBinaries = ClaferModel.createFromBinaries(testFileFolder + "serializationTest.tmp");
 		assertEquals(1, modelFromBinaries.getClaferModel().size());
 		assertEquals("A", modelFromBinaries.getClaferModel().get(0).getFeatureName());
 
@@ -246,8 +246,8 @@ public class ClaferModelTest {
 	@AfterClass
 	public final static void deleteFiles() throws IOException {
 		// generate the paths and delete the files
-		for (String filename : testFiles) {
-			Path path = Paths.get(testFileFolder + filename);
+		for (final String filename : testFiles) {
+			final Path path = Paths.get(testFileFolder + filename);
 			if (Files.exists(path)) {
 				Files.delete(path);
 			}

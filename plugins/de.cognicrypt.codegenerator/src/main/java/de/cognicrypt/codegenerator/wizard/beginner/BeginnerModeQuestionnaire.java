@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -39,7 +39,7 @@ public class BeginnerModeQuestionnaire {
 
 	/**
 	 * Added this method to get specific questions. This functionality was created to replace the code when handling buttons as 'Questions'.
-	 * 
+	 *
 	 * @param questionID
 	 * @return The requested question.
 	 */
@@ -91,11 +91,11 @@ public class BeginnerModeQuestionnaire {
 	 * @return Return whether there are more pages.
 	 */
 	public boolean hasMorePages() {
-		return this.pageID < pageList.size();
+		return this.pageID < this.pageList.size();
 	}
 
 	public boolean hasPages() {
-		return pageList.size() > 0;
+		return this.pageList.size() > 0;
 	}
 
 }

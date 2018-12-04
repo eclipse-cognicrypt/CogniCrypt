@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -31,15 +31,15 @@ public class QuestionsPage extends PageForTaskIntegratorWizard {
 	}
 
 	@Override
-	public void createControl(Composite parent) {
-		Composite container = new Composite(parent, SWT.NONE);
+	public void createControl(final Composite parent) {
+		final Composite container = new Composite(parent, SWT.NONE);
 		setControl(container);
 
 		// make the page layout two-column
 		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		container.setLayout(new GridLayout(2, false));
 
-		setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, this.getName()));
+		setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, getName()));
 		// fill the available space on the with the big composite
 		getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -51,31 +51,31 @@ public class QuestionsPage extends PageForTaskIntegratorWizard {
 			Activator.getDefault().logError("PageForTaskIntegratorWizard was instantiated by a wizard other than TaskIntegrationWizard");
 		}
 
-		PageForTaskIntegratorWizard claferPage = tiWizard.getTIPageByName(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION);
-		CompositeToHoldGranularUIElements claferPageComposite = (CompositeToHoldGranularUIElements) claferPage.getCompositeToHoldGranularUIElements();
+		final PageForTaskIntegratorWizard claferPage = tiWizard.getTIPageByName(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION);
+		final CompositeToHoldGranularUIElements claferPageComposite = claferPage.getCompositeToHoldGranularUIElements();
 
-		QuestionDialog questionDialog = new QuestionDialog(parent.getShell());
-		Button qstnDialog = new Button(container, SWT.NONE);
+		final QuestionDialog questionDialog = new QuestionDialog(parent.getShell());
+		final Button qstnDialog = new Button(container, SWT.NONE);
 		qstnDialog.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 		qstnDialog.setText("Add Question");
 
 		qstnDialog.addSelectionListener(new SelectionAdapter() {
 
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				int response = questionDialog.open();
-				int qID = compositeToHoldGranularUIElements.getListOfAllQuestions().size();
+			public void widgetSelected(final SelectionEvent e) {
+				final int response = questionDialog.open();
+				final int qID = QuestionsPage.this.compositeToHoldGranularUIElements.getListOfAllQuestions().size();
 				if (response == Window.OK) {
-					counter++;
+					QuestionsPage.this.counter++;
 					//Question questionDetails = getDummyQuestion(questionDialog.getQuestionText(),questionDialog.getquestionType(),questionDialog.getAnswerValue());
-					Question questionDetails = questionDialog.getQuestionDetails();
+					final Question questionDetails = questionDialog.getQuestionDetails();
 					questionDetails.setId(qID);
 
 					// Update the array list.
-					compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
-					compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails, claferPageComposite.getClaferModel(), false);
+					QuestionsPage.this.compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
+					QuestionsPage.this.compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails, claferPageComposite.getClaferModel(), false);
 					// rebuild the UI
-					compositeToHoldGranularUIElements.updateQuestionContainer();
+					QuestionsPage.this.compositeToHoldGranularUIElements.updateQuestionContainer();
 				}
 			}
 		});

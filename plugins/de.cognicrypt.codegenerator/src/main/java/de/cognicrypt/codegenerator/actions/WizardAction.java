@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -16,8 +16,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import de.cognicrypt.codegenerator.wizard.AltConfigWizard;
 import de.cognicrypt.codegenerator.wizard.CogniCryptWizardDialog;
-import de.cognicrypt.codegenerator.wizard.ConfiguratorWizard;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.CodeGenerators;
 
@@ -51,7 +51,7 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	 */
 	@Override
 	public void init(final IWorkbenchWindow window) {
-		this.shell=window.getShell();
+		this.shell = window.getShell();
 	}
 
 	/**
@@ -62,10 +62,11 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	@Override
 	public void run(final IAction action) {
 		Constants.WizardActionFromContextMenuFlag = false;
+//		final CogniCryptWizardDialog dialog = new CogniCryptWizardDialog(this.shell, wizard) {
 
-		final CogniCryptWizardDialog dialog = new CogniCryptWizardDialog(shell, new ConfiguratorWizard(CodeGenerators.CrySL)) {
+		final CogniCryptWizardDialog dialog = new CogniCryptWizardDialog(shell, new AltConfigWizard(CodeGenerators.CrySL)) {
 			@Override
-			protected void configureShell(Shell newShell) {
+			protected void configureShell(final Shell newShell) {
 				super.configureShell(newShell);
 			}
 		};

@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -28,37 +28,37 @@ import de.cognicrypt.codegenerator.taskintegrator.models.ClaferModel;
 
 public class CompositePatternEnum extends CompositePattern {
 
-	private boolean sortable;
-	private ArrayList<CompositeSortableTextItem> sortableTextItems;
+	private final boolean sortable;
+	private final ArrayList<CompositeSortableTextItem> sortableTextItems;
 
 	/**
 	 * instantiate the pattern composite with optional ordering functionality
-	 * 
+	 *
 	 * @param parent
 	 *        parent {@link Composite}
 	 * @param sortable
 	 *        <code>true</code> if the enumeration items should be sortable, <code>false</code> otherwise
 	 */
-	public CompositePatternEnum(Composite parent, boolean sortable) {
+	public CompositePatternEnum(final Composite parent, final boolean sortable) {
 		super(parent);
 
 		this.sortable = sortable;
-		sortableTextItems = new ArrayList<>();
+		this.sortableTextItems = new ArrayList<>();
 
-		Button btnAddOption = new Button(this, SWT.NONE);
+		final Button btnAddOption = new Button(this, SWT.NONE);
 		btnAddOption.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		btnAddOption.setText("Add option");
 		btnAddOption.addSelectionListener(new SelectionAdapter() {
 
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				CompositeSortableTextItem compositeSortableTextItem = new CompositeSortableTextItem(compositeOptions, sortable);
+			public void widgetSelected(final SelectionEvent e) {
+				final CompositeSortableTextItem compositeSortableTextItem = new CompositeSortableTextItem(CompositePatternEnum.this.compositeOptions, sortable);
 				compositeSortableTextItem.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
-				sortableTextItems.add(compositeSortableTextItem);
+				CompositePatternEnum.this.sortableTextItems.add(compositeSortableTextItem);
 
-				compositeOptions.layout();
-				compositeScrolledOptions.setMinSize(compositeOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+				CompositePatternEnum.this.compositeOptions.layout();
+				CompositePatternEnum.this.compositeScrolledOptions.setMinSize(CompositePatternEnum.this.compositeOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
 				updatePatternItemWidgets();
 
@@ -66,25 +66,25 @@ public class CompositePatternEnum extends CompositePattern {
 			}
 		});
 
-		compositeScrolledOptions = new ScrolledComposite(this, SWT.BORDER | SWT.V_SCROLL);
-		compositeScrolledOptions.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		compositeScrolledOptions.setLayout(new GridLayout(1, false));
+		this.compositeScrolledOptions = new ScrolledComposite(this, SWT.BORDER | SWT.V_SCROLL);
+		this.compositeScrolledOptions.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		this.compositeScrolledOptions.setLayout(new GridLayout(1, false));
 
-		compositeOptions = new Composite(compositeScrolledOptions, SWT.NONE);
-		compositeOptions.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		compositeOptions.setLayout(new GridLayout(1, false));
-		compositeScrolledOptions.setContent(compositeOptions);
+		this.compositeOptions = new Composite(this.compositeScrolledOptions, SWT.NONE);
+		this.compositeOptions.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		this.compositeOptions.setLayout(new GridLayout(1, false));
+		this.compositeScrolledOptions.setContent(this.compositeOptions);
 
-		compositeScrolledOptions.setExpandHorizontal(true);
-		compositeScrolledOptions.setExpandVertical(true);
-		compositeScrolledOptions.setMinSize(compositeOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		this.compositeScrolledOptions.setExpandHorizontal(true);
+		this.compositeScrolledOptions.setExpandVertical(true);
+		this.compositeScrolledOptions.setMinSize(this.compositeOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
-	private int getItemPosition(CompositeSortableTextItem needleItem) {
+	private int getItemPosition(final CompositeSortableTextItem needleItem) {
 		int index = -1;
 
-		for (int i = 0; i < sortableTextItems.size(); i++) {
-			CompositeSortableTextItem refComposite = sortableTextItems.get(i);
+		for (int i = 0; i < this.sortableTextItems.size(); i++) {
+			final CompositeSortableTextItem refComposite = this.sortableTextItems.get(i);
 			if (refComposite == needleItem) {
 				index = i;
 			}
@@ -93,15 +93,15 @@ public class CompositePatternEnum extends CompositePattern {
 		return index;
 	}
 
-	private void swapTexts(int i, int j) {
-		String tempString = sortableTextItems.get(i).getText();
-		sortableTextItems.get(i).setText(sortableTextItems.get(j).getText());
-		sortableTextItems.get(j).setText(tempString);
+	private void swapTexts(final int i, final int j) {
+		final String tempString = this.sortableTextItems.get(i).getText();
+		this.sortableTextItems.get(i).setText(this.sortableTextItems.get(j).getText());
+		this.sortableTextItems.get(j).setText(tempString);
 	}
 
-	public void moveUp(CompositeSortableTextItem targetComposite) {
+	public void moveUp(final CompositeSortableTextItem targetComposite) {
 
-		int targetIndex = getItemPosition(targetComposite);
+		final int targetIndex = getItemPosition(targetComposite);
 
 		if (targetIndex == -1 || targetIndex == 0) {
 			return;
@@ -111,11 +111,11 @@ public class CompositePatternEnum extends CompositePattern {
 		updatePatternItemWidgets();
 	}
 
-	public void moveDown(CompositeSortableTextItem targetComposite) {
+	public void moveDown(final CompositeSortableTextItem targetComposite) {
 
-		int targetIndex = getItemPosition(targetComposite);
+		final int targetIndex = getItemPosition(targetComposite);
 
-		if (targetIndex == -1 || targetIndex == sortableTextItems.size() - 1) {
+		if (targetIndex == -1 || targetIndex == this.sortableTextItems.size() - 1) {
 			return;
 		}
 
@@ -123,31 +123,31 @@ public class CompositePatternEnum extends CompositePattern {
 		updatePatternItemWidgets();
 	}
 
-	public void remove(CompositeSortableTextItem targetComposite) {
-		sortableTextItems.remove(targetComposite);
+	public void remove(final CompositeSortableTextItem targetComposite) {
+		this.sortableTextItems.remove(targetComposite);
 		targetComposite.dispose();
 
 		updatePatternItemWidgets();
 
-		compositeOptions.layout();
-		compositeScrolledOptions.setMinSize(compositeOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		this.compositeOptions.layout();
+		this.compositeScrolledOptions.setMinSize(this.compositeOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
 	/**
 	 * update list positions and set the move buttons to enabled or disabled
 	 */
 	private void updatePatternItemWidgets() {
-		for (int i = 0; i < sortableTextItems.size(); i++) {
-			CompositeSortableTextItem item = sortableTextItems.get(i);
+		for (int i = 0; i < this.sortableTextItems.size(); i++) {
+			final CompositeSortableTextItem item = this.sortableTextItems.get(i);
 			item.setMoveButtonsEnabled();
 			item.setPosition(i + 1);
 		}
 
-		if (sortableTextItems.size() == 1) {
-			sortableTextItems.get(0).setMoveButtonsEnabled(false, false);
-		} else if (sortableTextItems.size() > 1) {
-			sortableTextItems.get(0).setMoveButtonsEnabled(false, true);
-			sortableTextItems.get(sortableTextItems.size() - 1).setMoveButtonsEnabled(true, false);
+		if (this.sortableTextItems.size() == 1) {
+			this.sortableTextItems.get(0).setMoveButtonsEnabled(false, false);
+		} else if (this.sortableTextItems.size() > 1) {
+			this.sortableTextItems.get(0).setMoveButtonsEnabled(false, true);
+			this.sortableTextItems.get(this.sortableTextItems.size() - 1).setMoveButtonsEnabled(true, false);
 		}
 	}
 
@@ -155,14 +155,15 @@ public class CompositePatternEnum extends CompositePattern {
 	 * Get the result model depending on whether items in this enumeration are ordered or not. This will return a reference Clafer as a parent and the enumeration items as its
 	 * children when the sortable field of the object set to <code>true</code>.
 	 */
+	@Override
 	public ClaferModel getResultModel() {
-		ArrayList<String> userInput = new ArrayList<>();
-		for (CompositeSortableTextItem comp : sortableTextItems) {
+		final ArrayList<String> userInput = new ArrayList<>();
+		for (final CompositeSortableTextItem comp : this.sortableTextItems) {
 			userInput.add(comp.getText());
 		}
 
-		ClaferPatternEnumGenerator generator = new ClaferPatternEnumGenerator(patternName, sortable);
-		ClaferModel resultModel = generator.getClaferModel(userInput);
+		final ClaferPatternEnumGenerator generator = new ClaferPatternEnumGenerator(this.patternName, this.sortable);
+		final ClaferModel resultModel = generator.getClaferModel(userInput);
 
 		return resultModel;
 	}
@@ -172,9 +173,9 @@ public class CompositePatternEnum extends CompositePattern {
 		boolean itemsValid = true;
 
 		// check that items are unique
-		HashSet<String> itemNames = new HashSet<>();
+		final HashSet<String> itemNames = new HashSet<>();
 
-		for (CompositeSortableTextItem textItem : sortableTextItems) {
+		for (final CompositeSortableTextItem textItem : this.sortableTextItems) {
 			// adding to the HashSet will return false if item already in set
 			if (!textItem.getText().isEmpty() && !itemNames.add(textItem.getText())) {
 				textItem.showValidationError(UIConstants.DEC_ERROR, "The name already exists.");

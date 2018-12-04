@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -21,7 +21,7 @@ public class ClaferCompiler {
 
 	public static String getClaferExecutable() {
 		// TODO test on different operating systems
-		String osString = System.getProperty("os.name");
+		final String osString = System.getProperty("os.name");
 
 		if (osString.contains("Linux")) {
 			return CodeGenUtils.getResourceFromWithin("src/main/resources/bin/clafer-linux").getAbsolutePath();
@@ -35,21 +35,21 @@ public class ClaferCompiler {
 		return "clafer";
 	}
 
-	public static boolean execute(String filename) {
-		String claferExectuable = getClaferExecutable();
+	public static boolean execute(final String filename) {
+		final String claferExectuable = getClaferExecutable();
 
 		// try compilation
 		try {
-			ProcessBuilder processBuilder = new ProcessBuilder(claferExectuable, "-k", "-m", "choco", filename);
+			final ProcessBuilder processBuilder = new ProcessBuilder(claferExectuable, "-k", "-m", "choco", filename);
 			processBuilder.redirectErrorStream(true);
-			Process compilerProcess = processBuilder.start();
+			final Process compilerProcess = processBuilder.start();
 
 			compilerProcess.waitFor();
 
 			// store compilation output in string
-			StringBuilder sb = new StringBuilder();
-			InputStream processStdOutput = compilerProcess.getInputStream();
-			BufferedReader br = new BufferedReader(new InputStreamReader(processStdOutput));
+			final StringBuilder sb = new StringBuilder();
+			final InputStream processStdOutput = compilerProcess.getInputStream();
+			final BufferedReader br = new BufferedReader(new InputStreamReader(processStdOutput));
 			String line;
 			while ((line = br.readLine()) != null) {
 				sb.append(line);
@@ -60,7 +60,7 @@ public class ClaferCompiler {
 				return false;
 			}
 
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			Activator.getDefault().logError(ex);
 			return false;
 		}

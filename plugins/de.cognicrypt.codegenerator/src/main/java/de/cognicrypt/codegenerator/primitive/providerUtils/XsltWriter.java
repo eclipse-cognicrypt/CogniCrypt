@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -48,30 +48,30 @@ public class XsltWriter {
 
 	public void createDocument() throws ParserConfigurationException {
 		this.docFactory = DocumentBuilderFactory.newInstance();
-		this.docBuilder = docFactory.newDocumentBuilder();
-		this.doc = docBuilder.newDocument();
+		this.docBuilder = this.docFactory.newDocumentBuilder();
+		this.doc = this.docBuilder.newDocument();
 	}
 
-	public void setRoot(String root) {
+	public void setRoot(final String root) {
 
 		this.rootElement = this.doc.createElement(root);
-		doc.appendChild(rootElement);
+		this.doc.appendChild(this.rootElement);
 	}
 
-	public void addElement(String name, String value) {
-		Element element = doc.createElement(name);
-		element.appendChild(doc.createTextNode(value));
+	public void addElement(final String name, final String value) {
+		final Element element = this.doc.createElement(name);
+		element.appendChild(this.doc.createTextNode(value));
 		this.rootElement.appendChild(element);
 	}
 
 	// write the content into xml file
-	public void transformXml(File xmlFile) throws TransformerException {
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
+	public void transformXml(final File xmlFile) throws TransformerException {
+		final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		final Transformer transformer = transformerFactory.newTransformer();
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		DOMSource source = new DOMSource(this.doc);
-		StreamResult result = new StreamResult(xmlFile);
+		final DOMSource source = new DOMSource(this.doc);
+		final StreamResult result = new StreamResult(xmlFile);
 
 		// Output to console for testing
 		// StreamResult result = new StreamResult(System.out);
@@ -80,15 +80,15 @@ public class XsltWriter {
 		System.out.println("File saved!");
 	}
 
-	public void transformXsl(File xslFile, File xmlFile) throws ParserConfigurationException, TransformerFactoryConfigurationError, SAXException, IOException, TransformerException {
-		docFactory = DocumentBuilderFactory.newInstance();
-		javax.xml.parsers.DocumentBuilder builder = docFactory.newDocumentBuilder();
-		StreamSource styleSource = new StreamSource(xslFile);
-		Transformer t = TransformerFactory.newInstance().newTransformer(styleSource);
-		Document xml = builder.parse(xmlFile);
-		File resultFile = new File(CodeGenUtils.getResourceFromWithin(Constants.primitivesPath) + Constants.innerFileSeparator + "test.txt");
-		StreamResult result = new StreamResult(resultFile);
-		//transformation 
+	public void transformXsl(final File xslFile, final File xmlFile) throws ParserConfigurationException, TransformerFactoryConfigurationError, SAXException, IOException, TransformerException {
+		this.docFactory = DocumentBuilderFactory.newInstance();
+		final javax.xml.parsers.DocumentBuilder builder = this.docFactory.newDocumentBuilder();
+		final StreamSource styleSource = new StreamSource(xslFile);
+		final Transformer t = TransformerFactory.newInstance().newTransformer(styleSource);
+		final Document xml = builder.parse(xmlFile);
+		final File resultFile = new File(CodeGenUtils.getResourceFromWithin(Constants.primitivesPath) + Constants.innerFileSeparator + "test.txt");
+		final StreamResult result = new StreamResult(resultFile);
+		//transformation
 		t.transform(new DOMSource(xml), result);
 		resultFile.delete();
 	}

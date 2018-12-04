@@ -30,51 +30,49 @@ import de.cognicrypt.core.Constants;
 
 /**
  * This class provides methods for XML file processing.
+ * 
  * @author André Sonntag
  *
  */
 public class XMLParser {
 
 	/**
-	 * Usage:
-	 * 1) Constructor
-	 * 2) useDocFromFile || createNewDoc
-	 * 3) createRootElement
-	 * 4) createChildElement*
-	 * 5) createAttrForElement*
-	 * 6) writeXML
+	 * Usage: 1) Constructor 2) useDocFromFile || createNewDoc 3) createRootElement
+	 * 4) createChildElement* 5) createAttrForElement* 6) writeXML
 	 */
-	
+
 	private File xmlFile;
 	private Document doc;
 	private Element root;
 	private DocumentBuilder docBuilder;
-	private DocumentBuilderFactory docFactory;
+	private final DocumentBuilderFactory docFactory;
 
 	/**
 	 * Constructor
+	 * 
 	 * @param xmlFile
 	 */
-	public XMLParser(File xmlFile) {
+	public XMLParser(final File xmlFile) {
 		this.xmlFile = xmlFile;
-		docFactory = DocumentBuilderFactory.newInstance();
+		this.docFactory = DocumentBuilderFactory.newInstance();
 		try {
-			docBuilder = docFactory.newDocumentBuilder();
-		} catch (ParserConfigurationException e) {
+			this.docBuilder = this.docFactory.newDocumentBuilder();
+		} catch (final ParserConfigurationException e) {
 			Activator.getDefault().logError(e);
 		}
 	}
 
 	/**
-	 * This methods extracts the {@link Document} object from the XML file, for further processing.
+	 * This methods extracts the {@link Document} object from the XML file, for
+	 * further processing.
 	 */
 	public void useDocFromFile() {
 		try {
-			this.doc = docBuilder.parse(this.xmlFile);
-			doc.getDocumentElement().normalize();
-		} catch (SAXException e) {
+			this.doc = this.docBuilder.parse(this.xmlFile);
+			this.doc.getDocumentElement().normalize();
+		} catch (final SAXException e) {
 			Activator.getDefault().logError(e);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
 		}
 	}
@@ -85,85 +83,96 @@ public class XMLParser {
 	public void createNewDoc() {
 
 		try {
-			this.docBuilder = docFactory.newDocumentBuilder();
-		} catch (ParserConfigurationException e) {
+			this.docBuilder = this.docFactory.newDocumentBuilder();
+		} catch (final ParserConfigurationException e) {
 			e.printStackTrace();
 		}
-		this.doc = docBuilder.newDocument();
+		this.doc = this.docBuilder.newDocument();
 	}
 
 	/**
 	 * This method returns the root {@link Element} of the {@link Document}.
+	 * 
 	 * @return
 	 */
 	public Element getRoot() {
-		return doc.getDocumentElement();
+		return this.doc.getDocumentElement();
 	}
-	
+
 	/**
-	 * This method creates and appends a new root {@link Element} to the {@link Document} structure.
+	 * This method creates and appends a new root {@link Element} to the
+	 * {@link Document} structure.
+	 * 
 	 * @param rootElementName
 	 * @return the new created root element
 	 */
-	public Element createRootElement(String rootElementName) {
-		this.root = doc.createElement(rootElementName);
-		return createRootElement(root);
+	public Element createRootElement(final String rootElementName) {
+		this.root = this.doc.createElement(rootElementName);
+		return createRootElement(this.root);
 	}
 
 	/**
 	 * This method appends a root {@link Element} to the {@link Document} structure.
+	 * 
 	 * @param root
 	 * @return the inserted root element
 	 */
-	public Element createRootElement(Element root) {
-		this.root = root; 
+	public Element createRootElement(final Element root) {
+		this.root = root;
 		this.doc.appendChild(root);
 		return root;
 	}
-	
+
 	/**
-	 * This method creates and appends a new child {@link Element} with a value to a parent {@link Element}.
+	 * This method creates and appends a new child {@link Element} with a value to a
+	 * parent {@link Element}.
+	 * 
 	 * @param parent
 	 * @param childName
 	 * @param childValue
 	 * @return the new created child element
 	 */
-	public Element createChildElement(Element parent, String childName, String childValue) {
-		Element child = doc.createElement(childName);
-		child.appendChild(doc.createTextNode(childValue));
+	public Element createChildElement(final Element parent, final String childName, final String childValue) {
+		final Element child = this.doc.createElement(childName);
+		child.appendChild(this.doc.createTextNode(childValue));
 		return createChildElement(parent, child);
 	}
 
 	/**
-	 * This method creates and appends a new Child {@link Element} without a value to a parent {@link Element}.
+	 * This method creates and appends a new Child {@link Element} without a value
+	 * to a parent {@link Element}.
+	 * 
 	 * @param parent
 	 * @param childName
 	 * @return the new created child element
 	 */
-	public Element createChildElement(Element parent, String childName) {
-		Element child = doc.createElement(childName);
+	public Element createChildElement(final Element parent, final String childName) {
+		final Element child = this.doc.createElement(childName);
 		return createChildElement(parent, child);
 	}
 
 	/**
 	 * This method appends a child {@link Element} to a parent {@link Element}.
+	 * 
 	 * @param parent
 	 * @param child
 	 * @return the inserted child element
 	 */
-	public Element createChildElement(Element parent, Element child) {
+	public Element createChildElement(final Element parent, final Element child) {
 		parent.appendChild(child);
 		return child;
 	}
 
 	/**
-	 * This method creates a {@link Attr} with a value for an {@link Element} object.
+	 * This method creates a {@link Attr} with a value for an {@link Element}
+	 * object.
+	 * 
 	 * @param element
 	 * @param attrName
 	 * @param attrValue
 	 */
-	public void createAttrForElement(Element element, String attrName, String attrValue) {
-		Attr attr = this.doc.createAttribute(attrName);
+	public void createAttrForElement(final Element element, final String attrName, final String attrValue) {
+		final Attr attr = this.doc.createAttribute(attrName);
 		attr.setValue(attrValue);
 		element.setAttributeNode(attr);
 	}
@@ -173,33 +182,35 @@ public class XMLParser {
 	 */
 	public void writeXML() {
 
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		final TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer;
 		try {
 			transformer = transformerFactory.newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-			DOMSource source = new DOMSource(this.doc);
-			StreamResult result = new StreamResult(this.xmlFile);
+			final DOMSource source = new DOMSource(this.doc);
+			final StreamResult result = new StreamResult(this.xmlFile);
 			transformer.transform(source, result);
-		} catch (TransformerConfigurationException e) {
+		} catch (final TransformerConfigurationException e) {
 			Activator.getDefault().logError(e);
-		} catch (TransformerException e) {
+		} catch (final TransformerException e) {
 			Activator.getDefault().logError(e);
 		}
 
 	}
 
 	/**
-	 * This method removes {@link Node} with a specific {@link Attr} with a certain value.
+	 * This method removes {@link Node} with a specific {@link Attr} with a certain
+	 * value.
+	 * 
 	 * @param nodeName
 	 * @param attrName
 	 * @param attrValue
 	 */
-	public void removeNodeByAttrValue(String nodeName, String attrName, String attrValue) {
-		NodeList nl = this.doc.getElementsByTagName(nodeName);
+	public void removeNodeByAttrValue(final String nodeName, final String attrName, final String attrValue) {
+		final NodeList nl = this.doc.getElementsByTagName(nodeName);
 		for (int i = 0; i < nl.getLength(); i++) {
-			NamedNodeMap map = nl.item(i).getAttributes();
+			final NamedNodeMap map = nl.item(i).getAttributes();
 			for (int j = 0; j < map.getLength(); j++) {
 				if (map.item(j).getTextContent().equals(attrValue)) {
 					nl.item(i).getParentNode().removeChild(nl.item(i));
@@ -209,16 +220,18 @@ public class XMLParser {
 	}
 
 	/**
-	 * This method creates a {@link List} with all {@link Attr} values of a certain node name.
+	 * This method creates a {@link List} with all {@link Attr} values of a certain
+	 * node name.
+	 * 
 	 * @param nodeName
 	 * @param attrName
 	 * @return a list with all attribute values
 	 */
-	public ArrayList<String> getAttrValuesByAttrName(String nodeName, String attrName) {
-		ArrayList<String> valueList = new ArrayList<>();
-		NodeList nl = this.doc.getElementsByTagName(nodeName);
+	public ArrayList<String> getAttrValuesByAttrName(final String nodeName, final String attrName) {
+		final ArrayList<String> valueList = new ArrayList<>();
+		final NodeList nl = this.doc.getElementsByTagName(nodeName);
 		for (int i = 0; i < nl.getLength(); i++) {
-			NamedNodeMap map = nl.item(i).getAttributes();
+			final NamedNodeMap map = nl.item(i).getAttributes();
 			for (int j = 0; j < map.getLength(); j++) {
 				valueList.add(map.item(j).getTextContent());
 			}
@@ -227,17 +240,20 @@ public class XMLParser {
 	}
 
 	/**
-	 * This method filters a certain {@link Node}, on the basis of the {@link Node} name, {@link Attr} name and {@link Attr} value.
+	 * This method filters a certain {@link Node}, on the basis of the {@link Node}
+	 * name, {@link Attr} name and {@link Attr} value.
+	 * 
 	 * @param nodeName
 	 * @param attrName
 	 * @param attrValue
 	 * @return the filtered node
 	 * @throws NoSuchElementException
 	 */
-	public Node getNodeByAttrValue(String nodeName, String attrName, String attrValue) throws NoSuchElementException{
-		NodeList nl = this.doc.getElementsByTagName(nodeName);
+	public Node getNodeByAttrValue(final String nodeName, final String attrName, final String attrValue)
+			throws NoSuchElementException {
+		final NodeList nl = this.doc.getElementsByTagName(nodeName);
 		for (int i = 0; i < nl.getLength(); i++) {
-			NamedNodeMap map = nl.item(i).getAttributes();
+			final NamedNodeMap map = nl.item(i).getAttributes();
 			for (int j = 0; j < map.getLength(); j++) {
 				if (map.item(j).getTextContent().equals(attrValue)) {
 					return nl.item(i);
@@ -246,49 +262,51 @@ public class XMLParser {
 		}
 		throw new NoSuchElementException();
 	}
-	
+
 	/**
-	 * This method filters a certain child {@link Node} in a parent node, on the basis of the {@link Node} name.
+	 * This method filters a certain child {@link Node} in a parent node, on the
+	 * basis of the {@link Node} name.
+	 * 
 	 * @param parent
 	 * @param nodeName
 	 * @return the filtered node
 	 * @throws NoSuchElementException
 	 */
-	public Node getChildNodeByTagName(Node parent, String nodeName) throws NoSuchElementException {
-		NodeList childList = parent.getChildNodes();
-		for(int i = 0; i < childList.getLength(); i++) {
-			if(childList.item(i).getNodeName().equals(nodeName)) {
+	public Node getChildNodeByTagName(final Node parent, final String nodeName) throws NoSuchElementException {
+		final NodeList childList = parent.getChildNodes();
+		for (int i = 0; i < childList.getLength(); i++) {
+			if (childList.item(i).getNodeName().equals(nodeName)) {
 				return childList.item(i);
 			}
 		}
 		throw new NoSuchElementException();
 	}
-	
+
 	/**
 	 * This method updates the value of a certain {@link Node}.
+	 * 
 	 * @param node
 	 * @param newValue
 	 */
-	public void updateNodeValue(Node node, String newValue) {
+	public void updateNodeValue(final Node node, final String newValue) {
 		node.setTextContent(newValue);
-		doc = node.getOwnerDocument();
-	}
-	
-	public File getXmlFile() {
-		return xmlFile;
+		this.doc = node.getOwnerDocument();
 	}
 
-	public void setXmlFile(File xmlFile) {
+	public File getXmlFile() {
+		return this.xmlFile;
+	}
+
+	public void setXmlFile(final File xmlFile) {
 		this.xmlFile = xmlFile;
 	}
 
 	public Document getDoc() {
-		return doc;
+		return this.doc;
 	}
 
-	public void setDoc(Document doc) {
+	public void setDoc(final Document doc) {
 		this.doc = doc;
 	}
 
-	
 }

@@ -31,12 +31,12 @@ import de.cognicrypt.core.Constants;
 public class GenerationTest {
 
 	/**
-	 * In the following tests we check for the right number of methods 
-	 * in the appropriate classes. We choose this approach, because a
-	 * comparing of the source code/bytes leads to problems when some 
-	 * changes happen in the XSLTemplate.
+	 * In the following tests we check for the right number of methods in the
+	 * appropriate classes. We choose this approach, because a comparing of the
+	 * source code/bytes leads to problems when some changes happen in the
+	 * XSLTemplate.
 	 */
-	
+
 	Logger log = Logger.getLogger(GenerationTest.class.getName());
 	IJavaProject testJavaProject;
 	CodeGenerator generatorEnc;
@@ -50,19 +50,20 @@ public class GenerationTest {
 
 	@After
 	public void tearDown() throws CoreException {
-		TestUtils.deleteProject(testJavaProject.getProject());
+		TestUtils.deleteProject(this.testJavaProject.getProject());
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		GenerationTest.counter++;
-		this.testJavaProject = TestUtils.createJavaProject("TestProject_"+counter);
-		TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
+		this.testJavaProject = TestUtils.createJavaProject("TestProject_" + counter);
+		TestUtils.generateJavaClassInJavaProject(this.testJavaProject, "testPackage", "Test");
 		this.encTask = TestUtils.getTask("SymmetricEncryption");
-		this.generatorEnc = new XSLBasedGenerator(testJavaProject.getProject(), encTask.getXslFile());
+		this.generatorEnc = new XSLBasedGenerator(this.testJavaProject.getProject(), this.encTask.getXslFile());
 		this.secPasswordTask = TestUtils.getTask("SecurePassword");
-		this.generatorSecPassword = new XSLBasedGenerator(testJavaProject.getProject(), secPasswordTask.getXslFile());
-		this.developerProject = generatorEnc.getDeveloperProject();
+		this.generatorSecPassword = new XSLBasedGenerator(this.testJavaProject.getProject(),
+				this.secPasswordTask.getXslFile());
+		this.developerProject = this.generatorEnc.getDeveloperProject();
 	}
 
 	/**
@@ -71,8 +72,9 @@ public class GenerationTest {
 	 */
 	@Test
 	public void testCodeGeneration() {
-		this.configEnc = TestUtils.createXSLConfigurationForCodeGeneration(developerProject, encTask);
-		boolean encCheck = generatorEnc.generateCodeTemplates(configEnc, encTask.getAdditionalResources());
+		this.configEnc = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.encTask);
+		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc,
+				this.encTask.getAdditionalResources());
 		assertTrue(encCheck);
 	}
 
@@ -83,12 +85,13 @@ public class GenerationTest {
 	@Test
 	public void testCodeGenerationInTestClass() throws CoreException, IOException {
 
-		ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(developerProject, "testPackage", "Test.java");
-		TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
-		
-		this.configEnc = TestUtils.createXSLConfigurationForCodeGeneration(developerProject, encTask);
-		generatorEnc.generateCodeTemplates(configEnc, encTask.getAdditionalResources());
-	    assertEquals(1, TestUtils.countMethods(testClassUnit));
+		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, "testPackage",
+				"Test.java");
+		TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", testClassUnit);
+
+		this.configEnc = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.encTask);
+		this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
+		assertEquals(1, countMethods(testClassUnit));
 	}
 
 	/**
@@ -98,14 +101,17 @@ public class GenerationTest {
 	@Test
 	public void testCodeGenerationTwoTimesNoClassOpen() throws CoreException, IOException {
 
-		this.configEnc = TestUtils.createXSLConfigurationForCodeGeneration(developerProject, encTask);
-		generatorEnc.generateCodeTemplates(configEnc, encTask.getAdditionalResources());
-		
-		this.configSecPassword = TestUtils.createXSLConfigurationForCodeGeneration(developerProject, secPasswordTask);
-		generatorSecPassword.generateCodeTemplates(configSecPassword, secPasswordTask.getAdditionalResources());
-		
-		ICompilationUnit outputUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName,"Output.java");
-	    assertEquals(2, TestUtils.countMethods(outputUnit));
+		this.configEnc = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.encTask);
+		this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
+
+		this.configSecPassword = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject,
+				this.secPasswordTask);
+		this.generatorSecPassword.generateCodeTemplates(this.configSecPassword,
+				this.secPasswordTask.getAdditionalResources());
+
+		final ICompilationUnit outputUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PackageName,
+				"Output.java");
+		assertEquals(2, countMethods(outputUnit));
 	}
 
 	/**
@@ -114,19 +120,30 @@ public class GenerationTest {
 	 */
 //	@Test
 	public void testCodeGenerationInEncClass() throws CoreException, IOException {
+		this.configEnc = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.encTask);
+		this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
+		final ICompilationUnit encUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PackageName,
+				"Enc.java");
+		TestUtils.openJavaFileInWorkspace(this.developerProject, Constants.PackageName, encUnit);
 
-		this.configEnc = TestUtils.createXSLConfigurationForCodeGeneration(developerProject, encTask);
-		generatorEnc.generateCodeTemplates(configEnc, encTask.getAdditionalResources());
-		ICompilationUnit encUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName, "Enc.java");
-		TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encUnit);
-		
+		this.configSecPassword = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject,
+				this.secPasswordTask);
+		this.generatorSecPassword.generateCodeTemplates(this.configSecPassword,
+				this.secPasswordTask.getAdditionalResources());
 
-		this.configSecPassword = TestUtils.createXSLConfigurationForCodeGeneration(developerProject, secPasswordTask);
-		generatorSecPassword.generateCodeTemplates(configSecPassword, secPasswordTask.getAdditionalResources());
-		
-		ICompilationUnit outputUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName,"Output.java");
-	    assertEquals(2, TestUtils.countMethods(outputUnit));
+		final ICompilationUnit outputUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PackageName,
+				"Output.java");
+		assertEquals(2, countMethods(outputUnit));
 	}
-	
 
+	/**
+	 * This method counts methods in ICompilationUnits
+	 *
+	 * @param unit
+	 * @return
+	 * @throws JavaModelException
+	 */
+	private int countMethods(final ICompilationUnit unit) throws JavaModelException {
+		return unit.getAllTypes()[0].getMethods().length;
+	}
 }

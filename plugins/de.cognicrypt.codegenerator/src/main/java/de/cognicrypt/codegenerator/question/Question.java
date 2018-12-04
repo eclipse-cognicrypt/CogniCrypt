@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -15,6 +15,11 @@ import java.util.ArrayList;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.GUIElements;
 
+/**
+ * This class holds all the information to fill the wizard pages w.r.t. a specific end-user question.
+ * 
+ * E.g., when user input is required and a text field is required in order to get user input, the "textType" is used to distinguish ip addresses, ports and more.
+ */
 public class Question {
 
 	private int id;
@@ -37,6 +42,8 @@ public class Question {
 	private String tooltip = "";
 	//helpText
 	private transient String helpText = "";
+	//Message for showing a grayed text in a text field
+	private final String message = "";
 
 	public ArrayList<Answer> getAnswers() {
 		return this.answers;
@@ -44,7 +51,7 @@ public class Question {
 
 	/**
 	 * Retrieves the default answer of the question.
-	 * 
+	 *
 	 * @return Default answer
 	 */
 	public Answer getDefaultAnswer() {
@@ -60,7 +67,7 @@ public class Question {
 
 	/**
 	 * Retrieves the widget the question should be displayed as.
-	 * 
+	 *
 	 * @return GUI widget associated with the question
 	 */
 	public GUIElements getElement() {
@@ -82,6 +89,11 @@ public class Question {
 	//added get method for tooltip
 	public String getTooltip() {
 		return this.tooltip;
+	}
+
+	//getMessage returns a message string
+	public String getMessage() {
+		return this.message;
 	}
 
 	//added the type of the text
@@ -163,14 +175,14 @@ public class Question {
 	}
 
 	public String getQuestionType() {
-		return questionType;
+		return this.questionType;
 	}
 
-	public void setQuestionType(String questionType) {
+	public void setQuestionType(final String questionType) {
 		this.questionType = questionType;
 	}
 
-	public Answer setEnteredAnswer(Answer enteredAnswer) {
+	public Answer setEnteredAnswer(final Answer enteredAnswer) {
 		return this.enteredAnswer = enteredAnswer;
 	}
 
@@ -179,19 +191,18 @@ public class Question {
 	}
 
 	public String getExtension() {
-		return extension;
+		return this.extension;
 	}
 
-	public void setExtension(String extension) {
+	public void setExtension(final String extension) {
 		this.extension = extension;
 	}
 
 	public String getHelpText() {
-		return helpText;
+		return this.helpText;
 	}
 
-	public void setHelpText(String helpText) {
+	public void setHelpText(final String helpText) {
 		this.helpText = helpText;
 	}
-
 }

@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -61,23 +61,23 @@ public class XmlRegion {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param xmlRegionType
 	 * @param start
 	 */
-	public XmlRegion(XmlRegionType xmlRegionType, int start) {
+	public XmlRegion(final XmlRegionType xmlRegionType, final int start) {
 		this.xmlRegionType = xmlRegionType;
 		this.start = start;
 	}
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param xmlRegionType
 	 * @param start
 	 * @param end
 	 */
-	public XmlRegion(XmlRegionType xmlRegionType, int start, int end) {
+	public XmlRegion(final XmlRegionType xmlRegionType, final int start, final int end) {
 		this(xmlRegionType, start);
 		this.end = end;
 	}
@@ -93,7 +93,7 @@ public class XmlRegion {
 	 * @param end
 	 *        the end to set
 	 */
-	public void setEnd(int end) {
+	public void setEnd(final int end) {
 		this.end = end;
 	}
 

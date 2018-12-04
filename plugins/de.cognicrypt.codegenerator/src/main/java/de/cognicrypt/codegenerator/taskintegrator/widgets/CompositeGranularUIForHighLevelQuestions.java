@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -37,47 +37,47 @@ import de.cognicrypt.core.Constants;
 
 public class CompositeGranularUIForHighLevelQuestions extends Composite {
 
-	private Text txtQuestionID;
+	private final Text txtQuestionID;
 	public Text txtQuestion;
-	private Text txtAnswerType;
+	private final Text txtAnswerType;
 
 	private Question question;
 
 	/**
 	 * Create the composite.
-	 * 
+	 *
 	 * @param parent
 	 * @param style
 	 */
-	public CompositeGranularUIForHighLevelQuestions(Composite parent, int style, Question questionParam, boolean linkAnswerPage) {
+	public CompositeGranularUIForHighLevelQuestions(final Composite parent, final int style, final Question questionParam, final boolean linkAnswerPage) {
 		super(parent, SWT.BORDER);
 
 		setQuestion(questionParam);
 
-		GridData gridData = new GridData(SWT.FILL, SWT.TOP, true, false);
+		final GridData gridData = new GridData(SWT.FILL, SWT.TOP, true, false);
 		gridData.minimumWidth = 300;
 		setLayoutData(gridData);
 
 		setLayout(new GridLayout(2, false));
 
-		CompositeModifyDeleteButtons grpModifyDeleteButtons = new CompositeModifyDeleteButtons(this, question);
+		final CompositeModifyDeleteButtons grpModifyDeleteButtons = new CompositeModifyDeleteButtons(this, this.question);
 		grpModifyDeleteButtons.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 		//Only visible for "pageForHighLevelQuestions" page
 		grpModifyDeleteButtons.setVisible(!linkAnswerPage);
 
-		CompositeUpDownButtons grpUpDownButtons = new CompositeUpDownButtons(this, question);
+		final CompositeUpDownButtons grpUpDownButtons = new CompositeUpDownButtons(this, this.question);
 		grpUpDownButtons.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 		grpUpDownButtons.setVisible(!linkAnswerPage);
 
-		Group grpQuestionDetails = new Group(this, SWT.NONE);
+		final Group grpQuestionDetails = new Group(this, SWT.NONE);
 		grpQuestionDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 4));
 		grpQuestionDetails.setLayout(new GridLayout(4, false));
 
 		if (!linkAnswerPage) {
-			Button addDependencies = new Button(this, SWT.NONE);
-			GridData gdAddDependencies = new GridData(SWT.LEFT, SWT.FILL, false, false, 1, 3);
+			final Button addDependencies = new Button(this, SWT.NONE);
+			final GridData gdAddDependencies = new GridData(SWT.LEFT, SWT.FILL, false, false, 1, 3);
 			addDependencies.setLayoutData(gdAddDependencies);
 			addDependencies.setText("Link Variability construct and Link code");
 			addDependencies.setToolTipText("Click to Link variability construct and variables to use in code");
@@ -87,33 +87,34 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 			addDependencies.addSelectionListener(new SelectionAdapter() {
 
 				@Override
-				public void widgetSelected(SelectionEvent e) {
-					ClaferModel claferModel = ((CompositeToHoldGranularUIElements) addDependencies.getParent().getParent().getParent()).getClaferModel();
-					AddDependenciesDialog addDependenciesDialog = new AddDependenciesDialog(parent.getShell(), question, claferModel);
+				public void widgetSelected(final SelectionEvent e) {
+					final ClaferModel claferModel = ((CompositeToHoldGranularUIElements) addDependencies.getParent().getParent().getParent()).getClaferModel();
+					final AddDependenciesDialog addDependenciesDialog = new AddDependenciesDialog(parent
+						.getShell(), CompositeGranularUIForHighLevelQuestions.this.question, claferModel);
 					addDependenciesDialog.open();
 				}
 			});
 		}
 
 		if (linkAnswerPage) {
-			Button linkQstn = new Button(this, SWT.WRAP);
-			GridData gdLinkQstn = new GridData(SWT.LEFT, SWT.FILL, false, false, 1, 3);
+			final Button linkQstn = new Button(this, SWT.WRAP);
+			final GridData gdLinkQstn = new GridData(SWT.LEFT, SWT.FILL, false, false, 1, 3);
 			linkQstn.setLayoutData(gdLinkQstn);
 
 			linkQstn.setText("Link Answer to other questions");
 
-			//Visible only for the "pageForLinkAnswers" page 
+			//Visible only for the "pageForLinkAnswers" page
 			linkQstn.setVisible(linkAnswerPage);
 
 			//opens the LinkAnswerDialog
 			linkQstn.addSelectionListener(new SelectionAdapter() {
 
 				@Override
-				public void widgetSelected(SelectionEvent e) {
+				public void widgetSelected(final SelectionEvent e) {
 
 					//retrieves the list of all questions
-					ArrayList<Question> listOfAllQuestions = ((CompositeToHoldGranularUIElements) linkQstn.getParent().getParent().getParent()).getListOfAllQuestions();
-					LinkAnswerDialog linkAnsDialog = new LinkAnswerDialog(parent.getShell(), question, listOfAllQuestions);
+					final ArrayList<Question> listOfAllQuestions = ((CompositeToHoldGranularUIElements) linkQstn.getParent().getParent().getParent()).getListOfAllQuestions();
+					final LinkAnswerDialog linkAnsDialog = new LinkAnswerDialog(parent.getShell(), CompositeGranularUIForHighLevelQuestions.this.question, listOfAllQuestions);
 					linkAnsDialog.open();
 
 				}
@@ -122,57 +123,57 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 
 		grpQuestionDetails.setText("Question details");
 
-		Label lblQuestionId = new Label(grpQuestionDetails, SWT.NONE);
+		final Label lblQuestionId = new Label(grpQuestionDetails, SWT.NONE);
 		lblQuestionId.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		lblQuestionId.setText("Question id:");
 
-		txtQuestionID = new Text(grpQuestionDetails, SWT.BORDER);
-		txtQuestionID.setEditable(false);
-		GridData gdTxtQuestionID = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		this.txtQuestionID = new Text(grpQuestionDetails, SWT.BORDER);
+		this.txtQuestionID.setEditable(false);
+		final GridData gdTxtQuestionID = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		gdTxtQuestionID.widthHint = 0;
-		txtQuestionID.setLayoutData(gdTxtQuestionID);
-		txtQuestionID.setText(Integer.toString(question.getId()));
+		this.txtQuestionID.setLayoutData(gdTxtQuestionID);
+		this.txtQuestionID.setText(Integer.toString(this.question.getId()));
 
-		Label lblType = new Label(grpQuestionDetails, SWT.NONE);
+		final Label lblType = new Label(grpQuestionDetails, SWT.NONE);
 		lblType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		lblType.setText("Type:");
 
-		txtAnswerType = new Text(grpQuestionDetails, SWT.BORDER);
-		txtAnswerType.setEditable(false);
-		GridData gdTxtAnswerType = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		this.txtAnswerType = new Text(grpQuestionDetails, SWT.BORDER);
+		this.txtAnswerType.setEditable(false);
+		final GridData gdTxtAnswerType = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		gdTxtAnswerType.widthHint = 0;
-		txtAnswerType.setLayoutData(gdTxtAnswerType);
+		this.txtAnswerType.setLayoutData(gdTxtAnswerType);
 
-		Label lblQuestion = new Label(grpQuestionDetails, SWT.NONE);
+		final Label lblQuestion = new Label(grpQuestionDetails, SWT.NONE);
 		lblQuestion.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		lblQuestion.setText("Question:");
 
-		txtQuestion = new Text(grpQuestionDetails, SWT.BORDER);
-		txtQuestion.setEditable(false);
-		GridData gdTxtQuestion = new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1);
+		this.txtQuestion = new Text(grpQuestionDetails, SWT.BORDER);
+		this.txtQuestion.setEditable(false);
+		final GridData gdTxtQuestion = new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1);
 		gdTxtQuestion.widthHint = 0;
-		txtQuestion.setLayoutData(gdTxtQuestion);
+		this.txtQuestion.setLayoutData(gdTxtQuestion);
 
-		setTextQuestion(question.getQuestionText());
+		setTextQuestion(this.question.getQuestionText());
 
-		if (question.getElement().equals(Constants.GUIElements.combo)) {
-			txtAnswerType.setText(Constants.dropDown);
-		} else if (question.getElement().equals(Constants.GUIElements.text)) {
-			txtAnswerType.setText(Constants.textBox);
-		} else if (question.getElement().equals(Constants.GUIElements.radio)) {
-			txtAnswerType.setText(Constants.radioButton);
+		if (this.question.getElement().equals(Constants.GUIElements.combo)) {
+			this.txtAnswerType.setText(Constants.dropDown);
+		} else if (this.question.getElement().equals(Constants.GUIElements.text)) {
+			this.txtAnswerType.setText(Constants.textBox);
+		} else if (this.question.getElement().equals(Constants.GUIElements.radio)) {
+			this.txtAnswerType.setText(Constants.radioButton);
 		}
 
-		if (!question.getElement().equals(Constants.GUIElements.text)) {
-			Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
+		if (!this.question.getElement().equals(Constants.GUIElements.text)) {
+			final Label lblAnswers = new Label(grpQuestionDetails, SWT.NONE);
 			lblAnswers.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 			lblAnswers.setText("Answers:");
 
-			CompositeToHoldSmallerUIElements compositeForAnswers = new CompositeToHoldSmallerUIElements(grpQuestionDetails, SWT.None, null, false, null);
-			GridData gdCompositeForAnswers = new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1);
+			final CompositeToHoldSmallerUIElements compositeForAnswers = new CompositeToHoldSmallerUIElements(grpQuestionDetails, SWT.None, null, false, null);
+			final GridData gdCompositeForAnswers = new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1);
 			gdCompositeForAnswers.heightHint = 100;
 			compositeForAnswers.setLayoutData(gdCompositeForAnswers);
-			for (Answer answer : question.getAnswers()) {
+			for (final Answer answer : this.question.getAnswers()) {
 				compositeForAnswers.addAnswer(answer, false);
 			}
 		}
@@ -187,26 +188,26 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 	 * @return the question
 	 */
 	public Question getQuestion() {
-		return question;
+		return this.question;
 	}
 
 	/**
 	 * @param question
 	 *        the question to set
 	 */
-	private void setQuestion(Question question) {
+	private void setQuestion(final Question question) {
 		this.question = question;
 	}
 
-	public void setTextQuestion(String txtQuestion) {
+	public void setTextQuestion(final String txtQuestion) {
 		this.txtQuestion.setText(txtQuestion);
 	}
 
 	public String getTextQuestion() {
-		return txtQuestion.getText();
+		return this.txtQuestion.getText();
 	}
 
 	public String getAnswerType() {
-		return txtAnswerType.getText();
+		return this.txtAnswerType.getText();
 	}
 }

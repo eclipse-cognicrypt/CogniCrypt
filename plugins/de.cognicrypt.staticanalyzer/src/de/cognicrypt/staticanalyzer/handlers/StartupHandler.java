@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -27,7 +27,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.IStartup;
 
-import de.cognicrypt.staticanalyzer.Activator; 
+import de.cognicrypt.staticanalyzer.Activator;
 
 /**
  * At startup, this handler registers a listener that will be informed after a
@@ -41,21 +41,25 @@ public class StartupHandler implements IStartup {
 	static boolean analysis_running = false;
 
 	private static class AfterBuildListener implements IResourceChangeListener {
-		
-		
+
 		/**
 		 * This method sets up the analysis by <br>
 		 * 1) Listening to any resource change in the workspace <br>
-		 * 2) Setting Up the analysis by calling the "setup" method of  {@link AnalysisKickOff} <br>
+		 * 2) Setting Up the analysis by calling the "setup" method of
+		 * {@link AnalysisKickOff} <br>
 		 * 3) Running the analysis on the setup {@link AnalysisKickOff} object <br>
-		 * 
-		 * It maintains a Queue and a monitor flag that allows running only one analysis at a time.
-		 * 
-		 * @param event : an object of the {@link IResourceChangeEvent} class, contains info about the changed resources from the workspace
 		 *
-		 * @return <code>true</code>/<code>false</code> if change (not) in java element 
-		 * @throws Exception  if javaElement containing changed resource accessed wrongly 
-		 * @throws CoreException  if javaElement containing changed resource accessed wrongly 
+		 * It maintains a Queue and a monitor flag that allows running only one analysis
+		 * at a time.
+		 *
+		 * @param event : an object of the {@link IResourceChangeEvent} class, contains
+		 *              info about the changed resources from the workspace
+		 *
+		 * @return <code>true</code>/<code>false</code> if change (not) in java element
+		 * @throws Exception     if javaElement containing changed resource accessed
+		 *                       wrongly
+		 * @throws CoreException if javaElement containing changed resource accessed
+		 *                       wrongly
 		 */
 		@Override
 		public void resourceChanged(final IResourceChangeEvent event) {
@@ -116,14 +120,14 @@ public class StartupHandler implements IStartup {
 			}
 			if (!changedJavaElements.isEmpty()) {
 				final AnalysisKickOff ako = new AnalysisKickOff();
-				boolean stat = ako.setUp(changedJavaElements.get(0));
-				if(stat) {
+				final boolean stat = ako.setUp(changedJavaElements.get(0));
+				if (stat) {
 					analysis_Queue.add(ako);
 				} else {
 					Activator.getDefault().logInfo("Analysis has been cancelled due to erroneous setup.");
 				}
-				while(analysis_Queue.size() > 0) {
-					if(!analysis_running) {
+				while (analysis_Queue.size() > 0) {
+					if (!analysis_running) {
 						final AnalysisKickOff ak = analysis_Queue.remove();
 						analysis_running = true;
 						if (ak.run()) {

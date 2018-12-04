@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -26,7 +26,7 @@ public class FileHelper {
 
 	/**
 	 * Deletes file with given name.
-	 * 
+	 *
 	 * @param fileName Path to file to be deleted.
 	 * @return <Code>True</Code>/<Code>False</Code> if deletion of file
 	 *         succeeded/failed.
@@ -46,14 +46,14 @@ public class FileHelper {
 
 	/**
 	 * This method checks if a file contains a self defined String
-	 * 
+	 *
 	 * @param filePath
 	 * @param s
 	 * @return If the file contains the String <CODE>true</CODE> otherwise
 	 *         <CODE>false</CODE>
 	 * @throws IOException
 	 */
-	public static boolean checkFileForString(final String filePath, String searchString) throws IOException {
+	public static boolean checkFileForString(final String filePath, final String searchString) throws IOException {
 		final File f = new File(filePath);
 		if (!(f.exists() && Files.isReadable(f.toPath()))) {
 			return false;
@@ -64,7 +64,7 @@ public class FileHelper {
 
 	/**
 	 * This method trims a file content
-	 * 
+	 *
 	 * @param filePath
 	 * @throws IOException
 	 */
@@ -76,7 +76,7 @@ public class FileHelper {
 
 		final String contentStringAlt = String.join(Constants.lineSeparator, Files.readAllLines(Paths.get(filePath)))
 				.trim();
-		FileWriter writer = new FileWriter(f);
+		final FileWriter writer = new FileWriter(f);
 		writer.write(contentStringAlt);
 		writer.close();
 	}

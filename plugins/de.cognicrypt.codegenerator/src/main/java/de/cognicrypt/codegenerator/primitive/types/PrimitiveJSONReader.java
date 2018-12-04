@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -25,10 +25,10 @@ public class PrimitiveJSONReader {
 
 	private volatile static List<Primitive> primitives;
 
-	public static List<Primitive> getPrimitiveTypes(File file) {
+	public static List<Primitive> getPrimitiveTypes(final File file) {
 		if (primitives == null) {
 			try {
-				BufferedReader reader = new BufferedReader(new FileReader(file));
+				final BufferedReader reader = new BufferedReader(new FileReader(file));
 				final Gson gson = new Gson();
 				primitives = gson.fromJson(reader, new TypeToken<List<Primitive>>() {}.getType());
 

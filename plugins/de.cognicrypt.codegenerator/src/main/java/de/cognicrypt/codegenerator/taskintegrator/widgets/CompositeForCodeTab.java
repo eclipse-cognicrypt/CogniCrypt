@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -23,24 +23,24 @@ import de.cognicrypt.codegenerator.question.CodeDependency;
 
 public class CompositeForCodeTab extends Composite {
 
-	public CompositeForCodeTab(Composite parent, int style, Answer answer) {
+	public CompositeForCodeTab(final Composite parent, final int style, final Answer answer) {
 		super(parent, style);
 
 		// Non-editable text box containing answer value
-		Text txtBoxAnswers = new Text(this, SWT.BORDER);
+		final Text txtBoxAnswers = new Text(this, SWT.BORDER);
 		txtBoxAnswers.setBounds(5, 5, 210, 25);
 		txtBoxAnswers.setEditable(false);
 		txtBoxAnswers.setText(answer.getValue());
 
 		//Code dependency text field
-		Text txtValue = new Text(this, SWT.BORDER);
+		final Text txtValue = new Text(this, SWT.BORDER);
 		txtValue.setBounds(220, 5, 200, 25);
 		txtValue.setVisible(true);
 
-		CodeDependency codeDependency = new CodeDependency();
+		final CodeDependency codeDependency = new CodeDependency();
 
 		if (answer.getCodeDependencies() != null) {
-			for (CodeDependency cd : answer.getCodeDependencies()) {
+			for (final CodeDependency cd : answer.getCodeDependencies()) {
 				if (cd.getValue() != null) {
 					txtValue.setText(cd.getValue());
 					codeDependency.setValue(txtValue.getText());
@@ -51,12 +51,12 @@ public class CompositeForCodeTab extends Composite {
 		txtValue.addFocusListener(new FocusAdapter() {
 
 			@Override
-			public void focusLost(FocusEvent e) {
+			public void focusLost(final FocusEvent e) {
 				codeDependency.setValue(txtValue.getText());
 			}
 		});
 
-		ArrayList<CodeDependency> codeDependencies = new ArrayList<CodeDependency>();
+		final ArrayList<CodeDependency> codeDependencies = new ArrayList<CodeDependency>();
 		codeDependencies.add(codeDependency);
 		answer.setCodeDependencies(codeDependencies);
 

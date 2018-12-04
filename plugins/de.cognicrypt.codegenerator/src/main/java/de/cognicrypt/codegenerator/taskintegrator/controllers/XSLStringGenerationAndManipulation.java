@@ -1,15 +1,15 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 /**
- * 
+ *
  */
 package de.cognicrypt.codegenerator.taskintegrator.controllers;
 
@@ -45,20 +45,20 @@ import de.cognicrypt.core.Constants;
 public class XSLStringGenerationAndManipulation {
 
 	/**
-	 * 
+	 *
 	 * @param filePath
 	 * @param existingText
 	 * @param selected
 	 * @return
 	 */
-	public static String generateXSLStringFromPath(String filePath, String existingText, Point selected, String stringToAdd) {
-		StringBuilder dataFromFile = new StringBuilder();
+	public static String generateXSLStringFromPath(final String filePath, final String existingText, final Point selected, final String stringToAdd) {
+		final StringBuilder dataFromFile = new StringBuilder();
 
-		String xslStringBeforeAddingText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"2.0\">\n<xsl:output method=\"text\"/>\n<xsl:template match=\"/\">\n\n\n\npackage <xsl:value-of select=\"//task/Package\"/>; \n<xsl:apply-templates select=\"//Import\"/>\n";
-		String xslStringAfterAddingText = "\n</xsl:template>\n<xsl:template match=\"Import\">\nimport <xsl:value-of select=\".\"/>;\n</xsl:template>\n</xsl:stylesheet>";
+		final String xslStringBeforeAddingText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"2.0\">\n<xsl:output method=\"text\"/>\n<xsl:template match=\"/\">\n\n\n\npackage <xsl:value-of select=\"//task/Package\"/>; \n<xsl:apply-templates select=\"//Import\"/>\n";
+		final String xslStringAfterAddingText = "\n</xsl:template>\n<xsl:template match=\"Import\">\nimport <xsl:value-of select=\".\"/>;\n</xsl:template>\n</xsl:stylesheet>";
 
 		if (filePath != null) {
-			Path path = Paths.get(filePath);
+			final Path path = Paths.get(filePath);
 			if (path.getFileName().toString().endsWith(".java") || path.getFileName().toString().endsWith(".JAVA") || path.getFileName().toString().endsWith(".txt") || path
 				.getFileName().toString().endsWith(".TXT")) {
 
@@ -95,13 +95,13 @@ public class XSLStringGenerationAndManipulation {
 
 	/**
 	 * Read the data from the file and add it to the StringBuilder.
-	 * 
+	 *
 	 * @param dataFromFile
 	 *        the StringBuilder.
 	 * @param filePath
 	 *        the location of the file to be read.
 	 */
-	private static void appendTextFromFileToStringBuilder(StringBuilder dataFromFile, String filePath) {
+	private static void appendTextFromFileToStringBuilder(final StringBuilder dataFromFile, final String filePath) {
 		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 
 			String line = br.readLine();
@@ -111,9 +111,9 @@ public class XSLStringGenerationAndManipulation {
 				dataFromFile.append(System.lineSeparator());
 				line = br.readLine();
 			}
-		} catch (FileNotFoundException e) {
+		} catch (final FileNotFoundException e) {
 			Activator.getDefault().logError(e);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Activator.getDefault().logError(e);
 		}
 
@@ -121,18 +121,18 @@ public class XSLStringGenerationAndManipulation {
 
 	/**
 	 * Set the colors to all the {@link XmlRegion}.
-	 * 
+	 *
 	 * @param regions
 	 *        the List of {@link XmlRegion}
 	 * @return returns the {@link StyleRange} for the given code.
 	 */
-	public static List<StyleRange> computeStyleForXMLRegions(List<XmlRegion> regions) {
-		List<StyleRange> styleRanges = new ArrayList<StyleRange>();
-		for (XmlRegion xr : regions) {
+	public static List<StyleRange> computeStyleForXMLRegions(final List<XmlRegion> regions) {
+		final List<StyleRange> styleRanges = new ArrayList<StyleRange>();
+		for (final XmlRegion xr : regions) {
 
 			// The style itself depends on the region type
 			// In this example, we use colors from the system
-			StyleRange sr = new StyleRange();
+			final StyleRange sr = new StyleRange();
 			switch (xr.getXmlRegionType()) {
 				case MARKUP:
 					sr.foreground = Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN);
@@ -173,19 +173,19 @@ public class XSLStringGenerationAndManipulation {
 		return styleRanges;
 	}
 
-	public static void getListOfValidSuggestionsForXSLTags(String jsFilePath, String taskName, String taskDescription, List<Question> questions, HashMap<String, String> tagValueTagData) {
+	public static void getListOfValidSuggestionsForXSLTags(final String jsFilePath, final String taskName, final String taskDescription, final List<Question> questions, final HashMap<String, String> tagValueTagData) {
 		if (jsFilePath != null) {
-			InstanceGenerator instanceGenerator = new InstanceGenerator(jsFilePath, "c0_" + taskName, taskDescription);
+			final InstanceGenerator instanceGenerator = new InstanceGenerator(jsFilePath, "c0_" + taskName, taskDescription);
 
 			// This will contain the xml strings that are generated for every -> operator encountered.
-			List<Document> xmlStrings = new ArrayList<Document>();
+			final List<Document> xmlStrings = new ArrayList<Document>();
 
-			XMLClaferParser xmlParser = new XMLClaferParser();
+			final XMLClaferParser xmlParser = new XMLClaferParser();
 			// this will remain empty for the first instance, that contains no -> operators.
-			HashMap<Question, Answer> constraints = new HashMap<>();
-			List<InstanceClafer> instances = instanceGenerator.generateInstances(constraints);
+			final HashMap<Question, Answer> constraints = new HashMap<>();
+			final List<InstanceClafer> instances = instanceGenerator.generateInstances(constraints);
 			if (instances.size() > 0) {
-				InstanceClafer initialInstance = instances.get(0);
+				final InstanceClafer initialInstance = instances.get(0);
 				xmlStrings.add(xmlParser.displayInstanceValues(initialInstance, constraints));
 
 				// Questions needed to get the answer that has a constraint with the -> operator.
@@ -195,10 +195,10 @@ public class XSLStringGenerationAndManipulation {
 				//List<Page> pages = reader.getPages("/src/main/resources/TaskDesc/SymmetricEncryption.json");
 
 				//for (Page page : pages) {
-				for (Question question : questions) {
-					for (Answer answer : question.getAnswers()) {
+				for (final Question question : questions) {
+					for (final Answer answer : question.getAnswers()) {
 						if (answer.getClaferDependencies() != null) {
-							for (ClaferDependency claferDependency : answer.getClaferDependencies()) {
+							for (final ClaferDependency claferDependency : answer.getClaferDependencies()) {
 								if ("->".equals(claferDependency.getOperator())) {
 									xmlStrings.add(getXMLForNewAlgorithmInsertion(question, answer, xmlParser, instanceGenerator, claferDependency));
 
@@ -206,12 +206,12 @@ public class XSLStringGenerationAndManipulation {
 							} // clafer dependency loop
 						} // clafer dependency check
 						if (answer.getCodeDependencies() != null) {
-							for (CodeDependency codeDependency : answer.getCodeDependencies()) {
+							for (final CodeDependency codeDependency : answer.getCodeDependencies()) {
 								//xmlStrings.get(0).elementByID(Constants.Code).addElement(codeDependency.getOption()).addText(codeDependency.getValue() + "");
-								Element root = xmlStrings.get(0).getRootElement();
+								final Element root = xmlStrings.get(0).getRootElement();
 
-								for (Iterator<Element> element = root.elementIterator(Constants.Code); element.hasNext();) {
-									Element codeElement = element.next();
+								for (final Iterator<Element> element = root.elementIterator(Constants.Code); element.hasNext();) {
+									final Element codeElement = element.next();
 									// TODO fix question page to not create null code dependencies
 									if (codeDependency != null && codeDependency.getOption() != null && codeDependency.getValue() != null) {
 										codeElement.addElement(codeDependency.getOption()).addText(codeDependency.getValue() + "");
@@ -224,7 +224,7 @@ public class XSLStringGenerationAndManipulation {
 					//} // page loop
 
 				// Process each xml document that is generated.
-				for (Document xmlDocument : xmlStrings) {
+				for (final Document xmlDocument : xmlStrings) {
 					processXMLDocument(xmlDocument, tagValueTagData);
 				}
 			}
@@ -234,7 +234,7 @@ public class XSLStringGenerationAndManipulation {
 
 	/**
 	 * This method is created to be able to exit the nested loops as soon as the correct instance is found.
-	 * 
+	 *
 	 * @param question
 	 *        The question object from the outer loop.
 	 * @param answer
@@ -247,12 +247,12 @@ public class XSLStringGenerationAndManipulation {
 	 *        The claferDependency from the outer loop
 	 * @return
 	 */
-	private static Document getXMLForNewAlgorithmInsertion(Question question, Answer answer, XMLClaferParser xmlParser, InstanceGenerator instanceGenerator, ClaferDependency claferDependency) {
-		HashMap<Question, Answer> constraints = new HashMap<>();
+	private static Document getXMLForNewAlgorithmInsertion(final Question question, final Answer answer, final XMLClaferParser xmlParser, final InstanceGenerator instanceGenerator, final ClaferDependency claferDependency) {
+		final HashMap<Question, Answer> constraints = new HashMap<>();
 		constraints.put(question, answer);
-		String constraintOnType = claferDependency.getAlgorithm();
-		for (InstanceClafer instance : instanceGenerator.generateInstances(constraints)) {
-			for (InstanceClafer childInstance : instance.getChildren()) {
+		final String constraintOnType = claferDependency.getAlgorithm();
+		for (final InstanceClafer instance : instanceGenerator.generateInstances(constraints)) {
+			for (final InstanceClafer childInstance : instance.getChildren()) {
 				// check if the name of the constraint on the clafer instance is the same as the one on the clafer dependency from the outer loop.
 				if (childInstance.getType().getName().equals(constraintOnType)) {
 					return xmlParser.displayInstanceValues(instance, constraints);
@@ -264,20 +264,20 @@ public class XSLStringGenerationAndManipulation {
 
 	/**
 	 * Process the XML document here to generate values to be displayed to the user for selection.
-	 * 
+	 *
 	 * @param xmlDocument
 	 *        The serialized object representing the generated XML string.
 	 * @param tagValueTagData
 	 */
-	private static void processXMLDocument(Document xmlDocument, HashMap<String, String> tagValueTagData) {
-		Element root = xmlDocument.getRootElement();
+	private static void processXMLDocument(final Document xmlDocument, final HashMap<String, String> tagValueTagData) {
+		final Element root = xmlDocument.getRootElement();
 		// send a slash as a parameter to keep the recursive method as generic as possible.
 		processElement(root, "", Constants.SLASH, true, tagValueTagData);
 	}
 
 	/**
 	 * This method will process each element individually, and is called recursively to process nested tags.
-	 * 
+	 *
 	 * @param xmlElement
 	 *        The element under consideration.
 	 * @param existingNameToBeDisplayed
@@ -288,9 +288,9 @@ public class XSLStringGenerationAndManipulation {
 	 *        true if the element is the root element.
 	 * @param tagValueTagData
 	 */
-	private static void processElement(Element xmlElement, String existingNameToBeDisplayed, String existingDataForXSLDocument, boolean isRoot, HashMap<String, String> tagValueTagData) {
-		StringBuilder tagNameToBeDisplayed = new StringBuilder();
-		StringBuilder tagDataForXSLDocument = new StringBuilder();
+	private static void processElement(final Element xmlElement, final String existingNameToBeDisplayed, final String existingDataForXSLDocument, final boolean isRoot, final HashMap<String, String> tagValueTagData) {
+		final StringBuilder tagNameToBeDisplayed = new StringBuilder();
+		final StringBuilder tagDataForXSLDocument = new StringBuilder();
 
 		tagNameToBeDisplayed.append(existingNameToBeDisplayed);
 		tagDataForXSLDocument.append(existingDataForXSLDocument);
@@ -302,16 +302,16 @@ public class XSLStringGenerationAndManipulation {
 		tagDataForXSLDocument.append(Constants.SLASH);
 		tagDataForXSLDocument.append(xmlElement.getName());
 
-		int builderDisplayDataSizeTillRoot = tagNameToBeDisplayed.length();
-		int builderTagDataSizeTillRoot = tagDataForXSLDocument.length();
+		final int builderDisplayDataSizeTillRoot = tagNameToBeDisplayed.length();
+		final int builderTagDataSizeTillRoot = tagDataForXSLDocument.length();
 
 		if (xmlElement.attributeCount() == 0 && !xmlElement.elementIterator().hasNext()) {
 			// adding the tag, if there are no attributes.
 			tagValueTagData.put(tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString());
 		} else {
-			for (Iterator<Attribute> attribute = xmlElement.attributeIterator(); attribute.hasNext();) {
-				Attribute attributeData = attribute.next();
-				// TODO the name of the task can be fixed here based on what is chosen before.	
+			for (final Iterator<Attribute> attribute = xmlElement.attributeIterator(); attribute.hasNext();) {
+				final Attribute attributeData = attribute.next();
+				// TODO the name of the task can be fixed here based on what is chosen before.
 
 				if (tagNameToBeDisplayed.length() > builderDisplayDataSizeTillRoot) {
 					tagNameToBeDisplayed.delete(builderDisplayDataSizeTillRoot, tagNameToBeDisplayed.length());
@@ -330,9 +330,9 @@ public class XSLStringGenerationAndManipulation {
 
 				tagValueTagData.put(tagNameToBeDisplayed.toString(), tagDataForXSLDocument.toString());
 
-				// Adding the loop for the remaining elements within the attribute loop to have unique tags based on the attributes. 
-				for (Iterator<Element> element = xmlElement.elementIterator(); element.hasNext();) {
-					Element currentElement = element.next();
+				// Adding the loop for the remaining elements within the attribute loop to have unique tags based on the attributes.
+				for (final Iterator<Element> element = xmlElement.elementIterator(); element.hasNext();) {
+					final Element currentElement = element.next();
 					// do not consider the imports tag. The data is not relevant.
 					if (!currentElement.getName().equals("Imports")) {
 						if (tagNameToBeDisplayed.length() > builderDisplayDataSizeTillRoot) {
@@ -352,8 +352,8 @@ public class XSLStringGenerationAndManipulation {
 		}
 
 		// A similar loop outside the attribute loop to check the tags that are not nested.
-		for (Iterator<Element> element = xmlElement.elementIterator(); element.hasNext();) {
-			Element currentElement = element.next();
+		for (final Iterator<Element> element = xmlElement.elementIterator(); element.hasNext();) {
+			final Element currentElement = element.next();
 			// do not consider the imports tag. The data is not relevant.
 			if (!currentElement.getName().equals("Imports")) {
 				if (tagNameToBeDisplayed.length() > builderDisplayDataSizeTillRoot) {

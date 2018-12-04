@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -35,30 +35,30 @@ public class ProviderFileWriterTest {
 
 	@Before
 	public void setUp() throws IOException {
-		providerFile = new ProviderFile();
-		folder = CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder);
-		providerFile.zipProject(folder.getAbsolutePath(), jarFile, true);
+		this.providerFile = new ProviderFile();
+		this.folder = CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder);
+		this.providerFile.zipProject(this.folder.getAbsolutePath(), this.jarFile, true);
 	}
 
 	@Test
 	public void createJarFileTest() {
 		try {
 
-			File[] files = folder.listFiles();
-			for (File file : files) {
-				providerFile.zipProject(file.getAbsolutePath(), jarFile, true);
+			final File[] files = this.folder.listFiles();
+			for (final File file : files) {
+				this.providerFile.zipProject(file.getAbsolutePath(), this.jarFile, true);
 
 			}
-			JarFile jar = new JarFile(jarFile);
+			final JarFile jar = new JarFile(this.jarFile);
 			final Enumeration<JarEntry> entries = jar.entries();
 			while (entries.hasMoreElements()) {
 				final JarEntry entry = entries.nextElement();
 				final String entryName = entry.getName();
-				elementExists = fileExists(files, entryName);
+				this.elementExists = fileExists(files, entryName);
 			}
-			assertEquals(elementExists, true);
+			assertEquals(this.elementExists, true);
 			jar.close();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 
@@ -66,15 +66,16 @@ public class ProviderFileWriterTest {
 
 	@After
 	public void deleteFile() {
-		jarFile.delete();
+		this.jarFile.delete();
 	}
 
-	private boolean fileExists(File[] files, String element) {
+	private boolean fileExists(final File[] files, final String element) {
 		boolean elementExists = false;
 		for (int i = 0; i < files.length; i++) {
 			if (files[i].isFile()) {
-				if (files[i].getName().equals(element))
+				if (files[i].getName().equals(element)) {
 					elementExists = true;
+				}
 			}
 		}
 

@@ -1,5 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
+<<<<<<< HEAD
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -36,6 +37,7 @@ import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 import de.cognicrypt.codegenerator.wizard.Configuration;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.FileHelper;
+import de.cognicrypt.utils.Utils;
 
 /**
  * This class is responsible for generating code templates by performing an XSL transformation. Currently, Saxon is used as an XSLT- processor.
@@ -45,10 +47,9 @@ import de.cognicrypt.utils.FileHelper;
 public class XSLBasedGenerator extends CodeGenerator {
 
 	final private File xslFile;
-
 	/**
 	 * Constructor to initialize the code template generator.
-	 * 
+	 *
 	 * @param targetProject
 	 *        Project code is generated into.
 	 * @param pathToXSLFile
@@ -57,10 +58,11 @@ public class XSLBasedGenerator extends CodeGenerator {
 
 	public XSLBasedGenerator(final IProject targetProject, final String pathToXSLFile) {
 		super(targetProject);
-		xslFile = CodeGenUtils.getResourceFromWithin(pathToXSLFile);
+		this.xslFile = CodeGenUtils.getResourceFromWithin(pathToXSLFile);
 	}
 
-	public boolean generateCodeTemplates(Configuration chosenConfig, final String pathToAdditionalResources) {
+	@Override
+	public boolean generateCodeTemplates(final Configuration chosenConfig, final String pathToAdditionalResources) {
 		try {
 			// Check whether directories and templates/model exist
 			final File configFile = chosenConfig.persistConf();
@@ -68,16 +70,15 @@ public class XSLBasedGenerator extends CodeGenerator {
 				Activator.getDefault().logError(Constants.FilesDoNotExistErrorMessage);
 				return false;
 			}
-			
-			
+
 			final String srcPath = this.project.getProjectPath() + Constants.innerFileSeparator + this.project.getSourcePath();
 			String temporaryOutputFile = srcPath + Constants.CodeGenerationCallFile;
 
 			// If Output.java exists create OutputTemp.java
-			Path path = Paths.get(temporaryOutputFile);
+			final Path path = Paths.get(temporaryOutputFile);
 			boolean tempFlag;
 			if (Files.exists(path)) {
-				StringBuilder sb = new StringBuilder(temporaryOutputFile);
+				final StringBuilder sb = new StringBuilder(temporaryOutputFile);
 				sb.insert(temporaryOutputFile.length() - 5, Constants.TempSuffix);
 				temporaryOutputFile = sb.toString();
 				Activator.getDefault().logInfo(Constants.CreateOutputTemp);
@@ -98,14 +99,14 @@ public class XSLBasedGenerator extends CodeGenerator {
 			if (!addAdditionalFiles(pathToAdditionalResources)) {
 				return false;
 			}
-			for (String customProvider : chosenConfig.getProviders()) {
+			for (final String customProvider : chosenConfig.getProviders()) {
 				if (!addAddtionalFile(CodeGenUtils.getResourceFromWithin(Constants.providerPath + "/" + customProvider + Constants.JAR))) {
 					return false;
 				}
 			}
 
 			final IFile currentlyOpenFile = CodeGenUtils.getCurrentlyOpenFile();
-			if (currentlyOpenFile != null && project.equals(currentlyOpenFile.getProject())) {
+			if (currentlyOpenFile != null && this.project.equals(currentlyOpenFile.getProject())) {
 				Activator.getDefault().logInfo(Constants.OpenFile + currentlyOpenFile.getName());
 
 				if (FileHelper.checkFileForString(currentlyOpenFile.getRawLocation().toOSString(), Constants.AuthorTag)) {
@@ -136,7 +137,7 @@ public class XSLBasedGenerator extends CodeGenerator {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Performs the XSL-Transformation.
 	 *
@@ -151,7 +152,7 @@ public class XSLBasedGenerator extends CodeGenerator {
 	 */
 	public void transform(final File sourceFile, final String resultDir) throws TransformerException {
 		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
-		final Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(xslFile));
+		final Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(this.xslFile));
 		transformer.transform(new StreamSource(sourceFile), new StreamResult(new File(resultDir)));
 	}
 

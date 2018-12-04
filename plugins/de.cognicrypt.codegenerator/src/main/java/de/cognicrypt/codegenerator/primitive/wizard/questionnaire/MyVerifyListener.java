@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -18,19 +18,21 @@ public class MyVerifyListener implements VerifyListener {
 
 	public MyVerifyListener() {}
 
-	public void verifyText(VerifyEvent e) {
+	@Override
+	public void verifyText(final VerifyEvent e) {
 		{
 
-			String currentText = ((Text) e.widget).getText();
-			String port = currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
+			final String currentText = ((Text) e.widget).getText();
+			final String port = currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
 			try {
-				int portNum = Integer.valueOf(port);
+				final int portNum = Integer.valueOf(port);
 				if (portNum < 0 || portNum > 65535) {
 					e.doit = false;
 				}
-			} catch (NumberFormatException ex) {
-				if (!port.equals(""))
+			} catch (final NumberFormatException ex) {
+				if (!port.equals("")) {
 					e.doit = false;
+				}
 			}
 		}
 

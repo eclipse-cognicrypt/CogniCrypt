@@ -1,72 +1,14 @@
 [
 	{
 		"id": "0",
-		"helpID": "SecureCommunication_Page0",
+		"helpID": "TLS_Q1",
 		"content": [
 			{
 				"id": "0",
+				"element": "radio",
 				"note": "",
-				"tooltip": "Example : /home/users/keystores/android.jks",
-				"element": "text",
-      			"textType":"Browse",
-      			"extension": "*.jks",
-				"questionText": "Please specify the path to your keystore:",
+				"questionText": "Are you implementing the client side or server side?",
 				"answers": [
-					{
-						"value": "",
-						"codeDependencies": [
-							{
-								"option": "keystore",
-								"value": ""
-							}
-						],
-						"defaultAnswer": true
-					}
-				]
-			},
-			{
-				"id": "1",
-				"note": "",
-				"tooltip": "Secret password of keystore",
-				"element": "text",				
-      			"textType":"Password",
-				"questionText": "Please give the password for your keystore:",
-				"answers": [
-					{
-						"value": "C:\\      ",
-						"codeDependencies": [
-							{
-								"option": "keystorepassword",
-								"value": ""
-							}
-						],
-						"defaultAnswer": true
-					}
-				]
-			}
-		],
-		"nextID": "1"
-	},
-	{
-		"id": "1",
-		"helpID": "SecureCommunication_Page1",
-		"content": [
-			{
-				"id": "2",
-				"element": "combo",
-				"note": "",
-				"questionText": "What are you implementing?",
-				"answers": [
-					{
-						"value": "Server-side",
-						"codeDependencies": [
-							{
-								"option": "server",
-								"value": "true"
-							}
-						],
-						"nextID": "7"
-					},
 					{
 						"value": "Client-side",
 						"codeDependencies": [
@@ -75,7 +17,69 @@
 								"value": "false"
 							}
 						],
+						"defaultAnswer": true
+					},{
+						"value": "Server-side",
+						"codeDependencies": [
+							{
+								"option": "server",
+								"value": "true"
+							}
+						],
+						"nextID": "3"
+					}
+				]
+			},
+			{
+				"id": "1",
+				"element": "radio",
+				"note": "",
+				"questionText": "Which protocol do you wish to use?",
+				"answers": [
+					{
+						"value": "HTTPS",
+						"codeDependencies": [
+							{
+								"option": "HTTPS",
+								"value": "true"
+							}
+						],
+						"defaultAnswer": true
+					},
+					{
+						"value": "Plain Secure Connection",
+						"codeDependencies": [
+							{
+								"option": "HTTPS",
+								"value": "false"
+							}
+						]
+					}
+				]
+			}
+		], "nextID":"1"
+	},
+	{
+		"id": "1",
+		"helpID": "TLS_Q2_Client",
+		"content": [
+			{
+				"id": "0",
+				"element": "radio",
+				"note": "",
+				"questionText": "Do you want to set IP/hostname and port of the server you will communicate with?",
+				"answers": [
+					{
+						"value": "No/Keep it generic",
+						"codeDependencies": [
+						],
 						"defaultAnswer": true,
+						"nextID": "-1"
+					},
+					{
+						"value": "Yes",
+						"codeDependencies": [
+						],
 						"nextID": "2"
 					}
 				]
@@ -84,40 +88,14 @@
 	},
 	{
 		"id": "2",
-		"helpID": "SecureCommunication_Page2",
+		"helpID": "TLS_Q3_Backend",
 		"content": [
 			{
-				"id": "3",
-				"element": "radio",
-				"note": "",
-				"questionText": "Do you know the IP address and Port number of the server?",
-				"answers": [
-					{
-						"value": "Yes",
-						"codeDependencies": [
-						],
-						"nextID": "3"
-					},
-					{
-						"value": "No",
-						"codeDependencies": [
-						],
-						"defaultAnswer": true,
-						"nextID": "5"
-					}
-				]
-			}
-		]
-	},
-	{
-		"id": "3",
-		"helpID": "SecureCommunication_Page3",
-		"content": [
-			{
-				"id": "4",
+				"id": "0",
 				"element": "text",
+				"message": "e.g. 127.0.0.1",
       			"textType":"Ip address",
-				"questionText": "Please enter the IP address of the server:",
+				"questionText": "Please enter the server address (hostname or IP)",
 				"answers": [
 					{
 						"value": "",
@@ -132,11 +110,37 @@
 				]
 			},
 			{
-				"id": "5",
-				"tooltip": "Example: 80",
+				"id": "1",
+				"tooltip": "443 HTTPS\n 22 SSH",
 				"element": "text",
      			"textType":"Port number",
-				"questionText": "Please enter the Port number of the server:",
+				"questionText": "Please enter the server's port",
+				"answers": [
+					{
+						"value": "",
+						"codeDependencies": [
+							{
+								"option": "port",
+								"value": "443"
+							}
+						],
+						"defaultAnswer": true
+					}
+				]
+			}
+		],
+		"nextID": "-1"
+	},
+	{
+		"id": "3",
+		"helpID": "TLS_Q2_Server",		
+		"content": [
+			{			
+				"id": "0",
+				"tooltip": "Example: 443",
+				"element": "text",
+				"textType": "Port number",
+				"questionText": "Which port should the server run on?",
 				"answers": [
 					{
 						"value": "",
@@ -154,125 +158,332 @@
 		"nextID": "4"
 	},
 	{
-		"id": "4",
-		"helpID": "SecureCommunication_Page4",
-		"content": [
-			{
-				"id": "6",
-				"element": "button",
-				"questionText": "Click \"Test\" button, if you want to test the connection to the host IP else click \"Next\".",
-				"method": [
-					"Test",
-					"de.cognicrypt.codegenerator.wizard.TLSConnection",
-					"testConnection"
-				],
-				"methodParamIds": [
-					"4",
-					"5"
-				],
+	    "id": "4",
+	    "helpID": "TLS_Q4_Server",
+	    "content": [
+	        {
+	            "id": "0",
+	            "element": "radio",
+	           	"questionText": "Which clients should the server should at least support?",
 				"answers": [
 					{
-						"value": "true",
-						"codeDependencies": [
-						], 
-						"nextID": "5"
-						
+						"value": "Modern Clients",
+				          "claferDependencies": [{
+				            "algorithm": "secComsecurity",
+				            "value": "4",
+				            "operator": "="
+				          }],
+						"defaultAnswer": true,
+						"nextID": "6"
 					},
 					{
-						"value": "false",
+						"value": "Legacy Clients",
 						"codeDependencies": [
-						], 
-						"nextID": "5",
-						"defaultAnswer": true
+						],
+						"nextID": "5"
 					}
-				]
-			}
-		],
-		"nextID": "5"
+				]	
+			}	        
+	    ]
 	},
 	{
 		"id": "5",
-		"helpID": "SecureCommunication_Page5",
-		"content": [
-			{
-				"id": "7",
-				"element": "radio",
-				"note": "",
-				"questionText": "We have compiled a default configuration that is secure.\nDo you want to accept this configuration?",
-				"answers": [
-					{
-						"value": "Yes",
-						"claferDependencies": [
-							{
-								"algorithm": "ciphersuites",
-								"operand": "tlsProtocol;suiteSecurity",
-								"operator": "|",
-								"value": ">= TLS1_2;> Medium"
-							}
-						],
-						"defaultAnswer": true,
-						"nextID": "-1"
-					},
-					{
-						"value": "No",
-						"claferDependencies": [
-						],
-						"nextID": "6"
-					}
-				]
-			}
-		]
+		"helpID": "TLS_Q5_Server",
+		"content": [{
+	      "id": "0",
+	      "element":"checkbox",
+	      "note": "It is highly discouraged to enable support for any of the non-selected options. Supporting even older clients in a secure manner is not possible.",      
+	      "questionText": "Which clients should the server support at the very least?",
+	      "answers": [{
+	          "value": "Firefox 27",
+	          "defaultAnswer": true,
+	          "claferDependencies": [{
+	            "algorithm": "secComsecurity",
+	            "value": "4",
+	            "operator": "="
+	          }],
+	          "nextID": "6"
+	        },
+	        {
+	          "value": "Chrome 30",
+	          "defaultAnswer": true,
+	          "claferDependencies": [{
+	            "algorithm": "secComsecurity",
+	            "value": "4",
+	            "operator": "="
+	          }],
+	          "nextID": "6"
+	        },
+	        {
+	          "value": "Internet Explorer 11",
+	          "defaultAnswer": true,
+	          "claferDependencies": [{
+	            "algorithm": "secComsecurity",
+	            "value": "4",
+	            "operator": "="
+	          }],
+	          "nextID": "6"
+	        },
+	        {
+	          "value": "Opera 17",
+	          "defaultAnswer": true,
+	          "claferDependencies": [{
+	            "algorithm": "secComsecurity",
+	            "value": "4",
+	            "operator": "="
+	          }],
+	          "nextID": "6"
+	        },
+	        {
+	          "value": "Safari 9",
+	          "defaultAnswer": true,
+	          "claferDependencies": [{
+	            "algorithm": "secComsecurity",
+	            "value": "4",
+	            "operator": "="
+	          }],
+	          "nextID": "6"
+	        },
+	        {
+	          "value": "Android 5",
+	          "defaultAnswer": true,
+	          "claferDependencies": [{
+	            "algorithm": "secComsecurity",
+	            "value": "4",
+	            "operator": "="
+	          }],
+	          "nextID": "6"
+	        },
+	        {
+	          "value": "Java 8",
+	          "defaultAnswer": true,
+	          "claferDependencies": [{
+	            "algorithm": "secComsecurity",
+	            "value": "4",
+	            "operator": "="
+	          }],
+	          "nextID": "6"
+	        },
+	        {
+	          "value": "Firefox 1",
+	        "codeDependencies":[{
+	          "option":"legacy", 
+	          "value" : "true"
+	        }],
+	          "claferDependencies": [{
+	            "algorithm": "secComsecurity",
+	            "value": "2",
+	            "operator": "="
+	          },{
+	            "algorithm": "tlsProtocol",
+	            "value": "TLSv10;TLSv11;TLSv12",
+	            "operator": "++"
+	          }],
+	          "nextID": "6"
+	        },
+	        {
+	          "value": "Chrome 1",
+	          "codeDependencies":[{
+	          "option":"legacy", 
+	          "value" : "true"
+	        }],
+	          "claferDependencies": [{
+	            "algorithm": "secComsecurity",
+	            "value": "2",
+	            "operator": "="
+	          },{
+	            "algorithm": "tlsProtocol",
+	            "value": "TLSv10;TLSv11;TLSv12",
+	            "operator": "++"
+	          }],
+	          "nextID": "6"
+	        },
+	        {
+	          "value": "Internet Explorer 7",
+	          "codeDependencies":[{
+	          "option":"legacy", 
+	          "value" : "true"
+	        }],
+	          "claferDependencies": [{
+	            "algorithm": "secComsecurity",
+	            "value": "2",
+	            "operator": "="
+	          },{
+	            "algorithm": "tlsProtocol",
+	            "value": "TLSv10;TLSv11;TLSv12",
+	            "operator": "++"
+	          }],
+	          "nextID": "6"
+	        },
+	        {
+	          "value": "Opera 5",
+	          "codeDependencies":[{
+	          "option":"legacy", 
+	          "value" : "true"
+	        }],
+	          "claferDependencies": [{
+	            "algorithm": "secComsecurity",
+	            "value": "2",
+	            "operator": "="
+	          },{
+	            "algorithm": "tlsProtocol",
+	            "value": "TLSv10;TLSv11;TLSv12",
+	            "operator": "++"
+	          }],
+	          "nextID": "6"
+	        },
+	        {
+	          "value": "Safari 1",
+	          "codeDependencies":[{
+	          "option":"legacy", 
+	          "value" : "true"
+	        }],
+	          "claferDependencies": [{
+	            "algorithm": "secComsecurity",
+	            "value": "2",
+	            "operator": "="
+	          },{
+	            "algorithm": "tlsProtocol",
+	            "value": "TLSv10;TLSv11;TLSv12",
+	            "operator": "++"
+	          }],
+	          "nextID": "6"
+	        },
+	        {
+	          "value": "Android 2.3",
+	          "codeDependencies":[{
+	          "option":"legacy", 
+	          "value" : "true"
+	        }],
+	          "claferDependencies": [{
+	            "algorithm": "secComsecurity",
+	            "value": "2",
+	            "operator": "="
+	          },{
+	            "algorithm": "tlsProtocol",
+	            "value": "TLSv10;TLSv11;TLSv12",
+	            "operator": "++"
+	          }],
+	          "nextID": "6"
+	        },
+	        {
+	          "value": "Java 7",
+	          "codeDependencies":[{
+	          "option":"legacy", 
+	          "value" : "true"
+	        }],
+	          "claferDependencies": [{
+	            "algorithm": "secComsecurity",
+	            "value": "2",
+	            "operator": "="
+	          },{
+	            "algorithm": "tlsProtocol",
+	            "value": "TLSv10;TLSv11;TLSv12",
+	            "operator": "++"
+	          }],
+	          "nextID": "6"
+	        },
+	        {
+	          "value": "Windows XP",
+	          "codeDependencies":[{
+	          "option":"legacy", 
+	          "value" : "true"
+	        }],
+	          "claferDependencies": [{
+	            "algorithm": "secComsecurity",
+	            "value": "2",
+	            "operator": "="
+	          },{
+	            "algorithm": "tlsProtocol",
+	            "value": "TLSv10;TLSv11;TLSv12",
+	            "operator": "++"
+	          } ],
+	          "nextID": "6"       	      
+			}], 
+	      "nextID": "6"
+		}]
 	},
 	{
 		"id": "6",
-		"helpID": "SecureCommunication_Page6",
-		"content": [
-			{
-				"id": "8",
-				"element": "itemselection",
-				"selectionClafer": "CipherSuite",
-				"questionText": "Please select the cipher suites and TLS protocol versions you would like to use.",
-				"answers": [
-					{
-						"value": "",
-						"": [
-							{
-								"refClafer": "",
-								"value": "",
-								"operator": ""
-							}
-						],
-						"defaultAnswer": true,
-						"nextID": "-1"
-					}
-				]
-			}
-		]
-	},
-	{
-		"id": "7",
-		"helpID": "SecureCommunication_Page7",		
+		"helpID": "TLS_Q3_Server",		
 		"content": [
 			{			
-				"id": "9",
-				"tooltip": "Example: 80",
-				"element": "text",
-				"textType": "Port number",
-				"questionText": "Please enter the Port number of the server:",
+				"id": "0",
+				"element": "rbtextgroup",
+				"questionText": "Lastly, to set up a secure connection, you need a key. Please select your key source. One such source is a keystore. Keystores may contain several cryptogaphic keys and store them securely protected by passwords. Another source is a certificate. Certificates provide means to authenticate yourself to other parties.",
 				"answers": [
 					{
-						"value": "",
+						"value": "Import keystore",
 						"codeDependencies": [
 							{
-								"option": "port",
-								"value": "443"
+								"option": "key",
+								"value": "import"
+							}
+						],
+						"uiDependencies": [
+							{
+								"option": "rows",
+								"value": "1"
+							}, {
+								"option": "label1",
+								"value": "Keystore"
 							}
 						],
 						"defaultAnswer": true
+					},
+					{
+						"value": "Import certificate with bundled private key (one file)",
+						"codeDependencies": [
+							{
+								"option": "key",
+								"value": "key"
+							}
+						],
+						"uiDependencies": [
+							{
+								"option": "rows",
+								"value": "1"
+							},{
+								"option": "label1",
+								"value": "Key + Certificate"
+							}
+						]
+					},
+					{
+						"value": "Import certificate with associated private key (two files)",
+						"codeDependencies": [
+							{
+								"option": "key",
+								"value": "both"
+							}
+						],
+						"uiDependencies": [
+							{
+								"option": "rows",
+								"value": "2"
+							},
+							{
+								"option": "label1",
+								"value": "Key"
+							},
+							{
+								"option": "label2",
+								"value": "Certificate"
+							}
+						]
+					},
+					{
+						"value": "Generate new keystore",
+						"codeDependencies": [
+							{
+								"option": "key",
+								"value": "new"
+							}
+						]
 					}
 				]
 			}
 		],
-		"nextID": "5"
+		"nextID": "-1"
 	}
 ]

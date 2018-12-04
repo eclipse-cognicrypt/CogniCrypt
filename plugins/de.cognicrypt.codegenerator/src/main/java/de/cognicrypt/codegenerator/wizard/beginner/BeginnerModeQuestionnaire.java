@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -19,10 +19,10 @@ import de.cognicrypt.codegenerator.tasks.Task;
 
 public class BeginnerModeQuestionnaire {
 
-	private final List<Question> questionList;
-	private final List<Page> pageList;
 	private Task task;
+	private final List<Page> pageList;
 	private int pageID;
+	private final List<Question> questionList;
 
 	/**
 	 *
@@ -39,7 +39,7 @@ public class BeginnerModeQuestionnaire {
 
 	/**
 	 * Added this method to get specific questions. This functionality was created to replace the code when handling buttons as 'Questions'.
-	 * 
+	 *
 	 * @param questionID
 	 * @return The requested question.
 	 */
@@ -81,16 +81,6 @@ public class BeginnerModeQuestionnaire {
 	}
 
 	/**
-	 *
-	 * @return Return the list of pages.
-	 * @throws NullPointerException
-	 */
-	public List<Page> getPages() throws NullPointerException {
-		return this.pageList;
-	}
-
-	/**
-	 *
 	 * @return Return the next page.
 	 */
 	public Page nextPage() {
@@ -98,45 +88,14 @@ public class BeginnerModeQuestionnaire {
 	}
 
 	/**
-	 *
-	 * @return Return the previous page.
-	 */
-	public Page previousPage() {
-		return this.pageList.get(--this.pageID);
-	}
-
-	/**
-	 *
-	 * @param pageID
-	 * @return Return the page that has been set.
-	 */
-	public Page setPageByID(final int pageID) {
-		this.pageID = pageID;
-		return this.pageList.get(this.pageID);
-	}
-
-	/**
-	 *
-	 * @return Whether this is the first page.
-	 */
-	public boolean isFirstPage() {
-		return this.pageID == 0;
-	}
-
-	/**
-	 *
 	 * @return Return whether there are more pages.
 	 */
 	public boolean hasMorePages() {
-		return this.pageID < getPages().size();
+		return this.pageID < this.pageList.size();
 	}
 
-	/**
-	 *
-	 * @return Return the current pageID.
-	 */
-	public int getCurrentPageID() {
-		return this.pageID;
+	public boolean hasPages() {
+		return this.pageList.size() > 0;
 	}
 
 }

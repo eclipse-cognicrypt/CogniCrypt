@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -114,7 +114,7 @@ public class PropertyWidget {
 	 * @param pageincrement
 	 */
 	public PropertyWidget(final Composite container, final AstClafer parentClafer, final AstConcreteClafer childClafer, final String propertyName, final int selection, final int min, final int max, final int digits, final int increment, final int pageincrement) {
-		GridLayout layout = new GridLayout(5, false);
+		final GridLayout layout = new GridLayout(5, false);
 		container.setLayout(layout);
 		setChildClafer(childClafer);
 		setParentClafer(parentClafer);
@@ -136,14 +136,14 @@ public class PropertyWidget {
 		emptySpace.setText("	");
 		Composite temp = container.getParent();
 		// TODO: count the total number of parents of the outermost group using some function
-		// Now, the outermost group has 11 parents. So, a for loop from 0 to 10 is used. 
+		// Now, the outermost group has 11 parents. So, a for loop from 0 to 10 is used.
 		//(inner groups have one additional parent)
 		for (int i = 0; i < 10; i++) {
 			if (temp != null) {
 				temp = temp.getParent();
 			} else {
-				//if the checkbox belongs to outermost group, then it needs more indentation 
-				//to align properly with the combo boxes of inner groups 
+				//if the checkbox belongs to outermost group, then it needs more indentation
+				//to align properly with the combo boxes of inner groups
 				emptySpace.setText("	  ");
 			}
 		}
@@ -156,7 +156,7 @@ public class PropertyWidget {
 		propertyNameLabel.setLayoutData(new GridData(120, 20));
 
 		this.operatorComboViewer = new ComboViewer(container, SWT.FILL);
-		Combo operatorCombo = this.operatorComboViewer.getCombo();
+		final Combo operatorCombo = this.operatorComboViewer.getCombo();
 		operatorCombo.setEnabled(false);
 		operatorCombo.setLayoutData(new GridData(45, 15));
 
@@ -180,14 +180,14 @@ public class PropertyWidget {
 		});
 
 		// Identify if the label of the check box contains a word 'Security'
-		String labelPatternSecurity = "\\b" + Constants.Security + "\\b";
-		Pattern patternSecurity = Pattern.compile(labelPatternSecurity);
-		Matcher matchSecurity = patternSecurity.matcher(propertyName.replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
+		final String labelPatternSecurity = "\\b" + Constants.Security + "\\b";
+		final Pattern patternSecurity = Pattern.compile(labelPatternSecurity);
+		final Matcher matchSecurity = patternSecurity.matcher(propertyName.replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
 
 		// Identify if the label of the check box contains a word 'Performance'
-		String labelPatternPerformance = "\\b" + Constants.Performance + "\\b";
-		Pattern patternPerformance = Pattern.compile(labelPatternPerformance);
-		Matcher matchPerformance = patternPerformance.matcher(propertyName.replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
+		final String labelPatternPerformance = "\\b" + Constants.Performance + "\\b";
+		final Pattern patternPerformance = Pattern.compile(labelPatternPerformance);
+		final Matcher matchPerformance = patternPerformance.matcher(propertyName.replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
 		System.out.println(propertyName.replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
 
 		//If the label has Security or Performance, then spinner is not added and adds only a combo box with items high, medium and low
@@ -215,7 +215,7 @@ public class PropertyWidget {
 
 	/**
 	 * Getter for child clafer.
-	 * 
+	 *
 	 * @return Child clafer
 	 */
 	public AstConcreteClafer getChildClafer() {
@@ -223,7 +223,7 @@ public class PropertyWidget {
 	}
 
 	public String getOperator() {
-		String comboSelection = ((IStructuredSelection) this.operatorComboViewer.getSelection()).getFirstElement().toString();
+		final String comboSelection = ((IStructuredSelection) this.operatorComboViewer.getSelection()).getFirstElement().toString();
 		//TODO: assign proper operators for High, Medium, Low
 		if (comboSelection.equals("High") | comboSelection.equals("Medium") | comboSelection.equals("Low")) {
 			return "=";
@@ -234,7 +234,7 @@ public class PropertyWidget {
 
 	/**
 	 * Getter method for parent clafer.
-	 * 
+	 *
 	 * @return Parent clafer
 	 */
 	public AstClafer getParentClafer() {
@@ -242,7 +242,7 @@ public class PropertyWidget {
 	}
 
 	public String getValue() {
-		String comboSelection = ((IStructuredSelection) this.operatorComboViewer.getSelection()).getFirstElement().toString();
+		final String comboSelection = ((IStructuredSelection) this.operatorComboViewer.getSelection()).getFirstElement().toString();
 		////TODO: assign proper spinner values for High, Medium, Low
 		if (comboSelection.equals("High")) {
 			return "4";
@@ -261,7 +261,7 @@ public class PropertyWidget {
 
 	/**
 	 * Getter method for isGroupConstraint
-	 * 
+	 *
 	 * @return <Code>true</code>/<code>false</code> if property is group constraint
 	 */
 	public boolean isGroupConstraint() {
@@ -274,7 +274,7 @@ public class PropertyWidget {
 
 	/**
 	 * Setter method for child clafer.
-	 * 
+	 *
 	 * @param childClafer
 	 *        the childClafer to set
 	 */
@@ -284,7 +284,7 @@ public class PropertyWidget {
 
 	/**
 	 * Setter method for whether property is a group constraint.
-	 * 
+	 *
 	 * @param isGroupConstraint
 	 *        the isGroupConstraint to set
 	 */
@@ -294,7 +294,7 @@ public class PropertyWidget {
 
 	/**
 	 * Setter method for parent clafer.
-	 * 
+	 *
 	 * @param parentClafer
 	 *        the parentClafer to set
 	 */

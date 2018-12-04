@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -21,6 +21,8 @@ public class Answer {
 	private Boolean defaultAnswer;
 	private ArrayList<ClaferDependency> claferDependencies;
 	private ArrayList<CodeDependency> codeDependencies;
+	private ArrayList<UIDependency> uiDependencies;
+
 	private int nextID = Constants.ANSWER_NO_NEXT_ID;
 
 	public ArrayList<ClaferDependency> getClaferDependencies() {
@@ -67,6 +69,65 @@ public class Answer {
 	public String toString() {
 		//the combo viewer calls the toString() method so just display the value
 		return this.value;
+	}
+
+	public ArrayList<UIDependency> getUiDependencies() {
+		return this.uiDependencies;
+	}
+
+	public void setUiDependencies(final ArrayList<UIDependency> uiDependenies) {
+		this.uiDependencies = uiDependenies;
+	}
+
+	public boolean hasUiDependencies() {
+		return this.uiDependencies != null && this.uiDependencies.size() > 0;
+	}
+
+	/**
+	 * Retrieves the value from a specific UIDependency.
+	 *
+	 * @param option
+	 *        The ui property you want to query.
+	 * @return The option's value if available, else null.
+	 */
+	public String getUIDependency(final String option) {
+		if (!hasUiDependencies()) {
+			return null;
+		}
+
+		String value = null;
+		for (final UIDependency dep : this.uiDependencies) {
+			if (dep.getOption().equals(option)) {
+				value = dep.getValue();
+			}
+		}
+
+		return value;
+	}
+
+	public Answer combineWith(final Answer a) {
+		final Answer combined = new Answer();
+		combined.setValue(this.value + " + " + a.getValue());
+
+		final ArrayList<CodeDependency> cpD = new ArrayList<CodeDependency>();
+		if (this.codeDependencies != null) {
+			cpD.addAll(this.codeDependencies);
+		}
+		if (a.getCodeDependencies() != null) {
+			cpD.addAll(a.getCodeDependencies());
+		}
+		combined.setCodeDependencies(cpD);
+
+		final ArrayList<ClaferDependency> clD = new ArrayList<ClaferDependency>();
+		if (this.claferDependencies != null) {
+			clD.addAll(this.claferDependencies);
+		}
+		if (a.getClaferDependencies() != null) {
+			clD.addAll(a.getClaferDependencies());
+		}
+		combined.setClaferDependencies(clD);
+
+		return combined;
 	}
 
 }

@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -47,7 +47,7 @@ public class CreateAndModifyXmlfile {
 	/**
 	 * The class creates the xml file containing the help content of the task, adds the location of the xml file in the plugin.xml file and sets the page help id. The class needs
 	 * to be initialized with the list of pages and task name
-	 * 
+	 *
 	 * @param pages
 	 *        list of pages
 	 * @param taskName
@@ -58,7 +58,7 @@ public class CreateAndModifyXmlfile {
 	 * @throws TransformerException
 	 */
 
-	public CreateAndModifyXmlfile(ArrayList<Page> pages, String taskName, boolean taskHasPageHelpContent) throws IOException, ParserConfigurationException, SAXException, TransformerException {
+	public CreateAndModifyXmlfile(final ArrayList<Page> pages, final String taskName, final boolean taskHasPageHelpContent) throws IOException, ParserConfigurationException, SAXException, TransformerException {
 		setTaskName(taskName);
 		setPages(pages);
 		//creates the template xml file
@@ -68,18 +68,18 @@ public class CreateAndModifyXmlfile {
 		if (taskHasPageHelpContent) {
 			/**
 			 * For each page this loop creates a list of questions which has help content, then adds the content to the xml file and then sets the page help id
-			 * 
+			 *
 			 */
-			for (Page page : pages) {
-				ArrayList<Question> questionWithHelpContent = new ArrayList<>();
+			for (final Page page : pages) {
+				final ArrayList<Question> questionWithHelpContent = new ArrayList<>();
 				String pageHelpContent = "";
-				for (Question question : page.getContent()) {
+				for (final Question question : page.getContent()) {
 					if (!question.getHelpText().isEmpty()) {
 						questionWithHelpContent.add(question);
 					}
 				}
 				if (questionWithHelpContent.size() > 0) {
-					for (Question qstn : questionWithHelpContent) {
+					for (final Question qstn : questionWithHelpContent) {
 						pageHelpContent = pageHelpContent + qstn.getHelpText() + "\n";
 					}
 					addHelpContentToXmlFile(pageHelpContent, page.getId());
@@ -101,22 +101,22 @@ public class CreateAndModifyXmlfile {
 
 	/**
 	 * This method creates the template xml file for the task and places the xml file in target Help folder
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	private void createXmlFile() throws IOException {
 
-		File xmlFileTargetDirectory = new File(CodeGenUtils.getResourceFromWithin(Constants.XML_FILE_DIRECTORY_PATH), getTaskName() + Constants.XML_EXTENSION);
+		final File xmlFileTargetDirectory = new File(CodeGenUtils.getResourceFromWithin(Constants.XML_FILE_DIRECTORY_PATH), getTaskName() + Constants.XML_EXTENSION);
 		//creates the xml file
 		xmlFileTargetDirectory.createNewFile();
 
 		//writer to write contents at target location
-		FileWriter xmlWriter = new FileWriter(xmlFileTargetDirectory);
-		StringBuilder sb = new StringBuilder();
+		final FileWriter xmlWriter = new FileWriter(xmlFileTargetDirectory);
+		final StringBuilder sb = new StringBuilder();
 		sb.append(Constants.Xml_Declaration + System.lineSeparator());
 		sb.append(Constants.NLS_Tag + System.lineSeparator());
 		sb.append(Constants.contextsOpeningTag + System.lineSeparator() + Constants.contextsClosingTag);
-		String xmlContent = sb + "";
+		final String xmlContent = sb + "";
 		try {
 			xmlWriter.write(xmlContent);
 		} finally {
@@ -127,7 +127,7 @@ public class CreateAndModifyXmlfile {
 
 	/**
 	 * This method adds the page help content in the template xml file created by createXmlFile() method of this class
-	 * 
+	 *
 	 * @param pageHelpContent
 	 *        help content of the page
 	 * @param pageId
@@ -137,50 +137,50 @@ public class CreateAndModifyXmlfile {
 	 * @throws IOException
 	 * @throws TransformerException
 	 */
-	public void addHelpContentToXmlFile(String pageHelpContent, int pageId) throws ParserConfigurationException, SAXException, IOException, TransformerException {
+	public void addHelpContentToXmlFile(final String pageHelpContent, final int pageId) throws ParserConfigurationException, SAXException, IOException, TransformerException {
 
-		File xmlFile = CodeGenUtils.getResourceFromWithin(getFilePath());
-		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-		Document doc = docBuilder.parse(xmlFile);
+		final File xmlFile = CodeGenUtils.getResourceFromWithin(getFilePath());
+		final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		final DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+		final Document doc = docBuilder.parse(xmlFile);
 
 		//gets the root element contexts
-		Node contexts = doc.getElementsByTagName(Constants.contextsElement).item(0);
-		Element context = doc.createElement(Constants.contextElement);
+		final Node contexts = doc.getElementsByTagName(Constants.contextsElement).item(0);
+		final Element context = doc.createElement(Constants.contextElement);
 		contexts.appendChild(context);
 
-		//value of id attribute 
-		String idValue = getTaskName() + "_Page" + pageId;
+		//value of id attribute
+		final String idValue = getTaskName() + "_Page" + pageId;
 
 		//creates the id attribute of context element
-		Attr idAttribute = doc.createAttribute(Constants.idAttribute);
+		final Attr idAttribute = doc.createAttribute(Constants.idAttribute);
 		idAttribute.setValue(idValue);
 		context.setAttributeNode(idAttribute);
 
 		//creates the title attribute of context element
-		Attr titleAttribute = doc.createAttribute(Constants.titleAttribute);
+		final Attr titleAttribute = doc.createAttribute(Constants.titleAttribute);
 		titleAttribute.setValue(Constants.titleAttributeValue);
 		context.setAttributeNode(titleAttribute);
 
 		//Creates the description element which will contain the help content of the page
-		Element description = doc.createElement(Constants.descriptionAttribute);
+		final Element description = doc.createElement(Constants.descriptionAttribute);
 		description.appendChild(doc.createTextNode(pageHelpContent));
 		context.appendChild(description);
 
 		//writes the content in to xml file
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
+		final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		final Transformer transformer = transformerFactory.newTransformer();
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		DOMSource source = new DOMSource(doc);
-		StreamResult result = new StreamResult(xmlFile);
+		final DOMSource source = new DOMSource(doc);
+		final StreamResult result = new StreamResult(xmlFile);
 		transformer.transform(source, result);
 
 	}
 
 	/**
 	 * This method parses the plugin.xml file to add the path of the new xml file in it
-	 * 
+	 *
 	 * @param pluginXmlFile
 	 *        the plugin.xml file
 	 * @throws ParserConfigurationException
@@ -188,31 +188,31 @@ public class CreateAndModifyXmlfile {
 	 * @throws IOException
 	 * @throws TransformerException
 	 */
-	private void updatePluginXmlFile(File pluginXmlFile) throws ParserConfigurationException, SAXException, IOException, TransformerException {
+	private void updatePluginXmlFile(final File pluginXmlFile) throws ParserConfigurationException, SAXException, IOException, TransformerException {
 
-		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-		Document doc = docBuilder.parse(pluginXmlFile);
+		final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		final DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+		final Document doc = docBuilder.parse(pluginXmlFile);
 
 		//gets the plugin element of the file
-		Node plugin = doc.getElementsByTagName(Constants.pluginElement).item(0);
-		NodeList extensions = plugin.getChildNodes();
+		final Node plugin = doc.getElementsByTagName(Constants.pluginElement).item(0);
+		final NodeList extensions = plugin.getChildNodes();
 
 		/**
 		 * Following loop adds the path to the xml file of the task at the target location
 		 */
 
 		for (int i = 0; i < extensions.getLength(); i++) {
-			Node extension = extensions.item(i);
+			final Node extension = extensions.item(i);
 			if (Constants.extensionElement.equals(extension.getNodeName())) {
-				NamedNodeMap attr = extension.getAttributes();
+				final NamedNodeMap attr = extension.getAttributes();
 				if (attr.getLength() == 1) {
-					Node point = attr.getNamedItem(Constants.pointAttribute);
+					final Node point = attr.getNamedItem(Constants.pointAttribute);
 					if (point.getTextContent().equals(Constants.pointAttributeValue)) {
-						Element contexts = doc.createElement(Constants.contextsElement);
+						final Element contexts = doc.createElement(Constants.contextsElement);
 						extension.appendChild(contexts);
 
-						Attr file = doc.createAttribute(Constants.fileAttribute);
+						final Attr file = doc.createAttribute(Constants.fileAttribute);
 						String filePath = CodeGenUtils.getResourceFromWithin(getFilePath()).toString();
 						filePath = filePath.replace("\\", "/");
 						file.setValue(filePath.substring(filePath.indexOf(Constants.startingFrom)));
@@ -224,65 +224,65 @@ public class CreateAndModifyXmlfile {
 
 		}
 
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
+		final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		final Transformer transformer = transformerFactory.newTransformer();
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		DOMSource source = new DOMSource(doc);
-		StreamResult result = new StreamResult(pluginXmlFile);
+		final DOMSource source = new DOMSource(doc);
+		final StreamResult result = new StreamResult(pluginXmlFile);
 		transformer.transform(source, result);
 
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the task name
 	 */
 	public String getTaskName() {
-		return taskName;
+		return this.taskName;
 	}
 
 	/**
 	 * Sets the task name
-	 * 
+	 *
 	 * @param taskName
 	 */
-	public void setTaskName(String taskName) {
+	public void setTaskName(final String taskName) {
 		this.taskName = taskName;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the list of pages
 	 */
 	public ArrayList<Page> getPages() {
-		return pages;
+		return this.pages;
 	}
 
 	/**
 	 * Sets the list of pages
-	 * 
+	 *
 	 * @param pages
 	 */
-	public void setPages(ArrayList<Page> pages) {
+	public void setPages(final ArrayList<Page> pages) {
 		this.pages = pages;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the path of the file
 	 */
 	public String getFilePath() {
-		return filePath;
+		return this.filePath;
 	}
 
 	/**
 	 * sets the file path
-	 * 
+	 *
 	 * @param filePath
 	 *        the path of the file
 	 */
-	public void setFilePath(String filePath) {
+	public void setFilePath(final String filePath) {
 		this.filePath = filePath;
 	}
 

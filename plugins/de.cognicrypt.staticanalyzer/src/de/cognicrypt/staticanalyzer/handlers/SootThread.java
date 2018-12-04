@@ -1,7 +1,6 @@
 package de.cognicrypt.staticanalyzer.handlers;
 
 import org.eclipse.jdt.core.IJavaProject;
-
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.staticanalyzer.sootbridge.SootRunner;
 

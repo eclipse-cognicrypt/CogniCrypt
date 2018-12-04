@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -49,36 +49,36 @@ public class XsltWriterTest {
 	@Before
 	public void setUp() {
 		try {
-			xmlFile = new File(CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder) + "xmlTestFile.xml");
-			xslt = new XsltWriter();
-			xslt.createDocument();
-			xslt.setRoot("testRoot");
-			xslt.addElement("test", "this test");
+			this.xmlFile = new File(CodeGenUtils.getResourceFromWithin(Constants.testPrimitverFolder) + "xmlTestFile.xml");
+			this.xslt = new XsltWriter();
+			this.xslt.createDocument();
+			this.xslt.setRoot("testRoot");
+			this.xslt.addElement("test", "this test");
 
-		} catch (ParserConfigurationException e) {
+		} catch (final ParserConfigurationException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Test
 	public void xmlTransformTest() throws TransformerException, ParserConfigurationException, TransformerFactoryConfigurationError, SAXException, IOException {
-		xslt.transformXml(xmlFile);
-		xslt.transformXsl(xslFile, xmlFile);
-		resultTest = CodeGenUtils.getResourceFromWithin(Constants.primitivesPath + Constants.innerFileSeparator + "transformedFile.txt");
-		String content = readFile(resultTest.getAbsolutePath());
+		this.xslt.transformXml(this.xmlFile);
+		this.xslt.transformXsl(this.xslFile, this.xmlFile);
+		this.resultTest = CodeGenUtils.getResourceFromWithin(Constants.primitivesPath + Constants.innerFileSeparator + "transformedFile.txt");
+		final String content = readFile(this.resultTest.getAbsolutePath());
 		assertEquals(content, "this test is a success.");
-		assertNotEquals(xmlFile.length(), 0);
+		assertNotEquals(this.xmlFile.length(), 0);
 
 	}
 
 	@After
 	public void deleteFiles() {
-		xmlFile.delete();
-		resultTest.delete();
+		this.xmlFile.delete();
+		this.resultTest.delete();
 	}
 
-	static String readFile(String path) throws IOException {
-		byte[] encoded = Files.readAllBytes(Paths.get(path));
+	static String readFile(final String path) throws IOException {
+		final byte[] encoded = Files.readAllBytes(Paths.get(path));
 		return new String(encoded);
 	}
 }

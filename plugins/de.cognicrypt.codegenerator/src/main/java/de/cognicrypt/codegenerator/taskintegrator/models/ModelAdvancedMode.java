@@ -1,15 +1,15 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 /**
- * 
+ *
  */
 package de.cognicrypt.codegenerator.taskintegrator.models;
 
@@ -29,7 +29,7 @@ public class ModelAdvancedMode {
 	private boolean isCustomLibraryRequired;
 	private boolean isGuidedModeChosen;
 	//private boolean isGuidedModeForced;
-	private Task task;
+	private final Task task;
 	private String description;
 	private String taskDescription;
 
@@ -40,15 +40,15 @@ public class ModelAdvancedMode {
 
 	/**
 	 * Generate a name for the task based on the input given by the user and return it.
-	 * 
+	 *
 	 * @param stringTaskName
 	 * @return
 	 */
-	private String getMachineReadableName(String stringTaskName) {
-		String[] split = stringTaskName.split(" ");
-		StringBuilder machineReadable = new StringBuilder();
+	private String getMachineReadableName(final String stringTaskName) {
+		final String[] split = stringTaskName.split(" ");
+		final StringBuilder machineReadable = new StringBuilder();
 		if (stringTaskName.length() > 0) {
-			for (String string : split) {
+			for (final String string : split) {
 				machineReadable.append(string.substring(0, 1).toUpperCase());
 				machineReadable.append(string.substring(1));
 			}
@@ -61,30 +61,30 @@ public class ModelAdvancedMode {
 	 * @return the nameOfTheTask
 	 */
 	public String getNameOfTheTask() {
-		return nameOfTheTask;
+		return this.nameOfTheTask;
 	}
 
 	/**
 	 * @param nameOfTheTask
 	 *        the nameOfTheTask to set
 	 */
-	public void setNameOfTheTask(String nameOfTheTask) {
+	public void setNameOfTheTask(final String nameOfTheTask) {
 		this.nameOfTheTask = getMachineReadableName(nameOfTheTask); // generate the task name that will be used as the machine readable identifier for the task.
-		this.setDescription(nameOfTheTask); // This is the human readable name entered by the user.
+		setDescription(nameOfTheTask); // This is the human readable name entered by the user.
 	}
 
 	/**
 	 * @return the locationOfCustomLibrary
 	 */
 	public File getLocationOfCustomLibrary() {
-		return locationOfCustomLibrary;
+		return this.locationOfCustomLibrary;
 	}
 
 	/**
 	 * @param locationOfCustomLibrary
 	 *        the locationOfCustomLibrary to set
 	 */
-	public void setLocationOfCustomLibrary(File locationOfCustomLibrary) {
+	public void setLocationOfCustomLibrary(final File locationOfCustomLibrary) {
 		this.locationOfCustomLibrary = locationOfCustomLibrary;
 	}
 
@@ -92,14 +92,14 @@ public class ModelAdvancedMode {
 	 * @return the locationOfClaferFile
 	 */
 	public File getLocationOfClaferFile() {
-		return locationOfClaferFile;
+		return this.locationOfClaferFile;
 	}
 
 	/**
 	 * @param locationOfClaferFile
 	 *        the locationOfClaferFile to set
 	 */
-	public void setLocationOfClaferFile(File locationOfClaferFile) {
+	public void setLocationOfClaferFile(final File locationOfClaferFile) {
 		this.locationOfClaferFile = locationOfClaferFile;
 	}
 
@@ -107,14 +107,14 @@ public class ModelAdvancedMode {
 	 * @return the locationOfXSLFile
 	 */
 	public File getLocationOfXSLFile() {
-		return locationOfXSLFile;
+		return this.locationOfXSLFile;
 	}
 
 	/**
 	 * @param locationOfXSLFile
 	 *        the locationOfXSLFile to set
 	 */
-	public void setLocationOfXSLFile(File locationOfXSLFile) {
+	public void setLocationOfXSLFile(final File locationOfXSLFile) {
 		this.locationOfXSLFile = locationOfXSLFile;
 	}
 
@@ -122,14 +122,14 @@ public class ModelAdvancedMode {
 	 * @return the locationOfJSONFile
 	 */
 	public File getLocationOfJSONFile() {
-		return locationOfJSONFile;
+		return this.locationOfJSONFile;
 	}
 
 	/**
 	 * @param locationOfJSONFile
 	 *        the locationOfJSONFile to set
 	 */
-	public void setLocationOfJSONFile(File locationOfJSONFile) {
+	public void setLocationOfJSONFile(final File locationOfJSONFile) {
 		this.locationOfJSONFile = locationOfJSONFile;
 	}
 
@@ -137,14 +137,14 @@ public class ModelAdvancedMode {
 	 * @return the isGuidedModeChosen
 	 */
 	public boolean isGuidedModeChosen() {
-		return isGuidedModeChosen;
+		return this.isGuidedModeChosen;
 	}
 
 	/**
 	 * @param isGuidedModeChosen
 	 *        the isGuidedModeChosen to set
 	 */
-	public void setGuidedModeChosen(boolean isGuidedModeChosen) {
+	public void setGuidedModeChosen(final boolean isGuidedModeChosen) {
 		this.isGuidedModeChosen = isGuidedModeChosen;
 	}
 	/*	*//**
@@ -163,14 +163,14 @@ public class ModelAdvancedMode {
 	 * @return the isCustomLibraryRequired
 	 */
 	public boolean isCustomLibraryRequired() {
-		return isCustomLibraryRequired;
+		return this.isCustomLibraryRequired;
 	}
 
 	/**
 	 * @param isCustomLibraryRequired
 	 *        the isCustomLibraryRequired to set
 	 */
-	public void setCustomLibraryRequired(boolean isCustomLibraryRequired) {
+	public void setCustomLibraryRequired(final boolean isCustomLibraryRequired) {
 		this.isCustomLibraryRequired = isCustomLibraryRequired;
 	}
 
@@ -178,34 +178,34 @@ public class ModelAdvancedMode {
 	 * @return the task
 	 */
 	public Task getTask() {
-		return task;
+		return this.task;
 	}
 
 	/**
 	 * Generate the Task instance from the advanced mode model.
 	 */
 	public void setTask() {
-		task.setName(getNameOfTheTask());
-		task.setDescription(getDescription());
-		task.setModelFile(Constants.CFR_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.JS_EXTENSION);
-		task.setQuestionsJSONFile(Constants.JSON_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.JSON_EXTENSION);
-		task.setTaskDescription(getTaskDescription() == null ? "" : getTaskDescription());
-		task.setXslFile(Constants.XSL_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.XSL_EXTENSION);
-		task.setAdditionalResources(Constants.JAR_FILE_DIRECTORY_PATH + getNameOfTheTask());
+		this.task.setName(getNameOfTheTask());
+		this.task.setDescription(getDescription());
+		this.task.setModelFile(Constants.CFR_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.JS_EXTENSION);
+		this.task.setQuestionsJSONFile(Constants.JSON_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.JSON_EXTENSION);
+		this.task.setTaskDescription(getTaskDescription() == null ? "" : getTaskDescription());
+		this.task.setXslFile(Constants.XSL_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.XSL_EXTENSION);
+		this.task.setAdditionalResources(Constants.JAR_FILE_DIRECTORY_PATH + getNameOfTheTask());
 	}
 
 	/**
 	 * @return the description
 	 */
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	/**
 	 * @param description
 	 *        the description to set
 	 */
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -213,14 +213,14 @@ public class ModelAdvancedMode {
 	 * @return the taskDescryption
 	 */
 	public String getTaskDescription() {
-		return taskDescription;
+		return this.taskDescription;
 	}
 
 	/**
 	 * @param taskDescription
 	 *        the taskDescryption to set
 	 */
-	public void setTaskDescription(String taskDescription) {
+	public void setTaskDescription(final String taskDescription) {
 		this.taskDescription = taskDescription;
 	}
 
@@ -228,14 +228,14 @@ public class ModelAdvancedMode {
 	 * @return the locationOfHelpXMLFile
 	 */
 	public File getLocationOfHelpXMLFile() {
-		return locationOfHelpXMLFile;
+		return this.locationOfHelpXMLFile;
 	}
 
 	/**
 	 * @param locationOfHelpXMLFile
 	 *        the locationOfHelpXMLFile to set
 	 */
-	public void setLocationOfHelpXMLFile(File locationOfHelpXMLFile) {
+	public void setLocationOfHelpXMLFile(final File locationOfHelpXMLFile) {
 		this.locationOfHelpXMLFile = locationOfHelpXMLFile;
 	}
 }

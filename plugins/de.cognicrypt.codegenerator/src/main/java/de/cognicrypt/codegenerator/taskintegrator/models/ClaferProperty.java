@@ -1,15 +1,15 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 /**
- * 
+ *
  */
 package de.cognicrypt.codegenerator.taskintegrator.models;
 
@@ -26,24 +26,24 @@ public class ClaferProperty implements Serializable {
 	 * @param propertyName
 	 * @param propertyType
 	 */
-	public ClaferProperty(String propertyName, String propertyType) {
+	public ClaferProperty(final String propertyName, final String propertyType) {
 		super();
-		this.setPropertyName(propertyName);
-		this.setPropertyType(propertyType);
+		setPropertyName(propertyName);
+		setPropertyType(propertyType);
 	}
 
 	/**
 	 * @return the propertyName
 	 */
 	public String getPropertyName() {
-		return propertyName;
+		return this.propertyName;
 	}
 
 	/**
 	 * @param propertyName
 	 *        the propertyName to set
 	 */
-	public void setPropertyName(String propertyName) {
+	public void setPropertyName(final String propertyName) {
 		this.propertyName = propertyName;
 	}
 
@@ -51,19 +51,19 @@ public class ClaferProperty implements Serializable {
 	 * @return the propertyType
 	 */
 	public String getPropertyType() {
-		return propertyType;
+		return this.propertyType;
 	}
 
 	/**
 	 * @param propertyType
 	 *        the propertyType to set
 	 */
-	public void setPropertyType(String propertyType) {
+	public void setPropertyType(final String propertyType) {
 		this.propertyType = propertyType;
 	}
 
 	@Override
 	public String toString() {
-		return propertyName + " -> " + propertyType;
+		return this.propertyName + " -> " + this.propertyType;
 	}
 }

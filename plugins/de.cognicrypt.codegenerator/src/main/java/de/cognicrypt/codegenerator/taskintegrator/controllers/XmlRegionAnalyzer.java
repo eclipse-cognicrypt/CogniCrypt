@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -47,7 +47,7 @@ import de.cognicrypt.codegenerator.taskintegrator.controllers.XmlRegion.XmlRegio
 
 /**
  * A class that builds style ranges from a XML input.
- * 
+ *
  * @author Vincent Zurczak
  * @version 1.0 (tag version)
  */
@@ -57,33 +57,38 @@ public class XmlRegionAnalyzer {
 
 	/**
 	 * Analyzes a XML document.
-	 * 
+	 *
 	 * @param xml
 	 *        the XML text (may be an invalid XML document)
 	 * @return a non-null list of XML positions
 	 */
-	public List<XmlRegion> analyzeXml(String xml) {
+	public List<XmlRegion> analyzeXml(final String xml) {
 
 		this.offset = 0;
-		List<XmlRegion> positions = new ArrayList<XmlRegion>();
+		final List<XmlRegion> positions = new ArrayList<XmlRegion>();
 		while (this.offset < xml.length()) {
 
 			// White spaces
 			analyzeWhitespaces(xml, positions);
-			if (this.offset >= xml.length())
+			if (this.offset >= xml.length()) {
 				break;
+			}
 
 			// "<" can be several things
-			char c = xml.charAt(this.offset);
+			final char c = xml.charAt(this.offset);
 			if (c == '<') {
-				if (analyzeInstruction(xml, positions))
+				if (analyzeInstruction(xml, positions)) {
 					continue;
-				if (analyzeComment(xml, positions))
+				}
+				if (analyzeComment(xml, positions)) {
 					continue;
-				if (analyzeMarkup(xml, positions))
+				}
+				if (analyzeMarkup(xml, positions)) {
 					continue;
-				if (analyzeCData(xml, positions))
+				}
+				if (analyzeCData(xml, positions)) {
 					continue;
+				}
 
 				positions.add(new XmlRegion(XmlRegionType.UNEXPECTED, this.offset, xml.length()));
 				break;
@@ -91,20 +96,24 @@ public class XmlRegionAnalyzer {
 
 			// "/" and "/>" can only indicate a mark-up
 			else if (c == '/' && xml.charAt(this.offset + 1) == '>' || c == '>') {
-				if (analyzeMarkup(xml, positions))
+				if (analyzeMarkup(xml, positions)) {
 					continue;
+				}
 
 				positions.add(new XmlRegion(XmlRegionType.UNEXPECTED, this.offset, xml.length()));
 				break;
 			}
 
 			// Other things can be...
-			if (analyzeAttribute(xml, positions))
+			if (analyzeAttribute(xml, positions)) {
 				continue;
-			if (analyzeAttributeValue(xml, positions))
+			}
+			if (analyzeAttributeValue(xml, positions)) {
 				continue;
-			if (analyzeMarkupValue(xml, positions))
+			}
+			if (analyzeMarkupValue(xml, positions)) {
 				continue;
+			}
 
 			positions.add(new XmlRegion(XmlRegionType.UNEXPECTED, this.offset, xml.length()));
 			break;
@@ -115,21 +124,22 @@ public class XmlRegionAnalyzer {
 
 	/**
 	 * Tries to analyze a XML instruction.
-	 * 
+	 *
 	 * @param xml
 	 *        the XML text
 	 * @param positions
 	 *        the positions already found
 	 * @return true if it recognized a XML instruction
 	 */
-	boolean analyzeInstruction(String xml, List<XmlRegion> positions) {
+	boolean analyzeInstruction(final String xml, final List<XmlRegion> positions) {
 
 		boolean result = false;
 		int newPos = this.offset;
 		if (newPos < xml.length() && xml.charAt(newPos) == '<' && ++newPos < xml.length() && xml.charAt(newPos) == '?') {
 
-			while (++newPos < xml.length() && xml.charAt(newPos) != '>')
+			while (++newPos < xml.length() && xml.charAt(newPos) != '>') {
 				newPos = xml.indexOf('?', newPos);
+			}
 
 			if (xml.charAt(newPos) == '>') {
 				positions.add(new XmlRegion(XmlRegionType.INSTRUCTION, this.offset, newPos + 1));
@@ -143,14 +153,14 @@ public class XmlRegionAnalyzer {
 
 	/**
 	 * Tries to analyze a XML comment.
-	 * 
+	 *
 	 * @param xml
 	 *        the XML text
 	 * @param positions
 	 *        the positions already found
 	 * @return true if it recognized a XML instruction
 	 */
-	boolean analyzeComment(String xml, List<XmlRegion> positions) {
+	boolean analyzeComment(final String xml, final List<XmlRegion> positions) {
 
 		boolean result = false;
 		int newPos = this.offset;
@@ -159,12 +169,13 @@ public class XmlRegionAnalyzer {
 
 			int seq = 0;
 			while (seq != 3 && ++newPos < xml.length()) {
-				char c = xml.charAt(newPos);
+				final char c = xml.charAt(newPos);
 				seq = c == '-' && seq < 2 || c == '>' && seq == 2 ? seq + 1 : 0;
 			}
 
-			if (seq == 3)
+			if (seq == 3) {
 				newPos++;
+			}
 
 			positions.add(new XmlRegion(XmlRegionType.COMMENT, this.offset, newPos));
 			this.offset = newPos;
@@ -176,14 +187,14 @@ public class XmlRegionAnalyzer {
 
 	/**
 	 * Tries to analyze a XML mark-up.
-	 * 
+	 *
 	 * @param xml
 	 *        the XML text
 	 * @param positions
 	 *        the positions already found
 	 * @return true if it recognized a XML instruction
 	 */
-	boolean analyzeMarkup(String xml, List<XmlRegion> positions) {
+	boolean analyzeMarkup(final String xml, final List<XmlRegion> positions) {
 
 		int newPos = this.offset;
 		boolean result = false;
@@ -192,16 +203,19 @@ public class XmlRegionAnalyzer {
 		if (xml.charAt(newPos) == '<') {
 
 			// Do not process a CData section or a comment as a mark-up
-			if (newPos + 1 < xml.length() && xml.charAt(newPos + 1) == '!')
+			if (newPos + 1 < xml.length() && xml.charAt(newPos + 1) == '!') {
 				return false;
+			}
 
 			// Mark-up name
 			char c = '!';
-			while (newPos < xml.length() && (c = xml.charAt(newPos)) != '>' && !Character.isWhitespace(c))
+			while (newPos < xml.length() && (c = xml.charAt(newPos)) != '>' && !Character.isWhitespace(c)) {
 				newPos++;
+			}
 
-			if (c == '>')
+			if (c == '>') {
 				newPos++;
+			}
 
 			positions.add(new XmlRegion(XmlRegionType.MARKUP, this.offset, newPos));
 			this.offset = newPos;
@@ -228,28 +242,31 @@ public class XmlRegionAnalyzer {
 
 	/**
 	 * Tries to analyze a XML attribute.
-	 * 
+	 *
 	 * @param xml
 	 *        the XML text
 	 * @param positions
 	 *        the positions already found
 	 * @return true if it recognized a XML instruction
 	 */
-	boolean analyzeAttribute(String xml, List<XmlRegion> positions) {
+	boolean analyzeAttribute(final String xml, final List<XmlRegion> positions) {
 
 		// An attribute value follows a mark-up
 		for (int i = positions.size() - 1; i >= 0; i--) {
-			XmlRegion xr = positions.get(i);
-			if (xr.getXmlRegionType() == XmlRegionType.WHITESPACE)
+			final XmlRegion xr = positions.get(i);
+			if (xr.getXmlRegionType() == XmlRegionType.WHITESPACE) {
 				continue;
+			}
 
-			if (xr.getXmlRegionType() == XmlRegionType.ATTRIBUTE_VALUE)
+			if (xr.getXmlRegionType() == XmlRegionType.ATTRIBUTE_VALUE) {
 				break;
+			}
 
 			if (xr.getXmlRegionType() == XmlRegionType.MARKUP) {
-				char c = xml.charAt(xr.getEnd() - 1);
-				if (c != '>')
+				final char c = xml.charAt(xr.getEnd() - 1);
+				if (c != '>') {
 					break;
+				}
 			}
 
 			return false;
@@ -259,8 +276,9 @@ public class XmlRegionAnalyzer {
 		boolean result = false;
 		int newPos = this.offset;
 		char c;
-		while (newPos < xml.length() && (c = xml.charAt(newPos)) != '=' && c != '/' && c != '>' && !Character.isWhitespace(c))
+		while (newPos < xml.length() && (c = xml.charAt(newPos)) != '=' && c != '/' && c != '>' && !Character.isWhitespace(c)) {
 			newPos++;
+		}
 
 		// Found one?
 		if (newPos != this.offset) {
@@ -274,25 +292,27 @@ public class XmlRegionAnalyzer {
 
 	/**
 	 * Tries to analyze a mark-up's value.
-	 * 
+	 *
 	 * @param xml
 	 *        the XML text
 	 * @param positions
 	 *        the positions already found
 	 * @return true if it recognized a XML instruction
 	 */
-	boolean analyzeMarkupValue(String xml, List<XmlRegion> positions) {
+	boolean analyzeMarkupValue(final String xml, final List<XmlRegion> positions) {
 
 		// A mark-up value follows a mark-up
 		for (int i = positions.size() - 1; i >= 0; i--) {
-			XmlRegion xr = positions.get(i);
-			if (xr.getXmlRegionType() == XmlRegionType.WHITESPACE)
+			final XmlRegion xr = positions.get(i);
+			if (xr.getXmlRegionType() == XmlRegionType.WHITESPACE) {
 				continue;
+			}
 
 			if (xr.getXmlRegionType() == XmlRegionType.MARKUP || xr.getXmlRegionType() == XmlRegionType.COMMENT) {
-				char c = xml.charAt(xr.getEnd() - 1);
-				if (c == '>')
+				final char c = xml.charAt(xr.getEnd() - 1);
+				if (c == '>') {
 					break;
+				}
 			}
 
 			return false;
@@ -301,14 +321,15 @@ public class XmlRegionAnalyzer {
 		// Read...
 		boolean result = false;
 		int newPos = this.offset;
-		while (newPos < xml.length() && xml.charAt(newPos) != '<')
+		while (newPos < xml.length() && xml.charAt(newPos) != '<') {
 			newPos++;
+		}
 
 		// We read something and this something is not only made up of white spaces
 		if (this.offset != newPos) {
 
 			// We must here repair the list if the previous position is made up of white spaces
-			XmlRegion xr = positions.get(positions.size() - 1);
+			final XmlRegion xr = positions.get(positions.size() - 1);
 			int start = this.offset;
 			if (xr.getXmlRegionType() == XmlRegionType.WHITESPACE) {
 				start = xr.getStart();
@@ -325,23 +346,25 @@ public class XmlRegionAnalyzer {
 
 	/**
 	 * Tries to analyze a XML attribute's value.
-	 * 
+	 *
 	 * @param xml
 	 *        the XML text
 	 * @param positions
 	 *        the positions already found
 	 * @return true if it recognized a XML instruction
 	 */
-	boolean analyzeAttributeValue(String xml, List<XmlRegion> positions) {
+	boolean analyzeAttributeValue(final String xml, final List<XmlRegion> positions) {
 
 		// An attribute value follows an attribute
 		for (int i = positions.size() - 1; i >= 0; i--) {
-			XmlRegion xr = positions.get(i);
-			if (xr.getXmlRegionType() == XmlRegionType.WHITESPACE)
+			final XmlRegion xr = positions.get(i);
+			if (xr.getXmlRegionType() == XmlRegionType.WHITESPACE) {
 				continue;
+			}
 
-			if (xr.getXmlRegionType() == XmlRegionType.ATTRIBUTE)
+			if (xr.getXmlRegionType() == XmlRegionType.ATTRIBUTE) {
 				break;
+			}
 
 			return false;
 		}
@@ -355,9 +378,10 @@ public class XmlRegionAnalyzer {
 			int cpt = 0;
 			char previous = '!';
 			while (++newPos < xml.length()) {
-				char c = xml.charAt(newPos);
-				if (previous != '\\' && c == '"')
+				final char c = xml.charAt(newPos);
+				if (previous != '\\' && c == '"') {
 					cpt++;
+				}
 
 				previous = c;
 				if (cpt == 2) {
@@ -376,14 +400,14 @@ public class XmlRegionAnalyzer {
 
 	/**
 	 * Tries to analyze a CDATA section.
-	 * 
+	 *
 	 * @param xml
 	 *        the XML text
 	 * @param positions
 	 *        the positions already found
 	 * @return true if it recognized a XML instruction
 	 */
-	boolean analyzeCData(String xml, List<XmlRegion> positions) {
+	boolean analyzeCData(final String xml, final List<XmlRegion> positions) {
 
 		boolean result = false;
 		int newPos = this.offset;
@@ -393,11 +417,12 @@ public class XmlRegionAnalyzer {
 
 			int cpt = 0;
 			while (++newPos < xml.length()) {
-				char c = xml.charAt(newPos);
-				if (cpt < 2 && c == ']' || cpt == 2 && c == '>')
+				final char c = xml.charAt(newPos);
+				if (cpt < 2 && c == ']' || cpt == 2 && c == '>') {
 					cpt++;
-				else
+				} else {
 					cpt = 0;
+				}
 
 				if (cpt == 3) {
 					newPos++;
@@ -424,11 +449,12 @@ public class XmlRegionAnalyzer {
 	 * @param positions
 	 *        the positions already found
 	 */
-	void analyzeWhitespaces(String xml, List<XmlRegion> positions) {
+	void analyzeWhitespaces(final String xml, final List<XmlRegion> positions) {
 
 		int i = this.offset;
-		while (i < xml.length() && Character.isWhitespace(xml.charAt(i)))
+		while (i < xml.length() && Character.isWhitespace(xml.charAt(i))) {
 			i++;
+		}
 
 		if (i != this.offset) {
 			positions.add(new XmlRegion(XmlRegionType.WHITESPACE, this.offset, i));

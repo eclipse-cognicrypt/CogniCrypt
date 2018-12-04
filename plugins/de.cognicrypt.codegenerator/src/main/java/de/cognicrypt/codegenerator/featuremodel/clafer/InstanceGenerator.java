@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -53,7 +53,6 @@ import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.wizard.advanced.PropertyWidget;
 import de.cognicrypt.core.Constants;
 
 /**
@@ -71,13 +70,13 @@ public class InstanceGenerator {
 	private String taskName;
 	private String taskDescription;
 	private final AstClafer taskClafer;
-	private ArrayList<String> algorithmName = new ArrayList<>();
+	private final ArrayList<String> algorithmName = new ArrayList<>();
 	private ArrayList<TreeMap<String, InstanceClafer>> separatedAlgorithms = new ArrayList<TreeMap<String, InstanceClafer>>();
 	private int algorithmCount;
 
 	/**
 	 * Constructor for Instance Generator
-	 * 
+	 *
 	 * @param pathToModel
 	 *        Absolute path to model
 	 * @param nameOfTaskClafer
@@ -108,8 +107,8 @@ public class InstanceGenerator {
 	 *        Numeric or String value added as a constraint, EX outPutLength=128 here 128 is the value
 	 */
 	private void addConstraints(final AstClafer taskAlgorithm, final List<AstConcreteClafer> algorithmProperty, final String operator, final String value) {
-		final AstConcreteClafer rightOperand = algorithmProperty.get(0);
 		if (algorithmProperty.size() == 1) {
+			final AstConcreteClafer rightOperand = algorithmProperty.get(0);
 			try {
 				final Integer valueAsInt = Integer.parseInt(value);
 				if (rightOperand == null && "=".equals(operator)) {
@@ -170,15 +169,16 @@ public class InstanceGenerator {
 			} else {
 				for (int j = 0; j < length; j++) {
 					if (j == 0) {
-						constraint = global(ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), claferNames[j++]));
+						constraint = global(ClaferModelUtils.findClaferByName(ClaferModelUtils.getRootClafer(taskAlgorithm), claferNames[j++]));
 					}
-					final AstClafer astC = ClaferModelUtils.findClaferByName(taskAlgorithm.getParent(), claferNames[j]);
+					final AstClafer astC = ClaferModelUtils.findClaferByName(ClaferModelUtils.getRootClafer(taskAlgorithm), claferNames[j]);
 					constraint = union(constraint, global(astC));
 				}
 			}
-			taskAlgorithm.addConstraint(equal(joinRef(join($this(), rightOperand)), constraint));
-		} else if (operator.equals("|")) {
+			taskAlgorithm.getParent().addConstraint(equal(joinRef(join($this(), taskAlgorithm)), constraint));
 
+		} else if (operator.equals("|")) {
+			final AstConcreteClafer rightOperand = algorithmProperty.get(0);
 			final String[] claferNames = value.split(";");
 			//The constraint that is created looks like [all $consName : taskAlgorithm | $consName.algorithmProperty claferNames[0] && ...]
 			final AstLocal tmpClafer = local("suite");
@@ -208,21 +208,6 @@ public class InstanceGenerator {
 		}
 	}
 
-	private void advancedModeHandler(final AstModel astModel, final AstClafer taskClafer, final List<PropertyWidget> constraints) {
-		for (final PropertyWidget constraint : constraints) {
-			if (constraint.isEnabled() && !constraint.isGroupConstraint()) { //not sure why we need this check but keeping it from Ram's code till we figure it out
-				final String operator = constraint.getOperator();
-				final String value = constraint.getValue();
-				final AstConcreteClafer parent = (AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getParentClafer().getName());
-				final List<AstConcreteClafer> operand = new ArrayList<>();
-				operand.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(taskClafer, constraint.getChildClafer().getName()));
-				if (operand != null && ClaferModelUtils.isConcrete(operand.get(0))) {
-					addConstraints(parent, operand, operator, value);
-				}
-			}
-		}
-	}
-
 	private void basicModeHandler(final AstModel astModel, final AstClafer taskClafer, final HashMap<Question, Answer> qAMap) {
 		for (final Entry<Question, Answer> entry : qAMap.entrySet()) {
 			final Answer answer = entry.getValue();
@@ -234,12 +219,14 @@ public class InstanceGenerator {
 						final AstClafer algorithmClafer = ClaferModelUtils.findClaferByName(taskClafer, claferDependency.getAlgorithm());
 						final List<AstConcreteClafer> propertyClafer = new ArrayList<>();
 						final String operand = claferDependency.getOperand();
-						if (operand != null && operand.contains(";")) {
-							for (final String name : operand.split(";")) {
-								propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer.getParent(), name));
+						if (operand != null) {
+							if (operand.contains(";")) {
+								for (final String name : operand.split(";")) {
+									propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(ClaferModelUtils.getRootClafer(algorithmClafer), name));
+								}
+							} else {
+								propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(ClaferModelUtils.getRootClafer(algorithmClafer).getParent(), operand));
 							}
-						} else {
-							propertyClafer.add((AstConcreteClafer) ClaferModelUtils.findClaferByName(algorithmClafer.getParent(), operand));
 						}
 						addConstraints(algorithmClafer, propertyClafer, claferDependency.getOperator(), claferDependency.getValue());
 					}
@@ -256,7 +243,7 @@ public class InstanceGenerator {
 		} catch (final Exception ex) {
 			Activator.getDefault().logError("Instances not sorted by security level. Be cautious");
 		}
-		ArrayList<TreeMap<String, InstanceClafer>> separatedCombinations = new ArrayList<>();
+		final ArrayList<TreeMap<String, InstanceClafer>> separatedCombinations = new ArrayList<>();
 
 		int x = -1;
 		String tempKey = "";
@@ -285,9 +272,9 @@ public class InstanceGenerator {
 				this.displayNameToInstanceMap.put(copyKey, sortedInst);
 				separatedCombinations.get(x).put(copyKey, sortedInst);
 			}
-			this.setAlgorithmNames(key);
+			setAlgorithmNames(key);
 		}
-		this.setSeparatedAlgorithms(separatedCombinations);
+		setSeparatedAlgorithms(separatedCombinations);
 		this.displayNameToInstanceMap = new TreeMap<>(this.displayNameToInstanceMap);
 	}
 
@@ -310,17 +297,17 @@ public class InstanceGenerator {
 			int redundantCounter = 0;
 			while (this.solver.find()) {
 				if (this.solver.instance().getTopClafers().length > 0) {
-					InstanceClafer[] topClafers = this.solver.instance().getTopClafers();
+					final InstanceClafer[] topClafers = this.solver.instance().getTopClafers();
 					InstanceClafer taskInstance = null;
 
-					for (InstanceClafer instanceClafer : topClafers) {
+					for (final InstanceClafer instanceClafer : topClafers) {
 						if (instanceClafer.getType().equals(this.taskClafer)) {
 							taskInstance = instanceClafer;
 							break;
 						}
 					}
 
-					if (taskClafer != null) {
+					if (this.taskClafer != null) {
 
 						final long hashValueOfInstance = getHashValueOfInstance(taskInstance);
 
@@ -338,35 +325,6 @@ public class InstanceGenerator {
 
 					}
 				}
-			}
-
-		} catch (final Exception e) {
-			Activator.getDefault().logError(e);
-		}
-		this.generatedInstances = new ArrayList<>(this.uniqueInstances.values());
-		generateInstanceMapping();
-		return this.generatedInstances;
-	}
-
-	/**
-	 * Method to generate instances in an advanced user mode.
-	 * 
-	 * @param constraints
-	 *        List of constraints set by the user
-	 * @return List of generated Instance
-	 */
-	public List<InstanceClafer> generateInstancesAdvancedUserMode(final List<PropertyWidget> constraints) {
-		final AstModel model = this.claferModel.getModel();
-		try {
-			//PropertiesMapperUtil.getTaskLabelsMap().get(getTaskDescription());
-			advancedModeHandler(model, this.taskClafer, constraints);
-
-			// TODO Need to be uncommented after fix
-			// addGroupProperties(tempTask, constraints);
-			this.solver = ClaferCompiler.compile(model, this.claferModel.getScope().toBuilder().intHigh(Constants.INT_HIGH).intLow(Constants.INT_LOW));
-			while (this.solver.find()) {
-				final InstanceClafer instance = this.solver.instance().getTopClafers()[this.solver.instance().getTopClafers().length - 1];
-				this.uniqueInstances.put(getHashValueOfInstance(instance), instance);
 			}
 
 		} catch (final Exception e) {
@@ -454,11 +412,11 @@ public class InstanceGenerator {
 
 	/**
 	 * get list of generated instances, sorted by security, if possible
-	 * 
+	 *
 	 * @return {@link List}<{@link InstanceClafer}> of generated instances
 	 */
 	public List<InstanceClafer> getGeneratedInstances() {
-		return generatedInstances;
+		return this.generatedInstances;
 	}
 
 	/**
@@ -535,10 +493,10 @@ public class InstanceGenerator {
 	}
 
 	public ArrayList<TreeMap<String, InstanceClafer>> getSeparatedAlgorithms() {
-		return separatedAlgorithms;
+		return this.separatedAlgorithms;
 	}
 
-	public void setSeparatedAlgorithms(ArrayList<TreeMap<String, InstanceClafer>> separatedAlgorithms) {
+	public void setSeparatedAlgorithms(final ArrayList<TreeMap<String, InstanceClafer>> separatedAlgorithms) {
 		this.separatedAlgorithms = separatedAlgorithms;
 	}
 }

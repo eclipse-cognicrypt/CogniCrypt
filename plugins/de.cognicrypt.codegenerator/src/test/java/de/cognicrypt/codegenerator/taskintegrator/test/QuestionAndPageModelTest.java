@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -47,9 +47,9 @@ public class QuestionAndPageModelTest {
 		question.setId(0);
 		question.setQuestionText("Q0?");
 		question.setElement(Constants.GUIElements.combo);
-		ArrayList<Answer> answers = new ArrayList<>();
-		Answer ans1 = new Answer();
-		Answer ans2 = new Answer();
+		final ArrayList<Answer> answers = new ArrayList<>();
+		final Answer ans1 = new Answer();
+		final Answer ans2 = new Answer();
 		ans1.setValue("ans1");
 		ans1.setDefaultAnswer(true);
 		ans2.setValue("ans2");
@@ -77,16 +77,16 @@ public class QuestionAndPageModelTest {
 
 	@Test
 	public void testAnswerClaferDependency() {
-		ArrayList<ClaferDependency> claferDependenciesForAns1 = new ArrayList<>();
-		ClaferDependency claferDependencyForAns1 = new ClaferDependency();
+		final ArrayList<ClaferDependency> claferDependenciesForAns1 = new ArrayList<>();
+		final ClaferDependency claferDependencyForAns1 = new ClaferDependency();
 		claferDependencyForAns1.setAlgorithm("algo1");
 		claferDependencyForAns1.setOperand("prop1");
 		claferDependencyForAns1.setOperator(">");
 		claferDependencyForAns1.setValue("128");
 		claferDependenciesForAns1.add(claferDependencyForAns1);
 
-		ArrayList<ClaferDependency> claferDependenciesForAns2 = new ArrayList<>();
-		ClaferDependency claferDependencyForAns2 = new ClaferDependency();
+		final ArrayList<ClaferDependency> claferDependenciesForAns2 = new ArrayList<>();
+		final ClaferDependency claferDependencyForAns2 = new ClaferDependency();
 		claferDependencyForAns2.setAlgorithm("algo2");
 		claferDependencyForAns2.setOperand("prop2");
 		claferDependencyForAns2.setOperator(">=");
@@ -108,14 +108,14 @@ public class QuestionAndPageModelTest {
 
 	@Test
 	public void testAnswerCodeDependency() {
-		ArrayList<CodeDependency> codeDependenciesForAns1 = new ArrayList<>();
-		CodeDependency codeDependencyForAns1 = new CodeDependency();
+		final ArrayList<CodeDependency> codeDependenciesForAns1 = new ArrayList<>();
+		final CodeDependency codeDependencyForAns1 = new CodeDependency();
 		codeDependencyForAns1.setOption("variable1");
 		codeDependencyForAns1.setValue("value1");
 		codeDependenciesForAns1.add(codeDependencyForAns1);
 
-		ArrayList<CodeDependency> codeDependenciesForAns2 = new ArrayList<>();
-		CodeDependency codeDependencyForAns2 = new CodeDependency();
+		final ArrayList<CodeDependency> codeDependenciesForAns2 = new ArrayList<>();
+		final CodeDependency codeDependencyForAns2 = new CodeDependency();
 		codeDependencyForAns2.setOption("variable2");
 		codeDependencyForAns2.setValue("value2");
 		codeDependenciesForAns2.add(codeDependencyForAns2);
@@ -136,20 +136,20 @@ public class QuestionAndPageModelTest {
 	@Test
 	public void testPageModel() {
 		page.setId(0);
-		Question qstn = new Question();
+		final Question qstn = new Question();
 		qstn.setId(0);
 		qstn.setQuestionText("Q0?");
 		qstn.setElement(Constants.GUIElements.combo);
-		ArrayList<Answer> answers = new ArrayList<>();
-		Answer ans1 = new Answer();
-		Answer ans2 = new Answer();
+		final ArrayList<Answer> answers = new ArrayList<>();
+		final Answer ans1 = new Answer();
+		final Answer ans2 = new Answer();
 		ans1.setValue("ans1");
 		ans1.setDefaultAnswer(true);
 		ans2.setValue("ans2");
 		answers.add(ans1);
 		answers.add(ans2);
 		qstn.setAnswers(answers);
-		ArrayList<Question> questions = new ArrayList<>();
+		final ArrayList<Question> questions = new ArrayList<>();
 		questions.add(qstn);
 		page.setContent(questions);
 

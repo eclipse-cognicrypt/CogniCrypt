@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -24,14 +24,14 @@ public class SegregatesQuestionsIntoPages {
 	private ArrayList<Page> pages;
 	private int pageId = 0;
 
-	public SegregatesQuestionsIntoPages(ArrayList<Question> listOfAllQuestions) {
+	public SegregatesQuestionsIntoPages(final ArrayList<Question> listOfAllQuestions) {
 		setListOfAllQuestions(listOfAllQuestions);
-		pages = new ArrayList<>();
-		setPages(pages);
+		this.pages = new ArrayList<>();
+		setPages(this.pages);
 		/**
 		 * following loop adds the questions to different pages
 		 */
-		for (Question qstn : listOfAllQuestions) {
+		for (final Question qstn : listOfAllQuestions) {
 			//executes when question doesn't exists in any page
 			if (!questionExistsInAnyPage(qstn)) {
 				addQuestionToPage(qstn);
@@ -41,9 +41,9 @@ public class SegregatesQuestionsIntoPages {
 		/**
 		 * following loop checks whether the questions in the page has branch or not,if not then updates the page next Id
 		 */
-		for (Page page : pages) {
+		for (final Page page : this.pages) {
 			boolean updatePageNextId = false;
-			for (Question question : page.getContent()) {
+			for (final Question question : page.getContent()) {
 				if (!questionHasBranch(question)) {
 					updatePageNextId = true;
 				}
@@ -56,33 +56,33 @@ public class SegregatesQuestionsIntoPages {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the lists of all questions
 	 */
 	public ArrayList<Question> getListOfAllQuestions() {
-		return listOfAllQuestions;
+		return this.listOfAllQuestions;
 	}
 
 	/**
 	 * sets the list of all question
-	 * 
+	 *
 	 * @param listOfAllQuestions
 	 *        the list containing all the questions
 	 */
-	public void setListOfAllQuestions(ArrayList<Question> listOfAllQuestions) {
+	public void setListOfAllQuestions(final ArrayList<Question> listOfAllQuestions) {
 		this.listOfAllQuestions = listOfAllQuestions;
 	}
 
 	/**
 	 * checks if question exists in any page or not
-	 * 
+	 *
 	 * @param qstn
 	 *        the question
 	 * @return true if the qstn exists in any page otherwise false
 	 */
-	private boolean questionExistsInAnyPage(Question qstn) {
-		for (Page page : pages) {
-			for (Question question : page.getContent()) {
+	private boolean questionExistsInAnyPage(final Question qstn) {
+		for (final Page page : this.pages) {
+			for (final Question question : page.getContent()) {
 				if (question.getId() == qstn.getId()) {
 					return true;
 				}
@@ -93,12 +93,12 @@ public class SegregatesQuestionsIntoPages {
 
 	/**
 	 * Decides whether the question should be added to new page or to a existing page
-	 * 
+	 *
 	 * @param qstn
 	 *        quetsion that is to be added to ap page
 	 */
 
-	private void addQuestionToPage(Question qstn) {
+	private void addQuestionToPage(final Question qstn) {
 
 		/**
 		 * case 1: if question is the first question then adds it to new page
@@ -112,8 +112,8 @@ public class SegregatesQuestionsIntoPages {
 		else if (questionHasBranch(qstn)) {
 			addQuestionToNewPage(qstn);
 		} else {
-			Question previousQuestion = findPreviousQuestion(qstn);
-			Page previousQuestionPage = findPageContainingPreviousQuestion(previousQuestion);
+			final Question previousQuestion = findPreviousQuestion(qstn);
+			final Page previousQuestionPage = findPageContainingPreviousQuestion(previousQuestion);
 			/**
 			 * case 3: executes when previous question has branch then adds the current question to a new page
 			 */
@@ -138,17 +138,17 @@ public class SegregatesQuestionsIntoPages {
 
 	/**
 	 * Adds the question to a new page
-	 * 
+	 *
 	 * @param qstn
 	 */
-	private void addQuestionToNewPage(Question qstn) {
-		Page page = new Page();
-		page.setId(pageId);
-		pageId++;
-		ArrayList<Question> question = new ArrayList<>();
+	private void addQuestionToNewPage(final Question qstn) {
+		final Page page = new Page();
+		page.setId(this.pageId);
+		this.pageId++;
+		final ArrayList<Question> question = new ArrayList<>();
 		page.setContent(question);
 		page.getContent().add(qstn);
-		pages.add(page);
+		this.pages.add(page);
 		/**
 		 * executes when question has branch
 		 */
@@ -159,11 +159,11 @@ public class SegregatesQuestionsIntoPages {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param qstn
 	 * @return true if the current question is the first question in the list of Questions
 	 */
-	private boolean isFirstQuestion(Question qstn) {
+	private boolean isFirstQuestion(final Question qstn) {
 		if (qstn.getId() == 0) {
 			return true;
 		}
@@ -171,12 +171,12 @@ public class SegregatesQuestionsIntoPages {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param qstn
 	 * @return the previous question
 	 */
-	private Question findPreviousQuestion(Question qstn) {
-		for (Question question : listOfAllQuestions) {
+	private Question findPreviousQuestion(final Question qstn) {
+		for (final Question question : this.listOfAllQuestions) {
 			if (question.getId() == qstn.getId() - 1) {
 				return question;
 			}
@@ -185,15 +185,15 @@ public class SegregatesQuestionsIntoPages {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param qstn
 	 * @return true if question has branch otherwise false
 	 */
-	private boolean questionHasBranch(Question qstn) {
+	private boolean questionHasBranch(final Question qstn) {
 		if (qstn.getElement().equals(Constants.GUIElements.text)) {
 			return false;
 		} else {
-			ArrayList<Answer> answers = qstn.getAnswers();
+			final ArrayList<Answer> answers = qstn.getAnswers();
 			for (int i = 1; i < answers.size(); i++) {
 				if (answers.get(0).getNextID() != answers.get(i).getNextID()) {
 					return true;
@@ -205,45 +205,45 @@ public class SegregatesQuestionsIntoPages {
 
 	/**
 	 * adds the current question to the page which contains the previous question
-	 * 
+	 *
 	 * @param previousQuestionPage
 	 * @param question
 	 */
-	private void addQuestionToExistingPage(Page previousQuestionPage, Question qstn) {
+	private void addQuestionToExistingPage(final Page previousQuestionPage, final Question qstn) {
 		previousQuestionPage.getContent().add(qstn);
 	}
 
 	/**
 	 * Updates the answer nextID to the page ID containing the question which answer next ID points to
-	 * 
+	 *
 	 * @param qstn
 	 */
-	private void updateAnsNextIdToPageId(Question qstn) {
+	private void updateAnsNextIdToPageId(final Question qstn) {
 
 		if (!qstn.getElement().equals(Constants.GUIElements.text)) {
 			/**
 			 * if the question is the last question then sets the answer next ID to -1
 			 */
-			if (qstn.getId() == listOfAllQuestions.size() - 1) {
-				for (Answer ans : qstn.getAnswers()) {
+			if (qstn.getId() == this.listOfAllQuestions.size() - 1) {
+				for (final Answer ans : qstn.getAnswers()) {
 					ans.setNextID(Constants.ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID);
 				}
 			}
 			/**
 			 * executes when the current question is not the last question
 			 */
-			else if (qstn.getId() != listOfAllQuestions.size() - 1) {
-				ArrayList<Integer> ansNextIds = new ArrayList<>();
-				for (Answer ans : qstn.getAnswers()) {
+			else if (qstn.getId() != this.listOfAllQuestions.size() - 1) {
+				final ArrayList<Integer> ansNextIds = new ArrayList<>();
+				for (final Answer ans : qstn.getAnswers()) {
 					ansNextIds.add(ans.getNextID());
 				}
 				//sort the array to create the pages and add questions in it in order
 				Collections.sort(ansNextIds);
 
-				for (int nextId : ansNextIds) {
-					//executes only if the next id points to some question in the list 
+				for (final int nextId : ansNextIds) {
+					//executes only if the next id points to some question in the list
 					if (nextId >= 0) {
-						Answer ans = findAnswer(qstn.getAnswers(), nextId);
+						final Answer ans = findAnswer(qstn.getAnswers(), nextId);
 						if (ans.getNextID() != Constants.ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID) {
 							/**
 							 * if the user has not selected any option of comboForLinkAnswer in LinkAnswerDialog box then Sets the answer next Id to the next questionID in the
@@ -252,12 +252,12 @@ public class SegregatesQuestionsIntoPages {
 							if (ans.getNextID() == Constants.ANSWER_NO_NEXT_ID) {
 								ans.setNextID(qstn.getId() + 1);
 							}
-							Question linkedQuestion = questionWithId(ans.getNextID());
+							final Question linkedQuestion = questionWithId(ans.getNextID());
 							/**
 							 * if linkQuestion exists in any page then update the answer next id to the page id containing the question
 							 */
 							if (questionExistsInAnyPage(linkedQuestion)) {
-								Page pg = findPageContainingPreviousQuestion(linkedQuestion);
+								final Page pg = findPageContainingPreviousQuestion(linkedQuestion);
 								ans.setNextID(pg.getId());
 							}
 
@@ -265,7 +265,7 @@ public class SegregatesQuestionsIntoPages {
 							 * executes when linked question is not in the list of pages
 							 */
 							else {
-								ans.setNextID(pageId);
+								ans.setNextID(this.pageId);
 								addQuestionToNewPage(linkedQuestion);
 							}
 						}
@@ -281,12 +281,12 @@ public class SegregatesQuestionsIntoPages {
 
 	/**
 	 * Return the question with ID equal to id
-	 * 
+	 *
 	 * @param id
 	 * @return the question
 	 */
-	private Question questionWithId(int id) {
-		for (Question question : listOfAllQuestions) {
+	private Question questionWithId(final int id) {
+		for (final Question question : this.listOfAllQuestions) {
 			if (question.getId() == id) {
 				return question;
 			}
@@ -296,15 +296,15 @@ public class SegregatesQuestionsIntoPages {
 
 	/**
 	 * find the page which contains the given question
-	 * 
+	 *
 	 * @param qstn
 	 *        the question
 	 * @return the page
 	 */
 
-	private Page findPageContainingPreviousQuestion(Question qstn) {
-		for (Page page : pages) {
-			for (Question question : page.getContent()) {
+	private Page findPageContainingPreviousQuestion(final Question qstn) {
+		for (final Page page : this.pages) {
+			for (final Question question : page.getContent()) {
 				if (question.equals(qstn)) {
 					return page;
 				}
@@ -315,14 +315,14 @@ public class SegregatesQuestionsIntoPages {
 
 	/**
 	 * Update the page next ID
-	 * 
+	 *
 	 * @param page
 	 */
-	private void updatePageNextID(Page page) {
+	private void updatePageNextID(final Page page) {
 		/**
 		 * case 1: if the page is the last page in the list then sets the page nextID to -1
 		 */
-		if (page.getId() == pages.size() - 1) {
+		if (page.getId() == this.pages.size() - 1) {
 			page.setNextID(Constants.QUESTION_PAGE_LAST_PAGE_NEXT_ID);
 		}
 		/**
@@ -334,15 +334,15 @@ public class SegregatesQuestionsIntoPages {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param answers
 	 *        list of answers
 	 * @param nextId
 	 *        answer next id
 	 * @return the answer whose next id is equal to nextId
 	 */
-	private Answer findAnswer(ArrayList<Answer> answers, int nextId) {
-		for (Answer answer : answers) {
+	private Answer findAnswer(final ArrayList<Answer> answers, final int nextId) {
+		for (final Answer answer : answers) {
 			if (answer.getNextID() == nextId) {
 				return answer;
 			}
@@ -352,20 +352,20 @@ public class SegregatesQuestionsIntoPages {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the page array
 	 */
 
 	public ArrayList<Page> getPages() {
-		return pages;
+		return this.pages;
 	}
 
 	/**
 	 * Sets the page array
-	 * 
+	 *
 	 * @param pages
 	 */
-	public void setPages(ArrayList<Page> pages) {
+	public void setPages(final ArrayList<Page> pages) {
 		this.pages = pages;
 	}
 

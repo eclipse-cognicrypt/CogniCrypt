@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -46,15 +46,15 @@ public class XMLParserTest {
 	InstanceClafer inst;
 
 	// parameterized by junit.runners.Parameterized (see the constructor)
-	private String taskName;
-	private String jsFilePath;
-	private String validFilePath;
+	private final String taskName;
+	private final String jsFilePath;
+	private final String validFilePath;
 
 	// temporary output file
 	// common for all tests (among different parameterizations)
 	String xmlTestFilePath = "src/test/testXMLwriteInstance.xml";
 
-	public XMLParserTest(String taskName, String jsFile, String xmlFile) {
+	public XMLParserTest(final String taskName, final String jsFile, final String xmlFile) {
 		this.taskName = "c0_" + taskName;
 		this.jsFilePath = jsFile;
 		this.validFilePath = xmlFile;
@@ -62,8 +62,8 @@ public class XMLParserTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.claferModel = new ClaferModel(jsFilePath);
-		this.instGen = new InstanceGenerator(jsFilePath, taskName, "description");
+		this.claferModel = new ClaferModel(this.jsFilePath);
+		this.instGen = new InstanceGenerator(this.jsFilePath, this.taskName, "description");
 		this.constraints = new HashMap<>();
 		this.inst = this.instGen.generateInstances(this.constraints).get(0);
 	}
@@ -130,7 +130,7 @@ public class XMLParserTest {
 	/**
 	 * move all tags together and remove newlines
 	 */
-	public String uglifyXML(String input) {
+	public String uglifyXML(final String input) {
 		return input.replaceAll(">\\s*<", "><").replace("\n", "");
 	}
 }

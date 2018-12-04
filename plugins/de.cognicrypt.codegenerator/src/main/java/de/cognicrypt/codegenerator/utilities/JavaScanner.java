@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -51,7 +51,7 @@ public class JavaScanner {
 
 	protected boolean fEofSeen = false;
 
-	private String[] fgKeywords = { "abstract", "boolean", "break", "byte", "case", "catch", "char", "class", "continue", "default", "do", "double", "else", "extends", "false", "final", "finally", "float", "for", "if", "implements", "import", "instanceof", "int", "interface", "long", "native", "new", "null", "package", "private", "protected", "public", "return", "short", "static", "super", "switch", "synchronized", "this", "throw", "throws", "transient", "true", "try", "void", "volatile", "while" };
+	private final String[] fgKeywords = { "abstract", "boolean", "break", "byte", "case", "catch", "char", "class", "continue", "default", "do", "double", "else", "extends", "false", "final", "finally", "float", "for", "if", "implements", "import", "instanceof", "int", "interface", "long", "native", "new", "null", "package", "private", "protected", "public", "return", "short", "static", "super", "switch", "synchronized", "this", "throw", "throws", "transient", "true", "try", "void", "volatile", "while" };
 
 	public JavaScanner() {
 		initialize();
@@ -61,24 +61,25 @@ public class JavaScanner {
 	 * Returns the ending location of the current token in the document.
 	 */
 	public final int getLength() {
-		return fPos - fStartToken;
+		return this.fPos - this.fStartToken;
 	}
 
 	/**
 	 * Initialize the lookup table.
 	 */
 	void initialize() {
-		fgKeys = new Hashtable<String, Integer>();
-		Integer k = new Integer(KEY);
-		for (int i = 0; i < fgKeywords.length; i++)
-			fgKeys.put(fgKeywords[i], k);
+		this.fgKeys = new Hashtable<String, Integer>();
+		final Integer k = new Integer(KEY);
+		for (int i = 0; i < this.fgKeywords.length; i++) {
+			this.fgKeys.put(this.fgKeywords[i], k);
+		}
 	}
 
 	/**
 	 * Returns the starting location of the current token in the document.
 	 */
 	public final int getStartOffset() {
-		return fStartToken;
+		return this.fStartToken;
 	}
 
 	/**
@@ -87,7 +88,7 @@ public class JavaScanner {
 
 	public int nextToken() {
 		int c;
-		fStartToken = fPos;
+		this.fStartToken = this.fPos;
 		while (true) {
 			switch (c = read()) {
 				case EOF:
@@ -160,15 +161,16 @@ public class JavaScanner {
 						return WHITE;
 					}
 					if (Character.isJavaIdentifierStart((char) c)) {
-						fBuffer.setLength(0);
+						this.fBuffer.setLength(0);
 						do {
-							fBuffer.append((char) c);
+							this.fBuffer.append((char) c);
 							c = read();
 						} while (Character.isJavaIdentifierPart((char) c));
 						unread(c);
-						Integer i = (Integer) fgKeys.get(fBuffer.toString());
-						if (i != null)
+						final Integer i = this.fgKeys.get(this.fBuffer.toString());
+						if (i != null) {
 							return i.intValue();
+						}
 						return WORD;
 					}
 					return OTHER;
@@ -180,20 +182,21 @@ public class JavaScanner {
 	 * Returns next character.
 	 */
 	protected int read() {
-		if (fPos <= fEnd) {
-			return fDoc.charAt(fPos++);
+		if (this.fPos <= this.fEnd) {
+			return this.fDoc.charAt(this.fPos++);
 		}
 		return EOF;
 	}
 
-	public void setRange(String text) {
-		fDoc = text;
-		fPos = 0;
-		fEnd = fDoc.length() - 1;
+	public void setRange(final String text) {
+		this.fDoc = text;
+		this.fPos = 0;
+		this.fEnd = this.fDoc.length() - 1;
 	}
 
-	protected void unread(int c) {
-		if (c != EOF)
-			fPos--;
+	protected void unread(final int c) {
+		if (c != EOF) {
+			this.fPos--;
+		}
 	}
 }

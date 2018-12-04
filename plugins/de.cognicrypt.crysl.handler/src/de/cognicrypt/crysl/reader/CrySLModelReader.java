@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -141,7 +141,7 @@ public class CrySLModelReader {
 			EcoreUtil.resolveAll(resourceSet);
 			final EObject eObject = resource.getContents().get(0);
 			final Domainmodel dm = (Domainmodel) eObject;
-			curClass = dm.getJavaType().getQualifiedName();
+			this.curClass = dm.getJavaType().getQualifiedName();
 			final EnsuresBlock ensure = dm.getEnsure();
 			final Map<ParEqualsPredicate, SuperType> pre_preds = Maps.newHashMap();
 			final DestroysBlock destroys = dm.getDestroy();
@@ -176,8 +176,7 @@ public class CrySLModelReader {
 							getStatesForMethods(CrySLReaderUtils.resolveAggregateToMethodeNames(cond))));
 				}
 			}
-			final CryptSLRule rule = new CryptSLRule(curClass, objects, this.forbiddenMethods, this.smg, constraints,
-					actPreds);
+			final CryptSLRule rule = new CryptSLRule(this.curClass, objects, this.forbiddenMethods, this.smg, constraints, actPreds);
 			System.out.println(rule);
 			System.out.println("===========================================");
 			System.out.println("");
@@ -222,11 +221,11 @@ public class CrySLModelReader {
 					if (var.getVal() != null) {
 						final LiteralExpression lit = var.getVal();
 
-						ObjectImpl object = (ObjectImpl) ((LiteralExpression) lit.getLit().getName()).getValue();
-						ObjectDecl objectDecl = (ObjectDecl) object.eContainer();
-						String type = objectDecl.getObjectType().getQualifiedName()
+						final ObjectImpl object = (ObjectImpl) ((LiteralExpression) lit.getLit().getName()).getValue();
+						final ObjectDecl objectDecl = (ObjectDecl) object.eContainer();
+						final String type = objectDecl.getObjectType().getQualifiedName()
 								+ ((objectDecl.getArray() != null) ? objectDecl.getArray() : "");
-						String variable = object.getName();
+						final String variable = object.getName();
 
 						final String part = var.getVal().getPart();
 						if (part != null) {
@@ -253,8 +252,8 @@ public class CrySLModelReader {
 		if (cons instanceof PreDefinedPredicates) {
 			name = getPredefinedPredicate((LiteralExpression) expression);
 		} else {
-			EObject constraint = cons.getName();
-			String object = getValueOfLiteral(constraint);
+			final EObject constraint = cons.getName();
+			final String object = getValueOfLiteral(constraint);
 			if (constraint instanceof LiteralExpression) {
 				ObjectDecl objectDecl = (ObjectDecl) ((ObjectImpl) ((LiteralExpression) constraint).getValue())
 						.eContainer();
@@ -296,8 +295,8 @@ public class CrySLModelReader {
 					final LiteralExpression name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons()
 							.getLit().getName();
 
-					SuperType object = name.getValue();
-					ObjectDecl objectDecl = (ObjectDecl) object.eContainer();
+					final SuperType object = name.getValue();
+					final ObjectDecl objectDecl = (ObjectDecl) object.eContainer();
 					final CryptSLObject variable = new CryptSLObject(object.getName(),
 							objectDecl.getObjectType().getQualifiedName()
 									+ ((objectDecl.getArray() != null) ? objectDecl.getArray() : ""),
@@ -309,8 +308,8 @@ public class CrySLModelReader {
 					if (name == null) {
 						name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getLit().getName();
 					}
-					SuperType object = name.getValue();
-					ObjectDecl objectDecl = (ObjectDecl) object.eContainer();
+					final SuperType object = name.getValue();
+					final ObjectDecl objectDecl = (ObjectDecl) object.eContainer();
 					final CryptSLObject variable = new CryptSLObject(object.getName(),
 							objectDecl.getObjectType().getQualifiedName()
 									+ ((objectDecl.getArray() != null) ? objectDecl.getArray() : ""));
@@ -403,7 +402,7 @@ public class CrySLModelReader {
 			}
 		} else if (cons instanceof Constraint) {
 			LogOps op = null;
-			EObject operator = cons.getOperator();
+			final EObject operator = cons.getOperator();
 			if (operator instanceof LogicalImply) {
 				op = LogOps.implies;
 			} else {
@@ -437,7 +436,7 @@ public class CrySLModelReader {
 			}
 			final List<CryptSLMethod> crysl = new ArrayList<>();
 
-			Event alternative = fm.getRep();
+			final Event alternative = fm.getRep();
 			if (alternative != null) {
 				crysl.addAll(CrySLReaderUtils.resolveAggregateToMethodeNames(alternative));
 			}
@@ -458,7 +457,7 @@ public class CrySLModelReader {
 			if (pred.getParList() != null) {
 				for (final SuPar var : pred.getParList().getParameters()) {
 					if (var.getVal() != null) {
-						ObjectImpl object = (ObjectImpl) ((LiteralExpression) var.getVal().getLit().getName())
+						final ObjectImpl object = (ObjectImpl) ((LiteralExpression) var.getVal().getLit().getName())
 								.getValue();
 						String name = object.getName();
 						ObjectDecl objectDecl = (ObjectDecl) object.eContainer();
@@ -466,7 +465,7 @@ public class CrySLModelReader {
 								+ ((objectDecl.getArray() != null) ? objectDecl.getArray() : "");
 						if (name == null) {
 							name = "this";
-							type = curClass;
+							type = this.curClass;
 						}
 						variables.add(new CryptSLObject(name, type));
 					} else {
@@ -518,22 +517,21 @@ public class CrySLModelReader {
 			break;
 		case "neverTypeOf":
 			final List<ICryptSLPredicateParameter> varNType = new ArrayList<>();
-			Object object = (de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj()
+			final Object object = (de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj()
 					.get(0);
 			ObjectDecl objectDecl = (ObjectDecl) object.eContainer();
-			String type = objectDecl.getObjectType().getQualifiedName()
+			final String type = objectDecl.getObjectType().getQualifiedName()
 					+ ((objectDecl.getArray() != null) ? objectDecl.getArray() : "");
 			varNType.add(new CryptSLObject(object.getName(), type));
-			String qualifiedName = ((PreDefinedPredicates) lit.getCons()).getType().getQualifiedName();
+			final String qualifiedName = ((PreDefinedPredicates) lit.getCons()).getType().getQualifiedName();
 			varNType.add(new CryptSLObject(qualifiedName, "null"));
 			slci = new CryptSLPredicate(null, pred, varNType, false);
 			break;
 		case "length":
 			final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
-			Object objectL = (de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj()
-					.get(0);
+			final Object objectL = (de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0);
 			objectDecl = (ObjectDecl) objectL.eContainer();
-			String typeL = objectDecl.getObjectType().getQualifiedName()
+			final String typeL = objectDecl.getObjectType().getQualifiedName()
 					+ ((objectDecl.getArray() != null) ? objectDecl.getArray() : "");
 			variables.add(new CryptSLObject(objectL.getName(), typeL));
 			slci = new CryptSLPredicate(null, pred, variables, false);
@@ -554,7 +552,7 @@ public class CrySLModelReader {
 				boolean firstPar = true;
 				for (final SuPar var : pred.getParList().getParameters()) {
 					if (var.getVal() != null) {
-						ObjectImpl object = (ObjectImpl) ((LiteralExpression) var.getVal().getLit().getName())
+						final ObjectImpl object = (ObjectImpl) ((LiteralExpression) var.getVal().getLit().getName())
 								.getValue();
 						ObjectDecl objectDecl = (ObjectDecl) object.eContainer();
 						String type = objectDecl.getObjectType().getQualifiedName()
@@ -562,12 +560,12 @@ public class CrySLModelReader {
 						String name = object.getName();
 						if (name == null) {
 							name = "this";
-							type = curClass;
+							type = this.curClass;
 						}
 						variables.add(new CryptSLObject(name, type));
 					} else {
 						if (firstPar) {
-							variables.add(new CryptSLObject("this", curClass));
+							variables.add(new CryptSLObject("this", this.curClass));
 						} else {
 							variables.add(new CryptSLObject("_", "null"));
 						}
@@ -608,7 +606,7 @@ public class CrySLModelReader {
 			if (preValue != null) {
 				value = preValue.getName();
 			} else {
-				EObject cons = ((LiteralExpression) name).getCons();
+				final EObject cons = ((LiteralExpression) name).getCons();
 				if (cons instanceof LiteralExpression) {
 					value = getValueOfLiteral(((LiteralExpression) cons).getName());
 				} else {

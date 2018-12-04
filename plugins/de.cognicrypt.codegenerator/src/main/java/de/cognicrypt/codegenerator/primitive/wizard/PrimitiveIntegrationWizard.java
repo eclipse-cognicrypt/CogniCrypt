@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -59,10 +59,11 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		setWindowTitle(getWindowTitle());
 	}
 
+	@Override
 	public void addPages() {
-		selectedPrimitivePage = new PrimitiveSelectionPage();
+		this.selectedPrimitivePage = new PrimitiveSelectionPage();
 		setForcePreviousAndNextButtons(true);
-		addPage(selectedPrimitivePage);
+		addPage(this.selectedPrimitivePage);
 
 	}
 
@@ -78,20 +79,21 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		return updateRound;
 	}
 
-	private void createPrimitivePage(final Page curPage, final PrimitiveQuestionnaire primitiveQuestionnaire, int iteration) {
-		List<String> selection = null;
+	private void createPrimitivePage(final Page curPage, final PrimitiveQuestionnaire primitiveQuestionnaire, final int iteration) {
+		final List<String> selection = null;
 		if (curPage.getContent().size() == 1) {
 			final Question curQuestion = curPage.getContent().get(0);
 			System.out.print(curQuestion.getId());
 		}
-		// Pass the questionnaire instead of the all of the questions. 
+		// Pass the questionnaire instead of the all of the questions.
 		this.preferenceSelectionPage = new PrimitiveQuestionnairePage(curPage, this.primitiveQuestions.getPrimitive(), primitiveQuestionnaire, selection, iteration);
 	}
 
+	@Override
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
-		selectedPrimitive = this.selectedPrimitivePage.getSelectedPrimitive();
+		this.selectedPrimitive = this.selectedPrimitivePage.getSelectedPrimitive();
 		if (currentPage == this.selectedPrimitivePage && this.selectedPrimitivePage.isPageComplete()) {
-			this.primitiveQuestions = new PrimitiveQuestionnaire(selectedPrimitive, selectedPrimitive.getXmlFile());
+			this.primitiveQuestions = new PrimitiveQuestionnaire(this.selectedPrimitive, this.selectedPrimitive.getXmlFile());
 			this.preferenceSelectionPage = new PrimitiveQuestionnairePage(this.primitiveQuestions.nextPage(), this.primitiveQuestions.getPrimitive(), null);
 			if (this.preferenceSelectionPage != null) {
 				addPage(this.preferenceSelectionPage);
@@ -101,15 +103,15 @@ public class PrimitiveIntegrationWizard extends Wizard {
 			return this.preferenceSelectionPage;
 		} else if (currentPage.getPreviousPage() == this.selectedPrimitivePage || currentPage instanceof PrimitiveQuestionnairePage) {
 			final PrimitiveQuestionnairePage primitiveQuestionPage = (PrimitiveQuestionnairePage) currentPage;
-			LinkedHashMap<String, String> selectionMap = primitiveQuestionPage.getMap();
+			final LinkedHashMap<String, String> selectionMap = primitiveQuestionPage.getMap();
 
 			if (primitiveQuestionPage.getSelection() != null) {
-				for (String name : selectionMap.keySet()) {
+				for (final String name : selectionMap.keySet()) {
 
-					String key = name.toString();
-					String value = selectionMap.get(name).toString();
+					final String key = name.toString();
+					final String value = selectionMap.get(name).toString();
 
-					inputsMap.put(key, value);
+					this.inputsMap.put(key, value);
 
 				}
 			}
@@ -118,13 +120,13 @@ public class PrimitiveIntegrationWizard extends Wizard {
 				int nextID = -1;
 				if (primitiveQuestionPage.getPageNextID() > -2) {
 					nextID = primitiveQuestionPage.getPageNextID();
-					setPageId(primitiveQuestions.getCurrentPageID());
+					setPageId(this.primitiveQuestions.getCurrentPageID());
 				}
 
 				if (nextID > -1) {
 					final Page curPage = this.primitiveQuestions.setPageByID(nextID);
-					setPageId(primitiveQuestions.getCurrentPageID());
-					createPrimitivePage(curPage, primitiveQuestions, primitiveQuestionPage.getIteration());
+					setPageId(this.primitiveQuestions.getCurrentPageID());
+					createPrimitivePage(curPage, this.primitiveQuestions, primitiveQuestionPage.getIteration());
 					if (checkifInUpdateRound()) {
 						this.primitiveQuestions.previousPage();
 					}
@@ -164,15 +166,15 @@ public class PrimitiveIntegrationWizard extends Wizard {
 		return currentPage;
 	}
 
-	private void setPageId(int pageId) {
+	private void setPageId(final int pageId) {
 		this.pageId = pageId;
 
 	}
 
 	public String getPageId() {
 		//incrementing the page id to get the correct page number
-		int pageNumber = this.pageId + 2;
-		String pageNumberText = "-" + Integer.toString(pageNumber) + "-";
+		final int pageNumber = this.pageId + 2;
+		final String pageNumberText = "-" + Integer.toString(pageNumber) + "-";
 		return pageNumberText;
 
 	}
@@ -181,15 +183,16 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	@Override
 	public String getWindowTitle() {
 		if (getContainer() != null) {
-			IWizardPage currentPage = getContainer().getCurrentPage();
-			if (currentPage == selectedPrimitivePage)
+			final IWizardPage currentPage = getContainer().getCurrentPage();
+			if (currentPage == this.selectedPrimitivePage) {
 				return "-1-";
-			else if (currentPage == preferenceSelectionPage)
+			} else if (currentPage == this.preferenceSelectionPage) {
 				return (getPageId());
-			else if (currentPage == projectBrowserPage)
+			} else if (currentPage == this.projectBrowserPage) {
 				return "-7-";
-			else if (currentPage == methodSelectionPage)
+			} else if (currentPage == this.methodSelectionPage) {
 				return "-8-";
+			}
 		}
 
 		return "Primitive Integration";
@@ -199,64 +202,65 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	public boolean performFinish() {
 
 		//Clafer
-		File finalClafer = ClaferGenerator.copyClaferHeader(Constants.claferHeader, Constants.claferFooter);
-		ClaferGenerator.printClafer(inputsMap, finalClafer);
+		final File finalClafer = ClaferGenerator.copyClaferHeader(Constants.claferHeader, Constants.claferFooter);
+		ClaferGenerator.printClafer(this.inputsMap, finalClafer);
 
 		//Generation of xml file for xsl
 		final File xmlFile = CodeGenUtils.getResourceFromWithin(Constants.xmlFilePath);
-		xsltWriter = new XsltWriter();
+		this.xsltWriter = new XsltWriter();
 		try {
-			xsltWriter.createDocument();
-			xsltWriter.setRoot("SymmetricBlockCipher");
-			for (String name : inputsMap.keySet()) {
-				String key = name.toString();
-				String value = inputsMap.get(name).toString();
-				xsltWriter.addElement(name.trim(), value);
+			this.xsltWriter.createDocument();
+			this.xsltWriter.setRoot("SymmetricBlockCipher");
+			for (final String name : this.inputsMap.keySet()) {
+				name.toString();
+				final String value = this.inputsMap.get(name).toString();
+				this.xsltWriter.addElement(name.trim(), value);
 			}
-			xsltWriter.transformXml(xmlFile);
+			this.xsltWriter.transformXml(xmlFile);
 		} catch (ParserConfigurationException | TransformerException e) {
 			e.printStackTrace();
 		}
 
-		//Code generation 
+		//Code generation
 		try {
-			final File templateSpi = CodeGenUtils.getResourceFromWithin(selectedPrimitive.getXslFile());
+			final File templateSpi = CodeGenUtils.getResourceFromWithin(this.selectedPrimitive.getXslFile());
 			final File templateMaster = CodeGenUtils.getResourceFromWithin(
 				Constants.primitivesPath + Constants.innerFileSeparator + "XSL" + Constants.innerFileSeparator + "Template" + Constants.innerFileSeparator + "providerClass.xsl");
 
-			xsltWriter.transformXsl(templateSpi, xmlFile);
-			xsltWriter.transformXsl(templateMaster, xmlFile);
+			this.xsltWriter.transformXsl(templateSpi, xmlFile);
+			this.xsltWriter.transformXsl(templateMaster, xmlFile);
 		} catch (TransformerException | SAXException | IOException | ParserConfigurationException e1) {
 			e1.printStackTrace();
 		}
 
 		//Store source code of generated classes into a map
-		File folder = CodeGenUtils.getResourceFromWithin(Constants.primitivesPath);
-		classContent = new Helper().getSourceCode(folder);
-		for (String name : classContent.keySet()) {
-			String className = name.toString();
-			String sourceCode = classContent.get(name).toString();
+		final File folder = CodeGenUtils.getResourceFromWithin(Constants.primitivesPath);
+		this.classContent = new Helper().getSourceCode(folder);
+		for (final String name : this.classContent.keySet()) {
+			final String className = name.toString();
+			final String sourceCode = this.classContent.get(name).toString();
 
-			//Create new class that contains the source code 
-			UserJavaProject project = this.methodSelectionPage.getUserProject();
+			//Create new class that contains the source code
+			final UserJavaProject project = this.methodSelectionPage.getUserProject();
 			try {
-				providerName = inputsMap.get("name");
+				this.providerName = this.inputsMap.get("name");
 				project.createNewClass(className, sourceCode, project.getPackageByName(Constants.PRIMITIVE_PACKAGE));
 
-				//Create provider jarFile 
-				provider.zipProject(project.getProject().getLocation().toString() + "/",
-					new File(CodeGenUtils.getResourceFromWithin(Constants.PROVIDER_FOLDER) + Constants.innerFileSeparator + providerName + ".jar"), true);
-				//delete archived files 
-				for (File file : folder.listFiles()) {
-					if (file.getName().endsWith(".java") || file.getName().endsWith(".class"))
+				//Create provider jarFile
+				this.provider.zipProject(project.getProject().getLocation().toString() + "/",
+					new File(CodeGenUtils.getResourceFromWithin(Constants.PROVIDER_FOLDER) + Constants.innerFileSeparator + this.providerName + ".jar"), true);
+				//delete archived files
+				for (final File file : folder.listFiles()) {
+					if (file.getName().endsWith(".java") || file.getName().endsWith(".class")) {
 						file.delete();
+					}
 				}
 
 				//add delete Project
 				//project.deleteProject();
-			} catch (JavaModelException e) {
+			} catch (final JavaModelException e) {
 				e.printStackTrace();
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

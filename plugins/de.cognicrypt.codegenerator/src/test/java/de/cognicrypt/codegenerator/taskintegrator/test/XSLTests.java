@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -36,12 +36,12 @@ public class XSLTests {
 	 * Generate all the tags.
 	 */
 	public void generateTagsFromConstants() {
-		for (XSLTags xslTag : Constants.XSLTags.values()) {
-			ArrayList<XSLAttribute> attributes = new ArrayList<>();
-			for (String attributeName : xslTag.getXSLAttributes()) {
+		for (final XSLTags xslTag : Constants.XSLTags.values()) {
+			final ArrayList<XSLAttribute> attributes = new ArrayList<>();
+			for (final String attributeName : xslTag.getXSLAttributes()) {
 				attributes.add(new XSLAttribute(attributeName, "some value"));
 			}
-			tags.put(xslTag.getXSLTagFaceName(), new XSLTag(xslTag, attributes));
+			this.tags.put(xslTag.getXSLTagFaceName(), new XSLTag(xslTag, attributes));
 		}
 	}
 
@@ -51,18 +51,18 @@ public class XSLTests {
 	 */
 	public void testTagsFromConstants() {
 
-		for (XSLTag tag : tags.values()) {
+		for (final XSLTag tag : this.tags.values()) {
 
 			System.out.println("Tag under consideration : " + tag.getXSLTagDetails().getXSLTagFaceName());
 			boolean validTag = false;
-			StringBuilder dataFromFile = new StringBuilder();
+			final StringBuilder dataFromFile = new StringBuilder();
 
 			dataFromFile.append(XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), tag.toString()));
 
 			try {
 				DocumentHelper.parseText(dataFromFile.toString());
 				validTag = true;
-			} catch (DocumentException e) {
+			} catch (final DocumentException e) {
 				validTag = false;
 			}
 

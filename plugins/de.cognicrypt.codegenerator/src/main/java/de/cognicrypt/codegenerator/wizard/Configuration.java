@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -23,9 +23,8 @@ import de.cognicrypt.utils.FileHelper;
 
 /**
  * This class is a storage for the configuration chosen by the user.
- * 
- * @author Stefan Krueger
  *
+ * @author Stefan Krueger
  */
 public abstract class Configuration {
 	
@@ -39,7 +38,7 @@ public abstract class Configuration {
 
 	/**
 	 * Writes chosen configuration to hard disk.
-	 * 
+	 *
 	 * @return Written file.
 	 * @throws IOException
 	 *         see {@link FileWriter#FileWriter(String)) FileWriter} and {@link XMLWriter#write(String) XMLWriter.write()}
@@ -53,6 +52,6 @@ public abstract class Configuration {
 	 * Deletes config file from hard disk.
 	 */
 	public void deleteConfFromDisk() {
-		FileHelper.deleteFile(pathOnDisk);
+		FileHelper.deleteFile(this.pathOnDisk);
 	}
 }

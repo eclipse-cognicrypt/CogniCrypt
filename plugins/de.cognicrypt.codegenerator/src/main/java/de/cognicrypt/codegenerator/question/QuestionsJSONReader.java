@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -46,9 +46,7 @@ public class QuestionsJSONReader {
 		try {
 			final BufferedReader reader = new BufferedReader(new FileReader(CodeGenUtils.getResourceFromWithin(filePath)));
 			final Gson gson = new Gson();
-
 			questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
-
 			checkReadQuestions(questions);
 		} catch (final FileNotFoundException e) {
 			Activator.getDefault().logError(e);
@@ -71,9 +69,11 @@ public class QuestionsJSONReader {
 			final Gson gson = new Gson();
 
 			pages = gson.fromJson(reader, new TypeToken<List<Page>>() {}.getType());
-
-			checkReadPages(pages);
-			checkNextIDs(pages);
+			// For some tasks, we don't have questions. So, we don't need to check them.
+			if (pages.size() > 0) {
+				checkReadPages(pages);
+				checkNextIDs(pages);
+			}
 		} catch (final FileNotFoundException e) {
 			Activator.getDefault().logError(e);
 		}
@@ -104,14 +104,19 @@ public class QuestionsJSONReader {
 
 	/**
 	 * Check the validity of the pages and the questions contained in them.
-	 * 
+	 *
 	 * @param pages
 	 *        List of all read pages
 	 */
 	public void checkReadPages(final List<Page> pages) {
 		final Set<Integer> ids = new HashSet<>();
-		if (pages.size() < 1) {
-			throw new IllegalArgumentException("There are no pages for this task.");
+		if (pages.size() < 0) {
+			throw new IllegalArgumentException("There are a negative number of pages for this task.");
+		}
+		// A BeginnerQuestionaire is now allowed to have no questions, e.g., password task.
+		// As no questions exists, we can simply return at this point as nothing need to be checked.
+		if (pages.size() == 0) {
+			return;
 		}
 		for (final Page page : pages) {
 			if (!ids.add(page.getId())) {
@@ -125,16 +130,15 @@ public class QuestionsJSONReader {
 
 	private void checkReadQuestions(final List<Question> questions) {
 		final Set<Integer> ids = new HashSet<>();
-		if (questions.size() < 1) {
-			throw new IllegalArgumentException("There are no questions for this task.");
-		}
-		for (final Question question : questions) {
-			if (!ids.add(question.getId())) {
-				throw new IllegalArgumentException("Each question must have a unique ID.");
-			}
+		if (questions.size() > 1) {
+			for (final Question question : questions) {
+				if (!ids.add(question.getId())) {
+					throw new IllegalArgumentException("Each question must have a unique ID.");
+				}
 
-			if (question.getDefaultAnswer() == null) {
-				throw new IllegalArgumentException("Each question must have a default answer.");
+				if (question.getDefaultAnswer() == null) {
+					throw new IllegalArgumentException("Each question must have a default answer.");
+				}
 			}
 		}
 	}

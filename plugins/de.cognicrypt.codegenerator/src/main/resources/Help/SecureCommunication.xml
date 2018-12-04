@@ -5,14 +5,14 @@
         <description>Enter the path to a file with ".jks" extension.
 Enter the password and check the correctness before proceeding.         </description>
       </context>
-      <context  id="SecureCommunication_Page1">
+      <context  id="TLS_Q1">
         <description>Are you doing Client-side implementation or Server-side implementation?
 NOTE: If you are implementing on the Server-side, then you must know the Port number of the server. </description>
       </context>
-      <context  id="SecureCommunication_Page2">
+      <context  id="TLS_Q2_Client">
         <description>If you know both IP address and Port number of the server, select Yes.</description>
       </context>
-      <context  id="SecureCommunication_Page3">
+      <context  id="TLS_Q3_Backend">
         <description>Enter the IP address and Port number of the server. Please ensure that you have entered them correctly. </description>
       </context>
       <context  id="SecureCommunication_Page4">
@@ -24,7 +24,7 @@ NOTE: If you are implementing on the Server-side, then you must know the Port nu
       <context  id="SecureCommunication_Page6">
         <description>Choose the option that you wish and click 'Select' button. You can make multiple selections and the same time. The same applies for de-selection. </description>
       </context>
-      <context  id="SecureCommunication_Page7">
+      <context  id="TLS_Q2_Server">
         <description>Enter the Port number of the server. Please ensure that you have entered them correctly. </description>
       </context>
       

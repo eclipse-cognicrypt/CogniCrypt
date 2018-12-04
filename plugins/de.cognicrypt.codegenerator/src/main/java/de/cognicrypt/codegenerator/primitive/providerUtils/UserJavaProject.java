@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -44,27 +44,27 @@ public class UserJavaProject {
 
 	/**
 	 * List all methods located in the source folder of a javaProject
-	 * 
+	 *
 	 * @param javaProject
 	 * @return list of methods
 	 * @throws CoreException
 	 */
 	public List<IMethod> listOfAllMethods() throws CoreException {
-		IJavaProject javaProject = toJavaProject(this.project);
+		final IJavaProject javaProject = toJavaProject(this.project);
 		if (javaProject != null) {
-			List<IMethod> methodsList = new ArrayList<IMethod>();
-			IPackageFragment[] packages = javaProject.getPackageFragments();
-			for (IPackageFragment pack : packages) {
+			final List<IMethod> methodsList = new ArrayList<IMethod>();
+			final IPackageFragment[] packages = javaProject.getPackageFragments();
+			for (final IPackageFragment pack : packages) {
 				//look at the package from the source folder
 				if (pack.getKind() == IPackageFragmentRoot.K_SOURCE) {
 
-					for (ICompilationUnit unit : pack.getCompilationUnits()) {
+					for (final ICompilationUnit unit : pack.getCompilationUnits()) {
 
-						IType[] allTypes = unit.getAllTypes();
-						for (IType type : allTypes) {
-							IMethod[] methods = type.getMethods();
+						final IType[] allTypes = unit.getAllTypes();
+						for (final IType type : allTypes) {
+							final IMethod[] methods = type.getMethods();
 
-							for (IMethod method : methods) {
+							for (final IMethod method : methods) {
 								methodsList.add(method);
 							}
 						}
@@ -78,12 +78,12 @@ public class UserJavaProject {
 
 	/**
 	 * Import a project from path
-	 * 
+	 *
 	 * @param path
 	 * @throws CoreException
 	 */
-	public void ImportProject(String path) throws CoreException {
-		IProjectDescription description = ResourcesPlugin.getWorkspace().loadProjectDescription(new Path(path));
+	public void ImportProject(final String path) throws CoreException {
+		final IProjectDescription description = ResourcesPlugin.getWorkspace().loadProjectDescription(new Path(path));
 		this.project = ResourcesPlugin.getWorkspace().getRoot().getProject(description.getName());
 		this.project.create(description, null);
 		this.project.open(null);
@@ -92,12 +92,12 @@ public class UserJavaProject {
 
 	/**
 	 * Convert a project to javaProject if its nature is Java
-	 * 
+	 *
 	 * @param project
 	 * @return javaProject
 	 * @throws CoreException
 	 */
-	private IJavaProject toJavaProject(IProject project) throws CoreException {
+	private IJavaProject toJavaProject(final IProject project) throws CoreException {
 		IJavaProject javaProject = null;
 		if (project.hasNature(JavaCore.NATURE_ID)) {
 			javaProject = JavaCore.create(project);
@@ -109,31 +109,31 @@ public class UserJavaProject {
 
 	/**
 	 * This method creates a new package in the java project of the user
-	 * 
+	 *
 	 * @param packageName
 	 * @throws CoreException
 	 */
-	public void addPackage(String packageName) throws CoreException {
-		IJavaProject javaProject = toJavaProject(this.project);
-		IPackageFragment pack = javaProject.getPackageFragmentRoot(this.project.getFolder("src")).createPackageFragment(packageName, false, null);
+	public void addPackage(final String packageName) throws CoreException {
+		final IJavaProject javaProject = toJavaProject(this.project);
+		javaProject.getPackageFragmentRoot(this.project.getFolder("src")).createPackageFragment(packageName, false, null);
 	}
 
 	/**
-	 * 
+	 *
 	 * @param packageName
 	 * @return the package with the given name
 	 */
-	public IPackageFragment getPackageByName(String packageName) {
+	public IPackageFragment getPackageByName(final String packageName) {
 		IPackageFragment aPackage = null;
 		try {
-			IJavaProject javaProject = toJavaProject(this.project);
-			IPackageFragment[] packages = javaProject.getPackageFragments();
-			for (IPackageFragment pack : packages) {
+			final IJavaProject javaProject = toJavaProject(this.project);
+			final IPackageFragment[] packages = javaProject.getPackageFragments();
+			for (final IPackageFragment pack : packages) {
 				if (pack.getElementName().equals(packageName)) {
 					aPackage = pack;
 				}
 			}
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			e.printStackTrace();
 		}
 		return aPackage;
@@ -142,7 +142,7 @@ public class UserJavaProject {
 
 	/**
 	 * This method creates a new class in a certain package
-	 * 
+	 *
 	 * @param className
 	 * @param content
 	 *        contains the source code
@@ -150,19 +150,18 @@ public class UserJavaProject {
 	 *        is the package where the new class will be added
 	 * @throws JavaModelException
 	 */
-	public void createNewClass(String className, String content, IPackageFragment pack) throws JavaModelException {
+	public void createNewClass(final String className, final String content, final IPackageFragment pack) throws JavaModelException {
 		//Add the package declaration into the source code
-		StringBuffer buffer = new StringBuffer();
+		final StringBuffer buffer = new StringBuffer();
 		buffer.append("package " + pack.getElementName() + ";\n");
 		buffer.append("\n");
 		buffer.append(content);
 
-		//Generate the new class 
-		ICompilationUnit cu = pack.createCompilationUnit(className, buffer.toString(), false, null);
+		pack.createCompilationUnit(className, buffer.toString(), false, null);
 	}
 
 	/**
-	 * 
+	 *
 	 * @param sourceProject
 	 *        The name of the project to be cloned
 	 * @param cloneName
@@ -171,17 +170,17 @@ public class UserJavaProject {
 	 * @throws CoreException
 	 */
 
-	public static IProject cloneProject(String sourceProject) throws CoreException {
-		IProgressMonitor m = new NullProgressMonitor();
-		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		IProject project = workspaceRoot.getProject(sourceProject);
-		IProjectDescription projectDescription = project.getDescription();
-		String cloneName = sourceProject + "_copy";
+	public static IProject cloneProject(final String sourceProject) throws CoreException {
+		final IProgressMonitor m = new NullProgressMonitor();
+		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		final IProject project = workspaceRoot.getProject(sourceProject);
+		final IProjectDescription projectDescription = project.getDescription();
+		final String cloneName = sourceProject + "_copy";
 		// create clone project in workspace
-		IProjectDescription cloneDescription = workspaceRoot.getWorkspace().newProjectDescription(cloneName);
+		final IProjectDescription cloneDescription = workspaceRoot.getWorkspace().newProjectDescription(cloneName);
 		// copy project files
 		project.copy(cloneDescription, true, m);
-		IProject clone = workspaceRoot.getProject(cloneName);
+		final IProject clone = workspaceRoot.getProject(cloneName);
 		// copy the project properties
 		cloneDescription.setNatureIds(projectDescription.getNatureIds());
 		cloneDescription.setReferencedProjects(projectDescription.getReferencedProjects());
@@ -201,7 +200,7 @@ public class UserJavaProject {
 		return this.project;
 	}
 
-	public void setProject(IProject project) {
+	public void setProject(final IProject project) {
 		this.project = project;
 	}
 }

@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -33,7 +33,7 @@ class CompareInput extends CompareEditorInput {
 	private final String right;
 	private Object fRoot;
 
-	public CompareInput(String left, String right) {
+	public CompareInput(final String left, final String right) {
 		super(new CompareConfiguration());
 		setTitle("Compare Code");
 		this.left = left;
@@ -41,37 +41,40 @@ class CompareInput extends CompareEditorInput {
 	}
 
 	@Override
-	protected Object prepareInput(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-		String leftLabel = "Old Source";
-		String rightLabel = "Modified Source";
+	protected Object prepareInput(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+		final String leftLabel = "Old Source";
+		final String rightLabel = "Modified Source";
 
 		getCompareConfiguration().setLeftLabel(leftLabel);
 		getCompareConfiguration().setRightLabel(rightLabel);
 
-		Differencer d = new Differencer();
-		fRoot = d.findDifferences(false, monitor, null, null, new CompareItem(leftLabel, left), new CompareItem(rightLabel, right));
-		return fRoot;
+		final Differencer d = new Differencer();
+		this.fRoot = d.findDifferences(false, monitor, null, null, new CompareItem(leftLabel, this.left), new CompareItem(rightLabel, this.right));
+		return this.fRoot;
 	}
 
 }
 
 class CompareItem implements IStreamContentAccessor, ITypedElement {
 
-	private String contents, name;
+	private final String contents, name;
 
-	CompareItem(String name, String contents) {
+	CompareItem(final String name, final String contents) {
 		this.name = name;
 		this.contents = contents;
 	}
 
+	@Override
 	public InputStream getContents() throws CoreException {
-		return new ByteArrayInputStream(contents.getBytes());
+		return new ByteArrayInputStream(this.contents.getBytes());
 	}
 
+	@Override
 	public Image getImage() {
 		return null;
 	}
 
+	@Override
 	public String getName() {
 		return this.name;
 	}
@@ -80,6 +83,7 @@ class CompareItem implements IStreamContentAccessor, ITypedElement {
 		return this.contents;
 	}
 
+	@Override
 	public String getType() {
 		return "Java";
 	}

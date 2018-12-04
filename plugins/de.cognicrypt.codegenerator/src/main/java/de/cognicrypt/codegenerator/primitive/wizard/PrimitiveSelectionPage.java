@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -46,28 +46,29 @@ public class PrimitiveSelectionPage extends WizardPage {
 
 	/**
 	 * Create contents of the wizard.
-	 * 
+	 *
 	 * @param parent
 	 */
-	public void createControl(Composite parent) {
+	@Override
+	public void createControl(final Composite parent) {
 		this.container = new Composite(parent, SWT.NULL);
 		this.container.setBounds(10, 10, 200, 300);
 		final GridLayout layout = new GridLayout(3, false);
 		this.container.setLayout(layout);
 		final List<Primitive> primitives = PrimitiveJSONReader.getPrimitiveTypes(CodeGenUtils.getResourceFromWithin(Constants.jsonPrimitiveTypesFile));
 
-		setControl(container);
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
+		setControl(this.container);
+		new Label(this.container, SWT.NONE);
+		new Label(this.container, SWT.NONE);
+		new Label(this.container, SWT.NONE);
 
-		Label AlgorithmType = new Label(container, SWT.NONE);
+		final Label AlgorithmType = new Label(this.container, SWT.NONE);
 		AlgorithmType.setText("What kind of algorithm do you want to integrate?       ");
-		new Label(container, SWT.NONE);
+		new Label(this.container, SWT.NONE);
 
 		this.primitiveComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
-		Combo combo = primitiveComboSelection.getCombo();
-		GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		final Combo combo = this.primitiveComboSelection.getCombo();
+		final GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_combo.widthHint = 140;
 		combo.setLayoutData(gd_combo);
 		this.primitiveComboSelection.setContentProvider(ArrayContentProvider.getInstance());
@@ -99,6 +100,7 @@ public class PrimitiveSelectionPage extends WizardPage {
 		return (Primitive) ((IStructuredSelection) this.primitiveComboSelection.getSelection()).getFirstElement();
 	}
 
+	@Override
 	public boolean canFlipToNextPage() {
 		return true;
 	}

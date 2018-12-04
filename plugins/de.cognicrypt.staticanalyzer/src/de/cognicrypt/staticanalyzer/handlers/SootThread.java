@@ -7,20 +7,20 @@ import de.cognicrypt.staticanalyzer.sootbridge.SootRunner;
 
 public class SootThread extends Thread {
 	private boolean succ = false;
-	private IJavaProject curProj;
-	private ResultsCCUIListener resultsReporter;
-	
-	public SootThread(IJavaProject curProject, ResultsCCUIListener resultsListener) {
-		curProj = curProject;
-		resultsReporter = resultsListener;
+	private final IJavaProject curProj;
+	private final ResultsCCUIListener resultsReporter;
+
+	public SootThread(final IJavaProject curProject, final ResultsCCUIListener resultsListener) {
+		this.curProj = curProject;
+		this.resultsReporter = resultsListener;
 	}
-	
+
 	public boolean isSucc() {
-		return succ;
+		return this.succ;
 	}
 
 	@Override
 	public void run() {
-		succ = SootRunner.runSoot(curProj, this.resultsReporter);
+		this.succ = SootRunner.runSoot(this.curProj, this.resultsReporter);
 	}
 }

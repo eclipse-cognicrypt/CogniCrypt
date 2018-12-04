@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -25,16 +25,16 @@ public class ClaferComparatorTest {
 
 	@Test
 	public void testComparator() {
-		String modelFilename = "src/test/resources/security.js";
-		File modelFile = CodeGenUtils.getResourceFromWithin(modelFilename);
-		String taskName = "SecurityTestTask";
+		final String modelFilename = "src/test/resources/security.js";
+		final File modelFile = CodeGenUtils.getResourceFromWithin(modelFilename);
+		final String taskName = "SecurityTestTask";
 
-		InstanceGenerator instanceGenerator = new InstanceGenerator(modelFile.getAbsolutePath(), "c0_" + taskName, "");
+		final InstanceGenerator instanceGenerator = new InstanceGenerator(modelFile.getAbsolutePath(), "c0_" + taskName, "");
 		instanceGenerator.generateInstances(new HashMap<>());
 
 		// the first instance has a security clafer as a first child
 		// it should be the strongest security possible, namely 4
-		assertEquals(Integer.valueOf(4), (Integer) ((InstanceClafer) instanceGenerator.getGeneratedInstances().get(0).getChildren()[0].getRef()).getRef());
+		assertEquals(Integer.valueOf(4), ((InstanceClafer) instanceGenerator.getGeneratedInstances().get(0).getChildren()[0].getRef()).getRef());
 	}
 
 }

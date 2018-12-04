@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import de.cognicrypt.codegenerator.question.Question;
 
 /**
- * 
+ *
  * @author ravi This class enables the user to rearrange the question order using up and down buttons created by this class
  *
  */
@@ -30,22 +30,22 @@ public class CompositeUpDownButtons extends Composite {
 
 	/**
 	 * Creates the composite
-	 * 
+	 *
 	 * @param parent
 	 * @param currentQuestion
 	 */
-	public CompositeUpDownButtons(Composite parent, Question currentQuestion) {
+	public CompositeUpDownButtons(final Composite parent, final Question currentQuestion) {
 		super(parent, SWT.LEFT_TO_RIGHT);
 		setLayout(new GridLayout(2, false));
 
-		ArrayList<Question> listOfAllQuestions = ((CompositeToHoldGranularUIElements) this.getParent().getParent().getParent()).getListOfAllQuestions();
-		Button upBtn = new Button(this, SWT.None);
+		final ArrayList<Question> listOfAllQuestions = ((CompositeToHoldGranularUIElements) getParent().getParent().getParent()).getListOfAllQuestions();
+		final Button upBtn = new Button(this, SWT.None);
 		upBtn.setText("Up");
 		upBtn.setToolTipText("Click on this button to move this question up in the list");
 		upBtn.addSelectionListener(new SelectionAdapter() {
 
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				//Only executes if the currentQuestion is not the first question in the list
 				if (listOfAllQuestions.size() != 1) {
 					((CompositeToHoldGranularUIElements) upBtn.getParent().getParent().getParent().getParent()).moveUpTheQuestion(currentQuestion);
@@ -53,13 +53,13 @@ public class CompositeUpDownButtons extends Composite {
 			}
 		});
 
-		Button downBtn = new Button(this, SWT.None);
+		final Button downBtn = new Button(this, SWT.None);
 		downBtn.setText("Down");
 		downBtn.setToolTipText("Click on this button to move this question down in the list ");
 		downBtn.addSelectionListener(new SelectionAdapter() {
 
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				//Only executes if the currentQuestion is not the last question in the list
 				if (currentQuestion.getId() != listOfAllQuestions.size() - 1) {
 					((CompositeToHoldGranularUIElements) upBtn.getParent().getParent().getParent().getParent()).moveDownTheQuestion(currentQuestion);

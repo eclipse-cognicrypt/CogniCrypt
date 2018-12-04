@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -60,7 +60,7 @@ public abstract class CodeGenerator {
 	private int startPosForImports = -1;
 	private String temporaryOutputFile;
 
-	protected CodeGenerator(IProject targetProject) {
+	protected CodeGenerator(final IProject targetProject) {
 		this.project = new DeveloperProject(targetProject);
 	}
 
@@ -99,24 +99,24 @@ public abstract class CodeGenerator {
 	 * @throws CoreException
 	 *         See {@link DeveloperProject.crossing.opencce.cryptogen.CryptoProject#refresh() refresh()}
 	 */
-	protected boolean insertCallCodeIntoFile(final String temporaryOutputFile, boolean openFileFlag, boolean authorFlag, boolean tempFlag) throws BadLocationException, CoreException, IOException {
+	protected boolean insertCallCodeIntoFile(final String temporaryOutputFile, final boolean openFileFlag, final boolean authorFlag, final boolean tempFlag) throws BadLocationException, CoreException, IOException {
 
 		if ((openFileFlag && authorFlag) || !openFileFlag) {
-			StringBuilder sb = new StringBuilder(temporaryOutputFile);
+			final StringBuilder sb = new StringBuilder(temporaryOutputFile);
 			sb.delete(temporaryOutputFile.length() - 9, temporaryOutputFile.length() - 5);
-			IFile output = tempFlag == true ? this.project.getIFile(sb.toString()) : this.project.getIFile(temporaryOutputFile);
+			final IFile output = tempFlag == true ? this.project.getIFile(sb.toString()) : this.project.getIFile(temporaryOutputFile);
 			IDE.openEditor(Utils.getCurrentlyOpenPage(), output);
 		}
-		
-		IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
+
+		final IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
 		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {
 			Activator.getDefault().logError(null,
 				"Could not open access the editor of the file. Therefore, an outputfile containing calls to the generated classes in the Crypto package was generated.");
 			return false;
 		}
 
-		ITextEditor currentlyOpenEditor = (ITextEditor) currentlyOpenPart;
-		IDocument currentlyOpenDocument = currentlyOpenEditor.getDocumentProvider().getDocument(currentlyOpenEditor.getEditorInput());
+		final ITextEditor currentlyOpenEditor = (ITextEditor) currentlyOpenPart;
+		final IDocument currentlyOpenDocument = currentlyOpenEditor.getDocumentProvider().getDocument(currentlyOpenEditor.getEditorInput());
 		final String docContent = currentlyOpenDocument.get();
 		final TreeSet<SimpleEntry<Integer, Integer>> methLims = new TreeSet<>();
 		final SimpleEntry<Integer, SimpleEntry<Integer, Integer>> classlims = new SimpleEntry<>(0, null);
@@ -228,7 +228,7 @@ public abstract class CodeGenerator {
 
 	/**
 	 * Removes crypto package from developer project.
-	 * 
+	 *
 	 * @throws CoreException
 	 *         {@link DeveloperProject#getPackagesOfProject(String)} and {@link IPackageFragment#getCompilationUnit()}
 	 */
@@ -246,7 +246,7 @@ public abstract class CodeGenerator {
 	 *        Folder with files
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if files were added successfully (or not).
 	 */
-	protected boolean addAdditionalFiles(String source) {
+	protected boolean addAdditionalFiles(final String source) {
 		if (source.isEmpty()) {
 			return true;
 		}
@@ -256,7 +256,7 @@ public abstract class CodeGenerator {
 				Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);
 			}
 			for (int i = 0; i < members.length; i++) {
-				File addFile = members[i];
+				final File addFile = members[i];
 				if (!addAddtionalFile(addFile)) {
 					return false;
 				}
@@ -269,14 +269,14 @@ public abstract class CodeGenerator {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param fileToBeAdded
 	 *        file that ought to be added to the dev project
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if file was added successfully (or not).
 	 * @throws IOException
 	 * @throws CoreException
 	 */
-	protected boolean addAddtionalFile(File fileToBeAdded) throws IOException, CoreException {
+	protected boolean addAddtionalFile(final File fileToBeAdded) throws IOException, CoreException {
 		final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesInDevProject);
 		if (!libFolder.exists()) {
 			libFolder.create(true, true, null);
@@ -311,22 +311,22 @@ public abstract class CodeGenerator {
 		boolean fileOpen = false;
 
 		//prevent Organize Imports Problems
-		if (editor.getTitle().equals(temporaryOutputFile)) {
+		if (editor.getTitle().equals(this.temporaryOutputFile)) {
 			fileOpen = true;
 			Utils.closeEditor(editor);
 		}
-		
+
 		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
 		final FormatAllAction faa = new FormatAllAction(editor.getSite());
 		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageName).getCompilationUnits();
 		faa.runOnMultiple(generatedCUnits);
 		organizeImportsActionForAllFilesTouchedDuringGeneration.runOnMultiple(generatedCUnits);
 
-		if(fileOpen) {
-			IFile outputFile = this.project.getIFile(temporaryOutputFile);
+		if (fileOpen) {
+			final IFile outputFile = this.project.getIFile(this.temporaryOutputFile);
 			IDE.openEditor(Utils.getCurrentlyOpenPage(), outputFile);
 		}
-		final ICompilationUnit openClass = JavaCore.createCompilationUnitFrom(CodeGenUtils.getCurrentlyOpenFile(editor));
+		final ICompilationUnit openClass = JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor));
 		organizeImportsActionForAllFilesTouchedDuringGeneration.run(openClass);
 		faa.runOnMultiple(new ICompilationUnit[] { openClass });
 		editor.doSave(null);

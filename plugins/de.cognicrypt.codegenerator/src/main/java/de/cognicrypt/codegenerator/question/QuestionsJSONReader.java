@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -104,7 +104,7 @@ public class QuestionsJSONReader {
 
 	/**
 	 * Check the validity of the pages and the questions contained in them.
-	 * 
+	 *
 	 * @param pages
 	 *        List of all read pages
 	 */
@@ -113,8 +113,8 @@ public class QuestionsJSONReader {
 		if (pages.size() < 0) {
 			throw new IllegalArgumentException("There are a negative number of pages for this task.");
 		}
-		// A BeginnerQuestionaire is now allowed to have no questions, e.g., password task. 
-		// As no questions exists, we can simply return at this point as nothing need to be checked. 
+		// A BeginnerQuestionaire is now allowed to have no questions, e.g., password task.
+		// As no questions exists, we can simply return at this point as nothing need to be checked.
 		if (pages.size() == 0) {
 			return;
 		}
@@ -135,7 +135,7 @@ public class QuestionsJSONReader {
 				if (!ids.add(question.getId())) {
 					throw new IllegalArgumentException("Each question must have a unique ID.");
 				}
-	
+
 				if (question.getDefaultAnswer() == null) {
 					throw new IllegalArgumentException("Each question must have a default answer.");
 				}

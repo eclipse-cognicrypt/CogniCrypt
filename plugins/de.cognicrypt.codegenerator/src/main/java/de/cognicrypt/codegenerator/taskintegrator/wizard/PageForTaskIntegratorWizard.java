@@ -1,15 +1,15 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 /**
- * 
+ *
  */
 package de.cognicrypt.codegenerator.taskintegrator.wizard;
 
@@ -45,32 +45,33 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	/**
 	 * Create the wizard.
 	 */
-	public PageForTaskIntegratorWizard(String name, String title, String description) {
+	public PageForTaskIntegratorWizard(final String name, final String title, final String description) {
 		super(name);
 		setTitle(title);
 		setDescription(description);
-		this.setPageComplete(false);
+		setPageComplete(false);
 	}
 
 	/**
 	 * Create contents of the wizard.
-	 * 
+	 *
 	 * @param parent
 	 */
-	public void createControl(Composite parent) {
-		Composite container = new Composite(parent, SWT.NONE);
+	@Override
+	public void createControl(final Composite parent) {
+		final Composite container = new Composite(parent, SWT.NONE);
 		setControl(container);
 
 		// make the page layout two-column
 		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		container.setLayout(new GridLayout(2, false));
 
-		switch (this.getName()) {
+		switch (getName()) {
 			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
 				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE, this));
 				break;
 			case Constants.PAGE_NAME_FOR_LINK_ANSWERS:
-				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, this.getName()));
+				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, getName()));
 				// fill the available space on the with the big composite
 				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 				break;
@@ -79,7 +80,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 	/**
 	 * Get the location of the compiled Javascript file.
-	 * 
+	 *
 	 * @return the location of the JS file in the form of a string.
 	 */
 	public String getJSFilePath() {
@@ -89,31 +90,32 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	/**
 	 * Overwriting the getNextPage method to extract the list of all questions from highLevelQuestion page and forward the data to pageForLinkAnswers at runtime
 	 */
+	@Override
 	public IWizardPage getNextPage() {
-		boolean isNextPressed = "nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[2].getMethodName());
+		final boolean isNextPressed = "nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[2].getMethodName());
 		if (isNextPressed) {
-			boolean validatedNextPress = this.nextPressed(this);
+			final boolean validatedNextPress = nextPressed(this);
 			if (!validatedNextPress) {
 				return this;
 			}
 		}
 
-		if (this.getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD) && !getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode().isGuidedModeChosen()) {
+		if (getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD) && !getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode().isGuidedModeChosen()) {
 			return null;
 		}
 
-		if (this.getName().equals(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)) {
+		if (getName().equals(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)) {
 
 		}
 		/*
 		 * This is for debugging only. To be removed for the final version. TODO Please add checks on the pages after mode selection to mark those pages as completed, or restrict
 		 * the finish button.
 		 */
-		IWizardPage nextPage = super.getNextPage();
+		final IWizardPage nextPage = super.getNextPage();
 		if (nextPage != null) {
 			((WizardPage) nextPage).setPageComplete(true);
 
-			// refresh the TreeViewer when coming to the XSL page 
+			// refresh the TreeViewer when coming to the XSL page
 			if (nextPage.getName().equals(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)) {
 				if (((PageForTaskIntegratorWizard) nextPage).treeViewer != null) {
 					((PageForTaskIntegratorWizard) nextPage).treeViewer.refresh();
@@ -130,27 +132,27 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 	/**
 	 * Extract data from highLevelQuestions page and forward it to pageForLinkAnswers at runtime
-	 * 
+	 *
 	 * @param page
 	 *        highLevelQuestions page is received
 	 * @return true always
 	 */
-	protected boolean nextPressed(IWizardPage page) {
-		boolean ValidateNextPress = true;
+	protected boolean nextPressed(final IWizardPage page) {
+		final boolean ValidateNextPress = true;
 		try {
 			if (page.getName().equals(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS)) {
-				PageForTaskIntegratorWizard highLevelQuestionPage = (PageForTaskIntegratorWizard) page;
-				CompositeToHoldGranularUIElements highLevelQuestionPageComposite = (CompositeToHoldGranularUIElements) highLevelQuestionPage.getCompositeToHoldGranularUIElements();
-				IWizardPage nextPage = super.getNextPage();
-				ArrayList<Question> listOfAllQuestions = highLevelQuestionPageComposite.getListOfAllQuestions();
+				final PageForTaskIntegratorWizard highLevelQuestionPage = (PageForTaskIntegratorWizard) page;
+				final CompositeToHoldGranularUIElements highLevelQuestionPageComposite = highLevelQuestionPage.getCompositeToHoldGranularUIElements();
+				final IWizardPage nextPage = super.getNextPage();
+				final ArrayList<Question> listOfAllQuestions = highLevelQuestionPageComposite.getListOfAllQuestions();
 				if (nextPage instanceof PageForTaskIntegratorWizard) {
-					PageForTaskIntegratorWizard pftiw = (PageForTaskIntegratorWizard) nextPage;
+					final PageForTaskIntegratorWizard pftiw = (PageForTaskIntegratorWizard) nextPage;
 					if (pftiw.getCompositeToHoldGranularUIElements() instanceof CompositeToHoldGranularUIElements) {
-						CompositeToHoldGranularUIElements comp = (CompositeToHoldGranularUIElements) pftiw.getCompositeToHoldGranularUIElements();
+						final CompositeToHoldGranularUIElements comp = pftiw.getCompositeToHoldGranularUIElements();
 						if (comp.getListOfAllQuestions().size() > 0) {
 							comp.deleteAllQuestion();
 						}
-						for (Question question : listOfAllQuestions) {
+						for (final Question question : listOfAllQuestions) {
 							comp.getListOfAllQuestions().add(question);
 							comp.addQuestionUIElements(question, null, true);
 							//to rebuild the UI
@@ -161,7 +163,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				}
 			}
 
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			Activator.getDefault().logError(ex);
 
 		}
@@ -175,7 +177,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	@Override
 	public boolean canFlipToNextPage() {
 
-		// each case needs to be handled separately. By default all cases will return false. 
+		// each case needs to be handled separately. By default all cases will return false.
 		/*
 		 * switch(this.getName()){ case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD: if(((boolean)compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_IS_GUIDED_MODE_CHOSEN) ==
 		 * true || (boolean)compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_IS_GUIDED_MODE_FORCED) == true) && !this.isPageComplete()){ return true; } case
@@ -192,14 +194,14 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	public void checkIfModeSelectionPageIsComplete() {
 		boolean errorOnFileWidgets = false;
 		// The first child of the composite is a group. Get the children of this group to iterated over.
-		for (Control control : ((Composite) getCompositeChoiceForModeOfWizard().getChildren()[0]).getChildren()) {
+		for (final Control control : ((Composite) getCompositeChoiceForModeOfWizard().getChildren()[0]).getChildren()) {
 			// Check if the child is an instance of group and is visible.
 			if (control instanceof Composite && control.isVisible()) {
 
 				// Get the children of this group and iterate over them. These are the widgets that get the file data. This loop generalizes for all these widgets.
-				for (Control subGroup : ((Composite) control).getChildren()) {
+				for (final Control subGroup : ((Composite) control).getChildren()) {
 					if (subGroup instanceof CompositeBrowseForFile) {
-						CompositeBrowseForFile tempVaraiable = (CompositeBrowseForFile) subGroup;
+						final CompositeBrowseForFile tempVaraiable = (CompositeBrowseForFile) subGroup;
 						if ((tempVaraiable).getDecFilePath().getDescriptionText().contains(Constants.ERROR)) {
 							errorOnFileWidgets = true;
 						}
@@ -211,7 +213,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		}
 
 		// Check if validation failed on the task name.
-		boolean errorOnTaskName = getCompositeChoiceForModeOfWizard().getDecNameOfTheTask().getDescriptionText().contains(Constants.ERROR);
+		final boolean errorOnTaskName = getCompositeChoiceForModeOfWizard().getDecNameOfTheTask().getDescriptionText().contains(Constants.ERROR);
 
 		// Set the page to incomplete if the validation failed on any of the text boxes.
 		if (errorOnTaskName || errorOnFileWidgets) {
@@ -224,20 +226,20 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 	/**
 	 * Return the composite for the first page, i.e. to choose the mode of the wizard.
-	 * 
+	 *
 	 * @return the compositeChoiceForModeOfWizard
 	 */
 	public CompositeChoiceForModeOfWizard getCompositeChoiceForModeOfWizard() {
-		return compositeChoiceForModeOfWizard;
+		return this.compositeChoiceForModeOfWizard;
 	}
 
 	/**
 	 * The composite is maintained as a global variable to have access to it as part of the page object.
-	 * 
+	 *
 	 * @param compositeChoiceForModeOfWizard
 	 *        the compositeChoiceForModeOfWizard to set
 	 */
-	private void setCompositeChoiceForModeOfWizard(CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard) {
+	private void setCompositeChoiceForModeOfWizard(final CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard) {
 		this.compositeChoiceForModeOfWizard = compositeChoiceForModeOfWizard;
 	}
 
@@ -245,21 +247,21 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	 * @return the compositeToHoldGranularUIElements
 	 */
 	public CompositeToHoldGranularUIElements getCompositeToHoldGranularUIElements() {
-		return compositeToHoldGranularUIElements;
+		return this.compositeToHoldGranularUIElements;
 	}
 
 	/**
 	 * The composite is maintained as a global variable to have access to it as part of the page object.
-	 * 
+	 *
 	 * @param compositeToHoldGranularUIElements
 	 *        the compositeToHoldGranularUIElements to set
 	 */
-	public void setCompositeToHoldGranularUIElements(CompositeToHoldGranularUIElements compositeToHoldGranularUIElements) {
+	public void setCompositeToHoldGranularUIElements(final CompositeToHoldGranularUIElements compositeToHoldGranularUIElements) {
 		this.compositeToHoldGranularUIElements = compositeToHoldGranularUIElements;
 	}
 
 	public int getCounter() {
-		return counter;
+		return this.counter;
 	}
 
 }

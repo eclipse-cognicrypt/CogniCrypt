@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -29,9 +29,9 @@ public class PageUtilityTest {
 
 	@Test
 	public void testGetIndex() {
-		List<Question> questions = pqjr.getPages(this.testFile1).get(0).getContent();
+		final List<Question> questions = this.pqjr.getPages(this.testFile1).get(0).getContent();
 
-		int index = util.getIndex(questions.get(0).getAnswers(), "OFB");
+		final int index = this.util.getIndex(questions.get(0).getAnswers(), "OFB");
 		assertEquals(index, 1);
 
 	}

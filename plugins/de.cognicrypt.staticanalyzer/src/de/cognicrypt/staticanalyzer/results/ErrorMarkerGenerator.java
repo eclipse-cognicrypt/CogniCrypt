@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -40,12 +40,9 @@ public class ErrorMarkerGenerator {
 	 * Adds crypto-misuse error marker with message {@link message} into file
 	 * {@link sourceFile} at Line {@link line}.
 	 *
-	 * @param sourceFile
-	 *            File the marker is generated into
-	 * @param line
-	 *            Line the marker is generated at
-	 * @param message
-	 *            Error Message
+	 * @param sourceFile File the marker is generated into
+	 * @param line       Line the marker is generated at
+	 * @param message    Error Message
 	 * @return <code>true</code>/<code>false</code> if error marker was (not) added
 	 *         successfully
 	 */
@@ -57,31 +54,28 @@ public class ErrorMarkerGenerator {
 	 * Adds crypto-misuse error marker with message {@link message} into file
 	 * {@link sourceFile} at Line {@link line}.
 	 *
-	 * @param sourceFile
-	 *            File the marker is generated into
-	 * @param line
-	 *            Line the marker is generated at
-	 * @param message
-	 *            Error Message
-	 * @param isWarning
-	 *            Determines whether marker type is warning or error
+	 * @param sourceFile File the marker is generated into
+	 * @param line       Line the marker is generated at
+	 * @param message    Error Message
+	 * @param isWarning  Determines whether marker type is warning or error
 	 * @return <code>true</code>/<code>false</code> if error marker was (not) added
 	 *         successfully
 	 */
 	public boolean addMarker(final int id, final IResource sourceFile, final int line, final String message,
-			Severities sev) {
+			final Severities sev) {
 		if (!sourceFile.exists() || !sourceFile.isAccessible()) {
 			Activator.getDefault().logError(Constants.NO_RES_FOUND);
 			return false;
 		}
-		
+
 		IMarker marker;
 		try {
 			marker = sourceFile.createMarker(IMarker.PROBLEM);
 			marker.setAttribute(IMarker.LINE_NUMBER, line);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-			marker.setAttribute(IMarker.SEVERITY, (sev == Severities.Problem) ? IMarker.SEVERITY_ERROR : ((sev == Severities.Warning) ? IMarker.SEVERITY_WARNING : IMarker.SEVERITY_INFO));
+			marker.setAttribute(IMarker.SEVERITY, (sev == Severities.Problem) ? IMarker.SEVERITY_ERROR
+					: ((sev == Severities.Warning) ? IMarker.SEVERITY_WARNING : IMarker.SEVERITY_INFO));
 			marker.setAttribute(IMarker.SOURCE_ID, id);
 
 		} catch (final CoreException e) {
@@ -94,7 +88,7 @@ public class ErrorMarkerGenerator {
 
 	/**
 	 * Deletes markers from file and clears markers list.
-	 * 
+	 *
 	 * @return <code>true</code>/<code>false</code> if all error markers were (not)
 	 *         deleted successfully
 	 */
@@ -103,7 +97,7 @@ public class ErrorMarkerGenerator {
 	}
 
 	public boolean clearMarkers(final IProject curProj) {
-		boolean allMarkersDeleted = true;
+		final boolean allMarkersDeleted = true;
 		try {
 			for (final IMarker marker : this.markers) {
 				if (curProj == null || (curProj != null && curProj.equals(marker.getResource().getProject()))) {
@@ -113,7 +107,7 @@ public class ErrorMarkerGenerator {
 			if (curProj != null) {
 				curProj.refreshLocal(IResource.DEPTH_INFINITE, null);
 			}
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
 		this.markers.clear();

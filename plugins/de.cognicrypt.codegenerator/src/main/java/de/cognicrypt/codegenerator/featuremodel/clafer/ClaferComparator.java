@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -32,7 +32,7 @@ public class ClaferComparator implements Comparator<InstanceClafer> {
 				}
 				// if the security clafer is a reference clafer (e.g., a child of "abstract Security : Enum -> integer") use the target value of the reference for sorting
 				else if (securityClafer instanceof InstanceClafer) {
-					InstanceClafer instanceClaferSecurity = (InstanceClafer) securityClafer;
+					final InstanceClafer instanceClaferSecurity = (InstanceClafer) securityClafer;
 					if (instanceClaferSecurity.getRef() instanceof Integer) {
 						return (Integer) instanceClaferSecurity.getRef();
 					}

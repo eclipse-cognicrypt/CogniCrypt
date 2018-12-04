@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -70,7 +70,7 @@ public class DeveloperProject {
 
 	/**
 	 * Retrieves folder from developer package
-	 * 
+	 *
 	 * @param name
 	 *        Project-relative path to folder
 	 * @see org.eclipse.core.resources.IProject#getFolder(String) IProject.getFolder()
@@ -81,7 +81,7 @@ public class DeveloperProject {
 
 	/**
 	 * Retrieves file from developer package
-	 * 
+	 *
 	 * @param path
 	 *        Project-relative path to file
 	 * @see org.eclipse.core.resources.IProject#getFile(String) IProject.getFile()
@@ -128,7 +128,7 @@ public class DeveloperProject {
 
 	/**
 	 * Refreshes the project.
-	 * 
+	 *
 	 * @throws CoreException
 	 *         See {@link org.eclipse.core.resources.IResource#refreshLocal(int, org.eclipse.core.runtime.IProgressMonitor) refreshLocal()}
 	 */
@@ -146,8 +146,8 @@ public class DeveloperProject {
 	/**
 	 * @return Get all methods of the project
 	 */
-	public Method[] getMethodsfromProject(Class<?> testClass) {
-		Class<?> classes = this.project.getClass();
+	public Method[] getMethodsfromProject(final Class<?> testClass) {
+		final Class<?> classes = this.project.getClass();
 		return classes.getDeclaredMethods();
 	}
 
@@ -176,7 +176,7 @@ public class DeveloperProject {
 
 	/**
 	 * Removes package from developer project.
-	 * 
+	 *
 	 * @param packageName
 	 *        name of package that is removed
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if package removal was successful/failed.

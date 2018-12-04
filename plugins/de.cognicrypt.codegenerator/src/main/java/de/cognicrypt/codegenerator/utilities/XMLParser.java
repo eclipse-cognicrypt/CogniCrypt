@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -35,7 +35,7 @@ import de.cognicrypt.core.Constants;
 
 /**
  * This class handles XML files.
- * 
+ *
  * @author Mohammad Zahraee
  * @author Ram Kamath
  * @author Stefan Krueger
@@ -149,14 +149,14 @@ public class XMLParser {
 				this.enumParent = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
 				displayInstanceXML((InstanceClafer) inst.getRef(), parent);
 			} else if (PropertiesMapperUtil.getenumMap().keySet().contains(inst.getType().getSuperClafer())) {
-				String superClaferName = ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName());
+				ClaferModelUtils.removeScopePrefix(inst.getType().getSuperClafer().getName());
 				parent.addElement(this.enumParent).addText(ClaferModelUtils.removeScopePrefix(inst.getType().toString()).replace("\"", ""));
 			} else {
-				String instName = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
+				final String instName = ClaferModelUtils.removeScopePrefix(inst.getType().getName());
 				if (inst.hasRef()) {
 					parent.addElement(instName).addText(inst.getRef().toString().replace("\"", ""));
 				} else {
-					String instparentName = ClaferModelUtils.removeScopePrefix(inst.getType().getParent().getName());
+					final String instparentName = ClaferModelUtils.removeScopePrefix(inst.getType().getParent().getName());
 					parent.addElement(instparentName).addText(instName);
 				}
 			}

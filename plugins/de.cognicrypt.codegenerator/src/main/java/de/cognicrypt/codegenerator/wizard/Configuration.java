@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -32,7 +32,7 @@ import de.cognicrypt.utils.FileHelper;
 
 /**
  * This class is a storage for the configuration chosen by the user.
- * 
+ *
  * @author Stefan Krueger
  */
 public class Configuration {
@@ -41,7 +41,7 @@ public class Configuration {
 	final private Map<Question, Answer> options;
 	final private String pathOnDisk;
 
-	public Configuration(InstanceClafer instance, Map<Question, Answer> constraints, String pathOnDisk) {
+	public Configuration(final InstanceClafer instance, final Map<Question, Answer> constraints, final String pathOnDisk) {
 		this.instance = instance;
 		this.pathOnDisk = pathOnDisk;
 		this.options = constraints;
@@ -49,22 +49,22 @@ public class Configuration {
 
 	/**
 	 * Writes chosen configuration to hard disk.
-	 * 
+	 *
 	 * @return Written file.
 	 * @throws IOException
 	 *         see {@link FileWriter#FileWriter(String)) FileWriter} and {@link XMLWriter#write(String) XMLWriter.write()}
 	 */
 	public File persistConf() throws IOException {
 		final XMLClaferParser parser = new XMLClaferParser();
-		Document configInXMLFormat = parser.displayInstanceValues(instance, this.options);
+		Document configInXMLFormat = parser.displayInstanceValues(this.instance, this.options);
 		if (configInXMLFormat != null) {
 			final OutputFormat format = OutputFormat.createPrettyPrint();
-			final XMLWriter writer = new XMLWriter(new FileWriter(pathOnDisk), format);
+			final XMLWriter writer = new XMLWriter(new FileWriter(this.pathOnDisk), format);
 			writer.write(configInXMLFormat);
 			writer.close();
 			configInXMLFormat = null;
 
-			return new File(pathOnDisk);
+			return new File(this.pathOnDisk);
 		} else {
 			Activator.getDefault().logError(Constants.NO_XML_INSTANCE_FILE_TO_WRITE);
 		}
@@ -73,21 +73,21 @@ public class Configuration {
 
 	/**
 	 * Retrieves list of custom providers from configuration.
-	 * 
+	 *
 	 * @return List of custom providers
 	 */
 	public List<String> getProviders() {
-		List<String> providers = new ArrayList<String>();
-		for (InstanceClafer instanceChild : instance.getChildren()) {
+		final List<String> providers = new ArrayList<String>();
+		for (final InstanceClafer instanceChild : this.instance.getChildren()) {
 			if (instanceChild.hasRef() && instanceChild.getRef() instanceof InstanceClafer) {
-				for (InstanceClafer innerChild : ((InstanceClafer) instanceChild.getRef()).getChildren()) {
+				for (final InstanceClafer innerChild : ((InstanceClafer) instanceChild.getRef()).getChildren()) {
 					if (ClaferModelUtils.removeScopePrefix(innerChild.getType().getName()).equals("Provider")) {
 						try {
-							String provider = ClaferModelUtils.removeScopePrefix(((InstanceClafer) innerChild.getRef()).getType().getName());
+							final String provider = ClaferModelUtils.removeScopePrefix(((InstanceClafer) innerChild.getRef()).getType().getName());
 							if (!provider.equals(Constants.DEFAULT_PROVIDER)) {
 								providers.add(provider);
 							}
-						} catch (ClassCastException ex) {
+						} catch (final ClassCastException ex) {
 							Activator.getDefault().logError(ex, "Not all custom providers set successfully.");
 						}
 					}
@@ -101,6 +101,6 @@ public class Configuration {
 	 * Deletes config file from hard disk.
 	 */
 	public void deleteConfFromDisk() {
-		FileHelper.deleteFile(pathOnDisk);
+		FileHelper.deleteFile(this.pathOnDisk);
 	}
 }

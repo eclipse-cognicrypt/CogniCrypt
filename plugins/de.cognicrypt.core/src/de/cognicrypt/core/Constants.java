@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -22,7 +22,7 @@ public class Constants {
 	public enum GUIElements {
 		combo, text, textarea, button, radio, checkbox, composed, rbtextgroup
 	}
-	
+
 	public enum Severities {
 		Problem, Warning, Secure
 	}
@@ -388,40 +388,40 @@ public class Constants {
 		 * @param XSLBeginTagParam
 		 * @param XSLEndTagParam
 		 */
-		private XSLTags(String XSLTagFaceNameParam, String XSLBeginTagParam, String XSLEndTagParam,
-				String[] XSLAttributesParam) {
-			XSLTagFaceName = XSLTagFaceNameParam;
-			XSLBeginTag = XSLBeginTagParam;
-			XSLEndTag = XSLEndTagParam;
-			XSLAttributes = XSLAttributesParam;
+		private XSLTags(final String XSLTagFaceNameParam, final String XSLBeginTagParam, final String XSLEndTagParam,
+				final String[] XSLAttributesParam) {
+			this.XSLTagFaceName = XSLTagFaceNameParam;
+			this.XSLBeginTag = XSLBeginTagParam;
+			this.XSLEndTag = XSLEndTagParam;
+			this.XSLAttributes = XSLAttributesParam;
 		}
 
 		/**
 		 * @return the xSLTagFaceName
 		 */
 		public String getXSLTagFaceName() {
-			return XSLTagFaceName;
+			return this.XSLTagFaceName;
 		}
 
 		/**
 		 * @return the xSLBeginTag
 		 */
 		public String getXSLBeginTag() {
-			return XSLBeginTag;
+			return this.XSLBeginTag;
 		}
 
 		/**
 		 * @return the xSLEndTag
 		 */
 		public String getXSLEndTag() {
-			return XSLEndTag;
+			return this.XSLEndTag;
 		}
 
 		/**
 		 * @return the xSLAttributes
 		 */
 		public String[] getXSLAttributes() {
-			return XSLAttributes;
+			return this.XSLAttributes;
 		}
 
 	}
@@ -432,7 +432,7 @@ public class Constants {
 
 		private final String operatorValue;
 
-		FeatureConstraintRelationship(String operatorValue) {
+		FeatureConstraintRelationship(final String operatorValue) {
 			this.operatorValue = operatorValue;
 		}
 
@@ -440,18 +440,18 @@ public class Constants {
 		 * @return the operatorValue
 		 */
 		public String getOperatorValue() {
-			return operatorValue;
+			return this.operatorValue;
 		}
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see java.lang.Enum#toString() Just return the operator value instead of the
 		 * name.
 		 */
 		@Override
 		public String toString() {
-			return operatorValue;
+			return this.operatorValue;
 		}
 
 	}
@@ -465,7 +465,7 @@ public class Constants {
 		 */
 		@Override
 		public String toString() {
-			return this.name().toLowerCase();
+			return name().toLowerCase();
 		}
 
 	}
@@ -501,17 +501,17 @@ public class Constants {
 	public static final String radioButton = "Radio button";
 
 	// for creating SuppressWarnings.xml
-	public static final String SUPPRESSWARNING_FILE = "SuppressWarnings"+XML_EXTENSION;
+	public static final String SUPPRESSWARNING_FILE = "SuppressWarnings" + XML_EXTENSION;
 	public static final String SUPPRESSWARNINGS_ELEMENT = "SuppressWarnings";
 	public static final String SUPPRESSWARNING_ELEMENT = "SuppressWarning";
 	public static final String ID_ATTR = "ID";
 	public static final String FILE_ELEMENT = "File";
 	public static final String LINENUMBER_ELEMENT = "LineNumber";
 	public static final String MESSAGE_ELEMENT = "Message";
-	
+
 	// QuickFixs
 	public static final String SUPPRESSWARNING_FIX = "Suppress Warning: ";
-	
+
 	// for creating xml file
 	public static final String Xml_Declaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 	public static final String NLS_Tag = "<?NLS TYPE=\"org.eclipse.help.contexts\"?>";

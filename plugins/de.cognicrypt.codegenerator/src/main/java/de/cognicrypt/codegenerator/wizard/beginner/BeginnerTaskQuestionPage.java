@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -29,12 +29,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
@@ -42,11 +38,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
@@ -79,13 +73,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	}
 
 	public void setPageInactive() {
-		isActive = false;
+		this.isActive = false;
 	}
-	
+
 	public boolean isActive() {
-		return isActive;
+		return this.isActive;
 	}
-	
+
 	/**
 	 * construct a page containing an element other than itemselection
 	 *
@@ -189,7 +183,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				return this.finish;
 			}
 		}
-		
+
 		return true;
 	}
 
@@ -226,10 +220,10 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			//setting focus to the first field on the page
 			this.container.getChildren()[0].setFocus();
 		}
-		sc.setContent(container);
+		sc.setContent(this.container);
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);
-		sc.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		sc.setMinSize(this.container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		setControl(sc);
 	}
 
@@ -238,7 +232,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		final List<Answer> answers = question.getAnswers();
 		final Composite container = getPanel(parent);
 		final Label label = new Label(container, SWT.TOP | SWT.FILL | SWT.WRAP);
-		GridData gd_question = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
+		final GridData gd_question = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
 		gd_question.widthHint = 550;
 		label.setLayoutData(gd_question);
 		label.setText(question.getQuestionText());
@@ -303,66 +297,65 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			case checkbox:
 				final List<Button> cbs = new ArrayList<Button>();
 				final List<Button> exclusiveCbs = new ArrayList<Button>(answers.size());
-				
-				for(int i = 0; i < answers.size(); i++) {
+
+				for (int i = 0; i < answers.size(); i++) {
 					final Answer a = answers.get(i);
 					final Button curCheckbox = new Button(container, SWT.CHECK);
 					curCheckbox.setText(a.getValue());
-					
+
 					curCheckbox.addSelectionListener(new SelectionAdapter() {
-						
+
 						@Override
 						public void widgetSelected(final SelectionEvent selectionEvent) {
 							final Button btn = (Button) selectionEvent.getSource();
-							
-							if(btn == curCheckbox) {
+
+							if (btn == curCheckbox) {
 								final boolean isExclusive = Boolean.parseBoolean(a.getUIDependency("isExclusive"));
 								final boolean isSelected = btn.getSelection();
 
-								if(isExclusive) {
+								if (isExclusive) {
 									question.setEnteredAnswer(null);
 									BeginnerTaskQuestionPage.this.selectionMap.clear();
-									for(Button b : cbs) {
-										if(b != curCheckbox) {
+									for (final Button b : cbs) {
+										if (b != curCheckbox) {
 											b.setSelection(false);
 										}
 									}
 								} else {
-									exclusiveCbs.forEach(b -> b.setSelection(b == curCheckbox));								
+									exclusiveCbs.forEach(b -> b.setSelection(b == curCheckbox));
 								}
-								
-								if(isSelected) {
-									Answer prevAns = question.getEnteredAnswer();
+
+								if (isSelected) {
+									final Answer prevAns = question.getEnteredAnswer();
 									if (prevAns != null && !Boolean.parseBoolean(prevAns.getUIDependency("isExclusive"))) {
-										Answer combinedAnswer = prevAns.combineWith(a);
+										final Answer combinedAnswer = prevAns.combineWith(a);
 										question.setEnteredAnswer(combinedAnswer);
 										BeginnerTaskQuestionPage.this.selectionMap.put(question, combinedAnswer);
-										
+
 									} else {
 										question.setEnteredAnswer(a);
 										BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
 									}
 								}
-								
-								finish = cbs.stream().anyMatch(e -> e.getSelection());
+
+								BeginnerTaskQuestionPage.this.finish = cbs.stream().anyMatch(e -> e.getSelection());
 								BeginnerTaskQuestionPage.this.setPageComplete(isPageComplete());
-								
-								
+
 							}
-							
+
 						}
 					});
 					cbs.add(curCheckbox);
 					curCheckbox.setSelection(a.isDefaultAnswer());
 					question.setEnteredAnswer(a);
 					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
-					
+
 					final String isExlusiveValue = a.getUIDependency("isExclusive");
-					if(Boolean.parseBoolean(isExlusiveValue)) {
+					if (Boolean.parseBoolean(isExlusiveValue)) {
 						exclusiveCbs.add(curCheckbox);
 					}
 				}
-				
+
 				//added description for questions
 				if (!question.getNote().isEmpty()) {
 					createNote(parent, question);
@@ -373,102 +366,103 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 
 			case rbtextgroup:
-				
+
 				final Composite rbbtnControl = new Composite(parent, SWT.NONE);
-				GridData rbbtnControlData = new GridData(GridData.FILL, GridData.FILL, false, false);
+				final GridData rbbtnControlData = new GridData(GridData.FILL, GridData.FILL, false, false);
 				rbbtnControl.setLayoutData(rbbtnControlData);
 				rbbtnControl.setLayout(new GridLayout(3, false));
-				
-				Map<Button, List<Control>> rbgroups = new HashMap<Button, List<Control>>();
-				
-				for(Answer answer: answers) {
-					boolean isDefaultAnswer = answer.isDefaultAnswer();
-					String rows = answer.getUIDependency("rows");
-					int numRows = (rows == null)? 0 : Integer.parseInt(rows);
-					
-					Button radioButton = new Button(rbbtnControl, SWT.RADIO);
+
+				final Map<Button, List<Control>> rbgroups = new HashMap<Button, List<Control>>();
+
+				for (final Answer answer : answers) {
+					final boolean isDefaultAnswer = answer.isDefaultAnswer();
+					final String rows = answer.getUIDependency("rows");
+					final int numRows = (rows == null) ? 0 : Integer.parseInt(rows);
+
+					final Button radioButton = new Button(rbbtnControl, SWT.RADIO);
 					radioButton.setSelection(isDefaultAnswer);
 					radioButton.setText(answer.getValue());
-					radioButton.setLayoutData(new GridData(GridData.FILL,GridData.FILL,false, false, 3, 1));
-					
+					radioButton.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false, 3, 1));
+
 					rbgroups.put(radioButton, new ArrayList<Control>(numRows));
-					for(int i = 1; i <= numRows; i++) {
+					for (int i = 1; i <= numRows; i++) {
 						final int row = i;
-						String labelOption = "label" + row;
+						final String labelOption = "label" + row;
 						String labelText = answer.getUIDependency(labelOption);
-						if(labelText == null) {
+						if (labelText == null) {
 							labelText = "";
 						}
-						Label groupLabel = new Label(rbbtnControl, SWT.CENTER);
+						final Label groupLabel = new Label(rbbtnControl, SWT.CENTER);
 						groupLabel.setText(labelText);
-						groupLabel.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false ,1,1));
-						
-						Text pathText = new Text(rbbtnControl, SWT.BORDER);
+						groupLabel.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false, 1, 1));
+
+						final Text pathText = new Text(rbbtnControl, SWT.BORDER);
 						pathText.setEnabled(isDefaultAnswer);
 						pathText.setEditable(false);
-						pathText.setLayoutData( new GridData(GridData.FILL, GridData.FILL, true, false ,1,1));
-						Button browse = new Button(rbbtnControl, SWT.PUSH);
+						pathText.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false, 1, 1));
+						final Button browse = new Button(rbbtnControl, SWT.PUSH);
 						browse.setText(Constants.BROWSE);
 						browse.setEnabled(isDefaultAnswer);
-						browse.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false ,1,1));
+						browse.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false, 1, 1));
 						browse.addSelectionListener(new SelectionAdapter() {
 
-							public void widgetSelected(SelectionEvent e) {
-								FileDialog fileDialog = new FileDialog(getShell(), SWT.NULL);
-								String extension = answer.getUIDependency("extension" + row);
-								if(extension != null) {
-									fileDialog.setFilterExtensions(new String[] {extension});
+							@Override
+							public void widgetSelected(final SelectionEvent e) {
+								final FileDialog fileDialog = new FileDialog(getShell(), SWT.NULL);
+								final String extension = answer.getUIDependency("extension" + row);
+								if (extension != null) {
+									fileDialog.setFilterExtensions(new String[] { extension });
 								}
-								String path = fileDialog.open();
+								final String path = fileDialog.open();
 								if (path != null) {
 									pathText.setText(path);
-									
-									if(rbgroups.get(radioButton).stream().filter(text -> text instanceof Text).allMatch(text -> !((Text) text).getText().isEmpty())) {
+
+									if (rbgroups.get(radioButton).stream().filter(text -> text instanceof Text).allMatch(text -> !((Text) text).getText().isEmpty())) {
 										BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish = true);
 									}
 								}
 							}
 						});
-						
-						List<Control> curList = rbgroups.get(radioButton);
+
+						final List<Control> curList = rbgroups.get(radioButton);
 						curList.add(pathText);
 						curList.add(browse);
 						rbgroups.put(radioButton, curList);
 					}
-					
+
 					radioButton.addSelectionListener(new SelectionAdapter() {
-						
+
 						@Override
 						public void widgetSelected(final SelectionEvent selectionEvent) {
 							final Button btn = (Button) selectionEvent.getSource();
-							
-							for(Button curSelection : rbgroups.keySet()) {
-								boolean isEnabled = curSelection == btn;
-								if(isEnabled) {
+
+							for (final Button curSelection : rbgroups.keySet()) {
+								final boolean isEnabled = curSelection == btn;
+								if (isEnabled) {
 									question.setEnteredAnswer(answer);
-									if(!rbgroups.get(radioButton).stream().filter(text -> text instanceof Text).allMatch(text -> !((Text) text).getText().isEmpty())) {
+									if (!rbgroups.get(radioButton).stream().filter(text -> text instanceof Text).allMatch(text -> !((Text) text).getText().isEmpty())) {
 										BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish = false);
 									} else {
 										BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish = true);
 									}
 								}
-								
+
 								rbgroups.get(curSelection).stream().forEach(control -> control.setEnabled(isEnabled));
-							}		
+							}
 						}
 					});
 				}
-				break;	
-				
+				break;
+
 			case text:
-				
+
 				final Text inputField = new Text(container, SWT.BORDER);
 				inputField.setLayoutData(new GridData(100, SWT.DEFAULT));
 				inputField.setToolTipText(question.getTooltip());
 				inputField.setMessage(question.getMessage());
 
-				ControlDecoration deco = new ControlDecoration(inputField, SWT.LEFT | SWT.TOP);
-				FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
+				final ControlDecoration deco = new ControlDecoration(inputField, SWT.LEFT | SWT.TOP);
+				final FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
 				deco.setImage(fieldDecoration.getImage());
 				deco.hide();
 
@@ -476,28 +470,26 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				if (question.getTextType().equals(Constants.BROWSE)) {
 					inputField.setLayoutData(new GridData(300, SWT.DEFAULT));
 
-					Button browseButton = new Button(container, SWT.PUSH);
+					final Button browseButton = new Button(container, SWT.PUSH);
 					browseButton.setText(Constants.BROWSE);
 					browseButton.addSelectionListener(new SelectionAdapter() {
 
-						public void widgetSelected(SelectionEvent e) {
-							FileDialog fileDialog = new FileDialog(getShell(), SWT.NULL);
+						@Override
+						public void widgetSelected(final SelectionEvent e) {
+							final FileDialog fileDialog = new FileDialog(getShell(), SWT.NULL);
 							fileDialog.setFilterExtensions(new String[] { question.getExtension() });
-							String path = fileDialog.open();
+							final String path = fileDialog.open();
 							if (path != null) {
 								inputField.setText(path);
 							}
 						}
 					});
 
-					inputField.addModifyListener(new ModifyListener() {
-
-						public void modifyText(ModifyEvent event) {
-							count = 0;
-							// Get the widget whose text was modified
-							if (!inputField.getText().endsWith(".jks")) {
-								setCount(count + 1);
-							}
+					inputField.addModifyListener(event -> {
+						BeginnerTaskQuestionPage.this.count = 0;
+						// Get the widget whose text was modified
+						if (!inputField.getText().endsWith(".jks")) {
+							setCount(BeginnerTaskQuestionPage.this.count + 1);
 						}
 					});
 
@@ -508,13 +500,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					inputField.setEchoChar((char) 0x25cf);
 
 					//Check box to show/hide password
-					Button checkBox = new Button(container, SWT.CHECK);
+					final Button checkBox = new Button(container, SWT.CHECK);
 					checkBox.setText(Constants.SHOW_PASSWORD_CHECKBOX);
 					checkBox.setSelection(false);
 					checkBox.addSelectionListener(new SelectionAdapter() {
 
 						@Override
-						public void widgetSelected(SelectionEvent e) {
+						public void widgetSelected(final SelectionEvent e) {
 							if (checkBox.getSelection() == true) {
 								inputField.setEchoChar('\0');
 							} else {
@@ -524,97 +516,85 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					});
 					text(question, inputField);
 				} else if (question.getTextType().equals(Constants.INTEGER)) {
-					inputField.addListener(SWT.Verify, new Listener() {
-
-						@Override
-						public void handleEvent(Event e) {
-							String string = e.text;
-							char[] chars = new char[string.length()];
-							string.getChars(0, chars.length, chars, 0);
-							for (int i = 0; i < chars.length; i++) {
-								if (!('0' <= chars[i] && chars[i] <= '9')) {
-									deco.show();
-									deco.showHoverText("Expected an integer >0");
-									e.doit = false;
-									return;
-								}
+					inputField.addListener(SWT.Verify, e -> {
+						final String string = e.text;
+						final char[] chars = new char[string.length()];
+						string.getChars(0, chars.length, chars, 0);
+						for (int i = 0; i < chars.length; i++) {
+							if (!('0' <= chars[i] && chars[i] <= '9')) {
+								deco.show();
+								deco.showHoverText("Expected an integer >0");
+								e.doit = false;
+								return;
 							}
-							deco.hide();
 						}
+						deco.hide();
 					});
 
 					text(question, inputField);
 				} else if (question.getTextType().equals(Constants.PORT_NUMBER)) {
-					inputField.addVerifyListener(new VerifyListener() {
-
-						@Override
-						public void verifyText(VerifyEvent e) {
-							deco.hide();
-							String currentText = ((Text) e.widget).getText();
-							String port = currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
-							try {
-								int portNum = Integer.valueOf(port);
-								if (portNum < 0 || portNum > 65535) {
-									deco.show();
-									deco.showHoverText("Must be an integer < 65535");
-									e.doit = false;
-								}
-							} catch (NumberFormatException ex) {
-								if (!port.equals("")) {
-									deco.show();
-									deco.showHoverText("Expected an integer < 65535");
-									e.doit = false;
-								}
+					inputField.addVerifyListener(e -> {
+						deco.hide();
+						final String currentText = ((Text) e.widget).getText();
+						final String port = currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
+						try {
+							final int portNum = Integer.valueOf(port);
+							if (portNum < 0 || portNum > 65535) {
+								deco.show();
+								deco.showHoverText("Must be an integer < 65535");
+								e.doit = false;
+							}
+						} catch (final NumberFormatException ex) {
+							if (!port.equals("")) {
+								deco.show();
+								deco.showHoverText("Expected an integer < 65535");
+								e.doit = false;
 							}
 						}
 					});
 					text(question, inputField);
 				} else if (question.getTextType().equals(Constants.IP_ADDRESS)) {
-					inputField.addVerifyListener(new VerifyListener() {
-
-						@Override
-						public void verifyText(VerifyEvent e) {
-							String currentText = ((Text) e.widget).getText();
-							String ip = currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
-							String[] ipAddress = ip.split("\\.");
-							int i = 0;
-							try {
-								if (!ip.isEmpty()) {
-									deco.hide();
-									if (ipAddress.length > 4) {
-										deco.show();
-										deco.showHoverText("Expected format 255.255.255.255");
-										e.doit = false;
-									}
-									for (i = 0; i <= ipAddress.length - 1; i++) {
-										int j = Integer.parseInt(ipAddress[i]);
-										if (j < 0 || j > 255) {
-											deco.show();
-											deco.showHoverText("Expected format 255.255.255.255");
-											e.doit = false;
-										}
-									}
-									if (ip.endsWith("..") || ip.startsWith(".")) {
-										deco.show();
-										deco.showHoverText("Expected format 255.255.255.255");
-										e.doit = false;
-									}
-									if (ip.endsWith(".") || ip.endsWith("[0-9]")) {
-										deco.show();
-										deco.showHoverText("Expected format 255.255.255.255");
-									}
-									if (i == 4 && ip.endsWith(".")) {
-										deco.show();
-										deco.showHoverText("Expected format 255.255.255.255");
-										e.doit = false;
-									}
-								}
-							} catch (NumberFormatException ex) {
-								if (!ip.equals("")) {
+					inputField.addVerifyListener(e -> {
+						final String currentText = ((Text) e.widget).getText();
+						final String ip = currentText.substring(0, e.start) + e.text + currentText.substring(e.end);
+						final String[] ipAddress = ip.split("\\.");
+						int i = 0;
+						try {
+							if (!ip.isEmpty()) {
+								deco.hide();
+								if (ipAddress.length > 4) {
 									deco.show();
 									deco.showHoverText("Expected format 255.255.255.255");
 									e.doit = false;
 								}
+								for (i = 0; i <= ipAddress.length - 1; i++) {
+									final int j = Integer.parseInt(ipAddress[i]);
+									if (j < 0 || j > 255) {
+										deco.show();
+										deco.showHoverText("Expected format 255.255.255.255");
+										e.doit = false;
+									}
+								}
+								if (ip.endsWith("..") || ip.startsWith(".")) {
+									deco.show();
+									deco.showHoverText("Expected format 255.255.255.255");
+									e.doit = false;
+								}
+								if (ip.endsWith(".") || ip.endsWith("[0-9]")) {
+									deco.show();
+									deco.showHoverText("Expected format 255.255.255.255");
+								}
+								if (i == 4 && ip.endsWith(".")) {
+									deco.show();
+									deco.showHoverText("Expected format 255.255.255.255");
+									e.doit = false;
+								}
+							}
+						} catch (final NumberFormatException ex) {
+							if (!ip.equals("")) {
+								deco.show();
+								deco.showHoverText("Expected format 255.255.255.255");
+								e.doit = false;
 							}
 						}
 					});
@@ -628,7 +608,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?\\\\-])", "\\\\");
 					a.setValue(cleanedInput);
 					if (a.getCodeDependencies() != null) {
-						for (CodeDependency codeDep : a.getCodeDependencies()) {
+						for (final CodeDependency codeDep : a.getCodeDependencies()) {
 							codeDep.setValue(cleanedInput);
 						}
 					}
@@ -747,9 +727,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private void createNote(final Composite parent, final Question question) {
 		final Group notePanel = new Group(parent, SWT.NONE);
 		notePanel.setText("Note:");
-		GridLayout gridLayout = new GridLayout();
+		final GridLayout gridLayout = new GridLayout();
 		notePanel.setLayout(gridLayout);
-		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
+		final GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
 		gridData.horizontalSpan = 1;
 		notePanel.setLayoutData(gridData);
 		final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
@@ -825,7 +805,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 	public int getPageNextID() {
 		for (final Entry<Question, Answer> entry : this.selectionMap.entrySet()) {
-			int nextID = entry.getValue().getNextID();
+			final int nextID = entry.getValue().getNextID();
 			if (nextID > -2) {
 				return nextID;
 			}
@@ -870,14 +850,14 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	}
 
 	public int getCount() {
-		return count;
+		return this.count;
 	}
 
-	public void setCount(int count) {
+	public void setCount(final int count) {
 		this.count = count;
 	}
 
-	public void text(Question question, Text inputField) {
+	public void text(final Question question, final Text inputField) {
 		if (question.getEnteredAnswer() != null) {
 			final Answer a = question.getEnteredAnswer();
 			inputField.setText(a.getValue());
@@ -891,7 +871,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			final String cleanedInput = inputField.getText().replaceAll("(?=[]\\[+&|!(){}^\"~*?\\\\-])", "\\\\");
 			a.setValue(cleanedInput);
 			if (a.getCodeDependencies() != null) {
-				for (CodeDependency codeDep : a.getCodeDependencies()) {
+				for (final CodeDependency codeDep : a.getCodeDependencies()) {
 					codeDep.setValue(cleanedInput);
 				}
 			}
@@ -907,23 +887,23 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 }
 
 class RadioButtonGroup {
-	
+
 	private Button radioButton;
 	private Text[] textfields;
 	private Button[] browseButtons;
-	
+
 	public RadioButtonGroup() {
-		
+
 	}
-	
+
 	public void toggle() {
-		boolean isActive = radioButton.getSelection(); 
-		for(Text t : textfields) {
+		final boolean isActive = this.radioButton.getSelection();
+		for (final Text t : this.textfields) {
 			t.setEnabled(isActive);
 		}
-		
-		for(Button b: browseButtons) {
+
+		for (final Button b : this.browseButtons) {
 			b.setEnabled(isActive);
 		}
 	}
-};
+}

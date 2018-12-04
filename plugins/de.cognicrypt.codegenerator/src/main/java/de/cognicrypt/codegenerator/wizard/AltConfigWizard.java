@@ -50,6 +50,7 @@ public class AltConfigWizard extends Wizard {
 		this.constraints = new HashMap<>();
 	}
 
+	@Override
 	public void addPages() {
 		this.taskListPage = new TaskSelectionPage();
 		setForcePreviousAndNextButtons(true);
@@ -95,7 +96,7 @@ public class AltConfigWizard extends Wizard {
 			// It is possible that now questions are within a BeginnerModeQuestionnaire
 
 			if (this.beginnerQuestions.hasPages()) {
-				BeginnerTaskQuestionPage questionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(), null);
+				final BeginnerTaskQuestionPage questionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(), null);
 				addPage(questionPage);
 				return questionPage;
 			} else {
@@ -104,16 +105,16 @@ public class AltConfigWizard extends Wizard {
 		}
 
 		//Only case that is left: BeginnerTaskQuestionPage
-		BeginnerTaskQuestionPage curQuestionPage = (BeginnerTaskQuestionPage) currentPage;
+		final BeginnerTaskQuestionPage curQuestionPage = (BeginnerTaskQuestionPage) currentPage;
 		final HashMap<Question, Answer> curQuestionAnswerMap = curQuestionPage.getMap();
 
 		for (final Entry<Question, Answer> entry : curQuestionAnswerMap.entrySet()) {
 			this.constraints.put(entry.getKey(), entry.getValue());
 		}
 
-		int nextPageid = curQuestionPage.getPageNextID();
+		final int nextPageid = curQuestionPage.getPageNextID();
 		if (this.beginnerQuestions.hasMorePages() && nextPageid > -1) {
-			BeginnerTaskQuestionPage questionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.getPageByID(nextPageid), this.beginnerQuestions.getTask(), null);
+			final BeginnerTaskQuestionPage questionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.getPageByID(nextPageid), this.beginnerQuestions.getTask(), null);
 			addPage(questionPage);
 			return questionPage;
 		} else {
@@ -133,7 +134,7 @@ public class AltConfigWizard extends Wizard {
 	}
 
 	private IWizardPage addLocatorPage() {
-		LocatorPage locatorPage = new LocatorPage("Locator");
+		final LocatorPage locatorPage = new LocatorPage("Locator");
 		addPage(locatorPage);
 		return locatorPage;
 	}
@@ -149,14 +150,14 @@ public class AltConfigWizard extends Wizard {
 	@Override
 	public IWizardPage getPreviousPage(final IWizardPage currentPage) {
 		if (!checkifInUpdateRound()) {
-			IWizardPage[] pages = getPages();
+			final IWizardPage[] pages = getPages();
 			for (int i = 0; i < pages.length; i++) {
 				if (currentPage.equals(pages[i])) {
 					if (currentPage instanceof BeginnerTaskQuestionPage) {
 						((BeginnerTaskQuestionPage) currentPage).setPageInactive();
 					}
-					BeginnerTaskQuestionPage prevPage = (BeginnerTaskQuestionPage) pages[i - 1];
-					for (Entry<Question, Answer> quesAns : prevPage.getSelection().entrySet()) {
+					final BeginnerTaskQuestionPage prevPage = (BeginnerTaskQuestionPage) pages[i - 1];
+					for (final Entry<Question, Answer> quesAns : prevPage.getSelection().entrySet()) {
 						this.constraints.remove(quesAns.getKey());
 					}
 					return prevPage;
@@ -177,12 +178,12 @@ public class AltConfigWizard extends Wizard {
 		boolean ret = true;
 		final Task selectedTask = this.taskListPage.getSelectedTask();
 		this.constraints = (this.constraints != null) ? this.constraints : new HashMap<>();
-		InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
+		final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
 			.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
 
 		instanceGenerator.generateInstances(this.constraints);
-		Map<String, InstanceClafer> instances = instanceGenerator.getInstances();
-		InstanceClafer instance = instances.values().iterator().next();
+		final Map<String, InstanceClafer> instances = instanceGenerator.getInstances();
+		final InstanceClafer instance = instances.values().iterator().next();
 		final LocatorPage currentPage = (LocatorPage) getContainer().getCurrentPage();
 
 		// Initialize Code Generation

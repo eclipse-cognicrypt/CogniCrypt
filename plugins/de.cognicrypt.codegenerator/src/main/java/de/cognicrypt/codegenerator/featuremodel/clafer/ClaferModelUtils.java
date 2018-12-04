@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -16,7 +16,7 @@ import org.clafer.ast.AstConcreteClafer;
 
 /**
  * This class provides helper methods for handling clafer models.
- * 
+ *
  * @author Ram Kamath
  * @author Stefan Krueger
  */
@@ -24,7 +24,7 @@ public class ClaferModelUtils {
 
 	/**
 	 * Method to find a clafer with a given name in whole model
-	 * 
+	 *
 	 * @param startingClafer
 	 *        Starting point for search in the clafer model
 	 * @param name
@@ -49,7 +49,6 @@ public class ClaferModelUtils {
 						}
 					}
 				}
-				;
 
 			}
 			if (startingClafer instanceof AstAbstractClafer) {
@@ -76,7 +75,7 @@ public class ClaferModelUtils {
 
 	/**
 	 * Creates a new clafer in the model.
-	 * 
+	 *
 	 * @param parentClafer
 	 *        clafer the new clafer is a subclafer to
 	 * @param name
@@ -129,7 +128,7 @@ public class ClaferModelUtils {
 	public static String removeScopePrefix(final String claferName) {
 		return claferName.substring(claferName.indexOf('_') + 1, claferName.length());
 	}
-	
+
 	public static AstClafer getRootClafer(final AstClafer curClafer) {
 		AstClafer root = curClafer.getParent();
 		while (!("#root#".equals(root.getName()))) {

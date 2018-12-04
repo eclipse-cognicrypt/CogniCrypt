@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -190,11 +190,11 @@ public class Utils {
 
 	/**
 	 * This method closes the currently open editor.
-	 * 
+	 *
 	 * @param editor
 	 */
-	public static void closeEditor(IEditorPart editor) {
-		IWorkbenchPage workbenchPage = Utils.getCurrentlyOpenPage();
+	public static void closeEditor(final IEditorPart editor) {
+		final IWorkbenchPage workbenchPage = Utils.getCurrentlyOpenPage();
 		if (workbenchPage != null) {
 			workbenchPage.closeEditor(editor, true);
 		}
@@ -251,7 +251,7 @@ public class Utils {
 		return iproject;
 	}
 
-	public static File getResourceFromWithin(String inputPath) {
+	public static File getResourceFromWithin(final String inputPath) {
 		return getResourceFromWithin(inputPath, Activator.PLUGIN_ID);
 	}
 
@@ -261,14 +261,14 @@ public class Utils {
 	 * @param inputPath project-relative path
 	 * @return absolute path
 	 */
-	public static File getResourceFromWithin(final String inputPath, String pluginID) {
+	public static File getResourceFromWithin(final String inputPath, final String pluginID) {
 		try {
 			final Bundle bundle = Platform.getBundle(pluginID);
 			if (bundle == null) {
 				return new File(inputPath);
 			} else {
-				URL entry = bundle.getEntry(inputPath);
-				URL resolvedURL = FileLocator.toFileURL(entry);
+				final URL entry = bundle.getEntry(inputPath);
+				final URL resolvedURL = FileLocator.toFileURL(entry);
 				URI resolvedURI = null;
 				if (!(resolvedURL == null)) {
 					resolvedURI = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
@@ -292,8 +292,8 @@ public class Utils {
 		return CharMatcher.anyOf("\"").removeFrom(dirty);
 	}
 
-	public static int getFirstIndexofUCL(String searchString) {
-		OptionalInt index = searchString.chars().filter(n -> Character.isUpperCase(n)).findFirst();
+	public static int getFirstIndexofUCL(final String searchString) {
+		final OptionalInt index = searchString.chars().filter(n -> Character.isUpperCase(n)).findFirst();
 		if (index.isPresent()) {
 			return searchString.indexOf(index.getAsInt());
 		} else {

@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -46,13 +46,13 @@ import de.cognicrypt.core.Constants;
 
 public class CompareAlgorithmPage extends WizardPage {
 
-	private IProject selectedProject = null;
+	private final IProject selectedProject = null;
 	Text text1;
 	private Composite control;
 	private Group firstInstancePropertiesPanel;
 	private Group secondInstancePropertiesPanel;
-	private InstanceListPage instanceListPage;
-	private InstanceGenerator instanceGenerator;
+	private final InstanceListPage instanceListPage;
+	private final InstanceGenerator instanceGenerator;
 	private StyledText firstInstanceDetails;
 	private StyledText secondInstanceDetails;
 	private InstanceClafer value;
@@ -61,7 +61,7 @@ public class CompareAlgorithmPage extends WizardPage {
 	private Text notifyText;
 	private String algorithmSelected;
 
-	public CompareAlgorithmPage(InstanceListPage instanceListPage, InstanceGenerator instanceGenerator) {
+	public CompareAlgorithmPage(final InstanceListPage instanceListPage, final InstanceGenerator instanceGenerator) {
 		super(Constants.COMPARE_ALGORITHM_PAGE);
 		setTitle(Constants.COMPARE_TITLE);
 		setDescription(Constants.COMPARE_DESCRIPTION);
@@ -74,11 +74,11 @@ public class CompareAlgorithmPage extends WizardPage {
 		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		Display display = Display.getCurrent();
+		final Display display = Display.getCurrent();
 		ComboViewer firstAlgorithmClass;
 		Label firstLabelInstanceList;
 		this.control = new Composite(sc, SWT.NONE);
-		GridLayout layout = new GridLayout();
+		final GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		this.control.setLayout(layout);
 
@@ -96,7 +96,7 @@ public class CompareAlgorithmPage extends WizardPage {
 		firstLabelInstanceList.setText(Constants.COMPARE_LABEL);
 
 		firstAlgorithmClass = new ComboViewer(compositeControl, SWT.DROP_DOWN | SWT.READ_ONLY);
-		Object algorithmCombinationFirst = instanceListPage.getAlgorithmCombinations();
+		final Object algorithmCombinationFirst = this.instanceListPage.getAlgorithmCombinations();
 		firstAlgorithmClass.setContentProvider(ArrayContentProvider.getInstance());
 		firstAlgorithmClass.setInput(algorithmCombinationFirst);
 
@@ -109,25 +109,25 @@ public class CompareAlgorithmPage extends WizardPage {
 		secondLabelInstanceList.setText(Constants.COMPARE_LABEL);
 
 		secondAlgorithmClass = new ComboViewer(compositeControl1, SWT.DROP_DOWN | SWT.READ_ONLY);
-		Object algorithmCombinationSecond = instanceListPage.getAlgorithmCombinations();
+		final Object algorithmCombinationSecond = this.instanceListPage.getAlgorithmCombinations();
 		secondAlgorithmClass.setContentProvider(ArrayContentProvider.getInstance());
 		secondAlgorithmClass.setInput(algorithmCombinationSecond);
-		notifyText = new Text(control, SWT.WRAP | SWT.BORDER);
-		notifyText.setText(Constants.COMPARE_SAME_ALGORITHM);
-		notifyText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
-		notifyText.setEditable(false);
-		ControlDecoration deco = new ControlDecoration(notifyText, SWT.RIGHT);
-		Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage();
+		this.notifyText = new Text(this.control, SWT.WRAP | SWT.BORDER);
+		this.notifyText.setText(Constants.COMPARE_SAME_ALGORITHM);
+		this.notifyText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+		this.notifyText.setEditable(false);
+		final ControlDecoration deco = new ControlDecoration(this.notifyText, SWT.RIGHT);
+		final Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage();
 		deco.setImage(image);
 
 		//First set of Instance details
 		this.firstInstancePropertiesPanel = new Group(this.control, SWT.NONE);
-		firstInstancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		this.firstInstancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 		this.firstInstanceDetails = new StyledText(this.firstInstancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		this.firstInstanceDetails.setAlwaysShowScrollBars(false);
 
 		firstAlgorithmClass.addSelectionChangedListener(event -> {
-			String selectedAlgorithmSecond = getSelectedAlgorithmSecond();
+			final String selectedAlgorithmSecond = getSelectedAlgorithmSecond();
 			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 			CompareAlgorithmPage.this.firstInstancePropertiesPanel.setVisible(true);
 			final String selectedAlgorithmFirst = selection.getFirstElement().toString();
@@ -137,18 +137,18 @@ public class CompareAlgorithmPage extends WizardPage {
 			setHighlightFirst(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmFirst)));
 			if (!selectedAlgorithmFirst.equals(selectedAlgorithmSecond)) {
 				deco.hide();
-				notifyText.setVisible(false);
+				this.notifyText.setVisible(false);
 			} else {
-				notifyText.setVisible(true);
+				this.notifyText.setVisible(true);
 				deco.show();
 			}
 
 			compareHighlight();
 		});
 
-		GridLayout gridLayout = new GridLayout();
+		final GridLayout gridLayout = new GridLayout();
 		this.firstInstancePropertiesPanel.setLayout(gridLayout);
-		GridData gridDataFirst = new GridData(GridData.FILL, GridData.FILL, true, true);
+		final GridData gridDataFirst = new GridData(GridData.FILL, GridData.FILL, true, true);
 		gridDataFirst.widthHint = 60;
 		gridDataFirst.horizontalSpan = 1;
 		gridDataFirst.heightHint = 89;
@@ -158,20 +158,20 @@ public class CompareAlgorithmPage extends WizardPage {
 		this.firstInstanceDetails.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.firstInstanceDetails.setBounds(10, 20, 400, 180);
 		this.firstInstanceDetails.setEditable(false);
-		Color white = display.getSystemColor(SWT.COLOR_WHITE);
+		final Color white = display.getSystemColor(SWT.COLOR_WHITE);
 		this.firstInstanceDetails.setBackground(white);
 
 		//Second set of Instance details
 		this.secondInstancePropertiesPanel = new Group(this.control, SWT.NONE);
-		secondInstancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		this.secondInstancePropertiesPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		this.secondInstanceDetails = new StyledText(this.secondInstancePropertiesPanel, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		this.secondInstanceDetails.setAlwaysShowScrollBars(false);
 
 		//Tandem horizontal scrolling
-		handleVerticalScrolling(firstInstanceDetails, secondInstanceDetails);
+		handleVerticalScrolling(this.firstInstanceDetails, this.secondInstanceDetails);
 
 		secondAlgorithmClass.addSelectionChangedListener(event -> {
-			String selectedAlgorithmFirst = getSelectedAlgorithmFirst();
+			final String selectedAlgorithmFirst = getSelectedAlgorithmFirst();
 			final IStructuredSelection selection1 = (IStructuredSelection) event.getSelection();
 			CompareAlgorithmPage.this.secondInstancePropertiesPanel.setVisible(true);
 			final String selectedAlgorithmSecond = selection1.getFirstElement().toString();
@@ -180,17 +180,17 @@ public class CompareAlgorithmPage extends WizardPage {
 			CompareAlgorithmPage.this.secondInstanceDetails.setText(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmSecond)));
 			setHighlightSecond(getInstanceProperties(CompareAlgorithmPage.this.instanceGenerator.getInstances().get(selectedAlgorithmSecond)));
 			if (!selectedAlgorithmFirst.equals(selectedAlgorithmSecond)) {
-				notifyText.setVisible(false);
+				this.notifyText.setVisible(false);
 				deco.hide();
 			} else {
-				notifyText.setVisible(true);
+				this.notifyText.setVisible(true);
 				deco.show();
 			}
 			compareHighlight();
 		});
 
 		this.secondInstancePropertiesPanel.setLayout(new GridLayout());
-		GridData gridDataSecond = new GridData(GridData.FILL, GridData.FILL, true, true);
+		final GridData gridDataSecond = new GridData(GridData.FILL, GridData.FILL, true, true);
 		gridDataSecond.widthHint = 60;
 		gridDataSecond.horizontalSpan = 1;
 		gridDataSecond.heightHint = 89;
@@ -214,27 +214,27 @@ public class CompareAlgorithmPage extends WizardPage {
 	}
 
 	// To automatically scroll the contents of one text if the scroll bar of the other text is scrolled.
-	private static void handleVerticalScrolling(StyledText leftInstanceDetails, StyledText rightInstanceDetails) {
-		ScrollBar left = leftInstanceDetails.getVerticalBar();
-		ScrollBar right = rightInstanceDetails.getVerticalBar();
+	private static void handleVerticalScrolling(final StyledText leftInstanceDetails, final StyledText rightInstanceDetails) {
+		final ScrollBar left = leftInstanceDetails.getVerticalBar();
+		final ScrollBar right = rightInstanceDetails.getVerticalBar();
 
 		left.addListener(SWT.Selection, e -> {
-			int y = leftInstanceDetails.getTopPixel();
+			final int y = leftInstanceDetails.getTopPixel();
 			rightInstanceDetails.setTopPixel(y);
 		});
 		right.addListener(SWT.Selection, e -> {
-			int y = rightInstanceDetails.getTopPixel();
+			final int y = rightInstanceDetails.getTopPixel();
 			leftInstanceDetails.setTopPixel(y);
 		});
 	}
 
 	private String getInstanceProperties(final InstanceClafer inst) {
 		final Map<String, String> algorithms = new HashMap<>();
-		for (InstanceClafer child : inst.getChildren()) {
+		for (final InstanceClafer child : inst.getChildren()) {
 			getInstanceDetails(child, algorithms);
 		}
 
-		StringBuilder output = new StringBuilder();
+		final StringBuilder output = new StringBuilder();
 		for (final Map.Entry<String, String> entry : algorithms.entrySet()) {
 			final String key = entry.getKey();
 			final String value = entry.getValue();
@@ -287,18 +287,18 @@ public class CompareAlgorithmPage extends WizardPage {
 
 	public void compareHighlight() {
 
-		Display display = Display.getCurrent();
-		String firstAlgorithmHighlight = getHighlightFirst();
-		String secondAlgorithmHighlight = getHighlightSecond();
+		final Display display = Display.getCurrent();
+		final String firstAlgorithmHighlight = getHighlightFirst();
+		final String secondAlgorithmHighlight = getHighlightSecond();
 		if (secondAlgorithmHighlight != null) {
-			Color cyan = display.getSystemColor(SWT.COLOR_CYAN);
-			Color transparent = display.getSystemColor(SWT.COLOR_TRANSPARENT);
+			final Color cyan = display.getSystemColor(SWT.COLOR_CYAN);
+			final Color transparent = display.getSystemColor(SWT.COLOR_TRANSPARENT);
 
-			String[] partFirstInstanceDetails = firstAlgorithmHighlight.split("\n\r\n");
+			final String[] partFirstInstanceDetails = firstAlgorithmHighlight.split("\n\r\n");
 			String[] lines1;
 			String[] firstHalf1;
 
-			String[] partSecondInstanceDetails = secondAlgorithmHighlight.split("\n\r\n");
+			final String[] partSecondInstanceDetails = secondAlgorithmHighlight.split("\n\r\n");
 			String[] lines2;
 			String[] firstHalf2;
 
@@ -306,7 +306,7 @@ public class CompareAlgorithmPage extends WizardPage {
 			 * The two windows are being declared into 2 separate ArrayLists in the following section. Each ArrayList is a collection of LinkedHashMaps which contains each of the
 			 * blocks of data. Each line in the block are arranged as key value pairs in the LinkedHashMap
 			 */
-			ArrayList<LinkedHashMap<String, String>> firstPart = new ArrayList<LinkedHashMap<String, String>>();
+			final ArrayList<LinkedHashMap<String, String>> firstPart = new ArrayList<LinkedHashMap<String, String>>();
 			//Initializing the LinkedHashMaps for later use
 			for (int i = 0; i < partFirstInstanceDetails.length; i++) {
 				firstPart.add(new LinkedHashMap<String, String>());
@@ -321,7 +321,7 @@ public class CompareAlgorithmPage extends WizardPage {
 
 			}
 
-			ArrayList<LinkedHashMap<String, String>> secondPart = new ArrayList<LinkedHashMap<String, String>>();
+			final ArrayList<LinkedHashMap<String, String>> secondPart = new ArrayList<LinkedHashMap<String, String>>();
 			//Initializing the LinkedHashMaps for later use
 			for (int i = 0; i < partSecondInstanceDetails.length; i++) {
 				secondPart.add(new LinkedHashMap<String, String>());
@@ -347,13 +347,13 @@ public class CompareAlgorithmPage extends WizardPage {
 				//second loop with y parameter loops through each block in the second styled text box
 				for (y = 0; y < secondPart.size(); y++) {
 					//comparing the values for the 'Algorithm' Key
-					String firstKey = (String) (firstPart.get(x).keySet().toArray())[0];
-					String firstValue = firstPart.get(x).get(firstKey);
+					final String firstKey = (String) (firstPart.get(x).keySet().toArray())[0];
+					final String firstValue = firstPart.get(x).get(firstKey);
 					if (secondPart.get(y).containsKey(firstKey)) {
 						if (secondPart.get(y).get(firstKey).equals(firstValue)) {
-							Iterator<String> iterator1 = firstPart.get(x).keySet().iterator();
+							final Iterator<String> iterator1 = firstPart.get(x).keySet().iterator();
 							while (iterator1.hasNext()) {
-								key = (String) iterator1.next();
+								key = iterator1.next();
 								value = firstPart.get(x).get(key);
 								if (secondPart.get(y).containsKey(key)) {
 									if (secondPart.get(y).get(key).equals(value)) {
@@ -361,20 +361,20 @@ public class CompareAlgorithmPage extends WizardPage {
 										//getting the index of the current key in the block
 										pos1 = new ArrayList<String>(firstPart.get(x).keySet()).indexOf(key);
 										//highlighting the line which is calculated by adding pos1 with the t offset
-										firstInstanceDetails.setLineBackground(t + pos1, 1, transparent);
+										this.firstInstanceDetails.setLineBackground(t + pos1, 1, transparent);
 										//getting the index of the current key in the block
 										pos2 = new ArrayList<String>(secondPart.get(y).keySet()).indexOf(key);
 										//highlighting the line which is calculated by adding pos2 with the s offset
-										secondInstanceDetails.setLineBackground(s + pos2, 1, transparent);
+										this.secondInstanceDetails.setLineBackground(s + pos2, 1, transparent);
 									} else {
 										//getting the index of the current key in the block
 										pos1 = new ArrayList<String>(firstPart.get(x).keySet()).indexOf(key);
 										//highlighting the line which is calculated by adding pos1 with the t offset
-										firstInstanceDetails.setLineBackground(t + pos1, 1, cyan);
+										this.firstInstanceDetails.setLineBackground(t + pos1, 1, cyan);
 										//getting the index of the current key in the block
 										pos2 = new ArrayList<String>(secondPart.get(y).keySet()).indexOf(key);
 										//highlighting the line which is calculated by adding pos2 with the s offset
-										secondInstanceDetails.setLineBackground(s + pos2, 1, cyan);
+										this.secondInstanceDetails.setLineBackground(s + pos2, 1, cyan);
 									}
 								}
 								//								else {
@@ -401,7 +401,7 @@ public class CompareAlgorithmPage extends WizardPage {
 	}
 
 	public String getText1() {
-		return text1.getText();
+		return this.text1.getText();
 	}
 
 	public IProject getSelectedProject() {
@@ -409,7 +409,7 @@ public class CompareAlgorithmPage extends WizardPage {
 	}
 
 	@Override
-	public void setVisible(boolean visible) {
+	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
 		if (visible) {
 			this.control.setFocus();

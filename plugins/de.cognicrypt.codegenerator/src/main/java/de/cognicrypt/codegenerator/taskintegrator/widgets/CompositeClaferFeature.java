@@ -1,10 +1,10 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -33,86 +33,86 @@ public class CompositeClaferFeature extends Composite {
 
 	/**
 	 * Create the composite.
-	 * 
+	 *
 	 * @param parent
 	 */
-	public CompositeClaferFeature(Composite parent, ClaferFeature claferFeatureParam) {
+	public CompositeClaferFeature(final Composite parent, final ClaferFeature claferFeatureParam) {
 		super(parent, SWT.BORDER);
 		// set the clafer feature first.
 		setClaferFeature(claferFeatureParam);
 
-		GridData gridData = new GridData(SWT.FILL, SWT.TOP, true, false);
+		final GridData gridData = new GridData(SWT.FILL, SWT.TOP, true, false);
 		gridData.minimumWidth = 300;
 		setLayoutData(gridData);
 
 		setLayout(new GridLayout(2, false));
 
-		Group grpClaferFeature = new Group(this, SWT.NONE);
+		final Group grpClaferFeature = new Group(this, SWT.NONE);
 		grpClaferFeature.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
 		grpClaferFeature.setText("Variability Construct");
 		grpClaferFeature.setLayout(new GridLayout(4, false));
 
-		Button btnModify = new Button(this, SWT.NONE);
-		Button btnDelete = new Button(this, SWT.NONE);
+		final Button btnModify = new Button(this, SWT.NONE);
+		final Button btnDelete = new Button(this, SWT.NONE);
 
-		Label lblType = new Label(grpClaferFeature, SWT.NONE);
+		final Label lblType = new Label(grpClaferFeature, SWT.NONE);
 		lblType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 
-		if (claferFeature.getFeatureType().toString().equals(Constants.FeatureType.ABSTRACT.toString().toLowerCase())) {
+		if (this.claferFeature.getFeatureType().toString().equals(Constants.FeatureType.ABSTRACT.toString().toLowerCase())) {
 			lblType.setText("Class");
-		} else if (claferFeature.getFeatureType().toString().toLowerCase().equals(Constants.FeatureType.CONCRETE.toString().toLowerCase())) {
+		} else if (this.claferFeature.getFeatureType().toString().toLowerCase().equals(Constants.FeatureType.CONCRETE.toString().toLowerCase())) {
 			lblType.setText("Instance");
 		}
 
 		Text txtFeatureName;
 		txtFeatureName = new Text(grpClaferFeature, SWT.BORDER);
 		txtFeatureName.setEditable(false);
-		GridData gdFeatureName = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		final GridData gdFeatureName = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		gdFeatureName.widthHint = 0;
 		txtFeatureName.setLayoutData(gdFeatureName);
-		txtFeatureName.setText(claferFeature.getFeatureName());
+		txtFeatureName.setText(this.claferFeature.getFeatureName());
 
-		if (!claferFeature.getFeatureInheritance().isEmpty()) {
-			Label lblInheritsFrom = new Label(grpClaferFeature, SWT.NONE);
+		if (!this.claferFeature.getFeatureInheritance().isEmpty()) {
+			final Label lblInheritsFrom = new Label(grpClaferFeature, SWT.NONE);
 
-			if (claferFeature.getFeatureInheritance().contains("->")) {
+			if (this.claferFeature.getFeatureInheritance().contains("->")) {
 				lblInheritsFrom.setText("assigns");
-			} else if (claferFeature.getFeatureType() == Constants.FeatureType.ABSTRACT) {
+			} else if (this.claferFeature.getFeatureType() == Constants.FeatureType.ABSTRACT) {
 				lblInheritsFrom.setText("inherits from class");
-			} else if (claferFeature.getFeatureType() == Constants.FeatureType.CONCRETE) {
+			} else if (this.claferFeature.getFeatureType() == Constants.FeatureType.CONCRETE) {
 				lblInheritsFrom.setText("implements");
 			}
 
 			Text txtFeatureInheritance;
 			txtFeatureInheritance = new Text(grpClaferFeature, SWT.BORDER);
 			txtFeatureInheritance.setEditable(false);
-			GridData gdFeatureInheritance = new GridData(SWT.FILL, SWT.CENTER, true, false);
+			final GridData gdFeatureInheritance = new GridData(SWT.FILL, SWT.CENTER, true, false);
 			gdFeatureInheritance.widthHint = 0;
 			txtFeatureInheritance.setLayoutData(gdFeatureInheritance);
-			txtFeatureInheritance.setText(claferFeature.getFeatureInheritance());
+			txtFeatureInheritance.setText(this.claferFeature.getFeatureInheritance());
 		}
 
-		if (claferFeature.getFeatureProperties().size() != 0) {
-			Group grpClaferFeatureProperties = new Group(this, SWT.NONE);
+		if (this.claferFeature.getFeatureProperties().size() != 0) {
+			final Group grpClaferFeatureProperties = new Group(this, SWT.NONE);
 			grpClaferFeatureProperties.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 2, 1));
 			grpClaferFeatureProperties.setLayout(new GridLayout(1, false));
 			grpClaferFeatureProperties.setText("Clafer feature properties");
-			CompositeToHoldGranularUIElements comp = ((CompositeToHoldGranularUIElements) getParent().getParent());
-			CompositeToHoldSmallerUIElements smallerElements = new CompositeToHoldSmallerUIElements(grpClaferFeatureProperties, SWT.NONE, claferFeature
+			final CompositeToHoldGranularUIElements comp = ((CompositeToHoldGranularUIElements) getParent().getParent());
+			final CompositeToHoldSmallerUIElements smallerElements = new CompositeToHoldSmallerUIElements(grpClaferFeatureProperties, SWT.NONE, this.claferFeature
 				.getFeatureProperties(), false, comp.getClaferModel());
-			GridData gdPropertiesComposite = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
+			final GridData gdPropertiesComposite = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
 			smallerElements.setLayoutData(gdPropertiesComposite);
 		}
 
-		if (claferFeature.getFeatureConstraints().size() != 0) {
-			Group grpClaferFeatureConstraints = new Group(this, SWT.NONE);
+		if (this.claferFeature.getFeatureConstraints().size() != 0) {
+			final Group grpClaferFeatureConstraints = new Group(this, SWT.NONE);
 			grpClaferFeatureConstraints.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 2, 1));
 			grpClaferFeatureConstraints.setText("Clafer feature constraints");
 			grpClaferFeatureConstraints.setLayout(new GridLayout(1, false));
-			CompositeToHoldGranularUIElements comp = ((CompositeToHoldGranularUIElements) getParent().getParent());
-			CompositeToHoldSmallerUIElements smallerElements = new CompositeToHoldSmallerUIElements(grpClaferFeatureConstraints, SWT.NONE, claferFeature
+			final CompositeToHoldGranularUIElements comp = ((CompositeToHoldGranularUIElements) getParent().getParent());
+			final CompositeToHoldSmallerUIElements smallerElements = new CompositeToHoldSmallerUIElements(grpClaferFeatureConstraints, SWT.NONE, this.claferFeature
 				.getFeatureConstraints(), false, comp.getClaferModel());
-			GridData gdConstraintsComposite = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
+			final GridData gdConstraintsComposite = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
 			smallerElements.setLayoutData(gdConstraintsComposite);
 		}
 
@@ -120,23 +120,24 @@ public class CompositeClaferFeature extends Composite {
 		btnModify.addSelectionListener(new SelectionAdapter() {
 
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				CompositeToHoldGranularUIElements comp = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent());
-				ClaferModel claferModel = comp.getClaferModel();
-				ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), claferFeature, claferModel);
+			public void widgetSelected(final SelectionEvent e) {
+				final CompositeToHoldGranularUIElements comp = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent());
+				final ClaferModel claferModel = comp.getClaferModel();
+				final ClaferFeatureDialog cfrFeatureDialog = new ClaferFeatureDialog(getShell(), CompositeClaferFeature.this.claferFeature, claferModel);
 
 				// remember parent for widgets will be disposed
-				Composite parent = getParent();
+				final Composite parent = getParent();
 
 				if (cfrFeatureDialog.open() == 0) {
-					ClaferFeature resultFeature = cfrFeatureDialog.getResult();
-					((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent()).modifyClaferFeature(claferFeature, resultFeature);
+					final ClaferFeature resultFeature = cfrFeatureDialog.getResult();
+					((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent()).modifyClaferFeature(CompositeClaferFeature.this.claferFeature,
+						resultFeature);
 
-					// if features are missing, ask the user whether to implement them							
-					ClaferModel missingFeatures = claferModel.getMissingFeatures(resultFeature);
+					// if features are missing, ask the user whether to implement them
+					final ClaferModel missingFeatures = claferModel.getMissingFeatures(resultFeature);
 
 					if (!missingFeatures.getClaferModel().isEmpty()) {
-						MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.YES | SWT.NO);
+						final MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.YES | SWT.NO);
 						dialog.setText("Additional features can be created");
 						dialog.setMessage("Some of the used features don't exist yet. Should we create them for you?");
 
@@ -156,14 +157,14 @@ public class CompositeClaferFeature extends Composite {
 		btnDelete.addSelectionListener(new SelectionAdapter() {
 
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 
-				MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
+				final MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
 				confirmationMessageBox.setMessage("This information will be lost. Do you really want to delete?");
 				confirmationMessageBox.setText("Deleting Clafer Feature");
-				int response = confirmationMessageBox.open();
+				final int response = confirmationMessageBox.open();
 				if (response == SWT.YES) {
-					((CompositeToHoldGranularUIElements) btnDelete.getParent().getParent().getParent()).deleteClaferFeature(claferFeature);
+					((CompositeToHoldGranularUIElements) btnDelete.getParent().getParent().getParent()).deleteClaferFeature(CompositeClaferFeature.this.claferFeature);
 				}
 
 			}
@@ -179,14 +180,14 @@ public class CompositeClaferFeature extends Composite {
 	 * @return the claferFeature
 	 */
 	public ClaferFeature getClaferFeature() {
-		return claferFeature;
+		return this.claferFeature;
 	}
 
 	/**
 	 * @param claferFeature
 	 *        the claferFeature to set
 	 */
-	private void setClaferFeature(ClaferFeature claferFeature) {
+	private void setClaferFeature(final ClaferFeature claferFeature) {
 		this.claferFeature = claferFeature;
 	}
 }

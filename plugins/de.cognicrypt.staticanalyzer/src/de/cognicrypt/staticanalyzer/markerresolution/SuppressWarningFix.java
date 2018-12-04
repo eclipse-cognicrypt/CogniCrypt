@@ -32,8 +32,7 @@ public class SuppressWarningFix implements IMarkerResolution {
 	/**
 	 * This method adds a new entry to the warnings suppress xml file
 	 *
-	 * @param m
-	 *            ErrorMarker
+	 * @param m ErrorMarker
 	 * @throws CoreException
 	 * @throws IOException
 	 */

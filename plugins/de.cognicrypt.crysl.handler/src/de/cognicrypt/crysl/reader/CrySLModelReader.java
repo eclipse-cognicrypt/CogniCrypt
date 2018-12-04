@@ -176,13 +176,13 @@ public class CrySLModelReader {
 							getStatesForMethods(CrySLReaderUtils.resolveAggregateToMethodeNames(cond))));
 				}
 			}
-			final String className = fileName.substring(0, fileName.indexOf(extension) - 1);
-			final CryptSLRule rule = new CryptSLRule(className, objects, this.forbiddenMethods, this.smg, constraints,
+			final CryptSLRule rule = new CryptSLRule(curClass, objects, this.forbiddenMethods, this.smg, constraints,
 					actPreds);
 			System.out.println(rule);
 			System.out.println("===========================================");
 			System.out.println("");
 
+			final String className = fileName.substring(0, fileName.indexOf(extension) - 1);
 			storeRuletoFile(rule,
 					Utils.getResourceFromWithin("resources/CrySLRules", de.cognicrypt.core.Activator.PLUGIN_ID)
 							.getAbsolutePath(),

@@ -1,5 +1,3 @@
-[![Run Status](https://api.shippable.com/projects/592827ff79553f0700b4c956/badge?branch=master)](https://app.shippable.com/github/CROSSINGTUD/CogniCrypt)
-
 # CogniCrypt
 
 CogniCrypt is an Eclipse plugin that supports Java developers in using cryptographic APIs. It supports developers in two ways. First, it may generate code snippets for a number of programming tasks that involve cryptography, e.g., communication over a secure channel, data encryption, and long-term archiving. Second, it continuously runs a suite of static analyses in the background that check the  developer's code for misuses of cryptographic APIs.

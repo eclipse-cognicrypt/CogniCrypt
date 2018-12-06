@@ -62,13 +62,8 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	public void run(final IAction action) {
 		Constants.WizardActionFromContextMenuFlag = false;
 		final AltConfigWizard wizard = new AltConfigWizard();
-		final CogniCryptWizardDialog dialog = new CogniCryptWizardDialog(this.shell, wizard) {
-
-			@Override
-			protected void configureShell(final Shell newShell) {
-				super.configureShell(newShell);
-			}
-		};
+		final CogniCryptWizardDialog dialog = new CogniCryptWizardDialog(this.shell, wizard);
+		dialog.setHelpAvailable(false);
 		dialog.open();
 	}
 

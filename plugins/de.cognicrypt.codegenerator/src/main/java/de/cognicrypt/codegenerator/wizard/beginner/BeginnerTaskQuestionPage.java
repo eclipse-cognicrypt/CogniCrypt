@@ -261,6 +261,15 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				}
 				break;
 			case radio:
+				new Label(container, SWT.FILL);
+				new Label(container, SWT.FILL);
+				new Label(container, SWT.FILL);
+				if (!question.getNote().isEmpty()) {
+					createNote(container, question);
+					new Label(container, SWT.FILL);
+					new Label(container, SWT.FILL);
+					new Label(container, SWT.FILL);
+				}
 				final Button[] radioButtons = new Button[answers.size()];
 				for (int i = 0; i < answers.size(); i++) {
 					final int count = i;
@@ -277,9 +286,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						}
 					});
 				}
-				if (!question.getNote().isEmpty()) {
-					createNote(parent, question);
-				}
+				
 				Answer evalAnswer = question.getEnteredAnswer();
 				if (evalAnswer == null) {
 					evalAnswer = question.getDefaultAnswer();
@@ -295,6 +302,16 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish = true);
 				break;
 			case checkbox:
+				new Label(container, SWT.FILL);
+				new Label(container, SWT.FILL);
+				new Label(container, SWT.FILL);
+				//added description for questions
+				if (!question.getNote().isEmpty()) {
+					createNote(container, question);
+					new Label(container, SWT.FILL);
+					new Label(container, SWT.FILL);
+					new Label(container, SWT.FILL);
+				}
 				final List<Button> cbs = new ArrayList<Button>();
 				final List<Button> exclusiveCbs = new ArrayList<Button>(answers.size());
 
@@ -356,17 +373,15 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					}
 				}
 
-				//added description for questions
-				if (!question.getNote().isEmpty()) {
-					createNote(parent, question);
-				}
-
 				this.finish = true;
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
 				break;
 
 			case rbtextgroup:
-
+				new Label(container, SWT.FILL);
+				new Label(container, SWT.FILL);
+				new Label(container, SWT.FILL);
+				
 				final Composite rbbtnControl = new Composite(parent, SWT.NONE);
 				final GridData rbbtnControlData = new GridData(GridData.FILL, GridData.FILL, false, false);
 				rbbtnControl.setLayoutData(rbbtnControlData);

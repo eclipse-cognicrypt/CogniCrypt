@@ -25,6 +25,7 @@ Export-Package: boomerang,
  crypto.interfaces,
  crypto.rules,
  crypto.typestate,
+ de.cognicrypt.client,
  de.cognicrypt.core;uses:="org.osgi.framework,org.eclipse.core.runtime",
  de.cognicrypt.utils;
   uses:="org.eclipse.ui,

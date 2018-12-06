@@ -7,7 +7,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import de.cognicrypt.codegenerator.DeveloperProject;
+
+import de.cognicrypt.client.DeveloperProject;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.tasks.Task;

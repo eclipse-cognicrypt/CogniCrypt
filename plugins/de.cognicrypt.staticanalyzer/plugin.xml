@@ -129,10 +129,132 @@
       	</handledMarkerTypes>
    		</quickFixProcessor>
 	</extension>
-	 <extension 
+	 <!--ErrorMarker-->
+	<extension	
+		  id="de.cognicrypt.staticanalyzer.ccMarker"
+          name="CogniCrypt Problem"
+          point="org.eclipse.core.resources.markers">
+     	<super type="org.eclipse.core.resources.problemmarker"></super>
+     	<attribute name = "error"></attribute>
+     	<attribute name = "var"></attribute>
+       <persistent value="false"></persistent>
+    </extension>
+    <extension
+          id="de.cognicrypt.staticanalyzer.forbiddenMethodErrorMarker"
+          name="Forbidden Method Problem"
+          point="org.eclipse.core.resources.markers">
+       <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
+       <persistent value="false"></persistent>
+    </extension>
+    <extension
+          id="de.cognicrypt.staticanalyzer.impreciseValueExtractionErrorMarker"
+          name="Imprecise Value Extraction Problem"
+          point="org.eclipse.core.resources.markers">
+       <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
+       <persistent value="false"></persistent>
+    </extension>
+    <extension
+          id="de.cognicrypt.staticanalyzer.predicateContradictionErrorMarker"
+          name="Insecure Class Composition Problem"
+          point="org.eclipse.core.resources.markers">
+       <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
+       <persistent value="false"></persistent>
+    </extension>
+    <extension
+          id="de.cognicrypt.staticanalyzer.requiredPredicateErrorMarker"
+          name="Insecure Class Composition Problem"
+          point="org.eclipse.core.resources.markers">
+       <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
+       <persistent value="false"></persistent>
+    </extension>
+    <!--<extension
+   		 id="de.cognicrypt.staticanalyzer.requiredPredicateErrorAnnotation"
+   		 name="Required Predicate Annotation"
+         point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerType="de.cognicrypt.staticanalyzer.requiredPredicateErrorMarker"
+            name="de.cognicrypt.staticanalyzer.requiredPredicateErrorAnnotation">
+      </type>
+    </extension>
+	<extension
+         point="org.eclipse.ui.editors.markerAnnotationSpecification"
+         id="de.cognicrypt.staticanalyzer.requiredPredicateErrorAnnotationSpec">
+      <specification
+            annotationType="de.cognicrypt.staticanalyzer.requiredPredicateErrorAnnotation"
+            includeOnPreferencePage="true"
+            overviewRulerPreferenceKey="clruler"
+            label="requiredPredicateErrorAnnotation"
+			overviewRulerPreferenceValue="true"
+			highlightPreferenceKey="highlight.background"
+			highlightPreferenceValue="true"
+			colorPreferenceKey="clcolor"
+			colorPreferenceValue="205,255,205"
+			textPreferenceKey="cltext"
+			textPreferenceValue="true"
+			presentationLayer="5"
+			verticalRulerPreferenceKey="clvertical"
+			verticalRulerPreferenceValue="true"
+			textStylePreferenceKey="clstyle"
+			textStylePreferenceValue="BOX">
+      </specification>
+   </extension>-->  
+    <extension
+          id="de.cognicrypt.staticanalyzer.constraintErrorMarker"
+          name="Incorrect Parameter Problem"
+          point="org.eclipse.core.resources.markers">
+       <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
+       <persistent value="false"></persistent>
+    </extension>
+    <extension
+          id="de.cognicrypt.staticanalyzer.neverTypeOfErrorMarker"
+          name="Wrong Type Problem"
+          point="org.eclipse.core.resources.markers">
+       <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
+       <persistent value="false"></persistent>
+    </extension>
+     <extension
+          id="de.cognicrypt.staticanalyzer.incompleteOperationErrorMarker"
+          name="Missing Method Call Problem"
+          point="org.eclipse.core.resources.markers">
+       <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
+       <persistent value="false"></persistent>
+    </extension>
+     <extension
+          id="de.cognicrypt.staticanalyzer.typestateErrorMarker"
+          name="Incorrect Method Call Problem"
+          point="org.eclipse.core.resources.markers">
+       <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
+       <persistent value="false"></persistent>
+    </extension>
+    <!--MarkerResolution -->
+	<extension 
 	 point="org.eclipse.ui.ide.markerResolution">
       <markerResolutionGenerator
-         markerType="org.eclipse.core.resources.problemmarker"
+         markerType="de.cognicrypt.staticanalyzer.ccMarker"
          class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
-   </extension>
+      <markerResolutionGenerator
+         markerType="de.cognicrypt.staticanalyzer.forbiddenMethodErrorMarker"
+         class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
+      <markerResolutionGenerator
+         markerType="de.cognicrypt.staticanalyzer.impreciseValueExtractionErrorMarker"
+         class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
+      <markerResolutionGenerator
+         markerType="de.cognicrypt.staticanalyzer.predicateContradictionErrorMarker"
+         class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
+      <markerResolutionGenerator
+         markerType="de.cognicrypt.staticanalyzer.requiredPredicateErrorMarker"
+         class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
+      <markerResolutionGenerator
+         markerType="de.cognicrypt.staticanalyzer.constraintErrorMarker"
+         class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
+      <markerResolutionGenerator
+         markerType="de.cognicrypt.staticanalyzer.neverTypeOfErrorMarker"
+         class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
+      <markerResolutionGenerator
+         markerType="de.cognicrypt.staticanalyzer.incompleteOperationErrorMarker"
+         class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
+      <markerResolutionGenerator
+         markerType="de.cognicrypt.staticanalyzer.typestateErrorMarker"
+         class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
+      </extension>
 </plugin>

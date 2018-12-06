@@ -62,7 +62,7 @@ public class WizardActionFromContextMenu implements IWorkbenchWindowActionDelega
 	public void run(final IAction action) {
 		Constants.WizardActionFromContextMenuFlag = true;
 		final CogniCryptWizardDialog dialog = new CogniCryptWizardDialog(this.shell, new AltConfigWizard());
-
+		dialog.setHelpAvailable(false);
 		dialog.open();
 	}
 

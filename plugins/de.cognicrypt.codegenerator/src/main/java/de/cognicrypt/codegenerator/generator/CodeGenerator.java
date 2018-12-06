@@ -43,8 +43,8 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import client.DeveloperProject;
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 import de.cognicrypt.codegenerator.wizard.Configuration;
 import de.cognicrypt.core.Constants;

@@ -18,8 +18,8 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import client.DeveloperProject;
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;

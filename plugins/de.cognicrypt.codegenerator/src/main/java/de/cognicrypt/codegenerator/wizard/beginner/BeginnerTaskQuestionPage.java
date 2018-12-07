@@ -63,7 +63,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private BeginnerModeQuestionnaire beginnerModeQuestionnaire;
 	private final HashMap<Question, Answer> selectionMap = new HashMap<>();
 	private List<String> selectionValues;
-	private Text note;
+//	private Text note;
 	private Composite container;
 	private int count = 0;
 	private boolean isActive = true;
@@ -250,7 +250,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				new Label(parent, SWT.NONE);
 				//added description for questions
 				if (!question.getNote().isEmpty()) {
-					createNote(parent, question);
+					createNote(parent, question, true);
 				}
 				this.finish = true;
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
@@ -264,8 +264,10 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				new Label(container, SWT.FILL);
 				new Label(container, SWT.FILL);
 				new Label(container, SWT.FILL);
-				if (!question.getNote().isEmpty()) {
-					createNote(container, question);
+				final String radioNote = question.getNote();
+				Group radioNoteControl = null;
+				if (!radioNote.isEmpty()) {
+					radioNoteControl = createNote(container, question, !(radioNote.contains("$$$")));
 					new Label(container, SWT.FILL);
 					new Label(container, SWT.FILL);
 					new Label(container, SWT.FILL);
@@ -273,6 +275,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				final Button[] radioButtons = new Button[answers.size()];
 				for (int i = 0; i < answers.size(); i++) {
 					final int count = i;
+					final Group finalRadioNote = radioNoteControl;
 					final String ans = answers.get(i).getValue();
 					radioButtons[i] = new Button(container, SWT.RADIO);
 					radioButtons[i].setText(ans);
@@ -283,6 +286,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						public void widgetSelected(final SelectionEvent e) {
 							BeginnerTaskQuestionPage.this.selectionMap.put(question, answers.get(count));
 							question.setEnteredAnswer(answers.get(count));
+							if (finalRadioNote != null) {
+								try {
+									finalRadioNote.setVisible(Integer.parseInt(radioNote.split("\\$\\$\\$")[0]) == count);
+								} catch (NumberFormatException nfe) {
+									finalRadioNote.setVisible(false);
+								}
+							}
 						}
 					});
 				}
@@ -305,9 +315,11 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				new Label(container, SWT.FILL);
 				new Label(container, SWT.FILL);
 				new Label(container, SWT.FILL);
+				Group checkboxNoteControl = null;
+				final String checkboxNoteText = question.getNote();
 				//added description for questions
-				if (!question.getNote().isEmpty()) {
-					createNote(container, question);
+				if (!checkboxNoteText.isEmpty()) {
+					checkboxNoteControl = createNote(container, question, !checkboxNoteText.contains("$$$"));
 					new Label(container, SWT.FILL);
 					new Label(container, SWT.FILL);
 					new Label(container, SWT.FILL);
@@ -316,6 +328,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				final List<Button> exclusiveCbs = new ArrayList<Button>(answers.size());
 
 				for (int i = 0; i < answers.size(); i++) {
+					final int count = i;
+					final Group finalCheckBoxControl = checkboxNoteControl;
 					final Answer a = answers.get(i);
 					final Button curCheckbox = new Button(container, SWT.CHECK);
 					curCheckbox.setText(a.getValue());
@@ -352,6 +366,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 									} else {
 										question.setEnteredAnswer(a);
 										BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
+									}
+									if (finalCheckBoxControl != null) {
+										try {
+											finalCheckBoxControl.setVisible(Integer.parseInt(checkboxNoteText.split("\\$\\$\\$")[0]) == count);
+										} catch (NumberFormatException nfe) {
+											finalCheckBoxControl.setVisible(false);
+										}
 									}
 								}
 
@@ -739,7 +760,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		}
 	}
 
-	private void createNote(final Composite parent, final Question question) {
+	private Group createNote(final Composite parent, final Question question, boolean visible) {
 		final Group notePanel = new Group(parent, SWT.NONE);
 		notePanel.setText("Note:");
 		final GridLayout gridLayout = new GridLayout();
@@ -752,15 +773,21 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		notePanel.pack();
 		setControl(parent);
 
-		this.note = new Text(notePanel, SWT.MULTI | SWT.WRAP);
-		this.note.setLayoutData(new GridData(GridData.FILL_BOTH));
-		this.note.setText(question.getNote());
-		this.note.pack();
-		this.note.setBounds(10, 20, 585, 60);
-		this.note.setSize(this.note.computeSize(585, SWT.DEFAULT));
+		Text note = new Text(notePanel, SWT.MULTI | SWT.WRAP);
+		note.setLayoutData(new GridData(GridData.FILL_BOTH));
+		String noteText = question.getNote();
+		if (noteText.contains("$$$")) {
+			noteText = noteText.split("\\$\\$\\$")[1];
+		}
+		note.setText(noteText);
+		note.pack();
+		note.setBounds(10, 20, 585, 60);
+		note.setSize(note.computeSize(585, SWT.DEFAULT));
 		setControl(notePanel);
-		this.note.setEditable(false);
-		this.note.setEnabled(true);
+		note.setEditable(false);
+		note.setEnabled(true);
+		notePanel.setVisible(visible);
+		return notePanel;
 	}
 
 	@Override

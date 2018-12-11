@@ -10,11 +10,12 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.clafer.instance.InstanceClafer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
@@ -180,7 +181,9 @@ public class AltConfigWizard extends Wizard {
 	public boolean performFinish() {
 		boolean ret = true;
 		final Task selectedTask = this.taskListPage.getSelectedTask();
-		this.constraints = (this.constraints != null) ? this.constraints : new HashMap<>();
+		if (this.constraints == null) {
+			this.constraints = new HashMap<>();
+		}
 		final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
 			.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
 
@@ -190,10 +193,11 @@ public class AltConfigWizard extends Wizard {
 		final LocatorPage currentPage = (LocatorPage) getContainer().getCurrentPage();
 
 		// Initialize Code Generation
-		final CodeGenerator codeGenerator = new XSLBasedGenerator(Utils.getIProjectFromISelection(currentPage.getSelectedResource()), selectedTask.getXslFile());
+		final CodeGenerator codeGenerator = new XSLBasedGenerator((IResource) currentPage.getSelectedResource().getFirstElement(), selectedTask.getXslFile());
 		final DeveloperProject developerProject = codeGenerator.getDeveloperProject();
 
-		JOptionPane optionPane = new JOptionPane("CogniCrypt is now generating code that implements " + selectedTask.getName() + "\ninto file " + Utils.getCurrentlyOpenFile().getName() + ". This should take no longer than a few seconds.", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+		IFile currentlyOpenFile = Utils.getCurrentlyOpenFile();
+		JOptionPane optionPane = new JOptionPane("CogniCrypt is now generating code that implements " + selectedTask.getName() + "\ninto file " + ((currentlyOpenFile != null) ? currentlyOpenFile.getName() : "Output.java") + ". This should take no longer than a few seconds.", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
 		JDialog waitingDialog = optionPane.createDialog("Generating Code");
 		waitingDialog.setModal(false);
 		waitingDialog.setVisible(true);

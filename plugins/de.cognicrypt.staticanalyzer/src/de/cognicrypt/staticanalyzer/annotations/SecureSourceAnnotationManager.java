@@ -30,7 +30,7 @@ import org.eclipse.text.edits.TextEdit;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 
-import client.DeveloperProject;
+import de.cognicrypt.client.DeveloperProject;
 import de.cognicrypt.staticanalyzer.Activator;
 
 /**

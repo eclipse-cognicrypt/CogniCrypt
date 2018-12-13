@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-package client;
+package de.cognicrypt.client;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -98,7 +98,7 @@ public class DeveloperProject {
 	 *        name of the package
 	 * @return package as {@link org.eclipse.jdt.core.IPackageFragment IPackageFragment}
 	 * @throws CoreException
-	 *         see {@link client.DeveloperProject#getSourcePath() getSourcePath()}
+	 *         see {@link de.cognicrypt.client.DeveloperProject#getSourcePath() getSourcePath()}
 	 */
 	public IPackageFragment getPackagesOfProject(final String name) throws CoreException {
 		return JavaCore.create(this.project).getPackageFragmentRoot(this.project.getFolder(getSourcePath())).getPackageFragment(name);

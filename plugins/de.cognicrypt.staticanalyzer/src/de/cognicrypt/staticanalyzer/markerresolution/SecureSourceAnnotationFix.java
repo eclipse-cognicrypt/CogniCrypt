@@ -6,8 +6,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.ui.IMarkerResolution;
 
-import client.DeveloperProject;
 import crypto.analysis.errors.RequiredPredicateError;
+import de.cognicrypt.client.DeveloperProject;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.annotations.SecureSourceAnnotationManager;
 import de.cognicrypt.staticanalyzer.statment.CCStatement;

@@ -22,7 +22,7 @@ import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 
-import client.DeveloperProject;
+import de.cognicrypt.client.DeveloperProject;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.utils.Utils;

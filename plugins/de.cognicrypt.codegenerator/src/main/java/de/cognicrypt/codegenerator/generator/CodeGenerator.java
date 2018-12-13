@@ -12,6 +12,8 @@ package de.cognicrypt.codegenerator.generator;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.CharBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,9 +23,10 @@ import java.util.TreeSet;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
@@ -33,6 +36,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.internal.core.util.CharArrayBuffer;
 import org.eclipse.jdt.ui.actions.FormatAllAction;
 import org.eclipse.jdt.ui.actions.OrganizeImportsAction;
 import org.eclipse.jface.text.BadLocationException;
@@ -54,14 +58,20 @@ import de.cognicrypt.utils.Utils;
 public abstract class CodeGenerator {
 
 	protected final DeveloperProject project;
+	protected final IFile targetFile;
 	private int endingPositionForRunMethod = -1;
 	private int endPosForImports = -1;
 	private int startingPositionForRunMethod = -1;
 	private int startPosForImports = -1;
 	private String temporaryOutputFile;
 
-	protected CodeGenerator(final IProject targetProject) {
-		this.project = new DeveloperProject(targetProject);
+	protected CodeGenerator(final IResource target) {
+		this.project = new DeveloperProject(target.getProject());
+		if (target instanceof IFile) {
+			this.targetFile = (IFile) target;
+		} else {
+			this.targetFile = null;
+		}
 	}
 
 	/**
@@ -100,7 +110,10 @@ public abstract class CodeGenerator {
 	 *         See {@link DeveloperProject.crossing.opencce.cryptogen.CryptoProject#refresh() refresh()}
 	 */
 	protected boolean insertCallCodeIntoFile(final String temporaryOutputFile, final boolean openFileFlag, final boolean authorFlag, final boolean tempFlag) throws BadLocationException, CoreException, IOException {
-
+		if (this.targetFile != null) {
+			IDE.openEditor(Utils.getCurrentlyOpenPage(), targetFile);
+		}
+		
 		if ((openFileFlag && authorFlag) || !openFileFlag) {
 			final StringBuilder sb = new StringBuilder(temporaryOutputFile);
 			sb.delete(temporaryOutputFile.length() - 9, temporaryOutputFile.length() - 5);

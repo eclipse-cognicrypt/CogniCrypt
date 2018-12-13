@@ -2,9 +2,12 @@ package de.cognicrypt.codegenerator.wizard;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.wizard.WizardPage;
@@ -19,6 +22,8 @@ import org.eclipse.ui.internal.ide.misc.ContainerContentProvider;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.DrillDownComposite;
+
+import de.cognicrypt.utils.Utils;
 
 public class LocatorPage extends WizardPage {
 
@@ -96,12 +101,18 @@ public class LocatorPage extends WizardPage {
 
 		// This has to be done after the viewer has been laid out
 		treeViewer.setInput(ResourcesPlugin.getWorkspace());
-
+		IResource currentlyOpenRes = Utils.getCurrentlyOpenFile();
+		if (currentlyOpenRes == null) {
+			currentlyOpenRes = Utils.getCurrentlySelectedIProject();
+		}
+		if (currentlyOpenRes != null) {
+			treeViewer.setSelection(new StructuredSelection(currentlyOpenRes));
+			treeViewer.expandToLevel(currentlyOpenRes, 1);
+		}
 		setControl(composite);
 	}
 
 	public void containerSelectionChanged(final Object object, final Text containerNameField) {
-		//		selectedContainer = container;
 		String text = "";
 		if (object instanceof IContainer) {
 			text = TextProcessor.process(((IContainer) object).getFullPath().makeRelative().toString());

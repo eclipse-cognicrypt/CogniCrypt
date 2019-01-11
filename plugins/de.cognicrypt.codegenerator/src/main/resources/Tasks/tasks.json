@@ -44,5 +44,14 @@
 			"questionsJSONFile" : "src/main/resources/TaskDesc/DigitalSignatures.json",
 			"additionalResources" : "",
 			"xslFile" : "src/main/resources/XSLTemplates/DigitalSignatures.xsl"
+		},
+		{
+			"name" : "SECMUPACOMP",
+			"description" : "Secure multi party computation",
+			"taskDescription" : "This task generates code which enables secure multi party computation.",
+			"modelFile": "src/main/resources/ClaferModel/SECMUPACOMP.js",
+			"questionsJSONFile" : "src/main/resources/TaskDesc/SECMUPACOMP.json",
+			"additionalResources" : "",
+			"xslFile" : "src/main/resources/XSLTemplates/SECMUPACOMP.xsl" 
 		}
 ]

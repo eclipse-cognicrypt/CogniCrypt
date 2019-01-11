@@ -42,17 +42,12 @@ import de.cognicrypt.core.Constants;
 
 public class TaskSelectionPage extends WizardPage {
 
-	public static final String KEY_IMAGE = "key.png";
-	public static final String KEY_IMAGE_INVERTED = "key_invert.png";
-
-	public static final String WIFI_IMAGE = "wifi.png";
-	public static final String WIFI_IMAGE_INVERTED = "wifi_invert.png";
-
+	private static final String KEY_IMAGE = "key.png";
+	private static final String WIFI_IMAGE = "wifi.png";
 	private static final String LOCK_IMAGE = "lock.png";
-	private static final String LOCK_IMAGE_INVERTED = "lock_invert.png";
-
 	private static final String HAT_IMAGE = "hat.png";
-	private static final String HAT_IMAGE_INVERTED = "hat_invert.png";
+	private static final String SIGN_IMAGE = "signing.png";
+
 
 	private Composite container;
 	private Task selectedTask = null;
@@ -82,7 +77,6 @@ public class TaskSelectionPage extends WizardPage {
 		new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
 
 		final Image encImage = loadImage(LOCK_IMAGE);
-		final Image encImageInvert = loadImage(LOCK_IMAGE_INVERTED);
 		final Button encryptionButton = createImageButton(this.container, encImage);
 
 		final Label useCaseDescriptionLabel = new Label(this.container, SWT.WRAP);
@@ -92,30 +86,28 @@ public class TaskSelectionPage extends WizardPage {
 		useCaseDescriptionLabel.setLayoutData(gd_selectProjectLabel);
 
 		final Image hashImage = loadImage(KEY_IMAGE);
-		final Image hashImageInvert = loadImage(KEY_IMAGE_INVERTED);
-
 		final Button hashButton = createImageButton(this.container, hashImage);
 
 		final Image secChanImage = loadImage(WIFI_IMAGE);
-		final Image secChanImageInvert = loadImage(WIFI_IMAGE_INVERTED);
 		final Button secChanButton = createImageButton(this.container, secChanImage);
+		
+		final Image signImage = loadImage(SIGN_IMAGE);
+		final Button signButton = createImageButton(this.container, signImage);
 
 		final Image crcImage = loadImage(HAT_IMAGE);
-		final Image crcImageInvert = loadImage(HAT_IMAGE_INVERTED);
 		final Button crcButton = createImageButton(this.container, crcImage);
 
-		final Button[] buttons = new Button[] { encryptionButton, hashButton, secChanButton, crcButton };
-		final Image[] unclickedImages = new Image[] { encImage, hashImage, secChanImage, crcImage };
-		final Image[] clickedImages = new Image[] { encImageInvert, hashImageInvert, secChanImageInvert, crcImageInvert };
-
+		final Button[] buttons = new Button[] { encryptionButton, hashButton, secChanButton, signButton, crcButton };
+		final Image[] unclickedImages = new Image[] { encImage, hashImage, secChanImage, signImage, crcImage };
+		
 		// Get Tasks
 		final List<Task> tasks = TaskJSONReader.getTasks();
 		final Task[] taskdescs = new Task[] {
 				// TODO we should organize that file correctly and don't do such dirty hacks
-				tasks.get(0), tasks.get(1), tasks.get(2), tasks.get(3) };
+				tasks.get(0), tasks.get(1), tasks.get(2), tasks.get(4), tasks.get(3) };
 
 		for (final Button button : buttons) {
-			button.addListener(SWT.Selection, new SelectionButtonListener(buttons, unclickedImages, clickedImages, taskdescs, useCaseDescriptionLabel));
+			button.addListener(SWT.Selection, new SelectionButtonListener(buttons, unclickedImages, taskdescs, useCaseDescriptionLabel));
 		}
 
 		encryptionButton.notifyListeners(SWT.Selection, new Event());
@@ -272,20 +264,17 @@ public class TaskSelectionPage extends WizardPage {
 
 		private final Button[] buttons;
 		private final Image[] unclicked;
-		private final Image[] clicked;
 		private final Task[] tasks;
 
 		private final Label targetLabel;
 
-		public SelectionButtonListener(final Button[] buttons, final Image[] unclicked, final Image[] clicked, final Task[] tasks, final Label targetLabel) {
-
-			if (buttons.length != unclicked.length || buttons.length != clicked.length || buttons.length != tasks.length) {
+		public SelectionButtonListener(final Button[] buttons, final Image[] unclicked, final Task[] tasks, final Label targetLabel) {
+			if (buttons.length != unclicked.length || buttons.length != tasks.length) {
 				throw new IllegalArgumentException("All arrays are required to have the same length." + "If not it indicates an incomplete setup for buttons and their images");
 			}
 
 			this.buttons = buttons;
 			this.unclicked = unclicked;
-			this.clicked = clicked;
 			this.tasks = tasks;
 			this.targetLabel = targetLabel;
 		}
@@ -297,7 +286,6 @@ public class TaskSelectionPage extends WizardPage {
 				final Button b = this.buttons[i];
 				if (eventButton.equals(b)) {
 					b.setSelection(true);
-					b.setImage(this.clicked[i]);
 					this.targetLabel.setText(this.tasks[i].getTaskDescription());
 					TaskSelectionPage.this.selectedTask = this.tasks[i];
 					setPageComplete(true);

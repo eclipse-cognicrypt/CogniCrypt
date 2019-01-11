@@ -91,23 +91,23 @@ public class TaskSelectionPage extends WizardPage {
 		final Image secChanImage = loadImage(WIFI_IMAGE);
 		final Button secChanButton = createImageButton(this.container, secChanImage);
 		
-		//final Image signImage = loadImage(SIGN_IMAGE);
-		//final Button signButton = createImageButton(this.container, signImage);
+		final Image signImage = loadImage(SIGN_IMAGE);
+		final Button signButton = createImageButton(this.container, signImage);
 
 		final Image crcImage = loadImage(HAT_IMAGE);
 		final Button crcButton = createImageButton(this.container, crcImage);
 
-		//final Button[] buttons = new Button[] { encryptionButton, hashButton, secChanButton, signButton, crcButton };
-		//final Image[] unclickedImages = new Image[] { encImage, hashImage, secChanImage, signImage, crcImage };
-		final Button[] buttons = new Button[] { encryptionButton, hashButton, secChanButton, crcButton };
-		final Image[] unclickedImages = new Image[] { encImage, hashImage, secChanImage, crcImage };
+		final Button[] buttons = new Button[] { encryptionButton, hashButton, secChanButton, signButton, crcButton };
+		final Image[] unclickedImages = new Image[] { encImage, hashImage, secChanImage, signImage, crcImage };
+		//final Button[] buttons = new Button[] { encryptionButton, hashButton, secChanButton, crcButton };
+		//final Image[] unclickedImages = new Image[] { encImage, hashImage, secChanImage, crcImage };
 		
 		// Get Tasks
 		final List<Task> tasks = TaskJSONReader.getTasks();
 		final Task[] taskdescs = new Task[] {
 				// TODO we should organize that file correctly and don't do such dirty hacks
 				//tasks.get(0), tasks.get(1), tasks.get(2), tasks.get(4), tasks.get(3) };
-				tasks.get(0), tasks.get(1), tasks.get(2), tasks.get(3) };
+				tasks.get(0), tasks.get(1), tasks.get(2), tasks.get(5), tasks.get(3) };
 
 
 		for (final Button button : buttons) {

@@ -95,7 +95,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
 		final CCStatement stmt = new CCStatement(errorLocation);
 		final int stmtId = stmt.hashCode();
-		final String var = stmt.getVar();
 
 		/*
 		 * Adding of new marker types for new errors: 1) add new ErrorMarker extension
@@ -133,13 +132,13 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final File warningsFile = new File(this.warningFilePath);
 
 		if (!warningsFile.exists()) {
-			this.markerGenerator.addMarker(markerType, stmtId, sourceFile, var, lineNumber, errorMessage, sev);
+			this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev);
 		} else {
 			this.xmlParser = new XMLParser(warningsFile);
 			this.xmlParser.useDocFromFile();
 			if (!this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR)
 					.contains(stmtId + "")) {
-				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, var, lineNumber, errorMessage, sev);
+				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev);
 			} else {
 
 				// update existing LineNumber
@@ -181,7 +180,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 		final Value varName = var.getValue();
 		this.markerGenerator
-				.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt), "", unit.getJavaSourceStartLineNumber(),
+				.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt),  unit.getJavaSourceStartLineNumber(),
 						"Object " + (varName.toString().startsWith("$r")
 								? " of Type " + var.getValue().getType().toQuotedString()
 								: varName) + " is secure.",

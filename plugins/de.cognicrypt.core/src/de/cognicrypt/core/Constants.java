@@ -14,7 +14,7 @@ import org.eclipse.swt.graphics.Rectangle;
 public class Constants {
 
 	public enum GUIElements {
-		combo, text, textarea, button, radio, checkbox, composed, rbtextgroup
+		combo, text, textarea, button, radio, checkbox, composed, rbtextgroup, testtest
 	}
 
 	public enum Severities {

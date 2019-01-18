@@ -27,7 +27,14 @@ import crypto.analysis.CrySLAnalysisListener;
 import crypto.analysis.EnsuredCryptSLPredicate;
 import crypto.analysis.IAnalysisSeed;
 import crypto.analysis.errors.AbstractError;
+import crypto.analysis.errors.ConstraintError;
+import crypto.analysis.errors.ForbiddenMethodError;
 import crypto.analysis.errors.ImpreciseValueExtractionError;
+import crypto.analysis.errors.IncompleteOperationError;
+import crypto.analysis.errors.NeverTypeOfError;
+import crypto.analysis.errors.PredicateContradictionError;
+import crypto.analysis.errors.RequiredPredicateError;
+import crypto.analysis.errors.TypestateError;
 import crypto.extractparameter.CallSiteWithParamIndex;
 import crypto.extractparameter.ExtractedValue;
 import crypto.interfaces.ISLConstraint;
@@ -89,41 +96,68 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final CCStatement stmt = new CCStatement(errorLocation);
 		final int stmtId = stmt.hashCode();
 
-		this.warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator + Constants.SUPPRESSWARNING_FILE;
+		/*
+		 * Adding of new marker types for new errors: 1) add new ErrorMarker extension
+		 * point in plugin.xml 2) add new markerResolutionGenerator tag in plugin.xml 3)
+		 * add new Marker constant in Constants.java (CogniCrypt Core) 4) add new else
+		 * if in the following query
+		 */
+
+		String markerType;
+		if (error instanceof ForbiddenMethodError) {
+			markerType = Constants.FORBIDDEN_METHOD_MARKER_TYPE;
+		} else if (error instanceof PredicateContradictionError) {
+			markerType = Constants.PREDICATE_CONTRADICTION_MARKER_TYPE;
+		} else if (error instanceof RequiredPredicateError) {
+			markerType = Constants.REQUIRED_PREDICATE_MARKER_TYPE;
+		} else if (error instanceof ConstraintError) {
+			markerType = Constants.CONSTRAINT_ERROR_MARKER_TYPE;
+		} else if (error instanceof NeverTypeOfError) {
+			markerType = Constants.NEVER_TYPEOF_MARKER_TYPE;
+		} else if (error instanceof IncompleteOperationError) {
+			markerType = Constants.INCOMPLETE_OPERATION_MARKER_TYPE;
+		} else if (error instanceof TypestateError) {
+			markerType = Constants.TYPESTATE_ERROR_MARKER_TYPE;
+		} else if (error instanceof ImpreciseValueExtractionError) {
+			markerType = Constants.IMPRECISE_VALUE_EXTRACTION_MARKER_TYPE;
+		} else {
+			markerType = Constants.CC_MARKER_TYPE;
+		}
+
+		final Severities sev = (markerType != Constants.IMPRECISE_VALUE_EXTRACTION_MARKER_TYPE) ? Severities.Problem
+				: Severities.Warning;
+
+		this.warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator
+				+ Constants.SUPPRESSWARNING_FILE;
 		final File warningsFile = new File(this.warningFilePath);
 
 		if (!warningsFile.exists()) {
-			if (error instanceof ImpreciseValueExtractionError) {
-				this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage, Severities.Warning);
-			} else {
-				this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage);
-			}
+			this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev);
 		} else {
 			this.xmlParser = new XMLParser(warningsFile);
 			this.xmlParser.useDocFromFile();
-			if (!this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR).contains(stmtId + "")) {
-				if (error instanceof ImpreciseValueExtractionError) {
-					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage, Severities.Warning);
-				} else {
-					this.markerGenerator.addMarker(stmtId, sourceFile, lineNumber, errorMessage);
-				}
+			if (!this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR)
+					.contains(stmtId + "")) {
+				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev);
 			} else {
 
 				// update existing LineNumber
-				final Node suppressWarningNode = this.xmlParser.getNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR, stmtId + "");
-				final Node lineNumberNode = this.xmlParser.getChildNodeByTagName(suppressWarningNode, Constants.LINENUMBER_ELEMENT);
+				final Node suppressWarningNode = this.xmlParser.getNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT,
+						Constants.ID_ATTR, stmtId + "");
+				final Node lineNumberNode = this.xmlParser.getChildNodeByTagName(suppressWarningNode,
+						Constants.LINENUMBER_ELEMENT);
 				this.xmlParser.updateNodeValue(lineNumberNode, lineNumber + "");
 				this.xmlParser.writeXML();
 
 				try {
 					this.currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-				}
-				catch (final CoreException e) {
+				} catch (final CoreException e) {
 					Activator.getDefault().logError(e);
 				}
 				this.suppressedWarningIds.add(stmtId + "");
 			}
 		}
+
 	}
 
 	@Override
@@ -145,30 +179,36 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 		}
 		final Value varName = var.getValue();
-		this.markerGenerator.addMarker(-1, unitToResource(stmt), unit.getJavaSourceStartLineNumber(),
-				"Object " + (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", Severities.Secure);
+		this.markerGenerator
+				.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt),  unit.getJavaSourceStartLineNumber(),
+						"Object " + (varName.toString().startsWith("$r")
+								? " of Type " + var.getValue().getType().toQuotedString()
+								: varName) + " is secure.",
+						Severities.Secure);
 	}
 
 	/**
-	 * This method removes superfluous suppressed warning entries from the SuppressWarnings.xml file.
+	 * This method removes superfluous suppressed warning entries from the
+	 * SuppressWarnings.xml file.
 	 */
 	public void removeUndetectableWarnings() {
 		if (this.suppressedWarningIds.size() > 0) {
 
-			final ArrayList<String> allSuppressedWarningIds = this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR);
+			final ArrayList<String> allSuppressedWarningIds = this.xmlParser
+					.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR);
 
 			final ArrayList<String> difference = new ArrayList<>(allSuppressedWarningIds.size());
 			difference.addAll(allSuppressedWarningIds);
 			difference.removeAll(this.suppressedWarningIds);
 
 			for (int i = 0; i < difference.size(); i++) {
-				this.xmlParser.removeNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR, difference.get(i));
+				this.xmlParser.removeNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR,
+						difference.get(i));
 			}
 			this.xmlParser.writeXML();
 			try {
 				this.currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-			}
-			catch (final CoreException e) {
+			} catch (final CoreException e) {
 				Activator.getDefault().logError(e);
 			}
 		}
@@ -179,8 +219,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final SootClass className = stmt.getMethod().getDeclaringClass();
 		try {
 			return Utils.findClassByName(className.getName(), this.currentProject);
-		}
-		catch (final ClassNotFoundException e) {
+		} catch (final ClassNotFoundException e) {
 			Activator.getDefault().logError(e);
 		}
 		// Fall-back path when retrieval of actual path fails. If the statement below
@@ -204,7 +243,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	@Override
-	public void collectedValues(final AnalysisSeedWithSpecification arg0, final Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
+	public void collectedValues(final AnalysisSeedWithSpecification arg0,
+			final Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
 		// Nothing
 	}
 
@@ -271,7 +311,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void ensuredPredicates(final Table<Statement, Val, Set<EnsuredCryptSLPredicate>> existingPredicates,
-			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates, final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {
+			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates,
+			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {
 		// TODO Auto-generated method stub
 	}
 }

@@ -31,6 +31,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
@@ -63,7 +64,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private BeginnerModeQuestionnaire beginnerModeQuestionnaire;
 	private final HashMap<Question, Answer> selectionMap = new HashMap<>();
 	private List<String> selectionValues;
-//	private Text note;
 	private Composite container;
 	private int count = 0;
 	private boolean isActive = true;
@@ -416,7 +416,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					final int numRows = (rows == null) ? 0 : Integer.parseInt(rows);
 
 					final Button radioButton = new Button(rbbtnControl, SWT.RADIO);
-					radioButton.setSelection(isDefaultAnswer);
 					radioButton.setText(answer.getValue());
 					radioButton.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false, 3, 1));
 
@@ -467,26 +466,16 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					}
 
 					radioButton.addSelectionListener(new SelectionAdapter() {
-
+						
 						@Override
-						public void widgetSelected(final SelectionEvent selectionEvent) {
-							final Button btn = (Button) selectionEvent.getSource();
-
-							for (final Button curSelection : rbgroups.keySet()) {
-								final boolean isEnabled = curSelection == btn;
-								if (isEnabled) {
-									question.setEnteredAnswer(answer);
-									if (!rbgroups.get(radioButton).stream().filter(text -> text instanceof Text).allMatch(text -> !((Text) text).getText().isEmpty())) {
-										BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish = false);
-									} else {
-										BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish = true);
-									}
-								}
-
-								rbgroups.get(curSelection).stream().forEach(control -> control.setEnabled(isEnabled));
-							}
+						public void widgetSelected(SelectionEvent e) {
+							updateRBGroup(question, rbgroups, answer, (Button) e.getSource());
 						}
 					});
+					if (isDefaultAnswer) {
+						radioButton.setSelection(true);
+						updateRBGroup(question, rbgroups, answer, radioButton);
+					}
 				}
 				break;
 
@@ -924,6 +913,22 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		});
 		if (question.getDefaultAnswer().getCodeDependencies() != null) {
 			inputField.setText(question.getDefaultAnswer().getCodeDependencies().get(0).getValue());
+		}
+	}
+
+	protected void updateRBGroup(final Question question, final Map<Button, List<Control>> rbgroups, final Answer answer, final Button btn) {
+		for (final Button curSelection : rbgroups.keySet()) {
+			final boolean isEnabled = curSelection == btn;
+			if (isEnabled) {
+				question.setEnteredAnswer(answer);
+				if (!rbgroups.get(btn).stream().filter(text -> text instanceof Text).allMatch(text -> !((Text) text).getText().isEmpty())) {
+					BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish = false);
+				} else {
+					BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish = true);
+				}
+			}
+
+			rbgroups.get(curSelection).stream().forEach(control -> control.setEnabled(isEnabled));
 		}
 	}
 }

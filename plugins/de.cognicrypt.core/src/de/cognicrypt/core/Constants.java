@@ -475,6 +475,17 @@ public class Constants {
 	// QuickFixs
 	public static final String SUPPRESSWARNING_FIX = "Suppress Warning: ";
 
+	// Marker types
+	public static final String CC_MARKER_TYPE = "de.cognicrypt.staticanalyzer.ccMarker";
+	public static final String FORBIDDEN_METHOD_MARKER_TYPE = "de.cognicrypt.staticanalyzer.forbiddenMethodMarker";
+	public static final String IMPRECISE_VALUE_EXTRACTION_MARKER_TYPE = "de.cognicrypt.staticanalyzer.impreciseValueExtractionErrorMarker";
+	public static final String PREDICATE_CONTRADICTION_MARKER_TYPE = "de.cognicrypt.staticanalyzer.predicateContradictionErrorMarker";
+	public static final String REQUIRED_PREDICATE_MARKER_TYPE = "de.cognicrypt.staticanalyzer.requiredPredicateErrorMarker";
+	public static final String CONSTRAINT_ERROR_MARKER_TYPE = "de.cognicrypt.staticanalyzer.constraintErrorMarker";
+	public static final String NEVER_TYPEOF_MARKER_TYPE = "de.cognicrypt.staticanalyzer.neverTypeOfErrorMarker";
+	public static final String INCOMPLETE_OPERATION_MARKER_TYPE = "de.cognicrypt.staticanalyzer.incompleteOperationErrorMarker";
+	public static final String TYPESTATE_ERROR_MARKER_TYPE = "de.cognicrypt.staticanalyzer.typestateErrorMarker";
+	
 	// for creating xml file
 	public static final String Xml_Declaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 	public static final String NLS_Tag = "<?NLS TYPE=\"org.eclipse.help.contexts\"?>";

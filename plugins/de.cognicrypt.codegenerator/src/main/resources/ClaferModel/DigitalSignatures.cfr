@@ -26,8 +26,8 @@ RSA : SignatureScheme
 	[ security = Medium ]
 	[ keysize = 4096 ]
 ECDSA : SignatureScheme
-	[ performance = Slow ]
 	[ security = Strong ]
+	[ performance = Slow ]
 	[ keysize = 2048 ]
 
 abstract Task

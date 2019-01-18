@@ -45,8 +45,8 @@ public class TaskSelectionPage extends WizardPage {
 	private static final String KEY_IMAGE = "key.png";
 	private static final String WIFI_IMAGE = "wifi.png";
 	private static final String LOCK_IMAGE = "lock.png";
-	private static final String HAT_IMAGE = "hat.png";
 	private static final String SIGN_IMAGE = "signing.png";
+	private static final String MPC_IMAGE = "mpc.png";
 
 
 	private Composite container;
@@ -93,12 +93,13 @@ public class TaskSelectionPage extends WizardPage {
 		
 		final Image signImage = loadImage(SIGN_IMAGE);
 		final Button signButton = createImageButton(this.container, signImage);
+		
+		final Image mpcImage = loadImage(MPC_IMAGE);
+		final Button mpcButton = createImageButton(this.container, mpcImage);
 
-		final Image crcImage = loadImage(HAT_IMAGE);
-		final Button crcButton = createImageButton(this.container, crcImage);
 
-		final Button[] buttons = new Button[] { encryptionButton, hashButton, secChanButton, signButton, crcButton };
-		final Image[] unclickedImages = new Image[] { encImage, hashImage, secChanImage, signImage, crcImage };
+		final Button[] buttons = new Button[] { encryptionButton, hashButton, secChanButton, signButton, mpcButton};
+		final Image[] unclickedImages = new Image[] { encImage, hashImage, secChanImage, signImage, mpcImage};
 		//final Button[] buttons = new Button[] { encryptionButton, hashButton, secChanButton, crcButton };
 		//final Image[] unclickedImages = new Image[] { encImage, hashImage, secChanImage, crcImage };
 		
@@ -106,8 +107,8 @@ public class TaskSelectionPage extends WizardPage {
 		final List<Task> tasks = TaskJSONReader.getTasks();
 		final Task[] taskdescs = new Task[] {
 				// TODO we should organize that file correctly and don't do such dirty hacks
-				//tasks.get(0), tasks.get(1), tasks.get(2), tasks.get(4), tasks.get(3) };
-				tasks.get(0), tasks.get(1), tasks.get(2), tasks.get(5), tasks.get(3) };
+				tasks.get(0), tasks.get(1), tasks.get(2), tasks.get(4), tasks.get(5) };
+				//tasks.get(0), tasks.get(1), tasks.get(2), tasks.get(5), tasks.get(3) };
 
 
 		for (final Button button : buttons) {
@@ -116,87 +117,6 @@ public class TaskSelectionPage extends WizardPage {
 
 		encryptionButton.notifyListeners(SWT.Selection, new Event());
 
-		//
-		//		final Label selectTaskLabel = new Label(this.container, SWT.NONE);
-		//		final GridData gd_selectTaskLabel = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		//		gd_selectTaskLabel.heightHint = 28;
-		//		gd_selectTaskLabel.widthHint = 139;
-		//		selectTaskLabel.setLayoutData(gd_selectTaskLabel);
-		//		selectTaskLabel.setText(Constants.SELECT_TASK);
-		//
-		//		this.taskComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
-		//		Combo taskCombo = taskComboSelection.getCombo();
-		//		GridData gd_taskCombo = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		//		gd_taskCombo.widthHint = 223;
-		//		taskCombo.setLayoutData(gd_taskCombo);
-		//		taskCombo.setToolTipText(Constants.TASKLIST_TOOLTIP);
-		//		taskCombo.setEnabled(true);
-		//		this.taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
-		//
-		//		
-		//
-		//		this.taskComboSelection.setLabelProvider(new LabelProvider() {
-		//
-		//			@Override
-		//			public String getText(final Object task) {
-		//				if (task instanceof Task) {
-		//					final Task current = (Task) task;
-		//					return current.getDescription();
-		//
-		//				}
-		//				return super.getText(task);
-		//			}
-		//		});
-		//
-		//		this.taskComboSelection.setInput(tasks);
-		//		this.taskComboSelection.setComparator(new ViewerComparator());
-		//		//Label for task description
-		//		final Label taskDescription = new Label(this.container, SWT.NONE);
-		//		final GridData gd_taskDescription = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
-		//		gd_taskDescription.widthHint = 139;
-		//		taskDescription.setLayoutData(gd_taskDescription);
-		//		taskDescription.setText(Constants.TASK_DESCRIPTION);
-		//
-		//		// Adding description text for the cryptographic task that has been selected from the combo box
-		//		final Text descriptionText = new Text(this.container, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-		//		final GridData gd_descriptionText = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		//		gd_descriptionText.widthHint = 297;
-		//		gd_descriptionText.heightHint = 96;
-		//		descriptionText.setLayoutData(gd_descriptionText);
-		//		descriptionText.setToolTipText("Description for the selected cryptographic task ");
-		//		descriptionText.setEditable(false);
-		//		descriptionText.setCursor(null);
-		//
-		//		//Hide scroll bar 
-		//		Listener scrollBarListener = new Listener() {
-		//
-		//			@Override
-		//			public void handleEvent(Event event) {
-		//				Text t = (Text) event.widget;
-		//				Rectangle r1 = t.getClientArea();
-		//				// use r1.x as wHint instead of SWT.DEFAULT
-		//				Rectangle r2 = t.computeTrim(r1.x, r1.y, r1.width, r1.height);
-		//				Point p = t.computeSize(r1.x, SWT.DEFAULT, true);
-		//				t.getVerticalBar().setVisible(r2.height <= p.y);
-		//				if (event.type == SWT.Modify) {
-		//					t.getParent().layout(true);
-		//					t.showSelection();
-		//				}
-		//			}
-		//		};
-		//		descriptionText.addListener(SWT.Resize, scrollBarListener);
-		//		descriptionText.addListener(SWT.Modify, scrollBarListener);
-		//
-		//		this.taskComboSelection.addSelectionChangedListener(event -> {
-		//			final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-		//			final Task selectedTask = (Task) selection.getFirstElement();
-		//			TaskSelectionPage.this.taskComboSelection.refresh();
-		//			setPageComplete(selectedTask != null && this.selectedProject != null);
-		//			// To display the description text
-		//			descriptionText.setText(selectedTask.getTaskDescription());
-		//		});
-		//
-		//		this.taskComboSelection.setSelection(new StructuredSelection(tasks.get(0)));
 		setControl(this.container);
 		new Label(this.container, SWT.NONE);
 		new Label(this.container, SWT.NONE);

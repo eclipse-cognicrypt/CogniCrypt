@@ -190,7 +190,7 @@ public class Output {
 		 TLSServer tls = new TLSServer(<xsl:choose><xsl:when test="//task/code/port"><xsl:value-of select="//task/code/port"/></xsl:when>
          <xsl:otherwise>port</xsl:otherwise></xsl:choose>);
 		 
-		 tls.getCurrentConnections();
+		 tls.startAcceptingConnections();
 		
 	}
 }

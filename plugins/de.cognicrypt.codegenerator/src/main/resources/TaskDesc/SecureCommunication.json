@@ -74,7 +74,7 @@
 						"codeDependencies": [
 						],
 						"defaultAnswer": true,
-						"nextID": "-1"
+						"nextID": "6"
 					},
 					{
 						"value": "Yes",
@@ -129,7 +129,7 @@
 				]
 			}
 		],
-		"nextID": "-1"
+		"nextID": "6"
 	},
 	{
 		"id": "3",
@@ -418,7 +418,7 @@
 						"codeDependencies": [
 							{
 								"option": "key",
-								"value": "import"
+								"value": ""
 							}
 						],
 						"uiDependencies": [
@@ -437,7 +437,7 @@
 						"codeDependencies": [
 							{
 								"option": "key",
-								"value": "key"
+								"value": ""
 							}
 						],
 						"uiDependencies": [
@@ -455,7 +455,7 @@
 						"codeDependencies": [
 							{
 								"option": "key",
-								"value": "both"
+								"value": ""
 							}
 						],
 						"uiDependencies": [
@@ -478,7 +478,7 @@
 						"codeDependencies": [
 							{
 								"option": "key",
-								"value": "new"
+								"value": ""
 							}
 						]
 					}

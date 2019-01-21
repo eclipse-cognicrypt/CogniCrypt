@@ -27,7 +27,7 @@ public class TLSServer {
 	private static SSLServerSocket sslServersocket = null;
 
 	public TLSServer(int port) {
-		System.setProperty("javax.net.ssl.keyStore", "");
+		System.setProperty("javax.net.ssl.keyStore", "<xsl:value-of select="//task/code/key"/>");
 		InputStream input = null;
 		String pwd = null;
 		try {
@@ -210,7 +210,7 @@ public class TLSClient {
 
 	public TLSClient(<xsl:choose><xsl:when test="//task/code/host"></xsl:when><xsl:otherwise> String host</xsl:otherwise>
 		 </xsl:choose><xsl:choose><xsl:when test="//task/code/port"></xsl:when><xsl:otherwise>,int port</xsl:otherwise></xsl:choose>) {
-		System.setProperty("javax.net.ssl.trustStore", "<xsl:value-of select="//task/code/keystore"/>");
+		System.setProperty("javax.net.ssl.trustStore", "<xsl:value-of select="//task/code/key"/>");
 		SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 		try {
 			sslsocket = (SSLSocket) sslsocketfactory.createSocket(<xsl:choose>
@@ -226,7 +226,6 @@ public class TLSClient {
 			setProtocols();
 			bufW = new BufferedWriter(new OutputStreamWriter(sslsocket.getOutputStream()));
 			bufR = new BufferedReader(new InputStreamReader(sslsocket.getInputStream()));
-			System.err.println("Readers and writers set up.");
 		} catch (IOException ex) {
 			System.out.println(
 					"Connection to server could not be established. Please check whether the ip/hostname and port are correct");

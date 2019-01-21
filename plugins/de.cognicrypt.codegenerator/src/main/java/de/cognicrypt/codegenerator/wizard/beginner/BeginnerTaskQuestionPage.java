@@ -31,7 +31,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
@@ -451,10 +450,12 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 								final String path = fileDialog.open();
 								if (path != null) {
 									pathText.setText(path);
-
 									if (rbgroups.get(radioButton).stream().filter(text -> text instanceof Text).allMatch(text -> !((Text) text).getText().isEmpty())) {
 										BeginnerTaskQuestionPage.this.setPageComplete(BeginnerTaskQuestionPage.this.finish = true);
 									}
+									answer.getCodeDependencies().get(0).setValue(path.replace("\\", "\\\\"));
+									question.setEnteredAnswer(answer);
+									BeginnerTaskQuestionPage.this.selectionMap.put(question, answer);
 								}
 							}
 						});

@@ -90,7 +90,7 @@
 <extension point="org.eclipse.ui.preferencePages">
  	<page id="CogniCryptPreferencePage"
  		name="Cogni Crypt"
-    		class="org.eclipse.ui.articles.badwordchecker.CogniCryptPreferencePage">
+    		class="properties.CogniCryptpreferencePage">
    	</page>
    	
 </extension>

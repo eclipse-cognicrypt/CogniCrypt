@@ -112,7 +112,7 @@
 			</xsl:result-document>
 		</xsl:if>
 
-		<xsl:if test="//task/algorithm[@type='AsymmetricCipher']">
+		<xsl:if test="//task/code/hybrid='true'">
 			<xsl:result-document href="PublicKeyEnc.java">
 				package
 				<xsl:value-of select="//task/Package" />
@@ -167,7 +167,17 @@
 				<xsl:otherwise>
 					SecretKey encryptionKey = km.getKey(pwd);
 					SymmetricEnc symEnc = new SymmetricEnc();
-					symEnc.encrypt(data, encryptionKey);
+					<xsl:choose>
+						<xsl:when test="//task/code/dataType='File'">
+							File encFile = symEnc.encrypt(data, encryptionKey);
+						</xsl:when>
+						<xsl:when test="//task/code/dataType='String'">
+							String encMessage = symEnc.encrypt(data, encryptionKey);
+						</xsl:when>
+						<xsl:otherwise>
+							byte[] ciphertext = symEnc.encrypt(data, encryptionKey);
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
 			}

@@ -24,6 +24,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.ui.IEditorPart;
@@ -50,14 +51,14 @@ public class XSLBasedGenerator extends CodeGenerator {
 	/**
 	 * Constructor to initialize the code template generator.
 	 *
-	 * @param targetProject
+	 * @param iResource
 	 *        Project code is generated into.
 	 * @param pathToXSLFile
 	 *        Path to the XSL file is read from the Tasks.json file instead of a constant.
 	 */
 
-	public XSLBasedGenerator(final IProject targetProject, final String pathToXSLFile) {
-		super(targetProject);
+	public XSLBasedGenerator(final IResource iResource, final String pathToXSLFile) {
+		super(iResource);
 		this.xslFile = CodeGenUtils.getResourceFromWithin(pathToXSLFile);
 	}
 

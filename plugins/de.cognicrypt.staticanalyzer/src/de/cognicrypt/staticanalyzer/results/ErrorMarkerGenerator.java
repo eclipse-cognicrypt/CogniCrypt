@@ -29,50 +29,49 @@ public class ErrorMarkerGenerator {
 	}
 
 	/**
-	 * Adds crypto-misuse error marker with message {@link message} into file {@link sourceFile} at Line {@link line}.
+	 * Adds crypto-misuse error marker with message {@link message} into file
+	 * {@link sourceFile} at Line {@link line}.
 	 *
-	 * @param sourceFile File the marker is generated into
-	 * @param line Line the marker is generated at
-	 * @param message Error Message
-	 * @return <code>true</code>/<code>false</code> if error marker was (not) added successfully
+	 * @param markerType
+	 *            name of the error
+	 * @param id
+	 *            unique id of the error
+	 * @param sourceFile
+	 *            File the marker is generated into
+	 * @param line
+	 *            Line the marker is generated at
+	 * @param message
+	 *            Error Message
+	 * @param sev
+	 *            Severities type            
+	 * @return <code>true</code>/<code>false</code> if error marker was (not) added
+	 *         successfully
 	 */
-	public boolean addMarker(final int id, final IResource sourceFile, final int line, final String message) {
-		return addMarker(id, sourceFile, line, message, Severities.Problem);
-	}
+	public boolean addMarker(final String markerType, final int id, final IResource sourceFile, final int line,
+			final String message, final Severities sev) {
 
-	/**
-	 * Adds crypto-misuse error marker with message {@link message} into file {@link sourceFile} at Line {@link line}.
-	 *
-	 * @param sourceFile File the marker is generated into
-	 * @param line Line the marker is generated at
-	 * @param message Error Message
-	 * @param isWarning Determines whether marker type is warning or error
-	 * @return <code>true</code>/<code>false</code> if error marker was (not) added successfully
-	 */
-	public boolean addMarker(final int id, final IResource sourceFile, final int line, final String message, final Severities sev) {
 		if (!sourceFile.exists() || !sourceFile.isAccessible()) {
 			Activator.getDefault().logError(Constants.NO_RES_FOUND);
 			return false;
 		}
-
+		
 		IMarker marker;
 		try {
-			marker = sourceFile.createMarker(IMarker.PROBLEM);
+			marker = sourceFile.createMarker(markerType);
 			marker.setAttribute(IMarker.LINE_NUMBER, line);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-			marker.setAttribute(IMarker.SEVERITY,
-					(sev == Severities.Problem) ? IMarker.SEVERITY_ERROR : ((sev == Severities.Warning) ? IMarker.SEVERITY_WARNING : IMarker.SEVERITY_INFO));
+			marker.setAttribute(IMarker.SEVERITY, (sev == Severities.Problem) ? IMarker.SEVERITY_ERROR : ((sev == Severities.Warning) ? IMarker.SEVERITY_WARNING : IMarker.SEVERITY_INFO));
 			marker.setAttribute(IMarker.SOURCE_ID, id);
 
-		}
-		catch (final CoreException e) {
+		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 			return false;
 		}
 		this.markers.add(marker);
 		return true;
 	}
+
 
 	/**
 	 * Deletes markers from file and clears markers list.

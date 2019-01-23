@@ -64,7 +64,7 @@ public class PWHasher {
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public void templateUsage(char[] pwd) throws GeneralSecurityException  {
+	public static void templateUsage(char[] pwd) throws GeneralSecurityException  {
 		//In order to store a password, it is hashed. 
 		String pwdHash = PWHasher.createPWHash(pwd); // This call hashes the password pwd.
 		boolean t = PWHasher.verifyPWHash(pwd, pwdHash); // This call verifies that the password pwd belongs to the password hash pwdHash

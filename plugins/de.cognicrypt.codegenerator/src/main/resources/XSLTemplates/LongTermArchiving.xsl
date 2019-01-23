@@ -172,7 +172,7 @@ import de.tu_darmstadt.cs.cdc.mops.model.archiving_system.Document;
 package	<xsl:value-of select="//Package" />;
 <xsl:apply-templates select="//Import" />
 			public class Output {
-			public void templateUsage(String archiveName, String pathName, String
+			public static void templateUsage(String archiveName, String pathName, String
 			fileName, String keyStorePath, String keyStorePassword) throws
 			Exception {
 			LongTermArchivingClient archivingClient = new LongTermArchivingClient();

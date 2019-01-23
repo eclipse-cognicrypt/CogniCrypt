@@ -182,7 +182,7 @@ package <xsl:value-of select="//Package"/>;
 <xsl:apply-templates select="//Import"/>	
 public class Output {
 
-	public void templateUsage(
+	public static void templateUsage(
 		 <xsl:choose>
          <xsl:when test="//task/code/port"></xsl:when>
          <xsl:otherwise>,int port</xsl:otherwise></xsl:choose>) {
@@ -299,7 +299,7 @@ package <xsl:value-of select="//Package"/>;
 <xsl:apply-templates select="//Import"/>	
 public class Output {
 
-	public void templateUsage(<xsl:choose>
+	public static void templateUsage(<xsl:choose>
          <xsl:when test="//task/code/host"></xsl:when>
          <xsl:otherwise>String host</xsl:otherwise>
 		 </xsl:choose>
@@ -400,7 +400,7 @@ package <xsl:value-of select="//Package"/>;
 <xsl:apply-templates select="//Import"/>	
 public class Output {
 
-	public void templateUsage(<xsl:choose>
+	public static void templateUsage(<xsl:choose>
          <xsl:when test="//task/code/host"></xsl:when>
          <xsl:otherwise>String host</xsl:otherwise>
 		 </xsl:choose>) {

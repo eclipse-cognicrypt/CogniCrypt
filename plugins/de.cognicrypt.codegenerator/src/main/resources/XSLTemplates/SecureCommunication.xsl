@@ -316,10 +316,10 @@ public class Output {
          <xsl:otherwise>, port</xsl:otherwise>
 		 </xsl:choose>);
 		 
-		 Boolean sendingSuccessful = tls.sendData("");
-		 String data = tls.receiveData();
+		 boolean sendingSuccessful = tls.sendData(""); // This call sends the passed message over the connection.
+		 String data = tls.receiveData(); //This call makes the socket listen for incoming messages.
 		
-		tls.closeConnection();		
+		tls.closeConnection(); // This call properly closes the connection. Do not forget it.		
 	}
 	
 	

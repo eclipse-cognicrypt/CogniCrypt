@@ -8,17 +8,15 @@ package de.cognicrypt.crysl.handler;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IStartup;
+
+import de.cognicrypt.utils.Utils;
 import de.cognicrypt.crysl.reader.CrySLModelReader;
 
 /**
@@ -75,6 +73,7 @@ public class StartupHandler implements IStartup {
 				}
 
 			}
+			Activator.getDefault().logInfo("CrySL rules persisted to "+  Utils.getResourceFromWithin(CrySLModelReader.RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath());
 		}
 	}
 

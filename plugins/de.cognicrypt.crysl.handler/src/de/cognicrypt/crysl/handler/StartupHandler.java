@@ -8,14 +8,10 @@ package de.cognicrypt.crysl.handler;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IStartup;
@@ -29,22 +25,10 @@ import de.cognicrypt.crysl.reader.CrySLModelReader;
  */
 public class StartupHandler implements IStartup {
 
-	private static final AfterBuildListener BUILD_LISTENER = new AfterBuildListener();
-	private static final ImportListener IMPORT_LISTENER = new ImportListener();
-
-	@Override
-	public void earlyStartup() {
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(StartupHandler.BUILD_LISTENER, IResourceChangeEvent.POST_BUILD);
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(StartupHandler.IMPORT_LISTENER, IResourceChangeEvent.POST_CHANGE);
-	}
-
 	private static class AfterBuildListener implements IResourceChangeListener {
 
 		@Override
 		public void resourceChanged(final IResourceChangeEvent event) {
-			int i = event.getBuildKind();
-			IResource r = event.getResource();
-			int j = event.getType();
 			final List<IResource> changedCrySLElements = new ArrayList<>();
 			Activator.getDefault().logInfo("ResourcechangeListener has been triggered.");
 			try {
@@ -78,55 +62,11 @@ public class StartupHandler implements IStartup {
 		}
 	}
 
-	private static class ImportListener implements IResourceChangeListener {
-		
-		public void resourceChanged(IResourceChangeEvent event) {
-//			int i = event.getBuildKind();
-//			if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
-//				try {
-//					List<IProject> projects = getProjects(event.getDelta());
-//					for (IProject newProj : projects) {
-//						System.out.println("Sensibly gotten here because there are " + projects.size() + " projects.");
-//						IResource crySLFile = hasCrySLFiles(newProj);
-//						System.out.println("Found " + newProj + ".");
-//						if (crySLFile != null) {
-//							new CrySLModelReader(crySLFile);
-//						}
-//					}
-//				}
-//				catch (ClassNotFoundException | CoreException | IOException e) {
-//					Activator.getDefault().logError(e, "Importing CrySL rules failed.");
-//				}
-//			}
-		}
+	private static final AfterBuildListener BUILD_LISTENER = new AfterBuildListener();
 
-//		private IResource hasCrySLFiles(IContainer cont) throws CoreException {
-//			for (IResource member : cont.members()) {
-//				if (member instanceof IContainer) {
-//					return hasCrySLFiles((IContainer) member);
-//				}
-//				if (member instanceof IFile && ".cryptsl".equals(((IFile) member).getFileExtension())) {
-//					return member;
-//				}
-//			}
-//			return null;
-//		}
-//
-//		private List<IProject> getProjects(IResourceDelta delta) throws CoreException {
-//			final List<IProject> projects = new ArrayList<IProject>();
-//			delta.accept(new IResourceDeltaVisitor() {
-//				public boolean visit(IResourceDelta delta) throws CoreException {
-//					if (delta.getKind() == IResourceDelta.ADDED && delta.getResource().getType() == IResource.PROJECT) {
-//						IProject project = (IProject) delta.getResource();
-//						if (project.isAccessible()) {
-//							projects.add(project);
-//						}
-//					}
-//					// only continue for the workspace root
-//					return delta.getResource().getType() == IResource.ROOT;
-//				}
-//			});
-//			return projects;
-//		}
+	@Override
+	public void earlyStartup() {
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(StartupHandler.BUILD_LISTENER, IResourceChangeEvent.POST_BUILD);
 	}
+
 }

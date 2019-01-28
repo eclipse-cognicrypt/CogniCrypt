@@ -77,7 +77,6 @@ public class TaskSelectionPage extends WizardPage {
 		gd_selectProjectLabel.widthHint = 600;
 		useCaseDescriptionLabel.setLayoutData(gd_selectProjectLabel);
 
-		// Get Tasks
 		final List<Button> buttons = new ArrayList<Button>(); 
 		final List<Image> unclickedImages = new ArrayList<Image>();
 		new Label(this.container, SWT.NONE);
@@ -85,7 +84,7 @@ public class TaskSelectionPage extends WizardPage {
 			final Image taskImage = loadImage(ccTask.getImage());
 			unclickedImages.add(taskImage);
 			
-			final Button taskButton = createImageButton(this.container, taskImage);
+			final Button taskButton = createImageButton(this.container, taskImage, ccTask.getDescription());
 			buttons.add(taskButton);
 		}
 		buttons.stream().forEach(e -> e.addListener(SWT.Selection, new SelectionButtonListener(buttons, unclickedImages, tasks, useCaseDescriptionLabel)));
@@ -115,12 +114,12 @@ public class TaskSelectionPage extends WizardPage {
 		}
 	}
 
-	private Button createImageButton(final Composite container, final Image startImage) {
+	private Button createImageButton(final Composite container, final Image startImage, String taskName) {
 		final Button b = new Button(container, SWT.WRAP);
 		final Rectangle bounds = startImage.getBounds();
 		b.setSize(bounds.width, bounds.height);
 		b.setImage(startImage);
-
+		b.setToolTipText(taskName);
 		return b;
 	}
 

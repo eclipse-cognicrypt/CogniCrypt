@@ -96,8 +96,6 @@ import de.darmstadt.tu.crossing.cryptSL.impl.ObjectImpl;
 
 public class CrySLModelReader {
 	
-	public final static String RELATIVE_RULES_DIR = "resources/CrySLRules";
-
 	private List<CryptSLForbiddenMethod> forbiddenMethods = null;
 	private StateMachineGraph smg = null;
 	private String curClass = "";
@@ -176,7 +174,7 @@ public class CrySLModelReader {
 			System.out.println("");
 
 			final String className = fileName.substring(0, fileName.indexOf(extension) - 1);
-			storeRuletoFile(rule, Utils.getResourceFromWithin(RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath(), className);
+			storeRuletoFile(rule, Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath(), className);
 		}
 
 	}

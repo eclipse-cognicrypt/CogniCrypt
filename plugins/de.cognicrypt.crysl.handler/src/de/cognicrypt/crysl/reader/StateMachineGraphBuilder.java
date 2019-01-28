@@ -5,11 +5,14 @@
 
 package de.cognicrypt.crysl.reader;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import crypto.rules.CryptSLMethod;
@@ -69,7 +72,7 @@ public class StateMachineGraphBuilder {
 		return new StateNode(String.valueOf(this.nodeNameCounter++), false, true);
 	}
 
-	private List<TransitionEdge> getOutgoingEdge(final StateNode curNode, final StateNode notTo) {
+	private List<TransitionEdge> getOutgoingEdges(final StateNode curNode, final StateNode notTo) {
 		final List<TransitionEdge> outgoingEdges = new ArrayList<>();
 		for (final TransitionEdge comp : this.result.getAllTransitions()) {
 			if (comp.getLeft().equals(curNode) && !(comp.getRight().equals(curNode) || comp.getRight().equals(notTo))) {
@@ -127,10 +130,10 @@ public class StateMachineGraphBuilder {
 			if (rightElOp != null && ("+".equals(rightElOp) || "*".equals(rightElOp))) {
 				final List<TransitionEdge> outgoingEdges = new ArrayList<TransitionEdge>();
 				if ("|".equals(orderOp)) {
-					final List<TransitionEdge> tmpOutgoingEdges = getOutgoingEdge(leftPrev, null);
+					final List<TransitionEdge> tmpOutgoingEdges = getOutgoingEdges(leftPrev, null);
 					for (final TransitionEdge outgoingEdge : tmpOutgoingEdges) {
 						if (isReachable(outgoingEdge.to(), prevNode, new ArrayList<StateNode>())) {
-							outgoingEdges.addAll(getOutgoingEdge(outgoingEdge.to(), prevNode));
+							outgoingEdges.addAll(getOutgoingEdges(outgoingEdge.to(), prevNode));
 						}
 					}
 					for (final TransitionEdge outgoingEdge : outgoingEdges) {
@@ -138,7 +141,7 @@ public class StateMachineGraphBuilder {
 					}
 
 				} else {
-					outgoingEdges.addAll(getOutgoingEdge(rightPrev, prevNode));
+					outgoingEdges.addAll(getOutgoingEdges(rightPrev, prevNode));
 					for (final TransitionEdge outgoingEdge : outgoingEdges) {
 						addRegularEdge(outgoingEdge.getLabel(), prevNode, outgoingEdge.to(), true);
 					}
@@ -150,12 +153,33 @@ public class StateMachineGraphBuilder {
 			}
 
 		} else if ((left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
+			StateNode leftPrev = prevNode;
+			
+			Entry<String, StateNode> orLevel = leftOvers.get(level).stream().filter(e -> "|".equals(e.getKey())).findFirst().get();
+			StateNode p = orLevel.getValue();
+			List<TransitionEdge> orEdges = getOutgoingEdges(prevNode, null);
+			if (!orEdges.isEmpty()) {
+				Optional<TransitionEdge> edge = orEdges.stream().filter(e -> e.getRight().equals(p)).findFirst();
+				if (edge.isPresent() && edge.get().getLabel().equals(CrySLReaderUtils.resolveAggregateToMethodeNames(getLeftMostChild(left).getOrderEv().get(0)))) {
+					leftOvers.put(level + 1, orLevel);
+				}
+			}
 			prevNode = process(left, level + 1, leftOvers, prevNode);
 
-			prevNode = addRegularEdge(right, prevNode, null);
+			if (rightElOp != null && ("?".equals(rightElOp) || "*".equals(rightElOp))) {
+				prevNode = addRegularEdge(right, prevNode, null, true);
+			} else {
+				prevNode = addRegularEdge(right, prevNode, null);
+			}
+			
+			if (rightElOp != null && ("+".equals(rightElOp) || "*".equals(rightElOp))) {
+				addRegularEdge(right, prevNode, prevNode, true);
+			}
+
+			
+			
 		} else if (!(left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
-			StateNode leftPrev = null;
-			leftPrev = prevNode;
+			StateNode leftPrev = prevNode;
 			prevNode = addRegularEdge(left, prevNode, null);
 
 			if (leftElOp != null && ("+".equals(leftElOp) || "*".equals(leftElOp))) {
@@ -174,7 +198,7 @@ public class StateMachineGraphBuilder {
 			}
 
 			if (rightElOp != null && ("+".equals(rightElOp) || "*".equals(rightElOp))) {
-				final List<TransitionEdge> outgoingEdges = getOutgoingEdge(rightPrev, prevNode);
+				final List<TransitionEdge> outgoingEdges = getOutgoingEdges(rightPrev, prevNode);
 				for (final TransitionEdge outgoingEdge : outgoingEdges) {
 					addRegularEdge(outgoingEdge.getLabel(), prevNode, outgoingEdge.to(), true);
 				}
@@ -187,10 +211,27 @@ public class StateMachineGraphBuilder {
 		} else if (!(left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
 			StateNode leftPrev = null;
 			leftPrev = prevNode;
+
+			boolean sameName = false;
+			List<TransitionEdge> orEdges = getOutgoingEdges(prevNode, null);
+			Optional<Entry<String, StateNode>> alternative = leftOvers.get(level).stream().filter(e -> "|".equals(e.getKey())).findFirst();
+			if (alternative.isPresent()) {
+				Entry<String, StateNode> orLevel = alternative.get();
+				StateNode p = orLevel.getValue();
+				if (!orEdges.isEmpty()) {
+					Optional<TransitionEdge> edge = orEdges.stream().filter(e -> e.getRight().equals(p)).findFirst();
+					if (edge.isPresent() && edge.get().getLabel().equals(CrySLReaderUtils.resolveAggregateToMethodeNames(getLeftMostChild(left).getOrderEv().get(0)))) {
+						sameName = true;
+						prevNode = p;
+						leftOvers.remove(level, orLevel);
+					}
+				}
+			}
+			if (!sameName) {
+				prevNode = addRegularEdge(left, prevNode, null);
+			}
+
 			StateNode returnToNode = isOr(level, leftOvers);
-
-			prevNode = addRegularEdge(left, prevNode, null);
-
 			if (leftElOp != null && ("+".equals(leftElOp) || "*".equals(leftElOp))) {
 				addRegularEdge(left, prevNode, prevNode, true);
 			}
@@ -216,13 +257,18 @@ public class StateMachineGraphBuilder {
 			if (leftElOp != null && ("?".equals(leftElOp) || "*".equals(leftElOp))) {
 				addRegularEdge(right, leftPrev, prevNode, true);
 			}
+			
+			if (sameName) {
+				setAcceptingState(alternative.get().getValue());
+			}
+			
 		}
 		leftOvers.removeAll(level);
 		return prevNode;
 	}
 
 	private boolean isReachable(final StateNode stateNode, final StateNode prevNode, final List<StateNode> skippable) {
-		for (final TransitionEdge edge : getOutgoingEdge(stateNode, stateNode)) {
+		for (final TransitionEdge edge : getOutgoingEdges(stateNode, stateNode)) {
 			if (edge.to().equals(prevNode)) {
 				return true;
 			} else if (!skippable.contains(edge.to())) {
@@ -260,9 +306,9 @@ public class StateMachineGraphBuilder {
 				final String orderop = right.getOrderop();
 				List<TransitionEdge> outgoingEdges = null;
 				if (orderop != null && "|".equals(orderop)) {
-					outgoingEdges = getOutgoingEdge(rightPrev, null);
+					outgoingEdges = getOutgoingEdges(rightPrev, null);
 				} else {
-					outgoingEdges = getOutgoingEdge(rightPrev, prevNode);
+					outgoingEdges = getOutgoingEdges(rightPrev, prevNode);
 				}
 				for (final TransitionEdge outgoingEdge : outgoingEdges) {
 					addRegularEdge(outgoingEdge.getLabel(), prevNode, outgoingEdge.to(), true);
@@ -277,10 +323,13 @@ public class StateMachineGraphBuilder {
 			prevNode = process(left, level + 1, leftOvers, prevNode);
 			final StateNode rightPrev = prevNode;
 			prevNode = addRegularEdge(right, prevNode, null);
+			for (Entry<String, StateNode> a : leftOvers.get(level).stream().filter(e -> "*".equals(e.getKey())).collect(Collectors.toList())) {
+				addRegularEdge(right, a.getValue(), prevNode, true);
+			}
 			if ("*".equals(rightElOp) || "?".equals(rightElOp)) {
 				setAcceptingState(rightPrev);
 				if ("?".equals(left.getRight().getElementop()) || "*".equals(left.getRight().getElementop())) {
-					final List<TransitionEdge> outgoingEdges = getOutgoingEdge(leftPrev, null);
+					final List<TransitionEdge> outgoingEdges = getOutgoingEdges(leftPrev, null);
 					for (final TransitionEdge outgoingEdge : outgoingEdges) {
 						setAcceptingState(outgoingEdge.to());
 					}
@@ -306,7 +355,10 @@ public class StateMachineGraphBuilder {
 			}
 			if ("|".equals(orderOp)) {
 				setAcceptingState(prevNode);
+				SimpleEntry<String, StateNode> entry = new HashMap.SimpleEntry<>(orderOp, prevNode);
+				leftOvers.put(level + 1, entry);
 				prevNode = process(right, level + 1, leftOvers, leftPrev);
+
 			} else if ((returnToNode = isOr(level, leftOvers)) != null) {
 				prevNode = process(right, level + 1, leftOvers, returnToNode);
 			} else {
@@ -314,7 +366,7 @@ public class StateMachineGraphBuilder {
 			}
 
 			if (rightElOp != null && ("+".equals(rightElOp) || "*".equals(rightElOp))) {
-				final List<TransitionEdge> outgoingEdges = getOutgoingEdge(rightPrev, null);
+				final List<TransitionEdge> outgoingEdges = getOutgoingEdges(rightPrev, null);
 				for (final TransitionEdge outgoingEdge : outgoingEdges) {
 					addRegularEdge(outgoingEdge.getLabel(), prevNode, outgoingEdge.to(), true);
 				}
@@ -322,7 +374,7 @@ public class StateMachineGraphBuilder {
 
 			if (leftElOp != null && ("?".equals(leftElOp) || "*".equals(leftElOp))) {
 				setAcceptingState(leftPrev);
-				final List<TransitionEdge> outgoingEdges = getOutgoingEdge(rightPrev, null);
+				final List<TransitionEdge> outgoingEdges = getOutgoingEdges(rightPrev, null);
 				for (final TransitionEdge outgoingEdge : outgoingEdges) {
 					setAcceptingState(outgoingEdge.to());
 					addRegularEdge(outgoingEdge.getLabel(), leftPrev, outgoingEdge.to(), true);
@@ -368,6 +420,16 @@ public class StateMachineGraphBuilder {
 
 	private void setAcceptingState(final StateNode prevNode) {
 		prevNode.setAccepting(true);
+	}
+
+	private Expression getLeftMostChild(Expression ex) {
+		if (ex.getOrderEv().size() > 0) {
+			return ex;
+		}
+		if (ex.getLeft() != null) {
+			return getLeftMostChild(ex.getLeft());
+		}
+		return null;
 	}
 
 }

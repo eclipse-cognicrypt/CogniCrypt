@@ -66,7 +66,7 @@ public class XMLClaferParser {
 			taskElem.addAttribute(Constants.Description, ClaferModelUtils.removeScopePrefix(taskName));
 
 			// add imports
-			taskElem.addElement(Constants.Package).addText(Constants.PackageName);	// Constants.xmlPackage
+			taskElem.addElement(Constants.Package).addText(Constants.PackageName.replace(Constants.innerFileSeparator, "."));	// Constants.xmlPackage
 			final Element xmlimports = taskElem.addElement(Constants.Imports);
 			for (final String file : Constants.xmlimportsarr) {
 				xmlimports.addElement(Constants.Import).addText(file);

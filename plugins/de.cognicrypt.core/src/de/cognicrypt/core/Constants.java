@@ -7,6 +7,7 @@ package de.cognicrypt.core;
 
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import soot.util.Cons;
 
 /**
  * This class comprises all constants that are used by the plugin.
@@ -56,7 +57,7 @@ public class Constants {
 	public static final String testPrimitverFolder = "src/test/resources/PrimitiveIntegration/";
 
 	// Added Packages
-	public static final String PRIMITIVE_PACKAGE = "org.crypto.customPrimitive";
+	public static final String PRIMITIVE_PACKAGE = "de.cognicrypt.customPrimitive";
 
 	// Clafer related file
 	public static final String claferHeader = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "ClaferHeader.cfr";
@@ -129,7 +130,7 @@ public class Constants {
 	public static final String AdditionalOutputFile = "Output.java";
 	public static final String AdditionalOutputTempFile = "OutputTemp.java";
 	public static final String TempSuffix = "Temp";
-	public static final String PackageName = "Crypto";
+	public static final String PackageName = "de" + Constants.innerFileSeparator + "cognicrypt" + Constants.innerFileSeparator + "crypto";
 	public static final String CodeGenerationCallFile = Constants.innerFileSeparator + Constants.PackageName + Constants.innerFileSeparator + Constants.AdditionalOutputFile;
 
 	// File info for Code Generation

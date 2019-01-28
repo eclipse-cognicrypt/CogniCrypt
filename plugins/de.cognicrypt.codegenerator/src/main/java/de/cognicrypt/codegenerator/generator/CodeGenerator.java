@@ -134,7 +134,7 @@ public abstract class CodeGenerator {
 		final TreeSet<SimpleEntry<Integer, Integer>> methLims = new TreeSet<>();
 		final SimpleEntry<Integer, SimpleEntry<Integer, Integer>> classlims = new SimpleEntry<>(0, null);
 
-		final ASTParser astp = ASTParser.newParser(AST.JLS8);
+		final ASTParser astp = ASTParser.newParser(AST.JLS11);
 		astp.setSource(docContent.toCharArray());
 		astp.setKind(ASTParser.K_COMPILATION_UNIT);
 		final CompilationUnit cu = (CompilationUnit) astp.createAST(null);
@@ -246,9 +246,10 @@ public abstract class CodeGenerator {
 	 *         {@link DeveloperProject#getPackagesOfProject(String)} and {@link IPackageFragment#getCompilationUnit()}
 	 */
 	protected void removeCryptoPackageIfEmpty() throws CoreException {
-		final IPackageFragment cryptoPackage = this.project.getPackagesOfProject(Constants.PackageName);
+		String packagename = Constants.PackageName.replace(Constants.innerFileSeparator, ".");
+		final IPackageFragment cryptoPackage = this.project.getPackagesOfProject(packagename);
 		if (cryptoPackage.getCompilationUnits().length == 0) {
-			this.project.removePackage(Constants.PackageName);
+			this.project.removePackage(packagename);
 		}
 	}
 
@@ -331,7 +332,7 @@ public abstract class CodeGenerator {
 
 		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
 		final FormatAllAction faa = new FormatAllAction(editor.getSite());
-		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageName).getCompilationUnits();
+		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageName.replace(Constants.innerFileSeparator, ".")).getCompilationUnits();
 		faa.runOnMultiple(generatedCUnits);
 		organizeImportsActionForAllFilesTouchedDuringGeneration.runOnMultiple(generatedCUnits);
 

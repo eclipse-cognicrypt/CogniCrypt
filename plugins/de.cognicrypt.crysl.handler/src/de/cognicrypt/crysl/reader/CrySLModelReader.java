@@ -5,7 +5,6 @@
 
 package de.cognicrypt.crysl.reader;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -122,7 +121,15 @@ public class CrySLModelReader {
 		exceptions.add("String.cryptsl");
 
 		final IPath rulesFolder = crySLFile.getFullPath().removeLastSegments(1);
-		for (final IResource res : ResourcesPlugin.getWorkspace().getRoot().getFolder(rulesFolder).members()) {
+		
+		IResource[] members; // = ResourcesPlugin.getWorkspace().getRoot().getFolder(rulesFolder).members();
+		if (rulesFolder.segmentCount() == 1) {
+			members = crySLFile.getProject().members();
+		} else  {
+			members = ResourcesPlugin.getWorkspace().getRoot().getFolder(rulesFolder).members();
+		}
+		
+		for (final IResource res : members) {
 			final String extension = res.getFileExtension();
 			final String fileName = res.getName();
 			if (!"cryptsl".equals(extension) || exceptions.contains(fileName)) { // || !fileName.contains("Signature."))

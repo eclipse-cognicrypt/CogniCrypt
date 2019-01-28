@@ -96,6 +96,8 @@ import de.darmstadt.tu.crossing.cryptSL.UseBlock;
 import de.darmstadt.tu.crossing.cryptSL.impl.ObjectImpl;
 
 public class CrySLModelReader {
+	
+	public final static String RELATIVE_RULES_DIR = "resources/CrySLRules";
 
 	private List<CryptSLForbiddenMethod> forbiddenMethods = null;
 	private StateMachineGraph smg = null;
@@ -167,12 +169,7 @@ public class CrySLModelReader {
 			System.out.println("");
 
 			final String className = fileName.substring(0, fileName.indexOf(extension) - 1);
-			storeRuletoFile(rule, Utils.getResourceFromWithin("resources/CrySLRules", de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath(), className);
-
-			final String filePath = "C:\\Users\\stefank3\\git\\CryptoAnalysis\\CryptoAnalysis\\src\\test\\resources\\";
-			if ((new File(filePath)).exists()) {
-				storeRuletoFile(rule, filePath, className);
-			}
+			storeRuletoFile(rule, Utils.getResourceFromWithin(RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath(), className);
 		}
 
 	}

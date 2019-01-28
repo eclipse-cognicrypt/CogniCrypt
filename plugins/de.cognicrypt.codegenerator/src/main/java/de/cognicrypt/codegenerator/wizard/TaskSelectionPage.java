@@ -15,9 +15,9 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.WizardPage;
@@ -42,13 +42,6 @@ import de.cognicrypt.core.Constants;
 
 public class TaskSelectionPage extends WizardPage {
 
-	private static final String KEY_IMAGE = "key.png";
-	private static final String WIFI_IMAGE = "wifi.png";
-	private static final String LOCK_IMAGE = "lock.png";
-	private static final String SIGN_IMAGE = "signing.png";
-	private static final String MPC_IMAGE = "mpc.png";
-
-
 	private Composite container;
 	private Task selectedTask = null;
 
@@ -61,6 +54,8 @@ public class TaskSelectionPage extends WizardPage {
 
 	@Override
 	public void createControl(final Composite parent) {
+		final List<Task> tasks = TaskJSONReader.getTasks();
+
 		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -75,47 +70,26 @@ public class TaskSelectionPage extends WizardPage {
 		this.container.setLayout(gl);
 
 		new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
-
-		final Image encImage = loadImage(LOCK_IMAGE);
-		final Button encryptionButton = createImageButton(this.container, encImage);
-
+		new Label(this.container, SWT.NONE);
 		final Label useCaseDescriptionLabel = new Label(this.container, SWT.WRAP);
-		final GridData gd_selectProjectLabel = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 4);
+		final GridData gd_selectProjectLabel = new GridData(SWT.FILL, SWT.FILL, false, false, 1, tasks.size() + 1);
 		gd_selectProjectLabel.heightHint = 200;
 		gd_selectProjectLabel.widthHint = 600;
 		useCaseDescriptionLabel.setLayoutData(gd_selectProjectLabel);
 
-		final Image hashImage = loadImage(KEY_IMAGE);
-		final Button hashButton = createImageButton(this.container, hashImage);
-
-		final Image secChanImage = loadImage(WIFI_IMAGE);
-		final Button secChanButton = createImageButton(this.container, secChanImage);
-		
-		final Image signImage = loadImage(SIGN_IMAGE);
-		final Button signButton = createImageButton(this.container, signImage);
-		
-		final Image mpcImage = loadImage(MPC_IMAGE);
-		final Button mpcButton = createImageButton(this.container, mpcImage);
-
-
-		final Button[] buttons = new Button[] { encryptionButton, hashButton, secChanButton, signButton, mpcButton};
-		final Image[] unclickedImages = new Image[] { encImage, hashImage, secChanImage, signImage, mpcImage};
-		//final Button[] buttons = new Button[] { encryptionButton, hashButton, secChanButton, crcButton };
-		//final Image[] unclickedImages = new Image[] { encImage, hashImage, secChanImage, crcImage };
-		
 		// Get Tasks
-		final List<Task> tasks = TaskJSONReader.getTasks();
-		final Task[] taskdescs = new Task[] {
-				// TODO we should organize that file correctly and don't do such dirty hacks
-				tasks.get(0), tasks.get(1), tasks.get(2), tasks.get(4), tasks.get(5) };
-				//tasks.get(0), tasks.get(1), tasks.get(2), tasks.get(5), tasks.get(3) };
-
-
-		for (final Button button : buttons) {
-			button.addListener(SWT.Selection, new SelectionButtonListener(buttons, unclickedImages, taskdescs, useCaseDescriptionLabel));
+		final List<Button> buttons = new ArrayList<Button>(); 
+		final List<Image> unclickedImages = new ArrayList<Image>();
+		new Label(this.container, SWT.NONE);
+		for (Task ccTask : tasks) {
+			final Image taskImage = loadImage(ccTask.getImage());
+			unclickedImages.add(taskImage);
+			
+			final Button taskButton = createImageButton(this.container, taskImage);
+			buttons.add(taskButton);
 		}
-
-		encryptionButton.notifyListeners(SWT.Selection, new Event());
+		buttons.stream().forEach(e -> e.addListener(SWT.Selection, new SelectionButtonListener(buttons, unclickedImages, tasks, useCaseDescriptionLabel)));
+		buttons.get(0).notifyListeners(SWT.Selection, new Event());
 
 		setControl(this.container);
 		new Label(this.container, SWT.NONE);
@@ -128,16 +102,9 @@ public class TaskSelectionPage extends WizardPage {
 		setControl(sc);
 	}
 
-	public IProject getSelectedProject() {
-
-		// this information must be queried from the Locator page.
-		return null;//this.selectedProject;
-	}
-
 	public Task getSelectedTask() {
 		// TODO return task depending on the currently selected use case (via button)
 		return this.selectedTask;
-		//return (Task) ((IStructuredSelection) this.taskComboSelection.getSelection()).getFirstElement();
 	}
 
 	@Override
@@ -164,7 +131,7 @@ public class TaskSelectionPage extends WizardPage {
 				return null;
 			}
 
-			final URL entry = bundle.getEntry("src/main/resources/images/" + image);
+			final URL entry = bundle.getEntry("src/main/resources/images/" + image + ".png");
 			final URL resolvedURL = FileLocator.toFileURL(entry);
 			URI resolvedURI = null;
 			if (resolvedURL != null) {
@@ -186,19 +153,19 @@ public class TaskSelectionPage extends WizardPage {
 
 	class SelectionButtonListener implements Listener {
 
-		private final Button[] buttons;
-		private final Image[] unclicked;
-		private final Task[] tasks;
+		private final List<Button> buttons;
+		private final List<Image> buttonImages;
+		private final List<Task> tasks;
 
 		private final Label targetLabel;
 
-		public SelectionButtonListener(final Button[] buttons, final Image[] unclicked, final Task[] tasks, final Label targetLabel) {
-			if (buttons.length != unclicked.length || buttons.length != tasks.length) {
+		public SelectionButtonListener(final List<Button> buttons, final List<Image> buttonImages, final List<Task> tasks, final Label targetLabel) {
+			if (buttons.size() != buttonImages.size() || buttons.size() != tasks.size()) {
 				throw new IllegalArgumentException("All arrays are required to have the same length." + "If not it indicates an incomplete setup for buttons and their images");
 			}
 
 			this.buttons = buttons;
-			this.unclicked = unclicked;
+			this.buttonImages = buttonImages;
 			this.tasks = tasks;
 			this.targetLabel = targetLabel;
 		}
@@ -206,16 +173,16 @@ public class TaskSelectionPage extends WizardPage {
 		@Override
 		public void handleEvent(final Event event) {
 			final Button eventButton = (Button) event.widget;
-			for (int i = 0; i < this.buttons.length; i++) {
-				final Button b = this.buttons[i];
+			for (int i = 0; i < this.buttons.size(); i++) {
+				final Button b = this.buttons.get(i);
 				if (eventButton.equals(b)) {
+					TaskSelectionPage.this.selectedTask = this.tasks.get(i);
 					b.setSelection(true);
-					this.targetLabel.setText(this.tasks[i].getTaskDescription());
-					TaskSelectionPage.this.selectedTask = this.tasks[i];
+					this.targetLabel.setText(TaskSelectionPage.this.selectedTask.getTaskDescription());
 					setPageComplete(true);
 				} else {
 					b.setSelection(false);
-					b.setImage(this.unclicked[i]);
+					b.setImage(this.buttonImages.get(i));
 				}
 			}
 		}

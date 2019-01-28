@@ -17,6 +17,7 @@ public class Task {
 	private String taskDescription;
 	private String modelFile;
 	private String questionsJSONFile;
+	private String image;
 	private boolean isSelected;
 	private String additionalResources;
 	private String xslFile;
@@ -47,6 +48,16 @@ public class Task {
 
 	public boolean isSelected() {
 		return this.isSelected;
+	}
+
+	
+	public String getImage() {
+		return image;
+	}
+
+	
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	public void setAdditionalResources(final String additionalResources) {

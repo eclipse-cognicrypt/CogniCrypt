@@ -47,7 +47,7 @@
 						"defaultAnswer": true
 					},
 					{
-						"value": "Plain Secure Connection",
+						"value": "Plain Secure Connection (i.e., SSL/TLS)",
 						"codeDependencies": [
 							{
 								"option": "HTTPS",

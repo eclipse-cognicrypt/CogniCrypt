@@ -306,7 +306,11 @@ public class Output {
 		 <xsl:choose>
          <xsl:when test="//task/code/port"></xsl:when>
          <xsl:otherwise>,int port</xsl:otherwise></xsl:choose>) {
-         //You need to set the right host (first parameter) and the port name (second parameter). If you wish to pass a IP address, please use overload with InetAdress as second parameter instead of string.
+        
+         <xsl:choose>
+         <xsl:when test="//task/code/host">//You need to set the right host (first parameter) and the port name (second parameter). If you wish to pass a IP address, please use overload with InetAdress as second parameter instead of string.</xsl:when>
+		 </xsl:choose> 
+		 
 		 TLSClient tls = new TLSClient(<xsl:choose>
          <xsl:when test="//task/code/host"></xsl:when>
          <xsl:otherwise>host</xsl:otherwise>

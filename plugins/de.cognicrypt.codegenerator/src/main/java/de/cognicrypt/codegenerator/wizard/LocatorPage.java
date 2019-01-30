@@ -2,9 +2,11 @@ package de.cognicrypt.codegenerator.wizard;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -23,6 +25,7 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.DrillDownComposite;
 
+import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.utils.Utils;
 
 public class LocatorPage extends WizardPage {
@@ -78,9 +81,11 @@ public class LocatorPage extends WizardPage {
 			final IStructuredSelection selection = event.getStructuredSelection();
 			final Object firstElement = selection.getFirstElement();
 			containerSelectionChanged(firstElement, containerNameField); // allow null
-			if (firstElement != null) {
+			if (firstElement != null && isProperTarget(firstElement)) {
 				setPageComplete(true);
 				this.selectedResource = selection;
+			} else {
+				setPageComplete(false);
 			}
 
 		});
@@ -110,6 +115,28 @@ public class LocatorPage extends WizardPage {
 			treeViewer.expandToLevel(currentlyOpenRes, 1);
 		}
 		setControl(composite);
+	}
+
+	private boolean isProperTarget(Object target) {
+		if (target instanceof IFile) {
+			if (!"java".equals(((IFile) target).getFileExtension())) {
+				return false;
+			}
+		}
+		if (target instanceof IFolder) {
+			IFolder targetFolder = (IFolder) target;
+			try {
+				String systemTargetPath = targetFolder.getFullPath().removeFirstSegments(1).toOSString();
+				return systemTargetPath.startsWith(new DeveloperProject(targetFolder.getProject()).getSourcePath());
+			} catch (CoreException e) {
+				return false;
+			}
+		}
+		if (target instanceof IProject) {
+			return Utils.checkIfJavaProjectSelected((IProject) target);
+		}
+		
+		return true;
 	}
 
 	public void containerSelectionChanged(final Object object, final Text containerNameField) {

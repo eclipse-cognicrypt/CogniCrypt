@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IStartup;
 
 import de.cognicrypt.utils.Utils;
+import de.cognicrypt.core.Constants;
 import de.cognicrypt.crysl.reader.CrySLModelReader;
 
 /**
@@ -61,7 +62,7 @@ public class StartupHandler implements IStartup {
 				}
 
 			}
-			Activator.getDefault().logInfo("CrySL rules persisted to "+  Utils.getResourceFromWithin(CrySLModelReader.RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath());
+			Activator.getDefault().logInfo("CrySL rules persisted to "+  Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath());
 		}
 	}
 

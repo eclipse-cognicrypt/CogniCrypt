@@ -1,4 +1,4 @@
-package de.cognicrypt.staticanalyzer.statment;
+package de.cognicrypt.staticanalyzer.utils;
 
 import java.util.List;
 import boomerang.jimple.Statement;
@@ -80,6 +80,10 @@ public class CCStatement {
 		return true;
 	}
 
+	public String getParameterVarNameByIndex(int i) {
+		return stmt.getUnit().get().getInvokeExpr().getArg(i).toString();
+	}
+	
 	public String getMethod() {
 		return this.method;
 	}

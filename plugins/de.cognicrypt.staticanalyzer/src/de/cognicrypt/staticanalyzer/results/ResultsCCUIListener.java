@@ -8,7 +8,9 @@ package de.cognicrypt.staticanalyzer.results;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.eclipse.core.resources.IProject;
@@ -42,7 +44,7 @@ import crypto.rules.CryptSLPredicate;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.Severities;
 import de.cognicrypt.staticanalyzer.Activator;
-import de.cognicrypt.staticanalyzer.statment.CCStatement;
+import de.cognicrypt.staticanalyzer.utils.CCStatement;
 import de.cognicrypt.utils.Utils;
 import de.cognicrypt.utils.XMLParser;
 import soot.SootClass;
@@ -95,6 +97,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
 		final CCStatement stmt = new CCStatement(errorLocation);
 		final int stmtId = stmt.hashCode();
+		HashMap<String, String> errorInfoMap = new HashMap<>();
+
 
 		/*
 		 * Adding of new marker types for new errors: 1) add new ErrorMarker extension
@@ -124,21 +128,27 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			markerType = Constants.CC_MARKER_TYPE;
 		}
 
-		final Severities sev = (markerType != Constants.IMPRECISE_VALUE_EXTRACTION_MARKER_TYPE) ? Severities.Problem
-				: Severities.Warning;
-
+		final Severities sev = (markerType != Constants.IMPRECISE_VALUE_EXTRACTION_MARKER_TYPE) ? Severities.Problem: Severities.Warning;
+		
+		if(markerType.equals(Constants.REQUIRED_PREDICATE_MARKER_TYPE)){
+			errorInfoMap.put("predicate", ((RequiredPredicateError) error).getContradictedPredicate().getPredName());
+			String parameter = stmt.getParameterVarNameByIndex(((RequiredPredicateError) error).getExtractedValues().getCallSite().getIndex());
+			errorInfoMap.put("errorParam", parameter);
+//			errorInfoMap.put("errorParamIndex", ""+((RequiredPredicateError) error).getExtractedValues().getCallSite().getIndex());
+		}
+		
 		this.warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator
 				+ Constants.SUPPRESSWARNING_FILE;
 		final File warningsFile = new File(this.warningFilePath);
 
 		if (!warningsFile.exists()) {
-			this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev);
+			this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap);
 		} else {
 			this.xmlParser = new XMLParser(warningsFile);
 			this.xmlParser.useDocFromFile();
 			if (!this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR)
 					.contains(stmtId + "")) {
-				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev);
+				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap);
 			} else {
 
 				// update existing LineNumber
@@ -184,7 +194,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 						"Object " + (varName.toString().startsWith("$r")
 								? " of Type " + var.getValue().getType().toQuotedString()
 								: varName) + " is secure.",
-						Severities.Secure);
+						Severities.Secure, new HashMap<>());
 	}
 
 	/**

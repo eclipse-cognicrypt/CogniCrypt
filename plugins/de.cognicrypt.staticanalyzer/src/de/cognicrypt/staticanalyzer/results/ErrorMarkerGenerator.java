@@ -6,6 +6,7 @@
 package de.cognicrypt.staticanalyzer.results;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -48,7 +49,7 @@ public class ErrorMarkerGenerator {
 	 *         successfully
 	 */
 	public boolean addMarker(final String markerType, final int id, final IResource sourceFile, final int line,
-			final String message, final Severities sev) {
+			final String message, final Severities sev, final HashMap<String, String> additionalErrorInfos) {
 
 		if (!sourceFile.exists() || !sourceFile.isAccessible()) {
 			Activator.getDefault().logError(Constants.NO_RES_FOUND);
@@ -58,12 +59,21 @@ public class ErrorMarkerGenerator {
 		IMarker marker;
 		try {
 			marker = sourceFile.createMarker(markerType);
+			marker.setAttribute("errorType", markerType);
+			
+			if(markerType.equals(Constants.REQUIRED_PREDICATE_MARKER_TYPE)) {
+				marker.setAttribute("predicate", additionalErrorInfos.get("predicate"));
+				marker.setAttribute("errorParam", additionalErrorInfos.get("errorParam"));
+//				marker.setAttribute("errorParamIndex", additionalErrorInfos.get("errorParamIndex"));
+
+			}
+			
 			marker.setAttribute(IMarker.LINE_NUMBER, line);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 			marker.setAttribute(IMarker.SEVERITY, (sev == Severities.Problem) ? IMarker.SEVERITY_ERROR : ((sev == Severities.Warning) ? IMarker.SEVERITY_WARNING : IMarker.SEVERITY_INFO));
 			marker.setAttribute(IMarker.SOURCE_ID, id);
-
+			
 		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 			return false;

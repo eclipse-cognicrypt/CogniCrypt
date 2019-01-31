@@ -155,13 +155,16 @@ public class StateMachineGraphBuilder {
 		} else if ((left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
 			StateNode leftPrev = prevNode;
 			
-			Entry<String, StateNode> orLevel = leftOvers.get(level).stream().filter(e -> "|".equals(e.getKey())).findFirst().get();
-			StateNode p = orLevel.getValue();
-			List<TransitionEdge> orEdges = getOutgoingEdges(prevNode, null);
-			if (!orEdges.isEmpty()) {
-				Optional<TransitionEdge> edge = orEdges.stream().filter(e -> e.getRight().equals(p)).findFirst();
-				if (edge.isPresent() && edge.get().getLabel().equals(CrySLReaderUtils.resolveAggregateToMethodeNames(getLeftMostChild(left).getOrderEv().get(0)))) {
-					leftOvers.put(level + 1, orLevel);
+			Optional<Entry<String, StateNode>> optionalOrLevel = leftOvers.get(level).stream().filter(e -> "|".equals(e.getKey())).findFirst();
+			if (optionalOrLevel.isPresent()) {
+				Entry<String, StateNode> orLevel = optionalOrLevel.get();
+				StateNode p = orLevel.getValue();
+				List<TransitionEdge> orEdges = getOutgoingEdges(prevNode, null);
+				if (!orEdges.isEmpty()) {
+					Optional<TransitionEdge> edge = orEdges.stream().filter(e -> e.getRight().equals(p)).findFirst();
+					if (edge.isPresent() && edge.get().getLabel().equals(CrySLReaderUtils.resolveAggregateToMethodeNames(getLeftMostChild(left).getOrderEv().get(0)))) {
+						leftOvers.put(level + 1, orLevel);
+					}
 				}
 			}
 			prevNode = process(left, level + 1, leftOvers, prevNode);

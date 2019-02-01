@@ -7,11 +7,13 @@
 <xsl:variable name="outputSize"> <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/algorithm[@type='Digest']/outputSize"/> </xsl:variable>
 
 <xsl:choose>
-	<xsl:when test="//task/code/server='true'">
-		<xsl:result-document href="serverConfig.properties">
-			pwd=<xsl:value-of select="//task/code/keystorepassword"/>
-		</xsl:result-document>
-	</xsl:when>
+<xsl:when test="//task/code/server='true'">
+<xsl:result-document href="serverConfig.properties"><xsl:if test="//task/code/ksgen='true'"># Please specify the keystore file
+keystore=</xsl:if>
+# Please specify the keystore's passphrase
+pwd=
+</xsl:result-document>
+</xsl:when>
 </xsl:choose>
 
 <xsl:variable name="filename"><xsl:choose><xsl:when test="//task/code/server='true'">serverConfig.properties</xsl:when><xsl:otherwise>clientConfig.properties</xsl:otherwise></xsl:choose></xsl:variable>
@@ -27,9 +29,10 @@ public class TLSServer {
 	private static SSLServerSocket sslServersocket = null;
 
 	public TLSServer(int port) {
-		System.setProperty("javax.net.ssl.keyStore", "<xsl:value-of select="//task/code/key"/>");
+		<xsl:if test="//task/code/ksgen='false'">System.setProperty("javax.net.ssl.keyStore", "<xsl:value-of select="//task/code/key"/>");</xsl:if>
 		InputStream input = null;
 		String pwd = null;
+		<xsl:if test="//task/code/ksgen='true'">String keystore = null;</xsl:if>
 		try {
 			// If you move the generated code in another package (default of CogniCrypt is Crypto),
 			// you need to change the parameter (replacing Crypto with the package name).
@@ -37,8 +40,9 @@ public class TLSServer {
 			Properties prop = new Properties();
 			prop.load(input);
 			pwd = prop.getProperty("pwd");
+			<xsl:if test="//task/code/ksgen='true'">keystore = prop.getProperty("keystore");</xsl:if>
 		} catch (IOException ex) {
-			System.err.println("Could not read keystore password from config.");
+			System.err.println("Could not read keystore properties from config.");
 			ex.printStackTrace();
 		} finally {
 			if (input != null) {
@@ -50,6 +54,7 @@ public class TLSServer {
 			}
 		}
 		System.setProperty("javax.net.ssl.keyStorePassword", pwd);
+		<xsl:if test="//task/code/ksgen='true'">System.setProperty("javax.net.ssl.keyStore", keystore);</xsl:if>
 		SSLServerSocketFactory sslServerSocketFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
 		try {
 			sslServersocket = (SSLServerSocket) sslServerSocketFactory.createServerSocket(port);
@@ -183,6 +188,11 @@ package <xsl:value-of select="//Package"/>;
 public class Output {
 
 	public static void templateUsage(
+		<xsl:if test="//task/code/ksgen='true'">
+			// You chose that you want to generate a new keystore. Please Follow Oracle's documenation on doing so:
+			// https://docs.oracle.com/cd/E19509-01/820-3503/ggfen/
+			// When you generated a new keystore, please make sure to add the path the keystore to the "serverConfig.properties" file
+		</xsl:if>
 		 <xsl:choose>
          <xsl:when test="//task/code/port"></xsl:when>
          <xsl:otherwise>,int port</xsl:otherwise></xsl:choose>) {

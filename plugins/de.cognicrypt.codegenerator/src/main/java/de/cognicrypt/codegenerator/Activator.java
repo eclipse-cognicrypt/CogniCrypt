@@ -12,8 +12,11 @@ package de.cognicrypt.codegenerator;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.BundleContext;
 
 public class Activator extends AbstractUIPlugin {
@@ -23,6 +26,8 @@ public class Activator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Activator plugin;
+	
+	private volatile ScopedPreferenceStore prefStore;
 
 	/**
 	 * Returns the shared instance
@@ -80,4 +85,18 @@ public class Activator extends AbstractUIPlugin {
 		Activator.plugin = null;
 		super.stop(context);
 	}
+
+	@Override
+	public IPreferenceStore getPreferenceStore() {
+		if (null == prefStore) {
+			synchronized(this) {
+				if (null == prefStore) {
+					prefStore = new ScopedPreferenceStore(ConfigurationScope.INSTANCE, PLUGIN_ID);
+				}
+			}
+		}
+		return prefStore;
+	}
+	
+	
 }

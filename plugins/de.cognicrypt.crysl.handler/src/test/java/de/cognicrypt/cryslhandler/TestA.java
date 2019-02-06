@@ -14,4 +14,19 @@ public class TestA {
 
 	}
 
+	public void d() {
+
+	}
+	
+	public void e() {
+
+	}
+	
+	public void f() {
+
+	}
+	
+	public void g() {
+
+	}
 }

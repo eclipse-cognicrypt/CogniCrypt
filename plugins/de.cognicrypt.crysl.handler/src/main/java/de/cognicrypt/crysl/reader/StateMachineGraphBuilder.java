@@ -137,7 +137,9 @@ public class StateMachineGraphBuilder {
 						}
 					}
 					for (final TransitionEdge outgoingEdge : outgoingEdges) {
-						addRegularEdge(outgoingEdge.getLabel(), prevNode, outgoingEdge.from(), true);
+						if (isReachable(prevNode, outgoingEdge.from(), new ArrayList<StateNode>())) {
+							addRegularEdge(outgoingEdge.getLabel(), prevNode, outgoingEdge.from(), true);
+						}
 					}
 
 				} else {

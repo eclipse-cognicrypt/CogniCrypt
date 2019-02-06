@@ -385,6 +385,14 @@ public class StateMachineGraphBuilder {
 			}
 			if (rightElOp != null && ("?".equals(rightElOp) || "*".equals(rightElOp))) {
 				setAcceptingState(rightPrev);
+				if (leftOvers.containsKey(level)) {
+					Optional<Entry<String, StateNode>> optLeftOver = leftOvers.get(level).stream().filter(e -> "*".equals(e.getKey()) || "?".equals(e.getKey())).findFirst();
+					if (optLeftOver.isPresent()) {
+						setAcceptingState(optLeftOver.get().getValue());
+					
+					}
+				}
+				
 			}
 
 		} else if (!(left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {

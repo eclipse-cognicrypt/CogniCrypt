@@ -55,9 +55,11 @@ public class StartupHandler implements IStartup {
 
 			if (!changedCrySLElements.isEmpty()) {
 				try {
-					new CrySLModelReader(changedCrySLElements.get(0));
+					IResource res = changedCrySLElements.get(0);
+					CrySLModelReader csmr = new CrySLModelReader(res.getProject());
+					csmr.readRules(res.getFullPath().toOSString());
 				}
-				catch (ClassNotFoundException | CoreException | IOException e) {
+				catch (CoreException | IOException e) {
 					Activator.getDefault().logError(e, "Updating CrySL rules failed.");
 				}
 

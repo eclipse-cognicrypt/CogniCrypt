@@ -5,11 +5,15 @@
 
 package de.cognicrypt.crysl.reader;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -31,6 +36,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.xtext.common.types.JvmExecutable;
 import org.eclipse.xtext.common.types.JvmFormalParameter;
+import org.eclipse.xtext.common.types.access.impl.ClasspathTypeProvider;
 import org.eclipse.xtext.common.types.access.jdt.IJavaProjectProvider;
 import org.eclipse.xtext.common.types.access.jdt.JdtTypeProviderFactory;
 import org.eclipse.xtext.resource.XtextResource;
@@ -61,6 +67,7 @@ import crypto.rules.TransitionEdge;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.crysl.handler.Activator;
 import de.cognicrypt.utils.Utils;
+import de.darmstadt.tu.crossing.CryptSLStandaloneSetup;
 import de.darmstadt.tu.crossing.CryptSL.ui.internal.CryptSLActivator;
 import de.darmstadt.tu.crossing.constraints.CrySLArithmeticOperator;
 import de.darmstadt.tu.crossing.constraints.CrySLComparisonOperator;
@@ -95,88 +102,126 @@ import de.darmstadt.tu.crossing.cryptSL.UseBlock;
 import de.darmstadt.tu.crossing.cryptSL.impl.ObjectImpl;
 
 public class CrySLModelReader {
-	
+
 	private List<CryptSLForbiddenMethod> forbiddenMethods = null;
 	private StateMachineGraph smg = null;
 	private String curClass = "";
+	private XtextResourceSet resourceSet;
+	private boolean testmode = false;
 
-	public CrySLModelReader(final IResource crySLFile) throws ClassNotFoundException, CoreException, IOException {
+	public CrySLModelReader(IProject iProject) throws CoreException, IOException {
 		final Injector injector = CryptSLActivator.getInstance().getInjector(CryptSLActivator.DE_DARMSTADT_TU_CROSSING_CRYPTSL);
-		final XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
+		resourceSet = injector.getInstance(XtextResourceSet.class);
 
-		IProject iproject = crySLFile.getProject();
-		if (iproject == null) {
+		if (iProject == null) {
 			// if no project selected abort with error message
-			iproject = Utils.complileListOfJavaProjectsInWorkspace().get(0);
+			iProject = Utils.complileListOfJavaProjectsInWorkspace().get(0);
 		}
-		if (iproject.isOpen()) {
-			resourceSet.setClasspathURIContext(JavaCore.create(iproject));
+		if (iProject.isOpen()) {
+			resourceSet.setClasspathURIContext(JavaCore.create(iProject));
 		}
 		new JdtTypeProviderFactory(injector.getInstance(IJavaProjectProvider.class)).createTypeProvider(resourceSet);
 
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-		final List<String> exceptions = new ArrayList<>();
-		exceptions.add("String.cryptsl");
 
-		final IPath rulesFolder = crySLFile.getFullPath().removeLastSegments(1);
-		
-		IResource[] members; // = ResourcesPlugin.getWorkspace().getRoot().getFolder(rulesFolder).members();
-		if (rulesFolder.segmentCount() == 1) {
-			members = crySLFile.getProject().members();
-		} else  {
-			members = ResourcesPlugin.getWorkspace().getRoot().getFolder(rulesFolder).members();
+	}
+
+	public CrySLModelReader() throws MalformedURLException {
+		CryptSLStandaloneSetup cryptSLStandaloneSetup = new CryptSLStandaloneSetup();
+		final Injector injector = cryptSLStandaloneSetup.createInjectorAndDoEMFRegistration();
+		this.resourceSet = injector.getInstance(XtextResourceSet.class);
+
+		String a = System.getProperty("java.class.path");
+		String[] l = a.split(";");
+
+		URL[] classpath = new URL[l.length];
+		for (int i = 0; i < classpath.length; i++) {
+			classpath[i] = new File(l[i]).toURI().toURL();
 		}
-		
-		for (final IResource res : members) {
-			final String extension = res.getFileExtension();
-			final String fileName = res.getName();
-			if (!"cryptsl".equals(extension) || exceptions.contains(fileName)) { // || !fileName.contains("Signature."))
-				// {
-				continue;
+
+		URLClassLoader ucl = new URLClassLoader(classpath);
+		this.resourceSet.setClasspathURIContext(new URLClassLoader(classpath));
+		new ClasspathTypeProvider(ucl, this.resourceSet, null, null);
+		this.resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
+
+		testmode = true;
+	}
+
+	public CryptSLRule readRule(File ruleFile) {
+		final String fileName = ruleFile.getName();
+		final String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+		if (!"cryptsl".equals(extension)) {
+			return null;
+		}
+		final Resource resource = resourceSet.getResource(URI.createFileURI(ruleFile.getAbsolutePath()), true);// URI.createPlatformResourceURI(ruleFile.getFullPath().toPortableString(),
+																																																						// true), true);
+		EcoreUtil.resolveAll(resourceSet);
+		final EObject eObject = resource.getContents().get(0);
+		final Domainmodel dm = (Domainmodel) eObject;
+		this.curClass = dm.getJavaType().getQualifiedName();
+		final EnsuresBlock ensure = dm.getEnsure();
+		final Map<ParEqualsPredicate, SuperType> pre_preds = Maps.newHashMap();
+		final DestroysBlock destroys = dm.getDestroy();
+		if (destroys != null) {
+			pre_preds.putAll(getKills(destroys.getPred()));
+		}
+		if (ensure != null) {
+			pre_preds.putAll(getPredicates(ensure.getPred()));
+		}
+
+		this.smg = buildStateMachineGraph(dm.getOrder());
+		final ForbiddenBlock forbEvent = dm.getForbEvent();
+		this.forbiddenMethods = (forbEvent != null) ? getForbiddenMethods(forbEvent.getForb_methods()) : Lists.newArrayList();
+
+		final List<ISLConstraint> constraints = (dm.getReqConstraints() != null) ? buildUpConstraints(dm.getReqConstraints().getReq()) : Lists.newArrayList();
+		constraints.addAll(((dm.getRequire() != null) ? collectRequiredPredicates(dm.getRequire().getPred()) : Lists.newArrayList()));
+		final List<Entry<String, String>> objects = getObjects(dm.getUsage());
+
+		final List<CryptSLPredicate> actPreds = Lists.newArrayList();
+
+		for (final ParEqualsPredicate pred : pre_preds.keySet()) {
+			final SuperType cond = pre_preds.get(pred);
+			if (cond == null) {
+				actPreds.add(pred.tobasicPredicate());
+			} else {
+				actPreds.add(new CryptSLCondPredicate(pred.getBaseObject(), pred.getPredName(), pred.getParameters(), pred.isNegated(),
+						getStatesForMethods(CrySLReaderUtils.resolveAggregateToMethodeNames(cond))));
 			}
-			final Resource resource = resourceSet.getResource(URI.createPlatformResourceURI(rulesFolder.toPortableString() + Constants.outerFileSeparator + fileName, true), true);
-			EcoreUtil.resolveAll(resourceSet);
-			final EObject eObject = resource.getContents().get(0);
-			final Domainmodel dm = (Domainmodel) eObject;
-			this.curClass = dm.getJavaType().getQualifiedName();
-			final EnsuresBlock ensure = dm.getEnsure();
-			final Map<ParEqualsPredicate, SuperType> pre_preds = Maps.newHashMap();
-			final DestroysBlock destroys = dm.getDestroy();
-			if (destroys != null) {
-				pre_preds.putAll(getKills(destroys.getPred()));
-			}
-			if (ensure != null) {
-				pre_preds.putAll(getPredicates(ensure.getPred()));
-			}
+		}
+		final CryptSLRule rule = new CryptSLRule(this.curClass, objects, this.forbiddenMethods, this.smg, constraints, actPreds);
+		System.out.println(rule);
+		System.out.println("===========================================");
+		System.out.println("");
 
-			this.smg = buildStateMachineGraph(dm.getOrder());
-			final ForbiddenBlock forbEvent = dm.getForbEvent();
-			this.forbiddenMethods = (forbEvent != null) ? getForbiddenMethods(forbEvent.getForb_methods()) : Lists.newArrayList();
-
-			final List<ISLConstraint> constraints = (dm.getReqConstraints() != null) ? buildUpConstraints(dm.getReqConstraints().getReq()) : Lists.newArrayList();
-			constraints.addAll(((dm.getRequire() != null) ? collectRequiredPredicates(dm.getRequire().getPred()) : Lists.newArrayList()));
-			final List<Entry<String, String>> objects = getObjects(dm.getUsage());
-
-			final List<CryptSLPredicate> actPreds = Lists.newArrayList();
-
-			for (final ParEqualsPredicate pred : pre_preds.keySet()) {
-				final SuperType cond = pre_preds.get(pred);
-				if (cond == null) {
-					actPreds.add(pred.tobasicPredicate());
-				} else {
-					actPreds.add(new CryptSLCondPredicate(pred.getBaseObject(), pred.getPredName(), pred.getParameters(), pred.isNegated(),
-							getStatesForMethods(CrySLReaderUtils.resolveAggregateToMethodeNames(cond))));
-				}
-			}
-			final CryptSLRule rule = new CryptSLRule(this.curClass, objects, this.forbiddenMethods, this.smg, constraints, actPreds);
-			System.out.println(rule);
-			System.out.println("===========================================");
-			System.out.println("");
-
+		if (!testmode) {
 			final String className = fileName.substring(0, fileName.indexOf(extension) - 1);
 			storeRuletoFile(rule, Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath(), className);
 		}
+		return rule;
+	}
 
+	public List<CryptSLRule> readRules(String resourcesPath) throws CoreException {
+
+		final IPath rulesFolder = (new org.eclipse.core.runtime.Path(resourcesPath)).removeLastSegments(1);
+
+		IResource[] members = null;
+		if (rulesFolder.segmentCount() == 1) {
+			// members = crySLFile.getProject().members();
+		} else {
+			members = ResourcesPlugin.getWorkspace().getRoot().getFolder(rulesFolder).members();
+		}
+
+		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
+		for (final IResource res : members) {
+			if ("cryptsl".equals(res.getFileExtension())) {
+				CryptSLRule rule = readRule(((IFile) res).getRawLocation().makeAbsolute().toFile());
+				if (rule != null) {
+					rules.add(rule);
+				}
+			}
+		}
+
+		return null;
 	}
 
 	private StateMachineGraph buildStateMachineGraph(final Expression order) {

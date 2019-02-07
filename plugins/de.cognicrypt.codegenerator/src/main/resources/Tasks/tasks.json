@@ -5,6 +5,7 @@
 			"taskDescription": "This cryptographic task generates code encrypts data. Depending on the exact use-case, it either combines secret and public-key encryption or makes use of password-based encryption.",			
 			"modelFile" : "src/main/resources/ClaferModel/Encryption.js",
 			"questionsJSONFile" : "src/main/resources/TaskDesc/Encryption.json",
+			"image" : "lock",
 			"additionalResources" : "",
 			"xslFile" : "src/main/resources/XSLTemplates/Encryption.xsl"
 		},
@@ -14,6 +15,7 @@
 			"taskDescription": "Prepare a password for authentication or database storage.",
 			"modelFile" : "src/main/resources/ClaferModel/SecurePassword.js",
 			"questionsJSONFile" : "src/main/resources/TaskDesc/SecurePassword.json",
+			"image" : "key",
 			"additionalResources" : "",
 			"xslFile" : "src/main/resources/XSLTemplates/SecurePassword.xsl"	
 		},
@@ -23,15 +25,7 @@
 			"taskDescription": "Establish a secure communication channel (e.g., TLS/SSL connection).",
 			"modelFile" : "src/main/resources/ClaferModel/SecureCommunication.js",
 			"questionsJSONFile" : "src/main/resources/TaskDesc/SecureCommunication.json",
-			"additionalResources" : "",
-			"xslFile" : "src/main/resources/XSLTemplates/SecureCommunication.xsl"
-		},
-		{
-			"name": "Experimental",
-			"description": "",
-			"taskDescription": "This category comprises experimental algorithms and use cases that where developed with the CROSSING research project.",
-			"modelFile" : "src/main/resources/ClaferModel/SecureCommunication.js",
-			"questionsJSONFile" : "src/main/resources/TaskDesc/SecureCommunication.json",
+			"image" : "wifi",
 			"additionalResources" : "",
 			"xslFile" : "src/main/resources/XSLTemplates/SecureCommunication.xsl"
 		},
@@ -42,7 +36,18 @@
 			"taskDescription": "This cryptographic task generates code that allows for the signing of data. A new key pair is generated for the signature and you may also get code for verification generated.",			
 			"modelFile" : "src/main/resources/ClaferModel/DigitalSignatures.js",
 			"questionsJSONFile" : "src/main/resources/TaskDesc/DigitalSignatures.json",
+			"image" : "signing",
 			"additionalResources" : "",
 			"xslFile" : "src/main/resources/XSLTemplates/DigitalSignatures.xsl"
+		},
+		{
+			"name" : "SECMUPACOMP",
+			"description" : "Secure multi party computation",
+			"taskDescription" : "This task generates code which enables secure multi party computation.",
+			"modelFile": "src/main/resources/ClaferModel/SECMUPACOMP.js",
+			"questionsJSONFile" : "src/main/resources/TaskDesc/SECMUPACOMP.json",
+			"image" : "mpc",
+			"additionalResources" : "",
+			"xslFile" : "src/main/resources/XSLTemplates/SECMUPACOMP.xsl" 
 		}
 ]

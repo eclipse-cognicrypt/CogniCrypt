@@ -7,16 +7,13 @@
 <xsl:variable name="outputSize"> <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/algorithm[@type='Digest']/outputSize"/> </xsl:variable>
 
 <xsl:choose>
-	<xsl:when test="//task/code/server='true'">
-		<xsl:result-document href="serverConfig.properties">
-			pwd="<xsl:value-of select="//task/code/keystorepassword"/>"
-		</xsl:result-document>
-	</xsl:when>
-	<xsl:otherwise>
-		<xsl:result-document href="clientConfig.properties">
-			pwd="<xsl:value-of select="//task/code/keystorepassword"/>"
-		</xsl:result-document>
-	</xsl:otherwise>
+<xsl:when test="//task/code/server='true'">
+<xsl:result-document href="serverConfig.properties"><xsl:if test="//task/code/ksgen='true'"># Please specify the keystore file
+keystore=</xsl:if>
+# Please specify the keystore's passphrase
+pwd=
+</xsl:result-document>
+</xsl:when>
 </xsl:choose>
 
 <xsl:variable name="filename"><xsl:choose><xsl:when test="//task/code/server='true'">serverConfig.properties</xsl:when><xsl:otherwise>clientConfig.properties</xsl:otherwise></xsl:choose></xsl:variable>
@@ -30,88 +27,88 @@ package <xsl:value-of select="//task/Package"/>;
 /** @author CogniCrypt */
 public class TLSServer {	
 	private static SSLServerSocket sslServersocket = null;
-	private static List&lt;TLSConnection&gt; sslConnections = null;
-	private static Properties prop = new Properties();
-	private static InputStream input = null;
-	private static String pwd = null; 
-			
+
 	public TLSServer(int port) {
-			System.setProperty("javax.net.ssl.keyStore","<xsl:value-of select="//task/code/keystore"/>");
-			try {
-				// If you move the generated code in another package (default of CogniCrypt is Crypto),
-				// you need to change the parameter (replacing Crypto with the package name).
-				input = Object.class.getClass().getResourceAsStream("/Crypto/serverConfig.properties");
-				prop.load(input);
-				pwd = prop.getProperty("pwd"); 
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			} finally {
-				if (input != null) {
-					try {
-						input.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+		<xsl:if test="//task/code/ksgen='false'">System.setProperty("javax.net.ssl.keyStore", "<xsl:value-of select="//task/code/key"/>");</xsl:if>
+		InputStream input = null;
+		String pwd = null;
+		<xsl:if test="//task/code/ksgen='true'">String keystore = null;</xsl:if>
+		try {
+			// If you move the generated code in another package (default of CogniCrypt is Crypto),
+			// you need to change the parameter (replacing Crypto with the package name).
+			input = Object.class.getClass().getResourceAsStream("/Crypto/serverConfig.properties");
+			Properties prop = new Properties();
+			prop.load(input);
+			pwd = prop.getProperty("pwd");
+			<xsl:if test="//task/code/ksgen='true'">keystore = prop.getProperty("keystore");</xsl:if>
+		} catch (IOException ex) {
+			System.err.println("Could not read keystore properties from config.");
+			ex.printStackTrace();
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
-        	System.setProperty("javax.net.ssl.keyStorePassword",pwd);
-	        SSLServerSocketFactory sslServerSocketFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+		}
+		System.setProperty("javax.net.ssl.keyStorePassword", pwd);
+		<xsl:if test="//task/code/ksgen='true'">System.setProperty("javax.net.ssl.keyStore", keystore);</xsl:if>
+		SSLServerSocketFactory sslServerSocketFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
 		try {
-			sslServersocket = (SSLServerSocket) sslServerSocketFactory.createServerSocket(<xsl:choose><xsl:when test="//task/code/port"><xsl:value-of select="//task/code/port"/></xsl:when>
-         <xsl:otherwise>port</xsl:otherwise>
-		 </xsl:choose>
-         );
-         
+			sslServersocket = (SSLServerSocket) sslServerSocketFactory.createServerSocket(port);
+
 			setCipherSuites();
 			setProtocols();
-			
-			sslConnections = new ArrayList&lt;TLSConnection&gt;();
-			startAcceptingConnections();
 		} catch (IOException ex) {
-			System.out.println("Connection to server could not be established. Please check whether the ip/hostname and port are correct");
+			System.out.println(
+					"Connection to server could not be established. Please check whether the ip/hostname and port are correct");
 			ex.printStackTrace();
 		}
 	}
-	
-	private static void startAcceptingConnections() throws IOException {
+
+	public void startAcceptingConnections() {
+		System.out.println("Accepting connections now.");
 		while (true) {
-			sslConnections.add(new TLSConnection((SSLSocket) sslServersocket.accept()));
+			try {
+				Socket incoming = sslServersocket.accept();
+				Thread newConnectionHandler = new Thread() {
+
+					@Override
+					public void run() {
+						TLSConnection tlsConnection = new TLSConnection((SSLSocket) incoming);
+						System.out.println(
+								"Accepted connection from " + tlsConnection.getSource().getHostAddress() + ".");
+						tlsConnection.receiveData();
+					}
+				};
+
+				newConnectionHandler.start();
+			} catch (IOException e) {
+				System.err.println("Establishing connection with client failed.");
+			}
 		}
 	}
 
-	public List&lt;TLSConnection&gt; getCurrentConnections() {
-		return sslConnections;
-	}
-        
-    private void setCipherSuites() {
+	private void setCipherSuites() {
 		if (sslServersocket != null) {
-		//Insert cipher suites here
-		sslServersocket.setEnabledCipherSuites(new String[]{
-	"TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384", "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384", "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256", 
-	"TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256", "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256", "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256", 
-	"TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",  "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384", "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256", 
-	"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256"
-	<xsl:if test="//task/code/legacy='true'">
-	, "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA", "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA", "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
-	"TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA", "TLS_DHE_RSA_WITH_AES_128_CBC_SHA256", "TLS_DHE_RSA_WITH_AES_128_CBC_SHA", 
-	"TLS_DHE_RSA_WITH_AES_256_CBC_SHA256", "TLS_DHE_RSA_WITH_AES_CBC_256_SHA", "TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA", 
-	"TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA", "TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA", "TLS_RSA_WITH_AES_128_GCM_SHA256", 
-	"TLS_RSA_WITH_AES_256_GCM_SHA384",  "TLS_RSA_WITH_AES_256_CBC_SHA256", "TLS_RSA_WITH_AES_128_CBC_SHA", 
-	"TLS_RSA_WITH_3DES_EDE_CBC_SHA"
-	</xsl:if>
-		});
+			// Insert cipher suites here
+			sslServersocket.setEnabledCipherSuites(
+					new String[] { "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384", "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+							"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256", "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+							"TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384", "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
+							"TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256", "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256"
+
+					});
 		}
 	}
 
 	private void setProtocols() {
 		if (sslServersocket != null) {
-			//Insert TLSxx here
-			sslServersocket.setEnabledProtocols( new String[]{
-			"TLSv1.2" 
-			<xsl:if test="//task/element/tlsProtocol='TLSv10'">
-			, "TLSv1.1", "TLSv1.0"
-			</xsl:if>
-			} );
+			// Insert TLSxx here
+			sslServersocket.setEnabledProtocols(new String[] { "TLSv1.2"<xsl:if test="//task/element/tlsProtocol='TLSv10'">
+			,"TLSv1.1", "TLSv1"</xsl:if> });
 		}
 	}
 }
@@ -123,14 +120,19 @@ package <xsl:value-of select="//task/Package"/>;
 /** @author CogniCrypt */
 public class TLSConnection {
 
-	private SSLSocket sslSocket = null; 
+	private SSLSocket sslSocket = null;
 	private static BufferedWriter bufW = null;
 	private static BufferedReader bufR = null;
 
 	public TLSConnection(SSLSocket con) {
 		sslSocket = con;
+		try {
+			bufW = new BufferedWriter(new OutputStreamWriter(sslSocket.getOutputStream()));
+			bufR = new BufferedReader(new InputStreamReader(sslSocket.getInputStream()));
+		} catch (IOException e) {
+		}
 	}
-	
+
 	public void closeConnection() {
 		try {
 			if (!sslSocket.isClosed()) {
@@ -155,13 +157,27 @@ public class TLSConnection {
 	}
 
 	public String receiveData() {
+		String readLine = null;
 		try {
-			return bufR.readLine();
+			readLine = bufR.readLine();
 		} catch (IOException ex) {
 			System.out.println("Receiving data failed.");
 			ex.printStackTrace();
-			return null;
 		}
+
+		if (readLine == null) {
+			this.closeConnection();
+		}
+
+		return readLine;
+	}
+
+	public InetAddress getSource() {
+		return sslSocket.getInetAddress();
+	}
+
+	public boolean isClosed() {
+		return sslSocket.isClosed();
 	}
 
 }
@@ -171,7 +187,12 @@ package <xsl:value-of select="//Package"/>;
 <xsl:apply-templates select="//Import"/>	
 public class Output {
 
-	public void templateUsage(
+	public static void templateUsage(
+		<xsl:if test="//task/code/ksgen='true'">
+			// You chose that you want to generate a new keystore. Please Follow Oracle's documenation on doing so:
+			// https://docs.oracle.com/cd/E19509-01/820-3503/ggfen/
+			// When you generated a new keystore, please make sure to add the path the keystore to the "serverConfig.properties" file
+		</xsl:if>
 		 <xsl:choose>
          <xsl:when test="//task/code/port"></xsl:when>
          <xsl:otherwise>,int port</xsl:otherwise></xsl:choose>) {
@@ -179,7 +200,7 @@ public class Output {
 		 TLSServer tls = new TLSServer(<xsl:choose><xsl:when test="//task/code/port"><xsl:value-of select="//task/code/port"/></xsl:when>
          <xsl:otherwise>port</xsl:otherwise></xsl:choose>);
 		 
-		 tls.getCurrentConnections();
+		 tls.startAcceptingConnections();
 		
 	}
 }
@@ -191,44 +212,16 @@ public class Output {
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
 /** @author CogniCrypt */
-public class TLSClient {	
+
+public class TLSClient {
 	private static SSLSocket sslsocket = null;
 	private static BufferedWriter bufW = null;
 	private static BufferedReader bufR = null;
-	
-		
-	public TLSClient(<xsl:choose>
-         <xsl:when test="//task/code/host"></xsl:when>
-         <xsl:otherwise> String host</xsl:otherwise>
-		 </xsl:choose>
-		 <xsl:choose>
-         <xsl:when test="//task/code/port"></xsl:when>
-         <xsl:otherwise>,int port</xsl:otherwise>
-		 </xsl:choose>
-		 	) {
-			Properties prop = new Properties();
-			InputStream input = null;
-			String pwd = null;
-			System.setProperty("javax.net.ssl.trustStore","<xsl:value-of select="//task/code/keystore"/>");
-			try {
-				// If you move the generated code in another package (default of CogniCrypt is Crypto),
-				// you need to change the parameter (replacing Crypto with the package name).
-				input = Object.class.getClass().getResourceAsStream("/Crypto/clientConfig.properties");
-				prop.load(input);
-				pwd = prop.getProperty("pwd"); 
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			} finally {
-				if (input != null) {
-					try {
-						input.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-          System.setProperty("javax.net.ssl.trustStorePassword",pwd);
-	        SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+
+	public TLSClient(<xsl:choose><xsl:when test="//task/code/host"></xsl:when><xsl:otherwise> String host</xsl:otherwise>
+		 </xsl:choose><xsl:choose><xsl:when test="//task/code/port"></xsl:when><xsl:otherwise>,int port</xsl:otherwise></xsl:choose>) {
+		System.setProperty("javax.net.ssl.trustStore", "<xsl:value-of select="//task/code/key"/>");
+		SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 		try {
 			sslsocket = (SSLSocket) sslsocketfactory.createSocket(<xsl:choose>
          <xsl:when test="//task/code/host">
@@ -238,65 +231,57 @@ public class TLSClient {
         <xsl:choose>
          <xsl:when test="//task/code/port"><xsl:value-of select="//task/code/port"/></xsl:when>
          <xsl:otherwise>port</xsl:otherwise>
-		 </xsl:choose>
-         );
+</xsl:choose>);
 			setCipherSuites();
 			setProtocols();
-			sslsocket.startHandshake();
-	        bufW = new BufferedWriter(new OutputStreamWriter(sslsocket.getOutputStream()));
-	        bufR = new BufferedReader(new InputStreamReader(sslsocket.getInputStream()));
+			bufW = new BufferedWriter(new OutputStreamWriter(sslsocket.getOutputStream()));
+			bufR = new BufferedReader(new InputStreamReader(sslsocket.getInputStream()));
 		} catch (IOException ex) {
-			System.out.println("Connection to server could not be established. Please check whether the ip/hostname and port are correct");
+			System.out.println(
+					"Connection to server could not be established. Please check whether the ip/hostname and port are correct");
 			ex.printStackTrace();
 		}
-	        
-        }
-        
-        private void setCipherSuites() {
+
+	}
+
+	private void setCipherSuites() {
 		if (sslsocket != null) {
-			//Insert cipher suites here
-			sslsocket.setEnabledCipherSuites(new String[]{
-				"TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384", "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384", "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256", 
-	"TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256", "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256", "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256", 
-	"TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",  "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384", "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256", 
-	"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256"
-	<xsl:if test="//task/code/legacy='true'">
-	, "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA", "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA", "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
-	"TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA", "TLS_DHE_RSA_WITH_AES_128_CBC_SHA256", "TLS_DHE_RSA_WITH_AES_128_CBC_SHA", 
-	"TLS_DHE_RSA_WITH_AES_256_CBC_SHA256", "TLS_DHE_RSA_WITH_AES_CBC_256_SHA", "TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA", 
-	"TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA", "TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA", "TLS_RSA_WITH_AES_128_GCM_SHA256", 
-	"TLS_RSA_WITH_AES_256_GCM_SHA384",  "TLS_RSA_WITH_AES_256_CBC_SHA256", "TLS_RSA_WITH_AES_128_CBC_SHA", 
-	"TLS_RSA_WITH_3DES_EDE_CBC_SHA"
-	</xsl:if>
-});
+			// Insert cipher suites here
+			sslsocket.setEnabledCipherSuites(new String[] { "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+					"TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384", "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+					"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256", "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
+					"TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384", "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+					"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256"
+
+			});
 		}
 	}
 
 	private void setProtocols() {
 		if (sslsocket != null) {
-			//Insert TLSxx here
-			sslsocket.setEnabledProtocols( new String[]{
-			"TLSv1.2" 
+			// Insert TLSxx here
+			sslsocket.setEnabledProtocols(new String[] { "TLSv1.2"
 			<xsl:if test="//task/element/tlsProtocol='TLSv10'">
-			, "TLSv1.1", "TLSv1.0"
+			,"TLSv1.1", "TLSv1"
 			</xsl:if>
-			} );
+			});
 		}
 	}
-	
+
 	public void closeConnection() {
 		try {
-		if (!sslsocket.isClosed()) {
-			sslsocket.close();
-		}
+			if (!sslsocket.isClosed()) {
+				sslsocket.close();
+			}
 		} catch (IOException ex) {
 			System.out.println("Could not close channel.");
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public boolean sendData(String content) {
 		try {
+			System.out.println("Sending Message.");
 			bufW.write(content + "\n");
 			bufW.flush();
 			return true;
@@ -306,7 +291,7 @@ public class TLSClient {
 			return false;
 		}
 	}
-	
+
 	public String receiveData() {
 		try {
 			return bufR.readLine();
@@ -324,14 +309,18 @@ package <xsl:value-of select="//Package"/>;
 <xsl:apply-templates select="//Import"/>	
 public class Output {
 
-	public void templateUsage(<xsl:choose>
+	public static void templateUsage(<xsl:choose>
          <xsl:when test="//task/code/host"></xsl:when>
          <xsl:otherwise>String host</xsl:otherwise>
 		 </xsl:choose>
 		 <xsl:choose>
          <xsl:when test="//task/code/port"></xsl:when>
          <xsl:otherwise>,int port</xsl:otherwise></xsl:choose>) {
-         //You need to set the right host (first parameter) and the port name (second parameter). If you wish to pass a IP address, please use overload with InetAdress as second parameter instead of string.
+        
+         <xsl:choose>
+         <xsl:when test="//task/code/host">//You need to set the right host (first parameter) and the port name (second parameter). If you wish to pass a IP address, please use overload with InetAdress as second parameter instead of string.</xsl:when>
+		 </xsl:choose> 
+		 
 		 TLSClient tls = new TLSClient(<xsl:choose>
          <xsl:when test="//task/code/host"></xsl:when>
          <xsl:otherwise>host</xsl:otherwise>
@@ -341,10 +330,10 @@ public class Output {
          <xsl:otherwise>, port</xsl:otherwise>
 		 </xsl:choose>);
 		 
-		 Boolean sendingSuccessful = tls.sendData("");
-		 String data = tls.receiveData();
+		 boolean sendingSuccessful = tls.sendData(""); // This call sends the passed message over the connection.
+		 String data = tls.receiveData(); //This call makes the socket listen for incoming messages.
 		
-		tls.closeConnection();		
+		tls.closeConnection(); // This call properly closes the connection. Do not forget it.		
 	}
 	
 	
@@ -425,7 +414,7 @@ package <xsl:value-of select="//Package"/>;
 <xsl:apply-templates select="//Import"/>	
 public class Output {
 
-	public void templateUsage(<xsl:choose>
+	public static void templateUsage(<xsl:choose>
          <xsl:when test="//task/code/host"></xsl:when>
          <xsl:otherwise>String host</xsl:otherwise>
 		 </xsl:choose>) {

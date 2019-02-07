@@ -123,7 +123,6 @@ public class CrySLModelReader {
 		new JdtTypeProviderFactory(injector.getInstance(IJavaProjectProvider.class)).createTypeProvider(resourceSet);
 
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-
 	}
 
 	public CrySLModelReader() throws MalformedURLException {

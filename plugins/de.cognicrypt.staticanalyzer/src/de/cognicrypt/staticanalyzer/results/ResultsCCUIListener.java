@@ -134,7 +134,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			errorInfoMap.put("predicate", ((RequiredPredicateError) error).getContradictedPredicate().getPredName());
 			String parameter = stmt.getParameterVarNameByIndex(((RequiredPredicateError) error).getExtractedValues().getCallSite().getIndex());
 			errorInfoMap.put("errorParam", parameter);
-//			errorInfoMap.put("errorParamIndex", ""+((RequiredPredicateError) error).getExtractedValues().getCallSite().getIndex());
 		}
 		
 		this.warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator

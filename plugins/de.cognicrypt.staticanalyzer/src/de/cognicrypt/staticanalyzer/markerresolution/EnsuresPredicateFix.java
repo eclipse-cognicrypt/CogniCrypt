@@ -42,7 +42,6 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 	private DeveloperProject devProject;
 	private static String predicate;
 	private static String errorParamVarName;
-	// private static int errorParamIndex;
 	private static final String INVOKE_METHOD_NAME = "ensuresPredicate";
 	private static final String INJAR_CLASS_NAME = "CC";
 	private static final String VARIABLE_DECLARATION_NAME = "cc";
@@ -72,9 +71,6 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 			lineNumber = (int) marker.getAttribute(IMarker.LINE_NUMBER);
 			EnsuresPredicateFix.predicate = (String) marker.getAttribute("predicate");
 			EnsuresPredicateFix.errorParamVarName = (String) marker.getAttribute("errorParam");
-			// this.errorParamIndex = Integer.parseInt((String)
-			// marker.getAttribute("errorParamIndex"));
-
 		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
@@ -117,7 +113,6 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 					index = index.getParent();
 				}
 			}
-
 			listRewrite.insertBefore(ePStatement, index, null);
 
 		} else if (node.getNodeType() == ASTNode.FIELD_DECLARATION) {

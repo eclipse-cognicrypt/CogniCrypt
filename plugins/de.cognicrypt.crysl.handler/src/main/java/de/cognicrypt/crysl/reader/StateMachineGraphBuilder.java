@@ -294,9 +294,12 @@ public class StateMachineGraphBuilder {
 		if (left == null && right == null) {
 			final String elOp = curLevel.getElementop();
 			if ("*".equals(elOp) || "?".equals(elOp)) {
-				addRegularEdge(curLevel, prevNode, null, true);
+				prevNode = addRegularEdge(curLevel, prevNode, null, true);
 			} else {
 				addRegularEdge(curLevel, prevNode, null);
+			}
+			if ("*".equals(elOp) || "+".equals(elOp)) {
+				addRegularEdge(curLevel, prevNode, prevNode, true);
 			}
 		} else if ((left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
 			final StateNode leftPrev = prevNode;

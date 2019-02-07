@@ -123,11 +123,8 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 			final ListRewrite listRewrite = rewriter.getListRewrite(((TypeDeclaration) unit.types().get(0)),
 					TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
 			listRewrite.insertBefore(ePStatementFieldDec, node, null);
-
-		} else {
-
 		}
-
+		
 		final TextEdit edits = rewriter.rewriteAST();
 		final Document document = new Document(sourceUnit.getSource());
 		edits.apply(document);
@@ -222,12 +219,11 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 
 		@Override
 		public boolean visit(final MethodInvocation node) {
-			if (this.sourceFound == false) {
+			if (!this.sourceFound) {
 				if (this.lineNumber == this.unit.getLineNumber(node.getStartPosition())) {
 					try {
 						this.sourceFound = true;
 						addMethodEnsuresPredicate(node, this.unit, this.sourceUnit);
-						return false;
 					} catch (JavaModelException | IllegalArgumentException | MalformedTreeException
 							| BadLocationException e) {
 						Activator.getDefault().logError(e);
@@ -244,12 +240,11 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 
 		@Override
 		public boolean visit(final ClassInstanceCreation node) {
-			if (this.sourceFound == false) {
+			if (!this.sourceFound) {
 				if (this.lineNumber == this.unit.getLineNumber(node.getStartPosition())) {
 					try {
 						this.sourceFound = true;
 						addMethodEnsuresPredicate(node, this.unit, this.sourceUnit);
-						return false;
 					} catch (JavaModelException | IllegalArgumentException | MalformedTreeException
 							| BadLocationException e) {
 						Activator.getDefault().logError(e);
@@ -266,12 +261,11 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 
 		@Override
 		public boolean visit(final FieldDeclaration node) {
-			if (this.sourceFound == false) {
+			if (!this.sourceFound) {
 				if (this.lineNumber == this.unit.getLineNumber(node.getStartPosition())) {
 					try {
 						this.sourceFound = true;
 						addMethodEnsuresPredicate(node, this.unit, this.sourceUnit);
-						return false;
 					} catch (JavaModelException | IllegalArgumentException | MalformedTreeException
 							| BadLocationException e) {
 						Activator.getDefault().logError(e);

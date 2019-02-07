@@ -214,9 +214,79 @@ public class SMGBuilderTests {
 		s.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {afp}), four, six));
 		s.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), six, five));
 		
-		System.out.println(s);
 		StateMachineGraph actualUsagePattern = r.getUsagePattern();
 		Assert.assertEquals(s.getAllTransitions(), actualUsagePattern.getAllTransitions());
 	}
 	
+	@Test
+	public void mockCipherInputStreamRule() {
+		File ruleFile = new File("src/test/resources/Testrule6.cryptsl");
+		System.out.println(ruleFile.exists());
+		CryptSLRule r = csmr.readRule(ruleFile);
+		
+		StateMachineGraph s = new StateMachineGraph();
+		StateNode minusOne = new StateNode("-1", true);
+		StateNode zero = new StateNode("0", false );
+		StateNode one = new StateNode("1", false);
+		StateNode two = new StateNode("2", false, true);
+
+		s.addNode(minusOne);
+		s.addNode(zero);
+		s.addNode(one);
+		s.addNode(two);
+		
+		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(), new HashMap.SimpleEntry<String, String>("_", "void"));
+		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(), new HashMap.SimpleEntry<String, String>("_", "void"));
+		CryptSLMethod acp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(), new HashMap.SimpleEntry<String, String>("_", "void"));
+		
+		s.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
+		
+		s.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
+		s.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), one, one));
+		
+		s.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), one, two));
+		
+		StateMachineGraph actualUsagePattern = r.getUsagePattern();
+		Assert.assertEquals(s.getAllTransitions(), actualUsagePattern.getAllTransitions());
+	}
+	
+	@Test
+	public void mockKeyPairRule() {
+		File ruleFile = new File("src/test/resources/Testrule7.cryptsl");
+		System.out.println(ruleFile.exists());
+		CryptSLRule r = csmr.readRule(ruleFile);
+		
+		StateMachineGraph s = new StateMachineGraph();
+		StateNode minusOne = new StateNode("-1", true, true);
+		StateNode zero = new StateNode("0", false, true);
+		StateNode one = new StateNode("1", false, true);
+		StateNode two = new StateNode("2", false, true);
+
+		s.addNode(minusOne);
+		s.addNode(zero);
+		s.addNode(one);
+		s.addNode(two);
+		
+		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(), new HashMap.SimpleEntry<String, String>("_", "void"));
+		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(), new HashMap.SimpleEntry<String, String>("_", "void"));
+		CryptSLMethod acp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(), new HashMap.SimpleEntry<String, String>("_", "void"));
+		
+		s.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
+		
+		s.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
+		s.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), one, one));
+		
+		s.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), one, two));
+		s.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), two, two));
+		s.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), zero, two));
+		s.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), two, one));
+		
+		s.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), minusOne, one));
+		s.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), minusOne, two));
+		
+		System.out.println(s);
+		
+		StateMachineGraph actualUsagePattern = r.getUsagePattern();
+		Assert.assertEquals(s.getAllTransitions(), actualUsagePattern.getAllTransitions());
+	}
 }

@@ -305,7 +305,12 @@ public class StateMachineGraphBuilder {
 			final StateNode leftPrev = prevNode;
 			prevNode = process(left, level + 1, leftOvers, prevNode);
 			final StateNode rightPrev = prevNode;
-			prevNode = process(right, level + 1, leftOvers, prevNode);
+			if ("|".equals(orderOp)) {
+				prevNode = process(right, level + 1, leftOvers, leftPrev);
+			} else {
+				prevNode = process(right, level + 1, leftOvers, prevNode);	
+			}
+			
 
 			if ("*".equals(rightElOp) || "?".equals(rightElOp)) {
 				setAcceptingState(rightPrev);

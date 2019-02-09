@@ -335,7 +335,11 @@ public class StateMachineGraphBuilder {
 			final StateNode leftPrev = prevNode;
 			prevNode = process(left, level + 1, leftOvers, prevNode);
 			final StateNode rightPrev = prevNode;
-			prevNode = addRegularEdge(right, prevNode, null);
+			if ("|".equals(orderOp)) {
+				prevNode = addRegularEdge(right, leftPrev, prevNode);
+			} else {
+				prevNode = addRegularEdge(right, prevNode, null);
+			}
 			for (Entry<String, StateNode> a : leftOvers.get(level).stream().filter(e -> "*".equals(e.getKey())).collect(Collectors.toList())) {
 				addRegularEdge(right, a.getValue(), prevNode, true);
 			}

@@ -5,11 +5,22 @@
 
 package de.cognicrypt.crysl.reader;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import crypto.rules.CryptSLMethod;
+import crypto.rules.CryptSLRule;
+import de.cognicrypt.core.Activator;
+import de.cognicrypt.core.Constants;
 import de.darmstadt.tu.crossing.cryptSL.Aggregate;
 import de.darmstadt.tu.crossing.cryptSL.Event;
 import de.darmstadt.tu.crossing.cryptSL.Method;
@@ -86,4 +97,29 @@ public class CrySLReaderUtils {
 		}
 		return new CryptSLMethod(qualifiedName, pars, new ArrayList<Boolean>(), returnObject);
 	}
+
+	public static void storeRuletoFile(final CryptSLRule rule, final String folderPath, final String className) throws IOException {
+		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(folderPath + Constants.innerFileSeparator + className + ".cryptslbin"))) {
+			out.writeObject(rule);
+		}
+	}
+
+	public static List<CryptSLRule> readRuleFromBinaryFiles(final String folderPath) {
+		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
+			Arrays.asList((new File(folderPath)).list()).stream().filter(e -> ".cryptslbin".equals(e.substring(e.lastIndexOf(".")))).forEach(e -> {
+				try {
+					rules.add(readRuleFromBinaryFile(folderPath, e.substring(0, e.lastIndexOf("."))));
+				} catch (ClassNotFoundException | IOException e1) {
+					Activator.getDefault().logError("Well, that didn't work.");
+				}
+			});
+		return rules;
+	}
+	
+	public static CryptSLRule readRuleFromBinaryFile(final String folderPath, final String ruleNameName) throws FileNotFoundException, IOException, ClassNotFoundException {
+		try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(folderPath + Constants.innerFileSeparator + ruleNameName + ".cryptslbin"));) {
+			return (CryptSLRule) in.readObject();
+		}
+	}
+
 }

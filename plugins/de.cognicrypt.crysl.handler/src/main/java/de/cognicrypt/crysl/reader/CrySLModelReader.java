@@ -6,11 +6,7 @@
 package de.cognicrypt.crysl.reader;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -194,7 +190,14 @@ public class CrySLModelReader {
 
 		if (!testmode) {
 			final String className = fileName.substring(0, fileName.indexOf(extension) - 1);
-			storeRuletoFile(rule, Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath(), className);
+			String folderPath = Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath();
+			try {
+				CrySLReaderUtils.storeRuletoFile(rule, folderPath, className);
+				CrySLReaderUtils.readRuleFromBinaryFile(folderPath, className);
+			}
+			catch (ClassNotFoundException | IOException e) {
+				Activator.getDefault().logError(e, "Failed to store CrySL Rule for " + className + " to disk.");
+			}
 		}
 		return rule;
 	}
@@ -608,43 +611,5 @@ public class CrySLModelReader {
 		}
 		return Utils.filterQuotes(value);
 	}
-
-	private void storeRuletoFile(final CryptSLRule rule, final String folderPath, final String className) {
-		FileOutputStream fileOut;
-		try {
-			fileOut = new FileOutputStream(folderPath + Constants.innerFileSeparator + className + ".cryptslbin");
-			final ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			out.writeObject(rule);
-			out.close();
-			fileOut.close();
-			final FileInputStream fileIn = new FileInputStream(folderPath + Constants.innerFileSeparator + className + ".cryptslbin");
-			final ObjectInputStream in = new ObjectInputStream(fileIn);
-			in.readObject();
-			in.close();
-			fileIn.close();
-
-		}
-		catch (IOException | ClassNotFoundException e) {
-			Activator.getDefault().logError(e);
-		}
-	}
-
-	// private void loadModelFromFile(String outputURI) {
-	// ResourceSet resSet = new ResourceSetImpl();
-	// Resource xmiResourceRead = resSet.getResource(URI.createURI(outputURI),
-	// true);
-	// xmiResourceRead.getContents().get(0);
-	//// Domainmodel dmro =
-	// }
-
-	// private String storeModelToFile(XtextResourceSet resourceSet, EObject
-	// eObject, String className) throws IOException {
-	// //Store the model to path outputURI
-	// String outputURI = "file:///C:/Users/stefank3/Desktop/" + className + ".xmi";
-	// Resource xmiResource = resourceSet.createResource(URI.createURI(outputURI));
-	// xmiResource.getContents().add(eObject);
-	// xmiResource.save(null);
-	// return outputURI;
-	// }
 
 }

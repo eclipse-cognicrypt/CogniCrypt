@@ -424,9 +424,32 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), four, two));
 		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aep}), minusOne, two));
 		
+		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule11").getUsagePattern().getAllTransitions());
+	}
+	
+	@Test
+	public void mockTrustAnchorRule() {
+		StateMachineGraph expectedUsagePattern = new StateMachineGraph();
+		StateNode minusOne = new StateNode("-1", true);
+		StateNode zero = new StateNode("0", false, true);
+		
+		expectedUsagePattern.addNode(minusOne);
+		expectedUsagePattern.addNode(zero);
+
+		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+				new HashMap.SimpleEntry<String, String>("_", "void"));
+		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+				new HashMap.SimpleEntry<String, String>("_", "void"));
+		CryptSLMethod acp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+				new HashMap.SimpleEntry<String, String>("_", "void"));
+
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), minusOne, zero));
+		
 		System.out.println(expectedUsagePattern);
 		
-		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule11").getUsagePattern().getAllTransitions());
+		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule12").getUsagePattern().getAllTransitions());
 	}
 	
 }

@@ -154,7 +154,7 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), one, two));
 
 		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), zero, two));
-
+		
 		StateMachineGraph actualUsagePattern = readRuleFromFuleName("Testrule4").getUsagePattern();
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), actualUsagePattern.getAllTransitions());
 	}
@@ -447,9 +447,70 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), minusOne, zero));
 		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), minusOne, zero));
 		
-		System.out.println(expectedUsagePattern);
-		
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule12").getUsagePattern().getAllTransitions());
+	}
+	
+	@Test
+	public void mockPKCS7PaddingRule() {
+		StateMachineGraph expectedUsagePattern = new StateMachineGraph();
+		StateNode minusOne = new StateNode("-1", true);
+		StateNode zero = new StateNode("0", false, true);
+		StateNode one = new StateNode("1", false, true);
+		
+		expectedUsagePattern.addNode(minusOne);
+		expectedUsagePattern.addNode(zero);
+		expectedUsagePattern.addNode(one);
+
+		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+				new HashMap.SimpleEntry<String, String>("_", "void"));
+		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+				new HashMap.SimpleEntry<String, String>("_", "void"));
+
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), one, one));
+
+		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule13").getUsagePattern().getAllTransitions());
+	}
+	
+	@Test
+	public void mockCBCBlockCipherRule() {
+		StateMachineGraph expectedUsagePattern = new StateMachineGraph();
+		StateNode minusOne = new StateNode("-1", true);
+		StateNode zero = new StateNode("0", false);
+		StateNode one = new StateNode("1", false);
+		StateNode two = new StateNode("2", false);
+		StateNode three = new StateNode("3", false, true);
+		StateNode four = new StateNode("4", false);
+
+		expectedUsagePattern.addNode(minusOne);
+		expectedUsagePattern.addNode(zero);
+		expectedUsagePattern.addNode(one);
+		expectedUsagePattern.addNode(two);
+		expectedUsagePattern.addNode(three);
+		expectedUsagePattern.addNode(four);
+
+		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+				new HashMap.SimpleEntry<String, String>("_", "void"));
+		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+				new HashMap.SimpleEntry<String, String>("_", "void"));
+		CryptSLMethod acp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+				new HashMap.SimpleEntry<String, String>("_", "void"));
+		CryptSLMethod adp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+				new HashMap.SimpleEntry<String, String>("_", "void"));
+
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), one, one));
+
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), one, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), two, two));
+
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), two, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), one, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), three, three));
+		
+		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule14").getUsagePattern().getAllTransitions());
 	}
 	
 }

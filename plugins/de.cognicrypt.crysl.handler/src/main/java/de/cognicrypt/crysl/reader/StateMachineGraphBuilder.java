@@ -172,6 +172,7 @@ public class StateMachineGraphBuilder {
 			prevNode = process(left, level + 1, leftOvers, prevNode);
 
 			if (rightElOp != null && ("?".equals(rightElOp) || "*".equals(rightElOp))) {
+				leftOvers.put(level - 1, new HashMap.SimpleEntry<>(rightElOp, prevNode));
 				prevNode = addRegularEdge(right, prevNode, null, true);
 			} else {
 				prevNode = addRegularEdge(right, prevNode, null);
@@ -181,8 +182,6 @@ public class StateMachineGraphBuilder {
 				addRegularEdge(right, prevNode, prevNode, true);
 			}
 
-			
-			
 		} else if (!(left instanceof Order || left instanceof SimpleOrder) && (right instanceof Order || right instanceof SimpleOrder)) {
 			StateNode leftPrev = prevNode;
 			prevNode = addRegularEdge(left, prevNode, null);
@@ -310,7 +309,6 @@ public class StateMachineGraphBuilder {
 			} else {
 				prevNode = process(right, level + 1, leftOvers, prevNode);	
 			}
-			
 
 			if ("*".equals(rightElOp) || "?".equals(rightElOp)) {
 				setAcceptingState(rightPrev);
@@ -343,13 +341,26 @@ public class StateMachineGraphBuilder {
 			for (Entry<String, StateNode> a : leftOvers.get(level).stream().filter(e -> "*".equals(e.getKey())).collect(Collectors.toList())) {
 				addRegularEdge(right, a.getValue(), prevNode, true);
 			}
-			if ("*".equals(rightElOp) || "?".equals(rightElOp)) {
+			boolean isOptional = "*".equals(rightElOp) || "?".equals(rightElOp);
+			if (isOptional) {
 				setAcceptingState(rightPrev);
 				if ("?".equals(left.getRight().getElementop()) || "*".equals(left.getRight().getElementop())) {
 					final List<TransitionEdge> outgoingEdges = getOutgoingEdges(leftPrev, null);
 					for (final TransitionEdge outgoingEdge : outgoingEdges) {
 						setAcceptingState(outgoingEdge.to());
 					}
+				}
+			}
+			
+			if (rightElOp != null && ("+".equals(rightElOp) || "*".equals(rightElOp))) {
+				final List<TransitionEdge> outgoingEdges = getOutgoingEdges(rightPrev, null);
+				for (final TransitionEdge outgoingEdge : outgoingEdges) {
+					addRegularEdge(outgoingEdge.getLabel(), prevNode, outgoingEdge.to(), true);
+				}
+			}
+			if (leftOvers.containsKey(level)) {
+				for (Entry<String, StateNode> entry : leftOvers.get(level).stream().filter(e -> "*".equals(e.getKey()) || "?".equals(e.getKey())).collect(Collectors.toList())) {
+					addRegularEdge(right, entry.getValue(), prevNode, isOptional);
 				}
 			}
 			StateNode returnToNode = null;
@@ -362,7 +373,7 @@ public class StateMachineGraphBuilder {
 			prevNode = addRegularEdge(left, prevNode, null);
 
 			if (leftElOp != null && ("+".equals(leftElOp) || "*".equals(leftElOp))) {
-				addRegularEdge(left, prevNode, prevNode, true);
+				addRegularEdge(left, prevNode, prevNode);
 			}
 
 			final StateNode rightPrev = prevNode;

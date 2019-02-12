@@ -299,8 +299,18 @@ public class CrySLModelReader {
 
 		if (cons instanceof ArithmeticExpression) {
 			final ArithmeticExpression ae = (ArithmeticExpression) cons;
-			ae.getOperator().toString();
-			slci = new CryptSLArithmeticConstraint(new CryptSLObject("0", "int"), new CryptSLObject("1", "int"), ArithOp.n);
+			String op = new CrySLArithmeticOperator((ArithmeticOperator) ae.getOperator()).toString();
+			ArithOp operator = ArithOp.n;
+			if ("+".equals(op)) {
+				operator = ArithOp.p;
+			}
+			ObjectDecl leftObj = (ObjectDecl)((ObjectImpl)((LiteralExpression) ((LiteralExpression) ((LiteralExpression) ae.getLeftExpression()).getCons()).getName()).getValue()).eContainer();
+			CryptSLObject leftSide = new CryptSLObject(leftObj.getObjectName().getName(), leftObj.getObjectType().getQualifiedName());
+			
+			ObjectDecl rightObj = (ObjectDecl)((ObjectImpl)((LiteralExpression) ((LiteralExpression) ((LiteralExpression) ae.getRightExpression()).getCons()).getName()).getValue()).eContainer();
+			CryptSLObject rightSide = new CryptSLObject(rightObj.getObjectName().getName(), rightObj.getObjectType().getQualifiedName());
+			
+			slci = new CryptSLArithmeticConstraint(leftSide, rightSide, operator);
 		} else if (cons instanceof LiteralExpression) {
 			final LiteralExpression lit = (LiteralExpression) cons;
 			final List<String> parList = new ArrayList<>();

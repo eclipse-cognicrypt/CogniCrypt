@@ -89,7 +89,6 @@ public class CrySLReaderUtils {
 					parValue = par.getVal().getName();
 					final String parType = objectDecl.getObjectType().getIdentifier() + ((objectDecl.getArray() != null) ? objectDecl.getArray() : "");
 					pars.add(new SimpleEntry<>(parValue, parType));
-
 				} else {
 					pars.add(new SimpleEntry<>(parValue, "AnyType"));
 				}
@@ -98,9 +97,16 @@ public class CrySLReaderUtils {
 		return new CryptSLMethod(qualifiedName, pars, new ArrayList<Boolean>(), returnObject);
 	}
 
-	public static void storeRuletoFile(final CryptSLRule rule, final String folderPath, final String className) throws IOException {
-		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(folderPath + Constants.innerFileSeparator + className + ".cryptslbin"))) {
+	public static void storeRuletoFile(final CryptSLRule rule, final String folderPath) throws IOException {
+		String className = rule.getClassName();
+		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(folderPath + Constants.outerFileSeparator + className.substring(className.lastIndexOf(".") + 1) + ".cryptslbin"))) {
 			out.writeObject(rule);
+		}
+	}
+	
+	public static void storeRulesToFile(final List<CryptSLRule> rules, final String folder) throws IOException {
+		for (CryptSLRule rule : rules) {
+			storeRuletoFile(rule, folder);
 		}
 	}
 

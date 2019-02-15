@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -103,7 +104,7 @@ public class CrySLModelReader {
 	private StateMachineGraph smg = null;
 	private String curClass = "";
 	private XtextResourceSet resourceSet;
-	private boolean testmode = false;
+	private boolean testMode = false;
 
 	public CrySLModelReader(IProject iProject) throws CoreException, IOException {
 		final Injector injector = CryptSLActivator.getInstance().getInjector(CryptSLActivator.DE_DARMSTADT_TU_CROSSING_CRYPTSL);
@@ -139,7 +140,7 @@ public class CrySLModelReader {
 		new ClasspathTypeProvider(ucl, this.resourceSet, null, null);
 		this.resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 
-		testmode = true;
+		testMode = true;
 	}
 
 	public CryptSLRule readRule(File ruleFile) {
@@ -188,11 +189,11 @@ public class CrySLModelReader {
 		System.out.println("===========================================");
 		System.out.println("");
 
-		if (!testmode) {
+		if (!testMode) {
 			final String className = fileName.substring(0, fileName.indexOf(extension) - 1);
 			String folderPath = Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath();
 			try {
-				CrySLReaderUtils.storeRuletoFile(rule, folderPath, className);
+				CrySLReaderUtils.storeRuletoFile(rule, folderPath);
 				CrySLReaderUtils.readRuleFromBinaryFile(folderPath, className);
 			}
 			catch (ClassNotFoundException | IOException e) {
@@ -204,7 +205,7 @@ public class CrySLModelReader {
 
 	public List<CryptSLRule> readRules(String resourcesPath) throws CoreException {
 
-		final IPath rulesFolder = (new org.eclipse.core.runtime.Path(resourcesPath)).removeLastSegments(1);
+		final IPath rulesFolder = (new org.eclipse.core.runtime.Path(resourcesPath));
 
 		IResource[] members = null;
 		if (rulesFolder.segmentCount() == 1) {
@@ -220,10 +221,12 @@ public class CrySLModelReader {
 				if (rule != null) {
 					rules.add(rule);
 				}
+			} else if (res instanceof IFolder) {
+				rules.addAll(readRules(res.getFullPath().toOSString()));
 			}
 		}
 
-		return null;
+		return rules;
 	}
 
 	private StateMachineGraph buildStateMachineGraph(final Expression order) {
@@ -304,12 +307,14 @@ public class CrySLModelReader {
 			if ("+".equals(op)) {
 				operator = ArithOp.p;
 			}
-			ObjectDecl leftObj = (ObjectDecl)((ObjectImpl)((LiteralExpression) ((LiteralExpression) ((LiteralExpression) ae.getLeftExpression()).getCons()).getName()).getValue()).eContainer();
+			ObjectDecl leftObj =
+					(ObjectDecl) ((ObjectImpl) ((LiteralExpression) ((LiteralExpression) ((LiteralExpression) ae.getLeftExpression()).getCons()).getName()).getValue()).eContainer();
 			CryptSLObject leftSide = new CryptSLObject(leftObj.getObjectName().getName(), leftObj.getObjectType().getQualifiedName());
-			
-			ObjectDecl rightObj = (ObjectDecl)((ObjectImpl)((LiteralExpression) ((LiteralExpression) ((LiteralExpression) ae.getRightExpression()).getCons()).getName()).getValue()).eContainer();
+
+			ObjectDecl rightObj =
+					(ObjectDecl) ((ObjectImpl) ((LiteralExpression) ((LiteralExpression) ((LiteralExpression) ae.getRightExpression()).getCons()).getName()).getValue()).eContainer();
 			CryptSLObject rightSide = new CryptSLObject(rightObj.getObjectName().getName(), rightObj.getObjectType().getQualifiedName());
-			
+
 			slci = new CryptSLArithmeticConstraint(leftSide, rightSide, operator);
 		} else if (cons instanceof LiteralExpression) {
 			final LiteralExpression lit = (LiteralExpression) cons;

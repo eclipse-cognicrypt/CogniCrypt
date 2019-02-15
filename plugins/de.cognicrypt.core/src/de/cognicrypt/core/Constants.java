@@ -524,5 +524,7 @@ public class Constants {
 	// define a correct ID (get range of possible ones)
 	public static final int JDT_PROBLEM_ID = 10000000;
 	public final static String RELATIVE_RULES_DIR = "resources/CrySLRules";
+	public static final String cryslFileEnding = ".cryptsl";
+	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CryptSL";
 
 }

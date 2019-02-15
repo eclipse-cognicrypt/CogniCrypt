@@ -8,6 +8,8 @@ package de.cognicrypt.crysl.handler;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -28,6 +30,12 @@ public class Activator extends AbstractUIPlugin {
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		Activator.plugin = this;
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new CrySLFileOpenerListener());
+			}
+		});
 	}
 
 	@Override

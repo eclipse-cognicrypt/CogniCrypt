@@ -21,7 +21,7 @@ import de.cognicrypt.crysl.reader.CrySLReaderUtils;
 
 public class CrySLBuilder extends IncrementalProjectBuilder {
 
-	public static final String BUILDER_ID = "de.cognicrypt.crysl.handler.cryslnature";
+	public static final String BUILDER_ID = "de.cognicrypt.crysl.handler.cryslbuilder";
 	
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
@@ -36,7 +36,7 @@ public class CrySLBuilder extends IncrementalProjectBuilder {
 				if (entry.getContentKind() == IPackageFragmentRoot.K_SOURCE) {
 					resourcesPaths.add(entry.getPath());
 					IPath outputLocation = entry.getOutputLocation();
-					outputPaths.add(outputLocation != null ? outputLocation : entry.getPath());
+					outputPaths.add(outputLocation != null ? outputLocation : projectAsJavaProject.getOutputLocation());
 				}
 			}
 			for (int i = 0; i < resourcesPaths.size(); i++) {

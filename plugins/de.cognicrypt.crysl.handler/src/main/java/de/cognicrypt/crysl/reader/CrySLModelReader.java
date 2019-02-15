@@ -190,7 +190,7 @@ public class CrySLModelReader {
 		System.out.println("");
 
 		if (!testMode) {
-			final String className = fileName.substring(0, fileName.indexOf(extension) - 1);
+			final String className = rule.getClassName().substring(rule.getClassName().lastIndexOf(".") + 1);
 			String folderPath = Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath();
 			try {
 				CrySLReaderUtils.storeRuletoFile(rule, folderPath);

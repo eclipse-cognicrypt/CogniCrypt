@@ -231,4 +231,24 @@
          markerType="de.cognicrypt.staticanalyzer.typestateErrorMarker"
          class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
       </extension>
+      <extension point="org.eclipse.ui.popupMenus"> 
+    <objectContribution
+      adaptable="true"
+      id="code-clafer_configurator.objectContribution"
+      objectClass="org.eclipse.core.resources.IResource">
+      <menu 
+          icon="icons/cognicrypt.png"
+          id="code-clafer_configurator.menu1"
+          label="Launch Analysis">
+      <separator
+          name="code-clafer_configurator.separator1">
+      </separator>
+         </menu>
+      <action
+         id="org.eclipse.ui.articles.action.contribution.object.action1" 
+         label="Do Analysis"
+         class="de.cognicrypt.staticanalyzer.contextmenu.EnableAnalysisOnContextMenuButton" > 
+      </action>
+    </objectContribution>
+</extension>
 </plugin>

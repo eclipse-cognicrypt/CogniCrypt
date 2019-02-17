@@ -14,6 +14,8 @@ import java.util.Map;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jface.preference.IPreferenceStore;
+
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import boomerang.preanalysis.BoomerangPretransformer;
@@ -23,6 +25,7 @@ import crypto.rules.CryptSLRuleReader;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.utils.Utils;
+import properties.ICogniCryptConstants;
 import soot.G;
 import soot.PackManager;
 import soot.Scene;
@@ -70,9 +73,11 @@ public class SootRunner {
 					}
 
 				};
-				scanner.getAnalysisListener().addReportListener(resultsReporter);
-				scanner.scan(getRules());
+					scanner.getAnalysisListener().addReportListener(resultsReporter);
+					scanner.scan(getRules());
+				
 			}
+
 		};
 	}
 
@@ -93,8 +98,11 @@ public class SootRunner {
 		try {
 			final List<String> urls = new ArrayList<>();
 			final URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
+//			System.out.println(new File(uriString).getAbsolutePath());
+//			System.out.println("thiiiis is project path");
 			urls.add(new File(uriString).getAbsolutePath());
 			return urls;
+			
 		}
 		catch (final Exception e) {
 			Activator.getDefault().logError(e, "Error building project classpath");

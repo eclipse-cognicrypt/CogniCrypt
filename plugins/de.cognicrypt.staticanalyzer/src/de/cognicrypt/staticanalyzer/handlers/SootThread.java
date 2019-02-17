@@ -1,8 +1,11 @@
 package de.cognicrypt.staticanalyzer.handlers;
 
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jface.preference.IPreferenceStore;
+
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.staticanalyzer.sootbridge.SootRunner;
+import properties.ICogniCryptConstants;
 
 public class SootThread extends Thread {
 	private boolean succ = false;

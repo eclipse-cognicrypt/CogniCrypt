@@ -20,8 +20,11 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 import de.cognicrypt.codegenerator.Activator;
+
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferencePageContainer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
@@ -42,7 +45,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 
-
 public class CogniCryptpreferencePage extends PreferencePage implements IWorkbenchPreferencePage{
 	 
 
@@ -53,6 +55,7 @@ public class CogniCryptpreferencePage extends PreferencePage implements IWorkben
 	Button checkBox1;
 	Button checkBox2;
 	Button checkBox3;
+	Button checkBox4;
 	Combo advCombo1;
 	//Button advCombo2;
 	Combo advCombo3;
@@ -67,6 +70,7 @@ public class CogniCryptpreferencePage extends PreferencePage implements IWorkben
 	@Override
 	protected Control createContents(org.eclipse.swt.widgets.Composite parent) {
 		
+		IPreferenceStore store = getPreferenceStore();
 		final Composite container = new Composite(parent, SWT.NULL);
 		container.setLayout(new FillLayout(SWT.VERTICAL));
 
@@ -77,31 +81,9 @@ public class CogniCryptpreferencePage extends PreferencePage implements IWorkben
 	    String[] choices = {"Default JCA Rules", "Default JSSE rules","Default Tink rules"};
 	    combo = new Combo(group1, SWT.DROP_DOWN);
 	    combo.setItems(choices);
-
-	   /* combo.addSelectionListener(new SelectionAdapter() {
-	    	@Override
-	        public void widgetSelected(SelectionEvent event) {
-	    		if(combo.getSelectionIndex() == 0) {
-	    			
-	    			System.out.println("yaaaaaaay");
-	    		}else if(combo.getSelectionIndex() == 1) {
-	    			System.out.println("naaaaaaay");
-	    		}else if(combo.getSelectionIndex() == 2) {
-	    			System.out.println("laaaaaaay");
-	    		}else if(combo.getSelectionIndex() == 3) {
-	    			System.out.println("gaaaaaaay");
-	    		}
-	        }
-	    });*/
-	    
-	    checkBox3 = new Button(group1,SWT.CHECK);
-	    checkBox3.setText("En-/Disable automated analysis when saving");
-	    
-	    checkBox2 = new Button(group1,SWT.CHECK);
-	    checkBox2.setText("En-/Disable automatic analysis of dependencies on change");
 	    
 	    checkBox1 = new Button(group1,SWT.CHECK);
-	    checkBox1.setText("En-/Disable automatic analysis of dependencies");
+	    checkBox1.setText("Enable automatic analysis of dependencies");
 	    checkBox1.addSelectionListener(new SelectionAdapter() {
 	        @Override
 	        public void widgetSelected(SelectionEvent event) {
@@ -109,6 +91,28 @@ public class CogniCryptpreferencePage extends PreferencePage implements IWorkben
 	        	checkBox2.setSelection(true);	    	   
 	        }
 	    });
+	    
+	    checkBox2 = new Button(group1,SWT.CHECK);
+	    checkBox2.setText("Enable automatic analysis of dependencies on change");
+	    
+	    checkBox3 = new Button(group1,SWT.CHECK);
+	    checkBox3.setText("Enable automated analysis when saving");
+	    checkBox3.addSelectionListener(new SelectionAdapter() {
+	        @Override
+	        public void widgetSelected(SelectionEvent event) {
+	 
+	    	    checkBox4.setEnabled(checkBox3.getSelection());
+	    	    /*if (!checkBox3.getSelection()) {
+	    	    	store.setValue(ICogniCryptConstants.PRE_CHECKBOX4, store.getBoolean(ICogniCryptConstants.PRE_CHECKBOX3));
+	    	    	checkBox4.setSelection(false);
+	    	    }*/
+	    	    
+	        }
+	    });
+
+	    checkBox4 = new Button(group1,SWT.CHECK);
+	    checkBox4.setText("Show secure objects");
+	    checkBox4.setEnabled(store.getBoolean(ICogniCryptConstants.PRE_CHECKBOX3));
 	    
 	    final Group group2 = new Group(container, SWT.SHADOW_ETCHED_IN);
 	    group2.setText("Advance Options");
@@ -151,6 +155,7 @@ public class CogniCryptpreferencePage extends PreferencePage implements IWorkben
         store.setValue(ICogniCryptConstants.PRE_CHECKBOX1, checkBox1.getSelection());
         store.setValue(ICogniCryptConstants.PRE_CHECKBOX2, checkBox2.getSelection());
         store.setValue(ICogniCryptConstants.PRE_CHECKBOX3, checkBox3.getSelection());
+        store.setValue(ICogniCryptConstants.PRE_CHECKBOX4, checkBox4.getSelection());
         store.setValue(ICogniCryptConstants.PRE_COMBO, combo.getSelectionIndex());
         store.setValue(ICogniCryptConstants.PRE_ADV_COMBO1, advCombo1.getSelectionIndex());
         store.setValue(ICogniCryptConstants.PRE_ADV_COMBO3, advCombo3.getSelectionIndex());
@@ -170,11 +175,12 @@ public class CogniCryptpreferencePage extends PreferencePage implements IWorkben
 	                .getDefaultBoolean(ICogniCryptConstants.PRE_CHECKBOX2));
 	        checkBox3.setSelection(store
 	                .getDefaultBoolean(ICogniCryptConstants.PRE_CHECKBOX3));
+	        checkBox4.setSelection(store
+                .getDefaultBoolean(ICogniCryptConstants.PRE_CHECKBOX4));
 	        combo.select(store.getDefaultInt(ICogniCryptConstants.PRE_COMBO));
 	        advCombo1.select(store.getDefaultInt(ICogniCryptConstants.PRE_ADV_COMBO1));
 	        advCombo3.select(store.getDefaultInt(ICogniCryptConstants.PRE_ADV_COMBO3));
-
-
+	               
 	    }
 
 	private void initializeValues() {
@@ -184,6 +190,7 @@ public class CogniCryptpreferencePage extends PreferencePage implements IWorkben
 		checkBox1.setSelection(store.getBoolean(ICogniCryptConstants.PRE_CHECKBOX1));
 		checkBox2.setSelection(store.getBoolean(ICogniCryptConstants.PRE_CHECKBOX2));
 		checkBox3.setSelection(store.getBoolean(ICogniCryptConstants.PRE_CHECKBOX3));
+		checkBox4.setSelection(store.getBoolean(ICogniCryptConstants.PRE_CHECKBOX4));
 		advCombo1.select(store.getInt(ICogniCryptConstants.PRE_ADV_COMBO1));
 //		advCombo2.setSelection(store.getBoolean(ICogniCryptconstants.PRE_ADV_COMBO2));
 		advCombo3.select(store.getInt(ICogniCryptConstants.PRE_ADV_COMBO3));

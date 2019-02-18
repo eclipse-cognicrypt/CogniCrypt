@@ -19,8 +19,10 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IStartup;
 import de.cognicrypt.staticanalyzer.Activator;
+import properties.ICogniCryptConstants;
 
 /**
  * At startup, this handler registers a listener that will be informed after a build, whenever resources were changed.
@@ -48,6 +50,11 @@ public class StartupHandler implements IStartup {
 		 */
 		@Override
 		public void resourceChanged(final IResourceChangeEvent event) {
+			
+			IPreferenceStore store = de.cognicrypt.codegenerator.Activator.getDefault().getPreferenceStore();
+			if (store.getBoolean(ICogniCryptConstants.PRE_CHECKBOX3) == false) {
+				return;
+			}else {
 			final List<IJavaElement> changedJavaElements = new ArrayList<>();
 			Activator.getDefault().logInfo("ResourcechangeListener has been triggered.");
 			try {
@@ -109,6 +116,7 @@ public class StartupHandler implements IStartup {
 				final boolean stat = ako.setUp(changedJavaElements.get(0));
 				if (stat) {
 					analysis_Queue.add(ako);
+
 				} else {
 					Activator.getDefault().logInfo("Analysis has been cancelled due to erroneous setup.");
 				}
@@ -127,7 +135,7 @@ public class StartupHandler implements IStartup {
 			}
 		}
 	}
-
+	}
 	private static final AfterBuildListener BUILD_LISTENER = new AfterBuildListener();
 
 	@Override

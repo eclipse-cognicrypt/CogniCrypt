@@ -10,7 +10,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.clafer.instance.InstanceClafer;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -31,7 +30,6 @@ import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 import de.cognicrypt.codegenerator.wizard.beginner.BeginnerModeQuestionnaire;
 import de.cognicrypt.codegenerator.wizard.beginner.BeginnerTaskQuestionPage;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.utils.Utils;
 
 public class AltConfigWizard extends Wizard {
 
@@ -193,11 +191,11 @@ public class AltConfigWizard extends Wizard {
 		final LocatorPage currentPage = (LocatorPage) getContainer().getCurrentPage();
 
 		// Initialize Code Generation
-		final CodeGenerator codeGenerator = new XSLBasedGenerator((IResource) currentPage.getSelectedResource().getFirstElement(), selectedTask.getXslFile());
+		IResource selectedFile = (IResource) currentPage.getSelectedResource().getFirstElement();
+		final CodeGenerator codeGenerator = new XSLBasedGenerator(selectedFile, selectedTask.getXslFile());
 		final DeveloperProject developerProject = codeGenerator.getDeveloperProject();
 
-		IFile currentlyOpenFile = Utils.getCurrentlyOpenFile();
-		JOptionPane optionPane = new JOptionPane("CogniCrypt is now generating code that implements " + selectedTask.getName() + "\ninto file " + ((currentlyOpenFile != null) ? currentlyOpenFile.getName() : "Output.java") + ". This should take no longer than a few seconds.", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+		JOptionPane optionPane = new JOptionPane("CogniCrypt is now generating code that implements " + selectedTask.getName() + "\ninto file " + ((selectedFile != null) ? selectedFile.getName() : "Output.java") + ". This should take no longer than a few seconds.", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
 		JDialog waitingDialog = optionPane.createDialog("Generating Code");
 		waitingDialog.setModal(false);
 		waitingDialog.setVisible(true);

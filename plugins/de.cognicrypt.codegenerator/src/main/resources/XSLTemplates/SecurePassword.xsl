@@ -30,7 +30,7 @@ public class PWHasher {
 		return pwdHash;
 	}
 	
-	public static Boolean verifyPWHash(char[] pwd, String pwdhash) throws GeneralSecurityException {
+	public static boolean verifyPWHash(char[] pwd, String pwdhash) throws GeneralSecurityException {
 		String[] parts = pwdhash.split(":");
 		byte[] salt = fromBase64(parts[0]);
 
@@ -64,9 +64,10 @@ public class PWHasher {
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public void templateUsage(char[] pwd) throws GeneralSecurityException  {
-		String pwdHash = PWHasher.createPWHash(pwd);
-		Boolean t = PWHasher.verifyPWHash(pwd, pwdHash);
+	public static void templateUsage(char[] pwd) throws GeneralSecurityException  {
+		//In order to store a password, it is hashed. 
+		String pwdHash = PWHasher.createPWHash(pwd); // This call hashes the password pwd.
+		boolean t = PWHasher.verifyPWHash(pwd, pwdHash); // This call verifies that the password pwd belongs to the password hash pwdHash
 	}
 }
 </xsl:if>

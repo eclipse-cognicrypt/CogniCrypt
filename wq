@@ -1,0 +1,433 @@
+[33mcommit ea23b3b058009ab5a0927ee987592fc329bc0e4c[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: shahrzad <shahrzad.asghari73@gmail.com>
+Date:   Mon Feb 18 17:08:52 2019 +0100
+
+    added show warning in preference page, modified context menu button.
+    
+    Signed-off-by: shahrzad <shahrzad.asghari73@gmail.com>
+
+[33mcommit a20ec17401af4248d43458e77391cacdf0a98673[m
+Author: shahrzad <shahrzad.asghari73@gmail.com>
+Date:   Sun Feb 17 13:48:41 2019 +0100
+
+    added functionality to enable analysis on saving option, and its context
+    menu button
+    
+    Signed-off-by: shahrzad <shahrzad.asghari73@gmail.com>
+
+[33mcommit cdce1b681e238b69ac85668677d944ebbdb80d47[m
+Author: shahrzad <shahrzad.asghari73@gmail.com>
+Date:   Sat Feb 2 16:23:01 2019 +0100
+
+    finished preference pages UI
+    
+    Signed-off-by: shahrzad <shahrzad.asghari73@gmail.com>
+
+[33mcommit e9517f8e7dabc3498076b9fbfec31020fdc641f7[m
+Merge: 033e0534 a3c07745
+Author: shahrzad <shahrzad.asghari73@gmail.com>
+Date:   Tue Jan 22 15:18:08 2019 +0100
+
+    Merge remote-tracking branch 'upstream/master'
+
+[33mcommit 033e0534c66beff0fdae67d6c5bdd96096c1b09a[m
+Author: shahrzad <shahrzad.asghari73@gmail.com>
+Date:   Tue Jan 22 15:02:10 2019 +0100
+
+    added the UI of reference page
+    
+    Signed-off-by: shahrzad <shahrzad.asghari73@gmail.com>
+
+[33mcommit a3c07745fa0deacda2bf2fff883cc30085bf30bd[m[33m ([m[1;31mupstream/master[m[33m)[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Mon Jan 21 17:13:51 2019 +0100
+
+    Improved variabilty of and fixed bug in encryption stylesheet.
+
+[33mcommit 07cf956ea9cc456d55a6beb8c26e4509e68f4934[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Mon Jan 21 17:13:08 2019 +0100
+
+    Fixed bug in TLS task and added keystore question to client side.
+
+[33mcommit c7d45d84ab8d48334be1791d7e113d3328f944c8[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Mon Jan 21 15:42:43 2019 +0100
+
+    More clean up.
+
+[33mcommit 2c56081f525fa93b44ea84ce09fe1a1dcd41db10[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Mon Jan 21 14:01:13 2019 +0100
+
+    Made PWHasher methods static.
+
+[33mcommit 28341f9884cecd67bf3f77fe09af4a344a0ffcd3[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Mon Jan 21 13:23:48 2019 +0100
+
+    Clean up templates.
+
+[33mcommit 971cce8e267ff2e6099439b93ca2a0a96c7d4865[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Sat Jan 19 19:03:53 2019 +0100
+
+    Fixing code template for tls server.
+
+[33mcommit 62354bcfa5b37ab7778df15ccf3195d3ff05c1ae[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Sat Jan 19 18:48:18 2019 +0100
+
+    Fixed code for tls client. Reworked tls server code.
+
+[33mcommit f08aa08699664db8e344838e5d19b4a8c6e36b42[m[33m ([m[1;31mupstream/feature/SeccompIntegration[m[33m)[m
+Merge: 7b99cb03 1899c832
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Fri Jan 18 16:03:58 2019 +0100
+
+    Merge branch 'master' into feature/SeccompIntegration
+
+[33mcommit 1899c832a9ad3125b07e8eabafd2ed99cae8578c[m
+Merge: ab65ef71 17cb6322
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Fri Jan 18 15:58:19 2019 +0100
+
+    Merge branch 'master' of git@github.com:eclipse-cognicrypt/CogniCrypt.git
+
+[33mcommit ab65ef71181fb8fbca5815ba4e036cd9a694f716[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Fri Jan 18 15:57:42 2019 +0100
+
+    Fix bug with default selection Keystore page in TLS task.
+
+[33mcommit 7b99cb03434ced51418ba78d41809a848c823fc9[m
+Author: Anna-Katharina Wickert <wickert@st.informatik.tu-darmstadt.de>
+Date:   Fri Jan 18 08:16:01 2019 +0100
+
+    Finish Integration Digital Signature and MPC Task
+    
+    Manage to correct the digital signature task so that code can be
+    generated.
+    Add the MPC Task including a new icon.
+    Removed the icon for hat as these tasks should be handled by a plugin
+    mechanism and nothing is behind this task.
+
+[33mcommit 17cb63225539a86f9d72511e2f5e5317dd50d1c3[m
+Merge: 95d1e06d 447e534c
+Author: Stefan Krüger <kruegers@users.noreply.github.com>
+Date:   Thu Jan 17 14:22:48 2019 +0100
+
+    Merge pull request #242 from AndreSonntag/CorrectErrorTypes2
+    
+    Differentiation of different error types
+
+[33mcommit 447e534c9c47753366c0397d6bdde2408e01f5ff[m
+Author: AndreSonntag <Andre-Sonntag@gmx.de>
+Date:   Thu Jan 17 14:17:53 2019 +0100
+
+    remove var attribute
+    
+    Signed-off-by: AndreSonntag <Andre-Sonntag@gmx.de>
+
+[33mcommit c311f4a43297f2997da5329d6072203c31256426[m
+Author: AndreSonntag <Andre-Sonntag@gmx.de>
+Date:   Thu Jan 17 12:08:41 2019 +0100
+
+    add error types logic
+    
+    Signed-off-by: AndreSonntag <Andre-Sonntag@gmx.de>
+
+[33mcommit 18901deadcccdf8414f9e989446d854f52da1420[m
+Author: AndreSonntag <Andre-Sonntag@gmx.de>
+Date:   Thu Jan 17 12:01:28 2019 +0100
+
+    add error type strings to constant class
+    
+    Signed-off-by: AndreSonntag <Andre-Sonntag@gmx.de>
+
+[33mcommit 37921afce40eb3820b2b2e0cc53e7c6ed0ac6172[m
+Author: Anna-Katharina Wickert <wickert@st.informatik.tu-darmstadt.de>
+Date:   Fri Jan 11 17:56:32 2019 +0100
+
+    Integrate Secure Multiparty Computing
+    
+    Add secure multiparty computing to the TaskSelectionPage.
+    TODO: Change Icon for multuparty computing.
+    
+    Signed-off-by: Anna-Katharina Wickert <wickert@st.informatik.tu-darmstadt.de>
+
+[33mcommit 95d1e06dbc14a3656bb0ac827f5c8bebb0f8cd20[m
+Author: Anna-Katharina Wickert <wickert@st.informatik.tu-darmstadt.de>
+Date:   Fri Jan 11 16:00:45 2019 +0100
+
+    Remove signing from LocatorPage
+    
+    The current signing clafer model isn't correctly generated for all available options. I removed the signing option therefore from the LocatorPage again.
+    
+    Signed-off-by: Anna-Katharina Wickert <wickert@st.informatik.tu-darmstadt.de>
+
+[33mcommit 365fadd6c4a5537d01c78d76f0676ad7fc38bfa6[m
+Author: Anna-Katharina Wickert <wickert@st.informatik.tu-darmstadt.de>
+Date:   Fri Jan 11 10:41:48 2019 +0100
+
+    Update TaskSelectionPage
+    
+    Add signing task to taskselectionpage to integrate another task (UI Overhaul 2018).
+    Remove inverted images to improve the usability of the new UI.
+    Add new logos for the tasks.
+    
+    Signed-off-by: Anna-Katharina Wickert <wickert@st.informatik.tu-darmstadt.de>
+
+[33mcommit 43bf30a4b4996ce30f8270790ad51e36ff7ab51d[m
+Author: shahrzad <shahrzad.asghari73@gmail.com>
+Date:   Thu Dec 20 16:53:52 2018 +0100
+
+    added an extension to plugin.xml for new properties in preferences
+
+[33mcommit 2012df5ec502d3f45ec582809019e54cef0abd7b[m
+Merge: 7647ee7f 2a2681f1
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Tue Dec 11 11:40:16 2018 +0100
+
+    Merge branch 'master' into master_sa
+
+[33mcommit 2a2681f110b476d4e9e6c11a8d232d4795f8e23f[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Tue Dec 11 11:37:04 2018 +0100
+
+    Code is being generated in correct file.
+
+[33mcommit b477498e5c46fd7ada58b06450c3a159eb9de7c7[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Mon Dec 10 14:48:39 2018 +0100
+
+    Auto-select currently opened resouces on Locator page.
+
+[33mcommit 7647ee7f4bd6f2c188f9d3781d45d36b46726292[m
+Author: shahrzad <shahrzad.asghari73@gmail.com>
+Date:   Mon Dec 10 11:51:16 2018 +0100
+
+    Errors got fixed
+    
+    Signed-off-by: Stefan Krueger <stefan.krueger@uni-paderborn.de>
+
+[33mcommit e086b4b60d43984c94bead2f92c4226428cc344a[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Fri Dec 7 11:17:22 2018 +0100
+
+    Fixed four test cases for code generator.
+
+[33mcommit 65a54b6580929c5d6c7243372d76a8ea6260c88b[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Fri Dec 7 10:53:02 2018 +0100
+
+    Pushing fixed KeyStore rule.
+
+[33mcommit 277ca4bae1cd8a52a0105cfa66ed14c34fb3a864[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Fri Dec 7 01:04:05 2018 +0100
+
+    Opinionated Design(tm) for legacy-clients question.
+
+[33mcommit 14ed3245c5a7af95634edda6f3307ef0ac6fd202[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Fri Dec 7 00:33:48 2018 +0100
+
+    Disable help button.
+
+[33mcommit 08986105982b252e626337bdf61385c3529ea3cf[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Fri Dec 7 00:30:52 2018 +0100
+
+    Some aligning.
+
+[33mcommit 5afaff8780580529caabaa6728787b445cc5ad50[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Fri Dec 7 00:09:14 2018 +0100
+
+    Added release years to clients in TLS config page.
+
+[33mcommit 3235d967acd50b5dda61ee7bddf2aaf33efc048c[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Thu Dec 6 23:55:17 2018 +0100
+
+    Fixed clafer creation.
+
+[33mcommit aed976a893740556c8f0c84f02bb1d8c1eb494da[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Thu Dec 6 14:32:56 2018 +0100
+
+    More cleanup of no longer needed files.
+
+[33mcommit f876fc07dab82d13e516ab68a97e3f489d0e6825[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Thu Dec 6 14:20:39 2018 +0100
+
+    Cleaned up unnecessary files.
+
+[33mcommit 929a24cb7dae591633203f1955424136908f6769[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Thu Dec 6 14:18:52 2018 +0100
+
+    Fixed padding for key wrapping in hybrid encryption.
+
+[33mcommit bf6c4d7a0fc7c37fb8bb53becea059189c21c3d2[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Thu Dec 6 13:44:57 2018 +0100
+
+    Updated rules and analysis.
+
+[33mcommit 66eac8d8f528a04738a99940476f6c8e51395442[m
+Merge: 565b3243 1751ea74
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Wed Dec 5 17:46:35 2018 +0100
+
+    Merge branch 'master' of git@github.com:eclipse-cognicrypt/CogniCrypt.git
+
+[33mcommit 565b32439483280dbaca407c1e416efe9e6416a7[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Wed Dec 5 17:46:17 2018 +0100
+
+    Added message box when code is being generated.
+
+[33mcommit 1751ea7428b89ea45583a9e6e6c692d3eea6726a[m
+Author: Stefan Krüger <kruegers@users.noreply.github.com>
+Date:   Wed Dec 5 17:18:45 2018 +0100
+
+    Removed build badge since we have to move CI to Eclipse Jenkins.
+
+[33mcommit ec0e68d807e66f8afc749ef270e22003c1c91e0d[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Tue Dec 4 14:46:33 2018 +0100
+
+    Fix compiler error.
+
+[33mcommit 7de14df4692c2fdaa2f32db8d379acb552631e2b[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Tue Dec 4 14:18:01 2018 +0100
+
+    Added Code Formatter and Clean Up settings.
+
+[33mcommit ff10c6737ba253bd8c771063f9290dd725e6b40b[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Tue Dec 4 14:16:23 2018 +0100
+
+    Formatting.
+
+[33mcommit bdd590d11d9f739954dda2db1012b3a9303ea70c[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Tue Dec 4 12:28:37 2018 +0100
+
+    Auto-cleanup w/ CogniCrypt code formatting profile.
+
+[33mcommit 247242416ab0d72663930c06ed6f865d93ad6a8c[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Tue Dec 4 11:59:05 2018 +0100
+
+    CrySL Parser stores fully qualified name.
+
+[33mcommit b3d11c2f540a6a999890d42badb5b83a350046c4[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Mon Dec 3 17:18:34 2018 +0100
+
+    Merged two UI branches. (modifications joint work @akwick + @mreif.)
+
+[33mcommit 5b6ce37d020d20e559e651150a8780abece3dc86[m
+Merge: 72da17c2 52fad78c
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Mon Dec 3 16:39:56 2018 +0100
+
+    Merge branch 'master' into UIOverhaul
+    
+    Conflicts:
+            .classpath
+            plugins/de.cognicrypt.core/lib/CryptoAnalysis-1.0.0-jar-with-dependencies.jar
+
+[33mcommit 52fad78c598d22746251c52e1e5c5b989c445c52[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Mon Dec 3 16:24:30 2018 +0100
+
+    Cleanup.
+
+[33mcommit 19e7e34a73fb86a746308e8baf2492dd583826b5[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Mon Dec 3 16:11:05 2018 +0100
+
+    More cleanup.
+
+[33mcommit 6cd40406920c85716a6d484d90be4c07188e600a[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Mon Dec 3 16:03:33 2018 +0100
+
+    More cleanup.
+
+[33mcommit b15959ef7180d5d7e1d5890f563c0040a8713f7e[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Mon Dec 3 16:01:26 2018 +0100
+
+    Cleaned up parent project.
+
+[33mcommit 65deee6bd22e652b4e41807b1fc94be4053c3218[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Mon Dec 3 14:11:38 2018 +0100
+
+    Fixed compiler errors caused by wrong analysis setup.
+
+[33mcommit d0c0d6a9f28ccc028ea24d3dea8dc88ea7016116[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Wed Nov 28 11:52:47 2018 +0100
+
+    Adopted new classes for CrySL parser.
+    
+    Signed-off-by: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+
+[33mcommit ab25123bb11b4906658e309910351e0c504a1f9a[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Wed Nov 28 10:27:11 2018 +0100
+
+    Removed superfluous jar.
+
+[33mcommit 72da17c264fe5f114a826f0ff7815f94d14a83f1[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Tue Nov 27 14:20:44 2018 +0100
+
+    Summary commit for new code-gen UI. Joint work w/ @mreif & @akwick.
+    
+    Details:
+    - Redesigned task selection page.
+    - Reworked secure password and encryption task.
+    - First steps towards reworking of TLS task.
+    - Added Locator page.
+
+[33mcommit 3adde24baa81c5dd3b710cb450e858b08e32d280[m
+Author: Stefan Krueger <stefan.krueger@crossing.tu-darmstadt.de>
+Date:   Tue Nov 27 13:26:27 2018 +0100
+
+    Fixed two typos.
+
+[33mcommit 470074e09016db1985ef2a510cfaba9c94199a21[m
+Author: Johannes Späth <johspaeth@users.noreply.github.com>
+Date:   Mon Nov 26 16:32:14 2018 +0100
+
+    Update README.md
+
+[33mcommit 72e0b887e73f6d1c316c47547ecfbffc6ad5cfab[m
+Author: Johannes Späth <joh.spaeth@googlemail.com>
+Date:   Mon Nov 26 13:17:45 2018 +0100
+
+    Several fixes to CI pipeline, CodeGeneration-UI, and static analysis.
+    
+    * Code of Conduct
+    * Updated CI-Pipeline
+    * Renaming of button in CodeGeneration wizard
+    * Updated CryptoAnalysis-1.0.0-SNAPSHOT.jar(Fixes CROSSINGTUD/CryptoAnalysis#30)
+    * Updated rules (Fixes CROSSINGTUD/Crypto-API-Rules#18)
+    * General refactoring
+    
+    Fixes #147, #201 #185, #206, #211, #37, #210, #194
+
+[33mcommit 08c81eb744f55bf559d6ec2dfbcdb2d9bd252edf[m
+Author: Johannes Späth <joh.spaeth@googlemail.com>
+Date:   Mon Nov 26 12:52:34 2018 +0100
+
+    New initial commit

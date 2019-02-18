@@ -102,11 +102,11 @@ public class CogniCryptpreferencePage extends PreferencePage implements IWorkben
 	        public void widgetSelected(SelectionEvent event) {
 	 
 	    	    checkBox4.setEnabled(checkBox3.getSelection());
+	    	    //in case we do not want to see warnings also from context menu
 	    	    /*if (!checkBox3.getSelection()) {
 	    	    	store.setValue(ICogniCryptConstants.PRE_CHECKBOX4, store.getBoolean(ICogniCryptConstants.PRE_CHECKBOX3));
 	    	    	checkBox4.setSelection(false);
-	    	    }*/
-	    	    
+	    	    }*/ 
 	        }
 	    });
 

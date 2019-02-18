@@ -25,7 +25,6 @@
       </actionSet>
    </extension>
 	
-
 <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution

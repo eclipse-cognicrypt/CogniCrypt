@@ -21,3 +21,6 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  resources/
 Automatic-Module-Name: de.cognicrypt.staticanalyzer
+Import-Package: de.cognicrypt.codegenerator,
+ properties
+Export-Package: de.cognicrypt.staticanalyzer.handlers

@@ -47,7 +47,7 @@
 						"defaultAnswer": true
 					},
 					{
-						"value": "Plain Secure Connection",
+						"value": "Plain Secure Connection (i.e., SSL/TLS)",
 						"codeDependencies": [
 							{
 								"option": "HTTPS",
@@ -410,7 +410,7 @@
 		"content": [
 			{			
 				"id": "0",
-				"element": "rbtextgroup",
+				"element": "radio",
 				"questionText": "Lastly, to set up a secure connection, you need a key. Please select your key source. One such source is a keystore. Keystores may contain several cryptogaphic keys and store them securely protected by passwords. Another source is a certificate. Certificates provide means to authenticate yourself to other parties.",
 				"answers": [
 					{
@@ -419,6 +419,10 @@
 							{
 								"option": "key",
 								"value": ""
+							},
+							{
+								"option": "ksgen",
+								"value": "false"
 							}
 						],
 						"uiDependencies": [
@@ -428,50 +432,8 @@
 							}, {
 								"option": "label1",
 								"value": "Keystore"
-							}
-						],
+						}],
 						"defaultAnswer": true
-					},
-					{
-						"value": "Import certificate with bundled private key (one file)",
-						"codeDependencies": [
-							{
-								"option": "key",
-								"value": ""
-							}
-						],
-						"uiDependencies": [
-							{
-								"option": "rows",
-								"value": "1"
-							},{
-								"option": "label1",
-								"value": "Key + Certificate"
-							}
-						]
-					},
-					{
-						"value": "Import certificate with associated private key (two files)",
-						"codeDependencies": [
-							{
-								"option": "key",
-								"value": ""
-							}
-						],
-						"uiDependencies": [
-							{
-								"option": "rows",
-								"value": "2"
-							},
-							{
-								"option": "label1",
-								"value": "Key"
-							},
-							{
-								"option": "label2",
-								"value": "Certificate"
-							}
-						]
 					},
 					{
 						"value": "Generate new keystore",
@@ -479,6 +441,10 @@
 							{
 								"option": "key",
 								"value": ""
+							},
+							{
+								"option": "ksgen",
+								"value": "true"
 							}
 						]
 					}

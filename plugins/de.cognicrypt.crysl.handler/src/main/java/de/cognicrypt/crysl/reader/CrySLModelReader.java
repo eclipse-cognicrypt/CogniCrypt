@@ -102,10 +102,15 @@ public class CrySLModelReader {
 
 	private List<CryptSLForbiddenMethod> forbiddenMethods = null;
 	private StateMachineGraph smg = null;
-	private String curClass = "";
 	private XtextResourceSet resourceSet;
 	private boolean testMode = false;
 
+	private static final String INT = "int";
+	private static final String THIS = "this";
+	private static final String ANY_TYPE = "AnyType";
+	private static final String NULL = "null";
+	private static final String UNDERSCORE = "_";
+	
 	public CrySLModelReader(IProject iProject) throws CoreException, IOException {
 		final Injector injector = CryptSLActivator.getInstance().getInjector(CryptSLActivator.DE_DARMSTADT_TU_CROSSING_CRYPTSL);
 		resourceSet = injector.getInstance(XtextResourceSet.class);
@@ -145,8 +150,8 @@ public class CrySLModelReader {
 
 	public CryptSLRule readRule(File ruleFile) {
 		final String fileName = ruleFile.getName();
-		final String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
-		if (!"cryptsl".equals(extension)) {
+		final String extension = fileName.substring(fileName.lastIndexOf("."));
+		if (!Constants.cryslFileEnding.equals(extension)) {
 			return null;
 		}
 		final Resource resource = resourceSet.getResource(URI.createFileURI(ruleFile.getAbsolutePath()), true);// URI.createPlatformResourceURI(ruleFile.getFullPath().toPortableString(),
@@ -154,7 +159,7 @@ public class CrySLModelReader {
 		EcoreUtil.resolveAll(resourceSet);
 		final EObject eObject = resource.getContents().get(0);
 		final Domainmodel dm = (Domainmodel) eObject;
-		this.curClass = dm.getJavaType().getQualifiedName();
+		String curClass = dm.getJavaType().getQualifiedName();
 		final EnsuresBlock ensure = dm.getEnsure();
 		final Map<ParEqualsPredicate, SuperType> pre_preds = Maps.newHashMap();
 		final DestroysBlock destroys = dm.getDestroy();
@@ -184,7 +189,7 @@ public class CrySLModelReader {
 						getStatesForMethods(CrySLReaderUtils.resolveAggregateToMethodeNames(cond))));
 			}
 		}
-		final CryptSLRule rule = new CryptSLRule(this.curClass, objects, this.forbiddenMethods, this.smg, constraints, actPreds);
+		final CryptSLRule rule = new CryptSLRule(curClass, objects, this.forbiddenMethods, this.smg, constraints, actPreds);
 		System.out.println(rule);
 		System.out.println("===========================================");
 		System.out.println("");
@@ -204,19 +209,11 @@ public class CrySLModelReader {
 	}
 
 	public List<CryptSLRule> readRules(String resourcesPath) throws CoreException {
-
 		final IPath rulesFolder = (new org.eclipse.core.runtime.Path(resourcesPath));
 
-		IResource[] members = null;
-		if (rulesFolder.segmentCount() == 1) {
-			// members = crySLFile.getProject().members();
-		} else {
-			members = ResourcesPlugin.getWorkspace().getRoot().getFolder(rulesFolder).members();
-		}
-
 		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
-		for (final IResource res : members) {
-			if ("cryptsl".equals(res.getFileExtension())) {
+		for (final IResource res : ResourcesPlugin.getWorkspace().getRoot().getFolder(rulesFolder).members()) {
+			if (Constants.cryslFileEnding.equals(res.getFileExtension())) {
 				CryptSLRule rule = readRule(((IFile) res).getRawLocation().makeAbsolute().toFile());
 				if (rule != null) {
 					rules.add(rule);
@@ -266,7 +263,7 @@ public class CrySLModelReader {
 							variables.add(new CryptSLObject(variable, type));
 						}
 					} else {
-						variables.add(new CryptSLObject("_", "null"));
+						variables.add(new CryptSLObject(UNDERSCORE, NULL));
 					}
 				}
 			}
@@ -287,11 +284,11 @@ public class CrySLModelReader {
 			if (constraint instanceof LiteralExpression) {
 				name = new CryptSLObject(object, ((ObjectDecl) ((ObjectImpl) ((LiteralExpression) constraint).getValue()).eContainer()).getObjectType().getQualifiedName());
 			} else {
-				name = new CryptSLObject(object, "int");
+				name = new CryptSLObject(object, INT);
 			}
 		}
 
-		return new CryptSLArithmeticConstraint(name, new CryptSLObject("0", "int"), crypto.rules.CryptSLArithmeticConstraint.ArithOp.p);
+		return new CryptSLArithmeticConstraint(name, new CryptSLObject("0", INT), crypto.rules.CryptSLArithmeticConstraint.ArithOp.p);
 	}
 
 	private ISLConstraint getConstraint(final Constraint cons) {
@@ -409,7 +406,7 @@ public class CrySLModelReader {
 			final Pred innerPredicate = (Pred) un.getEnclosedExpression();
 			if (innerPredicate.getParList() != null) {
 				for (final SuPar sup : innerPredicate.getParList().getParameters()) {
-					vars.add(new CryptSLObject("_", "null"));
+					vars.add(new CryptSLObject(UNDERSCORE, NULL));
 				}
 			}
 			slci = new CryptSLPredicate(null, innerPredicate.getPredName(), vars, true);
@@ -420,7 +417,7 @@ public class CrySLModelReader {
 				final SuParList parList = ((Pred) cons).getParList();
 				if (parList != null) {
 					for (final SuPar sup : parList.getParameters()) {
-						vars.add(new CryptSLObject("_", "null"));
+						vars.add(new CryptSLObject(UNDERSCORE, NULL));
 					}
 				}
 				slci = new CryptSLPredicate(null, ((Pred) cons).getPredName(), vars, false);
@@ -465,7 +462,7 @@ public class CrySLModelReader {
 				crysl.addAll(CrySLReaderUtils.resolveAggregateToMethodeNames(alternative));
 			}
 			methodSignatures.add(new CryptSLForbiddenMethod(
-					new CryptSLMethod(meth.getDeclaringType().getIdentifier() + "." + meth.getSimpleName(), pars, null, new SimpleEntry<>("_", "AnyType")), false, crysl));
+					new CryptSLMethod(meth.getDeclaringType().getIdentifier() + "." + meth.getSimpleName(), pars, null, new SimpleEntry<>(UNDERSCORE, ANY_TYPE)), false, crysl));
 		}
 		return methodSignatures;
 	}
@@ -474,6 +471,7 @@ public class CrySLModelReader {
 		final Map<ParEqualsPredicate, SuperType> preds = new HashMap<>();
 		for (final Constraint cons : eList) {
 			final Pred pred = (Pred) cons;
+			
 			final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
 
 			if (pred.getParList() != null) {
@@ -483,12 +481,12 @@ public class CrySLModelReader {
 						String name = object.getName();
 						String type = ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName();
 						if (name == null) {
-							name = "this";
-							type = this.curClass;
+							name = THIS;
+							type = "";//this.curClass;
 						}
 						variables.add(new CryptSLObject(name, type));
 					} else {
-						variables.add(new CryptSLObject("_", "null"));
+						variables.add(new CryptSLObject(UNDERSCORE, NULL));
 					}
 				}
 			}
@@ -538,7 +536,7 @@ public class CrySLModelReader {
 				final String type = ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName();
 				varNType.add(new CryptSLObject(object.getName(), type));
 				final String qualifiedName = ((PreDefinedPredicates) lit.getCons()).getType().getQualifiedName();
-				varNType.add(new CryptSLObject(qualifiedName, "null"));
+				varNType.add(new CryptSLObject(qualifiedName, NULL));
 				slci = new CryptSLPredicate(null, pred, varNType, false);
 				break;
 			case "length":
@@ -568,15 +566,15 @@ public class CrySLModelReader {
 						String type = ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName();
 						String name = object.getName();
 						if (name == null) {
-							name = "this";
-							type = this.curClass;
+							name = THIS;
+							type = "";//this.curClass;
 						}
 						variables.add(new CryptSLObject(name, type));
 					} else {
 						if (firstPar) {
-							variables.add(new CryptSLObject("this", this.curClass));
+							variables.add(new CryptSLObject(THIS, ""));// this.curClass));
 						} else {
-							variables.add(new CryptSLObject("_", "null"));
+							variables.add(new CryptSLObject(UNDERSCORE, NULL));
 						}
 					}
 					firstPar = false;

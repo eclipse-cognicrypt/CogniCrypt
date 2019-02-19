@@ -42,7 +42,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.question.Answer;
@@ -155,10 +154,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		return true;
 	}
 
-	public String getHelpId(final Page page) {
-		return "de.cognicrypt.codegenerator." + page.getHelpID();
-	}
-
 	@Override
 	public void createControl(final Composite parent) {
 
@@ -171,10 +166,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		final GridLayout layout = new GridLayout(1, false);
 
 		// To display the Help view after clicking the help icon
-		if (!this.page.getHelpID().isEmpty()) {
-			PlatformUI.getWorkbench().getHelpSystem().setHelp(sc, getHelpId(this.page));
-		}
-
 		this.container.setLayout(layout);
 		// If legacy JSON files are in effect.
 		if (this.page == null) {
@@ -191,7 +182,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		sc.setContent(this.container);
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);
-		sc.setMinSize(this.container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		sc.setMinSize(sc.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		setControl(sc);
 	}
 
@@ -201,7 +192,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		final Composite container = getPanel(parent);
 		final Label label = new Label(container, SWT.TOP | SWT.FILL | SWT.WRAP);
 		final GridData gd_question = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
-//		gd_question.widthHint = 350;
+		gd_question.widthHint = 750;
 		label.setLayoutData(gd_question);
 		label.setText(question.getQuestionText());
 		
@@ -240,19 +231,15 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				final String radioNote = question.getNote();
 				Group radioNoteControl = null;
 				if (!radioNote.isEmpty()) {
-					radioNoteControl = createNote(answerPanel, question, !(radioNote.contains("$$$")));
-					new Label(answerPanel, SWT.FILL);
-					new Label(answerPanel, SWT.FILL);
-					new Label(answerPanel, SWT.FILL);
+					radioNoteControl = createNote(container, question, !(radioNote.contains("$$$")));
 				}
 				final Button[] radioButtons = new Button[answers.size()];
 				for (int i = 0; i < answers.size(); i++) {
 					final int count = i;
 					final Group finalRadioNote = radioNoteControl;
 					final String ans = answers.get(i).getValue();
-					radioButtons[i] = new Button(answerPanel, SWT.RADIO | SWT.RIGHT);
+					radioButtons[i] = new Button(answerPanel, SWT.RADIO);
 					radioButtons[i].setText(ans);
-					new Label(answerPanel, SWT.NONE);
 					radioButtons[i].addSelectionListener(new SelectionAdapter() {
 
 						@Override
@@ -289,10 +276,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				final String checkboxNoteText = question.getNote();
 				//added description for questions
 				if (!checkboxNoteText.isEmpty()) {
-					checkboxNoteControl = createNote(answerPanel, question, !checkboxNoteText.contains("$$$"));
-					new Label(answerPanel, SWT.FILL);
-					new Label(answerPanel, SWT.FILL);
-					new Label(answerPanel, SWT.FILL);
+					checkboxNoteControl = createNote(container, question, !checkboxNoteText.contains("$$$"));
 				}
 				final List<Button> cbs = new ArrayList<Button>();
 				final List<Button> exclusiveCbs = new ArrayList<Button>(answers.size());

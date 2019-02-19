@@ -232,12 +232,20 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		final Composite container = getPanel(parent);
 		final Label label = new Label(container, SWT.TOP | SWT.FILL | SWT.WRAP);
 		final GridData gd_question = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
-		gd_question.widthHint = 550;
+//		gd_question.widthHint = 350;
 		label.setLayoutData(gd_question);
 		label.setText(question.getQuestionText());
+		
+		final Composite answerPanel = new Composite(parent, SWT.NONE);
+		final GridLayout answerLayout = new GridLayout();
+		answerLayout.numColumns = 4;
+		answerLayout.verticalSpacing = 15;
+		answerLayout.horizontalSpacing = 15;
+		answerPanel.setLayout(answerLayout);
+
 		switch (question.getElement()) {
 			case combo:
-				final ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.FILL);
+				final ComboViewer comboViewer = new ComboViewer(answerPanel, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.FILL);
 				comboViewer.setContentProvider(ArrayContentProvider.getInstance());
 				comboViewer.setInput(answers);
 
@@ -260,25 +268,22 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				}
 				break;
 			case radio:
-				new Label(container, SWT.FILL);
-				new Label(container, SWT.FILL);
-				new Label(container, SWT.FILL);
 				final String radioNote = question.getNote();
 				Group radioNoteControl = null;
 				if (!radioNote.isEmpty()) {
-					radioNoteControl = createNote(container, question, !(radioNote.contains("$$$")));
-					new Label(container, SWT.FILL);
-					new Label(container, SWT.FILL);
-					new Label(container, SWT.FILL);
+					radioNoteControl = createNote(answerPanel, question, !(radioNote.contains("$$$")));
+					new Label(answerPanel, SWT.FILL);
+					new Label(answerPanel, SWT.FILL);
+					new Label(answerPanel, SWT.FILL);
 				}
 				final Button[] radioButtons = new Button[answers.size()];
 				for (int i = 0; i < answers.size(); i++) {
 					final int count = i;
 					final Group finalRadioNote = radioNoteControl;
 					final String ans = answers.get(i).getValue();
-					radioButtons[i] = new Button(container, SWT.RADIO);
+					radioButtons[i] = new Button(answerPanel, SWT.RADIO | SWT.RIGHT);
 					radioButtons[i].setText(ans);
-					new Label(container, SWT.NONE);
+					new Label(answerPanel, SWT.NONE);
 					radioButtons[i].addSelectionListener(new SelectionAdapter() {
 
 						@Override
@@ -311,17 +316,14 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish = true);
 				break;
 			case checkbox:
-				new Label(container, SWT.FILL);
-				new Label(container, SWT.FILL);
-				new Label(container, SWT.FILL);
 				Group checkboxNoteControl = null;
 				final String checkboxNoteText = question.getNote();
 				//added description for questions
 				if (!checkboxNoteText.isEmpty()) {
-					checkboxNoteControl = createNote(container, question, !checkboxNoteText.contains("$$$"));
-					new Label(container, SWT.FILL);
-					new Label(container, SWT.FILL);
-					new Label(container, SWT.FILL);
+					checkboxNoteControl = createNote(answerPanel, question, !checkboxNoteText.contains("$$$"));
+					new Label(answerPanel, SWT.FILL);
+					new Label(answerPanel, SWT.FILL);
+					new Label(answerPanel, SWT.FILL);
 				}
 				final List<Button> cbs = new ArrayList<Button>();
 				final List<Button> exclusiveCbs = new ArrayList<Button>(answers.size());
@@ -330,7 +332,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					final int count = i;
 					final Group finalCheckBoxControl = checkboxNoteControl;
 					final Answer a = answers.get(i);
-					final Button curCheckbox = new Button(container, SWT.CHECK);
+					final Button curCheckbox = new Button(answerPanel, SWT.CHECK);
 					curCheckbox.setText(a.getValue());
 
 					curCheckbox.addSelectionListener(new SelectionAdapter() {
@@ -374,12 +376,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 										}
 									}
 								}
-
 								BeginnerTaskQuestionPage.this.finish = cbs.stream().anyMatch(e -> e.getSelection());
 								BeginnerTaskQuestionPage.this.setPageComplete(isPageComplete());
-
 							}
-
 						}
 					});
 					cbs.add(curCheckbox);
@@ -398,10 +397,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 
 			case rbtextgroup:
-				new Label(container, SWT.FILL);
-				new Label(container, SWT.FILL);
-				new Label(container, SWT.FILL);
-				
 				final Composite rbbtnControl = new Composite(parent, SWT.NONE);
 				final GridData rbbtnControlData = new GridData(GridData.FILL, GridData.FILL, false, false);
 				rbbtnControl.setLayoutData(rbbtnControlData);
@@ -482,7 +477,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 			case text:
 
-				final Text inputField = new Text(container, SWT.BORDER);
+				final Text inputField = new Text(answerPanel, SWT.BORDER);
 				inputField.setLayoutData(new GridData(100, SWT.DEFAULT));
 				inputField.setToolTipText(question.getTooltip());
 				inputField.setMessage(question.getMessage());
@@ -496,7 +491,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				if (question.getTextType().equals(Constants.BROWSE)) {
 					inputField.setLayoutData(new GridData(300, SWT.DEFAULT));
 
-					final Button browseButton = new Button(container, SWT.PUSH);
+					final Button browseButton = new Button(answerPanel, SWT.PUSH);
 					browseButton.setText(Constants.BROWSE);
 					browseButton.addSelectionListener(new SelectionAdapter() {
 
@@ -649,10 +644,10 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 			case button:
 				for (int i = 0; i < 3; i++) {
-					new Label(container, SWT.NULL);
+					new Label(answerPanel, SWT.NULL);
 				}
 
-				final Composite comp = new Composite(container, SWT.NONE);
+				final Composite comp = new Composite(answerPanel, SWT.NONE);
 				final GridLayout grid = new GridLayout(2, false);
 				grid.marginWidth = 0;
 				comp.setLayout(grid);
@@ -851,7 +846,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		titledPanel.setFont(boldFont);
 		final GridLayout layout2 = new GridLayout();
 
-		layout2.numColumns = 4;
+		layout2.numColumns = 1;
 		titledPanel.setLayout(layout2);
 
 		return titledPanel;

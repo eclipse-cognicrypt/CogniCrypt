@@ -16,6 +16,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
+import de.cognicrypt.core.Constants;
 import de.cognicrypt.crysl.reader.CrySLModelReader;
 import de.cognicrypt.crysl.reader.CrySLReaderUtils;
 
@@ -53,7 +54,7 @@ public class CrySLBuilder extends IncrementalProjectBuilder {
 	protected void clean(IProgressMonitor monitor) throws CoreException {
 		for (final IClasspathEntry entry : JavaCore.create(getProject()).getResolvedClasspath(true)) {
 			if (entry.getContentKind() == IPackageFragmentRoot.K_SOURCE) {
-				Arrays.asList(new File(entry.getOutputLocation().removeFirstSegments(1).toOSString()).listFiles()).parallelStream().forEach(e -> e.delete());
+				Arrays.asList(new File(getProject().getLocation().toOSString() + Constants.outerFileSeparator + entry.getOutputLocation().removeFirstSegments(1).toOSString()).listFiles()).parallelStream().forEach(e -> e.delete());
 			}
 		}
 	}

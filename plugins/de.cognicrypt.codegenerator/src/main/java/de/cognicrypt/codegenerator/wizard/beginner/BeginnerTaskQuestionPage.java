@@ -55,14 +55,13 @@ import de.cognicrypt.core.Constants.GUIElements;
 
 public class BeginnerTaskQuestionPage extends WizardPage {
 
-	private final Question quest;
 	private final Task task;
-	private final Page page;
+	private Question quest;
+	private Page page;
 
 	private boolean finish = false;
 	private BeginnerModeQuestionnaire beginnerModeQuestionnaire;
 	private final HashMap<Question, Answer> selectionMap = new HashMap<>();
-	private List<String> selectionValues;
 	private Composite container;
 	private int count = 0;
 	private boolean isActive = true;
@@ -88,29 +87,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	 *        task for which the page is created
 	 */
 	public BeginnerTaskQuestionPage(final Question quest, final Task task) {
-		this(quest, task, null);
-	}
-
-	/**
-	 * construct a page containing a single question
-	 *
-	 * @param quest
-	 *        question that will be displayed on the page
-	 * @param task
-	 *        task for which the page is created
-	 * @param selectionValues
-	 *        list of selectable strings if element type of quest is itemselection, null otherwise
-	 */
-	public BeginnerTaskQuestionPage(final Question quest, final Task task, final List<String> selectionValues) {
-		super("Display Questions");
-		setTitle("Configuring Selected Task: " + task.getDescription());
-		setDescription(Constants.DESCRIPTION_VALUE_SELECTION_PAGE);
+		this(task);
 		this.quest = quest;
-		this.task = task;
-		this.selectionValues = selectionValues;
-
-		// This variable needs to be initialized.
-		this.page = null;
 	}
 
 	/**
@@ -119,39 +97,25 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	 *        page contains the questions that need to be displayed.
 	 * @param task
 	 *        task for which the page is created
-	 * @param selectionValues
-	 *        The call to this constructor needs to have this extra parameter for itemselection. list of selectable strings if element type of quest is itemselection, null
-	 *        otherwise
 	 */
-	public BeginnerTaskQuestionPage(final Page page, final Task task, final List<String> selectionValues) {
-		super("Display Questions");
-		setTitle("Configuring Selected Task: " + task.getDescription());
-		setDescription(Constants.DESCRIPTION_VALUE_SELECTION_PAGE);
+	public BeginnerTaskQuestionPage(final Page page, final Task task) {
+		this(task);
 		this.page = page;
-		this.task = task;
-		this.selectionValues = selectionValues;
-
-		//This variable needs to be initialized.
 		this.quest = null;
 	}
-
+	
 	/**
 	 *
 	 * @param page
 	 * @param task
 	 * @param beginnerModeQuestionnaire
 	 *        Updated this parameter in the constructor to accept the questionnaire instead of all the questions.
-	 * @param selectionValues
 	 */
-	public BeginnerTaskQuestionPage(final Page page, final Task task, final BeginnerModeQuestionnaire beginnerModeQuestionnaire, final List<String> selectionValues) {
-		super("Display Questions");
-		setTitle("Configuring Selected Task: " + task.getDescription());
-		setDescription(Constants.DESCRIPTION_VALUE_SELECTION_PAGE);
+	public BeginnerTaskQuestionPage(final Page page, final Task task, final BeginnerModeQuestionnaire beginnerModeQuestionnaire) {
+		this(task);
 		this.beginnerModeQuestionnaire = beginnerModeQuestionnaire;
 		this.quest = null;
 		this.page = page;
-		this.task = task;
-		this.selectionValues = selectionValues;
 	}
 
 	/**
@@ -162,14 +126,19 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	 * @param task
 	 */
 	public BeginnerTaskQuestionPage(final BeginnerModeQuestionnaire beginnerModeQuestionnaire, final Question quest, final Task task) {
-		super("Display Questions");
-		setTitle("Configuring Selected Task: " + task.getDescription());
-		setDescription(Constants.DESCRIPTION_VALUE_SELECTION_PAGE);
+		this(task);
 		this.beginnerModeQuestionnaire = beginnerModeQuestionnaire;
 		this.quest = quest;
 		this.page = null;
+	}
+	
+	private BeginnerTaskQuestionPage(final Task task) {
+		super("Display Questions");
+		setTitle("Configuring Selected Task: " + task.getDescription());
+		setDescription(Constants.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.task = task;
 	}
+	
 
 	@Override
 	public boolean isPageComplete() {
@@ -805,13 +774,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			return false;
 		}
 
-		if (this.selectionValues == null) {
-			if (other.selectionValues != null) {
-				return false;
-			}
-		} else if (!this.selectionValues.equals(other.selectionValues)) {
-			return false;
-		}
 		if (this.page != other.page) {
 			return false;
 		}
@@ -864,7 +826,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		result = prime * result + ((this.quest == null) ? 0 : this.quest.hashCode());
 		result = prime * result + ((this.page == null) ? 0 : this.quest.hashCode());
 		result = prime * result + ((this.selectionMap == null) ? 0 : this.selectionMap.hashCode());
-		result = prime * result + ((this.selectionValues == null) ? 0 : this.selectionValues.hashCode());
 		return result;
 	}
 

@@ -2,7 +2,7 @@
 		{
 			"name": "Encryption",
 			"description": "Encrypting data",
-			"taskDescription": "When this use case is selected, CogniCrypt generates code for Encrypting data. You can select which kind of plaintext (String, File, Byte[]), you wish to select, as well as how to communicate the secret necessary for decryption.",			
+			"taskDescription": "When this use case is selected, CogniCrypt generates code for encrypting data. You can select which kind of plaintext (String, File, Byte[]), you wish to encrypt, as well as how to communicate the secret necessary for decryption.",			
 			"modelFile" : "src/main/resources/ClaferModel/Encryption.js",
 			"questionsJSONFile" : "src/main/resources/TaskDesc/Encryption.json",
 			"image" : "lock",

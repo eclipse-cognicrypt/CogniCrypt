@@ -32,6 +32,7 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.ui.IMarkerResolution;
 
+import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.utils.DeveloperProject;
 import de.cognicrypt.utils.Utils;
@@ -64,7 +65,15 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 
 		try {
 			sourceUnit = Utils.getCompilationUnitFromMarker(marker);
-			Utils.addAdditionalFiles("resources/Predicate", "de.cognicrypt.staticanalyzer", this.devProject);
+			
+			if(devProject.isMavenProject()) {
+//				devProject.addMavenDependency("de.tudarmstadt.ukp.wikipedia", "de.tudarmstadt.ukp.wikipedia.api", "1.1.0");
+				devProject.addMavenDependency(Constants.CC_GROUPID, Constants.CC_ARTIFACTID, Constants.CC_VERSION);
+			}
+			else {
+				Utils.addAdditionalFiles("resources/Predicate", "de.cognicrypt.staticanalyzer", this.devProject);
+			}
+			
 			if (!Utils.hasJarImport(sourceUnit, "de.cognicrypt.staticanalyzer.*")) {
 				Utils.insertJarImport(sourceUnit, "de.cognicrypt.staticanalyzer.*");
 			}

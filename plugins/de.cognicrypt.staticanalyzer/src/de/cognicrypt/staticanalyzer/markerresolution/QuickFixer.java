@@ -30,13 +30,13 @@ public class QuickFixer implements IMarkerResolutionGenerator {
 			quickFixes.add(new SuppressWarningFix(Constants.SUPPRESSWARNING_FIX + message));
 
 			//TODO: currently the ensuresPredicate quickfix is disabled.
-//			if (errorType.equals(Constants.REQUIRED_PREDICATE_MARKER_TYPE)) {
-//				String predicate = (String) mk.getAttribute("predicate");
-//				
-//				if(predicate.equals("generatedKey") || predicate.equals("randomized")) {
-//					quickFixes.add(new EnsuresPredicateFix("This object comes from a stream/database/other external source and is actually secure."));
-//				}
-//			}
+			if (errorType.equals(Constants.REQUIRED_PREDICATE_MARKER_TYPE)) {
+				String predicate = (String) mk.getAttribute("predicate");
+				
+				if(predicate.equals("generatedKey") || predicate.equals("randomized")) {
+					quickFixes.add(new EnsuresPredicateFix("This object comes from a stream/database/other external source and is actually secure."));
+				}
+			}
 		}
 		catch (final CoreException e) {
 			Activator.getDefault().logError(e);

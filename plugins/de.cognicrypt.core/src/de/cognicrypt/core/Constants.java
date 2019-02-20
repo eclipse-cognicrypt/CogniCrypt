@@ -37,6 +37,7 @@ public class Constants {
 	public static final String lineSeparator = System.getProperty("line.separator");
 
 	public static final String JavaNatureID = "org.eclipse.jdt.core.javanature";
+	public static final String MavenNatureID = "org.eclipse.m2e.core.maven2Nature";
 
 	private static final String rsrcPath = "src" + Constants.innerFileSeparator + "main" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator;
 	private static final String tstrsrcPath = "src" + Constants.innerFileSeparator + "test" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator;
@@ -464,6 +465,13 @@ public class Constants {
 	public static final String textBox = "Text box";
 	public static final String radioButton = "Radio button";
 
+	// CogniCrypt MavenDependency
+	public static final String CC_GROUPID = "";
+	public static final String CC_ARTIFACTID = "";
+	public static final String CC_VERSION = "";
+
+	
+	
 	// for creating SuppressWarnings.xml
 	public static final String SUPPRESSWARNING_FILE = "SuppressWarnings" + XML_EXTENSION;
 	public static final String SUPPRESSWARNINGS_ELEMENT = "SuppressWarnings";

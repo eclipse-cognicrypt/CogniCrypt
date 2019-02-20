@@ -10,10 +10,14 @@
 
 package de.cognicrypt.utils;
 
+import java.io.File;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -24,16 +28,21 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import de.cognicrypt.core.Activator;
 import de.cognicrypt.core.Constants;
 
 /**
- * This class represents the app developer's project, on which the plugin is working.
+ * This class represents the app developer's project, on which the plugin is
+ * working.
  *
  */
 public class DeveloperProject {
-	
+
 	/**
 	 * Application project
 	 */
@@ -44,15 +53,21 @@ public class DeveloperProject {
 	}
 
 	/**
-	 * The method adds one library to the developer's project physical and build path. In the context of the overall tool, this is necessary when the user chooses a task that comes
-	 * with additional libraries.
+	 * The method adds one library to the developer's project physical and build
+	 * path. In the context of the overall tool, this is necessary when the user
+	 * chooses a task that comes with additional libraries.
 	 *
 	 * @param pathToJar
-	 *        path to library to be added
-	 * @return <CODE>true</CODE>/<CODE>false</CODE> if library was (not) added successfully.
+	 *            path to library to be added
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if library was (not) added
+	 *         successfully.
 	 * @throws CoreException
-	 *         {@link org.eclipse.core.resources.IProject#hasNature(String) hasNature()}, {@link org.eclipse.jdt.core.IJavaProject#getRawClasspath() getRawClassPath()} and
-	 *         {@link org.eclipse.jdt.core.IJavaProject#setRawClassPath() setRawClassPath()}
+	 *             {@link org.eclipse.core.resources.IProject#hasNature(String)
+	 *             hasNature()},
+	 *             {@link org.eclipse.jdt.core.IJavaProject#getRawClasspath()
+	 *             getRawClassPath()} and
+	 *             {@link org.eclipse.jdt.core.IJavaProject#setRawClassPath()
+	 *             setRawClassPath()}
 	 */
 	public boolean addJar(final String pathToJar) throws CoreException {
 		if (this.project.isOpen() && this.project.hasNature(Constants.JavaNatureID)) {
@@ -60,7 +75,8 @@ public class DeveloperProject {
 			final LinkedHashSet<IClasspathEntry> classPathEntryList = new LinkedHashSet<>();
 
 			classPathEntryList.addAll(Arrays.asList(projectAsJavaProject.getRawClasspath()));
-			classPathEntryList.add(JavaCore.newLibraryEntry(this.project.getFile(pathToJar).getFullPath(), null, null, false));
+			classPathEntryList
+					.add(JavaCore.newLibraryEntry(this.project.getFile(pathToJar).getFullPath(), null, null, false));
 
 			projectAsJavaProject.setRawClasspath(classPathEntryList.toArray(new IClasspathEntry[1]), null);
 			return true;
@@ -73,8 +89,9 @@ public class DeveloperProject {
 	 * Retrieves folder from developer package
 	 *
 	 * @param name
-	 *        Project-relative path to folder
-	 * @see org.eclipse.core.resources.IProject#getFolder(String) IProject.getFolder()
+	 *            Project-relative path to folder
+	 * @see org.eclipse.core.resources.IProject#getFolder(String)
+	 *      IProject.getFolder()
 	 */
 	public IFolder getFolder(final String name) {
 		return this.project.getFolder(name);
@@ -84,24 +101,30 @@ public class DeveloperProject {
 	 * Retrieves file from developer package
 	 *
 	 * @param path
-	 *        Project-relative path to file
+	 *            Project-relative path to file
 	 * @see org.eclipse.core.resources.IProject#getFile(String) IProject.getFile()
 	 */
 	public IFile getIFile(final String path) {
-		return this.project.getFile(path.substring(path.indexOf(this.project.getName()) + this.project.getName().length()));
+		return this.project
+				.getFile(path.substring(path.indexOf(this.project.getName()) + this.project.getName().length()));
 	}
 
 	/**
-	 * This method retrieves a package of the name {@linkplain name} that is in the developer's project.
+	 * This method retrieves a package of the name {@linkplain name} that is in the
+	 * developer's project.
 	 *
 	 * @param name
-	 *        name of the package
-	 * @return package as {@link org.eclipse.jdt.core.IPackageFragment IPackageFragment}
+	 *            name of the package
+	 * @return package as {@link org.eclipse.jdt.core.IPackageFragment
+	 *         IPackageFragment}
 	 * @throws CoreException
-	 *         see {@link de.cognicrypt.codegenerator.DeveloperProject#getSourcePath() getSourcePath()}
+	 *             see
+	 *             {@link de.cognicrypt.codegenerator.DeveloperProject#getSourcePath()
+	 *             getSourcePath()}
 	 */
 	public IPackageFragment getPackagesOfProject(final String name) throws CoreException {
-		return JavaCore.create(this.project).getPackageFragmentRoot(this.project.getFolder(getSourcePath())).getPackageFragment(name);
+		return JavaCore.create(this.project).getPackageFragmentRoot(this.project.getFolder(getSourcePath()))
+				.getPackageFragment(name);
 	}
 
 	/**
@@ -114,7 +137,8 @@ public class DeveloperProject {
 	/**
 	 * @return Path to Source Folder of Project.
 	 * @throws CoreException
-	 *         See {@link org.eclipse.core.resources.IProject#hasNature(String) hasNature()}
+	 *             See {@link org.eclipse.core.resources.IProject#hasNature(String)
+	 *             hasNature()}
 	 */
 	public String getSourcePath() throws CoreException {
 		if (this.project.isOpen() && this.project.hasNature(Constants.JavaNatureID)) {
@@ -131,10 +155,13 @@ public class DeveloperProject {
 	 * Refreshes the project.
 	 *
 	 * @throws CoreException
-	 *         See {@link org.eclipse.core.resources.IResource#refreshLocal(int, org.eclipse.core.runtime.IProgressMonitor) refreshLocal()}
+	 *             See
+	 *             {@link org.eclipse.core.resources.IResource#refreshLocal(int, org.eclipse.core.runtime.IProgressMonitor)
+	 *             refreshLocal()}
 	 */
 	public void refresh() throws CoreException {
-		// From JavaDoc: "This method is long-running." -> if it takes too long for big projects, reduce depth parameter
+		// From JavaDoc: "This method is long-running." -> if it takes too long for big
+		// projects, reduce depth parameter
 		// in call or call refresh on Crypto package only
 		this.project.refreshLocal(IResource.DEPTH_INFINITE, null);
 	}
@@ -179,8 +206,9 @@ public class DeveloperProject {
 	 * Removes package from developer project.
 	 *
 	 * @param packageName
-	 *        name of package that is removed
-	 * @return <CODE>true</CODE>/<CODE>false</CODE> if package removal was successful/failed.
+	 *            name of package that is removed
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if package removal was
+	 *         successful/failed.
 	 */
 	public Boolean removePackage(final String packageName) {
 		try {
@@ -193,4 +221,85 @@ public class DeveloperProject {
 		return false;
 	}
 
+	/**
+	 * This method checks if a project is a MavenProject. 
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if MavenNature is existing.
+	 * @throws CoreException
+	 */
+	public boolean isMavenProject() throws CoreException {
+		if (this.project.hasNature(Constants.MavenNatureID)) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean addMavenDependency(String groupId, String artifactId, String version) {
+		XMLParser xmlParser;
+		File pom = new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml");		
+		if (pom.exists()) {
+			xmlParser = new XMLParser(pom);
+			xmlParser.useDocFromFile();
+
+			
+			Node dependenciesNode = xmlParser.getChildNodeByTagName(xmlParser.getRoot(), "dependencies");
+			if(dependenciesNode != null) {
+				NodeList dependencyList = dependenciesNode.getChildNodes();
+				for (int i = 0; i < dependencyList.getLength(); i++) {
+					if (isEqualMavenDependency(dependencyList.item(i), groupId, artifactId, version)) {
+						return false;
+					}
+				}
+			}
+			else {
+				dependenciesNode = xmlParser.getDoc().createElement("dependencies");
+				xmlParser.getRoot().appendChild(dependenciesNode);
+			}
+			
+			Element dependency = xmlParser.getDoc().createElement("dependency");
+			xmlParser.createChildElement(dependency, "groupId", groupId);
+			xmlParser.createChildElement(dependency, "artifactId", artifactId);
+			xmlParser.createChildElement(dependency, "version", version);
+			dependenciesNode.appendChild(dependency);
+			
+			xmlParser.writeXML();
+
+		} else {
+			Activator.getDefault().logInfo("pom.xml doesn't exist at this place: " + project.getLocation().toOSString()
+					+ Constants.outerFileSeparator + "pom.xml");
+		}
+		return true;
+	}
+
+	private boolean isEqualMavenDependency(Node dependency, String groupId, String artifactId, String version) {
+
+		Node groupIdNode = null;
+		Node artifactIdNode = null;
+		Node versionNode = null;
+
+		if (dependency.getNodeType() == Node.ELEMENT_NODE) {
+			NodeList dependencyNodeList = dependency.getChildNodes();
+			for (int j = 0; j < dependencyNodeList.getLength(); j++) {
+				Node currentDependencyNode = dependencyNodeList.item(j);
+				if (currentDependencyNode.getNodeType() == Node.ELEMENT_NODE) {
+					String nodeName = currentDependencyNode.getNodeName();
+					if (nodeName.equals("groupId")) {
+						groupIdNode = currentDependencyNode;
+					} else if (nodeName.equals("artifactId")) {
+						artifactIdNode = currentDependencyNode;
+					} else if (nodeName.equals("version")) {
+						versionNode = currentDependencyNode;
+					}
+					// Activator.getDefault().logInfo("NodeName: " +nodeName );
+					// Activator.getDefault().logInfo("Content: " +nodeContent );
+				}
+			}
+		}
+		if (groupIdNode != null && artifactIdNode != null && versionNode != null) {
+			if (groupIdNode.getTextContent().equals(groupId) && artifactIdNode.getTextContent().equals(artifactId)
+					&& versionNode.getTextContent().equals(version)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

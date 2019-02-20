@@ -33,7 +33,12 @@ import de.cognicrypt.core.Constants;
 public class XMLParser {
 
 	/**
-	 * Usage: 1) Constructor 2) useDocFromFile || createNewDoc 3) createRootElement 4) createChildElement* 5) createAttrForElement* 6) writeXML
+	 * Usage: 1) Constructor
+	 * 		  2) useDocFromFile || createNewDoc 
+	 * 		  3) createRootElement 
+	 *        4) createChildElement* 
+	 *        5) createAttrForElement* 
+	 *        6) writeXML
 	 */
 
 	private File xmlFile;
@@ -108,6 +113,10 @@ public class XMLParser {
 		return createRootElement(this.root);
 	}
 
+	public Element createElement(final String elementName) {
+		return doc.createElement(elementName);
+	}
+	
 	/**
 	 * This method appends a root {@link Element} to the {@link Document} structure.
 	 * 
@@ -171,6 +180,7 @@ public class XMLParser {
 		element.setAttributeNode(attr);
 	}
 
+	
 	/**
 	 * This method writes the {@link Document} object structure to a XML File.
 	 */
@@ -233,6 +243,7 @@ public class XMLParser {
 		return valueList;
 	}
 
+	
 	/**
 	 * This method filters a certain {@link Node}, on the basis of the {@link Node} name, {@link Attr} name and {@link Attr} value.
 	 * 
@@ -255,6 +266,9 @@ public class XMLParser {
 		throw new NoSuchElementException();
 	}
 
+	
+	
+	
 	/**
 	 * This method filters a certain child {@link Node} in a parent node, on the basis of the {@link Node} name.
 	 * 
@@ -263,16 +277,17 @@ public class XMLParser {
 	 * @return the filtered node
 	 * @throws NoSuchElementException
 	 */
-	public Node getChildNodeByTagName(final Node parent, final String nodeName) throws NoSuchElementException {
+	public Node getChildNodeByTagName(final Node parent, final String nodeName){
 		final NodeList childList = parent.getChildNodes();
 		for (int i = 0; i < childList.getLength(); i++) {
 			if (childList.item(i).getNodeName().equals(nodeName)) {
 				return childList.item(i);
 			}
 		}
-		throw new NoSuchElementException();
+		return null;
 	}
 
+	
 	/**
 	 * This method updates the value of a certain {@link Node}.
 	 * 

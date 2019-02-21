@@ -466,12 +466,18 @@ public class Constants {
 	public static final String radioButton = "Radio button";
 
 	// CogniCrypt MavenDependency
-	public static final String CC_GROUPID = "";
-	public static final String CC_ARTIFACTID = "";
-	public static final String CC_VERSION = "";
+	public static final String PREDICATEENSURER_GROUPID = "";
+	public static final String PREDICATEENSURER_ARTIFACTID = "";
+	public static final String PREDICATEENSURER_VERSION = "";
+	public static final String PREDICATEENSURER_JAR_IMPORT = "de.predicateensurer.*";
+	
+	public static final String DEPENDENCIES_TAG = "dependencies";
+	public static final String DEPENDENCY_TAG = "dependency";
+	public static final String GROUPID_TAG = "groupId";
+	public static final String ARTIFACTID_TAG = "artifactId";
+	public static final String VERSION_TAG = "version";
+	public static final String MVN_INSTALL_COMMAND = "install";
 
-	
-	
 	// for creating SuppressWarnings.xml
 	public static final String SUPPRESSWARNING_FILE = "SuppressWarnings" + XML_EXTENSION;
 	public static final String SUPPRESSWARNINGS_ELEMENT = "SuppressWarnings";

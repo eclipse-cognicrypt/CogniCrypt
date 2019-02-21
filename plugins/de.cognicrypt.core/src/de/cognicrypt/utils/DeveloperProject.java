@@ -12,12 +12,17 @@ package de.cognicrypt.utils;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.handler.ArtifactHandler;
+
+import org.apache.maven.shared.invoker.DefaultInvocationRequest;
+import org.apache.maven.shared.invoker.DefaultInvoker;
+import org.apache.maven.shared.invoker.InvocationRequest;
+import org.apache.maven.shared.invoker.InvocationResult;
+import org.apache.maven.shared.invoker.Invoker;
+import org.apache.maven.shared.invoker.MavenInvocationException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -29,7 +34,6 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -233,6 +237,13 @@ public class DeveloperProject {
 		return false;
 	}
 
+	/**
+	 * This method adds a Maven dependency entry to the pom.xml, if the entry doesn't exist.
+	 * @param groupId		
+	 * @param artifactId
+	 * @param version
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if the adding is successful.
+	 */
 	public boolean addMavenDependency(String groupId, String artifactId, String version) {
 		XMLParser xmlParser;
 		File pom = new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml");		
@@ -241,7 +252,7 @@ public class DeveloperProject {
 			xmlParser.useDocFromFile();
 
 			
-			Node dependenciesNode = xmlParser.getChildNodeByTagName(xmlParser.getRoot(), "dependencies");
+			Node dependenciesNode = xmlParser.getChildNodeByTagName(xmlParser.getRoot(), Constants.DEPENDENCIES_TAG);
 			if(dependenciesNode != null) {
 				NodeList dependencyList = dependenciesNode.getChildNodes();
 				for (int i = 0; i < dependencyList.getLength(); i++) {
@@ -251,18 +262,17 @@ public class DeveloperProject {
 				}
 			}
 			else {
-				dependenciesNode = xmlParser.getDoc().createElement("dependencies");
+				dependenciesNode = xmlParser.getDoc().createElement(Constants.DEPENDENCIES_TAG);
 				xmlParser.getRoot().appendChild(dependenciesNode);
 			}
 			
-			Element dependency = xmlParser.getDoc().createElement("dependency");
-			xmlParser.createChildElement(dependency, "groupId", groupId);
-			xmlParser.createChildElement(dependency, "artifactId", artifactId);
-			xmlParser.createChildElement(dependency, "version", version);
+			Element dependency = xmlParser.getDoc().createElement(Constants.DEPENDENCY_TAG);
+			xmlParser.createChildElement(dependency, Constants.GROUPID_TAG, groupId);
+			xmlParser.createChildElement(dependency, Constants.ARTIFACTID_TAG, artifactId);
+			xmlParser.createChildElement(dependency, Constants.VERSION_TAG, version);
 			dependenciesNode.appendChild(dependency);
-			
 			xmlParser.writeXML();
-
+			execute(pom, Arrays.asList(Constants.MVN_INSTALL_COMMAND));
 		} else {
 			Activator.getDefault().logInfo("pom.xml doesn't exist at this place: " + project.getLocation().toOSString()
 					+ Constants.outerFileSeparator + "pom.xml");
@@ -270,6 +280,14 @@ public class DeveloperProject {
 		return true;
 	}
 
+	/**
+	 * This method 
+	 * @param dependency
+	 * @param groupId
+	 * @param artifactId
+	 * @param version
+	 * @return
+	 */
 	private boolean isEqualMavenDependency(Node dependency, String groupId, String artifactId, String version) {
 
 		Node groupIdNode = null;
@@ -282,15 +300,13 @@ public class DeveloperProject {
 				Node currentDependencyNode = dependencyNodeList.item(j);
 				if (currentDependencyNode.getNodeType() == Node.ELEMENT_NODE) {
 					String nodeName = currentDependencyNode.getNodeName();
-					if (nodeName.equals("groupId")) {
+					if (nodeName.equals(Constants.GROUPID_TAG)) {
 						groupIdNode = currentDependencyNode;
-					} else if (nodeName.equals("artifactId")) {
+					} else if (nodeName.equals(Constants.ARTIFACTID_TAG)) {
 						artifactIdNode = currentDependencyNode;
-					} else if (nodeName.equals("version")) {
+					} else if (nodeName.equals(Constants.VERSION_TAG)) {
 						versionNode = currentDependencyNode;
 					}
-					// Activator.getDefault().logInfo("NodeName: " +nodeName );
-					// Activator.getDefault().logInfo("Content: " +nodeContent );
 				}
 			}
 		}
@@ -301,5 +317,23 @@ public class DeveloperProject {
 			}
 		}
 		return false;
+	}
+
+	
+	/**
+	 * This method executes Maven commands
+	 * @param pom
+	 * @param commands
+	 */
+	private void execute(File pom, List<String> commands) {
+		InvocationRequest request = new DefaultInvocationRequest();
+		request.setPomFile(pom);
+		request.setGoals( commands );
+		Invoker invoker = new DefaultInvoker();
+		try {
+		InvocationResult result = invoker.execute( request );
+		} catch (MavenInvocationException e) {
+			Activator.getDefault().logError(e);
+		}
 	}
 }

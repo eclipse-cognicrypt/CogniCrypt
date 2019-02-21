@@ -1,6 +1,7 @@
 package de.cognicrypt.staticanalyzer.markerresolution;
 
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaModelException;
@@ -19,6 +20,7 @@ import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.PrimitiveType.Code;
+import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -59,27 +61,32 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 	@Override
 	public void run(final IMarker marker) {
 
+		final SuppressWarningFix tempFix = new SuppressWarningFix("");
+		tempFix.run(marker);
+		
 		this.devProject = new DeveloperProject(marker.getResource().getProject());
 		ICompilationUnit sourceUnit = null;
 		int lineNumber = 0;
 
 		try {
 			sourceUnit = Utils.getCompilationUnitFromMarker(marker);
-			
-			if(devProject.isMavenProject()) {
-//				devProject.addMavenDependency("de.tudarmstadt.ukp.wikipedia", "de.tudarmstadt.ukp.wikipedia.api", "1.1.0");
-				devProject.addMavenDependency(Constants.CC_GROUPID, Constants.CC_ARTIFACTID, Constants.CC_VERSION);
-			}
-			else {
+
+			if (devProject.isMavenProject()) {
+//				 devProject.addMavenDependency("de.tudarmstadt.ukp.wikipedia", "de.tudarmstadt.ukp.wikipedia.api", "1.1.0");
+				 devProject.addMavenDependency(Constants.PREDICATEENSURER_GROUPID, Constants.PREDICATEENSURER_ARTIFACTID, Constants.PREDICATEENSURER_VERSION);
+			} else {
 				Utils.addAdditionalFiles("resources/Predicate", "de.cognicrypt.staticanalyzer", this.devProject);
 			}
-			
-			if (!Utils.hasJarImport(sourceUnit, "de.cognicrypt.staticanalyzer.*")) {
-				Utils.insertJarImport(sourceUnit, "de.cognicrypt.staticanalyzer.*");
+
+			if (!Utils.hasJarImport(sourceUnit, Constants.PREDICATEENSURER_JAR_IMPORT)) {
+				Utils.insertJarImport(sourceUnit, Constants.PREDICATEENSURER_JAR_IMPORT);
 			}
 			lineNumber = (int) marker.getAttribute(IMarker.LINE_NUMBER);
 			EnsuresPredicateFix.predicate = (String) marker.getAttribute("predicate");
 			EnsuresPredicateFix.errorParamVarName = (String) marker.getAttribute("errorParam");
+			marker.delete();
+			marker.getResource().getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
+			
 		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
@@ -89,11 +96,17 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 		parser.setSource(sourceUnit);
 		final CompilationUnit unit = (CompilationUnit) parser.createAST(null);
 		unit.accept(new ErrorSourceVisitor(lineNumber, unit, sourceUnit));
+		
+		
+		
 	}
 
 	/**
-	 * This method creates and inserts the ensuresPredicate(predicate, errorVar) in the code
-	 * @param node - node of the ErrorMarker
+	 * This method creates and inserts the ensuresPredicate(predicate, errorVar) in
+	 * the code
+	 * 
+	 * @param node
+	 *            - node of the ErrorMarker
 	 * @param unit
 	 * @param sourceUnit
 	 * @throws JavaModelException
@@ -133,17 +146,17 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 					TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
 			listRewrite.insertBefore(ePStatementFieldDec, node, null);
 		}
-		
+
 		final TextEdit edits = rewriter.rewriteAST();
 		final Document document = new Document(sourceUnit.getSource());
 		edits.apply(document);
 		sourceUnit.getBuffer().setContents(document.get());
 	}
 
-	
 	/**
 	 * This method determines the next {@link MethodDeclaration} parent node
-	 * @param targetNode 
+	 * 
+	 * @param targetNode
 	 * @return MethodDeclaration parent node
 	 */
 	private static MethodDeclaration getMethodDeclarationParentNode(final ASTNode targetNode) {
@@ -162,13 +175,17 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 		}
 
 	}
-	
+
 	/**
 	 * This method builds a {@link FieldDeclaration} object
-	 * @param ast - current ast
+	 * 
+	 * @param ast
+	 *            - current ast
 	 * @param fragment
-	 * @param type - i.e. PrimitiveType.BOOLEAN
-	 * @param modifier - i.e. Modifier.PRIVATE
+	 * @param type
+	 *            - i.e. PrimitiveType.BOOLEAN
+	 * @param modifier
+	 *            - i.e. Modifier.PRIVATE
 	 * @return
 	 */
 	private static FieldDeclaration createFieldDeclaration(final AST ast, final VariableDeclarationFragment fragment,
@@ -181,8 +198,11 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 
 	/**
 	 * This method builds a {@link VariableDeclarationFragment} object
-	 * @param ast - current ast
-	 * @param variableName - declaration variable
+	 * 
+	 * @param ast
+	 *            - current ast
+	 * @param variableName
+	 *            - declaration variable
 	 * @return VariableDeclarationFragment obj
 	 */
 	private static VariableDeclarationFragment createVariableDeclarationFragment(final AST ast,
@@ -195,8 +215,11 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 
 	/**
 	 * This method builds a {@link MethodInvocation} object
-	 * @param ast - current ast
-	 * @param errorVarName - error variable name
+	 * 
+	 * @param ast
+	 *            - current ast
+	 * @param errorVarName
+	 *            - error variable name
 	 * @return ensuresPredicate(predicate, errorVarName) MethodInvocation
 	 */
 	private static MethodInvocation createEnsuresPredicateInvocation(final AST ast) {

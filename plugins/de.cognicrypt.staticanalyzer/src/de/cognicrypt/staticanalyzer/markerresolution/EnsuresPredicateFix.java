@@ -61,9 +61,6 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 	@Override
 	public void run(final IMarker marker) {
 
-		final SuppressWarningFix tempFix = new SuppressWarningFix("");
-		tempFix.run(marker);
-		
 		this.devProject = new DeveloperProject(marker.getResource().getProject());
 		ICompilationUnit sourceUnit = null;
 		int lineNumber = 0;
@@ -84,8 +81,7 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 			lineNumber = (int) marker.getAttribute(IMarker.LINE_NUMBER);
 			EnsuresPredicateFix.predicate = (String) marker.getAttribute("predicate");
 			EnsuresPredicateFix.errorParamVarName = (String) marker.getAttribute("errorParam");
-			marker.delete();
-			marker.getResource().getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
+		
 			
 		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
@@ -97,7 +93,8 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 		final CompilationUnit unit = (CompilationUnit) parser.createAST(null);
 		unit.accept(new ErrorSourceVisitor(lineNumber, unit, sourceUnit));
 		
-		
+		final SuppressWarningFix tempFix = new SuppressWarningFix("");
+		tempFix.run(marker);
 		
 	}
 

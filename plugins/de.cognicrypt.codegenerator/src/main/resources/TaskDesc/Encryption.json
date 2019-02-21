@@ -82,14 +82,8 @@
               "operator": "="
             }]
         }]
-     }
-  ],
-  "nextID": "1"
-},
-{
-	"id": "1",
-  	"helpID": "Encryption_Page1",
-  	"content": [{
+     },
+     {
       "id": "1",
       "element": "checkbox",
       "note":"",      
@@ -99,24 +93,21 @@
           "codeDependencies": [{
             "option": "dataType",
             "value": "File"
-          }],
-          "nextID": "-1"
+          }]
         },
         {
           "value": "String",
           "codeDependencies": [{
             "option": "dataType",
             "value": "String"
-          }],
-          "nextID": "-1"
+          }]
         },
         {
           "value": "Byte Array",
           "codeDependencies": [{
             "option": "dataType",
             "value": "byte[]"
-          }],
-          "nextID": "-1"
+          }]
         },
         {
           "value": "Other/Do not know",
@@ -130,13 +121,14 @@
             "value": "File"
           }],
           "uiDependencies": [{
-          	"option": "isExclusive",
-          	"value": "true"
+            "option": "isExclusive",
+            "value": "true"
           }],
           "nextID": "-1",
           "defaultAnswer": true
         }
-      ],
-      "nextID": "-1"
-    }]
+      ]
+    }
+  ],
+  "nextID": "-1"
 }]

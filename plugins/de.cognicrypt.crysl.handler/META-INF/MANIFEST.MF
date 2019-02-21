@@ -19,12 +19,8 @@ Require-Bundle: org.eclipse.ui,
  de.cognicrypt.core;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-<<<<<<< HEAD
 Export-Package: de.cognicrypt.crysl.handler,
  de.cognicrypt.crysl.reader;uses:="crypto.rules,org.eclipse.core.resources"
-=======
->>>>>>> aa11eeeac206b843ac5528a862959f0ea50b7613
 Bundle-ClassPath: .
 Automatic-Module-Name: de.cognicrypt.crysl.handler
-Export-Package: de.cognicrypt.crysl.reader
 Import-Package: org.junit

@@ -56,7 +56,7 @@ public class CogniCryptpreferencePage extends PreferencePage implements IWorkben
 //	Button checkBox2;
 	Button checkBox3;
 	Button checkBox4;
-//	Combo advCombo1;
+	Combo advCombo1;
 //	Button advCombo2;
 //	Combo advCombo3;
 	
@@ -115,7 +115,7 @@ public class CogniCryptpreferencePage extends PreferencePage implements IWorkben
 	    checkBox4.setText("Show secure objects");
 	    checkBox4.setEnabled(store.getBoolean(ICogniCryptConstants.PRE_CHECKBOX3));
 	    
-	   /* final Group group2 = new Group(container, SWT.SHADOW_ETCHED_IN);
+	    final Group group2 = new Group(container, SWT.SHADOW_ETCHED_IN);
 	    group2.setText("Advance Options");
 	    group2.setLayout(new RowLayout(SWT.VERTICAL));
 		
@@ -125,7 +125,7 @@ public class CogniCryptpreferencePage extends PreferencePage implements IWorkben
 		String[] choices2 = {"CHA","Spark"};
 		advCombo1 = new Combo(group2, SWT.DROP_DOWN);
 		advCombo1.setItems(choices2);
-		
+		/*
 		final Label label2 = new Label(group2, SWT.SHADOW_IN);
 		label2.setText("Entry point");
 		String[] choices3 = {"getImageDescriptor","copyClaferHeader","printClafer"};
@@ -158,7 +158,7 @@ public class CogniCryptpreferencePage extends PreferencePage implements IWorkben
         store.setValue(ICogniCryptConstants.PRE_CHECKBOX3, checkBox3.getSelection());
         store.setValue(ICogniCryptConstants.PRE_CHECKBOX4, checkBox4.getSelection());
         store.setValue(ICogniCryptConstants.PRE_COMBO, combo.getSelectionIndex());
-//        store.setValue(ICogniCryptConstants.PRE_ADV_COMBO1, advCombo1.getSelectionIndex());
+        store.setValue(ICogniCryptConstants.PRE_ADV_COMBO1, advCombo1.getSelectionIndex());
 //        store.setValue(ICogniCryptConstants.PRE_ADV_COMBO3, advCombo3.getSelectionIndex());
     }
 	
@@ -179,7 +179,7 @@ public class CogniCryptpreferencePage extends PreferencePage implements IWorkben
 	        checkBox4.setSelection(store
                 .getDefaultBoolean(ICogniCryptConstants.PRE_CHECKBOX4));
 	        combo.select(store.getDefaultInt(ICogniCryptConstants.PRE_COMBO));
-//	        advCombo1.select(store.getDefaultInt(ICogniCryptConstants.PRE_ADV_COMBO1));
+	        advCombo1.select(store.getDefaultInt(ICogniCryptConstants.PRE_ADV_COMBO1));
 //	        advCombo3.select(store.getDefaultInt(ICogniCryptConstants.PRE_ADV_COMBO3));
 	               
 	    }
@@ -192,7 +192,7 @@ public class CogniCryptpreferencePage extends PreferencePage implements IWorkben
 //		checkBox2.setSelection(store.getBoolean(ICogniCryptConstants.PRE_CHECKBOX2));
 		checkBox3.setSelection(store.getBoolean(ICogniCryptConstants.PRE_CHECKBOX3));
 		checkBox4.setSelection(store.getBoolean(ICogniCryptConstants.PRE_CHECKBOX4));
-//		advCombo1.select(store.getInt(ICogniCryptConstants.PRE_ADV_COMBO1));
+		advCombo1.select(store.getInt(ICogniCryptConstants.PRE_ADV_COMBO1));
 //		advCombo2.setSelection(store.getBoolean(ICogniCryptconstants.PRE_ADV_COMBO2));
 //		advCombo3.select(store.getInt(ICogniCryptConstants.PRE_ADV_COMBO3));
 	}

@@ -14,6 +14,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.w3c.dom.Node;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
@@ -45,6 +46,7 @@ import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.statment.CCStatement;
 import de.cognicrypt.utils.Utils;
 import de.cognicrypt.utils.XMLParser;
+import properties.ICogniCryptConstants;
 import soot.SootClass;
 import soot.Value;
 import soot.ValueBox;
@@ -160,32 +162,38 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	}
 
-	@Override
-	public void onSecureObjectFound(final IAnalysisSeed secureObject) {
-		final Statement stmt = secureObject.stmt();
-		final Stmt unit = stmt.getUnit().get();
-		final List<ValueBox> useAndDefBoxes = unit.getUseAndDefBoxes();
-		final Optional<ValueBox> varOpt = useAndDefBoxes.stream().filter(e -> e instanceof JimpleLocalBox).findFirst();
-		ValueBox var = null;
-		if (varOpt.isPresent()) {
-			var = varOpt.get();
-		} else {
-			for (final ValueBox box : useAndDefBoxes) {
-				if (box.getValue() instanceof JimpleLocal) {
-					var = box;
-					break;
-				}
-			}
+	// It only works when the secure object checkbox in preference page is checked
+		@Override
+		public void onSecureObjectFound(final IAnalysisSeed secureObject) {
+			IPreferenceStore store = de.cognicrypt.codegenerator.Activator.getDefault().getPreferenceStore();
+			if (store.getBoolean(ICogniCryptConstants.PRE_CHECKBOX4) == false) {
+				return;
+			}else {
+				final Statement stmt = secureObject.stmt();
+				final Stmt unit = stmt.getUnit().get();
+				final List<ValueBox> useAndDefBoxes = unit.getUseAndDefBoxes();
+				final Optional<ValueBox> varOpt = useAndDefBoxes.stream().filter(e -> e instanceof JimpleLocalBox).findFirst();
+				ValueBox var = null;
+				if (varOpt.isPresent()) {
+					var = varOpt.get();
+				} else {
+					for (final ValueBox box : useAndDefBoxes) {
+						if (box.getValue() instanceof JimpleLocal) {
+							var = box;
+							break;
+						}
+					}
 
-		}
-		final Value varName = var.getValue();
-		this.markerGenerator
+				}
+				final Value varName = var.getValue();
+				this.markerGenerator
 				.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt),  unit.getJavaSourceStartLineNumber(),
 						"Object " + (varName.toString().startsWith("$r")
 								? " of Type " + var.getValue().getType().toQuotedString()
-								: varName) + " is secure.",
+										: varName) + " is secure.",
 						Severities.Secure);
-	}
+			}
+		}
 
 	/**
 	 * This method removes superfluous suppressed warning entries from the

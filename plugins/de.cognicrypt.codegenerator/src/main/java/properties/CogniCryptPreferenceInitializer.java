@@ -19,7 +19,7 @@ public class CogniCryptPreferenceInitializer extends AbstractPreferenceInitializ
 //		store.setDefault(ICogniCryptConstants.PRE_CHECKBOX2, false);
 		store.setDefault(ICogniCryptConstants.PRE_CHECKBOX3, false);
 		store.setDefault(ICogniCryptConstants.PRE_CHECKBOX4, false);
-//		store.setDefault(ICogniCryptConstants.PRE_ADV_COMBO1,0);
+		store.setDefault(ICogniCryptConstants.PRE_ADV_COMBO1,0);
 //		store.setDefault(ICogniCryptConstants.PRE_ADV_COMBO2,0);
 //		store.setDefault(ICogniCryptConstants.PRE_ADV_COMBO3,0);
 

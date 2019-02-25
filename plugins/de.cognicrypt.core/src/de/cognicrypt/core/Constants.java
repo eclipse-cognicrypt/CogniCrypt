@@ -20,7 +20,11 @@ public class Constants {
 	}
 
 	public enum Severities {
-		Problem, Warning, Secure
+		Problem, Warning, Secure;
+		
+		public static Severities get(int i) {
+			return values()[i];
+		}
 	}
 	
 	public static enum CG {

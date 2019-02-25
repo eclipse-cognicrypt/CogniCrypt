@@ -130,7 +130,7 @@ public class SootRunner {
 		Options.v().set_exclude(getExcludeList());
 		Scene.v().loadNecessaryClasses();
 		// choose call graph based on what user selected on preference page
-		switch (Activator.getDefault().getPreferenceStore().getInt(ICogniCryptConstants.PRE_ADV_COMBO1)) {
+		switch (Activator.getDefault().getPreferenceStore().getInt(ICogniCryptConstants.CALL_GRAPH_SELECTION)) {
 			case 1:
 				Options.v().setPhaseOption("cg.spark", "on");
 				Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");

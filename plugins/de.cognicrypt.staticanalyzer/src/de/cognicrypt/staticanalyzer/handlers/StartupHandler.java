@@ -51,7 +51,7 @@ public class StartupHandler implements IStartup {
 		@Override
 		public void resourceChanged(final IResourceChangeEvent event) {
 			IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-			if (store.getBoolean(ICogniCryptConstants.PRE_CHECKBOX3) == false) {
+			if (store.getBoolean(ICogniCryptConstants.AUTOMATED_ANALYSIS) == false) {
 				return;
 			}else {
 			final List<IJavaElement> changedJavaElements = new ArrayList<>();

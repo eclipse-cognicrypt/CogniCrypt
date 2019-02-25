@@ -1,5 +1,6 @@
 package de.cognicrypt.core.properties;
 
+import java.util.Arrays;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
@@ -9,12 +10,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import de.cognicrypt.core.Activator;
+import de.cognicrypt.core.Constants;
 
 public class CogniCryptpreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
@@ -47,7 +48,7 @@ public class CogniCryptpreferencePage extends PreferencePage implements IWorkben
 		
 		// other options: "Default JSSE rules","Default Tink rules"
 		String[] choices = {"Default JCA Rules"};
-		ruleSelection = new Combo(source, SWT.DROP_DOWN);
+		ruleSelection = new Combo(source, SWT.DROP_DOWN | SWT.READ_ONLY);
 		ruleSelection.setItems(choices);
 
 		/*
@@ -77,9 +78,8 @@ public class CogniCryptpreferencePage extends PreferencePage implements IWorkben
 		final Label label1 = new Label(advancedOptions, SWT.SHADOW_IN);
 		label1.setText("Call-graph construction algorithm");
 
-		String[] cgAlgorithms = {"CHA", "Spark"};
-		CGSelection = new Combo(advancedOptions, SWT.DROP_DOWN);
-		CGSelection.setItems(cgAlgorithms);
+		CGSelection = new Combo(advancedOptions, SWT.DROP_DOWN | SWT.READ_ONLY);
+		CGSelection.setItems(Arrays.stream(Constants.CG.values()).map(Enum::name).toArray(String[]::new));
 		
 		/*
 		 * final Label label2 = new Label(group2, SWT.SHADOW_IN); label2.setText("Entry point"); String[] choices3 = {"getImageDescriptor","copyClaferHeader","printClafer"}; advCombo2

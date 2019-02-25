@@ -14,8 +14,6 @@ import java.util.Map;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jface.preference.IPreferenceStore;
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import boomerang.preanalysis.BoomerangPretransformer;
@@ -42,10 +40,6 @@ import soot.options.Options;
  */
 public class SootRunner {
 
-	public static enum CG {
-		CHA, SPARK_LIBRARY, SPARK
-	}
-	
 	private static SceneTransformer createAnalysisTransformer(final ResultsCCUIListener resultsReporter) {
 		return new SceneTransformer() {
 

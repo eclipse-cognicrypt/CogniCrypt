@@ -14,9 +14,9 @@
 
   <repositories>
     <repository>
-      <id>eclipse-oxygen</id>
+      <id>eclipse-photon</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/oxygen</url>
+      <url>http://download.eclipse.org/releases/photon</url>
     </repository>
     <repository>
       <id>cryptsl</id>

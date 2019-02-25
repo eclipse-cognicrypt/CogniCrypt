@@ -11,6 +11,7 @@ import org.eclipse.ui.IEditorPart;
 
 import de.cognicrypt.staticanalyzer.handlers.AnalysisKickOff;
 import de.cognicrypt.utils.Utils;
+
 public class EnableAnalysisOnContextMenuButton implements IActionDelegate {
 	
 	@Override

@@ -1,4 +1,4 @@
-package properties;
+package de.cognicrypt.core.properties;
 
 
 public interface ICogniCryptConstants {

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>   
+<extension
+      id="CogniCrypt"
+      point="org.eclipse.core.runtime.products">
+   <product
+         application="org.eclipse.ui.ide.workbench"
+         name="CogniCrypt">
+   </product>
+</extension>
+
+<extension
+      point="org.eclipse.compare.contentViewers">
+</extension>
+<extension point="org.eclipse.ui.preferencePages">
+ 	<page id="CogniCryptPreferencePage"
+ 		name="CogniCrypt"
+    		class="de.cognicrypt.core.properties.CogniCryptpreferencePage">
+   	</page>
+   	
+</extension>
+      <extension point="org.eclipse.core.runtime.preferences">
+         <initializer class="de.cognicrypt.core.properties.CogniCryptPreferenceInitializer"/>
+      </extension>
+      
+</plugin>

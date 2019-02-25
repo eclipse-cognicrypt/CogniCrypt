@@ -1,14 +1,11 @@
-package properties;
+package de.cognicrypt.core.properties;
 
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
-
-import de.cognicrypt.codegenerator.Activator;
-
+import de.cognicrypt.core.Activator;
 
 public class CogniCryptPreferenceInitializer extends AbstractPreferenceInitializer {
-	
 	
 	@Override
 	public void initializeDefaultPreferences(){

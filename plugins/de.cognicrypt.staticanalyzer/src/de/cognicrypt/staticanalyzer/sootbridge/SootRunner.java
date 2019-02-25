@@ -22,10 +22,10 @@ import boomerang.preanalysis.BoomerangPretransformer;
 import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
+import de.cognicrypt.core.properties.ICogniCryptConstants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.utils.Utils;
-import properties.ICogniCryptConstants;
 import soot.G;
 import soot.PackManager;
 import soot.Scene;
@@ -42,13 +42,9 @@ import soot.options.Options;
  */
 public class SootRunner {
 
-	//private static CG DEFAULT_CALL_GRAPH = CG.CHA;
-
 	public static enum CG {
 		CHA, SPARK_LIBRARY, SPARK
 	}
-	
-	public static IPreferenceStore store = de.cognicrypt.codegenerator.Activator.getDefault().getPreferenceStore();
 	
 	private static SceneTransformer createAnalysisTransformer(final ResultsCCUIListener resultsReporter) {
 		return new SceneTransformer() {
@@ -140,7 +136,7 @@ public class SootRunner {
 		Options.v().set_exclude(getExcludeList());
 		Scene.v().loadNecessaryClasses();
 		// choose call graph based on what user selected on preference page
-		switch (store.getInt(ICogniCryptConstants.PRE_ADV_COMBO1)) {
+		switch (Activator.getDefault().getPreferenceStore().getInt(ICogniCryptConstants.PRE_ADV_COMBO1)) {
 			case 1:
 				Options.v().setPhaseOption("cg.spark", "on");
 				Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");

@@ -5,9 +5,10 @@
 
 package de.cognicrypt.core;
 
+import java.util.Arrays;
+import java.util.List;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import soot.util.Cons;
 
 /**
  * This class comprises all constants that are used by the plugin.
@@ -20,6 +21,10 @@ public class Constants {
 
 	public enum Severities {
 		Problem, Warning, Secure
+	}
+	
+	public static enum CG {
+		CHA, SPARK_LIBRARY, SPARK
 	}
 
 	public static final String NO_RES_FOUND = "No resource to generate error marker for found.";

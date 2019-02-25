@@ -21,8 +21,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IStartup;
+import de.cognicrypt.core.properties.ICogniCryptConstants;
 import de.cognicrypt.staticanalyzer.Activator;
-import properties.ICogniCryptConstants;
 
 /**
  * At startup, this handler registers a listener that will be informed after a build, whenever resources were changed.
@@ -50,7 +50,7 @@ public class StartupHandler implements IStartup {
 		 */
 		@Override
 		public void resourceChanged(final IResourceChangeEvent event) {
-			IPreferenceStore store = de.cognicrypt.codegenerator.Activator.getDefault().getPreferenceStore();
+			IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 			if (store.getBoolean(ICogniCryptConstants.PRE_CHECKBOX3) == false) {
 				return;
 			}else {

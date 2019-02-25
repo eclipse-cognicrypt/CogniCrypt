@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -93,6 +94,11 @@ public class Activator extends AbstractUIPlugin {
 
 	public static List<ResultsCCUIListener> getResultsReporters() {
 		return resReporters;
+	}
+	
+	@Override
+	public IPreferenceStore getPreferenceStore() {
+		return de.cognicrypt.core.Activator.getDefault().getPreferenceStore();
 	}
 
 }

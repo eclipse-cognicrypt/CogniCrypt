@@ -44,7 +44,7 @@
                class="de.cognicrypt.codegenerator.actions.WizardActionFromContextMenu"
                icon="icons/cognicrypt.png"
                id="code-clafer_configurator_fromContextMenu"
-               label="Launch CogniCrypt">
+               label="Launch CogniCrypt Code Generation">
          </action>
       </objectContribution>
    </extension>

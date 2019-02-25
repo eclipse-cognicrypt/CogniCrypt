@@ -247,7 +247,7 @@
       <action
          id="org.eclipse.ui.articles.action.contribution.object.action2" 
          icon="icons/cognicrypt.png"
-         label="Run CogniCrypt On Selected Project"
+         label="Run CogniCrypt Analysis On Selected Project"
          class="de.cognicrypt.staticanalyzer.contextmenu.EnableAnalysisOnContextMenuButton" > 
       </action>
     </objectContribution>

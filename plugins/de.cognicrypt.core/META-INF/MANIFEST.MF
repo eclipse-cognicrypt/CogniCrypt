@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CogniCrypt Core
-Bundle-SymbolicName: de.cognicrypt.core
+Bundle-SymbolicName: de.cognicrypt.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: de.cognicrypt.core.Activator
 Bundle-Vendor: TU Darmstadt, Paderborn University
@@ -11,7 +11,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.ide,
  org.eclipse.ui,
  org.eclipse.jdt.core,
- com.google.guava
+ com.google.guava,
+ org.eclipse.ui.forms;bundle-version="3.7.400"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: boomerang,
@@ -26,6 +27,7 @@ Export-Package: boomerang,
  crypto.rules,
  crypto.typestate,
  de.cognicrypt.core;uses:="org.osgi.framework,org.eclipse.core.runtime",
+ de.cognicrypt.core.properties,
  de.cognicrypt.utils;
   uses:="org.eclipse.ui,
    org.eclipse.jdt.core,

@@ -57,7 +57,7 @@ public class StatisticsView extends ViewPart {
 		projectname = new StyledText(parent, SWT.NONE);
 		projectname.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 		projectname.setText("Nothing for now");
-		// projectname.setEditable(false);
+		projectname.setEditable(false);
 
 		// Refresh Button
 		reRunButton = new Button(parent, SWT.PUSH);
@@ -86,6 +86,7 @@ public class StatisticsView extends ViewPart {
 		timeofanalysis = new StyledText(parent, SWT.NONE);
 		timeofanalysis.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 		timeofanalysis.setWordWrap(true);
+		timeofanalysis.setEditable(false);
 
 		// Stop Button
 		stopAnalysisButton = new Button(parent, SWT.PUSH);
@@ -133,7 +134,7 @@ public class StatisticsView extends ViewPart {
 	}
 
 	private void createColumns(final Composite parent, final TableViewer viewer) {
-		String[] titles = {"Class", "Seed", "Errors", "Health"};
+		String[] titles = {"Class", "Location", "Errors", "Security"};
 		int[] bounds = {200, 250, 700, 200};
 
 		// Class
@@ -210,7 +211,7 @@ public class StatisticsView extends ViewPart {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				getView().allowAnalysisReRun(isAllowed);
-				
+
 			}
 		});
 	}

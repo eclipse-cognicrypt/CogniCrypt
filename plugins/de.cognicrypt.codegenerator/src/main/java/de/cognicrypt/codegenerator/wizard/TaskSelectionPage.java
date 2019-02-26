@@ -23,6 +23,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -76,6 +78,8 @@ public class TaskSelectionPage extends WizardPage {
 		gd_selectProjectLabel.heightHint = 200;
 		gd_selectProjectLabel.widthHint = 600;
 		useCaseDescriptionLabel.setLayoutData(gd_selectProjectLabel);
+		Font a = useCaseDescriptionLabel.getFont();
+		useCaseDescriptionLabel.setFont(new Font(useCaseDescriptionLabel.getDisplay(), new FontData(a.getFontData()[0].getName(), 12, SWT.None)) );
 
 		final List<Button> buttons = new ArrayList<Button>(); 
 		final List<Image> unclickedImages = new ArrayList<Image>();

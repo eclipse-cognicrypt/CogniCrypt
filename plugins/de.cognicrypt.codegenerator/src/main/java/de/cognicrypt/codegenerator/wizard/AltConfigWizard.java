@@ -46,7 +46,8 @@ public class AltConfigWizard extends Wizard {
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			Activator.getDefault().logError(e);
 		}
-		setWindowTitle("Cryptography Task Configurator");
+		setWindowTitle("CogniCrypt");
+		
 		final ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "icons/cognicrypt-medium.png");
 		setDefaultPageImageDescriptor(image);
 		this.constraints = new HashMap<>();

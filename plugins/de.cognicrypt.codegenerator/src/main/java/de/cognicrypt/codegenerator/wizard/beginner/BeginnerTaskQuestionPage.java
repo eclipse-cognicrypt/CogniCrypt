@@ -42,7 +42,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.question.Answer;
@@ -55,14 +54,13 @@ import de.cognicrypt.core.Constants.GUIElements;
 
 public class BeginnerTaskQuestionPage extends WizardPage {
 
-	private final Question quest;
 	private final Task task;
-	private final Page page;
+	private Question quest;
+	private Page page;
 
 	private boolean finish = false;
 	private BeginnerModeQuestionnaire beginnerModeQuestionnaire;
 	private final HashMap<Question, Answer> selectionMap = new HashMap<>();
-	private List<String> selectionValues;
 	private Composite container;
 	private int count = 0;
 	private boolean isActive = true;
@@ -88,29 +86,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	 *        task for which the page is created
 	 */
 	public BeginnerTaskQuestionPage(final Question quest, final Task task) {
-		this(quest, task, null);
-	}
-
-	/**
-	 * construct a page containing a single question
-	 *
-	 * @param quest
-	 *        question that will be displayed on the page
-	 * @param task
-	 *        task for which the page is created
-	 * @param selectionValues
-	 *        list of selectable strings if element type of quest is itemselection, null otherwise
-	 */
-	public BeginnerTaskQuestionPage(final Question quest, final Task task, final List<String> selectionValues) {
-		super("Display Questions");
-		setTitle("Configuring Selected Task: " + task.getDescription());
-		setDescription(Constants.DESCRIPTION_VALUE_SELECTION_PAGE);
+		this(task);
 		this.quest = quest;
-		this.task = task;
-		this.selectionValues = selectionValues;
-
-		// This variable needs to be initialized.
-		this.page = null;
 	}
 
 	/**
@@ -119,39 +96,25 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	 *        page contains the questions that need to be displayed.
 	 * @param task
 	 *        task for which the page is created
-	 * @param selectionValues
-	 *        The call to this constructor needs to have this extra parameter for itemselection. list of selectable strings if element type of quest is itemselection, null
-	 *        otherwise
 	 */
-	public BeginnerTaskQuestionPage(final Page page, final Task task, final List<String> selectionValues) {
-		super("Display Questions");
-		setTitle("Configuring Selected Task: " + task.getDescription());
-		setDescription(Constants.DESCRIPTION_VALUE_SELECTION_PAGE);
+	public BeginnerTaskQuestionPage(final Page page, final Task task) {
+		this(task);
 		this.page = page;
-		this.task = task;
-		this.selectionValues = selectionValues;
-
-		//This variable needs to be initialized.
 		this.quest = null;
 	}
-
+	
 	/**
 	 *
 	 * @param page
 	 * @param task
 	 * @param beginnerModeQuestionnaire
 	 *        Updated this parameter in the constructor to accept the questionnaire instead of all the questions.
-	 * @param selectionValues
 	 */
-	public BeginnerTaskQuestionPage(final Page page, final Task task, final BeginnerModeQuestionnaire beginnerModeQuestionnaire, final List<String> selectionValues) {
-		super("Display Questions");
-		setTitle("Configuring Selected Task: " + task.getDescription());
-		setDescription(Constants.DESCRIPTION_VALUE_SELECTION_PAGE);
+	public BeginnerTaskQuestionPage(final Page page, final Task task, final BeginnerModeQuestionnaire beginnerModeQuestionnaire) {
+		this(task);
 		this.beginnerModeQuestionnaire = beginnerModeQuestionnaire;
 		this.quest = null;
 		this.page = page;
-		this.task = task;
-		this.selectionValues = selectionValues;
 	}
 
 	/**
@@ -162,14 +125,19 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	 * @param task
 	 */
 	public BeginnerTaskQuestionPage(final BeginnerModeQuestionnaire beginnerModeQuestionnaire, final Question quest, final Task task) {
-		super("Display Questions");
-		setTitle("Configuring Selected Task: " + task.getDescription());
-		setDescription(Constants.DESCRIPTION_VALUE_SELECTION_PAGE);
+		this(task);
 		this.beginnerModeQuestionnaire = beginnerModeQuestionnaire;
 		this.quest = quest;
 		this.page = null;
+	}
+	
+	private BeginnerTaskQuestionPage(final Task task) {
+		super("Display Questions");
+		setTitle("Configuring Selected Task: " + task.getDescription());
+		setDescription(Constants.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.task = task;
 	}
+	
 
 	@Override
 	public boolean isPageComplete() {
@@ -186,10 +154,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		return true;
 	}
 
-	public String getHelpId(final Page page) {
-		return "de.cognicrypt.codegenerator." + page.getHelpID();
-	}
-
 	@Override
 	public void createControl(final Composite parent) {
 
@@ -202,10 +166,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		final GridLayout layout = new GridLayout(1, false);
 
 		// To display the Help view after clicking the help icon
-		if (!this.page.getHelpID().isEmpty()) {
-			PlatformUI.getWorkbench().getHelpSystem().setHelp(sc, getHelpId(this.page));
-		}
-
 		this.container.setLayout(layout);
 		// If legacy JSON files are in effect.
 		if (this.page == null) {
@@ -222,7 +182,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		sc.setContent(this.container);
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);
-		sc.setMinSize(this.container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		sc.setMinSize(sc.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		setControl(sc);
 	}
 
@@ -232,12 +192,20 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		final Composite container = getPanel(parent);
 		final Label label = new Label(container, SWT.TOP | SWT.FILL | SWT.WRAP);
 		final GridData gd_question = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
-		gd_question.widthHint = 550;
+		gd_question.widthHint = 750;
 		label.setLayoutData(gd_question);
 		label.setText(question.getQuestionText());
+		
+		final Composite answerPanel = new Composite(parent, SWT.NONE);
+		final GridLayout answerLayout = new GridLayout();
+		answerLayout.numColumns = 4;
+		answerLayout.verticalSpacing = 15;
+		answerLayout.horizontalSpacing = 15;
+		answerPanel.setLayout(answerLayout);
+
 		switch (question.getElement()) {
 			case combo:
-				final ComboViewer comboViewer = new ComboViewer(container, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.FILL);
+				final ComboViewer comboViewer = new ComboViewer(answerPanel, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.FILL);
 				comboViewer.setContentProvider(ArrayContentProvider.getInstance());
 				comboViewer.setInput(answers);
 
@@ -260,25 +228,18 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				}
 				break;
 			case radio:
-				new Label(container, SWT.FILL);
-				new Label(container, SWT.FILL);
-				new Label(container, SWT.FILL);
 				final String radioNote = question.getNote();
 				Group radioNoteControl = null;
 				if (!radioNote.isEmpty()) {
 					radioNoteControl = createNote(container, question, !(radioNote.contains("$$$")));
-					new Label(container, SWT.FILL);
-					new Label(container, SWT.FILL);
-					new Label(container, SWT.FILL);
 				}
 				final Button[] radioButtons = new Button[answers.size()];
 				for (int i = 0; i < answers.size(); i++) {
 					final int count = i;
 					final Group finalRadioNote = radioNoteControl;
 					final String ans = answers.get(i).getValue();
-					radioButtons[i] = new Button(container, SWT.RADIO);
+					radioButtons[i] = new Button(answerPanel, SWT.RADIO);
 					radioButtons[i].setText(ans);
-					new Label(container, SWT.NONE);
 					radioButtons[i].addSelectionListener(new SelectionAdapter() {
 
 						@Override
@@ -311,17 +272,11 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish = true);
 				break;
 			case checkbox:
-				new Label(container, SWT.FILL);
-				new Label(container, SWT.FILL);
-				new Label(container, SWT.FILL);
 				Group checkboxNoteControl = null;
 				final String checkboxNoteText = question.getNote();
 				//added description for questions
 				if (!checkboxNoteText.isEmpty()) {
 					checkboxNoteControl = createNote(container, question, !checkboxNoteText.contains("$$$"));
-					new Label(container, SWT.FILL);
-					new Label(container, SWT.FILL);
-					new Label(container, SWT.FILL);
 				}
 				final List<Button> cbs = new ArrayList<Button>();
 				final List<Button> exclusiveCbs = new ArrayList<Button>(answers.size());
@@ -330,7 +285,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					final int count = i;
 					final Group finalCheckBoxControl = checkboxNoteControl;
 					final Answer a = answers.get(i);
-					final Button curCheckbox = new Button(container, SWT.CHECK);
+					final Button curCheckbox = new Button(answerPanel, SWT.CHECK);
 					curCheckbox.setText(a.getValue());
 
 					curCheckbox.addSelectionListener(new SelectionAdapter() {
@@ -374,12 +329,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 										}
 									}
 								}
-
 								BeginnerTaskQuestionPage.this.finish = cbs.stream().anyMatch(e -> e.getSelection());
 								BeginnerTaskQuestionPage.this.setPageComplete(isPageComplete());
-
 							}
-
 						}
 					});
 					cbs.add(curCheckbox);
@@ -398,10 +350,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 
 			case rbtextgroup:
-				new Label(container, SWT.FILL);
-				new Label(container, SWT.FILL);
-				new Label(container, SWT.FILL);
-				
 				final Composite rbbtnControl = new Composite(parent, SWT.NONE);
 				final GridData rbbtnControlData = new GridData(GridData.FILL, GridData.FILL, false, false);
 				rbbtnControl.setLayoutData(rbbtnControlData);
@@ -482,7 +430,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 			case text:
 
-				final Text inputField = new Text(container, SWT.BORDER);
+				final Text inputField = new Text(answerPanel, SWT.BORDER);
 				inputField.setLayoutData(new GridData(100, SWT.DEFAULT));
 				inputField.setToolTipText(question.getTooltip());
 				inputField.setMessage(question.getMessage());
@@ -496,7 +444,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				if (question.getTextType().equals(Constants.BROWSE)) {
 					inputField.setLayoutData(new GridData(300, SWT.DEFAULT));
 
-					final Button browseButton = new Button(container, SWT.PUSH);
+					final Button browseButton = new Button(answerPanel, SWT.PUSH);
 					browseButton.setText(Constants.BROWSE);
 					browseButton.addSelectionListener(new SelectionAdapter() {
 
@@ -649,10 +597,10 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 			case button:
 				for (int i = 0; i < 3; i++) {
-					new Label(container, SWT.NULL);
+					new Label(answerPanel, SWT.NULL);
 				}
 
-				final Composite comp = new Composite(container, SWT.NONE);
+				final Composite comp = new Composite(answerPanel, SWT.NONE);
 				final GridLayout grid = new GridLayout(2, false);
 				grid.marginWidth = 0;
 				comp.setLayout(grid);
@@ -810,13 +758,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			return false;
 		}
 
-		if (this.selectionValues == null) {
-			if (other.selectionValues != null) {
-				return false;
-			}
-		} else if (!this.selectionValues.equals(other.selectionValues)) {
-			return false;
-		}
 		if (this.page != other.page) {
 			return false;
 		}
@@ -851,7 +792,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		titledPanel.setFont(boldFont);
 		final GridLayout layout2 = new GridLayout();
 
-		layout2.numColumns = 4;
+		layout2.numColumns = 1;
 		titledPanel.setLayout(layout2);
 
 		return titledPanel;
@@ -869,7 +810,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		result = prime * result + ((this.quest == null) ? 0 : this.quest.hashCode());
 		result = prime * result + ((this.page == null) ? 0 : this.quest.hashCode());
 		result = prime * result + ((this.selectionMap == null) ? 0 : this.selectionMap.hashCode());
-		result = prime * result + ((this.selectionValues == null) ? 0 : this.selectionValues.hashCode());
 		return result;
 	}
 

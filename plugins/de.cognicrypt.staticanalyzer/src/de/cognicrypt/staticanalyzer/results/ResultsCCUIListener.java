@@ -21,6 +21,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.w3c.dom.Node;
 import org.eclipse.swt.widgets.Display;
 
@@ -50,12 +51,13 @@ import crypto.interfaces.ISLConstraint;
 import crypto.rules.CryptSLPredicate;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.Severities;
+import de.cognicrypt.core.properties.ICogniCryptConstants;
 import de.cognicrypt.staticanalyzer.Activator;
-import de.cognicrypt.staticanalyzer.statment.CCStatement;
 import de.cognicrypt.staticanalyzer.view.AnalysisData;
 import de.cognicrypt.staticanalyzer.view.ResultsUnit;
 import de.cognicrypt.staticanalyzer.view.StatisticsView;
 import de.cognicrypt.staticanalyzer.view.Stats;
+import de.cognicrypt.staticanalyzer.statement.CCStatement;
 import de.cognicrypt.utils.Utils;
 import de.cognicrypt.utils.XMLParser;
 import soot.SootClass;
@@ -126,10 +128,11 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 
 		/*
-		 * Adding of new marker types for new errors: 1) add new ErrorMarker extension
-		 * point in plugin.xml 2) add new markerResolutionGenerator tag in plugin.xml 3)
-		 * add new Marker constant in Constants.java (CogniCrypt Core) 4) add new else
-		 * if in the following query
+		 * Adding of new marker types for new errors: 
+		 * 1) add new ErrorMarker extension point in plugin.xml 
+		 * 2) add new markerResolutionGenerator tag in plugin.xml 
+		 * 3) add new Marker constant in Constants.java (CogniCrypt Core) 
+		 * 4) add new else if in the following query
 		 */
 
 		String markerType;
@@ -152,9 +155,11 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		} else {
 			markerType = Constants.CC_MARKER_TYPE;
 		}
-
-		final Severities sev = (markerType != Constants.IMPRECISE_VALUE_EXTRACTION_MARKER_TYPE) ? Severities.Problem
-				: Severities.Warning;
+		int selectedSeverity = Activator.getDefault().getPreferenceStore().getInt(markerType);
+		if (selectedSeverity == -1) {
+			selectedSeverity = Activator.getDefault().getPreferenceStore().getDefaultInt(markerType);
+		}
+		Severities sev = Severities.get(selectedSeverity);
 
 		this.warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator
 				+ Constants.SUPPRESSWARNING_FILE;
@@ -189,32 +194,38 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	}
 
-	@Override
-	public void onSecureObjectFound(final IAnalysisSeed secureObject) {
-		final Statement stmt = secureObject.stmt();
-		final Stmt unit = stmt.getUnit().get();
-		final List<ValueBox> useAndDefBoxes = unit.getUseAndDefBoxes();
-		final Optional<ValueBox> varOpt = useAndDefBoxes.stream().filter(e -> e instanceof JimpleLocalBox).findFirst();
-		ValueBox var = null;
-		if (varOpt.isPresent()) {
-			var = varOpt.get();
-		} else {
-			for (final ValueBox box : useAndDefBoxes) {
-				if (box.getValue() instanceof JimpleLocal) {
-					var = box;
-					break;
-				}
-			}
+	// It only works when the secure object checkbox in preference page is checked
+		@Override
+		public void onSecureObjectFound(final IAnalysisSeed secureObject) {
+			IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+			if (store.getBoolean(ICogniCryptConstants.SHOW_SECURE_OBJECTS) == false) {
+				return;
+			}else {
+				final Statement stmt = secureObject.stmt();
+				final Stmt unit = stmt.getUnit().get();
+				final List<ValueBox> useAndDefBoxes = unit.getUseAndDefBoxes();
+				final Optional<ValueBox> varOpt = useAndDefBoxes.stream().filter(e -> e instanceof JimpleLocalBox).findFirst();
+				ValueBox var = null;
+				if (varOpt.isPresent()) {
+					var = varOpt.get();
+				} else {
+					for (final ValueBox box : useAndDefBoxes) {
+						if (box.getValue() instanceof JimpleLocal) {
+							var = box;
+							break;
+						}
+					}
 
-		}
-		final Value varName = var.getValue();
-		this.markerGenerator
+				}
+				final Value varName = var.getValue();
+				this.markerGenerator
 				.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt),  unit.getJavaSourceStartLineNumber(),
 						"Object " + (varName.toString().startsWith("$r")
 								? " of Type " + var.getValue().getType().toQuotedString()
-								: varName) + " is secure.",
+										: varName) + " is secure.",
 						Severities.Secure);
-	}
+			}
+		}
 
 	/**
 	 * This method removes superfluous suppressed warning entries from the

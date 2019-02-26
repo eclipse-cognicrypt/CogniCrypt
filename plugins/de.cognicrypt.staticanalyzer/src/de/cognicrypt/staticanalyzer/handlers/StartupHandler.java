@@ -19,7 +19,9 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IStartup;
+import de.cognicrypt.core.properties.ICogniCryptConstants;
 import de.cognicrypt.staticanalyzer.Activator;
 
 /**
@@ -48,6 +50,10 @@ public class StartupHandler implements IStartup {
 		 */
 		@Override
 		public void resourceChanged(final IResourceChangeEvent event) {
+			IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+			if (store.getBoolean(ICogniCryptConstants.AUTOMATED_ANALYSIS) == false) {
+				return;
+			}else {
 			final List<IJavaElement> changedJavaElements = new ArrayList<>();
 			Activator.getDefault().logInfo("ResourcechangeListener has been triggered.");
 			try {
@@ -126,6 +132,7 @@ public class StartupHandler implements IStartup {
 				}
 			}
 		}
+	  }
 	}
 
 	private static final AfterBuildListener BUILD_LISTENER = new AfterBuildListener();

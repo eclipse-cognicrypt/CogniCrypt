@@ -11,14 +11,13 @@ public class ResultsUnit {
 	private String className;
 	private String seed;
 	private String error;
-	private String healthStatus;
+	private boolean isHealthy;
 
-	public ResultsUnit(String className, String seed, String error, String healthStatus) {
-		// TODO Auto-generated constructor stub
+	public ResultsUnit(String className, String seed, String error, boolean isHealthy) {
 		this.className = className;
 		this.seed = seed;
 		this.error = error;
-		this.healthStatus = healthStatus;
+		this.isHealthy = isHealthy;
 	}
 
 	public String getClassName() {
@@ -45,12 +44,12 @@ public class ResultsUnit {
 		this.error = error;
 	}
 
-	public String getHealthStatus() {
-		return healthStatus;
+	public boolean isHealthy() {
+		return isHealthy;
 	}
 
-	public void setHealthStatus(String healthStatus) {
-		this.healthStatus = healthStatus;
+	public void setHealthStatus(boolean healthStatus) {
+		this.isHealthy = healthStatus;
 	}
 
 }

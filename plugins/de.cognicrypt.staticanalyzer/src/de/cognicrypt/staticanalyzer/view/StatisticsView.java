@@ -1,6 +1,8 @@
 package de.cognicrypt.staticanalyzer.view;
 
 import java.util.List;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -16,7 +18,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.part.*;
+import org.eclipse.ui.part.ViewPart;
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.staticanalyzer.handlers.AnalysisKickOff;
+import de.cognicrypt.utils.Utils;
 
 /**
  * This class creates a view which shows the results of an analysis.
@@ -36,7 +41,6 @@ public class StatisticsView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		// TODO Auto-generated method stub
 		GridLayout layout = new GridLayout(3, false);
 		parent.setLayout(layout);
 		resultsEnabled = true;
@@ -46,24 +50,27 @@ public class StatisticsView extends ViewPart {
 		projectnameLabel.setText("Project Name: ");
 		projectname = new StyledText(parent, SWT.NONE);
 		projectname.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
-		projectname.setText("Anything for now");
+		projectname.setText("Nothing for now");
 		// projectname.setEditable(false);
 
 		// Refresh Button
-		Button button = new Button(parent, SWT.PUSH);
-		button.setText("Restart");
-		button.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
+		Button reRunButton = new Button(parent, SWT.PUSH);
+		reRunButton.setText("Rerun the Analysis on this Project");
+		reRunButton.setEnabled(false);
+		reRunButton.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		// register listener for the selection event
-		button.addSelectionListener(new SelectionListener() {
+		reRunButton.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// System.out.println("Called!");
+				final AnalysisKickOff akf = new AnalysisKickOff();
+				final IJavaElement iJavaElement = JavaCore.create(Utils.getCurrentProject());
+				akf.setUp(iJavaElement);
+				akf.run();
 				resultsEnabled = true;
 			}
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
 			}
 
 		});
@@ -76,20 +83,18 @@ public class StatisticsView extends ViewPart {
 		timeofanalysis.setWordWrap(true);
 
 		// Stop Button
-		Button button2 = new Button(parent, SWT.PUSH);
-		button2.setText("Stop");
-		button2.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
+		Button StopAnalysisButton = new Button(parent, SWT.PUSH);
+		StopAnalysisButton.setText("Stop");
+		StopAnalysisButton.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		// register listener for the selection event
-		button2.addSelectionListener(new SelectionListener() {
+		StopAnalysisButton.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// System.out.println("Called!");
 				resultsEnabled = false;
 			}
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
 			}
 
 		});
@@ -100,9 +105,7 @@ public class StatisticsView extends ViewPart {
 
 	@Override
 	public void setFocus() {
-		// TODO Auto-generated method stub
 		viewer.getControl().setFocus();
-
 	}
 
 	private void createViewer(Composite parent) {
@@ -164,7 +167,7 @@ public class StatisticsView extends ViewPart {
 			@Override
 			public String getText(Object element) {
 				ResultsUnit u = (ResultsUnit) element;
-				return u.getHealthStatus();
+				return (u.isHealthy()) ? Constants.HEALTHY : Constants.UNHEALTHY;
 			}
 		});
 
@@ -185,13 +188,11 @@ public class StatisticsView extends ViewPart {
 	}
 
 	public void updateData(String projectName, String timeOfAnalysis, List<ResultsUnit> units) {
-		System.out.println("------------------------------ Inside StatisticsView updateData method: ----------------------------------");
 		if (resultsEnabled) {
 			projectname.setText(projectName);
 			timeofanalysis.setText(timeOfAnalysis);
 			viewer.setInput(units);
 			viewer.refresh();
 		}
-
 	}
 }

@@ -115,11 +115,11 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		if (stat.getClassesAnalysed().containsKey(sourceFile.getName())) {
 			AnalysisData data = stat.getClassesAnalysed().get(sourceFile.getName());
 			data.addError(errorMessage);
-			data.setHealth("Unhealthy");
+			data.setHealth(false);
 		} else {
 			AnalysisData data = new AnalysisData();
 			data.addError(errorMessage);
-			data.setHealth("Unhealthy");
+			data.setHealth(true);
 			Map<String, AnalysisData> classesAnalysedMap = stat.getClassesAnalysed();
 			classesAnalysedMap.put(sourceFile.getName(), data);
 
@@ -350,18 +350,18 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			units.add(new ResultsUnit(key, firstSeed, firstError, data.getHealth()));
 
 			while (seedsIndex < seedsSize && errorsIndex < errorsSize) {
-				units.add(new ResultsUnit("", seeds.get(seedsIndex), errors.get(errorsIndex), ""));
+				units.add(new ResultsUnit("", seeds.get(seedsIndex), errors.get(errorsIndex), true));
 				errorsIndex++;
 				seedsIndex++;
 			}
 
 			while (seedsIndex < seedsSize) {
-				units.add(new ResultsUnit("", seeds.get(seedsIndex), "", ""));
+				units.add(new ResultsUnit("", seeds.get(seedsIndex), "", true));
 				seedsIndex++;
 			}
 
 			while (errorsIndex < errorsSize) {
-				units.add(new ResultsUnit("", "", errors.get(errorsIndex), ""));
+				units.add(new ResultsUnit("", "", errors.get(errorsIndex), true));
 				errorsIndex++;
 			}
 
@@ -397,49 +397,41 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void beforeConstraintCheck(final AnalysisSeedWithSpecification analysisSeedWithSpecification) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void afterConstraintCheck(final AnalysisSeedWithSpecification analysisSeedWithSpecification) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void beforePredicateCheck(final AnalysisSeedWithSpecification analysisSeedWithSpecification) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void afterPredicateCheck(final AnalysisSeedWithSpecification analysisSeedWithSpecification) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void seedStarted(final IAnalysisSeed analysisSeedWithSpecification) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void boomerangQueryStarted(final Query seed, final BackwardQuery q) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void boomerangQueryFinished(final Query seed, final BackwardQuery q) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void ensuredPredicates(final Table<Statement, Val, Set<EnsuredCryptSLPredicate>> existingPredicates,
 			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates, final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {
-		// TODO Auto-generated method stub
 	}
 }

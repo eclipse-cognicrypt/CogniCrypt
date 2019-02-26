@@ -200,6 +200,36 @@
        <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
        <persistent value="false"></persistent>
     </extension>
+    
+    <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Cognicrypt"
+            id="Cognicrypt">
+      </category>
+      <view
+            name="Statistics"
+            inject="true"
+            icon="icons/cognicrypt.png"
+            category="Cognicrypt"
+            class="de.cognicrypt.staticanalyzer.view.StatisticsView"
+            id="de.cognicrypt.staticanalyzer.view.StatisticsView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+   
+    
     <!--MarkerResolution -->
 	<extension 
 	 point="org.eclipse.ui.ide.markerResolution">
@@ -253,3 +283,4 @@
     </objectContribution>
 </extension>
 </plugin>
+   

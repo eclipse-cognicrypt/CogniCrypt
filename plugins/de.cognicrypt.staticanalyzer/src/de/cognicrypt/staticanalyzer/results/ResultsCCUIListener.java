@@ -6,9 +6,13 @@
 package de.cognicrypt.staticanalyzer.results;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import org.eclipse.core.resources.IProject;
@@ -29,6 +33,7 @@ import crypto.analysis.EnsuredCryptSLPredicate;
 import crypto.analysis.IAnalysisSeed;
 import crypto.analysis.errors.AbstractError;
 import crypto.analysis.errors.ConstraintError;
+import crypto.analysis.errors.ErrorWithObjectAllocation;
 import crypto.analysis.errors.ForbiddenMethodError;
 import crypto.analysis.errors.ImpreciseValueExtractionError;
 import crypto.analysis.errors.IncompleteOperationError;
@@ -45,6 +50,10 @@ import de.cognicrypt.core.Constants.Severities;
 import de.cognicrypt.core.properties.ICogniCryptConstants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.statement.CCStatement;
+import de.cognicrypt.staticanalyzer.view.AnalysisData;
+import de.cognicrypt.staticanalyzer.view.ResultsUnit;
+import de.cognicrypt.staticanalyzer.view.StatisticsView;
+import de.cognicrypt.staticanalyzer.view.Stats;
 import de.cognicrypt.utils.Utils;
 import de.cognicrypt.utils.XMLParser;
 import soot.SootClass;
@@ -57,10 +66,11 @@ import soot.tagkit.AbstractHost;
 import typestate.TransitionFunction;
 
 /**
- * This listener is notified of any misuses the analysis finds.
+ * This listener is notified of any misuses the analysis finds. It also reports the results of the analysis to the Statistics View
  *
  * @author Stefan Krueger
- * @author AndrÃ© Sonntag
+ * @author André Sonntag
+ * @author Adnan Manzoor
  */
 public class ResultsCCUIListener extends CrySLAnalysisListener {
 
@@ -69,6 +79,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	private ArrayList<String> suppressedWarningIds;
 	private String warningFilePath;
 	private XMLParser xmlParser;
+	private static Stats stat;
 
 	private ResultsCCUIListener(final IProject curProj, final ErrorMarkerGenerator gen) {
 		this.currentProject = curProj;
@@ -98,12 +109,21 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final CCStatement stmt = new CCStatement(errorLocation);
 		final int stmtId = stmt.hashCode();
 
+		if (stat.getClassesAnalysed().containsKey(sourceFile.getName())) {
+			AnalysisData data = stat.getClassesAnalysed().get(sourceFile.getName());
+			data.addError(error);
+			data.setHealth(false);
+		} else {
+			AnalysisData data = new AnalysisData();
+			data.addError(error);
+			data.setHealth(false);
+			Map<String, AnalysisData> classesAnalysedMap = stat.getClassesAnalysed();
+			classesAnalysedMap.put(sourceFile.getName(), data);
+		}
+
 		/*
-		 * Adding of new marker types for new errors: 
-		 * 1) add new ErrorMarker extension point in plugin.xml 
-		 * 2) add new markerResolutionGenerator tag in plugin.xml 
-		 * 3) add new Marker constant in Constants.java (CogniCrypt Core) 
-		 * 4) add new else if in the following query
+		 * Adding of new marker types for new errors: 1) add new ErrorMarker extension point in plugin.xml 2) add new markerResolutionGenerator tag in plugin.xml 3) add new Marker
+		 * constant in Constants.java (CogniCrypt Core) 4) add new else if in the following query
 		 */
 
 		String markerType;
@@ -132,8 +152,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 		Severities sev = Severities.get(selectedSeverity);
 
-		this.warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator
-				+ Constants.SUPPRESSWARNING_FILE;
+		this.warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator + Constants.SUPPRESSWARNING_FILE;
 		final File warningsFile = new File(this.warningFilePath);
 
 		if (!warningsFile.exists()) {
@@ -141,22 +160,20 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		} else {
 			this.xmlParser = new XMLParser(warningsFile);
 			this.xmlParser.useDocFromFile();
-			if (!this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR)
-					.contains(stmtId + "")) {
+			if (!this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR).contains(stmtId + "")) {
 				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev);
 			} else {
 
 				// update existing LineNumber
-				final Node suppressWarningNode = this.xmlParser.getNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT,
-						Constants.ID_ATTR, stmtId + "");
-				final Node lineNumberNode = this.xmlParser.getChildNodeByTagName(suppressWarningNode,
-						Constants.LINENUMBER_ELEMENT);
+				final Node suppressWarningNode = this.xmlParser.getNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR, stmtId + "");
+				final Node lineNumberNode = this.xmlParser.getChildNodeByTagName(suppressWarningNode, Constants.LINENUMBER_ELEMENT);
 				this.xmlParser.updateNodeValue(lineNumberNode, lineNumber + "");
 				this.xmlParser.writeXML();
 
 				try {
 					this.currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-				} catch (final CoreException e) {
+				}
+				catch (final CoreException e) {
 					Activator.getDefault().logError(e);
 				}
 				this.suppressedWarningIds.add(stmtId + "");
@@ -166,60 +183,54 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	// It only works when the secure object checkbox in preference page is checked
-		@Override
-		public void onSecureObjectFound(final IAnalysisSeed secureObject) {
-			IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-			if (store.getBoolean(ICogniCryptConstants.SHOW_SECURE_OBJECTS) == false) {
-				return;
-			}else {
-				final Statement stmt = secureObject.stmt();
-				final Stmt unit = stmt.getUnit().get();
-				final List<ValueBox> useAndDefBoxes = unit.getUseAndDefBoxes();
-				final Optional<ValueBox> varOpt = useAndDefBoxes.stream().filter(e -> e instanceof JimpleLocalBox).findFirst();
-				ValueBox var = null;
-				if (varOpt.isPresent()) {
-					var = varOpt.get();
-				} else {
-					for (final ValueBox box : useAndDefBoxes) {
-						if (box.getValue() instanceof JimpleLocal) {
-							var = box;
-							break;
-						}
+	@Override
+	public void onSecureObjectFound(final IAnalysisSeed secureObject) {
+		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		if (store.getBoolean(ICogniCryptConstants.SHOW_SECURE_OBJECTS) == false) {
+			return;
+		} else {
+			final Statement stmt = secureObject.stmt();
+			final Stmt unit = stmt.getUnit().get();
+			final List<ValueBox> useAndDefBoxes = unit.getUseAndDefBoxes();
+			final Optional<ValueBox> varOpt = useAndDefBoxes.stream().filter(e -> e instanceof JimpleLocalBox).findFirst();
+			ValueBox var = null;
+			if (varOpt.isPresent()) {
+				var = varOpt.get();
+			} else {
+				for (final ValueBox box : useAndDefBoxes) {
+					if (box.getValue() instanceof JimpleLocal) {
+						var = box;
+						break;
 					}
-
 				}
-				final Value varName = var.getValue();
-				this.markerGenerator
-				.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt),  unit.getJavaSourceStartLineNumber(),
-						"Object " + (varName.toString().startsWith("$r")
-								? " of Type " + var.getValue().getType().toQuotedString()
-										: varName) + " is secure.",
-						Severities.Secure);
+
 			}
+			final Value varName = var.getValue();
+			this.markerGenerator.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt), unit.getJavaSourceStartLineNumber(),
+					"Object " + (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", Severities.Secure);
 		}
+	}
 
 	/**
-	 * This method removes superfluous suppressed warning entries from the
-	 * SuppressWarnings.xml file.
+	 * This method removes superfluous suppressed warning entries from the SuppressWarnings.xml file.
 	 */
 	public void removeUndetectableWarnings() {
 		if (this.suppressedWarningIds.size() > 0) {
 
-			final ArrayList<String> allSuppressedWarningIds = this.xmlParser
-					.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR);
+			final ArrayList<String> allSuppressedWarningIds = this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR);
 
 			final ArrayList<String> difference = new ArrayList<>(allSuppressedWarningIds.size());
 			difference.addAll(allSuppressedWarningIds);
 			difference.removeAll(this.suppressedWarningIds);
 
 			for (int i = 0; i < difference.size(); i++) {
-				this.xmlParser.removeNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR,
-						difference.get(i));
+				this.xmlParser.removeNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR, difference.get(i));
 			}
 			this.xmlParser.writeXML();
 			try {
 				this.currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-			} catch (final CoreException e) {
+			}
+			catch (final CoreException e) {
 				Activator.getDefault().logError(e);
 			}
 		}
@@ -230,7 +241,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final SootClass className = stmt.getMethod().getDeclaringClass();
 		try {
 			return Utils.findClassByName(className.getName(), this.currentProject);
-		} catch (final ClassNotFoundException e) {
+		}
+		catch (final ClassNotFoundException e) {
 			Activator.getDefault().logError(e);
 		}
 		// Fall-back path when retrieval of actual path fails. If the statement below
@@ -244,8 +256,18 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	@Override
-	public void discoveredSeed(final IAnalysisSeed arg0) {
-		// Nothing
+	public void discoveredSeed(final IAnalysisSeed seed) {
+		String seedClass = seed.getMethod().getDeclaringClass().getName();
+		if (stat.getClassesAnalysed().containsKey(seedClass)) {
+			AnalysisData data = stat.getClassesAnalysed().get(seedClass);
+			data.addSeed(seed);
+		} else {
+			AnalysisData data = new AnalysisData();
+			data.addSeed(seed);
+
+			Map<String, AnalysisData> classesAnalysedMap = stat.getClassesAnalysed();
+			classesAnalysedMap.put(seedClass, data);
+		}
 	}
 
 	@Override
@@ -254,8 +276,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	@Override
-	public void collectedValues(final AnalysisSeedWithSpecification arg0,
-			final Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
+	public void collectedValues(final AnalysisSeedWithSpecification arg0, final Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
 		// Nothing
 	}
 
@@ -270,60 +291,104 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void beforeAnalysis() {
-		// TODO Auto-generated method stub
+		DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+		LocalDateTime currentTime = LocalDateTime.now();
+		stat = new Stats();
+		stat.setProject(currentProject);
+		stat.setTimeOfAnalysis(dateTimeFormat.format(currentTime));
+		StatisticsView.allowAnalysisRerun(false);
 	}
 
 	@Override
 	public void afterAnalysis() {
 		removeUndetectableWarnings();
+		List<ResultsUnit> units = new ArrayList<ResultsUnit>();
+		for (Entry<String, AnalysisData> result : stat.getClassesAnalysed().entrySet()) {
+			String className = result.getKey();
+			AnalysisData findings = result.getValue();
+			for (IAnalysisSeed seed : findings.getSeeds()) {
+				String seedString = seedToDescription(className, seed);
+				units.add(new ResultsUnit(className, seedString, "", true));
+				className = "";
+			}
+			List<String> previousSeeds = new ArrayList<String>();
+			for (AbstractError err  : findings.getErrors()) {
+				String seed = err.getErrorLocation().toString();
+				if (err instanceof ErrorWithObjectAllocation) {
+					ErrorWithObjectAllocation incOpErr = (ErrorWithObjectAllocation) err;
+					seed = seedToDescription(className, incOpErr.getObjectLocation());
+				} 
+				if (previousSeeds.contains(seed)) {
+					units.add(new ResultsUnit(className, "", err.toErrorMarkerString(), false));
+				} else {
+					units.add(new ResultsUnit(className, seed, err.toErrorMarkerString(), false));
+				}
+				
+				//clean up
+				previousSeeds.add(seed);
+				className = "";
+			}
+			
+		}
+		
+		StatisticsView.allowAnalysisRerun(true);
+		StatisticsView.updateView(stat.getProject(), stat.getTimeOfAnalysis(), units);
+	}
+
+	public String seedToDescription(String className, IAnalysisSeed seed) {
+		String varName = seed.var().value().toString();
+		if (varName.startsWith("$")) {
+			String fqn = seed.var().value().getType().toQuotedString();
+			varName = "Object of type " + fqn.substring(fqn.lastIndexOf('.') + 1) ;
+		} else {
+			varName = "Object " + varName;
+		}
+		varName += " in Line " + seed.stmt().getUnit().get().getJavaSourceStartLineNumber();
+		
+		String methodName = seed.getMethod().getName();
+		if ("<init>".equals(methodName)) {
+			methodName = className.substring(className.lastIndexOf('.') + 1) + "()";
+		}
+		return varName + " of Method " + methodName;
 	}
 
 	@Override
 	public void beforeConstraintCheck(final AnalysisSeedWithSpecification analysisSeedWithSpecification) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void afterConstraintCheck(final AnalysisSeedWithSpecification analysisSeedWithSpecification) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void beforePredicateCheck(final AnalysisSeedWithSpecification analysisSeedWithSpecification) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void afterPredicateCheck(final AnalysisSeedWithSpecification analysisSeedWithSpecification) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void seedStarted(final IAnalysisSeed analysisSeedWithSpecification) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void boomerangQueryStarted(final Query seed, final BackwardQuery q) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void boomerangQueryFinished(final Query seed, final BackwardQuery q) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void ensuredPredicates(final Table<Statement, Val, Set<EnsuredCryptSLPredicate>> existingPredicates,
-			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates,
-			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {
-		// TODO Auto-generated method stub
+			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates, final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {
 	}
 }

@@ -535,5 +535,7 @@ public class Constants {
 	public final static String RELATIVE_RULES_DIR = "resources/CrySLRules";
 	public static final String cryslFileEnding = ".cryptsl";
 	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CryptSL";
+	public static final String HEALTHY = "Secure";
+	public static final String UNHEALTHY = "Insecure";
 
 }

@@ -11,9 +11,9 @@ import java.util.Map;
 
 public class Stats {
 
-	String projectname;
-	String timeOfAnalysis;
-	Map<String, AnalysisData> classesAnalysed = new HashMap<>();
+	private String projectname;
+	private String timeOfAnalysis;
+	private Map<String, AnalysisData> classesAnalysed = new HashMap<>();
 
 	public void setProjectName(String projName) {
 		projectname = projName;

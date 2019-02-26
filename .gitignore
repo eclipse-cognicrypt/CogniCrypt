@@ -4,3 +4,4 @@ target/
 .recommenders/
 *.project
 *.classpath
+*.prefs

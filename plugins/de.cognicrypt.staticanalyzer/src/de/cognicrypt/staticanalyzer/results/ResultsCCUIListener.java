@@ -349,8 +349,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		if ("<init>".equals(methodName)) {
 			methodName = className.substring(className.lastIndexOf('.') + 1) + "()";
 		}
-		String seedString = varName + " of Method " + methodName;
-		return seedString;
+		return varName + " of Method " + methodName;
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package de.cognicrypt.staticanalyzer.view;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.core.resources.IProject;
 
 /**
  * This class contains the data of the analysis from the ResultsCCUIListener.
@@ -11,16 +12,16 @@ import java.util.Map;
 
 public class Stats {
 
-	private String projectname;
+	private IProject project;
 	private String timeOfAnalysis;
 	private Map<String, AnalysisData> classesAnalysed = new HashMap<>();
 
-	public void setProjectName(String projName) {
-		projectname = projName;
+	public void setProject(IProject project) {
+		this.project = project;
 	}
 
-	public String getProjectName() {
-		return projectname;
+	public IProject getProject() {
+		return project;
 	}
 
 	public void setTimeOfAnalysis(String time) {

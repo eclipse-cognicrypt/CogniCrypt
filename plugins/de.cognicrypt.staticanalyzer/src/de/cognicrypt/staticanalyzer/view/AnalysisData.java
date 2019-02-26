@@ -1,6 +1,8 @@
 package de.cognicrypt.staticanalyzer.view;
 
 import java.util.ArrayList;
+import crypto.analysis.IAnalysisSeed;
+import crypto.analysis.errors.AbstractError;
 
 /**
  * This class contains the seeds, errors and health information from all the classes that were analysed and reached ResultsCCUIListener.
@@ -8,8 +10,8 @@ import java.util.ArrayList;
  * @author Adnan Manzoor
  */
 public class AnalysisData {
-	private final ArrayList<String> seeds;
-	private final ArrayList<String> errors;
+	private final ArrayList<IAnalysisSeed> seeds;
+	private final ArrayList<AbstractError> errors;
 	private boolean isHealthy;
 
 	public AnalysisData() {
@@ -18,19 +20,19 @@ public class AnalysisData {
 		this.isHealthy = true;
 	}
 
-	public void addSeed(String seed) {
+	public void addSeed(IAnalysisSeed seed) {
 		seeds.add(seed);
 	}
 
-	public ArrayList<String> getSeeds() {
+	public ArrayList<IAnalysisSeed> getSeeds() {
 		return seeds;
 	}
 
-	public void addError(String error) {
+	public void addError(AbstractError error) {
 		errors.add(error);
 	}
 
-	public ArrayList<String> getErrors() {
+	public ArrayList<AbstractError> getErrors() {
 		return errors;
 	}
 

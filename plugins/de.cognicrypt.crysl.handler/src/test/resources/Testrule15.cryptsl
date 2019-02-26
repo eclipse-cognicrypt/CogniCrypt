@@ -1,0 +1,15 @@
+SPEC de.cognicrypt.cryslhandler.TestA
+OBJECTS
+    int mode;
+    
+EVENTS
+    a : a(); // SHA256()
+    b : b(); // reset()
+    c : c(); // doFinal()
+    d : d(); // update()
+        
+ORDER
+    a, b?, (c | (d+, c))*
+    
+CONSTRAINTS
+	mode in {1, 2, 3};

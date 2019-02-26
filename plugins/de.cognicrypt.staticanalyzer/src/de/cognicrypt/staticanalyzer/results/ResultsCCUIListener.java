@@ -12,18 +12,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.w3c.dom.Node;
-import org.eclipse.swt.widgets.Display;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 import boomerang.BackwardQuery;
@@ -37,6 +33,7 @@ import crypto.analysis.EnsuredCryptSLPredicate;
 import crypto.analysis.IAnalysisSeed;
 import crypto.analysis.errors.AbstractError;
 import crypto.analysis.errors.ConstraintError;
+import crypto.analysis.errors.ErrorWithObjectAllocation;
 import crypto.analysis.errors.ForbiddenMethodError;
 import crypto.analysis.errors.ImpreciseValueExtractionError;
 import crypto.analysis.errors.IncompleteOperationError;
@@ -52,11 +49,11 @@ import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.Severities;
 import de.cognicrypt.core.properties.ICogniCryptConstants;
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.statement.CCStatement;
 import de.cognicrypt.staticanalyzer.view.AnalysisData;
 import de.cognicrypt.staticanalyzer.view.ResultsUnit;
 import de.cognicrypt.staticanalyzer.view.StatisticsView;
 import de.cognicrypt.staticanalyzer.view.Stats;
-import de.cognicrypt.staticanalyzer.statement.CCStatement;
 import de.cognicrypt.utils.Utils;
 import de.cognicrypt.utils.XMLParser;
 import soot.SootClass;
@@ -114,15 +111,14 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 		if (stat.getClassesAnalysed().containsKey(sourceFile.getName())) {
 			AnalysisData data = stat.getClassesAnalysed().get(sourceFile.getName());
-			data.addError(errorMessage);
+			data.addError(error);
 			data.setHealth(false);
 		} else {
 			AnalysisData data = new AnalysisData();
-			data.addError(errorMessage);
-			data.setHealth(true);
+			data.addError(error);
+			data.setHealth(false);
 			Map<String, AnalysisData> classesAnalysedMap = stat.getClassesAnalysed();
 			classesAnalysedMap.put(sourceFile.getName(), data);
-
 		}
 
 		/*
@@ -260,28 +256,18 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	@Override
-	public void discoveredSeed(final IAnalysisSeed arg0) {
-		// Nothing
-		System.out.println("\ndiscovered Seed\n");
-		String seedClass = arg0.getMethod().getDeclaringClass().getName() + ".java";
+	public void discoveredSeed(final IAnalysisSeed seed) {
+		String seedClass = seed.getMethod().getDeclaringClass().getName();
 		if (stat.getClassesAnalysed().containsKey(seedClass)) {
 			AnalysisData data = stat.getClassesAnalysed().get(seedClass);
-			data.addSeed("Method: " + arg0.getMethod().getName() + " , Variable: " + arg0.var().value());
+			data.addSeed(seed);
 		} else {
 			AnalysisData data = new AnalysisData();
-			data.addSeed("Method: " + arg0.getMethod().getName() + " , Variable: " + arg0.var().value());
+			data.addSeed(seed);
 
 			Map<String, AnalysisData> classesAnalysedMap = stat.getClassesAnalysed();
 			classesAnalysedMap.put(seedClass, data);
 		}
-
-		/*
-		 * //String seedClass = arg0.getClass().getName(); System.out.println("-------------------------------------------------------------------------");
-		 * System.out.println("Seed Name: " + seedName); System.out.println("Seed Method: " + arg0.getMethod().toString()); System.out.println("Object Id: " + arg0.var().toString());
-		 * System.out.println("Java Class: " + seedClass); //System.out.println("Class: " + seedClass);
-		 * System.out.println("-------------------------------------------------------------------------");
-		 */
-
 	}
 
 	@Override
@@ -305,94 +291,66 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void beforeAnalysis() {
-		// TODO Auto-generated method stub
-		System.out.println("\nBefore Analysis\n");
 		DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 		LocalDateTime currentTime = LocalDateTime.now();
 		stat = new Stats();
-		stat.setProjectName(currentProject.getName());
+		stat.setProject(currentProject);
 		stat.setTimeOfAnalysis(dateTimeFormat.format(currentTime));
-		// stat = new Stats();
+		StatisticsView.allowAnalysisRerun(false);
 	}
 
 	@Override
 	public void afterAnalysis() {
 		removeUndetectableWarnings();
-		System.out.println("\nInside After Analysis\n");
-		/*
-		 * System.out.println("------------------------------ Inside afterAnalysis method: ----------------------------------"); System.out.println("Project Name: " +
-		 * stat.getProjectName()); System.out.println("Time : " + stat.getTimeOfAnalysis());
-		 */
-		Set<String> keys = stat.getClassesAnalysed().keySet();
 		List<ResultsUnit> units = new ArrayList<ResultsUnit>();
-		for (String key : keys) {
-			// System.out.println(key + " has :" + stat.getClassesAnalysed().get(key).getErrors().size() +" errors & " + "Seeds analyzed = " +
-			// stat.getClassesAnalysed().get(key).getSeeds().size() + " Health = " + stat.getClassesAnalysed().get(key).getHealth() );
-			AnalysisData data = stat.getClassesAnalysed().get(key);
-			ArrayList<String> seeds = data.getSeeds();
-			ArrayList<String> errors = data.getErrors();
-			String firstSeed;
-			String firstError;
-			int seedsSize = seeds.size();
-			int errorsSize = errors.size();
-			int seedsIndex = 1, errorsIndex = 1;
-			if (seedsSize > 0) {
-				firstSeed = seeds.get(0);
-			} else {
-				firstSeed = "";
+		for (Entry<String, AnalysisData> result : stat.getClassesAnalysed().entrySet()) {
+			String className = result.getKey();
+			AnalysisData findings = result.getValue();
+			for (IAnalysisSeed seed : findings.getSeeds()) {
+				String seedString = seedToDescription(className, seed);
+				units.add(new ResultsUnit(className, seedString, "", true));
+				className = "";
 			}
-			if (errorsSize > 0) {
-				firstError = errors.get(0);
-			} else {
-				firstError = "";
+			List<String> previousSeeds = new ArrayList<String>();
+			for (AbstractError err  : findings.getErrors()) {
+				String seed = err.getErrorLocation().toString();
+				if (err instanceof ErrorWithObjectAllocation) {
+					ErrorWithObjectAllocation incOpErr = (ErrorWithObjectAllocation) err;
+					seed = seedToDescription(className, incOpErr.getObjectLocation());
+				} 
+				if (previousSeeds.contains(seed)) {
+					units.add(new ResultsUnit(className, "", err.toErrorMarkerString(), false));
+				} else {
+					units.add(new ResultsUnit(className, seed, err.toErrorMarkerString(), false));
+				}
+				
+				//clean up
+				previousSeeds.add(seed);
+				className = "";
 			}
-
-			units.add(new ResultsUnit(key, firstSeed, firstError, data.getHealth()));
-
-			while (seedsIndex < seedsSize && errorsIndex < errorsSize) {
-				units.add(new ResultsUnit("", seeds.get(seedsIndex), errors.get(errorsIndex), true));
-				errorsIndex++;
-				seedsIndex++;
-			}
-
-			while (seedsIndex < seedsSize) {
-				units.add(new ResultsUnit("", seeds.get(seedsIndex), "", true));
-				seedsIndex++;
-			}
-
-			while (errorsIndex < errorsSize) {
-				units.add(new ResultsUnit("", "", errors.get(errorsIndex), true));
-				errorsIndex++;
-			}
-
+			
 		}
-		/*
-		 * System.out.println("------------------------------ Inside afterAnalysis method: ----------------------------------"); System.out.println("Total Units Created: " +
-		 * units.size());
-		 */
-		IWorkbenchWindow workbenchWindow = null;
-		IWorkbenchWindow[] allWindows = PlatformUI.getWorkbench().getWorkbenchWindows();
-		for (IWorkbenchWindow window : allWindows) {
-			workbenchWindow = window;
-			if (workbenchWindow != null) {
-				System.out.println("Found workbench");
-				break;
-			}
-		}
-		if (workbenchWindow != null) {
-			IWorkbenchPage activePage = workbenchWindow.getActivePage();
-			IViewPart viewPart = activePage.findView("de.cognicrypt.staticanalyzer.view.StatisticsView");
-			if (viewPart != null) {
-				StatisticsView myView = (StatisticsView) viewPart;
-				Display.getDefault().asyncExec(new Runnable() {
+		
+		StatisticsView.allowAnalysisRerun(true);
+		StatisticsView.updateView(stat.getProject(), stat.getTimeOfAnalysis(), units);
+	}
 
-					public void run() {
-						myView.updateData(stat.getProjectName(), stat.getTimeOfAnalysis(), units);
-					}
-
-				});
-			}
+	public String seedToDescription(String className, IAnalysisSeed seed) {
+		String varName = seed.var().value().toString();
+		if (varName.startsWith("$")) {
+			String fqn = seed.var().value().getType().toQuotedString();
+			varName = "Object of type " + fqn.substring(fqn.lastIndexOf('.') + 1) ;
+		} else {
+			varName = "Object " + varName;
 		}
+		varName += " in Line " + seed.stmt().getUnit().get().getJavaSourceStartLineNumber();
+		
+		String methodName = seed.getMethod().getName();
+		if ("<init>".equals(methodName)) {
+			methodName = className.substring(className.lastIndexOf('.') + 1) + "()";
+		}
+		String seedString = varName + " of Method " + methodName;
+		return seedString;
 	}
 
 	@Override

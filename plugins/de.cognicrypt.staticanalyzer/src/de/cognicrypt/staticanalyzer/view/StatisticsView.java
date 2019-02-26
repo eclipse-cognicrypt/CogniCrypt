@@ -1,6 +1,7 @@
 package de.cognicrypt.staticanalyzer.view;
 
 import java.util.List;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -15,9 +16,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.handlers.AnalysisKickOff;
@@ -38,6 +42,8 @@ public class StatisticsView extends ViewPart {
 	private StyledText projectname;
 	private StyledText timeofanalysis;
 	private boolean resultsEnabled;
+	private Button reRunButton;
+	private Button stopAnalysisButton;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -54,7 +60,7 @@ public class StatisticsView extends ViewPart {
 		// projectname.setEditable(false);
 
 		// Refresh Button
-		Button reRunButton = new Button(parent, SWT.PUSH);
+		reRunButton = new Button(parent, SWT.PUSH);
 		reRunButton.setText("Rerun the Analysis on this Project");
 		reRunButton.setEnabled(false);
 		reRunButton.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
@@ -70,8 +76,7 @@ public class StatisticsView extends ViewPart {
 			}
 
 			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-			}
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
 
 		});
 
@@ -83,19 +88,19 @@ public class StatisticsView extends ViewPart {
 		timeofanalysis.setWordWrap(true);
 
 		// Stop Button
-		Button StopAnalysisButton = new Button(parent, SWT.PUSH);
-		StopAnalysisButton.setText("Stop");
-		StopAnalysisButton.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
+		stopAnalysisButton = new Button(parent, SWT.PUSH);
+		stopAnalysisButton.setText("Stop");
+		stopAnalysisButton.setEnabled(false);
+		stopAnalysisButton.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		// register listener for the selection event
-		StopAnalysisButton.addSelectionListener(new SelectionListener() {
+		stopAnalysisButton.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				resultsEnabled = false;
 			}
 
 			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-			}
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
 
 		});
 
@@ -187,12 +192,43 @@ public class StatisticsView extends ViewPart {
 		return projectname.getText();
 	}
 
-	public void updateData(String projectName, String timeOfAnalysis, List<ResultsUnit> units) {
+	public void updateData(IProject project, String timeOfAnalysis, List<ResultsUnit> units) {
 		if (resultsEnabled) {
-			projectname.setText(projectName);
+			projectname.setText(project.getName());
 			timeofanalysis.setText(timeOfAnalysis);
 			viewer.setInput(units);
 			viewer.refresh();
 		}
 	}
+
+	private void allowAnalysisReRun(boolean isAllowed) {
+		reRunButton.setEnabled(isAllowed);
+		stopAnalysisButton.setEnabled(!isAllowed);
+	}
+
+	public static void allowAnalysisRerun(boolean isAllowed) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				getView().allowAnalysisReRun(isAllowed);
+				
+			}
+		});
+	}
+
+	public static void updateView(IProject project, String timeOfAnalysis, List<ResultsUnit> units) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				getView().updateData(project, timeOfAnalysis, units);
+			}
+		});
+	}
+
+	private static StatisticsView getView() {
+		IViewPart viewPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("de.cognicrypt.staticanalyzer.view.StatisticsView");
+		if (viewPart != null) {
+			return (StatisticsView) viewPart;
+		}
+		return null;
+	}
+
 }

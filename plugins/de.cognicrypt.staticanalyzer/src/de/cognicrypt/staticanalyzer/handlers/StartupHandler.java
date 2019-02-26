@@ -115,18 +115,12 @@ public class StartupHandler implements IStartup {
 				final boolean stat = ako.setUp(changedJavaElements.get(0));
 				if (stat) {
 					analysis_Queue.add(ako);
-				} else {
-					Activator.getDefault().logInfo("Analysis has been cancelled due to erroneous setup.");
 				}
 				while (analysis_Queue.size() > 0) {
 					if (!analysis_running) {
 						final AnalysisKickOff ak = analysis_Queue.remove();
 						analysis_running = true;
-						if (ak.run()) {
-							Activator.getDefault().logInfo("Analysis has finished.");
-						} else {
-							Activator.getDefault().logInfo("Analysis has aborted.");
-						}
+						ak.run();
 						analysis_running = false;
 					}
 				}

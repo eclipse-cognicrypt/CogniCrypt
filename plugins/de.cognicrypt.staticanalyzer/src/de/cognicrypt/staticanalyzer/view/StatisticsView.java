@@ -23,6 +23,9 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+
+import com.google.common.base.Optional;
+
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.handlers.AnalysisKickOff;
 import de.cognicrypt.utils.Utils;
@@ -210,8 +213,10 @@ public class StatisticsView extends ViewPart {
 	public static void allowAnalysisRerun(boolean isAllowed) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				getView().allowAnalysisReRun(isAllowed);
-
+				Optional<StatisticsView> view = getView();
+				if(view.isPresent()) {
+					view.get().allowAnalysisReRun(isAllowed);
+				}
 			}
 		});
 	}
@@ -219,17 +224,20 @@ public class StatisticsView extends ViewPart {
 	public static void updateView(IProject project, String timeOfAnalysis, List<ResultsUnit> units) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				getView().updateData(project, timeOfAnalysis, units);
+				Optional<StatisticsView> view = getView();
+				if(view.isPresent()) {
+					view.get().updateData(project, timeOfAnalysis, units);
+				}
 			}
 		});
 	}
 
-	private static StatisticsView getView() {
+	private static Optional<StatisticsView> getView() {
 		IViewPart viewPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("de.cognicrypt.staticanalyzer.view.StatisticsView");
 		if (viewPart != null) {
-			return (StatisticsView) viewPart;
+			return Optional.of((StatisticsView) viewPart);
 		}
-		return null;
+		return Optional.absent();
 	}
 
 }

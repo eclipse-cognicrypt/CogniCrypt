@@ -97,7 +97,6 @@ public class AnalysisKickOff {
 				final SootThread sootThread = new SootThread(AnalysisKickOff.this.curProj, AnalysisKickOff.resultsReporter);
 				sootThread.start();
 				while (sootThread.isAlive()) {
-					Activator.getDefault().logInfo("Tick.");
 					try {
 						Thread.sleep(500);
 					}

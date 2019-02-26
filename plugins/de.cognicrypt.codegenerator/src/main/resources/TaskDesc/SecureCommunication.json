@@ -410,7 +410,7 @@
 		"content": [
 			{			
 				"id": "0",
-				"element": "radio",
+				"element": "rbtextgroup",
 				"questionText": "Lastly, to set up a secure connection, you need a key. Please select your key source. One such source is a keystore. Keystores may contain several cryptogaphic keys and store them securely protected by passwords. Another source is a certificate. Certificates provide means to authenticate yourself to other parties.",
 				"answers": [
 					{

@@ -134,7 +134,7 @@ public abstract class CodeGenerator {
 		final TreeSet<SimpleEntry<Integer, Integer>> methLims = new TreeSet<>();
 		final SimpleEntry<Integer, SimpleEntry<Integer, Integer>> classlims = new SimpleEntry<>(0, null);
 
-		final ASTParser astp = ASTParser.newParser(AST.JLS11);
+		final ASTParser astp = ASTParser.newParser(AST.JLS10);
 		astp.setSource(docContent.toCharArray());
 		astp.setKind(ASTParser.K_COMPILATION_UNIT);
 		final CompilationUnit cu = (CompilationUnit) astp.createAST(null);

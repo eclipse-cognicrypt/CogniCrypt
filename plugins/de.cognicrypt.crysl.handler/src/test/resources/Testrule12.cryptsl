@@ -1,0 +1,14 @@
+SPEC de.cognicrypt.cryslhandler.TestA
+OBJECTS
+    int mode;
+    
+EVENTS
+    a : a();
+    b : b();
+    c : c();
+        
+ORDER
+     a | b | c  
+
+CONSTRAINTS
+	mode in {1, 2, 3}

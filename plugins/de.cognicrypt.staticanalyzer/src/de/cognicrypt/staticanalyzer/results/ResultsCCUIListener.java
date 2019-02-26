@@ -24,7 +24,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.w3c.dom.Node;
 import org.eclipse.swt.widgets.Display;
-
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 import boomerang.BackwardQuery;
@@ -70,8 +69,7 @@ import soot.tagkit.AbstractHost;
 import typestate.TransitionFunction;
 
 /**
- * This listener is notified of any misuses the analysis finds.
- * It also reports the results of the analysis to the Statistics View
+ * This listener is notified of any misuses the analysis finds. It also reports the results of the analysis to the Statistics View
  *
  * @author Stefan Krueger
  * @author André Sonntag
@@ -113,8 +111,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
 		final CCStatement stmt = new CCStatement(errorLocation);
 		final int stmtId = stmt.hashCode();
-		
-		if(stat.getClassesAnalysed().containsKey(sourceFile.getName())){
+
+		if (stat.getClassesAnalysed().containsKey(sourceFile.getName())) {
 			AnalysisData data = stat.getClassesAnalysed().get(sourceFile.getName());
 			data.addError(errorMessage);
 			data.setHealth("Unhealthy");
@@ -124,15 +122,12 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			data.setHealth("Unhealthy");
 			Map<String, AnalysisData> classesAnalysedMap = stat.getClassesAnalysed();
 			classesAnalysedMap.put(sourceFile.getName(), data);
-			
+
 		}
 
 		/*
-		 * Adding of new marker types for new errors: 
-		 * 1) add new ErrorMarker extension point in plugin.xml 
-		 * 2) add new markerResolutionGenerator tag in plugin.xml 
-		 * 3) add new Marker constant in Constants.java (CogniCrypt Core) 
-		 * 4) add new else if in the following query
+		 * Adding of new marker types for new errors: 1) add new ErrorMarker extension point in plugin.xml 2) add new markerResolutionGenerator tag in plugin.xml 3) add new Marker
+		 * constant in Constants.java (CogniCrypt Core) 4) add new else if in the following query
 		 */
 
 		String markerType;
@@ -161,8 +156,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 		Severities sev = Severities.get(selectedSeverity);
 
-		this.warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator
-				+ Constants.SUPPRESSWARNING_FILE;
+		this.warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator + Constants.SUPPRESSWARNING_FILE;
 		final File warningsFile = new File(this.warningFilePath);
 
 		if (!warningsFile.exists()) {
@@ -170,22 +164,20 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		} else {
 			this.xmlParser = new XMLParser(warningsFile);
 			this.xmlParser.useDocFromFile();
-			if (!this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR)
-					.contains(stmtId + "")) {
+			if (!this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR).contains(stmtId + "")) {
 				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev);
 			} else {
 
 				// update existing LineNumber
-				final Node suppressWarningNode = this.xmlParser.getNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT,
-						Constants.ID_ATTR, stmtId + "");
-				final Node lineNumberNode = this.xmlParser.getChildNodeByTagName(suppressWarningNode,
-						Constants.LINENUMBER_ELEMENT);
+				final Node suppressWarningNode = this.xmlParser.getNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR, stmtId + "");
+				final Node lineNumberNode = this.xmlParser.getChildNodeByTagName(suppressWarningNode, Constants.LINENUMBER_ELEMENT);
 				this.xmlParser.updateNodeValue(lineNumberNode, lineNumber + "");
 				this.xmlParser.writeXML();
 
 				try {
 					this.currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-				} catch (final CoreException e) {
+				}
+				catch (final CoreException e) {
 					Activator.getDefault().logError(e);
 				}
 				this.suppressedWarningIds.add(stmtId + "");
@@ -195,60 +187,54 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	// It only works when the secure object checkbox in preference page is checked
-		@Override
-		public void onSecureObjectFound(final IAnalysisSeed secureObject) {
-			IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-			if (store.getBoolean(ICogniCryptConstants.SHOW_SECURE_OBJECTS) == false) {
-				return;
-			}else {
-				final Statement stmt = secureObject.stmt();
-				final Stmt unit = stmt.getUnit().get();
-				final List<ValueBox> useAndDefBoxes = unit.getUseAndDefBoxes();
-				final Optional<ValueBox> varOpt = useAndDefBoxes.stream().filter(e -> e instanceof JimpleLocalBox).findFirst();
-				ValueBox var = null;
-				if (varOpt.isPresent()) {
-					var = varOpt.get();
-				} else {
-					for (final ValueBox box : useAndDefBoxes) {
-						if (box.getValue() instanceof JimpleLocal) {
-							var = box;
-							break;
-						}
+	@Override
+	public void onSecureObjectFound(final IAnalysisSeed secureObject) {
+		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		if (store.getBoolean(ICogniCryptConstants.SHOW_SECURE_OBJECTS) == false) {
+			return;
+		} else {
+			final Statement stmt = secureObject.stmt();
+			final Stmt unit = stmt.getUnit().get();
+			final List<ValueBox> useAndDefBoxes = unit.getUseAndDefBoxes();
+			final Optional<ValueBox> varOpt = useAndDefBoxes.stream().filter(e -> e instanceof JimpleLocalBox).findFirst();
+			ValueBox var = null;
+			if (varOpt.isPresent()) {
+				var = varOpt.get();
+			} else {
+				for (final ValueBox box : useAndDefBoxes) {
+					if (box.getValue() instanceof JimpleLocal) {
+						var = box;
+						break;
 					}
-
 				}
-				final Value varName = var.getValue();
-				this.markerGenerator
-				.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt),  unit.getJavaSourceStartLineNumber(),
-						"Object " + (varName.toString().startsWith("$r")
-								? " of Type " + var.getValue().getType().toQuotedString()
-										: varName) + " is secure.",
-						Severities.Secure);
+
 			}
+			final Value varName = var.getValue();
+			this.markerGenerator.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt), unit.getJavaSourceStartLineNumber(),
+					"Object " + (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", Severities.Secure);
 		}
+	}
 
 	/**
-	 * This method removes superfluous suppressed warning entries from the
-	 * SuppressWarnings.xml file.
+	 * This method removes superfluous suppressed warning entries from the SuppressWarnings.xml file.
 	 */
 	public void removeUndetectableWarnings() {
 		if (this.suppressedWarningIds.size() > 0) {
 
-			final ArrayList<String> allSuppressedWarningIds = this.xmlParser
-					.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR);
+			final ArrayList<String> allSuppressedWarningIds = this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR);
 
 			final ArrayList<String> difference = new ArrayList<>(allSuppressedWarningIds.size());
 			difference.addAll(allSuppressedWarningIds);
 			difference.removeAll(this.suppressedWarningIds);
 
 			for (int i = 0; i < difference.size(); i++) {
-				this.xmlParser.removeNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR,
-						difference.get(i));
+				this.xmlParser.removeNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR, difference.get(i));
 			}
 			this.xmlParser.writeXML();
 			try {
 				this.currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-			} catch (final CoreException e) {
+			}
+			catch (final CoreException e) {
 				Activator.getDefault().logError(e);
 			}
 		}
@@ -259,7 +245,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final SootClass className = stmt.getMethod().getDeclaringClass();
 		try {
 			return Utils.findClassByName(className.getName(), this.currentProject);
-		} catch (final ClassNotFoundException e) {
+		}
+		catch (final ClassNotFoundException e) {
 			Activator.getDefault().logError(e);
 		}
 		// Fall-back path when retrieval of actual path fails. If the statement below
@@ -277,29 +264,24 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		// Nothing
 		System.out.println("\ndiscovered Seed\n");
 		String seedClass = arg0.getMethod().getDeclaringClass().getName() + ".java";
-		if(stat.getClassesAnalysed().containsKey(seedClass)){
+		if (stat.getClassesAnalysed().containsKey(seedClass)) {
 			AnalysisData data = stat.getClassesAnalysed().get(seedClass);
-			data.addSeed("Method: " +arg0.getMethod().getName() + " , Variable: " + arg0.var().value());
+			data.addSeed("Method: " + arg0.getMethod().getName() + " , Variable: " + arg0.var().value());
 		} else {
 			AnalysisData data = new AnalysisData();
-			data.addSeed("Method: " +arg0.getMethod().getName() + " , Variable: " + arg0.var().value());
-			
+			data.addSeed("Method: " + arg0.getMethod().getName() + " , Variable: " + arg0.var().value());
+
 			Map<String, AnalysisData> classesAnalysedMap = stat.getClassesAnalysed();
 			classesAnalysedMap.put(seedClass, data);
 		}
-			
-		
-		/*//String seedClass = arg0.getClass().getName();
-		System.out.println("-------------------------------------------------------------------------");
-		System.out.println("Seed Name: " + seedName);
-		System.out.println("Seed Method: " + arg0.getMethod().toString());
-		System.out.println("Object Id: " + arg0.var().toString());
-		System.out.println("Java Class: " + seedClass);
-		//System.out.println("Class: " + seedClass);
-		System.out.println("-------------------------------------------------------------------------");
-		*/
-		
-	
+
+		/*
+		 * //String seedClass = arg0.getClass().getName(); System.out.println("-------------------------------------------------------------------------");
+		 * System.out.println("Seed Name: " + seedName); System.out.println("Seed Method: " + arg0.getMethod().toString()); System.out.println("Object Id: " + arg0.var().toString());
+		 * System.out.println("Java Class: " + seedClass); //System.out.println("Class: " + seedClass);
+		 * System.out.println("-------------------------------------------------------------------------");
+		 */
+
 	}
 
 	@Override
@@ -308,8 +290,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	@Override
-	public void collectedValues(final AnalysisSeedWithSpecification arg0,
-			final Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
+	public void collectedValues(final AnalysisSeedWithSpecification arg0, final Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
 		// Nothing
 	}
 
@@ -331,20 +312,22 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		stat = new Stats();
 		stat.setProjectName(currentProject.getName());
 		stat.setTimeOfAnalysis(dateTimeFormat.format(currentTime));
-		//stat = new Stats();
+		// stat = new Stats();
 	}
 
 	@Override
 	public void afterAnalysis() {
 		removeUndetectableWarnings();
 		System.out.println("\nInside After Analysis\n");
-		/*System.out.println("------------------------------ Inside afterAnalysis method: ----------------------------------");
-		System.out.println("Project Name: " + stat.getProjectName());
-		System.out.println("Time : " + stat.getTimeOfAnalysis());*/
+		/*
+		 * System.out.println("------------------------------ Inside afterAnalysis method: ----------------------------------"); System.out.println("Project Name: " +
+		 * stat.getProjectName()); System.out.println("Time : " + stat.getTimeOfAnalysis());
+		 */
 		Set<String> keys = stat.getClassesAnalysed().keySet();
 		List<ResultsUnit> units = new ArrayList<ResultsUnit>();
-		for(String key:keys) {
-			//System.out.println(key + " has :" + stat.getClassesAnalysed().get(key).getErrors().size() +" errors & " + "Seeds analyzed = " + stat.getClassesAnalysed().get(key).getSeeds().size() + " Health = " + stat.getClassesAnalysed().get(key).getHealth() );
+		for (String key : keys) {
+			// System.out.println(key + " has :" + stat.getClassesAnalysed().get(key).getErrors().size() +" errors & " + "Seeds analyzed = " +
+			// stat.getClassesAnalysed().get(key).getSeeds().size() + " Health = " + stat.getClassesAnalysed().get(key).getHealth() );
 			AnalysisData data = stat.getClassesAnalysed().get(key);
 			ArrayList<String> seeds = data.getSeeds();
 			ArrayList<String> errors = data.getErrors();
@@ -353,63 +336,63 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			int seedsSize = seeds.size();
 			int errorsSize = errors.size();
 			int seedsIndex = 1, errorsIndex = 1;
-			if(seedsSize > 0) {
+			if (seedsSize > 0) {
 				firstSeed = seeds.get(0);
 			} else {
 				firstSeed = "";
 			}
-			if(errorsSize > 0) {
+			if (errorsSize > 0) {
 				firstError = errors.get(0);
 			} else {
 				firstError = "";
 			}
-			
+
 			units.add(new ResultsUnit(key, firstSeed, firstError, data.getHealth()));
-			
-			while(seedsIndex < seedsSize && errorsIndex < errorsSize) {
+
+			while (seedsIndex < seedsSize && errorsIndex < errorsSize) {
 				units.add(new ResultsUnit("", seeds.get(seedsIndex), errors.get(errorsIndex), ""));
 				errorsIndex++;
 				seedsIndex++;
 			}
-			
-			while(seedsIndex < seedsSize) {
+
+			while (seedsIndex < seedsSize) {
 				units.add(new ResultsUnit("", seeds.get(seedsIndex), "", ""));
 				seedsIndex++;
 			}
-			
-			while( errorsIndex < errorsSize) {
+
+			while (errorsIndex < errorsSize) {
 				units.add(new ResultsUnit("", "", errors.get(errorsIndex), ""));
 				errorsIndex++;
 			}
-			
-			
-			
+
 		}
-		/*System.out.println("------------------------------ Inside afterAnalysis method: ----------------------------------");
-		System.out.println("Total Units Created: " + units.size());*/
+		/*
+		 * System.out.println("------------------------------ Inside afterAnalysis method: ----------------------------------"); System.out.println("Total Units Created: " +
+		 * units.size());
+		 */
 		IWorkbenchWindow workbenchWindow = null;
 		IWorkbenchWindow[] allWindows = PlatformUI.getWorkbench().getWorkbenchWindows();
 		for (IWorkbenchWindow window : allWindows) {
-                workbenchWindow = window;
-                if (workbenchWindow != null) {
-                	System.out.println("Found workbench");
-                    break;
-                }
-            }
-        if(workbenchWindow != null) {
-        	IWorkbenchPage activePage = workbenchWindow.getActivePage();
-        	IViewPart viewPart = activePage.findView("de.cognicrypt.staticanalyzer.view.StatisticsView");
-        	if(viewPart != null) {
-	        	StatisticsView myView = (StatisticsView)viewPart;
-        		Display.getDefault().asyncExec(new Runnable() {
+			workbenchWindow = window;
+			if (workbenchWindow != null) {
+				System.out.println("Found workbench");
+				break;
+			}
+		}
+		if (workbenchWindow != null) {
+			IWorkbenchPage activePage = workbenchWindow.getActivePage();
+			IViewPart viewPart = activePage.findView("de.cognicrypt.staticanalyzer.view.StatisticsView");
+			if (viewPart != null) {
+				StatisticsView myView = (StatisticsView) viewPart;
+				Display.getDefault().asyncExec(new Runnable() {
 
-        			public void run() {
-        				myView.updateData(stat.getProjectName(), stat.getTimeOfAnalysis(), units);
-        			}
+					public void run() {
+						myView.updateData(stat.getProjectName(), stat.getTimeOfAnalysis(), units);
+					}
 
-        		});
-        	}
-        }
+				});
+			}
+		}
 	}
 
 	@Override
@@ -456,8 +439,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void ensuredPredicates(final Table<Statement, Val, Set<EnsuredCryptSLPredicate>> existingPredicates,
-			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates,
-			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {
+			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates, final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {
 		// TODO Auto-generated method stub
 	}
 }

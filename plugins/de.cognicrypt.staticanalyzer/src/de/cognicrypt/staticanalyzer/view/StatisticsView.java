@@ -1,6 +1,5 @@
 package de.cognicrypt.staticanalyzer.view;
 
-
 import java.util.List;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -19,17 +18,14 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.*;
 
-
-
 /**
  * This class creates a view which shows the results of an analysis.
+ * 
  * @author Adnan Manzoor
- *
  */
 
-public  class StatisticsView extends ViewPart {
-	
-	
+public class StatisticsView extends ViewPart {
+
 	/**
 	 * table which contains the results of the analysis
 	 */
@@ -37,51 +33,49 @@ public  class StatisticsView extends ViewPart {
 	private StyledText projectname;
 	private StyledText timeofanalysis;
 	private boolean resultsEnabled;
-	
+
 	@Override
 	public void createPartControl(Composite parent) {
 		// TODO Auto-generated method stub
 		GridLayout layout = new GridLayout(3, false);
 		parent.setLayout(layout);
 		resultsEnabled = true;
-		
-		//Project Name
+
+		// Project Name
 		Label projectnameLabel = new Label(parent, SWT.NONE);
 		projectnameLabel.setText("Project Name: ");
 		projectname = new StyledText(parent, SWT.NONE);
 		projectname.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 		projectname.setText("Anything for now");
-		//projectname.setEditable(false);
-		
-		
-		
-		//Refresh Button
-		Button button =  new Button(parent, SWT.PUSH);
+		// projectname.setEditable(false);
+
+		// Refresh Button
+		Button button = new Button(parent, SWT.PUSH);
 		button.setText("Restart");
 		button.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		//register listener for the selection event
+		// register listener for the selection event
 		button.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				        //System.out.println("Called!");
+				// System.out.println("Called!");
 				resultsEnabled = true;
 			}
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
-						// TODO Auto-generated method stub
+				// TODO Auto-generated method stub
 			}
-				
+
 		});
-		
-		//Time of Analysis
+
+		// Time of Analysis
 		Label timeofanalysisLabel = new Label(parent, SWT.NONE);
 		timeofanalysisLabel.setText("Time of Analysis: ");
 		timeofanalysis = new StyledText(parent, SWT.NONE);
 		timeofanalysis.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 		timeofanalysis.setWordWrap(true);
-		
-		//Stop Button
+
+		// Stop Button
 		Button button2 = new Button(parent, SWT.PUSH);
 		button2.setText("Stop");
 		button2.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
@@ -99,28 +93,28 @@ public  class StatisticsView extends ViewPart {
 			}
 
 		});
-		
-		//Results Table
-		createViewer(parent);		
+
+		// Results Table
+		createViewer(parent);
 	}
 
 	@Override
 	public void setFocus() {
 		// TODO Auto-generated method stub
 		viewer.getControl().setFocus();
-		
+
 	}
-	
+
 	private void createViewer(Composite parent) {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER | SWT.READ_ONLY | SWT.PUSH);
 		createColumns(parent, viewer);
 		final Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		
+
 		viewer.setContentProvider(new ArrayContentProvider());
-        getSite().setSelectionProvider(viewer);
-		
+		getSite().setSelectionProvider(viewer);
+
 		GridData gridData = new GridData();
 		gridData.verticalAlignment = GridData.FILL;
 		gridData.horizontalSpan = 3;
@@ -129,12 +123,12 @@ public  class StatisticsView extends ViewPart {
 		gridData.horizontalAlignment = GridData.FILL;
 		viewer.getControl().setLayoutData(gridData);
 	}
-	
+
 	private void createColumns(final Composite parent, final TableViewer viewer) {
-		String[] titles = { "Class", "Seed", "Errors", "Health" };
-		int[] bounds = { 200, 250, 700, 200};
-		
-		//Class
+		String[] titles = {"Class", "Seed", "Errors", "Health"};
+		int[] bounds = {200, 250, 700, 200};
+
+		// Class
 		TableViewerColumn col = createTableViewerColumn(titles[0], bounds[0], 0);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
@@ -143,8 +137,8 @@ public  class StatisticsView extends ViewPart {
 				return u.getClassName();
 			}
 		});
-		
-		//Seed
+
+		// Seed
 		col = createTableViewerColumn(titles[1], bounds[1], 1);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
@@ -153,8 +147,8 @@ public  class StatisticsView extends ViewPart {
 				return u.getSeed();
 			}
 		});
-		
-		//Errors
+
+		// Errors
 		col = createTableViewerColumn(titles[2], bounds[2], 2);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
@@ -163,8 +157,8 @@ public  class StatisticsView extends ViewPart {
 				return u.getError();
 			}
 		});
-		
-		//Health
+
+		// Health
 		col = createTableViewerColumn(titles[3], bounds[3], 3);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
@@ -173,10 +167,9 @@ public  class StatisticsView extends ViewPart {
 				return u.getHealthStatus();
 			}
 		});
-		
-		
+
 	}
-	
+
 	private TableViewerColumn createTableViewerColumn(String title, int bound, final int colNumber) {
 		final TableViewerColumn viewerColumn = new TableViewerColumn(viewer, SWT.NONE);
 		final TableColumn column = viewerColumn.getColumn();
@@ -186,20 +179,19 @@ public  class StatisticsView extends ViewPart {
 		column.setMoveable(true);
 		return viewerColumn;
 	}
-	
+
 	public String getProjectName() {
 		return projectname.getText();
 	}
 
 	public void updateData(String projectName, String timeOfAnalysis, List<ResultsUnit> units) {
 		System.out.println("------------------------------ Inside StatisticsView updateData method: ----------------------------------");
-		if(resultsEnabled) {
+		if (resultsEnabled) {
 			projectname.setText(projectName);
 			timeofanalysis.setText(timeOfAnalysis);
 			viewer.setInput(units);
 			viewer.refresh();
 		}
-		
+
 	}
 }
-

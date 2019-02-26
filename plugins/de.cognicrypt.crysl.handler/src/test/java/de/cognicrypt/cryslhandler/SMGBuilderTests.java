@@ -540,16 +540,15 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
 		
 		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
-
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), zero, two));
 		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), one, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), two, three));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), three, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), two, two));
-		
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), zero, three));
 		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), one, three));
 		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), three, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), three, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), zero, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), zero, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), two, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), two, three));
+		System.out.println(expectedUsagePattern);
 		
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule15").getUsagePattern().getAllTransitions());
 	

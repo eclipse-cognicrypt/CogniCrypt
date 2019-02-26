@@ -51,7 +51,7 @@ public class StateMachineGraphBuilder {
 		if (!isStillAccepting) {
 			prevNode.setAccepting(false);
 		}
-		this.result.addEdge(new TransitionEdge(label, prevNode, nextNode));
+		boolean added = this.result.addEdge(new TransitionEdge(label, prevNode, nextNode));
 		return nextNode;
 	}
 
@@ -308,6 +308,14 @@ public class StateMachineGraphBuilder {
 				prevNode = process(right, level + 1, leftOvers, leftPrev);
 			} else {
 				prevNode = process(right, level + 1, leftOvers, prevNode);	
+			}
+			for (Entry<String, StateNode> a : leftOvers.get(level).stream().filter(e -> "?".equals(e.getKey())).collect(Collectors.toList())) {
+				if ("*".equals(rightElOp) || "?".equals(rightElOp)) {
+					setAcceptingState(a.getValue());
+					for (TransitionEdge l : getOutgoingEdges(rightPrev, null)) {
+						addRegularEdge(l.getLabel(), a.getValue(), l.getRight(), true); 
+					}
+				}
 			}
 
 			if ("*".equals(rightElOp) || "?".equals(rightElOp)) {

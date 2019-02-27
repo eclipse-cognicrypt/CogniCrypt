@@ -16,6 +16,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.IJavaProject;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+
+import boomerang.callgraph.ObservableDynamicICFG;
+import boomerang.callgraph.ObservableICFG;
 import boomerang.preanalysis.BoomerangPretransformer;
 import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
@@ -28,7 +31,9 @@ import soot.G;
 import soot.PackManager;
 import soot.Scene;
 import soot.SceneTransformer;
+import soot.SootMethod;
 import soot.Transform;
+import soot.Unit;
 import soot.jimple.toolkits.ide.icfg.JimpleBasedInterproceduralCFG;
 import soot.options.Options;
 
@@ -46,11 +51,11 @@ public class SootRunner {
 			@Override
 			protected void internalTransform(final String phaseName, final Map<String, String> options) {
 				BoomerangPretransformer.v().apply();
-				final JimpleBasedInterproceduralCFG icfg = new JimpleBasedInterproceduralCFG(false);
-				final CryptoScanner scanner = new CryptoScanner() {
+				final ObservableDynamicICFG icfg = new ObservableDynamicICFG(true);
+				CryptoScanner scanner = new CryptoScanner() {
 
 					@Override
-					public JimpleBasedInterproceduralCFG icfg() {
+					public ObservableICFG<Unit, SootMethod> icfg() {
 						return icfg;
 					}
 

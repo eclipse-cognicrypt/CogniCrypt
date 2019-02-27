@@ -16,6 +16,7 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: boomerang,
+ boomerang.callgraph,
  boomerang.jimple,
  boomerang.preanalysis,
  boomerang.results,
@@ -43,4 +44,4 @@ Export-Package: boomerang,
  typestate
 Automatic-Module-Name: de.cognicrypt.core
 Bundle-ClassPath: .,
- lib/CryptoAnalysis-1.0.0-jar-with-dependencies.jar
+ lib/CryptoAnalysis-2.0-jar-with-dependencies.jar

@@ -18,8 +18,7 @@ public class EnableAnalysisOnContextMenuButton implements IActionDelegate {
 	public void run(IAction action) {
 		// TODO Auto-generated metshod stub
 		final AnalysisKickOff akf = new AnalysisKickOff();
-		//IFile ip = Utils.getCurrentlyOpenFile();
-		IProject ip = Utils.getCurrentProject();
+		IProject ip = Utils.getCurrentlySelectedIProject();
 		final IJavaElement iJavaElement = JavaCore.create(ip);
 		akf.setUp(iJavaElement);
 		akf.run();

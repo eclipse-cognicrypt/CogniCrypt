@@ -5,11 +5,15 @@
 
 package de.cognicrypt.core;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import de.cognicrypt.core.properties.PreferenceListener;
 
 public class Activator extends AbstractUIPlugin {
 
@@ -18,7 +22,7 @@ public class Activator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Activator plugin;
-
+	
 	/**
 	 * The constructor
 	 */
@@ -64,5 +68,5 @@ public class Activator extends AbstractUIPlugin {
 	public void logInfo(final String message) {
 		log(IStatus.INFO, message, null);
 	}
-
+	
 }

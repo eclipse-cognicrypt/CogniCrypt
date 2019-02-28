@@ -47,7 +47,6 @@ import crypto.interfaces.ISLConstraint;
 import crypto.rules.CryptSLPredicate;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.Severities;
-import de.cognicrypt.core.properties.ICogniCryptConstants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.statement.CCStatement;
 import de.cognicrypt.staticanalyzer.view.AnalysisData;
@@ -186,7 +185,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	@Override
 	public void onSecureObjectFound(final IAnalysisSeed secureObject) {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		if (store.getBoolean(ICogniCryptConstants.SHOW_SECURE_OBJECTS) == false) {
+		if (store.getBoolean(Constants.SHOW_SECURE_OBJECTS) == false) {
 			return;
 		} else {
 			final Statement stmt = secureObject.stmt();

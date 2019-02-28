@@ -14,6 +14,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import de.cognicrypt.core.properties.CogniCryptpreferencePage;
 import de.cognicrypt.staticanalyzer.handlers.ShutDownHandler;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 
@@ -41,6 +42,8 @@ public class Activator extends AbstractUIPlugin {
 		Activator.plugin = this;
 		resReporters = new ArrayList<ResultsCCUIListener>();
 		PlatformUI.getWorkbench().addWorkbenchListener(new ShutDownHandler());
+		
+		CogniCryptpreferencePage.registerPreferenceListener(new StaticAnalyzerPreferences());
 	}
 
 	@Override

@@ -35,13 +35,16 @@ public class CrySLBuilder extends IncrementalProjectBuilder {
 			
 			for (final IClasspathEntry entry : projectAsJavaProject.getResolvedClasspath(true)) {
 				if (entry.getContentKind() == IPackageFragmentRoot.K_SOURCE) {
-					resourcesPaths.add(entry.getPath());
-					IPath outputLocation = entry.getOutputLocation();
-					outputPaths.add(outputLocation != null ? outputLocation : projectAsJavaProject.getOutputLocation());
+					IPath res = entry.getPath();
+					if (!projectAsJavaProject.getPath().equals(res)) {
+						resourcesPaths.add(res);
+						IPath outputLocation = entry.getOutputLocation();
+						outputPaths.add(outputLocation != null ? outputLocation : projectAsJavaProject.getOutputLocation());
+					}
 				}
 			}
 			for (int i = 0; i < resourcesPaths.size(); i++) {
-				CrySLReaderUtils.storeRulesToFile(csmr.readRules(resourcesPaths.get(i).toOSString()), ResourcesPlugin.getWorkspace().getRoot().findMember(outputPaths.get(i)).getLocation().toOSString());
+					CrySLReaderUtils.storeRulesToFile(csmr.readRules(resourcesPaths.get(i).toOSString()), ResourcesPlugin.getWorkspace().getRoot().findMember(outputPaths.get(i)).getLocation().toOSString());
 			}
 		}
 		catch (IOException e) {
@@ -53,7 +56,7 @@ public class CrySLBuilder extends IncrementalProjectBuilder {
 
 	protected void clean(IProgressMonitor monitor) throws CoreException {
 		for (final IClasspathEntry entry : JavaCore.create(getProject()).getResolvedClasspath(true)) {
-			if (entry.getContentKind() == IPackageFragmentRoot.K_SOURCE) {
+			if (entry.getContentKind() == IPackageFragmentRoot.K_SOURCE && !(entry.getPath().toPortableString().lastIndexOf(Constants.innerFileSeparator) < 1)) {
 				Arrays.asList(new File(getProject().getLocation().toOSString() + Constants.outerFileSeparator + entry.getOutputLocation().removeFirstSegments(1).toOSString()).listFiles()).parallelStream().forEach(e -> e.delete());
 			}
 		}

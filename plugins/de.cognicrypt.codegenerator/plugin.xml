@@ -48,14 +48,4 @@
          </action>
       </objectContribution>
    </extension>
-   
- <extension
-      id="CogniCrypt"
-      point="org.eclipse.core.runtime.products">
-   <product
-         application="org.eclipse.ui.ide.workbench"
-         name="CogniCrypt">
-   </product>
-</extension>
-      
 </plugin>

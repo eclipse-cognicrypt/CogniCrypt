@@ -32,7 +32,11 @@ import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.SearchRequestor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISelectionService;
@@ -288,6 +292,13 @@ public class Utils {
 		} else {
 			return -1;
 		}
+	}
+
+	public static Group addHeaderGroup(Composite parent, String text) {
+		final Group headerGroup = new Group(parent, SWT.SHADOW_IN);
+		headerGroup.setText(text);
+		headerGroup.setLayout(new GridLayout(1, true));
+		return headerGroup;
 	}
 
 }

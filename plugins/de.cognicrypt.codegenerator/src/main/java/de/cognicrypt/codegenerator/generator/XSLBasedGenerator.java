@@ -89,7 +89,9 @@ public class XSLBasedGenerator extends CodeGenerator {
 
 			// Perform actual transformation by calling XSLT processor.
 			transform(configFile, temporaryOutputFile);
-			chosenConfig.deleteConfFromDisk();
+			if (!Activator.getDefault().getPreferenceStore().getBoolean(Constants.PERSIST_CONFIG)) {
+				chosenConfig.deleteConfFromDisk();
+			}
 
 			// Trim Output.java
 			FileHelper.trimFile(temporaryOutputFile);

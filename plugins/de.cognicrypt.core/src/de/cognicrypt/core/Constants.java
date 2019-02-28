@@ -5,8 +5,6 @@
 
 package de.cognicrypt.core;
 
-import java.util.Arrays;
-import java.util.List;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -496,6 +494,12 @@ public class Constants {
 	public static final String INCOMPLETE_OPERATION_MARKER_TYPE = "de.cognicrypt.staticanalyzer.incompleteOperationErrorMarker";
 	public static final String TYPESTATE_ERROR_MARKER_TYPE = "de.cognicrypt.staticanalyzer.typestateErrorMarker";
 	
+	public static final String RULE_SELECTION = "JCASel";
+	public static final String AUTOMATED_ANALYSIS = "AutoAnal";
+	public static final String SHOW_SECURE_OBJECTS = "SecObj";
+	public static final String CALL_GRAPH_SELECTION = "CGSel";
+	public static final String PERSIST_CONFIG = "de.cognicrypt.codegenerator.persistConfig";
+	
 	// for creating xml file
 	public static final String Xml_Declaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 	public static final String NLS_Tag = "<?NLS TYPE=\"org.eclipse.help.contexts\"?>";
@@ -537,5 +541,4 @@ public class Constants {
 	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CryptSL";
 	public static final String HEALTHY = "Secure";
 	public static final String UNHEALTHY = "Insecure";
-
 }

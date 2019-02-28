@@ -12,9 +12,12 @@ package de.cognicrypt.codegenerator;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import de.cognicrypt.codegenerator.preferences.CodeGenPreferences;
 
 public class Activator extends AbstractUIPlugin {
 
@@ -73,6 +76,8 @@ public class Activator extends AbstractUIPlugin {
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		Activator.plugin = this;
+		
+		de.cognicrypt.core.properties.CogniCryptpreferencePage.registerPreferenceListener(new CodeGenPreferences());
 	}
 
 	@Override
@@ -80,4 +85,11 @@ public class Activator extends AbstractUIPlugin {
 		Activator.plugin = null;
 		super.stop(context);
 	}
+
+	@Override
+	public IPreferenceStore getPreferenceStore() {
+		return de.cognicrypt.core.Activator.getDefault().getPreferenceStore();
+	}
+	
+	
 }

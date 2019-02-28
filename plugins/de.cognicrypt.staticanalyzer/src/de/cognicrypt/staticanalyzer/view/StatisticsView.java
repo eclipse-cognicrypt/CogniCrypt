@@ -43,7 +43,6 @@ public class StatisticsView extends ViewPart {
 	private StyledText timeofanalysis;
 	private boolean resultsEnabled;
 	private Button reRunButton;
-	private Button stopAnalysisButton;
 	private IProject lastProject;
 
 	@Override
@@ -87,23 +86,6 @@ public class StatisticsView extends ViewPart {
 		timeofanalysis.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 		timeofanalysis.setWordWrap(true);
 		timeofanalysis.setEditable(false);
-
-		// Stop Button
-		stopAnalysisButton = new Button(parent, SWT.PUSH);
-		stopAnalysisButton.setText("Stop");
-		stopAnalysisButton.setEnabled(false);
-		stopAnalysisButton.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		// register listener for the selection event
-		stopAnalysisButton.addSelectionListener(new SelectionListener() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				resultsEnabled = false;
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {}
-
-		});
 
 		// Results Table
 		createViewer(parent);
@@ -205,7 +187,6 @@ public class StatisticsView extends ViewPart {
 
 	private void allowAnalysisReRun(boolean isAllowed) {
 		reRunButton.setEnabled(isAllowed);
-		stopAnalysisButton.setEnabled(!isAllowed);
 	}
 
 	public static void allowAnalysisRerun(boolean isAllowed) {

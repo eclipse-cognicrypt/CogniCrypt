@@ -208,12 +208,12 @@
             id="Cognicrypt">
       </category>
       <view
-            name="Statistics"
-            inject="true"
-            icon="icons/cognicrypt.png"
             category="Cognicrypt"
             class="de.cognicrypt.staticanalyzer.view.StatisticsView"
-            id="de.cognicrypt.staticanalyzer.view.StatisticsView">
+            icon="/"
+            id="de.cognicrypt.staticanalyzer.view.StatisticsView"
+            inject="true"
+            name="Statistics">
       </view>
    </extension>
    <extension
@@ -222,13 +222,6 @@
             targetID="org.eclipse.jdt.ui.JavaPerspective">
       </perspectiveExtension>
    </extension>
-   <extension
-         point="org.eclipse.help.contexts">
-      <contexts
-            file="contexts.xml">
-      </contexts>
-   </extension>
-   
     
     <!--MarkerResolution -->
 	<extension 
@@ -261,26 +254,25 @@
          markerType="de.cognicrypt.staticanalyzer.typestateErrorMarker"
          class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
       </extension>
-            <extension point="org.eclipse.ui.popupMenus"> 
-    <objectContribution
-      adaptable="true"
-      id="code-clafer_configurator.objectContribution1"
-      objectClass="org.eclipse.core.resources.IResource">
-      <menu 
-          icon="icons/cognicrypt.png"
-          id="code-clafer_configurator.menu2"
-          label="Launch Analysis">
-      <separator
-          name="code-clafer_configurator.separator2">
-      </separator>
-         </menu>
-      <action
-         id="org.eclipse.ui.articles.action.contribution.object.action2" 
-         icon="icons/cognicrypt.png"
-         label="Run CogniCrypt Analysis On Selected Project"
-         class="de.cognicrypt.staticanalyzer.contextmenu.EnableAnalysisOnContextMenuButton" > 
-      </action>
-    </objectContribution>
-</extension>
+            <extension
+                  point="org.eclipse.ui.menus">
+               <menuContribution
+                     allPopups="false"
+                     locationURI="popup:de.cognicrypt.core.menu">
+                  <command
+                        commandId="de.cognicrypt.staticanalyzer.runAnalysis"
+                        label="Run CogniCrypt Analysis on Selected Project"
+                        style="push">
+                  </command>
+               </menuContribution>
+            </extension>
+            <extension
+                  point="org.eclipse.ui.commands">
+               <command
+                     defaultHandler="de.cognicrypt.staticanalyzer.handlers.RunAnalysisHandler"
+                     id="de.cognicrypt.staticanalyzer.runAnalysis"
+                     name="RunAnalysis">
+               </command>
+            </extension>
 </plugin>
    

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="de.cognicrypt.cryslhandler.feature"
-      label="CogniCrypt CrySL Handler"
+      id="de.cognicrypt.core.feature"
+      label="CogniCrypt Core"
       version="1.0.0.qualifier"
-      provider-name="Technical University Darmstadt, Paderborn University">
+      provider-name="Technical University Darmstadt; Paderborn University">
 
    <description url="https://cognicrypt.de">
       CogniCrypt is an Eclipse plugin that supports Java developers
@@ -104,23 +104,18 @@ Except as expressly stated in Sections 2(a) and 2(b) above, Recipient receives n
    </url>
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.xtext"/>
-      <import plugin="org.eclipse.xtext.common.types.ui"/>
-      <import plugin="de.darmstadt.tu.crossing.CryptSL.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="de.darmstadt.tu.crossing.CryptSL" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="de.darmstadt.tu.crossing.CryptSL.ide" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="de.cognicrypt.core" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.junit"/>
+      <import plugin="com.google.guava"/>
+      <import plugin="org.eclipse.ui.forms"/>
    </requires>
 
    <plugin
-         id="de.cognicrypt.crysl.handler"
+         id="de.cognicrypt.core"
          download-size="0"
          install-size="0"
          version="0.0.0"

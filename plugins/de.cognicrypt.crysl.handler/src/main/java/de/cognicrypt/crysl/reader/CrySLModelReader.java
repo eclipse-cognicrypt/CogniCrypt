@@ -96,6 +96,7 @@ import de.darmstadt.tu.crossing.cryptSL.SuParList;
 import de.darmstadt.tu.crossing.cryptSL.SuperType;
 import de.darmstadt.tu.crossing.cryptSL.UnaryPreExpression;
 import de.darmstadt.tu.crossing.cryptSL.UseBlock;
+import de.darmstadt.tu.crossing.cryptSL.impl.DomainmodelImpl;
 import de.darmstadt.tu.crossing.cryptSL.impl.ObjectImpl;
 
 public class CrySLModelReader {
@@ -213,7 +214,7 @@ public class CrySLModelReader {
 
 		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
 		for (final IResource res : ResourcesPlugin.getWorkspace().getRoot().getFolder(rulesFolder).members()) {
-			if (Constants.cryslFileEnding.equals(res.getFileExtension())) {
+			if (Constants.cryslFileEnding.equals("." + res.getFileExtension())) {
 				CryptSLRule rule = readRule(((IFile) res).getRawLocation().makeAbsolute().toFile());
 				if (rule != null) {
 					rules.add(rule);
@@ -556,6 +557,7 @@ public class CrySLModelReader {
 		final Map<ParEqualsPredicate, SuperType> preds = new HashMap<>();
 		for (final Constraint cons : predList) {
 			final Pred pred = (Pred) cons;
+			String curClass = ((DomainmodelImpl)cons.eContainer().eContainer()).getJavaType().getQualifiedName();
 			final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
 
 			if (pred.getParList() != null) {
@@ -567,12 +569,12 @@ public class CrySLModelReader {
 						String name = object.getName();
 						if (name == null) {
 							name = THIS;
-							type = "";//this.curClass;
+							type = curClass;
 						}
 						variables.add(new CryptSLObject(name, type));
 					} else {
 						if (firstPar) {
-							variables.add(new CryptSLObject(THIS, ""));// this.curClass));
+							variables.add(new CryptSLObject(THIS, curClass));
 						} else {
 							variables.add(new CryptSLObject(UNDERSCORE, NULL));
 						}

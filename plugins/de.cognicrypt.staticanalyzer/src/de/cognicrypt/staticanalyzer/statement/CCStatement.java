@@ -1,4 +1,4 @@
-package de.cognicrypt.staticanalyzer.statment;
+package de.cognicrypt.staticanalyzer.statement;
 
 import java.util.List;
 import boomerang.jimple.Statement;

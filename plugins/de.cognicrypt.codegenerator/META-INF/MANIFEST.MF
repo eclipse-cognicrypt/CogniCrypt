@@ -35,3 +35,4 @@ Import-Package: org.eclipse.jdt.core,
  org.eclipse.ui.texteditor,
  org.eclipse.jdt.launching
 Automatic-Module-Name: de.cognicrypt.codegenerator
+Bundle-Vendor: TU Darmstadt, Paderborn University

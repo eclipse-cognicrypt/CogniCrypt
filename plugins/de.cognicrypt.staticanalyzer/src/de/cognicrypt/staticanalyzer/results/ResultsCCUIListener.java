@@ -316,7 +316,11 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 				if (err instanceof ErrorWithObjectAllocation) {
 					ErrorWithObjectAllocation incOpErr = (ErrorWithObjectAllocation) err;
 					seed = seedToDescription(className, incOpErr.getObjectLocation());
-				} 
+				} else if (err instanceof RequiredPredicateError) {
+					RequiredPredicateError reqPred = (RequiredPredicateError) err;
+					seed = "Call to " + reqPred.getErrorLocation().getUnit().get().getInvokeExpr().getMethodRef().getSignature() +
+ 							" in Line " + reqPred.getErrorLocation().getUnit().get().getJavaSourceStartLineNumber() + " of Method " + reqPred.getErrorLocation().getMethod().getName() + "()";
+				}
 				if (previousSeeds.contains(seed)) {
 					units.add(new ResultsUnit(className, "", err.toErrorMarkerString(), false));
 				} else {
@@ -336,7 +340,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	public String seedToDescription(String className, IAnalysisSeed seed) {
 		String varName = seed.var().value().toString();
-		if (varName.startsWith("$")) {
+		if (varName.startsWith("$") || varName.contains("varMatcher")) {
 			String fqn = seed.var().value().getType().toQuotedString();
 			varName = "Object of type " + fqn.substring(fqn.lastIndexOf('.') + 1) ;
 		} else {
@@ -346,9 +350,9 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		
 		String methodName = seed.getMethod().getName();
 		if ("<init>".equals(methodName)) {
-			methodName = className.substring(className.lastIndexOf('.') + 1) + "()";
+			methodName = className.substring(className.lastIndexOf('.') + 1);
 		}
-		return varName + " of Method " + methodName;
+		return varName + " of Method " + methodName + "()";
 	}
 
 	@Override

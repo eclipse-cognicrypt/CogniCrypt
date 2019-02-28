@@ -27,5 +27,34 @@
          application="org.eclipse.ui.ide.workbench"
          name="CogniCrypt">
    </product>
-</extension>    
+</extension> 
+
+<extension
+                  point="org.eclipse.ui.menus">
+               <menuContribution
+                     allPopups="false"
+                     locationURI="popup:org.eclipse.ui.popup.any">
+                  <menu
+                        icon="icons/cognicrypt.png"
+                        id="de.cognicrypt.core.menu"
+                        label="CogniCrypt">
+                     <visibleWhen
+                           checkEnabled="true">
+                        <with
+                              variable="activeMenuSelection">
+                           <iterate
+                                 ifEmpty="false"
+                                 operator="or">
+                              <adapt
+                                    type="org.eclipse.jdt.core.IJavaProject">
+                                 <instanceof
+                                       value="org.eclipse.jdt.core.IJavaProject">
+                                 </instanceof>
+                              </adapt>
+                           </iterate>
+                        </with>
+                     </visibleWhen>
+                  </menu>
+               </menuContribution>
+            </extension>
 </plugin>

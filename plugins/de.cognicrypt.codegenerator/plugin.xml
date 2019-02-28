@@ -24,28 +24,24 @@
          </action>
       </actionSet>
    </extension>
-	
-
-<extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            id="code-clafer_configurator.objectContribution"
-            objectClass="org.eclipse.core.resources.IResource">
-         <menu
-               icon="icons/cognicrypt.png"
-               id="code-clafer_configurator.menu1"
-               label="Launch CogniCrypt Code Generation">
-            <separator
-                  name="code-clafer_configurator.separator1">
-            </separator>
-         </menu>
-         <action
-               class="de.cognicrypt.codegenerator.actions.WizardActionFromContextMenu"
-               icon="icons/cognicrypt.png"
-               id="code-clafer_configurator_fromContextMenu"
-               label="Launch CogniCrypt Code Generation">
-         </action>
-      </objectContribution>
-   </extension>
+   <extension
+                  point="org.eclipse.ui.menus">
+               <menuContribution
+                     allPopups="false"
+                     locationURI="popup:de.cognicrypt.core.menu">
+                  <command
+                        commandId="de.cognicrypt.codegenerator.rungenerator"
+                        label="Run CogniCrypt Code Generator"
+                        style="push">
+                  </command>
+               </menuContribution>
+            </extension>
+            <extension
+                  point="org.eclipse.ui.commands">
+               <command
+                     defaultHandler="de.cognicrypt.codegenerator.actions.RunCodeGeneratorHandler"
+                     id="de.cognicrypt.codegenerator.rungenerator"
+                     name="RunCodeGenerator">
+               </command>
+            </extension>
 </plugin>

@@ -187,6 +187,9 @@ public class StatisticsView extends ViewPart {
 
 	private void allowAnalysisReRun(boolean isAllowed) {
 		reRunButton.setEnabled(isAllowed);
+		if (!isAllowed) {
+			projectname.setText(projectname.getText() + " (Updating)");
+		}
 	}
 
 	public static void allowAnalysisRerun(boolean isAllowed) {

@@ -2,7 +2,6 @@ package de.cognicrypt.staticanalyzer.view;
 
 import java.util.List;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -23,17 +22,15 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-
 import com.google.common.base.Optional;
-
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.handlers.AnalysisKickOff;
-import de.cognicrypt.utils.Utils;
 
 /**
  * This class creates a view which shows the results of an analysis.
  * 
  * @author Adnan Manzoor
+ * @author Stefan Krueger
  */
 
 public class StatisticsView extends ViewPart {
@@ -47,6 +44,7 @@ public class StatisticsView extends ViewPart {
 	private boolean resultsEnabled;
 	private Button reRunButton;
 	private Button stopAnalysisButton;
+	private IProject lastProject;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -71,10 +69,9 @@ public class StatisticsView extends ViewPart {
 		reRunButton.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				final AnalysisKickOff akf = new AnalysisKickOff();
-				final IJavaElement iJavaElement = JavaCore.create(Utils.getCurrentProject());
-				akf.setUp(iJavaElement);
-				akf.run();
+				final AnalysisKickOff runningAnalysis = new AnalysisKickOff();
+				runningAnalysis.setUp(JavaCore.create(lastProject));
+				runningAnalysis.run();
 				resultsEnabled = true;
 			}
 
@@ -175,8 +172,8 @@ public class StatisticsView extends ViewPart {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				ResultsUnit u = (ResultsUnit) element;
-				return (u.isHealthy()) ? Constants.HEALTHY : Constants.UNHEALTHY;
+				ResultsUnit resultUnit = (ResultsUnit) element;
+				return (resultUnit.isHealthy()) ? Constants.HEALTHY : Constants.UNHEALTHY;
 			}
 		});
 
@@ -195,9 +192,10 @@ public class StatisticsView extends ViewPart {
 	public String getProjectName() {
 		return projectname.getText();
 	}
-
+	
 	public void updateData(IProject project, String timeOfAnalysis, List<ResultsUnit> units) {
 		if (resultsEnabled) {
+			lastProject = project;
 			projectname.setText(project.getName());
 			timeofanalysis.setText(timeOfAnalysis);
 			viewer.setInput(units);

@@ -65,6 +65,7 @@ public class AnalysisKickOff {
 		resultsReporter.getMarkerGenerator().clearMarkers(ip);
 		try {
 			if (ip == null || (!ip.hasNature(JavaCore.NATURE_ID))) {
+				Activator.getDefault().logInfo("The project "+ ip.getName() +" does not have Java nature. No analysis necessary.");
 				return false;
 			}
 		}
@@ -72,16 +73,22 @@ public class AnalysisKickOff {
 			Activator.getDefault().logError(e);
 			return false;
 		}
-		this.curProj = JavaCore.create(ip);
+		IJavaProject javaProject = JavaCore.create(ip);
+		if(javaProject == null) {
+			Activator.getDefault().logInfo("JavaCore could not create IJavaProject for project "+ ip.getName() +" .");
+			return false;
+		}
+		this.curProj = javaProject;
 		return true;
 	}
 
 	/**
 	 * This method executes the actual analysis.
 	 *
-	 * @return <code>true</code>/<code>false</code> Soot runs successfully
 	 */
-	public boolean run() {
+	public void run() {
+		if(this.curProj == null)
+			return;
 		final Job analysis = new Job(Constants.ANALYSIS_LABEL) {
 
 			@SuppressWarnings("deprecation")
@@ -93,17 +100,21 @@ public class AnalysisKickOff {
 					try {
 						Thread.sleep(500);
 					}
+					
 					catch (final InterruptedException e) {}
 
 					if (monitor.isCanceled()) {
 						sootThread.stop();
+						Activator.getDefault().logInfo("Static analysis job cancelled for "+ curProj.getElementName() +".");
 						return Status.CANCEL_STATUS;
 					}
 
 				}
 				if (sootThread.isSucc()) {
+					Activator.getDefault().logInfo("Static analysis job successfully terminated for "+ curProj.getElementName() +".");
 					return Status.OK_STATUS;
 				} else {
+					Activator.getDefault().logInfo("Static analysis failed for "+ curProj.getElementName() +".");
 					return Status.CANCEL_STATUS;
 				}
 
@@ -116,6 +127,5 @@ public class AnalysisKickOff {
 		};
 		analysis.setPriority(Job.LONG);
 		analysis.schedule();
-		return this.curProj != null && analysis.shouldRun();
 	}
 }

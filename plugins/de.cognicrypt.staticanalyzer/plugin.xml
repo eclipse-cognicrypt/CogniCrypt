@@ -210,7 +210,7 @@
       <view
             category="Cognicrypt"
             class="de.cognicrypt.staticanalyzer.view.StatisticsView"
-            icon="/"
+            icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt.png "
             id="de.cognicrypt.staticanalyzer.view.StatisticsView"
             inject="true"
             name="Statistics">

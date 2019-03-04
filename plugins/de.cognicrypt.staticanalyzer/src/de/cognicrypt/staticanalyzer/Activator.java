@@ -15,6 +15,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import de.cognicrypt.core.properties.CogniCryptpreferencePage;
+import de.cognicrypt.core.telemetry.Telemetry;
+import de.cognicrypt.core.telemetry.TelemetryEvents;
 import de.cognicrypt.staticanalyzer.handlers.ShutDownHandler;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 
@@ -30,6 +32,8 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 
 	private static List<ResultsCCUIListener> resReporters;
+	
+	private Telemetry telemetry;
 
 	/**
 	 * The constructor
@@ -41,6 +45,8 @@ public class Activator extends AbstractUIPlugin {
 		super.start(context);
 		Activator.plugin = this;
 		resReporters = new ArrayList<ResultsCCUIListener>();
+		telemetry = new Telemetry();
+		telemetry.sendEvent(TelemetryEvents.START);
 		PlatformUI.getWorkbench().addWorkbenchListener(new ShutDownHandler());
 		
 		CogniCryptpreferencePage.registerPreferenceListener(new StaticAnalyzerPreferences());
@@ -48,6 +54,8 @@ public class Activator extends AbstractUIPlugin {
 
 	@Override
 	public void stop(final BundleContext context) throws Exception {
+		telemetry.sendEvent(TelemetryEvents.STOP);
+		telemetry = null;
 		Activator.plugin = null;
 		super.stop(context);
 	}
@@ -102,6 +110,10 @@ public class Activator extends AbstractUIPlugin {
 	@Override
 	public IPreferenceStore getPreferenceStore() {
 		return de.cognicrypt.core.Activator.getDefault().getPreferenceStore();
+	}
+	
+	public Telemetry getTelemetry() {
+		return telemetry;
 	}
 
 }

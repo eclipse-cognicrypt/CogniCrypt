@@ -41,6 +41,7 @@ import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.core.telemetry.TelemetryEvents;
 
 public class TaskSelectionPage extends WizardPage {
 
@@ -176,6 +177,7 @@ public class TaskSelectionPage extends WizardPage {
 		@Override
 		public void handleEvent(final Event event) {
 			final Button eventButton = (Button) event.widget;
+			Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.WIZARD_NEW_TASK_SELECTED, event.text);
 			for (int i = 0; i < this.buttons.size(); i++) {
 				final Button b = this.buttons.get(i);
 				if (eventButton.equals(b)) {

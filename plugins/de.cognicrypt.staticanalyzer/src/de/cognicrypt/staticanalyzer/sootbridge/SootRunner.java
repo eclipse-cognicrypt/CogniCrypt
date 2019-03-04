@@ -23,6 +23,7 @@ import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.core.telemetry.TelemetryEvents;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.utils.Utils;
@@ -96,6 +97,7 @@ public class SootRunner {
 		}
 		catch (final Exception e) {
 			Activator.getDefault().logError(e, "Error building project classpath");
+			Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.SOOT_EXCEPTION, e);
 			return Lists.newArrayList();
 		}
 	}
@@ -109,6 +111,7 @@ public class SootRunner {
 		}
 		catch (final Exception t) {
 			Activator.getDefault().logError(t);
+			Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.SOOT_EXCEPTION, t);
 			return false;
 		}
 		return true;

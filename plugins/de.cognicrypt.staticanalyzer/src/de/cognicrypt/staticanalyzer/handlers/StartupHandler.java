@@ -22,6 +22,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IStartup;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.core.telemetry.TelemetryEvents;
 import de.cognicrypt.staticanalyzer.Activator;
 
 /**
@@ -56,6 +57,7 @@ public class StartupHandler implements IStartup {
 			}else {
 			final List<IJavaElement> changedJavaElements = new ArrayList<>();
 			Activator.getDefault().logInfo("ResourcechangeListener has been triggered.");
+			Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.POST_BUILD);
 			try {
 
 				event.getDelta().accept(delta -> {
@@ -76,6 +78,7 @@ public class StartupHandler implements IStartup {
 									}
 								}
 								catch (final Exception ex) {
+									Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.ANALYSIS_INTERNAL_ERROR, ex);
 									return false;
 								}
 							}
@@ -108,6 +111,7 @@ public class StartupHandler implements IStartup {
 
 			if (changedJavaElements.isEmpty()) {
 				Activator.getDefault().logInfo("No changed resource found. Abort.");
+				Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.ANALYSIS_ABORTED);
 				return;
 			}
 			if (!changedJavaElements.isEmpty()) {
@@ -121,6 +125,7 @@ public class StartupHandler implements IStartup {
 						final AnalysisKickOff ak = analysis_Queue.remove();
 						analysis_running = true;
 						ak.run();
+						Activator.getDefault().logInfo("Analysis has finished.");
 						analysis_running = false;
 					}
 				}

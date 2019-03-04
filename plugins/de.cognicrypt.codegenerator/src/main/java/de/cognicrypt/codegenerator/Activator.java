@@ -18,6 +18,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import de.cognicrypt.codegenerator.preferences.CodeGenPreferences;
+import de.cognicrypt.core.telemetry.Telemetry;
+import de.cognicrypt.core.telemetry.TelemetryEvents;
 
 public class Activator extends AbstractUIPlugin {
 
@@ -26,6 +28,8 @@ public class Activator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Activator plugin;
+	
+	private Telemetry telemetry;
 
 	/**
 	 * Returns the shared instance
@@ -76,20 +80,25 @@ public class Activator extends AbstractUIPlugin {
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		Activator.plugin = this;
-		
+		telemetry = new Telemetry();
+		telemetry.sendEvent(TelemetryEvents.START);
 		de.cognicrypt.core.properties.CogniCryptpreferencePage.registerPreferenceListener(new CodeGenPreferences());
 	}
 
 	@Override
 	public void stop(final BundleContext context) throws Exception {
 		Activator.plugin = null;
+		telemetry.sendEvent(TelemetryEvents.STOP);
+		telemetry = null;
 		super.stop(context);
+	}
+	
+	public Telemetry getTelemetry() {
+		return telemetry;
 	}
 
 	@Override
 	public IPreferenceStore getPreferenceStore() {
 		return de.cognicrypt.core.Activator.getDefault().getPreferenceStore();
 	}
-	
-	
 }

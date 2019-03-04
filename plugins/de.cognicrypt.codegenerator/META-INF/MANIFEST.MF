@@ -28,11 +28,11 @@ Bundle-ClassPath: lib/claferchocoig.jar,
  lib/saxon9he.jar
 Import-Package: org.eclipse.jdt.core,
  org.eclipse.jdt.core.dom,
+ org.eclipse.jdt.launching,
  org.eclipse.jdt.ui.actions,
  org.eclipse.jface.text,
  org.eclipse.ui.ide,
  org.eclipse.ui.part,
- org.eclipse.ui.texteditor,
- org.eclipse.jdt.launching
+ org.eclipse.ui.texteditor
 Automatic-Module-Name: de.cognicrypt.codegenerator
 Bundle-Vendor: TU Darmstadt, Paderborn University

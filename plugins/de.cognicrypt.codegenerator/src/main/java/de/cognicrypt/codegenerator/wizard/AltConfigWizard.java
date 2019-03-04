@@ -30,6 +30,7 @@ import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 import de.cognicrypt.codegenerator.wizard.beginner.BeginnerModeQuestionnaire;
 import de.cognicrypt.codegenerator.wizard.beginner.BeginnerTaskQuestionPage;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.core.telemetry.TelemetryEvents;
 
 public class AltConfigWizard extends Wizard {
 
@@ -47,6 +48,8 @@ public class AltConfigWizard extends Wizard {
 			Activator.getDefault().logError(e);
 		}
 		setWindowTitle("CogniCrypt");
+		
+		Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.WIZARD_OPENED);
 		
 		final ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "icons/cognicrypt-medium.png");
 		setDefaultPageImageDescriptor(image);
@@ -94,6 +97,7 @@ public class AltConfigWizard extends Wizard {
 			return currentPage;
 		}
 		final Task selectedTask = this.taskListPage.getSelectedTask();
+		Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.WIZARD_TASK_SELECTED, selectedTask.getName());
 		if (currentPage instanceof TaskSelectionPage) {
 			this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile());
 			// It is possible that now questions are within a BeginnerModeQuestionnaire
@@ -111,6 +115,7 @@ public class AltConfigWizard extends Wizard {
 		final BeginnerTaskQuestionPage curQuestionPage = (BeginnerTaskQuestionPage) currentPage;
 		final HashMap<Question, Answer> curQuestionAnswerMap = curQuestionPage.getMap();
 
+		Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.WIZARD_ANSWER_SELECTED, curQuestionAnswerMap.toString());
 		for (final Entry<Question, Answer> entry : curQuestionAnswerMap.entrySet()) {
 			this.constraints.put(entry.getKey(), entry.getValue());
 		}
@@ -160,6 +165,7 @@ public class AltConfigWizard extends Wizard {
 						((BeginnerTaskQuestionPage) currentPage).setPageInactive();
 					}
 					final BeginnerTaskQuestionPage prevPage = (BeginnerTaskQuestionPage) pages[i - 1];
+					Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.WIZARD_RETURNED, prevPage.getName());
 					for (final Entry<Question, Answer> quesAns : prevPage.getSelection().entrySet()) {
 						this.constraints.remove(quesAns.getKey());
 					}
@@ -191,8 +197,10 @@ public class AltConfigWizard extends Wizard {
 		final InstanceClafer instance = instances.values().iterator().next();
 		final LocatorPage currentPage = (LocatorPage) getContainer().getCurrentPage();
 
+
 		// Initialize Code Generation
 		IResource selectedFile = (IResource) currentPage.getSelectedResource().getFirstElement();
+		Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.WIZARD_FILE_SELECTED_GENERATION, selectedFile.getName());
 		final CodeGenerator codeGenerator = new XSLBasedGenerator(selectedFile, selectedTask.getXslFile());
 		final DeveloperProject developerProject = codeGenerator.getDeveloperProject();
 

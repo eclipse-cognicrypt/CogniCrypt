@@ -41,10 +41,10 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISelectionService;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.part.FileEditorInput;
 import org.osgi.framework.Bundle;
 import com.google.common.base.CharMatcher;
@@ -245,7 +245,7 @@ public class Utils {
 	 * @return Currently selected project.
 	 */
 	public static IProject getCurrentlySelectedIProject() {
-		final ISelectionService selectionService = Workbench.getInstance().getActiveWorkbenchWindow().getSelectionService();
+		final ISelectionService selectionService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
 		final ISelection selection = selectionService.getSelection();
 
 		return getIProjectFromISelection(selection);

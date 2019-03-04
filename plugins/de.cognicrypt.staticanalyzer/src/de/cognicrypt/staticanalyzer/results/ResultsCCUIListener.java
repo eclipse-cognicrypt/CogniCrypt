@@ -18,6 +18,10 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IPackageDeclaration;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.w3c.dom.Node;
 import com.google.common.collect.Multimap;
@@ -33,7 +37,6 @@ import crypto.analysis.EnsuredCryptSLPredicate;
 import crypto.analysis.IAnalysisSeed;
 import crypto.analysis.errors.AbstractError;
 import crypto.analysis.errors.ConstraintError;
-import crypto.analysis.errors.ErrorWithObjectAllocation;
 import crypto.analysis.errors.ForbiddenMethodError;
 import crypto.analysis.errors.ImpreciseValueExtractionError;
 import crypto.analysis.errors.IncompleteOperationError;
@@ -107,9 +110,20 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
 		final CCStatement stmt = new CCStatement(errorLocation);
 		final int stmtId = stmt.hashCode();
-
-		if (stat.getClassesAnalysed().containsKey(sourceFile.getName())) {
-			AnalysisData data = stat.getClassesAnalysed().get(sourceFile.getName());
+		
+		ICompilationUnit javaFile = (ICompilationUnit) JavaCore.create(sourceFile);
+		String className = "";
+		try {
+			for (IPackageDeclaration decl : javaFile.getPackageDeclarations()) {
+				className += decl.getElementName() + ".";
+			}
+		}
+		catch (JavaModelException e1) {
+		}
+		className += javaFile.getElementName().substring(0, javaFile.getElementName().lastIndexOf("."));
+		
+		if (stat.getClassesAnalysed().containsKey(className)) {
+			AnalysisData data = stat.getClassesAnalysed().get(className);
 			data.addError(error);
 			data.setHealth(false);
 		} else {
@@ -117,7 +131,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			data.addError(error);
 			data.setHealth(false);
 			Map<String, AnalysisData> classesAnalysedMap = stat.getClassesAnalysed();
-			classesAnalysedMap.put(sourceFile.getName(), data);
+			classesAnalysedMap.put(className, data);
 		}
 
 		/*
@@ -305,54 +319,21 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		for (Entry<String, AnalysisData> result : stat.getClassesAnalysed().entrySet()) {
 			String className = result.getKey();
 			AnalysisData findings = result.getValue();
+			boolean first = true;
+			for (AbstractError err : findings.getErrors()) {
+				units.add(new ResultsUnit(className, null, err, false, first));
+				first = false;
+			}
+
 			for (IAnalysisSeed seed : findings.getSeeds()) {
-				String seedString = seedToDescription(className, seed);
-				units.add(new ResultsUnit(className, seedString, "", true));
-				className = "";
-			}
-			List<String> previousSeeds = new ArrayList<String>();
-			for (AbstractError err  : findings.getErrors()) {
-				String seed = err.getErrorLocation().toString();
-				if (err instanceof ErrorWithObjectAllocation) {
-					ErrorWithObjectAllocation incOpErr = (ErrorWithObjectAllocation) err;
-					seed = seedToDescription(className, incOpErr.getObjectLocation());
-				} else if (err instanceof RequiredPredicateError) {
-					RequiredPredicateError reqPred = (RequiredPredicateError) err;
-					seed = "Call to " + reqPred.getErrorLocation().getUnit().get().getInvokeExpr().getMethodRef().getSignature() +
- 							" in Line " + reqPred.getErrorLocation().getUnit().get().getJavaSourceStartLineNumber() + " of Method " + reqPred.getErrorLocation().getMethod().getName() + "()";
+				if (units.parallelStream().noneMatch(e -> e.doesSeedmatchWithError(seed))) {
+					units.add(new ResultsUnit(className, seed, null, true));
 				}
-				if (previousSeeds.contains(seed)) {
-					units.add(new ResultsUnit(className, "", err.toErrorMarkerString(), false));
-				} else {
-					units.add(new ResultsUnit(className, seed, err.toErrorMarkerString(), false));
-				}
-				
-				//clean up
-				previousSeeds.add(seed);
-				className = "";
 			}
-			
 		}
-		
+
 		StatisticsView.allowAnalysisRerun(true);
 		StatisticsView.updateView(stat.getProject(), stat.getTimeOfAnalysis(), units);
-	}
-
-	public String seedToDescription(String className, IAnalysisSeed seed) {
-		String varName = seed.var().value().toString();
-		if (varName.startsWith("$") || varName.contains("varMatcher")) {
-			String fqn = seed.var().value().getType().toQuotedString();
-			varName = "Object of type " + fqn.substring(fqn.lastIndexOf('.') + 1) ;
-		} else {
-			varName = "Object " + varName;
-		}
-		varName += " in Line " + seed.stmt().getUnit().get().getJavaSourceStartLineNumber();
-		
-		String methodName = seed.getMethod().getName();
-		if ("<init>".equals(methodName)) {
-			methodName = className.substring(className.lastIndexOf('.') + 1);
-		}
-		return varName + " of Method " + methodName + "()";
 	}
 
 	@Override
@@ -392,6 +373,5 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void ensuredPredicates(final Table<Statement, Val, Set<EnsuredCryptSLPredicate>> existingPredicates,
-			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates, final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {
-	}
+			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates, final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {}
 }

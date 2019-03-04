@@ -2,9 +2,16 @@ package de.cognicrypt.staticanalyzer.view;
 
 import java.util.List;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
@@ -21,10 +28,15 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.texteditor.ITextEditor;
 import com.google.common.base.Optional;
+import crypto.analysis.errors.AbstractError;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.handlers.AnalysisKickOff;
+import de.cognicrypt.utils.Utils;
 
 /**
  * This class creates a view which shows the results of an analysis.
@@ -113,6 +125,38 @@ public class StatisticsView extends ViewPart {
 		gridData.grabExcessVerticalSpace = true;
 		gridData.horizontalAlignment = GridData.FILL;
 		viewer.getControl().setLayoutData(gridData);
+		
+		viewer.addDoubleClickListener(new IDoubleClickListener() {
+			
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				ResultsUnit clickedRow = (ResultsUnit) ((IStructuredSelection) event.getSelection()).getFirstElement();
+				int lineNumber = -1;
+				AbstractError error = clickedRow.getError();
+				
+				if (error != null) {
+					lineNumber = error.getErrorLocation().getUnit().get().getJavaSourceStartLineNumber();
+				} else {
+					lineNumber = clickedRow.getSeed().stmt().getUnit().get().getJavaSourceStartLineNumber();
+				}
+				
+				try {
+					String className = clickedRow.getClassName();
+					if (className.endsWith(".java")) {
+						className = className.substring(0, className.lastIndexOf("."));
+					}
+					ITextEditor activeEditor = (ITextEditor)IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), Utils.findFileInProject(lastProject, className));
+					IDocument activeDocument = activeEditor.getDocumentProvider().getDocument(activeEditor.getEditorInput());
+					if (activeDocument != null) {
+						IRegion lineInfo = activeDocument.getLineInformation(lineNumber - 1);
+						activeEditor.selectAndReveal(lineInfo.getOffset(), lineInfo.getLength());
+					}
+				}
+				catch (BadLocationException | CoreException e) {
+					Activator.getDefault().logError(e);
+				}
+			}
+		});
 	}
 
 	private void createColumns(final Composite parent, final TableViewer viewer) {
@@ -125,7 +169,7 @@ public class StatisticsView extends ViewPart {
 			@Override
 			public String getText(Object element) {
 				ResultsUnit u = (ResultsUnit) element;
-				return u.getClassName();
+				return u.printClassName();
 			}
 		});
 
@@ -135,7 +179,7 @@ public class StatisticsView extends ViewPart {
 			@Override
 			public String getText(Object element) {
 				ResultsUnit u = (ResultsUnit) element;
-				return u.getSeed();
+				return u.printSeedDescription();
 			}
 		});
 
@@ -145,7 +189,7 @@ public class StatisticsView extends ViewPart {
 			@Override
 			public String getText(Object element) {
 				ResultsUnit u = (ResultsUnit) element;
-				return u.getError();
+				return u.printErrorString();
 			}
 		});
 

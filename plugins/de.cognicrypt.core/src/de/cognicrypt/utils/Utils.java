@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -214,6 +215,28 @@ public class Utils {
 		catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
+	}
+
+	/**
+	 * This method searches the passed project for the class that contains the main method.
+	 *
+	 * @param project Project that is searched
+	 * @param requestor Object that handles the search results
+	 * @throws CoreException
+	 */
+	public static IFile findFileInProject(IContainer container, String name) throws CoreException {
+		for (IResource res : container.members()) {
+			if (res instanceof IContainer) {
+				IFile file = findFileInProject((IContainer) res, name);
+				if (file != null) {
+					return file;
+				}
+			} else if (res instanceof IFile && (res.getName().equals(name.substring(name.lastIndexOf(".") + 1) + ".java"))) {
+				return (IFile) res;
+			}
+		}
+
+		return null;
 	}
 
 	/**

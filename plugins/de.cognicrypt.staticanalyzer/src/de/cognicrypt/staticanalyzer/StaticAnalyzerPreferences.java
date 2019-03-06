@@ -140,7 +140,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		final Composite callGraphContainer = new Composite(staticAnalysisGroup, SWT.None);
 		callGraphContainer.setLayout(new GridLayout(2, true));
 		final Label label1 = new Label(callGraphContainer, SWT.SHADOW_IN);
-		label1.setText("Call-graph construction algorithm");
+		label1.setText("Call-graph constructiomarkern algorithm");
 
 		CGSelection = new Combo(callGraphContainer, SWT.DROP_DOWN | SWT.READ_ONLY);
 		CGSelection.setItems(Arrays.stream(Constants.CG.values()).map(Enum::name).toArray(String[]::new));
@@ -153,7 +153,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		// advCombo2.select(0);
 
 		final Group errorTypeGroup = new Group(staticAnalysisGroup, SWT.SHADOW_IN);
-		errorTypeGroup.setText("Error-Marker Types");
+		errorTypeGroup.setText("Error-Warning Types");
 		errorTypeGroup.setLayout(new GridLayout(1, true));
 
 		// ConstraintError

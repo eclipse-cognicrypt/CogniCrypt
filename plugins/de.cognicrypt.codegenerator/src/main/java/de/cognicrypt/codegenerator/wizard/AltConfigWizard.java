@@ -47,7 +47,7 @@ public class AltConfigWizard extends Wizard {
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			Activator.getDefault().logError(e);
 		}
-		setWindowTitle("CogniCrypt");
+		setWindowTitle("Code Generator");
 		
 		Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.WIZARD_OPENED);
 		

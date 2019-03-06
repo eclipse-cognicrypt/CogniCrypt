@@ -82,7 +82,7 @@ public class Constants {
 
 	// Tooltip
 	public static final String PROJECTLIST_TOOLTIP = "List of your Java projects";
-	public static final String TASKLIST_TOOLTIP = "Cryptographic tasks supported by CogniCrypt";
+	public static final String TASKLIST_TOOLTIP = "Cryptographic tasks supported by CodeGenerator";
 	public static final String DESCRIPTION_BOX_TOOLTIP = "Here is the description for the cryptographic task that you have selected";
 	public static final String GUIDEDMODE_TOOLTIP = "Guided mode configures the algorithm for you,\nbased on your answers to some simple questions.";
 	public static final String DEFAULT_ALGORITHM_COMBINATION_TOOLTIP = "Default Algorithm combination";
@@ -137,7 +137,7 @@ public class Constants {
 	public static final String AdditionalOutputFile = "Output.java";
 	public static final String AdditionalOutputTempFile = "OutputTemp.java";
 	public static final String TempSuffix = "Temp";
-	public static final String PackageName = "de" + Constants.innerFileSeparator + "cognicrypt" + Constants.innerFileSeparator + "crypto";
+	public static final String PackageName = "de" + Constants.innerFileSeparator + "codegenerator" + Constants.innerFileSeparator + "crypto";
 	public static final String CodeGenerationCallFile = Constants.innerFileSeparator + Constants.PackageName + Constants.innerFileSeparator + Constants.AdditionalOutputFile;
 
 	// File info for Code Generation
@@ -164,7 +164,7 @@ public class Constants {
 			"No possible combinations are available for chosen values. Please modify your preferences and try n.\n \n You can use  \n>= insted of >\n<= instead of <\nto make your selection generic.";
 	public static final String NO_POSSIBLE_COMBINATIONS_BEGINNER = "No possible combinations are available for chosen values. Please modify your preferences and try again.";
 	public static final String PLEASE_SELECT = "Please select project directory to launch the configurator";
-	public static final String ERROR_MESSAGE_NO_PROJECT = "There is no Java project in your workspace. Please create one and restart CogniCrypt.";
+	public static final String ERROR_MESSAGE_NO_PROJECT = "There is no Java project in your workspace. Please create one and restart Code Generator.";
 	public static final String ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY = "No directory for additional resources found.";
 	public static final String ERROR_MESSAGE_NO_FILE = "No file found";
 	public static final String ERROR = "ERROR: ";
@@ -510,7 +510,7 @@ public class Constants {
 	public static final String idAttribute = "id";
 	public static final String titleAttribute = "title";
 	public static final String descriptionAttribute = "description";
-	public static final String titleAttributeValue = "CogniCrypt";
+	public static final String titleAttributeValue = "Code Generator";
 	public static final String pluginElement = "plugin";
 	public static final String extensionElement = "extension";
 	public static final String pointAttribute = "point";
@@ -528,7 +528,7 @@ public class Constants {
 			"not", "one", "opt", "or", "product", "some", "sum", "then", "xor"};
 	public static final String[] CLAFER_PRIMITIVE_TYPES = {"integer", "int", "double", "real", "string"};
 
-	public static final String ANALYSIS_LABEL = "CogniCrypt Analysis";
+	public static final String ANALYSIS_LABEL = "Misuse Analysis";
 
 	public static final String BUILDER_ID = "QuickFixTest.ProblemMarkerBuilder";
 

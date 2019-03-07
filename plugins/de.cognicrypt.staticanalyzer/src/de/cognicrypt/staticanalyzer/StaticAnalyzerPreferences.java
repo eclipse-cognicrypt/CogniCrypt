@@ -140,7 +140,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		final Composite callGraphContainer = new Composite(staticAnalysisGroup, SWT.None);
 		callGraphContainer.setLayout(new GridLayout(2, true));
 		final Label label1 = new Label(callGraphContainer, SWT.SHADOW_IN);
-		label1.setText("Call-graph constructiomarkern algorithm");
+		label1.setText("Call-graph construction algorithm");
 
 		CGSelection = new Combo(callGraphContainer, SWT.DROP_DOWN | SWT.READ_ONLY);
 		CGSelection.setItems(Arrays.stream(Constants.CG.values()).map(Enum::name).toArray(String[]::new));

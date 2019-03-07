@@ -153,7 +153,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		// advCombo2.select(0);
 
 		final Group errorTypeGroup = new Group(staticAnalysisGroup, SWT.SHADOW_IN);
-		errorTypeGroup.setText("Error-Marker Types");
+		errorTypeGroup.setText("Error-Warning Types");
 		errorTypeGroup.setLayout(new GridLayout(1, true));
 
 		// ConstraintError

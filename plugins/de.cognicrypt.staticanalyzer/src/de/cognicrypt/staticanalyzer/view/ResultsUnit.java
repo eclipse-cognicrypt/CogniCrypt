@@ -5,10 +5,7 @@ import crypto.analysis.errors.AbstractError;
 import crypto.analysis.errors.ErrorWithObjectAllocation;
 import crypto.analysis.errors.IncompleteOperationError;
 import crypto.analysis.errors.TypestateError;
-import soot.Value;
 import soot.jimple.InstanceInvokeExpr;
-import soot.jimple.InvokeExpr;
-import soot.jimple.internal.AbstractInstanceInvokeExpr;
 
 /**
  * This class contains the analysis Data to be shown in the Statistics View.
@@ -121,15 +118,7 @@ public class ResultsUnit {
 		} else if (error == null) {
 			return false;
 		}
-
-		InvokeExpr invoke = error.getErrorLocation().getUnit().get().getInvokeExpr();
-		Value seedVariable = seed.var().value();
-		if (invoke instanceof InstanceInvokeExpr) {
-			return seedVariable.equals(((InstanceInvokeExpr) invoke).getBase());
-		} else {
-			return seedVariable.equals(((AbstractInstanceInvokeExpr) invoke).getBase());
-		}
-
+		return seed.var().value().equals(((InstanceInvokeExpr) error.getErrorLocation().getUnit().get().getInvokeExpr()).getBase());
 	}
 
 }

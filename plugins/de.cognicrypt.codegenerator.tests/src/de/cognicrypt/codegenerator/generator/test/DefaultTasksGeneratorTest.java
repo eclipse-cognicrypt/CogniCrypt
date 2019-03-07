@@ -28,21 +28,18 @@ public class DefaultTasksGeneratorTest {
 	IJavaProject testJavaProject;
 	CodeGenerator generatorEnc;
 	CodeGenerator generatorSecPassword;
-	CodeGenerator generatorLTA;
+	CodeGenerator generatorSECCOM;
 	CodeGenerator generatorSecMPComp;
-	CodeGenerator generatorHybridEnc;
 	CodeGenerator generatorDigitalSIgn;
 	Task encTask;
 	Task secPasswordTask;
-	Task LTATask;
+	Task SECCOMTask;
 	Task secMPCompTask;
-	Task hybridEncTask;
 	Task digitalSignTask;
 	Configuration configEnc;
 	Configuration configSecPassword;
-	Configuration configLTA;
+	Configuration configSecCom;
 	Configuration configSecMPComp;
-	Configuration configHybridEnc;
 	Configuration configDigitalSign;
 	DeveloperProject developerProject;
 	static int counter = 0;
@@ -58,20 +55,17 @@ public class DefaultTasksGeneratorTest {
 		this.testJavaProject = TestUtils.createJavaProject("TestProject_" + counter);
 		TestUtils.generateJavaClassInJavaProject(this.testJavaProject, "testPackage", "Test");
 
-		this.encTask = TestUtils.getTask("SymmetricEncryption");
+		this.encTask = TestUtils.getTask("Encryption");
 		this.generatorEnc = new XSLBasedGenerator(this.testJavaProject.getProject(), this.encTask.getXslFile());
 
 		this.secPasswordTask = TestUtils.getTask("SecurePassword");
 		this.generatorSecPassword = new XSLBasedGenerator(this.testJavaProject.getProject(), this.secPasswordTask.getXslFile());
 
-		this.LTATask = TestUtils.getTask("LongTermArchiving");
-		this.generatorLTA = new XSLBasedGenerator(this.testJavaProject.getProject(), this.LTATask.getXslFile());
+		this.SECCOMTask = TestUtils.getTask("SecureCommunication");
+		this.generatorSECCOM = new XSLBasedGenerator(this.testJavaProject.getProject(), this.SECCOMTask.getXslFile());
 
 		this.secMPCompTask = TestUtils.getTask("SECMUPACOMP");
 		this.generatorSecMPComp = new XSLBasedGenerator(this.testJavaProject.getProject(), this.secMPCompTask.getXslFile());
-
-		this.hybridEncTask = TestUtils.getTask("HybridEncryption");
-		this.generatorHybridEnc = new XSLBasedGenerator(this.testJavaProject.getProject(), this.hybridEncTask.getXslFile());
 
 		this.digitalSignTask = TestUtils.getTask("DigitalSignatures");
 		this.generatorDigitalSIgn = new XSLBasedGenerator(this.testJavaProject.getProject(), this.digitalSignTask.getXslFile());
@@ -96,15 +90,6 @@ public class DefaultTasksGeneratorTest {
 		assertTrue(secPasswordCheck);
 	}
 
-	/**
-	 * This test case is commented because it requires UI interaction
-	 */
-	// @Test
-	// public void LTADefault() {
-	// this.configLTA = TestUtils.createConfigurationForCodeGeneration(developerProject, LTATask);
-	// boolean ltaCheck = generatorLTA.generateCodeTemplates(configLTA, LTATask.getAdditionalResources());
-	// assertTrue(ltaCheck);
-	// }
 
 	@Test
 	public void SECMUPACOMPDefault() {
@@ -114,20 +99,21 @@ public class DefaultTasksGeneratorTest {
 	}
 
 	@Test
-	public void HybridEncryptionDefault() {
-		this.configHybridEnc = TestUtils.createConfigurationForCodeGeneration(this.developerProject, this.hybridEncTask);
-		final boolean hybridEncryptionCheck = this.generatorHybridEnc.generateCodeTemplates(this.configHybridEnc, this.hybridEncTask.getAdditionalResources());
-		assertTrue(hybridEncryptionCheck);
+	public void SECComDefault() {
+		this.configSecCom = TestUtils.createConfigurationForCodeGeneration(this.developerProject, this.SECCOMTask);
+		final boolean secComCheck = this.generatorSECCOM.generateCodeTemplates(this.configSecCom, this.SECCOMTask.getAdditionalResources());
+		assertTrue(secComCheck);
 	}
+	
 
 	/**
 	 * This test case is commented because it requires UI interaction
 	 */
-	// @Test
-	// public void DigitalSignDefault() {
-	// this.configDigitalSign = TestUtils.createConfigurationForCodeGeneration(developerProject, digitalSignTask);
-	// boolean digitalSignCheck = generatorDigitalSIgn.generateCodeTemplates(configDigitalSign, digitalSignTask.getAdditionalResources());
-	// assertTrue(digitalSignCheck);
-	// }
-
+	@Test
+	public void DigitalSignDefault() {
+		this.configDigitalSign = TestUtils.createConfigurationForCodeGeneration(developerProject, digitalSignTask);
+		boolean digitalSignCheck = generatorDigitalSIgn.generateCodeTemplates(configDigitalSign, digitalSignTask.getAdditionalResources());
+		assertTrue(digitalSignCheck);
+	}
+	
 }

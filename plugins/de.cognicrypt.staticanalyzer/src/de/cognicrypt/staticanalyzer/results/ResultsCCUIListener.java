@@ -162,6 +162,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		int selectedSeverity = Activator.getDefault().getPreferenceStore().getInt(markerType);
 		if (selectedSeverity == -1) {
 			selectedSeverity = Activator.getDefault().getPreferenceStore().getDefaultInt(markerType);
+		}if (selectedSeverity == 3) {
+			return;
 		}
 		Severities sev = Severities.get(selectedSeverity);
 

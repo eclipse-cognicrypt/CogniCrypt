@@ -48,7 +48,7 @@ public class AltConfigWizard extends Wizard {
 		}
 		setWindowTitle("CogniCrypt");
 		
-		final ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "icons/cognicrypt-medium.png");
+		final ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "platform:/plugin/de.cognicrypt.core/icons/cognicrypt-medium.png ");
 		setDefaultPageImageDescriptor(image);
 		this.constraints = new HashMap<>();
 	}

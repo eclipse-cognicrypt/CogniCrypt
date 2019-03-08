@@ -11,8 +11,7 @@
             "operand": "keySize",
             "value": "128",
             "operator": ">"
-          }],
-          "nextID": "-1"
+          }]
         },
         {
           "value": "No.",

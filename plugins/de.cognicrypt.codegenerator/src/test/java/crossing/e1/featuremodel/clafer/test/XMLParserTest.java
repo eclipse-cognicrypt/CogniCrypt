@@ -11,6 +11,7 @@
 package crossing.e1.featuremodel.clafer.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -96,9 +97,7 @@ public class XMLParserTest {
 		testFile.read(generatedBytes);
 		testFile.close();
 
-		String validXML = collectImports(new String(validBytes, "UTF-8"));
-		String generatedXML = new String(generatedBytes, "UTF-8");
-		assertEquals(validXML.trim(), generatedXML.trim());
+		assertTrue(uglifyXML(new String(validBytes)).trim().contentEquals(uglifyXML(new String(generatedBytes)).trim()));
 	}
 
 	@Test
@@ -131,6 +130,6 @@ public class XMLParserTest {
 	 * move all tags together and remove newlines
 	 */
 	public String uglifyXML(final String input) {
-		return input.replaceAll(">\\s*<", "><").replace("\n", "");
+		return input.replaceAll(">\\s*<", "><").replace("\n", "").trim();
 	}
 }

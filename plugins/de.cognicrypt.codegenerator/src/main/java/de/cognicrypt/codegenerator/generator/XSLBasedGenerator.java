@@ -24,7 +24,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.ui.IEditorPart;
@@ -37,7 +37,6 @@ import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 import de.cognicrypt.codegenerator.wizard.Configuration;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.FileHelper;
-import de.cognicrypt.utils.Utils;
 
 /**
  * This class is responsible for generating code templates by performing an XSL transformation. Currently, Saxon is used as an XSLT- processor.
@@ -50,14 +49,14 @@ public class XSLBasedGenerator extends CodeGenerator {
 	/**
 	 * Constructor to initialize the code template generator.
 	 *
-	 * @param targetProject
+	 * @param iResource
 	 *        Project code is generated into.
 	 * @param pathToXSLFile
 	 *        Path to the XSL file is read from the Tasks.json file instead of a constant.
 	 */
 
-	public XSLBasedGenerator(final IProject targetProject, final String pathToXSLFile) {
-		super(targetProject);
+	public XSLBasedGenerator(final IResource iResource, final String pathToXSLFile) {
+		super(iResource);
 		this.xslFile = CodeGenUtils.getResourceFromWithin(pathToXSLFile);
 	}
 
@@ -90,7 +89,9 @@ public class XSLBasedGenerator extends CodeGenerator {
 
 			// Perform actual transformation by calling XSLT processor.
 			transform(configFile, temporaryOutputFile);
-			chosenConfig.deleteConfFromDisk();
+			if (!Activator.getDefault().getPreferenceStore().getBoolean(Constants.PERSIST_CONFIG)) {
+				chosenConfig.deleteConfFromDisk();
+			}
 
 			// Trim Output.java
 			FileHelper.trimFile(temporaryOutputFile);
@@ -105,16 +106,15 @@ public class XSLBasedGenerator extends CodeGenerator {
 				}
 			}
 
-			final IFile currentlyOpenFile = CodeGenUtils.getCurrentlyOpenFile();
-			if (currentlyOpenFile != null && this.project.equals(currentlyOpenFile.getProject())) {
-				Activator.getDefault().logInfo(Constants.OpenFile + currentlyOpenFile.getName());
+			if (targetFile != null && this.project.equals(targetFile.getProject())) {
+				Activator.getDefault().logInfo(Constants.OpenFile + targetFile.getName());
 
-				if (FileHelper.checkFileForString(currentlyOpenFile.getRawLocation().toOSString(), Constants.AuthorTag)) {
-					Activator.getDefault().logInfo(Constants.ContainsAuthorTag + currentlyOpenFile.getName());
+				if (FileHelper.checkFileForString(targetFile.getRawLocation().toOSString(), Constants.AuthorTag)) {
+					Activator.getDefault().logInfo(Constants.ContainsAuthorTag + targetFile.getName());
 					insertCallCodeIntoFile(temporaryOutputFile, true, true, tempFlag);
 					removeCryptoPackageIfEmpty();
 				} else {
-					Activator.getDefault().logInfo(Constants.ContainsNotAuthorTag + currentlyOpenFile.getName());
+					Activator.getDefault().logInfo(Constants.ContainsNotAuthorTag + targetFile.getName());
 					insertCallCodeIntoFile(temporaryOutputFile, true, false, tempFlag);
 					removeCryptoPackageIfEmpty();
 				}

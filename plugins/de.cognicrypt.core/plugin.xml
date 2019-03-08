@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+<extension point="org.eclipse.ui.preferencePages">
+ 	<page id="CogniCryptPreferencePage"
+ 		name="CogniCrypt"
+    		class="de.cognicrypt.core.properties.CogniCryptpreferencePage">
+    		<keywordReference id="de.cognicrypt.core.keyword_CogniCrypt"/>
+   	</page>
+   	
+</extension>
+      <extension point="org.eclipse.core.runtime.preferences">
+         <initializer class="de.cognicrypt.core.properties.CogniCryptPreferenceInitializer"/>
+      </extension>
+      
+      <extension
+		point="org.eclipse.ui.keywords">
+		<keyword
+			id="de.cognicrypt.core.keyword_CogniCrypt"
+			label="CogniCrypt"/>
+	</extension>
+ 
+  <extension
+      id="CogniCrypt"
+      point="org.eclipse.core.runtime.products">
+   <product
+         application="org.eclipse.ui.ide.workbench"
+         name="CogniCrypt">
+   </product>
+</extension> 
+
+<extension
+                  point="org.eclipse.ui.menus">
+               <menuContribution
+                     allPopups="false"
+                     locationURI="popup:org.eclipse.ui.popup.any">
+                  <menu
+                        icon="icons/cognicrypt.png"
+                        id="de.cognicrypt.core.menu"
+                        label="CogniCrypt">
+                     <visibleWhen
+                           checkEnabled="true">
+                        <with
+                              variable="activeMenuSelection">
+                           <iterate
+                                 ifEmpty="false"
+                                 operator="or">
+                              <adapt
+                                    type="org.eclipse.jdt.core.IJavaProject">
+                                 <instanceof
+                                       value="org.eclipse.jdt.core.IJavaProject">
+                                 </instanceof>
+                              </adapt>
+                           </iterate>
+                        </with>
+                     </visibleWhen>
+                  </menu>
+               </menuContribution>
+            </extension>
+</plugin>

@@ -112,7 +112,7 @@
 			</xsl:result-document>
 		</xsl:if>
 
-		<xsl:if test="//task/algorithm[@type='AsymmetricCipher']">
+		<xsl:if test="//task/code/hybrid='true'">
 			<xsl:result-document href="PublicKeyEnc.java">
 				package
 				<xsl:value-of select="//task/Package" />
@@ -124,7 +124,7 @@
 				public byte[] encrypt(SecretKey sessionKey, PublicKey publicKey) throws
 				GeneralSecurityException {
 
-				Cipher c = Cipher.getInstance("<xsl:value-of select="//task/algorithm[@type='AsymmetricCipher']/name" />/<xsl:value-of select="//task/algorithm[@type='AsymmetricCipher']/mode" />/<xsl:value-of select="//task/algorithm[@type='AsymmetricCipher']/padding" />");
+				Cipher c = Cipher.getInstance("<xsl:value-of select="//task/algorithm[@type='AsymmetricCipher']/name" />/<xsl:value-of select="//task/algorithm[@type='AsymmetricCipher']/mode" />/<xsl:choose><xsl:when test="//task/algorithm[@type='AsymmetricCipher']/padding='OAEPWithSHA256AndMGF1Padding'">OAEPWithSHA-256AndMGF1Padding</xsl:when><xsl:otherwise>OAEPWithSHA-512AndMGF1Padding</xsl:otherwise></xsl:choose>");
 				c.init(Cipher.WRAP_MODE, publicKey);
 				byte[] sessionKeyBytes = c.wrap(sessionKey);
 				return sessionKeyBytes;
@@ -140,7 +140,7 @@
 			;
 			<xsl:apply-templates select="//Import" />
 			public class Output {
-			public void templateUsage(<xsl:choose><xsl:when test="//task/code/dataType='File'">File </xsl:when><xsl:when test="//task/code/dataType='String'">String </xsl:when><xsl:otherwise>byte[] </xsl:otherwise></xsl:choose>data <xsl:if test="//task/code/hybrid='false'">, char[] pwd</xsl:if>) throws GeneralSecurityException<xsl:if test="//task/code/dataType='File'">, IOException</xsl:if><xsl:if test="//task/code/dataType='String'">, UnsupportedEncodingException</xsl:if>{
+			public static void templateUsage(<xsl:choose><xsl:when test="//task/code/dataType='File'">File </xsl:when><xsl:when test="//task/code/dataType='String'">String </xsl:when><xsl:otherwise>byte[] </xsl:otherwise></xsl:choose>data <xsl:if test="//task/code/hybrid='false'">, char[] pwd</xsl:if>) throws GeneralSecurityException<xsl:if test="//task/code/dataType='File'">, IOException</xsl:if><xsl:if test="//task/code/dataType='String'">, UnsupportedEncodingException</xsl:if>{
 			KeyManagment km = new KeyManagment();
 			<xsl:choose>
 				<xsl:when test="//task/code/hybrid='true'">
@@ -167,7 +167,17 @@
 				<xsl:otherwise>
 					SecretKey encryptionKey = km.getKey(pwd);
 					SymmetricEnc symEnc = new SymmetricEnc();
-					symEnc.encrypt(data, encryptionKey);
+					<xsl:choose>
+						<xsl:when test="//task/code/dataType='File'">
+							File encFile = symEnc.encrypt(data, encryptionKey);
+						</xsl:when>
+						<xsl:when test="//task/code/dataType='String'">
+							String encMessage = symEnc.encrypt(data, encryptionKey);
+						</xsl:when>
+						<xsl:otherwise>
+							byte[] ciphertext = symEnc.encrypt(data, encryptionKey);
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
 			}

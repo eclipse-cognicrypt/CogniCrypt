@@ -34,5 +34,6 @@ Import-Package: org.eclipse.jdt.core,
  org.eclipse.ui.ide,
  org.eclipse.ui.part,
  org.eclipse.ui.texteditor,
- org.eclipse.jdt.launching
+ org.eclipse.jdt.launching,
+ org.apache.commons.io;bundle-version="2.2.0"
 Automatic-Module-Name: de.cognicrypt.codegenerator

@@ -10,10 +10,10 @@
 
 package crossing.e1.featuremodel.clafer.test;
 
+import java.io.IOException;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.google.gson.JsonSyntaxException;
 
 import de.cognicrypt.codegenerator.question.QuestionsJSONReader;
 
@@ -41,7 +41,7 @@ public class QuestionReaderTest {
 		QuestionReaderTest.qjr.getPages(this.testFile1);
 	}
 
-	@Test(expected = JsonSyntaxException.class)
+	@Test(expected = IOException.class)
 	public final void testGetQuestionsExceptionJSONSyntaxError() {
 		QuestionReaderTest.qjr.getPages(this.testFile5);
 	}

@@ -135,4 +135,144 @@
          markerType="org.eclipse.core.resources.problemmarker"
          class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
    </extension>
+   	 <!--ErrorMarker-->
+	<extension	
+		  id="de.cognicrypt.staticanalyzer.ccMarker"
+          name="CogniCrypt Marker"
+          point="org.eclipse.core.resources.markers">
+     	<super type="org.eclipse.core.resources.problemmarker"></super>
+     	<attribute name = "var"></attribute>
+       <persistent value="false"></persistent>
+    </extension>
+    <extension
+          id="de.cognicrypt.staticanalyzer.forbiddenMethodErrorMarker"
+          name="Forbidden Method Problem"
+          point="org.eclipse.core.resources.markers">
+       <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
+       <persistent value="false"></persistent>
+    </extension>
+    <extension
+          id="de.cognicrypt.staticanalyzer.impreciseValueExtractionErrorMarker"
+          name="Imprecise Value Extraction Problem"
+          point="org.eclipse.core.resources.markers">
+       <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
+       <persistent value="false"></persistent>
+    </extension>
+    <extension
+          id="de.cognicrypt.staticanalyzer.predicateContradictionErrorMarker"
+          name="Insecure Class Composition Problem"
+          point="org.eclipse.core.resources.markers">
+       <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
+       <persistent value="false"></persistent>
+    </extension>
+    <extension
+          id="de.cognicrypt.staticanalyzer.requiredPredicateErrorMarker"
+          name="Insecure Class Composition Problem"
+          point="org.eclipse.core.resources.markers">
+       <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
+       <persistent value="false"></persistent>
+    </extension>
+    <extension
+          id="de.cognicrypt.staticanalyzer.constraintErrorMarker"
+          name="Incorrect Parameter Problem"
+          point="org.eclipse.core.resources.markers">
+       <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
+       <persistent value="false"></persistent>
+    </extension>
+    <extension
+          id="de.cognicrypt.staticanalyzer.neverTypeOfErrorMarker"
+          name="Wrong Type Problem"
+          point="org.eclipse.core.resources.markers">
+       <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
+       <persistent value="false"></persistent>
+    </extension>
+     <extension
+          id="de.cognicrypt.staticanalyzer.incompleteOperationErrorMarker"
+          name="Missing Method Call Problem"
+          point="org.eclipse.core.resources.markers">
+       <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
+       <persistent value="false"></persistent>
+    </extension>
+     <extension
+          id="de.cognicrypt.staticanalyzer.typestateErrorMarker"
+          name="Incorrect Method Call Problem"
+          point="org.eclipse.core.resources.markers">
+       <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
+       <persistent value="false"></persistent>
+    </extension>
+    
+    <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Cognicrypt"
+            id="Cognicrypt">
+      </category>
+      <view
+            category="Cognicrypt"
+            class="de.cognicrypt.staticanalyzer.view.StatisticsView"
+            icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt.png "
+            id="de.cognicrypt.staticanalyzer.view.StatisticsView"
+            inject="true"
+            name="Statistics">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+      </perspectiveExtension>
+   </extension>
+    
+    <!--MarkerResolution -->
+	<extension 
+	 point="org.eclipse.ui.ide.markerResolution">
+      <markerResolutionGenerator
+         markerType="de.cognicrypt.staticanalyzer.ccMarker"
+         class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
+      <markerResolutionGenerator
+         markerType="de.cognicrypt.staticanalyzer.forbiddenMethodErrorMarker"
+         class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
+      <markerResolutionGenerator
+         markerType="de.cognicrypt.staticanalyzer.impreciseValueExtractionErrorMarker"
+         class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
+      <markerResolutionGenerator
+         markerType="de.cognicrypt.staticanalyzer.predicateContradictionErrorMarker"
+         class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
+      <markerResolutionGenerator
+         markerType="de.cognicrypt.staticanalyzer.requiredPredicateErrorMarker"
+         class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
+      <markerResolutionGenerator
+         markerType="de.cognicrypt.staticanalyzer.constraintErrorMarker"
+         class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
+      <markerResolutionGenerator
+         markerType="de.cognicrypt.staticanalyzer.neverTypeOfErrorMarker"
+         class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
+      <markerResolutionGenerator
+         markerType="de.cognicrypt.staticanalyzer.incompleteOperationErrorMarker"
+         class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
+      <markerResolutionGenerator
+         markerType="de.cognicrypt.staticanalyzer.typestateErrorMarker"
+         class="de.cognicrypt.staticanalyzer.markerresolution.QuickFixer"/>
+      </extension>
+            <extension
+                  point="org.eclipse.ui.menus">
+               <menuContribution
+                     allPopups="false"
+                     locationURI="popup:de.cognicrypt.core.menu">
+                  <command
+                        commandId="de.cognicrypt.staticanalyzer.runAnalysis"
+                        label="Run CogniCrypt Analysis on Selected Project"
+                        style="push">
+                  </command>
+               </menuContribution>
+            </extension>
+            <extension
+                  point="org.eclipse.ui.commands">
+               <command
+                     defaultHandler="de.cognicrypt.staticanalyzer.handlers.RunAnalysisHandler"
+                     id="de.cognicrypt.staticanalyzer.runAnalysis"
+                     name="RunAnalysis">
+               </command>
+            </extension>
 </plugin>
+   

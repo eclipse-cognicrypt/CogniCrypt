@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -35,14 +36,17 @@ import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.SearchRequestor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.part.FileEditorInput;
 import org.osgi.framework.Bundle;
 import com.google.common.base.CharMatcher;
@@ -217,12 +221,34 @@ public class Utils {
 	}
 
 	/**
+	 * This method searches the passed project for the class that contains the main method.
+	 *
+	 * @param project Project that is searched
+	 * @param requestor Object that handles the search results
+	 * @throws CoreException
+	 */
+	public static IFile findFileInProject(IContainer container, String name) throws CoreException {
+		for (IResource res : container.members()) {
+			if (res instanceof IContainer) {
+				IFile file = findFileInProject((IContainer) res, name);
+				if (file != null) {
+					return file;
+				}
+			} else if (res instanceof IFile && (res.getName().equals(name.substring(name.lastIndexOf(".") + 1) + ".java"))) {
+				return (IFile) res;
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * This method gets the project that is currently selected.
 	 *
 	 * @return Currently selected project.
 	 */
 	public static IProject getCurrentlySelectedIProject() {
-		final ISelectionService selectionService = Workbench.getInstance().getActiveWorkbenchWindow().getSelectionService();
+		final ISelectionService selectionService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
 		final ISelection selection = selectionService.getSelection();
 
 		return getIProjectFromISelection(selection);
@@ -348,4 +374,12 @@ public class Utils {
 		}
 		return subTypes;
 	}
+	
+	public static Group addHeaderGroup(Composite parent, String text) {
+		final Group headerGroup = new Group(parent, SWT.SHADOW_IN);
+		headerGroup.setText(text);
+		headerGroup.setLayout(new GridLayout(1, true));
+		return headerGroup;
+	}
+
 }

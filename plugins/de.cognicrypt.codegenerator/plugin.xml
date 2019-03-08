@@ -8,83 +8,41 @@
             visible="true"
             id="de.cognicrypt.codegenerator.actionSet">
          <menu
-               label="CogniCryptMenu"
-               id="cognicryptmenu">
+               icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt.png "
+               id="cognicryptmenu"
+               label="CogniCryptMenu">
             <separator
                   name="CognicryptGroup">
             </separator>
          </menu>
          <action
                class="de.cognicrypt.codegenerator.actions.WizardAction"
-               icon="icons/cognicrypt.png"
+               icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt.png "
                id="de.cognicrypt.codegenerator.actions.WizardAction"
-               label="&amp;Start Code Generation"
+               label="&amp;Launch CogniCrypt Code Generation"
                toolbarPath="CogniCryptGroup"
                tooltip="Generate Code For Cryptographic Task">
          </action>
       </actionSet>
    </extension>
-	
-
-<extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            id="code-clafer_configurator.objectContribution"
-            objectClass="org.eclipse.core.resources.IResource">
-         <menu
-               icon="icons/cognicrypt.png"
-               id="code-clafer_configurator.menu1"
-               label="Launch CogniCrypt">
-            <separator
-                  name="code-clafer_configurator.separator1">
-            </separator>
-         </menu>
-         <action
-               class="de.cognicrypt.codegenerator.actions.WizardActionFromContextMenu"
-               icon="icons/cognicrypt.png"
-               id="code-clafer_configurator_fromContextMenu"
-               label="Launch CogniCrypt">
-         </action>
-      </objectContribution>
-   </extension>
-   
    <extension
-       point="org.eclipse.help.contexts">
-        <contexts
-              file="src/main/resources/Help/TaskSelectionPage.xml"/>
-        <contexts
-              file="src/main/resources/Help/DefaultAlgorithmPage.xml"/> 
-        <contexts
-              file="src/main/resources/Help/InstanceListPage.xml"/> 
-        <contexts
-              file="src/main/resources/Help/SymmetricEncryption.xml"/>
-        <contexts
-              file="src/main/resources/Help/SecurePasswordStorage.xml"/>
-        <contexts
-              file="src/main/resources/Help/SecureCommunication.xml"/>
-        <contexts
-              file="src/main/resources/Help/LongTermArchiving.xml"/>
-        <contexts
-              file="src/main/resources/Help/MultiPartyComputation.xml"/>
-   </extension>
-
-<extension
-      point="org.eclipse.help.toc">
-      <toc file="toc.xml" primary="true" />
-   </extension>
-      
-<extension
-      id="CogniCrypt"
-      point="org.eclipse.core.runtime.products">
-   <product
-         application="org.eclipse.ui.ide.workbench"
-         name="CogniCrypt">
-   </product>
-</extension>
-
-<extension
-      point="org.eclipse.compare.contentViewers">
-</extension>
-      
+                  point="org.eclipse.ui.menus">
+               <menuContribution
+                     allPopups="false"
+                     locationURI="popup:de.cognicrypt.core.menu">
+                  <command
+                        commandId="de.cognicrypt.codegenerator.rungenerator"
+                        label="Run CogniCrypt Code Generator"
+                        style="push">
+                  </command>
+               </menuContribution>
+            </extension>
+            <extension
+                  point="org.eclipse.ui.commands">
+               <command
+                     defaultHandler="de.cognicrypt.codegenerator.actions.RunCodeGeneratorHandler"
+                     id="de.cognicrypt.codegenerator.rungenerator"
+                     name="RunCodeGenerator">
+               </command>
+            </extension>
 </plugin>

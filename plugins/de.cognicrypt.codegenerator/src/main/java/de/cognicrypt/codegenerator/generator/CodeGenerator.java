@@ -21,7 +21,7 @@ import java.util.TreeSet;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -54,14 +54,20 @@ import de.cognicrypt.utils.Utils;
 public abstract class CodeGenerator {
 
 	protected final DeveloperProject project;
+	protected final IFile targetFile;
 	private int endingPositionForRunMethod = -1;
 	private int endPosForImports = -1;
 	private int startingPositionForRunMethod = -1;
 	private int startPosForImports = -1;
 	private String temporaryOutputFile;
 
-	protected CodeGenerator(final IProject targetProject) {
-		this.project = new DeveloperProject(targetProject);
+	protected CodeGenerator(final IResource target) {
+		this.project = new DeveloperProject(target.getProject());
+		if (target instanceof IFile) {
+			this.targetFile = (IFile) target;
+		} else {
+			this.targetFile = null;
+		}
 	}
 
 	/**
@@ -100,7 +106,10 @@ public abstract class CodeGenerator {
 	 *         See {@link DeveloperProject.crossing.opencce.cryptogen.CryptoProject#refresh() refresh()}
 	 */
 	protected boolean insertCallCodeIntoFile(final String temporaryOutputFile, final boolean openFileFlag, final boolean authorFlag, final boolean tempFlag) throws BadLocationException, CoreException, IOException {
-
+		if (this.targetFile != null) {
+			IDE.openEditor(Utils.getCurrentlyOpenPage(), targetFile);
+		}
+		
 		if ((openFileFlag && authorFlag) || !openFileFlag) {
 			final StringBuilder sb = new StringBuilder(temporaryOutputFile);
 			sb.delete(temporaryOutputFile.length() - 9, temporaryOutputFile.length() - 5);
@@ -233,9 +242,10 @@ public abstract class CodeGenerator {
 	 *         {@link DeveloperProject#getPackagesOfProject(String)} and {@link IPackageFragment#getCompilationUnit()}
 	 */
 	protected void removeCryptoPackageIfEmpty() throws CoreException {
-		final IPackageFragment cryptoPackage = this.project.getPackagesOfProject(Constants.PackageName);
+		String packagename = Constants.PackageName.replace(Constants.innerFileSeparator, ".");
+		final IPackageFragment cryptoPackage = this.project.getPackagesOfProject(packagename);
 		if (cryptoPackage.getCompilationUnits().length == 0) {
-			this.project.removePackage(Constants.PackageName);
+			this.project.removePackage(packagename);
 		}
 	}
 
@@ -318,7 +328,7 @@ public abstract class CodeGenerator {
 
 		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
 		final FormatAllAction faa = new FormatAllAction(editor.getSite());
-		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageName).getCompilationUnits();
+		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageName.replace(Constants.innerFileSeparator, ".")).getCompilationUnits();
 		faa.runOnMultiple(generatedCUnits);
 		organizeImportsActionForAllFilesTouchedDuringGeneration.runOnMultiple(generatedCUnits);
 

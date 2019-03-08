@@ -8,5 +8,27 @@
             class="de.cognicrypt.crysl.handler.StartupHandler">
       </startup>
    </extension>
+   
+	<extension 
+		id="cryslbuilder" 
+   		name="CrySL Builder" 
+   		point="org.eclipse.core.resources.builders"> 
+      	<builder hasNature="true"> 
+			<run class="de.cognicrypt.crysl.handler.CrySLBuilder"/>
+      	</builder> 
+   </extension> 
+   
+     <extension 
+   		id="cryslnature" 
+   		name="CrySL Nature" 
+   		point="org.eclipse.core.resources.natures"> 
+      	<runtime> 
+        	<run class="de.cognicrypt.crysl.handler.CrySLNature"/> 
+      	</runtime> 
+       	<requires-nature
+            id="org.eclipse.jdt.core.javanature">
+    	</requires-nature>
+      	<builder id="de.cognicrypt.crysl.handler.cryslbuilder"/> 
+   </extension> 
 
 </plugin>

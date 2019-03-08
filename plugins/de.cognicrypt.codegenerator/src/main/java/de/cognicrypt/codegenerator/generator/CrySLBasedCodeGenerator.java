@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
@@ -82,9 +82,8 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 	 * @throws Exception
 	 */
 
-	public CrySLBasedCodeGenerator(IProject targetProject) {
-		super(targetProject);
-
+	public CrySLBasedCodeGenerator(IResource selectedFile) {
+		super(selectedFile);
 	}
 
 	@Override

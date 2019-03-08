@@ -20,3 +20,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Automatic-Module-Name: de.cognicrypt.staticanalyzer
+Import-Package: org.eclipse.ui.texteditor

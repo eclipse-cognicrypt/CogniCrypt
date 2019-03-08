@@ -18,7 +18,7 @@ package <xsl:value-of select="//task/Package"/>;
 public class PWHasher {	
 	//adopted code from https://github.com/defuse/password-hashing
 	
-	public String createPWHash(char[] pwd) throws GeneralSecurityException { 
+	public static String createPWHash(char[] pwd) throws GeneralSecurityException { 
 		byte[] salt = new byte[<xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/outputSize"/>/8];
 		SecureRandom.getInstanceStrong().nextBytes(salt);
 		
@@ -30,7 +30,7 @@ public class PWHasher {
 		return pwdHash;
 	}
 	
-	public Boolean verifyPWHash(char[] pwd, String pwdhash) throws GeneralSecurityException {
+	public static boolean verifyPWHash(char[] pwd, String pwdhash) throws GeneralSecurityException {
 		String[] parts = pwdhash.split(":");
 		byte[] salt = fromBase64(parts[0]);
 
@@ -64,10 +64,10 @@ public class PWHasher {
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
 public class Output {
-	public void templateUsage(char[] pwd) throws GeneralSecurityException  {
-		PWHasher pwHasher = new PWHasher();
-		String pwdHash = pwHasher.createPWHash(pwd);
-		Boolean t = pwHasher.verifyPWHash(pwd, pwdHash);
+	public static void templateUsage(char[] pwd) throws GeneralSecurityException  {
+		//In order to store a password, it is hashed. 
+		String pwdHash = PWHasher.createPWHash(pwd); // This call hashes the password pwd.
+		boolean t = PWHasher.verifyPWHash(pwd, pwdHash); // This call verifies that the password pwd belongs to the password hash pwdHash
 	}
 }
 </xsl:if>

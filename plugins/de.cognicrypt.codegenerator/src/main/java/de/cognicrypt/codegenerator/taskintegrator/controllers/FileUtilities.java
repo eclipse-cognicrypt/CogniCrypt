@@ -261,14 +261,14 @@ public class FileUtilities {
 	 * @return a boolean value for the validity of the file.
 	 */
 	private boolean validateJSONFile(final File jsonFileLocation) {
-		final Gson gson = new Gson();
 		try {
+			final Gson gson = new Gson();
 			final BufferedReader reader = new BufferedReader(new FileReader(jsonFileLocation));
 			gson.fromJson(reader, Object.class);
 			reader.close();
 			return true;
-		} catch (com.google.gson.JsonSyntaxException | IOException ex) {
-			Activator.getDefault().logError(ex);
+		} catch (IOException e) {
+			Activator.getDefault().logError(e);
 			appendFileErrors(jsonFileLocation.getName());
 			return false;
 		}

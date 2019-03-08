@@ -18,6 +18,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import de.cognicrypt.codegenerator.preferences.CodeGenPreferences;
+import de.cognicrypt.core.properties.CogniCryptPreferencePage;
 
 public class Activator extends AbstractUIPlugin {
 
@@ -77,7 +78,7 @@ public class Activator extends AbstractUIPlugin {
 		super.start(context);
 		Activator.plugin = this;
 		
-		de.cognicrypt.core.properties.CogniCryptpreferencePage.registerPreferenceListener(new CodeGenPreferences());
+		CogniCryptPreferencePage.registerPreferenceListener(new CodeGenPreferences());
 	}
 
 	@Override

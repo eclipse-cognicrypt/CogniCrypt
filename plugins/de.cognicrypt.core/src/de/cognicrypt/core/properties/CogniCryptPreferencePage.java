@@ -17,7 +17,7 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.osgi.service.prefs.BackingStoreException;
 import de.cognicrypt.core.Activator;
 
-public class CogniCryptpreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+public class CogniCryptPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
 	private static List<PreferenceListener> preferenceListeners = new ArrayList<>();
 	

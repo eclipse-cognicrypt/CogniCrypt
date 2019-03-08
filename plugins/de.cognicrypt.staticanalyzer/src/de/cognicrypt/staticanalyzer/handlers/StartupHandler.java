@@ -19,7 +19,9 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IStartup;
+import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 
 /**
@@ -48,6 +50,10 @@ public class StartupHandler implements IStartup {
 		 */
 		@Override
 		public void resourceChanged(final IResourceChangeEvent event) {
+			IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+			if (store.getBoolean(Constants.AUTOMATED_ANALYSIS) == false) {
+				return;
+			}else {
 			final List<IJavaElement> changedJavaElements = new ArrayList<>();
 			Activator.getDefault().logInfo("ResourcechangeListener has been triggered.");
 			try {
@@ -109,23 +115,18 @@ public class StartupHandler implements IStartup {
 				final boolean stat = ako.setUp(changedJavaElements.get(0));
 				if (stat) {
 					analysis_Queue.add(ako);
-				} else {
-					Activator.getDefault().logInfo("Analysis has been cancelled due to erroneous setup.");
 				}
 				while (analysis_Queue.size() > 0) {
 					if (!analysis_running) {
 						final AnalysisKickOff ak = analysis_Queue.remove();
 						analysis_running = true;
-						if (ak.run()) {
-							Activator.getDefault().logInfo("Analysis has finished.");
-						} else {
-							Activator.getDefault().logInfo("Analysis has aborted.");
-						}
+						ak.run();
 						analysis_running = false;
 					}
 				}
 			}
 		}
+	  }
 	}
 
 	private static final AfterBuildListener BUILD_LISTENER = new AfterBuildListener();

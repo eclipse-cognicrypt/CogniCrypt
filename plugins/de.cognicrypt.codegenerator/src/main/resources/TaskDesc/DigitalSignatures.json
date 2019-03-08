@@ -38,8 +38,7 @@
 		}, {
 			"value": "No, but I do need fast verification.",
 			"claferDependencies": [{
-				"algorithm": "scheme",
-				"operand": "performance",
+				"algorithm": "performance",
 				"operator": ">=",
 				"value": "Fast"
 			}],
@@ -48,8 +47,7 @@
 			"value": "No, I would like state-of-the-art security.",
 			"defaultAnswer": true,
 			"claferDependencies": [{
-				"algorithm": "scheme",
-				"operand": "security",
+				"algorithm": "security",
 				"operator": ">=",
 				"value": "Strong"
 			}],

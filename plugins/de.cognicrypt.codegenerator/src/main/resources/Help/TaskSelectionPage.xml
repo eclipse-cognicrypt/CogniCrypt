@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?NLS TYPE="org.eclipse.help.contexts"?>
-<contexts>
-	<context id="TaskSelectionHelp">
-		<description>Select a cryptographic task for which you want to automate the code generation. The code will be generated inside the chosen Java project.
-A Guided mode will configure the algorithm to suit your needs. You can opt the Non-Guided mode, if you wish to configure the algorithm by yourself.
-		</description>
-	</context>
-</contexts> 

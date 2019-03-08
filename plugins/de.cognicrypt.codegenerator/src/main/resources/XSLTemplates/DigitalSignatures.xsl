@@ -9,6 +9,7 @@
 <xsl:variable name="keyPairGenerator">
 	<xsl:choose>
 		<xsl:when test="//task/element[@type='DigitalSignatures']/scheme='RSA'">RSA</xsl:when>
+		<xsl:when test="//task/element[@type='DigitalSignatures']/scheme='DSA'">RSA</xsl:when>
 		<xsl:otherwise>EC</xsl:otherwise>
 	</xsl:choose>
 </xsl:variable>

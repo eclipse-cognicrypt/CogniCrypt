@@ -9,10 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import de.cognicrypt.core.properties.CogniCryptpreferencePage;
 import de.cognicrypt.staticanalyzer.handlers.ShutDownHandler;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 
@@ -40,6 +42,8 @@ public class Activator extends AbstractUIPlugin {
 		Activator.plugin = this;
 		resReporters = new ArrayList<ResultsCCUIListener>();
 		PlatformUI.getWorkbench().addWorkbenchListener(new ShutDownHandler());
+		
+		CogniCryptpreferencePage.registerPreferenceListener(new StaticAnalyzerPreferences());
 	}
 
 	@Override
@@ -93,6 +97,11 @@ public class Activator extends AbstractUIPlugin {
 
 	public static List<ResultsCCUIListener> getResultsReporters() {
 		return resReporters;
+	}
+	
+	@Override
+	public IPreferenceStore getPreferenceStore() {
+		return de.cognicrypt.core.Activator.getDefault().getPreferenceStore();
 	}
 
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="de.cognicrypt.cryslhandler.feature"
-      label="CrySL Handler"
+      label="CogniCrypt CrySL Handler"
       version="1.0.0.qualifier"
       provider-name="Technical University Darmstadt, Paderborn University">
 
@@ -103,12 +103,21 @@ Except as expressly stated in Sections 2(a) and 2(b) above, Recipient receives n
       <update url="http://download.eclipse.org/cognicrypt"/>
    </url>
 
-   <plugin
-         id="de.cognicrypt.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.xtext"/>
+      <import plugin="org.eclipse.xtext.common.types.ui"/>
+      <import plugin="de.darmstadt.tu.crossing.CryptSL.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="de.darmstadt.tu.crossing.CryptSL" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="de.darmstadt.tu.crossing.CryptSL.ide" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="de.cognicrypt.core" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.junit"/>
+   </requires>
 
    <plugin
          id="de.cognicrypt.crysl.handler"

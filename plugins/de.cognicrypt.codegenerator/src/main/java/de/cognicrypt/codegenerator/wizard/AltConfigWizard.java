@@ -8,10 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.clafer.instance.InstanceClafer;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -52,8 +55,9 @@ public class AltConfigWizard extends Wizard {
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			Activator.getDefault().logError(e);
 		}
-		setWindowTitle("Cryptography Task Configurator");
-		final ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "icons/cognicrypt-medium.png");
+		setWindowTitle("CogniCrypt");
+		
+		final ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "platform:/plugin/de.cognicrypt.core/icons/cognicrypt-medium.png ");
 		setDefaultPageImageDescriptor(image);
 		this.constraints = new HashMap<>();
 		generator = codeGen;
@@ -188,7 +192,9 @@ public class AltConfigWizard extends Wizard {
 		final Task selectedTask = this.taskListPage.getSelectedTask();
 		CodeGenerator codeGenerator;
 		String additionalResources = selectedTask.getAdditionalResources();
-
+		final LocatorPage currentPage = (LocatorPage) getContainer().getCurrentPage();
+		IResource selectedFile = (IResource) currentPage.getSelectedResource().getFirstElement();
+		
 		switch (generator) {
 			case CrySL:
 				List<List<CodeGenCrySLRule>> rules = new ArrayList<List<CodeGenCrySLRule>>();
@@ -209,13 +215,14 @@ public class AltConfigWizard extends Wizard {
 						}
 					}
 
-					codeGenerator = new CrySLBasedCodeGenerator(this.taskListPage.getSelectedProject());
+					codeGenerator = new CrySLBasedCodeGenerator(selectedFile);
 					
 					Map<CodeGenCrySLRule, ?> constraints = new HashMap<CodeGenCrySLRule, Object>();
 					Configuration chosenConfig = new CrySLConfiguration(rules, constraints, codeGenerator.getDeveloperProject()
 						.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
 
 					ret = codeGenerator.generateCodeTemplates(chosenConfig, additionalResources);
+					
 				} catch (Exception e) {
 					Activator.getDefault().logError(e);
 					return false;
@@ -230,19 +237,26 @@ public class AltConfigWizard extends Wizard {
 				instanceGenerator.generateInstances(this.constraints);
 				final Map<String, InstanceClafer> instances = instanceGenerator.getInstances();
 				final InstanceClafer instance = instances.values().iterator().next();
-				final LocatorPage currentPage = (LocatorPage) getContainer().getCurrentPage();
 
 				// Initialize Code Generation
-				codeGenerator = new XSLBasedGenerator(Utils.getIProjectFromISelection(currentPage.getSelectedResource()), selectedTask.getXslFile());
+				codeGenerator = new XSLBasedGenerator(selectedFile, selectedTask.getXslFile());
 				final DeveloperProject developerProject = codeGenerator.getDeveloperProject();
 
+				JOptionPane optionPane = new JOptionPane("CogniCrypt is now generating code that implements " + selectedTask.getDescription() + "\ninto file " + ((selectedFile != null) ? selectedFile.getName() : "Output.java") + ". This should take no longer than a few seconds.", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+				JDialog waitingDialog = optionPane.createDialog("Generating Code");
+				waitingDialog.setModal(false);
+				waitingDialog.setVisible(true);
+				
 				// Generate code template
 				XSLConfiguration chosenConfig = new XSLConfiguration(instance, this.constraints, developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
 				ret &= codeGenerator.generateCodeTemplates(chosenConfig, selectedTask.getAdditionalResources());
+				
+				waitingDialog.setVisible(false);
+				
+				waitingDialog.dispose();
 				break;
 			default:
 				ret = false;
-				break;
 		}
 		return ret;
 	}

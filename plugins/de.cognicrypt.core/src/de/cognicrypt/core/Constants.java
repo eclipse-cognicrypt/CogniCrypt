@@ -21,7 +21,15 @@ public class Constants {
 		XSL, CrySL
 	}
 	public enum Severities {
-		Problem, Warning, Secure
+		Problem, Warning, Secure, Ignored;
+		
+		public static Severities get(int i) {
+			return values()[i];
+		}
+	}
+	
+	public static enum CG {
+		CHA, SPARK_LIBRARY, SPARK
 	}
 
 	public static final String NO_RES_FOUND = "No resource to generate error marker for found.";
@@ -41,6 +49,7 @@ public class Constants {
 	public static final String JavaNatureID = "org.eclipse.jdt.core.javanature";
 
 	private static final String rsrcPath = "src" + Constants.innerFileSeparator + "main" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator;
+	private static final String tstrsrcPath = "src" + Constants.innerFileSeparator + "test" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator;
 	public static final String providerPath = Constants.rsrcPath + "AdditionalResources" + Constants.innerFileSeparator + "Provider";
 
 	// JSON task file
@@ -58,7 +67,7 @@ public class Constants {
 	public static final String testPrimitverFolder = "src/test/resources/PrimitiveIntegration/";
 
 	// Added Packages
-	public static final String PRIMITIVE_PACKAGE = "org.crypto.customPrimitive";
+	public static final String PRIMITIVE_PACKAGE = "de.cognicrypt.customPrimitive";
 
 	// Clafer related file
 	public static final String claferHeader = primitivesPath + innerFileSeparator + "Clafer" + innerFileSeparator + "ClaferHeader.cfr";
@@ -114,7 +123,7 @@ public class Constants {
 	public static final int ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID = -1;
 
 	// Clafer Instance Generation
-	public static final String claferPath = Constants.rsrcPath + "ClaferModel" + Constants.innerFileSeparator + "SymmetricEncryption.js";
+	public static final String claferPath = Constants.rsrcPath + "ClaferModel" + Constants.innerFileSeparator + "Encryption.js";
 	public static final String PATH_FOR_CONFIG_XML = "/Configurator.xml";
 	public static final String XML_FILE_NAME = Constants.rsrcPath + "ClaferModel/Encrypt_CryptoTasks.xml";
 
@@ -131,7 +140,8 @@ public class Constants {
 	public static final String AdditionalOutputFile = "Output.java";
 	public static final String AdditionalOutputTempFile = "OutputTemp.java";
 	public static final String TempSuffix = "Temp";
-	public static final String PackageName = "Crypto";
+
+	public static final String PackageName = "de" + Constants.innerFileSeparator + "cognicrypt" + Constants.innerFileSeparator + "crypto";
 	public static final String CodeGenerationCallFolder = Constants.innerFileSeparator + Constants.PackageName;
 	public static final String CodeGenerationCallFile = CodeGenerationCallFolder + Constants.innerFileSeparator + Constants.AdditionalOutputFile;
 
@@ -478,6 +488,23 @@ public class Constants {
 	// QuickFixs
 	public static final String SUPPRESSWARNING_FIX = "Suppress Warning: ";
 
+	// Marker types
+	public static final String CC_MARKER_TYPE = "de.cognicrypt.staticanalyzer.ccMarker";
+	public static final String FORBIDDEN_METHOD_MARKER_TYPE = "de.cognicrypt.staticanalyzer.forbiddenMethodMarker";
+	public static final String IMPRECISE_VALUE_EXTRACTION_MARKER_TYPE = "de.cognicrypt.staticanalyzer.impreciseValueExtractionErrorMarker";
+	public static final String PREDICATE_CONTRADICTION_MARKER_TYPE = "de.cognicrypt.staticanalyzer.predicateContradictionErrorMarker";
+	public static final String REQUIRED_PREDICATE_MARKER_TYPE = "de.cognicrypt.staticanalyzer.requiredPredicateErrorMarker";
+	public static final String CONSTRAINT_ERROR_MARKER_TYPE = "de.cognicrypt.staticanalyzer.constraintErrorMarker";
+	public static final String NEVER_TYPEOF_MARKER_TYPE = "de.cognicrypt.staticanalyzer.neverTypeOfErrorMarker";
+	public static final String INCOMPLETE_OPERATION_MARKER_TYPE = "de.cognicrypt.staticanalyzer.incompleteOperationErrorMarker";
+	public static final String TYPESTATE_ERROR_MARKER_TYPE = "de.cognicrypt.staticanalyzer.typestateErrorMarker";
+	
+	public static final String RULE_SELECTION = "JCASel";
+	public static final String AUTOMATED_ANALYSIS = "AutoAnal";
+	public static final String SHOW_SECURE_OBJECTS = "SecObj";
+	public static final String CALL_GRAPH_SELECTION = "CGSel";
+	public static final String PERSIST_CONFIG = "de.cognicrypt.codegenerator.persistConfig";
+	
 	// for creating xml file
 	public static final String Xml_Declaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 	public static final String NLS_Tag = "<?NLS TYPE=\"org.eclipse.help.contexts\"?>";
@@ -514,5 +541,9 @@ public class Constants {
 
 	// define a correct ID (get range of possible ones)
 	public static final int JDT_PROBLEM_ID = 10000000;
-
+	public final static String RELATIVE_RULES_DIR = "resources/CrySLRules";
+	public static final String cryslFileEnding = ".cryptsl";
+	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CryptSL";
+	public static final String HEALTHY = "Secure";
+	public static final String UNHEALTHY = "Insecure";
 }

@@ -16,10 +16,13 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.IJavaProject;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import boomerang.callgraph.ObservableDynamicICFG;
+import boomerang.callgraph.ObservableICFG;
 import boomerang.preanalysis.BoomerangPretransformer;
 import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
+import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.utils.Utils;
@@ -27,8 +30,9 @@ import soot.G;
 import soot.PackManager;
 import soot.Scene;
 import soot.SceneTransformer;
+import soot.SootMethod;
 import soot.Transform;
-import soot.jimple.toolkits.ide.icfg.JimpleBasedInterproceduralCFG;
+import soot.Unit;
 import soot.options.Options;
 
 /**
@@ -39,23 +43,17 @@ import soot.options.Options;
  */
 public class SootRunner {
 
-	private static CG DEFAULT_CALL_GRAPH = CG.CHA;
-
-	public static enum CG {
-		CHA, SPARK_LIBRARY, SPARK
-	}
-
 	private static SceneTransformer createAnalysisTransformer(final ResultsCCUIListener resultsReporter) {
 		return new SceneTransformer() {
 
 			@Override
 			protected void internalTransform(final String phaseName, final Map<String, String> options) {
 				BoomerangPretransformer.v().apply();
-				final JimpleBasedInterproceduralCFG icfg = new JimpleBasedInterproceduralCFG(false);
-				final CryptoScanner scanner = new CryptoScanner() {
+				final ObservableDynamicICFG icfg = new ObservableDynamicICFG(true);
+				CryptoScanner scanner = new CryptoScanner() {
 
 					@Override
-					public JimpleBasedInterproceduralCFG icfg() {
+					public ObservableICFG<Unit, SootMethod> icfg() {
 						return icfg;
 					}
 
@@ -134,8 +132,9 @@ public class SootRunner {
 		Options.v().set_include(getIncludeList());
 		Options.v().set_exclude(getExcludeList());
 		Scene.v().loadNecessaryClasses();
-		switch (DEFAULT_CALL_GRAPH.ordinal()) {
-			case 2:
+		// choose call graph based on what user selected on preference page
+		switch (Activator.getDefault().getPreferenceStore().getInt(Constants.CALL_GRAPH_SELECTION)) {
+			case 1:
 				Options.v().setPhaseOption("cg.spark", "on");
 				Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");
 				break;

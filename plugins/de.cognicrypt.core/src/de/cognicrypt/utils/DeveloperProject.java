@@ -226,7 +226,8 @@ public class DeveloperProject {
 	}
 
 	/**
-	 * This method checks if a project is a MavenProject. 
+	 * This method checks if a project is a MavenProject.
+	 * 
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if MavenNature is existing.
 	 * @throws CoreException
 	 */
@@ -238,41 +239,42 @@ public class DeveloperProject {
 	}
 
 	/**
-	 * This method adds a Maven dependency entry to the pom.xml, if the entry doesn't exist.
-	 * @param groupId		
+	 * This method adds a Maven dependency entry to the pom.xml, if the entry
+	 * doesn't exist.
+	 * 
+	 * @param groupId
 	 * @param artifactId
 	 * @param version
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if the adding is successful.
 	 */
 	public boolean addMavenDependency(String groupId, String artifactId, String version) {
 		XMLParser xmlParser;
-		File pom = new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml");		
+		File pom = new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml");
 		if (pom.exists()) {
 			xmlParser = new XMLParser(pom);
 			xmlParser.useDocFromFile();
 
-			
 			Node dependenciesNode = xmlParser.getChildNodeByTagName(xmlParser.getRoot(), Constants.DEPENDENCIES_TAG);
-			if(dependenciesNode != null) {
+			if (dependenciesNode != null) {
 				NodeList dependencyList = dependenciesNode.getChildNodes();
 				for (int i = 0; i < dependencyList.getLength(); i++) {
 					if (isEqualMavenDependency(dependencyList.item(i), groupId, artifactId, version)) {
 						return false;
 					}
 				}
-			}
-			else {
+			} else {
 				dependenciesNode = xmlParser.getDoc().createElement(Constants.DEPENDENCIES_TAG);
 				xmlParser.getRoot().appendChild(dependenciesNode);
 			}
-			
+
 			Element dependency = xmlParser.getDoc().createElement(Constants.DEPENDENCY_TAG);
 			xmlParser.createChildElement(dependency, Constants.GROUPID_TAG, groupId);
 			xmlParser.createChildElement(dependency, Constants.ARTIFACTID_TAG, artifactId);
 			xmlParser.createChildElement(dependency, Constants.VERSION_TAG, version);
 			dependenciesNode.appendChild(dependency);
 			xmlParser.writeXML();
-			execute(pom, Arrays.asList(Constants.MVN_INSTALL_COMMAND));
+			executeMavenCommands(pom, Arrays.asList(Constants.MVN_ECLIPSE_COMMAND+" "+Constants.MVN_SKIPTESTS_COMMAND));
+
 		} else {
 			Activator.getDefault().logInfo("pom.xml doesn't exist at this place: " + project.getLocation().toOSString()
 					+ Constants.outerFileSeparator + "pom.xml");
@@ -281,7 +283,8 @@ public class DeveloperProject {
 	}
 
 	/**
-	 * This method 
+	 * This method
+	 * 
 	 * @param dependency
 	 * @param groupId
 	 * @param artifactId
@@ -319,21 +322,24 @@ public class DeveloperProject {
 		return false;
 	}
 
-	
 	/**
 	 * This method executes Maven commands
-	 * @param pom
+	 * 
 	 * @param commands
 	 */
-	private void execute(File pom, List<String> commands) {
+	public void executeMavenCommands(File pom,List<String> commands) {
 		InvocationRequest request = new DefaultInvocationRequest();
 		request.setPomFile(pom);
-		request.setGoals( commands );
+		request.setGoals(commands);
 		Invoker invoker = new DefaultInvoker();
+//		invoker.setMavenHome(new File(System.getenv("M3_HOME")));
 		try {
-		InvocationResult result = invoker.execute( request );
+			InvocationResult result = invoker.execute(request);
 		} catch (MavenInvocationException e) {
 			Activator.getDefault().logError(e);
 		}
+		
+		//TODO: wenn Umgebungsvariable nicht gesetzt ist!!!
 	}
+
 }

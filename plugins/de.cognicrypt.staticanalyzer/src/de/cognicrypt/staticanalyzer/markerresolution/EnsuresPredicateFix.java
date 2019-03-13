@@ -60,6 +60,13 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 
 	@Override
 	public void run(final IMarker marker) {
+		try {
+			Activator.getDefault().logInfo("Line number: " + (int) marker.getAttribute(IMarker.LINE_NUMBER) + " - "
+					+ (String) marker.getAttribute(IMarker.MESSAGE));
+		} catch (CoreException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		this.devProject = new DeveloperProject(marker.getResource().getProject());
 		ICompilationUnit sourceUnit = null;
@@ -69,8 +76,8 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 			sourceUnit = Utils.getCompilationUnitFromMarker(marker);
 
 			if (devProject.isMavenProject()) {
-//				 devProject.addMavenDependency("de.tudarmstadt.ukp.wikipedia", "de.tudarmstadt.ukp.wikipedia.api", "1.1.0");
-				 devProject.addMavenDependency(Constants.PREDICATEENSURER_GROUPID, Constants.PREDICATEENSURER_ARTIFACTID, Constants.PREDICATEENSURER_VERSION);
+				devProject.addMavenDependency(Constants.PREDICATEENSURER_GROUPID, Constants.PREDICATEENSURER_ARTIFACTID,
+						Constants.PREDICATEENSURER_VERSION);
 			} else {
 				Utils.addAdditionalFiles("resources/Predicate", "de.cognicrypt.staticanalyzer", this.devProject);
 			}
@@ -81,8 +88,6 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 			lineNumber = (int) marker.getAttribute(IMarker.LINE_NUMBER);
 			EnsuresPredicateFix.predicate = (String) marker.getAttribute("predicate");
 			EnsuresPredicateFix.errorParamVarName = (String) marker.getAttribute("errorParam");
-		
-			
 		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
@@ -92,10 +97,21 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 		parser.setSource(sourceUnit);
 		final CompilationUnit unit = (CompilationUnit) parser.createAST(null);
 		unit.accept(new ErrorSourceVisitor(lineNumber, unit, sourceUnit));
-		
+		try {
+			marker.setAttribute(IMarker.LINE_NUMBER, ((int) marker.getAttribute(IMarker.LINE_NUMBER)) + 1);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 		final SuppressWarningFix tempFix = new SuppressWarningFix("");
 		tempFix.run(marker);
-		
+		// Utils.getCurrentlyOpenEditor().doSave(null);
+		// try {
+		// devProject.refresh();
+		// } catch (CoreException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+
 	}
 
 	/**
@@ -132,6 +148,7 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 					index = index.getParent();
 				}
 			}
+			// Activator.getDefault().logInfo("Linenumber of AST Node: "+index.);
 			listRewrite.insertBefore(ePStatement, index, null);
 
 		} else if (node.getNodeType() == ASTNode.FIELD_DECLARATION) {
@@ -148,6 +165,7 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 		final Document document = new Document(sourceUnit.getSource());
 		edits.apply(document);
 		sourceUnit.getBuffer().setContents(document.get());
+
 	}
 
 	/**

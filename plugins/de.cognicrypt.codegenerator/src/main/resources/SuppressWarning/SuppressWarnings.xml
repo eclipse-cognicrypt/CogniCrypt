@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SuppressWarnings>
+   <SuppressWarning ID="1746539721">
+      <File>SymmetricEnc.java</File>
+      <LineNumber>0</LineNumber>
+      <Message>First parameter was not properly generated as randomized</Message>
+   </SuppressWarning>
+   <SuppressWarning ID="-2080020545">
+      <File>SymmetricEnc.java</File>
+      <LineNumber>0</LineNumber>
+      <Message>Second parameter was not properly generated as generated Key</Message>
+   </SuppressWarning>
+    <SuppressWarning ID="-652051836">
+      <File>PublicKeyEnc.java</File>
+      <LineNumber>16</LineNumber>
+      <Message>Second parameter was not properly generated as generated Key</Message>
+   </SuppressWarning>
+   <SuppressWarning ID="-516075394">
+      <File>PWHasher.java</File>
+      <LineNumber>30</LineNumber>
+      <Message>Second parameter was not properly generated as randomized</Message>
+   </SuppressWarning>
+   <SuppressWarning ID="1607196638">
+      <File>PWHasher.java</File>
+      <LineNumber>32</LineNumber>
+      <Message>First parameter was not properly generated as specced Key</Message>
+   </SuppressWarning>
+</SuppressWarnings>

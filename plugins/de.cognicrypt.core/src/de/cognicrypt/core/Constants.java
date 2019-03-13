@@ -472,6 +472,7 @@ public class Constants {
 	public static final String radioButton = "Radio button";
 
 	// for creating SuppressWarnings.xml
+
 	public static final String SUPPRESSWARNING_FILE = "SuppressWarnings" + XML_EXTENSION;
 	public static final String SUPPRESSWARNINGS_ELEMENT = "SuppressWarnings";
 	public static final String SUPPRESSWARNING_ELEMENT = "SuppressWarning";
@@ -482,6 +483,7 @@ public class Constants {
 
 	// QuickFixs
 	public static final String SUPPRESSWARNING_FIX = "Suppress Warning: ";
+	public static final String SUPPRESSWARNING_PATH = Constants.rsrcPath + "SuppressWarning" + Constants.innerFileSeparator + "SuppressWarnings.xml";
 
 	// Marker types
 	public static final String CC_MARKER_TYPE = "de.cognicrypt.staticanalyzer.ccMarker";

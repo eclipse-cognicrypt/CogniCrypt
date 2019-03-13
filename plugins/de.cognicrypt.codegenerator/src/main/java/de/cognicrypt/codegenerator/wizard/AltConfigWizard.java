@@ -1,5 +1,7 @@
 package de.cognicrypt.codegenerator.wizard;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -9,8 +11,10 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.apache.commons.io.FileUtils;
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -203,7 +207,6 @@ public class AltConfigWizard extends Wizard {
 		Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.WIZARD_FILE_SELECTED_GENERATION, selectedFile.getName());
 		final CodeGenerator codeGenerator = new XSLBasedGenerator(selectedFile, selectedTask.getXslFile());
 		final DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-
 		JOptionPane optionPane = new JOptionPane("CogniCrypt is now generating code that implements " + selectedTask.getName() + "\ninto file " + ((selectedFile != null) ? selectedFile.getName() : "Output.java") + ". This should take no longer than a few seconds.", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
 		JDialog waitingDialog = optionPane.createDialog("Generating Code");
 		waitingDialog.setModal(false);
@@ -214,8 +217,26 @@ public class AltConfigWizard extends Wizard {
 			new Configuration(instance, this.constraints, developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile),
 			selectedTask.getAdditionalResources());
 		waitingDialog.setVisible(false);
-		
 		waitingDialog.dispose();
+		if(selectedTask.getName().equals("Encryption") || selectedTask.getName().equals("SecurePassword")) {
+		    try {
+		    	File supressWarningXMLFile = CodeGenUtils.getResourceFromWithin(Constants.SUPPRESSWARNING_PATH);
+		    	File clientSupressWarningXMLFile = new File(developerProject.getProjectPath()+"/SuppressWarnings.xml");
+
+		    	if(supressWarningXMLFile.exists()) {
+		    		if(!clientSupressWarningXMLFile.exists()) {
+			    		clientSupressWarningXMLFile.createNewFile();
+			    	}
+		    		FileUtils.copyFile(supressWarningXMLFile, clientSupressWarningXMLFile);
+					developerProject.refresh();
+		    	}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (CoreException e) {
+				e.printStackTrace();
+			} 
+		}
+		
 		
 		return ret;
 	}

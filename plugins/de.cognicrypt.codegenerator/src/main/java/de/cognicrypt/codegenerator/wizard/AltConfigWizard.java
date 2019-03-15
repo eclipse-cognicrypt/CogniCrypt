@@ -218,11 +218,11 @@ public class AltConfigWizard extends Wizard {
 			selectedTask.getAdditionalResources());
 		waitingDialog.setVisible(false);
 		waitingDialog.dispose();
+		
 		if(selectedTask.getName().equals("Encryption") || selectedTask.getName().equals("SecurePassword")) {
 		    try {
 		    	File supressWarningXMLFile = CodeGenUtils.getResourceFromWithin(Constants.SUPPRESSWARNING_PATH);
 		    	File clientSupressWarningXMLFile = new File(developerProject.getProjectPath()+"/SuppressWarnings.xml");
-
 		    	if(supressWarningXMLFile.exists()) {
 		    		if(!clientSupressWarningXMLFile.exists()) {
 			    		clientSupressWarningXMLFile.createNewFile();
@@ -231,9 +231,9 @@ public class AltConfigWizard extends Wizard {
 					developerProject.refresh();
 		    	}
 			} catch (IOException e) {
-				e.printStackTrace();
+				Activator.getDefault().logError(e);
 			} catch (CoreException e) {
-				e.printStackTrace();
+				Activator.getDefault().logError(e);
 			} 
 		}
 		

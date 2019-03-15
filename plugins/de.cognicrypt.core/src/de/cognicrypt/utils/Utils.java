@@ -6,6 +6,7 @@
 package de.cognicrypt.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import org.eclipse.jdt.core.search.SearchRequestor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -321,6 +323,21 @@ public class Utils {
 		headerGroup.setText(text);
 		headerGroup.setLayout(new GridLayout(1, true));
 		return headerGroup;
+	}
+
+	public static Image loadImage(final String image) {
+		return loadImage(image, Activator.PLUGIN_ID);
+	}
+
+	public static Image loadImage(final String image, String pluginID) {
+		try {
+			return new Image(PlatformUI.getWorkbench().getDisplay(), new FileInputStream(getResourceFromWithin(image, pluginID)));
+		}
+		catch (final Exception ex) {
+			Activator.getDefault().logError(ex);
+		}
+
+		return null;
 	}
 
 }

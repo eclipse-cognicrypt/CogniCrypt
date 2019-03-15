@@ -10,16 +10,9 @@
 
 package de.cognicrypt.codegenerator.wizard;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -35,13 +28,13 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.PlatformUI;
-import org.osgi.framework.Bundle;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.telemetry.TelemetryEvents;
+import de.cognicrypt.utils.Utils;
 
 public class TaskSelectionPage extends WizardPage {
 
@@ -86,7 +79,7 @@ public class TaskSelectionPage extends WizardPage {
 		final List<Image> unclickedImages = new ArrayList<Image>();
 		new Label(this.container, SWT.NONE);
 		for (Task ccTask : tasks) {
-			final Image taskImage = loadImage(ccTask.getImage());
+			final Image taskImage = Utils.loadImage("src/main/resources/images/" + ccTask.getImage() + ".png", Activator.PLUGIN_ID);
 			unclickedImages.add(taskImage);
 			
 			final Button taskButton = createImageButton(this.container, taskImage, ccTask.getDescription());
@@ -126,33 +119,6 @@ public class TaskSelectionPage extends WizardPage {
 		b.setImage(startImage);
 		b.setToolTipText(taskName);
 		return b;
-	}
-
-	private Image loadImage(final String image) {
-		try {
-			final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
-			if (bundle == null) {
-				return null;
-			}
-
-			final URL entry = bundle.getEntry("src/main/resources/images/" + image + ".png");
-			final URL resolvedURL = FileLocator.toFileURL(entry);
-			URI resolvedURI = null;
-			if (resolvedURL != null) {
-				resolvedURI = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
-			} else {
-				resolvedURI = FileLocator.resolve(entry).toURI();
-			}
-
-			final File file = new File(resolvedURI);
-			final InputStream is = new FileInputStream(file);
-
-			return new Image(PlatformUI.getWorkbench().getDisplay(), is);
-		} catch (final Exception ex) {
-			Activator.getDefault().logError(ex);
-		}
-
-		return null;
 	}
 
 	class SelectionButtonListener implements Listener {

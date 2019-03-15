@@ -197,7 +197,7 @@ public class Constants {
 			{"java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException",
 					"javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException",
 					"java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List",
-					"java.util.Base64", "java.io.InputStream", "java.io.OutputStream", "java.util.Properties", "java.io.FileOutputStream", "java.security.Key"};
+					"java.util.Base64", "java.io.InputStream", "java.io.OutputStream", "java.util.Properties", "java.io.FileOutputStream", "java.security.Key", "java.net.URL"};
 
 	// Types
 	public static final String INTEGER = "Integer";
@@ -472,6 +472,7 @@ public class Constants {
 	public static final String radioButton = "Radio button";
 
 	// for creating SuppressWarnings.xml
+
 	public static final String SUPPRESSWARNING_FILE = "SuppressWarnings" + XML_EXTENSION;
 	public static final String SUPPRESSWARNINGS_ELEMENT = "SuppressWarnings";
 	public static final String SUPPRESSWARNING_ELEMENT = "SuppressWarning";
@@ -482,6 +483,7 @@ public class Constants {
 
 	// QuickFixs
 	public static final String SUPPRESSWARNING_FIX = "Suppress Warning: ";
+	public static final String SUPPRESSWARNING_PATH = Constants.rsrcPath + "SuppressWarning" + Constants.innerFileSeparator + "SuppressWarnings.xml";
 
 	// Marker types
 	public static final String CC_MARKER_TYPE = "de.cognicrypt.staticanalyzer.ccMarker";

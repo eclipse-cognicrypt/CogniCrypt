@@ -497,6 +497,8 @@ public class Constants {
 	public static final String RULE_SELECTION = "JCASel";
 	public static final String AUTOMATED_ANALYSIS = "AutoAnal";
 	public static final String SHOW_SECURE_OBJECTS = "SecObj";
+	public static final String ANALYSE_DEPENDENCIES = "AnlzDep";
+	public static final String ANALYSE_DEPENDENCIES_CHANGED = "AnlzDepChng";
 	public static final String CALL_GRAPH_SELECTION = "CGSel";
 	public static final String PERSIST_CONFIG = "de.cognicrypt.codegenerator.persistConfig";
 	

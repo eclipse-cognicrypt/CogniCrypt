@@ -18,6 +18,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import de.cognicrypt.codegenerator.preferences.CodeGenPreferences;
+import de.cognicrypt.core.properties.CogniCryptPreferencePage;
 import de.cognicrypt.core.telemetry.Telemetry;
 import de.cognicrypt.core.telemetry.TelemetryEvents;
 
@@ -82,7 +83,7 @@ public class Activator extends AbstractUIPlugin {
 		Activator.plugin = this;
 		telemetry = new Telemetry();
 		telemetry.sendEvent(TelemetryEvents.START);
-		de.cognicrypt.core.properties.CogniCryptpreferencePage.registerPreferenceListener(new CodeGenPreferences());
+		CogniCryptPreferencePage.registerPreferenceListener(new CodeGenPreferences());
 	}
 
 	@Override

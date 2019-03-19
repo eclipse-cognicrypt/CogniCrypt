@@ -162,11 +162,12 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		int selectedSeverity = Activator.getDefault().getPreferenceStore().getInt(markerType);
 		if (selectedSeverity == -1) {
 			selectedSeverity = Activator.getDefault().getPreferenceStore().getDefaultInt(markerType);
-		}if (selectedSeverity == 3) {
-			return;
 		}
 		Severities sev = Severities.get(selectedSeverity);
-
+		if (sev == Severities.Ignored) {
+			return;
+		}
+		
 		this.warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator + Constants.SUPPRESSWARNING_FILE;
 		final File warningsFile = new File(this.warningFilePath);
 
@@ -222,7 +223,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			}
 			final Value varName = var.getValue();
 			this.markerGenerator.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt), unit.getJavaSourceStartLineNumber(),
-					"Object " + (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", Severities.Secure);
+					"Object " + (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", Severities.Info);
 		}
 	}
 

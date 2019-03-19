@@ -18,7 +18,7 @@ public class Constants {
 	}
 
 	public enum Severities {
-		Problem, Warning, Secure, Ignored;
+		Problem, Warning, Info, Ignored;
 		
 		public static Severities get(int i) {
 			return values()[i];

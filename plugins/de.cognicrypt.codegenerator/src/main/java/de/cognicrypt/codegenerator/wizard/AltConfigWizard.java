@@ -52,9 +52,9 @@ public class AltConfigWizard extends Wizard {
 			Activator.getDefault().logError(e);
 		}
 		setWindowTitle("Code Generator");
-		
+
 		Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.WIZARD_OPENED);
-		
+
 		final ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "platform:/plugin/de.cognicrypt.core/icons/cognicrypt-medium.png ");
 		setDefaultPageImageDescriptor(image);
 		this.constraints = new HashMap<>();
@@ -201,43 +201,44 @@ public class AltConfigWizard extends Wizard {
 		final InstanceClafer instance = instances.values().iterator().next();
 		final LocatorPage currentPage = (LocatorPage) getContainer().getCurrentPage();
 
-
 		// Initialize Code Generation
 		IResource selectedFile = (IResource) currentPage.getSelectedResource().getFirstElement();
 		Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.WIZARD_FILE_SELECTED_GENERATION, selectedFile.getName());
 		final CodeGenerator codeGenerator = new XSLBasedGenerator(selectedFile, selectedTask.getXslFile());
 		final DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-		JOptionPane optionPane = new JOptionPane("CogniCrypt is now generating code that implements " + selectedTask.getName() + "\ninto file " + ((selectedFile != null) ? selectedFile.getName() : "Output.java") + ". This should take no longer than a few seconds.", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+
+		JOptionPane optionPane = new JOptionPane("CogniCrypt is now generating code that implements " + selectedTask.getDescription() + "\ninto file " + ((selectedFile != null)
+			? selectedFile.getName()
+			: "Output.java") + ". This should take no longer than a few seconds.", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[] {}, null);
 		JDialog waitingDialog = optionPane.createDialog("Generating Code");
 		waitingDialog.setModal(false);
 		waitingDialog.setVisible(true);
-		
+
 		// Generate code template
 		ret &= codeGenerator.generateCodeTemplates(
 			new Configuration(instance, this.constraints, developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile),
 			selectedTask.getAdditionalResources());
 		waitingDialog.setVisible(false);
 		waitingDialog.dispose();
-		
-		if(selectedTask.getName().equals("Encryption") || selectedTask.getName().equals("SecurePassword")) {
-		    try {
-		    	File supressWarningXMLFile = CodeGenUtils.getResourceFromWithin(Constants.SUPPRESSWARNING_PATH);
-		    	File clientSupressWarningXMLFile = new File(developerProject.getProjectPath()+"/SuppressWarnings.xml");
-		    	if(supressWarningXMLFile.exists()) {
-		    		if(!clientSupressWarningXMLFile.exists()) {
-			    		clientSupressWarningXMLFile.createNewFile();
-			    	}
-		    		FileUtils.copyFile(supressWarningXMLFile, clientSupressWarningXMLFile);
+
+		if (selectedTask.getName().equals("Encryption") || selectedTask.getName().equals("SecurePassword")) {
+			try {
+				File supressWarningXMLFile = CodeGenUtils.getResourceFromWithin(Constants.SUPPRESSWARNING_PATH);
+				File clientSupressWarningXMLFile = new File(developerProject.getProjectPath() + "/SuppressWarnings.xml");
+				if (supressWarningXMLFile.exists()) {
+					if (!clientSupressWarningXMLFile.exists()) {
+						clientSupressWarningXMLFile.createNewFile();
+					}
+					FileUtils.copyFile(supressWarningXMLFile, clientSupressWarningXMLFile);
 					developerProject.refresh();
-		    	}
+				}
 			} catch (IOException e) {
 				Activator.getDefault().logError(e);
 			} catch (CoreException e) {
 				Activator.getDefault().logError(e);
-			} 
+			}
 		}
-		
-		
+
 		return ret;
 	}
 

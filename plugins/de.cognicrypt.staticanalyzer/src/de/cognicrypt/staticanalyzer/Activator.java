@@ -14,9 +14,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import de.cognicrypt.core.properties.CogniCryptpreferencePage;
 import de.cognicrypt.core.telemetry.Telemetry;
 import de.cognicrypt.core.telemetry.TelemetryEvents;
+import de.cognicrypt.core.properties.CogniCryptPreferencePage;
 import de.cognicrypt.staticanalyzer.handlers.ShutDownHandler;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 
@@ -49,7 +49,7 @@ public class Activator extends AbstractUIPlugin {
 		telemetry.sendEvent(TelemetryEvents.START);
 		PlatformUI.getWorkbench().addWorkbenchListener(new ShutDownHandler());
 		
-		CogniCryptpreferencePage.registerPreferenceListener(new StaticAnalyzerPreferences());
+		CogniCryptPreferencePage.registerPreferenceListener(new StaticAnalyzerPreferences());
 	}
 
 	@Override

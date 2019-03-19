@@ -47,7 +47,7 @@
 			"modelFile": "src/main/resources/ClaferModel/SECMUPACOMP.js",
 			"questionsJSONFile" : "src/main/resources/TaskDesc/SECMUPACOMP.json",
 			"image" : "mpc",
-			"additionalResources" : "",
+			"additionalResources" : "src/main/resources/AdditionalResources/SECMUPACOMP",
 			"xslFile" : "src/main/resources/XSLTemplates/SECMUPACOMP.xsl" 
 		}
 ]

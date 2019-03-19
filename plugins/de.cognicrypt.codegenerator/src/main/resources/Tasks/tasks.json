@@ -6,7 +6,7 @@
 			"modelFile" : "src/main/resources/ClaferModel/Encryption.js",
 			"questionsJSONFile" : "src/main/resources/TaskDesc/Encryption.json",
 			"image" : "lock",
-			"additionalResources" : "",
+			"additionalResources" : "src/main/resources/AdditionalResources/Encryption",
 			"xslFile" : "src/main/resources/XSLTemplates/Encryption.xsl"
 		},
 		{
@@ -16,7 +16,7 @@
 			"modelFile" : "src/main/resources/ClaferModel/SecurePassword.js",
 			"questionsJSONFile" : "src/main/resources/TaskDesc/SecurePassword.json",
 			"image" : "key",
-			"additionalResources" : "",
+			"additionalResources" : "src/main/resources/AdditionalResources/SecurePassword",
 			"xslFile" : "src/main/resources/XSLTemplates/SecurePassword.xsl"	
 		},
 		{

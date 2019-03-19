@@ -1,7 +1,5 @@
 package de.cognicrypt.codegenerator.wizard;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,10 +9,8 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import org.apache.commons.io.FileUtils;
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -220,24 +216,6 @@ public class AltConfigWizard extends Wizard {
 			selectedTask.getAdditionalResources());
 		waitingDialog.setVisible(false);
 		waitingDialog.dispose();
-
-		if (selectedTask.getName().equals("Encryption") || selectedTask.getName().equals("SecurePassword")) {
-			try {
-				File supressWarningXMLFile = CodeGenUtils.getResourceFromWithin(Constants.SUPPRESSWARNING_PATH);
-				File clientSupressWarningXMLFile = new File(developerProject.getProjectPath() + "/SuppressWarnings.xml");
-				if (supressWarningXMLFile.exists()) {
-					if (!clientSupressWarningXMLFile.exists()) {
-						clientSupressWarningXMLFile.createNewFile();
-					}
-					FileUtils.copyFile(supressWarningXMLFile, clientSupressWarningXMLFile);
-					developerProject.refresh();
-				}
-			} catch (IOException e) {
-				Activator.getDefault().logError(e);
-			} catch (CoreException e) {
-				Activator.getDefault().logError(e);
-			}
-		}
 
 		return ret;
 	}

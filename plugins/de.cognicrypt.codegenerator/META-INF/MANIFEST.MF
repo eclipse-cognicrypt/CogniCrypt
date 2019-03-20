@@ -37,3 +37,10 @@ Import-Package: org.eclipse.jdt.core,
  org.eclipse.jdt.launching
 Automatic-Module-Name: de.cognicrypt.codegenerator
 Bundle-Vendor: TU Darmstadt, Paderborn University
+Export-Package: de.cognicrypt.codegenerator.question,
+ de.cognicrypt.codegenerator.utilities,
+ de.cognicrypt.codegenerator.featuremodel.clafer,
+ de.cognicrypt.codegenerator.tasks,
+ org.clafer.ast,
+ org.dom4j,
+ org.dom4j.io

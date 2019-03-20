@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-package de.cognicrypt.codegenerator.question;
+package de.cognicrypt.integrator.task.test;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -18,9 +18,10 @@ import java.util.ArrayList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-
-import de.cognicrypt.codegenerator.Activator;
+import de.cognicrypt.codegenerator.question.Page;
+import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
+import de.cognicrypt.integrator.task.Activator;
 
 public class QuestionsJSONReaderTI {
 

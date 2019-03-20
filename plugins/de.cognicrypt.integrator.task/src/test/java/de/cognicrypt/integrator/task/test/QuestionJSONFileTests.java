@@ -16,7 +16,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.question.QuestionsJSONReader;
-import de.cognicrypt.codegenerator.question.QuestionsJSONReaderTI;
 import de.cognicrypt.integrator.task.controllers.SegregatesQuestionsIntoPages;
 
 public class QuestionJSONFileTests {

@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-package crossing.e1.featuremodel.clafer.test;
+package de.cognicrypt.codegenerator.featuremodel.clafer.test;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

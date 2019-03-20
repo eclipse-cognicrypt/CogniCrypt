@@ -19,7 +19,6 @@ import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.question.QuestionsJSONReaderTI;
 import de.cognicrypt.core.Constants;
 
 public class QuestionAndPageModelTest {

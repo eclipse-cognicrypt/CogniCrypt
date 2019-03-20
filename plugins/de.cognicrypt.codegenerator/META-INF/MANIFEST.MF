@@ -7,40 +7,26 @@ Bundle-Activator: de.cognicrypt.codegenerator.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
+ com.google.gson,
  org.junit,
  org.eclipse.jdt.ui;bundle-version="3.12.0",
  org.eclipse.jface.text;bundle-version="3.11.0",
  org.eclipse.jdt.core;bundle-version="3.12.0",
- org.eclipse.compare,
- org.eclipse.ui.workbench,
- org.apache.commons.io;bundle-version="2.2.0",
  org.eclipse.ui.workbench,
  de.cognicrypt.core;bundle-version="1.0.0",
  org.eclipse.ui.ide,
- com.google.gson
+ org.eclipse.ui.workbench.texteditor
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/claferchocoig.jar,
  .,
  src/main/resources/,
  src/main/java/,
- lib/gson-2.3.1.jar,
  lib/dom4j-2.0.0.jar,
  lib/saxon9he.jar
-Import-Package: org.eclipse.jdt.core,
- org.eclipse.jdt.core.dom,
- org.eclipse.jdt.ui.actions,
- org.eclipse.jface.text,
- org.eclipse.ui.ide,
- org.eclipse.ui.part,
- org.eclipse.ui.texteditor,
- org.eclipse.jdt.launching
 Automatic-Module-Name: de.cognicrypt.codegenerator
 Bundle-Vendor: TU Darmstadt, Paderborn University
-Export-Package: de.cognicrypt.codegenerator.question,
- de.cognicrypt.codegenerator.utilities,
- de.cognicrypt.codegenerator.featuremodel.clafer,
+Export-Package: de.cognicrypt.codegenerator.featuremodel.clafer,
+ de.cognicrypt.codegenerator.question,
  de.cognicrypt.codegenerator.tasks,
- org.clafer.ast,
- org.dom4j,
- org.dom4j.io
+ de.cognicrypt.codegenerator.utilities

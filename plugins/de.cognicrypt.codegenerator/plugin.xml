@@ -8,8 +8,9 @@
             visible="true"
             id="de.cognicrypt.codegenerator.actionSet">
          <menu
-               label="CogniCryptMenu"
-               id="cognicryptmenu">
+               icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt.png "
+               id="cognicryptmenu"
+               label="CogniCryptMenu">
             <separator
                   name="CognicryptGroup">
             </separator>

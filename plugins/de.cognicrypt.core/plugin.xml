@@ -4,15 +4,11 @@
 <extension point="org.eclipse.ui.preferencePages">
  	<page id="CogniCryptPreferencePage"
  		name="CogniCrypt"
-    		class="de.cognicrypt.core.properties.CogniCryptpreferencePage">
+    		class="de.cognicrypt.core.properties.CogniCryptPreferencePage">
     		<keywordReference id="de.cognicrypt.core.keyword_CogniCrypt"/>
    	</page>
    	
 </extension>
-      <extension point="org.eclipse.core.runtime.preferences">
-         <initializer class="de.cognicrypt.core.properties.CogniCryptPreferenceInitializer"/>
-      </extension>
-      
       <extension
 		point="org.eclipse.ui.keywords">
 		<keyword

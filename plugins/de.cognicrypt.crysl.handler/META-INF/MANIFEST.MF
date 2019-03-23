@@ -16,7 +16,8 @@ Require-Bundle: org.eclipse.ui,
  de.darmstadt.tu.crossing.CryptSL.ui;bundle-version="1.0.0",
  de.darmstadt.tu.crossing.CryptSL;bundle-version="1.0.0",
  de.darmstadt.tu.crossing.CryptSL.ide;bundle-version="1.0.0",
- de.cognicrypt.core;bundle-version="1.0.0"
+ de.cognicrypt.core;bundle-version="1.0.0",
+ org.junit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .

@@ -48,7 +48,7 @@ public class AltConfigWizard extends Wizard {
 		}
 		setWindowTitle("CogniCrypt");
 		
-		final ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "icons/cognicrypt-medium.png");
+		final ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "platform:/plugin/de.cognicrypt.core/icons/cognicrypt-medium.png ");
 		setDefaultPageImageDescriptor(image);
 		this.constraints = new HashMap<>();
 	}
@@ -196,7 +196,7 @@ public class AltConfigWizard extends Wizard {
 		final CodeGenerator codeGenerator = new XSLBasedGenerator(selectedFile, selectedTask.getXslFile());
 		final DeveloperProject developerProject = codeGenerator.getDeveloperProject();
 
-		JOptionPane optionPane = new JOptionPane("CogniCrypt is now generating code that implements " + selectedTask.getName() + "\ninto file " + ((selectedFile != null) ? selectedFile.getName() : "Output.java") + ". This should take no longer than a few seconds.", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+		JOptionPane optionPane = new JOptionPane("CogniCrypt is now generating code that implements " + selectedTask.getDescription() + "\ninto file " + ((selectedFile != null) ? selectedFile.getName() : "Output.java") + ". This should take no longer than a few seconds.", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
 		JDialog waitingDialog = optionPane.createDialog("Generating Code");
 		waitingDialog.setModal(false);
 		waitingDialog.setVisible(true);

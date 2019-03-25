@@ -20,6 +20,30 @@
       </builder>
    </extension>
    <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Run CogniCrypt Analysis"
+            visible="true"
+            id="de.cognicrypt.staticanalyzer.actionSet">
+         <menu
+               icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt-analysis.png"
+               id="cognicryptanalysismenu"
+               label="CogniCryptAnalysisMenu">
+            <separator
+                  name="CognicryptAnalysisGroup">
+            </separator>
+         </menu>
+         <action
+               class="de.cognicrypt.staticanalyzer.WizardAction"
+               icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt-analysis.png "
+               id="de.cognicrypt.staticanalyzer.actions.WizardAction"
+               label="&amp;Apply CogniCrypt Misuse Analysis"
+               toolbarPath="CogniCryptAnalysisGroup"
+               tooltip="Run CogniCrypt Misuse Analysis on Selected Project">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
          id="QuickFixTest.ProblemMarkerNature"
          name="ProblemMarkerNature"
          point="org.eclipse.core.resources.natures">

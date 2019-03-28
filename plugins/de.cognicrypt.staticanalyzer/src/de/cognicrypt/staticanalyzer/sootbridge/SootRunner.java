@@ -6,11 +6,16 @@
 package de.cognicrypt.staticanalyzer.sootbridge;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.IJavaProject;
@@ -75,13 +80,16 @@ public class SootRunner {
 	}
 
 	private static List<CryptSLRule> getRules() {
-		final List<CryptSLRule> rules = Lists.newArrayList();
-		final File[] listFiles = Utils.getResourceFromWithin("/resources/CrySLRules/").listFiles();
-		assert listFiles != null;
-		for (final File file : listFiles) {
-			if (file.getName().endsWith(".cryptslbin")) {
-				rules.add(CryptSLRuleReader.readFromFile(file));
-			}
+		List<CryptSLRule> rules = Lists.newArrayList();
+		//TODO Select rules according to selected rulesets in preference page. The CrySL rules for each ruleset are in a separate subdirectory of "/resources/CrySLRules/".  
+		try {
+			rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin("/resources/CrySLRules/").getPath()), Integer.MAX_VALUE, (file,attr) -> file.toString().endsWith(".cryptslbin"))
+			.map(path -> CryptSLRuleReader.readFromFile(path.toFile())).collect(Collectors.toList()));
+		} catch (IOException e) {
+			Activator.getDefault().logError(e, "Could not load CrySL Rules");
+		}
+		if(rules.isEmpty()) {
+			Activator.getDefault().logInfo("No CrySL rules loaded");
 		}
 		return rules;
 	}

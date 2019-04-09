@@ -14,6 +14,8 @@ import java.util.Map;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jface.preference.IPreferenceStore;
+
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import boomerang.callgraph.ObservableDynamicICFG;
@@ -88,10 +90,18 @@ public class SootRunner {
 
 	private static List<String> projectClassPath(final IJavaProject javaProject) {
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		try {
+
 			final List<String> urls = new ArrayList<>();
 			final URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
 			urls.add(new File(uriString).getAbsolutePath());
+			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) == true) {
+				
+				String mavenDepLoc = System.getProperty("user.home") + "/.m2";
+				
+				urls.add(mavenDepLoc);
+			}
 			return urls;
 		}
 		catch (final Exception e) {

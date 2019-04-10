@@ -61,7 +61,7 @@ public class CrySLBuilderUtils {
 	}
 	
 	public static boolean hasCrySLBuilder(IProject project) throws CoreException {
-		return Arrays.asList(project.getDescription().getBuildSpec()).stream().anyMatch(e -> "".equals(e.getBuilderName()));
+		return Arrays.asList(project.getDescription().getBuildSpec()).stream().anyMatch(e -> CrySLBuilder.BUILDER_ID.equals(e.getBuilderName()));
 	}
 	
 }

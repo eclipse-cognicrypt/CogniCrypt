@@ -85,7 +85,11 @@ public class StartupHandler implements IStartup {
 			
 			IResourceDelta delta = event.getDelta();
 			
-			IResource deltaResource = delta.getAffectedChildren()[0].getResource();
+			IResourceDelta[] affectedChildren = delta.getAffectedChildren();
+			if (affectedChildren.length == 0) {
+				return;
+			}
+			IResource deltaResource = affectedChildren[0].getResource();
 			if (event.getType() == IResourceChangeEvent.POST_CHANGE && deltaResource instanceof IProject && (delta.getKind() == IResourceDelta.ADDED || delta.getKind() == IResourceDelta.CHANGED)) {
 				try {
 					IProject project = (IProject) deltaResource;

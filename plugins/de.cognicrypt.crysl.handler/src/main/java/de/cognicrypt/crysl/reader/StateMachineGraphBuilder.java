@@ -19,6 +19,7 @@ import crypto.rules.CryptSLMethod;
 import crypto.rules.StateMachineGraph;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
+import de.cognicrypt.crysl.handler.Activator;
 import de.darmstadt.tu.crossing.cryptSL.Expression;
 import de.darmstadt.tu.crossing.cryptSL.Order;
 import de.darmstadt.tu.crossing.cryptSL.SimpleOrder;
@@ -40,6 +41,7 @@ public class StateMachineGraphBuilder {
 
 	private StateNode addRegularEdge(final Expression leaf, final StateNode prevNode, final StateNode nextNode, final Boolean isStillAccepting) {
 		final List<CryptSLMethod> label = CrySLReaderUtils.resolveAggregateToMethodeNames(leaf.getOrderEv().get(0));
+		Activator.getDefault().logError("There was a mismatch between methods defined under EVENTS and referenced under OBJECTS. Please check that you only labels and aggregates in ORDER that you actually defined.");
 		return addRegularEdge(label, prevNode, nextNode, isStillAccepting);
 	}
 

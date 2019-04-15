@@ -56,14 +56,20 @@ public class CrySLReaderUtils {
 			return dealWithAggregate(ev);
 		} else {
 			final ArrayList<CryptSLMethod> statements = new ArrayList<>();
-			statements.add(stringifyMethodSignature(leaf));
+			CryptSLMethod stringifyMethodSignature = stringifyMethodSignature(leaf);
+			if (stringifyMethodSignature != null) {
+				statements.add(stringifyMethodSignature);
+			}
 			return statements;
 		}
 	}
 
 	protected static CryptSLMethod stringifyMethodSignature(final Event lab) {
+		if (!(lab instanceof SuperType)) {
+			return null;
+		}
 		final Method method = ((SuperType) lab).getMeth();
-
+		
 		String methodName = method.getMethName().getSimpleName();
 		if (methodName == null) {
 			methodName = ((de.darmstadt.tu.crossing.cryptSL.Domainmodel) (method.eContainer().eContainer().eContainer())).getJavaType().getSimpleName();

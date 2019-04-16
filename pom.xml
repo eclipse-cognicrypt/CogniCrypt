@@ -23,15 +23,6 @@
       <url>https://it.crossing.tu-darmstadt.de/cognicrypt/</url>
       <layout>p2</layout>
     </repository>
-    <repository>
-      <id>xtend</id>
-      <url>http://build.eclipse.org/common/xtend/maven/</url>
-    </repository>
-    <repository>
-      <id>xtext</id>
-      <layout>p2</layout>
-      <url>http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/</url>
-    </repository>
   </repositories>
 
   <pluginRepositories>

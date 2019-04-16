@@ -279,6 +279,7 @@
                      locationURI="popup:de.cognicrypt.core.menu">
                   <command
                         commandId="de.cognicrypt.staticanalyzer.runAnalysis"
+                        icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt-analysis.png "
                         label="Run CogniCrypt Analysis on Selected Project"
                         style="push">
                   </command>

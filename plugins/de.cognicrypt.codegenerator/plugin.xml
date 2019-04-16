@@ -8,6 +8,7 @@
                      locationURI="popup:de.cognicrypt.core.menu">
                   <command
                         commandId="de.cognicrypt.codegenerator.rungenerator"
+                        icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt-codegen.png"
                         label="Run CogniCrypt Code Generator"
                         style="push">
                   </command>
@@ -31,7 +32,7 @@
                         label="CogniCrypt">
                      <command
                            commandId="de.cognicrypt.codegenerator.rungenerator"
-                           icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt-codegen.png "
+                           icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt-codegen.png"
                            label="RunCodeGeneratorToolBar"
                            style="push"
                            tooltip="Generate Code For Cryptographic Task">

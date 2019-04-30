@@ -6,11 +6,23 @@
 package de.cognicrypt.utils;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.OptionalInt;
+
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -47,6 +59,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.osgi.framework.Bundle;
 import com.google.common.base.CharMatcher;
 import de.cognicrypt.core.Activator;
+import de.cognicrypt.core.Constants;
 
 public class Utils {
 
@@ -61,8 +74,7 @@ public class Utils {
 	public static boolean checkIfJavaProjectSelected(final IProject project) {
 		try {
 			return project.hasNature("org.eclipse.jdt.core.javanature");
-		}
-		catch (final CoreException e) {
+		} catch (final CoreException e) {
 			return false;
 		}
 	}
@@ -81,7 +93,8 @@ public class Utils {
 		return javaProjects;
 	}
 
-	public static IResource findClassByName(final String className, final IProject currentProject) throws ClassNotFoundException {
+	public static IResource findClassByName(final String className, final IProject currentProject)
+			throws ClassNotFoundException {
 		try {
 			for (final IPackageFragment l : JavaCore.create(currentProject).getPackageFragments()) {
 				for (final ICompilationUnit cu : l.getCompilationUnits()) {
@@ -96,8 +109,7 @@ public class Utils {
 					}
 				}
 			}
-		}
-		catch (final JavaModelException e) {
+		} catch (final JavaModelException e) {
 			throw new ClassNotFoundException("Class " + className + " not found.", e);
 		}
 		throw new ClassNotFoundException("Class " + className + " not found.");
@@ -115,8 +127,7 @@ public class Utils {
 		if (Utils.window == null) {
 			try {
 				Thread.sleep(500);
-			}
-			catch (final InterruptedException e) {
+			} catch (final InterruptedException e) {
 				Activator.getDefault().logError(e);
 			}
 			defaultDisplay.asyncExec(getWindow);
@@ -129,7 +140,8 @@ public class Utils {
 	}
 
 	/**
-	 * Overload for {@link Utils#getCurrentlyOpenFile(IEditorPart) getCurrentlyOpenFile(IEditor part)}
+	 * Overload for {@link Utils#getCurrentlyOpenFile(IEditorPart)
+	 * getCurrentlyOpenFile(IEditor part)}
 	 *
 	 * @return Currently open file.
 	 */
@@ -138,7 +150,8 @@ public class Utils {
 	}
 
 	/**
-	 * This method gets the file that is currently opened in the editor as an {@link IFile}.
+	 * This method gets the file that is currently opened in the editor as an
+	 * {@link IFile}.
 	 *
 	 * @param part Editor part that contains the file.
 	 * @return Currently open file.
@@ -195,30 +208,33 @@ public class Utils {
 	}
 
 	/**
-	 * This method searches the passed project for the class that contains the main method.
+	 * This method searches the passed project for the class that contains the main
+	 * method.
 	 *
-	 * @param project Project that is searched
+	 * @param project   Project that is searched
 	 * @param requestor Object that handles the search results
 	 */
 	public static void findMainMethodInCurrentProject(final IJavaProject project, final SearchRequestor requestor) {
-		final SearchPattern sp = SearchPattern.createPattern("main", IJavaSearchConstants.METHOD, IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
+		final SearchPattern sp = SearchPattern.createPattern("main", IJavaSearchConstants.METHOD,
+				IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
 
 		final SearchEngine se = new SearchEngine();
-		final SearchParticipant[] searchParticipants = new SearchParticipant[] {SearchEngine.getDefaultSearchParticipant()};
-		final IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
+		final SearchParticipant[] searchParticipants = new SearchParticipant[] {
+				SearchEngine.getDefaultSearchParticipant() };
+		final IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] { project });
 
 		try {
 			se.search(sp, searchParticipants, scope, requestor, null);
-		}
-		catch (final CoreException e) {
+		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
 	}
 
 	/**
-	 * This method searches the passed project for the class that contains the main method.
+	 * This method searches the passed project for the class that contains the main
+	 * method.
 	 *
-	 * @param project Project that is searched
+	 * @param project   Project that is searched
 	 * @param requestor Object that handles the search results
 	 * @throws CoreException
 	 */
@@ -229,7 +245,8 @@ public class Utils {
 				if (file != null) {
 					return file;
 				}
-			} else if (res instanceof IFile && (res.getName().equals(name.substring(name.lastIndexOf(".") + 1) + ".java"))) {
+			} else if (res instanceof IFile
+					&& (res.getName().equals(name.substring(name.lastIndexOf(".") + 1) + ".java"))) {
 				return (IFile) res;
 			}
 		}
@@ -251,26 +268,25 @@ public class Utils {
 			return getJavaProjectFromSelection(curSel);
 		}
 	}
-	
+
 	private static ISelection getCurrentSelection() {
 		return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
 	}
-	
-	
+
 	public static IResource getCurrentlySelectedIResource() {
 		return getIResourceFromSelection(getCurrentSelection());
 	}
-	
+
 	private static IResource getIResourceFromSelection(final ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			final Object element = ((IStructuredSelection) selection).getFirstElement();
 			if (element instanceof IResource) {
 				return (IResource) element;
-			} 
+			}
 		}
 		return null;
 	}
-	
+
 	private static IProject getJavaProjectFromSelection(final ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			final Object element = ((IStructuredSelection) selection).getFirstElement();
@@ -307,8 +323,7 @@ public class Utils {
 				}
 				return new File(resolvedURI);
 			}
-		}
-		catch (final Exception ex) {
+		} catch (final Exception ex) {
 			Activator.getDefault().logError(ex);
 		}
 
@@ -337,6 +352,44 @@ public class Utils {
 		headerGroup.setText(text);
 		headerGroup.setLayout(new GridLayout(1, true));
 		return headerGroup;
+	}
+
+	public static HashMap<String, String> ExtractDepHashmap(IProject ip) throws XmlPullParserException, IOException {
+
+		String pathtoPom = ip.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml";
+		MavenXpp3Reader reader = new MavenXpp3Reader();
+
+		Path path = Paths.get(pathtoPom);
+		HashMap<String, String> hashDependency = new HashMap<>();
+
+		if (Files.exists(path)) {
+			FileReader file = new FileReader(pathtoPom);
+			Model model = reader.read(file);
+
+//			HashMap<String, String> hashDependency = new HashMap<>();
+			hashDependency.put(model.getGroupId(), "GroupId");
+			hashDependency.put(model.getArtifactId(), "ArtifactId");
+			hashDependency.put(model.getVersion(), "Version");
+
+		}
+		return hashDependency;
+
+	}
+	
+	public static void storeDepHashmaptoFile(HashMap<String, String> hashDependency, IProject ip) throws IOException {
+		try {
+			File file = new File(
+					ip.getLocation().toOSString() + Constants.outerFileSeparator + "dependencyHashmap.data");
+			file.createNewFile();
+//	    	  check if file exists, if it not, creates it
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file, false));
+			out.writeObject(hashDependency);
+			out.close();
+
+		} catch (final Exception e) {
+			Activator.getDefault().logError(e, "Error storing maven dependancy hashmap");
+		}
+
 	}
 
 }

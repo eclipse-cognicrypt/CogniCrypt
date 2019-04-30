@@ -128,7 +128,8 @@ public class StartupHandler implements IStartup {
 		}
 	  }
 	}
-
+	
+	
 	private static final AfterBuildListener BUILD_LISTENER = new AfterBuildListener();
 
 	@Override

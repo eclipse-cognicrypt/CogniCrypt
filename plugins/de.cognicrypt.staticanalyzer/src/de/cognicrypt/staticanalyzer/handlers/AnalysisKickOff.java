@@ -11,8 +11,10 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
-
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -36,7 +38,8 @@ import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.utils.Utils;
 
 /**
- * This class prepares and triggers the analysis. After it has finished, it refreshes the project.
+ * This class prepares and triggers the analysis. After it has finished, it
+ * refreshes the project.
  *
  * @author Stefan Krueger
  */
@@ -44,40 +47,9 @@ public class AnalysisKickOff {
 
 	private static ResultsCCUIListener resultsReporter;
 	private IJavaProject curProj;
-//	private  ObjectOutputStream out;
-	 
-	 public static void ExtractDepHashmap(IProject ip) throws XmlPullParserException, IOException{
-		 
-	        MavenXpp3Reader reader = new MavenXpp3Reader();
-	        Model model = reader.read(new FileReader(ip.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml"));
-	     
-	        HashMap<String, String> hashDependency = new HashMap<>();
-	        hashDependency.put(model.getGroupId(), "GroupId");
-	        hashDependency.put(model.getArtifactId(), "ArtifactId");
-	        hashDependency.put(model.getVersion(), "Version");
-//	        System.out.println("here we gooooooooo");
-	        storeDepHashmaptoFile(hashDependency, ip);
-	      
 
+	
 
-	 }
-
-	 
-	 public static void storeDepHashmaptoFile(HashMap<String, String> hashDependency, IProject ip) throws IOException{
-		 try {
-	    	  File file = new File(ip.getLocation().toOSString() + Constants.outerFileSeparator + "dependencyHashmap.data");
-	    	  file.createNewFile();
-//	    	  check if file exists, if it does not creates it
-	    	  ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file, false)); 
-	    	  out.writeObject(hashDependency);
-	    	  out.close();
-	  	  
-		 }catch (final Exception e) {
-				Activator.getDefault().logError(e, "Error storing maven dependancy hashmap");
-			}
-		 
-	 }
-	 
 	/**
 	 * This method sets up the analysis by <br>
 	 * 1) Creating a {@link ErrorMarkerGenerator} <br>
@@ -95,8 +67,10 @@ public class AnalysisKickOff {
 		} else {
 			ip = iJavaElement.getJavaProject().getProject();
 		}
+		HashMap<String, String> hashDependency;
 		try {
-			ExtractDepHashmap(ip);
+			hashDependency =  Utils.ExtractDepHashmap(ip);
+			Utils.storeDepHashmaptoFile(hashDependency, ip);
 		} catch (XmlPullParserException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -105,7 +79,8 @@ public class AnalysisKickOff {
 			e1.printStackTrace();
 		}
 
-		if (AnalysisKickOff.resultsReporter != null && !AnalysisKickOff.resultsReporter.getReporterProject().equals(ip)) {
+		if (AnalysisKickOff.resultsReporter != null
+				&& !AnalysisKickOff.resultsReporter.getReporterProject().equals(ip)) {
 			AnalysisKickOff.resultsReporter = null;
 			for (final ResultsCCUIListener resRep : Activator.getResultsReporters()) {
 				if (resRep.getReporterProject().equals(ip)) {
@@ -122,17 +97,17 @@ public class AnalysisKickOff {
 		resultsReporter.getMarkerGenerator().clearMarkers(ip);
 		try {
 			if (ip == null || (!ip.hasNature(JavaCore.NATURE_ID))) {
-				Activator.getDefault().logInfo("The project "+ ip.getName() +" does not have Java nature. No analysis necessary.");
+				Activator.getDefault()
+						.logInfo("The project " + ip.getName() + " does not have Java nature. No analysis necessary.");
 				return false;
 			}
-		}
-		catch (final CoreException e) {
+		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 			return false;
 		}
 		IJavaProject javaProject = JavaCore.create(ip);
-		if(javaProject == null) {
-			Activator.getDefault().logInfo("JavaCore could not create IJavaProject for project "+ ip.getName() +" .");
+		if (javaProject == null) {
+			Activator.getDefault().logInfo("JavaCore could not create IJavaProject for project " + ip.getName() + " .");
 			return false;
 		}
 		this.curProj = javaProject;
@@ -144,34 +119,38 @@ public class AnalysisKickOff {
 	 *
 	 */
 	public void run() {
-		if(this.curProj == null)
+		if (this.curProj == null)
 			return;
 		final Job analysis = new Job(Constants.ANALYSIS_LABEL) {
 
 			@SuppressWarnings("deprecation")
 			@Override
 			protected IStatus run(final IProgressMonitor monitor) {
-				final SootThread sootThread = new SootThread(AnalysisKickOff.this.curProj, AnalysisKickOff.resultsReporter);
+				final SootThread sootThread = new SootThread(AnalysisKickOff.this.curProj,
+						AnalysisKickOff.resultsReporter);
 				sootThread.start();
 				while (sootThread.isAlive()) {
 					try {
 						Thread.sleep(500);
 					}
-					
-					catch (final InterruptedException e) {}
+
+					catch (final InterruptedException e) {
+					}
 
 					if (monitor.isCanceled()) {
 						sootThread.stop();
-						Activator.getDefault().logInfo("Static analysis job cancelled for "+ curProj.getElementName() +".");
+						Activator.getDefault()
+								.logInfo("Static analysis job cancelled for " + curProj.getElementName() + ".");
 						return Status.CANCEL_STATUS;
 					}
 
 				}
 				if (sootThread.isSucc()) {
-					Activator.getDefault().logInfo("Static analysis job successfully terminated for "+ curProj.getElementName() +".");
+					Activator.getDefault().logInfo(
+							"Static analysis job successfully terminated for " + curProj.getElementName() + ".");
 					return Status.OK_STATUS;
 				} else {
-					Activator.getDefault().logInfo("Static analysis failed for "+ curProj.getElementName() +".");
+					Activator.getDefault().logInfo("Static analysis failed for " + curProj.getElementName() + ".");
 					return Status.CANCEL_STATUS;
 				}
 

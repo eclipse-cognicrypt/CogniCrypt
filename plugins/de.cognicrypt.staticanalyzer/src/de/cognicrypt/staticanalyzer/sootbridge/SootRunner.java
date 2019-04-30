@@ -6,14 +6,22 @@
 package de.cognicrypt.staticanalyzer.sootbridge;
 
 import java.io.File;
+import java.io.FileReader;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.google.common.base.Joiner;
@@ -36,6 +44,16 @@ import soot.SootMethod;
 import soot.Transform;
 import soot.Unit;
 import soot.options.Options;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * This runner triggers Soot.
@@ -96,12 +114,39 @@ public class SootRunner {
 			final List<String> urls = new ArrayList<>();
 			final URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
 			urls.add(new File(uriString).getAbsolutePath());
+			
+			String mavenDepLoc = System.getProperty("user.home") + "/.m2";
+			
 			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) == true) {
 				
-				String mavenDepLoc = System.getProperty("user.home") + "/.m2";
-				
 				urls.add(mavenDepLoc);
+				
+			}if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES_CHANGED) == true) {
+				
+//				String mavenDepLoc = System.getProperty("user.home") + "/.m2";
+				if (urls.contains(mavenDepLoc)) {
+//					System.out.println("it contaiiiiiiiiiiiiiiiiins");
+				}else {
+//					IProject ip = Utils.getCurrentlySelectedIProject();
+//					IProject ip = Utils.getCurrentProject();
+//			        MavenXpp3Reader reader = new MavenXpp3Reader();
+//			        Model model = reader.read(new FileReader(ip.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml"));
+//			     
+//			        System.out.println(model.getGroupId());
+//			        System.out.println(model.getArtifactId());
+//			        System.out.println(model.getVersion());
+//					
+//			        HashMap<String, String> hashDependency = new HashMap<>();
+//			        hashDependency.put(model.getGroupId(), "GroupId");
+//			        hashDependency.put(model.getArtifactId(), "ArtifactId");
+//			        hashDependency.put(model.getVersion(), "Version");
+//					//System.out.println(model);
+//					
+				}
+				
+				//urls.add(mavenDepLoc);
 			}
+			
 			return urls;
 		}
 		catch (final Exception e) {

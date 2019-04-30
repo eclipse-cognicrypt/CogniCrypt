@@ -5,6 +5,18 @@
 
 package de.cognicrypt.staticanalyzer.handlers;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
+
+
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -14,6 +26,9 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+
+import com.google.common.collect.Lists;
+
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ErrorMarkerGenerator;
@@ -29,7 +44,40 @@ public class AnalysisKickOff {
 
 	private static ResultsCCUIListener resultsReporter;
 	private IJavaProject curProj;
+//	private  ObjectOutputStream out;
+	 
+	 public static void ExtractDepHashmap(IProject ip) throws XmlPullParserException, IOException{
+		 
+	        MavenXpp3Reader reader = new MavenXpp3Reader();
+	        Model model = reader.read(new FileReader(ip.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml"));
+	     
+	        HashMap<String, String> hashDependency = new HashMap<>();
+	        hashDependency.put(model.getGroupId(), "GroupId");
+	        hashDependency.put(model.getArtifactId(), "ArtifactId");
+	        hashDependency.put(model.getVersion(), "Version");
+//	        System.out.println("here we gooooooooo");
+	        storeDepHashmaptoFile(hashDependency, ip);
+	      
 
+
+	 }
+
+	 
+	 public static void storeDepHashmaptoFile(HashMap<String, String> hashDependency, IProject ip) throws IOException{
+		 try {
+	    	  File file = new File(ip.getLocation().toOSString() + Constants.outerFileSeparator + "dependencyHashmap.data");
+	    	  file.createNewFile();
+//	    	  check if file exists, if it does not creates it
+	    	  ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file, false)); 
+	    	  out.writeObject(hashDependency);
+	    	  out.close();
+	  	  
+		 }catch (final Exception e) {
+				Activator.getDefault().logError(e, "Error storing maven dependancy hashmap");
+			}
+		 
+	 }
+	 
 	/**
 	 * This method sets up the analysis by <br>
 	 * 1) Creating a {@link ErrorMarkerGenerator} <br>
@@ -46,6 +94,15 @@ public class AnalysisKickOff {
 			ip = Utils.getCurrentProject();
 		} else {
 			ip = iJavaElement.getJavaProject().getProject();
+		}
+		try {
+			ExtractDepHashmap(ip);
+		} catch (XmlPullParserException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 
 		if (AnalysisKickOff.resultsReporter != null && !AnalysisKickOff.resultsReporter.getReporterProject().equals(ip)) {

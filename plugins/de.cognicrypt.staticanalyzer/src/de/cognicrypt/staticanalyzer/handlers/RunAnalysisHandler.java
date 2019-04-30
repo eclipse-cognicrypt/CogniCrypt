@@ -15,7 +15,12 @@ public class RunAnalysisHandler extends AbstractHandler {
 		final AnalysisKickOff akf = new AnalysisKickOff();
 		IProject ip = Utils.getCurrentlySelectedIProject();
 		final IJavaElement iJavaElement = JavaCore.create(ip);
-		akf.setUp(iJavaElement);
+		try {
+			akf.setUp(iJavaElement);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		akf.run();
 		return null;
 	}

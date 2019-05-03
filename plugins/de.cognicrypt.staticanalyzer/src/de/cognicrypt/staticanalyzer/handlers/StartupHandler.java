@@ -23,6 +23,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IStartup;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.utils.JavaVersion;
 
 /**
  * At startup, this handler registers a listener that will be informed after a build, whenever resources were changed.
@@ -50,8 +51,14 @@ public class StartupHandler implements IStartup {
 		 */
 		@Override
 		public void resourceChanged(final IResourceChangeEvent event) {
+			String javaVersion = System.getProperty("java.version");
+			JavaVersion systemJavaVersion = new JavaVersion(javaVersion);
+			JavaVersion requiredJavaVersion = new JavaVersion(Constants.CC_JAVA_VERSION);
 			IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 			if (store.getBoolean(Constants.AUTOMATED_ANALYSIS) == false) {
+				return;
+			} else if (javaVersion != "" && systemJavaVersion.compareTo(requiredJavaVersion) == 1) {
+				Activator.getDefault().logInfo("Analysis cancelled as the IDEs' java version is " + javaVersion + ", which is greater than 1.8.");
 				return;
 			}else {
 			final List<IJavaElement> changedJavaElements = new ArrayList<>();

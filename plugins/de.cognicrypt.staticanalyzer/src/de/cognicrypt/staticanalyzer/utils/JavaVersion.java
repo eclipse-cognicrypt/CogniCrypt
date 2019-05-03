@@ -1,6 +1,13 @@
 package de.cognicrypt.staticanalyzer.utils;
 
 public class JavaVersion implements Comparable<JavaVersion> {
+	/**
+	 * This class is used to compare different java version strings.
+	 * Ex: If a and b are JavaVersion objects, then
+	 * 			returns -1 (a<b)
+	 * 			returns 0  (a=b)
+	 * 			returns 1  (a>b)
+	 * */
 
     private String version;
 

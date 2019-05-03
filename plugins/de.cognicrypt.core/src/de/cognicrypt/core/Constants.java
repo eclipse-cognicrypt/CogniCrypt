@@ -541,4 +541,7 @@ public class Constants {
 	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CryptSL";
 	public static final String HEALTHY = "Secure";
 	public static final String UNHEALTHY = "Insecure";
+	
+	// define the max java version the plugin can run
+	public static final String CC_JAVA_VERSION = "1.8";
 }

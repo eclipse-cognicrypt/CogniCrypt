@@ -18,7 +18,7 @@ import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ErrorMarkerGenerator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
-import de.cognicrypt.staticanalyzer.utils.JavaVersion;
+import de.cognicrypt.utils.JavaVersion;
 import de.cognicrypt.utils.Utils;
 
 /**
@@ -90,11 +90,8 @@ public class AnalysisKickOff {
 	public void run() {
 		if(this.curProj == null)
 			return;
-		String javaVersion = System.getProperty("java.version");
-		JavaVersion systemJavaVersion = new JavaVersion(javaVersion);
-		JavaVersion requiredJavaVersion = new JavaVersion(Constants.CC_JAVA_VERSION);
-		if (javaVersion != "" && systemJavaVersion.compareTo(requiredJavaVersion) == 1) {
-			Activator.getDefault().logInfo("Analysis cancelled as the IDEs' java version is " + javaVersion + ", which is greater than 1.8.");
+		if (Utils.checkJavaVersion()) {
+			Activator.getDefault().logInfo("Analysis cancelled as the IDEs' java version is " + System.getProperty("java.version", "<JavaVersionNotFound>") + ", which is greater than 1.8.");
 			return;
 		}
 		final Job analysis = new Job(Constants.ANALYSIS_LABEL) {

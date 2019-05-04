@@ -1,4 +1,4 @@
-package de.cognicrypt.staticanalyzer.utils;
+package de.cognicrypt.utils;
 
 public class JavaVersion implements Comparable<JavaVersion> {
 	/**

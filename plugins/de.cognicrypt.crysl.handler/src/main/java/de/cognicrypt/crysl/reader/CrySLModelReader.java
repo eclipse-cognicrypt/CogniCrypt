@@ -91,6 +91,7 @@ import de.darmstadt.tu.crossing.cryptSL.ObjectDecl;
 import de.darmstadt.tu.crossing.cryptSL.PreDefinedPredicates;
 import de.darmstadt.tu.crossing.cryptSL.Pred;
 import de.darmstadt.tu.crossing.cryptSL.ReqPred;
+import de.darmstadt.tu.crossing.cryptSL.ReqPredLit;
 import de.darmstadt.tu.crossing.cryptSL.SuPar;
 import de.darmstadt.tu.crossing.cryptSL.SuParList;
 import de.darmstadt.tu.crossing.cryptSL.SuperType;
@@ -248,32 +249,47 @@ public class CrySLModelReader {
 	private List<ISLConstraint> collectRequiredPredicates(final EList<ReqPred> requiredPreds) {
 		final List<ISLConstraint> preds = new ArrayList<>();
 		for (final ReqPred pred : requiredPreds) {
-			final Constraint conditional = pred.getCons();
-			final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
-			if (pred.getPred().getParList() != null) {
-				for (final SuPar var : pred.getPred().getParList().getParameters()) {
-					if (var.getVal() != null) {
-						final LiteralExpression lit = var.getVal();
+			final ReqPred left = pred.getLeftExpression();
+			final ReqPred right = pred.getRightExpression();
+			ISLConstraint reqPred = null;
+			if (left == null && right == null) {
+				reqPred = extractReqPred(pred);
+			} else {
+				CryptSLPredicate l = extractReqPred(left);
+				CryptSLPredicate r = extractReqPred(right);
+				reqPred = new CryptSLConstraint(l, r, LogOps.or);
+			}
+			preds.add(reqPred);
+		}
+		
+		return preds;
+	}
 
-						final ObjectImpl object = (ObjectImpl) ((LiteralExpression) lit.getLit().getName()).getValue();
-						final String type = ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName();
-						final String variable = object.getName();
+	private CryptSLPredicate extractReqPred(final ReqPred pred) {
+		final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
+		ReqPredLit innerPred = (ReqPredLit)pred;
+		final Constraint conditional = innerPred.getCons();
+		if (innerPred.getPred().getParList() != null) {
+			for (final SuPar var : innerPred.getPred().getParList().getParameters()) {
+				if (var.getVal() != null) {
+					final LiteralExpression lit = var.getVal();
 
-						final String part = var.getVal().getPart();
-						if (part != null) {
-							variables.add(new CryptSLObject(variable, type, new CryptSLSplitter(Integer.parseInt(lit.getInd()), Utils.filterQuotes(lit.getSplit()))));
-						} else {
-							variables.add(new CryptSLObject(variable, type));
-						}
+					final ObjectImpl object = (ObjectImpl) ((LiteralExpression) lit.getLit().getName()).getValue();
+					final String type = ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName();
+					final String variable = object.getName();
+
+					final String part = var.getVal().getPart();
+					if (part != null) {
+						variables.add(new CryptSLObject(variable, type, new CryptSLSplitter(Integer.parseInt(lit.getInd()), Utils.filterQuotes(lit.getSplit()))));
 					} else {
-						variables.add(new CryptSLObject(UNDERSCORE, NULL));
+						variables.add(new CryptSLObject(variable, type));
 					}
+				} else {
+					variables.add(new CryptSLObject(UNDERSCORE, NULL));
 				}
 			}
-
-			preds.add(new CryptSLPredicate(null, pred.getPred().getPredName(), variables, (pred.getNot() != null ? true : false), getConstraint(conditional)));
 		}
-		return preds;
+		return new CryptSLPredicate(null, innerPred.getPred().getPredName(), variables, (innerPred.getNot() != null ? true : false), getConstraint(conditional));
 	}
 
 	private CryptSLArithmeticConstraint convertLiteralToArithmetic(final Constraint expression) {

@@ -211,8 +211,10 @@ public class CrySLModelReader {
 
 	public List<CryptSLRule> readRules(String resourcesPath) throws CoreException {
 		final IPath rulesFolder = (new org.eclipse.core.runtime.Path(resourcesPath));
-
 		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
+		if (rulesFolder.segmentCount() == 1) {
+			return rules;
+		}
 		for (final IResource res : ResourcesPlugin.getWorkspace().getRoot().getFolder(rulesFolder).members()) {
 			if (Constants.cryslFileEnding.equals("." + res.getFileExtension())) {
 				CryptSLRule rule = readRule(((IFile) res).getRawLocation().makeAbsolute().toFile());

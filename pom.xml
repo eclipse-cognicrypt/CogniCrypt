@@ -10,7 +10,6 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <tycho-version>0.26.0</tycho-version>
- 	<download-publish-path>/home/data/httpd/download.eclipse.org/cognicrypt/updates-nightly</download-publish-path>
   </properties>
 
   <repositories>

@@ -19,7 +19,7 @@
 						<artifactId>maven-antrun-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>deploy</id>
+								<id>publish-nightly</id>
 								<phase>install</phase>
 								<goals>
 									<goal>run</goal>

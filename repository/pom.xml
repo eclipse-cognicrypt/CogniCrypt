@@ -10,6 +10,42 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<groupId>de.cognicrypt</groupId>
+	<profiles>
+		<profile>
+			<id>publish</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>deploy</id>
+								<phase>install</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<delete includeemptydirs="false">
+											<fileset dir="${download-publish-path}">
+												<include name="**" />
+											</fileset>
+										</delete>
+										<copy includeemptydirs="false"
+											todir="${download-publish-path}">
+											<fileset dir="target/repository/">
+												<include name="**" />
+											</fileset>
+										</copy>
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 	<build>
 		<plugins>
 			<!-- workaround https://bugs.eclipse.org/bugs/show_bug.cgi?id=453708 -->

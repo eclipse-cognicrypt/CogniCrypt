@@ -10,7 +10,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean compile'
+                sh 'mvn clean package'
             }
         }
 
@@ -20,7 +20,6 @@ pipeline {
 		    	branch 'master';
 			}
             steps {
-		     container('ssh-client') {
                 sshagent ( ['projects-storage.eclipse.org-bot-ssh']) {
                     sh '''
                     ssh genie.cognicrypt@projects-storage.eclipse.org rm -rf /home/data/httpd/download.eclipse.org/cognicrypt/stable
@@ -29,7 +28,6 @@ pipeline {
                     '''
                 }
 		     }
-            }
 		}
     }
 }

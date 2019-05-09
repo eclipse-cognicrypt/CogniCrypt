@@ -20,6 +20,7 @@ pipeline {
 		    	branch 'master';
 			}
             steps {
+		     container('ssh-client') {
                 sshagent ( ['projects-storage.eclipse.org-bot-ssh']) {
                     sh '''
                     ssh genie.cognicrypt@projects-storage.eclipse.org rm -rf /home/data/httpd/download.eclipse.org/cognicrypt/stable
@@ -27,6 +28,7 @@ pipeline {
                     scp -r repository/target/repository/* genie.cognicrypt@projects-storage.eclipse.org:/home/data/httpd/download.eclipse.org/cognicrypt/stable
                     '''
                 }
+		     }
             }
 		}
     }

@@ -18,7 +18,8 @@ Require-Bundle: org.eclipse.ui,
  org.junit,
  de.cognicrypt.core;bundle-version="1.0.0",
  org.eclipse.ui.ide,
- com.google.gson
+ com.google.gson,
+ org.eclipse.ui.workbench.texteditor
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/claferchocoig.jar,

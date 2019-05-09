@@ -61,17 +61,6 @@ public class SootRunner {
 					public ObservableICFG<Unit, SootMethod> icfg() {
 						return icfg;
 					}
-
-					@Override
-					public boolean isCommandLineMode() {
-						return true;
-					}
-
-					@Override
-					public boolean rulesInSrcFormat() {
-						return false;
-					}
-
 				};
 				scanner.getAnalysisListener().addReportListener(resultsReporter);
 				scanner.scan(getRules());

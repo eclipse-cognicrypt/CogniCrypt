@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <task description="SecurityTestTask">
-  <Package>Crypto</Package>
+  <Package>de.cognicrypt.crypto</Package>
   <XMLImports/>
   <element type="SecurityTestTask">
     <security>Strong</security>

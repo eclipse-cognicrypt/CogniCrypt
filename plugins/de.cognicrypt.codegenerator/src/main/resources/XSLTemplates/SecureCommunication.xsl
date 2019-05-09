@@ -351,11 +351,7 @@ public class HTTPSConnection {
   private static BufferedWriter writer = null;
   private static URL url = null;
 
-  public HTTPSConnection(<xsl:choose><xsl:when test="//task/code/host">
-            	"<xsl:value-of select="//task/code/host"/>
-            </xsl:when><xsl:otherwise>
-            	String host
-         </xsl:otherwise></xsl:choose>) {
+  public HTTPSConnection(String host) throws IOException{
   url = new URL(host);
   con = (HttpsURLConnection) url.openConnection();
   con.setConnectTimeout(6000);
@@ -414,14 +410,9 @@ package <xsl:value-of select="//Package"/>;
 <xsl:apply-templates select="//Import"/>	
 public class Output {
 
-	public static void templateUsage(<xsl:choose>
-         <xsl:when test="//task/code/host"></xsl:when>
-         <xsl:otherwise>String host</xsl:otherwise>
-		 </xsl:choose>) {
-		 HTTPSConnection https = new HTTPSConnection(<xsl:choose>
-         <xsl:when test="//task/code/host"></xsl:when>
-         <xsl:otherwise>host</xsl:otherwise>
-		 </xsl:choose>);
+	public static void templateUsage(<xsl:choose><xsl:when test="//task/code/host"></xsl:when><xsl:otherwise>String host</xsl:otherwise></xsl:choose>) throws IOException{
+		 
+		 HTTPSConnection https = new HTTPSConnection(<xsl:choose><xsl:when test="//task/code/host">"<xsl:value-of select="//task/code/host"/>"</xsl:when><xsl:otherwise>host</xsl:otherwise></xsl:choose>);
 		 
 		// HTTPS get example
 		String data = https.get();

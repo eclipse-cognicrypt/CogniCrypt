@@ -17,23 +17,19 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.workbench,
  org.junit,
  de.cognicrypt.core;bundle-version="1.0.0",
- org.eclipse.ui.ide
+ org.eclipse.ui.ide,
+ com.google.gson
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/claferchocoig.jar,
  .,
  src/main/resources/,
  src/main/java/,
- lib/gson-2.3.1.jar,
  lib/dom4j-2.0.0.jar,
  lib/saxon9he.jar
-Import-Package: org.eclipse.jdt.core,
- org.eclipse.jdt.core.dom,
- org.eclipse.jdt.ui.actions,
- org.eclipse.jface.text,
- org.eclipse.ui.ide,
- org.eclipse.ui.part,
- org.eclipse.ui.texteditor,
- org.eclipse.jdt.launching,
- org.apache.commons.io;bundle-version="2.2.0"
 Automatic-Module-Name: de.cognicrypt.codegenerator
+Bundle-Vendor: TU Darmstadt, Paderborn University
+Export-Package: de.cognicrypt.codegenerator.featuremodel.clafer,
+ de.cognicrypt.codegenerator.question,
+ de.cognicrypt.codegenerator.tasks,
+ de.cognicrypt.codegenerator.utilities

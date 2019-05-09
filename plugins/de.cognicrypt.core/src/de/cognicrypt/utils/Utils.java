@@ -43,7 +43,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -52,6 +51,7 @@ import org.osgi.framework.Bundle;
 import com.google.common.base.CharMatcher;
 import crypto.rules.CryptSLRule;
 import de.cognicrypt.core.Activator;
+import de.cognicrypt.core.Constants;
 
 public class Utils {
 
@@ -248,25 +248,42 @@ public class Utils {
 	 * @return Currently selected project.
 	 */
 	public static IProject getCurrentlySelectedIProject() {
-		final ISelectionService selectionService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
-		final ISelection selection = selectionService.getSelection();
-
-		return getIProjectFromISelection(selection);
+		ISelection curSel = getCurrentSelection();
+		Object resource = null;
+		if ((resource = getIResourceFromSelection(curSel)) != null) {
+			return ((IProject) resource).getProject();
+		} else {
+			return getJavaProjectFromSelection(curSel);
+		}
 	}
-
-	public static IProject getIProjectFromISelection(final ISelection selection) {
-		IProject iproject = null;
+	
+	private static ISelection getCurrentSelection() {
+		return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
+	}
+	
+	
+	public static IResource getCurrentlySelectedIResource() {
+		return getIResourceFromSelection(getCurrentSelection());
+	}
+	
+	private static IResource getIResourceFromSelection(final ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			final Object element = ((IStructuredSelection) selection).getFirstElement();
 			if (element instanceof IResource) {
-				iproject = ((IResource) element).getProject();
-			} else if (element instanceof IJavaElement) {
-				final IJavaProject jProject = ((IJavaElement) element).getJavaProject();
-				iproject = jProject.getProject();
+				return (IResource) element;
+			} 
+		}
+		return null;
+	}
+	
+	private static IProject getJavaProjectFromSelection(final ISelection selection) {
+		if (selection instanceof IStructuredSelection) {
+			final Object element = ((IStructuredSelection) selection).getFirstElement();
+			if (element instanceof IJavaElement) {
+				return ((IJavaElement) element).getJavaProject().getProject();
 			}
 		}
-
-		return iproject;
+		return null;
 	}
 
 	public static File getResourceFromWithin(final String inputPath) {
@@ -381,5 +398,15 @@ public class Utils {
 		headerGroup.setLayout(new GridLayout(1, true));
 		return headerGroup;
 	}
-
+	
+	public static boolean checkJavaVersion() {
+		String javaVersion = System.getProperty("java.version", null);
+		if (javaVersion == null)
+			return true;
+		JavaVersion systemJavaVersion = new JavaVersion(javaVersion);
+		JavaVersion requiredJavaVersion = new JavaVersion(Constants.CC_JAVA_VERSION);
+		if (systemJavaVersion.compareTo(requiredJavaVersion) == 1)
+			return true;
+		return false;
+	}
 }

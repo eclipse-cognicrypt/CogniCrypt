@@ -21,7 +21,7 @@ public class Constants {
 		XSL, CrySL
 	}
 	public enum Severities {
-		Problem, Warning, Secure, Ignored;
+		Error, Warning, Info, Ignored;
 		
 		public static Severities get(int i) {
 			return values()[i];
@@ -202,7 +202,7 @@ public class Constants {
 			{"java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException",
 					"javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException",
 					"java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List",
-					"java.util.Base64", "java.io.InputStream", "java.io.OutputStream", "java.util.Properties", "java.io.FileOutputStream", "java.security.Key"};
+					"java.util.Base64", "java.io.InputStream", "java.io.OutputStream", "java.util.Properties", "java.io.FileOutputStream", "java.security.Key", "java.net.URL", "java.io.File"};
 
 	// Types
 	public static final String INTEGER = "Integer";
@@ -546,4 +546,7 @@ public class Constants {
 	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CryptSL";
 	public static final String HEALTHY = "Secure";
 	public static final String UNHEALTHY = "Insecure";
+	
+	// define the max java version before which plugin works.
+	public static final String CC_JAVA_VERSION = "1.8";
 }

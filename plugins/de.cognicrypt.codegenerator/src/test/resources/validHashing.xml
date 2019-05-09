@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <task description="PasswordStoring">
-  <Package>Crypto</Package>
+  <Package>de.cognicrypt.crypto</Package>
   <XMLImports/>
   <algorithm type="Digest">
     <outputSize>384</outputSize>

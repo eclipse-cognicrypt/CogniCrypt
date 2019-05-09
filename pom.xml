@@ -23,15 +23,6 @@
       <url>https://it.crossing.tu-darmstadt.de/cognicrypt/</url>
       <layout>p2</layout>
     </repository>
-    <repository>
-      <id>xtend</id>
-      <url>http://build.eclipse.org/common/xtend/maven/</url>
-    </repository>
-    <repository>
-      <id>xtext</id>
-      <layout>p2</layout>
-      <url>http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/</url>
-    </repository>
   </repositories>
 
   <pluginRepositories>
@@ -114,6 +105,8 @@
     <module>plugins/de.cognicrypt.codegenerator/</module>
     <module>plugins/de.cognicrypt.crysl.handler/</module>
     <module>plugins/de.cognicrypt.staticanalyzer/</module>
+	<module>plugins/de.cognicrypt.integrator.task/</module>
+	<module>plugins/de.cognicrypt.integrator.primitive/</module>
 	<module>plugins/de.cognicrypt.codegenerator.tests/</module>
 	<module>features/de.cognicrypt.core.feature/</module>
     <module>features/de.cognicrypt.codegenerator.feature/</module>

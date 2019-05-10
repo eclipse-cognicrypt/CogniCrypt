@@ -1,9 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry exported="true" kind="lib" path="lib/axml-2.0.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/checker-compat-qual-2.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/error_prone_annotations-2.1.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/functionaljava-4.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/hamcrest-core-1.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/j2objc-annotations-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jasmin-3.0.1-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jasmin-3.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/json-simple-1.1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jsr305-1.3.9.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/junit-4.12.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-api-2.11.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-core-2.11.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/PathExpression-1.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/slf4j-api-1.7.21.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xmlpull-1.1.3.4d_b4_min.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/asm-debug-all-5.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/boomerangPDS-2.3-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-cli-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-io-2.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-lang3-3.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/CryptoAnalysis-2.3-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gson-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/guava-25.0-jre.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/heros-1.1.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/idealPDS-2.3-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/slf4j-simple-1.7.21.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/soot-3.3.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/synchronizedPDS-2.3-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/WPDS-2.3-SNAPSHOT.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="resources"/>
-	<classpathentry exported="true" kind="lib" path="lib/CryptoAnalysis-2.0-jar-with-dependencies.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="src" path="src/"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

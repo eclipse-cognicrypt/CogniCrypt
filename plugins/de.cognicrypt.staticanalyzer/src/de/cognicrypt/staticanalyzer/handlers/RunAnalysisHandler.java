@@ -22,6 +22,10 @@ public class RunAnalysisHandler extends AbstractHandler {
 			e.printStackTrace();
 		}
 		akf.run();
+   
+		if (akf.setUp(iJavaElement)) {
+			akf.run();
+		}
 		return null;
 	}
 

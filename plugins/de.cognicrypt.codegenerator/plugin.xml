@@ -2,36 +2,13 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            label="Start Code Generation"
-            visible="true"
-            id="de.cognicrypt.codegenerator.actionSet">
-         <menu
-               icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt.png "
-               id="cognicryptmenu"
-               label="CogniCryptMenu">
-            <separator
-                  name="CognicryptGroup">
-            </separator>
-         </menu>
-         <action
-               class="de.cognicrypt.codegenerator.actions.WizardAction"
-               icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt.png "
-               id="de.cognicrypt.codegenerator.actions.WizardAction"
-               label="&amp;Launch CogniCrypt Code Generation"
-               toolbarPath="CogniCryptGroup"
-               tooltip="Generate Code For Cryptographic Task">
-         </action>
-      </actionSet>
-   </extension>
-   <extension
                   point="org.eclipse.ui.menus">
                <menuContribution
                      allPopups="false"
                      locationURI="popup:de.cognicrypt.core.menu">
                   <command
                         commandId="de.cognicrypt.codegenerator.rungenerator"
+                        icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt-codegen.png"
                         label="Run CogniCrypt Code Generator"
                         style="push">
                   </command>
@@ -44,5 +21,23 @@
                      id="de.cognicrypt.codegenerator.rungenerator"
                      name="RunCodeGenerator">
                </command>
+            </extension>
+            <extension
+                  point="org.eclipse.ui.menus">
+               <menuContribution
+                     allPopups="false"
+                     locationURI="toolbar:org.eclipse.ui.main.toolbar">
+                  <toolbar
+                        id="de.cognicrypt.toolbar"
+                        label="CogniCrypt">
+                     <command
+                           commandId="de.cognicrypt.codegenerator.rungenerator"
+                           icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt-codegen.png"
+                           label="RunCodeGeneratorToolBar"
+                           style="push"
+                           tooltip="Generate Code For Cryptographic Task">
+                     </command>
+                  </toolbar>
+               </menuContribution>
             </extension>
 </plugin>

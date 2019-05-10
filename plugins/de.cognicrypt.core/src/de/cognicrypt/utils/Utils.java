@@ -393,4 +393,16 @@ public class Utils {
 
 	}
 
+
+	public static boolean checkJavaVersion() {
+		String javaVersion = System.getProperty("java.version", null);
+		if (javaVersion == null)
+			return true;
+		JavaVersion systemJavaVersion = new JavaVersion(javaVersion);
+		JavaVersion requiredJavaVersion = new JavaVersion(Constants.CC_JAVA_VERSION);
+		if (systemJavaVersion.compareTo(requiredJavaVersion) == 1)
+			return true;
+		return false;
+	}
+
 }

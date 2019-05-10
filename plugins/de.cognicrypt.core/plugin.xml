@@ -31,7 +31,7 @@
                      allPopups="false"
                      locationURI="popup:org.eclipse.ui.popup.any">
                   <menu
-                        icon="icons/cognicrypt.png"
+                        icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt.png "
                         id="de.cognicrypt.core.menu"
                         label="CogniCrypt">
                      <visibleWhen
@@ -42,9 +42,9 @@
                                  ifEmpty="false"
                                  operator="or">
                               <adapt
-                                    type="org.eclipse.jdt.core.IJavaProject">
+                                    type="org.eclipse.core.resources.IProject">
                                  <instanceof
-                                       value="org.eclipse.jdt.core.IJavaProject">
+                                       value="org.eclipse.core.resources.IProject">
                                  </instanceof>
                               </adapt>
                            </iterate>

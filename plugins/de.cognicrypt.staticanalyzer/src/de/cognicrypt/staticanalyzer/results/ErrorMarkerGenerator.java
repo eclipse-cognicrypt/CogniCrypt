@@ -61,7 +61,7 @@ public class ErrorMarkerGenerator {
 			marker.setAttribute(IMarker.LINE_NUMBER, line);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-			marker.setAttribute(IMarker.SEVERITY, (sev == Severities.Problem) ? IMarker.SEVERITY_ERROR : ((sev == Severities.Warning) ? IMarker.SEVERITY_WARNING : IMarker.SEVERITY_INFO));
+			marker.setAttribute(IMarker.SEVERITY, (sev == Severities.Error) ? IMarker.SEVERITY_ERROR : ((sev == Severities.Warning) ? IMarker.SEVERITY_WARNING : IMarker.SEVERITY_INFO));
 			marker.setAttribute(IMarker.SOURCE_ID, id);
 
 		} catch (final CoreException e) {

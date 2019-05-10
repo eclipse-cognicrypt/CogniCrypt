@@ -14,6 +14,54 @@
 
   <build>
     <plugins>
+    <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.1.1</version>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>de.darmstadt.tu.crossing</groupId>
+									<artifactId>JavaCryptographicArchitecture</artifactId>
+									<version>1.0</version>
+									<classifier>ruleset</classifier>
+									<type>zip</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>resources/CrySLRules</outputDirectory>
+									<includes>**</includes>
+								</artifactItem>
+								<artifactItem>
+									<groupId>de.fraunhofer.iem</groupId>
+									<artifactId>BouncyCastle</artifactId>
+									<version>0.2</version>
+									<classifier>ruleset</classifier>
+									<type>zip</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>resources/CrySLRules</outputDirectory>
+									<includes>**</includes>
+								</artifactItem>
+								<artifactItem>
+									<groupId>de.darmstadt.tu.crossing</groupId>
+									<artifactId>Tink</artifactId>
+									<version>0.1</version>
+									<classifier>ruleset</classifier>
+									<type>zip</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>resources/CrySLRules</outputDirectory>
+									<includes>**</includes>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
@@ -152,4 +200,11 @@
       </plugins>
     </pluginManagement>
   </build>
+    <repositories>
+		<repository>
+			<id>soot-release</id>
+			<name>soot release</name>
+			<url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/</url>
+		</repository>
+	</repositories>
 </project>

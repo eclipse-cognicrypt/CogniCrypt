@@ -168,6 +168,7 @@ public class Utils {
 	}
 
 	public static IProject getCurrentProject() {
+		System.out.println("inside getuCurrent Project");
 		final IFile currentlyOpenFile = Utils.getCurrentlyOpenFile();
 		if (currentlyOpenFile != null) {
 			final IProject curProject = currentlyOpenFile.getProject();
@@ -260,6 +261,7 @@ public class Utils {
 	 * @return Currently selected project.
 	 */
 	public static IProject getCurrentlySelectedIProject() {
+
 		ISelection curSel = getCurrentSelection();
 		Object resource = null;
 		if ((resource = getIResourceFromSelection(curSel)) != null) {
@@ -365,8 +367,6 @@ public class Utils {
 		if (Files.exists(path)) {
 			FileReader file = new FileReader(pathtoPom);
 			Model model = reader.read(file);
-
-//			HashMap<String, String> hashDependency = new HashMap<>();
 			hashDependency.put(model.getGroupId(), "GroupId");
 			hashDependency.put(model.getArtifactId(), "ArtifactId");
 			hashDependency.put(model.getVersion(), "Version");

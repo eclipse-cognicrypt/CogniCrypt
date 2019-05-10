@@ -6,8 +6,15 @@
 package de.cognicrypt.staticanalyzer.sootbridge;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -22,6 +29,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.google.common.base.Joiner;
@@ -109,47 +117,60 @@ public class SootRunner {
 	private static List<String> projectClassPath(final IJavaProject javaProject) {
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		Object oldHashDependency; 
+
 		try {
 
 			final List<String> urls = new ArrayList<>();
 			final URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
 			urls.add(new File(uriString).getAbsolutePath());
-			
+
 			String mavenDepLoc = System.getProperty("user.home") + "/.m2";
-			
+
 			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) == true) {
-				
+
 				urls.add(mavenDepLoc);
-				
-			}if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES_CHANGED) == true) {
-				
-//				String mavenDepLoc = System.getProperty("user.home") + "/.m2";
-				if (urls.contains(mavenDepLoc)) {
-//					System.out.println("it contaiiiiiiiiiiiiiiiiins");
-				}else {
-//					IProject ip = Utils.getCurrentlySelectedIProject();
-//					IProject ip = Utils.getCurrentProject();
-//			        MavenXpp3Reader reader = new MavenXpp3Reader();
-//			        Model model = reader.read(new FileReader(ip.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml"));
-//			     
-//			        System.out.println(model.getGroupId());
-//			        System.out.println(model.getArtifactId());
-//			        System.out.println(model.getVersion());
-//					
-//			        HashMap<String, String> hashDependency = new HashMap<>();
-//			        hashDependency.put(model.getGroupId(), "GroupId");
-//			        hashDependency.put(model.getArtifactId(), "ArtifactId");
-//			        hashDependency.put(model.getVersion(), "Version");
-//					//System.out.println(model);
-//					
-				}
-				
-				//urls.add(mavenDepLoc);
+
 			}
-			
+			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES_CHANGED) == true) {
+
+				if (urls.contains(mavenDepLoc)) {
+//					Do nothing 
+				} 
+				else {
+					
+					IProject ip = javaProject.getJavaProject().getProject();
+					
+//					get hashmap of maven dep
+					HashMap<String, String> newHashDependency = Utils.ExtractDepHashmap(ip);
+//					get old hashmap maven dep
+					String pathtoDepenencyHashmap = ip.getLocation().toOSString() + Constants.outerFileSeparator
+							+ "dependencyHashmap.data";
+					Path path = Paths.get(pathtoDepenencyHashmap);
+					if (Files.exists(path)) {
+						FileInputStream fis = new FileInputStream(pathtoDepenencyHashmap);
+
+						ObjectInputStream ois = new ObjectInputStream(fis);
+						oldHashDependency = ois.readObject();
+						System.out.println(oldHashDependency);
+						System.out.println(newHashDependency);
+						System.out.println(oldHashDependency.equals(newHashDependency));
+						if(oldHashDependency.equals(newHashDependency)) {
+//							do nothing
+//							System.out.println("old and new hashmap are equal");
+						}else {
+							urls.add(mavenDepLoc);
+							Utils.storeDepHashmaptoFile(newHashDependency, ip);
+						}
+
+					}
+				}
+
+				urls.add(mavenDepLoc);
+			}
+
 			return urls;
-		}
-		catch (final Exception e) {
+		} catch (final Exception e) {
 			Activator.getDefault().logError(e, "Error building project classpath");
 			return Lists.newArrayList();
 		}
@@ -161,8 +182,7 @@ public class SootRunner {
 		registerTransformers(resultsReporter);
 		try {
 			runSoot();
-		}
-		catch (final Exception t) {
+		} catch (final Exception t) {
 			Activator.getDefault().logError(t);
 			return false;
 		}
@@ -189,14 +209,14 @@ public class SootRunner {
 		Scene.v().loadNecessaryClasses();
 		// choose call graph based on what user selected on preference page
 		switch (Activator.getDefault().getPreferenceStore().getInt(Constants.CALL_GRAPH_SELECTION)) {
-			case 1:
-				Options.v().setPhaseOption("cg.spark", "on");
-				Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");
-				break;
-			case 0:
-			default:
-				Options.v().setPhaseOption("cg.cha", "on");
-				Options.v().setPhaseOption("cg", "all-reachable:true");
+		case 1:
+			Options.v().setPhaseOption("cg.spark", "on");
+			Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");
+			break;
+		case 0:
+		default:
+			Options.v().setPhaseOption("cg.cha", "on");
+			Options.v().setPhaseOption("cg", "all-reachable:true");
 		}
 		Options.v().setPhaseOption("jb", "use-original-names:true");
 		Options.v().set_output_format(Options.output_format_none);

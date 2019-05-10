@@ -69,8 +69,14 @@ public class AnalysisKickOff {
 		}
 		HashMap<String, String> hashDependency;
 		try {
-			hashDependency =  Utils.ExtractDepHashmap(ip);
-			Utils.storeDepHashmaptoFile(hashDependency, ip);
+			String pathtoDepenencyHashmap = ip.getLocation().toOSString() + Constants.outerFileSeparator
+					+ "dependencyHashmap.data";
+			Path path = Paths.get(pathtoDepenencyHashmap);
+			if (!Files.exists(path)) {
+				hashDependency =  Utils.ExtractDepHashmap(ip);
+				Utils.storeDepHashmaptoFile(hashDependency, ip);
+			}
+
 		} catch (XmlPullParserException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

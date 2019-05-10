@@ -128,8 +128,10 @@ public class SootRunner {
 			String mavenDepLoc = System.getProperty("user.home") + "/.m2";
 
 			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) == true) {
-
-				urls.add(mavenDepLoc);
+				
+				if (mavenDepLoc != null) {
+					urls.add(mavenDepLoc);
+				}
 
 			}
 			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES_CHANGED) == true) {
@@ -144,6 +146,7 @@ public class SootRunner {
 //					get hashmap of maven dep
 					HashMap<String, String> newHashDependency = Utils.ExtractDepHashmap(ip);
 //					get old hashmap maven dep
+					if (!newHashDependency.isEmpty()) {}
 					String pathtoDepenencyHashmap = ip.getLocation().toOSString() + Constants.outerFileSeparator
 							+ "dependencyHashmap.data";
 					Path path = Paths.get(pathtoDepenencyHashmap);
@@ -152,9 +155,9 @@ public class SootRunner {
 
 						ObjectInputStream ois = new ObjectInputStream(fis);
 						oldHashDependency = ois.readObject();
-						System.out.println(oldHashDependency);
-						System.out.println(newHashDependency);
-						System.out.println(oldHashDependency.equals(newHashDependency));
+//						System.out.println(oldHashDependency);
+//						System.out.println(newHashDependency);
+//						System.out.println(oldHashDependency.equals(newHashDependency));
 						if(oldHashDependency.equals(newHashDependency)) {
 //							do nothing
 //							System.out.println("old and new hashmap are equal");

@@ -363,7 +363,6 @@ public class Utils {
 
 		Path path = Paths.get(pathtoPom);
 		HashMap<String, String> hashDependency = new HashMap<>();
-
 		if (Files.exists(path)) {
 			FileReader file = new FileReader(pathtoPom);
 			Model model = reader.read(file);
@@ -378,14 +377,16 @@ public class Utils {
 	
 	public static void storeDepHashmaptoFile(HashMap<String, String> hashDependency, IProject ip) throws IOException {
 		try {
-			File file = new File(
-					ip.getLocation().toOSString() + Constants.outerFileSeparator + "dependencyHashmap.data");
-			file.createNewFile();
-//	    	  check if file exists, if it not, creates it
-			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file, false));
-			out.writeObject(hashDependency);
-			out.close();
-
+			if (!hashDependency.isEmpty()) {
+				File file = new File(
+						ip.getLocation().toOSString() + Constants.outerFileSeparator + "dependencyHashmap.data");
+				file.createNewFile();
+//		    	  check if file exists, if it not, creates it
+				ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file, false));
+				out.writeObject(hashDependency);
+				out.close();
+			}
+			
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e, "Error storing maven dependancy hashmap");
 		}

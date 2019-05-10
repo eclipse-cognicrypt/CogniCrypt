@@ -56,6 +56,7 @@ public class StartupHandler implements IStartup {
 			}else {
 			final List<IJavaElement> changedJavaElements = new ArrayList<>();
 			Activator.getDefault().logInfo("ResourcechangeListener has been triggered.");
+			
 			try {
 
 				event.getDelta().accept(delta -> {

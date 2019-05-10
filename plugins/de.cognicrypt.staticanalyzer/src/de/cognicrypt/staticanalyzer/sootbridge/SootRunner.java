@@ -11,16 +11,28 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.IClasspathContainer;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
+import org.eclipse.jdt.launching.JavaRuntime;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
 import boomerang.callgraph.ObservableDynamicICFG;
 import boomerang.callgraph.ObservableICFG;
 import boomerang.preanalysis.BoomerangPretransformer;
@@ -70,32 +82,23 @@ public class SootRunner {
 
 	private static List<CryptSLRule> getRules() {
 		List<CryptSLRule> rules = Lists.newArrayList();
-		//TODO Select rules according to selected rulesets in preference page. The CrySL rules for each ruleset are in a separate subdirectory of "/resources/CrySLRules/".  
+		// TODO Select rules according to selected rulesets in preference page. The
+		// CrySL rules for each ruleset are in a separate subdirectory of
+		// "/resources/CrySLRules/".
 		try {
-			rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin("/resources/CrySLRules/").getPath()), Integer.MAX_VALUE, (file,attr) -> file.toString().endsWith(".cryptslbin"))
-			.map(path -> CryptSLRuleReader.readFromFile(path.toFile())).collect(Collectors.toList()));
+			rules.addAll(Files
+					.find(Paths.get(Utils.getResourceFromWithin("/resources/CrySLRules/").getPath()), Integer.MAX_VALUE,
+							(file, attr) -> file.toString().endsWith(".cryptslbin"))
+					.map(path -> CryptSLRuleReader.readFromFile(path.toFile())).collect(Collectors.toList()));
 		} catch (IOException e) {
 			Activator.getDefault().logError(e, "Could not load CrySL Rules");
 		}
-		if(rules.isEmpty()) {
+		if (rules.isEmpty()) {
 			Activator.getDefault().logInfo("No CrySL rules loaded");
 		}
 		return rules;
 	}
 
-	private static List<String> projectClassPath(final IJavaProject javaProject) {
-		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		try {
-			final List<String> urls = new ArrayList<>();
-			final URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
-			urls.add(new File(uriString).getAbsolutePath());
-			return urls;
-		}
-		catch (final Exception e) {
-			Activator.getDefault().logError(e, "Error building project classpath");
-			return Lists.newArrayList();
-		}
-	}
 
 	public static boolean runSoot(final IJavaProject project, final ResultsCCUIListener resultsReporter) {
 		G.reset();
@@ -103,8 +106,7 @@ public class SootRunner {
 		registerTransformers(resultsReporter);
 		try {
 			runSoot();
-		}
-		catch (final Exception t) {
+		} catch (final Exception t) {
 			Activator.getDefault().logError(t);
 			return false;
 		}
@@ -119,7 +121,7 @@ public class SootRunner {
 
 	private static void setSootOptions(final IJavaProject project) {
 		Options.v().set_soot_classpath(getSootClasspath(project));
-		Options.v().set_process_dir(Lists.newArrayList(projectClassPath(project)));
+		Options.v().set_process_dir(Lists.newArrayList(applicationClassPath(project)));
 
 		Options.v().set_keep_line_number(true);
 		Options.v().set_prepend_classpath(true);
@@ -131,14 +133,14 @@ public class SootRunner {
 		Scene.v().loadNecessaryClasses();
 		// choose call graph based on what user selected on preference page
 		switch (Activator.getDefault().getPreferenceStore().getInt(Constants.CALL_GRAPH_SELECTION)) {
-			case 1:
-				Options.v().setPhaseOption("cg.spark", "on");
-				Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");
-				break;
-			case 0:
-			default:
-				Options.v().setPhaseOption("cg.cha", "on");
-				Options.v().setPhaseOption("cg", "all-reachable:true");
+		case 1:
+			Options.v().setPhaseOption("cg.spark", "on");
+			Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");
+			break;
+		case 0:
+		default:
+			Options.v().setPhaseOption("cg.cha", "on");
+			Options.v().setPhaseOption("cg", "all-reachable:true");
 		}
 		Options.v().setPhaseOption("jb", "use-original-names:true");
 		Options.v().set_output_format(Options.output_format_none);
@@ -172,7 +174,78 @@ public class SootRunner {
 	}
 
 	private static String getSootClasspath(final IJavaProject javaProject) {
-		return Joiner.on(File.pathSeparator).join(projectClassPath(javaProject));
+		Collection<String> applicationClassPath = applicationClassPath(javaProject);
+		Collection<String> libraryClassPath = libraryClassPath(javaProject);
+		libraryClassPath.addAll(applicationClassPath);
+		System.out.println(Joiner.on(File.pathSeparator).join(libraryClassPath));
+		return Joiner.on(File.pathSeparator).join(libraryClassPath);
+	}
+
+	private static Collection<String> applicationClassPath(final IJavaProject javaProject) {
+		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		try {
+			final List<String> urls = new ArrayList<>();
+			final URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
+			urls.add(new File(uriString).getAbsolutePath());
+			return urls;
+		} catch (final Exception e) {
+			Activator.getDefault().logError(e, "Error building project classpath");
+			return Lists.newArrayList();
+		}
+	}
+	private static Collection<String> libraryClassPath(IJavaProject project) {
+		Collection<String> libraryClassPath = Sets.newHashSet();
+		IClasspathEntry[] rentries;
+		try {
+			rentries = project.getRawClasspath();
+			for (IClasspathEntry entry : rentries) {
+				resolveClassPathEntry(entry, libraryClassPath, project);
+			}
+
+		} catch (CoreException e1) {
+			e1.printStackTrace();
+		}
+
+		return libraryClassPath;
+	}
+
+	private static void resolveClassPathEntry(IClasspathEntry entry, Collection<String> libraryClassPath, IJavaProject project) {
+		IClasspathEntry[] rentries;
+		switch (entry.getEntryKind()) {
+		case IClasspathEntry.CPE_SOURCE:
+			libraryClassPath.addAll(applicationClassPath(project));
+			break;
+		case IClasspathEntry.CPE_PROJECT:
+            IJavaProject requiredProject = JavaCore.create((IProject) ResourcesPlugin.getWorkspace().getRoot().findMember(entry.getPath()));
+			try {
+				rentries = project.getRawClasspath();
+				for (IClasspathEntry e : rentries) {
+					resolveClassPathEntry(e, libraryClassPath, requiredProject);
+				}
+			} catch (JavaModelException e1) {
+				e1.printStackTrace();
+			}
+			break;
+		case IClasspathEntry.CPE_LIBRARY:
+			IPath path = entry.getPath();
+			libraryClassPath.add(path.toString());
+			break;
+		case IClasspathEntry.CPE_VARIABLE:
+			// JRE entry
+			break;
+		case IClasspathEntry.CPE_CONTAINER:
+			try {
+				IClasspathContainer container = JavaCore.getClasspathContainer(
+				          entry.getPath(), project);
+				IClasspathEntry[] subEntries = container.getClasspathEntries();
+				for(IClasspathEntry subEntry : subEntries) {
+					resolveClassPathEntry(subEntry, libraryClassPath, project);
+				}
+			} catch (JavaModelException e) {
+				e.printStackTrace();
+			}
+			break;
+		}
 	}
 
 }

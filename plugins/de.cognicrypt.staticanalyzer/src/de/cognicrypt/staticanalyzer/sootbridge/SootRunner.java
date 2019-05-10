@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IProject;
@@ -30,11 +31,13 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
 import com.google.common.base.Joiner;
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import boomerang.callgraph.ObservableDynamicICFG;
 import boomerang.callgraph.ObservableICFG;
+import boomerang.callgraph.ObservableStaticICFG;
 import boomerang.preanalysis.BoomerangPretransformer;
 import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
@@ -51,6 +54,7 @@ import soot.SootMethod;
 import soot.Transform;
 import soot.Unit;
 import soot.options.Options;
+import soot.jimple.toolkits.ide.icfg.JimpleBasedInterproceduralCFG;
 
 /**
  * This runner triggers Soot.
@@ -66,7 +70,7 @@ public class SootRunner {
 			@Override
 			protected void internalTransform(final String phaseName, final Map<String, String> options) {
 				BoomerangPretransformer.v().apply();
-				final ObservableDynamicICFG icfg = new ObservableDynamicICFG(true);
+				final ObservableStaticICFG icfg = new ObservableStaticICFG(new JimpleBasedInterproceduralCFG(true));
 				CryptoScanner scanner = new CryptoScanner() {
 
 					@Override
@@ -114,9 +118,15 @@ public class SootRunner {
 	}
 
 	private static void runSoot() {
-		Scene.v().loadNecessaryClasses();
+		Stopwatch watch = Stopwatch.createStarted();
 		PackManager.v().getPack("cg").apply();
+		long elapsed = watch.elapsed(TimeUnit.SECONDS);
+		watch.reset();
+		watch.start();
+		Activator.getDefault().logInfo("Call graph generated in  "+ elapsed + " seconds." );
 		PackManager.v().getPack("wjtp").apply();
+		long analysisTime = watch.elapsed(TimeUnit.SECONDS);
+		Activator.getDefault().logInfo("CogniCrypt Analysis terminated in "+ analysisTime + " seconds." );
 	}
 
 	private static void setSootOptions(final IJavaProject project) {

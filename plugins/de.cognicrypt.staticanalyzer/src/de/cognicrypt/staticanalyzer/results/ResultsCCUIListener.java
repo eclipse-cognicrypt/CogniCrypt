@@ -108,6 +108,11 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final Statement errorLocation = error.getErrorLocation();
 		final IResource sourceFile = unitToResource(errorLocation);
 		final int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
+		
+		//Bugfix, to be removed https://github.com/eclipse-cognicrypt/CogniCrypt/issues/289
+		if(!errorLocation.getUnit().isPresent() || errorLocation.getUnit().get().getInvokeExpr() == null)
+			return;
+		
 		final CCStatement stmt = new CCStatement(errorLocation);
 		final int stmtId = stmt.hashCode();
 		

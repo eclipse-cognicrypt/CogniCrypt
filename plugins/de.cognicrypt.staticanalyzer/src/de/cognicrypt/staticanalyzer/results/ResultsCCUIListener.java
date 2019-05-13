@@ -108,9 +108,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final Statement errorLocation = error.getErrorLocation();
 		final IResource sourceFile = unitToResource(errorLocation);
 		final int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
-		final CCStatement stmt = new CCStatement(errorLocation);
-		final int stmtId = stmt.hashCode();
-		
+
 		ICompilationUnit javaFile = (ICompilationUnit) JavaCore.create(sourceFile);
 		String className = "";
 		try {
@@ -139,6 +137,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		 * constant in Constants.java (CogniCrypt Core) 4) add new else if in the following query
 		 */
 
+		int stmtId = 0;
 		String markerType;
 		if (error instanceof ForbiddenMethodError) {
 			markerType = Constants.FORBIDDEN_METHOD_MARKER_TYPE;

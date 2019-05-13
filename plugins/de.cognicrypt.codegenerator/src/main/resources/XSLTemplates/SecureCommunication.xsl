@@ -411,9 +411,11 @@ package <xsl:value-of select="//Package"/>;
 public class Output {
 
 	public static void templateUsage(<xsl:choose><xsl:when test="//task/code/host"></xsl:when>
-         							 <xsl:otherwise>String host</xsl:otherwise></xsl:choose>) throws IOException{
+									 <xsl:otherwise>String host</xsl:otherwise></xsl:choose>) throws IOException{
+		 
 		 HTTPSConnection https = new HTTPSConnection(<xsl:choose><xsl:when test="//task/code/host">"<xsl:value-of select="//task/code/host"/>"</xsl:when>
-         											 <xsl:otherwise>host</xsl:otherwise></xsl:choose>);
+		 											 <xsl:otherwise>host</xsl:otherwise></xsl:choose>);
+		 
 		// HTTPS get example
 		String data = https.get();
 		System.out.println("received by get: " + data);	

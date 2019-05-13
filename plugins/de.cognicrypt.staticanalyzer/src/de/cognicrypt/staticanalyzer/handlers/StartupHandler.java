@@ -24,6 +24,8 @@ import org.eclipse.ui.IStartup;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.telemetry.TelemetryEvents;
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.utils.JavaVersion;
+import de.cognicrypt.utils.Utils;
 
 /**
  * At startup, this handler registers a listener that will be informed after a build, whenever resources were changed.
@@ -53,6 +55,9 @@ public class StartupHandler implements IStartup {
 		public void resourceChanged(final IResourceChangeEvent event) {
 			IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 			if (store.getBoolean(Constants.AUTOMATED_ANALYSIS) == false) {
+				return;
+			} else if (Utils.checkJavaVersion()) {
+				Activator.getDefault().logInfo("Analysis cancelled as the IDEs' java version is " + System.getProperty("java.version", "<JavaVersionNotFound>") + ", which is greater than 1.8.");
 				return;
 			}else {
 			final List<IJavaElement> changedJavaElements = new ArrayList<>();

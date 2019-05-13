@@ -71,7 +71,7 @@ import typestate.TransitionFunction;
  * This listener is notified of any misuses the analysis finds. It also reports the results of the analysis to the Statistics View
  *
  * @author Stefan Krueger
- * @author André Sonntag
+ * @author Andrï¿½ Sonntag
  * @author Adnan Manzoor
  */
 public class ResultsCCUIListener extends CrySLAnalysisListener {
@@ -142,23 +142,33 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		String markerType;
 		if (error instanceof ForbiddenMethodError) {
 			markerType = Constants.FORBIDDEN_METHOD_MARKER_TYPE;
+			stmtId = ((ForbiddenMethodError) error).hashCode();
 		} else if (error instanceof PredicateContradictionError) {
 			markerType = Constants.PREDICATE_CONTRADICTION_MARKER_TYPE;
+			stmtId = ((PredicateContradictionError) error).hashCode();
 		} else if (error instanceof RequiredPredicateError) {
 			markerType = Constants.REQUIRED_PREDICATE_MARKER_TYPE;
+			stmtId = ((RequiredPredicateError) error).hashCode();
 		} else if (error instanceof ConstraintError) {
 			markerType = Constants.CONSTRAINT_ERROR_MARKER_TYPE;
+			stmtId = ((ConstraintError) error).hashCode();
 		} else if (error instanceof NeverTypeOfError) {
 			markerType = Constants.NEVER_TYPEOF_MARKER_TYPE;
+			stmtId = ((NeverTypeOfError) error).hashCode();
 		} else if (error instanceof IncompleteOperationError) {
 			markerType = Constants.INCOMPLETE_OPERATION_MARKER_TYPE;
+			stmtId = ((IncompleteOperationError) error).hashCode();
 		} else if (error instanceof TypestateError) {
 			markerType = Constants.TYPESTATE_ERROR_MARKER_TYPE;
+			stmtId = ((TypestateError) error).hashCode();
 		} else if (error instanceof ImpreciseValueExtractionError) {
 			markerType = Constants.IMPRECISE_VALUE_EXTRACTION_MARKER_TYPE;
+			stmtId = ((ImpreciseValueExtractionError) error).hashCode();
 		} else {
 			markerType = Constants.CC_MARKER_TYPE;
+			stmtId = error.hashCode();
 		}
+
 		int selectedSeverity = Activator.getDefault().getPreferenceStore().getInt(markerType);
 		if (selectedSeverity == -1) {
 			selectedSeverity = Activator.getDefault().getPreferenceStore().getDefaultInt(markerType);
@@ -167,8 +177,9 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		if (sev == Severities.Ignored) {
 			return;
 		}
-		
-		this.warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator + Constants.SUPPRESSWARNING_FILE;
+
+		this.warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator
+				+ Constants.SUPPRESSWARNING_FILE;
 		final File warningsFile = new File(this.warningFilePath);
 
 		if (!warningsFile.exists()) {

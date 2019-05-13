@@ -232,5 +232,10 @@
 			<name>soot release</name>
 			<url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/</url>
 		</repository>
+		<repository>
+			<id>soot-snapshot</id>
+			<name>soot snapshot</name>
+			<url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/</url>
+		</repository>
 	</repositories>
 </project>

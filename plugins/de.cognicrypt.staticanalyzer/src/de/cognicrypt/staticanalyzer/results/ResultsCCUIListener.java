@@ -151,10 +151,10 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			markerType = Constants.PREDICATE_CONTRADICTION_MARKER_TYPE;
 		} else if (error instanceof RequiredPredicateError) {
 			markerType = Constants.REQUIRED_PREDICATE_MARKER_TYPE;
+		}  else if (error instanceof NeverTypeOfError) {
+			markerType = Constants.NEVER_TYPEOF_MARKER_TYPE;
 		} else if (error instanceof ConstraintError) {
 			markerType = Constants.CONSTRAINT_ERROR_MARKER_TYPE;
-		} else if (error instanceof NeverTypeOfError) {
-			markerType = Constants.NEVER_TYPEOF_MARKER_TYPE;
 		} else if (error instanceof IncompleteOperationError) {
 			markerType = Constants.INCOMPLETE_OPERATION_MARKER_TYPE;
 		} else if (error instanceof TypestateError) {

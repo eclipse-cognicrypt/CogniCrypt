@@ -9,7 +9,7 @@
                   <command
                         commandId="de.cognicrypt.codegenerator.rungenerator"
                         icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt-codegen.png"
-                        label="Run CogniCrypt Code Generator"
+                        label="Run Code Generator"
                         style="push">
                   </command>
                </menuContribution>
@@ -29,7 +29,7 @@
                      locationURI="toolbar:org.eclipse.ui.main.toolbar">
                   <toolbar
                         id="de.cognicrypt.toolbar"
-                        label="CogniCrypt">
+                        label="Code Generator">
                      <command
                            commandId="de.cognicrypt.codegenerator.rungenerator"
                            icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt-codegen.png"

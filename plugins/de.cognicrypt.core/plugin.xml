@@ -13,7 +13,7 @@
 		point="org.eclipse.ui.keywords">
 		<keyword
 			id="de.cognicrypt.core.keyword_CogniCrypt"
-			label="CogniCrypt"/>
+			label="Crypto Assistant"/>
 	</extension>
  
   <extension
@@ -33,7 +33,7 @@
                   <menu
                         icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt.png "
                         id="de.cognicrypt.core.menu"
-                        label="CogniCrypt">
+                        label="Crypto Assistant">
                      <visibleWhen
                            checkEnabled="true">
                         <with

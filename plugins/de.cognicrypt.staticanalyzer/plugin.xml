@@ -26,7 +26,7 @@
                      locationURI="toolbar:org.eclipse.ui.main.toolbar">
                   <toolbar
                         id="de.cognicrypt.toolbar"
-                        label="CogniCrypt">
+                        label="Crypto Assistant">
                      <command
                            commandId="de.cognicrypt.staticanalyzer.runAnalysis"
                            icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt-analysis.png "
@@ -280,7 +280,7 @@
                   <command
                         commandId="de.cognicrypt.staticanalyzer.runAnalysis"
                         icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt-analysis.png "
-                        label="Run CogniCrypt Analysis on Selected Project"
+                        label="Run Analysis on Selected Project"
                         style="push">
                   </command>
                </menuContribution>

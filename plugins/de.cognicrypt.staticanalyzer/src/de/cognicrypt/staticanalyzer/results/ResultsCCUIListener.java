@@ -107,7 +107,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final Statement errorLocation = error.getErrorLocation();
 		final IResource sourceFile = unitToResource(errorLocation);
 		final int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
-
+		final int stmtId = error.hashCode();
 		ICompilationUnit javaFile = (ICompilationUnit) JavaCore.create(sourceFile);
 		String className = "";
 		try {
@@ -136,35 +136,25 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		 * constant in Constants.java (CogniCrypt Core) 4) add new else if in the following query
 		 */
 
-		int stmtId = 0;
 		String markerType;
 		if (error instanceof ForbiddenMethodError) {
 			markerType = Constants.FORBIDDEN_METHOD_MARKER_TYPE;
-			stmtId = ((ForbiddenMethodError) error).hashCode();
 		} else if (error instanceof PredicateContradictionError) {
 			markerType = Constants.PREDICATE_CONTRADICTION_MARKER_TYPE;
-			stmtId = ((PredicateContradictionError) error).hashCode();
 		} else if (error instanceof RequiredPredicateError) {
 			markerType = Constants.REQUIRED_PREDICATE_MARKER_TYPE;
-			stmtId = ((RequiredPredicateError) error).hashCode();
 		} else if (error instanceof ConstraintError) {
 			markerType = Constants.CONSTRAINT_ERROR_MARKER_TYPE;
-			stmtId = ((ConstraintError) error).hashCode();
 		} else if (error instanceof NeverTypeOfError) {
 			markerType = Constants.NEVER_TYPEOF_MARKER_TYPE;
-			stmtId = ((NeverTypeOfError) error).hashCode();
 		} else if (error instanceof IncompleteOperationError) {
 			markerType = Constants.INCOMPLETE_OPERATION_MARKER_TYPE;
-			stmtId = ((IncompleteOperationError) error).hashCode();
 		} else if (error instanceof TypestateError) {
 			markerType = Constants.TYPESTATE_ERROR_MARKER_TYPE;
-			stmtId = ((TypestateError) error).hashCode();
 		} else if (error instanceof ImpreciseValueExtractionError) {
 			markerType = Constants.IMPRECISE_VALUE_EXTRACTION_MARKER_TYPE;
-			stmtId = ((ImpreciseValueExtractionError) error).hashCode();
 		} else {
 			markerType = Constants.CC_MARKER_TYPE;
-			stmtId = error.hashCode();
 		}
 
 		int selectedSeverity = Activator.getDefault().getPreferenceStore().getInt(markerType);

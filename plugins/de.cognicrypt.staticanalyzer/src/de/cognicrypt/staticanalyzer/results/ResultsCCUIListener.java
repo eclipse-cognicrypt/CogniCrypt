@@ -175,9 +175,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		if (sev == Severities.Ignored) {
 			return;
 		}
-
-		this.warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator
-				+ Constants.SUPPRESSWARNING_FILE;
+		
+		this.warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator + Constants.SUPPRESSWARNING_FILE;
 		final File warningsFile = new File(this.warningFilePath);
 
 		if (!warningsFile.exists()) {

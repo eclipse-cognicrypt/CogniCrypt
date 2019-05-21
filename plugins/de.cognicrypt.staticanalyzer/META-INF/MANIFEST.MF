@@ -15,9 +15,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.emf.common,
  org.eclipse.m2e.maven.runtime,
  de.cognicrypt.core;bundle-version="1.0.0",
- com.google.guava
+ com.google.guava,
+ org.eclipse.jdt.launching
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ resources/
 Automatic-Module-Name: de.cognicrypt.staticanalyzer
 Import-Package: org.eclipse.ui.texteditor

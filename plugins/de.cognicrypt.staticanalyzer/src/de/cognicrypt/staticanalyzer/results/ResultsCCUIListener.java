@@ -51,7 +51,6 @@ import crypto.rules.CryptSLPredicate;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.Severities;
 import de.cognicrypt.staticanalyzer.Activator;
-import de.cognicrypt.staticanalyzer.statement.CCStatement;
 import de.cognicrypt.staticanalyzer.view.AnalysisData;
 import de.cognicrypt.staticanalyzer.view.ResultsUnit;
 import de.cognicrypt.staticanalyzer.view.StatisticsView;
@@ -71,7 +70,7 @@ import typestate.TransitionFunction;
  * This listener is notified of any misuses the analysis finds. It also reports the results of the analysis to the Statistics View
  *
  * @author Stefan Krueger
- * @author André Sonntag
+ * @author Andrï¿½ Sonntag
  * @author Adnan Manzoor
  */
 public class ResultsCCUIListener extends CrySLAnalysisListener {
@@ -108,9 +107,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final Statement errorLocation = error.getErrorLocation();
 		final IResource sourceFile = unitToResource(errorLocation);
 		final int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
-		final CCStatement stmt = new CCStatement(errorLocation);
-		final int stmtId = stmt.hashCode();
-		
+		final int stmtId = error.hashCode();
 		ICompilationUnit javaFile = (ICompilationUnit) JavaCore.create(sourceFile);
 		String className = "";
 		try {
@@ -159,6 +156,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		} else {
 			markerType = Constants.CC_MARKER_TYPE;
 		}
+
 		int selectedSeverity = Activator.getDefault().getPreferenceStore().getInt(markerType);
 		if (selectedSeverity == -1) {
 			selectedSeverity = Activator.getDefault().getPreferenceStore().getDefaultInt(markerType);

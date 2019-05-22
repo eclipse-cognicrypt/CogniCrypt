@@ -56,7 +56,8 @@ import de.cognicrypt.core.Constants;
 public class Utils {
 
 	private static IWorkbenchWindow window = null;
-
+	static String defaultRulesPath = "resources/CrySLRules/JavaCryptographicArchitecture";
+	
 	/**
 	 * This method checks if a project passed as parameter is a Java project or not.
 	 *
@@ -350,7 +351,7 @@ public class Utils {
 	 *         Thows an exception if given rule name does not exist.
 	 */
 	public static CryptSLRule getCryptSLRule(String cryptslRule) throws IOException, ClassNotFoundException {
-		final FileInputStream fileIn = new FileInputStream(Utils.getResourceFromWithin("resources/CrySLRules", de.cognicrypt.core.Activator.PLUGIN_ID)
+		final FileInputStream fileIn = new FileInputStream(Utils.getResourceFromWithin(defaultRulesPath, de.cognicrypt.core.Activator.PLUGIN_ID)
 			.getAbsolutePath() + "\\" + cryptslRule + ".cryptslbin");
 		final ObjectInputStream in = new ObjectInputStream(fileIn);
 		CryptSLRule rule = (CryptSLRule) in.readObject();
@@ -361,13 +362,17 @@ public class Utils {
 	
 	
 	public static List<CryptSLRule> readCrySLRules() {
-		return readCrySLRules(Utils.getResourceFromWithin("resources/CrySLRules").getAbsolutePath());
+		return readCrySLRules(Utils.getResourceFromWithin(defaultRulesPath).getAbsolutePath());
 	}
 	
 	protected static List<CryptSLRule> readCrySLRules(String rulesFolder) {
 		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
 
 		for (File rule : (new File(rulesFolder)).listFiles()) {
+			if (rule.isDirectory()) {
+				rules.addAll(readCrySLRules(rule.getAbsolutePath()));
+				continue;
+			}
 			FileInputStream fileIn;
 			try {
 				fileIn = new FileInputStream(rule);

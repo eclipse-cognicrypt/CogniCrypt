@@ -3,7 +3,6 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
 	<xsl:output method="text" />
 	<xsl:template match="/">
-
 		<xsl:variable name="Rounds">
 			<xsl:value-of
 				select="//task/algorithm[@type='KeyDerivationAlgorithm']/iterations" />
@@ -11,10 +10,8 @@
 
 		<xsl:if test="//task/algorithm[@type='SymmetricBlockCipher']">
 			<xsl:result-document href="SymmetricEnc.java">
-				package
-				<xsl:value-of select="//task/Package" />
-				;
-				<xsl:apply-templates select="//Import" />
+				package <xsl:value-of select="//task/Package"/>;
+				<xsl:apply-templates select="//Import"/>
 				/** @author CogniCrypt */
 				public class SymmetricEnc {
 				<xsl:if test="//task/code/dataType='File'">
@@ -32,7 +29,6 @@
 					return Base64.getEncoder().encodeToString(encrypt(data, key));
 					}
 				</xsl:if>
-
 
 				public byte[] encrypt(byte[] data, SecretKey key) throws
 				GeneralSecurityException {
@@ -108,15 +104,12 @@
 					</xsl:choose>
 						return res;
 				}
-				}
-			</xsl:result-document>
+				}</xsl:result-document>
 		</xsl:if>
 
 		<xsl:if test="//task/code/hybrid='true'">
 			<xsl:result-document href="PublicKeyEnc.java">
-				package
-				<xsl:value-of select="//task/Package" />
-				;
+				package <xsl:value-of select="//task/Package" />;
 				<xsl:apply-templates select="//Import" />
 				/** @author CogniCrypt */
 				public class PublicKeyEnc {
@@ -129,17 +122,14 @@
 				byte[] sessionKeyBytes = c.wrap(sessionKey);
 				return sessionKeyBytes;
 				}
-				}
-			</xsl:result-document>
+				}</xsl:result-document>
 		</xsl:if>
 
 		<xsl:if test="//task[@description='Encryption']">
-
-			package
-			<xsl:value-of select="//Package" />
-			;
-			<xsl:apply-templates select="//Import" />
+			package <xsl:value-of select="//Package"/>;
+			<xsl:apply-templates select="//Import"/>
 			public class Output {
+			
 			public static void templateUsage(<xsl:choose><xsl:when test="//task/code/dataType='File'">File </xsl:when><xsl:when test="//task/code/dataType='String'">String </xsl:when><xsl:otherwise>byte[] </xsl:otherwise></xsl:choose>data <xsl:if test="//task/code/hybrid='false'">, char[] pwd</xsl:if>) throws GeneralSecurityException<xsl:if test="//task/code/dataType='File'">, IOException</xsl:if><xsl:if test="//task/code/dataType='String'">, UnsupportedEncodingException</xsl:if>{
 			KeyManagment km = new KeyManagment();
 			<xsl:choose>
@@ -183,9 +173,7 @@
 			}
 			}
 			<xsl:result-document href="KeyManagment.java">
-				package
-				<xsl:value-of select="//task/Package" />
-				;
+				package <xsl:value-of select="//task/Package" />;
 				<xsl:apply-templates select="//Import" />
 				/** @author CogniCrypt */
 				public class KeyManagment{
@@ -213,8 +201,7 @@
 					SecretKeySpec ret = new SecretKeySpec(tmpKey.getEncoded(), "<xsl:value-of select="//task/algorithm[@type='SymmetricBlockCipher']/name" />" );
 					spec.clearPassword();
 					return ret;
-					}
-				</xsl:if>
+					}</xsl:if>
 
 				<xsl:if test="//task/code/hybrid='true'">
 					public SecretKey generateSessionKey(int keySize) throws
@@ -229,18 +216,13 @@
 					KeyPairGenerator kpg = KeyPairGenerator.getInstance("<xsl:value-of select="//task/algorithm[@type='AsymmetricCipher']/name" />");
 					kpg.initialize(keySize);
 					return kpg.generateKeyPair();
-					}
-				</xsl:if>
-				}
-			</xsl:result-document>
+					}</xsl:if>
+				}</xsl:result-document>
 		</xsl:if>
 
 	</xsl:template>
 
 	<xsl:template match="Import">
-		import
-		<xsl:value-of select="." />
-		;
+		import <xsl:value-of select="."/>;
 	</xsl:template>
-
 </xsl:stylesheet>

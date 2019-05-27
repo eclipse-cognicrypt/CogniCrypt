@@ -2,7 +2,6 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
 <xsl:output method="text"/>
 <xsl:template match="/">
-
 <xsl:variable name="keysize"> <xsl:value-of select="//task/algorithm[@type='SignatureScheme']/keysize"/> </xsl:variable>
 <xsl:variable name="keyPairGenerator">
 	<xsl:choose>
@@ -50,8 +49,7 @@ public class Signatures {
 		return sig.verify(signature);
 	}
 	</xsl:if>
-}
-</xsl:result-document>
+}</xsl:result-document>
 
 package <xsl:value-of select="//Package"/>;
 <xsl:apply-templates select="//Import"/>
@@ -78,5 +76,4 @@ public class Output {
 <xsl:template match="Import">
 import <xsl:value-of select="."/>;
 </xsl:template>
-
 </xsl:stylesheet>

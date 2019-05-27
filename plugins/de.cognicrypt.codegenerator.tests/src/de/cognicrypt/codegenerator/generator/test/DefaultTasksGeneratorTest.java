@@ -1,12 +1,14 @@
 package de.cognicrypt.codegenerator.generator.test;
 
 import static org.junit.Assert.assertTrue;
+
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
@@ -46,6 +48,8 @@ public class DefaultTasksGeneratorTest {
 
 	@After
 	public void tearDown() throws CoreException {
+
+		//TestUtils.printSourceCode(developerProject, "de.cognicrypt.crypto");
 		TestUtils.deleteProject(this.testJavaProject.getProject());
 	}
 
@@ -53,7 +57,6 @@ public class DefaultTasksGeneratorTest {
 	public void setUp() throws Exception {
 		DefaultTasksGeneratorTest.counter++;
 		this.testJavaProject = TestUtils.createJavaProject("TestProject_" + counter);
-		TestUtils.generateJavaClassInJavaProject(this.testJavaProject, "testPackage", "Test");
 
 		this.encTask = TestUtils.getTask("Encryption");
 		this.generatorEnc = new XSLBasedGenerator(this.testJavaProject.getProject(), this.encTask.getXslFile());
@@ -82,14 +85,13 @@ public class DefaultTasksGeneratorTest {
 		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
 		assertTrue(encCheck);
 	}
-
+	
 	@Test
 	public void SecPasswordDefault() {
 		this.configSecPassword = TestUtils.createConfigurationForCodeGeneration(this.developerProject, this.secPasswordTask);
 		final boolean secPasswordCheck = this.generatorSecPassword.generateCodeTemplates(this.configSecPassword, this.secPasswordTask.getAdditionalResources());
 		assertTrue(secPasswordCheck);
 	}
-
 
 	@Test
 	public void SECMUPACOMPDefault() {
@@ -105,10 +107,6 @@ public class DefaultTasksGeneratorTest {
 		assertTrue(secComCheck);
 	}
 	
-
-	/**
-	 * This test case is commented because it requires UI interaction
-	 */
 	@Test
 	public void DigitalSignDefault() {
 		this.configDigitalSign = TestUtils.createConfigurationForCodeGeneration(developerProject, digitalSignTask);

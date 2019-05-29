@@ -276,8 +276,9 @@ public class CrySLModelReader {
 	}
 
 	private StateMachineGraph buildStateMachineGraph(final Expression order) {
-		final StateMachineGraphBuilder smgb = new StateMachineGraphBuilder(order);
-		return smgb.buildSMG();
+		StateMachineGraph smg = new StateMachineGraphBuilder(order).buildSMG();
+		smg.wrapUpCreation();
+		return smg;
 	}
 
 	private List<ISLConstraint> buildUpConstraints(final List<Constraint> constraints) {

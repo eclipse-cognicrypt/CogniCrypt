@@ -78,12 +78,12 @@ public class AnalysisKickOff {
 				Utils.storeDepHashmaptoFile(hashDependency, ip);
 			}
 
-		} catch (XmlPullParserException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		} catch (XmlPullParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		if (AnalysisKickOff.resultsReporter != null

@@ -36,6 +36,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
+import org.eclipse.jface.preference.IPreferenceStore;
 import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
@@ -109,7 +110,6 @@ public class SootRunner {
 		return rules;
 	}
 
-
 	public static boolean runSoot(final IJavaProject project, final ResultsCCUIListener resultsReporter) {
 		G.reset();
 		setSootOptions(project);
@@ -129,10 +129,10 @@ public class SootRunner {
 		long elapsed = watch.elapsed(TimeUnit.SECONDS);
 		watch.reset();
 		watch.start();
-		Activator.getDefault().logInfo("Call graph generated in  "+ elapsed + " seconds." );
+		Activator.getDefault().logInfo("Call graph generated in  " + elapsed + " seconds.");
 		PackManager.v().getPack("wjtp").apply();
 		long analysisTime = watch.elapsed(TimeUnit.SECONDS);
-		Activator.getDefault().logInfo("CogniCrypt Analysis terminated in "+ analysisTime + " seconds." );
+		Activator.getDefault().logInfo("CogniCrypt Analysis terminated in " + analysisTime + " seconds.");
 	}
 
 	private static void setSootOptions(final IJavaProject project) {
@@ -199,8 +199,8 @@ public class SootRunner {
 
 	private static Collection<String> applicationClassPath(final IJavaProject javaProject) {
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		Object oldHashDependency; 
+		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		Object oldHashDependency;
 
 		try {
 
@@ -209,11 +209,25 @@ IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 			urls.add(new File(uriString).getAbsolutePath());
 
 			String mavenDepLoc = System.getProperty("user.home") + "/.m2";
-
+//			System.out.println("uri deps areeeeeeee");
+//			System.out.println(uriString);
+//			System.out.println("maven deps areeeeeeee");
+//			System.out.println(mavenDepLoc);
+			
+//			String allJars = System.getProperty("user.home") + "/.p2";
+			
+			final IClasspathEntry[] resolvedClasspath = javaProject.getResolvedClasspath(true);
+			for (IClasspathEntry classpathEntry : resolvedClasspath) {
+				System.out.println("print the claaaasss path");
+			    System.out.println(classpathEntry.getPath().makeAbsolute().toFile().getCanonicalFile().toURL());
+			}
+//			System.out.println("alljars deps areeeeeeee");
+//			System.out.println(allJars);
 			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) == true) {
-				
+
 				if (mavenDepLoc != null) {
 					urls.add(mavenDepLoc);
+//					urls.add(allJars);
 				}
 
 			}
@@ -221,15 +235,15 @@ IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 
 				if (urls.contains(mavenDepLoc)) {
 //					Do nothing 
-				} 
-				else {
-					
+				} else {
+
 					IProject ip = javaProject.getJavaProject().getProject();
-					
+
 //					get hashmap of maven dep
 					HashMap<String, String> newHashDependency = Utils.ExtractDepHashmap(ip);
-//					get old hashmap maven dep
-					if (!newHashDependency.isEmpty()) {}
+//					get old hashmap of maven dep
+					if (!newHashDependency.isEmpty()) {
+					}
 					String pathtoDepenencyHashmap = ip.getLocation().toOSString() + Constants.outerFileSeparator
 							+ "dependencyHashmap.data";
 					Path path = Paths.get(pathtoDepenencyHashmap);
@@ -241,10 +255,10 @@ IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 //						System.out.println(oldHashDependency);
 //						System.out.println(newHashDependency);
 //						System.out.println(oldHashDependency.equals(newHashDependency));
-						if(oldHashDependency.equals(newHashDependency)) {
+						if (oldHashDependency.equals(newHashDependency)) {
 //							do nothing
 //							System.out.println("old and new hashmap are equal");
-						}else {
+						} else {
 							urls.add(mavenDepLoc);
 							Utils.storeDepHashmaptoFile(newHashDependency, ip);
 						}
@@ -261,6 +275,7 @@ IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 			return Lists.newArrayList();
 		}
 	}
+
 	private static Collection<String> libraryClassPath(IJavaProject project) {
 		Collection<String> libraryClassPath = Sets.newHashSet();
 		IClasspathEntry[] rentries;
@@ -277,14 +292,16 @@ IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		return libraryClassPath;
 	}
 
-	private static void resolveClassPathEntry(IClasspathEntry entry, Collection<String> libraryClassPath, IJavaProject project) {
+	private static void resolveClassPathEntry(IClasspathEntry entry, Collection<String> libraryClassPath,
+			IJavaProject project) {
 		IClasspathEntry[] rentries;
 		switch (entry.getEntryKind()) {
 		case IClasspathEntry.CPE_SOURCE:
 			libraryClassPath.addAll(applicationClassPath(project));
 			break;
 		case IClasspathEntry.CPE_PROJECT:
-            IJavaProject requiredProject = JavaCore.create((IProject) ResourcesPlugin.getWorkspace().getRoot().findMember(entry.getPath()));
+			IJavaProject requiredProject = JavaCore
+					.create((IProject) ResourcesPlugin.getWorkspace().getRoot().findMember(entry.getPath()));
 			try {
 				rentries = project.getRawClasspath();
 				for (IClasspathEntry e : rentries) {
@@ -303,10 +320,9 @@ IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 			break;
 		case IClasspathEntry.CPE_CONTAINER:
 			try {
-				IClasspathContainer container = JavaCore.getClasspathContainer(
-				          entry.getPath(), project);
+				IClasspathContainer container = JavaCore.getClasspathContainer(entry.getPath(), project);
 				IClasspathEntry[] subEntries = container.getClasspathEntries();
-				for(IClasspathEntry subEntry : subEntries) {
+				for (IClasspathEntry subEntry : subEntries) {
 					resolveClassPathEntry(subEntry, libraryClassPath, project);
 				}
 			} catch (JavaModelException e) {

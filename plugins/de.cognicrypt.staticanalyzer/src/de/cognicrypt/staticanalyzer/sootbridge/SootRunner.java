@@ -12,6 +12,8 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,6 +25,9 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
@@ -37,6 +42,11 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
@@ -209,20 +219,50 @@ public class SootRunner {
 			urls.add(new File(uriString).getAbsolutePath());
 
 			String mavenDepLoc = System.getProperty("user.home") + "/.m2";
-//			System.out.println("uri deps areeeeeeee");
-//			System.out.println(uriString);
+			
+			String classpath = javaProject.getProject().getLocation().toOSString() + Constants.outerFileSeparator + ".classpath";
+			
+			File classpathFile = new File(classpath);
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(classpathFile);
+			
+			NodeList nList = doc.getElementsByTagName("classpathentry");
+			for (int temp = 0; temp < nList.getLength(); temp++) {
+				Node nNode = nList.item(temp);
+				Element eElement = (Element) nNode;
+				if (eElement.getAttribute("kind").equals("con") && eElement.getAttribute("path").contains("JRE_CONTAINER")) {
+					String[] pathAttr = eElement.getAttribute("path").split("/");
+					String javaVersion = pathAttr[pathAttr.length-1];
+					System.out.println(javaVersion);
+					
+				}
+			}
+			
+			
 //			System.out.println("maven deps areeeeeeee");
 //			System.out.println(mavenDepLoc);
 			
-//			String allJars = System.getProperty("user.home") + "/.p2";
 			
-			final IClasspathEntry[] resolvedClasspath = javaProject.getResolvedClasspath(true);
-			for (IClasspathEntry classpathEntry : resolvedClasspath) {
-				System.out.println("print the claaaasss path");
-			    System.out.println(classpathEntry.getPath().makeAbsolute().toFile().getCanonicalFile().toURL());
-			}
-//			System.out.println("alljars deps areeeeeeee");
-//			System.out.println(allJars);
+//			final IClasspathEntry[] resolvedClasspath = javaProject.getResolvedClasspath(true);
+//			System.out.println("resoooooolev are here");
+//			System.out.println(resolvedClasspath);
+//			String claspathValue = System.getProperty("java.class.path");
+//			System.out.println(claspathValue);
+//			
+//			for (IClasspathEntry classpathEntry : resolvedClasspath) {
+//				System.out.println("print the claaaasss path");
+//			    System.out.println(classpathEntry.getPath().makeAbsolute().toFile().getCanonicalFile().toURL());
+//
+//			}
+//			System.out.println("done");
+//	        ClassLoader cl = ClassLoader.getSystemClassLoader();
+//	        URL[] urlss = ((URLClassLoader)cl).getURLs();
+//	        for(URL url: urlss){
+//		        System.out.println("here is cl for yo babe");
+//	        	System.out.println(url.getFile());
+//	        }
+			
 			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) == true) {
 
 				if (mavenDepLoc != null) {

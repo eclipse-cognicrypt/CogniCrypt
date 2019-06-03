@@ -356,7 +356,7 @@ public class Utils {
 		return headerGroup;
 	}
 
-	public static HashMap<String, String> ExtractDepHashmap(IProject ip) throws XmlPullParserException, IOException {
+	public static HashMap<String, String> ExtractDepHashmap(IProject ip) throws IOException, XmlPullParserException {
 
 		String pathtoPom = ip.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml";
 		MavenXpp3Reader reader = new MavenXpp3Reader();

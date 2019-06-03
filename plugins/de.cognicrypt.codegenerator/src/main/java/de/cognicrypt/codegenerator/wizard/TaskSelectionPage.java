@@ -113,7 +113,7 @@ public class TaskSelectionPage extends WizardPage {
 	}
 
 	private Button createImageButton(final Composite container, final Image startImage, String taskName) {
-		final Button b = new Button(container, SWT.WRAP);
+		final Button b = new Button(container, SWT.WRAP | SWT.TOGGLE);
 		final Rectangle bounds = startImage.getBounds();
 		b.setSize(bounds.width, bounds.height);
 		b.setImage(startImage);

@@ -49,7 +49,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.osgi.framework.Bundle;
 import com.google.common.base.CharMatcher;
 import de.cognicrypt.core.Activator;
-import de.cognicrypt.core.Constants;
 
 public class Utils {
 
@@ -357,14 +356,11 @@ public class Utils {
 		return null;
 	}
 
-	public static boolean checkJavaVersion() {
-		String javaVersion = System.getProperty("java.version", null);
-		if (javaVersion == null)
-			return true;
-		JavaVersion systemJavaVersion = new JavaVersion(javaVersion);
-		JavaVersion requiredJavaVersion = new JavaVersion(Constants.CC_JAVA_VERSION);
-		if (systemJavaVersion.compareTo(requiredJavaVersion) == 1)
-			return true;
-		return false;
+	public static boolean isIncompatibleJavaVersion() {
+		return isIncompatibleJavaVersion(System.getProperty("java.version", null));
+	}
+
+	public static boolean isIncompatibleJavaVersion(String javaVersion) {
+		return javaVersion == null || !javaVersion.startsWith("1.");
 	}
 }

@@ -11,16 +11,27 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.IClasspathContainer;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
+
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
 import boomerang.callgraph.ObservableDynamicICFG;
 import boomerang.callgraph.ObservableICFG;
 import boomerang.preanalysis.BoomerangPretransformer;
@@ -62,17 +73,7 @@ public class SootRunner {
 					public ObservableICFG<Unit, SootMethod> icfg() {
 						return icfg;
 					}
-
-					@Override
-					public boolean isCommandLineMode() {
-						return true;
-					}
-
-					@Override
-					public boolean rulesInSrcFormat() {
-						return false;
-					}
-
+					
 				};
 				scanner.getAnalysisListener().addReportListener(resultsReporter);
 				scanner.scan(getRules());
@@ -186,7 +187,78 @@ public class SootRunner {
 	}
 
 	private static String getSootClasspath(final IJavaProject javaProject) {
-		return Joiner.on(File.pathSeparator).join(projectClassPath(javaProject));
+		Collection<String> applicationClassPath = applicationClassPath(javaProject);
+		Collection<String> libraryClassPath = libraryClassPath(javaProject);
+		libraryClassPath.addAll(applicationClassPath);
+		System.out.println(Joiner.on(File.pathSeparator).join(libraryClassPath));
+		return Joiner.on(File.pathSeparator).join(libraryClassPath);
+	}
+
+	private static Collection<String> applicationClassPath(final IJavaProject javaProject) {
+		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		try {
+			final List<String> urls = new ArrayList<>();
+			final URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
+			urls.add(new File(uriString).getAbsolutePath());
+			return urls;
+		} catch (final Exception e) {
+			Activator.getDefault().logError(e, "Error building project classpath");
+			return Lists.newArrayList();
+		}
+	}
+	private static Collection<String> libraryClassPath(IJavaProject project) {
+		Collection<String> libraryClassPath = Sets.newHashSet();
+		IClasspathEntry[] rentries;
+		try {
+			rentries = project.getRawClasspath();
+			for (IClasspathEntry entry : rentries) {
+				resolveClassPathEntry(entry, libraryClassPath, project);
+			}
+
+		} catch (CoreException e1) {
+			e1.printStackTrace();
+		}
+
+		return libraryClassPath;
+	}
+
+	private static void resolveClassPathEntry(IClasspathEntry entry, Collection<String> libraryClassPath, IJavaProject project) {
+		IClasspathEntry[] rentries;
+		switch (entry.getEntryKind()) {
+		case IClasspathEntry.CPE_SOURCE:
+			libraryClassPath.addAll(applicationClassPath(project));
+			break;
+		case IClasspathEntry.CPE_PROJECT:
+            IJavaProject requiredProject = JavaCore.create((IProject) ResourcesPlugin.getWorkspace().getRoot().findMember(entry.getPath()));
+			try {
+				rentries = project.getRawClasspath();
+				for (IClasspathEntry e : rentries) {
+					resolveClassPathEntry(e, libraryClassPath, requiredProject);
+				}
+			} catch (JavaModelException e1) {
+				e1.printStackTrace();
+			}
+			break;
+		case IClasspathEntry.CPE_LIBRARY:
+			IPath path = entry.getPath();
+			libraryClassPath.add(path.toString());
+			break;
+		case IClasspathEntry.CPE_VARIABLE:
+			// JRE entry
+			break;
+		case IClasspathEntry.CPE_CONTAINER:
+			try {
+				IClasspathContainer container = JavaCore.getClasspathContainer(
+				          entry.getPath(), project);
+				IClasspathEntry[] subEntries = container.getClasspathEntries();
+				for(IClasspathEntry subEntry : subEntries) {
+					resolveClassPathEntry(subEntry, libraryClassPath, project);
+				}
+			} catch (JavaModelException e) {
+				e.printStackTrace();
+			}
+			break;
+		}
 	}
 
 }

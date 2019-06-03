@@ -10,9 +10,9 @@ import de.cognicrypt.codegenerator.generator.CodeGenCrySLRule;
 
 public class CrySLConfiguration extends Configuration {
 
-	private final List<List<CodeGenCrySLRule>> rules;
+	private final List<CodeGenCrySLRule> rules;
 
-	public CrySLConfiguration(List<List<CodeGenCrySLRule>> rules, Map<CodeGenCrySLRule, ?> constraints, String pathOnDisk) {
+	public CrySLConfiguration(List<CodeGenCrySLRule> rules, Map<CodeGenCrySLRule, ?> constraints, String pathOnDisk) {
 		super(constraints, pathOnDisk);
 		this.rules = rules;
 	}
@@ -28,7 +28,7 @@ public class CrySLConfiguration extends Configuration {
 		return null;
 	}
 
-	public List<List<CodeGenCrySLRule>> getRules() {
+	public List<CodeGenCrySLRule> getRules() {
 		return rules;
 	}
 }

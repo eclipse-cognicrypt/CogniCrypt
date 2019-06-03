@@ -389,6 +389,7 @@ public class Utils {
 	
 	public static boolean isSubType(String typeOne, String typeTwo) {
 		boolean subTypes = typeOne.equals(typeTwo);
+		subTypes |= (typeOne+ "[]").equals(typeTwo);
 		if (!subTypes) {
 			try {
 				subTypes = Class.forName(typeOne).isAssignableFrom(Class.forName(typeTwo));

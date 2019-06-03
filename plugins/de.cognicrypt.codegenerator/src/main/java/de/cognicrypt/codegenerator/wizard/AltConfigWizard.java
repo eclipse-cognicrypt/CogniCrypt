@@ -1,12 +1,18 @@
 package de.cognicrypt.codegenerator.wizard;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -14,14 +20,42 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.clafer.instance.InstanceClafer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.ClassInstanceCreation;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.ConstructorInvocation;
+import org.eclipse.jdt.core.dom.CreationReference;
+import org.eclipse.jdt.core.dom.Initializer;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.MethodRef;
+import org.eclipse.jdt.core.dom.Name;
+import org.eclipse.jdt.core.dom.PackageDeclaration;
+import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Bundle;
 
+import crypto.rules.CryptSLObject;
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
@@ -56,7 +90,7 @@ public class AltConfigWizard extends Wizard {
 			Activator.getDefault().logError(e);
 		}
 		setWindowTitle("CogniCrypt");
-		
+
 		final ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "platform:/plugin/de.cognicrypt.core/icons/cognicrypt-medium.png ");
 		setDefaultPageImageDescriptor(image);
 		this.constraints = new HashMap<>();
@@ -197,18 +231,114 @@ public class AltConfigWizard extends Wizard {
 		
 		switch (generator) {
 			case CrySL:
-				List<List<CodeGenCrySLRule>> rules = new ArrayList<List<CodeGenCrySLRule>>();
+				File templateFilea =  CodeGenUtils.getResourceFromWithin("src/main/java/de/cognicrypt/codegenerator/crysl/templates/EncryptionTemplate.java");
+				String projectRelDir = Constants.outerFileSeparator + "src" + Constants.outerFileSeparator + Constants.PackageName + Constants.outerFileSeparator;
+				String projectRelPath = projectRelDir + templateFilea.getName();
+				
+				try {
+					Files.createDirectories(Paths.get(selectedFile.getProject().getRawLocation().toOSString() + projectRelDir));
+					Files.copy(templateFilea.toPath(), Paths.get(selectedFile.getProject().getRawLocation().toOSString() + projectRelPath));
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				try {
+					selectedFile.getProject().refreshLocal(IProject.DEPTH_INFINITE, null);
+				} catch (CoreException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				IFile file = selectedFile.getProject().getFile(projectRelPath);
+//				try {
+//					file.create(stream, true, null);
+//				} catch (CoreException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+			
+				ASTParser parser = ASTParser.newParser(AST.JLS11);
+				parser.setSource((ICompilationUnit) JavaCore.create(file));
+
+				parser.setResolveBindings(true);
+				parser.setBindingsRecovery(true);
+				parser.setKind(ASTParser.K_COMPILATION_UNIT);
+				CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+
+				Map<SimpleName, CryptSLObject> variableDefinitions = new HashMap<SimpleName, CryptSLObject>();
+				List<CodeGenCrySLRule> rules = new ArrayList<CodeGenCrySLRule>();
+				List<CryptSLObject> retObj = new ArrayList<CryptSLObject>();
+				List<CryptSLObject> pars = new ArrayList<CryptSLObject>();
+				final ASTVisitor astVisitor = new ASTVisitor(true) {
+
+					@Override
+					public boolean visit(MethodInvocation node) {
+						// TODO Auto-generated method stub
+						MethodInvocation mi = node;
+						String calledMethodName = mi.getName().getFullyQualifiedName();
+						if ("addReturnObject".equals(calledMethodName)) {
+							Optional<SimpleName> variable = variableDefinitions.keySet().stream().filter(e -> mi.arguments().contains(((SimpleName) e).getFullyQualifiedName())).findFirst();
+							retObj.add(variableDefinitions.get(variable.get()));
+						} else if ("addParameter".equals(calledMethodName)) {
+							Optional<SimpleName> variable = variableDefinitions.keySet().stream().filter(e -> mi.arguments().contains(((SimpleName) e).getFullyQualifiedName())).findFirst();
+							pars.add(variableDefinitions.get(variable.get()));
+						} else if ("considerCrySLRule".equals(calledMethodName)){
+							String rule = (String) mi.arguments().get(0);
+							try {
+								rules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(rule), pars, retObj.get(0)));
+							} catch (ClassNotFoundException | IOException e) {
+							}
+							pars.clear();
+							retObj.clear();
+						} 
+						return super.visit(node);
+					}
+
+					@Override
+					public boolean visit(PackageDeclaration node) {
+//						Name a = ((PackageDeclaration)node).getName();
+//						a.structuralPropertiesForType().get(0);
+//						a.setProperty("qualifier", "aaa");
+//						((PackageDeclaration)node).setName(a);
+						return super.visit(node);
+					}
+
+					@Override
+					public void preVisit(ASTNode node) {
+						// TODO Auto-generated method stub
+						super.preVisit(node);
+					}
+
+					@Override
+					public boolean visit(VariableDeclarationExpression node) {
+						// TODO Auto-generated method stub
+						return super.visit(node);
+					}
+
+					@Override
+					public boolean visit(VariableDeclarationStatement node) {
+						// TODO Auto-generated method stub
+						SimpleName varName = ((VariableDeclarationFragment) ((VariableDeclarationStatement)node).fragments().get(0)).getName();
+						variableDefinitions.put(varName, new CryptSLObject(varName.getFullyQualifiedName(), ((VariableDeclarationStatement)node).getType().toString()));
+						return super.visit(node);
+					}
+					
+					
+
+				};
+				cu.accept(astVisitor);
+				
+				
 				try {
 					List<List<String>> stringRules = new ArrayList<List<String>>();
-					stringRules.add(Arrays.asList(new String[] { "SecureRandom", "PBEKeySpec", "SecretKeyFactory", "SecretKey", "SecretKeySpec" }));
+					stringRules.add(Arrays.asList(new String[] { "SecureRandom", "PBEKeySpec", "SecretKeyFactory", "SecretKey", "SecretKeySpec"}));
 					stringRules.add(Arrays.asList(new String[] { "Cipher" }));
 
 					for (List<String> rule : stringRules) {
 						ArrayList<CodeGenCrySLRule> newRules = new ArrayList<CodeGenCrySLRule>();
-						rules.add(newRules);
+//						rules.add(newRules);
 						for (String r : rule) {
 							try {
-								newRules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(r)));
+								newRules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(r), new ArrayList<CryptSLObject>(), new CryptSLObject("", "")));
 							} catch (FileNotFoundException ex) {
 								Activator.getDefault().logError(ex, "CrySL rule " + r + " not found.");
 							}

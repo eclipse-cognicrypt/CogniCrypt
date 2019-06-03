@@ -53,7 +53,7 @@ import de.cognicrypt.utils.Utils;
  */
 public class CrySLBasedCodeGenerator extends CodeGenerator {
 
-	private List<List<CodeGenCrySLRule>> rules;
+	private List<CodeGenCrySLRule> rules;
 	/**
 	 * Hash table to store the values that are assigend to variables.
 	 */
@@ -105,7 +105,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		Map<String, List<String>> tmpUsagePars = new HashMap<String, List<String>>();
 
 		GeneratorClass templateClass = new GeneratorClass();
-		templateClass.setPackageName(Constants.PackageName);
+		templateClass.setPackageName(Constants.PackageName.replace(Constants.innerFileSeparator, "."));
 
 		for (String imp : Constants.xmlimportsarr) {
 			templateClass.addImport(imp);
@@ -120,11 +120,11 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 
 		RuleDependencyTree rdt = new RuleDependencyTree(Utils.readCrySLRules());
 		predicateConnections = new ArrayList<Entry<CryptSLPredicate, Entry<CryptSLRule, CryptSLRule>>>();
-		List<CodeGenCrySLRule> mashedRuleList = rules.stream().reduce((a, b) -> {
+		List<CodeGenCrySLRule> mashedRuleList = rules; /*.stream().reduce((a, b) -> {
 			List<CodeGenCrySLRule> c = new ArrayList<CodeGenCrySLRule>(a);
 			c.addAll(b);
 			return c;
-		}).get();
+		}).get();*/
 		for (int i = 0; i < mashedRuleList.size(); i++) {
 			// Determine possible valid parameter values be analysing
 			// the given constraints
@@ -166,7 +166,8 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				}
 			}
 		}
-		for (List<CodeGenCrySLRule> ruleList : rules) {
+//		for (List<CodeGenCrySLRule> ruleList : rules) {
+		List<CodeGenCrySLRule> ruleList = rules;
 			String usedClass = ruleList.get(ruleList.size() - 1).getClassName();
 			String simpleClassName = usedClass.substring(usedClass.lastIndexOf('.') + 1);
 			String newClass = "CogniCrypt" + simpleClassName;
@@ -177,7 +178,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			// generate Java code
 			// ################################################################
 
-			ruleClass.setPackageName(Constants.PackageName);
+			ruleClass.setPackageName(Constants.PackageName.replace(Constants.innerFileSeparator, "."));
 
 			// class definition
 			ruleClass.setModifier("public");
@@ -273,7 +274,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			kills.clear();
 			ruleClass.addMethod(useMethod);
 			generatedClasses.add(ruleClass);
-		}
+//		}
 
 		tmplUsage.addException("GeneralSecurityException");
 		for (int j = 0; j < generatedClasses.size(); j++) {
@@ -281,8 +282,8 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			String className = generatedClass.getClassName();
 			tmplUsage.addStatementToBody(className + " " + className.toLowerCase() + " = new " + className + "();");
 
-			GeneratorMethod useMethod = generatedClass.getUseMethod();
-			String methodName = useMethod.getName();
+			GeneratorMethod useMethod2 = generatedClass.getUseMethod();
+			String methodName = useMethod2.getName();
 
 			String useMethodReturnType = generatedClass.getMethods().get(0).getReturnType();
 			if (!useMethodReturnType.equals("void")) {
@@ -297,7 +298,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			tmplUsage.addStatementToBody(className.toLowerCase() + "." + methodName + "(");
 
 			String previousReturnType = (j > 0) ? generatedClasses.get(j - 1).getUseMethod().getReturnType() : "void";
-			List<Entry<String, String>> parList = useMethod.getParameters();
+			List<Entry<String, String>> parList = useMethod2.getParameters();
 			for (int i = 0; i < parList.size(); i++) {
 				String parType = parList.get(i).getValue();
 				if (!Utils.isSubType(previousReturnType, parType) && !Utils.isSubType(parType, previousReturnType)) {
@@ -337,15 +338,15 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		for (TransitionEdge trans : transitions) {
 			for (CryptSLMethod potMethod : trans.getLabel()) {
 				SimpleEntry<String, String> cmpPar = new SimpleEntry<String, String>(par.getVarName(), par.getJavaType());
-				if (potMethod.getParameters().contains(cmpPar)) {
+				if (potMethod.getParameters().parallelStream().anyMatch(e -> e.getKey().equals(cmpPar.getKey()) && (e.getValue().equals(cmpPar.getValue()) || e.getValue().equals(cmpPar.getValue() + "[]")))) {
 					return potMethod.getParameters().size() - 1;
-				} else if (potMethod.getRetObject().equals(cmpPar)) {
+				} else if (potMethod.getRetObject().getKey().equals(cmpPar.getKey()) && (potMethod.getRetObject().getValue().equals(cmpPar.getValue()) || potMethod.getRetObject().getValue().equals(cmpPar.getValue() + "[]"))) {
 					return potMethod.getParameters().size();
 				}
 
 			}
 		}
-		return 0;
+		return Integer.MAX_VALUE;
 	}
 
 	/**

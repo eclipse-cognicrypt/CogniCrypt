@@ -64,7 +64,7 @@ Export-Package: boomerang,
  crypto.rules,
  crypto.typestate,
  de.cognicrypt.core;uses:="org.osgi.framework,org.eclipse.swt.graphics,org.eclipse.ui.plugin,org.osgi.framework,org.eclipse.core.runtime",
- de.cognicrypt.core.properties;uses:="org.eclipse.ui,org.eclipse.swt.widgets,org.eclipse.jface.preference",,
+ de.cognicrypt.core.properties;uses:="org.eclipse.ui,org.eclipse.swt.widgets,org.eclipse.jface.preference",
  de.cognicrypt.core.telemetry,
  de.cognicrypt.core,
  de.cognicrypt.utils;

@@ -68,13 +68,20 @@ public class AnalysisKickOff {
 		} else {
 			ip = iJavaElement.getJavaProject().getProject();
 		}
-		HashMap<String, String> hashDependency;
+
+		IJavaProject javaProject = JavaCore.create(ip);
+		if (javaProject == null) {
+			Activator.getDefault().logInfo("JavaCore could not create IJavaProject for project " + ip.getName() + " .");
+			return false;
+		}
+		
+		HashMap<String, File> hashDependency;
 		try {
 			String pathtoDepenencyHashmap = ip.getLocation().toOSString() + Constants.outerFileSeparator
 					+ "dependencyHashmap.data";
 			Path path = Paths.get(pathtoDepenencyHashmap);
 			if (!Files.exists(path)) {
-				hashDependency =  Utils.ExtractDepHashmap(ip);
+				hashDependency =  Utils.ExtractDepHashmap(javaProject);
 				Utils.storeDepHashmaptoFile(hashDependency, ip);
 			}
 
@@ -112,11 +119,7 @@ public class AnalysisKickOff {
 			Activator.getDefault().logError(e);
 			return false;
 		}
-		IJavaProject javaProject = JavaCore.create(ip);
-		if (javaProject == null) {
-			Activator.getDefault().logInfo("JavaCore could not create IJavaProject for project " + ip.getName() + " .");
-			return false;
-		}
+		
 		this.curProj = javaProject;
 		return true;
 	}

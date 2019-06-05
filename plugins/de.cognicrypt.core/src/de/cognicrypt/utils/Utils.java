@@ -15,10 +15,15 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.OptionalInt;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -31,6 +36,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -57,6 +63,9 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.osgi.framework.Bundle;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
 import com.google.common.base.CharMatcher;
 import de.cognicrypt.core.Activator;
 import de.cognicrypt.core.Constants;
@@ -168,8 +177,8 @@ public class Utils {
 	}
 
 	public static IProject getCurrentProject() {
-		System.out.println("inside getuCurrent Project");
 		final IFile currentlyOpenFile = Utils.getCurrentlyOpenFile();
+		
 		if (currentlyOpenFile != null) {
 			final IProject curProject = currentlyOpenFile.getProject();
 			if (checkIfJavaProjectSelected(curProject)) {
@@ -356,26 +365,41 @@ public class Utils {
 		return headerGroup;
 	}
 
-	public static HashMap<String, String> ExtractDepHashmap(IProject ip) throws IOException, XmlPullParserException {
+	public static HashMap<String, File> ExtractDepHashmap(IJavaProject javaProject) throws IOException, XmlPullParserException {
 
-		String pathtoPom = ip.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml";
-		MavenXpp3Reader reader = new MavenXpp3Reader();
+//		String pathtoPom = ip.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml";
+//		MavenXpp3Reader reader = new MavenXpp3Reader();
+//		Path path = Paths.get(pathtoPom);
 
-		Path path = Paths.get(pathtoPom);
-		HashMap<String, String> hashDependency = new HashMap<>();
-		if (Files.exists(path)) {
-			FileReader file = new FileReader(pathtoPom);
-			Model model = reader.read(file);
-			hashDependency.put(model.getGroupId(), "GroupId");
-			hashDependency.put(model.getArtifactId(), "ArtifactId");
-			hashDependency.put(model.getVersion(), "Version");
+		HashMap<String, File> hashDependency = new HashMap<>();
+		
+		IClasspathEntry[] resolvedClasspath;
+		try {
+			resolvedClasspath = javaProject.getResolvedClasspath(true);
+			for (IClasspathEntry classpathEntry : resolvedClasspath) {
 
+			    File dependencies = classpathEntry.getPath().makeAbsolute().toFile().getCanonicalFile();
+			    String [] s = dependencies.toString().split(null, '/');
+			    String depName = s[s.length-1];
+			    System.out.println(depName);
+			    hashDependency.put(depName, dependencies);
+			}
+		} catch (JavaModelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
+//			FileReader file = new FileReader(pathtoPom);
+//			Model model = reader.read(file);
+//			hashDependency.put(model.getGroupId(), "GroupId");
+//			hashDependency.put(model.getArtifactId(), "ArtifactId");
+//			hashDependency.put(model.getVersion(), "Version");
+
 		return hashDependency;
 
 	}
 	
-	public static void storeDepHashmaptoFile(HashMap<String, String> hashDependency, IProject ip) throws IOException {
+	public static void storeDepHashmaptoFile(HashMap<String, File> hashDependency, IProject ip) throws IOException {
 		try {
 			if (!hashDependency.isEmpty()) {
 				File file = new File(

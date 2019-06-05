@@ -210,16 +210,20 @@ public class SootRunner {
 	private static Collection<String> applicationClassPath(final IJavaProject javaProject) {
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		Object oldHashDependency;
+		HashMap<String, File> oldHashDependency;
+		
 
 		try {
 
 			final List<String> urls = new ArrayList<>();
+			final List<String> projectDependencies = new ArrayList<>();
+			
 			final URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
 			urls.add(new File(uriString).getAbsolutePath());
 
 			String mavenDepLoc = System.getProperty("user.home") + "/.m2";
 			
+			//get projects java version
 			String classpath = javaProject.getProject().getLocation().toOSString() + Constants.outerFileSeparator + ".classpath";
 			
 			File classpathFile = new File(classpath);
@@ -235,27 +239,17 @@ public class SootRunner {
 					String[] pathAttr = eElement.getAttribute("path").split("/");
 					String javaVersion = pathAttr[pathAttr.length-1];
 					System.out.println(javaVersion);
-					
 				}
 			}
-			
-			
-//			System.out.println("maven deps areeeeeeee");
-//			System.out.println(mavenDepLoc);
-			
-			
-//			final IClasspathEntry[] resolvedClasspath = javaProject.getResolvedClasspath(true);
-//			System.out.println("resoooooolev are here");
-//			System.out.println(resolvedClasspath);
-//			String claspathValue = System.getProperty("java.class.path");
-//			System.out.println(claspathValue);
-//			
-//			for (IClasspathEntry classpathEntry : resolvedClasspath) {
-//				System.out.println("print the claaaasss path");
-//			    System.out.println(classpathEntry.getPath().makeAbsolute().toFile().getCanonicalFile().toURL());
-//
-//			}
-//			System.out.println("done");
+						
+			final IClasspathEntry[] resolvedClasspath = javaProject.getResolvedClasspath(true);
+
+			for (IClasspathEntry classpathEntry : resolvedClasspath) {
+				System.out.println("print the claaaasss path");
+			    System.out.println(classpathEntry.getPath().makeAbsolute().toFile().getCanonicalFile().toString());
+			    projectDependencies.add(classpathEntry.getPath().makeAbsolute().toFile().getCanonicalFile().toString());
+
+			}
 //	        ClassLoader cl = ClassLoader.getSystemClassLoader();
 //	        URL[] urlss = ((URLClassLoader)cl).getURLs();
 //	        for(URL url: urlss){
@@ -265,22 +259,19 @@ public class SootRunner {
 			
 			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) == true) {
 
-				if (mavenDepLoc != null) {
-					urls.add(mavenDepLoc);
-//					urls.add(allJars);
+				if (projectDependencies != null) {
+					urls.addAll(projectDependencies);
+					System.out.println("all dep will be analyzed");
 				}
 
 			}
 			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES_CHANGED) == true) {
 
-				if (urls.contains(mavenDepLoc)) {
-//					Do nothing 
-				} else {
 
 					IProject ip = javaProject.getJavaProject().getProject();
 
-//					get hashmap of maven dep
-					HashMap<String, String> newHashDependency = Utils.ExtractDepHashmap(ip);
+//					get hashmap of dependencies
+					HashMap<String, File> newHashDependency = Utils.ExtractDepHashmap(javaProject);
 //					get old hashmap of maven dep
 					if (!newHashDependency.isEmpty()) {
 					}
@@ -291,22 +282,36 @@ public class SootRunner {
 						FileInputStream fis = new FileInputStream(pathtoDepenencyHashmap);
 
 						ObjectInputStream ois = new ObjectInputStream(fis);
-						oldHashDependency = ois.readObject();
+						oldHashDependency = (HashMap<String, File>) ois.readObject();
 //						System.out.println(oldHashDependency);
 //						System.out.println(newHashDependency);
 //						System.out.println(oldHashDependency.equals(newHashDependency));
-						if (oldHashDependency.equals(newHashDependency)) {
-//							do nothing
-//							System.out.println("old and new hashmap are equal");
-						} else {
-							urls.add(mavenDepLoc);
-							Utils.storeDepHashmaptoFile(newHashDependency, ip);
-						}
 
+					    try{
+					        for (String k : oldHashDependency.keySet())
+					        {
+					        	if(!newHashDependency.containsKey(k)) {
+					        		oldHashDependency.remove(k);
+					        	}
+					            if (!oldHashDependency.get(k).equals(newHashDependency.get(k))) {
+					            	urls.add(newHashDependency.get(k).getPath());
+					            	oldHashDependency.put(k, newHashDependency.get(k));
+//									Utils.storeDepHashmaptoFile(newHashDependency, ip);
+					            }
+					        } for (String k : newHashDependency.keySet())
+					        {
+					        	if(!oldHashDependency.containsKey(k)) {
+					        		oldHashDependency.put(k, newHashDependency.get(k));
+					        		urls.add(newHashDependency.get(k).getPath());
+					        	}
+					        	
+					        }
+					      
+					    } catch (NullPointerException np) {
+					    	Activator.getDefault().logError(np);
+					    }
 					}
-				}
-
-				urls.add(mavenDepLoc);
+//				urls.add(mavenDepLoc);
 			}
 
 			return urls;

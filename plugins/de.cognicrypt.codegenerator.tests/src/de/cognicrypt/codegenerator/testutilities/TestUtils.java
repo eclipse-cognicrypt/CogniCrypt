@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
@@ -141,12 +142,12 @@ public class TestUtils {
 	 * @return Task object
 	 */
 	public static Task getTask(final String name) throws NoSuchElementException {
-		for (final Task t : TaskJSONReader.getTasks()) {
+		for (final Task t : TaskJSONReader.getTasks()) {	
 			if (t.getName().equals(name)) {
 				return t;
 			}
 		}
-		throw new NoSuchElementException();
+		throw new NoSuchElementException(name);
 	}
 
 	/**
@@ -191,21 +192,15 @@ public class TestUtils {
 	public static Configuration createConfigurationForCodeGeneration(final DeveloperProject developerProject,
 			final Task t) {
 
-		// InstanceGenerator instGen = new
-		// InstanceGenerator(Utils.getResourceFromWithin(t.getModelFile()).getAbsolutePath(),
-		// "c0_" + t.getName(),t.getTaskDescription());
 		final InstanceGenerator instGen = new InstanceGenerator(
-				Utils.getResourceFromWithin(t.getModelFile(), de.cognicrypt.codegenerator.Activator.PLUGIN_ID)
-						.getAbsolutePath(),
+				Utils.getResourceFromWithin(t.getModelFile(), de.cognicrypt.codegenerator.Activator.PLUGIN_ID).getAbsolutePath(),
 				"c0_" + t.getName(), t.getTaskDescription());
 
-		// InstanceGenerator instGen = new
-		// InstanceGenerator(Utils.getResourceFromWithin(t.getModelFile()).getAbsolutePath(),
-		// "c0_" + t.getName(),t.getTaskDescription());
 		final HashMap<Question, Answer> constraints = TestUtils.setDefaultConstraintsForTask(t);
-		final List<InstanceClafer> instList = instGen.generateInstances(constraints);
-		final InstanceClafer inst = instList.get(0);
-		final Configuration ret = new Configuration(inst, constraints,
+		instGen.generateInstances(constraints);
+		final Map<String, InstanceClafer> instances = instGen.getInstances();
+		final InstanceClafer instance = instances.values().iterator().next();
+		final Configuration ret = new Configuration(instance, constraints,
 				developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
 		return ret;
 	}

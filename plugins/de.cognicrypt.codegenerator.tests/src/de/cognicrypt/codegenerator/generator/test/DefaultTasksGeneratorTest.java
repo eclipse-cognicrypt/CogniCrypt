@@ -17,14 +17,9 @@ import de.cognicrypt.codegenerator.testutilities.TestUtils;
 import de.cognicrypt.codegenerator.wizard.Configuration;
 
 /**
- * @author Enri Ozuni
+ * @author Andre Sonntag, Enri Ozuni
  */
 public class DefaultTasksGeneratorTest {
-
-	/**
-	 * In the following tests we check for the right number of methods in the appropriate classes. We choose this approach, because a comparing of the source code/bytes leads to
-	 * problems when some changes happen in the XSLTemplate.
-	 */
 
 	Logger log = Logger.getLogger(DefaultTasksGeneratorTest.class.getName());
 	IJavaProject testJavaProject;
@@ -46,15 +41,9 @@ public class DefaultTasksGeneratorTest {
 	DeveloperProject developerProject;
 	static int counter = 0;
 
-	@After
-	public void tearDown() throws CoreException {
-
-		//TestUtils.printSourceCode(developerProject, "de.cognicrypt.crypto");
-		TestUtils.deleteProject(this.testJavaProject.getProject());
-	}
-
 	@Before
 	public void setUp() throws Exception {
+				
 		DefaultTasksGeneratorTest.counter++;
 		this.testJavaProject = TestUtils.createJavaProject("TestProject_" + counter);
 
@@ -76,9 +65,12 @@ public class DefaultTasksGeneratorTest {
 		this.developerProject = this.generatorEnc.getDeveloperProject();
 	}
 
-	/**
-	 * Test if the code generation for all CogniCrypt tasks works, without any open class.
-	 */
+	@After
+	public void tearDown() throws CoreException {
+		TestUtils.deleteProject(this.testJavaProject.getProject());
+	}
+	
+	
 	@Test
 	public void EncDefault() {
 		this.configEnc = TestUtils.createConfigurationForCodeGeneration(this.developerProject, this.encTask);

@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IProject;
@@ -28,16 +27,13 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
-import org.eclipse.jdt.launching.JavaRuntime;
+
 import com.google.common.base.Joiner;
-import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import boomerang.callgraph.ObservableDynamicICFG;
 import boomerang.callgraph.ObservableICFG;
-import boomerang.callgraph.ObservableStaticICFG;
 import boomerang.preanalysis.BoomerangPretransformer;
 import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
@@ -54,7 +50,6 @@ import soot.SootMethod;
 import soot.Transform;
 import soot.Unit;
 import soot.options.Options;
-import soot.jimple.toolkits.ide.icfg.JimpleBasedInterproceduralCFG;
 
 /**
  * This runner triggers Soot.
@@ -77,6 +72,7 @@ public class SootRunner {
 					public ObservableICFG<Unit, SootMethod> icfg() {
 						return icfg;
 					}
+					
 				};
 				scanner.getAnalysisListener().addReportListener(resultsReporter);
 				scanner.scan(getRules());
@@ -86,23 +82,32 @@ public class SootRunner {
 
 	private static List<CryptSLRule> getRules() {
 		List<CryptSLRule> rules = Lists.newArrayList();
-		// TODO Select rules according to selected rulesets in preference page. The
-		// CrySL rules for each ruleset are in a separate subdirectory of
-		// "/resources/CrySLRules/".
+		//TODO Select rules according to selected rulesets in preference page. The CrySL rules for each ruleset are in a separate subdirectory of "/resources/CrySLRules/".  
 		try {
-			rules.addAll(Files
-					.find(Paths.get(Utils.getResourceFromWithin("/resources/CrySLRules/").getPath()), Integer.MAX_VALUE,
-							(file, attr) -> file.toString().endsWith(".cryptslbin"))
-					.map(path -> CryptSLRuleReader.readFromFile(path.toFile())).collect(Collectors.toList()));
+			rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin("/resources/CrySLRules/").getPath()), Integer.MAX_VALUE, (file,attr) -> file.toString().endsWith(".cryptslbin"))
+			.map(path -> CryptSLRuleReader.readFromFile(path.toFile())).collect(Collectors.toList()));
 		} catch (IOException e) {
 			Activator.getDefault().logError(e, "Could not load CrySL Rules");
 		}
-		if (rules.isEmpty()) {
+		if(rules.isEmpty()) {
 			Activator.getDefault().logInfo("No CrySL rules loaded");
 		}
 		return rules;
 	}
 
+	private static List<String> projectClassPath(final IJavaProject javaProject) {
+		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		try {
+			final List<String> urls = new ArrayList<>();
+			final URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
+			urls.add(new File(uriString).getAbsolutePath());
+			return urls;
+		}
+		catch (final Exception e) {
+			Activator.getDefault().logError(e, "Error building project classpath");
+			return Lists.newArrayList();
+		}
+	}
 
 	public static boolean runSoot(final IJavaProject project, final ResultsCCUIListener resultsReporter) {
 		G.reset();
@@ -110,7 +115,8 @@ public class SootRunner {
 		registerTransformers(resultsReporter);
 		try {
 			runSoot();
-		} catch (final Exception t) {
+		}
+		catch (final Exception t) {
 			Activator.getDefault().logError(t);
 			return false;
 		}
@@ -118,20 +124,14 @@ public class SootRunner {
 	}
 
 	private static void runSoot() {
-		Stopwatch watch = Stopwatch.createStarted();
+		Scene.v().loadNecessaryClasses();
 		PackManager.v().getPack("cg").apply();
-		long elapsed = watch.elapsed(TimeUnit.SECONDS);
-		watch.reset();
-		watch.start();
-		Activator.getDefault().logInfo("Call graph generated in  "+ elapsed + " seconds." );
 		PackManager.v().getPack("wjtp").apply();
-		long analysisTime = watch.elapsed(TimeUnit.SECONDS);
-		Activator.getDefault().logInfo("CogniCrypt Analysis terminated in "+ analysisTime + " seconds." );
 	}
 
 	private static void setSootOptions(final IJavaProject project) {
 		Options.v().set_soot_classpath(getSootClasspath(project));
-		Options.v().set_process_dir(Lists.newArrayList(applicationClassPath(project)));
+		Options.v().set_process_dir(Lists.newArrayList(projectClassPath(project)));
 
 		Options.v().set_keep_line_number(true);
 		Options.v().set_prepend_classpath(true);
@@ -143,14 +143,14 @@ public class SootRunner {
 		Scene.v().loadNecessaryClasses();
 		// choose call graph based on what user selected on preference page
 		switch (Activator.getDefault().getPreferenceStore().getInt(Constants.CALL_GRAPH_SELECTION)) {
-		case 1:
-			Options.v().setPhaseOption("cg.spark", "on");
-			Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");
-			break;
-		case 0:
-		default:
-			Options.v().setPhaseOption("cg.cha", "on");
-			Options.v().setPhaseOption("cg", "all-reachable:true");
+			case 1:
+				Options.v().setPhaseOption("cg.spark", "on");
+				Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");
+				break;
+			case 0:
+			default:
+				Options.v().setPhaseOption("cg.cha", "on");
+				Options.v().setPhaseOption("cg", "all-reachable:true");
 		}
 		Options.v().setPhaseOption("jb", "use-original-names:true");
 		Options.v().set_output_format(Options.output_format_none);

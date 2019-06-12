@@ -130,11 +130,25 @@ public class SootRunner {
 	}
 
 	private static void setSootOptions(final IJavaProject project) {
-		Options.v().set_soot_classpath(getSootClasspath(project));
+		
+		if(getJavaVersion() < 9) {
+			System.out.println("java 8 settings applied");
+			Options.v().set_prepend_classpath(true);
+			Options.v().set_soot_classpath(getSootClasspath(project));
+		}
+		else if(getJavaVersion() >= 9 && !isModularProject(project)) {
+			System.out.println("java 9 classpath settings applied");
+			Options.v().set_soot_classpath("VIRTUAL_FS_FOR_JDK" + File.pathSeparator + getSootClasspath(project));
+		}
+		else if(getJavaVersion() >= 9 && isModularProject(project))
+		{
+			System.out.println("java 9 modulepath settings applied");
+			Options.v().set_prepend_classpath(true);
+			Options.v().set_soot_modulepath(getSootClasspath(project));
+		}
 		Options.v().set_process_dir(Lists.newArrayList(applicationClassPath(project)));
 
 		Options.v().set_keep_line_number(true);
-		Options.v().set_prepend_classpath(true);
 		Options.v().set_allow_phantom_refs(true);
 		Options.v().set_whole_program(true);
 		Options.v().set_no_bodies_for_excluded(true);
@@ -257,5 +271,28 @@ public class SootRunner {
 			break;
 		}
 	}
+	
+	private static int getJavaVersion() {
+	    String version = System.getProperty("java.version");
+	    if(version.startsWith("1.")) {
+	        version = version.substring(2, 3);
+	    } else {
+	        int dot = version.indexOf(".");
+	        if(dot != -1) { version = version.substring(0, dot); }
+	    } return Integer.parseInt(version);
+	}
 
+	private static boolean isModularProject(final IJavaProject javaProject) {
+		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		try {
+			final URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
+			File dirName = new File(uriString);
+			String moduleFile = dirName + File.separator + "module-info.class";
+		    boolean check = new File(moduleFile).exists();
+		    return check;
+		} catch (final Exception e) {
+			Activator.getDefault().logError(e, "Error extracting project classpath");
+			return false;
+		}
+	}
 }

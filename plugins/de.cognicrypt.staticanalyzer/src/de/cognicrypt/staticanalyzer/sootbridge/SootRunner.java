@@ -131,15 +131,18 @@ public class SootRunner {
 
 	private static void setSootOptions(final IJavaProject project) {
 		
+		// soot configurations for JRE 8 and below
 		if(getJavaVersion() < 9) {
 			System.out.println("java 8 settings applied");
 			Options.v().set_prepend_classpath(true);
 			Options.v().set_soot_classpath(getSootClasspath(project));
 		}
+		// soot classpath configurations for JRE 9 and above
 		else if(getJavaVersion() >= 9 && !isModularProject(project)) {
 			System.out.println("java 9 classpath settings applied");
 			Options.v().set_soot_classpath("VIRTUAL_FS_FOR_JDK" + File.pathSeparator + getSootClasspath(project));
 		}
+		// soot modulepath configurations for JRE 9 and above
 		else if(getJavaVersion() >= 9 && isModularProject(project))
 		{
 			System.out.println("java 9 modulepath settings applied");
@@ -272,6 +275,10 @@ public class SootRunner {
 		}
 	}
 	
+	/**
+	 * This method retrieves the runtime java version of the plugin
+	 * @return
+	 */
 	private static int getJavaVersion() {
 	    String version = System.getProperty("java.version");
 	    if(version.startsWith("1.")) {
@@ -282,6 +289,11 @@ public class SootRunner {
 	    } return Integer.parseInt(version);
 	}
 
+	/**
+	 * This method checks if the java project is modular or not
+	 * @param javaProject
+	 * @return
+	 */
 	private static boolean isModularProject(final IJavaProject javaProject) {
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		try {

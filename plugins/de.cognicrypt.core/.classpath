@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/asm-analysis.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/asm-commons.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/asm-tree.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/asm-util.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/asm.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src/"/>
 	<classpathentry exported="true" kind="lib" path="lib/animal-sniffer-annotations.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/asm-debug-all.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/axml.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/boomerangPDS.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/checker-compat-qual.jar"/>
@@ -29,17 +40,10 @@
 	<classpathentry exported="true" kind="lib" path="lib/polyglot.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-simple.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/soot.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/synchronizedPDS.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/testCore.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/WPDS.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlpull.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="src" path="src/"/>
+	<classpathentry exported="true" kind="lib" path="lib/soot-j9.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

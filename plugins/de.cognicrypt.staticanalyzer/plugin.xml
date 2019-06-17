@@ -159,7 +159,7 @@
           name="CogniCrypt Marker"
           point="org.eclipse.core.resources.markers">
      	<super type="org.eclipse.core.resources.problemmarker"></super>
-     	<attribute name = "var"></attribute>
+     	<attribute name = "errorType"></attribute>
        <persistent value="false"></persistent>
     </extension>
     <extension
@@ -181,6 +181,9 @@
           name="Insecure Class Composition Problem"
           point="org.eclipse.core.resources.markers">
        <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
+       <attribute name = "predicate"></attribute>
+       <attribute name = "errorParamIndex"></attribute>
+       <attribute name = "errorParam"></attribute>
        <persistent value="false"></persistent>
     </extension>
     <extension

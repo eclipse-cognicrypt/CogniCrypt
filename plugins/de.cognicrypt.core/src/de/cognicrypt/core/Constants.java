@@ -467,9 +467,9 @@ public class Constants {
 
 	public static final String DEFAULT_FEATURE_SET_FILE = "DefaultFeatureSet";
 
-	public static final String PREDICATEENSURER_GROUPID = "";
-	public static final String PREDICATEENSURER_ARTIFACTID = "";
-	public static final String PREDICATEENSURER_VERSION = "";
+	public static final String PREDICATEENSURER_GROUPID = "de.upb.cognicrypt.predicateensurer";
+	public static final String PREDICATEENSURER_ARTIFACTID = "PredicateEnsurer";
+	public static final String PREDICATEENSURER_VERSION = "0.0.1-SNAPSHOT";
 	public static final String PREDICATEENSURER_JAR_IMPORT = "de.predicateensurer.CC";
 
 	public static final String DEPENDENCIES_TAG = "dependencies";
@@ -478,7 +478,9 @@ public class Constants {
 	public static final String ARTIFACTID_TAG = "artifactId";
 	public static final String VERSION_TAG = "version";
 	public static final String MVN_INSTALL_COMMAND = "install";
-	
+	public static final String MVN_CLEAN_COMMAND = "clean";
+	public static final String MVN_SKIPTESTS_COMMAND = "-DskipTests=true";
+	public static final String MVN_ECLIPSE_COMMAND = "eclipse:eclipse";
 	
 	
 	// for the list of items to be included inside the combo of the questionTab

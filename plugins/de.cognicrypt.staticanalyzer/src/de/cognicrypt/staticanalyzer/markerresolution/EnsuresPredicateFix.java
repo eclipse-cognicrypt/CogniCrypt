@@ -34,7 +34,7 @@ import org.eclipse.ui.IMarkerResolution;
 
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.utils.DeveloperProject;
-import de.cognicrypt.utils.Utils;
+import de.cognicrypt.staticanalyzer.utilities.QuickFixUtils;
 
 public class EnsuresPredicateFix implements IMarkerResolution{
 	private final String label;
@@ -63,10 +63,10 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 		int lineNumber = 0;
 
 		try {
-			sourceUnit = Utils.getCompilationUnitFromMarker(marker);
-			Utils.addAdditionalFiles("resources/Predicate", "de.cognicrypt.staticanalyzer", this.devProject);
-			if (!Utils.hasJarImport(sourceUnit, "de.cognicrypt.staticanalyzer.*")) {
-				Utils.insertJarImport(sourceUnit, "de.cognicrypt.staticanalyzer.*");
+			sourceUnit = QuickFixUtils.getCompilationUnitFromMarker(marker);
+			QuickFixUtils.addAdditionalFiles("resources/Predicate", "de.cognicrypt.staticanalyzer", this.devProject);
+			if (!QuickFixUtils.hasJarImport(sourceUnit, "de.cognicrypt.staticanalyzer.*")) {
+				QuickFixUtils.insertJarImport(sourceUnit, "de.cognicrypt.staticanalyzer.*");
 			}
 			lineNumber = (int) marker.getAttribute(IMarker.LINE_NUMBER);
 			EnsuresPredicateFix.predicate = (String) marker.getAttribute("predicate");

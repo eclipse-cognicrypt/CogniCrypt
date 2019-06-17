@@ -41,7 +41,6 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 	private DeveloperProject devProject;
 	private static String predicate;
 	private static String errorParamVarName;
-	// private static int errorParamIndex;
 	private static final String INVOKE_METHOD_NAME = "ensuresPredicate";
 	private static final String INJAR_CLASS_NAME = "CC";
 	private static final String VARIABLE_DECLARATION_NAME = "cc";
@@ -71,8 +70,6 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 			lineNumber = (int) marker.getAttribute(IMarker.LINE_NUMBER);
 			EnsuresPredicateFix.predicate = (String) marker.getAttribute("predicate");
 			EnsuresPredicateFix.errorParamVarName = (String) marker.getAttribute("errorParam");
-			// this.errorParamIndex = Integer.parseInt((String)
-			// marker.getAttribute("errorParamIndex"));
 
 		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
@@ -226,7 +223,7 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 
 		@Override
 		public boolean visit(final MethodInvocation node) {
-			if (this.sourceFound == false) {
+			if (!this.sourceFound) {
 				if (this.lineNumber == this.unit.getLineNumber(node.getStartPosition())) {
 					try {
 						this.sourceFound = true;
@@ -248,7 +245,7 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 
 		@Override
 		public boolean visit(final ClassInstanceCreation node) {
-			if (this.sourceFound == false) {
+			if (!this.sourceFound) {
 				if (this.lineNumber == this.unit.getLineNumber(node.getStartPosition())) {
 					try {
 						this.sourceFound = true;
@@ -270,7 +267,7 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 
 		@Override
 		public boolean visit(final FieldDeclaration node) {
-			if (this.sourceFound == false) {
+			if (!this.sourceFound) {
 				if (this.lineNumber == this.unit.getLineNumber(node.getStartPosition())) {
 					try {
 						this.sourceFound = true;

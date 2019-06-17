@@ -379,9 +379,9 @@ public class Utils {
 			for (IClasspathEntry classpathEntry : resolvedClasspath) {
 
 			    File dependencies = classpathEntry.getPath().makeAbsolute().toFile().getCanonicalFile();
-			    String [] s = dependencies.toString().split(null, '/');
-			    String depName = s[s.length-1];
-			    System.out.println(depName);
+			    
+			    String depName = dependencies.getName();
+//			    System.out.println(depName);
 			    hashDependency.put(depName, dependencies);
 			}
 		} catch (JavaModelException e) {

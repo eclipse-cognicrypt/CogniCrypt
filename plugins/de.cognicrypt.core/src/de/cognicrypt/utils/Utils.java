@@ -24,7 +24,7 @@ import java.util.OptionalInt;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
+import org.apache.commons.lang3.JavaVersion;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -417,16 +417,12 @@ public class Utils {
 
 	}
 
+	public static boolean isIncompatibleJavaVersion() {
+		return isIncompatibleJavaVersion(System.getProperty("java.version", null));
+	}
 
-	public static boolean checkJavaVersion() {
-		String javaVersion = System.getProperty("java.version", null);
-		if (javaVersion == null)
-			return true;
-		JavaVersion systemJavaVersion = new JavaVersion(javaVersion);
-		JavaVersion requiredJavaVersion = new JavaVersion(Constants.CC_JAVA_VERSION);
-		if (systemJavaVersion.compareTo(requiredJavaVersion) == 1)
-			return true;
-		return false;
+	public static boolean isIncompatibleJavaVersion(String javaVersion) {
+		return javaVersion == null || !javaVersion.startsWith("1.");
 	}
 
 }

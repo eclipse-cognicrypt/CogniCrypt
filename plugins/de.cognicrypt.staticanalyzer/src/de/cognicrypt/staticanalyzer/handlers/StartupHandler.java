@@ -23,7 +23,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IStartup;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
-import de.cognicrypt.utils.JavaVersion;
 import de.cognicrypt.utils.Utils;
 
 /**
@@ -55,7 +54,7 @@ public class StartupHandler implements IStartup {
 			IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 			if (store.getBoolean(Constants.AUTOMATED_ANALYSIS) == false) {
 				return;
-			} else if (Utils.checkJavaVersion()) {
+			} else if (Utils.isIncompatibleJavaVersion()) {
 				Activator.getDefault().logInfo("Analysis cancelled as the IDEs' java version is " + System.getProperty("java.version", "<JavaVersionNotFound>") + ", which is greater than 1.8.");
 				return;
 			}else {

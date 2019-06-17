@@ -35,7 +35,6 @@ import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ErrorMarkerGenerator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
-import de.cognicrypt.utils.JavaVersion;
 import de.cognicrypt.utils.Utils;
 
 /**
@@ -131,7 +130,7 @@ public class AnalysisKickOff {
 	public void run() {
 		if (this.curProj == null)
 			return;
-		if (Utils.checkJavaVersion()) {
+		if (Utils.isIncompatibleJavaVersion()) {
 			Activator.getDefault().logInfo("Analysis cancelled as the IDEs' java version is " + System.getProperty("java.version", "<JavaVersionNotFound>") + ", which is greater than 1.8.");
 			return;
 		}

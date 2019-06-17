@@ -88,7 +88,7 @@ public class SootRunner {
 			@Override
 			protected void internalTransform(final String phaseName, final Map<String, String> options) {
 				BoomerangPretransformer.v().apply();
-				final ObservableStaticICFG icfg = new ObservableStaticICFG(new JimpleBasedInterproceduralCFG(true));
+				final ObservableDynamicICFG icfg = new ObservableDynamicICFG(true);
 				CryptoScanner scanner = new CryptoScanner() {
 
 					@Override
@@ -136,15 +136,9 @@ public class SootRunner {
 	}
 
 	private static void runSoot() {
-		Stopwatch watch = Stopwatch.createStarted();
+		Scene.v().loadNecessaryClasses();
 		PackManager.v().getPack("cg").apply();
-		long elapsed = watch.elapsed(TimeUnit.SECONDS);
-		watch.reset();
-		watch.start();
-		Activator.getDefault().logInfo("Call graph generated in  " + elapsed + " seconds.");
 		PackManager.v().getPack("wjtp").apply();
-		long analysisTime = watch.elapsed(TimeUnit.SECONDS);
-		Activator.getDefault().logInfo("CogniCrypt Analysis terminated in " + analysisTime + " seconds.");
 	}
 
 	private static void setSootOptions(final IJavaProject project) {
@@ -393,3 +387,4 @@ public class SootRunner {
 	}
 
 }
+

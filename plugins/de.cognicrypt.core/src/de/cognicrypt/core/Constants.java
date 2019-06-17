@@ -470,7 +470,7 @@ public class Constants {
 	public static final String PREDICATEENSURER_GROUPID = "";
 	public static final String PREDICATEENSURER_ARTIFACTID = "";
 	public static final String PREDICATEENSURER_VERSION = "";
-	public static final String PREDICATEENSURER_JAR_IMPORT = "de.predicateensurer.*";
+	public static final String PREDICATEENSURER_JAR_IMPORT = "de.predicateensurer.CC";
 
 	public static final String DEPENDENCIES_TAG = "dependencies";
 	public static final String DEPENDENCY_TAG = "dependency";

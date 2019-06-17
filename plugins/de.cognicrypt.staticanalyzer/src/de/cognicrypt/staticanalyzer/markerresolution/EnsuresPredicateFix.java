@@ -57,9 +57,6 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 
 	@Override
 	public void run(final IMarker marker) {
-
-		final SuppressWarningFix tempFix = new SuppressWarningFix("");
-		tempFix.run(marker);
 		
 		this.devProject = new DeveloperProject(marker.getResource().getProject());
 		ICompilationUnit sourceUnit = null;
@@ -89,6 +86,9 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 		parser.setSource(sourceUnit);
 		final CompilationUnit unit = (CompilationUnit) parser.createAST(null);
 		unit.accept(new ErrorSourceVisitor(lineNumber, unit, sourceUnit));
+		
+		final SuppressWarningFix tempFix = new SuppressWarningFix("");
+		tempFix.run(marker);
 	}
 
 	/**

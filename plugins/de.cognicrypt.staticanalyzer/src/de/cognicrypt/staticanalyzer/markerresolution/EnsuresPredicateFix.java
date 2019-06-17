@@ -32,6 +32,7 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.ui.IMarkerResolution;
 
+import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.utils.DeveloperProject;
 import de.cognicrypt.staticanalyzer.utilities.QuickFixUtils;
@@ -57,15 +58,23 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 	@Override
 	public void run(final IMarker marker) {
 
+		final SuppressWarningFix tempFix = new SuppressWarningFix("");
+		tempFix.run(marker);
+		
 		this.devProject = new DeveloperProject(marker.getResource().getProject());
 		ICompilationUnit sourceUnit = null;
 		int lineNumber = 0;
 
 		try {
 			sourceUnit = QuickFixUtils.getCompilationUnitFromMarker(marker);
-			QuickFixUtils.addAdditionalFiles("resources/Predicate", "de.cognicrypt.staticanalyzer", this.devProject);
-			if (!QuickFixUtils.hasJarImport(sourceUnit, "de.cognicrypt.staticanalyzer.*")) {
-				QuickFixUtils.insertJarImport(sourceUnit, "de.cognicrypt.staticanalyzer.*");
+			if (devProject.isMavenProject()) {
+				 devProject.addMavenDependency(Constants.PREDICATEENSURER_GROUPID, Constants.PREDICATEENSURER_ARTIFACTID, Constants.PREDICATEENSURER_VERSION);
+			} else {
+				QuickFixUtils.addAdditionalFiles("resources/Predicate", "de.cognicrypt.staticanalyzer", this.devProject);
+			}
+
+			if (!QuickFixUtils.hasJarImport(sourceUnit, Constants.PREDICATEENSURER_JAR_IMPORT)) {
+				QuickFixUtils.insertJarImport(sourceUnit, Constants.PREDICATEENSURER_JAR_IMPORT);
 			}
 			lineNumber = (int) marker.getAttribute(IMarker.LINE_NUMBER);
 			EnsuresPredicateFix.predicate = (String) marker.getAttribute("predicate");

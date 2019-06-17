@@ -15,19 +15,16 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.ArrayList;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.MavenInvocationException;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -255,7 +252,7 @@ public class DeveloperProject {
 			dependenciesNode.appendChild(dependency);
 
 			xmlParser.writeXML();
-			execute(pom, Arrays.asList(Constants.MVN_INSTALL_COMMAND));
+			executeMavenCommands(pom, Arrays.asList(Constants.MVN_ECLIPSE_COMMAND+" "+Constants.MVN_SKIPTESTS_COMMAND));
 
 		} else {
 			Activator.getDefault().logInfo("pom.xml doesn't exist at this place: " + project.getLocation().toOSString()
@@ -310,15 +307,18 @@ public class DeveloperProject {
 	 * @param pom
 	 * @param commands
 	 */
-	private void execute(File pom, List<String> commands) {
+	public void executeMavenCommands(File pom,List<String> commands) {
 		InvocationRequest request = new DefaultInvocationRequest();
 		request.setPomFile(pom);
-		request.setGoals( commands );
+		request.setGoals(commands);
 		Invoker invoker = new DefaultInvoker();
+//		invoker.setMavenHome(new File(System.getenv("M3_HOME")));
 		try {
-		InvocationResult result = invoker.execute( request );
+			InvocationResult result = invoker.execute(request);
 		} catch (MavenInvocationException e) {
 			Activator.getDefault().logError(e);
 		}
+
+		//TODO: wenn Umgebungsvariable nicht gesetzt ist!!!
 	}
 }

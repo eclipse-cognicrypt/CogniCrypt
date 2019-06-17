@@ -182,7 +182,6 @@
           point="org.eclipse.core.resources.markers">
        <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
        <attribute name = "predicate"></attribute>
-       <attribute name = "errorParamIndex"></attribute>
        <attribute name = "errorParam"></attribute>
        <persistent value="false"></persistent>
     </extension>

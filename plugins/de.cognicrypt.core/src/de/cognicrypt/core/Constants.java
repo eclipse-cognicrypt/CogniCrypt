@@ -44,6 +44,7 @@ public class Constants {
 	public static final String lineSeparator = System.getProperty("line.separator");
 
 	public static final String JavaNatureID = "org.eclipse.jdt.core.javanature";
+	public static final String MavenNatureID = "org.eclipse.m2e.core.maven2Nature";
 
 	private static final String rsrcPath = "src" + Constants.innerFileSeparator + "main" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator;
 	private static final String tstrsrcPath = "src" + Constants.innerFileSeparator + "test" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator;
@@ -466,6 +467,20 @@ public class Constants {
 
 	public static final String DEFAULT_FEATURE_SET_FILE = "DefaultFeatureSet";
 
+	public static final String PREDICATEENSURER_GROUPID = "";
+	public static final String PREDICATEENSURER_ARTIFACTID = "";
+	public static final String PREDICATEENSURER_VERSION = "";
+	public static final String PREDICATEENSURER_JAR_IMPORT = "de.predicateensurer.*";
+
+	public static final String DEPENDENCIES_TAG = "dependencies";
+	public static final String DEPENDENCY_TAG = "dependency";
+	public static final String GROUPID_TAG = "groupId";
+	public static final String ARTIFACTID_TAG = "artifactId";
+	public static final String VERSION_TAG = "version";
+	public static final String MVN_INSTALL_COMMAND = "install";
+	
+	
+	
 	// for the list of items to be included inside the combo of the questionTab
 	public static final String dropDown = "Drop down";
 	public static final String textBox = "Text box";

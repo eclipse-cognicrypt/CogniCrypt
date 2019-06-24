@@ -154,7 +154,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			if(errorLocation.getUnit().get().containsInvokeExpr()) {
 				InvokeExpr invoke = errorLocation.getUnit().get().getInvokeExpr();
 				String errorParam = invoke.getArg(errorIndex).toString();
-				errorInfoMap.put("predicate", errorParam);
+				errorInfoMap.put("errorParam", errorParam);
 			}
 		
 		} else if (error instanceof ConstraintError) {

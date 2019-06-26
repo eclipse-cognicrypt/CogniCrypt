@@ -109,7 +109,7 @@ public abstract class CodeGenerator {
 		if (this.targetFile != null) {
 			IDE.openEditor(Utils.getCurrentlyOpenPage(), targetFile);
 		}
-		
+
 		if ((openFileFlag && authorFlag) || !openFileFlag) {
 			final StringBuilder sb = new StringBuilder(temporaryOutputFile);
 			sb.delete(temporaryOutputFile.length() - 9, temporaryOutputFile.length() - 5);
@@ -170,8 +170,17 @@ public abstract class CodeGenerator {
 
 		final int imports = docContent.startsWith("package") ? docContent.indexOf(Constants.lineSeparator) : 0;
 		final String[] callsForGenClasses = getCallsForGenClasses(temporaryOutputFile);
-		currentlyOpenDocument.replace(cursorPos, 0, callsForGenClasses[1]);
-		currentlyOpenDocument.replace(imports, 0, callsForGenClasses[0] + Constants.lineSeparator);
+		try {
+			currentlyOpenDocument.replace(cursorPos, 0, callsForGenClasses[1]);
+		} catch (Exception ex) {
+
+		}
+
+		try {
+			currentlyOpenDocument.replace(imports, 0, callsForGenClasses[0] + Constants.lineSeparator);
+		} catch (Exception ex) {
+
+		}
 		currentlyOpenEditor.doSave(null);
 		cleanUpProject(currentlyOpenEditor);
 		return true;
@@ -297,10 +306,10 @@ public abstract class CodeGenerator {
 		final Path memberPath = fileToBeAdded.toPath();
 		boolean isLib = Constants.JAR.equals(cutPath.substring(cutPath.indexOf(".")));
 
-		Files.copy(
-				memberPath, new File(this.project
-					.getProjectPath() + (isLib ? (Constants.outerFileSeparator + Constants.pathsForLibrariesInDevProject) : "") + Constants.outerFileSeparator + memberPath.getFileName()).toPath(),
-				StandardCopyOption.REPLACE_EXISTING);
+		Files.copy(memberPath, new File(this.project
+			.getProjectPath() + (isLib ? (Constants.outerFileSeparator + Constants.pathsForLibrariesInDevProject) : "") + Constants.outerFileSeparator + memberPath.getFileName())
+				.toPath(),
+			StandardCopyOption.REPLACE_EXISTING);
 		if (isLib) {
 			if (!this.project.addJar(Constants.pathsForLibrariesInDevProject + Constants.outerFileSeparator + fileToBeAdded.getName())) {
 				return false;

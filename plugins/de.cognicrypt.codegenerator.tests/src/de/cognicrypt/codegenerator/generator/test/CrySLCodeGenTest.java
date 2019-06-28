@@ -2,20 +2,16 @@ package de.cognicrypt.codegenerator.generator.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
 import org.junit.Test;
-
-import crypto.rules.CryptSLRule;
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.generator.CodeGenCrySLRule;
@@ -30,7 +26,7 @@ public class CrySLCodeGenTest {
 	@Test
 	public void generatePBEEnc() {
 
-		List<List<CodeGenCrySLRule>> rules = new ArrayList<List<CodeGenCrySLRule>>();
+		List<CodeGenCrySLRule> rules = new ArrayList<CodeGenCrySLRule>();
 		try {
 			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_ENC");
 			TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
@@ -44,9 +40,9 @@ public class CrySLCodeGenTest {
 
 			for (List<String> rule : stringRules) {
 				ArrayList<CodeGenCrySLRule> newRules = new ArrayList<CodeGenCrySLRule>();
-				rules.add(newRules);
+				rules.addAll(newRules);
 				for (String r : rule) {
-					newRules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(r)));
+					newRules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(r), null, null));
 				}
 			}
 
@@ -84,7 +80,7 @@ public class CrySLCodeGenTest {
 	@Test
 	public void generateSymEnc() {
 
-		List<List<CodeGenCrySLRule>> rules = new ArrayList<List<CodeGenCrySLRule>>();
+		List<CodeGenCrySLRule> rules = new ArrayList<CodeGenCrySLRule>();
 		try {
 			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_PBEENC");
 			TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
@@ -97,9 +93,9 @@ public class CrySLCodeGenTest {
 
 			for (List<String> rule : stringRules) {
 				ArrayList<CodeGenCrySLRule> newRules = new ArrayList<CodeGenCrySLRule>();
-				rules.add(newRules);
+				rules.addAll(newRules);
 				for (String r : rule) {
-					newRules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(r)));
+					newRules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(r), null, null));
 				}
 			}
 
@@ -135,7 +131,7 @@ public class CrySLCodeGenTest {
 
 	public void generatePWD() {
 
-		List<List<CodeGenCrySLRule>> rules = new ArrayList<List<CodeGenCrySLRule>>();
+		List<CodeGenCrySLRule> rules = new ArrayList<CodeGenCrySLRule>();
 		try {
 			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_ENC");
 			TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
@@ -146,10 +142,10 @@ public class CrySLCodeGenTest {
 			stringRules.add(Arrays.asList(new String[] { "SecureRandom", "PBEKeySpec", "SecretKeyFactory" }));
 			for (List<String> rule : stringRules) {
 				ArrayList<CodeGenCrySLRule> newRules = new ArrayList<CodeGenCrySLRule>();
-				rules.add(newRules);
+				rules.addAll(newRules);
 				for (String r : rule) {
 					try {
-						newRules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(r)));
+						newRules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(r), null, null));
 					} catch (FileNotFoundException ex) {
 						Activator.getDefault().logError(ex, "CrySL rule" + r + " not found.");
 					}

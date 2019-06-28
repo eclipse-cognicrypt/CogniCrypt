@@ -194,7 +194,7 @@ public class TestUtils {
 	 * @return Configuration for a certain Task
 	 */
 	public static CrySLConfiguration createCrySLConfigurationForCodeGeneration(DeveloperProject developerProject,
-			List<List<CodeGenCrySLRule>> rules) {
+			List<CodeGenCrySLRule> rules) {
 		CrySLConfiguration ret = new CrySLConfiguration(rules, null,
 				developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
 		return ret;

@@ -348,7 +348,7 @@ public class Utils {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 * @throws Exception
-	 *         Thows an exception if given rule name does not exist.
+	 *         Throws an exception if given rule name does not exist.
 	 */
 	public static CryptSLRule getCryptSLRule(String cryptslRule) throws IOException, ClassNotFoundException {
 		final FileInputStream fileIn = new FileInputStream(Utils.getResourceFromWithin(defaultRulesPath, de.cognicrypt.core.Activator.PLUGIN_ID)

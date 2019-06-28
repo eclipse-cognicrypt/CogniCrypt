@@ -1,13 +1,11 @@
 package de.cognicrypt.codegenerator.wizard;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,26 +22,19 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.ConstructorInvocation;
-import org.eclipse.jdt.core.dom.CreationReference;
-import org.eclipse.jdt.core.dom.Initializer;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.MethodRef;
-import org.eclipse.jdt.core.dom.Name;
+import org.eclipse.jdt.core.dom.MethodRefParameter;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
 import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
@@ -53,7 +44,6 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.Bundle;
 
 import crypto.rules.CryptSLObject;
 import de.cognicrypt.codegenerator.Activator;
@@ -276,16 +266,31 @@ public class AltConfigWizard extends Wizard {
 						MethodInvocation mi = node;
 						String calledMethodName = mi.getName().getFullyQualifiedName();
 						if ("addReturnObject".equals(calledMethodName)) {
-							Optional<SimpleName> variable = variableDefinitions.keySet().stream().filter(e -> mi.arguments().contains(((SimpleName) e).getFullyQualifiedName())).findFirst();
+							Optional<SimpleName> variable = Optional.empty();
+							for (SimpleName var : variableDefinitions.keySet()) {
+								variable = ((List<SimpleName>) mi.arguments()).parallelStream().filter(e -> e.getFullyQualifiedName().equals(var.getFullyQualifiedName())).findFirst();
+								if (variable.isPresent()) {
+									break;
+								}
+							}
+//							Optional<SimpleName> variable = variableDefinitions.keySet().stream().filter(e -> mi.arguments().contains(((SimpleName) e).getFullyQualifiedName())).findFirst();
 							retObj.add(variableDefinitions.get(variable.get()));
 						} else if ("addParameter".equals(calledMethodName)) {
-							Optional<SimpleName> variable = variableDefinitions.keySet().stream().filter(e -> mi.arguments().contains(((SimpleName) e).getFullyQualifiedName())).findFirst();
+							Optional<SimpleName> variable = Optional.empty();
+							for (SimpleName var : variableDefinitions.keySet()) {
+								variable = ((List<SimpleName>) mi.arguments()).parallelStream().filter(e -> e.getFullyQualifiedName().equals(var.getFullyQualifiedName())).findFirst();
+								if (variable.isPresent()) {
+									break;
+								}
+							}
 							pars.add(variableDefinitions.get(variable.get()));
 						} else if ("considerCrySLRule".equals(calledMethodName)){
-							String rule = (String) mi.arguments().get(0);
+							String rule = Utils.filterQuotes(mi.arguments().get(0).toString());
 							try {
-								rules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(rule), pars, retObj.get(0)));
+								String simpleRuleName = rule.substring(rule.lastIndexOf(".") + 1);
+								rules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(simpleRuleName), pars, (retObj.isEmpty()) ? null : retObj.get(0)));
 							} catch (ClassNotFoundException | IOException e) {
+								Activator.getDefault().logError(e);
 							}
 							pars.clear();
 							retObj.clear();
@@ -321,30 +326,29 @@ public class AltConfigWizard extends Wizard {
 						variableDefinitions.put(varName, new CryptSLObject(varName.getFullyQualifiedName(), ((VariableDeclarationStatement)node).getType().toString()));
 						return super.visit(node);
 					}
+
+					@Override
+					public boolean visit(MethodDeclaration node) {
+						// TODO Auto-generated method stub
+						for (SingleVariableDeclaration svd : (List<SingleVariableDeclaration>)node.parameters()) {
+							variableDefinitions.put(svd.getName(), new CryptSLObject(svd.getName().getFullyQualifiedName(), svd.getType().toString()));
+						}
+						return super.visit(node);
+					}
+
+					@Override
+					public boolean visit(MethodRefParameter node) {
+						// TODO Auto-generated method stub
+						return super.visit(node);
+					}
 					
 					
 
 				};
 				cu.accept(astVisitor);
 				
-				
+				Collections.reverse(rules);
 				try {
-					List<List<String>> stringRules = new ArrayList<List<String>>();
-					stringRules.add(Arrays.asList(new String[] { "SecureRandom", "PBEKeySpec", "SecretKeyFactory", "SecretKey", "SecretKeySpec"}));
-					stringRules.add(Arrays.asList(new String[] { "Cipher" }));
-
-					for (List<String> rule : stringRules) {
-						ArrayList<CodeGenCrySLRule> newRules = new ArrayList<CodeGenCrySLRule>();
-//						rules.add(newRules);
-						for (String r : rule) {
-							try {
-								newRules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(r), new ArrayList<CryptSLObject>(), new CryptSLObject("", "")));
-							} catch (FileNotFoundException ex) {
-								Activator.getDefault().logError(ex, "CrySL rule " + r + " not found.");
-							}
-						}
-					}
-
 					codeGenerator = new CrySLBasedCodeGenerator(selectedFile);
 					
 					Map<CodeGenCrySLRule, ?> constraints = new HashMap<CodeGenCrySLRule, Object>();

@@ -44,4 +44,14 @@ public class CodeGenCrySLRule extends CryptSLRule {
 		}
 		return requiredMethods.add(method);
 	}
+
+	
+	public List<CryptSLObject> getRequiredPars() {
+		return requiredPars;
+	}
+
+	
+	public CryptSLObject getRequiredRetObj() {
+		return requiredRetObj;
+	}
 }

@@ -336,14 +336,6 @@ public class AltConfigWizard extends Wizard {
 						return super.visit(node);
 					}
 
-					@Override
-					public boolean visit(MethodRefParameter node) {
-						// TODO Auto-generated method stub
-						return super.visit(node);
-					}
-					
-					
-
 				};
 				cu.accept(astVisitor);
 				

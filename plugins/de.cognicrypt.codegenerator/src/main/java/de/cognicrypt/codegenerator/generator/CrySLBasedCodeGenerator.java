@@ -91,6 +91,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		if (chosenConfig instanceof CrySLConfiguration) {
 			this.rules = ((CrySLConfiguration) chosenConfig).getRules();
 		}
+		
 
 		exceptions.add("GeneralSecurityException");
 		String genFolder = "";

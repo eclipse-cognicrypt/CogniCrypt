@@ -35,11 +35,11 @@ import org.eclipse.ui.IMarkerResolution;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.utils.DeveloperProject;
+import de.cognicrypt.utils.Utils;
 import de.cognicrypt.staticanalyzer.utilities.QuickFixUtils;
 
 public class EnsuresPredicateFix implements IMarkerResolution{
 	private final String label;
-	private DeveloperProject devProject;
 	private static String predicate;
 	private static String errorParamVarName;
 	private static final String INVOKE_METHOD_NAME = "ensuresPredicate";
@@ -58,7 +58,7 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 	@Override
 	public void run(final IMarker marker) {
 		
-		this.devProject = new DeveloperProject(marker.getResource().getProject());
+		DeveloperProject devProject = new DeveloperProject(marker.getResource().getProject());
 		ICompilationUnit sourceUnit = null;
 		int lineNumber = 0;
 
@@ -66,8 +66,10 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 			sourceUnit = QuickFixUtils.getCompilationUnitFromMarker(marker);
 			if (devProject.isMavenProject()) {
 				 devProject.addMavenDependency(Constants.PREDICATEENSURER_GROUPID, Constants.PREDICATEENSURER_ARTIFACTID, Constants.PREDICATEENSURER_VERSION);
+				 devProject.execMaven(new String[] {Constants.MVN_ECLIPSE_COMMAND + " " + Constants.MVN_SKIPTESTS_COMMAND});
+
 			} else {
-				QuickFixUtils.addAdditionalFiles("resources/Predicate", "de.cognicrypt.staticanalyzer", this.devProject);
+				QuickFixUtils.addAdditionalFiles("resources/Predicate", "de.cognicrypt.staticanalyzer", devProject);
 			}
 
 			if (!QuickFixUtils.hasJarImport(sourceUnit, Constants.PREDICATEENSURER_JAR_IMPORT)) {
@@ -89,11 +91,12 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 		
 		final SuppressWarningFix tempFix = new SuppressWarningFix("");
 		tempFix.run(marker);
+		Utils.getCurrentlyOpenEditor().doSave(null);		
 	}
 
 	/**
 	 * This method creates and inserts the ensuresPredicate(predicate, errorVar) in the code
-	 * @param node - node of the ErrorMarker
+	 * @param node
 	 * @param unit
 	 * @param sourceUnit
 	 * @throws JavaModelException

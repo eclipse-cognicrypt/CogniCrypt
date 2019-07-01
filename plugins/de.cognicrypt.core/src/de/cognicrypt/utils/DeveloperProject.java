@@ -14,8 +14,6 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
-import java.util.List;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -219,16 +217,52 @@ public class DeveloperProject {
 	}
 
 	/**
-	 * This method checks if a project is a MavenProject.
-	 * 
+	 * This method checks if a project contains the MavenNature
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if MavenNature is existing.
-	 * @throws CoreException
 	 */
-	public boolean isMavenProject() throws CoreException {
-		if (this.project.hasNature(Constants.MavenNatureID)) {
-			return true;
+	public boolean isMavenProject() {
+		try {
+			if (this.project.hasNature(Constants.MavenNatureID)) {
+				return true;
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
 		}
 		return false;
+	}
+
+	/**
+	 * This method checks if the pom.xml exists in client project
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if pom.xml is existing.
+	 */
+	private boolean pomExists() {
+		File pom = new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml");
+		File parentPom = new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "parent"
+				+ Constants.outerFileSeparator + "pom.xml");
+		if (pom.exists()) {
+			return true;
+		} else if (parentPom.exists()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * This method returns the pom.xml {@link File}
+	 * @return pom.xml
+	 */
+	private File getPomFile() {
+		File pom = new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml");
+		File parentPom = new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "parent"
+				+ Constants.outerFileSeparator + "pom.xml");
+		if (pom.exists()) {
+			return pom;
+		} else if (parentPom.exists()) {
+			return parentPom;
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -241,50 +275,59 @@ public class DeveloperProject {
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if the adding is successful.
 	 */
 	public boolean addMavenDependency(String groupId, String artifactId, String version) {
-		XMLParser xmlParser;
-		File pom = new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml");
-		if (pom.exists()) {
-			xmlParser = new XMLParser(pom);
-			xmlParser.useDocFromFile();
 
-			Node dependenciesNode = xmlParser.getChildNodeByTagName(xmlParser.getRoot(), Constants.DEPENDENCIES_TAG);
-			if (dependenciesNode != null) {
-				NodeList dependencyList = dependenciesNode.getChildNodes();
-				for (int i = 0; i < dependencyList.getLength(); i++) {
-					if (isEqualMavenDependency(dependencyList.item(i), groupId, artifactId, version)) {
-						return false;
+		if (isMavenProject()) {
+			if (pomExists()) {
+				XMLParser xmlParser;
+				File pom = getPomFile();
+				xmlParser = new XMLParser(pom);
+				xmlParser.useDocFromFile();
+
+				Node dependenciesNode = xmlParser.getChildNodeByTagName(xmlParser.getRoot(),
+						Constants.DEPENDENCIES_TAG);
+				if (dependenciesNode != null) {
+					NodeList dependencyList = dependenciesNode.getChildNodes();
+					for (int i = 0; i < dependencyList.getLength(); i++) {
+						if (isEqualMavenDependency(dependencyList.item(i), groupId, artifactId, version)) {
+							Activator.getDefault().logInfo("Maven Dependency already exists in pom.xml\n groupId:"
+									+ groupId + " artifactId: " + artifactId + " ver:" + version);
+							return false;
+						}
 					}
+				} else {
+					dependenciesNode = xmlParser.getDoc().createElement(Constants.DEPENDENCIES_TAG);
+					xmlParser.getRoot().appendChild(dependenciesNode);
 				}
+
+				Element dependency = xmlParser.getDoc().createElement(Constants.DEPENDENCY_TAG);
+				xmlParser.createChildElement(dependency, Constants.GROUPID_TAG, groupId);
+				xmlParser.createChildElement(dependency, Constants.ARTIFACTID_TAG, artifactId);
+				xmlParser.createChildElement(dependency, Constants.VERSION_TAG, version);
+				dependenciesNode.appendChild(dependency);
+				xmlParser.writeXML();
+				return true;
+
 			} else {
-				dependenciesNode = xmlParser.getDoc().createElement(Constants.DEPENDENCIES_TAG);
-				xmlParser.getRoot().appendChild(dependenciesNode);
+				Activator.getDefault().logError("Project " + project.getName() + " doesn't contain pom.xml");
+				return false;
 			}
-
-			Element dependency = xmlParser.getDoc().createElement(Constants.DEPENDENCY_TAG);
-			xmlParser.createChildElement(dependency, Constants.GROUPID_TAG, groupId);
-			xmlParser.createChildElement(dependency, Constants.ARTIFACTID_TAG, artifactId);
-			xmlParser.createChildElement(dependency, Constants.VERSION_TAG, version);
-			dependenciesNode.appendChild(dependency);
-
-			xmlParser.writeXML();
-			executeMavenCommands(pom, new String[] {Constants.MVN_ECLIPSE_COMMAND + " " + Constants.MVN_SKIPTESTS_COMMAND});
-//					Arrays.asList(Constants.MVN_ECLIPSE_COMMAND + " " + Constants.MVN_SKIPTESTS_COMMAND));
-
 		} else {
-			Activator.getDefault().logInfo("pom.xml doesn't exist at this place: " + project.getLocation().toOSString()
-					+ Constants.outerFileSeparator + "pom.xml");
+			Activator.getDefault()
+					.logError("Project " + project.getName() + " is not a Maven Project [no MavenNature available]");
+			return false;
 		}
-		return true;
 	}
 
 	/**
-	 * This method
+	 * This method checks if a Maven Dependency {@link Node} contains a certain
+	 * groupId,artifactId and version
 	 * 
 	 * @param dependency
 	 * @param groupId
 	 * @param artifactId
 	 * @param version
-	 * @return
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if the node contains the right
+	 *         Maven Dependency information
 	 */
 	private boolean isEqualMavenDependency(Node dependency, String groupId, String artifactId, String version) {
 
@@ -318,13 +361,18 @@ public class DeveloperProject {
 	}
 
 	/**
-	 * This method executes Maven commands
+	 * This method executes Maven commands via Embedded Maven
 	 * 
-	 * @param pom
+	 * @param workingDirectoryPath
 	 * @param commands
 	 */
-	public void executeMavenCommands(File pom, String[] commands) {
-		  MavenCli maven = new MavenCli();
-	      maven.doMain(commands, pom.getAbsolutePath(), System.out, System.out);
+	public void execMaven(String[] commands) {
+		if (isMavenProject()) {
+			MavenCli maven = new MavenCli();
+			maven.doMain(commands, getProjectPath(), System.out, System.out);
+		} else {
+			Activator.getDefault()
+					.logError("Project " + project.getName() + " is not a Maven Project [no MavenNature available]");
+		}
 	}
 }

@@ -6,9 +6,13 @@
 package de.cognicrypt.utils;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.OptionalInt;
 import org.eclipse.core.resources.IContainer;
@@ -19,6 +23,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -349,5 +354,55 @@ public class Utils {
 		if (systemJavaVersion.compareTo(requiredJavaVersion) == 1)
 			return true;
 		return false;
+	}
+	public static void storeDepHashmaptoFile(HashMap<String, File> hashDependency, IProject ip) throws IOException {
+		try {
+			if (!hashDependency.isEmpty()) {
+				File file = new File(
+						ip.getLocation().toOSString() + Constants.outerFileSeparator + "dependencyHashmap.data");
+				file.createNewFile();
+//		    	  check if file exists, if it not, creates it
+				ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file, false));
+				out.writeObject(hashDependency);
+				out.close();
+			}
+			
+		} catch (final Exception e) {
+			Activator.getDefault().logError(e, "Error storing maven dependancy hashmap");
+		}
+
+	}
+	public static HashMap<String, File> ExtractDepHashmap(IJavaProject javaProject) throws IOException {
+
+//		String pathtoPom = ip.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml";
+//		MavenXpp3Reader reader = new MavenXpp3Reader();
+//		Path path = Paths.get(pathtoPom);
+
+		HashMap<String, File> hashDependency = new HashMap<>();
+		
+		IClasspathEntry[] resolvedClasspath;
+		try {
+			resolvedClasspath = javaProject.getResolvedClasspath(true);
+			for (IClasspathEntry classpathEntry : resolvedClasspath) {
+
+			    File dependencies = classpathEntry.getPath().makeAbsolute().toFile().getCanonicalFile();
+			    
+			    String depName = dependencies.getName();
+//			    System.out.println(depName);
+			    hashDependency.put(depName, dependencies);
+			}
+		} catch (JavaModelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+//			FileReader file = new FileReader(pathtoPom);
+//			Model model = reader.read(file);
+//			hashDependency.put(model.getGroupId(), "GroupId");
+//			hashDependency.put(model.getArtifactId(), "ArtifactId");
+//			hashDependency.put(model.getVersion(), "Version");
+
+		return hashDependency;
+
 	}
 }

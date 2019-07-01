@@ -6,12 +6,17 @@
 package de.cognicrypt.staticanalyzer.sootbridge;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.URI;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +35,8 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
+import org.eclipse.jface.preference.IPreferenceStore;
+
 import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
@@ -184,11 +191,16 @@ public class SootRunner {
 	}
 
 	private static String getSootClasspath(final IJavaProject javaProject) {
+		
+		Collection<String> dependenciesClassPath = dependenciesClassPath(javaProject);
 		Collection<String> applicationClassPath = applicationClassPath(javaProject);
-		Collection<String> libraryClassPath = libraryClassPath(javaProject);
-		libraryClassPath.addAll(applicationClassPath);
-		System.out.println(Joiner.on(File.pathSeparator).join(libraryClassPath));
-		return Joiner.on(File.pathSeparator).join(libraryClassPath);
+//		Collection<String> libraryClassPath = libraryClassPath(javaProject);
+		
+		dependenciesClassPath.addAll(applicationClassPath);
+//		libraryClassPath.addAll(dependenciesClassPath);
+		System.out.println("WHATEVER IT IS IN LIBCLASSPATH");
+		System.out.println(Joiner.on(File.pathSeparator).join(dependenciesClassPath));
+		return Joiner.on(File.pathSeparator).join(dependenciesClassPath);
 	}
 
 	private static Collection<String> applicationClassPath(final IJavaProject javaProject) {
@@ -219,6 +231,114 @@ public class SootRunner {
 		return libraryClassPath;
 	}
 
+	private static Collection<String> dependenciesClassPath(final IJavaProject javaProject) {
+		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		Object oldHashDependencyObject;
+		try {
+
+			final List<String> depUrls = new ArrayList<>();
+			final List<String> projectDependencies = new ArrayList<>();
+
+			projectDependencies.addAll(libraryClassPath(javaProject));
+//			final IClasspathEntry[] resolvedClasspath = javaProject.getResolvedClasspath(true);
+			
+//			get projects java version
+//			String classpath = javaProject.getProject().getLocation().toOSString() + Constants.outerFileSeparator + ".classpath";
+//			
+//			File classpathFile = new File(classpath);
+//			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+//			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+//			Document doc = dBuilder.parse(classpathFile);
+//			
+//			NodeList nList = doc.getElementsByTagName("classpathentry");
+//			for (int temp = 0; temp < nList.getLength(); temp++) {
+//				Node nNode = nList.item(temp);
+//				Element eElement = (Element) nNode;
+//				if (eElement.getAttribute("kind").equals("con") && eElement.getAttribute("path").contains("JRE_CONTAINER")) {
+//					String[] pathAttr = eElement.getAttribute("path").split("/");
+//					String javaVersion = pathAttr[pathAttr.length-1];
+//					System.out.println(javaVersion);
+//				}
+//			}
+			
+//			for (IClasspathEntry classpathEntry : resolvedClasspath) {
+//
+//				projectDependencies.add(classpathEntry.getPath().makeAbsolute().toFile().getCanonicalFile().toString());
+//
+//				
+//			}
+			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) == true) {
+
+				if (projectDependencies != null) {
+					depUrls.addAll(projectDependencies);
+				}
+			}
+			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES_CHANGED) == true) {
+
+				IProject ip = javaProject.getJavaProject().getProject();
+//					get hashmap of dependencies
+				HashMap<String, File> newHashDependency = Utils.ExtractDepHashmap(javaProject);
+//					get old hashmap of maven dep
+				if (!newHashDependency.isEmpty()) {
+					System.out.println("new hash is not empty");
+
+					String pathtoDepenencyHashmap = ip.getLocation().toOSString() + Constants.outerFileSeparator
+							+ "dependencyHashmap.data";
+					Path path = Paths.get(pathtoDepenencyHashmap);
+					if (Files.exists(path)) {
+						FileInputStream fis = new FileInputStream(pathtoDepenencyHashmap);
+
+						ObjectInputStream ois = new ObjectInputStream(fis);
+						oldHashDependencyObject = ois.readObject();
+						HashMap<String, File> oldHashDependency = (HashMap<String, File>) oldHashDependencyObject;
+
+						if (!oldHashDependency.equals(newHashDependency)) {
+							System.out.println("deps are not the same");
+							try {
+//						    	System.out.println(oldHashDependency.keySet());
+								for (Iterator<String> k = oldHashDependency.keySet().iterator(); k.hasNext();) {
+									String keyV = k.next();
+									if (!newHashDependency.containsKey(keyV)) {
+										System.out.println("old dependency does not exist anymore");
+										k.remove();
+									} else if (!oldHashDependency.get(keyV).equals(newHashDependency.get(keyV))) {
+										System.out.println("old dependency changed");
+										depUrls.add(newHashDependency.get(keyV).getPath());
+										oldHashDependency.put(keyV, newHashDependency.get(keyV));
+
+									}
+								}
+								for (String k : newHashDependency.keySet()) {
+									if (!oldHashDependency.containsKey(k)) {
+										System.out.println("new dependency added");
+										oldHashDependency.put(k, newHashDependency.get(k));
+										depUrls.add(newHashDependency.get(k).getPath());
+									}
+
+								}
+								Utils.storeDepHashmaptoFile(oldHashDependency, ip);
+							} catch (NullPointerException np) {
+								Activator.getDefault().logError(np);
+							}
+						} else {
+							System.out.println("There are NO CHANGES in dependencies");
+						}
+					} else {
+						System.out.println("There are no dependencies");
+					}
+
+				}
+
+			}
+			System.out.println("CLASSPATH IS: " + depUrls);
+			return depUrls;
+		} catch (final Exception e) {
+			Activator.getDefault().logError(e, "Error building project dependencies classpath");
+			return Lists.newArrayList();
+		}
+
+	}
+	
 	private static void resolveClassPathEntry(IClasspathEntry entry, Collection<String> libraryClassPath, IJavaProject project) {
 		IClasspathEntry[] rentries;
 		switch (entry.getEntryKind()) {

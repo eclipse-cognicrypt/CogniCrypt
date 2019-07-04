@@ -9,12 +9,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.cognicrypt.codegenerator.DeveloperProject;
+
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.testutilities.TestUtils;
 import de.cognicrypt.codegenerator.wizard.Configuration;
+import de.cognicrypt.utils.DeveloperProject;
 
 /**
  * @author Andre Sonntag, Enri Ozuni

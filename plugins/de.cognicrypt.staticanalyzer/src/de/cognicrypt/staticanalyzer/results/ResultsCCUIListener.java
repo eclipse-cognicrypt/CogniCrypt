@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -60,6 +61,7 @@ import de.cognicrypt.utils.XMLParser;
 import soot.SootClass;
 import soot.Value;
 import soot.ValueBox;
+import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.internal.JimpleLocal;
 import soot.jimple.internal.JimpleLocalBox;
@@ -70,7 +72,7 @@ import typestate.TransitionFunction;
  * This listener is notified of any misuses the analysis finds. It also reports the results of the analysis to the Statistics View
  *
  * @author Stefan Krueger
- * @author Andr� Sonntag
+ * @author Andre Sonntag
  * @author Adnan Manzoor
  */
 public class ResultsCCUIListener extends CrySLAnalysisListener {
@@ -103,11 +105,14 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void reportError(final AbstractError error) {
+		
 		final String errorMessage = error.toErrorMarkerString();
 		final Statement errorLocation = error.getErrorLocation();
 		final IResource sourceFile = unitToResource(errorLocation);
 		final int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
 		final int stmtId = error.hashCode();
+		HashMap<String, String> errorInfoMap = new HashMap<>();
+
 		ICompilationUnit javaFile = (ICompilationUnit) JavaCore.create(sourceFile);
 		String className = "";
 		try {
@@ -143,6 +148,15 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			markerType = Constants.PREDICATE_CONTRADICTION_MARKER_TYPE;
 		} else if (error instanceof RequiredPredicateError) {
 			markerType = Constants.REQUIRED_PREDICATE_MARKER_TYPE;
+			errorInfoMap.put("predicate", ((RequiredPredicateError) error).getContradictedPredicate().getPredName());
+
+			int errorIndex = ((RequiredPredicateError) error).getExtractedValues().getCallSite().getIndex();
+			if(errorLocation.getUnit().get().containsInvokeExpr()) {
+				InvokeExpr invoke = errorLocation.getUnit().get().getInvokeExpr();
+				String errorParam = invoke.getArg(errorIndex).toString();
+				errorInfoMap.put("errorParam", errorParam);
+			}
+		
 		} else if (error instanceof ConstraintError) {
 			markerType = Constants.CONSTRAINT_ERROR_MARKER_TYPE;
 		} else if (error instanceof NeverTypeOfError) {
@@ -170,12 +184,12 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final File warningsFile = new File(this.warningFilePath);
 
 		if (!warningsFile.exists()) {
-			this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev);
+			this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap);
 		} else {
 			this.xmlParser = new XMLParser(warningsFile);
 			this.xmlParser.useDocFromFile();
 			if (!this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR).contains(stmtId + "")) {
-				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev);
+				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap);
 			} else {
 
 				// update existing LineNumber
@@ -221,8 +235,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			}
 			final Value varName = var.getValue();
 			this.markerGenerator.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt), unit.getJavaSourceStartLineNumber(),
-					"Object " + (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", Severities.Info);
-		}
+					"Object " + (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", Severities.Info, new HashMap<>());		}
 	}
 
 	/**

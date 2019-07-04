@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.cognicrypt</groupId>
 	<artifactId>de.cognicrypt.core</artifactId>
@@ -18,7 +17,7 @@
 		<dependency>
 			<groupId>de.fraunhofer.iem</groupId>
 			<artifactId>CryptoAnalysis</artifactId>
-			<version>2.3</version>
+			<version>2.4-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -227,16 +226,4 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	<repositories>
-		<repository>
-			<id>soot-release</id>
-			<name>soot release</name>
-			<url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/</url>
-		</repository>
-		<repository>
-			<id>soot-snapshot</id>
-			<name>soot snapshot</name>
-			<url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/</url>
-		</repository>
-	</repositories>
 </project>

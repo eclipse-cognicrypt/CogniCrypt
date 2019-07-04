@@ -263,14 +263,14 @@ public class XMLParser {
 	 * @return the filtered node
 	 * @throws NoSuchElementException
 	 */
-	public Node getChildNodeByTagName(final Node parent, final String nodeName) throws NoSuchElementException {
+	public Node getChildNodeByTagName(final Node parent, final String nodeName) {
 		final NodeList childList = parent.getChildNodes();
 		for (int i = 0; i < childList.getLength(); i++) {
 			if (childList.item(i).getNodeName().equals(nodeName)) {
 				return childList.item(i);
 			}
 		}
-		throw new NoSuchElementException();
+		return null;
 	}
 
 	/**
@@ -284,6 +284,12 @@ public class XMLParser {
 		this.doc = node.getOwnerDocument();
 	}
 
+	public Element createElement(final String elementName) {
+		return doc.createElement(elementName);
+	}
+
+	
+	
 	public File getXmlFile() {
 		return this.xmlFile;
 	}

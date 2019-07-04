@@ -21,11 +21,15 @@
 		</dependency>
 	</dependencies>
 	<build>
+	<pluginManagement>
 		<plugins>
+			
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.1.1</version>
 				<executions>
-					<execution>
+				<execution>
 						<id>copy-dependencies</id>
 						<phase>generate-sources</phase>
 						<goals>
@@ -37,13 +41,6 @@
 							<stripVersion>true</stripVersion>
 						</configuration>
 					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.1.1</version>
-				<executions>
 					<execution>
 						<id>unpack</id>
 						<phase>compile</phase>
@@ -140,10 +137,6 @@
 					</execution>
 				</executions>
 			</plugin>
-		</plugins>
-
-		<pluginManagement>
-			<plugins>
 				<!--This plugin's configuration is used to store Eclipse m2e settings 
 					only. It has no influence on the Maven build itself. -->
 				<plugin>

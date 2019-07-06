@@ -23,7 +23,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private Button automatedAnalysisCheckBox;
 	private Button secureObjectsCheckBox;
 	private Button analyseDependenciesCheckBox;
-	private Button analyseChangedDependenciesCheckBox;
+//	private Button analyseChangedDependenciesCheckBox;
 
 	private Combo CGSelection;
 	private Combo forbidden;
@@ -51,7 +51,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		automatedAnalysisCheckBox.setSelection(preferences.getBoolean(Constants.AUTOMATED_ANALYSIS));
 		secureObjectsCheckBox.setSelection(preferences.getBoolean(Constants.SHOW_SECURE_OBJECTS));
 		analyseDependenciesCheckBox.setSelection(preferences.getBoolean(Constants.ANALYSE_DEPENDENCIES));
-		analyseChangedDependenciesCheckBox.setSelection(preferences.getBoolean(Constants.ANALYSE_DEPENDENCIES_CHANGED));
+//		analyseChangedDependenciesCheckBox.setSelection(preferences.getBoolean(Constants.ANALYSE_DEPENDENCIES_CHANGED));
 		ruleSelection.select(preferences.getInt(Constants.RULE_SELECTION));
 	}
 
@@ -108,8 +108,8 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 //			} 
 //		});
 //		  
-		analyseChangedDependenciesCheckBox = new Button(staticAnalysisGroup,SWT.CHECK); 
-		analyseChangedDependenciesCheckBox.setText("Analyse dependencies when changed");
+//		analyseChangedDependenciesCheckBox = new Button(staticAnalysisGroup,SWT.CHECK); 
+//		analyseChangedDependenciesCheckBox.setText("Analyse dependencies when changed");
 	}
 
 	private void initializeAdvancedValues() {
@@ -222,7 +222,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		automatedAnalysisCheckBox.setSelection(preferences.getDefaultBoolean(Constants.AUTOMATED_ANALYSIS));
 		secureObjectsCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SHOW_SECURE_OBJECTS));
 		analyseDependenciesCheckBox.setSelection(preferences.getDefaultBoolean(Constants.ANALYSE_DEPENDENCIES));
-		analyseChangedDependenciesCheckBox.setSelection(preferences.getDefaultBoolean(Constants.ANALYSE_DEPENDENCIES_CHANGED));
+//		analyseChangedDependenciesCheckBox.setSelection(preferences.getDefaultBoolean(Constants.ANALYSE_DEPENDENCIES_CHANGED));
 		ruleSelection.select(preferences.getDefaultInt(Constants.RULE_SELECTION));
 
 		CGSelection.select(preferences.getDefaultInt(Constants.CALL_GRAPH_SELECTION));
@@ -240,7 +240,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		preferences.setValue(Constants.AUTOMATED_ANALYSIS, automatedAnalysisCheckBox.getSelection());
 		preferences.setValue(Constants.SHOW_SECURE_OBJECTS, secureObjectsCheckBox.getSelection());
 		preferences.setValue(Constants.ANALYSE_DEPENDENCIES, analyseDependenciesCheckBox.getSelection());
-		preferences.setValue(Constants.ANALYSE_DEPENDENCIES_CHANGED, analyseChangedDependenciesCheckBox.getSelection());
+//		preferences.setValue(Constants.ANALYSE_DEPENDENCIES_CHANGED, analyseChangedDependenciesCheckBox.getSelection());
 		preferences.setValue(Constants.RULE_SELECTION, ruleSelection.getSelectionIndex());
 		preferences.setValue(Constants.CALL_GRAPH_SELECTION, CGSelection.getSelectionIndex());
 

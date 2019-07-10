@@ -215,7 +215,6 @@ public class SootRunner {
 		} catch (CoreException e1) {
 			e1.printStackTrace();
 		}
-
 		return libraryClassPath;
 	}
 
@@ -237,8 +236,13 @@ public class SootRunner {
 			}
 			break;
 		case IClasspathEntry.CPE_LIBRARY:
-			IPath path = entry.getPath();
-			libraryClassPath.add(path.toString());
+
+			if(entry.getPath().segment(0).equals(project.getProject().getName())) {
+				libraryClassPath.add(project.getProject().getParent().getRawLocation()+Constants.innerFileSeparator+entry.getPath().toOSString());
+			}
+			else {
+				libraryClassPath.add(entry.getPath().toOSString());
+			}			
 			break;
 		case IClasspathEntry.CPE_VARIABLE:
 			// JRE entry

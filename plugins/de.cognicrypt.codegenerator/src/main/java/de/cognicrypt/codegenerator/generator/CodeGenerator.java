@@ -44,11 +44,11 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 import de.cognicrypt.codegenerator.wizard.Configuration;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.ComparableEntry;
+import de.cognicrypt.utils.DeveloperProject;
 import de.cognicrypt.utils.Utils;
 
 public abstract class CodeGenerator {

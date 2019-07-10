@@ -47,7 +47,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import crypto.rules.CryptSLObject;
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.CodeGenCrySLRule;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
@@ -62,6 +61,7 @@ import de.cognicrypt.codegenerator.wizard.beginner.BeginnerTaskQuestionPage;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.CodeGenerators;
 import de.cognicrypt.utils.Utils;
+import de.cognicrypt.utils.DeveloperProject;
 
 public class AltConfigWizard extends Wizard {
 

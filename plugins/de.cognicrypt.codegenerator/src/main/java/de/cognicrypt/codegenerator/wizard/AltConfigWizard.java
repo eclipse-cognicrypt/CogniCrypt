@@ -2,8 +2,10 @@ package de.cognicrypt.codegenerator.wizard;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,11 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.AbstractMap.SimpleEntry;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.text.DefaultEditorKit.CopyAction;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.core.resources.IFile;
@@ -29,12 +33,15 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.MethodRefParameter;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
@@ -51,6 +58,8 @@ import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.CodeGenCrySLRule;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.CrySLBasedCodeGenerator;
+import de.cognicrypt.codegenerator.generator.GeneratorClass;
+import de.cognicrypt.codegenerator.generator.GeneratorMethod;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
@@ -61,6 +70,7 @@ import de.cognicrypt.codegenerator.wizard.beginner.BeginnerTaskQuestionPage;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.CodeGenerators;
 import de.cognicrypt.utils.Utils;
+import net.sf.saxon.om.CopyOptions;
 import de.cognicrypt.utils.DeveloperProject;
 
 public class AltConfigWizard extends Wizard {
@@ -224,10 +234,12 @@ public class AltConfigWizard extends Wizard {
 				File templateFilea =  CodeGenUtils.getResourceFromWithin("src/main/java/de/cognicrypt/codegenerator/crysl/templates/EncryptionTemplate.java");
 				String projectRelDir = Constants.outerFileSeparator + "src" + Constants.outerFileSeparator + Constants.PackageName + Constants.outerFileSeparator;
 				String projectRelPath = projectRelDir + templateFilea.getName();
+				String resFileOSPath = selectedFile.getProject().getRawLocation().toOSString() + projectRelPath;
 				
 				try {
 					Files.createDirectories(Paths.get(selectedFile.getProject().getRawLocation().toOSString() + projectRelDir));
-					Files.copy(templateFilea.toPath(), Paths.get(selectedFile.getProject().getRawLocation().toOSString() + projectRelPath));
+					Files.copy(templateFilea.toPath(), Paths.get(resFileOSPath), StandardCopyOption.REPLACE_EXISTING);
+					
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -253,13 +265,19 @@ public class AltConfigWizard extends Wizard {
 				parser.setBindingsRecovery(true);
 				parser.setKind(ASTParser.K_COMPILATION_UNIT);
 				CompilationUnit cu = (CompilationUnit) parser.createAST(null);
-
+				final Map<Integer, Integer> methLims = new HashMap<>();
+				
 				Map<SimpleName, CryptSLObject> variableDefinitions = new HashMap<SimpleName, CryptSLObject>();
 				List<CodeGenCrySLRule> rules = new ArrayList<CodeGenCrySLRule>();
 				List<CryptSLObject> retObj = new ArrayList<CryptSLObject>();
 				List<CryptSLObject> pars = new ArrayList<CryptSLObject>();
+				
+				GeneratorClass templateClass = new GeneratorClass();
+				
 				final ASTVisitor astVisitor = new ASTVisitor(true) {
 
+					GeneratorMethod curMethod = null;
+					
 					@Override
 					public boolean visit(MethodInvocation node) {
 						// TODO Auto-generated method stub
@@ -294,16 +312,11 @@ public class AltConfigWizard extends Wizard {
 							}
 							pars.clear();
 							retObj.clear();
-						} 
-						return super.visit(node);
-					}
-
-					@Override
-					public boolean visit(PackageDeclaration node) {
-//						Name a = ((PackageDeclaration)node).getName();
-//						a.structuralPropertiesForType().get(0);
-//						a.setProperty("qualifier", "aaa");
-//						((PackageDeclaration)node).setName(a);
+						} else if ("generate".equals(calledMethodName)) {
+							methLims.put(1, node.getStartPosition() + node.getLength());
+						} else if ("getInstance".equals(calledMethodName)) {
+							methLims.put(0, node.getStartPosition() - "CrySLCodeGenerator.".length());
+						}
 						return super.visit(node);
 					}
 
@@ -329,13 +342,35 @@ public class AltConfigWizard extends Wizard {
 
 					@Override
 					public boolean visit(MethodDeclaration node) {
-						// TODO Auto-generated method stub
+						curMethod = new GeneratorMethod();
+						curMethod.setName(node.getName().getFullyQualifiedName());
+						curMethod.setReturnType(node.getReturnType2().toString());
+						curMethod.setModifier("public");
+						
+						for (Statement s : (List<Statement>) node.getBody().statements()) {
+							curMethod.addStatementToBody(s.toString());
+						}
+						
 						for (SingleVariableDeclaration svd : (List<SingleVariableDeclaration>)node.parameters()) {
 							variableDefinitions.put(svd.getName(), new CryptSLObject(svd.getName().getFullyQualifiedName(), svd.getType().toString()));
+							curMethod.addParameter(new SimpleEntry<String, String>(svd.getName().getFullyQualifiedName(), svd.getType().toString()));
 						}
+						templateClass.addMethod(curMethod);
 						return super.visit(node);
 					}
 
+					@Override
+					public boolean visit(TypeDeclaration node) {
+						templateClass.setClassName(node.getName().getFullyQualifiedName());
+						return super.visit(node);
+					}
+
+					@Override
+					public boolean visit(ImportDeclaration node) {
+						templateClass.addImport(node.getName().getFullyQualifiedName());
+						return super.visit(node);
+					}
+					
 				};
 				cu.accept(astVisitor);
 				
@@ -344,8 +379,7 @@ public class AltConfigWizard extends Wizard {
 					codeGenerator = new CrySLBasedCodeGenerator(selectedFile);
 					
 					Map<CodeGenCrySLRule, ?> constraints = new HashMap<CodeGenCrySLRule, Object>();
-					Configuration chosenConfig = new CrySLConfiguration(rules, constraints, codeGenerator.getDeveloperProject()
-						.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
+					Configuration chosenConfig = new CrySLConfiguration(rules, constraints, resFileOSPath, templateClass);
 
 					ret = codeGenerator.generateCodeTemplates(chosenConfig, additionalResources);
 					

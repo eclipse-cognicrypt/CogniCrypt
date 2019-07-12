@@ -43,11 +43,14 @@ public abstract class Configuration {
 	 * @throws IOException
 	 *         see {@link FileWriter#FileWriter(String)) FileWriter} and {@link XMLWriter#write(String) XMLWriter.write()}
 	 */
-
 	public abstract File persistConf() throws IOException;
 
 	public abstract List<String> getProviders();
 
+	public String getPath() {
+		return pathOnDisk;
+	}
+	
 	/**
 	 * Deletes config file from hard disk.
 	 */

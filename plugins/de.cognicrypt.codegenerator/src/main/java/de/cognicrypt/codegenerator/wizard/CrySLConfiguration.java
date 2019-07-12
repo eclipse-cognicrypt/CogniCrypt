@@ -6,15 +6,18 @@ import java.util.List;
 import java.util.Map;
 
 import de.cognicrypt.codegenerator.generator.CodeGenCrySLRule;
+import de.cognicrypt.codegenerator.generator.GeneratorClass;
 
 
 public class CrySLConfiguration extends Configuration {
 
 	private final List<CodeGenCrySLRule> rules;
+	private final GeneratorClass template;
 
-	public CrySLConfiguration(List<CodeGenCrySLRule> rules, Map<CodeGenCrySLRule, ?> constraints, String pathOnDisk) {
+	public CrySLConfiguration(List<CodeGenCrySLRule> rules, Map<CodeGenCrySLRule, ?> constraints, String pathOnDisk, GeneratorClass templateClass) {
 		super(constraints, pathOnDisk);
 		this.rules = rules;
+		this.template = templateClass;
 	}
 
 	@Override
@@ -30,5 +33,9 @@ public class CrySLConfiguration extends Configuration {
 
 	public List<CodeGenCrySLRule> getRules() {
 		return rules;
+	}
+	
+	public GeneratorClass getTemplateClass() {
+		return this.template;
 	}
 }

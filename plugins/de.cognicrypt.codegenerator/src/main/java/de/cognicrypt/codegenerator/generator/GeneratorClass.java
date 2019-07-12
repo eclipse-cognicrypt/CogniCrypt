@@ -80,9 +80,9 @@ public class GeneratorClass {
 		return methods;
 	}
 	
-	public GeneratorMethod getUseMethod() {
-		return methods.stream().filter(e -> e.getName().equals("use" + this.className)).findFirst().get();
-	}
+//	public GeneratorMethod getUseMethod() {
+//		return methods.stream().filter(e -> e.getName().equals("use" + this.className)).findFirst().get();
+//	}
 	
 	public File getAssociatedJavaFile() {
 		return associatedFile;

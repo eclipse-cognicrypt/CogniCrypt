@@ -8,6 +8,12 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
+import java.util.AbstractMap.SimpleEntry;
+
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.core.Constants;
@@ -41,6 +47,7 @@ public class CodeHandler {
 	 * @throws Exception
 	 */
 	public File writeToDisk(final String folderPath) throws Exception {
+		
 		File fileOnDisk = new File(folderPath);
 		fileOnDisk.mkdirs();
 		for (GeneratorClass toBeGeneratedClass : javaClasses) {

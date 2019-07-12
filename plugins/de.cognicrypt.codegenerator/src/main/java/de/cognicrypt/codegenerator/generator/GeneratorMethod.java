@@ -144,4 +144,8 @@ public class GeneratorMethod {
 		}
 	}
 
+	public void clearBody() {
+		this.body.setLength(0);
+	}
+
 }

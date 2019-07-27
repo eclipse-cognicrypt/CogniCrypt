@@ -294,19 +294,34 @@ public class CrySLModelReader {
 	private List<ISLConstraint> collectRequiredPredicates(final EList<ReqPred> requiredPreds) {
 		final List<ISLConstraint> preds = new ArrayList<>();
 		for (final ReqPred pred : requiredPreds) {
-			final ReqPred left = pred.getLeftExpression();
-			final ReqPred right = pred.getRightExpression();
 			ISLConstraint reqPred = null;
-			if (left == null && right == null) {
+			if (pred instanceof ReqPredLit) {
 				reqPred = extractReqPred(pred);
 			} else {
-				CryptSLPredicate l = extractReqPred(left);
-				CryptSLPredicate r = extractReqPred(right);
-				reqPred = new CryptSLConstraint(l, r, LogOps.or);
+				final ReqPred left = pred.getLeftExpression();
+				final ReqPred right = pred.getRightExpression();
+				
+				List<CryptSLPredicate> altPreds = retrieveReqPredFromAltPreds(left);
+				altPreds.add(extractReqPred(right));
+				reqPred = new CryptSLConstraint(altPreds.get(0), altPreds.get(1), LogOps.or);
+				for (int i = 2; i < altPreds.size(); i++) {
+					reqPred = new CryptSLConstraint(reqPred, altPreds.get(i), LogOps.or);
+				}
 			}
 			preds.add(reqPred);
 		}
 
+		return preds;
+	}
+
+	private List<CryptSLPredicate> retrieveReqPredFromAltPreds(ReqPred left) {
+		List<CryptSLPredicate> preds = new ArrayList<CryptSLPredicate>();
+		if (left instanceof ReqPredLit) {
+			preds.add(extractReqPred(left));
+		} else {
+			preds.addAll(retrieveReqPredFromAltPreds(left.getLeftExpression()));
+			preds.add(extractReqPred(left.getRightExpression()));
+		}
 		return preds;
 	}
 

@@ -39,6 +39,8 @@ import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.crysl.reader.CrySLModelReader;
+import de.cognicrypt.crysl.reader.CrySLReaderUtils;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.utils.Utils;
@@ -75,15 +77,26 @@ public class SootRunner {
 					
 				};
 				scanner.getAnalysisListener().addReportListener(resultsReporter);
-				scanner.scan(getRules());
+				scanner.scan(getRules(resultsReporter.getReporterProject()));
 			}
 		};
 	}
 
-	private static List<CryptSLRule> getRules() {
+	private static List<CryptSLRule> getRules(IProject project) {
 		List<CryptSLRule> rules = Lists.newArrayList();
 		//TODO Select rules according to selected rulesets in preference page. The CrySL rules for each ruleset are in a separate subdirectory of "/resources/CrySLRules/".  
 		try {
+			for (String path : projectClassPath(JavaCore.create(project))) {
+				List<CryptSLRule> readRuleFromBinaryFiles = CrySLReaderUtils.readRuleFromBinaryFiles(path);
+				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
+				rules.addAll(readRuleFromBinaryFiles);
+			}
+			
+			for (String path : applicationClassPath(JavaCore.create(project))) {
+				List<CryptSLRule> readRuleFromBinaryFiles = CrySLReaderUtils.readRuleFromBinaryFiles(path);
+				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e));
+				rules.addAll(readRuleFromBinaryFiles);
+			}
 			rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin("/resources/CrySLRules/").getPath()), Integer.MAX_VALUE, (file,attr) -> file.toString().endsWith(".cryptslbin"))
 			.map(path -> CryptSLRuleReader.readFromFile(path.toFile())).collect(Collectors.toList()));
 		} catch (IOException e) {
@@ -139,7 +152,7 @@ public class SootRunner {
 		Options.v().set_whole_program(true);
 		Options.v().set_no_bodies_for_excluded(true);
 		Options.v().set_include(getIncludeList());
-		Options.v().set_exclude(getExcludeList());
+		Options.v().set_exclude(getExcludeList(project));
 		Scene.v().loadNecessaryClasses();
 		// choose call graph based on what user selected on preference page
 		switch (Activator.getDefault().getPreferenceStore().getInt(Constants.CALL_GRAPH_SELECTION)) {
@@ -171,9 +184,9 @@ public class SootRunner {
 		return includeList;
 	}
 
-	private static List<String> getExcludeList() {
+	private static List<String> getExcludeList(IJavaProject project) {
 		final List<String> excludeList = new LinkedList<String>();
-		for (final CryptSLRule r : getRules()) {
+		for (final CryptSLRule r : getRules(project.getProject())) {
 			excludeList.add(crypto.Utils.getFullyQualifiedName(r));
 		}
 		return excludeList;

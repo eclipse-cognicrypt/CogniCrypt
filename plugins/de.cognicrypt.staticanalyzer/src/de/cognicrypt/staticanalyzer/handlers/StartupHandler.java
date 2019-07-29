@@ -53,6 +53,7 @@ public class StartupHandler implements IStartup {
 		@Override
 		public void resourceChanged(final IResourceChangeEvent event) {
 			IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+			final Boolean dependencyAnalyser = false;
 			if (store.getBoolean(Constants.AUTOMATED_ANALYSIS) == false) {
 				return;
 			} else if (Utils.checkJavaVersion()) {
@@ -125,7 +126,7 @@ public class StartupHandler implements IStartup {
 					if (!analysis_running) {
 						final AnalysisKickOff ak = analysis_Queue.remove();
 						analysis_running = true;
-						ak.run();
+						ak.run(dependencyAnalyser);
 						analysis_running = false;
 					}
 				}

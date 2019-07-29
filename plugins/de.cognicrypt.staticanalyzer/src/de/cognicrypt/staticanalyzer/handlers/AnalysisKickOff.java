@@ -87,7 +87,7 @@ public class AnalysisKickOff {
 	 * This method executes the actual analysis.
 	 *
 	 */
-	public void run() {
+	public void run(final Boolean dependencyAnalyser) {
 		if(this.curProj == null)
 			return;
 		if (Utils.checkJavaVersion()) {
@@ -99,7 +99,7 @@ public class AnalysisKickOff {
 			@SuppressWarnings("deprecation")
 			@Override
 			protected IStatus run(final IProgressMonitor monitor) {
-				final SootThread sootThread = new SootThread(AnalysisKickOff.this.curProj, AnalysisKickOff.resultsReporter);
+				final SootThread sootThread = new SootThread(AnalysisKickOff.this.curProj, AnalysisKickOff.resultsReporter, dependencyAnalyser);
 				sootThread.start();
 				while (sootThread.isAlive()) {
 					try {

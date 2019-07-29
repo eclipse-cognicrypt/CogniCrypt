@@ -111,9 +111,9 @@ public class SootRunner {
 	}
 
 
-	public static boolean runSoot(final IJavaProject project, final ResultsCCUIListener resultsReporter) {
+	public static boolean runSoot(final IJavaProject project, final ResultsCCUIListener resultsReporter, final Boolean dependencyAnalyser) {
 		G.reset();
-		setSootOptions(project);
+		setSootOptions(project, dependencyAnalyser);
 		registerTransformers(resultsReporter);
 		try {
 			runSoot();
@@ -136,10 +136,16 @@ public class SootRunner {
 		Activator.getDefault().logInfo("CogniCrypt Analysis terminated in "+ analysisTime + " seconds." );
 	}
 
-	private static void setSootOptions(final IJavaProject project) {
-		Options.v().set_soot_classpath(getSootClasspath(project));
-		Options.v().set_process_dir(Lists.newArrayList(applicationClassPath(project)));
-
+	private static void setSootOptions(final IJavaProject project, final Boolean dependencyAnalyser) {
+//		Options.v().set_soot_classpath(getSootClasspath(project)); // to jars files
+//		Options.v().set_process_dir(Lists.newArrayList(applicationClassPath(project))); // jar files too 
+		if (dependencyAnalyser == true) {
+			Options.v().set_soot_classpath(Joiner.on(File.pathSeparator).join(libraryClassPath(project))); // to jars files
+			Options.v().set_process_dir(Lists.newArrayList(libraryClassPath(project)));
+		}else {
+			Options.v().set_soot_classpath(getSootClasspath(project)); // to jars files
+			Options.v().set_process_dir(Lists.newArrayList(applicationClassPath(project))); // jar files too 
+		}
 		Options.v().set_keep_line_number(true);
 		Options.v().set_prepend_classpath(true);
 		Options.v().set_allow_phantom_refs(true);
@@ -192,14 +198,12 @@ public class SootRunner {
 
 	private static String getSootClasspath(final IJavaProject javaProject) {
 		
-		Collection<String> dependenciesClassPath = dependenciesClassPath(javaProject);
 		Collection<String> applicationClassPath = applicationClassPath(javaProject);
-//		Collection<String> libraryClassPath = libraryClassPath(javaProject);
+		Collection<String> libraryClassPath = libraryClassPath(javaProject);
 		
-		dependenciesClassPath.addAll(applicationClassPath);
-//		libraryClassPath.addAll(dependenciesClassPath);
-		System.out.println(Joiner.on(File.pathSeparator).join(dependenciesClassPath));
-		return Joiner.on(File.pathSeparator).join(dependenciesClassPath);
+		libraryClassPath.addAll(applicationClassPath);
+		System.out.println(Joiner.on(File.pathSeparator).join(libraryClassPath));
+		return Joiner.on(File.pathSeparator).join(libraryClassPath);
 	}
 
 	private static Collection<String> applicationClassPath(final IJavaProject javaProject) {
@@ -208,6 +212,7 @@ public class SootRunner {
 			final List<String> urls = new ArrayList<>();
 			final URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
 			urls.add(new File(uriString).getAbsolutePath());
+//			System.out.println("URLS IS: " + urls);
 			return urls;
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e, "Error building project classpath");
@@ -215,39 +220,45 @@ public class SootRunner {
 		}
 	}
 	private static Collection<String> libraryClassPath(IJavaProject project) {
+		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		
 		Collection<String> libraryClassPath = Sets.newHashSet();
 		IClasspathEntry[] rentries;
 		try {
-			rentries = project.getRawClasspath();
-			for (IClasspathEntry entry : rentries) {
-				resolveClassPathEntry(entry, libraryClassPath, project);
-			}
+			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) == true) {
 
+				rentries = project.getRawClasspath();
+				for (IClasspathEntry entry : rentries) {
+					resolveClassPathEntry(entry, libraryClassPath, project);
+				}
+			}
 		} catch (CoreException e1) {
 			e1.printStackTrace();
 		}
-
+		System.out.println("libraryClassPath is: " + libraryClassPath);
 		return libraryClassPath;
 	}
 
 	private static Collection<String> dependenciesClassPath(final IJavaProject javaProject) {
-		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+//		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 //		Object oldHashDependencyObject;
 		try {
 
 			final List<String> depUrls = new ArrayList<>();
-			final List<String> projectDependencies = new ArrayList<>();
+//			final List<String> projectDependencies = new ArrayList<>();
 
-			projectDependencies.addAll(libraryClassPath(javaProject));
-
-			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) == true) {
-
-				if (projectDependencies != null) {
-					depUrls.addAll(projectDependencies);
-				}
+			final IClasspathEntry[] resolvedClasspath = javaProject.getResolvedClasspath(true);
+			for (IClasspathEntry classpathEntry : resolvedClasspath) {
+				System.out.println("dependencies:" + classpathEntry.getPath().makeAbsolute().toFile().getCanonicalFile().toURL());
 			}
-			
-//			System.out.println("CLASSPATH IS: " + depUrls);
+
+//			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) == true) {
+//
+//				if (projectDependencies != null) {
+//					depUrls.addAll(projectDependencies);
+//				}
+//			}
+			System.out.println("CLASSPATH IS: " + depUrls);
 			return depUrls;
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e, "Error building project dependencies classpath");
@@ -260,7 +271,7 @@ public class SootRunner {
 		IClasspathEntry[] rentries;
 		switch (entry.getEntryKind()) {
 		case IClasspathEntry.CPE_SOURCE:
-			libraryClassPath.addAll(applicationClassPath(project));
+//			libraryClassPath.addAll(applicationClassPath(project));
 			break;
 		case IClasspathEntry.CPE_PROJECT:
             IJavaProject requiredProject = JavaCore.create((IProject) ResourcesPlugin.getWorkspace().getRoot().findMember(entry.getPath()));

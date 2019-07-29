@@ -12,11 +12,12 @@ public class RunAnalysisHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+		final Boolean dependencyAnalyser = false;
 		final AnalysisKickOff akf = new AnalysisKickOff();
 		IProject ip = Utils.getCurrentlySelectedIProject();
 		final IJavaElement iJavaElement = JavaCore.create(ip);
 		if (akf.setUp(iJavaElement)) {
-			akf.run();
+			akf.run(dependencyAnalyser);
 		}
 		return null;
 	}

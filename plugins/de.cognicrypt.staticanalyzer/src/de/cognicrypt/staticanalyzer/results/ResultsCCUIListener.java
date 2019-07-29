@@ -68,7 +68,8 @@ import soot.tagkit.AbstractHost;
 import typestate.TransitionFunction;
 
 /**
- * This listener is notified of any misuses the analysis finds. It also reports the results of the analysis to the Statistics View
+ * This listener is notified of any misuses the analysis finds. It also reports
+ * the results of the analysis to the Statistics View
  *
  * @author Stefan Krueger
  * @author André Sonntag
@@ -106,11 +107,18 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	public void reportError(final AbstractError error) {
 		final String errorMessage = error.toErrorMarkerString();
 		final Statement errorLocation = error.getErrorLocation();
-		final IResource sourceFile = unitToResource(errorLocation);
+		IResource sourceFile = null;
+		final Boolean kilid = false;
+		if (kilid) {
+			sourceFile = unitToResource(errorLocation);			
+		}
+		
 		final int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
 		
 		//Bugfix, to be removed https://github.com/eclipse-cognicrypt/CogniCrypt/issues/289
 		if(!errorLocation.getUnit().isPresent() || errorLocation.getUnit().get().getInvokeExpr() == null)
+			return;
+		if(sourceFile == null)
 			return;
 		
 		final CCStatement stmt = new CCStatement(errorLocation);
@@ -118,11 +126,13 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		
 		ICompilationUnit javaFile = (ICompilationUnit) JavaCore.create(sourceFile);
 		String className = "";
+		System.out.println("java is: " + javaFile);
 		try {
+			System.out.println("afterwards is: " + javaFile.getPackageDeclarations());
 			for (IPackageDeclaration decl : javaFile.getPackageDeclarations()) {
 				className += decl.getElementName() + ".";
-			}
-		}
+			}}
+			
 		catch (JavaModelException e1) {
 		}
 		className += javaFile.getElementName().substring(0, javaFile.getElementName().lastIndexOf("."));
@@ -138,7 +148,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			Map<String, AnalysisData> classesAnalysedMap = stat.getClassesAnalysed();
 			classesAnalysedMap.put(className, data);
 		}
-
+		
 		/*
 		 * Adding of new marker types for new errors: 1) add new ErrorMarker extension point in plugin.xml 2) add new markerResolutionGenerator tag in plugin.xml 3) add new Marker
 		 * constant in Constants.java (CogniCrypt Core) 4) add new else if in the following query
@@ -207,13 +217,15 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	@Override
 	public void onSecureObjectFound(final IAnalysisSeed secureObject) {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		if (store.getBoolean(Constants.SHOW_SECURE_OBJECTS) == false) {
+		final Boolean kilid = false;
+		if (store.getBoolean(Constants.SHOW_SECURE_OBJECTS) == false || kilid == false) {
 			return;
 		} else {
 			final Statement stmt = secureObject.stmt();
 			final Stmt unit = stmt.getUnit().get();
 			final List<ValueBox> useAndDefBoxes = unit.getUseAndDefBoxes();
-			final Optional<ValueBox> varOpt = useAndDefBoxes.stream().filter(e -> e instanceof JimpleLocalBox).findFirst();
+			final Optional<ValueBox> varOpt = useAndDefBoxes.stream().filter(e -> e instanceof JimpleLocalBox)
+					.findFirst();
 			ValueBox var = null;
 			if (varOpt.isPresent()) {
 				var = varOpt.get();
@@ -227,31 +239,37 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 			}
 			final Value varName = var.getValue();
-			this.markerGenerator.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt), unit.getJavaSourceStartLineNumber(),
-					"Object " + (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", Severities.Info);
+			this.markerGenerator.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt),
+					unit.getJavaSourceStartLineNumber(),
+					"Object " + (varName.toString().startsWith("$r")
+							? " of Type " + var.getValue().getType().toQuotedString()
+							: varName) + " is secure.",
+					Severities.Info);
 		}
 	}
 
 	/**
-	 * This method removes superfluous suppressed warning entries from the SuppressWarnings.xml file.
+	 * This method removes superfluous suppressed warning entries from the
+	 * SuppressWarnings.xml file.
 	 */
 	public void removeUndetectableWarnings() {
 		if (this.suppressedWarningIds.size() > 0) {
 
-			final ArrayList<String> allSuppressedWarningIds = this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR);
+			final ArrayList<String> allSuppressedWarningIds = this.xmlParser
+					.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR);
 
 			final ArrayList<String> difference = new ArrayList<>(allSuppressedWarningIds.size());
 			difference.addAll(allSuppressedWarningIds);
 			difference.removeAll(this.suppressedWarningIds);
 
 			for (int i = 0; i < difference.size(); i++) {
-				this.xmlParser.removeNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR, difference.get(i));
+				this.xmlParser.removeNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR,
+						difference.get(i));
 			}
 			this.xmlParser.writeXML();
 			try {
 				this.currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-			}
-			catch (final CoreException e) {
+			} catch (final CoreException e) {
 				Activator.getDefault().logError(e);
 			}
 		}
@@ -262,8 +280,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final SootClass className = stmt.getMethod().getDeclaringClass();
 		try {
 			return Utils.findClassByName(className.getName(), this.currentProject);
-		}
-		catch (final ClassNotFoundException e) {
+		} catch (final ClassNotFoundException e) {
 			Activator.getDefault().logError(e);
 		}
 		// Fall-back path when retrieval of actual path fails. If the statement below
@@ -297,7 +314,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	@Override
-	public void collectedValues(final AnalysisSeedWithSpecification arg0, final Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
+	public void collectedValues(final AnalysisSeedWithSpecification arg0,
+			final Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
 		// Nothing
 	}
 
@@ -381,5 +399,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void ensuredPredicates(final Table<Statement, Val, Set<EnsuredCryptSLPredicate>> existingPredicates,
-			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates, final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {}
+			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates,
+			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {
+	}
 }

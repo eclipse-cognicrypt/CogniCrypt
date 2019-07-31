@@ -65,7 +65,9 @@ public class GeneratorMethod {
 		int index = -1;
 		if ((index = statement.indexOf('=')) > 0) {
 			String[] varDecl = statement.substring(0, index).split(" ");
-			variableDeclarations.add(new SimpleEntry<>(varDecl[1], varDecl[0]));
+			if (varDecl.length == 2) {
+				variableDeclarations.add(new SimpleEntry<>(varDecl[1], varDecl[0]));
+			}
 		}
 		body.append("\n");
 	}

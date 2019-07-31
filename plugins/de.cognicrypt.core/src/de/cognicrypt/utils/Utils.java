@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.OptionalInt;
 import org.eclipse.core.resources.IContainer;
@@ -50,6 +51,8 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.osgi.framework.Bundle;
 import com.google.common.base.CharMatcher;
 import crypto.rules.CryptSLRule;
+import crypto.rules.StateNode;
+import crypto.rules.TransitionEdge;
 import de.cognicrypt.core.Activator;
 import de.cognicrypt.core.Constants;
 
@@ -385,6 +388,16 @@ public class Utils {
 			}
 		}
 		return rules;
+	}
+
+	public static List<TransitionEdge> getOutgoingEdges(Collection<TransitionEdge> collection,final StateNode curNode, final StateNode notTo) {
+		final List<TransitionEdge> outgoingEdges = new ArrayList<>();
+		for (final TransitionEdge comp : collection) {
+			if (comp.getLeft().equals(curNode) && !(comp.getRight().equals(curNode) || comp.getRight().equals(notTo))) {
+				outgoingEdges.add(comp);
+			}
+		}
+		return outgoingEdges;
 	}
 	
 	public static boolean isSubType(String typeOne, String typeTwo) {

@@ -2,10 +2,10 @@ package de.cognicrypt.codegenerator.wizard;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,13 +13,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.AbstractMap.SimpleEntry;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.text.DefaultEditorKit.CopyAction;
 
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.core.resources.IFile;
@@ -36,8 +34,6 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.MethodRefParameter;
-import org.eclipse.jdt.core.dom.PackageDeclaration;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
@@ -69,9 +65,8 @@ import de.cognicrypt.codegenerator.wizard.beginner.BeginnerModeQuestionnaire;
 import de.cognicrypt.codegenerator.wizard.beginner.BeginnerTaskQuestionPage;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.CodeGenerators;
-import de.cognicrypt.utils.Utils;
-import net.sf.saxon.om.CopyOptions;
 import de.cognicrypt.utils.DeveloperProject;
+import de.cognicrypt.utils.Utils;
 
 public class AltConfigWizard extends Wizard {
 
@@ -241,22 +236,14 @@ public class AltConfigWizard extends Wizard {
 					Files.copy(templateFilea.toPath(), Paths.get(resFileOSPath), StandardCopyOption.REPLACE_EXISTING);
 					
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					Activator.getDefault().logError(e1);
 				}
 				try {
 					selectedFile.getProject().refreshLocal(IProject.DEPTH_INFINITE, null);
 				} catch (CoreException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					Activator.getDefault().logError(e1);
 				}
 				IFile file = selectedFile.getProject().getFile(projectRelPath);
-//				try {
-//					file.create(stream, true, null);
-//				} catch (CoreException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
 			
 				ASTParser parser = ASTParser.newParser(AST.JLS11);
 				parser.setSource((ICompilationUnit) JavaCore.create(file));
@@ -278,21 +265,24 @@ public class AltConfigWizard extends Wizard {
 
 					GeneratorMethod curMethod = null;
 					
+					@SuppressWarnings("unchecked")
 					@Override
 					public boolean visit(MethodInvocation node) {
-						// TODO Auto-generated method stub
 						MethodInvocation mi = node;
 						String calledMethodName = mi.getName().getFullyQualifiedName();
 						if ("addReturnObject".equals(calledMethodName)) {
-							Optional<SimpleName> variable = Optional.empty();
 							for (SimpleName var : variableDefinitions.keySet()) {
-								variable = ((List<SimpleName>) mi.arguments()).parallelStream().filter(e -> e.getFullyQualifiedName().equals(var.getFullyQualifiedName())).findFirst();
-								if (variable.isPresent()) {
-									break;
+								String varfqn = var.getFullyQualifiedName();
+
+								for (SimpleName name : (List<SimpleName>) mi.arguments()) {
+									String efqn = name.getFullyQualifiedName();
+									if (efqn.equals(varfqn)) {
+										CryptSLObject cryptSLObject = variableDefinitions.get(var);
+										retObj.add(cryptSLObject); 
+										break;
+									}
 								}
 							}
-//							Optional<SimpleName> variable = variableDefinitions.keySet().stream().filter(e -> mi.arguments().contains(((SimpleName) e).getFullyQualifiedName())).findFirst();
-							retObj.add(variableDefinitions.get(variable.get()));
 						} else if ("addParameter".equals(calledMethodName)) {
 							Optional<SimpleName> variable = Optional.empty();
 							for (SimpleName var : variableDefinitions.keySet()) {
@@ -322,24 +312,22 @@ public class AltConfigWizard extends Wizard {
 
 					@Override
 					public void preVisit(ASTNode node) {
-						// TODO Auto-generated method stub
 						super.preVisit(node);
 					}
 
 					@Override
 					public boolean visit(VariableDeclarationExpression node) {
-						// TODO Auto-generated method stub
 						return super.visit(node);
 					}
 
 					@Override
 					public boolean visit(VariableDeclarationStatement node) {
-						// TODO Auto-generated method stub
 						SimpleName varName = ((VariableDeclarationFragment) ((VariableDeclarationStatement)node).fragments().get(0)).getName();
 						variableDefinitions.put(varName, new CryptSLObject(varName.getFullyQualifiedName(), ((VariableDeclarationStatement)node).getType().toString()));
 						return super.visit(node);
 					}
 
+					@SuppressWarnings("unchecked")
 					@Override
 					public boolean visit(MethodDeclaration node) {
 						curMethod = new GeneratorMethod();

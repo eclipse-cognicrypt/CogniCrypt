@@ -254,22 +254,22 @@ public class AltConfigWizard extends Wizard {
 				CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 				final Map<Integer, Integer> methLims = new HashMap<>();
 				
-				Map<SimpleName, CryptSLObject> variableDefinitions = new HashMap<SimpleName, CryptSLObject>();
 				List<CodeGenCrySLRule> rules = new ArrayList<CodeGenCrySLRule>();
-				List<CryptSLObject> retObj = new ArrayList<CryptSLObject>();
-				List<CryptSLObject> pars = new ArrayList<CryptSLObject>();
-				
 				GeneratorClass templateClass = new GeneratorClass();
 				
 				final ASTVisitor astVisitor = new ASTVisitor(true) {
 
 					GeneratorMethod curMethod = null;
+					CryptSLObject retObj = null;
+					List<CryptSLObject> pars = new ArrayList<CryptSLObject>();
+					Map<SimpleName, CryptSLObject> variableDefinitions = new HashMap<SimpleName, CryptSLObject>();
 					
 					@SuppressWarnings("unchecked")
 					@Override
 					public boolean visit(MethodInvocation node) {
 						MethodInvocation mi = node;
 						String calledMethodName = mi.getName().getFullyQualifiedName();
+						
 						if ("addReturnObject".equals(calledMethodName)) {
 							for (SimpleName var : variableDefinitions.keySet()) {
 								String varfqn = var.getFullyQualifiedName();
@@ -278,30 +278,34 @@ public class AltConfigWizard extends Wizard {
 									String efqn = name.getFullyQualifiedName();
 									if (efqn.equals(varfqn)) {
 										CryptSLObject cryptSLObject = variableDefinitions.get(var);
-										retObj.add(cryptSLObject); 
+										retObj= cryptSLObject; 
 										break;
 									}
 								}
 							}
 						} else if ("addParameter".equals(calledMethodName)) {
-							Optional<SimpleName> variable = Optional.empty();
 							for (SimpleName var : variableDefinitions.keySet()) {
-								variable = ((List<SimpleName>) mi.arguments()).parallelStream().filter(e -> e.getFullyQualifiedName().equals(var.getFullyQualifiedName())).findFirst();
-								if (variable.isPresent()) {
-									break;
+								String varfqn = var.getFullyQualifiedName();
+
+								for (SimpleName name : (List<SimpleName>) mi.arguments()) {
+									String efqn = name.getFullyQualifiedName();
+									if (efqn.equals(varfqn)) {
+										pars.add(variableDefinitions.get(var)); 
+										break;
+									}
 								}
 							}
-							pars.add(variableDefinitions.get(variable.get()));
 						} else if ("considerCrySLRule".equals(calledMethodName)){
 							String rule = Utils.filterQuotes(mi.arguments().get(0).toString());
 							try {
 								String simpleRuleName = rule.substring(rule.lastIndexOf(".") + 1);
-								rules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(simpleRuleName), pars, (retObj.isEmpty()) ? null : retObj.get(0)));
+								rules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(simpleRuleName), pars, retObj));
+								
+								retObj = null;
+								pars = new ArrayList<CryptSLObject>();
 							} catch (ClassNotFoundException | IOException e) {
 								Activator.getDefault().logError(e);
 							}
-							pars.clear();
-							retObj.clear();
 						} else if ("generate".equals(calledMethodName)) {
 							methLims.put(1, node.getStartPosition() + node.getLength());
 						} else if ("getInstance".equals(calledMethodName)) {
@@ -343,6 +347,7 @@ public class AltConfigWizard extends Wizard {
 							variableDefinitions.put(svd.getName(), new CryptSLObject(svd.getName().getFullyQualifiedName(), svd.getType().toString()));
 							curMethod.addParameter(new SimpleEntry<String, String>(svd.getName().getFullyQualifiedName(), svd.getType().toString()));
 						}
+						curMethod.setNumberOfVariablesInTemplate(curMethod.getDeclaredVariables().size());
 						templateClass.addMethod(curMethod);
 						return super.visit(node);
 					}

@@ -54,4 +54,5 @@ public class CodeGenCrySLRule extends CryptSLRule {
 	public CryptSLObject getRequiredRetObj() {
 		return requiredRetObj;
 	}
+	
 }

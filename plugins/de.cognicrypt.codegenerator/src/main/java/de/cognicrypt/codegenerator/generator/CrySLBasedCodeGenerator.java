@@ -7,6 +7,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -65,7 +66,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 	 */
 	private List<String> exceptions = new ArrayList<String>();
 
-//	private Map<String, CryptSLObject> methToReturnValue = new HashMap<String, CryptSLObject>();
+	//	private Map<String, CryptSLObject> methToReturnValue = new HashMap<String, CryptSLObject>();
 
 	private List<String> kills = new ArrayList<String>();
 
@@ -267,7 +268,8 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 					continue;
 				}
 
-				if (toBeEnsuredPred != null && toBeEnsured.isPresent() && !toBeEnsured.get().getKey().getParameters().get(0).equals(toBeEnsuredPred.getKey().getParameters().get(0))) {
+				if (toBeEnsuredPred != null && toBeEnsured.isPresent() && !toBeEnsured.get().getKey().getParameters().get(0)
+					.equals(toBeEnsuredPred.getKey().getParameters().get(0))) {
 					Entry<CryptSLPredicate, Entry<CryptSLRule, CryptSLRule>> originalPred = toBeEnsured.get();
 					int indexOf = predicateConnections.indexOf(originalPred);
 					predicateConnections.remove(indexOf);
@@ -394,7 +396,6 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 	 * @param imports
 	 */
 	private ArrayList<String> generateMethodInvocations(CodeGenCrySLRule rule, GeneratorMethod useMethod, List<TransitionEdge> currentTransitions, Map<CryptSLPredicate, Entry<CryptSLRule, CryptSLRule>> usablePreds, List<String> imports, boolean lastRule) {
-		//		String className = rule.getClassName().substring(rule.getClassName().lastIndexOf('.') + 1);
 		Set<StateNode> killStatements = rule.getPredicates().stream().filter(pred -> pred.isNegated() && pred instanceof CryptSLCondPredicate)
 			.map(e -> ((CryptSLCondPredicate) e).getConditionalMethods()).reduce(new HashSet<>(), (a, b) -> {
 				a.addAll(b);
@@ -422,7 +423,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 					method = fetchCorrespondingMethod(toBeEnsuredPred, meth);
 					if (method != null) {
 						ensures = true;
-					} 
+					}
 				}
 
 				for (Entry<CryptSLPredicate, Entry<CryptSLRule, CryptSLRule>> usablePred : usablePreds.entrySet()) {
@@ -513,15 +514,15 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		Entry<String, String> retObject = meth.getRetObject();
 		String returnType = retObject.getValue();
 		String returnVarName = retObject.getKey();
-//		String className = pred.getValue().getKey().getClassName();
-//		String classSimpleName = className.substring(className.lastIndexOf('.') + 1);
+		//		String className = pred.getValue().getKey().getClassName();
+		//		String classSimpleName = className.substring(className.lastIndexOf('.') + 1);
 
 		if (Utils.isSubType(predVarType, returnType) && returnVarName.equals(predVarName)) {
-//			methToReturnValue.put("useCogniCrypt" + classSimpleName, objectOfPred); // new CryptSLObject(predVarName, returnType));
+			//			methToReturnValue.put("useCogniCrypt" + classSimpleName, objectOfPred); // new CryptSLObject(predVarName, returnType));
 			return meth;
 
 		} else if (predVarName.equals("this") && meth.getMethodName().endsWith(predVarType.substring(predVarType.lastIndexOf('.') + 1))) {
-//			methToReturnValue.put("useCogniCrypt" + classSimpleName, objectOfPred); //new CryptSLObject(returnClassName.toLowerCase(), returnClassName));
+			//			methToReturnValue.put("useCogniCrypt" + classSimpleName, objectOfPred); //new CryptSLObject(returnClassName.toLowerCase(), returnClassName));
 			return meth;
 		} else {
 			for (Entry<String, String> par : meth.getParameters()) {
@@ -529,7 +530,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				String parVarName = par.getKey();
 
 				if ((Utils.isSubType(predVarType, parType) || Utils.isSubType(parType, predVarType)) && (parVarName.equals(predVarName) || "this".equals(predVarName))) {
-//					methToReturnValue.put("useCogniCrypt" + classSimpleName, objectOfPred);
+					//					methToReturnValue.put("useCogniCrypt" + classSimpleName, objectOfPred);
 					return meth;
 				}
 			}
@@ -604,18 +605,18 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		if (currentInvokedMethod.substring(0, currentInvokedMethod.indexOf("(")).equals(simpleName)) {
 
 			methodInvocation = className + " " + instanceName + " = new " + currentInvokedMethod;
-//			if (methodName.equals(lastInvokedMethod.substring(lastInvokedMethod.lastIndexOf('.') + 1))) {
-//				methodInvocation = methodInvocation;// + "\nreturn " + instanceName + ";";
-//			}
+			//			if (methodName.equals(lastInvokedMethod.substring(lastInvokedMethod.lastIndexOf('.') + 1))) {
+			//				methodInvocation = methodInvocation;// + "\nreturn " + instanceName + ";";
+			//			}
 		}
 		// Static method call
 		else if (currentInvokedMethod.toString().contains("getInstance")) {
 			currentInvokedMethod = new StringBuilder(currentInvokedMethod.substring(currentInvokedMethod.lastIndexOf("=") + 1).trim());
 			methodInvocation = className + " " + instanceName + " = " + simpleName + "." + currentInvokedMethod;
 
-//			if (methodName.equals(lastInvokedMethod.substring(lastInvokedMethod.lastIndexOf('.') + 1))) {
-//				methodInvocation = methodInvocation; // + "\nreturn " + instanceName + ";";
-//			}
+			//			if (methodName.equals(lastInvokedMethod.substring(lastInvokedMethod.lastIndexOf('.') + 1))) {
+			//				methodInvocation = methodInvocation; // + "\nreturn " + instanceName + ";";
+			//			}
 		}
 		// 3. Instance method call
 		else {
@@ -667,7 +668,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 
 		// Replace parameters by values that are defined in the previous step
 		// ################################################################
-		return replaceParameterByValue(rule.getClassName(), useMethod.getDeclaredVariables(), parameters, methodInvocation, imports);
+		return replaceParameterByValue(rule, useMethod, parameters, methodInvocation, imports);
 	}
 
 	/**
@@ -743,7 +744,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 	/**
 	 * Replaces parameter names in method invocations by a value. This value is derived by constraints.
 	 * 
-	 * @param className
+	 * @param rule
 	 * 
 	 * @param parametersOfCall
 	 *        All available parameters.
@@ -758,7 +759,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 	 * 
 	 * @return New method invocation as string (parameter names are replaces by values)
 	 */
-	private Entry<String, List<Entry<String, String>>> replaceParameterByValue(String className, List<Entry<String, String>> declaredVariables, List<Entry<String, String>> parametersOfCall, String currentInvokedMethod, List<String> imports) {
+	private Entry<String, List<Entry<String, String>>> replaceParameterByValue(CodeGenCrySLRule rule, GeneratorMethod useMethod, List<Entry<String, String>> parametersOfCall, String currentInvokedMethod, List<String> imports) {
 
 		// Split current method invocation "variable = method(method parameter)" in:
 		// 1. variable = method
@@ -768,13 +769,15 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		String methodParameter = currentInvokedMethod.substring(currentInvokedMethod.indexOf("("), currentInvokedMethod.indexOf(")"));
 		String appendix = currentInvokedMethod.substring(currentInvokedMethod.indexOf(")"), currentInvokedMethod.length());
 		List<Entry<String, String>> parametersOfUseMethod = new ArrayList<Entry<String, String>>();
-
+		List<Entry<String, String>> declaredVariables = useMethod.getDeclaredVariables();
+		
 		for (Entry<String, String> parameter : parametersOfCall) {
-			Optional<Entry<CryptSLPredicate, Entry<CryptSLRule, CryptSLRule>>> entry = predicateConnections.stream()
-				.filter(e -> Utils.isSubType(e.getValue().getValue().getClassName(), className) || Utils.isSubType(className, e.getValue().getValue().getClassName())).findFirst();
+			Optional<Entry<CryptSLPredicate, Entry<CryptSLRule, CryptSLRule>>> entry = predicateConnections.stream().filter(
+				e -> Utils.isSubType(e.getValue().getValue().getClassName(), rule.getClassName()) || Utils.isSubType(rule.getClassName(), e.getValue().getValue().getClassName()))
+				.findFirst();
 			CryptSLObject cryptSLObject = null;
 			if (entry.isPresent()) {
-//				String reqClassName = entry.get().getValue().getKey().getClassName();
+				//				String reqClassName = entry.get().getValue().getKey().getClassName();
 				cryptSLObject = (CryptSLObject) entry.get().getKey().getParameters().get(0);//methToReturnValue.get("useCogniCrypt" + reqClassName.substring(reqClassName.lastIndexOf('.') + 1));
 			}
 
@@ -809,23 +812,39 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 					value = value + "\"";
 					methodParameter = methodParameter.replace(parameter.getKey(), value);
 				}
-			} else {
-				if (!declaredVariables.contains(parameter)) {
-					Optional<Entry<String, String>> typeMatch = declaredVariables.stream()
-						.filter(e -> Utils.isSubType(e.getValue(), parameter.getValue()) || Utils.isSubType(parameter.getValue(), e.getValue())).findFirst();
-					if (typeMatch.isPresent()) {
+			} else if (!declaredVariables.contains(parameter)) {
+				int index = useMethod.getNumberOfVariablesInTemplate();
+				List<Entry<String, String>> tmpVariables = new ArrayList<>(declaredVariables.subList(0, index));
+				List<Entry<String, String>> declVariables = declaredVariables.subList(index, declaredVariables.size());
+				Collections.reverse(declVariables);
+				tmpVariables.addAll(declVariables);
 
-						if (toBeEnsuredPred != null) {
-							CryptSLPredicate existing = toBeEnsuredPred.getKey();
-							List<ICryptSLPredicateParameter> parameters = new ArrayList<ICryptSLPredicateParameter>();
-							for (ICryptSLPredicateParameter obj : existing.getParameters()) {
-								CryptSLObject par = ((CryptSLObject) obj);
-								parameters.add(new CryptSLObject(typeMatch.get().getKey(), par.getJavaType(), par.getSplitter()));
-							}
-							toBeEnsuredPred = new SimpleEntry<CryptSLPredicate, Entry<CryptSLRule, CryptSLRule>>(new CryptSLPredicate(existing.getBaseObject(), existing
-								.getPredName(), parameters, existing.isNegated(), existing.getConstraint()), toBeEnsuredPred.getValue());
+				Optional<Entry<String, String>> typeMatch = tmpVariables.stream()
+					.filter(e -> Utils.isSubType(e.getValue(), parameter.getValue()) || Utils.isSubType(parameter.getValue(), e.getValue())).findFirst();
+				if (typeMatch.isPresent()) {
+
+					if (toBeEnsuredPred != null) {
+						CryptSLPredicate existing = toBeEnsuredPred.getKey();
+						List<ICryptSLPredicateParameter> parameters = new ArrayList<ICryptSLPredicateParameter>();
+						for (ICryptSLPredicateParameter obj : existing.getParameters()) {
+							CryptSLObject par = ((CryptSLObject) obj);
+							parameters.add(new CryptSLObject(typeMatch.get().getKey(), par.getJavaType(), par.getSplitter()));
 						}
-						methodParameter = methodParameter.replace(parameter.getKey(), typeMatch.get().getKey());
+						toBeEnsuredPred = new SimpleEntry<CryptSLPredicate, Entry<CryptSLRule, CryptSLRule>>(new CryptSLPredicate(existing.getBaseObject(), existing
+							.getPredName(), parameters, existing.isNegated(), existing.getConstraint()), toBeEnsuredPred.getValue());
+
+						Optional<CryptSLObject> parMatch = rule.getRequiredPars().parallelStream().filter(e -> Utils.isSubType(e.getJavaType(), parameter.getValue())).findFirst();
+						if (parMatch.isPresent()) {
+							methodParameter = methodParameter.replace(parameter.getKey(), parMatch.get().getVarName());
+							continue;
+						}
+					}
+					methodParameter = methodParameter.replace(parameter.getKey(), typeMatch.get().getKey());
+				} else {
+					Optional<CryptSLObject> parMatch = rule.getRequiredPars().parallelStream().filter(e -> Utils.isSubType(e.getJavaType(), parameter.getValue())).findFirst();
+					if (parMatch.isPresent()) {
+						methodParameter = methodParameter.replace(parameter.getKey(), parMatch.get().getVarName());
+						continue;
 					} else {
 						parametersOfUseMethod.add(parameter);
 						if (parameter.getValue().contains(".")) {

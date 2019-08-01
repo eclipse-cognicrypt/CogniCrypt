@@ -18,6 +18,7 @@ public class GeneratorMethod {
 	private StringBuilder body;
 	private List<Entry<String, String>> variableDeclarations;
 	private StringBuilder killStatements;
+	private int templateVariables;
 
 	public GeneratorMethod() {
 		body = new StringBuilder();
@@ -66,7 +67,10 @@ public class GeneratorMethod {
 		if ((index = statement.indexOf('=')) > 0) {
 			String[] varDecl = statement.substring(0, index).split(" ");
 			if (varDecl.length == 2) {
-				variableDeclarations.add(new SimpleEntry<>(varDecl[1], varDecl[0]));
+				SimpleEntry<String, String> newVar = new SimpleEntry<>(varDecl[1], varDecl[0]);
+				if (!variableDeclarations.contains(newVar)) {
+					variableDeclarations.add(newVar);
+				}
 			}
 		}
 		body.append("\n");
@@ -148,6 +152,14 @@ public class GeneratorMethod {
 
 	public void clearBody() {
 		this.body.setLength(0);
+	}
+	
+	public void setNumberOfVariablesInTemplate(int number) {
+		templateVariables = number;
+	}
+	
+	public int getNumberOfVariablesInTemplate() {
+		return templateVariables;
 	}
 
 }

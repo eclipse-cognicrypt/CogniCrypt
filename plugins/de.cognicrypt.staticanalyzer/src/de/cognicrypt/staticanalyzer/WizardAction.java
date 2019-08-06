@@ -58,12 +58,11 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	 */
 	@Override
 	public void run(final IAction action) {
-		final Boolean dependencyAnalyser = false;
 		final AnalysisKickOff akf = new AnalysisKickOff();
 		IProject ip = Utils.getCurrentlySelectedIProject();
 		final IJavaElement iJavaElement = JavaCore.create(ip);
 		akf.setUp(iJavaElement);
-		akf.run(dependencyAnalyser);
+		akf.run();
 	}
 
 	/**

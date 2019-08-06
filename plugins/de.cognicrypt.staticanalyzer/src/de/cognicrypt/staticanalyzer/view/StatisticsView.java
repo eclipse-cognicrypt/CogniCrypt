@@ -80,10 +80,9 @@ public class StatisticsView extends ViewPart {
 		reRunButton.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				final Boolean dependencyAnalyser = false;
 				final AnalysisKickOff runningAnalysis = new AnalysisKickOff();
 				runningAnalysis.setUp(JavaCore.create(lastProject));
-				runningAnalysis.run(dependencyAnalyser);
+				runningAnalysis.run();
 				resultsEnabled = true;
 			}
 			

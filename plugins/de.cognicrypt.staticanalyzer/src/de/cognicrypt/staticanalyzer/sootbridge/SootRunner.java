@@ -71,6 +71,8 @@ import soot.jimple.toolkits.ide.icfg.JimpleBasedInterproceduralCFG;
  */
 public class SootRunner {
 
+	final Boolean depValue = false;
+	
 	private static SceneTransformer createAnalysisTransformer(final ResultsCCUIListener resultsReporter) {
 		return new SceneTransformer() {
 
@@ -112,6 +114,7 @@ public class SootRunner {
 
 
 	public static boolean runSoot(final IJavaProject project, final ResultsCCUIListener resultsReporter, final Boolean dependencyAnalyser) {
+		
 		G.reset();
 		setSootOptions(project, dependencyAnalyser);
 		registerTransformers(resultsReporter);
@@ -137,14 +140,13 @@ public class SootRunner {
 	}
 
 	private static void setSootOptions(final IJavaProject project, final Boolean dependencyAnalyser) {
-//		Options.v().set_soot_classpath(getSootClasspath(project)); // to jars files
-//		Options.v().set_process_dir(Lists.newArrayList(applicationClassPath(project))); // jar files too 
+
 		if (dependencyAnalyser == true) {
-			Options.v().set_soot_classpath(Joiner.on(File.pathSeparator).join(libraryClassPath(project))); // to jars files
-			Options.v().set_process_dir(Lists.newArrayList(libraryClassPath(project)));
+			Options.v().set_soot_classpath(Joiner.on(File.pathSeparator).join(libraryClassPath(project, dependencyAnalyser))); 
+			Options.v().set_process_dir(Lists.newArrayList(libraryClassPath(project, dependencyAnalyser)));
 		}else {
-			Options.v().set_soot_classpath(getSootClasspath(project)); // to jars files
-			Options.v().set_process_dir(Lists.newArrayList(applicationClassPath(project))); // jar files too 
+			Options.v().set_soot_classpath(getSootClasspath(project, dependencyAnalyser)); 
+			Options.v().set_process_dir(Lists.newArrayList(applicationClassPath(project))); 
 		}
 		Options.v().set_keep_line_number(true);
 		Options.v().set_prepend_classpath(true);
@@ -196,10 +198,10 @@ public class SootRunner {
 		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(resultsReporter)));
 	}
 
-	private static String getSootClasspath(final IJavaProject javaProject) {
+	private static String getSootClasspath(final IJavaProject javaProject, final Boolean dependencyAnalyser) {
 		
 		Collection<String> applicationClassPath = applicationClassPath(javaProject);
-		Collection<String> libraryClassPath = libraryClassPath(javaProject);
+		Collection<String> libraryClassPath = libraryClassPath(javaProject, dependencyAnalyser);
 		
 		libraryClassPath.addAll(applicationClassPath);
 		System.out.println(Joiner.on(File.pathSeparator).join(libraryClassPath));
@@ -212,20 +214,20 @@ public class SootRunner {
 			final List<String> urls = new ArrayList<>();
 			final URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
 			urls.add(new File(uriString).getAbsolutePath());
-//			System.out.println("URLS IS: " + urls);
 			return urls;
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e, "Error building project classpath");
 			return Lists.newArrayList();
 		}
 	}
-	private static Collection<String> libraryClassPath(IJavaProject project) {
+	private static Collection<String> libraryClassPath(IJavaProject project, Boolean dependencyAnalyser) {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		
 		Collection<String> libraryClassPath = Sets.newHashSet();
 		IClasspathEntry[] rentries;
 		try {
-			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) == true) {
+			// check if "include dependencies" checkbox is checked in preference page, or it was triggered from 
+			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) == true || dependencyAnalyser == true) {
 
 				rentries = project.getRawClasspath();
 				for (IClasspathEntry entry : rentries) {
@@ -235,36 +237,8 @@ public class SootRunner {
 		} catch (CoreException e1) {
 			e1.printStackTrace();
 		}
-		System.out.println("libraryClassPath is: " + libraryClassPath);
+//		System.out.println("libraryClassPath is: " + libraryClassPath);
 		return libraryClassPath;
-	}
-
-	private static Collection<String> dependenciesClassPath(final IJavaProject javaProject) {
-//		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-//		Object oldHashDependencyObject;
-		try {
-
-			final List<String> depUrls = new ArrayList<>();
-//			final List<String> projectDependencies = new ArrayList<>();
-
-			final IClasspathEntry[] resolvedClasspath = javaProject.getResolvedClasspath(true);
-			for (IClasspathEntry classpathEntry : resolvedClasspath) {
-				System.out.println("dependencies:" + classpathEntry.getPath().makeAbsolute().toFile().getCanonicalFile().toURL());
-			}
-
-//			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) == true) {
-//
-//				if (projectDependencies != null) {
-//					depUrls.addAll(projectDependencies);
-//				}
-//			}
-			System.out.println("CLASSPATH IS: " + depUrls);
-			return depUrls;
-		} catch (final Exception e) {
-			Activator.getDefault().logError(e, "Error building project dependencies classpath");
-			return Lists.newArrayList();
-		}
-
 	}
 	
 	private static void resolveClassPathEntry(IClasspathEntry entry, Collection<String> libraryClassPath, IJavaProject project) {

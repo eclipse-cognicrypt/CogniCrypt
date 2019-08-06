@@ -30,6 +30,12 @@ public class AnalysisKickOff {
 
 	private static ResultsCCUIListener resultsReporter;
 	private IJavaProject curProj;
+	private boolean depVariable = false;
+
+	
+	public void setDepValue(final Boolean dependencyAnalyser) {
+		this.depVariable = dependencyAnalyser;
+	}
 
 	/**
 	 * This method sets up the analysis by <br>
@@ -42,6 +48,7 @@ public class AnalysisKickOff {
 	 * @throws CoreException
 	 */
 	public boolean setUp(final IJavaElement iJavaElement) {
+		
 		IProject ip = null;
 		if (iJavaElement == null) {
 			ip = Utils.getCurrentProject();
@@ -62,7 +69,9 @@ public class AnalysisKickOff {
 		if (AnalysisKickOff.resultsReporter == null) {
 			AnalysisKickOff.resultsReporter = ResultsCCUIListener.createListener(ip);
 		}
-
+		if (this.depVariable)
+			resultsReporter.setDepValue(depVariable);
+		
 		resultsReporter.getMarkerGenerator().clearMarkers(ip);
 		try {
 			if (ip == null || (!ip.hasNature(JavaCore.NATURE_ID))) {
@@ -87,7 +96,7 @@ public class AnalysisKickOff {
 	 * This method executes the actual analysis.
 	 *
 	 */
-	public void run(final Boolean dependencyAnalyser) {
+	public void run() {
 		if(this.curProj == null)
 			return;
 		if (Utils.checkJavaVersion()) {
@@ -99,7 +108,7 @@ public class AnalysisKickOff {
 			@SuppressWarnings("deprecation")
 			@Override
 			protected IStatus run(final IProgressMonitor monitor) {
-				final SootThread sootThread = new SootThread(AnalysisKickOff.this.curProj, AnalysisKickOff.resultsReporter, dependencyAnalyser);
+				final SootThread sootThread = new SootThread(AnalysisKickOff.this.curProj, AnalysisKickOff.resultsReporter, depVariable);
 				sootThread.start();
 				while (sootThread.isAlive()) {
 					try {

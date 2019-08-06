@@ -100,12 +100,17 @@ public class AnalysisKickOff {
 			protected IStatus run(final IProgressMonitor monitor) {
 				final SootThread sootThread = new SootThread(AnalysisKickOff.this.curProj, AnalysisKickOff.resultsReporter);
 				sootThread.start();
+				final MonitorReporter monitorThread = new MonitorReporter(AnalysisKickOff.resultsReporter, sootThread);
+				monitorThread.start();
+				monitor.beginTask(Constants.ANALYSIS_LABEL, 100);
 				while (sootThread.isAlive()) {
-					try {
+					/*try {
 						Thread.sleep(500);
 					}
 					
-					catch (final InterruptedException e) {}
+					catch (final InterruptedException e) {}*/
+					monitor.setTaskName("Completed "+monitorThread.getProcessedSeeds()+" of "+monitorThread.getTotalSeeds()+" seeds.");
+					monitor.worked(monitorThread.getWorkUnitsCompleted());
 
 					if (monitor.isCanceled()) {
 						sootThread.stop();
@@ -114,6 +119,10 @@ public class AnalysisKickOff {
 					}
 
 				}
+				monitor.done();
+				AnalysisKickOff.resultsReporter.setPercentCompleted(0);
+				AnalysisKickOff.resultsReporter.setProcessedSeeds(0);
+				AnalysisKickOff.resultsReporter.setTotalSeeds(0);
 				if (sootThread.isSucc()) {
 					Activator.getDefault().logInfo("Static analysis job successfully terminated for "+ curProj.getElementName() +".");
 					return Status.OK_STATUS;

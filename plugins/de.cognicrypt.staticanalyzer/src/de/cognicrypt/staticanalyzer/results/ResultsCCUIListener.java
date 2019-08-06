@@ -83,6 +83,37 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	private String warningFilePath;
 	private XMLParser xmlParser;
 	private static Stats stat;
+	
+	private int totalSeeds;
+	private int processedSeeds;
+
+	private int percentCompleted;
+
+
+	public int getPercentCompleted() {
+		return percentCompleted;
+	}
+
+	public void setPercentCompleted(int percentCompleted) {
+		this.percentCompleted = percentCompleted;
+	}
+
+	public int getTotalSeeds() {
+		return totalSeeds;
+	}
+
+	public void setTotalSeeds(int totalSeeds) {
+		this.totalSeeds = totalSeeds;
+	}
+
+	public int getProcessedSeeds() {
+		return processedSeeds;
+	}
+
+	public void setProcessedSeeds(int processedSeeds) {
+		this.processedSeeds = processedSeeds;
+	}
+
 
 	private ResultsCCUIListener(final IProject curProj, final ErrorMarkerGenerator gen) {
 		this.currentProject = curProj;
@@ -297,6 +328,16 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 	}
 
+	@Override
+	public void addProgress(final int processSeeds,final int workListsize)   {
+		processedSeeds = processSeeds;
+		totalSeeds = workListsize + processSeeds;
+		percentCompleted = (int) Math.round((float) processedSeeds * 100 / totalSeeds);
+		System.out.println("Completed "+processedSeeds+" of "+totalSeeds+" seeds.");
+		System.out.println("Percentage Completed: "+percentCompleted +"%");
+	}
+	
+	
 	@Override
 	public void onSeedTimeout(final sync.pds.solver.nodes.Node<Statement, Val> arg0) {
 		// Nothing

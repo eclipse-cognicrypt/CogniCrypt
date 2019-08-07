@@ -82,6 +82,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	private ArrayList<String> suppressedWarningIds;
 	private String warningFilePath;
 	private XMLParser xmlParser;
+	private Boolean depVariable = false;
 	private static Stats stat;
 
 	private ResultsCCUIListener(final IProject curProj, final ErrorMarkerGenerator gen) {
@@ -103,32 +104,32 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		return this.currentProject;
 	}
 
+	public void setDepValue(final Boolean dependencyAnalyser) {
+		this.depVariable = dependencyAnalyser;
+	}
+
 	@Override
 	public void reportError(final AbstractError error) {
 		final String errorMessage = error.toErrorMarkerString();
 		final Statement errorLocation = error.getErrorLocation();
 		IResource sourceFile = null;
-		final Boolean kilid = false;
-		if (kilid) {
-			sourceFile = unitToResource(errorLocation);			
+		System.out.println("this is depvar: " + this.depVariable);
+		if (this.depVariable) {
+			return;
 		}
-		
+		sourceFile = unitToResource(errorLocation);
 		final int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
 		
 		//Bugfix, to be removed https://github.com/eclipse-cognicrypt/CogniCrypt/issues/289
 		if(!errorLocation.getUnit().isPresent() || errorLocation.getUnit().get().getInvokeExpr() == null)
 			return;
-		if(sourceFile == null)
-			return;
-		
+
 		final CCStatement stmt = new CCStatement(errorLocation);
 		final int stmtId = stmt.hashCode();
 		
 		ICompilationUnit javaFile = (ICompilationUnit) JavaCore.create(sourceFile);
 		String className = "";
-		System.out.println("java is: " + javaFile);
 		try {
-			System.out.println("afterwards is: " + javaFile.getPackageDeclarations());
 			for (IPackageDeclaration decl : javaFile.getPackageDeclarations()) {
 				className += decl.getElementName() + ".";
 			}}
@@ -217,8 +218,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	@Override
 	public void onSecureObjectFound(final IAnalysisSeed secureObject) {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		final Boolean kilid = false;
-		if (store.getBoolean(Constants.SHOW_SECURE_OBJECTS) == false || kilid == false) {
+//		final Boolean kilid = false;
+		if (store.getBoolean(Constants.SHOW_SECURE_OBJECTS) == false || this.depVariable) {
 			return;
 		} else {
 			final Statement stmt = secureObject.stmt();

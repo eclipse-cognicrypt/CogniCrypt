@@ -36,9 +36,10 @@ public class RunAnalysisOnDependenciesHandler extends AbstractHandler{
 		}
 		final AnalysisKickOff akf = new AnalysisKickOff();
 //		IProject ip = Utils.getCurrentlySelectedIProject();
+		akf.setDepValue(dependencyAnalyser);
 		final IJavaElement iJavaElement = JavaCore.create(ip);
 		if (akf.setUp(iJavaElement)) {
-			akf.run(dependencyAnalyser);
+			akf.run();
 		}
 
 		return null;

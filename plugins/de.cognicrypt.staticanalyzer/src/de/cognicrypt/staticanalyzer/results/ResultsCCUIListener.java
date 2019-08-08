@@ -151,6 +151,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			errorInfoMap.put("predicate", ((RequiredPredicateError) error).getContradictedPredicate().getPredName());
 
 			int errorIndex = ((RequiredPredicateError) error).getExtractedValues().getCallSite().getIndex();
+			errorInfoMap.put("errorParamIndex", errorIndex+"");
 			if(errorLocation.getUnit().get().containsInvokeExpr()) {
 				InvokeExpr invoke = errorLocation.getUnit().get().getInvokeExpr();
 				String errorParam = invoke.getArg(errorIndex).toString();

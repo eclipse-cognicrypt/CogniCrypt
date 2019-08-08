@@ -38,10 +38,8 @@ import de.cognicrypt.utils.DeveloperProject;
 import de.cognicrypt.utils.Utils;
 import de.cognicrypt.staticanalyzer.utilities.QuickFixUtils;
 
-public class EnsuresPredicateFix implements IMarkerResolution{
+public class EnsuresPredicateFix implements IMarkerResolution {
 	private final String label;
-	private static String predicate;
-	private static String errorParamVarName;
 	private static final String INVOKE_METHOD_NAME = "ensuresPredicate";
 	private static final String INJAR_CLASS_NAME = "CC";
 	private static final String VARIABLE_DECLARATION_NAME = "cc";
@@ -57,16 +55,22 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 
 	@Override
 	public void run(final IMarker marker) {
-		
+
 		DeveloperProject devProject = new DeveloperProject(marker.getResource().getProject());
 		ICompilationUnit sourceUnit = null;
+
+		String errorVarName = "";
+		int errorVarIndex = 0;
+		String predicate = "";
 		int lineNumber = 0;
 
 		try {
 			sourceUnit = QuickFixUtils.getCompilationUnitFromMarker(marker);
 			if (devProject.isMavenProject()) {
-				 devProject.addMavenDependency(Constants.PREDICATEENSURER_GROUPID, Constants.PREDICATEENSURER_ARTIFACTID, Constants.PREDICATEENSURER_VERSION);
-				 devProject.execMaven(new String[] {Constants.MVN_ECLIPSE_COMMAND + " " + Constants.MVN_SKIPTESTS_COMMAND});
+				devProject.addMavenDependency(Constants.PREDICATEENSURER_GROUPID, Constants.PREDICATEENSURER_ARTIFACTID,
+						Constants.PREDICATEENSURER_VERSION);
+				devProject.execMaven(
+						new String[] { Constants.MVN_ECLIPSE_COMMAND + " " + Constants.MVN_SKIPTESTS_COMMAND });
 
 			} else {
 				QuickFixUtils.addAdditionalFiles("resources/Predicate", "de.cognicrypt.staticanalyzer", devProject);
@@ -76,8 +80,10 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 				QuickFixUtils.insertJarImport(sourceUnit, Constants.PREDICATEENSURER_JAR_IMPORT);
 			}
 			lineNumber = (int) marker.getAttribute(IMarker.LINE_NUMBER);
-			EnsuresPredicateFix.predicate = (String) marker.getAttribute("predicate");
-			EnsuresPredicateFix.errorParamVarName = (String) marker.getAttribute("errorParam");
+			predicate = (String) marker.getAttribute("predicate");
+			errorVarName = (String) marker.getAttribute("errorParam");
+			errorVarIndex = (int) marker.getAttribute("errorParam");
+
 
 		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
@@ -87,15 +93,17 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setSource(sourceUnit);
 		final CompilationUnit unit = (CompilationUnit) parser.createAST(null);
-		unit.accept(new ErrorSourceVisitor(lineNumber, unit, sourceUnit));
-		
+		unit.accept(new ErrorSourceVisitor(unit, sourceUnit, errorVarName, errorVarIndex ,lineNumber, predicate));
+
 		final SuppressWarningFix tempFix = new SuppressWarningFix("");
 		tempFix.run(marker);
-		Utils.getCurrentlyOpenEditor().doSave(null);		
+		Utils.getCurrentlyOpenEditor().doSave(null);
 	}
 
 	/**
-	 * This method creates and inserts the ensuresPredicate(predicate, errorVar) in the code
+	 * This method creates and inserts the ensuresPredicate(predicate, errorVar) in
+	 * the code
+	 * 
 	 * @param node
 	 * @param unit
 	 * @param sourceUnit
@@ -105,14 +113,20 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 	 * @throws BadLocationException
 	 */
 	private static void addMethodEnsuresPredicate(final ASTNode node, final CompilationUnit unit,
-			final ICompilationUnit sourceUnit)
+			final ICompilationUnit sourceUnit, final String varName,final int varIndex, final String predicate)
 			throws JavaModelException, IllegalArgumentException, MalformedTreeException, BadLocationException {
 
 		final AST ast = unit.getAST();
 		final ASTRewrite rewriter = ASTRewrite.create(ast);
-		final MethodInvocation ePInvocation = createEnsuresPredicateInvocation(ast);
+		final MethodInvocation ePInvocation = createEnsuresPredicateInvocation(ast, varName, predicate);
 
 		if (node.getNodeType() == ASTNode.METHOD_INVOCATION || node.getNodeType() == ASTNode.CLASS_INSTANCE_CREATION) {
+			
+			
+			if(varName.startsWith("varReplacer")) {
+				encloseValue((MethodInvocation) node);
+			}
+			
 			final MethodDeclaration parentMethod = getMethodDeclarationParentNode(node);
 			final Statement ePStatement = ast.newExpressionStatement(ePInvocation);
 			final ListRewrite listRewrite = rewriter.getListRewrite(parentMethod.getBody(), Block.STATEMENTS_PROPERTY);
@@ -147,10 +161,16 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 		sourceUnit.getBuffer().setContents(document.get());
 	}
 
-
+	private static void encloseValue(MethodInvocation methodInvoc) {
+		
+		//TODO
+	}
+	
+	
 	/**
 	 * This method determines the next {@link MethodDeclaration} parent node
-	 * @param targetNode 
+	 * 
+	 * @param targetNode
 	 * @return MethodDeclaration parent node
 	 */
 	private static MethodDeclaration getMethodDeclarationParentNode(final ASTNode targetNode) {
@@ -172,10 +192,14 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 
 	/**
 	 * This method builds a {@link FieldDeclaration} object
-	 * @param ast - current ast
+	 * 
+	 * @param ast
+	 *            - current ast
 	 * @param fragment
-	 * @param type - i.e. PrimitiveType.BOOLEAN
-	 * @param modifier - i.e. Modifier.PRIVATE
+	 * @param type
+	 *            - i.e. PrimitiveType.BOOLEAN
+	 * @param modifier
+	 *            - i.e. Modifier.PRIVATE
 	 * @return
 	 */
 	private static FieldDeclaration createFieldDeclaration(final AST ast, final VariableDeclarationFragment fragment,
@@ -188,8 +212,11 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 
 	/**
 	 * This method builds a {@link VariableDeclarationFragment} object
-	 * @param ast - current ast
-	 * @param variableName - declaration variable
+	 * 
+	 * @param ast
+	 *            - current ast
+	 * @param variableName
+	 *            - declaration variable
 	 * @return VariableDeclarationFragment obj
 	 */
 	private static VariableDeclarationFragment createVariableDeclarationFragment(final AST ast,
@@ -202,17 +229,20 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 
 	/**
 	 * This method builds a {@link MethodInvocation} object
-	 * @param ast - current ast
-	 * @param errorVarName - error variable name
+	 * 
+	 * @param ast
+	 *            - current ast
+	 * @param errorVarName
+	 *            - error variable name
 	 * @return ensuresPredicate(predicate, errorVarName) MethodInvocation
 	 */
-	private static MethodInvocation createEnsuresPredicateInvocation(final AST ast) {
+	private static MethodInvocation createEnsuresPredicateInvocation(final AST ast, String varName, String predicate) {
 		final Name cc = ast.newName(INJAR_CLASS_NAME);
 		final MethodInvocation newInvocation = ast.newMethodInvocation();
 		newInvocation.setExpression(cc);
 		newInvocation.setName(ast.newSimpleName(INVOKE_METHOD_NAME));
 		final StringLiteral literalVar = ast.newStringLiteral();
-		literalVar.setLiteralValue(errorParamVarName);
+		literalVar.setLiteralValue(varName);
 		final StringLiteral literalPredicate = ast.newStringLiteral();
 		literalPredicate.setLiteralValue(predicate);
 		newInvocation.arguments().add(literalVar);
@@ -222,12 +252,19 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 
 	private static class ErrorSourceVisitor extends ASTVisitor {
 
+		private final String varName;
+		private final int errorVarIndex;
+		private final String predicate;
 		private final int lineNumber;
 		private final CompilationUnit unit;
 		private final ICompilationUnit sourceUnit;
 		private boolean sourceFound = false;
 
-		public ErrorSourceVisitor(final int lineNumber, final CompilationUnit unit, final ICompilationUnit sourceUnit) {
+		public ErrorSourceVisitor(final CompilationUnit unit, final ICompilationUnit sourceUnit, final String varName, final int errorVarIndex,
+				final int lineNumber, final String predicate) {
+			this.varName = varName;
+			this.errorVarIndex = errorVarIndex;
+			this.predicate = predicate;
 			this.lineNumber = lineNumber;
 			this.unit = unit;
 			this.sourceUnit = sourceUnit;
@@ -239,7 +276,7 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 				if (this.lineNumber == this.unit.getLineNumber(node.getStartPosition())) {
 					try {
 						this.sourceFound = true;
-						addMethodEnsuresPredicate(node, this.unit, this.sourceUnit);
+						addMethodEnsuresPredicate(node, this.unit, this.sourceUnit, this.varName, this.errorVarIndex ,this.predicate);
 						return false;
 					} catch (JavaModelException | IllegalArgumentException | MalformedTreeException
 							| BadLocationException e) {
@@ -261,7 +298,7 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 				if (this.lineNumber == this.unit.getLineNumber(node.getStartPosition())) {
 					try {
 						this.sourceFound = true;
-						addMethodEnsuresPredicate(node, this.unit, this.sourceUnit);
+						addMethodEnsuresPredicate(node, this.unit, this.sourceUnit, this.varName, this.errorVarIndex ,this.predicate);
 						return false;
 					} catch (JavaModelException | IllegalArgumentException | MalformedTreeException
 							| BadLocationException e) {
@@ -283,7 +320,7 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 				if (this.lineNumber == this.unit.getLineNumber(node.getStartPosition())) {
 					try {
 						this.sourceFound = true;
-						addMethodEnsuresPredicate(node, this.unit, this.sourceUnit);
+						addMethodEnsuresPredicate(node, this.unit, this.sourceUnit, this.varName, this.errorVarIndex ,this.predicate);
 						return false;
 					} catch (JavaModelException | IllegalArgumentException | MalformedTreeException
 							| BadLocationException e) {

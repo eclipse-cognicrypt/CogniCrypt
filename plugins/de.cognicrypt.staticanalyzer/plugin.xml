@@ -183,6 +183,7 @@
        <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
        <attribute name = "predicate"></attribute>
        <attribute name = "errorParam"></attribute>
+       <attribute name = "errorParamIndex"></attribute>
        <persistent value="false"></persistent>
     </extension>
     <extension

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -38,9 +39,11 @@ import org.eclipse.xtext.common.types.access.jdt.IJavaProjectProvider;
 import org.eclipse.xtext.common.types.access.jdt.JdtTypeProviderFactory;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Injector;
+
 import crypto.interfaces.ICryptSLPredicateParameter;
 import crypto.interfaces.ISLConstraint;
 import crypto.rules.CryptSLArithmeticConstraint;
@@ -91,8 +94,8 @@ import de.darmstadt.tu.crossing.cryptSL.ObjectDecl;
 import de.darmstadt.tu.crossing.cryptSL.Order;
 import de.darmstadt.tu.crossing.cryptSL.PreDefinedPredicates;
 import de.darmstadt.tu.crossing.cryptSL.Pred;
+import de.darmstadt.tu.crossing.cryptSL.PredLit;
 import de.darmstadt.tu.crossing.cryptSL.ReqPred;
-import de.darmstadt.tu.crossing.cryptSL.ReqPredLit;
 import de.darmstadt.tu.crossing.cryptSL.SimpleOrder;
 import de.darmstadt.tu.crossing.cryptSL.SuPar;
 import de.darmstadt.tu.crossing.cryptSL.SuParList;
@@ -312,7 +315,7 @@ public class CrySLModelReader {
 
 	private CryptSLPredicate extractReqPred(final ReqPred pred) {
 		final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
-		ReqPredLit innerPred = (ReqPredLit) pred;
+		PredLit innerPred = (PredLit) pred;
 		final Constraint conditional = innerPred.getCons();
 		if (innerPred.getPred().getParList() != null) {
 			for (final SuPar var : innerPred.getPred().getParList().getParameters()) {
@@ -555,7 +558,7 @@ public class CrySLModelReader {
 				}
 			}
 			final String meth = pred.getPredName();
-			final SuperType cond = pred.getLabelCond();
+			final SuperType cond = null; //pred
 			if (cond == null) {
 				preds.put(new ParEqualsPredicate(null, meth, variables, true), null);
 			} else {
@@ -625,7 +628,8 @@ public class CrySLModelReader {
 	private Map<? extends ParEqualsPredicate, ? extends SuperType> getPredicates(final List<Constraint> predList) {
 		final Map<ParEqualsPredicate, SuperType> preds = new HashMap<>();
 		for (final Constraint cons : predList) {
-			final Pred pred = (Pred) cons;
+			final Pred pred = (Pred) cons.getPredLit();
+			
 			String curClass = ((DomainmodelImpl) cons.eContainer().eContainer()).getJavaType().getQualifiedName();
 			final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
 
@@ -652,7 +656,7 @@ public class CrySLModelReader {
 				}
 			}
 			final String meth = pred.getPredName();
-			final SuperType cond = pred.getLabelCond();
+			final SuperType cond = cons.getLabelCond(); // pred.getLabelCond();
 			if (cond == null) {
 				preds.put(new ParEqualsPredicate(null, meth, variables, false), null);
 			} else {

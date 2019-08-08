@@ -2,6 +2,7 @@ package de.cognicrypt.codegenerator.generator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import crypto.interfaces.ISLConstraint;
@@ -14,20 +15,19 @@ import crypto.rules.StateMachineGraph;
 
 public class CodeGenCrySLRule extends CryptSLRule {
 
-
 	private static final long serialVersionUID = -7488186084564628280L;
 	private List<CryptSLMethod> requiredMethods;
-	private List<CryptSLObject> requiredPars;
+	private List<CodeGenCrySLObject> requiredPars;
 	private CryptSLObject requiredRetObj;
 	
-	public CodeGenCrySLRule(String _className, List<Entry<String, String>> defObjects, List<CryptSLForbiddenMethod> _forbiddenMethods, StateMachineGraph _usagePattern, List<ISLConstraint> _constraints, List<CryptSLPredicate> _predicates, List<CryptSLObject> reqPars, CryptSLObject reqRet) {
+	public CodeGenCrySLRule(String _className, List<Entry<String, String>> defObjects, List<CryptSLForbiddenMethod> _forbiddenMethods, StateMachineGraph _usagePattern, List<ISLConstraint> _constraints, List<CryptSLPredicate> _predicates, List<CodeGenCrySLObject> pars, CryptSLObject reqRet) {
 		super(_className, defObjects, _forbiddenMethods, _usagePattern, _constraints, _predicates);
-		requiredPars = reqPars;
+		requiredPars = pars;
 		requiredRetObj = reqRet;
 	}
 	
-	public CodeGenCrySLRule(CryptSLRule rule, List<CryptSLObject> reqPars, CryptSLObject reqRet) {
-		this(rule.getClassName(), rule.getObjects(), rule.getForbiddenMethods(), rule.getUsagePattern(), rule.getConstraints(), rule.getPredicates(), reqPars, reqRet);
+	public CodeGenCrySLRule(CryptSLRule rule, List<CodeGenCrySLObject> pars, CryptSLObject reqRet) {
+		this(rule.getClassName(), rule.getObjects(), rule.getForbiddenMethods(), rule.getUsagePattern(), rule.getConstraints(), rule.getPredicates(), pars, reqRet);
 	}
 
 	public boolean addConstraint(ISLConstraint constraint) {
@@ -46,7 +46,7 @@ public class CodeGenCrySLRule extends CryptSLRule {
 	}
 
 	
-	public List<CryptSLObject> getRequiredPars() {
+	public List<CodeGenCrySLObject> getRequiredPars() {
 		return requiredPars;
 	}
 

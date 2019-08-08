@@ -8,12 +8,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeSet;
-import java.util.AbstractMap.SimpleEntry;
-
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.ui.texteditor.ITextEditor;
+import java.util.Set;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.core.Constants;
@@ -26,7 +21,7 @@ import de.cognicrypt.core.Constants;
  */
 public class CodeHandler {
 
-	private List<GeneratorClass> javaClasses;
+	private Set<GeneratorClass> javaClasses;
 	private List<File> classFiles;
 	private boolean isCodeCompiled = false;
 
@@ -36,7 +31,7 @@ public class CodeHandler {
 	 * @param generatedClasses
 	 *        Array of file objects that include java code
 	 */
-	public CodeHandler(List<GeneratorClass> generatedClasses) {
+	public CodeHandler(Set<GeneratorClass> generatedClasses) {
 		this.javaClasses = generatedClasses;
 		classFiles = new ArrayList<File>();
 	}

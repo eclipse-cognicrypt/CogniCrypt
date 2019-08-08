@@ -19,7 +19,7 @@ public class CrySLCodeGenerator {
 		return this;
 	}
 
-	public CrySLCodeGenerator addParameter(Object par) {
+	public CrySLCodeGenerator addParameter(Object par, String methodName, int location) {
 		last.addParameter(par);
 		return this;
 	}

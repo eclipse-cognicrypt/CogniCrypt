@@ -19,6 +19,7 @@ public class GeneratorMethod {
 	private List<Entry<String, String>> variableDeclarations;
 	private StringBuilder killStatements;
 	private int templateVariables;
+	private List<CodeGenCrySLRule> cryslRules;
 
 	public GeneratorMethod() {
 		body = new StringBuilder();
@@ -141,7 +142,7 @@ public class GeneratorMethod {
 		}
 
 		method.append("{ \n");
-		method.append(body);
+		method.append(body.toString().replaceAll(",\\s+\\)", ")"));
 		method.append("\n}");
 		if (killStatements != null) {
 			return method.toString().replace("return ", killStatements.toString() + "\n return ");
@@ -162,4 +163,13 @@ public class GeneratorMethod {
 		return templateVariables;
 	}
 
+	public void setRules(List<CodeGenCrySLRule> rules) {
+		cryslRules = rules;
+	}
+
+	public List<CodeGenCrySLRule> getRules() {
+		return cryslRules;
+	}
+	
+	
 }

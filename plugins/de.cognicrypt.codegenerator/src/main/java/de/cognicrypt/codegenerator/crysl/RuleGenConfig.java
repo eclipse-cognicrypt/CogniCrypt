@@ -1,8 +1,6 @@
 package de.cognicrypt.codegenerator.crysl;
 import java.util.List;
 
-import crypto.rules.CryptSLRule;
-
 public class RuleGenConfig {
 
 	private String rule;

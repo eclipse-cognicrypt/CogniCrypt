@@ -1,5 +1,6 @@
 package de.cognicrypt.codegenerator.generator;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -23,6 +24,7 @@ import java.util.stream.Stream;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 
@@ -331,6 +333,14 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			Activator.getDefault().logError(e);
 		}
 
+		try {
+			insertCallCodeIntoFile(this.project.getProjectPath() + Constants.innerFileSeparator + this.project.getSourcePath() + Constants.CodeGenerationCallFile, true, false, false);
+			removeCryptoPackageIfEmpty();
+		} catch (CoreException | BadLocationException | IOException e) {
+			Activator.getDefault().logError(e);
+		}
+		
+		
 		return generatedClasses != null;
 	}
 

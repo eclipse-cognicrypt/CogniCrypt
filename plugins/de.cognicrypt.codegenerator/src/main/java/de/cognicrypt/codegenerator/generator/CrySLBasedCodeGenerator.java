@@ -59,7 +59,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 	/**
 	 * Hash table to store the values that are assigend to variables.
 	 */
-	Hashtable<String, String> parameterValues = new Hashtable<String, String>();
+	private static Hashtable<String, String> parameterValues = new Hashtable<String, String>();
 
 	/**
 	 * Contains the exceptions classes that are thrown by the generated code.
@@ -742,18 +742,18 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 						case g:
 						case ge:
 							try {
-								parameterValues.put(varName, String.valueOf(SecureRandom.getInstance("SHA1PRNG").nextInt(2 * value) + value));
+								parameterValues.putIfAbsent(varName, String.valueOf(SecureRandom.getInstance("SHA1PRNG").nextInt(2 * value) + value));
 							} catch (NoSuchAlgorithmException e1) {}
 							break;
 						case l:
 						case le:
 							try {
-								parameterValues.put(varName, String.valueOf(SecureRandom.getInstance("SHA1PRNG").nextInt(value)));
+								parameterValues.putIfAbsent(varName, String.valueOf(SecureRandom.getInstance("SHA1PRNG").nextInt(value)));
 							} catch (NoSuchAlgorithmException e) {}
 							break;
 						case neq:
 							try {
-								parameterValues.put(varName, String.valueOf(SecureRandom.getInstance("SHA1PRNG").nextInt(value - 1)));
+								parameterValues.putIfAbsent(varName, String.valueOf(SecureRandom.getInstance("SHA1PRNG").nextInt(value - 1)));
 							} catch (NoSuchAlgorithmException e) {}
 							break;
 						case eq:
@@ -934,9 +934,9 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 
 		if (!parameterValues.containsKey(parameterNameKey)) {
 			if ("transformation[0]".equals(parameterNameKey)) {
-				parameterValues.put("alg", cryptSLValueConstraint.getValueRange().get(0));
+				parameterValues.putIfAbsent("alg", cryptSLValueConstraint.getValueRange().get(0));
 			}
-			parameterValues.put(parameterNameKey, cryptSLValueConstraint.getValueRange().get(0));
+			parameterValues.putIfAbsent(parameterNameKey, cryptSLValueConstraint.getValueRange().get(0));
 		}
 
 		if (cryptSLValueConstraint.getValueRange().contains(parameterValues.get(parameterNameKey))) {

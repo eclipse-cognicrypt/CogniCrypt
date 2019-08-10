@@ -768,14 +768,18 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				if (comp.getLeft().getLeft() instanceof CryptSLObject && comp.getRight().getLeft() instanceof CryptSLObject) {
 					CryptSLObject left = (CryptSLObject) comp.getLeft().getLeft();
 					CryptSLObject right = (CryptSLObject) comp.getRight().getLeft();
-					int value;
+					int value = Integer.MIN_VALUE;
 					String varName = "";
 					try {
 						value = Integer.parseInt(left.getName());
 						varName = right.getVarName();
 					} catch (NumberFormatException ex) {
+						try {
 						value = Integer.parseInt(right.getName());
 						varName = left.getVarName();
+						} catch (NumberFormatException ex2) {
+							continue;
+						}
 					}
 
 					switch (comp.getOperator()) {

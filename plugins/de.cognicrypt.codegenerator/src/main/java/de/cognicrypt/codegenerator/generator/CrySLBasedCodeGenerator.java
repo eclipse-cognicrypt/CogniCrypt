@@ -198,19 +198,33 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				Optional<Entry<CryptSLPredicate, Entry<CryptSLRule, CryptSLRule>>> toBeEnsured = Optional.empty();
 
 				if (lastRule) {
+					CryptSLObject reqReturnObject = ((CodeGenCrySLRule) rule).getRequiredRetObj();
 					toBeEnsuredPred = null;
+					List<CryptSLPredicate> candidates = new ArrayList<CryptSLPredicate>();
 					for (CryptSLPredicate reqPred : rule.getPredicates()) {
-						CryptSLObject a = ((CodeGenCrySLRule) rule).getRequiredRetObj();
 						if (!(reqPred instanceof CryptSLCondPredicate)) {
-							Optional<ICryptSLPredicateParameter> o = reqPred.getParameters().stream()
-								.filter(
-									e -> Utils.isSubType(((CryptSLObject) e).getJavaType(), a.getJavaType()) || Utils.isSubType(a.getJavaType(), ((CryptSLObject) e).getJavaType()))
-								.findFirst();
-							if (o.isPresent()) {
-								toBeEnsuredPred = new SimpleEntry(reqPred, new SimpleEntry(rule, null));
-								break;
+							String parType = ((CryptSLObject) reqPred.getParameters().get(0)).getJavaType();
+							if (Utils.isSubType(parType, reqReturnObject.getJavaType()) || Utils.isSubType(reqReturnObject.getJavaType(), parType)) {
+								candidates.add(reqPred);
 							}
 						}
+					}
+					if (candidates.size() == 1) {
+						toBeEnsuredPred = new SimpleEntry(candidates.get(0), new SimpleEntry(rule, null));
+					} else if (candidates.size() > 1) {
+						Entry<CryptSLPredicate, Integer> candHD = null;
+						for (CryptSLPredicate candidate : candidates) {
+							String retName = reqReturnObject.getVarName();
+							String candName = ((CryptSLObject) candidate.getParameters().get(0)).getVarName();
+
+							if (candHD == null) {
+								candHD = new SimpleEntry<CryptSLPredicate, Integer>(candidate, getHD(retName, candName));
+							}
+							if (getHD(retName, candName) < candHD.getValue()) {
+								candHD = new SimpleEntry<CryptSLPredicate, Integer>(candidate, getHD(retName, candName));
+							}
+						}
+						toBeEnsuredPred = new SimpleEntry(candHD.getKey(), new SimpleEntry(rule, null));
 					}
 					if (toBeEnsuredPred == null) {
 						for (CryptSLPredicate reqPred : rule.getPredicates()) {
@@ -334,19 +348,33 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		}
 
 		try {
-			insertCallCodeIntoFile(this.project.getProjectPath() + Constants.innerFileSeparator + this.project.getSourcePath() + Constants.CodeGenerationCallFile, true, false, false);
+			insertCallCodeIntoFile(this.project.getProjectPath() + Constants.innerFileSeparator + this.project.getSourcePath() + Constants.CodeGenerationCallFile, true, false,
+				false);
 			removeCryptoPackageIfEmpty();
 		} catch (CoreException | BadLocationException | IOException e) {
 			Activator.getDefault().logError(e);
 		}
-		
-		
+
 		return generatedClasses != null;
+	}
+
+	private Integer getHD(String left, String right) {
+		int distance = 0;
+		int leftSize = left.length();
+		int rightSize = right.length();
+		for (int i = 0; i < (leftSize < rightSize ? leftSize : rightSize); i++) {
+			if (left.charAt(i) != right.charAt(i)) {
+				distance++;
+			}
+		}
+		distance += Math.abs(leftSize - rightSize);
+
+		return distance;
 	}
 
 	private void generateTemplateUsageBody(Set<GeneratorClass> generatedClasses, GeneratorMethod tmplUsage) {
 		for (GeneratorClass generatedClass : generatedClasses) {
-			
+
 			String className = generatedClass.getClassName();
 			tmplUsage.addStatementToBody(className + " " + className.toLowerCase() + " = new " + className + "();");
 
@@ -359,9 +387,9 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				String returnType = gen.getReturnType();
 				String varName = gen.getName() + "Res";
 				if (!"void".equals(returnType)) {
-					tmplUsage.addStatementToBody(returnType + " " + varName + " = "); 
+					tmplUsage.addStatementToBody(returnType + " " + varName + " = ");
 				}
-				
+
 				tmplUsage.addStatementToBody(className.toLowerCase() + "." + gen.getName() + "(");
 				for (Entry<String, String> par : gen.getParameters()) {
 					if (!declaredVariables.contains(par)) {
@@ -375,7 +403,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 							tmplUsage.addParameter(par);
 							declaredVariables.add(par);
 						}
-					} 
+					}
 					tmplUsage.addStatementToBody(par.getKey() + ", ");
 				}
 				tmplUsage.addStatementToBody(");");
@@ -441,8 +469,10 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 					if (found.contains(par)) {
 						continue;
 					}
-					if (Utils.isSubType(par.getJavaType(), e.getParameters().get(par.getPosition()).getValue()) || Utils
-						.isSubType(e.getParameters().get(par.getPosition()).getValue(), par.getJavaType())) {
+					List<Entry<String, String>> parameters = e.getParameters();
+					int parPos = par.getPosition();
+					if (parameters.size() > parPos && (Utils.isSubType(par.getJavaType(), parameters.get(parPos).getValue()) || Utils.isSubType(parameters.get(parPos).getValue(),
+						par.getJavaType()))) {
 						found.add(par);
 					}
 				}
@@ -806,6 +836,19 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		List<Entry<String, String>> declaredVariables = useMethod.getDeclaredVariables();
 
 		for (Entry<String, String> parameter : parametersOfCall) {
+			boolean inTemplate = false;
+			for (CodeGenCrySLObject par : rule.getRequiredPars()) {
+				if (methodNamdResultAssignment.endsWith(par.getMethod()) && 
+					(Utils.isSubType(par.getJavaType(), parameter.getValue()) || Utils.isSubType(parameter.getValue(), par.getJavaType()))) {
+					methodParameter = methodParameter.replace(parameter.getKey(), par.getVarName());
+					inTemplate = true;
+					break;
+				}
+			}
+			if (inTemplate) {
+				continue;
+			}
+			
 			Optional<Entry<CryptSLPredicate, Entry<CryptSLRule, CryptSLRule>>> entry = predicateConnections.stream().filter(
 				e -> Utils.isSubType(e.getValue().getValue().getClassName(), rule.getClassName()) || Utils.isSubType(rule.getClassName(), e.getValue().getValue().getClassName()))
 				.findFirst();

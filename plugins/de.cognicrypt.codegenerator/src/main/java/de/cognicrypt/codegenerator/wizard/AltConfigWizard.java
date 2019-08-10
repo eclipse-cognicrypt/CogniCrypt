@@ -228,7 +228,7 @@ public class AltConfigWizard extends Wizard {
 		IResource selectedFile = (IResource) currentPage.getSelectedResource().getFirstElement();
 
 		Map<String, String> taskCrySL = new HashMap<String, String>();
-		taskCrySL.put("Encryption", "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption");
+		taskCrySL.put("Encryption", "src/main/java/de/cognicrypt/codegenerator/crysl/templates/hybridencryption");
 		taskCrySL.put("SecurePassword", "src/main/java/de/cognicrypt/codegenerator/crysl/templates/passwordhashing");
 		taskCrySL.put("DigitalSignatures", "src/main/java/de/cognicrypt/codegenerator/crysl/templates/digitalsigning");
 		String taskName = selectedTask.getName();

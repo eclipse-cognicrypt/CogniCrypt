@@ -26,9 +26,10 @@ public class SecureEncryptor {
 		return keyPair;
 	}
 
-	public byte[] encryptSessionKey(javax.crypto.SecretKey sessionKey, java.security.PublicKey publicKey) throws GeneralSecurityException {
+	public byte[] encryptSessionKey(javax.crypto.SecretKey sessionKey, java.security.KeyPair keyPair) throws GeneralSecurityException {
 		byte[] wrappedKeyBytes = null;
 		int mode = Cipher.WRAP_MODE;
+		java.security.PublicKey publicKey = keyPair.getPublic();
 		CrySLCodeGenerator.getInstance().considerCrySLRule("javax.crypto.Cipher").addParameter(mode, "init", 0).addParameter(publicKey, "init", 1).addParameter(sessionKey, "wrap", 0).addReturnObject(wrappedKeyBytes).generate();
 		return wrappedKeyBytes;
 	}

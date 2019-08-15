@@ -1,5 +1,6 @@
 package de.cognicrypt.codegenerator.crysl.templates.digitalsigning;
 
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -12,24 +13,26 @@ import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
 public class Signer {
 	
-	public static KeyPair getKey() throws NoSuchAlgorithmException {
+	public static java.security.KeyPair getKey() throws NoSuchAlgorithmException {
 		java.security.KeyPair pair = null;
 		CrySLCodeGenerator.getInstance().considerCrySLRule("java.security.KeyPairGenerator").addReturnObject(pair).generate();
 		return pair;
 	}
 
-	public static byte[] sign(String msg, java.security.PrivateKey privKey)
+	public static byte[] sign(String msg, java.security.KeyPair keyPair)
 			throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-		byte[] msgBytes = msg.getBytes();
+		byte[] msgBytes = msg.getBytes(StandardCharsets.UTF_8);
 		byte[] res = null;
+		java.security.PrivateKey privKey = keyPair.getPrivate();
 		CrySLCodeGenerator.getInstance().considerCrySLRule("java.security.Signature").addParameter(privKey, "initSign", 0).addParameter(msgBytes, "update", 0).addReturnObject(res).generate();
 		return res;
 	}
 
-	public static boolean vfy(String msg, java.security.PublicKey pubKey)
+	public static boolean vfy(String msg, java.security.KeyPair keyPair)
 			throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
 		boolean res = false;
-		byte[] msgBytes = msg.getBytes();
+		byte[] msgBytes = msg.getBytes(StandardCharsets.UTF_8);
+		java.security.PublicKey pubKey = keyPair.getPublic();
 		CrySLCodeGenerator.getInstance().considerCrySLRule("java.security.Signature").addParameter(pubKey, "initVerify", 0).addParameter(msgBytes, "verify", 0).addReturnObject(res).generate();
 		return res;
 	}

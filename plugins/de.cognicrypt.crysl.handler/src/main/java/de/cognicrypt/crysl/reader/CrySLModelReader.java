@@ -406,11 +406,32 @@ public class CrySLModelReader {
 				final String part = ((ArrayElements) lit.getCons()).getCons().getPart();
 				if (part != null) {
 					final LiteralExpression name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getLit().getName();
-
 					final SuperType object = name.getValue();
 					final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(),
-							new CryptSLSplitter(Integer.parseInt(((ArrayElements) lit.getCons()).getCons().getInd()), Utils.filterQuotes(((ArrayElements) lit.getCons()).getCons().getSplit())));
+					new CryptSLSplitter(Integer.parseInt(((ArrayElements) lit.getCons()).getCons().getInd()), Utils.filterQuotes(((ArrayElements) lit.getCons()).getCons().getSplit())));
 					slci = new CryptSLValueConstraint(variable, parList);
+				} else {
+					final String consPred = ((ArrayElements) lit.getCons()).getCons().getConsPred();
+					if(consPred != null) {
+					final LiteralExpression name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getLit().getName();
+					final SuperType object = name.getValue();
+					int ind;
+					if(consPred.equals("alg(")) {
+						ind = 0;
+						final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(),
+						new CryptSLSplitter(ind, Utils.filterQuotes("/")));
+						slci = new CryptSLValueConstraint(variable, parList);
+					}else if(consPred.equals("mode(")) {
+						ind = 1;
+						final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(),
+								new CryptSLSplitter(ind, Utils.filterQuotes("/")));
+						slci = new CryptSLValueConstraint(variable, parList);
+					}else if(consPred.equals("pad(")) {
+						ind = 2;
+						final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(),
+								new CryptSLSplitter(ind, Utils.filterQuotes("/")));
+						slci = new CryptSLValueConstraint(variable, parList);
+					}
 				} else {
 					LiteralExpression name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getName();
 					if (name == null) {
@@ -420,6 +441,7 @@ public class CrySLModelReader {
 					final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName());
 					slci = new CryptSLValueConstraint(variable, parList);
 				}
+			}
 			}
 		} else if (cons instanceof ComparisonExpression) {
 			final ComparisonExpression comp = (ComparisonExpression) cons;
@@ -631,6 +653,16 @@ public class CrySLModelReader {
 				final String typeL1 = ((ObjectDecl) objectL1.eContainer()).getObjectType().getQualifiedName();
 				variables1.add(new CryptSLObject(objectL1.getName(), typeL1));
 				slci = new CryptSLPredicate(null, pred, variables1, false);
+				break;
+			case "instanceOf":
+				final List<ICryptSLPredicateParameter> varInstOf = new ArrayList<>();
+				final Object objInstOf = (de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0);
+				final String instOfType = ((ObjectDecl) objInstOf.eContainer()).getObjectType().getQualifiedName();
+				varInstOf.add(new CryptSLObject(objInstOf.getName(), instOfType));
+				final String typeName = ((PreDefinedPredicates) lit.getCons()).getType().getType().getQualifiedName();
+				varInstOf.add(new CryptSLObject(typeName, NULL));
+				slci = new CryptSLPredicate(null, pred, varInstOf, false);
+				break;
 			default:
 				new RuntimeException();
 		}

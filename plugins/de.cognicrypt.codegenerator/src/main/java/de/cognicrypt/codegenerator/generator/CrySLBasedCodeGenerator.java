@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +37,6 @@ import crypto.rules.CryptSLMethod;
 import crypto.rules.CryptSLObject;
 import crypto.rules.CryptSLPredicate;
 import crypto.rules.CryptSLRule;
-import crypto.rules.CryptSLSplitter;
 import crypto.rules.CryptSLValueConstraint;
 import crypto.rules.StateMachineGraph;
 import crypto.rules.StateNode;
@@ -57,23 +55,29 @@ import de.cognicrypt.utils.Utils;
  */
 public class CrySLBasedCodeGenerator extends CodeGenerator {
 
-	//	private List<CodeGenCrySLRule> rules;
-	/**
-	 * Hash table to store the values that are assigend to variables.
-	 */
-	private static Hashtable<String, String> parameterValues = new Hashtable<String, String>();
+	private static HashMap<String, String> parameterCache = new HashMap<String, String>();
+
+	public static void clearParameterCache() {
+		parameterCache.clear();
+	}
+
+	private static HashMap<String, String> ruleParameterCache = new HashMap<String, String>();
+
+	private static void clearRuleParameterCache() {
+		ruleParameterCache.clear();
+	}
 
 	/**
 	 * Contains the exceptions classes that are thrown by the generated code.
 	 */
 	private List<String> exceptions = new ArrayList<String>();
 
-	//	private Map<String, CryptSLObject> methToReturnValue = new HashMap<String, CryptSLObject>();
-
 	private List<String> kills = new ArrayList<String>();
 
 	List<Entry<CryptSLPredicate, Entry<CryptSLRule, CryptSLRule>>> predicateConnections;
 	Entry<CryptSLPredicate, Entry<CryptSLRule, CryptSLRule>> toBeEnsuredPred = null;
+	
+	CodeGenCrySLRule curRule = null;
 
 	/**
 	 * This constructor allows it to set a specific class and method names that are used in the generated Java code.
@@ -138,10 +142,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			predicateConnections = new ArrayList<Entry<CryptSLPredicate, Entry<CryptSLRule, CryptSLRule>>>();
 
 			for (int i = 0; i < rules.size(); i++) {
-				// Determine possible valid parameter values be analysing
-				// the given constraints
-				// ################################################################
-				analyseConstraints(rules.get(i).getConstraints());
+				//				analyseConstraints(rules.get(i).getConstraints());
 
 				if (i < rules.size() - 1) {
 					CryptSLRule nextRule = rules.get(i + 1);
@@ -191,6 +192,8 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			}
 
 			for (CodeGenCrySLRule rule : rules) {
+				curRule = rule;
+				clearRuleParameterCache();
 				boolean next = true;
 				boolean lastRule = rules.get(rules.size() - 1).equals(rule);
 				// get state machine of cryptsl rule
@@ -341,8 +344,6 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		try {
 			codeHandler.writeToDisk(genFolder);
 			cleanUpProject(page.getActiveEditor());
-			//			final IFile outputFile = this.project.getIFile(templateClass.getAssociatedJavaFile().getAbsolutePath());
-			//			IDE.openEditor(page, outputFile, PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getSite().getId());
 		} catch (Exception e) {
 			Activator.getDefault().logError(e);
 		}
@@ -669,18 +670,11 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			} else {
 				methodInvocation = className + " " + instanceName + " = new " + currentInvokedMethod;
 			}
-			//			if (methodName.equals(lastInvokedMethod.substring(lastInvokedMethod.lastIndexOf('.') + 1))) {
-			//				methodInvocation = methodInvocation;// + "\nreturn " + instanceName + ";";
-			//			}
 		}
 		// Static method call
 		else if (currentInvokedMethod.toString().contains("getInstance")) {
 			currentInvokedMethod = new StringBuilder(currentInvokedMethod.substring(currentInvokedMethod.lastIndexOf("=") + 1).trim());
 			methodInvocation = className + " " + instanceName + " = " + simpleName + "." + currentInvokedMethod;
-
-			//			if (methodName.equals(lastInvokedMethod.substring(lastInvokedMethod.lastIndexOf('.') + 1))) {
-			//				methodInvocation = methodInvocation; // + "\nreturn " + instanceName + ";";
-			//			}
 		}
 		// 3. Instance method call
 		else {
@@ -696,9 +690,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				if (lastRule) {
 					// Last invoked method and return type is not equal to "void".
 					if (methodName.equals(lastInvokedMethod) && !returnValueType.equals(voidString)) {
-						methodInvocation = retObjInTemplate.getVarName() + " = " +
-						//"return " + 
-							instanceName + "." + currentInvokedMethod;
+						methodInvocation = retObjInTemplate.getVarName() + " = " + instanceName + "." + currentInvokedMethod;
 						generated = true;
 					}
 					// Last invoked method and return type is equal to "void".
@@ -736,80 +728,6 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 	}
 
 	/**
-	 * This method analyses ISLConstraints to determine possible valid values for variables.
-	 * 
-	 * @param constraints
-	 *        List of constraints that are used for the analysis.
-	 */
-	private void analyseConstraints(List<ISLConstraint> constraints) {
-		for (ISLConstraint constraint : constraints) {
-			// handle CryptSLValueConstraint
-			if (constraint instanceof CryptSLValueConstraint) {
-				CryptSLValueConstraint cryptSLValueConstraint = (CryptSLValueConstraint) constraint;
-				resolveCryptSLValueConstraint(cryptSLValueConstraint);
-			}
-			// handle CryptSLConstraint
-			else if (constraint instanceof CryptSLConstraint) {
-				CryptSLConstraint cryptSLConstraint = (CryptSLConstraint) constraint;
-
-				// (CryptSLConstrant | CryptSLValueConstraint => CryptSLConstrant | CryptSLValueConstraint)
-				if ((cryptSLConstraint.getLeft() instanceof CryptSLConstraint || cryptSLConstraint.getRight() instanceof CryptSLValueConstraint) && cryptSLConstraint
-					.getOperator() == LogOps.implies && (cryptSLConstraint
-						.getRight() instanceof CryptSLConstraint || cryptSLConstraint.getRight() instanceof CryptSLValueConstraint)) {
-
-					// 1. step verify premise
-					if (resolveCryptSLConstraint(cryptSLConstraint.getLeft())) {
-						// 2. step verify conclusion
-						resolveCryptSLConstraint(cryptSLConstraint.getRight());
-					}
-				}
-			} else if (constraint instanceof CryptSLComparisonConstraint) {
-				CryptSLComparisonConstraint comp = (CryptSLComparisonConstraint) constraint;
-				if (comp.getLeft().getLeft() instanceof CryptSLObject && comp.getRight().getLeft() instanceof CryptSLObject) {
-					CryptSLObject left = (CryptSLObject) comp.getLeft().getLeft();
-					CryptSLObject right = (CryptSLObject) comp.getRight().getLeft();
-					int value = Integer.MIN_VALUE;
-					String varName = "";
-					try {
-						value = Integer.parseInt(left.getName());
-						varName = right.getVarName();
-					} catch (NumberFormatException ex) {
-						try {
-						value = Integer.parseInt(right.getName());
-						varName = left.getVarName();
-						} catch (NumberFormatException ex2) {
-							continue;
-						}
-					}
-
-					switch (comp.getOperator()) {
-						case g:
-						case ge:
-							try {
-								parameterValues.putIfAbsent(varName, String.valueOf(SecureRandom.getInstance("SHA1PRNG").nextInt(2 * value) + value));
-							} catch (NoSuchAlgorithmException e1) {}
-							break;
-						case l:
-						case le:
-							try {
-								parameterValues.putIfAbsent(varName, String.valueOf(SecureRandom.getInstance("SHA1PRNG").nextInt(value)));
-							} catch (NoSuchAlgorithmException e) {}
-							break;
-						case neq:
-							try {
-								parameterValues.putIfAbsent(varName, String.valueOf(SecureRandom.getInstance("SHA1PRNG").nextInt(value - 1)));
-							} catch (NoSuchAlgorithmException e) {}
-							break;
-						case eq:
-						default:
-							break;
-					}
-				}
-			}
-		}
-	}
-
-	/**
 	 * Replaces parameter names in method invocations by a value. This value is derived by constraints.
 	 * 
 	 * @param rule
@@ -841,10 +759,12 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 
 		for (Entry<String, String> parameter : parametersOfCall) {
 			boolean inTemplate = false;
+
 			for (CodeGenCrySLObject par : rule.getRequiredPars()) {
-				if (methodNamdResultAssignment.endsWith(par.getMethod()) && 
-					(Utils.isSubType(par.getJavaType(), parameter.getValue()) || Utils.isSubType(parameter.getValue(), par.getJavaType()))) {
+				if (methodNamdResultAssignment
+					.endsWith(par.getMethod()) && (Utils.isSubType(par.getJavaType(), parameter.getValue()) || Utils.isSubType(parameter.getValue(), par.getJavaType()))) {
 					methodParameter = methodParameter.replace(parameter.getKey(), par.getVarName());
+					updateToBeEnsured(new SimpleEntry<String, String>(par.getVarName(), parameter.getValue()));
 					inTemplate = true;
 					break;
 				}
@@ -852,7 +772,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			if (inTemplate) {
 				continue;
 			}
-			
+
 			Optional<Entry<CryptSLPredicate, Entry<CryptSLRule, CryptSLRule>>> entry = predicateConnections.stream().filter(
 				e -> Utils.isSubType(e.getValue().getValue().getClassName(), rule.getClassName()) || Utils.isSubType(rule.getClassName(), e.getValue().getValue().getClassName()))
 				.findFirst();
@@ -870,28 +790,28 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				}
 			}
 
-			if (currentInvokedMethod.contains("Cipher.getInstance")) {
-				String firstParameter = parameter.getKey() + "[0]";
-				String secondParameter = parameter.getKey() + "[1]";
-				String thirdParameter = parameter.getKey() + "[2]";
-				String value = "\"";
-
-				if (parameterValues.containsKey(firstParameter) && !parameterValues.get(firstParameter).isEmpty()) {
-					value = value + parameterValues.get(firstParameter);
-
-					if (parameterValues.containsKey(secondParameter) && !parameterValues.get(secondParameter).isEmpty()) {
-						value = value + "/" + parameterValues.get(secondParameter);
-
-						if (parameterValues.containsKey(thirdParameter) && !parameterValues.get(thirdParameter).isEmpty()) {
-							value = value + "/" + parameterValues.get(thirdParameter);
-						}
-					}
-
-					value = value + "\"";
-					methodParameter = methodParameter.replace(parameter.getKey(), value);
-					continue;
-				}
-			}
+//			if (currentInvokedMethod.contains("Cipher.getInstance")) {
+//				String firstParameter = parameter.getKey() + "[0]";
+//				String secondParameter = parameter.getKey() + "[1]";
+//				String thirdParameter = parameter.getKey() + "[2]";
+//				String value = "\"";
+//
+//				if (parameterValues.containsKey(firstParameter) && !parameterValues.get(firstParameter).isEmpty()) {
+//					value = value + parameterValues.get(firstParameter);
+//
+//					if (parameterValues.containsKey(secondParameter) && !parameterValues.get(secondParameter).isEmpty()) {
+//						value = value + "/" + parameterValues.get(secondParameter);
+//
+//						if (parameterValues.containsKey(thirdParameter) && !parameterValues.get(thirdParameter).isEmpty()) {
+//							value = value + "/" + parameterValues.get(thirdParameter);
+//						}
+//					}
+//
+//					value = value + "\"";
+//					methodParameter = methodParameter.replace(parameter.getKey(), value);
+//					continue;
+//				}
+//			}
 
 			int index = useMethod.getNumberOfVariablesInTemplate();
 			List<Entry<String, String>> tmpVariables = new ArrayList<>();
@@ -919,16 +839,15 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				continue;
 			}
 
-			if (parameterValues.containsKey(parameter.getKey())) {
-				String value = parameterValues.get(parameter.getKey());
-				// replace parameter by value
-				if (parameter.getValue().equals("java.lang.String")) {
-					methodParameter = methodParameter.replace(parameter.getKey(), "\"" + value + "\"");
-					continue;
-				} else {
-					methodParameter = methodParameter.replace(parameter.getKey(), value);
-					continue;
-				}
+			if (parameterCache.containsKey(parameter.getKey())) {
+				methodParameter = methodParameter.replace(parameter.getKey(), parameterCache.get(parameter.getKey()));
+				continue;
+			}
+			
+			String name = analyseConstraints(parameter, rule, methodNamdResultAssignment.substring(methodNamdResultAssignment.lastIndexOf(".") + 1));
+			if (!name.isEmpty()) {
+				methodParameter = methodParameter.replace(parameter.getKey(), name);
+				continue;
 			}
 
 			parametersOfUseMethod.add(parameter);
@@ -943,121 +862,208 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		return new SimpleEntry<>(currentInvokedMethod, parametersOfUseMethod);
 	}
 
-	private void updateToBeEnsured(Entry<String, String> entry) {
-		if (toBeEnsuredPred != null) {
-			CryptSLPredicate existing = toBeEnsuredPred.getKey();
-			CryptSLObject predicatePar = (CryptSLObject) existing.getParameters().get(0);
+	/**
+	 * This method analyses ISLConstraints to determine possible valid values for variables.
+	 * @param methodName 
+	 * 
+	 * @param constraints
+	 *        List of constraints that are used for the analysis.
+	 * @return
+	 */
+	private String analyseConstraints(Entry<String, String> parameter, CodeGenCrySLRule rule, String methodName) {
+		List<ISLConstraint> constraints = rule.getConstraints().stream().filter(e -> e.getInvolvedVarNames().contains(parameter.getKey())).collect(Collectors.toList());
 
-			if (!"this".equals(predicatePar.getVarName())) {
-				List<ICryptSLPredicateParameter> parameters = new ArrayList<ICryptSLPredicateParameter>();
-				for (ICryptSLPredicateParameter obj : existing.getParameters()) {
-					CryptSLObject par = ((CryptSLObject) obj);
-					if (Utils.isSubType(par.getJavaType(), predicatePar.getJavaType()) || Utils.isSubType(predicatePar.getJavaType(), par.getJavaType())) {
-						parameters.add(new CryptSLObject(entry.getKey(), par.getJavaType(), par.getSplitter()));
-					}
+		for (ISLConstraint constraint : constraints) {
+			// handle CryptSLValueConstraint
+			String name = resolveCryptSLConstraint(parameter, constraint, methodName, rule.getRequiredPars());
+			if (!name.isEmpty()) {
+				if ("java.lang.String".equals(parameter.getValue())) {
+					name = "\"" + name + "\"";
+				} else {
+					ruleParameterCache.putIfAbsent(parameter.getKey(), name);
 				}
-				if (!parameters.isEmpty()) {
-					toBeEnsuredPred = new SimpleEntry<CryptSLPredicate, Entry<CryptSLRule, CryptSLRule>>(new CryptSLPredicate(existing.getBaseObject(), existing
-						.getPredName(), parameters, existing.isNegated(), existing.getConstraint()), toBeEnsuredPred.getValue());
-				}
+				return name;
 			}
-
 		}
+		return "";
 	}
 
-	/**
-	 * This method assigns a value to a variable by analysing a CryptSLValueConstraint object.
-	 * 
-	 * If the assigned value is valid this method returns true otherwise false
-	 * 
-	 * @param cryptSLValueConstraint
-	 *        CryptSLValueConstraint object that is used to determine a value.
-	 * 
-	 * @return If the assigned value is valid this method returns true otherwise false
-	 */
-	private boolean resolveCryptSLValueConstraint(CryptSLValueConstraint cryptSLValueConstraint) {
-		CryptSLObject cryptSLObject = cryptSLValueConstraint.getVar();
-		CryptSLSplitter cryptSLSplitter = cryptSLObject.getSplitter();
-
-		String parameterNameKey = "";
-
-		// Distinguish between regular variable assignments and
-		// part assignments.
-		if (cryptSLSplitter == null) {
-			parameterNameKey = cryptSLValueConstraint.getVarName();
-		} else {
-			parameterNameKey = cryptSLObject.getVarName() + "[" + cryptSLSplitter.getIndex() + "]";
-		}
-
-		if (!parameterValues.containsKey(parameterNameKey)) {
-			if ("transformation[0]".equals(parameterNameKey)) {
-				parameterValues.putIfAbsent("alg", cryptSLValueConstraint.getValueRange().get(0));
-			}
-			parameterValues.putIfAbsent(parameterNameKey, cryptSLValueConstraint.getValueRange().get(0));
-		}
-
-		if (cryptSLValueConstraint.getValueRange().contains(parameterValues.get(parameterNameKey))) {
-			return true; // Assigned parameter value is in valid value range.
-		} else {
-			return false; // Assigned parameter value is not in valid value range.
-		}
+	private String resolveCryptSLConstraint(Entry<String, String> parameter, ISLConstraint constraint, String methodName, List<CodeGenCrySLObject> list) {
+		return resolveCryptSLConstraint(parameter, constraint, methodName, list, false);
 	}
 
 	/**
 	 * This method resolves constraints of a cryptsl rule recursively.
 	 * 
+	 * @param parameter
+	 * 
 	 * @param constraint
 	 *        Constraint object that should be resolved.
+	 * @param methodName
 	 * @return Returns true if the given constraint object describes a valid logical expression otherwise false.
 	 */
-	private boolean resolveCryptSLConstraint(ISLConstraint constraint) {
+	private String resolveCryptSLConstraint(Entry<String, String> parameter, ISLConstraint constraint, String methodName, List<CodeGenCrySLObject> list, boolean onlyEval) {
+		String parVarName = parameter.getKey();
 		if (constraint instanceof CryptSLValueConstraint) {
-
-			CryptSLValueConstraint cryptSLValueConstraint = (CryptSLValueConstraint) constraint;
-			return resolveCryptSLValueConstraint(cryptSLValueConstraint);
-
+			CryptSLValueConstraint asVC = (CryptSLValueConstraint) constraint;
+			String constraintValue = asVC.getValueRange().get(0);
+			if (onlyEval) {
+				 if (ruleParameterCache.containsKey(parVarName) && asVC.getValueRange().contains(ruleParameterCache.get(parVarName))) {
+					return constraintValue;
+				 }
+			} else if (asVC.getInvolvedVarNames().contains(parVarName)) {
+				if ("transformation".equals(parVarName) && "AES".equals(constraintValue)) {
+					constraintValue += dealWithCipherGetInstance();
+				}
+				ruleParameterCache.putIfAbsent(parVarName, constraintValue);
+				return constraintValue;
+			}
+		} else if (constraint instanceof CryptSLComparisonConstraint) {
+			CryptSLComparisonConstraint comp = (CryptSLComparisonConstraint) constraint;
+			if (comp.getLeft().getLeft() instanceof CryptSLObject && comp.getRight().getLeft() instanceof CryptSLObject) {
+				CryptSLObject left = (CryptSLObject) comp.getLeft().getLeft();
+				CryptSLObject right = (CryptSLObject) comp.getRight().getLeft();
+				int value = Integer.MIN_VALUE;
+				String varName = "";
+				try {
+					value = Integer.parseInt(left.getName());
+					varName = right.getVarName();
+				} catch (NumberFormatException ex) {
+					try {
+						value = Integer.parseInt(right.getName());
+						varName = left.getVarName();
+					} catch (NumberFormatException ex2) {
+						return "";
+					}
+				}
+				String secureInt = "";
+				switch (comp.getOperator()) {
+					case g:
+					case ge:
+						try {
+							secureInt = String.valueOf(SecureRandom.getInstance("SHA1PRNG").nextInt(2 * value) + value);
+						} catch (NoSuchAlgorithmException e1) {}
+						break;
+					case l:
+					case le:
+						try {
+							secureInt = String.valueOf(SecureRandom.getInstance("SHA1PRNG").nextInt(value));
+						} catch (NoSuchAlgorithmException e) {}
+						break;
+					case neq:
+						try {
+							secureInt = String.valueOf(SecureRandom.getInstance("SHA1PRNG").nextInt(value - 1));
+						} catch (NoSuchAlgorithmException e) {}
+						break;
+					case eq:
+					default:
+						break;
+				}
+				parameterCache.putIfAbsent(varName, secureInt);
+				return secureInt;
+			}
+		} else if (constraint instanceof CryptSLPredicate && "instanceOf".equals(((CryptSLPredicate) constraint).getPredName())) {
+			for (CodeGenCrySLObject obj : list) {
+				List<ICryptSLPredicateParameter> instanceOfPred = ((CryptSLPredicate) constraint).getParameters();
+				if (((CryptSLObject) instanceOfPred.get(1)).getVarName().equals(obj.getJavaType()) && obj.getMethod().equals(findMethodForParameter((CryptSLObject) instanceOfPred.get(0)))) {
+					return ((CryptSLObject) instanceOfPred.get(0)).getVarName();
+				}
+			}
 		} else if (constraint instanceof CryptSLConstraint) {
 
 			CryptSLConstraint cryptSLConstraint = (CryptSLConstraint) constraint;
 			LogOps operator = cryptSLConstraint.getOperator();
+			ISLConstraint left = cryptSLConstraint.getLeft();
+			ISLConstraint right = cryptSLConstraint.getRight();
+			Entry<String, String> leftAlternative = new SimpleEntry<String, String>(left.getInvolvedVarNames().iterator().next(), parameter.getValue());
+			Entry<String, String> rightAlternative = new SimpleEntry<String, String>(right.getInvolvedVarNames().iterator().next(), parameter.getValue());
 
 			if (operator == LogOps.and) {
-				return resolveCryptSLConstraint(cryptSLConstraint.getLeft()) && resolveCryptSLConstraint(cryptSLConstraint.getRight());
-			} else if (operator == LogOps.or) {
-				return resolveCryptSLConstraint(cryptSLConstraint.getLeft()) || resolveCryptSLConstraint(cryptSLConstraint.getRight());
-			} else if (operator == LogOps.implies) {
-				if (resolveCryptSLConstraint(cryptSLConstraint.getLeft())) {
-					return resolveCryptSLConstraint(cryptSLConstraint.getRight());
-				} else {
-					return true;
+				if (left.getInvolvedVarNames().contains(parVarName)) {
+					if (!right.getInvolvedVarNames().contains(parVarName)) {
+						if (!resolveCryptSLConstraint(parameter, right, methodName, list, true).isEmpty()) {
+							return resolveCryptSLConstraint(parameter, left, methodName, list);
+						} else {
+							return "";
+						}
+					} else {
+						if (resolveCryptSLConstraint(parameter, left, methodName, list, true).isEmpty()) {
+							return resolveCryptSLConstraint(parameter, right, methodName, list);
+						} else {
+							return resolveCryptSLConstraint(parameter, left, methodName, list);
+						}
+					}
+				} else if (!resolveCryptSLConstraint(parameter, left, methodName, list).isEmpty()) {
+					return resolveCryptSLConstraint(parameter, right, methodName, list);
 				}
+				return "";
+			} else if (operator == LogOps.or) {
+				if (!onlyEval) {
+					if (left.getInvolvedVarNames().contains(parVarName)) {
+						if (resolveCryptSLConstraint(parameter, left, methodName, list).isEmpty()) {
+							if (right.getInvolvedVarNames().contains(parVarName) && !resolveCryptSLConstraint(parameter, right, methodName, list, true).isEmpty()) {
+								return resolveCryptSLConstraint(parameter, right, methodName, list);
+							} else {
+								return "";
+							}
+						}
+						return resolveCryptSLConstraint(parameter, left, methodName, list);
+					}
+					return resolveCryptSLConstraint(parameter, right, methodName, list);
+				} else {
+					String leftResult = resolveCryptSLConstraint(parameter, left, methodName, list, onlyEval);
+					if (!leftResult.isEmpty()) {
+						return leftResult;
+					} else {
+						return resolveCryptSLConstraint(rightAlternative, right, methodName, list, onlyEval);
+					}
+				}
+			} else if (operator == LogOps.implies) {
+				if (!right.getInvolvedVarNames().contains(parVarName) || resolveCryptSLConstraint(leftAlternative, left, methodName, list, true).isEmpty()) {
+					return "";
+				}
+				return resolveCryptSLConstraint(parameter, right, methodName, list);
 			} else {
-				return false; // invalid operator
+				return ""; // invalid operator
 			}
 		}
-		return false; // unsupported object type
+		return ""; // unsupported object type
 	}
 
-	/**
-	 * Determine return type. The return type of the last invoked method is used for the return type of the generated method. If there is no method invoked that has a return type
-	 * unequal to void the type of the used class is used.
-	 * 
-	 * @param transitions
-	 *        All transitions that are used to describe the source code.
-	 * @return Returns the return type as string.
-	 */
-	private String getReturnType(List<TransitionEdge> transitions, String className) {
-		// Get last 
-		CryptSLMethod lastInvokedMethod = getLastInvokedMethod(transitions);
-
-		// Get return type
-		String type = lastInvokedMethod.getRetObject().getValue();
-
-		if (type.equals("void")) {
-			return className;
-		} else {
-			return type;
+	private String dealWithCipherGetInstance() {
+		String mode = "";
+		String pad = "";
+		List<ISLConstraint> constraints = curRule.getConstraints().parallelStream().filter(e -> e.getInvolvedVarNames().contains("transformation")).filter(e -> e instanceof CryptSLConstraint && ((CryptSLConstraint) e).getLeft().getName().contains("AES")).collect(Collectors.toList());
+		for (ISLConstraint cons : constraints) {
+			if (cons instanceof CryptSLConstraint && ((CryptSLConstraint) cons).getOperator() == LogOps.implies) {
+				CryptSLValueConstraint valCons = (CryptSLValueConstraint) ((CryptSLConstraint) cons).getRight();
+				int pos = valCons.getVar().getSplitter().getIndex();
+				if (pos == 1 && mode.isEmpty()) {
+					mode = valCons.getValueRange().get(0);
+				} else if (pos == 2 && pad.isEmpty()) {
+					pad = valCons.getValueRange().get(0);
+				}
+			}
 		}
+		//if all fails
+		if (mode.isEmpty()) {
+			mode = "CBC";
+		}
+		if (pad.isEmpty()) {
+			pad = "PKCS5Padding";
+		}
+		return "/" + mode + "/" + pad;
+	}
+
+	private String findMethodForParameter(CryptSLObject cryptSLObject) {
+		for (TransitionEdge te : curRule.getUsagePattern().getAllTransitions()) {
+			for (CryptSLMethod method : te.getLabel()) {
+				if (method.getParameters().parallelStream().anyMatch(f -> f.getKey().equals(cryptSLObject.getVarName()) && f.getValue().equals(cryptSLObject.getJavaType()))) {
+					return method.getMethodName().substring(method.getMethodName().lastIndexOf(".") + 1);
+				}
+			}
+		}
+		return "";
 	}
 
 	/**
@@ -1164,6 +1170,28 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			}
 		}
 		return true;
+	}
+
+	private void updateToBeEnsured(Entry<String, String> entry) {
+		if (toBeEnsuredPred != null) {
+			CryptSLPredicate existing = toBeEnsuredPred.getKey();
+			CryptSLObject predicatePar = (CryptSLObject) existing.getParameters().get(0);
+
+			if (!"this".equals(predicatePar.getVarName())) {
+				List<ICryptSLPredicateParameter> parameters = new ArrayList<ICryptSLPredicateParameter>();
+				for (ICryptSLPredicateParameter obj : existing.getParameters()) {
+					CryptSLObject par = ((CryptSLObject) obj);
+					if (Utils.isSubType(par.getJavaType(), predicatePar.getJavaType()) || Utils.isSubType(predicatePar.getJavaType(), par.getJavaType())) {
+						parameters.add(new CryptSLObject(entry.getKey(), par.getJavaType(), par.getSplitter()));
+					}
+				}
+				if (!parameters.isEmpty()) {
+					toBeEnsuredPred = new SimpleEntry<CryptSLPredicate, Entry<CryptSLRule, CryptSLRule>>(new CryptSLPredicate(existing.getBaseObject(), existing
+						.getPredName(), parameters, existing.isNegated(), existing.getConstraint()), toBeEnsuredPred.getValue());
+				}
+			}
+
+		}
 	}
 
 }

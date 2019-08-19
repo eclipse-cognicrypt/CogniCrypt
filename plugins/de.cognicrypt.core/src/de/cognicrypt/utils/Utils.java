@@ -9,6 +9,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.OptionalInt;
 import org.eclipse.core.resources.IContainer;
@@ -346,5 +347,14 @@ public class Utils {
 
 	public static boolean isIncompatibleJavaVersion(String javaVersion) {
 		return javaVersion == null || !javaVersion.startsWith("1.");
+	}
+	
+	/**
+	 * This method checks if a Collection is null or empty
+	 * @param c
+	 * @return 
+	 */
+	public static boolean isNullOrEmpty( final Collection< ? > c ) {
+	    return c == null || c.isEmpty();
 	}
 }

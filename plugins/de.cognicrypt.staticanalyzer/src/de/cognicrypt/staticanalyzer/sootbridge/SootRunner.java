@@ -226,7 +226,7 @@ public class SootRunner {
 		Collection<String> libraryClassPath = Sets.newHashSet();
 		IClasspathEntry[] rentries;
 		try {
-			// check if "include dependencies" checkbox is checked in preference page, or it was triggered from 
+			// check if "include dependencies" checkbox is checked in preference page or analysis is running for dependencies 
 			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) == true || dependencyAnalyser == true) {
 
 				rentries = project.getRawClasspath();
@@ -237,7 +237,6 @@ public class SootRunner {
 		} catch (CoreException e1) {
 			e1.printStackTrace();
 		}
-//		System.out.println("libraryClassPath is: " + libraryClassPath);
 		return libraryClassPath;
 	}
 	
@@ -245,7 +244,6 @@ public class SootRunner {
 		IClasspathEntry[] rentries;
 		switch (entry.getEntryKind()) {
 		case IClasspathEntry.CPE_SOURCE:
-//			libraryClassPath.addAll(applicationClassPath(project));
 			break;
 		case IClasspathEntry.CPE_PROJECT:
             IJavaProject requiredProject = JavaCore.create((IProject) ResourcesPlugin.getWorkspace().getRoot().findMember(entry.getPath()));

@@ -26,16 +26,15 @@ public class RunAnalysisOnDependenciesHandler extends AbstractHandler{
 
 	@Override
 	public Object execute(ExecutionEvent arg0) throws ExecutionException {
-		// TODO Auto-generated method stub
 		final Boolean dependencyAnalyser = true;
 		IProject ip = Utils.getCurrentlySelectedIProject();
 		IJavaProject javaProject = JavaCore.create(ip);
+		
 		if(javaProject == null) {
 			Activator.getDefault().logInfo("JavaCore could not create IJavaProject for project "+ ip.getName() +" .");
 			return false;
 		}
 		final AnalysisKickOff akf = new AnalysisKickOff();
-//		IProject ip = Utils.getCurrentlySelectedIProject();
 		akf.setDepValue(dependencyAnalyser);
 		final IJavaElement iJavaElement = JavaCore.create(ip);
 		if (akf.setUp(iJavaElement)) {

@@ -218,7 +218,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	@Override
 	public void onSecureObjectFound(final IAnalysisSeed secureObject) {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-//		final Boolean kilid = false;
 		if (store.getBoolean(Constants.SHOW_SECURE_OBJECTS) == false || this.depVariable) {
 			return;
 		} else {

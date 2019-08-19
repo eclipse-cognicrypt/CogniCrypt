@@ -23,7 +23,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private Button automatedAnalysisCheckBox;
 	private Button secureObjectsCheckBox;
 	private Button analyseDependenciesCheckBox;
-//	private Button analyseChangedDependenciesCheckBox;
 
 	private Combo CGSelection;
 	private Combo forbidden;
@@ -51,7 +50,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		automatedAnalysisCheckBox.setSelection(preferences.getBoolean(Constants.AUTOMATED_ANALYSIS));
 		secureObjectsCheckBox.setSelection(preferences.getBoolean(Constants.SHOW_SECURE_OBJECTS));
 		analyseDependenciesCheckBox.setSelection(preferences.getBoolean(Constants.ANALYSE_DEPENDENCIES));
-//		analyseChangedDependenciesCheckBox.setSelection(preferences.getBoolean(Constants.ANALYSE_DEPENDENCIES_CHANGED));
 		ruleSelection.select(preferences.getInt(Constants.RULE_SELECTION));
 	}
 
@@ -93,23 +91,9 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	    });
 		secureObjectsCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		secureObjectsCheckBox.setText("Show secure objects");
-//		secureObjectsCheckBox.setEnabled(preferences.getBoolean(Constants.AUTOMATED_ANALYSIS));
-//		System.out.println("automated anal" + Constants.AUTOMATED_ANALYSIS);
 		analyseDependenciesCheckBox = new Button(staticAnalysisGroup,SWT.CHECK); 
 		analyseDependenciesCheckBox.setText("Include dependencies to projects analysis");
 		analyseDependenciesCheckBox.setSelection(preferences.getBoolean(Constants.ANALYSE_DEPENDENCIES));
-//		analyseDependenciesCheckBox.addSelectionListener(new SelectionAdapter() {
-		  
-//		@Override 
-//		public void widgetSelected(SelectionEvent event) {
-//			// select analyseChangedDependenciesCheckBox if analyseDependenciesCheckBox set to true
-//			if (analyseDependenciesCheckBox.getSelection()) {
-//				analyseChangedDependenciesCheckBox.setSelection(true);}
-//			} 
-//		});
-//		  
-//		analyseChangedDependenciesCheckBox = new Button(staticAnalysisGroup,SWT.CHECK); 
-//		analyseChangedDependenciesCheckBox.setText("Analyse dependencies when changed");
 	}
 
 	private void initializeAdvancedValues() {
@@ -157,13 +141,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 		CGSelection = new Combo(callGraphContainer, SWT.DROP_DOWN | SWT.READ_ONLY);
 		CGSelection.setItems(Arrays.stream(Constants.CG.values()).map(Enum::name).toArray(String[]::new));
-
-		// final Label label2 = new Label(advancedOptions, SWT.SHADOW_IN);
-		// label2.setText("Entry point");
-		// String[] choices3 = {"getImageDescriptor", "copyClaferHeader", "printClafer"};
-		// advCombo2 = new Combo(advancedOptions, SWT.DROP_DOWN);
-		// advCombo2.setItems(choices3);
-		// advCombo2.select(0);
 
 		final Group errorTypeGroup = new Group(staticAnalysisGroup, SWT.SHADOW_IN);
 		errorTypeGroup.setText("Error-Warning Types");
@@ -222,7 +199,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		automatedAnalysisCheckBox.setSelection(preferences.getDefaultBoolean(Constants.AUTOMATED_ANALYSIS));
 		secureObjectsCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SHOW_SECURE_OBJECTS));
 		analyseDependenciesCheckBox.setSelection(preferences.getDefaultBoolean(Constants.ANALYSE_DEPENDENCIES));
-//		analyseChangedDependenciesCheckBox.setSelection(preferences.getDefaultBoolean(Constants.ANALYSE_DEPENDENCIES_CHANGED));
 		ruleSelection.select(preferences.getDefaultInt(Constants.RULE_SELECTION));
 
 		CGSelection.select(preferences.getDefaultInt(Constants.CALL_GRAPH_SELECTION));
@@ -240,10 +216,8 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		preferences.setValue(Constants.AUTOMATED_ANALYSIS, automatedAnalysisCheckBox.getSelection());
 		preferences.setValue(Constants.SHOW_SECURE_OBJECTS, secureObjectsCheckBox.getSelection());
 		preferences.setValue(Constants.ANALYSE_DEPENDENCIES, analyseDependenciesCheckBox.getSelection());
-//		preferences.setValue(Constants.ANALYSE_DEPENDENCIES_CHANGED, analyseChangedDependenciesCheckBox.getSelection());
 		preferences.setValue(Constants.RULE_SELECTION, ruleSelection.getSelectionIndex());
 		preferences.setValue(Constants.CALL_GRAPH_SELECTION, CGSelection.getSelectionIndex());
-
 		preferences.setValue(Constants.FORBIDDEN_METHOD_MARKER_TYPE, forbidden.getSelectionIndex());
 		preferences.setValue(Constants.CONSTRAINT_ERROR_MARKER_TYPE, constraint.getSelectionIndex());
 		preferences.setValue(Constants.INCOMPLETE_OPERATION_MARKER_TYPE, incompleteOp.getSelectionIndex());

@@ -1,5 +1,9 @@
 package de.cognicrypt.staticanalyzer.markerresolution;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -22,9 +26,11 @@ import org.eclipse.jdt.core.dom.PrimitiveType.Code;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
+import org.eclipse.jdt.internal.compiler.ast.Literal;
 import org.eclipse.jdt.internal.corext.dom.ASTNodeFactory;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -33,6 +39,7 @@ import org.eclipse.text.edits.TextEdit;
 import org.eclipse.ui.IMarkerResolution;
 
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.crysl.creator.CrySLRuleCreator;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.utils.DeveloperProject;
 import de.cognicrypt.utils.Utils;
@@ -41,11 +48,13 @@ import de.cognicrypt.staticanalyzer.utilities.QuickFixUtils;
 public class EnsuresPredicateFix implements IMarkerResolution {
 	private final String label;
 	private static final String INVOKE_METHOD_NAME = "ensuresPredicate";
-	private static final String INJAR_CLASS_NAME = "CC";
-	private static final String VARIABLE_DECLARATION_NAME = "cc";
+	private static final String INJAR_CLASS_NAME = "Ensurer";
+	private static final String VARIABLE_DECLARATION_NAME = "cognicrypt";
+	private final CrySLRuleCreator creator;
 
 	public EnsuresPredicateFix(final String label) {
 		this.label = label;
+		this.creator = new CrySLRuleCreator();
 	}
 
 	@Override
@@ -55,14 +64,36 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 
 	@Override
 	public void run(final IMarker marker) {
-
-		DeveloperProject devProject = new DeveloperProject(marker.getResource().getProject());
-		ICompilationUnit sourceUnit = null;
-
+		
 		String errorVarName = "";
 		int errorVarIndex = 0;
 		String predicate = "";
 		int lineNumber = 0;
+
+		try {
+			lineNumber = (int) marker.getAttribute(IMarker.LINE_NUMBER);
+			predicate = (String) marker.getAttribute("predicate");
+			errorVarName = (String) marker.getAttribute("errorParam");
+			//errorVarIndex = (int) marker.getAttribute("errorParamIndex");
+		} catch (final CoreException e) {
+			Activator.getDefault().logError(e);
+		}
+		
+		String folderPath = Utils.getResourceFromWithin("resources/PredicateEnsurer/CrySLRule",
+				de.cognicrypt.staticanalyzer.Activator.PLUGIN_ID).getAbsolutePath();
+		String filePath = folderPath + "/Ensurer.crysl";
+
+		File rule = new File(filePath);
+		if (rule.exists()) {
+			updateRule(filePath, predicate);
+		} else {
+			createRule(filePath, predicate);
+		}
+		
+		
+		
+		DeveloperProject devProject = new DeveloperProject(marker.getResource().getProject());
+		ICompilationUnit sourceUnit = null;
 
 		try {
 			sourceUnit = QuickFixUtils.getCompilationUnitFromMarker(marker);
@@ -73,18 +104,12 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 						new String[] { Constants.MVN_ECLIPSE_COMMAND + " " + Constants.MVN_SKIPTESTS_COMMAND });
 
 			} else {
-				QuickFixUtils.addAdditionalFiles("resources/Predicate", "de.cognicrypt.staticanalyzer", devProject);
+				QuickFixUtils.addAdditionalFiles("resources/PredicateEnsurer/Jar", "de.cognicrypt.staticanalyzer", devProject);
 			}
 
 			if (!QuickFixUtils.hasJarImport(sourceUnit, Constants.PREDICATEENSURER_JAR_IMPORT)) {
 				QuickFixUtils.insertJarImport(sourceUnit, Constants.PREDICATEENSURER_JAR_IMPORT);
 			}
-			lineNumber = (int) marker.getAttribute(IMarker.LINE_NUMBER);
-			predicate = (String) marker.getAttribute("predicate");
-			errorVarName = (String) marker.getAttribute("errorParam");
-			errorVarIndex = (int) marker.getAttribute("errorParam");
-
-
 		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
@@ -100,7 +125,28 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 		Utils.getCurrentlyOpenEditor().doSave(null);
 	}
 
-	
+	private boolean createRule(String filePath, String pred) {
+		String spec = "de.upb.cognicrypt.predicateensurer.ensurer";
+		List<String> objects = new ArrayList<String>();
+		objects.add("java.lang.Object obj;");
+		objects.add("java.lang.String pred;");
+
+		List<String> events = new ArrayList<String>();
+		events.add("c: Ensurer();");
+		events.add("e: ensuresPredicate(obj,pred);");
+
+		String order = "c?, e";
+
+		List<String> ensures = new ArrayList<String>();
+		ensures.add("pred in {\""+ pred + "\"} => " + pred + "[obj];");
+		return creator.createRule(filePath, spec, objects, events, order, null, null, ensures);
+	}
+
+	private boolean updateRule(String filePath, String pred) {
+		String folderPath = Utils.getResourceFromWithin("resources/PredicateEnsurer/CrySLRule",
+				de.cognicrypt.staticanalyzer.Activator.PLUGIN_ID).getAbsolutePath();
+		return creator.extendRule(filePath, "ENSURES", "pred in {" + pred + "} => " + pred + "[obj];");
+	}
 	
 	
 	/**
@@ -125,6 +171,7 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 
 		if (node.getNodeType() == ASTNode.METHOD_INVOCATION || node.getNodeType() == ASTNode.CLASS_INSTANCE_CREATION) {			
 			
+			//TODO
 			if(varName.startsWith("varReplacer")) {
 				encloseValue((MethodInvocation) node);
 			}
@@ -239,15 +286,13 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 	 * @return ensuresPredicate(predicate, errorVarName) MethodInvocation
 	 */
 	private MethodInvocation createEnsuresPredicateInvocation(final AST ast, String varName, String predicate) {
-		final Name cc = ast.newName(INJAR_CLASS_NAME);
+		final Name classname = ast.newName(INJAR_CLASS_NAME);
 		final MethodInvocation newInvocation = ast.newMethodInvocation();
-		newInvocation.setExpression(cc);
+		newInvocation.setExpression(classname);
 		newInvocation.setName(ast.newSimpleName(INVOKE_METHOD_NAME));
-		final StringLiteral literalVar = ast.newStringLiteral();
-		literalVar.setLiteralValue(varName);
 		final StringLiteral literalPredicate = ast.newStringLiteral();
 		literalPredicate.setLiteralValue(predicate);
-		newInvocation.arguments().add(literalVar);
+		newInvocation.arguments().add(ast.newSimpleName(varName));
 		newInvocation.arguments().add(literalPredicate);
 		return newInvocation;
 	}

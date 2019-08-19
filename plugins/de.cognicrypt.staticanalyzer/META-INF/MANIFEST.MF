@@ -20,4 +20,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  resources/
 Automatic-Module-Name: de.cognicrypt.staticanalyzer
-Import-Package: org.eclipse.ui.texteditor
+Import-Package: de.cognicrypt.crysl.creator,
+ org.eclipse.ui.texteditor

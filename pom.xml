@@ -23,6 +23,22 @@
       <url>https://it.crossing.tu-darmstadt.de/cognicrypt/</url>
       <layout>p2</layout>
     </repository>
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <id>soot-snapshot</id>
+      <name>soot snapshot</name>
+      <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/</url>
+    </repository>
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>soot-release</id>
+      <name>soot release</name>
+      <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/</url>
+    </repository>
   </repositories>
 
   <pluginRepositories>
@@ -67,35 +83,6 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
         <version>${tycho-version}</version>
-        <configuration>
-          <environments>
-            <environment>
-              <os>linux</os>
-              <ws>gtk</ws>
-              <arch>x86</arch>
-            </environment>
-            <environment>
-              <os>linux</os>
-              <ws>gtk</ws>
-              <arch>x86_64</arch>
-            </environment>
-            <environment>
-              <os>win32</os>
-              <ws>win32</ws>
-              <arch>x86</arch>
-            </environment>
-            <environment>
-              <os>win32</os>
-              <ws>win32</ws>
-              <arch>x86_64</arch>
-            </environment>
-            <environment>
-              <os>macosx</os>
-              <ws>cocoa</ws>
-              <arch>x86_64</arch>
-            </environment>
-          </environments>
-        </configuration>
       </plugin>
     </plugins>
   </build>

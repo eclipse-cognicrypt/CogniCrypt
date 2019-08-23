@@ -25,7 +25,7 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.DrillDownComposite;
 
-import de.cognicrypt.codegenerator.DeveloperProject;
+import de.cognicrypt.utils.DeveloperProject;
 import de.cognicrypt.utils.Utils;
 
 public class LocatorPage extends WizardPage {

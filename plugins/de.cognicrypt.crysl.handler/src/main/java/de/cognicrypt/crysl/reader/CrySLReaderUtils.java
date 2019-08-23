@@ -118,7 +118,11 @@ public class CrySLReaderUtils {
 
 	public static List<CryptSLRule> readRuleFromBinaryFiles(final String folderPath) {
 		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
-			Arrays.asList((new File(folderPath)).list()).stream().filter(e -> ".cryptslbin".equals(e.substring(e.lastIndexOf(".")))).forEach(e -> {
+			Arrays.asList((new File(folderPath)).list()).stream().filter(e -> {
+				
+			int lastIndexOf = e.lastIndexOf(".");
+			return (lastIndexOf > -1) ? ".cryptslbin".equals(e.substring(lastIndexOf)) : false;
+	}).forEach(e -> {
 				try {
 					rules.add(readRuleFromBinaryFile(folderPath, e.substring(0, e.lastIndexOf("."))));
 				} catch (ClassNotFoundException | IOException e1) {

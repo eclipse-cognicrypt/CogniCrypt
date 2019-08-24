@@ -30,38 +30,38 @@ public class SecureEncryptor {
 		byte[] wrappedKeyBytes = null;
 		int mode = Cipher.WRAP_MODE;
 		java.security.PublicKey publicKey = keyPair.getPublic();
-		CrySLCodeGenerator.getInstance().considerCrySLRule("javax.crypto.Cipher").addParameter(mode, "init", 0).addParameter(publicKey, "init", 1).addParameter(sessionKey, "wrap", 0).addReturnObject(wrappedKeyBytes).generate();
+		CrySLCodeGenerator.getInstance().considerCrySLRule("javax.crypto.Cipher").addParameter(mode, "init", 0).addParameter(publicKey, "init", 1)
+			.addParameter(sessionKey, "wrap", 0).addReturnObject(wrappedKeyBytes).generate();
 		return wrappedKeyBytes;
 	}
-	
+
 	public byte[] encryptData(byte[] plaintext, javax.crypto.SecretKey key) {
 		byte[] ivBytes = new byte[32];
 		byte[] cipherText = null;
 		int mode = Cipher.ENCRYPT_MODE;
-		
-		CrySLCodeGenerator.getInstance().considerCrySLRule("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "IvParameterSpec", 0)
-		.considerCrySLRule("javax.crypto.Cipher").addParameter(mode, "init", 0).addParameter(plaintext,"doFinal", 0).addParameter(key, "init", 1).addReturnObject(cipherText)
-			.generate(); 
-		
+
+		CrySLCodeGenerator.getInstance().considerCrySLRule("java.security.SecureRandom").addParameter(ivBytes, "nextBytes", 0)
+			.considerCrySLRule("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "IvParameterSpec", 0).considerCrySLRule("javax.crypto.Cipher")
+			.addParameter(mode, "init", 0).addParameter(plaintext, "doFinal", 0).addParameter(key, "init", 1).addReturnObject(cipherText).generate();
+
 		byte[] ret = new byte[ivBytes.length + cipherText.length];
 		System.arraycopy(ivBytes, 0, ret, 0, ivBytes.length);
 		System.arraycopy(cipherText, 0, ret, ivBytes.length, cipherText.length);
 		return ret;
 	}
-	
+
 	public byte[] decryptData(byte[] ciphertext, javax.crypto.SecretKey key) {
-		
+
 		byte[] ivBytes = new byte[32];
-		byte[] data = new byte[ciphertext.length - ivBytes.length]; 
+		byte[] data = new byte[ciphertext.length - ivBytes.length];
 		System.arraycopy(data, 0, ivBytes, 0, ivBytes.length);
 		System.arraycopy(data, ivBytes.length, data, 0, data.length);
-		
+
 		int mode = Cipher.DECRYPT_MODE;
 		byte[] res = null;
-		CrySLCodeGenerator.getInstance().considerCrySLRule("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "IvParameterSpec", 0)
-		.considerCrySLRule("javax.crypto.Cipher").addParameter(mode, "init", 0).addParameter(data,"doFinal", 0).addParameter(key, "init", 1).addReturnObject(res)
-			.generate(); 
-		
+		CrySLCodeGenerator.getInstance().considerCrySLRule("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "IvParameterSpec", 0).considerCrySLRule("javax.crypto.Cipher")
+			.addParameter(mode, "init", 0).addParameter(data, "doFinal", 0).addParameter(key, "init", 1).addReturnObject(res).generate();
+
 		return res;
 	}
 

@@ -20,7 +20,7 @@ public class SecureEncryptor {
 	}
 	
 	public byte[] encrypt(byte[] plaintext, javax.crypto.SecretKey key) {
-		byte[] ivBytes = new byte[32];
+		byte[] ivBytes = new byte[key.getEncoded().length];
 		byte[] res = null;
 		int mode = Cipher.ENCRYPT_MODE;
 		
@@ -36,10 +36,10 @@ public class SecureEncryptor {
 	
 	public byte[] decrypt(byte[] ciphertext, javax.crypto.SecretKey key) {
 		
-		byte[] ivBytes = new byte[32];
+		byte[] ivBytes = new byte[key.getEncoded().length];
 		byte[] data = new byte[ciphertext.length - ivBytes.length]; 
-		System.arraycopy(data, 0, ivBytes, 0, ivBytes.length);
-		System.arraycopy(data, ivBytes.length, data, 0, data.length);
+		System.arraycopy(ciphertext, 0, ivBytes, 0, ivBytes.length);
+		System.arraycopy(ciphertext, ivBytes.length, data, 0, data.length);
 		
 		int mode = Cipher.DECRYPT_MODE;
 		byte[] res = null;

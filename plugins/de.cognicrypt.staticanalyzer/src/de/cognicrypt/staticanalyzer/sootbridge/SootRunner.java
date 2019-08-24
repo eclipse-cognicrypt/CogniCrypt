@@ -15,13 +15,13 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -29,6 +29,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -39,7 +40,6 @@ import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.crysl.reader.CrySLModelReader;
 import de.cognicrypt.crysl.reader.CrySLReaderUtils;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
@@ -127,7 +127,7 @@ public class SootRunner {
 		setSootOptions(project);
 		registerTransformers(resultsReporter);
 		try {
-			runSoot();
+			runSoot(resultsReporter);
 		}
 		catch (final Exception t) {
 			Activator.getDefault().logError(t);
@@ -136,10 +136,17 @@ public class SootRunner {
 		return true;
 	}
 
-	private static void runSoot() {
-		Scene.v().loadNecessaryClasses();
+	private static void runSoot(final ResultsCCUIListener resultsReporter) {
+		Stopwatch watch = Stopwatch.createStarted();
 		PackManager.v().getPack("cg").apply();
+		long elapsed = watch.elapsed(TimeUnit.SECONDS);
+		watch.reset();
+		watch.start();
+		Activator.getDefault().logInfo("Call graph generated in  "+ elapsed + " seconds." );
+		resultsReporter.setCgGenComplete(true);
 		PackManager.v().getPack("wjtp").apply();
+		long analysisTime = watch.elapsed(TimeUnit.SECONDS);
+		Activator.getDefault().logInfo("CogniCrypt Analysis terminated in "+ analysisTime + " seconds." );
 	}
 
 	private static void setSootOptions(final IJavaProject project) {

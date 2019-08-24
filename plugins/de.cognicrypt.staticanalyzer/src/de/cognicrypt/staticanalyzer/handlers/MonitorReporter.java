@@ -9,6 +9,7 @@ public class MonitorReporter extends Thread{
 	private int totalSeeds;
 	private int processedSeeds; 
 	private int workUnitsCompleted;
+	private boolean cgGen;
 
 	public MonitorReporter(final ResultsCCUIListener resultsListener ,final SootThread sootThread) {
 		this.resultsReporter = resultsListener;
@@ -44,23 +45,23 @@ public class MonitorReporter extends Thread{
 	}
 
 
+	public boolean isCgGen() {
+		return cgGen;
+	}
+
+
+	public void setCgGen(boolean cgGen) {
+		this.cgGen = cgGen;
+	}
+
+
 	@Override
 	public void run() {
-		int worked = 0;
-		int percentCompleted = 0;
-		int temp = 0;
 		while(sootThread.isAlive()) {
-			percentCompleted = resultsReporter.getPercentCompleted();
+			setCgGen(resultsReporter.isCgGenComplete());
 			setProcessedSeeds(resultsReporter.getProcessedSeeds());
 			setTotalSeeds(resultsReporter.getTotalSeeds());
-			temp = percentCompleted - worked;
-		if(temp > 0) {
-				setWorkUnitsCompleted(temp);
-				worked = percentCompleted;
-			}
-			else
-				setWorkUnitsCompleted(0);
-
+			setWorkUnitsCompleted(resultsReporter.getWorkUnitsCompleted());
 		}
 	}
 

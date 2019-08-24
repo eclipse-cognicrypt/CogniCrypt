@@ -86,9 +86,11 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	
 	private int totalSeeds;
 	private int processedSeeds;
-
 	private int percentCompleted;
-
+	private int workUnitsCompleted;
+	private boolean cgGenComplete;
+	private int work = 0;
+	private int tempWork = 0;
 
 	public int getPercentCompleted() {
 		return percentCompleted;
@@ -114,6 +116,26 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		this.processedSeeds = processedSeeds;
 	}
 
+
+	public boolean isCgGenComplete() {
+		return cgGenComplete;
+	}
+
+	public void setCgGenComplete(boolean cgGenComplete) {
+		this.cgGenComplete = cgGenComplete;
+	}
+
+	public int getWorkUnitsCompleted() {
+		return workUnitsCompleted;
+	}
+
+	public void setWorkUnitsCompleted(int workUnitsCompleted) {
+		this.workUnitsCompleted = workUnitsCompleted;
+	}
+
+	public void setWork(int work) {
+		this.work = work;
+	}
 
 	private ResultsCCUIListener(final IProject curProj, final ErrorMarkerGenerator gen) {
 		this.currentProject = curProj;
@@ -330,12 +352,22 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void addProgress(final int processSeeds,final int workListsize)   {
-		processedSeeds = processSeeds;
-		totalSeeds = workListsize + processSeeds;
-		percentCompleted = (int) Math.round((float) processedSeeds * 100 / totalSeeds);
+		setProcessedSeeds(processSeeds);
+		setTotalSeeds(workListsize + processSeeds);
+		setPercentCompleted((int) Math.round((float) processedSeeds * 100 / totalSeeds));
+		tempWork = getPercentCompleted() - work;
+		if(tempWork > 0) {
+			setWorkUnitsCompleted(tempWork);
+			work = getPercentCompleted();
+		}
+		else
+			setWorkUnitsCompleted(0);
 		System.out.println("Completed "+processedSeeds+" of "+totalSeeds+" seeds.");
 		System.out.println("Percentage Completed: "+percentCompleted +"%");
-	}
+		
+		}
+		
+
 	
 	
 	@Override

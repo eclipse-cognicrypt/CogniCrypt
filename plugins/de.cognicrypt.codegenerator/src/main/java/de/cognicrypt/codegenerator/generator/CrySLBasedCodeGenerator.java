@@ -385,6 +385,8 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				if (gen.getRules().isEmpty()) {
 					continue;
 				}
+				
+				tmplUsage.addExceptions(gen.getExceptions());
 				String returnType = gen.getReturnType();
 				String varName = gen.getName() + "Res";
 				if (!"void".equals(returnType)) {
@@ -449,7 +451,6 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				return a;
 			});
 		ArrayList<String> methodInvocations = new ArrayList<String>();
-		rule.getPredicates().get(0).getConstraint();
 		List<String> localKillers = new ArrayList<String>();
 		boolean ensures = false;
 
@@ -580,8 +581,6 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		Entry<String, String> retObject = meth.getRetObject();
 		String returnType = retObject.getValue();
 		String returnVarName = retObject.getKey();
-		//		String className = pred.getValue().getKey().getClassName();
-		//		String classSimpleName = className.substring(className.lastIndexOf('.') + 1);
 
 		if (Utils.isSubType(predVarType, returnType) && returnVarName
 			.equals(predVarName) || (predVarName.equals("this") && meth.getMethodName().endsWith(predVarType.substring(predVarType.lastIndexOf('.') + 1)))) {
@@ -790,29 +789,6 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				}
 			}
 
-//			if (currentInvokedMethod.contains("Cipher.getInstance")) {
-//				String firstParameter = parameter.getKey() + "[0]";
-//				String secondParameter = parameter.getKey() + "[1]";
-//				String thirdParameter = parameter.getKey() + "[2]";
-//				String value = "\"";
-//
-//				if (parameterValues.containsKey(firstParameter) && !parameterValues.get(firstParameter).isEmpty()) {
-//					value = value + parameterValues.get(firstParameter);
-//
-//					if (parameterValues.containsKey(secondParameter) && !parameterValues.get(secondParameter).isEmpty()) {
-//						value = value + "/" + parameterValues.get(secondParameter);
-//
-//						if (parameterValues.containsKey(thirdParameter) && !parameterValues.get(thirdParameter).isEmpty()) {
-//							value = value + "/" + parameterValues.get(thirdParameter);
-//						}
-//					}
-//
-//					value = value + "\"";
-//					methodParameter = methodParameter.replace(parameter.getKey(), value);
-//					continue;
-//				}
-//			}
-
 			int index = useMethod.getNumberOfVariablesInTemplate();
 			List<Entry<String, String>> tmpVariables = new ArrayList<>();
 			if (declaredVariables.size() > index) {
@@ -912,7 +888,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 					return constraintValue;
 				 }
 			} else if (asVC.getInvolvedVarNames().contains(parVarName)) {
-				if ("transformation".equals(parVarName) && "AES".equals(constraintValue)) {
+				if ("transformation".equals(parVarName) && Arrays.asList(new String[] {"AES"}).contains(constraintValue)) {
 					constraintValue += dealWithCipherGetInstance();
 				}
 				ruleParameterCache.putIfAbsent(parVarName, constraintValue);

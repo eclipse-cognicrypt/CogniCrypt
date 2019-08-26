@@ -14,8 +14,9 @@ public class RunAnalysisHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		final AnalysisKickOff akf = new AnalysisKickOff();
 		IProject ip = Utils.getCurrentlySelectedIProject();
-		//save currently open file
-		Utils.getCurrentlyOpenEditor().doSave(null);
+		if (ip == Utils.getCurrentProject()) {
+			Utils.getCurrentlyOpenEditor().doSave(null);
+		}
 		final IJavaElement iJavaElement = JavaCore.create(ip);
 		if (akf.setUp(iJavaElement)) {
 			akf.run();

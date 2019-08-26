@@ -113,7 +113,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final String errorMessage = error.toErrorMarkerString();
 		final Statement errorLocation = error.getErrorLocation();
 		IResource sourceFile = null;
-		System.out.println("this is depvar: " + this.depVariable);
 		if (this.depVariable) {
 			return;
 		}

@@ -1,16 +1,10 @@
 package de.cognicrypt.staticanalyzer.handlers;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.io.File;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -18,13 +12,8 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
-//import org.eclipse.swt.graphics.Font;
 
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.Utils;
@@ -51,7 +40,6 @@ public class RunAnalysisHandler extends AbstractHandler {
 					}
 //					no analyse no save file
 					else if (answr == JOptionPane.CLOSED_OPTION) {
-						System.out.println("cloooosed");
 						return null;
 					}
 				}
@@ -68,20 +56,18 @@ public class RunAnalysisHandler extends AbstractHandler {
 		return null;
 	}
 
-	public static int saveFile(IFile openFile) throws Exception {
+	public static int saveFile(IFile openFileInEditor) throws Exception {
+		
 	    JFrame frame = new JFrame();
-	    String message = "This file has been changed, would you like to save it before analysis?" + "\n" + openFile;
+	    String message = "<html> The file below has been changed, would you like to save it before analysis?  <br><br>" + openFileInEditor;
 	    String folderPath = Utils.getResourceFromWithin(Constants.COGNICRYPT_ICON_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath();
 	    ImageIcon icon = new ImageIcon(folderPath);
 	   
-//	    System.out.println("this is us" + folderPath);
+
 	    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 	    JLabel label = new JLabel(message);
-	    label.setFont(new Font("Arial", 0, 18));
 	    
-	    int answer = JOptionPane.showConfirmDialog(frame, label, "CogniCrypt Analysis", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, icon);
-
-	    return answer;
+	    return JOptionPane.showConfirmDialog(frame, label, "CogniCrypt Analysis", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, icon);
 	    
 	  }
 	

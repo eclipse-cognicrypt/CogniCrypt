@@ -26,6 +26,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
 //import org.eclipse.swt.graphics.Font;
 
+import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.Utils;
 
 public class RunAnalysisHandler extends AbstractHandler {
@@ -66,26 +67,19 @@ public class RunAnalysisHandler extends AbstractHandler {
 		}
 		return null;
 	}
-	public static void makeDialog(IFile openFile) {
-		JFrame frame = new JFrame("Warning");
-//		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-		 JLabel textLabel = new JLabel("This file has been changed, do you want to save it or not?" + " /n this file" + openFile,SwingConstants.CENTER); textLabel.setPreferredSize(new Dimension(500, 200));
-		 JButton yesButton = new JButton("Yes");
-		 JButton noButton = new JButton("No");
-		 frame.getContentPane().add(textLabel, BorderLayout.CENTER);
-		 frame.setLocationRelativeTo(null);
-		 frame.pack();
-		 frame.setVisible(true);
-    }
+
 	public static int saveFile(IFile openFile) throws Exception {
 	    JFrame frame = new JFrame();
-	    String message = "This file has been changed, do you want to save it or not?" + openFile;
-	    ImageIcon icon = new ImageIcon("C:/Users/shahrzad/git/git/CogniCrypt/plugins/de.cognicrypt.core/icons/cognicrypt-codegen.png");
-	    
+	    String message = "This file has been changed, would you like to save it before analysis?" + "\n" + openFile;
+	    String folderPath = Utils.getResourceFromWithin(Constants.COGNICRYPT_ICON_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath();
+	    ImageIcon icon = new ImageIcon(folderPath);
+	   
+//	    System.out.println("this is us" + folderPath);
 	    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 	    JLabel label = new JLabel(message);
 	    label.setFont(new Font("Arial", 0, 18));
-	    int answer = JOptionPane.showConfirmDialog(frame, label, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, icon);
+	    
+	    int answer = JOptionPane.showConfirmDialog(frame, label, "CogniCrypt Analysis", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, icon);
 
 	    return answer;
 	    

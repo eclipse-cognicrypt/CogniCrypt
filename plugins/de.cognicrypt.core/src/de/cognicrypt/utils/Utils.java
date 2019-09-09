@@ -9,8 +9,11 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.OptionalInt;
+import java.util.regex.Matcher;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -45,9 +48,10 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.osgi.framework.Bundle;
+
 import com.google.common.base.CharMatcher;
+
 import de.cognicrypt.core.Activator;
-import de.cognicrypt.core.Constants;
 
 public class Utils {
 
@@ -252,16 +256,16 @@ public class Utils {
 			return getJavaProjectFromSelection(curSel);
 		}
 	}
-	
+
 	private static ISelection getCurrentSelection() {
 		return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
 	}
-	
-	
+
+
 	public static IResource getCurrentlySelectedIResource() {
 		return getIResourceFromSelection(getCurrentSelection());
 	}
-	
+
 	private static IResource getIResourceFromSelection(final ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			final Object element = ((IStructuredSelection) selection).getFirstElement();
@@ -271,7 +275,7 @@ public class Utils {
 		}
 		return null;
 	}
-	
+
 	private static IProject getJavaProjectFromSelection(final ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			final Object element = ((IStructuredSelection) selection).getFirstElement();
@@ -316,6 +320,36 @@ public class Utils {
 		return null;
 	}
 
+	/***
+	 * This method returns all sub-directories in a directory of the first level.
+	 * @param ruleSet JavaCryptographicArchitecture, BouncyCastle, Tink
+	 * @param inputPath input path where the CryptSL rules are stored
+	 * @return array of version numbers
+	 */
+	public static String[] getRuleVersions(String ruleSet, String inputPath){
+		List<String> versions = new ArrayList<String>();
+		File path = new File(System.getProperty("user.dir") + File.separator + ruleSet);
+		File[] innerDirs = path.listFiles();
+		for (File f: innerDirs) {
+			if (f.isDirectory()) {
+				String[] versionNumber = f.getPath().split(Matcher.quoteReplacement(System.getProperty("file.separator")));
+				versions.add(versionNumber[versionNumber.length - 1]);
+			}
+		}
+
+		versions.sort(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				Double one = Double.valueOf(o1);
+				Double two = Double.valueOf(o2);
+				return one.compareTo(two);
+			}
+		});
+
+		// https://shipilev.net/blog/2016/arrays-wisdom-ancients/
+		return versions.toArray(new String[0]);
+	}
+
 	protected static void setWindow(final IWorkbenchWindow activeWorkbenchWindow) {
 		Utils.window = activeWorkbenchWindow;
 	}
@@ -339,7 +373,7 @@ public class Utils {
 		headerGroup.setLayout(new GridLayout(1, true));
 		return headerGroup;
 	}
-	
+
 	public static boolean isIncompatibleJavaVersion() {
 		return isIncompatibleJavaVersion(System.getProperty("java.version", null));
 	}

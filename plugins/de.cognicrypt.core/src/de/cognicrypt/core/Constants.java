@@ -513,6 +513,7 @@ public class Constants {
 	public static final String TYPESTATE_ERROR_MARKER_TYPE = "de.cognicrypt.staticanalyzer.typestateErrorMarker";
 	
 	public static final String RULE_SELECTION = "JCASel";
+	public static final String RULES_VERSION = "RulesVersion";
 	public static final String AUTOMATED_ANALYSIS = "AutoAnal";
 	public static final String SHOW_SECURE_OBJECTS = "SecObj";
 	public static final String CALL_GRAPH_SELECTION = "CGSel";
@@ -555,6 +556,7 @@ public class Constants {
 	// define a correct ID (get range of possible ones)
 	public static final int JDT_PROBLEM_ID = 10000000;
 	public final static String RELATIVE_RULES_DIR = "resources/CrySLRules";
+	public final static String ECLIPSE_RULES_DIR = System.getProperty("user.dir");
 	public static final String cryslFileEnding = ".cryptsl";
 	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CryptSL";
 	public static final String HEALTHY = "Secure";
@@ -562,4 +564,20 @@ public class Constants {
 	
 	// define the max java version before which plugin works.
 	public static final String CC_JAVA_VERSION = "1.8";
+	
+	//Preference page rules table Constants
+	public static final String TABLE_HEADER_RULES = "Rules";
+	public static final String TABLE_HEADER_VERSION = "Version";
+	public static final String TABLE_HEADER_URL = "URL";
+	
+	public static final String JCA_TABLE_ITEM = "Java Cryptographic Architecture";
+	public static final String BC_TABLE_ITEM = "Bouncy Castle";
+	public static final String TINK_TABLE_ITEM = "Tink";
+	
+	public static final String NEXUS_SOOT_RELEASE = "https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release";
+	
+	//URLs of rulesets
+	public static final String JCA_NEXUS_URL= "https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/de/darmstadt/tu/crossing/JavaCryptographicArchitecture";
+	public static final String BC_NEXUS_URL = "https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/de/fraunhofer/iem/BouncyCastle";
+	public static final String TINK_NEXUS_URL = "https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/de/darmstadt/tu/crossing/Tink";
 }

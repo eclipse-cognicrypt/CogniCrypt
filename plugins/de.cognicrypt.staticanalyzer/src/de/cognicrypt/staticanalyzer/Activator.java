@@ -17,6 +17,7 @@ import org.osgi.framework.BundleContext;
 import de.cognicrypt.core.properties.CogniCryptPreferencePage;
 import de.cognicrypt.staticanalyzer.handlers.ShutDownHandler;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
+import de.cognicrypt.staticanalyzer.utils.ArtifactUtils;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -42,8 +43,10 @@ public class Activator extends AbstractUIPlugin {
 		Activator.plugin = this;
 		resReporters = new ArrayList<ResultsCCUIListener>();
 		PlatformUI.getWorkbench().addWorkbenchListener(new ShutDownHandler());
-		
+
 		CogniCryptPreferencePage.registerPreferenceListener(new StaticAnalyzerPreferences());
+		if(ArtifactUtils.downloadRulesets())
+			getDefault().logInfo("Rulesets updated.");
 	}
 
 	@Override
@@ -98,10 +101,9 @@ public class Activator extends AbstractUIPlugin {
 	public static List<ResultsCCUIListener> getResultsReporters() {
 		return resReporters;
 	}
-	
+
 	@Override
 	public IPreferenceStore getPreferenceStore() {
 		return de.cognicrypt.core.Activator.getDefault().getPreferenceStore();
 	}
-
 }

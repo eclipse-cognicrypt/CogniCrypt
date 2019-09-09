@@ -21,12 +21,14 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.osgi.service.prefs.BackingStoreException;
+import org.osgi.service.prefs.Preferences;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -39,10 +41,10 @@ import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.crysl.reader.CrySLModelReader;
 import de.cognicrypt.crysl.reader.CrySLReaderUtils;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
+import de.cognicrypt.staticanalyzer.utils.Ruleset;
 import de.cognicrypt.utils.Utils;
 import soot.G;
 import soot.PackManager;
@@ -74,7 +76,6 @@ public class SootRunner {
 					public ObservableICFG<Unit, SootMethod> icfg() {
 						return icfg;
 					}
-					
 				};
 				scanner.getAnalysisListener().addReportListener(resultsReporter);
 				scanner.scan(getRules(resultsReporter.getReporterProject()));
@@ -84,7 +85,6 @@ public class SootRunner {
 
 	private static List<CryptSLRule> getRules(IProject project) {
 		List<CryptSLRule> rules = Lists.newArrayList();
-		//TODO Select rules according to selected rulesets in preference page. The CrySL rules for each ruleset are in a separate subdirectory of "/resources/CrySLRules/".  
 		try {
 			for (String path : projectClassPath(JavaCore.create(project))) {
 				List<CryptSLRule> readRuleFromBinaryFiles = CrySLReaderUtils.readRuleFromBinaryFiles(path);
@@ -97,12 +97,37 @@ public class SootRunner {
 				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
-			rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin("/resources/CrySLRules/").getPath()), Integer.MAX_VALUE, (file,attr) -> file.toString().endsWith(".cryptslbin"))
-			.map(path -> CryptSLRuleReader.readFromFile(path.toFile())).collect(Collectors.toList()));
+			
+			Preferences prefs = InstanceScope.INSTANCE.getNode(de.cognicrypt.core.Activator.PLUGIN_ID);
+			try {
+				String[] listOfNodes = prefs.childrenNames();
+				for (String currentNode : listOfNodes) {
+					Preferences subPref = prefs.node(currentNode);
+					Ruleset loadedRuleset = new Ruleset(subPref);
+					if (loadedRuleset.isChecked()) {
+						String folderPath = Constants.ECLIPSE_RULES_DIR + File.separator + loadedRuleset.getFolderName() + 
+								File.separator + loadedRuleset.getSelectedVersion();
+						rules.addAll(Files
+								.find(Paths.get(new File(folderPath).getPath()), Integer.MAX_VALUE,
+										(file, attr) -> file.toString().endsWith(".cryptslbin"))
+								.map(path -> CryptSLRuleReader.readFromFile(path.toFile())).collect(Collectors.toList()));
+					}
+				}
+			} catch (BackingStoreException e) {
+				e.printStackTrace();
+			}
+			
+			if (rules.isEmpty()) {
+				Activator.getDefault().logInfo("No rules found in the specified location. Default rules folder selected - " + Constants.RELATIVE_RULES_DIR);
+				rules.addAll(Files
+						.find(Paths.get(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR).getPath()), Integer.MAX_VALUE,
+								(file, attr) -> file.toString().endsWith(".cryptslbin"))
+						.map(path -> CryptSLRuleReader.readFromFile(path.toFile())).collect(Collectors.toList()));
+			}
 		} catch (IOException e) {
 			Activator.getDefault().logError(e, "Could not load CrySL Rules");
 		}
-		if(rules.isEmpty()) {
+		if (rules.isEmpty()) {
 			Activator.getDefault().logInfo("No CrySL rules loaded");
 		}
 		return rules;
@@ -128,8 +153,7 @@ public class SootRunner {
 		registerTransformers(resultsReporter);
 		try {
 			runSoot();
-		}
-		catch (final Exception t) {
+		} catch (final Exception t) {
 			Activator.getDefault().logError(t);
 			return false;
 		}
@@ -156,14 +180,14 @@ public class SootRunner {
 		Scene.v().loadNecessaryClasses();
 		// choose call graph based on what user selected on preference page
 		switch (Activator.getDefault().getPreferenceStore().getInt(Constants.CALL_GRAPH_SELECTION)) {
-			case 1:
-				Options.v().setPhaseOption("cg.spark", "on");
-				Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");
-				break;
-			case 0:
-			default:
-				Options.v().setPhaseOption("cg.cha", "on");
-				Options.v().setPhaseOption("cg", "all-reachable:true");
+		case 1:
+			Options.v().setPhaseOption("cg.spark", "on");
+			Options.v().setPhaseOption("cg", "all-reachable:true,library:any-subtype");
+			break;
+		case 0:
+		default:
+			Options.v().setPhaseOption("cg.cha", "on");
+			Options.v().setPhaseOption("cg", "all-reachable:true");
 		}
 		Options.v().setPhaseOption("jb", "use-original-names:true");
 		Options.v().set_output_format(Options.output_format_none);

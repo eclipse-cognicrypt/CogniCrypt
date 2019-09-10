@@ -44,7 +44,7 @@ public class CrySLBuilder extends IncrementalProjectBuilder {
 				}
 			}
 			for (int i = 0; i < resourcesPaths.size(); i++) {
-					CrySLReaderUtils.storeRulesToFile(csmr.readRules(resourcesPaths.get(i).toOSString()), ResourcesPlugin.getWorkspace().getRoot().findMember(outputPaths.get(i)).getLocation().toOSString());
+					CrySLReaderUtils.storeRulesToFile(csmr.readRulesWithin(resourcesPaths.get(i).toOSString()), ResourcesPlugin.getWorkspace().getRoot().findMember(outputPaths.get(i)).getLocation().toOSString());
 			}
 		}
 		catch (IOException e) {

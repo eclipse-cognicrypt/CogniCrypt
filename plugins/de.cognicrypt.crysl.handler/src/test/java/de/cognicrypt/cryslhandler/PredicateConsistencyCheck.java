@@ -1,20 +1,23 @@
 package de.cognicrypt.cryslhandler;
 
 import static org.junit.Assert.assertEquals;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 import crypto.rules.CryptSLPredicate;
 import crypto.rules.CryptSLRule;
+import de.cognicrypt.crysl.reader.CrySLModelReader;
 import de.cognicrypt.crysl.reader.CrySLReaderUtils;
 
 public class PredicateConsistencyCheck {
 
 	@Test
-	public void predicateParameterNumberConsistencyTest() {
-		List<CryptSLRule> rules = CrySLReaderUtils.readRuleFromBinaryFiles("../de.cognicrypt.core/resources/CrySLRules/JavaCryptographicArchitecture");
+	public void predicateParameterNumberConsistencyTest() throws MalformedURLException, CoreException {
+		List<CryptSLRule> rules = (new CrySLModelReader()).readRulesOutside("../de.cognicrypt.core/resources/CrySLRules/JavaCryptographicArchitecture");
 		Map<String, List<PredicateDetails>> predicates = new HashMap<String, List<PredicateDetails>>();
 		for (CryptSLRule rule : rules) {
 

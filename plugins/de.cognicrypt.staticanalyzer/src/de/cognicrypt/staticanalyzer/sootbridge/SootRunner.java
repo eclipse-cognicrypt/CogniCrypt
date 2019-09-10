@@ -17,7 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -28,11 +27,9 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
 import boomerang.callgraph.ObservableDynamicICFG;
 import boomerang.callgraph.ObservableICFG;
 import boomerang.preanalysis.BoomerangPretransformer;
@@ -75,7 +72,7 @@ public class SootRunner {
 					public ObservableICFG<Unit, SootMethod> icfg() {
 						return icfg;
 					}
-					
+
 				};
 				scanner.getAnalysisListener().addReportListener(resultsReporter);
 				scanner.scan(getRules(resultsReporter.getReporterProject()));
@@ -85,33 +82,34 @@ public class SootRunner {
 
 	private static List<CryptSLRule> getRules(IProject project) {
 		List<CryptSLRule> rules = Lists.newArrayList();
-		//TODO Select rules according to selected rulesets in preference page. The CrySL rules for each ruleset are in a separate subdirectory of "/resources/CrySLRules/".  
+		// TODO Select rules according to selected rulesets in preference page. The CrySL rules for each ruleset are in a separate subdirectory of "/resources/CrySLRules/".
 		try {
+			CrySLModelReader r = new CrySLModelReader(project);
 			for (String path : projectClassPath(JavaCore.create(project))) {
-				List<CryptSLRule> readRuleFromBinaryFiles = CrySLReaderUtils.readRuleFromBinaryFiles(path);
+				List<CryptSLRule> readRuleFromBinaryFiles = r.readRulesWithin(path);
 				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
-			
+
 			for (String path : applicationClassPath(JavaCore.create(project))) {
-				List<CryptSLRule> readRuleFromBinaryFiles = CrySLReaderUtils.readRuleFromBinaryFiles(path);
+				List<CryptSLRule> readRuleFromBinaryFiles = r.readRulesWithin(path);
 				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
-			
-			rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin("/resources/CrySLRules/").getPath()), Integer.MAX_VALUE, (file,attr) -> file.toString().endsWith(".cryptsl"))
-		 	 .map(path -> {
-				try {
-					return CryptSLRuleReader.readFromSourceFile(path.toFile());
-				}
-				catch (MalformedURLException e) {
-				}
-				return null;
-			}).collect(Collectors.toList()));			
-		} catch (IOException e) {
+
+			rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin("/resources/CrySLRules/").getPath()), Integer.MAX_VALUE, (file, attr) -> file.toString().endsWith(".cryptsl"))
+					.map(path -> {
+						try {
+							return CryptSLRuleReader.readFromSourceFile(path.toFile());
+						}
+						catch (MalformedURLException e) {}
+						return null;
+					}).collect(Collectors.toList()));
+		}
+		catch (IOException | CoreException e) {
 			Activator.getDefault().logError(e, "Could not load CrySL Rules");
 		}
-		if(rules.isEmpty()) {
+		if (rules.isEmpty()) {
 			Activator.getDefault().logInfo("No CrySL rules loaded");
 		}
 		return rules;
@@ -220,11 +218,13 @@ public class SootRunner {
 			final URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
 			urls.add(new File(uriString).getAbsolutePath());
 			return urls;
-		} catch (final Exception e) {
+		}
+		catch (final Exception e) {
 			Activator.getDefault().logError(e, "Error building project classpath");
 			return Lists.newArrayList();
 		}
 	}
+
 	private static Collection<String> libraryClassPath(IJavaProject project) {
 		Collection<String> libraryClassPath = Sets.newHashSet();
 		IClasspathEntry[] rentries;
@@ -234,7 +234,8 @@ public class SootRunner {
 				resolveClassPathEntry(entry, libraryClassPath, project);
 			}
 
-		} catch (CoreException e1) {
+		}
+		catch (CoreException e1) {
 			e1.printStackTrace();
 		}
 		return libraryClassPath;
@@ -243,44 +244,44 @@ public class SootRunner {
 	private static void resolveClassPathEntry(IClasspathEntry entry, Collection<String> libraryClassPath, IJavaProject project) {
 		IClasspathEntry[] rentries;
 		switch (entry.getEntryKind()) {
-		case IClasspathEntry.CPE_SOURCE:
-			libraryClassPath.addAll(applicationClassPath(project));
-			break;
-		case IClasspathEntry.CPE_PROJECT:
-            IJavaProject requiredProject = JavaCore.create((IProject) ResourcesPlugin.getWorkspace().getRoot().findMember(entry.getPath()));
-			try {
-				rentries = project.getRawClasspath();
-				for (IClasspathEntry e : rentries) {
-					resolveClassPathEntry(e, libraryClassPath, requiredProject);
+			case IClasspathEntry.CPE_SOURCE:
+				libraryClassPath.addAll(applicationClassPath(project));
+				break;
+			case IClasspathEntry.CPE_PROJECT:
+				IJavaProject requiredProject = JavaCore.create((IProject) ResourcesPlugin.getWorkspace().getRoot().findMember(entry.getPath()));
+				try {
+					rentries = project.getRawClasspath();
+					for (IClasspathEntry e : rentries) {
+						resolveClassPathEntry(e, libraryClassPath, requiredProject);
+					}
 				}
-			} catch (JavaModelException e1) {
-				e1.printStackTrace();
-			}
-			break;
-		case IClasspathEntry.CPE_LIBRARY:
+				catch (JavaModelException e1) {
+					e1.printStackTrace();
+				}
+				break;
+			case IClasspathEntry.CPE_LIBRARY:
 
-			if(entry.getPath().segment(0).equals(project.getProject().getName())) {
-				libraryClassPath.add(project.getProject().getParent().getRawLocation()+Constants.innerFileSeparator+entry.getPath().toOSString());
-			}
-			else {
-				libraryClassPath.add(entry.getPath().toOSString());
-			}			
-			break;
-		case IClasspathEntry.CPE_VARIABLE:
-			// JRE entry
-			break;
-		case IClasspathEntry.CPE_CONTAINER:
-			try {
-				IClasspathContainer container = JavaCore.getClasspathContainer(
-				          entry.getPath(), project);
-				IClasspathEntry[] subEntries = container.getClasspathEntries();
-				for(IClasspathEntry subEntry : subEntries) {
-					resolveClassPathEntry(subEntry, libraryClassPath, project);
+				if (entry.getPath().segment(0).equals(project.getProject().getName())) {
+					libraryClassPath.add(project.getProject().getParent().getRawLocation() + Constants.innerFileSeparator + entry.getPath().toOSString());
+				} else {
+					libraryClassPath.add(entry.getPath().toOSString());
 				}
-			} catch (JavaModelException e) {
-				e.printStackTrace();
-			}
-			break;
+				break;
+			case IClasspathEntry.CPE_VARIABLE:
+				// JRE entry
+				break;
+			case IClasspathEntry.CPE_CONTAINER:
+				try {
+					IClasspathContainer container = JavaCore.getClasspathContainer(entry.getPath(), project);
+					IClasspathEntry[] subEntries = container.getClasspathEntries();
+					for (IClasspathEntry subEntry : subEntries) {
+						resolveClassPathEntry(subEntry, libraryClassPath, project);
+					}
+				}
+				catch (JavaModelException e) {
+					e.printStackTrace();
+				}
+				break;
 		}
 	}
 

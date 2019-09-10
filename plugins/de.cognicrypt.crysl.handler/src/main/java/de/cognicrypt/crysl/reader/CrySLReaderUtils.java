@@ -12,11 +12,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
+import com.google.common.io.Files;
 import crypto.rules.CryptSLMethod;
 import crypto.rules.CryptSLRule;
 import de.cognicrypt.core.Activator;
@@ -104,10 +106,8 @@ public class CrySLReaderUtils {
 	}
 
 	public static void storeRuletoFile(final CryptSLRule rule, final String folderPath) throws IOException {
-		String className = rule.getClassName();
-		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(folderPath + Constants.outerFileSeparator + className.substring(className.lastIndexOf(".") + 1) + ".cryptslbin"))) {
-			out.writeObject(rule);
-		}
+		File written = new File(folderPath + Constants.innerFileSeparator + rule.getClassName() + Constants.cryslFileEnding);
+		Files.write(rule.toString(), written, StandardCharsets.UTF_8);
 	}
 	
 	public static void storeRulesToFile(final List<CryptSLRule> rules, final String folder) throws IOException {
@@ -115,27 +115,4 @@ public class CrySLReaderUtils {
 			storeRuletoFile(rule, folder);
 		}
 	}
-
-	public static List<CryptSLRule> readRuleFromBinaryFiles(final String folderPath) {
-		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
-			Arrays.asList((new File(folderPath)).list()).stream().filter(e -> {
-				
-			int lastIndexOf = e.lastIndexOf(".");
-			return (lastIndexOf > -1) ? ".cryptslbin".equals(e.substring(lastIndexOf)) : false;
-	}).forEach(e -> {
-				try {
-					rules.add(readRuleFromBinaryFile(folderPath, e.substring(0, e.lastIndexOf("."))));
-				} catch (ClassNotFoundException | IOException e1) {
-					Activator.getDefault().logError("Well, that didn't work.");
-				}
-			});
-		return rules;
-	}
-	
-	public static CryptSLRule readRuleFromBinaryFile(final String folderPath, final String ruleNameName) throws FileNotFoundException, IOException, ClassNotFoundException {
-		try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(folderPath + Constants.innerFileSeparator + ruleNameName + ".cryptslbin"));) {
-			return (CryptSLRule) in.readObject();
-		}
-	}
-
 }

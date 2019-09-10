@@ -10,56 +10,6 @@
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
-  
-  <properties>
-		<aetherVersion>1.1.0</aetherVersion>
-		<mavenVersion>3.3.3</mavenVersion>
-	</properties>
-  
-  <dependencies>
-		<dependency>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-api</artifactId>
-			<version>${aetherVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-spi</artifactId>
-			<version>${aetherVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-impl</artifactId>
-			<version>${aetherVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-connector-basic</artifactId>
-			<version>${aetherVersion}</version>
-		</dependency>
-		<!-- FIXME Plugin is not able resolve aether-transport-file, aether-transport-http, zip4j dependencies-->
-		<dependency>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-transport-file</artifactId>
-			<version>${aetherVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-transport-http</artifactId>
-			<version>${aetherVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-aether-provider</artifactId>
-			<version>${mavenVersion}</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j -->
-		<dependency>
-			<groupId>net.lingala.zip4j</groupId>
-			<artifactId>zip4j</artifactId>
-			<version>2.1.1</version>
-		</dependency>
-	</dependencies>
 
   <build>
     <plugins>

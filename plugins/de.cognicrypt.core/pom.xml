@@ -45,8 +45,6 @@
 			<artifactId>aether-connector-basic</artifactId>
 			<version>${aetherVersion}</version>
 		</dependency>
-		<!-- FIXME Plugin is not able resolve aether-transport-file, aether-transport-http, 
-			zip4j dependencies -->
 		<dependency>
 			<groupId>org.eclipse.aether</groupId>
 			<artifactId>aether-transport-file</artifactId>
@@ -62,7 +60,6 @@
 			<artifactId>maven-aether-provider</artifactId>
 			<version>${mavenVersion}</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j -->
 		<dependency>
 			<groupId>net.lingala.zip4j</groupId>
 			<artifactId>zip4j</artifactId>
@@ -73,14 +70,13 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.5.9</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-
 	</dependencies>
+	
 	<build>
 	<plugins>
 		<plugin>
@@ -88,7 +84,7 @@
 			<artifactId>maven-dependency-plugin</artifactId>
 			<version>3.1.1</version>
 			<executions>
-			<execution>
+				<execution>
 					<id>copy-dependencies</id>
 					<phase>generate-sources</phase>
 					<goals>
@@ -98,47 +94,6 @@
 						<outputDirectory>${basedir}/lib</outputDirectory>
 						<includeScope>runtime</includeScope>
 						<stripVersion>true</stripVersion>
-					</configuration>
-				</execution>
-				<execution>
-					<id>unpack</id>
-					<phase>compile</phase>
-					<goals>
-						<goal>unpack</goal>
-					</goals>
-					<configuration>
-						<artifactItems>
-							<artifactItem>
-								<groupId>de.darmstadt.tu.crossing</groupId>
-								<artifactId>JavaCryptographicArchitecture</artifactId>
-								<version>1.0</version>
-								<classifier>ruleset</classifier>
-								<type>zip</type>
-								<overWrite>true</overWrite>
-								<outputDirectory>resources/CrySLRules</outputDirectory>
-								<includes>**</includes>
-							</artifactItem>
-							<artifactItem>
-								<groupId>de.fraunhofer.iem</groupId>
-								<artifactId>BouncyCastle</artifactId>
-								<version>0.4</version>
-								<classifier>ruleset</classifier>
-								<type>zip</type>
-								<overWrite>true</overWrite>
-								<outputDirectory>resources/CrySLRules</outputDirectory>
-								<includes>**</includes>
-							</artifactItem>
-							<artifactItem>
-								<groupId>de.darmstadt.tu.crossing</groupId>
-								<artifactId>Tink</artifactId>
-								<version>0.1</version>
-								<classifier>ruleset</classifier>
-								<type>zip</type>
-								<overWrite>true</overWrite>
-								<outputDirectory>resources/CrySLRules</outputDirectory>
-								<includes>**</includes>
-							</artifactItem>
-						</artifactItems>
 					</configuration>
 				</execution>
 			</executions>

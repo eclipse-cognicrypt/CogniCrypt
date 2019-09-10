@@ -8,12 +8,10 @@ public class SootThread extends Thread {
 	private boolean succ = false;
 	private final IJavaProject curProj;
 	private final ResultsCCUIListener resultsReporter;
-	private final Boolean dependencyAnalyser;
 
-	public SootThread(final IJavaProject curProject, final ResultsCCUIListener resultsListener, final Boolean dependencyAnalyser) {
+	public SootThread(final IJavaProject curProject, final ResultsCCUIListener resultsListener) {
 		this.curProj = curProject;
 		this.resultsReporter = resultsListener;
-		this.dependencyAnalyser = dependencyAnalyser;
 	}
 
 	public boolean isSucc() {
@@ -22,6 +20,6 @@ public class SootThread extends Thread {
 
 	@Override
 	public void run() {
-		this.succ = SootRunner.runSoot(this.curProj, this.resultsReporter, this.dependencyAnalyser);
+		this.succ = SootRunner.runSoot(this.curProj, this.resultsReporter);
 	}
 }

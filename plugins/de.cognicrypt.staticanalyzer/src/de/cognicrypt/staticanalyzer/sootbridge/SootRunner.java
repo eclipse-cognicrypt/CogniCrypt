@@ -21,7 +21,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -38,7 +37,6 @@ import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.crysl.reader.CrySLModelReader;
-import de.cognicrypt.crysl.reader.CrySLReaderUtils;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.utils.Utils;
@@ -236,7 +234,7 @@ public class SootRunner {
 
 		}
 		catch (CoreException e1) {
-			e1.printStackTrace();
+			Activator.getDefault().logError(e1);
 		}
 		return libraryClassPath;
 	}
@@ -256,7 +254,7 @@ public class SootRunner {
 					}
 				}
 				catch (JavaModelException e1) {
-					e1.printStackTrace();
+					Activator.getDefault().logError(e1);
 				}
 				break;
 			case IClasspathEntry.CPE_LIBRARY:
@@ -279,7 +277,7 @@ public class SootRunner {
 					}
 				}
 				catch (JavaModelException e) {
-					e.printStackTrace();
+					Activator.getDefault().logError(e);
 				}
 				break;
 		}

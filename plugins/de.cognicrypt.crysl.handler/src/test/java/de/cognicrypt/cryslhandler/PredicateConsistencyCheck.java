@@ -1,6 +1,5 @@
 package de.cognicrypt.cryslhandler;
 
-import static org.junit.Assert.assertEquals;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +10,6 @@ import org.junit.Test;
 import crypto.rules.CryptSLPredicate;
 import crypto.rules.CryptSLRule;
 import de.cognicrypt.crysl.reader.CrySLModelReader;
-import de.cognicrypt.crysl.reader.CrySLReaderUtils;
 
 public class PredicateConsistencyCheck {
 

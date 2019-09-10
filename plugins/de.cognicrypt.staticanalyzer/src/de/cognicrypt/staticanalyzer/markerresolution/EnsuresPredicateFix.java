@@ -31,12 +31,11 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.ui.IMarkerResolution;
-
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.utilities.QuickFixUtils;
 import de.cognicrypt.utils.DeveloperProject;
 import de.cognicrypt.utils.Utils;
-import de.cognicrypt.staticanalyzer.utilities.QuickFixUtils;
 
 public class EnsuresPredicateFix implements IMarkerResolution{
 	private final String label;

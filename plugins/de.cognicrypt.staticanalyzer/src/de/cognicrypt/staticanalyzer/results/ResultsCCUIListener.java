@@ -192,7 +192,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap);
 			} else {
 
-				// update existing LineNumber
+				// update existing line number
 				final Node suppressWarningNode = this.xmlParser.getNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR, stmtId + "");
 				final Node lineNumberNode = this.xmlParser.getChildNodeByTagName(suppressWarningNode, Constants.LINENUMBER_ELEMENT);
 				this.xmlParser.updateNodeValue(lineNumberNode, lineNumber + "");
@@ -213,8 +213,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	// It only works when the secure object checkbox in preference page is checked
 	@Override
 	public void onSecureObjectFound(final IAnalysisSeed secureObject) {
-		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		if (store.getBoolean(Constants.SHOW_SECURE_OBJECTS) == false) {
+		if (!Activator.getDefault().getPreferenceStore().getBoolean(Constants.SHOW_SECURE_OBJECTS)) {
 			return;
 		} else {
 			final Statement stmt = secureObject.stmt();
@@ -231,7 +230,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 						break;
 					}
 				}
-
 			}
 			final Value varName = var.getValue();
 			this.markerGenerator.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt), unit.getJavaSourceStartLineNumber(),

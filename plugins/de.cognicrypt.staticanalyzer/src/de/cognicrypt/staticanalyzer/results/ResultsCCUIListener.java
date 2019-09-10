@@ -110,12 +110,13 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void reportError(final AbstractError error) {
-		final String errorMessage = error.toErrorMarkerString();
-		final Statement errorLocation = error.getErrorLocation();
 		IResource sourceFile = null;
 		if (this.depVariable) {
 			return;
 		}
+		final String errorMessage = error.toErrorMarkerString();
+		final Statement errorLocation = error.getErrorLocation();
+
 		sourceFile = unitToResource(errorLocation);
 		final int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
 		

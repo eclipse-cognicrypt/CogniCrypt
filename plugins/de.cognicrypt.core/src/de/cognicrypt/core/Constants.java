@@ -498,6 +498,9 @@ public class Constants {
 	public static final String AUTOMATED_ANALYSIS = "AutoAnal";
 	public static final String SHOW_SECURE_OBJECTS = "SecObj";
 	public static final String CALL_GRAPH_SELECTION = "CGSel";
+
+	public static final String ANALYSE_DEPENDENCIES = "analyseDep";
+	
 	public static final String PERSIST_CONFIG = "de.cognicrypt.codegenerator.persistConfig";
 	
 	// for creating xml file
@@ -537,6 +540,7 @@ public class Constants {
 	// define a correct ID (get range of possible ones)
 	public static final int JDT_PROBLEM_ID = 10000000;
 	public final static String RELATIVE_RULES_DIR = "resources/CrySLRules";
+	public final static String COGNICRYPT_ICON_DIR = "icons/cognicrypt-analysis.png";
 	public static final String cryslFileEnding = ".cryptsl";
 	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CryptSL";
 	public static final String HEALTHY = "Secure";

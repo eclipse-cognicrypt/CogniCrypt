@@ -12,6 +12,7 @@ public class RunAnalysisHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+		
 		final AnalysisKickOff akf = new AnalysisKickOff();
 		IProject ip = Utils.getCurrentlySelectedIProject();
 		final IJavaElement iJavaElement = JavaCore.create(ip);
@@ -20,7 +21,5 @@ public class RunAnalysisHandler extends AbstractHandler {
 		}
 		return null;
 	}
-
-	
 
 }

@@ -227,7 +227,7 @@ public class SootRunner {
 		IClasspathEntry[] rentries;
 		try {
 			// check if "include dependencies" checkbox is checked in preference page or analysis is running for dependencies 
-			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) == true || dependencyAnalyser == true) {
+			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) || dependencyAnalyser) {
 
 				rentries = project.getRawClasspath();
 				for (IClasspathEntry entry : rentries) {

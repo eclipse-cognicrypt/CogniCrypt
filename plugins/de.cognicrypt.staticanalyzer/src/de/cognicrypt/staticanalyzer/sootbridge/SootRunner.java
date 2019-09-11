@@ -7,6 +7,7 @@ package de.cognicrypt.staticanalyzer.sootbridge;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -97,8 +98,16 @@ public class SootRunner {
 				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
-			rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin("/resources/CrySLRules/").getPath()), Integer.MAX_VALUE, (file,attr) -> file.toString().endsWith(".cryptslbin"))
-			.map(path -> CryptSLRuleReader.readFromFile(path.toFile())).collect(Collectors.toList()));
+			
+			rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin("/resources/CrySLRules/").getPath()), Integer.MAX_VALUE, (file,attr) -> file.toString().endsWith(".cryptsl"))
+		 	 .map(path -> {
+				try {
+					return CryptSLRuleReader.readFromSourceFile(path.toFile());
+				}
+				catch (MalformedURLException e) {
+				}
+				return null;
+			}).collect(Collectors.toList()));			
 		} catch (IOException e) {
 			Activator.getDefault().logError(e, "Could not load CrySL Rules");
 		}

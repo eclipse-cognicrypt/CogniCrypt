@@ -76,8 +76,7 @@ public class ErrorMarkerGenerator {
 			Activator.getDefault().logError(e);
 			return false;
 		}
-		this.markers.add(marker);
-		return true;
+		return this.markers.add(marker);
 	}
 
 

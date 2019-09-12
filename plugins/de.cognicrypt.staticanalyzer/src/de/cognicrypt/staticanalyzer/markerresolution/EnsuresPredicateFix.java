@@ -136,8 +136,6 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 					TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
 			listRewrite.insertBefore(ePStatementFieldDec, node, null);
 
-		} else {
-
 		}
 
 		final TextEdit edits = rewriter.rewriteAST();
@@ -247,8 +245,6 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 				} else {
 					return true;
 				}
-			} else {
-				return false;
 			}
 
 			return false;
@@ -269,8 +265,6 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 				} else {
 					return true;
 				}
-			} else {
-				return false;
 			}
 
 			return false;
@@ -291,8 +285,6 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 				} else {
 					return true;
 				}
-			} else {
-				return false;
 			}
 
 			return false;

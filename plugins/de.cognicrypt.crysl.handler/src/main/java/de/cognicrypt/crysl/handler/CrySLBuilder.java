@@ -23,7 +23,7 @@ import de.cognicrypt.crysl.reader.CrySLReaderUtils;
 public class CrySLBuilder extends IncrementalProjectBuilder {
 
 	public static final String BUILDER_ID = "de.cognicrypt.crysl.handler.cryslbuilder";
-	
+
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		try {
@@ -32,7 +32,7 @@ public class CrySLBuilder extends IncrementalProjectBuilder {
 			List<IPath> resourcesPaths = new ArrayList<IPath>();
 			List<IPath> outputPaths = new ArrayList<IPath>();
 			IJavaProject projectAsJavaProject = JavaCore.create(curProject);
-			
+
 			for (final IClasspathEntry entry : projectAsJavaProject.getResolvedClasspath(true)) {
 				if (entry.getContentKind() == IPackageFragmentRoot.K_SOURCE) {
 					IPath res = entry.getPath();
@@ -44,7 +44,8 @@ public class CrySLBuilder extends IncrementalProjectBuilder {
 				}
 			}
 			for (int i = 0; i < resourcesPaths.size(); i++) {
-					CrySLReaderUtils.storeRulesToFile(csmr.readRulesWithin(resourcesPaths.get(i).toOSString()), ResourcesPlugin.getWorkspace().getRoot().findMember(outputPaths.get(i)).getLocation().toOSString());
+				CrySLReaderUtils.storeRulesToFile(csmr.readRulesWithin(resourcesPaths.get(i).toOSString()),
+						ResourcesPlugin.getWorkspace().getRoot().findMember(outputPaths.get(i)).getLocation().toOSString());
 			}
 		}
 		catch (IOException e) {
@@ -60,7 +61,8 @@ public class CrySLBuilder extends IncrementalProjectBuilder {
 			if (entry.getContentKind() == IPackageFragmentRoot.K_SOURCE && !(entry.getPath().toPortableString().lastIndexOf(Constants.innerFileSeparator) < 1)) {
 				IPath outputLocation = entry.getOutputLocation();
 				if (outputLocation != null) {
-				Arrays.asList(new File(project.getLocation().toOSString() + Constants.outerFileSeparator + outputLocation.removeFirstSegments(1).toOSString()).listFiles()).parallelStream().forEach(e -> e.delete());
+					Arrays.asList(new File(project.getLocation().toOSString() + Constants.outerFileSeparator + outputLocation.removeFirstSegments(1).toOSString()).listFiles())
+							.parallelStream().forEach(e -> e.delete());
 				}
 			}
 		}

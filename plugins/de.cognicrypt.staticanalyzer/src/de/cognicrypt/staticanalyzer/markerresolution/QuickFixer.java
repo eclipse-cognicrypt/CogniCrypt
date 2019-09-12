@@ -1,7 +1,6 @@
 package de.cognicrypt.staticanalyzer.markerresolution;
 
 import java.util.ArrayList;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IMarkerResolution;

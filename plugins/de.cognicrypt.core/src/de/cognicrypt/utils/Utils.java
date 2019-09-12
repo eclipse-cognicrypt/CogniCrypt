@@ -54,7 +54,6 @@ import crypto.rules.CryptSLRule;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
 import de.cognicrypt.core.Activator;
-import de.cognicrypt.core.Constants;
 
 public class Utils {
 

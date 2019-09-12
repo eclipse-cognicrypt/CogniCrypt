@@ -210,17 +210,6 @@ public class CrySLModelReader {
 		System.out.println("===========================================");
 		System.out.println("");
 
-		if (!testMode) {
-			final String className = rule.getClassName().substring(rule.getClassName().lastIndexOf(".") + 1);
-			String folderPath = Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath();
-			try {
-				CrySLReaderUtils.storeRuletoFile(rule, folderPath);
-				CrySLReaderUtils.readRuleFromBinaryFile(folderPath, className);
-			}
-			catch (ClassNotFoundException | IOException e) {
-				Activator.getDefault().logError(e, "Failed to store CrySL Rule for " + className + " to disk.");
-			}
-		}
 		return rule;
 	}
 
@@ -254,8 +243,17 @@ public class CrySLModelReader {
 		}
 		return collected;
 	}
+	
+	public List<CryptSLRule> readRulesOutside(String resourcesPath) throws CoreException {
+		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
+		for (File a : ((new File(resourcesPath)).listFiles())) {
+			rules.add(readRule(a));
+		}
+		
+		return rules;
+	}
 
-	public List<CryptSLRule> readRules(String resourcesPath) throws CoreException {
+	public List<CryptSLRule> readRulesWithin(String resourcesPath) throws CoreException {
 		final IPath rulesFolder = (new org.eclipse.core.runtime.Path(resourcesPath));
 		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
 		if (rulesFolder.segmentCount() == 1) {
@@ -268,7 +266,7 @@ public class CrySLModelReader {
 					rules.add(rule);
 				}
 			} else if (res instanceof IFolder) {
-				rules.addAll(readRules(res.getFullPath().toOSString()));
+				rules.addAll(readRulesWithin(res.getFullPath().toOSString()));
 			}
 		}
 

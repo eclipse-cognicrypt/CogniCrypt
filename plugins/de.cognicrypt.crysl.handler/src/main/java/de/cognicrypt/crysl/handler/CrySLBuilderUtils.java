@@ -45,23 +45,23 @@ public class CrySLBuilderUtils {
 			Activator.getDefault().logError(e);
 		}
 	}
-	
+
 	static boolean hasCrySLFiles(IContainer cont) throws CoreException {
 		boolean hasCrySLFiles = false;
 		for (IResource member : cont.members()) {
 			if (member instanceof IContainer) {
 				hasCrySLFiles = hasCrySLFiles((IContainer) member);
 			}
-			
+
 			if (member instanceof IFile && Constants.cryslFileEnding.equals(((IFile) member).getFileExtension())) {
 				return true;
 			}
 		}
 		return hasCrySLFiles;
 	}
-	
+
 	public static boolean hasCrySLBuilder(IProject project) throws CoreException {
 		return Arrays.asList(project.getDescription().getBuildSpec()).stream().anyMatch(e -> CrySLBuilder.BUILDER_ID.equals(e.getBuilderName()));
 	}
-	
+
 }

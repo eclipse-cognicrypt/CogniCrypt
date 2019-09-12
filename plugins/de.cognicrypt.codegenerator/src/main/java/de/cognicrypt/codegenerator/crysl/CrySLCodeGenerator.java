@@ -1,7 +1,7 @@
 package de.cognicrypt.codegenerator.crysl;
 import java.util.List;
 
-public class CrySLCodeGenerator {
+public class CrySLCodeGenerator implements RuleContext, BeforeRuleContext{
 
 	private RuleGenConfig last = null;
 	private List<RuleGenConfig> ruleConfigs;
@@ -9,11 +9,11 @@ public class CrySLCodeGenerator {
 	private CrySLCodeGenerator() {
 	}
 	
-	public static CrySLCodeGenerator getInstance() {
+	public static BeforeRuleContext getInstance() {
 		return new CrySLCodeGenerator();
 	}
 	
-	public CrySLCodeGenerator considerCrySLRule(String rule) {
+	public CrySLCodeGenerator includeClass(String rule) {
 		resolveLast();
 		last = new RuleGenConfig(rule);
 		return this;

@@ -15,7 +15,7 @@ public class Signer {
 	
 	public static java.security.KeyPair getKey() throws NoSuchAlgorithmException {
 		java.security.KeyPair pair = null;
-		CrySLCodeGenerator.getInstance().considerCrySLRule("java.security.KeyPairGenerator").addReturnObject(pair).generate();
+		CrySLCodeGenerator.getInstance().includeClass("java.security.KeyPairGenerator").addReturnObject(pair).generate();
 		return pair;
 	}
 
@@ -24,7 +24,7 @@ public class Signer {
 		byte[] msgBytes = msg.getBytes(StandardCharsets.UTF_8);
 		byte[] res = null;
 		java.security.PrivateKey privKey = keyPair.getPrivate();
-		CrySLCodeGenerator.getInstance().considerCrySLRule("java.security.Signature").addParameter(privKey, "initSign", 0).addParameter(msgBytes, "update", 0).addReturnObject(res).generate();
+		CrySLCodeGenerator.getInstance().includeClass("java.security.Signature").addParameter(privKey, "initSign", 0).addParameter(msgBytes, "update", 0).addReturnObject(res).generate();
 		return res;
 	}
 
@@ -33,7 +33,7 @@ public class Signer {
 		boolean res = false;
 		byte[] msgBytes = msg.getBytes(StandardCharsets.UTF_8);
 		java.security.PublicKey pubKey = keyPair.getPublic();
-		CrySLCodeGenerator.getInstance().considerCrySLRule("java.security.Signature").addParameter(pubKey, "initVerify", 0).addParameter(msgBytes, "verify", 0).addReturnObject(res).generate();
+		CrySLCodeGenerator.getInstance().includeClass("java.security.Signature").addParameter(pubKey, "initVerify", 0).addParameter(msgBytes, "verify", 0).addReturnObject(res).generate();
 		return res;
 	}
 

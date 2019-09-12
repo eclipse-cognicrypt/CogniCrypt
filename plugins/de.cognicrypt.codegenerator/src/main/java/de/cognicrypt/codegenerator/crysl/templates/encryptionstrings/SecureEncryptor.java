@@ -16,9 +16,9 @@ public class SecureEncryptor {
 	public javax.crypto.SecretKey getKey(char[] pwd) {
 		byte[] salt = new byte[32];
 		javax.crypto.SecretKey encryptionKey = null;
-		CrySLCodeGenerator.getInstance().considerCrySLRule("java.security.SecureRandom").addParameter(salt, "nextBytes", 0).
-			considerCrySLRule("java.security.PBEKeySpec").addParameter(pwd, "PBEKeySpec", 0).considerCrySLRule("javax.crypto.SecretKeyFactory").
-			considerCrySLRule("java.security.SecretKey").considerCrySLRule("javax.crypto.SecretKeySpec").addReturnObject(encryptionKey)
+		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(salt, "nextBytes", 0).
+			includeClass("java.security.PBEKeySpec").addParameter(pwd, "PBEKeySpec", 0).includeClass("javax.crypto.SecretKeyFactory").
+			includeClass("java.security.SecretKey").includeClass("javax.crypto.SecretKeySpec").addReturnObject(encryptionKey)
 			.generate();
 		
 		return encryptionKey;
@@ -30,8 +30,8 @@ public class SecureEncryptor {
 		byte[] plaintextString = plaintext.getBytes(StandardCharsets.UTF_8);
 		int mode = Cipher.ENCRYPT_MODE;
 		
-		CrySLCodeGenerator.getInstance().considerCrySLRule("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "IvParameterSpec", 0)
-		.considerCrySLRule("javax.crypto.Cipher").addParameter(mode, "init", 0).addParameter(plaintextString,"doFinal", 0).addParameter(key, "init", 1).addReturnObject(res)
+		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "IvParameterSpec", 0)
+		.includeClass("javax.crypto.Cipher").addParameter(mode, "init", 0).addParameter(plaintextString,"doFinal", 0).addParameter(key, "init", 1).addReturnObject(res)
 			.generate(); 
 		
 		byte[] ret = new byte[ivBytes.length + res.length];
@@ -50,8 +50,8 @@ public class SecureEncryptor {
 		
 		int mode = Cipher.DECRYPT_MODE;
 		byte[] res = null;
-		CrySLCodeGenerator.getInstance().considerCrySLRule("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "IvParameterSpec", 0)
-		.considerCrySLRule("javax.crypto.Cipher").addParameter(mode, "init", 0).addParameter(data,"doFinal", 0).addParameter(key, "init", 1).addReturnObject(res)
+		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "IvParameterSpec", 0)
+		.includeClass("javax.crypto.Cipher").addParameter(mode, "init", 0).addParameter(data,"doFinal", 0).addParameter(key, "init", 1).addReturnObject(res)
 			.generate(); 
 		
 		return new String(res, StandardCharsets.UTF_8);

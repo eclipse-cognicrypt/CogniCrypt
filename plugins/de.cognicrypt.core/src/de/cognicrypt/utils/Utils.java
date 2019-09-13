@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.osgi.framework.Bundle;
 import com.google.common.base.CharMatcher;
+import crypto.cryptslhandler.CrySLModelReader;
 import crypto.rules.CryptSLRule;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
@@ -347,19 +349,10 @@ public class Utils {
 	 *        Name of cryptsl rule that should by returend.
 	 * 
 	 * @return Returns the cryptsl rule with the name that is defined by the parameter cryptslRule.
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
-	 * @throws Exception
-	 *         Throws an exception if given rule name does not exist.
+	 * @throws MalformedURLException 
 	 */
-	public static CryptSLRule getCryptSLRule(String cryptslRule) throws IOException, ClassNotFoundException {
-		final FileInputStream fileIn = new FileInputStream(Utils.getResourceFromWithin(defaultRulesPath, de.cognicrypt.core.Activator.PLUGIN_ID)
-			.getAbsolutePath() + "\\" + cryptslRule + ".cryptslbin");
-		final ObjectInputStream in = new ObjectInputStream(fileIn);
-		CryptSLRule rule = (CryptSLRule) in.readObject();
-		in.close();
-		fileIn.close();
-		return rule;
+	public static CryptSLRule getCryptSLRule(String cryptslRule) throws MalformedURLException {
+		return (new CrySLModelReader()).readRule(Utils.getResourceFromWithin(defaultRulesPath + "/" + cryptslRule + ".cryptsl", de.cognicrypt.core.Activator.PLUGIN_ID));
 	}
 	
 	

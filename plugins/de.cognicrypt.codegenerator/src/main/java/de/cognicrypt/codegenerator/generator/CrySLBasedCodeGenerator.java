@@ -22,7 +22,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -68,8 +67,8 @@ import de.cognicrypt.utils.Utils;
 
 /**
  * 
- * @author Florian Breitfelder
  * @author Stefan Krueger
+ * @author Florian Breitfelder
  *
  */
 public class CrySLBasedCodeGenerator extends CodeGenerator {

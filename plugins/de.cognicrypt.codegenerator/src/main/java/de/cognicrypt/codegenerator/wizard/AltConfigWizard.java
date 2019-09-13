@@ -79,15 +79,6 @@ public class AltConfigWizard extends Wizard {
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
 	private CodeGenerators generator;
-	private static boolean crySLMode = true;
-
-	public static void switchMode(boolean isCrySLMode) {
-		crySLMode = isCrySLMode;
-	}
-
-	public static boolean isCrySLMode() {
-		return crySLMode;
-	}
 
 	public AltConfigWizard(CodeGenerators codeGen) {
 		super();
@@ -238,7 +229,7 @@ public class AltConfigWizard extends Wizard {
 		IResource selectedFile = (IResource) currentPage.getSelectedResource().getFirstElement();
 
 		Map<String, String> taskCrySL = new HashMap<String, String>();
-		if (crySLMode) {
+		if (generator == CodeGenerators.CrySL) {
 			taskCrySL.put("Encryption", "encryptionstrings");
 			taskCrySL.put("SecurePassword", "passwordhashing");
 			taskCrySL.put("DigitalSignatures", "digitalsigning");

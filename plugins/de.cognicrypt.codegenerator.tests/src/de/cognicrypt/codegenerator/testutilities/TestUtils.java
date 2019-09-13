@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
-
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -32,7 +31,6 @@ import org.eclipse.jdt.launching.LibraryLocation;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.CodeGenCrySLRule;
 import de.cognicrypt.codegenerator.question.Answer;
@@ -71,7 +69,7 @@ public class TestUtils {
 		project.open(null);
 
 		final IProjectDescription description = project.getDescription();
-		description.setNatureIds(new String[] { JavaCore.NATURE_ID });
+		description.setNatureIds(new String[] {JavaCore.NATURE_ID});
 		project.setDescription(description, null);
 
 		final IJavaProject javaProject = JavaCore.create(project);
@@ -103,28 +101,19 @@ public class TestUtils {
 	}
 
 	/**
-	 * This method creates a package with a java class into a JavaProject
-<<<<<<< HEAD
+	 * This method creates a package with a java class into a JavaProject <<<<<<< HEAD
 	 * 
 	 * @param project JavaProject in which the new Java class will be generated
 	 * @param packageName package in which the new Java class will be generated
-	 * @param className name of the new Java class
-=======
-	 *
-	 * @param project
-	 *            JavaProject in which the new Java class will be generated
-	 * @param packageName
-	 *            package in which the new Java class will be generated
-	 * @param className
-	 *            name of the new Java class
->>>>>>> refs/heads/develop
+	 * @param className name of the new Java class =======
+	 * @param project JavaProject in which the new Java class will be generated
+	 * @param packageName package in which the new Java class will be generated
+	 * @param className name of the new Java class >>>>>>> refs/heads/develop
 	 * @throws JavaModelException
 	 */
-	public static void generateJavaClassInJavaProject(final IJavaProject project, final String packageName,
-			final String className) throws JavaModelException {
+	public static void generateJavaClassInJavaProject(final IJavaProject project, final String packageName, final String className) throws JavaModelException {
 
-		final IPackageFragment pack = project.getPackageFragmentRoot(project.getProject().getFolder("src"))
-				.createPackageFragment(packageName, false, null);
+		final IPackageFragment pack = project.getPackageFragmentRoot(project.getProject().getFolder("src")).createPackageFragment(packageName, false, null);
 		final String source = "public class " + className + " {\n\n}\n";
 		final StringBuffer buffer = new StringBuffer();
 		buffer.append("package " + pack.getElementName() + ";\r\n\r\n");
@@ -133,15 +122,10 @@ public class TestUtils {
 	}
 
 	/**
-	 * This method deletes a JavaProject from the Workspace/hard drive
-<<<<<<< HEAD
+	 * This method deletes a JavaProject from the Workspace/hard drive <<<<<<< HEAD
 	 * 
-	 * @param project JavaProject which will be deleted
-=======
-	 *
-	 * @param project
-	 *            JavaProject which will be deleted
->>>>>>> refs/heads/develop
+	 * @param project JavaProject which will be deleted =======
+	 * @param project JavaProject which will be deleted >>>>>>> refs/heads/develop
 	 * @throws CoreException
 	 * @throws InterruptedException
 	 */
@@ -150,19 +134,14 @@ public class TestUtils {
 	}
 
 	/**
-	 * This method looks for the right task by name
-<<<<<<< HEAD
+	 * This method looks for the right task by name <<<<<<< HEAD
 	 * 
-	 * @param name name of the task what we looking for.
-=======
-	 *
-	 * @param name
-	 *            name of the task what we looking for.
->>>>>>> refs/heads/develop
+	 * @param name name of the task what we looking for. =======
+	 * @param name name of the task what we looking for. >>>>>>> refs/heads/develop
 	 * @return Task object
 	 */
 	public static Task getTask(final String name) throws NoSuchElementException {
-		for (final Task t : TaskJSONReader.getTasks()) {	
+		for (final Task t : TaskJSONReader.getTasks()) {
 			if (t.getName().equals(name)) {
 				return t;
 			}
@@ -171,33 +150,30 @@ public class TestUtils {
 	}
 
 	/**
-	 * This method creates a HashMap. This HashMap contains the Questions and the
-	 * associated default Answers for certain Task.
+	 * This method creates a HashMap. This HashMap contains the Questions and the associated default Answers for certain Task.
 	 *
-	 * @param t
-	 *            Task
+	 * @param t Task
 	 * @return A HashMap with Questions and default Answers
 	 */
 	public static HashMap<Question, Answer> setDefaultConstraintsForTask(final Task t) {
 
 		final List<Page> pageList = (new QuestionsJSONReader()).getPages(t.getQuestionsJSONFile());
-		final HashMap<Question, Answer> contraintsForTask = new HashMap<>();	
+		final HashMap<Question, Answer> contraintsForTask = new HashMap<>();
 
-		if(pageList.isEmpty()) {
+		if (pageList.isEmpty()) {
 			return contraintsForTask;
 		}
-		
-		
+
 		int nextID = 0;
 		int tempID = 0;
-		while(nextID != -1) {
+		while (nextID != -1) {
 			for (final Question question : pageList.get(nextID).getContent()) {
 				contraintsForTask.put(question, question.getDefaultAnswer());
 				tempID = question.getDefaultAnswer().getNextID() != -2 ? question.getDefaultAnswer().getNextID() : -100;
 			}
 			nextID = tempID == -100 ? pageList.get(nextID).getNextID() : tempID;
 		}
-		
+
 		return contraintsForTask;
 	}
 
@@ -205,21 +181,18 @@ public class TestUtils {
 	 * This method creates the necessary Configuration for a CodeGenerator.
 	 *
 	 * @param developerProject
-	 * @param t
-	 *            task for what we create the Configuration
+	 * @param t task for what we create the Configuration
 	 * @return Configuration for a certain Task
 	 */
 	public static Configuration createXSLConfigurationForCodeGeneration(final DeveloperProject developerProject, final Task t) {
 
-		final InstanceGenerator instGen = new InstanceGenerator(
-				Utils.getResourceFromWithin(t.getModelFile(), de.cognicrypt.codegenerator.Activator.PLUGIN_ID).getAbsolutePath(),
+		final InstanceGenerator instGen = new InstanceGenerator(Utils.getResourceFromWithin(t.getModelFile(), de.cognicrypt.codegenerator.Activator.PLUGIN_ID).getAbsolutePath(),
 				"c0_" + t.getName(), t.getTaskDescription());
 
 		final HashMap<Question, Answer> constraints = TestUtils.setDefaultConstraintsForTask(t);
 		final List<InstanceClafer> instList = instGen.generateInstances(constraints);
 		final InstanceClafer inst = instList.get(0);
-		final Configuration ret = new XSLConfiguration(inst, constraints,
-				developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
+		final Configuration ret = new XSLConfiguration(inst, constraints, developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
 		return ret;
 	}
 
@@ -227,13 +200,11 @@ public class TestUtils {
 	 * This method creates the necessary Configuration for a CodeGenerator.
 	 * 
 	 * @param developerProject
-	 * @param t                task for what we create the Configuration
+	 * @param t task for what we create the Configuration
 	 * @return Configuration for a certain Task
 	 */
-	public static CrySLConfiguration createCrySLConfigurationForCodeGeneration(DeveloperProject developerProject,
-			List<CodeGenCrySLRule> rules) {
-		CrySLConfiguration ret = new CrySLConfiguration(rules, null,
-				developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile, null);
+	public static CrySLConfiguration createCrySLConfigurationForCodeGeneration(DeveloperProject developerProject, List<CodeGenCrySLRule> rules) {
+		CrySLConfiguration ret = new CrySLConfiguration(developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile, null);
 		return ret;
 	}
 
@@ -245,8 +216,7 @@ public class TestUtils {
 	 * @param unit
 	 * @throws CoreException
 	 */
-	public static void openJavaFileInWorkspace(final DeveloperProject project, final String packageName,
-			final ICompilationUnit cu) throws CoreException {
+	public static void openJavaFileInWorkspace(final DeveloperProject project, final String packageName, final ICompilationUnit cu) throws CoreException {
 
 		final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		final IFile openFile = project.getIFile(getFilePathInProject(project, packageName, cu));
@@ -262,8 +232,7 @@ public class TestUtils {
 	 * @return IComplitationUnit
 	 * @throws CoreException
 	 */
-	public static ICompilationUnit getICompilationUnit(final DeveloperProject project, final String packageName,
-			final String cuName) throws CoreException, NoSuchElementException {
+	public static ICompilationUnit getICompilationUnit(final DeveloperProject project, final String packageName, final String cuName) throws CoreException, NoSuchElementException {
 		final IPackageFragment packageFragment = project.getPackagesOfProject(packageName);
 		for (int i = 0; i < packageFragment.getCompilationUnits().length; i++) {
 			if (packageFragment.getCompilationUnits()[i].getElementName().equals(cuName)) {
@@ -276,7 +245,7 @@ public class TestUtils {
 	public static void printSourceCode(final DeveloperProject project, final String packageName) throws CoreException, NoSuchElementException {
 		final IPackageFragment packageFragment = project.getPackagesOfProject(packageName);
 		for (int i = 0; i < packageFragment.getCompilationUnits().length; i++) {
-			log.info("\n"+packageFragment.getCompilationUnits()[i].getSource());
+			log.info("\n" + packageFragment.getCompilationUnits()[i].getSource());
 		}
 
 	}
@@ -291,8 +260,7 @@ public class TestUtils {
 	 * @throws IOException
 	 * @throws CoreException
 	 */
-	public static byte[] fileToByteArray(final DeveloperProject project, final String packageName,
-			final ICompilationUnit cu) throws IOException, CoreException {
+	public static byte[] fileToByteArray(final DeveloperProject project, final String packageName, final ICompilationUnit cu) throws IOException, CoreException {
 
 		final File f = new File(getFilePathInProject(project, packageName, cu));
 		if (!(f.exists() && Files.isReadable(f.toPath()))) {
@@ -311,11 +279,9 @@ public class TestUtils {
 	 * @return
 	 * @throws CoreException
 	 */
-	private static String getFilePathInProject(final DeveloperProject project, final String packageName,
-			final ICompilationUnit cu) throws CoreException {
+	private static String getFilePathInProject(final DeveloperProject project, final String packageName, final ICompilationUnit cu) throws CoreException {
 		final String srcPath = project.getProjectPath() + Constants.innerFileSeparator + project.getSourcePath();
-		final String cuPath = srcPath + Constants.innerFileSeparator + packageName + Constants.innerFileSeparator
-				+ cu.getElementName();
+		final String cuPath = srcPath + Constants.innerFileSeparator + packageName + Constants.innerFileSeparator + cu.getElementName();
 		return cuPath;
 	}
 

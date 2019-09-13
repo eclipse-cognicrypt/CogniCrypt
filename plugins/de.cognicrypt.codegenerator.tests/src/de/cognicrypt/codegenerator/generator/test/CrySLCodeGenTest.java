@@ -69,8 +69,6 @@ public class CrySLCodeGenTest {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");
 		} catch (CoreException e) {
 			Activator.getDefault().logError(e, "Failed to create test project or to retrieve compilation unit.");
-		} catch (ClassNotFoundException e) {
-			Activator.getDefault().logError(e, "At least one CrySL rule could not be loaded.");
 		} catch (IOException e) {
 			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
 		}
@@ -121,8 +119,6 @@ public class CrySLCodeGenTest {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");
 		} catch (CoreException e) {
 			Activator.getDefault().logError(e, "Failed to create test project or to retrieve compilation unit.");
-		} catch (ClassNotFoundException e) {
-			Activator.getDefault().logError(e, "At least one CrySL rule could not be loaded.");
 		} catch (IOException e) {
 			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
 		}
@@ -144,11 +140,7 @@ public class CrySLCodeGenTest {
 				ArrayList<CodeGenCrySLRule> newRules = new ArrayList<CodeGenCrySLRule>();
 				rules.addAll(newRules);
 				for (String r : rule) {
-					try {
-						newRules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(r), null, null));
-					} catch (FileNotFoundException ex) {
-						Activator.getDefault().logError(ex, "CrySL rule" + r + " not found.");
-					}
+					newRules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(r), null, null));
 				}
 			}
 
@@ -175,8 +167,6 @@ public class CrySLCodeGenTest {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");
 		} catch (CoreException e) {
 			Activator.getDefault().logError(e, "Failed to create test project or to retrieve compilation unit.");
-		} catch (ClassNotFoundException e) {
-			Activator.getDefault().logError(e, "At least one CrySL rule could not be loaded.");
 		} catch (IOException e) {
 			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
 		}

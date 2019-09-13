@@ -233,7 +233,7 @@ public class TestUtils {
 	public static CrySLConfiguration createCrySLConfigurationForCodeGeneration(DeveloperProject developerProject,
 			List<CodeGenCrySLRule> rules) {
 		CrySLConfiguration ret = new CrySLConfiguration(rules, null,
-				developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
+				developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile, null);
 		return ret;
 	}
 

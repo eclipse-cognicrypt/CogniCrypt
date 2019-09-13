@@ -21,9 +21,9 @@ public class SecureEncryptor {
 		byte[] res = null;
 		int mode = Cipher.ENCRYPT_MODE;
 
-		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(ivBytes, "nextBytes", 0)
-			.includeClass("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "IvParameterSpec", 0).includeClass("javax.crypto.Cipher")
-			.addParameter(mode, "init", 0).addParameter(plaintext, "doFinal", 0).addParameter(key, "init", 1).addReturnObject(res).generate();
+		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(ivBytes, "next")
+			.includeClass("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher")
+			.addParameter(mode, "encmode").addParameter(plaintext, "plainText").addParameter(key, "key").addReturnObject(res).generate();
 
 		byte[] ret = new byte[ivBytes.length + res.length];
 		System.arraycopy(ivBytes, 0, ret, 0, ivBytes.length);
@@ -40,8 +40,8 @@ public class SecureEncryptor {
 
 		int mode = Cipher.DECRYPT_MODE;
 		byte[] res = null;
-		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "IvParameterSpec", 0).includeClass("javax.crypto.Cipher")
-			.addParameter(mode, "init", 0).addParameter(data, "doFinal", 0).addParameter(key, "init", 1).addReturnObject(res).generate();
+		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher")
+			.addParameter(mode, "encmode").addParameter(data, "plainText").addParameter(key, "key").addReturnObject(res).generate();
 
 		return res;
 	}

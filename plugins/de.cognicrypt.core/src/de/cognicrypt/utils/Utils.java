@@ -53,6 +53,7 @@ import org.osgi.framework.Bundle;
 import com.google.common.base.CharMatcher;
 import crypto.cryptslhandler.CrySLModelReader;
 import crypto.rules.CryptSLRule;
+import crypto.rules.CryptSLRuleReader;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
 import de.cognicrypt.core.Activator;
@@ -368,14 +369,13 @@ public class Utils {
 				rules.addAll(readCrySLRules(rule.getAbsolutePath()));
 				continue;
 			}
-			FileInputStream fileIn;
+			
 			try {
-				fileIn = new FileInputStream(rule);
-				final ObjectInputStream in = new ObjectInputStream(fileIn);
-				rules.add((CryptSLRule) in.readObject());
-				in.close();
-				fileIn.close();
-			} catch (IOException | ClassNotFoundException e) {
+				CryptSLRule readFromSourceFile = CryptSLRuleReader.readFromSourceFile(rule);
+				if (readFromSourceFile != null) {
+					rules.add(readFromSourceFile);
+				}
+			} catch (IOException e) {
 				Activator.getDefault().logError(e);
 			}
 		}

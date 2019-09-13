@@ -2,7 +2,7 @@ package de.cognicrypt.codegenerator.crysl;
 
 
 public interface RuleContext {
-	public RuleContext addParameter(Object par, String methodName, int location);
+	public RuleContext addParameter(Object par, String variableName);
 	
 	public BeforeRuleContext addReturnObject(Object par);
 	

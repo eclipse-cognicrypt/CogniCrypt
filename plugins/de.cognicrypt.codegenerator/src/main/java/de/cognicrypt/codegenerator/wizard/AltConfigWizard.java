@@ -2,6 +2,7 @@ package de.cognicrypt.codegenerator.wizard;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -33,14 +34,11 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StringLiteral;
-import org.eclipse.jdt.core.dom.ThrowStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -50,8 +48,12 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import crypto.rules.CryptSLMethod;
 import crypto.rules.CryptSLObject;
+import crypto.rules.CryptSLRule;
+import crypto.rules.TransitionEdge;
 import de.cognicrypt.codegenerator.Activator;
+import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.CodeGenCrySLObject;
 import de.cognicrypt.codegenerator.generator.CodeGenCrySLRule;
@@ -82,7 +84,7 @@ public class AltConfigWizard extends Wizard {
 	public static void switchMode(boolean isCrySLMode) {
 		crySLMode = isCrySLMode;
 	}
-	
+
 	public static boolean isCrySLMode() {
 		return crySLMode;
 	}
@@ -140,7 +142,6 @@ public class AltConfigWizard extends Wizard {
 	 */
 	@Override
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
-
 		if (checkifInUpdateRound()) {
 			return currentPage;
 		}
@@ -238,17 +239,17 @@ public class AltConfigWizard extends Wizard {
 
 		Map<String, String> taskCrySL = new HashMap<String, String>();
 		if (crySLMode) {
-			taskCrySL.put("Encryption", "C:\\Users\\stefank3\\git\\\\paper-CogniCrypt_GEN-userstudy\\EncryptionCG1\\src\\de\\crypto");
-			taskCrySL.put("SecurePassword", "C:\\Users\\stefank3\\git\\\\paper-CogniCrypt_GEN-userstudy\\HashingCG1\\src\\\\de\\\\crypto");
-			taskCrySL.put("DigitalSignatures", "C:\\Users\\stefank3\\git\\paper-CogniCrypt_GEN-userstudy\\DemoCG1\\src\\de\\crypto");
+			taskCrySL.put("Encryption", "encryptionstrings");
+			taskCrySL.put("SecurePassword", "passwordhashing");
+			taskCrySL.put("DigitalSignatures", "digitalsigning");
 		}
 		String taskName = selectedTask.getName();
 		if (!taskCrySL.containsKey(taskName)) {
 			generator = CodeGenerators.XSL;
 		}
-		JOptionPane optionPane = new JOptionPane("CogniCrypt is now generating code that implements " + selectedTask
-			.getDescription() + "\ninto file " + ((selectedFile != null) ? selectedFile.getName()
-				: "Output.java") + ". This should take no longer than a few seconds.", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[] {}, null);
+		JOptionPane optionPane = new JOptionPane("CogniCrypt is now generating code that implements " + selectedTask.getDescription() + "\ninto file " + ((selectedFile != null)
+			? selectedFile.getName()
+			: "Output.java") + ". This should take no longer than a few seconds.", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[] {}, null);
 		JDialog waitingDialog = optionPane.createDialog("Generating Code");
 		waitingDialog.setModal(false);
 		waitingDialog.setVisible(true);
@@ -257,7 +258,7 @@ public class AltConfigWizard extends Wizard {
 		switch (generator) {
 			case CrySL:
 				CrySLBasedCodeGenerator.clearParameterCache();
-				File templateFolder = new File(taskCrySL.get(taskName));
+				File templateFolder = CodeGenUtils.getResourceFromWithin("src/main/java/de/cognicrypt/codegenerator/crysl/templates/" + taskCrySL.get(taskName));
 
 				File templateFilea = templateFolder.listFiles()[0];
 				String projectRelDir = Constants.outerFileSeparator + "src" + Constants.outerFileSeparator + Constants.PackageName + Constants.outerFileSeparator;
@@ -324,22 +325,34 @@ public class AltConfigWizard extends Wizard {
 								SimpleName name = (SimpleName) arguments.get(0);
 								String efqn = name.getFullyQualifiedName();
 								if (efqn.equals(varfqn)) {
-									pars.add(new CodeGenCrySLObject(variableDefinitions.get(var), (String) ((StringLiteral) arguments.get(1))
-										.resolveConstantExpressionValue(), (Integer) ((NumberLiteral) arguments.get(2)).resolveConstantExpressionValue()));
+									pars.add(new CodeGenCrySLObject(variableDefinitions.get(var), (String) ((StringLiteral) arguments.get(1)).resolveConstantExpressionValue()));
 									break;
 								}
 							}
-						} else if ("considerCrySLRule".equals(calledMethodName)) {
+						} else if ("includeClass".equals(calledMethodName)) {
 							String rule = Utils.filterQuotes(arguments.get(0).toString());
-							try {
 								String simpleRuleName = rule.substring(rule.lastIndexOf(".") + 1);
-								rules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(simpleRuleName), pars, retObj));
-
+								try {
+									CryptSLRule cryptSLRule = Utils.getCryptSLRule(simpleRuleName);
+									for (CodeGenCrySLObject o : pars) {
+										for (TransitionEdge edge: cryptSLRule.getUsagePattern().getEdges()) {
+											for (CryptSLMethod method : edge.getLabel()) {
+												List<Entry<String, String>> parameters = method.getParameters();
+												for (int i = 0; i < parameters.size(); i++) {
+													if (parameters.get(i).getKey().equals(o.getCrySLVariable())) {
+														o.setMethod(method.getShortMethodName(), i);
+													}
+												}
+											}
+										}
+									}
+									rules.add(new CodeGenCrySLRule(cryptSLRule, pars, retObj));
+								} catch (MalformedURLException e) {
+									Activator.getDefault().logError(e);
+								}
 								retObj = null;
 								pars = new ArrayList<>();
-							} catch (ClassNotFoundException | IOException e) {
-								Activator.getDefault().logError(e);
-							}
+								
 						} else if ("generate".equals(calledMethodName)) {
 							methLims.put(1, node.getStartPosition() + node.getLength());
 						} else if ("getInstance".equals(calledMethodName)) {
@@ -415,7 +428,7 @@ public class AltConfigWizard extends Wizard {
 
 					Map<CodeGenCrySLRule, ?> constraints = new HashMap<CodeGenCrySLRule, Object>();
 					chosenConfig = new CrySLConfiguration(null, constraints, resFileOSPath, templateClass);
-					
+
 				} catch (Exception e) {
 					Activator.getDefault().logError(e);
 					return false;
@@ -442,7 +455,7 @@ public class AltConfigWizard extends Wizard {
 			default:
 				ret = false;
 		}
-		
+
 		ret = codeGenerator.generateCodeTemplates(chosenConfig, additionalResources);
 
 		waitingDialog.setVisible(false);

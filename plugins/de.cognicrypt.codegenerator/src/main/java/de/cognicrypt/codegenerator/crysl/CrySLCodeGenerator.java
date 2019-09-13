@@ -19,7 +19,7 @@ public class CrySLCodeGenerator implements RuleContext, BeforeRuleContext{
 		return this;
 	}
 
-	public CrySLCodeGenerator addParameter(Object par, String methodName, int location) {
+	public CrySLCodeGenerator addParameter(Object par, String variableName) {
 		last.addParameter(par);
 		return this;
 	}

@@ -1,25 +1,20 @@
 package de.cognicrypt.codegenerator.crysl.templates.passwordhashing;
 
 import java.security.GeneralSecurityException;
-import java.security.SecureRandom;
 
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
 public class PasswordHasher {
-	
+
 	public static java.lang.String createPWHash(char[] pwd) throws GeneralSecurityException {
 		byte[] salt = new byte[32];
 		byte[] pwdHashBytes = null;
-		
-		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(salt, "nextBytes", 0).includeClass("java.security.PBEKeySpec")
-		.addParameter(pwd, "PBEKeySpec", 0).includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey").addReturnObject(pwdHashBytes)
-		.generate();
-		
+
+		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(salt, "next").includeClass("java.security.PBEKeySpec")
+			.addParameter(pwd, "password").includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey").addReturnObject(pwdHashBytes).generate();
+
 		String pwdHash = toBase64(salt) + ":" + toBase64(pwdHashBytes);
 		return pwdHash;
 	}
@@ -29,10 +24,9 @@ public class PasswordHasher {
 		byte[] salt = fromBase64(parts[0]);
 		byte[] res = null;
 
-		CrySLCodeGenerator.getInstance().includeClass("java.security.PBEKeySpec").addParameter(salt, "PBEKeySpec", 1).addParameter(pwd, "PBEKeySpec", 0)
-		.includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey").addReturnObject(res)
-		.generate();
-		
+		CrySLCodeGenerator.getInstance().includeClass("java.security.PBEKeySpec").addParameter(salt, "salt").addParameter(pwd, "passowrd")
+			.includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey").addReturnObject(res).generate();
+
 		Boolean areEqual = slowEquals(res, fromBase64(parts[1]));
 		return areEqual;
 	}

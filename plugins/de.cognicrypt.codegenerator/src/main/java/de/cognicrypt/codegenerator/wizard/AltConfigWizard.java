@@ -258,181 +258,27 @@ public class AltConfigWizard extends Wizard {
 		switch (generator) {
 			case CrySL:
 				CrySLBasedCodeGenerator.clearParameterCache();
-				File templateFolder = CodeGenUtils.getResourceFromWithin("src/main/java/de/cognicrypt/codegenerator/crysl/templates/" + taskCrySL.get(taskName));
-
-				File templateFilea = templateFolder.listFiles()[0];
+				File templateFilea = CodeGenUtils.getResourceFromWithin("src/main/java/de/cognicrypt/codegenerator/crysl/templates/" + taskCrySL.get(taskName)).listFiles()[0];
 				String projectRelDir = Constants.outerFileSeparator + "src" + Constants.outerFileSeparator + Constants.PackageName + Constants.outerFileSeparator;
-				String projectRelPath = projectRelDir + templateFilea.getName();
-				String resFileOSPath = selectedFile.getProject().getRawLocation().toOSString() + projectRelPath;
+				String pathToTemplateFile = projectRelDir + templateFilea.getName();
+				String resFileOSPath = selectedFile.getProject().getRawLocation().toOSString() + pathToTemplateFile;
 
 				try {
 					Files.createDirectories(Paths.get(selectedFile.getProject().getRawLocation().toOSString() + projectRelDir));
 					Files.copy(templateFilea.toPath(), Paths.get(resFileOSPath), StandardCopyOption.REPLACE_EXISTING);
-
 				} catch (IOException e1) {
 					Activator.getDefault().logError(e1);
 				}
+				
 				try {
 					selectedFile.getProject().refreshLocal(IProject.DEPTH_INFINITE, null);
 				} catch (CoreException e1) {
 					Activator.getDefault().logError(e1);
 				}
-				IFile file = selectedFile.getProject().getFile(projectRelPath);
-
-				ASTParser parser = ASTParser.newParser(AST.JLS11);
-				parser.setSource((ICompilationUnit) JavaCore.create(file));
-
-				parser.setResolveBindings(true);
-				parser.setBindingsRecovery(true);
-				parser.setKind(ASTParser.K_COMPILATION_UNIT);
-				CompilationUnit cu = (CompilationUnit) parser.createAST(null);
-				final Map<Integer, Integer> methLims = new HashMap<>();
-
-				GeneratorClass templateClass = new GeneratorClass();
-
-				final ASTVisitor astVisitor = new ASTVisitor(true) {
-
-					GeneratorMethod curMethod = null;
-					CryptSLObject retObj = null;
-					List<CodeGenCrySLObject> pars = new ArrayList<>();
-					Map<SimpleName, CryptSLObject> variableDefinitions = new HashMap<SimpleName, CryptSLObject>();
-
-					List<CodeGenCrySLRule> rules = new ArrayList<CodeGenCrySLRule>();
-
-					@SuppressWarnings("unchecked")
-					@Override
-					public boolean visit(MethodInvocation node) {
-						MethodInvocation mi = node;
-						String calledMethodName = mi.getName().getFullyQualifiedName();
-
-						List arguments = mi.arguments();
-						if ("addReturnObject".equals(calledMethodName)) {
-							for (SimpleName var : variableDefinitions.keySet()) {
-								String varfqn = var.getFullyQualifiedName();
-
-								for (SimpleName name : (List<SimpleName>) arguments) {
-									String efqn = name.getFullyQualifiedName();
-									if (efqn.equals(varfqn)) {
-										CryptSLObject cryptSLObject = variableDefinitions.get(var);
-										retObj = cryptSLObject;
-										break;
-									}
-								}
-							}
-						} else if ("addParameter".equals(calledMethodName)) {
-							for (SimpleName var : variableDefinitions.keySet()) {
-								String varfqn = var.getFullyQualifiedName();
-								SimpleName name = (SimpleName) arguments.get(0);
-								String efqn = name.getFullyQualifiedName();
-								if (efqn.equals(varfqn)) {
-									pars.add(new CodeGenCrySLObject(variableDefinitions.get(var), (String) ((StringLiteral) arguments.get(1)).resolveConstantExpressionValue()));
-									break;
-								}
-							}
-						} else if ("includeClass".equals(calledMethodName)) {
-							String rule = Utils.filterQuotes(arguments.get(0).toString());
-								String simpleRuleName = rule.substring(rule.lastIndexOf(".") + 1);
-								try {
-									CryptSLRule cryptSLRule = Utils.getCryptSLRule(simpleRuleName);
-									for (CodeGenCrySLObject o : pars) {
-										for (TransitionEdge edge: cryptSLRule.getUsagePattern().getEdges()) {
-											for (CryptSLMethod method : edge.getLabel()) {
-												List<Entry<String, String>> parameters = method.getParameters();
-												for (int i = 0; i < parameters.size(); i++) {
-													if (parameters.get(i).getKey().equals(o.getCrySLVariable())) {
-														o.setMethod(method.getShortMethodName(), i);
-													}
-												}
-											}
-										}
-									}
-									rules.add(new CodeGenCrySLRule(cryptSLRule, pars, retObj));
-								} catch (MalformedURLException e) {
-									Activator.getDefault().logError(e);
-								}
-								retObj = null;
-								pars = new ArrayList<>();
-								
-						} else if ("generate".equals(calledMethodName)) {
-							methLims.put(1, node.getStartPosition() + node.getLength());
-						} else if ("getInstance".equals(calledMethodName)) {
-							methLims.put(0, node.getStartPosition() - "CrySLCodeGenerator.".length());
-						}
-						return super.visit(node);
-					}
-
-					@Override
-					public void postVisit(ASTNode node) {
-						if (node.getLocationInParent() != null && "thrownExceptionTypes".equals(node.getLocationInParent().getId())) {
-							curMethod.addException(node.toString());
-						}
-						super.postVisit(node);
-					}
-
-					@Override
-					public boolean visit(VariableDeclarationStatement node) {
-						SimpleName varName = ((VariableDeclarationFragment) ((VariableDeclarationStatement) node).fragments().get(0)).getName();
-						variableDefinitions.put(varName, new CryptSLObject(varName.getFullyQualifiedName(), ((VariableDeclarationStatement) node).getType().toString()));
-						return super.visit(node);
-					}
-
-					@SuppressWarnings("unchecked")
-					@Override
-					public boolean visit(MethodDeclaration node) {
-						curMethod = new GeneratorMethod();
-						curMethod.setName(node.getName().getFullyQualifiedName());
-						curMethod.setReturnType(node.getReturnType2().toString());
-						curMethod.setModifier("public");
-
-						for (Statement s : (List<Statement>) node.getBody().statements()) {
-							curMethod.addStatementToBody(s.toString());
-						}
-
-						for (SingleVariableDeclaration svd : (List<SingleVariableDeclaration>) node.parameters()) {
-							variableDefinitions.put(svd.getName(), new CryptSLObject(svd.getName().getFullyQualifiedName(), svd.getType().toString()));
-							curMethod.addParameter(new SimpleEntry<String, String>(svd.getName().getFullyQualifiedName(), svd.getType().toString()));
-						}
-						curMethod.setNumberOfVariablesInTemplate(curMethod.getDeclaredVariables().size());
-						templateClass.addMethod(curMethod);
-						return super.visit(node);
-					}
-
-					@Override
-					public void endVisit(MethodDeclaration node) {
-						Collections.reverse(rules);
-						curMethod.setRules(new ArrayList<>(rules));
-						rules.clear();
-						super.visit(node);
-					}
-
-					@Override
-					public boolean visit(TypeDeclaration node) {
-						templateClass.setClassName(node.getName().getFullyQualifiedName());
-						return super.visit(node);
-					}
-
-					@Override
-					public boolean visit(ImportDeclaration node) {
-						String importedClass = node.getName().getFullyQualifiedName();
-						if (!"de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator".equals(importedClass)) {
-							templateClass.addImport(importedClass);
-						}
-						return super.visit(node);
-					}
-
-				};
-				cu.accept(astVisitor);
-
-				try {
-					codeGenerator = new CrySLBasedCodeGenerator(selectedFile);
-
-					Map<CodeGenCrySLRule, ?> constraints = new HashMap<CodeGenCrySLRule, Object>();
-					chosenConfig = new CrySLConfiguration(null, constraints, resFileOSPath, templateClass);
-
-				} catch (Exception e) {
-					Activator.getDefault().logError(e);
-					return false;
-				}
+				
+				codeGenerator = new CrySLBasedCodeGenerator(selectedFile);
+				GeneratorClass templateClass = ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile);
+				chosenConfig = new CrySLConfiguration(resFileOSPath, templateClass);
 				break;
 			case XSL:
 
@@ -459,7 +305,6 @@ public class AltConfigWizard extends Wizard {
 		ret = codeGenerator.generateCodeTemplates(chosenConfig, additionalResources);
 
 		waitingDialog.setVisible(false);
-
 		waitingDialog.dispose();
 		return ret;
 	}

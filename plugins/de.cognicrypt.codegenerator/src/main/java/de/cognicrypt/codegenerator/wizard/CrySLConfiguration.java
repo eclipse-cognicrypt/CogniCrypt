@@ -2,6 +2,7 @@ package de.cognicrypt.codegenerator.wizard;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,30 +12,23 @@ import de.cognicrypt.codegenerator.generator.GeneratorClass;
 
 public class CrySLConfiguration extends Configuration {
 
-	private final List<CodeGenCrySLRule> rules;
 	private final GeneratorClass template;
 
-	public CrySLConfiguration(List<CodeGenCrySLRule> rules, Map<CodeGenCrySLRule, ?> constraints, String pathOnDisk, GeneratorClass templateClass) {
-		super(constraints, pathOnDisk);
-		this.rules = rules;
+	public CrySLConfiguration(String pathOnDisk, GeneratorClass templateClass) {
+		super(new HashMap<>(), pathOnDisk);
 		this.template = templateClass;
 	}
 
 	@Override
 	public File persistConf() throws IOException {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<String> getProviders() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
-	public List<CodeGenCrySLRule> getRules() {
-		return rules;
-	}
-	
 	public GeneratorClass getTemplateClass() {
 		return this.template;
 	}

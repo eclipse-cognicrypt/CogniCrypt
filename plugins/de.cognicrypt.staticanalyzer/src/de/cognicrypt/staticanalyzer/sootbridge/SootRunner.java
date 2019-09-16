@@ -6,13 +6,18 @@
 package de.cognicrypt.staticanalyzer.sootbridge;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +31,9 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
+import org.eclipse.jdt.launching.JavaRuntime;
+import org.eclipse.jface.preference.IPreferenceStore;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -57,6 +65,8 @@ import soot.options.Options;
  */
 public class SootRunner {
 
+	final Boolean depValue = false;
+	
 	private static SceneTransformer createAnalysisTransformer(final ResultsCCUIListener resultsReporter) {
 		return new SceneTransformer() {
 
@@ -127,9 +137,10 @@ public class SootRunner {
 		}
 	}
 
-	public static boolean runSoot(final IJavaProject project, final ResultsCCUIListener resultsReporter) {
+	public static boolean runSoot(final IJavaProject project, final ResultsCCUIListener resultsReporter, final Boolean dependencyAnalyser) {
+		
 		G.reset();
-		setSootOptions(project);
+		setSootOptions(project, dependencyAnalyser);
 		registerTransformers(resultsReporter);
 		try {
 			runSoot();
@@ -147,10 +158,15 @@ public class SootRunner {
 		PackManager.v().getPack("wjtp").apply();
 	}
 
-	private static void setSootOptions(final IJavaProject project) {
-		Options.v().set_soot_classpath(getSootClasspath(project));
-		Options.v().set_process_dir(Lists.newArrayList(projectClassPath(project)));
+	private static void setSootOptions(final IJavaProject project, final Boolean dependencyAnalyser) {
 
+		if (dependencyAnalyser == true) {
+			Options.v().set_soot_classpath(Joiner.on(File.pathSeparator).join(libraryClassPath(project, dependencyAnalyser))); 
+			Options.v().set_process_dir(Lists.newArrayList(libraryClassPath(project, dependencyAnalyser)));
+		}else {
+			Options.v().set_soot_classpath(getSootClasspath(project, dependencyAnalyser)); 
+			Options.v().set_process_dir(Lists.newArrayList(applicationClassPath(project))); 
+		}
 		Options.v().set_keep_line_number(true);
 		Options.v().set_prepend_classpath(true);
 		Options.v().set_allow_phantom_refs(true);
@@ -201,9 +217,11 @@ public class SootRunner {
 		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(resultsReporter)));
 	}
 
-	private static String getSootClasspath(final IJavaProject javaProject) {
+	private static String getSootClasspath(final IJavaProject javaProject, final Boolean dependencyAnalyser) {
+		
 		Collection<String> applicationClassPath = applicationClassPath(javaProject);
-		Collection<String> libraryClassPath = libraryClassPath(javaProject);
+		Collection<String> libraryClassPath = libraryClassPath(javaProject, dependencyAnalyser);
+		
 		libraryClassPath.addAll(applicationClassPath);
 		System.out.println(Joiner.on(File.pathSeparator).join(libraryClassPath));
 		return Joiner.on(File.pathSeparator).join(libraryClassPath);
@@ -223,22 +241,26 @@ public class SootRunner {
 		}
 	}
 
-	private static Collection<String> libraryClassPath(IJavaProject project) {
+	private static Collection<String> libraryClassPath(IJavaProject project, Boolean dependencyAnalyser) {
+		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+
 		Collection<String> libraryClassPath = Sets.newHashSet();
 		IClasspathEntry[] rentries;
 		try {
-			rentries = project.getRawClasspath();
-			for (IClasspathEntry entry : rentries) {
-				resolveClassPathEntry(entry, libraryClassPath, project);
-			}
+			// check if "include dependencies" checkbox is checked in preference page or analysis is running for dependencies 
+			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) || dependencyAnalyser) {
 
-		}
-		catch (CoreException e1) {
-			Activator.getDefault().logError(e1);
+				rentries = project.getRawClasspath();
+				for (IClasspathEntry entry : rentries) {
+					resolveClassPathEntry(entry, libraryClassPath, project);
+				}
+			}
+		} catch (CoreException e1) {
+			e1.printStackTrace();
 		}
 		return libraryClassPath;
 	}
-
+	
 	private static void resolveClassPathEntry(IClasspathEntry entry, Collection<String> libraryClassPath, IJavaProject project) {
 		IClasspathEntry[] rentries;
 		switch (entry.getEntryKind()) {
@@ -252,6 +274,7 @@ public class SootRunner {
 					for (IClasspathEntry e : rentries) {
 						resolveClassPathEntry(e, libraryClassPath, requiredProject);
 					}
+
 				}
 				catch (JavaModelException e1) {
 					Activator.getDefault().logError(e1);

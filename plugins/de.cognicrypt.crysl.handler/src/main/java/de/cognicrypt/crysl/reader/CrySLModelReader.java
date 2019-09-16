@@ -88,10 +88,12 @@ import de.darmstadt.tu.crossing.cryptSL.LogicalImply;
 import de.darmstadt.tu.crossing.cryptSL.LogicalOperator;
 import de.darmstadt.tu.crossing.cryptSL.Object;
 import de.darmstadt.tu.crossing.cryptSL.ObjectDecl;
+import de.darmstadt.tu.crossing.cryptSL.Order;
 import de.darmstadt.tu.crossing.cryptSL.PreDefinedPredicates;
 import de.darmstadt.tu.crossing.cryptSL.Pred;
 import de.darmstadt.tu.crossing.cryptSL.ReqPred;
 import de.darmstadt.tu.crossing.cryptSL.ReqPredLit;
+import de.darmstadt.tu.crossing.cryptSL.SimpleOrder;
 import de.darmstadt.tu.crossing.cryptSL.SuPar;
 import de.darmstadt.tu.crossing.cryptSL.SuParList;
 import de.darmstadt.tu.crossing.cryptSL.SuperType;
@@ -112,7 +114,7 @@ public class CrySLModelReader {
 	private static final String ANY_TYPE = "AnyType";
 	private static final String NULL = "null";
 	private static final String UNDERSCORE = "_";
-	
+
 	public CrySLModelReader(IProject iProject) throws CoreException, IOException {
 		final Injector injector = CryptSLActivator.getInstance().getInjector(CryptSLActivator.DE_DARMSTADT_TU_CROSSING_CRYPTSL);
 		resourceSet = injector.getInstance(XtextResourceSet.class);
@@ -165,6 +167,18 @@ public class CrySLModelReader {
 		final EnsuresBlock ensure = dm.getEnsure();
 		final Map<ParEqualsPredicate, SuperType> pre_preds = Maps.newHashMap();
 		final DestroysBlock destroys = dm.getDestroy();
+		
+		Expression order = dm.getOrder();
+		try {
+			if (order instanceof Order) {
+				validateOrder((Order) order);
+			}
+		}
+		catch (ClassCastException ex) {
+			Activator.getDefault().logError(ex.getMessage() + " in rule " + curClass + ".");
+			return null;
+		}
+		
 		if (destroys != null) {
 			pre_preds.putAll(getKills(destroys.getPred()));
 		}
@@ -172,7 +186,7 @@ public class CrySLModelReader {
 			pre_preds.putAll(getPredicates(ensure.getPred()));
 		}
 
-		this.smg = buildStateMachineGraph(dm.getOrder());
+		this.smg = buildStateMachineGraph(order);
 		final ForbiddenBlock forbEvent = dm.getForbEvent();
 		this.forbiddenMethods = (forbEvent != null) ? getForbiddenMethods(forbEvent.getForb_methods()) : Lists.newArrayList();
 
@@ -196,21 +210,50 @@ public class CrySLModelReader {
 		System.out.println("===========================================");
 		System.out.println("");
 
-		if (!testMode) {
-			final String className = rule.getClassName().substring(rule.getClassName().lastIndexOf(".") + 1);
-			String folderPath = Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath();
-			try {
-				CrySLReaderUtils.storeRuletoFile(rule, folderPath);
-				CrySLReaderUtils.readRuleFromBinaryFile(folderPath, className);
-			}
-			catch (ClassNotFoundException | IOException e) {
-				Activator.getDefault().logError(e, "Failed to store CrySL Rule for " + className + " to disk.");
-			}
-		}
 		return rule;
 	}
 
-	public List<CryptSLRule> readRules(String resourcesPath) throws CoreException {
+	private void validateOrder(Order order) {
+		List<String> collected = new ArrayList<String>();
+		collected.addAll(collectLabelsFromExpression(order.getLeft()));
+		collected.addAll(collectLabelsFromExpression(order.getRight()));
+	}
+
+	private List<String> collectLabelsFromExpression(Expression exp) {
+		List<String> collected = new ArrayList<String>();
+		if (exp instanceof Order || exp instanceof SimpleOrder) {
+			collected.addAll(collectLabelsFromExpression(exp.getLeft()));
+			collected.addAll(collectLabelsFromExpression(exp.getRight()));
+		} else {
+			for (Event ev : exp.getOrderEv()) {
+				if (ev instanceof SuperType) {
+					if (ev instanceof de.darmstadt.tu.crossing.cryptSL.Aggregate) {
+						for (Event lab : ((de.darmstadt.tu.crossing.cryptSL.Aggregate) ev).getLab()) {
+							if (lab instanceof SuperType) {
+								collected.add(((SuperType) lab).getName());
+							} else {
+								throw new ClassCastException("Parser error in the line after definition of label " + collected.get(collected.size() - 1));
+							}
+						}
+					} else {
+						collected.add(((SuperType) ev).getName());
+					}
+				}
+			}
+		}
+		return collected;
+	}
+	
+	public List<CryptSLRule> readRulesOutside(String resourcesPath) throws CoreException {
+		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
+		for (File a : ((new File(resourcesPath)).listFiles())) {
+			rules.add(readRule(a));
+		}
+		
+		return rules;
+	}
+
+	public List<CryptSLRule> readRulesWithin(String resourcesPath) throws CoreException {
 		final IPath rulesFolder = (new org.eclipse.core.runtime.Path(resourcesPath));
 		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
 		if (rulesFolder.segmentCount() == 1) {
@@ -223,7 +266,7 @@ public class CrySLModelReader {
 					rules.add(rule);
 				}
 			} else if (res instanceof IFolder) {
-				rules.addAll(readRules(res.getFullPath().toOSString()));
+				rules.addAll(readRulesWithin(res.getFullPath().toOSString()));
 			}
 		}
 
@@ -249,25 +292,40 @@ public class CrySLModelReader {
 	private List<ISLConstraint> collectRequiredPredicates(final EList<ReqPred> requiredPreds) {
 		final List<ISLConstraint> preds = new ArrayList<>();
 		for (final ReqPred pred : requiredPreds) {
-			final ReqPred left = pred.getLeftExpression();
-			final ReqPred right = pred.getRightExpression();
 			ISLConstraint reqPred = null;
-			if (left == null && right == null) {
+			if (pred instanceof ReqPredLit) {
 				reqPred = extractReqPred(pred);
 			} else {
-				CryptSLPredicate l = extractReqPred(left);
-				CryptSLPredicate r = extractReqPred(right);
-				reqPred = new CryptSLConstraint(l, r, LogOps.or);
+				final ReqPred left = pred.getLeftExpression();
+				final ReqPred right = pred.getRightExpression();
+				
+				List<CryptSLPredicate> altPreds = retrieveReqPredFromAltPreds(left);
+				altPreds.add(extractReqPred(right));
+				reqPred = new CryptSLConstraint(altPreds.get(0), altPreds.get(1), LogOps.or);
+				for (int i = 2; i < altPreds.size(); i++) {
+					reqPred = new CryptSLConstraint(reqPred, altPreds.get(i), LogOps.or);
+				}
 			}
 			preds.add(reqPred);
 		}
-		
+
+		return preds;
+	}
+
+	private List<CryptSLPredicate> retrieveReqPredFromAltPreds(ReqPred left) {
+		List<CryptSLPredicate> preds = new ArrayList<CryptSLPredicate>();
+		if (left instanceof ReqPredLit) {
+			preds.add(extractReqPred(left));
+		} else {
+			preds.addAll(retrieveReqPredFromAltPreds(left.getLeftExpression()));
+			preds.add(extractReqPred(left.getRightExpression()));
+		}
 		return preds;
 	}
 
 	private CryptSLPredicate extractReqPred(final ReqPred pred) {
 		final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
-		ReqPredLit innerPred = (ReqPredLit)pred;
+		ReqPredLit innerPred = (ReqPredLit) pred;
 		final Constraint conditional = innerPred.getCons();
 		if (innerPred.getPred().getParList() != null) {
 			for (final SuPar var : innerPred.getPred().getParList().getParameters()) {
@@ -490,7 +548,7 @@ public class CrySLModelReader {
 		final Map<ParEqualsPredicate, SuperType> preds = new HashMap<>();
 		for (final Constraint cons : eList) {
 			final Pred pred = (Pred) cons;
-			
+
 			final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
 
 			if (pred.getParList() != null) {
@@ -501,7 +559,7 @@ public class CrySLModelReader {
 						String type = ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName();
 						if (name == null) {
 							name = THIS;
-							type = "";//this.curClass;
+							type = "";// this.curClass;
 						}
 						variables.add(new CryptSLObject(name, type));
 					} else {
@@ -554,7 +612,7 @@ public class CrySLModelReader {
 				final Object object = (de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0);
 				final String type = ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName();
 				varNType.add(new CryptSLObject(object.getName(), type));
-				final String qualifiedName = ((PreDefinedPredicates) lit.getCons()).getType().getQualifiedName();
+				final String qualifiedName = ((PreDefinedPredicates) lit.getCons()).getType().getType().getQualifiedName();
 				varNType.add(new CryptSLObject(qualifiedName, NULL));
 				slci = new CryptSLPredicate(null, pred, varNType, false);
 				break;
@@ -571,6 +629,16 @@ public class CrySLModelReader {
 				final String typeL1 = ((ObjectDecl) objectL1.eContainer()).getObjectType().getQualifiedName();
 				variables1.add(new CryptSLObject(objectL1.getName(), typeL1));
 				slci = new CryptSLPredicate(null, pred, variables1, false);
+				break;
+			case "instanceOf":
+				final List<ICryptSLPredicateParameter> varInstOf = new ArrayList<>();
+				final Object objInstOf = (de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0);
+				final String instOfType = ((ObjectDecl) objInstOf.eContainer()).getObjectType().getQualifiedName();
+				varInstOf.add(new CryptSLObject(objInstOf.getName(), instOfType));
+				final String typeName = ((PreDefinedPredicates) lit.getCons()).getType().getType().getQualifiedName();
+				varInstOf.add(new CryptSLObject(typeName, NULL));
+				slci = new CryptSLPredicate(null, pred, varInstOf, false);
+				break;
 			default:
 				new RuntimeException();
 		}
@@ -581,7 +649,7 @@ public class CrySLModelReader {
 		final Map<ParEqualsPredicate, SuperType> preds = new HashMap<>();
 		for (final Constraint cons : predList) {
 			final Pred pred = (Pred) cons;
-			String curClass = ((DomainmodelImpl)cons.eContainer().eContainer()).getJavaType().getQualifiedName();
+			String curClass = ((DomainmodelImpl) cons.eContainer().eContainer()).getJavaType().getQualifiedName();
 			final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
 
 			if (pred.getParList() != null) {

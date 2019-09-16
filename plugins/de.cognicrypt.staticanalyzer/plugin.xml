@@ -159,7 +159,7 @@
           name="CogniCrypt Marker"
           point="org.eclipse.core.resources.markers">
      	<super type="org.eclipse.core.resources.problemmarker"></super>
-     	<attribute name = "var"></attribute>
+     	<attribute name = "errorType"></attribute>
        <persistent value="false"></persistent>
     </extension>
     <extension
@@ -181,6 +181,8 @@
           name="Insecure Class Composition Problem"
           point="org.eclipse.core.resources.markers">
        <super type="de.cognicrypt.staticanalyzer.ccMarker"></super>
+       <attribute name = "predicate"></attribute>
+       <attribute name = "errorParam"></attribute>
        <persistent value="false"></persistent>
     </extension>
     <extension
@@ -286,11 +288,32 @@
                </menuContribution>
             </extension>
             <extension
+                  point="org.eclipse.ui.menus">
+               <menuContribution
+                     allPopups="false"
+                     locationURI="popup:de.cognicrypt.core.menu">
+                  <command
+                        commandId="de.cognicrypt.staticanalyzer.runAnalysisOnDependencies"
+                        icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt-analysis.png "
+                        label="Run CogniCrypt Analysis on Selected Project's Dependencies"
+                        style="push">
+                  </command>
+               </menuContribution>
+            </extension>
+            <extension
                   point="org.eclipse.ui.commands">
                <command
                      defaultHandler="de.cognicrypt.staticanalyzer.handlers.RunAnalysisHandler"
                      id="de.cognicrypt.staticanalyzer.runAnalysis"
                      name="RunAnalysis">
+               </command>
+            </extension>
+                        <extension
+                  point="org.eclipse.ui.commands">
+               <command
+                     defaultHandler="de.cognicrypt.staticanalyzer.handlers.RunAnalysisOnDependenciesHandler"
+                     id="de.cognicrypt.staticanalyzer.runAnalysisOnDependencies"
+                     name="RunAnalysisOnDependencies">
                </command>
             </extension>
 </plugin>

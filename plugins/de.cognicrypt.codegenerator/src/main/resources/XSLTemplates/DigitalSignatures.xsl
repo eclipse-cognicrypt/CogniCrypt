@@ -2,18 +2,14 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
 <xsl:output method="text"/>
 <xsl:template match="/">
-
-<xsl:if test="//task[@description='DigitalSignatures']">
-
 <xsl:variable name="keysize"> <xsl:value-of select="//task/algorithm[@type='SignatureScheme']/keysize"/> </xsl:variable>
 <xsl:variable name="keyPairGenerator">
 	<xsl:choose>
 		<xsl:when test="//task/element[@type='DigitalSignatures']/scheme='RSA'">RSA</xsl:when>
-		<xsl:when test="//task/element[@type='DigitalSignatures']/scheme='DSA'">RSA</xsl:when>
+		<xsl:when test="//task/element[@type='DigitalSignatures']/scheme='DSA'">DSA</xsl:when>
 		<xsl:otherwise>EC</xsl:otherwise>
 	</xsl:choose>
 </xsl:variable>
-
 <xsl:variable name="signatureAlgorithm">
 	<xsl:choose>
 		<xsl:when test="//task/element[@type='DigitalSignatures']/scheme='RSA'">SHA256withRSA</xsl:when>
@@ -21,10 +17,9 @@
 	</xsl:choose>
 </xsl:variable>
 
-<xsl:result-document href="Signatures.java">
+<xsl:if test="//task[@description='DigitalSignatures']"><xsl:result-document href="Signatures.java">
 package <xsl:value-of select="//task/Package"/>;
 <xsl:apply-templates select="//Import"/>
-
 public class Signatures {
 
 	private static final String keyPairGenerator = "<xsl:value-of select="$keyPairGenerator"/>";
@@ -54,10 +49,7 @@ public class Signatures {
 		return sig.verify(signature);
 	}
 	</xsl:if>
-
-}
-
-</xsl:result-document>
+}</xsl:result-document>
 
 package <xsl:value-of select="//Package"/>;
 <xsl:apply-templates select="//Import"/>
@@ -78,16 +70,10 @@ public class Output {
 			System.out.println("Signature verification failed");
 		}
 		</xsl:if>
-
 	}
-}
-
-</xsl:if>
-
+}</xsl:if>
 </xsl:template>
-
 <xsl:template match="Import">
 import <xsl:value-of select="."/>;
 </xsl:template>
-
 </xsl:stylesheet>

@@ -6,9 +6,13 @@
 package de.cognicrypt.utils;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.OptionalInt;
 import org.eclipse.core.resources.IContainer;
@@ -19,6 +23,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -47,7 +52,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.osgi.framework.Bundle;
 import com.google.common.base.CharMatcher;
 import de.cognicrypt.core.Activator;
-import de.cognicrypt.core.Constants;
 
 public class Utils {
 
@@ -340,14 +344,11 @@ public class Utils {
 		return headerGroup;
 	}
 	
-	public static boolean checkJavaVersion() {
-		String javaVersion = System.getProperty("java.version", null);
-		if (javaVersion == null)
-			return true;
-		JavaVersion systemJavaVersion = new JavaVersion(javaVersion);
-		JavaVersion requiredJavaVersion = new JavaVersion(Constants.CC_JAVA_VERSION);
-		if (systemJavaVersion.compareTo(requiredJavaVersion) == 1)
-			return true;
-		return false;
+	public static boolean isIncompatibleJavaVersion() {
+		return isIncompatibleJavaVersion(System.getProperty("java.version", null));
+	}
+
+	public static boolean isIncompatibleJavaVersion(String javaVersion) {
+		return javaVersion == null || !javaVersion.startsWith("1.");
 	}
 }

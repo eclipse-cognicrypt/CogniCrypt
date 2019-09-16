@@ -23,7 +23,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IStartup;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
-import de.cognicrypt.utils.JavaVersion;
 import de.cognicrypt.utils.Utils;
 
 /**
@@ -55,83 +54,82 @@ public class StartupHandler implements IStartup {
 			IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 			if (store.getBoolean(Constants.AUTOMATED_ANALYSIS) == false) {
 				return;
-			} else if (Utils.checkJavaVersion()) {
-				Activator.getDefault().logInfo("Analysis cancelled as the IDEs' java version is " + System.getProperty("java.version", "<JavaVersionNotFound>") + ", which is greater than 1.8.");
+			} else if (Utils.isIncompatibleJavaVersion()) {
+				Activator.getDefault()
+						.logInfo("Analysis cancelled as the IDEs' java version is " + System.getProperty("java.version", "<JavaVersionNotFound>") + ", which is greater than 1.8.");
 				return;
-			}else {
-			final List<IJavaElement> changedJavaElements = new ArrayList<>();
-			Activator.getDefault().logInfo("ResourcechangeListener has been triggered.");
-			try {
+			} else {
+				final List<IJavaElement> changedJavaElements = new ArrayList<>();
+				Activator.getDefault().logInfo("ResourcechangeListener has been triggered.");
+				try {
 
-				event.getDelta().accept(delta -> {
-					switch (delta.getKind()) {
-						case IResourceDelta.ADDED:
-						case IResourceDelta.CHANGED:
-							final IResource res = delta.getResource();
-							if (res != null && res.getFileExtension() != null) {
-								try {
-									final IJavaElement javaElement = JavaCore.create(res);
-									if (javaElement != null) {
-										if (javaElement instanceof ICompilationUnit) {
-											if ((delta.getFlags() & IResourceDelta.CONTENT) != 0) {
-												changedJavaElements.add(javaElement);
+					event.getDelta().accept(delta -> {
+						switch (delta.getKind()) {
+							case IResourceDelta.ADDED:
+							case IResourceDelta.CHANGED:
+								final IResource res = delta.getResource();
+								if (res != null && res.getFileExtension() != null) {
+									try {
+										final IJavaElement javaElement = JavaCore.create(res);
+										if (javaElement != null) {
+											if (javaElement instanceof ICompilationUnit) {
+												if ((delta.getFlags() & IResourceDelta.CONTENT) != 0) {
+													changedJavaElements.add(javaElement);
+												}
+												return false;
 											}
-											return false;
 										}
+									} catch (final Exception ex) {
+										return false;
 									}
 								}
-								catch (final Exception ex) {
-									return false;
+						}
+						return true;
+					});
+					if (changedJavaElements.isEmpty()) {
+						for (final IResourceDelta ev : event.getDelta().getAffectedChildren()) {
+							ev.accept(delta -> {
+								switch (delta.getKind()) {
+									case IResourceDelta.ADDED:
+									case IResourceDelta.CHANGED:
+										final IResource res = delta.getResource();
+										final IJavaElement javaElement = JavaCore.create(res);
+										if (javaElement != null) {
+											if (javaElement instanceof IJavaProject) {
+												if ((delta.getFlags() & IResourceDelta.OPEN) != 0) {
+													changedJavaElements.add(javaElement);
+												}
+												return false;
+											}
+										}
 								}
-							}
+								return true;
+							});
+						}
 					}
-					return true;
-				});
+				} catch (final CoreException e) {}
+
 				if (changedJavaElements.isEmpty()) {
-					for (final IResourceDelta ev : event.getDelta().getAffectedChildren()) {
-						ev.accept(delta -> {
-							switch (delta.getKind()) {
-								case IResourceDelta.ADDED:
-								case IResourceDelta.CHANGED:
-									final IResource res = delta.getResource();
-									final IJavaElement javaElement = JavaCore.create(res);
-									if (javaElement != null) {
-										if (javaElement instanceof IJavaProject) {
-											if ((delta.getFlags() & IResourceDelta.OPEN) != 0) {
-												changedJavaElements.add(javaElement);
-											}
-											return false;
-										}
-									}
-							}
-							return true;
-						});
+					Activator.getDefault().logInfo("No changed resource found. Abort.");
+					return;
+				}
+				if (!changedJavaElements.isEmpty()) {
+					final AnalysisKickOff ako = new AnalysisKickOff();
+					final boolean stat = ako.setUp(changedJavaElements.get(0));
+					if (stat) {
+						analysis_Queue.add(ako);
 					}
-				}
-			}
-			catch (final CoreException e) {}
-
-			if (changedJavaElements.isEmpty()) {
-				Activator.getDefault().logInfo("No changed resource found. Abort.");
-				return;
-			}
-			if (!changedJavaElements.isEmpty()) {
-				final AnalysisKickOff ako = new AnalysisKickOff();
-				final boolean stat = ako.setUp(changedJavaElements.get(0));
-				if (stat) {
-					analysis_Queue.add(ako);
-				}
-				while (analysis_Queue.size() > 0) {
-					if (!analysis_running) {
-						final AnalysisKickOff ak = analysis_Queue.remove();
-						analysis_running = true;
-						ak.run();
-						analysis_running = false;
+					while (analysis_Queue.size() > 0) {
+						if (!analysis_running) {
+							final AnalysisKickOff ak = analysis_Queue.remove();
+							analysis_running = true;
+							ak.run();
+							analysis_running = false;
+						}
 					}
 				}
 			}
 		}
-	  }
 	}
 
 	private static final AfterBuildListener BUILD_LISTENER = new AfterBuildListener();

@@ -44,6 +44,7 @@ public class Constants {
 	public static final String lineSeparator = System.getProperty("line.separator");
 
 	public static final String JavaNatureID = "org.eclipse.jdt.core.javanature";
+	public static final String MavenNatureID = "org.eclipse.m2e.core.maven2Nature";
 
 	private static final String rsrcPath = "src" + Constants.innerFileSeparator + "main" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator;
 	private static final String tstrsrcPath = "src" + Constants.innerFileSeparator + "test" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator;
@@ -197,7 +198,8 @@ public class Constants {
 			{"java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException",
 					"javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException",
 					"java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List",
-					"java.util.Base64", "java.io.InputStream", "java.io.OutputStream", "java.util.Properties", "java.io.FileOutputStream", "java.security.Key", "java.net.URL", "java.io.File"};
+					"java.util.Base64", "java.io.InputStream", "java.io.OutputStream", "java.util.Properties", "java.io.FileOutputStream", "java.security.Key", "java.net.URL", "java.io.File", 
+					"javax.net.ssl.HttpsURLConnection","java.security.Signature"};
 
 	// Types
 	public static final String INTEGER = "Integer";
@@ -466,6 +468,22 @@ public class Constants {
 
 	public static final String DEFAULT_FEATURE_SET_FILE = "DefaultFeatureSet";
 
+	public static final String PREDICATEENSURER_GROUPID = "de.upb.cognicrypt.predicateensurer";
+	public static final String PREDICATEENSURER_ARTIFACTID = "PredicateEnsurer";
+	public static final String PREDICATEENSURER_VERSION = "0.0.1-SNAPSHOT";
+	public static final String PREDICATEENSURER_JAR_IMPORT = "de.upb.cognicrypt.predicateensurer.CC";
+
+	public static final String DEPENDENCIES_TAG = "dependencies";
+	public static final String DEPENDENCY_TAG = "dependency";
+	public static final String GROUPID_TAG = "groupId";
+	public static final String ARTIFACTID_TAG = "artifactId";
+	public static final String VERSION_TAG = "version";
+	public static final String MVN_INSTALL_COMMAND = "install";
+	public static final String MVN_CLEAN_COMMAND = "clean";
+	public static final String MVN_SKIPTESTS_COMMAND = "-DskipTests=true";
+	public static final String MVN_ECLIPSE_COMMAND = "eclipse:eclipse";
+	
+	
 	// for the list of items to be included inside the combo of the questionTab
 	public static final String dropDown = "Drop down";
 	public static final String textBox = "Text box";
@@ -494,10 +512,13 @@ public class Constants {
 	public static final String INCOMPLETE_OPERATION_MARKER_TYPE = "de.cognicrypt.staticanalyzer.incompleteOperationErrorMarker";
 	public static final String TYPESTATE_ERROR_MARKER_TYPE = "de.cognicrypt.staticanalyzer.typestateErrorMarker";
 	
-	public static final String RULE_SELECTION = "JCASel";
-	public static final String AUTOMATED_ANALYSIS = "AutoAnal";
-	public static final String SHOW_SECURE_OBJECTS = "SecObj";
-	public static final String CALL_GRAPH_SELECTION = "CGSel";
+	public static final String RULE_SELECTION = "de.cognicrypt.staticanalyzer.ruleSelection";
+	public static final String AUTOMATED_ANALYSIS = "de.cognicrypt.staticanalyzer.automaticAnalysis";
+	public static final String SHOW_SECURE_OBJECTS = "de.cognicrypt.staticanalyzer.secureObjects";
+	public static final String CALL_GRAPH_SELECTION = "de.cognicrypt.staticanalyzer.callgraphSelection";
+
+	public static final String ANALYSE_DEPENDENCIES = "de.cognicrypt.staticanalyzer.dependencyAnalysis";
+	
 	public static final String PERSIST_CONFIG = "de.cognicrypt.codegenerator.persistConfig";
 	
 	// for creating xml file

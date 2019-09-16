@@ -18,7 +18,6 @@ import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ErrorMarkerGenerator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
-import de.cognicrypt.utils.JavaVersion;
 import de.cognicrypt.utils.Utils;
 
 /**
@@ -30,6 +29,11 @@ public class AnalysisKickOff {
 
 	private static ResultsCCUIListener resultsReporter;
 	private IJavaProject curProj;
+	private boolean depOnly = false;
+
+	public void analyzeDependenciesOnly(final Boolean depOnly) {
+		this.depOnly = depOnly;
+	}
 
 	/**
 	 * This method sets up the analysis by <br>
@@ -42,6 +46,7 @@ public class AnalysisKickOff {
 	 * @throws CoreException
 	 */
 	public boolean setUp(final IJavaElement iJavaElement) {
+
 		IProject ip = null;
 		if (iJavaElement == null) {
 			ip = Utils.getCurrentProject();
@@ -63,20 +68,21 @@ public class AnalysisKickOff {
 			AnalysisKickOff.resultsReporter = ResultsCCUIListener.createListener(ip);
 		}
 
+		resultsReporter.analyzeDependenciesOnly(depOnly);
+
 		resultsReporter.getMarkerGenerator().clearMarkers(ip);
 		try {
-			if (ip == null || (!ip.hasNature(JavaCore.NATURE_ID))) {
-				Activator.getDefault().logInfo("The project "+ ip.getName() +" does not have Java nature. No analysis necessary.");
+			if (ip == null || !ip.hasNature(JavaCore.NATURE_ID)) {
+				Activator.getDefault().logInfo("The project " + ip.getName() + " does not have Java nature. No analysis necessary.");
 				return false;
 			}
-		}
-		catch (final CoreException e) {
+		}	catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 			return false;
 		}
 		IJavaProject javaProject = JavaCore.create(ip);
-		if(javaProject == null) {
-			Activator.getDefault().logInfo("JavaCore could not create IJavaProject for project "+ ip.getName() +" .");
+		if (javaProject == null) {
+			Activator.getDefault().logInfo("JavaCore could not create IJavaProject for project " + ip.getName() + ".");
 			return false;
 		}
 		this.curProj = javaProject;
@@ -85,13 +91,13 @@ public class AnalysisKickOff {
 
 	/**
 	 * This method executes the actual analysis.
-	 *
 	 */
 	public void run() {
-		if(this.curProj == null)
+		if (this.curProj == null)
 			return;
-		if (Utils.checkJavaVersion()) {
-			Activator.getDefault().logInfo("Analysis cancelled as the IDEs' java version is " + System.getProperty("java.version", "<JavaVersionNotFound>") + ", which is greater than 1.8.");
+		if (Utils.isIncompatibleJavaVersion()) {
+			Activator.getDefault()
+					.logInfo("Analysis cancelled as the IDEs' java version is " + System.getProperty("java.version", "<JavaVersionNotFound>") + ", which is greater than 1.8.");
 			return;
 		}
 		final Job analysis = new Job(Constants.ANALYSIS_LABEL) {
@@ -99,27 +105,25 @@ public class AnalysisKickOff {
 			@SuppressWarnings("deprecation")
 			@Override
 			protected IStatus run(final IProgressMonitor monitor) {
-				final SootThread sootThread = new SootThread(AnalysisKickOff.this.curProj, AnalysisKickOff.resultsReporter);
+				final SootThread sootThread = new SootThread(AnalysisKickOff.this.curProj, AnalysisKickOff.resultsReporter, depOnly);
 				sootThread.start();
 				while (sootThread.isAlive()) {
 					try {
 						Thread.sleep(500);
-					}
-					
-					catch (final InterruptedException e) {}
+					}	catch (final InterruptedException e) {}
 
 					if (monitor.isCanceled()) {
 						sootThread.stop();
-						Activator.getDefault().logInfo("Static analysis job cancelled for "+ curProj.getElementName() +".");
+						Activator.getDefault().logInfo("Static analysis job cancelled for " + curProj.getElementName() + ".");
 						return Status.CANCEL_STATUS;
 					}
 
 				}
 				if (sootThread.isSucc()) {
-					Activator.getDefault().logInfo("Static analysis job successfully terminated for "+ curProj.getElementName() +".");
+					Activator.getDefault().logInfo("Static analysis job successfully terminated for " + curProj.getElementName() + ".");
 					return Status.OK_STATUS;
 				} else {
-					Activator.getDefault().logInfo("Static analysis failed for "+ curProj.getElementName() +".");
+					Activator.getDefault().logInfo("Static analysis failed for " + curProj.getElementName() + ".");
 					return Status.CANCEL_STATUS;
 				}
 

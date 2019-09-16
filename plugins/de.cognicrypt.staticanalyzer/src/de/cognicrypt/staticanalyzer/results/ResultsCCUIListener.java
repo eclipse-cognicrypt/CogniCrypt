@@ -83,7 +83,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	private ArrayList<String> suppressedWarningIds;
 	private String warningFilePath;
 	private XMLParser xmlParser;
-	private Boolean depVariable = false;
+	private Boolean depOnly = false;
 	private static Stats stat;
 
 	private ResultsCCUIListener(final IProject curProj, final ErrorMarkerGenerator gen) {
@@ -105,14 +105,14 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		return this.currentProject;
 	}
 
-	public void setDepValue(final Boolean dependencyAnalyser) {
-		this.depVariable = dependencyAnalyser;
+	public void analyzeDependenciesOnly(final Boolean depOnly) {
+		this.depOnly = depOnly;
 	}
 
 	@Override
 	public void reportError(final AbstractError error) {
 		IResource sourceFile = null;
-		if (this.depVariable) {
+		if (this.depOnly) {
 			return;
 		}
 		final String errorMessage = error.toErrorMarkerString();
@@ -129,9 +129,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		try {
 			for (IPackageDeclaration decl : javaFile.getPackageDeclarations()) {
 				className += decl.getElementName() + ".";
-			}}
-			
-		catch (JavaModelException e1) {
+			}
+		} catch (JavaModelException e1) {
 		}
 		className += javaFile.getElementName().substring(0, javaFile.getElementName().lastIndexOf("."));
 		
@@ -146,7 +145,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			Map<String, AnalysisData> classesAnalysedMap = stat.getClassesAnalysed();
 			classesAnalysedMap.put(className, data);
 		}
-		
+
 		/*
 		 * Adding of new marker types for new errors: 1) add new ErrorMarker extension point in plugin.xml 2) add new markerResolutionGenerator tag in plugin.xml 3) add new Marker
 		 * constant in Constants.java (CogniCrypt Core) 4) add new else if in the following query
@@ -199,23 +198,23 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		} else {
 			this.xmlParser = new XMLParser(warningsFile);
 			this.xmlParser.useDocFromFile();
-			if (!this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR).contains(stmtId + "")) {
+			String idAsString = String.valueOf(stmtId);
+			if (!this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR).contains(idAsString)) {
 				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap);
 			} else {
 
 				// update existing line number
-				final Node suppressWarningNode = this.xmlParser.getNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR, stmtId + "");
+				final Node suppressWarningNode = this.xmlParser.getNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR, idAsString);
 				final Node lineNumberNode = this.xmlParser.getChildNodeByTagName(suppressWarningNode, Constants.LINENUMBER_ELEMENT);
 				this.xmlParser.updateNodeValue(lineNumberNode, lineNumber + "");
 				this.xmlParser.writeXML();
 
 				try {
 					this.currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-				}
-				catch (final CoreException e) {
+				} catch (final CoreException e) {
 					Activator.getDefault().logError(e);
 				}
-				this.suppressedWarningIds.add(stmtId + "");
+				this.suppressedWarningIds.add(idAsString);
 			}
 		}
 
@@ -225,7 +224,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	@Override
 	public void onSecureObjectFound(final IAnalysisSeed secureObject) {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		if (store.getBoolean(Constants.SHOW_SECURE_OBJECTS) == false || this.depVariable) {
+		if (!store.getBoolean(Constants.SHOW_SECURE_OBJECTS) || this.depOnly) {
 			return;
 		} else {
 			final Statement stmt = secureObject.stmt();

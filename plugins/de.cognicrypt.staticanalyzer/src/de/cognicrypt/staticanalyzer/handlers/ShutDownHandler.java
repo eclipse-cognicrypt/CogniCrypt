@@ -21,7 +21,8 @@ public class ShutDownHandler implements IWorkbenchListener {
 	}
 
 	@Override
-	public void postShutdown(IWorkbench workbench) {
+	public void postShutdown(final IWorkbench workbench) {
+
 	}
 
 }

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -51,7 +52,6 @@ import crypto.rules.CryptSLPredicate;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.Severities;
 import de.cognicrypt.staticanalyzer.Activator;
-import de.cognicrypt.staticanalyzer.statement.CCStatement;
 import de.cognicrypt.staticanalyzer.view.AnalysisData;
 import de.cognicrypt.staticanalyzer.view.ResultsUnit;
 import de.cognicrypt.staticanalyzer.view.StatisticsView;
@@ -61,6 +61,7 @@ import de.cognicrypt.utils.XMLParser;
 import soot.SootClass;
 import soot.Value;
 import soot.ValueBox;
+import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.internal.JimpleLocal;
 import soot.jimple.internal.JimpleLocalBox;
@@ -72,7 +73,7 @@ import typestate.TransitionFunction;
  * the results of the analysis to the Statistics View
  *
  * @author Stefan Krueger
- * @author André Sonntag
+ * @author Andre Sonntag
  * @author Adnan Manzoor
  */
 public class ResultsCCUIListener extends CrySLAnalysisListener {
@@ -110,7 +111,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void reportError(final AbstractError error) {
-		
 		IResource sourceFile = null;
 		if (this.depVariable) {
 			return;
@@ -120,14 +120,10 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 		sourceFile = unitToResource(errorLocation);
 		final int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
-		
-		//Bugfix, to be removed https://github.com/eclipse-cognicrypt/CogniCrypt/issues/289
-		if(!errorLocation.getUnit().isPresent() || errorLocation.getUnit().get().getInvokeExpr() == null)
-			return;
 
-		final CCStatement stmt = new CCStatement(errorLocation);
-		final int stmtId = stmt.hashCode();
-		
+		final int stmtId = error.hashCode();
+		HashMap<String, String> errorInfoMap = new HashMap<>();
+
 		ICompilationUnit javaFile = (ICompilationUnit) JavaCore.create(sourceFile);
 		String className = "";
 		try {
@@ -163,10 +159,19 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			markerType = Constants.PREDICATE_CONTRADICTION_MARKER_TYPE;
 		} else if (error instanceof RequiredPredicateError) {
 			markerType = Constants.REQUIRED_PREDICATE_MARKER_TYPE;
-		}  else if (error instanceof NeverTypeOfError) {
-			markerType = Constants.NEVER_TYPEOF_MARKER_TYPE;
+			errorInfoMap.put("predicate", ((RequiredPredicateError) error).getContradictedPredicate().getPredName());
+
+			int errorIndex = ((RequiredPredicateError) error).getExtractedValues().getCallSite().getIndex();
+			if(errorLocation.getUnit().get().containsInvokeExpr()) {
+				InvokeExpr invoke = errorLocation.getUnit().get().getInvokeExpr();
+				String errorParam = invoke.getArg(errorIndex).toString();
+				errorInfoMap.put("errorParam", errorParam);
+			}
+		
 		} else if (error instanceof ConstraintError) {
 			markerType = Constants.CONSTRAINT_ERROR_MARKER_TYPE;
+		} else if (error instanceof NeverTypeOfError) {
+			markerType = Constants.NEVER_TYPEOF_MARKER_TYPE;
 		} else if (error instanceof IncompleteOperationError) {
 			markerType = Constants.INCOMPLETE_OPERATION_MARKER_TYPE;
 		} else if (error instanceof TypestateError) {
@@ -176,6 +181,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		} else {
 			markerType = Constants.CC_MARKER_TYPE;
 		}
+
 		int selectedSeverity = Activator.getDefault().getPreferenceStore().getInt(markerType);
 		if (selectedSeverity == -1) {
 			selectedSeverity = Activator.getDefault().getPreferenceStore().getDefaultInt(markerType);
@@ -189,15 +195,15 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final File warningsFile = new File(this.warningFilePath);
 
 		if (!warningsFile.exists()) {
-			this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev);
+			this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap);
 		} else {
 			this.xmlParser = new XMLParser(warningsFile);
 			this.xmlParser.useDocFromFile();
 			if (!this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR).contains(stmtId + "")) {
-				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev);
+				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap);
 			} else {
 
-				// update existing LineNumber
+				// update existing line number
 				final Node suppressWarningNode = this.xmlParser.getNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR, stmtId + "");
 				final Node lineNumberNode = this.xmlParser.getChildNodeByTagName(suppressWarningNode, Constants.LINENUMBER_ELEMENT);
 				this.xmlParser.updateNodeValue(lineNumberNode, lineNumber + "");
@@ -237,16 +243,10 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 						break;
 					}
 				}
-
 			}
 			final Value varName = var.getValue();
-			this.markerGenerator.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt),
-					unit.getJavaSourceStartLineNumber(),
-					"Object " + (varName.toString().startsWith("$r")
-							? " of Type " + var.getValue().getType().toQuotedString()
-							: varName) + " is secure.",
-					Severities.Info);
-		}
+			this.markerGenerator.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt), unit.getJavaSourceStartLineNumber(),
+					"Object " + (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", Severities.Info, new HashMap<>());		}
 	}
 
 	/**

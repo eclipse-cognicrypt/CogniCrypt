@@ -565,4 +565,7 @@ public class Constants {
 	
 	// define the max java version before which plugin works.
 	public static final String CC_JAVA_VERSION = "1.8";
+	
+	// path to icons
+	public final static String COGNICRYPT_ICON_DIR = "icons/cognicrypt-analysis.png";
 }

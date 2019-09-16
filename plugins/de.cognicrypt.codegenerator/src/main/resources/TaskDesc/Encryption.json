@@ -85,7 +85,7 @@
      },
      {
       "id": "1",
-      "element": "checkbox",
+      "element": "radio",
       "note":"",      
       "questionText": "What data type do you wish to encrypt?",
       "answers": [{

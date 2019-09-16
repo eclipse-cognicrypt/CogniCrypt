@@ -512,12 +512,12 @@ public class Constants {
 	public static final String INCOMPLETE_OPERATION_MARKER_TYPE = "de.cognicrypt.staticanalyzer.incompleteOperationErrorMarker";
 	public static final String TYPESTATE_ERROR_MARKER_TYPE = "de.cognicrypt.staticanalyzer.typestateErrorMarker";
 	
-	public static final String RULE_SELECTION = "JCASel";
-	public static final String AUTOMATED_ANALYSIS = "AutoAnal";
-	public static final String SHOW_SECURE_OBJECTS = "SecObj";
-	public static final String CALL_GRAPH_SELECTION = "CGSel";
+	public static final String RULE_SELECTION = "de.cognicrypt.staticanalyzer.ruleSelection";
+	public static final String AUTOMATED_ANALYSIS = "de.cognicrypt.staticanalyzer.automaticAnalysis";
+	public static final String SHOW_SECURE_OBJECTS = "de.cognicrypt.staticanalyzer.secureObjects";
+	public static final String CALL_GRAPH_SELECTION = "de.cognicrypt.staticanalyzer.callgraphSelection";
 
-	public static final String ANALYSE_DEPENDENCIES = "analyseDep";
+	public static final String ANALYSE_DEPENDENCIES = "de.cognicrypt.staticanalyzer.dependencyAnalysis";
 	
 	public static final String PERSIST_CONFIG = "de.cognicrypt.codegenerator.persistConfig";
 	

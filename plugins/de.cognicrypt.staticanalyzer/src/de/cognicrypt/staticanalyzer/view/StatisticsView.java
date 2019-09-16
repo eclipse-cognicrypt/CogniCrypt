@@ -85,7 +85,7 @@ public class StatisticsView extends ViewPart {
 				runningAnalysis.run();
 				resultsEnabled = true;
 			}
-
+			
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {}
 

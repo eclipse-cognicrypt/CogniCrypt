@@ -53,7 +53,8 @@ public class RunAnalysisHandler extends AbstractHandler {
 	public static int saveFile(IFile openFileInEditor) {
 		
 	    JFrame frame = new JFrame();
-	    String message = "<html> The file below has been changed, would you like to save it before analysis?  <br><br>" + openFileInEditor;
+	    
+	    String message = "The file ["+ openFileInEditor.getName() +"] has unsaved changes. Would you like to save it before CogniCrypt analyzes your project?";
 	    String folderPath = Utils.getResourceFromWithin(Constants.COGNICRYPT_ICON_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath();
 	    ImageIcon icon = new ImageIcon(folderPath);
 

@@ -247,7 +247,12 @@ public class CrySLModelReader {
 	public List<CryptSLRule> readRulesOutside(String resourcesPath) throws CoreException {
 		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
 		for (File a : ((new File(resourcesPath)).listFiles())) {
-			rules.add(readRule(a));
+			if (!a.isDirectory() && a.exists() && a.canRead()) {
+				CryptSLRule rule = readRule(a);
+				if (rule != null) {
+					rules.add(rule);
+				}
+			}
 		}
 		
 		return rules;

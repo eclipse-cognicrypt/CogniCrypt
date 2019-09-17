@@ -228,13 +228,37 @@ public class AltConfigWizard extends Wizard {
 		final LocatorPage currentPage = (LocatorPage) getContainer().getCurrentPage();
 		IResource selectedFile = (IResource) currentPage.getSelectedResource().getFirstElement();
 
+		String taskName = selectedTask.getName();
 		Map<String, String> taskCrySL = new HashMap<String, String>();
 		if (generator == CodeGenerators.CrySL) {
-			taskCrySL.put("Encryption", "encryptionstrings");
+			if ("Encryption".equals(taskName)) {
+				String dataType = "";
+				boolean kda = true;
+				for (Entry<Question, Answer> entry: this.constraints.entrySet()) {
+					String question = entry.getKey().getQuestionText();
+					String answer = entry.getValue().getValue();
+					if ("What data type do you wish to encrypt?".equals(question)) {
+						dataType = answer;
+					}
+					if ("Which method of communication would you prefer to use for key exchange?".equals(question)) {
+						if ("Unencrypted digital channel (e.g. email)".equals(answer)) {
+							kda = false;
+						}
+					}
+				}
+				if ("String".equals(dataType)) {
+					dataType ="strings";
+				} else if ("File".equals(dataType)) {
+					dataType ="files";
+				} else {
+					dataType = "";
+				}
+				
+				taskCrySL.put("Encryption", ((!kda) ? "hybrid" : "") + "encryption" + dataType);
+			}
 			taskCrySL.put("SecurePassword", "passwordhashing");
 			taskCrySL.put("DigitalSignatures", "digitalsigning");
 		}
-		String taskName = selectedTask.getName();
 		if (!taskCrySL.containsKey(taskName)) {
 			generator = CodeGenerators.XSL;
 		}

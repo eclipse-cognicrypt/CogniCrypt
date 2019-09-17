@@ -6,18 +6,13 @@
 package de.cognicrypt.staticanalyzer.sootbridge;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +26,6 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
-import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.preference.IPreferenceStore;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -66,7 +59,7 @@ import soot.options.Options;
 public class SootRunner {
 
 	final Boolean depValue = false;
-	
+
 	private static SceneTransformer createAnalysisTransformer(final ResultsCCUIListener resultsReporter) {
 		return new SceneTransformer() {
 
@@ -94,13 +87,13 @@ public class SootRunner {
 		try {
 			CrySLModelReader r = new CrySLModelReader(project);
 			for (String path : projectClassPath(JavaCore.create(project))) {
-				List<CryptSLRule> readRuleFromBinaryFiles = r.readRulesWithin(path);
+				List<CryptSLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
 				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
 
 			for (String path : applicationClassPath(JavaCore.create(project))) {
-				List<CryptSLRule> readRuleFromBinaryFiles = r.readRulesWithin(path);
+				List<CryptSLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
 				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
@@ -138,7 +131,7 @@ public class SootRunner {
 	}
 
 	public static boolean runSoot(final IJavaProject project, final ResultsCCUIListener resultsReporter, final Boolean dependencyAnalyser) {
-		
+
 		G.reset();
 		setSootOptions(project, dependencyAnalyser);
 		registerTransformers(resultsReporter);
@@ -161,11 +154,11 @@ public class SootRunner {
 	private static void setSootOptions(final IJavaProject project, final Boolean dependencyAnalyser) {
 
 		if (dependencyAnalyser == true) {
-			Options.v().set_soot_classpath(Joiner.on(File.pathSeparator).join(libraryClassPath(project, dependencyAnalyser))); 
+			Options.v().set_soot_classpath(Joiner.on(File.pathSeparator).join(libraryClassPath(project, dependencyAnalyser)));
 			Options.v().set_process_dir(Lists.newArrayList(libraryClassPath(project, dependencyAnalyser)));
-		}else {
-			Options.v().set_soot_classpath(getSootClasspath(project, dependencyAnalyser)); 
-			Options.v().set_process_dir(Lists.newArrayList(applicationClassPath(project))); 
+		} else {
+			Options.v().set_soot_classpath(getSootClasspath(project, dependencyAnalyser));
+			Options.v().set_process_dir(Lists.newArrayList(applicationClassPath(project)));
 		}
 		Options.v().set_keep_line_number(true);
 		Options.v().set_prepend_classpath(true);
@@ -208,7 +201,13 @@ public class SootRunner {
 	private static List<String> getExcludeList(IJavaProject project) {
 		final List<String> excludeList = new LinkedList<String>();
 		for (final CryptSLRule r : getRules(project.getProject())) {
-			excludeList.add(crypto.Utils.getFullyQualifiedName(r));
+			try {
+				String fullyQualifiedName = crypto.Utils.getFullyQualifiedName(r);
+				excludeList.add(fullyQualifiedName);
+			}
+			catch (RuntimeException e) {
+				Activator.getDefault().logError(e);
+			}
 		}
 		return excludeList;
 	}
@@ -218,10 +217,10 @@ public class SootRunner {
 	}
 
 	private static String getSootClasspath(final IJavaProject javaProject, final Boolean dependencyAnalyser) {
-		
+
 		Collection<String> applicationClassPath = applicationClassPath(javaProject);
 		Collection<String> libraryClassPath = libraryClassPath(javaProject, dependencyAnalyser);
-		
+
 		libraryClassPath.addAll(applicationClassPath);
 		System.out.println(Joiner.on(File.pathSeparator).join(libraryClassPath));
 		return Joiner.on(File.pathSeparator).join(libraryClassPath);
@@ -247,7 +246,7 @@ public class SootRunner {
 		Collection<String> libraryClassPath = Sets.newHashSet();
 		IClasspathEntry[] rentries;
 		try {
-			// check if "include dependencies" checkbox is checked in preference page or analysis is running for dependencies 
+			// check if "include dependencies" checkbox is checked in preference page or analysis is running for dependencies
 			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) || dependencyAnalyser) {
 
 				rentries = project.getRawClasspath();
@@ -255,12 +254,13 @@ public class SootRunner {
 					resolveClassPathEntry(entry, libraryClassPath, project);
 				}
 			}
-		} catch (CoreException e1) {
+		}
+		catch (CoreException e1) {
 			e1.printStackTrace();
 		}
 		return libraryClassPath;
 	}
-	
+
 	private static void resolveClassPathEntry(IClasspathEntry entry, Collection<String> libraryClassPath, IJavaProject project) {
 		IClasspathEntry[] rentries;
 		switch (entry.getEntryKind()) {

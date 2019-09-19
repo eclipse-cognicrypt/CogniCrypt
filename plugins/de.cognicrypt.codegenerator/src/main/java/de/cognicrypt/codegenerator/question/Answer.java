@@ -22,6 +22,7 @@ public class Answer {
 	private ArrayList<ClaferDependency> claferDependencies;
 	private ArrayList<CodeDependency> codeDependencies;
 	private ArrayList<UIDependency> uiDependencies;
+	private String option;
 
 	private int nextID = Constants.ANSWER_NO_NEXT_ID;
 
@@ -128,6 +129,15 @@ public class Answer {
 		combined.setClaferDependencies(clD);
 
 		return combined;
+	}
+	
+	public String getOption() {
+		return option;
+	}
+
+	
+	public void setOption(String option) {
+		this.option = option;
 	}
 
 }

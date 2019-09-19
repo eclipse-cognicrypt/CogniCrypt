@@ -52,9 +52,9 @@ public class GenerationTest {
 		this.testJavaProject = TestUtils.createJavaProject("TestProject_" + counter);
 		TestUtils.generateJavaClassInJavaProject(this.testJavaProject, "testPackage", "Test");
 		this.encTask = TestUtils.getTask("Encryption");
-		this.generatorEnc = new XSLBasedGenerator(this.testJavaProject.getProject(), this.encTask.getXslFile());
+		this.generatorEnc = new XSLBasedGenerator(this.testJavaProject.getProject(), this.encTask.getCodeTemplate());
 		this.secPasswordTask = TestUtils.getTask("SecurePassword");
-		this.generatorSecPassword = new XSLBasedGenerator(this.testJavaProject.getProject(), this.secPasswordTask.getXslFile());
+		this.generatorSecPassword = new XSLBasedGenerator(this.testJavaProject.getProject(), this.secPasswordTask.getCodeTemplate());
 		this.developerProject = this.generatorEnc.getDeveloperProject();
 	}
 

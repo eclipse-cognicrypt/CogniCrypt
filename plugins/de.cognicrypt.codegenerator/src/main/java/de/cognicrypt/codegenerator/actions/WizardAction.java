@@ -19,7 +19,6 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import de.cognicrypt.codegenerator.wizard.AltConfigWizard;
 import de.cognicrypt.codegenerator.wizard.CogniCryptWizardDialog;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.core.Constants.CodeGenerators;
 
 /**
  * Our sample action implements workbench action delegate. The action proxy will be created by the workbench and shown in the UI. When the user tries to use the action, this
@@ -62,7 +61,7 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	@Override
 	public void run(final IAction action) {
 		Constants.WizardActionFromContextMenuFlag = false;
-		final AltConfigWizard wizard = new AltConfigWizard(CodeGenerators.CrySL);
+		final AltConfigWizard wizard = new AltConfigWizard();
 		final CogniCryptWizardDialog dialog = new CogniCryptWizardDialog(this.shell, wizard);
 		dialog.setHelpAvailable(false);
 		dialog.open();

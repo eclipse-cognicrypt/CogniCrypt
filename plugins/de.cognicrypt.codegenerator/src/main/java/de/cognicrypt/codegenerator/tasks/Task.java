@@ -10,18 +10,27 @@
 
 package de.cognicrypt.codegenerator.tasks;
 
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.core.Constants.CodeGenerators;
+
 public class Task {
 
 	private String name;
 	private String description;
 	private String taskDescription;
-	private String modelFile;
-	private String questionsJSONFile;
 	private String image;
-	private boolean isSelected;
+	private CodeGenerators codeGen;
+	
 	private String additionalResources;
-	private String xslFile;
+	private String questionsJSONFile;
+	
+	private String modelFile;
+	private String codeTemplate;
+	
 
+	private boolean isSelected;
+
+	
 	public String getAdditionalResources() {
 		return this.additionalResources;
 	}
@@ -88,23 +97,20 @@ public class Task {
 		this.questionsJSONFile = questionsJSONFile;
 	}
 
-	/**
-	 * Getter method of style sheet.
-	 *
-	 * @return the xslFile
-	 */
-	public String getXslFile() {
-		return this.xslFile;
+	public String getCodeTemplate() {
+		return this.codeTemplate;
 	}
 
-	/**
-	 * Setter method for style sheet.
-	 *
-	 * @param xslFile
-	 *        the xslFile to set
-	 */
-	public void setXslFile(final String xslFile) {
-		this.xslFile = xslFile;
+	public void setCodeTemplate(final String codeTemplate) {
+		this.codeTemplate = codeTemplate;
+	}
+	
+	public CodeGenerators getCodeGen() {
+		return codeGen;
+	}
+
+	public void setCodeGen(CodeGenerators codeGen) {
+		this.codeGen = codeGen;
 	}
 
 }

@@ -1,4 +1,4 @@
-package de.cognicrypt.codegenerator.crysl.templates.hybridencryptionfiles;
+package de.cognicrypt.codegenerator.crysl.templates.encryptionhybridstrings;
 
 import java.io.IOException;
 import java.nio.file.Files;

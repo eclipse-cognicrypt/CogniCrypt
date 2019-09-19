@@ -49,19 +49,19 @@ public class DefaultTasksGeneratorTest {
 		this.testJavaProject = TestUtils.createJavaProject("TestProject_" + counter);
 
 		this.encTask = TestUtils.getTask("Encryption");
-		this.generatorEnc = new XSLBasedGenerator(this.testJavaProject.getProject(), this.encTask.getXslFile());
+		this.generatorEnc = new XSLBasedGenerator(this.testJavaProject.getProject(), this.encTask.getCodeTemplate());
 
 		this.secPasswordTask = TestUtils.getTask("SecurePassword");
-		this.generatorSecPassword = new XSLBasedGenerator(this.testJavaProject.getProject(), this.secPasswordTask.getXslFile());
+		this.generatorSecPassword = new XSLBasedGenerator(this.testJavaProject.getProject(), this.secPasswordTask.getCodeTemplate());
 
 		this.SECCOMTask = TestUtils.getTask("SecureCommunication");
-		this.generatorSECCOM = new XSLBasedGenerator(this.testJavaProject.getProject(), this.SECCOMTask.getXslFile());
+		this.generatorSECCOM = new XSLBasedGenerator(this.testJavaProject.getProject(), this.SECCOMTask.getCodeTemplate());
 
 		this.secMPCompTask = TestUtils.getTask("SECMUPACOMP");
-		this.generatorSecMPComp = new XSLBasedGenerator(this.testJavaProject.getProject(), this.secMPCompTask.getXslFile());
+		this.generatorSecMPComp = new XSLBasedGenerator(this.testJavaProject.getProject(), this.secMPCompTask.getCodeTemplate());
 
 		this.digitalSignTask = TestUtils.getTask("DigitalSignatures");
-		this.generatorDigitalSIgn = new XSLBasedGenerator(this.testJavaProject.getProject(), this.digitalSignTask.getXslFile());
+		this.generatorDigitalSIgn = new XSLBasedGenerator(this.testJavaProject.getProject(), this.digitalSignTask.getCodeTemplate());
 
 		this.developerProject = this.generatorEnc.getDeveloperProject();
 	}

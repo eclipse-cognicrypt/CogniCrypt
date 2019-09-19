@@ -1,129 +1,50 @@
 [{
   "id": "0",
-  "helpID": "Encryption_Page0",
   "content": [{
       "id": "0",
-      "element":"radio",
-      "note": "",      
+      "element": "radio",
       "questionText": "Which method of communication would you prefer to use for key exchange?",
       "answers": [ {
           "value": "Encrypted digital channel",
-          "codeDependencies": [{
-            "option": "hybrid",
-            "value": "false"
-          }],
-          "claferDependencies": [{
-              "algorithm": "kda",
-              "value": "KeyDerivationAlgorithm",
-              "operator": "->"
-            },
-            {
-              "algorithm": "security",
-              "value": "min(symmetricCipher.algorithmSecurity, kda.algorithmSecurity)",
-              "operator": "="
-            }],
+          "option": "",
           "defaultAnswer": true
         },
         {
           "value": "Encrypted Hard Drive",
-          "codeDependencies": [{
-            "option": "hybrid",
-            "value": "false"
-          }],
-          "claferDependencies": [{
-              "algorithm": "kda",
-              "value": "KeyDerivationAlgorithm",
-              "operator": "->"
-            },
-            {
-              "algorithm": "security",
-              "value": "min(symmetricCipher.algorithmSecurity, kda.algorithmSecurity)",
-              "operator": "="
-            }]
+           "option": ""
         },
         {
           "value": "Unencrypted digital channel (e.g. email)",
-          "codeDependencies": [{
-            "option": "hybrid",
-            "value": "true"
-          }]
+          "option": "hybrid"
         },
         {
           "value": "Unencrypted analog channel (e.g. phone, mail)",
-          "codeDependencies": [{
-            "option": "hybrid",
-            "value": "false"
-          }],
-          "claferDependencies": [{
-              "algorithm": "kda",
-              "value": "KeyDerivationAlgorithm",
-              "operator": "->"
-            },
-            {
-              "algorithm": "security",
-              "value": "min(symmetricCipher.algorithmSecurity, kda.algorithmSecurity)",
-              "operator": "="
-            }]
+           "option": ""
         },
         {
           "value": "No Sharing",
-          "codeDependencies": [{
-            "option": "hybrid",
-            "value": "false"
-          }],
-          "claferDependencies": [{
-              "algorithm": "kda",
-              "value": "KeyDerivationAlgorithm",
-              "operator": "->"
-            },
-            {
-              "algorithm": "security",
-              "value": "min(symmetricCipher.algorithmSecurity, kda.algorithmSecurity)",
-              "operator": "="
-            }]
+          "option": ""
         }]
      },
      {
       "id": "1",
       "element": "radio",
-      "note":"",      
       "questionText": "What data type do you wish to encrypt?",
       "answers": [{
           "value": "File",
-          "codeDependencies": [{
-            "option": "dataType",
-            "value": "File"
-          }]
+           "option": "files"
         },
         {
           "value": "String",
-          "codeDependencies": [{
-            "option": "dataType",
-            "value": "String"
-          }]
+           "option": "strings"
         },
         {
           "value": "Byte Array",
-          "codeDependencies": [{
-            "option": "dataType",
-            "value": "byte[]"
-          }]
+           "option": ""
         },
         {
           "value": "Other/Do not know",
-          "isExclusive": true,
-          "codeDependencies": [{
-            "option": "dataType",
-            "value": "String"
-          },
-        {
-            "option": "dataType",
-            "value": "File"
-          }],
-          "uiDependencies": [{
-            "option": "isExclusive",
-            "value": "true"
-          }],
+           "option": "",
           "nextID": "-1",
           "defaultAnswer": true
         }

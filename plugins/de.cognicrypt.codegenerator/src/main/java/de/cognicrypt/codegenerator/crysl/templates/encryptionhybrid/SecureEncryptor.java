@@ -1,8 +1,5 @@
-package de.cognicrypt.codegenerator.crysl.templates.hybridencryptionstrings;
+package de.cognicrypt.codegenerator.crysl.templates.encryptionhybrid;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 
@@ -33,27 +30,25 @@ public class SecureEncryptor {
 		return wrappedKeyBytes;
 	}
 
-	public java.io.File encryptData(java.io.File plaintext, javax.crypto.SecretKey key) throws IOException {
+	public byte[] encryptData(byte[] plaintext, javax.crypto.SecretKey key) {
 		byte[] ivBytes = new byte[32];
 		byte[] cipherText = null;
-		byte[] plaintextFile = Files.readAllBytes(Paths.get(plaintext.getAbsolutePath()));
 		int mode = Cipher.ENCRYPT_MODE;
 
 		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(ivBytes, "next").includeClass("javax.crypto.spec.IvParameterSpec")
-			.addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher").addParameter(mode, "encmode").addParameter(plaintextFile, "plainText").addParameter(key, "key")
+			.addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher").addParameter(mode, "encmode").addParameter(plaintext, "plainText").addParameter(key, "key")
 			.addReturnObject(cipherText).generate();
 
 		byte[] ret = new byte[ivBytes.length + cipherText.length];
 		System.arraycopy(ivBytes, 0, ret, 0, ivBytes.length);
 		System.arraycopy(cipherText, 0, ret, ivBytes.length, cipherText.length);
-		Files.write(Paths.get(plaintext.getAbsolutePath()), ret);
-		return plaintext;
+		return ret;
 	}
 
-	public java.io.File decryptData(java.io.File ciphertext, javax.crypto.SecretKey key) throws IOException {
-		byte[] ciphertextFile = Files.readAllBytes(Paths.get(ciphertext.getAbsolutePath()));
+	public byte[] decryptData(byte[] ciphertext, javax.crypto.SecretKey key) {
+
 		byte[] ivBytes = new byte[32];
-		byte[] data = new byte[ciphertextFile.length - ivBytes.length];
+		byte[] data = new byte[ciphertext.length - ivBytes.length];
 		System.arraycopy(data, 0, ivBytes, 0, ivBytes.length);
 		System.arraycopy(data, ivBytes.length, data, 0, data.length);
 
@@ -62,8 +57,7 @@ public class SecureEncryptor {
 		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher")
 			.addParameter(mode, "encmode").addParameter(data, "plainText").addParameter(key, "key").addReturnObject(res).generate();
 
-		Files.write(Paths.get(ciphertext.getAbsolutePath()), res);
-		return ciphertext;
+		return res;
 	}
 
 }

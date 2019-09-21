@@ -31,12 +31,11 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.ui.IMarkerResolution;
-
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.utilities.QuickFixUtils;
 import de.cognicrypt.utils.DeveloperProject;
 import de.cognicrypt.utils.Utils;
-import de.cognicrypt.staticanalyzer.utilities.QuickFixUtils;
 
 public class EnsuresPredicateFix implements IMarkerResolution{
 	private final String label;
@@ -136,8 +135,6 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 			final ListRewrite listRewrite = rewriter.getListRewrite(((TypeDeclaration) unit.types().get(0)),
 					TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
 			listRewrite.insertBefore(ePStatementFieldDec, node, null);
-
-		} else {
 
 		}
 
@@ -248,8 +245,6 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 				} else {
 					return true;
 				}
-			} else {
-				return false;
 			}
 
 			return false;
@@ -270,8 +265,6 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 				} else {
 					return true;
 				}
-			} else {
-				return false;
 			}
 
 			return false;
@@ -292,8 +285,6 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 				} else {
 					return true;
 				}
-			} else {
-				return false;
 			}
 
 			return false;

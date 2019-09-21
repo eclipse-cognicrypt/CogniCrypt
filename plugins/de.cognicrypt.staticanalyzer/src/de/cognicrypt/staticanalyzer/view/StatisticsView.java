@@ -85,7 +85,7 @@ public class StatisticsView extends ViewPart {
 				runningAnalysis.run();
 				resultsEnabled = true;
 			}
-
+			
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {}
 
@@ -231,8 +231,10 @@ public class StatisticsView extends ViewPart {
 
 	private void allowAnalysisReRun(boolean isAllowed) {
 		reRunButton.setEnabled(isAllowed);
-		if (!isAllowed) {
-			projectname.setText(projectname.getText() + " (Updating)");
+		final String projectName = projectname.getText();
+		final String suffix = " (Updating)";
+		if (!isAllowed && !projectName.endsWith(suffix)) {
+			projectname.setText(projectName + suffix);
 		}
 	}
 

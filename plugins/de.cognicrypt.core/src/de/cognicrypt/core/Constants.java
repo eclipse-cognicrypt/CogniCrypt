@@ -512,11 +512,12 @@ public class Constants {
 	public static final String INCOMPLETE_OPERATION_MARKER_TYPE = "de.cognicrypt.staticanalyzer.incompleteOperationErrorMarker";
 	public static final String TYPESTATE_ERROR_MARKER_TYPE = "de.cognicrypt.staticanalyzer.typestateErrorMarker";
 	
-	public static final String RULE_SELECTION = "JCASel";
-	public static final String RULES_VERSION = "RulesVersion";
-	public static final String AUTOMATED_ANALYSIS = "AutoAnal";
-	public static final String SHOW_SECURE_OBJECTS = "SecObj";
-	public static final String CALL_GRAPH_SELECTION = "CGSel";
+	public static final String AUTOMATED_ANALYSIS = "de.cognicrypt.staticanalyzer.automaticAnalysis";
+	public static final String SHOW_SECURE_OBJECTS = "de.cognicrypt.staticanalyzer.secureObjects";
+	public static final String CALL_GRAPH_SELECTION = "de.cognicrypt.staticanalyzer.callgraphSelection";
+
+	public static final String ANALYSE_DEPENDENCIES = "de.cognicrypt.staticanalyzer.dependencyAnalysis";
+	
 	public static final String PERSIST_CONFIG = "de.cognicrypt.codegenerator.persistConfig";
 	
 	// for creating xml file
@@ -580,4 +581,7 @@ public class Constants {
 	public static final String JCA_NEXUS_URL= "https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/de/darmstadt/tu/crossing/JavaCryptographicArchitecture";
 	public static final String BC_NEXUS_URL = "https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/de/fraunhofer/iem/BouncyCastle";
 	public static final String TINK_NEXUS_URL = "https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/de/darmstadt/tu/crossing/Tink";
+
+	// path to icons
+	public final static String COGNICRYPT_ICON_DIR = "icons/cognicrypt-analysis.png";
 }

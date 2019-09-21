@@ -22,7 +22,6 @@ public class ShutDownHandler implements IWorkbenchListener {
 
 	@Override
 	public void postShutdown(final IWorkbench workbench) {
-		// TODO Auto-generated method stub
 
 	}
 

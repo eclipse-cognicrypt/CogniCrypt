@@ -573,4 +573,5 @@ public class Constants {
 	
 	// path to icons
 	public final static String COGNICRYPT_ICON_DIR = "icons/cognicrypt-analysis.png";
+	public static final String codeTemplateFolder = "src" + Constants.innerFileSeparator + "main" + Constants.innerFileSeparator + "java" + Constants.innerFileSeparator + "de" + Constants.innerFileSeparator + "cognicrypt" + Constants.innerFileSeparator + "codegenerator" + Constants.innerFileSeparator + "crysl" + Constants.innerFileSeparator + "templates" + Constants.innerFileSeparator;
 }

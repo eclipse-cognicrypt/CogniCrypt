@@ -50,7 +50,7 @@ public class TaskJSONReader {
 						t.setCodeTemplate(Constants.rsrcPath + "XSLTemplates" + Constants.innerFileSeparator + t.getName() + ".xsl");
 						t.setModelFile(Constants.rsrcPath + "ClaferModel" + Constants.innerFileSeparator + t.getName() + ".js");
 					} else if (t.getCodeGen() == CodeGenerators.CrySL) {
-						t.setCodeTemplate("src" + Constants.innerFileSeparator + "main" + Constants.innerFileSeparator + "java" + Constants.innerFileSeparator + "de" + Constants.innerFileSeparator + "cognicrypt" + Constants.innerFileSeparator + "codegenerator" + Constants.innerFileSeparator + "crysl" + Constants.innerFileSeparator + "templates" + Constants.innerFileSeparator + t.getName().toLowerCase());
+						t.setCodeTemplate(Constants.codeTemplateFolder + t.getName().toLowerCase());
 					}
 				}
 				

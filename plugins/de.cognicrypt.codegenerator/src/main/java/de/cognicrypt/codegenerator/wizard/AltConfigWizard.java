@@ -36,10 +36,10 @@ import de.cognicrypt.codegenerator.wizard.beginner.BeginnerModeQuestionnaire;
 import de.cognicrypt.codegenerator.wizard.beginner.BeginnerTaskQuestionPage;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.CodeGenerators;
+import de.cognicrypt.utils.DeveloperProject;
 
 public class AltConfigWizard extends Wizard {
 
-//	private TaskSelectionPage taskListPage;
 	private Task selectedTask;
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
@@ -193,7 +193,8 @@ public class AltConfigWizard extends Wizard {
 		for (Answer response : this.constraints.values()) {
 			substringLength += response.getOption().length();
 		}
-		selectedTask.setCodeTemplate(selectedTask.getCodeTemplate().substring(0, substringLength));
+		String oldCodeTemplate = selectedTask.getCodeTemplate();
+		selectedTask.setCodeTemplate(oldCodeTemplate.substring(0, oldCodeTemplate.length() - substringLength));
 	}
 
 	/**
@@ -204,7 +205,7 @@ public class AltConfigWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		boolean ret = false;
-		final CodeGenerators generator = selectedTask.getCodeGen();
+		final CodeGenerators genKind = selectedTask.getCodeGen();
 		CodeGenerator codeGenerator = null;
 		String additionalResources = selectedTask.getAdditionalResources();
 		final LocatorPage currentPage = (LocatorPage) getContainer().getCurrentPage();
@@ -219,24 +220,26 @@ public class AltConfigWizard extends Wizard {
 		waitingDialog.setVisible(true);
 		Configuration chosenConfig = null;
 
-		switch (generator) {
+		switch (genKind) {
 			case CrySL:
 				CrySLBasedCodeGenerator.clearParameterCache();
 				File templateFile = CodeGenUtils.getResourceFromWithin(selectedTask.getCodeTemplate()).listFiles()[0];
-				String projectRelDir = Constants.outerFileSeparator + "src" + Constants.outerFileSeparator + Constants.PackageName + Constants.outerFileSeparator;
-				String pathToTemplateFile = projectRelDir + templateFile.getName();
-				String resFileOSPath = targetFile.getProject().getRawLocation().toOSString() + pathToTemplateFile;
-
+				codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 				try {
+					String projectRelDir = Constants.outerFileSeparator + codeGenerator.getDeveloperProject().getSourcePath() + Constants.outerFileSeparator + Constants.PackageName.replaceAll("/", "\\\\") + Constants.outerFileSeparator;
+					String pathToTemplateFile = projectRelDir + templateFile.getName();
+					String resFileOSPath = targetFile.getProject().getRawLocation().toOSString() + pathToTemplateFile;
+					
 					Files.createDirectories(Paths.get(targetFile.getProject().getRawLocation().toOSString() + projectRelDir));
 					Files.copy(templateFile.toPath(), Paths.get(resFileOSPath), StandardCopyOption.REPLACE_EXISTING);
-				} catch (IOException e1) {
+					codeGenerator.getDeveloperProject().refresh();
+					
+					resetAnswers();
+					chosenConfig = new CrySLConfiguration(resFileOSPath, ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile));
+ 				} catch (IOException | CoreException  e1) {
 					Activator.getDefault().logError(e1);
 					return false;
 				}
-				codeGenerator = new CrySLBasedCodeGenerator(targetFile);
-				resetAnswers();
-				chosenConfig = new CrySLConfiguration(resFileOSPath, ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile));
 				break;
 			case XSL:
 				this.constraints = (this.constraints != null) ? this.constraints : new HashMap<>();
@@ -250,9 +253,8 @@ public class AltConfigWizard extends Wizard {
 					.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
 				break;
 			default:
-				ret = false;
+				return false;
 		}
-
 		ret = codeGenerator.generateCodeTemplates(chosenConfig, additionalResources);
 
 		try {

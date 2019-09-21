@@ -1,4 +1,4 @@
-package de.cognicrypt.codegenerator.crysl.templates.passwordhashing;
+package de.cognicrypt.codegenerator.crysl.templates.securepassword;
 
 import java.security.GeneralSecurityException;
 

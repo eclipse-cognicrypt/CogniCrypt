@@ -264,6 +264,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		});
 		secureObjectsCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		secureObjectsCheckBox.setText("Show secure objects");
+		secureObjectsCheckBox.setEnabled(preferences.getBoolean(Constants.AUTOMATED_ANALYSIS));
 		
 		analyseDependenciesCheckBox = new Button(staticAnalysisGroup,SWT.CHECK); 
 		analyseDependenciesCheckBox.setText("Include dependencies to projects analysis");

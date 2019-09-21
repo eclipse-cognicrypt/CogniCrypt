@@ -2,175 +2,379 @@ package de.cognicrypt.codegenerator.generator.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.junit.Test;
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.generator.CodeGenCrySLRule;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.CrySLBasedCodeGenerator;
 import de.cognicrypt.codegenerator.testutilities.TestUtils;
 import de.cognicrypt.codegenerator.wizard.CrySLConfiguration;
+import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.DeveloperProject;
-import de.cognicrypt.utils.Utils;
 
 public class CrySLCodeGenTest {
 
 	@Test
-	public void generatePBEEnc() {
-
-		List<CodeGenCrySLRule> rules = new ArrayList<CodeGenCrySLRule>();
+	public void generateSymEnc() throws IOException {
+		String template = "secretkeyencryption";
 		try {
-			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_ENC");
-			TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
-			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(testJavaProject.getProject());
+			IResource targetFile = TestUtils.generateJavaClassInJavaProject(TestUtils.createJavaProject("TestProject_SYMENC"), "testPackage", "Test");
+			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
 
-			List<List<String>> stringRules = new ArrayList<List<String>>();
-			stringRules.add(Arrays.asList(
-					new String[] { "SecureRandom", "PBEKeySpec", "SecretKeyFactory", "SecretKey", "SecretKeySpec" }));
-			stringRules.add(Arrays.asList(new String[] { "Cipher" }));
-
-			for (List<String> rule : stringRules) {
-				ArrayList<CodeGenCrySLRule> newRules = new ArrayList<CodeGenCrySLRule>();
-				rules.addAll(newRules);
-				for (String r : rule) {
-					newRules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(r), null, null));
-				}
-			}
-
-			CrySLConfiguration codeGenConfig = TestUtils.createCrySLConfigurationForCodeGeneration(developerProject,
-					rules);
-			boolean encCheck = codeGenerator.generateCodeTemplates(codeGenConfig, null);
+			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 			assertTrue(encCheck);
 
-			ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(developerProject, "Crypto", "Output.java");
-			TestUtils.openJavaFileInWorkspace(developerProject, "Crypto", testClassUnit);
+			ICompilationUnit testClassUnit = JavaCore.createCompilationUnitFrom((IFile) targetFile);
+			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
 			assertEquals(1, TestUtils.countMethods(testClassUnit));
 
-			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, "Crypto",
-					"CogniCryptCipher.java");
-			TestUtils.openJavaFileInWorkspace(developerProject, "Crypto", encClassUnit);
-			assertEquals(1, TestUtils.countMethods(encClassUnit));
-
-			ICompilationUnit keyClassUnit = TestUtils.getICompilationUnit(developerProject, "testPackage",
-					"CogniCryptSecretKeySpec.java");
-			TestUtils.openJavaFileInWorkspace(developerProject, "Crypto", keyClassUnit);
-			assertEquals(1, TestUtils.countMethods(keyClassUnit));
-
-		} catch (JavaModelException e) {
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "SecureEncryptor.java");
+			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
+			assertEquals(3, TestUtils.countMethods(encClassUnit));
+			assertEquals(4, TestUtils.countStatements(encClassUnit, "generateSessionKey"));
+			assertEquals(13, TestUtils.countStatements(encClassUnit, "encrypt"));
+			assertEquals(11, TestUtils.countStatements(encClassUnit, "decrypt"));
+		}
+		catch (JavaModelException e) {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");
-		} catch (CoreException e) {
+		}
+		catch (CoreException e) {
 			Activator.getDefault().logError(e, "Failed to create test project or to retrieve compilation unit.");
-		} catch (IOException e) {
-			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
 		}
 
 	}
 
 	@Test
-	public void generateSymEnc() {
-
-		List<CodeGenCrySLRule> rules = new ArrayList<CodeGenCrySLRule>();
+	public void generatePBEnc() {
+		String template = "encryption";
 		try {
 			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_PBEENC");
-			TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
-			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(testJavaProject.getProject());
+			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
+			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
 
-			List<List<String>> stringRules = new ArrayList<List<String>>();
-			stringRules.add(Arrays.asList(new String[] { "KeyGenerator" }));
-			stringRules.add(Arrays.asList(new String[] { "Cipher" }));
-
-			for (List<String> rule : stringRules) {
-				ArrayList<CodeGenCrySLRule> newRules = new ArrayList<CodeGenCrySLRule>();
-				rules.addAll(newRules);
-				for (String r : rule) {
-					newRules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(r), null, null));
-				}
-			}
-
-			CrySLConfiguration codeGenConfig = TestUtils.createCrySLConfigurationForCodeGeneration(developerProject,
-					rules);
-			boolean encCheck = codeGenerator.generateCodeTemplates(codeGenConfig, null);
+			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 			assertTrue(encCheck);
 
-			ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(developerProject, "Crypto", "Output.java");
-			TestUtils.openJavaFileInWorkspace(developerProject, "Crypto", testClassUnit);
+			ICompilationUnit testClassUnit = JavaCore.createCompilationUnitFrom((IFile) targetFile);
+			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
 			assertEquals(1, TestUtils.countMethods(testClassUnit));
 
-			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, "Crypto",
-					"CogniCryptCipher.java");
-			TestUtils.openJavaFileInWorkspace(developerProject, "Crypto", encClassUnit);
-			assertEquals(1, TestUtils.countMethods(encClassUnit));
-
-			ICompilationUnit keyClassUnit = TestUtils.getICompilationUnit(developerProject, "testPackage",
-					"CogniCryptKeyGenerator.java");
-			TestUtils.openJavaFileInWorkspace(developerProject, "Crypto", keyClassUnit);
-			assertEquals(1, TestUtils.countMethods(keyClassUnit));
-		} catch (JavaModelException e) {
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "SecureEncryptor.java");
+			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
+			assertEquals(3, TestUtils.countMethods(encClassUnit));
+			assertEquals(11, TestUtils.countStatements(encClassUnit, "getKey"));
+			assertEquals(11, TestUtils.countStatements(encClassUnit, "encrypt"));
+			assertEquals(11, TestUtils.countStatements(encClassUnit, "decrypt"));
+		}
+		catch (JavaModelException e) {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");
-		} catch (CoreException e) {
+		}
+		catch (CoreException e) {
 			Activator.getDefault().logError(e, "Failed to create test project or to retrieve compilation unit.");
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
 		}
 
 	}
-
-	public void generatePWD() {
-
-		List<CodeGenCrySLRule> rules = new ArrayList<CodeGenCrySLRule>();
+	
+	@Test
+	public void generatePBEncFiles() {
+		String template = "encryptionfiles";
 		try {
-			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_ENC");
-			TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
-			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(testJavaProject.getProject());
+			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_PBEENCFILES");
+			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
+			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
 
-			List<List<String>> stringRules = new ArrayList<List<String>>();
-			stringRules.add(Arrays.asList(new String[] { "SecureRandom", "PBEKeySpec", "SecretKeyFactory" }));
-			for (List<String> rule : stringRules) {
-				ArrayList<CodeGenCrySLRule> newRules = new ArrayList<CodeGenCrySLRule>();
-				rules.addAll(newRules);
-				for (String r : rule) {
-					newRules.add(new CodeGenCrySLRule(Utils.getCryptSLRule(r), null, null));
-				}
-			}
-
-			CrySLConfiguration codeGenConfig = TestUtils.createCrySLConfigurationForCodeGeneration(developerProject,
-					rules);
-			boolean encCheck = codeGenerator.generateCodeTemplates(codeGenConfig, null);
+			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 			assertTrue(encCheck);
 
-			ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(developerProject, "Crypto", "Output.java");
-			TestUtils.openJavaFileInWorkspace(developerProject, "Crypto", testClassUnit);
+			ICompilationUnit testClassUnit = JavaCore.createCompilationUnitFrom((IFile) targetFile);
+			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
 			assertEquals(1, TestUtils.countMethods(testClassUnit));
 
-			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, "Crypto",
-					"CogniCryptCipher.java");
-			TestUtils.openJavaFileInWorkspace(developerProject, "Crypto", encClassUnit);
-			assertEquals(1, TestUtils.countMethods(encClassUnit));
-
-			ICompilationUnit keyClassUnit = TestUtils.getICompilationUnit(developerProject, "testPackage",
-					"CogniCryptSecretKeySpec.java");
-			TestUtils.openJavaFileInWorkspace(developerProject, "Crypto", keyClassUnit);
-			assertEquals(1, TestUtils.countMethods(keyClassUnit));
-
-		} catch (JavaModelException e) {
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "SecureEncryptor.java");
+			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
+			assertEquals(3, TestUtils.countMethods(encClassUnit));
+			assertEquals(11, TestUtils.countStatements(encClassUnit, "getKey"));
+			assertEquals(13, TestUtils.countStatements(encClassUnit, "encrypt"));
+			assertEquals(13, TestUtils.countStatements(encClassUnit, "decrypt"));
+		}
+		catch (JavaModelException e) {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");
-		} catch (CoreException e) {
+		}
+		catch (CoreException e) {
 			Activator.getDefault().logError(e, "Failed to create test project or to retrieve compilation unit.");
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
 		}
 
 	}
+	
+	@Test
+	public void generatePBEncStrings() {
+		String template = "encryptionstrings";
+		try {
+			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_PBEENCSTRINGS");
+			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
+			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
 
+			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
+			assertTrue(encCheck);
+
+			ICompilationUnit testClassUnit = JavaCore.createCompilationUnitFrom((IFile) targetFile);
+			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
+			assertEquals(1, TestUtils.countMethods(testClassUnit));
+
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "SecureEncryptor.java");
+			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
+			assertEquals(3, TestUtils.countMethods(encClassUnit));
+			assertEquals(11, TestUtils.countStatements(encClassUnit, "getKey"));
+			assertEquals(12, TestUtils.countStatements(encClassUnit, "encrypt"));
+			assertEquals(12, TestUtils.countStatements(encClassUnit, "decrypt"));
+		}
+		catch (JavaModelException e) {
+			Activator.getDefault().logError(e, "Could not create Java class in test project.");
+		}
+		catch (CoreException e) {
+			Activator.getDefault().logError(e, "Failed to create test project or to retrieve compilation unit.");
+		}
+		catch (IOException e) {
+			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
+		}
+
+	}
+	
+	@Test
+	public void generateHybridEnc() {
+		String template = "encryptionhybrid";
+		try {
+			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_HybridENC");
+			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
+			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
+
+			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
+			assertTrue(encCheck);
+
+			ICompilationUnit testClassUnit = JavaCore.createCompilationUnitFrom((IFile) targetFile);
+			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
+			assertEquals(1, TestUtils.countMethods(testClassUnit));
+
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "SecureEncryptor.java");
+			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
+			assertEquals(5, TestUtils.countMethods(encClassUnit));
+			assertEquals(4, TestUtils.countStatements(encClassUnit, "generateSessionKey"));
+			assertEquals(5, TestUtils.countStatements(encClassUnit, "generateKeyPair"));
+			assertEquals(7, TestUtils.countStatements(encClassUnit, "encryptSessionKey"));
+			assertEquals(13, TestUtils.countStatements(encClassUnit, "encryptData"));
+			assertEquals(11, TestUtils.countStatements(encClassUnit, "decryptData"));
+		}
+		catch (JavaModelException e) {
+			Activator.getDefault().logError(e, "Could not create Java class in test project.");
+		}
+		catch (CoreException e) {
+			Activator.getDefault().logError(e, "Failed to create test project or to retrieve compilation unit.");
+		}
+		catch (IOException e) {
+			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
+		}
+	}
+
+	@Test
+	public void generateHybridEncFiles() {
+		String template = "encryptionhybridfiles";
+		try {
+			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_HybridENCFILES");
+			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
+			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
+
+			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
+			assertTrue(encCheck);
+
+			ICompilationUnit testClassUnit = JavaCore.createCompilationUnitFrom((IFile) targetFile);
+			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
+			assertEquals(1, TestUtils.countMethods(testClassUnit));
+
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "SecureEncryptor.java");
+			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
+			assertEquals(5, TestUtils.countMethods(encClassUnit));
+			assertEquals(4, TestUtils.countStatements(encClassUnit, "generateSessionKey"));
+			assertEquals(5, TestUtils.countStatements(encClassUnit, "generateKeyPair"));
+			assertEquals(7, TestUtils.countStatements(encClassUnit, "encryptSessionKey"));
+			assertEquals(15, TestUtils.countStatements(encClassUnit, "encryptData"));
+			assertEquals(13, TestUtils.countStatements(encClassUnit, "decryptData"));
+		}
+		catch (JavaModelException e) {
+			Activator.getDefault().logError(e, "Could not create Java class in test project.");
+		}
+		catch (CoreException e) {
+			Activator.getDefault().logError(e, "Failed to create test project or to retrieve compilation unit.");
+		}
+		catch (IOException e) {
+			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
+		}
+
+	}
+	
+	@Test
+	public void generateHybridEncStrings() {
+		String template = "encryptionhybridstrings";
+		try {
+			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_HybridENCSTRINGS");
+			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
+			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
+
+			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
+			assertTrue(encCheck);
+
+			ICompilationUnit testClassUnit = JavaCore.createCompilationUnitFrom((IFile) targetFile);
+			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
+			assertEquals(1, TestUtils.countMethods(testClassUnit));
+
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "SecureEncryptor.java");
+			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
+			assertEquals(5, TestUtils.countMethods(encClassUnit));
+			assertEquals(4, TestUtils.countStatements(encClassUnit, "generateSessionKey"));
+			assertEquals(5, TestUtils.countStatements(encClassUnit, "generateKeyPair"));
+			assertEquals(7, TestUtils.countStatements(encClassUnit, "encryptSessionKey"));
+			assertEquals(15, TestUtils.countStatements(encClassUnit, "encryptData"));
+			assertEquals(13, TestUtils.countStatements(encClassUnit, "decryptData"));
+		}
+		catch (JavaModelException e) {
+			Activator.getDefault().logError(e, "Could not create Java class in test project.");
+		}
+		catch (CoreException e) {
+			Activator.getDefault().logError(e, "Failed to create test project or to retrieve compilation unit.");
+		}
+		catch (IOException e) {
+			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
+		}
+
+	}
+	
+	@Test
+	public void generateSecPwd() {
+		String template = "securePassword";
+		try {
+			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_SecPwd");
+			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
+			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
+
+			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
+			assertTrue(encCheck);
+
+			ICompilationUnit testClassUnit = JavaCore.createCompilationUnitFrom((IFile) targetFile);
+			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
+			assertEquals(1, TestUtils.countMethods(testClassUnit));
+
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "PasswordHasher.java");
+			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
+			assertEquals(5, TestUtils.countMethods(encClassUnit));
+			assertEquals(11, TestUtils.countStatements(encClassUnit, "createPWHash"));
+			assertEquals(10, TestUtils.countStatements(encClassUnit, "verifyPWHash"));
+		}
+		catch (JavaModelException e) {
+			Activator.getDefault().logError(e, "Could not create Java class in test project.");
+		}
+		catch (CoreException e) {
+			Activator.getDefault().logError(e, "Failed to create test project or to retrieve compilation unit.");
+		}
+		catch (IOException e) {
+			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
+		}
+	}
+	
+	@Test
+	public void generatedigSign() {
+		String template = "digitalsigning";
+		try {
+			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_DigSign");
+			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
+			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
+
+			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
+			assertTrue(encCheck);
+
+			ICompilationUnit testClassUnit = JavaCore.createCompilationUnitFrom((IFile) targetFile);
+			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
+			assertEquals(1, TestUtils.countMethods(testClassUnit));
+
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "Signer.java");
+			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
+			assertEquals(3, TestUtils.countMethods(encClassUnit));
+			assertEquals(5, TestUtils.countStatements(encClassUnit, "getKey"));
+			assertEquals(7, TestUtils.countStatements(encClassUnit, "sign"));
+//			assertEquals(14, TestUtils.countStatements(encClassUnit, "vfy"));
+		}
+		catch (JavaModelException e) {
+			Activator.getDefault().logError(e, "Could not create Java class in test project.");
+		}
+		catch (CoreException e) {
+			Activator.getDefault().logError(e, "Failed to create test project or to retrieve compilation unit.");
+		}
+		catch (IOException e) {
+			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
+		}
+	}
+	
+	@Test
+	public void generateStringHasher() {
+		String template = "stringhashing";
+		try {
+			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_StrHash");
+			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
+			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
+
+			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
+			assertTrue(encCheck);
+
+			ICompilationUnit testClassUnit = JavaCore.createCompilationUnitFrom((IFile) targetFile);
+			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
+			assertEquals(1, TestUtils.countMethods(testClassUnit));
+
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "StringHasher.java");
+			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
+			assertEquals(2, TestUtils.countMethods(encClassUnit));
+			assertEquals(5, TestUtils.countStatements(encClassUnit, "createHash"));
+			assertEquals(5, TestUtils.countStatements(encClassUnit, "verifyHash"));
+		}
+		catch (JavaModelException e) {
+			Activator.getDefault().logError(e, "Could not create Java class in test project.");
+		}
+		catch (CoreException e) {
+			Activator.getDefault().logError(e, "Failed to create test project or to retrieve compilation unit.");
+		}
+		catch (IOException e) {
+			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
+		}
+	}
+	
 }

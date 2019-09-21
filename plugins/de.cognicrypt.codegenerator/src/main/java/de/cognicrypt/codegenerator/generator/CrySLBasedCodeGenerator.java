@@ -100,15 +100,9 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 	/**
 	 * This constructor allows it to set a specific class and method names that are used in the generated Java code.
 	 * 
-	 * @param cryptslRule
-	 *        Name of the cryptsl rule that should by transformed into java code.
-	 * @param className
-	 *        Class name that is used for the generated Java class.
-	 * @param methodName
-	 *        Method name that is usd for the generated Java code
-	 * @throws Exception
+	 * @param selectedFile
+	 * 	File the templateUsage method should be generated into
 	 */
-
 	public CrySLBasedCodeGenerator(IResource selectedFile) {
 		super(selectedFile);
 	}

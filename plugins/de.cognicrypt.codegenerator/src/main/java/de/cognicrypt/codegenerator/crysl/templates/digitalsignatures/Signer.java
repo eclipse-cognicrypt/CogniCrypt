@@ -1,4 +1,4 @@
-package de.cognicrypt.codegenerator.crysl.templates.digitalsigning;
+package de.cognicrypt.codegenerator.crysl.templates.digitalsignatures;
 
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;

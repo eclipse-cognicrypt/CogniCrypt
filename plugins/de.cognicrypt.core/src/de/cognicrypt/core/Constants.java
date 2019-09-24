@@ -142,7 +142,7 @@ public class Constants {
 	public static final String AdditionalOutputTempFile = "OutputTemp.java";
 	public static final String TempSuffix = "Temp";
 
-	public static final String PackageName = "de" + Constants.innerFileSeparator + "cognicrypt" + Constants.innerFileSeparator + "crypto";
+	public static final String PackageName = "de" + Constants.outerFileSeparator + "cognicrypt" + Constants.outerFileSeparator + "crypto";
 	public static final String CodeGenerationCallFolder = Constants.innerFileSeparator + Constants.PackageName;
 	public static final String CodeGenerationCallFile = CodeGenerationCallFolder + Constants.innerFileSeparator + Constants.AdditionalOutputFile;
 

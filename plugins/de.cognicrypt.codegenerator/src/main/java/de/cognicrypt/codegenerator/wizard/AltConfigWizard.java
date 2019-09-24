@@ -16,6 +16,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -36,7 +37,6 @@ import de.cognicrypt.codegenerator.wizard.beginner.BeginnerModeQuestionnaire;
 import de.cognicrypt.codegenerator.wizard.beginner.BeginnerTaskQuestionPage;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.CodeGenerators;
-import de.cognicrypt.utils.DeveloperProject;
 
 public class AltConfigWizard extends Wizard {
 
@@ -226,11 +226,17 @@ public class AltConfigWizard extends Wizard {
 				File templateFile = CodeGenUtils.getResourceFromWithin(selectedTask.getCodeTemplate()).listFiles()[0];
 				codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 				try {
-					String projectRelDir = Constants.outerFileSeparator + codeGenerator.getDeveloperProject().getSourcePath() + Constants.outerFileSeparator + Constants.PackageName.replaceAll("/", "\\\\") + Constants.outerFileSeparator;
+					String projectRelDir = Constants.outerFileSeparator + codeGenerator.getDeveloperProject().getSourcePath() + Constants.outerFileSeparator + Constants.PackageName + Constants.outerFileSeparator;
 					String pathToTemplateFile = projectRelDir + templateFile.getName();
-					String resFileOSPath = targetFile.getProject().getRawLocation().toOSString() + pathToTemplateFile;
+					String resFileOSPath = "";
 					
-					Files.createDirectories(Paths.get(targetFile.getProject().getRawLocation().toOSString() + projectRelDir));
+					IPath projectPath = targetFile.getProject().getRawLocation();
+					if (projectPath == null) {
+						projectPath = targetFile.getProject().getLocation(); 
+					}
+					resFileOSPath = projectPath.toOSString() + pathToTemplateFile;
+					
+					Files.createDirectories(Paths.get(projectPath.toOSString() + projectRelDir));
 					Files.copy(templateFile.toPath(), Paths.get(resFileOSPath), StandardCopyOption.REPLACE_EXISTING);
 					codeGenerator.getDeveloperProject().refresh();
 					

@@ -23,8 +23,9 @@ public class SecureEncryptor {
 		byte[] res = null;
 		int mode = Cipher.ENCRYPT_MODE;
 
-		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher")
-			.addParameter(mode, "encmode").addParameter(plaintext, "plainText").addParameter(key, "key").addReturnObject(res).generate();
+		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(ivBytes, "next").includeClass("javax.crypto.spec.IvParameterSpec")
+			.addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher").addParameter(mode, "encmode").addParameter(plaintext, "plainText").addParameter(key, "key")
+			.addReturnObject(res).generate();
 
 		byte[] ret = new byte[ivBytes.length + res.length];
 		System.arraycopy(ivBytes, 0, ret, 0, ivBytes.length);

@@ -373,9 +373,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 		else
 			setWorkUnitsCompleted(0);
-		System.out.println("Completed "+processedSeeds+" of "+totalSeeds+" seeds.");
-		System.out.println("Percentage Completed: "+percentCompleted +"%");
-		
 		}
 	
 	@Override

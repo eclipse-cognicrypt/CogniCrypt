@@ -10,10 +10,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ErrorMarkerGenerator;
@@ -105,13 +107,29 @@ public class AnalysisKickOff {
 			@SuppressWarnings("deprecation")
 			@Override
 			protected IStatus run(final IProgressMonitor monitor) {
+				int curSeed = 0;
 				final SootThread sootThread = new SootThread(AnalysisKickOff.this.curProj, AnalysisKickOff.resultsReporter, depOnly);
+				final MonitorReporter monitorThread = new MonitorReporter(AnalysisKickOff.resultsReporter, sootThread);
+				monitorThread.start();
 				sootThread.start();
+				AnalysisKickOff.resultsReporter.setCgGenComplete(false);
+				SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
+				SubMonitor cgGen = subMonitor.newChild(50);
 				while (sootThread.isAlive()) {
 					try {
-						Thread.sleep(500);
+						Thread.sleep(1);
 					}	catch (final InterruptedException e) {}
-
+					if(!monitorThread.isCgGen()) {
+						cgGen.setWorkRemaining(1000).split(1);
+						cgGen.setTaskName("Constructing call Graphs...");
+						}
+					else {
+					if(monitorThread.getProcessedSeeds()- curSeed !=0) {
+						curSeed = monitorThread.getProcessedSeeds();
+						subMonitor.split(monitorThread.getWorkUnitsCompleted()/2);
+						subMonitor.setTaskName("Completed "+monitorThread.getProcessedSeeds()+" of "+monitorThread.getTotalSeeds()+" seeds.");
+					}
+					}
 					if (monitor.isCanceled()) {
 						sootThread.stop();
 						Activator.getDefault().logInfo("Static analysis job cancelled for " + curProj.getElementName() + ".");
@@ -119,6 +137,12 @@ public class AnalysisKickOff {
 					}
 
 				}
+				monitor.done();
+				AnalysisKickOff.resultsReporter.setPercentCompleted(0);
+				AnalysisKickOff.resultsReporter.setProcessedSeeds(0);
+				AnalysisKickOff.resultsReporter.setTotalSeeds(0);
+				AnalysisKickOff.resultsReporter.setWorkUnitsCompleted(0);
+				AnalysisKickOff.resultsReporter.setWork(0);
 				if (sootThread.isSucc()) {
 					Activator.getDefault().logInfo("Static analysis job successfully terminated for " + curProj.getElementName() + ".");
 					return Status.OK_STATUS;

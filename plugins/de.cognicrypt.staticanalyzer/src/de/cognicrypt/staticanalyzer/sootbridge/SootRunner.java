@@ -136,7 +136,7 @@ public class SootRunner {
 		setSootOptions(project, dependencyAnalyser);
 		registerTransformers(resultsReporter);
 		try {
-			runSoot(resultsReporter);
+			runSoot();
 		}
 		catch (final Exception t) {
 			Activator.getDefault().logError(t);
@@ -145,10 +145,9 @@ public class SootRunner {
 		return true;
 	}
 
-	private static void runSoot(final ResultsCCUIListener resultsReporter) {
+	private static void runSoot() {
 		Scene.v().loadNecessaryClasses();
 		PackManager.v().getPack("cg").apply();
-		resultsReporter.setCgGenComplete(true);
 		PackManager.v().getPack("wjtp").apply();
 	}
 

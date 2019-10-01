@@ -44,11 +44,11 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 import de.cognicrypt.codegenerator.wizard.Configuration;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.ComparableEntry;
+import de.cognicrypt.utils.DeveloperProject;
 import de.cognicrypt.utils.Utils;
 
 public abstract class CodeGenerator {
@@ -205,7 +205,7 @@ public abstract class CodeGenerator {
 		// Retrieve complete content from file
 		final String fileContent = String.join(Constants.lineSeparator, Files.readAllLines(Paths.get(filePath)));
 		// Determine start and end position for relevant extract
-		final ASTParser astp = ASTParser.newParser(AST.JLS8);
+		final ASTParser astp = ASTParser.newParser(AST.JLS10);
 		astp.setSource(fileContent.toCharArray());
 		astp.setKind(ASTParser.K_COMPILATION_UNIT);
 		final CompilationUnit cu = (CompilationUnit) astp.createAST(null);

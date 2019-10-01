@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -60,6 +61,7 @@ import de.cognicrypt.utils.XMLParser;
 import soot.SootClass;
 import soot.Value;
 import soot.ValueBox;
+import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.internal.JimpleLocal;
 import soot.jimple.internal.JimpleLocalBox;
@@ -67,10 +69,11 @@ import soot.tagkit.AbstractHost;
 import typestate.TransitionFunction;
 
 /**
- * This listener is notified of any misuses the analysis finds. It also reports the results of the analysis to the Statistics View
+ * This listener is notified of any misuses the analysis finds. It also reports
+ * the results of the analysis to the Statistics View
  *
  * @author Stefan Krueger
- * @author Andr� Sonntag
+ * @author Andre Sonntag
  * @author Adnan Manzoor
  */
 public class ResultsCCUIListener extends CrySLAnalysisListener {
@@ -80,6 +83,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	private ArrayList<String> suppressedWarningIds;
 	private String warningFilePath;
 	private XMLParser xmlParser;
+	private Boolean depOnly = false;
 	private static Stats stat;
 
 	private ResultsCCUIListener(final IProject curProj, final ErrorMarkerGenerator gen) {
@@ -101,21 +105,32 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		return this.currentProject;
 	}
 
+	public void analyzeDependenciesOnly(final Boolean depOnly) {
+		this.depOnly = depOnly;
+	}
+
 	@Override
 	public void reportError(final AbstractError error) {
+		IResource sourceFile = null;
+		if (this.depOnly) {
+			return;
+		}
 		final String errorMessage = error.toErrorMarkerString();
 		final Statement errorLocation = error.getErrorLocation();
-		final IResource sourceFile = unitToResource(errorLocation);
+
+		sourceFile = unitToResource(errorLocation);
 		final int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
+
 		final int stmtId = error.hashCode();
+		HashMap<String, String> errorInfoMap = new HashMap<>();
+
 		ICompilationUnit javaFile = (ICompilationUnit) JavaCore.create(sourceFile);
 		String className = "";
 		try {
 			for (IPackageDeclaration decl : javaFile.getPackageDeclarations()) {
 				className += decl.getElementName() + ".";
 			}
-		}
-		catch (JavaModelException e1) {
+		} catch (JavaModelException e1) {
 		}
 		className += javaFile.getElementName().substring(0, javaFile.getElementName().lastIndexOf("."));
 		
@@ -143,6 +158,15 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			markerType = Constants.PREDICATE_CONTRADICTION_MARKER_TYPE;
 		} else if (error instanceof RequiredPredicateError) {
 			markerType = Constants.REQUIRED_PREDICATE_MARKER_TYPE;
+			errorInfoMap.put("predicate", ((RequiredPredicateError) error).getContradictedPredicate().getPredName());
+
+			int errorIndex = ((RequiredPredicateError) error).getExtractedValues().getCallSite().getIndex();
+			if(errorLocation.getUnit().get().containsInvokeExpr()) {
+				InvokeExpr invoke = errorLocation.getUnit().get().getInvokeExpr();
+				String errorParam = invoke.getArg(errorIndex).toString();
+				errorInfoMap.put("errorParam", errorParam);
+			}
+		
 		} else if (error instanceof ConstraintError) {
 			markerType = Constants.CONSTRAINT_ERROR_MARKER_TYPE;
 		} else if (error instanceof NeverTypeOfError) {
@@ -170,27 +194,27 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final File warningsFile = new File(this.warningFilePath);
 
 		if (!warningsFile.exists()) {
-			this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev);
+			this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap);
 		} else {
 			this.xmlParser = new XMLParser(warningsFile);
 			this.xmlParser.useDocFromFile();
-			if (!this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR).contains(stmtId + "")) {
-				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev);
+			String idAsString = String.valueOf(stmtId);
+			if (!this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR).contains(idAsString)) {
+				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap);
 			} else {
 
-				// update existing LineNumber
-				final Node suppressWarningNode = this.xmlParser.getNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR, stmtId + "");
+				// update existing line number
+				final Node suppressWarningNode = this.xmlParser.getNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR, idAsString);
 				final Node lineNumberNode = this.xmlParser.getChildNodeByTagName(suppressWarningNode, Constants.LINENUMBER_ELEMENT);
 				this.xmlParser.updateNodeValue(lineNumberNode, lineNumber + "");
 				this.xmlParser.writeXML();
 
 				try {
 					this.currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-				}
-				catch (final CoreException e) {
+				} catch (final CoreException e) {
 					Activator.getDefault().logError(e);
 				}
-				this.suppressedWarningIds.add(stmtId + "");
+				this.suppressedWarningIds.add(idAsString);
 			}
 		}
 
@@ -200,13 +224,14 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	@Override
 	public void onSecureObjectFound(final IAnalysisSeed secureObject) {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		if (store.getBoolean(Constants.SHOW_SECURE_OBJECTS) == false) {
+		if (!store.getBoolean(Constants.SHOW_SECURE_OBJECTS) || this.depOnly) {
 			return;
 		} else {
 			final Statement stmt = secureObject.stmt();
 			final Stmt unit = stmt.getUnit().get();
 			final List<ValueBox> useAndDefBoxes = unit.getUseAndDefBoxes();
-			final Optional<ValueBox> varOpt = useAndDefBoxes.stream().filter(e -> e instanceof JimpleLocalBox).findFirst();
+			final Optional<ValueBox> varOpt = useAndDefBoxes.stream().filter(e -> e instanceof JimpleLocalBox)
+					.findFirst();
 			ValueBox var = null;
 			if (varOpt.isPresent()) {
 				var = varOpt.get();
@@ -217,34 +242,34 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 						break;
 					}
 				}
-
 			}
 			final Value varName = var.getValue();
 			this.markerGenerator.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt), unit.getJavaSourceStartLineNumber(),
-					"Object " + (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", Severities.Info);
-		}
+					"Object " + (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", Severities.Info, new HashMap<>());		}
 	}
 
 	/**
-	 * This method removes superfluous suppressed warning entries from the SuppressWarnings.xml file.
+	 * This method removes superfluous suppressed warning entries from the
+	 * SuppressWarnings.xml file.
 	 */
 	public void removeUndetectableWarnings() {
 		if (this.suppressedWarningIds.size() > 0) {
 
-			final ArrayList<String> allSuppressedWarningIds = this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR);
+			final ArrayList<String> allSuppressedWarningIds = this.xmlParser
+					.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR);
 
 			final ArrayList<String> difference = new ArrayList<>(allSuppressedWarningIds.size());
 			difference.addAll(allSuppressedWarningIds);
 			difference.removeAll(this.suppressedWarningIds);
 
 			for (int i = 0; i < difference.size(); i++) {
-				this.xmlParser.removeNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR, difference.get(i));
+				this.xmlParser.removeNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR,
+						difference.get(i));
 			}
 			this.xmlParser.writeXML();
 			try {
 				this.currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-			}
-			catch (final CoreException e) {
+			} catch (final CoreException e) {
 				Activator.getDefault().logError(e);
 			}
 		}
@@ -255,8 +280,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final SootClass className = stmt.getMethod().getDeclaringClass();
 		try {
 			return Utils.findClassByName(className.getName(), this.currentProject);
-		}
-		catch (final ClassNotFoundException e) {
+		} catch (final ClassNotFoundException e) {
 			Activator.getDefault().logError(e);
 		}
 		// Fall-back path when retrieval of actual path fails. If the statement below
@@ -290,7 +314,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	@Override
-	public void collectedValues(final AnalysisSeedWithSpecification arg0, final Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
+	public void collectedValues(final AnalysisSeedWithSpecification arg0,
+			final Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
 		// Nothing
 	}
 
@@ -374,5 +399,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 	@Override
 	public void ensuredPredicates(final Table<Statement, Val, Set<EnsuredCryptSLPredicate>> existingPredicates,
-			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates, final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {}
+			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates,
+			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {
+	}
 }

@@ -16,7 +16,6 @@ public class RunCodeGeneratorHandler extends AbstractHandler {
 		Constants.WizardActionFromContextMenuFlag = true;
 		final CogniCryptWizardDialog dialog = new CogniCryptWizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), new AltConfigWizard());
 		dialog.setHelpAvailable(false);
-		
 		return dialog.open();
 	}
 

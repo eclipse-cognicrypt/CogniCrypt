@@ -26,7 +26,6 @@ public class CrySLFileOpenerListener implements IPartListener2 {
 				}
 			}
 		}
-
 	}
 	
 	@Override

@@ -141,7 +141,7 @@ public class FileUtilitiesTest {
 		testTask.setQuestionsJSONFile(this.validJSONFileLocation.getPath());
 		testTask.setSelected(false);
 		testTask.setTaskDescription("This is the description of the task");
-		testTask.setXslFile(this.validXSLFileLocation.getPath());
+		testTask.setCodeTemplate(this.validXSLFileLocation.getPath());
 		final FileUtilities fileUtilities = new FileUtilities(this.tempTaskName);
 		fileUtilities.writeTaskToJSONFile(testTask);
 		final List<Task> tasks = TaskJSONReader.getTasks();
@@ -153,7 +153,7 @@ public class FileUtilitiesTest {
 				assertTrue(task.getModelFile().equals(testTask.getModelFile()));
 				assertTrue(task.getQuestionsJSONFile().equals(testTask.getQuestionsJSONFile()));
 				assertTrue(task.getTaskDescription().equals(testTask.getTaskDescription()));
-				assertTrue(task.getXslFile().equals(testTask.getXslFile()));
+				assertTrue(task.getCodeTemplate().equals(testTask.getCodeTemplate()));
 			}
 		}
 	}

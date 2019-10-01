@@ -1,7 +1,12 @@
 package de.cognicrypt.codegenerator.wizard;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 import javax.swing.JDialog;
@@ -9,8 +14,9 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import org.clafer.instance.InstanceClafer;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -19,9 +25,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import de.cognicrypt.codegenerator.Activator;
-import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
+import de.cognicrypt.codegenerator.generator.CrySLBasedCodeGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
@@ -31,10 +37,11 @@ import de.cognicrypt.codegenerator.wizard.beginner.BeginnerModeQuestionnaire;
 import de.cognicrypt.codegenerator.wizard.beginner.BeginnerTaskQuestionPage;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.telemetry.TelemetryEvents;
+import de.cognicrypt.core.Constants.CodeGenerators;
 
 public class AltConfigWizard extends Wizard {
 
-	private TaskSelectionPage taskListPage;
+	private Task selectedTask;
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
 
@@ -53,14 +60,13 @@ public class AltConfigWizard extends Wizard {
 
 		final ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "platform:/plugin/de.cognicrypt.core/icons/cognicrypt-medium.png ");
 		setDefaultPageImageDescriptor(image);
-		this.constraints = new HashMap<>();
+		this.constraints = new LinkedHashMap<>();
 	}
 
 	@Override
 	public void addPages() {
-		this.taskListPage = new TaskSelectionPage();
 		setForcePreviousAndNextButtons(true);
-		addPage(this.taskListPage);
+		addPage(new TaskSelectionPage());
 	}
 
 	@Override
@@ -92,13 +98,12 @@ public class AltConfigWizard extends Wizard {
 	 */
 	@Override
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
-
 		if (checkifInUpdateRound()) {
 			return currentPage;
 		}
-		final Task selectedTask = this.taskListPage.getSelectedTask();
 		Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.WIZARD_TASK_SELECTED, selectedTask.getName());
 		if (currentPage instanceof TaskSelectionPage) {
+			selectedTask = ((TaskSelectionPage) currentPage).getSelectedTask();
 			this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile());
 			// It is possible that now questions are within a BeginnerModeQuestionnaire
 
@@ -126,16 +131,25 @@ public class AltConfigWizard extends Wizard {
 			addPage(questionPage);
 			return questionPage;
 		} else {
-			final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
-				.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
-
-			instanceGenerator.generateInstances(this.constraints);
-
-			if (instanceGenerator.getNoOfInstances() > 0) {
+			CodeGenerators generator = selectedTask.getCodeGen();
+			if (generator == CodeGenerators.CrySL) {
+				String selectedTemplate = selectedTask.getCodeTemplate(); 
+				for (Answer resp : this.constraints.values()) {
+					selectedTemplate += resp.getOption();
+				}
+				selectedTask.setCodeTemplate(selectedTemplate);
 				return addLocatorPage();
-			} else {
-				final String message = Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER;
-				MessageDialog.openError(new Shell(), "Error", message);
+			} else if (generator == CodeGenerators.XSL) {
+				final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
+					.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
+	
+				instanceGenerator.generateInstances(this.constraints);
+	
+				if (instanceGenerator.getNoOfInstances() > 0) {
+					return addLocatorPage();
+				} else {
+					MessageDialog.openError(new Shell(), "Error", Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER);
+				}
 			}
 		}
 		return currentPage;
@@ -173,8 +187,20 @@ public class AltConfigWizard extends Wizard {
 				}
 			}
 		}
+		if (currentPage instanceof LocatorPage && selectedTask.getCodeGen() == CodeGenerators.CrySL) {
+			resetAnswers();
+		}
 
 		return super.getPreviousPage(currentPage);
+	}
+
+	public void resetAnswers() {
+		int substringLength = 0;
+		for (Answer response : this.constraints.values()) {
+			substringLength += response.getOption().length();
+		}
+		String oldCodeTemplate = selectedTask.getCodeTemplate();
+		selectedTask.setCodeTemplate(oldCodeTemplate.substring(0, oldCodeTemplate.length() - substringLength));
 	}
 
 	/**
@@ -184,36 +210,74 @@ public class AltConfigWizard extends Wizard {
 	 */
 	@Override
 	public boolean performFinish() {
-		boolean ret = true;
-		final Task selectedTask = this.taskListPage.getSelectedTask();
-		if (this.constraints == null) {
-			this.constraints = new HashMap<>();
-		}
-		final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
-			.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
-
-		instanceGenerator.generateInstances(this.constraints);
-		final Map<String, InstanceClafer> instances = instanceGenerator.getInstances();
-		final InstanceClafer instance = instances.values().iterator().next();
+		boolean ret = false;
+		final CodeGenerators genKind = selectedTask.getCodeGen();
+		CodeGenerator codeGenerator = null;
+		String additionalResources = selectedTask.getAdditionalResources();
 		final LocatorPage currentPage = (LocatorPage) getContainer().getCurrentPage();
+		IResource targetFile = (IResource) currentPage.getSelectedResource().getFirstElement();
 
 		// Initialize Code Generation
-		IResource selectedFile = (IResource) currentPage.getSelectedResource().getFirstElement();
-		Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.WIZARD_FILE_SELECTED_GENERATION, selectedFile.getName());
-		final CodeGenerator codeGenerator = new XSLBasedGenerator(selectedFile, selectedTask.getXslFile());
-		final DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+		Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.WIZARD_FILE_SELECTED_GENERATION, targetFile.getName());
 
-		JOptionPane optionPane = new JOptionPane("CogniCrypt is now generating code that implements " + selectedTask.getDescription() + "\ninto file " + ((selectedFile != null)
-			? selectedFile.getName()
+		String taskName = selectedTask.getName();
+		JOptionPane optionPane = new JOptionPane("CogniCrypt is now generating code that implements " + selectedTask.getDescription() + "\ninto file " + ((targetFile != null)
+			? targetFile.getName()
 			: "Output.java") + ". This should take no longer than a few seconds.", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[] {}, null);
 		JDialog waitingDialog = optionPane.createDialog("Generating Code");
 		waitingDialog.setModal(false);
 		waitingDialog.setVisible(true);
+		Configuration chosenConfig = null;
 
-		// Generate code template
-		ret &= codeGenerator.generateCodeTemplates(
-			new Configuration(instance, this.constraints, developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile),
-			selectedTask.getAdditionalResources());
+		switch (genKind) {
+			case CrySL:
+				CrySLBasedCodeGenerator.clearParameterCache();
+				File templateFile = CodeGenUtils.getResourceFromWithin(selectedTask.getCodeTemplate()).listFiles()[0];
+				codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+				try {
+					String projectRelDir = Constants.outerFileSeparator + codeGenerator.getDeveloperProject().getSourcePath() + Constants.outerFileSeparator + Constants.PackageName + Constants.outerFileSeparator;
+					String pathToTemplateFile = projectRelDir + templateFile.getName();
+					String resFileOSPath = "";
+					
+					IPath projectPath = targetFile.getProject().getRawLocation();
+					if (projectPath == null) {
+						projectPath = targetFile.getProject().getLocation(); 
+					}
+					resFileOSPath = projectPath.toOSString() + pathToTemplateFile;
+					
+					Files.createDirectories(Paths.get(projectPath.toOSString() + projectRelDir));
+					Files.copy(templateFile.toPath(), Paths.get(resFileOSPath), StandardCopyOption.REPLACE_EXISTING);
+					codeGenerator.getDeveloperProject().refresh();
+					
+					resetAnswers();
+					chosenConfig = new CrySLConfiguration(resFileOSPath, ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile));
+ 				} catch (IOException | CoreException  e1) {
+					Activator.getDefault().logError(e1);
+					return false;
+				}
+				break;
+			case XSL:
+				this.constraints = (this.constraints != null) ? this.constraints : new HashMap<>();
+				final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
+					.getAbsolutePath(), "c0_" + taskName, selectedTask.getDescription());
+				instanceGenerator.generateInstances(this.constraints);
+
+				// Initialize Code Generation
+				codeGenerator = new XSLBasedGenerator(targetFile, selectedTask.getCodeTemplate());
+				chosenConfig = new XSLConfiguration(instanceGenerator.getInstances().values().iterator().next(), this.constraints, codeGenerator.getDeveloperProject()
+					.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
+				break;
+			default:
+				return false;
+		}
+		ret = codeGenerator.generateCodeTemplates(chosenConfig, additionalResources);
+
+		try {
+			codeGenerator.getDeveloperProject().refresh();
+		} catch (CoreException e1) {
+			Activator.getDefault().logError(e1);
+		}
+		
 		waitingDialog.setVisible(false);
 		waitingDialog.dispose();
 

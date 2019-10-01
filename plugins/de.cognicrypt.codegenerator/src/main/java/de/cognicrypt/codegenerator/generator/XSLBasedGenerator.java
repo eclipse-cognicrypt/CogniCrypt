@@ -1,10 +1,11 @@
 /********************************************************************************
  * Copyright (c) 2015-2018 TU Darmstadt
- *
+<<<<<<< HEAD
+ * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -39,13 +40,12 @@ import de.cognicrypt.utils.FileHelper;
 
 /**
  * This class is responsible for generating code templates by performing an XSL transformation. Currently, Saxon is used as an XSLT- processor.
- *
+ * 
  * @author Stefan Krueger
  */
 public class XSLBasedGenerator extends CodeGenerator {
 
 	final private File xslFile;
-
 	/**
 	 * Constructor to initialize the code template generator.
 	 *

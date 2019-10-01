@@ -2,7 +2,6 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
 <xsl:output method="text"/>
 <xsl:template match="/">
-
 <xsl:variable name="Rounds"> <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/iterations"/> </xsl:variable>
 <xsl:variable name="outputSize"> <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/algorithm[@type='Digest']/outputSize"/> </xsl:variable>
 
@@ -17,8 +16,6 @@ pwd=
 </xsl:choose>
 
 <xsl:variable name="filename"><xsl:choose><xsl:when test="//task/code/server='true'">serverConfig.properties</xsl:when><xsl:otherwise>clientConfig.properties</xsl:otherwise></xsl:choose></xsl:variable>
-
-
 <xsl:if test="//task[@description='SecureCommunication']">
 <xsl:choose><xsl:when test="//task/code/server='true'">
 <xsl:result-document href="TLSServer.java">
@@ -111,8 +108,7 @@ public class TLSServer {
 			,"TLSv1.1", "TLSv1"</xsl:if> });
 		}
 	}
-}
-</xsl:result-document>
+}</xsl:result-document>
 
 <xsl:result-document href="TLSConnection.java">
 package <xsl:value-of select="//task/Package"/>; 
@@ -179,9 +175,7 @@ public class TLSConnection {
 	public boolean isClosed() {
 		return sslSocket.isClosed();
 	}
-
-}
-</xsl:result-document>
+}</xsl:result-document>
 	
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
@@ -200,8 +194,7 @@ public class Output {
 		 TLSServer tls = new TLSServer(<xsl:choose><xsl:when test="//task/code/port"><xsl:value-of select="//task/code/port"/></xsl:when>
          <xsl:otherwise>port</xsl:otherwise></xsl:choose>);
 		 
-		 tls.startAcceptingConnections();
-		
+		 tls.startAcceptingConnections();	
 	}
 }
 </xsl:when>
@@ -231,7 +224,7 @@ public class TLSClient {
         <xsl:choose>
          <xsl:when test="//task/code/port"><xsl:value-of select="//task/code/port"/></xsl:when>
          <xsl:otherwise>port</xsl:otherwise>
-</xsl:choose>);
+		</xsl:choose>);
 			setCipherSuites();
 			setProtocols();
 			bufW = new BufferedWriter(new OutputStreamWriter(sslsocket.getOutputStream()));
@@ -302,8 +295,7 @@ public class TLSClient {
 		}
 	}
 	
-}
-</xsl:result-document>
+}</xsl:result-document>
 
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
@@ -335,12 +327,7 @@ public class Output {
 		
 		tls.closeConnection(); // This call properly closes the connection. Do not forget it.		
 	}
-	
-	
-}
-</xsl:when>
-<!-- Code template for the remaining option: HTTPS client connection -->
-<xsl:otherwise>
+}</xsl:when><xsl:otherwise>
 <xsl:result-document href="HTTPSConnection.java">
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
@@ -402,8 +389,7 @@ public class HTTPSConnection {
 		}
 	}
 	
-}
-</xsl:result-document>
+}</xsl:result-document>
 
 <!-- Template Usage file for HTTPS Client connection -->
 package <xsl:value-of select="//Package"/>; 
@@ -415,7 +401,6 @@ public class Output {
 		 
 		 HTTPSConnection https = new HTTPSConnection(<xsl:choose><xsl:when test="//task/code/host">"<xsl:value-of select="//task/code/host"/>"</xsl:when>
 		 											 <xsl:otherwise>host</xsl:otherwise></xsl:choose>);
-		 
 		// HTTPS get example
 		String data = https.get();
 		System.out.println("received by get: " + data);	
@@ -423,20 +408,13 @@ public class Output {
 		// HTTPS post example
 		// Boolean suc = https.post("Test");
 		// System.out.println("received by post maintest: " + suc);
-	}
-	
-	
-}
-</xsl:otherwise>
+	}	
+}</xsl:otherwise>
 </xsl:choose>
-
 </xsl:if>
-
 </xsl:template>
 
 <xsl:template match="Import">
 import <xsl:value-of select="."/>;
 </xsl:template>
-
-
 </xsl:stylesheet>

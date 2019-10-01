@@ -101,9 +101,9 @@ public class AltConfigWizard extends Wizard {
 		if (checkifInUpdateRound()) {
 			return currentPage;
 		}
-		Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.WIZARD_TASK_SELECTED, selectedTask.getName());
 		if (currentPage instanceof TaskSelectionPage) {
 			selectedTask = ((TaskSelectionPage) currentPage).getSelectedTask();
+			Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.WIZARD_TASK_SELECTED, selectedTask.getName());
 			this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile());
 			// It is possible that now questions are within a BeginnerModeQuestionnaire
 

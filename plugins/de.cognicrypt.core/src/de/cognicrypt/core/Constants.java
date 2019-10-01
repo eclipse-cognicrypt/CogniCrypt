@@ -143,6 +143,7 @@ public class Constants {
 	public static final String TempSuffix = "Temp";
 
 	public static final String PackageName = "de" + Constants.outerFileSeparator + "cognicrypt" + Constants.outerFileSeparator + "crypto";
+	public static final String PackageNameAsName = PackageName.replaceAll(Constants.outerFileSeparator, "."); 
 	public static final String CodeGenerationCallFolder = Constants.innerFileSeparator + Constants.PackageName;
 	public static final String CodeGenerationCallFile = CodeGenerationCallFolder + Constants.innerFileSeparator + Constants.AdditionalOutputFile;
 

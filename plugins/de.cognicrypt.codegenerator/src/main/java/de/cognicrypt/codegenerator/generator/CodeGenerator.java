@@ -242,10 +242,9 @@ public abstract class CodeGenerator {
 	 *         {@link DeveloperProject#getPackagesOfProject(String)} and {@link IPackageFragment#getCompilationUnit()}
 	 */
 	protected void removeCryptoPackageIfEmpty() throws CoreException {
-		String packagename = Constants.PackageName.replace(Constants.innerFileSeparator, ".");
-		final IPackageFragment cryptoPackage = this.project.getPackagesOfProject(packagename);
+		final IPackageFragment cryptoPackage = this.project.getPackagesOfProject(Constants.PackageNameAsName);
 		if (cryptoPackage.getCompilationUnits().length == 0) {
-			this.project.removePackage(packagename);
+			this.project.removePackage(Constants.PackageNameAsName);
 		}
 	}
 
@@ -328,7 +327,7 @@ public abstract class CodeGenerator {
 
 		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
 		final FormatAllAction faa = new FormatAllAction(editor.getSite());
-		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageName.replace(Constants.innerFileSeparator, ".")).getCompilationUnits();
+		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageNameAsName).getCompilationUnits();
 		faa.runOnMultiple(generatedCUnits);
 		organizeImportsActionForAllFilesTouchedDuringGeneration.runOnMultiple(generatedCUnits);
 

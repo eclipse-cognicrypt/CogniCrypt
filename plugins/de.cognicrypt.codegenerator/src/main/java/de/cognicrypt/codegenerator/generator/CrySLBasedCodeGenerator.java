@@ -113,7 +113,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		if (chosenConfig instanceof CrySLConfiguration) {
 			ruleClass = ((CrySLConfiguration) chosenConfig).getTemplateClass();
 		}
-		ruleClass.setPackageName(Constants.PackageName.replace(Constants.innerFileSeparator, "."));
+		ruleClass.setPackageName(Constants.PackageNameAsName);
 		ruleClass.setModifier("public");
 
 		exceptions.add("GeneralSecurityException");
@@ -129,7 +129,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		Map<String, List<String>> tmpUsagePars = new HashMap<String, List<String>>();
 
 		GeneratorClass templateClass = new GeneratorClass();
-		templateClass.setPackageName(Constants.PackageName.replace(Constants.innerFileSeparator, "."));
+		templateClass.setPackageName(Constants.PackageNameAsName);
 
 		for (String imp : Constants.xmlimportsarr) {
 			templateClass.addImport(imp);

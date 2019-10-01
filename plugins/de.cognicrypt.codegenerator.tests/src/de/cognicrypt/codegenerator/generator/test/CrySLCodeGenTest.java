@@ -37,7 +37,7 @@ public class CrySLCodeGenTest {
 			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
 			assertEquals(1, TestUtils.countMethods(testClassUnit));
 
-			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "SecureEncryptor.java");
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(3, TestUtils.countMethods(encClassUnit));
 			assertEquals(4, TestUtils.countStatements(encClassUnit, "generateSessionKey"));
@@ -70,7 +70,7 @@ public class CrySLCodeGenTest {
 			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
 			assertEquals(1, TestUtils.countMethods(testClassUnit));
 
-			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "SecureEncryptor.java");
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(3, TestUtils.countMethods(encClassUnit));
 			assertEquals(11, TestUtils.countStatements(encClassUnit, "getKey"));
@@ -106,7 +106,7 @@ public class CrySLCodeGenTest {
 			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
 			assertEquals(1, TestUtils.countMethods(testClassUnit));
 
-			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "SecureEncryptor.java");
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(3, TestUtils.countMethods(encClassUnit));
 			assertEquals(11, TestUtils.countStatements(encClassUnit, "getKey"));
@@ -142,7 +142,7 @@ public class CrySLCodeGenTest {
 			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
 			assertEquals(1, TestUtils.countMethods(testClassUnit));
 
-			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "SecureEncryptor.java");
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(3, TestUtils.countMethods(encClassUnit));
 			assertEquals(11, TestUtils.countStatements(encClassUnit, "getKey"));
@@ -178,7 +178,7 @@ public class CrySLCodeGenTest {
 			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
 			assertEquals(1, TestUtils.countMethods(testClassUnit));
 
-			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "SecureEncryptor.java");
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(5, TestUtils.countMethods(encClassUnit));
 			assertEquals(4, TestUtils.countStatements(encClassUnit, "generateSessionKey"));
@@ -215,7 +215,7 @@ public class CrySLCodeGenTest {
 			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
 			assertEquals(1, TestUtils.countMethods(testClassUnit));
 
-			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "SecureEncryptor.java");
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(5, TestUtils.countMethods(encClassUnit));
 			assertEquals(4, TestUtils.countStatements(encClassUnit, "generateSessionKey"));
@@ -253,7 +253,7 @@ public class CrySLCodeGenTest {
 			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
 			assertEquals(1, TestUtils.countMethods(testClassUnit));
 
-			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "SecureEncryptor.java");
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(5, TestUtils.countMethods(encClassUnit));
 			assertEquals(4, TestUtils.countStatements(encClassUnit, "generateSessionKey"));
@@ -291,7 +291,7 @@ public class CrySLCodeGenTest {
 			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
 			assertEquals(1, TestUtils.countMethods(testClassUnit));
 
-			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "PasswordHasher.java");
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "PasswordHasher.java");
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(5, TestUtils.countMethods(encClassUnit));
 			assertEquals(11, TestUtils.countStatements(encClassUnit, "createPWHash"));
@@ -325,7 +325,7 @@ public class CrySLCodeGenTest {
 			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
 			assertEquals(1, TestUtils.countMethods(testClassUnit));
 
-			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "Signer.java");
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "Signer.java");
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(3, TestUtils.countMethods(encClassUnit));
 			assertEquals(5, TestUtils.countStatements(encClassUnit, "getKey"));
@@ -360,7 +360,7 @@ public class CrySLCodeGenTest {
 			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
 			assertEquals(1, TestUtils.countMethods(testClassUnit));
 
-			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageName.replace("/", "."), "StringHasher.java");
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "StringHasher.java");
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(2, TestUtils.countMethods(encClassUnit));
 			assertEquals(5, TestUtils.countStatements(encClassUnit, "createHash"));

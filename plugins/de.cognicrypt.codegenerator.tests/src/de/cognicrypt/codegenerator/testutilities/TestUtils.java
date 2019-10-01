@@ -208,7 +208,7 @@ public class TestUtils {
 			throws CoreException, IOException {
 		File templateFile = CodeGenUtils.getResourceFromWithin(Constants.codeTemplateFolder + template).listFiles()[0];
 		String projectRelDir = Constants.outerFileSeparator + codeGenerator.getDeveloperProject().getSourcePath() + Constants.outerFileSeparator
-				+ Constants.PackageName.replaceAll("/", "\\\\") + Constants.outerFileSeparator;
+				+ Constants.PackageName + Constants.outerFileSeparator;
 		String pathToTemplateFile = projectRelDir + templateFile.getName();
 		String resFileOSPath = targetFile.getProject().getLocation().toOSString() + pathToTemplateFile;
 

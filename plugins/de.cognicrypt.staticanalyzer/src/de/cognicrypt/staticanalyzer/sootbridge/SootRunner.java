@@ -38,6 +38,7 @@ import com.google.common.collect.Sets;
 import boomerang.callgraph.ObservableDynamicICFG;
 import boomerang.callgraph.ObservableICFG;
 import boomerang.preanalysis.BoomerangPretransformer;
+import crypto.analysis.CrySLRulesetSelector.RuleFormat;
 import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
@@ -114,8 +115,8 @@ public class SootRunner {
 								File.separator + loadedRuleset.getSelectedVersion();
 						rules.addAll(Files
 								.find(Paths.get(new File(folderPath).getPath()), Integer.MAX_VALUE,
-										(file, attr) -> file.toString().endsWith(".cryptslbin"))
-								.map(path -> CryptSLRuleReader.readFromFile(path.toFile())).collect(Collectors.toList()));
+										(file, attr) -> file.toString().endsWith(RuleFormat.SOURCE.toString()))
+								.map(path -> CryptSLRuleReader.readFromSourceFile(path.toFile())).collect(Collectors.toList()));
 					}
 				}
 			} catch (BackingStoreException e) {

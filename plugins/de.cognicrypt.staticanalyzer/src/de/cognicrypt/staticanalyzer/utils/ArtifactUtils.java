@@ -10,16 +10,19 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.io.FileUtils;
+import org.ini4j.Profile.Section;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.utils.Utils;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;;
 
@@ -31,9 +34,10 @@ public class ArtifactUtils {
 	public static boolean downloadRulesets() {
 
 		List<String> defaultRulesetUrls = new ArrayList<String>();
-		defaultRulesetUrls.add(Constants.JCA_NEXUS_URL);
-		defaultRulesetUrls.add(Constants.BC_NEXUS_URL);
-		defaultRulesetUrls.add(Constants.TINK_NEXUS_URL);
+		Section ini = Utils.getConfig().get(Constants.INI_URL_HEADER);
+		defaultRulesetUrls.add(ini.get(Constants.INI_JCA_NEXUS));
+		defaultRulesetUrls.add(ini.get(Constants.INI_BC_NEXUS));
+		defaultRulesetUrls.add(ini.get(Constants.INI_TINK_NEXUS));
 
 		for (String currentUrl : defaultRulesetUrls) {
 			String metaFilePath = currentUrl + File.separator + "maven-metadata.xml";

@@ -6,6 +6,7 @@
 package de.cognicrypt.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -47,11 +48,14 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
+import org.ini4j.InvalidFileFormatException;
+import org.ini4j.Wini;
 import org.osgi.framework.Bundle;
 
 import com.google.common.base.CharMatcher;
 
 import de.cognicrypt.core.Activator;
+import de.cognicrypt.core.Constants;
 
 public class Utils {
 
@@ -319,14 +323,29 @@ public class Utils {
 
 		return null;
 	}
+	
+	/***
+	 * Returns parsed objects of resources/configuration.ini file.
+	 * @return Wini object
+	 */
+	public static Wini getConfig() {
+		Wini ini = null;
+		try {
+			ini = new Wini(getResourceFromWithin(Constants.CONFIG_FILE_PATH));
+		} catch (InvalidFileFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return ini;
+	}
 
 	/***
 	 * This method returns all sub-directories in a directory of the first level.
 	 * @param ruleSet JavaCryptographicArchitecture, BouncyCastle, Tink
-	 * @param inputPath input path where the CryptSL rules are stored
 	 * @return array of version numbers
 	 */
-	public static String[] getRuleVersions(String ruleSet, String inputPath){
+	public static String[] getRuleVersions(String ruleSet){
 		List<String> versions = new ArrayList<String>();
 		File path = new File(System.getProperty("user.dir") + File.separator + ruleSet);
 		File[] innerDirs = path.listFiles();

@@ -556,7 +556,6 @@ public class Constants {
 
 	// define a correct ID (get range of possible ones)
 	public static final int JDT_PROBLEM_ID = 10000000;
-	public final static String RELATIVE_RULES_DIR = "resources/CrySLRules";
 	public final static String ECLIPSE_RULES_DIR = System.getProperty("user.dir");
 	public static final String cryslFileEnding = ".cryptsl";
 	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CryptSL";
@@ -575,13 +574,14 @@ public class Constants {
 	public static final String BC_TABLE_ITEM = "Bouncy Castle";
 	public static final String TINK_TABLE_ITEM = "Tink";
 	
-	public static final String NEXUS_SOOT_RELEASE = "https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release";
+	//Configuration.ini keys
+	public static final String INI_URL_HEADER = "URLS";
+	public static final String INI_NEXUS_SOOT_RELEASE = "NEXUS_SOOT_RELEASE";
+	public static final String INI_JCA_NEXUS = "JCA_NEXUS";
+	public static final String INI_BC_NEXUS = "BC_NEXUS";
+	public static final String INI_TINK_NEXUS = "TINK_NEXUS";
 	
-	//URLs of rulesets
-	public static final String JCA_NEXUS_URL= "https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/de/darmstadt/tu/crossing/JavaCryptographicArchitecture";
-	public static final String BC_NEXUS_URL = "https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/de/fraunhofer/iem/BouncyCastle";
-	public static final String TINK_NEXUS_URL = "https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/de/darmstadt/tu/crossing/Tink";
-
 	// path to icons
 	public final static String COGNICRYPT_ICON_DIR = "icons/cognicrypt-analysis.png";
+	public final static String CONFIG_FILE_PATH = "configuration.ini";
 }

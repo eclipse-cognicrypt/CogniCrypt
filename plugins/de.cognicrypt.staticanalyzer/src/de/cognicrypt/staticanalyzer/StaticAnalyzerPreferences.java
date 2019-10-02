@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.ini4j.Profile.Section;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -54,13 +55,15 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private Combo neverType;
 	private Combo incompleteOp;
 	private Combo typestate;
+	
+	private Section ini = Utils.getConfig().get(Constants.INI_URL_HEADER);
 
 	private List<Ruleset> listOfRulesets = new ArrayList<Ruleset>() {
 		private static final long serialVersionUID = 1L;
 		{
-			add(new Ruleset(Constants.JCA_TABLE_ITEM, Constants.JCA_NEXUS_URL, true));
-			add(new Ruleset(Constants.BC_TABLE_ITEM, Constants.BC_NEXUS_URL));
-			add(new Ruleset(Constants.TINK_TABLE_ITEM, Constants.TINK_NEXUS_URL));
+			add(new Ruleset(Constants.JCA_TABLE_ITEM, ini.get(Constants.INI_JCA_NEXUS), true));
+			add(new Ruleset(Constants.BC_TABLE_ITEM, ini.get(Constants.INI_BC_NEXUS)));
+			add(new Ruleset(Constants.TINK_TABLE_ITEM, ini.get(Constants.INI_TINK_NEXUS)));
 		}
 	};
 
@@ -174,7 +177,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 			Ruleset ruleset = (Ruleset) itr.next();
 			ruleset.setVersions(new CCombo(table.getTable(), SWT.NONE));
 			ruleset.getVersions()
-					.setItems(Utils.getRuleVersions(ruleset.getFolderName(), Constants.RELATIVE_RULES_DIR));
+					.setItems(Utils.getRuleVersions(ruleset.getFolderName()));
 			ruleset.setSelectedVersion((ruleset.getSelectedVersion().length() > 0) ? ruleset.getSelectedVersion()
 					: ruleset.getVersions().getItem(ruleset.getVersions().getItemCount() - 1));
 			ruleset.getVersions().select(ruleset.getVersions().indexOf(ruleset.getSelectedVersion()));
@@ -198,7 +201,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private void modifyRulesTable(Ruleset newRuleset) {
 		newRuleset.setVersions(new CCombo(table.getTable(), SWT.NONE));
 		newRuleset.getVersions()
-				.setItems(Utils.getRuleVersions(newRuleset.getFolderName(), Constants.RELATIVE_RULES_DIR));
+				.setItems(Utils.getRuleVersions(newRuleset.getFolderName()));
 		newRuleset.setSelectedVersion(newRuleset.getVersions().getItem(newRuleset.getVersions().getItemCount() - 1));
 		newRuleset.getVersions().select(newRuleset.getVersions().getItemCount() - 1);
 		createRulesTableRow(newRuleset);

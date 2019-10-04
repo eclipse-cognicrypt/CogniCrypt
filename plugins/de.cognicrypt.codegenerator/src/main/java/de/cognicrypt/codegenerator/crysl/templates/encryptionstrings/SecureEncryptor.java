@@ -2,6 +2,7 @@ package de.cognicrypt.codegenerator.crysl.templates.encryptionstrings;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 import javax.crypto.Cipher;
 
@@ -33,15 +34,15 @@ public class SecureEncryptor {
 		System.arraycopy(ivBytes, 0, ret, 0, ivBytes.length);
 		System.arraycopy(res, 0, ret, ivBytes.length, res.length);
 
-		return new String(ret, StandardCharsets.UTF_8);
+		return Base64.getEncoder().encodeToString(ret);
 	}
 
 	public java.lang.String decrypt(java.lang.String ciphertext, javax.crypto.SecretKey key) throws IOException {
-		byte[] ciphertextFile = ciphertext.getBytes(StandardCharsets.UTF_8);
+		byte[] ciphertextString = Base64.getDecoder().decode(ciphertext);
 		byte[] ivBytes = new byte[key.getEncoded().length];
-		byte[] data = new byte[ciphertextFile.length - ivBytes.length];
-		System.arraycopy(ciphertext, 0, ivBytes, 0, ivBytes.length);
-		System.arraycopy(ciphertext, ivBytes.length, data, 0, data.length);
+		byte[] data = new byte[ciphertextString.length - ivBytes.length];
+		System.arraycopy(ciphertextString, 0, ivBytes, 0, ivBytes.length);
+		System.arraycopy(ciphertextString, ivBytes.length, data, 0, data.length);
 
 		int mode = Cipher.DECRYPT_MODE;
 		byte[] res = null;

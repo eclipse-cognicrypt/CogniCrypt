@@ -43,8 +43,8 @@ public class SecureEncryptor {
 		byte[] ciphertextFile = Files.readAllBytes(Paths.get(ciphertext.getAbsolutePath()));
 		byte[] ivBytes = new byte[key.getEncoded().length];
 		byte[] data = new byte[ciphertextFile.length - ivBytes.length];
-		System.arraycopy(ciphertext, 0, ivBytes, 0, ivBytes.length);
-		System.arraycopy(ciphertext, ivBytes.length, data, 0, data.length);
+		System.arraycopy(ciphertextFile, 0, ivBytes, 0, ivBytes.length);
+		System.arraycopy(ciphertextFile, ivBytes.length, data, 0, data.length);
 
 		int mode = Cipher.DECRYPT_MODE;
 		byte[] res = null;

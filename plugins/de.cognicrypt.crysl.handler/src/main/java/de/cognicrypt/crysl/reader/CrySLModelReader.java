@@ -40,6 +40,7 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.io.Files;
 import com.google.inject.Injector;
 import crypto.interfaces.ICryptSLPredicateParameter;
 import crypto.interfaces.ISLConstraint;
@@ -266,15 +267,22 @@ public class CrySLModelReader {
 		}
 		for (final IResource res : ResourcesPlugin.getWorkspace().getRoot().getFolder(rulesFolder).members()) {
 			if (Constants.cryslFileEnding.equals("." + res.getFileExtension())) {
-				CryptSLRule rule = readRule(((IFile) res).getRawLocation().makeAbsolute().toFile());
+				File resAsFile = ((IFile) res).getRawLocation().makeAbsolute().toFile();
+				CryptSLRule rule = readRule(resAsFile);
 				if (rule != null) {
 					rules.add(rule);
+					File to = new File(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath() + Constants.innerFileSeparator + rule.getClassName().substring(rule.getClassName().lastIndexOf(".") + 1) + Constants.cryslFileEnding);
+					try {
+						Files.copy(resAsFile, to);
+					}
+					catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			} else if (res instanceof IFolder) {
 				rules.addAll(readRulesWithin(res.getFullPath().toOSString()));
 			}
 		}
-
 		return rules;
 	}
 

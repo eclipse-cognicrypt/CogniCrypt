@@ -34,7 +34,7 @@ public class SecureEncryptor {
 	}
 
 	public java.io.File encryptData(java.io.File plaintext, javax.crypto.SecretKey key) throws IOException {
-		byte[] ivBytes = new byte[32];
+		byte[] ivBytes = new byte[key.getEncoded().length];
 		byte[] cipherText = null;
 		byte[] plaintextFile = Files.readAllBytes(Paths.get(plaintext.getAbsolutePath()));
 		int mode = Cipher.ENCRYPT_MODE;
@@ -52,7 +52,7 @@ public class SecureEncryptor {
 
 	public java.io.File decryptData(java.io.File ciphertext, javax.crypto.SecretKey key) throws IOException {
 		byte[] ciphertextFile = Files.readAllBytes(Paths.get(ciphertext.getAbsolutePath()));
-		byte[] ivBytes = new byte[32];
+		byte[] ivBytes = new byte[key.getEncoded().length];
 		byte[] data = new byte[ciphertextFile.length - ivBytes.length];
 		System.arraycopy(data, 0, ivBytes, 0, ivBytes.length);
 		System.arraycopy(data, ivBytes.length, data, 0, data.length);

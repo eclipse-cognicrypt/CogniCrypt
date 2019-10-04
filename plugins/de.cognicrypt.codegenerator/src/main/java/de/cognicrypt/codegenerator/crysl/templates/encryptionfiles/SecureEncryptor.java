@@ -15,8 +15,9 @@ public class SecureEncryptor {
 	public javax.crypto.SecretKey getKey(char[] pwd) {
 		byte[] salt = new byte[32];
 		javax.crypto.SecretKey encryptionKey = null;
+		int keysize = 128;
 		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(salt, "next").includeClass("java.security.PBEKeySpec")
-			.addParameter(pwd, "password").includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey").includeClass("javax.crypto.SecretKeySpec")
+			.addParameter(pwd, "password").addParameter(keysize, "keylength").includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey").includeClass("javax.crypto.SecretKeySpec")
 			.addReturnObject(encryptionKey).generate();
 
 		return encryptionKey;
@@ -43,8 +44,8 @@ public class SecureEncryptor {
 		byte[] ciphertextFile = Files.readAllBytes(Paths.get(ciphertext.getAbsolutePath()));
 		byte[] ivBytes = new byte[key.getEncoded().length];
 		byte[] data = new byte[ciphertextFile.length - ivBytes.length];
-		System.arraycopy(ciphertext, 0, ivBytes, 0, ivBytes.length);
-		System.arraycopy(ciphertext, ivBytes.length, data, 0, data.length);
+		System.arraycopy(ciphertextFile, 0, ivBytes, 0, ivBytes.length);
+		System.arraycopy(ciphertextFile, ivBytes.length, data, 0, data.length);
 
 		int mode = Cipher.DECRYPT_MODE;
 		byte[] res = null;

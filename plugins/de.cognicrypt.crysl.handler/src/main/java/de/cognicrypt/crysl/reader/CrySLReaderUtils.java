@@ -99,7 +99,7 @@ public class CrySLReaderUtils {
 	}
 
 	public static void storeRuletoFile(final CryptSLRule rule, final String folderPath) throws IOException {
-		File written = new File(folderPath + Constants.innerFileSeparator + rule.getClassName() + Constants.cryslFileEnding);
+		File written = new File(folderPath + Constants.innerFileSeparator + rule.getClassName().substring(rule.getClassName().lastIndexOf(".") + 1)+ Constants.cryslFileEnding);
 		Files.write(rule.toString(), written, StandardCharsets.UTF_8);
 	}
 	

@@ -13,8 +13,9 @@ public class SecureEncryptor {
 	public javax.crypto.SecretKey getKey(char[] pwd) {
 		byte[] salt = new byte[32];
 		javax.crypto.SecretKey encryptionKey = null;
+		int keysize = 128;
 		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(salt, "next").includeClass("java.security.PBEKeySpec")
-			.addParameter(pwd, "password").includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey").includeClass("javax.crypto.SecretKeySpec")
+			.addParameter(pwd, "password").addParameter(keysize, "keylength").includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey").includeClass("javax.crypto.SecretKeySpec")
 			.addReturnObject(encryptionKey).generate();
 
 		return encryptionKey;

@@ -3,15 +3,10 @@ package de.cognicrypt.crysl.creator;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import org.eclipse.ui.IEditorPart;
-
+import org.eclipse.core.runtime.CoreException;
 import com.google.common.base.Strings;
 
 import de.cognicrypt.core.Constants;
@@ -56,15 +51,15 @@ public class CrySLRuleCreator {
 		final String CONSTRAINTS = buildCrySLSectionString("CONSTRAINTS", constraints);
 		final String REQUIRES = buildCrySLSectionString("REQUIRES", requires);
 		final String ENSURES = buildCrySLSectionString("ENSURES", ensures);
-
-		final String cryslRuleContent = buildCrySLContentString(SPEC, OBJECTS, EVENTS, ORDER, CONSTRAINTS, REQUIRES,
-				ENSURES);
+		final String cryslRuleContent = buildCrySLContentString(SPEC, OBJECTS, EVENTS, ORDER, CONSTRAINTS, REQUIRES, ENSURES);
 
 		try {
 			createCrySLFile(filePath, cryslRuleContent);
 			compileRule(filePath);
 		} catch (IOException e) {
 			Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e);
 		}
 
 		return true;
@@ -86,16 +81,27 @@ public class CrySLRuleCreator {
 				List<String> rule = Files.readAllLines(Paths.get(filePath));
 				for (int i = 0; i < rule.size(); i++) {
 					if (rule.get(i).trim().toUpperCase().equals(section.trim())) {
-						rule.add(i + 1, "\t" + content);
-						successful = true;
-						break;
+						boolean doublicate = false;
+						for(int j = i; j < rule.size(); j++) {
+							if(rule.get(j).trim().equals(content.trim())) {
+								doublicate = true;
+								break;
+							}
+						}
+						if(!doublicate) {
+							rule.add(i + 1, "\t" + content);
+							successful = true;
+							break;
+						}
 					}
 				}
 				createCrySLFile(f.getAbsolutePath(), rule);
 				compileRule(filePath);
 			} catch (IOException e) {
 				Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
-			}
+			} catch (CoreException e) {
+				Activator.getDefault().logError(e);
+			}			
 		} else {
 			Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
 		}
@@ -127,6 +133,8 @@ public class CrySLRuleCreator {
 				compileRule(filePath);
 			} catch (IOException e) {
 				Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
+			} catch (CoreException e) {
+				Activator.getDefault().logError(e);
 			}
 		} else {
 			Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
@@ -199,7 +207,7 @@ public class CrySLRuleCreator {
 	 * @throws IOException
 	 */
 	private void createCrySLFile(String filePath, String content) throws IOException {
-		String path = filePath.endsWith(".crysl") ? filePath : filePath + ".crysl";
+		String path = filePath.endsWith(Constants.cryslFileEnding) ? filePath : filePath + Constants.cryslFileEnding;
 		FileOutputStream fos = new FileOutputStream(path);
 		fos.write(content.getBytes());
 		fos.flush();
@@ -225,18 +233,16 @@ public class CrySLRuleCreator {
 	 * This method compiles a CrySL file to a .cryptslbin file
 	 * @param filePath
 	 * @throws IOException
+	 * @throws CoreException 
 	 */
-	private void compileRule(String filePath) throws IOException {
-
-		File f = new File(filePath);
-
+	private void compileRule(String filePath) throws IOException, CoreException {
+		File f = new File(filePath);		
 		if (f.exists()) {
-			CrySLModelReader reader = new CrySLModelReader();
+			CrySLModelReader reader = new CrySLModelReader(Utils.getCurrentProject());
 			reader.readRule(f);
 		} else {
-			throw new IOException();
+			Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
 		}
-
 	}
 
 }

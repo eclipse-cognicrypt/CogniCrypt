@@ -4,6 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -65,6 +68,11 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 	@Override
 	public void run(final IMarker marker) {
 		
+		JOptionPane optionPane = new JOptionPane("Now, CogniCrypt recognizes the object as secure", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+		JDialog waitingDialog = optionPane.createDialog("CogniCrypt");
+		waitingDialog.setModal(false);
+		waitingDialog.setVisible(true);
+		
 		String errorVarName = "";
 		int errorVarIndex = 0;
 		String predicate = "";
@@ -74,38 +82,17 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 			lineNumber = (int) marker.getAttribute(IMarker.LINE_NUMBER);
 			predicate = (String) marker.getAttribute("predicate");
 			errorVarName = (String) marker.getAttribute("errorParam");
-			//errorVarIndex = (int) marker.getAttribute("errorParamIndex");
+//			errorVarIndex = (int) marker.getAttribute("errorParamIndex");
 		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
-		
-		String folderPath = Utils.getResourceFromWithin("resources/PredicateEnsurer/CrySLRule",
-				de.cognicrypt.staticanalyzer.Activator.PLUGIN_ID).getAbsolutePath();
-		String filePath = folderPath + "/Ensurer.crysl";
-
-		File rule = new File(filePath);
-		if (rule.exists()) {
-			updateRule(filePath, predicate);
-		} else {
-			createRule(filePath, predicate);
-		}
-		
-		
 		
 		DeveloperProject devProject = new DeveloperProject(marker.getResource().getProject());
 		ICompilationUnit sourceUnit = null;
 
 		try {
 			sourceUnit = QuickFixUtils.getCompilationUnitFromMarker(marker);
-			if (devProject.isMavenProject()) {
-				devProject.addMavenDependency(Constants.PREDICATEENSURER_GROUPID, Constants.PREDICATEENSURER_ARTIFACTID,
-						Constants.PREDICATEENSURER_VERSION);
-				devProject.execMaven(
-						new String[] { Constants.MVN_ECLIPSE_COMMAND + " " + Constants.MVN_SKIPTESTS_COMMAND });
-
-			} else {
-				QuickFixUtils.addAdditionalFiles("resources/PredicateEnsurer/Jar", "de.cognicrypt.staticanalyzer", devProject);
-			}
+			QuickFixUtils.addAdditionalFiles("resources/PredicateEnsurer/Jar", "de.cognicrypt.staticanalyzer", devProject);
 
 			if (!QuickFixUtils.hasJarImport(sourceUnit, Constants.PREDICATEENSURER_JAR_IMPORT)) {
 				QuickFixUtils.insertJarImport(sourceUnit, Constants.PREDICATEENSURER_JAR_IMPORT);
@@ -113,7 +100,7 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
-
+		
 		final ASTParser parser = ASTParser.newParser(AST.JLS9);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setSource(sourceUnit);
@@ -123,10 +110,28 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 		final SuppressWarningFix tempFix = new SuppressWarningFix("");
 		tempFix.run(marker);
 		Utils.getCurrentlyOpenEditor().doSave(null);
+		
+		String clientPath = Utils.getCurrentProject().getLocation().toOSString();
+		String filePath = clientPath+Constants.outerFileSeparator+"."+"Ensurer"+Constants.cryslFileEnding;
+		File rule = new File(filePath);
+		if (rule.exists()) {
+			updateRule(filePath, predicate);
+		} else {
+			createRule(filePath, predicate);
+		}
+		
+		waitingDialog.setVisible(false);
+		waitingDialog.dispose();
 	}
 
+	/**
+	 * This method creates a CrySL rule for the class de.upb.cognicrypt.predicateensurer.Ensurer
+	 * @param filePath
+	 * @param pred
+	 * @return 
+	 */
 	private boolean createRule(String filePath, String pred) {
-		String spec = "de.upb.cognicrypt.predicateensurer.ensurer";
+		String spec = "de.upb.cognicrypt.predicateensurer.Ensurer";
 		List<String> objects = new ArrayList<String>();
 		objects.add("java.lang.Object obj;");
 		objects.add("java.lang.String pred;");
@@ -142,10 +147,14 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 		return creator.createRule(filePath, spec, objects, events, order, null, null, ensures);
 	}
 
+	/**
+	 * This method add a further predicate to the CrySL rule de.upb.cognicrypt.predicateensurer.Ensurer
+	 * @param filePath
+	 * @param pred
+	 * @return
+	 */
 	private boolean updateRule(String filePath, String pred) {
-		String folderPath = Utils.getResourceFromWithin("resources/PredicateEnsurer/CrySLRule",
-				de.cognicrypt.staticanalyzer.Activator.PLUGIN_ID).getAbsolutePath();
-		return creator.extendRule(filePath, "ENSURES", "pred in {" + pred + "} => " + pred + "[obj];");
+		return creator.extendRule(filePath, "ENSURES", "pred in {\"" + pred + "\"} => " + pred + "[obj];");
 	}
 	
 	
@@ -171,9 +180,8 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 
 		if (node.getNodeType() == ASTNode.METHOD_INVOCATION || node.getNodeType() == ASTNode.CLASS_INSTANCE_CREATION) {			
 			
-			//TODO
 			if(varName.startsWith("varReplacer")) {
-				encloseValue((MethodInvocation) node);
+				//TODO enclose value in variable
 			}
 			
 			final MethodDeclaration parentMethod = getMethodDeclarationParentNode(node);
@@ -209,12 +217,6 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 		edits.apply(document);
 		sourceUnit.getBuffer().setContents(document.get());
 	}
-
-	private void encloseValue(MethodInvocation methodInvoc) {
-		
-		//TODO
-	}
-	
 	
 	/**
 	 * This method determines the next {@link MethodDeclaration} parent node

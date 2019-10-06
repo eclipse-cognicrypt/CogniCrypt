@@ -500,6 +500,7 @@ public class Constants {
 
 	// QuickFixs
 	public static final String SUPPRESSWARNING_FIX = "Suppress Warning: ";
+	public static final String UNSUPPRESSWARNING_FIX = "UnSuppress Warning: ";
 
 	// Marker types
 	public static final String CC_MARKER_TYPE = "de.cognicrypt.staticanalyzer.ccMarker";

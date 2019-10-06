@@ -50,7 +50,7 @@ public class ErrorMarkerGenerator {
 	 *         successfully
 	 */
 	public boolean addMarker(final String markerType, final int id, final IResource sourceFile, final int line,
-			final String message, final Severities sev, final HashMap<String, String> additionalErrorInfos) {
+			final String message, final Severities sev, final HashMap<String, String> additionalErrorInfos, boolean isSuppressed) {
 
 		if (!sourceFile.exists() || !sourceFile.isAccessible()) {
 			Activator.getDefault().logError(Constants.NO_RES_FOUND);
@@ -64,7 +64,12 @@ public class ErrorMarkerGenerator {
 			marker.setAttribute(IMarker.LINE_NUMBER, line);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+			if(isSuppressed) {
+				marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
+			}
+			else {
 			marker.setAttribute(IMarker.SEVERITY, (sev == Severities.Error) ? IMarker.SEVERITY_ERROR : ((sev == Severities.Warning) ? IMarker.SEVERITY_WARNING : IMarker.SEVERITY_INFO));
+			}
 			marker.setAttribute(IMarker.SOURCE_ID, id);
 
 			if(markerType.equals(Constants.REQUIRED_PREDICATE_MARKER_TYPE)) {

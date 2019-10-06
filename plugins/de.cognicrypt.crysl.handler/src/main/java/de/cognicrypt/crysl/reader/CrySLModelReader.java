@@ -537,7 +537,7 @@ public class CrySLModelReader {
 	private Map<? extends ParEqualsPredicate, ? extends SuperType> getKills(final EList<Constraint> eList) {
 		final Map<ParEqualsPredicate, SuperType> preds = new HashMap<>();
 		for (final Constraint cons : eList) {
-			final Pred pred = (Pred) cons;
+			final Pred pred = (Pred) cons.getPredLit().getPred();
 
 			final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
 
@@ -558,7 +558,7 @@ public class CrySLModelReader {
 				}
 			}
 			final String meth = pred.getPredName();
-			final SuperType cond = null; //pred
+			final SuperType cond = cons.getLabelCond();
 			if (cond == null) {
 				preds.put(new ParEqualsPredicate(null, meth, variables, true), null);
 			} else {
@@ -628,8 +628,7 @@ public class CrySLModelReader {
 	private Map<? extends ParEqualsPredicate, ? extends SuperType> getPredicates(final List<Constraint> predList) {
 		final Map<ParEqualsPredicate, SuperType> preds = new HashMap<>();
 		for (final Constraint cons : predList) {
-			final Pred pred = (Pred) cons.getPredLit();
-			
+			final Pred pred = (Pred) cons.getPredLit().getPred();
 			String curClass = ((DomainmodelImpl) cons.eContainer().eContainer()).getJavaType().getQualifiedName();
 			final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
 
@@ -655,12 +654,14 @@ public class CrySLModelReader {
 					firstPar = false;
 				}
 			}
+			
+			final CryptSLPredicate ensPredCons = extractReqPred(cons.getPredLit());
 			final String meth = pred.getPredName();
-			final SuperType cond = cons.getLabelCond(); // pred.getLabelCond();
+			final SuperType cond = cons.getLabelCond(); 
 			if (cond == null) {
-				preds.put(new ParEqualsPredicate(null, meth, variables, false), null);
+				preds.put(new ParEqualsPredicate(null, meth, variables, false, ensPredCons.getConstraint()), null);
 			} else {
-				preds.put(new ParEqualsPredicate(null, meth, variables, false), cond);
+				preds.put(new ParEqualsPredicate(null, meth, variables, false, ensPredCons.getConstraint()), cond);
 			}
 
 		}
@@ -699,5 +700,4 @@ public class CrySLModelReader {
 		}
 		return Utils.filterQuotes(value);
 	}
-
 }

@@ -6,6 +6,8 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolutionGenerator;
+import org.eclipse.ui.internal.ide.registry.MarkerHelpRegistry;
+
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 
@@ -23,7 +25,6 @@ public class QuickFixer implements IMarkerResolutionGenerator {
 		quickFixes = new ArrayList<>();
 		String message = "";
 		String errorType = "";
-
 		try {
 			errorType = (String) mk.getAttribute("errorType");
 			message = (String) mk.getAttribute(IMarker.MESSAGE);
@@ -31,9 +32,10 @@ public class QuickFixer implements IMarkerResolutionGenerator {
 
 			if (errorType.equals(Constants.REQUIRED_PREDICATE_MARKER_TYPE)) {
 				String predicate = (String) mk.getAttribute("predicate");
-
-				if(predicate.equals("generatedKey") || predicate.equals("randomized")) {
-					quickFixes.add(new EnsuresPredicateFix("This object comes from a stream/database/other external source and is actually secure."));
+				if (predicate != null) {
+					if(predicate.equals("generatedKey") || predicate.equals("randomized")) {
+						quickFixes.add(new EnsuresPredicateFix("This object comes from a stream/database/other external source and is actually secure."));
+					}
 				}
 			}
 		}

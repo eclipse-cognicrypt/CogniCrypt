@@ -1,12 +1,12 @@
 package de.cognicrypt.staticanalyzer.markerresolution;
 
 import java.util.ArrayList;
-
+import java.util.Arrays;
+import java.util.List;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolutionGenerator;
-import org.eclipse.ui.internal.ide.registry.MarkerHelpRegistry;
 
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
@@ -14,11 +14,13 @@ import de.cognicrypt.staticanalyzer.Activator;
 /**
  * This method provides solutions for the marker resolution
  *
- * @author André Sonntag
+ * @author Andre Sonntag
  */
 public class QuickFixer implements IMarkerResolutionGenerator {
 	
-	private ArrayList<IMarkerResolution> quickFixes;
+	private List<String> secureExtenernalSources = Arrays.asList(new String[] {"randomized", "generatedKey", "generatedKeyPair", "generatedPubKey", "generatedPrivKey"});
+	
+	private List<IMarkerResolution> quickFixes;
 	
 	@Override
 	public IMarkerResolution[] getResolutions(final IMarker mk) {
@@ -33,7 +35,7 @@ public class QuickFixer implements IMarkerResolutionGenerator {
 			if (errorType.equals(Constants.REQUIRED_PREDICATE_MARKER_TYPE)) {
 				String predicate = (String) mk.getAttribute("predicate");
 				if (predicate != null) {
-					if(predicate.equals("generatedKey") || predicate.equals("randomized")) {
+					if(secureExtenernalSources.contains(predicate)) {
 						quickFixes.add(new EnsuresPredicateFix("This object comes from a stream/database/other external source and is actually secure."));
 					}
 				}

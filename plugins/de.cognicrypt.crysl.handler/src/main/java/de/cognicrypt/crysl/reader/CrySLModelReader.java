@@ -213,17 +213,6 @@ public class CrySLModelReader {
 		System.out.println("===========================================");
 		System.out.println("");
 
-		if (!testMode) {
-			final String className = rule.getClassName().substring(rule.getClassName().lastIndexOf(".") + 1);
-			String folderPath = Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath();
-			try {
-				CrySLReaderUtils.storeRuletoFile(rule, folderPath);
-				CrySLReaderUtils.readRuleFromBinaryFile(folderPath, className);
-			}
-			catch (ClassNotFoundException | IOException e) {
-				Activator.getDefault().logError(e, "Failed to store CrySL Rule for " + className + " to disk.");
-			}
-		}
 		return rule;
 	}
 
@@ -257,8 +246,22 @@ public class CrySLModelReader {
 		}
 		return collected;
 	}
+	
+	public List<CryptSLRule> readRulesOutside(String resourcesPath) throws CoreException {
+		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
+		for (File a : ((new File(resourcesPath)).listFiles())) {
+			if (!a.isDirectory() && a.exists() && a.canRead()) {
+				CryptSLRule rule = readRule(a);
+				if (rule != null) {
+					rules.add(rule);
+				}
+			}
+		}
+		
+		return rules;
+	}
 
-	public List<CryptSLRule> readRules(String resourcesPath) throws CoreException {
+	public List<CryptSLRule> readRulesWithin(String resourcesPath) throws CoreException {
 		final IPath rulesFolder = (new org.eclipse.core.runtime.Path(resourcesPath));
 		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
 		if (rulesFolder.segmentCount() == 1) {
@@ -271,7 +274,7 @@ public class CrySLModelReader {
 					rules.add(rule);
 				}
 			} else if (res instanceof IFolder) {
-				rules.addAll(readRules(res.getFullPath().toOSString()));
+				rules.addAll(readRulesWithin(res.getFullPath().toOSString()));
 			}
 		}
 
@@ -297,19 +300,34 @@ public class CrySLModelReader {
 	private List<ISLConstraint> collectRequiredPredicates(final EList<ReqPred> requiredPreds) {
 		final List<ISLConstraint> preds = new ArrayList<>();
 		for (final ReqPred pred : requiredPreds) {
-			final ReqPred left = pred.getLeftExpression();
-			final ReqPred right = pred.getRightExpression();
 			ISLConstraint reqPred = null;
-			if (left == null && right == null) {
+			if (pred instanceof ReqPredLit) {
 				reqPred = extractReqPred(pred);
 			} else {
-				CryptSLPredicate l = extractReqPred(left);
-				CryptSLPredicate r = extractReqPred(right);
-				reqPred = new CryptSLConstraint(l, r, LogOps.or);
+				final ReqPred left = pred.getLeftExpression();
+				final ReqPred right = pred.getRightExpression();
+				
+				List<CryptSLPredicate> altPreds = retrieveReqPredFromAltPreds(left);
+				altPreds.add(extractReqPred(right));
+				reqPred = new CryptSLConstraint(altPreds.get(0), altPreds.get(1), LogOps.or);
+				for (int i = 2; i < altPreds.size(); i++) {
+					reqPred = new CryptSLConstraint(reqPred, altPreds.get(i), LogOps.or);
+				}
 			}
 			preds.add(reqPred);
 		}
 
+		return preds;
+	}
+
+	private List<CryptSLPredicate> retrieveReqPredFromAltPreds(ReqPred left) {
+		List<CryptSLPredicate> preds = new ArrayList<CryptSLPredicate>();
+		if (left instanceof ReqPredLit) {
+			preds.add(extractReqPred(left));
+		} else {
+			preds.addAll(retrieveReqPredFromAltPreds(left.getLeftExpression()));
+			preds.add(extractReqPred(left.getRightExpression()));
+		}
 		return preds;
 	}
 
@@ -619,6 +637,16 @@ public class CrySLModelReader {
 				final String typeL1 = ((ObjectDecl) objectL1.eContainer()).getObjectType().getQualifiedName();
 				variables1.add(new CryptSLObject(objectL1.getName(), typeL1));
 				slci = new CryptSLPredicate(null, pred, variables1, false);
+				break;
+			case "instanceOf":
+				final List<ICryptSLPredicateParameter> varInstOf = new ArrayList<>();
+				final Object objInstOf = (de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0);
+				final String instOfType = ((ObjectDecl) objInstOf.eContainer()).getObjectType().getQualifiedName();
+				varInstOf.add(new CryptSLObject(objInstOf.getName(), instOfType));
+				final String typeName = ((PreDefinedPredicates) lit.getCons()).getType().getType().getQualifiedName();
+				varInstOf.add(new CryptSLObject(typeName, NULL));
+				slci = new CryptSLPredicate(null, pred, varInstOf, false);
+				break;
 			default:
 				new RuntimeException();
 		}

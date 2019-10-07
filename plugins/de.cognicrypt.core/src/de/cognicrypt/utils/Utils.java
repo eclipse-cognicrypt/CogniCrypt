@@ -48,7 +48,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.osgi.framework.Bundle;
 import com.google.common.base.CharMatcher;
 import de.cognicrypt.core.Activator;
-import de.cognicrypt.core.Constants;
 
 public class Utils {
 

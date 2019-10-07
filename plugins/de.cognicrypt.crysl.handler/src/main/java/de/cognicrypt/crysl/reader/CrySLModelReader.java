@@ -301,7 +301,7 @@ public class CrySLModelReader {
 		final List<ISLConstraint> preds = new ArrayList<>();
 		for (final ReqPred pred : requiredPreds) {
 			ISLConstraint reqPred = null;
-			if (pred instanceof ReqPredLit) {
+			if (pred instanceof PredLit) {
 				reqPred = extractReqPred(pred);
 			} else {
 				final ReqPred left = pred.getLeftExpression();
@@ -322,7 +322,7 @@ public class CrySLModelReader {
 
 	private List<CryptSLPredicate> retrieveReqPredFromAltPreds(ReqPred left) {
 		List<CryptSLPredicate> preds = new ArrayList<CryptSLPredicate>();
-		if (left instanceof ReqPredLit) {
+		if (left instanceof PredLit) {
 			preds.add(extractReqPred(left));
 		} else {
 			preds.addAll(retrieveReqPredFromAltPreds(left.getLeftExpression()));

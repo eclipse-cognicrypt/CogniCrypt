@@ -26,12 +26,18 @@ public class QuickFixer implements IMarkerResolutionGenerator {
 		quickFixes = new ArrayList<>();
 		String message = "";
 		String errorType = "";
-
+		int severity;
 		try {
+			severity = (int) mk.getAttribute(IMarker.SEVERITY);
 			errorType = (String) mk.getAttribute("errorType");
 			message = (String) mk.getAttribute(IMarker.MESSAGE);
-			quickFixes.add(new SuppressWarningFix(Constants.SUPPRESSWARNING_FIX + message));
-
+			if(severity == 2) {
+				quickFixes.add(new SuppressWarningFix(Constants.SUPPRESSWARNING_FIX + message));
+			}
+			else if(severity == 0) {
+				quickFixes.add(new UnSuppressWarningFix(Constants.UNSUPPRESSWARNING_FIX + message));
+			}
+			
 			if (errorType.equals(Constants.REQUIRED_PREDICATE_MARKER_TYPE)) {
 				String predicate = (String) mk.getAttribute("predicate");
 

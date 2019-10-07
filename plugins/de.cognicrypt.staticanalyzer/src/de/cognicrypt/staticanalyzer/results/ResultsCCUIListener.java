@@ -194,13 +194,13 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final File warningsFile = new File(this.warningFilePath);
 
 		if (!warningsFile.exists()) {
-			this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap);
+			this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap, false);
 		} else {
 			this.xmlParser = new XMLParser(warningsFile);
 			this.xmlParser.useDocFromFile();
 			String idAsString = String.valueOf(stmtId);
 			if (!this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR).contains(idAsString)) {
-				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap);
+				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap, false);
 			} else {
 
 				// update existing line number
@@ -208,7 +208,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 				final Node lineNumberNode = this.xmlParser.getChildNodeByTagName(suppressWarningNode, Constants.LINENUMBER_ELEMENT);
 				this.xmlParser.updateNodeValue(lineNumberNode, lineNumber + "");
 				this.xmlParser.writeXML();
-
+				// last parameter(true) implies that the error was suppressed and info marker has to be shown.
+				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap, true);
 				try {
 					this.currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
 				} catch (final CoreException e) {
@@ -245,7 +246,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			}
 			final Value varName = var.getValue();
 			this.markerGenerator.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt), unit.getJavaSourceStartLineNumber(),
-					"Object " + (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", Severities.Info, new HashMap<>());		}
+					"Object " + (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", Severities.Info, new HashMap<>(), false);		}
 	}
 
 	/**

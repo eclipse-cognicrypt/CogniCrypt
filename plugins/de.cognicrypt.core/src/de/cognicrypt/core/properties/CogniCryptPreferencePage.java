@@ -39,7 +39,6 @@ public class CogniCryptPreferencePage extends PreferencePage implements IWorkben
 		advancedOptions.setLayout(new RowLayout(SWT.VERTICAL));
 		notifyAdvancedPreferenceListeners(advancedOptions);
 
-		collap.setExpanded(true);
 		return container;
 	}
 

@@ -29,7 +29,8 @@ public class RunAnalysisHandler extends AbstractHandler {
 		IEditorPart openEditor = Utils.getCurrentlyOpenEditor();
 
 //		check if there are unsaved changes
-		if (openEditor.isDirty()) {
+		
+		if (openEditor != null && openEditor.isDirty()) {
 			int answr = saveFile(Utils.getCurrentlyOpenFile());
 //			save file and analyze
 			if (answr == JOptionPane.YES_OPTION) {

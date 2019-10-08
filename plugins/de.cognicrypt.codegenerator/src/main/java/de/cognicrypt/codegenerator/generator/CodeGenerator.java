@@ -260,7 +260,12 @@ public abstract class CodeGenerator {
 			return true;
 		}
 		try {
-			final File[] members = CodeGenUtils.getResourceFromWithin(source).listFiles();
+			File pathToAddFiles = CodeGenUtils.getResourceFromWithin(source);
+			if (pathToAddFiles == null || !pathToAddFiles.exists()) {
+				return true;
+			}
+			
+			final File[] members = pathToAddFiles.listFiles();
 			if (members == null) {
 				Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);
 			}

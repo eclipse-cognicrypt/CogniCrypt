@@ -73,8 +73,8 @@ public class CrySLCodeGenTest {
 			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(3, TestUtils.countMethods(encClassUnit));
-			assertEquals(11, TestUtils.countStatements(encClassUnit, "getKey"));
-			assertEquals(11, TestUtils.countStatements(encClassUnit, "encrypt"));
+			assertEquals(12, TestUtils.countStatements(encClassUnit, "getKey"));
+			assertEquals(13, TestUtils.countStatements(encClassUnit, "encrypt"));
 			assertEquals(11, TestUtils.countStatements(encClassUnit, "decrypt"));
 		}
 		catch (JavaModelException e) {
@@ -109,8 +109,8 @@ public class CrySLCodeGenTest {
 			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(3, TestUtils.countMethods(encClassUnit));
-			assertEquals(11, TestUtils.countStatements(encClassUnit, "getKey"));
-			assertEquals(13, TestUtils.countStatements(encClassUnit, "encrypt"));
+			assertEquals(12, TestUtils.countStatements(encClassUnit, "getKey"));
+			assertEquals(15, TestUtils.countStatements(encClassUnit, "encrypt"));
 			assertEquals(13, TestUtils.countStatements(encClassUnit, "decrypt"));
 		}
 		catch (JavaModelException e) {
@@ -145,8 +145,8 @@ public class CrySLCodeGenTest {
 			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(3, TestUtils.countMethods(encClassUnit));
-			assertEquals(11, TestUtils.countStatements(encClassUnit, "getKey"));
-			assertEquals(12, TestUtils.countStatements(encClassUnit, "encrypt"));
+			assertEquals(12, TestUtils.countStatements(encClassUnit, "getKey"));
+			assertEquals(14, TestUtils.countStatements(encClassUnit, "encrypt"));
 			assertEquals(12, TestUtils.countStatements(encClassUnit, "decrypt"));
 		}
 		catch (JavaModelException e) {
@@ -310,7 +310,7 @@ public class CrySLCodeGenTest {
 	
 	@Test
 	public void generatedigSign() {
-		String template = "digitalsigning";
+		String template = "digitalsignatures";
 		try {
 			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_DigSign");
 			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
@@ -329,7 +329,7 @@ public class CrySLCodeGenTest {
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(3, TestUtils.countMethods(encClassUnit));
 			assertEquals(5, TestUtils.countStatements(encClassUnit, "getKey"));
-			assertEquals(7, TestUtils.countStatements(encClassUnit, "sign"));
+			assertEquals(8, TestUtils.countStatements(encClassUnit, "sign"));
 //			assertEquals(14, TestUtils.countStatements(encClassUnit, "vfy"));
 		}
 		catch (JavaModelException e) {

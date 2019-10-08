@@ -76,20 +76,10 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 		automatedAnalysisCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		automatedAnalysisCheckBox.setText("Enable automated analysis when saving");
-		automatedAnalysisCheckBox.addSelectionListener(new SelectionAdapter() {
-	        @Override
-	        public void widgetSelected(SelectionEvent event) {
-	 
-	        	secureObjectsCheckBox.setEnabled(automatedAnalysisCheckBox.getSelection());
-	    	    //in case we do not want to see warnings also from context menu
-	    	    /*if (!automatedAnalysisCheckBox.getSelection()) {
-	    	    	store.setValue(ICogniCryptConstants.PRE_CHECKBOX4, store.getBoolean(ICogniCryptConstants.PRE_CHECKBOX3));
-	    	    	checkBox4.setSelection(false);
-	    	    }*/ 
-	        }
-	    });
+		
 		secureObjectsCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		secureObjectsCheckBox.setText("Show secure objects");
+		
 		analyseDependenciesCheckBox = new Button(staticAnalysisGroup,SWT.CHECK); 
 		analyseDependenciesCheckBox.setText("Include dependencies to projects analysis");
 		analyseDependenciesCheckBox.setSelection(preferences.getBoolean(Constants.ANALYSE_DEPENDENCIES));

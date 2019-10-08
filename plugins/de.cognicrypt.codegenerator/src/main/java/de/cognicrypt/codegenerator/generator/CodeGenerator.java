@@ -196,7 +196,7 @@ public abstract class CodeGenerator {
 		// Retrieve complete content from file
 		final String fileContent = String.join(Constants.lineSeparator, Files.readAllLines(Paths.get(filePath)));
 		// Determine start and end position for relevant extract
-		final ASTParser astp = ASTParser.newParser(AST.JLS8);
+		final ASTParser astp = ASTParser.newParser(AST.JLS10);
 		astp.setSource(fileContent.toCharArray());
 		astp.setKind(ASTParser.K_COMPILATION_UNIT);
 		final CompilationUnit cu = (CompilationUnit) astp.createAST(null);
@@ -242,10 +242,9 @@ public abstract class CodeGenerator {
 	 *         {@link DeveloperProject#getPackagesOfProject(String)} and {@link IPackageFragment#getCompilationUnit()}
 	 */
 	protected void removeCryptoPackageIfEmpty() throws CoreException {
-		String packagename = Constants.PackageName.replace(Constants.innerFileSeparator, ".");
-		final IPackageFragment cryptoPackage = this.project.getPackagesOfProject(packagename);
+		final IPackageFragment cryptoPackage = this.project.getPackagesOfProject(Constants.PackageNameAsName);
 		if (cryptoPackage.getCompilationUnits().length == 0) {
-			this.project.removePackage(packagename);
+			this.project.removePackage(Constants.PackageNameAsName);
 		}
 	}
 
@@ -261,7 +260,12 @@ public abstract class CodeGenerator {
 			return true;
 		}
 		try {
-			final File[] members = CodeGenUtils.getResourceFromWithin(source).listFiles();
+			File pathToAddFiles = CodeGenUtils.getResourceFromWithin(source);
+			if (pathToAddFiles == null || !pathToAddFiles.exists()) {
+				return true;
+			}
+			
+			final File[] members = pathToAddFiles.listFiles();
 			if (members == null) {
 				Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);
 			}
@@ -328,7 +332,7 @@ public abstract class CodeGenerator {
 
 		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
 		final FormatAllAction faa = new FormatAllAction(editor.getSite());
-		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageName.replace(Constants.innerFileSeparator, ".")).getCompilationUnits();
+		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageNameAsName).getCompilationUnits();
 		faa.runOnMultiple(generatedCUnits);
 		organizeImportsActionForAllFilesTouchedDuringGeneration.runOnMultiple(generatedCUnits);
 

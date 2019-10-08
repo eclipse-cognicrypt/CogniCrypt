@@ -12,8 +12,7 @@ import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.utils.XMLParser;
 
 /**
- * This class writes the suppress warning information in a XML file and deletes the marker on the UI
- *
+ * This class writes the suppress warning information in a XML file and updates the error marker to info marker on the UI
  * @author André Sonntag
  */
 public class SuppressWarningFix implements IMarkerResolution {
@@ -67,7 +66,8 @@ public class SuppressWarningFix implements IMarkerResolution {
 
 			createSuppressWarningEntry(marker);
 			this.xmlParser.writeXML();
-			marker.delete();
+			/* changes error marker to info marker */
+			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
 			marker.getResource().getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 		}
 		catch (final IOException e) {

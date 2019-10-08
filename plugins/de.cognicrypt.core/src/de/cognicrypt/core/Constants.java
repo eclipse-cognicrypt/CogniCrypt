@@ -16,7 +16,10 @@ public class Constants {
 	public enum GUIElements {
 		combo, text, textarea, button, radio, checkbox, composed, rbtextgroup
 	}
-
+	
+	public enum CodeGenerators {
+		XSL, CrySL
+	}
 	public enum Severities {
 		Error, Warning, Info, Ignored;
 		
@@ -46,8 +49,7 @@ public class Constants {
 	public static final String JavaNatureID = "org.eclipse.jdt.core.javanature";
 	public static final String MavenNatureID = "org.eclipse.m2e.core.maven2Nature";
 
-	private static final String rsrcPath = "src" + Constants.innerFileSeparator + "main" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator;
-	private static final String tstrsrcPath = "src" + Constants.innerFileSeparator + "test" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator;
+	public static final String rsrcPath = "src" + Constants.innerFileSeparator + "main" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator;
 	public static final String providerPath = Constants.rsrcPath + "AdditionalResources" + Constants.innerFileSeparator + "Provider";
 
 	// JSON task file
@@ -120,14 +122,15 @@ public class Constants {
 	// the given answer makes the wizard end
 	public static final int ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID = -1;
 
-	// Clafer Instance Generation
+	// Input for Code Generation
+	public static final String pathToXSLFile = Constants.rsrcPath + "XSLTemplates" + Constants.innerFileSeparator + "JCA.xsl";
+	public static final String pathToClaferInstanceFolder = Constants.rsrcPath + "ClaferInstance" + Constants.innerFileSeparator;
 	public static final String claferPath = Constants.rsrcPath + "ClaferModel" + Constants.innerFileSeparator + "Encryption.js";
 	public static final String PATH_FOR_CONFIG_XML = "/Configurator.xml";
 	public static final String XML_FILE_NAME = Constants.rsrcPath + "ClaferModel/Encrypt_CryptoTasks.xml";
 
-	// Input for Code Generation
-	public static final String pathToXSLFile = Constants.rsrcPath + "XSLTemplates" + Constants.innerFileSeparator + "JCA.xsl";
-	public static final String pathToClaferInstanceFolder = Constants.rsrcPath + "ClaferInstance" + Constants.innerFileSeparator;
+	
+	
 	public static final String pathToClaferInstanceFile = "claferInstance.xml";
 	public static final String pathToClaferPreviewFile = "claferPreview.xml";
 	public static final String NameOfTemporaryMethod = "templateUsage";
@@ -138,8 +141,11 @@ public class Constants {
 	public static final String AdditionalOutputFile = "Output.java";
 	public static final String AdditionalOutputTempFile = "OutputTemp.java";
 	public static final String TempSuffix = "Temp";
-	public static final String PackageName = "de" + Constants.innerFileSeparator + "cognicrypt" + Constants.innerFileSeparator + "crypto";
-	public static final String CodeGenerationCallFile = Constants.innerFileSeparator + Constants.PackageName + Constants.innerFileSeparator + Constants.AdditionalOutputFile;
+
+	public static final String PackageName = "de" + Constants.outerFileSeparator + "cognicrypt" + Constants.outerFileSeparator + "crypto";
+	public static final String PackageNameAsName = PackageName.replaceAll(("\\".equals(Constants.outerFileSeparator) ? Constants.outerFileSeparator : "") + Constants.outerFileSeparator, "."); 
+	public static final String CodeGenerationCallFolder = Constants.innerFileSeparator + Constants.PackageName;
+	public static final String CodeGenerationCallFile = CodeGenerationCallFolder + Constants.innerFileSeparator + Constants.AdditionalOutputFile;
 
 	// File info for Code Generation
 	public static final String OpenFile = "Current file is open: ";
@@ -500,6 +506,7 @@ public class Constants {
 
 	// QuickFixs
 	public static final String SUPPRESSWARNING_FIX = "Suppress Warning: ";
+	public static final String UNSUPPRESSWARNING_FIX = "UnSuppress Warning: ";
 
 	// Marker types
 	public static final String CC_MARKER_TYPE = "de.cognicrypt.staticanalyzer.ccMarker";
@@ -584,4 +591,6 @@ public class Constants {
 	// path to icons
 	public final static String COGNICRYPT_ICON_DIR = "icons/cognicrypt-analysis.png";
 	public final static String CONFIG_FILE_PATH = "configuration.ini";
+
+	public static final String codeTemplateFolder = "src" + Constants.innerFileSeparator + "main" + Constants.innerFileSeparator + "java" + Constants.innerFileSeparator + "de" + Constants.innerFileSeparator + "cognicrypt" + Constants.innerFileSeparator + "codegenerator" + Constants.innerFileSeparator + "crysl" + Constants.innerFileSeparator + "templates" + Constants.innerFileSeparator;
 }

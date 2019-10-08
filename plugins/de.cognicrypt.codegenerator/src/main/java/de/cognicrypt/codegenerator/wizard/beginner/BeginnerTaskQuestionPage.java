@@ -203,6 +203,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		answerLayout.horizontalSpacing = 15;
 		answerPanel.setLayout(answerLayout);
 
+		int noOfAnswers = answers.size();
 		switch (question.getElement()) {
 			case combo:
 				final ComboViewer comboViewer = new ComboViewer(answerPanel, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.FILL);
@@ -233,9 +234,14 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				if (!radioNote.isEmpty()) {
 					radioNoteControl = createNote(container, question, !(radioNote.contains("$$$")));
 				}
-				final Button[] radioButtons = new Button[answers.size()];
-				for (int i = 0; i < answers.size(); i++) {
+				final Button[] radioButtons = new Button[noOfAnswers];
+				boolean shouldBreak = noOfAnswers % 4 == 1;
+				for (int i = 0; i < noOfAnswers; i++) {
 					final int count = i;
+					if (shouldBreak && i + 2 == noOfAnswers) {
+						new Label(answerPanel, SWT.NULL);
+					}
+					
 					final Group finalRadioNote = radioNoteControl;
 					final String ans = answers.get(i).getValue();
 					radioButtons[i] = new Button(answerPanel, SWT.RADIO);
@@ -261,7 +267,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				if (evalAnswer == null) {
 					evalAnswer = question.getDefaultAnswer();
 				}
-				for (int i = 0; i < answers.size(); i++) {
+				for (int i = 0; i < noOfAnswers; i++) {
 					if (radioButtons[i].getText().equals(evalAnswer.getValue())) {
 						radioButtons[i].setSelection(true);
 						BeginnerTaskQuestionPage.this.selectionMap.put(question, evalAnswer);
@@ -279,9 +285,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					checkboxNoteControl = createNote(container, question, !checkboxNoteText.contains("$$$"));
 				}
 				final List<Button> cbs = new ArrayList<Button>();
-				final List<Button> exclusiveCbs = new ArrayList<Button>(answers.size());
+				final List<Button> exclusiveCbs = new ArrayList<Button>(noOfAnswers);
 
-				for (int i = 0; i < answers.size(); i++) {
+				for (int i = 0; i < noOfAnswers; i++) {
 					final int count = i;
 					final Group finalCheckBoxControl = checkboxNoteControl;
 					final Answer a = answers.get(i);

@@ -40,6 +40,7 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.io.Files;
 import com.google.inject.Injector;
 import crypto.interfaces.ICryptSLPredicateParameter;
 import crypto.interfaces.ISLConstraint;
@@ -266,15 +267,22 @@ public class CrySLModelReader {
 		}
 		for (final IResource res : ResourcesPlugin.getWorkspace().getRoot().getFolder(rulesFolder).members()) {
 			if (Constants.cryslFileEnding.equals("." + res.getFileExtension())) {
-				CryptSLRule rule = readRule(((IFile) res).getRawLocation().makeAbsolute().toFile());
+				File resAsFile = ((IFile) res).getRawLocation().makeAbsolute().toFile();
+				CryptSLRule rule = readRule(resAsFile);
 				if (rule != null) {
 					rules.add(rule);
+					File to = new File(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath() + Constants.innerFileSeparator + rule.getClassName().substring(rule.getClassName().lastIndexOf(".") + 1) + Constants.cryslFileEnding);
+					try {
+						Files.copy(resAsFile, to);
+					}
+					catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			} else if (res instanceof IFolder) {
 				rules.addAll(readRulesWithin(res.getFullPath().toOSString()));
 			}
 		}
-
 		return rules;
 	}
 
@@ -409,11 +417,32 @@ public class CrySLModelReader {
 				final String part = ((ArrayElements) lit.getCons()).getCons().getPart();
 				if (part != null) {
 					final LiteralExpression name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getLit().getName();
-
 					final SuperType object = name.getValue();
 					final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(),
-							new CryptSLSplitter(Integer.parseInt(((ArrayElements) lit.getCons()).getCons().getInd()), Utils.filterQuotes(((ArrayElements) lit.getCons()).getCons().getSplit())));
+					new CryptSLSplitter(Integer.parseInt(((ArrayElements) lit.getCons()).getCons().getInd()), Utils.filterQuotes(((ArrayElements) lit.getCons()).getCons().getSplit())));
 					slci = new CryptSLValueConstraint(variable, parList);
+				} else {
+					final String consPred = ((ArrayElements) lit.getCons()).getCons().getConsPred();
+					if(consPred != null) {
+					final LiteralExpression name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getLit().getName();
+					final SuperType object = name.getValue();
+					int ind;
+					if(consPred.equals("alg(")) {
+						ind = 0;
+						final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(),
+						new CryptSLSplitter(ind, Utils.filterQuotes("/")));
+						slci = new CryptSLValueConstraint(variable, parList);
+					}else if(consPred.equals("mode(")) {
+						ind = 1;
+						final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(),
+								new CryptSLSplitter(ind, Utils.filterQuotes("/")));
+						slci = new CryptSLValueConstraint(variable, parList);
+					}else if(consPred.equals("pad(")) {
+						ind = 2;
+						final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(),
+								new CryptSLSplitter(ind, Utils.filterQuotes("/")));
+						slci = new CryptSLValueConstraint(variable, parList);
+					}
 				} else {
 					LiteralExpression name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getName();
 					if (name == null) {
@@ -423,6 +452,7 @@ public class CrySLModelReader {
 					final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName());
 					slci = new CryptSLValueConstraint(variable, parList);
 				}
+			}
 			}
 		} else if (cons instanceof ComparisonExpression) {
 			final ComparisonExpression comp = (ComparisonExpression) cons;

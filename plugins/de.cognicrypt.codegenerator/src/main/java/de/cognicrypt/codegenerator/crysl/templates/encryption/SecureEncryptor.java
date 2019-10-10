@@ -1,8 +1,6 @@
 package de.cognicrypt.codegenerator.crysl.templates.encryption;
 
 import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
 
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 

@@ -2,7 +2,6 @@ package de.cognicrypt.codegenerator.crysl.templates.stringhashing;
 
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
-import java.security.MessageDigest;
 import java.util.Base64;
 
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;

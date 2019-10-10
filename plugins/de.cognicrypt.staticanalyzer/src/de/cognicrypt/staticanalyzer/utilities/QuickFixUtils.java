@@ -11,7 +11,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;

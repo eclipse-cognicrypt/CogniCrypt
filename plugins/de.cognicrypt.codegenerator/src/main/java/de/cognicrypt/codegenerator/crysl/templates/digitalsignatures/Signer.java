@@ -2,11 +2,7 @@ package de.cognicrypt.codegenerator.crysl.templates.digitalsignatures;
 
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
-import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.Signature;
 import java.security.SignatureException;
 
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;

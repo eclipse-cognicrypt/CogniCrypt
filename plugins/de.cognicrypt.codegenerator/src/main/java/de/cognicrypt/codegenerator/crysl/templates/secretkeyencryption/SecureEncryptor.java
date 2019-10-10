@@ -3,8 +3,6 @@ package de.cognicrypt.codegenerator.crysl.templates.secretkeyencryption;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
 
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 

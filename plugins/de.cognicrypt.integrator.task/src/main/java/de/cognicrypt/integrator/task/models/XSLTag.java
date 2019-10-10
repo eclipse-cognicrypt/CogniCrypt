@@ -11,7 +11,6 @@
 package de.cognicrypt.integrator.task.models;
 
 import java.util.ArrayList;
-
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.XSLTags;
 

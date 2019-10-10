@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
-
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.FeatureType;
 

@@ -21,7 +21,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -33,7 +32,6 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
-
 import org.clafer.ast.AstClafer;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -48,10 +46,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
 import de.cognicrypt.integrator.task.models.ClaferModel;
-import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.utils.Utils;
 
 public class FileUtilities {

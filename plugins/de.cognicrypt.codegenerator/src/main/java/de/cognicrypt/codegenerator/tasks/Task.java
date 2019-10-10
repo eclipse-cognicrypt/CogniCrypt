@@ -10,7 +10,6 @@
 
 package de.cognicrypt.codegenerator.tasks;
 
-import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.CodeGenerators;
 
 public class Task {

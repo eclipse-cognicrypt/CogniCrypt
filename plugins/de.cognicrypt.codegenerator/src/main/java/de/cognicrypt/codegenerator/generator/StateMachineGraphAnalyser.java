@@ -3,7 +3,6 @@ package de.cognicrypt.codegenerator.generator;
 import java.util.ArrayList;
 import java.util.List;
 
-import crypto.analysis.CrySLResultsReporter;
 import crypto.rules.StateMachineGraph;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;

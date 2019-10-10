@@ -12,7 +12,6 @@ package de.cognicrypt.integrator.task.controllers;
 
 import java.util.ArrayList;
 import java.util.function.Predicate;
-
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import de.cognicrypt.integrator.task.models.ClaferFeature;
 import de.cognicrypt.integrator.task.models.ClaferModel;

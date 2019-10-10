@@ -46,9 +46,10 @@ public class PredicateConsistencyCheck {
 					}
 					if (prev.parameterCount != details.parameterCount) {
 						System.err.println("There is a predicate mismatch.");
-						System.err.println("The predicate " + predName + " has " + prev.parameterCount + " parameters in " + prev.name + ", but " + details.parameterCount + " parameters in " + details.name);
+						System.err.println(
+								"The predicate " + predName + " has " + prev.parameterCount + " parameters in " + prev.name + ", but " + details.parameterCount + " parameters in " + details.name);
 					}
-//					assertEquals(prev.parameterCount, details.parameterCount);
+					// assertEquals(prev.parameterCount, details.parameterCount);
 				}
 			}
 		}

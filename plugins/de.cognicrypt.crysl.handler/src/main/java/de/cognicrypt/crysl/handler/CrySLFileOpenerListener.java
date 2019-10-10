@@ -11,7 +11,7 @@ public class CrySLFileOpenerListener implements IPartListener2 {
 
 	@Override
 	public void partOpened(IWorkbenchPartReference partRef) {
-		
+
 		if (Constants.cryslEditorID.equals(partRef.getId())) {
 			IResource file = partRef.getPage().getActiveEditor().getEditorInput().getAdapter(IResource.class);
 			if (Constants.cryslFileEnding.substring(1).equals(file.getFileExtension())) {
@@ -27,33 +27,26 @@ public class CrySLFileOpenerListener implements IPartListener2 {
 			}
 		}
 	}
-	
-	@Override
-	public void partActivated(IWorkbenchPartReference partRef) {
-	}
 
 	@Override
-	public void partBroughtToTop(IWorkbenchPartReference partRef) {
-	}
+	public void partActivated(IWorkbenchPartReference partRef) {}
 
 	@Override
-	public void partClosed(IWorkbenchPartReference partRef) {
-	}
+	public void partBroughtToTop(IWorkbenchPartReference partRef) {}
 
 	@Override
-	public void partDeactivated(IWorkbenchPartReference partRef) {
-	}
+	public void partClosed(IWorkbenchPartReference partRef) {}
 
 	@Override
-	public void partHidden(IWorkbenchPartReference partRef) {
-	}
+	public void partDeactivated(IWorkbenchPartReference partRef) {}
 
 	@Override
-	public void partVisible(IWorkbenchPartReference partRef) {
-	}
+	public void partHidden(IWorkbenchPartReference partRef) {}
 
 	@Override
-	public void partInputChanged(IWorkbenchPartReference partRef) {
-	}
+	public void partVisible(IWorkbenchPartReference partRef) {}
+
+	@Override
+	public void partInputChanged(IWorkbenchPartReference partRef) {}
 
 }

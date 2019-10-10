@@ -26,14 +26,14 @@ public class RunAnalysisHandler extends AbstractHandler {
 		IProject ip = Utils.getCurrentlySelectedIProject();
 		IEditorPart openEditor = Utils.getCurrentlyOpenEditor();
 
-//		check if there are unsaved changes
+		// check if there are unsaved changes
 		if (openEditor != null && openEditor.isDirty()) {
 			int answr = saveFile(Utils.getCurrentlyOpenFile());
-//			save file and analyze
+			// save file and analyze
 			if (answr == JOptionPane.YES_OPTION) {
 				openEditor.doSave(null);
 			}
-//			no analyze no save file
+			// no analyze no save file
 			else if (answr == JOptionPane.CLOSED_OPTION) {
 				return null;
 			}
@@ -49,23 +49,19 @@ public class RunAnalysisHandler extends AbstractHandler {
 
 		JFrame frame = new JFrame();
 
-		String message = "The file [" + openFileInEditor.getName()
-				+ "] has unsaved changes. Would you like to save it before CogniCrypt analyzes your project?";
+		String message = "The file [" + openFileInEditor.getName() + "] has unsaved changes. Would you like to save it before CogniCrypt analyzes your project?";
 		JLabel label = new JLabel(message);
-		String iconPath = Utils
-				.getResourceFromWithin(Constants.COGNICRYPT_ICON_DIR, de.cognicrypt.core.Activator.PLUGIN_ID)
-				.getAbsolutePath();
+		String iconPath = Utils.getResourceFromWithin(Constants.COGNICRYPT_ICON_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath();
 		ImageIcon icon = new ImageIcon(iconPath);
-		
+
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-				| UnsupportedLookAndFeelException e) {
+		}
+		catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			Activator.getDefault().logError(e, "Error getting systems look and feel");
 		}
 
-		return JOptionPane.showConfirmDialog(frame, label, "CogniCrypt Analysis", JOptionPane.YES_NO_OPTION,
-				JOptionPane.QUESTION_MESSAGE, icon);
+		return JOptionPane.showConfirmDialog(frame, label, "CogniCrypt Analysis", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, icon);
 
 	}
 

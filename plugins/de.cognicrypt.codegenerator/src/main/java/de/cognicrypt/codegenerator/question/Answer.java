@@ -130,12 +130,11 @@ public class Answer {
 
 		return combined;
 	}
-	
+
 	public String getOption() {
 		return option;
 	}
 
-	
 	public void setOption(String option) {
 		this.option = option;
 	}

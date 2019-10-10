@@ -77,7 +77,7 @@ public class Activator extends AbstractUIPlugin {
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		Activator.plugin = this;
-		
+
 		CogniCryptPreferencePage.registerPreferenceListener(new CodeGenPreferences());
 	}
 
@@ -91,6 +91,5 @@ public class Activator extends AbstractUIPlugin {
 	public IPreferenceStore getPreferenceStore() {
 		return de.cognicrypt.core.Activator.getDefault().getPreferenceStore();
 	}
-	
-	
+
 }

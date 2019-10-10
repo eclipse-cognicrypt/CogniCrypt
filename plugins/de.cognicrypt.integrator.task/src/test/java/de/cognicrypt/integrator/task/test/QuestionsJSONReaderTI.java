@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.test;
@@ -27,8 +22,7 @@ public class QuestionsJSONReaderTI {
 	/**
 	 * This method reads all questions of the file
 	 *
-	 * @param filePath
-	 *        the path of the file
+	 * @param filePath the path of the file
 	 * @return list of all questions contained in the file
 	 */
 	public ArrayList<Question> readQuestionsFromFile(final String filePath) {
@@ -37,7 +31,8 @@ public class QuestionsJSONReaderTI {
 			final BufferedReader reader = new BufferedReader(new FileReader(CodeGenUtils.getResourceFromWithin(filePath)));
 			final Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 			originalQuestionList = gson.fromJson(reader, new TypeToken<ArrayList<Question>>() {}.getType());
-		} catch (final FileNotFoundException e) {
+		}
+		catch (final FileNotFoundException e) {
 			Activator.getDefault().logError(e);
 		}
 		return originalQuestionList;
@@ -46,8 +41,7 @@ public class QuestionsJSONReaderTI {
 	/**
 	 * This method reads all pages of the file
 	 *
-	 * @param filePath
-	 *        the path of the file
+	 * @param filePath the path of the file
 	 * @return list of all pages contained in the file
 	 */
 	public ArrayList<Page> readPageFromFile(final String filePath) {
@@ -56,7 +50,8 @@ public class QuestionsJSONReaderTI {
 			final BufferedReader reader = new BufferedReader(new FileReader(CodeGenUtils.getResourceFromWithin(filePath)));
 			final Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 			originalPageList = gson.fromJson(reader, new TypeToken<ArrayList<Page>>() {}.getType());
-		} catch (final FileNotFoundException e) {
+		}
+		catch (final FileNotFoundException e) {
 			Activator.getDefault().logError(e);
 		}
 		return originalPageList;

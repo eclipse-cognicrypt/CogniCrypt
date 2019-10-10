@@ -85,7 +85,7 @@ public class StatisticsView extends ViewPart {
 				runningAnalysis.run();
 				resultsEnabled = true;
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {}
 
@@ -125,27 +125,28 @@ public class StatisticsView extends ViewPart {
 		gridData.grabExcessVerticalSpace = true;
 		gridData.horizontalAlignment = GridData.FILL;
 		viewer.getControl().setLayoutData(gridData);
-		
+
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
-			
+
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				ResultsUnit clickedRow = (ResultsUnit) ((IStructuredSelection) event.getSelection()).getFirstElement();
 				int lineNumber = -1;
 				AbstractError error = clickedRow.getError();
-				
+
 				if (error != null) {
 					lineNumber = error.getErrorLocation().getUnit().get().getJavaSourceStartLineNumber();
 				} else {
 					lineNumber = clickedRow.getSeed().stmt().getUnit().get().getJavaSourceStartLineNumber();
 				}
-				
+
 				try {
 					String className = clickedRow.getClassName();
 					if (className.endsWith(".java")) {
 						className = className.substring(0, className.lastIndexOf("."));
 					}
-					ITextEditor activeEditor = (ITextEditor)IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), Utils.findFileInProject(lastProject, className));
+					ITextEditor activeEditor =
+							(ITextEditor) IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), Utils.findFileInProject(lastProject, className));
 					IDocument activeDocument = activeEditor.getDocumentProvider().getDocument(activeEditor.getEditorInput());
 					if (activeDocument != null) {
 						IRegion lineInfo = activeDocument.getLineInformation(lineNumber - 1);
@@ -218,7 +219,7 @@ public class StatisticsView extends ViewPart {
 	public String getProjectName() {
 		return projectname.getText();
 	}
-	
+
 	public void updateData(IProject project, String timeOfAnalysis, List<ResultsUnit> units) {
 		if (resultsEnabled) {
 			lastProject = project;
@@ -242,7 +243,7 @@ public class StatisticsView extends ViewPart {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				Optional<StatisticsView> view = getView();
-				if(view.isPresent()) {
+				if (view.isPresent()) {
 					view.get().allowAnalysisReRun(isAllowed);
 				}
 			}
@@ -253,7 +254,7 @@ public class StatisticsView extends ViewPart {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				Optional<StatisticsView> view = getView();
-				if(view.isPresent()) {
+				if (view.isPresent()) {
 					view.get().updateData(project, timeOfAnalysis, units);
 				}
 			}

@@ -1,15 +1,12 @@
 package de.cognicrypt.codegenerator.generator.test;
 
 import static org.junit.Assert.assertTrue;
-
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.tasks.Task;
@@ -44,7 +41,7 @@ public class DefaultTasksGeneratorTest {
 
 	@Before
 	public void setUp() throws Exception {
-				
+
 		DefaultTasksGeneratorTest.counter++;
 		this.testJavaProject = TestUtils.createJavaProject("TestProject_" + counter);
 
@@ -70,15 +67,14 @@ public class DefaultTasksGeneratorTest {
 	public void tearDown() throws CoreException {
 		TestUtils.deleteProject(this.testJavaProject.getProject());
 	}
-	
-	
+
 	@Test
 	public void EncDefault() {
 		this.configEnc = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.encTask);
 		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
 		assertTrue(encCheck);
 	}
-	
+
 	@Test
 	public void SecPasswordDefault() {
 		this.configSecPassword = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.secPasswordTask);
@@ -99,12 +95,12 @@ public class DefaultTasksGeneratorTest {
 		final boolean secComCheck = this.generatorSECCOM.generateCodeTemplates(this.configSecCom, this.SECCOMTask.getAdditionalResources());
 		assertTrue(secComCheck);
 	}
-	
+
 	@Test
 	public void DigitalSignDefault() {
 		this.configDigitalSign = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.digitalSignTask);
 		boolean digitalSignCheck = generatorDigitalSIgn.generateCodeTemplates(configDigitalSign, digitalSignTask.getAdditionalResources());
 		assertTrue(digitalSignCheck);
 	}
-	
+
 }

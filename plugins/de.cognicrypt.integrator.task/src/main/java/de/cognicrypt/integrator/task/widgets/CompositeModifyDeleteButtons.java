@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.widgets;
@@ -32,11 +27,11 @@ public class CompositeModifyDeleteButtons extends Composite {
 	 * @param style
 	 */
 	int counter = 0;
-	//private ArrayList<ClaferFeature> claferFeatures;
+	// private ArrayList<ClaferFeature> claferFeatures;
 
 	public CompositeModifyDeleteButtons(final Composite parent, final Question questionParam) {
 		super(parent, SWT.RIGHT_TO_LEFT);
-		//setClaferFeatures(claferFeatures);
+		// setClaferFeatures(claferFeatures);
 		/*
 		 * RowLayout rowLayout = new RowLayout(SWT.HORIZONTAL); setLayout(rowLayout);
 		 */
@@ -54,7 +49,9 @@ public class CompositeModifyDeleteButtons extends Composite {
 				final int response = confirmationMessageBox.open();
 				if (response == SWT.YES) {
 					((CompositeToHoldGranularUIElements) btnDelete.getParent().getParent().getParent().getParent())
-						.deleteQuestion(((CompositeGranularUIForHighLevelQuestions) btnDelete.getParent().getParent()).getQuestion());// (1) CompositeGranularUIForClaferFeature, (2) composite inside (3) CompositeToHoldGranularUIElements
+							.deleteQuestion(((CompositeGranularUIForHighLevelQuestions) btnDelete.getParent().getParent()).getQuestion());// (1) CompositeGranularUIForClaferFeature, (2)
+																																																														// composite inside (3)
+																																																														// CompositeToHoldGranularUIElements
 				}
 			}
 		});
@@ -68,8 +65,7 @@ public class CompositeModifyDeleteButtons extends Composite {
 
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				final ArrayList<Question> listOfAllQuestions = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent())
-					.getListOfAllQuestions();
+				final ArrayList<Question> listOfAllQuestions = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getListOfAllQuestions();
 				final ClaferModel claferModel = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getClaferModel();
 				final QuestionDialog qstnDialog = new QuestionDialog(parent.getShell(), questionParam, claferModel, listOfAllQuestions);
 				final int response = qstnDialog.open();

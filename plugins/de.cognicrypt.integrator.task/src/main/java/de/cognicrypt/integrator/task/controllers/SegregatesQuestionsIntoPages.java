@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.controllers;
@@ -31,7 +26,7 @@ public class SegregatesQuestionsIntoPages {
 		 * following loop adds the questions to different pages
 		 */
 		for (final Question qstn : listOfAllQuestions) {
-			//executes when question doesn't exists in any page
+			// executes when question doesn't exists in any page
 			if (!questionExistsInAnyPage(qstn)) {
 				addQuestionToPage(qstn);
 			}
@@ -55,7 +50,6 @@ public class SegregatesQuestionsIntoPages {
 	}
 
 	/**
-	 *
 	 * @return the lists of all questions
 	 */
 	public ArrayList<Question> getListOfAllQuestions() {
@@ -65,8 +59,7 @@ public class SegregatesQuestionsIntoPages {
 	/**
 	 * sets the list of all question
 	 *
-	 * @param listOfAllQuestions
-	 *        the list containing all the questions
+	 * @param listOfAllQuestions the list containing all the questions
 	 */
 	public void setListOfAllQuestions(final ArrayList<Question> listOfAllQuestions) {
 		this.listOfAllQuestions = listOfAllQuestions;
@@ -75,8 +68,7 @@ public class SegregatesQuestionsIntoPages {
 	/**
 	 * checks if question exists in any page or not
 	 *
-	 * @param qstn
-	 *        the question
+	 * @param qstn the question
 	 * @return true if the qstn exists in any page otherwise false
 	 */
 	private boolean questionExistsInAnyPage(final Question qstn) {
@@ -93,8 +85,7 @@ public class SegregatesQuestionsIntoPages {
 	/**
 	 * Decides whether the question should be added to new page or to a existing page
 	 *
-	 * @param qstn
-	 *        quetsion that is to be added to ap page
+	 * @param qstn quetsion that is to be added to ap page
 	 */
 
 	private void addQuestionToPage(final Question qstn) {
@@ -158,7 +149,6 @@ public class SegregatesQuestionsIntoPages {
 	}
 
 	/**
-	 *
 	 * @param qstn
 	 * @return true if the current question is the first question in the list of Questions
 	 */
@@ -170,7 +160,6 @@ public class SegregatesQuestionsIntoPages {
 	}
 
 	/**
-	 *
 	 * @param qstn
 	 * @return the previous question
 	 */
@@ -184,7 +173,6 @@ public class SegregatesQuestionsIntoPages {
 	}
 
 	/**
-	 *
 	 * @param qstn
 	 * @return true if question has branch otherwise false
 	 */
@@ -236,17 +224,16 @@ public class SegregatesQuestionsIntoPages {
 				for (final Answer ans : qstn.getAnswers()) {
 					ansNextIds.add(ans.getNextID());
 				}
-				//sort the array to create the pages and add questions in it in order
+				// sort the array to create the pages and add questions in it in order
 				Collections.sort(ansNextIds);
 
 				for (final int nextId : ansNextIds) {
-					//executes only if the next id points to some question in the list
+					// executes only if the next id points to some question in the list
 					if (nextId >= 0) {
 						final Answer ans = findAnswer(qstn.getAnswers(), nextId);
 						if (ans.getNextID() != Constants.ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID) {
 							/**
-							 * if the user has not selected any option of comboForLinkAnswer in LinkAnswerDialog box then Sets the answer next Id to the next questionID in the
-							 * listOfAllQuestions
+							 * if the user has not selected any option of comboForLinkAnswer in LinkAnswerDialog box then Sets the answer next Id to the next questionID in the listOfAllQuestions
 							 */
 							if (ans.getNextID() == Constants.ANSWER_NO_NEXT_ID) {
 								ans.setNextID(qstn.getId() + 1);
@@ -296,8 +283,7 @@ public class SegregatesQuestionsIntoPages {
 	/**
 	 * find the page which contains the given question
 	 *
-	 * @param qstn
-	 *        the question
+	 * @param qstn the question
 	 * @return the page
 	 */
 
@@ -333,11 +319,8 @@ public class SegregatesQuestionsIntoPages {
 	}
 
 	/**
-	 *
-	 * @param answers
-	 *        list of answers
-	 * @param nextId
-	 *        answer next id
+	 * @param answers list of answers
+	 * @param nextId answer next id
 	 * @return the answer whose next id is equal to nextId
 	 */
 	private Answer findAnswer(final ArrayList<Answer> answers, final int nextId) {
@@ -351,7 +334,6 @@ public class SegregatesQuestionsIntoPages {
 	}
 
 	/**
-	 *
 	 * @return the page array
 	 */
 

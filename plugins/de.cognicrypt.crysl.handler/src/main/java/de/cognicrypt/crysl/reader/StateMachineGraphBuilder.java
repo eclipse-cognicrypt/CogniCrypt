@@ -181,7 +181,7 @@ public class StateMachineGraphBuilder {
 					Optional<TransitionEdge> edge = result.getAllTransitions().parallelStream().filter(e -> e.to().equals(endNode)).findFirst();
 					if (edge.isPresent()) {
 						for (final TransitionEdge outgoingEdge : Utils.getOutgoingEdges(result.getAllTransitions(), skipper.getValue(), null)) {
-								addRegularEdge(edge.get().getLabel(), outgoingEdge.to(), endNode, true);
+							addRegularEdge(edge.get().getLabel(), outgoingEdge.to(), endNode, true);
 						}
 					}
 				}

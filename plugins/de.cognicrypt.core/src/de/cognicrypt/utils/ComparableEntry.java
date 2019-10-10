@@ -7,7 +7,7 @@ package de.cognicrypt.utils;
 
 import java.util.AbstractMap.SimpleEntry;
 
-public class ComparableEntry<K extends Comparable<?>, V extends Comparable<?>> extends SimpleEntry<K , V> implements Comparable<ComparableEntry<K, V>> {
+public class ComparableEntry<K extends Comparable<?>, V extends Comparable<?>> extends SimpleEntry<K, V> implements Comparable<ComparableEntry<K, V>> {
 
 	private static final long serialVersionUID = -7202623997902577640L;
 

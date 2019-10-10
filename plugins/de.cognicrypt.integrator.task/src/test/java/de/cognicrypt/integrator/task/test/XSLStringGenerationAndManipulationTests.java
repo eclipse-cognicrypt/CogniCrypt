@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.test;
@@ -57,7 +52,8 @@ public class XSLStringGenerationAndManipulationTests {
 	public void getxslFileFromMainResources() {
 		// get the first file from the list of active xsl files for the test.
 		this.xslFilePath = CodeGenUtils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH).listFiles()[0];
-		this.testResourceLocation = "src" + Constants.innerFileSeparator + "test" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator + "taskintegrator" + Constants.innerFileSeparator + "XSLTests" + Constants.innerFileSeparator;
+		this.testResourceLocation = "src" + Constants.innerFileSeparator + "test" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator + "taskintegrator"
+				+ Constants.innerFileSeparator + "XSLTests" + Constants.innerFileSeparator;
 		this.javaFilePath = CodeGenUtils.getResourceFromWithin(this.testResourceLocation + "JavaFileTest.java");
 		this.txtFilePath = CodeGenUtils.getResourceFromWithin(this.testResourceLocation + "TextFileTest.txt");
 		this.javaXSLFilePath = CodeGenUtils.getResourceFromWithin(this.testResourceLocation + "JavaFileTest.xsl");
@@ -77,12 +73,12 @@ public class XSLStringGenerationAndManipulationTests {
 	@Test
 	public void testGenerateXSLStringFromPathWithNoText() throws DocumentException {
 		boolean generatedFileValidity = false;
-		final Document xslGenerated = DocumentHelper
-			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.xslFilePath.getAbsolutePath(), "", new Point(0, 0), null));
-		final Document javaGenerated = DocumentHelper
-			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.javaFilePath.getAbsolutePath(), "", new Point(0, 0), null));
-		final Document txtGenerated = DocumentHelper
-			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.txtFilePath.getAbsolutePath(), "", new Point(0, 0), null));
+		final Document xslGenerated =
+				DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.xslFilePath.getAbsolutePath(), "", new Point(0, 0), null));
+		final Document javaGenerated =
+				DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.javaFilePath.getAbsolutePath(), "", new Point(0, 0), null));
+		final Document txtGenerated =
+				DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.txtFilePath.getAbsolutePath(), "", new Point(0, 0), null));
 		generatedFileValidity = true;
 		assertTrue(generatedFileValidity);
 
@@ -122,12 +118,12 @@ public class XSLStringGenerationAndManipulationTests {
 	@Test
 	public void testGenerateXSLStringFromPathWithNormalText() throws DocumentException {
 		boolean generatedFileValidity = false;
-		final Document xslGenerated = DocumentHelper
-			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.xslFilePath.getAbsolutePath(), "This is just a test", new Point(0, 0), null));
-		final Document javaGenerated = DocumentHelper
-			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.javaFilePath.getAbsolutePath(), "This is just a test", new Point(0, 0), null));
-		final Document txtGenerated = DocumentHelper
-			.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.txtFilePath.getAbsolutePath(), "This is just a test", new Point(0, 0), null));
+		final Document xslGenerated =
+				DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.xslFilePath.getAbsolutePath(), "This is just a test", new Point(0, 0), null));
+		final Document javaGenerated =
+				DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.javaFilePath.getAbsolutePath(), "This is just a test", new Point(0, 0), null));
+		final Document txtGenerated =
+				DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.txtFilePath.getAbsolutePath(), "This is just a test", new Point(0, 0), null));
 		generatedFileValidity = true;
 		assertTrue(generatedFileValidity);
 
@@ -154,11 +150,11 @@ public class XSLStringGenerationAndManipulationTests {
 	public void testGenerateXSLStringFromPathWithXSLText() throws DocumentException {
 		boolean generatedFileValidity = false;
 		final Document xslGenerated = DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.xslFilePath.getAbsolutePath(),
-			XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), "\n\n"), new Point(266, 266), null));
+				XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), "\n\n"), new Point(266, 266), null));
 		final Document javaGenerated = DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.javaFilePath.getAbsolutePath(),
-			XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), "\n\n"), new Point(266, 266), null));
+				XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), "\n\n"), new Point(266, 266), null));
 		final Document txtGenerated = DocumentHelper.parseText(XSLStringGenerationAndManipulation.generateXSLStringFromPath(this.txtFilePath.getAbsolutePath(),
-			XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), "\n\n"), new Point(266, 266), null));
+				XSLStringGenerationAndManipulation.generateXSLStringFromPath(null, "", new Point(0, 0), "\n\n"), new Point(266, 266), null));
 		generatedFileValidity = true;
 		assertTrue(generatedFileValidity);
 
@@ -217,7 +213,7 @@ public class XSLStringGenerationAndManipulationTests {
 			assertTrue(tagValueTagData.values().contains("//task/Package"));
 			// Check if the Task contains attribute description and a node description.
 			assertTrue(tagValueTagData.values().contains("//task[@description='']"));
-			//assertTrue(tagValueTagData.values().contains("//task/description"));
+			// assertTrue(tagValueTagData.values().contains("//task/description"));
 			// Check if there is at least one algorithm
 
 			if (task.getName().equals("SymmetricEncryption") || task.getName().equals("SecurePassword") || task.getName().equals("HybridEncryption")) {
@@ -225,8 +221,8 @@ public class XSLStringGenerationAndManipulationTests {
 				assertTrue(tagValueTagData.values().contains("//task/algorithm[@type='']/name"));
 			}
 
-			if (task.getName().equals("SecureCommunication") || task.getName().equals("LongTermArchiving") || task.getName().equals("SECMUPACOMP") || task.getName()
-				.equals("CertainTrust")) {
+			if (task.getName().equals("SecureCommunication") || task.getName().equals("LongTermArchiving") || task.getName().equals("SECMUPACOMP")
+					|| task.getName().equals("CertainTrust")) {
 				assertTrue(tagValueTagData.values().contains("//task/element[@type='']"));
 			}
 

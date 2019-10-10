@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.wizard;
@@ -80,7 +75,7 @@ public class AddDependenciesDialog extends Dialog {
 				final Label qstnTxt_1 = new Label(compositeForClaferTab, SWT.None);
 				qstnTxt_1.setText(this.question.getQuestionText());
 
-				//Group containing the headers
+				// Group containing the headers
 				final Composite compositeHeaderClaferTab = new Composite(compositeForClaferTab, SWT.NONE);
 				final GridData gd_groupHeaderClaferTab = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 				compositeHeaderClaferTab.setLayoutData(gd_groupHeaderClaferTab);
@@ -105,7 +100,7 @@ public class AddDependenciesDialog extends Dialog {
 				lblForOperator.setBounds(655, 5, 130, 25);
 				lblForOperator.setText("Set Value");
 
-				//widgets for answer and clafer depenedencies are added in ansScrollCompositeForClaferTab
+				// widgets for answer and clafer depenedencies are added in ansScrollCompositeForClaferTab
 				final CompositeToHoldSmallerUIElements ansScrollCompositeForClaferTab = new CompositeToHoldSmallerUIElements(compositeForClaferTab, SWT.NONE, null, false, null);
 				final GridData gd_LinkCode = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 				gd_LinkCode.heightHint = 200;
@@ -116,7 +111,7 @@ public class AddDependenciesDialog extends Dialog {
 				for (final Answer answer : this.question.getAnswers()) {
 					ansScrollCompositeForClaferTab.getListOfAllAnswer().add(answer);
 				}
-				//To add the widgets and data inside ansScrollCompositeForClaferTab
+				// To add the widgets and data inside ansScrollCompositeForClaferTab
 				ansScrollCompositeForClaferTab.callAddElementsInClaferTabQuestionDialog(this.claferModel);
 
 			}
@@ -223,7 +218,7 @@ public class AddDependenciesDialog extends Dialog {
 				lblText.setBounds(225, 5, 200, 25);
 				lblText.setText("Set Value");
 
-				//To create a scrollable Composite to display all the answers with the required input fields
+				// To create a scrollable Composite to display all the answers with the required input fields
 				final CompositeToHoldSmallerUIElements answerCompositeForLinkCodeTab = new CompositeToHoldSmallerUIElements(compositeForLinkCodeTab, SWT.NONE, null, false, null);
 				final GridData gd_LinkCode = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 				gd_LinkCode.heightHint = 200;
@@ -232,7 +227,7 @@ public class AddDependenciesDialog extends Dialog {
 				answerCompositeForLinkCodeTab.setLayout(new GridLayout(3, false));
 
 				for (final Answer answer : this.question.getAnswers()) {
-					//To add the widgets and data inside answerCompositeForLinkCodeTab
+					// To add the widgets and data inside answerCompositeForLinkCodeTab
 					answerCompositeForLinkCodeTab.addELementsInCodeTabQuestionDialog(answer);
 				}
 			}
@@ -268,8 +263,7 @@ public class AddDependenciesDialog extends Dialog {
 	/**
 	 * Capitalize the first letter of each word of question text
 	 *
-	 * @param questionText
-	 *        the question text
+	 * @param questionText the question text
 	 * @return the capitalize text
 	 */
 	private String getCapitaliseQuestionText(final String questionText) {
@@ -287,7 +281,6 @@ public class AddDependenciesDialog extends Dialog {
 	}
 
 	/**
-	 *
 	 * @return the question
 	 */
 	public Question getQuestion() {
@@ -295,16 +288,13 @@ public class AddDependenciesDialog extends Dialog {
 	}
 
 	/**
-	 *
-	 * @param question
-	 *        sets the question
+	 * @param question sets the question
 	 */
 	public void setQuestion(final Question question) {
 		this.question = question;
 	}
 
 	/**
-	 *
 	 * @return the clafer model
 	 */
 	public ClaferModel getClaferModel() {
@@ -312,9 +302,7 @@ public class AddDependenciesDialog extends Dialog {
 	}
 
 	/**
-	 *
-	 * @param claferModel
-	 *        sets the clafer model
+	 * @param claferModel sets the clafer model
 	 */
 	public void setClaferModel(final ClaferModel claferModel) {
 		this.claferModel = claferModel;

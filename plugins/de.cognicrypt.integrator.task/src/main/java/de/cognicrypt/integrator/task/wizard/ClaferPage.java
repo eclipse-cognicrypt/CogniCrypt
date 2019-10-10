@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.wizard;
@@ -155,8 +150,8 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 				final LocalDateTime date = LocalDateTime.now();
 				final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HHmm");
 				saveDialog.setFileName(date.format(formatter) + ".dat");
-				final String[] filterNames = new String[] { "CogniCrypt binary Clafer model (*.dat)", "Human-readable non-importable Clafer file (*.cfr)" };
-				final String[] filterExtensions = new String[] { "*.dat", "*.cfr" };
+				final String[] filterNames = new String[] {"CogniCrypt binary Clafer model (*.dat)", "Human-readable non-importable Clafer file (*.cfr)"};
+				final String[] filterExtensions = new String[] {"*.dat", "*.cfr"};
 				saveDialog.setFilterNames(filterNames);
 				saveDialog.setFilterExtensions(filterExtensions);
 				final String targetFilename = saveDialog.open();
@@ -207,7 +202,6 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 	 * get the path to the ClaferModel as a compiled javascript file
 	 *
 	 * @return {@link String} object that contains the absolute path to the compiled Clafer model, <code>null</code> if compilation failed
-	 *
 	 */
 	public String getCompiledClaferModelPath() {
 		final File cfrFile = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH), "currentClaferModel" + Constants.CFR_EXTENSION);
@@ -228,8 +222,8 @@ public class ClaferPage extends PageForTaskIntegratorWizard {
 			final String descriptionConstraint = "description = \"" + taskDescription + "\"";
 
 			if (this.compositeToHoldGranularUIElements.getClaferModel().getClaferModel().isEmpty()) {
-				final String defaultFeatureSetPath = Utils
-					.getResourceFromWithin(Constants.CFR_BIN_FILE_DIRECTORY_PATH + Constants.DEFAULT_FEATURE_SET_FILE + Constants.CFR_BIN_EXTENSION).getAbsolutePath();
+				final String defaultFeatureSetPath =
+						Utils.getResourceFromWithin(Constants.CFR_BIN_FILE_DIRECTORY_PATH + Constants.DEFAULT_FEATURE_SET_FILE + Constants.CFR_BIN_EXTENSION).getAbsolutePath();
 				final ClaferModel defaultFeaturesModel = ClaferModel.createFromBinaries(defaultFeatureSetPath);
 
 				final ClaferFeature taskFeature = new ClaferFeature(Constants.FeatureType.CONCRETE, taskName, "Task");

@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.widgets;
@@ -43,13 +38,10 @@ public class GroupFeatureProperty extends Composite {
 	/**
 	 * Create the composite.
 	 *
-	 * @param parent
-	 *        Composite that contains the feature property
-	 * @param style
-	 *        SWT style identifiers
+	 * @param parent Composite that contains the feature property
+	 * @param style SWT style identifiers
 	 * @param featurePropertyParam
-	 * @param showRemoveButton
-	 *        whether or not to show a remove button next to the feature property
+	 * @param showRemoveButton whether or not to show a remove button next to the feature property
 	 * @param editable
 	 * @param claferModel
 	 */
@@ -190,8 +182,7 @@ public class GroupFeatureProperty extends Composite {
 	}
 
 	/**
-	 * @param featureProperty
-	 *        the featureProperty to set
+	 * @param featureProperty the featureProperty to set
 	 */
 	private void setFeatureProperty(final ClaferProperty featureProperty) {
 		this.featureProperty = featureProperty;

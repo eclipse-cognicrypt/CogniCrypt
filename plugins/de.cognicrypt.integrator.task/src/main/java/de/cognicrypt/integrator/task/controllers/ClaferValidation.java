@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.controllers;
@@ -18,8 +13,7 @@ public class ClaferValidation {
 	/**
 	 * check if the given string is a valid clafer name and return a corresponding message
 	 *
-	 * @param claferName
-	 *        {@link String} name to be tested
+	 * @param claferName {@link String} name to be tested
 	 * @return {@link String} message containing errors in the name, empty string if valid
 	 */
 	public static String getNameValidationMessage(final String claferName, final boolean required) {
@@ -47,10 +41,8 @@ public class ClaferValidation {
 	/**
 	 * check if the given string is a valid clafer name and use the {@link ControlDecoration} to give feedback
 	 *
-	 * @param claferName
-	 *        {@link String} name to be tested
-	 * @param decoration
-	 *        {@link ControlDecoration} to display the error message in, hide if the string is valid
+	 * @param claferName {@link String} name to be tested
+	 * @param decoration {@link ControlDecoration} to display the error message in, hide if the string is valid
 	 * @return
 	 */
 	public static boolean validateClaferName(final String claferName, final boolean required, final ControlDecoration decoration) {

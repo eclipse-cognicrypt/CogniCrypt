@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.primitive.wizard;
@@ -52,7 +47,7 @@ public class PrimitiveIntegrationWizard extends Wizard {
 
 	public PrimitiveIntegrationWizard() {
 		super();
-		//Add page number to window title
+		// Add page number to window title
 		setWindowTitle(getWindowTitle());
 	}
 
@@ -169,14 +164,14 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	}
 
 	public String getPageId() {
-		//incrementing the page id to get the correct page number
+		// incrementing the page id to get the correct page number
 		final int pageNumber = this.pageId + 2;
 		final String pageNumberText = "-" + Integer.toString(pageNumber) + "-";
 		return pageNumberText;
 
 	}
 
-	//Adding page numbers to the window
+	// Adding page numbers to the window
 	@Override
 	public String getWindowTitle() {
 		if (getContainer() != null) {
@@ -198,11 +193,11 @@ public class PrimitiveIntegrationWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 
-		//Clafer
+		// Clafer
 		final File finalClafer = ClaferGenerator.copyClaferHeader(Constants.claferHeader, Constants.claferFooter);
 		ClaferGenerator.printClafer(this.inputsMap, finalClafer);
 
-		//Generation of xml file for xsl
+		// Generation of xml file for xsl
 		final File xmlFile = Utils.getResourceFromWithin(Constants.xmlFilePath);
 		this.xsltWriter = new XsltWriter();
 		try {
@@ -214,50 +209,54 @@ public class PrimitiveIntegrationWizard extends Wizard {
 				this.xsltWriter.addElement(name.trim(), value);
 			}
 			this.xsltWriter.transformXml(xmlFile);
-		} catch (ParserConfigurationException | TransformerException e) {
+		}
+		catch (ParserConfigurationException | TransformerException e) {
 			e.printStackTrace();
 		}
 
-		//Code generation
+		// Code generation
 		try {
 			final File templateSpi = Utils.getResourceFromWithin(this.selectedPrimitive.getXslFile());
 			final File templateMaster = Utils.getResourceFromWithin(
-				Constants.primitivesPath + Constants.innerFileSeparator + "XSL" + Constants.innerFileSeparator + "Template" + Constants.innerFileSeparator + "providerClass.xsl");
+					Constants.primitivesPath + Constants.innerFileSeparator + "XSL" + Constants.innerFileSeparator + "Template" + Constants.innerFileSeparator + "providerClass.xsl");
 
 			this.xsltWriter.transformXsl(templateSpi, xmlFile);
 			this.xsltWriter.transformXsl(templateMaster, xmlFile);
-		} catch (TransformerException | SAXException | IOException | ParserConfigurationException e1) {
+		}
+		catch (TransformerException | SAXException | IOException | ParserConfigurationException e1) {
 			e1.printStackTrace();
 		}
 
-		//Store source code of generated classes into a map
+		// Store source code of generated classes into a map
 		final File folder = Utils.getResourceFromWithin(Constants.primitivesPath);
 		this.classContent = new Helper().getSourceCode(folder);
 		for (final String name : this.classContent.keySet()) {
 			final String className = name.toString();
 			final String sourceCode = this.classContent.get(name).toString();
 
-			//Create new class that contains the source code
+			// Create new class that contains the source code
 			final UserJavaProject project = this.methodSelectionPage.getUserProject();
 			try {
 				this.providerName = this.inputsMap.get("name");
 				project.createNewClass(className, sourceCode, project.getPackageByName(Constants.PRIMITIVE_PACKAGE));
 
-				//Create provider jarFile
+				// Create provider jarFile
 				this.provider.zipProject(project.getProject().getLocation().toString() + "/",
-					new File(Utils.getResourceFromWithin(Constants.PROVIDER_FOLDER) + Constants.innerFileSeparator + this.providerName + ".jar"), true);
-				//delete archived files
+						new File(Utils.getResourceFromWithin(Constants.PROVIDER_FOLDER) + Constants.innerFileSeparator + this.providerName + ".jar"), true);
+				// delete archived files
 				for (final File file : folder.listFiles()) {
 					if (file.getName().endsWith(".java") || file.getName().endsWith(".class")) {
 						file.delete();
 					}
 				}
 
-				//add delete Project
-				//project.deleteProject();
-			} catch (final JavaModelException e) {
+				// add delete Project
+				// project.deleteProject();
+			}
+			catch (final JavaModelException e) {
 				e.printStackTrace();
-			} catch (final Exception e) {
+			}
+			catch (final Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

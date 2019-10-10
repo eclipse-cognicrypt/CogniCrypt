@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.widgets;
@@ -39,13 +34,13 @@ public class CompositeForClaferTab extends Composite {
 		super(parent, style);
 		setClaferModel(claferModel);
 
-		//Non-editable Text Box shows the answer value
+		// Non-editable Text Box shows the answer value
 		final Text txtBoxCurrentAnswer = new Text(this, SWT.BORDER);
 		txtBoxCurrentAnswer.setBounds(5, 5, 120, 25);
 		txtBoxCurrentAnswer.setEditable(false);
 		txtBoxCurrentAnswer.setText(answer.getValue());
 
-		//Add Clafer Dependencies button
+		// Add Clafer Dependencies button
 		final Button addMore = new Button(this, SWT.None);
 		addMore.setBounds(130, 5, 100, 25);
 		addMore.setText("Add");
@@ -74,13 +69,13 @@ public class CompositeForClaferTab extends Composite {
 				final Composite claferWidgets = new Composite(this, SWT.NONE);
 				claferWidgets.setBounds(235, getLowestWidgetYAxisValue(), 655, 34);
 
-				//Combo for displaying all the features created in Clafer page
+				// Combo for displaying all the features created in Clafer page
 				final Combo comboForAlgorithm = new Combo(claferWidgets, SWT.READ_ONLY);
 				comboForAlgorithm.setBounds(0, 0, 135, 25);
 
 				if (claferModel != null) {
 					for (final ClaferFeature claferFeature : claferModel) {
-						//add the claferFeature only if it has properties
+						// add the claferFeature only if it has properties
 						if (claferFeature.hasProperties()) {
 							comboForAlgorithm.add(claferFeature.getFeatureName());
 						}
@@ -98,18 +93,18 @@ public class CompositeForClaferTab extends Composite {
 				comboForOperand.setVisible(true);
 				comboForOperand.setBounds(140, 0, 130, 25);
 
-				//Combo containing all the operators
+				// Combo containing all the operators
 				final Combo comboForOperator = new Combo(claferWidgets, SWT.READ_ONLY);
 				comboForOperator.setBounds(275, 0, 110, 25);
 				comboForOperator.setItems(Constants.FeatureConstraintRelationship.EQUAL.toString(), Constants.FeatureConstraintRelationship.NOTEQUAL.toString(),
-					Constants.FeatureConstraintRelationship.LESSTHAN.toString(), Constants.FeatureConstraintRelationship.GREATERTHAN.toString(),
-					Constants.FeatureConstraintRelationship.LESSTHANEQUALTO.toString(), Constants.FeatureConstraintRelationship.GREATERTHANEQUALTO.toString());
+						Constants.FeatureConstraintRelationship.LESSTHAN.toString(), Constants.FeatureConstraintRelationship.GREATERTHAN.toString(),
+						Constants.FeatureConstraintRelationship.LESSTHANEQUALTO.toString(), Constants.FeatureConstraintRelationship.GREATERTHANEQUALTO.toString());
 
-				//To retrieve value from the user
+				// To retrieve value from the user
 				final Text txtBoxValue = new Text(claferWidgets, SWT.BORDER);
 				txtBoxValue.setBounds(390, 0, 120, 25);
 
-				//Upon click the button removes the current ClaferDependency
+				// Upon click the button removes the current ClaferDependency
 				final Button btnRemove = new Button(claferWidgets, SWT.None);
 				btnRemove.setBounds(515, 0, 100, 25);
 				btnRemove.setText("Remove");
@@ -117,9 +112,8 @@ public class CompositeForClaferTab extends Composite {
 
 					@Override
 					public void widgetSelected(final SelectionEvent e) {
-						//	answer.getClaferDependencies().remove(claferDependency);
-						((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent().getParent()).deleteClaferDependency(answer, claferDependency,
-							claferModel);
+						// answer.getClaferDependencies().remove(claferDependency);
+						((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent().getParent()).deleteClaferDependency(answer, claferDependency, claferModel);
 					}
 				});
 
@@ -146,7 +140,7 @@ public class CompositeForClaferTab extends Composite {
 
 				}
 
-				//adding the items to comboForOperand box depending on the comboForAlgorithm box value
+				// adding the items to comboForOperand box depending on the comboForAlgorithm box value
 				if (comboForAlgorithm.getText() != null) {
 					this.operandItems = new ArrayList<String>();
 					final ArrayList<String> operandToAdd = itemsToAdd(comboForAlgorithm.getText());
@@ -156,7 +150,7 @@ public class CompositeForClaferTab extends Composite {
 
 				}
 
-				//set the clafer dependency operand field depending upon the selected feature
+				// set the clafer dependency operand field depending upon the selected feature
 				comboForAlgorithm.addSelectionListener(new SelectionAdapter() {
 
 					@Override
@@ -168,7 +162,7 @@ public class CompositeForClaferTab extends Composite {
 						for (int i = 0; i < operandToAdd.size(); i++) {
 							comboForOperand.add(operandToAdd.get(i));
 						}
-						//to remove the previous operand selected as value of comboForlgorithm is changed
+						// to remove the previous operand selected as value of comboForlgorithm is changed
 						if (answer.getClaferDependencies() != null) {
 							comboForOperand.setText("");
 							claferDependency.setOperand(comboForOperand.getText());
@@ -178,7 +172,7 @@ public class CompositeForClaferTab extends Composite {
 					}
 				});
 
-				//set the clafer dependency operand field depending upon the operand/property selected
+				// set the clafer dependency operand field depending upon the operand/property selected
 				comboForOperand.addSelectionListener(new SelectionAdapter() {
 
 					@Override
@@ -186,7 +180,7 @@ public class CompositeForClaferTab extends Composite {
 						claferDependency.setOperand(comboForOperand.getText());
 					}
 				});
-				//set the clafer dependency operator field
+				// set the clafer dependency operator field
 				comboForOperator.addSelectionListener(new SelectionAdapter() {
 
 					@Override
@@ -194,7 +188,7 @@ public class CompositeForClaferTab extends Composite {
 						claferDependency.setOperator(comboForOperator.getText());
 					}
 				});
-				//set the clafer dependency value field
+				// set the clafer dependency value field
 				txtBoxValue.addFocusListener(new FocusAdapter() {
 
 					@Override
@@ -211,8 +205,7 @@ public class CompositeForClaferTab extends Composite {
 	}
 
 	/**
-	 * @param featureSelected
-	 *        feature selected in the comboForFeatures
+	 * @param featureSelected feature selected in the comboForFeatures
 	 * @return the list of operand to be added in the comboForOperand box depending on the featureSelected
 	 */
 
@@ -255,8 +248,7 @@ public class CompositeForClaferTab extends Composite {
 	}
 
 	/**
-	 * @param claferFeatures
-	 *        list of all clafer features created in the clafer page
+	 * @param claferFeatures list of all clafer features created in the clafer page
 	 */
 	private void setClaferModel(final ClaferModel claferModel) {
 		this.claferModel = claferModel;

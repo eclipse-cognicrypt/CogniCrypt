@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 /**
@@ -40,8 +35,7 @@ public class ClaferProperty implements Serializable {
 	}
 
 	/**
-	 * @param propertyName
-	 *        the propertyName to set
+	 * @param propertyName the propertyName to set
 	 */
 	public void setPropertyName(final String propertyName) {
 		this.propertyName = propertyName;
@@ -55,8 +49,7 @@ public class ClaferProperty implements Serializable {
 	}
 
 	/**
-	 * @param propertyType
-	 *        the propertyType to set
+	 * @param propertyType the propertyType to set
 	 */
 	public void setPropertyType(final String propertyType) {
 		this.propertyType = propertyType;

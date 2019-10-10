@@ -66,11 +66,11 @@ public class StateMachineGraphAnalyser {
 
 		// get all adjacent nodes from the current node
 		transitionsToAdjacentNodes.addAll(Utils.getOutgoingEdges(stateMachine.getAllTransitions(), currentTransition.getRight(), currentTransition.getRight()));
-//		for (TransitionEdge edge : edges) {
-//			
-//			if (edge.getLeft().getName().equals(currentTransition.getRight().getName()))
-//				transitionsToAdjacentNodes.add(edge);
-//		}
+		//		for (TransitionEdge edge : edges) {
+		//			
+		//			if (edge.getLeft().getName().equals(currentTransition.getRight().getName()))
+		//				transitionsToAdjacentNodes.add(edge);
+		//		}
 
 		for (TransitionEdge transition : transitionsToAdjacentNodes) {
 			//StateNode adjacentNode = transition.getRight();

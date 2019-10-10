@@ -93,7 +93,7 @@ public class ConstraintTests {
 		assertEquals(CompOp.neq, modeUnEq.getOperator());
 		assertEquals("mode2", modeUnEq.getRight().getLeft().getName());
 	}
-	
+
 	@Test
 	public void arithConstraintTest() {
 		CryptSLRule rule = readRuleFromFuleName("ArithConstraintTestRule");
@@ -111,18 +111,18 @@ public class ConstraintTests {
 		assertEquals("mode2", modeMinusMode2.getRight().getName());
 
 	}
-	
+
 	@Test
 	public void ComplexConstraintTest() {
 		CryptSLRule rule = readRuleFromFuleName("ComplexConstraintTestRule");
 		List<ISLConstraint> constraints = rule.getConstraints();
-		
+
 		CryptSLConstraint constraintAsImpliesConstraint = (CryptSLConstraint) constraints.get(0);
 		assertEquals(LogOps.implies, constraintAsImpliesConstraint.getOperator());
-		
+
 		CryptSLConstraint constraintAsAndConstraint = (CryptSLConstraint) constraints.get(1);
 		assertEquals(LogOps.and, constraintAsAndConstraint.getOperator());
-		
+
 		CryptSLConstraint constraintAsOrConstraint = (CryptSLConstraint) constraints.get(2);
 		assertEquals(LogOps.or, constraintAsOrConstraint.getOperator());
 	}

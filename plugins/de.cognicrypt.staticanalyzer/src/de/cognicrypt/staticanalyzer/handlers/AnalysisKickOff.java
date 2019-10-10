@@ -76,7 +76,8 @@ public class AnalysisKickOff {
 				Activator.getDefault().logInfo("The project " + ip.getName() + " does not have Java nature. No analysis necessary.");
 				return false;
 			}
-		}	catch (final CoreException e) {
+		}
+		catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 			return false;
 		}
@@ -110,7 +111,8 @@ public class AnalysisKickOff {
 				while (sootThread.isAlive()) {
 					try {
 						Thread.sleep(500);
-					}	catch (final InterruptedException e) {}
+					}
+					catch (final InterruptedException e) {}
 
 					if (monitor.isCanceled()) {
 						sootThread.stop();

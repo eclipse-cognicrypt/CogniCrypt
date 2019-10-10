@@ -46,6 +46,7 @@ import de.cognicrypt.utils.FileHelper;
 public class XSLBasedGenerator extends CodeGenerator {
 
 	final private File xslFile;
+
 	/**
 	 * Constructor to initialize the code template generator.
 	 *

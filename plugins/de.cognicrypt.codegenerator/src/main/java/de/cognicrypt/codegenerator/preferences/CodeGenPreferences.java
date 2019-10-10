@@ -14,9 +14,9 @@ import de.cognicrypt.utils.Utils;
 public class CodeGenPreferences extends PreferenceListener {
 
 	private IPreferenceStore preferences = Activator.getDefault().getPreferenceStore();
-	
+
 	private Button persistConfig;
-	
+
 	@Override
 	public void compileBasicPreferences(Composite parent) {
 
@@ -25,12 +25,12 @@ public class CodeGenPreferences extends PreferenceListener {
 	@Override
 	public void compileAdvancedPreferences(Composite parent) {
 		final Group codeGenGroup = Utils.addHeaderGroup(parent, "Code Generator");
-		
+
 		persistConfig = new Button(codeGenGroup, SWT.CHECK);
 		persistConfig.setText("Persist Code-generation Configuration");
-		
+
 		preferences.setDefault(Constants.PERSIST_CONFIG, false);
-		
+
 		persistConfig.setSelection(preferences.getBoolean(Constants.PERSIST_CONFIG));
 	}
 

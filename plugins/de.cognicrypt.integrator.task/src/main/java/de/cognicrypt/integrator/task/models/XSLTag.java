@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.models;
@@ -20,11 +15,9 @@ public class XSLTag {
 	private ArrayList<XSLAttribute> XSLAttributes; // Variable to hold the selected tag attributes.
 
 	/**
-	 * @param xSLTagDetails
-	 *        This detail come from the enumeration {@code XSLTags} in {@link Constants} class. These include the XSLTagFaceName, XSLBeginTag, XSLEndTag and an ArrayList of all
-	 *        possible attributes (XSLAttribute)
-	 * @param xSLAttributes
-	 *        This is an ArrayList of type {@link XSLAttribute} that are actually chosen.
+	 * @param xSLTagDetails This detail come from the enumeration {@code XSLTags} in {@link Constants} class. These include the XSLTagFaceName, XSLBeginTag, XSLEndTag and an
+	 *        ArrayList of all possible attributes (XSLAttribute)
+	 * @param xSLAttributes This is an ArrayList of type {@link XSLAttribute} that are actually chosen.
 	 */
 	public XSLTag(final XSLTags xSLTagDetails, final ArrayList<XSLAttribute> xSLAttributes) {
 		super();
@@ -40,8 +33,7 @@ public class XSLTag {
 	}
 
 	/**
-	 * @param xSLTagDetails
-	 *        set the constant from {@code XSLTags} in {@link Constants}.
+	 * @param xSLTagDetails set the constant from {@code XSLTags} in {@link Constants}.
 	 */
 	private void setXSLTagDetails(final Constants.XSLTags xSLTagDetails) {
 		this.XSLTagDetails = xSLTagDetails;
@@ -55,8 +47,7 @@ public class XSLTag {
 	}
 
 	/**
-	 * @param xSLAttributes
-	 *        set the ArrayList<{@link XSLAttribute}>.
+	 * @param xSLAttributes set the ArrayList<{@link XSLAttribute}>.
 	 */
 	private void setXSLAttributes(final ArrayList<XSLAttribute> xSLAttributes) {
 		this.XSLAttributes = xSLAttributes;
@@ -68,7 +59,6 @@ public class XSLTag {
 	 * First generate a String from ArrayList of type {@link XSLAttribute} such that it is in the form {@code ' XSLAttributeName1 = "XSLAttributeData1"' ...}
 	 * <p>
 	 * A String for the complete XSLTag is generated, by appending the XSLBeginTag, the attribute string, and the XSLEndTag. XSLTags may have an empty XSLEndTag.
-	 *
 	 */
 	@Override
 	public String toString() {

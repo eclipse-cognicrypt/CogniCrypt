@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.primitive.clafer;
@@ -26,7 +21,6 @@ import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
  * This class is responsible for generating Clafer for custom primitive.
  *
  * @author Anusha and Taran
- *
  */
 public class ClaferGenerator {
 
@@ -50,15 +44,19 @@ public class ClaferGenerator {
 			while ((bytesRead = input.read(buf)) > 0) {
 				output.write(buf, 0, bytesRead);
 			}
-		} catch (final FileNotFoundException e) {
+		}
+		catch (final FileNotFoundException e) {
 			e.printStackTrace();
-		} catch (final IOException e) {
+		}
+		catch (final IOException e) {
 			e.printStackTrace();
-		} finally {
+		}
+		finally {
 			try {
 				input.close();
 				output.close();
-			} catch (final IOException e) {
+			}
+			catch (final IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -84,7 +82,8 @@ public class ClaferGenerator {
 				System.out.println("\t" + "[" + key + " = " + userInput.get(key) + "]" + "\r\n");
 			}
 			bw.close();
-		} catch (final IOException ioe) {
+		}
+		catch (final IOException ioe) {
 			System.err.println("IOException: " + ioe.getMessage());
 		}
 	}

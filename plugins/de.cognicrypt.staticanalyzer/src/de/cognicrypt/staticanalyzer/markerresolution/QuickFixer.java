@@ -16,11 +16,11 @@ import de.cognicrypt.staticanalyzer.Activator;
  * @author Andre Sonntag
  */
 public class QuickFixer implements IMarkerResolutionGenerator {
-	
+
 	private List<String> secureExtenernalSources = Arrays.asList(new String[] {"randomized", "generatedKey", "generatedKeyPair", "generatedPubKey", "generatedPrivKey"});
-	
+
 	private List<IMarkerResolution> quickFixes;
-	
+
 	@Override
 	public IMarkerResolution[] getResolutions(final IMarker mk) {
 		quickFixes = new ArrayList<>();
@@ -31,17 +31,16 @@ public class QuickFixer implements IMarkerResolutionGenerator {
 			severity = (int) mk.getAttribute(IMarker.SEVERITY);
 			errorType = (String) mk.getAttribute("errorType");
 			message = (String) mk.getAttribute(IMarker.MESSAGE);
-			if(severity == 2) {
+			if (severity == 2) {
 				quickFixes.add(new SuppressWarningFix(Constants.SUPPRESSWARNING_FIX + message));
-			}
-			else if(severity == 0) {
+			} else if (severity == 0) {
 				quickFixes.add(new UnSuppressWarningFix(Constants.UNSUPPRESSWARNING_FIX + message));
 			}
-			
+
 			if (errorType.equals(Constants.REQUIRED_PREDICATE_MARKER_TYPE)) {
 				String predicate = (String) mk.getAttribute("predicate");
 
-				if(secureExtenernalSources.contains(predicate)) {
+				if (secureExtenernalSources.contains(predicate)) {
 					quickFixes.add(new EnsuresPredicateFix("This object comes from a stream/database/other external source and is actually secure."));
 				}
 			}

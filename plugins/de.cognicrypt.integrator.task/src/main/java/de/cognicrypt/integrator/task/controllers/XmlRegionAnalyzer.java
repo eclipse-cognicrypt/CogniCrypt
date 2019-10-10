@@ -1,41 +1,18 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 /****************************************************************************
- *
- * Copyright (c) 2012, Vincent Zurczak - All rights reserved.
- * This source file is released under the terms of the BSD license.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of California, Berkeley nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE REGENTS AND CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
+ * Copyright (c) 2012, Vincent Zurczak - All rights reserved. This source file is released under the terms of the BSD license. Redistribution and use in source and binary forms,
+ * with or without modification, are permitted provided that the following conditions are met: * Redistributions of source code must retain the above copyright notice, this list of
+ * conditions and the following disclaimer. * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution. * Neither the name of the University of California, Berkeley nor the names of its contributors may be used
+ * to endorse or promote products derived from this software without specific prior written permission. THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+ * THE REGENTS AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+ * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
 package de.cognicrypt.integrator.task.controllers;
@@ -57,8 +34,7 @@ public class XmlRegionAnalyzer {
 	/**
 	 * Analyzes a XML document.
 	 *
-	 * @param xml
-	 *        the XML text (may be an invalid XML document)
+	 * @param xml the XML text (may be an invalid XML document)
 	 * @return a non-null list of XML positions
 	 */
 	public List<XmlRegion> analyzeXml(final String xml) {
@@ -124,10 +100,8 @@ public class XmlRegionAnalyzer {
 	/**
 	 * Tries to analyze a XML instruction.
 	 *
-	 * @param xml
-	 *        the XML text
-	 * @param positions
-	 *        the positions already found
+	 * @param xml the XML text
+	 * @param positions the positions already found
 	 * @return true if it recognized a XML instruction
 	 */
 	boolean analyzeInstruction(final String xml, final List<XmlRegion> positions) {
@@ -153,18 +127,16 @@ public class XmlRegionAnalyzer {
 	/**
 	 * Tries to analyze a XML comment.
 	 *
-	 * @param xml
-	 *        the XML text
-	 * @param positions
-	 *        the positions already found
+	 * @param xml the XML text
+	 * @param positions the positions already found
 	 * @return true if it recognized a XML instruction
 	 */
 	boolean analyzeComment(final String xml, final List<XmlRegion> positions) {
 
 		boolean result = false;
 		int newPos = this.offset;
-		if (xml.charAt(newPos) == '<' && ++newPos < xml.length() && xml.charAt(newPos) == '!' && ++newPos < xml.length() && xml.charAt(newPos) == '-' && ++newPos < xml
-			.length() && xml.charAt(newPos) == '-') {
+		if (xml.charAt(newPos) == '<' && ++newPos < xml.length() && xml.charAt(newPos) == '!' && ++newPos < xml.length() && xml.charAt(newPos) == '-' && ++newPos < xml.length()
+				&& xml.charAt(newPos) == '-') {
 
 			int seq = 0;
 			while (seq != 3 && ++newPos < xml.length()) {
@@ -187,10 +159,8 @@ public class XmlRegionAnalyzer {
 	/**
 	 * Tries to analyze a XML mark-up.
 	 *
-	 * @param xml
-	 *        the XML text
-	 * @param positions
-	 *        the positions already found
+	 * @param xml the XML text
+	 * @param positions the positions already found
 	 * @return true if it recognized a XML instruction
 	 */
 	boolean analyzeMarkup(final String xml, final List<XmlRegion> positions) {
@@ -242,10 +212,8 @@ public class XmlRegionAnalyzer {
 	/**
 	 * Tries to analyze a XML attribute.
 	 *
-	 * @param xml
-	 *        the XML text
-	 * @param positions
-	 *        the positions already found
+	 * @param xml the XML text
+	 * @param positions the positions already found
 	 * @return true if it recognized a XML instruction
 	 */
 	boolean analyzeAttribute(final String xml, final List<XmlRegion> positions) {
@@ -292,10 +260,8 @@ public class XmlRegionAnalyzer {
 	/**
 	 * Tries to analyze a mark-up's value.
 	 *
-	 * @param xml
-	 *        the XML text
-	 * @param positions
-	 *        the positions already found
+	 * @param xml the XML text
+	 * @param positions the positions already found
 	 * @return true if it recognized a XML instruction
 	 */
 	boolean analyzeMarkupValue(final String xml, final List<XmlRegion> positions) {
@@ -346,10 +312,8 @@ public class XmlRegionAnalyzer {
 	/**
 	 * Tries to analyze a XML attribute's value.
 	 *
-	 * @param xml
-	 *        the XML text
-	 * @param positions
-	 *        the positions already found
+	 * @param xml the XML text
+	 * @param positions the positions already found
 	 * @return true if it recognized a XML instruction
 	 */
 	boolean analyzeAttributeValue(final String xml, final List<XmlRegion> positions) {
@@ -400,19 +364,17 @@ public class XmlRegionAnalyzer {
 	/**
 	 * Tries to analyze a CDATA section.
 	 *
-	 * @param xml
-	 *        the XML text
-	 * @param positions
-	 *        the positions already found
+	 * @param xml the XML text
+	 * @param positions the positions already found
 	 * @return true if it recognized a XML instruction
 	 */
 	boolean analyzeCData(final String xml, final List<XmlRegion> positions) {
 
 		boolean result = false;
 		int newPos = this.offset;
-		if (xml.charAt(newPos) == '<' && ++newPos < xml.length() && xml.charAt(newPos) == '!' && ++newPos < xml.length() && xml.charAt(newPos) == '[' && ++newPos < xml
-			.length() && xml.charAt(newPos) == 'C' && ++newPos < xml.length() && xml.charAt(newPos) == 'D' && ++newPos < xml.length() && xml.charAt(newPos) == 'A' && ++newPos < xml
-				.length() && xml.charAt(newPos) == 'T' && ++newPos < xml.length() && xml.charAt(newPos) == 'A' && ++newPos < xml.length() && xml.charAt(newPos) == '[') {
+		if (xml.charAt(newPos) == '<' && ++newPos < xml.length() && xml.charAt(newPos) == '!' && ++newPos < xml.length() && xml.charAt(newPos) == '[' && ++newPos < xml.length()
+				&& xml.charAt(newPos) == 'C' && ++newPos < xml.length() && xml.charAt(newPos) == 'D' && ++newPos < xml.length() && xml.charAt(newPos) == 'A' && ++newPos < xml.length()
+				&& xml.charAt(newPos) == 'T' && ++newPos < xml.length() && xml.charAt(newPos) == 'A' && ++newPos < xml.length() && xml.charAt(newPos) == '[') {
 
 			int cpt = 0;
 			while (++newPos < xml.length()) {
@@ -443,10 +405,8 @@ public class XmlRegionAnalyzer {
 	 * If white spaces are found, a XML position is stored and the offset is updated.
 	 * </p>
 	 *
-	 * @param xml
-	 *        the XML text
-	 * @param positions
-	 *        the positions already found
+	 * @param xml the XML text
+	 * @param positions the positions already found
 	 */
 	void analyzeWhitespaces(final String xml, final List<XmlRegion> positions) {
 

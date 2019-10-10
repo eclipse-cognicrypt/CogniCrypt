@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.controllers;
@@ -32,10 +27,8 @@ public class ClaferModelContentProvider implements ITreeContentProvider {
 	/**
 	 * create a {@link ClaferModelContentProvider} with filters attached
 	 *
-	 * @param featureFilter
-	 *        display {@link ClaferFeature}s that this predicate applies to (returns true for)
-	 * @param propertyFilter
-	 *        display {@link ClaferProperty}s that this predicate applies to (returns true for)
+	 * @param featureFilter display {@link ClaferFeature}s that this predicate applies to (returns true for)
+	 * @param propertyFilter display {@link ClaferProperty}s that this predicate applies to (returns true for)
 	 */
 	public ClaferModelContentProvider(final Predicate<? super ClaferFeature> featureFilter, final Predicate<? super ClaferProperty> propertyFilter) {
 		this.featureFilter = featureFilter;
@@ -60,8 +53,7 @@ public class ClaferModelContentProvider implements ITreeContentProvider {
 	/**
 	 * get the elements when setInput is called, can only be called on {@link ClaferModel} in this ContentProvider
 	 *
-	 * @param inputElement
-	 *        an input element of type {@link ClaferModel}
+	 * @param inputElement an input element of type {@link ClaferModel}
 	 * @return returns the Clafer features of the model as {@link Object}[], empty {@link Object}[] if input type wrong
 	 */
 	@Override

@@ -27,14 +27,14 @@ import de.cognicrypt.utils.FileHelper;
  * @author Stefan Krueger
  */
 public abstract class Configuration {
-	
+
 	final protected Map<Question, Answer> options;
 	final protected String pathOnDisk;
 
 	public Configuration(Map<?, ?> constraints, String pathOnDisk) {
 		this.pathOnDisk = pathOnDisk;
-		this.options = (Map<Question, Answer>)constraints;
-}
+		this.options = (Map<Question, Answer>) constraints;
+	}
 
 	/**
 	 * Writes chosen configuration to hard disk.
@@ -50,7 +50,7 @@ public abstract class Configuration {
 	public String getPath() {
 		return pathOnDisk;
 	}
-	
+
 	/**
 	 * Deletes config file from hard disk.
 	 */

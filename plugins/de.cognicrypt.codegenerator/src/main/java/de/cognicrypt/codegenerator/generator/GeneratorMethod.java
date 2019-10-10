@@ -57,7 +57,7 @@ public class GeneratorMethod {
 		killStatements.append(statement);
 		killStatements.append("\n");
 	}
-	
+
 	public List<Entry<String, String>> getDeclaredVariables() {
 		return variableDeclarations;
 	}
@@ -154,11 +154,11 @@ public class GeneratorMethod {
 	public void clearBody() {
 		this.body.setLength(0);
 	}
-	
+
 	public void setNumberOfVariablesInTemplate(int number) {
 		templateVariables = number;
 	}
-	
+
 	public int getNumberOfVariablesInTemplate() {
 		return templateVariables;
 	}
@@ -170,6 +170,5 @@ public class GeneratorMethod {
 	public List<CodeGenCrySLRule> getRules() {
 		return cryslRules;
 	}
-	
-	
+
 }

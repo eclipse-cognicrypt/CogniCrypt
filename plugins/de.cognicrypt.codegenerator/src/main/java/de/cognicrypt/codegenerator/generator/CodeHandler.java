@@ -42,21 +42,19 @@ public class CodeHandler {
 	 * @throws Exception
 	 */
 	public File writeToDisk(final String folderPath) throws Exception {
-		
+
 		File fileOnDisk = new File(folderPath);
 		fileOnDisk.mkdirs();
 		for (GeneratorClass toBeGeneratedClass : javaClasses) {
-			String path = fileOnDisk.getAbsolutePath() + Constants.outerFileSeparator + toBeGeneratedClass
-				.getClassName() + ".java";
-			try (
-				FileOutputStream fileOutputStream = new FileOutputStream(path)) {
+			String path = fileOnDisk.getAbsolutePath() + Constants.outerFileSeparator + toBeGeneratedClass.getClassName() + ".java";
+			try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
 				fileOutputStream.write(toBeGeneratedClass.toString().getBytes("UTF-8"));
 			} catch (Exception e) {
 				throw new Exception("Writing source code to file failed.");
 			}
 			toBeGeneratedClass.setSourceFile(new File(path));
 		}
-		
+
 		return fileOnDisk;
 	}
 
@@ -70,28 +68,28 @@ public class CodeHandler {
 	 */
 	public List<File> compile() throws CompilationFailedException, RuntimeException, IllegalStateException {
 		// setup compiler
-//		JavaCompiler compiler = new EclipseCompiler();
-//		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
-//		List<File> javaCodeFiles = javaClasses.stream().map(c -> c.getAssociatedJavaFile()).collect(Collectors.toList());
-//		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(javaCodeFiles);
-//
-//		// start compilation process
-//		boolean state = compiler.getTask(null, fileManager, null, null, null, compilationUnits).call();
-//
-//		if (state) { // if the compilation process was successful return list of class files
-//			for (int i = 0; i < javaClasses.size(); i++) {
-//				String path = javaCodeFiles.get(i).getAbsolutePath();
-//				path = path.substring(0, path.lastIndexOf(".")) + ".class";
-//				classFiles.add(i, new File(path));
-//			}
-//
-//			isCodeCompiled = true;
-			return classFiles;
-//
-//		} else { // if the compilation failed throw exception
-//			isCodeCompiled = false;
-//			throw new CompilationFailedException("Compilation failed!");
-//		}
+		//		JavaCompiler compiler = new EclipseCompiler();
+		//		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+		//		List<File> javaCodeFiles = javaClasses.stream().map(c -> c.getAssociatedJavaFile()).collect(Collectors.toList());
+		//		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(javaCodeFiles);
+		//
+		//		// start compilation process
+		//		boolean state = compiler.getTask(null, fileManager, null, null, null, compilationUnits).call();
+		//
+		//		if (state) { // if the compilation process was successful return list of class files
+		//			for (int i = 0; i < javaClasses.size(); i++) {
+		//				String path = javaCodeFiles.get(i).getAbsolutePath();
+		//				path = path.substring(0, path.lastIndexOf(".")) + ".class";
+		//				classFiles.add(i, new File(path));
+		//			}
+		//
+		//			isCodeCompiled = true;
+		return classFiles;
+		//
+		//		} else { // if the compilation failed throw exception
+		//			isCodeCompiled = false;
+		//			throw new CompilationFailedException("Compilation failed!");
+		//		}
 	}
 
 	/**

@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.primitive.providerUtils;
@@ -53,7 +48,7 @@ public class UserJavaProject {
 			final List<IMethod> methodsList = new ArrayList<IMethod>();
 			final IPackageFragment[] packages = javaProject.getPackageFragments();
 			for (final IPackageFragment pack : packages) {
-				//look at the package from the source folder
+				// look at the package from the source folder
 				if (pack.getKind() == IPackageFragmentRoot.K_SOURCE) {
 
 					for (final ICompilationUnit unit : pack.getCompilationUnits()) {
@@ -117,7 +112,6 @@ public class UserJavaProject {
 	}
 
 	/**
-	 *
 	 * @param packageName
 	 * @return the package with the given name
 	 */
@@ -131,7 +125,8 @@ public class UserJavaProject {
 					aPackage = pack;
 				}
 			}
-		} catch (final CoreException e) {
+		}
+		catch (final CoreException e) {
 			e.printStackTrace();
 		}
 		return aPackage;
@@ -142,14 +137,12 @@ public class UserJavaProject {
 	 * This method creates a new class in a certain package
 	 *
 	 * @param className
-	 * @param content
-	 *        contains the source code
-	 * @param pack
-	 *        is the package where the new class will be added
+	 * @param content contains the source code
+	 * @param pack is the package where the new class will be added
 	 * @throws JavaModelException
 	 */
 	public void createNewClass(final String className, final String content, final IPackageFragment pack) throws JavaModelException {
-		//Add the package declaration into the source code
+		// Add the package declaration into the source code
 		final StringBuffer buffer = new StringBuffer();
 		buffer.append("package " + pack.getElementName() + ";\n");
 		buffer.append("\n");
@@ -159,11 +152,8 @@ public class UserJavaProject {
 	}
 
 	/**
-	 *
-	 * @param sourceProject
-	 *        The name of the project to be cloned
-	 * @param cloneName
-	 *        The name of the cloned project
+	 * @param sourceProject The name of the project to be cloned
+	 * @param cloneName The name of the cloned project
 	 * @return a cloned project
 	 * @throws CoreException
 	 */

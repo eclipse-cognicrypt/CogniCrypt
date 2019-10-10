@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.primitive.wizard.questionnaire;
@@ -31,8 +26,7 @@ public class PrimitiveQuestionsJSONReader {
 	/***
 	 * This method reads all questions of one primitive using the file path to the question file.
 	 *
-	 * @param filePath
-	 *        path to the file that contains all questions for one primitive.
+	 * @param filePath path to the file that contains all questions for one primitive.
 	 * @return questions
 	 */
 	public List<Question> getQuestions(final String filePath) {
@@ -44,7 +38,8 @@ public class PrimitiveQuestionsJSONReader {
 			questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
 
 			checkReadQuestions(questions);
-		} catch (final FileNotFoundException e) {
+		}
+		catch (final FileNotFoundException e) {
 			Activator.getDefault().logError(e);
 			return null;
 		}
@@ -54,8 +49,7 @@ public class PrimitiveQuestionsJSONReader {
 	/***
 	 * This method reads all pages of one primitive using the file path to the JSON file.
 	 *
-	 * @param filePath
-	 *        Path to the file that contains all questions for one primitive.
+	 * @param filePath Path to the file that contains all questions for one primitive.
 	 * @return pages Return a list of all the pages in the JSON file.
 	 */
 	public List<Page> getPages(final String filePath) {
@@ -68,7 +62,8 @@ public class PrimitiveQuestionsJSONReader {
 
 			checkReadPages(pages);
 			checkNextIDs(pages);
-		} catch (final FileNotFoundException e) {
+		}
+		catch (final FileNotFoundException e) {
 			Activator.getDefault().logError(e);
 		}
 		return pages;
@@ -77,8 +72,7 @@ public class PrimitiveQuestionsJSONReader {
 	/***
 	 * This method reads all questions of one primitive.
 	 *
-	 * @param primitive
-	 *        primitive whose questions should be read
+	 * @param primitive primitive whose questions should be read
 	 * @return Questions
 	 */
 	public List<Question> getQuestions(final Primitive primitive) {
@@ -88,8 +82,7 @@ public class PrimitiveQuestionsJSONReader {
 	/***
 	 * This method reads all pages of one primitive.
 	 *
-	 * @param primitive
-	 *        primitive whose questions should be read
+	 * @param primitive primitive whose questions should be read
 	 * @return Pages
 	 */
 	public List<Page> getPages(final Primitive primitive) {
@@ -126,9 +119,9 @@ public class PrimitiveQuestionsJSONReader {
 				throw new IllegalArgumentException("Each question must have a unique ID.");
 			}
 
-			//			if (question.getDefaultAnswer() == null) {
-			//				throw new IllegalArgumentException("Each question must have a default answer.");
-			//			}
+			// if (question.getDefaultAnswer() == null) {
+			// throw new IllegalArgumentException("Each question must have a default answer.");
+			// }
 		}
 	}
 

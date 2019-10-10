@@ -22,9 +22,9 @@ import de.cognicrypt.core.Constants;
 public class XSLConfiguration extends Configuration {
 
 	final private InstanceClafer instance;
-	
+
 	public XSLConfiguration(InstanceClafer instance, Map<Question, Answer> constraints, String pathOnDisk) {
-		super( constraints, pathOnDisk);
+		super(constraints, pathOnDisk);
 		this.instance = instance;
 	}
 

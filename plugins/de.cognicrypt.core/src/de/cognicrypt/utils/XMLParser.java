@@ -288,8 +288,6 @@ public class XMLParser {
 		return doc.createElement(elementName);
 	}
 
-	
-	
 	public File getXmlFile() {
 		return this.xmlFile;
 	}

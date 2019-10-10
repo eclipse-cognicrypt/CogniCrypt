@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.primitive.providerUtils;
@@ -77,7 +72,8 @@ public class XsltWriter {
 		System.out.println("File saved!");
 	}
 
-	public void transformXsl(final File xslFile, final File xmlFile) throws ParserConfigurationException, TransformerFactoryConfigurationError, SAXException, IOException, TransformerException {
+	public void transformXsl(final File xslFile, final File xmlFile)
+			throws ParserConfigurationException, TransformerFactoryConfigurationError, SAXException, IOException, TransformerException {
 		this.docFactory = DocumentBuilderFactory.newInstance();
 		final javax.xml.parsers.DocumentBuilder builder = this.docFactory.newDocumentBuilder();
 		final StreamSource styleSource = new StreamSource(xslFile);
@@ -85,7 +81,7 @@ public class XsltWriter {
 		final Document xml = builder.parse(xmlFile);
 		final File resultFile = new File(Utils.getResourceFromWithin(Constants.primitivesPath) + Constants.innerFileSeparator + "test.txt");
 		final StreamResult result = new StreamResult(resultFile);
-		//transformation
+		// transformation
 		t.transform(new DOMSource(xml), result);
 		resultFile.delete();
 	}

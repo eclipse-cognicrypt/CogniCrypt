@@ -359,9 +359,8 @@ public class Utils {
 	}
 
 	public static List<CryptSLRule> readCrySLRules() {
-		return Stream
-				.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR).getAbsolutePath()), readCrySLRules(Utils.getResourceFromWithin(defaultRulesPath).getAbsolutePath()))
-				.flatMap(Collection::stream).collect(Collectors.toList());
+		return Stream.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR).getAbsolutePath()),
+				readCrySLRules(Utils.getResourceFromWithin(defaultRulesPath).getAbsolutePath())).flatMap(Collection::stream).collect(Collectors.toList());
 	}
 
 	protected static List<CryptSLRule> readCrySLRules(String rulesFolder) {

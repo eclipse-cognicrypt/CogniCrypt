@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 /**
@@ -43,7 +38,6 @@ import de.cognicrypt.integrator.task.Activator;
 public class XSLStringGenerationAndManipulation {
 
 	/**
-	 *
 	 * @param filePath
 	 * @param existingText
 	 * @param selected
@@ -52,13 +46,14 @@ public class XSLStringGenerationAndManipulation {
 	public static String generateXSLStringFromPath(final String filePath, final String existingText, final Point selected, final String stringToAdd) {
 		final StringBuilder dataFromFile = new StringBuilder();
 
-		final String xslStringBeforeAddingText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"2.0\">\n<xsl:output method=\"text\"/>\n<xsl:template match=\"/\">\n\n\n\npackage <xsl:value-of select=\"//task/Package\"/>; \n<xsl:apply-templates select=\"//Import\"/>\n";
+		final String xslStringBeforeAddingText =
+				"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"2.0\">\n<xsl:output method=\"text\"/>\n<xsl:template match=\"/\">\n\n\n\npackage <xsl:value-of select=\"//task/Package\"/>; \n<xsl:apply-templates select=\"//Import\"/>\n";
 		final String xslStringAfterAddingText = "\n</xsl:template>\n<xsl:template match=\"Import\">\nimport <xsl:value-of select=\".\"/>;\n</xsl:template>\n</xsl:stylesheet>";
 
 		if (filePath != null) {
 			final Path path = Paths.get(filePath);
-			if (path.getFileName().toString().endsWith(".java") || path.getFileName().toString().endsWith(".JAVA") || path.getFileName().toString().endsWith(".txt") || path
-				.getFileName().toString().endsWith(".TXT")) {
+			if (path.getFileName().toString().endsWith(".java") || path.getFileName().toString().endsWith(".JAVA") || path.getFileName().toString().endsWith(".txt")
+					|| path.getFileName().toString().endsWith(".TXT")) {
 
 				// Check if the XSL tags have already been created. If yes then add the text at the cursor location.
 				if (existingText.contains("<?xml version=") || existingText.contains("<xsl:stylesheet xmlns:xsl=")) {
@@ -94,10 +89,8 @@ public class XSLStringGenerationAndManipulation {
 	/**
 	 * Read the data from the file and add it to the StringBuilder.
 	 *
-	 * @param dataFromFile
-	 *        the StringBuilder.
-	 * @param filePath
-	 *        the location of the file to be read.
+	 * @param dataFromFile the StringBuilder.
+	 * @param filePath the location of the file to be read.
 	 */
 	private static void appendTextFromFileToStringBuilder(final StringBuilder dataFromFile, final String filePath) {
 		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -109,9 +102,11 @@ public class XSLStringGenerationAndManipulation {
 				dataFromFile.append(System.lineSeparator());
 				line = br.readLine();
 			}
-		} catch (final FileNotFoundException e) {
+		}
+		catch (final FileNotFoundException e) {
 			Activator.getDefault().logError(e);
-		} catch (final IOException e) {
+		}
+		catch (final IOException e) {
 			Activator.getDefault().logError(e);
 		}
 
@@ -120,8 +115,7 @@ public class XSLStringGenerationAndManipulation {
 	/**
 	 * Set the colors to all the {@link XmlRegion}.
 	 *
-	 * @param regions
-	 *        the List of {@link XmlRegion}
+	 * @param regions the List of {@link XmlRegion}
 	 * @return returns the {@link StyleRange} for the given code.
 	 */
 	public static List<StyleRange> computeStyleForXMLRegions(final List<XmlRegion> regions) {
@@ -171,7 +165,8 @@ public class XSLStringGenerationAndManipulation {
 		return styleRanges;
 	}
 
-	public static void getListOfValidSuggestionsForXSLTags(final String jsFilePath, final String taskName, final String taskDescription, final List<Question> questions, final HashMap<String, String> tagValueTagData) {
+	public static void getListOfValidSuggestionsForXSLTags(final String jsFilePath, final String taskName, final String taskDescription, final List<Question> questions,
+			final HashMap<String, String> tagValueTagData) {
 		if (jsFilePath != null) {
 			final InstanceGenerator instanceGenerator = new InstanceGenerator(jsFilePath, "c0_" + taskName, taskDescription);
 
@@ -187,12 +182,12 @@ public class XSLStringGenerationAndManipulation {
 				xmlStrings.add(xmlParser.displayInstanceValues(initialInstance, constraints));
 
 				// Questions needed to get the answer that has a constraint with the -> operator.
-				//QuestionsJSONReader reader = new QuestionsJSONReader();
+				// QuestionsJSONReader reader = new QuestionsJSONReader();
 				// TODO update this to read the data generated in the questions page.
 
-				//List<Page> pages = reader.getPages("/src/main/resources/TaskDesc/SymmetricEncryption.json");
+				// List<Page> pages = reader.getPages("/src/main/resources/TaskDesc/SymmetricEncryption.json");
 
-				//for (Page page : pages) {
+				// for (Page page : pages) {
 				for (final Question question : questions) {
 					for (final Answer answer : question.getAnswers()) {
 						if (answer.getClaferDependencies() != null) {
@@ -205,7 +200,7 @@ public class XSLStringGenerationAndManipulation {
 						} // clafer dependency check
 						if (answer.getCodeDependencies() != null) {
 							for (final CodeDependency codeDependency : answer.getCodeDependencies()) {
-								//xmlStrings.get(0).elementByID(Constants.Code).addElement(codeDependency.getOption()).addText(codeDependency.getValue() + "");
+								// xmlStrings.get(0).elementByID(Constants.Code).addElement(codeDependency.getOption()).addText(codeDependency.getValue() + "");
 								final Element root = xmlStrings.get(0).getRootElement();
 
 								for (final Iterator<Element> element = root.elementIterator(Constants.Code); element.hasNext();) {
@@ -219,7 +214,7 @@ public class XSLStringGenerationAndManipulation {
 						} // code dependency check
 					} // answer loop
 				} // question loop
-					//} // page loop
+					 // } // page loop
 
 				// Process each xml document that is generated.
 				for (final Document xmlDocument : xmlStrings) {
@@ -233,19 +228,15 @@ public class XSLStringGenerationAndManipulation {
 	/**
 	 * This method is created to be able to exit the nested loops as soon as the correct instance is found.
 	 *
-	 * @param question
-	 *        The question object from the outer loop.
-	 * @param answer
-	 *        The answer object from the outer loop.
-	 * @param xmlParser
-	 *        This object is needed to generate the xml string.
-	 * @param instanceGenerator
-	 *        This object is needed to generate the instances
-	 * @param claferDependency
-	 *        The claferDependency from the outer loop
+	 * @param question The question object from the outer loop.
+	 * @param answer The answer object from the outer loop.
+	 * @param xmlParser This object is needed to generate the xml string.
+	 * @param instanceGenerator This object is needed to generate the instances
+	 * @param claferDependency The claferDependency from the outer loop
 	 * @return
 	 */
-	private static Document getXMLForNewAlgorithmInsertion(final Question question, final Answer answer, final XMLClaferParser xmlParser, final InstanceGenerator instanceGenerator, final ClaferDependency claferDependency) {
+	private static Document getXMLForNewAlgorithmInsertion(final Question question, final Answer answer, final XMLClaferParser xmlParser, final InstanceGenerator instanceGenerator,
+			final ClaferDependency claferDependency) {
 		final HashMap<Question, Answer> constraints = new HashMap<>();
 		constraints.put(question, answer);
 		final String constraintOnType = claferDependency.getAlgorithm();
@@ -263,8 +254,7 @@ public class XSLStringGenerationAndManipulation {
 	/**
 	 * Process the XML document here to generate values to be displayed to the user for selection.
 	 *
-	 * @param xmlDocument
-	 *        The serialized object representing the generated XML string.
+	 * @param xmlDocument The serialized object representing the generated XML string.
 	 * @param tagValueTagData
 	 */
 	private static void processXMLDocument(final Document xmlDocument, final HashMap<String, String> tagValueTagData) {
@@ -276,17 +266,14 @@ public class XSLStringGenerationAndManipulation {
 	/**
 	 * This method will process each element individually, and is called recursively to process nested tags.
 	 *
-	 * @param xmlElement
-	 *        The element under consideration.
-	 * @param existingNameToBeDisplayed
-	 *        The string that will be displayed to the user for selection.
-	 * @param existingDataForXSLDocument
-	 *        The actual string that will be added to the code base on the selection that is done by the user.
-	 * @param isRoot
-	 *        true if the element is the root element.
+	 * @param xmlElement The element under consideration.
+	 * @param existingNameToBeDisplayed The string that will be displayed to the user for selection.
+	 * @param existingDataForXSLDocument The actual string that will be added to the code base on the selection that is done by the user.
+	 * @param isRoot true if the element is the root element.
 	 * @param tagValueTagData
 	 */
-	private static void processElement(final Element xmlElement, final String existingNameToBeDisplayed, final String existingDataForXSLDocument, final boolean isRoot, final HashMap<String, String> tagValueTagData) {
+	private static void processElement(final Element xmlElement, final String existingNameToBeDisplayed, final String existingDataForXSLDocument, final boolean isRoot,
+			final HashMap<String, String> tagValueTagData) {
 		final StringBuilder tagNameToBeDisplayed = new StringBuilder();
 		final StringBuilder tagDataForXSLDocument = new StringBuilder();
 

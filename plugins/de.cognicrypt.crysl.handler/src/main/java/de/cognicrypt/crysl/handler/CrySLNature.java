@@ -7,16 +7,14 @@ import org.eclipse.core.runtime.CoreException;
 public class CrySLNature implements IProjectNature {
 
 	public static final String NATURE_ID = "de.cognicrypt.crysl.handler.cryslnature";
-	
-	private IProject project; 
-	
-	@Override
-	public void configure() throws CoreException {
-	}
+
+	private IProject project;
 
 	@Override
-	public void deconfigure() throws CoreException {
-	}
+	public void configure() throws CoreException {}
+
+	@Override
+	public void deconfigure() throws CoreException {}
 
 	@Override
 	public IProject getProject() {

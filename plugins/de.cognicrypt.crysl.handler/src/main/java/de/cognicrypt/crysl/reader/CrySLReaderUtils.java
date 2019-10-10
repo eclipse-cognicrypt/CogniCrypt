@@ -64,7 +64,7 @@ public class CrySLReaderUtils {
 			return null;
 		}
 		final Method method = ((SuperType) lab).getMeth();
-		
+
 		String methodName = method.getMethName().getSimpleName();
 		if (methodName == null) {
 			methodName = ((de.darmstadt.tu.crossing.cryptSL.Domainmodel) (method.eContainer().eContainer().eContainer())).getJavaType().getSimpleName();
@@ -99,10 +99,10 @@ public class CrySLReaderUtils {
 	}
 
 	public static void storeRuletoFile(final CryptSLRule rule, final String folderPath) throws IOException {
-		File written = new File(folderPath + Constants.innerFileSeparator + rule.getClassName().substring(rule.getClassName().lastIndexOf(".") + 1)+ Constants.cryslFileEnding);
+		File written = new File(folderPath + Constants.innerFileSeparator + rule.getClassName().substring(rule.getClassName().lastIndexOf(".") + 1) + Constants.cryslFileEnding);
 		Files.write(rule.toString(), written, StandardCharsets.UTF_8);
 	}
-	
+
 	public static void storeRulesToFile(final List<CryptSLRule> rules, final String folder) throws IOException {
 		for (CryptSLRule rule : rules) {
 			storeRuletoFile(rule, folder);

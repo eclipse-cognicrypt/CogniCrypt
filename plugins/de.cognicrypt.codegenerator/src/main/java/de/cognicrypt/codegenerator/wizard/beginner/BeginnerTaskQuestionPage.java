@@ -102,7 +102,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		this.page = page;
 		this.quest = null;
 	}
-	
+
 	/**
 	 *
 	 * @param page
@@ -130,14 +130,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		this.quest = quest;
 		this.page = null;
 	}
-	
+
 	private BeginnerTaskQuestionPage(final Task task) {
 		super("Display Questions");
 		setTitle("Configuring Selected Task: " + task.getDescription());
 		setDescription(Constants.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.task = task;
 	}
-	
 
 	@Override
 	public boolean isPageComplete() {
@@ -195,7 +194,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		gd_question.widthHint = 750;
 		label.setLayoutData(gd_question);
 		label.setText(question.getQuestionText());
-		
+
 		final Composite answerPanel = new Composite(parent, SWT.NONE);
 		final GridLayout answerLayout = new GridLayout();
 		answerLayout.numColumns = 4;
@@ -241,7 +240,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					if (shouldBreak && i + 2 == noOfAnswers) {
 						new Label(answerPanel, SWT.NULL);
 					}
-					
+
 					final Group finalRadioNote = radioNoteControl;
 					final String ans = answers.get(i).getValue();
 					radioButtons[i] = new Button(answerPanel, SWT.RADIO);
@@ -262,7 +261,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						}
 					});
 				}
-				
+
 				Answer evalAnswer = question.getEnteredAnswer();
 				if (evalAnswer == null) {
 					evalAnswer = question.getDefaultAnswer();
@@ -421,7 +420,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					}
 
 					radioButton.addSelectionListener(new SelectionAdapter() {
-						
+
 						@Override
 						public void widgetSelected(SelectionEvent e) {
 							updateRBGroup(question, rbgroups, answer, (Button) e.getSource());

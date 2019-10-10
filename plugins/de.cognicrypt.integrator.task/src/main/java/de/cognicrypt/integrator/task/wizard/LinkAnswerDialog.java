@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.wizard;
@@ -34,8 +29,7 @@ public class LinkAnswerDialog extends Dialog {
 	 * Create the dialog.
 	 *
 	 * @param parentShell
-	 * @param question
-	 *        represents the current question
+	 * @param question represents the current question
 	 * @param listOfAllQuestions
 	 */
 	public LinkAnswerDialog(final Shell parent, final Question question, final ArrayList<Question> listOfAllQuestions) {
@@ -56,7 +50,7 @@ public class LinkAnswerDialog extends Dialog {
 		container.setLayout(new GridLayout(2, false));
 		getShell().setMinimumSize(700, 400);
 
-		//executes when the question type is text
+		// executes when the question type is text
 		if (this.question.getElement().equals(Constants.GUIElements.text)) {
 			final Label lblLinkAnswersTabMessage = new Label(container, SWT.NONE);
 			lblLinkAnswersTabMessage.setText("This type of question does not need to link answers");
@@ -69,7 +63,7 @@ public class LinkAnswerDialog extends Dialog {
 			final Label qstnTxt = new Label(container, SWT.NONE);
 			qstnTxt.setText(this.question.getQuestionText());
 
-			//Group containing the headers
+			// Group containing the headers
 			final Group groupHeaderLinkAnswer = new Group(container, SWT.NONE);
 			final GridData gd_groupHeaderLinkAnswer = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 			groupHeaderLinkAnswer.setLayoutData(gd_groupHeaderLinkAnswer);
@@ -100,7 +94,6 @@ public class LinkAnswerDialog extends Dialog {
 	}
 
 	/**
-	 *
 	 * @return the current question
 	 */
 	public Question getQuestion() {
@@ -117,7 +110,6 @@ public class LinkAnswerDialog extends Dialog {
 	}
 
 	/**
-	 *
 	 * @return listOfAllQuestions
 	 */
 	public ArrayList<Question> getListOfAllQuestions() {

@@ -79,15 +79,15 @@ public class TaskSelectionPage extends WizardPage {
 		gd_selectProjectLabel.widthHint = 600;
 		useCaseDescriptionLabel.setLayoutData(gd_selectProjectLabel);
 		Font a = useCaseDescriptionLabel.getFont();
-		useCaseDescriptionLabel.setFont(new Font(useCaseDescriptionLabel.getDisplay(), new FontData(a.getFontData()[0].getName(), 12, SWT.None)) );
+		useCaseDescriptionLabel.setFont(new Font(useCaseDescriptionLabel.getDisplay(), new FontData(a.getFontData()[0].getName(), 12, SWT.None)));
 
-		final List<Button> buttons = new ArrayList<Button>(); 
+		final List<Button> buttons = new ArrayList<Button>();
 		final List<Image> unclickedImages = new ArrayList<Image>();
 		new Label(this.container, SWT.NONE);
 		for (Task ccTask : tasks) {
 			final Image taskImage = loadImage(ccTask.getImage());
 			unclickedImages.add(taskImage);
-			
+
 			final Button taskButton = createImageButton(this.container, taskImage, ccTask.getDescription());
 			buttons.add(taskButton);
 		}

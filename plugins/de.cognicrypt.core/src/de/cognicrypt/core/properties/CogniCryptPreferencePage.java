@@ -20,7 +20,7 @@ import de.cognicrypt.core.Activator;
 public class CogniCryptPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
 	private static List<PreferenceListener> preferenceListeners = new ArrayList<>();
-	
+
 	@Override
 	public void init(IWorkbench CogniWorkbench) {}
 
@@ -33,7 +33,7 @@ public class CogniCryptPreferencePage extends PreferencePage implements IWorkben
 		new Label(container, SWT.NONE);
 		final ExpandableComposite collap = new ExpandableComposite(container, SWT.Collapse);
 		collap.setText("Advanced Options");
-		
+
 		final Composite advancedOptions = new Composite(collap, SWT.None);
 		collap.setClient(advancedOptions);
 		advancedOptions.setLayout(new RowLayout(SWT.VERTICAL));
@@ -64,19 +64,19 @@ public class CogniCryptPreferencePage extends PreferencePage implements IWorkben
 		super.performDefaults();
 		setDefaultValues();
 	}
-	
+
 	public static void registerPreferenceListener(PreferenceListener listener) {
 		preferenceListeners.add(listener);
 	}
-	
+
 	public static void notifyBasicPreferenceListeners(Composite basic) {
 		preferenceListeners.stream().forEach(e -> e.compileBasicPreferences(basic));
 	}
-	
+
 	public static void notifyAdvancedPreferenceListeners(Composite advanced) {
 		preferenceListeners.stream().forEach(e -> e.compileAdvancedPreferences(advanced));
 	}
-	
+
 	public static void setDefaultValues() {
 		preferenceListeners.parallelStream().forEach(e -> e.setDefaultValues());
 	}
@@ -84,5 +84,5 @@ public class CogniCryptPreferencePage extends PreferencePage implements IWorkben
 	private void storeValues() {
 		preferenceListeners.parallelStream().forEach(e -> e.storeValues());
 	}
-	
+
 }

@@ -135,7 +135,7 @@ public class LocatorPage extends WizardPage {
 		if (target instanceof IProject) {
 			return Utils.checkIfJavaProjectSelected((IProject) target);
 		}
-		
+
 		return true;
 	}
 

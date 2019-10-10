@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 /**
@@ -106,8 +101,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 		}
 		/*
-		 * This is for debugging only. To be removed for the final version. TODO Please add checks on the pages after mode selection to mark those pages as completed, or restrict
-		 * the finish button.
+		 * This is for debugging only. To be removed for the final version. TODO Please add checks on the pages after mode selection to mark those pages as completed, or restrict the
+		 * finish button.
 		 */
 		final IWizardPage nextPage = super.getNextPage();
 		if (nextPage != null) {
@@ -131,8 +126,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	/**
 	 * Extract data from highLevelQuestions page and forward it to pageForLinkAnswers at runtime
 	 *
-	 * @param page
-	 *        highLevelQuestions page is received
+	 * @param page highLevelQuestions page is received
 	 * @return true always
 	 */
 	protected boolean nextPressed(final IWizardPage page) {
@@ -153,7 +147,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						for (final Question question : listOfAllQuestions) {
 							comp.getListOfAllQuestions().add(question);
 							comp.addQuestionUIElements(question, null, true);
-							//to rebuild the UI
+							// to rebuild the UI
 							comp.updateLayout();
 						}
 
@@ -161,7 +155,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				}
 			}
 
-		} catch (final Exception ex) {
+		}
+		catch (final Exception ex) {
 			Activator.getDefault().logError(ex);
 
 		}
@@ -173,10 +168,10 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 		// each case needs to be handled separately. By default all cases will return false.
 		/*
-		 * switch(this.getName()){ case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD: if(((boolean)compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_IS_GUIDED_MODE_CHOSEN) ==
-		 * true || (boolean)compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_IS_GUIDED_MODE_FORCED) == true) && !this.isPageComplete()){ return true; } case
-		 * Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION: return false; case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION: return false; case
-		 * Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS: return false; default: return false; }
+		 * switch(this.getName()){ case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD: if(((boolean)compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_IS_GUIDED_MODE_CHOSEN) == true
+		 * || (boolean)compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_IS_GUIDED_MODE_FORCED) == true) && !this.isPageComplete()){ return true; } case
+		 * Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION: return false; case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION: return false; case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
+		 * return false; default: return false; }
 		 */
 		return super.canFlipToNextPage();
 
@@ -230,8 +225,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	/**
 	 * The composite is maintained as a global variable to have access to it as part of the page object.
 	 *
-	 * @param compositeChoiceForModeOfWizard
-	 *        the compositeChoiceForModeOfWizard to set
+	 * @param compositeChoiceForModeOfWizard the compositeChoiceForModeOfWizard to set
 	 */
 	private void setCompositeChoiceForModeOfWizard(final CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard) {
 		this.compositeChoiceForModeOfWizard = compositeChoiceForModeOfWizard;
@@ -247,8 +241,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	/**
 	 * The composite is maintained as a global variable to have access to it as part of the page object.
 	 *
-	 * @param compositeToHoldGranularUIElements
-	 *        the compositeToHoldGranularUIElements to set
+	 * @param compositeToHoldGranularUIElements the compositeToHoldGranularUIElements to set
 	 */
 	public void setCompositeToHoldGranularUIElements(final CompositeToHoldGranularUIElements compositeToHoldGranularUIElements) {
 		this.compositeToHoldGranularUIElements = compositeToHoldGranularUIElements;

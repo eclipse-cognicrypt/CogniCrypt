@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.wizard;
@@ -78,17 +73,18 @@ public class XslPage extends PageForTaskIntegratorWizard {
 		gdXSLComposite.heightHint = 0;
 		getCompositeForXsl().setLayoutData(gdXSLComposite);
 
-		final Button btnAddXSLTag = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
+		final Button btnAddXSLTag = new Button(container, SWT.PUSH);// Add button to add the xsl tag in the code
 		btnAddXSLTag.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 		btnAddXSLTag.setText("Add Xsl Tag");
 
-		final Button btnReadCode = new Button(container, SWT.PUSH);//Add button to add the xsl tag in the code
+		final Button btnReadCode = new Button(container, SWT.PUSH);// Add button to add the xsl tag in the code
 		btnReadCode.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 		btnReadCode.setText("Get the code");
 
 		btnReadCode.addSelectionListener(new SelectionAdapter() {
 			/*
 			 * (non-Javadoc)
+			 * 
 			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
 			 */
 
@@ -101,12 +97,12 @@ public class XslPage extends PageForTaskIntegratorWizard {
 					final MessageBox infoBox = new MessageBox(getShell(), SWT.ICON_INFORMATION | SWT.OK);
 					infoBox.setText("Updating code");
 					infoBox.setMessage(
-						"Some code already appears to be added. \n\nIf you choose an XSL file, all of the existing code will be replaced. If you choose a Java or text file, the contents of said file will be added at the location of the cursor.");
+							"Some code already appears to be added. \n\nIf you choose an XSL file, all of the existing code will be replaced. If you choose a Java or text file, the contents of said file will be added at the location of the cursor.");
 					infoBox.open();
 				}
 				final FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
 
-				fileDialog.setFilterExtensions(new String[] { "*.xsl", "*.java", "*.txt" });
+				fileDialog.setFilterExtensions(new String[] {"*.xsl", "*.java", "*.txt"});
 				fileDialog.setText("Choose the code file:");
 
 				final String fileDialogResult = fileDialog.open();
@@ -126,16 +122,16 @@ public class XslPage extends PageForTaskIntegratorWizard {
 				final int scrollbarPosY = getCompositeForXsl().getXslTxtBox().getTopPixel();
 
 				// this is needed to get the name and the description of the task from the wizard.
-				final ModelAdvancedMode objectForDataInGuidedMode = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD))
-					.getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
+				final ModelAdvancedMode objectForDataInGuidedMode =
+						((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
 				final String taskName = objectForDataInGuidedMode.getNameOfTheTask();
 				final String taskDescription = objectForDataInGuidedMode.getTaskDescription();
 
 				// Get the path for the javascript file from the clafer page.
 				final String jsFilePath = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getJSFilePath();
 				// Get the questions from the earlier pages.
-				final List<Question> questions = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_LINK_ANSWERS)).getCompositeToHoldGranularUIElements()
-					.getListOfAllQuestions();
+				final List<Question> questions =
+						((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_LINK_ANSWERS)).getCompositeToHoldGranularUIElements().getListOfAllQuestions();
 
 				XSLStringGenerationAndManipulation.getListOfValidSuggestionsForXSLTags(jsFilePath, taskName, taskDescription, questions, getTagValueTagData());
 				XSLTagDialog dialog;
@@ -200,13 +196,13 @@ public class XslPage extends PageForTaskIntegratorWizard {
 	}
 
 	public void setTreeViewerInput() {
-		final ClaferModel inputClafer = (((TaskIntegrationWizard) getWizard()).getTIPageByName(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompositeToHoldGranularUIElements()
-			.getClaferModel();
+		final ClaferModel inputClafer =
+				(((TaskIntegrationWizard) getWizard()).getTIPageByName(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompositeToHoldGranularUIElements().getClaferModel();
 
-		final List<Question> questions = ((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_LINK_ANSWERS)).getCompositeToHoldGranularUIElements()
-			.getListOfAllQuestions();
+		final List<Question> questions =
+				((PageForTaskIntegratorWizard) getWizard().getPage(Constants.PAGE_NAME_FOR_LINK_ANSWERS)).getCompositeToHoldGranularUIElements().getListOfAllQuestions();
 
-		final Object[] treeViewerInput = new Object[] { inputClafer, questions };
+		final Object[] treeViewerInput = new Object[] {inputClafer, questions};
 
 		this.treeViewer.setInput(treeViewerInput);
 		this.treeViewer.refresh();
@@ -224,8 +220,7 @@ public class XslPage extends PageForTaskIntegratorWizard {
 	/**
 	 * The composite is maintained as a global variable to have access to it as part of the page object.
 	 *
-	 * @param compositeForXsl
-	 *        the compositeForXsl to set
+	 * @param compositeForXsl the compositeForXsl to set
 	 */
 	private void setCompositeForXsl(final CompositeForXsl compositeForXsl) {
 		this.compositeForXsl = compositeForXsl;
@@ -240,8 +235,7 @@ public class XslPage extends PageForTaskIntegratorWizard {
 	}
 
 	/**
-	 * @param tagValueTagData
-	 *        the tagValueTagData to set
+	 * @param tagValueTagData the tagValueTagData to set
 	 */
 	public void setTagValueTagData(final HashMap<String, String> tagValueTagData) {
 		this.tagValueTagData = tagValueTagData;
@@ -250,8 +244,7 @@ public class XslPage extends PageForTaskIntegratorWizard {
 	/**
 	 * insert the given {@link String} text into the text box
 	 *
-	 * @param text
-	 *        {@link String} to be placed at the cursor position
+	 * @param text {@link String} to be placed at the cursor position
 	 */
 	private void insertAtCursor(final String text) {
 		final Point selection = getCompositeForXsl().getXslTxtBox().getSelection();

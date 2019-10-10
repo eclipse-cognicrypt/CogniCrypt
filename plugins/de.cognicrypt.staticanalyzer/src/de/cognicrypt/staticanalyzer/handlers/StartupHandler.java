@@ -79,7 +79,8 @@ public class StartupHandler implements IStartup {
 												return false;
 											}
 										}
-									} catch (final Exception ex) {
+									}
+									catch (final Exception ex) {
 										return false;
 									}
 								}
@@ -107,7 +108,8 @@ public class StartupHandler implements IStartup {
 							});
 						}
 					}
-				} catch (final CoreException e) {}
+				}
+				catch (final CoreException e) {}
 
 				if (changedJavaElements.isEmpty()) {
 					Activator.getDefault().logInfo("No changed resource found. Abort.");

@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.widgets;
@@ -49,8 +44,8 @@ public class GroupForLinkAnswer extends Group {
 		} else {
 			if (currentQuestion.getId() != listOfAllQuestions.size() - 1) {
 				/**
-				 * Adds Default option to the combo when the current question is not the last question in the list Upon Default selection means the answer points to the next
-				 * question in the list
+				 * Adds Default option to the combo when the current question is not the last question in the list Upon Default selection means the answer points to the next question in
+				 * the list
 				 */
 				comboForLinkAnswers.add("Default");
 			}

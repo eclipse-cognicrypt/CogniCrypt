@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.primitive.wizard;
@@ -28,7 +23,6 @@ import org.eclipse.swt.widgets.Text;
 import de.cognicrypt.integrator.primitive.providerUtils.UserJavaProject;
 
 /**
- *
  * @author Ahmed Ben Tahar
  */
 public class JavaProjectBrowserPage extends WizardPage {
@@ -60,7 +54,7 @@ public class JavaProjectBrowserPage extends WizardPage {
 
 		this.text = new Text(container, SWT.BORDER | SWT.READ_ONLY);
 		this.text.setEditable(true);
-		//gd_text.widthHint = 107;
+		// gd_text.widthHint = 107;
 		this.text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		this.text.addModifyListener(e -> {
 			this.selectedJavaFile = new File(getAbsolutePath());
@@ -77,14 +71,14 @@ public class JavaProjectBrowserPage extends WizardPage {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				final FileDialog dialog = new FileDialog(btnBrowse.getShell(), SWT.NULL);
-				dialog.setFilterExtensions(new String[] { ".project" });
+				dialog.setFilterExtensions(new String[] {".project"});
 				dialog.setFilterPath("c:\\");
 				JavaProjectBrowserPage.this.path = dialog.open();
 				if (JavaProjectBrowserPage.this.path != null) {
 
 					final File file = new File(JavaProjectBrowserPage.this.path);
 					if (file.isFile()) {
-						displayFiles(new String[] { file.toString() });
+						displayFiles(new String[] {file.toString()});
 					} else {
 						displayFiles(file.list());
 					}

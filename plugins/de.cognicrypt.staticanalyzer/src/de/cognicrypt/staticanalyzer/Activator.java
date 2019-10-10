@@ -42,7 +42,7 @@ public class Activator extends AbstractUIPlugin {
 		Activator.plugin = this;
 		resReporters = new ArrayList<ResultsCCUIListener>();
 		PlatformUI.getWorkbench().addWorkbenchListener(new ShutDownHandler());
-		
+
 		CogniCryptPreferencePage.registerPreferenceListener(new StaticAnalyzerPreferences());
 	}
 
@@ -98,7 +98,7 @@ public class Activator extends AbstractUIPlugin {
 	public static List<ResultsCCUIListener> getResultsReporters() {
 		return resReporters;
 	}
-	
+
 	@Override
 	public IPreferenceStore getPreferenceStore() {
 		return de.cognicrypt.core.Activator.getDefault().getPreferenceStore();

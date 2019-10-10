@@ -20,13 +20,13 @@ public class GeneratorClass {
 		imports = new HashSet<String>();
 		methods = new ArrayList<GeneratorMethod>();
 	}
-	
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof GeneratorClass) {
 			GeneratorClass cmpClass = (GeneratorClass) obj;
-			return className.equals(cmpClass.getClassName()) && cmpClass.getMethods().size() == methods.size() && cmpClass.getMethods().stream().allMatch(meth -> methods.contains(meth));
+			return className.equals(cmpClass.getClassName()) && cmpClass.getMethods().size() == methods.size() && cmpClass.getMethods().stream()
+				.allMatch(meth -> methods.contains(meth));
 		}
 		return false;
 	}
@@ -39,15 +39,15 @@ public class GeneratorClass {
 	public void addMethod(GeneratorMethod meth) {
 		methods.add(meth);
 	}
-	
+
 	public void addImport(String imp) {
 		imports.add(imp);
 	}
-	
+
 	public void addImports(List<String> imports) {
 		this.imports.addAll(imports);
 	}
-	
+
 	public String getPackageName() {
 		return packageName;
 	}
@@ -79,19 +79,19 @@ public class GeneratorClass {
 	public List<GeneratorMethod> getMethods() {
 		return methods;
 	}
-	
-//	public GeneratorMethod getUseMethod() {
-//		return methods.stream().filter(e -> e.getName().equals("use" + this.className)).findFirst().get();
-//	}
-	
+
+	//	public GeneratorMethod getUseMethod() {
+	//		return methods.stream().filter(e -> e.getName().equals("use" + this.className)).findFirst().get();
+	//	}
+
 	public File getAssociatedJavaFile() {
 		return associatedFile;
 	}
-	
+
 	public void setSourceFile(File javaFile) {
 		associatedFile = javaFile;
 	}
-	
+
 	public String toString() {
 		StringBuilder classContent = new StringBuilder("package ");
 		classContent.append(packageName);
@@ -103,12 +103,12 @@ public class GeneratorClass {
 		}
 		classContent.append("\n");
 		classContent.append(modifier + " class " + className + " {\n");
-		
+
 		for (GeneratorMethod genMeth : methods) {
 			classContent.append(genMeth);
 			classContent.append("\n");
 		}
-		
+
 		classContent.append("}");
 		return classContent.toString();
 	}

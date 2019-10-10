@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.widgets;
@@ -105,8 +100,7 @@ public class GroupXSLTagAttribute extends Group {
 	/**
 	 * The attribute drop down needs to be updated after changes have been made to keep them consistent.
 	 *
-	 * @param listOfPossibleAttributes
-	 *        represents the possible attributes based on the attributes already selected.
+	 * @param listOfPossibleAttributes represents the possible attributes based on the attributes already selected.
 	 */
 	public void updateAttributeDropDown(final ArrayList<String> listOfPossibleAttributes) {
 		if (listOfPossibleAttributes != null) {
@@ -153,8 +147,7 @@ public class GroupXSLTagAttribute extends Group {
 	}
 
 	/**
-	 * @param selectedAttribute
-	 *        the selectedAttribute to set
+	 * @param selectedAttribute the selectedAttribute to set
 	 */
 	private void setSelectedAttribute(final XSLAttribute selectedAttribute) {
 		this.selectedAttribute = selectedAttribute;

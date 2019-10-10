@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.widgets;
@@ -96,10 +91,8 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	/**
 	 * updates a given feature with a new version
 	 *
-	 * @param originalClaferFeature
-	 *        the feature to be updated
-	 * @param modifiedClaferFeature
-	 *        the updated version of the feature
+	 * @param originalClaferFeature the feature to be updated
+	 * @param modifiedClaferFeature the updated version of the feature
 	 */
 	public void modifyClaferFeature(final ClaferFeature originalClaferFeature, final ClaferFeature modifiedClaferFeature) {
 		for (ClaferFeature featureUnderConsideration : this.claferModel) {
@@ -119,7 +112,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		// Update the array list of clafer features.
 		setClaferModel(claferModel);
 		new CompositeGranularUIForHighLevelQuestions((Composite) getContent(), // the content composite of ScrolledComposite.
-			SWT.NONE, question, linkAnswerPage);
+				SWT.NONE, question, linkAnswerPage);
 		setMinSize(((Composite) getContent()).computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
 	}
@@ -127,8 +120,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	/**
 	 * Moves the question up in the list
 	 *
-	 * @param question
-	 *        the question that is to be move up in the list
+	 * @param question the question that is to be move up in the list
 	 */
 	public void moveUpTheQuestion(final Question question) {
 		int questionToBeMoveUp = 0;
@@ -148,8 +140,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	/**
 	 * Moves the question down in the list
 	 *
-	 * @param question
-	 *        the question that is to be move down in the list
+	 * @param question the question that is to be move down in the list
 	 */
 	public void moveDownTheQuestion(final Question question) {
 		int questionToBeMoveUp = 0;
@@ -169,8 +160,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	/**
 	 * Deletes the question
 	 *
-	 * @param questionToBeDeleted
-	 *        the question to be deleted
+	 * @param questionToBeDeleted the question to be deleted
 	 */
 	public void deleteQuestion(final Question questionToBeDeleted) {
 
@@ -232,10 +222,8 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	/**
 	 * Modifies the question details
 	 *
-	 * @param originalQuestion
-	 *        the original question
-	 * @param modifiedQuestion
-	 *        the modified question
+	 * @param originalQuestion the original question
+	 * @param modifiedQuestion the modified question
 	 */
 
 	public void modifyHighLevelQuestion(final Question originalQuestion, final Question modifiedQuestion) {
@@ -269,8 +257,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	}
 
 	/**
-	 * @param targetPageName
-	 *        the targetPageName to set
+	 * @param targetPageName the targetPageName to set
 	 */
 	private void setTargetPageName(final String targetPageName) {
 		this.targetPageName = targetPageName;
@@ -284,8 +271,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	}
 
 	/**
-	 * @param lowestWidgetYAxisValue
-	 *        the lowestWidgetYAxisValue to set
+	 * @param lowestWidgetYAxisValue the lowestWidgetYAxisValue to set
 	 */
 	public void setLowestWidgetYAxisValue(final int lowestWidgetYAxisValue) {
 		this.lowestWidgetYAxisValue = lowestWidgetYAxisValue + Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS;
@@ -307,8 +293,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	}
 
 	/**
-	 * @param listOfAllQuestions
-	 *        the listOfAllQuestions to set
+	 * @param listOfAllQuestions the listOfAllQuestions to set
 	 */
 	public void setListOfAllQuestions(final ArrayList<Question> listOfAllQuestions) {
 		this.listOfAllQuestions = listOfAllQuestions;

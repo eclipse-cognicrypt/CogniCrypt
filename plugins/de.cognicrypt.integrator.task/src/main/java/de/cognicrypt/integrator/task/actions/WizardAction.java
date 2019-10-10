@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.actions;
@@ -25,8 +20,8 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	public void run(final IAction arg0) {
 		Constants.WizardActionFromContextMenuFlag = false;
 		final WizardDialog dialog = new WizardDialog(new Shell(), new TaskIntegrationWizard());
-		//dialog.setPageSize(Constants.DEFAULT_SIZE_FOR_TI_WIZARD);
-		//dialog.setMinimumPageSize(Constants.DEFAULT_SIZE_FOR_COMPOSITES);
+		// dialog.setPageSize(Constants.DEFAULT_SIZE_FOR_TI_WIZARD);
+		// dialog.setMinimumPageSize(Constants.DEFAULT_SIZE_FOR_COMPOSITES);
 		dialog.open();
 	}
 

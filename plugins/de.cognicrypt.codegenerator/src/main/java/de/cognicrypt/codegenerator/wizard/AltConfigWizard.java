@@ -128,7 +128,7 @@ public class AltConfigWizard extends Wizard {
 		} else {
 			CodeGenerators generator = selectedTask.getCodeGen();
 			if (generator == CodeGenerators.CrySL) {
-				String selectedTemplate = selectedTask.getCodeTemplate(); 
+				String selectedTemplate = selectedTask.getCodeTemplate();
 				for (Answer resp : this.constraints.values()) {
 					selectedTemplate += resp.getOption();
 				}
@@ -137,9 +137,9 @@ public class AltConfigWizard extends Wizard {
 			} else if (generator == CodeGenerators.XSL) {
 				final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
 					.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
-	
+
 				instanceGenerator.generateInstances(this.constraints);
-	
+
 				if (instanceGenerator.getNoOfInstances() > 0) {
 					return addLocatorPage();
 				} else {
@@ -226,23 +226,24 @@ public class AltConfigWizard extends Wizard {
 				File templateFile = CodeGenUtils.getResourceFromWithin(selectedTask.getCodeTemplate()).listFiles()[0];
 				codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 				try {
-					String projectRelDir = Constants.outerFileSeparator + codeGenerator.getDeveloperProject().getSourcePath() + Constants.outerFileSeparator + Constants.PackageName + Constants.outerFileSeparator;
+					String projectRelDir = Constants.outerFileSeparator + codeGenerator.getDeveloperProject()
+						.getSourcePath() + Constants.outerFileSeparator + Constants.PackageName + Constants.outerFileSeparator;
 					String pathToTemplateFile = projectRelDir + templateFile.getName();
 					String resFileOSPath = "";
-					
+
 					IPath projectPath = targetFile.getProject().getRawLocation();
 					if (projectPath == null) {
-						projectPath = targetFile.getProject().getLocation(); 
+						projectPath = targetFile.getProject().getLocation();
 					}
 					resFileOSPath = projectPath.toOSString() + pathToTemplateFile;
-					
+
 					Files.createDirectories(Paths.get(projectPath.toOSString() + projectRelDir));
 					Files.copy(templateFile.toPath(), Paths.get(resFileOSPath), StandardCopyOption.REPLACE_EXISTING);
 					codeGenerator.getDeveloperProject().refresh();
-					
+
 					resetAnswers();
 					chosenConfig = new CrySLConfiguration(resFileOSPath, ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile));
- 				} catch (IOException | CoreException  e1) {
+				} catch (IOException | CoreException e1) {
 					Activator.getDefault().logError(e1);
 					return false;
 				}
@@ -255,8 +256,8 @@ public class AltConfigWizard extends Wizard {
 
 				// Initialize Code Generation
 				codeGenerator = new XSLBasedGenerator(targetFile, selectedTask.getCodeTemplate());
-				chosenConfig = new XSLConfiguration(instanceGenerator.getInstances().values().iterator().next(), this.constraints, codeGenerator.getDeveloperProject()
-					.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
+				chosenConfig = new XSLConfiguration(instanceGenerator.getInstances().values().iterator()
+					.next(), this.constraints, codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
 				break;
 			default:
 				return false;
@@ -268,7 +269,7 @@ public class AltConfigWizard extends Wizard {
 		} catch (CoreException e1) {
 			Activator.getDefault().logError(e1);
 		}
-		
+
 		waitingDialog.setVisible(false);
 		waitingDialog.dispose();
 		return ret;

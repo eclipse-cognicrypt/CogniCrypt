@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.widgets;
@@ -29,12 +24,9 @@ public class GroupConstraint extends Composite {
 	/**
 	 * Create the composite.
 	 *
-	 * @param parent
-	 *        Composite that contains the constraint
-	 * @param style
-	 *        SWT style identifiers
-	 * @param showRemoveButton
-	 *        whether or not to show a remove button next to the constraint
+	 * @param parent Composite that contains the constraint
+	 * @param style SWT style identifiers
+	 * @param showRemoveButton whether or not to show a remove button next to the constraint
 	 */
 	public GroupConstraint(final Composite parent, final int style, final ClaferConstraint constraint, final boolean showRemoveButton) {
 

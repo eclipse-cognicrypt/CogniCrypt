@@ -7,7 +7,6 @@ import java.util.List;
 
 import de.cognicrypt.codegenerator.generator.GeneratorClass;
 
-
 public class CrySLConfiguration extends Configuration {
 
 	private final GeneratorClass template;

@@ -339,7 +339,7 @@ public class CrySLCodeGenTest {
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(3, TestUtils.countMethods(encClassUnit));
 			assertEquals(5, TestUtils.countStatements(encClassUnit, "getKey"));
-			assertEquals(8, TestUtils.countStatements(encClassUnit, "sign"));
+			assertEquals(7, TestUtils.countStatements(encClassUnit, "sign"));
 			// assertEquals(14, TestUtils.countStatements(encClassUnit, "vfy"));
 		}
 		catch (JavaModelException e) {

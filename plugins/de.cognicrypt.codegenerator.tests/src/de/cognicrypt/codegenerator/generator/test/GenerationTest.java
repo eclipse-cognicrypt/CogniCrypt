@@ -14,6 +14,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.logging.Logger;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
@@ -22,6 +24,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
+import de.cognicrypt.codegenerator.generator.CrySLBasedCodeGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.testutilities.TestUtils;
@@ -49,6 +52,7 @@ public class GenerationTest {
 	Configuration configSecPassword;
 	DeveloperProject developerProject;
 	static int counter = 0;
+	IResource targetFile;
 
 	@After
 	public void tearDown() throws CoreException {
@@ -59,20 +63,22 @@ public class GenerationTest {
 	public void setUp() throws Exception {
 		GenerationTest.counter++;
 		this.testJavaProject = TestUtils.createJavaProject("TestProject_" + counter);
-		TestUtils.generateJavaClassInJavaProject(this.testJavaProject, "testPackage", "Test");
+		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, "testPackage", "Test");
 		this.encTask = TestUtils.getTask("Encryption");
-		this.generatorEnc = new XSLBasedGenerator(this.testJavaProject.getProject(), this.encTask.getCodeTemplate());
+		this.generatorEnc = new CrySLBasedCodeGenerator(targetFile);
 		this.secPasswordTask = TestUtils.getTask("SecurePassword");
-		this.generatorSecPassword = new XSLBasedGenerator(this.testJavaProject.getProject(), this.secPasswordTask.getCodeTemplate());
+		this.generatorSecPassword = new CrySLBasedCodeGenerator(targetFile);
 		this.developerProject = this.generatorEnc.getDeveloperProject();
 	}
 
 	/**
 	 * Test if the codegeneration for SymmetricEncrytion works, without any open class.
+	 * @throws IOException 
+	 * @throws CoreException 
 	 */
 	@Test
-	public void testCodeGeneration() {
-		this.configEnc = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.encTask);
+	public void testCodeGeneration() throws CoreException, IOException {
+		this.configEnc = TestUtils.createCrySLConfiguration("encryption", targetFile, generatorEnc, developerProject);
 		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
 		assertTrue(encCheck);
 	}
@@ -86,7 +92,7 @@ public class GenerationTest {
 		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, "testPackage", "Test.java");
 		TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", testClassUnit);
 
-		this.configEnc = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.encTask);
+		this.configEnc = TestUtils.createCrySLConfiguration("encryption", testClassUnit.getResource(), generatorEnc, this.developerProject);
 		this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
 		assertEquals(1, countMethods(testClassUnit));
 	}
@@ -97,13 +103,13 @@ public class GenerationTest {
 	@Test
 	public void testCodeGenerationTwoTimesNoClassOpen() throws CoreException, IOException {
 
-		this.configEnc = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.encTask);
+		this.configEnc = TestUtils.createCrySLConfiguration("encryption", targetFile, generatorEnc, this.developerProject);
 		this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
 
-		this.configSecPassword = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.secPasswordTask);
+		this.configSecPassword = TestUtils.createCrySLConfiguration("securePassword", targetFile, generatorSecPassword, this.developerProject);
 		this.generatorSecPassword.generateCodeTemplates(this.configSecPassword, this.secPasswordTask.getAdditionalResources());
 
-		final ICompilationUnit outputUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PackageName, "Output.java");
+		final ICompilationUnit outputUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PackageNameAsName, "Output.java");
 		assertEquals(2, countMethods(outputUnit));
 	}
 
@@ -112,12 +118,12 @@ public class GenerationTest {
 	 */
 	// @Test
 	public void testCodeGenerationInEncClass() throws CoreException, IOException {
-		this.configEnc = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.encTask);
+		this.configEnc = TestUtils.createCrySLConfiguration("encryption", targetFile, generatorEnc, this.developerProject);
 		this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
 		final ICompilationUnit encUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PackageName, "Enc.java");
 		TestUtils.openJavaFileInWorkspace(this.developerProject, Constants.PackageName, encUnit);
 
-		this.configSecPassword = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.secPasswordTask);
+		this.configSecPassword = TestUtils.createCrySLConfiguration("securePassword", targetFile, generatorSecPassword, this.developerProject);
 		this.generatorSecPassword.generateCodeTemplates(this.configSecPassword, this.secPasswordTask.getAdditionalResources());
 
 		final ICompilationUnit outputUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PackageName, "Output.java");

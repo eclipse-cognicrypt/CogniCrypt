@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 /**
@@ -46,7 +43,6 @@ import de.cognicrypt.utils.Utils;
 
 /**
  * @author rajiv
- *
  */
 public class FileUtilitiesTest {
 
@@ -79,7 +75,8 @@ public class FileUtilitiesTest {
 
 	@Before
 	public void setLocations() throws IOException {
-		this.testResourceLocation = "src" + Constants.innerFileSeparator + "test" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator + "taskintegrator" + Constants.innerFileSeparator + "FileUtilitiesTest" + Constants.innerFileSeparator;
+		this.testResourceLocation = "src" + Constants.innerFileSeparator + "test" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator + "taskintegrator"
+				+ Constants.innerFileSeparator + "FileUtilitiesTest" + Constants.innerFileSeparator;
 		this.validXSLFileLocation = CodeGenUtils.getResourceFromWithin(this.testResourceLocation + "TestValidXSL.xsl");
 		this.validJSONFileLocation = CodeGenUtils.getResourceFromWithin(this.testResourceLocation + "TestValidJSON.json");
 		this.validCFRFileLocation = CodeGenUtils.getResourceFromWithin(this.testResourceLocation + "TestValidCFR.cfr");
@@ -98,8 +95,7 @@ public class FileUtilitiesTest {
 		}
 
 		Files.copy(this.locationOfTasksFile.toPath(), this.tmpLocationOfTasksFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
-		Files.copy(this.locationOfPluginFile.toPath().toAbsolutePath(), this.tmpLocationOfPluginFile.toPath(), StandardCopyOption.REPLACE_EXISTING,
-			StandardCopyOption.COPY_ATTRIBUTES);
+		Files.copy(this.locationOfPluginFile.toPath().toAbsolutePath(), this.tmpLocationOfPluginFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
 
 		this.invalidHelpFileLocation = Utils.getResourceFromWithin(this.testResourceLocation + "TestInvalidHelp.xml");
 		this.invalidAdditionalResource = Utils.getResourceFromWithin(this.testResourceLocation + "TestInvalidAdditionalResources");
@@ -107,8 +103,7 @@ public class FileUtilitiesTest {
 	}
 
 	/**
-	 * Test method for
-	 * {@link de.cognicrypt.codegenerator.taskintegrator.controllers.FileUtilities#writeFiles(java.io.File, java.io.File, java.io.File, java.io.File, java.io.File)}.
+	 * Test method for {@link de.cognicrypt.codegenerator.taskintegrator.controllers.FileUtilities#writeFiles(java.io.File, java.io.File, java.io.File, java.io.File, java.io.File)}.
 	 */
 	@Test
 	public void testWriteFilesMinusAdditionalResources() {
@@ -123,8 +118,8 @@ public class FileUtilitiesTest {
 	@Test
 	public void testWriteFilesWithAdditionalResources() {
 		final FileUtilities fileUtilities = new FileUtilities(this.tempTaskName);
-		final String result = fileUtilities.writeFiles(this.validCFRFileLocation, this.validJSONFileLocation, this.validXSLFileLocation, this.validAdditionalResource,
-			this.validHelpFileLocation);
+		final String result =
+				fileUtilities.writeFiles(this.validCFRFileLocation, this.validJSONFileLocation, this.validXSLFileLocation, this.validAdditionalResource, this.validHelpFileLocation);
 		assertFileCreation(result);
 	}
 
@@ -162,7 +157,7 @@ public class FileUtilitiesTest {
 	 * Test method for {@link de.cognicrypt.codegenerator.taskintegrator.controllers.FileUtilities#updateThePluginXMLFileWithHelpData(java.lang.String)}.
 	 *
 	 * @throws DocumentException
-	 * @throws MalformedURLException 
+	 * @throws MalformedURLException
 	 */
 	@Test
 	public void testUpdateThePluginXMLFileWithHelpData() throws DocumentException, MalformedURLException {
@@ -185,8 +180,8 @@ public class FileUtilitiesTest {
 						final Element currentHelpFileContext = helpFileContext.next();
 						for (final Iterator<Attribute> it = currentHelpFileContext.attributeIterator(); it.hasNext();) {
 							final Attribute file = it.next();
-							if (file.getName().equals("file") && file.getValue().equals(
-								"src" + Constants.innerFileSeparator + "main" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator + "Help" + Constants.innerFileSeparator + this.tempTaskName + ".xml")) {
+							if (file.getName().equals("file") && file.getValue().equals("src" + Constants.innerFileSeparator + "main" + Constants.innerFileSeparator + "resources"
+									+ Constants.innerFileSeparator + "Help" + Constants.innerFileSeparator + this.tempTaskName + ".xml")) {
 								isSuccessfulWrite = true;
 							}
 						}
@@ -230,7 +225,7 @@ public class FileUtilitiesTest {
 			assertTrue(copiedAdditionalResourcesNumber == this.validAdditionalResource.listFiles().length);
 		}
 
-		//Utils.getResourceFromWithin(validAdditionalResource.getPath()).listFiles();
+		// Utils.getResourceFromWithin(validAdditionalResource.getPath()).listFiles();
 		assertTrue(this.copiedCFRFIle.exists());
 		assertTrue(this.generatedJSFIle.exists());
 		assertTrue(this.copiedJSONFIle.exists());
@@ -276,8 +271,7 @@ public class FileUtilitiesTest {
 	/**
 	 * Return the string from the XSL document.
 	 *
-	 * @param isValid
-	 *        Switch for valid invalid files.
+	 * @param isValid Switch for valid invalid files.
 	 * @return
 	 * @throws DocumentException
 	 * @throws IOException
@@ -310,16 +304,16 @@ public class FileUtilitiesTest {
 	/**
 	 * Test with invalid files.
 	 *//*
-		 * @Test public void testWriteFilesWithAdditionalResourcesInvalidFiles() { File invalidJSONFileLocation = new File(testResourceLocation + "TestInvalidJSON.json"); File
-		 * invalidCFRFileLocation = new File(testResourceLocation + "TestInvalidCFR.cfr"); if (invalidXSLFileLocation.exists() && invalidJSONFileLocation.exists() &&
-		 * invalidCFRFileLocation.exists() && invalidHelpFileLocation.exists() && invalidAdditionalResource .exists()) { FileUtilities fileUtilities = new
-		 * FileUtilities(tempTaskName); String result = fileUtilities.writeFiles(invalidCFRFileLocation, invalidJSONFileLocation, invalidXSLFileLocation, invalidAdditionalResource,
-		 * invalidHelpFileLocation); File[] filesAtAdditionalResources = invalidAdditionalResource.listFiles(); assertTrue(result.contains(
-		 * "Either the compilation failed, or the provided name for the Task does not match the one in the Clafer model. Please note : the name must be capitalized."));
-		 * assertTrue(result.contains("The contents of the file " + invalidJSONFileLocation.getName() + " are invalid.")); assertTrue(result.contains("The contents of the file " +
-		 * invalidXSLFileLocation.getName() + " are invalid.")); assertTrue(result.contains("The contents of the file " + filesAtAdditionalResources[0].getName() +
-		 * " are invalid.")); assertTrue(result.contains("The contents of the file " + invalidHelpFileLocation.getName() + " are invalid.")); } }
-		 */
+			 * @Test public void testWriteFilesWithAdditionalResourcesInvalidFiles() { File invalidJSONFileLocation = new File(testResourceLocation + "TestInvalidJSON.json"); File
+			 * invalidCFRFileLocation = new File(testResourceLocation + "TestInvalidCFR.cfr"); if (invalidXSLFileLocation.exists() && invalidJSONFileLocation.exists() &&
+			 * invalidCFRFileLocation.exists() && invalidHelpFileLocation.exists() && invalidAdditionalResource .exists()) { FileUtilities fileUtilities = new
+			 * FileUtilities(tempTaskName); String result = fileUtilities.writeFiles(invalidCFRFileLocation, invalidJSONFileLocation, invalidXSLFileLocation, invalidAdditionalResource,
+			 * invalidHelpFileLocation); File[] filesAtAdditionalResources = invalidAdditionalResource.listFiles(); assertTrue(result.contains(
+			 * "Either the compilation failed, or the provided name for the Task does not match the one in the Clafer model. Please note : the name must be capitalized."));
+			 * assertTrue(result.contains("The contents of the file " + invalidJSONFileLocation.getName() + " are invalid.")); assertTrue(result.contains("The contents of the file " +
+			 * invalidXSLFileLocation.getName() + " are invalid.")); assertTrue(result.contains("The contents of the file " + filesAtAdditionalResources[0].getName() + " are invalid."));
+			 * assertTrue(result.contains("The contents of the file " + invalidHelpFileLocation.getName() + " are invalid.")); } }
+			 */
 
 	/**
 	 * Test method for
@@ -328,11 +322,11 @@ public class FileUtilitiesTest {
 	 * @throws DocumentException
 	 * @throws IOException
 	 *//*
-		 * @Test public void testWriteFilesWithDataInvalidResourceInvalidXSL() throws IOException { FileUtilities fileUtilities = new FileUtilities(tempTaskName); String result =
-		 * fileUtilities.writeFiles(getListClaferModel(), getListOfQuestions(), getXSLString(false), invalidAdditionalResource);
-		 * assertTrue(result.contains("The contents of the file " + invalidXSLFileLocation.getName() + " are invalid.")); File[] filesAtAdditionalResources =
-		 * invalidAdditionalResource.listFiles(); assertTrue(result.contains("The contents of the file " + filesAtAdditionalResources[0].getName() + " are invalid.")); }
-		 */
+			 * @Test public void testWriteFilesWithDataInvalidResourceInvalidXSL() throws IOException { FileUtilities fileUtilities = new FileUtilities(tempTaskName); String result =
+			 * fileUtilities.writeFiles(getListClaferModel(), getListOfQuestions(), getXSLString(false), invalidAdditionalResource);
+			 * assertTrue(result.contains("The contents of the file " + invalidXSLFileLocation.getName() + " are invalid.")); File[] filesAtAdditionalResources =
+			 * invalidAdditionalResource.listFiles(); assertTrue(result.contains("The contents of the file " + filesAtAdditionalResources[0].getName() + " are invalid.")); }
+			 */
 
 	/**
 	 * Replacing the tests for invalid data with the incorrect NullPointerException. This is done because the error handling everywhere uses the Activator class, and this class is
@@ -341,8 +335,8 @@ public class FileUtilitiesTest {
 	@Test(expected = NullPointerException.class)
 	public void invalidJSONFileTest() {
 		final File invalidJSONFileLocation = CodeGenUtils.getResourceFromWithin(this.testResourceLocation + "TestInvalidJSON.json");
-		if (this.validXSLFileLocation.exists() && invalidJSONFileLocation.exists() && this.validCFRFileLocation.exists() && this.validHelpFileLocation
-			.exists() && this.validAdditionalResource.exists()) {
+		if (this.validXSLFileLocation.exists() && invalidJSONFileLocation.exists() && this.validCFRFileLocation.exists() && this.validHelpFileLocation.exists()
+				&& this.validAdditionalResource.exists()) {
 			final FileUtilities fileUtilities = new FileUtilities(this.tempTaskName);
 			fileUtilities.writeFiles(this.validCFRFileLocation, invalidJSONFileLocation, this.validXSLFileLocation, this.validAdditionalResource, this.validHelpFileLocation);
 		}
@@ -355,8 +349,8 @@ public class FileUtilitiesTest {
 	@Test(expected = NullPointerException.class)
 	public void invalidCFRFileTest() {
 		final File invalidCFRFileLocation = CodeGenUtils.getResourceFromWithin(this.testResourceLocation + "TestInvalidCFR.cfr");
-		if (this.validXSLFileLocation.exists() && this.validJSONFileLocation.exists() && invalidCFRFileLocation.exists() && this.validHelpFileLocation
-			.exists() && this.validAdditionalResource.exists()) {
+		if (this.validXSLFileLocation.exists() && this.validJSONFileLocation.exists() && invalidCFRFileLocation.exists() && this.validHelpFileLocation.exists()
+				&& this.validAdditionalResource.exists()) {
 			final FileUtilities fileUtilities = new FileUtilities(this.tempTaskName);
 			fileUtilities.writeFiles(invalidCFRFileLocation, this.validJSONFileLocation, this.validXSLFileLocation, this.validAdditionalResource, this.validHelpFileLocation);
 		}
@@ -368,8 +362,8 @@ public class FileUtilitiesTest {
 	 */
 	@Test(expected = NullPointerException.class)
 	public void invalidXSLFileTest() {
-		if (this.invalidXSLFileLocation.exists() && this.validJSONFileLocation.exists() && this.validCFRFileLocation.exists() && this.validHelpFileLocation
-			.exists() && this.validAdditionalResource.exists()) {
+		if (this.invalidXSLFileLocation.exists() && this.validJSONFileLocation.exists() && this.validCFRFileLocation.exists() && this.validHelpFileLocation.exists()
+				&& this.validAdditionalResource.exists()) {
 			final FileUtilities fileUtilities = new FileUtilities(this.tempTaskName);
 			fileUtilities.writeFiles(this.validCFRFileLocation, this.validJSONFileLocation, this.invalidXSLFileLocation, this.validAdditionalResource, this.validHelpFileLocation);
 		}
@@ -381,8 +375,8 @@ public class FileUtilitiesTest {
 	 */
 	@Test(expected = NullPointerException.class)
 	public void invalidHelpFileTest() {
-		if (this.validXSLFileLocation.exists() && this.validJSONFileLocation.exists() && this.validCFRFileLocation.exists() && this.invalidHelpFileLocation
-			.exists() && this.validAdditionalResource.exists()) {
+		if (this.validXSLFileLocation.exists() && this.validJSONFileLocation.exists() && this.validCFRFileLocation.exists() && this.invalidHelpFileLocation.exists()
+				&& this.validAdditionalResource.exists()) {
 			final FileUtilities fileUtilities = new FileUtilities(this.tempTaskName);
 			fileUtilities.writeFiles(this.validCFRFileLocation, this.validJSONFileLocation, this.validXSLFileLocation, this.validAdditionalResource, this.invalidHelpFileLocation);
 		}
@@ -394,8 +388,8 @@ public class FileUtilitiesTest {
 	 */
 	@Test(expected = NullPointerException.class)
 	public void invalidAdditionalResourceFileTest() {
-		if (this.validXSLFileLocation.exists() && this.validJSONFileLocation.exists() && this.validCFRFileLocation.exists() && this.validHelpFileLocation
-			.exists() && this.invalidAdditionalResource.exists()) {
+		if (this.validXSLFileLocation.exists() && this.validJSONFileLocation.exists() && this.validCFRFileLocation.exists() && this.validHelpFileLocation.exists()
+				&& this.invalidAdditionalResource.exists()) {
 			final FileUtilities fileUtilities = new FileUtilities(this.tempTaskName);
 			fileUtilities.writeFiles(this.validCFRFileLocation, this.validJSONFileLocation, this.validXSLFileLocation, this.invalidAdditionalResource, this.validHelpFileLocation);
 		}

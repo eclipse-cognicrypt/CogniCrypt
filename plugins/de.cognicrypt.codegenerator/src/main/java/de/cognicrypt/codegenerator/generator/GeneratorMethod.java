@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.codegenerator.generator;
 
 import java.util.AbstractMap.SimpleEntry;
@@ -57,7 +67,7 @@ public class GeneratorMethod {
 		killStatements.append(statement);
 		killStatements.append("\n");
 	}
-	
+
 	public List<Entry<String, String>> getDeclaredVariables() {
 		return variableDeclarations;
 	}
@@ -154,11 +164,11 @@ public class GeneratorMethod {
 	public void clearBody() {
 		this.body.setLength(0);
 	}
-	
+
 	public void setNumberOfVariablesInTemplate(int number) {
 		templateVariables = number;
 	}
-	
+
 	public int getNumberOfVariablesInTemplate() {
 		return templateVariables;
 	}
@@ -170,6 +180,5 @@ public class GeneratorMethod {
 	public List<CodeGenCrySLRule> getRules() {
 		return cryslRules;
 	}
-	
-	
+
 }

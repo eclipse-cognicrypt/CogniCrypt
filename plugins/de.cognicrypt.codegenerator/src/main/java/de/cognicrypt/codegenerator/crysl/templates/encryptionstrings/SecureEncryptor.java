@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.codegenerator.crysl.templates.encryptionstrings;
 
 import java.io.IOException;
@@ -15,8 +25,8 @@ public class SecureEncryptor {
 		javax.crypto.SecretKey encryptionKey = null;
 		int keysize = 128;
 		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(salt, "next").includeClass("java.security.PBEKeySpec")
-			.addParameter(pwd, "password").addParameter(keysize, "keylength").includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey").includeClass("javax.crypto.SecretKeySpec")
-			.addReturnObject(encryptionKey).generate();
+			.addParameter(pwd, "password").addParameter(keysize, "keylength").includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey")
+			.includeClass("javax.crypto.SecretKeySpec").addReturnObject(encryptionKey).generate();
 
 		return encryptionKey;
 	}

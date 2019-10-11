@@ -1,5 +1,7 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
  * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -361,9 +363,8 @@ public class Utils {
 	}
 
 	public static List<CryptSLRule> readCrySLRules() {
-		return Stream
-				.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR).getAbsolutePath()), readCrySLRules(Utils.getResourceFromWithin(defaultRulesPath).getAbsolutePath()))
-				.flatMap(Collection::stream).collect(Collectors.toList());
+		return Stream.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR).getAbsolutePath()),
+				readCrySLRules(Utils.getResourceFromWithin(defaultRulesPath).getAbsolutePath())).flatMap(Collection::stream).collect(Collectors.toList());
 	}
 
 	protected static List<CryptSLRule> readCrySLRules(String rulesFolder) {

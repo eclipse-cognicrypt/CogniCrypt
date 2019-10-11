@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.widgets;
@@ -22,7 +19,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import de.cognicrypt.codegenerator.question.Answer;
-
 
 public class GroupAnswer extends Group {
 
@@ -135,10 +131,10 @@ public class GroupAnswer extends Group {
 	/*
 	 * public String retrieveAnswer(){ getAnswer=txtAnswer.getText(); return getAnswer; }
 	 *//**
-		 * set the answer text
-		 *//*
-			 * public void setAnswerValue(){ answer.setValue(this.retrieveAnswer()); }
-			 */
+			 * set the answer text
+			 *//*
+					 * public void setAnswerValue(){ answer.setValue(this.retrieveAnswer()); }
+					 */
 
 	@Override
 	protected void checkSubclass() {
@@ -153,8 +149,7 @@ public class GroupAnswer extends Group {
 	}
 
 	/**
-	 * @param answer
-	 *        the answer to set
+	 * @param answer the answer to set
 	 */
 	public void setAnswer(final Answer answer) {
 		this.answer = answer;

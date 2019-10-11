@@ -1,5 +1,7 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -269,11 +271,11 @@ public abstract class CodeGenerator {
 			return true;
 		}
 		try {
-			
 			File pathToAddFiles = CodeGenUtils.getResourceFromWithin(source);
 			if (pathToAddFiles == null || !pathToAddFiles.exists()) {
 				return true;
 			}
+
 			final File[] members = pathToAddFiles.listFiles();
 			if (members == null) {
 				Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY);

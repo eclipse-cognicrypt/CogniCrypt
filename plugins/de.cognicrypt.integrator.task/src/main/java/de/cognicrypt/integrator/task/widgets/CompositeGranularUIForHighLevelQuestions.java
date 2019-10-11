@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.widgets;
@@ -30,7 +27,6 @@ import de.cognicrypt.integrator.task.wizard.LinkAnswerDialog;
 
 /**
  * This class creates widgets to display the overview of the question details and creates button to add clafer/code dependency to the question
- *
  */
 
 public class CompositeGranularUIForHighLevelQuestions extends Composite {
@@ -61,7 +57,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		final CompositeModifyDeleteButtons grpModifyDeleteButtons = new CompositeModifyDeleteButtons(this, this.question);
 		grpModifyDeleteButtons.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
-		//Only visible for "pageForHighLevelQuestions" page
+		// Only visible for "pageForHighLevelQuestions" page
 		grpModifyDeleteButtons.setVisible(!linkAnswerPage);
 
 		final CompositeUpDownButtons grpUpDownButtons = new CompositeUpDownButtons(this, this.question);
@@ -79,7 +75,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 			addDependencies.setLayoutData(gdAddDependencies);
 			addDependencies.setText("Link Variability construct and Link code");
 			addDependencies.setToolTipText("Click to Link variability construct and variables to use in code");
-			//Only visible for "pageForHighLevelQuestions" page
+			// Only visible for "pageForHighLevelQuestions" page
 			addDependencies.setVisible(!linkAnswerPage);
 
 			addDependencies.addSelectionListener(new SelectionAdapter() {
@@ -87,8 +83,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 				@Override
 				public void widgetSelected(final SelectionEvent e) {
 					final ClaferModel claferModel = ((CompositeToHoldGranularUIElements) addDependencies.getParent().getParent().getParent()).getClaferModel();
-					final AddDependenciesDialog addDependenciesDialog = new AddDependenciesDialog(parent
-						.getShell(), CompositeGranularUIForHighLevelQuestions.this.question, claferModel);
+					final AddDependenciesDialog addDependenciesDialog = new AddDependenciesDialog(parent.getShell(), CompositeGranularUIForHighLevelQuestions.this.question, claferModel);
 					addDependenciesDialog.open();
 				}
 			});
@@ -101,16 +96,16 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 
 			linkQstn.setText("Link Answer to other questions");
 
-			//Visible only for the "pageForLinkAnswers" page
+			// Visible only for the "pageForLinkAnswers" page
 			linkQstn.setVisible(linkAnswerPage);
 
-			//opens the LinkAnswerDialog
+			// opens the LinkAnswerDialog
 			linkQstn.addSelectionListener(new SelectionAdapter() {
 
 				@Override
 				public void widgetSelected(final SelectionEvent e) {
 
-					//retrieves the list of all questions
+					// retrieves the list of all questions
 					final ArrayList<Question> listOfAllQuestions = ((CompositeToHoldGranularUIElements) linkQstn.getParent().getParent().getParent()).getListOfAllQuestions();
 					final LinkAnswerDialog linkAnsDialog = new LinkAnswerDialog(parent.getShell(), CompositeGranularUIForHighLevelQuestions.this.question, listOfAllQuestions);
 					linkAnsDialog.open();
@@ -190,8 +185,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 	}
 
 	/**
-	 * @param question
-	 *        the question to set
+	 * @param question the question to set
 	 */
 	private void setQuestion(final Question question) {
 		this.question = question;

@@ -1,26 +1,36 @@
+/********************************************************************************
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.codegenerator.generator;
 
 import crypto.rules.CryptSLObject;
 
-public class CodeGenCrySLObject extends CryptSLObject{
+public class CodeGenCrySLObject extends CryptSLObject {
 
 	private final String crySLVariable;
 	private String method = "";
 	private int pos = -1;
-	
+
 	public CodeGenCrySLObject(String name, String type, String crySLVariable) {
 		super(name, type);
 		this.crySLVariable = crySLVariable;
 	}
-	
+
 	public CodeGenCrySLObject(CryptSLObject obj, String crySLVariable) {
 		this(obj.getVarName(), obj.getJavaType(), crySLVariable);
 	}
-	
+
 	public String getMethod() {
 		return this.method;
 	}
-	
+
 	public int getPosition() {
 		return this.pos;
 	}

@@ -1,5 +1,7 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -130,12 +132,11 @@ public class Answer {
 
 		return combined;
 	}
-	
+
 	public String getOption() {
 		return option;
 	}
 
-	
 	public void setOption(String option) {
 		this.option = option;
 	}

@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.cryslhandler;
 
 import static org.junit.Assert.assertEquals;
@@ -93,7 +103,7 @@ public class ConstraintTests {
 		assertEquals(CompOp.neq, modeUnEq.getOperator());
 		assertEquals("mode2", modeUnEq.getRight().getLeft().getName());
 	}
-	
+
 	@Test
 	public void arithConstraintTest() {
 		CryptSLRule rule = readRuleFromFuleName("ArithConstraintTestRule");
@@ -111,18 +121,18 @@ public class ConstraintTests {
 		assertEquals("mode2", modeMinusMode2.getRight().getName());
 
 	}
-	
+
 	@Test
 	public void ComplexConstraintTest() {
 		CryptSLRule rule = readRuleFromFuleName("ComplexConstraintTestRule");
 		List<ISLConstraint> constraints = rule.getConstraints();
-		
+
 		CryptSLConstraint constraintAsImpliesConstraint = (CryptSLConstraint) constraints.get(0);
 		assertEquals(LogOps.implies, constraintAsImpliesConstraint.getOperator());
-		
+
 		CryptSLConstraint constraintAsAndConstraint = (CryptSLConstraint) constraints.get(1);
 		assertEquals(LogOps.and, constraintAsAndConstraint.getOperator());
-		
+
 		CryptSLConstraint constraintAsOrConstraint = (CryptSLConstraint) constraints.get(2);
 		assertEquals(LogOps.or, constraintAsOrConstraint.getOperator());
 	}

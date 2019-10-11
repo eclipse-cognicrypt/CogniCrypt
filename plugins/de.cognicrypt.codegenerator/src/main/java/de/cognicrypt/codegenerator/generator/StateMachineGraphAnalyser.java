@@ -1,9 +1,18 @@
+/********************************************************************************
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.codegenerator.generator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import crypto.analysis.CrySLResultsReporter;
 import crypto.rules.StateMachineGraph;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
@@ -67,11 +76,11 @@ public class StateMachineGraphAnalyser {
 
 		// get all adjacent nodes from the current node
 		transitionsToAdjacentNodes.addAll(Utils.getOutgoingEdges(stateMachine.getAllTransitions(), currentTransition.getRight(), currentTransition.getRight()));
-//		for (TransitionEdge edge : edges) {
-//			
-//			if (edge.getLeft().getName().equals(currentTransition.getRight().getName()))
-//				transitionsToAdjacentNodes.add(edge);
-//		}
+		//		for (TransitionEdge edge : edges) {
+		//			
+		//			if (edge.getLeft().getName().equals(currentTransition.getRight().getName()))
+		//				transitionsToAdjacentNodes.add(edge);
+		//		}
 
 		for (TransitionEdge transition : transitionsToAdjacentNodes) {
 			//StateNode adjacentNode = transition.getRight();

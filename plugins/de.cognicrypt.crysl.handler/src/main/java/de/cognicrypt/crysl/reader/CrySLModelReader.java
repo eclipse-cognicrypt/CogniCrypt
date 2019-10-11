@@ -1,5 +1,7 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
  * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -168,7 +170,7 @@ public class CrySLModelReader {
 		final EnsuresBlock ensure = dm.getEnsure();
 		final Map<ParEqualsPredicate, SuperType> pre_preds = Maps.newHashMap();
 		final DestroysBlock destroys = dm.getDestroy();
-		
+
 		Expression order = dm.getOrder();
 		try {
 			if (order instanceof Order) {
@@ -179,7 +181,7 @@ public class CrySLModelReader {
 			Activator.getDefault().logError(ex.getMessage() + " in rule " + curClass + ".");
 			return null;
 		}
-		
+
 		if (destroys != null) {
 			pre_preds.putAll(getKills(destroys.getPred()));
 		}
@@ -244,7 +246,7 @@ public class CrySLModelReader {
 		}
 		return collected;
 	}
-	
+
 	public List<CryptSLRule> readRulesOutside(String resourcesPath) throws CoreException {
 		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
 		for (File a : ((new File(resourcesPath)).listFiles())) {
@@ -255,7 +257,7 @@ public class CrySLModelReader {
 				}
 			}
 		}
-		
+
 		return rules;
 	}
 
@@ -271,7 +273,8 @@ public class CrySLModelReader {
 				CryptSLRule rule = readRule(resAsFile);
 				if (rule != null) {
 					rules.add(rule);
-					File to = new File(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath() + Constants.innerFileSeparator + rule.getClassName().substring(rule.getClassName().lastIndexOf(".") + 1) + Constants.cryslFileEnding);
+					File to = new File(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath() + Constants.innerFileSeparator
+							+ rule.getClassName().substring(rule.getClassName().lastIndexOf(".") + 1) + Constants.cryslFileEnding);
 					try {
 						Files.copy(resAsFile, to);
 					}
@@ -311,7 +314,7 @@ public class CrySLModelReader {
 			} else {
 				final ReqPred left = pred.getLeftExpression();
 				final ReqPred right = pred.getRightExpression();
-				
+
 				List<CryptSLPredicate> altPreds = retrieveReqPredFromAltPreds(left);
 				altPreds.add(extractReqPred(right));
 				reqPred = new CryptSLConstraint(altPreds.get(0), altPreds.get(1), LogOps.or);
@@ -419,40 +422,40 @@ public class CrySLModelReader {
 					final LiteralExpression name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getLit().getName();
 					final SuperType object = name.getValue();
 					final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(),
-					new CryptSLSplitter(Integer.parseInt(((ArrayElements) lit.getCons()).getCons().getInd()), Utils.filterQuotes(((ArrayElements) lit.getCons()).getCons().getSplit())));
+							new CryptSLSplitter(Integer.parseInt(((ArrayElements) lit.getCons()).getCons().getInd()), Utils.filterQuotes(((ArrayElements) lit.getCons()).getCons().getSplit())));
 					slci = new CryptSLValueConstraint(variable, parList);
 				} else {
 					final String consPred = ((ArrayElements) lit.getCons()).getCons().getConsPred();
-					if(consPred != null) {
-					final LiteralExpression name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getLit().getName();
-					final SuperType object = name.getValue();
-					int ind;
-					if(consPred.equals("alg(")) {
-						ind = 0;
-						final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(),
-						new CryptSLSplitter(ind, Utils.filterQuotes("/")));
-						slci = new CryptSLValueConstraint(variable, parList);
-					}else if(consPred.equals("mode(")) {
-						ind = 1;
-						final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(),
-								new CryptSLSplitter(ind, Utils.filterQuotes("/")));
-						slci = new CryptSLValueConstraint(variable, parList);
-					}else if(consPred.equals("pad(")) {
-						ind = 2;
-						final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(),
-								new CryptSLSplitter(ind, Utils.filterQuotes("/")));
+					if (consPred != null) {
+						final LiteralExpression name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getLit().getName();
+						final SuperType object = name.getValue();
+						int ind;
+						if (consPred.equals("alg(")) {
+							ind = 0;
+							final CryptSLObject variable =
+									new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(), new CryptSLSplitter(ind, Utils.filterQuotes("/")));
+							slci = new CryptSLValueConstraint(variable, parList);
+						} else if (consPred.equals("mode(")) {
+							ind = 1;
+							final CryptSLObject variable =
+									new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(), new CryptSLSplitter(ind, Utils.filterQuotes("/")));
+							slci = new CryptSLValueConstraint(variable, parList);
+						} else if (consPred.equals("pad(")) {
+							ind = 2;
+							final CryptSLObject variable =
+									new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(), new CryptSLSplitter(ind, Utils.filterQuotes("/")));
+							slci = new CryptSLValueConstraint(variable, parList);
+						}
+					} else {
+						LiteralExpression name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getName();
+						if (name == null) {
+							name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getLit().getName();
+						}
+						final SuperType object = name.getValue();
+						final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName());
 						slci = new CryptSLValueConstraint(variable, parList);
 					}
-				} else {
-					LiteralExpression name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getName();
-					if (name == null) {
-						name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getLit().getName();
-					}
-					final SuperType object = name.getValue();
-					final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName());
-					slci = new CryptSLValueConstraint(variable, parList);
 				}
-			}
 			}
 		} else if (cons instanceof ComparisonExpression) {
 			final ComparisonExpression comp = (ComparisonExpression) cons;

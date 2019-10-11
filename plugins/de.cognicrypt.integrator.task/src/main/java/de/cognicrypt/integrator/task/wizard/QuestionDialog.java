@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.wizard;
@@ -107,7 +104,7 @@ public class QuestionDialog extends Dialog {
 		final Label lblToolTip = new Label(composite, SWT.None);
 		lblToolTip.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		lblToolTip.setText("Give tooltip");
-		//visible only if the question type is text
+		// visible only if the question type is text
 		lblToolTip.setVisible(false);
 
 		this.textBoxTooltip = new Text(composite, SWT.BORDER);
@@ -118,7 +115,7 @@ public class QuestionDialog extends Dialog {
 		final Label lblAnswerType = new Label(composite, SWT.None);
 		lblAnswerType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		lblAnswerType.setText("Expected answer is of type");
-		//visible only if the question type is text
+		// visible only if the question type is text
 		lblAnswerType.setVisible(false);
 
 		this.comboBoxAnswerType = new Combo(composite, SWT.NONE);
@@ -129,7 +126,7 @@ public class QuestionDialog extends Dialog {
 		final Button btnAddAnswer = new Button(composite, SWT.None);
 		btnAddAnswer.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		btnAddAnswer.setText("Add Answer");
-		//Visibility depends on question type
+		// Visibility depends on question type
 		btnAddAnswer.setVisible(false);
 		final boolean showRemoveButton = true;
 		this.compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton, null);
@@ -241,7 +238,7 @@ public class QuestionDialog extends Dialog {
 	@Override
 	protected void okPressed() {
 		setQuestionDetails();
-		//closes the dialog only if user has added answers to the question
+		// closes the dialog only if user has added answers to the question
 		if (this.compositeToHoldAnswers.getListOfAllAnswer().size() > 0) {
 			super.okPressed();
 		}
@@ -264,7 +261,7 @@ public class QuestionDialog extends Dialog {
 
 	}
 
-	//Saving question details
+	// Saving question details
 	public void setQuestionDetails() {
 		final Question questionDetails = new Question();
 		questionDetails.setQuestionText(this.textQuestion.getText());
@@ -277,8 +274,8 @@ public class QuestionDialog extends Dialog {
 		 */
 		if (!questionDetails.getElement().equals(Constants.GUIElements.text)) {
 			for (int i = 0; i < this.compositeToHoldAnswers.getListOfAllAnswer().size(); i++) {
-				if (Objects.equals(this.compositeToHoldAnswers.getListOfAllAnswer().get(i).getValue(), null) || Objects
-					.equals(this.compositeToHoldAnswers.getListOfAllAnswer().get(i).getValue(), "")) {
+				if (Objects.equals(this.compositeToHoldAnswers.getListOfAllAnswer().get(i).getValue(), null)
+						|| Objects.equals(this.compositeToHoldAnswers.getListOfAllAnswer().get(i).getValue(), "")) {
 					this.compositeToHoldAnswers.deleteAnswer(this.compositeToHoldAnswers.getListOfAllAnswer().get(i));
 					this.compositeToHoldAnswers.updateAnswerContainer();
 					i--;
@@ -286,7 +283,7 @@ public class QuestionDialog extends Dialog {
 			}
 		}
 
-		//opens a message box, alerting user to add answers to the question
+		// opens a message box, alerting user to add answers to the question
 		if (this.compositeToHoldAnswers.getListOfAllAnswer().size() == 0) {
 			final MessageBox msgNoAnsAdded = new MessageBox(this.compositeToHoldAnswers.getShell());
 			msgNoAnsAdded.setMessage("Please add answers to the question by clicking \"Add answer\" button");
@@ -300,7 +297,7 @@ public class QuestionDialog extends Dialog {
 			if (!this.textBoxTooltip.getText().equalsIgnoreCase("")) {
 				questionDetails.setTooltip(this.textBoxTooltip.getText());
 			}
-			//sets the text answer Type
+			// sets the text answer Type
 			if (this.comboBoxAnswerType.getText().isEmpty()) {
 				questionDetails.setTextType("");
 			} else {
@@ -322,8 +319,7 @@ public class QuestionDialog extends Dialog {
 	 * sets the question element depending on the question type selected
 	 *
 	 * @param question
-	 * @param element
-	 *        the value selected for the question type
+	 * @param element the value selected for the question type
 	 */
 	private void setQuestionElement(final Question question, final String element) {
 		/**
@@ -367,8 +363,7 @@ public class QuestionDialog extends Dialog {
 	/**
 	 * Capitalize the first letter of each word of question text
 	 *
-	 * @param questionText
-	 *        the question text
+	 * @param questionText the question text
 	 * @return the capitalize text
 	 */
 	private String getCapitaliseQuestionText(final String questionText) {
@@ -386,7 +381,6 @@ public class QuestionDialog extends Dialog {
 	}
 
 	/**
-	 *
 	 * @return the question
 	 */
 	public Question getQuestionDetails() {

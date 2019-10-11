@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.wizard;
@@ -207,8 +204,7 @@ public class ClaferFeatureDialog extends Dialog {
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
-		this.constraintsComposite = new CompositeToHoldSmallerUIElements(container, SWT.BORDER, this.resultClafer
-			.getFeatureConstraints(), true, this.claferModel, this.resultClafer);
+		this.constraintsComposite = new CompositeToHoldSmallerUIElements(container, SWT.BORDER, this.resultClafer.getFeatureConstraints(), true, this.claferModel, this.resultClafer);
 		final GridData gdConstraintsComposite = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
 		gdConstraintsComposite.minimumHeight = 100;
 		this.constraintsComposite.setLayoutData(gdConstraintsComposite);

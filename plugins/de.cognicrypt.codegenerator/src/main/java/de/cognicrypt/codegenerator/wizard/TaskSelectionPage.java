@@ -1,5 +1,7 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -73,15 +75,15 @@ public class TaskSelectionPage extends WizardPage {
 		gd_selectProjectLabel.widthHint = 600;
 		useCaseDescriptionLabel.setLayoutData(gd_selectProjectLabel);
 		Font a = useCaseDescriptionLabel.getFont();
-		useCaseDescriptionLabel.setFont(new Font(useCaseDescriptionLabel.getDisplay(), new FontData(a.getFontData()[0].getName(), 12, SWT.None)) );
+		useCaseDescriptionLabel.setFont(new Font(useCaseDescriptionLabel.getDisplay(), new FontData(a.getFontData()[0].getName(), 12, SWT.None)));
 
-		final List<Button> buttons = new ArrayList<Button>(); 
+		final List<Button> buttons = new ArrayList<Button>();
 		final List<Image> unclickedImages = new ArrayList<Image>();
 		new Label(this.container, SWT.NONE);
 		for (Task ccTask : tasks) {
 			final Image taskImage = Utils.loadImage("src/main/resources/images/" + ccTask.getImage() + ".png", Activator.PLUGIN_ID);
 			unclickedImages.add(taskImage);
-			
+
 			final Button taskButton = createImageButton(this.container, taskImage, ccTask.getDescription());
 			buttons.add(taskButton);
 		}

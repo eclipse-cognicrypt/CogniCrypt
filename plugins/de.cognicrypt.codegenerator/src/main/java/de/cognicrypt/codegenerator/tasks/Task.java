@@ -1,5 +1,7 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -10,7 +12,6 @@
 
 package de.cognicrypt.codegenerator.tasks;
 
-import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.CodeGenerators;
 
 public class Task {
@@ -20,17 +21,15 @@ public class Task {
 	private String taskDescription;
 	private String image;
 	private CodeGenerators codeGen;
-	
+
 	private String additionalResources;
 	private String questionsJSONFile;
-	
+
 	private String modelFile;
 	private String codeTemplate;
-	
 
 	private boolean isSelected;
 
-	
 	public String getAdditionalResources() {
 		return this.additionalResources;
 	}
@@ -59,12 +58,10 @@ public class Task {
 		return this.isSelected;
 	}
 
-	
 	public String getImage() {
 		return image;
 	}
 
-	
 	public void setImage(String image) {
 		this.image = image;
 	}
@@ -104,7 +101,7 @@ public class Task {
 	public void setCodeTemplate(final String codeTemplate) {
 		this.codeTemplate = codeTemplate;
 	}
-	
+
 	public CodeGenerators getCodeGen() {
 		return codeGen;
 	}

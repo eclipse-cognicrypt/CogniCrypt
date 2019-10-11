@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.widgets;
@@ -97,8 +94,8 @@ public class CompositeClaferFeature extends Composite {
 			grpClaferFeatureProperties.setLayout(new GridLayout(1, false));
 			grpClaferFeatureProperties.setText("Clafer feature properties");
 			final CompositeToHoldGranularUIElements comp = ((CompositeToHoldGranularUIElements) getParent().getParent());
-			final CompositeToHoldSmallerUIElements smallerElements = new CompositeToHoldSmallerUIElements(grpClaferFeatureProperties, SWT.NONE, this.claferFeature
-				.getFeatureProperties(), false, comp.getClaferModel());
+			final CompositeToHoldSmallerUIElements smallerElements =
+					new CompositeToHoldSmallerUIElements(grpClaferFeatureProperties, SWT.NONE, this.claferFeature.getFeatureProperties(), false, comp.getClaferModel());
 			final GridData gdPropertiesComposite = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
 			smallerElements.setLayoutData(gdPropertiesComposite);
 		}
@@ -109,8 +106,8 @@ public class CompositeClaferFeature extends Composite {
 			grpClaferFeatureConstraints.setText("Clafer feature constraints");
 			grpClaferFeatureConstraints.setLayout(new GridLayout(1, false));
 			final CompositeToHoldGranularUIElements comp = ((CompositeToHoldGranularUIElements) getParent().getParent());
-			final CompositeToHoldSmallerUIElements smallerElements = new CompositeToHoldSmallerUIElements(grpClaferFeatureConstraints, SWT.NONE, this.claferFeature
-				.getFeatureConstraints(), false, comp.getClaferModel());
+			final CompositeToHoldSmallerUIElements smallerElements =
+					new CompositeToHoldSmallerUIElements(grpClaferFeatureConstraints, SWT.NONE, this.claferFeature.getFeatureConstraints(), false, comp.getClaferModel());
 			final GridData gdConstraintsComposite = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
 			smallerElements.setLayoutData(gdConstraintsComposite);
 		}
@@ -129,8 +126,7 @@ public class CompositeClaferFeature extends Composite {
 
 				if (cfrFeatureDialog.open() == 0) {
 					final ClaferFeature resultFeature = cfrFeatureDialog.getResult();
-					((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent()).modifyClaferFeature(CompositeClaferFeature.this.claferFeature,
-						resultFeature);
+					((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent()).modifyClaferFeature(CompositeClaferFeature.this.claferFeature, resultFeature);
 
 					// if features are missing, ask the user whether to implement them
 					final ClaferModel missingFeatures = claferModel.getMissingFeatures(resultFeature);
@@ -183,8 +179,7 @@ public class CompositeClaferFeature extends Composite {
 	}
 
 	/**
-	 * @param claferFeature
-	 *        the claferFeature to set
+	 * @param claferFeature the claferFeature to set
 	 */
 	private void setClaferFeature(final ClaferFeature claferFeature) {
 		this.claferFeature = claferFeature;

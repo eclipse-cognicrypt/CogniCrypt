@@ -12,6 +12,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,12 +77,19 @@ public class SootRunner {
 
 				};
 				scanner.getAnalysisListener().addReportListener(resultsReporter);
+				
+				
+				List<CryptSLRule> rules = getRules(resultsReporter.getReporterProject());
+				
 				scanner.scan(getRules(resultsReporter.getReporterProject()));
 			}
 		};
 	}
 
 	private static List<CryptSLRule> getRules(IProject project) {
+		
+		StringBuilder builder = new StringBuilder();
+
 		List<CryptSLRule> rules = Lists.newArrayList();
 		// TODO Select rules according to selected rulesets in preference page. The CrySL rules for each ruleset are in a separate subdirectory of "/resources/CrySLRules/".
 		try {
@@ -97,14 +105,16 @@ public class SootRunner {
 				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
-
+			
+			builder.append("\n The analysis transfroms following rules into CrySLRule objects: \n");
 			rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin("/resources/CrySLRules/").getPath()), Integer.MAX_VALUE, (file, attr) -> file.toString().endsWith(".cryptsl"))
 					.map(path -> {
 						try {
+							builder.append(path.toFile().getName().toString()+"\n");
 							return CryptSLRuleReader.readFromSourceFile(path.toFile());
 						}
 						catch (MalformedURLException e) {}
-						return null;
+						return null; 
 					}).collect(Collectors.toList()));
 		}
 		catch (IOException | CoreException e) {
@@ -113,6 +123,18 @@ public class SootRunner {
 		if (rules.isEmpty()) {
 			Activator.getDefault().logInfo("No CrySL rules loaded");
 		}
+		
+		Activator.getDefault().logInfo(builder.toString());
+		
+		
+		StringBuilder builderA = new StringBuilder();
+		builderA.append("\n Rule object which we get back form the analysis!\n");
+		for(CryptSLRule rule : rules) {
+			builderA.append(rule.getClassName()+"\n");
+		}
+		
+		Activator.getDefault().logInfo(builderA.toString());
+
 		return rules;
 	}
 

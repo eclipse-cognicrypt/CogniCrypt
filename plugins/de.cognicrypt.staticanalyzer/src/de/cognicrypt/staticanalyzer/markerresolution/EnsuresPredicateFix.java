@@ -81,7 +81,6 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 			lineNumber = (int) marker.getAttribute(IMarker.LINE_NUMBER);
 			predicate = (String) marker.getAttribute("predicate");
 			errorVarName = (String) marker.getAttribute("errorParam");
-//			errorVarIndex = (int) marker.getAttribute("errorParamIndex");
 		} catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
@@ -91,7 +90,7 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 
 		try {
 			sourceUnit = QuickFixUtils.getCompilationUnitFromMarker(marker);
-			QuickFixUtils.addAdditionalFiles("resources/PredicateEnsurer/Jar", "de.cognicrypt.staticanalyzer", devProject);
+			QuickFixUtils.addAdditionalFiles("resources/PredicateEnsurer/Jar", de.cognicrypt.staticanalyzer.Activator.PLUGIN_ID, devProject);
 
 			if (!QuickFixUtils.hasJarImport(sourceUnit, Constants.PREDICATEENSURER_JAR_IMPORT)) {
 				QuickFixUtils.insertJarImport(sourceUnit, Constants.PREDICATEENSURER_JAR_IMPORT);
@@ -109,9 +108,11 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 		final SuppressWarningFix tempFix = new SuppressWarningFix("");
 		tempFix.run(marker);
 		Utils.getCurrentlyOpenEditor().doSave(null);
+
+		String corePath = Utils.getResourceFromWithin("/resources/CrySLRules/", de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath();
+		String filePath = corePath+Constants.outerFileSeparator+"Ensurer"+Constants.cryslFileEnding;
+		Activator.getDefault().logInfo(filePath);
 		
-		String clientPath = Utils.getCurrentProject().getLocation().toOSString();
-		String filePath = clientPath+Constants.outerFileSeparator+"."+"Ensurer"+Constants.cryslFileEnding;
 		File rule = new File(filePath);
 		if (rule.exists()) {
 			updateRule(filePath, predicate);

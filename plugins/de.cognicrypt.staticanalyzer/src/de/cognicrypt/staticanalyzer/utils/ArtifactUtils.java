@@ -9,7 +9,10 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -33,16 +36,18 @@ public class ArtifactUtils {
 	 */
 	public static boolean downloadRulesets() {
 
-		List<String> defaultRulesetUrls = new ArrayList<String>();
+		Map<String, Double> defaultRulesetUrls = new HashMap<String, Double>();
 		Section ini = Utils.getConfig().get(Constants.INI_URL_HEADER);
-		defaultRulesetUrls.add(ini.get(Constants.INI_JCA_NEXUS));
-		defaultRulesetUrls.add(ini.get(Constants.INI_BC_NEXUS));
-		defaultRulesetUrls.add(ini.get(Constants.INI_TINK_NEXUS));
-
-		for (String currentUrl : defaultRulesetUrls) {
-			String metaFilePath = currentUrl + File.separator + "maven-metadata.xml";
+		defaultRulesetUrls.put(ini.get(Constants.INI_JCA_NEXUS), Constants.MIN_JCA_RULE_VERSION);
+		defaultRulesetUrls.put(ini.get(Constants.INI_BC_NEXUS), Constants.MIN_BC_RULE_VERSION);
+		defaultRulesetUrls.put(ini.get(Constants.INI_TINK_NEXUS), Constants.MIN_TINK_RULE_VERSION);
+		
+		Iterator it = defaultRulesetUrls.entrySet().iterator();
+		while (it.hasNext()) {
+			Entry<String, Double> pair = (Entry<String, Double>) it.next();
+			String metaFilePath = pair.getKey() + File.separator + "maven-metadata.xml";
 			try {
-				ArtifactUtils.parseMetaData(metaFilePath);
+				ArtifactUtils.parseMetaData(metaFilePath, pair.getValue());
 			} catch (IOException | ParserConfigurationException | SAXException e) {
 				e.printStackTrace();
 				return false;
@@ -75,12 +80,13 @@ public class ArtifactUtils {
 	 * @throws SAXException 
 	 * @throws ParserConfigurationException 
 	 */
-	public static void parseMetaData(String pathToMetadataFile) throws IOException, ParserConfigurationException, SAXException {
+	public static void parseMetaData(String pathToMetadataFile, Double... minRuleVersion) throws IOException, ParserConfigurationException, SAXException {
 
 			ArrayList<String> listOfVersions = new ArrayList<String>();
 			// Used String[] instead of String to resolve "Local Variable Defined in an Enclosing Scope Must be Final or Effectively Final" error
 			String[] groupId = new String[1];
 			String[] artifactId = new String[1];
+			Double minVersion = minRuleVersion[0];
 
 			URL rulesetUrl = new URL(pathToMetadataFile);
 
@@ -137,7 +143,9 @@ public class ArtifactUtils {
 			metaData.delete();
 
 			for (String version : listOfVersions) {
-				downloadRulesetArtifact(groupId[0], artifactId[0], version, new File(System.getProperty("user.dir")));
+				if (Double.valueOf(version) >= minVersion) {
+					downloadRulesetArtifact(groupId[0], artifactId[0], version, new File(System.getProperty("user.dir")));
+				}
 			}
 	}
 

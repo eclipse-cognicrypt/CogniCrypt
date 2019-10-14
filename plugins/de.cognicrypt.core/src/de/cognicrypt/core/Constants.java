@@ -581,6 +581,10 @@ public class Constants {
 	public static final String BC_TABLE_ITEM = "Bouncy Castle";
 	public static final String TINK_TABLE_ITEM = "Tink";
 	
+	public static final Double MIN_JCA_RULE_VERSION = 1.1;
+	public static final Double MIN_BC_RULE_VERSION = 0.6;
+	public static final Double MIN_TINK_RULE_VERSION = 0.2;
+	
 	//Configuration.ini keys
 	public static final String INI_URL_HEADER = "URLS";
 	public static final String INI_NEXUS_SOOT_RELEASE = "NEXUS_SOOT_RELEASE";

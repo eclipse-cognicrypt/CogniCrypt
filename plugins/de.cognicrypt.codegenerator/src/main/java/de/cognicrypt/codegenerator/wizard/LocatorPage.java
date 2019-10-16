@@ -129,8 +129,8 @@ public class LocatorPage extends WizardPage {
 
 	private boolean isProperTarget(Object target) {
 		if (target instanceof IFile) {
-			if (!"java".equals(((IFile) target).getFileExtension())) {
-				return false;
+			if ("java".equals(((IFile) target).getFileExtension())) {
+				return true;
 			}
 		}
 		if (target instanceof IFolder) {
@@ -146,7 +146,7 @@ public class LocatorPage extends WizardPage {
 			return Utils.checkIfJavaProjectSelected((IProject) target);
 		}
 
-		return true;
+		return false;
 	}
 
 	public void containerSelectionChanged(final Object object, final Text containerNameField) {

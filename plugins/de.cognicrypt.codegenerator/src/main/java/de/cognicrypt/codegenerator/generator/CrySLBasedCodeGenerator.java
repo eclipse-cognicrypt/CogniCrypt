@@ -1196,10 +1196,8 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 	}
 
 	public GeneratorClass setUpTemplateClass(String pathToTemplateFile) {
-
 		ASTParser parser = ASTParser.newParser(AST.JLS11);
-		parser.setSource((ICompilationUnit) JavaCore.create(targetFile.getProject().getFile(pathToTemplateFile)));
-
+		parser.setSource((ICompilationUnit) JavaCore.create(getDeveloperProject().getFile(pathToTemplateFile)));
 		parser.setResolveBindings(true);
 		parser.setBindingsRecovery(true);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);

@@ -229,13 +229,12 @@ public class AltConfigWizard extends Wizard {
 		waitingDialog.setModal(false);
 		waitingDialog.setVisible(true);
 		Configuration chosenConfig = null;
-
-		switch (genKind) {
-			case CrySL:
-				CrySLBasedCodeGenerator.clearParameterCache();
-				File templateFile = CodeGenUtils.getResourceFromWithin(selectedTask.getCodeTemplate()).listFiles()[0];
-				codeGenerator = new CrySLBasedCodeGenerator(targetFile);
-				try {
+		try {
+			switch (genKind) {
+				case CrySL:
+					CrySLBasedCodeGenerator.clearParameterCache();
+					File templateFile = CodeGenUtils.getResourceFromWithin(selectedTask.getCodeTemplate()).listFiles()[0];
+					codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 					String projectRelDir = Constants.outerFileSeparator + codeGenerator.getDeveloperProject()
 						.getSourcePath() + Constants.outerFileSeparator + Constants.PackageName + Constants.outerFileSeparator;
 					String pathToTemplateFile = projectRelDir + templateFile.getName();
@@ -253,35 +252,37 @@ public class AltConfigWizard extends Wizard {
 
 					resetAnswers();
 					chosenConfig = new CrySLConfiguration(resFileOSPath, ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile));
-				} catch (IOException | CoreException e1) {
-					Activator.getDefault().logError(e1);
+					break;
+				case XSL:
+					this.constraints = (this.constraints != null) ? this.constraints : new HashMap<>();
+					final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
+						.getAbsolutePath(), "c0_" + taskName, selectedTask.getDescription());
+					instanceGenerator.generateInstances(this.constraints);
+
+					// Initialize Code Generation
+					codeGenerator = new XSLBasedGenerator(targetFile, selectedTask.getCodeTemplate());
+					chosenConfig = new XSLConfiguration(instanceGenerator.getInstances().values().iterator()
+						.next(), this.constraints, codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
+					break;
+				default:
 					return false;
-				}
-				break;
-			case XSL:
-				this.constraints = (this.constraints != null) ? this.constraints : new HashMap<>();
-				final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
-					.getAbsolutePath(), "c0_" + taskName, selectedTask.getDescription());
-				instanceGenerator.generateInstances(this.constraints);
+			}
+			ret = codeGenerator.generateCodeTemplates(chosenConfig, additionalResources);
 
-				// Initialize Code Generation
-				codeGenerator = new XSLBasedGenerator(targetFile, selectedTask.getCodeTemplate());
-				chosenConfig = new XSLConfiguration(instanceGenerator.getInstances().values().iterator()
-					.next(), this.constraints, codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
-				break;
-			default:
-				return false;
-		}
-		ret = codeGenerator.generateCodeTemplates(chosenConfig, additionalResources);
+			try {
+				codeGenerator.getDeveloperProject().refresh();
+			} catch (CoreException e1) {
+				Activator.getDefault().logError(e1);
+			}
 
-		try {
-			codeGenerator.getDeveloperProject().refresh();
-		} catch (CoreException e1) {
-			Activator.getDefault().logError(e1);
+		} catch (Exception ex) {
+			Activator.getDefault().logError(ex);
+		} finally {
+
+			waitingDialog.setVisible(false);
+			waitingDialog.dispose();
 		}
 
-		waitingDialog.setVisible(false);
-		waitingDialog.dispose();
 		return ret;
 	}
 

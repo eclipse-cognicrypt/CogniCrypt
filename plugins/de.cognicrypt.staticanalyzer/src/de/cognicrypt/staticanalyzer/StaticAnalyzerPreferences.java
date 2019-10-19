@@ -1,10 +1,18 @@
+/********************************************************************************
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.staticanalyzer;
 
 import java.util.Arrays;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -63,7 +71,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 	private void createBasicContents(Composite parent) {
 		final Group staticAnalysisGroup = Utils.addHeaderGroup(parent, "Analysis");
-		
+
 		final Composite source = new Composite(staticAnalysisGroup, SWT.FILL);
 		source.setLayout(new GridLayout(2, true));
 		final Label ruleSource = new Label(source, SWT.NONE);
@@ -76,21 +84,11 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 		automatedAnalysisCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		automatedAnalysisCheckBox.setText("Enable automated analysis when saving");
-		automatedAnalysisCheckBox.addSelectionListener(new SelectionAdapter() {
-	        @Override
-	        public void widgetSelected(SelectionEvent event) {
-	 
-	        	secureObjectsCheckBox.setEnabled(automatedAnalysisCheckBox.getSelection());
-	    	    //in case we do not want to see warnings also from context menu
-	    	    /*if (!automatedAnalysisCheckBox.getSelection()) {
-	    	    	store.setValue(ICogniCryptConstants.PRE_CHECKBOX4, store.getBoolean(ICogniCryptConstants.PRE_CHECKBOX3));
-	    	    	checkBox4.setSelection(false);
-	    	    }*/ 
-	        }
-	    });
+
 		secureObjectsCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		secureObjectsCheckBox.setText("Show secure objects");
-		analyseDependenciesCheckBox = new Button(staticAnalysisGroup,SWT.CHECK); 
+
+		analyseDependenciesCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		analyseDependenciesCheckBox.setText("Include dependencies to projects analysis");
 		analyseDependenciesCheckBox.setSelection(preferences.getBoolean(Constants.ANALYSE_DEPENDENCIES));
 	}
@@ -132,7 +130,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 	private void createAdvancedContents(Composite parent) {
 		final Group staticAnalysisGroup = Utils.addHeaderGroup(parent, "Analysis");
-		
+
 		final Composite callGraphContainer = new Composite(staticAnalysisGroup, SWT.None);
 		callGraphContainer.setLayout(new GridLayout(2, true));
 		final Label label1 = new Label(callGraphContainer, SWT.SHADOW_IN);

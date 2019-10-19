@@ -1,5 +1,7 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
  * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -64,7 +66,7 @@ public class CrySLReaderUtils {
 			return null;
 		}
 		final Method method = ((SuperType) lab).getMeth();
-		
+
 		String methodName = method.getMethName().getSimpleName();
 		if (methodName == null) {
 			methodName = ((de.darmstadt.tu.crossing.cryptSL.Domainmodel) (method.eContainer().eContainer().eContainer())).getJavaType().getSimpleName();
@@ -99,10 +101,10 @@ public class CrySLReaderUtils {
 	}
 
 	public static void storeRuletoFile(final CryptSLRule rule, final String folderPath) throws IOException {
-		File written = new File(folderPath + Constants.innerFileSeparator + rule.getClassName() + Constants.cryslFileEnding);
+		File written = new File(folderPath + Constants.innerFileSeparator + rule.getClassName().substring(rule.getClassName().lastIndexOf(".") + 1) + Constants.cryslFileEnding);
 		Files.write(rule.toString(), written, StandardCharsets.UTF_8);
 	}
-	
+
 	public static void storeRulesToFile(final List<CryptSLRule> rules, final String folder) throws IOException {
 		for (CryptSLRule rule : rules) {
 			storeRuletoFile(rule, folder);

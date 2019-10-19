@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.widgets;
@@ -204,8 +201,7 @@ public class CompositeBrowseForFile extends Composite {
 	/**
 	 * This object stores the basic data of the task that is being handled.
 	 *
-	 * @param objectForDataInNonGuidedMode
-	 *        the objectForDataInNonGuidedMode to set
+	 * @param objectForDataInNonGuidedMode the objectForDataInNonGuidedMode to set
 	 */
 	private void setObjectForDataInNonGuidedMode(final ModelAdvancedMode objectForDataInNonGuidedMode) {
 		this.objectForDataInNonGuidedMode = objectForDataInNonGuidedMode;
@@ -223,8 +219,7 @@ public class CompositeBrowseForFile extends Composite {
 	/**
 	 * This object is required to set the completion of the page for the mode selection page behavior.
 	 *
-	 * @param theLocalContainerPage
-	 *        the theLocalContainerPage to set
+	 * @param theLocalContainerPage the theLocalContainerPage to set
 	 */
 	public void setTheLocalContainerPage(final PageForTaskIntegratorWizard theLocalContainerPage) {
 		this.theLocalContainerPage = theLocalContainerPage;
@@ -244,8 +239,7 @@ public class CompositeBrowseForFile extends Composite {
 	/**
 	 * Keep the decorator object as global to allow access in the event listeners.
 	 *
-	 * @param decNameOfTheTask
-	 *        the decNameOfTheTask to set
+	 * @param decNameOfTheTask the decNameOfTheTask to set
 	 */
 	private void setDecFilePath(final ControlDecoration decFilePath) {
 		this.decFilePath = decFilePath;

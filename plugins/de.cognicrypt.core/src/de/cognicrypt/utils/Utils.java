@@ -1,20 +1,23 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
  * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.utils;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
 import java.util.OptionalInt;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -23,7 +26,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -51,11 +53,18 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.osgi.framework.Bundle;
 import com.google.common.base.CharMatcher;
+import crypto.cryptslhandler.CrySLModelReader;
+import crypto.rules.CryptSLRule;
+import crypto.rules.CryptSLRuleReader;
+import crypto.rules.StateNode;
+import crypto.rules.TransitionEdge;
 import de.cognicrypt.core.Activator;
+import de.cognicrypt.core.Constants;
 
 public class Utils {
 
 	private static IWorkbenchWindow window = null;
+	private static String defaultRulesPath = "resources/CrySLRules/JavaCryptographicArchitecture";
 
 	/**
 	 * This method checks if a project passed as parameter is a Java project or not.
@@ -256,26 +265,25 @@ public class Utils {
 			return getJavaProjectFromSelection(curSel);
 		}
 	}
-	
+
 	private static ISelection getCurrentSelection() {
 		return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
 	}
-	
-	
+
 	public static IResource getCurrentlySelectedIResource() {
 		return getIResourceFromSelection(getCurrentSelection());
 	}
-	
+
 	private static IResource getIResourceFromSelection(final ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			final Object element = ((IStructuredSelection) selection).getFirstElement();
 			if (element instanceof IResource) {
 				return (IResource) element;
-			} 
+			}
 		}
 		return null;
 	}
-	
+
 	private static IProject getJavaProjectFromSelection(final ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			final Object element = ((IStructuredSelection) selection).getFirstElement();
@@ -337,13 +345,77 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * Returns the cryptsl rule with the name that is defined by the method parameter cryptslRule.
+	 * 
+	 * @param cryptslRule Name of cryptsl rule that should by returend.
+	 * @return Returns the cryptsl rule with the name that is defined by the parameter cryptslRule.
+	 * @throws MalformedURLException
+	 */
+	public static CryptSLRule getCryptSLRule(String cryptslRule) throws MalformedURLException {
+		File ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR + "/" + cryptslRule + ".cryptsl", de.cognicrypt.core.Activator.PLUGIN_ID);
+		if (ruleRes == null || !ruleRes.exists() || !ruleRes.canRead()) {
+			ruleRes = Utils.getResourceFromWithin(defaultRulesPath + "/" + cryptslRule + ".cryptsl", de.cognicrypt.core.Activator.PLUGIN_ID);
+		}
+		return (new CrySLModelReader()).readRule(ruleRes);
+	}
+
+	public static List<CryptSLRule> readCrySLRules() {
+		return Stream.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR).getAbsolutePath()),
+				readCrySLRules(Utils.getResourceFromWithin(defaultRulesPath).getAbsolutePath())).flatMap(Collection::stream).collect(Collectors.toList());
+	}
+
+	protected static List<CryptSLRule> readCrySLRules(String rulesFolder) {
+		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
+
+		for (File rule : (new File(rulesFolder)).listFiles()) {
+			if (rule.isDirectory()) {
+				rules.addAll(readCrySLRules(rule.getAbsolutePath()));
+				continue;
+			}
+
+			try {
+				CryptSLRule readFromSourceFile = CryptSLRuleReader.readFromSourceFile(rule);
+				if (readFromSourceFile != null) {
+					rules.add(readFromSourceFile);
+				}
+			}
+			catch (IOException e) {
+				Activator.getDefault().logError(e);
+			}
+		}
+		return rules;
+	}
+
+	public static List<TransitionEdge> getOutgoingEdges(Collection<TransitionEdge> collection, final StateNode curNode, final StateNode notTo) {
+		final List<TransitionEdge> outgoingEdges = new ArrayList<>();
+		for (final TransitionEdge comp : collection) {
+			if (comp.getLeft().equals(curNode) && !(comp.getRight().equals(curNode) || comp.getRight().equals(notTo))) {
+				outgoingEdges.add(comp);
+			}
+		}
+		return outgoingEdges;
+	}
+
+	public static boolean isSubType(String typeOne, String typeTwo) {
+		boolean subTypes = typeOne.equals(typeTwo);
+		subTypes |= (typeOne + "[]").equals(typeTwo);
+		if (!subTypes) {
+			try {
+				subTypes = Class.forName(typeOne).isAssignableFrom(Class.forName(typeTwo));
+			}
+			catch (ClassNotFoundException e) {}
+		}
+		return subTypes;
+	}
+
 	public static Group addHeaderGroup(Composite parent, String text) {
 		final Group headerGroup = new Group(parent, SWT.SHADOW_IN);
 		headerGroup.setText(text);
 		headerGroup.setLayout(new GridLayout(1, true));
 		return headerGroup;
 	}
-	
+
 	public static boolean isIncompatibleJavaVersion() {
 		return isIncompatibleJavaVersion(System.getProperty("java.version", null));
 	}

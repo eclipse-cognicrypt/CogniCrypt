@@ -1,5 +1,7 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
  * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -78,7 +80,8 @@ public class AnalysisKickOff {
 				Activator.getDefault().logInfo("The project " + ip.getName() + " does not have Java nature. No analysis necessary.");
 				return false;
 			}
-		}	catch (final CoreException e) {
+		}
+		catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 			return false;
 		}
@@ -119,6 +122,7 @@ public class AnalysisKickOff {
 					try {
 						Thread.sleep(1);
 					}	catch (final InterruptedException e) {}
+					
 					if(!monitorThread.isCgGen()) {
 						cgGen.setWorkRemaining(1000).split(1);
 						cgGen.setTaskName("Constructing call Graphs...");

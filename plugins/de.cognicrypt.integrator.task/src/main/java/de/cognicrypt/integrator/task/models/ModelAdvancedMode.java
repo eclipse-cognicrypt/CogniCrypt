@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 /**
@@ -27,7 +24,7 @@ public class ModelAdvancedMode {
 	private File locationOfHelpXMLFile;
 	private boolean isCustomLibraryRequired;
 	private boolean isGuidedModeChosen;
-	//private boolean isGuidedModeForced;
+	// private boolean isGuidedModeForced;
 	private final Task task;
 	private String description;
 	private String taskDescription;
@@ -64,8 +61,7 @@ public class ModelAdvancedMode {
 	}
 
 	/**
-	 * @param nameOfTheTask
-	 *        the nameOfTheTask to set
+	 * @param nameOfTheTask the nameOfTheTask to set
 	 */
 	public void setNameOfTheTask(final String nameOfTheTask) {
 		this.nameOfTheTask = getMachineReadableName(nameOfTheTask); // generate the task name that will be used as the machine readable identifier for the task.
@@ -80,8 +76,7 @@ public class ModelAdvancedMode {
 	}
 
 	/**
-	 * @param locationOfCustomLibrary
-	 *        the locationOfCustomLibrary to set
+	 * @param locationOfCustomLibrary the locationOfCustomLibrary to set
 	 */
 	public void setLocationOfCustomLibrary(final File locationOfCustomLibrary) {
 		this.locationOfCustomLibrary = locationOfCustomLibrary;
@@ -95,8 +90,7 @@ public class ModelAdvancedMode {
 	}
 
 	/**
-	 * @param locationOfClaferFile
-	 *        the locationOfClaferFile to set
+	 * @param locationOfClaferFile the locationOfClaferFile to set
 	 */
 	public void setLocationOfClaferFile(final File locationOfClaferFile) {
 		this.locationOfClaferFile = locationOfClaferFile;
@@ -110,8 +104,7 @@ public class ModelAdvancedMode {
 	}
 
 	/**
-	 * @param locationOfXSLFile
-	 *        the locationOfXSLFile to set
+	 * @param locationOfXSLFile the locationOfXSLFile to set
 	 */
 	public void setLocationOfXSLFile(final File locationOfXSLFile) {
 		this.locationOfXSLFile = locationOfXSLFile;
@@ -125,8 +118,7 @@ public class ModelAdvancedMode {
 	}
 
 	/**
-	 * @param locationOfJSONFile
-	 *        the locationOfJSONFile to set
+	 * @param locationOfJSONFile the locationOfJSONFile to set
 	 */
 	public void setLocationOfJSONFile(final File locationOfJSONFile) {
 		this.locationOfJSONFile = locationOfJSONFile;
@@ -140,23 +132,21 @@ public class ModelAdvancedMode {
 	}
 
 	/**
-	 * @param isGuidedModeChosen
-	 *        the isGuidedModeChosen to set
+	 * @param isGuidedModeChosen the isGuidedModeChosen to set
 	 */
 	public void setGuidedModeChosen(final boolean isGuidedModeChosen) {
 		this.isGuidedModeChosen = isGuidedModeChosen;
 	}
 	/*	*//**
-			 * @return the isGuidedModeForced
-			 */
+				 * @return the isGuidedModeForced
+				 */
 	/*
 	 * public boolean isGuidedModeForced() { return isGuidedModeForced; }
 	 *//**
-		 * @param isGuidedModeForced
-		 *        the isGuidedModeForced to set
-		 *//*
-			 * private void setGuidedModeForced(boolean isGuidedModeForced) { this.isGuidedModeForced = isGuidedModeForced; }
-			 */
+			 * @param isGuidedModeForced the isGuidedModeForced to set
+			 *//*
+					 * private void setGuidedModeForced(boolean isGuidedModeForced) { this.isGuidedModeForced = isGuidedModeForced; }
+					 */
 
 	/**
 	 * @return the isCustomLibraryRequired
@@ -166,8 +156,7 @@ public class ModelAdvancedMode {
 	}
 
 	/**
-	 * @param isCustomLibraryRequired
-	 *        the isCustomLibraryRequired to set
+	 * @param isCustomLibraryRequired the isCustomLibraryRequired to set
 	 */
 	public void setCustomLibraryRequired(final boolean isCustomLibraryRequired) {
 		this.isCustomLibraryRequired = isCustomLibraryRequired;
@@ -189,7 +178,7 @@ public class ModelAdvancedMode {
 		this.task.setModelFile(Constants.CFR_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.JS_EXTENSION);
 		this.task.setQuestionsJSONFile(Constants.JSON_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.JSON_EXTENSION);
 		this.task.setTaskDescription(getTaskDescription() == null ? "" : getTaskDescription());
-		this.task.setXslFile(Constants.XSL_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.XSL_EXTENSION);
+		this.task.setCodeTemplate(Constants.XSL_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.XSL_EXTENSION);
 		this.task.setAdditionalResources(Constants.JAR_FILE_DIRECTORY_PATH + getNameOfTheTask());
 	}
 
@@ -201,8 +190,7 @@ public class ModelAdvancedMode {
 	}
 
 	/**
-	 * @param description
-	 *        the description to set
+	 * @param description the description to set
 	 */
 	public void setDescription(final String description) {
 		this.description = description;
@@ -216,8 +204,7 @@ public class ModelAdvancedMode {
 	}
 
 	/**
-	 * @param taskDescription
-	 *        the taskDescryption to set
+	 * @param taskDescription the taskDescryption to set
 	 */
 	public void setTaskDescription(final String taskDescription) {
 		this.taskDescription = taskDescription;
@@ -231,8 +218,7 @@ public class ModelAdvancedMode {
 	}
 
 	/**
-	 * @param locationOfHelpXMLFile
-	 *        the locationOfHelpXMLFile to set
+	 * @param locationOfHelpXMLFile the locationOfHelpXMLFile to set
 	 */
 	public void setLocationOfHelpXMLFile(final File locationOfHelpXMLFile) {
 		this.locationOfHelpXMLFile = locationOfHelpXMLFile;

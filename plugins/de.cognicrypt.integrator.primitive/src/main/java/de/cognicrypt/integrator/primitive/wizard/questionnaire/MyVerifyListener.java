@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.primitive.wizard.questionnaire;
@@ -29,7 +26,8 @@ public class MyVerifyListener implements VerifyListener {
 				if (portNum < 0 || portNum > 65535) {
 					e.doit = false;
 				}
-			} catch (final NumberFormatException ex) {
+			}
+			catch (final NumberFormatException ex) {
 				if (!port.equals("")) {
 					e.doit = false;
 				}

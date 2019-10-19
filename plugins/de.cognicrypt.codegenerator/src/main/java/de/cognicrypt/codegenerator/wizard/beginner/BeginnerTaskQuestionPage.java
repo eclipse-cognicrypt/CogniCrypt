@@ -1,5 +1,7 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -102,7 +104,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		this.page = page;
 		this.quest = null;
 	}
-	
+
 	/**
 	 *
 	 * @param page
@@ -130,14 +132,13 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		this.quest = quest;
 		this.page = null;
 	}
-	
+
 	private BeginnerTaskQuestionPage(final Task task) {
 		super("Display Questions");
 		setTitle("Configuring Selected Task: " + task.getDescription());
 		setDescription(Constants.DESCRIPTION_VALUE_SELECTION_PAGE);
 		this.task = task;
 	}
-	
 
 	@Override
 	public boolean isPageComplete() {
@@ -195,7 +196,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		gd_question.widthHint = 750;
 		label.setLayoutData(gd_question);
 		label.setText(question.getQuestionText());
-		
+
 		final Composite answerPanel = new Composite(parent, SWT.NONE);
 		final GridLayout answerLayout = new GridLayout();
 		answerLayout.numColumns = 4;
@@ -203,6 +204,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		answerLayout.horizontalSpacing = 15;
 		answerPanel.setLayout(answerLayout);
 
+		int noOfAnswers = answers.size();
 		switch (question.getElement()) {
 			case combo:
 				final ComboViewer comboViewer = new ComboViewer(answerPanel, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.FILL);
@@ -233,9 +235,14 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				if (!radioNote.isEmpty()) {
 					radioNoteControl = createNote(container, question, !(radioNote.contains("$$$")));
 				}
-				final Button[] radioButtons = new Button[answers.size()];
-				for (int i = 0; i < answers.size(); i++) {
+				final Button[] radioButtons = new Button[noOfAnswers];
+				boolean shouldBreak = noOfAnswers % 4 == 1;
+				for (int i = 0; i < noOfAnswers; i++) {
 					final int count = i;
+					if (shouldBreak && i + 2 == noOfAnswers) {
+						new Label(answerPanel, SWT.NULL);
+					}
+
 					final Group finalRadioNote = radioNoteControl;
 					final String ans = answers.get(i).getValue();
 					radioButtons[i] = new Button(answerPanel, SWT.RADIO);
@@ -256,12 +263,12 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						}
 					});
 				}
-				
+
 				Answer evalAnswer = question.getEnteredAnswer();
 				if (evalAnswer == null) {
 					evalAnswer = question.getDefaultAnswer();
 				}
-				for (int i = 0; i < answers.size(); i++) {
+				for (int i = 0; i < noOfAnswers; i++) {
 					if (radioButtons[i].getText().equals(evalAnswer.getValue())) {
 						radioButtons[i].setSelection(true);
 						BeginnerTaskQuestionPage.this.selectionMap.put(question, evalAnswer);
@@ -279,9 +286,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					checkboxNoteControl = createNote(container, question, !checkboxNoteText.contains("$$$"));
 				}
 				final List<Button> cbs = new ArrayList<Button>();
-				final List<Button> exclusiveCbs = new ArrayList<Button>(answers.size());
+				final List<Button> exclusiveCbs = new ArrayList<Button>(noOfAnswers);
 
-				for (int i = 0; i < answers.size(); i++) {
+				for (int i = 0; i < noOfAnswers; i++) {
 					final int count = i;
 					final Group finalCheckBoxControl = checkboxNoteControl;
 					final Answer a = answers.get(i);
@@ -415,7 +422,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					}
 
 					radioButton.addSelectionListener(new SelectionAdapter() {
-						
+
 						@Override
 						public void widgetSelected(SelectionEvent e) {
 							updateRBGroup(question, rbgroups, answer, (Button) e.getSource());

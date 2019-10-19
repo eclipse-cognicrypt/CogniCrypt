@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 /**
@@ -18,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
-
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.FeatureType;
 
@@ -36,8 +32,6 @@ public class ClaferFeature implements Serializable {
 	 * @param featureType
 	 * @param featureName
 	 * @param featureInheritance
-	 *
-	 *
 	 */
 	public ClaferFeature(final FeatureType featureType, final String featureName, final String featureInheritance) {
 		super();
@@ -56,8 +50,7 @@ public class ClaferFeature implements Serializable {
 	}
 
 	/**
-	 * @param featureType
-	 *        the featureType to set
+	 * @param featureType the featureType to set
 	 */
 	public void setFeatureType(final FeatureType featureType) {
 		this.featureType = featureType;
@@ -71,8 +64,7 @@ public class ClaferFeature implements Serializable {
 	}
 
 	/**
-	 * @param featureName
-	 *        the featureName to set
+	 * @param featureName the featureName to set
 	 */
 	public void setFeatureName(final String featureName) {
 		this.featureName = featureName;
@@ -131,8 +123,7 @@ public class ClaferFeature implements Serializable {
 	/**
 	 * check whether the {@link ClaferFeature} has properties meeting a given constraint
 	 *
-	 * @param predicate
-	 *        {@link Predicate} that has to be satisfied by at least one {@link ClaferProperty}
+	 * @param predicate {@link Predicate} that has to be satisfied by at least one {@link ClaferProperty}
 	 * @return <code>true</code> if the feature has non-empty properties that satisfy the predicate, <code>false</code> otherwise
 	 */
 	public boolean hasPropertiesSatisfying(final Predicate<? super ClaferProperty> predicate) {
@@ -148,8 +139,7 @@ public class ClaferFeature implements Serializable {
 	}
 
 	/**
-	 * @param needle
-	 *        {@link String} name of the property searched for
+	 * @param needle {@link String} name of the property searched for
 	 * @return true if the feature has a property with the given name, false otherwise
 	 */
 	public boolean hasProperty(final String needle) {
@@ -228,8 +218,7 @@ public class ClaferFeature implements Serializable {
 	/**
 	 * return a {@link String} representing of the feature
 	 *
-	 * @param includeChildren
-	 *        {@link Boolean} whether to include properties and constraints in the output
+	 * @param includeChildren {@link Boolean} whether to include properties and constraints in the output
 	 * @return {@link String} representation of the Clafer
 	 */
 	public String toString(final boolean includeChildren) {

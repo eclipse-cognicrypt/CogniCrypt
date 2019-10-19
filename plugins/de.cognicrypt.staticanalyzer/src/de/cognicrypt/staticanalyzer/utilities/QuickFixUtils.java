@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.staticanalyzer.utilities;
 
 import java.io.File;
@@ -11,7 +21,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;

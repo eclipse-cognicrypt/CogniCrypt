@@ -42,7 +42,7 @@ public class ArtifactUtils {
 		defaultRulesetUrls.put(ini.get(Constants.INI_BC_NEXUS), Constants.MIN_BC_RULE_VERSION);
 		defaultRulesetUrls.put(ini.get(Constants.INI_TINK_NEXUS), Constants.MIN_TINK_RULE_VERSION);
 		
-		Iterator it = defaultRulesetUrls.entrySet().iterator();
+		Iterator<Entry<String, Double>> it = defaultRulesetUrls.entrySet().iterator();
 		while (it.hasNext()) {
 			Entry<String, Double> pair = (Entry<String, Double>) it.next();
 			String metaFilePath = pair.getKey() + File.separator + "maven-metadata.xml";

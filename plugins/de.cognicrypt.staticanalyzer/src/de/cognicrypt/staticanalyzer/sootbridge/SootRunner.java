@@ -107,7 +107,7 @@ public class SootRunner {
 			}
 			
 			rules.addAll(Files
-					.find(Paths.get(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOME_RULES_DIR).getPath()), 
+					.find(Paths.get(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getPath()), 
 							Integer.MAX_VALUE,
 							(file, attr) -> file.toString().endsWith(RuleFormat.SOURCE.toString()))
 					.map(path -> {
@@ -134,7 +134,7 @@ public class SootRunner {
 											return false;
 										})
 								.map(path -> {
-										return CryptSLRuleReader.readFromSourceFile(path.toFile());									
+										return CryptSLRuleReader.readFromSourceFile(path.toFile());
 								}).collect(Collectors.toList()));
 					}
 				}

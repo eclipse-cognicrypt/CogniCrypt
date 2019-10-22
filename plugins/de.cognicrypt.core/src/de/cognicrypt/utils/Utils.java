@@ -7,23 +7,18 @@ package de.cognicrypt.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.OptionalInt;
-import java.util.regex.Matcher;
-
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.OptionalInt;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -69,7 +64,6 @@ import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
-
 import de.cognicrypt.core.Activator;
 import de.cognicrypt.core.Constants;
 
@@ -409,17 +403,17 @@ public class Utils {
 	 * @throws MalformedURLException
 	 */
 	public static CryptSLRule getCryptSLRule(String cryptslRule) throws MalformedURLException {
-		File ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOME_RULES_DIR + "/" + cryptslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
+		File ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + "/" + cryptslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
 		if (ruleRes == null || !ruleRes.exists() || !ruleRes.canRead()) {
-			ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOME_RULES_DIR + "/" + cryptslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
+			ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + "/" + cryptslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
 		}
 		return (new CrySLModelReader()).readRule(ruleRes);
 	}
 
 	public static List<CryptSLRule> readCrySLRules() {
 		return Stream
-				.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOME_RULES_DIR).getAbsolutePath()), 
-						readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOME_RULES_DIR).getAbsolutePath()))
+				.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getAbsolutePath()), 
+						readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getAbsolutePath()))
 				.flatMap(Collection::stream).collect(Collectors.toList());
 	}
 

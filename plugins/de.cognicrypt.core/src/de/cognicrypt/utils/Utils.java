@@ -62,6 +62,8 @@ import org.ini4j.Wini;
 import org.osgi.framework.Bundle;
 
 import com.google.common.base.CharMatcher;
+
+import crypto.analysis.CrySLRulesetSelector.RuleFormat;
 import crypto.cryptslhandler.CrySLModelReader;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
@@ -74,7 +76,6 @@ import de.cognicrypt.core.Constants;
 public class Utils {
 
 	private static IWorkbenchWindow window = null;
-	private static String defaultRulesPath = "resources/CrySLRules/JavaCryptographicArchitecture";
 
 	/**
 	 * This method checks if a project passed as parameter is a Java project or not.
@@ -408,16 +409,17 @@ public class Utils {
 	 * @throws MalformedURLException
 	 */
 	public static CryptSLRule getCryptSLRule(String cryptslRule) throws MalformedURLException {
-		File ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR + "/" + cryptslRule + ".cryptsl", de.cognicrypt.core.Activator.PLUGIN_ID);
+		File ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOME_RULES_DIR + "/" + cryptslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
 		if (ruleRes == null || !ruleRes.exists() || !ruleRes.canRead()) {
-			ruleRes = Utils.getResourceFromWithin(defaultRulesPath + "/" + cryptslRule + ".cryptsl", de.cognicrypt.core.Activator.PLUGIN_ID);
+			ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOME_RULES_DIR + "/" + cryptslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
 		}
 		return (new CrySLModelReader()).readRule(ruleRes);
 	}
 
 	public static List<CryptSLRule> readCrySLRules() {
 		return Stream
-				.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR).getAbsolutePath()), readCrySLRules(Utils.getResourceFromWithin(defaultRulesPath).getAbsolutePath()))
+				.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOME_RULES_DIR).getAbsolutePath()), 
+						readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOME_RULES_DIR).getAbsolutePath()))
 				.flatMap(Collection::stream).collect(Collectors.toList());
 	}
 

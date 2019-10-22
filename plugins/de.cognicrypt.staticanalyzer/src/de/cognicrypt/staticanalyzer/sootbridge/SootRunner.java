@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IProject;
@@ -47,6 +48,7 @@ import de.cognicrypt.crysl.reader.CrySLModelReader;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.staticanalyzer.utils.Ruleset;
+import de.cognicrypt.utils.Utils;
 import soot.G;
 import soot.PackManager;
 import soot.Scene;
@@ -89,7 +91,7 @@ public class SootRunner {
 
 	private static List<CryptSLRule> getRules(IProject project) {
 		List<CryptSLRule> rules = Lists.newArrayList();
-		// TODO Select rules according to selected rulesets in preference page. The CrySL rules for each ruleset are in a separate subdirectory of "/resources/CrySLRules/".
+		Set<String> readRules = Sets.newHashSet();
 		try {
 			CrySLModelReader r = new CrySLModelReader(project);
 			for (String path : projectClassPath(JavaCore.create(project))) {
@@ -103,6 +105,15 @@ public class SootRunner {
 				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
+			
+			rules.addAll(Files
+					.find(Paths.get(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOME_RULES_DIR).getPath()), 
+							Integer.MAX_VALUE,
+							(file, attr) -> file.toString().endsWith(RuleFormat.SOURCE.toString()))
+					.map(path -> {
+							readRules.add(path.getFileName().toString());
+							return CryptSLRuleReader.readFromSourceFile(path.toFile());
+					}).collect(Collectors.toList()));
 
 			Preferences prefs = InstanceScope.INSTANCE.getNode(de.cognicrypt.core.Activator.PLUGIN_ID);
 			try {
@@ -115,8 +126,16 @@ public class SootRunner {
 								File.separator + loadedRuleset.getSelectedVersion();
 						rules.addAll(Files
 								.find(Paths.get(new File(folderPath).getPath()), Integer.MAX_VALUE,
-										(file, attr) -> file.toString().endsWith(RuleFormat.SOURCE.toString()))
-								.map(path -> CryptSLRuleReader.readFromSourceFile(path.toFile())).collect(Collectors.toList()));
+										(file, attr) -> { 
+											if (file.toString().endsWith(RuleFormat.SOURCE.toString()) && 
+													!readRules.contains(file.getFileName().toString())) {
+												return true;
+											}
+											return false;
+										})
+								.map(path -> {
+										return CryptSLRuleReader.readFromSourceFile(path.toFile());									
+								}).collect(Collectors.toList()));
 					}
 				}
 			} catch (BackingStoreException e) {

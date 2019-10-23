@@ -44,7 +44,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 	private Button automatedAnalysisCheckBox;
 	private Button secureObjectsCheckBox;
-	private Button addNewRulesetButton;
+	private Button addNewRulesetButton, selectCustomRulesCheckBox;
 	private CheckboxTableViewer table;
 	private Button analyseDependenciesCheckBox;
 
@@ -85,6 +85,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		automatedAnalysisCheckBox.setSelection(preferences.getBoolean(Constants.AUTOMATED_ANALYSIS));
 		secureObjectsCheckBox.setSelection(preferences.getBoolean(Constants.SHOW_SECURE_OBJECTS));
 		analyseDependenciesCheckBox.setSelection(preferences.getBoolean(Constants.ANALYSE_DEPENDENCIES));
+		selectCustomRulesCheckBox.setSelection(preferences.getBoolean(Constants.SELECT_CUSTOM_RULES));
 	}
 
 	private void performBasicDefaults() {
@@ -248,6 +249,9 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 				}
 			}
 		});
+		
+		selectCustomRulesCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
+		selectCustomRulesCheckBox.setText("Select custom rules");
 
 		automatedAnalysisCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		automatedAnalysisCheckBox.setText("Enable automated analysis when saving");
@@ -390,6 +394,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	 */
 	@Override
 	public void setDefaultValues() {
+		selectCustomRulesCheckBox.setSelection(true);
 		automatedAnalysisCheckBox.setSelection(preferences.getDefaultBoolean(Constants.AUTOMATED_ANALYSIS));
 		secureObjectsCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SHOW_SECURE_OBJECTS));
 		analyseDependenciesCheckBox.setSelection(preferences.getDefaultBoolean(Constants.ANALYSE_DEPENDENCIES));
@@ -421,6 +426,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	 */
 	@Override
 	protected void storeValues() {
+		preferences.setValue(Constants.SELECT_CUSTOM_RULES,  selectCustomRulesCheckBox.getSelection());
 		preferences.setValue(Constants.AUTOMATED_ANALYSIS, automatedAnalysisCheckBox.getSelection());
 		preferences.setValue(Constants.SHOW_SECURE_OBJECTS, secureObjectsCheckBox.getSelection());
 		preferences.setValue(Constants.ANALYSE_DEPENDENCIES, analyseDependenciesCheckBox.getSelection());

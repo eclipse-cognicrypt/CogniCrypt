@@ -92,6 +92,8 @@ public class SootRunner {
 	private static List<CryptSLRule> getRules(IProject project) {
 		List<CryptSLRule> rules = Lists.newArrayList();
 		Set<String> readRules = Sets.newHashSet();
+		IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
+		
 		try {
 			CrySLModelReader r = new CrySLModelReader(project);
 			for (String path : projectClassPath(JavaCore.create(project))) {
@@ -106,14 +108,17 @@ public class SootRunner {
 				rules.addAll(readRuleFromBinaryFiles);
 			}
 			
-			rules.addAll(Files
-					.find(Paths.get(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getPath()), 
-							Integer.MAX_VALUE,
-							(file, attr) -> file.toString().endsWith(RuleFormat.SOURCE.toString()))
-					.map(path -> {
-							readRules.add(path.getFileName().toString());
-							return CryptSLRuleReader.readFromSourceFile(path.toFile());
-					}).collect(Collectors.toList()));
+			if (prefStore.getBoolean(Constants.SELECT_CUSTOM_RULES)) {
+				Activator.getDefault().logInfo("Loading custom rules.");
+				rules.addAll(Files
+						.find(Paths.get(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getPath()), 
+								Integer.MAX_VALUE,
+								(file, attr) -> file.toString().endsWith(RuleFormat.SOURCE.toString()))
+						.map(path -> {
+								readRules.add(path.getFileName().toString());
+								return CryptSLRuleReader.readFromSourceFile(path.toFile());
+						}).collect(Collectors.toList()));
+			}
 
 			Preferences prefs = InstanceScope.INSTANCE.getNode(de.cognicrypt.core.Activator.PLUGIN_ID);
 			try {

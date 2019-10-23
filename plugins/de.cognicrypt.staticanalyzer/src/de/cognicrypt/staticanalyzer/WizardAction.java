@@ -1,14 +1,18 @@
-package de.cognicrypt.staticanalyzer;
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
+package de.cognicrypt.staticanalyzer;
+/********************************************************************************
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaElement;
@@ -47,8 +51,7 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#init
 	 */
 	@Override
-	public void init(final IWorkbenchWindow window) {
-	}
+	public void init(final IWorkbenchWindow window) {}
 
 	/**
 	 * The action has been activated. The argument of the method represents the 'real' action sitting in the workbench UI.

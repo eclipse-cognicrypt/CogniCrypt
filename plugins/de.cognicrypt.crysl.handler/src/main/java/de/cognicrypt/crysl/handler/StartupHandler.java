@@ -1,5 +1,7 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
  * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -26,7 +28,7 @@ import de.cognicrypt.core.Constants;
  * @author Eric Bodden
  */
 public class StartupHandler implements IStartup {
-	
+
 	private static final AfterBuildListener BUILD_LISTENER = new AfterBuildListener();
 	private static final ImportListener IMPORT_LISTENER = new ImportListener();
 
@@ -81,15 +83,16 @@ public class StartupHandler implements IStartup {
 
 		@Override
 		public void resourceChanged(IResourceChangeEvent event) {
-			
+
 			IResourceDelta delta = event.getDelta();
-			
+
 			IResourceDelta[] affectedChildren = delta.getAffectedChildren();
 			if (affectedChildren.length == 0) {
 				return;
 			}
 			IResource deltaResource = affectedChildren[0].getResource();
-			if (event.getType() == IResourceChangeEvent.POST_CHANGE && deltaResource instanceof IProject && (delta.getKind() == IResourceDelta.ADDED || delta.getKind() == IResourceDelta.CHANGED)) {
+			if (event.getType() == IResourceChangeEvent.POST_CHANGE && deltaResource instanceof IProject
+					&& (delta.getKind() == IResourceDelta.ADDED || delta.getKind() == IResourceDelta.CHANGED)) {
 				try {
 					IProject project = (IProject) deltaResource;
 					if (!CrySLBuilderUtils.hasCrySLBuilder(project) && CrySLBuilderUtils.hasCrySLFiles(project)) {
@@ -101,4 +104,3 @@ public class StartupHandler implements IStartup {
 		}
 	}
 }
-	

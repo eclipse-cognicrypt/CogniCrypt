@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.models;
@@ -20,7 +17,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.function.Predicate;
-
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
 import de.cognicrypt.integrator.task.controllers.ClaferCompiler;
@@ -57,8 +53,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	/**
 	 * add all of the clafers from the given {@link ClaferModel} to this instance
 	 *
-	 * @param claferModel
-	 *        model the children of which are to be added
+	 * @param claferModel model the children of which are to be added
 	 */
 	public void add(final ClaferModel claferModel) {
 		for (final ClaferFeature cfrFeature : claferModel) {
@@ -73,8 +68,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	/**
 	 * check whether the model contains a clafer with the given name
 	 *
-	 * @param featureName
-	 *        needle as a {@link String}
+	 * @param featureName needle as a {@link String}
 	 * @return boolean success of the search
 	 */
 	public boolean hasFeature(final String featureName) {
@@ -90,8 +84,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	/**
 	 * get a clafer from the model by name
 	 *
-	 * @param featureName
-	 *        needle as a {@link String}
+	 * @param featureName needle as a {@link String}
 	 * @return {@link ClaferFeature} with the given name, <code>null</code> if not found
 	 */
 	public ClaferFeature getFeature(final String featureName) {
@@ -115,8 +108,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	/**
 	 * return a shallow copy containing only features that the predicate is true for
 	 *
-	 * @param predicate
-	 *        {@link Predicate}&lt;? super {@link ClaferFeature}&gt; to test on the features
+	 * @param predicate {@link Predicate}&lt;? super {@link ClaferFeature}&gt; to test on the features
 	 * @return {@link ClaferModel} containing references to the successfully filtered features
 	 */
 	public ClaferModel getIf(final Predicate<? super ClaferFeature> predicate) {
@@ -152,8 +144,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	/**
 	 * get missing inheritance or property types in this model with respect to a given feature
 	 *
-	 * @param refFeature
-	 *        reference feature to sift for unimplemented features
+	 * @param refFeature reference feature to sift for unimplemented features
 	 * @return a model containing only those features that have been added
 	 */
 	public ClaferModel getMissingFeatures(final ClaferFeature refFeature) {
@@ -230,8 +221,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	/**
 	 * add the missing features according to getMissingFeatures method
 	 *
-	 * @param refFeature
-	 *        reference feature to consider for search of unused features
+	 * @param refFeature reference feature to consider for search of unused features
 	 * @return a model containing only those features that have been added
 	 */
 	public ClaferModel implementMissingFeatures(final ClaferFeature refFeature) {
@@ -291,8 +281,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	/**
 	 * write the model into a file
 	 *
-	 * @param filename
-	 *        {@link String} filename of the file to write
+	 * @param filename {@link String} filename of the file to write
 	 * @return success of the writing as a {@link Boolean}
 	 */
 	public boolean toFile(final String filename) {
@@ -300,7 +289,8 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 			final FileWriter fileWriter = new FileWriter(filename);
 			fileWriter.write(toString());
 			fileWriter.close();
-		} catch (final IOException ex) {
+		}
+		catch (final IOException ex) {
 			Activator.getDefault().logError(ex);
 			return false;
 		}
@@ -311,8 +301,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	/**
 	 * try to compile the model in a given file
 	 *
-	 * @param filename
-	 *        {@link String} filename of the .cfr file to compile
+	 * @param filename {@link String} filename of the .cfr file to compile
 	 * @return {@link Boolean} success of the compilation
 	 */
 	public static boolean compile(final String filename) {
@@ -326,8 +315,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	/**
 	 * Get the parent feature of a property. Note, that this method finds a feature containing the given reference and does not check equality in terms of values.
 	 *
-	 * @param referenceProperty
-	 *        reference of the property to be found
+	 * @param referenceProperty reference of the property to be found
 	 * @return first {@link ClaferFeature} that contains a matching reference to the given property
 	 */
 	public ClaferFeature getParentFeatureOfProperty(final ClaferProperty referenceProperty) {
@@ -345,8 +333,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	/**
 	 * serialize the model into a binary
 	 *
-	 * @param filename
-	 *        target filename as a {@link String}
+	 * @param filename target filename as a {@link String}
 	 * @return success of the serialization
 	 */
 	public boolean toBinary(final String filename) {
@@ -360,7 +347,8 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 			fos.close();
 
 			return true;
-		} catch (final Exception ex) {
+		}
+		catch (final Exception ex) {
 			Activator.getDefault().logError(ex);
 		}
 
@@ -370,8 +358,7 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 	/**
 	 * factory method to create an instance from a binary
 	 *
-	 * @param filename
-	 *        source filename as a {@link String}
+	 * @param filename source filename as a {@link String}
 	 * @return {@link ClaferModel} instance if successful, <code>null</code> else
 	 */
 	public static ClaferModel createFromBinaries(final String filename) {
@@ -385,7 +372,8 @@ public class ClaferModel implements Iterable<ClaferFeature>, Serializable {
 
 			ois.close();
 			fis.close();
-		} catch (final Exception ex) {
+		}
+		catch (final Exception ex) {
 			Activator.getDefault().logError(ex);
 		}
 

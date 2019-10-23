@@ -1,5 +1,7 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
  * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -22,12 +24,12 @@ public class Constants {
 	}
 	public enum Severities {
 		Error, Warning, Info, Ignored;
-		
+
 		public static Severities get(int i) {
 			return values()[i];
 		}
 	}
-	
+
 	public static enum CG {
 		CHA, SPARK_LIBRARY, SPARK
 	}
@@ -129,8 +131,6 @@ public class Constants {
 	public static final String PATH_FOR_CONFIG_XML = "/Configurator.xml";
 	public static final String XML_FILE_NAME = Constants.rsrcPath + "ClaferModel/Encrypt_CryptoTasks.xml";
 
-	
-	
 	public static final String pathToClaferInstanceFile = "claferInstance.xml";
 	public static final String pathToClaferPreviewFile = "claferPreview.xml";
 	public static final String NameOfTemporaryMethod = "templateUsage";
@@ -143,7 +143,8 @@ public class Constants {
 	public static final String TempSuffix = "Temp";
 
 	public static final String PackageName = "de" + Constants.outerFileSeparator + "cognicrypt" + Constants.outerFileSeparator + "crypto";
-	public static final String PackageNameAsName = PackageName.replaceAll(("\\".equals(Constants.outerFileSeparator) ? Constants.outerFileSeparator : "") + Constants.outerFileSeparator, "."); 
+	public static final String PackageNameAsName =
+			PackageName.replaceAll(("\\".equals(Constants.outerFileSeparator) ? Constants.outerFileSeparator : "") + Constants.outerFileSeparator, ".");
 	public static final String CodeGenerationCallFolder = Constants.innerFileSeparator + Constants.PackageName;
 	public static final String CodeGenerationCallFile = CodeGenerationCallFolder + Constants.innerFileSeparator + Constants.AdditionalOutputFile;
 
@@ -200,12 +201,11 @@ public class Constants {
 	public static final String Type = "type";
 	public static final String Security = "Security";
 	public static final String Performance = "Performance";
-	public static final String[] xmlimportsarr =
-			{"java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException", "java.security.NoSuchAlgorithmException",
-					"javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException", "javax.crypto.NoSuchPaddingException",
-					"java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec", "java.security.spec.InvalidKeySpecException", "java.util.List",
-					"java.util.Base64", "java.io.InputStream", "java.io.OutputStream", "java.util.Properties", "java.io.FileOutputStream", "java.security.Key", "java.net.URL", "java.io.File", 
-					"javax.net.ssl.HttpsURLConnection","java.security.Signature"};
+	public static final String[] xmlimportsarr = {"java.security.InvalidAlgorithmParameterException", "java.security.InvalidKeyException", "java.security.NoSuchAlgorithmException",
+			"java.security.NoSuchAlgorithmException", "javax.crypto.SecretKey", "javax.crypto.BadPaddingException", "javax.crypto.Cipher", "javax.crypto.IllegalBlockSizeException",
+			"javax.crypto.NoSuchPaddingException", "java.security.SecureRandom", "javax.crypto.spec.IvParameterSpec", "javax.crypto.spec.SecretKeySpec",
+			"java.security.spec.InvalidKeySpecException", "java.util.List", "java.util.Base64", "java.io.InputStream", "java.io.OutputStream", "java.util.Properties",
+			"java.io.FileOutputStream", "java.security.Key", "java.net.URL", "java.io.File", "javax.net.ssl.HttpsURLConnection", "java.security.Signature"};
 
 	// Types
 	public static final String INTEGER = "Integer";
@@ -488,8 +488,7 @@ public class Constants {
 	public static final String MVN_CLEAN_COMMAND = "clean";
 	public static final String MVN_SKIPTESTS_COMMAND = "-DskipTests=true";
 	public static final String MVN_ECLIPSE_COMMAND = "eclipse:eclipse";
-	
-	
+
 	// for the list of items to be included inside the combo of the questionTab
 	public static final String dropDown = "Drop down";
 	public static final String textBox = "Text box";
@@ -518,16 +517,17 @@ public class Constants {
 	public static final String NEVER_TYPEOF_MARKER_TYPE = "de.cognicrypt.staticanalyzer.neverTypeOfErrorMarker";
 	public static final String INCOMPLETE_OPERATION_MARKER_TYPE = "de.cognicrypt.staticanalyzer.incompleteOperationErrorMarker";
 	public static final String TYPESTATE_ERROR_MARKER_TYPE = "de.cognicrypt.staticanalyzer.typestateErrorMarker";
-	
+
+	public static final String RULE_SELECTION = "de.cognicrypt.staticanalyzer.ruleSelection";
 	public static final String AUTOMATED_ANALYSIS = "de.cognicrypt.staticanalyzer.automaticAnalysis";
 	public static final String SHOW_SECURE_OBJECTS = "de.cognicrypt.staticanalyzer.secureObjects";
 	public static final String CALL_GRAPH_SELECTION = "de.cognicrypt.staticanalyzer.callgraphSelection";
 	public static final String SELECT_CUSTOM_RULES = "de.cognicrypt.staticanalyzer.selectCustomRules";
 
 	public static final String ANALYSE_DEPENDENCIES = "de.cognicrypt.staticanalyzer.dependencyAnalysis";
-	
+
 	public static final String PERSIST_CONFIG = "de.cognicrypt.codegenerator.persistConfig";
-	
+
 	// for creating xml file
 	public static final String Xml_Declaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 	public static final String NLS_Tag = "<?NLS TYPE=\"org.eclipse.help.contexts\"?>";
@@ -569,7 +569,7 @@ public class Constants {
 	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CryptSL";
 	public static final String HEALTHY = "Secure";
 	public static final String UNHEALTHY = "Insecure";
-	
+
 	// define the max java version before which plugin works.
 	public static final String CC_JAVA_VERSION = "1.8";
 	

@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 /**
@@ -21,7 +18,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -33,7 +29,6 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
-
 import org.clafer.ast.AstClafer;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -48,10 +43,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
 import de.cognicrypt.integrator.task.models.ClaferModel;
-import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.utils.Utils;
 
 public class FileUtilities {
@@ -71,13 +66,12 @@ public class FileUtilities {
 	}
 
 	/**
-	 *
 	 * @return the result of the comilation.
 	 */
 	private boolean compileCFRFile() {
 		// try to compile the Clafer file
-		final String claferFilename = Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH)
-			.getAbsolutePath() + Constants.innerFileSeparator + getTrimmedTaskName() + Constants.CFR_EXTENSION;
+		final String claferFilename =
+				Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH).getAbsolutePath() + Constants.innerFileSeparator + getTrimmedTaskName() + Constants.CFR_EXTENSION;
 		return ClaferModel.compile(claferFilename);
 	}
 
@@ -90,7 +84,8 @@ public class FileUtilities {
 	 * @param customLibLocation
 	 * @throws TransformerException
 	 */
-	public String writeFiles(final ClaferModel claferModel, final ArrayList<Question> questions, final String xslFileContents, final File customLibLocation, final String helpFileContents) {
+	public String writeFiles(final ClaferModel claferModel, final ArrayList<Question> questions, final String xslFileContents, final File customLibLocation,
+			final String helpFileContents) {
 		writeXSLFile(xslFileContents);
 
 		if (helpFileContents != null) {
@@ -119,7 +114,8 @@ public class FileUtilities {
 			writer.println(helpFileContents);
 			writer.flush();
 			writer.close();
-		} catch (final FileNotFoundException e) {
+		}
+		catch (final FileNotFoundException e) {
 			Activator.getDefault().logError(e);
 			getErrors().append("There was a problem wrting the Help data.\n");
 		}
@@ -187,7 +183,8 @@ public class FileUtilities {
 		reader.setValidation(false);
 		try {
 			reader.read(helpLocation);
-		} catch (final DocumentException e) {
+		}
+		catch (final DocumentException e) {
 			Activator.getDefault().logError(e);
 			appendFileErrors(helpLocation.getName());
 			return false;
@@ -224,7 +221,8 @@ public class FileUtilities {
 						customLib = new ZipFile(tmpLibLocation);
 						customLib.entries();
 						customLib.close();
-					} catch (final IOException ex) {
+					}
+					catch (final IOException ex) {
 						Activator.getDefault().logError(ex);
 						appendFileErrors(tmpLibLocation.getName());
 						return false;
@@ -244,7 +242,8 @@ public class FileUtilities {
 	private boolean validateXSLFile(final File xslFileLocation) {
 		try {
 			TransformerFactory.newInstance().newTransformer(new StreamSource(xslFileLocation));
-		} catch (final TransformerConfigurationException e) {
+		}
+		catch (final TransformerConfigurationException e) {
 			Activator.getDefault().logError(e);
 			appendFileErrors(xslFileLocation.getName());
 			return false;
@@ -265,7 +264,8 @@ public class FileUtilities {
 			gson.fromJson(reader, Object.class);
 			reader.close();
 			return true;
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			Activator.getDefault().logError(e);
 			appendFileErrors(jsonFileLocation.getName());
 			return false;
@@ -288,7 +288,7 @@ public class FileUtilities {
 		if (!isValidationSuccessful) {
 			appendFileErrors(cfrFileLocation.getName());
 			getErrors()
-				.append("Either the compilation failed, or the provided name for the Task does not match the one in the Clafer model. Please note : the name must be capitalized.");
+					.append("Either the compilation failed, or the provided name for the Task does not match the one in the Clafer model. Please note : the name must be capitalized.");
 			getErrors().append("\n");
 		}
 		return isValidationSuccessful;
@@ -322,7 +322,8 @@ public class FileUtilities {
 					Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
 				}
 
-			} catch (final Exception e) {
+			}
+			catch (final Exception e) {
 				Activator.getDefault().logError(e);
 				getErrors().append("There was a problem copying file ");
 				getErrors().append(existingFileLocation.getName());
@@ -337,7 +338,8 @@ public class FileUtilities {
 				final File tmpFile = new File(tempDirectory.toString() + Constants.innerFileSeparator + customLibFile.getName());
 				try {
 					Files.copy(customLibFile.toPath(), tmpFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
-				} catch (final IOException e) {
+				}
+				catch (final IOException e) {
 					Activator.getDefault().logError(e);
 					getErrors().append("There was a problem copying file ");
 					getErrors().append(existingFileLocation.getName());
@@ -350,8 +352,7 @@ public class FileUtilities {
 	/**
 	 * Update the task.json file with the new Task.
 	 *
-	 * @param task
-	 *        the Task to be added.
+	 * @param task the Task to be added.
 	 */
 	public void writeTaskToJSONFile(final Task task) {
 
@@ -369,14 +370,14 @@ public class FileUtilities {
 			gson.toJson(tasks, new TypeToken<List<Task>>() {}.getType(), writer);
 			writer.close();
 
-		} catch (final IOException e) {
+		}
+		catch (final IOException e) {
 			Activator.getDefault().logError(e);
 			getErrors().append("There was a problem updating the task file.\n");
 		}
 	}
 
 	/**
-	 *
 	 * @param claferModel
 	 */
 	private void writeCFRFile(final ClaferModel claferModel) {
@@ -385,16 +386,15 @@ public class FileUtilities {
 			final FileWriter writer = new FileWriter(cfrFile);
 			writer.write(claferModel.toString());
 			writer.close();
-		} catch (final IOException e) {
+		}
+		catch (final IOException e) {
 			Activator.getDefault().logError(e);
 			getErrors().append("There was a problem writing the Clafer model.\n");
 		}
 	}
 
 	/**
-	 *
-	 * @param questions
-	 *        listOfAllQuestions
+	 * @param questions listOfAllQuestions
 	 * @throws IOException
 	 * @throws SAXException
 	 * @throws ParserConfigurationException
@@ -419,7 +419,8 @@ public class FileUtilities {
 		 */
 		try {
 			new CreateAndModifyXmlfile(pages, getTaskName(), taskHasPageHelpContent);
-		} catch (IOException | ParserConfigurationException | SAXException | TransformerException e) {
+		}
+		catch (IOException | ParserConfigurationException | SAXException | TransformerException e) {
 			e.printStackTrace();
 		}
 
@@ -427,16 +428,17 @@ public class FileUtilities {
 
 		try {
 			final Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
-			//creates the file
+			// creates the file
 			jsonFile.createNewFile();
 
-			//creates the writer object for json file
+			// creates the writer object for json file
 			final FileWriter writerForJsonFile = new FileWriter(jsonFile);
 
-			//write the data into the .json file
+			// write the data into the .json file
 			writerForJsonFile.write(gson.toJson(pages));
 			writerForJsonFile.close();
-		} catch (final IOException e) {
+		}
+		catch (final IOException e) {
 			e.printStackTrace();
 		}
 		if (!validateJSONFile(jsonFile)) {
@@ -445,7 +447,6 @@ public class FileUtilities {
 	}
 
 	/**
-	 *
 	 * @param xslFileContents
 	 */
 	private void writeXSLFile(final String xslFileContents) {
@@ -456,7 +457,8 @@ public class FileUtilities {
 			writer.println(xslFileContents);
 			writer.flush();
 			writer.close();
-		} catch (final FileNotFoundException e) {
+		}
+		catch (final FileNotFoundException e) {
 			Activator.getDefault().logError(e);
 			getErrors().append("There was a problem wrting the XSL data.\n");
 		}
@@ -477,7 +479,8 @@ public class FileUtilities {
 		reader.setValidation(false);
 		try {
 			pluginXMLDocument = reader.read(pluginXMLFile);
-		} catch (final DocumentException e) {
+		}
+		catch (final DocumentException e) {
 			Activator.getDefault().logError(e);
 		}
 		if (pluginXMLDocument != null) {
@@ -496,7 +499,8 @@ public class FileUtilities {
 				final XMLWriter writer = new XMLWriter(fileWriter, format);
 				writer.write(pluginXMLDocument);
 				writer.close();
-			} catch (final IOException e) {
+			}
+			catch (final IOException e) {
 				Activator.getDefault().logError(e);
 			}
 		}
@@ -521,7 +525,6 @@ public class FileUtilities {
 	}
 
 	/**
-	 *
 	 * Set the name of the task that is being written to File. The names of the result files are set based on the provided task name.
 	 *
 	 * @param taskName
@@ -538,8 +541,7 @@ public class FileUtilities {
 	}
 
 	/**
-	 * @param set
-	 *        the string builder to maintain the list of errors.
+	 * @param set the string builder to maintain the list of errors.
 	 */
 	private void setErrors(final StringBuilder errors) {
 		this.errors = errors;

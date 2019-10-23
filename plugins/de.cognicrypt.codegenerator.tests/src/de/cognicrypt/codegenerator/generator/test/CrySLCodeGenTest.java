@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.codegenerator.generator.test;
 
 import static org.junit.Assert.assertEquals;
@@ -88,7 +98,7 @@ public class CrySLCodeGenTest {
 		}
 
 	}
-	
+
 	@Test
 	public void generatePBEncFiles() {
 		String template = "encryptionfiles";
@@ -124,7 +134,7 @@ public class CrySLCodeGenTest {
 		}
 
 	}
-	
+
 	@Test
 	public void generatePBEncStrings() {
 		String template = "encryptionstrings";
@@ -160,7 +170,7 @@ public class CrySLCodeGenTest {
 		}
 
 	}
-	
+
 	@Test
 	public void generateHybridEnc() {
 		String template = "encryptionhybrid";
@@ -235,7 +245,7 @@ public class CrySLCodeGenTest {
 		}
 
 	}
-	
+
 	@Test
 	public void generateHybridEncStrings() {
 		String template = "encryptionhybridstrings";
@@ -273,7 +283,7 @@ public class CrySLCodeGenTest {
 		}
 
 	}
-	
+
 	@Test
 	public void generateSecPwd() {
 		String template = "securePassword";
@@ -307,7 +317,7 @@ public class CrySLCodeGenTest {
 			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
 		}
 	}
-	
+
 	@Test
 	public void generatedigSign() {
 		String template = "digitalsignatures";
@@ -329,8 +339,8 @@ public class CrySLCodeGenTest {
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(3, TestUtils.countMethods(encClassUnit));
 			assertEquals(5, TestUtils.countStatements(encClassUnit, "getKey"));
-			assertEquals(8, TestUtils.countStatements(encClassUnit, "sign"));
-//			assertEquals(14, TestUtils.countStatements(encClassUnit, "vfy"));
+			assertEquals(7, TestUtils.countStatements(encClassUnit, "sign"));
+			// assertEquals(14, TestUtils.countStatements(encClassUnit, "vfy"));
 		}
 		catch (JavaModelException e) {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");
@@ -342,7 +352,7 @@ public class CrySLCodeGenTest {
 			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
 		}
 	}
-	
+
 	@Test
 	public void generateStringHasher() {
 		String template = "stringhashing";
@@ -376,5 +386,5 @@ public class CrySLCodeGenTest {
 			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
 		}
 	}
-	
+
 }

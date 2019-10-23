@@ -1,5 +1,7 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
 <<<<<<< HEAD
  * 
  * This program and the accompanying materials are made available under the
@@ -46,6 +48,7 @@ import de.cognicrypt.utils.FileHelper;
 public class XSLBasedGenerator extends CodeGenerator {
 
 	final private File xslFile;
+
 	/**
 	 * Constructor to initialize the code template generator.
 	 *

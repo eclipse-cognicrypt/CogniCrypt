@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.codegenerator.testutilities;
 
 import java.io.File;
@@ -110,7 +120,7 @@ public class TestUtils {
 	 * 
 	 * @param project JavaProject in which the new Java class will be generated
 	 * @param packageName package in which the new Java class will be generated
-	 * @param className name of the new Java class 
+	 * @param className name of the new Java class
 	 * @throws JavaModelException
 	 */
 	public static IResource generateJavaClassInJavaProject(final IJavaProject project, final String packageName, final String className) throws JavaModelException {
@@ -207,8 +217,8 @@ public class TestUtils {
 	public static CrySLConfiguration createCrySLConfiguration(String template, IResource targetFile, CodeGenerator codeGenerator, DeveloperProject developerProject)
 			throws CoreException, IOException {
 		File templateFile = CodeGenUtils.getResourceFromWithin(Constants.codeTemplateFolder + template).listFiles()[0];
-		String projectRelDir = Constants.outerFileSeparator + codeGenerator.getDeveloperProject().getSourcePath() + Constants.outerFileSeparator
-				+ Constants.PackageName + Constants.outerFileSeparator;
+		String projectRelDir =
+				Constants.outerFileSeparator + codeGenerator.getDeveloperProject().getSourcePath() + Constants.outerFileSeparator + Constants.PackageName + Constants.outerFileSeparator;
 		String pathToTemplateFile = projectRelDir + templateFile.getName();
 		String resFileOSPath = targetFile.getProject().getLocation().toOSString() + pathToTemplateFile;
 
@@ -308,15 +318,15 @@ public class TestUtils {
 	public static int countMethods(ICompilationUnit unit) throws JavaModelException {
 		return unit.getAllTypes()[0].getMethods().length;
 	}
-	
+
 	public static int countStatements(ICompilationUnit unit, String method) throws JavaModelException {
 		for (IMethod meth : unit.getAllTypes()[0].getMethods()) {
 			if (method.equals(meth.getElementName())) {
-				return meth.getSource().split(";").length -1 ;
+				return meth.getSource().split(";").length - 1;
 			}
 		}
-		
+
 		return -1;
 	}
-	
+
 }

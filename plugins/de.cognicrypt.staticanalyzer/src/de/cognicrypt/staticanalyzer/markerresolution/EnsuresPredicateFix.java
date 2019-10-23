@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.staticanalyzer.markerresolution;
 
 import org.eclipse.core.resources.IMarker;
@@ -37,7 +47,7 @@ import de.cognicrypt.staticanalyzer.utilities.QuickFixUtils;
 import de.cognicrypt.utils.DeveloperProject;
 import de.cognicrypt.utils.Utils;
 
-public class EnsuresPredicateFix implements IMarkerResolution{
+public class EnsuresPredicateFix implements IMarkerResolution {
 	private final String label;
 	private static String predicate;
 	private static String errorParamVarName;
@@ -56,7 +66,7 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 
 	@Override
 	public void run(final IMarker marker) {
-		
+
 		DeveloperProject devProject = new DeveloperProject(marker.getResource().getProject());
 		ICompilationUnit sourceUnit = null;
 		int lineNumber = 0;
@@ -64,8 +74,8 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 		try {
 			sourceUnit = QuickFixUtils.getCompilationUnitFromMarker(marker);
 			if (devProject.isMavenProject()) {
-				 devProject.addMavenDependency(Constants.PREDICATEENSURER_GROUPID, Constants.PREDICATEENSURER_ARTIFACTID, Constants.PREDICATEENSURER_VERSION);
-				 devProject.execMaven(new String[] {Constants.MVN_ECLIPSE_COMMAND + " " + Constants.MVN_SKIPTESTS_COMMAND});
+				devProject.addMavenDependency(Constants.PREDICATEENSURER_GROUPID, Constants.PREDICATEENSURER_ARTIFACTID, Constants.PREDICATEENSURER_VERSION);
+				devProject.execMaven(new String[] {Constants.MVN_ECLIPSE_COMMAND + " " + Constants.MVN_SKIPTESTS_COMMAND});
 
 			} else {
 				QuickFixUtils.addAdditionalFiles("resources/Predicate", "de.cognicrypt.staticanalyzer", devProject);
@@ -78,7 +88,8 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 			EnsuresPredicateFix.predicate = (String) marker.getAttribute("predicate");
 			EnsuresPredicateFix.errorParamVarName = (String) marker.getAttribute("errorParam");
 
-		} catch (final CoreException e) {
+		}
+		catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
 
@@ -87,14 +98,15 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 		parser.setSource(sourceUnit);
 		final CompilationUnit unit = (CompilationUnit) parser.createAST(null);
 		unit.accept(new ErrorSourceVisitor(lineNumber, unit, sourceUnit));
-		
+
 		final SuppressWarningFix tempFix = new SuppressWarningFix("");
 		tempFix.run(marker);
-		Utils.getCurrentlyOpenEditor().doSave(null);		
+		Utils.getCurrentlyOpenEditor().doSave(null);
 	}
 
 	/**
 	 * This method creates and inserts the ensuresPredicate(predicate, errorVar) in the code
+	 * 
 	 * @param node
 	 * @param unit
 	 * @param sourceUnit
@@ -103,8 +115,7 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 	 * @throws MalformedTreeException
 	 * @throws BadLocationException
 	 */
-	private static void addMethodEnsuresPredicate(final ASTNode node, final CompilationUnit unit,
-			final ICompilationUnit sourceUnit)
+	private static void addMethodEnsuresPredicate(final ASTNode node, final CompilationUnit unit, final ICompilationUnit sourceUnit)
 			throws JavaModelException, IllegalArgumentException, MalformedTreeException, BadLocationException {
 
 		final AST ast = unit.getAST();
@@ -117,8 +128,7 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 			final ListRewrite listRewrite = rewriter.getListRewrite(parentMethod.getBody(), Block.STATEMENTS_PROPERTY);
 
 			ASTNode index = node;
-			if (index.getParent().getNodeType() == ASTNode.VARIABLE_DECLARATION_FRAGMENT
-					|| index.getParent().getNodeType() == ASTNode.EXPRESSION_STATEMENT) {
+			if (index.getParent().getNodeType() == ASTNode.VARIABLE_DECLARATION_FRAGMENT || index.getParent().getNodeType() == ASTNode.EXPRESSION_STATEMENT) {
 				index = index.getParent();
 				if (node.getParent().getParent().getNodeType() == ASTNode.VARIABLE_DECLARATION_STATEMENT) {
 					index = index.getParent();
@@ -128,12 +138,9 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 			listRewrite.insertBefore(ePStatement, index, null);
 
 		} else if (node.getNodeType() == ASTNode.FIELD_DECLARATION) {
-			final VariableDeclarationFragment ePFragment = createVariableDeclarationFragment(ast,
-					VARIABLE_DECLARATION_NAME, ePInvocation);
-			final FieldDeclaration ePStatementFieldDec = createFieldDeclaration(ast, ePFragment, PrimitiveType.BOOLEAN,
-					Modifier.PRIVATE);
-			final ListRewrite listRewrite = rewriter.getListRewrite(((TypeDeclaration) unit.types().get(0)),
-					TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+			final VariableDeclarationFragment ePFragment = createVariableDeclarationFragment(ast, VARIABLE_DECLARATION_NAME, ePInvocation);
+			final FieldDeclaration ePStatementFieldDec = createFieldDeclaration(ast, ePFragment, PrimitiveType.BOOLEAN, Modifier.PRIVATE);
+			final ListRewrite listRewrite = rewriter.getListRewrite(((TypeDeclaration) unit.types().get(0)), TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
 			listRewrite.insertBefore(ePStatementFieldDec, node, null);
 
 		}
@@ -144,10 +151,10 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 		sourceUnit.getBuffer().setContents(document.get());
 	}
 
-
 	/**
 	 * This method determines the next {@link MethodDeclaration} parent node
-	 * @param targetNode 
+	 * 
+	 * @param targetNode
 	 * @return MethodDeclaration parent node
 	 */
 	private static MethodDeclaration getMethodDeclarationParentNode(final ASTNode targetNode) {
@@ -169,14 +176,14 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 
 	/**
 	 * This method builds a {@link FieldDeclaration} object
+	 * 
 	 * @param ast - current ast
 	 * @param fragment
 	 * @param type - i.e. PrimitiveType.BOOLEAN
 	 * @param modifier - i.e. Modifier.PRIVATE
 	 * @return
 	 */
-	private static FieldDeclaration createFieldDeclaration(final AST ast, final VariableDeclarationFragment fragment,
-			final Code type, final int modifier) {
+	private static FieldDeclaration createFieldDeclaration(final AST ast, final VariableDeclarationFragment fragment, final Code type, final int modifier) {
 		final FieldDeclaration declaration = ast.newFieldDeclaration(fragment);
 		declaration.setType(ast.newPrimitiveType(type));
 		declaration.modifiers().addAll(ASTNodeFactory.newModifiers(ast, modifier));
@@ -185,12 +192,12 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 
 	/**
 	 * This method builds a {@link VariableDeclarationFragment} object
+	 * 
 	 * @param ast - current ast
 	 * @param variableName - declaration variable
 	 * @return VariableDeclarationFragment obj
 	 */
-	private static VariableDeclarationFragment createVariableDeclarationFragment(final AST ast,
-			final String variableName, final Expression initializer) {
+	private static VariableDeclarationFragment createVariableDeclarationFragment(final AST ast, final String variableName, final Expression initializer) {
 		final VariableDeclarationFragment fragment = ast.newVariableDeclarationFragment();
 		fragment.setName(ast.newSimpleName(variableName));
 		fragment.setInitializer(initializer);
@@ -199,6 +206,7 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 
 	/**
 	 * This method builds a {@link MethodInvocation} object
+	 * 
 	 * @param ast - current ast
 	 * @param errorVarName - error variable name
 	 * @return ensuresPredicate(predicate, errorVarName) MethodInvocation
@@ -238,8 +246,8 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 						this.sourceFound = true;
 						addMethodEnsuresPredicate(node, this.unit, this.sourceUnit);
 						return false;
-					} catch (JavaModelException | IllegalArgumentException | MalformedTreeException
-							| BadLocationException e) {
+					}
+					catch (JavaModelException | IllegalArgumentException | MalformedTreeException | BadLocationException e) {
 						Activator.getDefault().logError(e);
 					}
 				} else {
@@ -258,8 +266,8 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 						this.sourceFound = true;
 						addMethodEnsuresPredicate(node, this.unit, this.sourceUnit);
 						return false;
-					} catch (JavaModelException | IllegalArgumentException | MalformedTreeException
-							| BadLocationException e) {
+					}
+					catch (JavaModelException | IllegalArgumentException | MalformedTreeException | BadLocationException e) {
 						Activator.getDefault().logError(e);
 					}
 				} else {
@@ -278,8 +286,8 @@ public class EnsuresPredicateFix implements IMarkerResolution{
 						this.sourceFound = true;
 						addMethodEnsuresPredicate(node, this.unit, this.sourceUnit);
 						return false;
-					} catch (JavaModelException | IllegalArgumentException | MalformedTreeException
-							| BadLocationException e) {
+					}
+					catch (JavaModelException | IllegalArgumentException | MalformedTreeException | BadLocationException e) {
 						Activator.getDefault().logError(e);
 					}
 				} else {

@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 /**
@@ -98,7 +95,8 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		compositeContainerGroupForLibrary.setLayout(new GridLayout(1, false));
 
 		// Updated the composite to deal with directory instead of a jar file for the custom library.
-		final CompositeBrowseForFile compLib = new CompositeBrowseForFile(compositeContainerGroupForLibrary, SWT.NONE, Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK, null, "Select file that contains the library", getTheLocalContainerPage());
+		final CompositeBrowseForFile compLib = new CompositeBrowseForFile(compositeContainerGroupForLibrary, SWT.NONE, Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK, null,
+				"Select file that contains the library", getTheLocalContainerPage());
 		compLib.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		final Button btnDoYouWishToUseTheGuidedMode = new Button(compositeChooseTheMode, SWT.CHECK);
@@ -112,38 +110,42 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		compositeNonguidedMode.setVisible(false);
 		compositeNonguidedMode.setLayout(new GridLayout(1, false));
 
-		this.compCfr = new CompositeBrowseForFile(compositeNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE, new String[] { "*.cfr" }, "Select cfr file that contains the Clafer features", getTheLocalContainerPage(), arg0 -> {
-			final Job compileJob = Job.create("Compile Clafer model", (ICoreRunnable) monitor -> {
-				// UI updates can only be run in the display thread,
-				// so do them via Display.getDefault()
-				Display.getDefault().asyncExec(() -> {
-					CompositeChoiceForModeOfWizard.this.compCfr.getDecFilePath().setDescriptionText(" (compiling...)");
-					CompositeChoiceForModeOfWizard.this.compCfr.getDecFilePath().setImage(UIConstants.DEC_INFORMATION);
+		this.compCfr = new CompositeBrowseForFile(compositeNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE, new String[] {"*.cfr"},
+				"Select cfr file that contains the Clafer features", getTheLocalContainerPage(), arg0 -> {
+					final Job compileJob = Job.create("Compile Clafer model", (ICoreRunnable) monitor -> {
+						// UI updates can only be run in the display thread,
+						// so do them via Display.getDefault()
+						Display.getDefault().asyncExec(() -> {
+							CompositeChoiceForModeOfWizard.this.compCfr.getDecFilePath().setDescriptionText(" (compiling...)");
+							CompositeChoiceForModeOfWizard.this.compCfr.getDecFilePath().setImage(UIConstants.DEC_INFORMATION);
 
-					// do the tedious work
-					final String fileToCompile = CompositeChoiceForModeOfWizard.this.compCfr.getText();
+							// do the tedious work
+							final String fileToCompile = CompositeChoiceForModeOfWizard.this.compCfr.getText();
 
-					if (ClaferModel.compile(fileToCompile)) {
-						CompositeChoiceForModeOfWizard.this.compCfr.getDecFilePath().setDescriptionText("Compilation successful");
-						CompositeChoiceForModeOfWizard.this.compCfr.getDecFilePath().setImage(UIConstants.DEC_INFORMATION);
-					} else {
-						CompositeChoiceForModeOfWizard.this.compCfr.getDecFilePath().setDescriptionText("Compilation error");
-						CompositeChoiceForModeOfWizard.this.compCfr.getDecFilePath().setImage(UIConstants.DEC_ERROR);
-					}
+							if (ClaferModel.compile(fileToCompile)) {
+								CompositeChoiceForModeOfWizard.this.compCfr.getDecFilePath().setDescriptionText("Compilation successful");
+								CompositeChoiceForModeOfWizard.this.compCfr.getDecFilePath().setImage(UIConstants.DEC_INFORMATION);
+							} else {
+								CompositeChoiceForModeOfWizard.this.compCfr.getDecFilePath().setDescriptionText("Compilation error");
+								CompositeChoiceForModeOfWizard.this.compCfr.getDecFilePath().setImage(UIConstants.DEC_ERROR);
+							}
+						});
+					});
+					// start the asynchronous task
+					compileJob.schedule();
+
 				});
-			});
-			// start the asynchronous task
-			compileJob.schedule();
-
-		});
 
 		this.compCfr.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
-		final CompositeBrowseForFile compXsl = new CompositeBrowseForFile(compositeNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE, new String[] { "*.xsl" }, "Select xsl file that contains the code details", getTheLocalContainerPage());
+		final CompositeBrowseForFile compXsl = new CompositeBrowseForFile(compositeNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE, new String[] {"*.xsl"},
+				"Select xsl file that contains the code details", getTheLocalContainerPage());
 		compXsl.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		final CompositeBrowseForFile compJson = new CompositeBrowseForFile(compositeNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE, new String[] { "*.json" }, "Select json file that contains the high level questions", getTheLocalContainerPage());
+		final CompositeBrowseForFile compJson = new CompositeBrowseForFile(compositeNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE, new String[] {"*.json"},
+				"Select json file that contains the high level questions", getTheLocalContainerPage());
 		compJson.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		final CompositeBrowseForFile compositeHelp = new CompositeBrowseForFile(compositeNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_HELP_FILE, new String[] { "*.xml" }, "Select file that contains the help data", getTheLocalContainerPage());
+		final CompositeBrowseForFile compositeHelp = new CompositeBrowseForFile(compositeNonguidedMode, SWT.NONE, Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_HELP_FILE,
+				new String[] {"*.xml"}, "Select file that contains the help data", getTheLocalContainerPage());
 		compositeHelp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		layout();
@@ -188,6 +190,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 
 		/*
 		 * TODO removed for the user study. btnForceGuidedMode.addSelectionListener(new SelectionAdapter() {
+		 * 
 		 * @Override public void widgetSelected(SelectionEvent e) { btnForceGuidedMode.getParent().getParent().getParent().setData(Constants.WIDGET_DATA_IS_GUIDED_MODE_FORCED,
 		 * btnForceGuidedMode.getSelection()); } });
 		 */
@@ -237,8 +240,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	/**
 	 * This object contains the basic data of the task.
 	 *
-	 * @param objectForDataInNonGuidedMode
-	 *        the objectForDataInNonGuidedMode to set
+	 * @param objectForDataInNonGuidedMode the objectForDataInNonGuidedMode to set
 	 */
 	public void setObjectForDataInNonGuidedMode(final ModelAdvancedMode objectForDataInNonGuidedMode) {
 		this.objectForDataInNonGuidedMode = objectForDataInNonGuidedMode;
@@ -272,8 +274,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	/**
 	 * The decorator is is global variable to be accessible in event listners.
 	 *
-	 * @param decNameOfTheTask
-	 *        the decNameOfTheTask to set
+	 * @param decNameOfTheTask the decNameOfTheTask to set
 	 */
 	public void setDecNameOfTheTask(final ControlDecoration decNameOfTheTask) {
 		this.decNameOfTheTask = decNameOfTheTask;
@@ -291,8 +292,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	}
 
 	/**
-	 * @param txtDescriptionOfTask
-	 *        the txtDescriptionOfTask to set
+	 * @param txtDescriptionOfTask the txtDescriptionOfTask to set
 	 */
 	public void setTxtDescriptionOfTask(final Text txtDescriptionOfTask) {
 		this.txtTaskDescription = txtDescriptionOfTask;

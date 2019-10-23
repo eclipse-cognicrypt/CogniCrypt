@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.test;
@@ -49,9 +46,9 @@ public class QuestionJSONFileTests {
 		this.originalQuestionList = new ArrayList<>();
 		this.expectedNumberOfPages = 1;
 		this.originalQuestionList = QuestionJSONFileTests.qjrTI.readQuestionsFromFile(this.testQuestions3in1);
-		//originalQuestionList = readQuestionsFromFile(testQuestions3in1);
+		// originalQuestionList = readQuestionsFromFile(testQuestions3in1);
 		final SegregatesQuestionsIntoPages questionToPages = new SegregatesQuestionsIntoPages(this.originalQuestionList);
-		//checks whether the page array format is correct or not
+		// checks whether the page array format is correct or not
 		QuestionJSONFileTests.qjr.checkReadPages(questionToPages.getPages());
 		assertEquals(this.expectedNumberOfPages, questionToPages.getPages().size());
 	}
@@ -64,9 +61,9 @@ public class QuestionJSONFileTests {
 		this.originalQuestionList = new ArrayList<>();
 		this.expectedNumberOfPages = 5;
 		this.originalQuestionList = QuestionJSONFileTests.qjrTI.readQuestionsFromFile(this.testQuestions6in5);
-		//originalQuestionList = readQuestionsFromFile(testQuestions3in1);
+		// originalQuestionList = readQuestionsFromFile(testQuestions3in1);
 		final SegregatesQuestionsIntoPages questionToPages = new SegregatesQuestionsIntoPages(this.originalQuestionList);
-		//checks whether the page array format is correct or not
+		// checks whether the page array format is correct or not
 		QuestionJSONFileTests.qjr.checkReadPages(questionToPages.getPages());
 		assertEquals(this.expectedNumberOfPages, questionToPages.getPages().size());
 	}
@@ -80,7 +77,7 @@ public class QuestionJSONFileTests {
 		this.expectedNumberOfPages = 2;
 		this.originalQuestionList = QuestionJSONFileTests.qjrTI.readQuestionsFromFile(this.testQuestions6in2);
 		final SegregatesQuestionsIntoPages questionToPages = new SegregatesQuestionsIntoPages(this.originalQuestionList);
-		//checks whether the page array format is correct or not
+		// checks whether the page array format is correct or not
 		QuestionJSONFileTests.qjr.checkReadPages(questionToPages.getPages());
 		assertEquals(this.expectedNumberOfPages, questionToPages.getPages().size());
 	}
@@ -94,7 +91,7 @@ public class QuestionJSONFileTests {
 		this.expectedNumberOfPages = 3;
 		this.originalQuestionList = QuestionJSONFileTests.qjrTI.readQuestionsFromFile(this.testQuestions6in3);
 		final SegregatesQuestionsIntoPages questionToPages = new SegregatesQuestionsIntoPages(this.originalQuestionList);
-		//checks whether the page array format is correct or not
+		// checks whether the page array format is correct or not
 		QuestionJSONFileTests.qjr.checkReadPages(questionToPages.getPages());
 		assertEquals(this.expectedNumberOfPages, questionToPages.getPages().size());
 	}
@@ -108,7 +105,7 @@ public class QuestionJSONFileTests {
 		this.expectedNumberOfPages = 4;
 		this.originalQuestionList = QuestionJSONFileTests.qjrTI.readQuestionsFromFile(this.testQuestions7in4);
 		final SegregatesQuestionsIntoPages questionToPages = new SegregatesQuestionsIntoPages(this.originalQuestionList);
-		//checks whether the page array format is correct or not
+		// checks whether the page array format is correct or not
 		QuestionJSONFileTests.qjr.checkReadPages(questionToPages.getPages());
 		assertEquals(this.expectedNumberOfPages, questionToPages.getPages().size());
 	}
@@ -122,7 +119,7 @@ public class QuestionJSONFileTests {
 		this.expectedNumberOfPages = 4;
 		this.originalQuestionList = QuestionJSONFileTests.qjrTI.readQuestionsFromFile(this.testQuestions8in4);
 		final SegregatesQuestionsIntoPages questionToPages = new SegregatesQuestionsIntoPages(this.originalQuestionList);
-		//checks whether the page array format is correct or not
+		// checks whether the page array format is correct or not
 		QuestionJSONFileTests.qjr.checkReadPages(questionToPages.getPages());
 		assertEquals(this.expectedNumberOfPages, questionToPages.getPages().size());
 	}
@@ -136,7 +133,7 @@ public class QuestionJSONFileTests {
 		this.expectedNumberOfPages = 10;
 		this.originalQuestionList = QuestionJSONFileTests.qjrTI.readQuestionsFromFile(this.testQuestions10in10);
 		final SegregatesQuestionsIntoPages questionToPages = new SegregatesQuestionsIntoPages(this.originalQuestionList);
-		//checks whether the page array format is correct or not
+		// checks whether the page array format is correct or not
 		QuestionJSONFileTests.qjr.checkReadPages(questionToPages.getPages());
 		assertEquals(this.expectedNumberOfPages, questionToPages.getPages().size());
 	}

@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.test;
@@ -84,7 +81,7 @@ public class XslPageContentProviderTest {
 		questionList.add(question);
 
 		final XSLPageContentProvider xslPageContentProvider = new XSLPageContentProvider();
-		final Object[] contentProviderElements = xslPageContentProvider.getElements(new Object[] { claferModel, questionList });
+		final Object[] contentProviderElements = xslPageContentProvider.getElements(new Object[] {claferModel, questionList});
 
 		// there should be three elements, the task clafer and the two code dependencies
 		assertEquals(3, contentProviderElements.length);
@@ -101,7 +98,7 @@ public class XslPageContentProviderTest {
 		final CodeDependency codeDep2 = new CodeDependency();
 		codeDep2.setOption("opt1");
 		codeDep2.setValue("val1");
-		final CodeDependency[] depList = new CodeDependency[] { codeDep1, codeDep2 };
+		final CodeDependency[] depList = new CodeDependency[] {codeDep1, codeDep2};
 
 		final Object[] firstList = claferModel.getClaferModel().toArray();
 		final Object[] secondList = depList;

@@ -9,7 +9,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <tycho-version>0.26.0</tycho-version>
+    <tycho-version>1.4.0</tycho-version>
   </properties>
 
   <repositories>
@@ -89,12 +89,12 @@
 
   <modules>
     <module>plugins/de.cognicrypt.core/</module>
-    <module>plugins/de.cognicrypt.codegenerator/</module>
     <module>plugins/de.cognicrypt.crysl.handler/</module>
+    <module>plugins/de.cognicrypt.codegenerator/</module>
+    <module>plugins/de.cognicrypt.codegenerator.tests/</module>
     <module>plugins/de.cognicrypt.staticanalyzer/</module>
 	<module>plugins/de.cognicrypt.integrator.task/</module>
 	<module>plugins/de.cognicrypt.integrator.primitive/</module>
-	<module>plugins/de.cognicrypt.codegenerator.tests/</module>
 	<module>features/de.cognicrypt.core.feature/</module>
     <module>features/de.cognicrypt.codegenerator.feature/</module>
     <module>features/de.cognicrypt.cryslhandler.feature/</module>

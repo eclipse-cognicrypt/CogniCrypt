@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.staticanalyzer.markerresolution;
 
 import java.io.File;
@@ -13,6 +23,7 @@ import de.cognicrypt.utils.XMLParser;
 
 /**
  * This class writes the suppress warning information in a XML file and updates the error marker to info marker on the UI
+ * 
  * @author André Sonntag
  */
 public class SuppressWarningFix implements IMarkerResolution {
@@ -28,7 +39,7 @@ public class SuppressWarningFix implements IMarkerResolution {
 	/**
 	 * This method adds a new entry to the SuppressWarnings.xml file
 	 *
-	 * @param m ErrorMarker 
+	 * @param m ErrorMarker
 	 * @throws CoreException
 	 * @throws IOException
 	 */

@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.codegenerator.wizard;
 
 import org.eclipse.core.resources.IContainer;
@@ -119,8 +129,8 @@ public class LocatorPage extends WizardPage {
 
 	private boolean isProperTarget(Object target) {
 		if (target instanceof IFile) {
-			if (!"java".equals(((IFile) target).getFileExtension())) {
-				return false;
+			if ("java".equals(((IFile) target).getFileExtension())) {
+				return true;
 			}
 		}
 		if (target instanceof IFolder) {
@@ -135,8 +145,8 @@ public class LocatorPage extends WizardPage {
 		if (target instanceof IProject) {
 			return Utils.checkIfJavaProjectSelected((IProject) target);
 		}
-		
-		return true;
+
+		return false;
 	}
 
 	public void containerSelectionChanged(final Object object, final Text containerNameField) {

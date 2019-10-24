@@ -13,16 +13,14 @@
 package de.cognicrypt.codegenerator.wizard;
 
 import java.beans.XMLEncoder;
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 
-import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
 import de.cognicrypt.codegenerator.question.Answer;
@@ -41,33 +39,23 @@ public abstract class Configuration {
 	final protected String pathOnDisk;
 
 	public Configuration(Map<?, ?> constraints, String pathOnDisk) {
+
 		this.pathOnDisk = pathOnDisk;
 		this.options = (Map<Question, Answer>) constraints;
-		String path = this.pathOnDisk.substring(0,this.pathOnDisk.lastIndexOf("/")) + "/" +Constants.pathToInstanceFile;
 		
-//		System.out.println("HERE IS THE OPTION ON DISK:......  " + this.options.values());
-		System.out.println("path issssssss: " + path);
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();  
-		XMLEncoder xmlEncoder = new XMLEncoder(bos);  
-		xmlEncoder.writeObject(this.options);  
-		xmlEncoder.flush();  
+		String path = this.pathOnDisk.substring(0,this.pathOnDisk.lastIndexOf("/")) + "/" +Constants.pathToInstanceFile;
 
-		String serializedMap = bos.toString(); 
-//		System.out.println("lets see IF IT WOOORKSSS:  " + serializedMap);  
-//		File fiif = new File(serializedMap, path);
-//		System.out.println("FILE HAS BEEN CREATED");
-		final OutputFormat format = OutputFormat.createPrettyPrint();
-		XMLWriter writer;
+	    XMLEncoder XMLencoder;
 		try {
-			writer = new XMLWriter(new FileWriter(this.pathOnDisk), format);
-			writer.write(serializedMap);
-			writer.close();
-		} catch (IOException e) {
+			XMLencoder = new XMLEncoder(
+			       new BufferedOutputStream(
+			           new FileOutputStream(path)));
+			XMLencoder.writeObject(this.options);
+			XMLencoder.close();
+		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
 		}
-		serializedMap = null;
-
 	
 	}
 

@@ -428,15 +428,11 @@ public class Utils {
 				continue;
 			}
 
-			try {
-				CryptSLRule readFromSourceFile = CryptSLRuleReader.readFromSourceFile(rule);
-				if (readFromSourceFile != null) {
-					rules.add(readFromSourceFile);
-				}
+			CryptSLRule readFromSourceFile = CryptSLRuleReader.readFromSourceFile(rule);
+			if (readFromSourceFile != null) {
+				rules.add(readFromSourceFile);
 			}
-			catch (IOException e) {
-				Activator.getDefault().logError(e);
-			}
+			
 		}
 		return rules;
 	}

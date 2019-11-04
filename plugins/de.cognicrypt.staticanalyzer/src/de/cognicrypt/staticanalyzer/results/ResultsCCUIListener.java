@@ -403,4 +403,10 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates,
 			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {
 	}
+
+	@Override
+	public void addProgress(int arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
 }

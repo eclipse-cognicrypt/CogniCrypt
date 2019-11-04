@@ -159,7 +159,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		} else if (error instanceof RequiredPredicateError) {
 			markerType = Constants.REQUIRED_PREDICATE_MARKER_TYPE;
 			errorInfoMap.put("predicate", ((RequiredPredicateError) error).getContradictedPredicate().getPredName());
-
+			errorInfoMap.put("predicateParamCount", ((RequiredPredicateError) error).getContradictedPredicate().getParameters().size()+"");
 			int errorIndex = ((RequiredPredicateError) error).getExtractedValues().getCallSite().getIndex();
 			errorInfoMap.put("errorParamIndex", errorIndex+"");
 			if(errorLocation.getUnit().get().containsInvokeExpr()) {
@@ -167,7 +167,6 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 				String errorParam = invoke.getArg(errorIndex).toString();
 				errorInfoMap.put("errorParam", errorParam);
 			}
-		
 		} else if (error instanceof ConstraintError) {
 			markerType = Constants.CONSTRAINT_ERROR_MARKER_TYPE;
 		} else if (error instanceof NeverTypeOfError) {

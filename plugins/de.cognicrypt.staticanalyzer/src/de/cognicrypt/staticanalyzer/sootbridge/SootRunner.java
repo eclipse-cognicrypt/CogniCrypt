@@ -89,7 +89,6 @@ public class SootRunner {
 	private static List<CryptSLRule> getRules(IProject project) {
 		
 		StringBuilder builder = new StringBuilder();
-
 		List<CryptSLRule> rules = Lists.newArrayList();
 		// TODO Select rules according to selected rulesets in preference page. The CrySL rules for each ruleset are in a separate subdirectory of "/resources/CrySLRules/".
 		try {
@@ -102,39 +101,22 @@ public class SootRunner {
 
 			for (String path : applicationClassPath(JavaCore.create(project))) {
 				List<CryptSLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
-				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e));
+				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
-			
-			builder.append("\n The analysis transfroms following rules into CrySLRule objects: \n");
+
 			rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin("/resources/CrySLRules/").getPath()), Integer.MAX_VALUE, (file, attr) -> file.toString().endsWith(".cryptsl"))
 					.map(path -> {
-						try {
-							builder.append(path.toFile().getName().toString()+"\n");
-							return CryptSLRuleReader.readFromSourceFile(path.toFile());
-						}
-						catch (MalformedURLException e) {}
-						return null; 
+						return r.readRule(path.toFile());
 					}).collect(Collectors.toList()));
 		}
 		catch (IOException | CoreException e) {
 			Activator.getDefault().logError(e, "Could not load CrySL Rules");
-		}
+		} 
 		if (rules.isEmpty()) {
 			Activator.getDefault().logInfo("No CrySL rules loaded");
 		}
 		
-		Activator.getDefault().logInfo(builder.toString());
-		
-		
-		StringBuilder builderA = new StringBuilder();
-		builderA.append("\n Rule object which we get back form the analysis!\n");
-		for(CryptSLRule rule : rules) {
-			builderA.append(rule.getClassName()+"\n");
-		}
-		
-		Activator.getDefault().logInfo(builderA.toString());
-
 		return rules;
 	}
 

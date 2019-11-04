@@ -117,7 +117,7 @@ public class CrySLModelReader {
 	private static final String ANY_TYPE = "AnyType";
 	private static final String NULL = "null";
 	private static final String UNDERSCORE = "_";
-
+	
 	public CrySLModelReader(IProject iProject) throws CoreException, IOException {
 		final Injector injector = CryptSLActivator.getInstance().getInjector(CryptSLActivator.DE_DARMSTADT_TU_CROSSING_CRYPTSL);
 		resourceSet = injector.getInstance(XtextResourceSet.class);
@@ -134,17 +134,24 @@ public class CrySLModelReader {
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 	}
 
+	/**
+	 * This constructor use the CogniCyrpt Core plugin lib folder as classpath
+	 * @throws MalformedURLException
+	 */
 	public CrySLModelReader() throws MalformedURLException {
 		CryptSLStandaloneSetup cryptSLStandaloneSetup = new CryptSLStandaloneSetup();
 		final Injector injector = cryptSLStandaloneSetup.createInjectorAndDoEMFRegistration();
 		this.resourceSet = injector.getInstance(XtextResourceSet.class);
+		String coreLibFolderPath = Utils.getResourceFromWithin("lib").getAbsolutePath();
+		
+		List<File> jars = new ArrayList<>();
+		for (String file : Utils.getResourceFromWithin("lib").list()) {
+			jars.add(new File(coreLibFolderPath+Constants.innerFileSeparator+file));
+		}
 
-		String a = System.getProperty("java.class.path");
-		String[] l = a.split(";");
-
-		URL[] classpath = new URL[l.length];
+		URL[] classpath = new URL[jars.size()];
 		for (int i = 0; i < classpath.length; i++) {
-			classpath[i] = new File(l[i]).toURI().toURL();
+			classpath[i] = jars.get(i).toURI().toURL();
 		}
 
 		URLClassLoader ucl = new URLClassLoader(classpath);
@@ -209,10 +216,12 @@ public class CrySLModelReader {
 			}
 		}
 		final CryptSLRule rule = new CryptSLRule(curClass, objects, this.forbiddenMethods, this.smg, constraints, actPreds);
-		System.out.println(rule);
-		System.out.println("===========================================");
-		System.out.println("");
-
+		if(!rule.getClassName().equalsIgnoreCase("void")) {
+			System.out.println(rule.getClassName());
+			System.out.println("===========================================");
+			System.out.println("");
+		}
+		
 		return rule;
 	}
 

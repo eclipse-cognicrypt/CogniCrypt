@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.widgets;
@@ -58,8 +55,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * Create the composite. Warnings suppressed for casting array lists.
 	 *
 	 * @param parent
-	 * @param style
-	 *        TODO
+	 * @param style TODO
 	 * @param targetArrayListOfDataToBeDisplayed
 	 * @param showRemoveButton
 	 */
@@ -129,7 +125,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	}
 
 	/**
-	 *
 	 * @param featureConstraintUnderConsideration
 	 * @param showRemoveButton
 	 */
@@ -139,7 +134,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	}
 
 	/**
-	 *
 	 * @param featureConstraintUnderConsideration
 	 * @param showRemoveButton
 	 */
@@ -151,7 +145,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	}
 
 	/**
-	 *
 	 * @param featureProperty
 	 * @param showRemoveButton
 	 */
@@ -161,7 +154,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	}
 
 	/**
-	 *
 	 * @param featureProperty
 	 * @param showRemoveButton
 	 */
@@ -175,7 +167,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	}
 
 	/**
-	 *
 	 * @param showRemoveButton
 	 * @param selectedTag
 	 */
@@ -199,7 +190,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	}
 
 	/**
-	 *
 	 * @param XSLAttrubuteParam
 	 * @param showRemoveButton
 	 */
@@ -211,7 +201,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	}
 
 	/**
-	 *
 	 * @param property
 	 */
 	public void removeFeatureProperty(final ClaferProperty property) {
@@ -220,7 +209,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	}
 
 	/**
-	 *
 	 * @param featureConstraint
 	 */
 	public void removeFeatureConstraint(final ClaferConstraint constraint) {
@@ -228,7 +216,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	}
 
 	/**
-	 *
 	 * @param xslAttribute
 	 */
 	public void removeXSLAttribute(final XSLAttribute xslAttribute) {
@@ -286,7 +273,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * Add the widgets and data inside the scrollable composite for Link code tab
 	 *
 	 * @param answer
-	 *
 	 */
 	public void addELementsInCodeTabQuestionDialog(final Answer answer) {
 		final CompositeForCodeTab group = new CompositeForCodeTab((Composite) getContent(), SWT.NONE, answer);
@@ -299,9 +285,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * Add the widgets and data inside the scrollable composite for clafer dependency tab
 	 *
 	 * @param answer
-	 * @param claferFeatures
-	 *        list of all clafer features created in the clafer page
-	 *
+	 * @param claferFeatures list of all clafer features created in the clafer page
 	 */
 	public void addElementsInClaferTabQuestionDialog(final Answer answer, final ClaferModel claferModel, final boolean showClaferWidgets) {
 		final CompositeForClaferTab group = new CompositeForClaferTab((Composite) getContent(), SWT.NONE, answer, claferModel, showClaferWidgets);
@@ -333,8 +317,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	/**
 	 * calls the addElementsInclaferTabQuestionDialog method for each answer
 	 *
-	 * @param claferModel
-	 *        contains the list of all ClaferFeatures
+	 * @param claferModel contains the list of all ClaferFeatures
 	 */
 	public void callAddElementsInClaferTabQuestionDialog(final ClaferModel claferModel) {
 		for (final Answer answer : this.arrayAnswer) {
@@ -345,12 +328,9 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	/**
 	 * Deletes the specific clafer dependency from the list of answer's clafer dependencies
 	 *
-	 * @param answer
-	 *        the Answer
-	 * @param claferDependency
-	 *        to be deleted
-	 * @param claferModel
-	 *        containing the list of clafer features
+	 * @param answer the Answer
+	 * @param claferDependency to be deleted
+	 * @param claferModel containing the list of clafer features
 	 */
 	public void deleteClaferDependency(final Answer answer, final ClaferDependency claferDependency, final ClaferModel claferModel) {
 		answer.getClaferDependencies().remove(claferDependency);
@@ -360,10 +340,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	/**
 	 * Updates the clafer tab whenever a deletion or addition of clafer dependency takes place in clafer tab
 	 *
-	 * @param claferModel
-	 *        containing the list of clafer features
-	 * @param showClaferWidgetsForAnswer
-	 *        the answer
+	 * @param claferModel containing the list of clafer features
+	 * @param showClaferWidgetsForAnswer the answer
 	 */
 	public void updateClaferTab(final ClaferModel claferModel, final Answer showClaferWidgetsForAnswer) {
 		final Composite contentOfThisScrolledComposite = (Composite) getContent();
@@ -411,8 +389,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	}
 
 	/**
-	 * @param lowestWidgetYAxisValue
-	 *        the lowestWidgetYAxisValue to set
+	 * @param lowestWidgetYAxisValue the lowestWidgetYAxisValue to set
 	 */
 	public void setLowestWidgetYAxisValue(final int lowestWidgetYAxisValue) {
 		this.lowestWidgetYAxisValue = lowestWidgetYAxisValue + Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS;
@@ -479,7 +456,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	}
 
 	/**
-	 *
 	 * @param listOfPossibleAttributes
 	 */
 	public void updateDropDownsForXSLAttributes(final ArrayList<String> listOfPossibleAttributes) {
@@ -489,7 +465,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	}
 
 	/**
-	 *
 	 * @param selectionOnComboXSLTags
 	 * @return
 	 */
@@ -524,7 +499,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 
 	public void modifyFeature(final ClaferConstraint constraint) {
 		final ClaferConstraintDialog cfrConstraintDialog = new ClaferConstraintDialog(getShell(), this.currentClaferFeature, this.claferModel, constraint);
-		final int id = this.featureConstraints.lastIndexOf(constraint); // blocking call to Dialog.open() the dialog // it returns 0 on success 
+		final int id = this.featureConstraints.lastIndexOf(constraint); // blocking call to Dialog.open() the dialog // it returns 0 on success
 		if (cfrConstraintDialog.open() == 0) {
 			this.featureConstraints.set(id, cfrConstraintDialog.getResult());
 		}

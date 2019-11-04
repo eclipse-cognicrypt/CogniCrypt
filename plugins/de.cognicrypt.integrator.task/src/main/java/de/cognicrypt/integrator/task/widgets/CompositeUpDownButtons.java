@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.widgets;
@@ -20,9 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 import de.cognicrypt.codegenerator.question.Question;
 
 /**
- *
  * @author ravi This class enables the user to rearrange the question order using up and down buttons created by this class
- *
  */
 public class CompositeUpDownButtons extends Composite {
 
@@ -44,7 +39,7 @@ public class CompositeUpDownButtons extends Composite {
 
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				//Only executes if the currentQuestion is not the first question in the list
+				// Only executes if the currentQuestion is not the first question in the list
 				if (listOfAllQuestions.size() != 1) {
 					((CompositeToHoldGranularUIElements) upBtn.getParent().getParent().getParent().getParent()).moveUpTheQuestion(currentQuestion);
 				}
@@ -58,7 +53,7 @@ public class CompositeUpDownButtons extends Composite {
 
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				//Only executes if the currentQuestion is not the last question in the list
+				// Only executes if the currentQuestion is not the last question in the list
 				if (currentQuestion.getId() != listOfAllQuestions.size() - 1) {
 					((CompositeToHoldGranularUIElements) upBtn.getParent().getParent().getParent().getParent()).moveDownTheQuestion(currentQuestion);
 				}

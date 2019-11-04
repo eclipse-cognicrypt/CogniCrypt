@@ -1,5 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
  * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -77,10 +78,6 @@ public class SootRunner {
 
 				};
 				scanner.getAnalysisListener().addReportListener(resultsReporter);
-				
-				
-				List<CryptSLRule> rules = getRules(resultsReporter.getReporterProject());
-				
 				scanner.scan(getRules(resultsReporter.getReporterProject()));
 			}
 		};
@@ -88,7 +85,6 @@ public class SootRunner {
 
 	private static List<CryptSLRule> getRules(IProject project) {
 		
-		StringBuilder builder = new StringBuilder();
 		List<CryptSLRule> rules = Lists.newArrayList();
 		// TODO Select rules according to selected rulesets in preference page. The CrySL rules for each ruleset are in a separate subdirectory of "/resources/CrySLRules/".
 		try {
@@ -107,7 +103,7 @@ public class SootRunner {
 
 			rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin("/resources/CrySLRules/").getPath()), Integer.MAX_VALUE, (file, attr) -> file.toString().endsWith(".cryptsl"))
 					.map(path -> {
-						return r.readRule(path.toFile());
+							return r.readRule(path.toFile());
 					}).collect(Collectors.toList()));
 		}
 		catch (IOException | CoreException e) {
@@ -140,7 +136,7 @@ public class SootRunner {
 		setSootOptions(project, dependencyAnalyser);
 		registerTransformers(resultsReporter);
 		try {
-			runSoot();
+			runSoot(resultsReporter);
 		}
 		catch (final Exception t) {
 			Activator.getDefault().logError(t);
@@ -149,9 +145,10 @@ public class SootRunner {
 		return true;
 	}
 
-	private static void runSoot() {
+	private static void runSoot(final ResultsCCUIListener resultsReporter) {
 		Scene.v().loadNecessaryClasses();
 		PackManager.v().getPack("cg").apply();
+		resultsReporter.setCgGenComplete(true);
 		PackManager.v().getPack("wjtp").apply();
 	}
 

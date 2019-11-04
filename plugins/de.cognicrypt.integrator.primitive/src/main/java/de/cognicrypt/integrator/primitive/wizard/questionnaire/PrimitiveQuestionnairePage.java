@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.primitive.wizard.questionnaire;
@@ -55,13 +52,9 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	ControlDecoration deco;
 
 	/**
-	 *
-	 * @param page
-	 *        page contains the questions that need to be displayed.
-	 * @param primitive
-	 *        primitive for which the page is created
+	 * @param page page contains the questions that need to be displayed.
+	 * @param primitive primitive for which the page is created
 	 * @param selectionValues
-	 *
 	 */
 	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, final List<String> selectionValues) {
 		super("Display Questions");
@@ -71,13 +64,11 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	}
 
 	/**
-	 *
 	 * @param page
 	 * @param primitive
 	 * @param PrimitiveQuestionnaire
 	 * @param selectionValues
-	 * @param iteration
-	 *        This parameter is used for number of keysizes.
+	 * @param iteration This parameter is used for number of keysizes.
 	 */
 	public PrimitiveQuestionnairePage(final Page page, final Primitive primitive, final PrimitiveQuestionnaire PrimitiveQuestionnaire, final List<String> selectionValues, final int iteration) {
 		super("Display Questions");
@@ -137,12 +128,13 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 					}
 					try {
 						this.iteration = Integer.parseInt(selection.getFirstElement().toString());
-					} catch (final Exception e) {
+					}
+					catch (final Exception e) {
 
 					}
 
 				});
-				//to create a text if the questions have 'note' to display
+				// to create a text if the questions have 'note' to display
 				if (!question.getNote().isEmpty()) {
 					createNote(parent, question);
 				}
@@ -173,8 +165,8 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 							if (source.getSelection()) {
 
 								if (answers.get(PrimitiveQuestionnairePage.this.pageUtility.getIndex(answers, source.getText())).getClaferDependencies() != null) {
-									PrimitiveQuestionnairePage.this.claferDepend = answers.get(PrimitiveQuestionnairePage.this.pageUtility.getIndex(answers, source.getText()))
-										.getClaferDependencies().get(0).getAlgorithm();
+									PrimitiveQuestionnairePage.this.claferDepend =
+											answers.get(PrimitiveQuestionnairePage.this.pageUtility.getIndex(answers, source.getText())).getClaferDependencies().get(0).getAlgorithm();
 
 								}
 								if (PrimitiveQuestionnairePage.this.selectedValue.isEmpty()) {
@@ -244,8 +236,8 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 							if (source.getSelection()) {
 								final int index = PrimitiveQuestionnairePage.this.pageUtility.getIndex(answers, source.getText());
 								if (answers.get(index).getClaferDependencies() != null) {
-									PrimitiveQuestionnairePage.this.claferDepend = answers.get(PrimitiveQuestionnairePage.this.pageUtility.getIndex(answers, source.getText()))
-										.getClaferDependencies().get(0).getAlgorithm();
+									PrimitiveQuestionnairePage.this.claferDepend =
+											answers.get(PrimitiveQuestionnairePage.this.pageUtility.getIndex(answers, source.getText())).getClaferDependencies().get(0).getAlgorithm();
 									PrimitiveQuestionnairePage.this.selectedValue = source.getText();
 									PrimitiveQuestionnairePage.this.selectionMap.put(PrimitiveQuestionnairePage.this.claferDepend, PrimitiveQuestionnairePage.this.selectedValue);
 								}
@@ -301,8 +293,8 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 								getWizard().getContainer().updateButtons();
 								final Button source = (Button) e.getSource();
 								if (answers.get(PrimitiveQuestionnairePage.this.pageUtility.getIndex(answers, source.getText())).getClaferDependencies() != null) {
-									PrimitiveQuestionnairePage.this.claferDepend = answers.get(PrimitiveQuestionnairePage.this.pageUtility.getIndex(answers, source.getText()))
-										.getClaferDependencies().get(0).getAlgorithm();
+									PrimitiveQuestionnairePage.this.claferDepend =
+											answers.get(PrimitiveQuestionnairePage.this.pageUtility.getIndex(answers, source.getText())).getClaferDependencies().get(0).getAlgorithm();
 								}
 								if (source.getText().equals(Constants.FIXED_SIZE)) {
 									textField[0].setEnabled(true);
@@ -335,7 +327,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 						PrimitiveQuestionnairePage.this.finish = !textField[1].getText().isEmpty();
 						PrimitiveQuestionnairePage.this.setPageComplete(PrimitiveQuestionnairePage.this.finish);
 
-						//Checking if the integer in the second field is greater than the first field
+						// Checking if the integer in the second field is greater than the first field
 						if (textField[0] != null && textField[1] != null) {
 							final String startRange = textField[0].getText();
 							final int startRangeInt = Integer.valueOf(startRange);
@@ -344,7 +336,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 							final int endRangeInt = Integer.valueOf(endRange);
 							System.out.print(endRangeInt);
 
-							//Field assit for Error message
+							// Field assit for Error message
 							this.deco = new ControlDecoration(textField[1], SWT.TOP | SWT.RIGHT | SWT.WRAP);
 							final Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_DEC_FIELD_ERROR);
 							this.deco.setDescriptionText("The value in the second text field should be greater than the value in first text field");
@@ -358,7 +350,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 								this.deco.show();
 							}
 						} else {
-							//deco.hide();
+							// deco.hide();
 						}
 
 					});
@@ -370,7 +362,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		}
 	}
 
-	//ensure if the input text field contains only integers
+	// ensure if the input text field contains only integers
 	private static void ensureTextContainsOnlyDigits(final VerifyEvent e) {
 		final String string = e.text;
 		e.doit = string.matches("\\d*");
@@ -386,7 +378,6 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 	}
 
 	/**
-	 *
 	 * @return returns the id of the current page.
 	 */
 	public int getPageMap() {
@@ -401,7 +392,7 @@ public class PrimitiveQuestionnairePage extends WizardPage {
 		}
 	}
 
-	//add the note below the question
+	// add the note below the question
 	private void createNote(final Composite parent, final Question question) {
 		final Group notePanel = new Group(parent, SWT.NONE);
 		notePanel.setText("Note:");

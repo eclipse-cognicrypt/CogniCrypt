@@ -1,5 +1,7 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
  * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -42,7 +44,7 @@ public class Activator extends AbstractUIPlugin {
 		Activator.plugin = this;
 		resReporters = new ArrayList<ResultsCCUIListener>();
 		PlatformUI.getWorkbench().addWorkbenchListener(new ShutDownHandler());
-		
+
 		CogniCryptPreferencePage.registerPreferenceListener(new StaticAnalyzerPreferences());
 	}
 
@@ -98,7 +100,7 @@ public class Activator extends AbstractUIPlugin {
 	public static List<ResultsCCUIListener> getResultsReporters() {
 		return resReporters;
 	}
-	
+
 	@Override
 	public IPreferenceStore getPreferenceStore() {
 		return de.cognicrypt.core.Activator.getDefault().getPreferenceStore();

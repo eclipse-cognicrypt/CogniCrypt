@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.wizard;
@@ -125,7 +122,7 @@ public class XSLTagDialog extends Dialog {
 						disposeAllAttributes();
 						setCurrentSelectionStringOncomboXSLTags(XSLTagDialog.this.comboXSLTags.getText());
 						XSLTagDialog.this.compositeForXSLAttributes
-							.updateDropDownsForXSLAttributes(XSLTagDialog.this.compositeForXSLAttributes.getListOfPossibleAttributes(XSLTagDialog.this.comboXSLTags.getText()));
+								.updateDropDownsForXSLAttributes(XSLTagDialog.this.compositeForXSLAttributes.getListOfPossibleAttributes(XSLTagDialog.this.comboXSLTags.getText()));
 					} else {
 						// If the user opts out of the change, replace the already changed value with the old one.
 						for (int i = 0; i < XSLTagDialog.this.comboXSLTags.getItemCount(); i++) {
@@ -194,6 +191,7 @@ public class XSLTagDialog extends Dialog {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
 	 */
 	@Override
@@ -217,7 +215,7 @@ public class XSLTagDialog extends Dialog {
 		for (final XSLAttribute xslAttribute : attributesOnThisTag) {
 			if (this.valuesForTagData != null) {
 				xslAttribute.setXSLAttributeData((this.valuesForTagData.get(xslAttribute.getXSLAttributeData()) == null) ? xslAttribute.getXSLAttributeData()
-					: this.valuesForTagData.get(xslAttribute.getXSLAttributeData()));
+						: this.valuesForTagData.get(xslAttribute.getXSLAttributeData()));
 			}
 		}
 
@@ -241,8 +239,7 @@ public class XSLTagDialog extends Dialog {
 	}
 
 	/**
-	 * @param currentSelectionStringOncomboXSLTags
-	 *        the currentSelectionStringOncomboXSLTags to set
+	 * @param currentSelectionStringOncomboXSLTags the currentSelectionStringOncomboXSLTags to set
 	 */
 	private void setCurrentSelectionStringOncomboXSLTags(final String currentSelectionStringOncomboXSLTags) {
 		this.currentSelectionStringOncomboXSLTags = currentSelectionStringOncomboXSLTags;
@@ -256,8 +253,7 @@ public class XSLTagDialog extends Dialog {
 	}
 
 	/**
-	 * @param tag
-	 *        the tag to set
+	 * @param tag the tag to set
 	 */
 	private void setTag(final XSLTag tag) {
 		this.tag = tag;
@@ -271,8 +267,7 @@ public class XSLTagDialog extends Dialog {
 	}
 
 	/**
-	 * @param valuesForTagData
-	 *        the valuesForTagData to set
+	 * @param valuesForTagData the valuesForTagData to set
 	 */
 	public void setValuesForTagData(final HashMap<String, String> valuesForTagData) {
 		this.valuesForTagData = valuesForTagData;

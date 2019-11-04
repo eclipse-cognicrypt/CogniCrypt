@@ -1,5 +1,7 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -66,7 +68,7 @@ public class XMLClaferParser {
 			taskElem.addAttribute(Constants.Description, ClaferModelUtils.removeScopePrefix(taskName));
 
 			// add imports
-			taskElem.addElement(Constants.Package).addText(Constants.PackageName.replace(Constants.innerFileSeparator, "."));	// Constants.xmlPackage
+			taskElem.addElement(Constants.Package).addText(Constants.PackageNameAsName);	// Constants.xmlPackage
 			final Element xmlimports = taskElem.addElement(Constants.Imports);
 			for (final String file : Constants.xmlimportsarr) {
 				xmlimports.addElement(Constants.Import).addText(file);

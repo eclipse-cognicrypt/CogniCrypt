@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.widgets;
@@ -34,10 +31,8 @@ public class CompositeSortableTextItem extends Composite {
 	/**
 	 * instantiate the composite with a text box, a remove button and optional move up and down buttons
 	 *
-	 * @param parent
-	 *        parent {@link Composite}
-	 * @param sortable
-	 *        <code>true</code> if up and down buttons should be shown, <code>false</code> otherwise
+	 * @param parent parent {@link Composite}
+	 * @param sortable <code>true</code> if up and down buttons should be shown, <code>false</code> otherwise
 	 */
 	public CompositeSortableTextItem(final Composite parent, final boolean sortable) {
 		super(parent, SWT.NONE);
@@ -144,10 +139,8 @@ public class CompositeSortableTextItem extends Composite {
 	/**
 	 * enable or disable the buttons move up and move down according to boolean flags
 	 *
-	 * @param upEnabled
-	 *        desired state of the button move up
-	 * @param downEnabled
-	 *        desired state of the button move down
+	 * @param upEnabled desired state of the button move up
+	 * @param downEnabled desired state of the button move down
 	 */
 	public void setMoveButtonsEnabled(final boolean upEnabled, final boolean downEnabled) {
 		if (this.btnUp != null && this.btnDown != null) {

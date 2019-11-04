@@ -1,3 +1,13 @@
+/********************************************************************************
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 package de.cognicrypt.staticanalyzer.markerresolution;
 
 import java.util.ArrayList;
@@ -7,7 +17,6 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolutionGenerator;
-
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 
@@ -17,20 +26,26 @@ import de.cognicrypt.staticanalyzer.Activator;
  * @author Andre Sonntag
  */
 public class QuickFixer implements IMarkerResolutionGenerator {
-	
+
 	private List<String> secureExtenernalSources = Arrays.asList(new String[] {"randomized", "generatedKey", "generatedKeyPair", "generatedPubKey", "generatedPrivKey"});
-	
+
 	private List<IMarkerResolution> quickFixes;
-	
+
 	@Override
 	public IMarkerResolution[] getResolutions(final IMarker mk) {
 		quickFixes = new ArrayList<>();
 		String message = "";
 		String errorType = "";
+		int severity;
 		try {
+			severity = (int) mk.getAttribute(IMarker.SEVERITY);
 			errorType = (String) mk.getAttribute("errorType");
 			message = (String) mk.getAttribute(IMarker.MESSAGE);
-			quickFixes.add(new SuppressWarningFix(Constants.SUPPRESSWARNING_FIX + message));
+			if (severity == 2) {
+				quickFixes.add(new SuppressWarningFix(Constants.SUPPRESSWARNING_FIX + message));
+			} else if (severity == 0) {
+				quickFixes.add(new UnSuppressWarningFix(Constants.UNSUPPRESSWARNING_FIX + message));
+			}
 
 			if (errorType.equals(Constants.REQUIRED_PREDICATE_MARKER_TYPE)) {
 				String predicate = (String) mk.getAttribute("predicate");

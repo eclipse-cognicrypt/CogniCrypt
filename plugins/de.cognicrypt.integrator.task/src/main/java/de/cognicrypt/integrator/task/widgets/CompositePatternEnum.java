@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.widgets;
@@ -32,10 +29,8 @@ public class CompositePatternEnum extends CompositePattern {
 	/**
 	 * instantiate the pattern composite with optional ordering functionality
 	 *
-	 * @param parent
-	 *        parent {@link Composite}
-	 * @param sortable
-	 *        <code>true</code> if the enumeration items should be sortable, <code>false</code> otherwise
+	 * @param parent parent {@link Composite}
+	 * @param sortable <code>true</code> if the enumeration items should be sortable, <code>false</code> otherwise
 	 */
 	public CompositePatternEnum(final Composite parent, final boolean sortable) {
 		super(parent);

@@ -1,11 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
+
+ * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.integrator.task.widgets;
@@ -30,7 +27,7 @@ public class CompositeForXsl extends Composite {
 		super(parent, SWT.BORDER);
 		setLayout(new GridLayout(2, false));
 
-		//UI Widgets for xslPage
+		// UI Widgets for xslPage
 		setXslTxtBox(new StyledText(this, SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL));
 		this.xslTxtBox.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
 		this.xslTxtBox.setCursor(null);
@@ -39,8 +36,7 @@ public class CompositeForXsl extends Composite {
 	/**
 	 * Read the text from the file provided and update the {@link StyledText} with the processed data.
 	 *
-	 * @param filePath
-	 *        the path that is chosen from the FileDialog.
+	 * @param filePath the path that is chosen from the FileDialog.
 	 */
 	public void updateTheTextFieldWithFileData(final String filePath) {
 
@@ -73,8 +69,7 @@ public class CompositeForXsl extends Composite {
 	}
 
 	/**
-	 * @param xslTxtBox
-	 *        the xslTxtBox to set
+	 * @param xslTxtBox the xslTxtBox to set
 	 */
 	private void setXslTxtBox(final StyledText xslTxtBox) {
 		this.xslTxtBox = xslTxtBox;

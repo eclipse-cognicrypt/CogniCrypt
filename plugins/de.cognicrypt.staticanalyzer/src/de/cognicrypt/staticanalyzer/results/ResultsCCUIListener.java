@@ -86,6 +86,14 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	private Boolean depOnly = false;
 	private static Stats stat;
 
+	private int totalSeeds;
+	private int processedSeeds;
+	private int percentCompleted;
+	private int workUnitsCompleted;
+	private boolean cgGenComplete;
+	private int work = 0;
+	private int tempWork = 0;
+	
 	private ResultsCCUIListener(final IProject curProj, final ErrorMarkerGenerator gen) {
 		this.currentProject = curProj;
 		this.markerGenerator = gen;
@@ -194,13 +202,13 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final File warningsFile = new File(this.warningFilePath);
 
 		if (!warningsFile.exists()) {
-			this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap);
+			this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap, false);
 		} else {
 			this.xmlParser = new XMLParser(warningsFile);
 			this.xmlParser.useDocFromFile();
 			String idAsString = String.valueOf(stmtId);
 			if (!this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR).contains(idAsString)) {
-				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap);
+				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap, false);
 			} else {
 
 				// update existing line number
@@ -208,6 +216,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 				final Node lineNumberNode = this.xmlParser.getChildNodeByTagName(suppressWarningNode, Constants.LINENUMBER_ELEMENT);
 				this.xmlParser.updateNodeValue(lineNumberNode, lineNumber + "");
 				this.xmlParser.writeXML();
+				// last parameter(true) implies that the error was suppressed and info marker has to be shown.
+				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap, true);
 
 				try {
 					this.currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -245,7 +255,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			}
 			final Value varName = var.getValue();
 			this.markerGenerator.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt), unit.getJavaSourceStartLineNumber(),
-					"Object " + (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", Severities.Info, new HashMap<>());		}
+					"Object " + (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", Severities.Info, new HashMap<>(),
+					false);	}
 	}
 
 	/**
@@ -404,8 +415,60 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	@Override
-	public void addProgress(int arg0, int arg1) {
-		// TODO Auto-generated method stub
-		
+	public void addProgress(final int processSeeds, final int workListsize) {
+		setProcessedSeeds(processSeeds);
+		setTotalSeeds(workListsize + processSeeds);
+		setPercentCompleted((int) Math.round((float) processedSeeds * 100 / totalSeeds));
+		tempWork = getPercentCompleted() - work;
+		if (tempWork > 0) {
+			setWorkUnitsCompleted(tempWork);
+			work = getPercentCompleted();
+		} else {
+			setWorkUnitsCompleted(0);
+		}
+	}
+
+	public int getPercentCompleted() {
+		return percentCompleted;
+	}
+
+	public void setPercentCompleted(int percentCompleted) {
+		this.percentCompleted = percentCompleted;
+	}
+
+	public int getTotalSeeds() {
+		return totalSeeds;
+	}
+
+	public void setTotalSeeds(int totalSeeds) {
+		this.totalSeeds = totalSeeds;
+	}
+
+	public int getProcessedSeeds() {
+		return processedSeeds;
+	}
+
+	public void setProcessedSeeds(int processedSeeds) {
+		this.processedSeeds = processedSeeds;
+	}
+
+	public boolean isCgGenComplete() {
+		return cgGenComplete;
+	}
+
+	public void setCgGenComplete(boolean cgGenComplete) {
+		this.cgGenComplete = cgGenComplete;
+	}
+
+	public int getWorkUnitsCompleted() {
+		return workUnitsCompleted;
+	}
+
+	public void setWorkUnitsCompleted(int workUnitsCompleted) {
+		this.workUnitsCompleted = workUnitsCompleted;
+	}
+
+	public void setWork(int work) {
+		this.work = work;
 	}
 }

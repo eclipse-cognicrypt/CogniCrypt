@@ -48,7 +48,7 @@ import de.cognicrypt.utils.Utils;
 public class EnsuresPredicateFix implements IMarkerResolution {
 	private final String label;
 	private static final String INJAR_CLASS_NAME = "Ensurer";
-	private static final String VARIABLE_DECLARATION_NAME = "ens";
+	private static String VARIABLE_DECLARATION_NAME;
 	private final CrySLRuleCreator creator;
 
 	public EnsuresPredicateFix(final String label) {
@@ -63,28 +63,37 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 
 	@Override
 	public void run(final IMarker marker) {
+
+		String errorVarName = "";
+		int errorVarIndex = 0;
+		String predicate = "";
+		int lineNumber = 0;
+		int predicateParamCount = 0;
+
+		try {
+			lineNumber = (int) marker.getAttribute(IMarker.LINE_NUMBER);
+			predicate = (String) marker.getAttribute("predicate");
+			errorVarName = (String) marker.getAttribute("errorParam");
+			predicateParamCount = Integer.parseInt((String)marker.getAttribute("predicateParamCount"));
+		} catch (final CoreException e) {
+			Activator.getDefault().logError(e);
+		}
+		
+		//Currently, we have no solution for more as one predicate parameter
+		if(predicateParamCount > 1) {
+			final SuppressWarningFix tempFix = new SuppressWarningFix("");
+			tempFix.run(marker);
+			Utils.getCurrentlyOpenEditor().doSave(null);
+			return;
+		}
 		
 		JOptionPane optionPane = new JOptionPane("Now, CogniCrypt recognizes the object as secure", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
 		JDialog waitingDialog = optionPane.createDialog("CogniCrypt");
 		waitingDialog.setModal(false);
 		waitingDialog.setVisible(true);
 		
-		String errorVarName = "";
-		int errorVarIndex = 0;
-		String predicate = "";
-		int lineNumber = 0;
-
-		try {
-			lineNumber = (int) marker.getAttribute(IMarker.LINE_NUMBER);
-			predicate = (String) marker.getAttribute("predicate");
-			errorVarName = (String) marker.getAttribute("errorParam");
-		} catch (final CoreException e) {
-			Activator.getDefault().logError(e);
-		}
-		
 		DeveloperProject devProject = new DeveloperProject(marker.getResource().getProject());
 		ICompilationUnit sourceUnit = null;
-
 		try {
 			sourceUnit = QuickFixUtils.getCompilationUnitFromMarker(marker);
 			QuickFixUtils.addAdditionalFiles("resources/PredicateEnsurer/Jar", de.cognicrypt.staticanalyzer.Activator.PLUGIN_ID, devProject);
@@ -96,25 +105,27 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 			Activator.getDefault().logError(e);
 		}
 		
-		final ASTParser parser = ASTParser.newParser(AST.JLS9);
-		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-		parser.setSource(sourceUnit);
-		final CompilationUnit unit = (CompilationUnit) parser.createAST(null);
-		unit.accept(new ErrorSourceVisitor(marker, unit, sourceUnit, errorVarName, errorVarIndex ,lineNumber, predicate));
-
 		String corePath = Utils.getResourceFromWithin("/resources/CrySLRules/Custom/", de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath();
 		String filePath = corePath+Constants.outerFileSeparator+"Ensurer"+Constants.cryslFileEnding;
-		Activator.getDefault().logInfo(filePath);
-		
 		File rule = new File(filePath);
+		
+		
+		VARIABLE_DECLARATION_NAME = "ens"+predicate.substring(0, 1).toUpperCase() + predicate.substring(1, 3);
 		if (rule.exists()) {
 			updateRule(filePath, predicate);
 		} else {
 			createRule(filePath, predicate);
 		}
 		
+		final ASTParser parser = ASTParser.newParser(AST.JLS9);
+		parser.setKind(ASTParser.K_COMPILATION_UNIT);
+		parser.setSource(sourceUnit);
+		final CompilationUnit unit = (CompilationUnit) parser.createAST(null);
+		unit.accept(new ErrorSourceVisitor(marker, unit, sourceUnit, errorVarName, errorVarIndex ,lineNumber, predicate));
+		
 		waitingDialog.setVisible(false);
 		waitingDialog.dispose();
+		Utils.getCurrentlyOpenEditor().doSave(null);
 	}
 
 	/**
@@ -130,6 +141,7 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 		objects.add("java.lang.String pred;");
 		List<String> events = new ArrayList<String>();
 		events.add("c: Ensurer(obj,pred);");
+
 		String order = "c";
 		List<String> ensures = new ArrayList<String>();
 		ensures.add("pred in {\""+ pred + "\"} => " + pred + "[obj];");
@@ -186,7 +198,7 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 					index = index.getParent();
 				}
 			}
-			final FieldDeclaration ensurerFieldDeclaration = createEnsurerFieldDeclaration(ast, ensurerClassVarDeclarationFragment, Modifier.DEFAULT);
+			final FieldDeclaration ensurerFieldDeclaration = createEnsurerFieldDeclaration(ast, ensurerClassVarDeclarationFragment, Modifier.NONE);
 			listRewrite.insertBefore(ensurerFieldDeclaration, index, null);
 
 		} else if (node.getNodeType() == ASTNode.FIELD_DECLARATION) {

@@ -102,11 +102,7 @@ public class SootRunner {
 
 			rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin("/resources/CrySLRules/").getPath()), Integer.MAX_VALUE, (file, attr) -> file.toString().endsWith(".cryptsl"))
 					.map(path -> {
-						try {
 							return CryptSLRuleReader.readFromSourceFile(path.toFile());
-						}
-						catch (MalformedURLException e) {}
-						return null;
 					}).collect(Collectors.toList()));
 		}
 		catch (IOException | CoreException e) {

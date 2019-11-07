@@ -6,12 +6,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import org.eclipse.core.runtime.CoreException;
 import com.google.common.base.Strings;
-
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.crysl.handler.Activator;
-import de.cognicrypt.crysl.reader.CrySLModelReader;
 import de.cognicrypt.utils.Utils;
 
 /**
@@ -25,14 +22,14 @@ public class CrySLRuleCreator {
 
 	/**
 	 * This method creates a CrySL rule and compiled them
-	 * @param filePath	Path where the file should be stored
-	 * @param spec		
-	 * @param objects
-	 * @param events
-	 * @param order
-	 * @param constraints
-	 * @param requires
-	 * @param ensures
+	 * @param filePath - path where the file should be stored
+	 * @param spec - fully-qualified name of the class	
+	 * @param objects - {@link List<String>} of objects in format: fully-qualified className varName; (i.e."java.lang.Object obj;")
+	 * @param events - {@link List<String>} of events that contribute to successful usage of the class
+	 * @param order - {@link String} regular expression of method event patterns that are defined in @param events
+	 * @param constraints - {@link List<String>} of constraints for objects defined in @param objects
+	 * @param requires - {@link List<String>} of required predicates 
+	 * @param ensures - {@link List<String>} of ensured predicates 
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if no error occurs during generation and compiling process
 	 */
 	public boolean createRule(String filePath, String spec, List<String> objects, List<String> events, String order,
@@ -55,21 +52,18 @@ public class CrySLRuleCreator {
 
 		try {
 			createCrySLFile(filePath, cryslRuleContent);
-			compileRule(filePath);
 		} catch (IOException e) {
 			Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
-		} catch (CoreException e) {
-			Activator.getDefault().logError(e);
-		}
+		} 
 
 		return true;
 	}
 
 	/**
-	 * This method adds a String to a certain section
-	 * @param filePath Path where the file is stored
-	 * @param section
-	 * @param content
+	 * This method extends a certain section by further a {@link String}
+	 * @param filePath - Path where the file is stored
+	 * @param section - Section to be extended
+	 * @param content - {@link String} object to extend the section
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if file and section could be find and no error occurs during compiling process
 	 */
 	public boolean extendRule(String filePath, String section, String content) {
@@ -96,12 +90,9 @@ public class CrySLRuleCreator {
 					}
 				}
 				createCrySLFile(f.getAbsolutePath(), rule);
-				compileRule(filePath);
 			} catch (IOException e) {
 				Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
-			} catch (CoreException e) {
-				Activator.getDefault().logError(e);
-			}			
+			}		
 		} else {
 			Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
 		}
@@ -109,9 +100,9 @@ public class CrySLRuleCreator {
 	}
 
 	/**
-	 * This method deletes a certain content string of a rule
+	 * This method deletes the matched {@link String} from the rule content
 	 * @param filePath Path where the file is stored
-	 * @param content
+	 * @param {@link String} to be deleted from the rule 
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if file and content sting could be find and no error occurs during compiling process
 	 */
 	public boolean reduceRule(String filePath, String content) {
@@ -130,11 +121,8 @@ public class CrySLRuleCreator {
 					}
 				}
 				createCrySLFile(f.getAbsolutePath(), rule);
-				compileRule(filePath);
 			} catch (IOException e) {
 				Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
-			} catch (CoreException e) {
-				Activator.getDefault().logError(e);
 			}
 		} else {
 			Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
@@ -144,14 +132,14 @@ public class CrySLRuleCreator {
 
 	/**
 	 * This method composes the individual sections to a rule
-	 * @param spec
-	 * @param objects
-	 * @param events
-	 * @param order
-	 * @param constraints
-	 * @param requires
-	 * @param ensures
-	 * @return	composed rule as String
+	 * @param spec - spec {@link String}
+	 * @param objects - objects {@link List<String>}
+	 * @param events - events {@link List<String>}
+	 * @param order - order {@link String}
+	 * @param constraints - constraints {@link List<String>}
+	 * @param requires - requires {@link List<String>}
+	 * @param ensures - ensures {@link List<String>}
+	 * @return composed rule as String
 	 */
 	private String buildCrySLContentString(String spec, String objects, String events, String order, String constraints,
 			String requires, String ensures) {
@@ -176,10 +164,11 @@ public class CrySLRuleCreator {
 	}
 
 	/**
-	 * This method composes a section together
-	 * @param section
-	 * @param values
-	 * @return comoposed section as String
+	 * This method checks the format of the values for a certain section, furthermore
+	 * the rule composes the section together
+	 * @param section - {@link String} section name
+	 * @param values - {@link List<String>} with the values for the section 
+	 * @return composed section as String
 	 */
 	private String buildCrySLSectionString(String section, List<String> values) {
 
@@ -201,9 +190,9 @@ public class CrySLRuleCreator {
 	}
 
 	/**
-	 * This method writes a String to a file
-	 * @param filePath
-	 * @param content
+	 * This method writes the rule content to a file
+	 * @param filePath path where the rule should be stored
+	 * @param content rule content as {@link String}
 	 * @throws IOException
 	 */
 	private void createCrySLFile(String filePath, String content) throws IOException {
@@ -215,34 +204,19 @@ public class CrySLRuleCreator {
 	}
 
 	/**
-	 * This method writes a {@link List<String>} to a file
-	 * @param name
-	 * @param content
+	 * This method writes the rule content from {@link List<String>} to a file
+	 * @param filePath path where the rule should be store 
+	 * @param content rule content as {@link List<String>}
 	 * @throws IOException
 	 */
-	private void createCrySLFile(String name, List<String> content) throws IOException {
+	private void createCrySLFile(String filePath, List<String> content) throws IOException {
 		StringBuilder builder = new StringBuilder();
 		for (String s : content) {
 			builder.append(s);
 			builder.append("\n");
 		}
-		createCrySLFile(name, builder.toString());
+		createCrySLFile(filePath, builder.toString());
 	}
 
-	/**
-	 * This method compiles a CrySL file to a .cryptslbin file
-	 * @param filePath
-	 * @throws IOException
-	 * @throws CoreException 
-	 */
-	private void compileRule(String filePath) throws IOException, CoreException {
-		File f = new File(filePath);		
-		if (f.exists()) {
-			CrySLModelReader reader = new CrySLModelReader(Utils.getCurrentProject());
-			reader.readRule(f);
-		} else {
-			Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
-		}
-	}
 
 }

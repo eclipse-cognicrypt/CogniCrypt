@@ -102,11 +102,7 @@ public class SootRunner {
 
 			rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin("/resources/CrySLRules/").getPath()), Integer.MAX_VALUE, (file, attr) -> file.toString().endsWith(".cryptsl"))
 					.map(path -> {
-						try {
 							return CryptSLRuleReader.readFromSourceFile(path.toFile());
-						}
-						catch (MalformedURLException e) {}
-						return null;
 					}).collect(Collectors.toList()));
 		}
 		catch (IOException | CoreException e) {
@@ -139,7 +135,7 @@ public class SootRunner {
 		setSootOptions(project, dependencyAnalyser);
 		registerTransformers(resultsReporter);
 		try {
-			runSoot();
+			runSoot(resultsReporter);
 		}
 		catch (final Exception t) {
 			Activator.getDefault().logError(t);
@@ -149,9 +145,10 @@ public class SootRunner {
 		return true;
 	}
 
-	private static void runSoot() {
+	private static void runSoot(final ResultsCCUIListener resultsReporter) {
 		Scene.v().loadNecessaryClasses();
 		PackManager.v().getPack("cg").apply();
+		resultsReporter.setCgGenComplete(true);
 		PackManager.v().getPack("wjtp").apply();
 	}
 

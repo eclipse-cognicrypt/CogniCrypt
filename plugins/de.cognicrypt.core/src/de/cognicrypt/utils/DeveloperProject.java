@@ -85,6 +85,10 @@ public class DeveloperProject {
 	public IFile getIFile(final String path) {
 		return this.project.getFile(path.substring(path.indexOf(this.project.getName()) + this.project.getName().length()));
 	}
+	
+	public IFile getFile(final String path) {
+		return this.project.getFile(path);
+	}
 
 	/**
 	 * This method retrieves a package of the name {@linkplain name} that is in the developer's project.

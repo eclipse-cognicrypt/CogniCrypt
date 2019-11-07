@@ -376,14 +376,9 @@ public class Utils {
 				continue;
 			}
 
-			try {
-				CryptSLRule readFromSourceFile = CryptSLRuleReader.readFromSourceFile(rule);
-				if (readFromSourceFile != null) {
-					rules.add(readFromSourceFile);
-				}
-			}
-			catch (IOException e) {
-				Activator.getDefault().logError(e);
+			CryptSLRule readFromSourceFile = CryptSLRuleReader.readFromSourceFile(rule);
+			if (readFromSourceFile != null) {
+				rules.add(readFromSourceFile);
 			}
 		}
 		return rules;

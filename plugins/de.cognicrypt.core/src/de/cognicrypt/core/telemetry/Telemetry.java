@@ -73,9 +73,10 @@ public class Telemetry {
 					telemetryData.put("client-info", "cogniCryptTelemetry");
 					telemetryData.put("uid", getUUID());
 					telemetryData.put("event", event.toString());
-					//telemetryData.put("timestamp", String.valueOf(Instant.now().toEpochMilli()));
 					if (payload != null) {
 						telemetryData.put("payload", payload);
+					} else {
+						telemetryData.put("payload", "");
 					}
 
 					String jsonString = new JSONObject(telemetryData).toJSONString();

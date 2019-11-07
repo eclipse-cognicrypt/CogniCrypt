@@ -145,7 +145,7 @@ public class TaskSelectionPage extends WizardPage {
 		@Override
 		public void handleEvent(final Event event) {
 			final Button eventButton = (Button) event.widget;
-			Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.WIZARD_NEW_TASK_SELECTED, event.text);
+			Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.WIZARD_NEW_TASK_SELECTED, eventButton.getToolTipText());
 			for (int i = 0; i < this.buttons.size(); i++) {
 				final Button b = this.buttons.get(i);
 				if (eventButton.equals(b)) {

@@ -46,13 +46,11 @@ public class QuickFixer implements IMarkerResolutionGenerator {
 			} else if (severity == 0) {
 				quickFixes.add(new UnSuppressWarningFix(Constants.UNSUPPRESSWARNING_FIX + message));
 			}
-
-			if (errorType.equals(Constants.REQUIRED_PREDICATE_MARKER_TYPE)) {
-				String predicate = (String) mk.getAttribute("predicate");
-				if (predicate != null) {
-					if(secureExtenernalSources.contains(predicate)) {
-						quickFixes.add(new EnsuresPredicateFix("This object comes from a stream/database/other external source and is actually secure."));
-					}
+			
+			String predicate = (String) mk.getAttribute("predicate");
+			if (errorType.equals(Constants.REQUIRED_PREDICATE_MARKER_TYPE) && predicate != null) {
+				if(secureExtenernalSources.contains(predicate)) {
+					quickFixes.add(new EnsuresPredicateFix("This object comes from a stream/database/other external source and is actually secure."));
 				}
 			}
 		}

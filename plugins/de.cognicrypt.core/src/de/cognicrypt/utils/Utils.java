@@ -1,8 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
  * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
-
 package de.cognicrypt.utils;
 
 import java.io.File;
@@ -372,14 +372,9 @@ public class Utils {
 				continue;
 			}
 
-			try {
-				CryptSLRule readFromSourceFile = CryptSLRuleReader.readFromSourceFile(rule);
-				if (readFromSourceFile != null) {
-					rules.add(readFromSourceFile);
-				}
-			}
-			catch (IOException e) {
-				Activator.getDefault().logError(e);
+			CryptSLRule readFromSourceFile = CryptSLRuleReader.readFromSourceFile(rule);
+			if (readFromSourceFile != null) {
+				rules.add(readFromSourceFile);
 			}
 		}
 		return rules;

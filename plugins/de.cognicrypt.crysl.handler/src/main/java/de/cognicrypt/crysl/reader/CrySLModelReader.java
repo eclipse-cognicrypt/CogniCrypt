@@ -139,9 +139,8 @@ public class CrySLModelReader {
 
 	/**
 	 * This constructor use the CogniCyrpt Core plugin lib folder as classpath
-	 * @throws MalformedURLException
 	 */
-	public CrySLModelReader() throws MalformedURLException {
+	public CrySLModelReader(){
 		CryptSLStandaloneSetup cryptSLStandaloneSetup = new CryptSLStandaloneSetup();
 		final Injector injector = cryptSLStandaloneSetup.createInjectorAndDoEMFRegistration();
 		this.resourceSet = injector.getInstance(XtextResourceSet.class);
@@ -154,7 +153,11 @@ public class CrySLModelReader {
 
 		URL[] classpath = new URL[jars.size()];
 		for (int i = 0; i < classpath.length; i++) {
-			classpath[i] = jars.get(i).toURI().toURL();
+			try {
+				classpath[i] = jars.get(i).toURI().toURL();
+			} catch (MalformedURLException e) {
+				Activator.getDefault().logError("File path: "+jars.get(i)+" could not converted to java.net.URI object");
+			}
 		}
 
 		URLClassLoader ucl = new URLClassLoader(classpath);

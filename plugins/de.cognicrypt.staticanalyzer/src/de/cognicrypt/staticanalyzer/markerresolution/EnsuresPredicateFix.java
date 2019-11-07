@@ -74,6 +74,8 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 	@Override
 	public void run(final IMarker marker) {
 
+		Utils.getCurrentlyOpenEditor().doSave(null);
+
 		String errorVarName = "";
 		int errorVarIndex = 0;
 		String predicate = "";

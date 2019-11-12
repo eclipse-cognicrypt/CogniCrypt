@@ -344,9 +344,9 @@ public class Utils {
 		try {
 			ini = new Wini(getResourceFromWithin(Constants.CONFIG_FILE_PATH));
 		} catch (InvalidFileFormatException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError("Could not read the configuration file due to: " + e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError("Failed identifying configuration file due to: " + e.getMessage());
 		}
 		return ini;
 	}

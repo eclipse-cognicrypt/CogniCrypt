@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
@@ -39,7 +38,6 @@ import org.eclipse.ui.PlatformUI;
 import org.ini4j.Profile.Section;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
-
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.properties.PreferenceListener;
 import de.cognicrypt.staticanalyzer.utils.AddNewRulesetDialog;
@@ -99,7 +97,8 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	}
 
 	private void performBasicDefaults() {
-		preferences.setDefault(Constants.AUTOMATED_ANALYSIS, false);
+		preferences.setDefault(Constants.RULE_SELECTION, 0);
+		preferences.setDefault(Constants.AUTOMATED_ANALYSIS, true);
 		preferences.setDefault(Constants.SHOW_SECURE_OBJECTS, false);
 		preferences.setDefault(Constants.ANALYSE_DEPENDENCIES, true);
 		preferences.setDefault(Constants.CALL_GRAPH_SELECTION, 0);

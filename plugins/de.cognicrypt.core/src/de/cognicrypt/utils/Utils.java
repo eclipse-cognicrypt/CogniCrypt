@@ -1,10 +1,8 @@
 /********************************************************************************
  * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
  * 
-
  * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
-
 package de.cognicrypt.utils;
 
 import java.io.File;
@@ -20,7 +18,6 @@ import java.util.OptionalInt;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -57,9 +54,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 import org.osgi.framework.Bundle;
-
 import com.google.common.base.CharMatcher;
-
 import crypto.analysis.CrySLRulesetSelector.RuleFormat;
 import crypto.cryptslhandler.CrySLModelReader;
 import crypto.rules.CryptSLRule;
@@ -432,7 +427,6 @@ public class Utils {
 			if (readFromSourceFile != null) {
 				rules.add(readFromSourceFile);
 			}
-			
 		}
 		return rules;
 	}
@@ -472,5 +466,14 @@ public class Utils {
 
 	public static boolean isIncompatibleJavaVersion(String javaVersion) {
 		return javaVersion == null || !javaVersion.startsWith("1.");
+	}
+	
+	/**
+	 * This method checks if a Collection is null or empty
+	 * @param c
+	 * @return 
+	 */
+	public static boolean isNullOrEmpty( final Collection< ? > c ) {
+	    return c == null || c.isEmpty();
 	}
 }

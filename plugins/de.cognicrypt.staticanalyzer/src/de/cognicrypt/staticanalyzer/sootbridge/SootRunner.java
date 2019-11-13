@@ -1,5 +1,7 @@
 /********************************************************************************
- * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
+
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * 
  * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -7,10 +9,12 @@ package de.cognicrypt.staticanalyzer.sootbridge;
 
 import java.io.File;
 import java.io.IOException;
+									  
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+						
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -90,6 +94,7 @@ public class SootRunner {
 	}
 
 	private static List<CryptSLRule> getRules(IProject project) {
+  
 		List<CryptSLRule> rules = Lists.newArrayList();
 		Set<String> readRules = Sets.newHashSet();
 		IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
@@ -104,7 +109,7 @@ public class SootRunner {
 
 			for (String path : applicationClassPath(JavaCore.create(project))) {
 				List<CryptSLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
-				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e));
+				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
 			
@@ -139,7 +144,7 @@ public class SootRunner {
 											return false;
 										})
 								.map(path -> {
-										return CryptSLRuleReader.readFromSourceFile(path.toFile());
+										return r.readRule(path.toFile());
 								}).collect(Collectors.toList()));
 					}
 				}
@@ -153,6 +158,7 @@ public class SootRunner {
 		if (rules.isEmpty()) {
 			Activator.getDefault().logInfo("No CrySL rules loaded");
 		}
+  
 		return rules;
 	}
 
@@ -176,7 +182,7 @@ public class SootRunner {
 		setSootOptions(project, dependencyAnalyser);
 		registerTransformers(resultsReporter);
 		try {
-			runSoot();
+			runSoot(resultsReporter);
 		}
 		catch (final Exception t) {
 			Activator.getDefault().logError(t);
@@ -185,8 +191,9 @@ public class SootRunner {
 		return true;
 	}
 
-	private static void runSoot() {
+	private static void runSoot(final ResultsCCUIListener resultsReporter) {
 		Scene.v().loadNecessaryClasses();
+		resultsReporter.setCgGenComplete(true);
 		PackManager.v().getPack("cg").apply();
 		PackManager.v().getPack("wjtp").apply();
 	}

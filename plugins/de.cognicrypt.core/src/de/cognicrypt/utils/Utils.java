@@ -1,10 +1,8 @@
 /********************************************************************************
  * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
  * 
-
  * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
-
 package de.cognicrypt.utils;
 
 import java.io.File;
@@ -417,5 +415,14 @@ public class Utils {
 
 	public static boolean isIncompatibleJavaVersion(String javaVersion) {
 		return javaVersion == null || !javaVersion.startsWith("1.");
+	}
+	
+	/**
+	 * This method checks if a Collection is null or empty
+	 * @param c
+	 * @return 
+	 */
+	public static boolean isNullOrEmpty( final Collection< ? > c ) {
+	    return c == null || c.isEmpty();
 	}
 }

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -40,10 +41,12 @@ import org.eclipse.xtext.common.types.access.jdt.IJavaProjectProvider;
 import org.eclipse.xtext.common.types.access.jdt.JdtTypeProviderFactory;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import com.google.inject.Injector;
+
 import crypto.interfaces.ICryptSLPredicateParameter;
 import crypto.interfaces.ISLConstraint;
 import crypto.rules.CryptSLArithmeticConstraint;
@@ -94,8 +97,8 @@ import de.darmstadt.tu.crossing.cryptSL.ObjectDecl;
 import de.darmstadt.tu.crossing.cryptSL.Order;
 import de.darmstadt.tu.crossing.cryptSL.PreDefinedPredicates;
 import de.darmstadt.tu.crossing.cryptSL.Pred;
+import de.darmstadt.tu.crossing.cryptSL.PredLit;
 import de.darmstadt.tu.crossing.cryptSL.ReqPred;
-import de.darmstadt.tu.crossing.cryptSL.ReqPredLit;
 import de.darmstadt.tu.crossing.cryptSL.SimpleOrder;
 import de.darmstadt.tu.crossing.cryptSL.SuPar;
 import de.darmstadt.tu.crossing.cryptSL.SuParList;
@@ -117,7 +120,7 @@ public class CrySLModelReader {
 	private static final String ANY_TYPE = "AnyType";
 	private static final String NULL = "null";
 	private static final String UNDERSCORE = "_";
-
+	
 	public CrySLModelReader(IProject iProject) throws CoreException, IOException {
 		final Injector injector = CryptSLActivator.getInstance().getInjector(CryptSLActivator.DE_DARMSTADT_TU_CROSSING_CRYPTSL);
 		resourceSet = injector.getInstance(XtextResourceSet.class);
@@ -134,17 +137,27 @@ public class CrySLModelReader {
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 	}
 
-	public CrySLModelReader() throws MalformedURLException {
+	/**
+	 * This constructor use the CogniCyrpt Core plugin lib folder as classpath
+	 */
+	public CrySLModelReader(){
 		CryptSLStandaloneSetup cryptSLStandaloneSetup = new CryptSLStandaloneSetup();
 		final Injector injector = cryptSLStandaloneSetup.createInjectorAndDoEMFRegistration();
 		this.resourceSet = injector.getInstance(XtextResourceSet.class);
+		String coreLibFolderPath = Utils.getResourceFromWithin("lib").getAbsolutePath();
+		
+		List<File> jars = new ArrayList<>();
+		for (String file : Utils.getResourceFromWithin("lib").list()) {
+			jars.add(new File(coreLibFolderPath+Constants.innerFileSeparator+file));
+		}
 
-		String a = System.getProperty("java.class.path");
-		String[] l = a.split(";");
-
-		URL[] classpath = new URL[l.length];
+		URL[] classpath = new URL[jars.size()];
 		for (int i = 0; i < classpath.length; i++) {
-			classpath[i] = new File(l[i]).toURI().toURL();
+			try {
+				classpath[i] = jars.get(i).toURI().toURL();
+			} catch (MalformedURLException e) {
+				Activator.getDefault().logError("File path: "+jars.get(i)+" could not converted to java.net.URI object");
+			}
 		}
 
 		URLClassLoader ucl = new URLClassLoader(classpath);
@@ -209,10 +222,12 @@ public class CrySLModelReader {
 			}
 		}
 		final CryptSLRule rule = new CryptSLRule(curClass, objects, this.forbiddenMethods, this.smg, constraints, actPreds);
-		System.out.println(rule);
-		System.out.println("===========================================");
-		System.out.println("");
-
+		if(!rule.getClassName().equalsIgnoreCase("void")) {
+			System.out.println(rule.getClassName());
+			System.out.println("===========================================");
+			System.out.println("");
+		}
+		
 		return rule;
 	}
 
@@ -309,7 +324,7 @@ public class CrySLModelReader {
 		final List<ISLConstraint> preds = new ArrayList<>();
 		for (final ReqPred pred : requiredPreds) {
 			ISLConstraint reqPred = null;
-			if (pred instanceof ReqPredLit) {
+			if (pred instanceof PredLit) {
 				reqPred = extractReqPred(pred);
 			} else {
 				final ReqPred left = pred.getLeftExpression();
@@ -330,7 +345,7 @@ public class CrySLModelReader {
 
 	private List<CryptSLPredicate> retrieveReqPredFromAltPreds(ReqPred left) {
 		List<CryptSLPredicate> preds = new ArrayList<CryptSLPredicate>();
-		if (left instanceof ReqPredLit) {
+		if (left instanceof PredLit) {
 			preds.add(extractReqPred(left));
 		} else {
 			preds.addAll(retrieveReqPredFromAltPreds(left.getLeftExpression()));
@@ -341,7 +356,7 @@ public class CrySLModelReader {
 
 	private CryptSLPredicate extractReqPred(final ReqPred pred) {
 		final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
-		ReqPredLit innerPred = (ReqPredLit) pred;
+		PredLit innerPred = (PredLit) pred;
 		final Constraint conditional = innerPred.getCons();
 		if (innerPred.getPred().getParList() != null) {
 			for (final SuPar var : innerPred.getPred().getParList().getParameters()) {
@@ -585,7 +600,7 @@ public class CrySLModelReader {
 	private Map<? extends ParEqualsPredicate, ? extends SuperType> getKills(final EList<Constraint> eList) {
 		final Map<ParEqualsPredicate, SuperType> preds = new HashMap<>();
 		for (final Constraint cons : eList) {
-			final Pred pred = (Pred) cons;
+			final Pred pred = (Pred) cons.getPredLit().getPred();
 
 			final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
 
@@ -606,7 +621,7 @@ public class CrySLModelReader {
 				}
 			}
 			final String meth = pred.getPredName();
-			final SuperType cond = pred.getLabelCond();
+			final SuperType cond = cons.getLabelCond();
 			if (cond == null) {
 				preds.put(new ParEqualsPredicate(null, meth, variables, true), null);
 			} else {
@@ -686,7 +701,7 @@ public class CrySLModelReader {
 	private Map<? extends ParEqualsPredicate, ? extends SuperType> getPredicates(final List<Constraint> predList) {
 		final Map<ParEqualsPredicate, SuperType> preds = new HashMap<>();
 		for (final Constraint cons : predList) {
-			final Pred pred = (Pred) cons;
+			final Pred pred = (Pred) cons.getPredLit().getPred();
 			String curClass = ((DomainmodelImpl) cons.eContainer().eContainer()).getJavaType().getQualifiedName();
 			final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
 
@@ -712,12 +727,14 @@ public class CrySLModelReader {
 					firstPar = false;
 				}
 			}
+			
+			final CryptSLPredicate ensPredCons = extractReqPred(cons.getPredLit());
 			final String meth = pred.getPredName();
-			final SuperType cond = pred.getLabelCond();
+			final SuperType cond = cons.getLabelCond(); 
 			if (cond == null) {
-				preds.put(new ParEqualsPredicate(null, meth, variables, false), null);
+				preds.put(new ParEqualsPredicate(null, meth, variables, false, ensPredCons.getConstraint()), null);
 			} else {
-				preds.put(new ParEqualsPredicate(null, meth, variables, false), cond);
+				preds.put(new ParEqualsPredicate(null, meth, variables, false, ensPredCons.getConstraint()), cond);
 			}
 
 		}
@@ -756,5 +773,4 @@ public class CrySLModelReader {
 		}
 		return Utils.filterQuotes(value);
 	}
-
 }

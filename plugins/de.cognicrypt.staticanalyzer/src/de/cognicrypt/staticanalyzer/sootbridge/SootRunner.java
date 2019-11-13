@@ -1,7 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
  * 
-
  * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -14,6 +13,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -84,6 +84,7 @@ public class SootRunner {
 	}
 
 	private static List<CryptSLRule> getRules(IProject project) {
+		
 		List<CryptSLRule> rules = Lists.newArrayList();
 		// TODO Select rules according to selected rulesets in preference page. The CrySL rules for each ruleset are in a separate subdirectory of "/resources/CrySLRules/".
 		try {
@@ -96,21 +97,22 @@ public class SootRunner {
 
 			for (String path : applicationClassPath(JavaCore.create(project))) {
 				List<CryptSLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
-				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e));
+				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
 
 			rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin("/resources/CrySLRules/").getPath()), Integer.MAX_VALUE, (file, attr) -> file.toString().endsWith(".cryptsl"))
 					.map(path -> {
-							return CryptSLRuleReader.readFromSourceFile(path.toFile());
+							return r.readRule(path.toFile());
 					}).collect(Collectors.toList()));
 		}
 		catch (IOException | CoreException e) {
 			Activator.getDefault().logError(e, "Could not load CrySL Rules");
-		}
+		} 
 		if (rules.isEmpty()) {
 			Activator.getDefault().logInfo("No CrySL rules loaded");
 		}
+		
 		return rules;
 	}
 

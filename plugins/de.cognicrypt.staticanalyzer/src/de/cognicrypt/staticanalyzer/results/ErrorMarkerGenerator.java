@@ -68,7 +68,9 @@ public class ErrorMarkerGenerator {
 
 			if (markerType.equals(Constants.REQUIRED_PREDICATE_MARKER_TYPE)) {
 				marker.setAttribute("predicate", additionalErrorInfos.get("predicate"));
+				marker.setAttribute("predicateParamCount", additionalErrorInfos.get("predicateParamCount"));
 				marker.setAttribute("errorParam", additionalErrorInfos.get("errorParam"));
+				marker.setAttribute("errorParamIndex", additionalErrorInfos.get("errorParamIndex"));
 			}
 
 		}

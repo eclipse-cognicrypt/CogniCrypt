@@ -477,7 +477,7 @@ public class Constants {
 	public static final String PREDICATEENSURER_GROUPID = "de.upb.cognicrypt.predicateensurer";
 	public static final String PREDICATEENSURER_ARTIFACTID = "PredicateEnsurer";
 	public static final String PREDICATEENSURER_VERSION = "0.0.1-SNAPSHOT";
-	public static final String PREDICATEENSURER_JAR_IMPORT = "de.upb.cognicrypt.predicateensurer.CC";
+	public static final String PREDICATEENSURER_JAR_IMPORT = "de.upb.cognicrypt.predicateensurer.Ensurer";
 
 	public static final String DEPENDENCIES_TAG = "dependencies";
 	public static final String DEPENDENCY_TAG = "dependency";

@@ -32,7 +32,22 @@ Bundle-ClassPath: lib/claferchocoig.jar,
  lib/saxon9he.jar
 Automatic-Module-Name: de.cognicrypt.codegenerator
 Bundle-Vendor: TU Darmstadt, Paderborn University
-Export-Package: de.cognicrypt.codegenerator.featuremodel.clafer,
+Export-Package: de.cognicrypt.codegenerator,
+ de.cognicrypt.codegenerator.actions,
+ de.cognicrypt.codegenerator.crysl,
+ de.cognicrypt.codegenerator.crysl.templates.asymmetricencryption,
+ de.cognicrypt.codegenerator.crysl.templates.digitalsignatures,
+ de.cognicrypt.codegenerator.crysl.templates.encryption,
+ de.cognicrypt.codegenerator.crysl.templates.encryptionfiles,
+ de.cognicrypt.codegenerator.crysl.templates.encryptionhybrid,
+ de.cognicrypt.codegenerator.crysl.templates.encryptionhybridfiles,
+ de.cognicrypt.codegenerator.crysl.templates.encryptionhybridstrings,
+ de.cognicrypt.codegenerator.crysl.templates.encryptionstrings,
+ de.cognicrypt.codegenerator.crysl.templates.secretkeyencryption,
+ de.cognicrypt.codegenerator.crysl.templates.securepassword,
+ de.cognicrypt.codegenerator.crysl.templates.stringhashing,
+ de.cognicrypt.codegenerator.featuremodel.clafer,
+ de.cognicrypt.codegenerator.generator,
  de.cognicrypt.codegenerator.question,
  de.cognicrypt.codegenerator.tasks,
  de.cognicrypt.codegenerator.utilities

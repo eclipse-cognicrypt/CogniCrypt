@@ -132,7 +132,7 @@ public abstract class CodeGenerator {
 		final TreeSet<SimpleEntry<Integer, Integer>> methLims = new TreeSet<>();
 		final SimpleEntry<Integer, SimpleEntry<Integer, Integer>> classlims = new SimpleEntry<>(0, null);
 
-		final ASTParser astp = ASTParser.newParser(AST.JLS10);
+		final ASTParser astp = ASTParser.newParser(AST.JLS9);
 		astp.setSource(docContent.toCharArray());
 		astp.setKind(ASTParser.K_COMPILATION_UNIT);
 		final CompilationUnit cu = (CompilationUnit) astp.createAST(null);
@@ -198,7 +198,7 @@ public abstract class CodeGenerator {
 		// Retrieve complete content from file
 		final String fileContent = String.join(Constants.lineSeparator, Files.readAllLines(Paths.get(filePath)));
 		// Determine start and end position for relevant extract
-		final ASTParser astp = ASTParser.newParser(AST.JLS10);
+		final ASTParser astp = ASTParser.newParser(AST.JLS9);
 		astp.setSource(fileContent.toCharArray());
 		astp.setKind(ASTParser.K_COMPILATION_UNIT);
 		final CompilationUnit cu = (CompilationUnit) astp.createAST(null);
@@ -322,26 +322,29 @@ public abstract class CodeGenerator {
 	 * @throws CoreException
 	 *         {@link DeveloperProject#refresh() refresh()} and {@link DeveloperProject#getPackagesOfProject(String) getPackagesOfProject()}
 	 */
-	protected void cleanUpProject(final IEditorPart editor) throws CoreException {
+	protected void cleanUpProject(IEditorPart editor) throws CoreException {
 		this.project.refresh();
-		boolean fileOpen = false;
-
-		//prevent Organize Imports Problems
-		if (editor.getTitle().equals(this.temporaryOutputFile)) {
-			fileOpen = true;
-			Utils.closeEditor(editor);
+		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageNameAsName).getCompilationUnits();
+		boolean noClassOpen = false;
+		
+		if(editor == null) {
+			if (generatedCUnits[0].getResource().getType() == IResource.FILE) {
+			    IFile genClass = (IFile) generatedCUnits[0].getResource();
+				IDE.openEditor(Utils.getCurrentlyOpenPage(), genClass);
+				editor = Utils.getCurrentlyOpenPage().getActiveEditor();
+				noClassOpen = true;
+			}
 		}
 
 		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
 		final FormatAllAction faa = new FormatAllAction(editor.getSite());
-		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageNameAsName).getCompilationUnits();
 		faa.runOnMultiple(generatedCUnits);
 		organizeImportsActionForAllFilesTouchedDuringGeneration.runOnMultiple(generatedCUnits);
 
-		if (fileOpen) {
-			final IFile outputFile = this.project.getIFile(this.temporaryOutputFile);
-			IDE.openEditor(Utils.getCurrentlyOpenPage(), outputFile);
+		if (noClassOpen) {
+			Utils.closeEditor(editor);
 		}
+		
 		final ICompilationUnit openClass = JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor));
 		organizeImportsActionForAllFilesTouchedDuringGeneration.run(openClass);
 		faa.runOnMultiple(new ICompilationUnit[] { openClass });

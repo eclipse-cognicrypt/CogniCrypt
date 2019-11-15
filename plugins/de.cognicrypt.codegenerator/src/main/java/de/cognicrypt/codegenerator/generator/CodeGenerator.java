@@ -132,7 +132,7 @@ public abstract class CodeGenerator {
 		final TreeSet<SimpleEntry<Integer, Integer>> methLims = new TreeSet<>();
 		final SimpleEntry<Integer, SimpleEntry<Integer, Integer>> classlims = new SimpleEntry<>(0, null);
 
-		final ASTParser astp = ASTParser.newParser(AST.JLS9);
+		final ASTParser astp = ASTParser.newParser(AST.JLS10);
 		astp.setSource(docContent.toCharArray());
 		astp.setKind(ASTParser.K_COMPILATION_UNIT);
 		final CompilationUnit cu = (CompilationUnit) astp.createAST(null);
@@ -325,15 +325,13 @@ public abstract class CodeGenerator {
 	protected void cleanUpProject(IEditorPart editor) throws CoreException {
 		this.project.refresh();
 		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageNameAsName).getCompilationUnits();
-		boolean noClassOpen = false;
-		
-		if(editor == null) {
-			if (generatedCUnits[0].getResource().getType() == IResource.FILE) {
+		boolean anyFileOpen = false;
+
+		if(editor == null && generatedCUnits[0].getResource().getType() == IResource.FILE) {
 			    IFile genClass = (IFile) generatedCUnits[0].getResource();
 				IDE.openEditor(Utils.getCurrentlyOpenPage(), genClass);
 				editor = Utils.getCurrentlyOpenPage().getActiveEditor();
-				noClassOpen = true;
-			}
+				anyFileOpen = true;
 		}
 
 		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
@@ -341,7 +339,7 @@ public abstract class CodeGenerator {
 		faa.runOnMultiple(generatedCUnits);
 		organizeImportsActionForAllFilesTouchedDuringGeneration.runOnMultiple(generatedCUnits);
 
-		if (noClassOpen) {
+		if (anyFileOpen) {
 			Utils.closeEditor(editor);
 		}
 		

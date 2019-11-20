@@ -322,26 +322,27 @@ public abstract class CodeGenerator {
 	 * @throws CoreException
 	 *         {@link DeveloperProject#refresh() refresh()} and {@link DeveloperProject#getPackagesOfProject(String) getPackagesOfProject()}
 	 */
-	protected void cleanUpProject(final IEditorPart editor) throws CoreException {
+	protected void cleanUpProject(IEditorPart editor) throws CoreException {
 		this.project.refresh();
-		boolean fileOpen = false;
+		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageNameAsName).getCompilationUnits();
+		boolean anyFileOpen = false;
 
-		//prevent Organize Imports Problems
-		if (editor.getTitle().equals(this.temporaryOutputFile)) {
-			fileOpen = true;
-			Utils.closeEditor(editor);
+		if(editor == null && generatedCUnits[0].getResource().getType() == IResource.FILE) {
+			    IFile genClass = (IFile) generatedCUnits[0].getResource();
+				IDE.openEditor(Utils.getCurrentlyOpenPage(), genClass);
+				editor = Utils.getCurrentlyOpenPage().getActiveEditor();
+				anyFileOpen = true;
 		}
 
 		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
 		final FormatAllAction faa = new FormatAllAction(editor.getSite());
-		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageNameAsName).getCompilationUnits();
 		faa.runOnMultiple(generatedCUnits);
 		organizeImportsActionForAllFilesTouchedDuringGeneration.runOnMultiple(generatedCUnits);
 
-		if (fileOpen) {
-			final IFile outputFile = this.project.getIFile(this.temporaryOutputFile);
-			IDE.openEditor(Utils.getCurrentlyOpenPage(), outputFile);
+		if (anyFileOpen) {
+			Utils.closeEditor(editor);
 		}
+		
 		final ICompilationUnit openClass = JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor));
 		organizeImportsActionForAllFilesTouchedDuringGeneration.run(openClass);
 		faa.runOnMultiple(new ICompilationUnit[] { openClass });

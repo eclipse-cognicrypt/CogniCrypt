@@ -288,7 +288,7 @@ public class CrySLModelReader {
 				CryptSLRule rule = readRule(resAsFile);
 				if (rule != null) {
 					rules.add(rule);
-					File to = new File(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath() + Constants.innerFileSeparator
+					File to = new File(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath() + Constants.innerFileSeparator
 							+ rule.getClassName().substring(rule.getClassName().lastIndexOf(".") + 1) + Constants.cryslFileEnding);
 					try {
 						Files.copy(resAsFile, to);

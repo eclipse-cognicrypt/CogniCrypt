@@ -12,10 +12,13 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.OptionalInt;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -49,8 +52,13 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
+import org.ini4j.InvalidFileFormatException;
+import org.ini4j.Wini;
 import org.osgi.framework.Bundle;
+
 import com.google.common.base.CharMatcher;
+
+import crypto.analysis.CrySLRulesetSelector.RuleFormat;
 import crypto.cryptslhandler.CrySLModelReader;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
@@ -62,7 +70,6 @@ import de.cognicrypt.core.Constants;
 public class Utils {
 
 	private static IWorkbenchWindow window = null;
-	private static String defaultRulesPath = "resources/CrySLRules/JavaCryptographicArchitecture";
 
 	/**
 	 * This method checks if a project passed as parameter is a Java project or not.
@@ -325,6 +332,51 @@ public class Utils {
 
 		return null;
 	}
+	
+	/***
+ 	 * Returns parsed objects of resources/configuration.ini file.
+ 	 * @return Wini object
+ 	 */
+ 	public static Wini getConfig() {
+ 		Wini ini = null;
+ 		try {
+ 			ini = new Wini(getResourceFromWithin(Constants.CONFIG_FILE_PATH));
+ 		} catch (InvalidFileFormatException e) {
+ 			Activator.getDefault().logError("Could not read the configuration file due to: " + e.getMessage());
+ 		} catch (IOException e) {
+ 			Activator.getDefault().logError("Failed identifying configuration file due to: " + e.getMessage());
+ 		}
+ 		return ini;
+ 	}
+
+ 	/***
+ 	 * This method returns all sub-directories in a directory of the first level.
+ 	 * @param ruleSet JavaCryptographicArchitecture, BouncyCastle, Tink
+ 	 * @return array of version numbers
+ 	 */
+ 	public static String[] getRuleVersions(String ruleSet){
+ 		List<String> versions = new ArrayList<String>();
+ 		File path = new File(System.getProperty("user.dir") + File.separator + ruleSet);
+ 		File[] innerDirs = path.listFiles();
+ 		for (File f: innerDirs) {
+ 			if (f.isDirectory()) {
+ 				String[] versionNumber = f.getPath().split(Matcher.quoteReplacement(System.getProperty("file.separator")));
+ 				versions.add(versionNumber[versionNumber.length - 1]);
+ 			}
+ 		}
+
+ 		versions.sort(new Comparator<String>() {
+ 			@Override
+ 			public int compare(String o1, String o2) {
+ 				Double one = Double.valueOf(o1);
+ 				Double two = Double.valueOf(o2);
+ 				return one.compareTo(two);
+ 			}
+ 		});
+
+ 		// https://shipilev.net/blog/2016/arrays-wisdom-ancients/
+ 		return versions.toArray(new String[0]);
+ 	}
 
 	protected static void setWindow(final IWorkbenchWindow activeWorkbenchWindow) {
 		Utils.window = activeWorkbenchWindow;
@@ -351,16 +403,16 @@ public class Utils {
 	 * @throws MalformedURLException
 	 */
 	public static CryptSLRule getCryptSLRule(String cryptslRule) throws MalformedURLException {
-		File ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR + "/" + cryptslRule + ".cryptsl", de.cognicrypt.core.Activator.PLUGIN_ID);
+		File ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + "/" + cryptslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
 		if (ruleRes == null || !ruleRes.exists() || !ruleRes.canRead()) {
-			ruleRes = Utils.getResourceFromWithin(defaultRulesPath + "/" + cryptslRule + ".cryptsl", de.cognicrypt.core.Activator.PLUGIN_ID);
+			ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + "/" + cryptslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
 		}
 		return (new CrySLModelReader()).readRule(ruleRes);
 	}
 
 	public static List<CryptSLRule> readCrySLRules() {
-		return Stream.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR).getAbsolutePath()),
-				readCrySLRules(Utils.getResourceFromWithin(defaultRulesPath).getAbsolutePath())).flatMap(Collection::stream).collect(Collectors.toList());
+		return Stream.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getAbsolutePath()),
+				readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getAbsolutePath())).flatMap(Collection::stream).collect(Collectors.toList());
 	}
 
 	protected static List<CryptSLRule> readCrySLRules(String rulesFolder) {

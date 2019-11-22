@@ -86,7 +86,7 @@ public class ArtifactUtils {
 			// Used String[] instead of String to resolve "Local Variable Defined in an Enclosing Scope Must be Final or Effectively Final" error
 			String[] groupId = new String[1];
 			String[] artifactId = new String[1];
-			Double minVersion = minRuleVersion[0];
+			Double minVersion = minRuleVersion.length > 0 ? minRuleVersion[0] : 0.0;
 
 			URL rulesetUrl = new URL(pathToMetadataFile);
 

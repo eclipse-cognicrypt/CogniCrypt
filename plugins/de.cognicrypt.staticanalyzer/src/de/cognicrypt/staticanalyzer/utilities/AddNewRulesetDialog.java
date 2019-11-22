@@ -13,10 +13,8 @@ import org.eclipse.swt.widgets.Text;
 
 public class AddNewRulesetDialog extends TitleAreaDialog {
 
-    private Text txtRulesetName;
     private Text txtRulesetUrl;
 
-    private String rulesetName;
     private String rulesetUrl;
 
     public AddNewRulesetDialog(Shell parentShell) {
@@ -27,7 +25,7 @@ public class AddNewRulesetDialog extends TitleAreaDialog {
     public void create() {
         super.create();
         setTitle("Add new ruleset");
-        setMessage("Please enter the name and url of the ruleset", IMessageProvider.INFORMATION);
+        setMessage("Please enter the url of the ruleset", IMessageProvider.INFORMATION);
     }
 
     @Override
@@ -38,24 +36,11 @@ public class AddNewRulesetDialog extends TitleAreaDialog {
         GridLayout layout = new GridLayout(2, false);
         container.setLayout(layout);
 
-        createRulesetName(container);
         createRulesetUrl(container);
 
         return area;
     }
-
-    private void createRulesetName(Composite container) {
-        Label lbtRulesetName = new Label(container, SWT.NONE);
-        lbtRulesetName.setText("Name");
-
-        GridData dataRulesetName = new GridData();
-        dataRulesetName.grabExcessHorizontalSpace = true;
-        dataRulesetName.horizontalAlignment = GridData.FILL;
-
-        txtRulesetName = new Text(container, SWT.BORDER);
-        txtRulesetName.setLayoutData(dataRulesetName);
-    }
-
+    
     private void createRulesetUrl(Composite container) {
         Label lbtRulesetUrl = new Label(container, SWT.NONE);
         lbtRulesetUrl.setText("Url");
@@ -75,7 +60,6 @@ public class AddNewRulesetDialog extends TitleAreaDialog {
     // save content of the Text fields because they get disposed
     // as soon as the Dialog closes
     private void saveInput() {
-        rulesetName = txtRulesetName.getText();
         rulesetUrl = txtRulesetUrl.getText();
 
     }
@@ -84,10 +68,6 @@ public class AddNewRulesetDialog extends TitleAreaDialog {
     protected void okPressed() {
         saveInput();
         super.okPressed();
-    }
-
-    public String getRulesetName() {
-        return rulesetName;
     }
 
     public String getRulesetUrl() {

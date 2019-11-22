@@ -579,11 +579,7 @@ public class Constants {
  	public static final String TABLE_HEADER_RULES = "Rules";
  	public static final String TABLE_HEADER_VERSION = "Version";
  	public static final String TABLE_HEADER_URL = "URL";
-
- 	public static final String JCA_TABLE_ITEM = "Java Cryptographic Architecture";
- 	public static final String BC_TABLE_ITEM = "Bouncy Castle";
- 	public static final String TINK_TABLE_ITEM = "Tink";
-
+ 	
  	public static final Double MIN_JCA_RULE_VERSION = 1.1;
  	public static final Double MIN_BC_RULE_VERSION = 0.6;
  	public static final Double MIN_TINK_RULE_VERSION = 0.2;

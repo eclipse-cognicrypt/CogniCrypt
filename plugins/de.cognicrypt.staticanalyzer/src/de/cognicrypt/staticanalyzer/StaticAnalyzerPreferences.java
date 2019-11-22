@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -71,9 +72,9 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private List<Ruleset> listOfRulesets = new ArrayList<Ruleset>() {
  		private static final long serialVersionUID = 1L;
  		{
- 			add(new Ruleset(Constants.JCA_TABLE_ITEM, ini.get(Constants.INI_JCA_NEXUS), true));
- 			add(new Ruleset(Constants.BC_TABLE_ITEM, ini.get(Constants.INI_BC_NEXUS)));
- 			add(new Ruleset(Constants.TINK_TABLE_ITEM, ini.get(Constants.INI_TINK_NEXUS)));
+ 			add(new Ruleset(ini.get(Constants.INI_JCA_NEXUS), true));
+ 			add(new Ruleset(ini.get(Constants.INI_BC_NEXUS)));
+ 			add(new Ruleset(ini.get(Constants.INI_TINK_NEXUS)));
  		}
  	};
 
@@ -116,7 +117,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
  		TableEditor editor = new TableEditor(table.getTable());
  		TableItem rulesRow = new TableItem(table.getTable(), SWT.NONE);
- 		rulesRow.setText(0, ruleset.getGivenName());
+ 		rulesRow.setText(0, ruleset.getFolderName());
  		editor.grabHorizontal = true;
  		editor.setEditor(ruleset.getVersions(), rulesRow, 1);
  		rulesRow.setText(2, ruleset.getUrl());
@@ -141,9 +142,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
  				String[] keys = subPref.keys();
  				for (String key : keys) {
  					switch (key) {
- 					case "GivenName":
- 						loadedRuleset.setGivenName(subPref.get(key, ""));
- 						break;
  					case "FolderName":
  						loadedRuleset.setFolderName(subPref.get(key, ""));
  						break;
@@ -254,7 +252,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
  					for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
  						Ruleset ruleset = (Ruleset) itr.next();
- 						if (item.getText(0) == ruleset.getGivenName())
+ 						if (item.getText(0) == ruleset.getFolderName())
  							ruleset.setChecked(item.getChecked());
  					}
  				}
@@ -286,17 +284,34 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	}
 	
 	protected void addNewRuleset() {
- 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
- 		AddNewRulesetDialog dialog = new AddNewRulesetDialog(window.getShell());
- 		dialog.create();
- 		if (dialog.open() == Window.OK) {
- 			if(ArtifactUtils.downloadRulesets(dialog.getRulesetUrl()))
- 				Activator.getDefault().logInfo("Rulesets updated.");
- 			Ruleset newRuleset = new Ruleset(dialog.getRulesetName(), dialog.getRulesetUrl());
- 			modifyRulesTable(newRuleset);
- 			listOfRulesets.add(newRuleset);
- 		}
- 	}
+		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		AddNewRulesetDialog dialog = new AddNewRulesetDialog(window.getShell());
+		dialog.create();
+		if (dialog.open() == Window.OK) {
+			if(ifExists(dialog.getRulesetUrl())) {
+				MessageDialog.openError(window.getShell(), "Duplicate Ruleset", "You are trying to add an existing ruleset!");
+				return;
+			}
+			else {
+				if(ArtifactUtils.downloadRulesets(dialog.getRulesetUrl())) {
+					Activator.getDefault().logInfo("Rulesets updated.");
+				}
+				Ruleset newRuleset = new Ruleset(dialog.getRulesetUrl());
+				modifyRulesTable(newRuleset);
+				listOfRulesets.add(newRuleset);
+			}
+		}
+	}
+	
+	boolean ifExists(String url) {
+		List<Ruleset> existingRulesets = getRulesetsFromPrefs();
+		for (Ruleset ruleset : existingRulesets) {
+			if(ruleset.getUrl().equals(url)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	private void initializeAdvancedValues() {
 		int currentCG = preferences.getInt(Constants.CALL_GRAPH_SELECTION);
@@ -447,7 +462,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
  			Preferences subPref = rulePreferences.node(ruleset.getFolderName());
  			subPref.putBoolean("CheckboxState", ruleset.isChecked());
  			subPref.put("FolderName", ruleset.getFolderName());
- 			subPref.put("GivenName", ruleset.getGivenName());
  			subPref.put("SelectedVersion", ruleset.getSelectedVersion());
  			subPref.put("Url", ruleset.getUrl());
  		}

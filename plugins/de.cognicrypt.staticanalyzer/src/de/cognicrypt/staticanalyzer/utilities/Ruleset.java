@@ -6,17 +6,12 @@ import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
 public class Ruleset {
-	private String givenName;
 	private String url;
 	private String folderName;
 	private CCombo versions;
 	private String selectedVersion = "";
 	private boolean isChecked = false;
 	private TableItem rulesRow;
-
-	public Ruleset(String gname) {
-		this.givenName = gname;
-	}
 	
 	public Ruleset(Preferences subPrefs) throws BackingStoreException {
 		String[] keys = subPrefs.keys();
@@ -31,9 +26,6 @@ public class Ruleset {
 				case "FolderName":
 					this.folderName = subPrefs.get(key, "");
 					break;
-				case "GivenName":
-					this.givenName = subPrefs.get(key, "");
-					break;
 				case "Url":
 					this.url = subPrefs.get(key, "");
 					break;
@@ -43,25 +35,15 @@ public class Ruleset {
 		}
 	}
 
-	public Ruleset(String gname, String url) {
-		this.givenName = gname;
+	public Ruleset(String url) {
 		this.folderName = url.substring(url.lastIndexOf('/') + 1);
 		this.url = url;
 	}
 
-	public Ruleset(String gname, String url, boolean checked) {
-		this.givenName = gname;
+	public Ruleset(String url, boolean checked) {
 		this.folderName = url.substring(url.lastIndexOf('/') + 1);
 		this.url = url;
 		this.isChecked = checked;
-	}
-	
-	public String getGivenName() {
-		return givenName;
-	}
-
-	public void setGivenName(String givenName) {
-		this.givenName = givenName;
 	}
 
 	public String getUrl() {

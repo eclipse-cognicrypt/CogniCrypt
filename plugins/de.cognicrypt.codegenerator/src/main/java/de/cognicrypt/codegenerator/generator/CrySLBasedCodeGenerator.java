@@ -777,13 +777,14 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		String appendix = currentInvokedMethod.substring(currentInvokedMethod.indexOf(")"), currentInvokedMethod.length());
 		List<Entry<String, String>> parametersOfUseMethod = new ArrayList<Entry<String, String>>();
 		List<Entry<String, String>> declaredVariables = useMethod.getDeclaredVariables();
-
+		List<CodeGenCrySLObject> reqPars = rule.getRequiredPars();
+		
 		for (Entry<String, String> parameter : parametersOfCall) {
 			boolean inTemplate = false;
 
-			for (CodeGenCrySLObject par : rule.getRequiredPars()) {
+			for (CodeGenCrySLObject par : reqPars) {
 				if (methodNamdResultAssignment
-					.endsWith(par.getMethod()) && (Utils.isSubType(par.getJavaType(), parameter.getValue()) || Utils.isSubType(parameter.getValue(), par.getJavaType()))) {
+					.endsWith(par.getMethod()) && par.getCrySLVariable().equals(parameter.getKey())) {
 					methodParameter = methodParameter.replace(parameter.getKey(), par.getVarName());
 					updateToBeEnsured(new SimpleEntry<String, String>(par.getVarName(), parameter.getValue()));
 					inTemplate = true;
@@ -797,12 +798,8 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			Optional<Entry<CryptSLPredicate, Entry<CryptSLRule, CryptSLRule>>> entry = predicateConnections.stream().filter(
 				e -> Utils.isSubType(e.getValue().getValue().getClassName(), rule.getClassName()) || Utils.isSubType(rule.getClassName(), e.getValue().getValue().getClassName()))
 				.findFirst();
-			CryptSLObject cryptSLObject = null;
 			if (entry.isPresent()) {
-				cryptSLObject = (CryptSLObject) entry.get().getKey().getParameters().get(0);
-			}
-
-			if (cryptSLObject != null) {
+				final CryptSLObject cryptSLObject = (CryptSLObject) entry.get().getKey().getParameters().get(0);
 				if (!"this".equals(cryptSLObject.getVarName())) {
 					if ((Utils.isSubType(cryptSLObject.getJavaType(), parameter.getValue()) || Utils.isSubType(parameter.getValue(), cryptSLObject.getJavaType()))) {
 						methodParameter = methodParameter.replace(parameter.getKey(), cryptSLObject.getVarName());
@@ -816,24 +813,20 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			if (declaredVariables.size() > index) {
 				tmpVariables.add(declaredVariables.get(declaredVariables.size() - 1));
 			}
-			tmpVariables.addAll(declaredVariables.subList(0, index));
+			for (Entry<String, String> declVar : declaredVariables.subList(0, index)) {
+				if (reqPars.parallelStream().noneMatch(e -> e.getVarName().equals(declVar.getKey()))) {
+					tmpVariables.add(declVar);
+				}
+			}
 			List<Entry<String, String>> declVariables = declaredVariables.subList(index, declaredVariables.size());
 			Collections.reverse(declVariables);
 			tmpVariables.addAll(declVariables);
 
 			Optional<Entry<String, String>> typeMatch = tmpVariables.stream()
-				.filter(e -> Utils.isSubType(e.getValue(), parameter.getValue()) || Utils.isSubType(parameter.getValue(), e.getValue())).findFirst();
+				.filter(e -> (Utils.isSubType(e.getValue(), parameter.getValue()) || Utils.isSubType(parameter.getValue(), e.getValue()))).findFirst();
 			if (typeMatch.isPresent()) {
 				updateToBeEnsured(typeMatch.get());
 				methodParameter = methodParameter.replace(parameter.getKey(), typeMatch.get().getKey());
-				continue;
-			}
-
-			Optional<CodeGenCrySLObject> parMatch = rule.getRequiredPars().parallelStream()
-				.filter(e -> Utils.isSubType(parameter.getValue(), e.getJavaType()) || Utils.isSubType(e.getJavaType(), parameter.getValue())).findFirst();
-			if (parMatch.isPresent()) {
-				updateToBeEnsured(new SimpleEntry<String, String>(parMatch.get().getVarName(), parMatch.get().getJavaType()));
-				methodParameter = methodParameter.replace(parameter.getKey(), parMatch.get().getVarName());
 				continue;
 			}
 

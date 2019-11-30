@@ -410,7 +410,7 @@ public class Utils {
 		String srcFormat = RuleFormat.SOURCE.toString();
 		File ruleRes = new File(System.getProperty("user.dir") + slash + defaultRuleset + slash + latestVersion + slash + defaultRuleset + slash + cryptslRule + srcFormat);
 		if (ruleRes == null || !ruleRes.exists() || !ruleRes.canRead()) {
-			ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + "/" + cryptslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
+			ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + slash + cryptslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
 		}
 		return (new CrySLModelReader()).readRule(ruleRes);
 	}

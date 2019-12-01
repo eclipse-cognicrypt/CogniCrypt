@@ -34,7 +34,7 @@ import boomerang.jimple.Val;
 import boomerang.results.ForwardBoomerangResults;
 import crypto.analysis.AnalysisSeedWithSpecification;
 import crypto.analysis.CrySLAnalysisListener;
-import crypto.analysis.EnsuredCryptSLPredicate;
+import crypto.analysis.EnsuredCrySLPredicate;
 import crypto.analysis.IAnalysisSeed;
 import crypto.analysis.errors.AbstractError;
 import crypto.analysis.errors.ConstraintError;
@@ -48,7 +48,7 @@ import crypto.analysis.errors.TypestateError;
 import crypto.extractparameter.CallSiteWithParamIndex;
 import crypto.extractparameter.ExtractedValue;
 import crypto.interfaces.ISLConstraint;
-import crypto.rules.CryptSLPredicate;
+import crypto.rules.CrySLPredicate;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.Severities;
 import de.cognicrypt.staticanalyzer.Activator;
@@ -409,9 +409,9 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	@Override
-	public void ensuredPredicates(final Table<Statement, Val, Set<EnsuredCryptSLPredicate>> existingPredicates,
-			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates,
-			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {
+	public void ensuredPredicates(final Table<Statement, Val, Set<EnsuredCrySLPredicate>> existingPredicates,
+			final Table<Statement, IAnalysisSeed, Set<CrySLPredicate>> expectedPredicates,
+			final Table<Statement, IAnalysisSeed, Set<CrySLPredicate>> missingPredicates) {
 	}
 
 	@Override

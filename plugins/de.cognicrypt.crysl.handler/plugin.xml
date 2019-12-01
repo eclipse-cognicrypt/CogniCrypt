@@ -56,7 +56,7 @@
                                     type="org.eclipse.core.resources.IResource">
                                  <test
                                        property="org.eclipse.core.resources.extension"
-                                       value="cryptsl">
+                                       value="crysl">
                                  </test>
                               </adapt>
                            </iterate>

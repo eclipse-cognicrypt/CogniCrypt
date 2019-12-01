@@ -10,9 +10,9 @@
 
 package de.cognicrypt.codegenerator.generator;
 
-import crypto.rules.CryptSLObject;
+import crypto.rules.CrySLObject;
 
-public class CodeGenCrySLObject extends CryptSLObject {
+public class CodeGenCrySLObject extends CrySLObject {
 
 	private final String crySLVariable;
 	private String method = "";
@@ -23,7 +23,7 @@ public class CodeGenCrySLObject extends CryptSLObject {
 		this.crySLVariable = crySLVariable;
 	}
 
-	public CodeGenCrySLObject(CryptSLObject obj, String crySLVariable) {
+	public CodeGenCrySLObject(CrySLObject obj, String crySLVariable) {
 		this(obj.getVarName(), obj.getJavaType(), crySLVariable);
 	}
 

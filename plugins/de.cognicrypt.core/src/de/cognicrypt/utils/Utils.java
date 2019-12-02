@@ -403,14 +403,11 @@ public class Utils {
 	 * @throws MalformedURLException
 	 */
 	public static CryptSLRule getCryptSLRule(String cryptslRule) throws MalformedURLException {
-		String defaultRuleset = Constants.Rules.JavaCryptographicArchitecture.toString();
-		String[] versionRules = getRuleVersions(defaultRuleset);
-		String latestVersion = versionRules[versionRules.length - 1];
-		String slash = File.separator;
-		String srcFormat = RuleFormat.SOURCE.toString();
-		File ruleRes = new File(System.getProperty("user.dir") + slash + defaultRuleset + slash + latestVersion + slash + defaultRuleset + slash + cryptslRule + srcFormat);
+		File ruleRes = new File(Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + 
+								getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString())[getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString()).length - 1] + 
+								Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + cryptslRule + RuleFormat.SOURCE.toString());
 		if (ruleRes == null || !ruleRes.exists() || !ruleRes.canRead()) {
-			ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + slash + cryptslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
+			ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + Constants.innerFileSeparator + cryptslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
 		}
 		return (new CrySLModelReader()).readRule(ruleRes);
 	}

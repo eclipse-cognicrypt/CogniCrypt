@@ -2,7 +2,7 @@
 <feature
       id="de.cognicrypt.core.feature"
       label="CogniCrypt Core"
-      version="2.0.0.qualifier"
+      version="1.0.0.qualifier"
       provider-name="Technical University Darmstadt; Paderborn University">
 
    <description url="https://cognicrypt.de">

@@ -8,33 +8,39 @@ package de.cognicrypt.staticanalyzer.sootbridge;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.osgi.service.prefs.BackingStoreException;
+import org.osgi.service.prefs.Preferences;
+
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
 import boomerang.callgraph.ObservableDynamicICFG;
 import boomerang.callgraph.ObservableICFG;
 import boomerang.preanalysis.BoomerangPretransformer;
+import crypto.analysis.CrySLRulesetSelector.RuleFormat;
 import crypto.analysis.CryptoScanner;
 import crypto.rules.CryptSLRule;
 import crypto.rules.CryptSLRuleReader;
@@ -42,6 +48,7 @@ import de.cognicrypt.core.Constants;
 import de.cognicrypt.crysl.reader.CrySLModelReader;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
+import de.cognicrypt.staticanalyzer.utilities.Ruleset;
 import de.cognicrypt.utils.Utils;
 import soot.G;
 import soot.PackManager;
@@ -87,6 +94,9 @@ public class SootRunner {
 		
 		List<CryptSLRule> rules = Lists.newArrayList();
 		// TODO Select rules according to selected rulesets in preference page. The CrySL rules for each ruleset are in a separate subdirectory of "/resources/CrySLRules/".
+		Set<String> readRules = Sets.newHashSet();
+ 		IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
+ 		
 		try {
 			CrySLModelReader r = new CrySLModelReader(project);
 			for (String path : projectClassPath(JavaCore.create(project))) {
@@ -100,11 +110,46 @@ public class SootRunner {
 				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
-
-			rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin("/resources/CrySLRules/").getPath()), Integer.MAX_VALUE, (file, attr) -> file.toString().endsWith(".cryptsl"))
-					.map(path -> {
-							return r.readRule(path.toFile());
-					}).collect(Collectors.toList()));
+			
+			if (prefStore.getBoolean(Constants.SELECT_CUSTOM_RULES)) {
+ 				Activator.getDefault().logInfo("Loading custom rules.");
+ 				rules.addAll(Files
+ 						.find(Paths.get(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getPath()), 
+ 								Integer.MAX_VALUE,
+ 								(file, attr) -> file.toString().endsWith(RuleFormat.SOURCE.toString()))
+ 						.map(path -> {
+ 								readRules.add(path.getFileName().toString());
+ 								return CryptSLRuleReader.readFromSourceFile(path.toFile());
+ 						}).collect(Collectors.toList()));
+ 			}
+			
+			Preferences prefs = InstanceScope.INSTANCE.getNode(de.cognicrypt.core.Activator.PLUGIN_ID);
+ 			try {
+ 				String[] listOfNodes = prefs.childrenNames();
+ 				for (String currentNode : listOfNodes) {
+ 					Preferences subPref = prefs.node(currentNode);
+ 					Ruleset loadedRuleset = new Ruleset(subPref);
+ 					if (loadedRuleset.isChecked()) {
+ 						String folderPath = Constants.ECLIPSE_RULES_DIR + File.separator + loadedRuleset.getFolderName() + 
+ 								File.separator + loadedRuleset.getSelectedVersion();
+ 						rules.addAll(Files
+ 								.find(Paths.get(new File(folderPath).getPath()), Integer.MAX_VALUE,
+ 										(file, attr) -> { 
+ 											if (file.toString().endsWith(RuleFormat.SOURCE.toString()) && 
+ 													!readRules.contains(file.getFileName().toString())) {
+ 												return true;
+ 											}
+ 											return false;
+ 										})
+ 								.map(path -> {
+ 										return r.readRule(path.toFile());
+ 								}).collect(Collectors.toList()));
+ 					}
+ 				}
+ 			} catch (BackingStoreException e) {
+ 				e.printStackTrace();
+ 			}
+ 			
 		}
 		catch (IOException | CoreException e) {
 			Activator.getDefault().logError(e, "Could not load CrySL Rules");

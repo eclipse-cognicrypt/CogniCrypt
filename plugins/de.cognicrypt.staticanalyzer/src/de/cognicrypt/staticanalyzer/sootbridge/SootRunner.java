@@ -126,47 +126,25 @@ public class SootRunner {
 			Preferences prefs = InstanceScope.INSTANCE.getNode(de.cognicrypt.core.Activator.PLUGIN_ID);
  			try {
  				String[] listOfNodes = prefs.childrenNames();
- 				if (listOfNodes.length > 0) {
-	 				for (String currentNode : listOfNodes) {
-	 					Preferences subPref = prefs.node(currentNode);
-	 					Ruleset loadedRuleset = new Ruleset(subPref);
-	 					if (loadedRuleset.isChecked()) {
-	 						String folderPath = Constants.ECLIPSE_RULES_DIR + File.separator + loadedRuleset.getFolderName() + 
-	 								File.separator + loadedRuleset.getSelectedVersion();
-	 						rules.addAll(Files
-	 								.find(Paths.get(new File(folderPath).getPath()), Integer.MAX_VALUE,
-	 										(file, attr) -> { 
-	 											if (file.toString().endsWith(RuleFormat.SOURCE.toString()) && 
-	 													!readRules.contains(file.getFileName().toString())) {
-	 												return true;
-	 											}
-	 											return false;
-	 										})
-	 								.map(path -> {
-	 										return r.readRule(path.toFile());
-	 								}).collect(Collectors.toList()));
-	 					}
-	 				}
- 				} else {
- 					//This block is executed only for the first run of the plugin as the
- 					//preference file will not be generated. Once the user has saved his 
- 					//preferences, this block will not be executed. This block fetches the latest JCA rules.
- 					String[] jcaVersions = Utils.getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString());
- 					String jcaFolderPath = Constants.ECLIPSE_RULES_DIR + File.separator + Constants.Rules.JavaCryptographicArchitecture.toString() + 
-								File.separator + jcaVersions[jcaVersions.length - 1];
- 					rules.addAll(Files
-								.find(Paths.get(new File(jcaFolderPath).getPath()), Integer.MAX_VALUE,
-										(file, attr) -> { 
-											if (file.toString().endsWith(RuleFormat.SOURCE.toString()) && 
-													!readRules.contains(file.getFileName().toString())) {
-												return true;
-											}
-											return false;
-										})
-								.map(path -> {
-										return r.readRule(path.toFile());
-								}).collect(Collectors.toList()));
- 					Activator.getDefault().logInfo("Loaded latest JCA rules");
+ 				for (String currentNode : listOfNodes) {
+ 					Preferences subPref = prefs.node(currentNode);
+ 					Ruleset loadedRuleset = new Ruleset(subPref);
+ 					if (loadedRuleset.isChecked()) {
+ 						String folderPath = Constants.ECLIPSE_RULES_DIR + File.separator + loadedRuleset.getFolderName() + 
+ 								File.separator + loadedRuleset.getSelectedVersion();
+ 						rules.addAll(Files
+ 								.find(Paths.get(new File(folderPath).getPath()), Integer.MAX_VALUE,
+ 										(file, attr) -> { 
+ 											if (file.toString().endsWith(RuleFormat.SOURCE.toString()) && 
+ 													!readRules.contains(file.getFileName().toString())) {
+ 												return true;
+ 											}
+ 											return false;
+ 										})
+ 								.map(path -> {
+ 										return r.readRule(path.toFile());
+ 								}).collect(Collectors.toList()));
+ 					}
  				}
  			} catch (BackingStoreException e) {
  				e.printStackTrace();

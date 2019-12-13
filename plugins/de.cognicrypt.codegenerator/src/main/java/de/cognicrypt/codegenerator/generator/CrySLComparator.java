@@ -12,10 +12,10 @@ package de.cognicrypt.codegenerator.generator;
 
 import java.util.Comparator;
 
-import crypto.rules.CryptSLRule;
+import crypto.rules.CrySLRule;
 import de.cognicrypt.utils.Utils;
 
-public class CrySLComparator implements Comparator<CryptSLRule> {
+public class CrySLComparator implements Comparator<CrySLRule> {
 
 	RuleDependencyTree rdt;
 
@@ -24,7 +24,7 @@ public class CrySLComparator implements Comparator<CryptSLRule> {
 	}
 
 	@Override
-	public int compare(CryptSLRule left, CryptSLRule right) {
+	public int compare(CrySLRule left, CrySLRule right) {
 		if (rdt.hasPath(left, right)) {
 			return -1;
 		} else if (rdt.hasPath(right, left)) {

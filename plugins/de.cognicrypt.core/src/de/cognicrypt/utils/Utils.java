@@ -59,9 +59,9 @@ import org.osgi.framework.Bundle;
 import com.google.common.base.CharMatcher;
 
 import crypto.analysis.CrySLRulesetSelector.RuleFormat;
-import crypto.cryptslhandler.CrySLModelReader;
-import crypto.rules.CryptSLRule;
-import crypto.rules.CryptSLRuleReader;
+import crypto.cryslhandler.CrySLModelReader;
+import crypto.rules.CrySLRule;
+import crypto.rules.CrySLRuleReader;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
 import de.cognicrypt.core.Activator;
@@ -396,29 +396,30 @@ public class Utils {
 	}
 
 	/**
-	 * Returns the cryptsl rule with the name that is defined by the method parameter cryptslRule.
+	 * Returns the crysl rule with the name that is defined by the method parameter cryslRule.
 	 * 
-	 * @param cryptslRule Name of cryptsl rule that should by returend.
-	 * @return Returns the cryptsl rule with the name that is defined by the parameter cryptslRule.
+	 * @param cryslRule Name of crysl rule that should by returend.
+	 * @return Returns the crysl rule with the name that is defined by the parameter cryslRule.
 	 * @throws MalformedURLException
 	 */
-	public static CryptSLRule getCryptSLRule(String cryptslRule) throws MalformedURLException {
+
+	public static CrySLRule getCrySLRule(String cryslRule) throws MalformedURLException {
 		File ruleRes = new File(Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + 
 								getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString())[getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString()).length - 1] + 
-								Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + cryptslRule + RuleFormat.SOURCE.toString());
+								Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + cryslRule + RuleFormat.SOURCE.toString());
 		if (ruleRes == null || !ruleRes.exists() || !ruleRes.canRead()) {
-			ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + Constants.innerFileSeparator + cryptslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
+			ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + Constants.innerFileSeparator + cryslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
 		}
 		return (new CrySLModelReader()).readRule(ruleRes);
 	}
 
-	public static List<CryptSLRule> readCrySLRules() {
+	public static List<CrySLRule> readCrySLRules() {
 		return Stream.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getAbsolutePath()),
 				readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getAbsolutePath())).flatMap(Collection::stream).collect(Collectors.toList());
 	}
 
-	protected static List<CryptSLRule> readCrySLRules(String rulesFolder) {
-		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
+	protected static List<CrySLRule> readCrySLRules(String rulesFolder) {
+		List<CrySLRule> rules = new ArrayList<CrySLRule>();
 
 		for (File rule : (new File(rulesFolder)).listFiles()) {
 			if (rule.isDirectory()) {
@@ -426,7 +427,7 @@ public class Utils {
 				continue;
 			}
 
-			CryptSLRule readFromSourceFile = CryptSLRuleReader.readFromSourceFile(rule);
+			CrySLRule readFromSourceFile = CrySLRuleReader.readFromSourceFile(rule);
 			if (readFromSourceFile != null) {
 				rules.add(readFromSourceFile);
 			}

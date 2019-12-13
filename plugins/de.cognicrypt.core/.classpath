@@ -34,13 +34,24 @@
 	<classpathentry exported="true" kind="lib" path="lib/testCore.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/WPDS.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlpull.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zip4j.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/aether-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/aether-transport-file.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/aether-transport-http.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/httpclient.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ini4j.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="src" path="src/"/>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="tests"/>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

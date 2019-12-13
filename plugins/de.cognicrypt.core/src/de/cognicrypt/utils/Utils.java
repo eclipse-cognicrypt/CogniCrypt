@@ -402,10 +402,13 @@ public class Utils {
 	 * @return Returns the crysl rule with the name that is defined by the parameter cryslRule.
 	 * @throws MalformedURLException
 	 */
+
 	public static CrySLRule getCrySLRule(String cryslRule) throws MalformedURLException {
-		File ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + "/" + cryslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
+		File ruleRes = new File(Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + 
+								getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString())[getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString()).length - 1] + 
+								Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + cryslRule + RuleFormat.SOURCE.toString());
 		if (ruleRes == null || !ruleRes.exists() || !ruleRes.canRead()) {
-			ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + "/" + cryslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
+			ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + Constants.innerFileSeparator + cryslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
 		}
 		return (new CrySLModelReader()).readRule(ruleRes);
 	}

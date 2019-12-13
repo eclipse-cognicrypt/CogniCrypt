@@ -22,6 +22,11 @@ public class Constants {
 	public enum CodeGenerators {
 		XSL, CrySL
 	}
+	
+	public enum Rules {
+		JavaCryptographicArchitecture, BouncyCastle, Tink
+	}
+	
 	public enum Severities {
 		Error, Warning, Info, Ignored;
 

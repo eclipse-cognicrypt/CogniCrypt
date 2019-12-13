@@ -580,9 +580,9 @@ public class Constants {
  	public static final String TABLE_HEADER_VERSION = "Version";
  	public static final String TABLE_HEADER_URL = "URL";
  	
- 	public static final Double MIN_JCA_RULE_VERSION = 1.1;
- 	public static final Double MIN_BC_RULE_VERSION = 0.6;
- 	public static final Double MIN_TINK_RULE_VERSION = 0.2;
+ 	public static final Double MIN_JCA_RULE_VERSION = 1.4;
+ 	public static final Double MIN_BC_RULE_VERSION = 0.7;
+ 	public static final Double MIN_TINK_RULE_VERSION = 0.3;
 
  	//Configuration.ini keys
  	public static final String INI_URL_HEADER = "URLS";

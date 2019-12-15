@@ -16,17 +16,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IPackageDeclaration;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.w3c.dom.Node;
+
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
+
 import boomerang.BackwardQuery;
 import boomerang.Query;
 import boomerang.jimple.Statement;
@@ -93,7 +92,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	private boolean cgGenComplete;
 	private int work = 0;
 	private int tempWork = 0;
-	
+
 	private ResultsCCUIListener(final IProject curProj, final ErrorMarkerGenerator gen) {
 		this.currentProject = curProj;
 		this.markerGenerator = gen;
@@ -132,16 +131,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final int stmtId = error.hashCode();
 		HashMap<String, String> errorInfoMap = new HashMap<>();
 
-		ICompilationUnit javaFile = (ICompilationUnit) JavaCore.create(sourceFile);
-		String className = "";
-		try {
-			for (IPackageDeclaration decl : javaFile.getPackageDeclarations()) {
-				className += decl.getElementName() + ".";
-			}
-		} catch (JavaModelException e1) {
-		}
-		className += javaFile.getElementName().substring(0, javaFile.getElementName().lastIndexOf("."));
-		
+		String className = sourceFile.getName();
+
 		if (stat.getClassesAnalysed().containsKey(className)) {
 			AnalysisData data = stat.getClassesAnalysed().get(className);
 			data.addError(error);
@@ -197,7 +188,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		if (sev == Severities.Ignored) {
 			return;
 		}
-		
+
 		this.warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator + Constants.SUPPRESSWARNING_FILE;
 		final File warningsFile = new File(this.warningFilePath);
 

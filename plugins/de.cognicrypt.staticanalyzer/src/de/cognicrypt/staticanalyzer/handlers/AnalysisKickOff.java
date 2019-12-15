@@ -93,8 +93,10 @@ public class AnalysisKickOff {
 			return false;
 		}
 		
-		if(KotlinNature.hasKotlinNature(ip))
+		if(KotlinNature.hasKotlinNature(ip)) {
 			KotlinCompiler.compileKotlinFiles(javaProject);
+			Activator.getDefault().logInfo("Finished compiling kotlin source files");
+		}
 		
 		this.curProj = javaProject;
 		return true;

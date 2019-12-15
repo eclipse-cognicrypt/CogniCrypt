@@ -32,6 +32,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
@@ -122,21 +123,31 @@ public class Utils {
 			// As a result the above IPackageFragment.getCompilationUnits() doesn't return any kotlin .class files
 			if(KotlinNature.hasKotlinNature(currentProject)) {
 
+				// computing corresponding source filename, since in kotlin .class filename is changed
+				// Eg. Demo.kt is compiled to DemoKt.class
+				String[] temp = className.split("\\.");
+				String classFileName = temp[temp.length-1];
+				String srcFilename = "";
+				
+				if(classFileName.substring(classFileName.length()-2).equals("Kt")) {
+					srcFilename = classFileName.substring(0, classFileName.length()-2) + ".kt";
+				}
+				// because in some projects the class names aren't renamed
+				else
+					srcFilename = classFileName + ".kt";
+
 				for (final IPackageFragment l : JavaCore.create(currentProject).getPackageFragments()) {
-					// computing corresponding source filename, since in kotlin .class filename is changed
-					// Eg. Demo.kt is compiled to DemoKt.class
-					String[] temp = className.split("\\.");
-					String classFileName = temp[temp.length-1];
-					String srcFilename = classFileName.substring(0, classFileName.length()-2) + ".kt";
+					// this check is needed because IJavaProject.getPackageFragments() returns dependencies as well
+					if(l.getKind() == IPackageFragmentRoot.K_SOURCE) {
+						// removing the <project_name> from path returned by IPackageFragment.getPath() because IProject.getFile() also appends it
+						String[] originalPath = l.getPath().toString().split(File.separator);
+						String[] modifiedPath = Arrays.copyOfRange(originalPath, 2, originalPath.length);
+						String packageName = String.join(File.separator, modifiedPath);
 
-					// removing the <project_name> from path returned by IPackageFragment.getPath() because IProject.getFile() also appends it
-					String[] originalPath = l.getPath().toString().split(File.separator);
-					String[] modifiedPath = Arrays.copyOfRange(originalPath, 2, originalPath.length);
-					String packageName = String.join(File.separator, modifiedPath);
-
-					IFile sourceFile = currentProject.getFile(packageName + File.separator + srcFilename);
-					if(sourceFile.exists())
-						return (IResource) sourceFile;
+						IFile sourceFile = currentProject.getFile(packageName + File.separator + srcFilename);
+						if(sourceFile.exists())
+							return (IResource) sourceFile;
+					}
 				}
 			}
 		}

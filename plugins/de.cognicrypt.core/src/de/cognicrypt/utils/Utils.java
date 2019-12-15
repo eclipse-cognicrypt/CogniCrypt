@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -54,6 +55,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
+import org.jetbrains.kotlin.core.model.KotlinNature;
 import org.osgi.framework.Bundle;
 
 import com.google.common.base.CharMatcher;
@@ -113,6 +115,28 @@ public class Utils {
 					if (name.startsWith(className)) {
 						return cu.getCorrespondingResource();
 					}
+				}
+			}
+
+			// This part is required because Eclipse JDT doesn’t provide any mapping of kotlin light classes to its source code
+			// As a result the above IPackageFragment.getCompilationUnits() doesn't return any kotlin .class files
+			if(KotlinNature.hasKotlinNature(currentProject)) {
+
+				for (final IPackageFragment l : JavaCore.create(currentProject).getPackageFragments()) {
+					// computing corresponding source filename, since in kotlin .class filename is changed
+					// Eg. Demo.kt is compiled to DemoKt.class
+					String[] temp = className.split("\\.");
+					String classFileName = temp[temp.length-1];
+					String srcFilename = classFileName.substring(0, classFileName.length()-2) + ".kt";
+
+					// removing the <project_name> from path returned by IPackageFragment.getPath() because IProject.getFile() also appends it
+					String[] originalPath = l.getPath().toString().split(File.separator);
+					String[] modifiedPath = Arrays.copyOfRange(originalPath, 2, originalPath.length);
+					String packageName = String.join(File.separator, modifiedPath);
+
+					IFile sourceFile = currentProject.getFile(packageName + File.separator + srcFilename);
+					if(sourceFile.exists())
+						return (IResource) sourceFile;
 				}
 			}
 		}
@@ -332,51 +356,51 @@ public class Utils {
 
 		return null;
 	}
-	
+
 	/***
- 	 * Returns parsed objects of resources/configuration.ini file.
- 	 * @return Wini object
- 	 */
- 	public static Wini getConfig() {
- 		Wini ini = null;
- 		try {
- 			ini = new Wini(getResourceFromWithin(Constants.CONFIG_FILE_PATH));
- 		} catch (InvalidFileFormatException e) {
- 			Activator.getDefault().logError("Could not read the configuration file due to: " + e.getMessage());
- 		} catch (IOException e) {
- 			Activator.getDefault().logError("Failed identifying configuration file due to: " + e.getMessage());
- 		}
- 		return ini;
- 	}
+	 * Returns parsed objects of resources/configuration.ini file.
+	 * @return Wini object
+	 */
+	public static Wini getConfig() {
+		Wini ini = null;
+		try {
+			ini = new Wini(getResourceFromWithin(Constants.CONFIG_FILE_PATH));
+		} catch (InvalidFileFormatException e) {
+			Activator.getDefault().logError("Could not read the configuration file due to: " + e.getMessage());
+		} catch (IOException e) {
+			Activator.getDefault().logError("Failed identifying configuration file due to: " + e.getMessage());
+		}
+		return ini;
+	}
 
- 	/***
- 	 * This method returns all sub-directories in a directory of the first level.
- 	 * @param ruleSet JavaCryptographicArchitecture, BouncyCastle, Tink
- 	 * @return array of version numbers
- 	 */
- 	public static String[] getRuleVersions(String ruleSet){
- 		List<String> versions = new ArrayList<String>();
- 		File path = new File(System.getProperty("user.dir") + File.separator + ruleSet);
- 		File[] innerDirs = path.listFiles();
- 		for (File f: innerDirs) {
- 			if (f.isDirectory()) {
- 				String[] versionNumber = f.getPath().split(Matcher.quoteReplacement(System.getProperty("file.separator")));
- 				versions.add(versionNumber[versionNumber.length - 1]);
- 			}
- 		}
+	/***
+	 * This method returns all sub-directories in a directory of the first level.
+	 * @param ruleSet JavaCryptographicArchitecture, BouncyCastle, Tink
+	 * @return array of version numbers
+	 */
+	public static String[] getRuleVersions(String ruleSet){
+		List<String> versions = new ArrayList<String>();
+		File path = new File(System.getProperty("user.dir") + File.separator + ruleSet);
+		File[] innerDirs = path.listFiles();
+		for (File f: innerDirs) {
+			if (f.isDirectory()) {
+				String[] versionNumber = f.getPath().split(Matcher.quoteReplacement(System.getProperty("file.separator")));
+				versions.add(versionNumber[versionNumber.length - 1]);
+			}
+		}
 
- 		versions.sort(new Comparator<String>() {
- 			@Override
- 			public int compare(String o1, String o2) {
- 				Double one = Double.valueOf(o1);
- 				Double two = Double.valueOf(o2);
- 				return one.compareTo(two);
- 			}
- 		});
+		versions.sort(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				Double one = Double.valueOf(o1);
+				Double two = Double.valueOf(o2);
+				return one.compareTo(two);
+			}
+		});
 
- 		// https://shipilev.net/blog/2016/arrays-wisdom-ancients/
- 		return versions.toArray(new String[0]);
- 	}
+		// https://shipilev.net/blog/2016/arrays-wisdom-ancients/
+		return versions.toArray(new String[0]);
+	}
 
 	protected static void setWindow(final IWorkbenchWindow activeWorkbenchWindow) {
 		Utils.window = activeWorkbenchWindow;
@@ -404,8 +428,8 @@ public class Utils {
 	 */
 	public static CryptSLRule getCryptSLRule(String cryptslRule) throws MalformedURLException {
 		File ruleRes = new File(Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + 
-								getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString())[getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString()).length - 1] + 
-								Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + cryptslRule + RuleFormat.SOURCE.toString());
+				getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString())[getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString()).length - 1] + 
+				Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + cryptslRule + RuleFormat.SOURCE.toString());
 		if (ruleRes == null || !ruleRes.exists() || !ruleRes.canRead()) {
 			ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + Constants.innerFileSeparator + cryptslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
 		}
@@ -470,13 +494,13 @@ public class Utils {
 	public static boolean isIncompatibleJavaVersion(String javaVersion) {
 		return javaVersion == null || !javaVersion.startsWith("1.");
 	}
-	
+
 	/**
 	 * This method checks if a Collection is null or empty
 	 * @param c
 	 * @return 
 	 */
 	public static boolean isNullOrEmpty( final Collection< ? > c ) {
-	    return c == null || c.isEmpty();
+		return c == null || c.isEmpty();
 	}
 }

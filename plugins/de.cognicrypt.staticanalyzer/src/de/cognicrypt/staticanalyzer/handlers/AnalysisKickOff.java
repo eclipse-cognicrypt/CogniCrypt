@@ -17,6 +17,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.jetbrains.kotlin.core.compiler.KotlinCompiler;
+import org.jetbrains.kotlin.core.model.KotlinNature;
 
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
@@ -90,6 +92,10 @@ public class AnalysisKickOff {
 			Activator.getDefault().logInfo("JavaCore could not create IJavaProject for project " + ip.getName() + ".");
 			return false;
 		}
+		
+		if(KotlinNature.hasKotlinNature(ip))
+			KotlinCompiler.compileKotlinFiles(javaProject);
+		
 		this.curProj = javaProject;
 		return true;
 	}

@@ -11,6 +11,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
@@ -92,12 +93,14 @@ public class AnalysisKickOff {
 			Activator.getDefault().logInfo("JavaCore could not create IJavaProject for project " + ip.getName() + ".");
 			return false;
 		}
-		
-		if(KotlinNature.hasKotlinNature(ip)) {
-			KotlinCompiler.compileKotlinFiles(javaProject);
-			Activator.getDefault().logInfo("Finished compiling kotlin source files");
+
+		if(Platform.getBundle("org.jetbrains.kotlin.core") != null) {
+			if(KotlinNature.hasKotlinNature(ip)) {
+				KotlinCompiler.compileKotlinFiles(javaProject);
+				Activator.getDefault().logInfo("Finished compiling kotlin source files");
+			}
 		}
-		
+
 		this.curProj = javaProject;
 		return true;
 	}
@@ -110,7 +113,7 @@ public class AnalysisKickOff {
 			return;
 		if (Utils.isIncompatibleJavaVersion()) {
 			Activator.getDefault()
-					.logInfo("Analysis cancelled as the IDEs' java version is " + System.getProperty("java.version", "<JavaVersionNotFound>") + ", which is greater than 1.8.");
+			.logInfo("Analysis cancelled as the IDEs' java version is " + System.getProperty("java.version", "<JavaVersionNotFound>") + ", which is greater than 1.8.");
 			return;
 		}
 		final Job analysis = new Job(Constants.ANALYSIS_LABEL) {
@@ -130,16 +133,16 @@ public class AnalysisKickOff {
 					try {
 						Thread.sleep(1);
 					}	catch (final InterruptedException e) {}
-					
+
 					if(!monitorThread.isCgGen()) {
 						cgGen.setWorkRemaining(1000).split(1);
 						cgGen.setTaskName("Constructing call Graphs...");
-						}
+					}
 					else {
 						if(monitorThread.getProcessedSeeds()- curSeed !=0) {
-						curSeed = monitorThread.getProcessedSeeds();
-						subMonitor.split(monitorThread.getWorkUnitsCompleted()/2);
-						subMonitor.setTaskName("Completed "+monitorThread.getProcessedSeeds()+" of "+monitorThread.getTotalSeeds()+" seeds.");
+							curSeed = monitorThread.getProcessedSeeds();
+							subMonitor.split(monitorThread.getWorkUnitsCompleted()/2);
+							subMonitor.setTaskName("Completed "+monitorThread.getProcessedSeeds()+" of "+monitorThread.getTotalSeeds()+" seeds.");
 						}
 					}
 					if (monitor.isCanceled()) {

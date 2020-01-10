@@ -57,7 +57,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private Button secureObjectsCheckBox;
 	private Button analyseDependenciesCheckBox;
 	private Button addNewRulesetButton, selectCustomRulesCheckBox;
- 	private CheckboxTableViewer table;
+	private CheckboxTableViewer table;
 
 	private Combo CGSelection;
 	private Combo forbidden;
@@ -66,17 +66,17 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private Combo neverType;
 	private Combo incompleteOp;
 	private Combo typestate;
-	
+
 	private Section ini = Utils.getConfig().get(Constants.INI_URL_HEADER);
-	
+
 	private List<Ruleset> listOfRulesets = new ArrayList<Ruleset>() {
- 		private static final long serialVersionUID = 1L;
- 		{
- 			add(new Ruleset(ini.get(Constants.INI_JCA_NEXUS), true));
- 			add(new Ruleset(ini.get(Constants.INI_BC_NEXUS)));
- 			add(new Ruleset(ini.get(Constants.INI_TINK_NEXUS)));
- 		}
- 	};
+		private static final long serialVersionUID = 1L;
+		{
+			add(new Ruleset(ini.get(Constants.INI_JCA_NEXUS), true));
+			add(new Ruleset(ini.get(Constants.INI_BC_NEXUS)));
+			add(new Ruleset(ini.get(Constants.INI_TINK_NEXUS)));
+		}
+	};
 
 	@Override
 	public void compileBasicPreferences(Composite parent) {
@@ -106,131 +106,134 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		preferences.setDefault(Constants.ANALYSE_DEPENDENCIES, true);
 		preferences.setDefault(Constants.CALL_GRAPH_SELECTION, 0);
 	}
-	
+
 	/***
- 	 * This method creates a row for each of the rule set with a drop-down list of
- 	 * versions passed.
- 	 * 
- 	 * @param ruleset rule set to be added
- 	 */
- 	private void createRulesTableRow(Ruleset ruleset) {
+	 * This method creates a row for each of the rule set with a drop-down list of
+	 * versions passed.
+	 * 
+	 * @param ruleset rule set to be added
+	 */
+	private void createRulesTableRow(Ruleset ruleset) {
 
- 		TableEditor editor = new TableEditor(table.getTable());
- 		TableItem rulesRow = new TableItem(table.getTable(), SWT.NONE);
- 		rulesRow.setText(0, ruleset.getFolderName());
- 		editor.grabHorizontal = true;
- 		editor.setEditor(ruleset.getVersions(), rulesRow, 1);
- 		rulesRow.setText(2, ruleset.getUrl());
- 		rulesRow.setChecked(ruleset.isChecked());
- 		ruleset.setRulesRow(rulesRow);
- 	}
+		TableEditor editor = new TableEditor(table.getTable());
+		TableItem rulesRow = new TableItem(table.getTable(), SWT.NONE);
+		rulesRow.setText(0, ruleset.getFolderName());
+		editor.grabHorizontal = true;
+		editor.setEditor(ruleset.getVersions(), rulesRow, 1);
+		rulesRow.setText(2, ruleset.getUrl());
+		rulesRow.setChecked(ruleset.isChecked());
+		ruleset.setRulesRow(rulesRow);
+	}
 
- 	/**
- 	 * This method fetches the list of rule sets which are stored in preference file
- 	 * 
- 	 * @return list of rule sets
- 	 */
- 	private List<Ruleset> getRulesetsFromPrefs() {
- 		List<Ruleset> ruleSets = new ArrayList<Ruleset>();
+	/**
+	 * This method fetches the list of rule sets which are stored in preference file
+	 * 
+	 * @return list of rule sets
+	 */
+	private List<Ruleset> getRulesetsFromPrefs() {
+		List<Ruleset> ruleSets = new ArrayList<Ruleset>();
 
- 		try {
- 			String[] listOfNodes = rulePreferences.childrenNames();
+		try {
+			String[] listOfNodes = rulePreferences.childrenNames();
 
- 			for (String currentNode : listOfNodes) {
- 				Ruleset loadedRuleset = new Ruleset(currentNode);
- 				Preferences subPref = rulePreferences.node(currentNode);
- 				String[] keys = subPref.keys();
- 				for (String key : keys) {
- 					switch (key) {
- 					case "FolderName":
- 						loadedRuleset.setFolderName(subPref.get(key, ""));
- 						break;
- 					case "CheckboxState":
- 						loadedRuleset.setChecked(subPref.getBoolean(key, false));
- 						break;
- 					case "SelectedVersion":
- 						loadedRuleset.setSelectedVersion(subPref.get(key, ""));
- 						break;
- 					case "Url":
- 						loadedRuleset.setUrl(subPref.get(key, ""));
- 						break;
- 					default:
- 						break;
- 					}
- 				}
- 				ruleSets.add(loadedRuleset);
- 			}
- 		} catch (BackingStoreException e) {
- 			e.printStackTrace();
- 		}
- 		return ruleSets;
- 	}
+			for (String currentNode : listOfNodes) {
+				Ruleset loadedRuleset = new Ruleset(currentNode);
+				Preferences subPref = rulePreferences.node(currentNode);
+				String[] keys = subPref.keys();
+				for (String key : keys) {
+					switch (key) {
+					case "FolderName":
+						loadedRuleset.setFolderName(subPref.get(key, ""));
+						break;
+					case "CheckboxState":
+						loadedRuleset.setChecked(subPref.getBoolean(key, false));
+						break;
+					case "SelectedVersion":
+						loadedRuleset.setSelectedVersion(subPref.get(key, ""));
+						break;
+					case "Url":
+						loadedRuleset.setUrl(subPref.get(key, ""));
+						break;
+					default:
+						break;
+					}
+				}
+				ruleSets.add(loadedRuleset);
+			}
+		} catch (BackingStoreException e) {
+			e.printStackTrace();
+		}
+		return ruleSets;
+	}
 
- 	/***
- 	 * This method creates a table with check boxes for the CrySL rule sets.
- 	 */
- 	private void createRulesTable() {
- 		TableViewerColumn rulesColumn = new TableViewerColumn(table, SWT.FILL);
- 		TableViewerColumn versionsColumn = new TableViewerColumn(table, SWT.FILL);
- 		TableViewerColumn rulesURL = new TableViewerColumn(table, SWT.FILL);
- 		rulesColumn.getColumn().setText(Constants.TABLE_HEADER_RULES);
- 		versionsColumn.getColumn().setText(Constants.TABLE_HEADER_VERSION);
- 		rulesURL.getColumn().setText(Constants.TABLE_HEADER_URL);
- 		rulesColumn.getColumn().setWidth(200);
- 		versionsColumn.getColumn().setWidth(100);
- 		rulesURL.getColumn().setWidth(200);
+	/***
+	 * This method creates a table with check boxes for the CrySL rule sets.
+	 */
+	private void createRulesTable() {
+		TableViewerColumn rulesColumn = new TableViewerColumn(table, SWT.FILL);
+		TableViewerColumn versionsColumn = new TableViewerColumn(table, SWT.FILL);
+		TableViewerColumn rulesURL = new TableViewerColumn(table, SWT.FILL);
+		rulesColumn.getColumn().setText(Constants.TABLE_HEADER_RULES);
+		versionsColumn.getColumn().setText(Constants.TABLE_HEADER_VERSION);
+		rulesURL.getColumn().setText(Constants.TABLE_HEADER_URL);
+		rulesColumn.getColumn().setWidth(200);
+		versionsColumn.getColumn().setWidth(100);
+		rulesURL.getColumn().setWidth(200);
 
- 		if (getRulesetsFromPrefs().size() > 0)
- 			listOfRulesets = getRulesetsFromPrefs();
+		if (getRulesetsFromPrefs().size() > 0)
+			listOfRulesets = getRulesetsFromPrefs();
 
- 		for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
- 			Ruleset ruleset = (Ruleset) itr.next();
- 			ruleset.setVersions(new CCombo(table.getTable(), SWT.NONE));
- 			ruleset.getVersions()
- 					.setItems(Utils.getRuleVersions(ruleset.getFolderName()));
- 			ruleset.setSelectedVersion((ruleset.getSelectedVersion().length() > 0) ? ruleset.getSelectedVersion()
- 					: ruleset.getVersions().getItem(ruleset.getVersions().getItemCount() - 1));
- 			ruleset.getVersions().select(ruleset.getVersions().indexOf(ruleset.getSelectedVersion()));
- 			createRulesTableRow(ruleset);
- 			ruleset.getVersions().addSelectionListener(new SelectionAdapter() {
- 				@Override
- 				public void widgetSelected(SelectionEvent e) {
- 					super.widgetSelected(e);
+		for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
+			Ruleset ruleset = (Ruleset) itr.next();
+			ruleset.setVersions(new CCombo(table.getTable(), SWT.NONE));
+			String[] items = Utils.getRuleVersions(ruleset.getFolderName());
+			if (items != null) {
+				ruleset.getVersions().setItems(items);
+			
+				ruleset.setSelectedVersion((ruleset.getSelectedVersion().length() > 0) ? ruleset.getSelectedVersion()
+					: ruleset.getVersions().getItem(ruleset.getVersions().getItemCount() - 1));
+				ruleset.getVersions().select(ruleset.getVersions().indexOf(ruleset.getSelectedVersion()));
+			}
+			createRulesTableRow(ruleset);
+			ruleset.getVersions().addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					super.widgetSelected(e);
 
- 					ruleset.setSelectedVersion(
- 							ruleset.getVersions().getItem(ruleset.getVersions().getSelectionIndex()));
- 				}
- 			});
- 		}
- 	}
+					ruleset.setSelectedVersion(
+							ruleset.getVersions().getItem(ruleset.getVersions().getSelectionIndex()));
+				}
+			});
+		}
+	}
 
- 	/***
- 	 * This method modifies the rule set table by adding a new rule set entry
- 	 * @param newRuleset The new rule set which is added to the table
- 	 */
- 	private void modifyRulesTable(Ruleset newRuleset) {
- 		newRuleset.setVersions(new CCombo(table.getTable(), SWT.NONE));
- 		newRuleset.getVersions()
- 				.setItems(Utils.getRuleVersions(newRuleset.getFolderName()));
- 		newRuleset.setSelectedVersion(newRuleset.getVersions().getItem(newRuleset.getVersions().getItemCount() - 1));
- 		newRuleset.getVersions().select(newRuleset.getVersions().getItemCount() - 1);
- 		createRulesTableRow(newRuleset);
- 		newRuleset.getVersions().addSelectionListener(new SelectionAdapter() {
- 			@Override
- 			public void widgetSelected(SelectionEvent e) {
- 				super.widgetSelected(e);
- 				newRuleset.setSelectedVersion(
- 						newRuleset.getVersions().getItem(newRuleset.getVersions().getSelectionIndex()));
- 			}
- 		});
- 	}
+	/***
+	 * This method modifies the rule set table by adding a new rule set entry
+	 * 
+	 * @param newRuleset The new rule set which is added to the table
+	 */
+	private void modifyRulesTable(Ruleset newRuleset) {
+		newRuleset.setVersions(new CCombo(table.getTable(), SWT.NONE));
+		newRuleset.getVersions().setItems(Utils.getRuleVersions(newRuleset.getFolderName()));
+		newRuleset.setSelectedVersion(newRuleset.getVersions().getItem(newRuleset.getVersions().getItemCount() - 1));
+		newRuleset.getVersions().select(newRuleset.getVersions().getItemCount() - 1);
+		createRulesTableRow(newRuleset);
+		newRuleset.getVersions().addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				super.widgetSelected(e);
+				newRuleset.setSelectedVersion(
+						newRuleset.getVersions().getItem(newRuleset.getVersions().getSelectionIndex()));
+			}
+		});
+	}
 
- 	/***
- 	 * This method creates the UI for the preference page.
- 	 * 
- 	 * @param parent Instance of the eclipse preference window on which UI widgets
- 	 *               for CogniCrypt are added.
- 	 */
+	/***
+	 * This method creates the UI for the preference page.
+	 * 
+	 * @param parent Instance of the eclipse preference window on which UI widgets
+	 *               for CogniCrypt are added.
+	 */
 	private void createBasicContents(Composite parent) {
 		final Group staticAnalysisGroup = Utils.addHeaderGroup(parent, "Analysis");
 
@@ -238,30 +241,30 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		source.setLayout(new GridLayout(3, true));
 		final Label ruleSource = new Label(source, SWT.NONE);
 		ruleSource.setText("Source of CrySL rules: ");
-		
+
 		table = CheckboxTableViewer.newCheckList(staticAnalysisGroup, SWT.CHECK);
- 		table.getTable().setHeaderVisible(true);
- 		table.getTable().setLinesVisible(true);
- 		createRulesTable();
- 		table.getTable().addSelectionListener(new SelectionAdapter() {
- 			@Override
- 			public void widgetSelected(SelectionEvent e) {
- 				super.widgetSelected(e);
- 				if (e.detail == SWT.CHECK) {
- 					TableItem item = (TableItem) e.item;
+		table.getTable().setHeaderVisible(true);
+		table.getTable().setLinesVisible(true);
+		createRulesTable();
+		table.getTable().addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				super.widgetSelected(e);
+				if (e.detail == SWT.CHECK) {
+					TableItem item = (TableItem) e.item;
 
- 					for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
- 						Ruleset ruleset = (Ruleset) itr.next();
- 						if (item.getText(0) == ruleset.getFolderName())
- 							ruleset.setChecked(item.getChecked());
- 					}
- 				}
- 			}
- 		});
+					for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
+						Ruleset ruleset = (Ruleset) itr.next();
+						if (item.getText(0) == ruleset.getFolderName())
+							ruleset.setChecked(item.getChecked());
+					}
+				}
+			}
+		});
 
- 		selectCustomRulesCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
- 		selectCustomRulesCheckBox.setText("Select custom rules");
-		
+		selectCustomRulesCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
+		selectCustomRulesCheckBox.setText("Select custom rules");
+
 		automatedAnalysisCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		automatedAnalysisCheckBox.setText("Enable automated analysis when saving");
 
@@ -271,29 +274,29 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		analyseDependenciesCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		analyseDependenciesCheckBox.setText("Include dependencies to projects analysis");
 		analyseDependenciesCheckBox.setSelection(preferences.getBoolean(Constants.ANALYSE_DEPENDENCIES));
-		
-		addNewRulesetButton = new Button(staticAnalysisGroup, SWT.PUSH);
- 		addNewRulesetButton.setText("Add ruleset");
- 		addNewRulesetButton.addListener(SWT.Selection, new Listener() {
 
- 			@Override
- 			public void handleEvent(Event e) {
- 				addNewRuleset();
- 			}
- 		});
+		addNewRulesetButton = new Button(staticAnalysisGroup, SWT.PUSH);
+		addNewRulesetButton.setText("Add ruleset");
+		addNewRulesetButton.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event e) {
+				addNewRuleset();
+			}
+		});
 	}
-	
+
 	protected void addNewRuleset() {
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		AddNewRulesetDialog dialog = new AddNewRulesetDialog(window.getShell());
 		dialog.create();
 		if (dialog.open() == Window.OK) {
-			if(ifExists(dialog.getRulesetUrl())) {
-				MessageDialog.openError(window.getShell(), "Duplicate Ruleset", "You are trying to add an existing ruleset!");
+			if (ifExists(dialog.getRulesetUrl())) {
+				MessageDialog.openError(window.getShell(), "Duplicate Ruleset",
+						"You are trying to add an existing ruleset!");
 				return;
-			}
-			else {
-				if(ArtifactUtils.downloadRulesets(dialog.getRulesetUrl())) {
+			} else {
+				if (ArtifactUtils.downloadRulesets(dialog.getRulesetUrl())) {
 					Activator.getDefault().logInfo("Rulesets updated.");
 				}
 				Ruleset newRuleset = new Ruleset(dialog.getRulesetUrl());
@@ -302,11 +305,11 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 			}
 		}
 	}
-	
+
 	boolean ifExists(String url) {
 		List<Ruleset> existingRulesets = getRulesetsFromPrefs();
 		for (Ruleset ruleset : existingRulesets) {
-			if(ruleset.getUrl().equals(url)) {
+			if (ruleset.getUrl().equals(url)) {
 				return true;
 			}
 		}
@@ -318,13 +321,16 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		CGSelection.select(currentCG > -1 ? currentCG : preferences.getDefaultInt(Constants.CALL_GRAPH_SELECTION));
 
 		int errorType = preferences.getInt(Constants.FORBIDDEN_METHOD_MARKER_TYPE);
-		forbidden.select(errorType > -1 ? errorType : preferences.getDefaultInt(Constants.FORBIDDEN_METHOD_MARKER_TYPE));
+		forbidden
+				.select(errorType > -1 ? errorType : preferences.getDefaultInt(Constants.FORBIDDEN_METHOD_MARKER_TYPE));
 
 		errorType = preferences.getInt(Constants.CONSTRAINT_ERROR_MARKER_TYPE);
-		constraint.select(errorType > -1 ? errorType : preferences.getDefaultInt(Constants.CONSTRAINT_ERROR_MARKER_TYPE));
+		constraint
+				.select(errorType > -1 ? errorType : preferences.getDefaultInt(Constants.CONSTRAINT_ERROR_MARKER_TYPE));
 
 		errorType = preferences.getInt(Constants.INCOMPLETE_OPERATION_MARKER_TYPE);
-		incompleteOp.select(errorType > -1 ? errorType : preferences.getDefaultInt(Constants.INCOMPLETE_OPERATION_MARKER_TYPE));
+		incompleteOp.select(
+				errorType > -1 ? errorType : preferences.getDefaultInt(Constants.INCOMPLETE_OPERATION_MARKER_TYPE));
 
 		errorType = preferences.getInt(Constants.TYPESTATE_ERROR_MARKER_TYPE);
 		typestate.select(errorType > -1 ? errorType : preferences.getDefaultInt(Constants.TYPESTATE_ERROR_MARKER_TYPE));
@@ -333,7 +339,8 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		neverType.select(errorType > -1 ? errorType : preferences.getDefaultInt(Constants.NEVER_TYPEOF_MARKER_TYPE));
 
 		errorType = preferences.getInt(Constants.REQUIRED_PREDICATE_MARKER_TYPE);
-		reqPred.select(errorType > -1 ? errorType : preferences.getDefaultInt(Constants.REQUIRED_PREDICATE_MARKER_TYPE));
+		reqPred.select(
+				errorType > -1 ? errorType : preferences.getDefaultInt(Constants.REQUIRED_PREDICATE_MARKER_TYPE));
 	}
 
 	private void performAdvancedDefaults() {
@@ -412,27 +419,27 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	}
 
 	/***
- 	 * This method assigns default values for each of the preference options and is
- 	 * invoked when Restore defaults is clicked.
- 	 */
+	 * This method assigns default values for each of the preference options and is
+	 * invoked when Restore defaults is clicked.
+	 */
 	@Override
 	public void setDefaultValues() {
 		selectCustomRulesCheckBox.setSelection(true);
 		automatedAnalysisCheckBox.setSelection(preferences.getDefaultBoolean(Constants.AUTOMATED_ANALYSIS));
 		secureObjectsCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SHOW_SECURE_OBJECTS));
 		analyseDependenciesCheckBox.setSelection(preferences.getDefaultBoolean(Constants.ANALYSE_DEPENDENCIES));
-		
+
 		for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
- 			Ruleset ruleset = (Ruleset) itr.next();
- 			ruleset.getVersions().select(ruleset.getVersions().getItemCount() - 1);
- 			if (ruleset.getFolderName().equals("JavaCryptographicArchitecture"))
- 				ruleset.getRulesRow().setChecked(true);
- 			else
- 				ruleset.getRulesRow().setChecked(false);
- 			ruleset.setSelectedVersion(ruleset.getVersions().getItem(ruleset.getVersions().getItemCount() - 1));
- 			ruleset.setChecked(ruleset.getRulesRow().getChecked());
- 		}
-		
+			Ruleset ruleset = (Ruleset) itr.next();
+			ruleset.getVersions().select(ruleset.getVersions().getItemCount() - 1);
+			if (ruleset.getFolderName().equals("JavaCryptographicArchitecture"))
+				ruleset.getRulesRow().setChecked(true);
+			else
+				ruleset.getRulesRow().setChecked(false);
+			ruleset.setSelectedVersion(ruleset.getVersions().getItem(ruleset.getVersions().getItemCount() - 1));
+			ruleset.setChecked(ruleset.getRulesRow().getChecked());
+		}
+
 		CGSelection.select(preferences.getDefaultInt(Constants.CALL_GRAPH_SELECTION));
 
 		forbidden.select(preferences.getDefaultInt(Constants.FORBIDDEN_METHOD_MARKER_TYPE));
@@ -455,16 +462,16 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		preferences.setValue(Constants.NEVER_TYPEOF_MARKER_TYPE, neverType.getSelectionIndex());
 		preferences.setValue(Constants.REQUIRED_PREDICATE_MARKER_TYPE, reqPred.getSelectionIndex());
 		preferences.setValue(Constants.TYPESTATE_ERROR_MARKER_TYPE, typestate.getSelectionIndex());
-		
-		for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
- 			Ruleset ruleset = (Ruleset) itr.next();
 
- 			Preferences subPref = rulePreferences.node(ruleset.getFolderName());
- 			subPref.putBoolean("CheckboxState", ruleset.isChecked());
- 			subPref.put("FolderName", ruleset.getFolderName());
- 			subPref.put("SelectedVersion", ruleset.getSelectedVersion());
- 			subPref.put("Url", ruleset.getUrl());
- 		}
+		for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
+			Ruleset ruleset = (Ruleset) itr.next();
+
+			Preferences subPref = rulePreferences.node(ruleset.getFolderName());
+			subPref.putBoolean("CheckboxState", ruleset.isChecked());
+			subPref.put("FolderName", ruleset.getFolderName());
+			subPref.put("SelectedVersion", ruleset.getSelectedVersion());
+			subPref.put("Url", ruleset.getUrl());
+		}
 	}
 
 }

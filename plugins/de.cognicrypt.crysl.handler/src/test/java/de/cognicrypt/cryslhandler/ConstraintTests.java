@@ -18,15 +18,15 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import crypto.interfaces.ISLConstraint;
-import crypto.rules.CryptSLArithmeticConstraint;
-import crypto.rules.CryptSLArithmeticConstraint.ArithOp;
-import crypto.rules.CryptSLComparisonConstraint;
-import crypto.rules.CryptSLComparisonConstraint.CompOp;
-import crypto.rules.CryptSLConstraint;
-import crypto.rules.CryptSLConstraint.LogOps;
-import crypto.rules.CryptSLLiteral;
-import crypto.rules.CryptSLRule;
-import crypto.rules.CryptSLValueConstraint;
+import crypto.rules.CrySLArithmeticConstraint;
+import crypto.rules.CrySLArithmeticConstraint.ArithOp;
+import crypto.rules.CrySLComparisonConstraint;
+import crypto.rules.CrySLComparisonConstraint.CompOp;
+import crypto.rules.CrySLConstraint;
+import crypto.rules.CrySLConstraint.LogOps;
+import crypto.rules.CrySLLiteral;
+import crypto.rules.CrySLRule;
+import crypto.rules.CrySLValueConstraint;
 import de.cognicrypt.crysl.reader.CrySLModelReader;
 
 public class ConstraintTests {
@@ -38,30 +38,30 @@ public class ConstraintTests {
 		csmr = new CrySLModelReader();
 	}
 
-	private CryptSLRule readRuleFromFuleName(String ruleName) {
-		return csmr.readRule(new File("src/test/resources/" + ruleName + ".cryptsl"));
+	private CrySLRule readRuleFromFuleName(String ruleName) {
+		return csmr.readRule(new File("src/test/resources/" + ruleName + ".crysl"));
 	}
 
 	@Test
 	public void inConstraintTest() {
-		CryptSLRule rule = readRuleFromFuleName("InConstraintTestRule");
+		CrySLRule rule = readRuleFromFuleName("InConstraintTestRule");
 		for (ISLConstraint constraint : rule.getConstraints()) {
-			if (constraint instanceof CryptSLConstraint && !(constraint instanceof CryptSLLiteral)) {
+			if (constraint instanceof CrySLConstraint && !(constraint instanceof CrySLLiteral)) {
 				// mode in {1} => mode2 in {2,4}
-				CryptSLConstraint constraintAsComplexConstraint = (CryptSLConstraint) constraint;
-				CryptSLValueConstraint modeInOne = (CryptSLValueConstraint) constraintAsComplexConstraint.getLeft();
+				CrySLConstraint constraintAsComplexConstraint = (CrySLConstraint) constraint;
+				CrySLValueConstraint modeInOne = (CrySLValueConstraint) constraintAsComplexConstraint.getLeft();
 				assertEquals("mode", modeInOne.getVarName());
 				assertEquals(Arrays.asList(new String[] {"1"}), modeInOne.getValueRange());
 
-				CryptSLValueConstraint modeTwoInTwoFour = (CryptSLValueConstraint) constraintAsComplexConstraint.getRight();
+				CrySLValueConstraint modeTwoInTwoFour = (CrySLValueConstraint) constraintAsComplexConstraint.getRight();
 				assertEquals("mode2", modeTwoInTwoFour.getVarName());
 				assertEquals(Arrays.asList(new String[] {"2", "4"}), modeTwoInTwoFour.getValueRange());
 
 				assertEquals(LogOps.implies, constraintAsComplexConstraint.getOperator());
 
-			} else if (constraint instanceof CryptSLValueConstraint) {
+			} else if (constraint instanceof CrySLValueConstraint) {
 				// mode in {1, 2, 3}
-				CryptSLValueConstraint constraintAsValueConstraint = (CryptSLValueConstraint) constraint;
+				CrySLValueConstraint constraintAsValueConstraint = (CrySLValueConstraint) constraint;
 				assertEquals("mode", constraintAsValueConstraint.getVarName());
 				assertEquals(Arrays.asList(new String[] {"1", "2", "3"}), constraintAsValueConstraint.getValueRange());
 			}
@@ -71,34 +71,34 @@ public class ConstraintTests {
 
 	@Test
 	public void cmpConstraintTest() {
-		CryptSLRule rule = readRuleFromFuleName("CompConstraintTestRule");
+		CrySLRule rule = readRuleFromFuleName("CompConstraintTestRule");
 		List<ISLConstraint> constraints = rule.getConstraints();
 		// mode > mode2
-		CryptSLComparisonConstraint modeGreater = (CryptSLComparisonConstraint) constraints.get(0);
+		CrySLComparisonConstraint modeGreater = (CrySLComparisonConstraint) constraints.get(0);
 		assertEquals("mode", modeGreater.getLeft().getLeft().getName());
 		assertEquals(CompOp.g, modeGreater.getOperator());
 		assertEquals("mode2", modeGreater.getRight().getLeft().getName());
 
 		// mode < mode2
-		CryptSLComparisonConstraint modeLesser = (CryptSLComparisonConstraint) constraints.get(1);
+		CrySLComparisonConstraint modeLesser = (CrySLComparisonConstraint) constraints.get(1);
 		assertEquals("mode", modeLesser.getLeft().getLeft().getName());
 		assertEquals(CompOp.l, modeLesser.getOperator());
 		assertEquals("mode2", modeLesser.getRight().getLeft().getName());
 
 		// mode >= mode2
-		CryptSLComparisonConstraint modeGreaterEq = (CryptSLComparisonConstraint) constraints.get(2);
+		CrySLComparisonConstraint modeGreaterEq = (CrySLComparisonConstraint) constraints.get(2);
 		assertEquals("mode", modeGreaterEq.getLeft().getLeft().getName());
 		assertEquals(CompOp.ge, modeGreaterEq.getOperator());
 		assertEquals("mode2", modeGreaterEq.getRight().getLeft().getName());
 
 		// mode <= mode2
-		CryptSLComparisonConstraint modeLesserEq = (CryptSLComparisonConstraint) constraints.get(3);
+		CrySLComparisonConstraint modeLesserEq = (CrySLComparisonConstraint) constraints.get(3);
 		assertEquals("mode", modeLesserEq.getLeft().getLeft().getName());
 		assertEquals(CompOp.le, modeLesserEq.getOperator());
 		assertEquals("mode2", modeLesserEq.getRight().getLeft().getName());
 
 		// mode != mode2
-		CryptSLComparisonConstraint modeUnEq = (CryptSLComparisonConstraint) constraints.get(4);
+		CrySLComparisonConstraint modeUnEq = (CrySLComparisonConstraint) constraints.get(4);
 		assertEquals("mode", modeUnEq.getLeft().getLeft().getName());
 		assertEquals(CompOp.neq, modeUnEq.getOperator());
 		assertEquals("mode2", modeUnEq.getRight().getLeft().getName());
@@ -106,16 +106,16 @@ public class ConstraintTests {
 
 	@Test
 	public void arithConstraintTest() {
-		CryptSLRule rule = readRuleFromFuleName("ArithConstraintTestRule");
+		CrySLRule rule = readRuleFromFuleName("ArithConstraintTestRule");
 		List<ISLConstraint> constraints = rule.getConstraints();
 		// mode + mode2
-		CryptSLArithmeticConstraint modePlusMode2 = (CryptSLArithmeticConstraint) constraints.get(0);
+		CrySLArithmeticConstraint modePlusMode2 = (CrySLArithmeticConstraint) constraints.get(0);
 		assertEquals("mode", modePlusMode2.getLeft().getName());
 		assertEquals(ArithOp.p, modePlusMode2.getOperator());
 		assertEquals("mode2", modePlusMode2.getRight().getName());
 
 		// mode - mode2
-		CryptSLArithmeticConstraint modeMinusMode2 = (CryptSLArithmeticConstraint) constraints.get(1);
+		CrySLArithmeticConstraint modeMinusMode2 = (CrySLArithmeticConstraint) constraints.get(1);
 		assertEquals("mode", modeMinusMode2.getLeft().getName());
 		assertEquals(ArithOp.n, modeMinusMode2.getOperator());
 		assertEquals("mode2", modeMinusMode2.getRight().getName());
@@ -124,16 +124,16 @@ public class ConstraintTests {
 
 	@Test
 	public void ComplexConstraintTest() {
-		CryptSLRule rule = readRuleFromFuleName("ComplexConstraintTestRule");
+		CrySLRule rule = readRuleFromFuleName("ComplexConstraintTestRule");
 		List<ISLConstraint> constraints = rule.getConstraints();
 
-		CryptSLConstraint constraintAsImpliesConstraint = (CryptSLConstraint) constraints.get(0);
+		CrySLConstraint constraintAsImpliesConstraint = (CrySLConstraint) constraints.get(0);
 		assertEquals(LogOps.implies, constraintAsImpliesConstraint.getOperator());
 
-		CryptSLConstraint constraintAsAndConstraint = (CryptSLConstraint) constraints.get(1);
+		CrySLConstraint constraintAsAndConstraint = (CrySLConstraint) constraints.get(1);
 		assertEquals(LogOps.and, constraintAsAndConstraint.getOperator());
 
-		CryptSLConstraint constraintAsOrConstraint = (CryptSLConstraint) constraints.get(2);
+		CrySLConstraint constraintAsOrConstraint = (CrySLConstraint) constraints.get(2);
 		assertEquals(LogOps.or, constraintAsOrConstraint.getOperator());
 	}
 

@@ -19,7 +19,7 @@
       <url>http://download.eclipse.org/releases/photon</url>
     </repository>
     <repository>
-      <id>cryptsl</id>
+      <id>crysl</id>
       <url>https://it.crossing.tu-darmstadt.de/cognicrypt/</url>
       <layout>p2</layout>
     </repository>

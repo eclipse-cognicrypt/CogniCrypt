@@ -19,8 +19,8 @@ import java.util.Map.Entry;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import crypto.rules.CryptSLMethod;
-import crypto.rules.CryptSLRule;
+import crypto.rules.CrySLMethod;
+import crypto.rules.CrySLRule;
 import crypto.rules.StateMachineGraph;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
@@ -35,8 +35,8 @@ public class SMGBuilderTests {
 		csmr = new CrySLModelReader();
 	}
 
-	private CryptSLRule readRuleFromFuleName(String ruleName) {
-		return csmr.readRule(new File("src/test/resources/" + ruleName + ".cryptsl"));
+	private CrySLRule readRuleFromFuleName(String ruleName) {
+		return csmr.readRule(new File("src/test/resources/" + ruleName + ".crysl"));
 	}
 
 	@Test
@@ -50,13 +50,13 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addNode(zero);
 		expectedUsagePattern.addNode(one);
 
-		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aap = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod abp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), zero, one));
 
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule1").getUsagePattern().getAllTransitions());
 	}
@@ -76,19 +76,19 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addNode(one);
 		expectedUsagePattern.addNode(two);
 
-		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aap = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod abp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod acp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod acp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), one, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), zero, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), one, one));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), one, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), two, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), one, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), two, two));
 
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule2").getUsagePattern().getAllTransitions());
 	}
@@ -110,31 +110,31 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addNode(three);
 		expectedUsagePattern.addNode(four);
 
-		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aap = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod abp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod acp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod acp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod adp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod adp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod aep = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.e", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aep = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.e", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod afp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.f", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod afp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.f", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), one, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), zero, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), one, one));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), one, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), two, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), one, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), two, two));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), one, three));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aep}), one, four));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), one, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aep}), one, four));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aep}), four, four));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp, afp}), four, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aep}), four, four));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp, afp}), four, three));
 
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule3").getUsagePattern().getAllTransitions());
 	}
@@ -152,18 +152,18 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addNode(one);
 		expectedUsagePattern.addNode(two);
 
-		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aap = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod abp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod acp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod acp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), one, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), zero, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), one, two));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), zero, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), zero, two));
 
 		StateMachineGraph actualUsagePattern = readRuleFromFuleName("Testrule4").getUsagePattern();
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), actualUsagePattern.getAllTransitions());
@@ -190,37 +190,37 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addNode(five);
 		expectedUsagePattern.addNode(six);
 
-		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aap = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod abp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod acp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod acp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod adp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod adp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod aep = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.e", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aep = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.e", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod afp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.f", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod afp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.f", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aap}), minusOne, zero));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), one, one));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), one, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), two, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), two, three));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), three, three));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), three, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), zero, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), one, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), one, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), two, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), two, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), three, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), three, two));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aep}), zero, four));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aep}), four, four));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), four, five));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), five, five));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {afp}), five, six));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {afp}), six, six));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {afp}), four, six));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), six, five));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aep}), zero, four));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aep}), four, four));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), four, five));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), five, five));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {afp}), five, six));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {afp}), six, six));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {afp}), four, six));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), six, five));
 
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule5").getUsagePattern().getAllTransitions());
 	}
@@ -238,19 +238,19 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addNode(one);
 		expectedUsagePattern.addNode(two);
 
-		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aap = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod abp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod acp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod acp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aap}), minusOne, zero));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), one, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), zero, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), one, one));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), one, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), one, two));
 
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule6").getUsagePattern().getAllTransitions());
 	}
@@ -268,25 +268,25 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addNode(one);
 		expectedUsagePattern.addNode(two);
 
-		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aap = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod abp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod acp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod acp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aap}), minusOne, zero));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), one, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), zero, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), one, one));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), one, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), two, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), zero, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), two, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), one, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), two, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), zero, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), two, one));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), minusOne, one));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), minusOne, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), minusOne, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), minusOne, two));
 
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule7").getUsagePattern().getAllTransitions());
 	}
@@ -300,11 +300,11 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addNode(minusOne);
 		expectedUsagePattern.addNode(zero);
 
-		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aap = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), zero, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aap}), zero, zero));
 
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule8").getUsagePattern().getAllTransitions());
 	}
@@ -332,28 +332,28 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addNode(six);
 		expectedUsagePattern.addNode(seven);
 
-		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aap = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod acp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod acp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod adp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod adp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod aep = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.e", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aep = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.e", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod abp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod afp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.f", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod afp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.f", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), zero, one));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), one, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aep}), two, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), zero, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), one, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aep}), two, three));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), minusOne, four));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), four, five));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), five, six));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {afp}), six, seven));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), minusOne, four));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), four, five));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), five, six));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {afp}), six, seven));
 
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule9").getUsagePattern().getAllTransitions());
 	}
@@ -375,29 +375,29 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addNode(three);
 		expectedUsagePattern.addNode(four);
 
-		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aap = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod abp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod acp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod acp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod adp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod adp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod aep = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.e", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aep = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.e", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod afp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.f", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod afp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.f", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), one, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), two, three));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), one, three));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aep}), one, four));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {afp}), four, three));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), three, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), three, three));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aep}), three, four));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), zero, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), one, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), two, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), one, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aep}), one, four));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {afp}), four, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), three, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), three, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aep}), three, four));
 
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule10").getUsagePattern().getAllTransitions());
 	}
@@ -419,26 +419,26 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addNode(three);
 		expectedUsagePattern.addNode(four);
 
-		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aap = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod abp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod acp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod acp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod adp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod adp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod aep = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.e", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aep = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.e", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), one, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), zero, three));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), three, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), zero, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), one, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), zero, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), three, two));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), minusOne, four));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), four, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aep}), minusOne, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), minusOne, four));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), four, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aep}), minusOne, two));
 
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule11").getUsagePattern().getAllTransitions());
 	}
@@ -452,16 +452,16 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addNode(minusOne);
 		expectedUsagePattern.addNode(zero);
 
-		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aap = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod abp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod acp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod acp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), minusOne, zero));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), minusOne, zero));
 
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule12").getUsagePattern().getAllTransitions());
 	}
@@ -477,14 +477,14 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addNode(zero);
 		expectedUsagePattern.addNode(one);
 
-		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aap = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod abp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), one, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), zero, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), one, one));
 
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule13").getUsagePattern().getAllTransitions());
 	}
@@ -506,25 +506,25 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addNode(three);
 		expectedUsagePattern.addNode(four);
 
-		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aap = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod abp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod acp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod acp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
-		CryptSLMethod adp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod adp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void"));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), one, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), zero, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), one, one));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), one, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), two, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), one, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), two, two));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), two, three));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), one, three));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), three, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), two, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), one, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), three, three));
 
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule14").getUsagePattern().getAllTransitions());
 	}
@@ -544,26 +544,26 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addNode(two);
 		expectedUsagePattern.addNode(three);
 
-		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aap = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void")); // SHA256()
-		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod abp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void")); // reset()
-		CryptSLMethod acp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod acp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void")); // doFinal()
-		CryptSLMethod adp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod adp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void")); // update()
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aap}), minusOne, zero));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), one, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), one, three));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), three, three));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), three, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), zero, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), zero, three));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), two, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), two, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), zero, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), one, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), one, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), three, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), three, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), zero, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), zero, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), two, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), two, three));
 
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule15").getUsagePattern().getAllTransitions());
 	}
@@ -585,25 +585,25 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addNode(three);
 		expectedUsagePattern.addNode(four);
 
-		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aap = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void")); // SHA256()
-		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod abp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void")); // reset()
-		CryptSLMethod acp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod acp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void")); // doFinal()
-		CryptSLMethod adp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod adp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void")); // update()
-		CryptSLMethod aep = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.e", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aep = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.e", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void")); //
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aap}), minusOne, zero));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), one, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), two, three));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aep}), three, four));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), four, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), four, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), zero, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), one, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), two, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aep}), three, four));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), four, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), four, one));
 
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule16").getUsagePattern().getAllTransitions());
 	}
@@ -625,28 +625,28 @@ public class SMGBuilderTests {
 		expectedUsagePattern.addNode(three);
 		expectedUsagePattern.addNode(four);
 
-		CryptSLMethod aap = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aap = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.a", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void")); // Reader
-		CryptSLMethod abp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod abp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.b", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void")); // setPath
-		CryptSLMethod acp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod acp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.c", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void")); // readPassword
-		CryptSLMethod adp = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod adp = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.d", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void")); // storeFile
-		CryptSLMethod aep = new CryptSLMethod("de.cognicrypt.cryslhandler.TestA.e", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
+		CrySLMethod aep = new CrySLMethod("de.cognicrypt.cryslhandler.TestA.e", new ArrayList<Entry<String, String>>(), new ArrayList<Boolean>(),
 				new HashMap.SimpleEntry<String, String>("_", "void")); // reset
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aap}), minusOne, zero));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aap}), minusOne, zero));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), zero, one));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), one, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), two, three));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {adp}), one, three));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {acp}), three, two));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aep}), three, four));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), zero, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), one, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), two, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), one, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), three, two));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aep}), three, four));
 
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {aep}), two, four));
-		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CryptSLMethod[] {abp}), four, one));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aep}), two, four));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {abp}), four, one));
 
 		// System.out.println(expectedUsagePattern);
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule17").getUsagePattern().getAllTransitions());

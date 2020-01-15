@@ -18,18 +18,18 @@ import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
 public class StringHasher {
 
-	public static java.lang.String createHash(String msg) throws GeneralSecurityException {
+	public static java.lang.String createHash(java.lang.String msg) throws GeneralSecurityException {
 		byte[] plainBytes = msg.getBytes(StandardCharsets.UTF_8);
 		byte[] out = null;
 		CrySLCodeGenerator.getInstance().includeClass("java.security.MessageDigest").addReturnObject(out).generate();
 		return Base64.getEncoder().encodeToString(out);
 	}
 
-	public static boolean verifyHash(java.lang.String newMsg, java.lang.String compareeHash) {
+	public static boolean verifyHash(java.lang.String compareeHash, java.lang.String newMsg) {
 		byte[] plainBytes = newMsg.getBytes(StandardCharsets.UTF_8);
 		byte[] out = null;
 		CrySLCodeGenerator.getInstance().includeClass("java.security.MessageDigest").addReturnObject(out).generate();
-		return Base64.getEncoder().encodeToString(out).equals(newMsg);
+		return Base64.getEncoder().encodeToString(out).equals(compareeHash);
 	}
 
 }

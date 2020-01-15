@@ -70,6 +70,7 @@ import de.cognicrypt.core.Constants;
 public class Utils {
 
 	private static IWorkbenchWindow window = null;
+	private static String defaultRulesPath = "resources/CrySLRules/JavaCryptographicArchitecture";
 
 	/**
 	 * This method checks if a project passed as parameter is a Java project or not.
@@ -414,8 +415,8 @@ public class Utils {
 	}
 
 	public static List<CrySLRule> readCrySLRules() {
-		return Stream.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getAbsolutePath()),
-				readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getAbsolutePath())).flatMap(Collection::stream).collect(Collectors.toList());
+		return Stream.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR).getAbsolutePath()),
+				readCrySLRules(Utils.getResourceFromWithin(defaultRulesPath).getAbsolutePath())).flatMap(Collection::stream).collect(Collectors.toList());
 	}
 
 	protected static List<CrySLRule> readCrySLRules(String rulesFolder) {

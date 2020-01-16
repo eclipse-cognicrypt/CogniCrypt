@@ -19,6 +19,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.ini4j.Profile.Section;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -143,7 +144,9 @@ public class ArtifactUtils {
 			metaData.delete();
 
 			for (String version : listOfVersions) {
-				if (Double.valueOf(version) >= minVersion) {
+				DefaultArtifactVersion min = new DefaultArtifactVersion(minVersion.toString());
+				DefaultArtifactVersion cur = new DefaultArtifactVersion(version);
+				if (cur.compareTo(min) >= 0) {
 					downloadRulesetArtifact(groupId[0], artifactId[0], version, new File(System.getProperty("user.dir")));
 				}
 			}

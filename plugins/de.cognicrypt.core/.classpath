@@ -8,7 +8,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons-cli.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-io.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-lang3.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/CryptoAnalysis.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/CryptoAnalysis.jar" sourcepath="/CryptoAnalysis"/>
 	<classpathentry exported="true" kind="lib" path="lib/dexlib2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/error_prone_annotations.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/functionaljava.jar"/>

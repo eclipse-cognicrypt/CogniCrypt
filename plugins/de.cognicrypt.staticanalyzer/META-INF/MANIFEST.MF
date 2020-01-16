@@ -17,8 +17,7 @@ Require-Bundle: org.eclipse.ui,
  de.cognicrypt.core;bundle-version="1.0.0",
  com.google.guava,
  org.eclipse.jdt.launching,
- de.cognicrypt.crysl.handler;bundle-version="1.0.0",
- org.jetbrains.kotlin.core;bundle-version="0.8.19";resolution:=optional
+ de.cognicrypt.crysl.handler;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,

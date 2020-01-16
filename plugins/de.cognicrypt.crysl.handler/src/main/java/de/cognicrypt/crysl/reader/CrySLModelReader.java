@@ -47,22 +47,22 @@ import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import com.google.inject.Injector;
 
-import crypto.interfaces.ICryptSLPredicateParameter;
+import crypto.interfaces.ICrySLPredicateParameter;
 import crypto.interfaces.ISLConstraint;
-import crypto.rules.CryptSLArithmeticConstraint;
-import crypto.rules.CryptSLArithmeticConstraint.ArithOp;
-import crypto.rules.CryptSLComparisonConstraint;
-import crypto.rules.CryptSLComparisonConstraint.CompOp;
-import crypto.rules.CryptSLCondPredicate;
-import crypto.rules.CryptSLConstraint;
-import crypto.rules.CryptSLConstraint.LogOps;
-import crypto.rules.CryptSLForbiddenMethod;
-import crypto.rules.CryptSLMethod;
-import crypto.rules.CryptSLObject;
-import crypto.rules.CryptSLPredicate;
-import crypto.rules.CryptSLRule;
-import crypto.rules.CryptSLSplitter;
-import crypto.rules.CryptSLValueConstraint;
+import crypto.rules.CrySLArithmeticConstraint;
+import crypto.rules.CrySLArithmeticConstraint.ArithOp;
+import crypto.rules.CrySLComparisonConstraint;
+import crypto.rules.CrySLComparisonConstraint.CompOp;
+import crypto.rules.CrySLCondPredicate;
+import crypto.rules.CrySLConstraint;
+import crypto.rules.CrySLConstraint.LogOps;
+import crypto.rules.CrySLForbiddenMethod;
+import crypto.rules.CrySLMethod;
+import crypto.rules.CrySLObject;
+import crypto.rules.CrySLPredicate;
+import crypto.rules.CrySLRule;
+import crypto.rules.CrySLSplitter;
+import crypto.rules.CrySLValueConstraint;
 import crypto.rules.ParEqualsPredicate;
 import crypto.rules.StateMachineGraph;
 import crypto.rules.StateNode;
@@ -70,47 +70,47 @@ import crypto.rules.TransitionEdge;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.crysl.handler.Activator;
 import de.cognicrypt.utils.Utils;
-import de.darmstadt.tu.crossing.CryptSLStandaloneSetup;
-import de.darmstadt.tu.crossing.CryptSL.ui.internal.CryptSLActivator;
+import de.darmstadt.tu.crossing.CrySLStandaloneSetup;
+import de.darmstadt.tu.crossing.CrySL.ui.internal.CrySLActivator;
 import de.darmstadt.tu.crossing.constraints.CrySLArithmeticOperator;
 import de.darmstadt.tu.crossing.constraints.CrySLComparisonOperator;
 import de.darmstadt.tu.crossing.constraints.CrySLLogicalOperator;
-import de.darmstadt.tu.crossing.cryptSL.ArithmeticExpression;
-import de.darmstadt.tu.crossing.cryptSL.ArithmeticOperator;
-import de.darmstadt.tu.crossing.cryptSL.ArrayElements;
-import de.darmstadt.tu.crossing.cryptSL.ComparingOperator;
-import de.darmstadt.tu.crossing.cryptSL.ComparisonExpression;
-import de.darmstadt.tu.crossing.cryptSL.Constraint;
-import de.darmstadt.tu.crossing.cryptSL.DestroysBlock;
-import de.darmstadt.tu.crossing.cryptSL.Domainmodel;
-import de.darmstadt.tu.crossing.cryptSL.EnsuresBlock;
-import de.darmstadt.tu.crossing.cryptSL.Event;
-import de.darmstadt.tu.crossing.cryptSL.Expression;
-import de.darmstadt.tu.crossing.cryptSL.ForbMethod;
-import de.darmstadt.tu.crossing.cryptSL.ForbiddenBlock;
-import de.darmstadt.tu.crossing.cryptSL.Literal;
-import de.darmstadt.tu.crossing.cryptSL.LiteralExpression;
-import de.darmstadt.tu.crossing.cryptSL.LogicalImply;
-import de.darmstadt.tu.crossing.cryptSL.LogicalOperator;
-import de.darmstadt.tu.crossing.cryptSL.Object;
-import de.darmstadt.tu.crossing.cryptSL.ObjectDecl;
-import de.darmstadt.tu.crossing.cryptSL.Order;
-import de.darmstadt.tu.crossing.cryptSL.PreDefinedPredicates;
-import de.darmstadt.tu.crossing.cryptSL.Pred;
-import de.darmstadt.tu.crossing.cryptSL.PredLit;
-import de.darmstadt.tu.crossing.cryptSL.ReqPred;
-import de.darmstadt.tu.crossing.cryptSL.SimpleOrder;
-import de.darmstadt.tu.crossing.cryptSL.SuPar;
-import de.darmstadt.tu.crossing.cryptSL.SuParList;
-import de.darmstadt.tu.crossing.cryptSL.SuperType;
-import de.darmstadt.tu.crossing.cryptSL.UnaryPreExpression;
-import de.darmstadt.tu.crossing.cryptSL.UseBlock;
-import de.darmstadt.tu.crossing.cryptSL.impl.DomainmodelImpl;
-import de.darmstadt.tu.crossing.cryptSL.impl.ObjectImpl;
+import de.darmstadt.tu.crossing.crySL.ArithmeticExpression;
+import de.darmstadt.tu.crossing.crySL.ArithmeticOperator;
+import de.darmstadt.tu.crossing.crySL.ArrayElements;
+import de.darmstadt.tu.crossing.crySL.ComparingOperator;
+import de.darmstadt.tu.crossing.crySL.ComparisonExpression;
+import de.darmstadt.tu.crossing.crySL.Constraint;
+import de.darmstadt.tu.crossing.crySL.DestroysBlock;
+import de.darmstadt.tu.crossing.crySL.Domainmodel;
+import de.darmstadt.tu.crossing.crySL.EnsuresBlock;
+import de.darmstadt.tu.crossing.crySL.Event;
+import de.darmstadt.tu.crossing.crySL.Expression;
+import de.darmstadt.tu.crossing.crySL.ForbMethod;
+import de.darmstadt.tu.crossing.crySL.ForbiddenBlock;
+import de.darmstadt.tu.crossing.crySL.Literal;
+import de.darmstadt.tu.crossing.crySL.LiteralExpression;
+import de.darmstadt.tu.crossing.crySL.LogicalImply;
+import de.darmstadt.tu.crossing.crySL.LogicalOperator;
+import de.darmstadt.tu.crossing.crySL.Object;
+import de.darmstadt.tu.crossing.crySL.ObjectDecl;
+import de.darmstadt.tu.crossing.crySL.Order;
+import de.darmstadt.tu.crossing.crySL.PreDefinedPredicates;
+import de.darmstadt.tu.crossing.crySL.Pred;
+import de.darmstadt.tu.crossing.crySL.PredLit;
+import de.darmstadt.tu.crossing.crySL.ReqPred;
+import de.darmstadt.tu.crossing.crySL.SimpleOrder;
+import de.darmstadt.tu.crossing.crySL.SuPar;
+import de.darmstadt.tu.crossing.crySL.SuParList;
+import de.darmstadt.tu.crossing.crySL.SuperType;
+import de.darmstadt.tu.crossing.crySL.UnaryPreExpression;
+import de.darmstadt.tu.crossing.crySL.UseBlock;
+import de.darmstadt.tu.crossing.crySL.impl.DomainmodelImpl;
+import de.darmstadt.tu.crossing.crySL.impl.ObjectImpl;
 
 public class CrySLModelReader {
 
-	private List<CryptSLForbiddenMethod> forbiddenMethods = null;
+	private List<CrySLForbiddenMethod> forbiddenMethods = null;
 	private StateMachineGraph smg = null;
 	private XtextResourceSet resourceSet;
 	private boolean testMode = false;
@@ -122,7 +122,7 @@ public class CrySLModelReader {
 	private static final String UNDERSCORE = "_";
 	
 	public CrySLModelReader(IProject iProject) throws CoreException, IOException {
-		final Injector injector = CryptSLActivator.getInstance().getInjector(CryptSLActivator.DE_DARMSTADT_TU_CROSSING_CRYPTSL);
+		final Injector injector = CrySLActivator.getInstance().getInjector(CrySLActivator.DE_DARMSTADT_TU_CROSSING_CRYSL);
 		resourceSet = injector.getInstance(XtextResourceSet.class);
 
 		if (iProject == null) {
@@ -141,8 +141,8 @@ public class CrySLModelReader {
 	 * This constructor use the CogniCyrpt Core plugin lib folder as classpath
 	 */
 	public CrySLModelReader(){
-		CryptSLStandaloneSetup cryptSLStandaloneSetup = new CryptSLStandaloneSetup();
-		final Injector injector = cryptSLStandaloneSetup.createInjectorAndDoEMFRegistration();
+		CrySLStandaloneSetup crySLStandaloneSetup = new CrySLStandaloneSetup();
+		final Injector injector = crySLStandaloneSetup.createInjectorAndDoEMFRegistration();
 		this.resourceSet = injector.getInstance(XtextResourceSet.class);
 		String coreLibFolderPath = Utils.getResourceFromWithin("lib").getAbsolutePath();
 		
@@ -168,7 +168,7 @@ public class CrySLModelReader {
 		testMode = true;
 	}
 
-	public CryptSLRule readRule(File ruleFile) {
+	public CrySLRule readRule(File ruleFile) {
 		final String fileName = ruleFile.getName();
 		final String extension = fileName.substring(fileName.lastIndexOf("."));
 		if (!Constants.cryslFileEnding.equals(extension)) {
@@ -210,18 +210,18 @@ public class CrySLModelReader {
 		constraints.addAll(((dm.getRequire() != null) ? collectRequiredPredicates(dm.getRequire().getPred()) : Lists.newArrayList()));
 		final List<Entry<String, String>> objects = getObjects(dm.getUsage());
 
-		final List<CryptSLPredicate> actPreds = Lists.newArrayList();
+		final List<CrySLPredicate> actPreds = Lists.newArrayList();
 
 		for (final ParEqualsPredicate pred : pre_preds.keySet()) {
 			final SuperType cond = pre_preds.get(pred);
 			if (cond == null) {
 				actPreds.add(pred.tobasicPredicate());
 			} else {
-				actPreds.add(new CryptSLCondPredicate(pred.getBaseObject(), pred.getPredName(), pred.getParameters(), pred.isNegated(),
+				actPreds.add(new CrySLCondPredicate(pred.getBaseObject(), pred.getPredName(), pred.getParameters(), pred.isNegated(),
 						getStatesForMethods(CrySLReaderUtils.resolveAggregateToMethodeNames(cond))));
 			}
 		}
-		final CryptSLRule rule = new CryptSLRule(curClass, objects, this.forbiddenMethods, this.smg, constraints, actPreds);
+		final CrySLRule rule = new CrySLRule(curClass, objects, this.forbiddenMethods, this.smg, constraints, actPreds);
 		if(!rule.getClassName().equalsIgnoreCase("void")) {
 			System.out.println(rule.getClassName());
 			System.out.println("===========================================");
@@ -245,8 +245,8 @@ public class CrySLModelReader {
 		} else {
 			for (Event ev : exp.getOrderEv()) {
 				if (ev instanceof SuperType) {
-					if (ev instanceof de.darmstadt.tu.crossing.cryptSL.Aggregate) {
-						for (Event lab : ((de.darmstadt.tu.crossing.cryptSL.Aggregate) ev).getLab()) {
+					if (ev instanceof de.darmstadt.tu.crossing.crySL.Aggregate) {
+						for (Event lab : ((de.darmstadt.tu.crossing.crySL.Aggregate) ev).getLab()) {
 							if (lab instanceof SuperType) {
 								collected.add(((SuperType) lab).getName());
 							} else {
@@ -262,11 +262,11 @@ public class CrySLModelReader {
 		return collected;
 	}
 
-	public List<CryptSLRule> readRulesOutside(String resourcesPath) throws CoreException {
-		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
+	public List<CrySLRule> readRulesOutside(String resourcesPath) throws CoreException {
+		List<CrySLRule> rules = new ArrayList<CrySLRule>();
 		for (File a : ((new File(resourcesPath)).listFiles())) {
 			if (!a.isDirectory() && a.exists() && a.canRead()) {
-				CryptSLRule rule = readRule(a);
+				CrySLRule rule = readRule(a);
 				if (rule != null) {
 					rules.add(rule);
 				}
@@ -276,16 +276,16 @@ public class CrySLModelReader {
 		return rules;
 	}
 
-	public List<CryptSLRule> readRulesWithin(String resourcesPath) throws CoreException {
+	public List<CrySLRule> readRulesWithin(String resourcesPath) throws CoreException {
 		final IPath rulesFolder = (new org.eclipse.core.runtime.Path(resourcesPath));
-		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
+		List<CrySLRule> rules = new ArrayList<CrySLRule>();
 		if (rulesFolder.segmentCount() == 1) {
 			return rules;
 		}
 		for (final IResource res : ResourcesPlugin.getWorkspace().getRoot().getFolder(rulesFolder).members()) {
 			if (Constants.cryslFileEnding.equals("." + res.getFileExtension())) {
 				File resAsFile = ((IFile) res).getRawLocation().makeAbsolute().toFile();
-				CryptSLRule rule = readRule(resAsFile);
+				CrySLRule rule = readRule(resAsFile);
 				if (rule != null) {
 					rules.add(rule);
 					File to = new File(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath() + Constants.innerFileSeparator
@@ -330,11 +330,11 @@ public class CrySLModelReader {
 				final ReqPred left = pred.getLeftExpression();
 				final ReqPred right = pred.getRightExpression();
 
-				List<CryptSLPredicate> altPreds = retrieveReqPredFromAltPreds(left);
+				List<CrySLPredicate> altPreds = retrieveReqPredFromAltPreds(left);
 				altPreds.add(extractReqPred(right));
-				reqPred = new CryptSLConstraint(altPreds.get(0), altPreds.get(1), LogOps.or);
+				reqPred = new CrySLConstraint(altPreds.get(0), altPreds.get(1), LogOps.or);
 				for (int i = 2; i < altPreds.size(); i++) {
-					reqPred = new CryptSLConstraint(reqPred, altPreds.get(i), LogOps.or);
+					reqPred = new CrySLConstraint(reqPred, altPreds.get(i), LogOps.or);
 				}
 			}
 			preds.add(reqPred);
@@ -343,8 +343,8 @@ public class CrySLModelReader {
 		return preds;
 	}
 
-	private List<CryptSLPredicate> retrieveReqPredFromAltPreds(ReqPred left) {
-		List<CryptSLPredicate> preds = new ArrayList<CryptSLPredicate>();
+	private List<CrySLPredicate> retrieveReqPredFromAltPreds(ReqPred left) {
+		List<CrySLPredicate> preds = new ArrayList<CrySLPredicate>();
 		if (left instanceof PredLit) {
 			preds.add(extractReqPred(left));
 		} else {
@@ -354,8 +354,8 @@ public class CrySLModelReader {
 		return preds;
 	}
 
-	private CryptSLPredicate extractReqPred(final ReqPred pred) {
-		final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
+	private CrySLPredicate extractReqPred(final ReqPred pred) {
+		final List<ICrySLPredicateParameter> variables = new ArrayList<>();
 		PredLit innerPred = (PredLit) pred;
 		final Constraint conditional = innerPred.getCons();
 		if (innerPred.getPred().getParList() != null) {
@@ -369,34 +369,34 @@ public class CrySLModelReader {
 
 					final String part = var.getVal().getPart();
 					if (part != null) {
-						variables.add(new CryptSLObject(variable, type, new CryptSLSplitter(Integer.parseInt(lit.getInd()), Utils.filterQuotes(lit.getSplit()))));
+						variables.add(new CrySLObject(variable, type, new CrySLSplitter(Integer.parseInt(lit.getInd()), Utils.filterQuotes(lit.getSplit()))));
 					} else {
-						variables.add(new CryptSLObject(variable, type));
+						variables.add(new CrySLObject(variable, type));
 					}
 				} else {
-					variables.add(new CryptSLObject(UNDERSCORE, NULL));
+					variables.add(new CrySLObject(UNDERSCORE, NULL));
 				}
 			}
 		}
-		return new CryptSLPredicate(null, innerPred.getPred().getPredName(), variables, (innerPred.getNot() != null ? true : false), getConstraint(conditional));
+		return new CrySLPredicate(null, innerPred.getPred().getPredName(), variables, (innerPred.getNot() != null ? true : false), getConstraint(conditional));
 	}
 
-	private CryptSLArithmeticConstraint convertLiteralToArithmetic(final Constraint expression) {
+	private CrySLArithmeticConstraint convertLiteralToArithmetic(final Constraint expression) {
 		final LiteralExpression cons = (LiteralExpression) ((LiteralExpression) expression).getCons();
-		ICryptSLPredicateParameter name;
+		ICrySLPredicateParameter name;
 		if (cons instanceof PreDefinedPredicates) {
 			name = getPredefinedPredicate((LiteralExpression) expression);
 		} else {
 			final EObject constraint = cons.getName();
 			final String object = getValueOfLiteral(constraint);
 			if (constraint instanceof LiteralExpression) {
-				name = new CryptSLObject(object, ((ObjectDecl) ((ObjectImpl) ((LiteralExpression) constraint).getValue()).eContainer()).getObjectType().getQualifiedName());
+				name = new CrySLObject(object, ((ObjectDecl) ((ObjectImpl) ((LiteralExpression) constraint).getValue()).eContainer()).getObjectType().getQualifiedName());
 			} else {
-				name = new CryptSLObject(object, INT);
+				name = new CrySLObject(object, INT);
 			}
 		}
 
-		return new CryptSLArithmeticConstraint(name, new CryptSLObject("0", INT), crypto.rules.CryptSLArithmeticConstraint.ArithOp.p);
+		return new CrySLArithmeticConstraint(name, new CrySLObject("0", INT), crypto.rules.CrySLArithmeticConstraint.ArithOp.p);
 	}
 
 	private ISLConstraint getConstraint(final Constraint cons) {
@@ -414,13 +414,13 @@ public class CrySLModelReader {
 			}
 			ObjectDecl leftObj =
 					(ObjectDecl) ((ObjectImpl) ((LiteralExpression) ((LiteralExpression) ((LiteralExpression) ae.getLeftExpression()).getCons()).getName()).getValue()).eContainer();
-			CryptSLObject leftSide = new CryptSLObject(leftObj.getObjectName().getName(), leftObj.getObjectType().getQualifiedName());
+			CrySLObject leftSide = new CrySLObject(leftObj.getObjectName().getName(), leftObj.getObjectType().getQualifiedName());
 
 			ObjectDecl rightObj =
 					(ObjectDecl) ((ObjectImpl) ((LiteralExpression) ((LiteralExpression) ((LiteralExpression) ae.getRightExpression()).getCons()).getName()).getValue()).eContainer();
-			CryptSLObject rightSide = new CryptSLObject(rightObj.getObjectName().getName(), rightObj.getObjectType().getQualifiedName());
+			CrySLObject rightSide = new CrySLObject(rightObj.getObjectName().getName(), rightObj.getObjectType().getQualifiedName());
 
-			slci = new CryptSLArithmeticConstraint(leftSide, rightSide, operator);
+			slci = new CrySLArithmeticConstraint(leftSide, rightSide, operator);
 		} else if (cons instanceof LiteralExpression) {
 			final LiteralExpression lit = (LiteralExpression) cons;
 			final List<String> parList = new ArrayList<>();
@@ -436,9 +436,9 @@ public class CrySLModelReader {
 				if (part != null) {
 					final LiteralExpression name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getLit().getName();
 					final SuperType object = name.getValue();
-					final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(),
-							new CryptSLSplitter(Integer.parseInt(((ArrayElements) lit.getCons()).getCons().getInd()), Utils.filterQuotes(((ArrayElements) lit.getCons()).getCons().getSplit())));
-					slci = new CryptSLValueConstraint(variable, parList);
+					final CrySLObject variable = new CrySLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(),
+							new CrySLSplitter(Integer.parseInt(((ArrayElements) lit.getCons()).getCons().getInd()), Utils.filterQuotes(((ArrayElements) lit.getCons()).getCons().getSplit())));
+					slci = new CrySLValueConstraint(variable, parList);
 				} else {
 					final String consPred = ((ArrayElements) lit.getCons()).getCons().getConsPred();
 					if (consPred != null) {
@@ -447,19 +447,19 @@ public class CrySLModelReader {
 						int ind;
 						if (consPred.equals("alg(")) {
 							ind = 0;
-							final CryptSLObject variable =
-									new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(), new CryptSLSplitter(ind, Utils.filterQuotes("/")));
-							slci = new CryptSLValueConstraint(variable, parList);
+							final CrySLObject variable =
+									new CrySLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(), new CrySLSplitter(ind, Utils.filterQuotes("/")));
+							slci = new CrySLValueConstraint(variable, parList);
 						} else if (consPred.equals("mode(")) {
 							ind = 1;
-							final CryptSLObject variable =
-									new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(), new CryptSLSplitter(ind, Utils.filterQuotes("/")));
-							slci = new CryptSLValueConstraint(variable, parList);
+							final CrySLObject variable =
+									new CrySLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(), new CrySLSplitter(ind, Utils.filterQuotes("/")));
+							slci = new CrySLValueConstraint(variable, parList);
 						} else if (consPred.equals("pad(")) {
 							ind = 2;
-							final CryptSLObject variable =
-									new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(), new CryptSLSplitter(ind, Utils.filterQuotes("/")));
-							slci = new CryptSLValueConstraint(variable, parList);
+							final CrySLObject variable =
+									new CrySLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName(), new CrySLSplitter(ind, Utils.filterQuotes("/")));
+							slci = new CrySLValueConstraint(variable, parList);
 						}
 					} else {
 						LiteralExpression name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getName();
@@ -467,8 +467,8 @@ public class CrySLModelReader {
 							name = (LiteralExpression) ((ArrayElements) lit.getCons()).getCons().getLit().getName();
 						}
 						final SuperType object = name.getValue();
-						final CryptSLObject variable = new CryptSLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName());
-						slci = new CryptSLValueConstraint(variable, parList);
+						final CrySLObject variable = new CrySLObject(object.getName(), ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName());
+						slci = new CrySLValueConstraint(variable, parList);
 					}
 				}
 			}
@@ -494,14 +494,14 @@ public class CrySLModelReader {
 				default:
 					op = CompOp.eq;
 			}
-			CryptSLArithmeticConstraint left;
-			CryptSLArithmeticConstraint right;
+			CrySLArithmeticConstraint left;
+			CrySLArithmeticConstraint right;
 
 			final Constraint leftExpression = comp.getLeftExpression();
 			if (leftExpression instanceof LiteralExpression) {
 				left = convertLiteralToArithmetic(leftExpression);
 			} else {
-				left = (CryptSLArithmeticConstraint) leftExpression;
+				left = (CrySLArithmeticConstraint) leftExpression;
 			}
 
 			final Constraint rightExpression = comp.getRightExpression();
@@ -520,37 +520,37 @@ public class CrySLModelReader {
 					operator = ArithOp.n;
 				}
 
-				right = new CryptSLArithmeticConstraint(
-						new CryptSLObject(leftValue,
+				right = new CrySLArithmeticConstraint(
+						new CrySLObject(leftValue,
 								((ObjectDecl) ((LiteralExpression) ((LiteralExpression) ((LiteralExpression) ar.getLeftExpression()).getCons()).getName()).getValue().eContainer()).getObjectType()
 										.getQualifiedName()),
-						new CryptSLObject(rightValue,
+						new CrySLObject(rightValue,
 								((ObjectDecl) ((LiteralExpression) ((LiteralExpression) ((LiteralExpression) ar.getRightExpression()).getCons()).getName()).getValue().eContainer()).getObjectType()
 										.getQualifiedName()),
 						operator);
 			}
-			slci = new CryptSLComparisonConstraint(left, right, op);
+			slci = new CrySLComparisonConstraint(left, right, op);
 		} else if (cons instanceof UnaryPreExpression) {
 			final UnaryPreExpression un = (UnaryPreExpression) cons;
-			final List<ICryptSLPredicateParameter> vars = new ArrayList<>();
+			final List<ICrySLPredicateParameter> vars = new ArrayList<>();
 			final Pred innerPredicate = (Pred) un.getEnclosedExpression();
 			if (innerPredicate.getParList() != null) {
 				for (final SuPar sup : innerPredicate.getParList().getParameters()) {
-					vars.add(new CryptSLObject(UNDERSCORE, NULL));
+					vars.add(new CrySLObject(UNDERSCORE, NULL));
 				}
 			}
-			slci = new CryptSLPredicate(null, innerPredicate.getPredName(), vars, true);
+			slci = new CrySLPredicate(null, innerPredicate.getPredName(), vars, true);
 		} else if (cons instanceof Pred) {
 			if (((Pred) cons).getPredName() != null && !((Pred) cons).getPredName().isEmpty()) {
-				final List<ICryptSLPredicateParameter> vars = new ArrayList<>();
+				final List<ICrySLPredicateParameter> vars = new ArrayList<>();
 
 				final SuParList parList = ((Pred) cons).getParList();
 				if (parList != null) {
 					for (final SuPar sup : parList.getParameters()) {
-						vars.add(new CryptSLObject(UNDERSCORE, NULL));
+						vars.add(new CrySLObject(UNDERSCORE, NULL));
 					}
 				}
-				slci = new CryptSLPredicate(null, ((Pred) cons).getPredName(), vars, false);
+				slci = new CrySLPredicate(null, ((Pred) cons).getPredName(), vars, false);
 			}
 		} else if (cons instanceof Constraint) {
 			LogOps op = null;
@@ -570,29 +570,29 @@ public class CrySLModelReader {
 						op = LogOps.and;
 				}
 			}
-			slci = new CryptSLConstraint(getConstraint(cons.getLeftExpression()), getConstraint(cons.getRightExpression()), op);
+			slci = new CrySLConstraint(getConstraint(cons.getLeftExpression()), getConstraint(cons.getRightExpression()), op);
 
 		}
 
 		return slci;
 	}
 
-	private List<CryptSLForbiddenMethod> getForbiddenMethods(final EList<ForbMethod> methods) {
-		final List<CryptSLForbiddenMethod> methodSignatures = new ArrayList<>();
+	private List<CrySLForbiddenMethod> getForbiddenMethods(final EList<ForbMethod> methods) {
+		final List<CrySLForbiddenMethod> methodSignatures = new ArrayList<>();
 		for (final ForbMethod fm : methods) {
 			final JvmExecutable meth = fm.getJavaMeth();
 			final List<Entry<String, String>> pars = new ArrayList<>();
 			for (final JvmFormalParameter par : meth.getParameters()) {
 				pars.add(new SimpleEntry<>(par.getSimpleName(), par.getParameterType().getSimpleName()));
 			}
-			final List<CryptSLMethod> crysl = new ArrayList<>();
+			final List<CrySLMethod> crysl = new ArrayList<>();
 
 			final Event alternative = fm.getRep();
 			if (alternative != null) {
 				crysl.addAll(CrySLReaderUtils.resolveAggregateToMethodeNames(alternative));
 			}
-			methodSignatures.add(new CryptSLForbiddenMethod(
-					new CryptSLMethod(meth.getDeclaringType().getIdentifier() + "." + meth.getSimpleName(), pars, null, new SimpleEntry<>(UNDERSCORE, ANY_TYPE)), false, crysl));
+			methodSignatures.add(new CrySLForbiddenMethod(
+					new CrySLMethod(meth.getDeclaringType().getIdentifier() + "." + meth.getSimpleName(), pars, null, new SimpleEntry<>(UNDERSCORE, ANY_TYPE)), false, crysl));
 		}
 		return methodSignatures;
 	}
@@ -602,7 +602,7 @@ public class CrySLModelReader {
 		for (final Constraint cons : eList) {
 			final Pred pred = (Pred) cons.getPredLit().getPred();
 
-			final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
+			final List<ICrySLPredicateParameter> variables = new ArrayList<>();
 
 			if (pred.getParList() != null) {
 				for (final SuPar var : pred.getParList().getParameters()) {
@@ -614,9 +614,9 @@ public class CrySLModelReader {
 							name = THIS;
 							type = "";// this.curClass;
 						}
-						variables.add(new CryptSLObject(name, type));
+						variables.add(new CrySLObject(name, type));
 					} else {
-						variables.add(new CryptSLObject(UNDERSCORE, NULL));
+						variables.add(new CrySLObject(UNDERSCORE, NULL));
 					}
 				}
 			}
@@ -647,50 +647,50 @@ public class CrySLModelReader {
 		ISLConstraint slci = null;
 		switch (pred) {
 			case "callTo":
-				final List<ICryptSLPredicateParameter> methodsToBeCalled = new ArrayList<>();
+				final List<ICrySLPredicateParameter> methodsToBeCalled = new ArrayList<>();
 				methodsToBeCalled.addAll(CrySLReaderUtils.resolveAggregateToMethodeNames(((PreDefinedPredicates) lit.getCons()).getObj().get(0)));
-				slci = new CryptSLPredicate(null, pred, methodsToBeCalled, false);
+				slci = new CrySLPredicate(null, pred, methodsToBeCalled, false);
 				break;
 			case "noCallTo":
-				final List<ICryptSLPredicateParameter> methodsNotToBeCalled = new ArrayList<>();
-				final List<CryptSLMethod> resolvedMethodNames = CrySLReaderUtils.resolveAggregateToMethodeNames(((PreDefinedPredicates) lit.getCons()).getObj().get(0));
-				for (final CryptSLMethod csm : resolvedMethodNames) {
-					this.forbiddenMethods.add(new CryptSLForbiddenMethod(csm, true));
+				final List<ICrySLPredicateParameter> methodsNotToBeCalled = new ArrayList<>();
+				final List<CrySLMethod> resolvedMethodNames = CrySLReaderUtils.resolveAggregateToMethodeNames(((PreDefinedPredicates) lit.getCons()).getObj().get(0));
+				for (final CrySLMethod csm : resolvedMethodNames) {
+					this.forbiddenMethods.add(new CrySLForbiddenMethod(csm, true));
 					methodsNotToBeCalled.add(csm);
 				}
-				slci = new CryptSLPredicate(null, pred, methodsNotToBeCalled, false);
+				slci = new CrySLPredicate(null, pred, methodsNotToBeCalled, false);
 				break;
 			case "neverTypeOf":
-				final List<ICryptSLPredicateParameter> varNType = new ArrayList<>();
-				final Object object = (de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0);
+				final List<ICrySLPredicateParameter> varNType = new ArrayList<>();
+				final Object object = (de.darmstadt.tu.crossing.crySL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0);
 				final String type = ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName();
-				varNType.add(new CryptSLObject(object.getName(), type));
+				varNType.add(new CrySLObject(object.getName(), type));
 				final String qualifiedName = ((PreDefinedPredicates) lit.getCons()).getType().getType().getQualifiedName();
-				varNType.add(new CryptSLObject(qualifiedName, NULL));
-				slci = new CryptSLPredicate(null, pred, varNType, false);
+				varNType.add(new CrySLObject(qualifiedName, NULL));
+				slci = new CrySLPredicate(null, pred, varNType, false);
 				break;
 			case "length":
-				final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
-				final Object objectL = (de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0);
+				final List<ICrySLPredicateParameter> variables = new ArrayList<>();
+				final Object objectL = (de.darmstadt.tu.crossing.crySL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0);
 				final String typeL = ((ObjectDecl) objectL.eContainer()).getObjectType().getQualifiedName();
-				variables.add(new CryptSLObject(objectL.getName(), typeL));
-				slci = new CryptSLPredicate(null, pred, variables, false);
+				variables.add(new CrySLObject(objectL.getName(), typeL));
+				slci = new CrySLPredicate(null, pred, variables, false);
 				break;
 			case "notHardCoded":
-				final List<ICryptSLPredicateParameter> variables1 = new ArrayList<>();
-				final Object objectL1 = (de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0);
+				final List<ICrySLPredicateParameter> variables1 = new ArrayList<>();
+				final Object objectL1 = (de.darmstadt.tu.crossing.crySL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0);
 				final String typeL1 = ((ObjectDecl) objectL1.eContainer()).getObjectType().getQualifiedName();
-				variables1.add(new CryptSLObject(objectL1.getName(), typeL1));
-				slci = new CryptSLPredicate(null, pred, variables1, false);
+				variables1.add(new CrySLObject(objectL1.getName(), typeL1));
+				slci = new CrySLPredicate(null, pred, variables1, false);
 				break;
 			case "instanceOf":
-				final List<ICryptSLPredicateParameter> varInstOf = new ArrayList<>();
-				final Object objInstOf = (de.darmstadt.tu.crossing.cryptSL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0);
+				final List<ICrySLPredicateParameter> varInstOf = new ArrayList<>();
+				final Object objInstOf = (de.darmstadt.tu.crossing.crySL.Object) ((PreDefinedPredicates) lit.getCons()).getObj().get(0);
 				final String instOfType = ((ObjectDecl) objInstOf.eContainer()).getObjectType().getQualifiedName();
-				varInstOf.add(new CryptSLObject(objInstOf.getName(), instOfType));
+				varInstOf.add(new CrySLObject(objInstOf.getName(), instOfType));
 				final String typeName = ((PreDefinedPredicates) lit.getCons()).getType().getType().getQualifiedName();
-				varInstOf.add(new CryptSLObject(typeName, NULL));
-				slci = new CryptSLPredicate(null, pred, varInstOf, false);
+				varInstOf.add(new CrySLObject(typeName, NULL));
+				slci = new CrySLPredicate(null, pred, varInstOf, false);
 				break;
 			default:
 				new RuntimeException();
@@ -703,7 +703,7 @@ public class CrySLModelReader {
 		for (final Constraint cons : predList) {
 			final Pred pred = (Pred) cons.getPredLit().getPred();
 			String curClass = ((DomainmodelImpl) cons.eContainer().eContainer()).getJavaType().getQualifiedName();
-			final List<ICryptSLPredicateParameter> variables = new ArrayList<>();
+			final List<ICrySLPredicateParameter> variables = new ArrayList<>();
 
 			if (pred.getParList() != null) {
 				boolean firstPar = true;
@@ -716,19 +716,19 @@ public class CrySLModelReader {
 							name = THIS;
 							type = curClass;
 						}
-						variables.add(new CryptSLObject(name, type));
+						variables.add(new CrySLObject(name, type));
 					} else {
 						if (firstPar) {
-							variables.add(new CryptSLObject(THIS, curClass));
+							variables.add(new CrySLObject(THIS, curClass));
 						} else {
-							variables.add(new CryptSLObject(UNDERSCORE, NULL));
+							variables.add(new CrySLObject(UNDERSCORE, NULL));
 						}
 					}
 					firstPar = false;
 				}
 			}
 			
-			final CryptSLPredicate ensPredCons = extractReqPred(cons.getPredLit());
+			final CrySLPredicate ensPredCons = extractReqPred(cons.getPredLit());
 			final String meth = pred.getPredName();
 			final SuperType cond = cons.getLabelCond(); 
 			if (cond == null) {
@@ -741,11 +741,11 @@ public class CrySLModelReader {
 		return preds;
 	}
 
-	private Set<StateNode> getStatesForMethods(final List<CryptSLMethod> condMethods) {
+	private Set<StateNode> getStatesForMethods(final List<CrySLMethod> condMethods) {
 		final Set<StateNode> predGens = new HashSet<>();
 		if (condMethods.size() != 0) {
 			for (final TransitionEdge methTrans : this.smg.getAllTransitions()) {
-				final List<CryptSLMethod> transLabel = methTrans.getLabel();
+				final List<CrySLMethod> transLabel = methTrans.getLabel();
 				if (transLabel.size() > 0 && (transLabel.equals(condMethods) || (condMethods.size() == 1 && transLabel.contains(condMethods.get(0))))) {
 					predGens.add(methTrans.getRight());
 				}

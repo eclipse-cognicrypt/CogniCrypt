@@ -570,8 +570,8 @@ public class Constants {
 	// define a correct ID (get range of possible ones)
 	public static final int JDT_PROBLEM_ID = 10000000;
 	public final static String ECLIPSE_RULES_DIR = System.getProperty("user.dir");
-	public static final String cryslFileEnding = ".cryptsl";
-	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CryptSL";
+	public static final String cryslFileEnding = ".crysl";
+	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CrySL";
 	public static final String HEALTHY = "Secure";
 	public static final String UNHEALTHY = "Insecure";
 
@@ -585,9 +585,9 @@ public class Constants {
  	public static final String TABLE_HEADER_VERSION = "Version";
  	public static final String TABLE_HEADER_URL = "URL";
  	
- 	public static final Double MIN_JCA_RULE_VERSION = 1.1;
- 	public static final Double MIN_BC_RULE_VERSION = 0.6;
- 	public static final Double MIN_TINK_RULE_VERSION = 0.2;
+ 	public static final Double MIN_JCA_RULE_VERSION = 1.4;
+ 	public static final Double MIN_BC_RULE_VERSION = 0.7;
+ 	public static final Double MIN_TINK_RULE_VERSION = 0.3;
 
  	//Configuration.ini keys
  	public static final String INI_URL_HEADER = "URLS";

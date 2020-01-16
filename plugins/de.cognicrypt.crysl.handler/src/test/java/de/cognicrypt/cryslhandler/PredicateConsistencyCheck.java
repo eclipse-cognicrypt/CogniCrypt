@@ -17,19 +17,19 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
-import crypto.rules.CryptSLPredicate;
-import crypto.rules.CryptSLRule;
+import crypto.rules.CrySLPredicate;
+import crypto.rules.CrySLRule;
 import de.cognicrypt.crysl.reader.CrySLModelReader;
 
 public class PredicateConsistencyCheck {
 
 	@Test
 	public void predicateParameterNumberConsistencyTest() throws MalformedURLException, CoreException {
-		List<CryptSLRule> rules = (new CrySLModelReader()).readRulesOutside("../de.cognicrypt.core/resources/CrySLRules/JavaCryptographicArchitecture");
+		List<CrySLRule> rules = (new CrySLModelReader()).readRulesOutside("../de.cognicrypt.core/resources/CrySLRules/JavaCryptographicArchitecture");
 		Map<String, List<PredicateDetails>> predicates = new HashMap<String, List<PredicateDetails>>();
-		for (CryptSLRule rule : rules) {
+		for (CrySLRule rule : rules) {
 
-			for (CryptSLPredicate pred : rule.getPredicates()) {
+			for (CrySLPredicate pred : rule.getPredicates()) {
 				String predName = pred.getPredName();
 				if (!predicates.containsKey(predName)) {
 					predicates.put(predName, new ArrayList<PredicateDetails>());
@@ -38,7 +38,7 @@ public class PredicateConsistencyCheck {
 				predDetails.add(new PredicateDetails(rule.getClassName(), pred.getParameters().size()));
 			}
 
-			for (CryptSLPredicate pred : rule.getRequiredPredicates()) {
+			for (CrySLPredicate pred : rule.getRequiredPredicates()) {
 				String predName = pred.getPredName();
 				if (!predicates.containsKey(predName)) {
 					predicates.put(predName, new ArrayList<PredicateDetails>());

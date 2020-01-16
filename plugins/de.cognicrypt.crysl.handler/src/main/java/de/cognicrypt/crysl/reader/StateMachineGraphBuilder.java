@@ -18,14 +18,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import crypto.rules.CryptSLMethod;
+import crypto.rules.CrySLMethod;
 import crypto.rules.StateMachineGraph;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
 import de.cognicrypt.utils.Utils;
-import de.darmstadt.tu.crossing.cryptSL.Expression;
-import de.darmstadt.tu.crossing.cryptSL.Order;
-import de.darmstadt.tu.crossing.cryptSL.SimpleOrder;
+import de.darmstadt.tu.crossing.crySL.Expression;
+import de.darmstadt.tu.crossing.crySL.Order;
+import de.darmstadt.tu.crossing.crySL.SimpleOrder;
 
 public class StateMachineGraphBuilder {
 
@@ -43,11 +43,11 @@ public class StateMachineGraphBuilder {
 	}
 
 	private StateNode addRegularEdge(final Expression leaf, final StateNode prevNode, final StateNode nextNode, final Boolean isStillAccepting) {
-		final List<CryptSLMethod> label = CrySLReaderUtils.resolveAggregateToMethodeNames(leaf.getOrderEv().get(0));
+		final List<CrySLMethod> label = CrySLReaderUtils.resolveAggregateToMethodeNames(leaf.getOrderEv().get(0));
 		return addRegularEdge(label, prevNode, nextNode, isStillAccepting);
 	}
 
-	private StateNode addRegularEdge(final List<CryptSLMethod> label, final StateNode prevNode, StateNode nextNode, final Boolean isStillAccepting) {
+	private StateNode addRegularEdge(final List<CrySLMethod> label, final StateNode prevNode, StateNode nextNode, final Boolean isStillAccepting) {
 		if (nextNode == null) {
 			nextNode = getNewNode();
 			this.result.addNode(nextNode);
@@ -67,7 +67,7 @@ public class StateMachineGraphBuilder {
 		if (this.head != null) {
 			processHead(this.head, 0, HashMultimap.create(), initialNode);
 		} else {
-			this.result.addEdge(new TransitionEdge(new ArrayList<CryptSLMethod>(), initialNode, initialNode));
+			this.result.addEdge(new TransitionEdge(new ArrayList<CrySLMethod>(), initialNode, initialNode));
 		}
 		return this.result;
 	}

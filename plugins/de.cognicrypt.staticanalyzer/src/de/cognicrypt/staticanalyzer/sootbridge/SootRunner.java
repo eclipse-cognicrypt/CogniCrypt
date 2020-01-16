@@ -42,8 +42,8 @@ import boomerang.callgraph.ObservableICFG;
 import boomerang.preanalysis.BoomerangPretransformer;
 import crypto.analysis.CrySLRulesetSelector.RuleFormat;
 import crypto.analysis.CryptoScanner;
-import crypto.rules.CryptSLRule;
-import crypto.rules.CryptSLRuleReader;
+import crypto.rules.CrySLRule;
+import crypto.rules.CrySLRuleReader;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.crysl.reader.CrySLModelReader;
 import de.cognicrypt.staticanalyzer.Activator;
@@ -90,9 +90,9 @@ public class SootRunner {
 		};
 	}
 
-	private static List<CryptSLRule> getRules(IProject project) {
+	private static List<CrySLRule> getRules(IProject project) {
 		
-		List<CryptSLRule> rules = Lists.newArrayList();
+		List<CrySLRule> rules = Lists.newArrayList();
 		// TODO Select rules according to selected rulesets in preference page. The CrySL rules for each ruleset are in a separate subdirectory of "/resources/CrySLRules/".
 		Set<String> readRules = Sets.newHashSet();
  		IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
@@ -100,13 +100,13 @@ public class SootRunner {
 		try {
 			CrySLModelReader r = new CrySLModelReader(project);
 			for (String path : projectClassPath(JavaCore.create(project))) {
-				List<CryptSLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
+				List<CrySLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
 				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
 
 			for (String path : applicationClassPath(JavaCore.create(project))) {
-				List<CryptSLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
+				List<CrySLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
 				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
@@ -119,7 +119,7 @@ public class SootRunner {
  								(file, attr) -> file.toString().endsWith(RuleFormat.SOURCE.toString()))
  						.map(path -> {
  								readRules.add(path.getFileName().toString());
- 								return CryptSLRuleReader.readFromSourceFile(path.toFile());
+ 								return CrySLRuleReader.readFromSourceFile(path.toFile());
  						}).collect(Collectors.toList()));
  			}
 			
@@ -246,7 +246,7 @@ public class SootRunner {
 
 	private static List<String> getExcludeList(IJavaProject project) {
 		final List<String> excludeList = new LinkedList<String>();
-		for (final CryptSLRule r : getRules(project.getProject())) {
+		for (final CrySLRule r : getRules(project.getProject())) {
 			try {
 				String fullyQualifiedName = crypto.Utils.getFullyQualifiedName(r);
 				excludeList.add(fullyQualifiedName);

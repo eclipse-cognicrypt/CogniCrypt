@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -368,9 +369,9 @@ public class Utils {
  		versions.sort(new Comparator<String>() {
  			@Override
  			public int compare(String o1, String o2) {
- 				Double one = Double.valueOf(o1);
- 				Double two = Double.valueOf(o2);
- 				return one.compareTo(two);
+ 				DefaultArtifactVersion v1 = new DefaultArtifactVersion(o1);
+  				DefaultArtifactVersion v2 = new DefaultArtifactVersion(o2);
+  				return v1.compareTo(v2);
  			}
  		});
 

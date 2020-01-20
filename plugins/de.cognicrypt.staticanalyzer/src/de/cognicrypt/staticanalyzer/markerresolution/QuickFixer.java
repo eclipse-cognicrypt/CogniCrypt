@@ -28,8 +28,8 @@ import de.cognicrypt.staticanalyzer.Activator;
 public class QuickFixer implements IMarkerResolutionGenerator {
 
 	private List<String> secureExtenernalSources = Arrays.asList(new String[] {"randomized", "generatedKey", "generatedKeyPair", "generatedPubKey", "generatedPrivKey"});
-
 	private List<IMarkerResolution> quickFixes;
+	private boolean isSuppressed = false;
 
 	@Override
 	public IMarkerResolution[] getResolutions(final IMarker mk) {
@@ -42,18 +42,23 @@ public class QuickFixer implements IMarkerResolutionGenerator {
 			errorType = (String) mk.getAttribute("errorType");
 			message = (String) mk.getAttribute(IMarker.MESSAGE);
 			if (severity == 2) {
+				isSuppressed = false;
 				quickFixes.add(new SuppressWarningFix(Constants.SUPPRESSWARNING_FIX + message));
-			} else if (severity == 0) {
+			} else if (severity == 0) {				
+				isSuppressed = true;
 				quickFixes.add(new UnSuppressWarningFix(Constants.UNSUPPRESSWARNING_FIX + message));
 			}
-
-			if (errorType.equals(Constants.REQUIRED_PREDICATE_MARKER_TYPE)) {
+			
+			// we need this check, because the ensuring of a predicate with more as one parameter does not work currently.
+			if(!isSuppressed) {
 				String predicate = (String) mk.getAttribute("predicate");
-
-				if (secureExtenernalSources.contains(predicate)) {
-					quickFixes.add(new EnsuresPredicateFix("This object comes from a stream/database/other external source and is actually secure."));
+				if (errorType.equals(Constants.REQUIRED_PREDICATE_MARKER_TYPE) && predicate != null) {
+					if(secureExtenernalSources.contains(predicate)) {					
+						quickFixes.add(new EnsuresPredicateFix("This object comes from a stream/database/other external source and is actually secure."));
+					}
 				}
 			}
+			
 		}
 		catch (final CoreException e) {
 			Activator.getDefault().logError(e);

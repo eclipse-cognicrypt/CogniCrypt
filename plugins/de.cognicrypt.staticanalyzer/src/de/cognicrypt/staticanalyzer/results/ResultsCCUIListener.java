@@ -1,7 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
- * 
-
+ * Copyright (c) 2015-2018 TU Darmstadt This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
@@ -36,7 +34,7 @@ import boomerang.jimple.Val;
 import boomerang.results.ForwardBoomerangResults;
 import crypto.analysis.AnalysisSeedWithSpecification;
 import crypto.analysis.CrySLAnalysisListener;
-import crypto.analysis.EnsuredCryptSLPredicate;
+import crypto.analysis.EnsuredCrySLPredicate;
 import crypto.analysis.IAnalysisSeed;
 import crypto.analysis.errors.AbstractError;
 import crypto.analysis.errors.ConstraintError;
@@ -50,7 +48,7 @@ import crypto.analysis.errors.TypestateError;
 import crypto.extractparameter.CallSiteWithParamIndex;
 import crypto.extractparameter.ExtractedValue;
 import crypto.interfaces.ISLConstraint;
-import crypto.rules.CryptSLPredicate;
+import crypto.rules.CrySLPredicate;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.Severities;
 import de.cognicrypt.staticanalyzer.Activator;
@@ -71,7 +69,8 @@ import soot.tagkit.AbstractHost;
 import typestate.TransitionFunction;
 
 /**
- * This listener is notified of any misuses the analysis finds. It also reports the results of the analysis to the Statistics View
+ * This listener is notified of any misuses the analysis finds. It also reports
+ * the results of the analysis to the Statistics View
  *
  * @author Stefan Krueger
  * @author Andre Sonntag
@@ -87,6 +86,14 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	private Boolean depOnly = false;
 	private static Stats stat;
 
+	private int totalSeeds;
+	private int processedSeeds;
+	private int percentCompleted;
+	private int workUnitsCompleted;
+	private boolean cgGenComplete;
+	private int work = 0;
+	private int tempWork = 0;
+	
 	private ResultsCCUIListener(final IProject curProj, final ErrorMarkerGenerator gen) {
 		this.currentProject = curProj;
 		this.markerGenerator = gen;
@@ -131,10 +138,10 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			for (IPackageDeclaration decl : javaFile.getPackageDeclarations()) {
 				className += decl.getElementName() + ".";
 			}
+		} catch (JavaModelException e1) {
 		}
-		catch (JavaModelException e1) {}
 		className += javaFile.getElementName().substring(0, javaFile.getElementName().lastIndexOf("."));
-
+		
 		if (stat.getClassesAnalysed().containsKey(className)) {
 			AnalysisData data = stat.getClassesAnalysed().get(className);
 			data.addError(error);
@@ -160,14 +167,14 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		} else if (error instanceof RequiredPredicateError) {
 			markerType = Constants.REQUIRED_PREDICATE_MARKER_TYPE;
 			errorInfoMap.put("predicate", ((RequiredPredicateError) error).getContradictedPredicate().getPredName());
-
+			errorInfoMap.put("predicateParamCount", ((RequiredPredicateError) error).getContradictedPredicate().getParameters().size()+"");
 			int errorIndex = ((RequiredPredicateError) error).getExtractedValues().getCallSite().getIndex();
-			if (errorLocation.getUnit().get().containsInvokeExpr()) {
+			errorInfoMap.put("errorParamIndex", errorIndex+"");
+			if(errorLocation.getUnit().get().containsInvokeExpr()) {
 				InvokeExpr invoke = errorLocation.getUnit().get().getInvokeExpr();
 				String errorParam = invoke.getArg(errorIndex).toString();
 				errorInfoMap.put("errorParam", errorParam);
 			}
-
 		} else if (error instanceof ConstraintError) {
 			markerType = Constants.CONSTRAINT_ERROR_MARKER_TYPE;
 		} else if (error instanceof NeverTypeOfError) {
@@ -190,7 +197,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		if (sev == Severities.Ignored) {
 			return;
 		}
-
+		
 		this.warningFilePath = sourceFile.getProject().getLocation().toOSString() + Constants.outerFileSeparator + Constants.SUPPRESSWARNING_FILE;
 		final File warningsFile = new File(this.warningFilePath);
 
@@ -211,10 +218,10 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 				this.xmlParser.writeXML();
 				// last parameter(true) implies that the error was suppressed and info marker has to be shown.
 				this.markerGenerator.addMarker(markerType, stmtId, sourceFile, lineNumber, errorMessage, sev, errorInfoMap, true);
+
 				try {
 					this.currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-				}
-				catch (final CoreException e) {
+				} catch (final CoreException e) {
 					Activator.getDefault().logError(e);
 				}
 				this.suppressedWarningIds.add(idAsString);
@@ -233,7 +240,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			final Statement stmt = secureObject.stmt();
 			final Stmt unit = stmt.getUnit().get();
 			final List<ValueBox> useAndDefBoxes = unit.getUseAndDefBoxes();
-			final Optional<ValueBox> varOpt = useAndDefBoxes.stream().filter(e -> e instanceof JimpleLocalBox).findFirst();
+			final Optional<ValueBox> varOpt = useAndDefBoxes.stream().filter(e -> e instanceof JimpleLocalBox)
+					.findFirst();
 			ValueBox var = null;
 			if (varOpt.isPresent()) {
 				var = varOpt.get();
@@ -248,30 +256,31 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			final Value varName = var.getValue();
 			this.markerGenerator.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt), unit.getJavaSourceStartLineNumber(),
 					"Object " + (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", Severities.Info, new HashMap<>(),
-					false);
-		}
+					false);	}
 	}
 
 	/**
-	 * This method removes superfluous suppressed warning entries from the SuppressWarnings.xml file.
+	 * This method removes superfluous suppressed warning entries from the
+	 * SuppressWarnings.xml file.
 	 */
 	public void removeUndetectableWarnings() {
 		if (this.suppressedWarningIds.size() > 0) {
 
-			final ArrayList<String> allSuppressedWarningIds = this.xmlParser.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR);
+			final ArrayList<String> allSuppressedWarningIds = this.xmlParser
+					.getAttrValuesByAttrName(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR);
 
 			final ArrayList<String> difference = new ArrayList<>(allSuppressedWarningIds.size());
 			difference.addAll(allSuppressedWarningIds);
 			difference.removeAll(this.suppressedWarningIds);
 
 			for (int i = 0; i < difference.size(); i++) {
-				this.xmlParser.removeNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR, difference.get(i));
+				this.xmlParser.removeNodeByAttrValue(Constants.SUPPRESSWARNING_ELEMENT, Constants.ID_ATTR,
+						difference.get(i));
 			}
 			this.xmlParser.writeXML();
 			try {
 				this.currentProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-			}
-			catch (final CoreException e) {
+			} catch (final CoreException e) {
 				Activator.getDefault().logError(e);
 			}
 		}
@@ -282,8 +291,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final SootClass className = stmt.getMethod().getDeclaringClass();
 		try {
 			return Utils.findClassByName(className.getName(), this.currentProject);
-		}
-		catch (final ClassNotFoundException e) {
+		} catch (final ClassNotFoundException e) {
 			Activator.getDefault().logError(e);
 		}
 		// Fall-back path when retrieval of actual path fails. If the statement below
@@ -317,7 +325,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	@Override
-	public void collectedValues(final AnalysisSeedWithSpecification arg0, final Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
+	public void collectedValues(final AnalysisSeedWithSpecification arg0,
+			final Multimap<CallSiteWithParamIndex, ExtractedValue> arg1) {
 		// Nothing
 	}
 
@@ -400,6 +409,66 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	}
 
 	@Override
-	public void ensuredPredicates(final Table<Statement, Val, Set<EnsuredCryptSLPredicate>> existingPredicates,
-			final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> expectedPredicates, final Table<Statement, IAnalysisSeed, Set<CryptSLPredicate>> missingPredicates) {}
+	public void ensuredPredicates(final Table<Statement, Val, Set<EnsuredCrySLPredicate>> existingPredicates,
+			final Table<Statement, IAnalysisSeed, Set<CrySLPredicate>> expectedPredicates,
+			final Table<Statement, IAnalysisSeed, Set<CrySLPredicate>> missingPredicates) {
+	}
+
+	@Override
+	public void addProgress(final int processSeeds, final int workListsize) {
+		setProcessedSeeds(processSeeds);
+		setTotalSeeds(workListsize + processSeeds);
+		setPercentCompleted((int) Math.round((float) processedSeeds * 100 / totalSeeds));
+		tempWork = getPercentCompleted() - work;
+		if (tempWork > 0) {
+			setWorkUnitsCompleted(tempWork);
+			work = getPercentCompleted();
+		} else {
+			setWorkUnitsCompleted(0);
+		}
+	}
+
+	public int getPercentCompleted() {
+		return percentCompleted;
+	}
+
+	public void setPercentCompleted(int percentCompleted) {
+		this.percentCompleted = percentCompleted;
+	}
+
+	public int getTotalSeeds() {
+		return totalSeeds;
+	}
+
+	public void setTotalSeeds(int totalSeeds) {
+		this.totalSeeds = totalSeeds;
+	}
+
+	public int getProcessedSeeds() {
+		return processedSeeds;
+	}
+
+	public void setProcessedSeeds(int processedSeeds) {
+		this.processedSeeds = processedSeeds;
+	}
+
+	public boolean isCgGenComplete() {
+		return cgGenComplete;
+	}
+
+	public void setCgGenComplete(boolean cgGenComplete) {
+		this.cgGenComplete = cgGenComplete;
+	}
+
+	public int getWorkUnitsCompleted() {
+		return workUnitsCompleted;
+	}
+
+	public void setWorkUnitsCompleted(int workUnitsCompleted) {
+		this.workUnitsCompleted = workUnitsCompleted;
+	}
+
+	public void setWork(int work) {
+		this.work = work;
+	}
 }

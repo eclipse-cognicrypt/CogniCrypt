@@ -9,6 +9,7 @@ package de.cognicrypt.crysl.handler;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -17,8 +18,8 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IStartup;
+
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.utils.Utils;
 
 /**
  * At startup, this handler registers a listener that will be informed after a build, whenever resources were changed.
@@ -75,8 +76,6 @@ public class StartupHandler implements IStartup {
 				}
 
 			}
-			Activator.getDefault()
-					.logInfo("CrySL rules persisted to " + Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath());
 		}
 	}
 

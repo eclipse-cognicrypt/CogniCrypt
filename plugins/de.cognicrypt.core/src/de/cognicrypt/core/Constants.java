@@ -22,6 +22,11 @@ public class Constants {
 	public enum CodeGenerators {
 		XSL, CrySL
 	}
+	
+	public enum Rules {
+		JavaCryptographicArchitecture, BouncyCastle, Tink
+	}
+	
 	public enum Severities {
 		Error, Warning, Info, Ignored;
 
@@ -478,7 +483,7 @@ public class Constants {
 	public static final String PREDICATEENSURER_GROUPID = "de.upb.cognicrypt.predicateensurer";
 	public static final String PREDICATEENSURER_ARTIFACTID = "PredicateEnsurer";
 	public static final String PREDICATEENSURER_VERSION = "0.0.1-SNAPSHOT";
-	public static final String PREDICATEENSURER_JAR_IMPORT = "de.upb.cognicrypt.predicateensurer.CC";
+	public static final String PREDICATEENSURER_JAR_IMPORT = "de.upb.cognicrypt.predicateensurer.Ensurer";
 
 	public static final String DEPENDENCIES_TAG = "dependencies";
 	public static final String DEPENDENCY_TAG = "dependency";
@@ -523,6 +528,7 @@ public class Constants {
 	public static final String AUTOMATED_ANALYSIS = "de.cognicrypt.staticanalyzer.automaticAnalysis";
 	public static final String SHOW_SECURE_OBJECTS = "de.cognicrypt.staticanalyzer.secureObjects";
 	public static final String CALL_GRAPH_SELECTION = "de.cognicrypt.staticanalyzer.callgraphSelection";
+	public static final String SELECT_CUSTOM_RULES = "de.cognicrypt.staticanalyzer.selectCustomRules";
 
 	public static final String ANALYSE_DEPENDENCIES = "de.cognicrypt.staticanalyzer.dependencyAnalysis";
 
@@ -564,14 +570,34 @@ public class Constants {
 
 	// define a correct ID (get range of possible ones)
 	public static final int JDT_PROBLEM_ID = 10000000;
-	public final static String RELATIVE_RULES_DIR = "resources/CrySLRules";
-	public static final String cryslFileEnding = ".cryptsl";
-	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CryptSL";
+	public final static String ECLIPSE_RULES_DIR = System.getProperty("user.dir");
+	public static final String cryslFileEnding = ".crysl";
+	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CrySL";
 	public static final String HEALTHY = "Secure";
 	public static final String UNHEALTHY = "Insecure";
 
 	// define the max java version before which plugin works.
 	public static final String CC_JAVA_VERSION = "1.8";
+	
+	public static final String RELATIVE_CUSTOM_RULES_DIR = "resources/CrySLRules/Custom";
+
+ 	//Preference page rules table Constants
+ 	public static final String TABLE_HEADER_RULES = "Rules";
+ 	public static final String TABLE_HEADER_VERSION = "Version";
+ 	public static final String TABLE_HEADER_URL = "URL";
+ 	
+ 	public static final Double MIN_JCA_RULE_VERSION = 1.4;
+ 	public static final Double MIN_BC_RULE_VERSION = 0.7;
+ 	public static final Double MIN_TINK_RULE_VERSION = 0.3;
+
+ 	//Configuration.ini keys
+ 	public static final String INI_URL_HEADER = "URLS";
+ 	public static final String INI_NEXUS_SOOT_RELEASE = "NEXUS_SOOT_RELEASE";
+ 	public static final String INI_JCA_NEXUS = "JCA_NEXUS";
+ 	public static final String INI_BC_NEXUS = "BC_NEXUS";
+ 	public static final String INI_TINK_NEXUS = "TINK_NEXUS";
+ 	
+ 	public final static String CONFIG_FILE_PATH = "configuration.ini";
 
 	// path to icons
 	public final static String COGNICRYPT_ICON_DIR = "icons/cognicrypt-analysis.png";

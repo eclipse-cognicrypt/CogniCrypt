@@ -570,6 +570,7 @@ public class Constants {
 
 	// define a correct ID (get range of possible ones)
 	public static final int JDT_PROBLEM_ID = 10000000;
+	public final static String RELATIVE_RULES_DIR = "resources/CrySLRules";
 	public final static String ECLIPSE_RULES_DIR = System.getProperty("user.dir");
 	public static final String cryslFileEnding = ".crysl";
 	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CrySL";

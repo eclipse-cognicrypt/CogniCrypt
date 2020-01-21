@@ -358,7 +358,10 @@ public class Utils {
  		List<String> versions = new ArrayList<String>();
  		File path = new File(System.getProperty("user.dir") + File.separator + ruleSet);
  		File[] innerDirs = path.listFiles();
- 		for (File f: innerDirs) {
+ 		if (innerDirs == null) {
+ 			return null;
+ 		}
+ 			for (File f: innerDirs) {
  			if (f.isDirectory()) {
  				String[] versionNumber = f.getPath().split(Matcher.quoteReplacement(System.getProperty("file.separator")));
  				versions.add(versionNumber[versionNumber.length - 1]);

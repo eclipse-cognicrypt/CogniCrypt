@@ -38,7 +38,7 @@ public class QuickFixer implements IMarkerResolutionGenerator {
 		String errorType = "";
 		int severity;
 		try {
-			severity = (int) mk.getAttribute(IMarker.SEVERITY);
+			severity = (int) mk.getAttribute(IMarker.SEVERITY);  //java.lang.NullPointerException
 			errorType = (String) mk.getAttribute("errorType");
 			message = (String) mk.getAttribute(IMarker.MESSAGE);
 			if (severity == 2) {
@@ -63,6 +63,7 @@ public class QuickFixer implements IMarkerResolutionGenerator {
 		catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
+		quickFixes.add(new FalsePositiveReporter("Test"));
 		return quickFixes.toArray(new IMarkerResolution[quickFixes.size()]);
 	}
 

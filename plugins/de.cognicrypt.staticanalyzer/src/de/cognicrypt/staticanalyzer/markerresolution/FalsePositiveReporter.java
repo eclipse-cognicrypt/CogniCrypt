@@ -3,11 +3,14 @@ package de.cognicrypt.staticanalyzer.markerresolution;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.border.TitledBorder;
@@ -39,28 +42,33 @@ public class FalsePositiveReporter implements IMarkerResolution {
 		JDialog reporterDialog = new JDialog();
 		reporterDialog.setTitle("Issue reporter");
 		reporterDialog.setLocationRelativeTo(null);
-		reporterDialog.setSize(440, 280);
+		reporterDialog.setSize(480, 320);
 		reporterDialog.setLayout(new BorderLayout());
-		reporterDialog.setModal(true);
+		reporterDialog.setModal(false);
 
 		TitledBorder title = BorderFactory.createTitledBorder("Issue Description");
 		JTextArea reportField = new JTextArea();
-		reportField.setFont(reportField.getFont().deriveFont(12f));
+		reportField.setFont(reportField.getFont().deriveFont(13f));
 		reportField.setBorder(title);
 		reportField.setEditable(true);
+		reportField.setLineWrap(true);
+		reportField.setWrapStyleWord(true);
+        JScrollPane reportScrollPane = new JScrollPane(reportField);       
 
 		JToolBar controlBar = new JToolBar();
 		controlBar.setFloatable(false);
 		controlBar.setRollover(true);
+
 		JLabel infoLabel = new JLabel(
-				"<html>Additonaly, to the issue description, the concerned source code file will be send.</html>");
+				"<html>Additonaly, to the issue description the affected file "+arg0.getResource().getName()+" will be send.</html>");
 
 		JButton sendButton = new JButton("Send");
 		sendButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				send();
+				send(reportField.getText());
+				close(reporterDialog);				
 			}
 		});
 
@@ -69,8 +77,7 @@ public class FalsePositiveReporter implements IMarkerResolution {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				clear();
-				cancel();
+				close(reporterDialog);
 			}
 		});
 
@@ -78,12 +85,38 @@ public class FalsePositiveReporter implements IMarkerResolution {
 		controlBar.add(sendButton);
 		controlBar.add(candelButton);
 
-		reporterDialog.add(reportField, BorderLayout.CENTER);
+		reporterDialog.add(reportScrollPane, BorderLayout.CENTER);
 		reporterDialog.add(controlBar, BorderLayout.SOUTH);
 		reporterDialog.setVisible(true);
 	}
+	
+	
+	/**
+	 * This method returns the {@link File} with the reported misuse
+	 * @param m
+	 * @return affected {@link File}
+	 */
+	private File getFile(IMarker m) {
+		return new File(m.getResource().getLocation().toOSString());
+	}
+	
+	/**
+	 * This method closes a {@link JDialog}
+	 * @param reporterDialog - dialog to be closed
+	 */
+	private void close(JDialog reporterDialog) {
+		reporterDialog.setVisible(false);
+		reporterDialog.dispatchEvent(new WindowEvent(
+				reporterDialog, WindowEvent.WINDOW_CLOSING));
+	}
+	
+	
 
-	private void send() {
+	/**
+	 * This method sends the issue report and the file with the misuse to the CogniCrypt server
+	 * @param issueReport report to be sent
+	 */
+	private void send(String issueReport) {
 
 //		String to = "";// change accordingly
 //		final String user = "";// change accordingly
@@ -136,13 +169,4 @@ public class FalsePositiveReporter implements IMarkerResolution {
 //		}
 
 	}
-
-	private void cancel() {
-
-	}
-
-	private void clear() {
-
-	}
-
 }

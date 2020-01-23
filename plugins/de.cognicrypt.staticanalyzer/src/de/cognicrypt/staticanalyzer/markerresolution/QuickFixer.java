@@ -49,21 +49,20 @@ public class QuickFixer implements IMarkerResolutionGenerator {
 				quickFixes.add(new UnSuppressWarningFix(Constants.UNSUPPRESSWARNING_FIX + message));
 			}
 			
-			// we need this check, because the ensuring of a predicate with more as one parameter does not work currently.
+			// we need to check this, because the ensuring of a predicate with more as one parameter does not work currently.
 			if(!isSuppressed) {
 				String predicate = (String) mk.getAttribute("predicate");
 				if (errorType.equals(Constants.REQUIRED_PREDICATE_MARKER_TYPE) && predicate != null) {
 					if(secureExtenernalSources.contains(predicate)) {					
-						quickFixes.add(new EnsuresPredicateFix("This object comes from a stream/database/other external source and is actually secure."));
+						quickFixes.add(new EnsuresPredicateFix(Constants.ENSUREPREDICATE_FIX));
 					}
 				}
 			}
-			
 		}
 		catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
-		quickFixes.add(new FalsePositiveReporter("Test"));
+		quickFixes.add(new FalsePositiveReporter(Constants.FALSEPOSTIVEREPORTER_FIX));
 		return quickFixes.toArray(new IMarkerResolution[quickFixes.size()]);
 	}
 

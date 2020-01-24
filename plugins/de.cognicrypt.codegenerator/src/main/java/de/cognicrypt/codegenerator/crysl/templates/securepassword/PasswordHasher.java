@@ -21,20 +21,22 @@ public class PasswordHasher {
 	public static java.lang.String createPWHash(char[] pwd) throws GeneralSecurityException {
 		byte[] salt = new byte[32];
 		byte[] pwdHashBytes = null;
+		int keysize = 160;
 
 		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(salt, "next").includeClass("java.security.PBEKeySpec")
-			.addParameter(pwd, "password").includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey").addReturnObject(pwdHashBytes).generate();
+			.addParameter(pwd, "password").addParameter(salt, "salt").addParameter(keysize, "keylength").includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey").addReturnObject(pwdHashBytes).generate();
 
-		String pwdHash = toBase64(salt) + ":" + toBase64(pwdHashBytes);
+		java.lang.String pwdHash = toBase64(salt) + ":" + toBase64(pwdHashBytes);
 		return pwdHash;
 	}
 
 	public static boolean verifyPWHash(char[] pwd, java.lang.String pwdhash) throws GeneralSecurityException {
-		String[] parts = pwdhash.split(":");
+		java.lang.String[] parts = pwdhash.split(":");
 		byte[] salt = fromBase64(parts[0]);
 		byte[] res = null;
+		int keysize = 160;
 
-		CrySLCodeGenerator.getInstance().includeClass("java.security.PBEKeySpec").addParameter(salt, "salt").addParameter(pwd, "passowrd")
+		CrySLCodeGenerator.getInstance().includeClass("java.security.PBEKeySpec").addParameter(pwd, "password").addParameter(salt, "salt").addParameter(keysize, "keylength")
 			.includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey").addReturnObject(res).generate();
 
 		Boolean areEqual = slowEquals(res, fromBase64(parts[1]));
@@ -49,11 +51,11 @@ public class PasswordHasher {
 		return diff == 0;
 	}
 
-	private static String toBase64(byte[] array) {
+	private static java.lang.String toBase64(byte[] array) {
 		return DatatypeConverter.printBase64Binary(array);
 	}
 
-	private static byte[] fromBase64(String hash) {
+	private static byte[] fromBase64(java.lang.String hash) {
 		return DatatypeConverter.parseBase64Binary(hash);
 	}
 

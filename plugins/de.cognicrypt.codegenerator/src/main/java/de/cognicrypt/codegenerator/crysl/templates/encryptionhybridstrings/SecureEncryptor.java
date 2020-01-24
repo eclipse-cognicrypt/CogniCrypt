@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 import javax.crypto.Cipher;
 
@@ -43,37 +44,35 @@ public class SecureEncryptor {
 		return wrappedKeyBytes;
 	}
 
-	public java.io.File encryptData(java.io.File plaintext, javax.crypto.SecretKey key) throws IOException {
-		byte[] ivBytes = new byte[32];
+	public java.lang.String encryptData(java.lang.String plaintext, javax.crypto.SecretKey key) throws IOException {
+		byte[] ivBytes = new byte[16];
 		byte[] cipherText = null;
-		byte[] plaintextFile = Files.readAllBytes(Paths.get(plaintext.getAbsolutePath()));
+		byte[] plaintextString = plaintext.getBytes("UTF-8");
 		int mode = Cipher.ENCRYPT_MODE;
 
 		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(ivBytes, "next").includeClass("javax.crypto.spec.IvParameterSpec")
-			.addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher").addParameter(mode, "encmode").addParameter(plaintextFile, "plainText").addParameter(key, "key")
+			.addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher").addParameter(mode, "encmode").addParameter(plaintextString, "plainText").addParameter(key, "key")
 			.addReturnObject(cipherText).generate();
 
 		byte[] ret = new byte[ivBytes.length + cipherText.length];
 		System.arraycopy(ivBytes, 0, ret, 0, ivBytes.length);
 		System.arraycopy(cipherText, 0, ret, ivBytes.length, cipherText.length);
-		Files.write(Paths.get(plaintext.getAbsolutePath()), ret);
-		return plaintext;
+		return Base64.getEncoder().encodeToString(ret);
+
 	}
 
-	public java.io.File decryptData(java.io.File ciphertext, javax.crypto.SecretKey key) throws IOException {
-		byte[] ciphertextFile = Files.readAllBytes(Paths.get(ciphertext.getAbsolutePath()));
-		byte[] ivBytes = new byte[32];
-		byte[] data = new byte[ciphertextFile.length - ivBytes.length];
-		System.arraycopy(data, 0, ivBytes, 0, ivBytes.length);
-		System.arraycopy(data, ivBytes.length, data, 0, data.length);
+	public java.lang.String decryptData(java.lang.String ciphertext, javax.crypto.SecretKey key) throws IOException {
+		byte[] ciphertextString = Base64.getDecoder().decode(ciphertext);
+		byte[] ivBytes = new byte[16];
+		byte[] data = new byte[ciphertextString.length - ivBytes.length];
+		System.arraycopy(ciphertextString, 0, ivBytes, 0, ivBytes.length);
+		System.arraycopy(ciphertextString, ivBytes.length, data, 0, data.length);
 
 		int mode = Cipher.DECRYPT_MODE;
 		byte[] res = null;
 		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher")
 			.addParameter(mode, "encmode").addParameter(data, "plainText").addParameter(key, "key").addReturnObject(res).generate();
-
-		Files.write(Paths.get(ciphertext.getAbsolutePath()), res);
-		return ciphertext;
+		return new String(res, "UTF-8");
 	}
 
 }

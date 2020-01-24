@@ -64,9 +64,9 @@ public class SecureEncryptor {
 		byte[] ciphertextFile = Files.readAllBytes(Paths.get(ciphertext.getAbsolutePath()));
 		byte[] ivBytes = new byte[key.getEncoded().length];
 		byte[] data = new byte[ciphertextFile.length - ivBytes.length];
-		System.arraycopy(data, 0, ivBytes, 0, ivBytes.length);
-		System.arraycopy(data, ivBytes.length, data, 0, data.length);
-
+		System.arraycopy(ciphertextFile, 0, ivBytes, 0, ivBytes.length);
+		System.arraycopy(ciphertextFile, ivBytes.length, data, 0, data.length);
+		
 		int mode = Cipher.DECRYPT_MODE;
 		byte[] res = null;
 		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher")

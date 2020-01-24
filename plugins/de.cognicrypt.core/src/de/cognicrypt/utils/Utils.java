@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -358,7 +359,10 @@ public class Utils {
  		List<String> versions = new ArrayList<String>();
  		File path = new File(System.getProperty("user.dir") + File.separator + ruleSet);
  		File[] innerDirs = path.listFiles();
- 		for (File f: innerDirs) {
+ 		if (innerDirs == null) {
+ 			return null;
+ 		}
+ 			for (File f: innerDirs) {
  			if (f.isDirectory()) {
  				String[] versionNumber = f.getPath().split(Matcher.quoteReplacement(System.getProperty("file.separator")));
  				versions.add(versionNumber[versionNumber.length - 1]);
@@ -368,9 +372,9 @@ public class Utils {
  		versions.sort(new Comparator<String>() {
  			@Override
  			public int compare(String o1, String o2) {
- 				Double one = Double.valueOf(o1);
- 				Double two = Double.valueOf(o2);
- 				return one.compareTo(two);
+ 				DefaultArtifactVersion v1 = new DefaultArtifactVersion(o1);
+  				DefaultArtifactVersion v2 = new DefaultArtifactVersion(o2);
+  				return v1.compareTo(v2);
  			}
  		});
 
@@ -414,8 +418,8 @@ public class Utils {
 	}
 
 	public static List<CrySLRule> readCrySLRules() {
-		return Stream.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getAbsolutePath()),
-				readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getAbsolutePath())).flatMap(Collection::stream).collect(Collectors.toList());
+		return Stream.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR).getAbsolutePath()),
+				readCrySLRules(Constants.ECLIPSE_RULES_DIR + Constants.outerFileSeparator + "JavaCryptographicArchitecture")).flatMap(Collection::stream).collect(Collectors.toList());
 	}
 
 	protected static List<CrySLRule> readCrySLRules(String rulesFolder) {
@@ -447,7 +451,7 @@ public class Utils {
 
 	public static boolean isSubType(String typeOne, String typeTwo) {
 		boolean subTypes = typeOne.equals(typeTwo);
-		subTypes |= (typeOne + "[]").equals(typeTwo);
+		subTypes |= ("byte".equals(typeOne) && (typeOne + "[]").equals(typeTwo));
 		if (!subTypes) {
 			try {
 				subTypes = Class.forName(typeOne).isAssignableFrom(Class.forName(typeTwo));

@@ -186,12 +186,16 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
  		for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
  			Ruleset ruleset = (Ruleset) itr.next();
  			ruleset.setVersions(new CCombo(table.getTable(), SWT.NONE));
+ 			String[] items = Utils.getRuleVersions(ruleset.getFolderName());
+ 			if (items != null) {
+				ruleset.getVersions().setItems(items);
  			ruleset.getVersions()
  					.setItems(Utils.getRuleVersions(ruleset.getFolderName()));
  			ruleset.setSelectedVersion((ruleset.getSelectedVersion().length() > 0) ? ruleset.getSelectedVersion()
  					: ruleset.getVersions().getItem(ruleset.getVersions().getItemCount() - 1));
  			ruleset.getVersions().select(ruleset.getVersions().indexOf(ruleset.getSelectedVersion()));
- 			createRulesTableRow(ruleset);
+			}
+			createRulesTableRow(ruleset);
  			ruleset.getVersions().addSelectionListener(new SelectionAdapter() {
  				@Override
  				public void widgetSelected(SelectionEvent e) {

@@ -11,7 +11,6 @@
 package de.cognicrypt.codegenerator.wizard;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -158,6 +157,26 @@ public class AltConfigWizard extends Wizard {
 			}
 		}
 		return currentPage;
+	}
+	
+	public  String constructTemplateName() {
+		String selectedTemplate = selectedTask.getCodeTemplate();
+		for (Answer resp : this.constraints.values()) {
+			selectedTemplate += resp.getOption();
+		}
+		return selectedTemplate;
+	}
+	
+	public void constructConstraints(HashMap<Question, Answer> constraint) {
+			this.constraints.putAll(constraint);
+	}
+	
+	public void setSelectedTask(Task selectedTask) {
+		this.selectedTask = selectedTask;
+	}
+	
+	public String getSelectedTemplate() {
+		return this.selectedTask.getCodeTemplate();
 	}
 
 	private IWizardPage addLocatorPage() {

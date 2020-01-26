@@ -527,4 +527,22 @@ public class QuestionsToTemplateTests {
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
 		assertEquals(wizard.constructTemplateName(), expected);
 	}
+	
+	@Test
+	public void testSecurePassword1() {
+		AltConfigWizard wizard = new AltConfigWizard();
+		Task securepassword = TestUtils.getTask("SecurePassword");
+		wizard.setSelectedTask(securepassword);
+		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/securepassword";
+		assertEquals(wizard.constructTemplateName(), expected);
+	}
+	
+	@Test
+	public void testDigitalSignatures1() {
+		AltConfigWizard wizard = new AltConfigWizard();
+		Task digitalsignatures = TestUtils.getTask("DigitalSignatures");
+		wizard.setSelectedTask(digitalsignatures);
+		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/digitalsignatures";
+		assertEquals(wizard.constructTemplateName(), expected);
+	}
 }

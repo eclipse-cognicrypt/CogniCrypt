@@ -17,13 +17,19 @@ import de.cognicrypt.core.Constants;
 import java.util.HashMap;
 
 /**
+ * The JUnit Plug-in tests check the correctness of CogniCrypt's code generation feature
+ * in determining the template path when the user chooses an arbitrary task and a set of 
+ * given question-answers in the wizard dialog. This is important since the code generation
+ * depends on the computed path to generate the proper template for a given input from
+ * the user through CogniCrypt's wizard.
+ * 
  * @author Shahrzad Asghari
  * @author Enri Ozuni
  */
 public class QuestionsToTemplateTests {
 	
 	@Test
-	public void test1() {
+	public void testEncryption1() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -48,7 +54,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test2() {
+	public void testEncryption2() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -73,7 +79,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test3() {
+	public void testEncryption3() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -98,7 +104,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test4() {
+	public void testEncryption4() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -123,7 +129,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test5() {
+	public void testEncryption5() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -148,7 +154,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test6() {
+	public void testEncryption6() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -173,7 +179,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test7() {
+	public void testEncryption7() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -198,7 +204,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test8() {
+	public void testEncryption8() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -223,7 +229,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test9() {
+	public void testEncryption9() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -248,7 +254,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test10() {
+	public void testEncryption10() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -273,7 +279,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test11() {
+	public void testEncryption11() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -298,7 +304,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test12() {
+	public void testEncryption12() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -323,7 +329,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test13() {
+	public void testEncryption13() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -348,7 +354,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test14() {
+	public void testEncryption14() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -373,7 +379,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test15() {
+	public void testEncryption15() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -398,7 +404,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test16() {
+	public void testEncryption16() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -423,7 +429,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test17() {
+	public void testEncryption17() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -448,7 +454,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test18() {
+	public void testEncryption18() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -473,7 +479,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test19() {
+	public void testEncryption19() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -498,7 +504,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void test20() {
+	public void testEncryption20() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);

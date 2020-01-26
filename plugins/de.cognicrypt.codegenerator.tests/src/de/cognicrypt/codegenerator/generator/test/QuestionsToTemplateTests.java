@@ -3,8 +3,6 @@ package de.cognicrypt.codegenerator.generator.test;
 import static org.junit.Assert.assertEquals;
 
 
-import java.io.IOException;
-
 import org.junit.Test;
 
 import de.cognicrypt.codegenerator.question.Answer;
@@ -12,8 +10,6 @@ import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.testutilities.TestUtils;
 import de.cognicrypt.codegenerator.wizard.AltConfigWizard;
-import de.cognicrypt.core.Constants;
-
 import java.util.HashMap;
 
 /**

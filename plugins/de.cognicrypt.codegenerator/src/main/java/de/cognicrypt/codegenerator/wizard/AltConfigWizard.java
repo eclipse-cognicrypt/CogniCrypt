@@ -175,10 +175,6 @@ public class AltConfigWizard extends Wizard {
 		this.selectedTask = selectedTask;
 	}
 	
-	public String getSelectedTemplate() {
-		return this.selectedTask.getCodeTemplate();
-	}
-
 	private IWizardPage addLocatorPage() {
 		final LocatorPage locatorPage = new LocatorPage("Locator");
 		addPage(locatorPage);

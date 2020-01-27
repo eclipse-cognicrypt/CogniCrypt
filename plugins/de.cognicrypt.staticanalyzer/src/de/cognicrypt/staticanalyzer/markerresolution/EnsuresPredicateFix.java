@@ -127,7 +127,7 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 			createRule(filePath, predicate);
 		}
 		
-		final ASTParser parser = ASTParser.newParser(AST.JLS9);
+		final ASTParser parser = ASTParser.newParser(AST.JLS11);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setSource(sourceUnit);
 		final CompilationUnit unit = (CompilationUnit) parser.createAST(null);

@@ -101,13 +101,13 @@ public class SootRunner {
 			CrySLModelReader r = new CrySLModelReader(project);
 			for (String path : projectClassPath(JavaCore.create(project))) {
 				List<CrySLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
-				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
+//				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
 
 			for (String path : applicationClassPath(JavaCore.create(project))) {
 				List<CrySLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
-				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
+//				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
 			
@@ -268,7 +268,6 @@ public class SootRunner {
 		Collection<String> libraryClassPath = libraryClassPath(javaProject, dependencyAnalyser);
 
 		libraryClassPath.addAll(applicationClassPath);
-		System.out.println(Joiner.on(File.pathSeparator).join(libraryClassPath));
 		return Joiner.on(File.pathSeparator).join(libraryClassPath);
 	}
 

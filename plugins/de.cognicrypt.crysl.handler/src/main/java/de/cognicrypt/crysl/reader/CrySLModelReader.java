@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -41,12 +40,10 @@ import org.eclipse.xtext.common.types.access.jdt.IJavaProjectProvider;
 import org.eclipse.xtext.common.types.access.jdt.JdtTypeProviderFactory;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import com.google.inject.Injector;
-
 import crypto.interfaces.ICrySLPredicateParameter;
 import crypto.interfaces.ISLConstraint;
 import crypto.rules.CrySLArithmeticConstraint;
@@ -222,11 +219,6 @@ public class CrySLModelReader {
 			}
 		}
 		final CrySLRule rule = new CrySLRule(curClass, objects, this.forbiddenMethods, this.smg, constraints, actPreds);
-		if(!rule.getClassName().equalsIgnoreCase("void")) {
-			System.out.println(rule.getClassName());
-			System.out.println("===========================================");
-			System.out.println("");
-		}
 		
 		return rule;
 	}
@@ -566,7 +558,7 @@ public class CrySLModelReader {
 						op = LogOps.or;
 						break;
 					default:
-						System.err.println("Sign " + operator.toString() + " was not properly translated.");
+						Activator.getDefault().logError("Sign " + operator.toString() + " was not properly translated.");
 						op = LogOps.and;
 				}
 			}

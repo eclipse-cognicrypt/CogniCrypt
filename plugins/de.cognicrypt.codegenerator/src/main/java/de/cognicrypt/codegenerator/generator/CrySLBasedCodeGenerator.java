@@ -672,8 +672,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 					methodParameter[i] = Class.forName(parameter.getValue());
 					i++;
 				} catch (ClassNotFoundException e) {
-					System.out.println("No class found for type: " + parameter.getValue().toString());
-					e.printStackTrace();
+					Activator.getDefault().logError(e, "No class found for type: " + parameter.getValue().toString());
 				}
 			}
 		}

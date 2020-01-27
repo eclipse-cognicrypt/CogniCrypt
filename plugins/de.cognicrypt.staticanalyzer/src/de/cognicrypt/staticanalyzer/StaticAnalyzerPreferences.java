@@ -161,7 +161,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
  				ruleSets.add(loadedRuleset);
  			}
  		} catch (BackingStoreException e) {
- 			e.printStackTrace();
+ 			Activator.getDefault().logError(e);
  		}
  		return ruleSets;
  	}

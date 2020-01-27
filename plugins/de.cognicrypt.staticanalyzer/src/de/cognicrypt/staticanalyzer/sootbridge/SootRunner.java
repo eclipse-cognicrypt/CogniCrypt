@@ -147,7 +147,7 @@ public class SootRunner {
  					}
  				}
  			} catch (BackingStoreException e) {
- 				e.printStackTrace();
+ 				Activator.getDefault().logError(e);
  			}
  			
 		}

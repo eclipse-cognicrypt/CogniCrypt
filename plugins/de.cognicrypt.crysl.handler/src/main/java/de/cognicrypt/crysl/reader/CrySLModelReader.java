@@ -286,7 +286,7 @@ public class CrySLModelReader {
 						Files.copy(resAsFile, to);
 					}
 					catch (IOException e) {
-						e.printStackTrace();
+						Activator.getDefault().logError(e);
 					}
 				}
 			} else if (res instanceof IFolder) {

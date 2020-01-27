@@ -110,7 +110,6 @@ public class CrySLModelReader {
 	private List<CrySLForbiddenMethod> forbiddenMethods = null;
 	private StateMachineGraph smg = null;
 	private XtextResourceSet resourceSet;
-	private boolean testMode = false;
 
 	private static final String INT = "int";
 	private static final String THIS = "this";
@@ -161,8 +160,6 @@ public class CrySLModelReader {
 		this.resourceSet.setClasspathURIContext(new URLClassLoader(classpath));
 		new ClasspathTypeProvider(ucl, this.resourceSet, null, null);
 		this.resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-
-		testMode = true;
 	}
 
 	public CrySLRule readRule(File ruleFile) {
@@ -527,9 +524,7 @@ public class CrySLModelReader {
 			final List<ICrySLPredicateParameter> vars = new ArrayList<>();
 			final Pred innerPredicate = (Pred) un.getEnclosedExpression();
 			if (innerPredicate.getParList() != null) {
-				for (final SuPar sup : innerPredicate.getParList().getParameters()) {
-					vars.add(new CrySLObject(UNDERSCORE, NULL));
-				}
+				innerPredicate.getParList().getParameters().forEach(e -> vars.add(new CrySLObject(UNDERSCORE, NULL)));
 			}
 			slci = new CrySLPredicate(null, innerPredicate.getPredName(), vars, true);
 		} else if (cons instanceof Pred) {
@@ -538,9 +533,7 @@ public class CrySLModelReader {
 
 				final SuParList parList = ((Pred) cons).getParList();
 				if (parList != null) {
-					for (final SuPar sup : parList.getParameters()) {
-						vars.add(new CrySLObject(UNDERSCORE, NULL));
-					}
+					parList.getParameters().forEach(e -> vars.add(new CrySLObject(UNDERSCORE, NULL)));
 				}
 				slci = new CrySLPredicate(null, ((Pred) cons).getPredName(), vars, false);
 			}

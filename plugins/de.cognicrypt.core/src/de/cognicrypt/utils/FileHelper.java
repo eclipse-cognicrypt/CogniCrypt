@@ -66,7 +66,7 @@ public class FileHelper {
 	public static void trimFile(final String filePath) throws IOException {
 		final File f = new File(filePath);
 		if (!(f.exists() && Files.isReadable(f.toPath()))) {
-			System.out.println("wrong filepath");
+			Activator.getDefault().logError("Output file" + filePath + " could not be trimmed. It does either not exist or is not readable.");
 		}
 
 		final String contentStringAlt = String.join(Constants.lineSeparator, Files.readAllLines(Paths.get(filePath))).trim();

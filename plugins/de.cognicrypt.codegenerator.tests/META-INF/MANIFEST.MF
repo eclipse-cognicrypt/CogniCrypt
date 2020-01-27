@@ -9,3 +9,4 @@ Require-Bundle: org.eclipse.jdt.launching,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: lib/claferchocoig.jar,src/
 Export-Package: de.cognicrypt.codegenerator
+Automatic-Module-Name: de.cognicrypt.codegenerator.tests

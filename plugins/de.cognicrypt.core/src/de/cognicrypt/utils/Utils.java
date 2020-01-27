@@ -18,7 +18,6 @@ import java.util.OptionalInt;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -56,9 +55,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 import org.osgi.framework.Bundle;
-
 import com.google.common.base.CharMatcher;
-
 import crypto.analysis.CrySLRulesetSelector.RuleFormat;
 import crypto.cryslhandler.CrySLModelReader;
 import crypto.rules.CrySLRule;

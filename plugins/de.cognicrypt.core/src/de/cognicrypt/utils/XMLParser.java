@@ -93,7 +93,7 @@ public class XMLParser {
 			this.docBuilder = this.docFactory.newDocumentBuilder();
 		}
 		catch (final ParserConfigurationException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e);
 		}
 		this.doc = this.docBuilder.newDocument();
 	}

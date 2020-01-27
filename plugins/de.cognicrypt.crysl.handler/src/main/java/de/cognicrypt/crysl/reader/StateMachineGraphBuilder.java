@@ -149,8 +149,6 @@ public class StateMachineGraphBuilder {
 			}
 
 		} else if ((left instanceof Order || left instanceof SimpleOrder) && !(right instanceof Order || right instanceof SimpleOrder)) {
-			StateNode leftPrev = prevNode;
-
 			Optional<Entry<String, StateNode>> optionalOrLevel = leftOvers.get(level).stream().filter(e -> "|".equals(e.getKey())).findFirst();
 			if (optionalOrLevel.isPresent()) {
 				Entry<String, StateNode> orLevel = optionalOrLevel.get();
